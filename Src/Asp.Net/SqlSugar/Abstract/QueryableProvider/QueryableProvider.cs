@@ -2766,6 +2766,12 @@ namespace SqlSugar
             QueryBuilder.IsDistinct = true;
             return this;
         }
+
+        public new ISugarQueryable<T, T2>  Take(int num)
+        {
+            QueryBuilder.Take = num;
+            return this;
+        }
         #endregion
     }
     #endregion
@@ -3063,6 +3069,11 @@ namespace SqlSugar
         #endregion
 
         #region Other
+        public new ISugarQueryable<T, T2,T3> Take(int num)
+        {
+            QueryBuilder.Take = num;
+            return this;
+        }
         public new ISugarQueryable<T, T2, T3> Clone()
         {
             var queryable = this.Context.Queryable<T, T2, T3>((t, t2, t3) => new object[] { }).WithCacheIF(IsCache, CacheTime);
@@ -3492,6 +3503,11 @@ namespace SqlSugar
 
 
         #region Other
+        public new ISugarQueryable<T, T2,T3,T4> Take(int num)
+        {
+            QueryBuilder.Take = num;
+            return this;
+        }
         public new ISugarQueryable<T, T2, T3, T4> Clone()
         {
             var queryable = this.Context.Queryable<T, T2, T3, T4>((t, t2, t3, t4) => new object[] { }).WithCacheIF(IsCache, CacheTime);
@@ -3883,6 +3899,11 @@ namespace SqlSugar
         #endregion
 
         #region Other
+        public new ISugarQueryable<T, T2, T3, T4,T5> Take(int num)
+        {
+            QueryBuilder.Take = num;
+            return this;
+        }
         public new ISugarQueryable<T, T2, T3, T4, T5> Clone()
         {
             var queryable = this.Context.Queryable<T, T2, T3, T4, T5>((t, t2, t3, t4, t5) => new object[] { }).WithCacheIF(IsCache, CacheTime);
@@ -4310,6 +4331,11 @@ namespace SqlSugar
         #endregion
 
         #region Other
+        public new ISugarQueryable<T, T2, T3, T4, T5,T6> Take(int num)
+        {
+            QueryBuilder.Take = num;
+            return this;
+        }
         public new ISugarQueryable<T, T2, T3, T4, T5, T6> Clone()
         {
             var queryable = this.Context.Queryable<T, T2, T3, T4, T5, T6>((t, t2, t3, t4, t5, T6) => new object[] { }).WithCacheIF(IsCache, CacheTime);
@@ -4728,6 +4754,11 @@ namespace SqlSugar
         #endregion
 
         #region Other
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> Take(int num)
+        {
+            QueryBuilder.Take = num;
+            return this;
+        }
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> Clone()
         {
             var queryable = this.Context.Queryable<T, T2, T3, T4, T5, T6, T7>((t, t2, t3, t4, t5, T6, t7) => new object[] { }).WithCacheIF(IsCache, CacheTime);
@@ -5179,6 +5210,11 @@ namespace SqlSugar
         #endregion
 
         #region Other
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> Take(int num)
+        {
+            QueryBuilder.Take = num;
+            return this;
+        }
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> Clone()
         {
             var queryable = this.Context.Queryable<T, T2, T3, T4, T5, T6, T7, T8>((t, t2, t3, t4, t5, T6, t7, t8) => new object[] { }).WithCacheIF(IsCache, CacheTime);
@@ -5579,6 +5615,11 @@ namespace SqlSugar
         #endregion
 
         #region Other
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> Take(int num)
+        {
+            QueryBuilder.Take = num;
+            return this;
+        }
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> Clone()
         {
             var queryable = this.Context.Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9>((t, t2, t3, t4, t5, T6, t7, t8, t9) => new object[] { }).WithCacheIF(IsCache, CacheTime);
@@ -5990,6 +6031,11 @@ namespace SqlSugar
         #endregion
 
         #region Other
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> Take(int num)
+        {
+            QueryBuilder.Take = num;
+            return this;
+        }
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> Clone()
         {
             var queryable = this.Context.Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>((t, t2, t3, t4, t5, T6, t7, t8, t9, t10) => new object[] { }).WithCacheIF(IsCache, CacheTime);
@@ -6425,6 +6471,11 @@ namespace SqlSugar
         #endregion
 
         #region Other
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> Take(int num)
+        {
+            QueryBuilder.Take = num;
+            return this;
+        }
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> Clone()
         {
             var queryable = this.Context.Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>((t, t2, t3, t4, t5, T6, t7, t8, t9, t10, t11) => new object[] { }).WithCacheIF(IsCache, CacheTime);
@@ -6886,6 +6937,11 @@ namespace SqlSugar
         #endregion
 
         #region Other
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> Take(int num)
+        {
+            QueryBuilder.Take = num;
+            return this;
+        }
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> Clone()
         {
             var queryable = this.Context.Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>((t, t2, t3, t4, t5, T6, t7, t8, t9, t10, t11, t12) => new object[] { }).WithCacheIF(IsCache, CacheTime);
