@@ -35,6 +35,7 @@ namespace SqlSugar
         IDeleteable<T> RemoveDataCache();
         IDeleteable<T> RemoveDataCache(string likeString);
         KeyValuePair<string, List<SugarParameter>> ToSql();
+        IDeleteable<T> EnableQueryFilter();
         void AddQueue();
     }
 }
