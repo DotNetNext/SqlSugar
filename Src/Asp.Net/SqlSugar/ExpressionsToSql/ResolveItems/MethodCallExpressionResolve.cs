@@ -899,6 +899,10 @@ namespace SqlSugar
             formatString = formatString.Replace("M", begin + UtilMethods.ConvertStringToNumbers(this.GetMethodValue("DateValue", parameters).ObjToString()) + end);
 
             parameters.Args.Last().MemberValue = DateType.Day;
+            if (IsSqlServer()) 
+            {
+                formatString = formatString.Replace("dd",begin+ UtilMethods.ConvertStringToNumbers( string.Format("CASE  WHEN  LEN({0})=1  THEN '0'+ {0}   else  {0}  end", this.GetMethodValue("DateValue", parameters))) + end);
+            }
             formatString = formatString.Replace("dd", begin + UtilMethods.ConvertStringToNumbers(this.GetMethodValue("DateValue", parameters).ObjToString()) + end);
             formatString = formatString.Replace("d", begin + UtilMethods.ConvertStringToNumbers(this.GetMethodValue("DateValue", parameters).ObjToString()) + end);
 
@@ -951,7 +955,10 @@ namespace SqlSugar
             }
             return this.GetMethodValue("MergeString", joinStringParameter).ObjToString();
         }
-
+        private bool IsSqlServer()
+        {
+            return this.Context is SqlServerExpressionContext;
+        }
         private bool IsMySql()
         {
             return this.Context is MySqlExpressionContext;
