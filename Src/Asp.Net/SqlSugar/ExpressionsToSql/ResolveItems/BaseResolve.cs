@@ -446,6 +446,7 @@ namespace SqlSugar
                 var mappingKeys = GetMappingColumns(parameter.CurrentExpression);
                 var isSameType = mappingKeys.Keys.Count>0;
                 CallContextThread<Dictionary<string,string>>.SetData("Exp_Select_Mapping_Key", mappingKeys);
+                CallContextAsync<Dictionary<string, string>>.SetData("Exp_Select_Mapping_Key", mappingKeys);
                 this.Expression = item;
                 this.Start();
                 var shortName = parameter.CommonTempData;
