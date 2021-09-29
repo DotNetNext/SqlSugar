@@ -73,6 +73,7 @@ namespace SqlSugar
         {
             var queryable = this.Context.Queryable<object>().Select<T>().WithCacheIF(IsCache, CacheTime);
             CopyQueryBuilder(queryable.QueryBuilder);
+            ((QueryableProvider<T>)queryable).CacheKey = this.CacheKey;
             ((QueryableProvider<T>)queryable).MapperAction = this.MapperAction;
             ((QueryableProvider<T>)queryable).MapperActionWithCache = this.MapperActionWithCache;
             ((QueryableProvider<T>)queryable).Mappers = this.Mappers;
