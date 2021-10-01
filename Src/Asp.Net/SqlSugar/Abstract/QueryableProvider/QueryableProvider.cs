@@ -1616,7 +1616,7 @@ namespace SqlSugar
                 var firstPareamter = (express as LambdaExpression).Parameters.First();
                 this.QueryBuilder.TableShortName = firstPareamter.Name;
             }
-            Check.Exception(result.JoinIndex > 9, ErrorMessage.GetThrowMessage("只支持11个表", "Only 11 tables are supported"));
+            Check.Exception(result.JoinIndex > 10, ErrorMessage.GetThrowMessage("只支持12个表", "Only 12 tables are supported"));
             return result;
         }
 
