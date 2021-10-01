@@ -717,7 +717,7 @@ namespace SqlSugar
                     {
                         var str1 = "(" + string.Join(",", currentParametres.Select(it => it.Name)) + ")=>";
                         var str2 = "("+string.Join(",", jsoinParameters.Select(it => it.Name))+",xxx )=>";
-                        throw new Exception(ErrorMessage.GetThrowMessage($"请把 {str1} 改成 {str2} ", "Please change {str1} to {str2}."));
+                        throw new Exception(ErrorMessage.GetThrowMessage($" exp: {expression} , Please change {str1} to {str2}.", $"Join 表达式 {expression} 错误, 请把 {str1} 改成 {str2} "));
                     }
                     foreach (var item in currentParametres.Take(jsoinParameters.Count))
                     {
