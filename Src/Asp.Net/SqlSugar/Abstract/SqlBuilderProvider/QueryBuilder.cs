@@ -716,8 +716,8 @@ namespace SqlSugar
                     if (jsoinParameters.Count + 1 != currentParametres.Count) 
                     {
                         var str1 = "(" + string.Join(",", currentParametres.Select(it => it.Name)) + ")=>";
-                        var str2 = "("+string.Join(",", jsoinParameters.Select(it => it.Name))+",xxx )=>";
-                        throw new Exception(ErrorMessage.GetThrowMessage($" exp: {expression} , Please change {str1} to {str2}.", $"Join 表达式 {expression} 错误, 请把 {str1} 改成 {str2} "));
+                        var str2 = "("+string.Join(",", jsoinParameters.Select(it => it.Name))+","+ currentParametres.Last().Type.Name + " )=>";
+                        throw new Exception(ErrorMessage.GetThrowMessage($"Join {currentParametres.Last().Type.Name} error , Please change {str1} to {str2}.", $"Join {currentParametres.Last().Type.Name} 错误, 请把 {str1} 改成 {str2} "));
                     }
                     foreach (var item in currentParametres.Take(jsoinParameters.Count))
                     {

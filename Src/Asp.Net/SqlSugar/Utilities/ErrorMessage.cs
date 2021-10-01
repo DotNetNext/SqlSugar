@@ -45,8 +45,8 @@ namespace SqlSugar
         {
             List<string> formatArgs = new List<string>() { enMessage, cnMessage };
             formatArgs.AddRange(args);
-            return string.Format(@"English Message : {0}
-Chinese Message : {1}", formatArgs.ToArray());
+            return string.Format(@"中文提示 : {1}
+Chinese Message : {0}", formatArgs.ToArray());
         }
     }
 }
