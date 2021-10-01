@@ -19,6 +19,8 @@ namespace SqlSugar
         ISugarQueryable<T> AS<T2>(string tableName);
         ISugarQueryable<T> AS(string tableName);
         ISugarQueryable<T> With(string withString);
+        ISugarQueryable<T,T2> LeftJoin<T2>(Expression<Func<T,T2,bool>> joinExpression);
+        ISugarQueryable<T, T2> InnerJoin<T2>(Expression<Func<T, T2, bool>> joinExpression);
         ISugarQueryable<T> Filter(string FilterName, bool isDisabledGobalFilter = false);
         ISugarQueryable<T> Mapper(Action<T> mapperAction);
         ISugarQueryable<T> Mapper<AType, BType, MappingType>(Expression<Func<MappingType, ManyToMany>> expression);
@@ -179,6 +181,9 @@ namespace SqlSugar
     }
     public partial interface ISugarQueryable<T, T2> : ISugarQueryable<T>
     {
+        ISugarQueryable<T, T2,T3> LeftJoin<T3>(Expression<Func<T,T2,T3,bool>> joinExpression);
+        ISugarQueryable<T, T2, T3> InnerJoin<T3>(Expression<Func<T, T2, T3, bool>> joinExpression);
+
         #region Where
         new ISugarQueryable<T, T2> Where(Expression<Func<T, bool>> expression);
         ISugarQueryable<T, T2> Where(Expression<Func<T, T2, bool>> expression);

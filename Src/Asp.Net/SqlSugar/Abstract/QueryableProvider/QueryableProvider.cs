@@ -46,6 +46,23 @@ namespace SqlSugar
                 return this.Context.EntityMaintenance.GetEntityInfo<T>();
             }
         }
+        public ISugarQueryable<T, T2> LeftJoin<T2>(Expression<Func<T, T2, bool>> joinExpression)
+        {
+            var result = InstanceFactory.GetQueryable<T, T2>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression,JoinType.Left));
+            return result;
+        }
+
+        public ISugarQueryable<T, T2> InnerJoin<T2>(Expression<Func<T, T2, bool>> joinExpression) 
+        {
+            var result = InstanceFactory.GetQueryable<T, T2>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression, JoinType.Inner));
+            return result;
+        }
         public void Clear()
         {
             QueryBuilder.Clear();
@@ -1578,6 +1595,29 @@ namespace SqlSugar
             }
             return result;
         }
+        protected JoinQueryInfo GetJoinInfo(Expression joinExpression,JoinType joinType)
+        {
+            QueryBuilder.CheckExpressionNew(joinExpression, "Join");
+            QueryBuilder.JoinExpression = joinExpression;
+            var express= LambdaExpression.Lambda(joinExpression).Body;
+            var lastPareamter= (express as LambdaExpression).Parameters.Last();
+            var expResult = this.QueryBuilder.GetExpressionValue(joinExpression, ResolveExpressType.WhereMultiple);
+            this.Context.InitMappingInfo(lastPareamter.Type);
+            var result= new JoinQueryInfo()
+            {
+                JoinIndex = QueryBuilder.JoinQueryInfos.Count,
+                JoinType = joinType,
+                JoinWhere = expResult.GetResultString(),
+                ShortName= lastPareamter.Name,
+                TableName=this.Context.EntityMaintenance.GetTableName(lastPareamter.Type)
+            };
+            if (result.JoinIndex == 0) 
+            {
+                var firstPareamter = (express as LambdaExpression).Parameters.First();
+                this.QueryBuilder.TableShortName = firstPareamter.Name;
+            }
+            return result;
+        }
 
         private void _CountEnd(MappingTableList expMapping)
         {
@@ -2448,6 +2488,23 @@ namespace SqlSugar
     #region T2
     public partial class QueryableProvider<T, T2> : QueryableProvider<T>, ISugarQueryable<T, T2>
     {
+        public ISugarQueryable<T, T2,T3> LeftJoin<T3>(Expression<Func<T, T2,T3, bool>> joinExpression)
+        {
+            var result = InstanceFactory.GetQueryable<T, T2,T3>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression, JoinType.Left));
+            return result;
+        }
+
+        public ISugarQueryable<T, T2,T3> InnerJoin<T3>(Expression<Func<T, T2,T3, bool>> joinExpression)
+        {
+            var result = InstanceFactory.GetQueryable<T, T2,T3>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression, JoinType.Inner));
+            return result;
+        }
         #region Where
         public new ISugarQueryable<T, T2> Where(Expression<Func<T, bool>> expression)
         {

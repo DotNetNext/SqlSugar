@@ -701,5 +701,27 @@ namespace SqlSugar
                 }
             }
         }
+        public void CheckExpressionNew(Expression expression, string methodName)
+        {
+            if (IsSingle() == false && this.JoinExpression != null)
+            {
+                var jsoinParameters = (this.JoinExpression as LambdaExpression).Parameters;
+                var currentParametres = (expression as LambdaExpression).Parameters;
+                if ((expression as LambdaExpression).Body.ToString() == "True")
+                {
+                    return;
+                }
+                if (currentParametres != null && currentParametres.Count > 0)
+                {
+                    foreach (var item in currentParametres.Take(jsoinParameters.Count))
+                    {
+                        var index = currentParametres.IndexOf(item);
+                        var name = item.Name;
+                        var joinName = jsoinParameters[index].Name;
+                        Check.Exception(name.ToLower() != joinName.ToLower(), ErrorMessage.ExpressionCheck, joinName, methodName, name);
+                    }
+                }
+            }
+        }
     }
 }

@@ -400,6 +400,15 @@ namespace OrmTest
 
                             ).Select(o=>o).ToList();
 
+
+            var query5 = db.Queryable<Order>()
+                            .InnerJoin<Custom>((o, cus) => o.CustomId == cus.Id)
+                            .InnerJoin<OrderItem>((o, cus, oritem) => o.Id == oritem.OrderId)
+                            .Where((o) => o.Id == 1)
+                            .Select((o, cus) => new ViewOrder {  Id=o.Id, CustomName = cus.Name })
+                            .ToList();
+
+
             Console.WriteLine("#### Join Table End ####");
         }
 
