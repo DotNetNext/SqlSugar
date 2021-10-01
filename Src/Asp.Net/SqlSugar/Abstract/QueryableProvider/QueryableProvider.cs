@@ -2835,6 +2835,24 @@ namespace SqlSugar
     #region T3
     public partial class QueryableProvider<T, T2, T3> : QueryableProvider<T>, ISugarQueryable<T, T2, T3>
     {
+        public ISugarQueryable<T, T2, T3,T4> LeftJoin<T4>(Expression<Func<T, T2, T3,T4, bool>> joinExpression)
+        {
+            var result = InstanceFactory.GetQueryable<T, T2, T3,T4>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression, JoinType.Left));
+            return result;
+        }
+
+        public ISugarQueryable<T, T2, T3,T4> InnerJoin<T4>(Expression<Func<T, T2, T3,T4, bool>> joinExpression)
+        {
+            var result = InstanceFactory.GetQueryable<T, T2, T3,T4>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression, JoinType.Inner));
+            return result;
+        }
+
         #region  Group 
         public ISugarQueryable<T, T2, T3> GroupBy(Expression<Func<T, T2, T3, object>> expression)
         {
@@ -3227,6 +3245,24 @@ namespace SqlSugar
     #region T4
     public partial class QueryableProvider<T, T2, T3, T4> : QueryableProvider<T>, ISugarQueryable<T, T2, T3, T4>
     {
+        public ISugarQueryable<T, T2, T3, T4, T5> LeftJoin<T5>(Expression<Func<T, T2, T3, T4,T5, bool>> joinExpression)
+        {
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4, T5>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression, JoinType.Left));
+            return result;
+        }
+
+        public ISugarQueryable<T, T2, T3, T4, T5> InnerJoin<T5>(Expression<Func<T, T2, T3, T4, T5, bool>> joinExpression)
+        {
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4, T5>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression, JoinType.Inner));
+            return result;
+        }
+
         #region Where
         public new ISugarQueryable<T, T2, T3, T4> Where(Expression<Func<T, bool>> expression)
         {
@@ -3661,6 +3697,24 @@ namespace SqlSugar
     #region T5
     public partial class QueryableProvider<T, T2, T3, T4, T5> : QueryableProvider<T>, ISugarQueryable<T, T2, T3, T4, T5>
     {
+        public ISugarQueryable<T, T2, T3, T4, T5, T6> LeftJoin<T6>(Expression<Func<T, T2, T3, T4, T5,T6, bool>> joinExpression)
+        {
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression, JoinType.Left));
+            return result;
+        }
+
+        public ISugarQueryable<T, T2, T3, T4, T5, T6> InnerJoin<T6>(Expression<Func<T, T2, T3, T4, T5, T6, bool>> joinExpression)
+        {
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression, JoinType.Inner));
+            return result;
+        }
+
         #region Where
         public new ISugarQueryable<T, T2, T3, T4, T5> Where(Expression<Func<T, bool>> expression)
         {
@@ -4057,6 +4111,23 @@ namespace SqlSugar
     #region T6
     public partial class QueryableProvider<T, T2, T3, T4, T5, T6> : QueryableProvider<T>, ISugarQueryable<T, T2, T3, T4, T5, T6>
     {
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> LeftJoin<T7>(Expression<Func<T, T2, T3, T4, T5, T6,T7, bool>> joinExpression)
+        {
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression, JoinType.Left));
+            return result;
+        }
+
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> InnerJoin<T7>(Expression<Func<T, T2, T3, T4, T5, T6, T7, bool>> joinExpression)
+        {
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression, JoinType.Inner));
+            return result;
+        }
         #region Where
         public new ISugarQueryable<T, T2, T3, T4, T5, T6> Where(Expression<Func<T, bool>> expression)
         {
@@ -4489,6 +4560,23 @@ namespace SqlSugar
     #region T7
     public partial class QueryableProvider<T, T2, T3, T4, T5, T6, T7> : QueryableProvider<T>, ISugarQueryable<T, T2, T3, T4, T5, T6, T7>
     {
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> LeftJoin<T8>(Expression<Func<T, T2, T3, T4, T5, T6, T7,T8, bool>> joinExpression)
+        {
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression, JoinType.Left));
+            return result;
+        }
+
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> InnerJoin<T8>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, bool>> joinExpression)
+        {
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression, JoinType.Inner));
+            return result;
+        }
         #region Where
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> Where(Expression<Func<T, bool>> expression)
         {
@@ -4912,6 +5000,23 @@ namespace SqlSugar
     #region T8
     public partial class QueryableProvider<T, T2, T3, T4, T5, T6, T7, T8> : QueryableProvider<T>, ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8>
     {
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> LeftJoin<T9>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8,T9, bool>> joinExpression)
+        {
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression, JoinType.Left));
+            return result;
+        }
+
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> InnerJoin<T9>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, bool>> joinExpression)
+        {
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression, JoinType.Inner));
+            return result;
+        }
         #region Where
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> Where(Expression<Func<T, bool>> expression)
         {
@@ -5368,6 +5473,23 @@ namespace SqlSugar
     #region T9
     public partial class QueryableProvider<T, T2, T3, T4, T5, T6, T7, T8, T9> : QueryableProvider<T>, ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9>
     {
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> LeftJoin<T10>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, bool>> joinExpression)
+        {
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression, JoinType.Left));
+            return result;
+        }
+
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> InnerJoin<T10>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, bool>> joinExpression)
+        {
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression, JoinType.Inner));
+            return result;
+        }
         #region Where
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> Where(Expression<Func<T, bool>> expression)
         {
@@ -5760,6 +5882,23 @@ namespace SqlSugar
     #region T10
     public partial class QueryableProvider<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> : QueryableProvider<T>, ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>
     {
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> LeftJoin<T11>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11, bool>> joinExpression)
+        {
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression, JoinType.Left));
+            return result;
+        }
+
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> InnerJoin<T11>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, bool>> joinExpression)
+        {
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression, JoinType.Inner));
+            return result;
+        }
         #region Where
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> Where(Expression<Func<T, bool>> expression)
         {
@@ -6176,6 +6315,23 @@ namespace SqlSugar
     #region T11
     public partial class QueryableProvider<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> : QueryableProvider<T>, ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>
     {
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> LeftJoin<T12>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12, bool>> joinExpression)
+        {
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression, JoinType.Left));
+            return result;
+        }
+
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> InnerJoin<T12>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, bool>> joinExpression)
+        {
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression, JoinType.Inner));
+            return result;
+        }
         #region Where
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> Where(Expression<Func<T, bool>> expression)
         {
