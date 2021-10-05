@@ -610,6 +610,11 @@ namespace SqlSugar
                 {
                     TableShortName = null;
                 }
+                if (IsSingle() && result.Contains("unionTable") && result.Trim().EndsWith(" unionTable")&& TableShortName!=null) 
+                {
+                    result = result.Replace(" ) unionTable  ", ") "+TableShortName);
+                    TableShortName = null;
+                }
                 if (this.TableShortName.HasValue())
                 {
                     result += (TableShortName + UtilConstants.Space);

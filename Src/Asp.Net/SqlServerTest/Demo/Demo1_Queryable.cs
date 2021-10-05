@@ -154,6 +154,21 @@ namespace OrmTest
             ))
             .Select<ViewOrder>().ToList();
             var test16 = db.Queryable<Order>().Select(it => SqlFunc.SqlServer_DateDiff("day", DateTime.Now.AddDays(-1), DateTime.Now)).ToList();
+            var test17 =  
+               db.Queryable<Order>()
+               .Select<Order>()
+               .MergeTable()
+              .Select(MergeTable => new ViewOrder()
+              {
+                  Name = SqlFunc.Subqueryable<Order>().Where(s=>s.Id== MergeTable.Id).Select(s => s.Name)
+              }).ToList(); ;
+            var test18 = db.UnionAll(
+               db.Queryable<Order>() ,
+               db.Queryable<Order>() 
+              ) 
+              .Select(it=>new ViewOrder(){ 
+                  Name=SqlFunc.Subqueryable<Order>().Where(s=>s.Id==it.Id).Select(s=>s.Name)
+               }).ToList();
             Console.WriteLine("#### Examples End ####");
         }
 
