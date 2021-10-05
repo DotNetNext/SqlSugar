@@ -34,7 +34,7 @@ namespace SqlSugar
             }
         }
 
-        public override object FormatValue(object value)
+        public  object FormatValue(object value,string name,int i)
         {
             if (value == null)
             {
@@ -45,12 +45,9 @@ namespace SqlSugar
                 var type = value.GetType();
                 if (type == UtilConstants.DateType)
                 {
-                    var date = value.ObjToDate();
-                    if (date < Convert.ToDateTime("1900-1-1"))
-                    {
-                        date = Convert.ToDateTime("1900-1-1");
-                    }
-                    return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
+                    var parameterName = this.Builder.SqlParameterKeyWord + name + i;
+                    this.Parameters.Add(new SugarParameter(parameterName, value));
+                    return parameterName;
                 }
                 else if (type == UtilConstants.ByteArrayType)
                 {
@@ -148,7 +145,7 @@ namespace SqlSugar
                                 dbType = "varchar";
                             }
                         }
-                        return string.Format("CAST({0} AS {1})", FormatValue(it.Value), dbType);
+                        return string.Format("CAST({0} AS {1})", FormatValue(it.Value,it.DbColumnName,i), dbType);
 
                     })) + ")");
                     ++i;
