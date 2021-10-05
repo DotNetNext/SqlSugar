@@ -13,6 +13,7 @@ namespace SqlSugar
             switch (expressiontype)
             {
                 case ExpressionType.And:
+                    return "&";
                 case ExpressionType.AndAlso:
                     return "AND";
                 case ExpressionType.Equal:
@@ -28,6 +29,7 @@ namespace SqlSugar
                 case ExpressionType.NotEqual:
                     return "<>";
                 case ExpressionType.Or:
+                    return "|";
                 case ExpressionType.OrElse:
                     return "OR";
                 case ExpressionType.Add:
