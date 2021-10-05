@@ -14,14 +14,14 @@ namespace SqlSugar
             sb.AppendLine(string.Join("\r\n", groupList.Select(t =>
             {
                 var updateTable = string.Format("UPDATE {0} SET", base.GetTableNameStringNoWith);
-                var setValues = string.Join(",", t.Where(s => !s.IsPrimarykey).Select(m => GetOracleUpdateColums(i,m)).ToArray());
+                var setValues = string.Join(",", t.Where(s => !s.IsPrimarykey).Select(m => GetOracleUpdateColums(i,m,false)).ToArray());
                 var pkList = t.Where(s => s.IsPrimarykey).ToList();
                 List<string> whereList = new List<string>();
                 foreach (var item in pkList)
                 {
                     var isFirst = pkList.First() == item;
                     var whereString = "";
-                    whereString += GetOracleUpdateColums(i,item);
+                    whereString += GetOracleUpdateColums(i,item,true);
                     whereList.Add(whereString);
                 }
                 i++;
@@ -30,12 +30,12 @@ namespace SqlSugar
             return sb.ToString();
         }
 
-        private string GetOracleUpdateColums(int i,DbColumnInfo m)
+        private string GetOracleUpdateColums(int i,DbColumnInfo m,bool iswhere)
         {
-            return string.Format("\"{0}\"={1}", m.DbColumnName.ToUpper(), FormatValue(i,m.DbColumnName,m.Value));
+            return string.Format("\"{0}\"={1}", m.DbColumnName.ToUpper(), FormatValue(i,m.DbColumnName,m.Value,iswhere));
         }
 
-        public  object FormatValue(int i,string name,object value)
+        public  object FormatValue(int i,string name,object value,bool iswhere)
         {
             if (value == null)
             {
@@ -44,7 +44,7 @@ namespace SqlSugar
             else
             {
                 var type = UtilMethods.GetUnderType(value.GetType());
-                if (type == UtilConstants.DateType)
+                if (type == UtilConstants.DateType && iswhere == false)
                 {
                     var date = value.ObjToDate();
                     if (date < Convert.ToDateTime("1900-1-1"))
@@ -52,6 +52,12 @@ namespace SqlSugar
                         date = Convert.ToDateTime("1900-1-1");
                     }
                     return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
+                }
+                else if (type == UtilConstants.DateType && iswhere) 
+                {
+                    var parameterName = this.Builder.SqlParameterKeyWord + name + i;
+                    this.Parameters.Add(new SugarParameter(parameterName, value));
+                    return parameterName;
                 }
                 else if (type.IsEnum())
                 {
