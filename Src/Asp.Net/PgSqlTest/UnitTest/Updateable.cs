@@ -74,7 +74,19 @@ namespace OrmTest
             //Db.CodeFirst.InitTables<UnitPk001212>();
             //Db.Deleteable<UnitPk00121>().Where(new UnitPk00121() { Id=1, CreateTime=DateTime.Now, Name="a" }).ExecuteCommand();
             //Db.Deleteable<UnitPk001212>().Where(new List<UnitPk001212> { new UnitPk001212() { Id = 1, CreateTime = DateTime.Now, Name = "a" } , new UnitPk001212() { Id = 2, CreateTime = DateTime.Now, Name = "11a" } }).ExecuteCommand();
+            Db.CodeFirst.InitTables<UnitDSsdfa>();
+            var dt = DateTime.Now;
+            Db.Insertable(new UnitDSsdfa() { pk = dt, value = 1 }).ExecuteCommand();
+            var list = new List<UnitDSsdfa>() { new UnitDSsdfa() { pk = Convert.ToDateTime("2022-1-1"), value = 2 }, new UnitDSsdfa() { pk = dt, value = 2 } };
+            var res1 = Db.Updateable(list).WhereColumns(it => it.pk).ExecuteCommand();
+
         }
+    }
+    public class UnitDSsdfa
+    {
+
+        public DateTime pk { get; set; }
+        public int value { get; set; }
     }
     public class UnitPk00121 
     {
