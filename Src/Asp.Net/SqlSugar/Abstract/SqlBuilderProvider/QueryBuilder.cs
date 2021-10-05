@@ -606,8 +606,9 @@ namespace SqlSugar
                 }
                 var result = Builder.GetTranslationTableName(name);
                 result += UtilConstants.Space;
-                if (result.Contains("MergeTable") && result.Trim().EndsWith(" MergeTable"))
+                if (IsSingle() && result.Contains("MergeTable") && result.Trim().EndsWith(" MergeTable"))
                 {
+                    result = result.Replace(") MergeTable  ", ") " + TableShortName);
                     TableShortName = null;
                 }
                 if (IsSingle() && result.Contains("unionTable") && result.Trim().EndsWith(" unionTable")&& TableShortName!=null) 

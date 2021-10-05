@@ -158,16 +158,16 @@ namespace OrmTest
                db.Queryable<Order>()
                .Select<Order>()
                .MergeTable()
-              .Select(MergeTable => new ViewOrder()
+              .Select(it => new ViewOrder()
               {
-                  Name = SqlFunc.Subqueryable<Order>().Where(s=>s.Id== MergeTable.Id).Select(s => s.Name)
+                  Name = SqlFunc.Subqueryable<Order>().Select(s => s.Name)
               }).ToList(); ;
             var test18 = db.UnionAll(
                db.Queryable<Order>() ,
                db.Queryable<Order>() 
               ) 
               .Select(it=>new ViewOrder(){ 
-                  Name=SqlFunc.Subqueryable<Order>().Where(s=>s.Id==it.Id).Select(s=>s.Name)
+                  Name=SqlFunc.Subqueryable<Order>().Select(s=>s.Name)
                }).ToList();
             Console.WriteLine("#### Examples End ####");
         }
