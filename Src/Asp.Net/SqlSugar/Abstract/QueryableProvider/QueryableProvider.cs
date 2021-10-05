@@ -781,7 +781,8 @@ namespace SqlSugar
             }
             else
             {
-                return this.Select<TResult>(this.SqlBuilder.SqlSelectAll);
+
+                return this.Select<TResult>(this.QueryBuilder.GetSelectValue);
             }
         }
 
