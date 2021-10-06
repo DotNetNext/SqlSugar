@@ -32,6 +32,7 @@ namespace SqlSugar
         List<T> GetPageList(List<IConditionalModel> conditionalList, PageModel page);
         List<T> GetPageList(List<IConditionalModel> conditionalList, PageModel page, Expression<Func<T, object>> orderByExpression = null, OrderByType orderByType = OrderByType.Asc);
         T GetSingle(Expression<Func<T, bool>> whereExpression);
+        T GetFirst(Expression<Func<T, bool>> whereExpression);
         bool Insert(T insertObj);
         bool InsertRange(List<T> insertObjs);
         bool InsertRange(T[] insertObjs);
@@ -63,6 +64,7 @@ namespace SqlSugar
         Task<List<T>> GetPageListAsync(List<IConditionalModel> conditionalList, PageModel page);
         Task<List<T>> GetPageListAsync(List<IConditionalModel> conditionalList, PageModel page, Expression<Func<T, object>> orderByExpression = null, OrderByType orderByType = OrderByType.Asc);
         Task<T> GetSingleAsync(Expression<Func<T, bool>> whereExpression);
+        Task<T> GetFirstAsync(Expression<Func<T, bool>> whereExpression);
         Task<bool> InsertAsync(T insertObj);
         Task<bool> InsertRangeAsync(List<T> insertObjs);
         Task<bool> InsertRangeAsync(T[] insertObjs);
