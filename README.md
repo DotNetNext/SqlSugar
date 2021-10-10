@@ -136,7 +136,7 @@ public static SqlSugarScope Db = new SqlSugarScope(new ConnectionConfig()
              tran.CommitTran();//这个提交不能漏掉
  }
 ```
-### Query Filter
+### Feature6 : Query Filter
 ```cs
 //set Filter
 db.QueryFilter.Add(new TableFilterItem<Order>(it => it.Name.Contains("a"))); //为Order表置全局条件
