@@ -47,5 +47,15 @@ WHERE
   ([o].[Id] = @Id0)
 ``` 
 
- 
+##  Page query
+```cs
+
+ int pageIndex = 1; 
+ int pageSize = 20;
+ int totalCount=0;
+ //单表分页
+ var page = db.Queryable<Student>().ToPageList(pageIndex, pageSize, ref totalCount);
+ //如果SqlServer不想有Rownumber可以用 ToOffsetPage 较新版本支持
+  
+```
  
