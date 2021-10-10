@@ -1,14 +1,18 @@
-<h1  align="center">🍬SqlSugar </h1>
-<div  align="center" >
-
-SqlSugar ORM is a library providing Object/Relational Mapping (ORM) support to applications, libraries, and frameworks.
-
 
 <p  align="center">
     <span>English</span> |  
     <a href="https://www.donet5.com/Home/Doc">中文</a>
 </p>
-</div>
+ 
+
+
+## Description
+ 
+
+SqlSugar ORM is a library providing Object/Relational Mapping (ORM) support to applications, libraries, and frameworks.
+
+Using SqlSugar is very simple , And it's powerful.
+
 
 
 - Support Support CodeFirst data migration.
