@@ -47,15 +47,29 @@ WHERE
   ([o].[Id] = @Id0)
 ``` 
 
-##  Page query
+##  📑 Page query
 ```cs
 
  int pageIndex = 1; 
  int pageSize = 20;
  int totalCount=0;
- //单表分页
  var page = db.Queryable<Student>().ToPageList(pageIndex, pageSize, ref totalCount);
- //如果SqlServer不想有Rownumber可以用 ToOffsetPage 较新版本支持
-  
 ```
  
+##   🚗 Dynamic expression
+```cs
+var names= new string [] { "a","b"};
+Expressionable<Order> exp = new Expressionable<Order>();
+foreach (var item in names)
+{
+    exp.Or(it => it.Name.Contains(item.ToString()));
+}
+var list= db.Queryable<Order>().Where(exp.ToExpression()).ToList();
+ ```
+ ```sql
+SELECT [Id],[Name],[Price],[CreateTime],[CustomId]
+        FROM [Order]  WHERE (
+                      ([Name] like '%'+ CAST(@MethodConst0 AS NVARCHAR(MAX))+'%') OR 
+                      ([Name] like '%'+ CAST(@MethodConst1 AS NVARCHAR(MAX))+'%')
+                     )
+```
