@@ -6,7 +6,7 @@
  
 
 
-## 🍬 SqlSugar 
+## SqlSugar ORM
 
 SqlSugar ORM is a library providing Object/Relational Mapping (ORM) support to applications, libraries, and frameworks.
 
