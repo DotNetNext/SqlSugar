@@ -21,8 +21,12 @@ Using SqlSugar is very simple , And it's powerful.
 - Support one-to-many and many-to-many navigation properties
 - Support MySql、SqlServer、Sqlite、Oracle 、 postgresql 、达梦、人大金仓 、神通数据库
 
+##  Documentation
 
-##  🍳 Join query  
+
+##  Feature characteristic
+
+###  🍳 Join query  
 Super simple query syntax
 ```cs
 var query5 = db.Queryable<Order>()
@@ -46,7 +50,7 @@ WHERE
   ([o].[Id] = @Id0)
 ``` 
 
-##  📑 Page query
+###  📑 Page query
 ```cs
 
  int pageIndex = 1; 
@@ -55,7 +59,7 @@ WHERE
  var page = db.Queryable<Student>().ToPageList(pageIndex, pageSize, ref totalCount);
 ```
  
-##   🚗 Dynamic expression
+###   🚗 Dynamic expression
 ```cs
 var names= new string [] { "a","b"};
 Expressionable<Order> exp = new Expressionable<Order>();
@@ -72,7 +76,7 @@ SELECT [Id],[Name],[Price],[CreateTime],[CustomId]
                       ([Name] like '%'+ CAST(@MethodConst1 AS NVARCHAR(MAX))+'%')
                      )
 ```
-##  Multi-tenant transaction
+###  Multi-tenant transaction
 ```cs
 //Creaate  database object
 SqlSugarClient db = new SqlSugarClient(new List<ConnectionConfig>()
