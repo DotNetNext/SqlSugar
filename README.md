@@ -12,8 +12,8 @@ SqlSugar ORM is a library providing Object/Relational Mapping (ORM) support to a
 
 Using SqlSugar is very simple , And it's powerful.
 
-
-- Multi-tenant, multi-library transactions
+- Support SqlServer、MySql and Oracle  insert blukcopy  
+- Support Multi-tenant, multi-library transactions
 - Support Support CodeFirst data migration.
 - Support Join query 、  Union all 、 Subquery 
 - Support Configure the query  
