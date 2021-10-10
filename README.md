@@ -136,14 +136,14 @@ public static SqlSugarScope Db = new SqlSugarScope(new ConnectionConfig()
              tran.CommitTran();//这个提交不能漏掉
  }
 ```
-### Feature6 : Query Filter
+### Feature6 : Query filter
 ```cs
 //set Filter
-db.QueryFilter.Add(new TableFilterItem<Order>(it => it.Name.Contains("a"))); //为Order表置全局条件
+db.QueryFilter.Add(new TableFilterItem<Order>(it => it.Name.Contains("a")));  
  
    
 db.Queryable<Order>().ToList();
-//SELECT [Id],[Name],[Price],[CreateTime],[CustomId] FROM [Order]  WHERE  ([Name] like '%'+@MethodConst0+'%') 
+//SELECT [Id],[Name],[Price],[CreateTime],[CustomId] FROM [Order]  WHERE  ([Name] like '%'+@MethodConst0+'%')  
 
 db.Queryable<OrderItem, Order>((i, o) => i.OrderId == o.Id)
         .Where(i => i.OrderId != 0)
