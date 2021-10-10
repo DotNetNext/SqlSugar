@@ -112,7 +112,6 @@ public static SqlSugarScope Db = new SqlSugarScope(new ConnectionConfig()
             IsAutoCloseConnection = true 
   },
   db=> {
-             //单例参数配置，所有上下文生效
             db.Aop.OnLogExecuting = (s, p) =>
             {
                 Console.WriteLine(s);
