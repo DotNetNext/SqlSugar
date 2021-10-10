@@ -102,3 +102,33 @@ db.BeginTran();
 
 db.CommitTran();
 ```
+### Singleton Pattern
+Implement transactions across methods
+```CS
+public static SqlSugarScope Db = new SqlSugarScope(new ConnectionConfig()
+ {
+            DbType = SqlSugar.DbType.SqlServer,
+            ConnectionString = Config.ConnectionString,
+            IsAutoCloseConnection = true 
+  },
+  db=> {
+             //单例参数配置，所有上下文生效
+            db.Aop.OnLogExecuting = (s, p) =>
+            {
+                Console.WriteLine(s);
+            };
+ });
+ 
+ 
+  using (var tran = Db.UseTran())
+  {
+          
+               //业务代码
+               new Test2().Insert(XX);
+               new Test1().Insert(XX);
+               .....出错会自动回滚
+                ....
+                         
+             tran.CommitTran();//这个提交不能漏掉
+ }
+```
