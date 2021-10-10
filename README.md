@@ -72,3 +72,29 @@ SELECT [Id],[Name],[Price],[CreateTime],[CustomId]
                       ([Name] like '%'+ CAST(@MethodConst1 AS NVARCHAR(MAX))+'%')
                      )
 ```
+##  Multi-tenant transaction
+```cs
+//Creaate  database object
+SqlSugarClient db = new SqlSugarClient(new List<ConnectionConfig>()
+{
+    new ConnectionConfig(){ ConfigId="0", DbType=DbType.SqlServer,  ConnectionString=Config.ConnectionString, IsAutoCloseConnection=true },
+    new ConnectionConfig(){ ConfigId="1", DbType=DbType.MySql, ConnectionString=Config.ConnectionString4 ,IsAutoCloseConnection=true}
+});
+
+
+var mysqldb = db.GetConnection("1");//mysql db
+var sqlServerdb = db.GetConnection("0");// sqlserver db
+ 
+db.BeginTran();
+            mysqldb.Insertable(new Order()
+            {
+                CreateTime = DateTime.Now,
+                CustomId = 1,
+                Name = "a",
+                Price = 1
+            }).ExecuteCommand();
+            mysqldb.Queryable<Order>().ToList();
+            sqlServerdb.Queryable<Order>().ToList();
+
+db.CommitTran();
+```
