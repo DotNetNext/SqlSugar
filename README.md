@@ -26,7 +26,7 @@ Using SqlSugar is very simple , And it's powerful.
 
 ##  Feature characteristic
 
-###  Feature1: Join query  
+###  Feature1 : Join query  
 Super simple query syntax
 ```cs
 var query5 = db.Queryable<Order>()
@@ -50,7 +50,7 @@ WHERE
   ([o].[Id] = @Id0)
 ``` 
 
-###   Feature2: Page query
+###   Feature2 : Page query
 ```cs
 
  int pageIndex = 1; 
@@ -59,7 +59,7 @@ WHERE
  var page = db.Queryable<Student>().ToPageList(pageIndex, pageSize, ref totalCount);
 ```
  
-###    Feature3:Dynamic expression
+###    Feature3 : Dynamic expression
 ```cs
 var names= new string [] { "a","b"};
 Expressionable<Order> exp = new Expressionable<Order>();
@@ -76,7 +76,7 @@ SELECT [Id],[Name],[Price],[CreateTime],[CustomId]
                       ([Name] like '%'+ CAST(@MethodConst1 AS NVARCHAR(MAX))+'%')
                      )
 ```
-###   Feature4: Multi-tenant transaction
+###   Feature4 : Multi-tenant transaction
 ```cs
 //Creaate  database object
 SqlSugarClient db = new SqlSugarClient(new List<ConnectionConfig>()
@@ -102,7 +102,7 @@ db.BeginTran();
 
 db.CommitTran();
 ```
-###  Feature5: Singleton Pattern
+###  Feature5 : Singleton Pattern
 Implement transactions across methods
 ```CS
 public static SqlSugarScope Db = new SqlSugarScope(new ConnectionConfig()
