@@ -152,3 +152,11 @@ db.Queryable<OrderItem, Order>((i, o) => i.OrderId == o.Id)
 //( [i].[OrderId] <> @OrderId0 )  AND  ([o].[Name] like '%'+@MethodConst1+'%')
  
 ```
+
+### Feature7 Insert or update 
+```cs
+    var x = Db.Storageable(list2).ToStorage();  
+    x.AsInsertable.ExecuteCommand();  
+    x.AsUpdateable.ExecuteCommand();  
+```
+ 
