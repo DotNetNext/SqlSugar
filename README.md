@@ -6,7 +6,7 @@
  
 
 
-## SqlSugar 
+## 🍬SqlSugar 
  
 
 SqlSugar ORM is a library providing Object/Relational Mapping (ORM) support to applications, libraries, and frameworks.
@@ -23,7 +23,7 @@ Using SqlSugar is very simple , And it's powerful.
 - Support MySql、SqlServer、Sqlite、Oracle 、 postgresql 、达梦、人大金仓 、神通数据库
 
 
-##  Join query  
+##  🍳Join query  
 Super simple query syntax
 ```cs
 var query5 = db.Queryable<Order>()
