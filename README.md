@@ -24,8 +24,8 @@ Using SqlSugar is very simple , And it's powerful.
 ##  Documentation
 |Select  | Insert    | Update  | Delete| Other |
 | ----- | --------- | ----------- | ------- |------- |
-| <a  target="_bank" href="https://www.donet5.com/Home/Doc?typeId=1187">Simple query</a> | <a href="https://www.donet5.com/Home/Doc?typeId=1193"> Insert </a> |Update|      Delete    ||
-| <a target="_bank" href="https://www.donet5.com/Home/Doc?typeId=1185">Join query </a> |      | column 3    |         ||
+| <a  target="_bank" href="https://www.donet5.com/Home/Doc?typeId=1187">Simple query</a> | <a href="https://www.donet5.com/Home/Doc?typeId=1193"> Insert </a> |<a href="https://www.donet5.com/Home/Doc?typeId=1191">Update</a>|    <a href="https://www.donet5.com/Home/Doc?typeId=1195">Delete</a>    ||
+| <a target="_bank" href="https://www.donet5.com/Home/Doc?typeId=1185">Join query </a> |      |    |         ||
 ##  Feature characteristic
 
 ###  Feature1 : Join query  
