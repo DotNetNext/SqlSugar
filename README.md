@@ -127,18 +127,18 @@ public static SqlSugarScope Db = new SqlSugarScope(new ConnectionConfig()
   using (var tran = Db.UseTran())
   {
           
-               //业务代码
+              
                new Test2().Insert(XX);
                new Test1().Insert(XX);
-               .....出错会自动回滚
+               ..... 
                 ....
                          
-             tran.CommitTran();//这个提交不能漏掉
+             tran.CommitTran(); 
  }
 ```
 ### Feature6 : Query filter
 ```cs
-//set Filter
+//set filter
 db.QueryFilter.Add(new TableFilterItem<Order>(it => it.Name.Contains("a")));  
  
    
