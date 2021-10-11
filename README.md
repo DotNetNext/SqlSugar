@@ -1,7 +1,7 @@
 
 <p  align="center">
     <span>English</span> |  
-    <a  href="https://www.donet5.com/Home/Doc"><font color=red>中文</font></a>
+    <a  href="https://www.donet5.com/Home/Doc"><font color="red">中文</font></a>
 </p>
  
 
