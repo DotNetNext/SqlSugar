@@ -25,10 +25,10 @@ Using SqlSugar is very simple , And it's powerful.
 - Support MySql、SqlServer、Sqlite、Oracle 、 postgresql 、达梦、人大金仓 、神通数据库
 
 ##  Documentation
-|Select  | Insert    | Update  | Delete| Other |
+|Other |Select  | Insert    | Update  | Delete| 
 | ----- | --------- | ----------- | ------- |------- |
-  [Simple query](https://www.donet5.com/Home/Doc?typeId=1187)  | <a href="https://www.donet5.com/Home/Doc?typeId=1193"> Insert </a> |<a href="https://www.donet5.com/Home/Doc?typeId=1191">Update</a>|    <a href="https://www.donet5.com/Home/Doc?typeId=1195">Delete</a>    | <a href="https://www.donet5.com/Home/Doc?typeId=1226">Nuget</a>|
-| <a target="_bank" href="https://www.donet5.com/Home/Doc?typeId=1185">Join query </a> |      |    |         |[Start guide](https://www.donet5.com/Home/Doc?typeId=1181)|
+ <a href="https://www.donet5.com/Home/Doc?typeId=1226">Nuget</a>| [Simple query](https://www.donet5.com/Home/Doc?typeId=1187)  | <a href="https://www.donet5.com/Home/Doc?typeId=1193"> Insert </a> |<a href="https://www.donet5.com/Home/Doc?typeId=1191">Update</a>|    <a href="https://www.donet5.com/Home/Doc?typeId=1195">Delete</a>    | 
+[Start guide](https://www.donet5.com/Home/Doc?typeId=1181)|| <a target="_bank" href="https://www.donet5.com/Home/Doc?typeId=1185">Join query </a> |      |    |         |
 ##  Feature characteristic
 
 ###  Feature1 : Join query  
