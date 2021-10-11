@@ -27,7 +27,7 @@ Using SqlSugar is very simple , And it's powerful.
 ##  Documentation
 |Other |Select  | Insert    | Update  | Delete| 
 | ----- | --------- | ----------- | ------- |------- |
- <a href="/donet5/SqlSugar/wiki/NUGET">Nuget</a>| [Simple query](https://www.donet5.com/Home/Doc?typeId=1187)  | <a href="https://www.donet5.com/Home/Doc?typeId=1193"> Insert </a> |<a href="https://www.donet5.com/Home/Doc?typeId=1191">Update</a>|    <a href="https://www.donet5.com/Home/Doc?typeId=1195">Delete</a>    | 
+ <a href="https://github.com/donet5/SqlSugar/wiki/NUGET">Nuget</a>| [Simple query](https://www.donet5.com/Home/Doc?typeId=1187)  | <a href="https://www.donet5.com/Home/Doc?typeId=1193"> Insert </a> |<a href="https://www.donet5.com/Home/Doc?typeId=1191">Update</a>|    <a href="https://www.donet5.com/Home/Doc?typeId=1195">Delete</a>    | 
 [Start guide](https://www.donet5.com/Home/Doc?typeId=1181)| <a target="_bank" href="https://www.donet5.com/Home/Doc?typeId=1185">Join query </a> |   |   |    |         |
 ##  Feature characteristic
 
