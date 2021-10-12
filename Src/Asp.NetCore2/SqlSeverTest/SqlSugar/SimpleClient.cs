@@ -98,6 +98,10 @@ namespace SqlSugar
         {
             return Context.Queryable<T>().Single(whereExpression);
         }
+        public T GetFirst(Expression<Func<T, bool>> whereExpression) 
+        {
+            return Context.Queryable<T>().First(whereExpression);
+        }
         public virtual List<T> GetPageList(Expression<Func<T, bool>> whereExpression, PageModel page)
         {
             int count = 0;
@@ -223,6 +227,10 @@ namespace SqlSugar
         public virtual Task<T> GetSingleAsync(Expression<Func<T, bool>> whereExpression)
         {
             return Context.Queryable<T>().SingleAsync(whereExpression);
+        }
+        public Task<T> GetFirstAsync(Expression<Func<T, bool>> whereExpression)
+        {
+            return Context.Queryable<T>().FirstAsync(whereExpression);
         }
         public virtual async Task<List<T>> GetPageListAsync(Expression<Func<T, bool>> whereExpression, PageModel page)
         {

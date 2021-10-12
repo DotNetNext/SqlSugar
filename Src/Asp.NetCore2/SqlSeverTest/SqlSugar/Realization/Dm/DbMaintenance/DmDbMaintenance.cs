@@ -458,13 +458,13 @@ namespace SqlSugar
                 }
             }
             string sql = GetCreateTableSql(tableName, columns);
-            string primaryKeyInfo = null;
+            //string primaryKeyInfo = null;
             if (columns.Any(it => it.IsPrimarykey) && isCreatePrimaryKey)
             {
-                primaryKeyInfo = string.Format(", Primary key({0})", string.Join(",", columns.Where(it => it.IsPrimarykey).Select(it => this.SqlBuilder.GetTranslationColumnName(it.DbColumnName.ToLower()))));
-
+                sql= sql.TrimEnd(')')+ string.Format(", Primary key({0})", string.Join(",", columns.Where(it => it.IsPrimarykey).Select(it => this.SqlBuilder.GetTranslationColumnName(it.DbColumnName.ToLower()))));
+                sql = sql + ")";
             }
-            sql = sql.Replace("$PrimaryKey", primaryKeyInfo);
+            //sql = sql.Replace("$PrimaryKey", primaryKeyInfo);
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
