@@ -331,36 +331,30 @@ namespace SqlSugar
             BindingFlags flag = BindingFlags.Instance | BindingFlags.NonPublic;
             Type type = item.GetType();
             PropertyInfo field = type.GetProperty("exp", flag);
-            Type ChildType = type.GetProperty("type", flag).GetValue(item,null) as Type;
+            Type ChildType = type.GetProperty("type", flag).GetValue(item, null) as Type;
             var entityInfo = this.Context.EntityMaintenance.GetEntityInfo(ChildType);
-            var exp=field.GetValue(item,null) as Expression;
+            var exp = field.GetValue(item, null) as Expression;
             var isMain = ChildType == this.EntityType;
             var isSingle = IsSingle();
-            if (ChildType != this.EntityType&&isSingle)
-            {
-                return;
-            }
-            var expValue = GetExpressionValue(exp, isSingle ? ResolveExpressType.WhereSingle : ResolveExpressType.WhereMultiple);
-            var sql = expValue.GetResultString();
             var itName = (exp as LambdaExpression).Parameters[0].Name;
             itName = this.Builder.GetTranslationColumnName(itName) + ".";
             var isEasyJoin = this.EasyJoinInfos.Count > 0;
-            if (WhereInfos.Count == 0)
-            {
-                sql =( " WHERE " + sql);
-            }else
-            {
-                sql = (" AND " + sql);
-            }
+
+            string sql = "";
             if (isSingle)
             {
-
+                if (ChildType != this.EntityType && isSingle)
+                {
+                    return;
+                }
+                sql = GetSql(exp, isSingle);
             }
             else if (isMain)
             {
                 if (TableShortName == null)
                     return;
                 var shortName = this.Builder.GetTranslationColumnName(TableShortName) + ".";
+                sql = GetSql(exp, isSingle);
                 sql = sql.Replace(itName, shortName);
             }
             else if (isEasyJoin)
@@ -368,11 +362,12 @@ namespace SqlSugar
                 var easyInfo = EasyJoinInfos.FirstOrDefault(it =>
                    it.Value.Equals(entityInfo.DbTableName, StringComparison.CurrentCultureIgnoreCase) ||
                    it.Value.Equals(entityInfo.EntityName, StringComparison.CurrentCultureIgnoreCase));
-                if (easyInfo.Key==null)
+                if (easyInfo.Key == null)
                 {
                     return;
                 }
                 var shortName = this.Builder.GetTranslationColumnName(easyInfo.Key.Trim()) + ".";
+                sql = GetSql(exp, isSingle);
                 sql = sql.Replace(itName, shortName);
             }
             else
@@ -385,9 +380,26 @@ namespace SqlSugar
                     return;
                 }
                 var shortName = this.Builder.GetTranslationColumnName(easyInfo.ShortName.Trim()) + ".";
+                sql = GetSql(exp, isSingle);
                 sql = sql.Replace(itName, shortName);
             }
             WhereInfos.Add(sql);
+        }
+
+        private string GetSql(Expression exp, bool isSingle)
+        {
+            var expValue = GetExpressionValue(exp, isSingle ? ResolveExpressType.WhereSingle : ResolveExpressType.WhereMultiple);
+            var sql = expValue.GetResultString();
+            if (WhereInfos.Count == 0)
+            {
+                sql = (" WHERE " + sql);
+            }
+            else
+            {
+                sql = (" AND " + sql);
+            }
+
+            return sql;
         }
 
         public virtual string GetExternalOrderBy(string externalOrderBy)
