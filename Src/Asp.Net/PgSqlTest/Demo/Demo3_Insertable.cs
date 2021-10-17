@@ -71,7 +71,7 @@ namespace OrmTest
                 Id = 0,
                 Items = new List<OrderItem>() {
                       new OrderItem(){
-                           CreateTime=DateTime.Now,
+                         
                            OrderId=0,
                             Price=1,
                              ItemId=1

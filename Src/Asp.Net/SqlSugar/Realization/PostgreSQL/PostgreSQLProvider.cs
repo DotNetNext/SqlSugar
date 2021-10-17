@@ -90,6 +90,11 @@ namespace SqlSugar
             foreach (var parameter in parameters)
             {
                 if (parameter.Value == null) parameter.Value = DBNull.Value;
+                if(parameter.Value is System.Data.SqlTypes.SqlDateTime&&parameter.DbType==System.Data.DbType.AnsiString)
+                {
+                    parameter.DbType = System.Data.DbType.DateTime;
+                    parameter.Value = DBNull.Value;
+                }
                 var sqlParameter = new NpgsqlParameter();
                 sqlParameter.ParameterName = parameter.ParameterName;
                 sqlParameter.Size = parameter.Size;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -243,7 +244,16 @@ namespace SqlSugar
                 }
                 else
                 {
-                    insertDictionary.Add(item.DbColumnName, item.PropertyInfo.GetValue(insetObject));
+                    var value = item.PropertyInfo.GetValue(insetObject);
+                    if (value == null&&this.Context.CurrentConnectionConfig.DbType==DbType.PostgreSQL) 
+                    {
+                       var underType= UtilMethods.GetUnderType(item.PropertyInfo.PropertyType);
+                        if (underType == UtilConstants.DateType)
+                        {
+                            value = SqlDateTime.Null;
+                        }
+                    }
+                    insertDictionary.Add(item.DbColumnName, value);
                 }
             }
             return insertDictionary;
