@@ -1051,7 +1051,7 @@ namespace SqlSugar
                 _Context.Ado.IsEnableLogEvent = true;
             this.CurrentConnectionConfig = config;
             _ThreadId = Thread.CurrentThread.ManagedThreadId.ToString();
-            if (_MappingColumns == null)
+            if (this.MappingTables == null)
                 this.MappingTables = new MappingTableList();
             if (this.MappingColumns == null)
                 this.MappingColumns = new MappingColumnList();
