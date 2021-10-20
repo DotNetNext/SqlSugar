@@ -747,8 +747,16 @@ namespace SqlSugar
                 foreach (var item in this.EntityInfo.Columns.Where(it => it.IsIgnore == false && GetPrimaryKeys().Any(pk => pk.Equals(it.DbColumnName, StringComparison.CurrentCultureIgnoreCase))))
                 {
                     var fielddName = item.DbColumnName;
-                    var fieldValue = this.EntityInfo.Columns.FirstOrDefault(it => it.PropertyName == item.PropertyName).PropertyInfo.GetValue(this.InsertObjs.Last(), null).ObjToString();
-                    cons.Add(new ConditionalModel() { ConditionalType = ConditionalType.Equal, FieldName = fielddName, FieldValue = fieldValue });
+                    var filedObject = this.EntityInfo.Columns.FirstOrDefault(it => it.PropertyName == item.PropertyName).PropertyInfo.GetValue(this.InsertObjs.Last(), null);
+                    var fieldValue = filedObject.ObjToString();
+                    if (filedObject != null && filedObject.GetType() != typeof(string)&&this.Context.CurrentConnectionConfig.DbType==DbType.PostgreSQL)
+                    {
+                        cons.Add(new ConditionalModel() { ConditionalType = ConditionalType.Equal, FieldName = fielddName, FieldValue = fieldValue,FieldValueConvertFunc= it => UtilMethods.ChangeType2(it, filedObject.GetType()) });
+                    }
+                    else
+                    {
+                        cons.Add(new ConditionalModel() { ConditionalType = ConditionalType.Equal, FieldName = fielddName, FieldValue = fieldValue });
+                    }
                 }
             }
             Check.Exception(cons.IsNullOrEmpty(), "Insertable.EnableDiffLogEvent need primary key");
