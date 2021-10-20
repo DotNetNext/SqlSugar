@@ -82,6 +82,7 @@
     <Compile Include="Demo\DemoJ_Report.cs" />
     <Compile Include="Demo\DemoL_Snowflake.cs" />
     <Compile Include="Demo\DemoM_UnitOfWork.cs" />
+    <Compile Include="Demo\DemoN_SplitTable.cs" />
     <Compile Include="Models\DataDictionary.cs" />
     <Compile Include="Models\Custom.cs" />
     <Compile Include="Models\EntityMapper.cs" />

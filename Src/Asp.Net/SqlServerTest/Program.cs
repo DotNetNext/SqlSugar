@@ -19,6 +19,7 @@ namespace OrmTest
             Demo3_Insertable.Init();
             Demo4_Deleteable.Init();
             Demo5_SqlQueryable.Init();
+            DemoN_SplitTable.Init();
             Demo6_Queue.Init();
             Demo7_Ado.Init();
             Demo8_Saveable.Init();

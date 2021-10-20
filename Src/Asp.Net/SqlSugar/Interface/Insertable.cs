@@ -45,6 +45,9 @@ namespace SqlSugar
         SqlServerBlukCopy UseSqlServer();
         MySqlBlukCopy<T> UseMySql();
         OracleBlukCopy UseOracle();
+
+        //SplitInsertable SplitTable(SplitType splitType);
+
         void AddQueue();
 
     }

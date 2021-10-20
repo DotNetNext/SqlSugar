@@ -834,7 +834,22 @@ namespace SqlSugar
             }
             return result;
         }
-
+        public ISugarQueryable<T> SplitTable(Func<List<string>, IEnumerable<string>> getTableNamesFunc) 
+        {
+            SplitTableHelper helper = new SplitTableHelper() 
+            { 
+              Context=Context,
+              EntityInfo=this.EntityInfo
+            };
+            var tables = getTableNamesFunc(helper.GetTables());
+            List<ISugarQueryable<object>> tableQueryables = new List<ISugarQueryable<object>>();
+            foreach (var item in tables)
+            {
+                tableQueryables.Add(this.Context.Queryable<object>().AS(item));
+            }
+            var asName = this.Context.UnionAll(tableQueryables.ToArray()).Select<T>().ToSql().Key;
+            return this.AS(asName);
+        }
         public ISugarQueryable<T> Distinct()
         {
             QueryBuilder.IsDistinct = true;

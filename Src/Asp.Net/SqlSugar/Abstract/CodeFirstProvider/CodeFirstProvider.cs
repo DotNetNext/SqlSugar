@@ -24,6 +24,13 @@ namespace SqlSugar
         #endregion
 
         #region Public methods
+        public SplitCodeFirstProvider SplitTables()
+        {
+            var result = new SplitCodeFirstProvider();
+            result.Context = this.Context;
+            return result;
+        }
+
         public virtual ICodeFirst BackupTable(int maxBackupDataRows = int.MaxValue)
         {
             this.IsBackupTable = true;

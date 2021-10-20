@@ -73,6 +73,7 @@
     <Compile Include="Abstract\CacheProvider\CacheProvider.cs" />
     <Compile Include="Abstract\CodeFirstProvider\CodeFirstProvider.cs" />
     <Compile Include="Abstract\AdoProvider\AdoAccessory.cs" />
+    <Compile Include="Abstract\CodeFirstProvider\SplitCodeFirstProvider.cs" />
     <Compile Include="Abstract\DbBindProvider\DbBindAccessory.cs" />
     <Compile Include="Abstract\DbBindProvider\DbBindProvider.cs" />
     <Compile Include="Abstract\DbBindProvider\IDataReaderEntityBuilder.cs" />
@@ -88,6 +89,7 @@
     <Compile Include="Abstract\FilterProvider\FilterProvider.cs" />
     <Compile Include="Abstract\InsertableProvider\InsertableProvider.cs" />
     <Compile Include="Abstract\DeleteProvider\DeleteableProvider.cs" />
+    <Compile Include="Abstract\InsertableProvider\SplitInsertable.cs" />
     <Compile Include="Entities\SqlSguarTransaction.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubAs.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubHaving.cs" />
@@ -208,6 +210,8 @@
     <Compile Include="DistributedSystem\Snowflake\IdWorker.cs" />
     <Compile Include="DistributedSystem\Snowflake\InvalidSystemClock.cs" />
     <Compile Include="DistributedSystem\Snowflake\TimeExtensions.cs" />
+    <Compile Include="SpliteTable\SplitHelper.cs" />
+    <Compile Include="SpliteTable\SplitType.cs" />
     <Compile Include="SqlSugarClient.cs" />
     <Compile Include="Utilities\CallContext.cs" />
     <Compile Include="Utilities\CallContextAsync.cs" />
