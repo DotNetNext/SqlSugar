@@ -14,15 +14,15 @@ namespace SqlSugar
         {
             if (_Filters == null)
                 _Filters = new List<SqlFilterItem>();
-            if (this.Context.CurrentConnectionConfig.IsShardSameThread)
-            {
-                if (!_Filters.Select(it => it.FilterValue(this.Context).Sql).Contains(filter.FilterValue(this.Context).Sql))
-                    _Filters.Add(filter);
-            }
-            else
-            {
+            //if (this.Context.CurrentConnectionConfig.IsShardSameThread)
+            //{
+            //    if (!_Filters.Select(it => it.FilterValue(this.Context).Sql).Contains(filter.FilterValue(this.Context).Sql))
+            //        _Filters.Add(filter);
+            //}
+            //else
+            //{
                 _Filters.Add(filter);
-            }
+            //}
             return this;
         }
 

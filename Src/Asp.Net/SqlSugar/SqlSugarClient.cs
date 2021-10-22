@@ -1003,15 +1003,15 @@ namespace SqlSugar
             return _ThreadId == Thread.CurrentThread.ManagedThreadId.ToString();
         }
 
-        private bool IsNoSameThreadAndShard()
-        {
-            return CurrentConnectionConfig.IsShardSameThread && _ThreadId != Thread.CurrentThread.ManagedThreadId.ToString();
-        }
+        //private bool IsNoSameThreadAndShard()
+        //{
+        //    return CurrentConnectionConfig.IsShardSameThread && _ThreadId != Thread.CurrentThread.ManagedThreadId.ToString();
+        //}
 
-        private bool IsSameThreadAndShard()
-        {
-            return CurrentConnectionConfig.IsShardSameThread && _ThreadId == Thread.CurrentThread.ManagedThreadId.ToString();
-        }
+        //private bool IsSameThreadAndShard()
+        //{
+        //    return CurrentConnectionConfig.IsShardSameThread && _ThreadId == Thread.CurrentThread.ManagedThreadId.ToString();
+        //}
 
         private SqlSugarProvider CopyClient()
         {

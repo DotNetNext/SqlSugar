@@ -31,9 +31,9 @@ namespace SqlSugar
         public InitKeyType InitKeyType = InitKeyType.Attribute;
         /// <summary>
         ///If true, there is only one connection instance in the same thread within the same connection string
-        [Obsolete("use  SqlSugar.Ioc")]
-        /// </summary>
-        public bool IsShardSameThread { get; set; }
+        //[Obsolete("use  SqlSugar.Ioc")]
+        ///// </summary>
+        //public bool IsShardSameThread { get; set; }
         /// <summary>
         /// Configure External Services replace default services,For example, Redis storage
         /// </summary>
