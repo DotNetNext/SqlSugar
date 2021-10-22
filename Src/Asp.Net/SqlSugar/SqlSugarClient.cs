@@ -37,7 +37,7 @@ namespace SqlSugar
 
         public SqlSugarClient(List<ConnectionConfig> configs)
         {
-            Check.Exception(configs.IsNullOrEmpty(), "List<ConnectionConfig> configs is null");
+            Check.Exception(configs.IsNullOrEmpty(), "List<ConnectionConfig> configs is null or count=0");
             InitConfigs(configs);
             var config = configs.First();
             InitContext(config);
