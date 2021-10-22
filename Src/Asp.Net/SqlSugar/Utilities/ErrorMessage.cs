@@ -6,6 +6,7 @@ namespace SqlSugar
 {
     internal static partial class ErrorMessage
     {
+        internal static SugarLanguageType SugarLanguageType { get; set; } = SugarLanguageType.Default;
         internal static string ObjNotExist
         {
             get
@@ -43,10 +44,21 @@ namespace SqlSugar
 
         internal static string GetThrowMessage(string enMessage, string cnMessage, params string[] args)
         {
-            List<string> formatArgs = new List<string>() { enMessage, cnMessage };
-            formatArgs.AddRange(args);
-            return string.Format(@"中文提示 : {1}
+            if (SugarLanguageType == SugarLanguageType.Default)
+            {
+                List<string> formatArgs = new List<string>() { enMessage, cnMessage };
+                formatArgs.AddRange(args);
+                return string.Format(@"中文提示 : {1}
 English Message : {0}", formatArgs.ToArray());
+            }
+            else if (SugarLanguageType == SugarLanguageType.English)
+            {
+                return enMessage;
+            }
+            else 
+            {
+                return cnMessage;
+            }
         }
     }
 }

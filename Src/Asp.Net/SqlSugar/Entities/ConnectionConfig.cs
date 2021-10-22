@@ -30,6 +30,10 @@ namespace SqlSugar
         /// </summary>
         public InitKeyType InitKeyType = InitKeyType.Attribute;
         /// <summary>
+        /// Exception prompt language  
+        /// </summary>
+        public SugarLanguageType  LanguageType { get=>ErrorMessage.SugarLanguageType; set=>ErrorMessage.SugarLanguageType=value; }
+        /// <summary>
         ///If true, there is only one connection instance in the same thread within the same connection string
         //[Obsolete("use  SqlSugar.Ioc")]
         ///// </summary>

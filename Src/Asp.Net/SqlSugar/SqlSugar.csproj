@@ -91,6 +91,7 @@
     <Compile Include="Abstract\DeleteProvider\DeleteableProvider.cs" />
     <Compile Include="Abstract\InsertableProvider\SplitInsertable.cs" />
     <Compile Include="Entities\SqlSguarTransaction.cs" />
+    <Compile Include="Enum\LanguageType.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubAs.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubHaving.cs" />
     <Compile Include="Interface\ISugarRepository.cs" />
