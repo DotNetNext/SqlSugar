@@ -849,18 +849,18 @@ namespace SqlSugar
         private SqlSugarProvider GetContext()
         {
             SqlSugarProvider result = null;
-            if (IsSameThreadAndShard())
-            {
-                result = SameThreadAndShard();
-            }
-            else if (IsNoSameThreadAndShard())
-            {
-                result = NoSameThreadAndShard();
-            }
-            else 
-            {
+            //if (IsSameThreadAndShard())
+            //{
+            //    result = SameThreadAndShard();
+            //}
+            //else if (IsNoSameThreadAndShard())
+            //{
+            //    result = NoSameThreadAndShard();
+            //}
+            //else 
+            //{
                 result = Synchronization();
-            }
+            //}
             ///Because SqlSugarScope implements thread safety
             //else if (IsSingleInstanceAsync())
             //{
