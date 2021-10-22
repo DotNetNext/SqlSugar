@@ -10,7 +10,7 @@ namespace SqlSugar
     public class ConnectionConfig
     {
         /// <summary>
-        /// 
+        ///Connection unique code
         /// </summary>
         public dynamic ConfigId { get; set; }
         /// <summary>
