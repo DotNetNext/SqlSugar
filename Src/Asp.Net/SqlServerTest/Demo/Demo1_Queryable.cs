@@ -423,6 +423,12 @@ namespace OrmTest
                             .Select((o, cus) => new ViewOrder {  Id=o.Id, CustomName = cus.Name })
                             .ToList();
 
+            var query6 = db.Queryable(db.Queryable<Order>()).LeftJoin<OrderItem>((m, i) => m.Id == i.OrderId)
+                .ToList();
+
+
+            var query7 = db.Queryable(db.Queryable<Order>().Select<Order>().MergeTable()).LeftJoin<OrderItem>((m, i) => m.Id == i.OrderId)
+                .ToList();
 
             Console.WriteLine("#### Join Table End ####");
         }
