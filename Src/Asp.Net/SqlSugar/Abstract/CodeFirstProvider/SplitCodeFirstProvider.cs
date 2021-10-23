@@ -11,7 +11,7 @@ namespace SqlSugar
         public SqlSugarProvider Context;
         public void InitTables<T>()
         {
-            this.Context.InitMappingInfo<T>();
+            var oldMapping = this.Context.Utilities.TranslateCopy(this.Context.MappingTables);
             SplitTableHelper helper = new SplitTableHelper()
             {
                 Context = this.Context,
@@ -23,7 +23,7 @@ namespace SqlSugar
             {
                 foreach (var item in tables)
                 {
-                    this.Context.MappingTables.Add(helper.EntityInfo.EntityName, item);
+                    this.Context.MappingTables.Add(helper.EntityInfo.EntityName, item.TableName);
                     this.Context.CodeFirst.InitTables(typeof(T));
                 }
             }

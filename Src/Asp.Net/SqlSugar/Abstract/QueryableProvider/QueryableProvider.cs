@@ -834,7 +834,7 @@ namespace SqlSugar
             }
             return result;
         }
-        public ISugarQueryable<T> SplitTable(Func<List<string>, IEnumerable<string>> getTableNamesFunc) 
+        public ISugarQueryable<T> SplitTable(Func<List<SplitTableInfo>, IEnumerable<SplitTableInfo>> getTableNamesFunc) 
         {
             SplitTableHelper helper = new SplitTableHelper() 
             { 
@@ -845,9 +845,9 @@ namespace SqlSugar
             List<ISugarQueryable<object>> tableQueryables = new List<ISugarQueryable<object>>();
             foreach (var item in tables)
             {
-                tableQueryables.Add(this.Context.Queryable<object>().AS(item));
+                tableQueryables.Add(this.Context.Queryable<object>().AS(item.TableName));
             }
-            var asName = this.Context.UnionAll(tableQueryables.ToArray()).Select<T>().ToSql().Key;
+            var asName = this.Context.UnionAll(tableQueryables.ToArray()).QueryBuilder.GetTableNameString;
             return this.AS(asName);
         }
         public ISugarQueryable<T> Distinct()

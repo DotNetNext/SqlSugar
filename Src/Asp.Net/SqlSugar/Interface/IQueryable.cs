@@ -179,7 +179,7 @@ namespace SqlSugar
         DataTable ToPivotTable<TColumn, TRow, TData>(Func<T, TColumn> columnSelector,Expression<Func<T, TRow>> rowSelector,Func<IEnumerable<T>, TData> dataSelector);
         List<dynamic> ToPivotList<TColumn, TRow, TData>(Func<T, TColumn> columnSelector, Expression<Func<T, TRow>> rowSelector, Func<IEnumerable<T>, TData> dataSelector);
         string ToPivotJson<TColumn, TRow, TData>(Func<T, TColumn> columnSelector, Expression<Func<T, TRow>> rowSelector, Func<IEnumerable<T>, TData> dataSelector);
-        ISugarQueryable<T> SplitTable(Func<List<string>,IEnumerable<string>> getTableNamesFunc);
+        ISugarQueryable<T> SplitTable(Func<List<SplitTableInfo>,IEnumerable<SplitTableInfo>> getTableNamesFunc);
     }
     public partial interface ISugarQueryable<T, T2> : ISugarQueryable<T>
     {

@@ -20,12 +20,17 @@ namespace OrmTest
                 InitKeyType = InitKeyType.Attribute,
                 IsAutoCloseConnection = true
             });
+            db.Aop.OnLogExecuted = (s, p) =>
+            {
+                Console.WriteLine(s);
+            };
             db.CodeFirst.SplitTables().InitTables<OrderSpliteTest>();
-            db.Queryable<OrderSpliteTest>().SplitTable(it => it.Take(3)).ToList();
+            var list=db.Queryable<OrderSpliteTest>().SplitTable(tabs => tabs.Take(3)).ToList();
+          
             Console.WriteLine("#### CodeFirst end ####");
         }
 
-        [SqlSugar.SugarTable("Order{year}{month}{day}")]
+        [SqlSugar.SugarTable("Taxxx0101{year}{month}{day}")]
         public class OrderSpliteTest 
         {
             [SugarColumn(IsPrimaryKey =true)]

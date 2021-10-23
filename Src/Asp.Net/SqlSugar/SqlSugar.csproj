@@ -212,6 +212,7 @@
     <Compile Include="DistributedSystem\Snowflake\InvalidSystemClock.cs" />
     <Compile Include="DistributedSystem\Snowflake\TimeExtensions.cs" />
     <Compile Include="SpliteTable\SplitHelper.cs" />
+    <Compile Include="SpliteTable\SplitTableInfo.cs" />
     <Compile Include="SpliteTable\SplitType.cs" />
     <Compile Include="SqlSugarClient.cs" />
     <Compile Include="Utilities\CallContext.cs" />
