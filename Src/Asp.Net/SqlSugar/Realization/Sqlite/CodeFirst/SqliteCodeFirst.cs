@@ -14,7 +14,7 @@ namespace SqlSugar
                 Check.Exception(entityInfo.Columns.Where(it => it.IsPrimarykey).Count() > 1, "Use Code First ,The primary key must not exceed 1");
 
                 var tableName = GetTableName(entityInfo);
-                var dbColumns = this.Context.DbMaintenance.GetColumnInfosByTableName(tableName);
+                var dbColumns = this.Context.DbMaintenance.GetColumnInfosByTableName(tableName,false);
                 ConvertColumns(dbColumns);
                 var entityColumns = entityInfo.Columns.Where(it => it.IsIgnore == false).ToList();
                 var dropColumns = dbColumns

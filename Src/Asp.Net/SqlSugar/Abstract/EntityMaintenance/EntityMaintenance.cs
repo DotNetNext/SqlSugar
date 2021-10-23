@@ -21,30 +21,37 @@ namespace SqlSugar
             return this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey,
             () =>
             {
-                EntityInfo result = new EntityInfo();
-                var sugarAttributeInfo = type.GetTypeInfo().GetCustomAttributes(typeof(SugarTable), true).Where(it => it is SugarTable).SingleOrDefault();
-                if (sugarAttributeInfo.HasValue())
-                {
-                    var sugarTable = (SugarTable)sugarAttributeInfo;
-                    result.DbTableName = sugarTable.TableName;
-                    result.TableDescription = sugarTable.TableDescription;
-                    result.IsDisabledUpdateAll = sugarTable.IsDisabledUpdateAll;
-                    result.IsDisabledDelete = sugarTable.IsDisabledDelete;
-                }
-                if (this.Context.Context.CurrentConnectionConfig.ConfigureExternalServices != null && this.Context.CurrentConnectionConfig.ConfigureExternalServices.EntityNameService != null) {
-                    if (result.DbTableName == null)
-                    {
-                        result.DbTableName = type.Name;
-                    }
-                    this.Context.CurrentConnectionConfig.ConfigureExternalServices.EntityNameService(type,result);
-                }
-                result.Type = type;
-                result.EntityName = result.Type.Name;
-                result.Columns = new List<EntityColumnInfo>();
-                SetColumns(result);
-                return result;
+                return GetEntityInfoNoCache(type);
             });
         }
+
+        public EntityInfo GetEntityInfoNoCache(Type type)
+        {
+            EntityInfo result = new EntityInfo();
+            var sugarAttributeInfo = type.GetTypeInfo().GetCustomAttributes(typeof(SugarTable), true).Where(it => it is SugarTable).SingleOrDefault();
+            if (sugarAttributeInfo.HasValue())
+            {
+                var sugarTable = (SugarTable)sugarAttributeInfo;
+                result.DbTableName = sugarTable.TableName;
+                result.TableDescription = sugarTable.TableDescription;
+                result.IsDisabledUpdateAll = sugarTable.IsDisabledUpdateAll;
+                result.IsDisabledDelete = sugarTable.IsDisabledDelete;
+            }
+            if (this.Context.Context.CurrentConnectionConfig.ConfigureExternalServices != null && this.Context.CurrentConnectionConfig.ConfigureExternalServices.EntityNameService != null)
+            {
+                if (result.DbTableName == null)
+                {
+                    result.DbTableName = type.Name;
+                }
+                this.Context.CurrentConnectionConfig.ConfigureExternalServices.EntityNameService(type, result);
+            }
+            result.Type = type;
+            result.EntityName = result.Type.Name;
+            result.Columns = new List<EntityColumnInfo>();
+            SetColumns(result);
+            return result;
+        }
+
         public string GetTableName<T>()
         {
             var typeName = typeof(T).Name;
