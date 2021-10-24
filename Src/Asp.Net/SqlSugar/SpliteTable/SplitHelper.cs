@@ -111,7 +111,7 @@ namespace SqlSugar
 
         private static void CheckTableName(string dbTableName)
         {
-            Check.Exception(!dbTableName.Contains("{year}"), ErrorMessage.GetThrowMessage("table name need {{year}}", "分表表名需要占位符 {year}}"));
+            Check.Exception(!dbTableName.Contains("{year}"), ErrorMessage.GetThrowMessage("table name need {{year}}", "分表表名需要占位符 {{year}}"));
             Check.Exception(!dbTableName.Contains("{month}"), ErrorMessage.GetThrowMessage("table name need {{month}}", "分表表名需要占位符 {{month}} "));
             Check.Exception(!dbTableName.Contains("{day}"), ErrorMessage.GetThrowMessage("table name need {{day}}", "分表表名需要占位符{{day}}"));
             Check.Exception(Regex.Matches(dbTableName, @"\{year\}").Count > 1, ErrorMessage.GetThrowMessage(" There can only be one {{year}}", " 只能有一个 {{year}}"));
