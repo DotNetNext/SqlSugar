@@ -14,6 +14,8 @@ namespace SqlSugar
         public List<SplitTableInfo> GetTables()
         {
 
+            var oldIsEnableLogEvent = this.Context.Ado.IsEnableLogEvent;
+            this.Context.Ado.IsEnableLogEvent = false;
             var tableInfos = this.Context.DbMaintenance.GetTableInfoList(false);
             SplitTableHelper.CheckTableName(EntityInfo.DbTableName);
             var regex = EntityInfo.DbTableName.Replace("{year}", "([0-9]{2,4})").Replace("{day}", "([0-9]{1,2})").Replace("{month}", "([0-9]{1,2})");
@@ -31,6 +33,7 @@ namespace SqlSugar
                 result.Add(tableInfo);
             }
             result = result.OrderByDescending(it => it.Date).ToList();
+            this.Context.Ado.IsEnableLogEvent = oldIsEnableLogEvent;
             return result;
         }
 
@@ -114,6 +117,7 @@ namespace SqlSugar
             Check.Exception(Regex.Matches(dbTableName, @"\{year\}").Count > 1, ErrorMessage.GetThrowMessage(" There can only be one {year}", " 只能有一个 {year}"));
             Check.Exception(Regex.Matches(dbTableName, @"\{month\}").Count > 1, ErrorMessage.GetThrowMessage("There can only be one {month}", "只能有一个 {month} "));
             Check.Exception(Regex.Matches(dbTableName, @"\{day\}").Count > 1, ErrorMessage.GetThrowMessage("There can only be one {day}", "只能有一个{day}"));
+            Check.Exception(Regex.IsMatch(dbTableName, @"\d\{|\}\d"), ErrorMessage.GetThrowMessage(" '{' or  '}'  can't be numbers nearby", "占位符相令一位不能是数字,比例错误:1{day}2,正确: 1_{day}_2"));
         } 
         #endregion
     }

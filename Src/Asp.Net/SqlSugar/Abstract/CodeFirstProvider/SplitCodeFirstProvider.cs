@@ -11,14 +11,14 @@ namespace SqlSugar
         public SqlSugarProvider Context;
         public void InitTables<T>()
         {
-            var oldMapping = this.Context.Utilities.TranslateCopy(this.Context.MappingTables);
+            //var oldMapping = this.Context.Utilities.TranslateCopy(this.Context.MappingTables);
             SplitTableHelper helper = new SplitTableHelper()
             {
                 Context = this.Context,
                 EntityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>()
             };
             var tables = helper.GetTables();
-            var oldMapingTables = this.Context.MappingTables;
+            //var oldMapingTables = this.Context.MappingTables;
             if (tables.Count >0)
             {
                 foreach (var item in tables)
@@ -32,7 +32,7 @@ namespace SqlSugar
                 this.Context.MappingTables.Add(helper.EntityInfo.EntityName, helper.GetDefaultTableName());
                 this.Context.CodeFirst.InitTables(typeof(T));
             }
-            this.Context.MappingTables = oldMapingTables;
+            this.Context.MappingTables.Add(helper.EntityInfo.EntityName, helper.EntityInfo.DbTableName);
         }
     }
 }

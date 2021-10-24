@@ -26,11 +26,12 @@ namespace OrmTest
             };
             db.CodeFirst.SplitTables().InitTables<OrderSpliteTest>();
             var list=db.Queryable<OrderSpliteTest>().SplitTable(tabs => tabs.Take(3)).ToList();
-          
+
+            var x = db.Deleteable<OrderSpliteTest>().Where(it=>it.Pk==Guid.NewGuid()).SplitTable(tabs => tabs.Take(3)).ExecuteCommand();
             Console.WriteLine("#### CodeFirst end ####");
         }
 
-        [SqlSugar.SugarTable("Taxxx0101{year}{month}{day}")]
+        [SqlSugar.SugarTable("Taxxx0101_{year}{month}{day}")]
         public class OrderSpliteTest 
         {
             [SugarColumn(IsPrimaryKey =true)]

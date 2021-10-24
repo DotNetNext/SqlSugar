@@ -841,6 +841,7 @@ namespace SqlSugar
               Context=Context,
               EntityInfo=this.EntityInfo
             };
+            this.Context.MappingTables.Add(this.EntityInfo.EntityName, this.EntityInfo.DbTableName);
             var tables = getTableNamesFunc(helper.GetTables());
             List<ISugarQueryable<object>> tableQueryables = new List<ISugarQueryable<object>>();
             foreach (var item in tables)
