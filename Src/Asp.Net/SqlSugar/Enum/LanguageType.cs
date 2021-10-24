@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SqlSugar
 {
-    public enum SugarLanguageType
+    public enum LanguageType
     {
         Default=0,
         Chinese=1,
