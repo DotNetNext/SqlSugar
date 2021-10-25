@@ -7,12 +7,13 @@ using System.Threading.Tasks;
 
 namespace SqlSugar 
 {
-    public class SplitTableDeleteProvider<T>  where T : class, new()
+    public class SplitTableUpdateProvider<T> where T : class, new()
     {
-        public ISqlSugarClient Context;
-        public DeleteableProvider<T> deleteobj;
+        public SqlSugarProvider Context;
+        public UpdateableProvider<T> updateobj;
 
-        public IEnumerable<SplitTableInfo> Tables { get;  set; }
+        public IEnumerable<SplitTableInfo> Tables { get; set; }
+
         public int ExecuteCommand()
         {
             if (this.Context.Ado.Transaction == null)
@@ -30,7 +31,7 @@ namespace SqlSugar
                     throw ex;
                 }
             }
-            else
+            else 
             {
                 return _ExecuteCommand();
             }
@@ -57,42 +58,41 @@ namespace SqlSugar
                 return await _ExecuteCommandAsync();
             }
         }
-        public int _ExecuteCommand()
+        private int _ExecuteCommand()
         {
             var result = 0;
-            var sqlobj = deleteobj.ToSql();
-      
-            foreach (var item in Tables)
-            {
-                var  newsqlobj = GetSqlObj(sqlobj, item.TableName);
-                result +=this.Context.Ado.ExecuteCommand(newsqlobj.Key, newsqlobj.Value);
-            }
-            return result;
-        }
+            var sqlobj = updateobj.ToSql();
 
-        public async Task<int> _ExecuteCommandAsync()
-        {
-            var result = 0;
-            var sqlobj = deleteobj.ToSql();
             foreach (var item in Tables)
             {
                 var newsqlobj = GetSqlObj(sqlobj, item.TableName);
-                result +=await this.Context.Ado.ExecuteCommandAsync(newsqlobj.Key, newsqlobj.Value);
+                result += this.Context.Ado.ExecuteCommand(newsqlobj.Key, newsqlobj.Value);
             }
             return result;
         }
 
-        private KeyValuePair<string, List<SugarParameter>> GetSqlObj(KeyValuePair<string, List<SugarParameter>> keyValuePair,string asName)
+        private async Task<int> _ExecuteCommandAsync()
+        {
+            var result = 0;
+            var sqlobj = updateobj.ToSql();
+            foreach (var item in Tables)
+            {
+                var newsqlobj = GetSqlObj(sqlobj, item.TableName);
+                result += await this.Context.Ado.ExecuteCommandAsync(newsqlobj.Key, newsqlobj.Value);
+            }
+            return result;
+        }
+
+        private KeyValuePair<string, List<SugarParameter>> GetSqlObj(KeyValuePair<string, List<SugarParameter>> keyValuePair, string asName)
         {
             List<SugarParameter> pars = new List<SugarParameter>();
             string sql = keyValuePair.Key;
-            if (keyValuePair.Value != null) 
+            if (keyValuePair.Value != null)
             {
                 pars = keyValuePair.Value.Select(it => new SugarParameter(it.ParameterName, it.Value)).ToList();
             }
-            sql = Regex.Replace(sql, deleteobj.EntityInfo.DbTableName, asName,RegexOptions.IgnoreCase);
-            return new KeyValuePair<string, List<SugarParameter>>(sql,pars);
+            sql = Regex.Replace(sql, updateobj.EntityInfo.DbTableName, asName, RegexOptions.IgnoreCase);
+            return new KeyValuePair<string, List<SugarParameter>>(sql, pars);
         }
-
     }
 }

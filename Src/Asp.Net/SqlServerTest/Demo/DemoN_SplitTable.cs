@@ -28,6 +28,12 @@ namespace OrmTest
             var list=db.Queryable<OrderSpliteTest>().SplitTable(tabs => tabs.Take(3)).ToList();
 
             var x = db.Deleteable<OrderSpliteTest>().Where(it=>it.Pk==Guid.NewGuid()).SplitTable(tabs => tabs.Take(3)).ExecuteCommand();
+
+            var x2 = db.Updateable<OrderSpliteTest>()
+                .SetColumns(it=>it.Name=="a")
+                .Where(it => it.Pk == Guid.NewGuid())
+                .SplitTable(tabs => tabs.Take(3))
+                .ExecuteCommand();
             Console.WriteLine("#### CodeFirst end ####");
         }
 

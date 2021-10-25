@@ -89,6 +89,21 @@ namespace SqlSugar
                 this.UpdateBuilder.TableWithString = lockString;
             return this;
         }
+        public SplitTableUpdateProvider<T> SplitTable(Func<List<SplitTableInfo>, IEnumerable<SplitTableInfo>> getTableNamesFunc)
+        {
+            this.Context.MappingTables.Add(this.EntityInfo.EntityName, this.EntityInfo.DbTableName);
+            SplitTableUpdateProvider<T> result = new SplitTableUpdateProvider<T>();
+            result.Context = this.Context;
+            SplitTableHelper helper = new SplitTableHelper()
+            {
+                Context = (SqlSugarProvider)Context,
+                EntityInfo = this.EntityInfo
+            };
+            var tables = getTableNamesFunc(helper.GetTables());
+            result.Tables = tables;
+            result.updateobj= this;
+            return result;
+        }
         public IUpdateable<T> RemoveDataCache()
         {
             this.RemoveCacheFunc = () =>
