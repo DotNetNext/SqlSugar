@@ -46,9 +46,9 @@ namespace SqlSugar
         MySqlBlukCopy<T> UseMySql();
         OracleBlukCopy UseOracle();
 
-        SplitInsertable SplitTable(SplitType splitType);
-        SplitInsertable SplitTable(SplitType splitType,Expression<Func<T,DateTime>> splitFieldName);
-        SplitInsertable SplitTable(SplitType splitType, Expression<Func<T, DateTime?>> splitFieldName);
+        SplitInsertable<T> SplitTable(SplitType splitType);
+        SplitInsertable<T> SplitTable(SplitType splitType,Expression<Func<T,DateTime>> splitFieldName);
+        SplitInsertable<T> SplitTable(SplitType splitType, Expression<Func<T, DateTime?>> splitFieldName);
 
         void AddQueue();
 

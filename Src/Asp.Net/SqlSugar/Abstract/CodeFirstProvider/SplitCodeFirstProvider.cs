@@ -17,6 +17,7 @@ namespace SqlSugar
                 Context = this.Context,
                 EntityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>()
             };
+            helper.CheckPrimaryKey();
             var tables = helper.GetTables();
             //var oldMapingTables = this.Context.MappingTables;
             if (tables.Count >0)

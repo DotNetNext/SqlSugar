@@ -6,11 +6,37 @@ using System.Threading.Tasks;
 
 namespace SqlSugar 
 {
-    public class SplitInsertable
+    public class SplitInsertable<T> 
     {
-        public object ExecuteCommand()
+        public SqlSugarProvider Context;
+        public EntityInfo EntityInfo;
+        internal IInsertable<T> Inserable { get;  set; }
+        internal List<string> TableNames { get;  set; }
+
+        public int ExecuteCommand()
         {
-            throw new NotImplementedException();
+            CreateTable();
+            if (TableNames.Count == 1)
+            {
+                return Inserable.AS(TableNames.First()).ExecuteCommand();
+            }
+            else 
+            {
+                return 0;
+            }
+        }
+
+        private void CreateTable()
+        {
+            foreach (var item in TableNames)
+            {
+                if (!this.Context.DbMaintenance.IsAnyTable(item, false)) 
+                {
+                    this.Context.MappingTables.Add(EntityInfo.EntityName, item);
+                    this.Context.CodeFirst.InitTables<T>();
+                }
+            }
+            this.Context.MappingTables.Add(EntityInfo.EntityName, EntityInfo.DbTableName);
         }
     }
 }

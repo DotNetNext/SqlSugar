@@ -71,7 +71,21 @@ namespace SqlSugar
             result = result.OrderByDescending(it => it.Date).ToList();
             this.Context.Ado.IsEnableLogEvent = oldIsEnableLogEvent;
             return result;
-        } 
+        }
+
+        public string GetDefaultTableName()
+        {
+            var date = this.Context.GetDate();
+            return GetTableNameByDate(date);
+        }
+        public string GetTableNameByDate(DateTime date)
+        {
+            return EntityInfo.DbTableName.Replace("{year}", date.Year + "").Replace("{day}", PadLeft2(date.Day + "")).Replace("{month}", PadLeft2(date.Month + ""));
+        }
+        public void CheckPrimaryKey()
+        {
+            Check.Exception(EntityInfo.Columns.Any(it => it.IsIdentity == true), ErrorMessage.GetThrowMessage("Split table can't IsIdentity=true", "分表禁止使用自增列"));
+        }
         #endregion
 
         #region Common Helper
@@ -127,13 +141,6 @@ namespace SqlSugar
             return Convert.ToDateTime($"{year}-{month}-{day}");
         }
 
-        public string GetDefaultTableName()
-        {
-            var date = this.Context.GetDate();
-            var result = EntityInfo.DbTableName.Replace("{year}", date.Year + "").Replace("{day}", PadLeft2(date.Day + "")).Replace("{month}", PadLeft2(date.Month + ""));
-            return result;
-        }
-
         private string PadLeft2(string str)
         {
             if (str.Length < 2)
@@ -159,22 +166,22 @@ namespace SqlSugar
         #endregion
 
         #region Date Helper
-        public static DateTime GetMondayDate()
+        private DateTime GetMondayDate()
         {
             return GetMondayDate(DateTime.Now);
         }
-        public static DateTime GetSundayDate()
+        private DateTime GetSundayDate()
         {
             return GetSundayDate(DateTime.Now);
         }
-        public static DateTime GetMondayDate(DateTime someDate)
+        private DateTime GetMondayDate(DateTime someDate)
         {
             int i = someDate.DayOfWeek - DayOfWeek.Monday;
             if (i == -1) i = 6;  
             TimeSpan ts = new TimeSpan(i, 0, 0, 0);
             return someDate.Subtract(ts);
         }
-        public static DateTime GetSundayDate(DateTime someDate)
+        private DateTime GetSundayDate(DateTime someDate)
         {
             int i = someDate.DayOfWeek - DayOfWeek.Sunday;
             if (i != 0) i = 7 - i; 

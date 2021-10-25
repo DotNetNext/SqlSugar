@@ -406,19 +406,61 @@ namespace SqlSugar
             result.AddSubList(tree);
             return result;
         }
-        public SplitInsertable SplitTable(SplitType splitType)
+        public SplitInsertable<T> SplitTable(SplitType splitType)
         {
-            throw new NotImplementedException();
+            SplitTableHelper helper = new SplitTableHelper()
+            {
+                Context = this.Context,
+                EntityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>()
+            };
+            helper.CheckPrimaryKey();
+            var table=helper.GetTableNameByDate(helper.GetTableGetDate(this.Context.GetDate(),splitType));
+            SplitInsertable<T> result = new SplitInsertable<T>();
+            result.Context = this.Context;
+            result.EntityInfo = this.EntityInfo;
+            result.TableNames = new List<string>() { table};
+            result.Inserable = this;
+            return result;
         }
 
-        public SplitInsertable SplitTable(SplitType splitType, Expression<Func<T, DateTime>> splitFieldName)
+        public SplitInsertable<T> SplitTable(SplitType splitType, Expression<Func<T, DateTime>> splitFieldName)
         {
-            throw new NotImplementedException();
+            SplitTableHelper helper = new SplitTableHelper()
+            {
+                Context = this.Context,
+                EntityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>()
+            };
+            helper.CheckPrimaryKey();
+            SplitInsertable<T> result = new SplitInsertable<T>();
+            result.Context = this.Context;
+            result.EntityInfo = this.EntityInfo;
+            result.TableNames = new List<string>();
+            List<DateTime> times = new List<DateTime>();
+            foreach (var item in times)
+            {
+                result.TableNames.Add(helper.GetTableNameByDate(helper.GetTableGetDate(item, splitType)));
+            }
+            return result;
         }
 
-        public SplitInsertable SplitTable(SplitType splitType, Expression<Func<T, DateTime?>> splitFieldName)
+        public SplitInsertable<T> SplitTable(SplitType splitType, Expression<Func<T, DateTime?>> splitFieldName)
         {
-            throw new NotImplementedException();
+            SplitTableHelper helper = new SplitTableHelper()
+            {
+                 Context=this.Context,
+                 EntityInfo=this.Context.EntityMaintenance.GetEntityInfo<T>()
+            };
+            helper.CheckPrimaryKey();
+            SplitInsertable<T> result = new SplitInsertable<T>();
+            result.Context = this.Context;
+            result.EntityInfo = this.EntityInfo;
+            result.TableNames = new List<string>();
+            List<DateTime> times = new List<DateTime>();
+            foreach (var item in times)
+            {
+                result.TableNames.Add(helper.GetTableNameByDate(helper.GetTableGetDate(item, splitType)));
+            }
+            return result;
         }
 
         #endregion
