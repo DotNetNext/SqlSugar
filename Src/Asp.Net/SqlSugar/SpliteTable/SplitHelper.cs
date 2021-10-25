@@ -11,7 +11,10 @@ namespace SqlSugar
     {
         public SqlSugarProvider Context { get; set; }
         public EntityInfo EntityInfo { get; set; }
-        public DateTime GetTableGetDate(DateTime time,SplitType type) 
+
+        #region Common Method
+
+        public DateTime GetTableGetDate(DateTime time, SplitType type)
         {
             switch (type)
             {
@@ -22,7 +25,7 @@ namespace SqlSugar
                 case SplitType.Month:
                     return Convert.ToDateTime(time.ToString("yyyy-MM-01"));
                 case SplitType.Season:
-                    if (time.Month <= 3) 
+                    if (time.Month <= 3)
                     {
                         return Convert.ToDateTime(time.ToString("yyyy-01-01"));
                     }
@@ -30,7 +33,7 @@ namespace SqlSugar
                     {
                         return Convert.ToDateTime(time.ToString("yyyy-04-01"));
                     }
-                    else  if (time.Month <= 9)
+                    else if (time.Month <= 9)
                     {
                         return Convert.ToDateTime(time.ToString("yyyy-07-01"));
                     }
@@ -62,15 +65,16 @@ namespace SqlSugar
                 var group1 = math.Groups[1].Value;
                 var group2 = math.Groups[2].Value;
                 var group3 = math.Groups[3].Value;
-                tableInfo.Date = GetDate(group1,group2,group3, EntityInfo.DbTableName);
+                tableInfo.Date = GetDate(group1, group2, group3, EntityInfo.DbTableName);
                 result.Add(tableInfo);
             }
             result = result.OrderByDescending(it => it.Date).ToList();
             this.Context.Ado.IsEnableLogEvent = oldIsEnableLogEvent;
             return result;
-        }
+        } 
+        #endregion
 
-        #region Helper
+        #region Common Helper
         private DateTime GetDate(string group1, string group2, string group3, string dbTableName)
         {
             var yearIndex = dbTableName.IndexOf("{year}");
@@ -154,7 +158,7 @@ namespace SqlSugar
         }
         #endregion
 
-        #region 得到一周的周一和周日的日期
+        #region Date Helper
         public static DateTime GetMondayDate()
         {
             return GetMondayDate(DateTime.Now);
