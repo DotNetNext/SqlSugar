@@ -24,8 +24,11 @@ namespace OrmTest
             {
                 Console.WriteLine(s);
             };
+
             db.CodeFirst.SplitTables().InitTables<OrderSpliteTest>();
             var list=db.Queryable<OrderSpliteTest>().SplitTable(tabs => tabs.Take(3)).ToList();
+
+            var list2 = db.Queryable<OrderSpliteTest>().SplitTable(tabs => tabs.Where(it=> it.Date>=DateTime.Now.AddYears(-2))).ToList();
 
             var x = db.Deleteable<OrderSpliteTest>().Where(it=>it.Pk==Guid.NewGuid()).SplitTable(tabs => tabs.Take(3)).ExecuteCommand();
 
@@ -34,6 +37,9 @@ namespace OrmTest
                 .Where(it => it.Pk == Guid.NewGuid())
                 .SplitTable(tabs => tabs.Take(3))
                 .ExecuteCommand();
+
+            var x3 = db.Insertable(new OrderSpliteTest() { Name="A" }).SplitTable(SplitType.Day).ExecuteCommand();
+            var x4 = db.Insertable(new OrderSpliteTest() { Name = "A" }).SplitTable(SplitType.Day,it=>it.Time).ExecuteCommand();
             Console.WriteLine("#### CodeFirst end ####");
         }
 
@@ -43,6 +49,8 @@ namespace OrmTest
             [SugarColumn(IsPrimaryKey =true)]
             public  Guid  Pk{ get; set; }
             public string Name { get; set; }
+            [SugarColumn(IsNullable =true)]
+            public DateTime Time { get; set; }
         }
     }
 }

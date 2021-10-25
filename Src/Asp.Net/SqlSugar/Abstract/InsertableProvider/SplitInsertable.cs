@@ -8,6 +8,9 @@ namespace SqlSugar
 {
     public class SplitInsertable
     {
-
+        public object ExecuteCommand()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

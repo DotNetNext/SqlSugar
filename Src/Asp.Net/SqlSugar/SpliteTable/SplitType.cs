@@ -10,6 +10,8 @@ namespace SqlSugar
     {
        Day=0,
        Week=1,
-       Month=1
+       Month =2,
+       Season=3,
+       Year=4
     }
 }

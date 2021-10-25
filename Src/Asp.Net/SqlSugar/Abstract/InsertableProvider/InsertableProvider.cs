@@ -406,6 +406,20 @@ namespace SqlSugar
             result.AddSubList(tree);
             return result;
         }
+        public SplitInsertable SplitTable(SplitType splitType)
+        {
+            throw new NotImplementedException();
+        }
+
+        public SplitInsertable SplitTable(SplitType splitType, Expression<Func<T, DateTime>> splitFieldName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public SplitInsertable SplitTable(SplitType splitType, Expression<Func<T, DateTime?>> splitFieldName)
+        {
+            throw new NotImplementedException();
+        }
 
         #endregion
 

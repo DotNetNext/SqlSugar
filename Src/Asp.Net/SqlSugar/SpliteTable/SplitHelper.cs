@@ -11,6 +11,39 @@ namespace SqlSugar
     {
         public SqlSugarProvider Context { get; set; }
         public EntityInfo EntityInfo { get; set; }
+        public DateTime GetTableGetDate(DateTime time,SplitType type) 
+        {
+            switch (type)
+            {
+                case SplitType.Day:
+                    return Convert.ToDateTime(time.ToString("yyyy-MM-dd"));
+                case SplitType.Week:
+                    return GetMondayDate(time);
+                case SplitType.Month:
+                    return Convert.ToDateTime(time.ToString("yyyy-MM-01"));
+                case SplitType.Season:
+                    if (time.Month <= 3) 
+                    {
+                        return Convert.ToDateTime(time.ToString("yyyy-01-01"));
+                    }
+                    else if (time.Month <= 6)
+                    {
+                        return Convert.ToDateTime(time.ToString("yyyy-04-01"));
+                    }
+                    else  if (time.Month <= 9)
+                    {
+                        return Convert.ToDateTime(time.ToString("yyyy-07-01"));
+                    }
+                    else
+                    {
+                        return Convert.ToDateTime(time.ToString("yyyy-10-01"));
+                    }
+                case SplitType.Year:
+                    return Convert.ToDateTime(time.ToString("yyyy-01-01"));
+                default:
+                    throw new Exception($"SplitType paramter error ");
+            }
+        }
         public List<SplitTableInfo> GetTables()
         {
 
@@ -118,7 +151,32 @@ namespace SqlSugar
             Check.Exception(Regex.Matches(dbTableName, @"\{month\}").Count > 1, ErrorMessage.GetThrowMessage("There can only be one {{month}}", "只能有一个 {{month}} "));
             Check.Exception(Regex.Matches(dbTableName, @"\{day\}").Count > 1, ErrorMessage.GetThrowMessage("There can only be one {{day}}", "只能有一个{{day}}"));
             Check.Exception(Regex.IsMatch(dbTableName, @"\d\{|\}\d"), ErrorMessage.GetThrowMessage(" '{{' or  '}}'  can't be numbers nearby", "占位符相令一位不能是数字,比如 : 1{{day}}2 错误 , 正确: 1_{{day}}_2"));
-        } 
+        }
+        #endregion
+
+        #region 得到一周的周一和周日的日期
+        public static DateTime GetMondayDate()
+        {
+            return GetMondayDate(DateTime.Now);
+        }
+        public static DateTime GetSundayDate()
+        {
+            return GetSundayDate(DateTime.Now);
+        }
+        public static DateTime GetMondayDate(DateTime someDate)
+        {
+            int i = someDate.DayOfWeek - DayOfWeek.Monday;
+            if (i == -1) i = 6;  
+            TimeSpan ts = new TimeSpan(i, 0, 0, 0);
+            return someDate.Subtract(ts);
+        }
+        public static DateTime GetSundayDate(DateTime someDate)
+        {
+            int i = someDate.DayOfWeek - DayOfWeek.Sunday;
+            if (i != 0) i = 7 - i; 
+            TimeSpan ts = new TimeSpan(i, 0, 0, 0);
+            return someDate.Add(ts);
+        }
         #endregion
     }
 }
