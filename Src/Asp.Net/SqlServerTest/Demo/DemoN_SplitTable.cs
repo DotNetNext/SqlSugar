@@ -25,11 +25,18 @@ namespace OrmTest
                 Console.WriteLine(s);
             };
 
+            //初始化分表
             db.CodeFirst.SplitTables().InitTables<OrderSpliteTest>();
-            var list=db.Queryable<OrderSpliteTest>().SplitTable(tabs => tabs.Take(3)).ToList();
 
+            //根据最近3个表进行查询
+            var list=db.Queryable<OrderSpliteTest>().Where(it=>it.Pk==Guid.NewGuid())
+                .SplitTable(tabs => tabs.Take(3))
+                .Where(it=>it.Time==DateTime.Now).ToOffsetPage(1,2);
+
+            //根据时间选出的表进行查询
             var list2 = db.Queryable<OrderSpliteTest>().SplitTable(tabs => tabs.Where(it=> it.Date>=DateTime.Now.AddYears(-2))).ToList();
 
+            //删除数据只在最近3张表执行操作
             var x = db.Deleteable<OrderSpliteTest>().Where(it=>it.Pk==Guid.NewGuid()).SplitTable(tabs => tabs.Take(3)).ExecuteCommand();
 
             var x2 = db.Updateable<OrderSpliteTest>()
@@ -38,7 +45,9 @@ namespace OrmTest
                 .SplitTable(tabs => tabs.Take(3))
                 .ExecuteCommand();
 
+            //按日分表 
             var x3 = db.Insertable(new OrderSpliteTest() { Name="A" }).SplitTable(SplitType.Day).ExecuteCommand();
+            //按日分表，根据time字段扔到对应的表中
             var x4 = db.Insertable(new OrderSpliteTest() { Name = "A" }).SplitTable(SplitType.Day,it=>it.Time).ExecuteCommand();
             Console.WriteLine("#### CodeFirst end ####");
         }

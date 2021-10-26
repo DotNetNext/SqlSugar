@@ -505,6 +505,11 @@ namespace SqlSugar
 
         public virtual ISugarQueryable<T> UnionAll<T>(params ISugarQueryable<T>[] queryables) where T : class, new()
         {
+            return _UnionAll(queryables);
+        }
+
+        internal ISugarQueryable<T> _UnionAll<T>(ISugarQueryable<T>[] queryables) 
+        {
             var sqlBuilder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
             Check.Exception(queryables.IsNullOrEmpty(), "UnionAll.queryables is null ");
             int i = 1;
@@ -533,6 +538,7 @@ namespace SqlSugar
                 return resulut.Select<T>(sqlBuilder.SqlSelectAll);
             }
         }
+
         public virtual ISugarQueryable<T> UnionAll<T>(List<ISugarQueryable<T>> queryables) where T : class, new()
         {
             Check.Exception(queryables.IsNullOrEmpty(), "UnionAll.queryables is null ");

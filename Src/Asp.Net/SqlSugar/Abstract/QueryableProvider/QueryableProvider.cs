@@ -843,13 +843,15 @@ namespace SqlSugar
             };
             this.Context.MappingTables.Add(this.EntityInfo.EntityName, this.EntityInfo.DbTableName);
             var tables = getTableNamesFunc(helper.GetTables());
-            List<ISugarQueryable<object>> tableQueryables = new List<ISugarQueryable<object>>();
+            List<ISugarQueryable<T>> tableQueryables = new List<ISugarQueryable<T>>();
             foreach (var item in tables)
             {
-                tableQueryables.Add(this.Context.Queryable<object>().AS(item.TableName));
+                tableQueryables.Add(this.Clone().AS(item.TableName));
             }
-            var asName = this.Context.UnionAll(tableQueryables.ToArray()).QueryBuilder.GetTableNameString;
-            return this.AS(asName);
+            var unionall = this.Context._UnionAll(tableQueryables.ToArray());
+            //var values= unionall.QueryBuilder.GetSelectValue;
+            //unionall.QueryBuilder.SelectValue = values;
+            return unionall;
         }
         public ISugarQueryable<T> Distinct()
         {
