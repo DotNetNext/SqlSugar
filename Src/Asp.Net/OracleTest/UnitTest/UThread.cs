@@ -55,13 +55,12 @@ namespace OrmTest
                 }
             }
         });
-        public static SqlSugarClient singleAndSsDb = new SqlSugarClient(new ConnectionConfig()
+        public static SqlSugarScope singleAndSsDb = new SqlSugarScope(new ConnectionConfig()
         {
             DbType = DbType.Oracle,
             ConnectionString = Config.ConnectionString,
             InitKeyType = InitKeyType.Attribute,
             IsAutoCloseConnection = true,
-            IsShardSameThread = true,
             AopEvents = new AopEvents
             {
                 OnLogExecuting = (sql, p) =>
