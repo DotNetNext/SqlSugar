@@ -31,7 +31,6 @@ namespace OrmTest
             ConnectionString = Config.ConnectionString,
             InitKeyType = InitKeyType.Attribute,
             IsAutoCloseConnection = true,
-            IsShardSameThread = true,
             AopEvents = new AopEvents
             {
                 OnLogExecuting = (sql, p) =>

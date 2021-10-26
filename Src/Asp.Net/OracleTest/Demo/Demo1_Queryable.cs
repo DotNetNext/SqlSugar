@@ -51,6 +51,7 @@ namespace OrmTest
                      CustomName = SqlFunc.MergeString(it.Name, "/", it.Name)
                  })
                 ).ToList();
+            var test2 = db.Queryable<Order>().Select<ViewOrder>().ToList();
             Console.WriteLine("#### Examples End ####");
         }
 
