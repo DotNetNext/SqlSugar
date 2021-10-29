@@ -263,9 +263,8 @@ namespace SqlSugar
             this.Context.MappingTables.Add(this.EntityInfo.EntityName, this.EntityInfo.DbTableName);
             SplitTableDeleteProvider<T> result = new SplitTableDeleteProvider<T>();
             result.Context = this.Context;
-            SplitTableContext helper = new SplitTableContext()
+            SplitTableContext helper = new SplitTableContext((SqlSugarProvider)Context)
             {
-                Context =(SqlSugarProvider)Context,
                 EntityInfo = this.EntityInfo
             };
             var tables = getTableNamesFunc(helper.GetTables());

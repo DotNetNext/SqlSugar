@@ -94,9 +94,8 @@ namespace SqlSugar
             this.Context.MappingTables.Add(this.EntityInfo.EntityName, this.EntityInfo.DbTableName);
             SplitTableUpdateProvider<T> result = new SplitTableUpdateProvider<T>();
             result.Context = this.Context;
-            SplitTableContext helper = new SplitTableContext()
+            SplitTableContext helper = new SplitTableContext(Context)
             {
-                Context = (SqlSugarProvider)Context,
                 EntityInfo = this.EntityInfo
             };
             var tables = getTableNamesFunc(helper.GetTables());

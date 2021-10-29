@@ -12,8 +12,10 @@ namespace SqlSugar
         public SqlSugarProvider Context { get; set; }
         public EntityInfo EntityInfo { get; set; }
         public ISplitTableService Service { get; set; }
-        public SplitTableContext() 
+        private SplitTableContext() { }
+        public SplitTableContext(SqlSugarProvider context) 
         {
+            this.Context = context;
             if (this.Context.CurrentConnectionConfig.ConfigureExternalServices != null&&this.Context.CurrentConnectionConfig.ConfigureExternalServices.SplitTableService!=null)
             {
                 Service = this.Context.CurrentConnectionConfig.ConfigureExternalServices.SplitTableService;

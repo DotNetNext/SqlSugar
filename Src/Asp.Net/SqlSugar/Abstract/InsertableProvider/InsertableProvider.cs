@@ -408,10 +408,9 @@ namespace SqlSugar
         }
         public SplitInsertable<T> SplitTable(SplitType splitType)
         {
-            SplitTableContext helper = new SplitTableContext()
+            SplitTableContext helper = new SplitTableContext(Context)
             {
-                Context = this.Context,
-                EntityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>()
+                EntityInfo = this.EntityInfo
             };
             helper.CheckPrimaryKey();
             SplitInsertable<T> result = new SplitInsertable<T>();
