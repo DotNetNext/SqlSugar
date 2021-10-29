@@ -417,6 +417,8 @@ namespace SqlSugar
             SplitInsertable<T> result = new SplitInsertable<T>();
             result.Context = this.Context;
             result.EntityInfo = this.EntityInfo;
+            result.Helper = helper;
+            result.SplitType = splitType;
             result.TableNames = new List<string>();
             foreach (var item in this.InsertObjs)
             {

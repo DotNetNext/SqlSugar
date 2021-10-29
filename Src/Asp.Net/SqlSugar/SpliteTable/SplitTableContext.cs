@@ -53,7 +53,5 @@ namespace SqlSugar
         {
             Check.Exception(EntityInfo.Columns.Any(it => it.IsIdentity == true), ErrorMessage.GetThrowMessage("Split table can't IsIdentity=true", "分表禁止使用自增列"));
         }
-
-   
     }
 }

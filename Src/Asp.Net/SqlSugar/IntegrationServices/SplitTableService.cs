@@ -10,7 +10,8 @@ namespace SqlSugar
 {
     public class DateSplitTableService : ISplitTableService
     {
-        public List<SplitTableInfo> GetAllTables(ISqlSugarClient db, EntityInfo EntityInfo,List<DbTableInfo> tableInfos)
+        #region Core
+        public List<SplitTableInfo> GetAllTables(ISqlSugarClient db, EntityInfo EntityInfo, List<DbTableInfo> tableInfos)
         {
             CheckTableName(EntityInfo.DbTableName);
             var regex = EntityInfo.DbTableName.Replace("{year}", "([0-9]{2,4})").Replace("{day}", "([0-9]{1,2})").Replace("{month}", "([0-9]{1,2})");
@@ -34,30 +35,28 @@ namespace SqlSugar
         }
         public string GetTableName(ISqlSugarClient db, EntityInfo EntityInfo)
         {
-            return GetTableName(db,EntityInfo,SplitType.Day);
+            return GetTableName(db, EntityInfo, SplitType.Day);
         }
-
-        public string GetTableName(ISqlSugarClient db, EntityInfo EntityInfo,SplitType splitType)
+        public string GetTableName(ISqlSugarClient db, EntityInfo EntityInfo, SplitType splitType)
         {
-            var date =db.GetDate();
-            return GetTableNameByDate(EntityInfo,splitType,date);
+            var date = db.GetDate();
+            return GetTableNameByDate(EntityInfo, splitType, date);
         }
-
         public string GetTableName(ISqlSugarClient db, EntityInfo entityInfo, SplitType splitType, object fieldValue)
         {
-            var value= Convert.ToDateTime(fieldValue);
-            return GetTableNameByDate(entityInfo,splitType, value);
+            var value = Convert.ToDateTime(fieldValue);
+            return GetTableNameByDate(entityInfo, splitType, value);
         }
         public object GetFieldValue(ISqlSugarClient db, EntityInfo entityInfo, SplitType splitType, object entityValue)
         {
-            var splitColumn=entityInfo.Columns.FirstOrDefault(it => it.PropertyInfo.PropertyType.GetCustomAttribute<SplitFieldAttribute>()!=null);
+            var splitColumn = entityInfo.Columns.FirstOrDefault(it => it.PropertyInfo.PropertyType.GetCustomAttribute<SplitFieldAttribute>() != null);
             if (splitColumn == null)
             {
                 return db.GetDate();
             }
-            else 
+            else
             {
-               var value= splitColumn.PropertyInfo.GetValue(entityValue, null);
+                var value = splitColumn.PropertyInfo.GetValue(entityValue, null);
                 if (value == null)
                 {
                     return db.GetDate();
@@ -70,13 +69,12 @@ namespace SqlSugar
                 {
                     return db.GetDate();
                 }
-                else 
+                else
                 {
                     return value;
                 }
             }
         }
-
         public void VerifySplitType(SplitType splitType)
         {
             switch (splitType)
@@ -92,9 +90,11 @@ namespace SqlSugar
                 case SplitType.Year:
                     break;
                 default:
-                    throw new Exception("DateSplitTableService no support "+ splitType.ToString());
+                    throw new Exception("DateSplitTableService no support " + splitType.ToString());
             }
         }
+
+        #endregion
 
         #region Common Helper
         private string GetTableNameByDate(EntityInfo EntityInfo,SplitType splitType,DateTime date)
@@ -237,5 +237,14 @@ namespace SqlSugar
         }
 
         #endregion
+
+        #region Private Models
+        internal class SplitTableSort
+        {
+            public string Name { get; set; }
+            public int Sort { get; set; }
+        }
+        #endregion
+
     }
 }

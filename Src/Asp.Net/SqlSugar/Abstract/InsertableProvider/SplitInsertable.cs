@@ -9,7 +9,9 @@ namespace SqlSugar
     public class SplitInsertable<T> 
     {
         public SqlSugarProvider Context;
+        internal SplitTableContext Helper;
         public EntityInfo EntityInfo;
+        public SplitType SplitType;
         internal IInsertable<T> Inserable { get;  set; }
         internal List<string> TableNames { get;  set; }
 

@@ -16,10 +16,4 @@ namespace SqlSugar
         public int Int { get; set; }
         public Byte[] ByteArray { get; set; }
     }
-
-    internal class SplitTableSort 
-    {
-        public string Name { get; set; }
-        public int Sort { get; set; }
-    }
 }

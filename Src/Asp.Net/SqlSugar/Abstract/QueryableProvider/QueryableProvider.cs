@@ -836,7 +836,7 @@ namespace SqlSugar
         }
         public ISugarQueryable<T> SplitTable(Func<List<SplitTableInfo>, IEnumerable<SplitTableInfo>> getTableNamesFunc) 
         {
-            SplitTableHelper helper = new SplitTableHelper() 
+            SplitTableContext helper = new SplitTableContext() 
             { 
               Context=Context,
               EntityInfo=this.EntityInfo
