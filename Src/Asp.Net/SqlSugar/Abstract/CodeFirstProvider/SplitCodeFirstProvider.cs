@@ -12,7 +12,7 @@ namespace SqlSugar
         public void InitTables<T>()
         {
             //var oldMapping = this.Context.Utilities.TranslateCopy(this.Context.MappingTables);
-            SplitTableHelper helper = new SplitTableHelper()
+            SplitTableContext helper = new SplitTableContext()
             {
                 Context = this.Context,
                 EntityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>()

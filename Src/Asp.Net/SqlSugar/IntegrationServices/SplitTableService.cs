@@ -1,59 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace SqlSugar
 {
-    internal class SplitTableHelper
+    public class DateSplitTableService : ISplitTableService
     {
-        public SqlSugarProvider Context { get; set; }
-        public EntityInfo EntityInfo { get; set; }
-
-        #region Common Method
-
-        public DateTime GetTableGetDate(DateTime time, SplitType type)
+        public List<SplitTableInfo> GetAllTables(ISqlSugarClient db, EntityInfo EntityInfo,List<DbTableInfo> tableInfos)
         {
-            switch (type)
-            {
-                case SplitType.Day:
-                    return Convert.ToDateTime(time.ToString("yyyy-MM-dd"));
-                case SplitType.Week:
-                    return GetMondayDate(time);
-                case SplitType.Month:
-                    return Convert.ToDateTime(time.ToString("yyyy-MM-01"));
-                case SplitType.Season:
-                    if (time.Month <= 3)
-                    {
-                        return Convert.ToDateTime(time.ToString("yyyy-01-01"));
-                    }
-                    else if (time.Month <= 6)
-                    {
-                        return Convert.ToDateTime(time.ToString("yyyy-04-01"));
-                    }
-                    else if (time.Month <= 9)
-                    {
-                        return Convert.ToDateTime(time.ToString("yyyy-07-01"));
-                    }
-                    else
-                    {
-                        return Convert.ToDateTime(time.ToString("yyyy-10-01"));
-                    }
-                case SplitType.Year:
-                    return Convert.ToDateTime(time.ToString("yyyy-01-01"));
-                default:
-                    throw new Exception($"SplitType paramter error ");
-            }
-        }
-        public List<SplitTableInfo> GetTables()
-        {
-
-            var oldIsEnableLogEvent = this.Context.Ado.IsEnableLogEvent;
-            this.Context.Ado.IsEnableLogEvent = false;
-            var tableInfos = this.Context.DbMaintenance.GetTableInfoList(false);
-            SplitTableHelper.CheckTableName(EntityInfo.DbTableName);
+            CheckTableName(EntityInfo.DbTableName);
             var regex = EntityInfo.DbTableName.Replace("{year}", "([0-9]{2,4})").Replace("{day}", "([0-9]{1,2})").Replace("{month}", "([0-9]{1,2})");
             var currentTables = tableInfos.Where(it => Regex.IsMatch(it.Name, regex, RegexOptions.IgnoreCase)).Select(it => it.Name).Reverse().ToList();
             List<SplitTableInfo> result = new List<SplitTableInfo>();
@@ -66,29 +25,84 @@ namespace SqlSugar
                 var group2 = math.Groups[2].Value;
                 var group3 = math.Groups[3].Value;
                 tableInfo.Date = GetDate(group1, group2, group3, EntityInfo.DbTableName);
+                //tableInfo.String = null;  Time table, it doesn't work
+                //tableInfo.Long = null;  Time table, it doesn't work
                 result.Add(tableInfo);
             }
             result = result.OrderByDescending(it => it.Date).ToList();
-            this.Context.Ado.IsEnableLogEvent = oldIsEnableLogEvent;
             return result;
         }
+        public string GetTableName(ISqlSugarClient db, EntityInfo EntityInfo)
+        {
+            return GetTableName(db,EntityInfo,SplitType.Day);
+        }
 
-        public string GetDefaultTableName()
+        public string GetTableName(ISqlSugarClient db, EntityInfo EntityInfo,SplitType splitType)
         {
-            var date = this.Context.GetDate();
-            return GetTableNameByDate(date);
+            var date =db.GetDate();
+            return GetTableNameByDate(EntityInfo,splitType,date);
         }
-        public string GetTableNameByDate(DateTime date)
+
+        public string GetTableName(ISqlSugarClient db, EntityInfo entityInfo, SplitType splitType, object fieldValue)
         {
-            return EntityInfo.DbTableName.Replace("{year}", date.Year + "").Replace("{day}", PadLeft2(date.Day + "")).Replace("{month}", PadLeft2(date.Month + ""));
+            var value= Convert.ToDateTime(fieldValue);
+            return GetTableNameByDate(entityInfo,splitType, value);
         }
-        public void CheckPrimaryKey()
+        public object GetFieldValue(ISqlSugarClient db, EntityInfo entityInfo, SplitType splitType, object entityValue)
         {
-            Check.Exception(EntityInfo.Columns.Any(it => it.IsIdentity == true), ErrorMessage.GetThrowMessage("Split table can't IsIdentity=true", "分表禁止使用自增列"));
+            var splitColumn=entityInfo.Columns.FirstOrDefault(it => it.PropertyInfo.PropertyType.GetCustomAttribute<SplitFieldAttribute>()!=null);
+            if (splitColumn == null)
+            {
+                return db.GetDate();
+            }
+            else 
+            {
+               var value= splitColumn.PropertyInfo.GetValue(entityValue, null);
+                if (value == null)
+                {
+                    return db.GetDate();
+                }
+                else if (UtilMethods.GetUnderType(value.GetType()) != UtilConstants.DateType)
+                {
+                    throw new Exception($"DateSplitTableService Split column {splitColumn.PropertyName} not DateTime " + splitType.ToString());
+                }
+                else if (Convert.ToDateTime(value) == DateTime.MinValue)
+                {
+                    return db.GetDate();
+                }
+                else 
+                {
+                    return value;
+                }
+            }
         }
-        #endregion
+
+        public void VerifySplitType(SplitType splitType)
+        {
+            switch (splitType)
+            {
+                case SplitType.Day:
+                    break;
+                case SplitType.Week:
+                    break;
+                case SplitType.Month:
+                    break;
+                case SplitType.Season:
+                    break;
+                case SplitType.Year:
+                    break;
+                default:
+                    throw new Exception("DateSplitTableService no support "+ splitType.ToString());
+            }
+        }
 
         #region Common Helper
+        private string GetTableNameByDate(EntityInfo EntityInfo,SplitType splitType,DateTime date)
+        {
+            date = ConvertDateBySplitType(date, splitType);
+            return EntityInfo.DbTableName.Replace("{year}", date.Year + "").Replace("{day}", PadLeft2(date.Day + "")).Replace("{month}", PadLeft2(date.Month + ""));
+        }
+
         private DateTime GetDate(string group1, string group2, string group3, string dbTableName)
         {
             var yearIndex = dbTableName.IndexOf("{year}");
@@ -166,6 +180,39 @@ namespace SqlSugar
         #endregion
 
         #region Date Helper
+        private DateTime ConvertDateBySplitType(DateTime time, SplitType type)
+        {
+            switch (type)
+            {
+                case SplitType.Day:
+                    return Convert.ToDateTime(time.ToString("yyyy-MM-dd"));
+                case SplitType.Week:
+                    return GetMondayDate(time);
+                case SplitType.Month:
+                    return Convert.ToDateTime(time.ToString("yyyy-MM-01"));
+                case SplitType.Season:
+                    if (time.Month <= 3)
+                    {
+                        return Convert.ToDateTime(time.ToString("yyyy-01-01"));
+                    }
+                    else if (time.Month <= 6)
+                    {
+                        return Convert.ToDateTime(time.ToString("yyyy-04-01"));
+                    }
+                    else if (time.Month <= 9)
+                    {
+                        return Convert.ToDateTime(time.ToString("yyyy-07-01"));
+                    }
+                    else
+                    {
+                        return Convert.ToDateTime(time.ToString("yyyy-10-01"));
+                    }
+                case SplitType.Year:
+                    return Convert.ToDateTime(time.ToString("yyyy-01-01"));
+                default:
+                    throw new Exception($"SplitType paramter error ");
+            }
+        }
         private DateTime GetMondayDate()
         {
             return GetMondayDate(DateTime.Now);
@@ -177,17 +224,18 @@ namespace SqlSugar
         private DateTime GetMondayDate(DateTime someDate)
         {
             int i = someDate.DayOfWeek - DayOfWeek.Monday;
-            if (i == -1) i = 6;  
+            if (i == -1) i = 6;
             TimeSpan ts = new TimeSpan(i, 0, 0, 0);
             return someDate.Subtract(ts);
         }
         private DateTime GetSundayDate(DateTime someDate)
         {
             int i = someDate.DayOfWeek - DayOfWeek.Sunday;
-            if (i != 0) i = 7 - i; 
+            if (i != 0) i = 7 - i;
             TimeSpan ts = new TimeSpan(i, 0, 0, 0);
             return someDate.Add(ts);
         }
+
         #endregion
     }
 }

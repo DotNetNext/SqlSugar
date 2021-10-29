@@ -88,6 +88,7 @@
     <Compile Include="Abstract\EntityMaintenance\EntityMaintenance.cs" />
     <Compile Include="Abstract\ExpressionableProvider\Expressionable.cs" />
     <Compile Include="Abstract\FilterProvider\FilterProvider.cs" />
+    <Compile Include="Abstract\InsertableProvider\SplitTableAttribute.cs" />
     <Compile Include="Abstract\InsertableProvider\InsertableProvider.cs" />
     <Compile Include="Abstract\DeleteProvider\DeleteableProvider.cs" />
     <Compile Include="Abstract\InsertableProvider\SplitInsertable.cs" />
@@ -213,9 +214,12 @@
     <Compile Include="DistributedSystem\Snowflake\IdWorker.cs" />
     <Compile Include="DistributedSystem\Snowflake\InvalidSystemClock.cs" />
     <Compile Include="DistributedSystem\Snowflake\TimeExtensions.cs" />
-    <Compile Include="SpliteTable\SplitHelper.cs" />
+    <Compile Include="IntegrationServices\SplitTableService.cs" />
+    <Compile Include="ExternalServiceInterface\ISplitTableService.cs" />
+    <Compile Include="SpliteTable\SplitTableContext.cs" />
     <Compile Include="SpliteTable\SplitTableInfo.cs" />
     <Compile Include="SpliteTable\SplitType.cs" />
+    <Compile Include="SpliteTable\SplitTypeExtensions.cs" />
     <Compile Include="SqlSugarClient.cs" />
     <Compile Include="Utilities\CallContext.cs" />
     <Compile Include="Utilities\CallContextAsync.cs" />

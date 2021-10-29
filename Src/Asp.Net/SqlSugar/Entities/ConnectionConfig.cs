@@ -79,7 +79,7 @@ namespace SqlSugar
         private ICacheService _ReflectionInoCache;
         private ICacheService _DataInfoCache;
         private IRazorService _RazorService;
-
+        public ISplitTableService SplitTableService { get; set; }
         public IRazorService RazorService
         {
             get

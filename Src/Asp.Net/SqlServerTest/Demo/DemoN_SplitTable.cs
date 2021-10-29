@@ -46,12 +46,13 @@ namespace OrmTest
                 .ExecuteCommand();
 
             //按日分表 
-            var x3 = db.Insertable(new OrderSpliteTest() { Name="A" }).SplitTable(SplitType.Day).ExecuteCommand();
-            //按日分表，根据time字段扔到对应的表中
-            var x4 = db.Insertable(new OrderSpliteTest() { Name = "A" }).SplitTable(SplitType.Day,it=>it.Time).ExecuteCommand();
+            var x3 = db.Insertable(new OrderSpliteTest() { Name="A" }).SplitTable().ExecuteCommand();
+            ////强制分表类型
+            //var x4 = db.Insertable(new OrderSpliteTest() { Name = "A" }).SplitTable(SplitType.Day).ExecuteCommand();
             Console.WriteLine("#### CodeFirst end ####");
         }
 
+        [SplitTable(SplitType.Day)]
         [SqlSugar.SugarTable("Taxxx0101_{year}{month}{day}")]
         public class OrderSpliteTest 
         {
@@ -59,6 +60,7 @@ namespace OrmTest
             public  Guid  Pk{ get; set; }
             public string Name { get; set; }
             [SugarColumn(IsNullable =true)]
+            [SplitField]
             public DateTime Time { get; set; }
         }
     }
