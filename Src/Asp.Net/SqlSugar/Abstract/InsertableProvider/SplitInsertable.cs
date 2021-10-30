@@ -59,6 +59,65 @@ namespace SqlSugar
                 return await _ExecuteCommandAsync();
             }
         }
+
+
+        public List<long> ExecuteReturnSnowflakeIdList()
+        {
+            if (this.Context.Ado.Transaction == null)
+            {
+                try
+                {
+                    this.Context.Ado.BeginTran();
+                    var result = _ExecuteReturnSnowflakeIdList();
+                    this.Context.Ado.CommitTran();
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    this.Context.Ado.RollbackTran();
+                    throw ex;
+                }
+            }
+            else
+            {
+                return _ExecuteReturnSnowflakeIdList();
+            }
+        }
+        public async Task<List<long>> ExecuteReturnSnowflakeIdListAsync()
+        {
+            if (this.Context.Ado.Transaction == null)
+            {
+                try
+                {
+                    this.Context.Ado.BeginTran();
+                    var result = await _ExecuteReturnSnowflakeIdListAsync();
+                    this.Context.Ado.BeginTran();
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    this.Context.Ado.RollbackTran();
+                    throw ex;
+                }
+            }
+            else
+            {
+                return await _ExecuteReturnSnowflakeIdListAsync();
+            }
+        }
+
+
+        public long ExecuteReturnSnowflakeId()
+        {
+            return ExecuteReturnSnowflakeIdList().FirstOrDefault();
+        }
+        public async Task<long> ExecuteReturnSnowflakeIdAsync()
+        {
+            var list = await ExecuteReturnSnowflakeIdListAsync();
+            return list.FirstOrDefault();
+        }
+
+
         internal int _ExecuteCommand()
         {
             CreateTable();
@@ -101,6 +160,53 @@ namespace SqlSugar
             }
             return result;
         }
+
+        internal List<long> _ExecuteReturnSnowflakeIdList()
+        {
+            CreateTable();
+            var result = new List<long>();
+            var groups = TableNames.GroupBy(it => it.Key).ToList();
+            var parent = ((InsertableProvider<T>)Inserable);
+            var names = parent.InsertBuilder.DbColumnInfoList.GroupBy(it => it.DbColumnName).Select(i => i.Key).ToList();
+            foreach (var item in groups)
+            {
+                var list = item.Select(it => it.Value as T).ToList();
+                var groupInserable = (InsertableProvider<T>)this.Context.Insertable<T>(list);
+                groupInserable.InsertBuilder.TableWithString = parent.InsertBuilder.TableWithString;
+                groupInserable.RemoveCacheFunc = parent.RemoveCacheFunc;
+                groupInserable.diffModel = parent.diffModel;
+                groupInserable.IsEnableDiffLogEvent = parent.IsEnableDiffLogEvent;
+                groupInserable.InsertBuilder.IsNoInsertNull = parent.InsertBuilder.IsNoInsertNull;
+                groupInserable.IsOffIdentity = parent.IsOffIdentity;
+                var idList= groupInserable.AS(item.Key).InsertColumns(names.ToArray()).ExecuteReturnSnowflakeIdList();
+                result.AddRange(idList);
+            }
+            return result;
+        }
+        internal async Task<List<long>> _ExecuteReturnSnowflakeIdListAsync()
+        {
+            CreateTable();
+            var result = new List<long>();
+            var groups = TableNames.GroupBy(it => it.Key).ToList();
+            var parent = ((InsertableProvider<T>)Inserable);
+            var names = parent.InsertBuilder.DbColumnInfoList.GroupBy(it => it.DbColumnName).Select(i => i.Key).ToList();
+            foreach (var item in groups)
+            {
+                var list = item.Select(it => it.Value as T).ToList();
+                var groupInserable = (InsertableProvider<T>)this.Context.Insertable<T>(list);
+                groupInserable.InsertBuilder.TableWithString = parent.InsertBuilder.TableWithString;
+                groupInserable.RemoveCacheFunc = parent.RemoveCacheFunc;
+                groupInserable.diffModel = parent.diffModel;
+                groupInserable.IsEnableDiffLogEvent = parent.IsEnableDiffLogEvent;
+                groupInserable.InsertBuilder.IsNoInsertNull = parent.InsertBuilder.IsNoInsertNull;
+                groupInserable.IsOffIdentity = parent.IsOffIdentity;
+                var idList =await groupInserable.AS(item.Key).InsertColumns(names.ToArray()).ExecuteReturnSnowflakeIdListAsync();
+                result.AddRange(idList);
+            }
+            return result;
+        }
+
+
         private void CreateTable()
         {
             var isLog = this.Context.Ado.IsEnableLogEvent;
