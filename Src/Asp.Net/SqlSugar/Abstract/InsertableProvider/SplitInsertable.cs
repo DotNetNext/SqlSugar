@@ -17,6 +17,50 @@ namespace SqlSugar
 
         public int ExecuteCommand()
         {
+            if (this.Context.Ado.Transaction == null)
+            {
+                try
+                {
+                    this.Context.Ado.BeginTran();
+                    var result = _ExecuteCommand();
+                    this.Context.Ado.CommitTran();
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    this.Context.Ado.RollbackTran();
+                    throw ex;
+                }
+            }
+            else
+            {
+                return _ExecuteCommand();
+            }
+        }
+        public async Task<int> ExecuteCommandAsync()
+        {
+            if (this.Context.Ado.Transaction == null)
+            {
+                try
+                {
+                    this.Context.Ado.BeginTran();
+                    var result = await _ExecuteCommandAsync();
+                    this.Context.Ado.BeginTran();
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    this.Context.Ado.RollbackTran();
+                    throw ex;
+                }
+            }
+            else
+            {
+                return await _ExecuteCommandAsync();
+            }
+        }
+        internal int _ExecuteCommand()
+        {
             CreateTable();
             var result = 0;
             var groups = TableNames.GroupBy(it => it.Key).ToList();
@@ -36,7 +80,27 @@ namespace SqlSugar
             }
             return result;
         }
-
+        internal async Task<int> _ExecuteCommandAsync()
+        {
+            CreateTable();
+            var result = 0;
+            var groups = TableNames.GroupBy(it => it.Key).ToList();
+            var parent = ((InsertableProvider<T>)Inserable);
+            var names = parent.InsertBuilder.DbColumnInfoList.GroupBy(it => it.DbColumnName).Select(i => i.Key).ToList();
+            foreach (var item in groups)
+            {
+                var list = item.Select(it => it.Value as T).ToList();
+                var groupInserable = (InsertableProvider<T>)this.Context.Insertable<T>(list);
+                groupInserable.InsertBuilder.TableWithString = parent.InsertBuilder.TableWithString;
+                groupInserable.RemoveCacheFunc = parent.RemoveCacheFunc;
+                groupInserable.diffModel = parent.diffModel;
+                groupInserable.IsEnableDiffLogEvent = parent.IsEnableDiffLogEvent;
+                groupInserable.InsertBuilder.IsNoInsertNull = parent.InsertBuilder.IsNoInsertNull;
+                groupInserable.IsOffIdentity = parent.IsOffIdentity;
+                result +=await groupInserable.AS(item.Key).InsertColumns(names.ToArray()).ExecuteCommandAsync();
+            }
+            return result;
+        }
         private void CreateTable()
         {
             var isLog = this.Context.Ado.IsEnableLogEvent;

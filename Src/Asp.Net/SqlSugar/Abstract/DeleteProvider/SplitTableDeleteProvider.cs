@@ -57,7 +57,7 @@ namespace SqlSugar
                 return await _ExecuteCommandAsync();
             }
         }
-        public int _ExecuteCommand()
+        internal int _ExecuteCommand()
         {
             var result = 0;
             var sqlobj = deleteobj.ToSql();
@@ -70,7 +70,7 @@ namespace SqlSugar
             return result;
         }
 
-        public async Task<int> _ExecuteCommandAsync()
+        internal async Task<int> _ExecuteCommandAsync()
         {
             var result = 0;
             var sqlobj = deleteobj.ToSql();
