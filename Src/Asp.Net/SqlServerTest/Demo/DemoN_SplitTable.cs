@@ -48,10 +48,16 @@ namespace OrmTest
             Console.WriteLine();
 
             var tableName = db.SplitHelper<OrderSpliteTest>().GetTableName(DateTime.Now.AddDays(-1));
+            var tableName2 = db.SplitHelper(new OrderSpliteTest() {  Time=DateTime.Now}).GetTableNames();
+            var tableName3 = db.SplitHelper(new List<OrderSpliteTest> {
+              new OrderSpliteTest() { Time = DateTime.Now },
+              new OrderSpliteTest() { Time = DateTime.Now },
+              new OrderSpliteTest() { Time = DateTime.Now.AddMonths(-10) }
+            }).GetTableNames();
             var x2 = db.Updateable<OrderSpliteTest>()
                 .SetColumns(it=>it.Name=="a")
                 .Where(it => it.Pk == Guid.NewGuid())
-                .SplitTable(tabs => tabs.InTableNames(tableName))
+                .SplitTable(tabs => tabs.InTableNames(tableName2))
                 .ExecuteCommand();
 
             Console.WriteLine();

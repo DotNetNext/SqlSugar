@@ -600,6 +600,14 @@ namespace SqlSugar
         {
             return ScopedContext.SplitHelper<T>();
         }
+        public SplitTableContextResult<T> SplitHelper<T>(T data)
+        {
+            return ScopedContext.SplitHelper(data);
+        }
+        public SplitTableContextResult<T> SplitHelper<T>(List<T> dataList)
+        {
+            return ScopedContext.SplitHelper(dataList);
+        }
         public SqlSguarTransaction UseTran()
         {
             return ScopedContext.UseTran();

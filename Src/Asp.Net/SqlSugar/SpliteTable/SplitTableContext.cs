@@ -8,6 +8,32 @@ using System.Threading.Tasks;
 
 namespace SqlSugar
 {
+    public class SplitTableContextResult<T> 
+    {
+        public List<T> Items { get;  set; }
+        public SplitTableContext Helper { get;  set; }
+
+        public string [] GetTableNames() 
+        {
+            List<string> result = new List<string>();
+            var attribute = typeof(T).GetCustomAttribute<SplitTableAttribute>() as SplitTableAttribute;
+            Check.Exception(attribute == null, $" {typeof(T).Name} need SplitTableAttribute");
+            foreach (var item in Items)
+            {
+                result.Add(Helper.GetTableName(Helper.GetValue(attribute.SplitType,item)));
+            }
+            return  result.Distinct().ToArray();
+        }
+        public string[] GetTableNames(SplitType splitType)
+        {
+            List<string> result = new List<string>();;
+            foreach (var item in Items)
+            {
+                result.Add(Helper.GetTableName(Helper.GetValue(splitType, item)));
+            }
+            return result.ToArray();
+        }
+    }
     public class SplitTableContext
     {
         internal SqlSugarProvider Context { get; set; }

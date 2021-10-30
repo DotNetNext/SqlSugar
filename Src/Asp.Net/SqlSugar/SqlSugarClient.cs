@@ -848,11 +848,15 @@ namespace SqlSugar
         #region Helper
         public SplitTableContext SplitHelper<T>()
         {
-            var result = new SplitTableContext(this.Context)
-            {
-                EntityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>()
-            };
-            return result;
+            return this.Context.SplitHelper<T>();
+        }
+        public SplitTableContextResult<T> SplitHelper<T>(T data) 
+        {
+            return this.Context.SplitHelper(data);
+        }
+        public SplitTableContextResult<T> SplitHelper<T>(List<T> dataList)
+        {
+            return this.Context.SplitHelper(dataList);
         }
         private SqlSugarProvider GetContext()
         {

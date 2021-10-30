@@ -1133,5 +1133,40 @@ namespace SqlSugar
             }
         }
         #endregion
+
+        #region Split table
+        public SplitTableContext SplitHelper<T>()
+        {
+            var result = new SplitTableContext(this.Context)
+            {
+                EntityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>()
+            };
+            return result;
+        }
+        public SplitTableContextResult<T> SplitHelper<T>(T data)
+        {
+            var result = new SplitTableContext(this.Context)
+            {
+                EntityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>()
+            };
+            return new SplitTableContextResult<T>()
+            {
+                Items = new List<T> { data },
+                Helper = result
+            };
+        }
+        public SplitTableContextResult<T> SplitHelper<T>(List<T> data)
+        {
+            var result = new SplitTableContext(this.Context)
+            {
+                EntityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>()
+            };
+            return new SplitTableContextResult<T>()
+            {
+                Items = data,
+                Helper = result
+            };
+        }
+        #endregion
     }
 }

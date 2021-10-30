@@ -44,6 +44,8 @@ namespace SqlSugar
 
         #region Other methods
         SplitTableContext SplitHelper<T>();
+        SplitTableContextResult<T> SplitHelper<T>(T data);
+        SplitTableContextResult<T> SplitHelper<T>(List<T> data);
         DateTime GetDate();
         //SimpleClient GetSimpleClient();
         SimpleClient<T> GetSimpleClient<T>() where T : class, new();
