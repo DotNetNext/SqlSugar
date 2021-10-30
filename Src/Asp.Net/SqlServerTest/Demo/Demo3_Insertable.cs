@@ -149,6 +149,13 @@ namespace OrmTest
 
             SubNoIdentity(db);
             SubIdentity(db);
+
+
+            var dict = new Dictionary<string, object>();
+            dict.Add("name", "1");
+            dict.Add("CreateTime", DateTime.Now);
+            dict.Add("Price", 1);
+            db.Insertable(dict).AS("[Order]").ExecuteCommand();
             Console.WriteLine("#### Insertable End ####");
 
         }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SqlSugar
 {
-    public partial interface IInsertable<T>
+    public partial interface IInsertable<T> where T :class,new()
     {
         InsertBuilder InsertBuilder { get; set; }
         int ExecuteCommand();
