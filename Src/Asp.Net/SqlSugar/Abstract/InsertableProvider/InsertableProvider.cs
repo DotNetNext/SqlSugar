@@ -22,7 +22,7 @@ namespace SqlSugar
         public EntityInfo EntityInfo { get; set; }
         public List<MappingColumn> MappingColumnList { get; set; }
         private List<string> IgnoreColumnNameList { get; set; }
-        private bool IsOffIdentity { get; set; }
+        internal bool IsOffIdentity { get; set; }
         public T[] InsertObjs { get; set; }
 
         public MappingTableList OldMappingTableList { get; set; }
@@ -418,12 +418,12 @@ namespace SqlSugar
             result.EntityInfo = this.EntityInfo;
             result.Helper = helper;
             result.SplitType = splitType;
-            result.TableNames = new List<string>();
+            result.TableNames = new List<KeyValuePair<string, object>>();
             foreach (var item in this.InsertObjs)
             {
                 var splitFieldValue = helper.GetValue(splitType, item);
                 var tableName=helper.GetTableName(splitType, splitFieldValue);
-                result.TableNames.Add(tableName);
+                result.TableNames.Add(new KeyValuePair<string, object>(tableName,item));
             }
             result.Inserable = this;
             return result;
