@@ -8,7 +8,7 @@ namespace OrmTest
 {
     /// <summary>
     /// Setting up the database name does not require you to create the database
-    /// 设置好数据库名不需要你去手动建库
+    /// 只需要设置IP和账户密码 ，自动建库
     /// </summary>
     public class Config
     {
