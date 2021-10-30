@@ -18,33 +18,29 @@ namespace SqlSugar
         public int ExecuteCommand()
         {
             CreateTable();
-            if (TableNames.Count == 1)
+            var result = 0;
+            var groups = TableNames.GroupBy(it => it.Key).ToList();
+            var parent = ((InsertableProvider<T>)Inserable);
+            var names = parent.InsertBuilder.DbColumnInfoList.GroupBy(it => it.DbColumnName).Select(i => i.Key).ToList();
+            foreach (var item in groups)
             {
-                return Inserable.AS(TableNames.First().Key).ExecuteCommand();
+                var list = item.Select(it => it.Value as T).ToList();
+                var groupInserable = (InsertableProvider<T>)this.Context.Insertable<T>(list);
+                groupInserable.InsertBuilder.TableWithString = parent.InsertBuilder.TableWithString;
+                groupInserable.RemoveCacheFunc = parent.RemoveCacheFunc;
+                groupInserable.diffModel = parent.diffModel;
+                groupInserable.IsEnableDiffLogEvent = parent.IsEnableDiffLogEvent;
+                groupInserable.InsertBuilder.IsNoInsertNull = parent.InsertBuilder.IsNoInsertNull;
+                groupInserable.IsOffIdentity = parent.IsOffIdentity;
+                result += groupInserable.AS(item.Key).InsertColumns(names.ToArray()).ExecuteCommand();
             }
-            else 
-            {
-                var result = 0;
-                var groups = TableNames.GroupBy(it => it.Key).ToList();
-                var parent = ((InsertableProvider<T>)Inserable);
-                var names= parent.InsertBuilder.DbColumnInfoList.GroupBy(it => it.DbColumnName).Select(i=>i.Key).ToList();
-                foreach (var item in groups)
-                {
-                    var groupInserable =(InsertableProvider<T>) this.Context.Insertable<T>(item.ToList());
-                    groupInserable.InsertBuilder.TableWithString = parent.InsertBuilder.TableWithString;
-                    groupInserable.RemoveCacheFunc = parent.RemoveCacheFunc;
-                    groupInserable.diffModel = parent.diffModel;
-                    groupInserable.IsEnableDiffLogEvent = parent.IsEnableDiffLogEvent;
-                    groupInserable.InsertBuilder.IsNoInsertNull = parent.InsertBuilder.IsNoInsertNull;
-                    groupInserable.IsOffIdentity = parent.IsOffIdentity;
-                    result += groupInserable.AS(item.Key).InsertColumns(names.ToArray()).ExecuteCommand();
-                }
-                return result;
-            }
+            return result;
         }
 
         private void CreateTable()
         {
+            var isLog = this.Context.Ado.IsEnableLogEvent;
+            this.Context.Ado.IsEnableLogEvent = false;
             foreach (var item in TableNames)
             {
                 if (!this.Context.DbMaintenance.IsAnyTable(item.Key, false)) 
@@ -53,6 +49,7 @@ namespace SqlSugar
                     this.Context.CodeFirst.InitTables<T>();
                 }
             }
+            this.Context.Ado.IsEnableLogEvent = isLog;
             this.Context.MappingTables.Add(EntityInfo.EntityName, EntityInfo.DbTableName);
         }
     }

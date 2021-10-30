@@ -48,7 +48,7 @@ namespace OrmTest
             //按日分表 
             var x3 = db.Insertable(new OrderSpliteTest() { Name="A" }).SplitTable().ExecuteCommand();
             ////强制分表类型
-            //var x4 = db.Insertable(new OrderSpliteTest() { Name = "A" }).SplitTable(SplitType.Day).ExecuteCommand();
+            var x4 = db.Insertable(new OrderSpliteTest() { Name = "A" ,Time=DateTime.Now.AddDays(-1) }).SplitTable().ExecuteCommand();
             Console.WriteLine("#### CodeFirst end ####");
         }
 

@@ -49,7 +49,7 @@ namespace SqlSugar
         }
         public object GetFieldValue(ISqlSugarClient db, EntityInfo entityInfo, SplitType splitType, object entityValue)
         {
-            var splitColumn = entityInfo.Columns.FirstOrDefault(it => it.PropertyInfo.PropertyType.GetCustomAttribute<SplitFieldAttribute>() != null);
+            var splitColumn = entityInfo.Columns.FirstOrDefault(it => it.PropertyInfo.GetCustomAttribute<SplitFieldAttribute>() != null);
             if (splitColumn == null)
             {
                 return db.GetDate();

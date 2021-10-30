@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -431,8 +432,16 @@ namespace SqlSugar
 
         public SplitInsertable<T> SplitTable()
         {
-            SplitType SplitType = SplitType.Day;
-            return SplitTable(SplitType);
+            var splitTableAttribute = typeof(T).GetCustomAttribute<SplitTableAttribute>();
+            if (splitTableAttribute != null)
+            {
+                return SplitTable((splitTableAttribute as SplitTableAttribute).SplitType);
+            }
+            else 
+            {
+                Check.Exception(true,$" {typeof(T).Name} need SplitTableAttribute");
+                return null;
+            }
         }
 
         #endregion
