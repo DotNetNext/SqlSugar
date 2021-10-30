@@ -1,19 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace SqlSugar
 {
-    internal class SplitTableContext
+    public class SplitTableContext
     {
-        public SqlSugarProvider Context { get; set; }
-        public EntityInfo EntityInfo { get; set; }
-        public ISplitTableService Service { get; set; }
+        internal SqlSugarProvider Context { get; set; }
+        internal EntityInfo EntityInfo { get; set; }
+        internal ISplitTableService Service { get; set; }
         private SplitTableContext() { }
-        public SplitTableContext(SqlSugarProvider context) 
+        internal SplitTableContext(SqlSugarProvider context) 
         {
             this.Context = context;
             if (this.Context.CurrentConnectionConfig.ConfigureExternalServices != null&&this.Context.CurrentConnectionConfig.ConfigureExternalServices.SplitTableService!=null)
@@ -35,23 +36,29 @@ namespace SqlSugar
             return result;
         }
 
-        internal string GetDefaultTableName()
+        public string GetDefaultTableName()
         {
            return Service.GetTableName(this.Context,EntityInfo);
         }
-        internal string GetTableName(SplitType splitType) 
+        public string GetTableName(SplitType splitType) 
         {
             return Service.GetTableName(this.Context,EntityInfo, splitType);
         }
-        internal string GetTableName(SplitType splitType, object fieldValue)
+        public string GetTableName(SplitType splitType, object fieldValue)
         {
             return Service.GetTableName(this.Context,EntityInfo, splitType, fieldValue);
         }
-        internal object GetValue(SplitType splitType, object entityValue)
+        public string GetTableName(object fieldValue)
+        {
+            var attribute = EntityInfo.Type.GetCustomAttribute<SplitTableAttribute>() as SplitTableAttribute;
+            Check.Exception(attribute == null, $" {EntityInfo.EntityName} need SplitTableAttribute");
+            return Service.GetTableName(this.Context, EntityInfo, attribute.SplitType, fieldValue);
+        }
+        public object GetValue(SplitType splitType, object entityValue)
         {
             return Service.GetFieldValue(this.Context,EntityInfo, splitType, entityValue);
         }
-        public void CheckPrimaryKey()
+        internal void CheckPrimaryKey()
         {
             Check.Exception(EntityInfo.Columns.Any(it => it.IsIdentity == true), ErrorMessage.GetThrowMessage("Split table can't IsIdentity=true", "分表禁止使用自增列"));
         }

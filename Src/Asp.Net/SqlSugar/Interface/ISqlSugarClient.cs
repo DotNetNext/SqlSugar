@@ -43,6 +43,7 @@ namespace SqlSugar
         #endregion
 
         #region Other methods
+        SplitTableContext SplitHelper<T>();
         DateTime GetDate();
         //SimpleClient GetSimpleClient();
         SimpleClient<T> GetSimpleClient<T>() where T : class, new();

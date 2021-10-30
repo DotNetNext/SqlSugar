@@ -846,6 +846,14 @@ namespace SqlSugar
         #endregion
 
         #region Helper
+        public SplitTableContext SplitHelper<T>()
+        {
+            var result = new SplitTableContext(this.Context)
+            {
+                EntityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>()
+            };
+            return result;
+        }
         private SqlSugarProvider GetContext()
         {
             SqlSugarProvider result = null;

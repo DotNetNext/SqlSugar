@@ -596,6 +596,10 @@ namespace SqlSugar
         {
             return ScopedContext.Updateable(UpdateObjs);
         }
+        public SplitTableContext SplitHelper<T>() 
+        {
+            return ScopedContext.SplitHelper<T>();
+        }
         public SqlSguarTransaction UseTran()
         {
             return ScopedContext.UseTran();
