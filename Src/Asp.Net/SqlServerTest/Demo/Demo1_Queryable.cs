@@ -435,8 +435,9 @@ namespace OrmTest
             var query8 = db.Queryable<Order>()
                 .LeftJoin(db.Queryable<Custom>().Where(it=>it.Id==1),(o,i)=>o.CustomId==i.Id)
                 .LeftJoin(db.Queryable<OrderItem>().Where(it=>it.OrderId==2),(o,i,item)=>item.OrderId==o.Id)
+                .LeftJoin(db.Queryable<Order>().Where(it => it.Id >0), (o, i, item, od) => od.Id == o.Id)
                 .Select(o => o).ToList();
-
+    
             Console.WriteLine("#### Join Table End ####");
         }
 
