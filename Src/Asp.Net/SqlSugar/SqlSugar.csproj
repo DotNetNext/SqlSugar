@@ -88,7 +88,7 @@
     <Compile Include="Abstract\EntityMaintenance\EntityMaintenance.cs" />
     <Compile Include="Abstract\ExpressionableProvider\Expressionable.cs" />
     <Compile Include="Abstract\FilterProvider\FilterProvider.cs" />
-    <Compile Include="Abstract\InsertableProvider\SplitTableAttribute.cs" />
+    <Compile Include="SpliteTable\SplitTableAttribute.cs" />
     <Compile Include="Abstract\InsertableProvider\InsertableProvider.cs" />
     <Compile Include="Abstract\DeleteProvider\DeleteableProvider.cs" />
     <Compile Include="Abstract\InsertableProvider\SplitInsertable.cs" />
