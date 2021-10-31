@@ -12,5 +12,17 @@ namespace SqlSugar
         {
             return tables.Where(it => tableNames.Any(y => y.Equals(it.TableName, StringComparison.OrdinalIgnoreCase)));
         }
+        public static IEnumerable<SplitTableInfo> ContainsTableNames(this List<SplitTableInfo> tables, params string[] tableNames)
+        {
+            List<SplitTableInfo> result = new List<SplitTableInfo>();
+            foreach (var item in tables)
+            {
+                if (tableNames.Any(it => item.TableName.Contains(it))) 
+                {
+                    result.Add(item);
+                }
+            }
+            return result;
+        }
     }
 }

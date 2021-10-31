@@ -851,6 +851,7 @@ namespace SqlSugar
             {
                 tableQueryables.Add(this.Clone().AS(item.TableName));
             }
+            Check.Exception(tableQueryables.Count == 0, ErrorMessage.GetThrowMessage("SplitTable error . There are no tables after filtering", "SplitTable没有筛选出分表，请检查条件和数据库中的表"));
             var unionall = this.Context._UnionAll(tableQueryables.ToArray());
             //var values= unionall.QueryBuilder.GetSelectValue;
             //unionall.QueryBuilder.SelectValue = values;
