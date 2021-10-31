@@ -846,15 +846,15 @@ namespace SqlSugar
         #endregion
 
         #region Helper
-        public SplitTableContext SplitHelper<T>()
+        public SplitTableContext SplitHelper<T>() where T:class,new()
         {
             return this.Context.SplitHelper<T>();
         }
-        public SplitTableContextResult<T> SplitHelper<T>(T data) 
+        public SplitTableContextResult<T> SplitHelper<T>(T data) where T : class, new()
         {
             return this.Context.SplitHelper(data);
         }
-        public SplitTableContextResult<T> SplitHelper<T>(List<T> dataList)
+        public SplitTableContextResult<T> SplitHelper<T>(List<T> dataList) where T : class, new()
         {
             return this.Context.SplitHelper(dataList);
         }

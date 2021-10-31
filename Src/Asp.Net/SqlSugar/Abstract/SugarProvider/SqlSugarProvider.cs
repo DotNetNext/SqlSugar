@@ -1135,7 +1135,7 @@ namespace SqlSugar
         #endregion
 
         #region Split table
-        public SplitTableContext SplitHelper<T>()
+        public SplitTableContext SplitHelper<T>() where T : class, new()
         {
             var result = new SplitTableContext(this.Context)
             {
@@ -1143,7 +1143,7 @@ namespace SqlSugar
             };
             return result;
         }
-        public SplitTableContextResult<T> SplitHelper<T>(T data)
+        public SplitTableContextResult<T> SplitHelper<T>(T data) where T : class, new()
         {
             var result = new SplitTableContext(this.Context)
             {
@@ -1155,7 +1155,7 @@ namespace SqlSugar
                 Helper = result
             };
         }
-        public SplitTableContextResult<T> SplitHelper<T>(List<T> data)
+        public SplitTableContextResult<T> SplitHelper<T>(List<T> data) where T : class, new()
         {
             var result = new SplitTableContext(this.Context)
             {

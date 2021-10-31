@@ -32,6 +32,7 @@ namespace OrmTest
         public static void Init()
         {
 
+            SplitTest();
             Filter();
             Insert();
             Insert2();

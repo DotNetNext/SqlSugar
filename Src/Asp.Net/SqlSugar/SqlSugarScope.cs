@@ -596,15 +596,15 @@ namespace SqlSugar
         {
             return ScopedContext.Updateable(UpdateObjs);
         }
-        public SplitTableContext SplitHelper<T>() 
+        public SplitTableContext SplitHelper<T>() where T : class, new()
         {
             return ScopedContext.SplitHelper<T>();
         }
-        public SplitTableContextResult<T> SplitHelper<T>(T data)
+        public SplitTableContextResult<T> SplitHelper<T>(T data) where T : class, new()
         {
             return ScopedContext.SplitHelper(data);
         }
-        public SplitTableContextResult<T> SplitHelper<T>(List<T> dataList)
+        public SplitTableContextResult<T> SplitHelper<T>(List<T> dataList) where T : class, new()
         {
             return ScopedContext.SplitHelper(dataList);
         }
