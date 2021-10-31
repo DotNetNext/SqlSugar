@@ -169,6 +169,7 @@ namespace OrmTest
               .Select(it=>new ViewOrder(){ 
                   Name=SqlFunc.Subqueryable<Order>().Select(s=>s.Name)
                }).ToList();
+            var test19 = db.Queryable<Order>().Select<ViewOrder>().ToList();
             Console.WriteLine("#### Examples End ####");
         }
 

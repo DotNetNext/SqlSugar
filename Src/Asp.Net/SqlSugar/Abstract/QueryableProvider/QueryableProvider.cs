@@ -790,10 +790,14 @@ namespace SqlSugar
                 var selectValue = new SugarMapper(this.Context).GetSelectValue<TResult>(this.QueryBuilder);
                 return this.Select<TResult>(selectValue);
             }
+            else if (this.QueryBuilder.EntityType == UtilConstants.ObjType || (this.QueryBuilder.AsTables != null && this.QueryBuilder.AsTables.Count == 1)||this.QueryBuilder.EntityName!=this.QueryBuilder.EntityType.Name) 
+            {
+                return this.Select<TResult>(this.SqlBuilder.SqlSelectAll);
+            }
             else
             {
-
-                return this.Select<TResult>(this.SqlBuilder.SqlSelectAll);
+                var selects = this.QueryBuilder.GetSelectValueByString();
+                return this.Select<TResult>(selects);
             }
         }
 
