@@ -35,7 +35,16 @@ namespace SqlSugar
         }
         public virtual string GetTableName(ISqlSugarClient db, EntityInfo EntityInfo)
         {
-            return GetTableName(db, EntityInfo, SplitType.Day);
+            var splitTableAttribute = EntityInfo.Type.GetCustomAttribute<SplitTableAttribute>();
+            if (splitTableAttribute != null)
+            {
+                var type=(splitTableAttribute as SplitTableAttribute).SplitType;
+                return GetTableName(db, EntityInfo, type);
+            }
+            else
+            {
+                return GetTableName(db, EntityInfo, SplitType.Day);
+            }
         }
         public virtual string GetTableName(ISqlSugarClient db, EntityInfo EntityInfo, SplitType splitType)
         {
