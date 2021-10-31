@@ -54,23 +54,12 @@ namespace SqlSugar
 
         public string GetTableName<T>()
         {
-            var typeName = typeof(T).Name;
-            if (this.Context.MappingTables == null || this.Context.MappingTables.Count == 0)
-            {
-                var entity = this.GetEntityInfo<T>();
-                if (entity.DbTableName.HasValue()) return entity.DbTableName;
-                else return entity.EntityName;
-            }
-            else
-            {
-                var mappingInfo = this.Context.MappingTables.SingleOrDefault(it => it.EntityName == typeName);
-                return mappingInfo == null ? typeName : mappingInfo.DbTableName;
-            }
+            return GetTableName(typeof(T));
         }
         public string GetTableName(Type entityType)
         {
             var typeName = entityType.Name;
-            if (this.Context.MappingTables == null || this.Context.MappingTables.Count == 0)
+            if (this.Context.MappingTables == null || this.Context.MappingTables.Count == 0 || !this.Context.MappingTables.Any(it => it.EntityName == typeName))
             {
                 var entity = this.GetEntityInfo(entityType);
                 if (entity.DbTableName.HasValue()) return entity.DbTableName;
@@ -103,27 +92,14 @@ namespace SqlSugar
         }
         public string GetDbColumnName<T>(string propertyName)
         {
-            var isAny = this.GetEntityInfo<T>().Columns.Any(it => it.PropertyName.Equals(propertyName, StringComparison.CurrentCultureIgnoreCase));
-            Check.Exception(!isAny, "Property " + propertyName + " is Invalid");
-            var typeName = typeof(T).Name;
-            if (this.Context.MappingColumns == null || this.Context.MappingColumns.Count == 0)
-            {
-                var column= this.GetEntityInfo<T>().Columns.First(it => it.PropertyName.Equals(propertyName, StringComparison.CurrentCultureIgnoreCase));
-                if (column.DbColumnName.HasValue()) return column.DbColumnName;
-                else return column.PropertyName;
-            }
-            else
-            {
-                var mappingInfo = this.Context.MappingColumns.SingleOrDefault(it => it.EntityName == typeName && it.PropertyName == propertyName);
-                return mappingInfo == null ? propertyName : mappingInfo.DbColumnName;
-            }
+            return GetDbColumnName(propertyName,typeof(T));
         }
         public string GetDbColumnName(string propertyName,Type entityType)
         {
             var isAny = this.GetEntityInfo(entityType).Columns.Any(it => it.PropertyName.Equals(propertyName, StringComparison.CurrentCultureIgnoreCase));
             Check.Exception(!isAny, "Property " + propertyName + " is Invalid");
             var typeName = entityType.Name;
-            if (this.Context.MappingColumns == null || this.Context.MappingColumns.Count == 0)
+            if (this.Context.MappingColumns == null || this.Context.MappingColumns.Count == 0 || !this.Context.MappingColumns.Any(it => it.EntityName == typeName && it.PropertyName == propertyName))
             {
                 var column = this.GetEntityInfo(entityType).Columns.First(it => it.PropertyName.Equals(propertyName, StringComparison.CurrentCultureIgnoreCase));
                 if (column.DbColumnName.HasValue()) return column.DbColumnName;
