@@ -2964,6 +2964,45 @@ namespace SqlSugar
     #region T3
     public partial class QueryableProvider<T, T2, T3> : QueryableProvider<T>, ISugarQueryable<T, T2, T3>
     {
+        public ISugarQueryable<T, T2, T3,T4> LeftJoin<T4>(ISugarQueryable<T4> joinQueryable, Expression<Func<T, T2, T3,T4, bool>> joinExpression)
+        {
+            this.Context.InitMappingInfo<T4>();
+            var result = InstanceFactory.GetQueryable<T, T2, T3,T4>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            var joinInfo = GetJoinInfo(joinExpression, JoinType.Left);
+            var sqlObject = joinQueryable.ToSql();
+            joinInfo.TableName = "(" + sqlObject.Key + ")";
+            this.QueryBuilder.Parameters.AddRange(sqlObject.Value);
+            result.QueryBuilder.JoinQueryInfos.Add(joinInfo);
+            return result;
+        }
+        public ISugarQueryable<T, T2, T3,T4> InnerJoin<T4>(ISugarQueryable<T4> joinQueryable, Expression<Func<T, T2, T3,T4, bool>> joinExpression)
+        {
+            this.Context.InitMappingInfo<T4>();
+            var result = InstanceFactory.GetQueryable<T, T2, T3,T4>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            var joinInfo = GetJoinInfo(joinExpression, JoinType.Inner);
+            var sqlObject = joinQueryable.ToSql();
+            joinInfo.TableName = "(" + sqlObject.Key + ")";
+            this.QueryBuilder.Parameters.AddRange(sqlObject.Value);
+            result.QueryBuilder.JoinQueryInfos.Add(joinInfo);
+            return result;
+        }
+        public ISugarQueryable<T, T2, T3,T4> RightJoin<T4>(ISugarQueryable<T4> joinQueryable, Expression<Func<T, T2, T3,T4, bool>> joinExpression)
+        {
+            this.Context.InitMappingInfo<T4>();
+            var result = InstanceFactory.GetQueryable<T, T2, T3,T4>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            var joinInfo = GetJoinInfo(joinExpression, JoinType.Right);
+            var sqlObject = joinQueryable.ToSql();
+            joinInfo.TableName = "(" + sqlObject.Key + ")";
+            this.QueryBuilder.Parameters.AddRange(sqlObject.Value);
+            result.QueryBuilder.JoinQueryInfos.Add(joinInfo);
+            return result;
+        }
         public ISugarQueryable<T, T2, T3,T4> LeftJoin<T4>(Expression<Func<T, T2, T3,T4, bool>> joinExpression)
         {
             this.Context.InitMappingInfo<T4>();
