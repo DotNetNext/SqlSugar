@@ -431,6 +431,11 @@ namespace OrmTest
             var query7 = db.Queryable(db.Queryable<Order>().Select<Order>().MergeTable()).LeftJoin<OrderItem>((m, i) => m.Id == i.OrderId)
                 .ToList();
 
+
+            var query8 = db.Queryable<Order>()
+                .LeftJoin(db.Queryable<Custom>().Where(it=>it.Id==1),(o,i)=>o.CustomId==i.Id)
+                .Select(o => o).ToList();
+
             Console.WriteLine("#### Join Table End ####");
         }
 
