@@ -186,6 +186,9 @@ namespace SqlSugar
     }
     public partial interface ISugarQueryable<T, T2> : ISugarQueryable<T>
     {
+        ISugarQueryable<T, T2,T3> LeftJoin<T3>(ISugarQueryable<T3> joinQueryable, Expression<Func<T, T2,T3, bool>> joinExpression);
+        ISugarQueryable<T, T2,T3> InnerJoin<T3>(ISugarQueryable<T3> joinQueryable, Expression<Func<T, T2,T3, bool>> joinExpression);
+        ISugarQueryable<T, T2,T3> RightJoin<T3>(ISugarQueryable<T3> joinQueryable, Expression<Func<T, T2,T3, bool>> joinExpression);
         ISugarQueryable<T, T2,T3> LeftJoin<T3>(Expression<Func<T,T2,T3,bool>> joinExpression);
         ISugarQueryable<T, T2, T3> InnerJoin<T3>(Expression<Func<T, T2, T3, bool>> joinExpression);
         ISugarQueryable<T, T2, T3> RightJoin<T3>(Expression<Func<T, T2, T3, bool>> joinExpression);
