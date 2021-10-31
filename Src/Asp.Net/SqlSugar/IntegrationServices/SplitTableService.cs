@@ -11,7 +11,7 @@ namespace SqlSugar
     public class DateSplitTableService : ISplitTableService
     {
         #region Core
-        public List<SplitTableInfo> GetAllTables(ISqlSugarClient db, EntityInfo EntityInfo, List<DbTableInfo> tableInfos)
+        public virtual List<SplitTableInfo> GetAllTables(ISqlSugarClient db, EntityInfo EntityInfo, List<DbTableInfo> tableInfos)
         {
             CheckTableName(EntityInfo.DbTableName);
             var regex = EntityInfo.DbTableName.Replace("{year}", "([0-9]{2,4})").Replace("{day}", "([0-9]{1,2})").Replace("{month}", "([0-9]{1,2})");
@@ -33,21 +33,21 @@ namespace SqlSugar
             result = result.OrderByDescending(it => it.Date).ToList();
             return result;
         }
-        public string GetTableName(ISqlSugarClient db, EntityInfo EntityInfo)
+        public virtual string GetTableName(ISqlSugarClient db, EntityInfo EntityInfo)
         {
             return GetTableName(db, EntityInfo, SplitType.Day);
         }
-        public string GetTableName(ISqlSugarClient db, EntityInfo EntityInfo, SplitType splitType)
+        public virtual string GetTableName(ISqlSugarClient db, EntityInfo EntityInfo, SplitType splitType)
         {
             var date = db.GetDate();
             return GetTableNameByDate(EntityInfo, splitType, date);
         }
-        public string GetTableName(ISqlSugarClient db, EntityInfo entityInfo, SplitType splitType, object fieldValue)
+        public virtual string GetTableName(ISqlSugarClient db, EntityInfo entityInfo, SplitType splitType, object fieldValue)
         {
             var value = Convert.ToDateTime(fieldValue);
             return GetTableNameByDate(entityInfo, splitType, value);
         }
-        public object GetFieldValue(ISqlSugarClient db, EntityInfo entityInfo, SplitType splitType, object entityValue)
+        public virtual object GetFieldValue(ISqlSugarClient db, EntityInfo entityInfo, SplitType splitType, object entityValue)
         {
             var splitColumn = entityInfo.Columns.FirstOrDefault(it => it.PropertyInfo.GetCustomAttribute<SplitFieldAttribute>() != null);
             if (splitColumn == null)
