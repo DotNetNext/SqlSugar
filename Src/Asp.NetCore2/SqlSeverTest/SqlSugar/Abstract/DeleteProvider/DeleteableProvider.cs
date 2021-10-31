@@ -258,6 +258,20 @@ namespace SqlSugar
             this.Where(Regex.Split(sqlable.Key," Where ",RegexOptions.IgnoreCase).Last(), sqlable.Value);
             return this;
         }
+        public SplitTableDeleteProvider<T> SplitTable(Func<List<SplitTableInfo>, IEnumerable<SplitTableInfo>> getTableNamesFunc) 
+        {
+            this.Context.MappingTables.Add(this.EntityInfo.EntityName, this.EntityInfo.DbTableName);
+            SplitTableDeleteProvider<T> result = new SplitTableDeleteProvider<T>();
+            result.Context = this.Context;
+            SplitTableContext helper = new SplitTableContext((SqlSugarProvider)Context)
+            {
+                EntityInfo = this.EntityInfo
+            };
+            var tables = getTableNamesFunc(helper.GetTables());
+            result.Tables = tables;
+            result.deleteobj = this;
+            return result;
+        }
         public IDeleteable<T> RemoveDataCache(string likeString)
         {
             this.RemoveCacheFunc = () =>

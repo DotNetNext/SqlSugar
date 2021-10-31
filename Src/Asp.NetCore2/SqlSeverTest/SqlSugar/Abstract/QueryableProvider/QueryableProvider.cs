@@ -46,6 +46,57 @@ namespace SqlSugar
                 return this.Context.EntityMaintenance.GetEntityInfo<T>();
             }
         }
+        public ISugarQueryable<T, T2> LeftJoin<T2>(ISugarQueryable<T2> joinQueryable, Expression<Func<T, T2, bool>> joinExpression)
+        {
+            this.Context.InitMappingInfo<T2>();
+            var result = InstanceFactory.GetQueryable<T, T2>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            var joinInfo = GetJoinInfo(joinExpression, JoinType.Left);
+            var sqlObject = joinQueryable.ToSql();
+            string sql = sqlObject.Key;
+            this.QueryBuilder.LambdaExpressions.ParameterIndex += 100;
+            UtilMethods.RepairReplicationParameters(ref sql, sqlObject.Value.ToArray(), this.QueryBuilder.LambdaExpressions.ParameterIndex, "");
+            joinInfo.TableName = "(" + sql + ")";
+            this.QueryBuilder.Parameters.AddRange(sqlObject.Value);
+            result.QueryBuilder.JoinQueryInfos.Add(joinInfo);
+            result.QueryBuilder.LambdaExpressions.ParameterIndex = this.QueryBuilder.LambdaExpressions.ParameterIndex;
+            return result;
+        }
+        public ISugarQueryable<T, T2> InnerJoin<T2>(ISugarQueryable<T2> joinQueryable, Expression<Func<T, T2, bool>> joinExpression)
+        {
+            this.Context.InitMappingInfo<T2>();
+            var result = InstanceFactory.GetQueryable<T, T2>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            var joinInfo = GetJoinInfo(joinExpression, JoinType.Inner);
+            var sqlObject = joinQueryable.ToSql();
+            string sql = sqlObject.Key;
+            this.QueryBuilder.LambdaExpressions.ParameterIndex += 100;
+            UtilMethods.RepairReplicationParameters(ref sql, sqlObject.Value.ToArray(), this.QueryBuilder.LambdaExpressions.ParameterIndex, "");
+            joinInfo.TableName = "(" + sql + ")";
+            this.QueryBuilder.Parameters.AddRange(sqlObject.Value);
+            result.QueryBuilder.JoinQueryInfos.Add(joinInfo);
+            result.QueryBuilder.LambdaExpressions.ParameterIndex = this.QueryBuilder.LambdaExpressions.ParameterIndex;
+            return result;
+        }
+        public ISugarQueryable<T, T2> RightJoin<T2>(ISugarQueryable<T2> joinQueryable, Expression<Func<T, T2, bool>> joinExpression)
+        {
+            this.Context.InitMappingInfo<T2>();
+            var result = InstanceFactory.GetQueryable<T, T2>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            var joinInfo = GetJoinInfo(joinExpression, JoinType.Right);
+            var sqlObject = joinQueryable.ToSql();
+            string sql = sqlObject.Key;
+            this.QueryBuilder.LambdaExpressions.ParameterIndex += 100;
+            UtilMethods.RepairReplicationParameters(ref sql, sqlObject.Value.ToArray(), this.QueryBuilder.LambdaExpressions.ParameterIndex, "");
+            joinInfo.TableName = "(" + sql + ")";
+            this.QueryBuilder.Parameters.AddRange(sqlObject.Value);
+            result.QueryBuilder.JoinQueryInfos.Add(joinInfo);
+            result.QueryBuilder.LambdaExpressions.ParameterIndex = this.QueryBuilder.LambdaExpressions.ParameterIndex;
+            return result;
+        }
         public ISugarQueryable<T, T2> LeftJoin<T2>(Expression<Func<T, T2, bool>> joinExpression)
         {
             this.Context.InitMappingInfo<T2>();
@@ -790,10 +841,14 @@ namespace SqlSugar
                 var selectValue = new SugarMapper(this.Context).GetSelectValue<TResult>(this.QueryBuilder);
                 return this.Select<TResult>(selectValue);
             }
+            else if (this.QueryBuilder.EntityType == UtilConstants.ObjType || (this.QueryBuilder.AsTables != null && this.QueryBuilder.AsTables.Count == 1)||this.QueryBuilder.EntityName!=this.QueryBuilder.EntityType.Name) 
+            {
+                return this.Select<TResult>(this.SqlBuilder.SqlSelectAll);
+            }
             else
             {
-
-                return this.Select<TResult>(this.SqlBuilder.SqlSelectAll);
+                var selects = this.QueryBuilder.GetSelectValueByString();
+                return this.Select<TResult>(selects);
             }
         }
 
@@ -819,9 +874,9 @@ namespace SqlSugar
         }
         public virtual ISugarQueryable<T> MergeTable()
         {
-            Check.Exception(this.MapperAction != null || this.MapperActionWithCache != null, "'Mapper’ needs to be written after ‘MergeTable’ ");
-            Check.Exception(this.QueryBuilder.SelectValue.IsNullOrEmpty(), "MergeTable need to use Queryable.Select Method .");
-            Check.Exception(this.QueryBuilder.Skip > 0 || this.QueryBuilder.Take > 0 || this.QueryBuilder.OrderByValue.HasValue(), "MergeTable  Queryable cannot Take Skip OrderBy PageToList  ");
+            Check.Exception(this.MapperAction != null || this.MapperActionWithCache != null,ErrorMessage.GetThrowMessage( "'Mapper’ needs to be written after ‘MergeTable’ ", "Mapper 只能在 MergeTable 之后使用"));
+            Check.Exception(this.QueryBuilder.SelectValue.IsNullOrEmpty(),ErrorMessage.GetThrowMessage( "MergeTable need to use Queryable.Select Method .", "使用MergeTable之前必须要有Queryable.Select方法"));
+            Check.Exception(this.QueryBuilder.Skip > 0 || this.QueryBuilder.Take > 0 || this.QueryBuilder.OrderByValue.HasValue(),ErrorMessage.GetThrowMessage( "MergeTable  Queryable cannot Take Skip OrderBy PageToList  ", "使用 MergeTable不能有 Take Skip OrderBy PageToList 等操作,你可以在Mergetable之后操作"));
             var sqlobj = this._ToSql();
             var index = QueryBuilder.WhereIndex + 1;
             var result = this.Context.Queryable<T>().AS(SqlBuilder.GetPackTable(sqlobj.Key, "MergeTable")).AddParameters(sqlobj.Value).Select("*").With(SqlWith.Null);
@@ -834,7 +889,25 @@ namespace SqlSugar
             }
             return result;
         }
-
+        public ISugarQueryable<T> SplitTable(Func<List<SplitTableInfo>, IEnumerable<SplitTableInfo>> getTableNamesFunc) 
+        {
+            SplitTableContext helper = new SplitTableContext(Context)
+            {
+                EntityInfo = this.EntityInfo
+            };
+            this.Context.MappingTables.Add(this.EntityInfo.EntityName, this.EntityInfo.DbTableName);
+            var tables = getTableNamesFunc(helper.GetTables());
+            List<ISugarQueryable<T>> tableQueryables = new List<ISugarQueryable<T>>();
+            foreach (var item in tables)
+            {
+                tableQueryables.Add(this.Clone().AS(item.TableName));
+            }
+            Check.Exception(tableQueryables.Count == 0, ErrorMessage.GetThrowMessage("SplitTable error . There are no tables after filtering", "SplitTable没有筛选出分表，请检查条件和数据库中的表"));
+            var unionall = this.Context._UnionAll(tableQueryables.ToArray());
+            //var values= unionall.QueryBuilder.GetSelectValue;
+            //unionall.QueryBuilder.SelectValue = values;
+            return unionall;
+        }
         public ISugarQueryable<T> Distinct()
         {
             QueryBuilder.IsDistinct = true;
@@ -1627,6 +1700,12 @@ namespace SqlSugar
             {
                 var firstPareamter = (express as LambdaExpression).Parameters.First();
                 this.QueryBuilder.TableShortName = firstPareamter.Name;
+                if (this.QueryBuilder.AsTables != null && this.QueryBuilder.AsTables.Count==1) 
+                {
+                    var tableinfo = this.QueryBuilder.AsTables.First();
+                    this.QueryBuilder.AsTables[tableinfo.Key] =" (SELECT * FROM " +this.QueryBuilder.AsTables.First().Value+")";
+                    this.QueryBuilder.SelectValue = this.QueryBuilder.TableShortName +".*";
+                }
             }
             Check.Exception(result.JoinIndex > 10, ErrorMessage.GetThrowMessage("只支持12个表", "Only 12 tables are supported"));
             return result;
@@ -2501,6 +2580,57 @@ namespace SqlSugar
     #region T2
     public partial class QueryableProvider<T, T2> : QueryableProvider<T>, ISugarQueryable<T, T2>
     {
+        public ISugarQueryable<T, T2,T3> LeftJoin<T3>(ISugarQueryable<T3> joinQueryable, Expression<Func<T, T2,T3, bool>> joinExpression)
+        {
+            this.Context.InitMappingInfo<T3>();
+            var result = InstanceFactory.GetQueryable<T, T2,T3>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            var joinInfo = GetJoinInfo(joinExpression, JoinType.Left);
+            var sqlObject = joinQueryable.ToSql();
+            string sql = sqlObject.Key;
+            this.QueryBuilder.LambdaExpressions.ParameterIndex += 100;
+            UtilMethods.RepairReplicationParameters(ref sql, sqlObject.Value.ToArray(), this.QueryBuilder.LambdaExpressions.ParameterIndex, "");
+            joinInfo.TableName = "(" + sql + ")";
+            this.QueryBuilder.Parameters.AddRange(sqlObject.Value);
+            result.QueryBuilder.JoinQueryInfos.Add(joinInfo);
+            result.QueryBuilder.LambdaExpressions.ParameterIndex = this.QueryBuilder.LambdaExpressions.ParameterIndex;
+            return result;
+        }
+        public ISugarQueryable<T, T2,T3> InnerJoin<T3>(ISugarQueryable<T3> joinQueryable, Expression<Func<T, T2,T3, bool>> joinExpression)
+        {
+            this.Context.InitMappingInfo<T3>();
+            var result = InstanceFactory.GetQueryable<T, T2, T3>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            var joinInfo = GetJoinInfo(joinExpression, JoinType.Inner);
+            var sqlObject = joinQueryable.ToSql();
+            string sql = sqlObject.Key;
+            this.QueryBuilder.LambdaExpressions.ParameterIndex += 100;
+            UtilMethods.RepairReplicationParameters(ref sql, sqlObject.Value.ToArray(), this.QueryBuilder.LambdaExpressions.ParameterIndex, "");
+            joinInfo.TableName = "(" + sql + ")";
+            this.QueryBuilder.Parameters.AddRange(sqlObject.Value);
+            result.QueryBuilder.JoinQueryInfos.Add(joinInfo);
+            result.QueryBuilder.LambdaExpressions.ParameterIndex = this.QueryBuilder.LambdaExpressions.ParameterIndex;
+            return result;
+        }
+        public ISugarQueryable<T, T2,T3> RightJoin<T3>(ISugarQueryable<T3> joinQueryable, Expression<Func<T, T2,T3, bool>> joinExpression)
+        {
+            this.Context.InitMappingInfo<T3>();
+            var result = InstanceFactory.GetQueryable<T, T2, T3>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            var joinInfo = GetJoinInfo(joinExpression, JoinType.Right);
+            var sqlObject = joinQueryable.ToSql();
+            string sql = sqlObject.Key;
+            this.QueryBuilder.LambdaExpressions.ParameterIndex += 100;
+            UtilMethods.RepairReplicationParameters(ref sql, sqlObject.Value.ToArray(), this.QueryBuilder.LambdaExpressions.ParameterIndex, "");
+            joinInfo.TableName = "(" + sql + ")";
+            this.QueryBuilder.Parameters.AddRange(sqlObject.Value);
+            result.QueryBuilder.JoinQueryInfos.Add(joinInfo);
+            result.QueryBuilder.LambdaExpressions.ParameterIndex = this.QueryBuilder.LambdaExpressions.ParameterIndex;
+            return result;
+        }
         public ISugarQueryable<T, T2,T3> LeftJoin<T3>(Expression<Func<T, T2,T3, bool>> joinExpression)
         {
             this.Context.InitMappingInfo<T3>();
@@ -2858,6 +2988,57 @@ namespace SqlSugar
     #region T3
     public partial class QueryableProvider<T, T2, T3> : QueryableProvider<T>, ISugarQueryable<T, T2, T3>
     {
+        public ISugarQueryable<T, T2, T3,T4> LeftJoin<T4>(ISugarQueryable<T4> joinQueryable, Expression<Func<T, T2, T3,T4, bool>> joinExpression)
+        {
+            this.Context.InitMappingInfo<T4>();
+            var result = InstanceFactory.GetQueryable<T, T2, T3,T4>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            var joinInfo = GetJoinInfo(joinExpression, JoinType.Left);
+            var sqlObject = joinQueryable.ToSql();
+            string sql = sqlObject.Key;
+            this.QueryBuilder.LambdaExpressions.ParameterIndex += 100;
+            UtilMethods.RepairReplicationParameters(ref sql, sqlObject.Value.ToArray(), this.QueryBuilder.LambdaExpressions.ParameterIndex, "");
+            joinInfo.TableName = "(" + sql + ")";
+            this.QueryBuilder.Parameters.AddRange(sqlObject.Value);
+            result.QueryBuilder.JoinQueryInfos.Add(joinInfo);
+            result.QueryBuilder.LambdaExpressions.ParameterIndex = this.QueryBuilder.LambdaExpressions.ParameterIndex;
+            return result;
+        }
+        public ISugarQueryable<T, T2, T3,T4> InnerJoin<T4>(ISugarQueryable<T4> joinQueryable, Expression<Func<T, T2, T3,T4, bool>> joinExpression)
+        {
+            this.Context.InitMappingInfo<T4>();
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            var joinInfo = GetJoinInfo(joinExpression, JoinType.Inner);
+            var sqlObject = joinQueryable.ToSql();
+            string sql = sqlObject.Key;
+            this.QueryBuilder.LambdaExpressions.ParameterIndex += 100;
+            UtilMethods.RepairReplicationParameters(ref sql, sqlObject.Value.ToArray(), this.QueryBuilder.LambdaExpressions.ParameterIndex, "");
+            joinInfo.TableName = "(" + sql + ")";
+            this.QueryBuilder.Parameters.AddRange(sqlObject.Value);
+            result.QueryBuilder.JoinQueryInfos.Add(joinInfo);
+            result.QueryBuilder.LambdaExpressions.ParameterIndex = this.QueryBuilder.LambdaExpressions.ParameterIndex;
+            return result;
+        }
+        public ISugarQueryable<T, T2, T3,T4> RightJoin<T4>(ISugarQueryable<T4> joinQueryable, Expression<Func<T, T2, T3,T4, bool>> joinExpression)
+        {
+            this.Context.InitMappingInfo<T4>();
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            var joinInfo = GetJoinInfo(joinExpression, JoinType.Right);
+            var sqlObject = joinQueryable.ToSql();
+            string sql = sqlObject.Key;
+            this.QueryBuilder.LambdaExpressions.ParameterIndex += 100;
+            UtilMethods.RepairReplicationParameters(ref sql, sqlObject.Value.ToArray(), this.QueryBuilder.LambdaExpressions.ParameterIndex, "");
+            joinInfo.TableName = "(" + sql + ")";
+            this.QueryBuilder.Parameters.AddRange(sqlObject.Value);
+            result.QueryBuilder.JoinQueryInfos.Add(joinInfo);
+            result.QueryBuilder.LambdaExpressions.ParameterIndex = this.QueryBuilder.LambdaExpressions.ParameterIndex;
+            return result;
+        }
         public ISugarQueryable<T, T2, T3,T4> LeftJoin<T4>(Expression<Func<T, T2, T3,T4, bool>> joinExpression)
         {
             this.Context.InitMappingInfo<T4>();
@@ -3280,6 +3461,57 @@ namespace SqlSugar
     #region T4
     public partial class QueryableProvider<T, T2, T3, T4> : QueryableProvider<T>, ISugarQueryable<T, T2, T3, T4>
     {
+        public ISugarQueryable<T, T2, T3, T4,T5> LeftJoin<T5>(ISugarQueryable<T5> joinQueryable, Expression<Func<T, T2, T3, T4, T5, bool>> joinExpression)
+        {
+            this.Context.InitMappingInfo<T5>();
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4,T5>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            var joinInfo = GetJoinInfo(joinExpression, JoinType.Left);
+            var sqlObject = joinQueryable.ToSql();
+            string sql = sqlObject.Key;
+            this.QueryBuilder.LambdaExpressions.ParameterIndex += 100;
+            UtilMethods.RepairReplicationParameters(ref sql, sqlObject.Value.ToArray(), this.QueryBuilder.LambdaExpressions.ParameterIndex, "");
+            joinInfo.TableName = "(" + sql + ")";
+            this.QueryBuilder.Parameters.AddRange(sqlObject.Value);
+            result.QueryBuilder.JoinQueryInfos.Add(joinInfo);
+            result.QueryBuilder.LambdaExpressions.ParameterIndex = this.QueryBuilder.LambdaExpressions.ParameterIndex;
+            return result;
+        }
+        public ISugarQueryable<T, T2, T3, T4,T5> InnerJoin<T5>(ISugarQueryable<T5> joinQueryable, Expression<Func<T, T2, T3, T4,T5, bool>> joinExpression)
+        {
+            this.Context.InitMappingInfo<T5>();
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4, T5>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            var joinInfo = GetJoinInfo(joinExpression, JoinType.Inner);
+            var sqlObject = joinQueryable.ToSql();
+            string sql = sqlObject.Key;
+            this.QueryBuilder.LambdaExpressions.ParameterIndex += 100;
+            UtilMethods.RepairReplicationParameters(ref sql, sqlObject.Value.ToArray(), this.QueryBuilder.LambdaExpressions.ParameterIndex, "");
+            joinInfo.TableName = "(" + sql + ")";
+            this.QueryBuilder.Parameters.AddRange(sqlObject.Value);
+            result.QueryBuilder.JoinQueryInfos.Add(joinInfo);
+            result.QueryBuilder.LambdaExpressions.ParameterIndex = this.QueryBuilder.LambdaExpressions.ParameterIndex;
+            return result;
+        }
+        public ISugarQueryable<T, T2, T3, T4,T5> RightJoin<T5>(ISugarQueryable<T5> joinQueryable, Expression<Func<T, T2, T3, T4,T5, bool>> joinExpression)
+        {
+            this.Context.InitMappingInfo<T5>();
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4, T5>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            var joinInfo = GetJoinInfo(joinExpression, JoinType.Right);
+            var sqlObject = joinQueryable.ToSql();
+            string sql = sqlObject.Key;
+            this.QueryBuilder.LambdaExpressions.ParameterIndex += 100;
+            UtilMethods.RepairReplicationParameters(ref sql, sqlObject.Value.ToArray(), this.QueryBuilder.LambdaExpressions.ParameterIndex, "");
+            joinInfo.TableName = "(" + sql + ")";
+            this.QueryBuilder.Parameters.AddRange(sqlObject.Value);
+            result.QueryBuilder.JoinQueryInfos.Add(joinInfo);
+            result.QueryBuilder.LambdaExpressions.ParameterIndex = this.QueryBuilder.LambdaExpressions.ParameterIndex;
+            return result;
+        }
         public ISugarQueryable<T, T2, T3, T4, T5> LeftJoin<T5>(Expression<Func<T, T2, T3, T4,T5, bool>> joinExpression)
         {
             this.Context.InitMappingInfo<T5>();
@@ -3743,6 +3975,57 @@ namespace SqlSugar
     #region T5
     public partial class QueryableProvider<T, T2, T3, T4, T5> : QueryableProvider<T>, ISugarQueryable<T, T2, T3, T4, T5>
     {
+        public ISugarQueryable<T, T2, T3, T4, T5,T6> LeftJoin<T6>(ISugarQueryable<T6> joinQueryable, Expression<Func<T, T2, T3, T4, T5, T6, bool>> joinExpression)
+        {
+            this.Context.InitMappingInfo<T6>();
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            var joinInfo = GetJoinInfo(joinExpression, JoinType.Left);
+            var sqlObject = joinQueryable.ToSql();
+            string sql = sqlObject.Key;
+            this.QueryBuilder.LambdaExpressions.ParameterIndex += 100;
+            UtilMethods.RepairReplicationParameters(ref sql, sqlObject.Value.ToArray(), this.QueryBuilder.LambdaExpressions.ParameterIndex, "");
+            joinInfo.TableName = "(" + sql + ")";
+            this.QueryBuilder.Parameters.AddRange(sqlObject.Value);
+            result.QueryBuilder.JoinQueryInfos.Add(joinInfo);
+            result.QueryBuilder.LambdaExpressions.ParameterIndex = this.QueryBuilder.LambdaExpressions.ParameterIndex;
+            return result;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6> InnerJoin<T6>(ISugarQueryable<T6> joinQueryable, Expression<Func<T, T2, T3, T4, T5, T6, bool>> joinExpression)
+        {
+            this.Context.InitMappingInfo<T6>();
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            var joinInfo = GetJoinInfo(joinExpression, JoinType.Inner);
+            var sqlObject = joinQueryable.ToSql();
+            string sql = sqlObject.Key;
+            this.QueryBuilder.LambdaExpressions.ParameterIndex += 100;
+            UtilMethods.RepairReplicationParameters(ref sql, sqlObject.Value.ToArray(), this.QueryBuilder.LambdaExpressions.ParameterIndex, "");
+            joinInfo.TableName = "(" + sql + ")";
+            this.QueryBuilder.Parameters.AddRange(sqlObject.Value);
+            result.QueryBuilder.JoinQueryInfos.Add(joinInfo);
+            result.QueryBuilder.LambdaExpressions.ParameterIndex = this.QueryBuilder.LambdaExpressions.ParameterIndex;
+            return result;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6> RightJoin<T6>(ISugarQueryable<T6> joinQueryable, Expression<Func<T, T2, T3, T4, T5, T6, bool>> joinExpression)
+        {
+            this.Context.InitMappingInfo<T6>();
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            var joinInfo = GetJoinInfo(joinExpression, JoinType.Right);
+            var sqlObject = joinQueryable.ToSql();
+            string sql = sqlObject.Key;
+            this.QueryBuilder.LambdaExpressions.ParameterIndex += 100;
+            UtilMethods.RepairReplicationParameters(ref sql, sqlObject.Value.ToArray(), this.QueryBuilder.LambdaExpressions.ParameterIndex, "");
+            joinInfo.TableName = "(" + sql + ")";
+            this.QueryBuilder.Parameters.AddRange(sqlObject.Value);
+            result.QueryBuilder.JoinQueryInfos.Add(joinInfo);
+            result.QueryBuilder.LambdaExpressions.ParameterIndex = this.QueryBuilder.LambdaExpressions.ParameterIndex;
+            return result;
+        }
         public ISugarQueryable<T, T2, T3, T4, T5, T6> LeftJoin<T6>(Expression<Func<T, T2, T3, T4, T5,T6, bool>> joinExpression)
         {
             this.Context.InitMappingInfo<T6>();
@@ -4168,6 +4451,57 @@ namespace SqlSugar
     #region T6
     public partial class QueryableProvider<T, T2, T3, T4, T5, T6> : QueryableProvider<T>, ISugarQueryable<T, T2, T3, T4, T5, T6>
     {
+        public ISugarQueryable<T, T2, T3, T4, T5, T6,T7> LeftJoin<T7>(ISugarQueryable<T7> joinQueryable, Expression<Func<T, T2, T3, T4, T5, T6, T7, bool>> joinExpression)
+        {
+            this.Context.InitMappingInfo<T7>();
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            var joinInfo = GetJoinInfo(joinExpression, JoinType.Left);
+            var sqlObject = joinQueryable.ToSql();
+            string sql = sqlObject.Key;
+            this.QueryBuilder.LambdaExpressions.ParameterIndex += 100;
+            UtilMethods.RepairReplicationParameters(ref sql, sqlObject.Value.ToArray(), this.QueryBuilder.LambdaExpressions.ParameterIndex, "");
+            joinInfo.TableName = "(" + sql + ")";
+            this.QueryBuilder.Parameters.AddRange(sqlObject.Value);
+            result.QueryBuilder.JoinQueryInfos.Add(joinInfo);
+            result.QueryBuilder.LambdaExpressions.ParameterIndex = this.QueryBuilder.LambdaExpressions.ParameterIndex;
+            return result;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> InnerJoin<T7>(ISugarQueryable<T7> joinQueryable, Expression<Func<T, T2, T3, T4, T5, T6, T7, bool>> joinExpression)
+        {
+            this.Context.InitMappingInfo<T7>();
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            var joinInfo = GetJoinInfo(joinExpression, JoinType.Inner);
+            var sqlObject = joinQueryable.ToSql();
+            string sql = sqlObject.Key;
+            this.QueryBuilder.LambdaExpressions.ParameterIndex += 100;
+            UtilMethods.RepairReplicationParameters(ref sql, sqlObject.Value.ToArray(), this.QueryBuilder.LambdaExpressions.ParameterIndex, "");
+            joinInfo.TableName = "(" + sql + ")";
+            this.QueryBuilder.Parameters.AddRange(sqlObject.Value);
+            result.QueryBuilder.JoinQueryInfos.Add(joinInfo);
+            result.QueryBuilder.LambdaExpressions.ParameterIndex = this.QueryBuilder.LambdaExpressions.ParameterIndex;
+            return result;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> RightJoin<T7>(ISugarQueryable<T7> joinQueryable, Expression<Func<T, T2, T3, T4, T5, T6, T7, bool>> joinExpression)
+        {
+            this.Context.InitMappingInfo<T7>();
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            var joinInfo = GetJoinInfo(joinExpression, JoinType.Right);
+            var sqlObject = joinQueryable.ToSql();
+            string sql = sqlObject.Key;
+            this.QueryBuilder.LambdaExpressions.ParameterIndex += 100;
+            UtilMethods.RepairReplicationParameters(ref sql, sqlObject.Value.ToArray(), this.QueryBuilder.LambdaExpressions.ParameterIndex, "");
+            joinInfo.TableName = "(" + sql + ")";
+            this.QueryBuilder.Parameters.AddRange(sqlObject.Value);
+            result.QueryBuilder.JoinQueryInfos.Add(joinInfo);
+            result.QueryBuilder.LambdaExpressions.ParameterIndex = this.QueryBuilder.LambdaExpressions.ParameterIndex;
+            return result;
+        }
         public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> LeftJoin<T7>(Expression<Func<T, T2, T3, T4, T5, T6,T7, bool>> joinExpression)
         {
             this.Context.InitMappingInfo<T7>();
@@ -4627,6 +4961,57 @@ namespace SqlSugar
     #region T7
     public partial class QueryableProvider<T, T2, T3, T4, T5, T6, T7> : QueryableProvider<T>, ISugarQueryable<T, T2, T3, T4, T5, T6, T7>
     {
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> LeftJoin<T8>(ISugarQueryable<T8> joinQueryable, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, bool>> joinExpression)
+        {
+            this.Context.InitMappingInfo<T8>();
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            var joinInfo = GetJoinInfo(joinExpression, JoinType.Left);
+            var sqlObject = joinQueryable.ToSql();
+            string sql = sqlObject.Key;
+            this.QueryBuilder.LambdaExpressions.ParameterIndex += 100;
+            UtilMethods.RepairReplicationParameters(ref sql, sqlObject.Value.ToArray(), this.QueryBuilder.LambdaExpressions.ParameterIndex, "");
+            joinInfo.TableName = "(" + sql + ")";
+            this.QueryBuilder.Parameters.AddRange(sqlObject.Value);
+            result.QueryBuilder.JoinQueryInfos.Add(joinInfo);
+            result.QueryBuilder.LambdaExpressions.ParameterIndex = this.QueryBuilder.LambdaExpressions.ParameterIndex;
+            return result;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> InnerJoin<T8>(ISugarQueryable<T8> joinQueryable, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, bool>> joinExpression)
+        {
+            this.Context.InitMappingInfo<T8>();
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            var joinInfo = GetJoinInfo(joinExpression, JoinType.Inner);
+            var sqlObject = joinQueryable.ToSql();
+            string sql = sqlObject.Key;
+            this.QueryBuilder.LambdaExpressions.ParameterIndex += 100;
+            UtilMethods.RepairReplicationParameters(ref sql, sqlObject.Value.ToArray(), this.QueryBuilder.LambdaExpressions.ParameterIndex, "");
+            joinInfo.TableName = "(" + sql + ")";
+            this.QueryBuilder.Parameters.AddRange(sqlObject.Value);
+            result.QueryBuilder.JoinQueryInfos.Add(joinInfo);
+            result.QueryBuilder.LambdaExpressions.ParameterIndex = this.QueryBuilder.LambdaExpressions.ParameterIndex;
+            return result;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> RightJoin<T8>(ISugarQueryable<T8> joinQueryable, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, bool>> joinExpression)
+        {
+            this.Context.InitMappingInfo<T8>();
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            var joinInfo = GetJoinInfo(joinExpression, JoinType.Right);
+            var sqlObject = joinQueryable.ToSql();
+            string sql = sqlObject.Key;
+            this.QueryBuilder.LambdaExpressions.ParameterIndex += 100;
+            UtilMethods.RepairReplicationParameters(ref sql, sqlObject.Value.ToArray(), this.QueryBuilder.LambdaExpressions.ParameterIndex, "");
+            joinInfo.TableName = "(" + sql + ")";
+            this.QueryBuilder.Parameters.AddRange(sqlObject.Value);
+            result.QueryBuilder.JoinQueryInfos.Add(joinInfo);
+            result.QueryBuilder.LambdaExpressions.ParameterIndex = this.QueryBuilder.LambdaExpressions.ParameterIndex;
+            return result;
+        }
         public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> LeftJoin<T8>(Expression<Func<T, T2, T3, T4, T5, T6, T7,T8, bool>> joinExpression)
         {
             this.Context.InitMappingInfo<T8>();
@@ -5077,6 +5462,57 @@ namespace SqlSugar
     #region T8
     public partial class QueryableProvider<T, T2, T3, T4, T5, T6, T7, T8> : QueryableProvider<T>, ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8>
     {
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> LeftJoin<T9>(ISugarQueryable<T9> joinQueryable, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, bool>> joinExpression)
+        {
+            this.Context.InitMappingInfo<T9>();
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            var joinInfo = GetJoinInfo(joinExpression, JoinType.Left);
+            var sqlObject = joinQueryable.ToSql();
+            string sql = sqlObject.Key;
+            this.QueryBuilder.LambdaExpressions.ParameterIndex += 100;
+            UtilMethods.RepairReplicationParameters(ref sql, sqlObject.Value.ToArray(), this.QueryBuilder.LambdaExpressions.ParameterIndex, "");
+            joinInfo.TableName = "(" + sql + ")";
+            this.QueryBuilder.Parameters.AddRange(sqlObject.Value);
+            result.QueryBuilder.JoinQueryInfos.Add(joinInfo);
+            result.QueryBuilder.LambdaExpressions.ParameterIndex = this.QueryBuilder.LambdaExpressions.ParameterIndex;
+            return result;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> InnerJoin<T9>(ISugarQueryable<T9> joinQueryable, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, bool>> joinExpression)
+        {
+            this.Context.InitMappingInfo<T9>();
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            var joinInfo = GetJoinInfo(joinExpression, JoinType.Inner);
+            var sqlObject = joinQueryable.ToSql();
+            string sql = sqlObject.Key;
+            this.QueryBuilder.LambdaExpressions.ParameterIndex += 100;
+            UtilMethods.RepairReplicationParameters(ref sql, sqlObject.Value.ToArray(), this.QueryBuilder.LambdaExpressions.ParameterIndex, "");
+            joinInfo.TableName = "(" + sql + ")";
+            this.QueryBuilder.Parameters.AddRange(sqlObject.Value);
+            result.QueryBuilder.JoinQueryInfos.Add(joinInfo);
+            result.QueryBuilder.LambdaExpressions.ParameterIndex = this.QueryBuilder.LambdaExpressions.ParameterIndex;
+            return result;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> RightJoin<T9>(ISugarQueryable<T9> joinQueryable, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, bool>> joinExpression)
+        {
+            this.Context.InitMappingInfo<T9>();
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            var joinInfo = GetJoinInfo(joinExpression, JoinType.Right);
+            var sqlObject = joinQueryable.ToSql();
+            string sql = sqlObject.Key;
+            this.QueryBuilder.LambdaExpressions.ParameterIndex += 100;
+            UtilMethods.RepairReplicationParameters(ref sql, sqlObject.Value.ToArray(), this.QueryBuilder.LambdaExpressions.ParameterIndex, "");
+            joinInfo.TableName = "(" + sql + ")";
+            this.QueryBuilder.Parameters.AddRange(sqlObject.Value);
+            result.QueryBuilder.JoinQueryInfos.Add(joinInfo);
+            result.QueryBuilder.LambdaExpressions.ParameterIndex = this.QueryBuilder.LambdaExpressions.ParameterIndex;
+            return result;
+        }
         public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> LeftJoin<T9>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8,T9, bool>> joinExpression)
         {
             this.Context.InitMappingInfo<T9>();
@@ -5560,6 +5996,57 @@ namespace SqlSugar
     #region T9
     public partial class QueryableProvider<T, T2, T3, T4, T5, T6, T7, T8, T9> : QueryableProvider<T>, ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9>
     {
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> LeftJoin<T10>(ISugarQueryable<T10> joinQueryable, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, bool>> joinExpression)
+        {
+            this.Context.InitMappingInfo<T10>();
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            var joinInfo = GetJoinInfo(joinExpression, JoinType.Left);
+            var sqlObject = joinQueryable.ToSql();
+            string sql = sqlObject.Key;
+            this.QueryBuilder.LambdaExpressions.ParameterIndex += 100;
+            UtilMethods.RepairReplicationParameters(ref sql, sqlObject.Value.ToArray(), this.QueryBuilder.LambdaExpressions.ParameterIndex, "");
+            joinInfo.TableName = "(" + sql + ")";
+            this.QueryBuilder.Parameters.AddRange(sqlObject.Value);
+            result.QueryBuilder.JoinQueryInfos.Add(joinInfo);
+            result.QueryBuilder.LambdaExpressions.ParameterIndex = this.QueryBuilder.LambdaExpressions.ParameterIndex;
+            return result;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> InnerJoin<T10>(ISugarQueryable<T10> joinQueryable, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, bool>> joinExpression)
+        {
+            this.Context.InitMappingInfo<T10>();
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            var joinInfo = GetJoinInfo(joinExpression, JoinType.Inner);
+            var sqlObject = joinQueryable.ToSql();
+            string sql = sqlObject.Key;
+            this.QueryBuilder.LambdaExpressions.ParameterIndex += 100;
+            UtilMethods.RepairReplicationParameters(ref sql, sqlObject.Value.ToArray(), this.QueryBuilder.LambdaExpressions.ParameterIndex, "");
+            joinInfo.TableName = "(" + sql + ")";
+            this.QueryBuilder.Parameters.AddRange(sqlObject.Value);
+            result.QueryBuilder.JoinQueryInfos.Add(joinInfo);
+            result.QueryBuilder.LambdaExpressions.ParameterIndex = this.QueryBuilder.LambdaExpressions.ParameterIndex;
+            return result;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> RightJoin<T10>(ISugarQueryable<T10> joinQueryable, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, bool>> joinExpression)
+        {
+            this.Context.InitMappingInfo<T10>();
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            var joinInfo = GetJoinInfo(joinExpression, JoinType.Right);
+            var sqlObject = joinQueryable.ToSql();
+            string sql = sqlObject.Key;
+            this.QueryBuilder.LambdaExpressions.ParameterIndex += 100;
+            UtilMethods.RepairReplicationParameters(ref sql, sqlObject.Value.ToArray(), this.QueryBuilder.LambdaExpressions.ParameterIndex, "");
+            joinInfo.TableName = "(" + sql + ")";
+            this.QueryBuilder.Parameters.AddRange(sqlObject.Value);
+            result.QueryBuilder.JoinQueryInfos.Add(joinInfo);
+            result.QueryBuilder.LambdaExpressions.ParameterIndex = this.QueryBuilder.LambdaExpressions.ParameterIndex;
+            return result;
+        }
         public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> LeftJoin<T10>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, bool>> joinExpression)
         {
             this.Context.InitMappingInfo<T10>();
@@ -5796,6 +6283,67 @@ namespace SqlSugar
             _OrderBy(expression, type);
             return this;
         }
+
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> OrderByIF(bool isOrderBy, string orderFileds)
+        {
+            if (isOrderBy)
+                base.OrderBy(orderFileds);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> OrderByIF(bool isOrderBy, Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            if (isOrderBy)
+                _OrderBy(expression, type);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> OrderByIF(bool isOrderBy, Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            if (isOrderBy)
+                _OrderBy(expression, type);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            if (isOrderBy)
+                _OrderBy(expression, type);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            if (isOrderBy)
+                _OrderBy(expression, type);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            if (isOrderBy)
+                _OrderBy(expression, type);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, T6, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            if (isOrderBy)
+                _OrderBy(expression, type);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, T6, T7, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            if (isOrderBy)
+                _OrderBy(expression, type);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            if (isOrderBy)
+                _OrderBy(expression, type);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8,T9, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            if (isOrderBy)
+                _OrderBy(expression, type);
+            return this;
+        }
         #endregion
 
         #region GroupBy
@@ -5979,6 +6527,57 @@ namespace SqlSugar
     #region T10
     public partial class QueryableProvider<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> : QueryableProvider<T>, ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>
     {
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> LeftJoin<T11>(ISugarQueryable<T11> joinQueryable, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, bool>> joinExpression)
+        {
+            this.Context.InitMappingInfo<T11>();
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            var joinInfo = GetJoinInfo(joinExpression, JoinType.Left);
+            var sqlObject = joinQueryable.ToSql();
+            string sql = sqlObject.Key;
+            this.QueryBuilder.LambdaExpressions.ParameterIndex += 100;
+            UtilMethods.RepairReplicationParameters(ref sql, sqlObject.Value.ToArray(), this.QueryBuilder.LambdaExpressions.ParameterIndex, "");
+            joinInfo.TableName = "(" + sql + ")";
+            this.QueryBuilder.Parameters.AddRange(sqlObject.Value);
+            result.QueryBuilder.JoinQueryInfos.Add(joinInfo);
+            result.QueryBuilder.LambdaExpressions.ParameterIndex = this.QueryBuilder.LambdaExpressions.ParameterIndex;
+            return result;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> InnerJoin<T11>(ISugarQueryable<T11> joinQueryable, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, bool>> joinExpression)
+        {
+            this.Context.InitMappingInfo<T11>();
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            var joinInfo = GetJoinInfo(joinExpression, JoinType.Inner);
+            var sqlObject = joinQueryable.ToSql();
+            string sql = sqlObject.Key;
+            this.QueryBuilder.LambdaExpressions.ParameterIndex += 100;
+            UtilMethods.RepairReplicationParameters(ref sql, sqlObject.Value.ToArray(), this.QueryBuilder.LambdaExpressions.ParameterIndex, "");
+            joinInfo.TableName = "(" + sql + ")";
+            this.QueryBuilder.Parameters.AddRange(sqlObject.Value);
+            result.QueryBuilder.JoinQueryInfos.Add(joinInfo);
+            result.QueryBuilder.LambdaExpressions.ParameterIndex = this.QueryBuilder.LambdaExpressions.ParameterIndex;
+            return result;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> RightJoin<T11>(ISugarQueryable<T11> joinQueryable, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, bool>> joinExpression)
+        {
+            this.Context.InitMappingInfo<T11>();
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            var joinInfo = GetJoinInfo(joinExpression, JoinType.Right);
+            var sqlObject = joinQueryable.ToSql();
+            string sql = sqlObject.Key;
+            this.QueryBuilder.LambdaExpressions.ParameterIndex += 100;
+            UtilMethods.RepairReplicationParameters(ref sql, sqlObject.Value.ToArray(), this.QueryBuilder.LambdaExpressions.ParameterIndex, "");
+            joinInfo.TableName = "(" + sql + ")";
+            this.QueryBuilder.Parameters.AddRange(sqlObject.Value);
+            result.QueryBuilder.JoinQueryInfos.Add(joinInfo);
+            result.QueryBuilder.LambdaExpressions.ParameterIndex = this.QueryBuilder.LambdaExpressions.ParameterIndex;
+            return result;
+        }
         public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> LeftJoin<T11>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11, bool>> joinExpression)
         {
             this.Context.InitMappingInfo<T11>();
@@ -6235,6 +6834,73 @@ namespace SqlSugar
             _OrderBy(expression, type);
             return this;
         }
+
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> OrderByIF(bool isOrderBy, string orderFileds)
+        {
+            if (isOrderBy)
+                base.OrderBy(orderFileds);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> OrderByIF(bool isOrderBy, Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            if (isOrderBy)
+                _OrderBy(expression, type);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> OrderByIF(bool isOrderBy, Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            if (isOrderBy)
+                _OrderBy(expression, type);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            if (isOrderBy)
+                _OrderBy(expression, type);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            if (isOrderBy)
+                _OrderBy(expression, type);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            if (isOrderBy)
+                _OrderBy(expression, type);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, T6, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            if (isOrderBy)
+                _OrderBy(expression, type);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, T6, T7, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            if (isOrderBy)
+                _OrderBy(expression, type);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            if (isOrderBy)
+                _OrderBy(expression, type);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            if (isOrderBy)
+                _OrderBy(expression, type);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9,T10, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            if (isOrderBy)
+                _OrderBy(expression, type);
+            return this;
+        }
         #endregion
 
         #region GroupBy
@@ -6423,6 +7089,57 @@ namespace SqlSugar
     #region T11
     public partial class QueryableProvider<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> : QueryableProvider<T>, ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>
     {
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> LeftJoin<T12>(ISugarQueryable<T12> joinQueryable, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, bool>> joinExpression)
+        {
+            this.Context.InitMappingInfo<T12>();
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            var joinInfo = GetJoinInfo(joinExpression, JoinType.Left);
+            var sqlObject = joinQueryable.ToSql();
+            string sql = sqlObject.Key;
+            this.QueryBuilder.LambdaExpressions.ParameterIndex += 100;
+            UtilMethods.RepairReplicationParameters(ref sql, sqlObject.Value.ToArray(), this.QueryBuilder.LambdaExpressions.ParameterIndex, "");
+            joinInfo.TableName = "(" + sql + ")";
+            this.QueryBuilder.Parameters.AddRange(sqlObject.Value);
+            result.QueryBuilder.JoinQueryInfos.Add(joinInfo);
+            result.QueryBuilder.LambdaExpressions.ParameterIndex = this.QueryBuilder.LambdaExpressions.ParameterIndex;
+            return result;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> InnerJoin<T12>(ISugarQueryable<T12> joinQueryable, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, bool>> joinExpression)
+        {
+            this.Context.InitMappingInfo<T12>();
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            var joinInfo = GetJoinInfo(joinExpression, JoinType.Inner);
+            var sqlObject = joinQueryable.ToSql();
+            string sql = sqlObject.Key;
+            this.QueryBuilder.LambdaExpressions.ParameterIndex += 100;
+            UtilMethods.RepairReplicationParameters(ref sql, sqlObject.Value.ToArray(), this.QueryBuilder.LambdaExpressions.ParameterIndex, "");
+            joinInfo.TableName = "(" + sql + ")";
+            this.QueryBuilder.Parameters.AddRange(sqlObject.Value);
+            result.QueryBuilder.JoinQueryInfos.Add(joinInfo);
+            result.QueryBuilder.LambdaExpressions.ParameterIndex = this.QueryBuilder.LambdaExpressions.ParameterIndex;
+            return result;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> RightJoin<T12>(ISugarQueryable<T12> joinQueryable, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, bool>> joinExpression)
+        {
+            this.Context.InitMappingInfo<T12>();
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            var joinInfo = GetJoinInfo(joinExpression, JoinType.Right);
+            var sqlObject = joinQueryable.ToSql();
+            string sql = sqlObject.Key;
+            this.QueryBuilder.LambdaExpressions.ParameterIndex += 100;
+            UtilMethods.RepairReplicationParameters(ref sql, sqlObject.Value.ToArray(), this.QueryBuilder.LambdaExpressions.ParameterIndex, "");
+            joinInfo.TableName = "(" + sql + ")";
+            this.QueryBuilder.Parameters.AddRange(sqlObject.Value);
+            result.QueryBuilder.JoinQueryInfos.Add(joinInfo);
+            result.QueryBuilder.LambdaExpressions.ParameterIndex = this.QueryBuilder.LambdaExpressions.ParameterIndex;
+            return result;
+        }
         public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> LeftJoin<T12>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12, bool>> joinExpression)
         {
             this.Context.InitMappingInfo<T12>();
@@ -6696,6 +7413,79 @@ namespace SqlSugar
         public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, object>> expression, OrderByType type = OrderByType.Asc)
         {
             _OrderBy(expression, type);
+            return this;
+        }
+
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> OrderByIF(bool isOrderBy, string orderFileds)
+        {
+            if (isOrderBy)
+                base.OrderBy(orderFileds);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> OrderByIF(bool isOrderBy, Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            if (isOrderBy)
+                _OrderBy(expression, type);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> OrderByIF(bool isOrderBy, Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            if (isOrderBy)
+                _OrderBy(expression, type);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            if (isOrderBy)
+                _OrderBy(expression, type);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            if (isOrderBy)
+                _OrderBy(expression, type);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            if (isOrderBy)
+                _OrderBy(expression, type);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, T6, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            if (isOrderBy)
+                _OrderBy(expression, type);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, T6, T7, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            if (isOrderBy)
+                _OrderBy(expression, type);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            if (isOrderBy)
+                _OrderBy(expression, type);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            if (isOrderBy)
+                _OrderBy(expression, type);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            if (isOrderBy)
+                _OrderBy(expression, type);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            if (isOrderBy)
+                _OrderBy(expression, type);
             return this;
         }
         #endregion
@@ -7157,6 +7947,84 @@ namespace SqlSugar
         public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> OrderBy(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, object>> expression, OrderByType type = OrderByType.Asc)
         {
             _OrderBy(expression, type);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> OrderByIF(bool isOrderBy, string orderFileds)
+        {
+            if (isOrderBy)
+                base.OrderBy(orderFileds);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> OrderByIF(bool isOrderBy, Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            if (isOrderBy)
+                _OrderBy(expression, type);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> OrderByIF(bool isOrderBy, Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            if (isOrderBy)
+                _OrderBy(expression, type);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            if (isOrderBy)
+                _OrderBy(expression, type);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            if (isOrderBy)
+                _OrderBy(expression, type);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            if (isOrderBy)
+                _OrderBy(expression, type);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, T6, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            if (isOrderBy)
+                _OrderBy(expression, type);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, T6, T7, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            if (isOrderBy)
+                _OrderBy(expression, type);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            if (isOrderBy)
+                _OrderBy(expression, type);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            if (isOrderBy)
+                _OrderBy(expression, type);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            if (isOrderBy)
+                _OrderBy(expression, type);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            if (isOrderBy)
+                _OrderBy(expression, type);
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> OrderByIF(bool isOrderBy, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12, object>> expression, OrderByType type = OrderByType.Asc)
+        {
+            if (isOrderBy)
+                _OrderBy(expression, type);
             return this;
         }
         #endregion

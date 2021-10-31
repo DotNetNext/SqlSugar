@@ -32,6 +32,13 @@ namespace SqlSugar
             exp = expression;
             type = typeof(T);
         }
+
+        public TableFilterItem(Type entityType,Expression expression)
+        {
+            exp = expression;
+            type = entityType;
+        }
+
         private new  string FilterName { get; set; }
         private new Func<ISqlSugarClient, SqlFilterResult> FilterValue { get; set; }
         private new bool IsJoinQuery { get; set; }

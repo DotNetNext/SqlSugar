@@ -162,7 +162,11 @@ namespace SqlSugar
             var copyObj = CopyEntityInfo(entityInfo);
             InitMappingInfo(copyObj);
         }
-
+        public void InitMappingInfoNoCache(Type type)
+        {
+            var entityInfo = this.Context.EntityMaintenance.GetEntityInfoNoCache(type);
+            InitMappingInfo(entityInfo);
+        }
         private EntityInfo CopyEntityInfo(EntityInfo entityInfo)
         {
             EntityInfo result = new EntityInfo()

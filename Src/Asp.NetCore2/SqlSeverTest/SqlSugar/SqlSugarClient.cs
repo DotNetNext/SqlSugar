@@ -37,7 +37,7 @@ namespace SqlSugar
 
         public SqlSugarClient(List<ConnectionConfig> configs)
         {
-            Check.Exception(configs.IsNullOrEmpty(), "List<ConnectionConfig> configs is null");
+            Check.Exception(configs.IsNullOrEmpty(), "List<ConnectionConfig> configs is null or count=0");
             InitConfigs(configs);
             var config = configs.First();
             InitContext(config);
@@ -846,21 +846,33 @@ namespace SqlSugar
         #endregion
 
         #region Helper
+        public SplitTableContext SplitHelper<T>() where T:class,new()
+        {
+            return this.Context.SplitHelper<T>();
+        }
+        public SplitTableContextResult<T> SplitHelper<T>(T data) where T : class, new()
+        {
+            return this.Context.SplitHelper(data);
+        }
+        public SplitTableContextResult<T> SplitHelper<T>(List<T> dataList) where T : class, new()
+        {
+            return this.Context.SplitHelper(dataList);
+        }
         private SqlSugarProvider GetContext()
         {
             SqlSugarProvider result = null;
-            if (IsSameThreadAndShard())
-            {
-                result = SameThreadAndShard();
-            }
-            else if (IsNoSameThreadAndShard())
-            {
-                result = NoSameThreadAndShard();
-            }
-            else 
-            {
+            //if (IsSameThreadAndShard())
+            //{
+            //    result = SameThreadAndShard();
+            //}
+            //else if (IsNoSameThreadAndShard())
+            //{
+            //    result = NoSameThreadAndShard();
+            //}
+            //else 
+            //{
                 result = Synchronization();
-            }
+            //}
             ///Because SqlSugarScope implements thread safety
             //else if (IsSingleInstanceAsync())
             //{
@@ -1003,15 +1015,15 @@ namespace SqlSugar
             return _ThreadId == Thread.CurrentThread.ManagedThreadId.ToString();
         }
 
-        private bool IsNoSameThreadAndShard()
-        {
-            return CurrentConnectionConfig.IsShardSameThread && _ThreadId != Thread.CurrentThread.ManagedThreadId.ToString();
-        }
+        //private bool IsNoSameThreadAndShard()
+        //{
+        //    return CurrentConnectionConfig.IsShardSameThread && _ThreadId != Thread.CurrentThread.ManagedThreadId.ToString();
+        //}
 
-        private bool IsSameThreadAndShard()
-        {
-            return CurrentConnectionConfig.IsShardSameThread && _ThreadId == Thread.CurrentThread.ManagedThreadId.ToString();
-        }
+        //private bool IsSameThreadAndShard()
+        //{
+        //    return CurrentConnectionConfig.IsShardSameThread && _ThreadId == Thread.CurrentThread.ManagedThreadId.ToString();
+        //}
 
         private SqlSugarProvider CopyClient()
         {
@@ -1051,7 +1063,7 @@ namespace SqlSugar
                 _Context.Ado.IsEnableLogEvent = true;
             this.CurrentConnectionConfig = config;
             _ThreadId = Thread.CurrentThread.ManagedThreadId.ToString();
-            if (_MappingColumns == null)
+            if (this.MappingTables == null)
                 this.MappingTables = new MappingTableList();
             if (this.MappingColumns == null)
                 this.MappingColumns = new MappingColumnList();

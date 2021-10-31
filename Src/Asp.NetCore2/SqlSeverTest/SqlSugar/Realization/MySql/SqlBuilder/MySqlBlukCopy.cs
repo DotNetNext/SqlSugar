@@ -42,10 +42,10 @@ namespace SqlSugar
             Type type = typeof(T);
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
             dt.TableName = this.Builder.GetTranslationColumnName(entity.DbTableName);
-            if (this.Context.MappingTables != null && this.Context.MappingTables.Any(it => it.EntityName == it.EntityName)) 
-            {
-                dt.TableName = this.Builder.GetTranslationColumnName(this.Context.MappingTables.First(it => it.EntityName == it.EntityName).DbTableName);
-            }
+            //if (this.Context.MappingTables != null && this.Context.MappingTables.Any(it => it.EntityName == it.EntityName)) 
+            //{
+            //    dt.TableName = this.Builder.GetTranslationColumnName(this.Context.MappingTables.First(it => it.EntityName == it.EntityName).DbTableName);
+            //}
             //创建属性的集合    
             List<PropertyInfo> pList = new List<PropertyInfo>();
             //把所有的public属性加入到集合 并添加DataTable的列    

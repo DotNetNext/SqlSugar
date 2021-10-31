@@ -17,5 +17,6 @@ namespace SqlSugar
         void InitTables<T, T2>();
         void InitTables<T, T2, T3>();
         void InitTables<T, T2, T3, T4>();
+        SplitCodeFirstProvider SplitTables();
     }
 }

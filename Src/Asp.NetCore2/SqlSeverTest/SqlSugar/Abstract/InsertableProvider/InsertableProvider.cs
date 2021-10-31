@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -22,7 +23,7 @@ namespace SqlSugar
         public EntityInfo EntityInfo { get; set; }
         public List<MappingColumn> MappingColumnList { get; set; }
         private List<string> IgnoreColumnNameList { get; set; }
-        private bool IsOffIdentity { get; set; }
+        internal bool IsOffIdentity { get; set; }
         public T[] InsertObjs { get; set; }
 
         public MappingTableList OldMappingTableList { get; set; }
@@ -405,6 +406,42 @@ namespace SqlSugar
             result.Entity = this.EntityInfo;
             result.AddSubList(tree);
             return result;
+        }
+        public SplitInsertable<T> SplitTable(SplitType splitType)
+        {
+            SplitTableContext helper = new SplitTableContext(Context)
+            {
+                EntityInfo = this.EntityInfo
+            };
+            helper.CheckPrimaryKey();
+            SplitInsertable<T> result = new SplitInsertable<T>();
+            result.Context = this.Context;
+            result.EntityInfo = this.EntityInfo;
+            result.Helper = helper;
+            result.SplitType = splitType;
+            result.TableNames = new List<KeyValuePair<string, object>>();
+            foreach (var item in this.InsertObjs)
+            {
+                var splitFieldValue = helper.GetValue(splitType, item);
+                var tableName=helper.GetTableName(splitType, splitFieldValue);
+                result.TableNames.Add(new KeyValuePair<string, object>(tableName,item));
+            }
+            result.Inserable = this;
+            return result;
+        }
+
+        public SplitInsertable<T> SplitTable()
+        {
+            var splitTableAttribute = typeof(T).GetCustomAttribute<SplitTableAttribute>();
+            if (splitTableAttribute != null)
+            {
+                return SplitTable((splitTableAttribute as SplitTableAttribute).SplitType);
+            }
+            else 
+            {
+                Check.Exception(true,$" {typeof(T).Name} need SplitTableAttribute");
+                return null;
+            }
         }
 
         #endregion

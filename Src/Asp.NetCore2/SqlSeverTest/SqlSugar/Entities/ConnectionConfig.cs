@@ -10,7 +10,7 @@ namespace SqlSugar
     public class ConnectionConfig
     {
         /// <summary>
-        /// 
+        ///Connection unique code
         /// </summary>
         public dynamic ConfigId { get; set; }
         /// <summary>
@@ -30,10 +30,14 @@ namespace SqlSugar
         /// </summary>
         public InitKeyType InitKeyType = InitKeyType.Attribute;
         /// <summary>
-        ///If true, there is only one connection instance in the same thread within the same connection string
-        [Obsolete("use  SqlSugar.Ioc")]
+        /// Exception prompt language  
         /// </summary>
-        public bool IsShardSameThread { get; set; }
+        public LanguageType  LanguageType { get=>ErrorMessage.SugarLanguageType; set=>ErrorMessage.SugarLanguageType=value; }
+        /// <summary>
+        ///If true, there is only one connection instance in the same thread within the same connection string
+        //[Obsolete("use  SqlSugar.Ioc")]
+        ///// </summary>
+        //public bool IsShardSameThread { get; set; }
         /// <summary>
         /// Configure External Services replace default services,For example, Redis storage
         /// </summary>
@@ -48,10 +52,10 @@ namespace SqlSugar
         /// More Gobal Settings
         /// </summary>
         public ConnMoreSettings MoreSettings { get; set; }
-        /// <summary>
-        /// Used for debugging errors or BUG,Used for debugging, which has an impact on Performance
-        /// </summary>
-        public SugarDebugger Debugger { get; set; }
+        ///// <summary>
+        ///// Used for debugging errors or BUG,Used for debugging, which has an impact on Performance
+        ///// </summary>
+        //public SugarDebugger Debugger { get; set; }
 
         public string IndexSuffix { get; set; }
 
@@ -75,7 +79,7 @@ namespace SqlSugar
         private ICacheService _ReflectionInoCache;
         private ICacheService _DataInfoCache;
         private IRazorService _RazorService;
-
+        public ISplitTableService SplitTableService { get; set; }
         public IRazorService RazorService
         {
             get

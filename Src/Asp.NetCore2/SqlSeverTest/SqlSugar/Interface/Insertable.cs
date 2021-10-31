@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SqlSugar
 {
-    public partial interface IInsertable<T>
+    public partial interface IInsertable<T> where T :class,new()
     {
         InsertBuilder InsertBuilder { get; set; }
         int ExecuteCommand();
@@ -45,6 +45,9 @@ namespace SqlSugar
         SqlServerBlukCopy UseSqlServer();
         MySqlBlukCopy<T> UseMySql();
         OracleBlukCopy UseOracle();
+
+        SplitInsertable<T> SplitTable();
+        SplitInsertable<T> SplitTable(SplitType splitType);
         void AddQueue();
 
     }

@@ -24,6 +24,13 @@ namespace SqlSugar
         #endregion
 
         #region Public methods
+        public SplitCodeFirstProvider SplitTables()
+        {
+            var result = new SplitCodeFirstProvider();
+            result.Context = this.Context;
+            return result;
+        }
+
         public virtual ICodeFirst BackupTable(int maxBackupDataRows = int.MaxValue)
         {
             this.IsBackupTable = true;
@@ -40,8 +47,8 @@ namespace SqlSugar
         public virtual void InitTables(Type entityType)
         {
 
-            this.Context.Utilities.RemoveCacheAll();
-            this.Context.InitMappingInfo(entityType);
+            //this.Context.Utilities.RemoveCacheAll();
+            this.Context.InitMappingInfoNoCache(entityType);
             if (!this.Context.DbMaintenance.IsAnySystemTablePermissions())
             {
                 Check.Exception(true, "Dbfirst and  Codefirst requires system table permissions");
@@ -107,7 +114,7 @@ namespace SqlSugar
         #region Core Logic
         protected virtual void Execute(Type entityType)
         {
-            var entityInfo = this.Context.EntityMaintenance.GetEntityInfo(entityType);
+            var entityInfo = this.Context.EntityMaintenance.GetEntityInfoNoCache(entityType);
             if (this.DefultLength > 0)
             {
                 foreach (var item in entityInfo.Columns)
@@ -132,7 +139,7 @@ namespace SqlSugar
             this.Context.MappingTables.Add(entityInfo.EntityName,tableName);
             entityInfo.DbTableName = tableName;
             entityInfo.Columns.ForEach(it => { it.DbTableName = tableName; });
-            var isAny = this.Context.DbMaintenance.IsAnyTable(tableName);
+            var isAny = this.Context.DbMaintenance.IsAnyTable(tableName,false);
             if (isAny&&entityInfo.IsDisabledUpdateAll)
             {
                 return;
@@ -168,7 +175,7 @@ namespace SqlSugar
                 //Check.Exception(entityInfo.Columns.Where(it => it.IsPrimarykey).Count() > 1, "Multiple primary keys do not support modifications");
 
                 var tableName = GetTableName(entityInfo);
-                var dbColumns = this.Context.DbMaintenance.GetColumnInfosByTableName(tableName);
+                var dbColumns = this.Context.DbMaintenance.GetColumnInfosByTableName(tableName,false);
                 ConvertColumns(dbColumns);
                 var entityColumns = entityInfo.Columns.Where(it => it.IsIgnore == false).ToList();
                 var dropColumns = dbColumns

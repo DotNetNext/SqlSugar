@@ -1274,25 +1274,25 @@ namespace SqlSugar
         }
         public virtual void ExecuteBefore(string sql, SugarParameter[] parameters)
         {
-            if (this.Context.CurrentConnectionConfig.Debugger != null && this.Context.CurrentConnectionConfig.Debugger.EnableThreadSecurityValidation == true)
-            {
+            //if (this.Context.CurrentConnectionConfig.Debugger != null && this.Context.CurrentConnectionConfig.Debugger.EnableThreadSecurityValidation == true)
+            //{
 
-                var contextId = this.Context.ContextID.ToString();
-                var processId = Thread.CurrentThread.ManagedThreadId.ToString();
-                var cache = new ReflectionInoCacheService();
-                if (!cache.ContainsKey<string>(contextId))
-                {
-                    cache.Add(contextId, processId);
-                }
-                else
-                {
-                    var cacheValue = cache.Get<string>(contextId);
-                    if (processId != cacheValue)
-                    {
-                        throw new SqlSugarException(this.Context, ErrorMessage.GetThrowMessage("Detection of SqlSugarClient cross-threading usage,a thread needs a new one", "检测到声名的SqlSugarClient跨线程使用，请检查是否静态、是否单例、或者IOC配置错误引起的，保证一个线程new出一个对象 ，具本Sql:") + sql, parameters);
-                    }
-                }
-            }
+            //    var contextId = this.Context.ContextID.ToString();
+            //    var processId = Thread.CurrentThread.ManagedThreadId.ToString();
+            //    var cache = new ReflectionInoCacheService();
+            //    if (!cache.ContainsKey<string>(contextId))
+            //    {
+            //        cache.Add(contextId, processId);
+            //    }
+            //    else
+            //    {
+            //        var cacheValue = cache.Get<string>(contextId);
+            //        if (processId != cacheValue)
+            //        {
+            //            throw new SqlSugarException(this.Context, ErrorMessage.GetThrowMessage("Detection of SqlSugarClient cross-threading usage,a thread needs a new one", "检测到声名的SqlSugarClient跨线程使用，请检查是否静态、是否单例、或者IOC配置错误引起的，保证一个线程new出一个对象 ，具本Sql:") + sql, parameters);
+            //        }
+            //    }
+            //}
             this.BeforeTime = DateTime.Now;
             if (this.IsEnableLogEvent)
             {
