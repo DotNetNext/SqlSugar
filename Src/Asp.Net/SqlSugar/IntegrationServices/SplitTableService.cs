@@ -21,7 +21,7 @@ namespace SqlSugar
             {
                 SplitTableInfo tableInfo = new SplitTableInfo();
                 tableInfo.TableName = item;
-                var math = Regex.Match(item, regex);
+                var math = Regex.Match(item, regex,RegexOptions.IgnoreCase);
                 var group1 = math.Groups[1].Value;
                 var group2 = math.Groups[2].Value;
                 var group3 = math.Groups[3].Value;
