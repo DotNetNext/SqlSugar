@@ -889,6 +889,12 @@ namespace SqlSugar
             }
             return result;
         }
+        public ISugarQueryable<T> SplitTable(DateTime beginTime, DateTime endTime) 
+        {
+            var splitColumn = this.EntityInfo.Columns.FirstOrDefault(it => it.PropertyInfo.GetCustomAttribute<SplitFieldAttribute>() != null);
+            var columnName = this.SqlBuilder.GetTranslationColumnName(splitColumn.DbColumnName);
+            return this.Where($" {columnName}>=@spBeginTime AND {columnName}<= @spEndTime",new { spBeginTime = beginTime , spEndTime = endTime}).SplitTable(tas => tas.Where(y => y.Date >= beginTime && y.Date <= endTime));
+        }
         public ISugarQueryable<T> SplitTable(Func<List<SplitTableInfo>, IEnumerable<SplitTableInfo>> getTableNamesFunc) 
         {
             SplitTableContext helper = new SplitTableContext(Context)

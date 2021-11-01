@@ -23,6 +23,7 @@ namespace OrmTest
             db.Aop.OnLogExecuted = (s, p) =>
             {
                 Console.WriteLine(s);
+                Console.WriteLine(string.Join(",", p?.Select(it => it.ParameterName + ":" + it.Value)));
             };
 
             //初始化分表
@@ -31,9 +32,9 @@ namespace OrmTest
             Console.WriteLine();
 
             //根据最近3个表进行查询
-            var list=db.Queryable<OrderSpliteTest>().Where(it=>it.Pk==Guid.NewGuid())
-                .SplitTable(tabs => tabs.Take(3))
-                .Where(it=>it.Time==DateTime.Now).ToOffsetPage(1,2);
+            var list=db.Queryable<OrderSpliteTest>()
+                .SplitTable(DateTime.Now.Date.AddYears(-1),DateTime.Now)
+                .ToList();
 
             Console.WriteLine();
 
