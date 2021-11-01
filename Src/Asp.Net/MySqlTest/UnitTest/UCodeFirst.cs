@@ -36,6 +36,12 @@ namespace OrmTest
                 b=it.b
             }).ToList();
             Db.CodeFirst.InitTables<UnitTest012213>();
+            Db.CodeFirst.InitTables<UnitTest3131>();
+        }
+
+        public class UnitTest3131 
+        {
+            public sbyte Id { get; set; }
         }
         public class UnitTest012213
         {
