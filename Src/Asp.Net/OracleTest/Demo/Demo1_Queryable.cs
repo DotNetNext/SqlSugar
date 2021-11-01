@@ -52,6 +52,7 @@ namespace OrmTest
                  })
                 ).ToList();
             var test2 = db.Queryable<Order>().Select<ViewOrder>().ToList();
+            var test3 = db.Queryable<Order>().Select(it=>new Order() { CreateTime=SqlFunc.GetDate() }).ToList();
             Console.WriteLine("#### Examples End ####");
         }
 
