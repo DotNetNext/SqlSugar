@@ -733,7 +733,7 @@ namespace SqlSugar
         //    return asyncInsertable;
         //}
 
-        private void After(string sql, long? result)
+        protected void After(string sql, long? result)
         {
             if (this.IsEnableDiffLogEvent)
             {
@@ -753,7 +753,7 @@ namespace SqlSugar
                 this.RemoveCacheFunc();
             }
         }
-        private void Before(string sql)
+        protected void Before(string sql)
         {
             if (this.IsEnableDiffLogEvent)
             {
