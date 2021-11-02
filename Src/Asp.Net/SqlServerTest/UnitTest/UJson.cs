@@ -21,6 +21,11 @@ namespace OrmTest
             list= Db.Queryable<UnitJsonTest>().ToList();
             UValidate.Check("order2", list.First().Order.Name, "Json");
             var list2 = Db.Queryable<UnitJsonTest>().ToList();
+            var x = new Order() { Name="a" };
+            Db.Updateable<UnitJsonTest2>()
+                 .SetColumns(it => it.Name=="a")
+                 .Where(it=>it.Id==1)
+                 .ExecuteCommand();
         }
     }
 
@@ -30,6 +35,8 @@ namespace OrmTest
         public int Id { get; set; }
         [SqlSugar.SugarColumn(IsJson = true)]
         public Order Order { get; set; }
+        [SqlSugar.SugarColumn(IsNullable =true)]
+        public string Name { get; set; }
     }
     public class UnitJsonTest
     {
