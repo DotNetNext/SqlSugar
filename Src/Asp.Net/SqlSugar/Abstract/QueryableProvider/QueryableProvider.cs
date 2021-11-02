@@ -1181,6 +1181,11 @@ namespace SqlSugar
             this.QueryBuilder.ResultType = typeof(SugarCacheDictionary);
             var keyName = QueryBuilder.GetExpressionValue(key, ResolveExpressType.FieldSingle).GetResultString();
             var valueName = QueryBuilder.GetExpressionValue(value, ResolveExpressType.FieldSingle).GetResultString();
+            if (this.QueryBuilder.IsSingle() == false) 
+            {
+                keyName = this.QueryBuilder.TableShortName+ "." + keyName;
+                valueName = this.QueryBuilder.TableShortName + "." + valueName;
+            }
             var result = this.Select<KeyValuePair<string, object>>(keyName + "," + valueName).ToList().ToDictionary(it => it.Key.ObjToString(), it => it.Value);
             return result;
         }

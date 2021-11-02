@@ -170,6 +170,8 @@ namespace OrmTest
                   Name=SqlFunc.Subqueryable<Order>().Select(s=>s.Name)
                }).ToList();
             var test19 = db.Queryable<Order>().Select<ViewOrder>().ToList();
+            var test20 = db.Queryable<Order>().LeftJoin<Custom>((o, cs) =>o.Id==cs.Id)
+                .ToDictionary(it => it.Id, it => it.Name);
             Console.WriteLine("#### Examples End ####");
         }
 
