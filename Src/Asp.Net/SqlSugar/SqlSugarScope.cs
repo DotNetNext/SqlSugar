@@ -65,6 +65,10 @@ namespace SqlSugar
 
         public SugarCacheProvider DataCache => ScopedContext.DataCache;
 
+        public ITenant AsTenant() 
+        {
+            return ScopedContext.AsTenant();
+        }
         public void AddConnection(ConnectionConfig connection)
         {
             ScopedContext.AddConnection(connection);

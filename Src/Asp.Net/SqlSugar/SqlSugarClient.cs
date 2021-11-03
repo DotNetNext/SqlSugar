@@ -576,6 +576,11 @@ namespace SqlSugar
         #endregion
 
         #region TenantManager
+        public ITenant AsTenant()
+        {
+            var tenant= this as ITenant;
+            return tenant;
+        }
         public SqlSguarTransaction UseTran() 
         {
             return new SqlSguarTransaction(this);

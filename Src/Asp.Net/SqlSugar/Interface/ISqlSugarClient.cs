@@ -52,7 +52,8 @@ namespace SqlSugar
         void InitMappingInfo(Type type);
         void InitMappingInfo<T>();
         void Open();
-        void Close(); 
+        void Close();
+        ITenant AsTenant();
         #endregion
 
         #region Insertable
