@@ -324,7 +324,7 @@ namespace OrmTest
 
             });
             result2.Wait();
-            if (result.IsSuccess == false)
+            if (result2.Result.IsSuccess == false)
             {
                 Console.WriteLine("---Roll back");
                 db.ChangeDatabase("1");//use sqlserver

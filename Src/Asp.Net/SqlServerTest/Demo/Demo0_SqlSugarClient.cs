@@ -308,23 +308,23 @@ namespace OrmTest
             // Example 3
             Console.WriteLine("Example 3");
 
-            var result2 = db.UseTranAsync(() =>
+            var result2 = db.UseTranAsync(async () =>
             {
 
                 db.ChangeDatabase("1");//use db1
-                db.Deleteable<Order>().ExecuteCommand();
+                await db.Deleteable<Order>().ExecuteCommandAsync();
                 Console.WriteLine("---Delete all " + db.CurrentConnectionConfig.DbType);
                 Console.WriteLine(db.Queryable<Order>().Count());
 
                 db.ChangeDatabase("2");//use db2
-                db.Deleteable<Order>().ExecuteCommand();
+                await db.Deleteable<Order>().ExecuteCommandAsync();
                 Console.WriteLine("---Delete all " + db.CurrentConnectionConfig.DbType);
                 Console.WriteLine(db.Queryable<Order>().Count());
                 throw new Exception("");
 
             });
             result2.Wait();
-            if (result.IsSuccess == false)
+            if (result2.Result.IsSuccess == false)
             {
                 Console.WriteLine("---Roll back");
                 db.ChangeDatabase("1");//use sqlserver
