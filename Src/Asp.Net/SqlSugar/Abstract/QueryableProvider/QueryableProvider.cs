@@ -825,7 +825,7 @@ namespace SqlSugar
         }
         public virtual bool Any()
         {
-            return this.Count() > 0;
+            return this.Select("1").First()!=null;
         }
 
         public virtual ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, TResult>> expression)
