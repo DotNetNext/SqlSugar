@@ -34,7 +34,7 @@ namespace SqlSugar
             }
         }
 
-        public  object FormatValue(object value,string name,int i)
+        public  object FormatValue(object value,string name,int i,DbColumnInfo columnInfo)
         {
             if (value == null)
             {
@@ -43,10 +43,19 @@ namespace SqlSugar
             else
             {
                 var type = value.GetType();
-                if (type == UtilConstants.DateType)
+                if (type == UtilConstants.DateType||columnInfo.IsArray||columnInfo.IsJson)
                 {
                     var parameterName = this.Builder.SqlParameterKeyWord + name + i;
-                    this.Parameters.Add(new SugarParameter(parameterName, value));
+                    var paramter = new SugarParameter(parameterName, value);
+                    if (columnInfo.IsJson) 
+                    {
+                        paramter.IsJson = true;
+                    }
+                    if (columnInfo.IsArray) 
+                    {
+                        paramter.IsArray = true;
+                    }
+                    this.Parameters.Add(paramter);
                     return parameterName;
                 }
                 else if (type == UtilConstants.ByteArrayType)
@@ -145,7 +154,7 @@ namespace SqlSugar
                                 dbType = "varchar";
                             }
                         }
-                        return string.Format("CAST({0} AS {1})", FormatValue(it.Value,it.DbColumnName,i), dbType);
+                        return string.Format("CAST({0} AS {1})", FormatValue(it.Value,it.DbColumnName,i,it), dbType);
 
                     })) + ")");
                     ++i;
