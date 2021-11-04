@@ -116,6 +116,7 @@ namespace SqlSugar
                     new KeyValuePair<string, CSharpDataType>("bit varying",CSharpDataType.byteArray),
                     new KeyValuePair<string, CSharpDataType>("varbit",CSharpDataType.@byte),
                     new KeyValuePair<string, CSharpDataType>("time",CSharpDataType.TimeSpan),
+                    new KeyValuePair<string, CSharpDataType>("public.geometry",CSharpDataType.@object)
                 };
         public override List<string> StringThrow
         {

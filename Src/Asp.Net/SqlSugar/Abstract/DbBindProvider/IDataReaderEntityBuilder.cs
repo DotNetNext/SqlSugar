@@ -111,7 +111,8 @@ namespace SqlSugar
                 }
                 if (columnInfo != null && columnInfo.PropertyInfo.GetSetMethod(true) != null)
                 {
-                    if (columnInfo.PropertyInfo.PropertyType.IsClass() && columnInfo.PropertyInfo.PropertyType != UtilConstants.ByteArrayType && columnInfo.PropertyInfo.PropertyType != UtilConstants.ObjType)
+                    var isGemo = columnInfo.PropertyInfo?.PropertyType?.FullName=="NetTopologySuite.Geometries.Geometry";
+                    if (!isGemo&&columnInfo.PropertyInfo.PropertyType.IsClass() && columnInfo.PropertyInfo.PropertyType != UtilConstants.ByteArrayType && columnInfo.PropertyInfo.PropertyType != UtilConstants.ObjType)
                     {
                         if (this.ReaderKeys.Any(it => it.Equals(fileName, StringComparison.CurrentCultureIgnoreCase)))
                         {
