@@ -893,7 +893,26 @@ namespace SqlSugar
         {
             var splitColumn = this.EntityInfo.Columns.FirstOrDefault(it => it.PropertyInfo.GetCustomAttribute<SplitFieldAttribute>() != null);
             var columnName = this.SqlBuilder.GetTranslationColumnName(splitColumn.DbColumnName);
-            return this.Where($" {columnName}>=@spBeginTime AND {columnName}<= @spEndTime",new { spBeginTime = beginTime , spEndTime = endTime}).SplitTable(tas => tas.Where(y => y.Date >= beginTime && y.Date <= endTime));
+            return this.Where($" {columnName}>=@spBeginTime AND {columnName}<= @spEndTime",new { spBeginTime = beginTime , spEndTime = endTime}).SplitTable(tas => {
+
+                var dateNull = DateTime.MinValue;
+                var min = tas.Where(it => it.Date <= beginTime.Date).Select(it=>it.Date).OrderByDescending(it=>it.Date).FirstOrDefault();
+                var max = tas.Where(it => it.Date >= endTime.Date).Select(it => it.Date).OrderBy(it => it.Date).FirstOrDefault();
+                if (max == dateNull && min == dateNull)
+                {
+                    return tas.Take(1);
+                }
+                if (max == dateNull) 
+                {
+                    max = min;
+                }
+                if (min == dateNull)
+                {
+                    min = max;
+                }
+                var result= tas.Where(y => y.Date >= min && y.Date <= max);
+                return result;
+                });
         }
         public ISugarQueryable<T> SplitTable(Func<List<SplitTableInfo>, IEnumerable<SplitTableInfo>> getTableNamesFunc) 
         {
