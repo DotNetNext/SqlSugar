@@ -902,6 +902,10 @@ namespace SqlSugar
                 {
                     return tas.Take(1);
                 }
+                if (max == dateNull)
+                {
+                    max = tas.Where(it => it.Date <= endTime).Select(it => it.Date).OrderByDescending(it => it.Date).FirstOrDefault();
+                }
                 if (max == dateNull) 
                 {
                     max = min;
