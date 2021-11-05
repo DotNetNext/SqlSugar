@@ -203,12 +203,14 @@ namespace SqlSugar
             ThrowUpdateByExpression();
             if (this.UpdateObjs.HasValue())
             {
+                var oldColumns = this.UpdateBuilder.DbColumnInfoList.Select(it => it.PropertyName).ToList();
                 var expression = (LambdaExpression.Lambda(method).Body as LambdaExpression).Body;
                 Check.Exception(!(expression is MethodCallExpression), method.ToString() + " is not method");
                 var callExpresion = expression as MethodCallExpression;
                 UtilMethods.DataInoveByExpresson(this.UpdateObjs, callExpresion);
                 this.UpdateBuilder.DbColumnInfoList = new List<DbColumnInfo>();
                 Init();
+                this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => oldColumns.Contains(it.PropertyName)).ToList();
             }
             return this;
         }
@@ -316,7 +318,7 @@ namespace SqlSugar
         public IUpdateable<T> SetColumns(Expression<Func<T, bool>> columns)
         {
             ThrowUpdateByObject();
-            CheckTranscodeing();
+
             var binaryExp = columns.Body as BinaryExpression;
             Check.Exception(!binaryExp.NodeType.IsIn(ExpressionType.Equal), "No support {0}", columns.ToString());
             Check.Exception(!(binaryExp.Left is MemberExpression) && !(binaryExp.Left is UnaryExpression), "No support {0}", columns.ToString());
@@ -327,6 +329,12 @@ namespace SqlSugar
                 expResult = Regex.Split(expResult, " IS NULL  ")[0]+" = NULL ";
             }
             string key = SqlBuilder.GetNoTranslationColumnName(expResult);
+
+            if (EntityInfo.Columns.Where(it=>it.IsJson||it.IsTranscoding).Any(it => it.DbColumnName.EqualCase(key) || it.PropertyName.EqualCase(key)))
+            {
+                CheckTranscodeing();
+            }
+
             UpdateBuilder.SetValues.Add(new KeyValuePair<string, string>(SqlBuilder.GetTranslationColumnName(key), expResult));
             this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => (UpdateParameterIsNull == false && IsPrimaryKey(it)) || UpdateBuilder.SetValues.Any(v => SqlBuilder.GetNoTranslationColumnName(v.Key).Equals(it.DbColumnName, StringComparison.CurrentCultureIgnoreCase) || SqlBuilder.GetNoTranslationColumnName(v.Key).Equals(it.PropertyName, StringComparison.CurrentCultureIgnoreCase)) || it.IsPrimarykey == true).ToList();
             AppendSets();

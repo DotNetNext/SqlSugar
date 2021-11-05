@@ -41,6 +41,15 @@ namespace SqlSugar
         {
             return base.GetDbColumnName(entityName,propertyName).ToUpper();
         }
+        public override bool IsTranslationText(string name)
+        {
+            if (!string.IsNullOrEmpty(name) && name.ToLower() == "sysdate") 
+            {
+                return true;
+            }
+            var result = name.IsContainsIn(SqlTranslationLeft, SqlTranslationRight, UtilConstants.Space, ExpressionConst.LeftParenthesis, ExpressionConst.RightParenthesis);
+            return result;
+        }
     }
     public partial class OracleMethod : DefaultDbMethod, IDbMethods
     {

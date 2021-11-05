@@ -283,7 +283,11 @@ namespace SqlSugar
                 var typeName = tType.Name;
                 if (item.PropertyType.IsClass())
                 {
-                    if (IsJsonItem(readerValues, name))
+                    if (item.PropertyType.FullName == "Newtonsoft.Json.Linq.JObject")
+                    {
+                        result.Add(name, DeserializeObject<dynamic>(readerValues[item.Name].ToString()));
+                    }
+                    else if (IsJsonItem(readerValues, name))
                     {
                         result.Add(name, DeserializeObject<Dictionary<string, object>>(readerValues.First().Value.ObjToString()));
                     }

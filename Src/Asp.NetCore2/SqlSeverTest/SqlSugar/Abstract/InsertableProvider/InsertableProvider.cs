@@ -733,7 +733,7 @@ namespace SqlSugar
         //    return asyncInsertable;
         //}
 
-        private void After(string sql, long? result)
+        protected void After(string sql, long? result)
         {
             if (this.IsEnableDiffLogEvent)
             {
@@ -753,7 +753,7 @@ namespace SqlSugar
                 this.RemoveCacheFunc();
             }
         }
-        private void Before(string sql)
+        protected void Before(string sql)
         {
             if (this.IsEnableDiffLogEvent)
             {
@@ -841,12 +841,14 @@ namespace SqlSugar
         {
             if (this.InsertObjs.HasValue())
             {
+                var oldColumns = this.InsertBuilder.DbColumnInfoList.Select(it => it.PropertyName).ToList();
                 var expression = (LambdaExpression.Lambda(method).Body as LambdaExpression).Body;
                 Check.Exception(!(expression is MethodCallExpression), method.ToString() + " is not method");
                 var callExpresion = expression as MethodCallExpression;
                 UtilMethods.DataInoveByExpresson(this.InsertObjs,callExpresion);
                 this.InsertBuilder.DbColumnInfoList = new List<DbColumnInfo>();
                 Init();
+                this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it => oldColumns.Contains(it.PropertyName)).ToList();
             }
             return this;
         }

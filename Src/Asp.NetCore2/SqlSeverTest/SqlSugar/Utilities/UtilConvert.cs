@@ -55,7 +55,17 @@ namespace SqlSugar
             }
             return errorValue;
         }
-
+        public static bool EqualCase(this string thisValue,string equalValue) 
+        {
+            if ( thisValue!=null && equalValue != null)
+            {
+                return thisValue.ToLower() == equalValue.ToLower();
+            }
+            else 
+            {
+                return thisValue == equalValue;
+            }
+        }
         public static string ObjToString(this object thisValue)
         {
             if (thisValue != null) return thisValue.ToString().Trim();

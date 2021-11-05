@@ -20,6 +20,8 @@ namespace SqlSugar
                 csharpTypeName = "long";
             if (csharpTypeName == "Boolean")
                 csharpTypeName = "bool";
+            if (csharpTypeName == "SByte")
+                csharpTypeName = "Byte";
             var mappings = this.MappingTypes.Where(it => it.Value.ToString().Equals(csharpTypeName, StringComparison.CurrentCultureIgnoreCase));
             return mappings.HasValue() ? mappings.First().Key : "varchar";
         }

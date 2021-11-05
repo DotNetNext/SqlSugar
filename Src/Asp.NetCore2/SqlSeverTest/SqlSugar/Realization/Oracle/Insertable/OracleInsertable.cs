@@ -34,7 +34,7 @@ namespace SqlSugar
             var count = Ado.ExecuteCommand(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
             var result = (this.GetIdentityKeys().IsNullOrEmpty() || count == 0) ? 0 : GetSeqValue(GetSeqName()).ObjToInt();
             this.Context.Ado.IsDisableMasterSlaveSeparation = isDisableMasterSlaveSeparation;
-
+            After(sql,result);
             AutoEnd(oldIsAuto);
             return result;
         }
@@ -52,7 +52,7 @@ namespace SqlSugar
             var count = Ado.ExecuteCommand(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
             var result = (this.GetIdentityKeys().IsNullOrEmpty() || count == 0) ? 0 : Convert.ToInt64(GetSeqValue(GetSeqName()));
             this.Context.Ado.IsDisableMasterSlaveSeparation = isDisableMasterSlaveSeparation;
-
+            After(sql, result);
             AutoEnd(oldIsAuto);
             return result;
         }
@@ -70,7 +70,7 @@ namespace SqlSugar
             var count = await Ado.ExecuteCommandAsync(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
             var result = (this.GetIdentityKeys().IsNullOrEmpty() || count == 0) ? 0 : GetSeqValue(GetSeqName()).ObjToInt();
             this.Context.Ado.IsDisableMasterSlaveSeparation = isDisableMasterSlaveSeparation;
-
+            After(sql, result);
             AutoEnd(oldIsAuto);
             return result;
         }
@@ -88,7 +88,7 @@ namespace SqlSugar
             var count = await Ado.ExecuteCommandAsync(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
             var result = (this.GetIdentityKeys().IsNullOrEmpty() || count == 0) ? 0 : Convert.ToInt64(GetSeqValue(GetSeqName()));
             this.Context.Ado.IsDisableMasterSlaveSeparation = isDisableMasterSlaveSeparation;
-
+            After(sql, result);
             AutoEnd(oldIsAuto);
             return result;
         }
