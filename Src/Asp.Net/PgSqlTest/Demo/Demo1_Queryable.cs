@@ -177,7 +177,8 @@ namespace OrmTest
 
             var  list4 = db.Queryable<ABMapping>()
               .Mapper(it => it.A, it => it.AId)
-              .Mapper(it => it.B, it => it.BId).ToList();
+              .Mapper(it => it.B, it => it.BId)
+              .Where(it => it.A.Id == 1).ToList();
 
             //Manual mode
             var result = db.Queryable<OrderInfo>().Take(10).Select<ViewOrder>().Mapper((itemModel, cache) =>

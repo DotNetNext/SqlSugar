@@ -45,6 +45,11 @@ namespace SqlSugar
         }
         public override string GetTranslationColumnName(string propertyName)
         {
+            if (propertyName.Contains(".")&& !propertyName.Contains(SqlTranslationLeft)) 
+            {
+                return string.Join(".", propertyName.Split('.').Select(it => $"{SqlTranslationLeft}{it.ToLower(isAutoToLower)}{SqlTranslationRight}"));
+            }
+
             if (propertyName.Contains(SqlTranslationLeft)) return propertyName;
             else
                 return SqlTranslationLeft + propertyName.ToLower(isAutoToLower) + SqlTranslationRight;
