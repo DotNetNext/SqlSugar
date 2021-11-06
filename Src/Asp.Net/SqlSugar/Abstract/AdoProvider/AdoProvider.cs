@@ -68,6 +68,7 @@ namespace SqlSugar
         public virtual Action<DiffLogModel> DiffLogEvent => this.Context.CurrentConnectionConfig.AopEvents?.OnDiffLogEvent;
         public virtual List<IDbConnection> SlaveConnections { get; set; }
         public virtual IDbConnection MasterConnection { get; set; }
+        public virtual string MasterConnectionString { get; set; }
         public virtual CancellationToken? CancellationToken { get; set; }
         #endregion
 
@@ -1373,6 +1374,7 @@ namespace SqlSugar
                 if (this.MasterConnection == null)
                 {
                     this.MasterConnection = this.Connection;
+                    this.MasterConnectionString = this.MasterConnection.ConnectionString;
                 }
                 var saves = this.Context.CurrentConnectionConfig.SlaveConnectionConfigs.Where(it => it.HitRate > 0).ToList();
                 var currentIndex = UtilRandom.GetRandomIndex(saves.ToDictionary(it => saves.ToList().IndexOf(it), it => it.HitRate));
@@ -1401,7 +1403,7 @@ namespace SqlSugar
             if (this.IsMasterSlaveSeparation && IsRead(sql) && this.Transaction == null)
             {
                 this.Connection = this.MasterConnection;
-                this.Context.CurrentConnectionConfig.ConnectionString = this.MasterConnection.ConnectionString;
+                this.Context.CurrentConnectionConfig.ConnectionString = this.MasterConnectionString;
             }
         }
 
