@@ -25,6 +25,7 @@ namespace SqlSugar
         private IgnoreColumnList _IgnoreInsertColumns;
         internal Guid? AsyncId { get; set; }
         internal bool? IsSingleInstance { get; set; }
+        internal List<string> GetConnectionConfigIds = new List<string>();
 
         #endregion
 
@@ -625,6 +626,7 @@ namespace SqlSugar
             {
                 db.Context.CurrentConnectionConfig.AopEvents = new AopEvents();
             }
+            this.GetConnectionConfigIds.Add(configId+"");
             return db.Context;
         }
         public bool IsAnyConnection(dynamic configId)
@@ -665,7 +667,17 @@ namespace SqlSugar
         public void BeginTran()
         {
             _IsAllTran = true;
-            AllClientEach(it => it.Ado.BeginTran());
+            AllClientEach(it => 
+            {
+                if (this.GetConnectionConfigIds.Any()&&this.GetConnectionConfigIds.Contains(it.CurrentConnectionConfig.ConfigId))
+                {
+                    it.Ado.BeginTran();
+                }
+                else
+                {
+                    it.Ado.BeginTran();
+                }
+            });
         }
         public void CommitTran()
         {
