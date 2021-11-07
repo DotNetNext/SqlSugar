@@ -336,6 +336,31 @@ namespace OrmTest
                 Console.WriteLine(db.Queryable<Order>().Count());
             }
 
+
+            // Example 4
+            Console.WriteLine("Example 4");
+            var mysqldb = db.GetConnection("1");//获取ConfigId为1的数据库对象
+            var sqlServerdb = db.GetConnection("2");//获取默认对象  
+            Console.WriteLine(mysqldb.Queryable<Order>().Count());
+            Console.WriteLine(sqlServerdb.Queryable<Order>().Count());
+            try
+            {
+                db.BeginTran();
+
+                sqlServerdb.Deleteable<Order>().ExecuteCommand();
+                mysqldb.Deleteable<Order>().ExecuteCommand();
+                Console.WriteLine(mysqldb.Queryable<Order>().Count());
+                Console.WriteLine(sqlServerdb.Queryable<Order>().Count());
+
+                throw new Exception("");
+                db.CommitTran();
+            }
+            catch (Exception)
+            {
+                db.RollbackTran();//数据回滚
+                Console.WriteLine(mysqldb.Queryable<Order>().Count());
+                Console.WriteLine(sqlServerdb.Queryable<Order>().Count());
+            }
             Console.WriteLine("#### Distributed TransactionExample End ####");
         }
     }
