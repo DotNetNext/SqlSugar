@@ -16,6 +16,7 @@ Using SqlSugar is very simple , And it's powerful.
 ## Description
 
 - Support SqlServer、MySql and Oracle  insert blukcopy  
+- Split table big data self-processing 
 - Support Multi-tenant, multi-library transactions
 - Support Support CodeFirst data migration.
 - Support Join query 、  Union all 、 Subquery 
