@@ -10,6 +10,7 @@ namespace SqlSugar
     public class SugarParameter : DbParameter
     {
         public bool IsRefCursor { get; set; }
+        public bool IsClob { get; set; }
         public SugarParameter(string name, object value)
         {
             this.Value = value;
