@@ -170,15 +170,18 @@ x.AsInsertable.ExecuteCommand();
 ### Feature8 ：Auto split table
 ```cs
 //entity 
-[SplitTable(SplitType.Year)]//按年分表 （自带分表支持 年、季、月、周、日）
-[SugarTable("SplitTestTable_{year}{month}{day}")]//生成表名格式 3个变量必须要有
+[SplitTable(SplitType.Year)]//Table by year (the table supports year, quarter, month, week and day)
+[SugarTable("SplitTestTable_{year}{month}{day}")] 
  public class SplitTestTable
  {
      [SugarColumn(IsPrimaryKey =true)]
      public long Id { get; set; }
  
      public string Name { get; set; }
-     [SplitField] //分表字段  在插入的时候会根据这个字段插入哪个表，在更新删除的时候也能可方便的用这个字段找出相关表
+     [SplitField] 
+     //When the sub-table field is inserted, which table will be inserted according to this field. 
+     //When it is updated and deleted, it can also be convenient to use this field to      
+     //find out the related table 
      public DateTime CreateTime { get; set; }
  }
  //split query
