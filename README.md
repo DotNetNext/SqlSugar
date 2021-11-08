@@ -167,3 +167,22 @@ var x = Db.Storageable(list).SplitInsert(it => !it.Any()).ToStorage()
 x.AsInsertable.ExecuteCommand(); 
 ```
  
+### Feature8 ：Auto split table
+```cs
+//entity 
+[SplitTable(SplitType.Year)]//按年分表 （自带分表支持 年、季、月、周、日）
+[SugarTable("SplitTestTable_{year}{month}{day}")]//生成表名格式 3个变量必须要有
+ public class SplitTestTable
+ {
+     [SugarColumn(IsPrimaryKey =true)]
+     public long Id { get; set; }
+ 
+     public string Name { get; set; }
+     [SplitField] //分表字段  在插入的时候会根据这个字段插入哪个表，在更新删除的时候也能可方便的用这个字段找出相关表
+     public DateTime CreateTime { get; set; }
+ }
+ //split query
+ var lis2t = db.Queryable<OrderSpliteTest>()
+.SplitTable(DateTime.Now.Date.AddYears(-1), DateTime.Now)
+.ToPageList(1,2);　
+ ```
