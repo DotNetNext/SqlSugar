@@ -168,8 +168,8 @@ x.AsInsertable.ExecuteCommand();
 ```
  
 ### Feature8 ：Auto split table
+Split entity 
 ```cs
-//entity 
 [SplitTable(SplitType.Year)]//Table by year (the table supports year, quarter, month, week and day)
 [SugarTable("SplitTestTable_{year}{month}{day}")] 
  public class SplitTestTable
@@ -178,14 +178,17 @@ x.AsInsertable.ExecuteCommand();
      public long Id { get; set; }
  
      public string Name { get; set; }
-     [SplitField] 
+     
      //When the sub-table field is inserted, which table will be inserted according to this field. 
      //When it is updated and deleted, it can also be convenient to use this field to      
      //find out the related table 
+     [SplitField] 
      public DateTime CreateTime { get; set; }
  }
- //split query
+ ```
+Split query
+```cs
  var lis2t = db.Queryable<OrderSpliteTest>()
 .SplitTable(DateTime.Now.Date.AddYears(-1), DateTime.Now)
 .ToPageList(1,2);　
- ```
+``` 
