@@ -16,6 +16,7 @@ Using SqlSugar is very simple , And it's powerful.
 ## Description
 
 - Support SqlServer、MySql and Oracle  insert blukcopy  
+- Split table big data self-processing 
 - Support Multi-tenant, multi-library transactions
 - Support Support CodeFirst data migration.
 - Support Join query 、  Union all 、 Subquery 
@@ -166,3 +167,28 @@ var x = Db.Storageable(list).SplitInsert(it => !it.Any()).ToStorage()
 x.AsInsertable.ExecuteCommand(); 
 ```
  
+### Feature8 ：Auto split table
+Split entity 
+```cs
+[SplitTable(SplitType.Year)]//Table by year (the table supports year, quarter, month, week and day)
+[SugarTable("SplitTestTable_{year}{month}{day}")] 
+ public class SplitTestTable
+ {
+     [SugarColumn(IsPrimaryKey =true)]
+     public long Id { get; set; }
+ 
+     public string Name { get; set; }
+     
+     //When the sub-table field is inserted, which table will be inserted according to this field. 
+     //When it is updated and deleted, it can also be convenient to use this field to      
+     //find out the related table 
+     [SplitField] 
+     public DateTime CreateTime { get; set; }
+ }
+ ```
+Split query
+```cs
+ var lis2t = db.Queryable<OrderSpliteTest>()
+.SplitTable(DateTime.Now.Date.AddYears(-1), DateTime.Now)
+.ToPageList(1,2);　
+``` 
