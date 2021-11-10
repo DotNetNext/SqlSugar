@@ -74,6 +74,10 @@ namespace SqlSugar
         {
             return Context.Updateable<T>(updateObjs);
         }
+        public IUpdateable<T> AsUpdateable() 
+        {
+            return Context.Updateable<T>();
+        }
         public IDeleteable<T> AsDeleteable()
         {
             return Context.Deleteable<T>();
