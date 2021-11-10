@@ -84,6 +84,7 @@
     <Compile Include="Abstract\DbMaintenanceProvider\Methods.cs" />
     <Compile Include="Abstract\DbMaintenanceProvider\Properties.cs" />
     <Compile Include="Abstract\AdoProvider\AdoProvider.cs" />
+    <Compile Include="Abstract\DeleteProvider\LogicDeleteProvider.cs" />
     <Compile Include="Abstract\DeleteProvider\SplitTableDeleteProvider.cs" />
     <Compile Include="Abstract\EntityMaintenance\EntityMaintenance.cs" />
     <Compile Include="Abstract\ExpressionableProvider\Expressionable.cs" />

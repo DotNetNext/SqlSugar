@@ -21,7 +21,7 @@ namespace SqlSugar
         public bool IsEnableDiffLogEvent { get; set; }
         public DiffLogModel diffModel { get; set; }
         public List<string> tempPrimaryKeys { get; set; }
-        private Action RemoveCacheFunc { get; set; }
+        internal Action RemoveCacheFunc { get; set; }
         public EntityInfo EntityInfo
         {
             get
@@ -270,6 +270,13 @@ namespace SqlSugar
             var tables = getTableNamesFunc(helper.GetTables());
             result.Tables = tables;
             result.deleteobj = this;
+            return result;
+        }
+        public LogicDeleteProvider<T> IsLogic() 
+        {
+            LogicDeleteProvider<T> result = new LogicDeleteProvider<T>();
+            result.DeleteBuilder = this.DeleteBuilder;
+            result.Deleteable = this;
             return result;
         }
         public IDeleteable<T> RemoveDataCache(string likeString)

@@ -66,7 +66,7 @@ namespace SqlSugar
         /// <param name="columns"></param>
         /// <returns></returns>
         IUpdateable<T> SetColumns(Expression<Func<T, T>> columns);
-
+        IUpdateable<T> SetColumns(string fieldName,object fieldValue);
 
 
         IUpdateable<T> UpdateColumnsIF(bool isUpdateColumns,Expression<Func<T, object>> columns);

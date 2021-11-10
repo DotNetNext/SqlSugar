@@ -41,8 +41,19 @@ namespace OrmTest
             //by expression
             db.Deleteable<Order>().Where(it => it.Id == 11111).ExecuteCommand();
 
+            //logic delete
+            db.CodeFirst.InitTables<LogicTest>();
+  ;
+            db.Deleteable<LogicTest>().Where(it=>it.Id==1).IsLogic().ExecuteCommand();
             Console.WriteLine("#### Deleteable End ####");
 
         }
+    }
+    public class LogicTest 
+    {
+        [SugarColumn(IsPrimaryKey =true,IsIdentity =true)]
+        public int Id { get; set; }
+
+        public bool isdeleted { get; set; }
     }
 }

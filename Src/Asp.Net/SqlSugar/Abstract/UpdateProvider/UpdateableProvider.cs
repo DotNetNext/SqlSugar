@@ -32,7 +32,7 @@ namespace SqlSugar
         public bool IsAs { get; set; }
         public bool IsEnableDiffLogEvent { get; set; }
         public DiffLogModel diffModel { get; set; }
-        private Action RemoveCacheFunc { get; set; }
+        internal Action RemoveCacheFunc { get; set; }
         private int SetColumnsIndex { get; set; }
         private List<DbColumnInfo> columns { get; set; }
         #endregion
@@ -291,6 +291,19 @@ namespace SqlSugar
         #endregion
 
         #region Update by expression
+        public IUpdateable<T> SetColumns(string fieldName, object fieldValue) 
+        {
+            ThrowUpdateByObject();
+            var columnInfo = this.EntityInfo.Columns.FirstOrDefault(it => it.PropertyName.EqualCase(fieldName));
+            if (columnInfo != null) 
+            {
+                fieldName = columnInfo.DbColumnName;
+            }
+            UpdateBuilder.SetValues.Add(new KeyValuePair<string, string>(fieldName, fieldValue+""));
+            this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => (UpdateParameterIsNull == false && IsPrimaryKey(it)) || UpdateBuilder.SetValues.Any(v => SqlBuilder.GetNoTranslationColumnName(v.Key).Equals(it.DbColumnName, StringComparison.CurrentCultureIgnoreCase) || SqlBuilder.GetNoTranslationColumnName(v.Key).Equals(it.PropertyName, StringComparison.CurrentCultureIgnoreCase)) || it.IsPrimarykey == true).ToList();
+            AppendSets();
+            return this;
+        }
         public IUpdateable<T> SetColumns(Expression<Func<T, T>> columns)
         {
             ThrowUpdateByObject();
