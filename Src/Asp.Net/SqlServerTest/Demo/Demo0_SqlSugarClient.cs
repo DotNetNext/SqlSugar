@@ -279,7 +279,7 @@ namespace OrmTest
             // Example 2
             Console.WriteLine("Example 2");
 
-            var result=db.UseTran(() =>
+            var result = db.UseTran(() =>
             {
 
                 db.ChangeDatabase("1");//use db1
@@ -294,7 +294,8 @@ namespace OrmTest
                 throw new Exception("");
 
             });
-            if (result.IsSuccess == false) {
+            if (result.IsSuccess == false)
+            {
                 Console.WriteLine("---Roll back");
                 db.ChangeDatabase("1");//use db1
                 Console.WriteLine(db.CurrentConnectionConfig.DbType);
@@ -307,36 +308,9 @@ namespace OrmTest
 
             // Example 3
             Console.WriteLine("Example 3");
-
-            var result2 = db.UseTranAsync(async () =>
-            {
-
-                db.ChangeDatabase("1");//use db1
-                await db.Deleteable<Order>().ExecuteCommandAsync();
-                Console.WriteLine("---Delete all " + db.CurrentConnectionConfig.DbType);
-                Console.WriteLine(db.Queryable<Order>().Count());
-
-                db.ChangeDatabase("2");//use db2
-                await db.Deleteable<Order>().ExecuteCommandAsync();
-                Console.WriteLine("---Delete all " + db.CurrentConnectionConfig.DbType);
-                Console.WriteLine(db.Queryable<Order>().Count());
-                throw new Exception("");
-
-            });
+            Task<DbResult<bool>> result2 = AsyncTranDemo(db);
             result2.Wait();
-            if (result2.Result.IsSuccess == false)
-            {
-                Console.WriteLine("---Roll back");
-                db.ChangeDatabase("1");//use sqlserver
-                Console.WriteLine(db.CurrentConnectionConfig.DbType);
-                Console.WriteLine(db.Queryable<Order>().Count());
-
-                db.ChangeDatabase("2");//use mysql
-                Console.WriteLine(db.CurrentConnectionConfig.DbType);
-                Console.WriteLine(db.Queryable<Order>().Count());
-            }
-
-
+ 
             // Example 4
             Console.WriteLine("Example 4");
             var mysqldb = db.GetConnection("1");//获取ConfigId为1的数据库对象
@@ -362,6 +336,41 @@ namespace OrmTest
                 Console.WriteLine(sqlServerdb.Queryable<Order>().Count());
             }
             Console.WriteLine("#### Distributed TransactionExample End ####");
+        }
+
+        /// <summary>
+        ///Async tran demo
+        /// </summary>
+        /// <param name="db"></param>
+        /// <returns></returns>
+        private static async Task<DbResult<bool>> AsyncTranDemo(SqlSugarClient db)
+        {
+            //need await all
+            var result2 =await db.UseTranAsync(async () =>
+            {
+                //need await all
+
+                db.ChangeDatabase("1");//use db1
+                await db.Deleteable<Order>().ExecuteCommandAsync();
+                Console.WriteLine("---Delete all " + db.CurrentConnectionConfig.DbType);
+                Console.WriteLine(db.Queryable<Order>().Count());
+
+                db.ChangeDatabase("2");//use db2
+                await db.Deleteable<Order>().ExecuteCommandAsync();
+                Console.WriteLine("---Delete all " + db.CurrentConnectionConfig.DbType);
+                Console.WriteLine(db.Queryable<Order>().Count());
+                throw new Exception("");
+
+            });
+            Console.WriteLine("---Roll back");
+            db.ChangeDatabase("1");//use sqlserver
+            Console.WriteLine(db.CurrentConnectionConfig.DbType);
+            Console.WriteLine(db.Queryable<Order>().Count());
+
+            db.ChangeDatabase("2");//use mysql
+            Console.WriteLine(db.CurrentConnectionConfig.DbType);
+            Console.WriteLine(db.Queryable<Order>().Count());
+            return result2;
         }
     }
 
