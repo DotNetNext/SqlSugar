@@ -671,17 +671,7 @@ namespace SqlSugar
         public void BeginTran()
         {
             _IsAllTran = true;
-            AllClientEach(it => 
-            {
-                if (this.GetConnectionConfigIds.Any()&&this.GetConnectionConfigIds.Contains(it.CurrentConnectionConfig.ConfigId+""))
-                {
-                    it.Ado.BeginTran();
-                }
-                else
-                {
-                    it.Ado.BeginTran();
-                }
-            });
+            AllClientEach(it => it.Ado.BeginTran());
         }
         public void CommitTran()
         {
