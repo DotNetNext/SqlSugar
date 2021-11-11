@@ -142,7 +142,7 @@ namespace SqlSugar
         }
         public IUpdateable<T> EnableDiffLogEvent(object businessData = null)
         {
-            Check.Exception(this.UpdateObjs.HasValue() && this.UpdateObjs.Count() > 1, "DiffLog does not support batch operations");
+            //Check.Exception(this.UpdateObjs.HasValue() && this.UpdateObjs.Count() > 1, "DiffLog does not support batch operations");
             diffModel = new DiffLogModel();
             this.IsEnableDiffLogEvent = true;
             diffModel.BusinessData = businessData;
@@ -807,8 +807,8 @@ namespace SqlSugar
         private List<DiffLogTableInfo> GetDiffTable(string sql, List<SugarParameter> parameters)
         {
             List<DiffLogTableInfo> result = new List<DiffLogTableInfo>();
-            var whereSql = Regex.Replace(sql, ".* WHERE ", "", RegexOptions.Singleline);
-            var dt = this.Context.Queryable<T>().Where(whereSql).AddParameters(parameters).ToDataTable();
+            //var whereSql = Regex.Replace(sql, ".* WHERE ", "", RegexOptions.Singleline);
+            var dt = this.Context.Queryable<T>().WhereClassByPrimaryKey(this.UpdateObjs.ToList()).ToDataTable();
             if (dt.Rows != null && dt.Rows.Count > 0)
             {
                 foreach (DataRow row in dt.Rows)
