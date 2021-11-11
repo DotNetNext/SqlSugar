@@ -129,7 +129,7 @@ namespace SqlSugar
             {
                 this.DbType = System.Data.DbType.Time;
             }
-            else if (type.Name=="Geometry")
+            else if (type?.Name=="Geometry")
             {
                 this.DbType = System.Data.DbType.Object;
             }
