@@ -65,6 +65,9 @@ namespace OrmTest
             db.Updateable(data).EnableDiffLogEvent("--update Order--").ExecuteCommand();
 
             db.Updateable(list.Take(5).ToList()).EnableDiffLogEvent("--update Order--").ExecuteCommand();
+
+
+            db.Updateable<Order>().SetColumns(it=>it.Name=="asdfa").Where(it=>it.Id==1).EnableDiffLogEvent("--update Order--").ExecuteCommand();
             Console.WriteLine("#### Aop End ####");
         }
     }
