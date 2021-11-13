@@ -33,24 +33,24 @@ namespace OrmTest
 
             Db.Queryable<Order>().Where(it => SqlSugar.SqlFunc.Equals(it.CreateTime.Date, it.CreateTime.Date)).ToList();
 
-            var sql = Db.Queryable<UnitSelectTest>().Select(it => new UnitSelectTest()
-            {
+           // var sql = Db.Queryable<UnitSelectTest>().Select(it => new UnitSelectTest()
+           // {
 
-                DcNull = it.Dc,
-                Dc = it.Int
-            }).ToSql().Key;
-            UValidate.Check(sql, "SELECT  [Dc] AS [DcNull] , [Int] AS [Dc]  FROM [UnitSelectTest]", "Queryable");
+           //     DcNull = it.Dc,
+           //     Dc = it.Int
+           // }).ToSql().Key;
+           // UValidate.Check(sql, "SELECT  [Dc] AS [DcNull] , [Int] AS [Dc]  FROM [UnitSelectTest]", "Queryable");
 
-            sql = Db.Updateable<UnitSelectTest2>(new UnitSelectTest2()).ToSql().Key;
-            UValidate.Check(sql, @"UPDATE [UnitSelectTest2]  SET
-           [Dc]=@Dc,[IntNull]=@IntNull  WHERE [Int]=@Int", "Queryable");
+           // sql = Db.Updateable<UnitSelectTest2>(new UnitSelectTest2()).ToSql().Key;
+           // UValidate.Check(sql, @"UPDATE [UnitSelectTest2]  SET
+           //[Dc]=@Dc,[IntNull]=@IntNull  WHERE [Int]=@Int", "Queryable");
 
-            sql = Db.Queryable<Order>().IgnoreColumns(it => it.CreateTime).ToSql().Key;
-            UValidate.Check(sql, "SELECT [Id],[Name],[Price],[CustomId] FROM [Order] ", "Queryable");
-            sql = Db.Queryable<Order>().IgnoreColumns(it => new { it.Id, it.Name }).ToSql().Key;
-            UValidate.Check(sql, "SELECT [Price],[CreateTime],[CustomId] FROM [Order] ", "Queryable");
-            sql = Db.Queryable<Order>().IgnoreColumns("id").ToSql().Key;
-            UValidate.Check(sql, "SELECT [Name],[Price],[CreateTime],[CustomId] FROM [Order] ", "Queryable");
+           // sql = Db.Queryable<Order>().IgnoreColumns(it => it.CreateTime).ToSql().Key;
+           // UValidate.Check(sql, "SELECT [Id],[Name],[Price],[CustomId] FROM [Order] ", "Queryable");
+           // sql = Db.Queryable<Order>().IgnoreColumns(it => new { it.Id, it.Name }).ToSql().Key;
+           // UValidate.Check(sql, "SELECT [Price],[CreateTime],[CustomId] FROM [Order] ", "Queryable");
+           // sql = Db.Queryable<Order>().IgnoreColumns("id").ToSql().Key;
+           // UValidate.Check(sql, "SELECT [Name],[Price],[CreateTime],[CustomId] FROM [Order] ", "Queryable");
 
             var cts = IEnumerbleContains.Data();
             var list2=Db.Queryable<Order>()
