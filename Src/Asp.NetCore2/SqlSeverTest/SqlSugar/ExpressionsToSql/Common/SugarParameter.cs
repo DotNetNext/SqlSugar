@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -10,6 +10,7 @@ namespace SqlSugar
     public class SugarParameter : DbParameter
     {
         public bool IsRefCursor { get; set; }
+        public bool IsClob { get; set; }
         public SugarParameter(string name, object value)
         {
             this.Value = value;
@@ -127,6 +128,10 @@ namespace SqlSugar
             else if (type == UtilConstants.TimeSpanType)
             {
                 this.DbType = System.Data.DbType.Time;
+            }
+            else if (type?.Name=="Geometry")
+            {
+                this.DbType = System.Data.DbType.Object;
             }
             else if (type!=null&&type.IsEnum())
             {

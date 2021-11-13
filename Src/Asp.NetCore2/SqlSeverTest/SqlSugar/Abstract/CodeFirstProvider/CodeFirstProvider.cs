@@ -191,7 +191,7 @@ namespace SqlSugar
                                                           dbColumns.Any(dc => dc.DbColumnName.Equals(ec.DbColumnName)
                                                                && ((ec.Length != dc.Length && !UtilMethods.GetUnderType(ec.PropertyInfo).IsEnum() && UtilMethods.GetUnderType(ec.PropertyInfo).IsIn(UtilConstants.StringType)) ||
                                                                     ec.IsNullable != dc.IsNullable ||
-                                                                    IsSamgeType(ec, dc)))).ToList();
+                                                                    IsNoSamgeType(ec, dc)))).ToList();
                 var renameColumns = entityColumns
                     .Where(it => !string.IsNullOrEmpty(it.OldDbColumnName))
                     .Where(entityColumn => dbColumns.Any(dbColumn => entityColumn.OldDbColumnName.Equals(dbColumn.DbColumnName, StringComparison.CurrentCultureIgnoreCase)))
@@ -343,7 +343,7 @@ namespace SqlSugar
             }
         }
 
-        protected virtual bool IsSamgeType(EntityColumnInfo ec, DbColumnInfo dc)
+        protected virtual bool IsNoSamgeType(EntityColumnInfo ec, DbColumnInfo dc)
         {
             if (!string.IsNullOrEmpty(ec.DataType))
             {
@@ -362,6 +362,22 @@ namespace SqlSugar
             }
             var dataType = dc.DataType;
             if (properyTypeName == "boolean" && dataType == "bool")
+            {
+                return false;
+            }
+            if (properyTypeName?.ToLower() == "varchar" && dataType?.ToLower() == "string") 
+            {
+                return false;
+            }
+            if (properyTypeName?.ToLower() == "number" && dataType?.ToLower() == "decimal")
+            {
+                return false;
+            }
+            if (properyTypeName?.ToLower() == "int" && dataType?.ToLower() == "decimal"&&dc.Length==22&&dc.Scale==0&&this.Context.CurrentConnectionConfig.DbType==DbType.Oracle)
+            {
+                return false;
+            }
+            if (properyTypeName?.ToLower() == "date" && dataType?.ToLower() == "datetime")
             {
                 return false;
             }

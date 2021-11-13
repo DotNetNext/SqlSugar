@@ -359,7 +359,7 @@ namespace SqlSugar
 
         public IInsertable<T> EnableDiffLogEvent(object businessData = null)
         {
-            Check.Exception(this.InsertObjs.HasValue() && this.InsertObjs.Count() > 1, "DiffLog does not support batch operations");
+            //Check.Exception(this.InsertObjs.HasValue() && this.InsertObjs.Count() > 1, "DiffLog does not support batch operations");
             diffModel = new DiffLogModel();
             this.IsEnableDiffLogEvent = true;
             diffModel.BusinessData = businessData;
@@ -770,6 +770,45 @@ namespace SqlSugar
         }
         private List<DiffLogTableInfo> GetDiffTable(string sql, long? identity)
         {
+
+            if (GetIdentityKeys().HasValue() && this.InsertObjs.Count() > 1)
+            {
+                return GetDiffTableByEntity();
+            }
+            else
+            {
+                return GetDiffTableBySql(identity);
+            }
+
+        }
+
+        private List<DiffLogTableInfo> GetDiffTableByEntity()
+        {
+            List<SugarParameter> parameters = new List<SugarParameter>();
+            List<DiffLogTableInfo> result = new List<DiffLogTableInfo>();
+            var dt2 = this.Context.Utilities.ListToDataTable<T>(this.InsertObjs.ToList());
+            foreach (DataRow row in dt2.Rows)
+            {
+                DiffLogTableInfo item = new DiffLogTableInfo();
+                item.TableDescription = this.EntityInfo.TableDescription;
+                item.TableName = this.EntityInfo.DbTableName;
+                item.Columns = new List<DiffLogColumnInfo>();
+                foreach (DataColumn col in dt2.Columns)
+                {
+
+                    DiffLogColumnInfo addItem = new DiffLogColumnInfo();
+                    addItem.Value = row[col.ColumnName];
+                    addItem.ColumnName = col.ColumnName;
+                    addItem.ColumnDescription = this.EntityInfo.Columns.Where(it => it.DbColumnName != null).FirstOrDefault(it => it.DbColumnName.Equals(col.ColumnName, StringComparison.CurrentCultureIgnoreCase))?.ColumnDescription;
+                    item.Columns.Add(addItem);
+                }
+                result.Add(item);
+            }
+            return result;
+        }
+
+        private List<DiffLogTableInfo> GetDiffTableBySql(long? identity)
+        {
             List<SugarParameter> parameters = new List<SugarParameter>();
             List<DiffLogTableInfo> result = new List<DiffLogTableInfo>();
             var whereSql = string.Empty;
@@ -786,9 +825,9 @@ namespace SqlSugar
                     var fielddName = item.DbColumnName;
                     var filedObject = this.EntityInfo.Columns.FirstOrDefault(it => it.PropertyName == item.PropertyName).PropertyInfo.GetValue(this.InsertObjs.Last(), null);
                     var fieldValue = filedObject.ObjToString();
-                    if (filedObject != null && filedObject.GetType() != typeof(string)&&this.Context.CurrentConnectionConfig.DbType==DbType.PostgreSQL)
+                    if (filedObject != null && filedObject.GetType() != typeof(string) && this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL)
                     {
-                        cons.Add(new ConditionalModel() { ConditionalType = ConditionalType.Equal, FieldName = fielddName, FieldValue = fieldValue,FieldValueConvertFunc= it => UtilMethods.ChangeType2(it, filedObject.GetType()) });
+                        cons.Add(new ConditionalModel() { ConditionalType = ConditionalType.Equal, FieldName = fielddName, FieldValue = fieldValue, FieldValueConvertFunc = it => UtilMethods.ChangeType2(it, filedObject.GetType()) });
                     }
                     else
                     {
@@ -814,7 +853,7 @@ namespace SqlSugar
                         DiffLogColumnInfo addItem = new DiffLogColumnInfo();
                         addItem.Value = row[col.ColumnName];
                         addItem.ColumnName = col.ColumnName;
-                        addItem.ColumnDescription = this.EntityInfo.Columns.Where(it=>it.DbColumnName!=null).First(it => it.DbColumnName.Equals(col.ColumnName, StringComparison.CurrentCultureIgnoreCase)).ColumnDescription;
+                        addItem.ColumnDescription = this.EntityInfo.Columns.Where(it => it.DbColumnName != null).First(it => it.DbColumnName.Equals(col.ColumnName, StringComparison.CurrentCultureIgnoreCase)).ColumnDescription;
                         item.Columns.Add(addItem);
                     }
                     result.Add(item);
@@ -834,7 +873,6 @@ namespace SqlSugar
                 }).ToList();
                 return new List<DiffLogTableInfo>() { diffTable };
             }
-
         }
 
         public IInsertable<T> CallEntityMethod(Expression<Action<T>> method)

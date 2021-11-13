@@ -18,6 +18,7 @@ namespace SqlSugar
         ITenant AsTenant();
         IUpdateable<T> AsUpdateable(List<T> updateObjs);
         IUpdateable<T> AsUpdateable(T updateObj);
+        IUpdateable<T> AsUpdateable();
         IUpdateable<T> AsUpdateable(T[] updateObjs);
         int Count(Expression<Func<T, bool>> whereExpression);
         bool Delete(Expression<Func<T, bool>> whereExpression);

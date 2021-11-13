@@ -32,7 +32,7 @@ namespace SqlSugar
         public bool IsAs { get; set; }
         public bool IsEnableDiffLogEvent { get; set; }
         public DiffLogModel diffModel { get; set; }
-        private Action RemoveCacheFunc { get; set; }
+        internal Action RemoveCacheFunc { get; set; }
         private int SetColumnsIndex { get; set; }
         private List<DbColumnInfo> columns { get; set; }
         #endregion
@@ -142,7 +142,7 @@ namespace SqlSugar
         }
         public IUpdateable<T> EnableDiffLogEvent(object businessData = null)
         {
-            Check.Exception(this.UpdateObjs.HasValue() && this.UpdateObjs.Count() > 1, "DiffLog does not support batch operations");
+            //Check.Exception(this.UpdateObjs.HasValue() && this.UpdateObjs.Count() > 1, "DiffLog does not support batch operations");
             diffModel = new DiffLogModel();
             this.IsEnableDiffLogEvent = true;
             diffModel.BusinessData = businessData;
@@ -291,6 +291,19 @@ namespace SqlSugar
         #endregion
 
         #region Update by expression
+        public IUpdateable<T> SetColumns(string fieldName, object fieldValue) 
+        {
+            ThrowUpdateByObject();
+            var columnInfo = this.EntityInfo.Columns.FirstOrDefault(it => it.PropertyName.EqualCase(fieldName));
+            if (columnInfo != null) 
+            {
+                fieldName = columnInfo.DbColumnName;
+            }
+            UpdateBuilder.SetValues.Add(new KeyValuePair<string, string>(fieldName, fieldValue+""));
+            this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => (UpdateParameterIsNull == false && IsPrimaryKey(it)) || UpdateBuilder.SetValues.Any(v => SqlBuilder.GetNoTranslationColumnName(v.Key).Equals(it.DbColumnName, StringComparison.CurrentCultureIgnoreCase) || SqlBuilder.GetNoTranslationColumnName(v.Key).Equals(it.PropertyName, StringComparison.CurrentCultureIgnoreCase)) || it.IsPrimarykey == true).ToList();
+            AppendSets();
+            return this;
+        }
         public IUpdateable<T> SetColumns(Expression<Func<T, T>> columns)
         {
             ThrowUpdateByObject();
@@ -794,8 +807,16 @@ namespace SqlSugar
         private List<DiffLogTableInfo> GetDiffTable(string sql, List<SugarParameter> parameters)
         {
             List<DiffLogTableInfo> result = new List<DiffLogTableInfo>();
-            var whereSql = Regex.Replace(sql, ".* WHERE ", "", RegexOptions.Singleline);
-            var dt = this.Context.Queryable<T>().Where(whereSql).AddParameters(parameters).ToDataTable();
+            DataTable dt = null;
+            if (this.UpdateParameterIsNull)
+            {
+                var whereSql = Regex.Replace(sql, ".* WHERE ", "", RegexOptions.Singleline);
+                dt = this.Context.Queryable<T>().Where(whereSql).AddParameters(parameters).ToDataTable();
+            }
+            else 
+            {
+                dt=this.Context.Queryable<T>().WhereClassByPrimaryKey(this.UpdateObjs.ToList()).ToDataTable();
+            }
             if (dt.Rows != null && dt.Rows.Count > 0)
             {
                 foreach (DataRow row in dt.Rows)
