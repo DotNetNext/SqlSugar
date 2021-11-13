@@ -289,7 +289,7 @@ namespace SqlSugar
             cacheKey = GetCacheKey(cacheKey);
             if (!isCache)
             {
-                return GetColumnInfosByTableName(tableName);
+                return GetColumnsByTableName(tableName);
             }
             return this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey,
             () =>
