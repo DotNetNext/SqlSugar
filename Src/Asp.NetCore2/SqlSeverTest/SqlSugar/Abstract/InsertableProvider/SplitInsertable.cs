@@ -45,7 +45,7 @@ namespace SqlSugar
                 {
                     this.Context.Ado.BeginTran();
                     var result = await _ExecuteCommandAsync();
-                    this.Context.Ado.BeginTran();
+                    this.Context.Ado.CommitTran();
                     return result;
                 }
                 catch (Exception ex)
@@ -91,7 +91,7 @@ namespace SqlSugar
                 {
                     this.Context.Ado.BeginTran();
                     var result = await _ExecuteReturnSnowflakeIdListAsync();
-                    this.Context.Ado.BeginTran();
+                    this.Context.Ado.CommitTran();
                     return result;
                 }
                 catch (Exception ex)

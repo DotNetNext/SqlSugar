@@ -134,6 +134,10 @@ namespace SqlSugar
                 {
                     sqlParameter.OracleDbType = OracleDbType.RefCursor;
                 }
+                if (parameter.IsClob)
+                {
+                    sqlParameter.OracleDbType = OracleDbType.Clob;
+                }
                 if (sqlParameter.DbType == System.Data.DbType.Guid)
                 {
                     sqlParameter.DbType = System.Data.DbType.String;
