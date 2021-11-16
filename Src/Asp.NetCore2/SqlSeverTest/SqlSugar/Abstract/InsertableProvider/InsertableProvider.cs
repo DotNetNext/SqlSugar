@@ -620,14 +620,19 @@ namespace SqlSugar
             foreach (var column in EntityInfo.Columns)
             {
                 if (column.IsIgnore || column.IsOnlyIgnoreInsert) continue;
+                var isMapping = IsMappingColumns;
                 var columnInfo = new DbColumnInfo()
                 {
-                    Value = column.PropertyInfo.GetValue(item, null),
-                    DbColumnName = GetDbColumnName(column.PropertyName),
+                    Value = PropertyCallAdapterProvider<T>.GetInstance(column.PropertyName).InvokeGet(item),
+                    DbColumnName = column.DbColumnName,
                     PropertyName = column.PropertyName,
                     PropertyType = UtilMethods.GetUnderType(column.PropertyInfo),
                     TableId = i
                 };
+                if (isMapping) 
+                {
+                    columnInfo.DbColumnName = GetDbColumnName(column.PropertyName);
+                }
                 if (column.IsJson)
                 {
                     columnInfo.IsJson = true;
@@ -645,8 +650,8 @@ namespace SqlSugar
                     if(columnInfo.Value!=null)
                        columnInfo.Value = this.Context.Utilities.SerializeObject(columnInfo.Value);
                 }
-                var tranColumn=EntityInfo.Columns.FirstOrDefault(it => it.IsTranscoding && it.DbColumnName.Equals(column.DbColumnName, StringComparison.CurrentCultureIgnoreCase));
-                if (tranColumn!=null&&columnInfo.Value.HasValue()) {
+                //var tranColumn=EntityInfo.Columns.FirstOrDefault(it => it.IsTranscoding && it.DbColumnName.Equals(column.DbColumnName, StringComparison.CurrentCultureIgnoreCase));
+                if (column.IsTranscoding&&columnInfo.Value.HasValue()) {
                     columnInfo.Value = UtilMethods.EncodeBase64(columnInfo.Value.ToString());
                 }
                 insertItem.Add(columnInfo);
