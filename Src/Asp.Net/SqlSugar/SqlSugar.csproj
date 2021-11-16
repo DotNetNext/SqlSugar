@@ -224,6 +224,7 @@
     <Compile Include="SqlSugarClient.cs" />
     <Compile Include="Utilities\CallContext.cs" />
     <Compile Include="Utilities\CallContextAsync.cs" />
+    <Compile Include="Utilities\PropertyCallAdapterProvider.cs" />
     <Compile Include="Utilities\SugarRetry.cs" />
     <Compile Include="Utilities\DataTableExtensions.cs" />
     <Compile Include="Utilities\ReflectionExtensions.cs" />
