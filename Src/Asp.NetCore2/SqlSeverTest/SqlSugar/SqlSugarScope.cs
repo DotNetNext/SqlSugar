@@ -641,6 +641,10 @@ namespace SqlSugar
             return ScopedContext.IsAnyConnection(configId);
         }
 
+        public IFastest<T> Fastest<T>()
+        {
+            return ScopedContext.Fastest<T>();
+        }
         private SqlSugarClient GetContext()
         {
             SqlSugarClient result = null;

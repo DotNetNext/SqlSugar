@@ -176,5 +176,10 @@ namespace SqlSugar
         #region Cache
         SugarCacheProvider DataCache { get; }
         #endregion
+
+        #region Fastest
+        IFastest<T> Fastest<T>();
+        #endregion
+
     }
 }
