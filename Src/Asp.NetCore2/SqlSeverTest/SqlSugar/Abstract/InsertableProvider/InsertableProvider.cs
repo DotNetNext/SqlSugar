@@ -629,6 +629,10 @@ namespace SqlSugar
                     PropertyType = UtilMethods.GetUnderType(column.PropertyInfo),
                     TableId = i
                 };
+                if (column.DbColumnName == null) 
+                {
+                    column.DbColumnName = column.PropertyName;
+                }
                 if (isMapping) 
                 {
                     columnInfo.DbColumnName = GetDbColumnName(column.PropertyName);
