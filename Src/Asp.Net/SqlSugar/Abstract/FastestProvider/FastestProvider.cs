@@ -18,31 +18,39 @@ namespace SqlSugar
         }
         public int BulkCopy(List<T> datas)
         {
-            return BulkCopyAsync(datas).GetAwaiter().GetResult();
+            return BulkCopyAsync(datas).ConfigureAwait(true).GetAwaiter().GetResult();
         }
-        public async Task<int> BulkCopyAsync(List<T> datas) 
+        public async Task<int> BulkCopyAsync(List<T> datas)
         {
-             
-            DataTable tempDataTable = ReflectionInoCore<DataTable>.GetInstance().GetOrCreate("BulkCopyAsync" + typeof(T).FullName,()=> queryable.Where(it=>false).ToDataTable());
+            DataTable dt = ToDdateTable(datas);
+            IFastBuilder buider = new SqlServerFastBuilder();
+            buider.Context = context;
+            var result = await buider.ExecuteBulkCopyAsync(dt);
+            return result;
+        }
+
+        private DataTable ToDdateTable(List<T> datas)
+        {
+            DataTable tempDataTable = ReflectionInoCore<DataTable>.GetInstance().GetOrCreate("BulkCopyAsync" + typeof(T).FullName, () => queryable.Where(it => false).ToDataTable());
             var dt = new DataTable();
             foreach (DataColumn item in tempDataTable.Columns)
             {
-                dt.Columns.Add(item.ColumnName,item.DataType);
+                dt.Columns.Add(item.ColumnName, item.DataType);
             }
             var entityInfo = this.context.EntityMaintenance.GetEntityInfo<T>();
-            dt.TableName =queryable.SqlBuilder.GetTranslationTableName(entityInfo.DbTableName);
+            dt.TableName = queryable.SqlBuilder.GetTranslationTableName(entityInfo.DbTableName);
             var columns = entityInfo.Columns;
             foreach (var item in datas)
             {
                 var dr = dt.NewRow();
                 foreach (var column in columns)
                 {
-                    if (column.IsIgnore || column.IsOnlyIgnoreInsert) 
+                    if (column.IsIgnore || column.IsOnlyIgnoreInsert)
                     {
                         continue;
                     }
                     var name = column.DbColumnName;
-                    if (name == null) 
+                    if (name == null)
                     {
                         name = column.PropertyName;
                     }
@@ -51,12 +59,9 @@ namespace SqlSugar
                 }
                 dt.Rows.Add(dr);
             }
-            IFastBuilder buider = new SqlServerFastBuilder();
-            buider.Context = context;
-            var result= await buider.ExecuteBulkCopyAsync(dt);
-            return result;
-        }
 
+            return dt;
+        }
         private object ValueConverter(EntityColumnInfo columnInfo,object value)
         {
             if (value == null)
