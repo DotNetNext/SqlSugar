@@ -25,8 +25,8 @@ namespace SqlSugar
     }
     public class PropertyCallAdapterProvider<TThis>
     {
-        private static readonly Dictionary<string, IPropertyCallAdapter<TThis>> _instances =
-            new Dictionary<string, IPropertyCallAdapter<TThis>>();
+        private static readonly System.Collections.Concurrent.ConcurrentDictionary<string, IPropertyCallAdapter<TThis>> _instances =
+            new System.Collections.Concurrent.ConcurrentDictionary<string, IPropertyCallAdapter<TThis>>();
 
         public static IPropertyCallAdapter<TThis> GetInstance(string forPropertyName)
         {
@@ -60,7 +60,7 @@ namespace SqlSugar
                     .CreateInstance(concreteAdapterType, getterInvocation)
                         as IPropertyCallAdapter<TThis>;
 
-                _instances.Add(forPropertyName, instance);
+                _instances.GetOrAdd(forPropertyName, instance);
             }
 
             return instance;
