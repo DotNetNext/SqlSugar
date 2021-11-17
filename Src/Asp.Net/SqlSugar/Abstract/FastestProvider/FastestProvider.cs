@@ -10,7 +10,7 @@ namespace SqlSugar
     {
         private SqlSugarProvider context;
         private ISugarQueryable<T> queryable;
-
+        private string AsName { get; set; }
         public FastestProvider(SqlSugarProvider sqlSugarProvider)
         {
             this.context = sqlSugarProvider;
@@ -28,7 +28,11 @@ namespace SqlSugar
             var result = await buider.ExecuteBulkCopyAsync(dt);
             return result;
         }
-
+        public IFastest<T> AS(string tableName)
+        {
+            this.AsName = tableName;
+            return this;
+        }
         private DataTable ToDdateTable(List<T> datas)
         {
             DataTable tempDataTable = ReflectionInoCore<DataTable>.GetInstance().GetOrCreate("BulkCopyAsync" + typeof(T).FullName, () => queryable.Where(it => false).ToDataTable());
@@ -38,7 +42,7 @@ namespace SqlSugar
                 dt.Columns.Add(item.ColumnName, item.DataType);
             }
             var entityInfo = this.context.EntityMaintenance.GetEntityInfo<T>();
-            dt.TableName = queryable.SqlBuilder.GetTranslationTableName(entityInfo.DbTableName);
+            GetTableName(dt, entityInfo);
             var columns = entityInfo.Columns;
             foreach (var item in datas)
             {
@@ -62,6 +66,18 @@ namespace SqlSugar
 
             return dt;
         }
+
+        private void GetTableName(DataTable dt, EntityInfo entityInfo)
+        {
+            if (this.AsName.HasValue())
+            {
+                dt.TableName = queryable.SqlBuilder.GetTranslationTableName(AsName);
+            }
+            else
+            {
+                dt.TableName = queryable.SqlBuilder.GetTranslationTableName(entityInfo.DbTableName);
+            }
+        }
         private object ValueConverter(EntityColumnInfo columnInfo,object value)
         {
             if (value == null)
@@ -72,5 +88,7 @@ namespace SqlSugar
             }
             return value;
         }
+
+    
     }
 }
