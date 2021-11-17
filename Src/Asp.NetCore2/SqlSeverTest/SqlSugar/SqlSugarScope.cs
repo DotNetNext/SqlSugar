@@ -641,7 +641,7 @@ namespace SqlSugar
             return ScopedContext.IsAnyConnection(configId);
         }
 
-        public IFastest<T> Fastest<T>()
+        public IFastest<T> Fastest<T>() where T : class, new()
         {
             return ScopedContext.Fastest<T>();
         }

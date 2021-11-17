@@ -566,7 +566,7 @@ namespace SqlSugar
         #endregion
 
         #region
-        public IFastest<T> Fastest<T>()
+        public IFastest<T> Fastest<T>() where T : class, new()
         {
             return this.Context.Fastest<T>();
         }

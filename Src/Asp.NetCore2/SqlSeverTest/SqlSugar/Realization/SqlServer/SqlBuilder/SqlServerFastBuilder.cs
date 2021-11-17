@@ -14,6 +14,10 @@ namespace SqlSugar
 
         public SqlSugarProvider Context { get; set;  }
 
+        public string UpdateSql { get; set; } = @"UPDATE TM
+                                                    SET  {0}
+                                                    FROM {1} TM
+                                                    INNER JOIN {2} TE ON {3} ";
 
         public async Task<int> ExecuteBulkCopyAsync(DataTable dt)
         {
@@ -55,6 +59,24 @@ namespace SqlSugar
             {
                 this.Context.Ado.Connection.Close();
             }
+        }
+
+        public async Task<int> UpdateByTempAsync(string tableName, string tempName, string[] updateColumns, string[] whereColumns)
+        {
+            Check.ArgumentNullException(!updateColumns.Any(),"update columns count is 0");
+            Check.ArgumentNullException(!whereColumns.Any(), "where columns count is 0");
+            var sets = string.Join(",", updateColumns.Select(it=>$"TM.{it}=TE.{it}"));
+            var wheres = string.Join(",", whereColumns.Select(it => $"TM.{it}=TE.{it}"));
+            string sql = string.Format(UpdateSql,sets, tableName,tempName, wheres);
+            return await this.Context.Ado.ExecuteCommandAsync(sql);
+        }
+
+        public async Task CreateTempAsync<T>(DataTable dt) where T :class,new()
+        {
+            await this.Context.UnionAll(
+                this.Context.Queryable<T>().Where(it => false).AS(dt.TableName), 
+                this.Context.Queryable<T>().Where(it => false).AS(dt.TableName)).Select("top 1 * into #temp").ToListAsync();
+            dt.TableName = "#temp";
         }
     }
 }
