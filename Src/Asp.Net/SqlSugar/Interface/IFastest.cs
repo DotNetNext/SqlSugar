@@ -10,5 +10,7 @@ namespace SqlSugar
         IFastest<T> AS(string tableName);
         int BulkCopy(List<T> datas);
         Task<int> BulkCopyAsync(List<T> datas);
+        int BulkUpdate(List<T> datas);
+        Task<int> BulkUpdateAsync(List<T> datas);
     }
 }

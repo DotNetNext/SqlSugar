@@ -3,19 +3,22 @@ using System.Collections.Generic;
 using System.Data;
 using System.Text;
 using System.Threading.Tasks;
-
+using System.Linq;
 namespace SqlSugar 
 {
-    public class FastestProvider<T>:IFastest<T>
+    public class FastestProvider<T>:IFastest<T> where T:class,new()
     {
         private SqlSugarProvider context;
         private ISugarQueryable<T> queryable;
         private string AsName { get; set; }
+        private EntityInfo entityInfo { get; set; }
         public FastestProvider(SqlSugarProvider sqlSugarProvider)
         {
             this.context = sqlSugarProvider;
             this.queryable = this.context.Queryable<T>();
+            entityInfo=this.context.EntityMaintenance.GetEntityInfo<T>();
         }
+        #region Api
         public int BulkCopy(List<T> datas)
         {
             return BulkCopyAsync(datas).ConfigureAwait(true).GetAwaiter().GetResult();
@@ -28,11 +31,42 @@ namespace SqlSugar
             var result = await buider.ExecuteBulkCopyAsync(dt);
             return result;
         }
+        public int BulkUpdate(List<T> datas)
+        {
+            return BulkUpdateAsync(datas).ConfigureAwait(true).GetAwaiter().GetResult();
+        }
+        public async Task<int> BulkUpdateAsync(List<T> datas)
+        {
+           var whereColumns=entityInfo.Columns.Where(it => it.IsPrimarykey).Select(it=>it.DbColumnName??it.PropertyName).ToArray();
+           var updateColumns = entityInfo.Columns.Where(it => !it.IsPrimarykey&&!it.IsIdentity&&!it.IsOnlyIgnoreUpdate&&!it.IsIgnore).Select(it => it.DbColumnName ?? it.PropertyName).ToArray();
+           return await BulkUpdateAsync(datas,whereColumns,updateColumns);
+        }
+        public async Task<int> BulkUpdateAsync(List<T> datas,string [] whereColumns,string [] updateColumns)
+        {
+            var isAuto = this.context.CurrentConnectionConfig.IsAutoCloseConnection;
+            this.context.CurrentConnectionConfig.IsAutoCloseConnection = false;
+            DataTable dt = ToDdateTable(datas);
+            IFastBuilder buider = new SqlServerFastBuilder();
+            buider.Context = context;
+            await buider.CreateTempAsync<T>(dt);
+            await buider.ExecuteBulkCopyAsync(dt);
+            //var queryTemp = this.context.Queryable<T>().AS(dt.TableName).ToList();//test
+            var result =await buider.UpdateByTempAsync(GetTableName(),dt.TableName,updateColumns, whereColumns);
+            this.context.DbMaintenance.DropTable(dt.TableName);
+            this.context.CurrentConnectionConfig.IsAutoCloseConnection = isAuto;
+            return result;
+        }
+        #endregion
+
+        #region Setting
         public IFastest<T> AS(string tableName)
         {
             this.AsName = tableName;
             return this;
-        }
+        } 
+        #endregion
+
+        #region Helper
         private DataTable ToDdateTable(List<T> datas)
         {
             DataTable tempDataTable = ReflectionInoCore<DataTable>.GetInstance().GetOrCreate("BulkCopyAsync" + typeof(T).FullName, () => queryable.Where(it => false).ToDataTable());
@@ -41,8 +75,7 @@ namespace SqlSugar
             {
                 dt.Columns.Add(item.ColumnName, item.DataType);
             }
-            var entityInfo = this.context.EntityMaintenance.GetEntityInfo<T>();
-            GetTableName(dt, entityInfo);
+            dt.TableName = GetTableName();
             var columns = entityInfo.Columns;
             foreach (var item in datas)
             {
@@ -66,29 +99,27 @@ namespace SqlSugar
 
             return dt;
         }
-
-        private void GetTableName(DataTable dt, EntityInfo entityInfo)
+        private string GetTableName()
         {
             if (this.AsName.HasValue())
             {
-                dt.TableName = queryable.SqlBuilder.GetTranslationTableName(AsName);
+                return queryable.SqlBuilder.GetTranslationTableName(AsName);
             }
             else
             {
-                dt.TableName = queryable.SqlBuilder.GetTranslationTableName(entityInfo.DbTableName);
+                return queryable.SqlBuilder.GetTranslationTableName(entityInfo.DbTableName);
             }
         }
-        private object ValueConverter(EntityColumnInfo columnInfo,object value)
+        private object ValueConverter(EntityColumnInfo columnInfo, object value)
         {
             if (value == null)
                 return value;
-            if (value is DateTime&&(DateTime)value == DateTime.MinValue) 
+            if (value is DateTime && (DateTime)value == DateTime.MinValue)
             {
                 value = Convert.ToDateTime("1900-01-01");
             }
             return value;
-        }
-
-    
+        } 
+        #endregion
     }
 }

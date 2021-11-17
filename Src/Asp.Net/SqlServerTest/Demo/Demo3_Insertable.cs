@@ -32,8 +32,8 @@ namespace OrmTest
 
             var insertObj = new Order() { Id = 1, Name = "order1", Price = 0 };
             var insertObjs = new List<Order> {
-                 new Order() { Id = 11, Name = "order11", Price=0 },
-                 new Order() { Id = 12, Name = "order12" , Price=0}
+                 new Order() { Id = 11, Name = "XX", Price=0 },
+                 new Order() { Id = 12, Name = "XX2" , Price=0}
             };
 
             var x=db.Insertable(insertObjs).RemoveDataCache().IgnoreColumns(it=>it.CreateTime).UseParameter().ExecuteCommand();
@@ -156,6 +156,9 @@ namespace OrmTest
             dict.Add("CreateTime", DateTime.Now);
             dict.Add("Price", 1);
             db.Insertable(dict).AS("[Order]").ExecuteCommand();
+
+
+            db.Fastest<Order>().BulkUpdate(insertObjs);
             Console.WriteLine("#### Insertable End ####");
 
         }

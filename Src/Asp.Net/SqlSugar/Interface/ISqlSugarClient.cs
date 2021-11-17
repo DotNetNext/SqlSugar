@@ -178,7 +178,7 @@ namespace SqlSugar
         #endregion
 
         #region Fastest
-        IFastest<T> Fastest<T>();
+        IFastest<T> Fastest<T>() where T : class, new();
         #endregion
 
     }
