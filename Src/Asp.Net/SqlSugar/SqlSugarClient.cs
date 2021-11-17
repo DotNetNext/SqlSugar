@@ -565,6 +565,13 @@ namespace SqlSugar
 
         #endregion
 
+        #region
+        public IFastest<T> Fastest<T>()
+        {
+            return this.Context.Fastest<T>();
+        }
+        #endregion
+
         #region More api
         public IContextMethods Utilities { get { return this.Context.Utilities; } set { this.Context.Utilities = value; } }
         public AopProvider Aop => this.Context.Aop;

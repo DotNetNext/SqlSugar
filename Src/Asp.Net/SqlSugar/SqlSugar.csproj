@@ -88,7 +88,11 @@
     <Compile Include="Abstract\DeleteProvider\SplitTableDeleteProvider.cs" />
     <Compile Include="Abstract\EntityMaintenance\EntityMaintenance.cs" />
     <Compile Include="Abstract\ExpressionableProvider\Expressionable.cs" />
+    <Compile Include="Abstract\FastestProvider\FastestProvider.cs" />
     <Compile Include="Abstract\FilterProvider\FilterProvider.cs" />
+    <Compile Include="Interface\IFastBuilder.cs" />
+    <Compile Include="Interface\IFastest.cs" />
+    <Compile Include="Realization\SqlServer\SqlBuilder\SqlServerFastBuilder.cs" />
     <Compile Include="SpliteTable\SplitTableAttribute.cs" />
     <Compile Include="Abstract\InsertableProvider\InsertableProvider.cs" />
     <Compile Include="Abstract\DeleteProvider\DeleteableProvider.cs" />
