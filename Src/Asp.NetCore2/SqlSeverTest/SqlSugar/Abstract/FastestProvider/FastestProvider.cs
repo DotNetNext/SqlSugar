@@ -46,12 +46,12 @@ namespace SqlSugar
             var isAuto = this.context.CurrentConnectionConfig.IsAutoCloseConnection;
             this.context.CurrentConnectionConfig.IsAutoCloseConnection = false;
             DataTable dt = ToDdateTable(datas);
-            IFastBuilder buider = new SqlServerFastBuilder();
+            IFastBuilder buider = GetBuider();
             buider.Context = context;
             await buider.CreateTempAsync<T>(dt);
             await buider.ExecuteBulkCopyAsync(dt);
             //var queryTemp = this.context.Queryable<T>().AS(dt.TableName).ToList();//test
-            var result =await buider.UpdateByTempAsync(GetTableName(),dt.TableName,updateColumns, whereColumns);
+            var result = await buider.UpdateByTempAsync(GetTableName(), dt.TableName, updateColumns, whereColumns);
             this.context.DbMaintenance.DropTable(dt.TableName);
             this.context.CurrentConnectionConfig.IsAutoCloseConnection = isAuto;
             return result;
@@ -63,10 +63,35 @@ namespace SqlSugar
         {
             this.AsName = tableName;
             return this;
-        } 
+        }
         #endregion
 
         #region Helper
+        private SqlServerFastBuilder GetBuider()
+        {
+            switch (this.context.CurrentConnectionConfig.DbType)
+            {
+                case DbType.MySql:
+                    break;
+                case DbType.SqlServer:
+                    return new SqlServerFastBuilder();
+                case DbType.Sqlite:
+                    break;
+                case DbType.Oracle:
+                    break;
+                case DbType.PostgreSQL:
+                    break;
+                case DbType.Dm:
+                    break;
+                case DbType.Kdbndp:
+                    break;
+                case DbType.Oscar:
+                    break;
+                default:
+                    break;
+            }
+            throw new Exception(this.context.CurrentConnectionConfig.DbType + "开发中");
+        }
         private DataTable ToDdateTable(List<T> datas)
         {
             DataTable tempDataTable = ReflectionInoCore<DataTable>.GetInstance().GetOrCreate("BulkCopyAsync" + typeof(T).FullName, () => queryable.Where(it => false).ToDataTable());
