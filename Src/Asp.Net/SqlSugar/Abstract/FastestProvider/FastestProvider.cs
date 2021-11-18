@@ -94,7 +94,19 @@ namespace SqlSugar
         }
         private DataTable ToDdateTable(List<T> datas)
         {
-            DataTable tempDataTable = ReflectionInoCore<DataTable>.GetInstance().GetOrCreate("BulkCopyAsync" + typeof(T).FullName, () => queryable.Where(it => false).ToDataTable());
+            DataTable tempDataTable = ReflectionInoCore<DataTable>.GetInstance().GetOrCreate("BulkCopyAsync" + typeof(T).FullName, 
+            () =>
+               {
+                   if (AsName == null)
+                   {
+                       return queryable.Where(it => false).ToDataTable();
+                   }
+                   else
+                   {
+                       return queryable.AS(AsName).Where(it => false).ToDataTable();
+                   }
+               }
+            );
             var dt = new DataTable();
             foreach (DataColumn item in tempDataTable.Columns)
             {
