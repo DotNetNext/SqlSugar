@@ -18,7 +18,8 @@ namespace SqlSugar
             this.queryable = this.context.Queryable<T>();
             entityInfo=this.context.EntityMaintenance.GetEntityInfo<T>();
         }
-        #region Api
+
+        #region BulkCopy
         public int BulkCopy(List<T> datas)
         {
             return BulkCopyAsync(datas).ConfigureAwait(true).GetAwaiter().GetResult();
@@ -31,6 +32,9 @@ namespace SqlSugar
             var result = await buider.ExecuteBulkCopyAsync(dt);
             return result;
         }
+        #endregion
+
+        #region BulkUpdate
         public int BulkUpdate(List<T> datas)
         {
             return BulkUpdateAsync(datas).ConfigureAwait(true).GetAwaiter().GetResult();
@@ -40,6 +44,10 @@ namespace SqlSugar
            var whereColumns=entityInfo.Columns.Where(it => it.IsPrimarykey).Select(it=>it.DbColumnName??it.PropertyName).ToArray();
            var updateColumns = entityInfo.Columns.Where(it => !it.IsPrimarykey&&!it.IsIdentity&&!it.IsOnlyIgnoreUpdate&&!it.IsIgnore).Select(it => it.DbColumnName ?? it.PropertyName).ToArray();
            return await BulkUpdateAsync(datas,whereColumns,updateColumns);
+        }
+        public int BulkUpdate(List<T> datas, string[] whereColumns, string[] updateColumns) 
+        {
+            return BulkUpdateAsync(datas,whereColumns,updateColumns).ConfigureAwait(true).GetAwaiter().GetResult();
         }
         public async Task<int> BulkUpdateAsync(List<T> datas,string [] whereColumns,string [] updateColumns)
         {
