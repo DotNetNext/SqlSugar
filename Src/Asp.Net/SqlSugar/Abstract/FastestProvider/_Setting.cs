@@ -8,6 +8,9 @@ namespace SqlSugar
 {
     public partial class FastestProvider<T> : IFastest<T> where T : class, new()
     {
+        private string AsName { get; set; }
+        private int Size { get; set; }
+
         public IFastest<T> AS(string tableName)
         {
             this.AsName = tableName;

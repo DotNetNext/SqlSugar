@@ -10,8 +10,6 @@ namespace SqlSugar
     {
         private SqlSugarProvider context;
         private ISugarQueryable<T> queryable;
-        private string AsName { get; set; }
-        private int Size { get; set; }
         private EntityInfo entityInfo { get; set; }
         public FastestProvider(SqlSugarProvider sqlSugarProvider)
         {
