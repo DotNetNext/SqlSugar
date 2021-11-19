@@ -152,6 +152,7 @@ namespace SqlSugar
                 column.EntityName = result.EntityName;
                 column.PropertyName = property.Name;
                 column.PropertyInfo = property;
+                column.UnderType = UtilMethods.GetUnderType(column.PropertyInfo.PropertyType);
                 if (sugarColumn.IsNullOrEmpty())
                 {
                     column.DbColumnName = property.Name;
