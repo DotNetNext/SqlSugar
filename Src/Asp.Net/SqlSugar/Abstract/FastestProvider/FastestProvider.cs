@@ -94,7 +94,7 @@ namespace SqlSugar
         private async Task<int> _BulkCopy(List<T> datas)
         {
             DataTable dt = ToDdateTable(datas);
-            IFastBuilder buider = new SqlServerFastBuilder();
+            IFastBuilder buider =GetBuider();
             buider.Context = context;
             var result = await buider.ExecuteBulkCopyAsync(dt);
             return result;

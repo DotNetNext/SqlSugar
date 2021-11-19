@@ -88,9 +88,10 @@
     <Compile Include="Abstract\DeleteProvider\SplitTableDeleteProvider.cs" />
     <Compile Include="Abstract\EntityMaintenance\EntityMaintenance.cs" />
     <Compile Include="Abstract\ExpressionableProvider\Expressionable.cs" />
+    <Compile Include="Abstract\FastestProvider\FastBuilder.cs" />
     <Compile Include="Abstract\FastestProvider\FastestProvider.cs" />
-    <Compile Include="Abstract\FastestProvider\_Private.cs" />
-    <Compile Include="Abstract\FastestProvider\_Setting.cs" />
+    <Compile Include="Abstract\FastestProvider\Private.cs" />
+    <Compile Include="Abstract\FastestProvider\Setting.cs" />
     <Compile Include="Abstract\FilterProvider\FilterProvider.cs" />
     <Compile Include="Interface\IFastBuilder.cs" />
     <Compile Include="Interface\IFastest.cs" />
