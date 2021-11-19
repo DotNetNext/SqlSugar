@@ -13,7 +13,7 @@ namespace SqlSugar
         void RollbackTran();
         void ChangeDatabase(dynamic configId);
         void ChangeDatabase(Func<ConnectionConfig, bool> changeExpression);
-        SqlSguarTransaction UseTran();
+        SqlSugarTransaction UseTran();
         DbResult<bool> UseTran(Action action, Action<Exception> errorCallBack = null);
         Task<DbResult<bool>> UseTranAsync(Func<Task> action, Action<Exception> errorCallBack = null);
         DbResult<T> UseTran<T>(Func<T> action, Action<Exception> errorCallBack = null);

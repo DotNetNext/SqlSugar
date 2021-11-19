@@ -565,7 +565,7 @@ namespace SqlSugar
 
         #endregion
 
-        #region
+        #region Fastest
         public IFastest<T> Fastest<T>() where T : class, new()
         {
             return this.Context.Fastest<T>();
@@ -588,9 +588,9 @@ namespace SqlSugar
             var tenant= this as ITenant;
             return tenant;
         }
-        public SqlSguarTransaction UseTran() 
+        public SqlSugarTransaction UseTran() 
         {
-            return new SqlSguarTransaction(this);
+            return new SqlSugarTransaction(this);
         }
         public void AddConnection(ConnectionConfig connection)
         {

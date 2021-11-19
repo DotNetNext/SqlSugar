@@ -612,7 +612,7 @@ namespace SqlSugar
         {
             return ScopedContext.SplitHelper(dataList);
         }
-        public SqlSguarTransaction UseTran()
+        public SqlSugarTransaction UseTran()
         {
             return ScopedContext.UseTran();
         }

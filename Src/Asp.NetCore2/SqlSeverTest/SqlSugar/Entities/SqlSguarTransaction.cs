@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace SqlSugar  
 {
-    public class SqlSguarTransaction:IDisposable
+    public class SqlSugarTransaction:IDisposable
     {
         private readonly SqlSugarClient context;
 
-        public SqlSguarTransaction(SqlSugarClient client)
+        public SqlSugarTransaction(SqlSugarClient client)
         {
             context = client;
             context.BeginTran();
