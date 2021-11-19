@@ -97,6 +97,26 @@ namespace SqlSugar
             {
                 value = Convert.ToDateTime("1900-01-01");
             }
+            else if (columnInfo.IsJson)
+            {
+                columnInfo.IsJson = true;
+            }
+            else if (columnInfo.IsArray)
+            {
+                columnInfo.IsArray = true;
+            }
+            else if (columnInfo.UnderType.IsEnum() )
+            {
+                value = Convert.ToInt64(value);
+            }
+            else if (columnInfo.IsJson && value != null)
+            {
+                 value = this.context.Utilities.SerializeObject(value);
+            }
+            else if (columnInfo.IsTranscoding && value.HasValue())
+            {
+                value = UtilMethods.EncodeBase64(value.ToString());
+            }
             return value;
         }
     }
