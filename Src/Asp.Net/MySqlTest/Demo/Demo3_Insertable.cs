@@ -61,12 +61,14 @@ namespace OrmTest
             db.Insertable(new OrderItem()
             {
                 CreateTime = DateTime.Now,
-                ItemId=1,
-                OrderId=1,
-                 OrderName="a",
+                ItemId = 1,
+                OrderId = 1,
+                OrderName = "a",
                 Price = 11
             }).UseMySql().ExecuteBulkCopy();
             var data = db.Queryable<Order>().ToList();
+            db.Insertable(data).UseMySql().ExecuteBulkCopy();
+            db.Fastest<Order>().BulkUpdate(data);
             Console.WriteLine("#### Insertable End ####");
         }
     }

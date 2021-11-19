@@ -13,6 +13,7 @@ namespace SqlSugar
    
     public class MySqlFastBuilder:FastBuilder,IFastBuilder
     {
+        public override string UpdateSql { get; set; } = @"UPDATE  {1} TM    INNER JOIN {2} TE  ON {3} SET {0} ";
         public async Task<int> ExecuteBulkCopyAsync(DataTable dt)
         {
 
@@ -60,6 +61,12 @@ namespace SqlSugar
                 CloseDb();
             }
             return result;
+        }
+        public override async Task CreateTempAsync<T>(DataTable dt) 
+        {
+            dt.TableName = "temp"+SnowFlakeSingle.instance.getID();
+            var sql = this.Context.Queryable<T>().Where(it => false).ToSql().Key;
+            await this.Context.Ado.ExecuteCommandAsync($"Create TEMPORARY  table {dt.TableName}({sql}) ");
         }
     }
 }

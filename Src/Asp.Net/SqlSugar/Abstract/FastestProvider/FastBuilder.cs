@@ -11,13 +11,13 @@ namespace SqlSugar
     {
         public SqlSugarProvider Context { get; set; }
 
-        public string UpdateSql { get; set; } = @"UPDATE TM
+        public virtual string UpdateSql { get; set; } = @"UPDATE TM
                                                     SET  {0}
                                                     FROM {1} TM
                                                     INNER JOIN {2} TE ON {3} ";
 
       
-        public void CloseDb()
+        public virtual void CloseDb()
         {
             if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection && this.Context.Ado.Transaction == null)
             {
@@ -25,7 +25,7 @@ namespace SqlSugar
             }
         }
 
-        public async Task<int> UpdateByTempAsync(string tableName, string tempName, string[] updateColumns, string[] whereColumns)
+        public  virtual async Task<int> UpdateByTempAsync(string tableName, string tempName, string[] updateColumns, string[] whereColumns)
         {
             Check.ArgumentNullException(!updateColumns.Any(), "update columns count is 0");
             Check.ArgumentNullException(!whereColumns.Any(), "where columns count is 0");
@@ -35,7 +35,7 @@ namespace SqlSugar
             return await this.Context.Ado.ExecuteCommandAsync(sql);
         }
 
-        public async Task CreateTempAsync<T>(DataTable dt) where T : class, new()
+        public virtual async Task CreateTempAsync<T>(DataTable dt) where T : class, new()
         {
             await this.Context.UnionAll(
                 this.Context.Queryable<T>().Where(it => false).AS(dt.TableName),
