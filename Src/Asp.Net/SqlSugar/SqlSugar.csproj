@@ -95,6 +95,7 @@
     <Compile Include="Abstract\FilterProvider\FilterProvider.cs" />
     <Compile Include="Interface\IFastBuilder.cs" />
     <Compile Include="Interface\IFastest.cs" />
+    <Compile Include="Realization\MySql\SqlBuilder\MySqlFastBuilder.cs" />
     <Compile Include="Realization\SqlServer\SqlBuilder\SqlServerFastBuilder.cs" />
     <Compile Include="SpliteTable\SplitTableAttribute.cs" />
     <Compile Include="Abstract\InsertableProvider\InsertableProvider.cs" />

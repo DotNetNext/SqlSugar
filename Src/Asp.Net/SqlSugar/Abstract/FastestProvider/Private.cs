@@ -9,12 +9,12 @@ namespace SqlSugar
 {
     public partial class FastestProvider<T> : IFastest<T> where T : class, new()
     {
-        private SqlServerFastBuilder GetBuider()
+        private IFastBuilder GetBuider()
         {
             switch (this.context.CurrentConnectionConfig.DbType)
             {
                 case DbType.MySql:
-                    break;
+                    return new MySqlFastBuilder();
                 case DbType.SqlServer:
                     return new SqlServerFastBuilder();
                 case DbType.Sqlite:
