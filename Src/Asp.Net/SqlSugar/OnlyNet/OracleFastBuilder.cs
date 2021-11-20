@@ -11,7 +11,7 @@ namespace SqlSugar
     {
         public OracleFastBuilder() 
         {
-            throw new Exception("Oracle bulk copy , only.net CORE is supported");
+            throw new Exception("Only.net CORE is supported");
         }
 
         public SqlSugarProvider Context { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
