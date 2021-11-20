@@ -20,7 +20,7 @@ namespace SqlSugar
                 case DbType.Sqlite:
                     break;
                 case DbType.Oracle:
-                    return new OracleFastBuilder();
+                    return new OracleFastBuilder(this.entityInfo);
                 case DbType.PostgreSQL:
                     return new PostgreSQLFastBuilder(this.entityInfo);
                 case DbType.Dm:

@@ -10,6 +10,13 @@ namespace SqlSugar
 {
     public class OracleFastBuilder : FastBuilder, IFastBuilder
     {
+        private EntityInfo entityInfo;
+
+        public OracleFastBuilder(EntityInfo entityInfo)
+        {
+            this.entityInfo = entityInfo;
+        }
+
         public override string UpdateSql { get; set; } = "UPDATE (SELECT A.NAME ANAME,B.NAME BNAME FROM A,B WHERE A.ID=B.ID)SET ANAME = BNAME;";
         public override async Task CreateTempAsync<T>(DataTable dt)
         {
@@ -51,6 +58,11 @@ namespace SqlSugar
         }
         public Task<int> ExecuteBulkCopyAsync(DataTable dt)
         {
+            var identityColumnInfo = this.entityInfo.Columns.FirstOrDefault(it => it.IsIdentity);
+            if (identityColumnInfo != null)
+            {
+                throw new Exception("Oracle bulkcopy no support identity");
+            }
             OracleBulkCopy copy = GetBulkCopyInstance();
             try
             {
