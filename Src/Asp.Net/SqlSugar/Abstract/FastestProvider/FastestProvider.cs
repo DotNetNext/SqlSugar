@@ -79,7 +79,7 @@ namespace SqlSugar
         #region Core
         private async Task<int> _BulkUpdate(List<T> datas, string[] whereColumns, string[] updateColumns)
         {
-            Begin();
+            Begin(datas);
             var isAuto = this.context.CurrentConnectionConfig.IsAutoCloseConnection;
             this.context.CurrentConnectionConfig.IsAutoCloseConnection = false;
             DataTable dt = ToDdateTable(datas);
@@ -91,38 +91,38 @@ namespace SqlSugar
             var result = await buider.UpdateByTempAsync(GetTableName(), dt.TableName, updateColumns, whereColumns);
             this.context.DbMaintenance.DropTable(dt.TableName);
             this.context.CurrentConnectionConfig.IsAutoCloseConnection = isAuto;
-            End();
+            End(datas);
             return result;
         }
         private async Task<int> _BulkCopy(List<T> datas)
         {
-            Begin();
+            Begin(datas);
             DataTable dt = ToDdateTable(datas);
             IFastBuilder buider =GetBuider();
             buider.Context = context;
             var result = await buider.ExecuteBulkCopyAsync(dt);
-            End();
+            End(datas);
             return result;
         }
         #endregion
 
         #region AOP
-        private void End()
+        private void End(List<T> datas)
         {
             this.context.Ado.IsEnableLogEvent = isLog;
             if (this.context.CurrentConnectionConfig?.AopEvents?.OnLogExecuted != null) 
             {
-                this.context.CurrentConnectionConfig?.AopEvents?.OnLogExecuted("Begin bulkcopy "+ entityInfo.DbTableName, new SugarParameter[] { });
+                this.context.CurrentConnectionConfig?.AopEvents?.OnLogExecuted($"End bulkcopy  name:{entityInfo.DbTableName} ,count: {datas.Count},current time: {DateTime.Now}" , new SugarParameter[] { });
             }
         }
 
-        private void Begin()
+        private void Begin(List<T> datas)
         {
             isLog = this.context.Ado.IsEnableLogEvent;
             this.context.Ado.IsEnableLogEvent = false;
             if (this.context.CurrentConnectionConfig?.AopEvents?.OnLogExecuting != null)
             {
-                this.context.CurrentConnectionConfig?.AopEvents?.OnLogExecuting("End bulkcopy " + entityInfo.DbTableName, new SugarParameter[] { });
+                this.context.CurrentConnectionConfig?.AopEvents?.OnLogExecuting($"Begin bulkcopy name:{entityInfo.DbTableName} ,count: {datas.Count},current time: {DateTime.Now} ", new SugarParameter[] { });
             }
         }
         #endregion
