@@ -20,7 +20,7 @@ namespace SqlSugar
                 case DbType.Sqlite:
                     break;
                 case DbType.Oracle:
-                    break;
+                    return new OracleFastBuilder();
                 case DbType.PostgreSQL:
                     return new PostgreSQLFastBuilder(this.entityInfo);
                 case DbType.Dm:
@@ -32,7 +32,7 @@ namespace SqlSugar
                 default:
                     break;
             }
-            throw new Exception(this.context.CurrentConnectionConfig.DbType + "开发中");
+            throw new Exception(this.context.CurrentConnectionConfig.DbType + "开发中...");
         }
         private DataTable ToDdateTable(List<T> datas)
         {
