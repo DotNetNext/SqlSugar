@@ -11,6 +11,7 @@ namespace SqlSugar
         private SqlSugarProvider context;
         private ISugarQueryable<T> queryable;
         private EntityInfo entityInfo { get; set; }
+        public bool isLog;
         public FastestProvider(SqlSugarProvider sqlSugarProvider)
         {
             this.context = sqlSugarProvider;
@@ -78,6 +79,7 @@ namespace SqlSugar
         #region Core
         private async Task<int> _BulkUpdate(List<T> datas, string[] whereColumns, string[] updateColumns)
         {
+            Begin();
             var isAuto = this.context.CurrentConnectionConfig.IsAutoCloseConnection;
             this.context.CurrentConnectionConfig.IsAutoCloseConnection = false;
             DataTable dt = ToDdateTable(datas);
@@ -89,15 +91,39 @@ namespace SqlSugar
             var result = await buider.UpdateByTempAsync(GetTableName(), dt.TableName, updateColumns, whereColumns);
             this.context.DbMaintenance.DropTable(dt.TableName);
             this.context.CurrentConnectionConfig.IsAutoCloseConnection = isAuto;
+            End();
             return result;
         }
         private async Task<int> _BulkCopy(List<T> datas)
         {
+            Begin();
             DataTable dt = ToDdateTable(datas);
             IFastBuilder buider =GetBuider();
             buider.Context = context;
             var result = await buider.ExecuteBulkCopyAsync(dt);
+            End();
             return result;
+        }
+        #endregion
+
+        #region AOP
+        private void End()
+        {
+            this.context.Ado.IsEnableLogEvent = isLog;
+            if (this.context.CurrentConnectionConfig?.AopEvents?.OnLogExecuted != null) 
+            {
+                this.context.CurrentConnectionConfig?.AopEvents?.OnLogExecuted("Begin bulkcopy "+ entityInfo.DbTableName, new SugarParameter[] { });
+            }
+        }
+
+        private void Begin()
+        {
+            isLog = this.context.Ado.IsEnableLogEvent;
+            this.context.Ado.IsEnableLogEvent = false;
+            if (this.context.CurrentConnectionConfig?.AopEvents?.OnLogExecuting != null)
+            {
+                this.context.CurrentConnectionConfig?.AopEvents?.OnLogExecuting("End bulkcopy " + entityInfo.DbTableName, new SugarParameter[] { });
+            }
         }
         #endregion
 
