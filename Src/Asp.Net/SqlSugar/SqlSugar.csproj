@@ -95,6 +95,7 @@
     <Compile Include="Abstract\FilterProvider\FilterProvider.cs" />
     <Compile Include="Interface\IFastBuilder.cs" />
     <Compile Include="Interface\IFastest.cs" />
+    <Compile Include="OnlyNet\OracleFastBuilder.cs" />
     <Compile Include="Realization\MySql\SqlBuilder\MySqlFastBuilder.cs" />
     <Compile Include="Realization\PostgreSQL\SqlBuilder\PostgreSQLFastBuilder.cs" />
     <Compile Include="Realization\SqlServer\SqlBuilder\SqlServerFastBuilder.cs" />
