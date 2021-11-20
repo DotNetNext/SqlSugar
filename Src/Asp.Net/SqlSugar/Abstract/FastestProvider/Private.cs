@@ -22,7 +22,7 @@ namespace SqlSugar
                 case DbType.Oracle:
                     break;
                 case DbType.PostgreSQL:
-                    break;
+                    return new PostgreSQLFastBuilder(this.entityInfo);
                 case DbType.Dm:
                     break;
                 case DbType.Kdbndp:
@@ -97,14 +97,14 @@ namespace SqlSugar
             {
                 value = Convert.ToDateTime("1900-01-01");
             }
-            else if (columnInfo.IsJson)
-            {
-                columnInfo.IsJson = true;
-            }
-            else if (columnInfo.IsArray)
-            {
-                columnInfo.IsArray = true;
-            }
+            //else if (columnInfo.IsJson)
+            //{
+            //    columnInfo.IsJson = true;
+            //}
+            //else if (columnInfo.IsArray)
+            //{
+            //    columnInfo.IsArray = true;
+            //}
             else if (columnInfo.UnderType.IsEnum() )
             {
                 value = Convert.ToInt64(value);
