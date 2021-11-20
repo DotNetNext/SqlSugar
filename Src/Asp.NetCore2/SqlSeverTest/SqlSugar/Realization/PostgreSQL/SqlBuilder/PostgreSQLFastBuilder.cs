@@ -58,52 +58,64 @@ namespace SqlSugar
             return await Task.FromResult(dt.Rows.Count);
         }
 
-        private static void BulkCopy(DataTable dt, string copyString, NpgsqlConnection conn, List<DbColumnInfo> columns)
+        private  void BulkCopy(DataTable dt, string copyString, NpgsqlConnection conn, List<DbColumnInfo> columns)
         {
             if (conn.State == ConnectionState.Closed)
                 conn.Open();
+            List<ColumnView> columnViews = new List<ColumnView>();
+            foreach (DataColumn item in dt.Columns)
+            {
+                ColumnView result = new ColumnView();
+                result.DbColumnInfo = columns.FirstOrDefault(it => it.DbColumnName.EqualCase(item.ColumnName));
+                result.DataColumn = item;
+                result.EntityColumnInfo=this.entityInfo.Columns.FirstOrDefault(it => it.DbColumnName.EqualCase(item.ColumnName));
+                var key = result.DbColumnInfo?.DataType?.ToLower();
+                if (result.DbColumnInfo == null) 
+                {
+                    result.Type = null;
+                }
+                else if (PgSqlType.ContainsKey(key))
+                {
+                    result.Type = PgSqlType[key];
+                }
+                else if (key?.First() == '_')
+                {
+                    var type = PgSqlType[key.Substring(1)];
+                    result.Type = NpgsqlDbType.Array | type;
+                }
+                else
+                {
+                    result.Type = null;
+                }
+                columnViews.Add(result);
+            }
             using (var writer = conn.BeginBinaryImport(copyString))
             {
                 foreach (DataRow row in dt.Rows)
                 {
                     writer.StartRow();
-                    foreach (DataColumn kvp in dt.Columns)
+                    foreach (var column in columnViews)
                     {
-                        var first = columns.FirstOrDefault(it => it.DbColumnName.EqualCase(kvp.ColumnName));
-                        var key = first.DataType.ToLower();
-                        if (PgSqlType.ContainsKey(key))
+                        var value = row[column.DataColumn.ColumnName];
+                        if (value == null) 
                         {
-                            WriterRow(writer, row, first);
+                            value = DBNull.Value;
                         }
-                        else if (first.DataType.First() == '_')
+                        if (column.Type == null)
                         {
-                            var type = PgSqlType[key.Substring(1)];
-                            writer.Write(row[kvp.ColumnName], NpgsqlDbType.Array | type);
+                            writer.Write(value);
                         }
-                        else
+                        else  
                         {
-                            writer.Write(row[kvp.ColumnName]);
-                        }
+                            writer.Write(value, column.Type.Value);
+                        }                    
                     }
                 }
                 writer.Complete();
             }
         }
 
-        private static void WriterRow(NpgsqlBinaryImporter writer, DataRow row, DbColumnInfo colInfo)
-        {
-            if (PgSqlType.ContainsKey(colInfo.DataType.ToLower())) 
-            {
-                if (row[colInfo.DbColumnName] == null || row[colInfo.DbColumnName] == DBNull.Value)
-                {
-                    writer.Write(DBNull.Value, NpgsqlDbType.Integer);
-                }
-                else
-                {
-                    writer.Write(row[colInfo.DbColumnName], PgSqlType[colInfo.DataType.ToLower()]);
-                }
-            }
-        }
+    
         public override async Task<int> UpdateByTempAsync(string tableName, string tempName, string[] updateColumns, string[] whereColumns)
         {
             var sqlquerybulder= this.Context.Queryable<object>().SqlBuilder;
@@ -118,6 +130,14 @@ namespace SqlSugar
         {
             await this.Context.Queryable<T>().Where(it => false).AS(dt.TableName).Select("  * into  temp mytemptable").ToListAsync();
             dt.TableName = "mytemptable";
+        }
+
+        public class ColumnView
+        {
+            public DataColumn DataColumn { get; set; }
+            public EntityColumnInfo EntityColumnInfo { get; set; }
+            public DbColumnInfo DbColumnInfo { get; set; }
+            public NpgsqlDbType? Type { get; set; }
         }
     }
 }
