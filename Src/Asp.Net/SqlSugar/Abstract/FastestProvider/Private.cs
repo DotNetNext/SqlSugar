@@ -41,11 +41,11 @@ namespace SqlSugar
             {
                 if (AsName == null)
                 {
-                    return queryable.Where(it => false).ToDataTable();
+                    return queryable.Where(it => false).Select("*").ToDataTable();
                 }
                 else
                 {
-                    return queryable.AS(AsName).Where(it => false).ToDataTable();
+                    return queryable.AS(AsName).Where(it => false).Select("*").ToDataTable();
                 }
             }
             );
