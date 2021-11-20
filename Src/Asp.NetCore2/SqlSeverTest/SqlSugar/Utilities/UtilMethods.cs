@@ -411,5 +411,22 @@ namespace SqlSugar
                 }
             }
         }
+
+        public static Dictionary<string, T> EnumToDictionary<T>()
+        {
+            Dictionary<string, T> dic = new Dictionary<string, T>();
+            if (!typeof(T).IsEnum)
+            {
+                return dic;
+            }
+            string desc = string.Empty;
+            foreach (var item in Enum.GetValues(typeof(T)))
+            {
+                var key = item.ToString().ToLower();
+                if (!dic.ContainsKey(key))
+                    dic.Add(key, (T)item);
+            }
+            return dic;
+        }
     }
 }
