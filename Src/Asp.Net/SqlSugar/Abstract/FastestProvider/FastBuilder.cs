@@ -38,8 +38,8 @@ namespace SqlSugar
         public virtual async Task CreateTempAsync<T>(DataTable dt) where T : class, new()
         {
             await this.Context.UnionAll(
-                this.Context.Queryable<T>().Where(it => false).AS(dt.TableName),
-                this.Context.Queryable<T>().Where(it => false).AS(dt.TableName)).Select("top 1 * into #temp").ToListAsync();
+                this.Context.Queryable<T>().Select("*").Where(it => false).AS(dt.TableName),
+                this.Context.Queryable<T>().Select("*").Where(it => false).AS(dt.TableName)).Select("top 1 * into #temp").ToListAsync();
             dt.TableName = "#temp";
         }
     }

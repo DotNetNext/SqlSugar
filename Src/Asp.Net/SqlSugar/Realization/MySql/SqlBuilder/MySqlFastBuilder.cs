@@ -65,7 +65,7 @@ namespace SqlSugar
         public override async Task CreateTempAsync<T>(DataTable dt) 
         {
             dt.TableName = "temp"+SnowFlakeSingle.instance.getID();
-            var sql = this.Context.Queryable<T>().Where(it => false).ToSql().Key;
+            var sql = this.Context.Queryable<T>().Select("*").Where(it => false).ToSql().Key;
             await this.Context.Ado.ExecuteCommandAsync($"Create TEMPORARY  table {dt.TableName}({sql}) ");
         }
     }
