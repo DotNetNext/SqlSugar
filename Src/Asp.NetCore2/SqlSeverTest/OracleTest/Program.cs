@@ -11,8 +11,9 @@ namespace OrmTest
         /// <param name="args"></param>
         static void Main(string[] args)
         {
- 
-            //Demo
+
+            ////Demo
+            DemoO_Fastest.Init();
             Demo0_SqlSugarClient.Init();
             Demo1_Queryable.Init();
             Demo2_Updateable.Init();
