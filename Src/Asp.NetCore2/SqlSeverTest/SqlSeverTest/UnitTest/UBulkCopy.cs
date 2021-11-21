@@ -73,9 +73,19 @@ namespace OrmTest
             {
                 throw new Exception("unit Bulk");
             }
+            Db.CodeFirst.InitTables<UnitTable001>();
+            Db.Fastest<UnitTable001>().BulkUpdate(new List<UnitTable001> {
+              new UnitTable001(){   Id=1, table="a" }
+            });
         }
     }
- 
+
+    public class UnitTable001
+    {
+        [SqlSugar.SugarColumn(IsPrimaryKey =true)]
+        public int Id { get; set; }
+        public string table { get; set; }
+    }
     public class UnitIdentity111
     {
         public int Id { get; set; }
