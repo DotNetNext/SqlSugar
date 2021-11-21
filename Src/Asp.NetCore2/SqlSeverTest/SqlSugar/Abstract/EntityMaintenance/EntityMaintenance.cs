@@ -37,7 +37,7 @@ namespace SqlSugar
                 result.IsDisabledUpdateAll = sugarTable.IsDisabledUpdateAll;
                 result.IsDisabledDelete = sugarTable.IsDisabledDelete;
             }
-            if (this.Context.Context.CurrentConnectionConfig.ConfigureExternalServices != null && this.Context.CurrentConnectionConfig.ConfigureExternalServices.EntityNameService != null)
+            if (this.Context.CurrentConnectionConfig.ConfigureExternalServices != null && this.Context.CurrentConnectionConfig.ConfigureExternalServices.EntityNameService != null)
             {
                 if (result.DbTableName == null)
                 {
