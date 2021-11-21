@@ -43,8 +43,8 @@ namespace OrmTest
             {
                 IsRemind = saveDiary.IsRemind,
             }).Where(it => it.ID == saveDiary.ID).ToSql();
-           // UValidate.Check(sql.Key, @"UPDATE ""UNITBOOLTEST""  SET
-           //""BOOLVALUE"" =:BoolValue  WHERE ""ID"" =:Id"", "Updateable");
+            // UValidate.Check(sql.Key, @"UPDATE ""UNITBOOLTEST""  SET
+            //""BOOLVALUE"" =:BoolValue  WHERE ""ID"" =:Id"", "Updateable");
 
 
             //  sql = Db.Updateable<UnitDiary>().SetColumns(it => new UnitDiary()
@@ -53,8 +53,20 @@ namespace OrmTest
             //}).Where(it => it.ID == saveDiary.ID).ToSql();
             //UValidate.Check(sql.Key, @"UPDATE ""DIARY""  SET
             //""TYPEID"" = @Const0   WHERE ( ""ID"" = :ID1 )", "Updateable");
+            Db.CodeFirst.InitTables<UnitGuidTest>();
+            Db.Updateable(new List<UnitGuidTest> {
+            new UnitGuidTest() { Id = Guid.NewGuid(),name= "a"  ,guid=Guid.NewGuid()},
+            new UnitGuidTest() { Id = Guid.NewGuid(),name= "a" }
+            }).ExecuteCommand();
 
         }
+    }
+    public class UnitGuidTest 
+    {
+        [SugarColumn(IsPrimaryKey =true)]
+        public Guid Id { get; set; }
+        public string name { get; set; }
+        public Guid guid { get; set; }
     }
     public class UnitSaveDiary
     {
