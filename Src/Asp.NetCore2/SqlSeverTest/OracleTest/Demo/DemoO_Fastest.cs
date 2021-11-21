@@ -42,7 +42,7 @@ namespace OrmTest
                     }
                 }
             });
-            db.DbMaintenance.DropTable("TestFAST11");
+        
             db.CodeFirst.InitTables<TestFAST11>();
             //db.Insertable<TestFAST11>(new List<TestFAST11>() {
             //  new TestFAST11(){  Date=DateTime.Now, Id=Guid.NewGuid()+"", Sex=1 , }
@@ -54,7 +54,7 @@ namespace OrmTest
               new TestFAST11(){  Date=DateTime.Now, Id=Guid.NewGuid()+"", Sex=1  }
             };
             //db.Updateable(data).ExecuteCommand();
-            db.Fastest<TestFAST11>().BulkUpdate(data);
+            db.Fastest<TestFAST11>().BulkCopy(data);
             var x = db.Queryable<TestFAST11>().ToList();
  
         }
