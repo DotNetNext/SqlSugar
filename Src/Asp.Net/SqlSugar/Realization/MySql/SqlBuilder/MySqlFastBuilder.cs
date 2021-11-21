@@ -44,7 +44,7 @@ namespace SqlSugar
                     TableName = dt.TableName,
                     Local = true,
                 };
-                bulk.Columns.AddRange(dt.Columns.Cast<DataColumn>().Select(colum => colum.ColumnName).Distinct().ToArray());
+                bulk.Columns.AddRange(dt.Columns.Cast<DataColumn>().Select(colum =>new MySqlBuilder().GetTranslationColumnName(colum.ColumnName)).Distinct().ToArray());
                 result= await bulk.LoadAsync();
                 //执行成功才删除文件
                 if (File.Exists(fileName))
@@ -64,8 +64,10 @@ namespace SqlSugar
         }
         public override async Task CreateTempAsync<T>(DataTable dt) 
         {
+            var queryable = this.Context.Queryable<T>();
+            var tableName = queryable.SqlBuilder.GetTranslationTableName(dt.TableName);
             dt.TableName = "temp"+SnowFlakeSingle.instance.getID();
-            var sql = this.Context.Queryable<T>().Select("*").Where(it => false).ToSql().Key;
+            var sql = queryable.AS(tableName).Where(it => false).ToSql().Key;
             await this.Context.Ado.ExecuteCommandAsync($"Create TEMPORARY  table {dt.TableName}({sql}) ");
         }
     }

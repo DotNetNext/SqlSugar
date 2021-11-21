@@ -27,10 +27,11 @@ namespace SqlSugar
 
         public  virtual async Task<int> UpdateByTempAsync(string tableName, string tempName, string[] updateColumns, string[] whereColumns)
         {
+            var sqlbuilder = this.Context.Queryable<object>().SqlBuilder;
             Check.ArgumentNullException(!updateColumns.Any(), "update columns count is 0");
             Check.ArgumentNullException(!whereColumns.Any(), "where columns count is 0");
-            var sets = string.Join(",", updateColumns.Select(it => $"TM.{it}=TE.{it}"));
-            var wheres = string.Join(",", whereColumns.Select(it => $"TM.{it}=TE.{it}"));
+            var sets = string.Join(",", updateColumns.Select(it => $"TM.{sqlbuilder.GetTranslationColumnName(it)}=TE.{sqlbuilder.GetTranslationColumnName(it)}"));
+            var wheres = string.Join(",", whereColumns.Select(it => $"TM.{sqlbuilder.GetTranslationColumnName(it)}=TE.{sqlbuilder.GetTranslationColumnName(it)}"));
             string sql = string.Format(UpdateSql, sets, tableName, tempName, wheres);
             return await this.Context.Ado.ExecuteCommandAsync(sql);
         }

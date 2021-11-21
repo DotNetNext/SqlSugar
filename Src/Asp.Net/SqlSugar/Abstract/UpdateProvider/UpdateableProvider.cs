@@ -299,7 +299,14 @@ namespace SqlSugar
             {
                 fieldName = columnInfo.DbColumnName;
             }
-            UpdateBuilder.SetValues.Add(new KeyValuePair<string, string>(fieldName, fieldValue+""));
+            var parameterName =this.SqlBuilder.SqlParameterKeyWord+ "Const" + this.UpdateBuilder.LambdaExpressions.ParameterIndex;
+            this.UpdateBuilder.LambdaExpressions.ParameterIndex = this.UpdateBuilder.LambdaExpressions.ParameterIndex+1;
+            if (UpdateBuilder.Parameters == null) 
+            {
+                UpdateBuilder.Parameters = new List<SugarParameter>();
+            }
+            UpdateBuilder.Parameters.Add(new SugarParameter(parameterName, fieldValue));
+            UpdateBuilder.SetValues.Add(new KeyValuePair<string, string>(SqlBuilder.GetTranslationColumnName(fieldName), $"{SqlBuilder.GetTranslationColumnName(fieldName)}={parameterName}"));
             this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => (UpdateParameterIsNull == false && IsPrimaryKey(it)) || UpdateBuilder.SetValues.Any(v => SqlBuilder.GetNoTranslationColumnName(v.Key).Equals(it.DbColumnName, StringComparison.CurrentCultureIgnoreCase) || SqlBuilder.GetNoTranslationColumnName(v.Key).Equals(it.PropertyName, StringComparison.CurrentCultureIgnoreCase)) || it.IsPrimarykey == true).ToList();
             AppendSets();
             return this;

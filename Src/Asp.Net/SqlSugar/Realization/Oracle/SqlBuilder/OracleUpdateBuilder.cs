@@ -59,7 +59,7 @@ namespace SqlSugar
                 {
                     return Convert.ToInt64(value);
                 }
-                else if (type.IsIn(UtilConstants.IntType,UtilConstants.LongType,UtilConstants.ShortType)) 
+                else if (type.IsIn(UtilConstants.IntType,UtilConstants.LongType,UtilConstants.ShortType))
                 {
                     return value;
                 }
