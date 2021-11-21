@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            Bulk();
             CodeFirst();
             Updateable();
             Json();
