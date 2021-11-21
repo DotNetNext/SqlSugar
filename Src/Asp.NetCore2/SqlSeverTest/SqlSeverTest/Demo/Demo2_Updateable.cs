@@ -100,6 +100,7 @@ namespace OrmTest
             //Where Sql
             //db.Updateable(updateObj).Where("id=@x", new { x = "1" }).ExecuteCommand();
 
+            db.Updateable<Order>().SetColumns("name", 1).Where(it => it.Id == 1).ExecuteCommand();
             Console.WriteLine("#### Updateable End ####");
         }
 

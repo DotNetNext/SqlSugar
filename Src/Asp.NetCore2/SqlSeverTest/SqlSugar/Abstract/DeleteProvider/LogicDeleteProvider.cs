@@ -17,11 +17,11 @@ namespace SqlSugar
             List<SugarParameter> pars;
             string where;
             LogicFieldName = _ExecuteCommand(LogicFieldName, out db, out where, out pars);
-            var updateable = db.Updateable<T>().SetColumns(LogicFieldName, "@IsDeleted");
+            var updateable = db.Updateable<T>().SetColumns(LogicFieldName,true);
             if (pars != null)
                 updateable.UpdateBuilder.Parameters.AddRange(pars);
             Convert(updateable as UpdateableProvider<T>);
-            var result = updateable.Where(where, new { IsDeleted = true }).ExecuteCommand();
+            var result = updateable.Where(where).ExecuteCommand();
             return result;
         }
         public async Task<int> ExecuteCommandAsync(string LogicFieldName = null)
