@@ -106,6 +106,9 @@ namespace OrmTest
                .Where(a => SqlFunc.StartsWith(a.Name, levelCode))
                .AddQueue();
             db.SaveQueues();
+
+
+            db.Fastest<Order>().BulkCopy(updateObjs);
             Console.WriteLine("#### Updateable End ####");
         }
 

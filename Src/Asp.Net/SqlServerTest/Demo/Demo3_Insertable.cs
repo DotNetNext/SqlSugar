@@ -158,7 +158,7 @@ namespace OrmTest
             db.Insertable(dict).AS("[Order]").ExecuteCommand();
 
 
-            db.Fastest<Order>().BulkUpdate(insertObjs);
+            db.Fastest<Order>().BulkCopy(insertObjs);
             Console.WriteLine("#### Insertable End ####");
 
         }
