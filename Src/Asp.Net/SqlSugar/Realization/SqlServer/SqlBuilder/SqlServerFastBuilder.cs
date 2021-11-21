@@ -43,6 +43,7 @@ namespace SqlSugar
             {
                 this.Context.Ado.Connection.Open();
             }
+            copy.BulkCopyTimeout = this.Context.Ado.CommandTimeOut;
             return copy;
         }
 
