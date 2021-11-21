@@ -56,8 +56,38 @@ namespace OrmTest
             {
                 throw new Exception("unit Bulk");
             }
+
+            Db.CodeFirst.InitTables<UnitIdentity111>();
+            Db.DbMaintenance.TruncateTable<UnitIdentity111>();
+            var count=Db.Fastest<UnitIdentity111111111>().AS("UnitIdentity111").BulkCopy(new List<UnitIdentity111111111> { 
+              new UnitIdentity111111111(){ Id=1, Name="jack" }
+            });
+            if (count == 0) 
+            {
+                throw new Exception("unit Bulk");
+            }
+            count = Db.Fastest<UnitIdentity111111111>().AS("UnitIdentity111").BulkUpdate(new List<UnitIdentity111111111> {
+              new UnitIdentity111111111(){ Id=1, Name="jack" }
+            });
+            if (count == 0)
+            {
+                throw new Exception("unit Bulk");
+            }
         }
     }
+ 
+    public class UnitIdentity111
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+    }
+    public class UnitIdentity111111111
+    {
+        [SqlSugar.SugarColumn(IsPrimaryKey = true)]
+        public int Id { get; set; }
+        public string Name { get; set; }
+    }
+
     public class UnitIdentity1 
     {
         [SqlSugar.SugarColumn(IsPrimaryKey =true,IsIdentity =true)]
