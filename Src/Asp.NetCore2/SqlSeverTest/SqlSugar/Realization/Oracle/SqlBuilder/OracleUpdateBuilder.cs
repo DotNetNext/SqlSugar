@@ -59,6 +59,14 @@ namespace SqlSugar
                 {
                     return Convert.ToInt64(value);
                 }
+                else if (type.IsIn(UtilConstants.IntType,UtilConstants.LongType,UtilConstants.ShortType))
+                {
+                    return value;
+                }
+                else if (type==UtilConstants.GuidType)
+                {
+                    return  "'" + value.ToString() + "'";
+                }
                 else if (type == UtilConstants.ByteArrayType)
                 {
                     string bytesString = "0x" + BitConverter.ToString((byte[])value).Replace("-", "");
