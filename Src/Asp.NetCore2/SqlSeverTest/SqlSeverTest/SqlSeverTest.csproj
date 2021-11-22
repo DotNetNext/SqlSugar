@@ -6,11 +6,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SqlSugar\SqlSugar.csproj" />
+    <Compile Remove="UnitTest\models\**" />
+    <EmbeddedResource Remove="UnitTest\models\**" />
+    <None Remove="UnitTest\models\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="UnitTest\models\" />
+    <ProjectReference Include="..\SqlSugar\SqlSugar.csproj" />
   </ItemGroup>
 
 </Project>
