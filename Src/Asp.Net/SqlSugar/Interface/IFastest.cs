@@ -8,7 +8,7 @@ namespace SqlSugar
     public interface IFastest<T>
     {
         IFastest<T> AS(string tableName);
-
+        IFastest<T> PageSize(int Size);
         int BulkCopy(List<T> datas);
         Task<int> BulkCopyAsync(List<T> datas);
 
