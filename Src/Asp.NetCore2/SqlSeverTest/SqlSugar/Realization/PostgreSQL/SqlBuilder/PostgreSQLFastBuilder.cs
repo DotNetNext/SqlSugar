@@ -44,7 +44,7 @@ namespace SqlSugar
             try
             {
                 var identityColumnInfo = this.entityInfo.Columns.FirstOrDefault(it => it.IsIdentity);
-                if (identityColumnInfo!=null)
+                if (identityColumnInfo != null)
                 {
                     throw new Exception("PgSql bulkcopy no support identity");
                 }
@@ -52,8 +52,11 @@ namespace SqlSugar
             }
             catch (Exception ex)
             {
-                base.CloseDb();
                 throw ex;
+            }
+            finally 
+            {
+                base.CloseDb();
             }
             return await Task.FromResult(dt.Rows.Count);
         }

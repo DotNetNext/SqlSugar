@@ -93,6 +93,7 @@ namespace SqlSugar
             var result = await buider.UpdateByTempAsync(GetTableName(), dt.TableName, updateColumns, whereColumns);
             this.context.DbMaintenance.DropTable(dt.TableName);
             this.context.CurrentConnectionConfig.IsAutoCloseConnection = isAuto;
+            buider.CloseDb();
             End(datas);
             return result;
         }

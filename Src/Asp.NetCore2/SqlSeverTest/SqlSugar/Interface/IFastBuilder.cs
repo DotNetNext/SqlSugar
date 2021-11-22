@@ -13,5 +13,6 @@ namespace SqlSugar
         Task<int> UpdateByTempAsync(string tableName,string tempName,string [] updateColumns,string[] whereColumns);
         Task<int> ExecuteBulkCopyAsync(DataTable dt);
         Task CreateTempAsync<T>(DataTable dt) where T : class, new();
+        void CloseDb();
     }
 }
