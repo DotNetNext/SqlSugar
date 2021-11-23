@@ -125,6 +125,9 @@ namespace SqlSugar
             var other = messageList.Where(it => it.StorageType == StorageType.Other).ToList();
             StorageableResult<T> result = new StorageableResult<T>()
             {
+                _IsWhereColumn= this.whereExpression != null,
+                _AsName =asname,
+                _Context=this.Context,
                 AsDeleteable = this.Context.Deleteable<T>().AS(asname),
                 AsUpdateable = this.Context.Updateable(update.Select(it => it.Item).ToList()).AS(asname),
                 AsInsertable = this.Context.Insertable(inset.Select(it => it.Item).ToList()).AS(asname),

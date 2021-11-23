@@ -88,5 +88,28 @@ namespace SqlSugar
         public IInsertable<T> AsInsertable { get; set; }
         public IUpdateable<T> AsUpdateable { get; set; }
         public IDeleteable<T> AsDeleteable { get; set; }
+        internal bool _IsWhereColumn { get;  set; }
+        internal string _AsName { get;  set; }
+        internal SqlSugarProvider _Context { get;  set; }
+
+        public int BulkCopy()
+        {
+            return this._Context.Fastest<T>().AS(_AsName).BulkCopy(InsertList.Select(it=>it.Item).ToList());
+        }
+        public Task<int> BulkCopyAsync()
+        {
+            return this._Context.Fastest<T>().AS(_AsName).BulkCopyAsync(InsertList.Select(it => it.Item).ToList());
+        }
+
+        public int BulkUpdate()
+        {
+            Check.Exception(_IsWhereColumn, "Storageable.BulkCopy no support WhereColumns");
+            return this._Context.Fastest<T>().AS(_AsName).BulkUpdate(UpdateList.Select(it => it.Item).ToList());
+        }
+        public Task<int> BulkUpdateAsync()
+        {
+            Check.Exception(_IsWhereColumn, "Storageable.BulkCopy no support WhereColumns");
+            return this._Context.Fastest<T>().AS(_AsName).BulkUpdateAsync(UpdateList.Select(it => it.Item).ToList());
+        }
     }
 }
