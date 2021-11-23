@@ -31,7 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
-
+            Fastest2();
             SplitTest();
             Filter();
             Insert();
