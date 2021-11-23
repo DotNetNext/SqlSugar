@@ -92,7 +92,7 @@ namespace SqlSugar
         private object ValueConverter(EntityColumnInfo columnInfo, object value)
         {
             if (value == null)
-                return value;
+                return DBNull.Value;
             if (value is DateTime && (DateTime)value == DateTime.MinValue)
             {
                 value = Convert.ToDateTime("1900-01-01");
