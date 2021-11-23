@@ -543,6 +543,10 @@ namespace SqlSugar
             {
                 return "*";
             }
+            if (result.Contains("/**/*")) 
+            {
+                return result.Replace("/**/*", "");
+            }
             if (result.Contains(".*") && this.IsSingle())
             {
                 return "*";
