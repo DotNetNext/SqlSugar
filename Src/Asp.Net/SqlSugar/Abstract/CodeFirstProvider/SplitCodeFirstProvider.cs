@@ -41,7 +41,7 @@ namespace SqlSugar
             this.Context.MappingTables.Add(helper.EntityInfo.EntityName, helper.EntityInfo.DbTableName);
         }
 
-        public void InitTables<T>(Type [] types) 
+        public void InitTables(Type [] types) 
         {
             foreach (var type in types)
             {
