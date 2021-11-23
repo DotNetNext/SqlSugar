@@ -87,6 +87,8 @@ namespace OrmTest
     }).SplitTable().ExecuteReturnSnowflakeId();
 
             //只查A表
+            var tableName2 = db.SplitHelper(new WordTestTable() {  Name="A" }).GetTableNames();
+            var listall1 = db.Queryable<WordTestTable>().Where(it => it.Name == "all").SplitTable(tas => tas.InTableNames(tableName2)).ToList();
             var listall = db.Queryable<WordTestTable>().Where(it => it.Name == "all").SplitTable(tas => tas.ContainsTableNames("_FirstA")).ToList();
          
         }

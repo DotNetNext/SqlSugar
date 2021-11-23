@@ -13,7 +13,7 @@ namespace OrmTest
             var db = new SqlSugarScope(new SqlSugar.ConnectionConfig()
             {
                 ConnectionString =Config.ConnectionString,
-                DbType = DbType.PostgreSQL,
+                DbType = DbType.SqlServer,
                 IsAutoCloseConnection = true
             });
 
@@ -41,13 +41,12 @@ namespace OrmTest
             db.Fastest<Test2>().BulkUpdate(updateList);
 
             Console.WriteLine("用例跑完");
-            Console.ReadKey();
         }
 
-        [SugarTable("UnitFastest001a")]
+        [SugarTable("UnitFastest0011a")]
         public class Test2
         {
-            [SugarColumn(IsNullable = false, IsPrimaryKey = true)]
+            [SugarColumn(IsNullable = false,IsIdentity =true, IsPrimaryKey = true)]
             public int id { get; set; }
 
             [SugarColumn(IsNullable = false)]
