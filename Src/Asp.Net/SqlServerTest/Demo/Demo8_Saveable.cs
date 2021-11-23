@@ -36,7 +36,10 @@ namespace OrmTest
             x.AsUpdateable.ExecuteCommand();
             x.AsInsertable.ExecuteCommand();
 
-           
+
+            var x2 = db.Storageable<Order>(new Order() { Id = 0, Name = "jack" }).ToStorage();
+            x2.BulkCopy();
+            x2.BulkUpdate();
             Console.WriteLine("");
             Console.WriteLine("#### Saveable End ####");
         }
