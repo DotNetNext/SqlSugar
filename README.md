@@ -196,12 +196,12 @@ Split query
 ### Feature9： Big data insert or update 
 ```cs
 //Insert A million only takes a few seconds
-db.Fastest<RealmAuctionDatum>().BulkCopy(GetList());//性能 比现有任何Bulkcopy都要快30%
+db.Fastest<RealmAuctionDatum>().BulkCopy(GetList());
  
  
 //uupdate A million only takes a few seconds
 db.Fastest<RealmAuctionDatum>().BulkUpdate(GetList());//A million only takes a few seconds完
-db.Fastest<RealmAuctionDatum>().BulkUpdate(GetList(),new string[]{"id"},new string[]{"name","time"})//无主键用法
+db.Fastest<RealmAuctionDatum>().BulkUpdate(GetList(),new string[]{"id"},new string[]{"name","time"})//no primary key
  
 //if exists update, else  insert
  var x= db.Storageable<Order>(data).ToStorage();
