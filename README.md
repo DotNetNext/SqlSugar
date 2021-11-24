@@ -199,7 +199,7 @@ Split query
 db.Fastest<RealmAuctionDatum>().BulkCopy(GetList());
  
  
-//uupdate A million only takes a few seconds
+//update A million only takes a few seconds
 db.Fastest<RealmAuctionDatum>().BulkUpdate(GetList());//A million only takes a few seconds完
 db.Fastest<RealmAuctionDatum>().BulkUpdate(GetList(),new string[]{"id"},new string[]{"name","time"})//no primary key
  
