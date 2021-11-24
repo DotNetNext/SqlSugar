@@ -192,3 +192,26 @@ Split query
 .SplitTable(DateTime.Now.Date.AddYears(-1), DateTime.Now)
 .ToPageList(1,2);　
 ``` 
+
+### Feature9： Big data insert or update 
+```cs
+//Insert A million only takes a few seconds
+db.Fastest<RealmAuctionDatum>().BulkCopy(GetList());//性能 比现有任何Bulkcopy都要快30%
+ 
+ 
+//uupdate A million only takes a few seconds
+db.Fastest<RealmAuctionDatum>().BulkUpdate(GetList());//A million only takes a few seconds完
+db.Fastest<RealmAuctionDatum>().BulkUpdate(GetList(),new string[]{"id"},new string[]{"name","time"})//无主键用法
+ 
+//if exists update, else  insert
+ var x= db.Storageable<Order>(data).ToStorage();
+     x.BulkCopy();
+     x.BulkUpdate(); 
+     
+//set table name
+db.Fastest<RealmAuctionDatum>().AS("tableName").BulkCopy(GetList())
+ 
+//set page 
+db.Fastest<Order>().PageSize(300000).BulkCopy(insertObjs);
+
+```
