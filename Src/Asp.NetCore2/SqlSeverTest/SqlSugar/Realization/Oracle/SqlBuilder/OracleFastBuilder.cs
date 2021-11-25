@@ -17,23 +17,27 @@ namespace SqlSugar
             this.entityInfo = entityInfo;
         }
 
-        public override string UpdateSql { get; set; } = "UPDATE (SELECT A.NAME ANAME,B.NAME BNAME FROM A,B WHERE A.ID=B.ID)SET ANAME = BNAME;";
+        public override string UpdateSql { get; set; } = "UPDATE (SELECT {4}  FROM {2} TM,{3} TE WHERE {1})SET {0}";
         public override async Task CreateTempAsync<T>(DataTable dt)
         {
-            await Task.FromResult(0);
-            throw new Exception("Oracle no support BulkUpdate");
-            //dt.TableName = "T" + SnowFlakeSingle.instance.getID().ToString().Substring(4,16);
-            //var sql = this.Context.Queryable<T>().Where(it => false).Select("*").ToSql().Key;
-            //await this.Context.Ado.ExecuteCommandAsync($"create global temporary table {dt.TableName} as {sql} ");
+            //await Task.FromResult(0);
+            //throw new Exception("Oracle no support BulkUpdate");
+            var columns = this.Context.EntityMaintenance.GetEntityInfo<T>().Columns.Where(it => it.IsPrimarykey).Select(it => it.DbColumnName).ToArray();
+            dt.TableName = "T" + SnowFlakeSingle.instance.getID().ToString().Substring(4, 10);
+            var sql = this.Context.Queryable<T>().Where(it => false).Select("*").ToSql().Key;
+            await this.Context.Ado.ExecuteCommandAsync($"create global temporary table {dt.TableName} as {sql} ");
+            this.Context.DbMaintenance.AddPrimaryKeys(dt.TableName, columns);
             //var xxx = this.Context.Queryable<T>().AS(dt.TableName).ToList();
         }
         public override async Task<int> UpdateByTempAsync(string tableName, string tempName, string[] updateColumns, string[] whereColumns)
         {
+            var sqlBuilder = this.Context.Queryable<object>().SqlBuilder;
             Check.ArgumentNullException(!updateColumns.Any(), "update columns count is 0");
             Check.ArgumentNullException(!whereColumns.Any(), "where columns count is 0");
-            var sets = string.Join(",", updateColumns.Select(it => $"TM.{it}=TE.{it}"));
-            var wheres = string.Join(",", whereColumns.Select(it => $"TM.{it}=TE.{it}"));
-            string sql = string.Format(UpdateSql, sets, tableName, tempName, wheres);
+            var sets = string.Join(",", updateColumns.Select(it => $"TM{it}=TE{it}"));
+            var wheres = string.Join(",", whereColumns.Select(it => $"TM.{sqlBuilder.GetTranslationColumnName(it)}=TE.{sqlBuilder.GetTranslationColumnName(it)}"));
+            var forms= string.Join(",", updateColumns.Select(it => $" TM.{sqlBuilder.GetTranslationColumnName(it)} TM{it},TE.{sqlBuilder.GetTranslationColumnName(it)} TE{it}")); ;
+            string sql = string.Format(UpdateSql, sets, wheres,tableName, tempName, forms);
             return await this.Context.Ado.ExecuteCommandAsync(sql);
         }
         private OracleBulkCopy GetBulkCopyInstance()
