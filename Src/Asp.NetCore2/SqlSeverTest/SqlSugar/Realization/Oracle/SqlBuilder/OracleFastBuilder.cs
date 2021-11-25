@@ -22,10 +22,11 @@ namespace SqlSugar
         {
             //await Task.FromResult(0);
             //throw new Exception("Oracle no support BulkUpdate");
+            var oldTableName = dt.TableName;
             var columns = this.Context.EntityMaintenance.GetEntityInfo<T>().Columns.Where(it => it.IsPrimarykey).Select(it => it.DbColumnName).ToArray();
-            dt.TableName = "T" + SnowFlakeSingle.instance.getID().ToString().Substring(4, 10);
-            var sql = this.Context.Queryable<T>().Where(it => false).Select("*").ToSql().Key;
-            await this.Context.Ado.ExecuteCommandAsync($"create global temporary table {dt.TableName} as {sql} ");
+            dt.TableName = "Temp" + SnowFlakeSingle.instance.getID().ToString();
+            var sql = this.Context.Queryable<T>().AS(oldTableName).Where(it => false).Select("*").ToSql().Key;
+            await this.Context.Ado.ExecuteCommandAsync($"create table {dt.TableName} as {sql} ");
             this.Context.DbMaintenance.AddPrimaryKeys(dt.TableName, columns);
             //var xxx = this.Context.Queryable<T>().AS(dt.TableName).ToList();
         }
