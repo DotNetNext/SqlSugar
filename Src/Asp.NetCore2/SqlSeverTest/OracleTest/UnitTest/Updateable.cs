@@ -44,7 +44,7 @@ namespace OrmTest
                 IsRemind = saveDiary.IsRemind,
             }).Where(it => it.ID == saveDiary.ID).ToSql();
             UValidate.Check(sql.Key, @"UPDATE ""DIARY""  SET
-            ""ISREMIND"" =  @Const0    WHERE ( ""ID"" = @ID1 )", "Updateable");
+            ""ISREMIND"" =  :Const0    WHERE ( ""ID"" = :ID1 )", "Updateable");
 
 
             sql = Db.Updateable<UnitDiary>().SetColumns(it => new UnitDiary()
@@ -52,7 +52,7 @@ namespace OrmTest
                TypeID = saveDiary.TypeID,
             }).Where(it => it.ID == saveDiary.ID).ToSql();
             UValidate.Check(sql.Key, @"UPDATE ""DIARY""  SET
-            ""TYPEID"" = @Const0   WHERE ( ""ID"" = @ID1 )", "Updateable");
+            ""TYPEID"" = :Const0   WHERE ( ""ID"" = :ID1 )", "Updateable");
 
         }
     }
