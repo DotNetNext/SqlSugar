@@ -36,7 +36,7 @@ namespace SqlSugar
             Check.ArgumentNullException(!updateColumns.Any(), "update columns count is 0");
             Check.ArgumentNullException(!whereColumns.Any(), "where columns count is 0");
             var sets = string.Join(",", updateColumns.Select(it => $"TM{it}=TE{it}"));
-            var wheres = string.Join(",", whereColumns.Select(it => $"TM.{sqlBuilder.GetTranslationColumnName(it)}=TE.{sqlBuilder.GetTranslationColumnName(it)}"));
+            var wheres = string.Join(" AND ", whereColumns.Select(it => $"TM.{sqlBuilder.GetTranslationColumnName(it)}=TE.{sqlBuilder.GetTranslationColumnName(it)}"));
             var forms= string.Join(",", updateColumns.Select(it => $" TM.{sqlBuilder.GetTranslationColumnName(it)} TM{it},TE.{sqlBuilder.GetTranslationColumnName(it)} TE{it}")); ;
             string sql = string.Format(UpdateSql, sets, wheres,tableName, tempName, forms);
             return await this.Context.Ado.ExecuteCommandAsync(sql);
