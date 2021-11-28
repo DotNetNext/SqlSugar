@@ -177,20 +177,6 @@ namespace SqlSugar
         Task<DbResult<bool>> UseTranAsync(Func<Task> action, Action<Exception> errorCallBack = null);
         Task<DbResult<T>> UseTranAsync<T>(Func<Task<T>> action, Action<Exception> errorCallBack = null);
         IAdo UseStoredProcedure();
-
-
-
-        #region Obsolete
-        [Obsolete("Use db.ado.UseStoredProcedure().MethodName()")]
-        void UseStoredProcedure(Action action);
-        [Obsolete("Use db.ado.UseStoredProcedure().MethodName()")]
-        T UseStoredProcedure<T>(Func<T> action);
-        [Obsolete("Use SqlQuery<dynamic>(sql)")]
-        dynamic SqlQueryDynamic(string sql, object whereObj = null);
-        [Obsolete("Use SqlQuery<dynamic>(sql)")]
-        dynamic SqlQueryDynamic(string sql, params SugarParameter[] parameters);
-        [Obsolete("Use SqlQuery<dynamic>(sql)")]
-        dynamic SqlQueryDynamic(string sql, List<SugarParameter> parameters); 
-        #endregion
+         
     }
 }
