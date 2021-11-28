@@ -322,7 +322,13 @@ namespace SqlSugar
             if (name.IsIn("GetSelfAndAutoFill","SelectAll"))
             {
                 var memberValue = (args.First() as MemberExpression).Expression.ToString();
-                model.Args.Add(new MethodCallExpressionArgs() { MemberValue = memberValue, IsMember = true, MemberName = memberValue });
+                var data = new MethodCallExpressionArgs() { MemberValue = memberValue, IsMember = true, MemberName = memberValue };
+                model.Args.Add(data);
+                if (args.Count() == 2) 
+                {
+                    data.MemberName = (args.Last()).ToString();
+                    data.MemberValue = "." ;
+                }
             }
             else
             {
@@ -773,7 +779,12 @@ namespace SqlSugar
                     case "SelectAll":
                     case "GetSelfAndAutoFill":
                         this.Context.Parameters.RemoveAll(it => it.ParameterName == model.Args[0].MemberName.ObjToString());
-                        return this.Context.DbMehtods.GetSelfAndAutoFill(model.Args[0].MemberValue.ObjToString(), this.Context.IsSingle);
+                        var result1= this.Context.DbMehtods.GetSelfAndAutoFill(model.Args[0].MemberValue.ObjToString(), this.Context.IsSingle);
+                        if ((model.Args[0].MemberValue+"") == "."&&this.Context.IsSingle) 
+                        {
+                            result1 =this.Context.GetTranslationTableName(model.Args[0].MemberName+"",false)+".*/**/" + result1;
+                        }
+                        return result1;
                     case "GetDate":
                         return this.Context.DbMehtods.GetDate();
                     case "GetRandom":

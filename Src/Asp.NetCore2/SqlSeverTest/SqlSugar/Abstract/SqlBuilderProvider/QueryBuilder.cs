@@ -491,7 +491,7 @@ namespace SqlSugar
         }
         public string GetSqlQuerySql(string result)
         {
-            if (this.IsSqlQuery && (Skip == null && Take == null))
+            if (this.IsSqlQuery && (Skip == null && Take == null)&&(this.WhereInfos==null||this.WhereInfos.Count==0))
             {
                 var old = result;
                 var regex = @"^SELECT .* FROM  \(((.|\n|\r)*)\) t  $";
@@ -542,6 +542,10 @@ namespace SqlSugar
             if (result == null)
             {
                 return "*";
+            }
+            if (result.Contains("/**/*")) 
+            {
+                return result.Replace("/**/*", "");
             }
             if (result.Contains(".*") && this.IsSingle())
             {
