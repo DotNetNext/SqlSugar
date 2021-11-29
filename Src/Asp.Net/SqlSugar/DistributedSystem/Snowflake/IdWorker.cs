@@ -65,7 +65,10 @@ namespace SqlSugar.DistributedSystem.Snowflake
         // def get_timestamp() = System.currentTimeMillis
 
         readonly object _lock = new Object();
-	
+        public long getID()
+        {
+            return NextId();
+        }
         public virtual long NextId() 
         {
             lock(_lock) 

@@ -8,22 +8,38 @@ namespace SqlSugar
 {
 	public sealed class SnowFlakeSingle 
 	{
-		public static readonly SnowFlakeSingle instance = new SnowFlakeSingle();
+		private static object LockObject = new object();
+		private static DistributedSystem.Snowflake.IdWorker worker;
 		public static int WorkId = 1;
 		public static int DatacenterId = 1;
 		private SnowFlakeSingle()
 		{
-			worker = new DistributedSystem.Snowflake.IdWorker(WorkId, DatacenterId);
+		
 		}
 		static SnowFlakeSingle() { }
-		public static SnowFlakeSingle Instance
+		public static DistributedSystem.Snowflake.IdWorker Instance
 		{
-			get { return instance; }
+			get
+			{
+				if (worker == null) 
+				{
+					lock (LockObject)
+					{
+						if (worker == null)
+						{
+							worker = new DistributedSystem.Snowflake.IdWorker(WorkId, DatacenterId);
+						}
+					}
+				}
+				return worker;
+			}
 		}
-		private DistributedSystem.Snowflake.IdWorker worker;
-		public long getID()
-		{
-			return worker.NextId();
+		public static DistributedSystem.Snowflake.IdWorker instance
+        {
+			get
+			{
+				return Instance;
+			}
 		}
 	}
 }
