@@ -140,9 +140,14 @@ namespace SqlSugar
                         var entityPropertyName = this.Context.EntityMaintenance.GetPropertyName<T>(primaryField);
                         var columnInfo = EntityInfo.Columns.Single(it => it.PropertyName == entityPropertyName);
                         var entityValue = columnInfo.PropertyInfo.GetValue(deleteObj, null);
+                        var tempequals = DeleteBuilder.WhereInEqualTemplate;
+                        if (this.Context.CurrentConnectionConfig.MoreSettings != null && this.Context.CurrentConnectionConfig.MoreSettings.DisableNvarchar == true) 
+                        {
+                            tempequals = "\"{0}\"={1} ";
+                        }
                         if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle)
                         {
-                            andString.AppendFormat(DeleteBuilder.WhereInEqualTemplate, primaryField.ToUpper(), entityValue);
+                            andString.AppendFormat(tempequals, primaryField.ToUpper(), entityValue);
                         }
                         else if (this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL&& (this.Context.CurrentConnectionConfig.MoreSettings==null||this.Context.CurrentConnectionConfig.MoreSettings?.PgSqlIsAutoToLower==true))
                         {
@@ -150,7 +155,7 @@ namespace SqlSugar
                         }
                         else
                         {
-                            andString.AppendFormat(DeleteBuilder.WhereInEqualTemplate, primaryField, entityValue);
+                            andString.AppendFormat(tempequals, primaryField, entityValue);
                         }
                         ++i;
                     }
