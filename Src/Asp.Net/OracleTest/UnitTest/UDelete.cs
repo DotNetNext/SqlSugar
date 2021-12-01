@@ -23,10 +23,10 @@ namespace OrmTest
               }
             };
             var db = Db;
-            db.CurrentConnectionConfig.MoreSettings = new SqlSugar.ConnMoreSettings()
-            {
-                 DisableNvarchar=true
-            };
+            //db.CurrentConnectionConfig.MoreSettings = new SqlSugar.ConnMoreSettings()
+            //{
+            //     DisableNvarchar=true
+            //};
             db.Insertable(list).ExecuteCommand();
             var r= db.Deleteable(list).ExecuteCommand();
             if (r == 0) 
