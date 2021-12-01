@@ -156,9 +156,13 @@ namespace SqlSugar
                                 andString.AppendFormat(tempequals, primaryField.ToUpper(), entityValue);
                             }
                         }
-                        else if (this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL&& (this.Context.CurrentConnectionConfig.MoreSettings==null||this.Context.CurrentConnectionConfig.MoreSettings?.PgSqlIsAutoToLower==true))
+                        else if (this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL && (this.Context.CurrentConnectionConfig.MoreSettings == null || this.Context.CurrentConnectionConfig.MoreSettings?.PgSqlIsAutoToLower == true))
                         {
                             andString.AppendFormat("\"{0}\"={1} ", primaryField.ToLower(), new PostgreSQLExpressionContext().GetValue(entityValue));
+                        }
+                        else if (entityValue != null && UtilMethods.GetUnderType(entityValue.GetType()) == UtilConstants.DateType) 
+                        {
+                            andString.AppendFormat("\"{0}\"={1} ", primaryField,$"'{entityValue.ObjToDate().ToString("yyyy-MM-dd HH:mm:ss.fff")}'");
                         }
                         else
                         {
