@@ -143,11 +143,18 @@ namespace SqlSugar
                         var tempequals = DeleteBuilder.WhereInEqualTemplate;
                         if (this.Context.CurrentConnectionConfig.MoreSettings != null && this.Context.CurrentConnectionConfig.MoreSettings.DisableNvarchar == true) 
                         {
-                            tempequals = "\"{0}\"={1} ";
+                            tempequals = "\"{0}\"='{1}' ";
                         }
                         if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle)
                         {
-                            andString.AppendFormat(tempequals, primaryField.ToUpper(), entityValue);
+                            if (entityValue != null && UtilMethods.GetUnderType(entityValue.GetType()) == UtilConstants.DateType)
+                            {
+                                andString.AppendFormat("\"{0}\"={1} ", primaryField.ToUpper(), "to_date('" + entityValue.ObjToDate().ToString("yyyy-MM-dd HH:mm:ss") + "', 'YYYY-MM-DD HH24:MI:SS') ");
+                            }
+                            else
+                            {
+                                andString.AppendFormat(tempequals, primaryField.ToUpper(), entityValue);
+                            }
                         }
                         else if (this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL&& (this.Context.CurrentConnectionConfig.MoreSettings==null||this.Context.CurrentConnectionConfig.MoreSettings?.PgSqlIsAutoToLower==true))
                         {
