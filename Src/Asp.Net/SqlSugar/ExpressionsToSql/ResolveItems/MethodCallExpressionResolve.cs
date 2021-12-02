@@ -878,7 +878,11 @@ namespace SqlSugar
 
         public string GeDateFormat(string formatString, string value)
         {
-            if (formatString == "yyyy-MM-dd"&&IsSqlServer()) 
+            if (IsOracle()) 
+            {
+               return $"to_char({value},'{formatString}') ";
+            }
+            else if (formatString == "yyyy-MM-dd"&&IsSqlServer()) 
             {
                 return $"CONVERT(varchar(100),convert(datetime,{value}), 23)";
             }
