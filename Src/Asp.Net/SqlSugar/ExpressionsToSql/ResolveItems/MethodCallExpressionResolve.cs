@@ -878,6 +878,22 @@ namespace SqlSugar
 
         public string GeDateFormat(string formatString, string value)
         {
+            if (formatString == "yyyy-MM-dd"&&IsSqlServer()) 
+            {
+                return $"CONVERT(varchar(100),convert(datetime,{value}), 23)";
+            }
+            else if (formatString == "yyyy-MM-dd HH:mm:ss" && IsSqlServer()) 
+            {
+                return $"CONVERT(varchar(100),convert(datetime,{value}), 120)";
+            }
+            else  if (formatString == "yyyy-MM-dd hh:mm:ss" && IsSqlServer())
+            {
+                return $"CONVERT(varchar(100),convert(datetime,{value}), 120)";
+            }
+            else if (formatString == "yyyy-MM-dd hh:mm:ss.ms" && IsSqlServer())
+            {
+                return $"CONVERT(varchar(100),convert(datetime,{value}), 121)";
+            }
             var parameter = new MethodCallExpressionArgs() { IsMember = true, MemberValue = DateType.Year };
             var parameter2 = new MethodCallExpressionArgs() { IsMember = true, MemberName = value };
             var parameters = new MethodCallExpressionModel() { Args = new List<MethodCallExpressionArgs>() { parameter2, parameter } };
