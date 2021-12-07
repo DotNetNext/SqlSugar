@@ -254,6 +254,11 @@ namespace OrmTest
                 parentUser = b
                 })
                 .ToList();
+
+            var sql111= Db.SqlQueryable<Order>("select 1 id ").ToSql().Key;
+            var sql222 = Db.SqlQueryable<Order>("select 1 id ").Where(it=>it.Id==1).ToSql().Key;
+            Check.Exception("select 1 id " != sql111, "unit query error");
+            Check.Exception("SELECT t.* FROM  (select 1 id ) t   WHERE ( [Id] = @Id0 )" != sql222, "unit query error");
         }
         [SugarTable("tree ")]
         public class Tree2

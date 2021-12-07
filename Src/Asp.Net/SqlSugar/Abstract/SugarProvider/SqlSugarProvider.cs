@@ -588,6 +588,7 @@ namespace SqlSugar
             var sqlBuilder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
             var result= this.Context.Queryable<T>().AS(sqlBuilder.GetPackTable(sql, sqlBuilder.GetDefaultShortName())).With(SqlWith.Null).Select(sqlBuilder.GetDefaultShortName() + ".*");
             result.QueryBuilder.IsSqlQuery = true;
+            result.QueryBuilder.OldSql = sql;
             return result;
         }
         #endregion
