@@ -117,7 +117,7 @@ namespace SqlSugar
                 {
                     sqlParameter.DbType = System.Data.DbType.AnsiString;
                 }
-                if (parameter.DbType== System.Data.DbType.DateTimeOffset) 
+                else if (parameter.DbType== System.Data.DbType.DateTimeOffset) 
                 {
                     sqlParameter.Value = UtilMethods.ConvertFromDateTimeOffset((DateTimeOffset)sqlParameter.Value);
                     sqlParameter.DbType = System.Data.DbType.DateTime;
