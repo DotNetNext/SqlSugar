@@ -37,6 +37,17 @@ namespace OrmTest
             }).ToList();
             Db.CodeFirst.InitTables<UnitTest012213>();
             Db.CodeFirst.InitTables<UnitTest3131>();
+            Db.CodeFirst.InitTables<UnitDateOfTime2>();
+          
+            Db.Insertable(new UnitDateOfTime2() { DateTimeOffset1 = DateTimeOffset.Now }).ExecuteCommand();
+            var list2 = Db.Queryable<UnitDateOfTime2>().ToList();
+            
+        }
+
+        public class UnitDateOfTime2
+        {
+            [SqlSugar.SugarColumn(ColumnDataType ="datetime(3)")]
+            public DateTimeOffset DateTimeOffset1 { get; set; }
         }
 
         public class UnitTest3131 
