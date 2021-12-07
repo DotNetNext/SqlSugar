@@ -28,6 +28,8 @@ namespace SqlSugar
                 csharpTypeName = "long";
             if (csharpTypeName.ToLower().IsIn("boolean", "bool"))
                 csharpTypeName = "bool";
+            if (csharpTypeName == "DateTimeOffset")
+                csharpTypeName = "DateTime";
             var mappings = this.MappingTypes.Where(it => it.Value.ToString().Equals(csharpTypeName, StringComparison.CurrentCultureIgnoreCase)).ToList();
             if (mappings!=null&&mappings.Count>0) 
                 return mappings.First().Key;

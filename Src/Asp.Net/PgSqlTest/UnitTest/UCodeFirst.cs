@@ -25,6 +25,15 @@ namespace OrmTest
                   id2=new TimeSpan(11,2,1)
             }).ExecuteCommand();
             var x= Db.Queryable<UnitTimeSpan2>().ToList();
+            Db.CodeFirst.InitTables<UnitDateOfTime22>();
+            Db.Insertable(new UnitDateOfTime22() { DateTimeOffset1 = DateTimeOffset.Now }).ExecuteCommand();
+            var list2 = Db.Queryable<UnitDateOfTime22>().ToList();
+
+        }
+        [SqlSugar.SugarTable("UnitDateOfTime221")]
+        public class UnitDateOfTime22
+        {
+            public DateTimeOffset DateTimeOffset1 { get; set; }
         }
         public class UnitTimeSpan2
         {
