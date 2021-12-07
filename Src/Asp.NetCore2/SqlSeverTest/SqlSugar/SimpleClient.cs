@@ -327,8 +327,6 @@ namespace SqlSugar
             return await this.Context.Deleteable<T>().In(ids).ExecuteCommandAsync() > 0;
         }
         #endregion
-
-        [Obsolete("Use AsSugarClient()")]
-        public ISqlSugarClient FullClient { get { return this.Context; } }
+ 
     }
 }

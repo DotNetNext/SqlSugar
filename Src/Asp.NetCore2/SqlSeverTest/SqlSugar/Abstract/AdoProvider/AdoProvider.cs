@@ -1500,54 +1500,5 @@ namespace SqlSugar
             return result;
         }
         #endregion
-
-        #region Obsolete
-        [Obsolete]
-        public virtual dynamic SqlQueryDynamic(string sql, object parameters = null)
-        {
-            var dt = this.GetDataTable(sql, parameters);
-            return dt == null ? null : this.Context.Utilities.DataTableToDynamic(dt);
-        }
-        [Obsolete]
-        public virtual dynamic SqlQueryDynamic(string sql, params SugarParameter[] parameters)
-        {
-            var dt = this.GetDataTable(sql, parameters);
-            return dt == null ? null : this.Context.Utilities.DataTableToDynamic(dt);
-        }
-        [Obsolete]
-        public dynamic SqlQueryDynamic(string sql, List<SugarParameter> parameters)
-        {
-            var dt = this.GetDataTable(sql, parameters);
-            return dt == null ? null : this.Context.Utilities.DataTableToDynamic(dt);
-        }
-        [Obsolete]
-        public void UseStoredProcedure(Action action)
-        {
-            var oldCommandType = this.CommandType;
-            this.CommandType = CommandType.StoredProcedure;
-            this.IsClearParameters = false;
-            if (action != null)
-            {
-                action();
-            }
-            this.CommandType = oldCommandType;
-            this.IsClearParameters = true;
-        }
-        [Obsolete]
-        public T UseStoredProcedure<T>(Func<T> action)
-        {
-            T result = default(T);
-            var oldCommandType = this.CommandType;
-            this.CommandType = CommandType.StoredProcedure;
-            this.IsClearParameters = false;
-            if (action != null)
-            {
-                result = action();
-            }
-            this.CommandType = oldCommandType;
-            this.IsClearParameters = true;
-            return result;
-        }
-        #endregion
     }
 }

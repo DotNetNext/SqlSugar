@@ -18,6 +18,8 @@ namespace SqlSugar
                 csharpTypeName = "long";
             if (csharpTypeName.ToLower().IsIn("boolean", "bool"))
                 csharpTypeName = "bool";
+            if (csharpTypeName == "Guid")
+                csharpTypeName = "string";
             var mappings = this.MappingTypes.Where(it => it.Value.ToString().Equals(csharpTypeName, StringComparison.CurrentCultureIgnoreCase));
             return mappings.HasValue() ? mappings.First().Key : "varchar";
         }

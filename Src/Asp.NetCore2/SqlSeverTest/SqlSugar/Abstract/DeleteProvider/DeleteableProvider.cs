@@ -140,17 +140,33 @@ namespace SqlSugar
                         var entityPropertyName = this.Context.EntityMaintenance.GetPropertyName<T>(primaryField);
                         var columnInfo = EntityInfo.Columns.Single(it => it.PropertyName == entityPropertyName);
                         var entityValue = columnInfo.PropertyInfo.GetValue(deleteObj, null);
+                        var tempequals = DeleteBuilder.WhereInEqualTemplate;
+                        if (this.Context.CurrentConnectionConfig.MoreSettings != null && this.Context.CurrentConnectionConfig.MoreSettings.DisableNvarchar == true) 
+                        {
+                            tempequals = "\"{0}\"='{1}' ";
+                        }
                         if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle)
                         {
-                            andString.AppendFormat(DeleteBuilder.WhereInEqualTemplate, primaryField.ToUpper(), entityValue);
+                            if (entityValue != null && UtilMethods.GetUnderType(entityValue.GetType()) == UtilConstants.DateType)
+                            {
+                                andString.AppendFormat("\"{0}\"={1} ", primaryField.ToUpper(), "to_date('" + entityValue.ObjToDate().ToString("yyyy-MM-dd HH:mm:ss") + "', 'YYYY-MM-DD HH24:MI:SS') ");
+                            }
+                            else
+                            {
+                                andString.AppendFormat(tempequals, primaryField.ToUpper(), entityValue);
+                            }
                         }
-                        else if (this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL&& (this.Context.CurrentConnectionConfig.MoreSettings==null||this.Context.CurrentConnectionConfig.MoreSettings?.PgSqlIsAutoToLower==true))
+                        else if (this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL && (this.Context.CurrentConnectionConfig.MoreSettings == null || this.Context.CurrentConnectionConfig.MoreSettings?.PgSqlIsAutoToLower == true))
                         {
                             andString.AppendFormat("\"{0}\"={1} ", primaryField.ToLower(), new PostgreSQLExpressionContext().GetValue(entityValue));
                         }
+                        else if (this.Context.CurrentConnectionConfig.DbType == DbType.SqlServer && entityValue != null && UtilMethods.GetUnderType(entityValue.GetType()) == UtilConstants.DateType) 
+                        {
+                            andString.AppendFormat("\"{0}\"={1} ", primaryField,$"'{entityValue.ObjToDate().ToString("yyyy-MM-dd HH:mm:ss.fff")}'");
+                        }
                         else
                         {
-                            andString.AppendFormat(DeleteBuilder.WhereInEqualTemplate, primaryField, entityValue);
+                            andString.AppendFormat(tempequals, primaryField, entityValue);
                         }
                         ++i;
                     }

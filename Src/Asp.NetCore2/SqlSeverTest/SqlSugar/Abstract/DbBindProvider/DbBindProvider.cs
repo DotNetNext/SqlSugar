@@ -314,7 +314,7 @@ namespace SqlSugar
         {
             get
             {
-                return new List<string>() { "int32", "datetime", "decimal", "double", "byte", "guid" };
+                return new List<string>() { "int32", "datetime", "decimal", "double", "byte" };
             }
         }
         #endregion
