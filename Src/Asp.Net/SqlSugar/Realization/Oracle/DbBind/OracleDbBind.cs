@@ -20,6 +20,8 @@ namespace SqlSugar
                 csharpTypeName = "bool";
             if (csharpTypeName == "Guid")
                 csharpTypeName = "string";
+            if (csharpTypeName == "DateTimeOffset")
+                csharpTypeName = "DateTime";
             var mappings = this.MappingTypes.Where(it => it.Value.ToString().Equals(csharpTypeName, StringComparison.CurrentCultureIgnoreCase));
             return mappings.HasValue() ? mappings.First().Key : "varchar";
         }
