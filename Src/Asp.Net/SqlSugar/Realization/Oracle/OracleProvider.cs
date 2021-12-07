@@ -143,6 +143,11 @@ namespace SqlSugar
                     sqlParameter.DbType = System.Data.DbType.String;
                     sqlParameter.Value = sqlParameter.Value.ObjToString();
                 }
+                else if (parameter.DbType == System.Data.DbType.DateTimeOffset)
+                {
+                    sqlParameter.Value = UtilMethods.ConvertFromDateTimeOffset((DateTimeOffset)parameter.Value);
+                    sqlParameter.DbType = System.Data.DbType.DateTime;
+                }
                 else if (parameter.DbType == System.Data.DbType.Boolean)
                 {
                     sqlParameter.DbType = System.Data.DbType.Int16;

@@ -28,6 +28,16 @@ namespace OrmTest
             });
             // db.Utilities.RemoveCacheAll();
             var xxxxx = Db.DbMaintenance.GetColumnInfosByTableName("TESTA1", false);
+            Db.CodeFirst.InitTables<UnitDateOfTime22>();
+            Db.Insertable(new UnitDateOfTime22() { DateTimeOffset1 = DateTimeOffset.Now }).ExecuteCommand();
+            Db.Insertable(new List<UnitDateOfTime22> { new UnitDateOfTime22() { DateTimeOffset1 = DateTimeOffset.Now }, new UnitDateOfTime22() { DateTimeOffset1 = DateTimeOffset.Now } }).ExecuteCommand();
+            var list2 = Db.Queryable<UnitDateOfTime22>().ToList();
+
+        }
+        [SqlSugar.SugarTable("UnitDateOfTime2211")]
+        public class UnitDateOfTime22
+        {
+            public DateTimeOffset DateTimeOffset1 { get; set; }
         }
         public class TESTA1 { 
            public string X { get; set; }
