@@ -40,6 +40,7 @@ namespace OrmTest
             Db.CodeFirst.InitTables<UnitDateOfTime2>();
           
             Db.Insertable(new UnitDateOfTime2() { DateTimeOffset1 = DateTimeOffset.Now }).ExecuteCommand();
+            Db.Insertable(new List<UnitDateOfTime2> { new UnitDateOfTime2() { DateTimeOffset1 = DateTimeOffset.Now }, new UnitDateOfTime2() { DateTimeOffset1 = DateTimeOffset.Now } }).ExecuteCommand();
             var list2 = Db.Queryable<UnitDateOfTime2>().ToList();
             
         }
