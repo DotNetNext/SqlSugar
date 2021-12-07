@@ -31,6 +31,18 @@ namespace OrmTest
                 id2 = new TimeSpan(11, 2, 1)
             }).ExecuteCommand();
             var x = Db.Queryable<UnitTimeSpan2>().ToList();
+            Db.CodeFirst.InitTables<UnitDateOfTime2>();
+
+            Db.Insertable(new UnitDateOfTime2() { DateTimeOffset1 = DateTimeOffset.Now }).ExecuteCommand();
+            Db.Insertable(new List<UnitDateOfTime2> { new UnitDateOfTime2() { DateTimeOffset1 = DateTimeOffset.Now }, new UnitDateOfTime2() { DateTimeOffset1 = DateTimeOffset.Now } }).ExecuteCommand();
+            var list2 = Db.Queryable<UnitDateOfTime2>().ToList();
+
+        }
+
+        public class UnitDateOfTime2
+        {
+          
+            public DateTimeOffset DateTimeOffset1 { get; set; }
         }
         public class UnitTimeSpan2
         {

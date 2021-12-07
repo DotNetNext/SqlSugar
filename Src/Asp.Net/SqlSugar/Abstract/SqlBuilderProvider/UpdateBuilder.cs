@@ -310,6 +310,11 @@ namespace SqlSugar
                 {
                     return value.ObjToBool() ? "1" : "0";
                 }
+                else if (type == UtilConstants.DateTimeOffsetType)
+                {
+                    var date = UtilMethods.ConvertFromDateTimeOffset((DateTimeOffset)value);
+                    return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
+                }
                 else if (type == UtilConstants.StringType || type == UtilConstants.ObjType)
                 {
                     return "N'" + value.ToString().ToSqlFilter() + "'";
