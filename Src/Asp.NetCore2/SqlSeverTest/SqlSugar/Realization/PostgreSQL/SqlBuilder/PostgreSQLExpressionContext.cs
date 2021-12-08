@@ -207,7 +207,7 @@ namespace SqlSugar
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
-            return string.Format(" (date_part('day',{0}-{1})=0) ", parameter.MemberName, parameter2.MemberName); ;
+            return string.Format(" ( to_char({0},'yyyy-MM-dd')=to_char({1},'yyyy-MM-dd') ) ", parameter.MemberName, parameter2.MemberName); ;
         }
 
         public override string DateIsSameByType(MethodCallExpressionModel model)
@@ -215,7 +215,34 @@ namespace SqlSugar
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
             var parameter3 = model.Args[2];
-            return string.Format(" (date_part('{2}',{0}-{1})=0) ", parameter.MemberName, parameter2.MemberName, parameter3.MemberValue);
+            DateType dateType =(DateType)parameter3.MemberValue;
+            var format = "yyyy-MM-dd";
+            switch (dateType)
+            {
+                case DateType.Year:
+                    format = "yyyy";
+                    break;
+                case DateType.Month:
+                    format = "yyyy-MM";
+                    break;
+                case DateType.Day:
+                    break;
+                case DateType.Hour:
+                    format = "yyyy-MM-dd HH";
+                    break;
+                case DateType.Second:
+                    format = "yyyy-MM-dd HH:mm:ss";
+                    break;
+                case DateType.Minute:
+                    format = "yyyy-MM-dd HH:mm";
+                    break;
+                case DateType.Millisecond:
+                    format = "yyyy-MM-dd HH:mm.ms";
+                    break;
+                default:
+                    break;
+            }
+            return string.Format(" ( to_char({0},'{2}')=to_char({1},'{2}') ) ", parameter.MemberName, parameter2.MemberName, format);
         }
 
         public override string ToDate(MethodCallExpressionModel model)
