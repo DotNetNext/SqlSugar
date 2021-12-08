@@ -878,7 +878,7 @@ namespace SqlSugar
 
         public string GeDateFormat(string formatString, string value)
         {
-            if (IsOracle())
+            if (IsOracle()||IsPg())
             {
                 return $"to_char({value},'{formatString}') ";
             }

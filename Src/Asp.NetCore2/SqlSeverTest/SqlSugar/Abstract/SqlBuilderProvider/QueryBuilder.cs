@@ -45,7 +45,7 @@ namespace SqlSugar
         public object SelectValue { get; set; }
         public string SelectCacheKey { get; set; }
         public string EntityName { get; set; }
-
+        public string OldSql { get; set; }
 
         public Type EntityType { get; set; }
         public Type ResultType { get; set; }
@@ -491,21 +491,14 @@ namespace SqlSugar
         }
         public string GetSqlQuerySql(string result)
         {
-            if (this.IsSqlQuery && (Skip == null && Take == null)&&(this.WhereInfos==null||this.WhereInfos.Count==0))
+            if (this.IsSqlQuery&&this.OldSql.HasValue() && (Skip == null && Take == null) && (this.WhereInfos == null || this.WhereInfos.Count == 0))
             {
-                var old = result;
-                var regex = @"^SELECT .* FROM  \(((.|\n|\r)*)\) t  $";
-                if (this.Context.CurrentConnectionConfig.DbType .IsIn( DbType.MySql,DbType.PostgreSQL,DbType.Sqlite)) 
-                {
-                    result = result.Substring(0,result.Length-1);
-                }
-                result = System.Text.RegularExpressions.Regex.Match(result,regex).Groups[1].Value;
-                if (string.IsNullOrEmpty(result))
-                {
-                    result = old;
-                }
+                return this.OldSql;
             }
-            return result;
+            else
+            {
+                return result;
+            }
         }
         #endregion
 
