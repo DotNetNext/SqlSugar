@@ -1388,6 +1388,11 @@ namespace SqlSugar
                     this.SlaveConnections.Add(this.Connection);
                 }
             }
+            else if (this.Transaction == null && this.IsMasterSlaveSeparation&& this.MasterConnection == null) 
+            {
+                this.MasterConnection = this.Connection;
+                this.MasterConnectionString = this.MasterConnection.ConnectionString;
+            }
         }
 
         private bool EqualsConnectionString(string connectionString1, string connectionString2)
