@@ -2575,8 +2575,8 @@ namespace SqlSugar
             asyncQueryableBuilder.Skip = this.QueryBuilder.Skip;
             asyncQueryableBuilder.SelectValue = this.QueryBuilder.SelectValue;
             asyncQueryableBuilder.WhereInfos = this.Context.Utilities.TranslateCopy(this.QueryBuilder.WhereInfos);
-            asyncQueryableBuilder.EasyJoinInfos = this.QueryBuilder.EasyJoinInfos;
-            asyncQueryableBuilder.JoinQueryInfos = this.QueryBuilder.JoinQueryInfos;
+            asyncQueryableBuilder.EasyJoinInfos = this.Context.Utilities.TranslateCopy(this.QueryBuilder.EasyJoinInfos);
+            asyncQueryableBuilder.JoinQueryInfos = this.Context.Utilities.TranslateCopy(this.QueryBuilder.JoinQueryInfos);
             asyncQueryableBuilder.WhereIndex = this.QueryBuilder.WhereIndex;
             asyncQueryableBuilder.EntityType = this.QueryBuilder.EntityType;
             asyncQueryableBuilder.EntityName = this.QueryBuilder.EntityName;
