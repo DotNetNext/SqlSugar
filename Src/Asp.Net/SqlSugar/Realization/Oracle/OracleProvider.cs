@@ -120,6 +120,8 @@ namespace SqlSugar
             {
                 if (parameter.Value == null) parameter.Value = DBNull.Value;
                 var sqlParameter = new OracleParameter();
+                sqlParameter.Value = parameter.Value;
+                sqlParameter.DbType = parameter.DbType;
                 sqlParameter.Size = parameter.Size == -1 ? 0 : parameter.Size;
                 sqlParameter.ParameterName = parameter.ParameterName;
                 if (sqlParameter.ParameterName[0] == '@')
@@ -164,11 +166,6 @@ namespace SqlSugar
                 {
                     sqlParameter.Value = parameter.Value;
                     sqlParameter.DbType = System.Data.DbType.Date;
-                }
-                else if (parameter.DbType == System.Data.DbType.AnsiStringFixedLength) 
-                {
-                    sqlParameter.DbType = System.Data.DbType.AnsiStringFixedLength;
-                    sqlParameter.Value = parameter.Value;
                 }
                 else
                 {
