@@ -137,7 +137,7 @@ namespace SqlSugar
                 if (parameter.IsClob)
                 {
                     sqlParameter.OracleDbType = OracleDbType.Clob;
-                    sqlParameter.Value = sqlParameter.Value;
+                    sqlParameter.Value = parameter.Value;
                 }
                 if (sqlParameter.DbType == System.Data.DbType.Guid)
                 {
