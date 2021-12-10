@@ -34,11 +34,7 @@ namespace OrmTest
         }
         public static void Init()
         {
-            DeleteTest();
-            CodeFirst();
-            Updateable();
-            Json();
-            Ado();
+            
             Queryable();
             QueryableAsync();
             //Thread();
