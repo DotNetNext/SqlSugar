@@ -226,6 +226,16 @@ namespace SqlSugar
                 }
                 foreach (var item in alterColumns)
                 {
+
+                    if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle) 
+                    {
+                        var entityColumnItem = entityColumns.FirstOrDefault(y => y.DbColumnName == item.DbColumnName);
+                        if (entityColumnItem!=null&&!string.IsNullOrEmpty(entityColumnItem.DataType)) 
+                        {
+                            continue;
+                        }
+                    }
+
                     this.Context.DbMaintenance.UpdateColumn(tableName, EntityColumnToDbColumn(entityInfo, tableName, item));
                     isChange = true;
                 }
