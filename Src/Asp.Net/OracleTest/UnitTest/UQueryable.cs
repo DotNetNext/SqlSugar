@@ -12,15 +12,83 @@ namespace OrmTest
         public static void Queryable()
         {
 
-           
-          //  Db.CodeFirst.InitTables<UnitTest0012>();
-            Db.Insertable(new UnitTest0012() { ID = "a" }).ExecuteCommand();
-            //Db.Insertable(new UnitTest0012() { ID = "b" }).ExecuteCommand();
-            var x1 = Db.Ado.GetDataTable("SELECT  ID  FROM  UNITTEST0012     ", new SugarParameter("Const0", "a", System.Data.DbType.AnsiStringFixedLength));
+            var pageindex = 1;
+            var pagesize = 10;
+            var total = 0;
+            var totalPage = 0;
+            var list = Db.Queryable<Order>().ToPageList(pageindex, pagesize, ref total, ref totalPage);
 
-     
+            //Db.CodeFirst.InitTables(typeof(CarType));
+            //Db.Updateable<CarType>()
+            //      .SetColumns(it => new CarType { State = SqlSugar.SqlFunc.IIF(it.State == true, false, true) }).Where(it => true)
+            //   .ExecuteCommand();
+
+            //Db.CodeFirst.InitTables(typeof(TestTree));
+            //Db.DbMaintenance.TruncateTable<TestTree>();
+            //Db.Ado.ExecuteCommand("insert testtree values(hierarchyid::GetRoot(),geography :: STGeomFromText ('POINT(55.9271035250276 -3.29431266523898)',4326),'name')");
+            //var list2 = Db.Queryable<TestTree>().ToList();
+
+            Db.CodeFirst.InitTables<UnitGuidTable>();
+            Db.Queryable<UnitGuidTable>().Where(it => it.Id.HasValue).ToList();
+
+            Db.Queryable<Order>().Where(it => SqlSugar.SqlFunc.Equals(it.CreateTime.Date, it.CreateTime.Date)).ToList();
+
+            // var sql = Db.Queryable<UnitSelectTest>().Select(it => new UnitSelectTest()
+            // {
+
+            //     DcNull = it.Dc,
+            //     Dc = it.Int
+            // }).ToSql().Key;
+            // UValidate.Check(sql, "SELECT  [Dc] AS [DcNull] , [Int] AS [Dc]  FROM [UnitSelectTest]", "Queryable");
+
+            // sql = Db.Updateable<UnitSelectTest2>(new UnitSelectTest2()).ToSql().Key;
+            // UValidate.Check(sql, @"UPDATE [UnitSelectTest2]  SET
+            //[Dc]=@Dc,[IntNull]=@IntNull  WHERE [Int]=@Int", "Queryable");
+
+            // sql = Db.Queryable<Order>().IgnoreColumns(it => it.CreateTime).ToSql().Key;
+            // UValidate.Check(sql, "SELECT [Id],[Name],[Price],[CustomId] FROM [Order] ", "Queryable");
+            // sql = Db.Queryable<Order>().IgnoreColumns(it => new { it.Id, it.Name }).ToSql().Key;
+            // UValidate.Check(sql, "SELECT [Price],[CreateTime],[CustomId] FROM [Order] ", "Queryable");
+            // sql = Db.Queryable<Order>().IgnoreColumns("id").ToSql().Key;
+            // UValidate.Check(sql, "SELECT [Name],[Price],[CreateTime],[CustomId] FROM [Order] ", "Queryable");
+
+            var cts = IEnumerbleContains.Data();
+            var list2 = Db.Queryable<Order>()
+                    .Where(p => /*ids.*/cts.Select(c => c.Id).Contains(p.Id)).ToList();
+
+            var cts2 = IEnumerbleContains.Data().ToList(); ;
+            var list3 = Db.Queryable<Order>()
+                    .Where(p => /*ids.*/cts2.Select(c => c.Id).Contains(p.Id)).ToList();
+
+
+            var list4 = Db.Queryable<Order>()
+                .Where(p => new List<int> { 1, 2, 3 }.Where(b => b > 1).Contains(p.Id)).ToList();
+
+            Db.CodeFirst.InitTables<UnitTest3>();
+            var list5 = Db.Queryable<UnitTest3>().Where(it => SqlSugar.SqlFunc.ToString(it.Date.Value.Year) == "1").ToList();
+            var list6 = Db.Queryable<UnitTest3>().Where(it => it.Date.Value.Year == 1).ToList();
+            var list7 = Db.Queryable<UnitTest3>().Where(it => it.Date.Value.Date == DateTime.Now.Date).ToList();
+
+
+            SaleOrder saleOrderInfo = new SaleOrder();
+            Db.CodeFirst.InitTables<SaleOrder>();
+            var result = Db.GetSimpleClient<SaleOrder>().Update(o => new SaleOrder()
+            {
+                OrderStatus = 1,
+                CheckMan = saleOrderInfo.CheckMan,
+                CheckTime = DateTime.Now
+            }, o => o.OrderSn == saleOrderInfo.OrderSn && o.OrderStatus != 1);
+
+
+              Db.CodeFirst.InitTables<UnitTest0012>();
+              Db.Insertable(new UnitTest0012() { ID = "a" }).ExecuteCommand();
+            //Db.Insertable(new UnitTest0012() { ID = "b" }).ExecuteCommand();
             //Db.CurrentConnectionConfig.MoreSettings=new ConnMoreSettings { DisableNvarchar = true };
             var x = Db.Ado.GetDataTable("SELECT  ID  FROM  UNITTEST0012   WHERE ID = :Const0  ",new SugarParameter("Const0", "a",System.Data.DbType.AnsiStringFixedLength));
+            if (x.Rows.Count == 0) 
+            {
+                throw new Exception("unit query error");
+            }
         }
 
         public class UnitTest0012

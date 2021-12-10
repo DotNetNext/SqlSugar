@@ -120,8 +120,6 @@ namespace SqlSugar
             {
                 if (parameter.Value == null) parameter.Value = DBNull.Value;
                 var sqlParameter = new OracleParameter();
-                sqlParameter.Value = parameter.Value;
-                sqlParameter.DbType = parameter.DbType;
                 sqlParameter.Size = parameter.Size == -1 ? 0 : parameter.Size;
                 sqlParameter.ParameterName = parameter.ParameterName;
                 if (sqlParameter.ParameterName[0] == '@')
@@ -139,6 +137,7 @@ namespace SqlSugar
                 if (parameter.IsClob)
                 {
                     sqlParameter.OracleDbType = OracleDbType.Clob;
+                    sqlParameter.Value = sqlParameter.Value;
                 }
                 if (sqlParameter.DbType == System.Data.DbType.Guid)
                 {
@@ -167,6 +166,11 @@ namespace SqlSugar
                     sqlParameter.Value = parameter.Value;
                     sqlParameter.DbType = System.Data.DbType.Date;
                 }
+                else if (parameter.DbType == System.Data.DbType.AnsiStringFixedLength)
+                {
+                    sqlParameter.DbType = System.Data.DbType.AnsiStringFixedLength;
+                    sqlParameter.Value = parameter.Value;
+                }
                 else
                 {
                     if (parameter.Value != null && parameter.Value.GetType() == UtilConstants.GuidType)
@@ -178,7 +182,7 @@ namespace SqlSugar
                 if (parameter.Direction != 0)
                     sqlParameter.Direction = parameter.Direction;
                 result[index] = sqlParameter;
-                if (sqlParameter.Direction.IsIn(ParameterDirection.Output, ParameterDirection.InputOutput,ParameterDirection.ReturnValue))
+                if (sqlParameter.Direction.IsIn(ParameterDirection.Output, ParameterDirection.InputOutput, ParameterDirection.ReturnValue))
                 {
                     if (this.OutputParameters == null) this.OutputParameters = new List<IDataParameter>();
                     this.OutputParameters.RemoveAll(it => it.ParameterName == sqlParameter.ParameterName);
