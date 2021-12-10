@@ -137,6 +137,7 @@ namespace SqlSugar
                 if (parameter.IsClob)
                 {
                     sqlParameter.OracleDbType = OracleDbType.Clob;
+                    sqlParameter.Value = sqlParameter.Value;
                 }
                 if (sqlParameter.DbType == System.Data.DbType.Guid)
                 {
@@ -164,6 +165,11 @@ namespace SqlSugar
                 {
                     sqlParameter.Value = parameter.Value;
                     sqlParameter.DbType = System.Data.DbType.Date;
+                }
+                else if (parameter.DbType == System.Data.DbType.AnsiStringFixedLength)
+                {
+                    sqlParameter.DbType = System.Data.DbType.AnsiStringFixedLength;
+                    sqlParameter.Value = parameter.Value;
                 }
                 else
                 {
