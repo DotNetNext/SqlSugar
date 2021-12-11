@@ -103,13 +103,29 @@ namespace SqlSugar
 
         public int BulkUpdate()
         {
-            Check.Exception(_WhereColumnList!=null&&_WhereColumnList.Any(),ErrorMessage.GetThrowMessage( "Storageable.BulkUpdate(+0) no support WhereColumns, Use Storageable(+1)", "请使用 Storageable.BulkUpdate +1 重载"));
-            return this._Context.Fastest<T>().AS(_AsName).BulkUpdate(UpdateList.Select(it => it.Item).ToList());
+            var isWhereColums = _WhereColumnList != null && _WhereColumnList.Any();
+            if (isWhereColums)
+            {
+                var updateColumns = this._Context.EntityMaintenance.GetEntityInfo<T>().Columns.Where(it => !it.IsPrimarykey && !it.IsIdentity && !it.IsOnlyIgnoreUpdate && !it.IsIgnore).Select(it => it.DbColumnName ?? it.PropertyName).ToArray();
+                return BulkUpdate(updateColumns);
+            }
+            else
+            {
+                return this._Context.Fastest<T>().AS(_AsName).BulkUpdate(UpdateList.Select(it => it.Item).ToList());
+            }
         }
         public Task<int> BulkUpdateAsync()
         {
-            Check.Exception(_WhereColumnList != null && _WhereColumnList.Any(), ErrorMessage.GetThrowMessage("Storageable.BulkUpdate(+0) no support WhereColumns, Use Storageable(+1)", "请使用 Storageable.BulkUpdate +1 重载"));
-            return this._Context.Fastest<T>().AS(_AsName).BulkUpdateAsync(UpdateList.Select(it => it.Item).ToList());
+            var isWhereColums = _WhereColumnList != null && _WhereColumnList.Any();
+            if (isWhereColums)
+            {
+                var updateColumns = this._Context.EntityMaintenance.GetEntityInfo<T>().Columns.Where(it => !it.IsPrimarykey && !it.IsIdentity && !it.IsOnlyIgnoreUpdate && !it.IsIgnore).Select(it => it.DbColumnName ?? it.PropertyName).ToArray();
+                return BulkUpdateAsync(updateColumns);
+            }
+            else
+            {
+                return this._Context.Fastest<T>().AS(_AsName).BulkUpdateAsync(UpdateList.Select(it => it.Item).ToList());
+            }
         }
         public int BulkUpdate(params string[] UpdateColumns)
         {
