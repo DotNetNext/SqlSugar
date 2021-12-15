@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Dynamic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
@@ -684,7 +685,25 @@ namespace SqlSugar
             SqlSugarClient result = CallContextThread<SqlSugarClient>.GetData(key);
             if (result == null)
             {
-                CallContextThread<SqlSugarClient>.SetData(key, new SqlSugarClient(_configs));
+                CallContextThread<SqlSugarClient>.SetData(key, new SqlSugarClient(_configs.Select(it=>new ConnectionConfig() { 
+                  AopEvents=it.AopEvents,
+                   ConfigId=it.ConfigId,
+                    ConfigureExternalServices=it.ConfigureExternalServices,
+                     ConnectionString=it.ConnectionString,
+                      DbType=it.DbType,
+                       IndexSuffix=it.IndexSuffix,
+                        InitKeyType=it.InitKeyType,
+                         IsAutoCloseConnection=it.IsAutoCloseConnection,
+                          LanguageType=it.LanguageType, 
+                           MoreSettings=it.MoreSettings==null?null:new ConnMoreSettings() { 
+                             DefaultCacheDurationInSeconds=it.MoreSettings.DefaultCacheDurationInSeconds,
+                              DisableNvarchar=it.MoreSettings.DisableNvarchar,
+                               PgSqlIsAutoToLower=it.MoreSettings.PgSqlIsAutoToLower,
+                                IsAutoRemoveDataCache=it.MoreSettings.IsAutoRemoveDataCache,
+                                 IsWithNoLockQuery=it.MoreSettings.IsWithNoLockQuery
+                           },
+                            SlaveConnectionConfigs=it.SlaveConnectionConfigs
+                }).ToList()));
                 result = CallContextThread<SqlSugarClient>.GetData(key);
                 if (this._configAction != null)
                 {
