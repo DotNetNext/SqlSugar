@@ -171,7 +171,7 @@ namespace SqlSugar
             var parameter = model.Args[0].MemberName;
             var parameter2 = model.Args[1].MemberName;
             int time = 1;
-            return string.Format("  date({0}, 'localtime',  'start of day')= date({1}, 'localtime',  'start of day') ", parameter, parameter2, time);
+            return string.Format("   strftime('%Y-%m-%d', {0})=  strftime('%Y-%m-%d', {1}) ", parameter, parameter2, time);
         }
         public override string DateIsSameByType(MethodCallExpressionModel model)
         {
