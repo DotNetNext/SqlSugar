@@ -646,6 +646,8 @@ namespace SqlSugar
         {
             return ScopedContext.Fastest<T>();
         }
+
+
         private SqlSugarClient GetContext()
         {
             SqlSugarClient result = null;
@@ -669,7 +671,8 @@ namespace SqlSugar
             SqlSugarClient result = CallContextAsync<SqlSugarClient>.GetData(key);
             if (result == null)
             {
-                CallContextAsync<SqlSugarClient>.SetData(key, new SqlSugarClient(_configs));
+                List<ConnectionConfig> configList = GetCopyConfigs();
+                CallContextAsync<SqlSugarClient>.SetData(key, new SqlSugarClient(configList));
                 result = CallContextAsync<SqlSugarClient>.GetData(key);
                 if (this._configAction != null)
                 {
@@ -685,25 +688,8 @@ namespace SqlSugar
             SqlSugarClient result = CallContextThread<SqlSugarClient>.GetData(key);
             if (result == null)
             {
-                CallContextThread<SqlSugarClient>.SetData(key, new SqlSugarClient(_configs.Select(it=>new ConnectionConfig() { 
-                  AopEvents=it.AopEvents,
-                   ConfigId=it.ConfigId,
-                    ConfigureExternalServices=it.ConfigureExternalServices,
-                     ConnectionString=it.ConnectionString,
-                      DbType=it.DbType,
-                       IndexSuffix=it.IndexSuffix,
-                        InitKeyType=it.InitKeyType,
-                         IsAutoCloseConnection=it.IsAutoCloseConnection,
-                          LanguageType=it.LanguageType, 
-                           MoreSettings=it.MoreSettings==null?null:new ConnMoreSettings() { 
-                             DefaultCacheDurationInSeconds=it.MoreSettings.DefaultCacheDurationInSeconds,
-                              DisableNvarchar=it.MoreSettings.DisableNvarchar,
-                               PgSqlIsAutoToLower=it.MoreSettings.PgSqlIsAutoToLower,
-                                IsAutoRemoveDataCache=it.MoreSettings.IsAutoRemoveDataCache,
-                                 IsWithNoLockQuery=it.MoreSettings.IsWithNoLockQuery
-                           },
-                            SlaveConnectionConfigs=it.SlaveConnectionConfigs
-                }).ToList()));
+                List<ConnectionConfig> configList = GetCopyConfigs();
+                CallContextThread<SqlSugarClient>.SetData(key, new SqlSugarClient(configList));
                 result = CallContextThread<SqlSugarClient>.GetData(key);
                 if (this._configAction != null)
                 {
@@ -711,6 +697,31 @@ namespace SqlSugar
                 }
             }
             return result;
+        }
+
+        private List<ConnectionConfig> GetCopyConfigs()
+        {
+            return _configs.Select(it => new ConnectionConfig()
+            {
+                AopEvents = it.AopEvents,
+                ConfigId = it.ConfigId,
+                ConfigureExternalServices = it.ConfigureExternalServices,
+                ConnectionString = it.ConnectionString,
+                DbType = it.DbType,
+                IndexSuffix = it.IndexSuffix,
+                InitKeyType = it.InitKeyType,
+                IsAutoCloseConnection = it.IsAutoCloseConnection,
+                LanguageType = it.LanguageType,
+                MoreSettings = it.MoreSettings == null ? null : new ConnMoreSettings()
+                {
+                    DefaultCacheDurationInSeconds = it.MoreSettings.DefaultCacheDurationInSeconds,
+                    DisableNvarchar = it.MoreSettings.DisableNvarchar,
+                    PgSqlIsAutoToLower = it.MoreSettings.PgSqlIsAutoToLower,
+                    IsAutoRemoveDataCache = it.MoreSettings.IsAutoRemoveDataCache,
+                    IsWithNoLockQuery = it.MoreSettings.IsWithNoLockQuery
+                },
+                SlaveConnectionConfigs = it.SlaveConnectionConfigs
+            }).ToList();
         }
     }
 }
