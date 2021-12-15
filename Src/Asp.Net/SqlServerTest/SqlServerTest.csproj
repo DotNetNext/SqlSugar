@@ -96,6 +96,7 @@
     <Compile Include="Models\ViewOrder.cs" />
     <Compile Include="UnitTest\UDelete.cs" />
     <Compile Include="UnitTest\UFastest.cs" />
+    <Compile Include="UnitTest\UConfig.cs" />
     <Compile Include="UnitTest\USplit.cs" />
     <Compile Include="UnitTest\Models\TB_AdminUser.cs" />
     <Compile Include="UnitTest\Models\TB_ClientConfig.cs" />

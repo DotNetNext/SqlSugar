@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UConfig();
             DeleteTest();
             Fastest2();
             SplitTest();
