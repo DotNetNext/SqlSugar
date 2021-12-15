@@ -75,8 +75,14 @@ namespace OrmTest
 
             Db.CodeFirst.InitTables<Testdbbool>();
             Db.DbMaintenance.TruncateTable("Testdbbool");
-            Db.Insertable(new Testdbbool() { isok=true }).UseMySql().ExecuteBulkCopy();
-            Db.Insertable(new Testdbbool() { isok = false }).UseMySql().ExecuteBulkCopy();
+            Db.Insertable(new Testdbbool() { isok = true }).UseMySql().ExecuteBulkCopy();
+            Db.Fastest<Testdbbool>().BulkCopy(new List<Testdbbool>() { new Testdbbool() { isok = true }, new Testdbbool() { isok = false } });
+            var list2= Db.Queryable<Testdbbool>().ToList();
+
+            if (!list2.Any(it => it.isok == false)) 
+            {
+                throw new Exception("blue copy");
+            }
 
             Db.CodeFirst.InitTables<MicroBlog>();
 
