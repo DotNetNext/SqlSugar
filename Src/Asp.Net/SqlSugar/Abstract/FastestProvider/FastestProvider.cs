@@ -8,7 +8,7 @@ namespace SqlSugar
 {
     public partial class FastestProvider<T>:IFastest<T> where T:class,new()
     {
-        private SqlSugarProvider context;
+        internal SqlSugarProvider context;
         private ISugarQueryable<T> queryable;
         private EntityInfo entityInfo { get; set; }
         public bool isLog;

@@ -92,6 +92,7 @@
     <Compile Include="Abstract\FastestProvider\FastestProvider.cs" />
     <Compile Include="Abstract\FastestProvider\Private.cs" />
     <Compile Include="Abstract\FastestProvider\Setting.cs" />
+    <Compile Include="Abstract\FastestProvider\SplitFastest.cs" />
     <Compile Include="Abstract\FilterProvider\FilterProvider.cs" />
     <Compile Include="Abstract\SugarProvider\SqlSugarCoreProvider.cs" />
     <Compile Include="Interface\IFastBuilder.cs" />
