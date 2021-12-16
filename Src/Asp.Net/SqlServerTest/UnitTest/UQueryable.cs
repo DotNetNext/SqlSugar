@@ -195,10 +195,19 @@ namespace OrmTest
                .Select(it => it.CreateTime.ToString("yyyy-MM-dd")).ToList();
 
             Check.Exception(d11111.Last() != "2021-11-30", "unit error");
+
+            db.CodeFirst.InitTables<UnitEnumadfa>();
+            db.Insertable(new UnitEnumadfa()).ExecuteCommand();
+            db.Insertable(new UnitEnumadfa() {  Type=DbType.Sqlite}).ExecuteCommand();
+            var listEnum=db.Queryable<UnitEnumadfa>().ToList();
         }
 
 
-        
+        public class UnitEnumadfa 
+        {
+            [SugarColumn(IsNullable =true)]
+            public DbType? Type { get; set; }
+        }
         public class UnitBytes11
         { 
             [SugarColumn(Length =200,IsNullable =true)]

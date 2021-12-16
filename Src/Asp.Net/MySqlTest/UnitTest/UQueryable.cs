@@ -105,6 +105,17 @@ namespace OrmTest
                 x2 = o2,
                 x3 = o3
             }).ToList();
+            Db.CodeFirst.InitTables<UnitEnumadfa>();
+            Db.Insertable(new UnitEnumadfa()).ExecuteCommand();
+            Db.Insertable(new UnitEnumadfa() { Type = DbType.Sqlite }).ExecuteCommand();
+            var listEnum = Db.Queryable<UnitEnumadfa>().ToList();
+        }
+
+
+        public class UnitEnumadfa
+        {
+            [SugarColumn(IsNullable = true)]
+            public DbType? Type { get; set; }
         }
 
         public static class IEnumerbleContains
