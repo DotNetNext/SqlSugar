@@ -18,7 +18,7 @@ namespace SqlSugar
             foreach (var item in groupModels.GroupBy(it => it.GroupName))
             {
                 var addList = item.Select(it => it.Item).ToList();
-                result += FastestProvider.BulkCopy(addList); ;
+                result += FastestProvider.AS(item.Key).BulkCopy(addList); ;
             }
             return result;
         }
@@ -30,7 +30,7 @@ namespace SqlSugar
             foreach (var item in groupModels.GroupBy(it => it.GroupName))
             {
                 var addList = item.Select(it => it.Item).ToList();
-                result +=await FastestProvider.BulkCopyAsync(addList); ;
+                result +=await FastestProvider.AS(item.Key).BulkCopyAsync(addList); ;
             }
             return result;
         }
@@ -44,7 +44,7 @@ namespace SqlSugar
             foreach (var item in groupModels.GroupBy(it => it.GroupName))
             {
                 var addList = item.Select(it => it.Item).ToList();
-                result += FastestProvider.BulkUpdate(addList); ;
+                result += FastestProvider.AS(item.Key).BulkUpdate(addList); ;
             }
             return result;
         }
@@ -56,7 +56,7 @@ namespace SqlSugar
             foreach (var item in groupModels.GroupBy(it => it.GroupName))
             {
                 var addList = item.Select(it => it.Item).ToList();
-                result += await FastestProvider.BulkUpdateAsync(addList); ;
+                result += await FastestProvider.AS(item.Key).BulkUpdateAsync(addList); ;
             }
             return result;
         }
@@ -70,7 +70,7 @@ namespace SqlSugar
             foreach (var item in groupModels.GroupBy(it => it.GroupName))
             {
                 var addList = item.Select(it => it.Item).ToList();
-                result += FastestProvider.BulkUpdate(addList,wherColumns,updateColumns); ;
+                result += FastestProvider.AS(item.Key).BulkUpdate(addList,wherColumns,updateColumns); ;
             }
             return result;
         }
@@ -82,7 +82,7 @@ namespace SqlSugar
             foreach (var item in groupModels.GroupBy(it => it.GroupName))
             {
                 var addList = item.Select(it => it.Item).ToList();
-                result += await FastestProvider.BulkUpdateAsync(addList, wherColumns, updateColumns); ;
+                result += await FastestProvider.AS(item.Key).BulkUpdateAsync(addList, wherColumns, updateColumns); ;
             }
             return result;
         }
