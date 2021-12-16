@@ -35,6 +35,59 @@ namespace SqlSugar
             return result;
         }
 
+
+        public int BulkUpdate(List<T> datas)
+        {
+            List<GroupModel> groupModels;
+            int result;
+            GroupDataList(datas, out groupModels, out result);
+            foreach (var item in groupModels.GroupBy(it => it.GroupName))
+            {
+                var addList = item.Select(it => it.Item).ToList();
+                result += FastestProvider.BulkUpdate(addList); ;
+            }
+            return result;
+        }
+        public async Task<int> BulkUpdateAsync(List<T> datas)
+        {
+            List<GroupModel> groupModels;
+            int result;
+            GroupDataList(datas, out groupModels, out result);
+            foreach (var item in groupModels.GroupBy(it => it.GroupName))
+            {
+                var addList = item.Select(it => it.Item).ToList();
+                result += await FastestProvider.BulkUpdateAsync(addList); ;
+            }
+            return result;
+        }
+
+
+        public int BulkUpdate(List<T> datas,string [] wherColumns,string [] updateColumns)
+        {
+            List<GroupModel> groupModels;
+            int result;
+            GroupDataList(datas, out groupModels, out result);
+            foreach (var item in groupModels.GroupBy(it => it.GroupName))
+            {
+                var addList = item.Select(it => it.Item).ToList();
+                result += FastestProvider.BulkUpdate(addList,wherColumns,updateColumns); ;
+            }
+            return result;
+        }
+        public async Task<int> BulkUpdateAsync(List<T> datas, string[] wherColumns, string[] updateColumns)
+        {
+            List<GroupModel> groupModels;
+            int result;
+            GroupDataList(datas, out groupModels, out result);
+            foreach (var item in groupModels.GroupBy(it => it.GroupName))
+            {
+                var addList = item.Select(it => it.Item).ToList();
+                result += await FastestProvider.BulkUpdateAsync(addList, wherColumns, updateColumns); ;
+            }
+            return result;
+        }
+
+
         private void GroupDataList(List<T> datas, out List<GroupModel> groupModels, out int result)
         {
             groupModels = new List<GroupModel>();
@@ -46,8 +99,7 @@ namespace SqlSugar
             }
             result = 0;
         }
-
-        public class GroupModel 
+        internal class GroupModel 
         {
             public string GroupName { get; set; }
             public T Item { get; set; }
