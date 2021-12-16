@@ -95,6 +95,27 @@ namespace OrmTest
              .WhereColumns(it=>it.Mid).ToStorage();
 
             x.AsInsertable.ExecuteCommand();
+
+            Db.CodeFirst.InitTables<UnitFastest001>();
+            Db.DbMaintenance.TruncateTable<UnitFastest001>();
+            var fastList = new List<UnitFastest001>()
+            {
+                new UnitFastest001 (){  Id=Guid.NewGuid()+"", Remark=@"aa
+raa" }
+            };
+            Db.Fastest<UnitFastest001>().BulkCopy(fastList);
+            var searchList = Db.Queryable<UnitFastest001>().ToList();
+            if (searchList.Count != 1) 
+            {
+                throw new Exception("unit error");
+            }
+        }
+
+        public class UnitFastest001 
+        {
+            public string Id { get; set; }
+            [SqlSugar.SugarColumn(Length =1000)]
+            public string Remark { get; set; }
         }
         public class MicroBlog
         {
