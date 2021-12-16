@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,7 +10,6 @@ namespace SqlSugar
     public class SplitFastest<T>where T:class,new()
     {
         public FastestProvider<T> FastestProvider { get;  set; }
-
         public int BulkCopy(List<T> datas)
         {
             List<GroupModel> groupModels;
@@ -90,11 +90,14 @@ namespace SqlSugar
 
         private void GroupDataList(List<T> datas, out List<GroupModel> groupModels, out int result)
         {
+            var attribute = typeof(T).GetCustomAttribute<SplitTableAttribute>() as SplitTableAttribute;
+            Check.Exception(attribute == null, $"{typeof(T).Name} need SplitTableAttribute");
             groupModels = new List<GroupModel>();
             var db = FastestProvider.context;
             foreach (var item in datas)
             {
-                var tableName = db.SplitHelper<T>().GetTableName(item);
+                var value = db.SplitHelper<T>().GetValue(attribute.SplitType, item);
+                var tableName = db.SplitHelper<T>().GetTableName(attribute.SplitType,value);
                 groupModels.Add(new GroupModel() { GroupName = tableName, Item = item });
             }
             result = 0;
