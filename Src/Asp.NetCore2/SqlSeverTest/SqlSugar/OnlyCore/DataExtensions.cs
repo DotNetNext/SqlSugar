@@ -261,11 +261,23 @@ namespace SqlSugar
                     for (int i = 0; i < dr.FieldCount; i++)
                     {
                         string name = dr.GetName(i).Trim();
-                        if (!columns.Contains(name))
-                            columns.Add(new DataColumn(name, dr.GetFieldType(i)));
+                        if (dr.GetFieldType(i).Name == "MySqlDateTime")
+                        {
+                            if (!columns.Contains(name))
+                                columns.Add(new DataColumn(name,UtilConstants.DateType));
+                            else
+                            {
+                                columns.Add(new DataColumn(name + i, UtilConstants.DateType));
+                            }
+                        }
                         else
                         {
-                            columns.Add(new DataColumn(name + i, dr.GetFieldType(i)));
+                            if (!columns.Contains(name))
+                                columns.Add(new DataColumn(name, dr.GetFieldType(i)));
+                            else
+                            {
+                                columns.Add(new DataColumn(name + i, dr.GetFieldType(i)));
+                            }
                         }
                     }
 
