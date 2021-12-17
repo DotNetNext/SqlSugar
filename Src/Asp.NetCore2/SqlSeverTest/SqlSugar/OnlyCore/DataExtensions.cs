@@ -88,6 +88,10 @@ namespace SqlSugar
                     string name = dr.GetName(i).Trim();
                     if (!columns.Contains(name))
                         columns.Add(new DataColumn(name, dr.GetFieldType(i)));
+                    else
+                    {
+                        columns.Add(new DataColumn(name + i, dr.GetFieldType(i)));
+                    }
                 }
 
                 while (dr.Read())
@@ -125,6 +129,11 @@ namespace SqlSugar
                         string name = dr.GetName(i).Trim();
                         if (!columns.Contains(name))
                             columns.Add(new DataColumn(name, dr.GetFieldType(i)));
+                        else 
+                        {
+                            columns.Add(new DataColumn(name+i, dr.GetFieldType(i)));
+                        }
+
                     }
 
                     while (dr.Read())
@@ -213,6 +222,10 @@ namespace SqlSugar
                     string name = dr.GetName(i).Trim();
                     if (!columns.Contains(name))
                         columns.Add(new DataColumn(name, dr.GetFieldType(i)));
+                    else
+                    {
+                        columns.Add(new DataColumn(name + i, dr.GetFieldType(i)));
+                    }
                 }
 
                 while (dr.Read())
@@ -250,6 +263,10 @@ namespace SqlSugar
                         string name = dr.GetName(i).Trim();
                         if (!columns.Contains(name))
                             columns.Add(new DataColumn(name, dr.GetFieldType(i)));
+                        else
+                        {
+                            columns.Add(new DataColumn(name + i, dr.GetFieldType(i)));
+                        }
                     }
 
                     while (dr.Read())
@@ -339,6 +356,10 @@ namespace SqlSugar
                     string name = dr.GetName(i).Trim();
                     if (!columns.Contains(name))
                         columns.Add(new DataColumn(name, dr.GetFieldType(i)));
+                    else
+                    {
+                        columns.Add(new DataColumn(name + i, dr.GetFieldType(i)));
+                    }
                 }
 
                 while (dr.Read())
@@ -376,6 +397,10 @@ namespace SqlSugar
                         string name = dr.GetName(i).Trim();
                         if (!columns.Contains(name))
                             columns.Add(new DataColumn(name, dr.GetFieldType(i)));
+                        else
+                        {
+                            columns.Add(new DataColumn(name + i, dr.GetFieldType(i)));
+                        }
                     }
 
                     while (dr.Read())
@@ -465,6 +490,10 @@ namespace SqlSugar
                     string name = dr.GetName(i).Trim();
                     if (!columns.Contains(name))
                         columns.Add(new DataColumn(name, dr.GetFieldType(i)));
+                    else
+                    {
+                        columns.Add(new DataColumn(name + i, dr.GetFieldType(i)));
+                    }
                 }
 
                 while (dr.Read())
@@ -502,6 +531,10 @@ namespace SqlSugar
                         string name = dr.GetName(i).Trim();
                         if (!columns.Contains(name))
                             columns.Add(new DataColumn(name, dr.GetFieldType(i)));
+                        else
+                        {
+                            columns.Add(new DataColumn(name + i, dr.GetFieldType(i)));
+                        }
                     }
 
                     while (dr.Read())
@@ -591,6 +624,10 @@ namespace SqlSugar
                     string name = dr.GetName(i).Trim();
                     if (!columns.Contains(name))
                         columns.Add(new DataColumn(name, dr.GetFieldType(i)));
+                    else
+                    {
+                        columns.Add(new DataColumn(name + i, dr.GetFieldType(i)));
+                    }
                 }
 
                 while (dr.Read())
@@ -628,6 +665,10 @@ namespace SqlSugar
                         string name = dr.GetName(i).Trim();
                         if (!columns.Contains(name))
                             columns.Add(new DataColumn(name, dr.GetFieldType(i)));
+                        else
+                        {
+                            columns.Add(new DataColumn(name + i, dr.GetFieldType(i)));
+                        }
                     }
 
                     while (dr.Read())
@@ -718,6 +759,10 @@ namespace SqlSugar
                     string name = dr.GetName(i).Trim();
                     if (!columns.Contains(name))
                         columns.Add(new DataColumn(name, dr.GetFieldType(i)));
+                    else
+                    {
+                        columns.Add(new DataColumn(name + i, dr.GetFieldType(i)));
+                    }
                 }
 
                 while (dr.Read())
@@ -755,6 +800,10 @@ namespace SqlSugar
                         string name = dr.GetName(i).Trim();
                         if (!columns.Contains(name))
                             columns.Add(new DataColumn(name, dr.GetFieldType(i)));
+                        else
+                        {
+                            columns.Add(new DataColumn(name + i, dr.GetFieldType(i)));
+                        }
                     }
 
                     while (dr.Read())
@@ -845,6 +894,10 @@ namespace SqlSugar
                     string name = dr.GetName(i).Trim();
                     if (!columns.Contains(name))
                         columns.Add(new DataColumn(name, dr.GetFieldType(i)));
+                    else
+                    {
+                        columns.Add(new DataColumn(name + i, dr.GetFieldType(i)));
+                    }
                 }
 
                 while (dr.Read())
@@ -882,6 +935,10 @@ namespace SqlSugar
                         string name = dr.GetName(i).Trim();
                         if (!columns.Contains(name))
                             columns.Add(new DataColumn(name, dr.GetFieldType(i)));
+                        else
+                        {
+                            columns.Add(new DataColumn(name + i, dr.GetFieldType(i)));
+                        }
                     }
 
                     while (dr.Read())
@@ -972,6 +1029,10 @@ namespace SqlSugar
                     string name = dr.GetName(i).Trim();
                     if (!columns.Contains(name))
                         columns.Add(new DataColumn(name, dr.GetFieldType(i)));
+                    else
+                    {
+                        columns.Add(new DataColumn(name + i, dr.GetFieldType(i)));
+                    }
                 }
 
                 while (dr.Read())
@@ -1009,6 +1070,10 @@ namespace SqlSugar
                         string name = dr.GetName(i).Trim();
                         if (!columns.Contains(name))
                             columns.Add(new DataColumn(name, dr.GetFieldType(i)));
+                        else
+                        {
+                            columns.Add(new DataColumn(name + i, dr.GetFieldType(i)));
+                        }
                     }
 
                     while (dr.Read())
