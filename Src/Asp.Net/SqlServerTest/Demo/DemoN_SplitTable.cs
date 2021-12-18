@@ -78,6 +78,7 @@ namespace OrmTest
             });
 
             db.Fastest<OrderSpliteTest>().SplitTable().BulkUpdate(db.Queryable<OrderSpliteTest>().SplitTable(it=>it).ToList());
+            db.Fastest<OrderSpliteTest>().SplitTable().BulkUpdate(db.Queryable<OrderSpliteTest>().SplitTable(it => it).ToList(),new string[] { "pk"},new string[] { "name"});
             Console.WriteLine("#### CodeFirst end ####");
         }
 

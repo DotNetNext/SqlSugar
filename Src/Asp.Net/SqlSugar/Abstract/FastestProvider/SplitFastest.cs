@@ -21,7 +21,8 @@ namespace SqlSugar
             {
                 CreateTable(item.Key);
                 var addList = item.Select(it => it.Item).ToList();
-                result += FastestProvider.AS(item.Key).BulkCopy(addList); ;
+                result += FastestProvider.AS(item.Key).BulkCopy(addList);
+                this.Context.MappingTables.Add(EntityInfo.EntityName, EntityInfo.DbTableName);
             }
             return result;
         }
@@ -34,7 +35,8 @@ namespace SqlSugar
             {
                 CreateTable(item.Key);
                 var addList = item.Select(it => it.Item).ToList();
-                result +=await FastestProvider.AS(item.Key).BulkCopyAsync(addList); ;
+                result +=await FastestProvider.AS(item.Key).BulkCopyAsync(addList);
+                this.Context.MappingTables.Add(EntityInfo.EntityName, EntityInfo.DbTableName);
             }
             return result;
         }
@@ -49,7 +51,8 @@ namespace SqlSugar
             {
                 CreateTable(item.Key);
                 var addList = item.Select(it => it.Item).ToList();
-                result += FastestProvider.AS(item.Key).BulkUpdate(addList); ;
+                result += FastestProvider.AS(item.Key).BulkUpdate(addList);
+                this.Context.MappingTables.Add(EntityInfo.EntityName, EntityInfo.DbTableName);
             }
             return result;
         }
@@ -62,7 +65,8 @@ namespace SqlSugar
             {
                 CreateTable(item.Key);
                 var addList = item.Select(it => it.Item).ToList();
-                result += await FastestProvider.AS(item.Key).BulkUpdateAsync(addList); ;
+                result += await FastestProvider.AS(item.Key).BulkUpdateAsync(addList);
+                this.Context.MappingTables.Add(EntityInfo.EntityName, EntityInfo.DbTableName);
             }
             return result;
         }
@@ -102,7 +106,6 @@ namespace SqlSugar
                 this.Context.CodeFirst.InitTables<T>();
             }
             this.Context.Ado.IsEnableLogEvent = isLog;
-            this.Context.MappingTables.Add(EntityInfo.EntityName, EntityInfo.DbTableName);
         }
 
         private void GroupDataList(List<T> datas, out List<GroupModel> groupModels, out int result)

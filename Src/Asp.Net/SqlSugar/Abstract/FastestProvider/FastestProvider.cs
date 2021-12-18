@@ -116,7 +116,7 @@ namespace SqlSugar
             this.context.Ado.IsEnableLogEvent = isLog;
             if (this.context.CurrentConnectionConfig?.AopEvents?.OnLogExecuted != null) 
             {
-                this.context.CurrentConnectionConfig?.AopEvents?.OnLogExecuted($"End {title}  name:{entityInfo.DbTableName} ,count: {datas.Count},current time: {DateTime.Now}" , new SugarParameter[] { });
+                this.context.CurrentConnectionConfig?.AopEvents?.OnLogExecuted($"End {title}  name:{GetTableName()} ,count: {datas.Count},current time: {DateTime.Now}" , new SugarParameter[] { });
             }
         }
 
@@ -127,7 +127,7 @@ namespace SqlSugar
             this.context.Ado.IsEnableLogEvent = false;
             if (this.context.CurrentConnectionConfig?.AopEvents?.OnLogExecuting != null)
             {
-                this.context.CurrentConnectionConfig?.AopEvents?.OnLogExecuting($"Begin {title} name:{entityInfo.DbTableName} ,count: {datas.Count},current time: {DateTime.Now} ", new SugarParameter[] { });
+                this.context.CurrentConnectionConfig?.AopEvents?.OnLogExecuting($"Begin {title} name:{GetTableName()} ,count: {datas.Count},current time: {DateTime.Now} ", new SugarParameter[] { });
             }
         }
         #endregion

@@ -94,7 +94,7 @@ namespace SqlSugar
             }
             else
             {
-                return queryable.SqlBuilder.GetTranslationTableName(entityInfo.DbTableName);
+                return queryable.SqlBuilder.GetTranslationTableName(this.context.EntityMaintenance.GetTableName<T>());
             }
         }
         private object ValueConverter(EntityColumnInfo columnInfo, object value)
