@@ -356,6 +356,11 @@ namespace SqlSugar
                 CheckTranscodeing();
             }
 
+            if (columns.ToString().Contains("Subqueryable()."))
+            {
+                expResult= expResult.Replace(this.SqlBuilder.SqlTranslationLeft+ (binaryExp.Left as MemberExpression).Expression+this.SqlBuilder.SqlTranslationRight+".",this.UpdateBuilder.GetTableNameString.TrimEnd()+".");
+            }
+
             UpdateBuilder.SetValues.Add(new KeyValuePair<string, string>(SqlBuilder.GetTranslationColumnName(key), expResult));
             this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => (UpdateParameterIsNull == false && IsPrimaryKey(it)) || UpdateBuilder.SetValues.Any(v => SqlBuilder.GetNoTranslationColumnName(v.Key).Equals(it.DbColumnName, StringComparison.CurrentCultureIgnoreCase) || SqlBuilder.GetNoTranslationColumnName(v.Key).Equals(it.PropertyName, StringComparison.CurrentCultureIgnoreCase)) || it.IsPrimarykey == true).ToList();
             AppendSets();
