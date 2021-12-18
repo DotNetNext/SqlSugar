@@ -10,6 +10,8 @@ namespace SqlSugar
     public class SplitFastest<T>where T:class,new()
     {
         public FastestProvider<T> FastestProvider { get;  set; }
+        public SqlSugarProvider Context { get { return this.FastestProvider.context; } }
+        public EntityInfo EntityInfo { get { return this.Context.EntityMaintenance.GetEntityInfo<T>(); } }
         public int BulkCopy(List<T> datas)
         {
             List<GroupModel> groupModels;
@@ -17,6 +19,7 @@ namespace SqlSugar
             GroupDataList(datas, out groupModels, out result);
             foreach (var item in groupModels.GroupBy(it => it.GroupName))
             {
+                CreateTable(item.Key);
                 var addList = item.Select(it => it.Item).ToList();
                 result += FastestProvider.AS(item.Key).BulkCopy(addList); ;
             }
@@ -29,6 +32,7 @@ namespace SqlSugar
             GroupDataList(datas, out groupModels, out result);
             foreach (var item in groupModels.GroupBy(it => it.GroupName))
             {
+                CreateTable(item.Key);
                 var addList = item.Select(it => it.Item).ToList();
                 result +=await FastestProvider.AS(item.Key).BulkCopyAsync(addList); ;
             }
@@ -43,6 +47,7 @@ namespace SqlSugar
             GroupDataList(datas, out groupModels, out result);
             foreach (var item in groupModels.GroupBy(it => it.GroupName))
             {
+                CreateTable(item.Key);
                 var addList = item.Select(it => it.Item).ToList();
                 result += FastestProvider.AS(item.Key).BulkUpdate(addList); ;
             }
@@ -55,6 +60,7 @@ namespace SqlSugar
             GroupDataList(datas, out groupModels, out result);
             foreach (var item in groupModels.GroupBy(it => it.GroupName))
             {
+                CreateTable(item.Key);
                 var addList = item.Select(it => it.Item).ToList();
                 result += await FastestProvider.AS(item.Key).BulkUpdateAsync(addList); ;
             }
@@ -86,7 +92,18 @@ namespace SqlSugar
             }
             return result;
         }
-
+        private void CreateTable(string tableName)
+        {
+            var isLog = this.Context.Ado.IsEnableLogEvent;
+            this.Context.Ado.IsEnableLogEvent = false;
+            if (!this.Context.DbMaintenance.IsAnyTable(tableName, false))
+            {
+                this.Context.MappingTables.Add(EntityInfo.EntityName, tableName);
+                this.Context.CodeFirst.InitTables<T>();
+            }
+            this.Context.Ado.IsEnableLogEvent = isLog;
+            this.Context.MappingTables.Add(EntityInfo.EntityName, EntityInfo.DbTableName);
+        }
 
         private void GroupDataList(List<T> datas, out List<GroupModel> groupModels, out int result)
         {
