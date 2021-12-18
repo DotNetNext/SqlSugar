@@ -86,7 +86,7 @@ namespace SqlSugar
 
         IUpdateable<T> IsEnableUpdateVersionValidation();
         IUpdateable<T> EnableDiffLogEvent(object businessData = null);
-        IUpdateable<T> ReSetValue(Expression<Func<T, bool>> setValueExpression);
+        IUpdateable<T> ReSetValue(Action<T> setValueExpression);
         IUpdateable<T> RemoveDataCache();
         IUpdateable<T> RemoveDataCache(string likeString);
         IUpdateable<T> CallEntityMethod(Expression<Action<T>> method);

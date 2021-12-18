@@ -181,19 +181,20 @@ namespace SqlSugar
         }
 
 
-        public IUpdateable<T> ReSetValue(Expression<Func<T, bool>> setValueExpression)
+        public  IUpdateable<T> ReSetValue(Action<T> setValueExpression) 
         {
-            Check.Exception(!IsSingle, "Batch operation not supported ReSetValue");
-            var expResult = UpdateBuilder.GetExpressionValue(setValueExpression, ResolveExpressType.WhereSingle);
-            var resultString = Regex.Match(expResult.GetResultString(), @"\((.+)\)").Groups[1].Value;
-            LambdaExpression lambda = setValueExpression as LambdaExpression;
-            var expression = lambda.Body;
-            Check.Exception(!(expression is BinaryExpression), "Expression  format error");
-            Check.Exception((expression as BinaryExpression).NodeType != ExpressionType.Equal, "Expression  format error");
-            var leftExpression = (expression as BinaryExpression).Left;
-            Check.Exception(!(leftExpression is MemberExpression), "Expression  format error");
-            var leftResultString = UpdateBuilder.GetExpressionValue(leftExpression, ResolveExpressType.FieldSingle).GetString();
-            UpdateBuilder.SetValues.Add(new KeyValuePair<string, string>(leftResultString, resultString));
+            ThrowUpdateByExpression();
+            if (this.UpdateObjs.HasValue())
+            {
+                var oldColumns = this.UpdateBuilder.DbColumnInfoList.Select(it => it.PropertyName).ToList();
+                foreach (var item in UpdateObjs)
+                {
+                    setValueExpression(item);
+                }
+                this.UpdateBuilder.DbColumnInfoList = new List<DbColumnInfo>();
+                Init();
+                this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => oldColumns.Contains(it.PropertyName)).ToList();
+            }
             return this;
         }
 
