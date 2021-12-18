@@ -45,7 +45,17 @@ namespace OrmTest
             }
             }).ExecuteCommand();
             var xxx = Db.Queryable<UnitArray311>().ToList();
+
+            Db.CodeFirst.InitTables<UnitUUID1XX>();
+            Db.Insertable(new UnitUUID1XX() { ID = Guid.NewGuid() }).ExecuteCommand();
+            var x1 = Db.Queryable<UnitUUID1XX>().ToList();
         }
+    }
+
+    public class UnitUUID1XX
+    {
+        [SugarColumn(ColumnDataType ="uuid")]
+        public Guid ID { get; set; }
     }
     public class UnitArray311 
     {
