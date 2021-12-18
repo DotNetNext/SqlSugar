@@ -402,9 +402,24 @@ namespace SqlSugar
                     if (suagrColumn != null && suagrColumn.IsJson)
                     {
                         var key = (typeName + "." + name).ToLower();
-                        if (readerValues.ContainsKey(key)&& readerValues[key]!=null)
+                        if (readerValues.Any(it=>it.Key.EqualCase(key)))
                         {
-                            result.Add(name,this.DeserializeObject<List<Dictionary<string,object>>>(readerValues[key]+""));
+                            var jsonString = readerValues.First(it => it.Key.EqualCase(key)).Value;
+                            if (jsonString != null)
+                            {
+                                if (jsonString.ToString().First() == '{'&& jsonString.ToString().Last() == '}')
+                                {
+                                    result.Add(name, this.DeserializeObject<Dictionary<string, object>>(jsonString + ""));
+                                }
+                                else 
+                                {
+                                    result.Add(name, this.DeserializeObject<List<Dictionary<string, object>>>(jsonString + ""));
+                                   
+                                }
+                            }
+                        }
+                        else 
+                        {
                         }
                     }
                     else

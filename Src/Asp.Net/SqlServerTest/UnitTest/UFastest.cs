@@ -18,7 +18,7 @@ namespace OrmTest
             });
 
             db.CodeFirst.InitTables<Test2>();
-
+            db.DbMaintenance.TruncateTable<Test2>();
             //用例代码
             db.Insertable(new Test2() { p = "1" }).ExecuteCommand();//用例代码
 

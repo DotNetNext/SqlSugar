@@ -26,6 +26,14 @@ namespace OrmTest
                  .SetColumns(it => it.Name=="a")
                  .Where(it=>it.Id==1)
                  .ExecuteCommand();
+            var list3=Db.Queryable<UnitJsonTest>().Select(it => new
+            {
+                x = it
+            }).ToList();
+            if (list3[0].x == null) 
+            {
+                throw new Exception("unit error");
+            }
         }
     }
 
