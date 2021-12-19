@@ -152,6 +152,7 @@ namespace SqlSugar
                     {
                         parameterName = parameterName.Replace(this.SqlTranslationLeft, "_");
                     }
+                    item.FieldName = GetTranslationColumnName(item.FieldName);
                     switch (item.ConditionalType)
                     {
                         case ConditionalType.Equal:
