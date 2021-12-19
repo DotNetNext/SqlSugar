@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.Dynamic;
 using System.Linq;
@@ -536,6 +537,10 @@ namespace SqlSugar
         }
 
         public IStorageable<T> Storageable<T>(T data) where T : class, new()
+        {
+            return ScopedContext.Storageable(data);
+        }
+        public StorageableDataTable Storageable(DataTable data)
         {
             return ScopedContext.Storageable(data);
         }

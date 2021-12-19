@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.Dynamic;
 using System.Linq;
@@ -345,6 +346,10 @@ namespace SqlSugar
         #endregion
 
         #region Saveable
+        public StorageableDataTable Storageable(DataTable data)
+        {
+            return this.Context.Storageable(data);
+        }
 
         public IStorageable<T> Storageable<T>(List<T> dataList) where T : class, new()
         {
