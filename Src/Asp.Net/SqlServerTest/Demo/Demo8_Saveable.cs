@@ -40,6 +40,21 @@ namespace OrmTest
             var x2 = db.Storageable<Order>(new Order() { Id = 0, Name = "jack" }).ToStorage();
             x2.BulkCopy();
             x2.BulkUpdate();
+
+            var dt = db.Queryable<Order>().ToDataTable();
+            dt.TableName = "order";
+            var addRow = dt.NewRow();
+            addRow["id"] = 0;
+            addRow["price"] = 1;
+            addRow["Name"] = "a";
+            dt.Rows.Add(addRow);
+            var x3 = 
+                db.Storageable(dt)
+                .WhereColumns("id").ToStorage();
+
+            x3.AsInsertable.IgnoreColumns("id").ExecuteCommand();
+            x3.AsUpdateable.ExecuteCommand();
+  
             Console.WriteLine("");
             Console.WriteLine("#### Saveable End ####");
         }

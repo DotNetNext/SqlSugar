@@ -60,7 +60,7 @@ namespace SqlSugar
         public StorageableDataTable Saveable(string inserMessage = null, string updateMessage = null)
         {
             SplitUpdate(it => it.Any(), updateMessage);
-            SplitInsert(it => it.Any(), inserMessage);
+            SplitInsert(it => true, inserMessage);
             return this;
         }
         public StorageableDataTable SplitError(Func<DataRow, bool> conditions, string message = null)
@@ -76,6 +76,10 @@ namespace SqlSugar
 
         public DataTableResult ToStorage()
         {
+            if (whereFuncs == null || whereFuncs.Count == 0)
+            {
+                Saveable();
+            }
             foreach (DataRow row in DataTable.Rows)
             {
                 foreach (var item in whereFuncs.OrderByDescending(it => (int)it.key))
@@ -90,12 +94,39 @@ namespace SqlSugar
                 .ToList();
             DataTable.Columns.Remove(SugarGroupId);
             DataTable.Columns.Remove(SugarErrorMessage);
+            var inserList = new List<Dictionary<string, object>>();
+            var updateList = new List<Dictionary<string, object>>();
+            if (Groups.Any(it => it.Type == StorageType.Insert.ToString())) 
+            {
+                foreach (var item in Groups)
+                {
+                    if (item.Type == StorageType.Insert.ToString()) 
+                    {
+                        item.DataTable.Columns.Remove(SugarGroupId);
+                        item.DataTable.Columns.Remove(SugarErrorMessage);
+                        inserList.AddRange(this.Context.Utilities.DataTableToDictionaryList(item.DataTable));
+                    }
+                }
+            }
+            if (Groups.Any(it => it.Type == StorageType.Update.ToString()))
+            {
+                foreach (var item in Groups)
+                {
+                    if (item.Type == StorageType.Update.ToString())
+                    {
+                        item.DataTable.Columns.Remove(SugarGroupId);
+                        item.DataTable.Columns.Remove(SugarErrorMessage);
+                        updateList.AddRange(this.Context.Utilities.DataTableToDictionaryList(item.DataTable));
+                    }
+                }
+            }
+            var tableName = this.Context.Queryable<object>().SqlBuilder.GetTranslationTableName(DataTable.TableName);
             DataTableResult result = new DataTableResult() 
             { 
                DataTableGroups=Groups,
-               AsDeleteable=this.Context.Deleteable<object>().AS(DataTable.TableName).Where(""),
-               AsUpdateable= this.Context.Updateable(new List<Dictionary<string,object>>()).AS(DataTable.TableName).WhereColumns(Columns),
-               AsInsertable=this.Context.Insertable(new List<Dictionary<string, object>>()).AS(DataTable.TableName)
+               AsDeleteable=this.Context.Deleteable<object>().AS(tableName).Where(""),
+               AsUpdateable= this.Context.Updateable(updateList).AS(tableName).WhereColumns(Columns),
+               AsInsertable=this.Context.Insertable(inserList).AS(tableName) 
             };
             return result;
         }
