@@ -30,7 +30,24 @@ namespace OrmTest
             Db.Insertable(new List<UnitDateOfTime22> { new UnitDateOfTime22() { DateTimeOffset1 = DateTimeOffset.Now }, new UnitDateOfTime22() { DateTimeOffset1 = DateTimeOffset.Now } }).ExecuteCommand();
             var list2 = Db.Queryable<UnitDateOfTime22>().ToList();
 
+            Db.CodeFirst.InitTables<UnitTestPk>();
+            Db.CodeFirst.InitTables<UnitTestPk>();
+            Db.CodeFirst.InitTables<UnitTestPk>();
         }
+
+        public class UnitTestPk 
+        {
+            [SqlSugar.SugarColumn(IsPrimaryKey =true,IsIdentity =true)]
+            public int id { get; set; }
+            [SqlSugar.SugarColumn(IsPrimaryKey = true )]
+            public long id2 { get; set; }
+            [SqlSugar.SugarColumn(IsPrimaryKey = true )]
+            public Guid id3 { get; set; }
+
+            public string Name { get; set; }
+        
+        }
+
         [SqlSugar.SugarTable("UnitDateOfTime221")]
         public class UnitDateOfTime22
         {
