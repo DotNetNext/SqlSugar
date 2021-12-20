@@ -406,8 +406,16 @@ namespace SqlSugar
                                and kcu.constraint_name = tco.constraint_name
                                where tco.constraint_type = 'PRIMARY KEY'
                                and kcu.table_schema='public' and 
-                               upper(kcu.table_name)=upper('{tableName}')";
-                var pkList = this.Context.Ado.SqlQuery<string>(sql);
+                               upper(kcu.table_name)=upper('{tableName.TrimEnd('"').TrimStart('"')}')";
+                List<string> pkList = new List<string>();
+                if (isCache)
+                {
+                    pkList=GetListOrCache<string>("GetColumnInfosByTableName_N_Pk"+tableName, sql);
+                }
+                else
+                {
+                    pkList = this.Context.Ado.SqlQuery<string>(sql);
+                }
                 if (pkList.Count >1) 
                 {
                     foreach (var item in result)
