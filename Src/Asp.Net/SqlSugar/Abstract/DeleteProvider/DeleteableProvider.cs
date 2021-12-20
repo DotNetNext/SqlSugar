@@ -242,6 +242,10 @@ namespace SqlSugar
         }
         public IDeleteable<T> Where(List<IConditionalModel> conditionalModels)
         {
+            if (conditionalModels.Count == 0) 
+            {
+                return Where("1=2");
+            }
             var sql = this.Context.Queryable<T>().SqlBuilder.ConditionalModelToSql(conditionalModels);
             var result = this;
             result.Where(sql.Key, sql.Value);

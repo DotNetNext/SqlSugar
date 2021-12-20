@@ -86,16 +86,22 @@ namespace SqlSugar
                 {
                     SplitMethod(item.value1,item.key,row,item.value2);
                 }
+                if (row[SugarGroupId] == null || row[SugarGroupId] == DBNull.Value) 
+                {
+                    row[SugarGroupId] = StorageType.Ignore;
+                }
             }
             DataTable.Columns.Remove(SugarUpdateRows);
             DataTable.Columns.Remove(SugarColumns);
             var Groups=DataTable.Rows.Cast<DataRow>()
+                .Where(it=> it[SugarGroupId]!=null&& it[SugarGroupId] != DBNull.Value)
                 .GroupBy(it => ((StorageType)it[SugarGroupId]).ToString()).Select(it=>new DataTableGroups{ Type=it.Key,DataTable= it.CopyToDataTable() })
                 .ToList();
             DataTable.Columns.Remove(SugarGroupId);
             DataTable.Columns.Remove(SugarErrorMessage);
             var inserList = new List<Dictionary<string, object>>();
             var updateList = new List<Dictionary<string, object>>();
+            var DeleteList=Groups.FirstOrDefault(it=>it.Type==StorageType.Delete.ToString());
             if (Groups.Any(it => it.Type == StorageType.Insert.ToString())) 
             {
                 foreach (var item in Groups)
@@ -120,11 +126,16 @@ namespace SqlSugar
                     }
                 }
             }
+            List<IConditionalModel> conditionalModels = new List<IConditionalModel>();
+            if (DeleteList!=null) 
+            {
+                SetConditList(DeleteList.DataTable.Rows.Cast<DataRow>().ToList(), Columns, conditionalModels);
+            }
             var tableName = this.Context.Queryable<object>().SqlBuilder.GetTranslationTableName(DataTable.TableName);
             DataTableResult result = new DataTableResult() 
             { 
                DataTableGroups=Groups,
-               AsDeleteable=this.Context.Deleteable<object>().AS(tableName).Where(""),
+               AsDeleteable=this.Context.Deleteable<object>().AS(tableName).Where(conditionalModels),
                AsUpdateable= this.Context.Updateable(updateList).AS(tableName).WhereColumns(Columns),
                AsInsertable=this.Context.Insertable(inserList).AS(tableName) 
             };

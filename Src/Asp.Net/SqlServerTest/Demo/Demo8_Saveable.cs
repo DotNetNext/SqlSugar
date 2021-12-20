@@ -41,7 +41,7 @@ namespace OrmTest
             x2.BulkCopy();
             x2.BulkUpdate();
 
-            var dt = db.Queryable<Order>().ToDataTable();
+            var dt = db.Queryable<Order>().Take(1).ToDataTable();
             dt.TableName = "order";
             var addRow = dt.NewRow();
             addRow["id"] = 0;
@@ -54,7 +54,14 @@ namespace OrmTest
 
             x3.AsInsertable.IgnoreColumns("id").ExecuteCommand();
             x3.AsUpdateable.ExecuteCommand();
-  
+
+
+            var x4 =
+               db.Storageable(dt)
+               .SplitDelete(it=>Convert.ToInt32( it["id"])>0)
+               .WhereColumns("id").ToStorage();
+            x4.AsDeleteable.ExecuteCommand();
+
             Console.WriteLine("");
             Console.WriteLine("#### Saveable End ####");
         }
