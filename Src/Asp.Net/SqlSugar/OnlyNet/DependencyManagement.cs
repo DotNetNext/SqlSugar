@@ -26,7 +26,7 @@ namespace SqlSugar
                 {
                     var message = ErrorMessage.GetThrowMessage(
                         " SqlSugar Some functions are used in newtonsoft ,Nuget references Newtonsoft.Json 9.0.0.1 + .",
-                        " Newtonsoft.Json.dll 未安装或者版本冲突，按下步骤操作即可 1、从Nuget卸载所有项目的Newtonsoft.Json和SqlSugar，用Nuget重新安装即可,如果还报错在最上层 WBE层 用NUGET安装");
+                        " Newtonsoft.Json.dll 未安装或者版本冲突，按下步骤操作即可 1、从Nuget卸载所有项目的Newtonsoft.Json和SqlSugar，用Nuget重新安装即可,如果还报错在最上层 WBE层 用NUGET安装，详细教程：https://www.donet5.com/Doc/8/1154");
                     throw new Exception(message);
                 }
             }
@@ -45,7 +45,7 @@ namespace SqlSugar
                 {
                     var message = ErrorMessage.GetThrowMessage(
                      "You need to refer to MySql.Data.dll",
-                     " MySql.Data.dll  未安装或者版本冲突，按下面步骤操作即可 1、从Nuget卸载所有项目的MySql.Data.dll和SqlSugar，用Nuget重新安装即可,如果还报错在最上层 WBE层 用NUGET安装，注意.NET 4.52版本以下用户只能用MySql.Data 6.9.12 版本 记住 6.9.12 或者6.9之前的版本 ， .NET 4.52及以上用最新的");
+                     " MySql.Data.dll  未安装或者版本冲突，按下面步骤操作即可 1、从Nuget卸载所有项目的MySql.Data.dll和SqlSugar，用Nuget重新安装即可,如果还报错在最上层 WBE层 用NUGET安装，注意.NET 4.52版本以下用户只能用MySql.Data 6.9.12 版本 记住 6.9.12 或者6.9之前的版本 ， .NET 4.52及以上用最新的 ，详细教程：https://www.donet5.com/Doc/8/1154");
                     throw new Exception(message);
                 }
             }
@@ -65,7 +65,7 @@ namespace SqlSugar
                 {
                     var message = ErrorMessage.GetThrowMessage(
                      "You need to refer to Npgsql.dll",
-                     " Npgsql.dll 未安装或者版本冲突，按下面步骤操作即可 1、从Nuget卸载所有项目的Npgsql.dll和SqlSugar，用Nuget重新安装即可,如果还报错在最上层 WBE层 用NUGET安装");
+                     " Npgsql.dll 未安装或者版本冲突，按下面步骤操作即可 1、从Nuget卸载所有项目的Npgsql.dll和SqlSugar，用Nuget重新安装即可,如果还报错在最上层 WBE层 用NUGET安装，详细教程：https://www.donet5.com/Doc/8/1154");
                     throw new Exception(message);
                 }
             }
@@ -85,7 +85,7 @@ namespace SqlSugar
                 {
                     var message = ErrorMessage.GetThrowMessage(
                      "You need to refer to Oracle.ManagedDataAccess.dll",
-                     "需要引用ManagedDataAccess.dll 未安装或者版本冲突， 按下面步骤操作即可 1、从Nuget卸载所有项目的ManagedDataAccess.dll和SqlSugar，用Nuget重新安装即可,如果还报错在最上层 WBE层 用NUGET安装");
+                     "需要引用ManagedDataAccess.dll 未安装或者版本冲突， 按下面步骤操作即可 1、从Nuget卸载所有项目的ManagedDataAccess.dll和SqlSugar，用Nuget重新安装即可,如果还报错在最上层 WBE层 用NUGET安装，详细教程：https://www.donet5.com/Doc/8/1154");
                     throw new Exception(message);
                 }
             }
@@ -105,7 +105,7 @@ namespace SqlSugar
                 {
                     var message = ErrorMessage.GetThrowMessage(
                      "You need to refer to System.Data.SQLite.dll." + ex.Message,
-                    "System.Data.SQLite.dll  未安装或者版本冲突，按下面步骤操作即可 1、从Nuget卸载所有项目的System.Data.SQLite.dll 和SqlSugar，用Nuget重新安装即可,如果还报错在最上层 WBE层 用NUGET安装");
+                    "System.Data.SQLite.dll  未安装或者版本冲突，按下面步骤操作即可 1、从Nuget卸载所有项目的System.Data.SQLite.dll 和SqlSugar，用Nuget重新安装即可,如果还报错在最上层 WBE层 用NUGET安装，详细教程：https://www.donet5.com/Doc/8/1154");
                     throw new Exception(message);
                 }
             }
