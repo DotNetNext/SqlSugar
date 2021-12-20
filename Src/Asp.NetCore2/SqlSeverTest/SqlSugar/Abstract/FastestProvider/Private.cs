@@ -56,6 +56,7 @@ namespace SqlSugar
             }
             dt.TableName = GetTableName();
             var columns = entityInfo.Columns;
+            var isMySql = this.context.CurrentConnectionConfig.DbType == DbType.MySql;
             foreach (var item in datas)
             {
                 var dr = dt.NewRow();
@@ -71,6 +72,13 @@ namespace SqlSugar
                         name = column.PropertyName;
                     }
                     var value = ValueConverter(column, PropertyCallAdapterProvider<T>.GetInstance(column.PropertyName).InvokeGet(item));
+                    if (isMySql&& column.UnderType==UtilConstants.BoolType) 
+                    {
+                        if (value.ObjToBool() == false)
+                        {
+                            value = DBNull.Value;
+                        }
+                    }
                     dr[name] = value;
                 }
                 dt.Rows.Add(dr);
@@ -86,7 +94,7 @@ namespace SqlSugar
             }
             else
             {
-                return queryable.SqlBuilder.GetTranslationTableName(entityInfo.DbTableName);
+                return queryable.SqlBuilder.GetTranslationTableName(this.context.EntityMaintenance.GetTableName<T>());
             }
         }
         private object ValueConverter(EntityColumnInfo columnInfo, object value)

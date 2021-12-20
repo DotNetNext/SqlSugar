@@ -88,7 +88,7 @@ namespace SqlSugar
         public IInsertable<T> AsInsertable { get; set; }
         public IUpdateable<T> AsUpdateable { get; set; }
         public IDeleteable<T> AsDeleteable { get; set; }
-        internal bool _IsWhereColumn { get;  set; }
+        internal List<EntityColumnInfo> _WhereColumnList { get;  set; }
         internal string _AsName { get;  set; }
         internal SqlSugarProvider _Context { get;  set; }
 
@@ -103,13 +103,58 @@ namespace SqlSugar
 
         public int BulkUpdate()
         {
-            Check.Exception(_IsWhereColumn, "Storageable.BulkCopy no support WhereColumns");
-            return this._Context.Fastest<T>().AS(_AsName).BulkUpdate(UpdateList.Select(it => it.Item).ToList());
+            var isWhereColums = _WhereColumnList != null && _WhereColumnList.Any();
+            if (isWhereColums)
+            {
+                var updateColumns = this._Context.EntityMaintenance.GetEntityInfo<T>().Columns.Where(it => !it.IsPrimarykey && !it.IsIdentity && !it.IsOnlyIgnoreUpdate && !it.IsIgnore).Select(it => it.DbColumnName ?? it.PropertyName).ToArray();
+                return BulkUpdate(updateColumns);
+            }
+            else
+            {
+                return this._Context.Fastest<T>().AS(_AsName).BulkUpdate(UpdateList.Select(it => it.Item).ToList());
+            }
         }
         public Task<int> BulkUpdateAsync()
         {
-            Check.Exception(_IsWhereColumn, "Storageable.BulkCopy no support WhereColumns");
-            return this._Context.Fastest<T>().AS(_AsName).BulkUpdateAsync(UpdateList.Select(it => it.Item).ToList());
+            var isWhereColums = _WhereColumnList != null && _WhereColumnList.Any();
+            if (isWhereColums)
+            {
+                var updateColumns = this._Context.EntityMaintenance.GetEntityInfo<T>().Columns.Where(it => !it.IsPrimarykey && !it.IsIdentity && !it.IsOnlyIgnoreUpdate && !it.IsIgnore).Select(it => it.DbColumnName ?? it.PropertyName).ToArray();
+                return BulkUpdateAsync(updateColumns);
+            }
+            else
+            {
+                return this._Context.Fastest<T>().AS(_AsName).BulkUpdateAsync(UpdateList.Select(it => it.Item).ToList());
+            }
+        }
+        public int BulkUpdate(params string[] UpdateColumns)
+        {
+
+            Check.Exception(UpdateColumns==null, "UpdateColumns is null");
+            if (_WhereColumnList != null && _WhereColumnList.Any())
+            {
+                return this._Context.Fastest<T>().AS(_AsName).BulkUpdate(UpdateList.Select(it => it.Item).ToList(), _WhereColumnList.Select(it => it.DbColumnName).ToArray(), UpdateColumns);
+            }
+            else 
+            {
+                var pkColumns = this._Context.EntityMaintenance.GetEntityInfo<T>().Columns.Where(it => it.IsPrimarykey).Select(it => it.DbColumnName).ToArray();
+                Check.Exception(pkColumns.Count()==0,"need primary key");
+                return this._Context.Fastest<T>().AS(_AsName).BulkUpdate(UpdateList.Select(it => it.Item).ToList(), pkColumns, UpdateColumns);
+            }
+        }
+        public async Task<int> BulkUpdateAsync(params string[] UpdateColumns)
+        {
+            Check.Exception(UpdateColumns == null, "UpdateColumns is null");
+            if (_WhereColumnList != null && _WhereColumnList.Any())
+            {
+                return  await this._Context.Fastest<T>().AS(_AsName).BulkUpdateAsync(UpdateList.Select(it => it.Item).ToList(), _WhereColumnList.Select(it => it.DbColumnName).ToArray(), UpdateColumns);
+            }
+            else
+            {
+                var pkColumns = this._Context.EntityMaintenance.GetEntityInfo<T>().Columns.Where(it => it.IsPrimarykey).Select(it => it.DbColumnName).ToArray();
+                Check.Exception(pkColumns.Count() == 0, "need primary key");
+                return await this._Context.Fastest<T>().AS(_AsName).BulkUpdateAsync(UpdateList.Select(it => it.Item).ToList(), pkColumns, UpdateColumns);
+            }
         }
     }
 }

@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.Dynamic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace SqlSugar
 {
-    public class SqlSugarScope: ISqlSugarClient, ITenant
+    public partial class SqlSugarScope: ISqlSugarClient, ITenant
     {
-        private List<ConnectionConfig> _configs;
-        private Action<SqlSugarClient> _configAction;
         private SqlSugarScope()
         {
 
@@ -540,6 +540,10 @@ namespace SqlSugar
         {
             return ScopedContext.Storageable(data);
         }
+        public StorageableDataTable Storageable(DataTable data)
+        {
+            return ScopedContext.Storageable(data);
+        }
 
         public ISugarQueryable<T> Union<T>(List<ISugarQueryable<T>> queryables) where T : class, new()
         {
@@ -644,54 +648,6 @@ namespace SqlSugar
         public IFastest<T> Fastest<T>() where T : class, new()
         {
             return ScopedContext.Fastest<T>();
-        }
-        private SqlSugarClient GetContext()
-        {
-            SqlSugarClient result = null;
-            var key = _configs.GetHashCode().ToString();
-            StackTrace st = new StackTrace(true);
-            var methods = st.GetFrames();
-            var isAsync = UtilMethods.IsAnyAsyncMethod(methods);
-            if (isAsync)
-            {
-                result = GetAsyncContext(key);
-            }
-            else
-            {
-                result = GetThreadContext(key);
-            }
-            return result;
-        }
-
-        private SqlSugarClient GetAsyncContext(string key)
-        {
-            SqlSugarClient result = CallContextAsync<SqlSugarClient>.GetData(key);
-            if (result == null)
-            {
-                CallContextAsync<SqlSugarClient>.SetData(key, new SqlSugarClient(_configs));
-                result = CallContextAsync<SqlSugarClient>.GetData(key);
-                if (this._configAction != null)
-                {
-                    this._configAction(result);
-                }
-            }
-
-            return result;
-        }
-
-        private SqlSugarClient GetThreadContext(string key)
-        {
-            SqlSugarClient result = CallContextThread<SqlSugarClient>.GetData(key);
-            if (result == null)
-            {
-                CallContextThread<SqlSugarClient>.SetData(key, new SqlSugarClient(_configs));
-                result = CallContextThread<SqlSugarClient>.GetData(key);
-                if (this._configAction != null)
-                {
-                    this._configAction(result);
-                }
-            }
-            return result;
         }
     }
 }

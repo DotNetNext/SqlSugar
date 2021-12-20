@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SqlSugar
 {
-    public interface IFastest<T>
+    public interface IFastest<T> where T:class,new()
     {
         IFastest<T> AS(string tableName);
         IFastest<T> PageSize(int Size);
@@ -16,5 +16,7 @@ namespace SqlSugar
         Task<int> BulkUpdateAsync(List<T> datas);
         int BulkUpdate(List<T> datas, string[] whereColumns, string[] updateColumns);
         Task<int> BulkUpdateAsync(List<T> datas, string[] whereColumns, string[] updateColumns);
+
+        SplitFastest<T> SplitTable();
     }
 }

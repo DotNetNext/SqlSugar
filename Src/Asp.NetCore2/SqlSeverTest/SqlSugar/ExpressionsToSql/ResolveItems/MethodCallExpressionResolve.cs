@@ -878,13 +878,25 @@ namespace SqlSugar
 
         public string GeDateFormat(string formatString, string value)
         {
-            if (IsOracle()||IsPg())
+            if (IsOracle() || IsPg())
             {
                 return $"to_char({value},'{formatString}') ";
             }
-            else if (IsMySql()&& formatString == "yyyy-MM-dd") 
+            else if (IsSqlite() && formatString == "yyyy-MM-dd") 
+            {
+                return $"strftime('%Y-%m-%d', {value})";
+            }
+            else if (IsSqlite() && formatString.Contains("%"))
+            {
+                return $"strftime('{formatString}', {value})";
+            }
+            else if (IsMySql() && formatString == "yyyy-MM-dd")
             {
                 return $"DATE_FORMAT({value}, '%Y-%m-%d')";
+            }
+            else if (IsMySql() && formatString.Contains("%"))
+            {
+                return $"DATE_FORMAT({value}, '{formatString}')";
             }
             else if (formatString == "yyyy-MM-dd" && IsSqlServer())
             {

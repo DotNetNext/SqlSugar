@@ -441,7 +441,7 @@ namespace SqlSugar
         #endregion
 
         #region Private
-        private List<T> GetListOrCache<T>(string cacheKey, string sql)
+        protected List<T> GetListOrCache<T>(string cacheKey, string sql)
         {
             return this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey,
              () =>

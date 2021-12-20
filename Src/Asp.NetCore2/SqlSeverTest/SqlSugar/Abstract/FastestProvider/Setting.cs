@@ -21,5 +21,11 @@ namespace SqlSugar
             this.Size = size;
             return this;
         }
+        public SplitFastest<T> SplitTable() 
+        {
+            SplitFastest<T> result = new SplitFastest<T>();
+            result.FastestProvider = this;
+            return result;
+        }
     }
 }

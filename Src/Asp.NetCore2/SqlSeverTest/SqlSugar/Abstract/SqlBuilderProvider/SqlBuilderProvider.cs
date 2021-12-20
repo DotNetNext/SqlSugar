@@ -152,6 +152,8 @@ namespace SqlSugar
                     {
                         parameterName = parameterName.Replace(this.SqlTranslationLeft, "_");
                     }
+                    string oldName = item.FieldName;
+                    item.FieldName = GetTranslationColumnName(item.FieldName);
                     switch (item.ConditionalType)
                     {
                         case ConditionalType.Equal:
@@ -248,6 +250,7 @@ namespace SqlSugar
                         default:
                             break;
                     }
+                    item.FieldName = oldName;
                 }
                 else
                 {

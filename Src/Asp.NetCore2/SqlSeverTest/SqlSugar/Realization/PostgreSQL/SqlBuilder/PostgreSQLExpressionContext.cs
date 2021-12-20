@@ -210,6 +210,12 @@ namespace SqlSugar
             return string.Format(" ( to_char({0},'yyyy-MM-dd')=to_char({1},'yyyy-MM-dd') ) ", parameter.MemberName, parameter2.MemberName); ;
         }
 
+        public override string HasValue(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            return string.Format("( {0} IS NOT NULL )", parameter.MemberName);
+        }
+
         public override string DateIsSameByType(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];

@@ -765,6 +765,18 @@ namespace SqlSugar
         {
             return Storageable(new List<T>() { data });
         }
+        public StorageableDataTable Storageable(DataTable data) 
+        {
+            var result = new StorageableDataTable();
+            Check.Exception(data.TableName.IsNullOrEmpty() || data.TableName == "Table",ErrorMessage.GetThrowMessage( "DataTable data.TableName is null", "参数DataTable没有设置TableName ，参数.TableName=表名"));
+            result.DataTable = data;
+            result.Context = this;
+            data.Columns.Add(new DataColumn("SugarGroupId", typeof(StorageType)));
+            data.Columns.Add(new DataColumn("SugarUpdateRows", typeof(List<DataRow>)));
+            data.Columns.Add(new DataColumn("SugarErrorMessage", typeof(string)));
+            data.Columns.Add(new DataColumn("SugarColumns", typeof(string[])));
+            return result;
+        }
         #endregion
 
         #region Reportable
