@@ -726,7 +726,7 @@ namespace SqlSugar
                     case "ToTime":
                         return this.Context.DbMehtods.ToTime(model);
                     case "ToString":
-                        if (model.Args.Count > 1 && model.Args.Last().MemberValue.ObjToString().IsContainsIn("-", "/", ":", "yy", "ms", "hh"))
+                        if (model.Args.Count > 1 && model.Args.Last().MemberValue.ObjToString().ToLower().IsContainsIn("-", "/", ":","m","d","s", "y", "ms", "h","convert"))
                         {
                             return GeDateFormat(model.Args.Last().MemberValue.ObjToString(), model.Args.First().MemberName.ObjToString());
                         }
