@@ -40,7 +40,15 @@ namespace SqlSugar
         {
             if (base.UpdateObjs.Count() == 1)
             {
-                return await base.ExecuteCommandAsync();
+               var result= await base.ExecuteCommandAsync();
+               if (result == -1)
+               {
+                    return 1;
+                }
+                else
+                {
+                    return result;
+                }
             }
             else if (base.UpdateObjs.Count() == 0)
             {
