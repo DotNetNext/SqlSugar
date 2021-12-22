@@ -172,6 +172,8 @@ namespace OrmTest
             var test19 = db.Queryable<Order>().Select<ViewOrder>().ToList();
             var test20 = db.Queryable<Order>().LeftJoin<Custom>((o, cs) =>o.Id==cs.Id)
                 .ToDictionary(it => it.Id, it => it.Name);
+
+            var test21 = db.Queryable<Order>().Where(it=>it.Id.ToString()==1.ToString()).Select(it => it.CreateTime.ToString("24")).First();
             Console.WriteLine("#### Examples End ####");
         }
 

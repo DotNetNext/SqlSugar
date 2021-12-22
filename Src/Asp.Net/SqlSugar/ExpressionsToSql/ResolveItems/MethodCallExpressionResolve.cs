@@ -726,11 +726,11 @@ namespace SqlSugar
                     case "ToTime":
                         return this.Context.DbMehtods.ToTime(model);
                     case "ToString":
-                        if (model.Args.Count > 1 && model.Args.Last().MemberValue.ObjToString().ToLower().IsContainsIn("-", "/", ":","m","d","s", "y", "ms", "h","convert"))
+                        if (model.Args.Count > 1)
                         {
                             return GeDateFormat(model.Args.Last().MemberValue.ObjToString(), model.Args.First().MemberName.ObjToString());
                         }
-                        Check.Exception(model.Args.Count > 1, "ToString (Format) is not supported, Use ToString().If time formatting can be used it.Date.Year+\"-\"+it.Data.Month+\"-\"+it.Date.Day ");
+                        //Check.Exception(model.Args.Count > 1, "ToString (Format) is not supported, Use ToString().If time formatting can be used it.Date.Year+\"-\"+it.Data.Month+\"-\"+it.Date.Day ");
                         return this.Context.DbMehtods.ToString(model);
                     case "ToVarchar":
                         return this.Context.DbMehtods.ToVarchar(model);
@@ -913,6 +913,10 @@ namespace SqlSugar
             else if (formatString == "yyyy-MM-dd hh:mm:ss.ms" && IsSqlServer())
             {
                 return $"CONVERT(varchar(100),convert(datetime,{value}), 121)";
+            }
+            else if (formatString!=null&& formatString.IsInt())
+            {
+                return string.Format("CONVERT(varchar(100),convert(datetime,{0}), {1})", value, formatString);
             }
             var parameter = new MethodCallExpressionArgs() { IsMember = true, MemberValue = DateType.Year };
             var parameter2 = new MethodCallExpressionArgs() { IsMember = true, MemberName = value };
