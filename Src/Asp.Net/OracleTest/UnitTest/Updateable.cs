@@ -59,6 +59,17 @@ namespace OrmTest
             new UnitGuidTest() { Id = Guid.NewGuid(),name= "a" }
             }).ExecuteCommand();
 
+            var updateObjs = new List<Order> {
+                 new Order() { Id = 11, Name = "order11" }
+            };
+
+            //update all columns by primary key
+
+            if (Db.Updateable(updateObjs).ExecuteCommandAsync().GetAwaiter().GetResult() != 1) 
+            {
+                throw new Exception("unit error");
+            }
+
         }
     }
     public class UnitGuidTest 
