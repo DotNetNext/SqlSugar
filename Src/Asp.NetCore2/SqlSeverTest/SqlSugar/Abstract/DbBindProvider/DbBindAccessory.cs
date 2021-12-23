@@ -13,8 +13,9 @@ namespace SqlSugar
         protected List<T> GetEntityList<T>(SqlSugarProvider context, IDataReader dataReader)
         {
             Type type = typeof(T);
-            var fieldNames = GetDataReaderNames(dataReader);
-            string cacheKey = GetCacheKey(type,fieldNames);
+            string types = null;
+            var fieldNames = GetDataReaderNames(dataReader,ref types);
+            string cacheKey = GetCacheKey(type,fieldNames) + types;
             IDataReaderEntityBuilder<T> entytyList = context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey, () =>
             {
                 var cacheResult = new IDataReaderEntityBuilder<T>(context, dataReader,fieldNames).CreateBuilder(type);
@@ -38,8 +39,9 @@ namespace SqlSugar
         protected async Task<List<T>> GetEntityListAsync<T>(SqlSugarProvider context, IDataReader dataReader)
         {
             Type type = typeof(T);
-            var fieldNames = GetDataReaderNames(dataReader);
-            string cacheKey = GetCacheKey(type, fieldNames);
+            string types = null;
+            var fieldNames = GetDataReaderNames(dataReader,ref types);
+            string cacheKey = GetCacheKey(type, fieldNames)+types;
             IDataReaderEntityBuilder<T> entytyList = context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey, () =>
             {
                 var cacheResult = new IDataReaderEntityBuilder<T>(context, dataReader, fieldNames).CreateBuilder(type);
@@ -73,14 +75,18 @@ namespace SqlSugar
             return sb.ToString();
         }
 
-        private List<string> GetDataReaderNames(IDataReader dataReader)
+        private List<string> GetDataReaderNames(IDataReader dataReader,ref string types)
         {
             List<string> keys = new List<string>();
+            StringBuilder sbTypes = new StringBuilder();
             var count = dataReader.FieldCount;
             for (int i = 0; i < count; i++)
             {
                 keys.Add(dataReader.GetName(i));
+                var type = dataReader.GetFieldType(i);
+                sbTypes.Append(type.Name.Substring(0,2));
             }
+            types = sbTypes.ToString();
             return keys;
         }
 
