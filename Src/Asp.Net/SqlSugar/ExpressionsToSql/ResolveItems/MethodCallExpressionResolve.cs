@@ -914,7 +914,7 @@ namespace SqlSugar
             {
                 return $"CONVERT(varchar(100),convert(datetime,{value}), 121)";
             }
-            else if (formatString!=null&& formatString.IsInt())
+            else if (IsSqlServer()&&formatString!=null&& formatString.IsInt())
             {
                 return string.Format("CONVERT(varchar(100),convert(datetime,{0}), {1})", value, formatString);
             }
