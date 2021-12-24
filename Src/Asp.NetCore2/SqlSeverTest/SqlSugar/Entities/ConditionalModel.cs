@@ -22,7 +22,8 @@ namespace SqlSugar
         public string FieldName { get; set; }
         public string FieldValue { get; set; }
         public ConditionalType ConditionalType { get; set; }
-        [Newtonsoft.Json.JsonIgnoreAttribute]
+        [Newtonsoft.Json.JsonIgnore]
+        [System.Text.Json.Serialization.JsonIgnore]
         public Func<string,object> FieldValueConvertFunc { get; set; }
     }
 }
