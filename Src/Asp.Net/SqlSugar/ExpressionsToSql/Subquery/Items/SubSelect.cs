@@ -49,10 +49,28 @@ namespace SqlSugar
                 this.Context.InitMappingInfo(entityType);
                 this.Context.RefreshMapping();
             }
-            if(this.Context.JoinIndex==0)
-               return SubTools.GetMethodValue(this.Context, exp.Arguments[0],ResolveExpressType.FieldSingle);
+            var result = "";
+            if (this.Context.JoinIndex == 0)
+                result = SubTools.GetMethodValue(this.Context, exp.Arguments[0], ResolveExpressType.FieldSingle);
             else
-              return SubTools.GetMethodValue(this.Context, exp.Arguments[0], ResolveExpressType.FieldMultiple);
+                result = SubTools.GetMethodValue(this.Context, exp.Arguments[0], ResolveExpressType.FieldMultiple);
+
+            SetShortName(exp, result);
+
+            return result;
+        }
+
+        private void SetShortName(MethodCallExpression exp, string result)
+        {
+            if (exp.Arguments[0] is LambdaExpression && result.IsContainsIn("+", "-"))
+            {
+                var parameters = (exp.Arguments[0] as LambdaExpression).Parameters;
+                if (parameters != null && parameters.Count > 0)
+                {
+                    this.Context.CurrentShortName = this.Context.SqlTranslationLeft + parameters[0] + this.Context.SqlTranslationRight;
+                }
+
+            }
         }
     }
 }

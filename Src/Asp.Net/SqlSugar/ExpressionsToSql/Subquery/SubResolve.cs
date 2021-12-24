@@ -96,6 +96,10 @@ namespace SqlSugar
             {
                 GetSubAs(sqlItems, asItems);
             }
+            if (this.context.CurrentShortName.HasValue()) 
+            {
+                GetShortName(sqlItems);
+            }
             var sql = string.Join(UtilConstants.Space, sqlItems);
             return this.context.DbMehtods.Pack(sql);
         }
@@ -109,6 +113,16 @@ namespace SqlSugar
                     var asName = this.context.GetTranslationTableName(asItems.First().Replace(subKey, ""), false);
                     var repKey = $"\\{this.context.SqlTranslationLeft}.+\\{this.context.SqlTranslationRight}";
                     sqlItems[i] = Regex.Replace(sqlItems[i], repKey, asName);
+                }
+            }
+        }
+        private void GetShortName(List<string> sqlItems)
+        {
+            for (int i = 0; i < sqlItems.Count; i++)
+            {
+                if (sqlItems[i].StartsWith("FROM " + this.context.SqlTranslationLeft))
+                {
+                    sqlItems[i] = sqlItems[i]+" "+this.context.CurrentShortName +" ";
                 }
             }
         }

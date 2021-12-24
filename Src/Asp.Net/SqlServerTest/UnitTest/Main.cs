@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UCustom01.Init();
             UConfig();
             DeleteTest();
             Fastest2();
