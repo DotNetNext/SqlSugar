@@ -258,10 +258,12 @@ namespace OrmTest
 
             var list2 = db.Queryable<Order>().Where(it =>
             SqlFunc.Subqueryable<OrderItem>() 
-             .LeftJoin<OrderItem>((i,y)=>i.ItemId==y.ItemId&&2==2)
+             .LeftJoin<OrderItem>((i,z)=>i.ItemId==z.ItemId)
              .InnerJoin<OrderItem>((i,y,z) => i.ItemId == z.ItemId)
-              .Where((i ,y,z)=>i.ItemId==z.ItemId)
-              .Any()
+             .InnerJoin<OrderItem>((i, y, z,x) => i.ItemId == z.ItemId)
+             .InnerJoin<OrderItem>((i, y, z, x ,h) => i.ItemId == z.ItemId)
+             .Where((i, z) => i.ItemId == z.ItemId)
+             .Any()
             ).ToList();
 ;
             var list3 = db.Queryable<Order>().Select(it => new
