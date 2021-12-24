@@ -336,7 +336,7 @@ namespace SqlSugar
                                 addValue = null;
                             }
                         }
-                        else if (item.PropertyType == UtilConstants.IntType)
+                        else if (UtilMethods.GetUnderType(item.PropertyType) == UtilConstants.IntType)
                         {
                             addValue = Convert.ToInt32(addValue);
                         }
