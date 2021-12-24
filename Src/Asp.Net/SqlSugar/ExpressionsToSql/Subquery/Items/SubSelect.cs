@@ -60,7 +60,7 @@ namespace SqlSugar
             return result;
         }
 
-        private void SetShortName(MethodCallExpression exp, string result)
+        public void SetShortName(MethodCallExpression exp, string result)
         {
             if (exp.Arguments[0] is LambdaExpression && result.IsContainsIn("+", "-"))
             {

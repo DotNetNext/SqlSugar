@@ -50,11 +50,11 @@ namespace SqlSugar
             var joinString =string.Format(" {2} LEFT JOIN {1} {0} ",
                  this.Context.GetTranslationColumnName(parameter.Name), 
                  tableName,
-                 this.Context.JoinIndex==1?name:"");
+                 null);
             var result = joinString+ "ON " + SubTools.GetMethodValue(Context, argExp, ResolveExpressType.WhereMultiple);
             //var selfParameterName = Context.GetTranslationColumnName((argExp as LambdaExpression).Parameters.First().Name) + UtilConstants.Dot;
             this.Context.JoinIndex++;
-
+            new SubSelect() { Context = this.Context }.SetShortName(exp, "+");
             //result = result.Replace(selfParameterName, SubTools.GetSubReplace(this.Context));
             return result;
         }

@@ -96,12 +96,31 @@ namespace SqlSugar
             {
                 GetSubAs(sqlItems, asItems);
             }
-            if (this.context.CurrentShortName.HasValue()) 
+            if (this.context.CurrentShortName.HasValue())
             {
                 GetShortName(sqlItems);
             }
-            var sql = string.Join(UtilConstants.Space, sqlItems);
+            var sql = "";
+
+            if (sqlItems.Count(it => IsJoin(it)) > 1)
+            {
+                var index = sqlItems.IndexOf(sqlItems.First(x=>IsJoin(x)));
+                var joinitems = sqlItems.Where(it => IsJoin(it)).ToList();
+                joinitems.Reverse();
+                var items = sqlItems.Where(it => !IsJoin(it)).ToList();
+                items.InsertRange(index, joinitems);
+                sql = string.Join(UtilConstants.Space, items);
+            }
+            else
+            {
+                sql = string.Join(UtilConstants.Space, sqlItems);
+            }
             return this.context.DbMehtods.Pack(sql);
+        }
+
+        private static bool IsJoin(string it)
+        {
+            return it.StartsWith("  INNER JOIN") || it.StartsWith("  LEFT JOIN");
         }
 
         private void GetSubAs(List<string> sqlItems, List<string> asItems)
