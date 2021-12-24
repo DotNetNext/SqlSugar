@@ -259,8 +259,8 @@ namespace OrmTest
             var list2 = db.Queryable<Order>().Where(it =>
             SqlFunc.Subqueryable<OrderItem>() 
              .LeftJoin<OrderItem>((i,y)=>i.ItemId==y.ItemId)
-             .InnerJoin<OrderItem>((i,z) => i.ItemId == z.ItemId)
-             .Where(i=>i.ItemId==1)
+             .InnerJoin<OrderItem>((i,y,z) => i.ItemId == z.ItemId)
+              .Where((i ,y)=>i.ItemId==1)
               .Any()
             ).ToList();
 ;
@@ -276,6 +276,14 @@ namespace OrmTest
                 customName = SqlFunc.Subqueryable<Custom>().Where(exp).Where(exp).GroupBy(s => s.Name).Having(s => SqlFunc.AggregateCount(s.Id) > 0).Select(s => s.Name)
             }).ToList();
 
+
+            var list5 = db.Queryable<Order>().Where(it =>
+        SqlFunc.Subqueryable<OrderItem>()
+         .LeftJoin<OrderItem>((i, y) => i.ItemId == y.ItemId)
+         .InnerJoin<OrderItem>((i, z) => i.ItemId == z.ItemId)
+         .Where(i => i.ItemId == 1)
+          .Any()
+        ).ToList();
             Console.WriteLine("#### Subquery End ####");
         }
 

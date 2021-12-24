@@ -6,21 +6,20 @@ using System.Text;
 
 namespace SqlSugar
 {
-
-    public class Subqueryable<T> where T : class, new()
+    public partial class Subqueryable<T> where T : class, new()
     {
 
         public Subqueryable<T> AS(string tableName) 
         {
             return this;
         }
-        public Subqueryable<T> InnerJoin<JoinType>(Func<T, JoinType, bool> expression)
+        public Subqueryable<T, JoinType> InnerJoin<JoinType>(Func<T, JoinType, bool> expression)
         {
-            return this;
+            return new Subqueryable<T, JoinType>();
         }
-        public Subqueryable<T> LeftJoin<JoinType>(Func<T, JoinType, bool> expression)
+        public Subqueryable<T, JoinType> LeftJoin<JoinType>(Func<T, JoinType, bool> expression)
         {
-            return this;
+            return new Subqueryable<T, JoinType>();
         }
    
         public Subqueryable<T> Where(string where)
