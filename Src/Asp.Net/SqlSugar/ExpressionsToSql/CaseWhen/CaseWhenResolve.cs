@@ -55,6 +55,15 @@ namespace SqlSugar
                 else
                 {
                     var sql = SubTools.GetMethodValue(this.context, methodExp.Arguments[0], this.context.IsSingle ? ResolveExpressType.WhereSingle : ResolveExpressType.WhereMultiple);
+                    if (methodExp.Method.Name == "IF") 
+                    {
+                        var parameter = this.context.Parameters.FirstOrDefault(it => it.ParameterName == sql.Trim());
+                        if (parameter!=null&&parameter.Value is bool) 
+                        {
+                            sql = Convert.ToBoolean(parameter.Value) ? " 1=1 " : " 1=2 ";
+                            this.context.Parameters.Remove(parameter);
+                        }
+                    }
                     sqls.Add(new KeyValuePair<string, string>(methodExp.Method.Name, sql));
                 }
             }

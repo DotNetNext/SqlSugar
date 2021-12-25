@@ -200,6 +200,13 @@ namespace OrmTest
             db.Insertable(new UnitEnumadfa()).ExecuteCommand();
             db.Insertable(new UnitEnumadfa() {  Type=DbType.Sqlite}).ExecuteCommand();
             var listEnum=db.Queryable<UnitEnumadfa>().ToList();
+
+            var d111111 = db.Queryable<Order>()
+   .Where(it => it.Id== SqlFunc.IF(true).Return(1).End(0) )
+   .ToList();
+            var d1111111 = db.Queryable<Order>()
+.Where(it => it.Id == SqlFunc.IF(it.Id>0).Return(1).End(0))
+.ToList();
         }
 
 
