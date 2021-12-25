@@ -49,9 +49,6 @@ namespace OrmTest
 
                         }).ToPageList(1, 10);
 
-            Console.WriteLine(result);
-            Console.WriteLine("用例跑完");
-            Console.ReadKey();
         }
         [SugarTable("unitUser_Test001")]
         public class User_Test001

@@ -32,6 +32,7 @@ namespace OrmTest
         public static void Init()
         {
             UCustom01.Init();
+            SubQueryTest();
             UConfig();
             DeleteTest();
             Fastest2();

@@ -102,6 +102,7 @@
     <Compile Include="UnitTest\Models\TB_AdminUser.cs" />
     <Compile Include="UnitTest\Models\TB_ClientConfig.cs" />
     <Compile Include="UnitTest\UAopTest.cs" />
+    <Compile Include="UnitTest\USubquery.cs" />
     <Compile Include="UnitTest\UTest01.cs" />
     <Compile Include="UnitTest\UEnum.cs" />
     <Compile Include="UnitTest\UFilter.cs" />
