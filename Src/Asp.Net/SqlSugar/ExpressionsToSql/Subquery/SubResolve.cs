@@ -57,12 +57,15 @@ namespace SqlSugar
                 {
 
                     var subExp = (context.Expression as BinaryExpression).Left is MethodCallExpression ? (context.Expression as BinaryExpression).Left : (context.Expression as BinaryExpression).Right;
-                    var meExp = ((subExp as MethodCallExpression).Object as MethodCallExpression).Arguments[0] as LambdaExpression;
-                    var selfParameterName = meExp.Parameters.First().Name;
-                    context.SingleTableNameSubqueryShortName = (((meExp.Body as BinaryExpression).Left as MemberExpression).Expression as ParameterExpression).Name;
-                    if (context.SingleTableNameSubqueryShortName == selfParameterName)
+                    if (subExp is MethodCallExpression)
                     {
-                        context.SingleTableNameSubqueryShortName = (((meExp.Body as BinaryExpression).Right as MemberExpression).Expression as ParameterExpression).Name;
+                        var meExp = ((subExp as MethodCallExpression).Object as MethodCallExpression).Arguments[0] as LambdaExpression;
+                        var selfParameterName = meExp.Parameters.First().Name;
+                        context.SingleTableNameSubqueryShortName = (((meExp.Body as BinaryExpression).Left as MemberExpression).Expression as ParameterExpression).Name;
+                        if (context.SingleTableNameSubqueryShortName == selfParameterName)
+                        {
+                            context.SingleTableNameSubqueryShortName = (((meExp.Body as BinaryExpression).Right as MemberExpression).Expression as ParameterExpression).Name;
+                        }
                     }
                 }
                 else if (context.RootExpression!=null&&context.Expression.GetType().Name == "SimpleBinaryExpression")

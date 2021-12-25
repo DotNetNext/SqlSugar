@@ -116,6 +116,19 @@ namespace OrmTest
               .Where(it => it.a)
       .ExecuteCommand();
 
+
+            Db.Queryable<Unitbluecopy>().Select(it => new Unitbluecopy() { x = it.x - SqlFunc.Subqueryable<Unitbluecopy>().Select(s => s.Id) }).ToList();
+            Db.Updateable<Unitbluecopy>()
+    .SetColumns(it => new Unitbluecopy() { x=it.x- SqlFunc.Subqueryable<Unitbluecopy>().Select(s=>s.Id) })
+    .Where(it => it.Id>0)
+.ExecuteCommand();
+
+            Db.Updateable<Unitbluecopy>()
+.SetColumns(it =>  it.x == it.x - SqlFunc.Subqueryable<Unitbluecopy>().Select(s => s.Id)  )
+.Where(it => it.Id > 0)
+.ExecuteCommand();
+
+
             Db.Updateable<Unitbluecopy>(new Unitbluecopy() { }).WhereColumns(it => it.Id).ExecuteCommand();
             Db.Updateable<Unitbluecopy>(Db.Queryable<Unitbluecopy>().ToList()).WhereColumns(it => it.Id).ExecuteCommand();
         }
