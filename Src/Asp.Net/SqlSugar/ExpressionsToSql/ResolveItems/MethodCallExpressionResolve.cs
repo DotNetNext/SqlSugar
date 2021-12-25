@@ -422,6 +422,7 @@ namespace SqlSugar
             var isBinaryExpression = item is BinaryExpression || item is MethodCallExpression;
             var isConst = item is ConstantExpression;
             var isIIF = name == "IIF";
+            var isSubIIF= (isIIF && item.ToString().StartsWith("IIF")) ;
             var isIFFBoolMember = isIIF && (item is MemberExpression) && (item as MemberExpression).Type == UtilConstants.BoolType;
             var isIFFUnary = isIIF && (item is UnaryExpression) && (item as UnaryExpression).Operand.Type == UtilConstants.BoolType;
             var isIFFBoolBinary = isIIF && (item is BinaryExpression) && (item as BinaryExpression).Type == UtilConstants.BoolType;
@@ -457,6 +458,10 @@ namespace SqlSugar
                 AppendModelByIIFMethod(parameter, model, item);
             }
             else if (isBinaryExpression)
+            {
+                model.Args.Add(GetMethodCallArgs(parameter, item));
+            }
+            else if (isSubIIF) 
             {
                 model.Args.Add(GetMethodCallArgs(parameter, item));
             }

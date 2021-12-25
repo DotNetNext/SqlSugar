@@ -202,11 +202,17 @@ namespace OrmTest
             var listEnum=db.Queryable<UnitEnumadfa>().ToList();
 
             var d111111 = db.Queryable<Order>()
-   .Where(it => it.Id== SqlFunc.IF(true).Return(1).End(0) )
-   .ToList();
-            var d1111111 = db.Queryable<Order>()
-.Where(it => it.Id == SqlFunc.IF(it.Id>0).Return(1).End(0))
-.ToList();
+            .Where(it => it.Id== SqlFunc.IF(true).Return(1).End(0) )
+            .ToList();
+                        var d1111111 = db.Queryable<Order>()
+            .Where(it => it.Id == SqlFunc.IF(it.Id>0).Return(1).End(0))
+            .ToList();
+                        var d11111111 = db.Queryable<Order>()
+            .Where(it => it.Id == (it.Id>0? (it.Id==1?11:1):2))
+            .ToList();
+                        var d111111111 = db.Queryable<Order>()
+            .Where(it => it.Id == (it.Id > 0 ? (it.Id == 1 ? 11 : (it.Id==2?2:1)) : 2))
+            .ToList();
         }
 
 
