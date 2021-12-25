@@ -10,10 +10,27 @@ namespace OrmTest
     {
         public static void Init()
         {
+            Demo5();
             Demo4();
             Demo3();
             Demo2();
             Demo1();
+        }
+
+        private static void Demo5()
+        {
+            var db = NewUnitTest.Db;
+            List<IConditionalModel> conModels = new List<IConditionalModel>();
+            conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.NoEqual, FieldValue = "1" });
+            conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.IsNot, FieldValue = null });
+            var json = db.Context.Utilities.SerializeObject(conModels);
+            var conditionalModels = db.Context.Utilities.JsonToConditionalModels(json);
+            var list6 = db.Queryable<Order>().Where(conditionalModels).ToList();
+            var json2 = db.Context.Utilities.SerializeObject(conditionalModels);
+            if (json != json2)
+            {
+                throw new Exception("unit error");
+            }
         }
 
         private static void Demo1()
