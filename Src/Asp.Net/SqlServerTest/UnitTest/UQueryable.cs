@@ -213,6 +213,9 @@ namespace OrmTest
                         var d111111111 = db.Queryable<Order>()
             .Where(it => it.Id == (it.Id > 0 ? (it.Id == 1 ? 11 : (it.Id==2?2:1)) : 2))
             .ToList();
+            bool? bq = true;
+            var d1111111111 = db.Queryable<BoolTest1>().Where(it => it.a.Equals(bq.Value)).ToArray();
+            var d11111111111 = db.Queryable<BoolTest1>().Where(it => SqlFunc.IIF(bq.Value,1,2)==1).ToArray();
         }
 
 

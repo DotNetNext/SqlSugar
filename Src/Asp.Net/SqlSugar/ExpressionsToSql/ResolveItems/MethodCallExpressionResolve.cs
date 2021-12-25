@@ -428,6 +428,7 @@ namespace SqlSugar
             var isIFFBoolBinary = isIIF && (item is BinaryExpression) && (item as BinaryExpression).Type == UtilConstants.BoolType;
             var isIFFBoolMethod = isIIF && (item is MethodCallExpression) && (item as MethodCallExpression).Type == UtilConstants.BoolType;
             var isFirst = item == args.First();
+            var isBoolValue = item.Type == UtilConstants.BoolType && item.ToString().StartsWith("value(");
             if (isFirst && isIIF && isConst)
             {
                 var value = (item as ConstantExpression).Value.ObjToBool() ? this.Context.DbMehtods.True() : this.Context.DbMehtods.False();
@@ -461,9 +462,25 @@ namespace SqlSugar
             {
                 model.Args.Add(GetMethodCallArgs(parameter, item));
             }
-            else if (isSubIIF) 
+            else if (isSubIIF)
             {
                 model.Args.Add(GetMethodCallArgs(parameter, item));
+            }
+            else if (isBoolValue&&!isIIF&& item is MemberExpression) 
+            {
+                model.Args.Add(GetMethodCallArgs(parameter, (item as MemberExpression).Expression));
+            }
+            else if (isBoolValue && isIIF && item is MemberExpression)
+            {
+                var argItem = GetMethodCallArgs(parameter, (item as MemberExpression).Expression);
+                if (argItem.IsMember) 
+                {
+                    var pName = this.Context.SqlParameterKeyWord + "true_0";
+                    if(!this.Context.Parameters.Any(it=>it.ParameterName== pName))
+                       this.Context.Parameters.Add(new SugarParameter(pName, true));
+                    argItem.MemberName = $" {argItem.MemberName}={pName} ";
+                }
+                model.Args.Add(argItem);
             }
             else
             {
