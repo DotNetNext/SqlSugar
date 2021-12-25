@@ -123,11 +123,17 @@ namespace SqlSugar
             List<SugarParameter> parameters = new List<SugarParameter>();
             var sqlBuilder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
             var mainIndex = 0;
+            var indexTree = 0;
             foreach (var model in models)
             {
                 if (model is ConditionalModel)
                 {
                     var item = model as ConditionalModel;
+                    if (item.FieldName == $"[value=sql{UtilConstants.ReplaceKey}]") 
+                    {
+                        builder.Append(item.FieldValue);
+                        continue;
+                    }
                     var index = mainIndex + beginIndex;
                     var type = index == 0 ? "" : "AND";
                     if (beginIndex > 0)
@@ -252,7 +258,7 @@ namespace SqlSugar
                     }
                     item.FieldName = oldName;
                 }
-                else
+                else if (model is ConditionalCollections)
                 {
                     var item = model as ConditionalCollections;
                     if (item != null && item.ConditionalList.HasValue())
@@ -292,9 +298,59 @@ namespace SqlSugar
                         }
                     }
                 }
+                else 
+                {
+                    var item = model as ConditionalTree;
+                    BuilderTree(builder,item,ref indexTree, parameters);
+                }
                 mainIndex++;
             }
             return new KeyValuePair<string, SugarParameter[]>(builder.ToString(), parameters.ToArray());
+        }
+
+        private void BuilderTree(StringBuilder builder,ConditionalTree item,ref  int indexTree, List<SugarParameter>  parameters)
+        {
+           var conditionals = ToConditionalCollections(item,ref indexTree, parameters);
+           var sqlobj = ConditionalModelToSql(new List<IConditionalModel> { conditionals }, 1);
+           var sql = sqlobj.Key;
+           RepairReplicationParameters(ref sql, sqlobj.Value,indexTree);
+           parameters.AddRange(sqlobj.Value);
+           var buiderSql = sql;
+           builder.Append(buiderSql);
+           indexTree++;
+        }
+
+        private  ConditionalCollections ToConditionalCollections(ConditionalTree item,ref int indexTree, List<SugarParameter> parameters)
+        {
+            List<KeyValuePair<WhereType, ConditionalModel>> list = new List<KeyValuePair<WhereType, ConditionalModel>>();
+            foreach (var it in item.ConditionalList) 
+            {
+                ConditionalModel model = new ConditionalModel();
+                if (it.Value is ConditionalModel)
+                {
+                    model = (ConditionalModel)it.Value;
+                }
+                else
+                {
+                    var con = ToConditionalCollections(it.Value as ConditionalTree,ref indexTree, parameters);
+                    var sqlobj = ConditionalModelToSql(new List<IConditionalModel> { con },0);
+                    var sql = sqlobj.Key;
+                    RepairReplicationParameters(ref sql, sqlobj.Value, indexTree);
+                    model = new ConditionalModel()
+                    {
+                        FieldName = $"[value=sql{UtilConstants.ReplaceKey}]",
+                        FieldValue = sql
+                    };
+                    parameters.AddRange(sqlobj.Value);
+                    indexTree++;
+                }
+                list.Add(new KeyValuePair<WhereType, ConditionalModel>(it.Key, model));
+            }
+            var result= new ConditionalCollections()
+            {
+                ConditionalList = list
+            };
+            return result;
         }
 
         private static object GetFieldValue(ConditionalModel item)

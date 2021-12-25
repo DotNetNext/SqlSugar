@@ -12,7 +12,10 @@ namespace SqlSugar
     {
          public List<KeyValuePair<WhereType, ConditionalModel>> ConditionalList { get; set; }
     }
- 
+    public class ConditionalTree : IConditionalModel
+    {
+        public List<KeyValuePair<WhereType, IConditionalModel>> ConditionalList { get; set; }
+    }
     public class ConditionalModel: IConditionalModel
     {
         public ConditionalModel()
