@@ -148,8 +148,14 @@ namespace SqlSugar
 
         private List<string> GetSubItems()
         {
+            var isSubSubQuery = this.allMethods.Select(it => it.ToString()).Any(it => Regex.Matches(it, "Subquery").Count > 1);
             var isubList = this.allMethods.Select(exp =>
              {
+                 if (isSubSubQuery) 
+                 {
+                     this.context.JoinIndex = 1;
+                     this.context.SubQueryIndex = 0;
+                 }
                  var methodName = exp.Method.Name;
                  var items = SubTools.SubItems(this.context);
                  var item = items.First(s => s.Name == methodName);

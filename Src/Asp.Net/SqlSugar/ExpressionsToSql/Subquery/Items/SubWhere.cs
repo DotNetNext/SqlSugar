@@ -40,8 +40,13 @@ namespace SqlSugar
         public string GetValue(Expression expression)
         {
             var exp = expression as MethodCallExpression;
+            if (Regex.Matches( expression.ToString(), "Subqueryable").Count >= 2)
+            {
+                new SubSelect() { Context = this.Context }.SetShortName(exp, "+");
+            }
             var argExp = exp.Arguments[0];
             var result = "WHERE " + SubTools.GetMethodValue(Context, argExp, ResolveExpressType.WhereMultiple);
+
 
 
             var regex = @"^WHERE  (\@Const\d+) $";
