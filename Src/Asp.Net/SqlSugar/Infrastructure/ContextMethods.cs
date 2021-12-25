@@ -707,11 +707,24 @@ namespace SqlSugar
 
                 if (item.Count() > 0)
                 {
-                    IConditionalModel model = new ConditionalTree()
+                    if (item.ToString().Contains("ConditionalList"))
                     {
-                        ConditionalList = GetConditionalList(item)
-                    };
-                    conditionalModels.Add(model);
+                        IConditionalModel model = new ConditionalTree()
+                        {
+                            ConditionalList = GetConditionalList(item)
+                        };
+                        conditionalModels.Add(model);
+                    }
+                    else
+                    {
+                        IConditionalModel conditionalModel = new ConditionalModel()
+                        {
+                            ConditionalType = (ConditionalType)Convert.ToInt32(item["ConditionalType"]),
+                            FieldName = item["FieldName"] + "",
+                            FieldValue = item["FieldValue"].Value<string>()==null?null: item["FieldValue"].ToString()
+                        };
+                        conditionalModels.Add(conditionalModel);
+                    }
                 }
             }
             return conditionalModels;
@@ -738,7 +751,7 @@ namespace SqlSugar
                     {
                         ConditionalType = (ConditionalType)Convert.ToInt32(value["ConditionalType"]),
                         FieldName = value["FieldName"] + "",
-                        FieldValue = value["FieldValue"] + ""
+                        FieldValue = value["FieldValue"].Value<string>() == null ? null : value["FieldValue"].ToString()
                     };
                 }
                 result.Add(new KeyValuePair<WhereType, IConditionalModel>(type, conditionalModel));
