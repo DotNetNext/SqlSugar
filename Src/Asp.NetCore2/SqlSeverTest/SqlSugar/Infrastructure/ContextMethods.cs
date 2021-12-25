@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
@@ -653,7 +654,7 @@ namespace SqlSugar
         }
         #endregion
 
-        #region
+        #region Page Each
         public void PageEach<T>(IEnumerable<T> pageItems,int pageSize, Action<List<T>> action)
         {
             if (pageItems != null&& pageItems.Any())
@@ -694,6 +695,68 @@ namespace SqlSugar
                 }
             }
         }
+
         #endregion
+
+        public List<IConditionalModel> JsonToConditionalModels(string json)
+        { 
+            List<IConditionalModel> conditionalModels = new List<IConditionalModel>();
+            var jarray = this.Context.Utilities.DeserializeObject<JArray>(json);
+            foreach (var item in jarray)
+            {
+
+                if (item.Count() > 0)
+                {
+                    if (item.ToString().Contains("ConditionalList"))
+                    {
+                        IConditionalModel model = new ConditionalTree()
+                        {
+                            ConditionalList = GetConditionalList(item)
+                        };
+                        conditionalModels.Add(model);
+                    }
+                    else
+                    {
+                        IConditionalModel conditionalModel = new ConditionalModel()
+                        {
+                            ConditionalType = (ConditionalType)Convert.ToInt32(item["ConditionalType"]),
+                            FieldName = item["FieldName"] + "",
+                            FieldValue = item["FieldValue"].Value<string>()==null?null: item["FieldValue"].ToString()
+                        };
+                        conditionalModels.Add(conditionalModel);
+                    }
+                }
+            }
+            return conditionalModels;
+        }
+        private static List<KeyValuePair<WhereType, IConditionalModel>> GetConditionalList(JToken item)
+        {
+            List<KeyValuePair<WhereType, IConditionalModel>> result = new List<KeyValuePair<WhereType, IConditionalModel>>();
+            var values = item.Values().First();
+            foreach (var jToken in values)
+            {
+                WhereType type = (WhereType)Convert.ToInt32(jToken["Key"]);
+                IConditionalModel conditionalModel = null;
+                var value = jToken["Value"];
+                if (value.ToString().Contains("ConditionalList"))
+                {
+                    conditionalModel = new ConditionalTree()
+                    {
+                        ConditionalList = GetConditionalList(value)
+                    };
+                }
+                else
+                {
+                    conditionalModel = new ConditionalModel()
+                    {
+                        ConditionalType = (ConditionalType)Convert.ToInt32(value["ConditionalType"]),
+                        FieldName = value["FieldName"] + "",
+                        FieldValue = value["FieldValue"].Value<string>() == null ? null : value["FieldValue"].ToString()
+                    };
+                }
+                result.Add(new KeyValuePair<WhereType, IConditionalModel>(type, conditionalModel));
+            }
+            return result;
+        }
     }
 }

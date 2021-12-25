@@ -37,5 +37,6 @@ namespace SqlSugar
         void PageEach<T>(IEnumerable<T> pageItems, int pageSize, Action<List<T>> action);
         Task PageEachAsync<T>(IEnumerable<T> pageItems, int pageSize, Func<List<T>, Task> action);
         Task PageEachAsync<T, ResultType>(IEnumerable<T> pageItems, int pageSize, Func<List<T>, Task<ResultType>> action);
+        List<IConditionalModel> JsonToConditionalModels(string json);
     }
 }
