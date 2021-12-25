@@ -333,9 +333,14 @@ namespace SqlSugar
                 }
                 else
                 {
-                    var con = ToConditionalCollections(it.Value as ConditionalTree,ref indexTree, parameters);
+                    var tree = it.Value as ConditionalTree;
+                    var con = ToConditionalCollections(tree, ref indexTree, parameters);
                     var sqlobj = ConditionalModelToSql(new List<IConditionalModel> { con }, index);
                     var sql = sqlobj.Key;
+                    if (sql.StartsWith(" NULL ")) 
+                    {
+                        sql = Regex.Replace(sql,"^ NULL ", it.Key.ToString().ToUpper());
+                    }
                     RepairReplicationParameters(ref sql, sqlobj.Value, indexTree);
                     model = new ConditionalModel()
                     {
