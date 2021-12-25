@@ -57,12 +57,15 @@ namespace SqlSugar
                 {
 
                     var subExp = (context.Expression as BinaryExpression).Left is MethodCallExpression ? (context.Expression as BinaryExpression).Left : (context.Expression as BinaryExpression).Right;
-                    var meExp = ((subExp as MethodCallExpression).Object as MethodCallExpression).Arguments[0] as LambdaExpression;
-                    var selfParameterName = meExp.Parameters.First().Name;
-                    context.SingleTableNameSubqueryShortName = (((meExp.Body as BinaryExpression).Left as MemberExpression).Expression as ParameterExpression).Name;
-                    if (context.SingleTableNameSubqueryShortName == selfParameterName)
+                    if (subExp is MethodCallExpression)
                     {
-                        context.SingleTableNameSubqueryShortName = (((meExp.Body as BinaryExpression).Right as MemberExpression).Expression as ParameterExpression).Name;
+                        var meExp = ((subExp as MethodCallExpression).Object as MethodCallExpression).Arguments[0] as LambdaExpression;
+                        var selfParameterName = meExp.Parameters.First().Name;
+                        context.SingleTableNameSubqueryShortName = (((meExp.Body as BinaryExpression).Left as MemberExpression).Expression as ParameterExpression).Name;
+                        if (context.SingleTableNameSubqueryShortName == selfParameterName)
+                        {
+                            context.SingleTableNameSubqueryShortName = (((meExp.Body as BinaryExpression).Right as MemberExpression).Expression as ParameterExpression).Name;
+                        }
                     }
                 }
                 else if (context.RootExpression!=null&&context.Expression.GetType().Name == "SimpleBinaryExpression")
@@ -96,8 +99,31 @@ namespace SqlSugar
             {
                 GetSubAs(sqlItems, asItems);
             }
-            var sql = string.Join(UtilConstants.Space, sqlItems);
+            if (this.context.CurrentShortName.HasValue())
+            {
+                GetShortName(sqlItems);
+            }
+            var sql = "";
+
+            if (sqlItems.Count(it => IsJoin(it)) > 1)
+            {
+                var index = sqlItems.IndexOf(sqlItems.First(x=>IsJoin(x)));
+                var joinitems = sqlItems.Where(it => IsJoin(it)).ToList();
+                joinitems.Reverse();
+                var items = sqlItems.Where(it => !IsJoin(it)).ToList();
+                items.InsertRange(index, joinitems);
+                sql = string.Join(UtilConstants.Space, items);
+            }
+            else
+            {
+                sql = string.Join(UtilConstants.Space, sqlItems);
+            }
             return this.context.DbMehtods.Pack(sql);
+        }
+
+        private static bool IsJoin(string it)
+        {
+            return it.StartsWith("  INNER JOIN") || it.StartsWith("  LEFT JOIN");
         }
 
         private void GetSubAs(List<string> sqlItems, List<string> asItems)
@@ -112,11 +138,27 @@ namespace SqlSugar
                 }
             }
         }
+        private void GetShortName(List<string> sqlItems)
+        {
+            for (int i = 0; i < sqlItems.Count; i++)
+            {
+                if (sqlItems[i].StartsWith("FROM " + this.context.SqlTranslationLeft))
+                {
+                    sqlItems[i] = sqlItems[i]+" "+this.context.CurrentShortName +" ";
+                }
+            }
+        }
 
         private List<string> GetSubItems()
         {
+            var isSubSubQuery = this.allMethods.Select(it => it.ToString()).Any(it => Regex.Matches(it, "Subquery").Count > 1);
             var isubList = this.allMethods.Select(exp =>
              {
+                 if (isSubSubQuery) 
+                 {
+                     this.context.JoinIndex = 1;
+                     this.context.SubQueryIndex = 0;
+                 }
                  var methodName = exp.Method.Name;
                  var items = SubTools.SubItems(this.context);
                  var item = items.First(s => s.Name == methodName);

@@ -12,7 +12,10 @@ namespace SqlSugar
     {
          public List<KeyValuePair<WhereType, ConditionalModel>> ConditionalList { get; set; }
     }
- 
+    public class ConditionalTree : IConditionalModel
+    {
+        public List<KeyValuePair<WhereType, IConditionalModel>> ConditionalList { get; set; }
+    }
     public class ConditionalModel: IConditionalModel
     {
         public ConditionalModel()
@@ -22,8 +25,7 @@ namespace SqlSugar
         public string FieldName { get; set; }
         public string FieldValue { get; set; }
         public ConditionalType ConditionalType { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
-        [System.Text.Json.Serialization.JsonIgnore]
+        [Newtonsoft.Json.JsonIgnoreAttribute]
         public Func<string,object> FieldValueConvertFunc { get; set; }
     }
 }

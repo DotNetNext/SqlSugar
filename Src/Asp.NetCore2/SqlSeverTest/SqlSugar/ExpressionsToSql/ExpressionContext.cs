@@ -39,6 +39,7 @@ namespace SqlSugar
         public int Index { get; set; }
         public int ParameterIndex { get; set; }
         public string SingleTableNameSubqueryShortName{ get;  set; }
+        public string CurrentShortName { get; set; }
         public MappingColumnList MappingColumns { get; set; }
         public MappingTableList MappingTables { get; set; }
         public IgnoreColumnList IgnoreComumnList { get; set; }

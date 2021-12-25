@@ -77,6 +77,11 @@ namespace SqlSugar
         {
             CheckConnection();
         }
+        public virtual void OpenAlways() 
+        {
+            this.Context.CurrentConnectionConfig.IsAutoCloseConnection = false;
+            this.Open();
+        }
         public virtual void Close()
         {
             if (this.Transaction != null)

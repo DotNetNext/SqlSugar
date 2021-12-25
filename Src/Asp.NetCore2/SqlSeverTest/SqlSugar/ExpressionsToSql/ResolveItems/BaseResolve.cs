@@ -645,7 +645,7 @@ namespace SqlSugar
 
         protected bool IsSubMethod(MethodCallExpression express)
         {
-            return SubTools.SubItemsConst.Any(it => express.Object != null && express.Object.Type.Name == "Subqueryable`1");
+            return SubTools.SubItemsConst.Any(it => express.Object != null && express.Object.Type.Name.StartsWith("Subqueryable`"));
         }
         protected static Dictionary<string, string> MethodMapping = new Dictionary<string, string>() {
             { "ToString","ToString"},

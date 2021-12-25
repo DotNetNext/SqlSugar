@@ -422,11 +422,13 @@ namespace SqlSugar
             var isBinaryExpression = item is BinaryExpression || item is MethodCallExpression;
             var isConst = item is ConstantExpression;
             var isIIF = name == "IIF";
+            var isSubIIF= (isIIF && item.ToString().StartsWith("IIF")) ;
             var isIFFBoolMember = isIIF && (item is MemberExpression) && (item as MemberExpression).Type == UtilConstants.BoolType;
             var isIFFUnary = isIIF && (item is UnaryExpression) && (item as UnaryExpression).Operand.Type == UtilConstants.BoolType;
             var isIFFBoolBinary = isIIF && (item is BinaryExpression) && (item as BinaryExpression).Type == UtilConstants.BoolType;
             var isIFFBoolMethod = isIIF && (item is MethodCallExpression) && (item as MethodCallExpression).Type == UtilConstants.BoolType;
             var isFirst = item == args.First();
+            var isBoolValue = item.Type == UtilConstants.BoolType && item.ToString().StartsWith("value(");
             if (isFirst && isIIF && isConst)
             {
                 var value = (item as ConstantExpression).Value.ObjToBool() ? this.Context.DbMehtods.True() : this.Context.DbMehtods.False();
@@ -459,6 +461,26 @@ namespace SqlSugar
             else if (isBinaryExpression)
             {
                 model.Args.Add(GetMethodCallArgs(parameter, item));
+            }
+            else if (isSubIIF)
+            {
+                model.Args.Add(GetMethodCallArgs(parameter, item));
+            }
+            else if (isBoolValue&&!isIIF&& item is MemberExpression) 
+            {
+                model.Args.Add(GetMethodCallArgs(parameter, (item as MemberExpression).Expression));
+            }
+            else if (isBoolValue && isIIF && item is MemberExpression)
+            {
+                var argItem = GetMethodCallArgs(parameter, (item as MemberExpression).Expression);
+                if (argItem.IsMember) 
+                {
+                    var pName = this.Context.SqlParameterKeyWord + "true_0";
+                    if(!this.Context.Parameters.Any(it=>it.ParameterName== pName))
+                       this.Context.Parameters.Add(new SugarParameter(pName, true));
+                    argItem.MemberName = $" {argItem.MemberName}={pName} ";
+                }
+                model.Args.Add(argItem);
             }
             else
             {
@@ -726,11 +748,11 @@ namespace SqlSugar
                     case "ToTime":
                         return this.Context.DbMehtods.ToTime(model);
                     case "ToString":
-                        if (model.Args.Count > 1 && model.Args.Last().MemberValue.ObjToString().IsContainsIn("-", "/", ":", "yy", "ms", "hh"))
+                        if (model.Args.Count > 1)
                         {
                             return GeDateFormat(model.Args.Last().MemberValue.ObjToString(), model.Args.First().MemberName.ObjToString());
                         }
-                        Check.Exception(model.Args.Count > 1, "ToString (Format) is not supported, Use ToString().If time formatting can be used it.Date.Year+\"-\"+it.Data.Month+\"-\"+it.Date.Day ");
+                        //Check.Exception(model.Args.Count > 1, "ToString (Format) is not supported, Use ToString().If time formatting can be used it.Date.Year+\"-\"+it.Data.Month+\"-\"+it.Date.Day ");
                         return this.Context.DbMehtods.ToString(model);
                     case "ToVarchar":
                         return this.Context.DbMehtods.ToVarchar(model);
@@ -826,7 +848,7 @@ namespace SqlSugar
 
         private bool IsSubMethod(MethodCallExpression express, string methodName)
         {
-            return SubTools.SubItemsConst.Any(it => it.Name == methodName) && express.Object != null && express.Object.Type.Name == "Subqueryable`1";
+            return SubTools.SubItemsConst.Any(it => it.Name == methodName) && express.Object != null && (express.Object.Type.Name.StartsWith("Subqueryable`"));
         }
         private bool CheckMethod(MethodCallExpression expression)
         {
@@ -913,6 +935,10 @@ namespace SqlSugar
             else if (formatString == "yyyy-MM-dd hh:mm:ss.ms" && IsSqlServer())
             {
                 return $"CONVERT(varchar(100),convert(datetime,{value}), 121)";
+            }
+            else if (IsSqlServer()&&formatString!=null&& formatString.IsInt())
+            {
+                return string.Format("CONVERT(varchar(100),convert(datetime,{0}), {1})", value, formatString);
             }
             var parameter = new MethodCallExpressionArgs() { IsMember = true, MemberValue = DateType.Year };
             var parameter2 = new MethodCallExpressionArgs() { IsMember = true, MemberName = value };

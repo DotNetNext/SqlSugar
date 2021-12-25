@@ -1923,7 +1923,14 @@ namespace SqlSugar
         }
         protected ISugarQueryable<T> _As(string tableName, string entityName)
         {
-            this.QueryBuilder.AsTables.Add(entityName, tableName);
+            if (this.QueryBuilder.AsTables != null && this.QueryBuilder.AsTables.Any(it => it.Key == entityName))
+            {
+                Check.Exception(true, ErrorMessage.GetThrowMessage($"use As<{tableName}>(\"{tableName}\")", $"请把 As(\"{tableName}\"), 改成 As<{tableName}实体>(\"{tableName}\")"));
+            }
+            else
+            {
+                this.QueryBuilder.AsTables.Add(entityName, tableName);
+            }
             return this;
         }
         protected void _Filter(string FilterName, bool isDisabledGobalFilter)

@@ -44,17 +44,17 @@ namespace SqlSugar
             var exp = expression as MethodCallExpression;
             var argExp = exp.Arguments[0];
             var name =this.Context.GetTranslationColumnName((argExp as LambdaExpression).Parameters[0].Name);
-            var parameter = (argExp as LambdaExpression).Parameters[1];
+            var parameter = (argExp as LambdaExpression).Parameters.Last();
             Context.InitMappingInfo(parameter.Type);
             var tableName= Context.GetTranslationTableName(parameter.Type.Name, true);
             var joinString =string.Format(" {2} INNER JOIN {1} {0} ",
                  this.Context.GetTranslationColumnName(parameter.Name), 
                  tableName,
-                 this.Context.JoinIndex==1?name:"");
+                 null);
             var result = joinString+ "ON " + SubTools.GetMethodValue(Context, argExp, ResolveExpressType.WhereMultiple);
             //var selfParameterName = Context.GetTranslationColumnName((argExp as LambdaExpression).Parameters.First().Name) + UtilConstants.Dot;
             this.Context.JoinIndex++;
-
+            new SubSelect() {  Context=this.Context}.SetShortName(exp, "+");
             //result = result.Replace(selfParameterName, SubTools.GetSubReplace(this.Context));
             return result;
         }

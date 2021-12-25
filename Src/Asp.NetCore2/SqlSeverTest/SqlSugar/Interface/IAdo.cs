@@ -163,6 +163,7 @@ namespace SqlSugar
         void Dispose();
         void Close();
         void Open();
+        void OpenAlways();
         void CheckConnection();
 
         void BeginTran();
