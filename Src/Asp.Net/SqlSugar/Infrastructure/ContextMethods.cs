@@ -719,7 +719,7 @@ namespace SqlSugar
                     {
                         IConditionalModel conditionalModel = new ConditionalModel()
                         {
-                            ConditionalType = (ConditionalType)Convert.ToInt32(item["ConditionalType"]),
+                            ConditionalType = (ConditionalType)Convert.ToInt32(item["ConditionalType"].Value<int>()),
                             FieldName = item["FieldName"] + "",
                             FieldValue = item["FieldValue"].Value<string>()==null?null: item["FieldValue"].ToString()
                         };
@@ -735,7 +735,7 @@ namespace SqlSugar
             var values = item.Values().First();
             foreach (var jToken in values)
             {
-                WhereType type = (WhereType)Convert.ToInt32(jToken["Key"]);
+                WhereType type = (WhereType)Convert.ToInt32(jToken["Key"].Value<int>());
                 IConditionalModel conditionalModel = null;
                 var value = jToken["Value"];
                 if (value.ToString().Contains("ConditionalList"))
@@ -749,7 +749,7 @@ namespace SqlSugar
                 {
                     conditionalModel = new ConditionalModel()
                     {
-                        ConditionalType = (ConditionalType)Convert.ToInt32(value["ConditionalType"]),
+                        ConditionalType = (ConditionalType)Convert.ToInt32(value["ConditionalType"].Value<int>()),
                         FieldName = value["FieldName"] + "",
                         FieldValue = value["FieldValue"].Value<string>() == null ? null : value["FieldValue"].ToString()
                     };
