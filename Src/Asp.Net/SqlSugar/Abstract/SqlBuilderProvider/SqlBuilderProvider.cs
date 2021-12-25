@@ -280,7 +280,7 @@ namespace SqlSugar
                             List<IConditionalModel> conModels = new List<IConditionalModel>();
                             conModels.Add(con.Value);
                             var childSqlInfo = ConditionalModelToSql(conModels, 1000 * (1 + index) + models.IndexOf(item));
-                            if (!isFirst)
+                            if (!isFirst && con.Value.FieldName != $"[value=sql{UtilConstants.ReplaceKey}]")
                             {
 
                                 builder.AppendFormat(" {0} ", con.Key.ToString().ToUpper());
@@ -301,17 +301,17 @@ namespace SqlSugar
                 else 
                 {
                     var item = model as ConditionalTree;
-                    BuilderTree(builder,item,ref indexTree, parameters);
+                    BuilderTree(builder,item,ref indexTree, parameters, ref mainIndex);
                 }
                 mainIndex++;
             }
             return new KeyValuePair<string, SugarParameter[]>(builder.ToString(), parameters.ToArray());
         }
 
-        private void BuilderTree(StringBuilder builder,ConditionalTree item,ref  int indexTree, List<SugarParameter>  parameters)
+        private void BuilderTree(StringBuilder builder,ConditionalTree item,ref  int indexTree, List<SugarParameter>  parameters,ref int mainIndex)
         {
            var conditionals = ToConditionalCollections(item,ref indexTree, parameters);
-           var sqlobj = ConditionalModelToSql(new List<IConditionalModel> { conditionals }, 1);
+           var sqlobj = ConditionalModelToSql(new List<IConditionalModel> { conditionals }, mainIndex);
            var sql = sqlobj.Key;
            RepairReplicationParameters(ref sql, sqlobj.Value,indexTree);
            parameters.AddRange(sqlobj.Value);
@@ -323,6 +323,7 @@ namespace SqlSugar
         private  ConditionalCollections ToConditionalCollections(ConditionalTree item,ref int indexTree, List<SugarParameter> parameters)
         {
             List<KeyValuePair<WhereType, ConditionalModel>> list = new List<KeyValuePair<WhereType, ConditionalModel>>();
+            var index = 0;
             foreach (var it in item.ConditionalList) 
             {
                 ConditionalModel model = new ConditionalModel();
@@ -333,7 +334,7 @@ namespace SqlSugar
                 else
                 {
                     var con = ToConditionalCollections(it.Value as ConditionalTree,ref indexTree, parameters);
-                    var sqlobj = ConditionalModelToSql(new List<IConditionalModel> { con },0);
+                    var sqlobj = ConditionalModelToSql(new List<IConditionalModel> { con }, index);
                     var sql = sqlobj.Key;
                     RepairReplicationParameters(ref sql, sqlobj.Value, indexTree);
                     model = new ConditionalModel()
@@ -345,6 +346,7 @@ namespace SqlSugar
                     indexTree++;
                 }
                 list.Add(new KeyValuePair<WhereType, ConditionalModel>(it.Key, model));
+                index++;
             }
             var result= new ConditionalCollections()
             {

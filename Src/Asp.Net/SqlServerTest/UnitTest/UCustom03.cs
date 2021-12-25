@@ -36,7 +36,68 @@ namespace OrmTest
                 })
             }
             });
+            var json = db.Context.Utilities.SerializeObject(conModels);
             var list6 =db .Queryable<Order>().Where(conModels).ToList();
+
+            Demo2();
+        }
+
+        private static void Demo2()
+        {
+            var db = NewUnitTest.Db;
+            List<IConditionalModel> conModels = new List<IConditionalModel>();
+            conModels.Add(new ConditionalTree()
+            {
+                ConditionalList = new List<KeyValuePair<WhereType, IConditionalModel>>()//  (id=1 or id=2 and id=1)
+            {
+                //new  KeyValuePair<WhereType, ConditionalModel>( WhereType.And ,new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Equal, FieldValue = "1" }),
+                new  KeyValuePair<WhereType, IConditionalModel> (WhereType.Or,new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Equal, FieldValue = "2" }),
+                new  KeyValuePair<WhereType, IConditionalModel> ( WhereType.And, new ConditionalTree(){
+                  ConditionalList=new List<KeyValuePair<WhereType, IConditionalModel>>(){
+                    new KeyValuePair<WhereType, IConditionalModel>(WhereType.And,new ConditionalModel(){
+                          FieldName = "id", ConditionalType = ConditionalType.Equal, FieldValue = "1"
+                    })
+
+                  }
+                })
+            }
+            });
+            conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.NoEqual, FieldValue = "1" });
+            conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.IsNot, FieldValue = null });// id is not null
+            var json = db.Context.Utilities.SerializeObject(conModels);
+            var list6 = db.Queryable<Order>().Where(conModels).ToList();
+
+            Demo3();
+        }
+
+
+        private static void Demo3()
+        {
+            var db = NewUnitTest.Db;
+            List<IConditionalModel> conModels = new List<IConditionalModel>();
+            conModels.Add(new ConditionalTree()
+            {
+                ConditionalList = new List<KeyValuePair<WhereType, IConditionalModel>>()//  (id=1 or id=2 and id=1)
+            {
+                //new  KeyValuePair<WhereType, ConditionalModel>( WhereType.And ,new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Equal, FieldValue = "1" }),
+                new  KeyValuePair<WhereType, IConditionalModel> (WhereType.Or,new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Equal, FieldValue = "2" }),
+                new  KeyValuePair<WhereType, IConditionalModel> ( WhereType.And, new ConditionalTree(){
+                  ConditionalList=new List<KeyValuePair<WhereType, IConditionalModel>>(){
+                    new KeyValuePair<WhereType, IConditionalModel>(WhereType.Or,new ConditionalModel(){
+                         FieldName="ID", ConditionalType=ConditionalType.Equal, FieldValue="1"
+                    }),
+                    new KeyValuePair<WhereType, IConditionalModel>(WhereType.And,new ConditionalModel(){
+                          FieldName = "id", ConditionalType = ConditionalType.Equal, FieldValue = "1"
+                    })
+
+                  }
+                })
+            }
+            });
+            conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.NoEqual, FieldValue = "1" });
+            conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.IsNot, FieldValue = null });// id is not null
+            var json = db.Context.Utilities.SerializeObject(conModels);
+            var list6 = db.Queryable<Order>().Where(conModels).ToList();
         }
     }
 }
