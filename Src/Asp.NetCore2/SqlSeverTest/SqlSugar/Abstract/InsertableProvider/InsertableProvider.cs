@@ -702,6 +702,9 @@ namespace SqlSugar
             }
             else
             {
+                Check.Exception(this.EntityInfo.Columns.Where(it => it.IsIdentity
+                && it.UnderType == typeof(string)).ToList().Count > 0,
+                    "IsIdentity key can not be type of string");
                 return this.EntityInfo.Columns.Where(it => it.IsIdentity).Select(it => it.DbColumnName).ToList();
             }
         }
