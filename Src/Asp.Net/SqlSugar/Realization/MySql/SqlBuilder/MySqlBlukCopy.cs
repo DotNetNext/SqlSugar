@@ -90,7 +90,7 @@ namespace SqlSugar
                     FieldTerminator = ",",
                     FieldQuotationCharacter = '"',
                     EscapeCharacter = '"',
-                    LineTerminator = "\r\n",
+                    LineTerminator = Environment.NewLine,
                     FileName = fileName,
                     NumberOfLinesToSkip = 0,
                     TableName = dt.TableName,
