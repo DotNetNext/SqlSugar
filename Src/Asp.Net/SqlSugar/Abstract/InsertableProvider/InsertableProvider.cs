@@ -702,7 +702,12 @@ namespace SqlSugar
             }
             else
             {
-                return this.EntityInfo.Columns.Where(it => it.IsIdentity).Select(it => it.DbColumnName).ToList();
+                return this.EntityInfo.Columns.Where(it => {
+
+                      Check.Exception(it.IsIdentity&&it.UnderType == typeof(string), "IsIdentity key can not be type of string");
+                      return it.IsIdentity;
+                    
+                    }).Select(it => it.DbColumnName).ToList();
             }
         }
         //private void TaskStart<Type>(Task<Type> result)
