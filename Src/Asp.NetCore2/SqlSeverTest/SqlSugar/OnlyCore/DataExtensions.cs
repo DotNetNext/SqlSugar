@@ -105,6 +105,7 @@ namespace SqlSugar
                 }
             }
 
+            dt.AcceptChanges();
         }
 
         /// <summary>
@@ -145,6 +146,7 @@ namespace SqlSugar
                         }
                         dt.Rows.Add(daRow);
                     }
+                    dt.AcceptChanges();
                     ds.Tables.Add(dt);
                 } while (dr.NextResult());
             }
@@ -238,7 +240,7 @@ namespace SqlSugar
                     dt.Rows.Add(daRow);
                 }
             }
-
+            dt.AcceptChanges();
         }
 
         /// <summary>
@@ -290,6 +292,7 @@ namespace SqlSugar
                         }
                         dt.Rows.Add(daRow);
                     }
+                    dt.AcceptChanges();
                     ds.Tables.Add(dt);
                 } while (dr.NextResult());
             }
@@ -384,7 +387,7 @@ namespace SqlSugar
                     dt.Rows.Add(daRow);
                 }
             }
-
+            dt.AcceptChanges();
         }
 
         /// <summary>
@@ -424,6 +427,7 @@ namespace SqlSugar
                         }
                         dt.Rows.Add(daRow);
                     }
+                    dt.AcceptChanges();
                     ds.Tables.Add(dt);
                 } while (dr.NextResult());
             }
@@ -518,7 +522,7 @@ namespace SqlSugar
                     dt.Rows.Add(daRow);
                 }
             }
-
+            dt.AcceptChanges();
         }
 
         /// <summary>
@@ -558,6 +562,7 @@ namespace SqlSugar
                         }
                         dt.Rows.Add(daRow);
                     }
+                    dt.AcceptChanges();
                     ds.Tables.Add(dt);
                 } while (dr.NextResult());
             }
@@ -652,7 +657,7 @@ namespace SqlSugar
                     dt.Rows.Add(daRow);
                 }
             }
-
+            dt.AcceptChanges();
         }
 
         /// <summary>
@@ -692,6 +697,7 @@ namespace SqlSugar
                         }
                         dt.Rows.Add(daRow);
                     }
+                    dt.AcceptChanges();
                     ds.Tables.Add(dt);
                 } while (dr.NextResult());
             }
@@ -787,7 +793,7 @@ namespace SqlSugar
                     dt.Rows.Add(daRow);
                 }
             }
-
+            dt.AcceptChanges();
         }
 
         /// <summary>
@@ -827,6 +833,7 @@ namespace SqlSugar
                         }
                         dt.Rows.Add(daRow);
                     }
+                    dt.AcceptChanges();
                     ds.Tables.Add(dt);
                 } while (dr.NextResult());
             }
@@ -922,7 +929,7 @@ namespace SqlSugar
                     dt.Rows.Add(daRow);
                 }
             }
-
+            dt.AcceptChanges();
         }
 
         /// <summary>
@@ -962,6 +969,7 @@ namespace SqlSugar
                         }
                         dt.Rows.Add(daRow);
                     }
+                    dt.AcceptChanges();
                     ds.Tables.Add(dt);
                 } while (dr.NextResult());
             }
@@ -1057,7 +1065,7 @@ namespace SqlSugar
                     dt.Rows.Add(daRow);
                 }
             }
-
+            dt.AcceptChanges();
         }
 
         /// <summary>
@@ -1097,6 +1105,7 @@ namespace SqlSugar
                         }
                         dt.Rows.Add(daRow);
                     }
+                    dt.AcceptChanges();
                     ds.Tables.Add(dt);
                 } while (dr.NextResult());
             }
