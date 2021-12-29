@@ -572,7 +572,14 @@ namespace SqlSugar
                 };
                 if (columnInfo.PropertyType.IsEnum()&& columnInfo.Value!=null)
                 {
-                    columnInfo.Value = Convert.ToInt64(columnInfo.Value);
+                    if (this.Context.CurrentConnectionConfig.MoreSettings?.TableEnumIsString == true)
+                    {
+                        columnInfo.Value = columnInfo.Value.ToString();
+                    }
+                    else
+                    {
+                        columnInfo.Value = Convert.ToInt64(columnInfo.Value);
+                    }
                 }
                 if (column.IsJson)
                 {
