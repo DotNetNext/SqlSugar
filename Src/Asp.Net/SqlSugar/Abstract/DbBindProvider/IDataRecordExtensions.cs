@@ -293,6 +293,17 @@ namespace SqlSugar
                 return null;
             }
             object value = dr.GetValue(i);
+            if (value != null)
+            {
+                if (value.GetType() == UtilConstants.DecType)
+                {
+                    value = Convert.ToUInt32(value);
+                }
+                else if (value.GetType() == UtilConstants.StringType)
+                {
+                    return (T)Enum.Parse(typeof(T), value.ObjToString());
+                }
+            }
             T t = (T)Enum.ToObject(typeof(T), value);
             return t;
         }
