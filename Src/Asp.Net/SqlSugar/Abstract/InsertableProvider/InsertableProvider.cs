@@ -650,6 +650,7 @@ namespace SqlSugar
                     if (this.Context.CurrentConnectionConfig.MoreSettings?.TableEnumIsString == true)
                     {
                         columnInfo.Value = columnInfo.Value.ToString();
+                        columnInfo.PropertyType = UtilConstants.StringType;
                     }
                     else
                     {
