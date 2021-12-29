@@ -208,7 +208,14 @@ namespace SqlSugar
                     var value = item.PropertyInfo.GetValue(dataItem.Item, null);
                     if (value != null&&value.GetType().IsEnum()) 
                     {
-                        value = Convert.ToInt64(value);
+                        if (this.Context.CurrentConnectionConfig.MoreSettings?.TableEnumIsString == true)
+                        {
+                            value = value.ToString();
+                        }
+                        else
+                        {
+                            value = Convert.ToInt64(value);
+                        }
                     }
                     condition.ConditionalList.Add(new KeyValuePair<WhereType, ConditionalModel>(i==0?WhereType.Or :WhereType.And, new ConditionalModel()
                     {
@@ -228,6 +235,7 @@ namespace SqlSugar
             ILambdaExpressions resolveExpress = InstanceFactory.GetLambdaExpressions(this.Context.CurrentConnectionConfig); ;
             if (this.Context.CurrentConnectionConfig.MoreSettings != null)
             {
+                resolveExpress.TableEnumIsString = this.Context.CurrentConnectionConfig.MoreSettings.TableEnumIsString;
                 resolveExpress.PgSqlIsAutoToLower = this.Context.CurrentConnectionConfig.MoreSettings.PgSqlIsAutoToLower;
             }
             else

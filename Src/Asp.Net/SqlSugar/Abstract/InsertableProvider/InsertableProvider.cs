@@ -606,7 +606,15 @@ namespace SqlSugar
                 };
                 if (columnInfo.PropertyType.IsEnum())
                 {
-                    columnInfo.Value = Convert.ToInt64(columnInfo.Value);
+                    if (this.Context.CurrentConnectionConfig.MoreSettings?.TableEnumIsString == true)
+                    {
+                        columnInfo.Value = columnInfo.Value.ToString();
+                        columnInfo.PropertyType = UtilConstants.StringType;
+                    }
+                    else
+                    {
+                        columnInfo.Value = Convert.ToInt64(columnInfo.Value);
+                    }
                 }
                 insertItem.Add(columnInfo);
             }

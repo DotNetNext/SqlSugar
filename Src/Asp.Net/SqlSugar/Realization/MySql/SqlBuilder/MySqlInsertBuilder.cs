@@ -59,7 +59,7 @@ namespace SqlSugar
                 {
                     if (this.Context.CurrentConnectionConfig.MoreSettings?.TableEnumIsString == true)
                     {
-                        return value.ToString();
+                         return value.ToSqlValue(); ;
                     }
                     else
                     {

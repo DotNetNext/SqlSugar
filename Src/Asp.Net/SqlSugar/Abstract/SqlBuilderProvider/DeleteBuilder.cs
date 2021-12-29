@@ -147,6 +147,7 @@ namespace SqlSugar
             this.LambdaExpressions.Clear();
             if (this.Context.CurrentConnectionConfig.MoreSettings != null)
             {
+                resolveExpress.TableEnumIsString = this.Context.CurrentConnectionConfig.MoreSettings.TableEnumIsString;
                 resolveExpress.PgSqlIsAutoToLower = this.Context.CurrentConnectionConfig.MoreSettings.PgSqlIsAutoToLower;
             }
             else

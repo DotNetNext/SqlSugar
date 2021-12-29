@@ -225,7 +225,14 @@ namespace SqlSugar
                     Context.ParameterIndex++;
                     if (value != null && value.GetType().IsEnum())
                     {
-                        value = Convert.ToInt64(value);
+                        if (this.Context.TableEnumIsString == true)
+                        {
+                            value = value.ToString();
+                        }
+                        else
+                        {
+                            value = Convert.ToInt64(value);
+                        }
                     }
                     this.Context.Parameters.Add(new SugarParameter(appendValue, value));
                     appendValue = string.Format(" {0} ", appendValue);

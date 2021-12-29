@@ -44,6 +44,7 @@ namespace SqlSugar
         public MappingTableList MappingTables { get; set; }
         public IgnoreColumnList IgnoreComumnList { get; set; }
         public bool PgSqlIsAutoToLower { get; set; }
+        public bool? TableEnumIsString { get; set; }
         public List<SqlFuncExternal> SqlFuncServices { get; set; }
         public Expression RootExpression { get; set; }
         public bool IsSingle
@@ -131,6 +132,7 @@ namespace SqlSugar
             copyContext.PgSqlIsAutoToLower = this.PgSqlIsAutoToLower;
             copyContext.IsSingle = this.IsSingle;
             copyContext.RootExpression = this.RootExpression;
+            copyContext.TableEnumIsString = this.TableEnumIsString;
             return copyContext;
         }
         public ExpressionContext GetCopyContextWithMapping()
@@ -145,6 +147,7 @@ namespace SqlSugar
             copyContext.InitMappingInfo = this.InitMappingInfo;
             copyContext.RefreshMapping = this.RefreshMapping;
             copyContext.PgSqlIsAutoToLower = this.PgSqlIsAutoToLower;
+            copyContext.TableEnumIsString = this.TableEnumIsString;
             copyContext.IsSingle = this.IsSingle;
             copyContext.RootExpression = this.RootExpression;
             return copyContext;

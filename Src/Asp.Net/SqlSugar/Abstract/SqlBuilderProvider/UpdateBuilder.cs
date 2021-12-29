@@ -121,6 +121,7 @@ namespace SqlSugar
             if (this.Context.CurrentConnectionConfig.MoreSettings != null)
             {
                 resolveExpress.PgSqlIsAutoToLower = this.Context.CurrentConnectionConfig.MoreSettings.PgSqlIsAutoToLower;
+                resolveExpress.TableEnumIsString = this.Context.CurrentConnectionConfig.MoreSettings.TableEnumIsString;
             }
             else
             {
@@ -306,7 +307,7 @@ namespace SqlSugar
                 {
                     if (this.Context.CurrentConnectionConfig.MoreSettings?.TableEnumIsString == true)
                     {
-                        return value.ToString();
+                        return value.ToSqlValue();
                     }
                     else
                     {
