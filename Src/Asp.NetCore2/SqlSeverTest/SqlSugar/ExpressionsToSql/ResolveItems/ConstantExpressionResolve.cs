@@ -12,7 +12,7 @@ namespace SqlSugar
         {
             var expression = base.Expression as ConstantExpression;
             var isLeft = parameter.IsLeft;
-            object value = ExpressionTool.GetValue(expression.Value);
+            object value = ExpressionTool.GetValue(expression.Value,this.Context);
             var baseParameter = parameter.BaseParameter;
             baseParameter.ChildExpression = expression;
             var isSetTempData = baseParameter.CommonTempData.HasValue() && baseParameter.CommonTempData.Equals(CommonTempDataType.Result);

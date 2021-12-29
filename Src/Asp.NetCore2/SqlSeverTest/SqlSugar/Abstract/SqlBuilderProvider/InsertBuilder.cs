@@ -102,6 +102,7 @@ namespace SqlSugar
             this.LambdaExpressions.Clear();
             if (this.Context.CurrentConnectionConfig.MoreSettings != null)
             {
+                resolveExpress.TableEnumIsString = this.Context.CurrentConnectionConfig.MoreSettings.TableEnumIsString;
                 resolveExpress.PgSqlIsAutoToLower = this.Context.CurrentConnectionConfig.MoreSettings.PgSqlIsAutoToLower;
             }
             else
@@ -196,7 +197,14 @@ namespace SqlSugar
                 }
                 else if (type.IsEnum())
                 {
-                    return Convert.ToInt64(value);
+                    if (this.Context.CurrentConnectionConfig.MoreSettings?.TableEnumIsString == true)
+                    {
+                        return value.ToSqlValue();
+                    }
+                    else
+                    {
+                        return Convert.ToInt64(value);
+                    }
                 }
                 else if (type == UtilConstants.BoolType)
                 {

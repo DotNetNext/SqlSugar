@@ -53,11 +53,21 @@ namespace SqlSugar
             }
         }
 
-        public static object GetValue(object value)
+        public static object GetValue(object value,ExpressionContext context)
         {
             if (value == null) return value;
             var type = value.GetType();
-            if (type.IsEnum() && type != typeof(DateType) && type != typeof(JoinType) && type != typeof(OrderByType)) return Convert.ToInt64(value);
+            if (type.IsEnum() && type != typeof(DateType) && type != typeof(JoinType) && type != typeof(OrderByType))
+            {
+                if (context.TableEnumIsString == true)
+                {
+                    return value.ToString();
+                }
+                else 
+                {
+                    return Convert.ToInt64(value);
+                }
+            }
             else
                 return value;
         }
