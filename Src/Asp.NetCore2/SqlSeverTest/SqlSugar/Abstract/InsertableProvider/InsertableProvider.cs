@@ -809,11 +809,13 @@ namespace SqlSugar
                 item.Columns = new List<DiffLogColumnInfo>();
                 foreach (DataColumn col in dt2.Columns)
                 {
-
+                    var sugarColumn = this.EntityInfo.Columns.Where(it => it.DbColumnName != null).FirstOrDefault(it =>
+                        it.DbColumnName.Equals(col.ColumnName, StringComparison.CurrentCultureIgnoreCase));
                     DiffLogColumnInfo addItem = new DiffLogColumnInfo();
                     addItem.Value = row[col.ColumnName];
                     addItem.ColumnName = col.ColumnName;
-                    addItem.ColumnDescription = this.EntityInfo.Columns.Where(it => it.DbColumnName != null).FirstOrDefault(it => it.DbColumnName.Equals(col.ColumnName, StringComparison.CurrentCultureIgnoreCase))?.ColumnDescription;
+                    addItem.IsPrimaryKey = sugarColumn?.IsPrimarykey ?? false;
+                    addItem.ColumnDescription = sugarColumn?.ColumnDescription;
                     item.Columns.Add(addItem);
                 }
                 result.Add(item);
@@ -830,7 +832,16 @@ namespace SqlSugar
             if (identity != null && identity > 0 && GetIdentityKeys().HasValue())
             {
                 var fieldName = GetIdentityKeys().Last();
-                cons.Add(new ConditionalModel() { ConditionalType = ConditionalType.Equal, FieldName = fieldName, FieldValue = identity.ToString() });
+
+                if (this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL)
+                {
+                    var fieldObjectType = this.EntityInfo.Columns.FirstOrDefault(x => x.DbColumnName == fieldName)
+                        .PropertyInfo.PropertyType;
+                    cons.Add(new ConditionalModel() { ConditionalType = ConditionalType.Equal, FieldName = fieldName, FieldValue = identity.ToString(), 
+                        FieldValueConvertFunc = it => UtilMethods.ChangeType2(it, fieldObjectType) });
+                }
+                else
+                    cons.Add(new ConditionalModel() { ConditionalType = ConditionalType.Equal, FieldName = fieldName, FieldValue = identity.ToString() });
             }
             else
             {
@@ -864,10 +875,13 @@ namespace SqlSugar
                     item.Columns = new List<DiffLogColumnInfo>();
                     foreach (DataColumn col in dt.Columns)
                     {
+                        var sugarColumn = this.EntityInfo.Columns.Where(it => it.DbColumnName != null).First(it =>
+                            it.DbColumnName.Equals(col.ColumnName, StringComparison.CurrentCultureIgnoreCase));
                         DiffLogColumnInfo addItem = new DiffLogColumnInfo();
                         addItem.Value = row[col.ColumnName];
                         addItem.ColumnName = col.ColumnName;
-                        addItem.ColumnDescription = this.EntityInfo.Columns.Where(it => it.DbColumnName != null).First(it => it.DbColumnName.Equals(col.ColumnName, StringComparison.CurrentCultureIgnoreCase)).ColumnDescription;
+                        addItem.IsPrimaryKey = sugarColumn.IsPrimarykey;
+                        addItem.ColumnDescription = sugarColumn.ColumnDescription;
                         item.Columns.Add(addItem);
                     }
                     result.Add(item);
@@ -883,7 +897,8 @@ namespace SqlSugar
                 {
                     ColumnDescription = it.ColumnDescription,
                     ColumnName = it.DbColumnName,
-                    Value = it.PropertyInfo.GetValue(this.InsertObjs.Last(), null)
+                    Value = it.PropertyInfo.GetValue(this.InsertObjs.Last(), null),
+                    IsPrimaryKey = it.IsPrimarykey
                 }).ToList();
                 return new List<DiffLogTableInfo>() { diffTable };
             }

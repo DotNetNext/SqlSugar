@@ -840,10 +840,13 @@ namespace SqlSugar
                     item.Columns = new List<DiffLogColumnInfo>();
                     foreach (DataColumn col in dt.Columns)
                     {
+                        var sugarColumn = this.EntityInfo.Columns.Where(it => it.DbColumnName != null).First(it =>
+                            it.DbColumnName.Equals(col.ColumnName, StringComparison.CurrentCultureIgnoreCase));
                         DiffLogColumnInfo addItem = new DiffLogColumnInfo();
                         addItem.Value = row[col.ColumnName];
                         addItem.ColumnName = col.ColumnName;
-                        addItem.ColumnDescription = this.EntityInfo.Columns.Where(it => it.DbColumnName != null).First(it => it.DbColumnName.Equals(col.ColumnName, StringComparison.CurrentCultureIgnoreCase)).ColumnDescription;
+                        addItem.IsPrimaryKey = sugarColumn.IsPrimarykey;
+                        addItem.ColumnDescription = sugarColumn.ColumnDescription;
                         item.Columns.Add(addItem);
                     }
                     result.Add(item);

@@ -21,10 +21,11 @@ namespace SqlSugar
         public string TableDescription { get; set; }
         public List<DiffLogColumnInfo> Columns { get; set; }
     }
-    public class DiffLogColumnInfo {
-
+    public class DiffLogColumnInfo 
+    {
         public string ColumnName { get; set; }
         public string ColumnDescription { get; set; }
         public object Value { get; set; }
+        public bool IsPrimaryKey { get; set; }
     }
 }
