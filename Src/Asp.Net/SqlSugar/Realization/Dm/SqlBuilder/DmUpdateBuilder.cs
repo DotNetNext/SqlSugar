@@ -60,7 +60,14 @@ namespace SqlSugar
                 }
                 else if (type.IsEnum())
                 {
-                    return Convert.ToInt64(value);
+                    if (this.Context.CurrentConnectionConfig.MoreSettings?.TableEnumIsString == true)
+                    {
+                        return value.ToSqlValue();
+                    }
+                    else
+                    {
+                        return Convert.ToInt64(value);
+                    }
                 }
                 else if (type == UtilConstants.ByteArrayType)
                 {
