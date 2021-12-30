@@ -678,6 +678,24 @@ namespace SqlSugar
                                 model.Args[0].MemberValue = first.Value;
                             }
                         }
+                        if (this.Context.TableEnumIsString == true) 
+                        {
+                            List<string> enumStringList = new List<string>();
+                            foreach (var inItem in (model.Args[0].MemberValue as IEnumerable)) 
+                            {
+                                if (inItem != null) 
+                                {
+                                    if (UtilMethods.GetUnderType(inItem.GetType()).IsEnum()) 
+                                    {
+                                        enumStringList.Add(inItem.ToString());
+                                    }
+                                }
+                            }
+                            if (enumStringList.Any()) 
+                            {
+                                model.Args[0].MemberValue = enumStringList;
+                            }
+                        }
                         var caResult = this.Context.DbMehtods.ContainsArray(model);
                         this.Context.Parameters.RemoveAll(it => it.ParameterName == model.Args[0].MemberName.ObjToString());
                         return caResult;

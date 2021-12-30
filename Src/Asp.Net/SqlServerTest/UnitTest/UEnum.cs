@@ -24,7 +24,14 @@ namespace OrmTest
 
             db.CodeFirst.InitTables<Unit00Z1string1>();
             db.Insertable(new Unit00Z1string1() { type = UnitType.a, type2 = null }).ExecuteCommand();
-            var x = db.Queryable<Unit00Z1string1>().Select(it => new
+            List<UnitType> ids = new List<UnitType>() {
+             UnitType.a,
+             UnitType.b
+            };
+            var x = db.Queryable<Unit00Z1string1>()
+                    .Where(it => it.type == UnitType.b)
+                .Where(it=>it.type2== UnitType.b)
+                .Where(it=> ids.Contains(it.type)).Select(it => new
             {
                 x = it.type,
                 x2 = it.type2
