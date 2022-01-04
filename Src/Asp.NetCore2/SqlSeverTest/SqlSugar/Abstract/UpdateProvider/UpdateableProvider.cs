@@ -844,7 +844,14 @@ namespace SqlSugar
             }
             else 
             {
-                dt=this.Context.Queryable<T>().WhereClassByPrimaryKey(this.UpdateObjs.ToList()).ToDataTable();
+                if (this.UpdateObjs.ToList().Count == 0)
+                {
+                    dt = new DataTable();
+                }
+                else
+                {
+                    dt = this.Context.Queryable<T>().WhereClassByPrimaryKey(this.UpdateObjs.ToList()).ToDataTable();
+                }
             }
             if (dt.Rows != null && dt.Rows.Count > 0)
             {
