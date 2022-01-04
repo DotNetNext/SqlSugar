@@ -259,6 +259,21 @@ namespace OrmTest
             var sql222 = Db.SqlQueryable<Order>("select 1 id ").Where(it=>it.Id==1).ToSql().Key;
             Check.Exception("select 1 id " != sql111, "unit query error");
             Check.Exception("SELECT t.* FROM  (select 1 id ) t   WHERE ( [Id] = @Id0 )" != sql222, "unit query error");
+
+            var query5 = Db.Queryable<Order>()
+                           .LeftJoin<Custom>((o, cus) => o.CustomId == cus.Id)
+                      
+                           .Where((o) => o.Id>0)
+                           .Select((o, cus) => new VUOrder { Ixd = o.Id.SelectAll()})
+                           .ToList();
+            Check.Exception(query5.Any() && query5.First().Ixd == 0,"unit error");
+        }
+        public class VUOrder
+        {
+            [SugarColumn(ColumnName ="Id")]
+            public int Ixd { get; set; }
+            [SugarColumn(ColumnName = "Name")]
+            public string nxxxame { get; set; }
         }
         [SugarTable("tree ")]
         public class Tree2
