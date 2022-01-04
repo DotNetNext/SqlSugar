@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace SqlSugar
 {
@@ -47,6 +48,10 @@ namespace SqlSugar
             catch 
             {
                 Check.Exception(true, ErrorMessage.WhereIFCheck,exp.Arguments[0].ToString());
+            }
+            if (Regex.Matches(expression.ToString(), "Subqueryable").Count >= 2)
+            {
+                new SubSelect() { Context = this.Context }.SetShortNameNext(exp, "+");
             }
             var isWhere= Convert.ToBoolean(value);
             if (!Convert.ToBoolean(isWhere)) {

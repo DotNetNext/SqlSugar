@@ -72,5 +72,17 @@ namespace SqlSugar
 
             }
         }
+        public void SetShortNameNext(MethodCallExpression exp, string result)
+        {
+            if (exp.Arguments.Count>1&&exp.Arguments[1] is LambdaExpression && result.IsContainsIn("+", "-"))
+            {
+                var parameters = (exp.Arguments[1] as LambdaExpression).Parameters;
+                if (parameters != null && parameters.Count > 0)
+                {
+                    this.Context.CurrentShortName = this.Context.SqlTranslationLeft + parameters[0] + this.Context.SqlTranslationRight;
+                }
+
+            }
+        }
     }
 }
