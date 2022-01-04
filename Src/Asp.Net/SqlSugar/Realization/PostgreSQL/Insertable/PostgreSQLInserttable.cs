@@ -16,6 +16,7 @@ namespace SqlSugar
             string sql = InsertBuilder.ToSqlString().Replace("$PrimaryKey",this.SqlBuilder.GetTranslationColumnName(GetIdentityKeys().FirstOrDefault()));
             RestoreMapping();
             var result = Ado.GetScalar(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray()).ObjToInt();
+            After(sql, result);
             return result;
         }
         public override async Task<int> ExecuteReturnIdentityAsync()
@@ -26,6 +27,7 @@ namespace SqlSugar
             RestoreMapping();
             var obj = await Ado.GetScalarAsync(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
             var result = obj.ObjToInt();
+            After(sql, result);
             return result;
         }
         public override KeyValuePair<string, List<SugarParameter>> ToSql()
@@ -41,6 +43,7 @@ namespace SqlSugar
             string sql = InsertBuilder.ToSqlString().Replace("$PrimaryKey", this.SqlBuilder.GetTranslationColumnName(GetIdentityKeys().FirstOrDefault()));
             RestoreMapping();
             var result = Convert.ToInt64(Ado.GetScalar(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray()) ?? "0");
+            After(sql, result);
             return result;
         }
         public override async Task<long> ExecuteReturnBigIdentityAsync()
@@ -50,6 +53,7 @@ namespace SqlSugar
             string sql = InsertBuilder.ToSqlString().Replace("$PrimaryKey", this.SqlBuilder.GetTranslationColumnName(GetIdentityKeys().FirstOrDefault()));
             RestoreMapping();
             var result = Convert.ToInt64(await Ado.GetScalarAsync(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray()) ?? "0");
+            After(sql, result);
             return result;
         }
 
