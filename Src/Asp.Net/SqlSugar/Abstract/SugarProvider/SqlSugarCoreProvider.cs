@@ -83,7 +83,8 @@ namespace SqlSugar
                     DisableNvarchar = it.MoreSettings.DisableNvarchar,
                     PgSqlIsAutoToLower = it.MoreSettings.PgSqlIsAutoToLower,
                     IsAutoRemoveDataCache = it.MoreSettings.IsAutoRemoveDataCache,
-                    IsWithNoLockQuery = it.MoreSettings.IsWithNoLockQuery
+                    IsWithNoLockQuery = it.MoreSettings.IsWithNoLockQuery,
+                    TableEnumIsString=it.MoreSettings.TableEnumIsString
                 },
                 SlaveConnectionConfigs = it.SlaveConnectionConfigs
             }).ToList();
