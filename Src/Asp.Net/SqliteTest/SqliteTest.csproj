@@ -78,8 +78,12 @@
     <Compile Include="Models\Tree.cs" />
     <Compile Include="Models\ViewOrder.cs" />
     <Compile Include="UnitTest\Main.cs" />
+    <Compile Include="UnitTest\Models\Export.cs" />
+    <Compile Include="UnitTest\Models\ExToCon.cs" />
+    <Compile Include="UnitTest\Models\LoadCon.cs" />
     <Compile Include="UnitTest\UAdo.cs" />
     <Compile Include="UnitTest\UCodeFirst.cs" />
+    <Compile Include="UnitTest\UCustom01.cs" />
     <Compile Include="UnitTest\UInsert.cs" />
     <Compile Include="UnitTest\UJson.cs" />
     <Compile Include="UnitTest\Updateable.cs" />
