@@ -48,7 +48,10 @@ namespace OrmTest
            
             Console.WriteLine();
 
-            var tableName = db.SplitHelper<OrderSpliteTest>().GetTableName(DateTime.Now.AddDays(-1));
+            var tableName = db.SplitHelper<OrderSpliteTest>().GetTableName(DateTime.Now.AddDays(-111));
+
+            var listNull= db.Queryable<OrderSpliteTest>().SplitTable(ta => ta.InTableNames(tableName)).ToList();
+
             var tableName2 = db.SplitHelper(new OrderSpliteTest() {  Time=DateTime.Now}).GetTableNames();
             var tableName3 = db.SplitHelper(new List<OrderSpliteTest> {
               new OrderSpliteTest() { Time = DateTime.Now },

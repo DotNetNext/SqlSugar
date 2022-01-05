@@ -68,6 +68,10 @@ namespace OrmTest
             Console.WriteLine();
             ////强制分表类型
             var x4 = db.Insertable(new OrderSpliteTest() { Name = "A" ,Time=DateTime.Now.AddDays(-1) }).SplitTable().ExecuteCommand();
+
+
+            var tableName21 = db.SplitHelper<OrderSpliteTest>().GetTableName(DateTime.Now.AddDays(-111));
+            var listNull = db.Queryable<OrderSpliteTest>().SplitTable(ta => ta.InTableNames(tableName21)).ToList();
             Console.WriteLine("#### CodeFirst end ####");
         }
 
