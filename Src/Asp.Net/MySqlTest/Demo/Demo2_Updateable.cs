@@ -99,7 +99,8 @@ namespace OrmTest
 
             //Where Sql
             //db.Updateable(updateObj).Where("id=@x", new { x = "1" }).ExecuteCommand();
-
+            var dataTable = db.Queryable<Order>().Select("id,name,1 as price").Take(2).ToDataTable();
+            db.Fastest<Order>().BulkUpdate("Order", dataTable, new string[] { "id" }, new string[] { "name" });
             Console.WriteLine("#### Updateable End ####");
         }
 

@@ -109,8 +109,8 @@ namespace OrmTest
                .AddQueue();
             db.SaveQueues();
 
-
-            db.Fastest<Order>().BulkCopy(updateObjs);
+            var dataTable = db.Queryable<Order>().Select("id,name,1 as price").Take(2).ToDataTable();
+            db.Fastest<Order>().BulkUpdate("Order", dataTable,new string[] {"id" },new string[] {"name" });
             Console.WriteLine("#### Updateable End ####");
         }
 
