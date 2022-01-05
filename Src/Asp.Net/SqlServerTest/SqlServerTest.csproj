@@ -97,6 +97,7 @@
     <Compile Include="UnitTest\UCustom01.cs" />
     <Compile Include="UnitTest\UCustom02.cs" />
     <Compile Include="UnitTest\UCustom03.cs" />
+    <Compile Include="UnitTest\UCustom04.cs" />
     <Compile Include="UnitTest\UDelete.cs" />
     <Compile Include="UnitTest\UFastest.cs" />
     <Compile Include="UnitTest\UConfig.cs" />
