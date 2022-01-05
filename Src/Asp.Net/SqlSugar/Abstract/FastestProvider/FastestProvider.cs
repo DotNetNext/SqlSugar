@@ -191,12 +191,12 @@ namespace SqlSugar
         {
             var title = isAdd ? "BulkCopy" : "BulkUpdate";
             this.context.Ado.IsEnableLogEvent = isLog;
-            if (this.context.CurrentConnectionConfig?.AopEvents?.OnLogExecuted != null) 
+            if (this.context.CurrentConnectionConfig?.AopEvents?.OnLogExecuted != null)
             {
-                this.context.CurrentConnectionConfig?.AopEvents?.OnLogExecuted($"End {title}  name:{GetTableName()} ,count: {datas.Count},current time: {DateTime.Now}" , new SugarParameter[] { });
+                this.context.CurrentConnectionConfig?.AopEvents?.OnLogExecuted($"End {title}  name:{GetTableName()} ,count: {datas.Count},current time: {DateTime.Now}", new SugarParameter[] { });
             }
+            RemoveCache();
         }
-
         private void Begin<Type>(List<Type> datas,bool isAdd)
         {
             var title = isAdd ? "BulkCopy" : "BulkUpdate";

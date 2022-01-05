@@ -8,6 +8,8 @@ namespace SqlSugar
 {
     public interface IFastest<T> where T:class,new()
     {
+        IFastest<T> RemoveDataCache();
+        IFastest<T> RemoveDataCache(string cacheKey);
         IFastest<T> AS(string tableName);
         IFastest<T> PageSize(int Size);
         int BulkCopy(List<T> datas);
