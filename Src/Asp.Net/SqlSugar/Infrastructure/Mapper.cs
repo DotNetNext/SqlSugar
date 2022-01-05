@@ -19,7 +19,7 @@ namespace SqlSugar
             string result = string.Empty;
             var veiwModel = _context.EntityMaintenance.GetEntityInfo<TResult>();
             var exp = (queryBuilder.JoinExpression as LambdaExpression);
-            List<KeyValuePair<string, object>> selectItems = new List<KeyValuePair<string, object>>();
+            List<KeyValuePair<string, JoinMapper>> selectItems = new List<KeyValuePair<string, JoinMapper>>();
             var exParsmeters = exp.Parameters.Select(it => new { shortName = it.Name, type = it.Type }).ToList();
             foreach (var viewColumns in veiwModel.Columns)
             {
@@ -54,10 +54,10 @@ namespace SqlSugar
                     {
                         JoinMapper joinMapper = new JoinMapper()
                         {
-                             asName=viewColumns.PropertyName,
-                             dbName=columnInfo.it.DbColumnName
+                             AsName=viewColumns.PropertyName,
+                             DbName=columnInfo.it.DbColumnName
                         };
-                        selectItems.Add(new KeyValuePair<string, object>(expPars.shortName,joinMapper));
+                        selectItems.Add(new KeyValuePair<string, JoinMapper>(expPars.shortName,joinMapper));
                         isbreak = true;
                     }
                 }

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace SqlSugar 
 {
-    internal class JoinMapper
+    public class JoinMapper
     {
-        public string asName { get; set; }
-        public string dbName { get; set; }
+        public string AsName { get; set; }
+        public string DbName { get; set; }
     }
 }
