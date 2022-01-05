@@ -161,5 +161,24 @@ namespace SqlSugar
             tempDataTable.TableName = dt.TableName;
             return tempDataTable;
         }
+
+
+        private void RemoveCache()
+        {
+            if (!string.IsNullOrEmpty(CacheKey) || !string.IsNullOrEmpty(CacheKeyLike))
+            {
+                Check.Exception(this.context.CurrentConnectionConfig.ConfigureExternalServices?.DataInfoCacheService == null, "ConnectionConfig.ConfigureExternalServices.DataInfoCacheService is null");
+                var service = this.context.CurrentConnectionConfig.ConfigureExternalServices?.DataInfoCacheService;
+                if (!string.IsNullOrEmpty(CacheKey)) 
+                {
+                    CacheSchemeMain.RemoveCache(service, CacheKey);
+                }
+                if (!string.IsNullOrEmpty(CacheKeyLike))
+                {
+                    CacheSchemeMain.RemoveCacheByLike(service, CacheKeyLike);
+                }
+            }
+        }
+
     }
 }
