@@ -127,5 +127,39 @@ namespace SqlSugar
             }
             return value;
         }
+        private DataTable GetCopyWriteDataTable(DataTable dt)
+        {
+            DataTable tempDataTable = ReflectionInoCore<DataTable>.GetInstance().GetOrCreate("BulkCopyAsync_dt" + dt.TableName,
+            () =>
+            {
+                if (AsName == null)
+                {
+                    return queryable.Where(it => false).Select("*").ToDataTable();
+                }
+                else
+                {
+                    return queryable.AS(AsName).Where(it => false).Select("*").ToDataTable();
+                }
+            }
+            );
+            var temColumnsList = tempDataTable.Columns.Cast<DataColumn>().Select(it => it.ColumnName.ToLower()).ToList();
+            var columns = dt.Columns.Cast<DataColumn>().Where(it => temColumnsList.Contains(it.ColumnName.ToLower())).ToList();
+            foreach (DataRow item in dt.Rows)
+            {
+                DataRow dr = tempDataTable.NewRow();
+                foreach (DataColumn column in columns)
+                {
+
+                    dr[column.ColumnName] = item[column.ColumnName];
+                    if (dr[column.ColumnName] == null)
+                    {
+                        dr[column.ColumnName] = DBNull.Value;
+                    }
+                }
+                tempDataTable.Rows.Add(dr);
+            }
+            tempDataTable.TableName = dt.TableName;
+            return tempDataTable;
+        }
     }
 }

@@ -20,6 +20,26 @@ namespace SqlSugar
         }
 
         #region BulkCopy
+        public int BulkCopy(string tableName,DataTable dt)
+        {
+            return BulkCopyAsync(tableName,dt).ConfigureAwait(true).GetAwaiter().GetResult();
+        }
+        public async Task<int> BulkCopyAsync(string tableName, DataTable dt)
+        {
+            if (Size > 0)
+            {
+                int resul = 0;
+                await this.context.Utilities.PageEachAsync(dt.Rows.Cast<DataRow>().ToList(), Size, async item =>
+                {
+                    resul += await _BulkCopy(tableName,item.CopyToDataTable());
+                });
+                return resul;
+            }
+            else
+            {
+                return await _BulkCopy(tableName,dt);
+            }
+        }
         public int BulkCopy(List<T> datas)
         {
             return BulkCopyAsync(datas).ConfigureAwait(true).GetAwaiter().GetResult();
@@ -107,10 +127,23 @@ namespace SqlSugar
             End(datas,true);
             return result;
         }
+        private async Task<int> _BulkCopy(string tableName,DataTable dataTable)
+        {
+            var datas =new string[dataTable.Rows.Count].ToList();
+            Begin(datas, true);
+            DataTable dt = dataTable;
+            dt.TableName =this.queryable.SqlBuilder.GetTranslationTableName(tableName);
+            dt = GetCopyWriteDataTable(dt);
+            IFastBuilder buider = GetBuider();
+            buider.Context = context;
+            var result = await buider.ExecuteBulkCopyAsync(dt);
+            End(datas, true);
+            return result;
+        }
         #endregion
 
         #region AOP
-        private void End(List<T> datas,bool isAdd)
+        private void End<Type>(List<Type> datas,bool isAdd)
         {
             var title = isAdd ? "BulkCopy" : "BulkUpdate";
             this.context.Ado.IsEnableLogEvent = isLog;
@@ -120,7 +153,7 @@ namespace SqlSugar
             }
         }
 
-        private void Begin(List<T> datas,bool isAdd)
+        private void Begin<Type>(List<Type> datas,bool isAdd)
         {
             var title = isAdd ? "BulkCopy" : "BulkUpdate";
             isLog = this.context.Ado.IsEnableLogEvent;
