@@ -48,7 +48,11 @@ namespace OrmTest
             db.Updateable<Unit00Z1string1>(x3).WhereColumns(it => it.type).ExecuteCommand();
             var x4 = db.Queryable<Unit00Z1string1>().ToList();
 
-  
+            db.Updateable<Unit00Z1string1>().SetColumns(it => new Unit00Z1string1 {
+                type=UnitType.a,
+                type2 = UnitType.b
+            })
+           .Where(it => true).ExecuteCommand();
         }
         private static void Int()
         {
