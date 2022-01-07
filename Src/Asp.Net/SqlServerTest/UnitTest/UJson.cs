@@ -58,9 +58,18 @@ namespace OrmTest
                  .LeftJoin<SqlSugarSelect.TestModel1>((a, b) => a.Pid == b.Id)
                  .Select((a, b) => new { a, b }).ToList();
             #endregion
+
+            db.CodeFirst.SetStringDefaultLength(2000).InitTables<UnitJsonTestadsga1>();
+            db.Insertable(new UnitJsonTestadsga1() { os = new List<Order>()}).ExecuteCommand();
+            db.Insertable(new UnitJsonTestadsga1() {  os = new List<Order>() { new Order() {  CreateTime=DateTime.Now} } }).ExecuteCommand();
+            var list10= db.Queryable<UnitJsonTestadsga1>().Select(it => new { it }).ToList();
         }
     }
-
+    public class UnitJsonTestadsga1
+    {
+        [SqlSugar.SugarColumn(Length =2000,IsJson =true)]
+        public List<Order>  os{get;set;}
+    }
     public class UnitJsonTest2
     {
         [SqlSugar.SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
