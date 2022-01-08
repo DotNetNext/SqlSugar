@@ -1027,7 +1027,7 @@ namespace SqlSugar
             };
             foreach (var r in strings)
             {
-                if (r.Substring(0, 1) == "@")
+                if (r!=""&&r.Substring(0, 1) == "@")
                 {
                     joinStringParameter.Args.Add(new MethodCallExpressionArgs()
                     {
