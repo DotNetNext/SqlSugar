@@ -930,6 +930,10 @@ namespace SqlSugar
             {
                 return $"strftime('%Y-%m-%d %H:%i:%S', {value})";
             }
+            else if (IsSqlite() && formatString == "yyyy-MM-dd hh:mm:ss")
+            {
+                return $"strftime('%Y-%m-%d %H:%i:%S', {value})";
+            }
             else if (IsSqlite() && formatString == "yyyy-MM")
             {
                 return $"strftime('%Y-%m', {value})";
@@ -963,6 +967,10 @@ namespace SqlSugar
                 return $"DATE_FORMAT({value}, '%Y%m%d')";
             }
             else if (IsMySql() && formatString == "yyyy-MM-dd HH:mm:ss")
+            {
+                return $"DATE_FORMAT({value}, '%Y-%m-%d %H:%i:%S')";
+            }
+            else if (IsMySql() && formatString == "yyyy-MM-dd hh:mm:ss")
             {
                 return $"DATE_FORMAT({value}, '%Y-%m-%d %H:%i:%S')";
             }
