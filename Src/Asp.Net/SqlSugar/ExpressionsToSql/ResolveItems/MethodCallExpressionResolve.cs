@@ -926,6 +926,18 @@ namespace SqlSugar
             {
                 return $"strftime('%Y-%m-%d', {value})";
             }
+            else if (IsSqlite() && formatString == "yyyy-MM")
+            {
+                return $"strftime('%Y-%m', {value})";
+            }
+            else if (IsSqlite() && formatString == "yyyyMM")
+            {
+                return $"strftime('%Y%m', {value})";
+            }
+            else if (IsSqlite() && formatString == "yyyyMMdd")
+            {
+                return $"strftime('%Y%m%d', {value})";
+            }
             else if (IsSqlite() && formatString.Contains("%"))
             {
                 return $"strftime('{formatString}', {value})";
