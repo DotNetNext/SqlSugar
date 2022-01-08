@@ -934,6 +934,18 @@ namespace SqlSugar
             {
                 return $"DATE_FORMAT({value}, '%Y-%m-%d')";
             }
+            else if (IsMySql() && formatString == "yyyy-MM")
+            {
+                return $"DATE_FORMAT({value}, '%Y-%m')";
+            }
+            else if (IsMySql() && formatString == "yyyyMM")
+            {
+                return $"DATE_FORMAT({value}, '%Y%m')";
+            }
+            else if (IsMySql() && formatString == "yyyyMMdd")
+            {
+                return $"DATE_FORMAT({value}, '%Y%m%d')";
+            }
             else if (IsMySql() && formatString.Contains("%"))
             {
                 return $"DATE_FORMAT({value}, '{formatString}')";
