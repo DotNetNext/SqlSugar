@@ -214,7 +214,7 @@ namespace SqlSugar
         internal string GetClassString(DbTableInfo tableInfo, ref string className)
         {
             string classText;
-            var columns = this.Context.DbMaintenance.GetColumnInfosByTableName(tableInfo.Name);
+            var columns = this.Context.DbMaintenance.GetColumnInfosByTableName(tableInfo.Name,false);
             if (this.Context.IgnoreColumns.HasValue())
             {
                 var entityName = this.Context.EntityMaintenance.GetEntityName(tableInfo.Name);

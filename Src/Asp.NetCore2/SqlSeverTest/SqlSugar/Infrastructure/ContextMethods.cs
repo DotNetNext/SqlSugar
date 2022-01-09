@@ -408,14 +408,18 @@ namespace SqlSugar
                             var jsonString = readerValues.First(it => it.Key.EqualCase(key)).Value;
                             if (jsonString != null)
                             {
-                                if (jsonString.ToString().First() == '{'&& jsonString.ToString().Last() == '}')
+                                if (jsonString.ToString().First() == '{' && jsonString.ToString().Last() == '}')
                                 {
                                     result.Add(name, this.DeserializeObject<Dictionary<string, object>>(jsonString + ""));
+                                } 
+                                else if (jsonString.ToString().Replace(" ","")!="[]"&&!jsonString.ToString().Contains("{")&&!jsonString.ToString().Contains("}")) 
+                                {
+                                    result.Add(name, this.DeserializeObject<dynamic>(jsonString + ""));
                                 }
-                                else 
+                                else
                                 {
                                     result.Add(name, this.DeserializeObject<List<Dictionary<string, object>>>(jsonString + ""));
-                                   
+
                                 }
                             }
                         }

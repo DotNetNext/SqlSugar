@@ -395,6 +395,14 @@ namespace SqlSugar
         public override bool CreateTable(string tableName, List<DbColumnInfo> columns, bool isCreatePrimaryKey = true)
         {
             tableName = this.SqlBuilder.GetTranslationTableName(tableName);
+            foreach (var item in columns)
+            {
+                if (item.DataType == "decimal" && item.DecimalDigits == 0 && item.Length == 0)
+                {
+                    item.DecimalDigits = 4;
+                    item.Length = 18;
+                }
+            }
             string sql = GetCreateTableSql(tableName, columns);
             this.Context.Ado.ExecuteCommand(sql);
             if (isCreatePrimaryKey)

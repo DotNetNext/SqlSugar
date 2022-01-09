@@ -926,6 +926,26 @@ namespace SqlSugar
             {
                 return $"strftime('%Y-%m-%d', {value})";
             }
+            else if (IsSqlite() && formatString == "yyyy-MM-dd HH:mm:ss")
+            {
+                return $"strftime('%Y-%m-%d %H:%i:%S', {value})";
+            }
+            else if (IsSqlite() && formatString == "yyyy-MM-dd hh:mm:ss")
+            {
+                return $"strftime('%Y-%m-%d %H:%i:%S', {value})";
+            }
+            else if (IsSqlite() && formatString == "yyyy-MM")
+            {
+                return $"strftime('%Y-%m', {value})";
+            }
+            else if (IsSqlite() && formatString == "yyyyMM")
+            {
+                return $"strftime('%Y%m', {value})";
+            }
+            else if (IsSqlite() && formatString == "yyyyMMdd")
+            {
+                return $"strftime('%Y%m%d', {value})";
+            }
             else if (IsSqlite() && formatString.Contains("%"))
             {
                 return $"strftime('{formatString}', {value})";
@@ -933,6 +953,26 @@ namespace SqlSugar
             else if (IsMySql() && formatString == "yyyy-MM-dd")
             {
                 return $"DATE_FORMAT({value}, '%Y-%m-%d')";
+            }
+            else if (IsMySql() && formatString == "yyyy-MM")
+            {
+                return $"DATE_FORMAT({value}, '%Y-%m')";
+            }
+            else if (IsMySql() && formatString == "yyyyMM")
+            {
+                return $"DATE_FORMAT({value}, '%Y%m')";
+            }
+            else if (IsMySql() && formatString == "yyyyMMdd")
+            {
+                return $"DATE_FORMAT({value}, '%Y%m%d')";
+            }
+            else if (IsMySql() && formatString == "yyyy-MM-dd HH:mm:ss")
+            {
+                return $"DATE_FORMAT({value}, '%Y-%m-%d %H:%i:%S')";
+            }
+            else if (IsMySql() && formatString == "yyyy-MM-dd hh:mm:ss")
+            {
+                return $"DATE_FORMAT({value}, '%Y-%m-%d %H:%i:%S')";
             }
             else if (IsMySql() && formatString.Contains("%"))
             {
@@ -1027,7 +1067,7 @@ namespace SqlSugar
             };
             foreach (var r in strings)
             {
-                if (r.Substring(0, 1) == "@")
+                if (r!=""&&r.Substring(0, 1) == "@")
                 {
                     joinStringParameter.Args.Add(new MethodCallExpressionArgs()
                     {
