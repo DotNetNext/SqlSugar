@@ -318,7 +318,7 @@ namespace SqlSugar
                     bool isIdentity = columns.FirstOrDefault(it => it.DbColumnName.Equals(dataReader.GetString(1),StringComparison.CurrentCultureIgnoreCase)).IsIdentity;
                     DbColumnInfo column = new DbColumnInfo()
                     {
-                        TableName = tableName,
+                        TableName = this.SqlBuilder.GetNoTranslationColumnName(tableName + ""),
                         DataType = type,
                         IsNullable = !dataReader.GetBoolean(3),
                         IsIdentity = isIdentity,
