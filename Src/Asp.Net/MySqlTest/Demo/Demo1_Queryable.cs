@@ -70,7 +70,7 @@ namespace OrmTest
             var db = GetInstance();
             var dbTime = db.GetDate();
             var getAll = db.Queryable<Order>().ToList();
-            var getAll2 = db.Queryable<Order>().Select(it => dbTime.ToString("yyyyMM")).ToList();
+            var getAll2 = db.Queryable<Order>().Where(it=>it.CreateTime.Day>=DateTime.Now.Date.Day).ToList();
             var getOrderBy = db.Queryable<Order>().OrderBy(it => it.Name,OrderByType.Desc).ToList();
             var getOrderBy2 = db.Queryable<Order>().OrderBy(it => it.Id).OrderBy(it => it.Name, OrderByType.Desc).ToList();
             var getOrderBy3 = db.Queryable<Order>().OrderBy(it =>new { it.Name,it.Id}).ToList();
@@ -85,6 +85,7 @@ namespace OrmTest
             var dp = DateTime.Now;
             var test05 = db.Queryable<Order>().Where(it => it.CreateTime.Month == dp.Month).ToList();
             var fromatList = db.Queryable<Order>().Select(it => it.CreateTime.ToString("%Y-%m")).ToList();
+            var test06 = db.Queryable<Order>().Where(it => it.CreateTime.Date.Day >= DateTime.Now.Date.Day).ToList();
             Console.WriteLine("#### Examples End ####");
         }
 
