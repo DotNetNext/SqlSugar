@@ -317,7 +317,7 @@ namespace SqlSugar
                 {
                     DbColumnInfo column = new DbColumnInfo()
                     {
-                        TableName = tableName,
+                        TableName =this.SqlBuilder.GetNoTranslationColumnName(tableName+""),
                         DataType = row["DataTypeName"].ToString().Trim(),
                         IsNullable = (bool)row["AllowDBNull"],
                         IsIdentity = (bool)row["IsAutoIncrement"],

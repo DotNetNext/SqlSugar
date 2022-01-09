@@ -32,6 +32,7 @@ namespace OrmTest
         public static void Init()
         {
             UCustom01.Init();
+            UCustom02.Init();
             Insert();
             CodeFirst();
             Updateable();
