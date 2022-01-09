@@ -32,7 +32,7 @@ namespace OrmTest
                     Price =Convert.ToDecimal(10)
                 }
             };
-
+            db.Insertable(orders).ExecuteCommand();
             var x1 = db.Storageable(orders).WhereColumns(m => m.Price).ToStorage();
             Console.WriteLine("insert:" + x1.InsertList.Count);
             Console.WriteLine("update:" + x1.UpdateList.Count);
