@@ -397,7 +397,7 @@ namespace SqlSugar
             tableName = this.SqlBuilder.GetTranslationTableName(tableName);
             foreach (var item in columns)
             {
-                if (item.DataType == "decimal" && this.Context.CurrentConnectionConfig.DbType == DbType.SqlServer && item.DecimalDigits == 0 && item.Length == 0)
+                if (item.DataType == "decimal" && item.DecimalDigits == 0 && item.Length == 0)
                 {
                     item.DecimalDigits = 4;
                     item.Length = 18;
