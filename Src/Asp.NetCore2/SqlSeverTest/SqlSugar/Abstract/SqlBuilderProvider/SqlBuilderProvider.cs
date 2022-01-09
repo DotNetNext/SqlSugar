@@ -363,9 +363,17 @@ namespace SqlSugar
         private static object GetFieldValue(ConditionalModel item)
         {
             if (item.FieldValueConvertFunc != null)
+            {
                 return item.FieldValueConvertFunc(item.FieldValue);
+            }
+            else if (item.CSharpTypeName.HasValue())
+            {
+                return  UtilMethods.ConvertDataByTypeName(item.CSharpTypeName,item.FieldValue);
+            }
             else
+            {
                 return item.FieldValue;
+            }
         }
         #endregion
 

@@ -205,7 +205,12 @@ namespace SqlSugar
             }
             else if (type.IsIn(typeof(decimal), typeof(double)))
             {
-                return value;
+                Expression<Func<SingleColumnEntity<object>, object>> exp = it => Convert.ToDecimal(it.ColumnName);
+                var result = queryBuilder.GetExpressionValue(exp, ResolveExpressType.WhereSingle).GetResultString();
+                result = Regex.Replace(result, @"\[ColumnName\]", formatBuilder.FormatValue(value) + "", RegexOptions.IgnoreCase);
+                result = Regex.Replace(result, @"\`ColumnName\`", formatBuilder.FormatValue(value) + "", RegexOptions.IgnoreCase);
+                result = Regex.Replace(result, @"""ColumnName""", formatBuilder.FormatValue(value) + "", RegexOptions.IgnoreCase);
+                return result;
             }
             else if (type.IsIn(typeof(DateTime))) 
             {
