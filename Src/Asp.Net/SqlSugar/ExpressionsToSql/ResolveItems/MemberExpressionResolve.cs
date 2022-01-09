@@ -366,6 +366,10 @@ namespace SqlSugar
             else
             {
                 this.Start();
+                if(parameter.CommonTempData!=null&& parameter.CommonTempData is DateTime) 
+                {
+                    parameter.CommonTempData= base.AppendParameter(parameter.CommonTempData);
+                }
                 var result = this.Context.DbMehtods.DateValue(new MethodCallExpressionModel()
                 {
                     Args = new List<MethodCallExpressionArgs>() {
