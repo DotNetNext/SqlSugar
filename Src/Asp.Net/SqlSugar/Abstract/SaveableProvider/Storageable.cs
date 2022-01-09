@@ -221,6 +221,7 @@ namespace SqlSugar
                     {
                         FieldName = item.DbColumnName,
                         ConditionalType = ConditionalType.Equal,
+                        CSharpTypeName=UtilMethods.GetTypeName(value),
                         FieldValue = value + "",
                         FieldValueConvertFunc=this.Context.CurrentConnectionConfig.DbType==DbType.PostgreSQL? 
                                                UtilMethods.GetTypeConvert(value):null

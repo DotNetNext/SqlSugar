@@ -286,6 +286,18 @@ namespace SqlSugar
             return null;
         }
 
+        internal static string GetTypeName(object value)
+        {
+            if (value == null)
+            {
+                return null;
+            }
+            else 
+            {
+                return value.GetType().Name;
+            }
+        }
+
         internal static string GetParenthesesValue(string dbTypeName)
         {
             if (Regex.IsMatch(dbTypeName, @"\(.+\)"))
@@ -437,6 +449,45 @@ namespace SqlSugar
                     dic.Add(key, (T)item);
             }
             return dic;
+        }
+        public static object ConvertDataByTypeName(string ctypename,string value)
+        {
+            var item = new ConditionalModel() {
+                CSharpTypeName = ctypename,
+                FieldValue = value
+            };
+            if (item.CSharpTypeName.EqualCase(UtilConstants.DecType.Name))
+            {
+                return Convert.ToDecimal(item.FieldValue);
+            }
+            else if (item.CSharpTypeName.EqualCase(UtilConstants.DobType.Name))
+            {
+                return Convert.ToDouble(item.FieldValue);
+            }
+            else if (item.CSharpTypeName.EqualCase(UtilConstants.DateType.Name))
+            {
+                return Convert.ToDateTime(item.FieldValue);
+            }
+            else if (item.CSharpTypeName.EqualCase(UtilConstants.IntType.Name))
+            {
+                return Convert.ToInt32(item.FieldValue);
+            }
+            else if (item.CSharpTypeName.EqualCase(UtilConstants.LongType.Name))
+            {
+                return Convert.ToInt64(item.FieldValue);
+            }
+            else if (item.CSharpTypeName.EqualCase(UtilConstants.ShortType.Name))
+            {
+                return Convert.ToInt16(item.FieldValue);
+            }
+            else if (item.CSharpTypeName.EqualCase(UtilConstants.DateTimeOffsetType.Name))
+            {
+                return UtilMethods.GetDateTimeOffsetByDateTime(Convert.ToDateTime(item.FieldValue));
+            }
+            else
+            {
+                return item.FieldValue;
+            }
         }
     }
 }

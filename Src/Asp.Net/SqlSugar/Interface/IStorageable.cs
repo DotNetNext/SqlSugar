@@ -38,10 +38,27 @@ namespace SqlSugar
             var  list = Database.Where(it=>true);
             foreach (var pk in PkFields)
             {
-                list = list.Where(it => it.GetType().GetProperty(pk).GetValue(it, null).ObjToString() == Item.GetType().GetProperty(pk).GetValue(Item, null).ObjToString());
+                list = list.Where(it =>IsEquals(it, pk));
             }
             return list.Any();
         }
+
+        private bool IsEquals(T it, string pk)
+        {
+            var leftValue = it.GetType().GetProperty(pk).GetValue(it, null);
+            var rightValue = Item.GetType().GetProperty(pk).GetValue(Item, null);
+            var left = leftValue.ObjToString();
+            var rigth = rightValue.ObjToString();
+            if (it.GetType().GetProperty(pk).PropertyType == UtilConstants.DecType)
+            {
+                return Convert.ToDecimal(leftValue) == Convert.ToDecimal(rightValue);
+            }
+            else
+            {
+                return left == rigth;
+            }
+        }
+
         public bool NotAny()
         {
             return !Any();
