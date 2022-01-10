@@ -245,24 +245,24 @@ namespace OrmTest
                 UserType = 1
             };
             db.Insertable(data).ExecuteCommand();
-            var role = new SqlSugarDemo.RoleEntity()
-            {
-                 RoleId=Guid.NewGuid(),
-                   ManageAccount= Guid.NewGuid(),
-                  ManageOrg=Guid.NewGuid(),
-                   OrganizationId=Guid.NewGuid(),
-                    UnitPrice=1,
-                     Quantity=1,
-                      RoleName="",
-                       RoleType=1,
-                        SortNum=1
-            };
-            db.Insertable(role).ExecuteCommand();
-            db.Insertable(new SqlSugarDemo.UserRoleEntity()
-            {
-                 RoleId= role.RoleId,
-                 UserId=data.UserId
-            }).ExecuteCommand();
+            //var role = new SqlSugarDemo.RoleEntity()
+            //{
+            //     RoleId=Guid.NewGuid(),
+            //       ManageAccount= Guid.NewGuid(),
+            //      ManageOrg=Guid.NewGuid(),
+            //       OrganizationId=Guid.NewGuid(),
+            //        UnitPrice=1,
+            //         Quantity=1,
+            //          RoleName="",
+            //           RoleType=1,
+            //            SortNum=1
+            //};
+            //db.Insertable(role).ExecuteCommand();
+            //db.Insertable(new SqlSugarDemo.UserRoleEntity()
+            //{
+            //     RoleId= role.RoleId,
+            //     UserId=data.UserId
+            //}).ExecuteCommand();
             var d111111111111 = db.Queryable<SqlSugarDemo.UserEntity>()
               .Mapper<SqlSugarDemo.UserEntity, SqlSugarDemo.RoleEntity, SqlSugarDemo.UserRoleEntity>(it => ManyToMany.Config(it.UserId, it.RoleId)).InSingle(data.UserId);
         }
