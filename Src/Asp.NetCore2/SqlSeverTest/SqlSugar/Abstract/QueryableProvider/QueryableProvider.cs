@@ -243,7 +243,11 @@ namespace SqlSugar
                                                    FieldValue=string.Join(",",mappingList.Select(z=>UtilMethods.GetPropertyValue(z,m_bPropertyName)).Distinct())
                                                   }
                    };
-                   var bList = this.Context.Queryable<BType>().Where(cons).ToList();
+                   List<BType> bList = new List<BType>();
+                   if (mappingList.Any())
+                   {
+                       bList=this.Context.Queryable<BType>().Where(cons).ToList();
+                   }
 
                    //get result
                    Dictionary<object, List<BType>> result = new Dictionary<object, List<BType>>();
