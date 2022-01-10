@@ -216,6 +216,55 @@ namespace OrmTest
             bool? bq = true;
             var d1111111111 = db.Queryable<BoolTest1>().Where(it => it.a.Equals(bq.Value)).ToArray();
             var d11111111111 = db.Queryable<BoolTest1>().Where(it => SqlFunc.IIF(bq.Value,1,2)==1).ToArray();
+
+
+            db.CodeFirst.InitTables<SqlSugarDemo.UserEntity, SqlSugarDemo.RoleEntity, SqlSugarDemo.UserRoleEntity>();
+            var data = new SqlSugarDemo.UserEntity()
+            {
+                CardNo = "",
+                CompanyWX = "",
+                Credential = "",
+                EmailAccount = "",
+                EndDate = DateTime.Now,
+                FailedLoginPwdCount = 1,
+                IsChangePassword = true,
+                IsReal = 1,
+                LastLoginDate = DateTime.Now,
+                ManageAccount = Guid.NewGuid(),
+                ManageOrg = Guid.NewGuid(),
+                NickName = "",
+                PhoneAccount = "",
+                RealName = "",
+                VerificationLoginPwdDate = DateTime.Now,
+                SafePhone = "",
+                Sex = 1,
+                StartDate = DateTime.Now,
+                StopLoginTime = DateTime.Now,
+                UserAccount = "",
+                UserId = Guid.NewGuid(),
+                UserType = 1
+            };
+            db.Insertable(data).ExecuteCommand();
+            var role = new SqlSugarDemo.RoleEntity()
+            {
+                 RoleId=Guid.NewGuid(),
+                   ManageAccount= Guid.NewGuid(),
+                  ManageOrg=Guid.NewGuid(),
+                   OrganizationId=Guid.NewGuid(),
+                    UnitPrice=1,
+                     Quantity=1,
+                      RoleName="",
+                       RoleType=1,
+                        SortNum=1
+            };
+            db.Insertable(role).ExecuteCommand();
+            db.Insertable(new SqlSugarDemo.UserRoleEntity()
+            {
+                 RoleId= role.RoleId,
+                 UserId=data.UserId
+            }).ExecuteCommand();
+            var d111111111111 = db.Queryable<SqlSugarDemo.UserEntity>()
+              .Mapper<SqlSugarDemo.UserEntity, SqlSugarDemo.RoleEntity, SqlSugarDemo.UserRoleEntity>(it => ManyToMany.Config(it.UserId, it.RoleId)).InSingle(data.UserId);
         }
 
 

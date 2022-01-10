@@ -95,7 +95,10 @@
     <Compile Include="Demo\Demo0_SqlSugarClient.cs" />
     <Compile Include="Models\ViewOrder.cs" />
     <Compile Include="UnitTest\Models\Order.cs" />
+    <Compile Include="UnitTest\Models\RoleEntity.cs" />
     <Compile Include="UnitTest\Models\TestModel.cs" />
+    <Compile Include="UnitTest\Models\UserEntity.cs" />
+    <Compile Include="UnitTest\Models\UserRoleEntity.cs" />
     <Compile Include="UnitTest\UCustom01.cs" />
     <Compile Include="UnitTest\UCustom02.cs" />
     <Compile Include="UnitTest\UCustom03.cs" />
