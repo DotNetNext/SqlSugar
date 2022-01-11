@@ -108,7 +108,16 @@ namespace OrmTest
             });
             var list3 = Db.Queryable<UnitBulk23131>().ToList();
             SqlSugar.Check.Exception(list3.First().table == false, "unit error");
- 
+            Db.Fastest<UnitBulk23131>().BulkUpdate(new List<UnitBulk23131> {
+            new UnitBulk23131()
+            {
+                Id = 1,
+                table = false
+            }
+            });
+            list3 = Db.Queryable<UnitBulk23131>().ToList();
+            SqlSugar.Check.Exception(list3.First().table == true, "unit error");
+
             Db.DbMaintenance.TruncateTable<UnitBulk23131>();
             Db.Fastest<UnitBulk23131>().BulkCopy(new List<UnitBulk23131> {
             new UnitBulk23131()
