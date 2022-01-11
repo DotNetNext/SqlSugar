@@ -168,6 +168,10 @@ namespace SqlSugar
                     {
                         sb.Append("\"" + row[colum].ToString().Replace("\"", "\"\"") + "\"");
                     }
+                    else if (colum.DataType == typeof(bool)) 
+                    {
+                        sb.Append(row[colum].ObjToBool() ? 1 : 0);
+                    }
                     else sb.Append(row[colum].ToString());
                 }
                 sb.AppendLine();

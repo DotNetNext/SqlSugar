@@ -76,9 +76,58 @@ namespace OrmTest
             Db.Fastest<UnitTable001>().BulkUpdate(new List<UnitTable001> {
               new UnitTable001(){   Id=1, table="a" }
             });
+
+            Db.CodeFirst.InitTables<UnitBulk23131>();
+            Db.DbMaintenance.TruncateTable<UnitBulk23131>();
+            Db.Fastest<UnitBulk23131>().BulkCopy(new List<UnitBulk23131> {
+            new UnitBulk23131()
+            {
+                Id = 1,
+                table = false
+            }
+            });
+            var list1 = Db.Queryable<UnitBulk23131>().ToList();
+            SqlSugar.Check.Exception(list1.First().table==true, "unit error");
+            Db.Fastest<UnitBulk23131>().BulkUpdate(new List<UnitBulk23131> {
+            new UnitBulk23131()
+            {
+                Id = 1,
+                table = true
+            }
+            });
+            var list2=Db.Queryable<UnitBulk23131>().ToList();
+            SqlSugar.Check.Exception(list2.First().table==false, "unit error");
+
+            Db.DbMaintenance.TruncateTable<UnitBulk23131>();
+            Db.Fastest<UnitBulk23131>().BulkCopy(new List<UnitBulk23131> {
+            new UnitBulk23131()
+            {
+                Id = 1,
+                table = true
+            }
+            });
+            var list3 = Db.Queryable<UnitBulk23131>().ToList();
+            SqlSugar.Check.Exception(list3.First().table == false, "unit error");
+ 
+            Db.DbMaintenance.TruncateTable<UnitBulk23131>();
+            Db.Fastest<UnitBulk23131>().BulkCopy(new List<UnitBulk23131> {
+            new UnitBulk23131()
+            {
+                Id = 1,
+                table = null
+            }
+            });
+            var list4 = Db.Queryable<UnitBulk23131>().ToList();
+            SqlSugar.Check.Exception(list4.First().table==true, "unit error");
         }
     }
-
+    public class UnitBulk23131 
+    {
+        [SqlSugar.SugarColumn(IsPrimaryKey = true)]
+        public int Id { get; set; }
+        [SqlSugar.SugarColumn(ColumnDataType ="tinyint",Length =1,IsNullable =true)]
+        public bool? table { get; set; }
+    }
     public class UnitTable001
     {
         [SqlSugar.SugarColumn(IsPrimaryKey = true)]
