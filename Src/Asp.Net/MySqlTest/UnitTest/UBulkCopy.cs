@@ -136,7 +136,7 @@ namespace OrmTest
             var rootData=Db.Utilities.DeserializeObject<Rootobject>(bulkData1);
             var inserData = rootData.data.ToList();
             var num= Db.Fastest<UnitDatum>().BulkCopy(inserData);
-            SqlSugar.Check.Exception(num!=20,"unit error")
+            SqlSugar.Check.Exception(num != 20, "unit error");
         }
     }
 
