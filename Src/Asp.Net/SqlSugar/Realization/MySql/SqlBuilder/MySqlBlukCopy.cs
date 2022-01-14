@@ -164,7 +164,7 @@ namespace SqlSugar
                 {
                     colum = table.Columns[i];
                     if (i != 0) sb.Append(",");
-                    if (colum.DataType == typeof(string) &&( row[colum].ToString().Contains(",") || row[colum].ToString().Contains("\r")))
+                    if (colum.DataType == typeof(string) &&( row[colum].ToString().Contains(",") || row[colum].ToString().Contains("\r")||row[colum].ToString().Contains("\"")))
                     {
                         sb.Append("\"" + row[colum].ToString().Replace("\"", "\"\"") + "\"");
                     }
