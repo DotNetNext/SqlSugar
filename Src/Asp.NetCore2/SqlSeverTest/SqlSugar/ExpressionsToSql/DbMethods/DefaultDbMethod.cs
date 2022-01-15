@@ -19,7 +19,7 @@ namespace SqlSugar
         public virtual string IsNullOrEmpty(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
-            return string.Format("( {0}='' OR {0} IS NULL )", parameter.MemberName);
+            return string.Format("( {0} IS NULL   OR {0}='')", parameter.MemberName);
         }
 
         public virtual string HasValue(MethodCallExpressionModel model)
