@@ -68,6 +68,9 @@ namespace OrmTest
 
 
             db.Updateable<Order>().SetColumns(it=>it.Name=="asdfa").Where(it=>it.Id==1).EnableDiffLogEvent("--update Order--").ExecuteCommand();
+
+            db.Updateable<Order>().SetColumns(it => it.Name == "asdfa")
+                .Where(it =>SqlFunc.Subqueryable<Order>().Where(x=>x.Id==it.Id).Any()).EnableDiffLogEvent("--update Order--").ExecuteCommand();
             Console.WriteLine("#### Aop End ####");
         }
     }
