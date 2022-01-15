@@ -102,6 +102,21 @@ namespace OrmTest
                 a = string.IsNullOrEmpty(it.Name)
             }).ToList();
 
+            var blist4 = Db.Queryable<BoolTest3>().Select(it => new BoolTest3()
+            {
+                a = SqlFunc.IIF(it.a == true, true, false)
+            }).ToList();
+
+
+            var blist5 = Db.Queryable<BoolTest3>().Select(it => new BoolTest3()
+            {
+                a = SqlFunc.IF(it.a == true).Return(true).End(false)
+            }).ToList();
+
+            var blist6 = Db.Queryable<BoolTest3>().Select(it => new BoolTest3()
+            {
+                a =it.a==true?true:false
+            }).ToList();
             var db = Db;
             db.CodeFirst.InitTables<UserInfo, UserIpRuleInfo>();
             db.Deleteable<UserInfo>().ExecuteCommand();
