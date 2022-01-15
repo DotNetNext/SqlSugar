@@ -117,6 +117,11 @@ namespace OrmTest
             {
                 a =it.a==true?true:false
             }).ToList();
+
+            var blist7 = Db.Queryable<BoolTest3>().Select(it => new BoolTest3()
+            {
+                a = SqlFunc.Subqueryable<Order>().Any()
+            }).ToList();
             var db = Db;
             db.CodeFirst.InitTables<UserInfo, UserIpRuleInfo>();
             db.Deleteable<UserInfo>().ExecuteCommand();
