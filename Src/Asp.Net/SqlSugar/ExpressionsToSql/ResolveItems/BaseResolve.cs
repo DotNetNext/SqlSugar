@@ -483,7 +483,7 @@ namespace SqlSugar
                     }
                 }
             }
-            else if (item.Type == UtilConstants.BoolType && item is MethodCallExpression && (item as MethodCallExpression).Method.Name == "Any"&&IsSubMethod(item as MethodCallExpression))
+            else if (item.Type == UtilConstants.BoolType && item is MethodCallExpression)
             {
                 this.Expression = item;
                 this.Start();
