@@ -13,10 +13,10 @@ namespace  OrmTest
         {
             var db = NewUnitTest.Db;
             db.DbMaintenance.CreateDatabase();
-            db.DbMaintenance.TruncateTable<UBulkCopydsafad1>();
             db.Aop.OnLogExecuting = null;
             db.CodeFirst.InitTables<UBulkCopydsafad1>();
             var list = new List<UBulkCopydsafad1>();
+           db.DbMaintenance.TruncateTable<UBulkCopydsafad1>();
             for (int i = 0; i < 100000; i++)
             {
                 list.Add(new UBulkCopydsafad1() { name = "a", name1 = "x" + i, name2 = "a" });
@@ -26,7 +26,7 @@ namespace  OrmTest
             var list2 = db.Queryable<UBulkCopydsafad1>().ToList();
             db.Fastest<UBulkCopydsafad1>().BulkCopy(list);
             var list3 = db.Queryable<UBulkCopydsafad1>().ToList();
-            var  updateRows= db.Fastest<UBulkCopydsafad1>().BulkUpdate(list3);
+            var row= db.Fastest<UBulkCopydsafad1>().BulkUpdate(list3);
             //db.CommitTran();
         }
         public class UBulkCopydsafad1
