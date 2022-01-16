@@ -81,6 +81,7 @@ namespace SqlSugar
                         cmd.Parameters.AddWithValue("@" + item.ColumnName, dataRow[item.ColumnName]);
                     }
                     i += await cmd.ExecuteNonQueryAsync();
+                    cmd.Parameters.Clear();
                 }
             }
             return i;
@@ -101,6 +102,7 @@ namespace SqlSugar
                         cmd.Parameters.AddWithValue("@" + item.ColumnName, dataRow[item.ColumnName]);
                     }
                     i += await cmd.ExecuteNonQueryAsync();
+                    cmd.Parameters.Clear();
                 }
             }
             return i;
