@@ -174,6 +174,11 @@ namespace SqlSugar
         }
         public virtual object FormatValue(object value)
         {
+            var N = "N";
+            if (this.Context.CurrentConnectionConfig.DbType == DbType.Sqlite) 
+            {
+                N = "";
+            }
             if (value == null)
             {
                 return "NULL";
@@ -212,7 +217,7 @@ namespace SqlSugar
                 }
                 else if (type == UtilConstants.StringType || type == UtilConstants.ObjType)
                 {
-                    return "N'" + value.ToString().ToSqlFilter() + "'";
+                    return N+"'" + value.ToString().ToSqlFilter() + "'";
                 }
                 else if (type == UtilConstants.DateTimeOffsetType)
                 {
@@ -221,11 +226,11 @@ namespace SqlSugar
                 }
                 else if (type == UtilConstants.FloatType) 
                 {
-                    return "N'" +Convert.ToDouble(value).ToString() + "'";
+                    return N+"'" +Convert.ToDouble(value).ToString() + "'";
                 }
                 else
                 {
-                    return "N'" + value.ToString() + "'";
+                    return N+"'" + value.ToString() + "'";
                 }
             }
         }

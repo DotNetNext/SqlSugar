@@ -18,7 +18,7 @@ namespace SqlSugar
                 case DbType.SqlServer:
                     return new SqlServerFastBuilder();
                 case DbType.Sqlite:
-                    break;
+                    return new SqliteFastBuilder(this.entityInfo);
                 case DbType.Oracle:
                     return new OracleFastBuilder(this.entityInfo);
                 case DbType.PostgreSQL:

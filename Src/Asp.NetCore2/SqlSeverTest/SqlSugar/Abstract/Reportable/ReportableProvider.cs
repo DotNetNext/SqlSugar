@@ -206,19 +206,28 @@ namespace SqlSugar
             else if (type.IsIn(typeof(decimal), typeof(double)))
             {
                 Expression<Func<SingleColumnEntity<object>, object>> exp = it => Convert.ToDecimal(it.ColumnName);
-                var result = queryBuilder.GetExpressionValue(exp, ResolveExpressType.WhereSingle).GetResultString();
-                result = Regex.Replace(result, @"\[ColumnName\]", formatBuilder.FormatValue(value) + "", RegexOptions.IgnoreCase);
-                result = Regex.Replace(result, @"\`ColumnName\`", formatBuilder.FormatValue(value) + "", RegexOptions.IgnoreCase);
-                result = Regex.Replace(result, @"""ColumnName""", formatBuilder.FormatValue(value) + "", RegexOptions.IgnoreCase);
+                var result = queryBuilder.LambdaExpressions.DbMehtods.ToDecimal(new MethodCallExpressionModel() {
+                 Args=new List<MethodCallExpressionArgs>() { 
+                  new MethodCallExpressionArgs(){ 
+                   IsMember=true,
+                   MemberName= formatBuilder.FormatValue(value) 
+                  }
+                 }
+                });
                 return result;
             }
             else if (type.IsIn(typeof(DateTime))) 
             {
-                Expression<Func<SingleColumnEntity<object>, object>> exp= it => Convert.ToDateTime(it.ColumnName);
-                var result= queryBuilder.GetExpressionValue(exp,ResolveExpressType.WhereSingle).GetResultString();
-                result = Regex.Replace(result, @"\[ColumnName\]", formatBuilder.FormatValue(value)+"",RegexOptions.IgnoreCase);
-                result = Regex.Replace(result, @"\`ColumnName\`", formatBuilder.FormatValue(value) + "", RegexOptions.IgnoreCase);
-                result = Regex.Replace(result, @"""ColumnName""", formatBuilder.FormatValue(value) + "", RegexOptions.IgnoreCase);
+                Expression<Func<SingleColumnEntity<object>, object>> exp = it => Convert.ToDecimal(it.ColumnName);
+                var result = queryBuilder.LambdaExpressions.DbMehtods.ToDate(new MethodCallExpressionModel()
+                {
+                    Args = new List<MethodCallExpressionArgs>() {
+                  new MethodCallExpressionArgs(){
+                   IsMember=true,
+                   MemberName= formatBuilder.FormatValue(value)
+                  }
+                 }
+                });
                 return result;
             }
             else

@@ -133,7 +133,10 @@ namespace SqlSugar
             await buider.ExecuteBulkCopyAsync(dt);
             //var queryTemp = this.context.Queryable<T>().AS(dt.TableName).ToList();//test
             var result = await buider.UpdateByTempAsync(GetTableName(), dt.TableName, updateColumns, whereColumns);
-            this.context.DbMaintenance.DropTable(dt.TableName);
+            if (this.context.CurrentConnectionConfig.DbType != DbType.Sqlite)
+            {
+                this.context.DbMaintenance.DropTable(dt.TableName);
+            }
             this.context.CurrentConnectionConfig.IsAutoCloseConnection = isAuto;
             buider.CloseDb();
             End(datas, false);
