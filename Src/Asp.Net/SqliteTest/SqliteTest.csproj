@@ -81,6 +81,7 @@
     <Compile Include="UnitTest\Models\Export.cs" />
     <Compile Include="UnitTest\Models\ExToCon.cs" />
     <Compile Include="UnitTest\Models\LoadCon.cs" />
+    <Compile Include="UnitTest\UBulkCopy2.cs" />
     <Compile Include="UnitTest\UAdo.cs" />
     <Compile Include="UnitTest\UBulkCopy.cs" />
     <Compile Include="UnitTest\UCodeFirst.cs" />

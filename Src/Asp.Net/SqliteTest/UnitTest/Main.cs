@@ -33,6 +33,7 @@ namespace OrmTest
         {
             
             UBulkCopy.Init();
+            Bulk();
             Insert();
             CodeFirst();
             Updateable();
