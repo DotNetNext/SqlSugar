@@ -104,6 +104,7 @@
     <Compile Include="OnlyNet\OracleFastBuilder.cs" />
     <Compile Include="Realization\MySql\SqlBuilder\MySqlFastBuilder.cs" />
     <Compile Include="Realization\PostgreSQL\SqlBuilder\PostgreSQLFastBuilder.cs" />
+    <Compile Include="Realization\Sqlite\SqlBuilder\SqliteFastBuilder.cs" />
     <Compile Include="Realization\SqlServer\SqlBuilder\SqlServerFastBuilder.cs" />
     <Compile Include="SpliteTable\SplitTableAttribute.cs" />
     <Compile Include="Abstract\InsertableProvider\InsertableProvider.cs" />

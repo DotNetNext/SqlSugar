@@ -31,8 +31,8 @@ namespace OrmTest
         }
         public static void Init()
         {
-            UCustom01.Init();
-            UCustom02.Init();
+            
+            UBulkCopy.Init();
             Insert();
             CodeFirst();
             Updateable();
