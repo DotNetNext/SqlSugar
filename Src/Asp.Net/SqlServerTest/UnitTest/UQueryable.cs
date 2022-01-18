@@ -216,7 +216,7 @@ namespace OrmTest
             bool? bq = true;
             var d1111111111 = db.Queryable<BoolTest1>().Where(it => it.a.Equals(bq.Value)).ToArray();
             var d11111111111 = db.Queryable<BoolTest1>().Where(it => SqlFunc.IIF(bq.Value,1,2)==1).ToArray();
-
+            var d111111111111 = db.Queryable<BoolTest1>().Select(it =>new { x = SqlFunc.IsNull(it.a,false) }).ToArray();
 
             db.CodeFirst.InitTables<SqlSugarDemo.UserEntity, SqlSugarDemo.RoleEntity, SqlSugarDemo.UserRoleEntity>();
             var data = new SqlSugarDemo.UserEntity()
@@ -263,7 +263,7 @@ namespace OrmTest
             //     RoleId= role.RoleId,
             //     UserId=data.UserId
             //}).ExecuteCommand();
-            var d111111111111 = db.Queryable<SqlSugarDemo.UserEntity>()
+            var d1111111111111 = db.Queryable<SqlSugarDemo.UserEntity>()
               .Mapper<SqlSugarDemo.UserEntity, SqlSugarDemo.RoleEntity, SqlSugarDemo.UserRoleEntity>(it => ManyToMany.Config(it.UserId, it.RoleId)).InSingle(data.UserId);
         }
 

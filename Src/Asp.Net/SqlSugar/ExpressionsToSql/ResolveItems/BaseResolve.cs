@@ -524,6 +524,10 @@ namespace SqlSugar
             {
                 return false;
             }
+            else if ((item as MethodCallExpression).Method.Name == "IsNull")
+            {
+                return false;
+            }
             else if ((item as MethodCallExpression).Method.Name == "End"&&item.ToString().Contains("IF("))
             {
                 return false;
