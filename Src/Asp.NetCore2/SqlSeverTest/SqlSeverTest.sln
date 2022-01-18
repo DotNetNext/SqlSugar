@@ -23,7 +23,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KdbndpTest", "KdbndpTest\Kd
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CacheTest", "CacheTest\CacheTest.csproj", "{2EC6C9BD-6B8F-4EC3-B4ED-EAEFD8BB735C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OscarTest", "OscarTest\OscarTest.csproj", "{29925F8E-6495-463A-ABBD-C050AE85E130}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OscarTest", "OscarTest\OscarTest.csproj", "{29925F8E-6495-463A-ABBD-C050AE85E130}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbFirstRazorTest", "DbFirstRazorTest\DbFirstRazorTest.csproj", "{EE197EB0-C494-4478-A5CD-545E7139202E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -75,6 +77,10 @@ Global
 		{29925F8E-6495-463A-ABBD-C050AE85E130}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{29925F8E-6495-463A-ABBD-C050AE85E130}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{29925F8E-6495-463A-ABBD-C050AE85E130}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE197EB0-C494-4478-A5CD-545E7139202E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE197EB0-C494-4478-A5CD-545E7139202E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE197EB0-C494-4478-A5CD-545E7139202E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE197EB0-C494-4478-A5CD-545E7139202E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
