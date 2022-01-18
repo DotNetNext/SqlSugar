@@ -196,5 +196,11 @@ namespace SqlSugar
         {
             return string.Format("instr ({0},{1},1,1) ", model.Args[0].MemberName, model.Args[1].MemberName);
         }
+
+        public override string ToDecimal(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            return string.Format(" CAST({0} AS decimal(18,4))", parameter.MemberName);
+        }
     }
 }
