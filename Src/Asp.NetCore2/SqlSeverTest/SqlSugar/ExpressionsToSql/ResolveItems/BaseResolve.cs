@@ -524,6 +524,10 @@ namespace SqlSugar
             {
                 return false;
             }
+            else if ((item as MethodCallExpression).Method.Name == "IsNull")
+            {
+                return false;
+            }
             else if ((item as MethodCallExpression).Method.Name == "End"&&item.ToString().Contains("IF("))
             {
                 return false;
@@ -621,7 +625,14 @@ namespace SqlSugar
             {
                 dbColumnName = mappingInfo.DbColumnName;
             }
-            asName = this.Context.GetTranslationText(shortName+"."+item.Type.Name + "." + propertyName);
+            if (shortName != null && shortName.ObjToString().Contains(this.Context.SqlTranslationLeft)&&this.Context.IsSingle)
+            {
+                asName = this.Context.GetTranslationText(item.Type.Name + "." + propertyName);
+            }
+            else
+            {
+                asName = this.Context.GetTranslationText(shortName + "." + item.Type.Name + "." + propertyName);
+            }
             if (Context.IsJoin)
             {
                 this.Context.Result.Append(Context.GetAsString(asName, dbColumnName, shortName.ObjToString()));
