@@ -621,7 +621,7 @@ namespace SqlSugar
             {
                 dbColumnName = mappingInfo.DbColumnName;
             }
-            if (shortName != null && shortName.ObjToString().Contains(this.Context.SqlTranslationLeft))
+            if (shortName != null && shortName.ObjToString().Contains(this.Context.SqlTranslationLeft)&&this.Context.IsSingle)
             {
                 asName = this.Context.GetTranslationText(item.Type.Name + "." + propertyName);
             }

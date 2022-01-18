@@ -22,7 +22,7 @@ namespace OrmTest
                 Job = new UnitJobClass { Company = a.Company, Work = a.Work }
             }
             ).ToList();
-
+            Check.Exception(list.First().Job.Company != "1", "unit error");
 
         }
         public class Unit06 
