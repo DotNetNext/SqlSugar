@@ -36,6 +36,7 @@ namespace OrmTest
             UCustom03.Init();
             UCustom04.Init();
             UCustom05.Init();
+            UCustom06.Init();
             SubQueryTest();
             UConfig();
             DeleteTest();

@@ -436,10 +436,15 @@ namespace SqlSugar
                 {
                     var key = typeName + "." + name;
                     var info = readerValues.Select(it => it.Key).FirstOrDefault(it => it.ToLower() == key.ToLower());
+                    var oldInfo = info;
                     if (mappingKeys!=null&&mappingKeys.ContainsKey(item.Name)) 
                     {
                         key = mappingKeys[item.Name]+"."+typeName + "." + name;
                         info = readerValues.Select(it => it.Key).FirstOrDefault(it => it.ToLower() == key.ToLower());
+                    }
+                    if (info == null&&oldInfo!=null) 
+                    {
+                        info = oldInfo;
                     }
                     if (info != null)
                     {
