@@ -829,7 +829,7 @@ namespace SqlSugar
         }
         public virtual bool Any()
         {
-            return this.Select("1").First()!=null;
+            return this.Select("1").ToList().Count() > 0;
         }
 
         public virtual ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, TResult>> expression)
