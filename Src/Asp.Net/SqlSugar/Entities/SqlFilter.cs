@@ -39,7 +39,8 @@ namespace SqlSugar
         {
             exp = expression;
             type = entityType;
-            IsJoinQuery = isJoinOn;
+            base.IsJoinQuery = isJoinOn;
+            this.IsJoinQuery = isJoinOn;
         }
 
         private new  string FilterName { get; set; }
