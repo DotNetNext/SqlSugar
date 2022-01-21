@@ -23,8 +23,9 @@ namespace OrmTest
         {
             var db = GetInstance();
             //Order add filter  
-            db.QueryFilter.Add(new TableFilterItem<Order>(it => it.Name.Contains("a")));
+            db.QueryFilter.Add(new TableFilterItem<Order>(it => it.Name.Contains("a"),true));
 
+            db.Queryable<Order>().ToList();
 
             db.Queryable<Order>().ToList();
             //SELECT [Id],[Name],[Price],[CreateTime],[CustomId] FROM [Order]  WHERE  ([Name] like '%'+@MethodConst0+'%') 
@@ -40,6 +41,8 @@ namespace OrmTest
             //no filter
             db.Queryable<Order>().Filter(null, false).ToList();
             //SELECT [Id],[Name],[Price],[CreateTime],[CustomId] FROM [Order]
+
+            db.Queryable<OrderItem>().LeftJoin<Order>((x, y) => x.ItemId == y.Id).ToList();
         }
 
 

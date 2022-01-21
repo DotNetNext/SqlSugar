@@ -384,7 +384,24 @@ namespace SqlSugar
                 sql = GetSql(exp, isSingle);
                 sql = sql.Replace(itName, shortName);
             }
-            WhereInfos.Add(sql);
+            if (item.IsJoinQuery == false||isMain||isSingle|| isEasyJoin)
+            {
+                WhereInfos.Add(sql);
+            }
+            else 
+            {
+                foreach (var joinInfo in this.JoinQueryInfos)
+                {
+                    if (joinInfo.TableName.EqualCase(entityInfo.EntityName)|| joinInfo.TableName.EqualCase(entityInfo.DbTableName)) 
+                    {
+                        if (sql.StartsWith(" WHERE ")) 
+                        {
+                            sql = Regex.Replace(sql, $"^ WHERE ", " AND ");
+                        }
+                        joinInfo.JoinWhere=joinInfo.JoinWhere + sql;
+                    }
+                }
+            }
         }
 
         private string GetSql(Expression exp, bool isSingle)

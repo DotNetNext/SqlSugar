@@ -27,16 +27,19 @@ namespace SqlSugar
         }
         private Expression exp { get; set; }
         private Type type { get; set; }
-        public TableFilterItem(Expression<Func<T,bool>> expression)
+        public TableFilterItem(Expression<Func<T,bool>> expression,bool isJoinOn=false)
         {
             exp = expression;
             type = typeof(T);
+            base.IsJoinQuery = isJoinOn;
+            this.IsJoinQuery = isJoinOn;
         }
 
-        public TableFilterItem(Type entityType,Expression expression)
+        public TableFilterItem(Type entityType,Expression expression, bool isJoinOn=false)
         {
             exp = expression;
             type = entityType;
+            IsJoinQuery = isJoinOn;
         }
 
         private new  string FilterName { get; set; }
