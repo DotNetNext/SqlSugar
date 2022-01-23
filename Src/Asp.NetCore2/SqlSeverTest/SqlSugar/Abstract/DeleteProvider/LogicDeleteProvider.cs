@@ -10,27 +10,42 @@ namespace SqlSugar
     {
         public DeleteableProvider<T> Deleteable { get; set; }
         public DeleteBuilder DeleteBuilder { get; set; }
-
-        public int ExecuteCommand(string LogicFieldName = null)
+        public int ExecuteCommand(string LogicFieldName = null,object deleteValue=null,string deleteTimeFieldName = null)
         {
             ISqlSugarClient db;
             List<SugarParameter> pars;
             string where;
             LogicFieldName = _ExecuteCommand(LogicFieldName, out db, out where, out pars);
-            var updateable = db.Updateable<T>().SetColumns(LogicFieldName,true);
+            if (deleteValue == null) 
+            {
+                deleteValue = true;
+            }
+            var updateable = db.Updateable<T>().SetColumns(LogicFieldName, deleteValue);
+            if (deleteTimeFieldName != null)
+            {
+                updateable.SetColumns(deleteTimeFieldName, DateTime.Now);
+            }
             if (pars != null)
                 updateable.UpdateBuilder.Parameters.AddRange(pars);
             Convert(updateable as UpdateableProvider<T>);
             var result = updateable.Where(where).ExecuteCommand();
             return result;
         }
-        public async Task<int> ExecuteCommandAsync(string LogicFieldName = null)
+        public async Task<int> ExecuteCommandAsync(string LogicFieldName = null, object deleteValue = null, string deleteTimeFieldName = null)
         {
             ISqlSugarClient db;
             List<SugarParameter> pars;
             string where;
             LogicFieldName = _ExecuteCommand(LogicFieldName, out db, out where, out pars);
-            var updateable = db.Updateable<T>().SetColumns(LogicFieldName, true);
+            if (deleteValue == null)
+            {
+                deleteValue = true;
+            }
+            var updateable = db.Updateable<T>().SetColumns(LogicFieldName, deleteValue);
+            if (deleteTimeFieldName != null)
+            {
+                updateable.SetColumns(deleteTimeFieldName, DateTime.Now);
+            }
             if (pars != null)
                 updateable.UpdateBuilder.Parameters.AddRange(pars);
             Convert(updateable as UpdateableProvider<T>);
