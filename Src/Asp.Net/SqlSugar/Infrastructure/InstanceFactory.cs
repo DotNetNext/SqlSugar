@@ -33,18 +33,6 @@ namespace SqlSugar
             {
                 return new PostgreSQLQueryable<T>();
             } 
-            else if (currentConnectionConfig.DbType == DbType.MySqlConnector) 
-            {
-                return CustomProvider.GetQueryable<T>("MySql", "SqlSugar.MySqlConnector");
-            }
-            else if (currentConnectionConfig.DbType == DbType.Access)
-            {
-                return CustomProvider.GetQueryable<T>("MySql", "SqlSugar.Access");
-            }
-            else if (currentConnectionConfig.DbType == DbType.Custom)
-            {
-                return CustomProvider.GetQueryable<T>("DbType.Custom", "DbType.Custom");
-            }
             else
             {
                 string className = "Queryable";
