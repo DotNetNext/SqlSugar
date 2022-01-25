@@ -14,7 +14,16 @@ namespace SqlSugar
             var noFormat = table.Split(']').Length==1;
             if (tableArray.Length > 1 && noFormat)
             {
-                return tableArray.Last();
+                var dbMain = new SqlServerDbMaintenance() { Context = this.Context };
+                var schmes = dbMain.GetSchemas();
+                if (!schmes.Any(it => it.EqualCase(tableArray.First())))
+                {
+                    return tableArray.Last();
+                }
+                else 
+                {
+                    return dbMain.SqlBuilder.GetTranslationTableName(table);
+                }
             }
             else
             {

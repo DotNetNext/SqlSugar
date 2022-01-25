@@ -313,6 +313,58 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public List<string> GetSchemas()
+        {
+            return this.Context.Ado.SqlQuery<string>("SELECT name FROM  sys.schemas where name <> 'dbo'");
+        }
+        public override bool DeleteTableRemark(string tableName)
+        {
+            string sql = string.Format(this.DeleteTableRemarkSql, tableName);
+            if (tableName.Contains("."))
+            {
+                var schemas = GetSchemas();
+                var tableSchemas = this.SqlBuilder.GetNoTranslationColumnName(tableName.Split('.').First());
+                if (schemas.Any(y => y.EqualCase(tableSchemas)))
+                {
+                    sql = string.Format(this.DeleteTableRemarkSql, this.SqlBuilder.GetNoTranslationColumnName(tableName.Split('.').Last()));
+                    sql = sql.Replace(",dbo,", $",{tableSchemas},").Replace("'user'", "'SCHEMA'");
+                }
+            }
+            this.Context.Ado.ExecuteCommand(sql);
+            return true;
+        }
+        public override bool IsAnyTableRemark(string tableName)
+        {
+            string sql = string.Format(this.IsAnyTableRemarkSql, tableName);
+            if (tableName.Contains("."))
+            {
+                var schemas = GetSchemas();
+                var tableSchemas = this.SqlBuilder.GetNoTranslationColumnName(tableName.Split('.').First());
+                if (schemas.Any(y => y.EqualCase(tableSchemas)))
+                {
+                    sql = string.Format(this.IsAnyTableRemarkSql, this.SqlBuilder.GetNoTranslationColumnName(tableName.Split('.').Last()));
+                    sql = sql.Replace("'dbo'", $"'{tableSchemas}'");
+                }
+            }
+            var dt = this.Context.Ado.GetDataTable(sql);
+            return dt.Rows != null && dt.Rows.Count > 0;
+        }
+        public override bool AddTableRemark(string tableName, string description)
+        {
+            string sql = string.Format(this.AddTableRemarkSql, tableName, description);
+            if (tableName.Contains(".")) 
+            {
+                var schemas = GetSchemas();
+                var tableSchemas =this.SqlBuilder.GetNoTranslationColumnName(tableName.Split('.').First());
+                if (schemas.Any(y => y.EqualCase(tableSchemas))) 
+                {
+                    sql = string.Format(this.AddTableRemarkSql, this.SqlBuilder.GetNoTranslationColumnName(tableName.Split('.').Last()), description);
+                    sql = sql.Replace("N'dbo'", $"N'{tableSchemas}'").Replace("N'user'", "N'SCHEMA'");
+                }
+            }
+            this.Context.Ado.ExecuteCommand(sql);
+            return true;
+        }
         public override bool AddDefaultValue(string tableName, string columnName, string defaultValue)
         {
             if (defaultValue == "''")
