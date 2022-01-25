@@ -25,13 +25,25 @@ namespace SqlSugar
             {
                 return new SqlServerQueryable<T>();
             }
-            else  if (currentConnectionConfig.DbType == DbType.MySql)
+            else if (currentConnectionConfig.DbType == DbType.MySql)
             {
                 return new MySqlQueryable<T>();
             }
             else if (currentConnectionConfig.DbType == DbType.PostgreSQL)
             {
                 return new PostgreSQLQueryable<T>();
+            } 
+            else if (currentConnectionConfig.DbType == DbType.MySqlConnector) 
+            {
+                return CustomProvider.GetQueryable<T>("MySql", "SqlSugar.MySqlConnector");
+            }
+            else if (currentConnectionConfig.DbType == DbType.Access)
+            {
+                return CustomProvider.GetQueryable<T>("MySql", "SqlSugar.Access");
+            }
+            else if (currentConnectionConfig.DbType == DbType.Custom)
+            {
+                return CustomProvider.GetQueryable<T>("DbType.Custom", "DbType.Custom");
             }
             else
             {
