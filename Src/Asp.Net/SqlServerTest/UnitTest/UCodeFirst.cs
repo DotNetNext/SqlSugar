@@ -37,6 +37,20 @@ namespace OrmTest
             Db.Insertable(new List<UnitDateOfTime2> { new UnitDateOfTime2() { DateTimeOffset1 = DateTimeOffset.Now }, new UnitDateOfTime2() { DateTimeOffset1 = DateTimeOffset.Now } }).ExecuteCommand();
             var list2 = Db.Queryable<UnitDateOfTime2>().ToList();
 
+            try
+            {
+                Db.Ado.ExecuteCommand(@" create schema abp");
+            }
+            catch  
+            { 
+            }
+            db.CodeFirst.InitTables<UnitTableName>();
+
+        }
+        [SugarTable("abp.UnitTableName","备注")]
+        public class UnitTableName 
+        {
+            public string Id { get; set; }
         }
 
         public class UnitDateOfTime2
