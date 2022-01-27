@@ -336,7 +336,7 @@ namespace SqlSugar
                     sql = FormatSql(sql);
                 SetConnectionStart(sql);
                 if (this.ProcessingEventStartingSQL != null)
-                    ExecuteProcessingSQL(ref sql, parameters);
+                    ExecuteProcessingSQL(ref sql, ref parameters);
                 ExecuteBefore(sql, parameters);
                 IDbCommand sqlCommand = GetCommand(sql, parameters);
                 int count = sqlCommand.ExecuteNonQuery();
@@ -369,7 +369,7 @@ namespace SqlSugar
                 SetConnectionStart(sql);
                 var isSp = this.CommandType == CommandType.StoredProcedure;
                 if (this.ProcessingEventStartingSQL != null)
-                    ExecuteProcessingSQL(ref sql, parameters);
+                    ExecuteProcessingSQL(ref sql, ref parameters);
                 ExecuteBefore(sql, parameters);
                 IDbCommand sqlCommand = GetCommand(sql, parameters);
                 IDataReader sqlDataReader = sqlCommand.ExecuteReader(this.IsAutoClose() ? CommandBehavior.CloseConnection : CommandBehavior.Default);
@@ -400,7 +400,7 @@ namespace SqlSugar
                     sql = FormatSql(sql);
                 SetConnectionStart(sql);
                 if (this.ProcessingEventStartingSQL != null)
-                    ExecuteProcessingSQL(ref sql, parameters);
+                    ExecuteProcessingSQL(ref sql, ref parameters);
                 ExecuteBefore(sql, parameters);
                 IDataAdapter dataAdapter = this.GetAdapter();
                 DbCommand sqlCommand = GetCommand(sql, parameters);
@@ -435,7 +435,7 @@ namespace SqlSugar
                     sql = FormatSql(sql);
                 SetConnectionStart(sql);
                 if (this.ProcessingEventStartingSQL != null)
-                    ExecuteProcessingSQL(ref sql, parameters);
+                    ExecuteProcessingSQL(ref sql, ref parameters);
                 ExecuteBefore(sql, parameters);
                 IDbCommand sqlCommand = GetCommand(sql, parameters);
                 object scalar = sqlCommand.ExecuteScalar();
@@ -470,7 +470,7 @@ namespace SqlSugar
                     sql = FormatSql(sql);
                 SetConnectionStart(sql);
                 if (this.ProcessingEventStartingSQL != null)
-                    ExecuteProcessingSQL(ref sql, parameters);
+                    ExecuteProcessingSQL(ref sql, ref parameters);
                 ExecuteBefore(sql, parameters);
                 var sqlCommand = GetCommand(sql, parameters);
                 int count;
@@ -508,7 +508,7 @@ namespace SqlSugar
                 SetConnectionStart(sql);
                 var isSp = this.CommandType == CommandType.StoredProcedure;
                 if (this.ProcessingEventStartingSQL != null)
-                    ExecuteProcessingSQL(ref sql, parameters);
+                    ExecuteProcessingSQL(ref sql, ref parameters);
                 ExecuteBefore(sql, parameters);
                 var sqlCommand = GetCommand(sql, parameters);
                 DbDataReader sqlDataReader;
@@ -544,7 +544,7 @@ namespace SqlSugar
                     sql = FormatSql(sql);
                 SetConnectionStart(sql);
                 if (this.ProcessingEventStartingSQL != null)
-                    ExecuteProcessingSQL(ref sql, parameters);
+                    ExecuteProcessingSQL(ref sql, ref parameters);
                 ExecuteBefore(sql, parameters);
                 var sqlCommand = GetCommand(sql, parameters);
                 object scalar;
@@ -1272,12 +1272,13 @@ namespace SqlSugar
             }
         }
 
-        private void ExecuteProcessingSQL(ref string sql, SugarParameter[] parameters)
+        private void ExecuteProcessingSQL(ref string sql, ref SugarParameter[] parameters)
         {
             var result = this.ProcessingEventStartingSQL(sql, parameters);
             sql = result.Key;
             parameters = result.Value;
         }
+
         public virtual void ExecuteBefore(string sql, SugarParameter[] parameters)
         {
             //if (this.Context.CurrentConnectionConfig.Debugger != null && this.Context.CurrentConnectionConfig.Debugger.EnableThreadSecurityValidation == true)
