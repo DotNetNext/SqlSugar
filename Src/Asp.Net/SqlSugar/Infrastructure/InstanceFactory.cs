@@ -497,7 +497,16 @@ namespace SqlSugar
         {
             var key = "Assembly_"+ CustomTypeName+assembly.GetHashCode();
             var newAssembly = new ReflectionInoCacheService().GetOrCreate<Assembly>(key, () => {
-                return Assembly.LoadFrom(CustomTypeName + ".dll");
+                try
+                {
+                    return Assembly.LoadFrom(CustomTypeName + ".dll");
+                }
+                catch 
+                {
+                    var message = "Not Found " + CustomTypeName + ".dll";
+                    Check.Exception(true, message);
+                    return null;
+                }
             });
             Type type = newAssembly.GetType(className);
             return type;

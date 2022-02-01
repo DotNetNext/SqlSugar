@@ -125,10 +125,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SqlSugar.MySqlConnector\SqlSugar.MySqlConnector.csproj">
-      <Project>{d131ee06-bad4-4b80-b7de-d6f539087644}</Project>
-      <Name>SqlSugar.MySqlConnector</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SqlSugar\SqlSugar.csproj">
       <Project>{489bb790-226c-4fad-8d1e-51d72a7ff8e5}</Project>
       <Name>SqlSugar</Name>
