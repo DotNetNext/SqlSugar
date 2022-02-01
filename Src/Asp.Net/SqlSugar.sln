@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26730.10
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31624.102
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlSugar", "SqlSugar\SqlSugar.csproj", "{489BB790-226C-4FAD-8D1E-51D72A7FF8E5}"
 EndProject
@@ -28,6 +28,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PgSqlTest", "PgSqlTest\PgSqlTest.csproj", "{86A55D46-B5F5-44B4-8B60-2AED1E2EDD99}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DmTest", "DmTest\DmTest.csproj", "{68A45CBA-AD64-429C-9AF4-FE78658B73D5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlSugar.Access", "SqlSugar.Access\SqlSugar.Access.csproj", "{0A27F276-D442-4E0A-B810-32D6074F0155}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlSugar.MySqlConnector", "SqlSugar.MySqlConnector\SqlSugar.MySqlConnector.csproj", "{D131EE06-BAD4-4B80-B7DE-D6F539087644}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MySqlConnectorTest", "MySqlConnectorTest\MySqlConnectorTest.csproj", "{7F705C44-F878-4706-AB9B-8D35030A8222}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -83,6 +89,18 @@ Global
 		{68A45CBA-AD64-429C-9AF4-FE78658B73D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{68A45CBA-AD64-429C-9AF4-FE78658B73D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{68A45CBA-AD64-429C-9AF4-FE78658B73D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A27F276-D442-4E0A-B810-32D6074F0155}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A27F276-D442-4E0A-B810-32D6074F0155}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A27F276-D442-4E0A-B810-32D6074F0155}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A27F276-D442-4E0A-B810-32D6074F0155}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D131EE06-BAD4-4B80-B7DE-D6F539087644}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D131EE06-BAD4-4B80-B7DE-D6F539087644}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D131EE06-BAD4-4B80-B7DE-D6F539087644}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D131EE06-BAD4-4B80-B7DE-D6F539087644}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F705C44-F878-4706-AB9B-8D35030A8222}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F705C44-F878-4706-AB9B-8D35030A8222}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F705C44-F878-4706-AB9B-8D35030A8222}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F705C44-F878-4706-AB9B-8D35030A8222}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

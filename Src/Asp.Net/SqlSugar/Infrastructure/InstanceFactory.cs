@@ -11,6 +11,7 @@ namespace SqlSugar
     {
         static Assembly assembly = Assembly.GetExecutingAssembly();
         static Dictionary<string, Type> typeCache = new Dictionary<string, Type>();
+        public static string CustomTypeName = "";
         public static bool NoCache = false;
 
         public static void RemoveCache()
@@ -302,7 +303,22 @@ namespace SqlSugar
 
         private static string GetClassName(string type, string name)
         {
-            return UtilConstants.AssemblyName + "." + type + name;
+            if (type == "MySqlConnector")
+            {
+                return "SqlSugar.MySqlConnector.MySql" + name;
+            }
+            else if (type == "Access")
+            {
+                return "SqlSugar.MySqlConnector.Access" + name;
+            }
+            else if (type == "Custom")
+            {
+                return "SqlSugar.MySqlConnector.MySql" + name;
+            }
+            else
+            {
+                return UtilConstants.AssemblyName + "." + CustomTypeName + name;
+            }
         }
 
         #region CreateInstance
@@ -403,8 +419,16 @@ namespace SqlSugar
         }
         private static Restult NoCacheGetCacheInstance<Restult>(string className, Type[] types)
         {
-          
-            Type type = Type.GetType(className + "`" + types.Length, true).MakeGenericType(types);
+
+            Type type = null;
+            if (string.IsNullOrEmpty(CustomTypeName))
+            {
+                type = Type.GetType(className + "`" + types.Length, true).MakeGenericType(types);
+            }
+            else 
+            {
+                type = GetCustomTypeByClass(className + "`" + types.Length).MakeGenericType(types);
+            }
             var result = (Restult)Activator.CreateInstance(type, true);
             return result;
         }
@@ -452,9 +476,23 @@ namespace SqlSugar
         }
         private static T NoCacheGetCacheInstance<T>(string className)
         {
-            Type  type = assembly.GetType(className);
+            Type type = null;
+            if (string.IsNullOrEmpty(CustomTypeName))
+            {
+                type=assembly.GetType(className);
+            }
+            else
+            {
+                type = GetCustomTypeByClass(className);
+            }
             var result = (T)Activator.CreateInstance(type, true);
             return result;
+        }
+
+        private static Type GetCustomTypeByClass(string className)
+        {
+            Type type = Assembly.LoadFrom(CustomTypeName+".dll").GetType(className);
+            return type;
         }
         #endregion
     }

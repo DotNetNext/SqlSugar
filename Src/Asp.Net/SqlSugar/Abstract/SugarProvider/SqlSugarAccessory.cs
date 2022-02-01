@@ -382,8 +382,13 @@ namespace SqlSugar
                     DependencyManagement.TryOscar();
                     break;
                 case DbType.MySqlConnector:
+                    InstanceFactory.CustomTypeName = "SqlSugar.MySqlConnector";
+                    break;
                 case DbType.Access:
+                    InstanceFactory.CustomTypeName = "SqlSugar.Access";
+                    break;
                 case DbType.Custom:
+                    InstanceFactory.CustomTypeName = "Custom";
                     break;
                 default:
                     throw new Exception("ConnectionConfig.DbType is null");
