@@ -1096,7 +1096,9 @@ namespace SqlSugar
         }
         private bool IsMySql()
         {
-            return this.Context is MySqlExpressionContext;
+            var name = this.Context.GetType().Name;
+            var result= (name =="MySqlExpressionContext");
+            return result;
         }
         private bool IsSqlite()
         {
