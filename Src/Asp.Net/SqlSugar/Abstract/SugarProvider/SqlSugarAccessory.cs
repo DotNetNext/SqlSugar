@@ -388,7 +388,8 @@ namespace SqlSugar
                     InstanceFactory.CustomTypeName = SugarCompatible.IsFramework?"SqlSugar.Access": "SqlSugar.AccessCore";
                     break;
                 case DbType.Custom:
-                    InstanceFactory.CustomTypeName = "Custom";
+                    Check.Exception(config?.MoreSettings?.CustomNugetDllName == null,ErrorMessage.GetThrowMessage("if DbType is Custmon , ConnectionConfig.MoreSettings.CustomNugetDbName is not null", "DbType是Custom ，而需要设置外部数据库支持dll名称。示例： ConnectionConfig.MoreSettings.CustomNugetDllName=\"SqlSugar.DB2\" , 设置完后我们需要引用SqlSugar.DB2.dll "));
+                    InstanceFactory.CustomTypeName = config.MoreSettings.CustomNugetDllName;
                     break;
                 default:
                     throw new Exception("ConnectionConfig.DbType is null");
