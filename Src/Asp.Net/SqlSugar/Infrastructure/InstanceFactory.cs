@@ -493,9 +493,13 @@ namespace SqlSugar
             return result;
         }
 
-        private static Type GetCustomTypeByClass(string className)
+        internal static Type GetCustomTypeByClass(string className)
         {
-            Type type = Assembly.LoadFrom(CustomTypeName+".dll").GetType(className);
+            var key = "Assembly_"+ CustomTypeName+assembly.GetHashCode();
+            var newAssembly = new ReflectionInoCacheService().GetOrCreate<Assembly>(key, () => {
+                return Assembly.LoadFrom(CustomTypeName + ".dll");
+            });
+            Type type = newAssembly.GetType(className);
             return type;
         }
         #endregion
