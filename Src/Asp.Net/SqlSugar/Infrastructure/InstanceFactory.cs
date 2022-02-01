@@ -317,7 +317,11 @@ namespace SqlSugar
             }
             else
             {
-                return UtilConstants.AssemblyName + "." + CustomTypeName + name;
+                if (!string.IsNullOrEmpty(CustomTypeName)) 
+                {
+                    type = CustomTypeName;
+                }
+                return UtilConstants.AssemblyName + "." + type + name;
             }
         }
 
