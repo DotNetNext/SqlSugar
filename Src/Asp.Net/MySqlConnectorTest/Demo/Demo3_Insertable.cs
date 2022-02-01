@@ -51,21 +51,21 @@ namespace OrmTest
             db.Insertable(insertObj).With(SqlWith.UpdLock).ExecuteCommand();
 
             db.Deleteable<Order>().ExecuteCommand();
-            db.Insertable(new Order()
-            {
-                CreateTime = DateTime.Now,
-                CustomId = 11,
-                Name = "11",
-                Price = 11
-            }).UseMySql().ExecuteBulkCopy();
-            db.Insertable(new OrderItem()
-            {
-                CreateTime = DateTime.Now,
-                ItemId = 1,
-                OrderId = 1,
-                OrderName = "a",
-                Price = 11
-            }).UseMySql().ExecuteBulkCopy();
+            //db.Insertable(new Order()
+            //{
+            //    CreateTime = DateTime.Now,
+            //    CustomId = 11,
+            //    Name = "11",
+            //    Price = 11
+            //}).UseMySql().ExecuteBulkCopy();
+            //db.Insertable(new OrderItem()
+            //{
+            //    CreateTime = DateTime.Now,
+            //    ItemId = 1,
+            //    OrderId = 1,
+            //    OrderName = "a",
+            //    Price = 11
+            //}).UseMySql().ExecuteBulkCopy();
             var data = db.Queryable<Order>().ToList();
             db.Insertable(data).UseMySql().ExecuteBulkCopy();
             db.Fastest<Order>().BulkUpdate(data);
