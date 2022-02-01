@@ -410,7 +410,14 @@ namespace SqlSugar
             {
                 lock (typeCache)
                 {
-                    type = Type.GetType(className + "`" + types.Length, true).MakeGenericType(types);
+                    if (string.IsNullOrEmpty(CustomTypeName))
+                    {
+                        type = Type.GetType(className + "`" + types.Length, true).MakeGenericType(types);
+                    }
+                    else 
+                    {
+                        type = GetCustomTypeByClass(className + "`" + types.Length).MakeGenericType(types);
+                    }
                     Check.ArgumentNullException(type, string.Format(ErrorMessage.ObjNotExist, className));
                     if (!typeCache.ContainsKey(cacheKey))
                     {
