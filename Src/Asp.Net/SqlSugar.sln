@@ -15,7 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OracleTest", "OracleTest\Or
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PerformanceTest", "PerformanceTest\PerformanceTest.csproj", "{60D6AA62-93ED-4D02-80E4-6BEB81766D3E}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SqlSugar.Extensions", "SqlSugar.Extensions", "{B762D1DA-DFCD-4597-A14D-4F20DA0EE70E}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SqlSugar.ServiceExtensions", "SqlSugar.ServiceExtensions", "{B762D1DA-DFCD-4597-A14D-4F20DA0EE70E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtensionsDemo", "ExtensionsDemo\ExtensionsDemo.csproj", "{EBBA686A-C1F0-4823-85EB-32EB306ADD7F}"
 EndProject
@@ -34,6 +34,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlSugar.MySqlConnector", "SqlSugar.MySqlConnector\SqlSugar.MySqlConnector.csproj", "{D131EE06-BAD4-4B80-B7DE-D6F539087644}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MySqlConnectorTest", "MySqlConnectorTest\MySqlConnectorTest.csproj", "{7F705C44-F878-4706-AB9B-8D35030A8222}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SqlSugar.CustomDatabase", "SqlSugar.CustomDatabase", "{BD138454-2F77-4085-81EF-66E7F9EBE3DA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -109,6 +111,8 @@ Global
 		{EBBA686A-C1F0-4823-85EB-32EB306ADD7F} = {B762D1DA-DFCD-4597-A14D-4F20DA0EE70E}
 		{CDB72ABE-0336-4730-A195-ABF2611DEEAA} = {B762D1DA-DFCD-4597-A14D-4F20DA0EE70E}
 		{629CDF51-682F-4B22-843A-BA76C232ACCD} = {B762D1DA-DFCD-4597-A14D-4F20DA0EE70E}
+		{0A27F276-D442-4E0A-B810-32D6074F0155} = {BD138454-2F77-4085-81EF-66E7F9EBE3DA}
+		{D131EE06-BAD4-4B80-B7DE-D6F539087644} = {BD138454-2F77-4085-81EF-66E7F9EBE3DA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AE9BE6D6-3952-4582-B65E-83E0E57FDC8A}
