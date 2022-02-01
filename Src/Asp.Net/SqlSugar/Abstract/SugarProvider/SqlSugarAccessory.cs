@@ -382,10 +382,10 @@ namespace SqlSugar
                     DependencyManagement.TryOscar();
                     break;
                 case DbType.MySqlConnector:
-                    InstanceFactory.CustomTypeName = "SqlSugar.MySqlConnector";
+                    InstanceFactory.CustomTypeName = SugarCompatible.IsFramework?"SqlSugar.MySqlConnector": "SqlSugar.MySqlConnectorCore";
                     break;
                 case DbType.Access:
-                    InstanceFactory.CustomTypeName = "SqlSugar.Access";
+                    InstanceFactory.CustomTypeName = SugarCompatible.IsFramework?"SqlSugar.Access": "SqlSugar.AccessCore";
                     break;
                 case DbType.Custom:
                     InstanceFactory.CustomTypeName = "Custom";
