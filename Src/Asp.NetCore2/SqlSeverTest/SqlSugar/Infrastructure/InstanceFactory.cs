@@ -11,6 +11,7 @@ namespace SqlSugar
     {
         static Assembly assembly = Assembly.GetExecutingAssembly();
         static Dictionary<string, Type> typeCache = new Dictionary<string, Type>();
+        public static string CustomTypeName = "";
         public static bool NoCache = false;
 
         public static void RemoveCache()
@@ -25,14 +26,14 @@ namespace SqlSugar
             {
                 return new SqlServerQueryable<T>();
             }
-            else  if (currentConnectionConfig.DbType == DbType.MySql)
+            else if (currentConnectionConfig.DbType == DbType.MySql)
             {
                 return new MySqlQueryable<T>();
             }
             else if (currentConnectionConfig.DbType == DbType.PostgreSQL)
             {
                 return new PostgreSQLQueryable<T>();
-            }
+            } 
             else
             {
                 string className = "Queryable";
@@ -302,7 +303,26 @@ namespace SqlSugar
 
         private static string GetClassName(string type, string name)
         {
-            return UtilConstants.AssemblyName + "." + type + name;
+            if (type == "MySqlConnector")
+            {
+                return "SqlSugar.MySqlConnector.MySql" + name;
+            }
+            else if (type == "Access")
+            {
+                return "SqlSugar.MySqlConnector.Access" + name;
+            }
+            else if (type == "Custom")
+            {
+                return "SqlSugar.MySqlConnector.MySql" + name;
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(CustomTypeName)) 
+                {
+                    type = CustomTypeName;
+                }
+                return UtilConstants.AssemblyName + "." + type + name;
+            }
         }
 
         #region CreateInstance
@@ -390,7 +410,14 @@ namespace SqlSugar
             {
                 lock (typeCache)
                 {
-                    type = Type.GetType(className + "`" + types.Length, true).MakeGenericType(types);
+                    if (string.IsNullOrEmpty(CustomTypeName))
+                    {
+                        type = Type.GetType(className + "`" + types.Length, true).MakeGenericType(types);
+                    }
+                    else 
+                    {
+                        type = GetCustomTypeByClass(className + "`" + types.Length).MakeGenericType(types);
+                    }
                     Check.ArgumentNullException(type, string.Format(ErrorMessage.ObjNotExist, className));
                     if (!typeCache.ContainsKey(cacheKey))
                     {
@@ -403,8 +430,16 @@ namespace SqlSugar
         }
         private static Restult NoCacheGetCacheInstance<Restult>(string className, Type[] types)
         {
-          
-            Type type = Type.GetType(className + "`" + types.Length, true).MakeGenericType(types);
+
+            Type type = null;
+            if (string.IsNullOrEmpty(CustomTypeName))
+            {
+                type = Type.GetType(className + "`" + types.Length, true).MakeGenericType(types);
+            }
+            else 
+            {
+                type = GetCustomTypeByClass(className + "`" + types.Length).MakeGenericType(types);
+            }
             var result = (Restult)Activator.CreateInstance(type, true);
             return result;
         }
@@ -452,9 +487,36 @@ namespace SqlSugar
         }
         private static T NoCacheGetCacheInstance<T>(string className)
         {
-            Type  type = assembly.GetType(className);
+            Type type = null;
+            if (string.IsNullOrEmpty(CustomTypeName))
+            {
+                type=assembly.GetType(className);
+            }
+            else
+            {
+                type = GetCustomTypeByClass(className);
+            }
             var result = (T)Activator.CreateInstance(type, true);
             return result;
+        }
+
+        internal static Type GetCustomTypeByClass(string className)
+        {
+            var key = "Assembly_"+ CustomTypeName+assembly.GetHashCode();
+            var newAssembly = new ReflectionInoCacheService().GetOrCreate<Assembly>(key, () => {
+                try
+                {
+                    return Assembly.LoadFrom(CustomTypeName + ".dll");
+                }
+                catch 
+                {
+                    var message = "Not Found " + CustomTypeName + ".dll";
+                    Check.Exception(true, message);
+                    return null;
+                }
+            });
+            Type type = newAssembly.GetType(className);
+            return type;
         }
         #endregion
     }

@@ -25,7 +25,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CacheTest", "CacheTest\Cach
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OscarTest", "OscarTest\OscarTest.csproj", "{29925F8E-6495-463A-ABBD-C050AE85E130}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbFirstRazorTest", "DbFirstRazorTest\DbFirstRazorTest.csproj", "{EE197EB0-C494-4478-A5CD-545E7139202E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DbFirstRazorTest", "DbFirstRazorTest\DbFirstRazorTest.csproj", "{EE197EB0-C494-4478-A5CD-545E7139202E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SqlSugar.CustomDatabase", "SqlSugar.CustomDatabase", "{88992AAF-146B-4253-9AD7-493E8F415B57}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlSugar.MySqlConnectorCore", "SqlSugar.MySqlConnectorCore\SqlSugar.MySqlConnectorCore.csproj", "{D22873F3-80E1-4415-9CD6-21B1C7EEA4A0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -81,9 +85,16 @@ Global
 		{EE197EB0-C494-4478-A5CD-545E7139202E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE197EB0-C494-4478-A5CD-545E7139202E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EE197EB0-C494-4478-A5CD-545E7139202E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D22873F3-80E1-4415-9CD6-21B1C7EEA4A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D22873F3-80E1-4415-9CD6-21B1C7EEA4A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D22873F3-80E1-4415-9CD6-21B1C7EEA4A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D22873F3-80E1-4415-9CD6-21B1C7EEA4A0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D22873F3-80E1-4415-9CD6-21B1C7EEA4A0} = {88992AAF-146B-4253-9AD7-493E8F415B57}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {230A85B9-54F1-41B1-B1DA-80086581B2B4}

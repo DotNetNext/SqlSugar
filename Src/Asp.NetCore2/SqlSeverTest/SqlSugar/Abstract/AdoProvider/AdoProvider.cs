@@ -1253,7 +1253,7 @@ namespace SqlSugar
         {
             this.CancellationToken = null;
         }
-        private void Async()
+        protected void Async()
         {
             if (this.Context.Root != null && this.Context.Root.AsyncId == null)
             {
@@ -1272,7 +1272,7 @@ namespace SqlSugar
             }
         }
 
-        private void ExecuteProcessingSQL(ref string sql, SugarParameter[] parameters)
+        protected void ExecuteProcessingSQL(ref string sql, SugarParameter[] parameters)
         {
             var result = this.ProcessingEventStartingSQL(sql, parameters);
             sql = result.Key;
@@ -1361,18 +1361,18 @@ namespace SqlSugar
             if (parameters == null) return null;
             return base.GetParameters(parameters, propertyInfo, this.SqlParameterKeyWord);
         }
-        private bool IsAutoClose()
+        protected bool IsAutoClose()
         {
             return this.Context.CurrentConnectionConfig.IsAutoCloseConnection && this.Transaction == null;
         }
-        private bool IsMasterSlaveSeparation
+        protected bool IsMasterSlaveSeparation
         {
             get
             {
                 return this.Context.CurrentConnectionConfig.SlaveConnectionConfigs.HasValue() && this.IsDisableMasterSlaveSeparation == false;
             }
         }
-        private void SetConnectionStart(string sql)
+        protected void SetConnectionStart(string sql)
         {
             if (this.Transaction == null && this.IsMasterSlaveSeparation && IsRead(sql))
             {
@@ -1408,7 +1408,7 @@ namespace SqlSugar
             return result.Count() == 0;
         }
 
-        private void SetConnectionEnd(string sql)
+        protected void SetConnectionEnd(string sql)
         {
             if (this.IsMasterSlaveSeparation && IsRead(sql) && this.Transaction == null)
             {
@@ -1424,11 +1424,11 @@ namespace SqlSugar
             return result;
         }
 
-        private void ExecuteErrorEvent(string sql, SugarParameter[] parameters, Exception ex)
+        protected void ExecuteErrorEvent(string sql, SugarParameter[] parameters, Exception ex)
         {
             ErrorEvent(new SqlSugarException(this.Context, ex, sql, parameters));
         }
-        private void InitParameters(ref string sql, SugarParameter[] parameters)
+        protected void InitParameters(ref string sql, SugarParameter[] parameters)
         {
             if (parameters.HasValue())
             {

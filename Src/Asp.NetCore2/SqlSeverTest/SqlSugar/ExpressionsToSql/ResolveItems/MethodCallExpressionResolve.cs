@@ -635,6 +635,10 @@ namespace SqlSugar
                     type = DbType.Oracle;
                 else if (this.Context is PostgreSQLExpressionContext)
                     type = DbType.PostgreSQL;
+                else if (this.Context.GetType().Name.StartsWith("MySql")) 
+                {
+                    type = DbType.MySql;
+                }
                 return this.Context.SqlFuncServices.First(it => it.UniqueMethodName == name).MethodValue(model, type, this.Context);
             }
             else
@@ -1092,7 +1096,9 @@ namespace SqlSugar
         }
         private bool IsMySql()
         {
-            return this.Context is MySqlExpressionContext;
+            var name = this.Context.GetType().Name;
+            var result= (name =="MySqlExpressionContext");
+            return result;
         }
         private bool IsSqlite()
         {

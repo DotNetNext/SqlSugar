@@ -14,6 +14,9 @@ namespace SqlSugar
         PostgreSQL,
         Dm,
         Kdbndp,
-        Oscar
+        Oscar,
+        MySqlConnector,
+        Access,
+        Custom=900
     }
 }

@@ -23,6 +23,8 @@ namespace SqlSugar
                     return new OracleFastBuilder(this.entityInfo);
                 case DbType.PostgreSQL:
                     return new PostgreSQLFastBuilder(this.entityInfo);
+                case DbType.MySqlConnector:
+                    return InstanceFactory.CreateInstance<IFastBuilder>("SqlSugar.MySqlConnector.MySqlFastBuilder");
                 case DbType.Dm:
                     break;
                 case DbType.Kdbndp:
@@ -56,7 +58,7 @@ namespace SqlSugar
             }
             dt.TableName = GetTableName();
             var columns = entityInfo.Columns;
-            var isMySql = this.context.CurrentConnectionConfig.DbType == DbType.MySql;
+            var isMySql = this.context.CurrentConnectionConfig.DbType.IsIn(DbType.MySql, DbType.MySqlConnector);
             foreach (var item in datas)
             {
                 var dr = dt.NewRow();
