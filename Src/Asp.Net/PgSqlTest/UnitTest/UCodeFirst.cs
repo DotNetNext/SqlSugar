@@ -33,8 +33,16 @@ namespace OrmTest
             Db.CodeFirst.InitTables<UnitTestPk>();
             Db.CodeFirst.InitTables<UnitTestPk>();
             Db.CodeFirst.InitTables<UnitTestPk>();
-        }
 
+            Db.CodeFirst.InitTables<UnitLong1>();
+            Db.Insertable(new List<UnitLong1>() { new UnitLong1() { Num = null }, new UnitLong1() { Num = null } }) 
+                .UseParameter().ExecuteCommand();
+        }
+        public class UnitLong1
+        {
+            [SqlSugar.SugarColumn(IsNullable =true)]
+            public long? Num { get; set; }
+        }
         public class UnitTestPk 
         {
             [SqlSugar.SugarColumn(IsPrimaryKey =true,IsIdentity =true)]
