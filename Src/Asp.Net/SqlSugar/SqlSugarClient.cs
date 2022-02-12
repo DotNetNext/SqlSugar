@@ -839,9 +839,7 @@ namespace SqlSugar
         public void Dispose()
         {
             AllClientEach(it => it.Ado.RollbackTran());
-            this.Context.Dispose();
             AllClientEach(it => it.Dispose());
-           
         }
 
         #endregion
