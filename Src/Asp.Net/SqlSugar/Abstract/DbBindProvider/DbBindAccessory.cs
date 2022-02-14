@@ -84,7 +84,10 @@ namespace SqlSugar
             {
                 keys.Add(dataReader.GetName(i));
                 var type = dataReader.GetFieldType(i);
-                sbTypes.Append(type.Name.Substring(0,2));
+                if (type != null)
+                {
+                    sbTypes.Append(type.Name.Substring(0, 2));
+                }
             }
             types = sbTypes.ToString();
             return keys;

@@ -45,8 +45,17 @@ namespace OrmTest
             { 
             }
             db.CodeFirst.InitTables<UnitTableName>();
-
+            db.CodeFirst.InitTables<UnitGe>();
+            db.Insertable(new UnitGe() { geometry1 = "POINT (20 180)" }).ExecuteCommand();
+            var gelist=db.Queryable<UnitGe>().Select(it=>new { geometry1 = it.geometry1.ToString()}).ToList();
         }
+
+        public class UnitGe 
+        {
+            [SugarColumn(ColumnDataType = "geometry")]
+            public string geometry1 { get; set; }
+        }
+
         [SugarTable("abp.UnitTableName","备注")]
         public class UnitTableName 
         {
