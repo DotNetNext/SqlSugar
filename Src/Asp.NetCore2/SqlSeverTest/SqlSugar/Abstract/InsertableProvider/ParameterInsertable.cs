@@ -149,7 +149,7 @@ namespace SqlSugar
             foreach (var gitem in groupList)
             {
                 batchInsetrSql.Append("(");
-                insertColumns = string.Join(",", gitem.Select(it => FormatValue(it.DbColumnName, it.Value, allParamter, itemable.InsertBuilder.Builder.SqlParameterKeyWord)));
+                insertColumns = string.Join(",", gitem.Select(it => FormatValue(it.PropertyType,it.DbColumnName, it.Value, allParamter, itemable.InsertBuilder.Builder.SqlParameterKeyWord)));
                 batchInsetrSql.Append(insertColumns);
                 if (groupList.Last() == gitem)
                 {
@@ -161,10 +161,11 @@ namespace SqlSugar
                 }
             }
         }
-        private string FormatValue(string name, object value, List<SugarParameter> allParamter, string keyword)
+        private string FormatValue(Type type,string name, object value, List<SugarParameter> allParamter, string keyword)
         {
             var result = keyword + name + allParamter.Count;
-            allParamter.Add(new SugarParameter(result, value));
+            var addParameter = new SugarParameter(result, value,type);
+            allParamter.Add(addParameter);
             return result;
         } 
         #endregion
