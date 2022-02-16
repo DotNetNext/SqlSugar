@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text;
 
-namespace SqlSugar.MySqlConnectorCore
+namespace SqlSugar.MySqlConnector 
 {
     public class MySqlInsertBuilder : InsertBuilder
     {

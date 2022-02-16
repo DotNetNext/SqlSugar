@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-namespace SqlSugar.MySqlConnectorCore
+namespace SqlSugar.MySqlConnector 
 {
     public class MySqlExpressionContext : ExpressionContext, ILambdaExpressions
     {

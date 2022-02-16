@@ -1,4 +1,4 @@
-﻿namespace SqlSugar.MySqlConnectorCore
+﻿namespace SqlSugar.MySqlConnector 
 {
     public class MySqlDeleteBuilder : DeleteBuilder
     {

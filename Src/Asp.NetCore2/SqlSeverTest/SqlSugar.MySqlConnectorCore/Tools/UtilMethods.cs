@@ -12,7 +12,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace SqlSugar.MySqlConnectorCore 
+namespace SqlSugar.MySqlConnector  
 {
     public class UtilMethods
     {

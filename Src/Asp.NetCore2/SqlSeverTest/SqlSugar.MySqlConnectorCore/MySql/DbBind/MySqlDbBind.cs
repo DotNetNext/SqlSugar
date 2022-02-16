@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SqlSugar.MySqlConnectorCore
+namespace SqlSugar.MySqlConnector 
 {
     public class MySqlDbBind : DbBindProvider
     {

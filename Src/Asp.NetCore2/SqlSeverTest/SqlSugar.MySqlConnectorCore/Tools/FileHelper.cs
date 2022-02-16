@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace SqlSugar.MySqlConnectorCore
+namespace SqlSugar.MySqlConnector 
 {
     internal class FileHelper
     {

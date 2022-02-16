@@ -6,7 +6,7 @@ using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-namespace SqlSugar.MySqlConnectorCore
+namespace SqlSugar.MySqlConnector 
 {
     public class MySqlProvider : AdoProvider
     {
@@ -54,7 +54,7 @@ namespace SqlSugar.MySqlConnectorCore
         }
         public override IDataAdapter GetAdapter()
         {
-            return new MySqlDataAdapter();
+            return new MySqlConnectorDataAdapter();
         }
         public override DbCommand GetCommand(string sql, SugarParameter[] parameters)
         {

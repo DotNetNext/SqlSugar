@@ -4,7 +4,7 @@ using System.Data;
 using System.Text;
 using MySqlConnector;
 
-namespace SqlSugar.MySqlConnectorCore 
+namespace SqlSugar.MySqlConnector  
 {
     /// <summary>
     /// 数据填充器
