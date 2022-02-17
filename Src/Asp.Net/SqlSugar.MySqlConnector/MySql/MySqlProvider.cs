@@ -197,7 +197,7 @@ namespace SqlSugar.MySqlConnector
                     sql = FormatSql(sql);
                 SetConnectionStart(sql);
                 if (this.ProcessingEventStartingSQL != null)
-                    ExecuteProcessingSQL(ref sql, parameters);
+                    ExecuteProcessingSQL(ref sql,ref parameters);
                 ExecuteBefore(sql, parameters);
                 var sqlCommand =await GetCommandAsync(sql, parameters);
                 int count;
@@ -238,7 +238,7 @@ namespace SqlSugar.MySqlConnector
                 SetConnectionStart(sql);
                 var isSp = this.CommandType == CommandType.StoredProcedure;
                 if (this.ProcessingEventStartingSQL != null)
-                    ExecuteProcessingSQL(ref sql, parameters);
+                    ExecuteProcessingSQL(ref sql,ref parameters);
                 ExecuteBefore(sql, parameters);
                 var sqlCommand =   await GetCommandAsync(sql, parameters);
                 DbDataReader sqlDataReader;
@@ -274,7 +274,7 @@ namespace SqlSugar.MySqlConnector
                     sql = FormatSql(sql);
                 SetConnectionStart(sql);
                 if (this.ProcessingEventStartingSQL != null)
-                    ExecuteProcessingSQL(ref sql, parameters);
+                    ExecuteProcessingSQL(ref sql,ref parameters);
                 ExecuteBefore(sql, parameters);
                 var sqlCommand = await GetCommandAsync(sql, parameters) ;
                 object scalar;
