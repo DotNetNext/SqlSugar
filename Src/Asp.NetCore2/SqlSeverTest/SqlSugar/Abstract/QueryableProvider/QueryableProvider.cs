@@ -897,7 +897,8 @@ namespace SqlSugar
         {
             var splitColumn = this.EntityInfo.Columns.FirstOrDefault(it => it.PropertyInfo.GetCustomAttribute<SplitFieldAttribute>() != null);
             var columnName = this.SqlBuilder.GetTranslationColumnName(splitColumn.DbColumnName);
-            return this.Where($" {columnName}>=@spBeginTime AND {columnName}<= @spEndTime",new { spBeginTime = beginTime , spEndTime = endTime}).SplitTable(tas => {
+            var sqlParameterKeyWord = this.SqlBuilder.SqlParameterKeyWord;
+            return this.Where($" {columnName}>={sqlParameterKeyWord}spBeginTime AND {columnName}<= {sqlParameterKeyWord}spEndTime",new { spBeginTime = beginTime , spEndTime = endTime}).SplitTable(tas => {
 
                 var dateNull = DateTime.MinValue;
                 var min = tas.Where(it => it.Date <= beginTime.Date).Select(it=>it.Date).OrderByDescending(it=>it.Date).FirstOrDefault();

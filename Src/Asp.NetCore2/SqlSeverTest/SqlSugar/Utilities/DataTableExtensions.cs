@@ -82,7 +82,11 @@ namespace SqlSugar
 
             var arr = new List<object>();
             var cols = new List<string>();
-            String rowName = ((MemberExpression)rowSelector.Body).Member.Name;
+            var rowName = "";
+            if (rowSelector.Body is MemberExpression)
+                rowName = ((MemberExpression)rowSelector.Body).Member.Name;
+            else
+                rowName = string.Join(UtilConstants.ReplaceKey, ((NewExpression)rowSelector.Body).Arguments.Select(it => it as MemberExpression).Select(it => it.Member.Name));
             var columns = source.Select(columnSelector).Distinct();
 
             cols = (new[] { rowName }).Concat(columns.Select(x => x.ToString())).ToList();
