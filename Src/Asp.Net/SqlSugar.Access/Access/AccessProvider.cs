@@ -57,7 +57,7 @@ namespace SqlSugar.Access
         }
         public override IDataAdapter GetAdapter()
         {
-            return new SqlDataAdapter();
+            return new OleDbDataAdapter();
         }
         public override DbCommand GetCommand(string sql, SugarParameter[] parameters)
         {
