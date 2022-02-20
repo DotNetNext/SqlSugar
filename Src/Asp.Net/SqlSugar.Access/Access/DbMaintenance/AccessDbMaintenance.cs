@@ -318,6 +318,7 @@ namespace SqlSugar.Access
         }
         public override List<DbTableInfo> GetTableInfoList(bool isCache = true)
         {
+           // (this.Context.Ado.Connection as OleDbConnection).Open();
             var table = (this.Context.Ado.Connection as OleDbConnection).GetOleDbSchemaTable(OleDbSchemaGuid.Tables, new Object[] { null, null, null, "Table" });
             var result= table
               .Rows.Cast<DataRow>().Select(it=>new DbTableInfo

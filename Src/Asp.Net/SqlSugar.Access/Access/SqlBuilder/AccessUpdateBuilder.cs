@@ -8,5 +8,10 @@ namespace SqlSugar.Access
 {
     public class AccessUpdateBuilder : UpdateBuilder
     {
+        protected override string TomultipleSqlString(List<IGrouping<int, DbColumnInfo>> groupList)
+        {
+            throw new Exception("access no support batch update");
+        }
+         
     }
 }

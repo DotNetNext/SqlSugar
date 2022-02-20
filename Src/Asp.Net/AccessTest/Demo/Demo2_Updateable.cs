@@ -35,14 +35,14 @@ namespace OrmTest
             /*** 1.entity or List ***/
 
             var updateObj = new Order() { Id = 1, Name = "order1" };
-            var updateObjs = new List<Order> {
-                 new Order() { Id = 11, Name = "order11" },
-                 new Order() { Id = 12, Name = "order12" }
-            };
+            //var updateObjs = new List<Order> {
+            //     new Order() { Id = 11, Name = "order11" },
+            //     new Order() { Id = 12, Name = "order12" }
+            //};
 
             //update all columns by primary key
             var result = db.Updateable(updateObj).ExecuteCommand();//update single
-            var result2 = db.Updateable(updateObjs).ExecuteCommand();//update List<Class>
+            //var result2 = db.Updateable(updateObjs).ExecuteCommand();//update List<Class>
 
             //Ignore  Name and Price
             var result3 = db.Updateable(updateObj).IgnoreColumns(it => new { it.CreateTime, it.Price }).ExecuteCommand();
@@ -52,10 +52,10 @@ namespace OrmTest
 
             //If there is no primary key
             var result5 = db.Updateable(updateObj).WhereColumns(it => new { it.Id }).ExecuteCommand();//update single by id
-            var result6 = db.Updateable(updateObjs).WhereColumns(it => new { it.Id }).ExecuteCommand();//update List<Class> by id
+            //var result6 = db.Updateable(updateObjs).WhereColumns(it => new { it.Id }).ExecuteCommand();//update List<Class> by id
 
             //Re set value
-            var result66 = db.Updateable(new List<Order> { updateObj }).ReSetValue(it => it.Id = 112).IgnoreColumns(it => new { it.CreateTime, it.Price }).ExecuteCommand();
+            //var result66 = db.Updateable(new List<Order> { updateObj }).ReSetValue(it => it.Id = 112).IgnoreColumns(it => new { it.CreateTime, it.Price }).ExecuteCommand();
 
 
 
@@ -81,7 +81,7 @@ namespace OrmTest
             dtList.Add(dt);
 
             var t66 = db.Updateable(dt).AS("[Order]").WhereColumns("id").ExecuteCommand();
-            var t666 = db.Updateable(dtList).AS("[Order]").WhereColumns("id").ExecuteCommand();
+           // var t666 = db.Updateable(dtList).AS("[Order]").WhereColumns("id").ExecuteCommand();
 
 
 
@@ -109,8 +109,8 @@ namespace OrmTest
                .AddQueue();
             db.SaveQueues();
 
-            var dataTable = db.Queryable<Order>().Select("id,name,1 as price").Take(2).ToDataTable();
-            db.Fastest<Order>().BulkUpdate("Order", dataTable,new string[] {"id" },new string[] {"name" });
+            //var dataTable = db.Queryable<Order>().Select("id,name,1 as price").Take(2).ToDataTable();
+            //db.Fastest<Order>().BulkUpdate("Order", dataTable,new string[] {"id" },new string[] {"name" });
             Console.WriteLine("#### Updateable End ####");
         }
 

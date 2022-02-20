@@ -13,15 +13,15 @@ namespace OrmTest
         public static void Init()
         {
             EasyExamples();
-            QueryConditions();
+            //QueryConditions();
             JoinTable();
-            Async();
-            NoEntity();
-            Mapper();
-            SqlFuncTest();
-            Subquery();
-            ReturnType();
-            ConfiQuery();
+            //Async();
+            //NoEntity();
+            //Mapper();
+            //SqlFuncTest();
+            //Subquery();
+            //ReturnType();
+            //ConfiQuery();
         }
 
         private static void ConfiQuery()
@@ -137,43 +137,43 @@ namespace OrmTest
             int c = 0;
             var test10 = db.Queryable<Order>().ToPageList(1, 2, ref c);
             var test11 = db.Queryable<Order>().GroupBy(it=>new { it.CreateTime.Year }).Select(it=>it.CreateTime.Year).ToList();
-            var test12 = db.Queryable<Order>().GroupBy(it =>  it.CreateTime.Date ).Select(it => it.CreateTime.Date).ToList();
-            var test13 = db.Queryable<Order>().GroupBy(it => new { it.CreateTime.Date ,it.CreateTime.Year,it.CreateTime.Minute })
-                .Select(it => new { it.CreateTime.Date, it.CreateTime.Year, it.CreateTime.Minute }).ToList();
-            var test14 = db.Queryable<Order>()
-                .GroupBy(it =>   it.CreateTime.Year )
-                 .GroupBy(it => it.CreateTime.Second)
-                     .GroupBy(it => it.CreateTime.Date)
-                .Select(it => new {
-                    it.CreateTime.Year,
-                    it.CreateTime.Second,
-                    it.CreateTime.Date
-                }).ToList();
+          //  var test12 = db.Queryable<Order>().GroupBy(it =>  it.CreateTime.Date ).Select(it => it.CreateTime.Date).ToList();
+            //var test13 = db.Queryable<Order>().GroupBy(it => new { it.CreateTime.Date ,it.CreateTime.Year,it.CreateTime.Minute })
+            //    .Select(it => new { it.CreateTime.Date, it.CreateTime.Year, it.CreateTime.Minute }).ToList();
+            //var test14 = db.Queryable<Order>()
+            //    .GroupBy(it =>   it.CreateTime.Year )
+            //     .GroupBy(it => it.CreateTime.Second)
+            //         .GroupBy(it => it.CreateTime.Date)
+            //    .Select(it => new {
+            //        it.CreateTime.Year,
+            //        it.CreateTime.Second,
+            //        it.CreateTime.Date
+            //    }).ToList();
             var test15 = db.Queryable<Order, Order>((o, i) => new JoinQueryInfos(
               JoinType.Left, o.Name == SqlFunc.ToString(SqlFunc.MergeString(",", i.Name, ","))
             ))
             .Select<ViewOrder>().ToList();
            // var test16 = db.Queryable<Order>().Select(it => SqlFunc.SqlServer_DateDiff("day", DateTime.Now.AddDays(-1), DateTime.Now)).ToList();
-            var test17 =  
-               db.Queryable<Order>()
-               .Select<Order>()
-               .MergeTable()
-              .Select(it => new ViewOrder()
-              {
-                  Name = SqlFunc.Subqueryable<Order>().Select(s => s.Name)
-              }).ToList(); ;
-            var test18 = db.UnionAll(
-               db.Queryable<Order>() ,
-               db.Queryable<Order>() 
-              ) 
-              .Select(it=>new ViewOrder(){ 
-                  Name=SqlFunc.Subqueryable<Order>().Select(s=>s.Name)
-               }).ToList();
+            //var test17 =  
+            //   db.Queryable<Order>()
+            //   .Select<Order>()
+            //   .MergeTable()
+            //  .Select(it => new ViewOrder()
+            //  {
+            //      Name = SqlFunc.Subqueryable<Order>().Select(s => s.Name)
+            //  }).ToList(); ;
+            //var test18 = db.UnionAll(
+            //   db.Queryable<Order>() ,
+            //   db.Queryable<Order>() 
+            //  ) 
+            //  .Select(it=>new ViewOrder(){ 
+            //      Name=SqlFunc.Subqueryable<Order>().Select(s=>s.Name)
+            //   }).ToList();
             var test19 = db.Queryable<Order>().Select<ViewOrder>().ToList();
             var test20 = db.Queryable<Order>().LeftJoin<Custom>((o, cs) =>o.Id==cs.Id)
                 .ToDictionary(it => it.Id, it => it.Name);
 
-            var test21 = db.Queryable<Order>().Where(it=>it.Id.ToString()==1.ToString()).Select(it => it.CreateTime.ToString("24")).First();
+            //var test21 = db.Queryable<Order>().Where(it=>it.Id.ToString()==1.ToString()).Select(it => it.CreateTime.ToString("24")).First();
             Console.WriteLine("#### Examples End ####");
         }
 
@@ -397,12 +397,12 @@ namespace OrmTest
                          .Select<ViewOrder>()
                          .ToList();
 
-            //Join table
-            var list2 = db.Queryable<Order, OrderItem, Custom>((o, i, c) => new JoinQueryInfos(
-             JoinType.Left, o.Id == i.OrderId,
-             JoinType.Left, c.Id == o.CustomId
-            ))
-           .Select<ViewOrder>().ToList();
+           // //Join table
+           // var list2 = db.Queryable<Order, OrderItem, Custom>((o, i, c) => new JoinQueryInfos(
+           //  JoinType.Left, o.Id == i.OrderId,
+           //  JoinType.Left, c.Id == o.CustomId
+           // ))
+           //.Select<ViewOrder>().ToList();
 
             //Join queryable
             var query1 = db.Queryable<Order, OrderItem>((o, i) => new JoinQueryInfos(
@@ -421,36 +421,36 @@ namespace OrmTest
 
 
 
-            var query4 = db.Queryable<Order,OrderItem,Custom>(
-                              db.Queryable<Order>().Where(it => it.Name.Contains("a")),
-                              db.Queryable<OrderItem>().Where(it => it.CreateTime>DateTime.Now),
-                              db.Queryable<Custom>().Where(it => it.Name.Contains("b")),
-                              JoinType.Left, (o, i, c) => o.Id==i.OrderId,
-                              JoinType.Left,(o,i,c)=>o.CustomId==c.Id
+            //var query4 = db.Queryable<Order,OrderItem,Custom>(
+            //                  db.Queryable<Order>().Where(it => it.Name.Contains("a")),
+            //                  db.Queryable<OrderItem>().Where(it => it.CreateTime>DateTime.Now),
+            //                  db.Queryable<Custom>().Where(it => it.Name.Contains("b")),
+            //                  JoinType.Left, (o, i, c) => o.Id==i.OrderId,
+            //                  JoinType.Left,(o,i,c)=>o.CustomId==c.Id
 
-                            ).Select(o=>o).ToList();
-
-
-            var query5 = db.Queryable<Order>()
-                            .InnerJoin<Custom>((o, cus) => o.CustomId == cus.Id)
-                            .InnerJoin<OrderItem>((o, cus, oritem) => o.Id == oritem.OrderId)
-                            .Where((o) => o.Id == 1)
-                            .Select((o, cus) => new ViewOrder {  Id=o.Id, CustomName = cus.Name })
-                            .ToList();
-
-            var query6 = db.Queryable(db.Queryable<Order>()).LeftJoin<OrderItem>((m, i) => m.Id == i.OrderId)
-                .ToList();
+            //                ).Select(o=>o).ToList();
 
 
-            var query7 = db.Queryable(db.Queryable<Order>().Select<Order>().MergeTable()).LeftJoin<OrderItem>((m, i) => m.Id == i.OrderId)
-                .ToList();
+            //var query5 = db.Queryable<Order>()
+            //                .InnerJoin<Custom>((o, cus) => o.CustomId == cus.Id)
+            //                .InnerJoin<OrderItem>((o, cus, oritem) => o.Id == oritem.OrderId)
+            //                .Where((o) => o.Id == 1)
+            //                .Select((o, cus) => new ViewOrder {  Id=o.Id, CustomName = cus.Name })
+            //                .ToList();
+
+            //var query6 = db.Queryable(db.Queryable<Order>()).LeftJoin<OrderItem>((m, i) => m.Id == i.OrderId)
+            //    .ToList();
 
 
-            var query8 = db.Queryable<Order>()
-                .LeftJoin(db.Queryable<Custom>().Where(it=>it.Id==1),(o,i)=>o.CustomId==i.Id)
-                .LeftJoin(db.Queryable<OrderItem>().Where(it=>it.OrderId==2),(o,i,item)=>item.OrderId==o.Id)
-                .LeftJoin(db.Queryable<Order>().Where(it => it.Id >0), (o, i, item, od) => od.Id == o.Id)
-                .Select(o => o).ToList();
+            //var query7 = db.Queryable(db.Queryable<Order>().Select<Order>().MergeTable()).LeftJoin<OrderItem>((m, i) => m.Id == i.OrderId)
+            //    .ToList();
+
+
+            //var query8 = db.Queryable<Order>()
+            //    .LeftJoin(db.Queryable<Custom>().Where(it=>it.Id==1),(o,i)=>o.CustomId==i.Id)
+            //    .LeftJoin(db.Queryable<OrderItem>().Where(it=>it.OrderId==2),(o,i,item)=>item.OrderId==o.Id)
+            //    .LeftJoin(db.Queryable<Order>().Where(it => it.Id >0), (o, i, item, od) => od.Id == o.Id)
+            //    .Select(o => o).ToList();
     
             Console.WriteLine("#### Join Table End ####");
         }
