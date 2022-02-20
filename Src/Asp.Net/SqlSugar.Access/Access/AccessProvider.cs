@@ -3,15 +3,17 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Data.Odbc;
+using System.Data.OleDb;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 namespace SqlSugar.Access
 {
-    public class SqlServerProvider : AdoProvider
+    public class AccessProvider : AdoProvider
     {
-        public SqlServerProvider() { }
+        public AccessProvider() { }
         public override IDbConnection Connection
         {
             get
@@ -20,7 +22,7 @@ namespace SqlSugar.Access
                 {
                     try
                     {
-                        base._DbConnection = new SqlConnection(base.Context.CurrentConnectionConfig.ConnectionString);
+                        base._DbConnection = new OleDbConnection(base.Context.CurrentConnectionConfig.ConnectionString);
                     }
                     catch (Exception ex)
                     {
@@ -41,7 +43,7 @@ namespace SqlSugar.Access
         public override void BeginTran(string transactionName)
         {
             CheckConnection();
-            base.Transaction = ((SqlConnection)this.Connection).BeginTransaction(transactionName);
+            base.Transaction = ((OleDbConnection)this.Connection).BeginTransaction();
         }
         /// <summary>
         /// Only SqlServer
@@ -51,7 +53,7 @@ namespace SqlSugar.Access
         public override void BeginTran(IsolationLevel iso, string transactionName)
         {
             CheckConnection();
-            base.Transaction = ((SqlConnection)this.Connection).BeginTransaction(iso, transactionName);
+            base.Transaction = ((OleDbConnection)this.Connection).BeginTransaction(iso);
         }
         public override IDataAdapter GetAdapter()
         {
@@ -59,16 +61,16 @@ namespace SqlSugar.Access
         }
         public override DbCommand GetCommand(string sql, SugarParameter[] parameters)
         {
-            SqlCommand sqlCommand = new SqlCommand(sql, (SqlConnection)this.Connection);
+            OleDbCommand sqlCommand = new OleDbCommand(sql, (OleDbConnection)this.Connection);
             sqlCommand.CommandType = this.CommandType;
             sqlCommand.CommandTimeout = this.CommandTimeOut;
             if (this.Transaction != null)
             {
-                sqlCommand.Transaction = (SqlTransaction)this.Transaction;
+                sqlCommand.Transaction = (OleDbTransaction)this.Transaction;
             }
             if (parameters.HasValue())
             {
-                SqlParameter[] ipars = GetSqlParameter(parameters);
+                OleDbParameter[] ipars = GetSqlParameter(parameters);
                 sqlCommand.Parameters.AddRange(ipars);
             }
             CheckConnection();
@@ -76,7 +78,7 @@ namespace SqlSugar.Access
         }
         public override void SetCommandToAdapter(IDataAdapter dataAdapter, DbCommand command)
         {
-            ((SqlDataAdapter)dataAdapter).SelectCommand = (SqlCommand)command;
+            ((OleDbDataAdapter)dataAdapter).SelectCommand = (OleDbCommand)command;
         }
         /// <summary>
         /// if mysql return MySqlParameter[] pars
@@ -87,14 +89,14 @@ namespace SqlSugar.Access
         public override IDataParameter[] ToIDbDataParameter(params SugarParameter[] parameters)
         {
             if (parameters == null || parameters.Length == 0) return null;
-            SqlParameter[] result = new SqlParameter[parameters.Length];
+            OleDbParameter[] result = new OleDbParameter[parameters.Length];
             int index = 0;
             foreach (var parameter in parameters)
             {
                 if (parameter.Value == null) parameter.Value = DBNull.Value;
-                var sqlParameter = new SqlParameter();
+                var sqlParameter = new OleDbParameter();
                 sqlParameter.ParameterName = parameter.ParameterName;
-                sqlParameter.UdtTypeName = parameter.UdtTypeName;
+                //sqlParameter.UdtTypeName = parameter.UdtTypeName;
                 sqlParameter.Size = parameter.Size;
                 sqlParameter.Value = parameter.Value;
                 sqlParameter.DbType = parameter.DbType;
@@ -116,27 +118,27 @@ namespace SqlSugar.Access
         /// </summary>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        public SqlParameter[] GetSqlParameter(params SugarParameter[] parameters)
+        public OleDbParameter[] GetSqlParameter(params SugarParameter[] parameters)
         {
             var isVarchar =IsVarchar();
             if (parameters == null || parameters.Length == 0) return null;
-            SqlParameter[] result = new SqlParameter[parameters.Length];
+            OleDbParameter[] result = new OleDbParameter[parameters.Length];
             int index = 0;
             foreach (var parameter in parameters)
             {
                 if (parameter.Value == null) parameter.Value = DBNull.Value;
-                var sqlParameter = new SqlParameter();
+                var sqlParameter = new OleDbParameter();
                 sqlParameter.ParameterName = parameter.ParameterName;
-                sqlParameter.UdtTypeName = parameter.UdtTypeName;
+                //sqlParameter.UdtTypeName = parameter.UdtTypeName;
                 sqlParameter.Size = parameter.Size;
                 sqlParameter.Value = parameter.Value;
                 sqlParameter.DbType = parameter.DbType;
-                var isTime = parameter.DbType == System.Data.DbType.Time;
-                if (isTime) 
-                {
-                   sqlParameter.SqlDbType = SqlDbType.Time;
-                   sqlParameter.Value=DateTime.Parse(parameter.Value?.ToString()).TimeOfDay;
-                }
+                //var isTime = parameter.DbType == System.Data.DbType.Time;
+                //if (isTime) 
+                //{
+                //   sqlParameter.DbType = SqlDbType.Time;
+                //   sqlParameter.Value=DateTime.Parse(parameter.Value?.ToString()).TimeOfDay;
+                //}
                 if (sqlParameter.Value!=null&& sqlParameter.Value != DBNull.Value && sqlParameter.DbType == System.Data.DbType.DateTime)
                 {
                     var date = Convert.ToDateTime(sqlParameter.Value);
@@ -151,11 +153,11 @@ namespace SqlSugar.Access
                 }
                 sqlParameter.Direction = parameter.Direction;
                 result[index] = sqlParameter;
-                if (parameter.TypeName.HasValue()) {
-                    sqlParameter.TypeName = parameter.TypeName;
-                    sqlParameter.SqlDbType = SqlDbType.Structured;
-                    sqlParameter.DbType = System.Data.DbType.Object;
-                }
+                //if (parameter.TypeName.HasValue()) {
+                //    sqlParameter.TypeName = parameter.TypeName;
+                //    sqlParameter.SqlDbType = SqlDbType.Structured;
+                //    sqlParameter.DbType = System.Data.DbType.Object;
+                //}
                 if (sqlParameter.Direction.IsIn(ParameterDirection.Output, ParameterDirection.InputOutput, ParameterDirection.ReturnValue))
                 {
                     if (this.OutputParameters == null) this.OutputParameters = new List<IDataParameter>();
