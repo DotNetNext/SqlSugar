@@ -133,12 +133,12 @@ namespace SqlSugar.Access
                 sqlParameter.Size = parameter.Size;
                 sqlParameter.Value = parameter.Value;
                 sqlParameter.DbType = parameter.DbType;
-                //var isTime = parameter.DbType == System.Data.DbType.Time;
-                //if (isTime) 
-                //{
-                //   sqlParameter.DbType = SqlDbType.Time;
-                //   sqlParameter.Value=DateTime.Parse(parameter.Value?.ToString()).TimeOfDay;
-                //}
+                var isTime = parameter.DbType == System.Data.DbType.DateTime;
+                if (isTime)
+                {
+                    sqlParameter.DbType = System.Data.DbType.String;
+                    sqlParameter.Value = sqlParameter.Value.ToString();
+                }
                 if (sqlParameter.Value!=null&& sqlParameter.Value != DBNull.Value && sqlParameter.DbType == System.Data.DbType.DateTime)
                 {
                     var date = Convert.ToDateTime(sqlParameter.Value);
