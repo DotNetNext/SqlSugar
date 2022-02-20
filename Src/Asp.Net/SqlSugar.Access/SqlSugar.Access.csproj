@@ -41,8 +41,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Queryable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Access\CodeFirst\AccessCodeFirst.cs" />
+    <Compile Include="Access\DbBind\AccessDbBind.cs" />
+    <Compile Include="Access\DbFirst\AccessDbFirst.cs" />
+    <Compile Include="Access\DbMaintenance\AccessDbMaintenance.cs" />
+    <Compile Include="Access\Queryable\AccessQueryable.cs" />
+    <Compile Include="Access\SqlBuilder\AccessBlukCopy.cs" />
+    <Compile Include="Access\SqlBuilder\AccessBuilder.cs" />
+    <Compile Include="Access\SqlBuilder\AccessDeleteBuilder.cs" />
+    <Compile Include="Access\SqlBuilder\AccessExpressionContext.cs" />
+    <Compile Include="Access\SqlBuilder\AccessFastBuilder.cs" />
+    <Compile Include="Access\SqlBuilder\AccessInsertBuilder.cs" />
+    <Compile Include="Access\SqlBuilder\AccessQueryBuilder.cs" />
+    <Compile Include="Access\SqlBuilder\AccessUpdateBuilder.cs" />
+    <Compile Include="Access\AccessProvider.cs" />
+    <Compile Include="Tools\ErrorMessage.cs" />
+    <Compile Include="Tools\FileHelper.cs" />
+    <Compile Include="Tools\UtilConstants.cs" />
+    <Compile Include="Tools\UtilExtensions.cs" />
+    <Compile Include="Tools\UtilMethods.cs" />
+    <Compile Include="Tools\ValidateExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SqlSugar\SqlSugar.csproj">
