@@ -437,9 +437,49 @@ namespace SqlSugar.Access
         }
         public override List<DbColumnInfo> GetColumnInfosByTableName(string tableName, bool isCache = true)
         {
-            tableName = SqlBuilder.GetNoTranslationColumnName(tableName);
-            var result= base.GetColumnInfosByTableName(tableName, isCache);
-            return result;
+            List<DbColumnInfo> columns = new List<DbColumnInfo>();
+            var dt = this.Context.Ado.GetDataTable("select top 8 * from " +this.SqlBuilder.GetTranslationTableName(tableName));
+            var oleDb = (this.Context.Ado.Connection as OleDbConnection);
+            DataTable columnTable = oleDb.GetOleDbSchemaTable(OleDbSchemaGuid.Columns, new object[] { null, null,tableName, null });
+            DataTable Pk = oleDb.GetOleDbSchemaTable(OleDbSchemaGuid.Primary_Keys, new string[] { null, null, tableName });
+            foreach (DataRow dr in columnTable.Rows)
+            {
+                DbColumnInfo info = new DbColumnInfo();
+                info.TableName = tableName;
+                info.DbColumnName = dr["COLUMN_NAME"] + "";
+                info.IsNullable = Convert.ToBoolean(dr["IS_NULLABLE"]);
+                info.DataType = dt.Columns[info.DbColumnName].DataType.Name;
+                if (info.DataType.EqualCase( "int32")) 
+                {
+                    info.DataType = "int";
+                }
+                else if (info.DataType.EqualCase("int64"))
+                {
+                    info.DataType = "long";
+                }
+                if (info.DataType.EqualCase("string") ) 
+                {
+                    info.Length = dr["CHARACTER_MAXIMUM_LENGTH"].ObjToInt();
+                }
+                if (info.DataType.EqualCase("Decimal"))
+                {
+                    info.Length = dr["numeric_precision"].ObjToInt();
+                    info.Scale=info.DecimalDigits = dr["numeric_scale"].ObjToInt();
+                }
+                foreach (DataRow pkRow in Pk.Rows)
+                {
+                    if (pkRow["COLUMN_NAME"].ObjToString() == dr["COLUMN_NAME"].ObjToString()) 
+                    {
+                        info.IsPrimarykey = true;
+                        if (info.DataType == "int") 
+                        {
+                            info.IsIdentity = true;
+                        }
+                    }
+                }
+                columns.Add(info);
+            }
+            return columns;
         }
         public override bool RenameColumn(string tableName, string oldColumnName, string newColumnName)
         {

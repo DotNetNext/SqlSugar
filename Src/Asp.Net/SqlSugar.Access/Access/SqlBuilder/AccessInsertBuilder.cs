@@ -8,6 +8,27 @@ namespace SqlSugar.Access
 {
     public class AccessInsertBuilder : InsertBuilder
     {
+        public override string SqlTemplate
+        {
+            get
+            {
+                if (IsReturnIdentity)
+                {
+                    return @"INSERT INTO {0} 
+           ({1})
+     VALUES
+           ({2}) ;";
+                }
+                else
+                {
+                    return @"INSERT INTO {0} 
+           ({1})
+     VALUES
+           ({2}) ;";
+
+                }
+            }
+        }
         public override string ToSqlString()
         {
             if (IsNoInsertNull)
