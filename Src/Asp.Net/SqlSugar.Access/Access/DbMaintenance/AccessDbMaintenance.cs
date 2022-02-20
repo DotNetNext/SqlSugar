@@ -1,6 +1,8 @@
 ﻿using SqlSugar.Access;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.OleDb;
 using System.Linq;
 using System.Text;
 
@@ -231,11 +233,7 @@ namespace SqlSugar.Access
         {
             get
             {
-                return @"SELECT C.class_desc
-                                FROM sys.tables A 
-                                LEFT JOIN sys.extended_properties C ON C.major_id = A.object_id 
-								INNER JOIN sys.schemas SC ON  SC.schema_id=A.schema_id AND SC.name='dbo'
-                                WHERE A.name = '{0}'  AND minor_id=0";
+                return @"SELECT 1 AS ID";
             }
 
         }
@@ -276,7 +274,7 @@ namespace SqlSugar.Access
         {
             get
             {
-                return "select top 1 id from sysobjects";
+                return "select   1  AS ID ";
             }
         }
         #endregion
@@ -314,6 +312,22 @@ namespace SqlSugar.Access
         #endregion
 
         #region Methods
+        public override void AddDefaultValue(EntityInfo entityInfo)
+        {
+            //base.AddDefaultValue(entityInfo);
+        }
+        public override List<DbTableInfo> GetTableInfoList(bool isCache = true)
+        {
+            var table = (this.Context.Ado.Connection as OleDbConnection).GetOleDbSchemaTable(OleDbSchemaGuid.Tables, new Object[] { null, null, null, "Table" });
+            var result= table
+              .Rows.Cast<DataRow>().Select(it=>new DbTableInfo
+              { 
+                 
+                  Name=it["TABLE_NAME"]+"",
+                  Description=it["DESCRIPTION"]+""
+              }).ToList();
+            return result;
+        }
         public List<string> GetSchemas()
         {
             return this.Context.Ado.SqlQuery<string>("SELECT name FROM  sys.schemas where name <> 'dbo'");
