@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace SqlSugar.Access 
 {
    
-    public class SqlServerFastBuilder:FastBuilder,IFastBuilder
+    public class AccessFastBuilder : FastBuilder,IFastBuilder
     {
         public async Task<int> ExecuteBulkCopyAsync(DataTable dt)
         {

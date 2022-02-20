@@ -12,6 +12,8 @@ namespace SqlSugar
         static Assembly assembly = Assembly.GetExecutingAssembly();
         static Dictionary<string, Type> typeCache = new Dictionary<string, Type>();
         public static string CustomTypeName = "";
+        public static string CustomDbName = "";
+        public static string CustomNamespace = "";
         public static bool NoCache = false;
 
         public static void RemoveCache()
@@ -309,11 +311,11 @@ namespace SqlSugar
             }
             else if (type == "Access")
             {
-                return "SqlSugar.MySqlConnector.Access" + name;
+                return "SqlSugar.Access.Access" + name;
             }
             else if (type == "Custom")
             {
-                return "SqlSugar.MySqlConnector.MySql" + name;
+                return CustomNamespace + "."+CustomDbName + name;
             }
             else
             {

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SqlSugar.Access
 {
-    public class SqlServerInsertBuilder:InsertBuilder
+    public class AccessInsertBuilder : InsertBuilder
     {
         public override string ToSqlString()
         {

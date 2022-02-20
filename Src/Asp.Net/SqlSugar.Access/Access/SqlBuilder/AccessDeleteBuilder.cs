@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SqlSugar.Access
 {
-    public class SqlServerDeleteBuilder: DeleteBuilder
+    public class AccessDeleteBuilder : DeleteBuilder
     {
 
     }

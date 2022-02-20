@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SqlSugar.Access
 {
-    public class SqlServerCodeFirst:CodeFirstProvider
+    public class AccessCodeFirst : CodeFirstProvider
     {
         protected override string GetTableName(EntityInfo entityInfo)
         {

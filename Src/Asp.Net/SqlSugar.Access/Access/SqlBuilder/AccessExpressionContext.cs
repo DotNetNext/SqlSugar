@@ -9,16 +9,16 @@ using System.Threading.Tasks;
 
 namespace SqlSugar.Access
 {
-    public partial class SqlServerExpressionContext : ExpressionContext, ILambdaExpressions
+    public partial class AccessExpressionContext : ExpressionContext, ILambdaExpressions
     {
         public SqlSugarProvider Context { get; set; }
-        public SqlServerExpressionContext()
+        public AccessExpressionContext()
         {
             base.DbMehtods = new SqlServerMethod();
         }
 
     }
-    public partial class SqlServerMethod : DefaultDbMethod, IDbMethods
+    public partial class AccessMethod : DefaultDbMethod, IDbMethods
     {
         public override string HasValue(MethodCallExpressionModel model)
         {

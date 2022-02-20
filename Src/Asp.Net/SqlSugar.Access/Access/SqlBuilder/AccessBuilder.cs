@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SqlSugar.Access
 {
-    public class SqlServerBuilder : SqlBuilderProvider
+    public class AccessBuilder : SqlBuilderProvider
     {
         public override string SqlTranslationLeft { get { return "["; } }
         public override string SqlTranslationRight { get { return "]"; } }

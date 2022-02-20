@@ -6,7 +6,7 @@ using System.Text;
 
 namespace SqlSugar.Access
 {
-    public class SqlServerDbMaintenance : DbMaintenanceProvider
+    public class AccessDbMaintenance : DbMaintenanceProvider
     {
         #region DML
         protected override string GetDataBaseSql
@@ -389,61 +389,7 @@ namespace SqlSugar.Access
         /// <returns></returns>
         public override bool CreateDatabase(string databaseName, string databaseDirectory = null)
         {
-            if (databaseDirectory != null)
-            {
-                try
-                {
-                    if (!FileHelper.IsExistDirectory(databaseDirectory))
-                    {
-                        FileHelper.CreateDirectory(databaseDirectory);
-                    }
-                }
-                catch  
-                {
-                    //Databases and sites are not in the same service
-                }
-            }
-            var oldDatabaseName = this.Context.Ado.Connection.Database;
-            var connection = this.Context.CurrentConnectionConfig.ConnectionString;
-            connection = connection.Replace(oldDatabaseName, "master");
-            var newDb = new SqlSugarClient(new ConnectionConfig()
-            {
-                DbType = this.Context.CurrentConnectionConfig.DbType,
-                IsAutoCloseConnection = true,
-                ConnectionString = connection
-            });
-            if (!GetDataBaseList(newDb).Any(it => it.Equals(databaseName, StringComparison.CurrentCultureIgnoreCase)))
-            {
-                var sql = CreateDataBaseSql;
-                if (databaseDirectory.HasValue())
-                {
-                    sql += @"on primary 
-                                        (
-                                            name = N'{0}',
-                                            filename = N'{1}\{0}.mdf',
-                                            size = 10mb,
-                                            maxsize = 100mb,
-                                            filegrowth = 1mb
-                                        ),
-                                        (
-                                            name = N'{0}_ndf',   
-                                            filename = N'{1}\{0}.ndf',
-                                            size = 10mb,
-                                            maxsize = 100mb,
-                                             filegrowth = 10 %
-                                        )
-                                        log on  
-                                        (
-                                            name = N'{0}_log',
-                                            filename = N'{1}\{0}.ldf',
-                                            size = 100mb,
-                                            maxsize = 1gb,
-                                            filegrowth = 10mb
-                                        ); ";
-                }
-                newDb.Ado.ExecuteCommand(string.Format(sql, databaseName, databaseDirectory));
-            }
-            return true;
+            throw new Exception("Access no support CreateDatabase");
         }
         public override bool CreateTable(string tableName, List<DbColumnInfo> columns, bool isCreatePrimaryKey = true)
         {

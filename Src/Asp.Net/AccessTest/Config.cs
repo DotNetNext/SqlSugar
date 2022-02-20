@@ -12,20 +12,28 @@ namespace OrmTest
     /// </summary>
     public class Config
     {
+        public static string GetCurrentProjectPath
+        {
+
+            get
+            {
+                return Environment.CurrentDirectory.Replace(@"\bin\Debug", "");
+            }
+        }
         /// <summary>
         /// Account have permission to create database
         /// 用有建库权限的数据库账号
         /// </summary>
-        public static string ConnectionString = "server=.;uid=sa;pwd=sasa;database=SQLSUGAR4XTEST";
+        public static string ConnectionString =  "Provider=Microsoft.Jet.OLEDB.4.0;Data Source="+GetCurrentProjectPath+"test.accdb";
         /// <summary>
         /// Account have permission to create database
         /// 用有建库权限的数据库账号
         /// </summary>
-        public static string ConnectionString2 = "server=.;uid=sa;pwd=sasa;database=SQLSUGAR4XTEST2";
+        public static string ConnectionString2 = ConnectionString;
         /// <summary>
         /// Account have permission to create database
         /// 用有建库权限的数据库账号
         /// </summary>
-        public static string ConnectionString3 = "server=.;uid=sa;pwd=sasa;database=SQLSUGAR4XTEST3";
+        public static string ConnectionString3 = ConnectionString;
     }
 }

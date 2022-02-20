@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SqlSugar.Access
 {
-    public class SqlServerQueryBuilder: QueryBuilder
+    public class AccessQueryBuilder : QueryBuilder
     {
         public override string SqlTemplate
         {

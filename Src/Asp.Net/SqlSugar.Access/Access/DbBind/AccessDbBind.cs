@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 namespace SqlSugar.Access
 {
-    public class SqlServerDbBind : DbBindProvider
+    public class AccessDbBind : DbBindProvider
     {
         public override List<KeyValuePair<string, CSharpDataType>> MappingTypes
         {
