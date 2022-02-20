@@ -111,17 +111,17 @@ namespace OrmTest
             var getByWhere = db.Queryable<Order>().Where(it => it.Id == 1 || it.Name == "a").ToList();
             var getByWhere2 = db.Queryable<Order>().Where(it => it.Id == DateTime.Now.Year).ToList();
             var getByFuns = db.Queryable<Order>().Where(it => SqlFunc.IsNullOrEmpty(it.Name)).ToList();
-            var getByFuns2 = db.Queryable<Order>().GroupBy(it => it.Name).Select(it => SqlFunc.AggregateDistinctCount(it.Price)).ToList();
+           // var getByFuns2 = db.Queryable<Order>().GroupBy(it => it.Name).Select(it => SqlFunc.AggregateDistinctCount(it.Price)).ToList();
             var getDicionary = db.Queryable<Order>().ToDictionary(it => it.Id, it => it.Name);
             var getDicionaryList = db.Queryable<Order>().ToDictionaryList();
             var getTest = db.Queryable<Order>().Where(it =>string.IsNullOrWhiteSpace( it.Name)).ToList();
-            var test01 = db.Queryable<Order>().PartitionBy(it => it.Id).ToList();
+           // var test01 = db.Queryable<Order>().PartitionBy(it => it.Id).ToList();
             var q1 = db.Queryable<Order>().Take(1);
             var q2 = db.Queryable<Order>().Take(2);
-            var test02 = db.Union(q1, q2).ToList();
+            //var test02 = db.Union(q1, q2).ToList();
             var test03 = db.Queryable<Order>().Take(1).ToList();
             var dp = DateTime.Now;
-            var test05 = db.Queryable<Order>().Where(it => it.CreateTime.Month==  dp.Month).ToList();
+            //var test05 = db.Queryable<Order>().Where(it => it.CreateTime.Month==  dp.Month).ToList();
             var test06 = db.Queryable<Order>()
                    .ToPivotTable(it => it.Id, it => it.Name, it => it.Sum(x => x.Price));
 
@@ -131,8 +131,8 @@ namespace OrmTest
             var test08 = db.Queryable<Order>()
             .ToPivotJson(it => it.Id, it => it.Name, it => it.Sum(x => x.Price));
 
-            var test09 = db.Queryable<Order>().PartitionBy(it=>it.Id).ToPageListAsync(1,2,0);
-            test09.Wait();
+            //var test09 = db.Queryable<Order>().PartitionBy(it=>it.Id).ToPageListAsync(1,2,0);
+            //test09.Wait();
 
             int c = 0;
             var test10 = db.Queryable<Order>().ToPageList(1, 2, ref c);

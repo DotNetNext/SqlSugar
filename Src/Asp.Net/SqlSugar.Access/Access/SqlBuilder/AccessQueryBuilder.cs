@@ -23,13 +23,17 @@ namespace SqlSugar.Access
             var isIgnoreOrderBy = this.IsCount && this.PartitionByValue.IsNullOrEmpty();
             AppendFilter();
             sql = new StringBuilder();
-            if (this.OrderByValue == null && (Skip != null || Take != null)) this.OrderByValue = " ORDER BY GetDate() ";
+            if (this.OrderByValue == null && (Skip != null || Take != null)) this.OrderByValue = " ORDER BY now() ";
             if (this.PartitionByValue.HasValue())
             {
                 this.OrderByValue = this.PartitionByValue + this.OrderByValue;
             }
             var isFirst = (Skip == 0 || Skip == null) && Take == 1 && DisableTop == false;
             var isRowNumber = (Skip != null || Take != null) && !isFirst;
+            var isPage = isRowNumber;
+            isRowNumber = false;
+            Skip = null;
+            Take = null;
             var rowNumberString = string.Format(",ROW_NUMBER() OVER({0}) AS RowIndex ", GetOrderByString);
             string groupByValue = GetGroupByString + HavingInfos;
             string orderByValue = (!isRowNumber && this.OrderByValue.HasValue()) ? GetOrderByString : null;
@@ -42,7 +46,7 @@ namespace SqlSugar.Access
             {
                 if (externalOrderBy.IsNullOrEmpty())
                 {
-                    externalOrderBy = " ORDER BY GetDate() ";
+                    externalOrderBy = " ORDER BY now() ";
                 }
                 result = string.Format("SELECT *,ROW_NUMBER() OVER({0}) AS RowIndex2 FROM ({1}) ExternalTable ", GetExternalOrderBy(externalOrderBy), result);
                 result = ToPageSql2(result, ExternalPageIndex, ExternalPageSize, true);
@@ -52,7 +56,7 @@ namespace SqlSugar.Access
             {
                 if (this.OrderByValue.IsNullOrEmpty())
                 {
-                    result += " ORDER BY GETDATE() ";
+                    result += " ORDER BY now() ";
                 }
                 result += this.Offset;
             }

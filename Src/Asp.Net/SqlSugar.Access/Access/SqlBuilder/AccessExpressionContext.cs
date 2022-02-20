@@ -14,12 +14,20 @@ namespace SqlSugar.Access
         public SqlSugarProvider Context { get; set; }
         public AccessExpressionContext()
         {
-            base.DbMehtods = new SqlServerMethod();
+            base.DbMehtods = new AccessMethod();
         }
 
     }
     public partial class AccessMethod : DefaultDbMethod, IDbMethods
     {
+        public override string GetRandom()
+        {
+            return " rnd() ";
+        }
+        public override string GetDate()
+        {
+            return " NOW()";
+        }
         public override string HasValue(MethodCallExpressionModel model)
         {
             if (model.Args[0].Type == UtilConstants.GuidType)

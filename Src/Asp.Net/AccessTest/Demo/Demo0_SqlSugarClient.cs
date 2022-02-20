@@ -222,120 +222,120 @@ namespace OrmTest
 
         private static void DistributedTransactionExample()
         {
-            Console.WriteLine("");
-            Console.WriteLine("#### Distributed TransactionExample Start ####");
-            SqlSugarClient db = new SqlSugarClient(new List<ConnectionConfig>()
-            {
-                new ConnectionConfig(){ ConfigId="1", DbType=DbType.Access, ConnectionString=Config.ConnectionString,InitKeyType=InitKeyType.Attribute,IsAutoCloseConnection=true },
-                new ConnectionConfig(){ ConfigId="2", DbType=DbType.Access, ConnectionString=Config.ConnectionString2 ,InitKeyType=InitKeyType.Attribute ,IsAutoCloseConnection=true}
-            });
+            //Console.WriteLine("");
+            //Console.WriteLine("#### Distributed TransactionExample Start ####");
+            //SqlSugarClient db = new SqlSugarClient(new List<ConnectionConfig>()
+            //{
+            //    new ConnectionConfig(){ ConfigId="1", DbType=DbType.Access, ConnectionString=Config.ConnectionString,InitKeyType=InitKeyType.Attribute,IsAutoCloseConnection=true },
+            //    new ConnectionConfig(){ ConfigId="2", DbType=DbType.Access, ConnectionString=Config.ConnectionString2 ,InitKeyType=InitKeyType.Attribute ,IsAutoCloseConnection=true}
+            //});
 
-            //use db1
-            db.CodeFirst.SetStringDefaultLength(200).InitTables(typeof(Order), typeof(OrderItem));//
-            db.Insertable(new Order() { Name = "order1", CreateTime = DateTime.Now }).ExecuteCommand();
-            Console.WriteLine(db.CurrentConnectionConfig.DbType + ":" + db.Queryable<Order>().Count());
+            ////use db1
+            //db.CodeFirst.SetStringDefaultLength(200).InitTables(typeof(Order), typeof(OrderItem));//
+            //db.Insertable(new Order() { Name = "order1", CreateTime = DateTime.Now }).ExecuteCommand();
+            //Console.WriteLine(db.CurrentConnectionConfig.DbType + ":" + db.Queryable<Order>().Count());
 
-            //use db2
-            db.ChangeDatabase("2");
-            db.DbMaintenance.CreateDatabase();//Create Database2
-            db.CodeFirst.SetStringDefaultLength(200).InitTables(typeof(Order), typeof(OrderItem));
-            db.Insertable(new Order() { Name = "order1", CreateTime = DateTime.Now }).ExecuteCommand();
-            Console.WriteLine(db.CurrentConnectionConfig.DbType + ":" + db.Queryable<Order>().Count());
+            ////use db2
+            //db.ChangeDatabase("2");
+            //db.DbMaintenance.CreateDatabase();//Create Database2
+            //db.CodeFirst.SetStringDefaultLength(200).InitTables(typeof(Order), typeof(OrderItem));
+            //db.Insertable(new Order() { Name = "order1", CreateTime = DateTime.Now }).ExecuteCommand();
+            //Console.WriteLine(db.CurrentConnectionConfig.DbType + ":" + db.Queryable<Order>().Count());
 
-            // Example 1
-            Console.WriteLine("Example 1");
-            try
-            {
-                db.BeginTran();
+            //// Example 1
+            //Console.WriteLine("Example 1");
+            //try
+            //{
+            //    db.BeginTran();
 
-                db.ChangeDatabase("1");//use db1
-                db.Deleteable<Order>().ExecuteCommand();
-                Console.WriteLine("---Delete all " + db.CurrentConnectionConfig.DbType);
-                Console.WriteLine(db.Queryable<Order>().Count());
+            //    db.ChangeDatabase("1");//use db1
+            //    db.Deleteable<Order>().ExecuteCommand();
+            //    Console.WriteLine("---Delete all " + db.CurrentConnectionConfig.DbType);
+            //    Console.WriteLine(db.Queryable<Order>().Count());
 
-                db.ChangeDatabase("2");//use db2
-                db.Deleteable<Order>().ExecuteCommand();
-                Console.WriteLine("---Delete all " + db.CurrentConnectionConfig.DbType);
-                Console.WriteLine(db.Queryable<Order>().Count());
+            //    db.ChangeDatabase("2");//use db2
+            //    db.Deleteable<Order>().ExecuteCommand();
+            //    Console.WriteLine("---Delete all " + db.CurrentConnectionConfig.DbType);
+            //    Console.WriteLine(db.Queryable<Order>().Count());
 
-                throw new Exception();
-                db.CommitTran();
-            }
-            catch
-            {
-                db.RollbackTran();
-                Console.WriteLine("---Roll back");
-                db.ChangeDatabase("1");//use db1
-                Console.WriteLine(db.CurrentConnectionConfig.DbType);
-                Console.WriteLine(db.Queryable<Order>().Count());
+            //    throw new Exception();
+            //    db.CommitTran();
+            //}
+            //catch
+            //{
+            //    db.RollbackTran();
+            //    Console.WriteLine("---Roll back");
+            //    db.ChangeDatabase("1");//use db1
+            //    Console.WriteLine(db.CurrentConnectionConfig.DbType);
+            //    Console.WriteLine(db.Queryable<Order>().Count());
 
-                db.ChangeDatabase("2");//use db2
-                Console.WriteLine(db.CurrentConnectionConfig.DbType);
-                Console.WriteLine(db.Queryable<Order>().Count());
-            }
+            //    db.ChangeDatabase("2");//use db2
+            //    Console.WriteLine(db.CurrentConnectionConfig.DbType);
+            //    Console.WriteLine(db.Queryable<Order>().Count());
+            //}
 
 
 
-            // Example 2
-            Console.WriteLine("Example 2");
+            //// Example 2
+            //Console.WriteLine("Example 2");
 
-            var result = db.UseTran(() =>
-            {
+            //var result = db.UseTran(() =>
+            //{
 
-                db.ChangeDatabase("1");//use db1
-                db.Deleteable<Order>().ExecuteCommand();
-                Console.WriteLine("---Delete all " + db.CurrentConnectionConfig.DbType);
-                Console.WriteLine(db.Queryable<Order>().Count());
+            //    db.ChangeDatabase("1");//use db1
+            //    db.Deleteable<Order>().ExecuteCommand();
+            //    Console.WriteLine("---Delete all " + db.CurrentConnectionConfig.DbType);
+            //    Console.WriteLine(db.Queryable<Order>().Count());
 
-                db.ChangeDatabase("2");//use db2
-                db.Deleteable<Order>().ExecuteCommand();
-                Console.WriteLine("---Delete all " + db.CurrentConnectionConfig.DbType);
-                Console.WriteLine(db.Queryable<Order>().Count());
-                throw new Exception("");
+            //    db.ChangeDatabase("2");//use db2
+            //    db.Deleteable<Order>().ExecuteCommand();
+            //    Console.WriteLine("---Delete all " + db.CurrentConnectionConfig.DbType);
+            //    Console.WriteLine(db.Queryable<Order>().Count());
+            //    throw new Exception("");
 
-            });
-            if (result.IsSuccess == false)
-            {
-                Console.WriteLine("---Roll back");
-                db.ChangeDatabase("1");//use db1
-                Console.WriteLine(db.CurrentConnectionConfig.DbType);
-                Console.WriteLine(db.Queryable<Order>().Count());
+            //});
+            //if (result.IsSuccess == false)
+            //{
+            //    Console.WriteLine("---Roll back");
+            //    db.ChangeDatabase("1");//use db1
+            //    Console.WriteLine(db.CurrentConnectionConfig.DbType);
+            //    Console.WriteLine(db.Queryable<Order>().Count());
 
-                db.ChangeDatabase("2");//use db2
-                Console.WriteLine(db.CurrentConnectionConfig.DbType);
-                Console.WriteLine(db.Queryable<Order>().Count());
-            }
+            //    db.ChangeDatabase("2");//use db2
+            //    Console.WriteLine(db.CurrentConnectionConfig.DbType);
+            //    Console.WriteLine(db.Queryable<Order>().Count());
+            //}
 
-            // Example 3
-            Console.WriteLine("Example 3");
-            Task<DbResult<bool>> result2 = AsyncTranDemo(db);
-            result2.Wait();
+            //// Example 3
+            //Console.WriteLine("Example 3");
+            //Task<DbResult<bool>> result2 = AsyncTranDemo(db);
+            //result2.Wait();
  
-            // Example 4
-            Console.WriteLine("Example 4");
-            var mysqldb = db.GetConnection("1");//获取ConfigId为1的数据库对象
-            var sqlServerdb = db.GetConnection("2");//获取默认对象  
-            Console.WriteLine(mysqldb.Queryable<Order>().Count());
-            Console.WriteLine(sqlServerdb.Queryable<Order>().Count());
-            try
-            {
-                db.BeginTran();
+            //// Example 4
+            //Console.WriteLine("Example 4");
+            //var mysqldb = db.GetConnection("1");//获取ConfigId为1的数据库对象
+            //var sqlServerdb = db.GetConnection("2");//获取默认对象  
+            //Console.WriteLine(mysqldb.Queryable<Order>().Count());
+            //Console.WriteLine(sqlServerdb.Queryable<Order>().Count());
+            //try
+            //{
+            //    db.BeginTran();
 
-                sqlServerdb.Deleteable<Order>().ExecuteCommand();
-                mysqldb.Deleteable<Order>().ExecuteCommand();
-                Console.WriteLine(mysqldb.Queryable<Order>().Count());
-                Console.WriteLine(sqlServerdb.Queryable<Order>().Count());
+            //    sqlServerdb.Deleteable<Order>().ExecuteCommand();
+            //    mysqldb.Deleteable<Order>().ExecuteCommand();
+            //    Console.WriteLine(mysqldb.Queryable<Order>().Count());
+            //    Console.WriteLine(sqlServerdb.Queryable<Order>().Count());
 
-                throw new Exception("");
-                db.CommitTran();
-            }
-            catch (Exception)
-            {
-                db.RollbackTran();//数据回滚
-                Console.WriteLine(mysqldb.Queryable<Order>().Count());
-                Console.WriteLine(sqlServerdb.Queryable<Order>().Count());
-            }
-            Console.WriteLine("#### Distributed TransactionExample End ####");
+            //    throw new Exception("");
+            //    db.CommitTran();
+            //}
+            //catch (Exception)
+            //{
+            //    db.RollbackTran();//数据回滚
+            //    Console.WriteLine(mysqldb.Queryable<Order>().Count());
+            //    Console.WriteLine(sqlServerdb.Queryable<Order>().Count());
+            //}
+            //Console.WriteLine("#### Distributed TransactionExample End ####");
         }
 
         /// <summary>
