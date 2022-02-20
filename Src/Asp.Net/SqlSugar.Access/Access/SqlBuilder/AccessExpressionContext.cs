@@ -20,6 +20,56 @@ namespace SqlSugar.Access
     }
     public partial class AccessMethod : DefaultDbMethod, IDbMethods
     {
+        public override string ToDate(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            return string.Format(" CDate({0}) ", parameter.MemberName);
+        }
+        public override string ToBool(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            return string.Format(" CDate({0}) ", parameter.MemberName);
+        }
+        public override string ToInt32(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            return string.Format(" CInt({0}) ", parameter.MemberName);
+        }
+        public override string ToString(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            return string.Format(" CVar({0}) ", parameter.MemberName);
+        }
+        public override string ToDateShort(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            return string.Format(" Format$({0},\"Long Date\") ", parameter.MemberName);
+        }
+        public override string DateValue(MethodCallExpressionModel model)
+        {
+            var type = "";
+            if (model.Args[1].MemberValue.ObjToString() == "Day") 
+            {
+                type = "d";
+            }
+            if (model.Args[1].MemberValue.ObjToString() == "Month")
+            {
+                type = "m";
+            }
+            if (model.Args[1].MemberValue.ObjToString() == "Year")
+            {
+                type = "yyyy";
+            }
+            if (model.Args[1].MemberValue.ObjToString() == DateType.Minute.ToString())
+            {
+                type = "M";
+            }
+            if (model.Args[1].MemberValue.ObjToString() == DateType.Second.ToString())
+            {
+                type = "s";
+            }
+            return "DATEPART(\""+ type + "\", date())";
+        }
         public override string GetRandom()
         {
             return " rnd() ";

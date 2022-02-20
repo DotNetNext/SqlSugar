@@ -121,7 +121,7 @@ namespace OrmTest
             //var test02 = db.Union(q1, q2).ToList();
             var test03 = db.Queryable<Order>().Take(1).ToList();
             var dp = DateTime.Now;
-            //var test05 = db.Queryable<Order>().Where(it => it.CreateTime.Month==  dp.Month).ToList();
+            var test05 = db.Queryable<Order>().Where(it => it.CreateTime.Month==  dp.Month).ToList();
             var test06 = db.Queryable<Order>()
                    .ToPivotTable(it => it.Id, it => it.Name, it => it.Sum(x => x.Price));
 
@@ -153,7 +153,7 @@ namespace OrmTest
               JoinType.Left, o.Name == SqlFunc.ToString(SqlFunc.MergeString(",", i.Name, ","))
             ))
             .Select<ViewOrder>().ToList();
-            var test16 = db.Queryable<Order>().Select(it => SqlFunc.SqlServer_DateDiff("day", DateTime.Now.AddDays(-1), DateTime.Now)).ToList();
+           // var test16 = db.Queryable<Order>().Select(it => SqlFunc.SqlServer_DateDiff("day", DateTime.Now.AddDays(-1), DateTime.Now)).ToList();
             var test17 =  
                db.Queryable<Order>()
                .Select<Order>()
