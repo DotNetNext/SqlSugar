@@ -34,14 +34,14 @@ namespace OrmTest
                                                         new ConnectionConfig()
                                                     {
                                                         ConfigId="1",
-                                                        DbType = SqlSugar.DbType.SqlServer,
+                                                        DbType = SqlSugar.DbType.Access,
                                                         IsAutoCloseConnection = true,
                                                         ConnectionString = Config.ConnectionString
                                                     },
                                                         new ConnectionConfig()
                                                     {
                                                         ConfigId="2",
-                                                        DbType = SqlSugar.DbType.SqlServer,
+                                                        DbType = SqlSugar.DbType.Access,
                                                         IsAutoCloseConnection = true,
                                                         ConnectionString = Config.ConnectionString2
                                                     }

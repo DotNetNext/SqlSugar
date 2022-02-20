@@ -553,7 +553,7 @@ namespace OrmTest
         {
             return new SqlSugarClient(new ConnectionConfig()
             {
-                DbType = SqlSugar.DbType.SqlServer,
+                DbType = SqlSugar.DbType.Access,
                 ConnectionString = Config.ConnectionString,
                 InitKeyType = InitKeyType.Attribute,
                 IsAutoCloseConnection = true,

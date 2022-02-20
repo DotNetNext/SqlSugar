@@ -95,7 +95,7 @@ namespace OrmTest
 
         public static SqlSugarClient GetInstance()
         {
-            SqlSugarClient db = new SqlSugarClient(new ConnectionConfig() { DbType = DbType.SqlServer, ConnectionString = Config.ConnectionString, IsAutoCloseConnection = true });
+            SqlSugarClient db = new SqlSugarClient(new ConnectionConfig() { DbType = DbType.Access, ConnectionString = Config.ConnectionString, IsAutoCloseConnection = true });
             db.Aop.OnLogExecuted = (sql, p) =>
             {
                 Console.WriteLine(sql);

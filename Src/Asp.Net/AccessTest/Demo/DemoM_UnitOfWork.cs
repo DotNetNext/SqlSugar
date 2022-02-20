@@ -33,7 +33,7 @@ namespace OrmTest
         {
             public static SqlSugarScope Db = new SqlSugarScope(new ConnectionConfig()
             {
-                DbType = SqlSugar.DbType.SqlServer,
+                DbType = SqlSugar.DbType.Access,
                 ConnectionString = Config.ConnectionString,
                 IsAutoCloseConnection = true
             }, db => {
