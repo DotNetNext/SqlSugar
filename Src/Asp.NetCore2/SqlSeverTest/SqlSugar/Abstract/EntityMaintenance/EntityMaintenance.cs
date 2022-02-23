@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace SqlSugar
 {
@@ -17,7 +17,7 @@ namespace SqlSugar
         }
         public EntityInfo GetEntityInfo(Type type)
         {
-            string cacheKey = "GetEntityInfo"+ type.GetHashCode() + type.FullName;
+            string cacheKey = "GetEntityInfo" + type.GetHashCode() + type.FullName;
             return this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey,
             () =>
             {
@@ -37,6 +37,7 @@ namespace SqlSugar
                 result.IsDisabledUpdateAll = sugarTable.IsDisabledUpdateAll;
                 result.IsDisabledDelete = sugarTable.IsDisabledDelete;
             }
+            if (result.TableDescription.IsNullOrEmpty()) result.TableDescription = GetTableAnnotation(type);
             if (this.Context.CurrentConnectionConfig.ConfigureExternalServices != null && this.Context.CurrentConnectionConfig.ConfigureExternalServices.EntityNameService != null)
             {
                 if (result.DbTableName == null)
@@ -92,9 +93,9 @@ namespace SqlSugar
         }
         public string GetDbColumnName<T>(string propertyName)
         {
-            return GetDbColumnName(propertyName,typeof(T));
+            return GetDbColumnName(propertyName, typeof(T));
         }
-        public string GetDbColumnName(string propertyName,Type entityType)
+        public string GetDbColumnName(string propertyName, Type entityType)
         {
             var isAny = this.GetEntityInfo(entityType).Columns.Any(it => it.PropertyName.Equals(propertyName, StringComparison.CurrentCultureIgnoreCase));
             Check.Exception(!isAny, "Property " + propertyName + " is Invalid");
@@ -117,17 +118,17 @@ namespace SqlSugar
             if (this.Context.MappingColumns == null || this.Context.MappingColumns.Count == 0) return dbColumnName;
             else
             {
-                var mappingInfo = this.Context.MappingColumns.SingleOrDefault(it => it.EntityName == typeName && it.DbColumnName.Equals(dbColumnName,StringComparison.CurrentCultureIgnoreCase));
+                var mappingInfo = this.Context.MappingColumns.SingleOrDefault(it => it.EntityName == typeName && it.DbColumnName.Equals(dbColumnName, StringComparison.CurrentCultureIgnoreCase));
                 return mappingInfo == null ? dbColumnName : mappingInfo.PropertyName;
             }
         }
-        public string GetPropertyName(string dbColumnName,Type entityType)
+        public string GetPropertyName(string dbColumnName, Type entityType)
         {
             var typeName = entityType.Name;
             if (this.Context.MappingColumns == null || this.Context.MappingColumns.Count == 0) return dbColumnName;
             else
             {
-                var mappingInfo = this.Context.MappingColumns.SingleOrDefault(it => it.EntityName == typeName && it.DbColumnName.Equals(dbColumnName,StringComparison.CurrentCultureIgnoreCase));
+                var mappingInfo = this.Context.MappingColumns.SingleOrDefault(it => it.EntityName == typeName && it.DbColumnName.Equals(dbColumnName, StringComparison.CurrentCultureIgnoreCase));
                 return mappingInfo == null ? dbColumnName : mappingInfo.PropertyName;
             }
         }
@@ -136,6 +137,52 @@ namespace SqlSugar
             var propertyName = GetPropertyName<T>(dbColumnName);
             return typeof(T).GetProperties().First(it => it.Name == propertyName);
         }
+        /// <summary>
+        /// Gets the text contents of this XML element node
+        /// </summary>
+        /// <param name="entityType">entity type</param>
+        /// <param name="nodeAttributeName">The value of the name attribute of the XML node</param>
+        /// <returns>the text contents of this XML element node</returns>
+        public string GetXElementNodeValue(Type entityType, string nodeAttributeName)
+        {
+            FileInfo file = new FileInfo(entityType.Assembly.Location);
+            string xmlPath = entityType.Assembly.Location.Replace(file.Extension, ".xml");
+            if (!File.Exists(xmlPath))
+            {
+                return string.Empty;
+            }
+            XElement xe = XElement.Load(xmlPath);
+            if (xe == null)
+            {
+                return string.Empty;
+            }
+            var xeNode = xe.Element("members").Elements("member").Where(ele => ele.Attribute("name").Value == nodeAttributeName).FirstOrDefault();
+            if (xeNode == null)
+            {
+                return string.Empty;
+            }
+            return xeNode.Element("summary").Value.Trim();
+        }
+        /// <summary>
+        /// Gets the code annotation for the database table
+        /// </summary>
+        /// <param name="entityType">entity type</param>
+        /// <returns>the code annotation for the database table</returns>
+        public string GetTableAnnotation(Type entityType)
+        {
+            return GetXElementNodeValue(entityType, $"T:{entityType.FullName}");
+        }
+        /// <summary>
+        /// Gets the code annotation for the field
+        /// </summary>
+        /// <param name="entityType">entity type</param>
+        /// <param name="dbColumnName">column name</param>
+        /// <returns>the code annotation for the field</returns>
+        public string GetPropertyAnnotation(Type entityType, string dbColumnName)
+        {
+            return GetXElementNodeValue(entityType, $"P:{entityType.FullName}.{dbColumnName}");
+        }
+
         #region Primary key
         private void SetColumns(EntityInfo result)
         {
@@ -159,7 +206,7 @@ namespace SqlSugar
                 }
                 else
                 {
-                    if (sugarColumn.IsJson && String.IsNullOrEmpty(sugarColumn.ColumnDataType)) 
+                    if (sugarColumn.IsJson && String.IsNullOrEmpty(sugarColumn.ColumnDataType))
                     {
                         if (this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL)
                         {
@@ -201,6 +248,7 @@ namespace SqlSugar
                         column.ColumnDescription = sugarColumn.ColumnDescription;
                     }
                 }
+                if (column.ColumnDescription.IsNullOrEmpty()) column.ColumnDescription = GetPropertyAnnotation(result.Type, column.DbColumnName);
                 if (this.Context.MappingColumns.HasValue())
                 {
                     var golbalMappingInfo = this.Context.MappingColumns.FirstOrDefault(it => it.EntityName.Equals(result.EntityName, StringComparison.CurrentCultureIgnoreCase) && it.PropertyName == column.PropertyName);
@@ -213,7 +261,8 @@ namespace SqlSugar
                     if (golbalMappingInfo != null)
                         column.IsIgnore = true;
                 }
-                if (this.Context.CurrentConnectionConfig.ConfigureExternalServices != null && this.Context.CurrentConnectionConfig.ConfigureExternalServices.EntityService != null) {
+                if (this.Context.CurrentConnectionConfig.ConfigureExternalServices != null && this.Context.CurrentConnectionConfig.ConfigureExternalServices.EntityService != null)
+                {
                     this.Context.CurrentConnectionConfig.ConfigureExternalServices.EntityService(property, column);
                 }
                 result.Columns.Add(column);
