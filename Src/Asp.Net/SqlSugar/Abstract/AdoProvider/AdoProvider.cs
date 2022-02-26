@@ -200,10 +200,12 @@ namespace SqlSugar
             var result = new DbResult<bool>();
             try
             {
+                var isAutoConfig = this.Context.CurrentConnectionConfig.IsAutoCloseConnection;
                 this.BeginTran();
                 if (action != null)
                     action();
                 this.CommitTran();
+                this.Context.CurrentConnectionConfig.IsAutoCloseConnection = isAutoConfig;
                 result.Data = result.IsSuccess = true;
             }
             catch (Exception ex)
