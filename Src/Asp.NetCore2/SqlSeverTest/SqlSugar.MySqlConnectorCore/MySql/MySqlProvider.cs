@@ -54,7 +54,7 @@ namespace SqlSugar.MySqlConnector
         }
         public override IDataAdapter GetAdapter()
         {
-            return new MySqlDataAdapter();
+            return new MySqlConnectorDataAdapter();
         }
         public override DbCommand GetCommand(string sql, SugarParameter[] parameters)
         {
