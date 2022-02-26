@@ -726,12 +726,22 @@ namespace SqlSugar
                     }
                     else
                     {
-                        IConditionalModel conditionalModel = new ConditionalModel()
+                        var typeValue = item["ConditionalType"].Value<object>();
+
+                        ConditionalModel conditionalModel = new ConditionalModel()
                         {
-                            ConditionalType = (ConditionalType)Convert.ToInt32(item["ConditionalType"].Value<int>()),
+                            // ConditionalType = (ConditionalType)Convert.ToInt32(),
                             FieldName = item["FieldName"] + "",
                             FieldValue = item["FieldValue"].Value<string>()==null?null: item["FieldValue"].ToString()
                         };
+                        if (typeValue.IsInt())
+                        {
+                            conditionalModel.ConditionalType = (ConditionalType)Convert.ToInt32(typeValue);
+                        }
+                        else 
+                        {
+                            conditionalModel.ConditionalType = (ConditionalType)Enum.Parse(typeof(ConditionalType),typeValue.ObjToString());
+                        }
                         conditionalModels.Add(conditionalModel);
                     }
                 }

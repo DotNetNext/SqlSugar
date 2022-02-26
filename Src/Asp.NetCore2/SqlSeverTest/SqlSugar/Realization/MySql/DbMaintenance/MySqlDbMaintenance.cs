@@ -342,6 +342,10 @@ namespace SqlSugar
                 if (item.ColumnDescription != null)
                 {
                     var mySqlCodeFirst = this.Context.CodeFirst as MySqlCodeFirst;
+                    if (item.UnderType == UtilConstants.GuidType&&item.Length==0) 
+                    {
+                        item.Length = 36;
+                    }
                     string sql = GetUpdateColumnSql(entity.DbTableName, mySqlCodeFirst.GetEntityColumnToDbColumn(entity, entity.DbTableName, item))+" "+(item.IsIdentity? "AUTO_INCREMENT" : "")+" " + " COMMENT '" + item.ColumnDescription + "'";
                     db.Ado.ExecuteCommand(sql);
                 }

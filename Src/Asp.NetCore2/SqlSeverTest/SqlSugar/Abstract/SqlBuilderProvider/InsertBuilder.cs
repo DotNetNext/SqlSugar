@@ -30,6 +30,7 @@ namespace SqlSugar
         public EntityInfo EntityInfo { get; set; }
         public Dictionary<string, int> OracleSeqInfoList { get; set; }
         public bool IsBlukCopy { get; set; }
+        public virtual bool IsOleDb { get; set; }
         #endregion
 
         #region SqlTemplate

@@ -170,7 +170,15 @@ namespace SqlSugar
         /// <returns>the code annotation for the database table</returns>
         public string GetTableAnnotation(Type entityType)
         {
-            return GetXElementNodeValue(entityType, $"T:{entityType.FullName}");
+            var result= GetXElementNodeValue(entityType, $"T:{entityType.FullName}");
+            if (string.IsNullOrEmpty(result))
+            {
+                return null;
+            }
+            else
+            {
+                return result;
+            }
         }
         /// <summary>
         /// Gets the code annotation for the field
@@ -180,7 +188,15 @@ namespace SqlSugar
         /// <returns>the code annotation for the field</returns>
         public string GetPropertyAnnotation(Type entityType, string dbColumnName)
         {
-            return GetXElementNodeValue(entityType, $"P:{entityType.FullName}.{dbColumnName}");
+            var result= GetXElementNodeValue(entityType, $"P:{entityType.FullName}.{dbColumnName}");
+            if (string.IsNullOrEmpty(result))
+            {
+                return null;
+            }
+            else
+            {
+                return result;
+            }
         }
 
         #region Primary key
@@ -269,6 +285,5 @@ namespace SqlSugar
             }
         }
         #endregion
-
     }
 }

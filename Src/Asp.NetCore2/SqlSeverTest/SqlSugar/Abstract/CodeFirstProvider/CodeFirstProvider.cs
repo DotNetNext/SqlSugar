@@ -400,7 +400,14 @@ namespace SqlSugar
             {
                 return false;
             }
-            return properyTypeName != dataType;
+            if (properyTypeName == null || dataType == null)
+            {
+                return properyTypeName != dataType;
+            }
+            else
+            {
+                return properyTypeName.ToLower() != dataType.ToLower();
+            }
         }
         private static string GetType(string name)
         {

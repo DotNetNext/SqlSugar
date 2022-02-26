@@ -13,7 +13,6 @@ namespace SqlSugar
         public bool DisableNvarchar { get; set; }
         public bool PgSqlIsAutoToLower = true;
         public int DefaultCacheDurationInSeconds { get; set; }
-        public bool? TableEnumIsString { get; set; }
-        public string CustomNugetDllName { get;  set; }
+        public bool? TableEnumIsString { get; set; } 
     }
 }

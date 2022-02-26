@@ -242,6 +242,18 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override bool AddColumnRemark(string columnName, string tableName, string description)
+        {
+            tableName = this.SqlBuilder.GetTranslationTableName(tableName);
+            string sql = string.Format(this.AddColumnRemarkSql, columnName, tableName, description);
+            this.Context.Ado.ExecuteCommand(sql);
+            return true;
+        }
+        public override bool AddTableRemark(string tableName, string description)
+        {
+            tableName = this.SqlBuilder.GetTranslationTableName(tableName);
+            return base.AddTableRemark(tableName, description);
+        }
         public override bool UpdateColumn(string tableName, DbColumnInfo columnInfo)
         {
             tableName = this.SqlBuilder.GetTranslationTableName(tableName);
