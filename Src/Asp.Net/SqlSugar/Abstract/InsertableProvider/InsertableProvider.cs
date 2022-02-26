@@ -69,7 +69,16 @@ namespace SqlSugar
                 return 0;
             }
             string sql = _ExecuteReturnIdentity();
-            var result = Ado.GetInt(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
+            var result = 0;
+            if (InsertBuilder.IsOleDb)
+            {
+                result = Ado.GetInt(sql.Split(';').First(), InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
+                result = Ado.GetInt(sql.Split(';').Last(), InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
+            }
+            else
+            {
+                result = Ado.GetInt(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
+            }
             After(sql, result);
             return result;
         }
@@ -81,7 +90,16 @@ namespace SqlSugar
                 return 0;
             }
             string sql = _ExecuteReturnBigIdentity();
-            var result = Convert.ToInt64(Ado.GetScalar(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray()));
+            long result = 0;
+            if (InsertBuilder.IsOleDb)
+            {
+                result = Convert.ToInt64(Ado.GetScalar(sql.Split(';').First(), InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray()));
+                result = Convert.ToInt64(Ado.GetScalar(sql.Split(';').Last(), InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray()));
+            }
+            else
+            {
+                result= Convert.ToInt64(Ado.GetScalar(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray()));
+            }
             After(sql, result);
             return result;
         }
