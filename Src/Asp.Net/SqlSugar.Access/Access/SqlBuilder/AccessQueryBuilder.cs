@@ -26,12 +26,14 @@ namespace SqlSugar.Access
             if (this.OrderByValue == null && (Skip != null || Take != null)) this.OrderByValue = " ORDER BY now() ";
             if (this.PartitionByValue.HasValue())
             {
-                this.OrderByValue = this.PartitionByValue + this.OrderByValue;
+                throw new Exception("sqlite no support partition by");
             }
             var isFirst = (Skip == 0 || Skip == null) && Take == 1 && DisableTop == false;
             var isRowNumber = (Skip != null || Take != null) && !isFirst;
             var isPage = isRowNumber;
             isRowNumber = false;
+            var oldSkip = Skip;
+            var oldTake = Take;
             Skip = null;
             Take = null;
             var rowNumberString = string.Format(",ROW_NUMBER() OVER({0}) AS RowIndex ", GetOrderByString);
@@ -44,12 +46,7 @@ namespace SqlSugar.Access
             var result = isFirst ? sql.ToString() : ToPageSql(sql.ToString(), this.Take, this.Skip);
             if (ExternalPageIndex > 0)
             {
-                if (externalOrderBy.IsNullOrEmpty())
-                {
-                    externalOrderBy = " ORDER BY now() ";
-                }
-                result = string.Format("SELECT *,ROW_NUMBER() OVER({0}) AS RowIndex2 FROM ({1}) ExternalTable ", GetExternalOrderBy(externalOrderBy), result);
-                result = ToPageSql2(result, ExternalPageIndex, ExternalPageSize, true);
+                throw new Exception("sqlite no support partition by");
             }
             this.OrderByValue = oldOrderBy;
             if (!string.IsNullOrEmpty(this.Offset))
@@ -57,10 +54,34 @@ namespace SqlSugar.Access
                 if (this.OrderByValue.IsNullOrEmpty())
                 {
                     result += " ORDER BY now() ";
+                    this.OrderByValue = " ORDER BY now() ";
                 }
                 result += this.Offset;
             }
             result = GetSqlQuerySql(result);
+            if (isPage) 
+            {
+                var colums=this.Context.EntityMaintenance.GetEntityInfo(this.EntityType).Columns;
+                if (!colums.Any(x => x.IsPrimarykey)) 
+                {
+                    throw new Exception("sqlite page need primary key , entity name: "+ this.EntityName);
+                }
+                var pkName =this.Builder.GetTranslationColumnName(colums.Where(x => x.IsPrimarykey).First().DbColumnName);
+                var takeSql = $@" SELECT   { (oldTake == null ? "" : ("Top " + oldTake)) }
+                *FROM({ result}) ACCTABLE1";
+                var skipSql = $@"  
+                      WHERE {pkName} NOT IN   
+                    (SELECT    {  (oldSkip == null ? "" : ("Top " + oldSkip))} {pkName} FROM ({result}) ACCTABLE2  { this.OrderByValue })";
+                if (oldSkip == 0)
+                {
+                    result = takeSql;
+                }
+                else 
+                {
+                    result = takeSql+skipSql;
+                }
+
+            }
             return result;
         }
     }

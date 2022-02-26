@@ -100,7 +100,9 @@ namespace OrmTest
             Console.WriteLine("#### Examples Start ####");
             var db = GetInstance();
             var dbTime = db.GetDate();
-            var getAll = db.Queryable<Order>().Where(it=> SqlFunc.EqualsNull(it.Name,null)).ToList();
+            var getAll = db.Queryable<Order>().ToList();
+            var getTake = db.Queryable<Order>().Take(2).ToList();
+            var getSkip = db.Queryable<Order>().Skip(2).ToList();
             var getOrderBy = db.Queryable<Order>().OrderBy(it => it.Name,OrderByType.Desc).ToList();
             var getOrderBy2 = db.Queryable<Order>().OrderBy(it => it.Id).OrderBy(it => it.Name, OrderByType.Desc).ToList();
             var getOrderBy3 = db.Queryable<Order>().OrderBy(it =>new { it.Name,it.Id}).ToList();
@@ -135,7 +137,7 @@ namespace OrmTest
             //test09.Wait();
 
             int c = 0;
-            var test10 = db.Queryable<Order>().ToPageList(1, 2, ref c);
+            var test10 = db.Queryable<Order>().OrderBy(it=>it.Id).ToPageList(3,5, ref c);
             var test11 = db.Queryable<Order>().GroupBy(it=>new { it.CreateTime.Year }).Select(it=>it.CreateTime.Year).ToList();
           //  var test12 = db.Queryable<Order>().GroupBy(it =>  it.CreateTime.Date ).Select(it => it.CreateTime.Date).ToList();
             //var test13 = db.Queryable<Order>().GroupBy(it => new { it.CreateTime.Date ,it.CreateTime.Year,it.CreateTime.Minute })
