@@ -316,19 +316,45 @@ namespace SqlSugar.Access
         {
             //base.AddDefaultValue(entityInfo);
         }
+        public override List<DbTableInfo> GetViewInfoList(bool isCache = true)
+        {
+            return new List<DbTableInfo>();
+        }
         public override List<DbTableInfo> GetTableInfoList(bool isCache = true)
         {
-           // (this.Context.Ado.Connection as OleDbConnection).Open();
+            bool isOpen = Open();
             var table = (this.Context.Ado.Connection as OleDbConnection).GetOleDbSchemaTable(OleDbSchemaGuid.Tables, new Object[] { null, null, null, "Table" });
-            var result= table
-              .Rows.Cast<DataRow>().Select(it=>new DbTableInfo
-              { 
-                 
-                  Name=it["TABLE_NAME"]+"",
-                  Description=it["DESCRIPTION"]+""
+            var result = table
+              .Rows.Cast<DataRow>().Select(it => new DbTableInfo
+              {
+
+                  Name = it["TABLE_NAME"] + "",
+                  Description = it["DESCRIPTION"] + ""
               }).ToList();
+            Close(isOpen);
             return result;
         }
+
+        private void Close(bool isOpen)
+        {
+            if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection = true && isOpen)
+            {
+                this.Context.Ado.Connection.Close();
+            }
+        }
+
+        private bool Open()
+        {
+            var isOpen = false;
+            if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection = true && this.Context.Ado.Connection.State == ConnectionState.Closed)
+            {
+                this.Context.Ado.Connection.Open();
+                isOpen = true;
+            }
+
+            return isOpen;
+        }
+
         public List<string> GetSchemas()
         {
             return this.Context.Ado.SqlQuery<string>("SELECT name FROM  sys.schemas where name <> 'dbo'");
@@ -438,9 +464,11 @@ namespace SqlSugar.Access
         }
         public override List<DbColumnInfo> GetColumnInfosByTableName(string tableName, bool isCache = true)
         {
+
             List<DbColumnInfo> columns = new List<DbColumnInfo>();
             var dt = this.Context.Ado.GetDataTable("select top 8 * from " +this.SqlBuilder.GetTranslationTableName(tableName));
             var oleDb = (this.Context.Ado.Connection as OleDbConnection);
+            bool isOpen = Open();
             DataTable columnTable = oleDb.GetOleDbSchemaTable(OleDbSchemaGuid.Columns, new object[] { null, null,tableName, null });
             DataTable Pk = oleDb.GetOleDbSchemaTable(OleDbSchemaGuid.Primary_Keys, new string[] { null, null, tableName });
             foreach (DataRow dr in columnTable.Rows)
@@ -480,6 +508,7 @@ namespace SqlSugar.Access
                 }
                 columns.Add(info);
             }
+            Close(isOpen);
             return columns;
         }
         public override bool RenameColumn(string tableName, string oldColumnName, string newColumnName)
