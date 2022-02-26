@@ -29,9 +29,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DbFirstRazorTest", "DbFirst
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SqlSugar.CustomDatabase", "SqlSugar.CustomDatabase", "{88992AAF-146B-4253-9AD7-493E8F415B57}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlSugar.MySqlConnectorCore", "SqlSugar.MySqlConnectorCore\SqlSugar.MySqlConnectorCore.csproj", "{D22873F3-80E1-4415-9CD6-21B1C7EEA4A0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlSugar.MySqlConnectorCore", "SqlSugar.MySqlConnectorCore\SqlSugar.MySqlConnectorCore.csproj", "{D22873F3-80E1-4415-9CD6-21B1C7EEA4A0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MySqlConnectorTest", "MySqlConnectorTest\MySqlConnectorTest.csproj", "{1509863D-FEB5-4CC4-9C92-7EBE308B731E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MySqlConnectorTest", "MySqlConnectorTest\MySqlConnectorTest.csproj", "{1509863D-FEB5-4CC4-9C92-7EBE308B731E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlSugar.AccessCore", "SqlSugar.AccessCore\SqlSugar.AccessCore.csproj", "{DD0C850D-86E5-4FFF-BFF3-8797EB448B47}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -95,12 +97,17 @@ Global
 		{1509863D-FEB5-4CC4-9C92-7EBE308B731E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1509863D-FEB5-4CC4-9C92-7EBE308B731E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1509863D-FEB5-4CC4-9C92-7EBE308B731E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD0C850D-86E5-4FFF-BFF3-8797EB448B47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD0C850D-86E5-4FFF-BFF3-8797EB448B47}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD0C850D-86E5-4FFF-BFF3-8797EB448B47}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD0C850D-86E5-4FFF-BFF3-8797EB448B47}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{D22873F3-80E1-4415-9CD6-21B1C7EEA4A0} = {88992AAF-146B-4253-9AD7-493E8F415B57}
+		{DD0C850D-86E5-4FFF-BFF3-8797EB448B47} = {88992AAF-146B-4253-9AD7-493E8F415B57}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {230A85B9-54F1-41B1-B1DA-80086581B2B4}
