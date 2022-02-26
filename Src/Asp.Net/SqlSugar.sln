@@ -39,6 +39,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SqlSugar.CustomDatabase", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessTest", "AccessTest\AccessTest.csproj", "{FA1B8C67-44C2-4937-96A2-7E01B9F5941E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomDbTest", "CustomDbTest\CustomDbTest.csproj", "{7BAAEBFC-D86E-4127-8640-E7EFAB8F40EA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -109,6 +111,10 @@ Global
 		{FA1B8C67-44C2-4937-96A2-7E01B9F5941E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FA1B8C67-44C2-4937-96A2-7E01B9F5941E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FA1B8C67-44C2-4937-96A2-7E01B9F5941E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7BAAEBFC-D86E-4127-8640-E7EFAB8F40EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BAAEBFC-D86E-4127-8640-E7EFAB8F40EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BAAEBFC-D86E-4127-8640-E7EFAB8F40EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7BAAEBFC-D86E-4127-8640-E7EFAB8F40EA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
