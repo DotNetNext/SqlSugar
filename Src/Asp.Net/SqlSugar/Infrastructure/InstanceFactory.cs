@@ -484,7 +484,18 @@ namespace SqlSugar
             {
                 lock (typeCache)
                 {
-                    type = assembly.GetType(className);
+                    if (string.IsNullOrEmpty(CustomDllName))
+                    {
+                        type = assembly.GetType(className);
+                    }
+                    else 
+                    {
+                        type= GetCustomTypeByClass(className);
+                        if (type == null) 
+                        {
+                            type = assembly.GetType(className);
+                        }
+                    }
                     Check.ArgumentNullException(type, string.Format(ErrorMessage.ObjNotExist, className));
                     if (!typeCache.ContainsKey(className))
                     {
