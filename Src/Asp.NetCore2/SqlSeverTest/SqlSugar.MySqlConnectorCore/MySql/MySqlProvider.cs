@@ -75,7 +75,7 @@ namespace SqlSugar.MySqlConnector
         }
         public override void SetCommandToAdapter(IDataAdapter dataAdapter, DbCommand command)
         {
-            ((MySqlDataAdapter)dataAdapter).SelectCommand = (MySqlCommand)command;
+            ((MySqlConnectorDataAdapter)dataAdapter).SelectCommand = (MySqlCommand)command;
         }
         /// <summary>
         /// if mysql return MySqlParameter[] pars
