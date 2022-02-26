@@ -88,6 +88,7 @@ namespace OrmTest
 
             //只查A表
             var tableName2 = db.SplitHelper(new WordTestTable() {  Name="A" }).GetTableNames();
+            db.Updateable(data).SplitTable(tas => tas.InTableNames("WordTestTable_FirstZ")).ExecuteCommand();
             var listall1 = db.Queryable<WordTestTable>().Where(it => it.Name == "all").SplitTable(tas => tas.InTableNames(tableName2)).ToList();
             var listall = db.Queryable<WordTestTable>().Where(it => it.Name == "all").SplitTable(tas => tas.ContainsTableNames("_FirstA")).ToList();
          
@@ -127,7 +128,7 @@ namespace OrmTest
             List<SplitTableInfo> result = new List<SplitTableInfo>();
             foreach (var item in tableInfos)
             {
-                if (item.Name.Contains(EntityInfo.DbTableName+"_First")) //区分标识如果不用正则符复杂一些，防止找错表
+                if (item.Name.Contains("_First")) //区分标识如果不用正则符复杂一些，防止找错表
                 {
                     SplitTableInfo data = new SplitTableInfo()
                     {
