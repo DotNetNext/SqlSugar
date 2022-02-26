@@ -72,8 +72,19 @@ namespace SqlSugar
             var result = 0;
             if (InsertBuilder.IsOleDb)
             {
+                var isAuto = false;
+                if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection) 
+                {
+                    isAuto = true;
+                    this.Context.CurrentConnectionConfig.IsAutoCloseConnection = false;
+                }
                 result = Ado.GetInt(sql.Split(';').First(), InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
                 result = Ado.GetInt(sql.Split(';').Last(), InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
+                if (isAuto)
+                {
+                    this.Ado.Close();
+                    this.Context.CurrentConnectionConfig.IsAutoCloseConnection = isAuto;
+                }
             }
             else
             {
@@ -93,8 +104,19 @@ namespace SqlSugar
             long result = 0;
             if (InsertBuilder.IsOleDb)
             {
+                var isAuto = false;
+                if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection)
+                {
+                    isAuto = true;
+                    this.Context.CurrentConnectionConfig.IsAutoCloseConnection = false;
+                }
                 result = Convert.ToInt64(Ado.GetScalar(sql.Split(';').First(), InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray()));
                 result = Convert.ToInt64(Ado.GetScalar(sql.Split(';').Last(), InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray()));
+                if (isAuto)
+                {
+                    this.Ado.Close();
+                    this.Context.CurrentConnectionConfig.IsAutoCloseConnection = isAuto;
+                }
             }
             else
             {
