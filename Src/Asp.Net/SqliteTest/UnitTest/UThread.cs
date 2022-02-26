@@ -40,7 +40,7 @@ namespace OrmTest
                 }
             }
         });
-        public static SqlSugarClient singleDb =  new SqlSugarClient(new ConnectionConfig()
+        public static SqlSugarScope singleDb =  new SqlSugarScope(new ConnectionConfig()
         {
             DbType = DbType.Sqlite,
             ConnectionString = Config.ConnectionString,
