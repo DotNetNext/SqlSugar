@@ -12,7 +12,7 @@ namespace OrmTest
         static void Main(string[] args)
         {
 
-            //需要 Cpu X86 
+            //注意: Cpu X86  ，生成的目录要在x86里面
             Demo0_SqlSugarClient.Init();
             Demo1_Queryable.Init();
             Demo2_Updateable.Init();
