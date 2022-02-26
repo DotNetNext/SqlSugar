@@ -312,6 +312,10 @@ namespace SqlSugar.Access
         #endregion
 
         #region Methods
+        public override bool AddRemark(EntityInfo entity)
+        {
+            return true;
+        }
         public override void AddDefaultValue(EntityInfo entityInfo)
         {
             //base.AddDefaultValue(entityInfo);
