@@ -11,7 +11,7 @@ namespace SqlSugar
     {
         static Assembly assembly = Assembly.GetExecutingAssembly();
         static Dictionary<string, Type> typeCache = new Dictionary<string, Type>();
-        public static string CustomTypeName = "";
+        public static string CustomDllName = "";
         public static string CustomDbName = "";
         public static string CustomNamespace = "";
         public static bool NoCache = false;
@@ -319,10 +319,10 @@ namespace SqlSugar
             }
             else
             {
-                if (!string.IsNullOrEmpty(CustomTypeName)) 
-                {
-                    type = CustomTypeName;
-                }
+                //if (!string.IsNullOrEmpty(CustomDllName)) 
+                //{
+                //    type = CustomDllName;
+                //}
                 return UtilConstants.AssemblyName + "." + type + name;
             }
         }
@@ -412,7 +412,7 @@ namespace SqlSugar
             {
                 lock (typeCache)
                 {
-                    if (string.IsNullOrEmpty(CustomTypeName))
+                    if (string.IsNullOrEmpty(CustomDllName))
                     {
                         type = Type.GetType(className + "`" + types.Length, true).MakeGenericType(types);
                     }
@@ -434,7 +434,7 @@ namespace SqlSugar
         {
 
             Type type = null;
-            if (string.IsNullOrEmpty(CustomTypeName))
+            if (string.IsNullOrEmpty(CustomDllName))
             {
                 type = Type.GetType(className + "`" + types.Length, true).MakeGenericType(types);
             }
@@ -490,7 +490,7 @@ namespace SqlSugar
         private static T NoCacheGetCacheInstance<T>(string className)
         {
             Type type = null;
-            if (string.IsNullOrEmpty(CustomTypeName))
+            if (string.IsNullOrEmpty(CustomDllName))
             {
                 type=assembly.GetType(className);
             }
@@ -504,15 +504,15 @@ namespace SqlSugar
 
         internal static Type GetCustomTypeByClass(string className)
         {
-            var key = "Assembly_"+ CustomTypeName+assembly.GetHashCode();
+            var key = "Assembly_"+ CustomDllName+assembly.GetHashCode();
             var newAssembly = new ReflectionInoCacheService().GetOrCreate<Assembly>(key, () => {
                 try
                 {
-                    return Assembly.LoadFrom(CustomTypeName + ".dll");
+                    return Assembly.LoadFrom(CustomDllName + ".dll");
                 }
                 catch 
                 {
-                    var message = "Not Found " + CustomTypeName + ".dll";
+                    var message = "Not Found " + CustomDllName + ".dll";
                     Check.Exception(true, message);
                     return null;
                 }
