@@ -419,6 +419,10 @@ namespace SqlSugar
                     else 
                     {
                         type = GetCustomTypeByClass(className + "`" + types.Length).MakeGenericType(types);
+                        if (type == null) 
+                        {
+                            type = Type.GetType(className + "`" + types.Length, true).MakeGenericType(types);
+                        }
                     }
                     Check.ArgumentNullException(type, string.Format(ErrorMessage.ObjNotExist, className));
                     if (!typeCache.ContainsKey(cacheKey))
@@ -441,6 +445,10 @@ namespace SqlSugar
             else 
             {
                 type = GetCustomTypeByClass(className + "`" + types.Length).MakeGenericType(types);
+                if (type == null) 
+                {
+                    type = Type.GetType(className + "`" + types.Length, true).MakeGenericType(types);
+                }
             }
             var result = (Restult)Activator.CreateInstance(type, true);
             return result;
