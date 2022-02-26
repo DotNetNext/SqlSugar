@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 namespace OrmTest
 {
     /// <summary>
-    /// Setting up the database name does not require you to create the database
-    /// 只需要设置IP和账户密码 ，自动建库
+    ///  CPU X86
+    ///  CPU X86
     /// </summary>
     public class Config
     {
@@ -17,7 +17,7 @@ namespace OrmTest
 
             get
             {
-                return Environment.CurrentDirectory.Replace(@"\bin\Debug\netcoreapp3.1", "");
+                return Environment.CurrentDirectory;
             }
         }
         /// <summary>

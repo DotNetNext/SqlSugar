@@ -11,6 +11,8 @@ namespace OrmTest
         /// <param name="args"></param>
         static void Main(string[] args)
         {
+
+            //需要 Cpu X86 
             Demo0_SqlSugarClient.Init();
             Demo1_Queryable.Init();
             Demo2_Updateable.Init();
