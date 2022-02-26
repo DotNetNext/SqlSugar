@@ -8,6 +8,7 @@ namespace SqlSugar.Access
 {
     public class AccessInsertBuilder : InsertBuilder
     {
+        public override bool IsOleDb { get; set; } = true;
         public override string SqlTemplate
         {
             get
@@ -17,7 +18,7 @@ namespace SqlSugar.Access
                     return @"INSERT INTO {0} 
            ({1})
      VALUES
-           ({2}) ;";
+           ({2}) ;select @@identity";
                 }
                 else
                 {

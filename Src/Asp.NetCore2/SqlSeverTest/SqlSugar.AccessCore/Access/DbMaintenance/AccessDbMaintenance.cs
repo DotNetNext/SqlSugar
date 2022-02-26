@@ -341,7 +341,7 @@ namespace SqlSugar.Access
 
         private void Close(bool isOpen)
         {
-            if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection = true && isOpen)
+            if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection&& isOpen)
             {
                 this.Context.Ado.Connection.Close();
             }
@@ -350,7 +350,7 @@ namespace SqlSugar.Access
         private bool Open()
         {
             var isOpen = false;
-            if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection = true && this.Context.Ado.Connection.State == ConnectionState.Closed)
+            if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection&& this.Context.Ado.Connection.State == ConnectionState.Closed)
             {
                 this.Context.Ado.Connection.Open();
                 isOpen = true;
