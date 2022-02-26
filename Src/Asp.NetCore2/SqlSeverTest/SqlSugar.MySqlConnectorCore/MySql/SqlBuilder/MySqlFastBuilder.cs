@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SqlSugar.MySqlConnector  
+namespace SqlSugar.MySqlConnector 
 {
    
     public class MySqlFastBuilder:FastBuilder,IFastBuilder

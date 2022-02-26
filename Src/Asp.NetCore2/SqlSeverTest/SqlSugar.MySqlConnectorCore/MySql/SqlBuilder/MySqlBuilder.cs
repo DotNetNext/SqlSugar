@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace SqlSugar.MySqlConnector 
+namespace SqlSugar.MySqlConnector
 {
     public class MySqlBuilder : SqlBuilderProvider
     {

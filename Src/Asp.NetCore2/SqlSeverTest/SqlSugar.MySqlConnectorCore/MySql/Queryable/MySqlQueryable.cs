@@ -1,4 +1,4 @@
-﻿namespace SqlSugar.MySqlConnector 
+﻿namespace SqlSugar.MySqlConnector
 {
     public class MySqlQueryable<T> : QueryableProvider<T>
     {

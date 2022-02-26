@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace SqlSugar.MySqlConnector 
+namespace SqlSugar.MySqlConnector
 {
     public class MySqlUpdateBuilder : UpdateBuilder
     {

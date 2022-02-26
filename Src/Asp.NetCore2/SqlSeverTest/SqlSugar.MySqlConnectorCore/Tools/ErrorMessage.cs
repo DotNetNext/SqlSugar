@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-namespace SqlSugar.MySqlConnector 
+namespace SqlSugar.MySqlConnector
 {
     internal static partial class ErrorMessage
     {
