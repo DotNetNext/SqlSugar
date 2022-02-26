@@ -17,7 +17,7 @@ namespace OrmTest
 
             get
             {
-                return Environment.CurrentDirectory.Replace(@"\bin\Debug", "");
+                return Environment.CurrentDirectory.Replace(@"\bin\Debug\netcoreapp3.1", "");
             }
         }
         /// <summary>
