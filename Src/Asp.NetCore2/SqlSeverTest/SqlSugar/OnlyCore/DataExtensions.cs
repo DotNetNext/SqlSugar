@@ -12,6 +12,7 @@ using Microsoft.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Data.OscarClient;
+using System.Data.OleDb;
 
 namespace SqlSugar
 {
@@ -1119,15 +1120,15 @@ namespace SqlSugar
     /// </summary>
     public class OleDbDataAdapter : IDataAdapter
     {
-        private SqlCommand command;
+        private OleDbCommand command;
         private string sql;
-        private SqlConnection _sqlConnection;
+        private OleDbConnection _sqlConnection;
 
         /// <summary>
         /// SqlDataAdapter
         /// </summary>
         /// <param name="command"></param>
-        public OleDbDataAdapter(SqlCommand command)
+        public OleDbDataAdapter(OleDbCommand command)
         {
             this.command = command;
         }
@@ -1142,7 +1143,7 @@ namespace SqlSugar
         /// </summary>
         /// <param name="sql"></param>
         /// <param name="_sqlConnection"></param>
-        public OleDbDataAdapter(string sql, SqlConnection _sqlConnection)
+        public OleDbDataAdapter(string sql, OleDbConnection _sqlConnection)
         {
             this.sql = sql;
             this._sqlConnection = _sqlConnection;
@@ -1151,13 +1152,13 @@ namespace SqlSugar
         /// <summary>
         /// SelectCommand
         /// </summary>
-        public SqlCommand SelectCommand
+        public OleDbCommand SelectCommand
         {
             get
             {
                 if (this.command == null)
                 {
-                    this.command = new SqlCommand(this.sql, this._sqlConnection);
+                    this.command = new OleDbCommand(this.sql, this._sqlConnection);
                 }
                 return this.command;
             }
@@ -1179,7 +1180,7 @@ namespace SqlSugar
             }
             var columns = dt.Columns;
             var rows = dt.Rows;
-            using (SqlDataReader dr = command.ExecuteReader())
+            using (OleDbDataReader dr = command.ExecuteReader())
             {
                 for (int i = 0; i < dr.FieldCount; i++)
                 {
@@ -1216,7 +1217,7 @@ namespace SqlSugar
             {
                 ds = new DataSet();
             }
-            using (SqlDataReader dr = command.ExecuteReader())
+            using (OleDbDataReader dr = command.ExecuteReader())
             {
                 do
                 {

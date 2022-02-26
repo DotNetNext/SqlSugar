@@ -35,6 +35,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MySqlConnectorTest", "MySql
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlSugar.AccessCore", "SqlSugar.AccessCore\SqlSugar.AccessCore.csproj", "{DD0C850D-86E5-4FFF-BFF3-8797EB448B47}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessTest", "AccessTest\AccessTest.csproj", "{DC928353-9E17-418C-99F3-C831A0F44FB2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -101,6 +103,10 @@ Global
 		{DD0C850D-86E5-4FFF-BFF3-8797EB448B47}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DD0C850D-86E5-4FFF-BFF3-8797EB448B47}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DD0C850D-86E5-4FFF-BFF3-8797EB448B47}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC928353-9E17-418C-99F3-C831A0F44FB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC928353-9E17-418C-99F3-C831A0F44FB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC928353-9E17-418C-99F3-C831A0F44FB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC928353-9E17-418C-99F3-C831A0F44FB2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
