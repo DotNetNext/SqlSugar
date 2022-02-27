@@ -388,9 +388,9 @@ namespace SqlSugar
                     InstanceFactory.CustomDllName = SugarCompatible.IsFramework?"SqlSugar.Access": "SqlSugar.AccessCore";
                     break;
                 case DbType.Custom:
-                    Check.Exception(InstanceFactory.CustomDbName==null , "DbType.Custom: InstanceFactory.CustomDbName is not null  ");
-                    Check.Exception(InstanceFactory.CustomNamespace == null, "DbType.Custom: InstanceFactory.CustomNamespace is not null  ");
-                    Check.Exception(InstanceFactory.CustomDllName == null, "DbType.Custom: InstanceFactory.CustomDllName is not null  ");
+                    Check.Exception(InstanceFactory.CustomDbName.IsNullOrEmpty() , "DbType.Custom: InstanceFactory.CustomDbName is not null  ");
+                    Check.Exception(InstanceFactory.CustomNamespace.IsNullOrEmpty(), "DbType.Custom: InstanceFactory.CustomNamespace is not null  ");
+                    Check.Exception(InstanceFactory.CustomDllName.IsNullOrEmpty(), "DbType.Custom: InstanceFactory.CustomDllName is not null  ");
                     break;
                 default:
                     throw new Exception("ConnectionConfig.DbType is null");
