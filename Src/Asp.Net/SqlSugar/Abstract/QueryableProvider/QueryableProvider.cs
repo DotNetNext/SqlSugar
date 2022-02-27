@@ -899,27 +899,20 @@ namespace SqlSugar
             var columnName = this.SqlBuilder.GetTranslationColumnName(splitColumn.DbColumnName);
             var sqlParameterKeyWord = this.SqlBuilder.SqlParameterKeyWord;
             return this.Where($" {columnName}>={sqlParameterKeyWord}spBeginTime AND {columnName}<= {sqlParameterKeyWord}spEndTime",new { spBeginTime = beginTime , spEndTime = endTime}).SplitTable(tas => {
-
-                var dateNull = DateTime.MinValue;
-                var min = tas.Where(it => it.Date <= beginTime.Date).Select(it=>it.Date).OrderByDescending(it=>it.Date).FirstOrDefault();
-                var max = tas.Where(it => it.Date >= endTime.Date).Select(it => it.Date).OrderBy(it => it.Date).FirstOrDefault();
-                if (max == dateNull && min == dateNull)
+                var result = tas;
+                var  type= this.EntityInfo.Type.GetCustomAttribute<SplitTableAttribute>();
+                if (SplitType.Month == type.SplitType)
                 {
-                    return tas.Take(1);
+                    result = result.Where(y => y.Date >= beginTime.ToString("yyyy-MM").ObjToDate() && y.Date <= endTime.Date.ToString("yyyy-MM").ObjToDate().AddMonths(1).AddDays(-1)).ToList();
                 }
-                if (max == dateNull)
+                else if (SplitType.Month == type.SplitType)
                 {
-                    max = tas.Where(it => it.Date <= endTime).Select(it => it.Date).OrderByDescending(it => it.Date).FirstOrDefault();
+                    result = result.Where(y => y.Date.Year >= beginTime.Year && y.Date.Year <= endTime.Year).ToList();
                 }
-                if (max == dateNull) 
+                else 
                 {
-                    max = min;
+                    result = result.Where(y => y.Date >= beginTime.Date && y.Date <= endTime.Date).ToList();
                 }
-                if (min == dateNull)
-                {
-                    min = max;
-                }
-                var result= tas.Where(y => y.Date >= min && y.Date <= max);
                 return result;
                 });
         }
