@@ -905,7 +905,7 @@ namespace SqlSugar
                 {
                     result = result.Where(y => y.Date >= beginTime.ToString("yyyy-MM").ObjToDate() && y.Date <= endTime.Date.ToString("yyyy-MM").ObjToDate().AddMonths(1).AddDays(-1)).ToList();
                 }
-                else if (SplitType.Month == type.SplitType)
+                else if (SplitType.Year == type.SplitType)
                 {
                     result = result.Where(y => y.Date.Year >= beginTime.Year && y.Date.Year <= endTime.Year).ToList();
                 }
