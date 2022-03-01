@@ -14,7 +14,9 @@ namespace SqlSugar
             switch (this.context.CurrentConnectionConfig.DbType)
             {
                 case DbType.MySql:
-                    return new MySqlFastBuilder();
+                    var result= new MySqlFastBuilder();
+                    result.CharacterSet = this.CharacterSet;
+                    return result;
                 case DbType.SqlServer:
                     return new SqlServerFastBuilder();
                 case DbType.Sqlite:
@@ -24,7 +26,9 @@ namespace SqlSugar
                 case DbType.PostgreSQL:
                     return new PostgreSQLFastBuilder(this.entityInfo);
                 case DbType.MySqlConnector:
-                    return InstanceFactory.CreateInstance<IFastBuilder>("SqlSugar.MySqlConnector.MySqlFastBuilder");
+                    var resultConnector = InstanceFactory.CreateInstance<IFastBuilder>("SqlSugar.MySqlConnector.MySqlFastBuilder");
+                    resultConnector.CharacterSet = this.CharacterSet;
+                    return resultConnector;
                 case DbType.Dm:
                     break;
                 case DbType.Kdbndp:
