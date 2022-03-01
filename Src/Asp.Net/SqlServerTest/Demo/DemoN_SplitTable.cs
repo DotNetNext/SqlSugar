@@ -36,6 +36,11 @@ namespace OrmTest
                 .SplitTable(DateTime.Now.Date.AddYears(-1),DateTime.Now)
                 .ToList();
 
+            var first = db.Queryable<OrderSpliteTest>()
+          .SplitTable(DateTime.MaxValue, DateTime.Now)
+          .First();//no table
+
+
             Console.WriteLine();
 
             //根据时间选出的表进行查询

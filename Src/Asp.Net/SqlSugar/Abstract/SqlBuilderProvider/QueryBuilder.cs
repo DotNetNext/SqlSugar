@@ -509,6 +509,11 @@ namespace SqlSugar
         }
         public string GetSqlQuerySql(string result)
         {
+            if (GetTableNameString == " (-- No table ) t  ")
+            {
+                result = "-- No table ";
+                return result;
+            }
             if (this.IsSqlQuery&&this.OldSql.HasValue() && (Skip == null && Take == null) && (this.WhereInfos == null || this.WhereInfos.Count == 0))
             {
                 return this.OldSql;

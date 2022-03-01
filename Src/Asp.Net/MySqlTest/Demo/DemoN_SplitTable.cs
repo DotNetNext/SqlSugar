@@ -35,6 +35,12 @@ namespace OrmTest
                 .SplitTable(tabs => tabs.Take(3))
                 .Where(it=>it.Time==DateTime.Now).ToOffsetPage(1,2);
 
+            var first = db.Queryable<OrderSpliteTest>()
+      .SplitTable(DateTime.MaxValue, DateTime.Now)
+      .First();//no table
+
+
+
             Console.WriteLine();
 
             //根据时间选出的表进行查询
