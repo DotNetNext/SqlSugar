@@ -12,7 +12,7 @@ namespace SqlSugar
         IFastest<T> RemoveDataCache(string cacheKey);
         IFastest<T> AS(string tableName);
         IFastest<T> PageSize(int Size);
-        void SetCharacterSet(string CharacterSet);
+        IFastest<T> SetCharacterSet(string CharacterSet);
         int BulkCopy(List<T> datas);
         Task<int> BulkCopyAsync(List<T> datas);
         int BulkCopy(string tableName,DataTable dataTable);

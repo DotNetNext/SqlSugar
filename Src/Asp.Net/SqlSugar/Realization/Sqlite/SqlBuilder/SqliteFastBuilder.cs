@@ -12,6 +12,7 @@ namespace SqlSugar
     {
         private EntityInfo entityInfo;
         private bool IsUpdate = false;
+        public string CharacterSet { get; set; }
         private DataTable UpdateDataTable { get; set; }
         public SqliteFastBuilder(EntityInfo entityInfo)
         {

@@ -9,6 +9,7 @@ namespace SqlSugar
 {
     public class OracleFastBuilder:IFastBuilder
     {
+        public string CharacterSet { get; set; }
         public OracleFastBuilder(EntityInfo entityInfo) 
         {
             throw new Exception("Only.net CORE is supported");

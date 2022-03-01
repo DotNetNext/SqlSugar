@@ -8,6 +8,7 @@ namespace OrmTest
         {
             //Demo
             Demo0_SqlSugarClient.Init();
+            DemoO_Fastest.Init();
             Demo1_Queryable.Init();
             Demo2_Updateable.Init();
             Demo3_Insertable.Init();

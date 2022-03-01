@@ -44,7 +44,7 @@ namespace SqlSugar
                     TableName = dt.TableName,
                     Local = true,
                 };
-                if (bulk.CharacterSet.HasValue()) 
+                if (this.CharacterSet.HasValue()) 
                 {
                     bulk.CharacterSet = this.CharacterSet;
                 }

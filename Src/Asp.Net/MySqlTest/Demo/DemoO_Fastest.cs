@@ -45,7 +45,7 @@ namespace OrmTest
                 }
             });
             db.CodeFirst.InitTables<TestFAST111>();
-            db.Fastest<TestFAST111>().BulkCopy(new List<TestFAST111>() { 
+            db.Fastest<TestFAST111>().SetCharacterSet("utf8mb4").BulkCopy(new List<TestFAST111>() { 
               new TestFAST111(){  Date=DateTime.Now, Id=Guid.NewGuid()+"", Sex=1 , X=111,json=new string[]{ "x"} }
             });
             var data = new List<TestFAST111>() {
