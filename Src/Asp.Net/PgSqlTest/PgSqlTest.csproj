@@ -100,6 +100,7 @@
     <Compile Include="Models\ViewOrder.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="UnitTest\UAopTest.cs" />
+    <Compile Include="UnitTest\UCustom01.cs" />
     <Compile Include="UnitTest\USave.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
