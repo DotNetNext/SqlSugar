@@ -78,12 +78,16 @@ namespace SqlSugar
                         name = column.PropertyName;
                     }
                     var value = ValueConverter(column, PropertyCallAdapterProvider<T>.GetInstance(column.PropertyName).InvokeGet(item));
-                    if (isMySql&& column.UnderType==UtilConstants.BoolType) 
+                    if (isMySql && column.UnderType == UtilConstants.BoolType)
                     {
                         if (value.ObjToBool() == false)
                         {
                             value = DBNull.Value;
                         }
+                    }
+                    else if (column.UnderType == UtilConstants.DateTimeOffsetType&& value!=null) 
+                    {
+                        value = UtilMethods.ConvertFromDateTimeOffset((DateTimeOffset)value);
                     }
                     dr[name] = value;
                 }

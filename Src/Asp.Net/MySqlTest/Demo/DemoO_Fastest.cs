@@ -21,7 +21,12 @@ namespace OrmTest
         [SqlSugar.SugarColumn(IsNullable = true,IsJson =true,ColumnDataType ="varchar(500)")]
         public string [] json { get; set; }
     }
- 
+
+    public class TestFAST1121 
+    {
+       
+        public DateTimeOffset A { get; set; }
+    }
     public class DemoO_Fastest
     {
         public static void Init()
@@ -54,7 +59,10 @@ namespace OrmTest
             //db.Updateable(data).ExecuteCommand();
             db.Fastest<TestFAST111>().BulkUpdate(data);
             var x = db.Queryable<TestFAST111>().ToList();
- 
+            db.CodeFirst.InitTables<TestFAST1121>();
+            db.Fastest<TestFAST1121>().BulkCopy(new List<TestFAST1121>() { 
+              new TestFAST1121(){  A=DateTimeOffset.Now}
+             });
         }
     }
 }
