@@ -22,6 +22,10 @@ namespace OrmTest
                 IsAutoCloseConnection = true
 
             });
+            ssc.Aop.OnLogExecuting = (s, p) =>
+            {
+                Console.WriteLine(s);
+            };
             ssc.CodeFirst.InitTables<Student>();
             var expMethods = new List<SqlFuncExternal>();
 
@@ -75,9 +79,22 @@ namespace OrmTest
 
 
             }
+            ssc.CodeFirst.InitTables<unittest1231sdaa>();
+
+            ssc.CodeFirst.InitTables<unittest1231sdaa2>();
         }
     }
 
+    public class unittest1231sdaa
+    {
+        [SugarColumn(IndexGroupNameList = new string[] { "index3" }, ColumnDataType = "DATETIME(6)", DefaultValue = "CURRENT_TIMESTAMP(6)")]
+        public DateTime update_time { get; set; }
+    }
+    public class unittest1231sdaa2
+    {
+        [SugarColumn(IndexGroupNameList = new string[] { "index3" }, ColumnDataType = "DATETIME", DefaultValue = "CURRENT_TIMESTAMP")]
+        public DateTime update_time { get; set; }
+    }
     [SugarTable("unitstudent1111")]
     public class Student
     {
