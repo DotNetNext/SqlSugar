@@ -63,10 +63,10 @@ namespace SqlSugar
                 }
             }
             result = queryBuilder.GetSelectByItems(selectItems);
-            if (_context.CurrentConnectionConfig.DbType == DbType.PostgreSQL)
-            {
-                result = result.ToLower();
-            }
+            //if (_context.CurrentConnectionConfig.DbType == DbType.PostgreSQL)
+            //{
+            //    result = result.ToLower();
+            //}
             return result;
         }
     }
