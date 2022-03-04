@@ -484,6 +484,22 @@ namespace SqlSugar
             {
                 return UtilMethods.GetDateTimeOffsetByDateTime(Convert.ToDateTime(item.FieldValue));
             }
+            else if (item.CSharpTypeName.EqualCase(UtilConstants.GuidType.Name))
+            {
+                return Guid.Parse(item.FieldValue);
+            }
+            else if (item.CSharpTypeName == "int")
+            {
+                return Convert.ToInt32(item.FieldValue);
+            }
+            else if (item.CSharpTypeName == "long")
+            {
+                return Convert.ToInt64(item.FieldValue);
+            }
+            else if (item.CSharpTypeName == "short")
+            {
+                return Convert.ToInt16(item.FieldValue);
+            }
             else
             {
                 return item.FieldValue;

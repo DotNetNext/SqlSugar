@@ -483,11 +483,12 @@ namespace SqlSugar
                     name = this.AsTables.First(it => it.Key == name).Value;
                 }
             }
+            var isSubQuery = name!=null&& name.StartsWith("(") && name.EndsWith(")");
             return string.Format(
                 this.JoinTemplate,
                 joinInfo.JoinType.ToString() + UtilConstants.Space,
                 Builder.GetTranslationTableName(name) + UtilConstants.Space,
-                joinInfo.ShortName + UtilConstants.Space + (TableWithString == SqlWith.Null ? " " : TableWithString),
+                joinInfo.ShortName + UtilConstants.Space + (TableWithString == SqlWith.Null|| isSubQuery ? " " : TableWithString),
                 joinInfo.JoinWhere);
         }
         public virtual void Clear()
@@ -509,6 +510,11 @@ namespace SqlSugar
         }
         public string GetSqlQuerySql(string result)
         {
+            if (GetTableNameString == " (-- No table ) t  ")
+            {
+                result = "-- No table ";
+                return result;
+            }
             if (this.IsSqlQuery&&this.OldSql.HasValue() && (Skip == null && Take == null) && (this.WhereInfos == null || this.WhereInfos.Count == 0))
             {
                 return this.OldSql;

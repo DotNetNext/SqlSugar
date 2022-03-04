@@ -10,7 +10,7 @@ namespace SqlSugar
     public class FastBuilder 
     {
         public SqlSugarProvider Context { get; set; }
-
+        public virtual string CharacterSet { get; set; }
         public virtual string UpdateSql { get; set; } = @"UPDATE TM
                                                     SET  {0}
                                                     FROM {1} TM

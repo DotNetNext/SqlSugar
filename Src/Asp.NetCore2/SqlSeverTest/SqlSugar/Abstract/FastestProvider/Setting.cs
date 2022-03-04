@@ -12,6 +12,12 @@ namespace SqlSugar
         private int Size { get; set; }
         private string CacheKey { get; set; }
         private string CacheKeyLike { get; set; }
+        private string CharacterSet { get; set; }
+        public IFastest<T> SetCharacterSet(string CharacterSet) 
+        {
+            this.CharacterSet = CharacterSet;
+            return this;
+        }
         public IFastest<T> RemoveDataCache() 
         {
             CacheKey = typeof(T).FullName;

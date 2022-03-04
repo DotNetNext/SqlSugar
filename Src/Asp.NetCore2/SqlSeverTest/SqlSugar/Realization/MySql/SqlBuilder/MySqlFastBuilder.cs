@@ -44,6 +44,10 @@ namespace SqlSugar
                     TableName = dt.TableName,
                     Local = true,
                 };
+                if (this.CharacterSet.HasValue()) 
+                {
+                    bulk.CharacterSet = this.CharacterSet;
+                }
                 bulk.Columns.AddRange(dt.Columns.Cast<DataColumn>().Select(colum =>new MySqlBuilder().GetTranslationColumnName(colum.ColumnName)).Distinct().ToArray());
                 result= await bulk.LoadAsync();
                 //执行成功才删除文件
