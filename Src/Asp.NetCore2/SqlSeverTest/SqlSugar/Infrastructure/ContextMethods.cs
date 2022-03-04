@@ -726,7 +726,7 @@ namespace SqlSugar
                     }
                     else
                     {
-                        var typeValue = item["ConditionalType"].Value<object>();
+                        var typeValue = item["ConditionalType"].Value<string>();
 
                         ConditionalModel conditionalModel = new ConditionalModel()
                         {
