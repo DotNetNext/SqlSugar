@@ -986,6 +986,10 @@ namespace SqlSugar
             {
                 return $"CONVERT(varchar(100),convert(datetime,{value}), 23)";
             }
+            else if (formatString == "yyyy-MM" && IsSqlServer())
+            {
+                return $"CONVERT(varchar(7),convert(datetime,{value}), 23)";
+            }
             else if (formatString == "yyyy-MM-dd HH:mm:ss" && IsSqlServer())
             {
                 return $"CONVERT(varchar(100),convert(datetime,{value}), 120)";
