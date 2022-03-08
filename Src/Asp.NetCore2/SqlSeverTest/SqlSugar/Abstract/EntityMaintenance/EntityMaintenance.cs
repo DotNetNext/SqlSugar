@@ -145,7 +145,12 @@ namespace SqlSugar
         /// <returns>the text contents of this XML element node</returns>
         public string GetXElementNodeValue(Type entityType, string nodeAttributeName)
         {
-            FileInfo file = new FileInfo(entityType.Assembly.Location);
+            var path = entityType.Assembly.Location;
+            if (string.IsNullOrEmpty(path))
+            {
+                return null;
+            }
+            FileInfo file = new FileInfo(path);
             string xmlPath = entityType.Assembly.Location.Replace(file.Extension, ".xml");
             if (!File.Exists(xmlPath))
             {
@@ -170,6 +175,10 @@ namespace SqlSugar
         /// <returns>the code annotation for the database table</returns>
         public string GetTableAnnotation(Type entityType)
         {
+            if (entityType.IsClass() == false) 
+            {
+                return null;
+            }
             var result= GetXElementNodeValue(entityType, $"T:{entityType.FullName}");
             if (string.IsNullOrEmpty(result))
             {
@@ -188,6 +197,10 @@ namespace SqlSugar
         /// <returns>the code annotation for the field</returns>
         public string GetPropertyAnnotation(Type entityType, string dbColumnName)
         {
+            if (entityType.IsClass() == false)
+            {
+                return null;
+            }
             var result= GetXElementNodeValue(entityType, $"P:{entityType.FullName}.{dbColumnName}");
             if (string.IsNullOrEmpty(result))
             {
