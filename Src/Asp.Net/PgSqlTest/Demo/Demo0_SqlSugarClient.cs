@@ -16,7 +16,7 @@ namespace OrmTest
             SqlSugarClient();//Create db
             DbContext();//Optimizing SqlSugarClient usage
             SingletonPattern();//Singleten Pattern
-            DistributedTransactionExample();
+            //DistributedTransactionExample(); The demo requires three different databases
             MasterSlave();//Read-write separation 
             CustomAttribute(); 
         }
