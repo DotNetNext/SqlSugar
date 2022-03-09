@@ -527,7 +527,19 @@ namespace SqlSugar
             var newAssembly = new ReflectionInoCacheService().GetOrCreate<Assembly>(key, () => {
                 try
                 {
-                    return Assembly.LoadFrom(CustomDllName + ".dll");
+                    var path = Assembly.GetExecutingAssembly().Location;
+                    if (path.HasValue())
+                    {
+                        path =System.IO.Path.Combine( System.IO.Path.GetDirectoryName(path), CustomDllName + ".dll");
+                    }
+                    if (path.HasValue() && FileHelper.IsExistFile(path))
+                    {
+                        return Assembly.LoadFrom(path);
+                    }
+                    else
+                    {
+                        return Assembly.LoadFrom(CustomDllName + ".dll");
+                    }
                 }
                 catch 
                 {
