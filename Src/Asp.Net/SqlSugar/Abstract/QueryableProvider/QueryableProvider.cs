@@ -909,6 +909,21 @@ namespace SqlSugar
                 {
                     result = result.Where(y => y.Date.Year >= beginTime.Year && y.Date.Year <= endTime.Year).ToList();
                 }
+                else if (SplitType.Week == type.SplitType)
+                {
+                    var begtinWeek = UtilMethods.GetWeekFirstDayMon(beginTime).Date;
+                    var endWeek = UtilMethods.GetWeekLastDaySun(endTime).Date;
+                    result = result.Where(y => 
+                        y.Date >= begtinWeek&& y.Date  <= endWeek).ToList();
+                }
+                else if (SplitType.Season == type.SplitType)
+                {
+
+                    var beginSeason= Convert.ToDateTime( beginTime.AddMonths(0 - ((beginTime.Month - 1) % 3)).ToString("yyyy-MM-01")).Date;
+                    var endSeason= DateTime.Parse(endTime.AddMonths(3 - ((endTime.Month - 1) % 3)).ToString("yyyy-MM-01")).AddDays(-1).Date;
+                    result = result.Where(y =>
+                        y.Date >= beginSeason && y.Date <= endSeason).ToList();
+                }
                 else 
                 {
                     result = result.Where(y => y.Date >= beginTime.Date && y.Date <= endTime.Date).ToList();
