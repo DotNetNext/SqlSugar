@@ -344,6 +344,10 @@ namespace SqlSugar
 
         public static string EncodeBase64(string code)
         {
+            if (StaticConfig.Encode != null) 
+            {
+                return StaticConfig.Encode(code);
+            }
             if (code.IsNullOrEmpty()) return code;
             string encode = "";
             byte[] bytes = Encoding.GetEncoding("utf-8").GetBytes(code);
@@ -384,6 +388,10 @@ namespace SqlSugar
         {
             try
             {
+                if (StaticConfig.Decode != null)
+                {
+                    return StaticConfig.Decode(code);
+                }
                 if (code.IsNullOrEmpty()) return code;
                 string decode = "";
                 byte[] bytes = Convert.FromBase64String(code);
