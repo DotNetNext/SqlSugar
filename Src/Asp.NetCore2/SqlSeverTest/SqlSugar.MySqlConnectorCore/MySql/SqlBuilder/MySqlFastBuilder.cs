@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SqlSugar.MySqlConnector 
+namespace SqlSugar.MySqlConnector
 {
    
     public class MySqlFastBuilder:FastBuilder,IFastBuilder
@@ -44,6 +44,10 @@ namespace SqlSugar.MySqlConnector
                     TableName = dt.TableName,
                     Local = true,
                 };
+                if (this.CharacterSet.HasValue()) 
+                {
+                    bulk.CharacterSet = this.CharacterSet;
+                }
                 bulk.Columns.AddRange(dt.Columns.Cast<DataColumn>().Select(colum =>new MySqlBuilder().GetTranslationColumnName(colum.ColumnName)).Distinct().ToArray());
                 result= await bulk.LoadAsync();
                 //执行成功才删除文件
