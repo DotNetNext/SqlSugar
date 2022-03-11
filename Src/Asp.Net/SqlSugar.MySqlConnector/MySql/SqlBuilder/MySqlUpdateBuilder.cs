@@ -128,6 +128,14 @@ namespace SqlSugar.MySqlConnector
                         return Convert.ToInt64(value);
                     }
                 }
+                else if (type == UtilConstants.LongType)
+                {
+                    return GetString(value);
+                }
+                else if (type == UtilConstants.IntType)
+                {
+                    return GetString(value);
+                }
                 else if (type == UtilConstants.BoolType)
                 {
                     return value.ObjToBool() ? "1" : "0";
