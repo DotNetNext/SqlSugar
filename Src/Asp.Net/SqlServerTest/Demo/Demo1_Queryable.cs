@@ -179,6 +179,7 @@ namespace OrmTest
             var test24 = db.Queryable<Order>().Where(it => true).Select(it => new { x1 = it.CreateTime.ToString("yyyy-MM-dd _ HH _ mm _ ss "), it.CreateTime }).ToList();
             var test25 = db.Queryable<Order>().Where(it => true).Select(it => new { x1 = it.CreateTime.Month,x2=DateTime.Now.Month}).ToList();
             var test26 = db.Queryable<Order>().Where(it => true).Select(it => new { x1 = it.CreateTime.Day, x2 = DateTime.Now.Day }).ToList();
+            var test27 = db.Queryable<Order>().Where(it => true).Select(it => new { x1 = it.CreateTime.Year, x2 = DateTime.Now.Year }).ToList();
             Console.WriteLine("#### Examples End ####");
         }
 

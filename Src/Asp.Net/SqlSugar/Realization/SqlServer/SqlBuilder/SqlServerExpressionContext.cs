@@ -24,20 +24,13 @@ namespace SqlSugar
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
-            if ((parameter2.MemberValue + "") == "Month")
+            if (parameter.MemberName != null && parameter.MemberName is DateTime)
             {
-                if (parameter.MemberName != null && parameter.MemberName is DateTime)
-                {
-                    return string.Format(" Month('{0}') ", parameter.MemberName);
-                }
-                else
-                {
-                    return string.Format(" Month({0}) ", parameter.MemberName);
-                }
+                return string.Format(" datepart({0},'{1}') ", parameter2.MemberValue, parameter.MemberName);
             }
             else
             {
-               return base.DateValue(model);
+                return string.Format(" datepart({0},{1}) ", parameter2.MemberValue, parameter.MemberName);
             }
         }
         public override string HasValue(MethodCallExpressionModel model)
