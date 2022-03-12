@@ -176,6 +176,7 @@ namespace OrmTest
             var test21 = db.Queryable<Order>().Where(it=>it.Id.ToString()==1.ToString()).Select(it => it.CreateTime.ToString("24")).First();
             var test22 = db.Queryable<Order>().Where(it => it.Id.ToString() == 1.ToString()).Select(it => SqlFunc.AggregateDistinctCount(it.CreateTime)).First();
             var test23 = db.Queryable<Order>().Where(it =>true).Select(it => new { x1 = it.CreateTime.ToString("yyyy-MM") ,it.CreateTime}).ToList();
+            var test24 = db.Queryable<Order>().Where(it => true).Select(it => new { x1 = it.CreateTime.ToString("yyyy-MM-dd _ HH _ mm _ ss "), it.CreateTime }).ToList();
             Console.WriteLine("#### Examples End ####");
         }
 
