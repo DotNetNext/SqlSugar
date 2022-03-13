@@ -20,6 +20,19 @@ namespace OrmTest
             db.Insertable(new Unitsdafa111()).ExecuteCommand();
             db.Insertable(new Unitsdafa111() {Id=Guid.NewGuid(),Id2=Guid.NewGuid() }).ExecuteCommand();
             var list=db.Queryable<Unitsdafa111>().ToList();
+            Db.Insertable(new List<UnitafaXX1>() { new UnitafaXX1 { } }).IgnoreColumns(z => z.dt2).CallEntityMethod(z => z.Test01()).ExecuteCommand();
+            try
+            {
+                Db.Insertable(new List<UnitafaXX1>() { new UnitafaXX1 {  Id=1, dt2=DateTime.Now,dt = DateTime.Now } }).IgnoreColumns(false, true).UseParameter().ExecuteCommand();
+                throw new Exception("ok");
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message == "ok")
+                {
+                    throw new Exception("unit error"); 
+                }
+            }
         }
         public class Unitsdafa111
         {
@@ -49,5 +62,20 @@ namespace OrmTest
             }
         }
 
+    }
+
+    public class UnitafaXX1
+    {
+        [SqlSugar.SugarColumn(IsPrimaryKey =true,IsIdentity = true)]
+        public int Id { get; set; }
+
+        public DateTime dt { get; set; }
+        [SqlSugar.SugarColumn(IsNullable =true)]
+        public DateTime dt2 { get; set; }
+
+        internal void Test01()
+        {
+            dt = DateTime.Now;
+        }
     }
 }
