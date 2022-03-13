@@ -485,6 +485,18 @@ namespace SqlSugar
                                 FieldName = column.DbColumnName,
                                 FieldValue = value.ObjToString()
                             });
+                            if (value != null && value.GetType().IsEnum()) 
+                            {
+                                if (this.Context.CurrentConnectionConfig?.MoreSettings?.TableEnumIsString == true)
+                                {
+
+                                }
+                                else 
+                                {
+                                    data.Value.FieldValue = Convert.ToInt64(value).ObjToString();
+                                }
+
+                            }
                             cons.ConditionalList.Add(data);
                             if (this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL)
                             {

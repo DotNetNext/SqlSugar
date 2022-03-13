@@ -53,6 +53,12 @@ namespace OrmTest
                 type2 = UnitType.b
             })
            .Where(it => true).ExecuteCommand();
+            db.Queryable<Unit00Z1string1>().WhereClass(new Unit00Z1string1()
+            {
+
+                type = UnitType.a,
+                type2 = UnitType.b
+            }).ToList();
         }
         private static void Int()
         {
@@ -74,6 +80,12 @@ namespace OrmTest
             }
             Db.Updateable<Unit00Z11C12>(x3).WhereColumns(it => it.type).ExecuteCommand();
             var x4 = Db.Queryable<Unit00Z11C12>().ToList();
+
+            Db.Queryable<Unit00Z11C12>().WhereClass(new Unit00Z11C12() { 
+            
+             type= UnitType.a,
+             type2=UnitType.b
+            }).ToList();
         }
 
         public class Unit00Z11C12
