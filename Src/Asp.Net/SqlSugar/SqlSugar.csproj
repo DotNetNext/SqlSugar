@@ -97,6 +97,7 @@
     <Compile Include="Abstract\SaveableProvider\StorageableDataTable.cs" />
     <Compile Include="Abstract\SugarProvider\SqlSugarCoreProvider.cs" />
     <Compile Include="Entities\JoinMapper.cs" />
+    <Compile Include="Entities\SugarConnection.cs" />
     <Compile Include="ExpressionsToSql\Subquery\SubTemplate.cs" />
     <Compile Include="ExpressionsToSql\Subquery\SubqueryableN.cs" />
     <Compile Include="Infrastructure\StaticConfig.cs" />
