@@ -514,6 +514,54 @@ namespace SqlSugar
             }
         }
 
+        public static bool IsNumber(string ctypename)
+        {
+            if (ctypename.IsNullOrEmpty()) 
+            {
+                return false;
+            }
+            var item = new ConditionalModel()
+            {
+                CSharpTypeName = ctypename,
+            };
+            if (item.CSharpTypeName.EqualCase(UtilConstants.DecType.Name))
+            {
+                return true;
+            }
+            else if (item.CSharpTypeName.EqualCase(UtilConstants.DobType.Name))
+            {
+                return true;
+            }
+            else if (item.CSharpTypeName.EqualCase(UtilConstants.IntType.Name))
+            {
+                return true;
+            }
+            else if (item.CSharpTypeName.EqualCase(UtilConstants.LongType.Name))
+            {
+                return true;
+            }
+            else if (item.CSharpTypeName.EqualCase(UtilConstants.ShortType.Name))
+            {
+                return true;
+            }
+            else if (item.CSharpTypeName == "int")
+            {
+                return true;
+            }
+            else if (item.CSharpTypeName == "long")
+            {
+                return true;
+            }
+            else if (item.CSharpTypeName == "short")
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         /// <summary>
         /// Get Week Last Day Sun
         /// </summary>
