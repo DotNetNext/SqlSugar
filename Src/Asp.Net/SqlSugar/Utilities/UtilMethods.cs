@@ -344,6 +344,10 @@ namespace SqlSugar
 
         public static string EncodeBase64(string code)
         {
+            if (StaticConfig.Encode != null) 
+            {
+                return StaticConfig.Encode(code);
+            }
             if (code.IsNullOrEmpty()) return code;
             string encode = "";
             byte[] bytes = Encoding.GetEncoding("utf-8").GetBytes(code);
@@ -384,6 +388,10 @@ namespace SqlSugar
         {
             try
             {
+                if (StaticConfig.Decode != null)
+                {
+                    return StaticConfig.Decode(code);
+                }
                 if (code.IsNullOrEmpty()) return code;
                 string decode = "";
                 byte[] bytes = Convert.FromBase64String(code);
@@ -488,21 +496,125 @@ namespace SqlSugar
             {
                 return Guid.Parse(item.FieldValue);
             }
-            else if (item.CSharpTypeName == "int")
+            else if (item.CSharpTypeName.EqualCase("int"))
             {
                 return Convert.ToInt32(item.FieldValue);
             }
-            else if (item.CSharpTypeName == "long")
+            else if (item.CSharpTypeName .EqualCase("long"))
             {
                 return Convert.ToInt64(item.FieldValue);
             }
-            else if (item.CSharpTypeName == "short")
+            else if (item.CSharpTypeName.EqualCase("short"))
             {
                 return Convert.ToInt16(item.FieldValue);
+            }
+            else if (item.CSharpTypeName.EqualCase("byte"))
+            {
+                return Convert.ToByte(item.FieldValue);
+            }
+            else if (item.CSharpTypeName.EqualCase( "uint"))
+            {
+                return Convert.ToUInt32(item.FieldValue);
+            }
+            else if (item.CSharpTypeName.EqualCase( "ulong"))
+            {
+                return Convert.ToUInt64(item.FieldValue);
+            }
+            else if (item.CSharpTypeName.EqualCase("ushort"))
+            {
+                return Convert.ToUInt16(item.FieldValue);
+            }
+            else if (item.CSharpTypeName.EqualCase( "uint32"))
+            {
+                return Convert.ToUInt32(item.FieldValue);
+            }
+            else if (item.CSharpTypeName.EqualCase( "uint64"))
+            {
+                return Convert.ToUInt64(item.FieldValue);
+            }
+            else if (item.CSharpTypeName.EqualCase("uint16"))
+            {
+                return Convert.ToUInt16(item.FieldValue);
             }
             else
             {
                 return item.FieldValue;
+            }
+        }
+
+        public static bool IsNumber(string ctypename)
+        {
+            if (ctypename.IsNullOrEmpty()) 
+            {
+                return false;
+            }
+            var item = new ConditionalModel()
+            {
+                CSharpTypeName = ctypename,
+            };
+            if (item.CSharpTypeName.EqualCase(UtilConstants.DecType.Name))
+            {
+                return true;
+            }
+            else if (item.CSharpTypeName.EqualCase(UtilConstants.DobType.Name))
+            {
+                return true;
+            }
+            else if (item.CSharpTypeName.EqualCase(UtilConstants.IntType.Name))
+            {
+                return true;
+            }
+            else if (item.CSharpTypeName.EqualCase(UtilConstants.LongType.Name))
+            {
+                return true;
+            }
+            else if (item.CSharpTypeName.EqualCase(UtilConstants.ShortType.Name))
+            {
+                return true;
+            }
+            else if (item.CSharpTypeName.EqualCase("int"))
+            {
+                return true;
+            }
+            else if (item.CSharpTypeName.EqualCase("long"))
+            {
+                return true;
+            }
+            else if (item.CSharpTypeName.EqualCase("short"))
+            {
+                return true;
+            }
+            else if (item.CSharpTypeName.EqualCase("byte"))
+            {
+                return true;
+            }
+            else if (item.CSharpTypeName.EqualCase("uint"))
+            {
+                return true;
+            }
+            else if (item.CSharpTypeName.EqualCase("ulong"))
+            {
+                return true;
+            }
+            else if (item.CSharpTypeName.EqualCase("ushort"))
+            {
+                return true;
+            }
+            else if (item.CSharpTypeName.EqualCase("uint32"))
+            {
+                return true;
+            }
+            else if (item.CSharpTypeName.EqualCase("uint64"))
+            {
+                return true;
+            }
+            else if (item.CSharpTypeName.EqualCase("uint16"))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
 

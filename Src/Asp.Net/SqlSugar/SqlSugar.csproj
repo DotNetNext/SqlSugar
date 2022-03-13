@@ -99,6 +99,7 @@
     <Compile Include="Entities\JoinMapper.cs" />
     <Compile Include="ExpressionsToSql\Subquery\SubTemplate.cs" />
     <Compile Include="ExpressionsToSql\Subquery\SubqueryableN.cs" />
+    <Compile Include="Infrastructure\StaticConfig.cs" />
     <Compile Include="Interface\IFastBuilder.cs" />
     <Compile Include="Interface\IFastest.cs" />
     <Compile Include="OnlyNet\OracleFastBuilder.cs" />
