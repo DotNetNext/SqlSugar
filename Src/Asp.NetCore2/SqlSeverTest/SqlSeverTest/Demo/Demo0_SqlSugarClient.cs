@@ -17,7 +17,7 @@ namespace OrmTest
             SqlSugarClient();//Create db
             DbContext();//Optimizing SqlSugarClient usage
             SingletonPattern();//Singleten Pattern
-            //DistributedTransactionExample(); The demo requires three different databases
+            DistributedTransactionExample();  
             MasterSlave();//Read-write separation 
             CustomAttribute(); 
         }
@@ -231,6 +231,7 @@ namespace OrmTest
                 new ConnectionConfig(){ ConfigId="2", DbType=DbType.SqlServer, ConnectionString=Config.ConnectionString2 ,InitKeyType=InitKeyType.Attribute ,IsAutoCloseConnection=true}
             });
 
+            var db1 = db.Ado.Connection.Database;
             //use db1
             db.CodeFirst.SetStringDefaultLength(200).InitTables(typeof(Order), typeof(OrderItem));//
             db.Insertable(new Order() { Name = "order1", CreateTime = DateTime.Now }).ExecuteCommand();
@@ -238,10 +239,16 @@ namespace OrmTest
 
             //use db2
             db.ChangeDatabase("2");
+            var db2 = db.Ado.Connection.Database;
             db.DbMaintenance.CreateDatabase();//Create Database2
             db.CodeFirst.SetStringDefaultLength(200).InitTables(typeof(Order), typeof(OrderItem));
             db.Insertable(new Order() { Name = "order1", CreateTime = DateTime.Now }).ExecuteCommand();
             Console.WriteLine(db.CurrentConnectionConfig.DbType + ":" + db.Queryable<Order>().Count());
+
+            if (db2 == db1)
+            {
+                return;
+            }
 
             // Example 1
             Console.WriteLine("Example 1");
