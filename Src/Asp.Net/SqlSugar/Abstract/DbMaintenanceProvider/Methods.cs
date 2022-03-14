@@ -325,6 +325,12 @@ namespace SqlSugar
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
+        public virtual bool CreateIndex(string tableName, string[] columnNames, string IndexName, bool isUnique = false) 
+        {
+            string sql = string.Format("CREATE {3} INDEX {2} ON {0}({1})", tableName, string.Join(",", columnNames), IndexName, isUnique ? "UNIQUE" : "");
+            this.Context.Ado.ExecuteCommand(sql);
+            return true;
+        }
         public virtual bool IsAnyIndex(string indexName)
         {
             string sql = string.Format(this.IsAnyIndexSql, indexName);
