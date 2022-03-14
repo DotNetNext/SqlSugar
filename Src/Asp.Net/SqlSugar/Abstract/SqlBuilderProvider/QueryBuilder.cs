@@ -243,7 +243,7 @@ namespace SqlSugar
             }
             resolveExpress.RootExpression = expression;
             resolveExpress.JoinQueryInfos = Builder.QueryBuilder.JoinQueryInfos;
-            resolveExpress.IsSingle = IsSingle();
+            resolveExpress.IsSingle = IsSingle()&& resolveType!= ResolveExpressType.WhereMultiple;
             resolveExpress.MappingColumns = Context.MappingColumns;
             resolveExpress.MappingTables = Context.MappingTables;
             resolveExpress.IgnoreComumnList = Context.IgnoreColumns;

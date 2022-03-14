@@ -20,6 +20,7 @@ namespace OrmTest
             db.Insertable(new Unitsdafa111()).ExecuteCommand();
             db.Insertable(new Unitsdafa111() {Id=Guid.NewGuid(),Id2=Guid.NewGuid() }).ExecuteCommand();
             var list=db.Queryable<Unitsdafa111>().ToList();
+            db.CodeFirst.InitTables<UnitafaXX1>();
             Db.Insertable(new List<UnitafaXX1>() { new UnitafaXX1 { } }).IgnoreColumns(z => z.dt2).CallEntityMethod(z => z.Test01()).ExecuteCommand();
             try
             {

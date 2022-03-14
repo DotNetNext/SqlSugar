@@ -267,6 +267,13 @@ namespace OrmTest
                            .Select((o, cus) => new VUOrder { Ixd = o.Id.SelectAll()})
                            .ToList();
             Check.Exception(query5.Any() && query5.First().Ixd == 0,"unit error");
+
+
+            var query6 = Db.Queryable<Order>()
+                     .LeftJoin<Custom>((o, cus) => o.Id.ToString().Contains(cus.Id.ToString()))
+
+                     .Where((o) => o.Id > 0) 
+                     .ToList();
         }
         public class VUOrder
         {
