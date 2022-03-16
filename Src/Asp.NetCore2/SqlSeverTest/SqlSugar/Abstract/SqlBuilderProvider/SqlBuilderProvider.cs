@@ -189,12 +189,36 @@ namespace SqlSugar
                         case ConditionalType.In:
                             if (item.FieldValue == null) item.FieldValue = string.Empty;
                             var inValue1 = ("(" + item.FieldValue.Split(',').ToJoinSqlInVals() + ")");
+                            if (item.CSharpTypeName.HasValue()&&UtilMethods.IsNumber(item.CSharpTypeName)) 
+                            {
+                                inValue1= inValue1.Replace("'","");
+                            }
+                            else if(inValue1.Contains("'null'"))
+                            {
+                                inValue1 = inValue1.Replace("'null'", "null");
+                            }
+                            else if (inValue1.Contains("[null]"))
+                            {
+                                inValue1 = inValue1.Replace("[null]", "null");
+                            }
                             builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "IN", inValue1);
                             parameters.Add(new SugarParameter(parameterName, item.FieldValue));
                             break;
                         case ConditionalType.NotIn:
                             if (item.FieldValue == null) item.FieldValue = string.Empty;
                             var inValue2 = ("(" + item.FieldValue.Split(',').ToJoinSqlInVals() + ")");
+                            if (item.CSharpTypeName.HasValue() && UtilMethods.IsNumber(item.CSharpTypeName))
+                            {
+                                inValue2 = inValue2.Replace("'", "");
+                            }
+                            else if (inValue2.Contains("'null'"))
+                            {
+                                inValue2 = inValue2.Replace("'null'", "null");
+                            }
+                            else if (inValue2.Contains("[null]"))
+                            {
+                                inValue2 = inValue2.Replace("[null]", "null");
+                            }
                             builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "NOT IN", inValue2);
                             parameters.Add(new SugarParameter(parameterName, item.FieldValue));
                             break;

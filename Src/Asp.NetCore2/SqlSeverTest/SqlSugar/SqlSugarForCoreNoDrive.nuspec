@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>SqlSugarCoreNoDrive</id>
-    <version>5.0.5.9</version>
+    <version>5.0.6</version>
     <authors>sunkaixuan</authors>
     <owners>Landa</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
@@ -11,7 +11,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description> .Net Core/.net5 SqlSugar ORM ,High-performance, lightweight https://github.com/sunkaixuan/SqlSugar</description>
     <copyright>Copyright 2016</copyright>
-    <tags>Asp.net core orm</tags>
+    <tags>SqlSugar Sql Sugar Core Asp.net core orm</tags>
     <dependencies>
       <group targetFramework=".NETStandard2.1">
         <dependency id="System.Data.Common" version="4.3.0" />

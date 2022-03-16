@@ -166,7 +166,7 @@ namespace SqlSugar
             {
                 return string.Empty;
             }
-            return xeNode.Element("summary").Value.Trim();
+            return xeNode.Element("summary").Value.ToSqlFilter().Trim();
         }
         /// <summary>
         /// Gets the code annotation for the database table

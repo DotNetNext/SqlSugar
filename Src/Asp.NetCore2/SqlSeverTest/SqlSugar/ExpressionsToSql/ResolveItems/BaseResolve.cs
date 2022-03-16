@@ -532,6 +532,26 @@ namespace SqlSugar
             {
                 return false;
             }
+            else if ((item as MethodCallExpression).Method.Name== "AggregateMax")
+            {
+                return false;
+            }
+            else if ((item as MethodCallExpression).Method.Name == "AggregateMin")
+            {
+                return false;
+            }
+            else if ((item as MethodCallExpression).Method.Name == "AggregateSum")
+            {
+                return false;
+            }
+            else if ((item as MethodCallExpression).Method.Name == "ToBool")
+            {
+                return false;
+            }
+            else if ((item as MethodCallExpression).Method.Name == "ToBoolean")
+            {
+                return false;
+            }
             else 
             {
                 return true;

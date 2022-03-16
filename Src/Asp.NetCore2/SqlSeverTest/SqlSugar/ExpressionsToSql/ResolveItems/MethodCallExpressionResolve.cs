@@ -1006,6 +1006,10 @@ namespace SqlSugar
             {
                 return string.Format("CONVERT(varchar(100),convert(datetime,{0}), {1})", value, formatString);
             }
+            else if (IsSqlServer())
+            {
+                return string.Format("FORMAT({0},'{1}','en-US')", value, formatString);
+            }
             var parameter = new MethodCallExpressionArgs() { IsMember = true, MemberValue = DateType.Year };
             var parameter2 = new MethodCallExpressionArgs() { IsMember = true, MemberName = value };
             var parameters = new MethodCallExpressionModel() { Args = new List<MethodCallExpressionArgs>() { parameter2, parameter } };

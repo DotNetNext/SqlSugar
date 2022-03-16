@@ -29,6 +29,7 @@ namespace SqlSugar
         #region DDL
         bool AddDefaultValue(string tableName,string columnName,string defaultValue);
         bool CreateIndex(string tableName, string [] columnNames, bool isUnique=false);
+        bool CreateIndex(string tableName, string[] columnNames, string IndexName, bool isUnique = false);
         bool DropTable(string tableName);
         bool TruncateTable(string tableName);
         bool TruncateTable<T>();

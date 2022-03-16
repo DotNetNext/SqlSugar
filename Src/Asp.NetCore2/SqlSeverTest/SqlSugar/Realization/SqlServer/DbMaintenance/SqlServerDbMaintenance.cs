@@ -12,7 +12,7 @@ namespace SqlSugar
         {
             get
             {
-                return "SELECT NAME FROM MASTER.DBO.SYSDATABASES ORDER BY NAME";
+                return "SELECT NAME FROM master.dbo.sysdatabases ORDER BY NAME";
             }
         }
         protected override string GetColumnInfosByTableNameSql

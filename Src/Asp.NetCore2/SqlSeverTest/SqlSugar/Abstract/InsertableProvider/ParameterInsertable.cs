@@ -99,6 +99,10 @@ namespace SqlSugar
             var removeCacheFunc = inserable.RemoveCacheFunc;
             var objects = inserable.InsertObjs;
             var identityList = inserable.EntityInfo.Columns.Where(it => it.IsIdentity).Select(it => it.PropertyName).ToArray();
+            if (inserable.IsOffIdentity) 
+            {
+                identityList = new string[] { };
+            }
             this.Context.Utilities.PageEach(objects, 100, pagelist =>
             {
  
@@ -120,6 +124,10 @@ namespace SqlSugar
             var removeCacheFunc = inserable.RemoveCacheFunc;
             var objects = inserable.InsertObjs;
             var identityList = inserable.EntityInfo.Columns.Where(it => it.IsIdentity).Select(it => it.PropertyName).ToArray();
+            if (inserable.IsOffIdentity)
+            {
+                identityList = new string[] { };
+            }
             await this.Context.Utilities.PageEachAsync(objects, 100,async pagelist =>
             {
 

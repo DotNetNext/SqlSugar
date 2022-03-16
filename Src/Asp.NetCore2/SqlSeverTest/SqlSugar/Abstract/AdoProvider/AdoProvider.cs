@@ -77,10 +77,15 @@ namespace SqlSugar
         {
             CheckConnection();
         }
-        public virtual void OpenAlways() 
+        public SugarConnection  OpenAlways() 
         {
+            SugarConnection result = new SugarConnection();
+            result.IsAutoClose = this.Context.CurrentConnectionConfig.IsAutoCloseConnection;
+            result.conn = this.Connection;
+            result.Context = this.Context;
             this.Context.CurrentConnectionConfig.IsAutoCloseConnection = false;
             this.Open();
+            return result;
         }
         public virtual void Close()
         {
