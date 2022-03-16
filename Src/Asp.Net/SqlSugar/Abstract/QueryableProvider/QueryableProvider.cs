@@ -2173,6 +2173,10 @@ namespace SqlSugar
                         Check.Exception(true, ".Mapper() parameter error");
                     }
                     List<string> inValues = entitys.Select(it => it.GetType().GetProperty(filedName).GetValue(it, null).ObjToString()).ToList();
+                    if (inValues!=null&& inValues.Any()&&UtilMethods.GetUnderType(entitys.First().GetType().GetProperty(filedName).PropertyType) == UtilConstants.GuidType) 
+                    {
+                        inValues = inValues.Select(x => x == "" ? "null" : x).Distinct().ToList();
+                    }
                     List<IConditionalModel> wheres = new List<IConditionalModel>()
                     {
                        new ConditionalModel()

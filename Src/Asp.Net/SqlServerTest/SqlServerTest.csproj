@@ -102,6 +102,7 @@
     <Compile Include="UnitTest\UCustom01.cs" />
     <Compile Include="UnitTest\UCustom02.cs" />
     <Compile Include="UnitTest\UCustom03.cs" />
+    <Compile Include="UnitTest\UCustom08.cs" />
     <Compile Include="UnitTest\UCustom07.cs" />
     <Compile Include="UnitTest\UCustom06.cs" />
     <Compile Include="UnitTest\UCustom05.cs" />
