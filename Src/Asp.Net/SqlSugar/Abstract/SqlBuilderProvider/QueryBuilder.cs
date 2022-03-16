@@ -641,12 +641,12 @@ namespace SqlSugar
                 result += UtilConstants.Space;
                 if (IsSingle() && result.Contains("MergeTable") && result.Trim().EndsWith(" MergeTable") && TableShortName != null)
                 {
-                    result = result.Replace(") MergeTable  ", ") " + TableShortName);
+                    result = result.Replace(") MergeTable  ", ") " + TableShortName+UtilConstants.Space);
                     TableShortName = null;
                 }
                 if (IsSingle() && result.Contains("unionTable") && result.Trim().EndsWith(" unionTable")&& TableShortName!=null) 
                 {
-                    result = result.Replace(" ) unionTable  ", ") "+TableShortName);
+                    result = result.Replace(" ) unionTable  ", ") "+TableShortName + UtilConstants.Space);
                     TableShortName = null;
                 }
                 if (this.TableShortName.HasValue())
