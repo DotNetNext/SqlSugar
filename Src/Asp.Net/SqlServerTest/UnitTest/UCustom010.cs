@@ -13,6 +13,7 @@ namespace OrmTest
         public static void Init()
         {
             var db = NewUnitTest.Db;
+            db.CodeFirst.InitTables<Unitasfa1sadfa>();
             var list = db.Queryable<Unitasfa1sadfa>()
                .Select(x => new { x = Convert.ToBoolean(x.ItemId),
                    x1 = SqlFunc.ToBool(x.ItemId)
