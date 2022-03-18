@@ -87,7 +87,7 @@ namespace OrmTest
                        }
                  }
             })
-            .AddSubList(it => it.Items.First().OrderId).ExecuteReturnPrimaryKey();
+            .AddSubList(it => it.Items.First().OrderId).ExecuteCommand();
 
 
 
@@ -141,7 +141,7 @@ namespace OrmTest
                   }
            })
            .AddSubList(it => it.TwoItem3)
-           .ExecuteReturnPrimaryKey();
+           .ExecuteCommand();
 
             SubNoIdentity(db);
             SubIdentity(db);
