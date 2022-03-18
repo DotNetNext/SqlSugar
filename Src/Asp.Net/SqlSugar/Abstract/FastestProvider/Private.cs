@@ -151,7 +151,7 @@ namespace SqlSugar
                     return queryable.AS(AsName).Where(it => false).Select("*").ToDataTable();
                 }
             }
-            );
+            ).Copy();
             var temColumnsList = tempDataTable.Columns.Cast<DataColumn>().Select(it => it.ColumnName.ToLower()).ToList();
             var columns = dt.Columns.Cast<DataColumn>().Where(it => temColumnsList.Contains(it.ColumnName.ToLower())).ToList();
             foreach (DataRow item in dt.Rows)
