@@ -305,6 +305,7 @@ namespace SqlSugar
             this.Context.Ado.IsEnableLogEvent = false;
             using (DbDataReader dataReader = (SqliteDataReader)this.Context.Ado.GetDataReader(sql))
             {
+                this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
                 List<DbColumnInfo> result = new List<DbColumnInfo>();
                 while (dataReader.Read())
                 {
