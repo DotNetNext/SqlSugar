@@ -427,7 +427,10 @@ namespace SqlSugar
 
         public virtual string ToCountSql(string sql)
         {
-
+            if (sql != null && sql.Contains("-- No table")) 
+            {
+                return "-- No table";
+            }
             return string.Format(" SELECT COUNT(1) FROM ({0}) CountTable ", sql);
         }
 

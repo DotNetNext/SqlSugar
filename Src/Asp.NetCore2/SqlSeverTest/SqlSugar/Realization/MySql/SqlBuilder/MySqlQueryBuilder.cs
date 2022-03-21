@@ -71,7 +71,14 @@ namespace SqlSugar
             string result = null;
             sql = new StringBuilder();
             sql.AppendFormat(SqlTemplate, "Count(*)", GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, (Skip != null || Take != null) ? null : GetOrderByString);
-            if (IsCount) { return sql.ToString(); }
+            if (IsCount) 
+            {
+                if (sql.ToString().Contains("-- No table")) 
+                {
+                    return "-- No table";
+                }
+                return sql.ToString(); 
+            }
             if (Skip != null && Take == null)
             {
                 if (this.OrderByValue == "ORDER BY ") this.OrderByValue += GetSelectValue.Split(',')[0];
