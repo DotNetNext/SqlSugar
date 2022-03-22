@@ -14,6 +14,32 @@ namespace SqlSugar
     }
     public class SqliteMethod : DefaultDbMethod, IDbMethods
     {
+        public override string DateDiff(MethodCallExpressionModel model)
+        {
+            var parameter = (DateType)(Enum.Parse(typeof(DateType), model.Args[0].MemberValue.ObjToString()));
+            var begin = model.Args[1].MemberName;
+            var end = model.Args[2].MemberName;
+            switch (parameter)
+            {
+                case DateType.Year:
+                    return $" ( strftime('%Y',{end}) - strftime('%Y',{begin}) )";
+                case DateType.Month:
+                    return $" ( (strftime('%m',{end}) - strftime('%m',{begin}))+(strftime('%Y',{end}) - strftime('%Y',{begin}))*12 )";
+                case DateType.Day:
+                    return $" (julianday( strftime('%Y-%m-%d',datetime({end})) )-julianday(strftime('%Y-%m-%d',datetime({begin})))) ";
+                case DateType.Hour:
+                    return $" ((julianday( strftime('%Y-%m-%d %H:%M',datetime({end})) )-   julianday(strftime('%Y-%m-%d %H:%M',datetime({begin}))))*24 )";
+                case DateType.Minute:
+                    return $" ((julianday( strftime('%Y-%m-%d %H:%M',datetime({end})) )-   julianday(strftime('%Y-%m-%d %H:%M',datetime({begin}))))*24*60  )";
+                case DateType.Second:
+                    return $" ((julianday( strftime('%Y-%m-%d %H:%M:%S',datetime({end})) )-   julianday(strftime('%Y-%m-%d %H:%M:%S',datetime({begin}))))*24*60*60  )";
+                case DateType.Millisecond:
+                    break;
+                default:
+                    break;
+            }
+            throw new Exception(parameter + " datediff no support");
+        }
         public override string Length(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
