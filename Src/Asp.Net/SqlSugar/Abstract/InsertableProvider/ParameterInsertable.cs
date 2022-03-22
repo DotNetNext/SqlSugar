@@ -98,6 +98,10 @@ namespace SqlSugar
             var tableWithString = inserable.InsertBuilder.TableWithString;
             var removeCacheFunc = inserable.RemoveCacheFunc;
             var objects = inserable.InsertObjs;
+            if (objects == null || objects.Count() == 0 || (objects.Count() == 1 && objects.First() == null)) 
+            {
+                return result;
+            }
             var identityList = inserable.EntityInfo.Columns.Where(it => it.IsIdentity).Select(it => it.PropertyName).ToArray();
             if (inserable.IsOffIdentity) 
             {

@@ -157,6 +157,7 @@ namespace OrmTest
             dict.Add("Price", 1);
             db.Insertable(dict).AS("[Order]").ExecuteCommand();
 
+            db.Insertable(new List<Order>()).UseParameter().ExecuteCommand();
 
             db.Fastest<Order>().BulkCopy(insertObjs);
 
