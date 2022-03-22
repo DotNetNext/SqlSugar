@@ -490,5 +490,41 @@ namespace SqlSugar
             var parameter2= model.Args[1];
             return string.Format("  ROUND({0},{1}) ", parameter.MemberName, parameter2.MemberName);
         }
+
+        public string DateDiff(MethodCallExpressionModel model) 
+        {
+            var parameter = model.Args[0];
+            var parameter2 = model.Args[1];
+            var parameter3 = model.Args[2];
+            return string.Format(" DATEDIFF({0},{1},{2}) ", parameter.MemberValue?.ToString().ToSqlFilter(), parameter2.MemberName, parameter3.MemberName);
+        }
+        public string GreaterThan(MethodCallExpressionModel model) 
+        {
+            //>
+            var parameter = model.Args[0];
+            var parameter2 = model.Args[1];
+            return string.Format(" ({0} > {1}) ", parameter.MemberName, parameter2.MemberName); 
+        }
+        public string GreaterThanOrEqual(MethodCallExpressionModel model) 
+        {
+            //>=
+            var parameter = model.Args[0];
+            var parameter2 = model.Args[1];
+            return string.Format(" ({0} >= {1}) ", parameter.MemberName, parameter2.MemberName);
+        }
+        public string LessThan(MethodCallExpressionModel model) 
+        {
+            //<
+            var parameter = model.Args[0];
+            var parameter2 = model.Args[1];
+            return string.Format(" ({0} < {1}) ", parameter.MemberName, parameter2.MemberName);
+        }
+        public string LessThanOrEqual(MethodCallExpressionModel model) 
+        {
+            //<=
+            var parameter = model.Args[0];
+            var parameter2 = model.Args[1];
+            return string.Format(" ({0} <= {1}) ", parameter.MemberName, parameter2.MemberName);
+        }
     }
 }

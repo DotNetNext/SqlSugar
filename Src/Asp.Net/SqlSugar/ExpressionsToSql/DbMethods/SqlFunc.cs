@@ -9,6 +9,27 @@ namespace SqlSugar
 {
     public partial class SqlFunc
     {
+
+        public static int DateDiff(DateType dateType,DateTime littleTime, DateTime bigTime) 
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+        public static bool GreaterThan(object thisValue,object gtValue)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+        public static bool GreaterThanOrEqual(object thisValue, object gtValue)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+        public static bool LessThan(object thisValue, object ltValue)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+        public static bool LessThanOrEqual(object thisValue, object ltValue)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
         public static bool HasNumber(object thisValue)
         {
             return thisValue.ObjToInt() > 0;

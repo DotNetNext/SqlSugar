@@ -856,6 +856,16 @@ namespace SqlSugar
                         return this.Context.DbMehtods.Abs(model);
                     case "Round":
                         return this.Context.DbMehtods.Round(model);
+                    case "DateDiff":
+                        return this.Context.DbMehtods.DateDiff(model);
+                    case "GreaterThan":
+                        return this.Context.DbMehtods.GreaterThan(model);
+                    case "GreaterThanOrEqual":
+                        return this.Context.DbMehtods.GreaterThanOrEqual(model);
+                    case "LessThan":
+                        return this.Context.DbMehtods.LessThan(model);
+                    case "LessThanOrEqual":
+                        return this.Context.DbMehtods.LessThanOrEqual(model);
                     default:
                         break;
                 }

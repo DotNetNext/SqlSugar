@@ -75,5 +75,11 @@ namespace SqlSugar
         string Format(MethodCallExpressionModel model);
         string Abs(MethodCallExpressionModel model);
         string Round(MethodCallExpressionModel model);
+
+        string DateDiff(MethodCallExpressionModel model);
+        string GreaterThan(MethodCallExpressionModel model);
+        string GreaterThanOrEqual(MethodCallExpressionModel model);
+        string  LessThan(MethodCallExpressionModel model);
+        string LessThanOrEqual(MethodCallExpressionModel model); 
     }
 }

@@ -180,6 +180,11 @@ namespace OrmTest
             var test25 = db.Queryable<Order>().Where(it => true).Select(it => new { x1 = it.CreateTime.Month,x2=DateTime.Now.Month}).ToList();
             var test26 = db.Queryable<Order>().Where(it => true).Select(it => new { x1 = it.CreateTime.Day, x2 = DateTime.Now.Day }).ToList();
             var test27 = db.Queryable<Order>().Where(it => true).Select(it => new { x1 = it.CreateTime.Year, x2 = DateTime.Now.Year }).ToList();
+            var test28 = db.Queryable<Order>().Select(it=>SqlFunc.DateDiff(DateType.Day,Convert.ToDateTime("2021-1-1"),Convert.ToDateTime("2021-1-12"))).ToList();
+            var test29 = db.Queryable<Order>().Select(it =>new {x= SqlFunc.LessThan(1, 2) }).ToList();
+            var test30= db.Queryable<Order>().Select(it => new { x = SqlFunc.LessThanOrEqual(1, 2) }).ToList();
+            var test31 = db.Queryable<Order>().Select(it => new { x = SqlFunc.GreaterThan(1, 2) }).ToList();
+            var test32 = db.Queryable<Order>().Select(it => new { x = SqlFunc.GreaterThanOrEqual(1, 2) }).ToList();
             Console.WriteLine("#### Examples End ####");
         }
 
