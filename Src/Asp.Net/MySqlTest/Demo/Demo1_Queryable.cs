@@ -86,6 +86,7 @@ namespace OrmTest
             var test05 = db.Queryable<Order>().Where(it => it.CreateTime.Month == dp.Month).ToList();
             var fromatList = db.Queryable<Order>().Select(it => it.CreateTime.ToString("%Y-%m")).ToList();
             var test06 = db.Queryable<Order>().Where(it => it.CreateTime.Date.Day >= DateTime.Now.Date.Day).ToList();
+            var test07 = db.Queryable<Order>().Select(it => SqlFunc.DateDiff(DateType.Day, Convert.ToDateTime("2021-1-1"), Convert.ToDateTime("2021-1-12"))).ToList();
             Console.WriteLine("#### Examples End ####");
         }
 
