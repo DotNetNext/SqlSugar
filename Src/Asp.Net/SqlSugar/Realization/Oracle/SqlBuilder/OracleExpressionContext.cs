@@ -53,6 +53,33 @@ namespace SqlSugar
     }
     public partial class OracleMethod : DefaultDbMethod, IDbMethods
     {
+
+        public override string DateDiff(MethodCallExpressionModel model)
+        {
+            var parameter = (DateType)(Enum.Parse(typeof(DateType), model.Args[0].MemberValue.ObjToString()));
+            var begin = model.Args[1].MemberName;
+            var end = model.Args[2].MemberName;
+            switch (parameter)
+            {
+                case DateType.Year:
+                    return $" ( cast((months_between( {end} ,  {begin}))/12 as number(9,0) ) )";
+                case DateType.Month:
+                    return $" ( cast((months_between( {end} ,  {begin})) as number(9,0) ) )";
+                case DateType.Day:
+                    return $" ( ROUND(TO_NUMBER({end} - {begin}))  )";
+                case DateType.Hour:
+                    return $" ( ROUND(TO_NUMBER({end} - {begin}) * 24)  )";
+                case DateType.Minute:
+                    return $" ( ROUND(TO_NUMBER({end} - {begin}) * 24 * 60) )";
+                case DateType.Second:
+                    return $" ( ROUND(TO_NUMBER({end} - {begin}) * 24 * 60 * 60) )";
+                case DateType.Millisecond:
+                    return $" ( ROUND(TO_NUMBER({end} - {begin}) * 24 * 60 * 60 * 60) )";
+                default:
+                    break;
+            }
+            throw new Exception(parameter + " datediff no support");
+        }
         private void PageEach<T>(IEnumerable<T> pageItems, int pageSize, Action<List<T>> action)
         {
             if (pageItems != null && pageItems.Any())
