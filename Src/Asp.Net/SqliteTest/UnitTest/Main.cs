@@ -31,7 +31,8 @@ namespace OrmTest
         }
         public static void Init()
         {
-            
+            UCustom01.Init();
+            UCustom011.Init();
             UBulkCopy.Init();
             Bulk();
             Insert();

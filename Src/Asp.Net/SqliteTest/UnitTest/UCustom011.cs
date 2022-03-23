@@ -13,16 +13,16 @@ namespace OrmTest
         {
             var db = NewUnitTest.Db;
             db.Queryable<Order>().Where(it => (it.CreateTime - SqlFunc.GetDate()).TotalDays > 1).ToList();
-            var x1=db.Queryable<Order>().Select(it => (DateTime.Now - SqlFunc.GetDate().AddYears(-1)).TotalDays).ToList();
-            var x2 = db.Queryable<Order>().Select(it => (DateTime.Now - SqlFunc.GetDate().AddDays(-1)).TotalHours).ToList();
-            var x3 = db.Queryable<Order>().Select(it => (DateTime.Now - SqlFunc.GetDate().AddHours(-1)).TotalMinutes).ToList();
-            var x4 = db.Queryable<Order>().Select(it => (DateTime.Now - SqlFunc.GetDate().AddMinutes(-1)).TotalSeconds).ToList();
+            var x1=db.Queryable<Order>().Select(it => (SqlFunc.GetDate() - SqlFunc.GetDate().AddYears(-1)).TotalDays).ToList();
+            var x2 = db.Queryable<Order>().Select(it => (SqlFunc.GetDate() - SqlFunc.GetDate().AddDays(-1)).TotalHours).ToList();
+            var x3 = db.Queryable<Order>().Select(it => (SqlFunc.GetDate() - SqlFunc.GetDate().AddHours(-1)).TotalMinutes).ToList();
+            var x4 = db.Queryable<Order>().Select(it => (SqlFunc.GetDate() - SqlFunc.GetDate().AddMinutes(-1)).TotalSeconds).ToList();
             if (x1.Any()) 
             {
                 Check.Exception(x1.First()!=365, "unit error . UCustom011");
                 Check.Exception(x2.First() != 24, "unit error . UCustom011");
-                Check.Exception(x3.First() != 60, "unit error . UCustom011");
-                Check.Exception(x4.First() != 60, "unit error . UCustom011");
+                Check.Exception(x3.First()<=59|| x3.First() >=61, "unit error . UCustom011");
+                Check.Exception(x4.First() <= 59 || x4.First() >= 61, "unit error . UCustom011");
             }
         }
      
