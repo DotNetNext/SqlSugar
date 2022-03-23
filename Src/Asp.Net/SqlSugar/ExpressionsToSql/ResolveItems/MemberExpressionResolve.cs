@@ -23,6 +23,10 @@ namespace SqlSugar
             else if (IsDateDiff(expression))
             {
                 ResolveDateDiff(parameter, isLeft, expression);
+            } 
+            else if (expression.Member.Name== "DayOfWeek"&& expression.Type==typeof(DayOfWeek)) 
+            {
+                ResolveDayOfWeek(parameter, isLeft, expression);
             }
             else if (isHasValue)
             {
@@ -212,6 +216,28 @@ namespace SqlSugar
         #endregion
 
         #region Resolve special member
+        private void ResolveDayOfWeek(ExpressionParameter parameter, bool? isLeft, MemberExpression expression)
+        {
+            var exp = expression.Expression;
+            var value = GetNewExpressionValue(exp);
+            var result = this.Context.DbMehtods.DateValue(new MethodCallExpressionModel()
+            {
+                Args = new List<MethodCallExpressionArgs>() {
+                    
+                      new MethodCallExpressionArgs(){
+                           MemberName=value,
+                            MemberValue=value
+                      },
+                      new MethodCallExpressionArgs(){
+                           MemberName=DateType.Weekday,
+                            MemberValue=DateType.Weekday
+                      }
+                  }
+            }); ;
+            base.AppendMember(parameter, isLeft, result);
+        }
+
+
         private void ResolveDateDiff(ExpressionParameter parameter, bool? isLeft, MemberExpression expression)
         {
             var binaryExp=expression.Expression as BinaryExpression;

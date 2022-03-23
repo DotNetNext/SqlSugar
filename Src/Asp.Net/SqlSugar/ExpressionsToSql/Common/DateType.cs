@@ -14,6 +14,7 @@ namespace SqlSugar
         Hour = 4,
         Second=5,
         Minute=6,
-        Millisecond=7
+        Millisecond=7,
+        Weekday=8
     }
 }
