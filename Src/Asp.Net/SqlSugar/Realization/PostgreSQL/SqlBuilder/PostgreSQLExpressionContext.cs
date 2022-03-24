@@ -205,6 +205,11 @@ namespace SqlSugar
             {
                 format = "ms";
             }
+            if (parameter2.MemberValue.ObjToString() == DateType.Weekday.ToString())
+            {
+                return $"  extract(DOW FROM cast({parameter.MemberName} as TIMESTAMP)) ";
+            }
+ 
             return string.Format(" cast( to_char({1},'{0}')as integer ) ", format, parameter.MemberName);
         }
 
