@@ -184,6 +184,8 @@ namespace SqlSugar
                 case DateType.Minute:
                     parameter2 = "%M";
                     break;
+                case DateType.Weekday:
+                    return $" cast (strftime('%w', {parameter.MemberName}) as integer) ";
                 case DateType.Millisecond:
                 default:
                     Check.ThrowNotSupportedException(typeName);
