@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>SqlSugar.AccessCore</id>
-    <version>1.1</version>
+    <version>1.2</version>
     <authors>sunkaixuan</authors>
     <owners>Landa</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>

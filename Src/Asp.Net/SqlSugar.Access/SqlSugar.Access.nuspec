@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>SqlSugar.Access</id>
-    <version>1.1</version>
+    <version>1.2</version>
     <title>SqlSugar.Access Framework</title>
     <authors>sun kaixuan</authors>
     <owners>landa</owners>
