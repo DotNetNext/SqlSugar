@@ -71,7 +71,12 @@ namespace SqlSugar.Access
             if (parameters.HasValue())
             {
                 OleDbParameter[] ipars = GetSqlParameter(parameters);
+                if (ipars != null)
+                {
+                    ipars = ipars.OrderBy(it => sql.IndexOf(it.ParameterName)).ToArray();
+                }
                 sqlCommand.Parameters.AddRange(ipars);
+            
             }
             CheckConnection();
             return sqlCommand;
