@@ -90,6 +90,32 @@ namespace SqlSugar
     }
     public class KdbndpMethod : DefaultDbMethod, IDbMethods
     {
+        public override string DateDiff(MethodCallExpressionModel model)
+        {
+            var parameter = (DateType)(Enum.Parse(typeof(DateType), model.Args[0].MemberValue.ObjToString()));
+            var begin = model.Args[1].MemberName;
+            var end = model.Args[2].MemberName;
+            switch (parameter)
+            {
+                case DateType.Year:
+                    return $" ( DATE_PART('Year',  {end}   ) - DATE_PART('Year',  {begin}) )";
+                case DateType.Month:
+                    return $" (  ( DATE_PART('Year',  {end}   ) - DATE_PART('Year',  {begin}) ) * 12 + (DATE_PART('month', {end}) - DATE_PART('month', {begin})) )";
+                case DateType.Day:
+                    return $" ( DATE_PART('day', {end} - {begin}) )";
+                case DateType.Hour:
+                    return $" ( ( DATE_PART('day', {end} - {begin}) ) * 24 + DATE_PART('hour', {end} - {begin} ) )";
+                case DateType.Minute:
+                    return $" ( ( ( DATE_PART('day', {end} - {begin}) ) * 24 + DATE_PART('hour', {end} - {begin} ) ) * 60 + DATE_PART('minute', {end} - {begin} ) )";
+                case DateType.Second:
+                    return $" ( ( ( DATE_PART('day', {end} - {begin}) ) * 24 + DATE_PART('hour', {end} - {begin} ) ) * 60 + DATE_PART('minute', {end} - {begin} ) ) * 60 + DATE_PART('minute', {end} - {begin} )";
+                case DateType.Millisecond:
+                    break;
+                default:
+                    break;
+            }
+            throw new Exception(parameter + " datediff no support");
+        }
         public override string DateValue(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
@@ -113,7 +139,7 @@ namespace SqlSugar
             }
             if (parameter2.MemberValue.ObjToString() == DateType.Minute.ToString())
             {
-                format = "mm";
+                format = "mi";
             }
             if (parameter2.MemberValue.ObjToString() == DateType.Second.ToString())
             {
@@ -121,8 +147,13 @@ namespace SqlSugar
             }
             if (parameter2.MemberValue.ObjToString() == DateType.Millisecond.ToString())
             {
-                format = "ss";
+                format = "ms";
             }
+            if (parameter2.MemberValue.ObjToString() == DateType.Weekday.ToString())
+            {
+                return $"  extract(DOW FROM cast({parameter.MemberName} as TIMESTAMP)) ";
+            }
+
             return string.Format(" cast( to_char({1},'{0}')as integer ) ", format, parameter.MemberName);
         }
 
