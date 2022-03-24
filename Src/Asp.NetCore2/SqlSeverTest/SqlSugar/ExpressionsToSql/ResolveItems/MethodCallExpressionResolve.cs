@@ -559,6 +559,10 @@ namespace SqlSugar
             {
                 parameter.CommonTempData = item.ToString();
             }
+            else if (IsDateItemValue(item))
+            {
+                parameter.CommonTempData = GetNewExpressionValue(item);
+            }
             else
             {
                 base.Start();
@@ -581,7 +585,7 @@ namespace SqlSugar
                     methodCallExpressionArgs.IsMember = false;
                 }
             }
-            if (IsDateDate(item) || IsDateValue(item))
+            if (IsDateDate(item) || IsDateValue(item)|| IsDateItemValue(item))
             {
                 methodCallExpressionArgs.IsMember = true;
             }
@@ -602,6 +606,33 @@ namespace SqlSugar
             }
             model.Args.Add(methodCallExpressionArgs);
             parameter.ChildExpression = null;
+        }
+
+        private bool IsDateItemValue(Expression item)
+        {
+            var result = false;
+            if (item is MemberExpression)
+            {
+                var memberExp = item as MemberExpression;
+                if (memberExp != null && memberExp.Expression != null && memberExp.Expression.Type == UtilConstants.DateType) 
+                {
+                    foreach (var dateType in UtilMethods.EnumToDictionary<DateType>())
+                    {
+                        if (memberExp.Member.Name.EqualCase(dateType.Key))
+                        {
+                            result = true;
+                            break;
+                        }
+                        else if (memberExp.Member.Name=="DayOfWeek") 
+                        {
+                            result = true;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return result;
         }
 
         private static bool IsDateDate(Expression item)
@@ -856,6 +887,16 @@ namespace SqlSugar
                         return this.Context.DbMehtods.Abs(model);
                     case "Round":
                         return this.Context.DbMehtods.Round(model);
+                    case "DateDiff":
+                        return this.Context.DbMehtods.DateDiff(model);
+                    case "GreaterThan":
+                        return this.Context.DbMehtods.GreaterThan(model);
+                    case "GreaterThanOrEqual":
+                        return this.Context.DbMehtods.GreaterThanOrEqual(model);
+                    case "LessThan":
+                        return this.Context.DbMehtods.LessThan(model);
+                    case "LessThanOrEqual":
+                        return this.Context.DbMehtods.LessThanOrEqual(model);
                     default:
                         break;
                 }

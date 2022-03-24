@@ -20,6 +20,14 @@ namespace SqlSugar
             {
                 ResolveLength(parameter, isLeft, expression);
             }
+            else if (IsDateDiff(expression))
+            {
+                ResolveDateDiff(parameter, isLeft, expression);
+            } 
+            else if (expression.Member.Name== "DayOfWeek"&& expression.Type==typeof(DayOfWeek)) 
+            {
+                ResolveDayOfWeek(parameter, isLeft, expression);
+            }
             else if (isHasValue)
             {
                 ResolveHasValue(parameter, expression);
@@ -61,6 +69,7 @@ namespace SqlSugar
                 ResolveDefault(parameter, baseParameter, expression, isLeft, isSetTempData, isSingle);
             }
         }
+
 
 
         #region Resolve default
@@ -207,6 +216,65 @@ namespace SqlSugar
         #endregion
 
         #region Resolve special member
+        private void ResolveDayOfWeek(ExpressionParameter parameter, bool? isLeft, MemberExpression expression)
+        {
+            var exp = expression.Expression;
+            var value = GetNewExpressionValue(exp);
+            var result = this.Context.DbMehtods.DateValue(new MethodCallExpressionModel()
+            {
+                Args = new List<MethodCallExpressionArgs>() {
+                    
+                      new MethodCallExpressionArgs(){
+                           MemberName=value,
+                            MemberValue=value
+                      },
+                      new MethodCallExpressionArgs(){
+                           MemberName=DateType.Weekday,
+                            MemberValue=DateType.Weekday
+                      }
+                  }
+            }); ;
+            base.AppendMember(parameter, isLeft, result);
+        }
+
+
+        private void ResolveDateDiff(ExpressionParameter parameter, bool? isLeft, MemberExpression expression)
+        {
+            var binaryExp=expression.Expression as BinaryExpression;
+            var beginExp = binaryExp.Right;
+            var endExp = binaryExp.Left;
+
+            var dateType = DateType.Day;
+            var begin = GetNewExpressionValue(beginExp);
+            var end  = GetNewExpressionValue(endExp);
+
+            foreach (var item in UtilMethods.EnumToDictionary<DateType>())
+            {
+                if (expression.Member.Name.ToLower().Contains(item.Key.ToLower())) 
+                {
+                    dateType = item.Value;
+                    break;
+                }
+            }
+            var result = this.Context.DbMehtods.DateDiff(new MethodCallExpressionModel()
+            {
+                Args = new List<MethodCallExpressionArgs>() {
+                      new MethodCallExpressionArgs(){
+                           MemberName=dateType,
+                            MemberValue=dateType
+                      },
+                       new MethodCallExpressionArgs(){
+                           MemberName=begin,
+                            MemberValue=begin
+                      },
+                           new MethodCallExpressionArgs(){
+                           MemberName=end,
+                            MemberValue=end
+                      }
+                  }
+            }); ;
+            base.AppendMember(parameter, isLeft, result);
+        }
         private void ResolveDateDateByCall(ExpressionParameter parameter, bool? isLeft, MemberExpression expression)
         {
             var value = GetNewExpressionValue(expression.Expression);
@@ -441,6 +509,17 @@ namespace SqlSugar
         #endregion
 
         #region Helper
+        private static bool IsDateDiff(MemberExpression expression)
+        {
+            return
+                expression.Expression!=null&&
+                expression.Expression is BinaryExpression &&
+                expression.Expression.Type == UtilConstants.TimeSpanType&&
+                expression.Member.Name.StartsWith("Total")&&
+                expression.Member.Name.EndsWith("s")
+                ;
+        }
+
         private string AppendMember(ExpressionParameter parameter, bool? isLeft, string fieldName)
         {
             if (parameter.BaseExpression is BinaryExpression || (parameter.BaseParameter.CommonTempData != null && parameter.BaseParameter.CommonTempData.Equals(CommonTempDataType.Append)))

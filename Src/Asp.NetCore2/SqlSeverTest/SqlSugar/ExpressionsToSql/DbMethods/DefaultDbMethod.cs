@@ -433,18 +433,18 @@ namespace SqlSugar
             return string.Format("CHARINDEX ({0},{1})", model.Args[0].MemberName, model.Args[1].MemberName);
         }
 
-        public string ToVarchar(MethodCallExpressionModel model)
+        public virtual string ToVarchar(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             return string.Format(" CAST({0} AS VARCHAR(MAX))", parameter.MemberName);
         }
-        public  string BitwiseAnd(MethodCallExpressionModel model)
+        public virtual string BitwiseAnd(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
             return string.Format(" ({0} & {1}) ", parameter.MemberName, parameter2.MemberName); ;
         }
-        public string BitwiseInclusiveOR(MethodCallExpressionModel model)
+        public virtual string BitwiseInclusiveOR(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
@@ -471,24 +471,60 @@ namespace SqlSugar
             return string.Format(" DATEDIFF({0},{1},{2}) ", parameter.MemberValue?.ToString().ToSqlFilter(), parameter2.MemberName, parameter3.MemberName); ;
         }
 
-        public string Format(MethodCallExpressionModel model)
+        public virtual string Format(MethodCallExpressionModel model)
         {
             var str = model.Args[0].MemberValue.ObjToString();
             var array = model.Args.Skip(1).Select(it => it.IsMember?it.MemberName:it.MemberValue).ToArray();
              return string.Format("'"+str+ "'", array);
         }
 
-        public string Abs(MethodCallExpressionModel model)
+        public virtual string Abs(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             return string.Format(" ABS({0}) ", parameter.MemberName);
         }
 
-        public string Round(MethodCallExpressionModel model)
+        public virtual string Round(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             var parameter2= model.Args[1];
             return string.Format("  ROUND({0},{1}) ", parameter.MemberName, parameter2.MemberName);
+        }
+
+        public virtual string DateDiff(MethodCallExpressionModel model) 
+        {
+            var parameter = model.Args[0];
+            var parameter2 = model.Args[1];
+            var parameter3 = model.Args[2];
+            return string.Format(" DATEDIFF({0},{1},{2}) ", parameter.MemberValue?.ToString().ToSqlFilter(), parameter2.MemberName, parameter3.MemberName);
+        }
+        public virtual string GreaterThan(MethodCallExpressionModel model) 
+        {
+            //>
+            var parameter = model.Args[0];
+            var parameter2 = model.Args[1];
+            return string.Format(" ({0} > {1}) ", parameter.MemberName, parameter2.MemberName); 
+        }
+        public virtual string GreaterThanOrEqual(MethodCallExpressionModel model) 
+        {
+            //>=
+            var parameter = model.Args[0];
+            var parameter2 = model.Args[1];
+            return string.Format(" ({0} >= {1}) ", parameter.MemberName, parameter2.MemberName);
+        }
+        public virtual string LessThan(MethodCallExpressionModel model) 
+        {
+            //<
+            var parameter = model.Args[0];
+            var parameter2 = model.Args[1];
+            return string.Format(" ({0} < {1}) ", parameter.MemberName, parameter2.MemberName);
+        }
+        public virtual string LessThanOrEqual(MethodCallExpressionModel model) 
+        {
+            //<=
+            var parameter = model.Args[0];
+            var parameter2 = model.Args[1];
+            return string.Format(" ({0} <= {1}) ", parameter.MemberName, parameter2.MemberName);
         }
     }
 }
