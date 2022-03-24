@@ -17,6 +17,7 @@ namespace OrmTest
             var x2 = db.Queryable<Order>().Select(it => (SqlFunc.GetDate() - SqlFunc.GetDate().AddDays(-1)).TotalHours).ToList();
             var x3 = db.Queryable<Order>().Select(it => (SqlFunc.GetDate() - SqlFunc.GetDate().AddHours(-1)).TotalMinutes).ToList();
             var x4 = db.Queryable<Order>().Select(it => (SqlFunc.GetDate() - SqlFunc.GetDate().AddMinutes(-1)).TotalSeconds).ToList();
+            var x5 = db.Queryable<Order>().Select(it => DateTime.Now.DayOfWeek.ToString() ).ToList();
             if (x1.Any()) 
             {
                 Check.Exception(x1.First()!=365, "unit error . UCustom011");
