@@ -32,36 +32,16 @@ namespace OrmTest
 
 
             //insert or update
-            var x= db.Storageable<Order>(new Order() { Id=1, Name="jack" }).ToStorage();
-            x.AsUpdateable.ExecuteCommand();
+            var x= db.Storageable<Order>(new Order() { Id=159, Name="jack" }).ToStorage();
+            var updateRow=x.AsUpdateable.ExecuteCommand();
             x.AsInsertable.ExecuteCommand();
 
-
             var x2 = db.Storageable<Order>(new Order() { Id = 0, Name = "jack" }).ToStorage();
-            x2.BulkCopy();
-            x2.BulkUpdate();
-
-            var dt = db.Queryable<Order>().Take(1).ToDataTable();
-            dt.TableName = "order";
-            var addRow = dt.NewRow();
-            addRow["id"] = 0;
-            addRow["price"] = 1;
-            addRow["Name"] = "a";
-            dt.Rows.Add(addRow);
-            var x3 = 
-                db.Storageable(dt)
-                .WhereColumns("id").ToStorage();
-
-            x3.AsInsertable.IgnoreColumns("id").ExecuteCommand();
-            x3.AsUpdateable.ExecuteCommand();
+            var updateRow2 = x2.AsUpdateable.ExecuteCommand();
+            x2.AsInsertable.ExecuteCommand();
 
 
-            var x4 =
-               db.Storageable(dt)
-               .SplitDelete(it=>Convert.ToInt32( it["id"])>0)
-               .WhereColumns("id").ToStorage();
-            x4.AsDeleteable.ExecuteCommand();
-
+            db.Saveable(new Order() { Id = 159, Name = "jack" }).ExecuteCommand();
             Console.WriteLine("");
             Console.WriteLine("#### Saveable End ####");
         }

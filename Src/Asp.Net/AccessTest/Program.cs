@@ -17,6 +17,7 @@ namespace OrmTest
             Demo3_Insertable.Init();
             Demo4_Deleteable.Init();
             Demo5_SqlQueryable.Init();
+            Demo8_Saveable.Init();
             Demo7_Ado.Init();
             DemoD_DbFirst.Init();
             Console.WriteLine("all successfully.");
