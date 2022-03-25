@@ -1023,10 +1023,10 @@ namespace SqlSugar
         {
             try
             {
-                if (this.CurrentConnectionConfig.DbType == DbType.Oracle)
-                {
-                    throw new Exception("Oracle no support SaveQueues");
-                }
+                //if (this.CurrentConnectionConfig.DbType == DbType.Oracle)
+                //{
+                //    throw new Exception("Oracle no support SaveQueues");
+                //}
                 if (this.Queues == null || this.Queues.Count == 0) return default(T);
                 isTran = isTran && this.Ado.Transaction == null;
                 if (isTran) this.Ado.BeginTran();
