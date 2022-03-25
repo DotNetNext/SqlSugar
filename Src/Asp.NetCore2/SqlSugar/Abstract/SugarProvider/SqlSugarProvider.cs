@@ -557,9 +557,9 @@ namespace SqlSugar
                 string sql = sqlObj.Key;
                 UtilMethods.RepairReplicationParameters(ref sql, sqlObj.Value.ToArray(), i, "Union");
                 if (sqlObj.Value.HasValue())
-                    allItems.Add(new KeyValuePair<string, List<SugarParameter>>(sql, sqlObj.Value));
+                    allItems.Add(new KeyValuePair<string, List<SugarParameter>>($" ( {sql} ) ", sqlObj.Value));
                 else
-                    allItems.Add(new KeyValuePair<string, List<SugarParameter>>(sql, new List<SugarParameter>()));
+                    allItems.Add(new KeyValuePair<string, List<SugarParameter>>($" ( {sql} ) ", new List<SugarParameter>()));
                 i++;
             }
             var allSql = sqlBuilder.GetUnionSql(allItems.Select(it => it.Key).ToList());
@@ -1023,10 +1023,10 @@ namespace SqlSugar
         {
             try
             {
-                if (this.CurrentConnectionConfig.DbType == DbType.Oracle)
-                {
-                    throw new Exception("Oracle no support SaveQueues");
-                }
+                //if (this.CurrentConnectionConfig.DbType == DbType.Oracle)
+                //{
+                //    throw new Exception("Oracle no support SaveQueues");
+                //}
                 if (this.Queues == null || this.Queues.Count == 0) return default(T);
                 isTran = isTran && this.Ado.Transaction == null;
                 if (isTran) this.Ado.BeginTran();

@@ -142,7 +142,14 @@ namespace SqlSugar
                 }
                 else if (type == UtilConstants.StringType || type == UtilConstants.ObjType)
                 {
-                    return N + "'" + value.ToString().ToSqlFilter() + "'";
+                    if (value.ToString().Length > 2000)
+                    {
+                        return   "to_clob('" + value.ToString().ToSqlFilter() + "')";
+                    }
+                    else
+                    {
+                        return N + "'" + value.ToString().ToSqlFilter() + "'";
+                    }
                 }
                 else
                 {
