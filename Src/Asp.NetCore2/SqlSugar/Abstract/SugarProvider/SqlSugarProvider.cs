@@ -501,6 +501,71 @@ namespace SqlSugar
             queryable.QueryBuilder.JoinQueryInfos.Add(new JoinQueryInfo() { JoinIndex = 1, JoinType = joinType2, JoinWhere = exp2.GetResultString(), TableName = sqlBuilder.GetPackTable(sql3, shortName3) });
             return queryable;
         }
+
+        public virtual ISugarQueryable<T, T2, T3,T4> Queryable<T, T2, T3,T4>(
+              ISugarQueryable<T> joinQueryable1, ISugarQueryable<T2> joinQueryable2, ISugarQueryable<T3> joinQueryable3, ISugarQueryable<T4> joinQueryable4,
+              JoinType joinType1, Expression<Func<T, T2, T3, T4, bool>> joinExpression1,
+              JoinType joinType2, Expression<Func<T, T2, T3, T4, bool>> joinExpression2,
+               JoinType joinType3, Expression<Func<T, T2, T3,T4, bool>> joinExpression3
+          ) where T : class, new() where T2 : class, new() where T3 : class, new() where T4 : class, new()
+        {
+            Check.Exception(joinQueryable1.QueryBuilder.Take != null || joinQueryable1.QueryBuilder.Skip != null || joinQueryable1.QueryBuilder.OrderByValue.HasValue(), "joinQueryable1 Cannot have 'Skip' 'ToPageList' 'Take' Or 'OrderBy'");
+            Check.Exception(joinQueryable2.QueryBuilder.Take != null || joinQueryable2.QueryBuilder.Skip != null || joinQueryable2.QueryBuilder.OrderByValue.HasValue(), "joinQueryable2 Cannot have 'Skip' 'ToPageList' 'Take' Or 'OrderBy'");
+            Check.Exception(joinQueryable3.QueryBuilder.Take != null || joinQueryable3.QueryBuilder.Skip != null || joinQueryable3.QueryBuilder.OrderByValue.HasValue(), "joinQueryable3 Cannot have 'Skip' 'ToPageList' 'Take' Or 'OrderBy'");
+            Check.Exception(joinQueryable4.QueryBuilder.Take != null || joinQueryable4.QueryBuilder.Skip != null || joinQueryable4.QueryBuilder.OrderByValue.HasValue(), "joinQueryable4 Cannot have 'Skip' 'ToPageList' 'Take' Or 'OrderBy'");
+            var sqlBuilder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
+
+            sqlBuilder.Context = this;
+            InitMappingInfo<T, T2, T3,T4>();
+            var types = new Type[] { typeof(T2) };
+            var queryable = InstanceFactory.GetQueryable<T, T2, T3,T4>(this.CurrentConnectionConfig);
+            queryable.Context = this.Context;
+            queryable.SqlBuilder = sqlBuilder;
+            queryable.QueryBuilder = InstanceFactory.GetQueryBuilder(this.CurrentConnectionConfig);
+            queryable.QueryBuilder.JoinQueryInfos = new List<JoinQueryInfo>();
+            queryable.QueryBuilder.Builder = sqlBuilder;
+            queryable.QueryBuilder.Context = this;
+            queryable.QueryBuilder.EntityType = typeof(T);
+            queryable.QueryBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(this.CurrentConnectionConfig);
+
+            //master
+            var shortName1 = joinExpression1.Parameters[0].Name;
+            var sqlObj1 = joinQueryable1.ToSql();
+            string sql1 = sqlObj1.Key;
+            UtilMethods.RepairReplicationParameters(ref sql1, sqlObj1.Value.ToArray(), 0, "Join");
+            queryable.QueryBuilder.EntityName = sqlBuilder.GetPackTable(sql1, shortName1); ;
+            queryable.QueryBuilder.Parameters.AddRange(sqlObj1.Value);
+
+            //join table 1
+            var shortName2 = joinExpression1.Parameters[1].Name;
+            var sqlObj2 = joinQueryable2.ToSql();
+            string sql2 = sqlObj2.Key;
+            UtilMethods.RepairReplicationParameters(ref sql2, sqlObj2.Value.ToArray(), 1, "Join");
+            queryable.QueryBuilder.Parameters.AddRange(sqlObj2.Value);
+            var exp = queryable.QueryBuilder.GetExpressionValue(joinExpression1, ResolveExpressType.WhereMultiple);
+            queryable.QueryBuilder.JoinQueryInfos.Add(new JoinQueryInfo() { JoinIndex = 0, JoinType = joinType1, JoinWhere = exp.GetResultString(), TableName = sqlBuilder.GetPackTable(sql2, shortName2) });
+
+
+            //join table 2
+            var shortName3 = joinExpression1.Parameters[2].Name;
+            var sqlObj3 = joinQueryable3.ToSql();
+            string sql3 = sqlObj3.Key;
+            UtilMethods.RepairReplicationParameters(ref sql3, sqlObj3.Value.ToArray(), 2, "Join");
+            queryable.QueryBuilder.Parameters.AddRange(sqlObj3.Value);
+            var exp2 = queryable.QueryBuilder.GetExpressionValue(joinExpression2, ResolveExpressType.WhereMultiple);
+            queryable.QueryBuilder.JoinQueryInfos.Add(new JoinQueryInfo() { JoinIndex = 1, JoinType = joinType2, JoinWhere = exp2.GetResultString(), TableName = sqlBuilder.GetPackTable(sql3, shortName3) });
+
+            //join table 3
+            var shortName4 = joinExpression1.Parameters[3].Name;
+            var sqlObj4 = joinQueryable4.ToSql();
+            string sql4 = sqlObj4.Key;
+            UtilMethods.RepairReplicationParameters(ref sql4, sqlObj4.Value.ToArray(), 3, "Join");
+            queryable.QueryBuilder.Parameters.AddRange(sqlObj4.Value);
+            var exp3 = queryable.QueryBuilder.GetExpressionValue(joinExpression3, ResolveExpressType.WhereMultiple);
+            queryable.QueryBuilder.JoinQueryInfos.Add(new JoinQueryInfo() { JoinIndex = 1, JoinType = joinType3, JoinWhere = exp3.GetResultString(), TableName = sqlBuilder.GetPackTable(sql4, shortName4) });
+
+            return queryable;
+        }
         #endregion
 
         public virtual ISugarQueryable<T> UnionAll<T>(params ISugarQueryable<T>[] queryables) where T : class, new()
