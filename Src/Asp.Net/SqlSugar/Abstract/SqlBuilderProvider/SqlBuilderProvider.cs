@@ -331,7 +331,17 @@ namespace SqlSugar
             }
             return new KeyValuePair<string, SugarParameter[]>(builder.ToString(), parameters.ToArray());
         }
-
+        public virtual string GetUnionFomatSql(string sql)
+        {
+            if (this.Context.CurrentConnectionConfig.DbType.IsIn(DbType.MySql, DbType.PostgreSQL,DbType.MySqlConnector))
+            {
+                return $" ( {sql} ) ";
+            }
+            else
+            {
+                return sql;
+            }
+        }
         private void BuilderTree(StringBuilder builder,ConditionalTree item,ref  int indexTree, List<SugarParameter>  parameters,ref int mainIndex)
         {
            var conditionals = ToConditionalCollections(item,ref indexTree, parameters);

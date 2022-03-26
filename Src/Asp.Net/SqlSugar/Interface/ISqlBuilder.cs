@@ -41,5 +41,6 @@ namespace SqlSugar
         string GetUnionSql(List<string> sqlList);
         void RepairReplicationParameters(ref string appendSql, SugarParameter[] parameters, int addIndex);
         KeyValuePair<string, SugarParameter[]> ConditionalModelToSql(List<IConditionalModel> models, int beginIndex = 0);
+        string GetUnionFomatSql(string sql);
     }
 }
