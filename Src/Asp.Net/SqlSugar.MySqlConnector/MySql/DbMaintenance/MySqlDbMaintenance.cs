@@ -341,11 +341,11 @@ namespace SqlSugar.MySqlConnector
             {
                 if (item.ColumnDescription != null)
                 {
-                    if (item.UnderType == UtilConstants.GuidType && item.Length == 0)
+                    var mySqlCodeFirst = this.Context.CodeFirst as MySqlCodeFirst;
+                    if (item.UnderType == UtilConstants.GuidType&&item.Length==0) 
                     {
                         item.Length = 36;
                     }
-                    var mySqlCodeFirst = this.Context.CodeFirst as MySqlCodeFirst;
                     string sql = GetUpdateColumnSql(entity.DbTableName, mySqlCodeFirst.GetEntityColumnToDbColumn(entity, entity.DbTableName, item))+" "+(item.IsIdentity? "AUTO_INCREMENT" : "")+" " + " COMMENT '" + item.ColumnDescription + "'";
                     db.Ado.ExecuteCommand(sql);
                 }
@@ -439,7 +439,7 @@ namespace SqlSugar.MySqlConnector
                 string template = "ALTER table {0} CHANGE COLUMN {1} {1} {3} default {2}";
                 var dbColumnInfo = this.Context.DbMaintenance.GetColumnInfosByTableName(tableName).First(it => it.DbColumnName.Equals(columnName, StringComparison.CurrentCultureIgnoreCase));
                 var value = Regex.Match(defaultValue, @"\(\d\)$").Value;
-                string sql = string.Format(template, tableName, columnName, defaultValue, dbColumnInfo.DataType);
+                string sql = string.Format(template, tableName, columnName, defaultValue, dbColumnInfo.DataType+ value);
                 this.Context.Ado.ExecuteCommand(sql);
                 return true;
             }

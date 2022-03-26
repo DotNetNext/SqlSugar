@@ -14,6 +14,13 @@ namespace SqlSugar.MySqlConnector
     }
     public class MySqlMethod : DefaultDbMethod, IDbMethods
     {
+        public override string DateDiff(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter2 = model.Args[1];
+            var parameter3 = model.Args[2];
+            return string.Format(" TIMESTAMPDIFF({0},{1},{2}) ", parameter.MemberValue?.ToString().ToSqlFilter(), parameter2.MemberName, parameter3.MemberName);
+        }
         public override string DateValue(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
@@ -69,7 +76,7 @@ namespace SqlSugar.MySqlConnector
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
             var parameter3 = model.Args[2];
-            if (parameter3.MemberValue.ObjToString() == "Millisecond")
+            if (parameter3.MemberValue.ObjToString() == "Millisecond") 
             {
                 parameter3.MemberValue = "Second";
                 return string.Format(" (DATE_ADD({1} , INTERVAL {2}/1000 {0})) ", parameter3.MemberValue, parameter.MemberName, parameter2.MemberName);
