@@ -20,8 +20,22 @@ namespace OrmTest
               new UnitClob(){ 
                   Clob=x+x+x+x+x+x+x+x}
             }).ExecuteCommand();
+
+            db.CodeFirst.InitTables<UnitDate>();
+            db.Insertable(new List<UnitDate>() {
+             new UnitDate(){  date=DateTime.Now,date2=DateTime.Now},
+                       new UnitDate(){  date=DateTime.Now.AddDays(10),date2=DateTime.Now.AddDays(10)}
+            }).ExecuteCommand();
+            var list=db.Queryable<UnitDate>().ToList();
         }
 
+        public class UnitDate 
+        {
+            [SugarColumn(ColumnDataType = "date")]
+            public DateTime date { get; set; }
+            [SugarColumn(ColumnDataType = "timestamp")]
+            public DateTime date2 { get; set; }
+        }
         public class UnitClob 
         {
             [SugarColumn(IsPrimaryKey =true)]
