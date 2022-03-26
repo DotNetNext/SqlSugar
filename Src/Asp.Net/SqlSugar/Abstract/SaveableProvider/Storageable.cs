@@ -68,6 +68,22 @@ namespace SqlSugar
             return this;
         }
 
+        public int ExecuteUpdateOrInsert() 
+        {
+            var result = 0;
+            var x = this.ToStorage();
+            result+=x.AsInsertable.ExecuteCommand();
+            result += x.AsUpdateable.ExecuteCommand();
+            return result;
+        }
+        public async Task<int> ExecuteUpdateOrInsertAsync()
+        {
+            var result = 0;
+            var x = await Task.Run(() => this.ToStorage());
+            result +=await x.AsInsertable.ExecuteCommandAsync();
+            result +=await x.AsUpdateable.ExecuteCommandAsync();
+            return result;
+        }
         public StorageableResult<T> ToStorage()
         {
             if (whereFuncs == null || whereFuncs.Count == 0)
@@ -147,6 +163,89 @@ namespace SqlSugar
             result.AsDeleteable.Where(delete.Select(it => it.Item).ToList());
             return result;
         }
+
+
+        public async Task<StorageableResult<T>> ToStorageAsync()
+        {
+            if (whereFuncs == null || whereFuncs.Count == 0)
+            {
+                return await this.Saveable().ToStorageAsync();
+            }
+            if (this.allDatas.Count == 0)
+                return new StorageableResult<T>()
+                {
+                    AsDeleteable = this.Context.Deleteable<T>().AS(asname).Where(it => false),
+                    AsInsertable = this.Context.Insertable(new List<T>()).AS(asname),
+                    AsUpdateable = this.Context.Updateable(new List<T>()).AS(asname),
+                    InsertList = new List<StorageableMessage<T>>(),
+                    UpdateList = new List<StorageableMessage<T>>(),
+                    DeleteList = new List<StorageableMessage<T>>(),
+                    ErrorList = new List<StorageableMessage<T>>(),
+                    IgnoreList = new List<StorageableMessage<T>>(),
+                    OtherList = new List<StorageableMessage<T>>(),
+                    TotalList = new List<StorageableMessage<T>>()
+                };
+            var pkInfos = this.Context.EntityMaintenance.GetEntityInfo<T>().Columns.Where(it => it.IsPrimarykey);
+            if (whereExpression == null && !pkInfos.Any())
+            {
+                Check.Exception(true, "Need primary key or WhereColumn");
+            }
+            if (whereExpression == null && pkInfos.Any())
+            {
+                await this.Context.Utilities.PageEachAsync(allDatas, 300,async item => {
+                    var addItems =await this.Context.Queryable<T>().AS(asname).WhereClassByPrimaryKey(item.Select(it => it.Item).ToList()).ToListAsync();
+                    dbDataList.AddRange(addItems);
+                });
+            }
+            var pkProperties = GetPkProperties(pkInfos);
+            var messageList = allDatas.Select(it => new StorageableMessage<T>()
+            {
+                Item = it.Item,
+                Database = dbDataList,
+                PkFields = pkProperties
+            }).ToList();
+            foreach (var item in whereFuncs.OrderByDescending(it => (int)it.key))
+            {
+                List<StorageableMessage<T>> whereList = messageList.Where(it => it.StorageType == null).ToList();
+                Func<StorageableMessage<T>, bool> exp = item.value1;
+                var list = whereList.Where(exp).ToList();
+                foreach (var it in list)
+                {
+                    it.StorageType = item.key;
+                    it.StorageMessage = item.value2;
+                }
+            }
+            var delete = messageList.Where(it => it.StorageType == StorageType.Delete).ToList();
+            var update = messageList.Where(it => it.StorageType == StorageType.Update).ToList();
+            var inset = messageList.Where(it => it.StorageType == StorageType.Insert).ToList();
+            var error = messageList.Where(it => it.StorageType == StorageType.Error).ToList();
+            var ignore = messageList.Where(it => it.StorageType == StorageType.Ignore || it.StorageType == null).ToList();
+            var other = messageList.Where(it => it.StorageType == StorageType.Other).ToList();
+            StorageableResult<T> result = new StorageableResult<T>()
+            {
+                _WhereColumnList = wherecolumnList,
+                _AsName = asname,
+                _Context = this.Context,
+                AsDeleteable = this.Context.Deleteable<T>().AS(asname),
+                AsUpdateable = this.Context.Updateable(update.Select(it => it.Item).ToList()).AS(asname),
+                AsInsertable = this.Context.Insertable(inset.Select(it => it.Item).ToList()).AS(asname),
+                OtherList = other,
+                InsertList = inset,
+                DeleteList = delete,
+                UpdateList = update,
+                ErrorList = error,
+                IgnoreList = ignore,
+                TotalList = messageList
+            };
+            if (this.whereExpression != null)
+            {
+                result.AsUpdateable.WhereColumns(whereExpression);
+                result.AsDeleteable.WhereColumns(whereExpression);
+            }
+            result.AsDeleteable.Where(delete.Select(it => it.Item).ToList());
+            return result;
+        }
+
 
         private string[] GetPkProperties(IEnumerable<EntityColumnInfo> pkInfos)
         {

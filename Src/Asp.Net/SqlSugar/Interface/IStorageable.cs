@@ -17,7 +17,10 @@ namespace SqlSugar
         IStorageable<T> SplitDelete(Func<StorageableInfo<T>, bool> conditions, string message = null);
         IStorageable<T> SplitOther(Func<StorageableInfo<T>, bool> conditions, string message = null);
         StorageableResult<T> ToStorage();
+        Task<StorageableResult<T>> ToStorageAsync();
         IStorageable<T> As(string tableName);
+        int ExecuteUpdateOrInsert();
+        Task<int> ExecuteUpdateOrInsertAsync();
     }
 
     public class StorageableInfo<T> where T : class, new()
