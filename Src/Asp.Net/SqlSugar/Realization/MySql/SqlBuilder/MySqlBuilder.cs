@@ -22,5 +22,9 @@ namespace SqlSugar
                 return "select sysdate()";
             }
         }
+        public override string GetUnionFomatSql(string sql)
+        {
+            return " ( " + sql + " )  ";
+        }
     }
 }

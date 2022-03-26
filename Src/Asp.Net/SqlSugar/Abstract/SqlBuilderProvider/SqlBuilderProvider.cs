@@ -333,14 +333,7 @@ namespace SqlSugar
         }
         public virtual string GetUnionFomatSql(string sql)
         {
-            if (this.Context.CurrentConnectionConfig.DbType.IsIn(DbType.MySql, DbType.PostgreSQL,DbType.MySqlConnector))
-            {
-                return $" ( {sql} ) ";
-            }
-            else
-            {
-                return sql;
-            }
+            return sql;
         }
         private void BuilderTree(StringBuilder builder,ConditionalTree item,ref  int indexTree, List<SugarParameter>  parameters,ref int mainIndex)
         {
