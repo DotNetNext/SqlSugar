@@ -27,7 +27,7 @@ namespace SqlSugar
         {
             get
             {
-                return "select sysdate from dual";
+                return "select systimestamp from dual";
             }
         }
         public override string SqlTranslationLeft { get { return "\""; } }
