@@ -57,7 +57,7 @@ namespace SqlSugar
                     {
                         date = Convert.ToDateTime("1900-1-1");
                     }
-                    return "to_date('" + date.ToString("yyyy-MM-dd HH:mm:ss") + "', 'YYYY-MM-DD HH24:MI:SS') ";
+                    return "to_timestamp('" + date.ToString("yyyy-MM-dd HH:mm:ss.ffffff") + "', 'YYYY-MM-DD HH24:MI:SS.FF') ";
                 }
                 else if (type.IsEnum())
                 {
@@ -83,7 +83,7 @@ namespace SqlSugar
                 else if (type == UtilConstants.DateTimeOffsetType)
                 {
                     var date = UtilMethods.ConvertFromDateTimeOffset((DateTimeOffset)value);
-                    return "to_date('" + date.ToString("yyyy-MM-dd HH:mm:ss") + "', 'YYYY-MM-DD HH24:MI:SS') ";
+                    return "to_timestamp('" + date.ToString("yyyy-MM-dd HH:mm:ss.ffffff") + "', 'YYYY-MM-DD HH24:MI:SS.FF') ";
                 }
                 else if (type == UtilConstants.StringType || type == UtilConstants.ObjType)
                 {
