@@ -19,8 +19,8 @@ namespace SqlSugar
         StorageableResult<T> ToStorage();
         Task<StorageableResult<T>> ToStorageAsync();
         IStorageable<T> As(string tableName);
-        int ExecuteUpdateOrInsert();
-        Task<int> ExecuteUpdateOrInsertAsync();
+        int ExecuteCommand();
+        Task<int> ExecuteCommandAsync();
     }
 
     public class StorageableInfo<T> where T : class, new()

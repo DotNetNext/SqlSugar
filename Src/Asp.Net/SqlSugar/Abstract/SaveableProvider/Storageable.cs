@@ -68,7 +68,7 @@ namespace SqlSugar
             return this;
         }
 
-        public int ExecuteUpdateOrInsert() 
+        public int ExecuteCommand() 
         {
             var result = 0;
             var x = this.ToStorage();
@@ -76,10 +76,10 @@ namespace SqlSugar
             result += x.AsUpdateable.ExecuteCommand();
             return result;
         }
-        public async Task<int> ExecuteUpdateOrInsertAsync()
+        public async Task<int> ExecuteCommandAsync()
         {
             var result = 0;
-            var x = await Task.Run(() => this.ToStorage());
+            var x = await this.ToStorageAsync();
             result +=await x.AsInsertable.ExecuteCommandAsync();
             result +=await x.AsUpdateable.ExecuteCommandAsync();
             return result;
