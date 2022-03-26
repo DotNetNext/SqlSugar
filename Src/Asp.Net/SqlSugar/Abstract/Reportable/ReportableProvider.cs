@@ -218,7 +218,23 @@ namespace SqlSugar
             }
             else if (type.IsIn(typeof(DateTime))) 
             {
-                Expression<Func<SingleColumnEntity<object>, object>> exp = it => Convert.ToDecimal(it.ColumnName);
+                if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle) 
+                {
+                    return queryBuilder.LambdaExpressions.DbMehtods.Oracle_ToDate(new MethodCallExpressionModel()
+                    {
+                        Args = new List<MethodCallExpressionArgs>() {
+                  new MethodCallExpressionArgs(){
+                   IsMember=true,
+                   MemberName= value.ObjToDate().ToString("yyyy-MM-dd HH:mm:ss").ToSqlValue()
+                  },
+                    new MethodCallExpressionArgs(){
+                   IsMember=true,
+                   MemberName= "yyyy-mm-dd hh24:mi:ss".ToSqlValue()
+                  }
+                 }
+                    }); ;
+                }
+                //Expression<Func<SingleColumnEntity<object>, object>> exp = it => Convert.ToDecimal(it.ColumnName);
                 var result = queryBuilder.LambdaExpressions.DbMehtods.ToDate(new MethodCallExpressionModel()
                 {
                     Args = new List<MethodCallExpressionArgs>() {
