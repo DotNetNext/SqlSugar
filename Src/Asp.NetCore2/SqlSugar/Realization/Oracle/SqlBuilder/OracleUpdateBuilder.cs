@@ -33,10 +33,10 @@ namespace SqlSugar
 
         private string GetOracleUpdateColums(DbColumnInfo m)
         {
-            return string.Format("\"{0}\"={1}", m.DbColumnName.ToUpper(), FormatValue(m.Value));
+            return string.Format("\"{0}\"={1}", m.DbColumnName.ToUpper(), FormatValue(m.Value,m.IsPrimarykey));
         }
 
-        public override object FormatValue(object value)
+        public  object FormatValue(object value,bool isPrimaryKey)
         {
             if (value == null)
             {
@@ -45,6 +45,10 @@ namespace SqlSugar
             else
             {
                 string N =this.Context.GetN();
+                if (isPrimaryKey) 
+                {
+                    N = "";
+                }
                 var type = UtilMethods.GetUnderType(value.GetType());
                 if (type == UtilConstants.DateType)
                 {

@@ -34,6 +34,10 @@ namespace SqlSugar
         {
             if (columnName.Contains(":"))
                 return base.GetTranslationColumnName(columnName);
+            else if (columnName.Contains("\".\""))
+            {
+                return columnName;
+            }
             else
             return base.GetTranslationColumnName(columnName).ToUpper();
         }

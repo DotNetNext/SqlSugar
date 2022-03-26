@@ -15,6 +15,7 @@ namespace SqlSugar
         Second=5,
         Minute=6,
         Millisecond=7,
-        Weekday=8
+        Weekday=8,
+        Quarter=9
     }
 }

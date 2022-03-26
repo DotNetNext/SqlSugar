@@ -520,9 +520,9 @@ namespace SqlSugar
                 string sql = sqlObj.Key;
                 UtilMethods.RepairReplicationParameters(ref sql, sqlObj.Value.ToArray(), i, "UnionAll");
                 if (sqlObj.Value.HasValue())
-                    allItems.Add(new KeyValuePair<string, List<SugarParameter>>(sql, sqlObj.Value));
+                    allItems.Add(new KeyValuePair<string, List<SugarParameter>>(sqlBuilder.GetUnionFomatSql(sql), sqlObj.Value));
                 else
-                    allItems.Add(new KeyValuePair<string, List<SugarParameter>>(sql, new List<SugarParameter>()));
+                    allItems.Add(new KeyValuePair<string, List<SugarParameter>>(sqlBuilder.GetUnionFomatSql(sql), new List<SugarParameter>()));
                 i++;
             }
             var allSql = sqlBuilder.GetUnionAllSql(allItems.Select(it => it.Key).ToList());
@@ -557,9 +557,9 @@ namespace SqlSugar
                 string sql = sqlObj.Key;
                 UtilMethods.RepairReplicationParameters(ref sql, sqlObj.Value.ToArray(), i, "Union");
                 if (sqlObj.Value.HasValue())
-                    allItems.Add(new KeyValuePair<string, List<SugarParameter>>($" ( {sql} ) ", sqlObj.Value));
+                    allItems.Add(new KeyValuePair<string, List<SugarParameter>>(sqlBuilder.GetUnionFomatSql(sql), sqlObj.Value));
                 else
-                    allItems.Add(new KeyValuePair<string, List<SugarParameter>>($" ( {sql} ) ", new List<SugarParameter>()));
+                    allItems.Add(new KeyValuePair<string, List<SugarParameter>>(sqlBuilder.GetUnionFomatSql(sql), new List<SugarParameter>()));
                 i++;
             }
             var allSql = sqlBuilder.GetUnionSql(allItems.Select(it => it.Key).ToList());

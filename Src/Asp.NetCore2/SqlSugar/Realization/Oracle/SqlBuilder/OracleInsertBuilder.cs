@@ -65,7 +65,7 @@ namespace SqlSugar
 
 
                     batchInsetrSql.Append("(");
-                    insertColumns =  string.Join(",", item.Select(it =>FormatValue(it.Value)));
+                    insertColumns =  string.Join(",", item.Select(it =>FormatValue(it.Value,it.PropertyName)));
                     batchInsetrSql.Append(insertColumns);
                     if (identities.HasValue())
                     {
@@ -99,7 +99,8 @@ namespace SqlSugar
                 return result;
             }
         }
-        public override object FormatValue(object value)
+        int i = 0;
+        public  object FormatValue(object value,string name)
         {
             if (value == null)
             {
@@ -144,7 +145,10 @@ namespace SqlSugar
                 {
                     if (value.ToString().Length > 2000)
                     {
-                        return   "to_clob('" + value.ToString().ToSqlFilter() + "')";
+                        ++i;
+                        var parameterName = this.Builder.SqlParameterKeyWord + name + i;
+                        this.Parameters.Add(new SugarParameter(parameterName, value));
+                        return parameterName;
                     }
                     else
                     {
