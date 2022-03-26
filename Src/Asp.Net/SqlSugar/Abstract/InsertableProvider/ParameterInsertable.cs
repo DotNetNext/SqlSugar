@@ -71,7 +71,7 @@ namespace SqlSugar
             await this.Context.Utilities.PageEachAsync<T,int>(objects, 60,async pagelist =>
             {
                 if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle)
-                    this.Context.AddQueue("Begin");
+                    this.Context.AddQueue("begin");
                 foreach (var item in pagelist)
                 {
                     var itemable = this.Context.Insertable(item);
@@ -81,7 +81,7 @@ namespace SqlSugar
                     itemable.AddQueue();
                 }
                 if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle) 
-                    this.Context.AddQueue("End");
+                    this.Context.AddQueue("end");
                 result += await this.Context.SaveQueuesAsync(false);
                 if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle)
                     return objects.Length;
