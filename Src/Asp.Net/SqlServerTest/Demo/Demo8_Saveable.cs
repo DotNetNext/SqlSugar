@@ -30,6 +30,8 @@ namespace OrmTest
                 }
             });
 
+            //insert or update
+            var x1 = db.Storageable<Order>(new Order() { Id = 1, Name = "jack" }).ExecuteUpdateOrInsert();
 
             //insert or update
             var x= db.Storageable<Order>(new Order() { Id=1, Name="jack" }).ToStorage();

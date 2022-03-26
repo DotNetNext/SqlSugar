@@ -360,11 +360,13 @@ namespace SqlSugar
             Check.Exception(typeof(T).FullName.Contains("System.Collections.Generic.List`"), "  need  where T: class, new() ");
             return this.Context.Storageable(new List<T> { data});
         }
+
+        [Obsolete("use Storageable")]
         public ISaveable<T> Saveable<T>(List<T> saveObjects) where T : class, new()
         {
             return this.Context.Saveable<T>(saveObjects);
         }
-
+        [Obsolete("use Storageable")]
         public ISaveable<T> Saveable<T>(T saveObject) where T : class, new()
         {
             return this.Context.Saveable(saveObject);
