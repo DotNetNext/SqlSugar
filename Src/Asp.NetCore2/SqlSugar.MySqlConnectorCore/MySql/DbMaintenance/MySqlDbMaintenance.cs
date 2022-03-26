@@ -438,6 +438,7 @@ namespace SqlSugar.MySqlConnector
             {
                 string template = "ALTER table {0} CHANGE COLUMN {1} {1} {3} default {2}";
                 var dbColumnInfo = this.Context.DbMaintenance.GetColumnInfosByTableName(tableName).First(it => it.DbColumnName.Equals(columnName, StringComparison.CurrentCultureIgnoreCase));
+                var value = Regex.Match(defaultValue, @"\(\d\)$").Value;
                 string sql = string.Format(template, tableName, columnName, defaultValue, dbColumnInfo.DataType);
                 this.Context.Ado.ExecuteCommand(sql);
                 return true;
