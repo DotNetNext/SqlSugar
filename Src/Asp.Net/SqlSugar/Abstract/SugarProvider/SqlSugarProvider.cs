@@ -1053,7 +1053,16 @@ namespace SqlSugar
                             addParameters.Add(parameter);
                         }
                         parsmeters.AddRange(addParameters);
-                        itemSql = itemSql.TrimEnd(';') + ";";
+                        itemSql = itemSql
+                           .TrimEnd('\r')
+                           .TrimEnd('\n')
+                           .TrimEnd('\r')
+                           .TrimEnd('\n')
+                           .TrimEnd(';') + ";";
+                        if (itemSql == "begin;")
+                        {
+                            itemSql = itemSql.TrimEnd(';') + "\n";
+                        }
                         sqlBuilder.AppendLine(itemSql);
                         index++;
                     }
