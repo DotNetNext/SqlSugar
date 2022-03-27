@@ -1285,7 +1285,10 @@ namespace SqlSugar
             {
                 if (cancellationTokenSource?.IsCancellationRequested == true) return;
                 var queryable = this.Clone();
-                var page = queryable.ToPageList(i, singleMaxReads, ref totalNumber, ref totalPage);
+                var page =
+                    totalPage==1?
+                    queryable.ToPageList(i, singleMaxReads, ref totalNumber, ref totalPage):
+                    queryable.ToPageList(i, singleMaxReads);
                 foreach (var item in page)
                 {
                     if (cancellationTokenSource?.IsCancellationRequested == true) return;
