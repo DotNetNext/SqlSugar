@@ -185,6 +185,13 @@ namespace OrmTest
             var test30= db.Queryable<Order>().Select(it => new { x = SqlFunc.LessThanOrEqual(1, 2) }).ToList();
             var test31 = db.Queryable<Order>().Select(it => new { x = SqlFunc.GreaterThan(1, 2) }).ToList();
             var test32 = db.Queryable<Order>().Select(it => new { x = SqlFunc.GreaterThanOrEqual(1, 2) }).ToList();
+            List<Order> result = new List<Order>();
+            db.Queryable<Order>().ForEach(it =>
+            {
+                result.Add(it);
+
+            },10);
+            var test33= db.Queryable<Order>().ToList();
             Console.WriteLine("#### Examples End ####");
         }
 

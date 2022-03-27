@@ -1276,6 +1276,23 @@ namespace SqlSugar
             InitMapping();
             return _ToList<T>();
         }
+        public virtual void ForEach(Action<T> action, int singleMaxReads = 300,System.Threading.CancellationTokenSource cancellationTokenSource = null) 
+        {
+            Check.Exception(this.QueryBuilder.Skip > 0 || this.QueryBuilder.Take > 0, ErrorMessage.GetThrowMessage("no support Skip take, use PageForEach", "不支持Skip Take,请使用 Queryale.PageForEach"));
+            var totalNumber = 0;
+            var totalPage = 1;
+            for (int i = 1; i <= totalPage; i++)
+            {
+                if (cancellationTokenSource?.IsCancellationRequested == true) return;
+                var queryable = this.Clone();
+                var page = queryable.ToPageList(i, singleMaxReads, ref totalNumber, ref totalPage);
+                foreach (var item in page)
+                {
+                    if (cancellationTokenSource?.IsCancellationRequested == true) return;
+                    action.Invoke(item);
+                }
+            }
+        }
         public List<T> ToOffsetPage(int pageIndex, int pageSize) 
         {
             if (this.Context.CurrentConnectionConfig.DbType != DbType.SqlServer)
