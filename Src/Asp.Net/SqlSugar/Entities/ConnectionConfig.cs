@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -61,6 +62,23 @@ namespace SqlSugar
 
         [JsonIgnore]
         public AopEvents AopEvents { get;set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public SqlMiddle SqlMiddle { get;  set; }
+    }
+    public class SqlMiddle
+    { 
+        public bool? IsSqlMiddle { get; set; }
+        public Func<string ,SugarParameter[],object> GetScalar { get; set; }
+        public Func<string, SugarParameter[],int> ExecuteCommand { get; set; }
+        public Func<string, SugarParameter[],IDataReader> GetDataReader { get; set; }
+        public Func<string, SugarParameter[],DataSet> GetDataSetAll { get; set; }
+        public Func<string, SugarParameter[], Task<object>> GetScalarAsync { get; set; }
+        public Func<string, SugarParameter[], Task<int>> ExecuteCommandAsync { get; set; }
+        public Func<string, SugarParameter[], Task<IDataReader>> GetDataReaderAsync { get; set; }
+        public Func<string, SugarParameter[], Task<DataSet>> GetDataSetAllAsync { get; set; }
+
     }
     public class AopEvents
     {
