@@ -199,6 +199,14 @@ namespace OrmTest
 
             },2,10,ref count,5);
             var test33= db.Queryable<Order>().ToList();
+            db.CurrentConnectionConfig.SqlMiddle = new SqlMiddle
+            {
+                 IsSqlMiddle=true,
+                 ExecuteCommand = (s, p)=>{ return s.Length; }
+                  
+            };
+            var five=db.Ado.ExecuteCommand("11111");
+            db.CurrentConnectionConfig.SqlMiddle = null;
             Console.WriteLine("#### Examples End ####");
         }
 
