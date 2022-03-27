@@ -86,6 +86,7 @@ namespace SqlSugar
                     IsWithNoLockQuery = it.MoreSettings.IsWithNoLockQuery,
                     TableEnumIsString=it.MoreSettings.TableEnumIsString
                 },
+                SqlMiddle=it.SqlMiddle,
                 SlaveConnectionConfigs = it.SlaveConnectionConfigs
             }).ToList();
         }
