@@ -191,6 +191,13 @@ namespace OrmTest
                 result.Add(it);
 
             },10);
+            result = new List<Order>();
+            int count = 0;
+            db.Queryable<Order>().ForEachByPage(it =>
+            {
+                result.Add(it);
+
+            },2,10,ref count,5);
             var test33= db.Queryable<Order>().ToList();
             Console.WriteLine("#### Examples End ####");
         }
