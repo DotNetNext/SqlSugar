@@ -1873,18 +1873,21 @@ namespace SqlSugar
             var isSingle = QueryBuilder.IsSingle();
             ExpressionResult lamResult = null;
             string result = null;
-            if (expression is NewExpression && !expression.ObjToString().Contains("="))
-            {
-                lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.ArraySingle : ResolveExpressType.ArrayMultiple);
-                result = string.Join(",", lamResult.GetResultArray().Select(it => it));
-            }
-            else if (expression is NewExpression) 
+            if (expression is NewExpression) 
             {
                 var newExp=expression as  NewExpression;
                 foreach (var item in newExp.Arguments)
                 {
-                    result += 
-                        QueryBuilder.GetExpressionValue(item, isSingle ? ResolveExpressType.WhereSingle : ResolveExpressType.WhereMultiple).GetResultString()+",";
+                    if (item is MemberExpression)
+                    {
+                        result +=
+                          QueryBuilder.GetExpressionValue(item, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple).GetResultString() + ",";
+                    }
+                    else
+                    {
+                        result +=
+                            QueryBuilder.GetExpressionValue(item, isSingle ? ResolveExpressType.WhereSingle : ResolveExpressType.WhereMultiple).GetResultString() + ",";
+                    }
                 }
                 result = result.TrimEnd(',');
             }
