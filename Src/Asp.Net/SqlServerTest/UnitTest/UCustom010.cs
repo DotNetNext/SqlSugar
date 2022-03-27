@@ -19,6 +19,12 @@ namespace OrmTest
                    x1 = SqlFunc.ToBool(x.ItemId)
                })
                .ToList();
+            db.CodeFirst.InitTables<UnitADSFA>();
+            var list2=db.Queryable<UnitADSFA>().GroupBy(it => new
+            {
+                it.A,
+                x=it.A.ToString()
+            }).ToList();
         }
         public class Unitasfa1sadfa
         {
@@ -29,6 +35,9 @@ namespace OrmTest
  
         }
 
-     
+        public class UnitADSFA 
+        {
+            public bool A { get; set; }
+        }
     }
 }
