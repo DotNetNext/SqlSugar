@@ -80,6 +80,8 @@ namespace SqlSugar
 
         IUpdateable<T> IgnoreColumns(bool ignoreAllNullColumns, bool isOffIdentity = false, bool ignoreAllDefaultValue = false);
         IUpdateable<T> IgnoreColumns(Expression<Func<T, object>> columns);
+        IUpdateable<T> IgnoreColumnsIF(bool isIgnore, Expression<Func<T, object>> columns);
+
         IUpdateable<T> IgnoreColumns(params string[] columns);
 
 

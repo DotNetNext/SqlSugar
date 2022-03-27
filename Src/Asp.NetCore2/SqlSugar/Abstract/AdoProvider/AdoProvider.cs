@@ -339,6 +339,8 @@ namespace SqlSugar
                 InitParameters(ref sql, parameters);
                 if (FormatSql != null)
                     sql = FormatSql(sql);
+                if (this.Context.CurrentConnectionConfig?.SqlMiddle?.IsSqlMiddle==true)
+                    return this.Context.CurrentConnectionConfig.SqlMiddle.ExecuteCommand(sql, parameters);
                 SetConnectionStart(sql);
                 if (this.ProcessingEventStartingSQL != null)
                     ExecuteProcessingSQL(ref sql,ref parameters);
@@ -371,6 +373,8 @@ namespace SqlSugar
                 InitParameters(ref sql, parameters);
                 if (FormatSql != null)
                     sql = FormatSql(sql);
+                if (this.Context.CurrentConnectionConfig?.SqlMiddle?.IsSqlMiddle == true)
+                    return this.Context.CurrentConnectionConfig.SqlMiddle.GetDataReader(sql, parameters);
                 SetConnectionStart(sql);
                 var isSp = this.CommandType == CommandType.StoredProcedure;
                 if (this.ProcessingEventStartingSQL != null)
@@ -403,6 +407,8 @@ namespace SqlSugar
                 InitParameters(ref sql, parameters);
                 if (FormatSql != null)
                     sql = FormatSql(sql);
+                if (this.Context.CurrentConnectionConfig?.SqlMiddle?.IsSqlMiddle == true)
+                    return this.Context.CurrentConnectionConfig.SqlMiddle.GetDataSetAll(sql, parameters);
                 SetConnectionStart(sql);
                 if (this.ProcessingEventStartingSQL != null)
                     ExecuteProcessingSQL(ref sql,ref parameters);
@@ -438,6 +444,8 @@ namespace SqlSugar
                 InitParameters(ref sql, parameters);
                 if (FormatSql != null)
                     sql = FormatSql(sql);
+                if (this.Context.CurrentConnectionConfig?.SqlMiddle?.IsSqlMiddle == true)
+                    return this.Context.CurrentConnectionConfig.SqlMiddle.GetScalar(sql, parameters);
                 SetConnectionStart(sql);
                 if (this.ProcessingEventStartingSQL != null)
                     ExecuteProcessingSQL(ref sql,ref parameters);
@@ -473,6 +481,8 @@ namespace SqlSugar
                 InitParameters(ref sql, parameters);
                 if (FormatSql != null)
                     sql = FormatSql(sql);
+                if (this.Context.CurrentConnectionConfig?.SqlMiddle?.IsSqlMiddle == true)
+                    return await this.Context.CurrentConnectionConfig.SqlMiddle.ExecuteCommandAsync(sql, parameters);
                 SetConnectionStart(sql);
                 if (this.ProcessingEventStartingSQL != null)
                     ExecuteProcessingSQL(ref sql,ref parameters);
@@ -510,6 +520,8 @@ namespace SqlSugar
                 InitParameters(ref sql, parameters);
                 if (FormatSql != null)
                     sql = FormatSql(sql);
+                if (this.Context.CurrentConnectionConfig?.SqlMiddle?.IsSqlMiddle == true)
+                    return await this.Context.CurrentConnectionConfig.SqlMiddle.GetDataReaderAsync(sql, parameters);
                 SetConnectionStart(sql);
                 var isSp = this.CommandType == CommandType.StoredProcedure;
                 if (this.ProcessingEventStartingSQL != null)
@@ -547,6 +559,8 @@ namespace SqlSugar
                 InitParameters(ref sql, parameters);
                 if (FormatSql != null)
                     sql = FormatSql(sql);
+                if (this.Context.CurrentConnectionConfig?.SqlMiddle?.IsSqlMiddle == true)
+                    return await this.Context.CurrentConnectionConfig.SqlMiddle.GetScalarAsync(sql, parameters);
                 SetConnectionStart(sql);
                 if (this.ProcessingEventStartingSQL != null)
                     ExecuteProcessingSQL(ref sql,ref parameters);

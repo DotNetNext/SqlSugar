@@ -169,6 +169,11 @@ namespace SqlSugar
             this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => !ignoreColumns.Contains(it.DbColumnName.ToLower())).ToList();
             return this;
         }
+        public IUpdateable<T> IgnoreColumnsIF(bool IsIgnore, Expression<Func<T, object>> columns)
+        {
+            if (IsIgnore) this.IgnoreColumns(columns);
+            return this;
+        }
         public IUpdateable<T> IgnoreColumns(string[] columns)
         {
             if (columns.HasValue())

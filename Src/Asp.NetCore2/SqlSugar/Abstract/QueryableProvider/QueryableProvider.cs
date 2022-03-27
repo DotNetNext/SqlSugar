@@ -1276,6 +1276,64 @@ namespace SqlSugar
             InitMapping();
             return _ToList<T>();
         }
+        public virtual void ForEach(Action<T> action, int singleMaxReads = 300,System.Threading.CancellationTokenSource cancellationTokenSource = null) 
+        {
+            Check.Exception(this.QueryBuilder.Skip > 0 || this.QueryBuilder.Take > 0, ErrorMessage.GetThrowMessage("no support Skip take, use PageForEach", "不支持Skip Take,请使用 Queryale.PageForEach"));
+            var totalNumber = 0;
+            var totalPage = 1;
+            for (int i = 1; i <= totalPage; i++)
+            {
+                if (cancellationTokenSource?.IsCancellationRequested == true) return;
+                var queryable = this.Clone();
+                var page =
+                    totalPage==1?
+                    queryable.ToPageList(i, singleMaxReads, ref totalNumber, ref totalPage):
+                    queryable.ToPageList(i, singleMaxReads);
+                foreach (var item in page)
+                {
+                    if (cancellationTokenSource?.IsCancellationRequested == true) return;
+                    action.Invoke(item);
+                }
+            }
+        }
+        public virtual void ForEachByPage(Action<T> action, int pageIndex, int pageSize, ref int totalNumber, int singleMaxReads = 300, System.Threading.CancellationTokenSource cancellationTokenSource = null)
+        {
+            int count = this.Clone().Count();
+            if (count > 0)
+            {
+                if (pageSize > singleMaxReads && count - ((pageIndex - 1) * pageSize) > singleMaxReads)
+                {
+                    Int32 Skip = (pageIndex - 1) * pageSize;
+                    Int32 NowCount = count - Skip;
+                    Int32 number = 0;
+                    if (NowCount > pageSize) NowCount = pageSize;
+                    while (NowCount > 0)
+                    {
+                        if (cancellationTokenSource?.IsCancellationRequested == true) return;
+                        if (number + singleMaxReads > pageSize) singleMaxReads = NowCount;
+                        foreach (var item in this.Clone().Skip(Skip).Take(singleMaxReads).ToList())
+                        {
+                            if (cancellationTokenSource?.IsCancellationRequested == true) return;
+                            action.Invoke(item);
+                        }
+                        NowCount -= singleMaxReads;
+                        Skip += singleMaxReads;
+                        number += singleMaxReads;
+                    }
+                }
+                else
+                {
+                    if (cancellationTokenSource?.IsCancellationRequested == true) return;
+                    foreach (var item in this.Clone().ToPageList(pageIndex, pageSize))
+                    {
+                        if (cancellationTokenSource?.IsCancellationRequested == true) return;
+                        action.Invoke(item);
+                    }
+                }
+            }
+            totalNumber = count;
+        }
+
         public List<T> ToOffsetPage(int pageIndex, int pageSize) 
         {
             if (this.Context.CurrentConnectionConfig.DbType != DbType.SqlServer)
