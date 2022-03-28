@@ -49,6 +49,7 @@ namespace SqlSugar
         #endregion
 
         #region Global variable
+        public SugarActionType SugarActionType { get { return this.Context.SugarActionType; }set { this.Context.SugarActionType = value; } }
         public SqlSugarProvider Context { get { return GetContext(); } }
         public bool IsSystemTablesConfig => this.Context.IsSystemTablesConfig;
         public ConnectionConfig CurrentConnectionConfig { get { return _CurrentConnectionConfig; } set { _CurrentConnectionConfig = value; } }

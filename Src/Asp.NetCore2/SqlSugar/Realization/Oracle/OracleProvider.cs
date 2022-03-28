@@ -164,8 +164,16 @@ namespace SqlSugar
                 }
                 else if (parameter.DbType == System.Data.DbType.DateTime)
                 {
-                    sqlParameter.Value = parameter.Value;
-                    sqlParameter.DbType = System.Data.DbType.Date;
+                    if (this.Context.SugarActionType == SugarActionType.Insert)
+                    {
+                        sqlParameter.Value = parameter.Value;
+                        sqlParameter.DbType = System.Data.DbType.DateTime;
+                    }
+                    else
+                    {
+                        sqlParameter.Value = parameter.Value;
+                        sqlParameter.DbType = System.Data.DbType.Date;
+                    }
                 }
                 else if (parameter.DbType == System.Data.DbType.AnsiStringFixedLength)
                 {

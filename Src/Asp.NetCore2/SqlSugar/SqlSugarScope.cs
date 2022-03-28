@@ -35,7 +35,7 @@ namespace SqlSugar
             this._configAction = configAction;
         }
         public SqlSugarClient ScopedContext{ get{ return GetContext();}}
-
+        public SugarActionType SugarActionType { get => ScopedContext.SugarActionType;set=> ScopedContext.SugarActionType=value;  }
         public MappingTableList MappingTables { get => ScopedContext.MappingTables; set => ScopedContext.MappingTables = value; }
         public MappingColumnList MappingColumns { get => ScopedContext.MappingColumns; set => ScopedContext.MappingColumns=value; }
         public IgnoreColumnList IgnoreColumns { get => ScopedContext.IgnoreColumns; set => ScopedContext.IgnoreColumns=value; }
