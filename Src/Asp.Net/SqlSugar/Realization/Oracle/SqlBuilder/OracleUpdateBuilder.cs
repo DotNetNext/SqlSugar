@@ -33,10 +33,10 @@ namespace SqlSugar
 
         private string GetOracleUpdateColums(DbColumnInfo m)
         {
-            return string.Format("\"{0}\"={1}", m.DbColumnName.ToUpper(), FormatValue(m.Value,m.IsPrimarykey));
+            return string.Format("\"{0}\"={1}", m.DbColumnName.ToUpper(), FormatValue(m.Value,m.IsPrimarykey,m.PropertyName));
         }
-
-        public  object FormatValue(object value,bool isPrimaryKey)
+        int i = 0;
+        public  object FormatValue(object value,bool isPrimaryKey,string name)
         {
             if (value == null)
             {
@@ -87,7 +87,17 @@ namespace SqlSugar
                 }
                 else if (type == UtilConstants.StringType || type == UtilConstants.ObjType)
                 {
-                    return N + "'" + value.ToString().ToSqlFilter() + "'";
+                    if (value.ToString().Length > 2000)
+                    {
+                        ++i;
+                        var parameterName = this.Builder.SqlParameterKeyWord + name + i;
+                        this.Parameters.Add(new SugarParameter(parameterName, value));
+                        return parameterName;
+                    }
+                    else
+                    {
+                        return N + "'" + value.ToString().ToSqlFilter() + "'";
+                    }
                 }
                 else
                 {
