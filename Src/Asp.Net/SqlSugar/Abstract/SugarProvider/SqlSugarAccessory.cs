@@ -31,6 +31,7 @@ namespace SqlSugar
         public MappingColumnList MappingColumns { get; set; }
         public IgnoreColumnList IgnoreColumns { get; set; }
         public IgnoreColumnList IgnoreInsertColumns { get; set; }
+        public SugarActionType SugarActionType { get; set; } = SugarActionType.UnKnown;
         public ConfigQuery ConfigQuery { 
             get 
             {
@@ -258,6 +259,7 @@ namespace SqlSugar
         }
         protected ISugarQueryable<T> CreateQueryable<T>(ISugarQueryable<T> result)
         {
+            this.SugarActionType = SugarActionType.Query;
             Check.Exception(typeof(T).IsClass() == false || typeof(T).GetConstructors().Length == 0, "Queryable<{0}> Error ,{0} is invalid , need is a class,and can new().", typeof(T).Name);
             var sqlBuilder = InstanceFactory.GetSqlbuilder(CurrentConnectionConfig);
             result.Context = this.Context;
@@ -272,6 +274,7 @@ namespace SqlSugar
         }
         protected InsertableProvider<T> CreateInsertable<T>(T[] insertObjs) where T : class, new()
         {
+            this.SugarActionType = SugarActionType.Insert;
             var result = InstanceFactory.GetInsertableProvider<T>(this.CurrentConnectionConfig);
             var sqlBuilder = InstanceFactory.GetSqlbuilder(this.CurrentConnectionConfig); ;
             result.Context = this;
@@ -287,6 +290,7 @@ namespace SqlSugar
         }
         protected DeleteableProvider<T> CreateDeleteable<T>() where T : class, new()
         {
+            this.SugarActionType = SugarActionType.Delete;
             var result = InstanceFactory.GetDeleteableProvider<T>(this.CurrentConnectionConfig);
             var sqlBuilder = InstanceFactory.GetSqlbuilder(this.CurrentConnectionConfig); ;
             result.Context = this;
@@ -299,6 +303,7 @@ namespace SqlSugar
         }
         protected UpdateableProvider<T> CreateUpdateable<T>(T[] UpdateObjs) where T : class, new()
         {
+            this.SugarActionType = SugarActionType.Update;
             var result = InstanceFactory.GetUpdateableProvider<T>(this.CurrentConnectionConfig);
             var sqlBuilder = InstanceFactory.GetSqlbuilder(this.CurrentConnectionConfig); ;
             result.Context = this;
@@ -315,6 +320,7 @@ namespace SqlSugar
 
         protected void CreateQueryJoin<T>(Expression joinExpression, Type[] types, ISugarQueryable<T> queryable)
         {
+            this.SugarActionType = SugarActionType.Query;
             this.CreateQueryable<T>(queryable);
             string shortName = string.Empty;
             List<SugarParameter> paramters = new List<SugarParameter>();
@@ -328,6 +334,7 @@ namespace SqlSugar
         }
         protected void CreateEasyQueryJoin<T>(Expression joinExpression, Type[] types, ISugarQueryable<T> queryable)
         {
+            this.SugarActionType = SugarActionType.Query;
             this.CreateQueryable<T>(queryable);
             string shortName = string.Empty;
             queryable.SqlBuilder.QueryBuilder.EasyJoinInfos = this.GetEasyJoinInfo(joinExpression, ref shortName, queryable.SqlBuilder, types);

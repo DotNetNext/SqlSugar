@@ -1434,6 +1434,7 @@ namespace SqlSugar
                 this.Connection = this.MasterConnection;
                 this.Context.CurrentConnectionConfig.ConnectionString = this.MasterConnectionString;
             }
+            this.Context.SugarActionType = SugarActionType.UnKnown;
         }
 
         private bool IsRead(string sql)

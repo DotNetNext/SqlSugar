@@ -31,7 +31,7 @@ namespace SqlSugar
         EntityMaintenance EntityMaintenance { get; set; }
         QueryFilterProvider QueryFilter { get; set; }
         IContextMethods Utilities { get; set; }
-
+        SugarActionType SugarActionType { get; set; }
 
         #region Deleteable
         IDeleteable<T> Deleteable<T>() where T : class, new();

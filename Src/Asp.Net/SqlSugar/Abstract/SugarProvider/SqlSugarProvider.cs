@@ -1199,7 +1199,8 @@ namespace SqlSugar
         }
 
         #endregion
-        #region
+
+        #region Fastest
         public IFastest<T> Fastest<T>() where T:class,new()
         {
             return new FastestProvider<T>(this);
