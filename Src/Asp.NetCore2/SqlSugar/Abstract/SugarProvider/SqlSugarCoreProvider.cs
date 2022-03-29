@@ -86,7 +86,17 @@ namespace SqlSugar
                     IsWithNoLockQuery = it.MoreSettings.IsWithNoLockQuery,
                     TableEnumIsString=it.MoreSettings.TableEnumIsString
                 },
-                SqlMiddle=it.SqlMiddle,
+                SqlMiddle=it.SqlMiddle==null?null:new SqlMiddle { 
+                  IsSqlMiddle=it.SqlMiddle.IsSqlMiddle,
+                  ExecuteCommand=it.SqlMiddle.ExecuteCommand,
+                  ExecuteCommandAsync=it.SqlMiddle.ExecuteCommandAsync,
+                  GetDataReader=it.SqlMiddle.GetDataReader,
+                  GetDataReaderAsync=it.SqlMiddle.GetDataReaderAsync,
+                  GetDataSetAll=it.SqlMiddle.GetDataSetAll,
+                  GetDataSetAllAsync=it.SqlMiddle.GetDataSetAllAsync,
+                  GetScalar=it.SqlMiddle.GetScalar,
+                  GetScalarAsync=it.SqlMiddle.GetScalarAsync
+                },
                 SlaveConnectionConfigs = it.SlaveConnectionConfigs
             }).ToList();
         }
