@@ -70,15 +70,15 @@ namespace SqlSugar
                 case DateType.Month:
                     return $" ( cast((months_between( {end} ,  {begin})) as number(9,0) ) )";
                 case DateType.Day:
-                    return $" ( ROUND(TO_NUMBER({end} - {begin}))  )";
+                    return $" ( ROUND(TO_NUMBER(cast({end} as date) - cast({begin} as date)))  )";
                 case DateType.Hour:
-                    return $" ( ROUND(TO_NUMBER({end} - {begin}) * 24)  )";
+                    return $" ( ROUND(TO_NUMBER(cast({end} as date) - cast({begin} as date)) * 24)  )";
                 case DateType.Minute:
-                    return $" ( ROUND(TO_NUMBER({end} - {begin}) * 24 * 60) )";
+                    return $" ( ROUND(TO_NUMBER(cast({end} as date) - cast({begin} as date)) * 24 * 60) )";
                 case DateType.Second:
-                    return $" ( ROUND(TO_NUMBER({end} - {begin}) * 24 * 60 * 60) )";
+                    return $" ( ROUND(TO_NUMBER(cast({end} as date) - cast({begin} as date)) * 24 * 60 * 60) )";
                 case DateType.Millisecond:
-                    return $" ( ROUND(TO_NUMBER({end} - {begin}) * 24 * 60 * 60 * 60) )";
+                    return $" ( ROUND(TO_NUMBER(cast({end} as date) - cast({begin} as date)) * 24 * 60 * 60 * 60) )";
                 default:
                     break;
             }
