@@ -23,7 +23,7 @@ namespace OrmTest
 
             db.CodeFirst.InitTables<UnitDate>();
             db.Insertable(new List<UnitDate>() {
-             new UnitDate(){  date=DateTime.Now,date2=DateTime.Now} 
+             new UnitDate(){   date1=DateTime.Now,date2=DateTime.Now} 
             }).ExecuteCommand();
             var list=db.Queryable<UnitDate>().ToList();
         }
