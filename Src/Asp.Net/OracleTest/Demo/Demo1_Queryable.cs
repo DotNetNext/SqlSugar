@@ -62,6 +62,7 @@ namespace OrmTest
             var test05 = db.Queryable<Order>().Select(it => SqlFunc.DateDiff(DateType.Minute, DateTime.Now, DateTime.Now.AddMinutes(21))).ToList();
             var test06 = db.Queryable<Order>().Select(it => SqlFunc.DateDiff(DateType.Hour, DateTime.Now, DateTime.Now.AddHours(3))).ToList();
             var test07 = db.Queryable<Order>().Select(it => it.CreateTime.DayOfWeek.ToString()).ToList();
+            var test08 = db.Queryable<Order>().Select(it => it.CreateTime.AddDays(1)).ToList();
             Console.WriteLine("#### Examples End ####");
         }
 
