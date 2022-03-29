@@ -21,13 +21,14 @@ namespace OrmTest
                   Clob=x+x+x+x+x+x+x+x}
             }).ExecuteCommand();
 
-            db.CodeFirst.InitTables<UnitDate1>();
-            db.Insertable(new UnitDate1() { date1 = DateTime.Now.AddDays(10), date2 = DateTime.Now.AddDays(10) }
-            ).ExecuteCommand();
-            var list=db.Queryable<UnitDate1>().ToList();
+            db.CodeFirst.InitTables<UnitDate>();
+            db.Insertable(new List<UnitDate>() {
+             new UnitDate(){  date=DateTime.Now,date2=DateTime.Now} 
+            }).ExecuteCommand();
+            var list=db.Queryable<UnitDate>().ToList();
         }
 
-        public class UnitDate1
+        public class UnitDate 
         {
             [SugarColumn(ColumnDataType = "date")]
             public DateTime date1 { get; set; }
