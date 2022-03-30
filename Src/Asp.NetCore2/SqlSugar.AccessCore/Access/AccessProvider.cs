@@ -70,7 +70,7 @@ namespace SqlSugar.Access
             }
             if (parameters.HasValue())
             {
-                OleDbParameter[] ipars = GetSqlParameter(parameters).Where(x=>sql.Contains(x.ParameterName)).ToArray();
+                OleDbParameter[] ipars = GetSqlParameter(parameters).Where(x=>sql.ToLower().Contains(x.ParameterName.ToLower())).ToArray();
                 if (ipars != null)
                 {
                     ipars = ipars.OrderBy(it => sql.IndexOf(it.ParameterName)).ToArray();
