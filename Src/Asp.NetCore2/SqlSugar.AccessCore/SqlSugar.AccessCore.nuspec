@@ -19,6 +19,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="E:\Git\SqlSugarNew\Src\Asp.NetCore2\SqlSeverTest\SqlSugar.AccessCore\bin\Debug\netstandard2.1\SqlSugar.AccessCore.dll" target="lib\netstandard2.1"></file>
+    <file src="E:\Git\SqlSugarNew\Src\Asp.NetCore2\SqlSugar.AccessCore\bin\Debug\netstandard2.1\SqlSugar.AccessCore.dll" target="lib\netstandard2.1"></file>
   </files>
 </package>
