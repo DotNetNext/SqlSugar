@@ -27,7 +27,8 @@ namespace SqlSugar
                 }
             }
         }
-        public override object FormatValue(object value)
+        int i = 0;
+        public  object FormatValue(object value,string name)
         {
             var n = "N";
             if (this.Context.CurrentConnectionConfig.MoreSettings != null && this.Context.CurrentConnectionConfig.MoreSettings.DisableNvarchar)
@@ -72,7 +73,10 @@ namespace SqlSugar
                 }
                 else if (type == UtilConstants.StringType || type == UtilConstants.ObjType)
                 {
-                    return n+"'" + GetString(value).ToSqlFilter() + "'";
+                    ++i;
+                    var parameterName = this.Builder.SqlParameterKeyWord + name + i;
+                    this.Parameters.Add(new SugarParameter(parameterName, value));
+                    return parameterName;
                 }
                 else
                 {
@@ -115,7 +119,7 @@ namespace SqlSugar
                 foreach (var item in groupList)
                 {
                     batchInsetrSql.Append("(");
-                    insertColumns = string.Join(",", item.Select(it => FormatValue(it.Value)));
+                    insertColumns = string.Join(",", item.Select(it => FormatValue(it.Value,it.PropertyName)));
                     batchInsetrSql.Append(insertColumns);
                     if (groupList.Last() == item)
                     {
