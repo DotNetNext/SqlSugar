@@ -139,6 +139,11 @@ namespace SqlSugar
                     sqlParameter.OracleDbType = OracleDbType.Clob;
                     sqlParameter.Value = parameter.Value;
                 }
+                if (parameter.IsArray)
+                {
+                    sqlParameter.OracleDbType = OracleDbType.Varchar2;
+                    sqlParameter.CollectionType = OracleCollectionType.PLSQLAssociativeArray;
+                }
                 if (sqlParameter.DbType == System.Data.DbType.Guid)
                 {
                     sqlParameter.DbType = System.Data.DbType.String;
