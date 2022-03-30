@@ -22,6 +22,32 @@ namespace SqlSugar
         }
         public override string ToSqlString()
         {
+            var oldTake = Take;
+            var oldSkip = Skip;
+            var isDistinctPage = IsDistinct && (Take > 1 || Skip > 1);
+            if (isDistinctPage)
+            {
+                Take = null;
+                Skip = null;
+            }
+            var result = _ToSqlString();
+            if (isDistinctPage)
+            {
+                if (this.OrderByValue.HasValue())
+                {
+                    Take = int.MaxValue;
+                    result = result.Replace("DISTINCT", $" DISTINCT TOP {int.MaxValue} ");
+                }
+                Take = oldTake;
+                Skip = oldSkip;
+                result = this.Context.SqlQueryable<object>(result).Skip(Skip??0).Take(Take??0).ToSql().Key;
+
+
+            }
+            return result;
+        }
+        public  string _ToSqlString()
+        {
             string oldOrderBy = this.OrderByValue;
             string externalOrderBy = oldOrderBy;
             var isIgnoreOrderBy = this.IsCount && this.PartitionByValue.IsNullOrEmpty();

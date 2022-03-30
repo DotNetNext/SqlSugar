@@ -35,7 +35,7 @@ namespace SqlSugar
                 }
                 Take = oldTake;
                 Skip = oldSkip;
-                result =this.Context.SqlQueryable<object>(result).Skip(Skip.Value).Take(Take.Value).ToSql().Key;
+                result =this.Context.SqlQueryable<object>(result).Skip(Skip??0).Take(Take??0).ToSql().Key;
                 
 
             }
