@@ -69,5 +69,8 @@
       <Name>SqlSugar</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="SqlSugar.Access.nuspec" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
