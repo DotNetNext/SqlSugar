@@ -73,6 +73,20 @@ namespace SqlSugar
         #endregion
 
         #region Connection
+        public virtual bool IsValidConnection() 
+        {
+            try
+            {
+                using (OpenAlways()) 
+                {
+                    return true;
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
         public virtual void Open()
         {
             CheckConnection();

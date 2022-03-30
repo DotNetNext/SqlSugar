@@ -164,6 +164,7 @@ namespace SqlSugar
         void Close();
         void Open();
         SugarConnection OpenAlways();
+        bool IsValidConnection();
         void CheckConnection();
 
         void BeginTran();

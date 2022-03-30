@@ -59,7 +59,7 @@ namespace SqlSugar
                     {
                         updateTable.Append(SqlTemplateBatchUnion);
                     }
-                    updateTable.Append("\r\n SELECT " + string.Join(",", columns.Select(it => string.Format(SqlTemplateBatchSelect, FormatValue(it.Value),this.Builder.GetTranslationColumnName(it.DbColumnName)))));
+                    updateTable.Append("\r\n SELECT " + string.Join(",", columns.Select(it => string.Format(SqlTemplateBatchSelect, FormatValue(it.Value,it.PropertyName),this.Builder.GetTranslationColumnName(it.DbColumnName)))));
                     ++i;
                 }
                 pageIndex++;
@@ -89,7 +89,8 @@ namespace SqlSugar
             }
             return batchUpdateSql.ToString();
         }
-        public override object FormatValue(object value)
+        int i = 0;
+        public  object FormatValue(object value,string name)
         {
             var n = "N";
             if (this.Context.CurrentConnectionConfig.MoreSettings != null&&this.Context.CurrentConnectionConfig.MoreSettings.DisableNvarchar)
@@ -142,7 +143,10 @@ namespace SqlSugar
                 }
                 else if (type == UtilConstants.StringType || type == UtilConstants.ObjType)
                 {
-                    return n+"'" + GetString(value).ToSqlFilter() + "'";
+                    ++i;
+                    var parameterName = this.Builder.SqlParameterKeyWord + name + i;
+                    this.Parameters.Add(new SugarParameter(parameterName, value));
+                    return parameterName;
                 }
                 else
                 {
