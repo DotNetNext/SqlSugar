@@ -86,7 +86,7 @@ namespace SqlSugar
             if (rowSelector.Body is MemberExpression)
                 rowName = ((MemberExpression)rowSelector.Body).Member.Name;
             else
-                rowName = "Key";
+                rowName = "Pivot_Group_Keys";
             var columns = source.Select(columnSelector).Distinct();
 
             cols = (new[] { rowName }).Concat(columns.Select(x => x.ToString())).ToList();
