@@ -86,7 +86,7 @@ namespace SqlSugar
             if (rowSelector.Body is MemberExpression)
                 rowName = ((MemberExpression)rowSelector.Body).Member.Name;
             else
-                rowName = string.Join(UtilConstants.ReplaceKey, ((NewExpression)rowSelector.Body).Arguments.Select(it => it as MemberExpression).Select(it => it.Member.Name));
+                rowName = "Key";
             var columns = source.Select(columnSelector).Distinct();
 
             cols = (new[] { rowName }).Concat(columns.Select(x => x.ToString())).ToList();
