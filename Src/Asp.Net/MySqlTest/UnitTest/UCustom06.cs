@@ -23,6 +23,18 @@ namespace OrmTest
             ).ToList();
             Check.Exception(list.First().Job.Company != "1", "unit error");
 
+            db.CodeFirst.InitTables<Unit08adfa>();
+            db.Insertable(new Unit08adfa
+            {
+                Id = null
+            }).ExecuteCommand();
+            var list4=db.Queryable<Unit08adfa>().ToList();
+        }
+
+        public class Unit08adfa 
+        {
+            [SugarColumn(IsNullable =true,ColumnDataType ="char(36)")]
+            public Guid? Id { get; set; }
         }
         public class Unit06 
         {
