@@ -333,6 +333,10 @@ namespace SqlSugar
                     {
                         value = value.Replace("= \"SYSDATE\"", "= SYSDATE");
                     }
+                    var param = UpdateBuilder.Parameters.First(x => x.ParameterName == item.Split(" = ")[1].Trim());
+                    var columnInfo = UpdateBuilder.DbColumnInfoList.First(x => x.DbColumnName == key);
+                    param.IsArray = columnInfo.IsArray;
+                    param.IsJson = columnInfo.IsJson;
                     UpdateBuilder.SetValues.Add(new KeyValuePair<string, string>(SqlBuilder.GetTranslationColumnName(key), value));
                 }
             }

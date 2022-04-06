@@ -199,7 +199,9 @@ namespace SqlSugar
                         OldDbColumnName = item.OldDbColumnName,
                         OracleSequenceName = item.OracleSequenceName,
                         PropertyInfo = item.PropertyInfo,
-                        PropertyName = item.PropertyName
+                        PropertyName = item.PropertyName,
+                        IsJson = item.IsJson,
+                        IsArray = item.IsArray
                     };
                     columns.Add(item);
                 }
