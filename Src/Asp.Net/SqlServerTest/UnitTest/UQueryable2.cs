@@ -169,7 +169,7 @@ namespace OrmTest
                customName = SqlFunc.MappingColumn(default(string), $" (select top 1 id from [Order] where id={p1} or id={p2} ) ")
             }).ToList();
 
-            int id = 0;
+            //int id = 0;
             Db.Queryable(Db.Queryable<Order>().Where(it => it.Id == 1)).Where(it => it.Id == 1).ToList();
             _db.QueryFilter.Clear();
 
