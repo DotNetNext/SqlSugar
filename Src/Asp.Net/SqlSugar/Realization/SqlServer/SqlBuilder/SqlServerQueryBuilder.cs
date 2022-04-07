@@ -78,8 +78,13 @@ namespace SqlSugar
                 if (this.OrderByValue.IsNullOrEmpty())
                 {
                     result += " ORDER BY GETDATE() ";
-                    if(this.OldSql.HasValue())
-                      this.OldSql += " ORDER BY GETDATE() ";
+                    if (this.OldSql.HasValue())
+                        this.OldSql += " ORDER BY GETDATE() ";
+                }
+                else 
+                {
+                    if (this.OldSql.HasValue())
+                        this.OldSql += (" "+this.GetOrderByString);
                 }
                 result += this.Offset;
 
