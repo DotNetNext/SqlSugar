@@ -102,7 +102,7 @@ namespace SqlSugar
         {
             return Context.Queryable<T>().Single(whereExpression);
         }
-        public T GetFirst(Expression<Func<T, bool>> whereExpression) 
+        public virtual T GetFirst(Expression<Func<T, bool>> whereExpression) 
         {
             return Context.Queryable<T>().First(whereExpression);
         }
@@ -232,7 +232,7 @@ namespace SqlSugar
         {
             return Context.Queryable<T>().SingleAsync(whereExpression);
         }
-        public Task<T> GetFirstAsync(Expression<Func<T, bool>> whereExpression)
+        public virtual Task<T> GetFirstAsync(Expression<Func<T, bool>> whereExpression)
         {
             return Context.Queryable<T>().FirstAsync(whereExpression);
         }
