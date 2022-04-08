@@ -28,7 +28,7 @@ namespace OrmTest
                  //count  = SqlFunc.AggregateSum(SqlFunc.IIF(b.客户确认状态 < 20, 1, 0))
              }).ToList();
           
-            db.Queryable<Tree>().ToParentList(it => it.ParentId, "0");
+            db.Queryable<Tree>().LeftJoin<Tree>((t,y)=>t.Id==y.Id).Where(t=>1==1).Select(t=>t).ToParentList(it => it.ParentId, "0");
         }
 
         public class Unitadfaint21
