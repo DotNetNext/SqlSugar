@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SqlSugar
 {
-    public interface ISqlSugarClient: IDisposable
+    public interface ISqlSugarClient : IDisposable
     {
         MappingTableList MappingTables { get; set; }
         MappingColumnList MappingColumns { get; set; }
@@ -25,7 +25,7 @@ namespace SqlSugar
         AopProvider Aop { get; }
         ICodeFirst CodeFirst { get; }
 
- 
+
         IDbFirst DbFirst { get; }
         IDbMaintenance DbMaintenance { get; }
         EntityMaintenance EntityMaintenance { get; set; }
@@ -109,12 +109,20 @@ namespace SqlSugar
             where T2 : class, new();
 
         ISugarQueryable<T, T2, T3> Queryable<T, T2, T3>(ISugarQueryable<T> joinQueryable1, ISugarQueryable<T2> joinQueryable2, ISugarQueryable<T3> joinQueryable3,
-          JoinType joinType1, Expression<Func<T, T2,T3, bool>> joinExpression1,
-          JoinType joinType2, Expression<Func<T, T2,T3, bool>> joinExpression2)
-           where T: class, new() 
-           where T2 : class, new() 
+          JoinType joinType1, Expression<Func<T, T2, T3, bool>> joinExpression1,
+          JoinType joinType2, Expression<Func<T, T2, T3, bool>> joinExpression2)
+           where T : class, new()
+           where T2 : class, new()
            where T3 : class, new();
 
+        ISugarQueryable<T, T2, T3, T4> Queryable<T, T2, T3, T4>(ISugarQueryable<T> joinQueryable1, ISugarQueryable<T2> joinQueryable2, ISugarQueryable<T3> joinQueryable3, ISugarQueryable<T4> joinQueryable4,
+            JoinType joinType1, Expression<Func<T, T2, T3, T4, bool>> joinExpression1,
+            JoinType joinType2, Expression<Func<T, T2, T3, T4, bool>> joinExpression2,
+            JoinType joinType3, Expression<Func<T, T2, T3, T4, bool>> joinExpression4)
+             where T : class, new()
+             where T2 : class, new()
+             where T3 : class, new()
+             where T4 : class, new();
         ISugarQueryable<T> Queryable<T>();
         ISugarQueryable<T> Queryable<T>(ISugarQueryable<T> queryable) where T : class, new();
         ISugarQueryable<T> Queryable<T>(string shortName);
@@ -150,7 +158,7 @@ namespace SqlSugar
         Task<Tuple<List<T>, List<T2>, List<T3>, List<T4>>> SaveQueuesAsync<T, T2, T3, T4>(bool isTran = true);
         Task<Tuple<List<T>, List<T2>, List<T3>>> SaveQueuesAsync<T, T2, T3>(bool isTran = true);
         Task<Tuple<List<T>, List<T2>>> SaveQueuesAsync<T, T2>(bool isTran = true);
-        Task<List<T>> SaveQueuesAsync<T>(bool isTran = true); 
+        Task<List<T>> SaveQueuesAsync<T>(bool isTran = true);
         #endregion
 
         #region Union 
