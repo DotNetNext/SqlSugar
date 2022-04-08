@@ -144,6 +144,7 @@ namespace SqlSugar
                 Check.Exception(true, ErrorMessage.GetThrowMessage("Need to achieve ConnectionConfig.ConfigureExternal Services.RazorService", "需要实现 ConnectionConfig.ConfigureExternal Services.RazorService接口"));
             }
             this.Context.Utilities.RemoveCacheAll();
+            result.FormatFileNameFunc = this.FormatFileNameFunc;
             return result;
         }
         #endregion

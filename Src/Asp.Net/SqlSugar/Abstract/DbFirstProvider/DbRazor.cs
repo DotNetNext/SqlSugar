@@ -10,6 +10,7 @@ namespace SqlSugar
     public class RazorFirst
     {
         internal List<KeyValuePair<string,string>> ClassStringList { get;  set; }
+        internal Func<string, string> FormatFileNameFunc { get; set; }
 
         public static string DefaultRazorClassTemplate =
 @"using System;
@@ -79,7 +80,12 @@ namespace @Model.Namespace
             {
                 foreach (var item in ClassStringList)
                 {
-                    var filePath = directoryPath.TrimEnd('\\').TrimEnd('/') + string.Format(seChar + "{0}.cs", item.Key);
+                    var fileName = item.Key;
+                    if (this.FormatFileNameFunc != null) 
+                    {
+                        fileName = this.FormatFileNameFunc(fileName);
+                    }
+                    var filePath = directoryPath.TrimEnd('\\').TrimEnd('/') + string.Format(seChar + "{0}.cs",fileName);
                     FileHelper.CreateFile(filePath, item.Value, Encoding.UTF8);
                 }
             }
