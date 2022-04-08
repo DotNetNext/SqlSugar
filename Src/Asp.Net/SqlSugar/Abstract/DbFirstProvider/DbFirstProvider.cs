@@ -21,6 +21,7 @@ namespace SqlSugar
         private bool IsDefaultValue { get; set; }
         private Func<string, bool> WhereColumnsfunc;
         private Func<string, string> FormatFileNameFunc { get; set; }
+        private bool IsStringNullable {get;set;}
         private ISqlBuilder SqlBuilder
         {
             get
@@ -56,6 +57,11 @@ namespace SqlSugar
         }
 
         #region Setting Template
+        public IDbFirst StringNullable() 
+        {
+            IsStringNullable = true;
+            return this;
+        }
         public IDbFirst SettingClassDescriptionTemplate(Func<string, string> func)
         {
             this.ClassDescriptionTemplate = func(this.ClassDescriptionTemplate);
@@ -421,11 +427,15 @@ namespace SqlSugar
             }
             if (result == "Int32")
             {
-                result = "int";
+                result = item.IsNullable?"int?":"int";
             }
             if (result == "String")
             {
                 result = "string";
+            }
+            if (result == "string" && item.IsNullable && IsStringNullable) 
+            {
+                result = result + "?";
             }
             return result;
         }

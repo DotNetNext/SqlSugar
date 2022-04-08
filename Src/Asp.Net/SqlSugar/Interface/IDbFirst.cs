@@ -24,5 +24,6 @@ namespace SqlSugar
         Dictionary<string, string> ToClassStringList(string nameSpace = "Models");
         void Init();
         IDbFirst FormatFileName(Func<string,string> formatFileNameFunc);
+        IDbFirst StringNullable();
     }
 }
