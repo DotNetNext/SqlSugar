@@ -23,5 +23,6 @@ namespace SqlSugar
         void CreateClassFile(string directoryPath, string nameSpace = "Models");
         Dictionary<string, string> ToClassStringList(string nameSpace = "Models");
         void Init();
+        IDbFirst FormatFileName(Func<string,string> formatFileNameFunc);
     }
 }
