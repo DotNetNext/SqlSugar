@@ -29,6 +29,11 @@ namespace OrmTest
              }).ToList();
           
             db.Queryable<Tree>().LeftJoin<Tree>((t,y)=>t.Id==y.Id).Where(t=>1==1).Select(t=>t).ToParentList(it => it.ParentId, "0");
+            db.Queryable<Order>() .Select((a) => new
+                           {
+                               ID = a.Id,
+                               真实名称 = !string.IsNullOrEmpty(a.Name) ? a.Name : a.Name
+                           }).ToList();
         }
 
         public class Unitadfaint21

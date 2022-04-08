@@ -547,7 +547,11 @@ namespace SqlSugar
             {
                 parameter.CommonTempData = DateTime.Now.Date;
             }
-            else if (item is ConditionalExpression) 
+            else if (item is ConditionalExpression)
+            {
+                parameter.CommonTempData = GetNewExpressionValue(item);
+            }
+            else if (IsNot(item))
             {
                 parameter.CommonTempData = GetNewExpressionValue(item);
             }
@@ -589,7 +593,7 @@ namespace SqlSugar
                     methodCallExpressionArgs.IsMember = false;
                 }
             }
-            if (IsDateDate(item) || IsDateValue(item)|| IsDateItemValue(item)||item is ConditionalExpression)
+            if (IsDateDate(item) || IsDateValue(item) || IsDateItemValue(item) || item is ConditionalExpression||IsNot(item))
             {
                 methodCallExpressionArgs.IsMember = true;
             }
@@ -610,6 +614,11 @@ namespace SqlSugar
             }
             model.Args.Add(methodCallExpressionArgs);
             parameter.ChildExpression = null;
+        }
+
+        private static bool IsNot(Expression item)
+        {
+            return item is UnaryExpression && (item as UnaryExpression).NodeType == ExpressionType.Not;
         }
 
         private bool IsDateItemValue(Expression item)
