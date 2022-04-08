@@ -19,6 +19,14 @@ namespace OrmTest
             db.CodeFirst.InitTables<Unitadfaint21>();
             db.Insertable(new Unitadfaint21() { id = 1 , id2=22 }).ExecuteCommand();
             var list2 = db.Queryable<Unitadfaint21>().ToList();
+            
+            var list3=db.Queryable<Order>()
+              // .Where(it=>SqlFunc.ToString(it.Id>0?1:0)=="")
+               .Select(it => new
+             {
+                 count = SqlFunc.AggregateSum(it.Id < 20 ? 1 : 0)
+                 //count  = SqlFunc.AggregateSum(SqlFunc.IIF(b.客户确认状态 < 20, 1, 0))
+             }).ToListAsync();
         }
 
         public class Unitadfaint21
