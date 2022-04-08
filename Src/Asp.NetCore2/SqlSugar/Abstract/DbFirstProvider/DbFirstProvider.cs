@@ -20,6 +20,8 @@ namespace SqlSugar
         private bool IsAttribute { get; set; }
         private bool IsDefaultValue { get; set; }
         private Func<string, bool> WhereColumnsfunc;
+        private Func<string, string> FormatFileNameFunc { get; set; }
+        private bool IsStringNullable {get;set;}
         private ISqlBuilder SqlBuilder
         {
             get
@@ -55,6 +57,11 @@ namespace SqlSugar
         }
 
         #region Setting Template
+        public IDbFirst StringNullable() 
+        {
+            IsStringNullable = true;
+            return this;
+        }
         public IDbFirst SettingClassDescriptionTemplate(Func<string, string> func)
         {
             this.ClassDescriptionTemplate = func(this.ClassDescriptionTemplate);
@@ -137,6 +144,7 @@ namespace SqlSugar
                 Check.Exception(true, ErrorMessage.GetThrowMessage("Need to achieve ConnectionConfig.ConfigureExternal Services.RazorService", "需要实现 ConnectionConfig.ConfigureExternal Services.RazorService接口"));
             }
             this.Context.Utilities.RemoveCacheAll();
+            result.FormatFileNameFunc = this.FormatFileNameFunc;
             return result;
         }
         #endregion
@@ -145,6 +153,11 @@ namespace SqlSugar
         public IDbFirst IsCreateAttribute(bool isCreateAttribute = true)
         {
             this.IsAttribute = isCreateAttribute;
+            return this;
+        }
+        public IDbFirst FormatFileName(Func<string, string> formatFileNameFunc)
+        {
+            this.FormatFileNameFunc = formatFileNameFunc;
             return this;
         }
         public IDbFirst IsCreateDefaultValue(bool isCreateDefaultValue = true)
@@ -319,7 +332,12 @@ namespace SqlSugar
             {
                 foreach (var item in classStringList)
                 {
-                    var filePath = directoryPath.TrimEnd('\\').TrimEnd('/') + string.Format(seChar + "{0}.cs", item.Key);
+                    var fileName = item.Key;
+                    if (FormatFileNameFunc!= null)
+                    {
+                        fileName = FormatFileNameFunc(fileName);
+                     }
+                    var filePath = directoryPath.TrimEnd('\\').TrimEnd('/') + string.Format(seChar + "{0}.cs", fileName);
                     FileHelper.CreateFile(filePath, item.Value, Encoding.UTF8);
                 }
             }
@@ -410,11 +428,15 @@ namespace SqlSugar
             }
             if (result == "Int32")
             {
-                result = "int";
+                result = item.IsNullable?"int?":"int";
             }
             if (result == "String")
             {
                 result = "string";
+            }
+            if (result == "string" && item.IsNullable && IsStringNullable) 
+            {
+                result = result + "?";
             }
             return result;
         }

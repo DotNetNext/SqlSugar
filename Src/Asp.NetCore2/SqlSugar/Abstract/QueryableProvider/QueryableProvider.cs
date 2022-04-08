@@ -1123,16 +1123,28 @@ namespace SqlSugar
             var parentIdName =UtilConvert.ToMemberExpression((parentIdExpression as LambdaExpression).Body).Member.Name;
             var ParentInfo = entity.Columns.First(it => it.PropertyName == parentIdName);
             var parentPropertyName= ParentInfo.DbColumnName;
-            var current = this.Context.Queryable<T>().AS(this.QueryBuilder.GetTableNameString).InSingle(primaryKeyValue);
+            var tableName= this.QueryBuilder.GetTableNameString;
+            if (this.QueryBuilder.IsSingle() == false) 
+            {
+                if (this.QueryBuilder.JoinQueryInfos.Count>0)
+                {
+                    tableName = this.QueryBuilder.JoinQueryInfos.First().TableName;
+                }
+                if (this.QueryBuilder.EasyJoinInfos.Count>0)
+                {
+                    tableName = this.QueryBuilder.JoinQueryInfos.First().TableName;
+                }
+            }
+            var current = this.Context.Queryable<T>().AS(tableName).InSingle(primaryKeyValue);
             if (current != null)
             {
                 result.Add(current);
                 object parentId = ParentInfo.PropertyInfo.GetValue(current,null);
                 int i = 0;
-                while (parentId!=null&&this.Context.Queryable<T>().AS(this.QueryBuilder.GetTableNameString).In(parentId).Any())
+                while (parentId!=null&&this.Context.Queryable<T>().AS(tableName).In(parentId).Any())
                 {
                     Check.Exception(i > 100, ErrorMessage.GetThrowMessage("Dead cycle", "出现死循环或超出循环上限（100），检查最顶层的ParentId是否是null或者0"));
-                    var parent = this.Context.Queryable<T>().AS(this.QueryBuilder.GetTableNameString).InSingle(parentId);
+                    var parent = this.Context.Queryable<T>().AS(tableName).InSingle(parentId);
                     result.Add(parent);
                     parentId= ParentInfo.PropertyInfo.GetValue(parent, null);
                     ++i;
@@ -1148,16 +1160,28 @@ namespace SqlSugar
             var parentIdName = UtilConvert.ToMemberExpression((parentIdExpression as LambdaExpression).Body).Member.Name;
             var ParentInfo = entity.Columns.First(it => it.PropertyName == parentIdName);
             var parentPropertyName = ParentInfo.DbColumnName;
-            var current =await this.Context.Queryable<T>().AS(this.QueryBuilder.GetTableNameString).InSingleAsync(primaryKeyValue);
+            var tableName = this.QueryBuilder.GetTableNameString;
+            if (this.QueryBuilder.IsSingle() == false)
+            {
+                if (this.QueryBuilder.JoinQueryInfos.Count > 0)
+                {
+                    tableName = this.QueryBuilder.JoinQueryInfos.First().TableName;
+                }
+                if (this.QueryBuilder.EasyJoinInfos.Count > 0)
+                {
+                    tableName = this.QueryBuilder.JoinQueryInfos.First().TableName;
+                }
+            }
+            var current =await this.Context.Queryable<T>().AS(tableName).InSingleAsync(primaryKeyValue);
             if (current != null)
             {
                 result.Add(current);
                 object parentId = ParentInfo.PropertyInfo.GetValue(current, null);
                 int i = 0;
-                while (parentId != null &&await this.Context.Queryable<T>().AS(this.QueryBuilder.GetTableNameString).In(parentId).AnyAsync())
+                while (parentId != null &&await this.Context.Queryable<T>().AS(tableName).In(parentId).AnyAsync())
                 {
                     Check.Exception(i > 100, ErrorMessage.GetThrowMessage("Dead cycle", "出现死循环或超出循环上限（100），检查最顶层的ParentId是否是null或者0"));
-                    var parent =await this.Context.Queryable<T>().AS(this.QueryBuilder.GetTableNameString).InSingleAsync(parentId);
+                    var parent =await this.Context.Queryable<T>().AS(tableName).InSingleAsync(parentId);
                     result.Add(parent);
                     parentId = ParentInfo.PropertyInfo.GetValue(parent, null);
                     ++i;
