@@ -1911,7 +1911,28 @@ namespace SqlSugar
         {
             QueryBuilder.CheckExpression(expression, "OrderBy");
             var isSingle = QueryBuilder.IsSingle();
-            if ((expression as LambdaExpression).Body is NewExpression)
+            if (expression.ToString().IsContainsIn("Desc(", "Asc("))
+            {
+                var orderValue = "";
+                var newExp = (expression as LambdaExpression).Body as NewExpression;
+                foreach (var item in newExp.Arguments)
+                {
+                    if (item is MemberExpression)
+                    {
+                        orderValue +=
+                          QueryBuilder.GetExpressionValue(item, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple).GetResultString() + ",";
+                    }
+                    else
+                    {
+                        orderValue +=
+                            QueryBuilder.GetExpressionValue(item, isSingle ? ResolveExpressType.WhereSingle : ResolveExpressType.WhereMultiple).GetResultString() + ",";
+                    }
+                }
+                orderValue = orderValue.TrimEnd(',');
+                OrderBy(orderValue);
+                return this;
+            }
+            else if ((expression as LambdaExpression).Body is NewExpression)
             {
                 var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.ArraySingle : ResolveExpressType.ArrayMultiple);
                 var items = lamResult.GetResultString().Split(',').Where(it => it.HasValue()).Select(it => it + UtilConstants.Space + type.ToString().ToUpper()).ToList();

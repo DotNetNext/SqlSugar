@@ -910,6 +910,10 @@ namespace SqlSugar
                         return this.Context.DbMehtods.LessThan(model);
                     case "LessThanOrEqual":
                         return this.Context.DbMehtods.LessThanOrEqual(model);
+                    case "Asc":
+                        return this.Context.DbMehtods.Asc(model);
+                    case "Desc":
+                        return this.Context.DbMehtods.Desc(model);
                     default:
                         break;
                 }

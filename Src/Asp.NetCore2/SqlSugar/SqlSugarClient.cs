@@ -637,7 +637,8 @@ namespace SqlSugar
         public SqlSugarProvider GetConnectionWithAttr<T>() 
         {
             var attr = typeof(T).GetCustomAttribute<TenantAttribute>();
-            Check.ExceptionEasy(attr==null,"not TenantAttribute", "不存在特性 TenantAttribute");
+            if (attr == null)
+                return this.GetConnection(this.CurrentConnectionConfig.ConfigId);
             var configId = attr.configId;
             return this.GetConnection(configId);
         }
