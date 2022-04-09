@@ -1300,6 +1300,67 @@ namespace SqlSugar
             InitMapping();
             return _ToList<T>();
         }
+        public List<T> SetContext<ParameterT>(Expression<Func<T, object>> thisFiled, Expression<Func<object>> mappingFiled, ParameterT parameter) 
+        {
+            List<T> result = new List<T>();
+            var entity = this.Context.EntityMaintenance.GetEntityInfo<ParameterT>();
+            var queryableContext = this.Context.TempItems["Queryable_To_Context"] as MapperContext<ParameterT>;
+            var list = queryableContext.list;
+            var pkName = (((mappingFiled as LambdaExpression).Body as UnaryExpression).Operand as MemberExpression).Member.Name;
+            var key = thisFiled.ToString() +typeof(ParameterT).FullName + typeof(T).FullName;
+            var ids = list.Select(it => it.GetType().GetProperty(pkName).GetValue(it)).ToArray();
+            if (queryableContext.TempChildLists == null)
+                queryableContext.TempChildLists = new Dictionary<string, object>();
+            if (list != null &&  queryableContext.TempChildLists.ContainsKey(key))
+            {
+                result = (List<T>)queryableContext.TempChildLists[key];
+            }
+            else
+            {
+                if (queryableContext.TempChildLists == null)
+                    queryableContext.TempChildLists = new Dictionary<string, object>();
+                this.Context.Utilities.PageEach(ids, 200, pageIds =>
+                {
+                     result.AddRange(this.Clone().In(thisFiled, pageIds).ToList());
+                });
+                queryableContext.TempChildLists[key]= result;
+            }
+            var name = (((thisFiled as LambdaExpression).Body as UnaryExpression).Operand as MemberExpression).Member.Name;
+            var pkValue = parameter.GetType().GetProperty(pkName).GetValue(parameter);
+            result = result.Where(it => it.GetType().GetProperty(name).GetValue(it).ObjToString() == pkValue.ObjToString()).ToList();
+            return result;
+        }
+
+        public async Task<List<T>> SetContextAsync<ParameterT>(Expression<Func<T, object>> thisFiled, Expression<Func<object>> mappingFiled, ParameterT parameter)
+        {
+            List<T> result = new List<T>();
+            var entity = this.Context.EntityMaintenance.GetEntityInfo<ParameterT>();
+            var queryableContext = this.Context.TempItems["Queryable_To_Context"] as MapperContext<ParameterT>;
+            var list = queryableContext.list;
+            var pkName = (((mappingFiled as LambdaExpression).Body as UnaryExpression).Operand as MemberExpression).Member.Name;
+            var key = thisFiled.ToString() + typeof(ParameterT).FullName + typeof(T).FullName;
+            var ids = list.Select(it => it.GetType().GetProperty(pkName).GetValue(it)).ToArray();
+            if (queryableContext.TempChildLists == null)
+                queryableContext.TempChildLists = new Dictionary<string, object>();
+            if (list != null && queryableContext.TempChildLists.ContainsKey(key))
+            {
+                result = (List<T>)queryableContext.TempChildLists[key];
+            }
+            else
+            {
+                if (queryableContext.TempChildLists == null)
+                    queryableContext.TempChildLists = new Dictionary<string, object>();
+                await this.Context.Utilities.PageEachAsync(ids, 200, async pageIds =>
+                {
+                    result.AddRange(await this.Clone().In(thisFiled, pageIds).ToListAsync());
+                });
+                queryableContext.TempChildLists[key] = result;
+            }
+            var name = (((thisFiled as LambdaExpression).Body as UnaryExpression).Operand as MemberExpression).Member.Name;
+            var pkValue = parameter.GetType().GetProperty(pkName).GetValue(parameter);
+            result = result.Where(it => it.GetType().GetProperty(name).GetValue(it).ObjToString() == pkValue.ObjToString()).ToList();
+            return result;
+        }
         public virtual void ForEach(Action<T> action, int singleMaxReads = 300,System.Threading.CancellationTokenSource cancellationTokenSource = null) 
         {
             Check.Exception(this.QueryBuilder.Skip > 0 || this.QueryBuilder.Take > 0, ErrorMessage.GetThrowMessage("no support Skip take, use PageForEach", "不支持Skip Take,请使用 Queryale.PageForEach"));

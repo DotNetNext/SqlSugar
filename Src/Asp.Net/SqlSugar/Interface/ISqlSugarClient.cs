@@ -193,5 +193,10 @@ namespace SqlSugar
         IFastest<T> Fastest<T>() where T : class, new();
         #endregion
 
+        #region ThenMapper
+        void ThenMapper<T>(IEnumerable<T> list, Action<T> action);
+        Task ThenMapperAsync<T>(IEnumerable<T> list, Func<T,Task> action);
+        #endregion
+
     }
 }

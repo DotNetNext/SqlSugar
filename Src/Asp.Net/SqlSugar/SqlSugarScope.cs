@@ -662,5 +662,15 @@ namespace SqlSugar
         {
             return ScopedContext.Fastest<T>();
         }
+
+        public void ThenMapper<T>(IEnumerable<T> list, Action<T> action)
+        {
+            ScopedContext.ThenMapper(list, action);
+        }
+
+        public Task ThenMapperAsync<T>(IEnumerable<T> list, Func<T, Task> action)
+        {
+            return ScopedContext.ThenMapperAsync(list, action);
+        }
     }
 }
