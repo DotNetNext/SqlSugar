@@ -353,7 +353,24 @@ namespace OrmTest
             var query2 = db.Queryable<Order>().Where(it => it.Id == 1);
             var list7 = query2.Clone().Where(it => it.Name == "jack").ToList();//id=1 and name = jack
             var list8 = query2.Clone().Where(it => it.Name == "tom").ToList();//id=1 and name = tom
-
+                                                                              //无限级高性能导航映射
+            var treeRoot = db.Queryable<Tree>().Where(it => it.Id == 1).ToList();
+            db.ThenMapper(treeRoot, item =>
+            {
+                item.Child = db.Queryable<Tree>().SetContext(x => x.ParentId, () => item.Id, item).ToList();
+            });
+            db.ThenMapper(treeRoot.SelectMany(it => it.Child), it =>
+            {
+                it.Child = db.Queryable<Tree>().SetContext(x => x.ParentId, () => it.Id, it).ToList();
+            });
+            db.ThenMapper(treeRoot.SelectMany(it => it.Child).SelectMany(it => it.Child), it =>
+            {
+                it.Child = db.Queryable<Tree>().SetContext(x => x.ParentId, () => it.Id, it).ToList();
+            });
+            db.ThenMapper(treeRoot.SelectMany(it => it.Child).SelectMany(it => it.Child).SelectMany(it => it.Child), it =>
+            {
+                it.Child = db.Queryable<Tree>().SetContext(x => x.ParentId, () => it.Id, it).ToList();
+            });
             Console.WriteLine("#### Condition Screening End ####");
 
 
