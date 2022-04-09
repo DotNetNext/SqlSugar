@@ -341,6 +341,24 @@ namespace OrmTest
                 itemModel.Items = allItems.Where(it => it.OrderId==itemModel.Id).ToList();//Every time it's executed
             }).ToList();
 
+            //无限级高性能导航映射
+            var treeRoot=db.Queryable<Tree>().Where(it => it.Id == 1).ToList();
+            db.ThenMapper(treeRoot, item =>
+            {
+                item.Child = db.Queryable<Tree>().SetContext(x => x.ParentId, () => item.Id, item).ToList();
+            });
+            db.ThenMapper(treeRoot.SelectMany(it=>it.Child), it =>
+            {
+                it.Child = db.Queryable<Tree>().SetContext(x => x.ParentId, () => it.Id, it).ToList();
+            });
+            db.ThenMapper(treeRoot.SelectMany(it => it.Child).SelectMany(it=>it.Child), it =>
+            {
+                it.Child = db.Queryable<Tree>().SetContext(x => x.ParentId, () => it.Id, it).ToList();
+            });
+            db.ThenMapper(treeRoot.SelectMany(it => it.Child).SelectMany(it => it.Child).SelectMany(it => it.Child), it =>
+            {
+                it.Child = db.Queryable<Tree>().SetContext(x => x.ParentId, () => it.Id, it).ToList();
+            });
             Console.WriteLine("#### End Start ####");
         }
 
