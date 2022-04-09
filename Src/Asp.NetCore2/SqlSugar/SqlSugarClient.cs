@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Dynamic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -632,6 +633,13 @@ namespace SqlSugar
                     Context = provider
                 });
             }
+        }
+        public SqlSugarProvider GetConnectionWithAttr<T>() 
+        {
+            var attr = typeof(T).GetCustomAttribute<TenantAttribute>();
+            Check.ExceptionEasy(attr==null,"not TenantAttribute", "不存在特性 TenantAttribute");
+            var configId = attr.configId;
+            return this.GetConnection(configId);
         }
         public SqlSugarProvider GetConnection(dynamic configId)
         {

@@ -158,6 +158,10 @@ namespace SqlSugar
         {
             return ScopedContext.GetConnection(configId);
         }
+        public SqlSugarProvider GetConnectionWithAttr<T>()
+        {
+            return ScopedContext.GetConnectionWithAttr<T>();
+        }
 
         public DateTime GetDate()
         {

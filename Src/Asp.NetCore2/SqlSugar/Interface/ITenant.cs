@@ -21,6 +21,7 @@ namespace SqlSugar
         Task<DbResult<T>> UseTranAsync<T>(Func<Task<T>> action, Action<Exception> errorCallBack = null);
         void AddConnection(ConnectionConfig connection);
         SqlSugarProvider GetConnection(dynamic configId);
+        SqlSugarProvider GetConnectionWithAttr<T>();
         bool IsAnyConnection(dynamic configId);
 
         void Close();
