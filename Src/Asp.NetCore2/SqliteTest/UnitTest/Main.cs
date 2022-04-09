@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UCustom012.Init();
             Bulk();
             CodeFirst();
             Updateable();
