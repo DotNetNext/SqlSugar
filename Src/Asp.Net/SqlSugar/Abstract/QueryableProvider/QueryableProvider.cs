@@ -2367,7 +2367,8 @@ namespace SqlSugar
                       {
                            FieldName=this.SqlBuilder.GetTranslationColumnName(whereCol.DbColumnName),
                            ConditionalType= ConditionalType.In,
-                           FieldValue=string.Join(",",inValues.Distinct())
+                           FieldValue=string.Join(",",inValues.Distinct()),
+                           CSharpTypeName=whereCol.PropertyInfo.PropertyType.Name
                       }
                     };
                     var list = this.Context.Queryable<TObject>().Where(wheres).ToList();
