@@ -50,8 +50,7 @@ namespace OrmTest
             {
                 if (context == null)
                 {
-                    var configId = typeof(T).GetCustomAttribute<TenantAttribute>().configId;
-                    Context = db.GetConnection(configId);
+                    Context = db.GetConnectionWithAttr<T>();
                     Context.CodeFirst.InitTables<T>();
                 }
             }

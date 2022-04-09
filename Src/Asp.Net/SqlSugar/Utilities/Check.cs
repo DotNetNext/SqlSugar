@@ -33,5 +33,10 @@ namespace SqlSugar
         {
             throw new SqlSugarException(ErrorMessage.GetThrowMessage(enMessage, cnMessage));
         }
+        public static void ExceptionEasy(bool isException, string enMessage, string cnMessage)
+        {
+            if (isException)
+                throw new SqlSugarException(ErrorMessage.GetThrowMessage(enMessage, cnMessage));
+        }
     }
 }
