@@ -25,6 +25,8 @@ namespace SqlSugar
         private MappingColumnList _MappingColumns;
         private IgnoreColumnList _IgnoreColumns;
         private IgnoreColumnList _IgnoreInsertColumns;
+
+
         internal Guid? AsyncId { get; set; }
         internal bool? IsSingleInstance { get; set; }
 
@@ -588,6 +590,17 @@ namespace SqlSugar
         public IFastest<T> Fastest<T>() where T : class, new()
         {
             return this.Context.Fastest<T>();
+        }
+        #endregion
+
+        #region ThenMapper
+        public void ThenMapper<T>(IEnumerable<T> list, Action<T> action)
+        {
+            this.Context.ThenMapper(list, action);
+        }
+        public  Task ThenMapperAsync<T>(IEnumerable<T> list, Func<T, Task> action)
+        {
+            return this.Context.ThenMapperAsync(list,action);
         }
         #endregion
 
