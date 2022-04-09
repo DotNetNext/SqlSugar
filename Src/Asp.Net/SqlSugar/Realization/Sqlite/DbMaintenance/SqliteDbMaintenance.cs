@@ -204,7 +204,7 @@ namespace SqlSugar
         {
             get
             {
-                throw new NotSupportedException();
+                throw new NotSupportedException(" Sqlite no support default value");
             }
         }
         protected override string IsAnyIndexSql

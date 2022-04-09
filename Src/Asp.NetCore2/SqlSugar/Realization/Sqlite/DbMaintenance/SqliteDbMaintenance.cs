@@ -250,7 +250,7 @@ namespace SqlSugar
             }
         }
 
-        protected override string AddDefaultValueSql => throw new NotSupportedException();
+        protected override string AddDefaultValueSql => throw new NotSupportedException(" Sqlite no support default value");
         #endregion
 
         #region Methods
