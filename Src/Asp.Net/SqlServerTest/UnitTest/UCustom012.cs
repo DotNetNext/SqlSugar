@@ -28,19 +28,23 @@ namespace OrmTest
             db.Insertable(new RoomA() { RoomId = 6, RoomName = "清华003厅", SchoolId = 2 }).ExecuteCommand();
 
 
-            db.Insertable(new SchoolA() {  SchoolId=1, SchoolName="北大"  }).ExecuteCommand();
+            db.Insertable(new SchoolA() { SchoolId = 1, SchoolName = "北大" }).ExecuteCommand();
             db.Insertable(new SchoolA() { SchoolId = 2, SchoolName = "清华" }).ExecuteCommand();
 
-            db.Insertable(new StudentA() { StudentId=1, SchoolId=1, Name= "北大jack" }).ExecuteCommand();
+            db.Insertable(new StudentA() { StudentId = 1, SchoolId = 1, Name = "北大jack" }).ExecuteCommand();
             db.Insertable(new StudentA() { StudentId = 2, SchoolId = 1, Name = "北大tom" }).ExecuteCommand();
             db.Insertable(new StudentA() { StudentId = 3, SchoolId = 2, Name = "清华jack" }).ExecuteCommand();
             db.Insertable(new StudentA() { StudentId = 4, SchoolId = 2, Name = "清华tom" }).ExecuteCommand();
 
-            var list=db.Queryable<StudentA>().Mapper(x => x.SchoolA, x => x.SchoolId).ToList();
+            //先用Mapper导航映射查出第二层
+            var list = db.Queryable<StudentA>().Mapper(x => x.SchoolA, x => x.SchoolId).ToList();
 
+            //参数1 ：将第二层对象合并成一个集合  参数2：委托
+            //说明：如果2级对象是集合用SelectMany
             db.ThenMapper(list.Select(it => it.SchoolA), sch =>
             {
-                sch.RoomList = db.Queryable<RoomA>().SetContext(room => room.SchoolId , () => sch.SchoolId, sch).ToList();
+                //参数1: room表关联字段  参数2: school表关联字段，  参数3: school当前记录
+                sch.RoomList = db.Queryable<RoomA>().SetContext(room => room.SchoolId, () => sch.SchoolId, sch).ToList();
             });
 
 
