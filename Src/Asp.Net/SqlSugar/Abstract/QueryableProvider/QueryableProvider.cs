@@ -637,7 +637,14 @@ namespace SqlSugar
                 {
                     if (item != null)
                     {
-                        values.Add(item.ToString().ToSqlValue());
+                        if (UtilMethods.IsNumber(item.GetType().Name))
+                        {
+                            values.Add(item.ToString());
+                        }
+                        else
+                        {
+                            values.Add(item.ToString().ToSqlValue());
+                        }
                     }
                 }
                 this.Where(string.Format(QueryBuilder.InTemplate, filed, string.Join(",", values)));
