@@ -9,7 +9,14 @@ namespace SqlSugar
 {
     public partial class SqlFunc
     {
-
+        public static T Desc<T>(T value)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+        public static T Asc<T>(T value)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
         public static int DateDiff(DateType dateType,DateTime littleTime, DateTime bigTime) 
         {
             throw new NotSupportedException("Can only be used in expressions");

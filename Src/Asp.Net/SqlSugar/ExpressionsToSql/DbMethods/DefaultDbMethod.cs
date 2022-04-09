@@ -526,5 +526,14 @@ namespace SqlSugar
             var parameter2 = model.Args[1];
             return string.Format(" ({0} <= {1}) ", parameter.MemberName, parameter2.MemberName);
         }
+
+        public virtual string Asc(MethodCallExpressionModel model) 
+        {
+            return model.Args[0].MemberName + " ASC ";
+        }
+        public virtual string Desc(MethodCallExpressionModel model)
+        {
+            return model.Args[0].MemberName + " DESC ";
+        }
     }
 }

@@ -80,6 +80,8 @@ namespace SqlSugar
         string GreaterThan(MethodCallExpressionModel model);
         string GreaterThanOrEqual(MethodCallExpressionModel model);
         string  LessThan(MethodCallExpressionModel model);
-        string LessThanOrEqual(MethodCallExpressionModel model); 
+        string LessThanOrEqual(MethodCallExpressionModel model);
+        string Asc(MethodCallExpressionModel model);
+        string Desc(MethodCallExpressionModel model);
     }
 }

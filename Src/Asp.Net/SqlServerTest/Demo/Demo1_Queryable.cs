@@ -139,6 +139,11 @@ namespace OrmTest
             };
             var five=db.Ado.ExecuteCommand("11111");
             db.CurrentConnectionConfig.SqlMiddle = null;
+            db.GetConnectionWithAttr<Order>().Queryable<Order>().ToList();
+            var test34 = db.Queryable<Order>().OrderBy(it=>new { 
+              id= it.Id,
+              name=SqlFunc.Asc(it.Name),
+            }).ToList();
             Console.WriteLine("#### Examples End ####");
         }
 
