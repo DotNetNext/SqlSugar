@@ -29,5 +29,9 @@ namespace SqlSugar
             if (isException)
                 throw new SqlSugarException(string.Format(message, args));
         }
+        public static void ExceptionEasy(string enMessage, string cnMessage)
+        {
+            throw new SqlSugarException(ErrorMessage.GetThrowMessage(enMessage, cnMessage));
+        }
     }
 }
