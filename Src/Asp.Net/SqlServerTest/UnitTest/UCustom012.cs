@@ -15,11 +15,11 @@ namespace OrmTest
         {
             var db = NewUnitTest.Db;
 
-            db.CodeFirst.InitTables<StudentA, RoomA, SchoolA>();
+            db.CodeFirst.InitTables<StudentA, RoomA, SchoolA,TeacherA>();
             db.DbMaintenance.TruncateTable<StudentA>();
             db.DbMaintenance.TruncateTable<RoomA>();
             db.DbMaintenance.TruncateTable<SchoolA>();
-
+            db.DbMaintenance.TruncateTable<TeacherA>();
             db.Insertable(new RoomA() { RoomId = 1, RoomName = "北大001室", SchoolId = 1 }).ExecuteCommand();
             db.Insertable(new RoomA() { RoomId = 2, RoomName = "北大002室", SchoolId = 1 }).ExecuteCommand();
             db.Insertable(new RoomA() { RoomId = 3, RoomName = "北大003室", SchoolId = 1 }).ExecuteCommand();
@@ -36,6 +36,12 @@ namespace OrmTest
             db.Insertable(new StudentA() { StudentId = 3, SchoolId = 2, Name = "清华jack" }).ExecuteCommand();
             db.Insertable(new StudentA() { StudentId = 4, SchoolId = 2, Name = "清华tom" }).ExecuteCommand();
 
+            db.Insertable(new TeacherA() {  SchoolId=1, Id=1, Name="北大老师01" }).ExecuteCommand();
+            db.Insertable(new TeacherA() { SchoolId = 1, Id =2, Name = "北大老师02" }).ExecuteCommand();
+
+            db.Insertable(new TeacherA() { SchoolId = 2, Id = 3, Name = "清华老师01" }).ExecuteCommand();
+            db.Insertable(new TeacherA() { SchoolId = 2, Id = 4, Name = "清华老师02" }).ExecuteCommand();
+
             //先用Mapper导航映射查出第二层
             var list = db.Queryable<StudentA>().Mapper(x => x.SchoolA, x => x.SchoolId).ToList();
 
@@ -45,7 +51,10 @@ namespace OrmTest
             {
                 //参数1: room表关联字段  参数2: school表关联字段，  参数3: school当前记录
                 sch.RoomList = db.Queryable<RoomA>().SetContext(room => room.SchoolId, () => sch.SchoolId, sch).ToList();
+
+                sch.TeacherList = db.Queryable<TeacherA>().SetContext(teachera => teachera.SchoolId, () => sch.SchoolId, sch).ToList();
             });
+          
 
 
         }
@@ -66,8 +75,16 @@ namespace OrmTest
             public string SchoolName { get; set; }
             [SugarColumn(IsIgnore = true)]
             public List<RoomA> RoomList { get; set; }
+            [SugarColumn(IsIgnore = true)]
+            public List<TeacherA> TeacherList { get; set; }
         }
-
+        public class TeacherA
+        {
+            [SugarColumn(IsPrimaryKey = true)]
+            public int Id { get; set; }
+            public int SchoolId { get; set; }
+            public string Name { get; set; }
+        }
         public class RoomA
         {
             [SugarColumn(IsPrimaryKey = true)]
