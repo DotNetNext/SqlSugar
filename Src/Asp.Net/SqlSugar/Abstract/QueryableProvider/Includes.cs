@@ -267,7 +267,11 @@ namespace SqlSugar
 
         private void _Includes(  SqlSugarProvider context, params Expression [] includes)
         {
-            throw new NotImplementedException();
+            if (this.QueryBuilder.Includes == null) 
+            {
+                this.QueryBuilder.Includes =new  List<Expression[]>();
+            }
+            this.QueryBuilder.Includes.Add(includes);
         }
     }
 }
