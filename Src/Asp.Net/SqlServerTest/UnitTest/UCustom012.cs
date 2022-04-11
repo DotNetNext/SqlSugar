@@ -89,10 +89,10 @@ namespace OrmTest
             db.Insertable(new Tree1() { Id = 3, Name = "0102", ParentId = 1 }).ExecuteCommand();
             db.Insertable(new Tree1() { Id = 4, Name = "02" }).ExecuteCommand();
             db.Insertable(new Tree1() { Id = 5, Name = "0201", ParentId = 2 }).ExecuteCommand(); 
-            db.Insertable(new Tree1() { Id = 6, Name = "020101", ParentId = 22 }).ExecuteCommand();
+            db.Insertable(new Tree1() { Id = 6, Name = "020101", ParentId = 5 }).ExecuteCommand();
             var list4=db.Queryable<Tree1>()
-                .Includes(it => it.Child,it=>it.Child)
-                .Includes(it => it.Parent,it=>it.Parent)
+                .Includes(it => it.Child,it=>it.Child,it=>it.Child)
+                .Includes(it => it.Parent,it=>it.Parent, it => it.Parent, it => it.Parent)
                 .ToList();
             //var json = db.Utilities.SerializeObject(list4);
         }

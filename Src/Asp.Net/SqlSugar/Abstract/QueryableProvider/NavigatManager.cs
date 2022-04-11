@@ -68,7 +68,7 @@ namespace SqlSugar
             }
             else if (i == 3)
             {
-                var currentList = _preList;
+                var currentList = _preList.Where(it => it != null).ToList();
                 if (RootList == null || currentList.Count == 0) return;
                 var memberExpression = ((_preExpressionList.Last() as LambdaExpression).Body as MemberExpression);
                 var navObjectName = memberExpression.Member.Name;
@@ -85,7 +85,7 @@ namespace SqlSugar
                     list = currentList.Select(it => (it.GetType().GetProperty(navObjectName).GetValue(it))).ToList();
                 }
                 ExecuteByLay(item, list, SelectR3);
-                _preList = list;
+                _preList = list.ToList();
             }
             _preExpressionList.Add(item);
         }
