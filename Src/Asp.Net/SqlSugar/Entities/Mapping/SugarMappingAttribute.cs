@@ -206,19 +206,19 @@ namespace SqlSugar
     [AttributeUsage(AttributeTargets.Property, Inherited = true)]
     public class Navigat: Attribute
     {
-        public string name { get; set; }
-        public Type mappingType { get; set; }
-        public string aId { get; set; }
-        public string bId { get; set; }
+        public string Name { get; set; }
+        public Type MappingType { get; set; }
+        public string MappingAId { get; set; }
+        public string MappingBId { get; set; }
         public Navigat(string name)
         {
-            this.name = name;
+            this.Name = name;
         }
         public Navigat(Type abType,string aId,string bId)
         {
-            this.mappingType = mappingType;
-            this.aId = aId;
-            this.bId= bId;
+            this.MappingType = abType;
+            this.MappingAId = aId;
+            this.MappingBId = bId;
         }
     }
     

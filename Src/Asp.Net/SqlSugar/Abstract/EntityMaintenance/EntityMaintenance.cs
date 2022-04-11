@@ -220,6 +220,12 @@ namespace SqlSugar
                 EntityColumnInfo column = new EntityColumnInfo();
                 //var isVirtual = property.GetGetMethod().IsVirtual;
                 //if (isVirtual) continue;
+                var navigat=property.GetCustomAttribute(typeof(Navigat));
+                if (navigat != null) 
+                {
+                    column.IsIgnore = true;
+                    column.Navigat = navigat as Navigat;
+                }
                 var sugarColumn = property.GetCustomAttributes(typeof(SugarColumn), true)
                 .Where(it => it is SugarColumn)
                 .Select(it => (SugarColumn)it)
