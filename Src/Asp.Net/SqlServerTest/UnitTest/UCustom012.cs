@@ -81,8 +81,33 @@ namespace OrmTest
             db.Insertable(new ABMapping1() { AId =2, BId = 1 }).ExecuteCommand();
             db.Insertable(new ABMapping1() { AId = 2, BId = 2 }).ExecuteCommand();
             var list3= db.Queryable<A1>().Includes(x => x.BList).ToList();
+
+            db.CodeFirst.InitTables(typeof(Tree1));
+            db.DbMaintenance.TruncateTable("Tree1");
+            db.Insertable(new Tree1() { Id = 1, Name = "01" }).ExecuteCommand();
+            db.Insertable(new Tree1() { Id = 2, Name = "0101", ParentId = 1 }).ExecuteCommand();
+            db.Insertable(new Tree1() { Id = 3, Name = "0102", ParentId = 1 }).ExecuteCommand();
+            db.Insertable(new Tree1() { Id = 4, Name = "02" }).ExecuteCommand();
+            db.Insertable(new Tree1() { Id = 5, Name = "0201", ParentId = 2 }).ExecuteCommand(); 
+            db.Insertable(new Tree1() { Id = 6, Name = "020101", ParentId = 22 }).ExecuteCommand();
+            var list4=db.Queryable<Tree1>()
+                .Includes(it => it.Child,it=>it.Child)
+                .Includes(it => it.Parent,it=>it.Parent)
+                .ToList();
+            //var json = db.Utilities.SerializeObject(list4);
         }
 
+        public class Tree1
+        {
+            [SqlSugar.SugarColumn(IsPrimaryKey = true)]
+            public int Id { get; set; }
+            public string Name { get; set; }
+            public int ParentId { get; set; }
+            [Navigat(NavigatType.OneToOne,nameof(ParentId))]
+            public Tree1 Parent { get; set; }
+            [Navigat(NavigatType.OneToMany,nameof(Tree1.ParentId))]
+            public List<Tree1> Child { get; set; }
+        }
         public class ABMapping1
         {
             [SugarColumn(IsPrimaryKey = true )]

@@ -24,6 +24,7 @@ namespace SqlSugar
         //public QueryableProvider<T> Queryable { get; set; }
 
         private List<Expression> _preExpressionList = new List<Expression>();
+        private List<object> _preList = new List<object>();
         //private Expression[] _expressions;
         //private List<T> _list;
         //private EntityInfo _entityInfo;
@@ -46,10 +47,45 @@ namespace SqlSugar
             }
             else if (i == 2)
             {
+                var currentList = RootList;
+                if (RootList == null || currentList.Count == 0) return;
                 var memberExpression = ((_preExpressionList.Last() as LambdaExpression).Body as MemberExpression);
                 var navObjectName = memberExpression.Member.Name;
-                var list = RootList.Select(it => (it.GetType().GetProperty(navObjectName).GetValue(it))).ToList();
+                var navType = currentList[0].GetType().GetProperty(navObjectName).PropertyType.Name;    
+                var isList = navType.StartsWith("List`");
+                List<object> list = new List<object>();
+                if (isList)
+                {
+                     list = currentList.SelectMany(it => (it.GetType().GetProperty(navObjectName).GetValue(it) as IList).Cast<object>()).ToList();
+                
+                }
+                else 
+                {
+                    list = currentList.Select(it => (it.GetType().GetProperty(navObjectName).GetValue(it))).ToList();
+                }
                 ExecuteByLay(item, list, SelectR2);
+                _preList = list;
+            }
+            else if (i == 3)
+            {
+                var currentList = _preList;
+                if (RootList == null || currentList.Count == 0) return;
+                var memberExpression = ((_preExpressionList.Last() as LambdaExpression).Body as MemberExpression);
+                var navObjectName = memberExpression.Member.Name;
+                var navType = currentList[0].GetType().GetProperty(navObjectName).PropertyType.Name;
+                var isList = navType.StartsWith("List`");
+                List<object> list = new List<object>();
+                if (isList)
+                {
+                    list = currentList.SelectMany(it => (it.GetType().GetProperty(navObjectName).GetValue(it) as IList).Cast<object>()).ToList();
+
+                }
+                else
+                {
+                    list = currentList.Select(it => (it.GetType().GetProperty(navObjectName).GetValue(it))).ToList();
+                }
+                ExecuteByLay(item, list, SelectR3);
+                _preList = list;
             }
             _preExpressionList.Add(item);
         }
@@ -57,9 +93,16 @@ namespace SqlSugar
         private void ExecuteByLay(Expression expression, List<object> list, Func<ISugarQueryable<object>, List<object>> selector)
         {
             if (list == null || list.Count == 0) return;
+            list = list.Where(it => it != null).ToList();
             var memberExpression = ((expression as LambdaExpression).Body as MemberExpression);
 
-            var listItemType = list[0].GetType();
+            var listItemType = list.Where(it=>it!=null).FirstOrDefault()?.GetType();
+            if (listItemType.Name.StartsWith("List`")) 
+            {
+                listItemType = listItemType.GetGenericArguments()[0];
+            }
+            if (listItemType == null) return;
+
             var listItemEntity = this.Context.EntityMaintenance.GetEntityInfo(listItemType);
             var listPkColumn = listItemEntity.Columns.Where(it => it.IsPrimarykey).FirstOrDefault();
             var navObjectName = memberExpression.Member.Name;
