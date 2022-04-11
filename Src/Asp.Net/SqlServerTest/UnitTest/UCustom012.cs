@@ -63,36 +63,46 @@ namespace OrmTest
 
                 sch.TeacherList = db.Queryable<TeacherA>().SetContext(teachera => teachera.SchoolId, () => sch.SchoolId, sch).ToList();
             });
+     
 
             var list2=db.Queryable<StudentA>()
                 .Includes(x => x.SchoolA, x => x.RoomList)//2个参数就是 then Include 
                 .Includes(x => x.Books) 
                 .ToList();
-
-           var list3= db.Queryable<A>().Includes(x => x.BList).ToList();
+            db.CodeFirst.InitTables<A1, B1, ABMapping1>();
+            db.DbMaintenance.TruncateTable<A1>();
+            db.DbMaintenance.TruncateTable<B1>();
+            db.DbMaintenance.TruncateTable<ABMapping1>();
+            db.Insertable(new A1() { Id = 1, Name = "a1" }).ExecuteCommand();
+            db.Insertable(new A1() { Id = 2, Name = "a2" }).ExecuteCommand();
+            db.Insertable(new B1() { Id = 1, Name = "b1" }).ExecuteCommand();
+            db.Insertable(new B1() { Id = 2, Name = "b2" }).ExecuteCommand();
+            db.Insertable(new ABMapping1() {  AId=1,BId=1 }).ExecuteCommand();
+            db.Insertable(new ABMapping1() { AId = 2, BId = 2 }).ExecuteCommand();
+            var list3= db.Queryable<A1>().Includes(x => x.BList).ToList();
         }
 
-        public class ABMapping
+        public class ABMapping1
         {
-            [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+            [SugarColumn(IsPrimaryKey = true )]
             public int AId { get; set; }
             public int BId { get; set; }
         }
-        public class A
+        public class A1
         {
-            [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+            [SugarColumn(IsPrimaryKey = true  )]
             public int Id { get; set; }
             public string Name { get; set; }
-            [Navigat(typeof(ABMapping),nameof(ABMapping.AId),nameof(ABMapping.BId))]
-            public List<B> BList { get; set; }
+            [Navigat(typeof(ABMapping1),nameof(ABMapping1.AId),nameof(ABMapping1.BId))]
+            public List<B1> BList { get; set; }
         }
-        public class B
+        public class B1
         {
-            [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+            [SugarColumn(IsPrimaryKey = true )]
             public int Id { get; set; }
             public string Name { get; set; }
-            [Navigat(typeof(ABMapping), nameof(ABMapping.BId), nameof(ABMapping.AId))]
-            public List<A> BList { get; set; }
+            [Navigat(typeof(ABMapping1), nameof(ABMapping1.BId), nameof(ABMapping1.AId))]
+            public List<A1> BList { get; set; }
         }
 
         public class StudentA
@@ -112,7 +122,7 @@ namespace OrmTest
             [SugarColumn(IsPrimaryKey = true)]
             public int SchoolId { get; set; }
             public string SchoolName { get; set; }
-            [SugarColumn(IsIgnore = true)]
+            [Navigat(NavigatType.OneToMany,nameof(RoomA.SchoolId))]
             public List<RoomA> RoomList { get; set; }
             [SugarColumn(IsIgnore = true)]
             public List<TeacherA> TeacherList { get; set; }

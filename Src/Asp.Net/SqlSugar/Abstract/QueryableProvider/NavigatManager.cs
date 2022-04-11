@@ -23,7 +23,7 @@ namespace SqlSugar
         public List<T> RootList { get; set; }
         //public QueryableProvider<T> Queryable { get; set; }
 
-        //private List<Expression> _preExpressionList = new List<Expression>();
+        private List<Expression> _preExpressionList = new List<Expression>();
         //private Expression[] _expressions;
         //private List<T> _list;
         //private EntityInfo _entityInfo;
@@ -39,10 +39,19 @@ namespace SqlSugar
 
         private void ExecuteByLay(int i, Expression item)
         {
+ 
             if (i == 1)
             {
                 ExecuteByLay(item, RootList.Select(it => it as object).ToList(), SelectR1);
             }
+            else if(i == 2)
+            {
+                var memberExpression = ((_preExpressionList.Last() as LambdaExpression).Body as MemberExpression);
+                var navObjectName = memberExpression.Member.Name;
+                var list = RootList.Select(it =>(it.GetType().GetProperty(navObjectName).GetValue(it))).ToList();
+                ExecuteByLay(item, list, SelectR2);
+            }
+            _preExpressionList.Add(item);
         }
 
         private void ExecuteByLay(Expression expression, List<object> list, Func<ISugarQueryable<object>, List<object>> selector)
@@ -73,8 +82,43 @@ namespace SqlSugar
             }
             else
             {
-
+                ManyToMany(list, selector, listItemEntity, navObjectNamePropety, navObjectNameColumnInfo);
             }
+        }
+
+        private void ManyToMany(List<object> list, Func<ISugarQueryable<object>, List<object>> selector, EntityInfo listItemEntity, System.Reflection.PropertyInfo navObjectNamePropety, EntityColumnInfo navObjectNameColumnInfo)
+        {
+            //var navEntity = navObjectNameColumnInfo.PropertyInfo.PropertyType.GetGenericArguments()[0];
+            //var navEntityInfo = this.Context.EntityMaintenance.GetEntityInfo(navEntity);
+            //var navColumn = navEntityInfo.Columns.FirstOrDefault(it => it.PropertyName == navObjectNameColumnInfo.Navigat.Name);
+            ////var navType = navObjectNamePropety.PropertyType;
+            //var listItemPkColumn = listItemEntity.Columns.Where(it => it.IsPrimarykey).FirstOrDefault();
+
+            //var ids = list.Select(it => it.GetType().GetProperty(listItemPkColumn.PropertyName).GetValue(it)).Select(it => it == null ? "null" : it).Distinct().ToList();
+            //List<IConditionalModel> conditionalModels = new List<IConditionalModel>();
+            //conditionalModels.Add((new ConditionalModel()
+            //{
+            //    ConditionalType = ConditionalType.In,
+            //    FieldName = navObjectNameColumnInfo.Navigat.Name,
+            //    FieldValue = String.Join(",", ids),
+            //    CSharpTypeName = listItemPkColumn.PropertyInfo.PropertyType.Name
+            //}));
+            //var navList = selector(this.Context.Queryable<object>().AS(navEntityInfo.DbTableName).Where(conditionalModels));
+            //if (navList.HasValue())
+            //{
+            //    foreach (var item in list)
+            //    {
+            //        var setValue = navList
+            //             .Where(x => navColumn.PropertyInfo.GetValue(x).ObjToString() == listItemPkColumn.PropertyInfo.GetValue(item).ObjToString()).ToList();
+            //        var instance = Activator.CreateInstance(navObjectNamePropety.PropertyType, true);
+            //        var ilist = instance as IList;
+            //        foreach (var value in setValue)
+            //        {
+            //            ilist.Add(value);
+            //        }
+            //        navObjectNamePropety.SetValue(item, instance);
+            //    }
+            //}
         }
 
         private void OneToOne(List<object> list, Func<ISugarQueryable<object>, List<object>> selector, EntityInfo listItemEntity, System.Reflection.PropertyInfo navObjectNamePropety, EntityColumnInfo navObjectNameColumnInfo)
@@ -120,7 +164,7 @@ namespace SqlSugar
             }));
             var navList = selector(this.Context.Queryable<object>().AS(navEntityInfo.DbTableName).Where(conditionalModels));
             if (navList.HasValue())
-
+            {
                 foreach (var item in list)
                 {
                     var setValue = navList
@@ -131,17 +175,9 @@ namespace SqlSugar
                     {
                         ilist.Add(value);
                     }
-                    navObjectNamePropety.SetValue(item, instance); 
+                    navObjectNamePropety.SetValue(item, instance);
                 }
+            }
         }
-
-        //private void Lay2(List<Expression> preExpressionList, List<T> list)
-        //{
-
-        //}
-        //private void Lay3(List<Expression> preExpressionList, List<T> list)
-        //{
-
-        //}
     }
 }
