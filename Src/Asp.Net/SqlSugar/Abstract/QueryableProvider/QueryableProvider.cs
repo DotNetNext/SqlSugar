@@ -2207,8 +2207,20 @@ namespace SqlSugar
             }
             RestoreMapping();
             _Mapper(result);
+            _InitNavigat(result);
             return result;
         }
+
+        private void _InitNavigat<TResult>(List<TResult> result)
+        {
+            if (this.QueryBuilder.Includes != null) 
+            {
+                var manager=(this.QueryBuilder.Includes  as NavigatManager<TResult>);
+                manager.RootList = result;
+                manager.Execute();
+            }
+        }
+
         protected async Task<List<TResult>> _ToListAsync<TResult>()
         {
             List<TResult> result = null;

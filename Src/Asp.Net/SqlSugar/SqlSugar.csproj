@@ -94,7 +94,9 @@
     <Compile Include="Abstract\FastestProvider\Setting.cs" />
     <Compile Include="Abstract\FastestProvider\SplitFastest.cs" />
     <Compile Include="Abstract\FilterProvider\FilterProvider.cs" />
+    <Compile Include="Abstract\QueryableProvider\IncludesHelper.cs" />
     <Compile Include="Abstract\QueryableProvider\Includes.cs" />
+    <Compile Include="Abstract\QueryableProvider\NavigatManager.cs" />
     <Compile Include="Abstract\SaveableProvider\StorageableDataTable.cs" />
     <Compile Include="Abstract\SugarProvider\SqlSugarCoreProvider.cs" />
     <Compile Include="Entities\JoinMapper.cs" />

@@ -33,7 +33,7 @@ namespace SqlSugar
         #endregion
 
         #region Splicing basic
-        public List<Expression[]> Includes { get; set; }
+        public object Includes { get; set; }
         public List<string> IgnoreColumns { get; set; }
         public bool IsCount { get; set; }
         public bool IsSqlQuery { get; set; }

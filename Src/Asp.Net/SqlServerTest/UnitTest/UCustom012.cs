@@ -15,7 +15,7 @@ namespace OrmTest
         {
             var db = NewUnitTest.Db;
 
-            db.CodeFirst.InitTables<StudentA, RoomA, SchoolA,TeacherA>();
+            db.CodeFirst.InitTables<StudentA, RoomA, SchoolA, TeacherA>();
             db.DbMaintenance.TruncateTable<StudentA>();
             db.DbMaintenance.TruncateTable<RoomA>();
             db.DbMaintenance.TruncateTable<SchoolA>();
@@ -36,8 +36,8 @@ namespace OrmTest
             db.Insertable(new StudentA() { StudentId = 3, SchoolId = 2, Name = "清华jack" }).ExecuteCommand();
             db.Insertable(new StudentA() { StudentId = 4, SchoolId = 2, Name = "清华tom" }).ExecuteCommand();
 
-            db.Insertable(new TeacherA() {  SchoolId=1, Id=1, Name="北大老师01" }).ExecuteCommand();
-            db.Insertable(new TeacherA() { SchoolId = 1, Id =2, Name = "北大老师02" }).ExecuteCommand();
+            db.Insertable(new TeacherA() { SchoolId = 1, Id = 1, Name = "北大老师01" }).ExecuteCommand();
+            db.Insertable(new TeacherA() { SchoolId = 1, Id = 2, Name = "北大老师02" }).ExecuteCommand();
 
             db.Insertable(new TeacherA() { SchoolId = 2, Id = 3, Name = "清华老师01" }).ExecuteCommand();
             db.Insertable(new TeacherA() { SchoolId = 2, Id = 4, Name = "清华老师02" }).ExecuteCommand();
@@ -54,7 +54,11 @@ namespace OrmTest
 
                 sch.TeacherList = db.Queryable<TeacherA>().SetContext(teachera => teachera.SchoolId, () => sch.SchoolId, sch).ToList();
             });
-          
+
+            db.Queryable<StudentA>()
+                .Includes(x => x.SchoolA, x => x.RoomList)//2个参数就是 then Include 
+                .Includes(x => x.Books) 
+                .ToList();
 
 
         }
@@ -64,8 +68,10 @@ namespace OrmTest
             public int StudentId { get; set; }
             public string Name { get; set; }
             public int SchoolId { get; set; }
-            [SugarColumn(IsIgnore = true)]
+            [Navigat(nameof(SchoolId))]
             public SchoolA SchoolA { get; set; }
+            [Navigat(nameof(BookA.studenId))]
+            public List<BookA> Books { get; set; }
         }
 
         public class SchoolA
@@ -91,6 +97,10 @@ namespace OrmTest
             public int RoomId { get; set; }
             public string RoomName { get; set; }
             public int SchoolId { get; set; }
+        }
+        public class BookA 
+        { 
+            public int studenId { get; set; }
         }
 
     }
