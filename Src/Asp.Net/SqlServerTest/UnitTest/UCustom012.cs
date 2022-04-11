@@ -78,6 +78,7 @@ namespace OrmTest
             db.Insertable(new B1() { Id = 1, Name = "b1" }).ExecuteCommand();
             db.Insertable(new B1() { Id = 2, Name = "b2" }).ExecuteCommand();
             db.Insertable(new ABMapping1() {  AId=1,BId=1 }).ExecuteCommand();
+            db.Insertable(new ABMapping1() { AId =2, BId = 1 }).ExecuteCommand();
             db.Insertable(new ABMapping1() { AId = 2, BId = 2 }).ExecuteCommand();
             var list3= db.Queryable<A1>().Includes(x => x.BList).ToList();
         }
@@ -86,6 +87,7 @@ namespace OrmTest
         {
             [SugarColumn(IsPrimaryKey = true )]
             public int AId { get; set; }
+            [SugarColumn(IsPrimaryKey = true)]
             public int BId { get; set; }
         }
         public class A1

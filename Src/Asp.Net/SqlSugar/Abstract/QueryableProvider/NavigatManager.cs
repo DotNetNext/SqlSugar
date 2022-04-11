@@ -79,6 +79,7 @@ namespace SqlSugar
             }
             else if (navObjectNameColumnInfo.Navigat.NavigatType == NavigatType.ManyToOne)
             {
+                OneToOne(list, selector, listItemEntity, navObjectNamePropety, navObjectNameColumnInfo);
             }
             else
             {
@@ -90,7 +91,7 @@ namespace SqlSugar
         {
             var bEntity = navObjectNameColumnInfo.PropertyInfo.PropertyType.GetGenericArguments()[0];
             var bEntityInfo = this.Context.EntityMaintenance.GetEntityInfo(bEntity);
-            var bPk = bEntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey);
+            var bPkColumn = bEntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey);
 
             var listItemPkColumn = listItemEntity.Columns.Where(it => it.IsPrimarykey).FirstOrDefault();
             var ids = list.Select(it => it.GetType().GetProperty(listItemPkColumn.PropertyName).GetValue(it)).Select(it => it == null ? "null" : it).Distinct().ToList();
@@ -111,29 +112,28 @@ namespace SqlSugar
             conditionalModels2.Add((new ConditionalModel()
             {
                 ConditionalType = ConditionalType.In,
-                FieldName = bPk.DbColumnName,
+                FieldName = bPkColumn.DbColumnName,
                 FieldValue = String.Join(",", abids.Select(it => it.Bid).ToArray()),
                 CSharpTypeName = bColumn.PropertyInfo.PropertyType.Name
             }));
-            var navList = selector(this.Context.Queryable<object>().AS(bEntityInfo.DbTableName).Where(conditionalModels2));
-            if (navList.HasValue())
+            var bList = selector(this.Context.Queryable<object>().AS(bEntityInfo.DbTableName).Where(conditionalModels2));
+            if (bList.HasValue())
             {
-                foreach (var item in list)
+                foreach (var listItem in list)
                 {
 
                     var instance = Activator.CreateInstance(navObjectNamePropety.PropertyType, true);
                     var ilist = instance as IList;
-                    foreach (var value in navList)
+                    foreach (var bInfo in bList)
                     {
-                        var pk = listItemPkColumn.PropertyInfo.GetValue(item).ObjToString();
-                        if (abids.Any(x => x.Aid == pk))
+                        var pk = listItemPkColumn.PropertyInfo.GetValue(listItem).ObjToString();
+                        var bid = bPkColumn.PropertyInfo.GetValue(bInfo).ObjToString();
+                        if (abids.Any(x => x.Aid == pk&& x.Bid== bid))
                         {
-                            var bids = abids.Where(x => x.Aid == pk).ToList();
-                            if (bids.Count()>0)
-                                ilist.Add(value);
+                                ilist.Add(bInfo);
                         }
                     }
-                    navObjectNamePropety.SetValue(item, instance);
+                    navObjectNamePropety.SetValue(listItem, instance);
                 }
             }
         }
