@@ -100,6 +100,7 @@
     <Compile Include="Abstract\SaveableProvider\StorageableDataTable.cs" />
     <Compile Include="Abstract\SugarProvider\SqlSugarCoreProvider.cs" />
     <Compile Include="Entities\JoinMapper.cs" />
+    <Compile Include="Enum\NavigatType.cs" />
     <Compile Include="Enum\SugarActionType.cs" />
     <Compile Include="Entities\SugarConnection.cs" />
     <Compile Include="ExpressionsToSql\Subquery\SubTemplate.cs" />

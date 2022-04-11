@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -10,14 +11,14 @@ namespace SqlSugar
     public class NavigatManager<T>
     {
         public SqlSugarProvider Context { get; set; }
-        public Action<ISugarQueryable<object>> SelectR1 { get;  set; }
-        public Action<ISugarQueryable<object>> SelectR2 { get; set; }
-        public Action<ISugarQueryable<object>> SelectR3 { get; set; }
-        public Action<ISugarQueryable<object>> SelectR4 { get; set; }
-        public Action<ISugarQueryable<object>> SelectR5 { get; set; }
-        public Action<ISugarQueryable<object>> SelectR6 { get; set; }
-        public Action<ISugarQueryable<object>> SelectR7 { get; set; }
-        public Action<ISugarQueryable<object>> SelectR8 { get; set; }
+        public Func<ISugarQueryable<object>, List<object>> SelectR1 { get; set; }
+        public Func<ISugarQueryable<object>, List<object>> SelectR2 { get; set; }
+        public Func<ISugarQueryable<object>, List<object>> SelectR3 { get; set; }
+        public Func<ISugarQueryable<object>, List<object>> SelectR4 { get; set; }
+        public Func<ISugarQueryable<object>, List<object>> SelectR5 { get; set; }
+        public Func<ISugarQueryable<object>, List<object>> SelectR6 { get; set; }
+        public Func<ISugarQueryable<object>, List<object>> SelectR7 { get; set; }
+        public Func<ISugarQueryable<object>, List<object>> SelectR8 { get; set; }
         public Expression[] Expressions { get; set; }
         public List<T> RootList { get; set; }
         //public QueryableProvider<T> Queryable { get; set; }
@@ -28,50 +29,112 @@ namespace SqlSugar
         //private EntityInfo _entityInfo;
         public void Execute()
         {
-            foreach (var item in Expressions) 
+            var i = 1;
+            foreach (var item in Expressions)
+            {
+                ExecuteByLay(i, item);
+                i++;
+            }
+        }
+
+        private void ExecuteByLay(int i, Expression item)
+        {
+            if (i == 1)
+            {
+                ExecuteByLay(item, RootList.Select(it => it as object).ToList(), SelectR1);
+            }
+        }
+
+        private void ExecuteByLay(Expression expression, List<object> list, Func<ISugarQueryable<object>, List<object>> selector)
+        {
+            if (list == null || list.Count == 0) return;
+            var memberExpression = ((expression as LambdaExpression).Body as MemberExpression);
+
+            var listItemType = list[0].GetType();
+            var listItemEntity = this.Context.EntityMaintenance.GetEntityInfo(listItemType);
+            var listPkColumn = listItemEntity.Columns.Where(it => it.IsPrimarykey).FirstOrDefault();
+            var navObjectName = memberExpression.Member.Name;
+            var navObjectNamePropety = listItemType.GetProperty(navObjectName);
+            var navObjectNameColumnInfo = listItemEntity.Columns.First(it => it.PropertyName == navObjectName);
+            Check.ExceptionEasy(navObjectNameColumnInfo.Navigat == null, $"{navObjectName} not [Navigat(..)] ", $"{navObjectName} 没有导航特性 [Navigat(..)] ");
+
+
+
+            if (navObjectNameColumnInfo.Navigat.NavigatType == NavigatType.OneToOne)
+            {
+                OneToOne(list, selector, listItemEntity, navObjectNamePropety, navObjectNameColumnInfo);
+            }
+            else if (navObjectNameColumnInfo.Navigat.NavigatType == NavigatType.OneToMany)
+            {
+                OneToMany(list, selector, listItemEntity, navObjectNamePropety, navObjectNameColumnInfo);
+            }
+            else if (navObjectNameColumnInfo.Navigat.NavigatType == NavigatType.ManyToOne)
+            {
+            }
+            else
             {
 
             }
         }
 
-        //private void Lay1(List<Expression> preExpressionList, Expression expression, List<object> list)
-        //{
-        //    if (list == null || list.Count == 0) return;
-        //    var memberExpression = ((expression as LambdaExpression).Body as MemberExpression);
-        //    var navName = memberExpression.Member.Name;
-        //    var type = list[0].GetType();
-        //    var propety = type.GetProperty(navName);
-        //    var entity=this.Context.EntityMaintenance.GetEntityInfo(type);
-        //    var columInfo = entity.Columns.First(it => it.PropertyName == navName);
-        //    Check.ExceptionEasy(columInfo.Navigat == null, $"{navName} not [Navigat(..)] ", $"{navName} 没有导航特性 [Navigat(..)] ");
-        //    var navColumn = entity.Columns.FirstOrDefault(it => it.PropertyName == columInfo.Navigat.Name);
-        //    if (columInfo.Navigat.MappingType != null)
-        //    {
+        private void OneToOne(List<object> list, Func<ISugarQueryable<object>, List<object>> selector, EntityInfo listItemEntity, System.Reflection.PropertyInfo navObjectNamePropety, EntityColumnInfo navObjectNameColumnInfo)
+        {
+            var navColumn = listItemEntity.Columns.FirstOrDefault(it => it.PropertyName == navObjectNameColumnInfo.Navigat.Name);
+            var navType = navObjectNamePropety.PropertyType;
+            var navEntityInfo = this.Context.EntityMaintenance.GetEntityInfo(navType);
+            var navPkColumn = navEntityInfo.Columns.Where(it => it.IsPrimarykey).FirstOrDefault();
 
-        //    }
-        //    else if (columInfo.Navigat.Name.Contains("."))
-        //    {
+            var ids = list.Select(it => it.GetType().GetProperty(navObjectNameColumnInfo.Navigat.Name).GetValue(it)).Select(it => it == null ? "null" : it).Distinct().ToList();
+            List<IConditionalModel> conditionalModels = new List<IConditionalModel>();
+            conditionalModels.Add((new ConditionalModel()
+            {
+                ConditionalType = ConditionalType.In,
+                FieldName = navPkColumn.DbColumnName,
+                FieldValue = String.Join(",", ids),
+                CSharpTypeName = navObjectNameColumnInfo.PropertyInfo.PropertyType.Name
+            }));
+            var navList = selector(this.Context.Queryable<object>().AS(navEntityInfo.DbTableName).Where(conditionalModels));
+            foreach (var item in list)
+            {
+                var setValue = navList.FirstOrDefault(x => navPkColumn.PropertyInfo.GetValue(x).ObjToString() == navColumn.PropertyInfo.GetValue(item).ObjToString());
+                navObjectNamePropety.SetValue(item, setValue);
+            }
+        }
 
-        //    }
-        //    else 
-        //    {
-        //        var tableType =this.Context.EntityMaintenance.GetEntityInfo(list.First().GetType());
-        //        var pkColumn = tableType.Columns.Where(it=>it.IsPrimarykey).FirstOrDefault();
-        //        var ids = list.Select(it => it.GetType().GetProperty(navColumn.PropertyName).GetValue(it)).Select(it=>it==null?"null":it).Distinct().ToList();
-        //        List<IConditionalModel> conditionalModels = new List<IConditionalModel>();
-        //        conditionalModels.Add((new ConditionalModel() { 
-        //          ConditionalType  = ConditionalType.In,
-        //          FieldName= pkColumn.DbColumnName,
-        //          FieldValue=String.Join(",", ids),
-        //          CSharpTypeName=columInfo.PropertyInfo.PropertyType.Name
-        //        }));
-        //        var list2 = this.Context.Queryable<object>().AS(tableType.DbTableName).Where(conditionalModels).ToList();
-        //        foreach (var item in list) 
-        //        {
-        //            item.
-        //        }
-        //    }
-        //}
+        private void OneToMany(List<object> list, Func<ISugarQueryable<object>, List<object>> selector, EntityInfo listItemEntity, System.Reflection.PropertyInfo navObjectNamePropety, EntityColumnInfo navObjectNameColumnInfo)
+        {
+            var navEntity = navObjectNameColumnInfo.PropertyInfo.PropertyType.GetGenericArguments()[0];
+            var navEntityInfo = this.Context.EntityMaintenance.GetEntityInfo(navEntity);
+            var navColumn = navEntityInfo.Columns.FirstOrDefault(it => it.PropertyName == navObjectNameColumnInfo.Navigat.Name);
+            //var navType = navObjectNamePropety.PropertyType;
+            var listItemPkColumn = listItemEntity.Columns.Where(it => it.IsPrimarykey).FirstOrDefault();
+
+            var ids = list.Select(it => it.GetType().GetProperty(listItemPkColumn.PropertyName).GetValue(it)).Select(it => it == null ? "null" : it).Distinct().ToList();
+            List<IConditionalModel> conditionalModels = new List<IConditionalModel>();
+            conditionalModels.Add((new ConditionalModel()
+            {
+                ConditionalType = ConditionalType.In,
+                FieldName = navObjectNameColumnInfo.Navigat.Name,
+                FieldValue = String.Join(",", ids),
+                CSharpTypeName = listItemPkColumn.PropertyInfo.PropertyType.Name
+            }));
+            var navList = selector(this.Context.Queryable<object>().AS(navEntityInfo.DbTableName).Where(conditionalModels));
+            if (navList.HasValue())
+
+                foreach (var item in list)
+                {
+                    var setValue = navList
+                         .Where(x => navColumn.PropertyInfo.GetValue(x).ObjToString() == listItemPkColumn.PropertyInfo.GetValue(item).ObjToString()).ToList();
+                    var instance = Activator.CreateInstance(navObjectNamePropety.PropertyType, true);
+                    var ilist = instance as IList;
+                    foreach (var value in setValue)
+                    {
+                        ilist.Add(value);
+                    }
+                    navObjectNamePropety.SetValue(item, instance); 
+                }
+        }
+
         //private void Lay2(List<Expression> preExpressionList, List<T> list)
         //{
 

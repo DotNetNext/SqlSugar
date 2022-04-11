@@ -2215,9 +2215,13 @@ namespace SqlSugar
         {
             if (this.QueryBuilder.Includes != null) 
             {
-                var manager=(this.QueryBuilder.Includes  as NavigatManager<TResult>);
-                manager.RootList = result;
-                manager.Execute();
+                var managers=(this.QueryBuilder.Includes  as List<object>);
+                foreach (var it in managers)
+                {
+                    var manager = it as NavigatManager<TResult>;
+                    manager.RootList = result;
+                    manager.Execute();
+                }
             }
         }
 

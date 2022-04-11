@@ -16,10 +16,12 @@ namespace OrmTest
             var db = NewUnitTest.Db;
 
             db.CodeFirst.InitTables<StudentA, RoomA, SchoolA, TeacherA>();
+            db.CodeFirst.InitTables<BookA>();
             db.DbMaintenance.TruncateTable<StudentA>();
             db.DbMaintenance.TruncateTable<RoomA>();
             db.DbMaintenance.TruncateTable<SchoolA>();
             db.DbMaintenance.TruncateTable<TeacherA>();
+            db.DbMaintenance.TruncateTable<BookA>();
             db.Insertable(new RoomA() { RoomId = 1, RoomName = "北大001室", SchoolId = 1 }).ExecuteCommand();
             db.Insertable(new RoomA() { RoomId = 2, RoomName = "北大002室", SchoolId = 1 }).ExecuteCommand();
             db.Insertable(new RoomA() { RoomId = 3, RoomName = "北大003室", SchoolId = 1 }).ExecuteCommand();
@@ -42,6 +44,13 @@ namespace OrmTest
             db.Insertable(new TeacherA() { SchoolId = 2, Id = 3, Name = "清华老师01" }).ExecuteCommand();
             db.Insertable(new TeacherA() { SchoolId = 2, Id = 4, Name = "清华老师02" }).ExecuteCommand();
 
+
+            db.Insertable(new BookA() { BookId=1, Name="java" , studenId=1 }).ExecuteCommand();
+            db.Insertable(new BookA() { BookId = 2, Name = "c#2", studenId = 2 }).ExecuteCommand();
+            db.Insertable(new BookA() { BookId = 3, Name = "c#1", studenId = 2 }).ExecuteCommand();
+            db.Insertable(new BookA() { BookId = 4, Name = "php", studenId = 3 }).ExecuteCommand();
+            db.Insertable(new BookA() { BookId = 5, Name = "js", studenId = 4 }).ExecuteCommand();
+
             //先用Mapper导航映射查出第二层
             var list = db.Queryable<StudentA>().Mapper(x => x.SchoolA, x => x.SchoolId).ToList();
 
@@ -55,25 +64,49 @@ namespace OrmTest
                 sch.TeacherList = db.Queryable<TeacherA>().SetContext(teachera => teachera.SchoolId, () => sch.SchoolId, sch).ToList();
             });
 
-            db.Queryable<StudentA>()
+            var list2=db.Queryable<StudentA>()
                 .Includes(x => x.SchoolA, x => x.RoomList)//2个参数就是 then Include 
                 .Includes(x => x.Books) 
                 .ToList();
 
-
+           var list3= db.Queryable<A>().Includes(x => x.BList).ToList();
         }
+
+        public class ABMapping
+        {
+            [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+            public int AId { get; set; }
+            public int BId { get; set; }
+        }
+        public class A
+        {
+            [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+            public int Id { get; set; }
+            public string Name { get; set; }
+            [Navigat(typeof(ABMapping),nameof(ABMapping.AId),nameof(ABMapping.BId))]
+            public List<B> BList { get; set; }
+        }
+        public class B
+        {
+            [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+            public int Id { get; set; }
+            public string Name { get; set; }
+            [Navigat(typeof(ABMapping), nameof(ABMapping.BId), nameof(ABMapping.AId))]
+            public List<A> BList { get; set; }
+        }
+
         public class StudentA
         {
             [SugarColumn(IsPrimaryKey = true)]
             public int StudentId { get; set; }
             public string Name { get; set; }
             public int SchoolId { get; set; }
-            [Navigat(nameof(SchoolId))]
+            [Navigat(NavigatType.OneToOne, nameof(SchoolId))]
             public SchoolA SchoolA { get; set; }
-            [Navigat(nameof(BookA.studenId))]
+            [Navigat(NavigatType.OneToMany, nameof(BookA.studenId))]
             public List<BookA> Books { get; set; }
-        }
 
+        }
         public class SchoolA
         {
             [SugarColumn(IsPrimaryKey = true)]
@@ -98,8 +131,12 @@ namespace OrmTest
             public string RoomName { get; set; }
             public int SchoolId { get; set; }
         }
-        public class BookA 
-        { 
+        public class BookA
+        {
+            [SugarColumn(IsPrimaryKey = true)]
+            public int BookId { get; set; }
+
+            public string Name { get; set; }
             public int studenId { get; set; }
         }
 

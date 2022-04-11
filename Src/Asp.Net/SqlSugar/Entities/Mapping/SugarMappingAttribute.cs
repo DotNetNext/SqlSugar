@@ -210,15 +210,17 @@ namespace SqlSugar
         public Type MappingType { get; set; }
         public string MappingAId { get; set; }
         public string MappingBId { get; set; }
-        public Navigat(string name)
+        public NavigatType NavigatType { get; set; }
+        public Navigat(NavigatType navigatType,string name)
         {
             this.Name = name;
+            this.NavigatType = navigatType;
         }
-        public Navigat(Type abType,string aId,string bId)
+        public Navigat(Type MappingTableType,string typeAiD,string typeBId)
         {
-            this.MappingType = abType;
-            this.MappingAId = aId;
-            this.MappingBId = bId;
+            this.MappingType = MappingTableType;
+            this.MappingAId = typeAiD;
+            this.MappingBId = typeBId;
         }
     }
     

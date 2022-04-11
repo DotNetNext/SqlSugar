@@ -11,36 +11,29 @@ namespace SqlSugar
     {
         private void _Includes<T1, TReturn1>(SqlSugarProvider context, params Expression[] expressions)
         {
-            Action<ISugarQueryable<object>> SelectR1 = it => it.Select<TReturn1>();
+            Func<ISugarQueryable<object>,List<object>> SelectR1 = it => it.Select<TReturn1>().ToList().Select(x=>x as object).ToList();
             var navigat = new NavigatManager<T>();
             navigat.SelectR1 = SelectR1;
             navigat.Expressions = expressions;
             navigat.Context = this.Context;
-            this.QueryBuilder.Includes = navigat;
+            if (this.QueryBuilder.Includes == null) this.QueryBuilder.Includes = new List<object>();
+            this.QueryBuilder.Includes.Add(navigat);
         }
         private void _Includes<T1, TReturn1, TReturn2>(SqlSugarProvider context, params Expression[] expressions)
         {
-            Action<ISugarQueryable<object>> SelectR1 = it => it.Select<TReturn1>();
-            Action<ISugarQueryable<object>> SelectR2 = it => it.Select<TReturn2>();
+            Func<ISugarQueryable<object>, List<object>> SelectR1 = it => it.Select<TReturn1>().ToList().Select(x => x as object).ToList();
+            Func<ISugarQueryable<object>, List<object>> SelectR2 = it => it.Select<TReturn2>().ToList().Select(x => x as object).ToList();
             var navigat = new NavigatManager<T>();
             navigat.SelectR1 = SelectR1;
             navigat.SelectR2 = SelectR2;
             navigat.Expressions = expressions;
             navigat.Context = this.Context;
-            this.QueryBuilder.Includes = navigat;
+            if (this.QueryBuilder.Includes == null) this.QueryBuilder.Includes = new List<object>();
+            this.QueryBuilder.Includes.Add(navigat);
         }
         private void _Includes<T1, TReturn1, TReturn2, TReturn3>(SqlSugarProvider context, params Expression[] expressions)
         {
-            Action<ISugarQueryable<object>> SelectR1 = it => it.Select<TReturn1>();
-            Action<ISugarQueryable<object>> SelectR2 = it => it.Select<TReturn2>();
-            Action<ISugarQueryable<object>> SelectR3 = it => it.Select<TReturn3>();
-            var navigat = new NavigatManager<T>();
-            navigat.SelectR1 = SelectR1;
-            navigat.SelectR2 = SelectR2;
-            navigat.SelectR2 = SelectR3;
-            navigat.Expressions = expressions;
-            navigat.Context = this.Context;
-            this.QueryBuilder.Includes = navigat;
+            throw new NotImplementedException();
         }
         private void _Includes<T1, TReturn1, TReturn2, TReturn3, TReturn4>(SqlSugarProvider context, params Expression[] expressions)
         {
