@@ -88,37 +88,48 @@ namespace SqlSugar
 
         private void ManyToMany(List<object> list, Func<ISugarQueryable<object>, List<object>> selector, EntityInfo listItemEntity, System.Reflection.PropertyInfo navObjectNamePropety, EntityColumnInfo navObjectNameColumnInfo)
         {
-            //var navEntity = navObjectNameColumnInfo.PropertyInfo.PropertyType.GetGenericArguments()[0];
-            //var navEntityInfo = this.Context.EntityMaintenance.GetEntityInfo(navEntity);
-            //var navColumn = navEntityInfo.Columns.FirstOrDefault(it => it.PropertyName == navObjectNameColumnInfo.Navigat.Name);
-            ////var navType = navObjectNamePropety.PropertyType;
-            //var listItemPkColumn = listItemEntity.Columns.Where(it => it.IsPrimarykey).FirstOrDefault();
+            var bEntity = navObjectNameColumnInfo.PropertyInfo.PropertyType.GetGenericArguments()[0];
+            var bEntityInfo = this.Context.EntityMaintenance.GetEntityInfo(bEntity);
+            var bPk = bEntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey);
 
-            //var ids = list.Select(it => it.GetType().GetProperty(listItemPkColumn.PropertyName).GetValue(it)).Select(it => it == null ? "null" : it).Distinct().ToList();
-            //List<IConditionalModel> conditionalModels = new List<IConditionalModel>();
-            //conditionalModels.Add((new ConditionalModel()
-            //{
-            //    ConditionalType = ConditionalType.In,
-            //    FieldName = navObjectNameColumnInfo.Navigat.Name,
-            //    FieldValue = String.Join(",", ids),
-            //    CSharpTypeName = listItemPkColumn.PropertyInfo.PropertyType.Name
-            //}));
-            //var navList = selector(this.Context.Queryable<object>().AS(navEntityInfo.DbTableName).Where(conditionalModels));
-            //if (navList.HasValue())
-            //{
-            //    foreach (var item in list)
-            //    {
-            //        var setValue = navList
-            //             .Where(x => navColumn.PropertyInfo.GetValue(x).ObjToString() == listItemPkColumn.PropertyInfo.GetValue(item).ObjToString()).ToList();
-            //        var instance = Activator.CreateInstance(navObjectNamePropety.PropertyType, true);
-            //        var ilist = instance as IList;
-            //        foreach (var value in setValue)
-            //        {
-            //            ilist.Add(value);
-            //        }
-            //        navObjectNamePropety.SetValue(item, instance);
-            //    }
-            //}
+            var listItemPkColumn = listItemEntity.Columns.Where(it => it.IsPrimarykey).FirstOrDefault();
+            var ids = list.Select(it => it.GetType().GetProperty(listItemPkColumn.PropertyName).GetValue(it)).Select(it => it == null ? "null" : it).Distinct().ToList();
+            var mappingEntity = this.Context.EntityMaintenance.GetEntityInfo(navObjectNameColumnInfo.Navigat.MappingType);
+            var aColumn = mappingEntity.Columns.First(it => it.PropertyName == navObjectNameColumnInfo.Navigat.MappingAId);
+            var bColumn = mappingEntity.Columns.First(it => it.PropertyName == navObjectNameColumnInfo.Navigat.MappingBId);
+            List<IConditionalModel> conditionalModels = new List<IConditionalModel>();
+            conditionalModels.Add((new ConditionalModel()
+            {
+                ConditionalType = ConditionalType.In,
+                FieldName = aColumn.DbColumnName,
+                FieldValue = String.Join(",", ids),
+                CSharpTypeName = bColumn.PropertyInfo.PropertyType.Name
+            }));
+            var bids=this.Context.Queryable<object>().AS(mappingEntity.DbTableName).Where(conditionalModels).Select<string>(bColumn.DbColumnName).ToList();
+
+            List<IConditionalModel> conditionalModels2 = new List<IConditionalModel>();
+            conditionalModels2.Add((new ConditionalModel()
+            {
+                ConditionalType = ConditionalType.In,
+                FieldName = bPk.DbColumnName,
+                FieldValue = String.Join(",", bids),
+                CSharpTypeName = bColumn.PropertyInfo.PropertyType.Name
+            }));
+            var navList = selector(this.Context.Queryable<object>().AS(bEntityInfo.DbTableName).Where(conditionalModels2));
+            if (navList.HasValue())
+            {
+                foreach (var item in list)
+                {
+                   
+                    var instance = Activator.CreateInstance(navObjectNamePropety.PropertyType, true);
+                    var ilist = instance as IList;
+                    foreach (var value in navList)
+                    {
+                        ilist.Add(value);
+                    }
+                    navObjectNamePropety.SetValue(item, instance);
+                }
+            }
         }
 
         private void OneToOne(List<object> list, Func<ISugarQueryable<object>, List<object>> selector, EntityInfo listItemEntity, System.Reflection.PropertyInfo navObjectNamePropety, EntityColumnInfo navObjectNameColumnInfo)
