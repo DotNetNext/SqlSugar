@@ -39,16 +39,16 @@ namespace SqlSugar
 
         private void ExecuteByLay(int i, Expression item)
         {
- 
+
             if (i == 1)
             {
                 ExecuteByLay(item, RootList.Select(it => it as object).ToList(), SelectR1);
             }
-            else if(i == 2)
+            else if (i == 2)
             {
                 var memberExpression = ((_preExpressionList.Last() as LambdaExpression).Body as MemberExpression);
                 var navObjectName = memberExpression.Member.Name;
-                var list = RootList.Select(it =>(it.GetType().GetProperty(navObjectName).GetValue(it))).ToList();
+                var list = RootList.Select(it => (it.GetType().GetProperty(navObjectName).GetValue(it))).ToList();
                 ExecuteByLay(item, list, SelectR2);
             }
             _preExpressionList.Add(item);
@@ -103,16 +103,16 @@ namespace SqlSugar
                 ConditionalType = ConditionalType.In,
                 FieldName = aColumn.DbColumnName,
                 FieldValue = String.Join(",", ids),
-                CSharpTypeName = bColumn.PropertyInfo.PropertyType.Name
+                CSharpTypeName = aColumn.PropertyInfo.PropertyType.Name
             }));
-            var bids=this.Context.Queryable<object>().AS(mappingEntity.DbTableName).Where(conditionalModels).Select<string>(bColumn.DbColumnName).ToList();
+            var abids = this.Context.Queryable<object>().AS(mappingEntity.DbTableName).Where(conditionalModels).Select<SugarAbMapping>($"{aColumn.DbColumnName} as aid,{bColumn.DbColumnName} as bid").ToList();
 
             List<IConditionalModel> conditionalModels2 = new List<IConditionalModel>();
             conditionalModels2.Add((new ConditionalModel()
             {
                 ConditionalType = ConditionalType.In,
                 FieldName = bPk.DbColumnName,
-                FieldValue = String.Join(",", bids),
+                FieldValue = String.Join(",", abids.Select(it => it.Bid).ToArray()),
                 CSharpTypeName = bColumn.PropertyInfo.PropertyType.Name
             }));
             var navList = selector(this.Context.Queryable<object>().AS(bEntityInfo.DbTableName).Where(conditionalModels2));
@@ -120,12 +120,18 @@ namespace SqlSugar
             {
                 foreach (var item in list)
                 {
-                   
+
                     var instance = Activator.CreateInstance(navObjectNamePropety.PropertyType, true);
                     var ilist = instance as IList;
                     foreach (var value in navList)
                     {
-                        ilist.Add(value);
+                        var pk = listItemPkColumn.PropertyInfo.GetValue(item).ObjToString();
+                        if (abids.Any(x => x.Aid == pk))
+                        {
+                            var bids = abids.Where(x => x.Aid == pk).ToList();
+                            if (bids.Count()>0)
+                                ilist.Add(value);
+                        }
                     }
                     navObjectNamePropety.SetValue(item, instance);
                 }
