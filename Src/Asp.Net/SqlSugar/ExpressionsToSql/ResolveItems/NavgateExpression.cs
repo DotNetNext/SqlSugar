@@ -9,6 +9,13 @@ namespace SqlSugar
 {
     internal class NavgateExpression
     {
+        private SqlSugarProvider context;
+
+        public NavgateExpression(SqlSugarProvider context)
+        {
+            this.context = context;
+        }
+
         internal bool IsNavgate(Expression expression)
         {
             var exp = expression;
