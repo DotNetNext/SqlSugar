@@ -104,6 +104,7 @@
     <Compile Include="Enum\NavigatType.cs" />
     <Compile Include="Enum\SugarActionType.cs" />
     <Compile Include="Entities\SugarConnection.cs" />
+    <Compile Include="ExpressionsToSql\ResolveItems\NavgateExpression.cs" />
     <Compile Include="ExpressionsToSql\Subquery\SubTemplate.cs" />
     <Compile Include="ExpressionsToSql\Subquery\SubqueryableN.cs" />
     <Compile Include="Abstract\QueryableProvider\QueryableContext.cs" />

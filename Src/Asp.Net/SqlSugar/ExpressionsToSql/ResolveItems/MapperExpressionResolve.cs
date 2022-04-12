@@ -17,7 +17,15 @@ namespace SqlSugar
         public MapperExpressionResolve(Expression expression, InvalidOperationException ex)
         {
             this.expression = expression;
-            OldNavgate(expression, ex);
+            NavgateExpression navgate = new NavgateExpression();
+            if (navgate.IsNavgate(expression))
+            {
+                navgate.Execute(this);
+            }
+            else
+            {
+                OldNavgate(expression, ex);
+            }
         }
 
         private void OldNavgate(Expression expression, InvalidOperationException ex)
