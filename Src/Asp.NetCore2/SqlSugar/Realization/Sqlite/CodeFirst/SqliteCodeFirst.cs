@@ -91,7 +91,7 @@ namespace SqlSugar
         {
             var tableName = GetTableName(entityInfo);
             string backupName=tableName+DateTime.Now.ToString("yyyyMMddHHmmss");
-            Check.Exception(entityInfo.Columns.Where(it => it.IsPrimarykey).Count() > 1, "Use Code First ,The primary key must not exceed 1");
+            //Check.Exception(entityInfo.Columns.Where(it => it.IsPrimarykey).Count() > 1, "Use Code First ,The primary key must not exceed 1");
             List<DbColumnInfo> columns = new List<DbColumnInfo>();
             if (entityInfo.Columns.HasValue())
             {
