@@ -17,6 +17,11 @@ namespace SqlSugar
         public MapperExpressionResolve(Expression expression, InvalidOperationException ex)
         {
             this.expression = expression;
+            OldNavgate(expression, ex);
+        }
+
+        private void OldNavgate(Expression expression, InvalidOperationException ex)
+        {
             this.ex = ex;
             this.mappers = CallContext.MapperExpression.Value;
             Error01();
