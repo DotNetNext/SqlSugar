@@ -552,6 +552,10 @@ namespace SqlSugar
             {
                 return false;
             }
+            else if ((item as MethodCallExpression).Method.Name == "Select"&& item.ToString().Contains("Subqueryable()"))
+            {
+                return false;
+            }
             else 
             {
                 return true;
