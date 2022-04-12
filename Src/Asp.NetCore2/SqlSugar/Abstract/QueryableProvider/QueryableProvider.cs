@@ -2240,6 +2240,7 @@ namespace SqlSugar
             }
             RestoreMapping();
             _Mapper(result);
+            await Task.Run(() => { _InitNavigat(result); });
             return result;
         }
 
