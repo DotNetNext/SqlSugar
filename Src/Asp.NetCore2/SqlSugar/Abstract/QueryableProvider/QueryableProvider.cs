@@ -1313,7 +1313,15 @@ namespace SqlSugar
             var entity = this.Context.EntityMaintenance.GetEntityInfo<ParameterT>();
             var queryableContext = this.Context.TempItems["Queryable_To_Context"] as MapperContext<ParameterT>;
             var list = queryableContext.list;
-            var pkName = (((mappingFiled as LambdaExpression).Body as UnaryExpression).Operand as MemberExpression).Member.Name;
+            var pkName = "";
+            if ((mappingFiled as LambdaExpression).Body is UnaryExpression)
+            {
+                pkName = (((mappingFiled as LambdaExpression).Body as UnaryExpression).Operand as MemberExpression).Member.Name;
+            } 
+            else  
+            {
+                pkName = ((mappingFiled as LambdaExpression).Body as MemberExpression).Member.Name;
+            }
             var key = thisFiled.ToString() +typeof(ParameterT).FullName + typeof(T).FullName;
             var ids = list.Select(it => it.GetType().GetProperty(pkName).GetValue(it)).ToArray();
             if (queryableContext.TempChildLists == null)
@@ -1332,7 +1340,15 @@ namespace SqlSugar
                 });
                 queryableContext.TempChildLists[key]= result;
             }
-            var name = (((thisFiled as LambdaExpression).Body as UnaryExpression).Operand as MemberExpression).Member.Name;
+            var name = "";
+            if((thisFiled as LambdaExpression).Body is UnaryExpression) 
+            {
+                name = (((thisFiled as LambdaExpression).Body as UnaryExpression).Operand as MemberExpression).Member.Name;
+            }
+            else
+            {
+                name = ((thisFiled as LambdaExpression).Body as MemberExpression).Member.Name;
+            }
             var pkValue = parameter.GetType().GetProperty(pkName).GetValue(parameter);
             result = result.Where(it => it.GetType().GetProperty(name).GetValue(it).ObjToString() == pkValue.ObjToString()).ToList();
             return result;
@@ -2817,6 +2833,7 @@ namespace SqlSugar
                        _Size=it._Size
                 }).ToList();
             }
+            asyncQueryableBuilder.Includes = this.QueryBuilder.Includes;
             asyncQueryableBuilder.Take = this.QueryBuilder.Take;
             asyncQueryableBuilder.Skip = this.QueryBuilder.Skip;
             asyncQueryableBuilder.SelectValue = this.QueryBuilder.SelectValue;
