@@ -81,6 +81,7 @@ namespace OrmTest
             db.Insertable(new ABMapping1() { AId =2, BId = 1 }).ExecuteCommand();
             db.Insertable(new ABMapping1() { AId = 2, BId = 2 }).ExecuteCommand();
             var list3= db.Queryable<A1>().Includes(x => x.BList).ToList();
+            var list31 = db.Queryable<A1>().Includes(x => x.BList,x=>x.AList).ToList();
 
             db.CodeFirst.InitTables(typeof(Tree1));
             db.DbMaintenance.TruncateTable("Tree1");
@@ -129,7 +130,7 @@ namespace OrmTest
             public int Id { get; set; }
             public string Name { get; set; }
             [Navigat(typeof(ABMapping1), nameof(ABMapping1.BId), nameof(ABMapping1.AId))]
-            public List<A1> BList { get; set; }
+            public List<A1> AList { get; set; }
         }
 
         public class StudentA
