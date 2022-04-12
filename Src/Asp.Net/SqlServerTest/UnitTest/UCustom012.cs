@@ -96,8 +96,34 @@ namespace OrmTest
                 .Includes(it => it.Parent,it=>it.Parent, it => it.Parent, it => it.Parent)
                 .ToList();
             //var json = db.Utilities.SerializeObject(list4);
+
+            db.CodeFirst.InitTables<UnitA001, UnitA002>();
+            db.DbMaintenance.TruncateTable<UnitA001>();
+            db.DbMaintenance.TruncateTable<UnitA002>();
+
+            db.Insertable(new UnitA001() { id = 1, name1 = "a", orgid = "1" }).ExecuteCommand();
+            db.Insertable(new UnitA002() { id = 1, name2= "a2", orgid = "1" }).ExecuteCommand();
+            var list5=db.Queryable<UnitA001>().ToList();
+            db.ThenMapper(list5, it =>
+            {
+                it.UnitA002 = db.Queryable<UnitA002>().SetContext(x => x.orgid, () => it.id, it).First();
+            });
         }
 
+        public class UnitA001
+        {
+            public int id { get; set; }
+            public string name1 { get; set; }
+            public string orgid { get; set; }
+            [SugarColumn(IsIgnore =true)]
+            public UnitA002 UnitA002 { get; set; }
+        }
+        public class UnitA002
+        {
+            public int id { get; set; }
+            public string name2{ get; set; }
+            public string orgid { get; set; }
+        }
         public class Tree1
         {
             [SqlSugar.SugarColumn(IsPrimaryKey = true)]
