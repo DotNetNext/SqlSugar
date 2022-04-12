@@ -36,5 +36,6 @@ namespace SqlSugar
         public string[] UIndexGroupNameList { get;  set; }
         public bool IsArray { get;  set; }
         public Type UnderType { get;  set; }
+        public Navigat Navigat { get; set; }
     }
 }

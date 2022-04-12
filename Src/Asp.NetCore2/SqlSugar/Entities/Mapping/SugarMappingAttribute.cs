@@ -203,4 +203,25 @@ namespace SqlSugar
         }
     }
 
+    [AttributeUsage(AttributeTargets.Property, Inherited = true)]
+    public class Navigat: Attribute
+    {
+        public string Name { get; set; }
+        public Type MappingType { get; set; }
+        public string MappingAId { get; set; }
+        public string MappingBId { get; set; }
+        public NavigatType NavigatType { get; set; }
+        public Navigat(NavigatType navigatType,string name)
+        {
+            this.Name = name;
+            this.NavigatType = navigatType;
+        }
+        public Navigat(Type MappingTableType,string typeAiD,string typeBId)
+        {
+            this.MappingType = MappingTableType;
+            this.MappingAId = typeAiD;
+            this.MappingBId = typeBId;
+        }
+    }
+    
 }
