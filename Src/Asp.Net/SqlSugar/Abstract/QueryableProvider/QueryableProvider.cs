@@ -1477,6 +1477,43 @@ namespace SqlSugar
             }
             totalNumber = count;
         }
+        public virtual async Task ForEachByPageAsync(Action<T> action, int pageIndex, int pageSize,RefAsync<int> totalNumber, int singleMaxReads = 300, System.Threading.CancellationTokenSource cancellationTokenSource = null)
+        {
+            int count = this.Clone().Count();
+            if (count > 0)
+            {
+                if (pageSize > singleMaxReads && count - ((pageIndex - 1) * pageSize) > singleMaxReads)
+                {
+                    Int32 Skip = (pageIndex - 1) * pageSize;
+                    Int32 NowCount = count - Skip;
+                    Int32 number = 0;
+                    if (NowCount > pageSize) NowCount = pageSize;
+                    while (NowCount > 0)
+                    {
+                        if (cancellationTokenSource?.IsCancellationRequested == true) return;
+                        if (number + singleMaxReads > pageSize) singleMaxReads = NowCount;
+                        foreach (var item in await this.Clone().Skip(Skip).Take(singleMaxReads).ToListAsync())
+                        {
+                            if (cancellationTokenSource?.IsCancellationRequested == true) return;
+                            action.Invoke(item);
+                        }
+                        NowCount -= singleMaxReads;
+                        Skip += singleMaxReads;
+                        number += singleMaxReads;
+                    }
+                }
+                else
+                {
+                    if (cancellationTokenSource?.IsCancellationRequested == true) return;
+                    foreach (var item in this.Clone().ToPageList(pageIndex, pageSize))
+                    {
+                        if (cancellationTokenSource?.IsCancellationRequested == true) return;
+                        action.Invoke(item);
+                    }
+                }
+            }
+            totalNumber = count;
+        }
 
         public List<T> ToOffsetPage(int pageIndex, int pageSize) 
         {
