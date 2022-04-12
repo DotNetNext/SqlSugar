@@ -1420,6 +1420,26 @@ namespace SqlSugar
                 }
             }
         }
+        public virtual async Task ForEachAsync(Action<T> action, int singleMaxReads = 300, System.Threading.CancellationTokenSource cancellationTokenSource = null)
+        {
+            Check.Exception(this.QueryBuilder.Skip > 0 || this.QueryBuilder.Take > 0, ErrorMessage.GetThrowMessage("no support Skip take, use PageForEach", "不支持Skip Take,请使用 Queryale.PageForEach"));
+            RefAsync<int> totalNumber = 0;
+            RefAsync<int> totalPage = 1;
+            for (int i = 1; i <= totalPage; i++)
+            {
+                if (cancellationTokenSource?.IsCancellationRequested == true) return;
+                var queryable = this.Clone();
+                var page =
+                    totalPage == 1 ?
+                    await  queryable.ToPageListAsync(i, singleMaxReads,  totalNumber,  totalPage) :
+                    await queryable.ToPageListAsync(i, singleMaxReads);
+                foreach (var item in page)
+                {
+                    if (cancellationTokenSource?.IsCancellationRequested == true) return;
+                    action.Invoke(item);
+                }
+            }
+        }
         public virtual void ForEachByPage(Action<T> action, int pageIndex, int pageSize, ref int totalNumber, int singleMaxReads = 300, System.Threading.CancellationTokenSource cancellationTokenSource = null)
         {
             int count = this.Clone().Count();
@@ -1768,6 +1788,12 @@ namespace SqlSugar
             totalNumber.Value = await this.Clone().CountAsync();
             this.Context.MappingTables = oldMapping;
             return await this.Clone().ToPageListAsync(pageIndex, pageSize);
+        }
+        public Task<List<T>> ToPageListAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber, RefAsync<int> totalPage) 
+        {
+            var result = ToPageListAsync(pageNumber, pageSize, totalNumber);
+            totalPage = (totalNumber + pageSize - 1) / pageSize;
+            return result;
         }
         public async Task<string> ToJsonAsync()
         {
