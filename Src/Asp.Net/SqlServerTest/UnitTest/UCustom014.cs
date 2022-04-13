@@ -18,7 +18,7 @@ namespace OrmTest
                 DbType = DbType.SqlServer,
                 IsAutoCloseConnection = true
             });
-
+        
             db.CodeFirst.InitTables<Country111, Province111, City111>();
             db.DbMaintenance.TruncateTable("Country111");
             db.DbMaintenance.TruncateTable("Province111");
@@ -84,7 +84,10 @@ namespace OrmTest
                       }
                  }
                           }).ExecuteCommand();
-
+            db.Aop.OnLogExecuted = (sq, p) =>
+            {
+                Console.WriteLine(sq);
+            };
             var list=db.Queryable<Country111>()
                 .Includes(x => x.Provinces.OrderByDescending(x111=>x111.Id).ToList())
                 .ToList();
@@ -99,30 +102,33 @@ namespace OrmTest
                 .ToList();
         }
 
+        [SugarTable("Country_111")]
         public class Country111
         {
-            [SqlSugar.SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+            [SqlSugar.SugarColumn(IsPrimaryKey = true, IsIdentity = true, ColumnName = "cid")]
             public int Id { get; set; }
             public string Name { get; set; }
 
             [Navigat(NavigatType.OneToMany,nameof(Province111.CountryId))]
             public List<Province111> Provinces { get; set; }
         }
-
+        [SugarTable("Province_111")]
         public class Province111
         {
-            [SqlSugar.SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+            [SqlSugar.SugarColumn(IsPrimaryKey = true, IsIdentity = true, ColumnName = "pid")]
             public int Id { get; set; }
             public string Name { get; set; }
+            [SugarColumn(ColumnName = "coid")]
             public int CountryId { get; set; }
             [Navigat(NavigatType.OneToMany, nameof(City111.ProvinceId))]
             public List<City111> citys { get; set; }
         }
-
+        [SugarTable("City_111")]
         public class City111
         {
-            [SqlSugar.SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+            [SqlSugar.SugarColumn(IsPrimaryKey = true, IsIdentity = true, ColumnName   = "cid")]
             public int Id { get; set; }
+            [SugarColumn(ColumnName="ppid")]
             public int ProvinceId { get; set; }
             public string Name { get; set; }
         }

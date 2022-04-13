@@ -238,7 +238,7 @@ namespace SqlSugar
             conditionalModels.Add((new ConditionalModel()
             {
                 ConditionalType = ConditionalType.In,
-                FieldName = navObjectNameColumnInfo.Navigat.Name,
+                FieldName = navColumn.DbColumnName,
                 FieldValue = String.Join(",", ids),
                 CSharpTypeName = listItemPkColumn.PropertyInfo.PropertyType.Name
             }));
