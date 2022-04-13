@@ -20,9 +20,9 @@ namespace OrmTest
             });
         
             db.CodeFirst.InitTables<Country111, Province111, City111>();
-            db.DbMaintenance.TruncateTable("Country111");
-            db.DbMaintenance.TruncateTable("Province111");
-            db.DbMaintenance.TruncateTable("City111");
+            db.DbMaintenance.TruncateTable("Country_111");
+            db.DbMaintenance.TruncateTable("Province_111");
+            db.DbMaintenance.TruncateTable("City_111");
             db.Insertable(new List<Country111>()
             {
                  new Country111(){
