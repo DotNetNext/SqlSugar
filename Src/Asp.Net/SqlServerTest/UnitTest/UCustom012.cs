@@ -80,12 +80,15 @@ namespace OrmTest
             db.DbMaintenance.TruncateTable<ABMapping1>();
             db.Insertable(new A1() { Id = 1, Name = "a1" }).ExecuteCommand();
             db.Insertable(new A1() { Id = 2, Name = "a2" }).ExecuteCommand();
+            db.Insertable(new A1() { Id = 3, Name = "a3" }).ExecuteCommand();
             db.Insertable(new B1() { Id = 1, Name = "b1" }).ExecuteCommand();
             db.Insertable(new B1() { Id = 2, Name = "b2" }).ExecuteCommand();
             db.Insertable(new ABMapping1() {  AId=1,BId=1 }).ExecuteCommand();
             db.Insertable(new ABMapping1() { AId =2, BId = 1 }).ExecuteCommand();
             db.Insertable(new ABMapping1() { AId = 2, BId = 2 }).ExecuteCommand();
-            var list3= db.Queryable<A1>().Includes(x => x.BList).ToList();
+            var list3= db.Queryable<A1>()
+                .Includes(x => x.BList)
+                .Where(x=>x.BList.Any()).ToList();
             var list31 = db.Queryable<A1>().Includes(x => x.BList,x=>x.AList).ToList();
 
             db.CodeFirst.InitTables(typeof(Tree1));

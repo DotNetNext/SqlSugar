@@ -94,18 +94,24 @@ namespace SqlSugar
         }
         private MapperSql GetManyToManySql()
         {
-            var pk = this.ProPertyEntity.Columns.First(it => it.IsPrimarykey == true).DbColumnName;
-            var name = this.EntityInfo.Columns.First(it => it.PropertyName == Navigat.Name).DbColumnName;
-            var selectName = this.ProPertyEntity.Columns.First(it => it.PropertyName == MemberName).DbColumnName;
+         
+            var bPk = this.ProPertyEntity.Columns.First(it => it.IsPrimarykey == true).DbColumnName;
+            var aPk = this.EntityInfo.Columns.First(it => it.IsPrimarykey == true).DbColumnName;
             MapperSql mapper = new MapperSql();
             var queryable = this.context.Queryable<object>();
-            pk = queryable.QueryBuilder.Builder.GetTranslationColumnName(pk);
-            name = queryable.QueryBuilder.Builder.GetTranslationColumnName(name);
-            selectName = queryable.QueryBuilder.Builder.GetTranslationColumnName(selectName);
-            mapper.Sql = queryable
-                .AS(this.ProPertyEntity.DbTableName)
-                .WhereIF(!string.IsNullOrEmpty(whereSql),whereSql)
-                .Where($" {ShorName}.{name}={pk} ").Select(selectName).ToSql().Key;
+            bPk = queryable.QueryBuilder.Builder.GetTranslationColumnName(bPk);
+            aPk = queryable.QueryBuilder.Builder.GetTranslationColumnName(aPk);
+            var mappingType = Navigat.MappingType;
+            var mappingEntity = this.context.EntityMaintenance.GetEntityInfo(mappingType);
+            var mappingTableName=queryable.QueryBuilder.Builder.GetTranslationTableName(mappingEntity.DbTableName);
+            var mappingA = mappingEntity.Columns.First(it => it.PropertyName == Navigat.MappingAId).DbColumnName;
+            var mappingB = mappingEntity.Columns.First(it => it.PropertyName == Navigat.MappingBId).DbColumnName;
+            mappingA = queryable.QueryBuilder.Builder.GetTranslationColumnName(mappingA);
+            mappingB = queryable.QueryBuilder.Builder.GetTranslationColumnName(mappingB);
+            var bTableName = queryable.QueryBuilder.Builder.GetTranslationTableName(this.ProPertyEntity.DbTableName);
+            mapper.Sql = $" (select count(1) from {bTableName} {this.ProPertyEntity.DbTableName}_1  where  {this.ProPertyEntity.DbTableName}_1.{bPk} in (select {mappingA} from {mappingTableName} where {mappingB} = {ShorName}.{aPk} )) ";
+            if (this.whereSql.HasValue())
+                mapper.Sql = mapper.Sql + " AND " + this.whereSql;
             mapper.Sql = $" ({mapper.Sql}) ";
             mapper.Sql = GetMethodSql(mapper.Sql);
             return mapper;
