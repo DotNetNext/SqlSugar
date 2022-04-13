@@ -12,13 +12,8 @@ namespace OrmTest
 
         public static void Init()
         {
-            var db = new SqlSugarScope(new SqlSugar.ConnectionConfig()
-            {
-                ConnectionString = Config.ConnectionString,
-                DbType = DbType.SqlServer,
-                IsAutoCloseConnection = true
-            });
-        
+            var db = NewUnitTest.Db;
+
             db.CodeFirst.InitTables<Country111, Province111, City111>();
             db.DbMaintenance.TruncateTable("Country_111");
             db.DbMaintenance.TruncateTable("Province_111");
