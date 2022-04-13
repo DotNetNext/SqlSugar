@@ -88,6 +88,9 @@
     <Compile Include="Demo\DemoJ_Report.cs" />
     <Compile Include="UnitTest\UBulkCopy.cs" />
     <Compile Include="UnitTest\UCustom011.cs" />
+    <Compile Include="UnitTest\UCustom012.cs" />
+    <Compile Include="UnitTest\UCustom014.cs" />
+    <Compile Include="UnitTest\UCustom015.cs" />
     <Compile Include="UnitTest\UCustom06.cs" />
     <Compile Include="UnitTest\UInsert.cs" />
     <Compile Include="UnitTest\UnitCustom01.cs" />
