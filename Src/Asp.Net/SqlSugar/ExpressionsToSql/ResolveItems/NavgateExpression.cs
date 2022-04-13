@@ -66,6 +66,10 @@ namespace SqlSugar
 
         internal MapperSql GetSql()
         {
+            if (this.ProPertyEntity.Type.Name.StartsWith("List`")) 
+            {
+                Check.ExceptionEasy(true, " expression error ", "导航查询出错，比如.Count要改成 .Count()");
+            }
             var pk = this.ProPertyEntity.Columns.First(it => it.IsPrimarykey == true).DbColumnName;
             var name = this.EntityInfo.Columns.First(it => it.PropertyName == Navigat.Name).DbColumnName;
             var selectName = this.ProPertyEntity.Columns.First(it => it.PropertyName ==MemberName).DbColumnName;
