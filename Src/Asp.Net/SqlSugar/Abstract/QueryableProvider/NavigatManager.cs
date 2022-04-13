@@ -25,6 +25,7 @@ namespace SqlSugar
 
         private List<Expression> _preExpressionList = new List<Expression>();
         private List<object> _preList = new List<object>();
+        private List<Expression> _ListCallFunc;
         //private Expression[] _expressions;
         //private List<T> _list;
         //private EntityInfo _entityInfo;
@@ -40,7 +41,7 @@ namespace SqlSugar
 
         private void ExecuteByLay(int i, Expression item)
         {
-
+            _ListCallFunc = GetWhereExpression(ref item);
             if (i == 1)
             {
                 ExecuteByLay(item, RootList.Select(it => it as object).ToList(), SelectR1);
@@ -88,6 +89,7 @@ namespace SqlSugar
                 _preList = list.ToList();
             }
             _preExpressionList.Add(item);
+            _ListCallFunc = new List<Expression>();
         }
 
         private void ExecuteByLay(Expression expression, List<object> list, Func<ISugarQueryable<object>, List<object>> selector)
@@ -130,6 +132,23 @@ namespace SqlSugar
             }
         }
 
+        private List<Expression> GetWhereExpression(ref Expression expression)
+        {
+            List<Expression> expressions = new List<Expression>();
+            var isCall = (expression as LambdaExpression).Body is MethodCallExpression;
+            if (isCall) 
+            {
+               var newexp = (expression as LambdaExpression).Body;
+                while (newexp is MethodCallExpression) 
+                {
+                    expressions.Add(newexp);
+                    newexp= (newexp as MethodCallExpression).Arguments[0];  
+                }
+                expression =LambdaExpression.Lambda(newexp);
+            }
+            return expressions;
+        }
+
         private void ManyToMany(List<object> list, Func<ISugarQueryable<object>, List<object>> selector, EntityInfo listItemEntity, System.Reflection.PropertyInfo navObjectNamePropety, EntityColumnInfo navObjectNameColumnInfo)
         {
             var bEntity = navObjectNameColumnInfo.PropertyInfo.PropertyType.GetGenericArguments()[0];
@@ -159,7 +178,8 @@ namespace SqlSugar
                 FieldValue = String.Join(",", abids.Select(it => it.Bid).ToArray()),
                 CSharpTypeName = bColumn.PropertyInfo.PropertyType.Name
             }));
-            var bList = selector(this.Context.Queryable<object>().AS(bEntityInfo.DbTableName).Where(conditionalModels2));
+            var sql = GetWhereSql();
+            var bList = selector(this.Context.Queryable<object>().AS(bEntityInfo.DbTableName).Where(conditionalModels2).WhereIF(sql.WhereString.HasValue(),sql.WhereString).OrderByIF(sql.OrderByString.HasValue(),sql.OrderByString));  
             if (bList.HasValue())
             {
                 foreach (var listItem in list)
@@ -222,7 +242,8 @@ namespace SqlSugar
                 FieldValue = String.Join(",", ids),
                 CSharpTypeName = listItemPkColumn.PropertyInfo.PropertyType.Name
             }));
-            var navList = selector(this.Context.Queryable<object>().AS(navEntityInfo.DbTableName).Where(conditionalModels));
+            var sqlObj = GetWhereSql();
+            var navList = selector(this.Context.Queryable<object>().AS(navEntityInfo.DbTableName).Where(conditionalModels).WhereIF(sqlObj.WhereString.HasValue(),sqlObj.WhereString).OrderByIF(sqlObj.OrderByString.HasValue(),sqlObj.OrderByString));
             if (navList.HasValue())
             {
                 foreach (var item in list)
@@ -239,5 +260,56 @@ namespace SqlSugar
                 }
             }
         }
+
+        private SqlInfo GetWhereSql()
+        {
+            if (_ListCallFunc == null|| _ListCallFunc.Count==0) return new SqlInfo();
+            List<string> where = new List<string>();
+            List<string> oredrBy = new List<string>();
+            _ListCallFunc.Reverse();
+            SqlInfo result = new SqlInfo();
+            foreach (var item in _ListCallFunc)
+            {
+                var method = item as MethodCallExpression;
+                if (method.Method.Name == "Where")
+                {
+                    var exp = method.Arguments[1];
+                    where.Add("Where " + this.Context.Queryable<object>().QueryBuilder.GetExpressionValue(exp, ResolveExpressType.WhereSingle).GetString());
+                }
+                else if (method.Method.Name == "OrderBy")
+                {
+                    var exp = method.Arguments[1];
+                    oredrBy.Add( " "+this.Context.Queryable<object>().QueryBuilder.GetExpressionValue(exp,ResolveExpressType.WhereSingle).GetString());
+                }
+                else if (method.Method.Name == "OrderByDescending")
+                {
+                    var exp = method.Arguments[1];
+                    oredrBy.Add(" " + this.Context.Queryable<object>().QueryBuilder.GetExpressionValue(exp, ResolveExpressType.WhereSingle).GetString()+" DESC");
+                }
+                else if (method.Method.Name == "ToList")
+                { 
+                }
+                else 
+                {
+                    Check.ExceptionEasy($"no support {item}", $"不支持表达式{item} 不支持方法{method.Method.Name}");
+                }
+            }
+            if (where.Any()) 
+            {
+                result.WhereString=  String.Join(" AND ", where);
+            }
+            if (oredrBy.Any())
+            {
+                result.OrderByString = String.Join(" , ", oredrBy);
+            }
+            return result;
+        }
+
+        public class SqlInfo 
+        {
+            public string WhereString { get; set; }
+            public string OrderByString { get; set; }
+        }
+
     }
 }

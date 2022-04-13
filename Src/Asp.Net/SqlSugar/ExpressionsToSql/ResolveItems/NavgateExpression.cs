@@ -42,6 +42,10 @@ namespace SqlSugar
             if (childExpression != null && childExpression is MemberExpression)
             {
                 var child2Expression = (childExpression as MemberExpression).Expression;
+                if (child2Expression == null) 
+                {
+                    return false;
+                }
                 if (child2Expression.Type.IsClass() && child2Expression is ParameterExpression)
                 {
                     var entity = this.context.EntityMaintenance.GetEntityInfo(child2Expression.Type);
