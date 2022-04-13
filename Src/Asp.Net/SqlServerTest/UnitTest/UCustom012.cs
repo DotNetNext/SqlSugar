@@ -51,6 +51,13 @@ namespace OrmTest
             db.Insertable(new BookA() { BookId = 4, Name = "php", studenId = 3 }).ExecuteCommand();
             db.Insertable(new BookA() { BookId = 5, Name = "js", studenId = 4 }).ExecuteCommand();
 
+
+            var list2 = db.Queryable<StudentA>()
+           .Includes(x => x.SchoolA, x => x.RoomList)//2个参数就是 then Include 
+           .Includes(x => x.Books)
+           .Where(x => x.SchoolA.SchoolName == "北大")
+           .ToList();
+
             //先用Mapper导航映射查出第二层
             var list = db.Queryable<StudentA>().Mapper(x => x.SchoolA, x => x.SchoolId).ToList();
 
@@ -65,10 +72,7 @@ namespace OrmTest
             });
      
 
-            var list2=db.Queryable<StudentA>()
-                .Includes(x => x.SchoolA, x => x.RoomList)//2个参数就是 then Include 
-                .Includes(x => x.Books) 
-                .ToList();
+       
             db.CodeFirst.InitTables<A1, B1, ABMapping1>();
             db.DbMaintenance.TruncateTable<A1>();
             db.DbMaintenance.TruncateTable<B1>();
