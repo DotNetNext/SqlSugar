@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SqlSugar;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -37,6 +38,16 @@ namespace OrmTest
             Db.CodeFirst.InitTables<UnitLong1>();
             Db.Insertable(new List<UnitLong1>() { new UnitLong1() { Num = null }, new UnitLong1() { Num = null } }) 
                 .UseParameter().ExecuteCommand();
+            if (Db.DbMaintenance.IsAnyTable("User", false))
+                Db.DbMaintenance.DropTable("User");
+            Db.CodeFirst.InitTables<User>();
+        }
+        public class User
+        {
+            [SugarColumn(IndexGroupNameList = new string[] { "index" })]
+            public int key { get; set; }
+            [SugarColumn(UniqueGroupNameList = new string[] { "index" })]
+            public int key2 { get; set; }
         }
         public class UnitLong1
         {
