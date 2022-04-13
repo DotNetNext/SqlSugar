@@ -242,6 +242,7 @@ namespace SqlSugar
             {
                 resolveExpress.PgSqlIsAutoToLower = true;
             }
+            resolveExpress.SugarContext = new ExpressionOutParameter() { Context = this.Context  };
             resolveExpress.RootExpression = expression;
             resolveExpress.JoinQueryInfos = Builder.QueryBuilder.JoinQueryInfos;
             resolveExpress.IsSingle = IsSingle()&& resolveType!= ResolveExpressType.WhereMultiple;
