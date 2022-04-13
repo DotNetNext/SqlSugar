@@ -22,36 +22,43 @@ namespace SqlSugar
 
         internal bool IsNavgate(Expression expression)
         {
+            var result = false;
             var exp = expression;
             if (exp is UnaryExpression) 
             {
                 exp = (exp as UnaryExpression).Operand;
             }
-            if (exp is MemberExpression) 
+            if (exp is MemberExpression)
             {
-                var memberExp=exp as MemberExpression;
+                var memberExp = exp as MemberExpression;
                 var childExpression = memberExp.Expression;
-                if (childExpression != null && childExpression is MemberExpression) 
+                result = ValidateNav(result, memberExp, childExpression);
+            }
+            return result;
+        }
+
+        private bool ValidateNav(bool result, MemberExpression memberExp, Expression childExpression)
+        {
+            if (childExpression != null && childExpression is MemberExpression)
+            {
+                var child2Expression = (childExpression as MemberExpression).Expression;
+                if (child2Expression.Type.IsClass() && child2Expression is ParameterExpression)
                 {
-                    var child2Expression = (childExpression as MemberExpression).Expression;
-                    if (child2Expression.Type.IsClass()&& child2Expression is ParameterExpression) 
+                    var entity = this.context.EntityMaintenance.GetEntityInfo(child2Expression.Type);
+                    if (entity.Columns.Any(x => x.PropertyName == (childExpression as MemberExpression).Member.Name && x.Navigat != null))
                     {
-                       var entity= this.context.EntityMaintenance.GetEntityInfo(child2Expression.Type);
-                        if (entity.Columns.Any(x => x.PropertyName == (childExpression as MemberExpression).Member.Name && x.Navigat != null)) 
-                        {
-                            EntityInfo = entity;
-                            ShorName = child2Expression.ToString();
-                            MemberName= memberExp.Member.Name;
-                            ProPertyEntity = this.context.EntityMaintenance.GetEntityInfo(childExpression.Type);
-                            Navigat = entity.Columns.FirstOrDefault(x => x.PropertyName == (childExpression as MemberExpression).Member.Name).Navigat;
-                            return true;
-                        }
+                        EntityInfo = entity;
+                        ShorName = child2Expression.ToString();
+                        MemberName = memberExp.Member.Name;
+                        ProPertyEntity = this.context.EntityMaintenance.GetEntityInfo(childExpression.Type);
+                        Navigat = entity.Columns.FirstOrDefault(x => x.PropertyName == (childExpression as MemberExpression).Member.Name).Navigat;
+                        result = true;
                     }
                 }
             }
-            return false;
-        }
 
+            return result;
+        }
 
         internal MapperSql GetSql()
         {

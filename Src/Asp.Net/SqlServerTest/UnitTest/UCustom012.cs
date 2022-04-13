@@ -55,6 +55,7 @@ namespace OrmTest
             var list2 = db.Queryable<StudentA>()
            .Includes(x => x.SchoolA, x => x.RoomList)//2个参数就是 then Include 
            .Includes(x => x.Books)
+           .Where(x=>x.Books.Any())
            .Where(x => x.SchoolA.SchoolName == "北大")
            .ToList();
 
@@ -98,13 +99,16 @@ namespace OrmTest
 
 
             var list21111 = new List<Tree1>();
-            db.Queryable<Tree1>()
+           var xxx= db.Queryable<Tree1>()
                 .Includes(it => it.Child)
                 .Includes(it => it.Parent)
-                .ForEach(item => {
-                    list21111.Add(item);
-                }, 2);
+                .Where(it=>it.Child.Any())
+                .ToList();
 
+            db.ThenMapper(xxx, it =>
+            {
+                it.Child = it.Child.OrderBy(x => x.Id).ToList();
+            });
             //var json = db.Utilities.SerializeObject(list4);
 
             db.CodeFirst.InitTables<UnitA001, UnitA002>();

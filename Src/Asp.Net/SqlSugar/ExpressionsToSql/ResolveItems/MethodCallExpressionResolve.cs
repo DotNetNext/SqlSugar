@@ -244,6 +244,15 @@ namespace SqlSugar
         {
             try
             {
+                 OneToManyNavgateExpression nav=new OneToManyNavgateExpression(this.Context?.SugarContext?.Context);
+                 if (nav.IsNavgate(express)) 
+                 {
+                    var sql = nav.GetSql();
+                    this.Context.SingleTableNameSubqueryShortName = nav.ShorName;
+                    base.AppendValue(parameter, isLeft, sql);
+                    return;
+                 }
+
                 var constValue = ExpressionTool.DynamicInvoke(express);
                 if (constValue is MapperSql)
                 {
