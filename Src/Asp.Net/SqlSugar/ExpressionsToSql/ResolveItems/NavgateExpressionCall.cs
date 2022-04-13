@@ -16,9 +16,12 @@ namespace SqlSugar
         public string ShorName;
         private string MemberName;
         private string MethodName;
-        public OneToManyNavgateExpression(SqlSugarProvider context)
+        private string whereSql;
+        private MethodCallExpressionResolve methodCallExpressionResolve;
+        public OneToManyNavgateExpression(SqlSugarProvider context, MethodCallExpressionResolve methodCallExpressionResolve)
         {
             this.context = context;
+            this.methodCallExpressionResolve = methodCallExpressionResolve;
         }
 
         internal bool IsNavgate(Expression expression)
@@ -36,8 +39,19 @@ namespace SqlSugar
                 if (memberExp.Method.Name.IsIn("Any","Count") &&  memberExp.Arguments.Count>0 && memberExp.Arguments[0] is MemberExpression ) 
                 {
                     result = ValidateNav(result, memberExp.Arguments[0] as MemberExpression, memberExp.Arguments[0]);
+                    if (memberExp.Arguments.Count > 1)
+                    {
+                        whereSql = GetWhereSql(memberExp);
+                    }
                 }
             }
+            return result;
+        }
+
+        private string GetWhereSql(MethodCallExpression memberExp)
+        {
+            var whereExp = memberExp.Arguments[1];
+            var result= this.methodCallExpressionResolve.GetNewExpressionValue(whereExp);
             return result;
         }
 
@@ -90,6 +104,7 @@ namespace SqlSugar
             selectName = queryable.QueryBuilder.Builder.GetTranslationColumnName(selectName);
             mapper.Sql = queryable
                 .AS(this.ProPertyEntity.DbTableName)
+                .WhereIF(!string.IsNullOrEmpty(whereSql),whereSql)
                 .Where($" {ShorName}.{name}={pk} ").Select(selectName).ToSql().Key;
             mapper.Sql = $" ({mapper.Sql}) ";
             mapper.Sql = GetMethodSql(mapper.Sql);
@@ -107,6 +122,7 @@ namespace SqlSugar
             //selectName = queryable.QueryBuilder.Builder.GetTranslationColumnName(selectName);
             mapper.Sql = queryable
                 .AS(this.ProPertyEntity.DbTableName)
+                .WhereIF(!string.IsNullOrEmpty(whereSql), whereSql)
                 .Where($" {name}={ShorName}.{pk} ").Select(" COUNT(1) ").ToSql().Key;
             mapper.Sql = $" ({mapper.Sql}) ";
             mapper.Sql = GetMethodSql(mapper.Sql);

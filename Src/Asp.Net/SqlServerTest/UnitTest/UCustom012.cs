@@ -55,7 +55,7 @@ namespace OrmTest
             var list2 = db.Queryable<StudentA>()
            .Includes(x => x.SchoolA, x => x.RoomList)//2个参数就是 then Include 
            .Includes(x => x.Books)
-           .Where(x=>x.Books.Any())
+           .Where(x=>x.Books.Any(z=>z.BookId==1))
            .Where(x => x.SchoolA.SchoolName == "北大")
            .ToList();
 

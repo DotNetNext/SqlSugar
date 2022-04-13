@@ -319,7 +319,7 @@ namespace SqlSugar
             return methodCallExpressionArgs;
         }
 
-        protected string GetNewExpressionValue(Expression item)
+        public string GetNewExpressionValue(Expression item)
         {
             var newContext = this.Context.GetCopyContextWithMapping();
             newContext.Resolve(item, this.Context.IsJoin ? ResolveExpressType.WhereMultiple : ResolveExpressType.WhereSingle);

@@ -244,7 +244,7 @@ namespace SqlSugar
         {
             try
             {
-                 OneToManyNavgateExpression nav=new OneToManyNavgateExpression(this.Context?.SugarContext?.Context);
+                 OneToManyNavgateExpression nav=new OneToManyNavgateExpression(this.Context?.SugarContext?.Context,this);
                  if (nav.IsNavgate(express)) 
                  {
                     var sql = nav.GetSql();
