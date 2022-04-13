@@ -19,10 +19,11 @@ namespace OrmTest
                 IsAutoCloseConnection = true
             });
             db.CodeFirst.InitTables<UnitBoola1>();
+            db.Insertable(new UnitBoola1() { a = true }).ExecuteCommand();
             db.Queryable<Order>()
                 .Select(x => new
                 {
-                    x1 = SqlFunc.Subqueryable<UnitBoola1>().Select(it => it.a)
+                    x1 =(bool?) SqlFunc.Subqueryable<UnitBoola1>().Select(it => it.a)
                 }).ToList();
 
         }
