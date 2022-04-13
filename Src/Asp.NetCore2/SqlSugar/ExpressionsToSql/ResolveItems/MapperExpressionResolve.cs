@@ -17,19 +17,6 @@ namespace SqlSugar
         public MapperExpressionResolve(Expression expression, InvalidOperationException ex)
         {
             this.expression = expression;
-            NavgateExpression navgate = new NavgateExpression(context);
-            if (navgate.IsNavgate(expression))
-            {
-                navgate.Execute(this);
-            }
-            else
-            {
-                OldNavgate(expression, ex);
-            }
-        }
-
-        private void OldNavgate(Expression expression, InvalidOperationException ex)
-        {
             this.ex = ex;
             this.mappers = CallContext.MapperExpression.Value;
             Error01();
@@ -48,7 +35,7 @@ namespace SqlSugar
         {
             var methodExpression = expression as MethodCallExpression;
             var callName = methodExpression.Method.Name;
-            var exp= methodExpression.Arguments[0] as MemberExpression;
+            var exp = methodExpression.Arguments[0] as MemberExpression;
             ThrowTrue(exp == null);
             var childExpression = exp;
             MapperExpression mapper = GetMapperMany(exp);
@@ -67,13 +54,13 @@ namespace SqlSugar
             ThrowTrue(exp.Expression == null);
             var childExpression = exp.Expression;
             MapperExpression mapper = GetMapper(exp);
-            var fillInfo=GetFillInfo(childExpression, mapper);
+            var fillInfo = GetFillInfo(childExpression, mapper);
             var mappingFild1Info = GetMappingFild1Info(childExpression, mapper);
             var mappingFild1Info2 = GetMappingFild2Info(childExpression, mapper);
             var SelectInfo = GetSelectInfo(expression);
             var entity = this.context.EntityMaintenance.GetEntityInfo(childExpression.Type);
 
-            var isExMapper = mappingFild1Info2!=null;
+            var isExMapper = mappingFild1Info2 != null;
             var isFillFild1SameType = fillInfo.Type == mappingFild1Info.Type;
             var isSameProperty = false;
 
@@ -91,11 +78,11 @@ namespace SqlSugar
             }
             else
             {
-                oneToOne(fillInfo, mappingFild1Info, mappingFild1Info2,SelectInfo);
+                oneToOne(fillInfo, mappingFild1Info, mappingFild1Info2, SelectInfo);
             }
         }
 
-   
+
         private void oneToOne(MapperExpressionInfo fillInfo, MapperExpressionInfo mappingFild1Info, MapperExpressionInfo mappingFild1Info2, MapperExpressionInfo selectInfo)
         {
             var pkColumn = selectInfo.EntityInfo.Columns.Where(it => it.IsPrimarykey == true).FirstOrDefault();
@@ -108,11 +95,11 @@ namespace SqlSugar
             var whereRight = sqlBuilder.GetTranslationColumnName(mappingFild1Info.FieldString);
             this.sql = this.context.Queryable<object>()
                                                         .AS(tableName)
-                                                        .Where(string.Format(" {0}={1} ",whereLeft , whereRight))
+                                                        .Where(string.Format(" {0}={1} ", whereLeft, whereRight))
                                                         .Select(sqlBuilder.GetTranslationColumnName(selectInfo.FieldName)).ToSql().Key;
         }
 
-        private void oneToMany(MethodCallExpression methodCallExpression,string methodName,EntityInfo mainEntity,string shortName,MapperExpressionInfo fillInfo, MapperExpressionInfo mappingFild1Info, MapperExpressionInfo mappingFild1Info2)
+        private void oneToMany(MethodCallExpression methodCallExpression, string methodName, EntityInfo mainEntity, string shortName, MapperExpressionInfo fillInfo, MapperExpressionInfo mappingFild1Info, MapperExpressionInfo mappingFild1Info2)
         {
             var pkColumn = mainEntity.Columns.FirstOrDefault(it => it.IsPrimarykey == true);
             if (pkColumn == null)
@@ -145,14 +132,14 @@ namespace SqlSugar
         {
             if (methodCallExpression.Arguments.Count <= 1)
                 return null;
-            var exp= methodCallExpression.Arguments[1];
-            var querybuiler=InstanceFactory.GetQueryBuilder(this.context.CurrentConnectionConfig);
+            var exp = methodCallExpression.Arguments[1];
+            var querybuiler = InstanceFactory.GetQueryBuilder(this.context.CurrentConnectionConfig);
             querybuiler.LambdaExpressions = InstanceFactory.GetLambdaExpressions(this.context.CurrentConnectionConfig);
             querybuiler.Builder = InstanceFactory.GetSqlbuilder(this.context.CurrentConnectionConfig);
             querybuiler.Builder.Context = querybuiler.Context;
             querybuiler.Builder.QueryBuilder = querybuiler;
             querybuiler.Context = this.context;
-            var expValue=querybuiler.GetExpressionValue(exp, ResolveExpressType.WhereMultiple);
+            var expValue = querybuiler.GetExpressionValue(exp, ResolveExpressType.WhereMultiple);
             var paramterName = (exp as LambdaExpression).Parameters[0].Name;
             var sql = expValue.GetResultString();
             sql = sql.Replace(querybuiler.Builder.GetTranslationColumnName(paramterName) + ".", "");
@@ -160,7 +147,7 @@ namespace SqlSugar
             {
                 foreach (var item in querybuiler.Parameters)
                 {
-                    sql = sql.Replace(item.ParameterName,item.Value.ObjToString().ToSqlValue());
+                    sql = sql.Replace(item.ParameterName, item.Value.ObjToString().ToSqlValue());
                 }
             }
             return sql;
@@ -168,7 +155,7 @@ namespace SqlSugar
 
         private MapperExpressionInfo GetSelectInfo(Expression expression)
         {
-      
+
             var field = expression;
             if (field is UnaryExpression)
             {
@@ -183,7 +170,7 @@ namespace SqlSugar
             {
                 Type = type,
                 FieldName = fieldName,
-                EntityInfo= entity
+                EntityInfo = entity
             };
         }
 
@@ -219,18 +206,18 @@ namespace SqlSugar
             }
             var type = ((field as MemberExpression).Expression).Type;
             this.context.InitMappingInfo(type);
-            var name =(field as MemberExpression).Member.Name;
+            var name = (field as MemberExpression).Member.Name;
             var entity = this.context.EntityMaintenance.GetEntityInfo(type);
-            var fieldName=entity.Columns.First(it => it.PropertyName == name).DbColumnName;
+            var fieldName = entity.Columns.First(it => it.PropertyName == name).DbColumnName;
             var array = (field as MemberExpression).ToString().Split('.').ToList();
-            array[array.Count()-1] = fieldName;
+            array[array.Count() - 1] = fieldName;
             var filedString = string.Join(".", array);
             return new MapperExpressionInfo()
             {
-                 Type=type,
-                 FieldName = fieldName,
-                 FieldString= filedString,
-                 EntityInfo= entity
+                Type = type,
+                FieldName = fieldName,
+                FieldString = filedString,
+                EntityInfo = entity
             };
         }
 
@@ -244,14 +231,15 @@ namespace SqlSugar
                 this.querybuiler.TableShortName = (childExpression as MemberExpression).Expression.ToString();
             }
             this.context.InitMappingInfo(childExpression.Type);
-            return new MapperExpressionInfo() {
-                 EntityInfo=this.context.EntityMaintenance.GetEntityInfo(childExpression.Type)
+            return new MapperExpressionInfo()
+            {
+                EntityInfo = this.context.EntityMaintenance.GetEntityInfo(childExpression.Type)
             };
         }
 
         private MapperExpression GetMapper(MemberExpression exp)
         {
-            var mapper= mappers.Where(it => it.Type == MapperExpressionType.oneToOne)
+            var mapper = mappers.Where(it => it.Type == MapperExpressionType.oneToOne)
                 .Reverse()
                 .Where(it => (it.FillExpression as LambdaExpression).Body.ToString() == exp.Expression.ToString()).FirstOrDefault();
             ThrowTrue(mapper == null);
@@ -263,7 +251,7 @@ namespace SqlSugar
             return "";
         }
 
-        private void  ExtMapper(MapperExpressionInfo fillInfo, MapperExpressionInfo mappingFild1Info, MapperExpressionInfo mappingFild1Info2, MapperExpressionInfo selectInfo)
+        private void ExtMapper(MapperExpressionInfo fillInfo, MapperExpressionInfo mappingFild1Info, MapperExpressionInfo mappingFild1Info2, MapperExpressionInfo selectInfo)
         {
             var tableName = sqlBuilder.GetTranslationTableName(fillInfo.EntityInfo.DbTableName);
             var whereLeft = sqlBuilder.GetTranslationColumnName(mappingFild1Info2.FieldName);
@@ -334,7 +322,7 @@ namespace SqlSugar
         }
         void ThrowTrue(bool isError)
         {
-            Check.Exception(isError, ErrorMessage.GetThrowMessage(expression.ToString() + "no support", "不支持表达式" + expression.ToString()+ " 1.检查当前表达式中的别名是否与Mapper中的一致 2.目前只支持 1对1 Mapper下的 Where "));
+            Check.Exception(isError, ErrorMessage.GetThrowMessage(expression.ToString() + "no support", "不支持表达式" + expression.ToString() + " 1.检查当前表达式中的别名是否与Mapper中的一致 2.目前只支持 1对1 Mapper下的 Where "));
         }
     }
 
@@ -347,7 +335,7 @@ namespace SqlSugar
     {
         public Type Type { get; set; }
         public EntityInfo EntityInfo { get; set; }
-        public string FieldName { get;  set; }
-        public string FieldString { get;  set; }
+        public string FieldName { get; set; }
+        public string FieldString { get; set; }
     }
 }

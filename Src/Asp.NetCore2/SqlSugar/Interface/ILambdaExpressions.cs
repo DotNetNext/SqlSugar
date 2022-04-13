@@ -28,6 +28,7 @@ namespace SqlSugar
          Action RefreshMapping { get; set; }
         bool PgSqlIsAutoToLower { get; set; }
         Expression RootExpression { get; set; }
+        ExpressionOutParameter SugarContext { get; set; }
         bool? TableEnumIsString { get; set; }
 
         string GetAsString(string fieldName, string fieldValue);

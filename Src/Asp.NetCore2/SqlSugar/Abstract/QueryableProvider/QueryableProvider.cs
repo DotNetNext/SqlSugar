@@ -1420,6 +1420,26 @@ namespace SqlSugar
                 }
             }
         }
+        public virtual async Task ForEachAsync(Action<T> action, int singleMaxReads = 300, System.Threading.CancellationTokenSource cancellationTokenSource = null)
+        {
+            Check.Exception(this.QueryBuilder.Skip > 0 || this.QueryBuilder.Take > 0, ErrorMessage.GetThrowMessage("no support Skip take, use PageForEach", "不支持Skip Take,请使用 Queryale.PageForEach"));
+            RefAsync<int> totalNumber = 0;
+            RefAsync<int> totalPage = 1;
+            for (int i = 1; i <= totalPage; i++)
+            {
+                if (cancellationTokenSource?.IsCancellationRequested == true) return;
+                var queryable = this.Clone();
+                var page =
+                    totalPage == 1 ?
+                    await  queryable.ToPageListAsync(i, singleMaxReads,  totalNumber,  totalPage) :
+                    await queryable.ToPageListAsync(i, singleMaxReads);
+                foreach (var item in page)
+                {
+                    if (cancellationTokenSource?.IsCancellationRequested == true) return;
+                    action.Invoke(item);
+                }
+            }
+        }
         public virtual void ForEachByPage(Action<T> action, int pageIndex, int pageSize, ref int totalNumber, int singleMaxReads = 300, System.Threading.CancellationTokenSource cancellationTokenSource = null)
         {
             int count = this.Clone().Count();
@@ -1436,6 +1456,43 @@ namespace SqlSugar
                         if (cancellationTokenSource?.IsCancellationRequested == true) return;
                         if (number + singleMaxReads > pageSize) singleMaxReads = NowCount;
                         foreach (var item in this.Clone().Skip(Skip).Take(singleMaxReads).ToList())
+                        {
+                            if (cancellationTokenSource?.IsCancellationRequested == true) return;
+                            action.Invoke(item);
+                        }
+                        NowCount -= singleMaxReads;
+                        Skip += singleMaxReads;
+                        number += singleMaxReads;
+                    }
+                }
+                else
+                {
+                    if (cancellationTokenSource?.IsCancellationRequested == true) return;
+                    foreach (var item in this.Clone().ToPageList(pageIndex, pageSize))
+                    {
+                        if (cancellationTokenSource?.IsCancellationRequested == true) return;
+                        action.Invoke(item);
+                    }
+                }
+            }
+            totalNumber = count;
+        }
+        public virtual async Task ForEachByPageAsync(Action<T> action, int pageIndex, int pageSize,RefAsync<int> totalNumber, int singleMaxReads = 300, System.Threading.CancellationTokenSource cancellationTokenSource = null)
+        {
+            int count = this.Clone().Count();
+            if (count > 0)
+            {
+                if (pageSize > singleMaxReads && count - ((pageIndex - 1) * pageSize) > singleMaxReads)
+                {
+                    Int32 Skip = (pageIndex - 1) * pageSize;
+                    Int32 NowCount = count - Skip;
+                    Int32 number = 0;
+                    if (NowCount > pageSize) NowCount = pageSize;
+                    while (NowCount > 0)
+                    {
+                        if (cancellationTokenSource?.IsCancellationRequested == true) return;
+                        if (number + singleMaxReads > pageSize) singleMaxReads = NowCount;
+                        foreach (var item in await this.Clone().Skip(Skip).Take(singleMaxReads).ToListAsync())
                         {
                             if (cancellationTokenSource?.IsCancellationRequested == true) return;
                             action.Invoke(item);
@@ -1768,6 +1825,12 @@ namespace SqlSugar
             totalNumber.Value = await this.Clone().CountAsync();
             this.Context.MappingTables = oldMapping;
             return await this.Clone().ToPageListAsync(pageIndex, pageSize);
+        }
+        public Task<List<T>> ToPageListAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber, RefAsync<int> totalPage) 
+        {
+            var result = ToPageListAsync(pageNumber, pageSize, totalNumber);
+            totalPage = (totalNumber + pageSize - 1) / pageSize;
+            return result;
         }
         public async Task<string> ToJsonAsync()
         {
@@ -2248,6 +2311,10 @@ namespace SqlSugar
             if (this.QueryBuilder.Includes != null) 
             {
                 var managers=(this.QueryBuilder.Includes  as List<object>);
+                if (this.QueryBuilder.SelectValue.HasValue()) 
+                {
+                    Check.ExceptionEasy("To use includes, use select after tolist()", "使用Includes请在ToList()之后在使用Select");
+                }
                 foreach (var it in managers)
                 {
                     var manager = it as NavigatManager<TResult>;

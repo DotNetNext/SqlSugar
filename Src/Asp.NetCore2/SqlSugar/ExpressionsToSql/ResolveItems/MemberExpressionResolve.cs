@@ -58,7 +58,24 @@ namespace SqlSugar
             }
             else if (isMemberValue)
             {
-                ResolveMemberValue(parameter, baseParameter, isLeft, isSetTempData, expression);
+                var nav = new OneToOneNavgateExpression(this.Context?.SugarContext?.Context);
+                if (nav.IsNavgate(expression))
+                {
+                    var value = nav.GetSql();
+                    this.Context.SingleTableNameSubqueryShortName = nav.ShorName;
+                    if (isSetTempData)
+                    {
+                        baseParameter.CommonTempData = value;
+                    }
+                    else
+                    {
+                        AppendValue(parameter, isLeft, value);
+                    }
+                }
+                else
+                {
+                    ResolveMemberValue(parameter, baseParameter, isLeft, isSetTempData, expression);
+                }
             }
             else if (fieldIsBool && !isField && !isSelectField)
             {

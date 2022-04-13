@@ -109,7 +109,9 @@ namespace SqlSugar
         ISugarQueryable<T> Select(string select);
         ISugarQueryable<T> MergeTable();
         void ForEach(Action<T> action, int singleMaxReads = 300, System.Threading.CancellationTokenSource cancellationTokenSource = null);
+        Task ForEachAsync(Action<T> action, int singleMaxReads = 300, System.Threading.CancellationTokenSource cancellationTokenSource = null);
         void ForEachByPage(Action<T> action, int pageIndex, int pageSize, ref int totalNumber, int singleMaxReads = 300, System.Threading.CancellationTokenSource cancellationTokenSource = null);
+        Task ForEachByPageAsync(Action<T> action, int pageIndex, int pageSize, RefAsync<int> totalNumber, int singleMaxReads = 300, System.Threading.CancellationTokenSource cancellationTokenSource = null);
         int Count();
         Task<int> CountAsync();
         int Count(Expression<Func<T, bool>> expression);
@@ -173,6 +175,7 @@ namespace SqlSugar
         List<T> ToPageList(int pageNumber, int pageSize, ref int totalNumber);
         List<T> ToPageList(int pageNumber, int pageSize, ref int totalNumber,ref int totalPage);
         Task<List<T>> ToPageListAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber);
+        Task<List<T>> ToPageListAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber, RefAsync<int> totalPage);
         ISugarQueryable<T> WithCache(string cacheKey,int cacheDurationInSeconds = int.MaxValue);
         ISugarQueryable<T> WithCache(int cacheDurationInSeconds = int.MaxValue);
         ISugarQueryable<T> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue);

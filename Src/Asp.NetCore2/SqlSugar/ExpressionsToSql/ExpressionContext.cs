@@ -19,6 +19,7 @@ namespace SqlSugar
         #endregion
 
         #region Properties
+        public ExpressionOutParameter SugarContext { get; set; }
         public IDbMethods DbMehtods
         {
             get
