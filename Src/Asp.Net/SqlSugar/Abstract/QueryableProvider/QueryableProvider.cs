@@ -2311,6 +2311,10 @@ namespace SqlSugar
             if (this.QueryBuilder.Includes != null) 
             {
                 var managers=(this.QueryBuilder.Includes  as List<object>);
+                if (this.QueryBuilder.SelectValue.HasValue()) 
+                {
+                    Check.ExceptionEasy("To use includes, use select after tolist()", "使用Includes请在ToList()之后在使用Select");
+                }
                 foreach (var it in managers)
                 {
                     var manager = it as NavigatManager<TResult>;
