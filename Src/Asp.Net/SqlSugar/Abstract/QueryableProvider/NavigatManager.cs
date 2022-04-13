@@ -269,6 +269,7 @@ namespace SqlSugar
             _ListCallFunc.Reverse();
             SqlInfo result = new SqlInfo();
             result.Parameters = new List<SugarParameter>();
+            var isList = false;
             foreach (var item in _ListCallFunc)
             {
                 var method = item as MethodCallExpression;
@@ -289,7 +290,8 @@ namespace SqlSugar
                     oredrBy.Add(" " + queryable.QueryBuilder.GetExpressionValue(exp, ResolveExpressType.WhereSingle).GetString()+" DESC");
                 }
                 else if (method.Method.Name == "ToList")
-                { 
+                {
+                    isList = true;
                 }
                 else 
                 {
@@ -300,10 +302,12 @@ namespace SqlSugar
             }
             if (where.Any()) 
             {
+                Check.Exception(isList == false, $"{_ListCallFunc.First()} need is ToList()", $"{_ListCallFunc.First()} 需要ToList");
                 result.WhereString=  String.Join(" AND ", where);
             }
             if (oredrBy.Any())
             {
+                Check.Exception(isList == false, $"{_ListCallFunc.First()} need is ToList()", $"{_ListCallFunc.First()} 需要ToList");
                 result.OrderByString = String.Join(" , ", oredrBy);
             }
             return result;
