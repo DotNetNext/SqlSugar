@@ -27,6 +27,16 @@ namespace OrmTest
             });
             // db.Utilities.RemoveCacheAll();
             var xxxxx = Db.DbMaintenance.GetColumnInfosByTableName("TESTA1", false);
+            if (Db.DbMaintenance.IsAnyTable("User", false))
+                Db.DbMaintenance.DropTable("User");
+            Db.CodeFirst.InitTables<User>();
+        }
+        public class User
+        {
+            [SugarColumn(IndexGroupNameList = new string[] { "index" })]
+            public int key { get; set; }
+            [SugarColumn(UniqueGroupNameList = new string[] { "index" })]
+            public int key2 { get; set; }
         }
         public class TESTA1
         {
