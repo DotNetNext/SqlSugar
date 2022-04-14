@@ -318,6 +318,8 @@ namespace SqlSugar
             string sql = string.Format(CreateIndexSql,this.SqlBuilder.GetTranslationTableName(tableName),string.Join(",",columnNames.Select(it=>this.SqlBuilder.GetTranslationColumnName(it))), string.Join("_", columnNames) + this.Context.CurrentConnectionConfig.IndexSuffix, isUnique ? "UNIQUE" : "");
             sql = sql.Replace("_" + this.SqlBuilder.SqlTranslationLeft, "_");
             sql = sql.Replace(  this.SqlBuilder.SqlTranslationRight+"_", "_");
+            sql = sql.Replace(this.SqlBuilder.SqlTranslationLeft+ this.SqlBuilder.SqlTranslationLeft, this.SqlBuilder.SqlTranslationLeft);
+            sql = sql.Replace(this.SqlBuilder.SqlTranslationRight + this.SqlBuilder.SqlTranslationRight, this.SqlBuilder.SqlTranslationRight);
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
@@ -326,6 +328,8 @@ namespace SqlSugar
             string sql = string.Format(CreateIndexSql, this.SqlBuilder.GetTranslationTableName(tableName), string.Join(",", columnNames.Select(it => this.SqlBuilder.GetTranslationColumnName(it))), string.Join("_", columnNames) + this.Context.CurrentConnectionConfig.IndexSuffix + "_Unique","UNIQUE" );
             sql = sql.Replace("_" + this.SqlBuilder.SqlTranslationLeft, "_");
             sql = sql.Replace(this.SqlBuilder.SqlTranslationRight + "_", "_");
+            sql = sql.Replace(this.SqlBuilder.SqlTranslationLeft + this.SqlBuilder.SqlTranslationLeft, this.SqlBuilder.SqlTranslationLeft);
+            sql = sql.Replace(this.SqlBuilder.SqlTranslationRight + this.SqlBuilder.SqlTranslationRight, this.SqlBuilder.SqlTranslationRight);
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
