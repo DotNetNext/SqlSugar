@@ -62,6 +62,10 @@ namespace SqlSugar
             }
             this.OrderByValue = oldOrderBy;
             result = GetSqlQuerySql(result);
+            if (result.IndexOf("-- No table") > 0)
+            {
+                return "-- No table";
+            }
             return result;
         }
         
