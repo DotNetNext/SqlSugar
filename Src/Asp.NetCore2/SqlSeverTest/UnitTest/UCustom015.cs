@@ -73,10 +73,10 @@ namespace OrmTest
             public string Name { get; set; }
             public int InfoId { get; set; }
 
-            [Navigat(NavigatType.OneToOne, nameof(InfoId))]
+            [Navigate(NavigateType.OneToOne, nameof(InfoId))]
             public Country111Info Info { get; set; }
 
-            [Navigat(NavigatType.OneToMany,nameof(Province1111.CountryId))]
+            [Navigate(NavigateType.OneToMany,nameof(Province1111.CountryId))]
             public List<Province1111> Provinces { get; set; }
         }
 
