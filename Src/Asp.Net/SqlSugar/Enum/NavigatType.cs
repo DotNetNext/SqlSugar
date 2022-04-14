@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SqlSugar 
 {
-    public enum NavigatType
+    public enum NavigateType
     {
         OneToOne=1,
         OneToMany=2,

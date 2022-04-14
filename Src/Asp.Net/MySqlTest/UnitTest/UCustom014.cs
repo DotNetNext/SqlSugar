@@ -104,7 +104,7 @@ namespace OrmTest
             public int Id { get; set; }
             public string Name { get; set; }
 
-            [Navigat(NavigatType.OneToMany,nameof(Province111.CountryId))]
+            [Navigate(NavigateType.OneToMany,nameof(Province111.CountryId))]
             public List<Province111> Provinces { get; set; }
         }
         [SugarTable("Province_111")]
@@ -115,7 +115,7 @@ namespace OrmTest
             public string Name { get; set; }
             [SugarColumn(ColumnName = "coid")]
             public int CountryId { get; set; }
-            [Navigat(NavigatType.OneToMany, nameof(City111.ProvinceId))]
+            [Navigate(NavigateType.OneToMany, nameof(City111.ProvinceId))]
             public List<City111> citys { get; set; }
         }
         [SugarTable("City_111")]

@@ -149,9 +149,9 @@ namespace OrmTest
             public int Id { get; set; }
             public string Name { get; set; }
             public int ParentId { get; set; }
-            [Navigat(NavigatType.OneToOne,nameof(ParentId))]
+            [Navigate(NavigateType.OneToOne,nameof(ParentId))]
             public Tree1 Parent { get; set; }
-            [Navigat(NavigatType.OneToMany,nameof(Tree1.ParentId))]
+            [Navigate(NavigateType.OneToMany,nameof(Tree1.ParentId))]
             public List<Tree1> Child { get; set; }
         }
         public class ABMapping1
@@ -166,7 +166,7 @@ namespace OrmTest
             [SugarColumn(IsPrimaryKey = true  )]
             public int Id { get; set; }
             public string Name { get; set; }
-            [Navigat(typeof(ABMapping1),nameof(ABMapping1.AId),nameof(ABMapping1.BId))]
+            [Navigate(typeof(ABMapping1),nameof(ABMapping1.AId),nameof(ABMapping1.BId))]
             public List<B1> BList { get; set; }
         }
         public class B1
@@ -174,7 +174,7 @@ namespace OrmTest
             [SugarColumn(IsPrimaryKey = true )]
             public int Id { get; set; }
             public string Name { get; set; }
-            [Navigat(typeof(ABMapping1), nameof(ABMapping1.BId), nameof(ABMapping1.AId))]
+            [Navigate(typeof(ABMapping1), nameof(ABMapping1.BId), nameof(ABMapping1.AId))]
             public List<A1> AList { get; set; }
         }
 
@@ -184,9 +184,9 @@ namespace OrmTest
             public int StudentId { get; set; }
             public string Name { get; set; }
             public int SchoolId { get; set; }
-            [Navigat(NavigatType.OneToOne, nameof(SchoolId))]
+            [Navigate(NavigateType.OneToOne, nameof(SchoolId))]
             public SchoolA SchoolA { get; set; }
-            [Navigat(NavigatType.OneToMany, nameof(BookA.studenId))]
+            [Navigate(NavigateType.OneToMany, nameof(BookA.studenId))]
             public List<BookA> Books { get; set; }
 
         }
@@ -195,7 +195,7 @@ namespace OrmTest
             [SugarColumn(IsPrimaryKey = true)]
             public int SchoolId { get; set; }
             public string SchoolName { get; set; }
-            [Navigat(NavigatType.OneToMany,nameof(RoomA.SchoolId))]
+            [Navigate(NavigateType.OneToMany,nameof(RoomA.SchoolId))]
             public List<RoomA> RoomList { get; set; }
             [SugarColumn(IsIgnore = true)]
             public List<TeacherA> TeacherList { get; set; }
