@@ -27,7 +27,7 @@ namespace OrmTest
             DemoA_DbMain.Init();
             DemoB_Aop.Init();
             DemoC_GobalFilter.Init();
-            DemoD_DbFirst.Init();;
+            //DemoD_DbFirst.Init();;
             DemoE_CodeFirst.Init();
             DemoF_Utilities.Init();
             DemoG_SimpleClient.Init();
@@ -36,7 +36,7 @@ namespace OrmTest
             DemoL_Snowflake.Init();
             DemoM_UnitOfWork.Init();
             //Unit test
-            NewUnitTest.Init();
+            //NewUnitTest.Init();
 
             //Rest Data
             NewUnitTest.RestData();
