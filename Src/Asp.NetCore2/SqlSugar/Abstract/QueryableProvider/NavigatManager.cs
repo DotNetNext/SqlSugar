@@ -279,21 +279,30 @@ namespace SqlSugar
                     var exp = method.Arguments[1];
                     where.Add(" " +queryable.QueryBuilder.GetExpressionValue(exp, ResolveExpressType.WhereSingle).GetString());
                 }
+                if (method.Method.Name == "WhereIF")
+                {
+                    var isOk = LambdaExpression.Lambda(method.Arguments[1]).Compile().DynamicInvoke();
+                    if (isOk.ObjToBool())
+                    {
+                        var exp = method.Arguments[2];
+                        where.Add(" " + queryable.QueryBuilder.GetExpressionValue(exp, ResolveExpressType.WhereSingle).GetString());
+                    }
+                }
                 else if (method.Method.Name == "OrderBy")
                 {
                     var exp = method.Arguments[1];
-                    oredrBy.Add( " "+ queryable.QueryBuilder.GetExpressionValue(exp,ResolveExpressType.WhereSingle).GetString());
+                    oredrBy.Add(" " + queryable.QueryBuilder.GetExpressionValue(exp, ResolveExpressType.WhereSingle).GetString());
                 }
                 else if (method.Method.Name == "OrderByDescending")
                 {
                     var exp = method.Arguments[1];
-                    oredrBy.Add(" " + queryable.QueryBuilder.GetExpressionValue(exp, ResolveExpressType.WhereSingle).GetString()+" DESC");
+                    oredrBy.Add(" " + queryable.QueryBuilder.GetExpressionValue(exp, ResolveExpressType.WhereSingle).GetString() + " DESC");
                 }
                 else if (method.Method.Name == "ToList")
                 {
                     isList = true;
                 }
-                else 
+                else
                 {
                     Check.ExceptionEasy($"no support {item}", $"不支持表达式{item} 不支持方法{method.Method.Name}");
                 }

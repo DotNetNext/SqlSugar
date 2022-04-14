@@ -201,6 +201,14 @@ namespace SqlSugar
                             {
                                 inValue1 = inValue1.Replace("[null]", "null");
                             }
+                            if (item.CSharpTypeName.EqualCase("guid")&& inValue1=="('')") 
+                            {
+                                inValue1 = $"('{Guid.Empty.ToString()}')";
+                            }
+                            else if (inValue1 == "()")
+                            {
+                                inValue1 = $"(NULL)";
+                            }
                             builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "IN", inValue1);
                             parameters.Add(new SugarParameter(parameterName, item.FieldValue));
                             break;

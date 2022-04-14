@@ -989,7 +989,11 @@ namespace SqlSugar
 
         public string GeDateFormat(string formatString, string value)
         {
-            if (IsOracle() || IsPg())
+            if (IsOracle() && formatString == "yyyy-MM-dd HH:mm:ss")
+            {
+                return $"to_char({value},'yyyy-MM-dd HH:mi:ss') ";
+            }
+            else if (IsOracle() || IsPg())
             {
                 return $"to_char({value},'{formatString}') ";
             }
