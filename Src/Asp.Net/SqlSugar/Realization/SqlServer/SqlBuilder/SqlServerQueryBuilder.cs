@@ -39,6 +39,10 @@ namespace SqlSugar
                 
 
             }
+            if (result.IndexOf("-- No table") > 0) 
+            {
+                return  "-- No table";
+            }
             return result;
         }
         public string _ToSqlString()
