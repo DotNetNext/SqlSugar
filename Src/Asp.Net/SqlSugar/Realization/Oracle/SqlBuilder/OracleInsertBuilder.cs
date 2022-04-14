@@ -121,7 +121,14 @@ namespace SqlSugar
                     {
                         date = Convert.ToDateTime("1900-1-1");
                     }
-                    return "to_timestamp('" + date.ToString("yyyy-MM-dd HH:mm:ss.ffffff") + "', 'YYYY-MM-DD HH24:MI:SS.FF') ";
+                    if (this.Context.CurrentConnectionConfig?.MoreSettings?.DisableMillisecond == true)
+                    {
+                        return "to_date('" + date.ToString("yyyy-MM-dd HH:mm:ss") + "', 'YYYY-MM-DD HH24:MI:SS')  ";
+                    }
+                    else
+                    {
+                        return "to_timestamp('" + date.ToString("yyyy-MM-dd HH:mm:ss.ffffff") + "', 'YYYY-MM-DD HH24:MI:SS.FF') ";
+                    }
                 }
                 else if (type.IsEnum())
                 {
