@@ -12,7 +12,7 @@ namespace SqlSugar
         private SqlSugarProvider context;
         private EntityInfo EntityInfo;
         private EntityInfo ProPertyEntity;
-        private Navigat Navigat;
+        private Navigate Navigat;
         public string ShorName;
         private string MemberName;
         private string MethodName;
@@ -82,7 +82,7 @@ namespace SqlSugar
         }
         internal MapperSql GetSql()
         {
-            if (Navigat.NavigatType == NavigatType.OneToMany)
+            if (Navigat.NavigatType == NavigateType.OneToMany)
             {
                 return GetOneToManySql();
             }

@@ -78,6 +78,10 @@ namespace SqlSugar
             }
             this.OrderByValue = oldOrderBy;
             result = GetSqlQuerySql(result);
+            if (result.IndexOf("-- No table") > 0)
+            {
+                return "-- No table";
+            }
             return result;
         }
         public override string ToPageSql(string sql, int? take, int? skip, bool isExternal = false)

@@ -12,7 +12,7 @@ namespace SqlSugar
         private SqlSugarProvider context;
         private EntityInfo EntityInfo;
         private EntityInfo ProPertyEntity;
-        private Navigat Navigat;
+        private Navigate Navigat;
         public string ShorName;
         private string MemberName;
         public OneToOneNavgateExpression(SqlSugarProvider context)
