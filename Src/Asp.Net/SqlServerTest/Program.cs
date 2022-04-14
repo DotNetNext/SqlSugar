@@ -36,7 +36,7 @@ namespace OrmTest
             DemoL_Snowflake.Init();
             DemoM_UnitOfWork.Init();
             //Unit test
-            //NewUnitTest.Init();
+            NewUnitTest.Init();
 
             //Rest Data
             NewUnitTest.RestData();
