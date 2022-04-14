@@ -51,7 +51,14 @@ namespace SqlSugar
                     {
                         date = Convert.ToDateTime("1900-1-1");
                     }
-                    return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
+                    if (this.Context.CurrentConnectionConfig?.MoreSettings?.DisableMillisecond == true)
+                    {
+                        return "'" + date.ToString("yyyy-MM-dd HH:mm:ss") + "'";
+                    }
+                    else 
+                    {
+                        return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
+                    }
                 }
                 else if (type == UtilConstants.DateType && iswhere) 
                 {
