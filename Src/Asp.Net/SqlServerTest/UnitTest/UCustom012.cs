@@ -101,13 +101,13 @@ namespace OrmTest
             db.Insertable(new Tree1() { Id = 4, Name = "02" }).ExecuteCommand();
             db.Insertable(new Tree1() { Id = 5, Name = "0201", ParentId = 2 }).ExecuteCommand(); 
             db.Insertable(new Tree1() { Id = 6, Name = "020101", ParentId = 5 }).ExecuteCommand();
-
+            db.Insertable(new Tree1() { Id = 7, Name = "02010101", ParentId = 6 }).ExecuteCommand();
 
             var list21111 = new List<Tree1>();
            var xxx= db.Queryable<Tree1>()
-                .Includes(it => it.Child)
-                .Includes(it => it.Parent)
-                .Where(it=>it.Child.Any())
+                .Includes(it => it.Child,it=>it.Child,it=>it.Child)
+                .Includes(it => it.Parent,it=>it.Parent,it=>it.Parent)
+                //.Where(it=>it.Child.Any())
                 .ToList();
 
             db.ThenMapper(xxx, it =>
