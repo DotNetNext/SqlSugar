@@ -86,9 +86,9 @@ namespace OrmTest
             db.Insertable(new ABMapping1() {  AId=1,BId=1 }).ExecuteCommand();
             db.Insertable(new ABMapping1() { AId =2, BId = 1 }).ExecuteCommand();
             db.Insertable(new ABMapping1() { AId = 2, BId = 2 }).ExecuteCommand();
-
+            var p = "";
             var list3= db.Queryable<A1>()
-                .Includes(x => x.BList.Where(it=>it.Id==1).ToList())
+                .Includes(x => x.BList.WhereIF(!string.IsNullOrEmpty(p),it=>it.Id==11).ToList())
                 .Where(x=>x.BList.Any()).ToList();
 
             var list31 = db.Queryable<A1>().Includes(x => x.BList,x=>x.AList).ToList();
