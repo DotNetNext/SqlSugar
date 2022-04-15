@@ -358,10 +358,21 @@ namespace SqlSugar
                 }
             }
             string sql = GetCreateTableSql(tableName, columns);
-            if (!isCreatePrimaryKey)
+            string primaryKeyInfo = null;
+
+            if (!isCreatePrimaryKey || columns.Count(it => it.IsPrimarykey) > 1)
             {
                 sql = sql.Replace("PRIMARY KEY AUTOINCREMENT", "").Replace("PRIMARY KEY", "");
             }
+
+            if (columns.Count(it => it.IsPrimarykey) > 1 && isCreatePrimaryKey)
+            {
+                primaryKeyInfo = string.Format(",\r\n Primary key({0})", string.Join(",", columns.Where(it => it.IsPrimarykey).Select(it => this.SqlBuilder.GetTranslationColumnName(it.DbColumnName))));
+                primaryKeyInfo = primaryKeyInfo.Replace("`", "\"");
+            }
+
+            sql = sql.Replace("$PrimaryKey", primaryKeyInfo);
+
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
