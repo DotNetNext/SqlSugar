@@ -17,8 +17,15 @@ namespace OrmTest
             Db.DbMaintenance.TruncateTable<Test00111>();
             Db.Insertable(new Test00111()).ExecuteCommand();
             var list = Db.Queryable<Test00111>().ToList();
+            Db.CodeFirst.InitTables<Test00111121>();
         }
-
+        public class Test00111121
+        {
+            [SugarColumn(IsPrimaryKey = true)]
+            public string id { get; set; }
+            [SugarColumn(IsPrimaryKey =true)]
+            public string creater { get; set; }
+        }
         public class Test00111
         {
             public int id { get; set; }
