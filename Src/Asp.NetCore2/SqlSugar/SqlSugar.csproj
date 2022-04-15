@@ -14,8 +14,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Abstract\QueryableProvider\QueryableProvider\**" />
     <Compile Remove="dll\**" />
+    <EmbeddedResource Remove="Abstract\QueryableProvider\QueryableProvider\**" />
     <EmbeddedResource Remove="dll\**" />
+    <None Remove="Abstract\QueryableProvider\QueryableProvider\**" />
     <None Remove="dll\**" />
   </ItemGroup>
 
@@ -54,7 +57,6 @@
     <Folder Include="Abstract\AdoProvider\Abstract\SqlBuilderProvider\" />
     <Folder Include="Abstract\AdoProvider\Abstract\SugarProvider\" />
     <Folder Include="Abstract\AdoProvider\Abstract\UpdateProvider\" />
-    <Folder Include="Abstract\QueryableProvider\QueryableProvider\" />
   </ItemGroup>
 
 </Project>
