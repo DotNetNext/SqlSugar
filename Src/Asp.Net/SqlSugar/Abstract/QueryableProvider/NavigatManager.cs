@@ -279,7 +279,7 @@ namespace SqlSugar
                     var exp = method.Arguments[1];
                     where.Add(" " +queryable.QueryBuilder.GetExpressionValue(exp, ResolveExpressType.WhereSingle).GetString());
                 }
-                if (method.Method.Name == "WhereIF")
+                else if (method.Method.Name == "WhereIF")
                 {
                     var isOk = LambdaExpression.Lambda(method.Arguments[1]).Compile().DynamicInvoke();
                     if (isOk.ObjToBool())
