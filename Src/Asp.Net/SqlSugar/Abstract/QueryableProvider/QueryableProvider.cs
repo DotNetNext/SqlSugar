@@ -418,7 +418,8 @@ namespace SqlSugar
                         {
                             ConditionalType = ConditionalType.Equal,
                             FieldName = this.QueryBuilder.Builder.GetTranslationColumnName(column.DbColumnName),
-                            FieldValue = value.ObjToString()
+                            FieldValue = value.ObjToString(),
+                            CSharpTypeName = column.PropertyInfo.PropertyType.Name
                         });
                         if (this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL) 
                         {
@@ -483,7 +484,8 @@ namespace SqlSugar
                             {
                                 ConditionalType = ConditionalType.Equal,
                                 FieldName = column.DbColumnName,
-                                FieldValue = value.ObjToString()
+                                FieldValue = value.ObjToString(),
+                                CSharpTypeName=column.PropertyInfo.PropertyType.Name
                             });
                             if (value != null && value.GetType().IsEnum()) 
                             {
