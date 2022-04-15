@@ -99,6 +99,7 @@
     <Compile Include="UnitTest\Models\TestModel.cs" />
     <Compile Include="UnitTest\Models\UserEntity.cs" />
     <Compile Include="UnitTest\Models\UserRoleEntity.cs" />
+    <Compile Include="UnitTest\UCustom017.cs" />
     <Compile Include="UnitTest\UCustom016.cs" />
     <Compile Include="UnitTest\UCustom015.cs" />
     <Compile Include="UnitTest\UCustom014.cs" />
