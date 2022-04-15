@@ -56,7 +56,7 @@ FROM
 WHERE
   ([o].[Id] = @Id0)
 ``` 
-###   Feature2 : Page query
+###   Feature2 : Include query
 ```cs Include Query
 var list=db.Queryable<Test>()
            .Includes(x => x.Provinces,x=>x.Citys ,x=>x.Street) 
