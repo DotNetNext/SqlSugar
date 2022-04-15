@@ -25,7 +25,7 @@ namespace SqlSugar
                     whereList.Add(whereString);
                 }
                 i++;
-                return string.Format("{0} {1} WHERE {2};", updateTable, setValues, string.Join("AND", whereList));
+                return string.Format("{0} {1} WHERE {2};", updateTable, setValues, string.Join(" AND", whereList));
             }).ToArray()));
             return sb.ToString();
         }
