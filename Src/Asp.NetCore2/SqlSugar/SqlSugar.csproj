@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <Version>5.0.7.2</Version>
+    <Version>5.0.7.3</Version>
     <Copyright>sun_kai_xuan</Copyright>
     <PackageProjectUrl>https://github.com/sunkaixuan/SqlSugar</PackageProjectUrl>
     <PackageLicenseUrl></PackageLicenseUrl>
@@ -14,11 +14,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Abstract\QueryableProvider\QueryableProvider\**" />
     <Compile Remove="dll\**" />
-    <EmbeddedResource Remove="Abstract\QueryableProvider\QueryableProvider\**" />
     <EmbeddedResource Remove="dll\**" />
-    <None Remove="Abstract\QueryableProvider\QueryableProvider\**" />
     <None Remove="dll\**" />
   </ItemGroup>
 
