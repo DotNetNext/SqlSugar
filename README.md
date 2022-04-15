@@ -36,13 +36,18 @@ Using SqlSugar is very simple , And it's powerful.
 ###  Feature1 : Join query  
 Super simple query syntax
 ```cs
-var query5 = db.Queryable<Order>()
+var query  = db.Queryable<Order>()
             .LeftJoin<Custom>  ((o, cus) => o.CustomId == cus.Id)
             .LeftJoin<OrderItem> ((o, cus, oritem ) => o.Id == oritem.OrderId)
             .LeftJoin<OrderItem> ((o, cus, oritem , oritem2) => o.Id == oritem2.OrderId)
             .Where(o => o.Id == 1)  
             .Select((o, cus) => new ViewOrder { Id = o.Id, CustomName = cus.Name })
             .ToList();   
+            
+var list=db.Queryable<Test>()
+           .Includes(x => x.Provinces,x=>x.Citys ,x=>x.Street) 
+           .Includes(x => x.ClassInfo) 
+           .ToList();
 ```
 ```sql
 SELECT
