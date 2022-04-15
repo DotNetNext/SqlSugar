@@ -75,6 +75,38 @@ namespace SqlSugar
                 ExecuteByLay(item, list, SelectR3);
                 _preList = list.ToList();
             }
+            else if (i == 4)
+            {
+                var currentList = _preList.Where(it => it != null).ToList();
+                if (RootList == null || currentList.Count == 0) return;
+                List<object> list = ExecuteByLay(currentList);
+                ExecuteByLay(item, list, SelectR4);
+                _preList = list.ToList();
+            }
+            else if (i == 5)
+            {
+                var currentList = _preList.Where(it => it != null).ToList();
+                if (RootList == null || currentList.Count == 0) return;
+                List<object> list = ExecuteByLay(currentList);
+                ExecuteByLay(item, list, SelectR5);
+                _preList = list.ToList();
+            }
+            else if (i == 6)
+            {
+                var currentList = _preList.Where(it => it != null).ToList();
+                if (RootList == null || currentList.Count == 0) return;
+                List<object> list = ExecuteByLay(currentList);
+                ExecuteByLay(item, list, SelectR6);
+                _preList = list.ToList();
+            }
+            else if (i == 7)
+            {
+                var currentList = _preList.Where(it => it != null).ToList();
+                if (RootList == null || currentList.Count == 0) return;
+                List<object> list = ExecuteByLay(currentList);
+                ExecuteByLay(item, list, SelectR7);
+                _preList = list.ToList();
+            }
             _preExpressionList.Add(item);
             _ListCallFunc = new List<Expression>();
         }
