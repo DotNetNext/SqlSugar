@@ -45,7 +45,10 @@ namespace SqlSugar
             if (this.QueryBuilder.Includes == null) this.QueryBuilder.Includes = new List<object>();
             this.QueryBuilder.Includes.Add(navigat);
         }
-
+        public NavISugarQueryable<T> AsNavQueryable() 
+        {
+            return GetNavSugarQueryable();
+        }
         private  NavISugarQueryable<T> GetNavSugarQueryable()
         {
             var result= new NavQueryableProvider<T>();

@@ -13,6 +13,7 @@ namespace SqlSugar
     /// <typeparam name="T"></typeparam>
     public partial interface ISugarQueryable<T>
     {
+        NavISugarQueryable<T> AsNavQueryable();
         ISugarQueryable<T> Includes<TReturn1>(Expression<Func<T, List<TReturn1>>> include1);
         ISugarQueryable<T> Includes<TReturn1>(Expression<Func<T, TReturn1>> include1);
         ISugarQueryable<T> Includes<TReturn1, TReturn2>(Expression<Func<T, List<TReturn1>>> include1, Expression<Func<TReturn1, List<TReturn2>>> include2);
