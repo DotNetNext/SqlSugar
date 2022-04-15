@@ -71,25 +71,64 @@ namespace SqlSugar
             {
                 var currentList = _preList.Where(it => it != null).ToList();
                 if (RootList == null || currentList.Count == 0) return;
-                var memberExpression = ((_preExpressionList.Last() as LambdaExpression).Body as MemberExpression);
-                var navObjectName = memberExpression.Member.Name;
-                var navType = currentList[0].GetType().GetProperty(navObjectName).PropertyType.Name;
-                var isList = navType.StartsWith("List`");
-                List<object> list = new List<object>();
-                if (isList)
-                {
-                    list = currentList.SelectMany(it => (it.GetType().GetProperty(navObjectName).GetValue(it) as IList).Cast<object>()).ToList();
-
-                }
-                else
-                {
-                    list = currentList.Select(it => (it.GetType().GetProperty(navObjectName).GetValue(it))).ToList();
-                }
+                List<object> list = ExecuteByLay(currentList);
                 ExecuteByLay(item, list, SelectR3);
+                _preList = list.ToList();
+            }
+            else if (i == 4)
+            {
+                var currentList = _preList.Where(it => it != null).ToList();
+                if (RootList == null || currentList.Count == 0) return;
+                List<object> list = ExecuteByLay(currentList);
+                ExecuteByLay(item, list, SelectR4);
+                _preList = list.ToList();
+            }
+            else if (i == 5)
+            {
+                var currentList = _preList.Where(it => it != null).ToList();
+                if (RootList == null || currentList.Count == 0) return;
+                List<object> list = ExecuteByLay(currentList);
+                ExecuteByLay(item, list, SelectR5);
+                _preList = list.ToList();
+            }
+            else if (i == 6)
+            {
+                var currentList = _preList.Where(it => it != null).ToList();
+                if (RootList == null || currentList.Count == 0) return;
+                List<object> list = ExecuteByLay(currentList);
+                ExecuteByLay(item, list, SelectR6);
+                _preList = list.ToList();
+            }
+            else if (i == 7)
+            {
+                var currentList = _preList.Where(it => it != null).ToList();
+                if (RootList == null || currentList.Count == 0) return;
+                List<object> list = ExecuteByLay(currentList);
+                ExecuteByLay(item, list, SelectR7);
                 _preList = list.ToList();
             }
             _preExpressionList.Add(item);
             _ListCallFunc = new List<Expression>();
+        }
+
+        private List<object> ExecuteByLay(List<object> currentList)
+        {
+            var memberExpression = ((_preExpressionList.Last() as LambdaExpression).Body as MemberExpression);
+            var navObjectName = memberExpression.Member.Name;
+            var navType = currentList[0].GetType().GetProperty(navObjectName).PropertyType.Name;
+            var isList = navType.StartsWith("List`");
+            List<object> list = new List<object>();
+            if (isList)
+            {
+                list = currentList.SelectMany(it => (it.GetType().GetProperty(navObjectName).GetValue(it) as IList).Cast<object>()).ToList();
+
+            }
+            else
+            {
+                list = currentList.Select(it => (it.GetType().GetProperty(navObjectName).GetValue(it))).ToList();
+            }
+
+            return list;
         }
 
         private void ExecuteByLay(Expression expression, List<object> list, Func<ISugarQueryable<object>, List<object>> selector)
