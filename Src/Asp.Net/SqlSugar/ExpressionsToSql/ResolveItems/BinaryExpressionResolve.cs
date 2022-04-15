@@ -138,7 +138,7 @@ namespace SqlSugar
                 return false;
             }
             var methodString = method.ToString();
-            if (methodString.IndexOf("GroupBy(")==0) 
+            if (methodString.IndexOf("GroupBy(")<=0) 
             {
                 return false;
             }
