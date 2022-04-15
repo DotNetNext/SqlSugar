@@ -43,11 +43,6 @@ var query  = db.Queryable<Order>()
             .Where(o => o.Id == 1)  
             .Select((o, cus) => new ViewOrder { Id = o.Id, CustomName = cus.Name })
             .ToList();   
-            
-var list=db.Queryable<Test>()
-           .Includes(x => x.Provinces,x=>x.Citys ,x=>x.Street) 
-           .Includes(x => x.ClassInfo) 
-           .ToList();
 ```
 ```sql
 SELECT
@@ -61,8 +56,15 @@ FROM
 WHERE
   ([o].[Id] = @Id0)
 ``` 
-
 ###   Feature2 : Page query
+```cs Include Query
+var list=db.Queryable<Test>()
+           .Includes(x => x.Provinces,x=>x.Citys ,x=>x.Street) 
+           .Includes(x => x.ClassInfo) 
+           .ToList();
+```
+
+###   Feature3 : Page query
 ```cs
 
  int pageIndex = 1; 
@@ -71,7 +73,7 @@ WHERE
  var page = db.Queryable<Student>().ToPageList(pageIndex, pageSize, ref totalCount);
 ```
  
-###    Feature3 : Dynamic expression
+###    Feature4 : Dynamic expression
 ```cs
 var names= new string [] { "a","b"};
 Expressionable<Order> exp = new Expressionable<Order>();
@@ -88,7 +90,7 @@ SELECT [Id],[Name],[Price],[CreateTime],[CustomId]
                       ([Name] like '%'+ CAST(@MethodConst1 AS NVARCHAR(MAX))+'%')
                      )
 ```
-###   Feature4 : Multi-tenant transaction
+###   Feature5 : Multi-tenant transaction
 ```cs
 //Creaate  database object
 SqlSugarClient db = new SqlSugarClient(new List<ConnectionConfig>()
@@ -114,7 +116,7 @@ db.BeginTran();
 
 db.CommitTran();
 ```
-###  Feature5 : Singleton Pattern
+###  Feature6 : Singleton Pattern
 Implement transactions across methods
 ```CS
 public static SqlSugarScope Db = new SqlSugarScope(new ConnectionConfig()
@@ -143,7 +145,7 @@ public static SqlSugarScope Db = new SqlSugarScope(new ConnectionConfig()
              tran.CommitTran(); 
  }
 ```
-### Feature6 : Query filter
+### Feature7 : Query filter
 ```cs
 //set filter
 db.QueryFilter.Add(new TableFilterItem<Order>(it => it.Name.Contains("a")));  
@@ -160,7 +162,7 @@ db.Queryable<OrderItem, Order>((i, o) => i.OrderId == o.Id)
  
 ```
 
-### Feature7 : Insert or update 
+### Feature8 : Insert or update 
 insert or update 
 ```cs
     var x = Db.Storageable(list2).ToStorage();  
@@ -173,7 +175,7 @@ var x = Db.Storageable(list).SplitInsert(it => !it.Any()).ToStorage()
 x.AsInsertable.ExecuteCommand(); 
 ```
  
-### Feature8 ：Auto split table
+### Feature9 ：Auto split table
 Split entity 
 ```cs
 [SplitTable(SplitType.Year)]//Table by year (the table supports year, quarter, month, week and day)
@@ -199,7 +201,7 @@ Split query
 .ToPageList(1,2);　
 ``` 
 
-### Feature9： Big data insert or update 
+### Feature10： Big data insert or update 
 ```cs
 //Insert A million only takes a few seconds
 db.Fastest<RealmAuctionDatum>().BulkCopy(GetList());
