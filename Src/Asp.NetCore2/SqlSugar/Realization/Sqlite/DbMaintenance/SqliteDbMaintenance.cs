@@ -311,10 +311,20 @@ namespace SqlSugar
                 {
                     var type = dataReader.GetValue(2).ObjToString();
                     var length = 0;
+                    var decimalDigits = 0;
                     if (type.Contains("("))
                     {
-                        type = type.Split('(').First();
+                        if (type.Contains(","))
+                        {
+                            var digit = type.Split('(').Last().TrimEnd(')');
+                            decimalDigits = digit.Split(',').Last().ObjToInt();
+                            length = digit.Split(',').First().ObjToInt();
+                        }
+                        else
+                        {
                         length = type.Split('(').Last().TrimEnd(')').ObjToInt();
+                        }
+                        type = type.Split('(').First();
                     }
                     bool isIdentity = columns.FirstOrDefault(it => it.DbColumnName.Equals(dataReader.GetString(1),StringComparison.CurrentCultureIgnoreCase)).IsIdentity;
                     DbColumnInfo column = new DbColumnInfo()
