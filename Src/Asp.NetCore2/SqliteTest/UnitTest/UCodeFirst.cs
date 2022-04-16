@@ -18,6 +18,17 @@ namespace OrmTest
             Db.Insertable(new Test00111()).ExecuteCommand();
             var list = Db.Queryable<Test00111>().ToList();
             Db.CodeFirst.InitTables<Test00111121>();
+            Db.CodeFirst.InitTables<UnitByteArray>();
+            Db.Insertable(new UnitByteArray()
+            {
+                Data = new byte[] { 1, 2, 123, 31, 1 }
+            }).ExecuteCommand();
+            var list2=Db.Queryable<UnitByteArray>().ToDataTable();
+        }
+
+        public class UnitByteArray 
+        {
+            public byte[] Data { get; set; }    
         }
         public class Test00111121
         {
