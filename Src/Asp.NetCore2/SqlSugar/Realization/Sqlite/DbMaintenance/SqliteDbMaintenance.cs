@@ -337,7 +337,9 @@ namespace SqlSugar
                         DbColumnName = dataReader.GetString(1),
                         DefaultValue = dataReader.GetValue(4).ObjToString(),
                         IsPrimarykey = dataReader.GetBoolean(5).ObjToBool(),
-                        Length = length
+                        Length = length,
+                        DecimalDigits=decimalDigits,
+                        Scale= decimalDigits
                     };
                     result.Add(column);
                 }
