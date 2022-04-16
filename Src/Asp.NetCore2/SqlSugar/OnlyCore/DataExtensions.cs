@@ -424,14 +424,7 @@ namespace SqlSugar
                         DataRow daRow = dt.NewRow();
                         for (int i = 0; i < columns.Count; i++)
                         {
-                            if (columns[i].DataType == System.Type.GetType("System.Byte[]"))
-                            {
-                                daRow[columns[i].ColumnName] = System.Text.Encoding.ASCII.GetBytes(dr.GetValue(i).ToString());
-                            }
-                            else
-                            {
                             daRow[columns[i].ColumnName] = dr.GetValue(i);
-                            }
                         }
                         dt.Rows.Add(daRow);
                     }
