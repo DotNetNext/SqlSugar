@@ -137,8 +137,36 @@ namespace OrmTest
             var inserData = rootData.data.ToList();
             var num= Db.Fastest<UnitDatum>().BulkCopy(inserData);
             SqlSugar.Check.Exception(num != 20, "unit error");
-        }
+            var db = Db;
+            //技术上没实现
+            //db.CodeFirst.InitTables<UnitTest23412>();
+            //var list5 = new List<UnitTest23412>() {
+            //    new UnitTest23412(){
+            //     Id=Guid.NewGuid(),
+            //      Bytes=new byte[]{1,2,1,1,1}
+            //    },
+            //       new UnitTest23412(){
+            //     Id=Guid.NewGuid(),
+            //      Bytes=new byte[]{2,1,1,1,1}
+            //    }
+
+            //};
+            //db.DbMaintenance.TruncateTable<UnitTest23412>();
+            //db.Fastest<UnitTest23412>().BulkCopy(list5);
+            //var list6 = db.Queryable<UnitTest23412>().ToList();
+     
     }
+
+    public class UnitTest23412
+    {
+        public UnitTest23412()
+        {
+        }
+
+        public Guid Id { get; set; }
+        public byte[] Bytes { get; set; }
+    }
+}
 
     public class Rootobject
     {
