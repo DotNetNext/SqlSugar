@@ -220,6 +220,27 @@ namespace SqlSugar
             this.Context.InitMappingInfo<T>();
             return this.TruncateTable(this.Context.EntityMaintenance.GetEntityInfo<T>().DbTableName);
         }
+        public virtual bool TruncateTable<T,T2>()
+        {
+            TruncateTable<T>();
+            TruncateTable<T2>();
+            return true;
+        }
+        public virtual bool TruncateTable<T, T2,T3>()
+        {
+            TruncateTable<T>();
+            TruncateTable<T2>();
+            TruncateTable<T3>();
+            return true;
+        }
+        public virtual bool TruncateTable<T, T2, T3,T4>()
+        {
+            TruncateTable<T>();
+            TruncateTable<T2>();
+            TruncateTable<T3>();
+            TruncateTable<T4>();
+            return true;
+        }
         public virtual bool DropColumn(string tableName, string columnName)
         {
             columnName = this.SqlBuilder.GetTranslationColumnName(columnName);

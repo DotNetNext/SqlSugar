@@ -33,6 +33,9 @@ namespace SqlSugar
         bool DropTable(string tableName);
         bool TruncateTable(string tableName);
         bool TruncateTable<T>();
+        bool TruncateTable<T,T2>();
+        bool TruncateTable<T, T2, T3>();
+        bool TruncateTable<T, T2, T3,T4>();
         bool CreateTable(string tableName, List<DbColumnInfo> columns,bool isCreatePrimaryKey=true);
         bool AddColumn(string tableName, DbColumnInfo column);
         bool UpdateColumn(string tableName, DbColumnInfo column);
