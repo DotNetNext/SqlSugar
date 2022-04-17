@@ -269,6 +269,7 @@ namespace SqlSugar
             var navEntity = navObjectNameColumnInfo.PropertyInfo.PropertyType.GetGenericArguments()[0];
             var navEntityInfo = this.Context.EntityMaintenance.GetEntityInfo(navEntity);
             var navColumn = navEntityInfo.Columns.FirstOrDefault(it => it.PropertyName == navObjectNameColumnInfo.Navigat.Name);
+            Check.ExceptionEasy(navColumn == null, $"{navEntityInfo.EntityName} not found {navObjectNameColumnInfo.Navigat.Name} ", $"实体 {navEntityInfo.EntityName} 未找到导航配置列 {navObjectNameColumnInfo.Navigat.Name} ");
             //var navType = navObjectNamePropety.PropertyType;
             var listItemPkColumn = listItemEntity.Columns.Where(it => it.IsPrimarykey).FirstOrDefault();
             Check.ExceptionEasy(listItemPkColumn == null, listItemEntity.EntityName + " not primary key", listItemEntity.EntityName + "没有主键");

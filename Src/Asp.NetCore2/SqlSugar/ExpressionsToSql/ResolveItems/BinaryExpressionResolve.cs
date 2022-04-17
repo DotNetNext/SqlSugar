@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Text.RegularExpressions;
+
 namespace SqlSugar
 {
     public class BinaryExpressionResolve : BaseResolve
@@ -26,6 +28,13 @@ namespace SqlSugar
         {
             var expression = this.Expression as BinaryExpression;
             var operatorValue = parameter.OperatorValue = ExpressionTool.GetOperator(expression.NodeType);
+
+            if (IsGroupSubquery(expression.Right,operatorValue))
+            {
+                InSubGroupBy(expression);
+                return;
+            }
+
             var isEqual = expression.NodeType == ExpressionType.Equal;
             var isComparisonOperator = ExpressionTool.IsComparisonOperator(expression);
             base.ExactExpression = expression;
@@ -87,6 +96,57 @@ namespace SqlSugar
             {
                 base.Context.Result.Append(" " + ExpressionConst.ExpressionReplace + parameter.BaseParameter.Index + " ");
             }
+        }
+
+
+        private void InSubGroupBy(BinaryExpression expression)
+        {
+            var leftSql = GetNewExpressionValue(expression.Left);
+            var rightExpression = expression.Right as MethodCallExpression;
+            var selector = GetNewExpressionValue(rightExpression.Arguments[0]);
+            var rightSql = GetNewExpressionValue(rightExpression.Object).Replace("SELECT FROM", $"SELECT {selector} FROM");
+            if (this.Context.IsSingle&&this.Context.SingleTableNameSubqueryShortName==null)
+            {
+                var leftExp = expression.Left;
+                if (leftExp is UnaryExpression) 
+                {
+                    leftExp = (leftExp as UnaryExpression).Operand;
+                }
+                var p = (leftExp as MemberExpression);
+                this.Context.SingleTableNameSubqueryShortName=p.Expression.ToString();
+            }
+            base.Context.Result.Append($" {leftSql} in ({rightSql}) ");
+        }
+
+        private bool IsGroupSubquery(Expression rightExpression, string operatorValue)
+        {
+            if (operatorValue != "=")
+            {
+                return false;
+            }
+            if (rightExpression == null)
+            {
+                return false;
+            }
+            if ((rightExpression is MethodCallExpression) == false)
+            {
+                return false;
+            }
+            var method = (rightExpression as MethodCallExpression);
+            if (method.Method.Name != "Select")
+            {
+                return false;
+            }
+            var methodString = method.ToString();
+            if (methodString.IndexOf("GroupBy(")<=0) 
+            {
+                return false;
+            }
+            if (Regex.Matches(methodString, @"Subqueryable\(").Count!=1)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }
