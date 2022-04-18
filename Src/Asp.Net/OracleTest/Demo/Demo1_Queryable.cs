@@ -128,6 +128,16 @@ namespace OrmTest
             Console.WriteLine("#### Subquery Start ####");
             var db = GetInstance();
 
+            var list0 = db.Queryable<Order>().Where(it =>
+            SqlFunc.Subqueryable<OrderItem>()
+             .LeftJoin<OrderItem>((i, z) => i.ItemId == z.ItemId)
+             .InnerJoin<OrderItem>((i, z, y) => i.ItemId == z.ItemId)
+             .InnerJoin<OrderItem>((i, z, y, h) => i.ItemId == z.ItemId)
+             .InnerJoin<OrderItem>((i, z, y, h, n) => i.ItemId == z.ItemId)
+             .Where((i, z) => i.ItemId == z.ItemId)
+             .Any()
+            ).ToList();
+
             var list = db.Queryable<Order>().Take(10).Select(it => new
             {
                 customName=SqlFunc.Subqueryable<Custom>().Where("it.CustomId=id").Select(s=>s.Name),
