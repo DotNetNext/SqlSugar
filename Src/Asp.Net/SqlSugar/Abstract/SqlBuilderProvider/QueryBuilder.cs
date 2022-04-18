@@ -265,7 +265,7 @@ namespace SqlSugar
             if (isSingleTableHasSubquery)
             {
                 Check.Exception(!string.IsNullOrEmpty(this.TableShortName) && resolveExpress.SingleTableNameSubqueryShortName != this.TableShortName, "{0} and {1} need same name", resolveExpress.SingleTableNameSubqueryShortName, this.TableShortName);
-                this.TableShortName = resolveExpress.SingleTableNameSubqueryShortName;
+                this.TableShortName =this.Builder.GetTranslationColumnName(resolveExpress.SingleTableNameSubqueryShortName);
             }
             return result;
         }
