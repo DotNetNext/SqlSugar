@@ -60,6 +60,16 @@ namespace OrmTest
            .Where(x => x.SchoolA.SchoolName == "北大")
            .ToList();
 
+
+
+
+            var list3 = db.Queryable<StudentA>()
+           .Includes(x => x.SchoolA, x => x.RoomList)//2个参数就是 then Include 
+           .Includes(x => x.SchoolA, x => x.TeacherList)//2个参数就是 then Include 
+           .Includes(x => x.Books.Select(z=>new BookA() { Name=z.Name }).ToList())
+           .Where(x => x.Books.Any(z => z.BookId == 1))
+           .Where(x => x.SchoolA.SchoolName == "北大")
+           .ToList();
             //先用Mapper导航映射查出第二层
             var list = db.Queryable<StudentA>().Mapper(x => x.SchoolA, x => x.SchoolId).ToList();
 
@@ -88,7 +98,7 @@ namespace OrmTest
             db.Insertable(new ABMapping1() { AId =2, BId = 1 }).ExecuteCommand();
             db.Insertable(new ABMapping1() { AId = 2, BId = 2 }).ExecuteCommand();
             var p = "";
-            var list3= db.Queryable<A1>()
+            var list4= db.Queryable<A1>()
                 .Includes(x => x.BList.WhereIF(!string.IsNullOrEmpty(p),it=>it.Id==11).ToList())
                 .Where(x=>x.BList.Any()).ToList();
 

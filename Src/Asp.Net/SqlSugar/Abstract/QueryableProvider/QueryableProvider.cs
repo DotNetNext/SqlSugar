@@ -868,7 +868,14 @@ namespace SqlSugar
             }
             else if (this.QueryBuilder.EntityType == UtilConstants.ObjType || (this.QueryBuilder.AsTables != null && this.QueryBuilder.AsTables.Count == 1)||this.QueryBuilder.EntityName!=this.QueryBuilder.EntityType.Name) 
             {
-                return this.Select<TResult>(this.SqlBuilder.SqlSelectAll);
+                if (this.QueryBuilder.SelectValue.HasValue()&& this.QueryBuilder.SelectValue.ObjToString().Contains("AS"))
+                {
+                    return this.Select<TResult>(this.QueryBuilder.SelectValue+"");
+                }
+                else
+                {
+                    return this.Select<TResult>(this.SqlBuilder.SqlSelectAll);
+                }
             }
             else
             {

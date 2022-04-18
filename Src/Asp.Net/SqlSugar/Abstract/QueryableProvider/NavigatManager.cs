@@ -218,7 +218,7 @@ namespace SqlSugar
                 CSharpTypeName = bColumn.PropertyInfo.PropertyType.Name
             }));
             var sql = GetWhereSql();
-            var bList = selector(this.Context.Queryable<object>().AS(bEntityInfo.DbTableName).AddParameters(sql.Parameters).Where(conditionalModels2).WhereIF(sql.WhereString.HasValue(),sql.WhereString).OrderByIF(sql.OrderByString.HasValue(),sql.OrderByString));  
+            var bList = selector(this.Context.Queryable<object>().AS(bEntityInfo.DbTableName).AddParameters(sql.Parameters).Where(conditionalModels2).WhereIF(sql.WhereString.HasValue(),sql.WhereString).Select(sql.SelectString).OrderByIF(sql.OrderByString.HasValue(),sql.OrderByString));  
             if (bList.HasValue())
             {
                 foreach (var listItem in list)
@@ -288,7 +288,7 @@ namespace SqlSugar
                 CSharpTypeName = listItemPkColumn.PropertyInfo.PropertyType.Name
             }));
             var sqlObj = GetWhereSql();
-            var navList = selector(this.Context.Queryable<object>().AS(navEntityInfo.DbTableName).AddParameters(sqlObj.Parameters).Where(conditionalModels).WhereIF(sqlObj.WhereString.HasValue(),sqlObj.WhereString).OrderByIF(sqlObj.OrderByString.HasValue(),sqlObj.OrderByString));
+            var navList = selector(this.Context.Queryable<object>().AS(navEntityInfo.DbTableName).AddParameters(sqlObj.Parameters).Where(conditionalModels).WhereIF(sqlObj.WhereString.HasValue(),sqlObj.WhereString).Select(sqlObj.SelectString).OrderByIF(sqlObj.OrderByString.HasValue(),sqlObj.OrderByString));
             if (navList.HasValue())
             {
                 foreach (var item in list)
@@ -341,6 +341,37 @@ namespace SqlSugar
                     var exp = method.Arguments[1];
                     oredrBy.Add(" " + queryable.QueryBuilder.GetExpressionValue(exp, ResolveExpressType.WhereSingle).GetString());
                 }
+                else if (method.Method.Name == "Select")
+                {
+                    var exp = method.Arguments[1];
+                    var types = exp.Type.GetGenericArguments();
+                    if (types != null && types.Length > 0)
+                    {
+                        var type = types[0];
+                        var entityInfo = this.Context.EntityMaintenance.GetEntityInfo(type);
+                        if (entityInfo.Columns.Count(x => x.Navigat != null) == 0)
+                        {
+                            result.SelectString = (" " + queryable.QueryBuilder.GetExpressionValue(exp, ResolveExpressType.SelectSingle).GetString());
+                        }
+                        else
+                        {
+                            var pkInfo = entityInfo.Columns.FirstOrDefault(x => x.IsPrimarykey);
+                            if (pkInfo != null)
+                            {
+                                var pkName = pkInfo.DbColumnName;
+                                AppColumns(result, queryable, pkName);
+                            }
+                            foreach (var nav in entityInfo.Columns.Where(x => x.Navigat != null&&x.Navigat.NavigatType==NavigateType.OneToOne))
+                            {
+                                var navColumn = entityInfo.Columns.FirstOrDefault(it => it.PropertyName == nav.Navigat.Name);
+                                if (navColumn != null) 
+                                {
+                                    AppColumns(result, queryable, navColumn.DbColumnName);
+                                }
+                            }
+                        }
+                    }
+                }
                 else if (method.Method.Name == "OrderByDescending")
                 {
                     var exp = method.Arguments[1];
@@ -370,10 +401,20 @@ namespace SqlSugar
             return result;
         }
 
+        private static void AppColumns(SqlInfo result, ISugarQueryable<object> queryable, string columnName)
+        {
+            var selectPkName = queryable.SqlBuilder.GetTranslationColumnName(columnName);
+            if (result.SelectString.HasValue() && !result.SelectString.ToLower().Contains(selectPkName.ToLower()))
+            {
+                result.SelectString = result.SelectString + "," + selectPkName;
+            }
+        }
+
         public class SqlInfo 
         {
             public string WhereString { get; set; }
             public string OrderByString { get; set; }
+            public string SelectString { get; set; }
             public List<SugarParameter>  Parameters { get; set; }
         }
 
