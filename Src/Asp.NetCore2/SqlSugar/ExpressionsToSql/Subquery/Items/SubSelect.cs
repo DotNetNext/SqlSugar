@@ -67,7 +67,7 @@ namespace SqlSugar
                 var parameters = (exp.Arguments[0] as LambdaExpression).Parameters;
                 if (parameters != null && parameters.Count > 0)
                 {
-                    this.Context.CurrentShortName = this.Context.SqlTranslationLeft + parameters[0] + this.Context.SqlTranslationRight;
+                    this.Context.CurrentShortName = this.Context.GetTranslationColumnName(parameters[0].ObjToString());
                 }
 
             }
@@ -79,7 +79,7 @@ namespace SqlSugar
                 var parameters = (exp.Arguments[1] as LambdaExpression).Parameters;
                 if (parameters != null && parameters.Count > 0)
                 {
-                    this.Context.CurrentShortName = this.Context.SqlTranslationLeft + parameters[0] + this.Context.SqlTranslationRight;
+                    this.Context.CurrentShortName = this.Context.GetTranslationColumnName(parameters[0].ObjToString());
                 }
 
             }
