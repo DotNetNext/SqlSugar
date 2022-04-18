@@ -223,19 +223,21 @@ namespace SqlSugar
             {
                 foreach (var listItem in list)
                 {
-
-                    var instance = Activator.CreateInstance(navObjectNamePropety.PropertyType, true);
-                    var ilist = instance as IList;
-                    foreach (var bInfo in bList)
+                    if (navObjectNamePropety.GetValue(listItem) == null)
                     {
-                        var pk = listItemPkColumn.PropertyInfo.GetValue(listItem).ObjToString();
-                        var bid = bPkColumn.PropertyInfo.GetValue(bInfo).ObjToString();
-                        if (abids.Any(x => x.Aid == pk&& x.Bid== bid))
+                        var instance = Activator.CreateInstance(navObjectNamePropety.PropertyType, true);
+                        var ilist = instance as IList;
+                        foreach (var bInfo in bList)
                         {
+                            var pk = listItemPkColumn.PropertyInfo.GetValue(listItem).ObjToString();
+                            var bid = bPkColumn.PropertyInfo.GetValue(bInfo).ObjToString();
+                            if (abids.Any(x => x.Aid == pk && x.Bid == bid))
+                            {
                                 ilist.Add(bInfo);
+                            }
                         }
+                        navObjectNamePropety.SetValue(listItem, instance);
                     }
-                    navObjectNamePropety.SetValue(listItem, instance);
                 }
             }
         }
@@ -259,8 +261,11 @@ namespace SqlSugar
             var navList = selector(this.Context.Queryable<object>().AS(navEntityInfo.DbTableName).Where(conditionalModels));
             foreach (var item in list)
             {
-                var setValue = navList.FirstOrDefault(x => navPkColumn.PropertyInfo.GetValue(x).ObjToString() == navColumn.PropertyInfo.GetValue(item).ObjToString());
-                navObjectNamePropety.SetValue(item, setValue);
+                if (navObjectNamePropety.GetValue(item) == null)
+                {
+                    var setValue = navList.FirstOrDefault(x => navPkColumn.PropertyInfo.GetValue(x).ObjToString() == navColumn.PropertyInfo.GetValue(item).ObjToString());
+                    navObjectNamePropety.SetValue(item, setValue);
+                }
             }
         }
 
@@ -288,15 +293,18 @@ namespace SqlSugar
             {
                 foreach (var item in list)
                 {
-                    var setValue = navList
-                         .Where(x => navColumn.PropertyInfo.GetValue(x).ObjToString() == listItemPkColumn.PropertyInfo.GetValue(item).ObjToString()).ToList();
-                    var instance = Activator.CreateInstance(navObjectNamePropety.PropertyType, true);
-                    var ilist = instance as IList;
-                    foreach (var value in setValue)
+                    if (navObjectNamePropety.GetValue(item) == null)
                     {
-                        ilist.Add(value);
+                        var setValue = navList
+                             .Where(x => navColumn.PropertyInfo.GetValue(x).ObjToString() == listItemPkColumn.PropertyInfo.GetValue(item).ObjToString()).ToList();
+                        var instance = Activator.CreateInstance(navObjectNamePropety.PropertyType, true);
+                        var ilist = instance as IList;
+                        foreach (var value in setValue)
+                        {
+                            ilist.Add(value);
+                        }
+                        navObjectNamePropety.SetValue(item, instance);
                     }
-                    navObjectNamePropety.SetValue(item, instance);
                 }
             }
         }
