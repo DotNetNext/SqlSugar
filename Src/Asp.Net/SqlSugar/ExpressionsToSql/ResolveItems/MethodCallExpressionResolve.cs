@@ -589,6 +589,10 @@ namespace SqlSugar
                 IsMember = parameter.ChildExpression is MemberExpression && !ExpressionTool.IsConstExpression(parameter.ChildExpression as MemberExpression),
                 MemberName = parameter.CommonTempData
             };
+            if(methodCallExpressionArgs.MemberName is MapperSql) 
+            {
+                methodCallExpressionArgs.MemberName = (methodCallExpressionArgs.MemberName as MapperSql).Sql;
+            }
             if (methodCallExpressionArgs.IsMember && parameter.ChildExpression != null && parameter.ChildExpression.ToString() == "DateTime.Now")
             {
                 methodCallExpressionArgs.IsMember = false;
