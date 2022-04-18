@@ -54,6 +54,7 @@ namespace OrmTest
 
             var list2 = db.Queryable<StudentA>()
            .Includes(x => x.SchoolA, x => x.RoomList)//2个参数就是 then Include 
+           .Includes(x => x.SchoolA, x => x.TeacherList)//2个参数就是 then Include 
            .Includes(x => x.Books)
            .Where(x=>x.Books.Any(z=>z.BookId==1))
            .Where(x => x.SchoolA.SchoolName == "北大")
@@ -197,7 +198,7 @@ namespace OrmTest
             public string SchoolName { get; set; }
             [Navigate(NavigateType.OneToMany,nameof(RoomA.SchoolId))]
             public List<RoomA> RoomList { get; set; }
-            [SugarColumn(IsIgnore = true)]
+            [Navigate(NavigateType.OneToMany, nameof(TeacherA.SchoolId))]
             public List<TeacherA> TeacherList { get; set; }
         }
         public class TeacherA
