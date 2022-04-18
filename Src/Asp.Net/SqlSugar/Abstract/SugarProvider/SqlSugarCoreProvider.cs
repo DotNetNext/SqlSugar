@@ -84,7 +84,8 @@ namespace SqlSugar
                     PgSqlIsAutoToLower = it.MoreSettings.PgSqlIsAutoToLower,
                     IsAutoRemoveDataCache = it.MoreSettings.IsAutoRemoveDataCache,
                     IsWithNoLockQuery = it.MoreSettings.IsWithNoLockQuery,
-                    TableEnumIsString=it.MoreSettings.TableEnumIsString
+                    TableEnumIsString=it.MoreSettings.TableEnumIsString,
+                    DisableMillisecond=it.MoreSettings.DisableMillisecond
                 },
                 SqlMiddle=it.SqlMiddle==null?null:new SqlMiddle { 
                   IsSqlMiddle=it.SqlMiddle.IsSqlMiddle,
