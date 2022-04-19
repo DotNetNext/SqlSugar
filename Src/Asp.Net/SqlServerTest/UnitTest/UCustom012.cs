@@ -30,8 +30,8 @@ namespace OrmTest
             db.Insertable(new RoomA() { RoomId = 6, RoomName = "清华003厅", SchoolId = 2 }).ExecuteCommand();
 
 
-            db.Insertable(new SchoolA() { SchoolId = 1, SchoolName = "北大" }).ExecuteCommand();
-            db.Insertable(new SchoolA() { SchoolId = 2, SchoolName = "清华" }).ExecuteCommand();
+            db.Insertable(new SchoolA() { SchoolId = 1, School_Name = "北大" }).ExecuteCommand();
+            db.Insertable(new SchoolA() { SchoolId = 2, School_Name = "清华" }).ExecuteCommand();
 
             db.Insertable(new StudentA() { StudentId = 1, SchoolId = 1, Name = "北大jack" }).ExecuteCommand();
             db.Insertable(new StudentA() { StudentId = 2, SchoolId = 1, Name = "北大tom" }).ExecuteCommand();
