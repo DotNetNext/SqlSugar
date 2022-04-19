@@ -289,7 +289,7 @@ namespace SqlSugar
                 FieldValue = String.Join(",", ids),
                 CSharpTypeName = listItemPkColumn.PropertyInfo.PropertyType.Name
             }));
-            var sqlObj = GetWhereSql();
+            var sqlObj = GetWhereSql(navObjectNameColumnInfo.Navigat.Name);
       
             if (list.Any() && navObjectNamePropety.GetValue(list.First()) == null)
             {
@@ -312,7 +312,7 @@ namespace SqlSugar
             }
         }
 
-        private SqlInfo GetWhereSql()
+        private SqlInfo GetWhereSql(string properyName=null)
         {
             if (_ListCallFunc == null|| _ListCallFunc.Count==0) return new SqlInfo();
             List<string> where = new List<string>();
@@ -374,6 +374,15 @@ namespace SqlSugar
                                 {
                                     AppColumns(result, queryable, navColumn.DbColumnName);
                                 }
+                            }
+                        }
+                        if (properyName != null)
+                        {
+                            var fkColumnsInfo = entityInfo.Columns.FirstOrDefault(x => x.PropertyName == properyName);
+                            if (fkColumnsInfo != null)
+                            {
+                                var fkName = fkColumnsInfo.DbColumnName;
+                                AppColumns(result, queryable, fkName);
                             }
                         }
                     }
