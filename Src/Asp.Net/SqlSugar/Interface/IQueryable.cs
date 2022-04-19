@@ -132,7 +132,7 @@ namespace SqlSugar
         Task<TResult> AvgAsync<TResult>(string avgField);
         TResult Avg<TResult>(Expression<Func<T, TResult>> expression);
         Task<TResult> AvgAsync<TResult>(Expression<Func<T, TResult>> expression);
-
+        List<TResult> ToList<TResult>(Expression<Func<T, TResult>> expression);
         List<T> ToList();
         List<T> SetContext<ParameterT>(Expression<Func<T,object>> thisFiled, Expression<Func<object>> mappingFiled, ParameterT parameter);
         Task <List<T>> SetContextAsync<ParameterT>(Expression<Func<T, object>> thisFiled, Expression<Func<object>> mappingFiled, ParameterT parameter);
