@@ -15,50 +15,50 @@ namespace OrmTest
         {
             var db = NewUnitTest.Db;
 
-            db.CodeFirst.InitTables<StudentA, RoomA, SchoolA, TeacherA>();
-            db.CodeFirst.InitTables<BookA>();
-            db.DbMaintenance.TruncateTable<StudentA>();
-            db.DbMaintenance.TruncateTable<RoomA>();
-            db.DbMaintenance.TruncateTable<SchoolA>();
-            db.DbMaintenance.TruncateTable<TeacherA>();
-            db.DbMaintenance.TruncateTable<BookA>();
-            db.Insertable(new RoomA() { RoomId = 1, RoomName = "北大001室", SchoolId = 1 }).ExecuteCommand();
-            db.Insertable(new RoomA() { RoomId = 2, RoomName = "北大002室", SchoolId = 1 }).ExecuteCommand();
-            db.Insertable(new RoomA() { RoomId = 3, RoomName = "北大003室", SchoolId = 1 }).ExecuteCommand();
-            db.Insertable(new RoomA() { RoomId = 4, RoomName = "清华001厅", SchoolId = 2 }).ExecuteCommand();
-            db.Insertable(new RoomA() { RoomId = 5, RoomName = "清华002厅", SchoolId = 2 }).ExecuteCommand();
-            db.Insertable(new RoomA() { RoomId = 6, RoomName = "清华003厅", SchoolId = 2 }).ExecuteCommand();
+           // db.CodeFirst.InitTables<StudentA, RoomA, SchoolA, TeacherA>();
+           // db.CodeFirst.InitTables<BookA>();
+           // db.DbMaintenance.TruncateTable<StudentA>();
+           // db.DbMaintenance.TruncateTable<RoomA>();
+           // db.DbMaintenance.TruncateTable<SchoolA>();
+           // db.DbMaintenance.TruncateTable<TeacherA>();
+           // db.DbMaintenance.TruncateTable<BookA>();
+           // db.Insertable(new RoomA() { RoomId = 1, RoomName = "北大001室", SchoolId = 1 }).ExecuteCommand();
+           // db.Insertable(new RoomA() { RoomId = 2, RoomName = "北大002室", SchoolId = 1 }).ExecuteCommand();
+           // db.Insertable(new RoomA() { RoomId = 3, RoomName = "北大003室", SchoolId = 1 }).ExecuteCommand();
+           // db.Insertable(new RoomA() { RoomId = 4, RoomName = "清华001厅", SchoolId = 2 }).ExecuteCommand();
+           // db.Insertable(new RoomA() { RoomId = 5, RoomName = "清华002厅", SchoolId = 2 }).ExecuteCommand();
+           // db.Insertable(new RoomA() { RoomId = 6, RoomName = "清华003厅", SchoolId = 2 }).ExecuteCommand();
 
 
-            db.Insertable(new SchoolA() { SchoolId = 1, SchoolName = "北大" }).ExecuteCommand();
-            db.Insertable(new SchoolA() { SchoolId = 2, SchoolName = "清华" }).ExecuteCommand();
+           // db.Insertable(new SchoolA() { SchoolId = 1, SchoolName = "北大" }).ExecuteCommand();
+           // db.Insertable(new SchoolA() { SchoolId = 2, SchoolName = "清华" }).ExecuteCommand();
 
-            db.Insertable(new StudentA() { StudentId = 1, SchoolId = 1, Name = "北大jack" }).ExecuteCommand();
-            db.Insertable(new StudentA() { StudentId = 2, SchoolId = 1, Name = "北大tom" }).ExecuteCommand();
-            db.Insertable(new StudentA() { StudentId = 3, SchoolId = 2, Name = "清华jack" }).ExecuteCommand();
-            db.Insertable(new StudentA() { StudentId = 4, SchoolId = 2, Name = "清华tom" }).ExecuteCommand();
+           // db.Insertable(new StudentA() { StudentId = 1, SchoolId = 1, Name = "北大jack" }).ExecuteCommand();
+           // db.Insertable(new StudentA() { StudentId = 2, SchoolId = 1, Name = "北大tom" }).ExecuteCommand();
+           // db.Insertable(new StudentA() { StudentId = 3, SchoolId = 2, Name = "清华jack" }).ExecuteCommand();
+           // db.Insertable(new StudentA() { StudentId = 4, SchoolId = 2, Name = "清华tom" }).ExecuteCommand();
 
-            db.Insertable(new TeacherA() { SchoolId = 1, Id = 1, Name = "北大老师01" }).ExecuteCommand();
-            db.Insertable(new TeacherA() { SchoolId = 1, Id = 2, Name = "北大老师02" }).ExecuteCommand();
+           // db.Insertable(new TeacherA() { SchoolId = 1, Id = 1, Name = "北大老师01" }).ExecuteCommand();
+           // db.Insertable(new TeacherA() { SchoolId = 1, Id = 2, Name = "北大老师02" }).ExecuteCommand();
 
-            db.Insertable(new TeacherA() { SchoolId = 2, Id = 3, Name = "清华老师01" }).ExecuteCommand();
-            db.Insertable(new TeacherA() { SchoolId = 2, Id = 4, Name = "清华老师02" }).ExecuteCommand();
-
-
-            db.Insertable(new BookA() { BookId=1, Name="java" , studenId=1 }).ExecuteCommand();
-            db.Insertable(new BookA() { BookId = 2, Name = "c#2", studenId = 2 }).ExecuteCommand();
-            db.Insertable(new BookA() { BookId = 3, Name = "c#1", studenId = 2 }).ExecuteCommand();
-            db.Insertable(new BookA() { BookId = 4, Name = "php", studenId = 3 }).ExecuteCommand();
-            db.Insertable(new BookA() { BookId = 5, Name = "js", studenId = 4 }).ExecuteCommand();
+           // db.Insertable(new TeacherA() { SchoolId = 2, Id = 3, Name = "清华老师01" }).ExecuteCommand();
+           // db.Insertable(new TeacherA() { SchoolId = 2, Id = 4, Name = "清华老师02" }).ExecuteCommand();
 
 
-            var list2 = db.Queryable<StudentA>()
-           .Includes(x => x.SchoolA, x => x.RoomList)//2个参数就是 then Include 
-           .Includes(x => x.SchoolA, x => x.TeacherList)//2个参数就是 then Include 
-           .Includes(x => x.Books)
-           .Where(x=>x.Books.Any(z=>z.BookId==1))
-           .Where(x => x.SchoolA.SchoolName == "北大")
-           .ToList();
+           // db.Insertable(new BookA() { BookId=1, Names = "java" , studenId=1 }).ExecuteCommand();
+           // db.Insertable(new BookA() { BookId = 2, Names = "c#2", studenId = 2 }).ExecuteCommand();
+           // db.Insertable(new BookA() { BookId = 3, Names = "c#1", studenId = 2 }).ExecuteCommand();
+           // db.Insertable(new BookA() { BookId = 4, Names = "php", studenId = 3 }).ExecuteCommand();
+           // db.Insertable(new BookA() { BookId = 5, Names = "js", studenId = 4 }).ExecuteCommand();
+
+
+           // var list2 = db.Queryable<StudentA>()
+           //.Includes(x => x.SchoolA, x => x.RoomList)//2个参数就是 then Include 
+           //.Includes(x => x.SchoolA, x => x.TeacherList)//2个参数就是 then Include 
+           //.Includes(x => x.Books)
+           //.Where(x=>x.Books.Any(z=>z.BookId==1))
+           //.Where(x => x.SchoolA.SchoolName.Contains("北大"))
+           //.ToList();
 
 
 
@@ -66,9 +66,9 @@ namespace OrmTest
             var list3 = db.Queryable<StudentA>()
            .Includes(x => x.SchoolA, x => x.RoomList)//2个参数就是 then Include 
            .Includes(x => x.SchoolA, x => x.TeacherList)//2个参数就是 then Include 
-           .Includes(x => x.Books.Select(z=>new BookA() { Name=z.Name }).ToList())
+           .Includes(x => x.Books.Select(z=>new BookA() { Names = z.Names }).ToList())
            .Where(x => x.Books.Any(z => z.BookId == 1))
-           .Where(x => x.SchoolA.SchoolName == "北大")
+           .Where(x => x.SchoolA.School_Name == "北大")
            .ToList();
             //先用Mapper导航映射查出第二层
             var list = db.Queryable<StudentA>().Mapper(x => x.SchoolA, x => x.SchoolId).ToList();
@@ -205,7 +205,8 @@ namespace OrmTest
         {
             [SugarColumn(IsPrimaryKey = true)]
             public int SchoolId { get; set; }
-            public string SchoolName { get; set; }
+            [SugarColumn( ColumnName = "SchoolName")]
+            public string School_Name { get; set; }
             [Navigate(NavigateType.OneToMany,nameof(RoomA.SchoolId))]
             public List<RoomA> RoomList { get; set; }
             [Navigate(NavigateType.OneToMany, nameof(TeacherA.SchoolId))]
@@ -229,8 +230,8 @@ namespace OrmTest
         {
             [SugarColumn(IsPrimaryKey = true)]
             public int BookId { get; set; }
-
-            public string Name { get; set; }
+            [SugarColumn(ColumnName ="Name")]
+            public string Names{ get; set; }
             public int studenId { get; set; }
         }
 
