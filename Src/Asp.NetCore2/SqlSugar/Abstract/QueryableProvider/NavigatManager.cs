@@ -347,11 +347,14 @@ namespace SqlSugar
                 else if (method.Method.Name == "Select")
                 {
                     var exp = method.Arguments[1];
+                    var newExp = (exp as LambdaExpression).Body;
                     var types = exp.Type.GetGenericArguments();
                     if (types != null && types.Length > 0)
                     {
                         var type = types[0];
                         var entityInfo = this.Context.EntityMaintenance.GetEntityInfo(type);
+                        this.Context.InitMappingInfo(type);
+                        Check.ExceptionEasy(newExp.Type != entityInfo.Type, $" new {newExp.Type .Name}is error ,use Select(it=>new {entityInfo.Type.Name})",$"new {newExp.Type.Name}是错误的，请使用Select(it=>new {entityInfo.Type.Name})");
                         if (entityInfo.Columns.Count(x => x.Navigat != null) == 0)
                         {
                             result.SelectString = (" " + queryable.QueryBuilder.GetExpressionValue(exp, ResolveExpressType.SelectSingle).GetString());
@@ -397,6 +400,11 @@ namespace SqlSugar
                 result.WhereString=  String.Join(" AND ", where);
             }
             if (oredrBy.Any())
+            {
+                Check.Exception(isList == false, $"{_ListCallFunc.First()} need is ToList()", $"{_ListCallFunc.First()} 需要ToList");
+                result.OrderByString = String.Join(" , ", oredrBy);
+            }
+            if (result.SelectString.HasValue())
             {
                 Check.Exception(isList == false, $"{_ListCallFunc.First()} need is ToList()", $"{_ListCallFunc.First()} 需要ToList");
                 result.OrderByString = String.Join(" , ", oredrBy);
