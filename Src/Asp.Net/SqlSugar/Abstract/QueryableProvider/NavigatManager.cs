@@ -258,13 +258,15 @@ namespace SqlSugar
                 FieldValue = String.Join(",", ids),
                 CSharpTypeName = navObjectNameColumnInfo.PropertyInfo.PropertyType.Name
             }));
-            var navList = selector(this.Context.Queryable<object>().AS(navEntityInfo.DbTableName).Where(conditionalModels));
-            foreach (var item in list)
+            if (list.Any()&&navObjectNamePropety.GetValue(list.First()) == null)
             {
-                if (navObjectNamePropety.GetValue(item) == null)
+                var navList = selector(this.Context.Queryable<object>().AS(navEntityInfo.DbTableName).Where(conditionalModels));
+                foreach (var item in list)
                 {
+
                     var setValue = navList.FirstOrDefault(x => navPkColumn.PropertyInfo.GetValue(x).ObjToString() == navColumn.PropertyInfo.GetValue(item).ObjToString());
                     navObjectNamePropety.SetValue(item, setValue);
+
                 }
             }
         }
@@ -288,12 +290,13 @@ namespace SqlSugar
                 CSharpTypeName = listItemPkColumn.PropertyInfo.PropertyType.Name
             }));
             var sqlObj = GetWhereSql();
-            var navList = selector(this.Context.Queryable<object>().AS(navEntityInfo.DbTableName).AddParameters(sqlObj.Parameters).Where(conditionalModels).WhereIF(sqlObj.WhereString.HasValue(),sqlObj.WhereString).Select(sqlObj.SelectString).OrderByIF(sqlObj.OrderByString.HasValue(),sqlObj.OrderByString));
-            if (navList.HasValue())
+      
+            if (list.Any() && navObjectNamePropety.GetValue(list.First()) == null)
             {
-                foreach (var item in list)
+                var navList = selector(this.Context.Queryable<object>().AS(navEntityInfo.DbTableName).AddParameters(sqlObj.Parameters).Where(conditionalModels).WhereIF(sqlObj.WhereString.HasValue(), sqlObj.WhereString).Select(sqlObj.SelectString).OrderByIF(sqlObj.OrderByString.HasValue(), sqlObj.OrderByString));
+                if (navList.HasValue())
                 {
-                    if (navObjectNamePropety.GetValue(item) == null)
+                    foreach (var item in list)
                     {
                         var setValue = navList
                              .Where(x => navColumn.PropertyInfo.GetValue(x).ObjToString() == listItemPkColumn.PropertyInfo.GetValue(item).ObjToString()).ToList();
