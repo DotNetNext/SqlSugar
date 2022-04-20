@@ -12,6 +12,7 @@ namespace SqlSugar
    
     public class SqlServerFastBuilder:FastBuilder,IFastBuilder
     {
+        public override bool IsActionUpdateColumns { get; set; } = true;
         public async Task<int> ExecuteBulkCopyAsync(DataTable dt)
         {
 
