@@ -9,6 +9,7 @@ namespace SqlSugar
 {
     public interface  IFastBuilder
     {
+        bool IsActionUpdateColumns { get; set; }
         SqlSugarProvider Context { get; set; }
         string CharacterSet { get; set; }
         Task<int> UpdateByTempAsync(string tableName,string tempName,string [] updateColumns,string[] whereColumns);

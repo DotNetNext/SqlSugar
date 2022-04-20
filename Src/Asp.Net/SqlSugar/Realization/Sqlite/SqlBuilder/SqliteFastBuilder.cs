@@ -14,6 +14,7 @@ namespace SqlSugar
         private bool IsUpdate = false;
         public string CharacterSet { get; set; }
         private DataTable UpdateDataTable { get; set; }
+        public bool IsActionUpdateColumns { get; set; }
         public SqliteFastBuilder(EntityInfo entityInfo)
         {
             this.entityInfo = entityInfo;

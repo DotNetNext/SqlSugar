@@ -128,6 +128,7 @@ namespace SqlSugar
             this.context.CurrentConnectionConfig.IsAutoCloseConnection = false;
             DataTable dt = ToDdateTable(datas);
             IFastBuilder buider = GetBuider();
+            ActionIgnoreColums(whereColumns, updateColumns, dt, buider.IsActionUpdateColumns);
             buider.Context = context;
             await buider.CreateTempAsync<T>(dt);
             await buider.ExecuteBulkCopyAsync(dt);
@@ -142,6 +143,34 @@ namespace SqlSugar
             End(datas, false);
             return result;
         }
+
+        private  void ActionIgnoreColums(string[] whereColumns, string[] updateColumns, DataTable dt,bool IsActionUpdateColumns)
+        {
+            if (entityInfo.Columns.Where(it => it.IsIgnore == false).Count() > whereColumns.Length + updateColumns.Length &&IsActionUpdateColumns)
+            {
+                var ignoreColums = dt.Columns.Cast<DataColumn>()
+                .Where(it => !whereColumns.Any(y => y.EqualCase(it.ColumnName)))
+                .Where(it => !updateColumns.Any(y => y.EqualCase(it.ColumnName))).ToList();
+                foreach (DataRow item in dt.Rows)
+                {
+                    foreach (var col in ignoreColums)
+                    {
+                        if (item[col.ColumnName].IsNullOrEmpty())
+                        {
+                            if (col.DataType == UtilConstants.StringType)
+                            {
+                                item[col.ColumnName] = string.Empty;
+                            }
+                            else
+                            {
+                                item[col.ColumnName] = Activator.CreateInstance(col.DataType);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         private async Task<int> _BulkUpdate(string tableName,DataTable dataTable, string[] whereColumns, string[] updateColumns)
         {
             var datas = new string[dataTable.Rows.Count].ToList();
