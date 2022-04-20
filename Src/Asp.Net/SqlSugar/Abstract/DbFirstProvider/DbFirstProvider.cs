@@ -21,7 +21,8 @@ namespace SqlSugar
         private bool IsDefaultValue { get; set; }
         private Func<string, bool> WhereColumnsfunc;
         private Func<string, string> FormatFileNameFunc { get; set; }
-        private bool IsStringNullable {get;set;}
+        private bool IsStringNullable {get;set; }
+        private Func<DbColumnInfo,string,string,string> PropertyTextTemplateFunc { get; set; }
         private ISqlBuilder SqlBuilder
         {
             get
@@ -95,6 +96,11 @@ namespace SqlSugar
         public IDbFirst SettingPropertyTemplate(Func<string, string> func)
         {
             this.PropertyTemplate = func(this.PropertyTemplate);
+            return this;
+        }
+        public IDbFirst SettingPropertyTemplate(Func<DbColumnInfo, string,string,string> func)
+        {
+            this.PropertyTextTemplateFunc = func;
             return this;
         }
         public RazorFirst UseRazorAnalysis(string razorClassTemplate, string classNamespace = "Models")
@@ -264,7 +270,7 @@ namespace SqlSugar
                     string PropertyDescriptionText = this.PropertyDescriptionTemplate;
                     string propertyName = GetPropertyName(item);
                     string propertyTypeName = GetPropertyTypeName(item);
-                    PropertyText = GetPropertyText(item, PropertyText);
+                    PropertyText =this.PropertyTextTemplateFunc == null? GetPropertyText(item, PropertyText):this.PropertyTextTemplateFunc(item,this.PropertyTemplate, propertyTypeName);
                     PropertyDescriptionText = GetPropertyDescriptionText(item, PropertyDescriptionText);
                     PropertyText = PropertyDescriptionText + PropertyText;
                     classText = classText.Replace(DbFirstTemplate.KeyPropertyName, PropertyText + (isLast ? "" : ("\r\n" + DbFirstTemplate.KeyPropertyName)));
@@ -284,6 +290,7 @@ namespace SqlSugar
             classText = classText.Replace(DbFirstTemplate.KeyPropertyName, null);
             return classText;
         }
+
         internal string GetClassString(List<DbColumnInfo> columns, ref string className)
         {
             string classText = this.ClassTemplate;

@@ -52,7 +52,23 @@ namespace OrmTest
                         .SettingConstructorTemplate(old =>{return old; })
                    .CreateClassFile("c:\\Demo\\7");
 
-
+            db.DbFirst 
+                  .SettingPropertyTemplate((columns,temp,type) => {
+                      var columnattribute = "\r           [SugarColumn({0})]";
+                      List<string> attributes = new List<string>();
+                      if (columns.IsPrimarykey)
+                          attributes.Add("IsPrimarykey=true");
+                      if (columns.IsIdentity)
+                          attributes.Add("IsIdentity=true");
+                      if (attributes.Count == 0) 
+                      {
+                          columnattribute="";
+                      }
+                      return temp.Replace("{PropertyType}", type)
+                                 .Replace("{PropertyName}", columns.DbColumnName)
+                                 .Replace("{SugarColumn}",string.Format(columnattribute,string.Join(",", attributes)));
+                  }) 
+             .CreateClassFile("c:\\Demo\\8");
 
             foreach (var item in db.DbMaintenance.GetTableInfoList())
             {
@@ -63,7 +79,7 @@ namespace OrmTest
                     db.MappingColumns.Add(col.DbColumnName.ToUpper() /*Format class property name*/, col.DbColumnName, entityName);
                 }
             }
-            db.DbFirst.IsCreateAttribute().CreateClassFile("c:\\Demo\\8", "Models");
+            db.DbFirst.IsCreateAttribute().CreateClassFile("c:\\Demo\\9", "Models");
 
 
             //Use Razor Template
