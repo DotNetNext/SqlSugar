@@ -189,7 +189,7 @@ namespace SqlSugar
                         case ConditionalType.In:
                             if (item.FieldValue == null) item.FieldValue = string.Empty;
                             var inValue1 = string.Empty;
-                            if (item.CSharpTypeName.EqualCase("string"))
+                            if (item.CSharpTypeName.EqualCase("string")|| item.CSharpTypeName==null)
                             {
                                 inValue1 = ("(" + item.FieldValue.Split(',').Distinct().ToArray().ToJoinSqlInVals() + ")");
                             }
