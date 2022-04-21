@@ -218,7 +218,7 @@ namespace SqlSugar
                                 inValue1 = $"(NULL)";
                             }
                             builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "IN", inValue1);
-                            parameters.Add(new SugarParameter(parameterName, item.FieldValue));
+                            //parameters.Add(new SugarParameter(parameterName, item.FieldValue));
                             break;
                         case ConditionalType.NotIn:
                             if (item.FieldValue == null) item.FieldValue = string.Empty;
