@@ -33,7 +33,7 @@ namespace SqlSugar
             {
                 var sugarTable = (SugarTable)sugarAttributeInfo;
                 result.DbTableName = sugarTable.TableName;
-                result.TableDescription = sugarTable.TableDescription;
+                result.TableDescription = sugarTable.TableDescription.ToSqlFilter();
                 result.IsDisabledUpdateAll = sugarTable.IsDisabledUpdateAll;
                 result.IsDisabledDelete = sugarTable.IsDisabledDelete;
             }
@@ -257,7 +257,7 @@ namespace SqlSugar
                         column.DbColumnName = sugarColumn.ColumnName.IsNullOrEmpty() ? property.Name : sugarColumn.ColumnName;
                         column.IsPrimarykey = sugarColumn.IsPrimaryKey;
                         column.IsIdentity = sugarColumn.IsIdentity;
-                        column.ColumnDescription = sugarColumn.ColumnDescription;
+                        column.ColumnDescription = sugarColumn.ColumnDescription.ToSqlFilter();
                         column.IsNullable = sugarColumn.IsNullable;
                         column.Length = sugarColumn.Length;
                         column.OldDbColumnName = sugarColumn.OldColumnName;
