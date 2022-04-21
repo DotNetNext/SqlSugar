@@ -1332,6 +1332,10 @@ namespace SqlSugar
         }
         public List<T> SetContext<ParameterT>(Expression<Func<T, object>> thisFiled, Expression<Func<object>> mappingFiled, ParameterT parameter) 
         {
+            if (parameter == null) 
+            {
+                return new List<T>();
+            }
             List<T> result = new List<T>();
             var entity = this.Context.EntityMaintenance.GetEntityInfo<ParameterT>();
             var queryableContext = this.Context.TempItems["Queryable_To_Context"] as MapperContext<ParameterT>;

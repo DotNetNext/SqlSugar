@@ -81,9 +81,10 @@ namespace OrmTest
             db.ThenMapper(list.Select(it => it.SchoolA), sch =>
             {
                 //参数1: room表关联字段  参数2: school表关联字段，  参数3: school当前记录
-                sch.RoomList = db.Queryable<RoomA>().SetContext(room => room.SchoolId, () => sch.SchoolId, sch).ToList();
-
-                sch.TeacherList = db.Queryable<TeacherA>().SetContext(teachera => teachera.SchoolId, () => sch.SchoolId, sch).ToList();
+                if(sch!=null)
+                  sch.RoomList = db.Queryable<RoomA>().SetContext(room => room.SchoolId, () => sch.SchoolId, sch).ToList();
+                if (sch != null)
+                    sch.TeacherList = db.Queryable<TeacherA>().SetContext(teachera => teachera.SchoolId, () => sch.SchoolId, sch).ToList();
             });
      
 
