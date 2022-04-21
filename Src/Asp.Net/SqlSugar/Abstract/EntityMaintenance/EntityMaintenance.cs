@@ -33,7 +33,7 @@ namespace SqlSugar
             {
                 var sugarTable = (SugarTable)sugarAttributeInfo;
                 result.DbTableName = sugarTable.TableName;
-                result.TableDescription = sugarTable.TableDescription;
+                result.TableDescription = sugarTable.TableDescription.ToSqlFilter();
                 result.IsDisabledUpdateAll = sugarTable.IsDisabledUpdateAll;
                 result.IsDisabledDelete = sugarTable.IsDisabledDelete;
             }
