@@ -1346,7 +1346,7 @@ namespace SqlSugar
                 pkName = ((mappingFiled as LambdaExpression).Body as MemberExpression).Member.Name;
             }
             var key = thisFiled.ToString() +typeof(ParameterT).FullName + typeof(T).FullName;
-            var ids = list.Select(it => it.GetType().GetProperty(pkName).GetValue(it)).ToArray();
+            var ids = list.Where(it=>it!=null).Select(it => it.GetType().GetProperty(pkName).GetValue(it)).Distinct().ToArray();
             if (queryableContext.TempChildLists == null)
                 queryableContext.TempChildLists = new Dictionary<string, object>();
             if (list != null &&  queryableContext.TempChildLists.ContainsKey(key))
