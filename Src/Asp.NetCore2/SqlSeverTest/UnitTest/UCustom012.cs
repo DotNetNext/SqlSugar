@@ -183,6 +183,7 @@ namespace OrmTest
             [SugarColumn(IsPrimaryKey = true)]
             public int StudentId { get; set; }
             public string Name { get; set; }
+            [SugarColumn(IsNullable =true)]
             public int SchoolId { get; set; }
             [Navigate(NavigateType.OneToOne, nameof(SchoolId))]
             public SchoolA SchoolA { get; set; }
