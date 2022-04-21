@@ -188,7 +188,15 @@ namespace SqlSugar
                             break;
                         case ConditionalType.In:
                             if (item.FieldValue == null) item.FieldValue = string.Empty;
-                            var inValue1 = ("(" + item.FieldValue.Split(',').ToJoinSqlInVals() + ")");
+                            var inValue1 = string.Empty;
+                            if (item.CSharpTypeName.EqualCase("string"))
+                            {
+                                inValue1 = ("(" + item.FieldValue.Split(',').Distinct().ToArray().ToJoinSqlInVals() + ")");
+                            }
+                            else 
+                            {
+                                inValue1 = ("(" + item.FieldValue.Split(',').Select(it=>it==""?"null":it).Distinct().ToArray().ToJoinSqlInVals() + ")");
+                            }
                             if (item.CSharpTypeName.HasValue()&&UtilMethods.IsNumber(item.CSharpTypeName)) 
                             {
                                 inValue1= inValue1.Replace("'","");
