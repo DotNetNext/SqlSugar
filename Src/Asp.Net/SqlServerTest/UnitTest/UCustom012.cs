@@ -37,6 +37,7 @@ namespace OrmTest
             db.Insertable(new StudentA() { StudentId = 2, SchoolId = 1, Name = "北大tom" }).ExecuteCommand();
             db.Insertable(new StudentA() { StudentId = 3, SchoolId = 2, Name = "清华jack" }).ExecuteCommand();
             db.Insertable(new StudentA() { StudentId = 4, SchoolId = 2, Name = "清华tom" }).ExecuteCommand();
+            db.Insertable(new StudentA() { StudentId = 5, SchoolId = null, Name = "清华tom" }).ExecuteCommand();
 
             db.Insertable(new TeacherA() { SchoolId = 1, Id = 1, Name = "北大老师01" }).ExecuteCommand();
             db.Insertable(new TeacherA() { SchoolId = 1, Id = 2, Name = "北大老师02" }).ExecuteCommand();
@@ -60,7 +61,9 @@ namespace OrmTest
            .Where(x => x.SchoolA.School_Name.Contains("北大"))
            .ToList();
 
-
+            var list21 = db.Queryable<StudentA>()
+                 .Mapper(it => it.SchoolA, it => it.SchoolId)
+                 .ToList();
 
 
             var list3 = db.Queryable<StudentA>()
@@ -194,7 +197,8 @@ namespace OrmTest
             [SugarColumn(IsPrimaryKey = true)]
             public int StudentId { get; set; }
             public string Name { get; set; }
-            public int SchoolId { get; set; }
+            [SugarColumn(IsNullable =true)]
+            public int? SchoolId { get; set; }
             [Navigate(NavigateType.OneToOne, nameof(SchoolId))]
             public SchoolA SchoolA { get; set; }
             [Navigate(NavigateType.OneToMany, nameof(BookA.studenId))]
