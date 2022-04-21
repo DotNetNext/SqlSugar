@@ -57,7 +57,7 @@ namespace SqlSugar
                 List<object> list = new List<object>();
                 if (isList)
                 {
-                     list = currentList.SelectMany(it => (it.GetType().GetProperty(navObjectName).GetValue(it) as IList).Cast<object>()).ToList();
+                     list = currentList.SelectMany(it => (it.GetType().GetProperty(navObjectName).GetValue(it) as IList)?.Cast<object>()??new List<object> { }).ToList();
                 
                 }
                 else 
