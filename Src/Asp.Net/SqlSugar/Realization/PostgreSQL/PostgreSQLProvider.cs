@@ -113,6 +113,9 @@ namespace SqlSugar
                     {
                         sqlParameter.NpgsqlDbType = ArrayMapping[type] | NpgsqlDbType.Array;
                     }
+                    else if (type==DBNull.Value.GetType()) 
+                    {
+                    }
                     else
                     {
                         Check.Exception(true, sqlParameter.Value.GetType().Name + " No Support");
