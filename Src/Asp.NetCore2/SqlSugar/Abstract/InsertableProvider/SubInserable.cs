@@ -63,6 +63,10 @@ namespace SqlSugar
                     {
                         MemberAssignment memberAssignment = (MemberAssignment)memInit.Bindings[0];
                         tree.Expression = memberAssignment.Expression;
+                        if (memInit.Bindings.Count > 1)
+                        {
+                            tree.Childs = GetSubInsertTree(((MemberAssignment)memInit.Bindings[1]).Expression);
+                        }
                     }
                     resul.Add(tree);
                 }

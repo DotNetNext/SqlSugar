@@ -84,7 +84,7 @@ namespace OrmTest
         public int Id { get; set; }
         public string Name { get; set; }
 
-        [SqlSugar.SugarColumn(IsIgnore = true)]
+        [SqlSugar.Navigate(SqlSugar.NavigateType.OneToMany,nameof(Province1.CountryId))]
         public List<Province1> Provinces { get; set; }
     }
 
@@ -94,7 +94,7 @@ namespace OrmTest
         public int Id { get; set; }
         public string Name { get; set; }
         public int CountryId { get; set; }
-        [SqlSugar.SugarColumn(IsIgnore = true)]
+        [SqlSugar.Navigate(SqlSugar.NavigateType.OneToMany, nameof(City1.ProvinceId))]
         public List<City1> citys { get; set; }
     }
 
@@ -104,5 +104,16 @@ namespace OrmTest
         public int Id { get; set; }
         public int ProvinceId { get; set; }
         public string Name { get; set; }
+        [SqlSugar.Navigate(SqlSugar.NavigateType.OneToMany, nameof(Area1.CityId))]
+        public List<Area1> area { get; set; }
+    }
+
+    public class Area1
+    {
+        [SqlSugar.SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+        public int Id { get; set; }
+        public int CityId { get; set; }
+        public string Name { get; set; }
+
     }
 }

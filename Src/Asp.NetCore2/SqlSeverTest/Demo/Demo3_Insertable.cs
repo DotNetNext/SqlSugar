@@ -231,38 +231,58 @@ namespace OrmTest
         }
         private static void SubIdentity(SqlSugarClient db)
         {
-            db.CodeFirst.InitTables<Country1, Province1, City1>();
+            db.CodeFirst.InitTables<Country1, Province1, City1,Area1>();
             db.DbMaintenance.TruncateTable("Country1");
             db.DbMaintenance.TruncateTable("Province1");
             db.DbMaintenance.TruncateTable("City1");
-            db.Insertable(new List<Country1>()
+            db.DbMaintenance.TruncateTable("Area1");
+            var list = new List<Country1>()
             {
-                 new Country1(){
+               new Country1(){
                      Id=1,
-                      Name="中国",
-                       Provinces=new List<Province1>(){
+                       Name="中国",
+                     Provinces=new List<Province1>(){
                             new Province1{
                                  Id=1001,
                                  Name="江苏",
-                                  citys=new List<City1>(){
-                                       new City1(){ Id=1001001, Name="南通" },
-                                       new City1(){ Id=1001002, Name="南京" }
-                                  }
+                                 citys=new List<City1>(){
+                                      new City1(){
+                                      ProvinceId=1001,
+                                      Name ="昆山",
+                                      area=new List<Area1>() {
+                                            new Area1(){
+                                                   CityId=000,
+                                                   Name="江苏小县城"
+
+                                            }
+                                      }
+
+                                      }
+                                  },
+
                             },
                            new Province1{
                                  Id=1002,
                                  Name="上海",
                                   citys=new List<City1>(){
-                                       new City1(){ Id=1002001, Name="徐汇" },
-                                       new City1(){ Id=1002002, Name="普陀" }
+                                      new City1(){
+                                     ProvinceId=1002,
+                                      Name ="陆家嘴"
+                                      }
+
+
                                   }
                             },
                            new Province1{
                                  Id=1003,
                                  Name="北京",
-                                 citys=new List<City1>(){
-                                       new City1(){ Id=1003001, Name="北京A" },
-                                       new City1(){ Id=1003002, Name="北京B" }
+                                  citys=new List<City1>(){
+                                      new City1(){
+                                       ProvinceId=1003 ,
+                                      Name ="中官村"
+                                      }
+
+
                                   }
                             }
                        }
@@ -286,28 +306,30 @@ namespace OrmTest
                       Name="英国",
                       Id=3
                   }
-            })
+            };
+            //开始插入
+            db.Insertable(list)
             .AddSubList(it => new SubInsertTree()
             {
-                Expression = it.Provinces.First().CountryId,
+                Expression = it.Provinces.First().CountryId,//CountryId自动填充
                 ChildExpression = new List<SubInsertTree>() {
-                      new SubInsertTree(){
-                           Expression=it.Provinces.First().citys.First().ProvinceId
-                      }
+                    new SubInsertTree(){
+                      Expression=it.Provinces.First()
+                                      .citys.First()
+                                      .ProvinceId,//ProvinceId自动填充,
+                     ChildExpression=new List<SubInsertTree>(){
+                             new SubInsertTree(){
+                               Expression = it.Provinces.First().citys.First().area.First().CityId
+                             }
+
+                         }
+                    }
                  }
             })
+            //如果有多个子结果这里还能在.AddSubList
             .ExecuteCommand();
 
-            var list = db.Queryable<Country1>()
-                                 .Mapper(it => it.Provinces, it => it.Provinces.First().CountryId)
-                                 .Mapper(it =>
-                                 {
-                                     foreach (var item in it.Provinces)
-                                     {
-                                         item.citys = db.Queryable<City1>().Where(y => y.ProvinceId == item.Id).ToList();
-                                     }
-                                 })
-                                 .ToList();
+            var list2=db.Queryable<Country1>().Includes(x => x.Provinces, x => x.citys, x => x.area).ToList();
         }
     }
 }
