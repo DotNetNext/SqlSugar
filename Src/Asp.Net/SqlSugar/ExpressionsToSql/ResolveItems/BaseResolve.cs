@@ -618,7 +618,7 @@ namespace SqlSugar
                 }
                 else 
                 {
-                    Check.ExceptionEasy("Expression parsing error. Same Key exists at multiple levels", "表达式解析出错，多层级存在相同的Key ");
+                    
                 }
             }
             return result; ;
