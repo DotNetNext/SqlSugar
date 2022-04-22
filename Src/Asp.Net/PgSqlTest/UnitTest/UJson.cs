@@ -49,9 +49,15 @@ namespace OrmTest
             Db.CodeFirst.InitTables<UnitUUID1XX>();
             Db.Insertable(new UnitUUID1XX() { ID = Guid.NewGuid() }).ExecuteCommand();
             var x1 = Db.Queryable<UnitUUID1XX>().ToList();
+            Db.CodeFirst.InitTables<Unitaaar>();
+            Db.Insertable(new Unitaaar() { arr = null }).ExecuteCommand();
         }
     }
-
+    public class Unitaaar 
+    {
+        [SugarColumn(ColumnDataType = "text []", IsArray = true, IsNullable = true)]
+        public string[] arr { get; set; }
+    }
     public class UnitUUID1XX
     {
         [SugarColumn(ColumnDataType ="uuid")]
