@@ -20,9 +20,19 @@ namespace OrmTest
             list= Db.Queryable<UnitJsonTest>().ToList();
             UValidate.Check("order2", list.First().Order.Name, "Json");
             var list2 = Db.Queryable<UnitJsonTest>().ToList();
+            Db.CodeFirst.InitTables<UnitArrayTest>();
+            Db.Updateable(new UnitArrayTest() { Name="a" }).IgnoreColumns(true).ExecuteCommand();
         }
     }
 
+    public class UnitArrayTest
+    {
+        [SqlSugar.SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+        public int Id { get; set; }
+        public string Name { get; set;}
+        [SqlSugar.SugarColumn(IsArray =true)]
+        public int[] ids { get; set; }
+    }
 
     public class UnitJsonTest
     {
