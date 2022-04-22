@@ -612,7 +612,14 @@ namespace SqlSugar
                 {
                     first = first.Split('(').Last().Trim();
                 }
-                result.Add(first,last);
+                if (!result.ContainsKey(first))
+                {
+                    result.Add(first, last);
+                }
+                else 
+                {
+                    //future
+                }
             }
             return result; ;
         }
