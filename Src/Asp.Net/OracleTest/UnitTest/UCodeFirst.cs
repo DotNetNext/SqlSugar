@@ -33,6 +33,30 @@ namespace OrmTest
             Db.Insertable(new List<UnitDateOfTime22> { new UnitDateOfTime22() { DateTimeOffset1 = DateTimeOffset.Now }, new UnitDateOfTime22() { DateTimeOffset1 = DateTimeOffset.Now } }).ExecuteCommand();
             var list2 = Db.Queryable<UnitDateOfTime22>().ToList();
 
+            if (Db.DbMaintenance.IsAnyTable("UnitCodeFirst131", false))
+                Db.DbMaintenance.DropTable("UnitCodeFirst131");
+            Db.CodeFirst.InitTables<UnitCodeFirst131>();
+            Db.Insertable(new UnitCodeFirst131() { Id = 1 }).ExecuteCommand();
+            Db.CodeFirst.InitTables<UNITCODEFIRST131>();
+            Db.CodeFirst.InitTables<UNITCOdEFIRST131>();
+        }
+        public class UnitCodeFirst131
+        {
+            public int Id { get; set; }
+        }
+        public class UNITCODEFIRST131
+        {
+            public int Id { get; set; }
+            [SqlSugar.SugarColumn(DefaultValue = "a")]
+            public string Name { get; set; }
+        }
+        public class UNITCOdEFIRST131
+        {
+            public int Id { get; set; }
+            [SqlSugar.SugarColumn(DefaultValue = "a")]
+            public string Name { get; set; }
+            [SqlSugar.SugarColumn(DefaultValue = "0")]
+            public int dt { get; set; }
         }
         [SqlSugar.SugarTable("UnitDateOfTime2211")]
         public class UnitDateOfTime22
