@@ -313,6 +313,28 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override bool IsAnyTable(string tableName, bool isCache = true)
+        {
+            if (tableName.Contains("."))
+            {
+                var schemas = GetSchemas();
+                var first =this.SqlBuilder.GetNoTranslationColumnName(tableName.Split('.').First());
+                var schemaInfo= schemas.FirstOrDefault(it=>it.EqualCase(first));
+                if (schemaInfo == null)
+                {
+                    return base.IsAnyTable(tableName, isCache);
+                }
+                else
+                {
+                    var result= this.Context.Ado.GetInt($"select object_id('{tableName}')");
+                    return result > 0;
+                }
+            }
+            else
+            {
+                return base.IsAnyTable(tableName, isCache);
+            }
+        }
         public List<string> GetSchemas()
         {
             return this.Context.Ado.SqlQuery<string>("SELECT name FROM  sys.schemas where name <> 'dbo'");

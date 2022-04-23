@@ -52,6 +52,13 @@ namespace OrmTest
             catch
             {
             }
+            try
+            {
+                Db.Ado.ExecuteCommand(@" create schema [ddd]");
+            }
+            catch
+            {
+            }
             db.CodeFirst.InitTables<UnitTableName>();
             db.CodeFirst.InitTables<UnitGe>();
             db.Insertable(new UnitGe() { geometry1 = "POINT (20 180)" }).ExecuteCommand();
@@ -67,6 +74,7 @@ namespace OrmTest
             Db.CodeFirst.InitTables<UNITCODEFIRST131>();
             Db.CodeFirst.InitTables<UNITCOdEFIRST131>();
             Db.CodeFirst.InitTables<UnitTableUserName>();
+            db.CodeFirst.InitTables<UnitTablename>();
         }
         public class UnitCodeFirst131
         {
@@ -104,7 +112,11 @@ namespace OrmTest
         {
             public string Id { get; set; }
         }
-
+        [SugarTable("ddd.UnitTableName", "备注")]
+        public class UnitTablename
+        {
+            public string Id { get; set; }
+        }
         public class UnitDateOfTime2
         {
           
