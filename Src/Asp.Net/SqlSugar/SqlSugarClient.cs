@@ -346,6 +346,7 @@ namespace SqlSugar
             
             var result= this.Context.Queryable<T>(queryable);
             var QueryBuilder = queryable.QueryBuilder;
+            result.QueryBuilder.IsQueryInQuery = true;
             result.QueryBuilder.WhereIndex = QueryBuilder.WhereIndex++;
             result.QueryBuilder.LambdaExpressions.ParameterIndex = QueryBuilder.LambdaExpressions.ParameterIndex++;
             result.QueryBuilder.LambdaExpressions.Index = QueryBuilder.LambdaExpressions.Index++;

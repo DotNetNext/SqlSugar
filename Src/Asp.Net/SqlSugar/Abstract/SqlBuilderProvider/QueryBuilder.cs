@@ -33,6 +33,7 @@ namespace SqlSugar
         #endregion
 
         #region Splicing basic
+        public bool IsQueryInQuery { get; set; }
         public List<object> Includes { get; set; }
         public List<string> IgnoreColumns { get; set; }
         public bool IsCount { get; set; }
@@ -641,6 +642,18 @@ namespace SqlSugar
                 if (this.AsTables.Any(it=>it.Key==EntityName))
                 {
                     name = this.AsTables.FirstOrDefault(it => it.Key == EntityName).Value;
+                    if (this.IsQueryInQuery && this.SelectValue != null && this.SelectValue is Expression) 
+                    {
+                        if (this.SelectValue.ToString().Contains("Subqueryable()")&& name.TrimStart().StartsWith("(")) 
+                        {
+                            var oldName = name;
+                            name = Regex.Match(name, @"\(.+\)").Value;
+                            if (name.IsNullOrEmpty()) 
+                            {
+                                name = oldName;
+                            }
+                        }
+                    }
                 }
                 var result = Builder.GetTranslationTableName(name);
                 result += UtilConstants.Space;

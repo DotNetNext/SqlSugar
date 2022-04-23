@@ -142,6 +142,11 @@ namespace OrmTest
             {
                 it.UnitA002 = db.Queryable<UnitA002>().SetContext(x => x.orgid, () => it.id, it).First();
             });
+            db.Queryable(db.Queryable<Order>())
+                .Select(it => new
+                {
+                    x = SqlFunc.Subqueryable<Order>().Where(z => z.Id == it.Id).Any()
+                }).ToList();
         }
 
         public class UnitA001
