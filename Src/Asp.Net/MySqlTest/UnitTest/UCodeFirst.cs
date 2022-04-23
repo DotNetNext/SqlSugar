@@ -47,6 +47,30 @@ namespace OrmTest
               Db.DbMaintenance.DropTable("Unit1afa113111");
             Db.CodeFirst.InitTables<Unit1afa113111>();
             var entity=Db.Insertable(new Unit1afa113111() { Name = "a" }).ExecuteReturnEntity();
+            if (Db.DbMaintenance.IsAnyTable("UnitCodeFirst131", false))
+                Db.DbMaintenance.DropTable("UnitCodeFirst131");
+            Db.CodeFirst.InitTables<UnitCodeFirst131>();
+            Db.Insertable(new UnitCodeFirst131() { Id = 1 }).ExecuteCommand();
+            Db.CodeFirst.InitTables<UNITCODEFIRST131>();
+            Db.CodeFirst.InitTables<UNITCOdEFIRST131>();
+        }
+        public class UnitCodeFirst131
+        {
+            public int Id { get; set; }
+        }
+        public class UNITCODEFIRST131
+        {
+            public int Id { get; set; }
+            [SqlSugar.SugarColumn(DefaultValue = "a")]
+            public string Name { get; set; }
+        }
+        public class UNITCOdEFIRST131
+        {
+            public int Id { get; set; }
+            [SqlSugar.SugarColumn(DefaultValue = "a")]
+            public string Name { get; set; }
+            [SqlSugar.SugarColumn(DefaultValue = "0")]
+            public int dt { get; set; }
         }
 
         public class Unit1afa113111 
