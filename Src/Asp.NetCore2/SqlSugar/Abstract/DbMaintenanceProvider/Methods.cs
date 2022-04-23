@@ -196,8 +196,27 @@ namespace SqlSugar
         public virtual bool AddColumn(string tableName, DbColumnInfo columnInfo)
         {
             tableName = this.SqlBuilder.GetTranslationTableName(tableName);
+            var isAddNotNUll = columnInfo.IsNullable == false && columnInfo.DefaultValue.HasValue();
+            if (isAddNotNUll)
+            {
+                columnInfo = this.Context.Utilities.TranslateCopy(columnInfo);
+                columnInfo.IsNullable = true;
+            }
             string sql = GetAddColumnSql(tableName, columnInfo);
             this.Context.Ado.ExecuteCommand(sql);
+            if (isAddNotNUll) 
+            {
+                var dtColums = this.Context.Queryable<object>().AS(columnInfo.TableName).Where("1=2").ToDataTable().Columns.Cast<System.Data.DataColumn>();
+                var dtColumInfo = dtColums.First(it => it.ColumnName.EqualCase(columnInfo.DbColumnName));
+                var type = UtilMethods.GetUnderType(dtColumInfo.DataType);
+                var value= type==UtilConstants.StringType?(object)"": Activator.CreateInstance(type);
+                var dt = new Dictionary<string, object>();
+                dt.Add(columnInfo.DbColumnName, value);
+                this.Context.Updateable(dt)
+                             .AS(tableName)
+                             .Where($"{columnInfo.DbColumnName} is null ").ExecuteCommand();
+                UpdateColumn(tableName, columnInfo);
+            }
             return true;
         }
         public virtual bool UpdateColumn(string tableName, DbColumnInfo column)
