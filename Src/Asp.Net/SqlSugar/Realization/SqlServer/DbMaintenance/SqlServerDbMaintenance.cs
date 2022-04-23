@@ -327,7 +327,14 @@ namespace SqlSugar
                 if (schemas.Any(y => y.EqualCase(tableSchemas)))
                 {
                     sql = string.Format(this.DeleteTableRemarkSql, this.SqlBuilder.GetNoTranslationColumnName(tableName.Split('.').Last()));
-                    sql = sql.Replace(",dbo,", $",{tableSchemas},").Replace("'user'", "'SCHEMA'");
+                    if (tableSchemas.EqualCase("user"))
+                    {
+                        sql = sql.Replace("'user'", "'SCHEMA'").Replace("dbo", $"'{tableSchemas}'");
+                    }
+                    else
+                    {
+                        sql = sql.Replace(",dbo,", $",{tableSchemas},").Replace("'user'", "'SCHEMA'");
+                    }
                 }
             }
             this.Context.Ado.ExecuteCommand(sql);
