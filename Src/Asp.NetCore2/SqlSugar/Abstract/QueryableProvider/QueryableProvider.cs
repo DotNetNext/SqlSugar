@@ -2943,6 +2943,7 @@ namespace SqlSugar
                        _Size=it._Size
                 }).ToList();
             }
+            asyncQueryableBuilder.IsQueryInQuery = this.QueryBuilder.IsQueryInQuery;
             asyncQueryableBuilder.Includes = this.QueryBuilder.Includes;
             asyncQueryableBuilder.Take = this.QueryBuilder.Take;
             asyncQueryableBuilder.Skip = this.QueryBuilder.Skip;

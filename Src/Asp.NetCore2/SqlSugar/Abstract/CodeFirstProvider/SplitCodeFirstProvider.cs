@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,6 +17,19 @@ namespace SqlSugar
         }
 
         public void InitTables(Type type)
+        {
+            var isSplitEntity = type.GetCustomAttributes<SplitTableAttribute>() != null;
+            if (isSplitEntity)
+            {
+                _InitTables(type);
+            }
+            else 
+            {
+                this.Context.CodeFirst.InitTables(type);
+            }
+      
+        }
+        private void _InitTables(Type type)
         {
             //var oldMapping = this.Context.Utilities.TranslateCopy(this.Context.MappingTables);
             SplitTableContext helper = new SplitTableContext(Context)

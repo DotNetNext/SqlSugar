@@ -313,6 +313,28 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override bool IsAnyTable(string tableName, bool isCache = true)
+        {
+            if (tableName.Contains("."))
+            {
+                var schemas = GetSchemas();
+                var first =this.SqlBuilder.GetNoTranslationColumnName(tableName.Split('.').First());
+                var schemaInfo= schemas.FirstOrDefault(it=>it.EqualCase(first));
+                if (schemaInfo == null)
+                {
+                    return base.IsAnyTable(tableName, isCache);
+                }
+                else
+                {
+                    var result= this.Context.Ado.GetInt($"select object_id('{tableName}')");
+                    return result > 0;
+                }
+            }
+            else
+            {
+                return base.IsAnyTable(tableName, isCache);
+            }
+        }
         public List<string> GetSchemas()
         {
             return this.Context.Ado.SqlQuery<string>("SELECT name FROM  sys.schemas where name <> 'dbo'");
@@ -327,7 +349,14 @@ namespace SqlSugar
                 if (schemas.Any(y => y.EqualCase(tableSchemas)))
                 {
                     sql = string.Format(this.DeleteTableRemarkSql, this.SqlBuilder.GetNoTranslationColumnName(tableName.Split('.').Last()));
-                    sql = sql.Replace(",dbo,", $",{tableSchemas},").Replace("'user'", "'SCHEMA'");
+                    if (tableSchemas.EqualCase("user"))
+                    {
+                        sql = sql.Replace("'user'", "'SCHEMA'").Replace("dbo", $"'{tableSchemas}'");
+                    }
+                    else
+                    {
+                        sql = sql.Replace(",dbo,", $",{tableSchemas},").Replace("'user'", "'SCHEMA'");
+                    }
                 }
             }
             this.Context.Ado.ExecuteCommand(sql);
@@ -359,7 +388,14 @@ namespace SqlSugar
                 if (schemas.Any(y => y.EqualCase(tableSchemas))) 
                 {
                     sql = string.Format(this.AddTableRemarkSql, this.SqlBuilder.GetNoTranslationColumnName(tableName.Split('.').Last()), description);
-                    sql = sql.Replace("N'dbo'", $"N'{tableSchemas}'").Replace("N'user'", "N'SCHEMA'");
+                    if (tableSchemas.EqualCase("user"))
+                    {
+                        sql = sql.Replace("N'user', N'dbo'", $"N'user', '{tableSchemas}'").Replace("N'user'", "N'SCHEMA'");
+                    }
+                    else
+                    {
+                        sql = sql.Replace("N'dbo'", $"N'{tableSchemas}'").Replace("N'user'", "N'SCHEMA'");
+                    }
                 }
             }
             this.Context.Ado.ExecuteCommand(sql);

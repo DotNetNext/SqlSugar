@@ -366,7 +366,14 @@ namespace SqlSugar
         {
             if (!string.IsNullOrEmpty(ec.DataType))
             {
-                return ec.DataType != dc.DataType;
+                if (ec.IsIdentity && dc.IsIdentity)
+                {
+                    return false;
+                }
+                else
+                {
+                    return ec.DataType != dc.DataType;
+                }
             }
             var propertyType = UtilMethods.GetUnderType(ec.PropertyInfo);
             var properyTypeName = string.Empty;
