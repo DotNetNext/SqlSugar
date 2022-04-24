@@ -95,6 +95,6 @@ namespace SqlSugar
         KeyValuePair<string,List<SugarParameter>> ToSql();
         void AddQueue();
         SplitTableUpdateProvider<T> SplitTable(Func<List<SplitTableInfo>, IEnumerable<SplitTableInfo>> getTableNamesFunc);
-
+        SplitTableUpdateByObjectProvider<T> SplitTable();
     }
 }

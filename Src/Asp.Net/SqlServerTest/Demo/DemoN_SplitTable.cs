@@ -84,6 +84,8 @@ namespace OrmTest
               new OrderSpliteTest() {Pk=Guid.NewGuid(),Name ="a", Time = DateTime.Now },
               new OrderSpliteTest() {Pk=Guid.NewGuid(),Name ="a", Time = DateTime.Now.AddMonths(-10) }
             });
+            var updateList = db.Queryable<OrderSpliteTest>().SplitTable(x1 => x1).Take(10).ToList();
+            db.Updateable(updateList).IgnoreColumns(it=>it.Name).SplitTable().ExecuteCommand();
 
             db.Fastest<OrderSpliteTest>().SplitTable().BulkUpdate(db.Queryable<OrderSpliteTest>().SplitTable(it=>it).ToList());
             db.Fastest<OrderSpliteTest>().SplitTable().BulkUpdate(db.Queryable<OrderSpliteTest>().SplitTable(it => it).ToList(),new string[] { "pk"},new string[] { "name"});
