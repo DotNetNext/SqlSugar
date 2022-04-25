@@ -22,6 +22,7 @@ namespace SqlSugar
         public DiffLogModel diffModel { get; set; }
         public List<string> tempPrimaryKeys { get; set; }
         internal Action RemoveCacheFunc { get; set; }
+        internal List<T> DeleteObjects { get; set; }
         public EntityInfo EntityInfo
         {
             get
@@ -87,6 +88,7 @@ namespace SqlSugar
 
         public IDeleteable<T> Where(List<T> deleteObjs)
         {
+            this.DeleteObjects = deleteObjs;
             if (deleteObjs == null || deleteObjs.Count() == 0)
             {
                 Where(SqlBuilder.SqlFalse);
@@ -289,6 +291,19 @@ namespace SqlSugar
             };
             var tables = getTableNamesFunc(helper.GetTables());
             result.Tables = tables;
+            result.deleteobj = this;
+            return result;
+        }
+        public SplitTableDeleteByObjectProvider<T> SplitTable()
+        {
+            SplitTableDeleteByObjectProvider<T> result = new SplitTableDeleteByObjectProvider<T>();
+            result.Context = this.Context;
+            Check.ExceptionEasy(this.DeleteObjects == null, "SplitTable() +0  only List<T> can be deleted", "SplitTable()无参数重载只支持根据实体集合删除");
+            result.deleteObjects = this.DeleteObjects.ToArray();
+            SplitTableContext helper = new SplitTableContext((SqlSugarProvider)Context)
+            {
+                EntityInfo = this.EntityInfo
+            };
             result.deleteobj = this;
             return result;
         }
