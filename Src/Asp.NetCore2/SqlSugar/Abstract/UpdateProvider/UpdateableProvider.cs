@@ -103,6 +103,19 @@ namespace SqlSugar
             result.updateobj= this;
             return result;
         }
+        public SplitTableUpdateByObjectProvider<T> SplitTable()
+        {
+            Check.ExceptionEasy(UpdateParameterIsNull, "SplitTable() not supported db.Updateable<T>(),use db.Updateable(list)", ".SplitTable()不支持 db.Updateable<T>()方式更新,请使用 db.Updateable(list) 对象方式更新, 或者使用 .SplitTable(+1)重载");
+            SplitTableUpdateByObjectProvider<T> result = new SplitTableUpdateByObjectProvider<T>();
+            result.Context = this.Context;
+            result.UpdateObjects = this.UpdateObjs;
+            SplitTableContext helper = new SplitTableContext(Context)
+            {
+                EntityInfo = this.EntityInfo
+            };
+            result.updateobj = this;
+            return result;
+        }
         public IUpdateable<T> RemoveDataCache()
         {
             this.RemoveCacheFunc = () =>
