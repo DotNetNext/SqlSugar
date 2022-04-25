@@ -13,8 +13,11 @@ namespace OrmTest
 			var db = NewUnitTest.Db;
 			db.CodeFirst.InitTables<OperatorInfo, Role, OptRole>();
 			db.Queryable<OperatorInfo>()
-				.Includes(x => x.Roles).Where(x => x.Roles.Any())
+				.Includes(x => x.Roles).Where(x => x.Roles.Any(z=>z.id==1))
 				.ToList();
+			db.Queryable<OperatorInfo>()
+		.Includes(x => x.Roles).Where(x => x.Roles.Any())
+		.ToList();
 		}
 
 			/// <summary>
