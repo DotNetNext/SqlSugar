@@ -87,6 +87,9 @@ namespace OrmTest
             var updateList = db.Queryable<OrderSpliteTest>().SplitTable(x1 => x1).Take(10).ToList();
             db.Updateable(updateList).IgnoreColumns(it=>it.Name).SplitTable().ExecuteCommand();
 
+
+            db.Deleteable(updateList).SplitTable().ExecuteCommand();
+
             db.Fastest<OrderSpliteTest>().SplitTable().BulkUpdate(db.Queryable<OrderSpliteTest>().SplitTable(it=>it).ToList());
             db.Fastest<OrderSpliteTest>().SplitTable().BulkUpdate(db.Queryable<OrderSpliteTest>().SplitTable(it => it).ToList(),new string[] { "pk"},new string[] { "name"});
             Console.WriteLine("#### CodeFirst end ####");
