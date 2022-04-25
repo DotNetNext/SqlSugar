@@ -24,10 +24,12 @@ namespace SqlSugar
             foreach (var item in groupModels.GroupBy(it => it.GroupName))
             {
                 var addList = item.Select(it => it.Item).ToList();
-                result += this.Context.Updateable(addList).AS(item.Key).ExecuteCommand();
+                result += this.Context.Updateable(addList).IgnoreColumns(GetIgnoreColumns()).AS(item.Key).ExecuteCommand();
             }
             return result;
         }
+
+
         public async Task<int> ExecuteCommandAsync()
         {
             List<GroupModel> groupModels;
@@ -36,11 +38,22 @@ namespace SqlSugar
             foreach (var item in groupModels.GroupBy(it => it.GroupName))
             {
                 var addList = item.Select(it => it.Item).ToList();
-                result +=await this.Context.Updateable(addList).AS(item.Key).ExecuteCommandAsync();
+                result += await this.Context.Updateable(addList).IgnoreColumns(GetIgnoreColumns()).AS(item.Key).ExecuteCommandAsync();
             }
             return result;
         }
-
+        private string [] GetIgnoreColumns()
+        {
+            if (this.updateobj.UpdateBuilder.DbColumnInfoList.Any())
+            {
+               var columns=this.updateobj.UpdateBuilder.DbColumnInfoList.Select(it => it.DbColumnName).Distinct().ToList();
+                return this.Context.EntityMaintenance.GetEntityInfo<T>().Columns.Where(x => !columns.Any(y => y.EqualCase(x.DbColumnName))).Select(it => it.DbColumnName).ToArray();
+            }
+            else 
+            {
+                return null;
+            }
+        }
         private void GroupDataList(T[] datas, out List<GroupModel> groupModels, out int result)
         {
             var attribute = typeof(T).GetCustomAttribute<SplitTableAttribute>() as SplitTableAttribute;
