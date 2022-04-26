@@ -369,6 +369,7 @@ namespace SqlSugar
             }
             catch (Exception ex)
             {
+                SugarCatch(ex, sql,parameters);
                 CommandType = CommandType.Text;
                 if (ErrorEvent != null)
                     ExecuteErrorEvent(sql, parameters, ex);
@@ -408,6 +409,7 @@ namespace SqlSugar
             }
             catch (Exception ex)
             {
+                SugarCatch(ex, sql, parameters);
                 CommandType = CommandType.Text;
                 if (ErrorEvent != null)
                     ExecuteErrorEvent(sql, parameters, ex);
@@ -440,6 +442,7 @@ namespace SqlSugar
             }
             catch (Exception ex)
             {
+                SugarCatch(ex, sql, parameters);
                 CommandType = CommandType.Text;
                 if (ErrorEvent != null)
                     ExecuteErrorEvent(sql, parameters, ex);
@@ -475,6 +478,7 @@ namespace SqlSugar
             }
             catch (Exception ex)
             {
+                SugarCatch(ex, sql, parameters);
                 CommandType = CommandType.Text;
                 if (ErrorEvent != null)
                     ExecuteErrorEvent(sql, parameters, ex);
@@ -515,6 +519,7 @@ namespace SqlSugar
             }
             catch (Exception ex)
             {
+                SugarCatch(ex, sql, parameters);
                 CommandType = CommandType.Text;
                 if (ErrorEvent != null)
                     ExecuteErrorEvent(sql, parameters, ex);
@@ -559,6 +564,7 @@ namespace SqlSugar
             }
             catch (Exception ex)
             {
+                SugarCatch(ex, sql, parameters);
                 CommandType = CommandType.Text;
                 if (ErrorEvent != null)
                     ExecuteErrorEvent(sql, parameters, ex);
@@ -594,6 +600,7 @@ namespace SqlSugar
             }
             catch (Exception ex)
             {
+                SugarCatch(ex, sql, parameters);
                 CommandType = CommandType.Text;
                 if (ErrorEvent != null)
                     ExecuteErrorEvent(sql, parameters, ex);
@@ -1282,6 +1289,14 @@ namespace SqlSugar
         #endregion
 
         #region  Helper
+
+        private void SugarCatch(Exception ex, string sql, SugarParameter[] parameters)
+        {
+            if (sql != null && sql.Contains("{year}{month}{day}")) 
+            {
+                Check.ExceptionEasy("need .SplitTable() message:" + ex.Message, "当前代码是否缺少 .SplitTable() ,可以看文档 [分表]  , 详细错误:" + ex.Message);
+            }
+        }
         public virtual void RemoveCancellationToken()
         {
             this.CancellationToken = null;
