@@ -18,31 +18,58 @@ namespace SqlSugar
         {
             this.conn = conn;
             var key = GetKey();
-            CallContextAsync<SqlSugarProvider>.SetData(key, conn);
+            this.GetContext(true);
         }
         public SqlSugarProvider ScopedContext { get { return GetContext(); } }
-        private SqlSugarProvider GetAsyncContext(string key)
+        private SqlSugarProvider GetAsyncContext(bool isInit=false)
         {
-            SqlSugarProvider result = CallContextAsync<SqlSugarProvider>.GetData(key);
-            if (result == null)
+            if (isInit)
             {
-                CallContextAsync<SqlSugarProvider>.SetData(key, new SqlSugarProvider(conn.CurrentConnectionConfig));
-                result = CallContextAsync<SqlSugarProvider>.GetData(key);
+                CallContextAsync<SqlSugarProvider>.SetData(GetKey(), this.conn);
+                isInit = false;
+                return conn;
             }
+            else
+            {
+                SqlSugarProvider result = CallContextAsync<SqlSugarProvider>.GetData(GetKey());
+                if (result == null)
+                {
+                    SqlSugarProvider db=new SqlSugarProvider(this.conn.CurrentConnectionConfig);
+                    CallContextAsync<SqlSugarProvider>.SetData(GetKey(), db);
+                    return db;
+                }
+                else
+                {
 
-            return result;
-        }
-        private SqlSugarProvider GetThreadContext(string key)
-        {
-            SqlSugarProvider result = CallContextThread<SqlSugarProvider>.GetData(key);
-            if (result == null)
-            {
-                CallContextThread<SqlSugarProvider>.SetData(key, new SqlSugarProvider (this.CurrentConnectionConfig));
-                result = CallContextThread<SqlSugarProvider>.GetData(key);
+                    return result;
+                }
             }
-            return result;
         }
-        private SqlSugarProvider GetContext()
+        private SqlSugarProvider GetThreadContext(bool isInit = false)
+        {
+            if (isInit)
+            {
+                CallContextThread<SqlSugarProvider>.SetData(GetKey(), this.conn);
+                isInit = false;
+                return conn;
+            }
+            else
+            {
+                SqlSugarProvider result = CallContextThread<SqlSugarProvider>.GetData(GetKey());
+                if (result == null)
+                {
+                    SqlSugarProvider db = new SqlSugarProvider(this.conn.CurrentConnectionConfig);
+                    CallContextThread<SqlSugarProvider>.SetData(GetKey(), db);
+                    return db;
+                }
+                else
+                {
+
+                    return result;
+                }
+            }
+        }
+        private SqlSugarProvider GetContext(bool isInit = false)
         {
             SqlSugarProvider result = null;
             var key = GetKey(); ;
@@ -51,11 +78,11 @@ namespace SqlSugar
             var isAsync = UtilMethods.IsAnyAsyncMethod(methods);
             if (isAsync)
             {
-                result= GetAsyncContext(key);
+                result= GetAsyncContext(isInit);
             }
             else
             {
-                result= GetThreadContext(key);
+                result= GetThreadContext(isInit);
             }
             return result;
         }
