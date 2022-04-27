@@ -294,7 +294,8 @@ namespace SqlSugar
                     }
                     else if (IsJsonList(readerValues, item))
                     {
-                        result.Add(name, DeserializeObject<List<Dictionary<string, object>>>(readerValues[item.Name.ToLower()].ToString()));
+                        var json = readerValues.First(y => y.Key.EqualCase(item.Name)).Value.ToString();
+                        result.Add(name, DeserializeObject<List<Dictionary<string, object>>>(json));
                     }
                     else if (IsBytes(readerValues, item))
                     {
@@ -374,10 +375,10 @@ namespace SqlSugar
         private static bool IsJsonList(Dictionary<string, object> readerValues, PropertyInfo item)
         {
             return item.PropertyType.FullName.IsCollectionsList() &&
-                                        readerValues.ContainsKey(item.Name.ToLower()) &&
-                                        readerValues[item.Name.ToLower()] != null &&
-                                        readerValues[item.Name.ToLower()].GetType() == UtilConstants.StringType &&
-                                        Regex.IsMatch(readerValues[item.Name.ToLower()].ToString(), @"^\[{.+\}]$");
+                                        readerValues.Any(y=>y.Key.EqualCase(item.Name)) &&
+                                        readerValues.First(y => y.Key.EqualCase(item.Name)).Value != null &&
+                                        readerValues.First(y => y.Key.EqualCase(item.Name)).Value.GetType() == UtilConstants.StringType &&
+                                        Regex.IsMatch(readerValues.First(y => y.Key.EqualCase(item.Name)).Value.ToString(), @"^\[{.+\}]$");
         }
 
         private Dictionary<string, object> DataReaderToDynamicList_Part<T>(Dictionary<string, object> readerValues, PropertyInfo item, List<T> reval, Dictionary<string, string> mappingKeys=null)
