@@ -2332,6 +2332,13 @@ namespace SqlSugar
             _InitNavigat(result);
             return result;
         }
+        private async Task _InitNavigatAsync<TResult>(List<TResult> result)
+        {
+            if (this.QueryBuilder.Includes != null)
+            {
+                await Task.Run(() => { _InitNavigat(result); });
+            }
+        }
 
         private void _InitNavigat<TResult>(List<TResult> result)
         {
@@ -2366,7 +2373,7 @@ namespace SqlSugar
             }
             RestoreMapping();
             _Mapper(result);
-            await Task.Run(() => { _InitNavigat(result); });
+            await _InitNavigatAsync(result);
             return result;
         }
 

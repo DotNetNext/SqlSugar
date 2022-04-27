@@ -38,9 +38,9 @@ namespace OrmTest
 			db.Queryable<OperatorInfo>()
 				.Includes(x => x.Roles).Where(x => x.Roles.Any(z=>z.id==1))
 				.ToList();
-			db.Queryable<OperatorInfo>()
+			var list=db.Queryable<OperatorInfo>()
 				.Includes(x => x.Roles).Where(x => x.Roles.Any())
-				.ToList();
+				.ToListAsync().GetAwaiter().GetResult();
 			//db.Queryable<OperatorInfo>()
 			//	.Includes(x => x.Roles.Where(z=>z.name==x.realname).ToList())
 			//	.ToList();
