@@ -656,6 +656,14 @@ namespace SqlSugar
             var configId = attr.configId;
             return this.GetConnection(configId);
         }
+        public SqlSugarScopeProvider GetConnectionScopeWithAttr<T>()
+        {
+            var attr = typeof(T).GetCustomAttribute<TenantAttribute>();
+            if (attr == null)
+                return this.GetConnection(this.CurrentConnectionConfig.ConfigId);
+            var configId = attr.configId;
+            return this.GetConnectionScope(configId);
+        }
         public SqlSugarProvider GetConnection(dynamic configId)
         {
             InitTenant();
@@ -678,6 +686,12 @@ namespace SqlSugar
                 db.Context.CurrentConnectionConfig.AopEvents = new AopEvents();
             }
             return db.Context;
+        }
+
+        public SqlSugarScopeProvider GetConnectionScope(dynamic configId)
+        {
+            var conn = GetConnection(configId);
+            return new SqlSugarScopeProvider(conn);
         }
         public bool IsAnyConnection(dynamic configId)
         {

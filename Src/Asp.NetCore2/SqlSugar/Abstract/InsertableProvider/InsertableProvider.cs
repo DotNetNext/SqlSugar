@@ -255,6 +255,14 @@ namespace SqlSugar
             object setValue = 0;
             if (idValue > int.MaxValue)
                 setValue = idValue;
+            else if (this.EntityInfo.Columns.Any(it => it.IsIdentity && it.PropertyInfo.PropertyType == typeof(uint)))
+            {
+                setValue = Convert.ToUInt32(idValue);
+            }
+            else if (this.EntityInfo.Columns.Any(it => it.IsIdentity && it.PropertyInfo.PropertyType == typeof(ulong)))
+            {
+                setValue = Convert.ToUInt64(idValue);
+            }
             else
                 setValue = Convert.ToInt32(idValue);
             this.Context.EntityMaintenance.GetProperty<T>(identityKey).SetValue(result, setValue, null);

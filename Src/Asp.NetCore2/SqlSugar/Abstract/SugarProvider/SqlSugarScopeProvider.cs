@@ -10,43 +10,101 @@ using System.Threading.Tasks;
 
 namespace SqlSugar
 {
-    public partial class SqlSugarScope: ISqlSugarClient, ITenant
+    public class SqlSugarScopeProvider:ISqlSugarClient
     {
-        private SqlSugarScope()
-        {
+        private  SqlSugarProvider conn;
 
-        }
-        public SqlSugarScope(ConnectionConfig config)
+        public SqlSugarScopeProvider(SqlSugarProvider conn)
         {
-           _configs=new List<ConnectionConfig>() { config};
+            this.conn = conn;
+            var key = GetKey();
+            this.GetContext(true);
         }
-        public SqlSugarScope(List<ConnectionConfig> configs)
+        public SqlSugarProvider ScopedContext { get { return GetContext(); } }
+        private SqlSugarProvider GetAsyncContext(bool isInit=false)
         {
-            _configs = configs;
+            if (isInit)
+            {
+                CallContextAsync<SqlSugarProvider>.SetData(GetKey(), this.conn);
+                isInit = false;
+                return conn;
+            }
+            else
+            {
+                SqlSugarProvider result = CallContextAsync<SqlSugarProvider>.GetData(GetKey());
+                if (result == null)
+                {
+                    SqlSugarProvider db=new SqlSugarProvider(this.conn.CurrentConnectionConfig);
+                    CallContextAsync<SqlSugarProvider>.SetData(GetKey(), db);
+                    return db;
+                }
+                else
+                {
+
+                    return result;
+                }
+            }
         }
-        public SqlSugarScope(ConnectionConfig config, Action<SqlSugarClient> configAction)
+        private SqlSugarProvider GetThreadContext(bool isInit = false)
         {
-            _configs = new List<ConnectionConfig>() { config };
-            this._configAction = configAction;
+            if (isInit)
+            {
+                CallContextThread<SqlSugarProvider>.SetData(GetKey(), this.conn);
+                isInit = false;
+                return conn;
+            }
+            else
+            {
+                SqlSugarProvider result = CallContextThread<SqlSugarProvider>.GetData(GetKey());
+                if (result == null)
+                {
+                    SqlSugarProvider db = new SqlSugarProvider(this.conn.CurrentConnectionConfig);
+                    CallContextThread<SqlSugarProvider>.SetData(GetKey(), db);
+                    return db;
+                }
+                else
+                {
+
+                    return result;
+                }
+            }
         }
-        public SqlSugarScope(List<ConnectionConfig> configs, Action<SqlSugarClient> configAction)
+        private SqlSugarProvider GetContext(bool isInit = false)
         {
-            _configs = configs;
-            this._configAction = configAction;
+            SqlSugarProvider result = null;
+            var key = GetKey(); ;
+            StackTrace st = new StackTrace(true);
+            var methods = st.GetFrames();
+            var isAsync = UtilMethods.IsAnyAsyncMethod(methods);
+            if (isAsync)
+            {
+                result= GetAsyncContext(isInit);
+            }
+            else
+            {
+                result= GetThreadContext(isInit);
+            }
+            return result;
         }
-        public SqlSugarClient ScopedContext{ get{ return GetContext();}}
-        public SugarActionType SugarActionType { get => ScopedContext.SugarActionType;set=> ScopedContext.SugarActionType=value;  }
+        private  dynamic GetKey()
+        {
+            return "SqlSugarProviderScope_" + conn.CurrentConnectionConfig.ConfigId + conn.GetHashCode();
+        }
+
+        #region  API
+
+        public SugarActionType SugarActionType { get => ScopedContext.SugarActionType; set => ScopedContext.SugarActionType = value; }
         public MappingTableList MappingTables { get => ScopedContext.MappingTables; set => ScopedContext.MappingTables = value; }
-        public MappingColumnList MappingColumns { get => ScopedContext.MappingColumns; set => ScopedContext.MappingColumns=value; }
-        public IgnoreColumnList IgnoreColumns { get => ScopedContext.IgnoreColumns; set => ScopedContext.IgnoreColumns=value; }
-        public IgnoreColumnList IgnoreInsertColumns { get => ScopedContext.IgnoreInsertColumns; set => ScopedContext.IgnoreInsertColumns=value; }
-        public Dictionary<string, object> TempItems { get => ScopedContext.TempItems; set => ScopedContext.TempItems=value; }
+        public MappingColumnList MappingColumns { get => ScopedContext.MappingColumns; set => ScopedContext.MappingColumns = value; }
+        public IgnoreColumnList IgnoreColumns { get => ScopedContext.IgnoreColumns; set => ScopedContext.IgnoreColumns = value; }
+        public IgnoreColumnList IgnoreInsertColumns { get => ScopedContext.IgnoreInsertColumns; set => ScopedContext.IgnoreInsertColumns = value; }
+        public Dictionary<string, object> TempItems { get => ScopedContext.TempItems; set => ScopedContext.TempItems = value; }
         public ConfigQuery ConfigQuery { get => ScopedContext.ConfigQuery; set => ScopedContext.ConfigQuery = value; }
 
         public bool IsSystemTablesConfig => ScopedContext.IsSystemTablesConfig;
 
-        public Guid ContextID { get => ScopedContext.ContextID; set => ScopedContext.ContextID=value; }
-        public ConnectionConfig CurrentConnectionConfig { get => ScopedContext.CurrentConnectionConfig; set => ScopedContext.CurrentConnectionConfig=value; }
+        public Guid ContextID { get => ScopedContext.ContextID; set => ScopedContext.ContextID = value; }
+        public ConnectionConfig CurrentConnectionConfig { get => ScopedContext.CurrentConnectionConfig; set => ScopedContext.CurrentConnectionConfig = value; }
 
         public IAdo Ado => ScopedContext.Ado;
 
@@ -58,22 +116,14 @@ namespace SqlSugar
 
         public IDbMaintenance DbMaintenance => ScopedContext.DbMaintenance;
 
-        public EntityMaintenance EntityMaintenance { get => ScopedContext.EntityMaintenance; set => ScopedContext.EntityMaintenance=value; }
-        public QueryFilterProvider QueryFilter { get => ScopedContext.QueryFilter; set => ScopedContext.QueryFilter=value; }
-        public IContextMethods Utilities { get => ScopedContext.Utilities; set => ScopedContext.Utilities=value; }
-        public QueueList Queues { get => ScopedContext.Queues; set => ScopedContext.Queues=value; }
+        public EntityMaintenance EntityMaintenance { get => ScopedContext.EntityMaintenance; set => ScopedContext.EntityMaintenance = value; }
+        public QueryFilterProvider QueryFilter { get => ScopedContext.QueryFilter; set => ScopedContext.QueryFilter = value; }
+        public IContextMethods Utilities { get => ScopedContext.Utilities; set => ScopedContext.Utilities = value; }
+        public QueueList Queues { get => ScopedContext.Queues; set => ScopedContext.Queues = value; }
 
         public SugarCacheProvider DataCache => ScopedContext.DataCache;
 
-        public ITenant AsTenant() 
-        {
-            return ScopedContext.AsTenant();
-        }
-        public void AddConnection(ConnectionConfig connection)
-        {
-            ScopedContext.AddConnection(connection);
-        }
-
+         
         public void AddQueue(string sql, object parsmeters = null)
         {
             ScopedContext.AddQueue(sql, parsmeters);
@@ -81,42 +131,22 @@ namespace SqlSugar
 
         public void AddQueue(string sql, List<SugarParameter> parsmeters)
         {
-            ScopedContext.AddQueue(sql,parsmeters);
+            ScopedContext.AddQueue(sql, parsmeters);
         }
 
         public void AddQueue(string sql, SugarParameter parsmeter)
         {
-            ScopedContext.AddQueue(sql,parsmeter);
+            ScopedContext.AddQueue(sql, parsmeter);
         }
 
-        public void BeginTran()
-        {
-            ScopedContext.BeginTran();
-        }
-
-        public void ChangeDatabase(dynamic configId)
-        {
-            ScopedContext.ChangeDatabase(configId);
-        }
-
-        public void ChangeDatabase(Func<ConnectionConfig, bool> changeExpression)
-        {
-            ScopedContext.ChangeDatabase(changeExpression);
-        }
-
+      
         public void Close()
         {
             ScopedContext.Close();
         }
-
-        public void CommitTran()
-        {
-            ScopedContext.CommitTran();
-        }
-
         public IDeleteable<T> Deleteable<T>() where T : class, new()
         {
-           return ScopedContext.Deleteable<T>();
+            return ScopedContext.Deleteable<T>();
         }
 
         public IDeleteable<T> Deleteable<T>(dynamic primaryKeyValue) where T : class, new()
@@ -153,23 +183,7 @@ namespace SqlSugar
         {
             ScopedContext.Dispose();
         }
-
-        public SqlSugarProvider GetConnection(dynamic configId)
-        {
-            return ScopedContext.GetConnection(configId);
-        }
-        public SqlSugarScopeProvider GetConnectionScope(dynamic configId)
-        {
-            return ScopedContext.GetConnectionScope(configId);
-        }
-        public SqlSugarProvider GetConnectionWithAttr<T>()
-        {
-            return ScopedContext.GetConnectionWithAttr<T>();
-        }
-        public SqlSugarScopeProvider GetConnectionScopeWithAttr<T>()
-        {
-            return ScopedContext.GetConnectionScopeWithAttr<T>();
-        }
+ 
         public DateTime GetDate()
         {
             return ScopedContext.GetDate();
@@ -222,7 +236,7 @@ namespace SqlSugar
 
         public ISugarQueryable<ExpandoObject> Queryable(string tableName, string shortName)
         {
-            return ScopedContext.Queryable(tableName,shortName);
+            return ScopedContext.Queryable(tableName, shortName);
         }
 
         public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, bool>> joinExpression) where T : class, new()
@@ -394,7 +408,7 @@ namespace SqlSugar
             where T : class, new()
             where T2 : class, new()
         {
-            return ScopedContext.Queryable(joinQueryable1,joinQueryable2, joinExpression);
+            return ScopedContext.Queryable(joinQueryable1, joinQueryable2, joinExpression);
         }
 
         public ISugarQueryable<T, T2> Queryable<T, T2>(ISugarQueryable<T> joinQueryable1, ISugarQueryable<T2> joinQueryable2, JoinType joinType, Expression<Func<T, T2, bool>> joinExpression)
@@ -409,9 +423,9 @@ namespace SqlSugar
             where T2 : class, new()
             where T3 : class, new()
         {
-            return ScopedContext.Queryable(joinQueryable1, joinQueryable2, joinQueryable3,joinType1,joinExpression1,joinType2,joinExpression2);
+            return ScopedContext.Queryable(joinQueryable1, joinQueryable2, joinQueryable3, joinType1, joinExpression1, joinType2, joinExpression2);
         }
-        public ISugarQueryable<T, T2, T3,T4> Queryable<T, T2, T3, T4>(ISugarQueryable<T> joinQueryable1, ISugarQueryable<T2> joinQueryable2, ISugarQueryable<T3> joinQueryable3, ISugarQueryable<T4> joinQueryable4, JoinType joinType1, Expression<Func<T, T2, T3, T4, bool>> joinExpression1, JoinType joinType2, Expression<Func<T, T2, T3, T4, bool>> joinExpression2, JoinType joinType3, Expression<Func<T, T2, T3, T4, bool>> joinExpression3)
+        public ISugarQueryable<T, T2, T3, T4> Queryable<T, T2, T3, T4>(ISugarQueryable<T> joinQueryable1, ISugarQueryable<T2> joinQueryable2, ISugarQueryable<T3> joinQueryable3, ISugarQueryable<T4> joinQueryable4, JoinType joinType1, Expression<Func<T, T2, T3, T4, bool>> joinExpression1, JoinType joinType2, Expression<Func<T, T2, T3, T4, bool>> joinExpression2, JoinType joinType3, Expression<Func<T, T2, T3, T4, bool>> joinExpression3)
             where T : class, new()
             where T2 : class, new()
             where T3 : class, new()
@@ -447,23 +461,6 @@ namespace SqlSugar
         public IReportable<T> Reportable<T>(T[] array)
         {
             return ScopedContext.Reportable(array);
-        }
-
-        public void RollbackTran()
-        {
-             ScopedContext.RollbackTran();
-        }
-
-
-        [Obsolete("use Storageable")]
-        public ISaveable<T> Saveable<T>(List<T> saveObjects) where T : class, new()
-        {
-            return ScopedContext.Saveable(saveObjects);
-        }
-        [Obsolete("use Storageable")]
-        public ISaveable<T> Saveable<T>(T saveObject) where T : class, new()
-        {
-            return ScopedContext.Saveable(saveObject);
         }
 
         public int SaveQueues(bool isTran = true)
@@ -636,35 +633,6 @@ namespace SqlSugar
         {
             return ScopedContext.SplitHelper(dataList);
         }
-        public SqlSugarTransaction UseTran()
-        {
-            return ScopedContext.UseTran();
-        }
-        public DbResult<bool> UseTran(Action action, Action<Exception> errorCallBack = null)
-        {
-            return ScopedContext.UseTran(action,errorCallBack);
-        }
-
-        public DbResult<T> UseTran<T>(Func<T> action, Action<Exception> errorCallBack = null)
-        {
-            return ScopedContext.UseTran(action,errorCallBack);
-        }
-
-        public Task<DbResult<bool>> UseTranAsync(Func<Task> action, Action<Exception> errorCallBack = null)
-        {
-            return ScopedContext.UseTranAsync(action, errorCallBack);
-        }
-
-        public Task<DbResult<T>> UseTranAsync<T>(Func<Task<T>> action, Action<Exception> errorCallBack = null)
-        {
-            return ScopedContext.UseTranAsync(action, errorCallBack);
-        }
-
-        public bool IsAnyConnection(dynamic configId)
-        {
-            return ScopedContext.IsAnyConnection(configId);
-        }
-
         public IFastest<T> Fastest<T>() where T : class, new()
         {
             return ScopedContext.Fastest<T>();
@@ -679,5 +647,21 @@ namespace SqlSugar
         {
             return ScopedContext.ThenMapperAsync(list, action);
         }
+
+        public ITenant AsTenant()
+        {
+            return ScopedContext.AsTenant();
+        }
+
+        public ISaveable<T> Saveable<T>(List<T> saveObjects) where T : class, new()
+        {
+            return ScopedContext.Saveable(saveObjects);
+        }
+
+        public ISaveable<T> Saveable<T>(T saveObject) where T : class, new()
+        {
+            return ScopedContext.Saveable(saveObject);
+        }
+        #endregion
     }
 }
