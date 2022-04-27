@@ -12,13 +12,39 @@ namespace OrmTest
 		{
 			var db = NewUnitTest.Db;
 			db.CodeFirst.InitTables<OperatorInfo, Role, OptRole>();
+			db.DbMaintenance.TruncateTable<OperatorInfo, Role, OptRole>();
+			db.Insertable(new OperatorInfo()
+			{
+				 id="1",
+				  createTime=DateTime.Now,	
+				   isDel=1,
+				    isDisabled=1,
+					 openid="",
+					  phone="",
+					   pwd="",
+					    realname="a01",
+						 remark="a",
+						   sno="a",
+						    username="a01"
+			}).ExecuteCommand();
+			var id=db.Insertable(new Role()
+			{
+				 id=1,
+				  createTime=DateTime.Now,
+				   name="admin"
+
+			}).ExecuteReturnIdentity();
+			db.Insertable(new OptRole() { operId="1", roleId=id }).ExecuteCommand();
 			db.Queryable<OperatorInfo>()
 				.Includes(x => x.Roles).Where(x => x.Roles.Any(z=>z.id==1))
 				.ToList();
 			db.Queryable<OperatorInfo>()
-		.Includes(x => x.Roles).Where(x => x.Roles.Any())
-		.ToList();
-		}
+				.Includes(x => x.Roles).Where(x => x.Roles.Any())
+				.ToList();
+			//db.Queryable<OperatorInfo>()
+			//	.Includes(x => x.Roles.Where(z=>z.name==x.realname).ToList())
+			//	.ToList();
+		 }
 
 			/// <summary>
 			/// 描述：
