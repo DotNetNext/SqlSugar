@@ -88,7 +88,7 @@ namespace SqlSugar
         }
         private  dynamic GetKey()
         {
-            return "SqlSugarProviderScope_" + conn.CurrentConnectionConfig.ConfigId + conn.GetHashCode();
+            return "SqlSugarProviderScope_" + conn.CurrentConnectionConfig.ConfigId;
         }
 
         #region  API
