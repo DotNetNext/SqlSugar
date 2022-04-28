@@ -1856,7 +1856,7 @@ namespace SqlSugar
         public Task<List<T>> ToPageListAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber, RefAsync<int> totalPage) 
         {
             var result = ToPageListAsync(pageNumber, pageSize, totalNumber);
-            totalPage = (totalNumber + pageSize - 1) / pageSize;
+            totalPage.Value = (totalNumber + pageSize - 1) / pageSize;
             return result;
         }
         public async Task<string> ToJsonAsync()
