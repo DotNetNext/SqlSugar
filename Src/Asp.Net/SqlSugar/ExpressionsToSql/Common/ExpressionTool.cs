@@ -182,7 +182,19 @@ namespace SqlSugar
             reval = objReference;
             return reval;
         }
-
+        public static string GetMemberName(Expression expression) 
+        {
+            if (expression is LambdaExpression) 
+            {
+                expression = (expression as LambdaExpression).Body;
+            }
+            if (expression is UnaryExpression) 
+            {
+                expression = ((UnaryExpression)expression).Operand;   
+            }
+            var member = (expression as MemberExpression).Member.Name;
+            return member;
+        }
         internal static object GetExpressionValue(Expression expression)
         {
             try

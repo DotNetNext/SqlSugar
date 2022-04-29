@@ -165,6 +165,10 @@ namespace SqlSugar
             {
                 OneToOne(list, selector, listItemEntity, navObjectNamePropety, navObjectNameColumnInfo);
             }
+            else if (navObjectNameColumnInfo.Navigat.NavigatType == NavigateType.Dynamic)
+            {
+                Dynamic(list, selector, listItemEntity, navObjectNamePropety, navObjectNameColumnInfo);
+            }
             else
             {
                 ManyToMany(list, selector, listItemEntity, navObjectNamePropety, navObjectNameColumnInfo);
@@ -312,6 +316,30 @@ namespace SqlSugar
             }
         }
 
+        private void Dynamic(List<object> list, Func<ISugarQueryable<object>, List<object>> selector, EntityInfo listItemEntity, System.Reflection.PropertyInfo navObjectNamePropety, EntityColumnInfo navObjectNameColumnInfo)
+        {
+            var navEntity = navObjectNameColumnInfo.PropertyInfo.PropertyType.GetGenericArguments()[0];
+            var navEntityInfo = this.Context.EntityMaintenance.GetEntityInfo(navEntity);
+            var sqlObj = GetWhereSql(navObjectNameColumnInfo.Navigat.Name);
+            Check.ExceptionEasy(sqlObj.MappingExpressions.IsNullOrEmpty(), $"Dynamic need MappingField ,Demo: Includes(it => it.Books.MappingField(z=>z.studenId,()=>it.StudentId).ToList())", $"自定义映射需要 MappingFields ,例子: Includes(it => it.Books.MappingFields(z=>z.studenId,()=>it.StudentId).ToList())");
+            if (list.Any() && navObjectNamePropety.GetValue(list.First()) == null)
+            {
+                MappingFieldsHelper<T> helper = new MappingFieldsHelper<T>();
+                helper.Context = this.Context;
+                helper.NavEntity = navEntityInfo;
+                helper.RootEntity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+                var whereSql = helper.GetMppingSql(RootList,sqlObj.MappingExpressions);
+                var navList = selector(this.Context.Queryable<object>().AS(navEntityInfo.DbTableName).AddParameters(sqlObj.Parameters).Where(whereSql,true).WhereIF(sqlObj.WhereString.HasValue(), sqlObj.WhereString).Select(sqlObj.SelectString).OrderByIF(sqlObj.OrderByString.HasValue(), sqlObj.OrderByString));
+                if (navList.HasValue())
+                {
+                    foreach (var item in list)
+                    {
+                        helper.SetChildList(navObjectNameColumnInfo, item, navList, sqlObj.MappingExpressions);
+                    }
+                }
+            }
+
+        }
         private SqlInfo GetWhereSql(string properyName=null)
         {
             if (_ListCallFunc == null|| _ListCallFunc.Count==0) return new SqlInfo();
@@ -344,6 +372,16 @@ namespace SqlSugar
                     var exp = method.Arguments[1];
                     oredrBy.Add(" " + queryable.QueryBuilder.GetExpressionValue(exp, ResolveExpressType.WhereSingle).GetString());
                 }
+                else if (method.Method.Name == "MappingField")
+                {
+                    if (result.MappingExpressions == null)
+                        result.MappingExpressions = new List<MappingFieldsExpression>();
+                    result.MappingExpressions.Add(new MappingFieldsExpression()
+                    {
+                        LeftColumnExpression = method.Arguments[1],
+                        RightColumnExpression = method.Arguments[2]
+                    });
+                }
                 else if (method.Method.Name == "Select")
                 {
                     var exp = method.Arguments[1];
@@ -370,7 +408,7 @@ namespace SqlSugar
                             foreach (var nav in entityInfo.Columns.Where(x => x.Navigat != null&&x.Navigat.NavigatType==NavigateType.OneToOne))
                             {
                                 var navColumn = entityInfo.Columns.FirstOrDefault(it => it.PropertyName == nav.Navigat.Name);
-                                if (navColumn != null) 
+                                if (navColumn != null)
                                 {
                                     AppColumns(result, queryable, navColumn.DbColumnName);
                                 }
@@ -436,6 +474,7 @@ namespace SqlSugar
             public string OrderByString { get; set; }
             public string SelectString { get; set; }
             public List<SugarParameter>  Parameters { get; set; }
+            public List<MappingFieldsExpression> MappingExpressions { get; set; }
         }
 
     }

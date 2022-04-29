@@ -536,7 +536,19 @@ namespace SqlSugar
             var sqlObj = this.SqlBuilder.ConditionalModelToSql(conditionalModels,0);
             return this.Where(sqlObj.Key, sqlObj.Value);
         }
-
+        public ISugarQueryable<T> Where(List<IConditionalModel> conditionalModels, bool isWrap)
+        {
+            if (conditionalModels.IsNullOrEmpty()) return this;
+            var sqlObj = this.SqlBuilder.ConditionalModelToSql(conditionalModels, 0);
+            if (isWrap)
+            {
+                return this.Where("("+sqlObj.Key+")", sqlObj.Value);
+            }
+            else 
+            {
+                return this.Where(sqlObj.Key, sqlObj.Value);
+            }
+        }
         public virtual ISugarQueryable<T> Where<T2>(string whereString, object whereObj = null)
         {
             var whereValue = QueryBuilder.WhereInfos;

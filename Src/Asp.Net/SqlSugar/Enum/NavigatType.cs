@@ -11,6 +11,7 @@ namespace SqlSugar
         OneToOne=1,
         OneToMany=2,
         ManyToOne=3,
-        ManyToMany=4,   
+        ManyToMany=4, 
+        Dynamic=5
     }
 }
