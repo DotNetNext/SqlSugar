@@ -35,16 +35,18 @@ namespace SqlSugar
             foreach (var model in list) 
             {
                 var clist = new List<KeyValuePair<WhereType, ConditionalModel>>();
+                var i = 0;
                 foreach (var item in mappingFieldsExpressions)
                 {
                     InitMappingFieldsExpression(item);
-                    clist.Add(new KeyValuePair<WhereType, ConditionalModel>(WhereType.Or, new ConditionalModel()
+                    clist.Add(new KeyValuePair<WhereType, ConditionalModel>(i==0?WhereType.Or: WhereType.And, new ConditionalModel()
                     {
                         FieldName = item.LeftEntityColumn.DbColumnName,
                         ConditionalType = ConditionalType.Equal,
                         FieldValue = item.RightEntityColumn.PropertyInfo.GetValue(model).ObjToString(),
                         CSharpTypeName = item.RightEntityColumn.PropertyInfo.PropertyType.Name
                     }));
+                    i++;
                 }
                 conditionalModels.Add(new ConditionalCollections() { 
                   ConditionalList= clist
@@ -71,34 +73,34 @@ namespace SqlSugar
                 else if (count == 2)
                 {
                     setList = list.Where(it =>
-                     GetWhereByIndex(item, mappingFieldsExpressions, it, 0) ||
+                     GetWhereByIndex(item, mappingFieldsExpressions, it, 0) &&
                      GetWhereByIndex(item, mappingFieldsExpressions, it, 1)
                     ).ToList();
                 }
                 else if (count == 3)
                 {
                     setList = list.Where(it =>
-                     GetWhereByIndex(item, mappingFieldsExpressions, it, 0) ||
-                     GetWhereByIndex(item, mappingFieldsExpressions, it, 1) ||
+                     GetWhereByIndex(item, mappingFieldsExpressions, it, 0) &&
+                     GetWhereByIndex(item, mappingFieldsExpressions, it, 1) &&
                      GetWhereByIndex(item, mappingFieldsExpressions, it, 2)
                     ).ToList();
                 }
                 else if (count == 4)
                 {
                     setList = list.Where(it =>
-                     GetWhereByIndex(item, mappingFieldsExpressions, it, 0) ||
-                     GetWhereByIndex(item, mappingFieldsExpressions, it, 1) ||
-                     GetWhereByIndex(item, mappingFieldsExpressions, it, 2) ||
+                     GetWhereByIndex(item, mappingFieldsExpressions, it, 0) &&
+                     GetWhereByIndex(item, mappingFieldsExpressions, it, 1) &&
+                     GetWhereByIndex(item, mappingFieldsExpressions, it, 2) &&
                      GetWhereByIndex(item, mappingFieldsExpressions, it, 3)
                     ).ToList();
                 }
                 else if (count == 5)
                 {
                     setList = list.Where(it =>
-                     GetWhereByIndex(item, mappingFieldsExpressions, it, 0) ||
-                     GetWhereByIndex(item, mappingFieldsExpressions, it, 1) ||
-                     GetWhereByIndex(item, mappingFieldsExpressions, it, 2) ||
-                     GetWhereByIndex(item, mappingFieldsExpressions, it, 3) ||
+                     GetWhereByIndex(item, mappingFieldsExpressions, it, 0) &&
+                     GetWhereByIndex(item, mappingFieldsExpressions, it, 1) &&
+                     GetWhereByIndex(item, mappingFieldsExpressions, it, 2) &&
+                     GetWhereByIndex(item, mappingFieldsExpressions, it, 3) &&
                      GetWhereByIndex(item, mappingFieldsExpressions, it, 4)
                     ).ToList();
                 }
@@ -119,7 +121,9 @@ namespace SqlSugar
 
         private static bool GetWhereByIndex(object item, List<MappingFieldsExpression> mappingFieldsExpressions, object it,int index)
         {
-            return mappingFieldsExpressions[index].LeftEntityColumn.PropertyInfo.GetValue(it).ObjToString() == mappingFieldsExpressions[index].RightEntityColumn.PropertyInfo.GetValue(item).ObjToString();
+            var left = mappingFieldsExpressions[index].LeftEntityColumn.PropertyInfo.GetValue(it).ObjToString();
+            var right= mappingFieldsExpressions[index].RightEntityColumn.PropertyInfo.GetValue(item).ObjToString(); ;
+            return left == right;
         }
 
         private void InitMappingFieldsExpression(MappingFieldsExpression item)

@@ -12,8 +12,9 @@ namespace OrmTest
         {
             var db = NewUnitTest.Db;
             var list=db.Queryable<StudentA>()
-                .Includes(it => it.Books.MappingField(z=>z.studenId,()=>it.StudentId)
-                                        .MappingField(z => z.studenId, () => it.StudentId).ToList())
+                .Includes(it => it.Books.Where(z=>z.BookId==1)
+                                        .MappingField(z=>z.studenId,()=>it.StudentId)
+                                        .MappingField(z => z.BookId, () => it.StudentId).ToList())
                 .ToList();
         }
 
