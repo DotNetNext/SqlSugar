@@ -39,6 +39,7 @@ namespace OrmTest
             UCustom014.Init();
             UCustom013.Init();
             UCustom012.Init();
+            UintDynamic.Init();
             UCustom09.Init();
             UCustom011.Init();
             UCustom010.Init();
