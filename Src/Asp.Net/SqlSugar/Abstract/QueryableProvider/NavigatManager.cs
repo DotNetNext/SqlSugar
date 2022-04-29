@@ -240,7 +240,17 @@ namespace SqlSugar
                                 ilist.Add(bInfo);
                             }
                         }
-                        navObjectNamePropety.SetValue(listItem, instance);
+                        if (sql.MappingExpressions.HasValue())
+                        {
+                            MappingFieldsHelper<T> helper = new MappingFieldsHelper<T>();
+                            helper.NavEntity = bEntityInfo;
+                            helper.RootEntity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+                            helper.SetChildList(navObjectNameColumnInfo, listItem, ilist.Cast<object>().ToList(), sql.MappingExpressions);
+                        }
+                        else
+                        {
+                            navObjectNamePropety.SetValue(listItem, instance);
+                        }
                     }
                 }
             }
@@ -304,13 +314,25 @@ namespace SqlSugar
                     {
                         var setValue = navList
                              .Where(x => navColumn.PropertyInfo.GetValue(x).ObjToString() == listItemPkColumn.PropertyInfo.GetValue(item).ObjToString()).ToList();
-                        var instance = Activator.CreateInstance(navObjectNamePropety.PropertyType, true);
-                        var ilist = instance as IList;
-                        foreach (var value in setValue)
+
+                        if (sqlObj.MappingExpressions.HasValue())
                         {
-                            ilist.Add(value);
+                            MappingFieldsHelper<T> helper = new MappingFieldsHelper<T>();
+                            helper.NavEntity = navEntityInfo;
+                            helper.RootEntity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+                            helper.SetChildList(navObjectNameColumnInfo, item,setValue,sqlObj.MappingExpressions);
                         }
-                        navObjectNamePropety.SetValue(item, instance);
+                        else
+                        {
+
+                            var instance = Activator.CreateInstance(navObjectNamePropety.PropertyType, true);
+                            var ilist = instance as IList;
+                            foreach (var value in setValue)
+                            {
+                                ilist.Add(value);
+                            }
+                            navObjectNamePropety.SetValue(item, instance);
+                        }
                     }
                 }
             }
