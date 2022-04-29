@@ -51,7 +51,7 @@ namespace OrmTest
             db.Insertable(new BookA() { BookId = 3, Names = "c#1", studenId = 2 }).ExecuteCommand();
             db.Insertable(new BookA() { BookId = 4, Names = "php", studenId = 3 }).ExecuteCommand();
             db.Insertable(new BookA() { BookId = 5, Names = "js", studenId = 4 }).ExecuteCommand();
-
+            db.Insertable(new BookA() { BookId = 6, Names = "北大jack", studenId = 1 }).ExecuteCommand();
 
             var list2 = db.Queryable<StudentA>()
            .Includes(x => x.SchoolA, x => x.RoomList)//2个参数就是 then Include 
@@ -73,6 +73,13 @@ namespace OrmTest
            .Where(x => x.Books.Any(z => z.BookId == 1))
            .Where(x => x.SchoolA.School_Name == "北大")
            .ToList();
+
+
+
+            var list3_1 = db.Queryable<StudentA>()
+           .Includes(x => x.Books.MappingField(z=>z.Names,()=>x.Name).ToList())
+           .ToList();
+
             //先用Mapper导航映射查出第二层
             var list = db.Queryable<StudentA>().Mapper(x => x.SchoolA, x => x.SchoolId).ToList();
 
