@@ -74,7 +74,25 @@ namespace SqlSugar
                 }
             }
         }
-
+        public static void TryOpenGauss()
+        {
+            if (!IsTryPgSql)
+            {
+                try
+                {
+                    OpenGaussProvider db = new OpenGaussProvider();
+                    var conn = db.GetAdapter();
+                    IsTryPgSql = true;
+                }
+                catch
+                {
+                    var message = ErrorMessage.GetThrowMessage(
+                     "You need to refer to Npgsql 3.2.7",
+                     "你需要引用 Npgsql 3.2.7及以上版本");
+                    throw new Exception(message);
+                }
+            }
+        }
         public static void TryOracle()
         {
             if (!IsTryOracle)

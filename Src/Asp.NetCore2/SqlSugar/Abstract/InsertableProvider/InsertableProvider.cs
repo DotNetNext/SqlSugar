@@ -36,7 +36,7 @@ namespace SqlSugar
         #region Core
         public void AddQueue()
         {
-            if (this.InsertObjs!=null&&this.InsertObjs.Length > 0&& this.InsertObjs[0]!=null)
+            if (this.InsertObjs != null && this.InsertObjs.Length > 0 && this.InsertObjs[0] != null)
             {
                 var sqlObj = this.ToSql();
                 this.Context.Queues.Add(sqlObj.Key, sqlObj.Value);
@@ -73,7 +73,7 @@ namespace SqlSugar
             if (InsertBuilder.IsOleDb)
             {
                 var isAuto = false;
-                if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection) 
+                if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection)
                 {
                     isAuto = true;
                     this.Context.CurrentConnectionConfig.IsAutoCloseConnection = false;
@@ -120,27 +120,27 @@ namespace SqlSugar
             }
             else
             {
-                result= Convert.ToInt64(Ado.GetScalar(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray()));
+                result = Convert.ToInt64(Ado.GetScalar(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray()));
             }
             After(sql, result);
             return result;
         }
 
-        public virtual long ExecuteReturnSnowflakeId() 
+        public virtual long ExecuteReturnSnowflakeId()
         {
             var id = SnowFlakeSingle.instance.getID();
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
-            var snowProperty=entity.Columns.FirstOrDefault(it => it.IsPrimarykey && it.PropertyInfo.PropertyType == UtilConstants.LongType);
-            Check.Exception(snowProperty==null, "The entity sets the primary key and is long");
+            var snowProperty = entity.Columns.FirstOrDefault(it => it.IsPrimarykey && it.PropertyInfo.PropertyType == UtilConstants.LongType);
+            Check.Exception(snowProperty == null, "The entity sets the primary key and is long");
             Check.Exception(snowProperty.IsIdentity == true, "SnowflakeId IsIdentity can't true");
-            foreach (var item in  this.InsertBuilder.DbColumnInfoList.Where(it=>it.PropertyName==snowProperty.PropertyName))
+            foreach (var item in this.InsertBuilder.DbColumnInfoList.Where(it => it.PropertyName == snowProperty.PropertyName))
             {
                 item.Value = id;
             }
             this.ExecuteCommand();
             return id;
         }
-        public List<long>  ExecuteReturnSnowflakeIdList() 
+        public List<long> ExecuteReturnSnowflakeIdList()
         {
             List<long> result = new List<long>();
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
@@ -156,7 +156,7 @@ namespace SqlSugar
             this.ExecuteCommand();
             return result;
         }
-        public async Task<long> ExecuteReturnSnowflakeIdAsync() 
+        public async Task<long> ExecuteReturnSnowflakeIdAsync()
         {
             var id = SnowFlakeSingle.instance.getID();
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
@@ -170,7 +170,7 @@ namespace SqlSugar
             await this.ExecuteCommandAsync();
             return id;
         }
-        public async Task<List<long>> ExecuteReturnSnowflakeIdListAsync() 
+        public async Task<List<long>> ExecuteReturnSnowflakeIdListAsync()
         {
             List<long> result = new List<long>();
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
@@ -203,7 +203,7 @@ namespace SqlSugar
             object setValue = 0;
             if (idValue > int.MaxValue)
                 setValue = idValue;
-            else if (this.EntityInfo.Columns.Any(it => it.IsIdentity && it.PropertyInfo.PropertyType == typeof(uint))) 
+            else if (this.EntityInfo.Columns.Any(it => it.IsIdentity && it.PropertyInfo.PropertyType == typeof(uint)))
             {
                 setValue = Convert.ToUInt32(idValue);
             }
@@ -224,7 +224,7 @@ namespace SqlSugar
                 return 0;
             }
             string sql = _ExecuteCommand();
-            var result =await Ado.ExecuteCommandAsync(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
+            var result = await Ado.ExecuteCommandAsync(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
             After(sql, null);
             return result;
         }
@@ -235,7 +235,7 @@ namespace SqlSugar
                 return 0;
             }
             string sql = _ExecuteReturnIdentity();
-            var result =await Ado.GetIntAsync(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
+            var result = await Ado.GetIntAsync(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
             After(sql, result);
             return result;
         }
@@ -249,7 +249,7 @@ namespace SqlSugar
             var result = InsertObjs.First();
             var identityKeys = GetIdentityKeys();
             if (identityKeys.Count == 0) { return await this.ExecuteCommandAsync() > 0; }
-            var idValue =await ExecuteReturnBigIdentityAsync();
+            var idValue = await ExecuteReturnBigIdentityAsync();
             Check.Exception(identityKeys.Count > 1, "ExecuteCommandIdentityIntoEntity does not support multiple identity keys");
             var identityKey = identityKeys.First();
             object setValue = 0;
@@ -287,7 +287,7 @@ namespace SqlSugar
         public IParameterInsertable<T> UseParameter()
         {
             var result = new ParameterInsertable<T>();
-            result.Context= this.Context;
+            result.Context = this.Context;
             result.Inserable = this;
             return result;
         }
@@ -330,7 +330,7 @@ namespace SqlSugar
 
         public IInsertable<T> InsertColumns(string[] columns)
         {
-            this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it => columns.Any(ig => ig.Equals(it.PropertyName, StringComparison.CurrentCultureIgnoreCase))|| columns.Any(ig => ig.Equals(it.DbColumnName, StringComparison.CurrentCultureIgnoreCase))).ToList();
+            this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it => columns.Any(ig => ig.Equals(it.PropertyName, StringComparison.CurrentCultureIgnoreCase)) || columns.Any(ig => ig.Equals(it.DbColumnName, StringComparison.CurrentCultureIgnoreCase))).ToList();
             return this;
         }
 
@@ -340,8 +340,9 @@ namespace SqlSugar
                 this.InsertBuilder.TableWithString = lockString;
             return this;
         }
-        public IInsertable<T> IgnoreColumns(bool ignoreNullColumn, bool isOffIdentity = false) {
-            Check.Exception(this.InsertObjs.Count() > 1&& ignoreNullColumn, ErrorMessage.GetThrowMessage("ignoreNullColumn NoSupport batch insert", "ignoreNullColumn 不支持批量操作"));
+        public IInsertable<T> IgnoreColumns(bool ignoreNullColumn, bool isOffIdentity = false)
+        {
+            Check.Exception(this.InsertObjs.Count() > 1 && ignoreNullColumn, ErrorMessage.GetThrowMessage("ignoreNullColumn NoSupport batch insert", "ignoreNullColumn 不支持批量操作"));
             this.IsOffIdentity = isOffIdentity;
             if (this.InsertBuilder.LambdaExpressions == null)
                 this.InsertBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(this.Context.CurrentConnectionConfig);
@@ -377,11 +378,11 @@ namespace SqlSugar
             var currentType = this.Context.CurrentConnectionConfig.DbType;
             Check.Exception(currentType != DbType.SqlServer, "UseSqlServer no support " + currentType);
             SqlServerBlukCopy result = new SqlServerBlukCopy();
-            result.DbColumnInfoList =this.InsertBuilder.DbColumnInfoList.GroupBy(it => it.TableId).ToList();
+            result.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.GroupBy(it => it.TableId).ToList();
             result.InsertBuilder = this.InsertBuilder;
             result.Builder = this.SqlBuilder;
             result.Context = this.Context;
-            result.Inserts=this.InsertObjs;
+            result.Inserts = this.InsertObjs;
             return result;
         }
         public OracleBlukCopy UseOracle()
@@ -437,7 +438,7 @@ namespace SqlSugar
             result.InsertObjects = this.InsertObjs;
             result.Context = this.Context;
             result.SubList = new List<SubInsertTreeExpression>();
-            result.SubList.Add(new SubInsertTreeExpression() { Expression= items });
+            result.SubList.Add(new SubInsertTreeExpression() { Expression = items });
             result.InsertBuilder = this.InsertBuilder;
             result.Pk = GetPrimaryKeys().First();
             result.Entity = this.EntityInfo;
@@ -479,8 +480,8 @@ namespace SqlSugar
             foreach (var item in this.InsertObjs)
             {
                 var splitFieldValue = helper.GetValue(splitType, item);
-                var tableName=helper.GetTableName(splitType, splitFieldValue);
-                result.TableNames.Add(new KeyValuePair<string, object>(tableName,item));
+                var tableName = helper.GetTableName(splitType, splitFieldValue);
+                result.TableNames.Add(new KeyValuePair<string, object>(tableName, item));
             }
             result.Inserable = this;
             return result;
@@ -493,9 +494,9 @@ namespace SqlSugar
             {
                 return SplitTable((splitTableAttribute as SplitTableAttribute).SplitType);
             }
-            else 
+            else
             {
-                Check.Exception(true,$" {typeof(T).Name} need SplitTableAttribute");
+                Check.Exception(true, $" {typeof(T).Name} need SplitTableAttribute");
                 return null;
             }
         }
@@ -638,12 +639,12 @@ namespace SqlSugar
 
         private void DataAop(T item)
         {
-            var dataEvent=this.Context.CurrentConnectionConfig.AopEvents?.DataExecuting;
+            var dataEvent = this.Context.CurrentConnectionConfig.AopEvents?.DataExecuting;
             if (dataEvent != null && item != null)
             {
                 foreach (var columnInfo in this.EntityInfo.Columns)
                 {
-                    dataEvent(columnInfo.PropertyInfo.GetValue(item, null), new DataFilterModel() { OperationType = DataFilterType.InsertByObject,EntityValue=item, EntityColumnInfo = columnInfo });
+                    dataEvent(columnInfo.PropertyInfo.GetValue(item, null), new DataFilterModel() { OperationType = DataFilterType.InsertByObject, EntityValue = item, EntityColumnInfo = columnInfo });
                 }
             }
         }
@@ -693,11 +694,11 @@ namespace SqlSugar
                     PropertyType = UtilMethods.GetUnderType(column.PropertyInfo),
                     TableId = i
                 };
-                if (column.DbColumnName == null) 
+                if (column.DbColumnName == null)
                 {
                     column.DbColumnName = column.PropertyName;
                 }
-                if (isMapping) 
+                if (isMapping)
                 {
                     columnInfo.DbColumnName = GetDbColumnName(column.PropertyName);
                 }
@@ -709,7 +710,7 @@ namespace SqlSugar
                 {
                     columnInfo.IsArray = true;
                 }
-                if (columnInfo.PropertyType.IsEnum()&& columnInfo.Value!=null)
+                if (columnInfo.PropertyType.IsEnum() && columnInfo.Value != null)
                 {
                     if (this.Context.CurrentConnectionConfig.MoreSettings?.TableEnumIsString == true)
                     {
@@ -721,13 +722,14 @@ namespace SqlSugar
                         columnInfo.Value = Convert.ToInt64(columnInfo.Value);
                     }
                 }
-                if (column.IsJson&& columnInfo.Value!=null)
+                if (column.IsJson && columnInfo.Value != null)
                 {
-                    if(columnInfo.Value!=null)
-                       columnInfo.Value = this.Context.Utilities.SerializeObject(columnInfo.Value);
+                    if (columnInfo.Value != null)
+                        columnInfo.Value = this.Context.Utilities.SerializeObject(columnInfo.Value);
                 }
                 //var tranColumn=EntityInfo.Columns.FirstOrDefault(it => it.IsTranscoding && it.DbColumnName.Equals(column.DbColumnName, StringComparison.CurrentCultureIgnoreCase));
-                if (column.IsTranscoding&&columnInfo.Value.HasValue()) {
+                if (column.IsTranscoding && columnInfo.Value.HasValue())
+                {
                     columnInfo.Value = UtilMethods.EncodeBase64(columnInfo.Value.ToString());
                 }
                 insertItem.Add(columnInfo);
@@ -774,12 +776,13 @@ namespace SqlSugar
             }
             else
             {
-                return this.EntityInfo.Columns.Where(it => {
+                return this.EntityInfo.Columns.Where(it =>
+                {
 
-                      Check.Exception(it.IsIdentity&&it.UnderType == typeof(string), "IsIdentity key can not be type of string");
-                      return it.IsIdentity;
-                    
-                    }).Select(it => it.DbColumnName).ToList();
+                    Check.Exception(it.IsIdentity && it.UnderType == typeof(string), "IsIdentity key can not be type of string");
+                    return it.IsIdentity;
+
+                }).Select(it => it.DbColumnName).ToList();
             }
         }
         //private void TaskStart<Type>(Task<Type> result)
@@ -909,8 +912,25 @@ namespace SqlSugar
                 {
                     var fieldObjectType = this.EntityInfo.Columns.FirstOrDefault(x => x.DbColumnName == fieldName)
                         .PropertyInfo.PropertyType;
-                    cons.Add(new ConditionalModel() { ConditionalType = ConditionalType.Equal, FieldName = fieldName, FieldValue = identity.ToString(), 
-                        FieldValueConvertFunc = it => UtilMethods.ChangeType2(it, fieldObjectType) });
+                    cons.Add(new ConditionalModel()
+                    {
+                        ConditionalType = ConditionalType.Equal,
+                        FieldName = fieldName,
+                        FieldValue = identity.ToString(),
+                        FieldValueConvertFunc = it => UtilMethods.ChangeType2(it, fieldObjectType)
+                    });
+                }
+                else if (this.Context.CurrentConnectionConfig.DbType == DbType.OpenGauss)
+                {
+                    var fieldObjectType = this.EntityInfo.Columns.FirstOrDefault(x => x.DbColumnName == fieldName)
+                        .PropertyInfo.PropertyType;
+                    cons.Add(new ConditionalModel()
+                    {
+                        ConditionalType = ConditionalType.Equal,
+                        FieldName = fieldName,
+                        FieldValue = identity.ToString(),
+                        FieldValueConvertFunc = it => UtilMethods.ChangeType2(it, fieldObjectType)
+                    });
                 }
                 else
                     cons.Add(new ConditionalModel() { ConditionalType = ConditionalType.Equal, FieldName = fieldName, FieldValue = identity.ToString() });
@@ -923,6 +943,10 @@ namespace SqlSugar
                     var filedObject = this.EntityInfo.Columns.FirstOrDefault(it => it.PropertyName == item.PropertyName).PropertyInfo.GetValue(this.InsertObjs.Last(), null);
                     var fieldValue = filedObject.ObjToString();
                     if (filedObject != null && filedObject.GetType() != typeof(string) && this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL)
+                    {
+                        cons.Add(new ConditionalModel() { ConditionalType = ConditionalType.Equal, FieldName = fielddName, FieldValue = fieldValue, FieldValueConvertFunc = it => UtilMethods.ChangeType2(it, filedObject.GetType()) });
+                    }
+                    else if (filedObject != null && filedObject.GetType() != typeof(string) && this.Context.CurrentConnectionConfig.DbType == DbType.OpenGauss)
                     {
                         cons.Add(new ConditionalModel() { ConditionalType = ConditionalType.Equal, FieldName = fielddName, FieldValue = fieldValue, FieldValueConvertFunc = it => UtilMethods.ChangeType2(it, filedObject.GetType()) });
                     }
@@ -984,7 +1008,7 @@ namespace SqlSugar
                 var expression = (LambdaExpression.Lambda(method).Body as LambdaExpression).Body;
                 Check.Exception(!(expression is MethodCallExpression), method.ToString() + " is not method");
                 var callExpresion = expression as MethodCallExpression;
-                UtilMethods.DataInoveByExpresson(this.InsertObjs,callExpresion);
+                UtilMethods.DataInoveByExpresson(this.InsertObjs, callExpresion);
                 this.InsertBuilder.DbColumnInfoList = new List<DbColumnInfo>();
                 Init();
                 this.InsertBuilder.DbColumnInfoList = this.InsertBuilder.DbColumnInfoList.Where(it => oldColumns.Contains(it.PropertyName)).ToList();

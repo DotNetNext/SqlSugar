@@ -35,6 +35,8 @@ namespace SqlSugar
                     break;
                 case DbType.Oscar:
                     break;
+                case DbType.OpenGauss:
+                    return new OpenGaussFastBuilder(this.entityInfo);
                 default:
                     break;
             }

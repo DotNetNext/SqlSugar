@@ -692,6 +692,8 @@ namespace SqlSugar
                     type = DbType.Oracle;
                 else if (this.Context is PostgreSQLExpressionContext)
                     type = DbType.PostgreSQL;
+                else if (this.Context is OpenGaussExpressionContext)
+                    type = DbType.OpenGauss;
                 else if (this.Context.GetType().Name.StartsWith("MySql")) 
                 {
                     type = DbType.MySql;
