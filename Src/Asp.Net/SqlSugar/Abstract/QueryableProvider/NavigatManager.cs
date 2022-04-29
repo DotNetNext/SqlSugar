@@ -377,6 +377,7 @@ namespace SqlSugar
                 var queryable = this.Context.Queryable<object>();
                 if (method.Method.Name == "Where")
                 {
+                    CheckHasRootShortName(method.Arguments[0], method.Arguments[1]);
                     var exp = method.Arguments[1];
                     where.Add(" " +queryable.QueryBuilder.GetExpressionValue(exp, ResolveExpressType.WhereSingle).GetString());
                 }
@@ -386,6 +387,7 @@ namespace SqlSugar
                     if (isOk.ObjToBool())
                     {
                         var exp = method.Arguments[2];
+                        CheckHasRootShortName(method.Arguments[1], method.Arguments[2]);
                         where.Add(" " + queryable.QueryBuilder.GetExpressionValue(exp, ResolveExpressType.WhereSingle).GetString());
                     }
                 }
@@ -465,17 +467,17 @@ namespace SqlSugar
             }
             if (where.Any()) 
             {
-                Check.Exception(isList == false, $"{_ListCallFunc.First()} need is ToList()", $"{_ListCallFunc.First()} 需要ToList");
+                Check.ExceptionEasy(isList == false, $"{_ListCallFunc.First()} need is ToList()", $"{_ListCallFunc.First()} 需要ToList");
                 result.WhereString=  String.Join(" AND ", where);
             }
             if (oredrBy.Any())
             {
-                Check.Exception(isList == false, $"{_ListCallFunc.First()} need is ToList()", $"{_ListCallFunc.First()} 需要ToList");
+                Check.ExceptionEasy(isList == false, $"{_ListCallFunc.First()} need is ToList()", $"{_ListCallFunc.First()} 需要ToList");
                 result.OrderByString = String.Join(" , ", oredrBy);
             }
             if (result.SelectString.HasValue())
             {
-                Check.Exception(isList == false, $"{_ListCallFunc.First()} need is ToList()", $"{_ListCallFunc.First()} 需要ToList");
+                Check.ExceptionEasy(isList == false, $"{_ListCallFunc.First()} need is ToList()", $"{_ListCallFunc.First()} 需要ToList");
                 result.OrderByString = String.Join(" , ", oredrBy);
             }
             return result;
@@ -488,6 +490,31 @@ namespace SqlSugar
             {
                 result.SelectString = result.SelectString + "," + selectPkName;
             }
+        }
+        private void CheckHasRootShortName(Expression rootExpression, Expression childExpression)
+        {
+            var rootShortName = GetShortName(rootExpression);
+            if (rootShortName.HasValue()&& childExpression.ToString().Contains($"{rootShortName}."))
+            {
+                Check.ExceptionEasy($".Where({childExpression}) no support {rootShortName}.Field, Use .MappingField",$".Where({childExpression})禁止出{rootShortName}.字段 , 你可以使用.MappingField(z=>z.字段,()=>{rootShortName}.字段) 与主表字段进行过滤");
+            }
+        }
+
+        private static string GetShortName(Expression expression1)
+        {
+            string shortName = null;
+            if (expression1 is MemberExpression)
+            {
+                var shortNameExpression = (expression1 as MemberExpression).Expression;
+                if (shortNameExpression != null && shortNameExpression.Type == typeof(T))
+                {
+                    if (shortNameExpression is ParameterExpression)
+                    {
+                        shortName = (shortNameExpression as ParameterExpression).Name;
+                    }
+                }
+            }
+            return shortName;
         }
 
         public class SqlInfo 
