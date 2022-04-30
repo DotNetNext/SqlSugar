@@ -182,6 +182,23 @@ namespace SqlSugar
             reval = objReference;
             return reval;
         }
+
+        internal static Expression RemoveConvert(Expression item)
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                if ((item is UnaryExpression) && (item as UnaryExpression).NodeType == ExpressionType.Convert)
+                {
+                    item = (item as UnaryExpression).Operand;
+                }
+                else 
+                {
+                    break;
+                }
+            }
+            return item;
+        }
+
         public static string GetMemberName(Expression expression) 
         {
             if (expression is LambdaExpression) 
