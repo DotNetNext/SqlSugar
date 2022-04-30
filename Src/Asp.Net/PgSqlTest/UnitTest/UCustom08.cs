@@ -71,6 +71,9 @@ namespace OrmTest
             db.Updateable<UpdateTest>()
              .SetColumns(x => new UpdateTest { T1 = 1 }).Where(x => x.Id == id).ExecuteCommand();
 
+            data.T1 = 1;
+            db.Updateable<UpdateTest>()
+            .SetColumns(x => new UpdateTest { T1 = (int)data.T1 }).Where(x => x.Id == id).ExecuteCommand();
 
             //Console.ReadKey();
 
