@@ -380,6 +380,31 @@ namespace SqlSugar
             _WhereClassByPrimaryKey(new List<T>() { data });
             return this;
         }
+        public ISugarQueryable<T> WhereColumns(List<Dictionary<string, object>> list)
+        {
+            List<IConditionalModel> conditionalModels = new List<IConditionalModel>();
+            foreach (var model in list)
+            {
+                int i = 0;
+                var clist = new List<KeyValuePair<WhereType, ConditionalModel>>();
+                foreach (var item in model.Keys)
+                {
+                    clist.Add(new KeyValuePair<WhereType, ConditionalModel>(i == 0 ? WhereType.Or : WhereType.And, new ConditionalModel()
+                    {
+                        FieldName = item,
+                        ConditionalType = ConditionalType.Equal,
+                        FieldValue = model[item].ObjToString(),
+                        CSharpTypeName = model[item] == null ? null : model[item].GetType().Name
+                    }));
+                    i++;
+                }
+                conditionalModels.Add(new ConditionalCollections()
+                {
+                    ConditionalList = clist
+                });
+            }
+            return this.Where(conditionalModels);
+        }
 
         /// <summary>
         ///  if a property that is primary key is a condition

@@ -29,8 +29,8 @@ namespace SqlSugar
         IDeleteable<T> Where(string whereString, SugarParameter parameter);
         IDeleteable<T> Where(string whereString, SugarParameter[] parameters);
         IDeleteable<T> Where(string whereString, List<SugarParameter> parameters);
-        IDeleteable<T> WhereColumns(Expression<Func<T, object>> columns);
-        IDeleteable<T> WhereColumns(string [] columns);
+        IDeleteable<T> WhereColumns(List<T> list,Expression<Func<T, object>> columns);
+        IDeleteable<T> WhereColumns(List<Dictionary<string,object>> columns);
         IDeleteable<T> Where(List<IConditionalModel> conditionalModels);
         IDeleteable<T> EnableDiffLogEvent(object businessData = null);
         IDeleteable<T> RemoveDataCache();

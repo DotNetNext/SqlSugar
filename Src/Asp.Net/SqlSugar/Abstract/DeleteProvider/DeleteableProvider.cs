@@ -254,21 +254,39 @@ namespace SqlSugar
             return result;
         }
 
-        public IDeleteable<T> WhereColumns(Expression<Func<T, object>> columns)
+        public IDeleteable<T> WhereColumns(List<T> list,Expression<Func<T, object>> columns)
         {
+            this.Where(list);
             if (columns != null)
             {
                 tempPrimaryKeys = DeleteBuilder.GetExpressionValue(columns, ResolveExpressType.ArraySingle).GetResultArray().Select(it => this.SqlBuilder.GetNoTranslationColumnName(it)).ToList();
             }
             return this;
         }
-        public IDeleteable<T> WhereColumns(string [] columns)
+        public IDeleteable<T> WhereColumns(List<Dictionary<string, object>> list) 
         {
-            if (columns != null)
+            List<IConditionalModel> conditionalModels = new List<IConditionalModel>();
+            foreach (var model in list)
             {
-                tempPrimaryKeys = columns.ToList();
+                int i = 0;
+                var clist = new List<KeyValuePair<WhereType, ConditionalModel>>();
+                foreach (var item in model.Keys)
+                {
+                    clist.Add(new KeyValuePair<WhereType, ConditionalModel>(i == 0 ? WhereType.Or : WhereType.And, new ConditionalModel()
+                    {
+                        FieldName =item,
+                        ConditionalType = ConditionalType.Equal,
+                        FieldValue = model[item].ObjToString(),
+                        CSharpTypeName = model[item]==null?null : model[item].GetType().Name
+                    }));
+                    i++;
+                }
+                conditionalModels.Add(new ConditionalCollections()
+                {
+                    ConditionalList = clist
+                });
             }
-            return this;
+            return this.Where(conditionalModels);
         }
         public IDeleteable<T> RemoveDataCache()
         {
