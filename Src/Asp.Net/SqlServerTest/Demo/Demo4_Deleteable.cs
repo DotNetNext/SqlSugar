@@ -29,8 +29,14 @@ namespace OrmTest
                     }
                 }
             });
+            var dr = new Dictionary<string, object>();
+            dr.Add("Id", 1);
+            dr.Add("Name","2");
+            var dr2 = new Dictionary<string, object>();
+            dr2.Add("Id", 2);
+            dr2.Add("Name", "2");
             //by entity
-            db.Deleteable<Order>().Where(new Order() { Id = 1111 }).ExecuteCommand();
+            db.Deleteable<object>().AS("[Order]").WhereColumns(new List<Dictionary<string,object>>() { dr, dr2 }).ExecuteCommand();
 
             //by primary key
             db.Deleteable<Order>().In(1111).ExecuteCommand();
@@ -40,6 +46,9 @@ namespace OrmTest
 
             //by expression
             db.Deleteable<Order>().Where(it => it.Id == 11111).ExecuteCommand();
+
+
+            db.Deleteable<Order>().WhereColumns(new List<Order>() { new Order() {  Name="a"} },it=>it.Name).ExecuteCommand();
 
             //logic delete
             db.CodeFirst.InitTables<LogicTest>();

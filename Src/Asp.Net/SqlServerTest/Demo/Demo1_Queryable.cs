@@ -144,6 +144,13 @@ namespace OrmTest
               id= it.Id,
               name=SqlFunc.Asc(it.Name),
             }).ToList();
+            var dr = new Dictionary<string, object>();
+            dr.Add("Id", 1);
+            dr.Add("Name", "2");
+            var dr2 = new Dictionary<string, object>();
+            dr2.Add("Id", 2);
+            dr2.Add("Name", "2");
+            var test35 = db.Queryable<object>().AS("[order]").WhereColumns(new List<Dictionary<string, object>>() { dr, dr2 }).ToDataTable();
             Console.WriteLine("#### Examples End ####");
         }
 
