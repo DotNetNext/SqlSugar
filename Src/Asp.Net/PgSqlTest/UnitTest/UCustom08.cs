@@ -51,7 +51,7 @@ namespace OrmTest
 
                 };
 
-            db.DbMaintenance.CreateDatabase();
+          //  db.DbMaintenance.CreateDatabase();
 
             db.CodeFirst.InitTables(typeof(UpdateTest));
 
@@ -72,7 +72,7 @@ namespace OrmTest
              .SetColumns(x => new UpdateTest { T1 = 1 }).Where(x => x.Id == id).ExecuteCommand();
 
 
-            Console.ReadKey();
+            //Console.ReadKey();
 
         }
     }
