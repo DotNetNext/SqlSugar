@@ -256,8 +256,12 @@ namespace SqlSugar
 
         public IDeleteable<T> WhereColumns(List<T> list,Expression<Func<T, object>> columns)
         {
+            if (this.GetPrimaryKeys().IsNullOrEmpty())
+            {
+                tempPrimaryKeys = DeleteBuilder.GetExpressionValue(columns, ResolveExpressType.ArraySingle).GetResultArray().Select(it => this.SqlBuilder.GetNoTranslationColumnName(it)).ToList();
+            }
             this.Where(list);
-            if (columns != null)
+            if (columns != null&& tempPrimaryKeys.IsNullOrEmpty())
             {
                 tempPrimaryKeys = DeleteBuilder.GetExpressionValue(columns, ResolveExpressType.ArraySingle).GetResultArray().Select(it => this.SqlBuilder.GetNoTranslationColumnName(it)).ToList();
             }
