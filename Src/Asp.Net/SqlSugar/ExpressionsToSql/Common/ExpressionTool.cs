@@ -198,7 +198,23 @@ namespace SqlSugar
             }
             return item;
         }
-
+        internal static Expression RemoveConvertThanOne(Expression item)
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                if ((item is UnaryExpression) 
+                    && (item as UnaryExpression).NodeType == ExpressionType.Convert
+                    && (item as UnaryExpression).Operand is UnaryExpression)
+                {
+                    item = (item as UnaryExpression).Operand;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            return item;
+        }
         public static string GetMemberName(Expression expression) 
         {
             if (expression is LambdaExpression) 

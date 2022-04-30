@@ -130,7 +130,7 @@ namespace SqlSugar
                 }
                 else if (IsConst(item))
                 {
-                    base.Expression = ExpressionTool.RemoveConvert(item);
+                    base.Expression =ExpressionTool.RemoveConvertThanOne(item);
                     base.Start();
                     string parameterName = this.Context.SqlParameterKeyWord + ExpressionConst.Const + this.Context.ParameterIndex;
                     parameter.Context.Result.Append(base.Context.GetEqString(memberName, parameterName));
