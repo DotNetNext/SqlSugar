@@ -16,6 +16,7 @@ namespace SqlSugar
         int BulkCopy(List<T> datas);
         Task<int> BulkCopyAsync(List<T> datas);
         int BulkCopy(string tableName,DataTable dataTable);
+        int BulkCopy(DataTable dataTable);
         Task<int> BulkCopyAsync(string tableName, DataTable dataTable);
 
         int BulkUpdate(List<T> datas);

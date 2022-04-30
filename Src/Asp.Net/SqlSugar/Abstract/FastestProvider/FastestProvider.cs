@@ -24,6 +24,11 @@ namespace SqlSugar
         {
             return BulkCopyAsync(tableName,dt).ConfigureAwait(true).GetAwaiter().GetResult();
         }
+        public int BulkCopy(DataTable dt) 
+        {
+            Check.ExceptionEasy(this.AsName.IsNullOrEmpty(), "need .AS(tablaeName) ", "需要 .AS(tablaeName) 设置表名");
+            return BulkCopyAsync(this.AsName, dt).ConfigureAwait(true).GetAwaiter().GetResult();
+        }
         public async Task<int> BulkCopyAsync(string tableName, DataTable dt)
         {
             if (Size > 0)
