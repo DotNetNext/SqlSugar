@@ -104,6 +104,11 @@ namespace SqlSugar
         {
             return BulkUpdateAsync(tableName,dataTable, whereColumns, updateColumns).ConfigureAwait(true).GetAwaiter().GetResult();
         }
+        public int BulkUpdate(DataTable dataTable, string[] whereColumns, string[] updateColumns)
+        {
+            Check.ExceptionEasy(this.AsName.IsNullOrEmpty(), "need .AS(tablaeName) ", "需要 .AS(tablaeName) 设置表名");
+            return BulkUpdateAsync(this.AsName, dataTable, whereColumns, updateColumns).ConfigureAwait(true).GetAwaiter().GetResult();
+        }
         public async Task<int> BulkUpdateAsync(string tableName, DataTable dataTable, string[] whereColumns, string[] updateColumns)
         {
 
