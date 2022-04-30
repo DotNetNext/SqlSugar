@@ -380,6 +380,31 @@ namespace SqlSugar
             _WhereClassByPrimaryKey(new List<T>() { data });
             return this;
         }
+        public ISugarQueryable<T> WhereColumns(List<Dictionary<string, object>> list)
+        {
+            List<IConditionalModel> conditionalModels = new List<IConditionalModel>();
+            foreach (var model in list)
+            {
+                int i = 0;
+                var clist = new List<KeyValuePair<WhereType, ConditionalModel>>();
+                foreach (var item in model.Keys)
+                {
+                    clist.Add(new KeyValuePair<WhereType, ConditionalModel>(i == 0 ? WhereType.Or : WhereType.And, new ConditionalModel()
+                    {
+                        FieldName = item,
+                        ConditionalType = ConditionalType.Equal,
+                        FieldValue = model[item].ObjToString(),
+                        CSharpTypeName = model[item] == null ? null : model[item].GetType().Name
+                    }));
+                    i++;
+                }
+                conditionalModels.Add(new ConditionalCollections()
+                {
+                    ConditionalList = clist
+                });
+            }
+            return this.Where(conditionalModels);
+        }
 
         /// <summary>
         ///  if a property that is primary key is a condition
@@ -536,7 +561,19 @@ namespace SqlSugar
             var sqlObj = this.SqlBuilder.ConditionalModelToSql(conditionalModels,0);
             return this.Where(sqlObj.Key, sqlObj.Value);
         }
-
+        public ISugarQueryable<T> Where(List<IConditionalModel> conditionalModels, bool isWrap)
+        {
+            if (conditionalModels.IsNullOrEmpty()) return this;
+            var sqlObj = this.SqlBuilder.ConditionalModelToSql(conditionalModels, 0);
+            if (isWrap)
+            {
+                return this.Where("("+sqlObj.Key+")", sqlObj.Value);
+            }
+            else 
+            {
+                return this.Where(sqlObj.Key, sqlObj.Value);
+            }
+        }
         public virtual ISugarQueryable<T> Where<T2>(string whereString, object whereObj = null)
         {
             var whereValue = QueryBuilder.WhereInfos;
@@ -1856,7 +1893,7 @@ namespace SqlSugar
         public Task<List<T>> ToPageListAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber, RefAsync<int> totalPage) 
         {
             var result = ToPageListAsync(pageNumber, pageSize, totalNumber);
-            totalPage = (totalNumber + pageSize - 1) / pageSize;
+            totalPage.Value = (totalNumber + pageSize - 1) / pageSize;
             return result;
         }
         public async Task<string> ToJsonAsync()
@@ -2332,6 +2369,13 @@ namespace SqlSugar
             _InitNavigat(result);
             return result;
         }
+        private async Task _InitNavigatAsync<TResult>(List<TResult> result)
+        {
+            if (this.QueryBuilder.Includes != null)
+            {
+                await Task.Run(() => { _InitNavigat(result); });
+            }
+        }
 
         private void _InitNavigat<TResult>(List<TResult> result)
         {
@@ -2366,7 +2410,7 @@ namespace SqlSugar
             }
             RestoreMapping();
             _Mapper(result);
-            await Task.Run(() => { _InitNavigat(result); });
+            await _InitNavigatAsync(result);
             return result;
         }
 

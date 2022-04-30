@@ -543,6 +543,30 @@ namespace SqlSugar
         #endregion
 
         #region DataTable
+        public DataTable DictionaryListToDataTable(List<Dictionary<string, object>> list) 
+        {
+            DataTable result = new DataTable();
+            if (list.Count == 0)
+                return result;
+
+            var columnNames = list.First();
+            foreach (var item in columnNames)
+            {
+                result.Columns.Add(item.Key,item.Value==null?typeof(object):item.Value.GetType());
+            }
+            foreach (var item in list)
+            {
+                var row = result.NewRow();
+                foreach (var key in item.Keys)
+                {
+                    row[key] = item[key];
+                }
+
+                result.Rows.Add(row);
+            }
+
+            return result;
+        }
         public dynamic DataTableToDynamic(DataTable table)
         {
             List<Dictionary<string, object>> deserializeObject = new List<Dictionary<string, object>>();

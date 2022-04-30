@@ -20,5 +20,9 @@ namespace SqlSugar
                 return thisValue;
             }
         }
+        public static IEnumerable<T> MappingField<T>(this IEnumerable<T> thisValue,Func<T, object> leftField, Func<object> rightField)
+        {
+            return thisValue;
+        }
     }
 }

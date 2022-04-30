@@ -136,8 +136,10 @@ namespace SqlSugar
                 }
                 else if (type == UtilConstants.ByteArrayType)
                 {
-                    string bytesString = "0x" + BitConverter.ToString((byte[])value).Replace("-", "");
-                    return bytesString;
+                    ++i;
+                    var parameterName = this.Builder.SqlParameterKeyWord + name + i;
+                    this.Parameters.Add(new SugarParameter(parameterName, value,System.Data.DbType.Binary));
+                    return parameterName;
                 }
                 else if (type == UtilConstants.BoolType)
                 {
@@ -150,7 +152,7 @@ namespace SqlSugar
                 }
                 else if (type == UtilConstants.StringType || type == UtilConstants.ObjType)
                 {
-                    if (value.ToString().Length > 2000)
+                    if (value.ToString().Length > 1000)
                     {
                         ++i;
                         var parameterName = this.Builder.SqlParameterKeyWord + name + i;

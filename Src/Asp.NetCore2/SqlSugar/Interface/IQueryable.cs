@@ -52,10 +52,11 @@ namespace SqlSugar
         ISugarQueryable<T> WhereClass<ClassType>(List<ClassType> whereClassList,bool ignoreDefaultValue = false) where ClassType : class, new();
         ISugarQueryable<T> WhereClassByPrimaryKey(List<T> list);
         ISugarQueryable<T> WhereClassByPrimaryKey(T data) ;
+        ISugarQueryable<T> WhereColumns(List<Dictionary<string, object>> columns);
         ISugarQueryable<T> Where(Expression<Func<T, bool>> expression);
         ISugarQueryable<T> Where(string whereString, object parameters = null);
         ISugarQueryable<T> Where(List<IConditionalModel> conditionalModels);
-
+        ISugarQueryable<T> Where(List<IConditionalModel> conditionalModels,bool isWrap);
         ISugarQueryable<T> Having(Expression<Func<T, bool>> expression);
         ISugarQueryable<T> Having(string whereString, object parameters = null);
 
