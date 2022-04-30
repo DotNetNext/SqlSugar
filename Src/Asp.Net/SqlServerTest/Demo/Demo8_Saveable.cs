@@ -66,6 +66,12 @@ namespace OrmTest
                .WhereColumns("id").ToStorage();
             x4.AsDeleteable.ExecuteCommand();
 
+            var dicList = db.Queryable<Order>().Take(10).ToDictionaryList();
+            var x5 =
+          db.Storageable(dicList, "order")
+          .WhereColumns("id").ToStorage();
+            x5.AsUpdateable.IgnoreColumns("items").ExecuteCommand();
+
             Console.WriteLine("");
             Console.WriteLine("#### Saveable End ####");
         }
