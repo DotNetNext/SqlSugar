@@ -262,7 +262,14 @@ namespace SqlSugar
             }
             return this;
         }
-
+        public IDeleteable<T> WhereColumns(string [] columns)
+        {
+            if (columns != null)
+            {
+                tempPrimaryKeys = columns.ToList();
+            }
+            return this;
+        }
         public IDeleteable<T> RemoveDataCache()
         {
             this.RemoveCacheFunc = () =>
