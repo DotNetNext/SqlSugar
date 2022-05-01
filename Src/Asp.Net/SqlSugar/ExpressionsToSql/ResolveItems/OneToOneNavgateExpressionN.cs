@@ -34,12 +34,6 @@ namespace SqlSugar
                 var childExpression = memberExp.Expression;
                 result = ValidateIsJoinMember(result, memberExp, childExpression);
             }
-            else if (exp is MethodCallExpression)
-            {
-                var memberExp = exp as MemberExpression;
-                var childExpression = memberExp.Expression;
-                result = ValidateIsJoinAny(result, memberExp, childExpression);
-            }
             return result;
         }
         public MapperSql GetMemberSql()
