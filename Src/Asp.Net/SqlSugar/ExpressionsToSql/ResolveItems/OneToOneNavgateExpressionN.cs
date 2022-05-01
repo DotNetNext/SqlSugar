@@ -21,6 +21,7 @@ namespace SqlSugar
 
         public bool IsNavgate(Expression expression)
         {
+            if (this.context == null) return false;
             var result = false;
             var exp = expression;
             if (exp is UnaryExpression)
@@ -87,13 +88,17 @@ namespace SqlSugar
             {
                 var oldChildExpression = childExpression;
                 var child2Expression = (childExpression as MemberExpression).Expression;
-                if (child2Expression == null)
+                if (child2Expression == null||(child2Expression is ConstantExpression))
                 {
                     return false;
                 }
                 items = new List<ExpressionItems>();
                 items.Add(new ExpressionItems() { Type=1 , Expression= memberExp, ParentEntityInfo= this.context.EntityMaintenance.GetEntityInfo(oldChildExpression.Type )});
                 items.Add(new ExpressionItems() { Type = 2, Expression = oldChildExpression, ThisEntityInfo=this.context.EntityMaintenance.GetEntityInfo(oldChildExpression.Type), ParentEntityInfo = this.context.EntityMaintenance.GetEntityInfo(child2Expression.Type) });
+                if (items.Any(it => it.Type == 2 && it.Nav == null)) 
+                {
+                    return false;
+                }
                 while (child2Expression != null)
                 {
                     if (IsClass(child2Expression))
