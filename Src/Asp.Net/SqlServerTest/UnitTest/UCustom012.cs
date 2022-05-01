@@ -30,8 +30,8 @@ namespace OrmTest
             db.Insertable(new RoomA() { RoomId = 6, RoomName = "清华003厅", SchoolId = 2 }).ExecuteCommand();
 
 
-            db.Insertable(new SchoolA() { SchoolId = 1, School_Name = "北大" }).ExecuteCommand();
-            db.Insertable(new SchoolA() { SchoolId = 2, School_Name = "清华" }).ExecuteCommand();
+            db.Insertable(new SchoolA() { SchoolId = 1, CityId= 1001001, School_Name = "北大" }).ExecuteCommand();
+            db.Insertable(new SchoolA() { SchoolId = 2 , CityId=2,School_Name = "清华" }).ExecuteCommand();
 
             db.Insertable(new StudentA() { StudentId = 1, SchoolId = 1, Name = "北大jack" }).ExecuteCommand();
             db.Insertable(new StudentA() { StudentId = 2, SchoolId = 1, Name = "北大tom" }).ExecuteCommand();
@@ -65,6 +65,16 @@ namespace OrmTest
                  .Mapper(it => it.SchoolA, it => it.SchoolId)
                  .ToList();
 
+            var list22 = db.Queryable<StudentA>()
+                 //.Includes(it => it.SchoolA)
+                 .Where(it=>it.SchoolA.City.Id== 1001001)
+                 .ToList();
+            var list33 = db.Queryable<StudentA>()
+            //.Includes(it => it.SchoolA)
+            .Where(it => it.SchoolA.SchoolId == 1)
+            .ToList();
+
+            Check.Exception(string.Join(",", list22.Select(it => it.StudentId)) != string.Join(",", list33.Select(it => it.StudentId)), "unit error");
 
             var list3 = db.Queryable<StudentA>()
            .Includes(x => x.SchoolA, x => x.RoomList)//2个参数就是 then Include 
@@ -220,14 +230,19 @@ namespace OrmTest
         }
         public class SchoolA
         {
-            [SugarColumn(IsPrimaryKey = true)]
+            [SugarColumn(IsPrimaryKey = true,ColumnName = "schoolid")]
             public int SchoolId { get; set; }
+            [SugarColumn(IsNullable =true)]
+            public int CityId { get; set; }
             [SugarColumn( ColumnName = "SchoolName")]
             public string School_Name { get; set; }
             [Navigate(NavigateType.OneToMany,nameof(RoomA.SchoolId))]
             public List<RoomA> RoomList { get; set; }
             [Navigate(NavigateType.OneToMany, nameof(TeacherA.SchoolId))]
             public List<TeacherA> TeacherList { get; set; }
+            [Navigate(NavigateType.OneToOne,nameof(CityId))]
+            public City City { get; set; }
+
         }
         public class TeacherA
         {
