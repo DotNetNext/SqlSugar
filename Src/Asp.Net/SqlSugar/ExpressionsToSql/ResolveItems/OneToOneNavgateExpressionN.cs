@@ -18,6 +18,9 @@ namespace SqlSugar
         {
             this.context = context;
         }
+        #endregion
+
+        #region Api&Core
 
         public bool IsNavgate(Expression expression)
         {
@@ -48,33 +51,30 @@ namespace SqlSugar
             var queryable = this.context.Queryable<object>(masterShortName).AS(formInfo.ThisEntityInfo.DbTableName);
             i++;
             var lastShortName = "";
-            foreach (var item in joinInfos) 
+            foreach (var item in joinInfos)
             {
-                var shortName = item.ThisEntityInfo.DbTableName+i;
+                var shortName = item.ThisEntityInfo.DbTableName + i;
                 var pkColumn = item.ThisEntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey);
                 var navColum = item.ParentEntityInfo.Columns.FirstOrDefault(it => it.PropertyName == item.Nav.Name);
                 Check.ExceptionEasy(pkColumn == null, $"{item.ThisEntityInfo.EntityName} need PrimayKey", $"使用导航属性{item.ThisEntityInfo.EntityName} 缺少主键");
-                var on = $" {shortName}.{pkColumn.DbColumnName}={formInfo.ThisEntityInfo.DbTableName + (i-1)}.{navColum.DbColumnName}";
-                queryable.AddJoinInfo(item.ThisEntityInfo.DbTableName, shortName,on , JoinType.Inner);
+                var on = $" {shortName}.{pkColumn.DbColumnName}={formInfo.ThisEntityInfo.DbTableName + (i - 1)}.{navColum.DbColumnName}";
+                queryable.AddJoinInfo(item.ThisEntityInfo.DbTableName, shortName, on, JoinType.Inner);
                 ++i;
-                lastShortName=shortName;
+                lastShortName = shortName;
                 formInfo = item;
             }
-            var selectProperyInfo=ExpressionTool.GetMemberName(memberInfo.Expression);
+            var selectProperyInfo = ExpressionTool.GetMemberName(memberInfo.Expression);
             var selectColumnInfo = memberInfo.ParentEntityInfo.Columns.First(it => it.PropertyName == selectProperyInfo);
             queryable.Select($" {lastShortName}.{selectColumnInfo.DbColumnName}");
             var last = subInfos.First();
-            var FirstPkColumn = last.ThisEntityInfo.Columns.FirstOrDefault(it =>it.IsPrimarykey);
+            var FirstPkColumn = last.ThisEntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey);
             Check.ExceptionEasy(FirstPkColumn == null, $"{ last.ThisEntityInfo.EntityName} need PrimayKey", $"使用导航属性{ last.ThisEntityInfo.EntityName} 缺少主键");
-            var PkColumn = last.ParentEntityInfo.Columns.FirstOrDefault(it => it.PropertyName==last.Nav.Name);
+            var PkColumn = last.ParentEntityInfo.Columns.FirstOrDefault(it => it.PropertyName == last.Nav.Name);
             Check.ExceptionEasy(PkColumn == null, $"{ last.ParentEntityInfo.EntityName} no found {last.Nav.Name}", $"{ last.ParentEntityInfo.EntityName} 不存在 {last.Nav.Name}");
             queryable.Where($" {this.shorName}.{PkColumn.DbColumnName} = {masterShortName}.{FirstPkColumn.DbColumnName} ");
-            MapperSql.Sql ="( " + queryable.ToSql().Key+" ) ";
+            MapperSql.Sql = "( " + queryable.ToSql().Key + " ) ";
             return MapperSql;
         }
-        #endregion
-
-        #region All one to one
         private bool ValidateIsJoinMember(bool result, MemberExpression memberExp, Expression childExpression)
         {
             if (childExpression != null && childExpression is MemberExpression)
