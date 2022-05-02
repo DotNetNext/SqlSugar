@@ -32,13 +32,14 @@ namespace OrmTest
 
             db.Insertable(new SchoolA() { SchoolId = 1, CityId= 1001001, School_Name = "北大" }).ExecuteCommand();
             db.Insertable(new SchoolA() { SchoolId = 2 , CityId=2,School_Name = "清华" }).ExecuteCommand();
+            db.Insertable(new SchoolA() { SchoolId = 3, CityId = 3, School_Name = "青鸟" }).ExecuteCommand();
 
             db.Insertable(new StudentA() { StudentId = 1, SchoolId = 1, Name = "北大jack" }).ExecuteCommand();
             db.Insertable(new StudentA() { StudentId = 2, SchoolId = 1, Name = "北大tom" }).ExecuteCommand();
             db.Insertable(new StudentA() { StudentId = 3, SchoolId = 2, Name = "清华jack" }).ExecuteCommand();
             db.Insertable(new StudentA() { StudentId = 4, SchoolId = 2, Name = "清华tom" }).ExecuteCommand();
             db.Insertable(new StudentA() { StudentId = 5, SchoolId = null, Name = "清华tom" }).ExecuteCommand();
-
+            db.Insertable(new StudentA() { StudentId = 6, SchoolId = 3, Name = "青鸟学生" }).ExecuteCommand();
             db.Insertable(new TeacherA() { SchoolId = 1, Id = 1, Name = "北大老师01" }).ExecuteCommand();
             db.Insertable(new TeacherA() { SchoolId = 1, Id = 2, Name = "北大老师02" }).ExecuteCommand();
 
@@ -75,6 +76,13 @@ namespace OrmTest
             .ToList();
 
             Check.Exception(string.Join(",", list22.Select(it => it.StudentId)) != string.Join(",", list33.Select(it => it.StudentId)), "unit error");
+
+
+            var list333 = db.Queryable<StudentA>()
+               .Includes(it => it.SchoolA,it=>it.TeacherList)
+               .Where(it => it.SchoolA.TeacherList.Any())
+               .ToList();
+
 
             var list3 = db.Queryable<StudentA>()
            .Includes(x => x.SchoolA, x => x.RoomList)//2个参数就是 then Include 

@@ -10,7 +10,7 @@ namespace SqlSugar
     internal class ExpressionItems
     {
         /// <summary>
-        /// 0 memeber, 2 method  ,3 class
+        /// 1 memeber, 2 class  ,3 method
         /// </summary>
         public int Type { get; set; }
         public EntityInfo ParentEntityInfo { get; set; }
