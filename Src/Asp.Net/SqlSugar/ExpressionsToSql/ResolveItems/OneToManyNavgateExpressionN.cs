@@ -123,7 +123,7 @@ namespace SqlSugar
                     navColum = item.ParentEntityInfo.Columns.FirstOrDefault(it => it.PropertyName == item.Nav.Name);
                 }
                 Check.ExceptionEasy(pkColumn == null, $"{item.ThisEntityInfo.EntityName} need PrimayKey", $"使用导航属性{item.ThisEntityInfo.EntityName} 缺少主键");
-                var on = $" {shortName}.{pkColumn.DbColumnName}={formInfo.ThisEntityInfo.DbTableName + (i - 1)}.{navColum.DbColumnName}";
+                var on = $" {shortName}.{queryable.SqlBuilder.GetTranslationColumnName(pkColumn.DbColumnName)}={formInfo.ThisEntityInfo.DbTableName + (i - 1)}.{queryable.SqlBuilder.GetTranslationColumnName(navColum.DbColumnName)}";
                 queryable.AddJoinInfo(item.ThisEntityInfo.DbTableName, shortName, on, JoinType.Inner);
                 ++i;
                 index++;
@@ -136,7 +136,7 @@ namespace SqlSugar
             Check.ExceptionEasy(FirstPkColumn == null, $"{ last.ThisEntityInfo.EntityName} need PrimayKey", $"使用导航属性{ last.ThisEntityInfo.EntityName} 缺少主键");
             var PkColumn = last.ParentEntityInfo.Columns.FirstOrDefault(it => it.PropertyName == last.Nav.Name);
             Check.ExceptionEasy(PkColumn == null, $"{ last.ParentEntityInfo.EntityName} no found {last.Nav.Name}", $"{ last.ParentEntityInfo.EntityName} 不存在 {last.Nav.Name}");
-            queryable.Where($" {this.shorName}.{PkColumn.DbColumnName} = {masterShortName}.{FirstPkColumn.DbColumnName} ");
+            queryable.Where($" {this.shorName}.{ queryable.SqlBuilder.GetTranslationColumnName(PkColumn.DbColumnName)} = {masterShortName}.{queryable.SqlBuilder.GetTranslationColumnName(FirstPkColumn.DbColumnName)} ");
             MapperSql.Sql = $"( {queryable.ToSql().Key} ) ";
             if ((memberInfo.Expression as MethodCallExpression).Method.Name == "Any")
             {
