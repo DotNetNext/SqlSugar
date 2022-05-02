@@ -107,7 +107,9 @@
     <Compile Include="Enum\NavigatType.cs" />
     <Compile Include="Enum\SugarActionType.cs" />
     <Compile Include="Entities\SugarConnection.cs" />
+    <Compile Include="ExpressionsToSql\Common\ExpressionItems.cs" />
     <Compile Include="ExpressionsToSql\Common\ExpressionOutParameter.cs" />
+    <Compile Include="ExpressionsToSql\ResolveItems\OneToManyNavgateExpressionN.cs" />
     <Compile Include="ExpressionsToSql\ResolveItems\OneToManyNavgateExpression.cs" />
     <Compile Include="ExpressionsToSql\ResolveItems\OneToOneNavgateExpressionN.cs" />
     <Compile Include="ExpressionsToSql\ResolveItems\OneToOneNavgateExpression.cs" />

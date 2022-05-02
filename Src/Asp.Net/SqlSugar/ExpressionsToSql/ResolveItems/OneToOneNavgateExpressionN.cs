@@ -12,7 +12,7 @@ namespace SqlSugar
         #region  Constructor
         public string shorName { get; set; }
         public EntityInfo entityInfo;
-
+        public List<ExpressionItems> items;
         public SqlSugarProvider context;
         public OneToOneNavgateExpressionN(SqlSugarProvider context)
         {
@@ -75,7 +75,6 @@ namespace SqlSugar
         #endregion
 
         #region All one to one
-        List<ExpressionItems> items;
         private bool ValidateIsJoinMember(bool result, MemberExpression memberExp, Expression childExpression)
         {
             if (childExpression != null && childExpression is MemberExpression)
@@ -121,13 +120,6 @@ namespace SqlSugar
         }
         #endregion
 
-        #region One to one Last Method
-        private bool ValidateIsJoinAny(bool result, MemberExpression memberExp, Expression childExpression)
-        {
-            return false;
-        } 
-        #endregion
-
         #region Helper
 
         private static bool IsParameter(Expression child2Expression)
@@ -146,31 +138,5 @@ namespace SqlSugar
         }
         #endregion
 
-        #region Entities
-        internal class ExpressionItems 
-        {
-            /// <summary>
-            /// 0 memeber, 2 method  ,3 class
-            /// </summary>
-            public int Type { get; set; }
-            public EntityInfo ParentEntityInfo { get; set; }
-            public EntityInfo ThisEntityInfo { get; set; }
-            public Expression Expression { get; set; }  
-            public Navigate Nav 
-            { 
-                get 
-                {
-                    if (Expression is MemberExpression) 
-                    {
-                        var name=(Expression as MemberExpression).Member.Name;
-                        var navColumn = ParentEntityInfo.Columns.FirstOrDefault(it => it.PropertyName == name);
-                        return navColumn==null?null:navColumn.Navigat;
-                    }
-                    return null;
-                } 
-            }
-
-        }
-        #endregion
     }
 }
