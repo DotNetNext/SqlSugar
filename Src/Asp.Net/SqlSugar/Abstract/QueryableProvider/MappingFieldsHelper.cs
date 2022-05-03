@@ -72,7 +72,7 @@ namespace SqlSugar
             }
         }
 
-        private List<object> GetSetList(object item, List<object> list, List<MappingFieldsExpression> mappingFieldsExpressions)
+        public List<object> GetSetList(object item, List<object> list, List<MappingFieldsExpression> mappingFieldsExpressions)
         {
             foreach (var field in mappingFieldsExpressions)
             {
