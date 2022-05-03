@@ -16,6 +16,17 @@ namespace OrmTest
                                         .MappingField(z=>z.studenId,()=>it.StudentId)
                                         .MappingField(z => z.BookId, () => it.StudentId).ToList())
                 .ToList();
+
+            var list2 = db.Queryable<StudentA>().ToList();
+            db.ThenMapper(list2, it =>
+            {
+                it.Books = db.Queryable<BookA>().Where(z=>z.BookId==1).SetContext(
+                            z => z.studenId, () => it.StudentId, 
+                            z => z.BookId, () => it.StudentId,
+                            it);
+            });
+
+        
         }
 
         public class StudentA
