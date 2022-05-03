@@ -88,6 +88,8 @@ namespace OrmTest
                 .Where(it => it.SchoolA.TeacherList.Any(z=>z.Id>2))
                 .ToList();
 
+            Check.Exception(list3333.Select(x=>x.SchoolA).SelectMany(x=>x.TeacherList).Any(it=>it.Id<=2), "unit error");
+
             var list3 = db.Queryable<StudentA>()
            .Includes(x => x.SchoolA, x => x.RoomList)//2个参数就是 then Include 
            .Includes(x => x.SchoolA, x => x.TeacherList)//2个参数就是 then Include 
