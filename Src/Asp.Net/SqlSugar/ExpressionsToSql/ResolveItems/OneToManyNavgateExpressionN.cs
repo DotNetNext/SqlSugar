@@ -110,14 +110,14 @@ namespace SqlSugar
             foreach (var item in joinInfos)
             {
                 var shortName = item.ThisEntityInfo.DbTableName + i;
-                EntityColumnInfo pkColumn ;
-                EntityColumnInfo navColum ;
+                EntityColumnInfo pkColumn;
+                EntityColumnInfo navColum;
                 if (index == 0)
                 {
                     pkColumn = item.ThisEntityInfo.Columns.FirstOrDefault(it => it.PropertyName == item.Nav.Name);
                     navColum = item.ParentEntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey);
                 }
-                else 
+                else
                 {
                     pkColumn = item.ThisEntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey);
                     navColum = item.ParentEntityInfo.Columns.FirstOrDefault(it => it.PropertyName == item.Nav.Name);
@@ -137,6 +137,7 @@ namespace SqlSugar
             var PkColumn = last.ParentEntityInfo.Columns.FirstOrDefault(it => it.PropertyName == last.Nav.Name);
             Check.ExceptionEasy(PkColumn == null, $"{ last.ParentEntityInfo.EntityName} no found {last.Nav.Name}", $"{ last.ParentEntityInfo.EntityName} 不存在 {last.Nav.Name}");
             queryable.Where($" {this.shorName}.{ queryable.SqlBuilder.GetTranslationColumnName(PkColumn.DbColumnName)} = {masterShortName}.{queryable.SqlBuilder.GetTranslationColumnName(FirstPkColumn.DbColumnName)} ");
+            queryable.WhereIF(this.whereSql.HasValue(), GetWhereSql1(this.whereSql,lastShortName, joinInfos, queryable.SqlBuilder));
             MapperSql.Sql = $"( {queryable.ToSql().Key} ) ";
             if ((memberInfo.Expression as MethodCallExpression).Method.Name == "Any")
             {
@@ -146,7 +147,21 @@ namespace SqlSugar
             return MapperSql;
         }
 
+
         #region Helper
+        private string GetWhereSql1(string wheresql,string lastShortName, List<ExpressionItems> joinInfos,ISqlBuilder sqlBuilder)
+        {
+            var sql = wheresql;
+            if (sql == null) return sql;
+            joinInfos.Last().ThisEntityInfo.Columns.ForEach(it =>
+            {
+                this.whereSql = this.whereSql.Replace(sqlBuilder.GetTranslationColumnName(it.DbColumnName),
+                    lastShortName+"." + sqlBuilder.GetTranslationColumnName(it.DbColumnName));
+
+            });
+            return sql;
+        }
+
         private string GetWhereSql(MethodCallExpression memberExp)
         {
             var whereExp = memberExp.Arguments[1];
