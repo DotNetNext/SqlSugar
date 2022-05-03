@@ -85,6 +85,7 @@
     <Compile Include="Demo\DemoN_SplitTable.cs" />
     <Compile Include="Models\DataDictionary.cs" />
     <Compile Include="Models\Custom.cs" />
+    <Compile Include="Models\DiffLong.cs" />
     <Compile Include="Models\EntityMapper.cs" />
     <Compile Include="Models\Mapper.cs" />
     <Compile Include="Models\SubInsertTest.cs" />
