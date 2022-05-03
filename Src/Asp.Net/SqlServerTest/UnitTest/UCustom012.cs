@@ -149,6 +149,8 @@ namespace OrmTest
             db.Insertable(new Tree1() { Id = 6, Name = "020101", ParentId = 5 }).ExecuteCommand();
             db.Insertable(new Tree1() { Id = 7, Name = "02010101", ParentId = 6 }).ExecuteCommand();
 
+            db.Queryable<Tree1>().Where(x => x.Parent.Parent.Parent.Id > 0).ToList();
+            db.Queryable<Tree1>().Where(x => x.Parent.Child.Any()).ToList();
             var list21111 = new List<Tree1>();
            var xxx= db.Queryable<Tree1>()
                 .Includes(it => it.Child,it=>it.Child,it=>it.Child)
