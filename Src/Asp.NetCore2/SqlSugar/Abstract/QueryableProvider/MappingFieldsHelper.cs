@@ -57,57 +57,10 @@ namespace SqlSugar
 
         public void SetChildList(EntityColumnInfo navColumnInfo,object item,List<object> list, List<MappingFieldsExpression> mappingFieldsExpressions)
         {
-            if (item != null) 
+            if (item != null)
             {
                 //var expable =Expressionable.Create<object>();
-                foreach (var field in mappingFieldsExpressions) 
-                {
-                    InitMappingFieldsExpression(field);
-                }
-                var setList =new List<object>();
-                var count = mappingFieldsExpressions.Count;
-                if (count == 1)
-                {
-                    setList=list.Where(it => GetWhereByIndex(item, mappingFieldsExpressions, it, 0)).ToList();
-                }
-                else if (count == 2)
-                {
-                    setList = list.Where(it =>
-                     GetWhereByIndex(item, mappingFieldsExpressions, it, 0) &&
-                     GetWhereByIndex(item, mappingFieldsExpressions, it, 1)
-                    ).ToList();
-                }
-                else if (count == 3)
-                {
-                    setList = list.Where(it =>
-                     GetWhereByIndex(item, mappingFieldsExpressions, it, 0) &&
-                     GetWhereByIndex(item, mappingFieldsExpressions, it, 1) &&
-                     GetWhereByIndex(item, mappingFieldsExpressions, it, 2)
-                    ).ToList();
-                }
-                else if (count == 4)
-                {
-                    setList = list.Where(it =>
-                     GetWhereByIndex(item, mappingFieldsExpressions, it, 0) &&
-                     GetWhereByIndex(item, mappingFieldsExpressions, it, 1) &&
-                     GetWhereByIndex(item, mappingFieldsExpressions, it, 2) &&
-                     GetWhereByIndex(item, mappingFieldsExpressions, it, 3)
-                    ).ToList();
-                }
-                else if (count == 5)
-                {
-                    setList = list.Where(it =>
-                     GetWhereByIndex(item, mappingFieldsExpressions, it, 0) &&
-                     GetWhereByIndex(item, mappingFieldsExpressions, it, 1) &&
-                     GetWhereByIndex(item, mappingFieldsExpressions, it, 2) &&
-                     GetWhereByIndex(item, mappingFieldsExpressions, it, 3) &&
-                     GetWhereByIndex(item, mappingFieldsExpressions, it, 4)
-                    ).ToList();
-                }
-                else 
-                {
-                    Check.ExceptionEasy("MappingField max value  is  5", "MappingField最大数量不能超过5");
-                }
+                List<object> setList = GetSetList(item, list, mappingFieldsExpressions);
                 //navColumnInfo.PropertyInfo.SetValue();
                 var instance = Activator.CreateInstance(navColumnInfo.PropertyInfo.PropertyType, true);
                 var ilist = instance as IList;
@@ -115,8 +68,62 @@ namespace SqlSugar
                 {
                     ilist.Add(value);
                 }
-                navColumnInfo.PropertyInfo.SetValue(item,ilist);
+                navColumnInfo.PropertyInfo.SetValue(item, ilist);
             }
+        }
+
+        public List<object> GetSetList(object item, List<object> list, List<MappingFieldsExpression> mappingFieldsExpressions)
+        {
+            foreach (var field in mappingFieldsExpressions)
+            {
+                InitMappingFieldsExpression(field);
+            }
+            var setList = new List<object>();
+            var count = mappingFieldsExpressions.Count;
+            if (count == 1)
+            {
+                setList = list.Where(it => GetWhereByIndex(item, mappingFieldsExpressions, it, 0)).ToList();
+            }
+            else if (count == 2)
+            {
+                setList = list.Where(it =>
+                 GetWhereByIndex(item, mappingFieldsExpressions, it, 0) &&
+                 GetWhereByIndex(item, mappingFieldsExpressions, it, 1)
+                ).ToList();
+            }
+            else if (count == 3)
+            {
+                setList = list.Where(it =>
+                 GetWhereByIndex(item, mappingFieldsExpressions, it, 0) &&
+                 GetWhereByIndex(item, mappingFieldsExpressions, it, 1) &&
+                 GetWhereByIndex(item, mappingFieldsExpressions, it, 2)
+                ).ToList();
+            }
+            else if (count == 4)
+            {
+                setList = list.Where(it =>
+                 GetWhereByIndex(item, mappingFieldsExpressions, it, 0) &&
+                 GetWhereByIndex(item, mappingFieldsExpressions, it, 1) &&
+                 GetWhereByIndex(item, mappingFieldsExpressions, it, 2) &&
+                 GetWhereByIndex(item, mappingFieldsExpressions, it, 3)
+                ).ToList();
+            }
+            else if (count == 5)
+            {
+                setList = list.Where(it =>
+                 GetWhereByIndex(item, mappingFieldsExpressions, it, 0) &&
+                 GetWhereByIndex(item, mappingFieldsExpressions, it, 1) &&
+                 GetWhereByIndex(item, mappingFieldsExpressions, it, 2) &&
+                 GetWhereByIndex(item, mappingFieldsExpressions, it, 3) &&
+                 GetWhereByIndex(item, mappingFieldsExpressions, it, 4)
+                ).ToList();
+            }
+            else
+            {
+                Check.ExceptionEasy("MappingField max value  is  5", "MappingField最大数量不能超过5");
+            }
+
+            return setList;
         }
 
         private static bool GetWhereByIndex(object item, List<MappingFieldsExpression> mappingFieldsExpressions, object it,int index)

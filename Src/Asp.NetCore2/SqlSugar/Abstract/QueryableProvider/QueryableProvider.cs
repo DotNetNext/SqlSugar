@@ -1386,7 +1386,7 @@ namespace SqlSugar
             {
                 pkName = ((mappingFiled as LambdaExpression).Body as MemberExpression).Member.Name;
             }
-            var key = thisFiled.ToString() +typeof(ParameterT).FullName + typeof(T).FullName;
+            var key = thisFiled.ToString()+mappingFiled.ToString() +typeof(ParameterT).FullName + typeof(T).FullName;
             var ids = list.Where(it=>it!=null).Select(it => it.GetType().GetProperty(pkName).GetValue(it)).Distinct().ToArray();
             if (queryableContext.TempChildLists == null)
                 queryableContext.TempChildLists = new Dictionary<string, object>();
@@ -1417,7 +1417,54 @@ namespace SqlSugar
             result = result.Where(it => it.GetType().GetProperty(name).GetValue(it).ObjToString() == pkValue.ObjToString()).ToList();
             return result;
         }
-
+        public List<T> SetContext<ParameterT>(Expression<Func<T, object>> thisFiled1, Expression<Func<object>> mappingFiled1,
+            Expression<Func<T, object>> thisFiled2, Expression<Func<object>> mappingFiled2,
+            ParameterT parameter)
+        {
+            if (parameter == null)
+            {
+                return new List<T>();
+            }
+            var rightEntity = this.Context.EntityMaintenance.GetEntityInfo<ParameterT>();
+            var leftEntity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            List<T> result = new List<T>();
+            var queryableContext = this.Context.TempItems["Queryable_To_Context"] as MapperContext<ParameterT>;
+            var list = queryableContext.list;
+            var key = thisFiled1.ToString() + mappingFiled1.ToString()+
+                      thisFiled2.ToString() + mappingFiled2.ToString()+
+                       typeof(ParameterT).FullName + typeof(T).FullName;
+            MappingFieldsHelper<ParameterT> fieldsHelper = new MappingFieldsHelper<ParameterT>();
+            var mappings = new List<MappingFieldsExpression>() {
+               new MappingFieldsExpression(){
+               LeftColumnExpression=thisFiled1,
+               LeftEntityColumn=leftEntity.Columns.First(it=>it.PropertyName==ExpressionTool.GetMemberName(thisFiled1)),
+               RightColumnExpression=mappingFiled1,
+               RightEntityColumn=rightEntity.Columns.First(it=>it.PropertyName==ExpressionTool.GetMemberName(mappingFiled1))
+             },
+               new MappingFieldsExpression(){
+               LeftColumnExpression=thisFiled2,
+               LeftEntityColumn=leftEntity.Columns.First(it=>it.PropertyName==ExpressionTool.GetMemberName(thisFiled2)),
+               RightColumnExpression=mappingFiled2,
+               RightEntityColumn=rightEntity.Columns.First(it=>it.PropertyName==ExpressionTool.GetMemberName(mappingFiled2))
+             }
+            };
+            var conditionals=fieldsHelper.GetMppingSql(list, mappings);
+            if (queryableContext.TempChildLists == null)
+                queryableContext.TempChildLists = new Dictionary<string, object>();
+            if (list != null && queryableContext.TempChildLists.ContainsKey(key))
+            {
+                result = (List<T>)queryableContext.TempChildLists[key];
+            }
+            else
+            {
+                result = this.Clone().Where(conditionals,true).ToList();
+                queryableContext.TempChildLists[key] = result;
+            }
+            List<object> listObj = result.Select(it => (object)it).ToList();
+            object obj = (object)parameter;
+            var newResult = fieldsHelper.GetSetList(obj, listObj, mappings).Select(it=>(T)it ).ToList();
+            return newResult;
+        }
         public async Task<List<T>> SetContextAsync<ParameterT>(Expression<Func<T, object>> thisFiled, Expression<Func<object>> mappingFiled, ParameterT parameter)
         {
             List<T> result = new List<T>();
@@ -1433,7 +1480,7 @@ namespace SqlSugar
             {
                 pkName = ((mappingFiled as LambdaExpression).Body as MemberExpression).Member.Name;
             }
-            var key = thisFiled.ToString() + typeof(ParameterT).FullName + typeof(T).FullName;
+            var key = thisFiled.ToString()+ mappingFiled.ToString() + typeof(ParameterT).FullName + typeof(T).FullName;
             var ids = list.Select(it => it.GetType().GetProperty(pkName).GetValue(it)).ToArray();
             if (queryableContext.TempChildLists == null)
                 queryableContext.TempChildLists = new Dictionary<string, object>();
@@ -1463,6 +1510,54 @@ namespace SqlSugar
             var pkValue = parameter.GetType().GetProperty(pkName).GetValue(parameter);
             result = result.Where(it => it.GetType().GetProperty(name).GetValue(it).ObjToString() == pkValue.ObjToString()).ToList();
             return result;
+        }
+        public async Task<List<T>> SetContextAsync<ParameterT>(Expression<Func<T, object>> thisFiled1, Expression<Func<object>> mappingFiled1,
+    Expression<Func<T, object>> thisFiled2, Expression<Func<object>> mappingFiled2,
+    ParameterT parameter)
+        {
+            if (parameter == null)
+            {
+                return new List<T>();
+            }
+            var rightEntity = this.Context.EntityMaintenance.GetEntityInfo<ParameterT>();
+            var leftEntity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            List<T> result = new List<T>();
+            var queryableContext = this.Context.TempItems["Queryable_To_Context"] as MapperContext<ParameterT>;
+            var list = queryableContext.list;
+            var key = thisFiled1.ToString() + mappingFiled1.ToString() +
+                      thisFiled2.ToString() + mappingFiled2.ToString() +
+                       typeof(ParameterT).FullName + typeof(T).FullName;
+            MappingFieldsHelper<ParameterT> fieldsHelper = new MappingFieldsHelper<ParameterT>();
+            var mappings = new List<MappingFieldsExpression>() {
+               new MappingFieldsExpression(){
+               LeftColumnExpression=thisFiled1,
+               LeftEntityColumn=leftEntity.Columns.First(it=>it.PropertyName==ExpressionTool.GetMemberName(thisFiled1)),
+               RightColumnExpression=mappingFiled1,
+               RightEntityColumn=rightEntity.Columns.First(it=>it.PropertyName==ExpressionTool.GetMemberName(mappingFiled1))
+             },
+               new MappingFieldsExpression(){
+               LeftColumnExpression=thisFiled2,
+               LeftEntityColumn=leftEntity.Columns.First(it=>it.PropertyName==ExpressionTool.GetMemberName(thisFiled2)),
+               RightColumnExpression=mappingFiled2,
+               RightEntityColumn=rightEntity.Columns.First(it=>it.PropertyName==ExpressionTool.GetMemberName(mappingFiled2))
+             }
+            };
+            var conditionals = fieldsHelper.GetMppingSql(list, mappings);
+            if (queryableContext.TempChildLists == null)
+                queryableContext.TempChildLists = new Dictionary<string, object>();
+            if (list != null && queryableContext.TempChildLists.ContainsKey(key))
+            {
+                result = (List<T>)queryableContext.TempChildLists[key];
+            }
+            else
+            {
+                result =await this.Clone().Where(conditionals, true).ToListAsync();
+                queryableContext.TempChildLists[key] = result;
+            }
+            List<object> listObj = result.Select(it => (object)it).ToList();
+            object obj = (object)parameter;
+            var newResult = fieldsHelper.GetSetList(obj, listObj, mappings).Select(it => (T)it).ToList();
+            return newResult;
         }
         public virtual void ForEach(Action<T> action, int singleMaxReads = 300,System.Threading.CancellationTokenSource cancellationTokenSource = null) 
         {
