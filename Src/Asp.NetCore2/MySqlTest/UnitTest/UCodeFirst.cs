@@ -13,6 +13,7 @@ namespace OrmTest
             if (Db.DbMaintenance.IsAnyTable("UnitCodeTest1", false))
                 Db.DbMaintenance.DropTable("UnitCodeTest1");
             Db.CodeFirst.InitTables<UnitCodeTest1>();
+            Db.CodeFirst.InitTables<UnitCodeTest111>();
         }
         public class UnitCodeTest1
         {
@@ -20,6 +21,20 @@ namespace OrmTest
             public int Id { get; set; }
             [SqlSugar.SugarColumn(DefaultValue="now()", IndexGroupNameList =new string[] {"group1" } )]
             public DateTime? CreateDate { get; set; }
+        }
+        [SqlSugar.SugarIndex("UCTINDEX",
+                      nameof(UnitCodeTest111.CreateDate),SqlSugar.OrderByType.Desc,
+                      nameof(UnitCodeTest111.CreateDate2), SqlSugar.OrderByType.Desc,
+                      nameof(UnitCodeTest111.CreateDate3), SqlSugar.OrderByType.Desc
+            )]
+        public class UnitCodeTest111
+        {
+ 
+            public int Id { get; set; }
+          
+            public DateTime? CreateDate { get; set; }
+            public DateTime? CreateDate2 { get; set; }
+            public DateTime? CreateDate3 { get; set; }
         }
     }
 }
