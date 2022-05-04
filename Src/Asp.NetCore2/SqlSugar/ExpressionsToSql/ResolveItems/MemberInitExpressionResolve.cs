@@ -19,6 +19,7 @@ namespace SqlSugar
                     break;
                 case ResolveExpressType.WhereMultiple:
                     break;
+                case ResolveExpressType.ArraySingle:
                 case ResolveExpressType.SelectSingle:
                     Select(expression, parameter, true);
                     break;

@@ -291,6 +291,14 @@ namespace SqlSugar
             }
         }
 
+
+        public IStorageable<T> WhereColumns(string [] columns) 
+        {
+            var list = columns.Select(it=>this.Context.EntityMaintenance.GetDbColumnName<T>(it)).ToList();
+            var exp=ExpressionBuilderHelper.CreateNewFields<T>(this.Context.EntityMaintenance.GetEntityInfo<T>(), list);
+            return this.WhereColumns(exp);
+        }
+
         private  void SetConditList(List<StorageableInfo<T>> itemList, List<EntityColumnInfo> whereColumns, List<IConditionalModel> conditList)
         {
            ;
