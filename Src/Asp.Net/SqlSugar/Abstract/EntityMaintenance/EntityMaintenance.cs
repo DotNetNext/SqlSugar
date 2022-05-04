@@ -37,6 +37,11 @@ namespace SqlSugar
                 result.IsDisabledUpdateAll = sugarTable.IsDisabledUpdateAll;
                 result.IsDisabledDelete = sugarTable.IsDisabledDelete;
             }
+            var indexs = type.GetCustomAttributes(typeof(SugarIndexAttribute));
+            if (indexs != null && indexs.Any())
+            {
+                result.Indexs = indexs.Select(it => it as SugarIndexAttribute).ToList();
+            }
             if (result.TableDescription.IsNullOrEmpty()) result.TableDescription = GetTableAnnotation(type);
             if (this.Context.CurrentConnectionConfig.ConfigureExternalServices != null && this.Context.CurrentConnectionConfig.ConfigureExternalServices.EntityNameService != null)
             {
