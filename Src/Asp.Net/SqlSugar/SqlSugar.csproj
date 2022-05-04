@@ -261,6 +261,7 @@
     <Compile Include="Abstract\SugarProvider\SqlSugarScopeProvider.cs" />
     <Compile Include="Utilities\CallContext.cs" />
     <Compile Include="Utilities\CallContextAsync.cs" />
+    <Compile Include="Utilities\ExpressionBuilderHelper.cs" />
     <Compile Include="Utilities\CommonExtensions.cs" />
     <Compile Include="Utilities\PropertyCallAdapterProvider.cs" />
     <Compile Include="Utilities\SugarRetry.cs" />

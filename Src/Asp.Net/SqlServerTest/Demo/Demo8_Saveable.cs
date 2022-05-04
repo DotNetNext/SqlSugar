@@ -45,6 +45,8 @@ namespace OrmTest
             x2.BulkCopy();
             x2.BulkUpdate();
 
+            var x22 = db.Storageable<Order>(new Order() { Id = 0, Name = "jack" }).WhereColumns(new string[] { "Name" ,"Id"}).ExecuteCommand();
+
             var dt = db.Queryable<Order>().Take(1).ToDataTable();
             dt.TableName = "order";
             var addRow = dt.NewRow();
