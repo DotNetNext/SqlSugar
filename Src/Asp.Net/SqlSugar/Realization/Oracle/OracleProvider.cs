@@ -112,7 +112,7 @@ namespace SqlSugar
             {
                 foreach (var Parameter in parameters)
                 {
-                    if (Parameter.ParameterName!=null&&Parameter.ParameterName.ToLower().IsIn("@user", "@level", "@key", ":user", ":level", ":key"))
+                    if (Parameter.ParameterName != null && Parameter.ParameterName.ToLower().IsIn("@user", "@level",  ":user", ":level"))
                     {
                         if (parameters.Count(it => it.ParameterName.StartsWith(Parameter.ParameterName)) == 1)
                         {
@@ -120,7 +120,7 @@ namespace SqlSugar
                             sql = sql.Replace(Parameter.ParameterName, newName);
                             Parameter.ParameterName = newName;
                         }
-                        else 
+                        else
                         {
                             Check.ExceptionEasy($" {Parameter.ParameterName} is key word", $"{Parameter.ParameterName}是关键词");
                         }
@@ -149,10 +149,6 @@ namespace SqlSugar
             var isVarchar = this.Context.IsVarchar();
             foreach (var parameter in parameters)
             {
-                if (parameter.ParameterName.ToLower().IsIn("@user", "@level", "@key", ":user", ":level", ":key"))
-                {
-                    Check.ExceptionEasy($"{parameter.ParameterName.Replace(":","@")} key word", $"参数名{parameter.ParameterName.Replace(":", "@")}是关键字 ，在ORACLE中例如  {parameter.ParameterName.Replace(":", "@")}  无法定义成参数 ，你可以用AOP替换参数名");
-                }
                 if (parameter.Value == null) parameter.Value = DBNull.Value;
                 var sqlParameter = new OracleParameter();
                 sqlParameter.Size = parameter.Size == -1 ? 0 : parameter.Size;
