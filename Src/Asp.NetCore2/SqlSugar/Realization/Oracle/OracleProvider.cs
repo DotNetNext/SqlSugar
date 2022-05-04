@@ -87,6 +87,7 @@ namespace SqlSugar
         }
         public override DbCommand GetCommand(string sql, SugarParameter[] parameters)
         {
+            sql = ReplaceKeyWordParameterName(sql, parameters);
             OracleCommand sqlCommand = new OracleCommand(sql, (OracleConnection)this.Connection);
             sqlCommand.BindByName = true;
             sqlCommand.CommandType = this.CommandType;
@@ -104,6 +105,32 @@ namespace SqlSugar
             CheckConnection();
             return sqlCommand;
         }
+
+        private static string ReplaceKeyWordParameterName(string sql, SugarParameter[] parameters)
+        {
+            if (parameters.HasValue())
+            {
+                foreach (var Parameter in parameters)
+                {
+                    if (Parameter.ParameterName != null && Parameter.ParameterName.ToLower().IsIn("@user", "@level",  ":user", ":level"))
+                    {
+                        if (parameters.Count(it => it.ParameterName.StartsWith(Parameter.ParameterName)) == 1)
+                        {
+                            var newName = Parameter.ParameterName + "_01";
+                            sql = sql.Replace(Parameter.ParameterName, newName);
+                            Parameter.ParameterName = newName;
+                        }
+                        else
+                        {
+                            Check.ExceptionEasy($" {Parameter.ParameterName} is key word", $"{Parameter.ParameterName}ÊÇ¹Ø¼ü´Ê");
+                        }
+                    }
+                }
+            }
+
+            return sql;
+        }
+
         public override void SetCommandToAdapter(IDataAdapter dataAdapter, DbCommand command)
         {
             ((MyOracleDataAdapter)dataAdapter).SelectCommand = (OracleCommand)command;
