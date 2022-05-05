@@ -14,7 +14,10 @@ namespace OrmTest
             var list=db.Queryable<StudentA>()
                 .Includes(it => it.Books.Where(z=>z.BookId==1)
                                         .MappingField(z=>z.studenId,()=>it.StudentId)
-                                        .MappingField(z => z.BookId, () => it.StudentId).ToList())
+                                        .MappingField(z => z.BookId, () => it.StudentId).ToList()
+                                        
+                                  , c=>c.bookChilds
+                                          .MappingField(z=>z.BookId,()=>c.BookId).ToList())
                 .ToList();
 
             var list2 = db.Queryable<StudentA>().ToList();
@@ -58,6 +61,8 @@ namespace OrmTest
             [SugarColumn(ColumnName = "Name")]
             public string Names { get; set; }
             public int studenId { get; set; }
+            [Navigate(NavigateType.Dynamic,null)]
+            public List<BookA> bookChilds { get; set; }
         }
     }
 }

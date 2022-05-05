@@ -29,7 +29,7 @@ namespace SqlSugar
             return mappingFields;
         }
 
-        public List<IConditionalModel> GetMppingSql(List<T> list, List<MappingFieldsExpression>  mappingFieldsExpressions)
+        public List<IConditionalModel> GetMppingSql(List<object> list, List<MappingFieldsExpression>  mappingFieldsExpressions)
         {
             List<IConditionalModel> conditionalModels = new List<IConditionalModel>();
             foreach (var model in list) 
@@ -141,9 +141,26 @@ namespace SqlSugar
             {
                 item.LeftEntityColumn = this.NavEntity.Columns.FirstOrDefault(it => it.PropertyName == leftName);
             }
-            if (item.RightEntityColumn == null)
+            if (item.RightEntityColumn == null && this.Context != null)
             {
-                item.RightEntityColumn = this.RootEntity.Columns.FirstOrDefault(it => it.PropertyName == rightName);
+                if (item.RightColumnExpression is LambdaExpression) 
+                {
+                    var body=(item.RightColumnExpression as LambdaExpression).Body;
+                    if (body is UnaryExpression) 
+                    {
+                        body = ((UnaryExpression)body).Operand;
+                    }
+                    if (body is MemberExpression) 
+                    {
+                        var exp=(body as MemberExpression).Expression;
+                        if (exp.NodeType == ExpressionType.Parameter) 
+                        {
+                            item.RightEntityColumn =this.Context.EntityMaintenance.GetEntityInfo(exp.Type).Columns.FirstOrDefault(it => it.PropertyName == rightName);
+                        }
+                    }
+                }
+                if (item.RightEntityColumn==null)
+                   item.RightEntityColumn = this.RootEntity.Columns.FirstOrDefault(it => it.PropertyName == rightName);
             }
         }
 

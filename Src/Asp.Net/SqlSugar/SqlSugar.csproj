@@ -431,27 +431,7 @@
     <None Include="packages.config" />
     <None Include="SqlSugar.nuspec" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Abstract\AdoProvider\Abstract\AdoProvider\" />
-    <Folder Include="Abstract\AdoProvider\Abstract\AopProvider\" />
-    <Folder Include="Abstract\AdoProvider\Abstract\CacheProvider\" />
-    <Folder Include="Abstract\AdoProvider\Abstract\CodeFirstProvider\" />
-    <Folder Include="Abstract\AdoProvider\Abstract\DbBindProvider\" />
-    <Folder Include="Abstract\AdoProvider\Abstract\DbFirstProvider\" />
-    <Folder Include="Abstract\AdoProvider\Abstract\DbMaintenanceProvider\" />
-    <Folder Include="Abstract\AdoProvider\Abstract\DeleteProvider\" />
-    <Folder Include="Abstract\AdoProvider\Abstract\EntityMaintenance\" />
-    <Folder Include="Abstract\AdoProvider\Abstract\ExpressionableProvider\" />
-    <Folder Include="Abstract\AdoProvider\Abstract\FastestProvider\" />
-    <Folder Include="Abstract\AdoProvider\Abstract\FilterProvider\" />
-    <Folder Include="Abstract\AdoProvider\Abstract\InsertableProvider\" />
-    <Folder Include="Abstract\AdoProvider\Abstract\QueryableProvider\" />
-    <Folder Include="Abstract\AdoProvider\Abstract\Reportable\" />
-    <Folder Include="Abstract\AdoProvider\Abstract\SaveableProvider\" />
-    <Folder Include="Abstract\AdoProvider\Abstract\SqlBuilderProvider\" />
-    <Folder Include="Abstract\AdoProvider\Abstract\SugarProvider\" />
-    <Folder Include="Abstract\AdoProvider\Abstract\UpdateProvider\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

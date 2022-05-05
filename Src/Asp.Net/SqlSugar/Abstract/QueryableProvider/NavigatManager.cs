@@ -243,6 +243,7 @@ namespace SqlSugar
                         if (sql.MappingExpressions.HasValue())
                         {
                             MappingFieldsHelper<T> helper = new MappingFieldsHelper<T>();
+                            helper.Context = this.Context;
                             helper.NavEntity = bEntityInfo;
                             helper.RootEntity = this.Context.EntityMaintenance.GetEntityInfo<T>();
                             helper.SetChildList(navObjectNameColumnInfo, listItem, ilist.Cast<object>().ToList(), sql.MappingExpressions);
@@ -319,6 +320,7 @@ namespace SqlSugar
                         {
                             MappingFieldsHelper<T> helper = new MappingFieldsHelper<T>();
                             helper.NavEntity = navEntityInfo;
+                            helper.Context = this.Context;
                             helper.RootEntity = this.Context.EntityMaintenance.GetEntityInfo<T>();
                             helper.SetChildList(navObjectNameColumnInfo, item,setValue,sqlObj.MappingExpressions);
                         }
@@ -350,7 +352,7 @@ namespace SqlSugar
                 helper.Context = this.Context;
                 helper.NavEntity = navEntityInfo;
                 helper.RootEntity = this.Context.EntityMaintenance.GetEntityInfo<T>();
-                var whereSql = helper.GetMppingSql(RootList,sqlObj.MappingExpressions);
+                var whereSql = helper.GetMppingSql(list, sqlObj.MappingExpressions);
                 var navList = selector(this.Context.Queryable<object>().AS(navEntityInfo.DbTableName).AddParameters(sqlObj.Parameters).Where(whereSql,true).WhereIF(sqlObj.WhereString.HasValue(), sqlObj.WhereString).Select(sqlObj.SelectString).OrderByIF(sqlObj.OrderByString.HasValue(), sqlObj.OrderByString));
                 if (navList.HasValue())
                 {
