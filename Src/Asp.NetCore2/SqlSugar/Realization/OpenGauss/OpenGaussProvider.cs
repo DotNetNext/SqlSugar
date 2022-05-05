@@ -21,8 +21,8 @@ namespace SqlSugar
                 {
                     try
                     {
-                        //AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
-                        //AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
+                        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+                        AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
                         //TODO: 临时解决 加 ;No Reset On Close=true 目前没有碰到其他问题，原因 OpenGauss 数据库 不支持 DISCARD， true 会导致 ERROR: DISCARD statement is not yet supported. 错误
                         var npgsqlConnectionString = $"{base.Context.CurrentConnectionConfig.ConnectionString};No Reset On Close=true";
                         base._DbConnection = new NpgsqlConnection(npgsqlConnectionString);
@@ -79,8 +79,7 @@ namespace SqlSugar
             ((NpgsqlDataAdapter)dataAdapter).SelectCommand = (NpgsqlCommand)command;
         }
         /// <summary>
-        /// if mysql return MySqlParameter[] pars
-        /// if sqlerver return SqlParameter[] pars ...
+        /// if OpenGauss return NpgsqlParameter [] pars ...
         /// </summary>
         /// <param name="parameters"></param>
         /// <returns></returns>
