@@ -21,7 +21,10 @@ namespace SqlSugar
                 {
                     try
                     {
-                        var npgsqlConnectionString = base.Context.CurrentConnectionConfig.ConnectionString;
+                        //AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+                        //AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
+                        //TODO: 临时解决 加 ;No Reset On Close=true 目前没有碰到其他问题，原因 OpenGauss 数据库 不支持 DISCARD， true 会导致 ERROR: DISCARD statement is not yet supported. 错误
+                        var npgsqlConnectionString = $"{base.Context.CurrentConnectionConfig.ConnectionString};No Reset On Close=true";
                         base._DbConnection = new NpgsqlConnection(npgsqlConnectionString);
                     }
                     catch (Exception ex)
@@ -90,10 +93,15 @@ namespace SqlSugar
             foreach (var parameter in parameters)
             {
                 if (parameter.Value == null) parameter.Value = DBNull.Value;
-                if(parameter.Value is System.Data.SqlTypes.SqlDateTime&&parameter.DbType==System.Data.DbType.AnsiString)
+                if (parameter.Value is System.Data.SqlTypes.SqlDateTime && parameter.DbType == System.Data.DbType.AnsiString)
                 {
                     parameter.DbType = System.Data.DbType.DateTime;
                     parameter.Value = DBNull.Value;
+                }
+                if (parameter.DbType == System.Data.DbType.Guid)
+                {
+                    parameter.DbType = System.Data.DbType.AnsiString;
+                    parameter.Value = parameter.Value.ToString();
                 }
                 var sqlParameter = new NpgsqlParameter();
                 sqlParameter.ParameterName = parameter.ParameterName;
@@ -113,7 +121,7 @@ namespace SqlSugar
                     {
                         sqlParameter.NpgsqlDbType = ArrayMapping[type] | NpgsqlDbType.Array;
                     }
-                    else if (type==DBNull.Value.GetType()) 
+                    else if (type == DBNull.Value.GetType())
                     {
                         if (parameter.DbType.IsIn(System.Data.DbType.Int32))
                         {
@@ -123,9 +131,9 @@ namespace SqlSugar
                         {
                             sqlParameter.NpgsqlDbType = NpgsqlDbType.Bigint | NpgsqlDbType.Array;
                         }
-                        else 
+                        else
                         {
-                            sqlParameter.NpgsqlDbType =NpgsqlDbType.Text | NpgsqlDbType.Array;
+                            sqlParameter.NpgsqlDbType = NpgsqlDbType.Text | NpgsqlDbType.Array;
                         }
 
                     }
@@ -164,9 +172,9 @@ namespace SqlSugar
             { typeof(char[]),NpgsqlDbType.Text},
             { typeof(byte[]),NpgsqlDbType.Bytea},
             { typeof(bool[]),NpgsqlDbType.Boolean},
-            {typeof(DateTime[]),NpgsqlDbType.Date},
-            {typeof(float[]),NpgsqlDbType.Real},
-
+            { typeof(DateTime[]),NpgsqlDbType.Date},
+            { typeof(float[]),NpgsqlDbType.Real},
+            { typeof(Guid[]),NpgsqlDbType.Varchar },
 
             { typeof(int?[]),NpgsqlDbType.Integer},
             { typeof(short?[]),NpgsqlDbType.Smallint},
@@ -175,11 +183,11 @@ namespace SqlSugar
             { typeof(char?[]),NpgsqlDbType.Text},
             { typeof(byte?[]),NpgsqlDbType.Bytea},
             { typeof(bool?[]),NpgsqlDbType.Boolean},
-            {typeof(DateTime?[]),NpgsqlDbType.Date},
+            { typeof(DateTime?[]),NpgsqlDbType.Date},
 
 
-             { typeof(string[]), NpgsqlDbType.Text},
-             {typeof(float?[]),NpgsqlDbType.Real},
+            { typeof(string[]), NpgsqlDbType.Text},
+            { typeof(float?[]),NpgsqlDbType.Real},
         };
     }
 }
