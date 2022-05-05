@@ -103,7 +103,7 @@ namespace SqlSugar
         {
             get
             {
-                return "mysqldump.exe  {0} -uroot -p > {1}  ";
+                return "gs_dump  {0} -ugauss -p > {1}  ";
             }
         }
         protected override string CreateTableSql

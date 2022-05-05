@@ -1411,10 +1411,6 @@ namespace SqlSugar
         }
         protected bool IsAutoClose()
         {
-            if (this.Context.CurrentConnectionConfig.DbType == DbType.OpenGauss)
-            {
-                return false; //TODO: 临时解决  OpenGauss 数据库 不支持 DISCARD， true 会导致 ERROR: DISCARD statement is not yet supported. 错误
-            }
             return this.Context.CurrentConnectionConfig.IsAutoCloseConnection && this.Transaction == null;
         }
         protected bool IsMasterSlaveSeparation
