@@ -1448,7 +1448,7 @@ namespace SqlSugar
                RightEntityColumn=rightEntity.Columns.First(it=>it.PropertyName==ExpressionTool.GetMemberName(mappingFiled2))
              }
             };
-            var conditionals=fieldsHelper.GetMppingSql(list, mappings);
+            var conditionals=fieldsHelper.GetMppingSql(list.Cast<object>().ToList(), mappings);
             if (queryableContext.TempChildLists == null)
                 queryableContext.TempChildLists = new Dictionary<string, object>();
             if (list != null && queryableContext.TempChildLists.ContainsKey(key))
@@ -1542,7 +1542,7 @@ namespace SqlSugar
                RightEntityColumn=rightEntity.Columns.First(it=>it.PropertyName==ExpressionTool.GetMemberName(mappingFiled2))
              }
             };
-            var conditionals = fieldsHelper.GetMppingSql(list, mappings);
+            var conditionals = fieldsHelper.GetMppingSql(list.Cast<object>().ToList(), mappings);
             if (queryableContext.TempChildLists == null)
                 queryableContext.TempChildLists = new Dictionary<string, object>();
             if (list != null && queryableContext.TempChildLists.ContainsKey(key))
