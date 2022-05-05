@@ -74,9 +74,26 @@ namespace SqlSugar
         {
             return new ConnectionConfig()
             {
-                AopEvents = it.AopEvents,
+                AopEvents =it.AopEvents==null?null:new AopEvents() { 
+                   DataExecuting=it.AopEvents?.DataExecuting,
+                   OnDiffLogEvent=it.AopEvents?.OnDiffLogEvent,
+                   OnError=it.AopEvents?.OnError,
+                   OnExecutingChangeSql=it.AopEvents?.OnExecutingChangeSql,
+                   OnLogExecuted=it.AopEvents?.OnLogExecuted,
+                   OnLogExecuting= it.AopEvents?.OnLogExecuting,
+                },
                 ConfigId = it.ConfigId,
-                ConfigureExternalServices = it.ConfigureExternalServices,
+                ConfigureExternalServices =it.ConfigureExternalServices==null?null:new ConfigureExternalServices() { 
+                      AppendDataReaderTypeMappings=it.ConfigureExternalServices.AppendDataReaderTypeMappings,
+                      DataInfoCacheService=it.ConfigureExternalServices.DataInfoCacheService,
+                      EntityNameService=it.ConfigureExternalServices.EntityNameService,
+                      EntityService=it.ConfigureExternalServices.EntityService,
+                      RazorService=it.ConfigureExternalServices.RazorService,
+                      ReflectionInoCacheService=it.ConfigureExternalServices.ReflectionInoCacheService,
+                      SerializeService=it.ConfigureExternalServices.SerializeService,
+                      SplitTableService=it.ConfigureExternalServices.SplitTableService,
+                      SqlFuncServices=it.ConfigureExternalServices.SqlFuncServices
+                },
                 ConnectionString = it.ConnectionString,
                 DbType = it.DbType,
                 IndexSuffix = it.IndexSuffix,
