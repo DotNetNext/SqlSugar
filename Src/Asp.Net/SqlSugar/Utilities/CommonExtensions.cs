@@ -24,5 +24,9 @@ namespace SqlSugar
         {
             return thisValue;
         }
+        public static List<T> MappingField<T>(this T thisValue, Func<T, object> leftField, Func<object> rightField) where T:class
+        {
+            return new List<T>() { thisValue };
+        }
     }
 }

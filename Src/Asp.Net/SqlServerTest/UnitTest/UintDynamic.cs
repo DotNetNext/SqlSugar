@@ -29,7 +29,10 @@ namespace OrmTest
                             it);
             });
 
-        
+            var list3 = db.Queryable<StudentA>()
+                        .Includes(it => it.SchoolA.MappingField(z=>z.SchoolId,()=>it.SchoolId).ToList() )
+             .ToList();
+
         }
 
         public class StudentA

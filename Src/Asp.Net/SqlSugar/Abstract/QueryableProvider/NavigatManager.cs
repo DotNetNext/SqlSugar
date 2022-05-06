@@ -342,7 +342,13 @@ namespace SqlSugar
 
         private void Dynamic(List<object> list, Func<ISugarQueryable<object>, List<object>> selector, EntityInfo listItemEntity, System.Reflection.PropertyInfo navObjectNamePropety, EntityColumnInfo navObjectNameColumnInfo)
         {
-            var navEntity = navObjectNameColumnInfo.PropertyInfo.PropertyType.GetGenericArguments()[0];
+            var args = navObjectNameColumnInfo.PropertyInfo.PropertyType.GetGenericArguments();
+            if (args.Length == 0) 
+            {
+                DynamicOneToOne(list,selector,listItemEntity, navObjectNamePropety, navObjectNameColumnInfo);
+                return;
+            }
+            var navEntity = args[0];
             var navEntityInfo = this.Context.EntityMaintenance.GetEntityInfo(navEntity);
             var sqlObj = GetWhereSql(navObjectNameColumnInfo.Navigat.Name);
             Check.ExceptionEasy(sqlObj.MappingExpressions.IsNullOrEmpty(), $"Dynamic need MappingField ,Demo: Includes(it => it.Books.MappingField(z=>z.studenId,()=>it.StudentId).ToList())", $"自定义映射需要 MappingFields ,例子: Includes(it => it.Books.MappingFields(z=>z.studenId,()=>it.StudentId).ToList())");
@@ -364,6 +370,31 @@ namespace SqlSugar
             }
 
         }
+
+        private void DynamicOneToOne(List<object> list, Func<ISugarQueryable<object>, List<object>> selector, EntityInfo listItemEntity, System.Reflection.PropertyInfo navObjectNamePropety, EntityColumnInfo navObjectNameColumnInfo)
+        {
+            var navEntity = navObjectNameColumnInfo.PropertyInfo.PropertyType;
+            var navEntityInfo = this.Context.EntityMaintenance.GetEntityInfo(navEntity);
+            var sqlObj = GetWhereSql(navObjectNameColumnInfo.Navigat.Name);
+            Check.ExceptionEasy(sqlObj.MappingExpressions.IsNullOrEmpty(), $"Dynamic need MappingField ,Demo: Includes(it => it.Books.MappingField(z=>z.studenId,()=>it.StudentId).ToList())", $"自定义映射需要 MappingFields ,例子: Includes(it => it.Books.MappingFields(z=>z.studenId,()=>it.StudentId).ToList())");
+            if (list.Any() && navObjectNamePropety.GetValue(list.First()) == null)
+            {
+                MappingFieldsHelper<T> helper = new MappingFieldsHelper<T>();
+                helper.Context = this.Context;
+                helper.NavEntity = navEntityInfo;
+                helper.RootEntity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+                var whereSql = helper.GetMppingSql(list, sqlObj.MappingExpressions);
+                var navList = selector(this.Context.Queryable<object>().AS(navEntityInfo.DbTableName).AddParameters(sqlObj.Parameters).Where(whereSql, true).WhereIF(sqlObj.WhereString.HasValue(), sqlObj.WhereString).Select(sqlObj.SelectString).OrderByIF(sqlObj.OrderByString.HasValue(), sqlObj.OrderByString));
+                if (navList.HasValue())
+                {
+                    foreach (var item in list)
+                    {
+                        helper.SetChildItem(navObjectNameColumnInfo, item, navList, sqlObj.MappingExpressions);
+                    }
+                }
+            }
+        }
+
         private SqlInfo GetWhereSql(string properyName=null)
         {
             if (_ListCallFunc == null|| _ListCallFunc.Count==0) return new SqlInfo();
