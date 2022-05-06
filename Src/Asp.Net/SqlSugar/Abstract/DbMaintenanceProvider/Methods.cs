@@ -216,6 +216,7 @@ namespace SqlSugar
                 this.Context.Updateable(dt)
                              .AS(tableName)
                              .Where($"{columnInfo.DbColumnName} is null ").ExecuteCommand();
+                columnInfo.IsNullable = false;
                 UpdateColumn(tableName, columnInfo);
             }
             return true;
