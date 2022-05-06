@@ -86,7 +86,7 @@ namespace SqlSugar
                      z.DecimalDigits != y.DecimalDigits
                   ))).Select(it => new DiffColumsInfo()
                   {
-                     Message=GetColumnString(it)
+                     Message= GetUpdateColumnString(it, tableInfo.OldColumnInfos.FirstOrDefault(y => y.DbColumnName.EqualCase(it.DbColumnName)))
                   }).ToList();
             return result;
         }
@@ -101,6 +101,40 @@ namespace SqlSugar
         private static string GetColumnString(DbColumnInfo it)
         {
             return $"{it.DbColumnName}  {it.DataType}  {it.Length} {it.Scale}   default:{it.DefaultValue} description:{it.ColumnDescription} pk:{it.IsPrimarykey} nullable:{it.IsNullable} identity:{it.IsIdentity} ";
+        }
+
+        private static string GetUpdateColumnString(DbColumnInfo it,DbColumnInfo old)
+        {
+            var result= $"{it.DbColumnName}  changes: ";
+            if (it.DataType != old.DataType) 
+            {
+                result += $"  [DataType:{old.DataType}->{it.DataType}] ";
+            }
+            if (it.Length != old.Length)
+            {
+                result += $"  [Length:{old.Length}->{it.Length}] ";
+            }
+            if (it.Scale != old.Scale)
+            {
+                result += $"  [Scale:{old.Scale}->{it.Scale}] ";
+            }
+            if (it.ColumnDescription != old.ColumnDescription)
+            {
+                result += $"  [Description:{old.ColumnDescription}->{it.ColumnDescription}] ";
+            }
+            if (it.IsPrimarykey != old.IsPrimarykey)
+            {
+                result += $"  [Pk:{old.IsPrimarykey}->{it.IsPrimarykey}] ";
+            }
+            if (it.IsNullable != old.IsNullable)
+            {
+                result += $"  [Nullable:{old.IsNullable}->{it.IsNullable}] ";
+            }
+            if (it.IsIdentity != old.IsIdentity)
+            {
+                result += $"  [Identity:{old.IsIdentity}->{it.IsIdentity}] ";
+            }
+            return result;
         }
     }
     public class TableDifferenceInfo
