@@ -118,9 +118,61 @@ namespace SqlSugar
                 }
             }
         }
+        public TableDifferenceProvider GetDifferenceTables<T>()
+        {
+            var type = typeof(T);
+            return GetDifferenceTables(type);
+        }
+
+        public TableDifferenceProvider GetDifferenceTables(params Type[] types)
+        {
+            TableDifferenceProvider result = new TableDifferenceProvider();
+            foreach (var type in types)
+            {
+                GetDifferenceTables(result, type);
+            }
+            return result;
+        }
         #endregion
 
         #region Core Logic
+        private void GetDifferenceTables(TableDifferenceProvider result, Type type)
+        {
+            var tempTableName = "TempDiff" + DateTime.Now.ToString("yyMMssHHmmssfff");
+            var oldTableName = this.Context.EntityMaintenance.GetEntityInfo(type).DbTableName;
+            var db = new SqlSugarProvider(UtilMethods.CopyConfig(this.Context.CurrentConnectionConfig));
+            UtilMethods.IsNullReturnNew(db.CurrentConnectionConfig.ConfigureExternalServices);
+            db.CurrentConnectionConfig.ConfigureExternalServices.EntityNameService += (x, p) =>
+            {
+                p.IsDisabledUpdateAll = true;//Disabled update
+            };
+            db.MappingTables = new MappingTableList();
+            db.MappingTables.Add(type.Name, tempTableName);
+            try
+            {
+                db.CodeFirst.InitTables(type);
+                var tables = db.DbMaintenance.GetTableInfoList(false);
+                var oldTableInfo = tables.FirstOrDefault(it=>it.Name.EqualCase(oldTableName));
+                var newTableInfo = tables.FirstOrDefault(it => it.Name.EqualCase(oldTableName));
+                var oldTable = db.DbMaintenance.GetColumnInfosByTableName(oldTableName, false);
+                var tempTable = db.DbMaintenance.GetColumnInfosByTableName(tempTableName, false);
+                result.tableInfos.Add(new DiffTableInfo()
+                {
+                     OldTableInfo= oldTableInfo,
+                     NewTableInfo = newTableInfo,
+                     OldColumnInfos =  oldTable,
+                     NewColumnInfos = tempTable
+                });
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                db.DbMaintenance.DropTable(tempTableName);
+            }
+        }
         protected virtual void Execute(Type entityType)
         {
             var entityInfo = this.Context.EntityMaintenance.GetEntityInfoNoCache(entityType);

@@ -72,6 +72,22 @@ namespace SqlSugar
             }
         }
 
+        public void SetChildItem(EntityColumnInfo navColumnInfo, object item, List<object> list, List<MappingFieldsExpression> mappingFieldsExpressions)
+        {
+            if (item != null)
+            {
+                //var expable =Expressionable.Create<object>();
+                List<object> setList = GetSetList(item, list, mappingFieldsExpressions);
+                //navColumnInfo.PropertyInfo.SetValue();
+                var instance = Activator.CreateInstance(navColumnInfo.PropertyInfo.PropertyType, true);
+                var ilist = instance as IList;
+                foreach (var value in setList)
+                {
+                    navColumnInfo.PropertyInfo.SetValue(item, value);
+                }
+          
+            }
+        }
         public List<object> GetSetList(object item, List<object> list, List<MappingFieldsExpression> mappingFieldsExpressions)
         {
             foreach (var field in mappingFieldsExpressions)
