@@ -13,7 +13,7 @@ namespace OrmTest
             var db = NewUnitTest.Db;
 
             //建表 
-            if (!db.DbMaintenance.IsAnyTable("Test001", false))
+            if (!db.DbMaintenance.IsAnyTable("UintTest001", false))
             {
                 db.CodeFirst.InitTables<UintTest001>();
                 //用例代码 
@@ -46,8 +46,15 @@ namespace OrmTest
                             .InnerJoin<UintTest001>((i, t) => i.group == t.group)
                             .Where((i,t)=>t.addTime < nowTime.AddDays(1))
                             .ToList();
+            var json = @"
+[{""ConditionalList"":[{""Key"":-1,""Value"":{""FieldName"":""id"",""FieldValue"":1517454440779616256,""ConditionalType"":0,""CSharpTypeName"":""long""}},{""Key"":0,""Value"":{""FieldName"":""mobile_phone"",""FieldValue"":""13554067074"",""ConditionalType"":0,""CSharpTypeName"":""string""}},{""Key"":0,""Value"":{""ConditionalList"":[{""Key"":-1,""Value"":{""FieldName"":""template_id"",""FieldValue"":""1374856"",""ConditionalType"":0,""CSharpTypeName"":""long""}},{""Key"":0,""Value"":{""FieldName"":""send_content"",""FieldValue"":""1"",""ConditionalType"":1,""CSharpTypeName"":""string""}}]}}]}]
+";
 
-            Console.WriteLine("用例跑完");
+            var json2 = @"
+[{""ConditionalList"":[{""Key"":-1,""Value"":{""FieldName"":""id"",""FieldValue"":1517454440779616256,""ConditionalType"":0}},{""Key"":0,""Value"":{""FieldName"":""mobile_phone"",""FieldValue"":""13554067074"",""ConditionalType"":0,""CSharpTypeName"":""string""}},{""Key"":0,""Value"":{""ConditionalList"":[{""Key"":-1,""Value"":{""FieldName"":""template_id"",""FieldValue"":""1374856"",""ConditionalType"":0}},{""Key"":0,""Value"":{""FieldName"":""send_content"",""FieldValue"":""1"",""ConditionalType"":1,""CSharpTypeName"":""string""}}]}}]}]
+";
+            var cons=db.Utilities.JsonToConditionalModels(json);
+            var cons2 = db.Utilities.JsonToConditionalModels(json2);
             Console.ReadKey();
         }
         //建类
