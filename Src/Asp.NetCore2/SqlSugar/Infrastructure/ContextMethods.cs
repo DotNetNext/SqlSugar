@@ -757,6 +757,7 @@ namespace SqlSugar
                         {
                             // ConditionalType = (ConditionalType)Convert.ToInt32(),
                             FieldName = item["FieldName"] + "",
+                            CSharpTypeName = item["CSharpTypeName"] ==null?null: item["CSharpTypeName"].ObjToString(),
                             FieldValue = item["FieldValue"].Value<string>()==null?null: item["FieldValue"].ToString()
                         };
                         if (typeValue.IsInt())
@@ -795,6 +796,7 @@ namespace SqlSugar
                     {
                         ConditionalType = (ConditionalType)Convert.ToInt32(value["ConditionalType"].Value<int>()),
                         FieldName = value["FieldName"] + "",
+                        CSharpTypeName= value["CSharpTypeName"]==null?null : value["CSharpTypeName"].ObjToString(),
                         FieldValue = value["FieldValue"].Value<string>() == null ? null : value["FieldValue"].ToString()
                     };
                 }
