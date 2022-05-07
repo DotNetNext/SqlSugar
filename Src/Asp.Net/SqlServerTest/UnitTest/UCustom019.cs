@@ -55,7 +55,33 @@ namespace OrmTest
 ";
             var cons=db.Utilities.JsonToConditionalModels(json);
             var cons2 = db.Utilities.JsonToConditionalModels(json2);
-            Console.ReadKey();
+
+ 
+            var res21 = db.Queryable<UintTest001>()
+                            .InnerJoin<UintTest001>((i, t) => i.group == t.group)
+                            .Select((i, t) => new Test001_Ext
+                            {
+                                id = SqlFunc.Subqueryable<UintTest001>()
+                                .Where(s => s.id == 1)
+                                .Select(s =>s.id*i.id)
+                            }).ToList();
+            var res22 = db.Queryable<UintTest001>()
+                .InnerJoin<UintTest001>((i, t) => i.group == t.group)
+                .Select((i, t) => new Test001_Ext
+                {
+                    id = SqlFunc.Subqueryable<UintTest001>()
+                    .Where(s => s.id == 1)
+                    .Select(s => s.id * s.id)
+                }).ToList();
+            var  res23 = db.Queryable<UintTest001>()
+                            .InnerJoin<UintTest001>((i, t) => i.group == t.group)
+                            .Select((i, t) => new Test001_Ext
+                            {
+                                 id = SqlFunc.Subqueryable<UintTest001>()
+                                .Where(s => s.id == 1)
+                                .Select(s => SqlFunc.ToInt32(SqlFunc.AggregateSum(SqlFunc.DateDiff(DateType.Second, s.addTime, s.addTime)) / 3600.0))
+                            }).ToList();
+
         }
         //建类
         public class UintTest001
