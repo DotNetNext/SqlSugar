@@ -15,22 +15,22 @@ namespace OrmTest
             //建表 
             if (!db.DbMaintenance.IsAnyTable("Test001", false))
             {
-                db.CodeFirst.InitTables<Test001>();
+                db.CodeFirst.InitTables<UintTest001>();
                 //用例代码 
-                var dataList = new List<Test001>();
-                dataList.Add(new Test001() { id = 1, group = 1, addTime = DateTime.Now });
-                dataList.Add(new Test001() { id = 2, group = 1, addTime = DateTime.Now.AddDays(1) });
-                dataList.Add(new Test001() { id = 3, group = 2, addTime = DateTime.Now.AddDays(1) });
-                dataList.Add(new Test001() { id = 4, group = 2, addTime = DateTime.Now.AddDays(1) });
-                dataList.Add(new Test001() { id = 5, group = 2, addTime = DateTime.Now.AddDays(1) });
-                dataList.Add(new Test001() { id = 6, group = 3, addTime = DateTime.Now.AddDays(1) });
+                var dataList = new List<UintTest001>();
+                dataList.Add(new UintTest001() { id = 1, group = 1, addTime = DateTime.Now });
+                dataList.Add(new UintTest001() { id = 2, group = 1, addTime = DateTime.Now.AddDays(1) });
+                dataList.Add(new UintTest001() { id = 3, group = 2, addTime = DateTime.Now.AddDays(1) });
+                dataList.Add(new UintTest001() { id = 4, group = 2, addTime = DateTime.Now.AddDays(1) });
+                dataList.Add(new UintTest001() { id = 5, group = 2, addTime = DateTime.Now.AddDays(1) });
+                dataList.Add(new UintTest001() { id = 6, group = 3, addTime = DateTime.Now.AddDays(1) });
                 var result = db.Insertable(dataList).ExecuteCommand();//用例代码
             }
 
             var defaultTime = new DateTime(1900, 1, 1);
             var nowTime = DateTime.Now;
 
-            var iQueryAble = db.Queryable<Test001>()
+            var iQueryAble = db.Queryable<UintTest001>()
                 .GroupBy(it => it.group)
                 .GroupBy(it => it.addTime)
                 .Where(it=>it.id==1)
@@ -43,7 +43,7 @@ namespace OrmTest
                 });
             var res = db.Queryable(iQueryAble)
                            
-                            .InnerJoin<Test001>((i, t) => i.group == t.group)
+                            .InnerJoin<UintTest001>((i, t) => i.group == t.group)
                             .Where((i,t)=>t.addTime < nowTime.AddDays(1))
                             .ToList();
 
@@ -51,7 +51,7 @@ namespace OrmTest
             Console.ReadKey();
         }
         //建类
-        public class Test001
+        public class UintTest001
         {
             public int id { get; set; }
 
@@ -60,7 +60,7 @@ namespace OrmTest
             public DateTime addTime { get; set; }
         }
 
-        public class Test001_Ext : Test001
+        public class Test001_Ext : UintTest001
         {
             public DateTime lastTime { get; set; }
             public DateTime lastTime2 { get;   set; }
