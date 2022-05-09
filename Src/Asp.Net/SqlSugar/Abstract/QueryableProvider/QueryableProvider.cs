@@ -1044,6 +1044,14 @@ namespace SqlSugar
         }
         public virtual int Count()
         {
+            if (this.QueryBuilder.Skip == null&& 
+                this.QueryBuilder.Take == null&& 
+                this.QueryBuilder.OrderByValue == null && 
+                this.QueryBuilder.PartitionByValue == null) 
+            {
+
+                return this.Clone().Select<int>(" COUNT(1) ").ToList().First();
+            }
             MappingTableList expMapping;
             int result;
             _CountBegin(out expMapping, out result);
