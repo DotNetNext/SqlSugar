@@ -151,6 +151,14 @@ namespace OrmTest
             dr2.Add("Id", 2);
             dr2.Add("Name", "2");
             var test35 = db.Queryable<object>().AS("[order]").WhereColumns(new List<Dictionary<string, object>>() { dr, dr2 }).ToDataTable();
+            var test36 = db.Queryable<Order>().Take(1).ToList();
+            var test37= db.Queryable<Order>().First();
+            var test38 = db.Queryable<Order>().Take(2).ToList();
+            var test39 = db.Queryable<Order>().Take(1).OrderBy(it => it.Id).ToList();
+            var test40 = db.Queryable<Order>().OrderBy(it => it.Id).First();
+            var test41 = db.Queryable<Order>().Take(2).OrderBy(it => it.Id).ToList();
+            var test42 = db.Queryable<Order>().Take(2).OrderBy(it => it.Id).ToPageList(1,2);
+            var test43 = db.Queryable<Order>().Take(2).ToPageList(1, 2);
             Console.WriteLine("#### Examples End ####");
         }
 
