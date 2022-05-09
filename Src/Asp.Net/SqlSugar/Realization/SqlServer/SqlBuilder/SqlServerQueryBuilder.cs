@@ -52,21 +52,25 @@ namespace SqlSugar
             var isIgnoreOrderBy = this.IsCount && this.PartitionByValue.IsNullOrEmpty();
             AppendFilter();
             sql = new StringBuilder();
+            var oldOrderByValue = this.OrderByValue;
             if (this.OrderByValue == null && (Skip != null || Take != null)) this.OrderByValue = " ORDER BY GetDate() ";
             if (this.PartitionByValue.HasValue())
             {
                 this.OrderByValue = this.PartitionByValue + this.OrderByValue;
             }
             var isFirst = (Skip == 0 || Skip == null) && Take == 1 && DisableTop == false;
-            var isRowNumber = (Skip != null || Take != null) && !isFirst;
+            var isTop = (Skip == null && Take != null && DisableTop == false);
+            var isRowNumber = (Skip != null || Take != null) && !isFirst && !isTop;
+            if (!isRowNumber && oldOrderByValue == null) { this.OrderByValue = null; }
+            if (isFirst && oldOrderByValue == "ORDER BY GETDATE() ") { this.OrderByValue = null; }
             var rowNumberString = string.Format(",ROW_NUMBER() OVER({0}) AS RowIndex ", GetOrderByString);
             string groupByValue = GetGroupByString + HavingInfos;
             string orderByValue = (!isRowNumber && this.OrderByValue.HasValue()) ? GetOrderByString : null;
             if (isIgnoreOrderBy) { orderByValue = null; }
-            sql.AppendFormat(SqlTemplate, isFirst ? (" TOP 1 " + GetSelectValue) : GetSelectValue, GetTableNameString, GetWhereValueString, groupByValue, orderByValue);
+            sql.AppendFormat(SqlTemplate, GetSelect(isFirst,isTop), base.GetTableNameString, base.GetWhereValueString, groupByValue, orderByValue);
             sql.Replace(UtilConstants.ReplaceKey, isRowNumber ? (isIgnoreOrderBy ? null : rowNumberString) : null);
             if (isIgnoreOrderBy) { this.OrderByValue = oldOrderBy; return sql.ToString(); }
-            var result = isFirst ? sql.ToString() : ToPageSql(sql.ToString(), this.Take, this.Skip);
+            var result = (isFirst || isTop) ? sql.ToString() : ToPageSql(sql.ToString(), this.Take, this.Skip);
             if (ExternalPageIndex > 0)
             {
                 if (externalOrderBy.IsNullOrEmpty())
@@ -85,10 +89,10 @@ namespace SqlSugar
                     if (this.OldSql.HasValue())
                         this.OldSql += " ORDER BY GETDATE() ";
                 }
-                else 
+                else
                 {
                     if (this.OldSql.HasValue())
-                        this.OldSql += (" "+this.GetOrderByString);
+                        this.OldSql += (" " + this.GetOrderByString);
                 }
                 result += this.Offset;
 
@@ -97,6 +101,22 @@ namespace SqlSugar
             }
             result = GetSqlQuerySql(result);
             return result;
+        }
+
+        private string GetSelect(bool isFirst,bool isTop)
+        {
+            if (isFirst) 
+            {
+                return (" TOP 1 " + GetSelectValue);
+            }
+            else if(isTop)
+            {
+                return ($" TOP {this.Take} " + GetSelectValue);
+            }
+            else 
+            { 
+                return GetSelectValue;
+            }
         }
     }
 }
