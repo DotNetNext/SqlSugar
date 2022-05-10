@@ -31,7 +31,14 @@ namespace SqlSugar
 
             if (IsGroupSubquery(expression.Right,operatorValue))
             {
-                InSubGroupBy(expression);
+                if (ExpressionTool.IsUnConvertExpress(expression.Right))
+                {
+                    InSubGroupByConvertExpress(expression);
+                }
+                else
+                {
+                    InSubGroupBy(expression);
+                }
                 return;
             }
 
@@ -98,7 +105,24 @@ namespace SqlSugar
             }
         }
 
-
+        private void InSubGroupByConvertExpress(BinaryExpression expression)
+        {
+            var leftSql = GetNewExpressionValue(expression.Left);
+            var rightExpression = (expression.Right as UnaryExpression).Operand as MethodCallExpression;
+            var selector = GetNewExpressionValue(rightExpression.Arguments[0]);
+            var rightSql = GetNewExpressionValue(rightExpression.Object).Replace("SELECT FROM", $"SELECT {selector} FROM");
+            if (this.Context.IsSingle && this.Context.SingleTableNameSubqueryShortName == null)
+            {
+                var leftExp = expression.Left;
+                if (leftExp is UnaryExpression)
+                {
+                    leftExp = (leftExp as UnaryExpression).Operand;
+                }
+                var p = (leftExp as MemberExpression);
+                this.Context.SingleTableNameSubqueryShortName = p.Expression.ToString();
+            }
+            base.Context.Result.Append($" {leftSql} in ({rightSql}) ");
+        }
         private void InSubGroupBy(BinaryExpression expression)
         {
             var leftSql = GetNewExpressionValue(expression.Left);
@@ -127,6 +151,10 @@ namespace SqlSugar
             if (rightExpression == null)
             {
                 return false;
+            }
+            if (ExpressionTool.IsUnConvertExpress(rightExpression))
+            {
+                rightExpression = (rightExpression as UnaryExpression).Operand;
             }
             if ((rightExpression is MethodCallExpression) == false)
             {
