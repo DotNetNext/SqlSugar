@@ -52,7 +52,10 @@ namespace SqlSugar
                         }
                         if (context.SingleTableNameSubqueryShortName == selfParameterName)
                         {
-                            context.SingleTableNameSubqueryShortName = (((meExp.Body as BinaryExpression).Right as MemberExpression).Expression as ParameterExpression).Name;
+                            if (meExp.Body is BinaryExpression)
+                            {
+                                context.SingleTableNameSubqueryShortName = (((meExp.Body as BinaryExpression).Right as MemberExpression).Expression as ParameterExpression).Name;
+                            }
                         }
                     }
                 }
