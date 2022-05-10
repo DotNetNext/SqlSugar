@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UCustom020.Init();
             UCustom019.Init();
             UnitManyToMany.Init();
             UCustom018.Init();
