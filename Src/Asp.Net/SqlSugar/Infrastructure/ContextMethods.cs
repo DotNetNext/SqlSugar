@@ -394,6 +394,7 @@ namespace SqlSugar
                 return null;
             }
             var classProperties = type.GetProperties().ToList();
+            var columns = this.Context.EntityMaintenance.GetEntityInfo(type).Columns;
             foreach (var prop in classProperties)
             {
                 var name = prop.Name;
@@ -403,29 +404,14 @@ namespace SqlSugar
                     var suagrColumn=prop.GetCustomAttribute<SugarColumn>();
                     if (suagrColumn != null && suagrColumn.IsJson)
                     {
-                        var key = (typeName + "." + name).ToLower();
-                        if (readerValues.Any(it=>it.Key.EqualCase(key)))
+                        Json(readerValues, result, name, typeName);
+                    }
+                    else if (columns.Any(it => it.IsJson))
+                    {
+                        var column = columns.FirstOrDefault(it => it.PropertyName == name);
+                        if (column != null && column.IsJson) 
                         {
-                            var jsonString = readerValues.First(it => it.Key.EqualCase(key)).Value;
-                            if (jsonString != null)
-                            {
-                                if (jsonString.ToString().First() == '{' && jsonString.ToString().Last() == '}')
-                                {
-                                    result.Add(name, this.DeserializeObject<Dictionary<string, object>>(jsonString + ""));
-                                } 
-                                else if (jsonString.ToString().Replace(" ","")!="[]"&&!jsonString.ToString().Contains("{")&&!jsonString.ToString().Contains("}")) 
-                                {
-                                    result.Add(name, this.DeserializeObject<dynamic>(jsonString + ""));
-                                }
-                                else
-                                {
-                                    result.Add(name, this.DeserializeObject<List<Dictionary<string, object>>>(jsonString + ""));
-
-                                }
-                            }
-                        }
-                        else 
-                        {
+                            Json(readerValues, result, name, typeName);
                         }
                     }
                     else
@@ -461,6 +447,34 @@ namespace SqlSugar
                 }
             }
             return result;
+        }
+
+        private void Json(Dictionary<string, object> readerValues, Dictionary<string, object> result, string name, string typeName)
+        {
+            var key = (typeName + "." + name).ToLower();
+            if (readerValues.Any(it => it.Key.EqualCase(key)))
+            {
+                var jsonString = readerValues.First(it => it.Key.EqualCase(key)).Value;
+                if (jsonString != null)
+                {
+                    if (jsonString.ToString().First() == '{' && jsonString.ToString().Last() == '}')
+                    {
+                        result.Add(name, this.DeserializeObject<Dictionary<string, object>>(jsonString + ""));
+                    }
+                    else if (jsonString.ToString().Replace(" ", "") != "[]" && !jsonString.ToString().Contains("{") && !jsonString.ToString().Contains("}"))
+                    {
+                        result.Add(name, this.DeserializeObject<dynamic>(jsonString + ""));
+                    }
+                    else
+                    {
+                        result.Add(name, this.DeserializeObject<List<Dictionary<string, object>>>(jsonString + ""));
+
+                    }
+                }
+            }
+            else
+            {
+            }
         }
         #endregion
 
