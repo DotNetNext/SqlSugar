@@ -472,6 +472,15 @@ namespace SqlSugar
                         {
                             asName = GetAsName(item, shortName, property);
                         }
+                        else if (comumnInfo!=null&&this.Context.SugarContext != null&&this.Context.SugarContext.Context != null) 
+                        {
+                           var entityInfo=this.Context.SugarContext.Context.EntityMaintenance.GetEntityInfo(item.Type);
+                           var entityColumn = entityInfo.Columns.FirstOrDefault(it => it.PropertyName == property.Name);
+                           if (entityColumn != null && entityColumn.IsJson) 
+                           {
+                                asName = GetAsName(item, shortName, property);
+                           }
+                        }
                     }
                     else if (isSameType)
                     {

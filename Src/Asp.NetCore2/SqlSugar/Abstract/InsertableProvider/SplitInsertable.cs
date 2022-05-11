@@ -215,8 +215,11 @@ namespace SqlSugar
             {
                 if (!this.Context.DbMaintenance.IsAnyTable(item.Key, false)) 
                 {
-                    this.Context.MappingTables.Add(EntityInfo.EntityName, item.Key);
-                    this.Context.CodeFirst.InitTables<T>();
+                    if (item.Value != null)
+                    {
+                        this.Context.MappingTables.Add(EntityInfo.EntityName, item.Key);
+                        this.Context.CodeFirst.InitTables<T>();
+                    }
                 }
             }
             this.Context.Ado.IsEnableLogEvent = isLog;

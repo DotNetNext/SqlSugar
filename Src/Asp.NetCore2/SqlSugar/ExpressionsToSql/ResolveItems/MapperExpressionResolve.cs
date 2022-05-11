@@ -318,11 +318,11 @@ namespace SqlSugar
 
         void Error01()
         {
-            Check.Exception(mappers == null, ErrorMessage.GetThrowMessage(expression.ToString() + "no support", "当前表达式" + expression.ToString() + "必须在Mapper之后使用"));
+            Check.Exception(mappers == null, ErrorMessage.GetThrowMessage(expression.ToString() + "no support", "当前表达式" + expression.ToString() + " 不支持，查看导航是否配置正确等 "));
         }
         void ThrowTrue(bool isError)
         {
-            Check.Exception(isError, ErrorMessage.GetThrowMessage(expression.ToString() + "no support", "不支持表达式" + expression.ToString() + " 1.检查当前表达式中的别名是否与Mapper中的一致 2.目前只支持 1对1 Mapper下的 Where "));
+            Check.Exception(isError, ErrorMessage.GetThrowMessage(expression.ToString() + "no support", "不支持表达式" + expression.ToString() + "  ，查看导航是否配置正确等 "));
         }
     }
 

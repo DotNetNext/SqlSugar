@@ -864,6 +864,10 @@ namespace SqlSugar
             {
                 return GetDiffTableByEntity();
             }
+            else if (GetIdentityKeys().IsNullOrEmpty()) 
+            {
+                return GetDiffTableByEntity();
+            }
             else
             {
                 return GetDiffTableBySql(identity);

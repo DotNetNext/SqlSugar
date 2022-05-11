@@ -69,6 +69,63 @@ namespace SqlSugar
             return isAsync;
         }
 
+
+        public static ConnectionConfig CopyConfig(ConnectionConfig it)
+        {
+            return new ConnectionConfig()
+            {
+                AopEvents =it.AopEvents==null?null:new AopEvents() { 
+                   DataExecuting=it.AopEvents?.DataExecuting,
+                   OnDiffLogEvent=it.AopEvents?.OnDiffLogEvent,
+                   OnError=it.AopEvents?.OnError,
+                   OnExecutingChangeSql=it.AopEvents?.OnExecutingChangeSql,
+                   OnLogExecuted=it.AopEvents?.OnLogExecuted,
+                   OnLogExecuting= it.AopEvents?.OnLogExecuting,
+                },
+                ConfigId = it.ConfigId,
+                ConfigureExternalServices =it.ConfigureExternalServices==null?null:new ConfigureExternalServices() { 
+                      AppendDataReaderTypeMappings=it.ConfigureExternalServices.AppendDataReaderTypeMappings,
+                      DataInfoCacheService=it.ConfigureExternalServices.DataInfoCacheService,
+                      EntityNameService=it.ConfigureExternalServices.EntityNameService,
+                      EntityService=it.ConfigureExternalServices.EntityService,
+                      RazorService=it.ConfigureExternalServices.RazorService,
+                      ReflectionInoCacheService=it.ConfigureExternalServices.ReflectionInoCacheService,
+                      SerializeService=it.ConfigureExternalServices.SerializeService,
+                      SplitTableService=it.ConfigureExternalServices.SplitTableService,
+                      SqlFuncServices=it.ConfigureExternalServices.SqlFuncServices
+                },
+                ConnectionString = it.ConnectionString,
+                DbType = it.DbType,
+                IndexSuffix = it.IndexSuffix,
+                InitKeyType = it.InitKeyType,
+                IsAutoCloseConnection = it.IsAutoCloseConnection,
+                LanguageType = it.LanguageType,
+                MoreSettings = it.MoreSettings == null ? null : new ConnMoreSettings()
+                {
+                    DefaultCacheDurationInSeconds = it.MoreSettings.DefaultCacheDurationInSeconds,
+                    DisableNvarchar = it.MoreSettings.DisableNvarchar,
+                    PgSqlIsAutoToLower = it.MoreSettings.PgSqlIsAutoToLower,
+                    IsAutoRemoveDataCache = it.MoreSettings.IsAutoRemoveDataCache,
+                    IsWithNoLockQuery = it.MoreSettings.IsWithNoLockQuery,
+                    TableEnumIsString = it.MoreSettings.TableEnumIsString,
+                    DisableMillisecond = it.MoreSettings.DisableMillisecond
+                },
+                SqlMiddle = it.SqlMiddle == null ? null : new SqlMiddle
+                {
+                    IsSqlMiddle = it.SqlMiddle.IsSqlMiddle,
+                    ExecuteCommand = it.SqlMiddle.ExecuteCommand,
+                    ExecuteCommandAsync = it.SqlMiddle.ExecuteCommandAsync,
+                    GetDataReader = it.SqlMiddle.GetDataReader,
+                    GetDataReaderAsync = it.SqlMiddle.GetDataReaderAsync,
+                    GetDataSetAll = it.SqlMiddle.GetDataSetAll,
+                    GetDataSetAllAsync = it.SqlMiddle.GetDataSetAllAsync,
+                    GetScalar = it.SqlMiddle.GetScalar,
+                    GetScalarAsync = it.SqlMiddle.GetScalarAsync
+                },
+                SlaveConnectionConfigs = it.SlaveConnectionConfigs
+            };
+        }
+
         public static bool IsAsyncMethod(MethodBase method)
         {
             if (method == null)

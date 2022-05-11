@@ -30,15 +30,16 @@ namespace OrmTest
             db.Insertable(new RoomA() { RoomId = 6, RoomName = "清华003厅", SchoolId = 2 }).ExecuteCommand();
 
 
-            db.Insertable(new SchoolA() { SchoolId = 1, School_Name = "北大" }).ExecuteCommand();
-            db.Insertable(new SchoolA() { SchoolId = 2, School_Name = "清华" }).ExecuteCommand();
+            db.Insertable(new SchoolA() { SchoolId = 1, CityId= 1001001, School_Name = "北大" }).ExecuteCommand();
+            db.Insertable(new SchoolA() { SchoolId = 2 , CityId=2,School_Name = "清华" }).ExecuteCommand();
+            db.Insertable(new SchoolA() { SchoolId = 3, CityId = 3, School_Name = "青鸟" }).ExecuteCommand();
 
             db.Insertable(new StudentA() { StudentId = 1, SchoolId = 1, Name = "北大jack" }).ExecuteCommand();
             db.Insertable(new StudentA() { StudentId = 2, SchoolId = 1, Name = "北大tom" }).ExecuteCommand();
             db.Insertable(new StudentA() { StudentId = 3, SchoolId = 2, Name = "清华jack" }).ExecuteCommand();
             db.Insertable(new StudentA() { StudentId = 4, SchoolId = 2, Name = "清华tom" }).ExecuteCommand();
             db.Insertable(new StudentA() { StudentId = 5, SchoolId = null, Name = "清华tom" }).ExecuteCommand();
-
+            db.Insertable(new StudentA() { StudentId = 6, SchoolId = 3, Name = "青鸟学生" }).ExecuteCommand();
             db.Insertable(new TeacherA() { SchoolId = 1, Id = 1, Name = "北大老师01" }).ExecuteCommand();
             db.Insertable(new TeacherA() { SchoolId = 1, Id = 2, Name = "北大老师02" }).ExecuteCommand();
 
@@ -51,7 +52,7 @@ namespace OrmTest
             db.Insertable(new BookA() { BookId = 3, Names = "c#1", studenId = 2 }).ExecuteCommand();
             db.Insertable(new BookA() { BookId = 4, Names = "php", studenId = 3 }).ExecuteCommand();
             db.Insertable(new BookA() { BookId = 5, Names = "js", studenId = 4 }).ExecuteCommand();
-
+            db.Insertable(new BookA() { BookId = 6, Names = "北大jack", studenId = 1 }).ExecuteCommand();
 
             var list2 = db.Queryable<StudentA>()
            .Includes(x => x.SchoolA, x => x.RoomList)//2个参数就是 then Include 
@@ -65,6 +66,29 @@ namespace OrmTest
                  .Mapper(it => it.SchoolA, it => it.SchoolId)
                  .ToList();
 
+            var list22 = db.Queryable<StudentA>()
+                 //.Includes(it => it.SchoolA)
+                 .Where(it=>it.SchoolA.City.Id== 1001001)
+                 .ToList();
+            var list33 = db.Queryable<StudentA>()
+            //.Includes(it => it.SchoolA)
+            .Where(it => it.SchoolA.SchoolId == 1)
+            .ToList();
+
+            Check.Exception(string.Join(",", list22.Select(it => it.StudentId)) != string.Join(",", list33.Select(it => it.StudentId)), "unit error");
+
+
+            var list333 = db.Queryable<StudentA>()
+               .Includes(it => it.SchoolA,it=>it.TeacherList)
+               .Where(it => it.SchoolA.TeacherList.Any())
+               .ToList();
+
+            var list3333 = db.Queryable<StudentA>()
+                .Includes(it => it.SchoolA, it => it.TeacherList)
+                .Where(it => it.SchoolA.TeacherList.Any(z=>z.Id>2))
+                .ToList();
+
+            Check.Exception(list3333.Select(x=>x.SchoolA).SelectMany(x=>x.TeacherList).Any(it=>it.Id<=2), "unit error");
 
             var list3 = db.Queryable<StudentA>()
            .Includes(x => x.SchoolA, x => x.RoomList)//2个参数就是 then Include 
@@ -73,6 +97,13 @@ namespace OrmTest
            .Where(x => x.Books.Any(z => z.BookId == 1))
            .Where(x => x.SchoolA.School_Name == "北大")
            .ToList();
+
+
+
+            var list3_1 = db.Queryable<StudentA>()
+           .Includes(x => x.Books.MappingField(z=>z.Names,()=>x.Name).ToList())
+           .ToList();
+
             //先用Mapper导航映射查出第二层
             var list = db.Queryable<StudentA>().Mapper(x => x.SchoolA, x => x.SchoolId).ToList();
 
@@ -118,6 +149,8 @@ namespace OrmTest
             db.Insertable(new Tree1() { Id = 6, Name = "020101", ParentId = 5 }).ExecuteCommand();
             db.Insertable(new Tree1() { Id = 7, Name = "02010101", ParentId = 6 }).ExecuteCommand();
 
+            db.Queryable<Tree1>().Where(x => x.Parent.Parent.Parent.Id > 0).ToList();
+            db.Queryable<Tree1>().Where(x => x.Parent.Child.Any()).ToList();
             var list21111 = new List<Tree1>();
            var xxx= db.Queryable<Tree1>()
                 .Includes(it => it.Child,it=>it.Child,it=>it.Child)
@@ -213,14 +246,19 @@ namespace OrmTest
         }
         public class SchoolA
         {
-            [SugarColumn(IsPrimaryKey = true)]
+            [SugarColumn(IsPrimaryKey = true,ColumnName = "schoolid")]
             public int SchoolId { get; set; }
+            [SugarColumn(IsNullable =true)]
+            public int CityId { get; set; }
             [SugarColumn( ColumnName = "SchoolName")]
             public string School_Name { get; set; }
             [Navigate(NavigateType.OneToMany,nameof(RoomA.SchoolId))]
             public List<RoomA> RoomList { get; set; }
             [Navigate(NavigateType.OneToMany, nameof(TeacherA.SchoolId))]
             public List<TeacherA> TeacherList { get; set; }
+            [Navigate(NavigateType.OneToOne,nameof(CityId))]
+            public City City { get; set; }
+
         }
         public class TeacherA
         {

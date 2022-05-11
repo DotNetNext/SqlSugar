@@ -20,7 +20,7 @@ namespace SqlSugar.MySqlConnector
                     try
                     {
                         var mySqlConnectionString = base.Context.CurrentConnectionConfig.ConnectionString;
-                        if (!mySqlConnectionString.ToLower().Contains("charset"))
+                        if (!mySqlConnectionString.ToLower().Contains("charset") && !mySqlConnectionString.ToLower().Contains("character"))
                         {
                             mySqlConnectionString = mySqlConnectionString.Trim().TrimEnd(';') + ";charset=utf8;";
                         }

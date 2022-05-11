@@ -47,7 +47,9 @@ namespace SqlSugar
             if (this.updateobj.UpdateBuilder.DbColumnInfoList.Any())
             {
                var columns=this.updateobj.UpdateBuilder.DbColumnInfoList.Select(it => it.DbColumnName).Distinct().ToList();
-                return this.Context.EntityMaintenance.GetEntityInfo<T>().Columns.Where(x => !columns.Any(y => y.EqualCase(x.DbColumnName))).Select(it => it.DbColumnName).ToArray();
+               var result= this.Context.EntityMaintenance.GetEntityInfo<T>().Columns.Where(x => !columns.Any(y => y.EqualCase(x.DbColumnName))).Select(it => it.DbColumnName).ToArray();
+               result = result.Where(it => !string.IsNullOrEmpty(it)).ToArray();
+               return result;
             }
             else 
             {

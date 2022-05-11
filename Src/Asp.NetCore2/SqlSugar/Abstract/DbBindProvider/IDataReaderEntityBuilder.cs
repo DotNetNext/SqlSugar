@@ -229,7 +229,11 @@ namespace SqlSugar
                 {
                     method = isNullableType ? getConvertByte : getByte;
                 }
-                else if (bindPropertyType == UtilConstants.StringType&&dbTypeName?.ToLower()== "timestamp")
+                else if (bindPropertyType == UtilConstants.StringType && dbTypeName?.ToLower() == "timestamp")
+                {
+                    method = isNullableType ? getOtherNull.MakeGenericMethod(bindPropertyType) : getOther.MakeGenericMethod(bindPropertyType);
+                }
+                else if (dbTypeName.EqualCase("STRING")) 
                 {
                     method = isNullableType ? getOtherNull.MakeGenericMethod(bindPropertyType) : getOther.MakeGenericMethod(bindPropertyType);
                 }

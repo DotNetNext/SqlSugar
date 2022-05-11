@@ -27,6 +27,20 @@ namespace OrmTest
 						   sno="a",
 						    username="a01"
 			}).ExecuteCommand();
+			db.Insertable(new OperatorInfo()
+			{
+				id = "2",
+				createTime = DateTime.Now,
+				isDel = 1,
+				isDisabled = 1,
+				openid = "",
+				phone = "",
+				pwd = "",
+				realname = "a01",
+				remark = "a",
+				sno = "a",
+				username = "admin"
+			}).ExecuteCommand();
 			var id=db.Insertable(new Role()
 			{
 				 id=1,
@@ -34,17 +48,25 @@ namespace OrmTest
 				   name="admin"
 
 			}).ExecuteReturnIdentity();
+			var id2 = db.Insertable(new Role()
+			{
+				id = 2,
+				createTime = DateTime.Now,
+				name = "admin"
+
+			}).ExecuteReturnIdentity();
 			db.Insertable(new OptRole() { operId="1", roleId=id }).ExecuteCommand();
+			db.Insertable(new OptRole() { id=2, operId = "2", roleId = id2 }).ExecuteCommand();
 			db.Queryable<OperatorInfo>()
 				.Includes(x => x.Roles).Where(x => x.Roles.Any(z=>z.id==1))
 				.ToList();
 			var list=db.Queryable<OperatorInfo>()
 				.Includes(x => x.Roles).Where(x => x.Roles.Any())
 				.ToListAsync().GetAwaiter().GetResult();
-			//db.Queryable<OperatorInfo>()
-			//	.Includes(x => x.Roles.Where(z=>z.name==x.realname).ToList())
-			//	.ToList();
-		 }
+            var list2=db.Queryable<OperatorInfo>()
+                .Includes(x => x.Roles.MappingField(z=>z.name,()=>x.username).ToList())
+                .ToList();
+        }
 
 			/// <summary>
 			/// 描述：

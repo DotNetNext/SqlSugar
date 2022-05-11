@@ -158,9 +158,9 @@ namespace SqlSugar
             if (this.whereExpression != null)
             {
                 result.AsUpdateable.WhereColumns(whereExpression);
-                result.AsDeleteable.WhereColumns(whereExpression);
+                result.AsDeleteable.WhereColumns(update.Select(it => it.Item).ToList(),whereExpression);
             }
-            result.AsDeleteable.Where(delete.Select(it => it.Item).ToList());
+            //result.AsDeleteable.Where(delete.Select(it => it.Item).ToList());
             return result;
         }
 
@@ -240,9 +240,9 @@ namespace SqlSugar
             if (this.whereExpression != null)
             {
                 result.AsUpdateable.WhereColumns(whereExpression);
-                result.AsDeleteable.WhereColumns(whereExpression);
+                result.AsDeleteable.WhereColumns(delete.Select(it => it.Item).ToList(),whereExpression);
             }
-            result.AsDeleteable.Where(delete.Select(it => it.Item).ToList());
+            //result.AsDeleteable.Where(delete.Select(it => it.Item).ToList());
             return result;
         }
 
@@ -289,6 +289,14 @@ namespace SqlSugar
                 this.whereExpression = columns;
                 return this;
             }
+        }
+
+
+        public IStorageable<T> WhereColumns(string [] columns) 
+        {
+            var list = columns.Select(it=>this.Context.EntityMaintenance.GetDbColumnName<T>(it)).ToList();
+            var exp=ExpressionBuilderHelper.CreateNewFields<T>(this.Context.EntityMaintenance.GetEntityInfo<T>(), list);
+            return this.WhereColumns(exp);
         }
 
         private  void SetConditList(List<StorageableInfo<T>> itemList, List<EntityColumnInfo> whereColumns, List<IConditionalModel> conditList)

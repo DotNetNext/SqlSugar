@@ -347,9 +347,9 @@ namespace SqlSugar
             var result= this.Context.Queryable<T>(queryable);
             var QueryBuilder = queryable.QueryBuilder;
             result.QueryBuilder.IsQueryInQuery = true;
-            result.QueryBuilder.WhereIndex = QueryBuilder.WhereIndex++;
-            result.QueryBuilder.LambdaExpressions.ParameterIndex = QueryBuilder.LambdaExpressions.ParameterIndex++;
-            result.QueryBuilder.LambdaExpressions.Index = QueryBuilder.LambdaExpressions.Index++;
+            var appendIndex = result.QueryBuilder.Parameters==null?1:result.QueryBuilder.Parameters.Count+1;
+            result.QueryBuilder.WhereIndex = (QueryBuilder.WhereIndex+1);
+            result.QueryBuilder.LambdaExpressions.ParameterIndex = (QueryBuilder.LambdaExpressions.ParameterIndex+ appendIndex);
             return result;
         }
 
@@ -364,6 +364,12 @@ namespace SqlSugar
         public StorageableDataTable Storageable(DataTable data)
         {
             return this.Context.Storageable(data);
+        }
+        public StorageableDataTable Storageable(List<Dictionary<string,object>> dictionaryList,string tableName)
+        {
+            DataTable dt = this.Context.Utilities.DictionaryListToDataTable(dictionaryList);
+            dt.TableName = tableName;
+            return this.Context.Storageable(dt);
         }
 
         public IStorageable<T> Storageable<T>(List<T> dataList) where T : class, new()

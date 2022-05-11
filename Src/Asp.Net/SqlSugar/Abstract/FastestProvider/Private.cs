@@ -85,7 +85,7 @@ namespace SqlSugar
                             value = DBNull.Value;
                         }
                     }
-                    else if (column.UnderType == UtilConstants.DateTimeOffsetType&& value!=null) 
+                    else if (column.UnderType == UtilConstants.DateTimeOffsetType&& value!=null && value != DBNull.Value) 
                     {
                         value = UtilMethods.ConvertFromDateTimeOffset((DateTimeOffset)value);
                     }

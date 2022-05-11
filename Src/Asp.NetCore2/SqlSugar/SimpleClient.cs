@@ -200,6 +200,10 @@ namespace SqlSugar
         {
             return this.Context.Deleteable<T>().Where(deleteObj).ExecuteCommand() > 0;
         }
+        public virtual bool Delete(List<T> deleteObjs)
+        {
+            return this.Context.Deleteable<T>().Where(deleteObjs).ExecuteCommand() > 0;
+        }
         public virtual bool Delete(Expression<Func<T, bool>> whereExpression)
         {
             return this.Context.Deleteable<T>().Where(whereExpression).ExecuteCommand() > 0;
@@ -313,6 +317,10 @@ namespace SqlSugar
         public virtual async Task<bool> DeleteAsync(T deleteObj)
         {
             return await this.Context.Deleteable<T>().Where(deleteObj).ExecuteCommandAsync() > 0;
+        }
+        public virtual async Task<bool> DeleteAsync(List<T> deleteObjs)
+        {
+            return await this.Context.Deleteable<T>().Where(deleteObjs).ExecuteCommandAsync() > 0;
         }
         public virtual async Task<bool> DeleteAsync(Expression<Func<T, bool>> whereExpression)
         {

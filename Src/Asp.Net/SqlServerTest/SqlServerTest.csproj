@@ -85,6 +85,7 @@
     <Compile Include="Demo\DemoN_SplitTable.cs" />
     <Compile Include="Models\DataDictionary.cs" />
     <Compile Include="Models\Custom.cs" />
+    <Compile Include="Models\DiffLong.cs" />
     <Compile Include="Models\EntityMapper.cs" />
     <Compile Include="Models\Mapper.cs" />
     <Compile Include="Models\SubInsertTest.cs" />
@@ -94,6 +95,9 @@
     <Compile Include="Models\OrderItem.cs" />
     <Compile Include="Demo\Demo0_SqlSugarClient.cs" />
     <Compile Include="Models\ViewOrder.cs" />
+    <Compile Include="UnitTest\UCustom020.cs" />
+    <Compile Include="UnitTest\UCustom019.cs" />
+    <Compile Include="UnitTest\UintDynamic.cs" />
     <Compile Include="UnitTest\UnitManyToMany.cs" />
     <Compile Include="UnitTest\UCustom018.cs" />
     <Compile Include="UnitTest\Models\Order.cs" />

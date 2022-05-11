@@ -23,6 +23,7 @@ namespace SqlSugar
         int Count(Expression<Func<T, bool>> whereExpression);
         bool Delete(Expression<Func<T, bool>> whereExpression);
         bool Delete(T deleteObj);
+        bool Delete(List<T> deleteObjs);
         bool DeleteById(dynamic id);
         bool DeleteByIds(dynamic[] ids);
         T GetById(dynamic id);
@@ -55,6 +56,7 @@ namespace SqlSugar
         Task<int> CountAsync(Expression<Func<T, bool>> whereExpression);
         Task<bool> DeleteAsync(Expression<Func<T, bool>> whereExpression);
         Task<bool> DeleteAsync(T deleteObj);
+        Task<bool> DeleteAsync(List<T> deleteObjs);
         Task<bool> DeleteByIdAsync(dynamic id);
         Task<bool> DeleteByIdsAsync(dynamic[] ids);
         Task<T> GetByIdAsync(dynamic id);

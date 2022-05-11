@@ -38,6 +38,7 @@ namespace OrmTest
             //sql  
             var dt2 = db.Ado.GetDataTable("select * from  \"ORDER\" where @id>0  or name=@name", new { id = 1, name = "2" });
 
+            var int1=db.Ado.GetInt("select @key as id from dual ", new { key = 1 });
             //Stored Procedure
             //var dt3 = db.Ado.UseStoredProcedure().GetDataTable("sp_school", new { name = "张三", age = 0 }); 
             //var nameP = new SugarParameter("@name", "张三");
