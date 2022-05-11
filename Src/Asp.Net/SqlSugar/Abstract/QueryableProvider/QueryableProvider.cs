@@ -1047,7 +1047,8 @@ namespace SqlSugar
             if (this.QueryBuilder.Skip == null&& 
                 this.QueryBuilder.Take == null&& 
                 this.QueryBuilder.OrderByValue == null && 
-                this.QueryBuilder.PartitionByValue == null) 
+                this.QueryBuilder.PartitionByValue == null&&
+                this.QueryBuilder.SelectValue==null) 
             {
 
                 return this.Clone().Select<int>(" COUNT(1) ").ToList().First();
