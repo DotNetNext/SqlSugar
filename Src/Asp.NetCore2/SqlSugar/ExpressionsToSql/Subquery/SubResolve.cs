@@ -48,13 +48,13 @@ namespace SqlSugar
                         var selfParameterName = meExp.Parameters.First().Name;
                         if ((meExp.Body is BinaryExpression))
                         {
-                            context.SingleTableNameSubqueryShortName = (((meExp.Body as BinaryExpression).Left as MemberExpression).Expression as ParameterExpression).Name;
+                            context.SingleTableNameSubqueryShortName = (((meExp.Body as BinaryExpression).Left as MemberExpression)?.Expression as ParameterExpression)?.Name;
                         }
                         if (context.SingleTableNameSubqueryShortName == selfParameterName)
                         {
                             if (meExp.Body is BinaryExpression)
                             {
-                                context.SingleTableNameSubqueryShortName = (((meExp.Body as BinaryExpression).Right as MemberExpression).Expression as ParameterExpression).Name;
+                                context.SingleTableNameSubqueryShortName = (((meExp.Body as BinaryExpression).Right as MemberExpression)?.Expression as ParameterExpression)?.Name;
                             }
                         }
                     }
