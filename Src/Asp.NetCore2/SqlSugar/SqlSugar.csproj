@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <Version>5.0.7.6</Version>
+    <Version>5.0.7.8</Version>
     <Copyright>sun_kai_xuan</Copyright>
     <PackageProjectUrl>https://github.com/sunkaixuan/SqlSugar</PackageProjectUrl>
     <PackageLicenseUrl></PackageLicenseUrl>
@@ -54,11 +54,6 @@
     <Folder Include="Abstract\AdoProvider\Abstract\SqlBuilderProvider\" />
     <Folder Include="Abstract\AdoProvider\Abstract\SugarProvider\" />
     <Folder Include="Abstract\AdoProvider\Abstract\UpdateProvider\" />
-    <Folder Include="CaseWhen\" />
-    <Folder Include="Common\" />
-    <Folder Include="DbMethods\" />
-    <Folder Include="ResolveItems\" />
-    <Folder Include="Subquery\Items\" />
   </ItemGroup>
 
 </Project>

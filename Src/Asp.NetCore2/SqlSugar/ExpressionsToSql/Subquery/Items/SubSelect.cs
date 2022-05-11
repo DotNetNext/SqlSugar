@@ -62,7 +62,7 @@ namespace SqlSugar
 
         public void SetShortName(MethodCallExpression exp, string result)
         {
-            if (exp.Arguments[0] is LambdaExpression && result.IsContainsIn("+", "-"))
+            if (exp.Arguments[0] is LambdaExpression && result.IsContainsIn("+", "-","*","/"))
             {
                 var parameters = (exp.Arguments[0] as LambdaExpression).Parameters;
                 if (parameters != null && parameters.Count > 0)
@@ -74,7 +74,7 @@ namespace SqlSugar
         }
         public void SetShortNameNext(MethodCallExpression exp, string result)
         {
-            if (exp.Arguments.Count>1&&exp.Arguments[1] is LambdaExpression && result.IsContainsIn("+", "-"))
+            if (exp.Arguments.Count>1&&exp.Arguments[1] is LambdaExpression && result.IsContainsIn("+", "-", "*", "/"))
             {
                 var parameters = (exp.Arguments[1] as LambdaExpression).Parameters;
                 if (parameters != null && parameters.Count > 0)

@@ -71,6 +71,7 @@
   <ItemGroup>
     <Compile Include="Abstract\AopProvider\AopProvider.cs" />
     <Compile Include="Abstract\CacheProvider\CacheProvider.cs" />
+    <Compile Include="Abstract\CodeFirstProvider\TableDifferenceProvider.cs" />
     <Compile Include="Abstract\CodeFirstProvider\CodeFirstProvider.cs" />
     <Compile Include="Abstract\AdoProvider\AdoAccessory.cs" />
     <Compile Include="Abstract\CodeFirstProvider\SplitCodeFirstProvider.cs" />
@@ -97,6 +98,7 @@
     <Compile Include="Abstract\FilterProvider\FilterProvider.cs" />
     <Compile Include="Abstract\QueryableProvider\IncludesHelper.cs" />
     <Compile Include="Abstract\QueryableProvider\Includes.cs" />
+    <Compile Include="Abstract\QueryableProvider\MappingFieldsHelper.cs" />
     <Compile Include="Abstract\QueryableProvider\NavigatManager.cs" />
     <Compile Include="Abstract\SaveableProvider\StorageableDataTable.cs" />
     <Compile Include="Abstract\SugarProvider\SqlSugarCoreProvider.cs" />
@@ -106,9 +108,12 @@
     <Compile Include="Enum\NavigatType.cs" />
     <Compile Include="Enum\SugarActionType.cs" />
     <Compile Include="Entities\SugarConnection.cs" />
+    <Compile Include="ExpressionsToSql\Common\ExpressionItems.cs" />
     <Compile Include="ExpressionsToSql\Common\ExpressionOutParameter.cs" />
-    <Compile Include="ExpressionsToSql\ResolveItems\NavgateExpressionCall.cs" />
-    <Compile Include="ExpressionsToSql\ResolveItems\NavgateExpression.cs" />
+    <Compile Include="ExpressionsToSql\ResolveItems\OneToManyNavgateExpressionN.cs" />
+    <Compile Include="ExpressionsToSql\ResolveItems\OneToManyNavgateExpression.cs" />
+    <Compile Include="ExpressionsToSql\ResolveItems\OneToOneNavgateExpressionN.cs" />
+    <Compile Include="ExpressionsToSql\ResolveItems\OneToOneNavgateExpression.cs" />
     <Compile Include="ExpressionsToSql\Subquery\SubTemplate.cs" />
     <Compile Include="ExpressionsToSql\Subquery\SubqueryableN.cs" />
     <Compile Include="Abstract\QueryableProvider\QueryableContext.cs" />
@@ -257,6 +262,7 @@
     <Compile Include="Abstract\SugarProvider\SqlSugarScopeProvider.cs" />
     <Compile Include="Utilities\CallContext.cs" />
     <Compile Include="Utilities\CallContextAsync.cs" />
+    <Compile Include="Utilities\ExpressionBuilderHelper.cs" />
     <Compile Include="Utilities\CommonExtensions.cs" />
     <Compile Include="Utilities\PropertyCallAdapterProvider.cs" />
     <Compile Include="Utilities\SugarRetry.cs" />
@@ -426,27 +432,7 @@
     <None Include="packages.config" />
     <None Include="SqlSugar.nuspec" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Abstract\AdoProvider\Abstract\AdoProvider\" />
-    <Folder Include="Abstract\AdoProvider\Abstract\AopProvider\" />
-    <Folder Include="Abstract\AdoProvider\Abstract\CacheProvider\" />
-    <Folder Include="Abstract\AdoProvider\Abstract\CodeFirstProvider\" />
-    <Folder Include="Abstract\AdoProvider\Abstract\DbBindProvider\" />
-    <Folder Include="Abstract\AdoProvider\Abstract\DbFirstProvider\" />
-    <Folder Include="Abstract\AdoProvider\Abstract\DbMaintenanceProvider\" />
-    <Folder Include="Abstract\AdoProvider\Abstract\DeleteProvider\" />
-    <Folder Include="Abstract\AdoProvider\Abstract\EntityMaintenance\" />
-    <Folder Include="Abstract\AdoProvider\Abstract\ExpressionableProvider\" />
-    <Folder Include="Abstract\AdoProvider\Abstract\FastestProvider\" />
-    <Folder Include="Abstract\AdoProvider\Abstract\FilterProvider\" />
-    <Folder Include="Abstract\AdoProvider\Abstract\InsertableProvider\" />
-    <Folder Include="Abstract\AdoProvider\Abstract\QueryableProvider\" />
-    <Folder Include="Abstract\AdoProvider\Abstract\Reportable\" />
-    <Folder Include="Abstract\AdoProvider\Abstract\SaveableProvider\" />
-    <Folder Include="Abstract\AdoProvider\Abstract\SqlBuilderProvider\" />
-    <Folder Include="Abstract\AdoProvider\Abstract\SugarProvider\" />
-    <Folder Include="Abstract\AdoProvider\Abstract\UpdateProvider\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -39,6 +39,12 @@ namespace OrmTest
             Db.Insertable(new UnitCodeFirst131() { Id = 1 }).ExecuteCommand();
             Db.CodeFirst.InitTables<UNITCODEFIRST131>();
             Db.CodeFirst.InitTables<UNITCOdEFIRST131>();
+            Db.CodeFirst.InitTables<UnitADFA13131>();
+        }
+        public class UnitADFA13131 
+        {
+            [SugarColumn(ColumnDescription = "order")]
+            public string order { get; set; }
         }
         public class UnitCodeFirst131
         {

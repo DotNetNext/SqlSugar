@@ -381,6 +381,31 @@ namespace SqlSugar
             _WhereClassByPrimaryKey(new List<T>() { data });
             return this;
         }
+        public ISugarQueryable<T> WhereColumns(List<Dictionary<string, object>> list)
+        {
+            List<IConditionalModel> conditionalModels = new List<IConditionalModel>();
+            foreach (var model in list)
+            {
+                int i = 0;
+                var clist = new List<KeyValuePair<WhereType, ConditionalModel>>();
+                foreach (var item in model.Keys)
+                {
+                    clist.Add(new KeyValuePair<WhereType, ConditionalModel>(i == 0 ? WhereType.Or : WhereType.And, new ConditionalModel()
+                    {
+                        FieldName = item,
+                        ConditionalType = ConditionalType.Equal,
+                        FieldValue = model[item].ObjToString(),
+                        CSharpTypeName = model[item] == null ? null : model[item].GetType().Name
+                    }));
+                    i++;
+                }
+                conditionalModels.Add(new ConditionalCollections()
+                {
+                    ConditionalList = clist
+                });
+            }
+            return this.Where(conditionalModels);
+        }
 
         /// <summary>
         ///  if a property that is primary key is a condition
@@ -551,7 +576,19 @@ namespace SqlSugar
             var sqlObj = this.SqlBuilder.ConditionalModelToSql(conditionalModels, 0);
             return this.Where(sqlObj.Key, sqlObj.Value);
         }
-
+        public ISugarQueryable<T> Where(List<IConditionalModel> conditionalModels, bool isWrap)
+        {
+            if (conditionalModels.IsNullOrEmpty()) return this;
+            var sqlObj = this.SqlBuilder.ConditionalModelToSql(conditionalModels, 0);
+            if (isWrap)
+            {
+                return this.Where("("+sqlObj.Key+")", sqlObj.Value);
+            }
+            else 
+            {
+                return this.Where(sqlObj.Key, sqlObj.Value);
+            }
+        }
         public virtual ISugarQueryable<T> Where<T2>(string whereString, object whereObj = null)
         {
             var whereValue = QueryBuilder.WhereInfos;
@@ -1023,6 +1060,15 @@ namespace SqlSugar
         }
         public virtual int Count()
         {
+            if (this.QueryBuilder.Skip == null&& 
+                this.QueryBuilder.Take == null&& 
+                this.QueryBuilder.OrderByValue == null && 
+                this.QueryBuilder.PartitionByValue == null&&
+                this.QueryBuilder.SelectValue==null) 
+            {
+
+                return this.Clone().Select<int>(" COUNT(1) ").ToList().First();
+            }
             MappingTableList expMapping;
             int result;
             _CountBegin(out expMapping, out result);
@@ -1148,23 +1194,26 @@ namespace SqlSugar
         public List<T> ToChildList(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue)
         {
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
-            Check.Exception(entity.Columns.Where(it => it.IsPrimarykey).Count() == 0, "No Primary key");
-            var pk = entity.Columns.Where(it => it.IsPrimarykey).First().PropertyName;
+            var pk = GetTreeKey(entity);
             var list = this.ToList();
             return GetChildList(parentIdExpression, pk, list, primaryKeyValue);
         }
         public async Task<List<T>> ToChildListAsync(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue)
         {
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
-            Check.Exception(entity.Columns.Where(it => it.IsPrimarykey).Count() == 0, "No Primary key");
-            var pk = entity.Columns.Where(it => it.IsPrimarykey).First().PropertyName;
+            var pk = GetTreeKey(entity);
             var list = await this.ToListAsync();
             return GetChildList(parentIdExpression, pk, list, primaryKeyValue);
         }
         public List<T> ToParentList(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue)
         {
-            List<T> result = new List<T>() { };
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            var isTreeKey = entity.Columns.Any(it => it.IsTreeKey);
+            if (isTreeKey) 
+            {
+                return _ToParentListByTreeKey(parentIdExpression,primaryKeyValue);
+            }
+            List<T> result = new List<T>() { };
             Check.Exception(entity.Columns.Where(it => it.IsPrimarykey).Count() == 0, "No Primary key");
             var parentIdName = UtilConvert.ToMemberExpression((parentIdExpression as LambdaExpression).Body).Member.Name;
             var ParentInfo = entity.Columns.First(it => it.PropertyName == parentIdName);
@@ -1198,10 +1247,75 @@ namespace SqlSugar
             }
             return result;
         }
+
+        private List<T> _ToParentListByTreeKey(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue)
+        {
+            var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            var treeKey = entity.Columns.FirstOrDefault(it => it.IsTreeKey);
+            List<T> result = new List<T>() { };
+            var parentIdName = UtilConvert.ToMemberExpression((parentIdExpression as LambdaExpression).Body).Member.Name;
+            var ParentInfo = entity.Columns.First(it => it.PropertyName == parentIdName);
+            var parentPropertyName = ParentInfo.DbColumnName;
+            var tableName = this.QueryBuilder.GetTableNameString;
+            if (this.QueryBuilder.IsSingle() == false)
+            {
+                if (this.QueryBuilder.JoinQueryInfos.Count > 0)
+                {
+                    tableName = this.QueryBuilder.JoinQueryInfos.First().TableName;
+                }
+                if (this.QueryBuilder.EasyJoinInfos.Count > 0)
+                {
+                    tableName = this.QueryBuilder.JoinQueryInfos.First().TableName;
+                }
+            }
+            var current = this.Context.Queryable<T>().AS(tableName).Where(new List<IConditionalModel>() {
+                new ConditionalModel()
+                {
+                    ConditionalType = ConditionalType.Equal,
+                    CSharpTypeName = treeKey.PropertyInfo.PropertyType.Name,
+                    FieldValue = primaryKeyValue + "",
+                    FieldName = treeKey.DbColumnName
+                } }).First();
+            if (current != null)
+            {
+                result.Add(current);
+                object parentId = ParentInfo.PropertyInfo.GetValue(current, null);
+                int i = 0;
+                while (parentId != null && this.Context.Queryable<T>().AS(tableName).Where(new List<IConditionalModel>() {
+                new ConditionalModel()
+                {
+                    ConditionalType = ConditionalType.Equal,
+                    CSharpTypeName = treeKey.PropertyInfo.PropertyType.Name,
+                    FieldValue = parentId + "",
+                    FieldName = treeKey.DbColumnName
+                } }).Any())
+                {
+                    Check.Exception(i > 100, ErrorMessage.GetThrowMessage("Dead cycle", "出现死循环或超出循环上限（100），检查最顶层的ParentId是否是null或者0"));
+                    var parent = this.Context.Queryable<T>().AS(tableName).Where(new List<IConditionalModel>() {
+                new ConditionalModel()
+                {
+                    ConditionalType = ConditionalType.Equal,
+                    CSharpTypeName = treeKey.PropertyInfo.PropertyType.Name,
+                    FieldValue = parentId + "",
+                    FieldName = treeKey.DbColumnName
+                } }).First();
+                    result.Add(parent);
+                    parentId = ParentInfo.PropertyInfo.GetValue(parent, null);
+                    ++i;
+                }
+            }
+            return result;
+        }
+
         public async Task<List<T>> ToParentListAsync(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue)
         {
             List<T> result = new List<T>() { };
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            var isTreeKey = entity.Columns.Any(it => it.IsTreeKey);
+            if (isTreeKey)
+            {
+                return await _ToParentListByTreeKeyAsync(parentIdExpression, primaryKeyValue);
+            }
             Check.Exception(entity.Columns.Where(it => it.IsPrimarykey).Count() == 0, "No Primary key");
             var parentIdName = UtilConvert.ToMemberExpression((parentIdExpression as LambdaExpression).Body).Member.Name;
             var ParentInfo = entity.Columns.First(it => it.PropertyName == parentIdName);
@@ -1235,11 +1349,69 @@ namespace SqlSugar
             }
             return result;
         }
+        private async Task<List<T>> _ToParentListByTreeKeyAsync(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue)
+        {
+            var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            var treeKey = entity.Columns.FirstOrDefault(it => it.IsTreeKey);
+            List<T> result = new List<T>() { };
+            var parentIdName = UtilConvert.ToMemberExpression((parentIdExpression as LambdaExpression).Body).Member.Name;
+            var ParentInfo = entity.Columns.First(it => it.PropertyName == parentIdName);
+            var parentPropertyName = ParentInfo.DbColumnName;
+            var tableName = this.QueryBuilder.GetTableNameString;
+            if (this.QueryBuilder.IsSingle() == false)
+            {
+                if (this.QueryBuilder.JoinQueryInfos.Count > 0)
+                {
+                    tableName = this.QueryBuilder.JoinQueryInfos.First().TableName;
+                }
+                if (this.QueryBuilder.EasyJoinInfos.Count > 0)
+                {
+                    tableName = this.QueryBuilder.JoinQueryInfos.First().TableName;
+                }
+            }
+            var current = await this.Context.Queryable<T>().AS(tableName).Where(new List<IConditionalModel>() {
+                new ConditionalModel()
+                {
+                    ConditionalType = ConditionalType.Equal,
+                    CSharpTypeName = treeKey.PropertyInfo.PropertyType.Name,
+                    FieldValue = primaryKeyValue + "",
+                    FieldName = treeKey.DbColumnName
+                } }).FirstAsync();
+            if (current != null)
+            {
+                result.Add(current);
+                object parentId = ParentInfo.PropertyInfo.GetValue(current, null);
+                int i = 0;
+                while (parentId != null && await this.Context.Queryable<T>().AS(tableName).Where(new List<IConditionalModel>() {
+                new ConditionalModel()
+                {
+                    ConditionalType = ConditionalType.Equal,
+                    CSharpTypeName = treeKey.PropertyInfo.PropertyType.Name,
+                    FieldValue = parentId + "",
+                    FieldName = treeKey.DbColumnName
+                } }).AnyAsync())
+                {
+                    Check.Exception(i > 100, ErrorMessage.GetThrowMessage("Dead cycle", "出现死循环或超出循环上限（100），检查最顶层的ParentId是否是null或者0"));
+                    var parent = await this.Context.Queryable<T>().AS(tableName).Where(new List<IConditionalModel>() {
+                new ConditionalModel()
+                {
+                    ConditionalType = ConditionalType.Equal,
+                    CSharpTypeName = treeKey.PropertyInfo.PropertyType.Name,
+                    FieldValue = parentId + "",
+                    FieldName = treeKey.DbColumnName
+                } }).FirstAsync();
+                    result.Add(parent);
+                    parentId = ParentInfo.PropertyInfo.GetValue(parent, null);
+                    ++i;
+                }
+            }
+            return result;
+        }
+
         public List<T> ToTree(Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, object rootValue)
         {
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
-            Check.Exception(entity.Columns.Where(it => it.IsPrimarykey).Count() == 0, "No Primary key");
-            var pk = entity.Columns.Where(it => it.IsPrimarykey).First().PropertyName;
+            var pk = GetTreeKey(entity);
             var list = this.ToList();
             return GetTreeRoot(childListExpression, parentIdExpression, pk, list, rootValue);
         }
@@ -1247,10 +1419,9 @@ namespace SqlSugar
         public async Task<List<T>> ToTreeAsync(Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, object rootValue)
         {
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
-            Check.Exception(entity.Columns.Where(it => it.IsPrimarykey).Count() == 0, "No Primary key");
-            var pk = entity.Columns.Where(it => it.IsPrimarykey).First().PropertyName;
-            var list = await this.ToListAsync();
-            return GetTreeRoot(childListExpression, parentIdExpression, pk, list, rootValue);
+            var pk = GetTreeKey(entity); ;
+            var list =await this.ToListAsync();
+            return GetTreeRoot(childListExpression, parentIdExpression, pk, list,rootValue);
         }
 
         public virtual DataTable ToDataTable()
@@ -1365,8 +1536,8 @@ namespace SqlSugar
             {
                 pkName = ((mappingFiled as LambdaExpression).Body as MemberExpression).Member.Name;
             }
-            var key = thisFiled.ToString() + typeof(ParameterT).FullName + typeof(T).FullName;
-            var ids = list.Where(it => it != null).Select(it => it.GetType().GetProperty(pkName).GetValue(it)).Distinct().ToArray();
+            var key = thisFiled.ToString()+mappingFiled.ToString() +typeof(ParameterT).FullName + typeof(T).FullName;
+            var ids = list.Where(it=>it!=null).Select(it => it.GetType().GetProperty(pkName).GetValue(it)).Distinct().ToArray();
             if (queryableContext.TempChildLists == null)
                 queryableContext.TempChildLists = new Dictionary<string, object>();
             if (list != null && queryableContext.TempChildLists.ContainsKey(key))
@@ -1396,7 +1567,54 @@ namespace SqlSugar
             result = result.Where(it => it.GetType().GetProperty(name).GetValue(it).ObjToString() == pkValue.ObjToString()).ToList();
             return result;
         }
-
+        public List<T> SetContext<ParameterT>(Expression<Func<T, object>> thisFiled1, Expression<Func<object>> mappingFiled1,
+            Expression<Func<T, object>> thisFiled2, Expression<Func<object>> mappingFiled2,
+            ParameterT parameter)
+        {
+            if (parameter == null)
+            {
+                return new List<T>();
+            }
+            var rightEntity = this.Context.EntityMaintenance.GetEntityInfo<ParameterT>();
+            var leftEntity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            List<T> result = new List<T>();
+            var queryableContext = this.Context.TempItems["Queryable_To_Context"] as MapperContext<ParameterT>;
+            var list = queryableContext.list;
+            var key = thisFiled1.ToString() + mappingFiled1.ToString()+
+                      thisFiled2.ToString() + mappingFiled2.ToString()+
+                       typeof(ParameterT).FullName + typeof(T).FullName;
+            MappingFieldsHelper<ParameterT> fieldsHelper = new MappingFieldsHelper<ParameterT>();
+            var mappings = new List<MappingFieldsExpression>() {
+               new MappingFieldsExpression(){
+               LeftColumnExpression=thisFiled1,
+               LeftEntityColumn=leftEntity.Columns.First(it=>it.PropertyName==ExpressionTool.GetMemberName(thisFiled1)),
+               RightColumnExpression=mappingFiled1,
+               RightEntityColumn=rightEntity.Columns.First(it=>it.PropertyName==ExpressionTool.GetMemberName(mappingFiled1))
+             },
+               new MappingFieldsExpression(){
+               LeftColumnExpression=thisFiled2,
+               LeftEntityColumn=leftEntity.Columns.First(it=>it.PropertyName==ExpressionTool.GetMemberName(thisFiled2)),
+               RightColumnExpression=mappingFiled2,
+               RightEntityColumn=rightEntity.Columns.First(it=>it.PropertyName==ExpressionTool.GetMemberName(mappingFiled2))
+             }
+            };
+            var conditionals=fieldsHelper.GetMppingSql(list.Cast<object>().ToList(), mappings);
+            if (queryableContext.TempChildLists == null)
+                queryableContext.TempChildLists = new Dictionary<string, object>();
+            if (list != null && queryableContext.TempChildLists.ContainsKey(key))
+            {
+                result = (List<T>)queryableContext.TempChildLists[key];
+            }
+            else
+            {
+                result = this.Clone().Where(conditionals,true).ToList();
+                queryableContext.TempChildLists[key] = result;
+            }
+            List<object> listObj = result.Select(it => (object)it).ToList();
+            object obj = (object)parameter;
+            var newResult = fieldsHelper.GetSetList(obj, listObj, mappings).Select(it=>(T)it ).ToList();
+            return newResult;
+        }
         public async Task<List<T>> SetContextAsync<ParameterT>(Expression<Func<T, object>> thisFiled, Expression<Func<object>> mappingFiled, ParameterT parameter)
         {
             List<T> result = new List<T>();
@@ -1412,7 +1630,7 @@ namespace SqlSugar
             {
                 pkName = ((mappingFiled as LambdaExpression).Body as MemberExpression).Member.Name;
             }
-            var key = thisFiled.ToString() + typeof(ParameterT).FullName + typeof(T).FullName;
+            var key = thisFiled.ToString()+ mappingFiled.ToString() + typeof(ParameterT).FullName + typeof(T).FullName;
             var ids = list.Select(it => it.GetType().GetProperty(pkName).GetValue(it)).ToArray();
             if (queryableContext.TempChildLists == null)
                 queryableContext.TempChildLists = new Dictionary<string, object>();
@@ -1443,7 +1661,55 @@ namespace SqlSugar
             result = result.Where(it => it.GetType().GetProperty(name).GetValue(it).ObjToString() == pkValue.ObjToString()).ToList();
             return result;
         }
-        public virtual void ForEach(Action<T> action, int singleMaxReads = 300, System.Threading.CancellationTokenSource cancellationTokenSource = null)
+        public async Task<List<T>> SetContextAsync<ParameterT>(Expression<Func<T, object>> thisFiled1, Expression<Func<object>> mappingFiled1,
+    Expression<Func<T, object>> thisFiled2, Expression<Func<object>> mappingFiled2,
+    ParameterT parameter)
+        {
+            if (parameter == null)
+            {
+                return new List<T>();
+            }
+            var rightEntity = this.Context.EntityMaintenance.GetEntityInfo<ParameterT>();
+            var leftEntity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            List<T> result = new List<T>();
+            var queryableContext = this.Context.TempItems["Queryable_To_Context"] as MapperContext<ParameterT>;
+            var list = queryableContext.list;
+            var key = thisFiled1.ToString() + mappingFiled1.ToString() +
+                      thisFiled2.ToString() + mappingFiled2.ToString() +
+                       typeof(ParameterT).FullName + typeof(T).FullName;
+            MappingFieldsHelper<ParameterT> fieldsHelper = new MappingFieldsHelper<ParameterT>();
+            var mappings = new List<MappingFieldsExpression>() {
+               new MappingFieldsExpression(){
+               LeftColumnExpression=thisFiled1,
+               LeftEntityColumn=leftEntity.Columns.First(it=>it.PropertyName==ExpressionTool.GetMemberName(thisFiled1)),
+               RightColumnExpression=mappingFiled1,
+               RightEntityColumn=rightEntity.Columns.First(it=>it.PropertyName==ExpressionTool.GetMemberName(mappingFiled1))
+             },
+               new MappingFieldsExpression(){
+               LeftColumnExpression=thisFiled2,
+               LeftEntityColumn=leftEntity.Columns.First(it=>it.PropertyName==ExpressionTool.GetMemberName(thisFiled2)),
+               RightColumnExpression=mappingFiled2,
+               RightEntityColumn=rightEntity.Columns.First(it=>it.PropertyName==ExpressionTool.GetMemberName(mappingFiled2))
+             }
+            };
+            var conditionals = fieldsHelper.GetMppingSql(list.Cast<object>().ToList(), mappings);
+            if (queryableContext.TempChildLists == null)
+                queryableContext.TempChildLists = new Dictionary<string, object>();
+            if (list != null && queryableContext.TempChildLists.ContainsKey(key))
+            {
+                result = (List<T>)queryableContext.TempChildLists[key];
+            }
+            else
+            {
+                result =await this.Clone().Where(conditionals, true).ToListAsync();
+                queryableContext.TempChildLists[key] = result;
+            }
+            List<object> listObj = result.Select(it => (object)it).ToList();
+            object obj = (object)parameter;
+            var newResult = fieldsHelper.GetSetList(obj, listObj, mappings).Select(it => (T)it).ToList();
+            return newResult;
+        }
+        public virtual void ForEach(Action<T> action, int singleMaxReads = 300,System.Threading.CancellationTokenSource cancellationTokenSource = null) 
         {
             Check.Exception(this.QueryBuilder.Skip > 0 || this.QueryBuilder.Take > 0, ErrorMessage.GetThrowMessage("no support Skip take, use PageForEach", "不支持Skip Take,请使用 Queryale.PageForEach"));
             var totalNumber = 0;
@@ -1872,7 +2138,7 @@ namespace SqlSugar
         public Task<List<T>> ToPageListAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber, RefAsync<int> totalPage)
         {
             var result = ToPageListAsync(pageNumber, pageSize, totalNumber);
-            totalPage = (totalNumber + pageSize - 1) / pageSize;
+            totalPage.Value = (totalNumber + pageSize - 1) / pageSize;
             return result;
         }
         public async Task<string> ToJsonAsync()
@@ -2090,6 +2356,14 @@ namespace SqlSugar
             InitMapping();
             QueryBuilder.IsCount = true;
             result = 0;
+        }
+        private static string GetTreeKey(EntityInfo entity)
+        {
+            Check.Exception(entity.Columns.Where(it => it.IsPrimarykey || it.IsTreeKey).Count() == 0, "need IsPrimary=true Or IsTreeKey=true");
+            string pk = entity.Columns.Where(it => it.IsTreeKey).FirstOrDefault()?.PropertyName;
+            if (pk == null)
+                pk = entity.Columns.Where(it => it.IsPrimarykey).FirstOrDefault()?.PropertyName;
+            return pk;
         }
         protected ISugarQueryable<TResult> _Select<TResult>(Expression expression)
         {
@@ -2348,6 +2622,13 @@ namespace SqlSugar
             _InitNavigat(result);
             return result;
         }
+        private async Task _InitNavigatAsync<TResult>(List<TResult> result)
+        {
+            if (this.QueryBuilder.Includes != null)
+            {
+                await Task.Run(() => { _InitNavigat(result); });
+            }
+        }
 
         private void _InitNavigat<TResult>(List<TResult> result)
         {
@@ -2382,7 +2663,7 @@ namespace SqlSugar
             }
             RestoreMapping();
             _Mapper(result);
-            await Task.Run(() => { _InitNavigat(result); });
+            await _InitNavigatAsync(result);
             return result;
         }
 

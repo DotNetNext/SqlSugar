@@ -144,6 +144,21 @@ namespace OrmTest
               id= it.Id,
               name=SqlFunc.Asc(it.Name),
             }).ToList();
+            var dr = new Dictionary<string, object>();
+            dr.Add("Id", 1);
+            dr.Add("Name", "2");
+            var dr2 = new Dictionary<string, object>();
+            dr2.Add("Id", 2);
+            dr2.Add("Name", "2");
+            var test35 = db.Queryable<object>().AS("[order]").WhereColumns(new List<Dictionary<string, object>>() { dr, dr2 }).ToDataTable();
+            var test36 = db.Queryable<Order>().Take(1).ToList();
+            var test37= db.Queryable<Order>().First();
+            var test38 = db.Queryable<Order>().Take(2).ToList();
+            var test39 = db.Queryable<Order>().Take(1).OrderBy(it => it.Id).ToList();
+            var test40 = db.Queryable<Order>().OrderBy(it => it.Id).First();
+            var test41 = db.Queryable<Order>().Take(2).OrderBy(it => it.Id).ToList();
+            var test42 = db.Queryable<Order>().Take(2).OrderBy(it => it.Id).ToPageList(1,2);
+            var test43 = db.Queryable<Order>().Take(2).ToPageList(1, 2);
             Console.WriteLine("#### Examples End ####");
         }
 
@@ -306,13 +321,18 @@ namespace OrmTest
 
 
             db.Insertable(new Tree() { Id = 222, Name = "child11", ParentId = 11 }).ExecuteCommand();
-            var tree = db.Queryable<Tree>().ToTree(it => it.Child, it => it.ParentId, 0); 
+            var tree = db.Queryable<Tree>().ToTree(it => it.Child, it => it.ParentId, 0);
+            var tree2 = db.Queryable<Tree2>().ToTree(it => it.Child, it => it.ParentId, 0);
             var allchilds= db.Queryable<Tree>().ToChildList(it => it.ParentId, 0);
+            var allchilds_2 = db.Queryable<Tree2>().ToChildList(it => it.ParentId, 0);
             var allchilds1 = db.Queryable<Tree>().ToChildList(it => it.ParentId, 1);
             var allchilds2= db.Queryable<Tree>().ToChildList(it => it.ParentId, 2);
+            var allchilds2_2 = db.Queryable<Tree2>().ToChildList(it => it.ParentId, 2);
             var parentList = db.Queryable<Tree>().ToParentList(it => it.ParentId, 22);
             var parentList2 = db.Queryable<Tree>().ToParentList(it => it.ParentId, 222);
+            var parentList22 = db.Queryable<Tree2>().ToParentList(it => it.ParentId, 222);
             var parentList3 = db.Queryable<Tree>().ToParentList(it => it.ParentId, 2);
+       
 
             //one to one
             var list2 = db.Queryable<OrderItemInfo>().Mapper(it => it.Order, it => it.OrderId).ToList();

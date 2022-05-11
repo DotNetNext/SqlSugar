@@ -118,9 +118,61 @@ namespace SqlSugar
                 }
             }
         }
+        public TableDifferenceProvider GetDifferenceTables<T>()
+        {
+            var type = typeof(T);
+            return GetDifferenceTables(type);
+        }
+
+        public TableDifferenceProvider GetDifferenceTables(params Type[] types)
+        {
+            TableDifferenceProvider result = new TableDifferenceProvider();
+            foreach (var type in types)
+            {
+                GetDifferenceTables(result, type);
+            }
+            return result;
+        }
         #endregion
 
         #region Core Logic
+        private void GetDifferenceTables(TableDifferenceProvider result, Type type)
+        {
+            var tempTableName = "TempDiff" + DateTime.Now.ToString("yyMMssHHmmssfff");
+            var oldTableName = this.Context.EntityMaintenance.GetEntityInfo(type).DbTableName;
+            var db = new SqlSugarProvider(UtilMethods.CopyConfig(this.Context.CurrentConnectionConfig));
+            UtilMethods.IsNullReturnNew(db.CurrentConnectionConfig.ConfigureExternalServices);
+            db.CurrentConnectionConfig.ConfigureExternalServices.EntityNameService += (x, p) =>
+            {
+                p.IsDisabledUpdateAll = true;//Disabled update
+            };
+            db.MappingTables = new MappingTableList();
+            db.MappingTables.Add(type.Name, tempTableName);
+            try
+            {
+                db.CodeFirst.InitTables(type);
+                var tables = db.DbMaintenance.GetTableInfoList(false);
+                var oldTableInfo = tables.FirstOrDefault(it=>it.Name.EqualCase(oldTableName));
+                var newTableInfo = tables.FirstOrDefault(it => it.Name.EqualCase(oldTableName));
+                var oldTable = db.DbMaintenance.GetColumnInfosByTableName(oldTableName, false);
+                var tempTable = db.DbMaintenance.GetColumnInfosByTableName(tempTableName, false);
+                result.tableInfos.Add(new DiffTableInfo()
+                {
+                     OldTableInfo= oldTableInfo,
+                     NewTableInfo = newTableInfo,
+                     OldColumnInfos =  oldTable,
+                     NewColumnInfos = tempTable
+                });
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                db.DbMaintenance.DropTable(tempTableName);
+            }
+        }
         protected virtual void Execute(Type entityType)
         {
             var entityInfo = this.Context.EntityMaintenance.GetEntityInfoNoCache(entityType);
@@ -132,12 +184,12 @@ namespace SqlSugar
                     {
                         item.Length = DefultLength;
                     }
-                    if (item.DataType!=null&&item.DataType.Contains(",")&& !Regex.IsMatch(item.DataType,@"\d\,\d")) 
+                    if (item.DataType != null && item.DataType.Contains(",") && !Regex.IsMatch(item.DataType, @"\d\,\d"))
                     {
                         var types = item.DataType.Split(',').Select(it => it.ToLower()).ToList();
-                        var mapingTypes=this.Context.Ado.DbBind.MappingTypes.Select(it=>it.Key.ToLower()).ToList();
-                        var mappingType=types.FirstOrDefault(it => mapingTypes.Contains(it));
-                        if (mappingType != null) 
+                        var mapingTypes = this.Context.Ado.DbBind.MappingTypes.Select(it => it.Key.ToLower()).ToList();
+                        var mappingType = types.FirstOrDefault(it => mapingTypes.Contains(it));
+                        if (mappingType != null)
                         {
                             item.DataType = mappingType;
                         }
@@ -145,11 +197,11 @@ namespace SqlSugar
                 }
             }
             var tableName = GetTableName(entityInfo);
-            this.Context.MappingTables.Add(entityInfo.EntityName,tableName);
+            this.Context.MappingTables.Add(entityInfo.EntityName, tableName);
             entityInfo.DbTableName = tableName;
             entityInfo.Columns.ForEach(it => { it.DbTableName = tableName; });
-            var isAny = this.Context.DbMaintenance.IsAnyTable(tableName,false);
-            if (isAny&&entityInfo.IsDisabledUpdateAll)
+            var isAny = this.Context.DbMaintenance.IsAnyTable(tableName, false);
+            if (isAny && entityInfo.IsDisabledUpdateAll)
             {
                 return;
             }
@@ -160,8 +212,35 @@ namespace SqlSugar
 
             this.Context.DbMaintenance.AddRemark(entityInfo);
             this.Context.DbMaintenance.AddIndex(entityInfo);
+            CreateIndex(entityInfo);
             this.Context.DbMaintenance.AddDefaultValue(entityInfo);
         }
+
+        private void CreateIndex(EntityInfo entityInfo)
+        {
+            if (entityInfo.Indexs.HasValue())
+            {
+                foreach (var item in entityInfo.Indexs)
+                {
+                    if (!this.Context.DbMaintenance.IsAnyIndex(item.IndexName))
+                    {
+                        var fileds = item.IndexFields
+                            .Select(it =>
+                            {
+                                var dbColumn = entityInfo.Columns.FirstOrDefault(z => z.PropertyName == it.Key);
+                                if (dbColumn == null)
+                                {
+                                    Check.ExceptionEasy($"{entityInfo.EntityName} no   SugarIndex[ {it.Key} ]  found", $"类{entityInfo.EntityName} 索引特性没找到列 ：{it.Key}");
+                                }
+                                return new KeyValuePair<string, OrderByType>(dbColumn.DbColumnName, it.Value);
+                            })
+                            .Select(it => it.Key + " " + it.Value).ToArray();
+                        this.Context.DbMaintenance.CreateIndex(entityInfo.DbTableName, fileds, item.IndexName, item.IsUnique);
+                    }
+                }
+            }
+        }
+
         public virtual void NoExistLogic(EntityInfo entityInfo)
         {
             var tableName = GetTableName(entityInfo);

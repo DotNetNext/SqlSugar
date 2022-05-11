@@ -19,6 +19,7 @@ namespace SqlSugar
                     break;
                 case ResolveExpressType.WhereMultiple:
                     break;
+                case ResolveExpressType.ArraySingle:
                 case ResolveExpressType.SelectSingle:
                     Select(expression, parameter, true);
                     break;
@@ -130,24 +131,12 @@ namespace SqlSugar
                 }
                 else if (IsConst(item))
                 {
-                    base.Expression = item;
+                    base.Expression =ExpressionTool.RemoveConvertThanOne(item);
                     base.Start();
                     string parameterName = this.Context.SqlParameterKeyWord + ExpressionConst.Const + this.Context.ParameterIndex;
                     parameter.Context.Result.Append(base.Context.GetEqString(memberName, parameterName));
                     var addItem = new SugarParameter(parameterName, parameter.CommonTempData);
-                    var dataType = UtilMethods.GetUnderType(item.Type);
-                    if (addItem.Value == null && dataType == UtilConstants.DateType)
-                    {
-                        addItem.DbType = System.Data.DbType.Date;
-                    }
-                    if (addItem.Value == null && dataType.IsIn(UtilConstants.FloatType,UtilConstants.IntType,UtilConstants.LongType,UtilConstants.DecType,UtilConstants.DobType))
-                    {
-                        addItem.DbType = System.Data.DbType.Int32;
-                    }
-                    if (addItem.Value == null && dataType == UtilConstants.BoolType)
-                    {
-                        addItem.DbType = System.Data.DbType.Boolean;
-                    }
+                    ConvertParameterTypeByType(item, addItem);
 
                     this.Context.Parameters.Add(addItem);
                     this.Context.ParameterIndex++;
@@ -163,6 +152,16 @@ namespace SqlSugar
                         base.Start();
                         parameter.IsAppendResult();
                         parameter.Context.Result.Append(base.Context.GetEqString(memberName, parameter.CommonTempData.ObjToString()));
+
+                        if (this.Context.Parameters != null)
+                        {
+                            var memberParameter = this.Context.Parameters?.FirstOrDefault(it =>it.Value==null && it.ParameterName == parameter.CommonTempData.ObjToString());
+                            if (memberParameter != null)
+                            {
+                                ConvertParameterTypeByType(item, memberParameter);
+                            }
+                        }
+
                         base.Context.Result.CurrentParameter = null;
                     }
                 }
@@ -208,6 +207,24 @@ namespace SqlSugar
                 }
             }
         }
+
+        private static void ConvertParameterTypeByType(Expression item, SugarParameter addItem)
+        {
+            var dataType = UtilMethods.GetUnderType(item.Type);
+            if (addItem.Value == null && dataType == UtilConstants.DateType)
+            {
+                addItem.DbType = System.Data.DbType.Date;
+            }
+            if (addItem.Value == null && dataType.IsIn(UtilConstants.FloatType, UtilConstants.IntType, UtilConstants.LongType, UtilConstants.DecType, UtilConstants.DobType))
+            {
+                addItem.DbType = System.Data.DbType.Int32;
+            }
+            if (addItem.Value == null && dataType == UtilConstants.BoolType)
+            {
+                addItem.DbType = System.Data.DbType.Boolean;
+            }
+        }
+
         private static bool IsConst(Expression item)
         {
             return item is UnaryExpression || item.NodeType == ExpressionType.Constant || (item is MemberExpression) && ((MemberExpression)item).Expression.NodeType == ExpressionType.Constant;

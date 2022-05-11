@@ -39,8 +39,18 @@ namespace OrmTest
             }
 
             db.Fastest<Test2>().BulkUpdate(updateList);
-
+            db.CodeFirst.InitTables<UnitTestoffset11>();
+            db.Fastest<UnitTestoffset11>().BulkCopy(new List<UnitTestoffset11>() {
+            new  UnitTestoffset11 { },
+             new  UnitTestoffset11 {  DateTimeOffset= DateTimeOffset.Now}
+            });
+            var list = db.Queryable<UnitTestoffset11>().ToList();
             Console.WriteLine("用例跑完");
+        }
+        public class UnitTestoffset11 
+        {
+            [SugarColumn(IsNullable =true)]
+            public DateTimeOffset? DateTimeOffset { get; set; }
         }
 
         [SugarTable("UnitFastest0011a")]

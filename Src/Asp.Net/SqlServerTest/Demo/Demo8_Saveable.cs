@@ -45,6 +45,8 @@ namespace OrmTest
             x2.BulkCopy();
             x2.BulkUpdate();
 
+            var x22 = db.Storageable<Order>(new Order() { Id = 0, Name = "jack" }).WhereColumns(new string[] { "Name" ,"Id"}).ExecuteCommand();
+
             var dt = db.Queryable<Order>().Take(1).ToDataTable();
             dt.TableName = "order";
             var addRow = dt.NewRow();
@@ -65,6 +67,12 @@ namespace OrmTest
                .SplitDelete(it=>Convert.ToInt32( it["id"])>0)
                .WhereColumns("id").ToStorage();
             x4.AsDeleteable.ExecuteCommand();
+
+            var dicList = db.Queryable<Order>().Take(10).ToDictionaryList();
+            var x5 =
+          db.Storageable(dicList, "order")
+          .WhereColumns("id").ToStorage();
+            x5.AsUpdateable.IgnoreColumns("items").ExecuteCommand();
 
             Console.WriteLine("");
             Console.WriteLine("#### Saveable End ####");

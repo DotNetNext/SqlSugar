@@ -72,9 +72,13 @@ namespace OrmTest
             Db.CodeFirst.InitTables<UnitCodeFirst131>();
             Db.Insertable(new UnitCodeFirst131() { Id = 1 }).ExecuteCommand();
             Db.CodeFirst.InitTables<UNITCODEFIRST131>();
+            var diffInfo = db.CodeFirst.GetDifferenceTables(typeof(UNITCOdEFIRST131)).ToDiffString();
+            db.CodeFirst.InitTables<UNITCOdEFIRST131>();
+            var diffInfo2 = db.CodeFirst.GetDifferenceTables(typeof(UNITCODEFIRST131)).ToDiffString();
             Db.CodeFirst.InitTables<UNITCOdEFIRST131>();
             Db.CodeFirst.InitTables<UnitTableUserName>();
             db.CodeFirst.InitTables<UnitTablename>();
+        
         }
         public class UnitCodeFirst131
         {

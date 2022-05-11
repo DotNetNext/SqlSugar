@@ -163,7 +163,8 @@ namespace OrmTest
 
 
             var dataTable= db.Queryable<Order>().Select("id,name,Price").Take(2).ToDataTable();
-            int result= db.Fastest<Order>().BulkCopy("order", dataTable);
+            int result= db.Fastest<System.Data.DataTable>().AS("order").BulkCopy("order", dataTable);
+            int result2 = db.Fastest<System.Data.DataTable>().AS("order").BulkCopy( dataTable);
             Console.WriteLine("#### Insertable End ####");
 
         }
