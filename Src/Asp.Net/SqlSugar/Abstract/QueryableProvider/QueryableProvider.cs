@@ -1190,8 +1190,13 @@ namespace SqlSugar
         }
         public List<T> ToParentList(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue)
         {
-            List<T> result = new List<T>() { };
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            var isTreeKey = entity.Columns.Any(it => it.IsTreeKey);
+            if (isTreeKey) 
+            {
+                return _ToParentListByTreeKey(parentIdExpression,primaryKeyValue);
+            }
+            List<T> result = new List<T>() { };
             Check.Exception(entity.Columns.Where(it => it.IsPrimarykey).Count() == 0, "No Primary key");
             var parentIdName =UtilConvert.ToMemberExpression((parentIdExpression as LambdaExpression).Body).Member.Name;
             var ParentInfo = entity.Columns.First(it => it.PropertyName == parentIdName);
@@ -1225,10 +1230,75 @@ namespace SqlSugar
             }
             return result;
         }
+
+        private List<T> _ToParentListByTreeKey(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue)
+        {
+            var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            var treeKey = entity.Columns.FirstOrDefault(it => it.IsTreeKey);
+            List<T> result = new List<T>() { };
+            var parentIdName = UtilConvert.ToMemberExpression((parentIdExpression as LambdaExpression).Body).Member.Name;
+            var ParentInfo = entity.Columns.First(it => it.PropertyName == parentIdName);
+            var parentPropertyName = ParentInfo.DbColumnName;
+            var tableName = this.QueryBuilder.GetTableNameString;
+            if (this.QueryBuilder.IsSingle() == false)
+            {
+                if (this.QueryBuilder.JoinQueryInfos.Count > 0)
+                {
+                    tableName = this.QueryBuilder.JoinQueryInfos.First().TableName;
+                }
+                if (this.QueryBuilder.EasyJoinInfos.Count > 0)
+                {
+                    tableName = this.QueryBuilder.JoinQueryInfos.First().TableName;
+                }
+            }
+            var current = this.Context.Queryable<T>().AS(tableName).Where(new List<IConditionalModel>() {
+                new ConditionalModel()
+                {
+                    ConditionalType = ConditionalType.Equal,
+                    CSharpTypeName = treeKey.PropertyInfo.PropertyType.Name,
+                    FieldValue = primaryKeyValue + "",
+                    FieldName = treeKey.DbColumnName
+                } }).First();
+            if (current != null)
+            {
+                result.Add(current);
+                object parentId = ParentInfo.PropertyInfo.GetValue(current, null);
+                int i = 0;
+                while (parentId != null && this.Context.Queryable<T>().AS(tableName).Where(new List<IConditionalModel>() {
+                new ConditionalModel()
+                {
+                    ConditionalType = ConditionalType.Equal,
+                    CSharpTypeName = treeKey.PropertyInfo.PropertyType.Name,
+                    FieldValue = parentId + "",
+                    FieldName = treeKey.DbColumnName
+                } }).Any())
+                {
+                    Check.Exception(i > 100, ErrorMessage.GetThrowMessage("Dead cycle", "出现死循环或超出循环上限（100），检查最顶层的ParentId是否是null或者0"));
+                    var parent = this.Context.Queryable<T>().AS(tableName).Where(new List<IConditionalModel>() {
+                new ConditionalModel()
+                {
+                    ConditionalType = ConditionalType.Equal,
+                    CSharpTypeName = treeKey.PropertyInfo.PropertyType.Name,
+                    FieldValue = parentId + "",
+                    FieldName = treeKey.DbColumnName
+                } }).First();
+                    result.Add(parent);
+                    parentId = ParentInfo.PropertyInfo.GetValue(parent, null);
+                    ++i;
+                }
+            }
+            return result;
+        }
+
         public async Task<List<T>> ToParentListAsync(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue)
         {
             List<T> result = new List<T>() { };
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            var isTreeKey = entity.Columns.Any(it => it.IsTreeKey);
+            if (isTreeKey)
+            {
+                return await _ToParentListByTreeKeyAsync(parentIdExpression, primaryKeyValue);
+            }
             Check.Exception(entity.Columns.Where(it => it.IsPrimarykey).Count() == 0, "No Primary key");
             var parentIdName = UtilConvert.ToMemberExpression((parentIdExpression as LambdaExpression).Body).Member.Name;
             var ParentInfo = entity.Columns.First(it => it.PropertyName == parentIdName);
@@ -1262,6 +1332,65 @@ namespace SqlSugar
             }
             return result;
         }
+        private async Task<List<T>> _ToParentListByTreeKeyAsync(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue)
+        {
+            var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            var treeKey = entity.Columns.FirstOrDefault(it => it.IsTreeKey);
+            List<T> result = new List<T>() { };
+            var parentIdName = UtilConvert.ToMemberExpression((parentIdExpression as LambdaExpression).Body).Member.Name;
+            var ParentInfo = entity.Columns.First(it => it.PropertyName == parentIdName);
+            var parentPropertyName = ParentInfo.DbColumnName;
+            var tableName = this.QueryBuilder.GetTableNameString;
+            if (this.QueryBuilder.IsSingle() == false)
+            {
+                if (this.QueryBuilder.JoinQueryInfos.Count > 0)
+                {
+                    tableName = this.QueryBuilder.JoinQueryInfos.First().TableName;
+                }
+                if (this.QueryBuilder.EasyJoinInfos.Count > 0)
+                {
+                    tableName = this.QueryBuilder.JoinQueryInfos.First().TableName;
+                }
+            }
+            var current = await this.Context.Queryable<T>().AS(tableName).Where(new List<IConditionalModel>() {
+                new ConditionalModel()
+                {
+                    ConditionalType = ConditionalType.Equal,
+                    CSharpTypeName = treeKey.PropertyInfo.PropertyType.Name,
+                    FieldValue = primaryKeyValue + "",
+                    FieldName = treeKey.DbColumnName
+                } }).FirstAsync();
+            if (current != null)
+            {
+                result.Add(current);
+                object parentId = ParentInfo.PropertyInfo.GetValue(current, null);
+                int i = 0;
+                while (parentId != null && await this.Context.Queryable<T>().AS(tableName).Where(new List<IConditionalModel>() {
+                new ConditionalModel()
+                {
+                    ConditionalType = ConditionalType.Equal,
+                    CSharpTypeName = treeKey.PropertyInfo.PropertyType.Name,
+                    FieldValue = parentId + "",
+                    FieldName = treeKey.DbColumnName
+                } }).AnyAsync())
+                {
+                    Check.Exception(i > 100, ErrorMessage.GetThrowMessage("Dead cycle", "出现死循环或超出循环上限（100），检查最顶层的ParentId是否是null或者0"));
+                    var parent = await this.Context.Queryable<T>().AS(tableName).Where(new List<IConditionalModel>() {
+                new ConditionalModel()
+                {
+                    ConditionalType = ConditionalType.Equal,
+                    CSharpTypeName = treeKey.PropertyInfo.PropertyType.Name,
+                    FieldValue = parentId + "",
+                    FieldName = treeKey.DbColumnName
+                } }).FirstAsync();
+                    result.Add(parent);
+                    parentId = ParentInfo.PropertyInfo.GetValue(parent, null);
+                    ++i;
+                }
+            }
+            return result;
+        }
+
         public List<T> ToTree(Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, object rootValue)
         {
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
