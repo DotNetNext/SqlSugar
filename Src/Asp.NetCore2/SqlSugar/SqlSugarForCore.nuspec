@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>SqlSugarCore</id>
-    <version>5.0.7.8</version>
+    <version>5.0.7.9</version>
     <authors>sunkaixuan</authors>
     <owners>果糖大数据科技</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
@@ -19,7 +19,7 @@
         <dependency id="Newtonsoft.Json" version="10.0.3" />
         <dependency id="Microsoft.Data.Sqlite" version="5.0.5" />
         <dependency id="System.Reflection.Emit.Lightweight" version="4.3.0" />
-        <dependency id="MySql.Data" version="8.0.21" />
+        <dependency id="MySql.Data" version="8.0.29" />
         <dependency id="Oracle.ManagedDataAccess.Core" version="3.21.1" />
         <dependency id="Npgsql" version="5.0.7" />
 	    <dependency id="SqlSugarCore.Dm" version="1.0.0" />
