@@ -1177,16 +1177,14 @@ namespace SqlSugar
         public List<T> ToChildList(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue) 
         {
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
-            Check.Exception(entity.Columns.Where(it => it.IsPrimarykey).Count() == 0, "No Primary key");
-            var pk = entity.Columns.Where(it => it.IsPrimarykey).First().PropertyName;
+            var pk = GetTreeKey(entity);
             var list = this.ToList();
             return GetChildList(parentIdExpression, pk, list, primaryKeyValue);
         }
         public async Task<List<T>> ToChildListAsync(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue) 
         {
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
-            Check.Exception(entity.Columns.Where(it => it.IsPrimarykey).Count() == 0, "No Primary key");
-            var pk = entity.Columns.Where(it => it.IsPrimarykey).First().PropertyName;
+            var pk = GetTreeKey(entity);
             var list = await this.ToListAsync();
             return GetChildList(parentIdExpression,pk,list, primaryKeyValue);
         }
@@ -1267,8 +1265,7 @@ namespace SqlSugar
         public List<T> ToTree(Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, object rootValue)
         {
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
-            Check.Exception(entity.Columns.Where(it => it.IsPrimarykey).Count() == 0, "No Primary key");
-            var pk = entity.Columns.Where(it => it.IsPrimarykey).First().PropertyName;
+            var pk = GetTreeKey(entity);
             var list = this.ToList();
             return GetTreeRoot(childListExpression, parentIdExpression, pk, list, rootValue);
         }
@@ -1276,8 +1273,7 @@ namespace SqlSugar
         public async Task<List<T>> ToTreeAsync(Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, object rootValue)
         {
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
-            Check.Exception(entity.Columns.Where(it => it.IsPrimarykey).Count() == 0, "No Primary key");
-            var pk = entity.Columns.Where(it => it.IsPrimarykey).First().PropertyName;
+            var pk = GetTreeKey(entity); ;
             var list =await this.ToListAsync();
             return GetTreeRoot(childListExpression, parentIdExpression, pk, list,rootValue);
         }
@@ -2214,6 +2210,14 @@ namespace SqlSugar
             InitMapping();
             QueryBuilder.IsCount = true;
             result = 0;
+        }
+        private static string GetTreeKey(EntityInfo entity)
+        {
+            Check.Exception(entity.Columns.Where(it => it.IsPrimarykey || it.IsTreeKey).Count() == 0, "need IsPrimary=true Or IsTreeKey=true");
+            string pk = entity.Columns.Where(it => it.IsTreeKey).FirstOrDefault()?.PropertyName;
+            if (pk == null)
+                pk = entity.Columns.Where(it => it.IsPrimarykey).FirstOrDefault()?.PropertyName;
+            return pk;
         }
         protected ISugarQueryable<TResult> _Select<TResult>(Expression expression)
         {

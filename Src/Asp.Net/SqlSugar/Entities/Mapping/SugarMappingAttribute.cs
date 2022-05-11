@@ -190,6 +190,12 @@ namespace SqlSugar
             set { _IsArray = value; }
         }
 
+        private bool _IsTreeKey;
+        public bool IsTreeKey
+        {
+            get { return _IsTreeKey; }
+            set { _IsTreeKey = value; }
+        }
     }
 
 

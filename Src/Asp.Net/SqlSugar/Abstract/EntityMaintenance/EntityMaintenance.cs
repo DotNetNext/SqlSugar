@@ -280,6 +280,7 @@ namespace SqlSugar
                         column.UIndexGroupNameList = sugarColumn.UniqueGroupNameList;
                         column.IsOnlyIgnoreUpdate = sugarColumn.IsOnlyIgnoreUpdate;
                         column.IsArray = sugarColumn.IsArray;
+                        column.IsTreeKey = sugarColumn.IsTreeKey;
                     }
                     else
                     {
