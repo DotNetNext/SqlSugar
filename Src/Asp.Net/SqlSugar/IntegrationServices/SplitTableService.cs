@@ -65,6 +65,10 @@ namespace SqlSugar
             }
             else
             {
+                if (entityValue == null) 
+                {
+                    return null;
+                }
                 var value = splitColumn.PropertyInfo.GetValue(entityValue, null);
                 if (value == null)
                 {
