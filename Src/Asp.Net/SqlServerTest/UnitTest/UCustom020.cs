@@ -27,7 +27,11 @@ namespace OrmTest
  
                                                                                                                                                                                                                                                                        //用例代码 
             var result =  db.Queryable<CustomerModel>().Where(customer => customer.CustomerLevelId == SqlFunc.Subqueryable<CustomertypelevelNewModel>().Where(n => SqlFunc.Between(n.CustomerTypeNewId, 1, 2)).GroupBy(n => n.CustomerLevelId).Select(n => n.CustomerLevelId)).ToList();
-
+            var result2 = db.Queryable<CustomerModel>()
+                            .Where(customer => customer.CustomerLevelId ==
+                            SqlFunc.Subqueryable<CustomertypelevelNewModel>()
+                            .Where(n => n.RoamCusTypeNewId == 1)
+                            .GroupBy(n => n.CustomerLevelId).Select(n => n.CustomerLevelId)).ToList();
         }
 
         public class CustomerReq
