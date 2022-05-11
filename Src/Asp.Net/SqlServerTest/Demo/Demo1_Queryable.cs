@@ -321,13 +321,18 @@ namespace OrmTest
 
 
             db.Insertable(new Tree() { Id = 222, Name = "child11", ParentId = 11 }).ExecuteCommand();
-            var tree = db.Queryable<Tree>().ToTree(it => it.Child, it => it.ParentId, 0); 
+            var tree = db.Queryable<Tree>().ToTree(it => it.Child, it => it.ParentId, 0);
+            var tree2 = db.Queryable<Tree2>().ToTree(it => it.Child, it => it.ParentId, 0);
             var allchilds= db.Queryable<Tree>().ToChildList(it => it.ParentId, 0);
+            var allchilds_2 = db.Queryable<Tree2>().ToChildList(it => it.ParentId, 0);
             var allchilds1 = db.Queryable<Tree>().ToChildList(it => it.ParentId, 1);
             var allchilds2= db.Queryable<Tree>().ToChildList(it => it.ParentId, 2);
+            var allchilds2_2 = db.Queryable<Tree2>().ToChildList(it => it.ParentId, 2);
             var parentList = db.Queryable<Tree>().ToParentList(it => it.ParentId, 22);
             var parentList2 = db.Queryable<Tree>().ToParentList(it => it.ParentId, 222);
+            var parentList22 = db.Queryable<Tree2>().ToParentList(it => it.ParentId, 222);
             var parentList3 = db.Queryable<Tree>().ToParentList(it => it.ParentId, 2);
+       
 
             //one to one
             var list2 = db.Queryable<OrderItemInfo>().Mapper(it => it.Order, it => it.OrderId).ToList();
