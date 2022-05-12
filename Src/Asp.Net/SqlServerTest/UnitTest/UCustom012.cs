@@ -83,6 +83,12 @@ namespace OrmTest
                .Where(it => it.SchoolA.TeacherList.Any())
                .ToList();
 
+            var xxxx = 0;
+            var pageList = db.Queryable<StudentA>()
+               .Includes(it => it.SchoolA, it => it.TeacherList)
+               .Where(it => it.SchoolA.TeacherList.Any())
+               .ToPageList(1, 2, ref xxxx);
+
             var list3333 = db.Queryable<StudentA>()
                 .Includes(it => it.SchoolA, it => it.TeacherList)
                 .Where(it => it.SchoolA.TeacherList.Any(z=>z.Id>2))
