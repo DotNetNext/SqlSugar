@@ -126,6 +126,10 @@ namespace SqlSugar
         }
         #endregion
 
+        public ISugarQueryable<T> MasterQueryable<T>()
+        {
+            return this.Context.MasterQueryable<T>();
+        }
         public ISugarQueryable<T> SqlQueryable<T>(string sql) where T : class, new()
         {
             return this.Context.SqlQueryable<T>(sql);
