@@ -1415,6 +1415,7 @@ namespace SqlSugar
             var sqlObj = this.ToSql();
             RestoreMapping();
             DataTable result = null;
+            bool isChangeQueryableMasterSlave = GetIsMasterQuery();
             if (IsCache)
             {
                 var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService;
@@ -1424,6 +1425,7 @@ namespace SqlSugar
             {
                 result = this.Db.GetDataTable(sqlObj.Key, sqlObj.Value.ToArray());
             }
+            RestChangeMasterQuery(isChangeQueryableMasterSlave);
             return result;
         }
         public virtual DataTable ToDataTablePage(int pageIndex, int pageSize)
@@ -3069,10 +3071,30 @@ namespace SqlSugar
             List<TResult> result;
             var isComplexModel = QueryBuilder.IsComplexModel(sqlObj.Key);
             var entityType = typeof(TResult);
+            bool isChangeQueryableMasterSlave = GetIsMasterQuery();
             var dataReader = this.Db.GetDataReader(sqlObj.Key, sqlObj.Value.ToArray());
             result = GetData<TResult>(isComplexModel, entityType, dataReader);
+            RestChangeMasterQuery(isChangeQueryableMasterSlave);
             return result;
         }
+
+        private void RestChangeMasterQuery(bool isChangeQueryableMasterSlave)
+        {
+            if (isChangeQueryableMasterSlave)
+                this.Context.Ado.IsDisableMasterSlaveSeparation = false;
+        }
+
+        private bool GetIsMasterQuery()
+        {
+            var isChangeQueryableMasterSlave =
+                                   this.QueryBuilder.IsDisableMasterSlaveSeparation == true &&
+                                   this.Context.Ado.IsDisableMasterSlaveSeparation == false &&
+                                   this.Context.Ado.Transaction == null;
+            if (isChangeQueryableMasterSlave)
+                this.Context.Ado.IsDisableMasterSlaveSeparation = true;
+            return isChangeQueryableMasterSlave;
+        }
+
         protected async Task<List<TResult>> GetDataAsync<TResult>(KeyValuePair<string, List<SugarParameter>> sqlObj)
         {
             List<TResult> result;
@@ -3224,6 +3246,7 @@ namespace SqlSugar
                        _Size=it._Size
                 }).ToList();
             }
+            asyncQueryableBuilder.IsDisableMasterSlaveSeparation = this.QueryBuilder.IsDisableMasterSlaveSeparation;
             asyncQueryableBuilder.IsQueryInQuery = this.QueryBuilder.IsQueryInQuery;
             asyncQueryableBuilder.Includes = this.QueryBuilder.Includes;
             asyncQueryableBuilder.Take = this.QueryBuilder.Take;
