@@ -20,7 +20,7 @@ namespace SqlSugar
 
             if (dr.IsDBNull(i) || dr.GetValue(i).IsNullOrEmpty())//空值出错问题
             {
-                return Guid.Empty;
+                return null;//字符串空值用 null 
             }
             var result = Guid.Parse(dr.GetValue(i).ToString());
             return result;
