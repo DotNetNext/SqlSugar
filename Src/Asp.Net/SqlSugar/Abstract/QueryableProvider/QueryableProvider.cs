@@ -443,7 +443,7 @@ namespace SqlSugar
                         {
                             ConditionalType = ConditionalType.Equal,
                             FieldName = this.QueryBuilder.Builder.GetTranslationColumnName(column.DbColumnName),
-                            FieldValue = value.ObjToString(),
+                            FieldValue = value.ObjToStringNew(),
                             CSharpTypeName = column.PropertyInfo.PropertyType.Name
                         });
                         if (this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL) 
