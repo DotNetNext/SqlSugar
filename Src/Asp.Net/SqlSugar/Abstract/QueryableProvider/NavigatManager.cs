@@ -357,6 +357,14 @@ namespace SqlSugar
                             navObjectNamePropety.SetValue(item.Key, instance);
                         }
                     }
+                    foreach (var item in list)
+                    {
+                        if (navObjectNamePropety.GetValue(item) == null) 
+                        {
+                            var instance = Activator.CreateInstance(navObjectNamePropety.PropertyType, true);
+                            navObjectNamePropety.SetValue(item, instance);
+                        }
+                    }
                 }
             }
         }
