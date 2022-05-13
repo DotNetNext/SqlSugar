@@ -161,6 +161,7 @@ namespace SqlSugar
             var isSingle = groupList.Count() == 1;
             if (isSingle&&this.IsListUpdate==null)
             {
+                ActionMinDate();
                 return ToSingleSqlString(groupList);
             }
             else
@@ -279,7 +280,28 @@ namespace SqlSugar
             }
             return string.Format(SqlTemplate, GetTableNameString, columnsString, whereString);
         }
-
+        public virtual void ActionMinDate()
+        {
+            if (this.Parameters != null)
+            {
+                foreach (var item in this.Parameters)
+                {
+                    if (item.DbType == System.Data.DbType.Date || item.DbType == System.Data.DbType.DateTime)
+                    {
+                        if (item.Value != null && item.Value != DBNull.Value)
+                        {
+                            if (item.Value is DateTime)
+                            {
+                                if (Convert.ToDateTime(item.Value) == DateTime.MinValue)
+                                {
+                                    item.Value = UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
         public virtual object FormatValue(object value)
         {
             if (value == null)
