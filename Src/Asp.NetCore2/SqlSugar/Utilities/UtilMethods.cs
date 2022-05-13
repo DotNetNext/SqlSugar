@@ -193,6 +193,23 @@ namespace SqlSugar
         {
             return (T)To(value, typeof(T));
         }
+
+        internal static DateTime GetMinDate(ConnectionConfig currentConnectionConfig)
+        {
+            if (currentConnectionConfig.MoreSettings == null)
+            {
+                return Convert.ToDateTime("1900-01-01");
+            }
+            else if (currentConnectionConfig.MoreSettings.DbMinDate == null)
+            {
+                return Convert.ToDateTime("1900-01-01");
+            }
+            else 
+            {
+                return currentConnectionConfig.MoreSettings.DbMinDate.Value;
+            }
+        }
+
         internal static Type GetUnderType(Type oldType)
         {
             Type type = Nullable.GetUnderlyingType(oldType);
