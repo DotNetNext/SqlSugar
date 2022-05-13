@@ -91,9 +91,9 @@ namespace SqlSugar
                 if (type == UtilConstants.DateType)
                 {
                     var date = value.ObjToDate();
-                    if (date < Convert.ToDateTime("1900-1-1"))
+                    if (date < UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig))
                     {
-                        date = Convert.ToDateTime("1900-1-1");
+                        date = UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig);
                     }
                     if (this.Context.CurrentConnectionConfig?.MoreSettings?.DisableMillisecond == true)
                     {

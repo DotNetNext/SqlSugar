@@ -141,7 +141,7 @@ namespace SqlSugar
                     var date = Convert.ToDateTime(sqlParameter.Value);
                     if (date==DateTime.MinValue)
                     {
-                        sqlParameter.Value = Convert.ToDateTime("1753/01/01");
+                        sqlParameter.Value =UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig);
                     }
                 }
                 if (parameter.Direction == 0) 
