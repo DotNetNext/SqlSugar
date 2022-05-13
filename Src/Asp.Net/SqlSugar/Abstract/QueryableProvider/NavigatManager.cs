@@ -277,11 +277,21 @@ namespace SqlSugar
             if (list.Any()&&navObjectNamePropety.GetValue(list.First()) == null)
             {
                 var navList = selector(this.Context.Queryable<object>().AS(navEntityInfo.DbTableName).Where(conditionalModels));
-                foreach (var item in list)
-                {
 
-                    var setValue = navList.FirstOrDefault(x => navPkColumn.PropertyInfo.GetValue(x).ObjToString() == navColumn.PropertyInfo.GetValue(item).ObjToString());
-                    navObjectNamePropety.SetValue(item, setValue);
+                var GroupQuery = (from l in list
+                                 join n in navList
+                                      on navColumn.PropertyInfo.GetValue(l).ObjToString() 
+                                      equals navPkColumn.PropertyInfo.GetValue(n).ObjToString()  
+                                 select new
+                                 {
+                                     l,
+                                     n
+                                 }).ToList();
+                foreach (var item in GroupQuery)
+                {
+                  
+                   // var setValue = navList.FirstOrDefault(x => navPkColumn.PropertyInfo.GetValue(x).ObjToString() == navColumn.PropertyInfo.GetValue(item).ObjToString());
+                    navObjectNamePropety.SetValue(item.l, item.n);
 
                 }
             }
