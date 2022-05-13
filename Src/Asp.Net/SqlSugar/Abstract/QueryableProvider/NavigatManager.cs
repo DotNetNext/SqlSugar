@@ -323,29 +323,38 @@ namespace SqlSugar
                 var navList = selector(this.Context.Queryable<object>().AS(navEntityInfo.DbTableName).AddParameters(sqlObj.Parameters).Where(conditionalModels).WhereIF(sqlObj.WhereString.HasValue(), sqlObj.WhereString).Select(sqlObj.SelectString).OrderByIF(sqlObj.OrderByString.HasValue(), sqlObj.OrderByString));
                 if (navList.HasValue())
                 {
-                    foreach (var item in list)
+                    //var setValue = navList
+                    //  .Where(x => navColumn.PropertyInfo.GetValue(x).ObjToString() == listItemPkColumn.PropertyInfo.GetValue(item).ObjToString()).ToList();
+                    var GroupQuery = (from l in list
+                                      join n in navList
+                                           on listItemPkColumn.PropertyInfo.GetValue(l).ObjToString()
+                                           equals navColumn.PropertyInfo.GetValue(n).ObjToString()
+                                      select new
+                                      {
+                                          l,
+                                          n
+                                      }).GroupBy(it=>it.l).ToList();
+                    foreach (var item in GroupQuery)
                     {
-                        var setValue = navList
-                             .Where(x => navColumn.PropertyInfo.GetValue(x).ObjToString() == listItemPkColumn.PropertyInfo.GetValue(item).ObjToString()).ToList();
-
+                 
                         if (sqlObj.MappingExpressions.HasValue())
                         {
                             MappingFieldsHelper<T> helper = new MappingFieldsHelper<T>();
                             helper.NavEntity = navEntityInfo;
                             helper.Context = this.Context;
                             helper.RootEntity = this.Context.EntityMaintenance.GetEntityInfo<T>();
-                            helper.SetChildList(navObjectNameColumnInfo, item,setValue,sqlObj.MappingExpressions);
+                            helper.SetChildList(navObjectNameColumnInfo, item.Key,item.Select(it=>it.n).ToList(),sqlObj.MappingExpressions);
                         }
                         else
                         {
 
                             var instance = Activator.CreateInstance(navObjectNamePropety.PropertyType, true);
                             var ilist = instance as IList;
-                            foreach (var value in setValue)
+                            foreach (var value in item.Select(it => it.n).ToList())
                             {
                                 ilist.Add(value);
                             }
-                            navObjectNamePropety.SetValue(item, instance);
+                            navObjectNamePropety.SetValue(item.Key, instance);
                         }
                     }
                 }
