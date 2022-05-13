@@ -17,6 +17,10 @@ namespace OrmTest
             SqlSugarClient db = NewUnitTest.Db;
             var b = DateTime.Now;
 
+            var xxx=db.Queryable<StationEntity>().LeftJoin<StationEntity>((x111, zzzz) => true)
+                    .Includes(t => t.StationConfigs)
+                .ToList();
+
             var data1 = db.Queryable<StationEntity>()
                             .Includes(t => t.StationConfigs, m => m.BaseStationConfig)
                            .Where(t => t.DeleteTime == null)
