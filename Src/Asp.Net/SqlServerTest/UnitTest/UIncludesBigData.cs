@@ -15,12 +15,18 @@ namespace OrmTest
             Console.WriteLine("");
             Console.WriteLine("#### SqlQueryable Start ####");
             SqlSugarClient db = NewUnitTest.Db;
+         
+            var list=db.Queryable<StationEntity>().ToList();
+            foreach (var item in list)
+            {
+                item.KeyID = Guid.NewGuid() + "";
+            }
+            if (db.Queryable<StationEntity>().Count() < 2000)
+            {
+                db.Insertable(list).ExecuteCommand();
+            }
             var b = DateTime.Now;
-
-            var xxx=db.Queryable<StationEntity>().LeftJoin<StationEntity>((x111, zzzz) => true)
-                    .Includes(t => t.StationConfigs)
-                .ToList();
-
+            db.Aop.OnLogExecuting = null;
             var data1 = db.Queryable<StationEntity>()
                             .Includes(t => t.StationConfigs, m => m.BaseStationConfig)
                            .Where(t => t.DeleteTime == null)
