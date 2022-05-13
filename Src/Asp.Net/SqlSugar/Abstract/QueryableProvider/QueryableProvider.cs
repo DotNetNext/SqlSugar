@@ -2122,10 +2122,10 @@ namespace SqlSugar
             this.Context.MappingTables = oldMapping;
             return await this.Clone().ToPageListAsync(pageIndex, pageSize);
         }
-        public Task<List<T>> ToPageListAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber, RefAsync<int> totalPage) 
+        public async Task<List<T>> ToPageListAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber, RefAsync<int> totalPage) 
         {
-            var result = ToPageListAsync(pageNumber, pageSize, totalNumber);
-            totalPage.Value = (totalNumber + pageSize - 1) / pageSize;
+            var result =await ToPageListAsync(pageNumber, pageSize, totalNumber);
+            totalPage.Value = (totalNumber.Value + pageSize - 1) / pageSize;
             return result;
         }
         public async Task<string> ToJsonAsync()
