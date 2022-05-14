@@ -306,7 +306,11 @@ namespace SqlSugar
             var queryable = this.Context.Queryable<T>();
             queryable.QueryBuilder.LambdaExpressions.ParameterIndex= 1000;
             var sqlable= queryable.ToSql();
-            this.Where(Regex.Split(sqlable.Key," Where ",RegexOptions.IgnoreCase).Last(), sqlable.Value);
+            var whereInfos = Regex.Split(sqlable.Key, " Where ", RegexOptions.IgnoreCase);
+            if (whereInfos.Length > 1)
+            {
+                this.Where(whereInfos.Last(), sqlable.Value);
+            }
             return this;
         }
         public SplitTableDeleteProvider<T> SplitTable(Func<List<SplitTableInfo>, IEnumerable<SplitTableInfo>> getTableNamesFunc) 
