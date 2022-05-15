@@ -515,7 +515,9 @@ namespace SqlSugar
                 });
                 parameter.Context.Result.Append(this.Context.GetAsString(asName, sql));
             }
-            else if (item.NodeType == ExpressionType.Not && (item as UnaryExpression).Operand is MethodCallExpression)
+            else if (item.NodeType == ExpressionType.Not 
+                && (item as UnaryExpression).Operand is MethodCallExpression
+                && ((item as UnaryExpression).Operand as MethodCallExpression).Method.Name.IsIn("IsNullOrEmpty", "IsNullOrWhiteSpace"))
             {
                 var asValue =  packIfElse(GetNewExpressionValue(item)).ObjToString();
                 parameter.Context.Result.Append(this.Context.GetAsString(asName, asValue));
