@@ -100,6 +100,12 @@ namespace OrmTest
                 x2 = o2,
                 x3 = o3
             }).ToList();
+
+            var list16=Db.Queryable<Order>().Select(x => new BoolTest1
+            {
+                // c=SqlFunc.Subqueryable<Order>().Where(z=>z.Id==x.Id).Count(),
+                 a = !string.IsNullOrEmpty(x.Name)
+            }).ToList();
         }
 
         public static class IEnumerbleContains
