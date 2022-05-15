@@ -20,7 +20,7 @@ namespace SqlSugar
             get
             {
                 return GetThrowMessage("Entity mapping error.{0}",
-                                       "实体与表映射出错。{0}");
+                                       "Select 实体与表映射出错,可以注释实体类中的字段排查具体哪一个字段。{0}");
             }
         }
 
