@@ -6,6 +6,8 @@ using Microsoft.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
+
 namespace SqlSugar
 {
     public class SqlServerProvider : AdoProvider
@@ -131,10 +133,15 @@ namespace SqlSugar
                 sqlParameter.Value = parameter.Value;
                 sqlParameter.DbType = parameter.DbType;
                 var isTime = parameter.DbType == System.Data.DbType.Time;
-                if (isTime) 
+                if (isTime)
                 {
-                   sqlParameter.SqlDbType = SqlDbType.Time;
-                   sqlParameter.Value=DateTime.Parse(parameter.Value?.ToString()).TimeOfDay;
+                    sqlParameter.SqlDbType = SqlDbType.Time;
+                    sqlParameter.Value=DateTime.Parse(parameter.Value?.ToString()).TimeOfDay;
+                }
+                else if (parameter.Value!=null&&parameter.Value is XElement)
+                {
+                    sqlParameter.SqlDbType = SqlDbType.Xml;
+                    sqlParameter.Value= (parameter.Value as XElement).ToString();
                 }
                 if (sqlParameter.Value!=null&& sqlParameter.Value != DBNull.Value && sqlParameter.DbType == System.Data.DbType.DateTime)
                 {
