@@ -80,6 +80,29 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+
+        public virtual void ActionMinDate()
+        {
+            if (this.Parameters != null)
+            {
+                foreach (var item in this.Parameters)
+                {
+                    if (item.DbType == System.Data.DbType.Date || item.DbType == System.Data.DbType.DateTime)
+                    {
+                        if (item.Value != null && item.Value != DBNull.Value)
+                        {
+                            if (item.Value is DateTime)
+                            {
+                                if (Convert.ToDateTime(item.Value) == DateTime.MinValue)
+                                {
+                                    item.Value = UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
         public virtual void Clear()
         {
 
@@ -190,9 +213,9 @@ namespace SqlSugar
                 if (type == UtilConstants.DateType)
                 {
                     var date = value.ObjToDate();
-                    if (date < Convert.ToDateTime("1900-1-1"))
+                    if (date < UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig))
                     {
-                        date = Convert.ToDateTime("1900-1-1");
+                        date = UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig);
                     }
                     return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
                 }

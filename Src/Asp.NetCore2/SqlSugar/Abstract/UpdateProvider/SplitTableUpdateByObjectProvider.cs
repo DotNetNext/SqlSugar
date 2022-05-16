@@ -24,7 +24,9 @@ namespace SqlSugar
             foreach (var item in groupModels.GroupBy(it => it.GroupName))
             {
                 var addList = item.Select(it => it.Item).ToList();
-                result += this.Context.Updateable(addList).IgnoreColumns(GetIgnoreColumns()).AS(item.Key).ExecuteCommand();
+                result += this.Context.Updateable(addList)
+                    .IgnoreColumns(this.updateobj.UpdateBuilder.IsNoUpdateNull, this.updateobj.UpdateBuilder.IsOffIdentity,this.updateobj.UpdateBuilder.IsNoUpdateDefaultValue)
+                    .IgnoreColumns(GetIgnoreColumns()).AS(item.Key).ExecuteCommand();
             }
             return result;
         }
@@ -38,7 +40,9 @@ namespace SqlSugar
             foreach (var item in groupModels.GroupBy(it => it.GroupName))
             {
                 var addList = item.Select(it => it.Item).ToList();
-                result += await this.Context.Updateable(addList).IgnoreColumns(GetIgnoreColumns()).AS(item.Key).ExecuteCommandAsync();
+                result += await this.Context.Updateable(addList)
+                    .IgnoreColumns(this.updateobj.UpdateBuilder.IsNoUpdateNull, this.updateobj.UpdateBuilder.IsOffIdentity, this.updateobj.UpdateBuilder.IsNoUpdateDefaultValue)
+                    .IgnoreColumns(GetIgnoreColumns()).AS(item.Key).ExecuteCommandAsync();
             }
             return result;
         }

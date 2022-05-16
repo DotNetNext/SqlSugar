@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace OrmTest
 {
@@ -78,7 +79,20 @@ namespace OrmTest
             Db.CodeFirst.InitTables<UNITCOdEFIRST131>();
             Db.CodeFirst.InitTables<UnitTableUserName>();
             db.CodeFirst.InitTables<UnitTablename>();
+            db.CodeFirst.InitTables<UnitXml>();
+            db.Insertable(new UnitXml()
+            {
+                 name= XElement.Parse("<xml>aa</xml>")
+            }).ExecuteCommand();
+            var list= db.Queryable<UnitXml>().ToList();
         
+        }
+        public class UnitXml 
+        {
+            [SugarColumn(ColumnDataType ="xml")]
+            public XElement name { get; set; }
+            [SugarColumn(IsNullable =true)]
+            public string name2 { get; set; }
         }
         public class UnitCodeFirst131
         {

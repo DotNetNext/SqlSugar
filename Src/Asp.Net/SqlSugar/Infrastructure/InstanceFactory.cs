@@ -35,7 +35,11 @@ namespace SqlSugar
             else if (currentConnectionConfig.DbType == DbType.PostgreSQL)
             {
                 return new PostgreSQLQueryable<T>();
-            } 
+            }
+            else if (currentConnectionConfig.DbType == DbType.OpenGauss)
+            {
+                return new OpenGaussQueryable<T>();
+            }
             else
             {
                 string className = "Queryable";
@@ -240,6 +244,10 @@ namespace SqlSugar
             else if (currentConnectionConfig.DbType == DbType.PostgreSQL)
             {
                 return new PostgreSQLInserttable<T>();
+            }
+            else if (currentConnectionConfig.DbType == DbType.OpenGauss)
+            {
+                return new OpenGaussInserttable<T>();
             }
             else if (currentConnectionConfig.DbType == DbType.Kdbndp)
             {

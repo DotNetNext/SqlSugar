@@ -45,6 +45,8 @@ namespace OrmTest
             db.Insertable(new Order() { Name = "abc", CustomId = 1, CreateTime = DateTime.Now }).ExecuteCommand();
             Console.WriteLine("Slave:");
             db.Queryable<Order>().First();
+            db.MasterQueryable<Order>().ToList();
+            db.MasterQueryable<Order>().ToDataTable();
             Console.WriteLine("#### MasterSlave End ####");
         }
 

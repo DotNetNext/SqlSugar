@@ -3,12 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Data;
+using System.Xml.Linq;
+
 namespace SqlSugar
 {
     public static partial class IDataRecordExtensions
     {
 
         #region Common Extensions
+        public static XElement GetXelement(this IDataRecord dr, int i) 
+        {
+            var result = XElement.Parse(dr.GetString(i).ToString());
+            return result;
+        }
         public static Guid GetStringGuid(this IDataRecord dr, int i)
         {
             var result = Guid.Parse(dr.GetValue(i).ToString());

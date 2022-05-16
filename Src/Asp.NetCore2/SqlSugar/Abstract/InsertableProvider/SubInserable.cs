@@ -210,25 +210,25 @@ namespace SqlSugar
                                 if (this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL)
                                 {
                                     var sqlobj = this.Context.Insertable(insert).AS(tableName).ToSql();
-                                    id = this.Context.Ado.GetInt(sqlobj.Key + "  " + entityInfo.Columns.First(it => isIdentity).DbColumnName, sqlobj.Value);
+                                    id = this.Context.Ado.GetInt(sqlobj.Key+ "  "+ this.InsertBuilder.Builder.GetTranslationColumnName(entityInfo.Columns.First(it=>isIdentity).DbColumnName), sqlobj.Value);
                                 }
                                 else if (this.Context.CurrentConnectionConfig.DbType == DbType.OpenGauss)
                                 {
                                     var sqlobj = this.Context.Insertable(insert).AS(tableName).ToSql();
-                                    id = this.Context.Ado.GetInt(sqlobj.Key + "  " + entityInfo.Columns.First(it => isIdentity).DbColumnName, sqlobj.Value);
+                                    id = this.Context.Ado.GetInt(sqlobj.Key+ "  "+ this.InsertBuilder.Builder.GetTranslationColumnName(entityInfo.Columns.First(it=>isIdentity).DbColumnName), sqlobj.Value);
                                 }
                                 else
                                 {
                                     id = this.Context.Insertable(insert).AS(tableName).ExecuteReturnIdentity();
                                 }
-                                if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle && id == 0)
+                                if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle&&id==0)
                                 {
-                                    var seqName = entityInfo.Columns.First(it => it.OracleSequenceName.HasValue())?.OracleSequenceName;
-                                    id = this.Context.Ado.GetInt("select " + seqName + ".currval from dual");
+                                    var seqName=entityInfo.Columns.First(it => it.OracleSequenceName.HasValue())?.OracleSequenceName;
+                                    id = this.Context.Ado.GetInt("select "+seqName+".currval from dual");
                                 }
                             }
                             var entity = entityList[i];
-                            var pk = GetPrimaryKey(entityInfo, entity, id);
+                            var pk = GetPrimaryKey(entityInfo,entity, id);
                             AddChildList(item.Childs, entity, pk);
                             ++i;
                         }
@@ -254,9 +254,9 @@ namespace SqlSugar
                 else
                 {
                     var value = item.PropertyInfo.GetValue(insetObject);
-                    if (value == null && this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL)
+                    if (value == null&&this.Context.CurrentConnectionConfig.DbType==DbType.PostgreSQL) 
                     {
-                        var underType = UtilMethods.GetUnderType(item.PropertyInfo.PropertyType);
+                       var underType= UtilMethods.GetUnderType(item.PropertyInfo.PropertyType);
                         if (underType == UtilConstants.DateType)
                         {
                             value = SqlDateTime.Null;
@@ -288,13 +288,13 @@ namespace SqlSugar
             {
                 listMember = (subMemberException.Expression as MemberExpression);
             }
-            if (listMember == null && item.Expression is LambdaExpression)
+            if (listMember == null&& item.Expression is LambdaExpression)
             {
                 listMember = (item.Expression as LambdaExpression).Body as MemberExpression;
             }
             if (listMember == null && item.Expression is MemberExpression)
             {
-                listMember = item.Expression as MemberExpression;
+                listMember =  item.Expression  as MemberExpression;
             }
             childName = listMember.Member.Name;
             return childName;
@@ -321,7 +321,7 @@ namespace SqlSugar
             return subMemberName;
         }
 
-        private object GetPrimaryKey(EntityInfo entityInfo, object InsertObject, int id)
+        private object GetPrimaryKey(EntityInfo entityInfo,object InsertObject, int id)
         {
             object pkValue;
             if (id.ObjToInt() == 0)

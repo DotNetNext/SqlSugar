@@ -14,7 +14,7 @@ namespace OrmTest.Test
         {
             SqlSugarClient Db = new SqlSugarClient(new ConnectionConfig()
             {
-                ConnectionString = @"PORT=5433;DATABASE=x;HOST=localhost;PASSWORD=haosql;USER ID=postgres",
+                ConnectionString = @"PORT=5433;DATABASE=x;HOST=localhost;PASSWORD=Gauss666;USER ID=gauss",
                 DbType = DbType.OpenGauss,
                 IsAutoCloseConnection = true,
                 //MoreSettings = new ConnMoreSettings()

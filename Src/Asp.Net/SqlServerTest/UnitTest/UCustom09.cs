@@ -34,6 +34,11 @@ namespace OrmTest
                                ID = a.Id,
                                真实名称 = !string.IsNullOrEmpty(a.Name) ? a.Name : a.Name
                            }).ToList();
+            db.Queryable<Order>().Select(x => new
+            {
+                // c=SqlFunc.Subqueryable<Order>().Where(z=>z.Id==x.Id).Count(),
+                x1 = !string.IsNullOrEmpty(x.Name)
+            }).ToList();
         }
 
         public class Unitadfaint21

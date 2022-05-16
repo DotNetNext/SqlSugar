@@ -97,11 +97,11 @@ namespace SqlSugar
                     parameter.DbType = System.Data.DbType.DateTime;
                     parameter.Value = DBNull.Value;
                 }
-                if (parameter.DbType == System.Data.DbType.Guid)
-                {
-                    parameter.DbType = System.Data.DbType.AnsiString;
-                    parameter.Value = parameter.Value.ToString();
-                }
+                //if (parameter.DbType == System.Data.DbType.Guid)
+                //{
+                //    parameter.DbType = System.Data.DbType.AnsiString;
+                //    parameter.Value = parameter.Value.ToString();
+                //}
                 var sqlParameter = new NpgsqlParameter();
                 sqlParameter.ParameterName = parameter.ParameterName;
                 sqlParameter.Size = parameter.Size;

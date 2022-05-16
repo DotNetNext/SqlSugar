@@ -193,6 +193,23 @@ namespace SqlSugar
         {
             return (T)To(value, typeof(T));
         }
+
+        internal static DateTime GetMinDate(ConnectionConfig currentConnectionConfig)
+        {
+            if (currentConnectionConfig.MoreSettings == null)
+            {
+                return Convert.ToDateTime("1900-01-01");
+            }
+            else if (currentConnectionConfig.MoreSettings.DbMinDate == null)
+            {
+                return Convert.ToDateTime("1900-01-01");
+            }
+            else 
+            {
+                return currentConnectionConfig.MoreSettings.DbMinDate.Value;
+            }
+        }
+
         internal static Type GetUnderType(Type oldType)
         {
             Type type = Nullable.GetUnderlyingType(oldType);
@@ -557,7 +574,7 @@ namespace SqlSugar
             {
                 return Convert.ToInt32(item.FieldValue);
             }
-            else if (item.CSharpTypeName .EqualCase("long"))
+            else if (item.CSharpTypeName.EqualCase("long"))
             {
                 return Convert.ToInt64(item.FieldValue);
             }
@@ -569,11 +586,11 @@ namespace SqlSugar
             {
                 return Convert.ToByte(item.FieldValue);
             }
-            else if (item.CSharpTypeName.EqualCase( "uint"))
+            else if (item.CSharpTypeName.EqualCase("uint"))
             {
                 return Convert.ToUInt32(item.FieldValue);
             }
-            else if (item.CSharpTypeName.EqualCase( "ulong"))
+            else if (item.CSharpTypeName.EqualCase("ulong"))
             {
                 return Convert.ToUInt64(item.FieldValue);
             }
@@ -581,17 +598,21 @@ namespace SqlSugar
             {
                 return Convert.ToUInt16(item.FieldValue);
             }
-            else if (item.CSharpTypeName.EqualCase( "uint32"))
+            else if (item.CSharpTypeName.EqualCase("uint32"))
             {
                 return Convert.ToUInt32(item.FieldValue);
             }
-            else if (item.CSharpTypeName.EqualCase( "uint64"))
+            else if (item.CSharpTypeName.EqualCase("uint64"))
             {
                 return Convert.ToUInt64(item.FieldValue);
             }
             else if (item.CSharpTypeName.EqualCase("uint16"))
             {
                 return Convert.ToUInt16(item.FieldValue);
+            }
+            else if (item.CSharpTypeName.EqualCase("byte[]")&&item.FieldValue!=null&&item.FieldValue.Contains("|")) 
+            {
+                return item.FieldValue.Split('|').Select(it=>Convert.ToByte(it)).ToArray();
             }
             else
             {

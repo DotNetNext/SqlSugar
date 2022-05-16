@@ -443,10 +443,17 @@ namespace SqlSugar
                         {
                             ConditionalType = ConditionalType.Equal,
                             FieldName = this.QueryBuilder.Builder.GetTranslationColumnName(column.DbColumnName),
-                            FieldValue = value.ObjToString(),
+                            FieldValue = value.ObjToStringNew(),
                             CSharpTypeName = column.PropertyInfo.PropertyType.Name
                         });
                         if (this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL) 
+                        {
+                            data.Value.FieldValueConvertFunc = it =>
+                            {
+                                return UtilMethods.ChangeType2(it, value.GetType());
+                            };
+                        }
+                        if (this.Context.CurrentConnectionConfig.DbType == DbType.OpenGauss)
                         {
                             data.Value.FieldValueConvertFunc = it =>
                             {
@@ -526,6 +533,13 @@ namespace SqlSugar
                             }
                             cons.ConditionalList.Add(data);
                             if (this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL)
+                            {
+                                data.Value.FieldValueConvertFunc = it =>
+                                {
+                                    return UtilMethods.ChangeType2(it, value.GetType());
+                                };
+                            }
+                            if (this.Context.CurrentConnectionConfig.DbType == DbType.OpenGauss)
                             {
                                 data.Value.FieldValueConvertFunc = it =>
                                 {
@@ -1048,7 +1062,8 @@ namespace SqlSugar
                 this.QueryBuilder.Take == null&& 
                 this.QueryBuilder.OrderByValue == null && 
                 this.QueryBuilder.PartitionByValue == null&&
-                this.QueryBuilder.SelectValue==null) 
+                this.QueryBuilder.SelectValue==null&&
+                this.QueryBuilder.Includes == null) 
             {
 
                 return this.Clone().Select<int>(" COUNT(1) ").ToList().First();
@@ -1415,6 +1430,7 @@ namespace SqlSugar
             var sqlObj = this.ToSql();
             RestoreMapping();
             DataTable result = null;
+            bool isChangeQueryableMasterSlave = GetIsMasterQuery();
             if (IsCache)
             {
                 var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService;
@@ -1424,6 +1440,7 @@ namespace SqlSugar
             {
                 result = this.Db.GetDataTable(sqlObj.Key, sqlObj.Value.ToArray());
             }
+            RestChangeMasterQuery(isChangeQueryableMasterSlave);
             return result;
         }
         public virtual DataTable ToDataTablePage(int pageIndex, int pageSize)
@@ -2119,10 +2136,10 @@ namespace SqlSugar
             this.Context.MappingTables = oldMapping;
             return await this.Clone().ToPageListAsync(pageIndex, pageSize);
         }
-        public Task<List<T>> ToPageListAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber, RefAsync<int> totalPage) 
+        public async Task<List<T>> ToPageListAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber, RefAsync<int> totalPage) 
         {
-            var result = ToPageListAsync(pageNumber, pageSize, totalNumber);
-            totalPage.Value = (totalNumber + pageSize - 1) / pageSize;
+            var result =await ToPageListAsync(pageNumber, pageSize, totalNumber);
+            totalPage.Value = (totalNumber.Value + pageSize - 1) / pageSize;
             return result;
         }
         public async Task<string> ToJsonAsync()
@@ -3069,10 +3086,30 @@ namespace SqlSugar
             List<TResult> result;
             var isComplexModel = QueryBuilder.IsComplexModel(sqlObj.Key);
             var entityType = typeof(TResult);
+            bool isChangeQueryableMasterSlave = GetIsMasterQuery();
             var dataReader = this.Db.GetDataReader(sqlObj.Key, sqlObj.Value.ToArray());
             result = GetData<TResult>(isComplexModel, entityType, dataReader);
+            RestChangeMasterQuery(isChangeQueryableMasterSlave);
             return result;
         }
+
+        private void RestChangeMasterQuery(bool isChangeQueryableMasterSlave)
+        {
+            if (isChangeQueryableMasterSlave)
+                this.Context.Ado.IsDisableMasterSlaveSeparation = false;
+        }
+
+        private bool GetIsMasterQuery()
+        {
+            var isChangeQueryableMasterSlave =
+                                   this.QueryBuilder.IsDisableMasterSlaveSeparation == true &&
+                                   this.Context.Ado.IsDisableMasterSlaveSeparation == false &&
+                                   this.Context.Ado.Transaction == null;
+            if (isChangeQueryableMasterSlave)
+                this.Context.Ado.IsDisableMasterSlaveSeparation = true;
+            return isChangeQueryableMasterSlave;
+        }
+
         protected async Task<List<TResult>> GetDataAsync<TResult>(KeyValuePair<string, List<SugarParameter>> sqlObj)
         {
             List<TResult> result;
@@ -3224,6 +3261,7 @@ namespace SqlSugar
                        _Size=it._Size
                 }).ToList();
             }
+            asyncQueryableBuilder.IsDisableMasterSlaveSeparation = this.QueryBuilder.IsDisableMasterSlaveSeparation;
             asyncQueryableBuilder.IsQueryInQuery = this.QueryBuilder.IsQueryInQuery;
             asyncQueryableBuilder.Includes = this.QueryBuilder.Includes;
             asyncQueryableBuilder.Take = this.QueryBuilder.Take;

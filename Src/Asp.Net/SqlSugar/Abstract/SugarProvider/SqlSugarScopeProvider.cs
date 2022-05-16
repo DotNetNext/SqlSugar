@@ -233,7 +233,10 @@ namespace SqlSugar
         {
             ScopedContext.Open();
         }
-
+        public ISugarQueryable<T> MasterQueryable<T>()
+        {
+            return ScopedContext.MasterQueryable<T>();
+        }
         public ISugarQueryable<ExpandoObject> Queryable(string tableName, string shortName)
         {
             return ScopedContext.Queryable(tableName, shortName);

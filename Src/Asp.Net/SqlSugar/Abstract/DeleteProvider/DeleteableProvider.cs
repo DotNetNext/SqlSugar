@@ -162,6 +162,10 @@ namespace SqlSugar
                         {
                             andString.AppendFormat("\"{0}\"={1} ", primaryField.ToLower(), new PostgreSQLExpressionContext().GetValue(entityValue));
                         }
+                        else if (this.Context.CurrentConnectionConfig.DbType == DbType.OpenGauss && (this.Context.CurrentConnectionConfig.MoreSettings == null || this.Context.CurrentConnectionConfig.MoreSettings?.PgSqlIsAutoToLower == true))
+                        {
+                            andString.AppendFormat("\"{0}\"={1} ", primaryField.ToLower(), new OpenGaussExpressionContext().GetValue(entityValue));
+                        }
                         else if (this.Context.CurrentConnectionConfig.DbType == DbType.SqlServer && entityValue != null && UtilMethods.GetUnderType(entityValue.GetType()) == UtilConstants.DateType) 
                         {
                             andString.AppendFormat("\"{0}\"={1} ", primaryField,$"'{entityValue.ObjToDate().ToString("yyyy-MM-dd HH:mm:ss.fff")}'");
@@ -306,7 +310,11 @@ namespace SqlSugar
             var queryable = this.Context.Queryable<T>();
             queryable.QueryBuilder.LambdaExpressions.ParameterIndex= 1000;
             var sqlable= queryable.ToSql();
-            this.Where(Regex.Split(sqlable.Key," Where ",RegexOptions.IgnoreCase).Last(), sqlable.Value);
+            var whereInfos = Regex.Split(sqlable.Key, " Where ", RegexOptions.IgnoreCase);
+            if (whereInfos.Length > 1)
+            {
+                this.Where(whereInfos.Last(), sqlable.Value);
+            }
             return this;
         }
         public SplitTableDeleteProvider<T> SplitTable(Func<List<SplitTableInfo>, IEnumerable<SplitTableInfo>> getTableNamesFunc) 

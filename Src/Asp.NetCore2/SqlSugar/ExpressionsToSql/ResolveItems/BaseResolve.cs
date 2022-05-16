@@ -515,6 +515,13 @@ namespace SqlSugar
                 });
                 parameter.Context.Result.Append(this.Context.GetAsString(asName, sql));
             }
+            else if (item.NodeType == ExpressionType.Not 
+                && (item as UnaryExpression).Operand is MethodCallExpression
+                && ((item as UnaryExpression).Operand as MethodCallExpression).Method.Name.IsIn("IsNullOrEmpty", "IsNullOrWhiteSpace"))
+            {
+                var asValue =  packIfElse(GetNewExpressionValue(item)).ObjToString();
+                parameter.Context.Result.Append(this.Context.GetAsString(asName, asValue));
+            }
             else if (item is MethodCallExpression || item is UnaryExpression || item is ConditionalExpression || item.NodeType == ExpressionType.Coalesce)
             {
                 this.Expression = item;
@@ -526,7 +533,15 @@ namespace SqlSugar
                 Check.ThrowNotSupportedException(item.GetType().Name);
             }
         }
-
+        public object packIfElse(object methodValue)
+        {
+            methodValue = this.Context.DbMehtods.CaseWhen(new List<KeyValuePair<string, string>>() {
+                    new KeyValuePair<string, string>("IF",methodValue.ObjToString()),
+                    new KeyValuePair<string, string>("Return","1"),
+                    new KeyValuePair<string, string>("End","0")
+                 });
+            return methodValue;
+        }
         private static bool IsNotCaseExpression(Expression item)
         {
             if ((item as MethodCallExpression).Method.Name == "IIF")

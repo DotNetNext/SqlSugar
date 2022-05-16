@@ -177,6 +177,10 @@ namespace SqlSugar
                             {
                                 item[col.ColumnName] = string.Empty;
                             }
+                            else if (col.DataType == UtilConstants.DateType)
+                            {
+                                item[col.ColumnName] =UtilMethods.GetMinDate(this.context.CurrentConnectionConfig);
+                            }
                             else
                             {
                                 item[col.ColumnName] = Activator.CreateInstance(col.DataType);

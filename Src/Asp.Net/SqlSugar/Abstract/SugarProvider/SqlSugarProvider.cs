@@ -85,6 +85,12 @@ namespace SqlSugar
             var sqlBuilder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
             return this.Ado.GetDateTime(sqlBuilder.FullSqlDateNow);
         }
+        public ISugarQueryable<T> MasterQueryable<T>()
+        {
+            var result = this.Queryable<T>();
+            result.QueryBuilder.IsDisableMasterSlaveSeparation = true;
+            return result;
+        }
         /// <summary>
         /// Lambda Query operation
         /// </summary>

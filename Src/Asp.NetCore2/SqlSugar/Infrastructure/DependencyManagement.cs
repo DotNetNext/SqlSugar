@@ -13,6 +13,7 @@ namespace SqlSugar
         private static bool IsTrySqlite = false;
         private static bool IsTryOracle = false;
         private static bool IsTryPgSql = false;
+        private static bool IsTryGSql = false;
         private static bool IsTryDm = false;
         private static bool IsTryKd = false;
         private static bool IsTryOscar = false;
@@ -76,13 +77,13 @@ namespace SqlSugar
         }
         public static void TryOpenGauss()
         {
-            if (!IsTryPgSql)
+            if (!IsTryGSql)
             {
                 try
                 {
                     OpenGaussProvider db = new OpenGaussProvider();
                     var conn = db.GetAdapter();
-                    IsTryPgSql = true;
+                    IsTryGSql = true;
                 }
                 catch
                 {
