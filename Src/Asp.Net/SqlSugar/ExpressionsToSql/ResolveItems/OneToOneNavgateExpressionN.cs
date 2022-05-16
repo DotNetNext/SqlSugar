@@ -75,17 +75,6 @@ namespace SqlSugar
             MapperSql.Sql = "( " + queryable.ToSql().Key + " ) ";
             return MapperSql;
         }
-        private string ToShortName(string name) 
-        {
-            if (name.ObjToString().Contains("."))
-            {
-                return name.Replace(".", "_");
-            }
-            else 
-            {
-                return name;
-            }
-        }
         private bool ValidateIsJoinMember(bool result, MemberExpression memberExp, Expression childExpression)
         {
             if (childExpression != null && childExpression is MemberExpression)
@@ -132,6 +121,17 @@ namespace SqlSugar
         #endregion
 
         #region Helper
+        private string ToShortName(string name)
+        {
+            if (name.ObjToString().Contains("."))
+            {
+                return name.Replace(".", "_");
+            }
+            else
+            {
+                return name;
+            }
+        }
 
         private static bool IsParameter(Expression child2Expression)
         {
