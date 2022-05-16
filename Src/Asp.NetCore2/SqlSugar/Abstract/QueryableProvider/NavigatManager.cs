@@ -333,17 +333,17 @@ namespace SqlSugar
                                       {
                                           l,
                                           n
-                                      }).GroupBy(it=>it.l).ToList();
+                                      }).GroupBy(it => it.l).ToList();
                     foreach (var item in GroupQuery)
                     {
-                 
+
                         if (sqlObj.MappingExpressions.HasValue())
                         {
                             MappingFieldsHelper<T> helper = new MappingFieldsHelper<T>();
                             helper.NavEntity = navEntityInfo;
                             helper.Context = this.Context;
                             helper.RootEntity = this.Context.EntityMaintenance.GetEntityInfo<T>();
-                            helper.SetChildList(navObjectNameColumnInfo, item.Key,item.Select(it=>it.n).ToList(),sqlObj.MappingExpressions);
+                            helper.SetChildList(navObjectNameColumnInfo, item.Key, item.Select(it => it.n).ToList(), sqlObj.MappingExpressions);
                         }
                         else
                         {
@@ -359,11 +359,20 @@ namespace SqlSugar
                     }
                     foreach (var item in list)
                     {
-                        if (navObjectNamePropety.GetValue(item) == null) 
+                        if (navObjectNamePropety.GetValue(item) == null)
                         {
                             var instance = Activator.CreateInstance(navObjectNamePropety.PropertyType, true);
                             navObjectNamePropety.SetValue(item, instance);
                         }
+                    }
+                }
+                else 
+                {
+                    //No navigation data  set new List()
+                    foreach (var item in list)
+                    {
+                         var instance = Activator.CreateInstance(navObjectNamePropety.PropertyType, true);
+                         navObjectNamePropety.SetValue(item, instance);
                     }
                 }
             }
