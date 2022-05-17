@@ -735,6 +735,7 @@ namespace SqlSugar
         }
         public virtual ISugarQueryable<T> OrderBy(string orderFileds)
         {
+            orderFileds = orderFileds.ToCheckField();
             var orderByValue = QueryBuilder.OrderByValue;
             if (QueryBuilder.OrderByValue.IsNullOrEmpty())
             {
@@ -771,6 +772,7 @@ namespace SqlSugar
 
         public virtual ISugarQueryable<T> GroupBy(string groupFileds)
         {
+            groupFileds = groupFileds.ToCheckField();
             var croupByValue = QueryBuilder.GroupByValue;
             if (QueryBuilder.GroupByValue.IsNullOrEmpty())
             {

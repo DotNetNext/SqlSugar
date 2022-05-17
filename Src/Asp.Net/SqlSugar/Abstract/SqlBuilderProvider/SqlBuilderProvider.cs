@@ -160,7 +160,7 @@ namespace SqlSugar
                     }
                     string oldName = item.FieldName;
                     item.FieldName = GetTranslationColumnName(item.FieldName);
-                    Check.Exception(item.FieldName.Contains("--"), "Field name is error format");
+                    item.FieldName = item.FieldName.ToCheckField();
                     switch (item.ConditionalType)
                     {
                         case ConditionalType.Equal:

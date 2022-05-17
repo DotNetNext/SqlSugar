@@ -47,6 +47,26 @@ namespace SqlSugar
             return value;
         }
 
+        /// <summary>
+        /// Check field format
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static string ToCheckField(this string value)
+        {
+            if (value != null)
+            {
+                if (value.IsContainsIn(";", "--")) 
+                {
+                    throw new Exception($"{value} format error ");
+                }
+                else if (value.IsContainsIn("'")&&(value.Length- value.Replace("'","").Length)%2!=0)
+                {
+                    throw new Exception($"{value} format error ");
+                }
+            }
+            return value;
+        }
         internal static string ToLower(this string value ,bool isAutoToLower)
         {
             if (value == null) return null;
