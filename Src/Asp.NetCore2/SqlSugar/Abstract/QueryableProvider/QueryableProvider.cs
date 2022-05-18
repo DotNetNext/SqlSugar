@@ -588,6 +588,12 @@ namespace SqlSugar
             this._Having(expression);
             return this;
         }
+        public virtual ISugarQueryable<T> HavingIF(bool isHaving,Expression<Func<T, bool>> expression)
+        {
+            if(isHaving)
+             this._Having(expression);
+            return this;
+        }
         public virtual ISugarQueryable<T> Having(string whereString, object parameters = null)
         {
 
@@ -749,6 +755,11 @@ namespace SqlSugar
             this._OrderBy(expression, type);
             return this;
         }
+        public virtual ISugarQueryable<T> OrderByDescending(Expression<Func<T, object>> expression)
+        {
+            this._OrderBy(expression, OrderByType.Desc);
+            return this;
+        }
         public virtual ISugarQueryable<T> GroupBy(Expression<Func<T, object>> expression)
         {
             _GroupBy(expression);
@@ -894,7 +905,7 @@ namespace SqlSugar
 
         public virtual List<TResult> ToList<TResult>(Expression<Func<T, TResult>> expression)
         {
-            if (this.QueryBuilder.Includes.Count > 0)
+            if (this.QueryBuilder.Includes != null && this.QueryBuilder.Includes.Count > 0)
             {
                 var list = this.ToList().Select(expression.Compile()).ToList();
                 return list;
@@ -902,6 +913,20 @@ namespace SqlSugar
             else 
             {
                 var list = this.Select(expression).ToList();
+                return list;
+            }
+        }
+        public async virtual Task<List<TResult>> ToListAsync<TResult>(Expression<Func<T, TResult>> expression)
+        {
+            if (this.QueryBuilder.Includes != null && this.QueryBuilder.Includes.Count > 0)
+            {
+                var result = await this.ToListAsync();
+                var list =  result.Select(expression.Compile()).ToList();
+                return list;
+            }
+            else
+            {
+                var list = await this.Select(expression).ToListAsync();
                 return list;
             }
         }
@@ -1868,6 +1893,19 @@ namespace SqlSugar
             pageIndex = _PageList(pageIndex, pageSize);
             return ToList();
         }
+        public virtual List<TResult> ToPageList<TResult>(int pageIndex, int pageSize, ref int totalNumber,Expression<Func<T, TResult>> expression) 
+        {
+            if (this.QueryBuilder.Includes!=null&&this.QueryBuilder.Includes.Count > 0)
+            {
+                var list = this.ToPageList(pageIndex,pageSize,ref totalNumber).Select(expression.Compile()).ToList();
+                return list;
+            }
+            else
+            {
+                var list = this.Select(expression).ToPageList(pageIndex, pageSize, ref totalNumber).ToList();
+                return list;
+            }
+        }
         public virtual List<T> ToPageList(int pageIndex, int pageSize, ref int totalNumber)
         {
             var oldMapping = this.Context.MappingTables;
@@ -2116,6 +2154,20 @@ namespace SqlSugar
         {
             pageIndex = _PageList(pageIndex, pageSize);
             return ToListAsync();
+        }
+        public async virtual Task<List<TResult>> ToPageListAsync<TResult>(int pageIndex, int pageSize, RefAsync<int> totalNumber, Expression<Func<T, TResult>> expression)
+        {
+            if (this.QueryBuilder.Includes!=null&&this.QueryBuilder.Includes.Count > 0)
+            {
+                var pList = await this.ToPageListAsync(pageIndex, pageSize, totalNumber);
+                var list = pList.Select(expression.Compile()).ToList();
+                return list;
+            }
+            else
+            {
+                var list = await this.Select(expression).ToPageListAsync(pageIndex, pageSize, totalNumber) ;
+                return list;
+            }
         }
         public async Task<List<T>> ToPageListAsync(int pageIndex, int pageSize, RefAsync<int> totalNumber)
         {
@@ -3456,7 +3508,16 @@ namespace SqlSugar
             _OrderBy(expression, type);
             return this;
         }
-
+        public new virtual ISugarQueryable<T,T2> OrderByDescending(Expression<Func<T, object>> expression)
+        {
+            this._OrderBy(expression, OrderByType.Desc);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2> OrderByDescending(Expression<Func<T,T2, object>> expression)
+        {
+            this._OrderBy(expression, OrderByType.Desc);
+            return this;
+        }
         public new ISugarQueryable<T, T2> OrderBy(Expression<Func<T, object>> expression, OrderByType type)
         {
             _OrderBy(expression, type);
@@ -3483,6 +3544,18 @@ namespace SqlSugar
         #endregion
 
         #region GroupBy
+        public new virtual ISugarQueryable<T,T2> HavingIF(bool isHaving, Expression<Func<T, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
+            return this;
+        }
+        public  virtual ISugarQueryable<T, T2> HavingIF(bool isHaving, Expression<Func<T,T2, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
+            return this;
+        }
         public new ISugarQueryable<T, T2> GroupBy(Expression<Func<T, object>> expression)
         {
             _GroupBy(expression);
@@ -3826,9 +3899,42 @@ namespace SqlSugar
             base.Having(whereString, whereObj);
             return this;
         }
+        public new virtual ISugarQueryable<T, T2,T3> HavingIF(bool isHaving, Expression<Func<T, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
+            return this;
+        }
+        public  virtual ISugarQueryable<T, T2,T3> HavingIF(bool isHaving, Expression<Func<T, T2, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
+            return this;
+        }
+        public  virtual ISugarQueryable<T, T2, T3> HavingIF(bool isHaving, Expression<Func<T, T2,T3, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
+            return this;
+        }
         #endregion
 
         #region Order
+        public new virtual ISugarQueryable<T, T2,T3> OrderByDescending(Expression<Func<T, object>> expression)
+        {
+            this._OrderBy(expression, OrderByType.Desc);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2,T3> OrderByDescending(Expression<Func<T, T2, object>> expression)
+        {
+            this._OrderBy(expression, OrderByType.Desc);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2,T3> OrderByDescending(Expression<Func<T, T2,T3, object>> expression)
+        {
+            this._OrderBy(expression, OrderByType.Desc);
+            return this;
+        }
         public new ISugarQueryable<T, T2,T3> OrderBy(string orderFileds)
         {
             base.OrderBy(orderFileds);
@@ -4368,6 +4474,26 @@ namespace SqlSugar
         #endregion
 
         #region OrderBy
+        public new virtual ISugarQueryable<T, T2, T3, T4> OrderByDescending(Expression<Func<T, object>> expression)
+        {
+            this._OrderBy(expression, OrderByType.Desc);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4> OrderByDescending(Expression<Func<T, T2, object>> expression)
+        {
+            this._OrderBy(expression, OrderByType.Desc);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4> OrderByDescending(Expression<Func<T, T2, T3, object>> expression)
+        {
+            this._OrderBy(expression, OrderByType.Desc);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3,T4> OrderByDescending(Expression<Func<T, T2, T3, T4, object>> expression)
+        {
+            this._OrderBy(expression, OrderByType.Desc);
+            return this;
+        }
         public new ISugarQueryable<T, T2,T3,T4> OrderBy(string orderFileds)
         {
             base.OrderBy(orderFileds);
@@ -4473,6 +4599,31 @@ namespace SqlSugar
         public new ISugarQueryable<T, T2, T3, T4> Having(string whereString, object whereObj)
         {
             base.Having(whereString, whereObj);
+            return this;
+        }
+
+        public  new virtual ISugarQueryable<T, T2, T3,T4> HavingIF(bool isHaving, Expression<Func<T, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
+            return this;
+        }
+        public  virtual ISugarQueryable<T, T2, T3,T4> HavingIF(bool isHaving, Expression<Func<T, T2, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
+            return this;
+        }
+        public  virtual ISugarQueryable<T, T2, T3,T4> HavingIF(bool isHaving, Expression<Func<T, T2, T3, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4> HavingIF(bool isHaving, Expression<Func<T, T2, T3,T4, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
             return this;
         }
         #endregion
@@ -5034,6 +5185,37 @@ namespace SqlSugar
             base.Having(whereString, whereObj);
             return this;
         }
+
+        public new virtual ISugarQueryable<T, T2, T3, T4,T5> HavingIF(bool isHaving, Expression<Func<T, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4, T5> HavingIF(bool isHaving, Expression<Func<T, T2, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4, T5> HavingIF(bool isHaving, Expression<Func<T, T2, T3, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4, T5> HavingIF(bool isHaving, Expression<Func<T, T2, T3, T4, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4, T5> HavingIF(bool isHaving, Expression<Func<T, T2, T3, T4,T5, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
+            return this;
+        }
         #endregion
 
         #region Aggr
@@ -5549,6 +5731,43 @@ namespace SqlSugar
             base.Having(whereString, whereObj);
             return this;
         }
+
+        public new virtual ISugarQueryable<T, T2, T3, T4, T5,T6> HavingIF(bool isHaving, Expression<Func<T, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6> HavingIF(bool isHaving, Expression<Func<T, T2, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6> HavingIF(bool isHaving, Expression<Func<T, T2, T3, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6> HavingIF(bool isHaving, Expression<Func<T, T2, T3, T4, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6> HavingIF(bool isHaving, Expression<Func<T, T2, T3, T4, T5, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6> HavingIF(bool isHaving, Expression<Func<T, T2, T3, T4, T5,T6, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
+            return this;
+        }
         #endregion
 
         #region Aggr
@@ -6053,6 +6272,48 @@ namespace SqlSugar
         {
             if (isOrderBy)
                 _OrderBy(expression, type);
+            return this;
+        }
+        public new virtual ISugarQueryable<T, T2, T3, T4, T5, T6,T7> HavingIF(bool isHaving, Expression<Func<T, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7> HavingIF(bool isHaving, Expression<Func<T, T2, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7> HavingIF(bool isHaving, Expression<Func<T, T2, T3, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7> HavingIF(bool isHaving, Expression<Func<T, T2, T3, T4, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7> HavingIF(bool isHaving, Expression<Func<T, T2, T3, T4, T5, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7> HavingIF(bool isHaving, Expression<Func<T, T2, T3, T4, T5, T6, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7> HavingIF(bool isHaving, Expression<Func<T, T2, T3, T4, T5, T6,T7, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
             return this;
         }
         #endregion
