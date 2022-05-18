@@ -1868,6 +1868,19 @@ namespace SqlSugar
             pageIndex = _PageList(pageIndex, pageSize);
             return ToList();
         }
+        public virtual List<TResult> ToPageList<TResult>(int pageIndex, int pageSize, ref int totalNumber,Expression<Func<T, TResult>> expression) 
+        {
+            if (this.QueryBuilder.Includes.Count > 0)
+            {
+                var list = this.ToPageList(pageIndex,pageSize,ref totalNumber).Select(expression.Compile()).ToList();
+                return list;
+            }
+            else
+            {
+                var list = this.Select(expression).ToPageList(pageIndex, pageSize, ref totalNumber).ToList();
+                return list;
+            }
+        }
         public virtual List<T> ToPageList(int pageIndex, int pageSize, ref int totalNumber)
         {
             var oldMapping = this.Context.MappingTables;
@@ -2116,6 +2129,20 @@ namespace SqlSugar
         {
             pageIndex = _PageList(pageIndex, pageSize);
             return ToListAsync();
+        }
+        public async virtual Task<List<TResult>> ToPageList<TResult>(int pageIndex, int pageSize, RefAsync<int> totalNumber, Expression<Func<T, TResult>> expression)
+        {
+            if (this.QueryBuilder.Includes.Count > 0)
+            {
+                var pList = await this.ToPageListAsync(pageIndex, pageSize, totalNumber);
+                var list = pList.Select(expression.Compile()).ToList();
+                return list;
+            }
+            else
+            {
+                var list = await this.Select(expression).ToPageListAsync(pageIndex, pageSize, totalNumber) ;
+                return list;
+            }
         }
         public async Task<List<T>> ToPageListAsync(int pageIndex, int pageSize, RefAsync<int> totalNumber)
         {
