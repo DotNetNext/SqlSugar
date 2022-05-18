@@ -894,7 +894,7 @@ namespace SqlSugar
 
         public virtual List<TResult> ToList<TResult>(Expression<Func<T, TResult>> expression)
         {
-            if (this.QueryBuilder.Includes.Count > 0)
+            if (this.QueryBuilder.Includes != null && this.QueryBuilder.Includes.Count > 0)
             {
                 var list = this.ToList().Select(expression.Compile()).ToList();
                 return list;
@@ -902,6 +902,20 @@ namespace SqlSugar
             else 
             {
                 var list = this.Select(expression).ToList();
+                return list;
+            }
+        }
+        public async virtual Task<List<TResult>> ToListAsync<TResult>(Expression<Func<T, TResult>> expression)
+        {
+            if (this.QueryBuilder.Includes != null && this.QueryBuilder.Includes.Count > 0)
+            {
+                var result = await this.ToListAsync();
+                var list =  result.Select(expression.Compile()).ToList();
+                return list;
+            }
+            else
+            {
+                var list = await this.Select(expression).ToListAsync();
                 return list;
             }
         }
@@ -1870,7 +1884,7 @@ namespace SqlSugar
         }
         public virtual List<TResult> ToPageList<TResult>(int pageIndex, int pageSize, ref int totalNumber,Expression<Func<T, TResult>> expression) 
         {
-            if (this.QueryBuilder.Includes.Count > 0)
+            if (this.QueryBuilder.Includes!=null&&this.QueryBuilder.Includes.Count > 0)
             {
                 var list = this.ToPageList(pageIndex,pageSize,ref totalNumber).Select(expression.Compile()).ToList();
                 return list;
@@ -2130,9 +2144,9 @@ namespace SqlSugar
             pageIndex = _PageList(pageIndex, pageSize);
             return ToListAsync();
         }
-        public async virtual Task<List<TResult>> ToPageList<TResult>(int pageIndex, int pageSize, RefAsync<int> totalNumber, Expression<Func<T, TResult>> expression)
+        public async virtual Task<List<TResult>> ToPageListAsync<TResult>(int pageIndex, int pageSize, RefAsync<int> totalNumber, Expression<Func<T, TResult>> expression)
         {
-            if (this.QueryBuilder.Includes.Count > 0)
+            if (this.QueryBuilder.Includes!=null&&this.QueryBuilder.Includes.Count > 0)
             {
                 var pList = await this.ToPageListAsync(pageIndex, pageSize, totalNumber);
                 var list = pList.Select(expression.Compile()).ToList();

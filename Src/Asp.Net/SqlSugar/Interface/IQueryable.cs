@@ -134,6 +134,7 @@ namespace SqlSugar
         TResult Avg<TResult>(Expression<Func<T, TResult>> expression);
         Task<TResult> AvgAsync<TResult>(Expression<Func<T, TResult>> expression);
         List<TResult> ToList<TResult>(Expression<Func<T, TResult>> expression);
+        Task<List<TResult>> ToListAsync<TResult>(Expression<Func<T, TResult>> expression);
         List<T> ToList();
         List<T> SetContext<ParameterT>(Expression<Func<T,object>> thisFiled, Expression<Func<object>> mappingFiled, ParameterT parameter);
         List<T> SetContext<ParameterT>(Expression<Func<T, object>> thisFiled1, Expression<Func<object>> mappingFiled1, Expression<Func<T, object>> thisFiled2, Expression<Func<object>> mappingFiled2, ParameterT parameter);
@@ -176,8 +177,10 @@ namespace SqlSugar
         List<T> ToPageList(int pageNumber, int pageSize);
         Task<List<T>> ToPageListAsync(int pageNumber, int pageSize);
         List<T> ToPageList(int pageNumber, int pageSize, ref int totalNumber);
+        List<TResult> ToPageList<TResult>(int pageIndex, int pageSize, ref int totalNumber, Expression<Func<T, TResult>> expression);
         List<T> ToPageList(int pageNumber, int pageSize, ref int totalNumber,ref int totalPage);
         Task<List<T>> ToPageListAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber);
+        Task<List<TResult>> ToPageListAsync<TResult>(int pageIndex, int pageSize, RefAsync<int> totalNumber, Expression<Func<T, TResult>> expression);
         Task<List<T>> ToPageListAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber, RefAsync<int> totalPage);
         ISugarQueryable<T> WithCache(string cacheKey,int cacheDurationInSeconds = int.MaxValue);
         ISugarQueryable<T> WithCache(int cacheDurationInSeconds = int.MaxValue);
