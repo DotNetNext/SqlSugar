@@ -58,6 +58,7 @@ namespace SqlSugar
         ISugarQueryable<T> Where(List<IConditionalModel> conditionalModels);
         ISugarQueryable<T> Where(List<IConditionalModel> conditionalModels,bool isWrap);
         ISugarQueryable<T> Having(Expression<Func<T, bool>> expression);
+        ISugarQueryable<T> HavingIF(bool isHaving,Expression<Func<T, bool>> expression);
         ISugarQueryable<T> Having(string whereString, object parameters = null);
 
         ISugarQueryable<T> WhereIF(bool isWhere, Expression<Func<T, bool>> expression);
@@ -247,6 +248,8 @@ namespace SqlSugar
         new ISugarQueryable<T, T2> Having(Expression<Func<T, bool>> expression);
         ISugarQueryable<T, T2> Having(Expression<Func<T, T2, bool>> expression);
         new ISugarQueryable<T, T2> Having(string whereString, object whereObj = null);
+        new ISugarQueryable<T,T2> HavingIF(bool isHaving, Expression<Func<T, bool>> expression);
+        ISugarQueryable<T, T2> HavingIF(bool isHaving, Expression<Func<T,T2, bool>> expression);
         #endregion
 
         #region Aggr
@@ -346,6 +349,9 @@ namespace SqlSugar
         ISugarQueryable<T, T2, T3> Having(Expression<Func<T, T2, bool>> expression);
         ISugarQueryable<T, T2, T3> Having(Expression<Func<T, T2, T3, bool>> expression);
         new ISugarQueryable<T, T2, T3> Having(string whereString, object parameters = null);
+        new ISugarQueryable<T, T2,T3> HavingIF(bool isHaving, Expression<Func<T, bool>> expression);
+        ISugarQueryable<T, T2,T3> HavingIF(bool isHaving, Expression<Func<T, T2, bool>> expression);
+        ISugarQueryable<T, T2, T3> HavingIF(bool isHaving, Expression<Func<T, T2,T3, bool>> expression);
         #endregion
 
         #region Aggr
@@ -457,6 +463,10 @@ namespace SqlSugar
         ISugarQueryable<T, T2, T3, T4> Having(Expression<Func<T, T2, T3, bool>> expression);
         ISugarQueryable<T, T2, T3, T4> Having(Expression<Func<T, T2, T3, T4, bool>> expression);
         new ISugarQueryable<T, T2, T3, T4> Having(string whereString, object parameters = null);
+        new ISugarQueryable<T, T2, T3,T4> HavingIF(bool isHaving, Expression<Func<T, bool>> expression);
+        ISugarQueryable<T, T2, T3,T4> HavingIF(bool isHaving, Expression<Func<T, T2, bool>> expression);
+        ISugarQueryable<T, T2, T3,T4> HavingIF(bool isHaving, Expression<Func<T, T2, T3, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4> HavingIF(bool isHaving, Expression<Func<T, T2, T3,T4, bool>> expression);
         #endregion
 
         #region Aggr
@@ -576,6 +586,11 @@ namespace SqlSugar
         ISugarQueryable<T, T2, T3, T4,T5> Having(Expression<Func<T, T2, T3, T4, bool>> expression);
         ISugarQueryable<T, T2, T3, T4, T5> Having(Expression<Func<T, T2, T3, T4,T5, bool>> expression);
         new ISugarQueryable<T, T2, T3, T4,T5> Having(string whereString, object parameters = null);
+        new ISugarQueryable<T, T2, T3, T4,T5> HavingIF(bool isHaving, Expression<Func<T, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4,T5> HavingIF(bool isHaving, Expression<Func<T, T2, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4,T5> HavingIF(bool isHaving, Expression<Func<T, T2, T3, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4,T5> HavingIF(bool isHaving, Expression<Func<T, T2, T3, T4, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5> HavingIF(bool isHaving, Expression<Func<T, T2, T3, T4,T5, bool>> expression);
         #endregion
 
         #region Aggr
@@ -690,6 +705,12 @@ namespace SqlSugar
         ISugarQueryable<T, T2, T3, T4, T5, T6> Having(Expression<Func<T, T2, T3, T4, T5, bool>> expression);
         ISugarQueryable<T, T2, T3, T4, T5, T6> Having(Expression<Func<T, T2, T3, T4, T5,T6, bool>> expression);
         new ISugarQueryable<T, T2, T3, T4, T5, T6> Having(string whereString, object parameters = null);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6> HavingIF(bool isHaving, Expression<Func<T, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6> HavingIF(bool isHaving, Expression<Func<T, T2, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6> HavingIF(bool isHaving, Expression<Func<T, T2, T3, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6> HavingIF(bool isHaving, Expression<Func<T, T2, T3, T4, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6> HavingIF(bool isHaving, Expression<Func<T, T2, T3, T4, T5, bool>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6> HavingIF(bool isHaving, Expression<Func<T, T2, T3, T4, T5,T6, bool>> expression);
         #endregion
 
         #region Aggr
