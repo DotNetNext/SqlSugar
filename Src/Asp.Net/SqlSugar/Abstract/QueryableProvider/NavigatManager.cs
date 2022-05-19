@@ -389,7 +389,7 @@ namespace SqlSugar
             var navEntity = args[0];
             var navEntityInfo = this.Context.EntityMaintenance.GetEntityInfo(navEntity);
             var sqlObj = GetWhereSql(navObjectNameColumnInfo.Navigat.Name);
-            Check.ExceptionEasy(sqlObj.MappingExpressions.IsNullOrEmpty(), $"Dynamic need MappingField ,Demo: Includes(it => it.Books.MappingField(z=>z.studenId,()=>it.StudentId).ToList())", $"自定义映射需要 MappingFields ,例子: Includes(it => it.Books.MappingFields(z=>z.studenId,()=>it.StudentId).ToList())");
+            Check.ExceptionEasy(sqlObj.MappingExpressions.IsNullOrEmpty(), $"Dynamic need MappingField ,Demo: Includes(it => it.Books.MappingField(z=>z.studenId,()=>it.StudentId).ToList())", $"自定义映射需要 MappingField ,例子: Includes(it => it.Books.MappingField(z=>z.studenId,()=>it.StudentId).ToList())");
             if (list.Any() && navObjectNamePropety.GetValue(list.First()) == null)
             {
                 MappingFieldsHelper<T> helper = new MappingFieldsHelper<T>();
