@@ -565,7 +565,7 @@ namespace SqlSugar
         private void CheckHasRootShortName(Expression rootExpression, Expression childExpression)
         {
             var rootShortName = GetShortName(rootExpression);
-            if (rootShortName.HasValue()&& childExpression.ToString().Contains($"{rootShortName}."))
+            if (rootShortName.HasValue()&& childExpression.ToString().Contains($" {rootShortName}."))
             {
                 Check.ExceptionEasy($".Where({childExpression}) no support {rootShortName}.Field, Use .MappingField",$".Where({childExpression})禁止出{rootShortName}.字段 , 你可以使用.MappingField(z=>z.字段,()=>{rootShortName}.字段) 与主表字段进行过滤");
             }
