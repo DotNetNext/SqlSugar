@@ -13,6 +13,7 @@ namespace OrmTest
 
         public static void Init()
         {
+   
             var db = new SqlSugarScope(new SqlSugar.ConnectionConfig()
             {
                 ConnectionString = Config.ConnectionString,
@@ -23,7 +24,14 @@ namespace OrmTest
             {
                 Console.WriteLine(s);
             };
-            //db.CodeFirst.InitTables<User_Test001>();
+            try
+            {
+                db.CodeFirst.InitTables<User_Test001>();
+            }
+            catch 
+            {
+                //In the future to deal with
+            }
             var list=db.Queryable<User_Test001>().ToList();
 
 
