@@ -22,7 +22,7 @@ namespace OrmTest
             }).ExecuteCommand();
 
             var result2 = db.Queryable<UnitStudent111>()
-             .Includes(e => e.Exams.Where(s => s.Id >e.Id).ToList()).ToList();
+             .Includes(e => e.Exams.Where(s => s.Time >DateTime.Now).ToList()).ToList();
 
 
 
