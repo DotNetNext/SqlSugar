@@ -521,17 +521,21 @@ namespace SqlSugar
                                 FieldValue = value.ObjToString(),
                                 CSharpTypeName=column.PropertyInfo.PropertyType.Name
                             });
-                            if (value != null && value.GetType().IsEnum()) 
+                            if (value != null && value.GetType().IsEnum())
                             {
                                 if (this.Context.CurrentConnectionConfig?.MoreSettings?.TableEnumIsString == true)
                                 {
 
                                 }
-                                else 
+                                else
                                 {
                                     data.Value.FieldValue = Convert.ToInt64(value).ObjToString();
                                 }
 
+                            }
+                            else if (value != null && column.PropertyInfo.PropertyType == UtilConstants.DateType) 
+                            {
+                                data.Value.FieldValue = value.ObjToDate().ToString("yyyy-MM-dd HH:mm:ss.ffffff");
                             }
                             cons.ConditionalList.Add(data);
                             if (this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL)
