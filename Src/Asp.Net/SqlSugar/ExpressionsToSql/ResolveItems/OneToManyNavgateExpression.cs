@@ -43,7 +43,7 @@ namespace SqlSugar
                     if (memberExp.Arguments.Count > 1)
                     {
                         var pars = ExpressionTool.ExpressionParameters(memberExp.Arguments.Last());
-                        if (pars != null && pars.Any(z => z.Type == ProPertyEntity.Type))
+                        if (pars != null&& ProPertyEntity!=null&& pars.Any(z => z.Type == ProPertyEntity.Type))
                         {
                             PropertyShortName = pars.First(z => z.Type == ProPertyEntity.Type).Name;
                         }
@@ -57,7 +57,7 @@ namespace SqlSugar
         private string GetWhereSql(MethodCallExpression memberExp)
         {
             var whereExp = memberExp.Arguments[1];
-            if (PropertyShortName.HasValue())
+            if (PropertyShortName.HasValue()&& Navigat!=null&& Navigat.NavigatType==NavigateType.OneToMany)
             {
                 var result = this.methodCallExpressionResolve.GetNewExpressionValue(whereExp, ResolveExpressType.WhereMultiple);
                 return result;
