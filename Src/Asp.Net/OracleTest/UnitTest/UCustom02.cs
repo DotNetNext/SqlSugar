@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using SqlSugar;
 namespace OrmTest
@@ -18,11 +19,12 @@ namespace OrmTest
             var dt = DateTime.Now;
             db.Aop.OnLogExecuting = (sql, pars) =>
             {
-                var dt1 = pars[0];
+                
             };
             //用例代码 
             var result = db.Insertable(new UnitTest001() { id = dt }).ExecuteCommand();//用例代码
-            var res = db.Queryable<UnitTest001>().WhereClass(new UnitTest001() { id = dt }).ToList();
+            var lastId = db.Queryable<UnitTest001>().ToList().Last().id;
+            var res = db.Queryable<UnitTest001>().WhereClass(new UnitTest001() { id = lastId }).ToList();
             if (res.Count == 0) 
             {
                 throw new Exception("unit error");
