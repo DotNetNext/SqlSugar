@@ -167,7 +167,7 @@ namespace SqlSugar
             }
             else if (navObjectNameColumnInfo.Navigat.NavigatType == NavigateType.Dynamic)
             {
-                Dynamic(list, selector, listItemEntity, navObjectNamePropety, navObjectNameColumnInfo);
+                Dynamic(list, selector, listItemEntity, navObjectNamePropety, navObjectNameColumnInfo,expression);
             }
             else
             {
@@ -378,18 +378,18 @@ namespace SqlSugar
             }
         }
 
-        private void Dynamic(List<object> list, Func<ISugarQueryable<object>, List<object>> selector, EntityInfo listItemEntity, System.Reflection.PropertyInfo navObjectNamePropety, EntityColumnInfo navObjectNameColumnInfo)
+        private void Dynamic(List<object> list, Func<ISugarQueryable<object>, List<object>> selector, EntityInfo listItemEntity, System.Reflection.PropertyInfo navObjectNamePropety, EntityColumnInfo navObjectNameColumnInfo,Expression expression)
         {
             var args = navObjectNameColumnInfo.PropertyInfo.PropertyType.GetGenericArguments();
             if (args.Length == 0) 
             {
-                DynamicOneToOne(list,selector,listItemEntity, navObjectNamePropety, navObjectNameColumnInfo);
+                DynamicOneToOne(list,selector,listItemEntity, navObjectNamePropety, navObjectNameColumnInfo,expression);
                 return;
             }
             var navEntity = args[0];
             var navEntityInfo = this.Context.EntityMaintenance.GetEntityInfo(navEntity);
             var sqlObj = GetWhereSql(navObjectNameColumnInfo.Navigat.Name);
-            Check.ExceptionEasy(sqlObj.MappingExpressions.IsNullOrEmpty(), $"Dynamic need MappingField ,Demo: Includes(it => it.Books.MappingField(z=>z.studenId,()=>it.StudentId).ToList())", $"自定义映射需要 MappingField ,例子: Includes(it => it.Books.MappingField(z=>z.studenId,()=>it.StudentId).ToList())");
+            Check.ExceptionEasy(sqlObj.MappingExpressions.IsNullOrEmpty(), $"{expression} error,dynamic need MappingField ,Demo: Includes(it => it.Books.MappingField(z=>z.studenId,()=>it.StudentId).ToList())", $"{expression} 解析出错,自定义映射需要 MappingField ,例子: Includes(it => it.Books.MappingField(z=>z.studenId,()=>it.StudentId).ToList())");
             if (list.Any() && navObjectNamePropety.GetValue(list.First()) == null)
             {
                 MappingFieldsHelper<T> helper = new MappingFieldsHelper<T>();
@@ -409,12 +409,12 @@ namespace SqlSugar
 
         }
 
-        private void DynamicOneToOne(List<object> list, Func<ISugarQueryable<object>, List<object>> selector, EntityInfo listItemEntity, System.Reflection.PropertyInfo navObjectNamePropety, EntityColumnInfo navObjectNameColumnInfo)
+        private void DynamicOneToOne(List<object> list, Func<ISugarQueryable<object>, List<object>> selector, EntityInfo listItemEntity, System.Reflection.PropertyInfo navObjectNamePropety, EntityColumnInfo navObjectNameColumnInfo,Expression expression)
         {
             var navEntity = navObjectNameColumnInfo.PropertyInfo.PropertyType;
             var navEntityInfo = this.Context.EntityMaintenance.GetEntityInfo(navEntity);
             var sqlObj = GetWhereSql(navObjectNameColumnInfo.Navigat.Name);
-            Check.ExceptionEasy(sqlObj.MappingExpressions.IsNullOrEmpty(), $"Dynamic need MappingField ,Demo: Includes(it => it.Books.MappingField(z=>z.studenId,()=>it.StudentId).ToList())", $"自定义映射需要 MappingFields ,例子: Includes(it => it.Books.MappingFields(z=>z.studenId,()=>it.StudentId).ToList())");
+            Check.ExceptionEasy(sqlObj.MappingExpressions.IsNullOrEmpty(), $"{expression} error，dynamic need MappingField ,Demo: Includes(it => it.Books.MappingField(z=>z.studenId,()=>it.StudentId).ToList())", $"{expression}解析出错， 自定义映射需要 MappingField ,例子: Includes(it => it.Books.MappingField(z=>z.studenId,()=>it.StudentId).ToList())");
             if (list.Any() && navObjectNamePropety.GetValue(list.First()) == null)
             {
                 MappingFieldsHelper<T> helper = new MappingFieldsHelper<T>();
