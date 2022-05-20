@@ -322,7 +322,21 @@ namespace SqlSugar
         public string GetNewExpressionValue(Expression item)
         {
             var newContext = this.Context.GetCopyContextWithMapping();
+            newContext.SugarContext = this.Context.SugarContext;
             newContext.Resolve(item, this.Context.IsJoin ? ResolveExpressType.WhereMultiple : ResolveExpressType.WhereSingle);
+            this.Context.Index = newContext.Index;
+            this.Context.ParameterIndex = newContext.ParameterIndex;
+            if (newContext.Parameters.HasValue())
+            {
+                this.Context.Parameters.AddRange(newContext.Parameters);
+            }
+            return newContext.Result.GetResultString();
+        }
+        public string GetNewExpressionValue(Expression item,ResolveExpressType type)
+        {
+            var newContext = this.Context.GetCopyContextWithMapping();
+            newContext.SugarContext = this.Context.SugarContext;
+            newContext.Resolve(item, type);
             this.Context.Index = newContext.Index;
             this.Context.ParameterIndex = newContext.ParameterIndex;
             if (newContext.Parameters.HasValue())

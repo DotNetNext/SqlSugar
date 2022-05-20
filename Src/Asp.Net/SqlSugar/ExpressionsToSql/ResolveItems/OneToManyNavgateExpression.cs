@@ -14,6 +14,7 @@ namespace SqlSugar
         private EntityInfo ProPertyEntity;
         private Navigate Navigat;
         public string ShorName;
+        public string PropertyShortName;
         private string MemberName;
         private string MethodName;
         private string whereSql;
@@ -41,8 +42,13 @@ namespace SqlSugar
                     result = ValidateNav(result, memberExp.Arguments[0] as MemberExpression, memberExp.Arguments[0]);
                     if (memberExp.Arguments.Count > 1)
                     {
+                        var pars = ExpressionTool.ExpressionParameters(memberExp.Arguments.Last());
+                        if (pars != null && pars.Any(z => z.Type == ProPertyEntity.Type))
+                        {
+                            PropertyShortName = pars.First(z => z.Type == ProPertyEntity.Type).Name;
+                        }
                         whereSql = GetWhereSql(memberExp);
-                    }
+                    }           
                 }
             }
             return result;
@@ -51,8 +57,16 @@ namespace SqlSugar
         private string GetWhereSql(MethodCallExpression memberExp)
         {
             var whereExp = memberExp.Arguments[1];
-            var result= this.methodCallExpressionResolve.GetNewExpressionValue(whereExp);
-            return result;
+            if (PropertyShortName.HasValue())
+            {
+                var result = this.methodCallExpressionResolve.GetNewExpressionValue(whereExp, ResolveExpressType.WhereMultiple);
+                return result;
+            }
+            else
+            {
+                var result = this.methodCallExpressionResolve.GetNewExpressionValue(whereExp);
+                return result;
+            }
         }
 
         private bool ValidateNav(bool result, MemberExpression memberExp, Expression childExpression)
@@ -129,6 +143,10 @@ namespace SqlSugar
             pk = queryable.QueryBuilder.Builder.GetTranslationColumnName(pk);
             name = queryable.QueryBuilder.Builder.GetTranslationColumnName(name);
             //selectName = queryable.QueryBuilder.Builder.GetTranslationColumnName(selectName);
+            if (PropertyShortName.HasValue())
+            {
+                queryable.QueryBuilder.TableShortName = PropertyShortName;
+            }
             mapper.Sql = queryable
                 .AS(this.ProPertyEntity.DbTableName)
                 .WhereIF(!string.IsNullOrEmpty(whereSql), whereSql)

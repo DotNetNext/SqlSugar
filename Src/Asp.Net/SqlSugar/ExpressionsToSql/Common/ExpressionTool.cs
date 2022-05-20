@@ -53,6 +53,19 @@ namespace SqlSugar
             }
         }
 
+        public static List<ParameterExpression> ExpressionParameters(Expression expression)
+        {
+             List<ParameterExpression> parameters = null;
+             if (expression is LambdaExpression)
+             {
+                  if ((expression as LambdaExpression).Parameters != null) 
+                  {
+                      parameters = (expression as LambdaExpression).Parameters.ToList();
+                  }
+             }
+             return parameters;
+        }
+
         public static object GetValue(object value,ExpressionContext context)
         {
             if (value == null) return value;
