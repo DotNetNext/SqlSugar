@@ -278,7 +278,7 @@ namespace SqlSugar
             {
                 var navList = selector(this.Context.Queryable<object>().AS(navEntityInfo.DbTableName).Where(conditionalModels));
 
-                var GroupQuery = (from l in list
+                var groupQuery = (from l in list
                                  join n in navList
                                       on navColumn.PropertyInfo.GetValue(l).ObjToString() 
                                       equals navPkColumn.PropertyInfo.GetValue(n).ObjToString()  
@@ -287,7 +287,7 @@ namespace SqlSugar
                                      l,
                                      n
                                  }).ToList();
-                foreach (var item in GroupQuery)
+                foreach (var item in groupQuery)
                 {
                   
                    // var setValue = navList.FirstOrDefault(x => navPkColumn.PropertyInfo.GetValue(x).ObjToString() == navColumn.PropertyInfo.GetValue(item).ObjToString());
@@ -325,7 +325,7 @@ namespace SqlSugar
                 {
                     //var setValue = navList
                     //  .Where(x => navColumn.PropertyInfo.GetValue(x).ObjToString() == listItemPkColumn.PropertyInfo.GetValue(item).ObjToString()).ToList();
-                    var GroupQuery = (from l in list
+                    var groupQuery = (from l in list
                                       join n in navList
                                            on listItemPkColumn.PropertyInfo.GetValue(l).ObjToString()
                                            equals navColumn.PropertyInfo.GetValue(n).ObjToString()
@@ -334,7 +334,7 @@ namespace SqlSugar
                                           l,
                                           n
                                       }).GroupBy(it => it.l).ToList();
-                    foreach (var item in GroupQuery)
+                    foreach (var item in groupQuery)
                     {
 
                         if (sqlObj.MappingExpressions.HasValue())
