@@ -1932,7 +1932,35 @@ namespace SqlSugar
             totalPage = (totalNumber + pageSize - 1) / pageSize;
             return result;
         }
-
+        public virtual string ToSqlString() 
+        {
+            var sqlObj = this.Clone().ToSql();
+            var result = sqlObj.Key;
+            if (result == null) return null;
+            if (sqlObj.Value != null)
+            {
+                foreach (var item in sqlObj.Value.OrderByDescending(it=>it.ParameterName.Length))
+                {
+                    if (item.Value == null || item.Value == DBNull.Value)
+                    {
+                        result = result.Replace(item.ParameterName, "null");
+                    }
+                    else if (UtilMethods.IsNumber(item.Value.GetType().Name))
+                    {
+                        result = result.Replace(item.ParameterName, item.Value.ObjToString());
+                    }
+                    else if(this.Context.CurrentConnectionConfig.MoreSettings?.DisableNvarchar==true||item.DbType==System.Data.DbType.AnsiString||this.Context.CurrentConnectionConfig.DbType==DbType.Sqlite)
+                    {
+                        result = result.Replace(item.ParameterName, $"'{item.Value.ObjToString()}'");
+                    }
+                    else  
+                    {
+                        result = result.Replace(item.ParameterName, $"N'{item.Value.ObjToString()}'");
+                    }
+                }
+            }
+            return result;
+        }
         public virtual KeyValuePair<string, List<SugarParameter>> ToSql()
         {
             if (!QueryBuilder.IsClone) 
