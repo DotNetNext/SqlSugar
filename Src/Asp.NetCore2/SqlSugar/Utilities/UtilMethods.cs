@@ -730,5 +730,33 @@ namespace SqlSugar
             string FirstDay = datetime.AddDays(daydiff).ToString("yyyy-MM-dd");
             return Convert.ToDateTime(FirstDay);
         }
+
+        public static string GetSqlString(ConnectionConfig connectionConfig,KeyValuePair<string, List<SugarParameter>> sqlObj, string result)
+        {
+            if (sqlObj.Value != null)
+            {
+                foreach (var item in sqlObj.Value.OrderByDescending(it => it.ParameterName.Length))
+                {
+                    if (item.Value == null || item.Value == DBNull.Value)
+                    {
+                        result = result.Replace(item.ParameterName, "null");
+                    }
+                    else if (UtilMethods.IsNumber(item.Value.GetType().Name))
+                    {
+                        result = result.Replace(item.ParameterName, item.Value.ObjToString());
+                    }
+                    else if (connectionConfig.MoreSettings?.DisableNvarchar == true || item.DbType == System.Data.DbType.AnsiString || connectionConfig.DbType == DbType.Sqlite)
+                    {
+                        result = result.Replace(item.ParameterName, $"'{item.Value.ObjToString()}'");
+                    }
+                    else
+                    {
+                        result = result.Replace(item.ParameterName, $"N'{item.Value.ObjToString()}'");
+                    }
+                }
+            }
+
+            return result;
+        }
     }
 }

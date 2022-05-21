@@ -93,6 +93,7 @@ namespace SqlSugar
         IUpdateable<T> RemoveDataCache(string likeString);
         IUpdateable<T> CallEntityMethod(Expression<Action<T>> method);
         KeyValuePair<string,List<SugarParameter>> ToSql();
+        string ToSqlString();
         void AddQueue();
         SplitTableUpdateProvider<T> SplitTable(Func<List<SplitTableInfo>, IEnumerable<SplitTableInfo>> getTableNamesFunc);
         SplitTableUpdateByObjectProvider<T> SplitTable();
