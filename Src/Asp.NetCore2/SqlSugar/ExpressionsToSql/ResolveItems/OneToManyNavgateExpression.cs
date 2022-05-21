@@ -153,7 +153,7 @@ namespace SqlSugar
             mapper.Sql = queryable
                 .AS(this.ProPertyEntity.DbTableName)
                 .WhereIF(!string.IsNullOrEmpty(whereSql), whereSql)
-                .Where($" {name}={ShorName}.{pk} ").Select(" COUNT(1) ").ToSql().Key;
+                .Where($" {name}={ShorName}.{pk} ").Select(MethodName=="Any"?"1":" COUNT(1) ").ToSql().Key;
             mapper.Sql = $" ({mapper.Sql}) ";
             mapper.Sql = GetMethodSql(mapper.Sql);
             return mapper;
@@ -163,7 +163,7 @@ namespace SqlSugar
         {
             if (MethodName == "Any") 
             {
-                return $" ({sql}>0 ) ";
+                return $" ( EXISTS {sql} ) ";
             }
             return sql;
         }
