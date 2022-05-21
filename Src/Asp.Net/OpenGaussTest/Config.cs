@@ -10,7 +10,10 @@ namespace OrmTest
     /// Setting up the database name does not require you to create the database
     /// docker快速创建测试容器：
     /// docker run -p 5432:5432 -eGAUSS_USER=gauss  -eGAUSS_PASSWORD=Gauss666 --name OpenGaussTest lsqtzj/openeuler_open_gauss:latest
-    /// 等到容器提示 ==> START Service SUCCESSFUL ... 
+    /// 等到容器提示 ==> START Service SUCCESSFUL ...     
+    /// 删除容器
+    /// docker stop OpenGaussTest 
+    /// docker rm OpenGaussTest
     /// 设置好数据库名不需要你去手动建库
     /// </summary>
     public class Config
