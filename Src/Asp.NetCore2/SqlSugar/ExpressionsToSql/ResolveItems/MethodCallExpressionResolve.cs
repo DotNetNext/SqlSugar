@@ -280,9 +280,16 @@ namespace SqlSugar
                     base.AppendValue(parameter, isLeft, parameterName);
                 }
             }
-            catch
+            catch(Exception ex)
             {
-                Check.Exception(true, string.Format(ErrorMessage.MethodError, express.Method.Name));
+                if (ex is SqlSugarException)
+                {
+                    Check.Exception(true, string.Format(ex.Message, express.Method.Name));
+                }
+                else
+                {
+                    Check.Exception(true, string.Format(ErrorMessage.MethodError, express.Method.Name));
+                }
             }
         }
 
