@@ -745,7 +745,7 @@ namespace SqlSugar
                     {
                         result = result.Replace(item.ParameterName, item.Value.ObjToString());
                     }
-                    else if (connectionConfig.MoreSettings?.DisableNvarchar == true || item.DbType == System.Data.DbType.AnsiString || this.Context.CurrentConnectionConfig.DbType == DbType.Sqlite)
+                    else if (connectionConfig.MoreSettings?.DisableNvarchar == true || item.DbType == System.Data.DbType.AnsiString || connectionConfig.DbType == DbType.Sqlite)
                     {
                         result = result.Replace(item.ParameterName, $"'{item.Value.ObjToString()}'");
                     }
