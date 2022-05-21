@@ -41,6 +41,20 @@ namespace OrmTest
 				sno = "a",
 				username = "admin"
 			}).ExecuteCommand();
+			db.Insertable(new OperatorInfo()
+			{
+				id = "3",
+				createTime = DateTime.Now,
+				isDel = 1,
+				isDisabled = 1,
+				openid = "",
+				phone = "",
+				pwd = "",
+				realname = "a01",
+				remark = "a",
+				sno = "a",
+				username = "admin"
+			}).ExecuteCommand();
 			var id=db.Insertable(new Role()
 			{
 				 id=1,
@@ -60,10 +74,19 @@ namespace OrmTest
 			db.Queryable<OperatorInfo>()
 				.Includes(x => x.Roles).Where(x => x.Roles.Any(z=>z.id==1))
 				.ToList();
-			var list=db.Queryable<OperatorInfo>()
-				.Includes(x => x.Roles).Where(x => x.Roles.Any())
-				.ToListAsync().GetAwaiter().GetResult();
-            var list2=db.Queryable<OperatorInfo>()
+			var list = db.Queryable<OperatorInfo>()
+				.Includes(x => x.Roles).Where(x=>x.Roles.Any()).ToList();
+            if (list.Count != 2) 
+			{
+				throw new Exception("unit error");
+			}
+			var list3 = db.Queryable<OperatorInfo>()
+			.Includes(x => x.Roles).Where(x => x.Roles.Count()==0).ToList();
+			if (list3.Count != 1)
+			{
+				throw new Exception("unit error");
+			}
+			var list2=db.Queryable<OperatorInfo>()
                 .Includes(x => x.Roles.MappingField(z=>z.name,()=>x.username).ToList())
                 .ToList();
         }
