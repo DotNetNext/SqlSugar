@@ -135,7 +135,10 @@ namespace SqlSugar
         }
         private MapperSql GetOneToManySql()
         {
-            var pk = this.EntityInfo.Columns.First(it => it.IsPrimarykey == true).DbColumnName;
+            var pkColumn = this.EntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey == true);
+            Check.ExceptionEasy(pkColumn == null, $"{this.EntityInfo.EntityName} need primary key ",
+                $"导航属性 {this.EntityInfo.EntityName}需要主键");
+            var pk = pkColumn.DbColumnName;
             var name = this.ProPertyEntity.Columns.First(it => it.PropertyName == Navigat.Name).DbColumnName;
             //var selectName = this.ProPertyEntity.Columns.First(it => it.PropertyName == MemberName).DbColumnName;
             MapperSql mapper = new MapperSql();
