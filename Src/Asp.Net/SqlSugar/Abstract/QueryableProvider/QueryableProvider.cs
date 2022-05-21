@@ -106,6 +106,15 @@ namespace SqlSugar
             result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression,JoinType.Left));
             return result;
         }
+        public ISugarQueryable<T, T2> FullJoin<T2>(Expression<Func<T, T2, bool>> joinExpression)
+        {
+            this.Context.InitMappingInfo<T2>();
+            var result = InstanceFactory.GetQueryable<T, T2>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression, JoinType.Full));
+            return result;
+        }
         public ISugarQueryable<T, T2> RightJoin<T2>(Expression<Func<T, T2, bool>> joinExpression)
         {
             this.Context.InitMappingInfo<T2>();
@@ -519,17 +528,21 @@ namespace SqlSugar
                                 FieldValue = value.ObjToString(),
                                 CSharpTypeName=column.PropertyInfo.PropertyType.Name
                             });
-                            if (value != null && value.GetType().IsEnum()) 
+                            if (value != null && value.GetType().IsEnum())
                             {
                                 if (this.Context.CurrentConnectionConfig?.MoreSettings?.TableEnumIsString == true)
                                 {
 
                                 }
-                                else 
+                                else
                                 {
                                     data.Value.FieldValue = Convert.ToInt64(value).ObjToString();
                                 }
 
+                            }
+                            else if (value != null && column.PropertyInfo.PropertyType == UtilConstants.DateType) 
+                            {
+                                data.Value.FieldValue = value.ObjToDate().ToString("yyyy-MM-dd HH:mm:ss.ffffff");
                             }
                             cons.ConditionalList.Add(data);
                             if (this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL)
@@ -600,6 +613,12 @@ namespace SqlSugar
         public virtual ISugarQueryable<T> Having(Expression<Func<T, bool>> expression)
         {
             this._Having(expression);
+            return this;
+        }
+        public virtual ISugarQueryable<T> HavingIF(bool isHaving,Expression<Func<T, bool>> expression)
+        {
+            if(isHaving)
+             this._Having(expression);
             return this;
         }
         public virtual ISugarQueryable<T> Having(string whereString, object parameters = null)
@@ -749,6 +768,7 @@ namespace SqlSugar
         }
         public virtual ISugarQueryable<T> OrderBy(string orderFileds)
         {
+            orderFileds = orderFileds.ToCheckField();
             var orderByValue = QueryBuilder.OrderByValue;
             if (QueryBuilder.OrderByValue.IsNullOrEmpty())
             {
@@ -760,6 +780,11 @@ namespace SqlSugar
         public virtual ISugarQueryable<T> OrderBy(Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc)
         {
             this._OrderBy(expression, type);
+            return this;
+        }
+        public virtual ISugarQueryable<T> OrderByDescending(Expression<Func<T, object>> expression)
+        {
+            this._OrderBy(expression, OrderByType.Desc);
             return this;
         }
         public virtual ISugarQueryable<T> GroupBy(Expression<Func<T, object>> expression)
@@ -785,6 +810,7 @@ namespace SqlSugar
 
         public virtual ISugarQueryable<T> GroupBy(string groupFileds)
         {
+            groupFileds = groupFileds.ToCheckField();
             var croupByValue = QueryBuilder.GroupByValue;
             if (QueryBuilder.GroupByValue.IsNullOrEmpty())
             {
@@ -906,7 +932,7 @@ namespace SqlSugar
 
         public virtual List<TResult> ToList<TResult>(Expression<Func<T, TResult>> expression)
         {
-            if (this.QueryBuilder.Includes.Count > 0)
+            if (this.QueryBuilder.Includes != null && this.QueryBuilder.Includes.Count > 0)
             {
                 var list = this.ToList().Select(expression.Compile()).ToList();
                 return list;
@@ -914,6 +940,20 @@ namespace SqlSugar
             else 
             {
                 var list = this.Select(expression).ToList();
+                return list;
+            }
+        }
+        public async virtual Task<List<TResult>> ToListAsync<TResult>(Expression<Func<T, TResult>> expression)
+        {
+            if (this.QueryBuilder.Includes != null && this.QueryBuilder.Includes.Count > 0)
+            {
+                var result = await this.ToListAsync();
+                var list =  result.Select(expression.Compile()).ToList();
+                return list;
+            }
+            else
+            {
+                var list = await this.Select(expression).ToListAsync();
                 return list;
             }
         }
@@ -1880,6 +1920,19 @@ namespace SqlSugar
             pageIndex = _PageList(pageIndex, pageSize);
             return ToList();
         }
+        public virtual List<TResult> ToPageList<TResult>(int pageIndex, int pageSize, ref int totalNumber,Expression<Func<T, TResult>> expression) 
+        {
+            if (this.QueryBuilder.Includes!=null&&this.QueryBuilder.Includes.Count > 0)
+            {
+                var list = this.ToPageList(pageIndex,pageSize,ref totalNumber).Select(expression.Compile()).ToList();
+                return list;
+            }
+            else
+            {
+                var list = this.Select(expression).ToPageList(pageIndex, pageSize, ref totalNumber).ToList();
+                return list;
+            }
+        }
         public virtual List<T> ToPageList(int pageIndex, int pageSize, ref int totalNumber)
         {
             var oldMapping = this.Context.MappingTables;
@@ -1893,6 +1946,15 @@ namespace SqlSugar
             totalPage = (totalNumber + pageSize - 1) / pageSize;
             return result;
         }
+        public virtual string ToSqlString()
+        {
+            var sqlObj = this.Clone().ToSql();
+            var result = sqlObj.Key;
+            if (result == null) return null;
+            result = UtilMethods.GetSqlString(this.Context.CurrentConnectionConfig,sqlObj, result);
+            return result;
+        }
+
 
         public virtual KeyValuePair<string, List<SugarParameter>> ToSql()
         {
@@ -2128,6 +2190,20 @@ namespace SqlSugar
         {
             pageIndex = _PageList(pageIndex, pageSize);
             return ToListAsync();
+        }
+        public async virtual Task<List<TResult>> ToPageListAsync<TResult>(int pageIndex, int pageSize, RefAsync<int> totalNumber, Expression<Func<T, TResult>> expression)
+        {
+            if (this.QueryBuilder.Includes!=null&&this.QueryBuilder.Includes.Count > 0)
+            {
+                var pList = await this.ToPageListAsync(pageIndex, pageSize, totalNumber);
+                var list = pList.Select(expression.Compile()).ToList();
+                return list;
+            }
+            else
+            {
+                var list = await this.Select(expression).ToPageListAsync(pageIndex, pageSize, totalNumber) ;
+                return list;
+            }
         }
         public async Task<List<T>> ToPageListAsync(int pageIndex, int pageSize, RefAsync<int> totalNumber)
         {
@@ -3368,6 +3444,15 @@ namespace SqlSugar
             result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression, JoinType.Left));
             return result;
         }
+        public ISugarQueryable<T, T2, T3> FullJoin<T3>(Expression<Func<T, T2, T3, bool>> joinExpression)
+        {
+            this.Context.InitMappingInfo<T3>();
+            var result = InstanceFactory.GetQueryable<T, T2, T3>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression, JoinType.Full));
+            return result;
+        }
         public ISugarQueryable<T, T2, T3> RightJoin<T3>(Expression<Func<T, T2, T3, bool>> joinExpression)
         {
             this.Context.InitMappingInfo<T3>();
@@ -3468,7 +3553,16 @@ namespace SqlSugar
             _OrderBy(expression, type);
             return this;
         }
-
+        public new virtual ISugarQueryable<T,T2> OrderByDescending(Expression<Func<T, object>> expression)
+        {
+            this._OrderBy(expression, OrderByType.Desc);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2> OrderByDescending(Expression<Func<T,T2, object>> expression)
+        {
+            this._OrderBy(expression, OrderByType.Desc);
+            return this;
+        }
         public new ISugarQueryable<T, T2> OrderBy(Expression<Func<T, object>> expression, OrderByType type)
         {
             _OrderBy(expression, type);
@@ -3495,6 +3589,18 @@ namespace SqlSugar
         #endregion
 
         #region GroupBy
+        public new virtual ISugarQueryable<T,T2> HavingIF(bool isHaving, Expression<Func<T, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
+            return this;
+        }
+        public  virtual ISugarQueryable<T, T2> HavingIF(bool isHaving, Expression<Func<T,T2, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
+            return this;
+        }
         public new ISugarQueryable<T, T2> GroupBy(Expression<Func<T, object>> expression)
         {
             _GroupBy(expression);
@@ -3776,6 +3882,15 @@ namespace SqlSugar
             result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression, JoinType.Left));
             return result;
         }
+        public ISugarQueryable<T, T2, T3, T4> FullJoin<T4>(Expression<Func<T, T2, T3, T4, bool>> joinExpression)
+        {
+            this.Context.InitMappingInfo<T4>();
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression, JoinType.Full));
+            return result;
+        }
         public ISugarQueryable<T, T2, T3, T4> RightJoin<T4>(Expression<Func<T, T2, T3, T4, bool>> joinExpression)
         {
             this.Context.InitMappingInfo<T4>();
@@ -3838,9 +3953,42 @@ namespace SqlSugar
             base.Having(whereString, whereObj);
             return this;
         }
+        public new virtual ISugarQueryable<T, T2,T3> HavingIF(bool isHaving, Expression<Func<T, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
+            return this;
+        }
+        public  virtual ISugarQueryable<T, T2,T3> HavingIF(bool isHaving, Expression<Func<T, T2, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
+            return this;
+        }
+        public  virtual ISugarQueryable<T, T2, T3> HavingIF(bool isHaving, Expression<Func<T, T2,T3, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
+            return this;
+        }
         #endregion
 
         #region Order
+        public new virtual ISugarQueryable<T, T2,T3> OrderByDescending(Expression<Func<T, object>> expression)
+        {
+            this._OrderBy(expression, OrderByType.Desc);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2,T3> OrderByDescending(Expression<Func<T, T2, object>> expression)
+        {
+            this._OrderBy(expression, OrderByType.Desc);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2,T3> OrderByDescending(Expression<Func<T, T2,T3, object>> expression)
+        {
+            this._OrderBy(expression, OrderByType.Desc);
+            return this;
+        }
         public new ISugarQueryable<T, T2,T3> OrderBy(string orderFileds)
         {
             base.OrderBy(orderFileds);
@@ -4254,6 +4402,15 @@ namespace SqlSugar
             result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression, JoinType.Left));
             return result;
         }
+        public ISugarQueryable<T, T2, T3, T4, T5> FullJoin<T5>(Expression<Func<T, T2, T3, T4, T5, bool>> joinExpression)
+        {
+            this.Context.InitMappingInfo<T5>();
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4, T5>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression, JoinType.Full));
+            return result;
+        }
         public ISugarQueryable<T, T2, T3, T4, T5> RightJoin<T5>(Expression<Func<T, T2, T3, T4, T5, bool>> joinExpression)
         {
             this.Context.InitMappingInfo<T5>();
@@ -4380,6 +4537,26 @@ namespace SqlSugar
         #endregion
 
         #region OrderBy
+        public new virtual ISugarQueryable<T, T2, T3, T4> OrderByDescending(Expression<Func<T, object>> expression)
+        {
+            this._OrderBy(expression, OrderByType.Desc);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4> OrderByDescending(Expression<Func<T, T2, object>> expression)
+        {
+            this._OrderBy(expression, OrderByType.Desc);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4> OrderByDescending(Expression<Func<T, T2, T3, object>> expression)
+        {
+            this._OrderBy(expression, OrderByType.Desc);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3,T4> OrderByDescending(Expression<Func<T, T2, T3, T4, object>> expression)
+        {
+            this._OrderBy(expression, OrderByType.Desc);
+            return this;
+        }
         public new ISugarQueryable<T, T2,T3,T4> OrderBy(string orderFileds)
         {
             base.OrderBy(orderFileds);
@@ -4485,6 +4662,31 @@ namespace SqlSugar
         public new ISugarQueryable<T, T2, T3, T4> Having(string whereString, object whereObj)
         {
             base.Having(whereString, whereObj);
+            return this;
+        }
+
+        public  new virtual ISugarQueryable<T, T2, T3,T4> HavingIF(bool isHaving, Expression<Func<T, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
+            return this;
+        }
+        public  virtual ISugarQueryable<T, T2, T3,T4> HavingIF(bool isHaving, Expression<Func<T, T2, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
+            return this;
+        }
+        public  virtual ISugarQueryable<T, T2, T3,T4> HavingIF(bool isHaving, Expression<Func<T, T2, T3, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4> HavingIF(bool isHaving, Expression<Func<T, T2, T3,T4, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
             return this;
         }
         #endregion
@@ -4773,6 +4975,15 @@ namespace SqlSugar
             result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression, JoinType.Left));
             return result;
         }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6> FullJoin<T6>(Expression<Func<T, T2, T3, T4, T5, T6, bool>> joinExpression)
+        {
+            this.Context.InitMappingInfo<T6>();
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression, JoinType.Full));
+            return result;
+        }
         public ISugarQueryable<T, T2, T3, T4, T5, T6> RightJoin<T6>(Expression<Func<T, T2, T3, T4, T5, T6, bool>> joinExpression)
         {
             this.Context.InitMappingInfo<T6>();
@@ -4917,6 +5128,31 @@ namespace SqlSugar
         #endregion
 
         #region OrderBy
+        public new virtual ISugarQueryable<T, T2, T3, T4, T5> OrderByDescending(Expression<Func<T, object>> expression)
+        {
+            this._OrderBy(expression, OrderByType.Desc);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4, T5> OrderByDescending(Expression<Func<T, T2, object>> expression)
+        {
+            this._OrderBy(expression, OrderByType.Desc);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4, T5> OrderByDescending(Expression<Func<T, T2, T3, object>> expression)
+        {
+            this._OrderBy(expression, OrderByType.Desc);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4, T5> OrderByDescending(Expression<Func<T, T2, T3, T4, object>> expression)
+        {
+            this._OrderBy(expression, OrderByType.Desc);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4,T5> OrderByDescending(Expression<Func<T, T2, T3, T4, T5, object>> expression)
+        {
+            this._OrderBy(expression, OrderByType.Desc);
+            return this;
+        }
         public new ISugarQueryable<T, T2, T3, T4,T5> OrderBy(string orderFileds)
         {
             base.OrderBy(orderFileds);
@@ -5044,6 +5280,37 @@ namespace SqlSugar
         public new ISugarQueryable<T, T2, T3, T4,T5> Having(string whereString, object whereObj)
         {
             base.Having(whereString, whereObj);
+            return this;
+        }
+
+        public new virtual ISugarQueryable<T, T2, T3, T4,T5> HavingIF(bool isHaving, Expression<Func<T, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4, T5> HavingIF(bool isHaving, Expression<Func<T, T2, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4, T5> HavingIF(bool isHaving, Expression<Func<T, T2, T3, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4, T5> HavingIF(bool isHaving, Expression<Func<T, T2, T3, T4, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4, T5> HavingIF(bool isHaving, Expression<Func<T, T2, T3, T4,T5, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
             return this;
         }
         #endregion
@@ -5254,6 +5521,15 @@ namespace SqlSugar
             result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression, JoinType.Left));
             return result;
         }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> FullJoin<T7>(Expression<Func<T, T2, T3, T4, T5, T6, T7, bool>> joinExpression)
+        {
+            this.Context.InitMappingInfo<T7>();
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression, JoinType.Full));
+            return result;
+        }
         public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> RightJoin<T7>(Expression<Func<T, T2, T3, T4, T5, T6, T7, bool>> joinExpression)
         {
             this.Context.InitMappingInfo<T7>();
@@ -5411,6 +5687,37 @@ namespace SqlSugar
         #endregion
 
         #region OrderBy
+        public new virtual ISugarQueryable<T, T2, T3, T4, T5, T6> OrderByDescending(Expression<Func<T, object>> expression)
+        {
+            this._OrderBy(expression, OrderByType.Desc);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6> OrderByDescending(Expression<Func<T, T2, object>> expression)
+        {
+            this._OrderBy(expression, OrderByType.Desc);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6> OrderByDescending(Expression<Func<T, T2, T3, object>> expression)
+        {
+            this._OrderBy(expression, OrderByType.Desc);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6> OrderByDescending(Expression<Func<T, T2, T3, T4, object>> expression)
+        {
+            this._OrderBy(expression, OrderByType.Desc);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6> OrderByDescending(Expression<Func<T, T2, T3, T4, T5, object>> expression)
+        {
+            this._OrderBy(expression, OrderByType.Desc);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4, T5,T6> OrderByDescending(Expression<Func<T, T2, T3, T4, T5, T6, object>> expression)
+        {
+            this._OrderBy(expression, OrderByType.Desc);
+            return this;
+        }
+
         public new ISugarQueryable<T, T2, T3, T4, T5,T6> OrderBy(string orderFileds)
         {
             base.OrderBy(orderFileds);
@@ -5559,6 +5866,43 @@ namespace SqlSugar
         public new ISugarQueryable<T, T2, T3, T4, T5,T6> Having(string whereString, object whereObj)
         {
             base.Having(whereString, whereObj);
+            return this;
+        }
+
+        public new virtual ISugarQueryable<T, T2, T3, T4, T5,T6> HavingIF(bool isHaving, Expression<Func<T, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6> HavingIF(bool isHaving, Expression<Func<T, T2, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6> HavingIF(bool isHaving, Expression<Func<T, T2, T3, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6> HavingIF(bool isHaving, Expression<Func<T, T2, T3, T4, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6> HavingIF(bool isHaving, Expression<Func<T, T2, T3, T4, T5, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6> HavingIF(bool isHaving, Expression<Func<T, T2, T3, T4, T5,T6, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
             return this;
         }
         #endregion
@@ -5767,6 +6111,15 @@ namespace SqlSugar
             result.SqlBuilder = this.SqlBuilder;
             result.Context = this.Context;
             result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression, JoinType.Left));
+            return result;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> FullJoin<T8>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, bool>> joinExpression)
+        {
+            this.Context.InitMappingInfo<T8>();
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression, JoinType.Full));
             return result;
         }
         public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> RightJoin<T8>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, bool>> joinExpression)
@@ -6067,6 +6420,48 @@ namespace SqlSugar
                 _OrderBy(expression, type);
             return this;
         }
+        public new virtual ISugarQueryable<T, T2, T3, T4, T5, T6,T7> HavingIF(bool isHaving, Expression<Func<T, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7> HavingIF(bool isHaving, Expression<Func<T, T2, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7> HavingIF(bool isHaving, Expression<Func<T, T2, T3, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7> HavingIF(bool isHaving, Expression<Func<T, T2, T3, T4, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7> HavingIF(bool isHaving, Expression<Func<T, T2, T3, T4, T5, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7> HavingIF(bool isHaving, Expression<Func<T, T2, T3, T4, T5, T6, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4, T5, T6, T7> HavingIF(bool isHaving, Expression<Func<T, T2, T3, T4, T5, T6,T7, bool>> expression)
+        {
+            if (isHaving)
+                this._Having(expression);
+            return this;
+        }
         #endregion
 
         #region Aggr
@@ -6273,6 +6668,15 @@ namespace SqlSugar
             result.SqlBuilder = this.SqlBuilder;
             result.Context = this.Context;
             result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression, JoinType.Left));
+            return result;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> FullJoin<T9>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, bool>> joinExpression)
+        {
+            this.Context.InitMappingInfo<T9>();
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression, JoinType.Full));
             return result;
         }
         public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> RightJoin<T9>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, bool>> joinExpression)
@@ -6814,6 +7218,15 @@ namespace SqlSugar
             result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression, JoinType.Left));
             return result;
         }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> FullJoin<T10>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, bool>> joinExpression)
+        {
+            this.Context.InitMappingInfo<T10>();
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression, JoinType.Full));
+            return result;
+        }
         public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> RightJoin<T10>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, bool>> joinExpression)
         {
             this.Context.InitMappingInfo<T10>();
@@ -7348,6 +7761,15 @@ namespace SqlSugar
             result.SqlBuilder = this.SqlBuilder;
             result.Context = this.Context;
             result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression, JoinType.Left));
+            return result;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> FullJoin<T11>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, bool>> joinExpression)
+        {
+            this.Context.InitMappingInfo<T11>();
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression, JoinType.Full));
             return result;
         }
         public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> RightJoin<T11>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, bool>> joinExpression)
@@ -7915,6 +8337,15 @@ namespace SqlSugar
             result.SqlBuilder = this.SqlBuilder;
             result.Context = this.Context;
             result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression, JoinType.Left));
+            return result;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> FullJoin<T12>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, bool>> joinExpression)
+        {
+            this.Context.InitMappingInfo<T12>();
+            var result = InstanceFactory.GetQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(this.Context.CurrentConnectionConfig);
+            result.SqlBuilder = this.SqlBuilder;
+            result.Context = this.Context;
+            result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression, JoinType.Full));
             return result;
         }
         public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> RightJoin<T12>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, bool>> joinExpression)

@@ -32,6 +32,7 @@ namespace OrmTest
         public static void Init()
         {
             UByteArray.Init();
+            UCustom021.Inti();
             UCustom020.Init();
             UCustom019.Init();
             UnitManyToMany.Init();

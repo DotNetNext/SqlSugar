@@ -85,6 +85,7 @@
     <Compile Include="UnitTest\UCodeFirst.cs" />
     <Compile Include="UnitTest\UCustom01.cs" />
     <Compile Include="UnitTest\UCustom011.cs" />
+    <Compile Include="UnitTest\UCustom02.cs" />
     <Compile Include="UnitTest\UDelete.cs" />
     <Compile Include="UnitTest\UJson.cs" />
     <Compile Include="UnitTest\Updateable.cs" />

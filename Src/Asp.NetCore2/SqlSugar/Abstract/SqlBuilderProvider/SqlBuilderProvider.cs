@@ -160,6 +160,7 @@ namespace SqlSugar
                     }
                     string oldName = item.FieldName;
                     item.FieldName = GetTranslationColumnName(item.FieldName);
+                    item.FieldName = item.FieldName.ToCheckField();
                     switch (item.ConditionalType)
                     {
                         case ConditionalType.Equal:

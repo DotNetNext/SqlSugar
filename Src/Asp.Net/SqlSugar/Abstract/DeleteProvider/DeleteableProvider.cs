@@ -446,7 +446,14 @@ namespace SqlSugar
                 DeleteBuilder.TableWithString = lockString;
             return this;
         }
-
+        public virtual string ToSqlString()
+        {
+            var sqlObj = this.ToSql();
+            var result = sqlObj.Key;
+            if (result == null) return null;
+            result = UtilMethods.GetSqlString(this.Context.CurrentConnectionConfig, sqlObj, result);
+            return result;
+        }
         public KeyValuePair<string, List<SugarParameter>> ToSql()
         {
             DeleteBuilder.EntityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>();

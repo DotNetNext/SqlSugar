@@ -42,6 +42,7 @@ namespace SqlSugar
         IInsertable<T> RemoveDataCache();
         IInsertable<T> RemoveDataCache(string likeString);
         KeyValuePair<string, List<SugarParameter>> ToSql();
+        string ToSqlString();
         SqlServerBlukCopy UseSqlServer();
         MySqlBlukCopy<T> UseMySql();
         OracleBlukCopy UseOracle();

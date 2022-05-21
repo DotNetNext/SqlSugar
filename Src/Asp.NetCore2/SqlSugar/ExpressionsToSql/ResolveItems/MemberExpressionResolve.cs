@@ -86,6 +86,12 @@ namespace SqlSugar
                         AppendValue(parameter, isLeft, value);
                     }
                 }
+                else if(expression.Expression is UnaryExpression&&(expression.Expression as UnaryExpression).Operand is ParameterExpression) 
+                {
+                    var memParameter = (expression.Expression as UnaryExpression).Operand as ParameterExpression;
+                    var name = ExpressionTool.GetMemberName(expression);
+                    this.Context.Result.Append(this.Context.GetTranslationColumnName(memParameter.Name+"."+name));
+                }
                 else
                 {
                     ResolveMemberValue(parameter, baseParameter, isLeft, isSetTempData, expression);

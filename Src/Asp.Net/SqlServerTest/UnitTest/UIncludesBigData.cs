@@ -32,6 +32,13 @@ namespace OrmTest
                            .Where(t => t.DeleteTime == null)
                            .OrderBy(t => t.StationCode, OrderByType.Asc)
                            .ToList();
+            db.Aop.OnLogExecuting = (s, p) =>
+            {
+                Console.WriteLine(s);
+            };
+            var data2 = db.Queryable<StationEntity>()
+                      .Where(x=>x.StationConfigs.Any(z=>z.BaseStationConfig.KeyID==x.LineID))
+                      .ToList();
             var b1 = DateTime.Now.Subtract(b).TotalMilliseconds;
 
             Console.WriteLine("#### SqlQueryable End ####");

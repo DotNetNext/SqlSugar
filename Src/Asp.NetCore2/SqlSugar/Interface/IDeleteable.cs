@@ -36,6 +36,7 @@ namespace SqlSugar
         IDeleteable<T> RemoveDataCache();
         IDeleteable<T> RemoveDataCache(string likeString);
         KeyValuePair<string, List<SugarParameter>> ToSql();
+        string ToSqlString();
         IDeleteable<T> EnableQueryFilter();
         SplitTableDeleteProvider<T> SplitTable(Func<List<SplitTableInfo>, IEnumerable<SplitTableInfo>> getTableNamesFunc);
         SplitTableDeleteByObjectProvider<T> SplitTable();

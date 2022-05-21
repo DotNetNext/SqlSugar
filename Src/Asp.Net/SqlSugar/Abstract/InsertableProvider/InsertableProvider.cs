@@ -53,6 +53,14 @@ namespace SqlSugar
             After(sql, null);
             return result;
         }
+        public virtual string ToSqlString()
+        {
+            var sqlObj = this.ToSql();
+            var result = sqlObj.Key;
+            if (result == null) return null;
+            result = UtilMethods.GetSqlString(this.Context.CurrentConnectionConfig, sqlObj, result);
+            return result;
+        }
         public virtual KeyValuePair<string, List<SugarParameter>> ToSql()
         {
             InsertBuilder.IsReturnIdentity = true;

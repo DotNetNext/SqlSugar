@@ -14,6 +14,7 @@ namespace SqlSugar
         private EntityInfo ProPertyEntity;
         private Navigate Navigat;
         public string ShorName;
+        public string PropertyShortName;
         private string MemberName;
         private string MethodName;
         private string whereSql;
@@ -41,8 +42,13 @@ namespace SqlSugar
                     result = ValidateNav(result, memberExp.Arguments[0] as MemberExpression, memberExp.Arguments[0]);
                     if (memberExp.Arguments.Count > 1)
                     {
+                        var pars = ExpressionTool.ExpressionParameters(memberExp.Arguments.Last());
+                        if (pars != null&& ProPertyEntity!=null&& pars.Any(z => z.Type == ProPertyEntity.Type))
+                        {
+                            PropertyShortName = pars.First(z => z.Type == ProPertyEntity.Type).Name;
+                        }
                         whereSql = GetWhereSql(memberExp);
-                    }
+                    }           
                 }
             }
             return result;
@@ -51,8 +57,16 @@ namespace SqlSugar
         private string GetWhereSql(MethodCallExpression memberExp)
         {
             var whereExp = memberExp.Arguments[1];
-            var result= this.methodCallExpressionResolve.GetNewExpressionValue(whereExp);
-            return result;
+            if (PropertyShortName.HasValue()&& Navigat!=null&& Navigat.NavigatType==NavigateType.OneToMany)
+            {
+                var result = this.methodCallExpressionResolve.GetNewExpressionValue(whereExp, ResolveExpressType.WhereMultiple);
+                return result;
+            }
+            else
+            {
+                var result = this.methodCallExpressionResolve.GetNewExpressionValue(whereExp);
+                return result;
+            }
         }
 
         private bool ValidateNav(bool result, MemberExpression memberExp, Expression childExpression)
@@ -109,19 +123,29 @@ namespace SqlSugar
             mappingA = queryable.QueryBuilder.Builder.GetTranslationColumnName(mappingA);
             mappingB = queryable.QueryBuilder.Builder.GetTranslationColumnName(mappingB);
             var bTableName = queryable.QueryBuilder.Builder.GetTranslationTableName(this.ProPertyEntity.DbTableName);
-            mapper.Sql = $" (select count(1) from {bTableName} {this.ProPertyEntity.DbTableName}_1  where  {this.ProPertyEntity.DbTableName}_1.{bPk} in (select {mappingB} from {mappingTableName} where {mappingA} = {ShorName}.{aPk} )  )";
+            mapper.Sql = $" (select {(MethodName == "Any" ? "1":" COUNT(1) ")} from {bTableName} {this.ProPertyEntity.DbTableName}_1  where  {this.ProPertyEntity.DbTableName}_1.{bPk} in (select {mappingB} from {mappingTableName} where {mappingA} = {ShorName}.{aPk} )  )";
             if (this.whereSql.HasValue())
             {
                 mapper.Sql = mapper.Sql.TrimEnd(')');
                 mapper.Sql = mapper.Sql + " AND " + this.whereSql+")";
             }
-            mapper.Sql = $" ({mapper.Sql}) ";
+            if (MethodName == "Any")
+            {
+                mapper.Sql = $" {mapper.Sql} ";
+            }
+            else 
+            {
+                mapper.Sql = $" ({mapper.Sql}) ";
+            }
             mapper.Sql = GetMethodSql(mapper.Sql);
             return mapper;
         }
         private MapperSql GetOneToManySql()
         {
-            var pk = this.EntityInfo.Columns.First(it => it.IsPrimarykey == true).DbColumnName;
+            var pkColumn = this.EntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey == true);
+            Check.ExceptionEasy(pkColumn == null, $"{this.EntityInfo.EntityName} need primary key ",
+                $"导航属性 {this.EntityInfo.EntityName}需要主键");
+            var pk = pkColumn.DbColumnName;
             var name = this.ProPertyEntity.Columns.First(it => it.PropertyName == Navigat.Name).DbColumnName;
             //var selectName = this.ProPertyEntity.Columns.First(it => it.PropertyName == MemberName).DbColumnName;
             MapperSql mapper = new MapperSql();
@@ -129,10 +153,14 @@ namespace SqlSugar
             pk = queryable.QueryBuilder.Builder.GetTranslationColumnName(pk);
             name = queryable.QueryBuilder.Builder.GetTranslationColumnName(name);
             //selectName = queryable.QueryBuilder.Builder.GetTranslationColumnName(selectName);
+            if (PropertyShortName.HasValue())
+            {
+                queryable.QueryBuilder.TableShortName = PropertyShortName;
+            }
             mapper.Sql = queryable
                 .AS(this.ProPertyEntity.DbTableName)
                 .WhereIF(!string.IsNullOrEmpty(whereSql), whereSql)
-                .Where($" {name}={ShorName}.{pk} ").Select(" COUNT(1) ").ToSql().Key;
+                .Where($" {name}={ShorName}.{pk} ").Select(MethodName=="Any"?"1":" COUNT(1) ").ToSql().Key;
             mapper.Sql = $" ({mapper.Sql}) ";
             mapper.Sql = GetMethodSql(mapper.Sql);
             return mapper;
@@ -142,7 +170,7 @@ namespace SqlSugar
         {
             if (MethodName == "Any") 
             {
-                return $" ({sql}>0 ) ";
+                return $" ( EXISTS {sql} ) ";
             }
             return sql;
         }

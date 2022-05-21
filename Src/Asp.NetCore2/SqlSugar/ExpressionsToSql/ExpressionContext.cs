@@ -134,6 +134,7 @@ namespace SqlSugar
             copyContext.IsSingle = this.IsSingle;
             copyContext.RootExpression = this.RootExpression;
             copyContext.TableEnumIsString = this.TableEnumIsString;
+            copyContext.SugarContext = this.SugarContext;
             return copyContext;
         }
         public ExpressionContext GetCopyContextWithMapping()
