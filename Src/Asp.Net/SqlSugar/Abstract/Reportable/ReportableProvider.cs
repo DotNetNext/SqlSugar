@@ -196,7 +196,7 @@ namespace SqlSugar
         }
         private object FormatValue(object value,EntityColumnInfo entityColumnInfo=null)
         {
-            if (entityColumnInfo != null && value == null&&this.Context.CurrentConnectionConfig.DbType==DbType.SqlServer) 
+            if (entityColumnInfo != null&&entityColumnInfo.UnderType==UtilConstants.DateType && value == null&&this.Context.CurrentConnectionConfig.DbType==DbType.SqlServer) 
             {
                 return $" CAST( NULL AS DATETIME) ";
             }
