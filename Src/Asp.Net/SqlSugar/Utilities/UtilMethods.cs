@@ -751,6 +751,14 @@ namespace SqlSugar
             {
                 foreach (var item in sqlObj.Value.OrderByDescending(it => it.ParameterName.Length))
                 {
+                    if (connectionConfig.MoreSettings == null) 
+                    {
+                        connectionConfig.MoreSettings = new ConnMoreSettings();
+                    }
+                    if (item.Value != null && item.Value is DateTime &&((DateTime)item.Value==DateTime.MinValue)) 
+                    {
+                        item.Value = connectionConfig.MoreSettings.DbMinDate;
+                    }
                     if (item.Value == null || item.Value == DBNull.Value)
                     {
                         result = result.Replace(item.ParameterName, "null");
