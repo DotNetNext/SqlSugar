@@ -108,7 +108,8 @@ namespace SqlSugar
                     IsAutoRemoveDataCache = it.MoreSettings.IsAutoRemoveDataCache,
                     IsWithNoLockQuery = it.MoreSettings.IsWithNoLockQuery,
                     TableEnumIsString = it.MoreSettings.TableEnumIsString,
-                    DisableMillisecond = it.MoreSettings.DisableMillisecond
+                    DisableMillisecond = it.MoreSettings.DisableMillisecond,
+                    DbMinDate=it.MoreSettings.DbMinDate
                 },
                 SqlMiddle = it.SqlMiddle == null ? null : new SqlMiddle
                 {
