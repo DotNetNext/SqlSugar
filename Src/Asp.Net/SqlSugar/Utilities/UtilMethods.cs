@@ -731,9 +731,22 @@ namespace SqlSugar
             string FirstDay = datetime.AddDays(daydiff).ToString("yyyy-MM-dd");
             return Convert.ToDateTime(FirstDay);
         }
-
-        public static string GetSqlString(ConnectionConfig connectionConfig,KeyValuePair<string, List<SugarParameter>> sqlObj, string result)
+        public static string GetSqlString(DbType dbType, string sql, SugarParameter []  parametres,bool DisableNvarchar=false) 
         {
+            if (parametres == null)
+                parametres = new SugarParameter[] { };
+            return GetSqlString(new ConnectionConfig()
+            {
+                DbType = dbType,
+                MoreSettings=new ConnMoreSettings() 
+                { 
+                     DisableNvarchar=DisableNvarchar
+                }
+            },new  KeyValuePair<string, List<SugarParameter>>(sql,parametres.ToList()));
+        }
+        public static string GetSqlString(ConnectionConfig connectionConfig,KeyValuePair<string, List<SugarParameter>> sqlObj)
+        {
+            var result = sqlObj.Key;
             if (sqlObj.Value != null)
             {
                 foreach (var item in sqlObj.Value.OrderByDescending(it => it.ParameterName.Length))
