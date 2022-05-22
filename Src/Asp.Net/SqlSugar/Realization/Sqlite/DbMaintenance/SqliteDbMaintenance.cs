@@ -258,6 +258,11 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override bool TruncateTable(string tableName)
+        {
+            base.TruncateTable(tableName);
+            return this.Context.Ado.ExecuteCommand($"UPDATE sqlite_sequence SET seq = 0 WHERE name = '{tableName}'") > 0;
+        }
         /// <summary>
         ///by current connection string
         /// </summary>
