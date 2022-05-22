@@ -108,7 +108,7 @@ namespace SqlSugar
         private object GetSelect<Y>(EntityColumnInfo it,Y  data)
         {
 
-            return string.Format(" {0} AS {1} ", FormatValue(it.PropertyInfo.GetValue(data,null)),it.PropertyName);
+            return string.Format(" {0} AS {1} ", FormatValue(it.PropertyInfo.GetValue(data,null), it),it.PropertyName);
         }
 
         private void NoClassMethod<Y>(Y data, StringBuilder sb,bool isLast)
@@ -194,8 +194,12 @@ namespace SqlSugar
             }
             return result;
         }
-        private object FormatValue(object value)
+        private object FormatValue(object value,EntityColumnInfo entityColumnInfo=null)
         {
+            if (entityColumnInfo != null && value == null&&this.Context.CurrentConnectionConfig.DbType==DbType.SqlServer) 
+            {
+                return $" CAST( NULL AS DATETIME) ";
+            }
             if (value == null)
                 return "null";
             var type =UtilMethods.GetUnderType(value.GetType());
