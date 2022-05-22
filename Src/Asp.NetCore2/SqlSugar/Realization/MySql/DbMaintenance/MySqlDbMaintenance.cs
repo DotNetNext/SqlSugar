@@ -34,7 +34,8 @@ namespace SqlSugar
                                     CASE WHEN is_nullable = 'YES'
                                     THEN true ELSE false END AS `IsNullable`,
                                     numeric_scale as Scale,
-                                    numeric_scale as DecimalDigits
+                                    numeric_scale as DecimalDigits,
+                                    LOCATE(  'unsigned',COLUMN_type   ) >0  as IsUnsigned
                                     FROM
                                     Information_schema.columns where TABLE_NAME='{0}' and  TABLE_SCHEMA=(select database()) ORDER BY ordinal_position";
                 return sql;
