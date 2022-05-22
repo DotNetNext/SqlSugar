@@ -1937,7 +1937,7 @@ namespace SqlSugar
             var sqlObj = this.Clone().ToSql();
             var result = sqlObj.Key;
             if (result == null) return null;
-            result = UtilMethods.GetSqlString(this.Context.CurrentConnectionConfig,sqlObj, result);
+            result = UtilMethods.GetSqlString(this.Context.CurrentConnectionConfig,sqlObj);
             return result;
         }
 

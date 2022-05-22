@@ -108,7 +108,8 @@ namespace SqlSugar
                     IsAutoRemoveDataCache = it.MoreSettings.IsAutoRemoveDataCache,
                     IsWithNoLockQuery = it.MoreSettings.IsWithNoLockQuery,
                     TableEnumIsString = it.MoreSettings.TableEnumIsString,
-                    DisableMillisecond = it.MoreSettings.DisableMillisecond
+                    DisableMillisecond = it.MoreSettings.DisableMillisecond,
+                    DbMinDate=it.MoreSettings.DbMinDate
                 },
                 SqlMiddle = it.SqlMiddle == null ? null : new SqlMiddle
                 {
@@ -730,13 +731,34 @@ namespace SqlSugar
             string FirstDay = datetime.AddDays(daydiff).ToString("yyyy-MM-dd");
             return Convert.ToDateTime(FirstDay);
         }
-
-        public static string GetSqlString(ConnectionConfig connectionConfig,KeyValuePair<string, List<SugarParameter>> sqlObj, string result)
+        public static string GetSqlString(DbType dbType, string sql, SugarParameter []  parametres,bool DisableNvarchar=false) 
         {
+            if (parametres == null)
+                parametres = new SugarParameter[] { };
+            return GetSqlString(new ConnectionConfig()
+            {
+                DbType = dbType,
+                MoreSettings=new ConnMoreSettings() 
+                { 
+                     DisableNvarchar=DisableNvarchar
+                }
+            },new  KeyValuePair<string, List<SugarParameter>>(sql,parametres.ToList()));
+        }
+        public static string GetSqlString(ConnectionConfig connectionConfig,KeyValuePair<string, List<SugarParameter>> sqlObj)
+        {
+            var result = sqlObj.Key;
             if (sqlObj.Value != null)
             {
                 foreach (var item in sqlObj.Value.OrderByDescending(it => it.ParameterName.Length))
                 {
+                    if (connectionConfig.MoreSettings == null) 
+                    {
+                        connectionConfig.MoreSettings = new ConnMoreSettings();
+                    }
+                    if (item.Value != null && item.Value is DateTime &&((DateTime)item.Value==DateTime.MinValue)) 
+                    {
+                        item.Value = connectionConfig.MoreSettings.DbMinDate;
+                    }
                     if (item.Value == null || item.Value == DBNull.Value)
                     {
                         result = result.Replace(item.ParameterName, "null");
@@ -744,6 +766,16 @@ namespace SqlSugar
                     else if (UtilMethods.IsNumber(item.Value.GetType().Name))
                     {
                         result = result.Replace(item.ParameterName, item.Value.ObjToString());
+                    }
+                    else if (item.Value is byte[])
+                    {
+                        result = result.Replace(item.ParameterName, "0x" + BitConverter.ToString((byte[])item.Value));
+                    }
+                    else if (item.Value.GetType() !=UtilConstants.StringType&& connectionConfig.DbType == DbType.PostgreSQL&& PostgreSQLDbBind.MappingTypesConst.Any(x =>x.Value.ToString().EqualCase(item.Value.GetType().Name))) 
+                    {
+                        var type =  PostgreSQLDbBind.MappingTypesConst.First(x => x.Value.ToString().EqualCase(item.Value.GetType().Name)).Key;
+                        var replaceValue= string.Format("CAST('{0}' AS {1})", item.Value, type);
+                        result = result.Replace(item.ParameterName, replaceValue);
                     }
                     else if (connectionConfig.MoreSettings?.DisableNvarchar == true || item.DbType == System.Data.DbType.AnsiString || connectionConfig.DbType == DbType.Sqlite)
                     {
