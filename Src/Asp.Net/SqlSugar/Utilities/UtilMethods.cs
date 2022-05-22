@@ -746,6 +746,16 @@ namespace SqlSugar
                     {
                         result = result.Replace(item.ParameterName, item.Value.ObjToString());
                     }
+                    else if (item.Value is byte[])
+                    {
+                        result = result.Replace(item.ParameterName, "0x" + BitConverter.ToString((byte[])item.Value));
+                    }
+                    else if (item.Value.GetType() !=UtilConstants.StringType&& connectionConfig.DbType == DbType.PostgreSQL&& PostgreSQLDbBind.MappingTypesConst.Any(x =>x.Value.ToString().EqualCase(item.Value.GetType().Name))) 
+                    {
+                        var type =  PostgreSQLDbBind.MappingTypesConst.First(x => x.Value.ToString().EqualCase(item.Value.GetType().Name)).Key;
+                        var replaceValue= string.Format("CAST('{0}' AS {1})", item.Value, type);
+                        result = result.Replace(item.ParameterName, replaceValue);
+                    }
                     else if (connectionConfig.MoreSettings?.DisableNvarchar == true || item.DbType == System.Data.DbType.AnsiString || connectionConfig.DbType == DbType.Sqlite)
                     {
                         result = result.Replace(item.ParameterName, $"'{item.Value.ObjToString()}'");
