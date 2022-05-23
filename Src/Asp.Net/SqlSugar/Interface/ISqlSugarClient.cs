@@ -44,6 +44,7 @@ namespace SqlSugar
         #endregion
 
         #region Other methods
+        SugarUnitOfWork CreateContext(bool isTran = true);
         SplitTableContext SplitHelper<T>() where T : class, new();
         SplitTableContextResult<T> SplitHelper<T>(T data) where T : class, new();
         SplitTableContextResult<T> SplitHelper<T>(List<T> data) where T : class, new();

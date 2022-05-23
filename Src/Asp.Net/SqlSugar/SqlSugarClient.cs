@@ -67,6 +67,19 @@ namespace SqlSugar
         #endregion
 
         #region SimpleClient
+        public SugarUnitOfWork CreateContext(bool isTran = true)
+        {
+            SugarUnitOfWork sugarUnitOf = new SugarUnitOfWork();
+            sugarUnitOf.Db = this;
+            sugarUnitOf.Tenant = this;
+            sugarUnitOf.IsTran = true;
+            this.Open();
+            if (isTran)
+            {
+                this.BeginTran();
+            }
+            return sugarUnitOf;
+        }
         public SimpleClient<T> GetSimpleClient<T>() where T : class, new()
         {
             return this.Context.GetSimpleClient<T>();

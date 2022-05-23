@@ -175,6 +175,11 @@ namespace SqlSugar
             return ScopedContext.GetDate();
         }
 
+        public SugarUnitOfWork CreateContext(bool isTran = true) 
+        {
+            return ScopedContext.CreateContext(isTran);
+        }
+
         public SimpleClient<T> GetSimpleClient<T>() where T : class, new()
         {
             return ScopedContext.GetSimpleClient<T>();

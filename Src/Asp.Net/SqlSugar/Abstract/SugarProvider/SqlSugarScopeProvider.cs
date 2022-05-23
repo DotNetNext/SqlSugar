@@ -188,7 +188,11 @@ namespace SqlSugar
         {
             return ScopedContext.GetDate();
         }
-
+        public SugarUnitOfWork CreateContext(bool isTran = true)
+        {
+            Check.ExceptionEasy(" var childDb=Db.GetConnection(configId);  use Db.CreateContext ", " 例如 var childDb=Db.GetConnection(configId);其中Db才能使用CreateContext，childDb不能使用");
+            return null;
+        }
         public SimpleClient<T> GetSimpleClient<T>() where T : class, new()
         {
             return ScopedContext.GetSimpleClient<T>();

@@ -103,6 +103,7 @@
     <Compile Include="Abstract\SaveableProvider\StorageableDataTable.cs" />
     <Compile Include="Abstract\SugarProvider\SqlSugarCoreProvider.cs" />
     <Compile Include="Abstract\UpdateProvider\SplitTableUpdateByObjectProvider.cs" />
+    <Compile Include="SugarUnitOfWork.cs" />
     <Compile Include="Entities\SugarAbMapping.cs" />
     <Compile Include="Entities\JoinMapper.cs" />
     <Compile Include="Enum\DbLockType.cs" />
