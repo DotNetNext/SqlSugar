@@ -87,7 +87,15 @@ namespace SqlSugar
             foreach (var item in properies)
             {
                 var value = Activator.CreateInstance(item.PropertyType);
-                value.GetType().GetProperty("Context").SetValue(value, this);
+                TenantAttribute tenantAttribute = item.PropertyType.GetGenericArguments()[0].GetCustomAttribute<TenantAttribute>();
+                if (tenantAttribute == null)
+                {
+                    value.GetType().GetProperty("Context").SetValue(value, this);
+                }
+                else 
+                {
+                    value.GetType().GetProperty("Context").SetValue(value, this.GetConnection(tenantAttribute.configId));
+                }
                 item.SetValue(result, value);
             }
             return result;
