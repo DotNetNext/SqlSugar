@@ -67,17 +67,45 @@ namespace SqlSugar
         #endregion
 
         #region SimpleClient
+
+        public T CreateContext<T>(bool isTran=true) where T : SugarUnitOfWork, new()
+        {
+            T result = new T();
+            _CreateContext(isTran, result);
+            var type = typeof(T);
+            var ps = type.GetProperties();
+            var cacheKey = "SugarUnitOfWork" + typeof(T).FullName + typeof(T).GetHashCode();
+            var properies = new ReflectionInoCacheService().GetOrCreate(cacheKey,
+                () =>
+                ps.Where(it =>
+
+                (it.PropertyType.BaseType != null && it.PropertyType.BaseType.Name.StartsWith("SimpleClient`"))
+                  ||
+                it.PropertyType.Name.StartsWith("SimpleClient`")
+
+                ));
+            foreach (var item in properies)
+            {
+                var value = Activator.CreateInstance(item.PropertyType);
+                value.GetType().GetProperty("Context").SetValue(value, this);
+                item.SetValue(result, value);
+            }
+            return result;
+        }
         public SugarUnitOfWork CreateContext(bool isTran = true)
         {
             SugarUnitOfWork sugarUnitOf = new SugarUnitOfWork();
+            return _CreateContext(isTran, sugarUnitOf);
+        }
+        
+        private SugarUnitOfWork _CreateContext(bool isTran, SugarUnitOfWork sugarUnitOf)
+        {
             sugarUnitOf.Db = this;
             sugarUnitOf.Tenant = this;
             sugarUnitOf.IsTran = true;
             this.Open();
             if (isTran)
-            {
                 this.BeginTran();
-            }
             return sugarUnitOf;
         }
         public SimpleClient<T> GetSimpleClient<T>() where T : class, new()

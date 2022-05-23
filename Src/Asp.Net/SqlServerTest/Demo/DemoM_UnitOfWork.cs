@@ -14,58 +14,54 @@ namespace OrmTest
             Console.WriteLine("");
             Console.WriteLine("#### DemoM_UnitOfWork ####");
 
-
-            DbContext.Db.UseTran(() =>
+             var db=NewUnitTest.Db;
+             using (var uow = db.CreateContext<MyDbContext>())
+             {
+                var o = uow.GetRepository<Order>();
+                var o2 = uow.GetMyRepository<DbSet<Order>>();
+                var list = o.GetList();//默认仓储
+                var list2 = o2.CommQuery();//自定义仓储
+                var list3 = uow.Orders1.GetList();//MyDbContext中的默认仓储
+                var list4 = uow.Orders2.GetList();//MyDbContext中的自定义仓储
+                uow.Commit();
+            }
+            var d = DateTime.Now;
+            for (int i = 0; i < 100000; i++)
             {
-
-                var id = DbContext.CustomDal.InsertReturnIdentity(new Custom() { Id = 1, Name = "guid" });
-                var id2 = DbContext.OrderDal.InsertReturnIdentity(new Order() { Name = "guid2", Price = 0, CreateTime = DateTime.Now, CustomId = 1 });
-                throw new Exception("");
-            },
-            e =>
-            {
-               //throw e;
-            });
-            Console.WriteLine("");
+                db.CreateContext<MyDbContext>();
+            }
+            Console.WriteLine("CreateContext 100000：" + (DateTime.Now-d).TotalMilliseconds+"ms");
             Console.WriteLine("#### Saveable End ####");
         }
-        public class DbContext
+        /// <summary>
+        /// 自定义DbContext
+        /// </summary>
+        public class MyDbContext : SugarUnitOfWork 
         {
-            public static SqlSugarScope Db = new SqlSugarScope(new ConnectionConfig()
+            /// <summary>
+            /// 原生仓储
+            /// </summary>
+            public SimpleClient<Order> Orders1 { get; set; }
+            /// <summary>
+            ///自定义仓储
+            /// </summary>
+            public DbSet<Order> Orders2 { get; set; }
+        }
+        /// <summary>
+        /// 自定义仓储
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        public class DbSet<T> : SimpleClient<T> where T : class, new()
+        {
+            /// <summary>
+            /// 仓储自定义方法
+            /// </summary>
+            /// <returns></returns>
+            public List<T> CommQuery()
             {
-                DbType = SqlSugar.DbType.SqlServer,
-                ConnectionString = Config.ConnectionString,
-                IsAutoCloseConnection = true
-            }, db => {
-                //单例参数配置，所有上下文生效
-                db.Aop.OnLogExecuting = (s, p) =>
-                {
-                    Console.WriteLine(s);
-                };
-            });
-
-            public static DbSet<Order> OrderDal => new DbSet<Order>();
-            public static DbSet<Custom> CustomDal => new DbSet<Custom>();
-
-
-            public class DbSet<T> : SimpleClient<T> where T : class, new()
-            {
-                public DbSet(ISqlSugarClient context = null) : base(context)//需要有构造参数
-                {
-                    base.Context = DbContext.Db;
-                }
-
-                /// <summary>
-                /// 扩展方法，自带方法不能满足的时候可以添加新方法
-                /// </summary>
-                /// <returns></returns>
-                public List<T> CommQuery(string json)
-                {
-                    //base.Context.Queryable<T>().ToList();可以拿到SqlSugarClient 做复杂操作
-                    return null;
-                }
-
+                return base.Context.Queryable<T>().ToList();
             }
+
         }
 
     }
