@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -29,13 +30,30 @@ namespace SqlSugar
 
         public SimpleClient<T> GetRepository<T>() where T : class, new()
         {
-            return new SimpleClient<T>(Db);
+            TenantAttribute tenantAttribute = typeof(T).GetCustomAttribute<TenantAttribute>();
+            if (tenantAttribute == null)
+            {
+                return new SimpleClient<T>(Db);
+            }
+            else 
+            {
+                return new SimpleClient<T>(Db.AsTenant().GetConnection(tenantAttribute.configId));
+            }
         }
 
         public RepositoryType GetMyRepository<RepositoryType>() where RepositoryType : ISugarRepository, new()
         {
             var result = new RepositoryType();
-            result.Context = this.Db;
+            var type = typeof(RepositoryType).GetGenericArguments()[0];
+            TenantAttribute tenantAttribute = type.GetCustomAttribute<TenantAttribute>();
+            if (tenantAttribute == null)
+            {
+                result.Context = this.Db;
+            }
+            else 
+            {
+                result.Context = this.Db.AsTenant().GetConnection(tenantAttribute.configId);
+            }
             return result;
         }
 
