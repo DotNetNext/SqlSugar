@@ -105,6 +105,7 @@
     <Compile Include="Abstract\UpdateProvider\SplitTableUpdateByObjectProvider.cs" />
     <Compile Include="Entities\SugarAbMapping.cs" />
     <Compile Include="Entities\JoinMapper.cs" />
+    <Compile Include="Enum\DbLockType.cs" />
     <Compile Include="Enum\NavigatType.cs" />
     <Compile Include="Enum\SugarActionType.cs" />
     <Compile Include="Entities\SugarConnection.cs" />

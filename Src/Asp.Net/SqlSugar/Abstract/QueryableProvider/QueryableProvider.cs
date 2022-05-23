@@ -389,6 +389,27 @@ namespace SqlSugar
             _WhereClassByPrimaryKey(new List<T>() { data });
             return this;
         }
+        public ISugarQueryable<T> TranLock(DbLockType LockType = DbLockType.Wait) 
+        {
+            Check.ExceptionEasy(this.Context.Ado.Transaction == null, "need BeginTran", "需要事务才能使用TranLock");
+            Check.ExceptionEasy(this.QueryBuilder.IsSingle()==false, "TranLock, can only be used for single table query", "TranLock只能用在单表查询");
+            if (this.Context.CurrentConnectionConfig.DbType == DbType.SqlServer)
+            {
+                if (LockType == DbLockType.Wait)
+                {
+                    this.With("UpdLock,RowLock");
+                }
+                else
+                {
+                    this.With("UpdLock,RowLock,NoWait");
+                }
+            }
+            else 
+            {
+                this.QueryBuilder.TranLock = (LockType == DbLockType.Error? " for update nowait" : " for update");
+            }
+            return this;
+        }
         public ISugarQueryable<T> WhereColumns(List<Dictionary<string, object>> list)
         {
             List<IConditionalModel> conditionalModels = new List<IConditionalModel>();
@@ -3323,6 +3344,7 @@ namespace SqlSugar
                        _Size=it._Size
                 }).ToList();
             }
+            asyncQueryableBuilder.TranLock = this.QueryBuilder.TranLock;
             asyncQueryableBuilder.IsDisableMasterSlaveSeparation = this.QueryBuilder.IsDisableMasterSlaveSeparation;
             asyncQueryableBuilder.IsQueryInQuery = this.QueryBuilder.IsQueryInQuery;
             asyncQueryableBuilder.Includes = this.QueryBuilder.Includes;

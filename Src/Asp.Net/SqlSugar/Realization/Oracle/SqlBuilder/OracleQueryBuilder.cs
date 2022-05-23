@@ -44,6 +44,10 @@ namespace SqlSugar
 
 
             }
+            if (TranLock != null)
+            {
+                result = result + TranLock;
+            }
             return result;
         }
         public  string _ToSqlString()
