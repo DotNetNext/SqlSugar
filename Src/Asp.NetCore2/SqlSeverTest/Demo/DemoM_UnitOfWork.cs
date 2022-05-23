@@ -16,14 +16,16 @@ namespace OrmTest
 
             var db = NewUnitTest.Db;
             db.CurrentConnectionConfig.ConfigId = "1";
-            using (var uow = db.CreateContext<MyDbContext>())
+
+
+
+            using (var uow = db.CreateContext<MyDbContext>())//带事务
             {
-                var o = uow.GetRepository<ORDER>();
-                var o2 = uow.GetMyRepository<DbSet<ORDER>>();
-                var list = o.GetList();//默认仓储
-                var list2 = o2.CommQuery();//自定义仓储
-                var list3 = uow.Orders1.GetList();//MyDbContext中的默认仓储
-                var list4 = uow.Orders2.GetList();//MyDbContext中的自定义仓储
+                var list3 = uow.OrderItem.GetList();//查询OrderItem
+                var list4 = uow.Orders.GetList();//查询Orders
+                //也可以手动调用仓储
+                //var orderItemDal=uow.GetMyRepository<DbSet<OrderItem>>();
+
                 uow.Commit();
             }
         }
@@ -33,13 +35,13 @@ namespace OrmTest
         public class MyDbContext : SugarUnitOfWork
         {
             /// <summary>
-            /// 原生仓储
+            /// OrderItem
             /// </summary>
-            public SimpleClient<ORDER> Orders1 { get; set; }
+            public DbSet<OrderItem> OrderItem { get; set; }
             /// <summary>
-            ///自定义仓储
+            ///Orders2
             /// </summary>
-            public DbSet<ORDER> Orders2 { get; set; }
+            public DbSet<ORDER> Orders { get; set; }
         }
         /// <summary>
         /// 自定义仓储
