@@ -397,11 +397,11 @@ namespace SqlSugar
             {
                 if (LockType == DbLockType.Wait)
                 {
-                    this.With("UpdLock,RowLock");
+                    this.With("WITH(UpdLock,RowLock)");
                 }
                 else
                 {
-                    this.With("UpdLock,RowLock,NoWait");
+                    this.With("WITH(UpdLock,RowLock,NoWait)");
                 }
             }
             else 
