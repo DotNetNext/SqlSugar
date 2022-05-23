@@ -15,23 +15,17 @@ namespace OrmTest
             Console.WriteLine("#### DemoM_UnitOfWork ####");
 
              var db=NewUnitTest.Db;
+            db.CurrentConnectionConfig.ConfigId = "1";
              using (var uow = db.CreateContext<MyDbContext>())
              {
-                var o = uow.GetRepository<Order>();
-                var o2 = uow.GetMyRepository<DbSet<Order>>();
+                var o = uow.GetRepository<ORDER>();
+                var o2 = uow.GetMyRepository<DbSet<ORDER>>();
                 var list = o.GetList();//默认仓储
                 var list2 = o2.CommQuery();//自定义仓储
                 var list3 = uow.Orders1.GetList();//MyDbContext中的默认仓储
                 var list4 = uow.Orders2.GetList();//MyDbContext中的自定义仓储
                 uow.Commit();
             }
-            var d = DateTime.Now;
-            for (int i = 0; i < 100000; i++)
-            {
-                db.CreateContext<MyDbContext>();
-            }
-            Console.WriteLine("CreateContext 100000：" + (DateTime.Now-d).TotalMilliseconds+"ms");
-            Console.WriteLine("#### Saveable End ####");
         }
         /// <summary>
         /// 自定义DbContext
@@ -41,11 +35,11 @@ namespace OrmTest
             /// <summary>
             /// 原生仓储
             /// </summary>
-            public SimpleClient<Order> Orders1 { get; set; }
+            public SimpleClient<ORDER> Orders1 { get; set; }
             /// <summary>
             ///自定义仓储
             /// </summary>
-            public DbSet<Order> Orders2 { get; set; }
+            public DbSet<ORDER> Orders2 { get; set; }
         }
         /// <summary>
         /// 自定义仓储
@@ -62,6 +56,22 @@ namespace OrmTest
                 return base.Context.Queryable<T>().ToList();
             }
 
+        }
+
+        [Tenant("1")]
+        public class ORDER
+        {
+            [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+            public int Id { get; set; }
+
+            public string Name { get; set; }
+            public decimal Price { get; set; }
+            [SugarColumn(IsNullable = true)]
+            public DateTime CreateTime { get; set; }
+            [SugarColumn(IsNullable = true)]
+            public int CustomId { get; set; }
+            [SugarColumn(IsIgnore = true)]
+            public List<OrderItem> Items { get; set; }
         }
 
     }
