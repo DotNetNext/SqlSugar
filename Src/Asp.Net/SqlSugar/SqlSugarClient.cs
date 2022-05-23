@@ -110,7 +110,7 @@ namespace SqlSugar
         {
             sugarUnitOf.Db = this;
             sugarUnitOf.Tenant = this;
-            sugarUnitOf.IsTran = true;
+            sugarUnitOf.IsTran = isTran;
             this.Open();
             if (isTran)
                 this.BeginTran();
