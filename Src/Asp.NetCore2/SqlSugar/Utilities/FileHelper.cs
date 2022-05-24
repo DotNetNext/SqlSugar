@@ -46,7 +46,10 @@ namespace SqlSugar
         {
             if (!IsExistDirectory(directoryPath))
             {
-                Directory.CreateDirectory(directoryPath);
+                if (directoryPath != "")
+                {
+                    Directory.CreateDirectory(directoryPath);
+                }
             }
         }
         public static void DeleteFile(string filePath)
