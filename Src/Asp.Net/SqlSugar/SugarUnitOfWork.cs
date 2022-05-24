@@ -74,7 +74,7 @@ namespace SqlSugar
             return result;
         }
 
-        public void Commit()
+        public bool Commit()
         {
             if (this.IsTran && this.IsCommit == false)
             {
@@ -86,6 +86,7 @@ namespace SqlSugar
                 this.Db.Close();
                 IsClose = true;
             }
+            return IsCommit;
         }
     }
 }
