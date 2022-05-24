@@ -101,7 +101,18 @@ namespace SqlSugar
                 {
                     foreach (DataColumn item in dt.Columns)
                     {
-                        cmd.Parameters.AddWithValue("@" + item.ColumnName, dataRow[item.ColumnName]);
+                        if (dataRow[item.ColumnName] != null && dataRow[item.ColumnName].ToString().IsIn(true.ToString()))
+                        {
+                            cmd.Parameters.AddWithValue("@" + item.ColumnName, true);
+                        }
+                        else if (dataRow[item.ColumnName] != null && dataRow[item.ColumnName].ToString().IsIn(false.ToString()))
+                        {
+                            cmd.Parameters.AddWithValue("@" + item.ColumnName, false);
+                        }
+                        else
+                        {
+                            cmd.Parameters.AddWithValue("@" + item.ColumnName, dataRow[item.ColumnName]);
+                        }
                     }
                     i += await cmd.ExecuteNonQueryAsync();
                     cmd.Parameters.Clear();
