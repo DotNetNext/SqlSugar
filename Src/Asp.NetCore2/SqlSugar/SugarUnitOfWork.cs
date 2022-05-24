@@ -7,6 +7,23 @@ using System.Threading.Tasks;
 
 namespace SqlSugar
 {
+    public interface ISugarUnitOfWork<T> where T : SugarUnitOfWork, new()
+    {
+        public ISqlSugarClient Db { get; set; }
+        T CreateContext(bool isTran);
+    }
+    public class SugarUnitOfWork<T> : ISugarUnitOfWork<T> where T : SugarUnitOfWork, new()
+    {
+        public SugarUnitOfWork(ISqlSugarClient db)
+        {
+            this.Db = db;
+        }
+        public ISqlSugarClient Db { get; set; }
+        public T CreateContext(bool isTran) 
+        {
+            return Db.CreateContext<T>(isTran);
+        }
+    }
     public class SugarUnitOfWork : IDisposable
     {
         public ISqlSugarClient Db { get; internal set; }
