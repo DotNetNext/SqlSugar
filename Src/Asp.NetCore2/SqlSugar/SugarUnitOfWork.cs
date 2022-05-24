@@ -9,7 +9,7 @@ namespace SqlSugar
 {
     public interface ISugarUnitOfWork<T> where T : SugarUnitOfWork, new()
     {
-        public ISqlSugarClient Db { get; set; }
+        ISqlSugarClient Db { get; set; }
         T CreateContext(bool isTran);
     }
     public class SugarUnitOfWork<T> : ISugarUnitOfWork<T> where T : SugarUnitOfWork, new()
