@@ -2114,6 +2114,16 @@ namespace SqlSugar
 
         public async Task<int> CountAsync()
         {
+            if (this.QueryBuilder.Skip == null &&
+             this.QueryBuilder.Take == null &&
+             this.QueryBuilder.OrderByValue == null &&
+             this.QueryBuilder.PartitionByValue == null &&
+             this.QueryBuilder.SelectValue == null &&
+             this.QueryBuilder.Includes == null)
+            {
+                var list = await this.Clone().Select<int>(" COUNT(1) ").ToListAsync();
+                return list.First();
+            }
             MappingTableList expMapping;
             int result;
             _CountBegin(out expMapping, out result);
