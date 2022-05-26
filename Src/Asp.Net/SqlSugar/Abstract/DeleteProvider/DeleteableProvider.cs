@@ -451,7 +451,7 @@ namespace SqlSugar
             var sqlObj = this.ToSql();
             var result = sqlObj.Key;
             if (result == null) return null;
-            result = UtilMethods.GetSqlString(this.Context.CurrentConnectionConfig, sqlObj, result);
+            result = UtilMethods.GetSqlString(this.Context.CurrentConnectionConfig, sqlObj);
             return result;
         }
         public KeyValuePair<string, List<SugarParameter>> ToSql()

@@ -14,58 +14,66 @@ namespace OrmTest
             Console.WriteLine("");
             Console.WriteLine("#### DemoM_UnitOfWork ####");
 
+            var db = NewUnitTest.Db;
+            db.CurrentConnectionConfig.ConfigId = "1";
 
-            DbContext.Db.UseTran(() =>
+
+
+            using (var uow = db.CreateContext<MyDbContext>())//带事务
             {
+                var list3 = uow.OrderItem.GetList();//查询OrderItem
+                var list4 = uow.Orders.GetList();//查询Orders
+                //也可以手动调用仓储
+                //var orderItemDal=uow.GetMyRepository<DbSet<OrderItem>>();
 
-                var id = DbContext.CustomDal.InsertReturnIdentity(new Custom() { Id = 1, Name = "guid" });
-                var id2 = DbContext.OrderDal.InsertReturnIdentity(new Order() { Name = "guid2", Price = 0, CreateTime = DateTime.Now, CustomId = 1 });
-                throw new Exception("");
-            },
-            e =>
-            {
-               //throw e;
-            });
-            Console.WriteLine("");
-            Console.WriteLine("#### Saveable End ####");
-        }
-        public class DbContext
-        {
-            public static SqlSugarScope Db = new SqlSugarScope(new ConnectionConfig()
-            {
-                DbType = SqlSugar.DbType.SqlServer,
-                ConnectionString = Config.ConnectionString,
-                IsAutoCloseConnection = true
-            }, db => {
-                //单例参数配置，所有上下文生效
-                db.Aop.OnLogExecuting = (s, p) =>
-                {
-                    Console.WriteLine(s);
-                };
-            });
-
-            public static DbSet<Order> OrderDal => new DbSet<Order>();
-            public static DbSet<Custom> CustomDal => new DbSet<Custom>();
-
-
-            public class DbSet<T> : SimpleClient<T> where T : class, new()
-            {
-                public DbSet(ISqlSugarClient context = null) : base(context)//需要有构造参数
-                {
-                    base.Context = DbContext.Db;
-                }
-
-                /// <summary>
-                /// 扩展方法，自带方法不能满足的时候可以添加新方法
-                /// </summary>
-                /// <returns></returns>
-                public List<T> CommQuery(string json)
-                {
-                    //base.Context.Queryable<T>().ToList();可以拿到SqlSugarClient 做复杂操作
-                    return null;
-                }
-
+                uow.Commit();
             }
+        }
+        /// <summary>
+        /// 自定义DbContext
+        /// </summary>
+        public class MyDbContext : SugarUnitOfWork
+        {
+            /// <summary>
+            /// OrderItem
+            /// </summary>
+            public DbSet<OrderItem> OrderItem { get; set; }
+            /// <summary>
+            ///Orders2
+            /// </summary>
+            public DbSet<ORDER> Orders { get; set; }
+        }
+        /// <summary>
+        /// 自定义仓储
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        public class DbSet<T> : SimpleClient<T> where T : class, new()
+        {
+            /// <summary>
+            /// 仓储自定义方法
+            /// </summary>
+            /// <returns></returns>
+            public List<T> CommQuery()
+            {
+                return base.Context.Queryable<T>().ToList();
+            }
+
+        }
+
+        [Tenant("1")]
+        public class ORDER
+        {
+            [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+            public int Id { get; set; }
+
+            public string Name { get; set; }
+            public decimal Price { get; set; }
+            [SugarColumn(IsNullable = true)]
+            public DateTime CreateTime { get; set; }
+            [SugarColumn(IsNullable = true)]
+            public int CustomId { get; set; }
+            [SugarColumn(IsIgnore = true)]
+            public List<OrderItem> Items { get; set; }
         }
 
     }

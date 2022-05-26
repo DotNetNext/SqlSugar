@@ -23,7 +23,7 @@ namespace SqlSugar
             return this.Context;
         }
 
-        private SimpleClient()
+        public SimpleClient()
         {
 
         }

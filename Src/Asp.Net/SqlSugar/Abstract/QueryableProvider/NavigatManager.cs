@@ -120,12 +120,12 @@ namespace SqlSugar
             List<object> list = new List<object>();
             if (isList)
             {
-                list = currentList.SelectMany(it => (it.GetType().GetProperty(navObjectName).GetValue(it) as IList).Cast<object>()).ToList();
+                list = currentList.Where(it=> it.GetType().GetProperty(navObjectName).GetValue(it)!=null).SelectMany(it => (it.GetType().GetProperty(navObjectName).GetValue(it) as IList).Cast<object>()).ToList();
 
             }
             else
             {
-                list = currentList.Select(it => (it.GetType().GetProperty(navObjectName).GetValue(it))).ToList();
+                list = currentList.Where(it=>it.GetType().GetProperty(navObjectName).GetValue(it)!=null).Select(it => (it.GetType().GetProperty(navObjectName).GetValue(it))).ToList();
             }
 
             return list;

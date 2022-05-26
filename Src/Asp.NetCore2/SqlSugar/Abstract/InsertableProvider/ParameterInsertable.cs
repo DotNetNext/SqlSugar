@@ -57,7 +57,7 @@ namespace SqlSugar
                 result +=this.Context.SaveQueues(false);
             });
             if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle)
-                return objects.Length;
+                result=objects.Length;
             return result;
         }
         public async Task<int> DefaultExecuteCommandAsync()
@@ -84,7 +84,7 @@ namespace SqlSugar
                     this.Context.AddQueue("end");
                 result += await this.Context.SaveQueuesAsync(false);
                 if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle)
-                    return objects.Length;
+                    result= objects.Length;
                 return result;
             });
             return result;

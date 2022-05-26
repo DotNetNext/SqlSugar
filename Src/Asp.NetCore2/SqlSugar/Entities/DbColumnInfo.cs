@@ -23,5 +23,6 @@ namespace SqlSugar
         public int Scale { get; set; }
         public bool IsArray { get;  set; }
         internal bool IsJson { get;  set; }
+        public bool? IsUnsigned { get; set; }
     }
 }

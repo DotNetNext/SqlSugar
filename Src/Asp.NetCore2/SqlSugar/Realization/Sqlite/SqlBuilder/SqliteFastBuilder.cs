@@ -80,7 +80,18 @@ namespace SqlSugar
                 {
                     foreach (DataColumn item in dt.Columns)
                     {
-                        cmd.Parameters.AddWithValue("@" + item.ColumnName, dataRow[item.ColumnName]);
+                        if (IsBoolTrue(dataRow, item))
+                        {
+                            cmd.Parameters.AddWithValue("@" + item.ColumnName, true);
+                        }
+                        else if (IsBoolFalse(dataRow, item))
+                        {
+                            cmd.Parameters.AddWithValue("@" + item.ColumnName, false);
+                        }
+                        else
+                        {
+                            cmd.Parameters.AddWithValue("@" + item.ColumnName, dataRow[item.ColumnName]);
+                        }
                     }
                     i += await cmd.ExecuteNonQueryAsync();
                     cmd.Parameters.Clear();
@@ -101,7 +112,18 @@ namespace SqlSugar
                 {
                     foreach (DataColumn item in dt.Columns)
                     {
-                        cmd.Parameters.AddWithValue("@" + item.ColumnName, dataRow[item.ColumnName]);
+                        if (IsBoolTrue(dataRow, item))
+                        {
+                            cmd.Parameters.AddWithValue("@" + item.ColumnName, true);
+                        }
+                        else if (IsBoolFalse(dataRow, item))
+                        {
+                            cmd.Parameters.AddWithValue("@" + item.ColumnName, false);
+                        }
+                        else
+                        {
+                            cmd.Parameters.AddWithValue("@" + item.ColumnName, dataRow[item.ColumnName]);
+                        }
                     }
                     i += await cmd.ExecuteNonQueryAsync();
                     cmd.Parameters.Clear();
@@ -109,6 +131,17 @@ namespace SqlSugar
             }
             return i;
         }
+
+        private static bool IsBoolFalse(DataRow dataRow, DataColumn item)
+        {
+            return dataRow[item.ColumnName] != null && dataRow[item.ColumnName]  is string && dataRow[item.ColumnName].ToString().IsIn(false.ToString());
+        }
+
+        private static bool IsBoolTrue(DataRow dataRow, DataColumn item)
+        {
+            return dataRow[item.ColumnName] != null && dataRow[item.ColumnName] is string && dataRow[item.ColumnName].ToString().IsIn(true.ToString());
+        }
+
         private static void Open(SqliteConnection cn)
         {
             if (cn.State != ConnectionState.Open)

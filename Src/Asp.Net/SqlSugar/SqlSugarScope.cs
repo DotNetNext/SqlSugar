@@ -175,6 +175,15 @@ namespace SqlSugar
             return ScopedContext.GetDate();
         }
 
+        public T CreateContext<T>(bool isTran = true) where T : SugarUnitOfWork, new() 
+        {
+            return ScopedContext.CreateContext<T>(isTran);
+        }
+        public SugarUnitOfWork CreateContext(bool isTran = true) 
+        {
+            return ScopedContext.CreateContext(isTran);
+        }
+
         public SimpleClient<T> GetSimpleClient<T>() where T : class, new()
         {
             return ScopedContext.GetSimpleClient<T>();
@@ -219,7 +228,10 @@ namespace SqlSugar
         {
             ScopedContext.Open();
         }
-
+        public ISugarQueryable<T> SlaveQueryable<T>() 
+        {
+            return ScopedContext.SlaveQueryable<T>();
+        }
         public ISugarQueryable<T> MasterQueryable<T>() 
         {
             return ScopedContext.MasterQueryable<T>();
