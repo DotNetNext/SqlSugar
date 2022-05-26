@@ -91,6 +91,13 @@ namespace SqlSugar
             result.QueryBuilder.IsDisableMasterSlaveSeparation = true;
             return result;
         }
+
+        public ISugarQueryable<T> SlaveQueryable<T>()
+        {
+            var result = this.Queryable<T>();
+            result.QueryBuilder.IsEnableMasterSlaveSeparation = true;
+            return result;
+        }
         /// <summary>
         /// Lambda Query operation
         /// </summary>

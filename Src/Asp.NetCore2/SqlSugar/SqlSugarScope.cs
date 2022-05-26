@@ -228,7 +228,10 @@ namespace SqlSugar
         {
             ScopedContext.Open();
         }
-
+        public ISugarQueryable<T> SlaveQueryable<T>() 
+        {
+            return ScopedContext.SlaveQueryable<T>();
+        }
         public ISugarQueryable<T> MasterQueryable<T>() 
         {
             return ScopedContext.MasterQueryable<T>();
