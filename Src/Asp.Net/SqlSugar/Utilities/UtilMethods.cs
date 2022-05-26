@@ -607,6 +607,14 @@ namespace SqlSugar
             {
                 return Convert.ToUInt64(item.FieldValue);
             }
+            else if (item.CSharpTypeName.EqualCase("bool"))
+            {
+                return Convert.ToBoolean(item.FieldValue);
+            }
+            else if (item.CSharpTypeName.EqualCase("ToBoolean"))
+            {
+                return Convert.ToBoolean(item.FieldValue);
+            }
             else if (item.CSharpTypeName.EqualCase("uint16"))
             {
                 return Convert.ToUInt16(item.FieldValue);
