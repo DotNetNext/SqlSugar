@@ -276,7 +276,13 @@ namespace SqlSugar
         public override bool CreateDatabase(string databaseName, string databaseDirectory = null)
         {
             var connString = this.Context.CurrentConnectionConfig.ConnectionString;
+            var linuxPath = connString.Split('=')?[1]?.TrimStart();
             var path = Regex.Match(connString, @"[a-z,A-Z]\:\\.+\\").Value;
+            if (linuxPath.StartsWith("."))
+            {//当前目录写法 . 号
+                var fileInfo = new System.IO.FileInfo(System.IO.Path.Combine(Environment.CurrentDirectory, linuxPath));
+                path = fileInfo.DirectoryName;
+            }
             if (path.IsNullOrEmpty())
             {
                 path = Regex.Match(connString, @"\/.+\/").Value;
