@@ -69,6 +69,7 @@ namespace SqlSugar
 
         #region Queryable
         ISugarQueryable<T> MasterQueryable<T>();
+        ISugarQueryable<T> SlaveQueryable<T>();
         ISugarQueryable<T> SqlQueryable<T>(string sql) where T : class, new();
         ISugarQueryable<ExpandoObject> Queryable(string tableName, string shortName);
         ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> Queryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, bool>> joinExpression) where T : class, new();

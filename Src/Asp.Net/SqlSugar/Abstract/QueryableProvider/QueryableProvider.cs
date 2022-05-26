@@ -1478,6 +1478,7 @@ namespace SqlSugar
             RestoreMapping();
             DataTable result = null;
             bool isChangeQueryableMasterSlave = GetIsMasterQuery();
+            bool isChangeQueryableSlave = GetIsSlaveQuery();
             if (IsCache)
             {
                 var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService;
@@ -1488,6 +1489,7 @@ namespace SqlSugar
                 result = this.Db.GetDataTable(sqlObj.Key, sqlObj.Value.ToArray());
             }
             RestChangeMasterQuery(isChangeQueryableMasterSlave);
+            RestChangeSlaveQuery(isChangeQueryableSlave);
             return result;
         }
         public virtual DataTable ToDataTablePage(int pageIndex, int pageSize)
@@ -3179,10 +3181,12 @@ namespace SqlSugar
             List<TResult> result;
             var isComplexModel = QueryBuilder.IsComplexModel(sqlObj.Key);
             var entityType = typeof(TResult);
+            bool isChangeQueryableSlave = GetIsSlaveQuery();
             bool isChangeQueryableMasterSlave = GetIsMasterQuery();
             var dataReader = this.Db.GetDataReader(sqlObj.Key, sqlObj.Value.ToArray());
             result = GetData<TResult>(isComplexModel, entityType, dataReader);
             RestChangeMasterQuery(isChangeQueryableMasterSlave);
+            RestChangeSlaveQuery(isChangeQueryableSlave);
             return result;
         }
 
@@ -3200,6 +3204,23 @@ namespace SqlSugar
                                    this.Context.Ado.Transaction == null;
             if (isChangeQueryableMasterSlave)
                 this.Context.Ado.IsDisableMasterSlaveSeparation = true;
+            return isChangeQueryableMasterSlave;
+        }
+
+        private void RestChangeSlaveQuery(bool isChangeQueryableSlaveSlave)
+        {
+            if (isChangeQueryableSlaveSlave)
+                this.Context.Ado.IsDisableMasterSlaveSeparation = true;
+        }
+
+        private bool GetIsSlaveQuery()
+        {
+            var isChangeQueryableMasterSlave =
+                                   this.QueryBuilder.IsEnableMasterSlaveSeparation == true &&
+                                   this.Context.Ado.IsDisableMasterSlaveSeparation == true &&
+                                   this.Context.Ado.Transaction == null;
+            if (isChangeQueryableMasterSlave)
+                this.Context.Ado.IsDisableMasterSlaveSeparation = false;
             return isChangeQueryableMasterSlave;
         }
 
@@ -3354,6 +3375,7 @@ namespace SqlSugar
                        _Size=it._Size
                 }).ToList();
             }
+            asyncQueryableBuilder.IsEnableMasterSlaveSeparation = this.QueryBuilder.IsEnableMasterSlaveSeparation;
             asyncQueryableBuilder.TranLock = this.QueryBuilder.TranLock;
             asyncQueryableBuilder.IsDisableMasterSlaveSeparation = this.QueryBuilder.IsDisableMasterSlaveSeparation;
             asyncQueryableBuilder.IsQueryInQuery = this.QueryBuilder.IsQueryInQuery;

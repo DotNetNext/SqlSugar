@@ -179,6 +179,10 @@ namespace SqlSugar
         {
             return this.Context.MasterQueryable<T>();
         }
+        public ISugarQueryable<T> SlaveQueryable<T>()
+        {
+            return this.Context.SlaveQueryable<T>();
+        }
         public ISugarQueryable<T> SqlQueryable<T>(string sql) where T : class, new()
         {
             return this.Context.SqlQueryable<T>(sql);

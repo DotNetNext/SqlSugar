@@ -35,6 +35,7 @@ namespace SqlSugar
         #region Splicing basic
         public string TranLock { get; set; }
         public bool IsDisableMasterSlaveSeparation { get;  set; }
+        public bool IsEnableMasterSlaveSeparation { get; set; }
         public bool IsQueryInQuery { get; set; }
         public List<object> Includes { get; set; }
         public List<string> IgnoreColumns { get; set; }
