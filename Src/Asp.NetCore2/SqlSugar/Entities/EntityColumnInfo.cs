@@ -21,6 +21,7 @@ namespace SqlSugar
         public bool IsPrimarykey { get; set; }
         public bool IsTreeKey { get; set; }
         public bool IsEnableUpdateVersionValidation { get; set; }
+        public object SqlParameterDbType { get; set; }
         public string EntityName { get;  set; }
         public string DbTableName { get; set; }
         public bool IsIgnore { get;  set; }

@@ -281,6 +281,7 @@ namespace SqlSugar
                         column.IsOnlyIgnoreUpdate = sugarColumn.IsOnlyIgnoreUpdate;
                         column.IsArray = sugarColumn.IsArray;
                         column.IsTreeKey = sugarColumn.IsTreeKey;
+                        column.SqlParameterDbType = sugarColumn.SqlParameterDbType;
                     }
                     else
                     {
