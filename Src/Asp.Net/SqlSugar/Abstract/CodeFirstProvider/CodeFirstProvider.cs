@@ -222,6 +222,10 @@ namespace SqlSugar
             {
                 foreach (var item in entityInfo.Indexs)
                 {
+                    if (entityInfo.Type.GetCustomAttribute<SplitTableAttribute>() != null) 
+                    {
+                        item.IndexName = item.IndexName + entityInfo.DbTableName;
+                    }
                     if (!this.Context.DbMaintenance.IsAnyIndex(item.IndexName))
                     {
                         var fileds = item.IndexFields
