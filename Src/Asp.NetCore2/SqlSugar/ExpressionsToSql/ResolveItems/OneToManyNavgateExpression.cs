@@ -59,13 +59,30 @@ namespace SqlSugar
             var whereExp = memberExp.Arguments[1];
             if (PropertyShortName.HasValue()&& Navigat!=null&& Navigat.NavigatType==NavigateType.OneToMany)
             {
+                InitType(whereExp);
                 var result = this.methodCallExpressionResolve.GetNewExpressionValue(whereExp, ResolveExpressType.WhereMultiple);
                 return result;
             }
             else
             {
+                InitType(whereExp);
                 var result = this.methodCallExpressionResolve.GetNewExpressionValue(whereExp);
                 return result;
+            }
+        }
+
+        private void InitType(Expression whereExp)
+        {
+            if (whereExp is LambdaExpression)
+            {
+                var parameters = (whereExp as LambdaExpression).Parameters;
+                if (parameters != null && parameters.Count > 0)
+                {
+                    foreach (var item in parameters)
+                    {
+                        this.context.InitMappingInfo(item.Type);
+                    }
+                }
             }
         }
 
