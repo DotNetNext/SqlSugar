@@ -170,7 +170,15 @@ namespace SqlSugar
                         + Context.ParameterIndex;
                     if (value.ObjToString() != "NULL" && !parameter.ValueIsNull)
                     {
-                        this.Context.Parameters.Add(new SugarParameter(appendValue, value));
+                        EntityColumnInfo columnInfo = GetColumnInfo(oppoSiteExpression);
+                        if (columnInfo != null && columnInfo.SqlParameterDbType != null&& columnInfo.SqlParameterDbType is  System.Data.DbType)
+                        {
+                            this.Context.Parameters.Add(new SugarParameter(appendValue, value, (System.Data.DbType)columnInfo.SqlParameterDbType));
+                        }
+                        else
+                        {
+                            this.Context.Parameters.Add(new SugarParameter(appendValue, value));
+                        }
                     }
                     else
                     {
@@ -251,6 +259,19 @@ namespace SqlSugar
                 }
             }
         }
+
+        private EntityColumnInfo GetColumnInfo(Expression oppoSiteExpression)
+        {
+            var oppsite = (oppoSiteExpression as MemberExpression);
+            if (oppsite == null) return null;
+            if (this.Context.SugarContext == null) return null;
+            if (this.Context.SugarContext.Context == null) return null;
+            if (oppsite.Expression == null) return null;
+            var columnInfo = this.Context.SugarContext.Context.EntityMaintenance
+                .GetEntityInfo(oppsite.Expression.Type).Columns.FirstOrDefault(it => it.PropertyName == oppsite.Member.Name);
+            return columnInfo;
+        }
+
         protected void AppendOpreator(ExpressionParameter parameter, bool? isLeft)
         {
             if (isLeft == true)

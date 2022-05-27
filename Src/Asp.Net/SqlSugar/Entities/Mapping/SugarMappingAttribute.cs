@@ -196,6 +196,8 @@ namespace SqlSugar
             get { return _IsTreeKey; }
             set { _IsTreeKey = value; }
         }
+
+        public object SqlParameterDbType { get; set; }
     }
 
 
