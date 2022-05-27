@@ -160,7 +160,7 @@ namespace SqlSugar
                 result.AsUpdateable.WhereColumns(whereExpression);
                 result.AsDeleteable.WhereColumns(update.Select(it => it.Item).ToList(),whereExpression);
             }
-            //result.AsDeleteable.Where(delete.Select(it => it.Item).ToList());
+            result.AsDeleteable.Where(delete.Select(it => it.Item).ToList());
             return result;
         }
 
@@ -242,7 +242,7 @@ namespace SqlSugar
                 result.AsUpdateable.WhereColumns(whereExpression);
                 result.AsDeleteable.WhereColumns(delete.Select(it => it.Item).ToList(),whereExpression);
             }
-            //result.AsDeleteable.Where(delete.Select(it => it.Item).ToList());
+            result.AsDeleteable.Where(delete.Select(it => it.Item).ToList());
             return result;
         }
 
