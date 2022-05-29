@@ -119,6 +119,10 @@ namespace SqlSugar
                         {
                             sqlParameter.NpgsqlDbType = NpgsqlDbType.Integer | NpgsqlDbType.Array;
                         }
+                        else if (parameter.DbType.IsIn(System.Data.DbType.Int16))
+                        {
+                            sqlParameter.NpgsqlDbType = NpgsqlDbType.Smallint | NpgsqlDbType.Array;
+                        }
                         else if (parameter.DbType.IsIn(System.Data.DbType.Int64))
                         {
                             sqlParameter.NpgsqlDbType = NpgsqlDbType.Bigint | NpgsqlDbType.Array;
