@@ -18,6 +18,7 @@ namespace SqlSugar
         int BulkCopy(string tableName,DataTable dataTable);
         int BulkCopy(DataTable dataTable);
         Task<int> BulkCopyAsync(string tableName, DataTable dataTable);
+        Task<int> BulkCopyAsync(DataTable dataTable);
 
         int BulkUpdate(List<T> datas);
         Task<int> BulkUpdateAsync(List<T> datas);
@@ -27,6 +28,7 @@ namespace SqlSugar
         int BulkUpdate(DataTable dataTable, string[] whereColumns, string[] updateColumns);
         int BulkUpdate(DataTable dataTable, string[] whereColumns);
         Task<int> BulkUpdateAsync(string tableName, DataTable dataTable, string[] whereColumns, string[] updateColumns);
+        Task<int> BulkUpdateAsync(DataTable dataTable, string[] whereColumns);
         SplitFastest<T> SplitTable();
     }
 }
