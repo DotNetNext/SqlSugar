@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UCustom22.Init();
             UByteArray.Init();
             UCustom021.Inti();
             UCustom020.Init();
