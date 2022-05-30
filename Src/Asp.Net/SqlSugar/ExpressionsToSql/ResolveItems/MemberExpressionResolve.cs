@@ -23,8 +23,8 @@ namespace SqlSugar
             else if (IsDateDiff(expression))
             {
                 ResolveDateDiff(parameter, isLeft, expression);
-            } 
-            else if (expression.Member.Name== "DayOfWeek"&& expression.Type==typeof(DayOfWeek)) 
+            }
+            else if (expression.Member.Name == "DayOfWeek" && expression.Type == typeof(DayOfWeek))
             {
                 ResolveDayOfWeek(parameter, isLeft, expression);
             }
@@ -56,6 +56,19 @@ namespace SqlSugar
             {
                 ResolveDateDate(parameter, isLeft, expression);
             }
+            else if (IsConvertMemberName(expression))
+            {
+                var memParameter = (expression.Expression as UnaryExpression).Operand as ParameterExpression;
+                var name = ExpressionTool.GetMemberName(expression);
+                if (this.Context.IsSingle)
+                {
+                    AppendMember(parameter, isLeft, this.Context.GetTranslationColumnName(name));
+                }
+                else 
+                {
+                    AppendMember(parameter, isLeft, this.Context.GetTranslationColumnName(memParameter.Name + "." + name));
+                }
+            }
             else if (isMemberValue)
             {
                 var nav = new OneToOneNavgateExpression(this.Context?.SugarContext?.Context);
@@ -73,7 +86,7 @@ namespace SqlSugar
                         AppendValue(parameter, isLeft, value);
                     }
                 }
-                else if (navN.IsNavgate(expression)) 
+                else if (navN.IsNavgate(expression))
                 {
                     var value = navN.GetMemberSql();
                     this.Context.SingleTableNameSubqueryShortName = navN.shorName;
@@ -85,12 +98,6 @@ namespace SqlSugar
                     {
                         AppendValue(parameter, isLeft, value);
                     }
-                }
-                else if(expression.Expression is UnaryExpression&&(expression.Expression as UnaryExpression).Operand is ParameterExpression) 
-                {
-                    var memParameter = (expression.Expression as UnaryExpression).Operand as ParameterExpression;
-                    var name = ExpressionTool.GetMemberName(expression);
-                    this.Context.Result.Append(this.Context.GetTranslationColumnName(memParameter.Name+"."+name));
                 }
                 else
                 {
@@ -105,6 +112,11 @@ namespace SqlSugar
             {
                 ResolveDefault(parameter, baseParameter, expression, isLeft, isSetTempData, isSingle);
             }
+        }
+
+        private static bool IsConvertMemberName(MemberExpression expression)
+        {
+            return expression.Expression is UnaryExpression && (expression.Expression as UnaryExpression).Operand is ParameterExpression;
         }
 
 
