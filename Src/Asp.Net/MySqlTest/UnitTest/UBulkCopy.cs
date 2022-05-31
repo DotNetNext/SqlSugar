@@ -11,6 +11,7 @@ namespace OrmTest
 
         public static void Bulk()
         {
+            Db.DbMaintenance.CreateDatabase();
             Db.CodeFirst.InitTables<UnitIdentity1>();
             Db.DbMaintenance.TruncateTable<UnitIdentity1>();
             var data = new UnitIdentity1()
@@ -154,11 +155,45 @@ namespace OrmTest
             //db.DbMaintenance.TruncateTable<UnitTest23412>();
             //db.Fastest<UnitTest23412>().BulkCopy(list5);
             //var list6 = db.Queryable<UnitTest23412>().ToList();
-     
-    }
+            db.CodeFirst.InitTables<UnitBulk2313111>();
+            db.DbMaintenance.TruncateTable<UnitBulk2313111>();
+            var fdt = GetBitTable(false);
+            db.Fastest<System.Data.DataTable>().AS("UnitBulk2313111").BulkCopy(fdt);
+            //db.Fastest<UnitBulk2313111>().AS("UnitBulk2313111").BulkCopy(new List<UnitBulk2313111>() { 
+            //new UnitBulk2313111(){  Id=100, table=false}
+            //});
+            var listdt= db.Queryable<UnitBulk2313111>().ToList();
+            var fdt2 = GetBitTable(true);
+            db.Fastest<System.Data.DataTable>().AS("UnitBulk2313111").BulkUpdate(fdt2,new string[] {"id" });
+            var listdt2 = db.Queryable<UnitBulk2313111>().ToList();
+            if (listdt.First().table != false || listdt2.First().table != true) 
+            {
+                throw new Exception("unit error");
+            }
 
-    public class UnitTest23412
-    {
+        }
+        public class UnitBulk2313111
+        {
+            [SqlSugar.SugarColumn(IsPrimaryKey = true)]
+            public int Id { get; set; }
+            [SqlSugar.SugarColumn(  IsNullable = true)]
+            public bool? table { get; set; }
+        }
+
+        public static System.Data.DataTable GetBitTable(bool isTrue)
+        {
+            var dt22 = new System.Data.DataTable();
+            var dr = dt22.NewRow();
+            dt22.Columns.Add("table", typeof(bool));
+            dt22.Columns.Add("id", typeof(int));
+            dr = dt22.NewRow();
+            dr["id"] = 0;
+            dr["table"] = isTrue;
+            dt22.Rows.Add(dr);  
+            return dt22;
+        }
+        public class UnitTest23412
+       {
         public UnitTest23412()
         {
         }
