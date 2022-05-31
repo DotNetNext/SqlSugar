@@ -138,6 +138,18 @@ namespace SqlSugar
                 this.DbType = System.Data.DbType.Int64;
                 this.Value = Convert.ToInt64(Value);
             }
+            else if (type==UtilConstants.UIntType)
+            {
+                this.DbType = System.Data.DbType.UInt32;
+            }
+            else if (type == UtilConstants.ULongType)
+            {
+                this.DbType = System.Data.DbType.UInt64;
+            }
+            else if (type == UtilConstants.ShortType)
+            {
+                this.DbType = System.Data.DbType.UInt16;
+            }
 
         }
         public SugarParameter(string name, object value, bool isOutput)

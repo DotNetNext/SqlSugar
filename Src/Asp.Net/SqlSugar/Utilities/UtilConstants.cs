@@ -15,6 +15,9 @@ namespace SqlSugar
         internal const string ReplaceKey = "{662E689B-17A1-4D06-9D27-F29EAB8BC3D6}";
         internal const string ReplaceCommaKey = "{112A689B-17A1-4A06-9D27-A39EAB8BC3D5}";
 
+        internal static Type UShortType = typeof(ushort);
+        internal static Type ULongType = typeof(ulong);
+        internal static Type UIntType = typeof(uint);
         internal static Type IntType = typeof(int);
         internal static Type LongType = typeof(long);
         internal static Type GuidType = typeof(Guid);
