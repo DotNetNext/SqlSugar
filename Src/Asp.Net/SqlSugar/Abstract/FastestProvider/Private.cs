@@ -165,6 +165,13 @@ namespace SqlSugar
                     {
                         dr[column.ColumnName] = DBNull.Value;
                     }
+                    if (column.DataType==UtilConstants.BoolType&&this.context.CurrentConnectionConfig.DbType.IsIn(DbType.MySql, DbType.MySqlConnector)) 
+                    {
+                        if (Convert.ToBoolean(dr[column.ColumnName]) == false) 
+                        {
+                            dr[column.ColumnName] = DBNull.Value;
+                        }
+                    }
                 }
                 tempDataTable.Rows.Add(dr);
             }
