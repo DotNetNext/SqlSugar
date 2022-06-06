@@ -275,6 +275,17 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override bool AddColumnRemark(string columnName, string tableName, string description)
+        {
+            //base.AddColumnRemark(columnName, tableName, description);
+            var message= @"db.DbMaintenance.UpdateColumn(""tablename"", new DbColumnInfo()
+            {{
+                DataType = ""VARCHAR(30) NOT NULL COMMENT 'xxxxx'"",
+                DbColumnName = ""columnname""
+            }})" ;
+            Check.Exception(true,"MySql no support AddColumnRemark , use " + message);
+            return true;
+        }
         /// <summary>
         ///by current connection string
         /// </summary>
