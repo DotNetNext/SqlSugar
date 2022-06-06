@@ -175,7 +175,8 @@ namespace SqlSugar
                         FieldName = name,
                         ConditionalType = ConditionalType.Equal,
                         FieldValue = value + "",
-                        FieldValueConvertFunc = this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL ?
+                        FieldValueConvertFunc = (this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL ||
+                                                this.Context.CurrentConnectionConfig.DbType == DbType.OpenGauss)?
                                                UtilMethods.GetTypeConvert(value) : null
                     }));
                     ++i;

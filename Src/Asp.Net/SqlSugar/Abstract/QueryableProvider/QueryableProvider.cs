@@ -483,6 +483,13 @@ namespace SqlSugar
                                 return UtilMethods.ChangeType2(it, value.GetType());
                             };
                         }
+                        if (this.Context.CurrentConnectionConfig.DbType == DbType.OpenGauss)
+                        {
+                            data.Value.FieldValueConvertFunc = it =>
+                            {
+                                return UtilMethods.ChangeType2(it, value.GetType());
+                            };
+                        }
                         cons.ConditionalList.Add(data);
                     }
                     if (cons.HasValue())
@@ -560,6 +567,13 @@ namespace SqlSugar
                             }
                             cons.ConditionalList.Add(data);
                             if (this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL)
+                            {
+                                data.Value.FieldValueConvertFunc = it =>
+                                {
+                                    return UtilMethods.ChangeType2(it, value.GetType());
+                                };
+                            }
+                            if (this.Context.CurrentConnectionConfig.DbType == DbType.OpenGauss)
                             {
                                 data.Value.FieldValueConvertFunc = it =>
                                 {

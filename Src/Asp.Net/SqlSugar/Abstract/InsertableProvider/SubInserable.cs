@@ -212,6 +212,11 @@ namespace SqlSugar
                                     var sqlobj = this.Context.Insertable(insert).AS(tableName).ToSql();
                                     id = this.Context.Ado.GetInt(sqlobj.Key+ "  "+ this.InsertBuilder.Builder.GetTranslationColumnName(entityInfo.Columns.First(it=>isIdentity).DbColumnName), sqlobj.Value);
                                 }
+                                else if (this.Context.CurrentConnectionConfig.DbType == DbType.OpenGauss)
+                                {
+                                    var sqlobj = this.Context.Insertable(insert).AS(tableName).ToSql();
+                                    id = this.Context.Ado.GetInt(sqlobj.Key + "  " + this.InsertBuilder.Builder.GetTranslationColumnName(entityInfo.Columns.First(it => isIdentity).DbColumnName), sqlobj.Value);
+                                }
                                 else
                                 {
                                     id = this.Context.Insertable(insert).AS(tableName).ExecuteReturnIdentity();
@@ -252,6 +257,14 @@ namespace SqlSugar
                     if (value == null&&this.Context.CurrentConnectionConfig.DbType==DbType.PostgreSQL) 
                     {
                        var underType= UtilMethods.GetUnderType(item.PropertyInfo.PropertyType);
+                        if (underType == UtilConstants.DateType)
+                        {
+                            value = SqlDateTime.Null;
+                        }
+                    }
+                    else if (value == null && this.Context.CurrentConnectionConfig.DbType == DbType.OpenGauss)
+                    {
+                        var underType = UtilMethods.GetUnderType(item.PropertyInfo.PropertyType);
                         if (underType == UtilConstants.DateType)
                         {
                             value = SqlDateTime.Null;

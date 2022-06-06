@@ -24,9 +24,10 @@ namespace SqlSugar
 
         public static Guid? GetConvertStringGuid(this IDataRecord dr, int i)
         {
-            if (dr.IsDBNull(i))
+
+            if (dr.IsDBNull(i) || dr.GetValue(i).IsNullOrEmpty())//空值出错问题
             {
-                return Guid.Empty;
+                return null;//字符串空值用 null 
             }
             var result = Guid.Parse(dr.GetValue(i).ToString());
             return result;
@@ -116,7 +117,7 @@ namespace SqlSugar
 
         public static Guid? GetConvertGuid(this IDataRecord dr, int i)
         {
-            if (dr.IsDBNull(i))
+            if (dr.IsDBNull(i) || dr.GetValue(i).IsNullOrEmpty())//空值出错问题
             {
                 return null;
             }
@@ -211,7 +212,7 @@ namespace SqlSugar
             var date = dr.GetValue(i);
             if (date is DateTime)
             {
-               return UtilMethods.GetDateTimeOffsetByDateTime((DateTime)(date));
+                return UtilMethods.GetDateTimeOffsetByDateTime((DateTime)(date));
             }
             else
             {
@@ -255,7 +256,7 @@ namespace SqlSugar
             {
                 return null;
             }
-            return GetOther<T>(dr,i);
+            return GetOther<T>(dr, i);
 
         }
 
@@ -290,7 +291,7 @@ namespace SqlSugar
             var obj = dr.GetValue(i);
             if (obj == null)
                 return default(T);
-            return  (T)obj;
+            return (T)obj;
         }
 
         public static Nullable<T> GetConvertEnum_Null<T>(this IDataReader dr, int i) where T : struct

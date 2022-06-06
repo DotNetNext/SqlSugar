@@ -9,6 +9,7 @@ namespace OrmTest
     /// <summary>
     /// Setting up the database name does not require you to create the database
     /// 设置好数据库名不需要你去手动建库
+    /// docker快速创建测试容器：docker run -p 5432:5432 -e 'POSTGRES_PASSWORD=haosql' -d --name postgres_test postgres:9.5
     /// </summary>
     public class Config
     {

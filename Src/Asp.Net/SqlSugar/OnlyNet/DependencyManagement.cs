@@ -12,6 +12,7 @@ namespace SqlSugar
         private static bool IsTrySqlite = false;
         private static bool IsTryOracle = false;
         private static bool IsTryPgSql = false;
+        private static bool IsTryGSql = false;
         private static bool IsTryDm = false;
         public static void TryJsonNet()
         {
@@ -70,7 +71,25 @@ namespace SqlSugar
                 }
             }
         }
-
+        internal static void TryOpenGauss()
+        {
+            if (!IsTryGSql)
+            {
+                try
+                {
+                    OpenGaussProvider db = new OpenGaussProvider();
+                    var conn = db.GetAdapter();
+                    IsTryGSql = true;
+                }
+                catch
+                {
+                    var message = ErrorMessage.GetThrowMessage(
+                     "You need to refer to Npgsql.dll",
+                     " Npgsql.dll 未安装或者版本冲突，按下面步骤操作即可 1、从Nuget卸载所有项目的Npgsql.dll和SqlSugar，用Nuget重新安装即可,如果还报错在最上层 WBE层 用NUGET安装，详细教程：https://www.donet5.com/Doc/8/1154");
+                    throw new Exception(message);
+                }
+            }
+        }
         internal static void TryOracle()
         {
             if (!IsTryOracle)

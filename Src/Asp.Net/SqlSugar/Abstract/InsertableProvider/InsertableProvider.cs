@@ -924,6 +924,18 @@ namespace SqlSugar
                     cons.Add(new ConditionalModel() { ConditionalType = ConditionalType.Equal, FieldName = fieldName, FieldValue = identity.ToString(), 
                         FieldValueConvertFunc = it => UtilMethods.ChangeType2(it, fieldObjectType) });
                 }
+                else if (this.Context.CurrentConnectionConfig.DbType == DbType.OpenGauss)
+                {
+                    var fieldObjectType = this.EntityInfo.Columns.FirstOrDefault(x => x.DbColumnName == fieldName)
+                        .PropertyInfo.PropertyType;
+                    cons.Add(new ConditionalModel()
+                    {
+                        ConditionalType = ConditionalType.Equal,
+                        FieldName = fieldName,
+                        FieldValue = identity.ToString(),
+                        FieldValueConvertFunc = it => UtilMethods.ChangeType2(it, fieldObjectType)
+                    });
+                }
                 else
                     cons.Add(new ConditionalModel() { ConditionalType = ConditionalType.Equal, FieldName = fieldName, FieldValue = identity.ToString() });
             }
@@ -935,6 +947,10 @@ namespace SqlSugar
                     var filedObject = this.EntityInfo.Columns.FirstOrDefault(it => it.PropertyName == item.PropertyName).PropertyInfo.GetValue(this.InsertObjs.Last(), null);
                     var fieldValue = filedObject.ObjToString();
                     if (filedObject != null && filedObject.GetType() != typeof(string) && this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL)
+                    {
+                        cons.Add(new ConditionalModel() { ConditionalType = ConditionalType.Equal, FieldName = fielddName, FieldValue = fieldValue, FieldValueConvertFunc = it => UtilMethods.ChangeType2(it, filedObject.GetType()) });
+                    }
+                    else if (filedObject != null && filedObject.GetType() != typeof(string) && this.Context.CurrentConnectionConfig.DbType == DbType.OpenGauss)
                     {
                         cons.Add(new ConditionalModel() { ConditionalType = ConditionalType.Equal, FieldName = fielddName, FieldValue = fieldValue, FieldValueConvertFunc = it => UtilMethods.ChangeType2(it, filedObject.GetType()) });
                     }

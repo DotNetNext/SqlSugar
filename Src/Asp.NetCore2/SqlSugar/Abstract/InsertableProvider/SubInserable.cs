@@ -41,7 +41,7 @@ namespace SqlSugar
                     });
                 }
             }
-            catch  
+            catch
             {
                 Check.Exception(true, tree.ToString() + " format error ");
             }
@@ -51,7 +51,7 @@ namespace SqlSugar
         private List<SubInsertTreeExpression> GetSubInsertTree(Expression expression)
         {
             List<SubInsertTreeExpression> resul = new List<SubInsertTreeExpression>();
-          
+
             if (expression is ListInitExpression)
             {
                 ListInitExpression exp = expression as ListInitExpression;
@@ -73,13 +73,13 @@ namespace SqlSugar
             }
             else
             {
-                
+
             }
             return resul;
         }
 
         [Obsolete("use ExecuteCommand")]
-        public object ExecuteReturnPrimaryKey() 
+        public object ExecuteReturnPrimaryKey()
         {
             return ExecuteCommand();
         }
@@ -89,7 +89,7 @@ namespace SqlSugar
             object resut = 0;
             await Task.Run(() =>
             {
-                resut= ExecuteCommand();
+                resut = ExecuteCommand();
             });
             return resut;
         }
@@ -150,7 +150,7 @@ namespace SqlSugar
 
         private bool IsIdEntity(EntityInfo entity)
         {
-            return entity.Columns.Where(it => it.IsIdentity||it.OracleSequenceName.HasValue()).Count() > 0;
+            return entity.Columns.Where(it => it.IsIdentity || it.OracleSequenceName.HasValue()).Count() > 0;
         }
 
         private void AddChildList(List<SubInsertTreeExpression> items, object insertObject, object pkValue)
@@ -175,7 +175,7 @@ namespace SqlSugar
                         {
                             childList = new List<object>() { childList };
                         }
-                        if (!string.IsNullOrEmpty(subMemberName) &&subMemberName!=childName)
+                        if (!string.IsNullOrEmpty(subMemberName) && subMemberName != childName)
                         {
                             foreach (var child in childList as IEnumerable<object>)
                             {
@@ -208,6 +208,11 @@ namespace SqlSugar
                             if (isIdentity)
                             {
                                 if (this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL)
+                                {
+                                    var sqlobj = this.Context.Insertable(insert).AS(tableName).ToSql();
+                                    id = this.Context.Ado.GetInt(sqlobj.Key+ "  "+ this.InsertBuilder.Builder.GetTranslationColumnName(entityInfo.Columns.First(it=>isIdentity).DbColumnName), sqlobj.Value);
+                                }
+                                else if (this.Context.CurrentConnectionConfig.DbType == DbType.OpenGauss)
                                 {
                                     var sqlobj = this.Context.Insertable(insert).AS(tableName).ToSql();
                                     id = this.Context.Ado.GetInt(sqlobj.Key+ "  "+ this.InsertBuilder.Builder.GetTranslationColumnName(entityInfo.Columns.First(it=>isIdentity).DbColumnName), sqlobj.Value);
@@ -252,6 +257,14 @@ namespace SqlSugar
                     if (value == null&&this.Context.CurrentConnectionConfig.DbType==DbType.PostgreSQL) 
                     {
                        var underType= UtilMethods.GetUnderType(item.PropertyInfo.PropertyType);
+                        if (underType == UtilConstants.DateType)
+                        {
+                            value = SqlDateTime.Null;
+                        }
+                    }
+                    else if (value == null && this.Context.CurrentConnectionConfig.DbType == DbType.OpenGauss)
+                    {
+                        var underType = UtilMethods.GetUnderType(item.PropertyInfo.PropertyType);
                         if (underType == UtilConstants.DateType)
                         {
                             value = SqlDateTime.Null;

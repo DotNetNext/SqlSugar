@@ -13,6 +13,7 @@ namespace SqlSugar
         private static bool IsTrySqlite = false;
         private static bool IsTryOracle = false;
         private static bool IsTryPgSql = false;
+        private static bool IsTryGSql = false;
         private static bool IsTryDm = false;
         private static bool IsTryKd = false;
         private static bool IsTryOscar = false;
@@ -74,7 +75,25 @@ namespace SqlSugar
                 }
             }
         }
-
+        public static void TryOpenGauss()
+        {
+            if (!IsTryGSql)
+            {
+                try
+                {
+                    OpenGaussProvider db = new OpenGaussProvider();
+                    var conn = db.GetAdapter();
+                    IsTryGSql = true;
+                }
+                catch
+                {
+                    var message = ErrorMessage.GetThrowMessage(
+                     "You need to refer to Npgsql 3.2.7",
+                     "你需要引用 Npgsql 3.2.7及以上版本");
+                    throw new Exception(message);
+                }
+            }
+        }
         public static void TryOracle()
         {
             if (!IsTryOracle)
