@@ -360,7 +360,7 @@ namespace OrmTest
                 });
                 itemModel.Items = allItems.Where(it => it.OrderId==itemModel.Id).ToList();//Every time it's executed
             }).ToList();
-
+            db.CodeFirst.InitTables<Tree>();
             //无限级高性能导航映射
             var treeRoot=db.Queryable<Tree>().Where(it => it.Id == 1).ToList();
             db.ThenMapper(treeRoot, item =>
