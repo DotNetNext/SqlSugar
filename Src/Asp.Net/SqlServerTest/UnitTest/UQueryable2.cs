@@ -274,6 +274,15 @@ namespace OrmTest
 
                      .Where((o) => o.Id > 0) 
                      .ToList();
+            var db = Db;
+            db.CurrentConnectionConfig.MoreSettings = new ConnMoreSettings
+            { 
+                 IsWithNoLockQuery = true,
+            };
+            var sql13 = db.Queryable<Order>().AS("[ORDER]")
+                .LeftJoin<OrderItem>((o,i) => o.Id == i.OrderId).AS<OrderItem>("[ORDERDETAIL]")
+                .LeftJoin<Custom>((o, i, c) => c.Id == o.CustomId).AS<Custom>("[CUSTOM]")
+                .Select<ViewOrder>().ToList();
         }
         public class VUOrder
         {
