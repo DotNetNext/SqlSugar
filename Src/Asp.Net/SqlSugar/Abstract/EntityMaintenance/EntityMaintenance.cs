@@ -171,7 +171,15 @@ namespace SqlSugar
             {
                 return string.Empty;
             }
-            return xeNode.Element("summary").Value.ToSqlFilter().Trim();
+            var summary = xeNode.Element("summary");
+            if (summary != null)
+            {
+                return summary.Value.ToSqlFilter().Trim();
+            }
+            else 
+            {
+                return xeNode.Elements().Where(x=>x.Name.ToString().EqualCase("summary")).Select(it=>it.Value).FirstOrDefault().ToSqlFilter().Trim()??"";
+            }
         }
         /// <summary>
         /// Gets the code annotation for the database table
