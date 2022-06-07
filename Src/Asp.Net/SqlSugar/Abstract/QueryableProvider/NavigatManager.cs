@@ -336,21 +336,31 @@ namespace SqlSugar
                                       }).GroupBy(it => it.l).ToList();
                     foreach (var item in groupQuery)
                     {
-
+                        var itemSelectList=item.Select(it => it.n);
+                        if (sqlObj.Skip != null)
+                        {
+                            itemSelectList = itemSelectList
+                                .Skip(sqlObj.Skip.Value);
+                        }
+                        if (sqlObj.Take != null) 
+                        {
+                            itemSelectList = itemSelectList
+                                .Take(sqlObj.Take.Value);
+                        }
                         if (sqlObj.MappingExpressions.HasValue())
                         {
                             MappingFieldsHelper<T> helper = new MappingFieldsHelper<T>();
                             helper.NavEntity = navEntityInfo;
                             helper.Context = this.Context;
                             helper.RootEntity = this.Context.EntityMaintenance.GetEntityInfo<T>();
-                            helper.SetChildList(navObjectNameColumnInfo, item.Key, item.Select(it => it.n).ToList(), sqlObj.MappingExpressions);
+                            helper.SetChildList(navObjectNameColumnInfo, item.Key, itemSelectList.ToList(), sqlObj.MappingExpressions);
                         }
                         else
                         {
 
                             var instance = Activator.CreateInstance(navObjectNamePropety.PropertyType, true);
                             var ilist = instance as IList;
-                            foreach (var value in item.Select(it => it.n).ToList())
+                            foreach (var value in itemSelectList.ToList())
                             {
                                 ilist.Add(value);
                             }

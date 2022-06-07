@@ -110,6 +110,10 @@ namespace OrmTest
            .Includes(x => x.Books.MappingField(z=>z.Names,()=>x.Name).ToList())
            .ToList();
 
+            var list3_11 = db.Queryable<StudentA>()
+           .Includes(x => x.Books.Skip(1).Take(2).ToList())
+           .ToList();
+
             //先用Mapper导航映射查出第二层
             var list = db.Queryable<StudentA>().Mapper(x => x.SchoolA, x => x.SchoolId).ToList();
 
