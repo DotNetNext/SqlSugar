@@ -332,7 +332,7 @@ namespace SqlSugar
                                       select new
                                       {
                                           l,
-                                          n
+                                          n 
                                       }).GroupBy(it => it.l).ToList();
                     foreach (var item in groupQuery)
                     {
@@ -525,6 +525,16 @@ namespace SqlSugar
                     var exp = method.Arguments[1];
                     oredrBy.Add(" " + queryable.QueryBuilder.GetExpressionValue(exp, ResolveExpressType.WhereSingle).GetString() + " DESC");
                 }
+                else if (method.Method.Name == "Skip")
+                {
+                    var exp = method.Arguments[1];
+                    result.Skip = (int)ExpressionTool.GetExpressionValue(exp);
+                }
+                else if (method.Method.Name == "Take")
+                {
+                    var exp = method.Arguments[1];
+                    result.Take = (int)ExpressionTool.GetExpressionValue(exp);
+                }
                 else if (method.Method.Name == "ToList")
                 {
                     isList = true;
@@ -594,6 +604,8 @@ namespace SqlSugar
 
         public class SqlInfo 
         {
+            public int? Take { get; set; }
+            public int? Skip { get; set; }
             public string WhereString { get; set; }
             public string OrderByString { get; set; }
             public string SelectString { get; set; }
