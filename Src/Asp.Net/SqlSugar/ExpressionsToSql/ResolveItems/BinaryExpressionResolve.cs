@@ -71,7 +71,7 @@ namespace SqlSugar
             {
                 leftExpression = (leftExpression as UnaryExpression).Operand;
             }
-            if (rightExpression is UnaryExpression && (rightExpression as UnaryExpression).Operand.Type == UtilConstants.BoolType && (rightExpression as UnaryExpression).NodeType == ExpressionType.Convert)
+            if (rightExpression is UnaryExpression&& (rightExpression as UnaryExpression).NodeType == ExpressionType.Convert)
             {
                 rightExpression = (rightExpression as UnaryExpression).Operand;
             }
