@@ -540,7 +540,7 @@ namespace SqlSugar
                                 ConditionalType = ConditionalType.Equal,
                                 FieldName = column.DbColumnName,
                                 FieldValue = value.ObjToString(),
-                                CSharpTypeName=column.PropertyInfo.PropertyType.Name
+                                CSharpTypeName=column.UnderType.Name
                             });
                             if (value != null && value.GetType().IsEnum())
                             {
