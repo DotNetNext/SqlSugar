@@ -2421,7 +2421,14 @@ namespace SqlSugar
                 if (this.QueryBuilder.AsTables != null && this.QueryBuilder.AsTables.Count==1) 
                 {
                     var tableinfo = this.QueryBuilder.AsTables.First();
-                    this.QueryBuilder.AsTables[tableinfo.Key] =" (SELECT * FROM " +this.QueryBuilder.AsTables.First().Value+")";
+                    if (this.Context.CurrentConnectionConfig?.MoreSettings?.IsWithNoLockQuery == true)
+                    {
+                        this.QueryBuilder.AsTables[tableinfo.Key] = " (SELECT * FROM " + this.QueryBuilder.AsTables.First().Value + $" {SqlWith.NoLock} )";
+                    }
+                    else 
+                    {
+                        this.QueryBuilder.AsTables[tableinfo.Key] = " (SELECT * FROM " + this.QueryBuilder.AsTables.First().Value + ")";
+                    }
                     this.QueryBuilder.SelectValue = this.QueryBuilder.TableShortName +".*";
                 }
             }
