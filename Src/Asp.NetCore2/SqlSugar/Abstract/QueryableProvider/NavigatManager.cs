@@ -538,12 +538,26 @@ namespace SqlSugar
                 else if (method.Method.Name == "Skip")
                 {
                     var exp = method.Arguments[1];
-                    result.Skip = (int)ExpressionTool.GetExpressionValue(exp);
+                    if (exp is BinaryExpression)
+                    {
+                        result.Skip = (int)ExpressionTool.DynamicInvoke(exp);
+                    }
+                    else
+                    {
+                        result.Skip = (int)ExpressionTool.GetExpressionValue(exp);
+                    }
                 }
                 else if (method.Method.Name == "Take")
                 {
                     var exp = method.Arguments[1];
-                    result.Take = (int)ExpressionTool.GetExpressionValue(exp);
+                    if (exp is BinaryExpression)
+                    {
+                        result.Take = (int)ExpressionTool.DynamicInvoke(exp);
+                    }
+                    else
+                    {
+                        result.Take = (int)ExpressionTool.GetExpressionValue(exp);
+                    }
                 }
                 else if (method.Method.Name == "ToList")
                 {
