@@ -332,25 +332,35 @@ namespace SqlSugar
                                       select new
                                       {
                                           l,
-                                          n
+                                          n 
                                       }).GroupBy(it => it.l).ToList();
                     foreach (var item in groupQuery)
                     {
-
+                        var itemSelectList=item.Select(it => it.n);
+                        if (sqlObj.Skip != null)
+                        {
+                            itemSelectList = itemSelectList
+                                .Skip(sqlObj.Skip.Value);
+                        }
+                        if (sqlObj.Take != null) 
+                        {
+                            itemSelectList = itemSelectList
+                                .Take(sqlObj.Take.Value);
+                        }
                         if (sqlObj.MappingExpressions.HasValue())
                         {
                             MappingFieldsHelper<T> helper = new MappingFieldsHelper<T>();
                             helper.NavEntity = navEntityInfo;
                             helper.Context = this.Context;
                             helper.RootEntity = this.Context.EntityMaintenance.GetEntityInfo<T>();
-                            helper.SetChildList(navObjectNameColumnInfo, item.Key, item.Select(it => it.n).ToList(), sqlObj.MappingExpressions);
+                            helper.SetChildList(navObjectNameColumnInfo, item.Key, itemSelectList.ToList(), sqlObj.MappingExpressions);
                         }
                         else
                         {
 
                             var instance = Activator.CreateInstance(navObjectNamePropety.PropertyType, true);
                             var ilist = instance as IList;
-                            foreach (var value in item.Select(it => it.n).ToList())
+                            foreach (var value in itemSelectList.ToList())
                             {
                                 ilist.Add(value);
                             }
@@ -525,6 +535,16 @@ namespace SqlSugar
                     var exp = method.Arguments[1];
                     oredrBy.Add(" " + queryable.QueryBuilder.GetExpressionValue(exp, ResolveExpressType.WhereSingle).GetString() + " DESC");
                 }
+                else if (method.Method.Name == "Skip")
+                {
+                    var exp = method.Arguments[1];
+                    result.Skip = (int)ExpressionTool.GetExpressionValue(exp);
+                }
+                else if (method.Method.Name == "Take")
+                {
+                    var exp = method.Arguments[1];
+                    result.Take = (int)ExpressionTool.GetExpressionValue(exp);
+                }
                 else if (method.Method.Name == "ToList")
                 {
                     isList = true;
@@ -594,6 +614,8 @@ namespace SqlSugar
 
         public class SqlInfo 
         {
+            public int? Take { get; set; }
+            public int? Skip { get; set; }
             public string WhereString { get; set; }
             public string OrderByString { get; set; }
             public string SelectString { get; set; }
