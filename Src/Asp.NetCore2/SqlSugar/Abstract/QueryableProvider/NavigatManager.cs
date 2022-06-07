@@ -250,10 +250,39 @@ namespace SqlSugar
                         }
                         else
                         {
-                            navObjectNamePropety.SetValue(listItem, instance);
+                            if (sql.Skip != null || sql.Take != null)
+                            {
+                                var instanceCast = (instance as IList);
+                                var newinstance = Activator.CreateInstance(navObjectNamePropety.PropertyType, true) as IList;
+                                SkipTakeIList(sql, instanceCast, newinstance);
+                                navObjectNamePropety.SetValue(listItem, newinstance);
+                            }
+                            else
+                            {
+                                navObjectNamePropety.SetValue(listItem, instance);
+                            }
                         }
                     }
                 }
+            }
+        }
+
+        private static void SkipTakeIList(SqlInfo sql, IList instanceCast, IList newinstance)
+        {
+            var intArray = Enumerable.Range(0, instanceCast.Count);
+            if (sql.Skip != null)
+            {
+                intArray = intArray
+                    .Skip(sql.Skip.Value);
+            }
+            if (sql.Take != null)
+            {
+                intArray = intArray
+                    .Take(sql.Take.Value);
+            }
+            foreach (var i in intArray)
+            {
+                newinstance.Add(instanceCast[i]);
             }
         }
 
