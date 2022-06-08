@@ -99,6 +99,7 @@
     <Compile Include="Models\Tree.cs" />
     <Compile Include="Models\ViewOrder.cs" />
     <Compile Include="Config.cs" />
+    <Compile Include="UnitTest\UCustom013.cs" />
     <Compile Include="UnitTest\UCustom08.cs" />
     <Compile Include="UnitTest\UAopTest.cs" />
     <Compile Include="UnitTest\UCustom01.cs" />
