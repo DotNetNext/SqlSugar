@@ -426,6 +426,7 @@ namespace SqlSugar
                 return;
             }
             var navEntity = args[0];
+            this.Context.InitMappingInfo(navEntity);
             var navEntityInfo = this.Context.EntityMaintenance.GetEntityInfo(navEntity);
             var sqlObj = GetWhereSql(navObjectNameColumnInfo.Navigat.Name);
             Check.ExceptionEasy(sqlObj.MappingExpressions.IsNullOrEmpty(), $"{expression} error,dynamic need MappingField ,Demo: Includes(it => it.Books.MappingField(z=>z.studenId,()=>it.StudentId).ToList())", $"{expression} 解析出错,自定义映射需要 MappingField ,例子: Includes(it => it.Books.MappingField(z=>z.studenId,()=>it.StudentId).ToList())");
