@@ -354,7 +354,7 @@ namespace SqlSugar
                 {
                     //var setValue = navList
                     //  .Where(x => navColumn.PropertyInfo.GetValue(x).ObjToString() == listItemPkColumn.PropertyInfo.GetValue(item).ObjToString()).ToList();
-                    var groupQuery = (from l in list
+                    var groupQuery = (from l in list.Distinct()
                                       join n in navList
                                            on listItemPkColumn.PropertyInfo.GetValue(l).ObjToString()
                                            equals navColumn.PropertyInfo.GetValue(n).ObjToString()
