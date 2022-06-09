@@ -18,7 +18,7 @@ namespace SqlSugar
 
         public void InitTables(Type type)
         {
-            var isSplitEntity = type.GetCustomAttributes<SplitTableAttribute>() != null;
+            var isSplitEntity = type.GetCustomAttribute<SplitTableAttribute>() != null;
             if (isSplitEntity)
             {
                 _InitTables(type);
