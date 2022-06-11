@@ -283,6 +283,15 @@ namespace OrmTest
                 .LeftJoin<OrderItem>((o,i) => o.Id == i.OrderId).AS<OrderItem>("[ORDERDETAIL]")
                 .LeftJoin<Custom>((o, i, c) => c.Id == o.CustomId).AS<Custom>("[CUSTOM]")
                 .Select<ViewOrder>().ToList();
+
+            var sql14 =db.SqlQueryable<Order>("select * from [ORDER]")
+             .LeftJoin<OrderItem>((o, i) => o.Id == i.OrderId).AS<OrderItem>("[ORDERDETAIL]")
+             .LeftJoin<Custom>((o, i, c) => c.Id == o.CustomId).AS<Custom>("[CUSTOM]")
+             .Select<ViewOrder>().ToSql();
+            if (sql14.Key!=("SELECT c.[Name] AS [CustomName],o.[Id] AS [Id],o.[Name] AS [Name],o.[Price] AS [Price],o.[CreateTime] AS [CreateTime],o.[CustomId] AS [CustomId] FROM  (SELECT * FROM  (select * from [ORDER]) t  WITH(NOLOCK)  ) o Left JOIN [ORDERDETAIL] i  ON ( [o].[Id] = [i].[OrderId] )  Left JOIN [CUSTOM] c  ON ( [c].[Id] = [o].[CustomId] )  ")) 
+            {
+                throw new Exception("unit error");
+            }
         }
         public class VUOrder
         {
