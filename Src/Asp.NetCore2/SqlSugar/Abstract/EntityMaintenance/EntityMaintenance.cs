@@ -161,7 +161,7 @@ namespace SqlSugar
             {
                 return string.Empty;
             }
-            XElement xe = XElement.Load(xmlPath);
+            XElement xe =new ReflectionInoCacheService().GetOrCreate("EntityXml_"+xmlPath,()=> XElement.Load(xmlPath));
             if (xe == null)
             {
                 return string.Empty;
@@ -178,7 +178,11 @@ namespace SqlSugar
             }
             else 
             {
-                return xeNode.Elements().Where(x=>x.Name.ToString().EqualCase("summary")).Select(it=>it.Value).FirstOrDefault().ToSqlFilter().Trim()??"";
+                var summaryValue = xeNode.Elements().Where(x => x.Name.ToString().EqualCase("summary")).Select(it => it.Value).FirstOrDefault();
+                if(summaryValue==null)
+                    return string.Empty;  
+                else
+                    return summaryValue.ToSqlFilter().Trim()??"";
             }
         }
         /// <summary>
