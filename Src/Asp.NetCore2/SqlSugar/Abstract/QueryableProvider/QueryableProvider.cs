@@ -103,6 +103,7 @@ namespace SqlSugar
             var result = InstanceFactory.GetQueryable<T, T2>(this.Context.CurrentConnectionConfig);
             result.SqlBuilder = this.SqlBuilder;
             result.Context = this.Context;
+            this.QueryBuilder.IsSqlQuery = false;
             result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression,JoinType.Left));
             return result;
         }
