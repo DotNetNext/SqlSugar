@@ -32,6 +32,7 @@ namespace OrmTest
             Console.WriteLine("#### Examples Start ####");
             var db = GetInstance();
             var dbTime = db.GetDate();
+            var GetFirst = db.Queryable<Order>().OrderBy(x => Convert.ToInt32(x.Price), OrderByType.Asc).First();
             var getAll = db.Queryable<Order>().Where(it=> SqlFunc.EqualsNull(it.Name,null)).ToList();
             var getOrderBy = db.Queryable<Order>().OrderBy(it => it.Name,OrderByType.Desc).ToList();
             var getOrderBy2 = db.Queryable<Order>().OrderBy(it => it.Id).OrderBy(it => it.Name, OrderByType.Desc).ToList();
