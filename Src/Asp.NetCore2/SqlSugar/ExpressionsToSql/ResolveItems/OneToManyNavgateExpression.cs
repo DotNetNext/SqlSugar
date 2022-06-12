@@ -117,7 +117,15 @@ namespace SqlSugar
             {
                 return GetOneToManySql();
             }
-            else 
+            else if (Navigat.NavigatType == NavigateType.Dynamic) 
+            {
+                Check.ExceptionEasy(
+                   true,
+                   " NavigateType.Dynamic no support expression .  " + this.ProPertyEntity.Type.Name,
+                   " NavigateType.Dynamic 自定义导航对象不支持在Where(x=>x.自定义.Id==1)等方法中使用" + this.ProPertyEntity.Type.Name);
+                return null;
+            }
+            else
             {
                 return GetManyToManySql();
             }
