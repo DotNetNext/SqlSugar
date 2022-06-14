@@ -568,7 +568,7 @@ namespace SqlSugar
         {
             List<DiffLogTableInfo> result = new List<DiffLogTableInfo>();
             var whereSql = Regex.Replace(sql, ".* WHERE ", "", RegexOptions.Singleline);
-            var dt = this.Context.Queryable<T>().Where(whereSql).AddParameters(parameters).ToDataTable();
+            var dt = this.Context.Queryable<T>().Filter(null, true).Where(whereSql).AddParameters(parameters).ToDataTable();
             if (dt.Rows != null && dt.Rows.Count > 0)
             {
                 foreach (DataRow row in dt.Rows)
