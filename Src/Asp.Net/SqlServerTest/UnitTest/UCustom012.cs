@@ -190,6 +190,11 @@ namespace OrmTest
                 {
                     x = SqlFunc.Subqueryable<Order>().Where(z => z.Id == it.Id).Any()
                 }).ToList();
+
+            db.Deleteable<StudentA>().Where(x => x.SchoolA.TeacherList.Any()).ExecuteCommand();
+            db.Deleteable<StudentA>().Where(x => x.SchoolA.School_Name=="a").ExecuteCommand();
+            db.Updateable<StudentA>()
+                .SetColumns(it=>it.Name=="a").Where(x => x.SchoolA.School_Name == "a").ExecuteCommand();
         }
 
         public class UnitA001
