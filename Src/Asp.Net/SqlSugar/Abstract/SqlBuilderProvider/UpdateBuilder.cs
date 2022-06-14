@@ -142,6 +142,7 @@ namespace SqlSugar
                 resolveExpress.IgnoreComumnList = Context.IgnoreColumns;
                 resolveExpress.SqlFuncServices = Context.CurrentConnectionConfig.ConfigureExternalServices == null ? null : Context.CurrentConnectionConfig.ConfigureExternalServices.SqlFuncServices;
             };
+            resolveExpress.SugarContext = new ExpressionOutParameter() { Context = this.Context };
             resolveExpress.Resolve(expression, resolveType);
             this.Parameters.AddRange(resolveExpress.Parameters);
             var result = resolveExpress.Result;
