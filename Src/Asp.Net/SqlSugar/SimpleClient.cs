@@ -148,6 +148,16 @@ namespace SqlSugar
         {
             return this.Context.Insertable(insertObj).ExecuteCommand() > 0;
         }
+
+        public virtual bool InsertOrUpdate(T data) 
+        {
+            return this.Context.Storageable(data).ExecuteCommand() > 0;
+        }
+        public virtual bool InsertOrUpdate(List<T> datas)
+        {
+            return this.Context.Storageable(datas).ExecuteCommand() > 0;
+        }
+
         public virtual int InsertReturnIdentity(T insertObj)
         {
             return this.Context.Insertable(insertObj).ExecuteReturnIdentity();
@@ -278,6 +288,14 @@ namespace SqlSugar
             return Context.Queryable<T>().Where(whereExpression).CountAsync();
         }
 
+        public virtual async Task<bool> InsertOrUpdateAsync(T data)
+        {
+            return await this.Context.Storageable(data).ExecuteCommandAsync() > 0;
+        }
+        public virtual async Task<bool> InsertOrUpdateAsync(List<T> datas)
+        {
+            return await this.Context.Storageable(datas).ExecuteCommandAsync() > 0;
+        }
         public virtual async Task<bool> InsertAsync(T insertObj)
         {
             return  await this.Context.Insertable(insertObj).ExecuteCommandAsync() > 0;
