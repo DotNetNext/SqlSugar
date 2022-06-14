@@ -76,6 +76,7 @@ namespace SqlSugar
                 if (nav.IsNavgate(expression))
                 {
                     var value = nav.GetSql();
+                    SetNavigateResult();
                     this.Context.SingleTableNameSubqueryShortName = nav.ShorName;
                     if (isSetTempData)
                     {
@@ -89,6 +90,7 @@ namespace SqlSugar
                 else if (navN.IsNavgate(expression))
                 {
                     var value = navN.GetMemberSql();
+                    SetNavigateResult();
                     this.Context.SingleTableNameSubqueryShortName = navN.shorName;
                     if (isSetTempData)
                     {
