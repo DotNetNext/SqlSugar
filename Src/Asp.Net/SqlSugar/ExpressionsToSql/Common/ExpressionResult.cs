@@ -9,6 +9,7 @@ namespace SqlSugar
     {
         public bool IsLockCurrentParameter { get; set; }
         public bool IsUpper { get; set; }
+        public bool IsNavicate { get; set; }
         private ExpressionParameter _CurrentParameter;
         public ExpressionParameter CurrentParameter
         {

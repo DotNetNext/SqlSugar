@@ -248,6 +248,7 @@ namespace SqlSugar
                  if (nav.IsNavgate(express)) 
                  {
                     var sql = nav.GetSql();
+                    SetNavigateResult();
                     this.Context.SingleTableNameSubqueryShortName = nav.ShorName;
                     base.AppendValue(parameter, isLeft, sql);
                     return;
@@ -257,6 +258,7 @@ namespace SqlSugar
                 if (nav2.IsNavgate(express))
                 {
                     var sql = nav2.GetSql();
+                    SetNavigateResult();
                     this.Context.SingleTableNameSubqueryShortName = nav2.shorName;
                     base.AppendValue(parameter, isLeft, sql);
                     return;
@@ -292,6 +294,8 @@ namespace SqlSugar
                 }
             }
         }
+
+   
 
         private void NativeExtensionMethod(ExpressionParameter parameter, MethodCallExpression express, bool? isLeft, string name, List<MethodCallExpressionArgs> appendArgs = null)
         {

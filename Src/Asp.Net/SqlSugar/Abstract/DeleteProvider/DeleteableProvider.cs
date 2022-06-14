@@ -184,8 +184,12 @@ namespace SqlSugar
         {
             var expResult = DeleteBuilder.GetExpressionValue(expression, ResolveExpressType.WhereSingle);
             var whereString = expResult.GetResultString();
-            if (expression.ToString().Contains("Subqueryable()")){
-                whereString = whereString.Replace(this.SqlBuilder.GetTranslationColumnName(expression.Parameters.First().Name) + ".",this.SqlBuilder.GetTranslationTableName(this.EntityInfo.DbTableName) + ".");
+            if (expression.ToString().Contains("Subqueryable()")) {
+                whereString = whereString.Replace(this.SqlBuilder.GetTranslationColumnName(expression.Parameters.First().Name) + ".", this.SqlBuilder.GetTranslationTableName(this.EntityInfo.DbTableName) + ".");
+            } 
+            else if (expResult.IsNavicate)
+            {
+                whereString = whereString.Replace(expression.Parameters.First().Name + ".", this.SqlBuilder.GetTranslationTableName(this.EntityInfo.DbTableName) + ".");
             }
             DeleteBuilder.WhereInfos.Add(whereString);
             return this;
