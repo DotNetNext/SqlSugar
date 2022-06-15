@@ -289,6 +289,7 @@ namespace SqlSugar
         private void OneToOne(List<object> list, Func<ISugarQueryable<object>, List<object>> selector, EntityInfo listItemEntity, System.Reflection.PropertyInfo navObjectNamePropety, EntityColumnInfo navObjectNameColumnInfo)
         {
             var navColumn = listItemEntity.Columns.FirstOrDefault(it => it.PropertyName == navObjectNameColumnInfo.Navigat.Name);
+            Check.ExceptionEasy(navColumn == null, "OneToOne navigation configuration error", $"OneToOne导航配置错误： 实体{ listItemEntity.EntityName } 不存在{navObjectNameColumnInfo.Navigat.Name}");
             var navType = navObjectNamePropety.PropertyType;
             var navEntityInfo = this.Context.EntityMaintenance.GetEntityInfo(navType);
             this.Context.InitMappingInfo(navEntityInfo.Type);
