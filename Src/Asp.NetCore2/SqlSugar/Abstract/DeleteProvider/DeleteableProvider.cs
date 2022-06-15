@@ -145,7 +145,7 @@ namespace SqlSugar
                         var tempequals = DeleteBuilder.WhereInEqualTemplate;
                         if (this.Context.CurrentConnectionConfig.MoreSettings != null && this.Context.CurrentConnectionConfig.MoreSettings.DisableNvarchar == true) 
                         {
-                            tempequals = "\"{0}\"='{1}' ";
+                            tempequals = $"{SqlBuilder.SqlTranslationLeft}{{0}}{SqlBuilder.SqlTranslationRight}='{{1}}' ";
                         }
                         if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle)
                         {
