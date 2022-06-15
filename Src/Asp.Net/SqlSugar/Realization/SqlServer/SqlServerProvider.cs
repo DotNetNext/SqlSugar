@@ -192,7 +192,7 @@ namespace SqlSugar
             }
             else if (parameter.DbType == System.Data.DbType.UInt64)
             {
-                return System.Data.DbType.Int32;
+                return System.Data.DbType.Int64;
             }
             else
             {
