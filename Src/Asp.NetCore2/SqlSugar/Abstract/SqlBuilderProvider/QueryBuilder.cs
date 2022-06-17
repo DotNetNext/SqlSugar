@@ -676,7 +676,10 @@ namespace SqlSugar
                 }
                 if (this.TableWithString.HasValue() && this.TableWithString != SqlWith.Null)
                 {
-                    result += TableWithString + UtilConstants.Space;
+                    if (!result.TrimStart().StartsWith("("))
+                    {
+                        result += TableWithString + UtilConstants.Space;
+                    }
                 }
                 if (!this.IsSingle())
                 {

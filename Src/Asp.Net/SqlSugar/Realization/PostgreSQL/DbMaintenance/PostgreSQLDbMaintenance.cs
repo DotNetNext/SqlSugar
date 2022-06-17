@@ -19,6 +19,7 @@ namespace SqlSugar
         {
             get
             {
+                string schema = GetSchema();
                 string sql = @"select cast (pclass.oid as int4) as TableId,cast(ptables.tablename as varchar) as TableName,
                                 pcolumn.column_name as DbColumnName,pcolumn.udt_name as DataType,
                                 CASE WHEN pcolumn.numeric_scale >0 THEN pcolumn.numeric_precision ELSE pcolumn.character_maximum_length END   as Length,
@@ -32,7 +33,7 @@ namespace SqlSugar
                                 then true else false end as IsIdentity,
                                 case when pcolumn.is_nullable = 'YES'
                                 then true else false end as IsNullable
-                                 from (select * from pg_tables where upper(tablename) = upper('{0}') and schemaname='public') ptables inner join pg_class pclass
+                                 from (select * from pg_tables where upper(tablename) = upper('{0}') and schemaname='" + schema + @"') ptables inner join pg_class pclass
                                 on ptables.tablename = pclass.relname inner join (SELECT *
                                 FROM information_schema.columns
                                 ) pcolumn on pcolumn.table_name = ptables.tablename
@@ -49,13 +50,19 @@ namespace SqlSugar
                 return sql;
             }
         }
+
         protected override string GetTableInfoListSql
         {
             get
             {
+                var schema = GetSchema();
                 return @"select cast(relname as varchar) as Name,
                         cast(obj_description(relfilenode,'pg_class') as varchar) as Description from pg_class c 
-                        where  relkind = 'r' and relname not like 'pg_%' and relname not like 'sql_%' order by relname";
+                         inner join 
+						 pg_namespace n on n.oid = c.relnamespace and nspname='"+ schema + @"'
+                         inner join 
+                         pg_tables z on z.tablename=c.relname
+                        where  relkind = 'r' and relname not like 'pg_%' and relname not like 'sql_%' and schemaname='" + schema + "' order by relname";
             }
         }
         protected override string GetViewInfoListSql
@@ -65,7 +72,7 @@ namespace SqlSugar
                 return @"select cast(relname as varchar) as Name,cast(Description as varchar) from pg_description
                          join pg_class on pg_description.objoid = pg_class.oid
                          where objsubid = 0 and relname in (SELECT viewname from pg_views  
-                         WHERE schemaname ='public')";
+                         WHERE schemaname ='"+GetSchema()+"')";
             }
         }
         #endregion
@@ -417,7 +424,7 @@ namespace SqlSugar
                                and kcu.constraint_schema = tco.constraint_schema
                                and kcu.constraint_name = tco.constraint_name
                                where tco.constraint_type = 'PRIMARY KEY'
-                               and kcu.table_schema='public' and 
+                               and kcu.table_schema='{GetSchema()}' and 
                                upper(kcu.table_name)=upper('{tableName.TrimEnd('"').TrimStart('"')}')";
                 List<string> pkList = new List<string>();
                 if (isCache)
@@ -445,6 +452,32 @@ namespace SqlSugar
             }
             return result;
         }
+        #endregion
+
+        #region Helper
+        private string GetSchema()
+        {
+            var schema = "public";
+            if (System.Text.RegularExpressions.Regex.IsMatch(this.Context.CurrentConnectionConfig.ConnectionString.ToLower(), "searchpath="))
+            {
+                var regValue = System.Text.RegularExpressions.Regex.Match(this.Context.CurrentConnectionConfig.ConnectionString.ToLower(), @"searchpath\=(\w+)").Groups[1].Value;
+                if (regValue.HasValue())
+                {
+                    schema = regValue;
+                }
+            }
+            else if (System.Text.RegularExpressions.Regex.IsMatch(this.Context.CurrentConnectionConfig.ConnectionString.ToLower(), "search path="))
+            {
+                var regValue = System.Text.RegularExpressions.Regex.Match(this.Context.CurrentConnectionConfig.ConnectionString.ToLower(), @"search path\=(\w+)").Groups[1].Value;
+                if (regValue.HasValue())
+                {
+                    schema = regValue;
+                }
+            }
+
+            return schema;
+        }
+
         #endregion
     }
 }

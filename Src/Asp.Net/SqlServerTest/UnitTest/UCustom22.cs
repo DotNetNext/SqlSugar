@@ -33,6 +33,14 @@ namespace OrmTest
             //用例代码        
 
             Search<Test0011>(db);
+            db.CurrentConnectionConfig.MoreSettings = new ConnMoreSettings()
+            {
+                 IsWithNoLockQuery=true
+            };
+            db.Queryable<Test0011>()
+                .Select<Test0011>()
+                .MergeTable().LeftJoin<Test0011>((x, y) => true)
+                .ToList();
 
         }
 

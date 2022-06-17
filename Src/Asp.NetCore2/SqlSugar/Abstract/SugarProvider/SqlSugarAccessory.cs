@@ -381,6 +381,9 @@ namespace SqlSugar
                 case DbType.PostgreSQL:
                     DependencyManagement.TryPostgreSQL();
                     break;
+                case DbType.OpenGauss:
+                    DependencyManagement.TryOpenGauss();
+                    break;
                 case DbType.Kdbndp:
                     DependencyManagement.TryKdbndb();
                     break;
@@ -400,9 +403,6 @@ namespace SqlSugar
                     Check.Exception(InstanceFactory.CustomDbName.IsNullOrEmpty() , "DbType.Custom: InstanceFactory.CustomDbName is not null  ");
                     Check.Exception(InstanceFactory.CustomNamespace.IsNullOrEmpty(), "DbType.Custom: InstanceFactory.CustomNamespace is not null  ");
                     Check.Exception(InstanceFactory.CustomDllName.IsNullOrEmpty(), "DbType.Custom: InstanceFactory.CustomDllName is not null  ");
-                    break;
-                case DbType.OpenGauss:
-                    DependencyManagement.TryOpenGauss();
                     break;
                 default:
                     throw new Exception("ConnectionConfig.DbType is null");

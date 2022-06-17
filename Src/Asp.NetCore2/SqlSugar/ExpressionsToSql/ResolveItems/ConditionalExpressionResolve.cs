@@ -17,6 +17,11 @@ namespace SqlSugar
                 express.IfTrue,
                 express.IfFalse
             };
+            if (IsBoolMember(express))
+            {
+                Expression trueValue = Expression.Constant(true);
+                args[0]= ExpressionBuilderHelper.CreateExpression(express.Test, trueValue, ExpressionType.And);
+            }
             var isLeft = parameter.IsLeft;
             MethodCallExpressionModel model = new MethodCallExpressionModel();
             model.Args = new List<MethodCallExpressionArgs>();
@@ -39,6 +44,11 @@ namespace SqlSugar
                 default:
                     break;
             }
+        }
+
+        private static bool IsBoolMember(ConditionalExpression express)
+        {
+            return express.Test is MemberExpression && (express.Test as MemberExpression).Expression is ParameterExpression;
         }
     }
 }

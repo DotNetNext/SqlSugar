@@ -39,6 +39,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile>bin\Debug\OrmTest.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -95,6 +96,12 @@
     <Compile Include="Models\OrderItem.cs" />
     <Compile Include="Demo\Demo0_SqlSugarClient.cs" />
     <Compile Include="Models\ViewOrder.cs" />
+    <Compile Include="UnitTest\UCustomNavigate01.cs" />
+    <Compile Include="UnitTest\Models\DSPersonScheduleModel.cs" />
+    <Compile Include="UnitTest\Models\PersonScheduleParam.cs" />
+    <Compile Include="UnitTest\Models\T_BAS_AIRPORT.cs" />
+    <Compile Include="UnitTest\Models\V_PERSON_SCHEDULE_A.cs" />
+    <Compile Include="UnitTest\UCustom023.cs" />
     <Compile Include="UnitTest\UCustom22.cs" />
     <Compile Include="UnitTest\UCustom021.cs" />
     <Compile Include="UnitTest\UByteArray.cs" />

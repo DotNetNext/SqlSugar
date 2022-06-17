@@ -29,9 +29,19 @@ namespace OrmTest
             db.Insertable(new CodeFirstTable1() { Name = "a", Text="a",CreateTime=DateTime.Now }).ExecuteCommand();
             db.Insertable(new CodeFirstTable1() { Name = "a", Text = "a", CreateTime = DateTime.Now.AddDays(1) }).ExecuteCommand();
             var list = db.Queryable<CodeFirstTable1>().ToList();
+            db.CodeFirst.InitTables<UnituLong>();
+            db.Insertable(new UnituLong() { longx = 1 }).ExecuteCommand();
+            var ulList=db.Queryable<UnituLong>().Where(x => x.longx > 0).ToList();
             Console.WriteLine("#### CodeFirst end ####");
         }
     }
+
+    public class UnituLong
+    {
+
+        public ulong longx{get;set;}
+    }
+
 
     [SugarIndex("index_codetable1_name",nameof(CodeFirstTable1.Name),OrderByType.Asc)]
     [SugarIndex("index_codetable1_nameid", nameof(CodeFirstTable1.Name), OrderByType.Asc,nameof(CodeFirstTable1.Id),OrderByType.Desc)]

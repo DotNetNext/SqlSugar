@@ -103,6 +103,7 @@ namespace SqlSugar
             var result = InstanceFactory.GetQueryable<T, T2>(this.Context.CurrentConnectionConfig);
             result.SqlBuilder = this.SqlBuilder;
             result.Context = this.Context;
+            this.QueryBuilder.IsSqlQuery = false;
             result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression,JoinType.Left));
             return result;
         }
@@ -547,7 +548,7 @@ namespace SqlSugar
                                 ConditionalType = ConditionalType.Equal,
                                 FieldName = column.DbColumnName,
                                 FieldValue = value.ObjToString(),
-                                CSharpTypeName=column.PropertyInfo.PropertyType.Name
+                                CSharpTypeName=column.UnderType.Name
                             });
                             if (value != null && value.GetType().IsEnum())
                             {
@@ -1291,16 +1292,16 @@ namespace SqlSugar
                     tableName = this.QueryBuilder.JoinQueryInfos.First().TableName;
                 }
             }
-            var current = this.Context.Queryable<T>().AS(tableName).InSingle(primaryKeyValue);
+            var current = this.Context.Queryable<T>().AS(tableName).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).InSingle(primaryKeyValue);
             if (current != null)
             {
                 result.Add(current);
                 object parentId = ParentInfo.PropertyInfo.GetValue(current,null);
                 int i = 0;
-                while (parentId!=null&&this.Context.Queryable<T>().AS(tableName).In(parentId).Any())
+                while (parentId!=null&&this.Context.Queryable<T>().AS(tableName).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).In(parentId).Any())
                 {
                     Check.Exception(i > 100, ErrorMessage.GetThrowMessage("Dead cycle", "出现死循环或超出循环上限（100），检查最顶层的ParentId是否是null或者0"));
-                    var parent = this.Context.Queryable<T>().AS(tableName).InSingle(parentId);
+                    var parent = this.Context.Queryable<T>().AS(tableName).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).InSingle(parentId);
                     result.Add(parent);
                     parentId= ParentInfo.PropertyInfo.GetValue(parent, null);
                     ++i;
@@ -1329,7 +1330,7 @@ namespace SqlSugar
                     tableName = this.QueryBuilder.JoinQueryInfos.First().TableName;
                 }
             }
-            var current = this.Context.Queryable<T>().AS(tableName).Where(new List<IConditionalModel>() {
+            var current = this.Context.Queryable<T>().AS(tableName).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).Where(new List<IConditionalModel>() {
                 new ConditionalModel()
                 {
                     ConditionalType = ConditionalType.Equal,
@@ -1342,7 +1343,7 @@ namespace SqlSugar
                 result.Add(current);
                 object parentId = ParentInfo.PropertyInfo.GetValue(current, null);
                 int i = 0;
-                while (parentId != null && this.Context.Queryable<T>().AS(tableName).Where(new List<IConditionalModel>() {
+                while (parentId != null && this.Context.Queryable<T>().AS(tableName).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).Where(new List<IConditionalModel>() {
                 new ConditionalModel()
                 {
                     ConditionalType = ConditionalType.Equal,
@@ -1352,7 +1353,7 @@ namespace SqlSugar
                 } }).Any())
                 {
                     Check.Exception(i > 100, ErrorMessage.GetThrowMessage("Dead cycle", "出现死循环或超出循环上限（100），检查最顶层的ParentId是否是null或者0"));
-                    var parent = this.Context.Queryable<T>().AS(tableName).Where(new List<IConditionalModel>() {
+                    var parent = this.Context.Queryable<T>().AS(tableName).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).Where(new List<IConditionalModel>() {
                 new ConditionalModel()
                 {
                     ConditionalType = ConditionalType.Equal,
@@ -1393,16 +1394,16 @@ namespace SqlSugar
                     tableName = this.QueryBuilder.JoinQueryInfos.First().TableName;
                 }
             }
-            var current =await this.Context.Queryable<T>().AS(tableName).InSingleAsync(primaryKeyValue);
+            var current =await this.Context.Queryable<T>().AS(tableName).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).InSingleAsync(primaryKeyValue);
             if (current != null)
             {
                 result.Add(current);
                 object parentId = ParentInfo.PropertyInfo.GetValue(current, null);
                 int i = 0;
-                while (parentId != null &&await this.Context.Queryable<T>().AS(tableName).In(parentId).AnyAsync())
+                while (parentId != null &&await this.Context.Queryable<T>().AS(tableName).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).In(parentId).AnyAsync())
                 {
                     Check.Exception(i > 100, ErrorMessage.GetThrowMessage("Dead cycle", "出现死循环或超出循环上限（100），检查最顶层的ParentId是否是null或者0"));
-                    var parent =await this.Context.Queryable<T>().AS(tableName).InSingleAsync(parentId);
+                    var parent =await this.Context.Queryable<T>().AS(tableName).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).InSingleAsync(parentId);
                     result.Add(parent);
                     parentId = ParentInfo.PropertyInfo.GetValue(parent, null);
                     ++i;
@@ -1430,7 +1431,7 @@ namespace SqlSugar
                     tableName = this.QueryBuilder.JoinQueryInfos.First().TableName;
                 }
             }
-            var current = await this.Context.Queryable<T>().AS(tableName).Where(new List<IConditionalModel>() {
+            var current = await this.Context.Queryable<T>().AS(tableName).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).Where(new List<IConditionalModel>() {
                 new ConditionalModel()
                 {
                     ConditionalType = ConditionalType.Equal,
@@ -1443,7 +1444,7 @@ namespace SqlSugar
                 result.Add(current);
                 object parentId = ParentInfo.PropertyInfo.GetValue(current, null);
                 int i = 0;
-                while (parentId != null && await this.Context.Queryable<T>().AS(tableName).Where(new List<IConditionalModel>() {
+                while (parentId != null && await this.Context.Queryable<T>().AS(tableName).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).Where(new List<IConditionalModel>() {
                 new ConditionalModel()
                 {
                     ConditionalType = ConditionalType.Equal,
@@ -1453,7 +1454,7 @@ namespace SqlSugar
                 } }).AnyAsync())
                 {
                     Check.Exception(i > 100, ErrorMessage.GetThrowMessage("Dead cycle", "出现死循环或超出循环上限（100），检查最顶层的ParentId是否是null或者0"));
-                    var parent = await this.Context.Queryable<T>().AS(tableName).Where(new List<IConditionalModel>() {
+                    var parent = await this.Context.Queryable<T>().AS(tableName).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).Where(new List<IConditionalModel>() {
                 new ConditionalModel()
                 {
                     ConditionalType = ConditionalType.Equal,
@@ -2435,7 +2436,14 @@ namespace SqlSugar
                 if (this.QueryBuilder.AsTables != null && this.QueryBuilder.AsTables.Count==1) 
                 {
                     var tableinfo = this.QueryBuilder.AsTables.First();
-                    this.QueryBuilder.AsTables[tableinfo.Key] =" (SELECT * FROM " +this.QueryBuilder.AsTables.First().Value+")";
+                    if (this.Context.CurrentConnectionConfig?.MoreSettings?.IsWithNoLockQuery == true&& this.QueryBuilder.AsTables.First().Value.ObjToString().Contains(SqlWith.NoLock) ==false)
+                    {
+                        this.QueryBuilder.AsTables[tableinfo.Key] = " (SELECT * FROM " + this.QueryBuilder.AsTables.First().Value + $" {SqlWith.NoLock} )";
+                    }
+                    else 
+                    {
+                        this.QueryBuilder.AsTables[tableinfo.Key] = " (SELECT * FROM " + this.QueryBuilder.AsTables.First().Value + ")";
+                    }
                     this.QueryBuilder.SelectValue = this.QueryBuilder.TableShortName +".*";
                 }
             }

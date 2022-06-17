@@ -1243,5 +1243,36 @@ namespace SqlSugar
             this.CurrentConnectionConfig = Tenant.ConnectionConfig;
         }
         #endregion
+
+        #region Tenant Crud
+        public ISugarQueryable<T> QueryableWithAttr<T>()
+        {
+            return this.GetConnectionWithAttr<T>().Queryable<T>();
+        }
+        public IInsertable<T> InsertableWithAttr<T>(T insertObj) where T : class, new()
+        {
+            return this.GetConnectionWithAttr<T>().Insertable(insertObj);
+        }
+        public IInsertable<T> InsertableWithAttr<T>(List<T> insertObjs) where T : class, new()
+        {
+            return this.GetConnectionWithAttr<T>().Insertable(insertObjs);
+        }
+        public IUpdateable<T> UpdateableWithAttr<T>(T updateObj) where T : class, new()
+        {
+            return this.GetConnectionWithAttr<T>().Updateable(updateObj);
+        }
+        public IUpdateable<T> UpdateableWithAttr<T>(List<T> updateObjs) where T : class, new()
+        {
+            return this.GetConnectionWithAttr<T>().Updateable(updateObjs);
+        }
+        public IDeleteable<T> DeleteableWithAttr<T>(T deleteObject) where T : class, new()
+        {
+            return this.GetConnectionWithAttr<T>().Deleteable(deleteObject);
+        }
+        public IDeleteable<T> DeleteableWithAttr<T>(List<T> deleteObjects) where T : class, new()
+        {
+            return this.GetConnectionWithAttr<T>().Deleteable(deleteObjects);
+        }
+        #endregion
     }
 }

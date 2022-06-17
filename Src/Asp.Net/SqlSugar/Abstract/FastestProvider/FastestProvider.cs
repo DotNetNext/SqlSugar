@@ -213,6 +213,10 @@ namespace SqlSugar
             dataTable.TableName = this.queryable.SqlBuilder.GetTranslationTableName(tableName);
             DataTable dt = GetCopyWriteDataTable(dataTable);
             IFastBuilder buider = GetBuider();
+            if (dt.Columns.Count != dataTable.Columns.Count)
+            {
+                ActionIgnoreColums(whereColumns, updateColumns, dt, buider.IsActionUpdateColumns);
+            }
             buider.Context = context;
             await buider.CreateTempAsync<object>(dt);
             await buider.ExecuteBulkCopyAsync(dt);

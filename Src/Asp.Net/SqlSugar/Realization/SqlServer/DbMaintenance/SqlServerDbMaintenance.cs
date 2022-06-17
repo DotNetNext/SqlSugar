@@ -204,7 +204,7 @@ namespace SqlSugar
                                 " LEFT JOIN sys.extended_properties C ON C.major_id = A.object_id" +
                                 " LEFT JOIN sys.columns B ON B.object_id = A.object_id AND C.minor_id = B.column_id" +
                                 " INNER JOIN sys.schemas SC ON SC.schema_id = A.schema_id AND SC.name = 'dbo'" +
-                                " WHERE A.name = '{1}' and b.name = '{0}'";
+                                " WHERE A.name = '{1}' and B.name = '{0}'";
 
             }
         }

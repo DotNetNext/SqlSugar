@@ -89,7 +89,11 @@ namespace OrmTest
 			var list2=db.Queryable<OperatorInfo>()
                 .Includes(x => x.Roles.MappingField(z=>z.name,()=>x.username).ToList())
                 .ToList();
-        }
+
+			var list4 = db.Queryable<OperatorInfo>()
+			.Includes(x => x.Roles.Skip(10).Take(1).ToList())
+			.ToList();
+		}
 
 			/// <summary>
 			/// 描述：

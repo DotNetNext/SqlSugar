@@ -17,7 +17,7 @@ namespace SqlSugar
         Oscar,
         MySqlConnector,
         Access,
-        Custom=900,
-        OpenGauss = 999
+        OpenGauss,
+        Custom =900
     }
 }

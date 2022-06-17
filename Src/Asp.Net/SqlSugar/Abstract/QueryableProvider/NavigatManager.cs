@@ -250,16 +250,46 @@ namespace SqlSugar
                         }
                         else
                         {
-                            navObjectNamePropety.SetValue(listItem, instance);
+                            if (sql.Skip != null || sql.Take != null)
+                            {
+                                var instanceCast = (instance as IList);
+                                var newinstance = Activator.CreateInstance(navObjectNamePropety.PropertyType, true) as IList;
+                                SkipTakeIList(sql, instanceCast, newinstance);
+                                navObjectNamePropety.SetValue(listItem, newinstance);
+                            }
+                            else
+                            {
+                                navObjectNamePropety.SetValue(listItem, instance);
+                            }
                         }
                     }
                 }
             }
         }
 
+        private static void SkipTakeIList(SqlInfo sql, IList instanceCast, IList newinstance)
+        {
+            var intArray = Enumerable.Range(0, instanceCast.Count);
+            if (sql.Skip != null)
+            {
+                intArray = intArray
+                    .Skip(sql.Skip.Value);
+            }
+            if (sql.Take != null)
+            {
+                intArray = intArray
+                    .Take(sql.Take.Value);
+            }
+            foreach (var i in intArray)
+            {
+                newinstance.Add(instanceCast[i]);
+            }
+        }
+
         private void OneToOne(List<object> list, Func<ISugarQueryable<object>, List<object>> selector, EntityInfo listItemEntity, System.Reflection.PropertyInfo navObjectNamePropety, EntityColumnInfo navObjectNameColumnInfo)
         {
             var navColumn = listItemEntity.Columns.FirstOrDefault(it => it.PropertyName == navObjectNameColumnInfo.Navigat.Name);
+            Check.ExceptionEasy(navColumn == null, "OneToOne navigation configuration error", $"OneToOne导航配置错误： 实体{ listItemEntity.EntityName } 不存在{navObjectNameColumnInfo.Navigat.Name}");
             var navType = navObjectNamePropety.PropertyType;
             var navEntityInfo = this.Context.EntityMaintenance.GetEntityInfo(navType);
             this.Context.InitMappingInfo(navEntityInfo.Type);
@@ -325,32 +355,42 @@ namespace SqlSugar
                 {
                     //var setValue = navList
                     //  .Where(x => navColumn.PropertyInfo.GetValue(x).ObjToString() == listItemPkColumn.PropertyInfo.GetValue(item).ObjToString()).ToList();
-                    var groupQuery = (from l in list
+                    var groupQuery = (from l in list.Distinct()
                                       join n in navList
                                            on listItemPkColumn.PropertyInfo.GetValue(l).ObjToString()
                                            equals navColumn.PropertyInfo.GetValue(n).ObjToString()
                                       select new
                                       {
                                           l,
-                                          n
+                                          n 
                                       }).GroupBy(it => it.l).ToList();
                     foreach (var item in groupQuery)
                     {
-
+                        var itemSelectList=item.Select(it => it.n);
+                        if (sqlObj.Skip != null)
+                        {
+                            itemSelectList = itemSelectList
+                                .Skip(sqlObj.Skip.Value);
+                        }
+                        if (sqlObj.Take != null) 
+                        {
+                            itemSelectList = itemSelectList
+                                .Take(sqlObj.Take.Value);
+                        }
                         if (sqlObj.MappingExpressions.HasValue())
                         {
                             MappingFieldsHelper<T> helper = new MappingFieldsHelper<T>();
                             helper.NavEntity = navEntityInfo;
                             helper.Context = this.Context;
                             helper.RootEntity = this.Context.EntityMaintenance.GetEntityInfo<T>();
-                            helper.SetChildList(navObjectNameColumnInfo, item.Key, item.Select(it => it.n).ToList(), sqlObj.MappingExpressions);
+                            helper.SetChildList(navObjectNameColumnInfo, item.Key, itemSelectList.ToList(), sqlObj.MappingExpressions);
                         }
                         else
                         {
 
                             var instance = Activator.CreateInstance(navObjectNamePropety.PropertyType, true);
                             var ilist = instance as IList;
-                            foreach (var value in item.Select(it => it.n).ToList())
+                            foreach (var value in itemSelectList.ToList())
                             {
                                 ilist.Add(value);
                             }
@@ -387,6 +427,7 @@ namespace SqlSugar
                 return;
             }
             var navEntity = args[0];
+            this.Context.InitMappingInfo(navEntity);
             var navEntityInfo = this.Context.EntityMaintenance.GetEntityInfo(navEntity);
             var sqlObj = GetWhereSql(navObjectNameColumnInfo.Navigat.Name);
             Check.ExceptionEasy(sqlObj.MappingExpressions.IsNullOrEmpty(), $"{expression} error,dynamic need MappingField ,Demo: Includes(it => it.Books.MappingField(z=>z.studenId,()=>it.StudentId).ToList())", $"{expression} 解析出错,自定义映射需要 MappingField ,例子: Includes(it => it.Books.MappingField(z=>z.studenId,()=>it.StudentId).ToList())");
@@ -413,6 +454,7 @@ namespace SqlSugar
         {
             var navEntity = navObjectNameColumnInfo.PropertyInfo.PropertyType;
             var navEntityInfo = this.Context.EntityMaintenance.GetEntityInfo(navEntity);
+            this.Context.InitMappingInfo(navEntity);
             var sqlObj = GetWhereSql(navObjectNameColumnInfo.Navigat.Name);
             Check.ExceptionEasy(sqlObj.MappingExpressions.IsNullOrEmpty(), $"{expression} error，dynamic need MappingField ,Demo: Includes(it => it.Books.MappingField(z=>z.studenId,()=>it.StudentId).ToList())", $"{expression}解析出错， 自定义映射需要 MappingField ,例子: Includes(it => it.Books.MappingField(z=>z.studenId,()=>it.StudentId).ToList())");
             if (list.Any() && navObjectNamePropety.GetValue(list.First()) == null)
@@ -525,6 +567,30 @@ namespace SqlSugar
                     var exp = method.Arguments[1];
                     oredrBy.Add(" " + queryable.QueryBuilder.GetExpressionValue(exp, ResolveExpressType.WhereSingle).GetString() + " DESC");
                 }
+                else if (method.Method.Name == "Skip")
+                {
+                    var exp = method.Arguments[1];
+                    if (exp is BinaryExpression)
+                    {
+                        result.Skip = (int)ExpressionTool.DynamicInvoke(exp);
+                    }
+                    else
+                    {
+                        result.Skip = (int)ExpressionTool.GetExpressionValue(exp);
+                    }
+                }
+                else if (method.Method.Name == "Take")
+                {
+                    var exp = method.Arguments[1];
+                    if (exp is BinaryExpression)
+                    {
+                        result.Take = (int)ExpressionTool.DynamicInvoke(exp);
+                    }
+                    else
+                    {
+                        result.Take = (int)ExpressionTool.GetExpressionValue(exp);
+                    }
+                }
                 else if (method.Method.Name == "ToList")
                 {
                     isList = true;
@@ -594,6 +660,8 @@ namespace SqlSugar
 
         public class SqlInfo 
         {
+            public int? Take { get; set; }
+            public int? Skip { get; set; }
             public string WhereString { get; set; }
             public string OrderByString { get; set; }
             public string SelectString { get; set; }

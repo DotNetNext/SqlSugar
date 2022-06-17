@@ -248,6 +248,7 @@ namespace SqlSugar
                  if (nav.IsNavgate(express)) 
                  {
                     var sql = nav.GetSql();
+                    SetNavigateResult();
                     this.Context.SingleTableNameSubqueryShortName = nav.ShorName;
                     base.AppendValue(parameter, isLeft, sql);
                     return;
@@ -257,6 +258,7 @@ namespace SqlSugar
                 if (nav2.IsNavgate(express))
                 {
                     var sql = nav2.GetSql();
+                    SetNavigateResult();
                     this.Context.SingleTableNameSubqueryShortName = nav2.shorName;
                     base.AppendValue(parameter, isLeft, sql);
                     return;
@@ -293,6 +295,8 @@ namespace SqlSugar
             }
         }
 
+   
+
         private void NativeExtensionMethod(ExpressionParameter parameter, MethodCallExpression express, bool? isLeft, string name, List<MethodCallExpressionArgs> appendArgs = null)
         {
             var method = express.Method;
@@ -317,12 +321,17 @@ namespace SqlSugar
                     break;
                 case ResolveExpressType.FieldSingle:
                 case ResolveExpressType.FieldMultiple:
-                    if (express.Method.Name == "ToString" && express.Object!=null&&express.Object?.Type == UtilConstants.DateType) 
+                    if (express.Method.Name == "ToString" && express.Object != null && express.Object?.Type == UtilConstants.DateType)
                     {
-                        var format = (args[0] as ConstantExpression).Value+"";
+                        var format = (args[0] as ConstantExpression).Value + "";
                         var value = GetNewExpressionValue(express.Object);
                         var dateString = GeDateFormat(format, value);
                         base.AppendValue(parameter, isLeft, dateString);
+                    }
+                    else 
+                    {
+                        var value = GetNewExpressionValue(express,this.Context.IsJoin?ResolveExpressType.WhereMultiple: ResolveExpressType.WhereSingle);
+                        base.AppendValue(parameter, isLeft, value);
                     }
                     break;
                 default:

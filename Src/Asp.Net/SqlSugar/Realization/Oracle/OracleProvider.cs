@@ -203,6 +203,11 @@ namespace SqlSugar
                     sqlParameter.Value = parameter.Value;
                     sqlParameter.DbType = System.Data.DbType.DateTime;
                 }
+                else if (parameter.DbType == System.Data.DbType.Date)
+                {
+                    sqlParameter.Value = parameter.Value;
+                    sqlParameter.DbType = System.Data.DbType.Date;
+                }
                 else if (parameter.DbType == System.Data.DbType.AnsiStringFixedLength)
                 {
                     sqlParameter.DbType = System.Data.DbType.AnsiStringFixedLength;

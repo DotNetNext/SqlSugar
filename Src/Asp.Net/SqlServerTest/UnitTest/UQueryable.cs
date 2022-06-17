@@ -272,6 +272,10 @@ namespace OrmTest
             {
                 throw new Exception("unit test error");
             }
+            var x3 = Db.Queryable<BoolTest1>().Select(it => new  
+            {
+                a = it.a?1:0
+            }).ToList();
         }
 
 

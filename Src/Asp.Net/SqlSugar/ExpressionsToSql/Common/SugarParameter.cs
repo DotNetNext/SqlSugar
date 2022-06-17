@@ -136,7 +136,10 @@ namespace SqlSugar
             else if (type!=null&&type.IsEnum())
             {
                 this.DbType = System.Data.DbType.Int64;
-                this.Value = Convert.ToInt64(Value);
+                if (Value != null)
+                {
+                    this.Value = Convert.ToInt64(Value);
+                }
             }
             else if (type==UtilConstants.UIntType)
             {

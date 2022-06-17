@@ -15,7 +15,7 @@ namespace SqlSugar
         }
         public virtual List<DbTableInfo> GetViewInfoList(bool isCache = true)
         {
-            string cacheKey = "DbMaintenanceProvider.GetViewInfoList";
+            string cacheKey = "DbMaintenanceProvider.GetViewInfoList" + this.Context.CurrentConnectionConfig.ConfigId;
             cacheKey = GetCacheKey(cacheKey);
             var result = new List<DbTableInfo>();
             if (isCache)
@@ -30,7 +30,7 @@ namespace SqlSugar
         }
         public virtual List<DbTableInfo> GetTableInfoList(bool isCache = true)
         {
-            string cacheKey = "DbMaintenanceProvider.GetTableInfoList";
+            string cacheKey = "DbMaintenanceProvider.GetTableInfoList"+this.Context.CurrentConnectionConfig.ConfigId;
             cacheKey = GetCacheKey(cacheKey);
             var result = new List<DbTableInfo>();
             if (isCache)
@@ -46,7 +46,7 @@ namespace SqlSugar
         public virtual List<DbColumnInfo> GetColumnInfosByTableName(string tableName, bool isCache = true)
         {
             if (string.IsNullOrEmpty(tableName)) return new List<DbColumnInfo>();
-            string cacheKey = "DbMaintenanceProvider.GetColumnInfosByTableName." + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower();
+            string cacheKey = "DbMaintenanceProvider.GetColumnInfosByTableName." + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower() + this.Context.CurrentConnectionConfig.ConfigId;
             cacheKey = GetCacheKey(cacheKey);
             var sql = string.Format(this.GetColumnInfosByTableNameSql, tableName);
             if (isCache)
@@ -57,7 +57,7 @@ namespace SqlSugar
         }
         public virtual List<string> GetIsIdentities(string tableName)
         {
-            string cacheKey = "DbMaintenanceProvider.GetIsIdentities" + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower();
+            string cacheKey = "DbMaintenanceProvider.GetIsIdentities" + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower() + this.Context.CurrentConnectionConfig.ConfigId;
             cacheKey = GetCacheKey(cacheKey);
             return this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey, () =>
                      {
@@ -67,7 +67,7 @@ namespace SqlSugar
         }
         public virtual List<string> GetPrimaries(string tableName)
         {
-            string cacheKey = "DbMaintenanceProvider.GetPrimaries" + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower();
+            string cacheKey = "DbMaintenanceProvider.GetPrimaries" + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower() + this.Context.CurrentConnectionConfig.ConfigId;
             cacheKey = GetCacheKey(cacheKey);
             return this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey, () =>
              {

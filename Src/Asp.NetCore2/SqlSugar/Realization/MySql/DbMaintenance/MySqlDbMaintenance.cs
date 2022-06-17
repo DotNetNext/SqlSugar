@@ -275,6 +275,12 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override bool IsAnyColumnRemark(string columnName, string tableName)
+        {
+            var isAny=this.Context.DbMaintenance.GetColumnInfosByTableName(tableName, false)
+                .Any(it => it.ColumnDescription.HasValue() && it.DbColumnName.EqualCase(columnName));
+            return isAny;
+        }
         public override bool AddColumnRemark(string columnName, string tableName, string description)
         {
             //base.AddColumnRemark(columnName, tableName, description);

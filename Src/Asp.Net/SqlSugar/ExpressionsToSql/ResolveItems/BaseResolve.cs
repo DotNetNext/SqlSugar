@@ -682,7 +682,16 @@ namespace SqlSugar
             }
             return result; ;
         }
-
+        protected void SetNavigateResult()
+        {
+            if (this.Context != null)
+            {
+                if (this.Context.Result != null)
+                {
+                    this.Context.Result.IsNavicate = true;
+                }
+            }
+        }
         private string GetAsName(Expression item, object shortName, PropertyInfo property)
         {
             string asName;

@@ -99,6 +99,7 @@
     <Compile Include="Models\Tree.cs" />
     <Compile Include="Models\ViewOrder.cs" />
     <Compile Include="Config.cs" />
+    <Compile Include="UnitTest\UCustom013.cs" />
     <Compile Include="UnitTest\UCustom08.cs" />
     <Compile Include="UnitTest\UAopTest.cs" />
     <Compile Include="UnitTest\UCustom01.cs" />
@@ -106,6 +107,7 @@
     <Compile Include="UnitTest\UCustom012.cs" />
     <Compile Include="UnitTest\UCustom014.cs" />
     <Compile Include="UnitTest\UCustom015.cs" />
+    <Compile Include="UnitTest\UCustom016.cs" />
     <Compile Include="UnitTest\USave.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

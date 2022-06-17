@@ -70,6 +70,13 @@ namespace SqlSugar
             {
                 Check.ExceptionEasy(true, " expression error ", "导航查询出错，比如.Count要改成 .Count()");
             }
+            else if (Navigat.NavigatType == NavigateType.Dynamic)
+            {
+                Check.ExceptionEasy(
+                    true,
+                    " NavigateType.Dynamic no support expression .  "+ this.ProPertyEntity.Type.Name,
+                    " NavigateType.Dynamic 自定义导航对象不支持在Where(x=>x.自定义.Id==1)等方法中使用"+ this.ProPertyEntity.Type.Name);
+            }
             var pk = this.ProPertyEntity.Columns.First(it => it.IsPrimarykey == true).DbColumnName;
             var name = this.EntityInfo.Columns.First(it => it.PropertyName == Navigat.Name).DbColumnName;
             var selectName = this.ProPertyEntity.Columns.First(it => it.PropertyName ==MemberName).DbColumnName;

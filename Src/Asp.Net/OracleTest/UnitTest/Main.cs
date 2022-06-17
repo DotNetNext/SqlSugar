@@ -34,6 +34,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UCustom03.Init();
             UCustom02.Init();
             UCustom01.Init();
             DeleteTest();

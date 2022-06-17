@@ -161,7 +161,7 @@ namespace SqlSugar
             {
                 return string.Empty;
             }
-            XElement xe = XElement.Load(xmlPath);
+            XElement xe =new ReflectionInoCacheService().GetOrCreate("EntityXml_"+xmlPath,()=> XElement.Load(xmlPath));
             if (xe == null)
             {
                 return string.Empty;
@@ -171,7 +171,19 @@ namespace SqlSugar
             {
                 return string.Empty;
             }
-            return xeNode.Element("summary").Value.ToSqlFilter().Trim();
+            var summary = xeNode.Element("summary");
+            if (summary != null)
+            {
+                return summary.Value.ToSqlFilter().Trim();
+            }
+            else 
+            {
+                var summaryValue = xeNode.Elements().Where(x => x.Name.ToString().EqualCase("summary")).Select(it => it.Value).FirstOrDefault();
+                if(summaryValue==null)
+                    return string.Empty;  
+                else
+                    return summaryValue.ToSqlFilter().Trim()??"";
+            }
         }
         /// <summary>
         /// Gets the code annotation for the database table

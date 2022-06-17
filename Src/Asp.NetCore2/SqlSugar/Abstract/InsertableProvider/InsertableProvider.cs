@@ -136,6 +136,11 @@ namespace SqlSugar
 
         public virtual long ExecuteReturnSnowflakeId()
         {
+            if (this.InsertObjs.Length > 1) 
+            {
+                return this.ExecuteReturnSnowflakeIdList().First();
+            }
+
             var id = SnowFlakeSingle.instance.getID();
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
             var snowProperty = entity.Columns.FirstOrDefault(it => it.IsPrimarykey && it.PropertyInfo.PropertyType == UtilConstants.LongType);

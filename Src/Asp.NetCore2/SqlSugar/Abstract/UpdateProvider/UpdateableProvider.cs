@@ -416,6 +416,10 @@ namespace SqlSugar
             {
                 whereString = whereString.Replace(this.SqlBuilder.GetTranslationColumnName(expression.Parameters.First().Name) + ".", this.SqlBuilder.GetTranslationTableName(this.EntityInfo.DbTableName) + ".");
             }
+            else if (expResult.IsNavicate)
+            {
+                whereString = whereString.Replace(expression.Parameters.First().Name + ".", this.SqlBuilder.GetTranslationTableName(this.EntityInfo.DbTableName) + ".");
+            }
             UpdateBuilder.WhereValues.Add(whereString);
             return this;
         }
@@ -872,7 +876,7 @@ namespace SqlSugar
                 {
                     whereSql=Regex.Match(sql, @"\(EXISTS.+").Value;
                 }
-                dt = this.Context.Queryable<T>().Where(whereSql).AddParameters(parameters).ToDataTable();
+                dt = this.Context.Queryable<T>().Filter(null, true).Where(whereSql).AddParameters(parameters).ToDataTable();
             }
             else 
             {
@@ -882,7 +886,7 @@ namespace SqlSugar
                 }
                 else
                 {
-                    dt = this.Context.Queryable<T>().WhereClassByPrimaryKey(this.UpdateObjs.ToList()).ToDataTable();
+                    dt = this.Context.Queryable<T>().Filter(null, true).WhereClassByPrimaryKey(this.UpdateObjs.ToList()).ToDataTable();
                 }
             }
             if (dt.Rows != null && dt.Rows.Count > 0)

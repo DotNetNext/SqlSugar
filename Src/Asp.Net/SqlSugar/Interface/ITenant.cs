@@ -24,6 +24,13 @@ namespace SqlSugar
         SqlSugarScopeProvider GetConnectionScope(dynamic configId);
         SqlSugarProvider GetConnectionWithAttr<T>();
         SqlSugarScopeProvider GetConnectionScopeWithAttr<T>();
+        ISugarQueryable<T> QueryableWithAttr<T>();
+        IInsertable<T> InsertableWithAttr<T>(T insertObj) where T : class, new();
+        IInsertable<T> InsertableWithAttr<T>(List<T> insertObjs) where T : class, new();
+        IUpdateable<T> UpdateableWithAttr<T>(T updateObj) where T : class, new();
+        IUpdateable<T> UpdateableWithAttr<T>(List<T> updateObjs) where T : class, new();
+        IDeleteable<T> DeleteableWithAttr<T>(T deleteObjs) where T : class, new();
+        IDeleteable<T> DeleteableWithAttr<T>(List<T> deleteObjs) where T : class, new();
         bool IsAnyConnection(dynamic configId);
 
         void Close();

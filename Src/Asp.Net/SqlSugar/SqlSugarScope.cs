@@ -695,5 +695,33 @@ namespace SqlSugar
         {
             return ScopedContext.ThenMapperAsync(list, action);
         }
+        public ISugarQueryable<T> QueryableWithAttr<T>()
+        {
+            return ScopedContext.QueryableWithAttr<T>();
+        }
+        public IInsertable<T> InsertableWithAttr<T>(T insertObj) where T : class, new()
+        {
+            return ScopedContext.InsertableWithAttr<T>(insertObj);
+        }
+        public IInsertable<T> InsertableWithAttr<T>(List<T> insertObjs) where T : class, new()
+        {
+            return ScopedContext.InsertableWithAttr<T>(insertObjs);
+        }
+        public IUpdateable<T> UpdateableWithAttr<T>(T updateObj) where T : class, new()
+        {
+            return ScopedContext.UpdateableWithAttr<T>(updateObj);
+        }
+        public IUpdateable<T> UpdateableWithAttr<T>(List<T> updateObjs) where T : class, new()
+        {
+            return ScopedContext.UpdateableWithAttr<T>(updateObjs);
+        }
+        public IDeleteable<T> DeleteableWithAttr<T>(T deleteObj) where T : class, new()
+        {
+            return ScopedContext.DeleteableWithAttr<T>(deleteObj);
+        }
+        public IDeleteable<T> DeleteableWithAttr<T>(List<T> deleteObjs) where T : class, new()
+        {
+            return ScopedContext.DeleteableWithAttr<T>(deleteObjs);
+        }
     }
 }

@@ -131,33 +131,34 @@ namespace SqlSugar
                 //sqlParameter.UdtTypeName = parameter.UdtTypeName;
                 sqlParameter.Size = parameter.Size;
                 sqlParameter.Value = parameter.Value;
-                sqlParameter.DbType = parameter.DbType;
+                sqlParameter.DbType = GetDbType(parameter);
                 var isTime = parameter.DbType == System.Data.DbType.Time;
                 if (isTime)
                 {
                     sqlParameter.SqlDbType = SqlDbType.Time;
-                    sqlParameter.Value=DateTime.Parse(parameter.Value?.ToString()).TimeOfDay;
+                    sqlParameter.Value = DateTime.Parse(parameter.Value?.ToString()).TimeOfDay;
                 }
-                else if (parameter.Value!=null&&parameter.Value is XElement)
+                else if (parameter.Value != null && parameter.Value is XElement)
                 {
                     sqlParameter.SqlDbType = SqlDbType.Xml;
-                    sqlParameter.Value= (parameter.Value as XElement).ToString();
+                    sqlParameter.Value = (parameter.Value as XElement).ToString();
                 }
-                if (sqlParameter.Value!=null&& sqlParameter.Value != DBNull.Value && sqlParameter.DbType == System.Data.DbType.DateTime)
+                if (sqlParameter.Value != null && sqlParameter.Value != DBNull.Value && sqlParameter.DbType == System.Data.DbType.DateTime)
                 {
                     var date = Convert.ToDateTime(sqlParameter.Value);
-                    if (date==DateTime.MinValue)
+                    if (date == DateTime.MinValue)
                     {
                         sqlParameter.Value = UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig);
                     }
                 }
-                if (parameter.Direction == 0) 
+                if (parameter.Direction == 0)
                 {
                     parameter.Direction = ParameterDirection.Input;
                 }
                 sqlParameter.Direction = parameter.Direction;
                 result[index] = sqlParameter;
-                if (parameter.TypeName.HasValue()) {
+                if (parameter.TypeName.HasValue())
+                {
                     sqlParameter.TypeName = parameter.TypeName;
                     sqlParameter.SqlDbType = SqlDbType.Structured;
                     sqlParameter.DbType = System.Data.DbType.Object;
@@ -169,14 +170,34 @@ namespace SqlSugar
                     this.OutputParameters.Add(sqlParameter);
                 }
 
-                if (isVarchar&&sqlParameter.DbType== System.Data.DbType.String)
+                if (isVarchar && sqlParameter.DbType == System.Data.DbType.String)
                 {
-                    sqlParameter.DbType =System.Data.DbType.AnsiString;
+                    sqlParameter.DbType = System.Data.DbType.AnsiString;
                 }
 
                 ++index;
             }
             return result;
+        }
+
+        private static System.Data.DbType GetDbType(SugarParameter parameter)
+        {
+            if (parameter.DbType==System.Data.DbType.UInt16)
+            {
+                return System.Data.DbType.Int16;
+            }
+            else if (parameter.DbType == System.Data.DbType.UInt32)
+            {
+                return System.Data.DbType.Int32;
+            }
+            else if (parameter.DbType == System.Data.DbType.UInt64)
+            {
+                return System.Data.DbType.Int64;
+            }
+            else
+            {
+                return parameter.DbType;
+            }
         }
     }
 }

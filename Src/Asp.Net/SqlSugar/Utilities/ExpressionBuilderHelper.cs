@@ -12,6 +12,22 @@ namespace SqlSugar
 {
     public class ExpressionBuilderHelper
     {
+        /// <summary>
+        /// Create Expression
+        /// </summary>
+        public static Expression CreateExpression(Expression left, Expression value, ExpressionType type)
+        {
+
+            if (type == ExpressionType.Equal)
+            {
+                return Expression.Equal(left, Expression.Convert(value, left.Type));
+            }
+            else 
+            {
+                //Not implemented, later used in writing
+                return Expression.Equal(left, Expression.Convert(value, left.Type));
+            }
+        }
         public static Expression<Func<T, object>> CreateNewFields<T>(EntityInfo entity,List<string> propertyNames)
         {
             Type sourceType = typeof(T);
