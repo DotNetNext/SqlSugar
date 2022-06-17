@@ -59,8 +59,10 @@ namespace SqlSugar
                 return @"select cast(relname as varchar) as Name,
                         cast(obj_description(relfilenode,'pg_class') as varchar) as Description from pg_class c 
                          inner join 
+						 pg_namespace n on n.oid = c.relnamespace and nspname='"+ schema + @"'
+                         inner join 
                          pg_tables z on z.tablename=c.relname
-                        where  relkind = 'r' and relname not like 'pg_%' and relname not like 'sql_%' and schemaname='"+ schema + "' order by relname";
+                        where  relkind = 'r' and relname not like 'pg_%' and relname not like 'sql_%' and schemaname='" + schema + "' order by relname";
             }
         }
         protected override string GetViewInfoListSql
@@ -70,7 +72,7 @@ namespace SqlSugar
                 return @"select cast(relname as varchar) as Name,cast(Description as varchar) from pg_description
                          join pg_class on pg_description.objoid = pg_class.oid
                          where objsubid = 0 and relname in (SELECT viewname from pg_views  
-                         WHERE schemaname ='public')";
+                         WHERE schemaname ='"+GetSchema()+"')";
             }
         }
         #endregion
@@ -422,7 +424,7 @@ namespace SqlSugar
                                and kcu.constraint_schema = tco.constraint_schema
                                and kcu.constraint_name = tco.constraint_name
                                where tco.constraint_type = 'PRIMARY KEY'
-                               and kcu.table_schema='public' and 
+                               and kcu.table_schema='{GetSchema()}' and 
                                upper(kcu.table_name)=upper('{tableName.TrimEnd('"').TrimStart('"')}')";
                 List<string> pkList = new List<string>();
                 if (isCache)
