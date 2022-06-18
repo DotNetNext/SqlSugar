@@ -322,6 +322,31 @@ namespace SqlSugar
         {
             return true;
         }
+        // Sqlite 没有表列注释功能
+        public override bool IsAnyTableRemark(string tableName)
+        {
+            return false;
+        }
+        public override bool IsAnyColumnRemark(string columnName, string tableName)
+        {
+            return false;
+        }
+        public override bool AddTableRemark(string tableName, string description)
+        {
+            return true;
+        }
+        public override bool AddColumnRemark(string columnName, string tableName, string description)
+        {
+            return true;
+        }
+        public override bool DeleteTableRemark(string tableName)
+        {
+            return true;
+        }
+        public override bool DeleteColumnRemark(string columnName, string tableName)
+        {
+            return true;
+        }
         private List<DbColumnInfo> GetColumnsByTableName(string tableName)
         {
             tableName = SqlBuilder.GetTranslationTableName(tableName);

@@ -394,8 +394,31 @@ namespace SqlSugar
         {
             return true;
         }
-
-
+        // Sqlite 没有表列注释功能
+        public override bool IsAnyTableRemark(string tableName)
+        {
+            return false;
+        }
+        public override bool IsAnyColumnRemark(string columnName, string tableName)
+        {
+            return false;
+        }
+        public override bool AddTableRemark(string tableName, string description)
+        {
+            return true;
+        }
+        public override bool AddColumnRemark(string columnName, string tableName, string description)
+        {
+            return true;
+        }
+        public override bool DeleteTableRemark(string tableName)
+        {
+            return true;
+        }
+        public override bool DeleteColumnRemark(string columnName, string tableName)
+        {
+            return true;
+        }
         public override bool BackupTable(string oldTableName, string newTableName, int maxBackupDataRows = int.MaxValue)
         {
             oldTableName = this.SqlBuilder.GetTranslationTableName(oldTableName);
