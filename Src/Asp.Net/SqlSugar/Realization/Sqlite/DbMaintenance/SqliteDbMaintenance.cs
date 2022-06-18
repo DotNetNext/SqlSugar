@@ -391,6 +391,27 @@ namespace SqlSugar
                 return result;
             }
         }
+        public override bool RenameTable(string oldTableName, string newTableName)
+        {
+            string sql = string.Format(this.RenameTableSql, oldTableName, newTableName);
+            this.Context.Ado.ExecuteCommand(sql);
+            return true;
+        }
+        public override bool RenameColumn(string tableName, string oldColumnName, string newColumnName)
+        {
+            // 目前Sqlite 没有修改列功能,使用复制功能实现
+            var columns = GetColumnInfosByTableName(tableName, false);
+            var column = columns.FirstOrDefault(m => m.DbColumnName == oldColumnName);
+            column.DbColumnName = $"{column.DbColumnName} as {newColumnName}";
+            // 复制临时表
+            string sql = $"create table {tableName}_temp as select {string.Join(",", columns.Select(m => m.DbColumnName))} from {tableName};";
+            this.Context.Ado.ExecuteCommand(sql);
+            // 删除旧表
+            DropTable(tableName);
+            // 重命名临时表
+            RenameTable($"{tableName}_temp", tableName);
+            return true;
+        }
         public override bool BackupTable(string oldTableName, string newTableName, int maxBackupDataRows = int.MaxValue)
         {
             oldTableName = this.SqlBuilder.GetTranslationTableName(oldTableName);
