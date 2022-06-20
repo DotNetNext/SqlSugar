@@ -76,7 +76,7 @@ namespace SqlSugar
         private string GetSqlPartByString(object value, List<SugarParameter> pars)
         {
             var valueString = value.ObjToString().Trim();
-            if (SqlValueHelper.IsSqlValue(valueString))
+            if (Json2SqlHelper.IsSqlValue(valueString))
             {
                 return GetParameterName(pars, valueString);
             }
@@ -105,9 +105,9 @@ namespace SqlSugar
         }
         private  string GetParameterName(List<SugarParameter> pars, string valueString)
         {
-            object parvalue = SqlValueHelper.GetValue(valueString);
+            object parvalue = Json2SqlHelper.GetValue(valueString);
             SugarParameter parameter = new SugarParameter("@p" + pars.Count(), parvalue);
-            var type = SqlValueHelper.GetType(valueString);
+            var type = Json2SqlHelper.GetType(valueString);
             parvalue = UtilMethods.ConvertDataByTypeName(type, parvalue.ObjToString());
             var parname = GetParameterName(pars, parvalue);
             return parname;

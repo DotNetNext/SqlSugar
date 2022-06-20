@@ -31,16 +31,7 @@ namespace SqlSugar
         }
         public List<string> GetTableNameList(string json)
         {
-            List<string> result = new List<string>();
-            var mainTable = JObject.Parse(json).AsJEnumerable().Where(it =>
-              it.Path.ToLower().IsIn(
-                  JsonProviderConfig.KeyInsertable.Get().ToLower(),
-                  JsonProviderConfig.KeyUpdateable.Get().ToLower(),
-                  JsonProviderConfig.KeyDeleteable.Get().ToLower(),
-                  JsonProviderConfig.KeyQueryable.Get().ToLower()
-              )).FirstOrDefault();
-            if (mainTable != null)
-                result.Add(mainTable.First().ToString());
+            List<string> result = Json2SqlHelper.GetTableNames(json);
             return result;
         }
     }

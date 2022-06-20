@@ -55,8 +55,8 @@ namespace SqlSugar
             if (item.Value == null)
                 return null;
             var valueString = item.Value.ToString();
-            var vallue = SqlValueHelper.GetValue(valueString);
-            var type = SqlValueHelper.GetType(valueString);
+            var vallue = Json2SqlHelper.GetValue(valueString);
+            var type = Json2SqlHelper.GetType(valueString);
             return UtilMethods.ConvertDataByTypeName(type,vallue);
         }
     }
