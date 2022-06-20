@@ -21,6 +21,8 @@ namespace Test
                 IsAutoCloseConnection = true,
                 ConnectionString = "server=localhost;Database=SqlSugar4xTest;Uid=root;Pwd=haosql"
             }); ;
+            TestHelper.InitDatabase(jsonToSqlClient);
+
             jsonToSqlClient.Context.Aop.OnLogExecuted = (sql, p) =>
             {
                 Console.WriteLine(sql);
@@ -45,7 +47,5 @@ namespace Test
 
             Console.WriteLine();
         }
-
-
     }
 }
