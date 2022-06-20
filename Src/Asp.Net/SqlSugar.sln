@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31624.102
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32414.318
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlSugar", "SqlSugar\SqlSugar.csproj", "{489BB790-226C-4FAD-8D1E-51D72A7FF8E5}"
 EndProject
@@ -40,6 +40,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessTest", "AccessTest\AccessTest.csproj", "{FA1B8C67-44C2-4937-96A2-7E01B9F5941E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomDbTest", "CustomDbTest\CustomDbTest.csproj", "{7BAAEBFC-D86E-4127-8640-E7EFAB8F40EA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Json2SqlTest", "Json2SqlTest\Json2SqlTest.csproj", "{B30F8D3F-7A48-4C7B-B808-A3F900B9F3D4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -115,6 +117,10 @@ Global
 		{7BAAEBFC-D86E-4127-8640-E7EFAB8F40EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7BAAEBFC-D86E-4127-8640-E7EFAB8F40EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7BAAEBFC-D86E-4127-8640-E7EFAB8F40EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B30F8D3F-7A48-4C7B-B808-A3F900B9F3D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B30F8D3F-7A48-4C7B-B808-A3F900B9F3D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B30F8D3F-7A48-4C7B-B808-A3F900B9F3D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B30F8D3F-7A48-4C7B-B808-A3F900B9F3D4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
