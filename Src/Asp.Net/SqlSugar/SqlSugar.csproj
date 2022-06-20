@@ -173,7 +173,7 @@
     <Compile Include="Json2Sql\Provider\Updateable\JsonUpdateableProvider.cs" />
     <Compile Include="Json2Sql\Queryable\QueryableProvider.cs" />
     <Compile Include="Json2Sql\Utils\Json2SqlConfig.cs" />
-    <Compile Include="Json2Sql\Utils\JsonPublicMethod.cs" />
+    <Compile Include="Json2Sql\Utils\Json2SqlHelper.cs" />
     <Compile Include="SugarUnitOfWork.cs" />
     <Compile Include="Entities\SugarAbMapping.cs" />
     <Compile Include="Entities\JoinMapper.cs" />
