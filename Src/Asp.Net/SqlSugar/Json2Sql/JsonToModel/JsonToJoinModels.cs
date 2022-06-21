@@ -22,8 +22,8 @@ namespace SqlSugar
             var shortName = array[1];
             var onWhere = array[2];
             JoinModel result = new JoinModel();
-            result.TableName = tableName.ObjToString();
-            result.ShortName = shortName.ObjToString();
+            result.TableName = tableName.ObjToString().ToCheckField();
+            result.ShortName = shortName.ObjToString().ToCheckField();
             result.OnWhereList = JsonToSqlFuncModels(onWhere);
             return result;
         }

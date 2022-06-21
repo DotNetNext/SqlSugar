@@ -22,7 +22,7 @@ namespace SqlSugar
                 }
                 else if (item.Type == JTokenType.String)
                 {
-                    conditionalModels.Add(new OrderByModel() { FieldName = item.ObjToString() });
+                    conditionalModels.Add(new OrderByModel() { FieldName = item.ObjToString().ToCheckField() });
                 }
                 else if (item.Type == JTokenType.Array)
                 {

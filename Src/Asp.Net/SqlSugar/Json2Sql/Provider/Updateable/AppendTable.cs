@@ -11,7 +11,7 @@ namespace SqlSugar
         private void AppendTable(JToken item)
         {
             var tableInfo = jsonCommonProvider.GetTableName(item);
-            this.TableName = tableInfo.TableName;
+            this.TableName = tableInfo.TableName.ToCheckField();
             if (tableInfo.ShortName.HasValue())
             {
                 this.TableName = tableInfo.ShortName + "." + tableInfo.TableName;

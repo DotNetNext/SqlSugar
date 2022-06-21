@@ -22,7 +22,7 @@ namespace SqlSugar
                 }
                 else if (IsString(item))
                 {
-                    conditionalModels.Add(new SelectModel() { FiledName = item.ObjToString(), AsName = item.ObjToString().Replace(".", "_") });
+                    conditionalModels.Add(new SelectModel() { FiledName = item.ObjToString().ToCheckField(), AsName = item.ObjToString().Replace(".", "_") });
                 }
                 else if (IsArraySingleItem(item))
                 {

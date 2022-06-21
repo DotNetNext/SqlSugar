@@ -57,7 +57,7 @@ namespace SqlSugar
 
         public object GetStringParameters(JToken parameters)
         {
-            return parameters.ObjToString();
+            return parameters.ObjToString().ToCheckField();
         } 
         #endregion
 

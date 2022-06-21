@@ -22,7 +22,7 @@ namespace SqlSugar
                 }
                 else
                 {
-                    conditionalModels.Add(new GroupByModel() { FieldName = item.ObjToString() });
+                    conditionalModels.Add(new GroupByModel() { FieldName = item.ObjToString().ToCheckField() });
                 }
             }
             return conditionalModels;
