@@ -73,7 +73,9 @@ namespace SqlSugar
             var result = 0;
             var x = this.ToStorage();
             result+=x.AsInsertable.ExecuteCommand();
-            result += x.AsUpdateable.ExecuteCommand();
+            var updateRow = x.AsUpdateable.ExecuteCommand();
+            if (updateRow < 0) updateRow = 0;
+            result += updateRow;
             return result;
         }
         public async Task<int> ExecuteCommandAsync()

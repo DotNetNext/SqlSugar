@@ -17,7 +17,7 @@ namespace SqlSugar
 
         private int AppendPageNumber(JToken item)
         {
-            var result= Convert.ToInt32(item.First().ToString().ObjToInt());
+            var result = Convert.ToInt32(item.First().ToString().ObjToInt());
             if (result == 0)
             {
                 result = 1;

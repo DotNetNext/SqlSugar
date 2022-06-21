@@ -50,7 +50,7 @@ namespace SqlSugar
         private void AppendTable(JToken item)
         {
             var tableInfo = jsonCommonProvider.GetTableName(item);
-            var tableName = tableInfo.TableName;
+            var tableName = tableInfo.TableName.ToCheckField();
             if (tableInfo.ShortName.HasValue())
             {
                  tableName = tableInfo.ShortName + "." + tableInfo.TableName;
