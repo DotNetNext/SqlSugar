@@ -34,7 +34,8 @@ namespace SqlSugar.MySqlConnector
                                     CASE WHEN is_nullable = 'YES'
                                     THEN true ELSE false END AS `IsNullable`,
                                     numeric_scale as Scale,
-                                    numeric_scale as DecimalDigits
+                                    numeric_scale as DecimalDigits,
+                                    LOCATE(  'unsigned',COLUMN_type   ) >0  as IsUnsigned
                                     FROM
                                     Information_schema.columns where TABLE_NAME='{0}' and  TABLE_SCHEMA=(select database()) ORDER BY ordinal_position";
                 return sql;
@@ -274,6 +275,23 @@ namespace SqlSugar.MySqlConnector
         #endregion
 
         #region Methods
+        public override bool IsAnyColumnRemark(string columnName, string tableName)
+        {
+            var isAny=this.Context.DbMaintenance.GetColumnInfosByTableName(tableName, false)
+                .Any(it => it.ColumnDescription.HasValue() && it.DbColumnName.ToLower()==columnName.ToLower());
+            return isAny;
+        }
+        public override bool AddColumnRemark(string columnName, string tableName, string description)
+        {
+            //base.AddColumnRemark(columnName, tableName, description);
+            var message= @"db.DbMaintenance.UpdateColumn(""tablename"", new DbColumnInfo()
+            {{
+                DataType = ""VARCHAR(30) NOT NULL COMMENT 'xxxxx'"",
+                DbColumnName = ""columnname""
+            }})" ;
+            Check.Exception(true,"MySql no support AddColumnRemark , use " + message);
+            return true;
+        }
         /// <summary>
         ///by current connection string
         /// </summary>

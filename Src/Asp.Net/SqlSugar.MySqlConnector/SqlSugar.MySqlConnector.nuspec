@@ -1,8 +1,8 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0"?>
 <package >
   <metadata>
     <id>SqlSugar.MySqlConnector</id>
-    <version>1.0</version>
+    <version>5.0.9.1</version>
     <title>SqlSugar.MySqlConnector Framework</title>
     <authors>sun kaixuan</authors>
     <owners>landa</owners>
