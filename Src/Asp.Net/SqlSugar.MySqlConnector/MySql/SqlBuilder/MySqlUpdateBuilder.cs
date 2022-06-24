@@ -59,7 +59,7 @@ namespace SqlSugar.MySqlConnector
                     {
                         updateTable.Append(SqlTemplateBatchUnion);
                     }
-                    updateTable.Append("\r\n SELECT " + string.Join(",", columns.Select(it => string.Format(SqlTemplateBatchSelect, FormatValue(it.Value),this.Builder.GetTranslationColumnName(it.DbColumnName)))));
+                    updateTable.Append("\r\n SELECT " + string.Join(",", columns.Select(it => string.Format(SqlTemplateBatchSelect, FormatValue(it.Value,it.PropertyName),this.Builder.GetTranslationColumnName(it.DbColumnName)))));
                     ++i;
                 }
                 pageIndex++;
@@ -89,7 +89,8 @@ namespace SqlSugar.MySqlConnector
             }
             return batchUpdateSql.ToString();
         }
-        public override object FormatValue(object value)
+        int i = 0;
+        public  object FormatValue(object value,string name)
         {
             var n = "N";
             if (this.Context.CurrentConnectionConfig.MoreSettings != null&&this.Context.CurrentConnectionConfig.MoreSettings.DisableNvarchar)
@@ -106,9 +107,9 @@ namespace SqlSugar.MySqlConnector
                 if (type == UtilConstants.DateType)
                 {
                     var date = value.ObjToDate();
-                    if (date < Convert.ToDateTime("1900-1-1"))
+                    if (date < UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig))
                     {
-                        date = Convert.ToDateTime("1900-1-1");
+                        date = UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig);
                     }
                     return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
                 }
@@ -142,7 +143,10 @@ namespace SqlSugar.MySqlConnector
                 }
                 else if (type == UtilConstants.StringType || type == UtilConstants.ObjType)
                 {
-                    return n+"'" + GetString(value).ToSqlFilter() + "'";
+                    ++i;
+                    var parameterName = this.Builder.SqlParameterKeyWord + name + i;
+                    this.Parameters.Add(new SugarParameter(parameterName, value));
+                    return parameterName;
                 }
                 else
                 {

@@ -27,7 +27,8 @@ namespace SqlSugar.MySqlConnector
                 }
             }
         }
-        public override object FormatValue(object value)
+        int i = 0;
+        public  object FormatValue(object value,string name)
         {
             var n = "N";
             if (this.Context.CurrentConnectionConfig.MoreSettings != null && this.Context.CurrentConnectionConfig.MoreSettings.DisableNvarchar)
@@ -44,9 +45,9 @@ namespace SqlSugar.MySqlConnector
                 if (type == UtilConstants.DateType)
                 {
                     var date = value.ObjToDate();
-                    if (date < Convert.ToDateTime("1900-1-1"))
+                    if (date < UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig))
                     {
-                        date = Convert.ToDateTime("1900-1-1");
+                        date = UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig);
                     }
                     return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
                 }
@@ -72,7 +73,10 @@ namespace SqlSugar.MySqlConnector
                 }
                 else if (type == UtilConstants.StringType || type == UtilConstants.ObjType)
                 {
-                    return n+"'" + GetString(value).ToSqlFilter() + "'";
+                    ++i;
+                    var parameterName = this.Builder.SqlParameterKeyWord + name + i;
+                    this.Parameters.Add(new SugarParameter(parameterName, value));
+                    return parameterName;
                 }
                 else
                 {
@@ -102,6 +106,7 @@ namespace SqlSugar.MySqlConnector
             if (isSingle)
             {
                 string columnParametersString = string.Join(",", this.DbColumnInfoList.Select(it => Builder.SqlParameterKeyWord + it.DbColumnName));
+                ActionMinDate();
                 return string.Format(SqlTemplate, GetTableNameString, columnsString, columnParametersString);
             }
             else
@@ -115,7 +120,7 @@ namespace SqlSugar.MySqlConnector
                 foreach (var item in groupList)
                 {
                     batchInsetrSql.Append("(");
-                    insertColumns = string.Join(",", item.Select(it => FormatValue(it.Value)));
+                    insertColumns = string.Join(",", item.Select(it => FormatValue(it.Value,it.PropertyName)));
                     batchInsetrSql.Append(insertColumns);
                     if (groupList.Last() == item)
                     {

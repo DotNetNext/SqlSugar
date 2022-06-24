@@ -16,7 +16,21 @@ namespace SqlSugar.MySqlConnector
 {
     public class UtilMethods
     {
-
+        internal static DateTime GetMinDate(ConnectionConfig currentConnectionConfig)
+        {
+            if (currentConnectionConfig.MoreSettings == null)
+            {
+                return Convert.ToDateTime("1900-01-01");
+            }
+            else if (currentConnectionConfig.MoreSettings.DbMinDate == null)
+            {
+                return Convert.ToDateTime("1900-01-01");
+            }
+            else
+            {
+                return currentConnectionConfig.MoreSettings.DbMinDate.Value;
+            }
+        }
         internal static DateTime ConvertFromDateTimeOffset(DateTimeOffset dateTime)
         {
             if (dateTime.Offset.Equals(TimeSpan.Zero))
