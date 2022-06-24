@@ -319,6 +319,12 @@ namespace SqlSugar
                 {
                     this.Context.CurrentConnectionConfig.ConfigureExternalServices.EntityService(property, column);
                 }
+                if (column.PropertyInfo.DeclaringType != null
+                    && column.PropertyInfo.DeclaringType != result.Type
+                    &&result.Columns.Any(x=>x.PropertyName==column.PropertyName)) 
+                {
+                    continue;
+                }
                 result.Columns.Add(column);
             }
         }
