@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 namespace SqlSugar
@@ -33,9 +34,19 @@ namespace SqlSugar
             IPropertyCallAdapter<TThis> instance;
             if (!_instances.TryGetValue(forPropertyName, out instance))
             {
-                var property = typeof(TThis).GetProperty(
-                    forPropertyName,
-                    BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                PropertyInfo property = null;
+                var propertys = typeof(TThis).GetProperties(
+                 
+                    BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                    .Where(it=>it.Name== forPropertyName);
+                if (propertys.Count() == 1)
+                {
+                    property = propertys.First();
+                }
+                else 
+                {
+                    property = propertys.First();
+                }
 
                 MethodInfo getMethod;
                 Delegate getterInvocation = null;
