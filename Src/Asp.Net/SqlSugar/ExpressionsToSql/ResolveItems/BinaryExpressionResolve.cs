@@ -37,7 +37,7 @@ namespace SqlSugar
                 }
                 else
                 {
-                    InSubGroupBy(expression);
+                    InSubGroupBy(expression, operatorValue=="<>"?"NOT":"");
                 }
                 return;
             }
@@ -123,7 +123,7 @@ namespace SqlSugar
             }
             base.Context.Result.Append($" {leftSql} in ({rightSql}) ");
         }
-        private void InSubGroupBy(BinaryExpression expression)
+        private void InSubGroupBy(BinaryExpression expression,string not)
         {
             var leftSql = GetNewExpressionValue(expression.Left);
             var rightExpression = expression.Right as MethodCallExpression;
@@ -139,12 +139,12 @@ namespace SqlSugar
                 var p = (leftExp as MemberExpression);
                 this.Context.SingleTableNameSubqueryShortName=p.Expression.ToString();
             }
-            base.Context.Result.Append($" {leftSql} in ({rightSql}) ");
+            base.Context.Result.Append($" {leftSql} {not} in ({rightSql}) ");
         }
 
         private bool IsGroupSubquery(Expression rightExpression, string operatorValue)
         {
-            if (operatorValue != "=")
+            if (operatorValue != "="&& operatorValue != "<>")
             {
                 return false;
             }
