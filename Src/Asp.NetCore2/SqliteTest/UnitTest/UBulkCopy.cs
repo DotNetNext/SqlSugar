@@ -132,7 +132,21 @@ namespace OrmTest
             });
             var list4 = Db.Queryable<UnitBulk23131>().ToList();
             SqlSugar.Check.Exception(list4.First().table==true, "unit error");
+            var db = Db;
+            db.CodeFirst.InitTables<UnitTestoffset11>();
+            db.Fastest<UnitTestoffset11>().BulkCopy(new List<UnitTestoffset11>() {
+            new  UnitTestoffset11 { },
+             new  UnitTestoffset11 {  DateTimeOffset= DateTimeOffset.Now}
+            });
+            var list5 = db.Queryable<UnitTestoffset11>().ToList();
+            Console.WriteLine("用例跑完");
         }
+
+    }
+    public class UnitTestoffset11
+    {
+        [SqlSugar.SugarColumn(IsNullable = true)]
+        public DateTimeOffset? DateTimeOffset { get; set; }
     }
     public class UnitBulk23131 
     {
