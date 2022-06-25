@@ -28,6 +28,13 @@ namespace OrmTest
             if (x[0].Length != 18 && x[0].Scale != 0) throw new Exception("unit test error");
             if (x[1].Length != 18 && x[1].Scale != 2) throw new Exception("unit test error");
             if (x[2].Length != 0 && x[2].Scale != 0) throw new Exception("unit test error");
+            Db.CodeFirst.InitTables<UnitIndextest>();
+        }
+        [SqlSugar.SugarIndex("UnitIndextestIndex", nameof(UnitIndextest.Table), SqlSugar.OrderByType.Asc)]
+        public class UnitIndextest
+        {
+            public string Table { get; set; }
+            public string Id { get; set; }
         }
 
         public class UnitByteArray1 

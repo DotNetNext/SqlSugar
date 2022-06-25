@@ -13,6 +13,13 @@ namespace OrmTest
             if (Db.DbMaintenance.IsAnyTable("UnitCodeTest1", false))
                 Db.DbMaintenance.DropTable("UnitCodeTest1");
             Db.CodeFirst.InitTables<UnitCodeTest1>();
+            Db.CodeFirst.InitTables<UnitIndextest>();
+        }
+        [SqlSugar.SugarIndex("UnitIndextestIndex", nameof(UnitIndextest.Table), SqlSugar.OrderByType.Asc)]
+        public class UnitIndextest
+        {
+            public string Table { get; set; }
+            public string Id { get; set; }
         }
         public class UnitCodeTest1
         {
