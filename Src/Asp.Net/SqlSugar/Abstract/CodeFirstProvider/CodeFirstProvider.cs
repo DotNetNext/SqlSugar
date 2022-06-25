@@ -228,6 +228,8 @@ namespace SqlSugar
                     }
                     if (!this.Context.DbMaintenance.IsAnyIndex(item.IndexName))
                     {
+                        var querybulder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
+                        querybulder.Context = this.Context;
                         var fileds = item.IndexFields
                             .Select(it =>
                             {
@@ -238,7 +240,7 @@ namespace SqlSugar
                                 }
                                 return new KeyValuePair<string, OrderByType>(dbColumn.DbColumnName, it.Value);
                             })
-                            .Select(it => it.Key + " " + it.Value).ToArray();
+                            .Select(it => querybulder.GetTranslationColumnName(it.Key) + " " + it.Value).ToArray();
                         this.Context.DbMaintenance.CreateIndex(entityInfo.DbTableName, fileds, item.IndexName, item.IsUnique);
                     }
                 }
