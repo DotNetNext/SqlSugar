@@ -10,6 +10,7 @@ namespace SqlSugar
     public class FastBuilder 
     {
         public virtual bool IsActionUpdateColumns { get; set; }
+        public virtual DbFastestProperties DbFastestProperties { get; set; }
         public SqlSugarProvider Context { get; set; }
         public virtual string CharacterSet { get; set; }
         public virtual string UpdateSql { get; set; } = @"UPDATE TM

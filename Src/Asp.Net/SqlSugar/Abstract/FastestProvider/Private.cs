@@ -42,6 +42,7 @@ namespace SqlSugar
         }
         private DataTable ToDdateTable(List<T> datas)
         {
+            var builder = GetBuider();
             DataTable tempDataTable = ReflectionInoCore<DataTable>.GetInstance().GetOrCreate("BulkCopyAsync" + typeof(T).FullName,
             () =>
             {
@@ -87,7 +88,14 @@ namespace SqlSugar
                     }
                     else if (column.UnderType == UtilConstants.DateTimeOffsetType&& value!=null && value != DBNull.Value) 
                     {
-                        value = UtilMethods.ConvertFromDateTimeOffset((DateTimeOffset)value);
+                        if (builder.DbFastestProperties != null && builder.DbFastestProperties.HasOffsetTime == true)
+                        {
+                            //Don't need to deal with
+                        }
+                        else
+                        {
+                            value = UtilMethods.ConvertFromDateTimeOffset((DateTimeOffset)value);
+                        }
                     }
                     dr[name] = value;
                 }

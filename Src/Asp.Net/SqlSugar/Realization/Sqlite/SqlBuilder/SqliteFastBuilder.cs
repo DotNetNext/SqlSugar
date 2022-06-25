@@ -15,6 +15,7 @@ namespace SqlSugar
         public string CharacterSet { get; set; }
         private DataTable UpdateDataTable { get; set; }
         public bool IsActionUpdateColumns { get; set; }
+        public DbFastestProperties DbFastestProperties { get; set; } = new DbFastestProperties();
         public SqliteFastBuilder(EntityInfo entityInfo)
         {
             this.entityInfo = entityInfo;

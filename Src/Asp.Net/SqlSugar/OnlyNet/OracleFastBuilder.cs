@@ -17,6 +17,7 @@ namespace SqlSugar
 
         public SqlSugarProvider Context { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public bool IsActionUpdateColumns { get; set; }
+        public DbFastestProperties DbFastestProperties { get; set; } = new DbFastestProperties();
 
         public void CloseDb()
         {
