@@ -151,5 +151,14 @@ namespace SqlSugar
         {
             return default(int);
         }
+
+        public Subqueryable<T> WithNoLock()
+        {
+            return this;
+        }
+        public Subqueryable<T> EnableTableFilter()
+        {
+            return this;
+        }
     }
 }
