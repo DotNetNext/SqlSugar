@@ -93,7 +93,7 @@ namespace OrmTest
                .MergeTable()
               .Select(it => new ViewOrder()
               {
-                  Name = SqlFunc.Subqueryable<Order>().Select(s => s.Name)
+                  Name = SqlFunc.Subqueryable<Order>().WithNoLock().Select(s => s.Name)
               }).ToList(); ;
             var test18 = db.UnionAll(
                db.Queryable<Order>() ,

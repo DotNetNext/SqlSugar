@@ -22,6 +22,7 @@ namespace OrmTest
         private static void TableFilterDemo()
         {
             var db = GetInstance();
+
             //Order add filter  
             db.QueryFilter.Add(new TableFilterItem<Order>(it => it.Name.Contains("a"),true));
 
@@ -43,6 +44,22 @@ namespace OrmTest
             //SELECT [Id],[Name],[Price],[CreateTime],[CustomId] FROM [Order]
 
             db.Queryable<OrderItem>().LeftJoin<Order>((x, y) => x.ItemId == y.Id).ToList();
+
+            db.QueryFilter.Add(new SqlFilterItem()
+            {
+                FilterName = "Myfilter1",
+                FilterValue = it =>
+                {
+                    //Writable logic
+                    return new SqlFilterResult() { Sql = " name like '%a%' " };
+                },
+                IsJoinQuery = false // single query
+            });
+            db.Queryable<Order>().Select(x=>
+            new { 
+               id=SqlFunc.Subqueryable<Order>().EnableTableFilter().Where(z=>true).Select(z=>z.Id)
+            }
+            ).ToList();
         }
 
 
