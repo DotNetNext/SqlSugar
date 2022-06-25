@@ -229,6 +229,7 @@ namespace SqlSugar
                     if (!this.Context.DbMaintenance.IsAnyIndex(item.IndexName))
                     {
                         var querybulder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
+                        querybulder.Context = this.Context;
                         var fileds = item.IndexFields
                             .Select(it =>
                             {
