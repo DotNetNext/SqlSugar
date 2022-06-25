@@ -85,8 +85,23 @@ namespace OrmTest
                  name= XElement.Parse("<xml>aa</xml>")
             }).ExecuteCommand();
             var list= db.Queryable<UnitXml>().ToList();
+            if (db.DbMaintenance.IsAnyTable("UnitDateTimeOffset", false))
+            {
+                db.DbMaintenance.DropTable("UnitDateTimeOffset");
+            }
+            db.CodeFirst.InitTables<UnitDateTimeOffset>();
+            if (db.DbMaintenance.GetColumnInfosByTableName("UnitDateTimeOffset", false).First().DataType.ToLower() != "datetimeoffset") 
+            {
+                throw new Exception("unit error");
+            }
         
         }
+
+        public class UnitDateTimeOffset
+        {
+            public DateTimeOffset timeOffset { get; set; }
+        }
+
         public class UnitXml 
         {
             [SugarColumn(ColumnDataType ="xml")]
