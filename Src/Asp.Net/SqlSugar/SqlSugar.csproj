@@ -104,6 +104,8 @@
     <Compile Include="Abstract\SugarProvider\SqlSugarCoreProvider.cs" />
     <Compile Include="Abstract\UpdateProvider\SplitTableUpdateByObjectProvider.cs" />
     <Compile Include="Entities\DbFastestProperties.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\Items\SubWithNoLock.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\Items\SubEnableTableFilter.cs" />
     <Compile Include="Json2Sql\Entities\JsonDeleteResult.cs" />
     <Compile Include="Json2Sql\Entities\JsonInsertResult.cs" />
     <Compile Include="Json2Sql\Entities\JsonQueryResult.cs" />

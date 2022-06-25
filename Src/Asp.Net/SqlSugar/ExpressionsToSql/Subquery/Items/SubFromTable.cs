@@ -44,6 +44,7 @@ namespace SqlSugar
             var exp = expression as MethodCallExpression;
             var resType = exp.Method.ReturnType;
             var entityType = resType.GetGenericArguments().First();
+            this.Context.SubTableType = entityType;
             var name = entityType.Name;
             if (this.Context.InitMappingInfo != null)
             {
