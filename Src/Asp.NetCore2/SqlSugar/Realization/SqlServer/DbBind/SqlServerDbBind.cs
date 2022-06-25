@@ -6,6 +6,17 @@ namespace SqlSugar
 {
     public class SqlServerDbBind : DbBindProvider
     {
+        public override string GetDbTypeName(string csharpTypeName)
+        {
+            if (csharpTypeName == nameof(DateTimeOffset))
+            {
+                return nameof(DateTimeOffset);
+            }
+            else
+            {
+                return base.GetDbTypeName(csharpTypeName);
+            }
+        }
         public override List<KeyValuePair<string, CSharpDataType>> MappingTypes
         {
             get
