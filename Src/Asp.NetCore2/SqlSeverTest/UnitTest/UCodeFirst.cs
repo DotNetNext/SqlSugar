@@ -21,6 +21,13 @@ namespace OrmTest
             Db.Insertable(new UnitCodeFirst131() { Id = 1 }).ExecuteCommand();
             Db.CodeFirst.InitTables<UNITCODEFIRST131>();
             Db.CodeFirst.InitTables<UNITCOdEFIRST131>();
+            Db.CodeFirst.InitTables<UnitIndextest>();
+        }
+        [SqlSugar.SugarIndex("UnitIndextestIndex", nameof(UnitIndextest.Table),SqlSugar.OrderByType.Asc)]
+        public class UnitIndextest
+        {
+            public string Table { get; set; }
+            public string Id { get; set; }
         }
         public class UnitCodeFirst131 
         {
