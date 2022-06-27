@@ -13,8 +13,8 @@ namespace OrmTest
         {
 
             var db = NewUnitTest.Db;
-            db.CodeFirst.InitTables<UnitaSchoolA, UnitaStudentA>();
-            db.DbMaintenance.TruncateTable<UnitaSchoolA, UnitaStudentA>();
+            db.CodeFirst.InitTables<UnitaSchoolA, UnitaStudentA,UnitaBookA>();
+            db.DbMaintenance.TruncateTable<UnitaSchoolA, UnitaStudentA, UnitaBookA>();
             db.Insertable(new UnitaSchoolA() { SchoolId = 1, CityId = 1001001, School_Name = "北大" }).ExecuteCommand();
             db.Insertable(new UnitaSchoolA() { SchoolId = 2, CityId = 2, School_Name = "清华" }).ExecuteCommand();
             db.Insertable(new UnitaSchoolA() { SchoolId = 3, CityId = 3, School_Name = "青鸟" }).ExecuteCommand();
@@ -26,8 +26,18 @@ namespace OrmTest
             db.Insertable(new UnitaStudentA() { StudentId = 5, SchoolId = null, Name = "清华tom" }).ExecuteCommand();
             db.Insertable(new UnitaStudentA() { StudentId = 6, SchoolId = 3, Name = "青鸟学生" }).ExecuteCommand();
 
-            var list=db.Queryable<UnitaStudentA>()
-                .Includes(x => x.SchoolA).Where(x=>x.SchoolA.School_Name=="a").ToList();
+            db.Insertable(new UnitaBookA() { BookId = 1, Names = "java", studenId = 1 }).ExecuteCommand();
+            db.Insertable(new UnitaBookA() { BookId = 2, Names = "c#2", studenId = 2 }).ExecuteCommand();
+            db.Insertable(new UnitaBookA() { BookId = 3, Names = "c#1", studenId = 2 }).ExecuteCommand();
+            db.Insertable(new UnitaBookA() { BookId = 4, Names = "php", studenId = 3 }).ExecuteCommand();
+            db.Insertable(new UnitaBookA() { BookId = 5, Names = "js", studenId = 4 }).ExecuteCommand();
+            db.Insertable(new UnitaBookA() { BookId = 6, Names = "北大jack", studenId = 1 }).ExecuteCommand();
+
+            var list =db.Queryable<UnitaStudentA>()
+                .Includes(x => x.SchoolA).Where(x=>x.SchoolA.School_Name!=null).ToList();
+
+            var list2 = db.Queryable<UnitaStudentA>()
+                .Includes(x => x.Books).Where(x=>x.Books.Any()).ToList();
         }
         public class UnitaStudentA
         {
@@ -37,7 +47,9 @@ namespace OrmTest
             public int? SchoolId { get; set; }
             [Navigate(NavigateType.OneToOne, nameof(SchoolId),nameof(UnitaSchoolA.SchoolId))]
             public UnitaSchoolA SchoolA { get; set; }
- 
+            [Navigate(NavigateType.OneToMany, nameof(UnitaBookA.studenId),nameof(StudentId))]
+            public List<UnitaBookA> Books { get; set; }
+
 
         }
         public class UnitaSchoolA
@@ -48,6 +60,14 @@ namespace OrmTest
             [SugarColumn(ColumnName = "SchoolName")]
             public string School_Name { get; set; }
 
+        }
+        public class UnitaBookA
+        {
+            [SugarColumn(IsPrimaryKey = true)]
+            public int BookId { get; set; }
+            [SugarColumn(ColumnName = "Name")]
+            public string Names { get; set; }
+            public int studenId { get; set; }
         }
     }
 }
