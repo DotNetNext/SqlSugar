@@ -294,7 +294,11 @@ namespace SqlSugar
             var navEntityInfo = this.Context.EntityMaintenance.GetEntityInfo(navType);
             this.Context.InitMappingInfo(navEntityInfo.Type);
             var navPkColumn = navEntityInfo.Columns.Where(it => it.IsPrimarykey).FirstOrDefault();
-            Check.ExceptionEasy(navPkColumn==null, navEntityInfo.EntityName+ "need primarykey", navEntityInfo.EntityName + " 需要主键");
+            Check.ExceptionEasy(navPkColumn==null&& navObjectNameColumnInfo.Navigat.Name2==null, navEntityInfo.EntityName+ "need primarykey", navEntityInfo.EntityName + " 需要主键");
+            if (navPkColumn==null) 
+            {
+                navPkColumn = navEntityInfo.Columns.Where(it => it.PropertyName== navObjectNameColumnInfo.Navigat.Name2).FirstOrDefault();
+            }
             var ids = list.Select(it => it.GetType().GetProperty(navObjectNameColumnInfo.Navigat.Name).GetValue(it)).Select(it => it == null ? "null" : it).Distinct().ToList();
             List<IConditionalModel> conditionalModels = new List<IConditionalModel>();
             conditionalModels.Add((new ConditionalModel()
