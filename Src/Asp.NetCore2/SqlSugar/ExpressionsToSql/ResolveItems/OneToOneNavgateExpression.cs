@@ -77,7 +77,18 @@ namespace SqlSugar
                     " NavigateType.Dynamic no support expression .  "+ this.ProPertyEntity.Type.Name,
                     " NavigateType.Dynamic 自定义导航对象不支持在Where(x=>x.自定义.Id==1)等方法中使用"+ this.ProPertyEntity.Type.Name);
             }
-            var pk = this.ProPertyEntity.Columns.First(it => it.IsPrimarykey == true).DbColumnName;
+            var pk = this.ProPertyEntity.Columns.FirstOrDefault(it => it.IsPrimarykey == true)?.DbColumnName;
+            if (pk == null && Navigat.Name2 != null)
+            {
+                pk = this.ProPertyEntity.Columns.FirstOrDefault(it => it.PropertyName == Navigat.Name2)?.DbColumnName;
+            }
+            if(pk==null) 
+            {
+                Check.ExceptionEasy(
+                  true,
+                  $"{this.ProPertyEntity.EntityName} naviate config error",
+                  $"{this.ProPertyEntity.EntityName} 导航配置错误");
+            }
             var name = this.EntityInfo.Columns.First(it => it.PropertyName == Navigat.Name).DbColumnName;
             var selectName = this.ProPertyEntity.Columns.First(it => it.PropertyName ==MemberName).DbColumnName;
             MapperSql mapper = new MapperSql();

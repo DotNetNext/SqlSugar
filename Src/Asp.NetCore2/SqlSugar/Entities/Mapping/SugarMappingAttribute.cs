@@ -215,6 +215,7 @@ namespace SqlSugar
     public class Navigate: Attribute
     {
         public string Name { get; set; }
+        public string Name2 { get; set; }
         public Type MappingType { get; set; }
         public string MappingAId { get; set; }
         public string MappingBId { get; set; }
@@ -222,6 +223,12 @@ namespace SqlSugar
         public Navigate(NavigateType navigatType,string name)
         {
             this.Name = name;
+            this.NavigatType = navigatType;
+        }
+        public Navigate(NavigateType navigatType, string firstName,string lastName)
+        {
+            this.Name = firstName;
+            this.Name2 = lastName;
             this.NavigatType = navigatType;
         }
         public Navigate(Type MappingTableType,string typeAiD,string typeBId)

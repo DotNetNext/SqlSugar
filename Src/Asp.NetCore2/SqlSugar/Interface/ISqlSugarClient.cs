@@ -202,5 +202,14 @@ namespace SqlSugar
         Task ThenMapperAsync<T>(IEnumerable<T> list, Func<T,Task> action);
         #endregion
 
+        #region  Nav CUD
+        InsertNavProvider<T, T> InsertNav<T>(T data);
+        InsertNavProvider<T, T> InsertNav<T>(List<T> datas);
+        DeleteNavProvider<T, T> DeleteNav<T>(T data);
+        DeleteNavProvider<T, T> DeleteNav<T>(List<T> datas);
+        UpdateNavProvider<T, T> UpdateNav<T>(T data);
+        UpdateNavProvider<T, T> UpdateNav<T>(List<T> datas);
+        #endregion
+
     }
 }
