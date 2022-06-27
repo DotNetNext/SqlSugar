@@ -27,7 +27,7 @@ namespace OrmTest
             db.Insertable(new UnitaStudentA() { StudentId = 6, SchoolId = 3, Name = "青鸟学生" }).ExecuteCommand();
 
             var list=db.Queryable<UnitaStudentA>()
-                .Includes(x => x.SchoolA).ToList();
+                .Includes(x => x.SchoolA).Where(x=>x.SchoolA.School_Name=="a").ToList();
         }
         public class UnitaStudentA
         {
