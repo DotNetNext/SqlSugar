@@ -1288,6 +1288,10 @@ namespace SqlSugar
         {
             return this.GetConnectionWithAttr<T>().Updateable(updateObj);
         }
+        public IUpdateable<T> UpdateableWithAttr<T>() where T : class, new()
+        {
+            return this.GetConnectionWithAttr<T>().Updateable<T>();
+        }
         public IUpdateable<T> UpdateableWithAttr<T>(List<T> updateObjs) where T : class, new()
         {
             return this.GetConnectionWithAttr<T>().Updateable(updateObjs);

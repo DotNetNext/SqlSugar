@@ -711,6 +711,12 @@ namespace SqlSugar
         {
             return ScopedContext.UpdateableWithAttr<T>(updateObj);
         }
+
+        public IUpdateable<T> UpdateableWithAttr<T>() where T : class, new()
+        {
+            return ScopedContext.UpdateableWithAttr<T>();
+        }
+
         public IUpdateable<T> UpdateableWithAttr<T>(List<T> updateObjs) where T : class, new()
         {
             return ScopedContext.UpdateableWithAttr<T>(updateObjs);
