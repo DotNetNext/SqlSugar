@@ -340,7 +340,11 @@ namespace SqlSugar
             Check.ExceptionEasy(navColumn == null, $"{navEntityInfo.EntityName} not found {navObjectNameColumnInfo.Navigat.Name} ", $"实体 {navEntityInfo.EntityName} 未找到导航配置列 {navObjectNameColumnInfo.Navigat.Name} ");
             //var navType = navObjectNamePropety.PropertyType;
             var listItemPkColumn = listItemEntity.Columns.Where(it => it.IsPrimarykey).FirstOrDefault();
-            Check.ExceptionEasy(listItemPkColumn == null, listItemEntity.EntityName + " not primary key", listItemEntity.EntityName + "没有主键");
+            Check.ExceptionEasy(listItemPkColumn == null&& navObjectNameColumnInfo.Navigat.Name2==null, listItemEntity.EntityName + " not primary key", listItemEntity.EntityName + "没有主键");
+            if (listItemPkColumn == null) 
+            {
+                listItemPkColumn = listItemEntity.Columns.Where(it => it.PropertyName== navObjectNameColumnInfo.Navigat.Name2).FirstOrDefault();
+            }
             var ids = list.Select(it => it.GetType().GetProperty(listItemPkColumn.PropertyName).GetValue(it)).Select(it => it == null ? "null" : it).Distinct().ToList();
             List<IConditionalModel> conditionalModels = new List<IConditionalModel>();
             conditionalModels.Add((new ConditionalModel()
