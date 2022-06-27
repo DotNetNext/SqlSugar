@@ -153,6 +153,33 @@ namespace SqlSugar
 
         #region Queryable
 
+        #region  Nav CUD
+        public InsertNavProvider<T, T> InsertNav<T>(T data)
+        {
+            return  this.Context.InsertNav(data);
+        }
+        public InsertNavProvider<T, T> InsertNav<T>(List<T> datas)
+        {
+            return this.Context.InsertNav(datas);
+        }
+        public DeleteNavProvider<T, T> DeleteNav<T>(T data)
+        {
+            return this.Context.DeleteNav(data);
+        }
+        public DeleteNavProvider<T, T> DeleteNav<T>(List<T> datas)
+        {
+            return this.Context.DeleteNav(datas);
+        }
+        public UpdateNavProvider<T, T> UpdateNav<T>(T data)
+        {
+            return this.Context.UpdateNav(data);
+        }
+        public UpdateNavProvider<T, T> UpdateNav<T>(List<T> datas)
+        {
+            return this.Context.UpdateNav(datas);  
+        }
+        #endregion
+
         #region Union
         public ISugarQueryable<T> Union<T>(List<ISugarQueryable<T>> queryables) where T : class, new()
         {

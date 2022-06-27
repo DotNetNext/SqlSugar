@@ -105,6 +105,15 @@ namespace OrmTest
            .ToList();
 
 
+            //功能开发中
+            db.InsertNav(list3)
+            .ThenInclude(z1 => z1.SchoolA)
+            .ThenInclude(z1 => z1.RoomList)
+            .AsNav()
+            .ThenInclude(z1 => z1.Books);
+
+
+            
 
             var list3_1 = db.Queryable<StudentA>()
            .Includes(x => x.Books.MappingField(z=>z.Names,()=>x.Name).ToList())

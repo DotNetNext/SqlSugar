@@ -678,6 +678,30 @@ namespace SqlSugar
         {
             return ScopedContext.Saveable(saveObject);
         }
+        public InsertNavProvider<T, T> InsertNav<T>(T data)
+        {
+            return ScopedContext.InsertNav(data);
+        }
+        public InsertNavProvider<T, T> InsertNav<T>(List<T> datas)
+        {
+            return ScopedContext.InsertNav(datas);
+        }
+        public DeleteNavProvider<T, T> DeleteNav<T>(T data)
+        {
+            return ScopedContext.DeleteNav(data);
+        }
+        public DeleteNavProvider<T, T> DeleteNav<T>(List<T> datas)
+        {
+            return ScopedContext.DeleteNav(datas);
+        }
+        public UpdateNavProvider<T, T> UpdateNav<T>(T data)
+        {
+            return ScopedContext.UpdateNav(data);
+        }
+        public UpdateNavProvider<T, T> UpdateNav<T>(List<T> datas)
+        {
+            return ScopedContext.UpdateNav(datas);
+        }
         #endregion
     }
 }

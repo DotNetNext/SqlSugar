@@ -889,6 +889,39 @@ namespace SqlSugar
         }
         #endregion
 
+        #region  Nav CUD
+        public InsertNavProvider<T, T> InsertNav<T>(T data)
+        {
+            return InsertNav(new List<T>() { data });
+        }
+        public InsertNavProvider<T, T> InsertNav<T>(List<T> datas)
+        {
+            var result = new InsertNavProvider<T, T>();
+            result.Roots = datas;
+            return result;
+        }
+        public DeleteNavProvider<T, T> DeleteNav<T>(T data)
+        {
+            return DeleteNav(new List<T>() { data });
+        }
+        public DeleteNavProvider<T, T> DeleteNav<T>(List<T> datas)
+        {
+            var result = new DeleteNavProvider<T, T>();
+            result.Roots = datas;
+            return result;
+        }
+        public UpdateNavProvider<T, T> UpdateNav<T>(T data)
+        {
+            return UpdateNav(new List<T>() { data });
+        }
+        public UpdateNavProvider<T, T> UpdateNav<T>(List<T> datas)
+        {
+            var result = new UpdateNavProvider<T, T>();
+            result.Roots = datas;
+            return result;
+        }
+        #endregion
+
         #region DbFirst
         public virtual IDbFirst DbFirst
         {
