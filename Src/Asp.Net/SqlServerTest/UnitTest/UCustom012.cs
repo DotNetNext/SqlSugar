@@ -106,11 +106,11 @@ namespace OrmTest
 
 
             //功能开发中
-            db.InsertNav(list3)
-            .ThenInclude(z1 => z1.SchoolA)
-            .ThenInclude(z1 => z1.RoomList)
-            .AsNav()
-            .ThenInclude(z1 => z1.Books);
+            //db.InsertNav(list3)
+            //.ThenInclude(z1 => z1.SchoolA)
+            //.ThenInclude(z1 => z1.RoomList)
+            //.AsNav()
+            //.ThenInclude(z1 => z1.Books);
 
 
             
