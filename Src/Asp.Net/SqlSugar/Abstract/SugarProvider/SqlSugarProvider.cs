@@ -890,14 +890,15 @@ namespace SqlSugar
         #endregion
 
         #region  Nav CUD
-        public InsertNavProvider<T, T> InsertNav<T>(T data)
+        public InsertNavProvider<T, T> InsertNav<T>(T data) where T : class, new()
         {
             return InsertNav(new List<T>() { data });
         }
-        public InsertNavProvider<T, T> InsertNav<T>(List<T> datas)
+        public InsertNavProvider<T, T> InsertNav<T>(List<T> datas) where T : class, new()
         {
             var result = new InsertNavProvider<T, T>();
             result.Roots = datas;
+            result.Context = this;
             return result;
         }
         public DeleteNavProvider<T, T> DeleteNav<T>(T data)
@@ -908,6 +909,7 @@ namespace SqlSugar
         {
             var result = new DeleteNavProvider<T, T>();
             result.Roots = datas;
+            result.Context = this;
             return result;
         }
         public UpdateNavProvider<T, T> UpdateNav<T>(T data)
@@ -918,6 +920,7 @@ namespace SqlSugar
         {
             var result = new UpdateNavProvider<T, T>();
             result.Roots = datas;
+            result.Context = this;
             return result;
         }
         #endregion

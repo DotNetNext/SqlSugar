@@ -730,11 +730,11 @@ namespace SqlSugar
             return ScopedContext.DeleteableWithAttr<T>(deleteObjs);
         }
  
-        public InsertNavProvider<T, T> InsertNav<T>(T data)
+        public InsertNavProvider<T, T> InsertNav<T>(T data) where T : class, new()
         {
             return ScopedContext.InsertNav(data);
         }
-        public InsertNavProvider<T, T> InsertNav<T>(List<T> datas)
+        public InsertNavProvider<T, T> InsertNav<T>(List<T> datas) where T : class, new()
         {
             return ScopedContext.InsertNav(datas);
         }
