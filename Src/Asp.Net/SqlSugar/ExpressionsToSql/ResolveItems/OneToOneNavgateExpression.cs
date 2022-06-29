@@ -78,7 +78,7 @@ namespace SqlSugar
                     " NavigateType.Dynamic 自定义导航对象不支持在Where(x=>x.自定义.Id==1)等方法中使用"+ this.ProPertyEntity.Type.Name);
             }
             var pk = this.ProPertyEntity.Columns.FirstOrDefault(it => it.IsPrimarykey == true)?.DbColumnName;
-            if (pk == null && Navigat.Name2 != null)
+            if (Navigat.Name2.HasValue())
             {
                 pk = this.ProPertyEntity.Columns.FirstOrDefault(it => it.PropertyName == Navigat.Name2)?.DbColumnName;
             }

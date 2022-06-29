@@ -168,7 +168,7 @@ namespace SqlSugar
         private MapperSql GetOneToManySql()
         {
             var pkColumn = this.EntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey == true);
-            if (pkColumn == null && Navigat.Name2 != null) 
+            if (Navigat.Name2.HasValue()) 
             {
                 pkColumn = this.EntityInfo.Columns.FirstOrDefault(it => it.PropertyName== Navigat.Name2);
             }
