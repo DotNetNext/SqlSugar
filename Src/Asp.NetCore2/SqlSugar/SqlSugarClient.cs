@@ -154,11 +154,11 @@ namespace SqlSugar
         #region Queryable
 
         #region  Nav CUD
-        public InsertNavProvider<T, T> InsertNav<T>(T data)
+        public InsertNavProvider<T, T> InsertNav<T>(T data) where T : class, new()
         {
             return  this.Context.InsertNav(data);
         }
-        public InsertNavProvider<T, T> InsertNav<T>(List<T> datas)
+        public InsertNavProvider<T, T> InsertNav<T>(List<T> datas) where T : class, new()
         {
             return this.Context.InsertNav(datas);
         }
@@ -1287,6 +1287,10 @@ namespace SqlSugar
         public IUpdateable<T> UpdateableWithAttr<T>(T updateObj) where T : class, new()
         {
             return this.GetConnectionWithAttr<T>().Updateable(updateObj);
+        }
+        public IUpdateable<T> UpdateableWithAttr<T>() where T : class, new()
+        {
+            return this.GetConnectionWithAttr<T>().Updateable<T>();
         }
         public IUpdateable<T> UpdateableWithAttr<T>(List<T> updateObjs) where T : class, new()
         {

@@ -295,7 +295,7 @@ namespace SqlSugar
             this.Context.InitMappingInfo(navEntityInfo.Type);
             var navPkColumn = navEntityInfo.Columns.Where(it => it.IsPrimarykey).FirstOrDefault();
             Check.ExceptionEasy(navPkColumn==null&& navObjectNameColumnInfo.Navigat.Name2==null, navEntityInfo.EntityName+ "need primarykey", navEntityInfo.EntityName + " 需要主键");
-            if (navPkColumn==null) 
+            if (navObjectNameColumnInfo.Navigat.Name2.HasValue()) 
             {
                 navPkColumn = navEntityInfo.Columns.Where(it => it.PropertyName== navObjectNameColumnInfo.Navigat.Name2).FirstOrDefault();
             }
@@ -341,7 +341,7 @@ namespace SqlSugar
             //var navType = navObjectNamePropety.PropertyType;
             var listItemPkColumn = listItemEntity.Columns.Where(it => it.IsPrimarykey).FirstOrDefault();
             Check.ExceptionEasy(listItemPkColumn == null&& navObjectNameColumnInfo.Navigat.Name2==null, listItemEntity.EntityName + " not primary key", listItemEntity.EntityName + "没有主键");
-            if (listItemPkColumn == null) 
+            if (navObjectNameColumnInfo.Navigat.Name2.HasValue()) 
             {
                 listItemPkColumn = listItemEntity.Columns.Where(it => it.PropertyName== navObjectNameColumnInfo.Navigat.Name2).FirstOrDefault();
             }

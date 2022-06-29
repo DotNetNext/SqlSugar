@@ -11,6 +11,7 @@ namespace SqlSugar
     {
 
         public List<Root> Roots { get;  set; }
+        public SqlSugarProvider Context { get; internal set; }
 
         public DeleteNavProvider<Root,TChild> ThenInclude<TChild>(Expression<Func<T,TChild>> expression)
         {
