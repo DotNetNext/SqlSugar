@@ -216,6 +216,10 @@ namespace SqlSugar
             Type type = Nullable.GetUnderlyingType(oldType);
             return type == null ? oldType : type;
         }
+        public static object GetDefaultValue(Type type)
+        {
+            return type.IsValueType ? Activator.CreateInstance(type) : null;
+        }
         public static string ReplaceSqlParameter(string itemSql, SugarParameter itemParameter, string newName)
         {
             itemSql = Regex.Replace(itemSql, string.Format(@"{0} ", "\\" + itemParameter.ParameterName), newName + " ", RegexOptions.IgnoreCase);
