@@ -897,8 +897,8 @@ namespace SqlSugar
         public InsertNavProvider<T, T> InsertNav<T>(List<T> datas) where T : class, new()
         {
             var result = new InsertNavProvider<T, T>();
-            result.Roots = datas;
-            result.Context = this;
+            result._Roots = datas;
+            result._Context = this;
             return result;
         }
         public DeleteNavProvider<T, T> DeleteNav<T>(T data)
