@@ -1300,6 +1300,10 @@ namespace SqlSugar
         {
             return this.GetConnectionWithAttr<T>().Deleteable(deleteObject);
         }
+        public IDeleteable<T> DeleteableWithAttr<T>() where T : class, new()
+        {
+            return this.GetConnectionWithAttr<T>().Deleteable<T>();
+        }
         public IDeleteable<T> DeleteableWithAttr<T>(List<T> deleteObjects) where T : class, new()
         {
             return this.GetConnectionWithAttr<T>().Deleteable(deleteObjects);

@@ -725,6 +725,10 @@ namespace SqlSugar
         {
             return ScopedContext.DeleteableWithAttr<T>(deleteObj);
         }
+        public IDeleteable<T> DeleteableWithAttr<T>() where T : class, new()
+        {
+            return ScopedContext.DeleteableWithAttr<T>();
+        }
         public IDeleteable<T> DeleteableWithAttr<T>(List<T> deleteObjs) where T : class, new()
         {
             return ScopedContext.DeleteableWithAttr<T>(deleteObjs);

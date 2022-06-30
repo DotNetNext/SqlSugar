@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>SqlSugarCore</id>
-    <version>5.0.9.1</version>
+    <version>5.0.9.2-preview04</version>
     <authors>sunkaixuan</authors>
     <owners>果糖大数据科技</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
