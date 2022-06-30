@@ -121,7 +121,8 @@ namespace SqlSugar
                 if (sqlParameter.DbType == System.Data.DbType.Guid)
                 {
                     sqlParameter.DbType = System.Data.DbType.String;
-                    sqlParameter.Value = sqlParameter.Value.ToString();
+                    if(sqlParameter.Value != DBNull.Value)
+                       sqlParameter.Value = sqlParameter.Value.ToString();
                 }
                 if (parameter.Direction == 0)
                 {

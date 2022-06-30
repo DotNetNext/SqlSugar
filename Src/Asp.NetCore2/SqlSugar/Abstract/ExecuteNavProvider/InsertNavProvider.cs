@@ -11,7 +11,7 @@ namespace SqlSugar
     {
 
         public List<Root> Roots { get;  set; }
-        public object ParentList { get; set; }
+        public List<object> ParentList { get; set; }
         public EntityInfo ParentEntity { get; set; }
         public SqlSugarProvider Context { get;   set; }
 
@@ -19,7 +19,7 @@ namespace SqlSugar
         {
             if (ParentList == null) 
             {
-                ParentList = GetParentList(Roots);
+                ParentList = GetParentList(Roots).Cast<object>().ToList();
             }
             var name=ExpressionTool.GetMemberName(expression);
             var nav = this.ParentEntity.Columns.FirstOrDefault(x => x.PropertyName == name);
@@ -29,7 +29,7 @@ namespace SqlSugar
             }
             if (nav.Navigat.NavigatType == NavigateType.OneToOne || nav.Navigat.NavigatType == NavigateType.ManyToOne)
             {
-                InsertOneToOne();
+                InsertOneToOne<TChild>(ParentList,this.ParentEntity, name,nav);
             }
             else if (nav.Navigat.NavigatType == NavigateType.OneToMany)
             {
@@ -52,9 +52,40 @@ namespace SqlSugar
        
         }
 
-        private void InsertOneToOne()
+        private void InsertOneToOne<TChild>(List<object> parentList, EntityInfo parentEntity, string name, EntityColumnInfo nav)
         {
-            
+            var parentColumn = parentEntity.Columns.FirstOrDefault(it => it.PropertyName==nav.Navigat.Name);
+            this.ParentEntity = this.Context.EntityMaintenance.GetEntityInfo<TChild>();
+            var pkColumn = ParentEntity.Columns.FirstOrDefault(it=>it.IsPrimarykey==true);
+            if (nav.Navigat.Name2.HasValue()) 
+            {
+                pkColumn = ParentEntity.Columns.FirstOrDefault(it => it.PropertyName==nav.Navigat.Name2);
+            }
+            Check.Exception(pkColumn == null, $" Navigate {parentEntity.EntityName} : {name} is error ", $"导航实体 {parentEntity.EntityName} 属性 {name} 配置错误");
+            List<object> childList = new List<object>();
+            foreach (var parent in parentList) 
+            {
+                var childItems=(TChild)nav.PropertyInfo.GetValue(parent);
+                if (childItems != null)
+                {
+                    var pkValue = pkColumn.PropertyInfo.GetValue(childItems);
+                    var pvValue = parentColumn.PropertyInfo.GetValue(parent);
+                    if (IsDefaultValue(pvValue))
+                    {
+                        pvValue = pkValue;
+                    }
+                    if (IsDefaultValue(pvValue))
+                    {
+                        
+                    }
+                }
+            }
+            parentList = childList;
+        }
+
+        private static bool IsDefaultValue(object pvValue)
+        {
+            return pvValue == null || pvValue == UtilMethods.GetDefaultValue(pvValue.GetType());
         }
 
         private List<Type> GetParentList<Type>(List<Type> datas) where Type : class ,new()
