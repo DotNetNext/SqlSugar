@@ -28,7 +28,7 @@ namespace SqlSugar
         public EntityInfo GetEntityInfoNoCache(Type type)
         {
             EntityInfo result = new EntityInfo();
-            var sugarAttributeInfo = type.GetTypeInfo().GetCustomAttributes(typeof(SugarTable), true).Where(it => it is SugarTable).SingleOrDefault();
+            var sugarAttributeInfo = type.GetTypeInfo().GetCustomAttributes(typeof(SugarTable), false).Where(it => it is SugarTable).SingleOrDefault();
             if (sugarAttributeInfo.HasValue())
             {
                 var sugarTable = (SugarTable)sugarAttributeInfo;
