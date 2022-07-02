@@ -116,6 +116,12 @@ namespace OrmTest
             db.InsertNav(list.Last().school_001)
               .ThenInclude(x => x.rooms)
               .ThenInclude(x => x.desk);
+
+            if (db.Queryable<Desk_002>().Count() != 4 || db.Queryable<Room_002>().Count() != 4
+               || db.Queryable<School_002>().Count() != 2 || db.Queryable<Student_002>().Count() != 0)
+            {
+                throw new Exception("unit error");
+            }
         }
 
         public class Student_002 
