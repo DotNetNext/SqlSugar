@@ -96,6 +96,17 @@ namespace SqlSugar
                 }
                 this._Context.Insertable(insertData).ExecuteCommand();
             }
+            else if (pkColumn.UnderType == UtilConstants.GuidType && pkColumn.IsIdentity == false)
+            {
+                foreach (var child in insertData)
+                {
+                    if (IsDefaultValue(pkColumn.PropertyInfo.GetValue(child)))
+                    {
+                        pkColumn.PropertyInfo.SetValue(child, Guid.NewGuid());
+                    }
+                }
+                this._Context.Insertable(insertData).ExecuteCommand();
+            }
             else
             {
                 this._Context.Insertable(insertData).ExecuteCommand();
