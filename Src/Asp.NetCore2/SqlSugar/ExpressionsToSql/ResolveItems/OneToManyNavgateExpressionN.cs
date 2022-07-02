@@ -160,7 +160,12 @@ namespace SqlSugar
                 {
                     if (this.whereSql.Contains("." + sqlBuilder.GetTranslationColumnName(it.DbColumnName)))
                     {
-                        this.whereSql =Regex.Replace(this.whereSql,@"\w+\."+sqlBuilder.GetTranslationColumnName(it.DbColumnName),
+                        var regex = @"\w+\." + sqlBuilder.GetTranslationColumnName(it.DbColumnName)
+                            .Replace(sqlBuilder.SqlTranslationLeft, "\\" + sqlBuilder.SqlTranslationLeft)
+                            .Replace(sqlBuilder.SqlTranslationRight, "\\" + sqlBuilder.SqlTranslationRight)
+                            .Replace("\\\\","\\");
+
+                        this.whereSql =Regex.Replace(this.whereSql, regex,
                              lastShortName + "." + sqlBuilder.GetTranslationColumnName(it.DbColumnName));
                     }
                     else
