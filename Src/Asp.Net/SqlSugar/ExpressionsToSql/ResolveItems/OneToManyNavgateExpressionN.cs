@@ -131,7 +131,8 @@ namespace SqlSugar
                 lastShortName = shortName;
                 formInfo = item;
             }
-            queryable.Select($" COUNT(1)");
+            var isAny = (memberInfo.Expression as MethodCallExpression).Method.Name == "Any";
+            queryable.Select(isAny ? "1" : " COUNT(1) ");
             var last = subInfos.First();
             var FirstPkColumn = last.ThisEntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey);
             Check.ExceptionEasy(FirstPkColumn == null, $"{ last.ThisEntityInfo.EntityName} need PrimayKey", $"使用导航属性{ last.ThisEntityInfo.EntityName} 缺少主键");
@@ -140,9 +141,9 @@ namespace SqlSugar
             queryable.Where($" {this.shorName}.{ queryable.SqlBuilder.GetTranslationColumnName(PkColumn.DbColumnName)} = {masterShortName}.{queryable.SqlBuilder.GetTranslationColumnName(FirstPkColumn.DbColumnName)} ");
             queryable.WhereIF(this.whereSql.HasValue(), GetWhereSql1(this.whereSql,lastShortName, joinInfos, queryable.SqlBuilder));
             MapperSql.Sql = $"( {queryable.ToSql().Key} ) ";
-            if ((memberInfo.Expression as MethodCallExpression).Method.Name == "Any")
+            if (isAny)
             {
-                MapperSql.Sql = $"( {MapperSql.Sql}>0 ) ";
+                MapperSql.Sql = $" EXISTS( {MapperSql.Sql}) ";
 
             }
             return MapperSql;
