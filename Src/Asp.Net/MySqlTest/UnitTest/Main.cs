@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UOneManyMany.init();
             UDelete.Init();
             UCustom012.Init();
             UCustom014.Init();
