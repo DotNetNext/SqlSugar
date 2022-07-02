@@ -32,6 +32,7 @@ namespace OrmTest
         public static void Init()
         {
 
+            UOneManyMany3.init();
             UOneManyMany2.init();
             UOneManyMany.init();
             UNavDynamic111N.Init();

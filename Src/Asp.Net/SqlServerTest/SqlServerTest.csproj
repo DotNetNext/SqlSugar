@@ -139,7 +139,8 @@
     <Compile Include="UnitTest\UDelete.cs" />
     <Compile Include="UnitTest\UFastest.cs" />
     <Compile Include="UnitTest\UConfig.cs" />
-    <Compile Include="UnitTest\UOneManyMany 2.cs" />
+    <Compile Include="UnitTest\UOneManyMany3.cs" />
+    <Compile Include="UnitTest\UOneManyMany2.cs" />
     <Compile Include="UnitTest\UOneManyMany.cs" />
     <Compile Include="UnitTest\USplit.cs" />
     <Compile Include="UnitTest\Models\TB_AdminUser.cs" />
