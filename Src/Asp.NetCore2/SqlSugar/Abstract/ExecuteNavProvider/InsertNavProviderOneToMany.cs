@@ -41,9 +41,8 @@ namespace SqlSugar
             EntityColumnInfo parentPkColumn = _ParentPkColumn;
             if (_ParentPkColumn == null)
             {
-                _ParentPkColumn= this._ParentEntity.Columns.FirstOrDefault(it => it.IsPrimarykey);
+                parentPkColumn= _ParentPkColumn = this._ParentEntity.Columns.FirstOrDefault(it => it.IsPrimarykey);
             }
-
             return parentPkColumn;
         }
 

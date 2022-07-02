@@ -13,6 +13,7 @@ namespace SqlSugar
             var parentEntity = _ParentEntity;
             var parentList = _ParentList;
             var parentColumn = parentEntity.Columns.FirstOrDefault(it => it.PropertyName == nav.Navigat.Name);
+            var parentPkColumn = parentEntity.Columns.FirstOrDefault(it => it.IsPrimarykey);
             var thisEntity = this._Context.EntityMaintenance.GetEntityInfo<TChild>();
             EntityColumnInfo thisPkColumn = GetPkColumnByNav(thisEntity, nav);
             Check.Exception(thisPkColumn == null, $" Navigate {parentEntity.EntityName} : {name} is error ", $"导航实体 {parentEntity.EntityName} 属性 {name} 配置错误");
@@ -31,6 +32,17 @@ namespace SqlSugar
                             navPropertyValue = pkValue;
                         }
                     }
+                    if (IsDefaultValue(navPropertyValue)) 
+                    {
+                        InsertDatas<TChild>(new List<TChild>() { childItem }, thisPkColumn);
+                        navPropertyValue = thisPkColumn.PropertyInfo.GetValue(childItem);
+                        parentColumn.PropertyInfo.SetValue(parent,navPropertyValue);
+                        this._Context.Updateable<DbTableInfo>
+                            ().AS(parentEntity.DbTableName)
+                            .SetColumns(parentColumn.DbColumnName, navPropertyValue)
+                            .Where(parentPkColumn.DbColumnName,"=", parentPkColumn.PropertyInfo.GetValue(parent)).ExecuteCommand();
+                    }
+            
                     thisPkColumn.PropertyInfo.SetValue(childItem, navPropertyValue);
                     childList.Add(childItem);
                 }
