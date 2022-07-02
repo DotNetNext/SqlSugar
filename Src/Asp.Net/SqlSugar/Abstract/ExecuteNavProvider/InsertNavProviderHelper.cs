@@ -12,7 +12,7 @@ namespace SqlSugar
 
         private static bool IsDefaultValue(object pvValue)
         {
-            return pvValue == null || pvValue == UtilMethods.GetDefaultValue(pvValue.GetType());
+            return pvValue == null || pvValue.Equals(UtilMethods.GetDefaultValue(pvValue.GetType()));
         }
         private void InitParentList()
         {
