@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace SqlSugar 
@@ -155,11 +156,21 @@ namespace SqlSugar
             if (sql == null) return sql;
             joinInfos.Last().ThisEntityInfo.Columns.ForEach(it =>
             {
-                this.whereSql = this.whereSql.Replace(sqlBuilder.GetTranslationColumnName(it.DbColumnName),
-                    lastShortName+"." + sqlBuilder.GetTranslationColumnName(it.DbColumnName));
-
+                if (it.DbColumnName != null)
+                {
+                    if (this.whereSql.Contains("." + sqlBuilder.GetTranslationColumnName(it.DbColumnName)))
+                    {
+                        this.whereSql =Regex.Replace(this.whereSql,@"\w+\."+sqlBuilder.GetTranslationColumnName(it.DbColumnName),
+                             lastShortName + "." + sqlBuilder.GetTranslationColumnName(it.DbColumnName));
+                    }
+                    else
+                    {
+                        this.whereSql = this.whereSql.Replace(sqlBuilder.GetTranslationColumnName(it.DbColumnName),
+                            lastShortName + "." + sqlBuilder.GetTranslationColumnName(it.DbColumnName));
+                    }
+                }
             });
-            return sql;
+            return this.whereSql;
         }
 
         private string GetWhereSql(MethodCallExpression memberExp)

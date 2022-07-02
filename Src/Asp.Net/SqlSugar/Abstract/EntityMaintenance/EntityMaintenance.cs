@@ -291,6 +291,10 @@ namespace SqlSugar
                             {
                                 column.DataType = "json";
                             }
+                            else if (column.Length > 0) 
+                            {
+                                column.DataType = "varchar";
+                            }
                             else
                             {
                                 column.DataType = "varchar(4000)";
