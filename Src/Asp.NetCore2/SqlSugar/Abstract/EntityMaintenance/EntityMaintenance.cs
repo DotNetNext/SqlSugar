@@ -258,7 +258,7 @@ namespace SqlSugar
                 }
                 else
                 {
-                   
+                    
                     if (sugarColumn.IsIgnore == false)
                     {
                         column.DbColumnName = sugarColumn.ColumnName.IsNullOrEmpty() ? property.Name : sugarColumn.ColumnName;
@@ -284,11 +284,16 @@ namespace SqlSugar
                         column.IsArray = sugarColumn.IsArray;
                         column.IsTreeKey = sugarColumn.IsTreeKey;
                         column.SqlParameterDbType = sugarColumn.SqlParameterDbType;
+
                         if (sugarColumn.IsJson && String.IsNullOrEmpty(sugarColumn.ColumnDataType))
                         {
                             if (this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL)
                             {
                                 column.DataType = "json";
+                            }
+                            else if (column.Length > 0) 
+                            {
+                                column.DataType = "varchar";
                             }
                             else
                             {

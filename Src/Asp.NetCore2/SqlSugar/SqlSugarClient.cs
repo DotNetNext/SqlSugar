@@ -750,7 +750,7 @@ namespace SqlSugar
         {
             var attr = typeof(T).GetCustomAttribute<TenantAttribute>();
             if (attr == null)
-                return this.GetConnection(this.CurrentConnectionConfig.ConfigId);
+                return this.GetConnectionScope(this.CurrentConnectionConfig.ConfigId);
             var configId = attr.configId;
             return this.GetConnectionScope(configId);
         }

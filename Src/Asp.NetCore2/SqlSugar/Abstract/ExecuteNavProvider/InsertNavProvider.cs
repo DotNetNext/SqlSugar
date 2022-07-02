@@ -7,112 +7,72 @@ using System.Threading.Tasks;
 
 namespace SqlSugar 
 {
-    public class InsertNavProvider<Root,T> where T : class,new() where Root:class,new()
+    public partial class InsertNavProvider<Root,T> where T : class,new() where Root:class,new()
     {
 
-        public List<Root> Roots { get;  set; }
-        public List<object> ParentList { get; set; }
-        public EntityInfo ParentEntity { get; set; }
-        public SqlSugarProvider Context { get;   set; }
+        public List<Root> _Roots { get;  set; }
+        public List<object> _ParentList { get; set; }
+        public List<object> _RootList { get; set; }
+        public EntityInfo _ParentEntity { get; set; }
+        public EntityColumnInfo _ParentPkColumn { get; set; }
+        public SqlSugarProvider _Context { get;   set; }
 
-        public InsertNavProvider<Root,TChild> ThenInclude<TChild>(Expression<Func<T,TChild>> expression) where TChild : class, new()
+
+        public InsertNavProvider<Root, Root> AsNav()
         {
-            if (ParentList == null) 
+            return new InsertNavProvider<Root, Root> { 
+             _Context = _Context,  
+             _ParentEntity = null,
+              _ParentList=null,
+               _Roots= _Roots ,
+               _ParentPkColumn=this._Context.EntityMaintenance.GetEntityInfo<Root>().Columns.First(it=>it.IsPrimarykey)
+            };
+        }
+        public InsertNavProvider<Root, TChild> ThenInclude<TChild>(Expression<Func<T, TChild>> expression) where TChild : class, new()
+        {
+            InitParentList();
+            var name = ExpressionTool.GetMemberName(expression);
+            var nav = this._ParentEntity.Columns.FirstOrDefault(x => x.PropertyName == name);
+            if (nav.Navigat == null)
             {
-                ParentList = GetParentList(Roots).Cast<object>().ToList();
-            }
-            var name=ExpressionTool.GetMemberName(expression);
-            var nav = this.ParentEntity.Columns.FirstOrDefault(x => x.PropertyName == name);
-            if (nav.Navigat == null) 
-            {
-                Check.ExceptionEasy($"{name} no navigate attribute", $"{this.ParentEntity.EntityName}的属性{name}没有导航属性");
+                Check.ExceptionEasy($"{name} no navigate attribute", $"{this._ParentEntity.EntityName}的属性{name}没有导航属性");
             }
             if (nav.Navigat.NavigatType == NavigateType.OneToOne || nav.Navigat.NavigatType == NavigateType.ManyToOne)
             {
-                InsertOneToOne<TChild>(ParentList,this.ParentEntity, name,nav);
+                InsertOneToOne<TChild>(name, nav);
             }
             else if (nav.Navigat.NavigatType == NavigateType.OneToMany)
             {
-                InsertOneToMany();
+                InsertOneToMany<TChild>(name, nav);
             }
-            else 
+            else
             {
-                InsertManyToMany();
+                InsertManyToMany<TChild>(name, nav);
             }
-            return null;
+            return GetResult<TChild>();
         }
-
-        private void InsertManyToMany()
+        public InsertNavProvider<Root, TChild> ThenInclude<TChild>(Expression<Func<T,List<TChild>>> expression) where TChild : class, new()
         {
-             
-        }
-
-        private void InsertOneToMany()
-        {
-       
-        }
-
-        private void InsertOneToOne<TChild>(List<object> parentList, EntityInfo parentEntity, string name, EntityColumnInfo nav)
-        {
-            var parentColumn = parentEntity.Columns.FirstOrDefault(it => it.PropertyName==nav.Navigat.Name);
-            this.ParentEntity = this.Context.EntityMaintenance.GetEntityInfo<TChild>();
-            var pkColumn = ParentEntity.Columns.FirstOrDefault(it=>it.IsPrimarykey==true);
-            if (nav.Navigat.Name2.HasValue()) 
+            InitParentList();
+            var name = ExpressionTool.GetMemberName(expression);
+            var nav = this._ParentEntity.Columns.FirstOrDefault(x => x.PropertyName == name);
+            if (nav.Navigat == null)
             {
-                pkColumn = ParentEntity.Columns.FirstOrDefault(it => it.PropertyName==nav.Navigat.Name2);
+                Check.ExceptionEasy($"{name} no navigate attribute", $"{this._ParentEntity.EntityName}的属性{name}没有导航属性");
             }
-            Check.Exception(pkColumn == null, $" Navigate {parentEntity.EntityName} : {name} is error ", $"导航实体 {parentEntity.EntityName} 属性 {name} 配置错误");
-            List<object> childList = new List<object>();
-            foreach (var parent in parentList) 
+            if (nav.Navigat.NavigatType == NavigateType.OneToOne || nav.Navigat.NavigatType == NavigateType.ManyToOne)
             {
-                var childItems=(TChild)nav.PropertyInfo.GetValue(parent);
-                if (childItems != null)
-                {
-                    var pkValue = pkColumn.PropertyInfo.GetValue(childItems);
-                    var pvValue = parentColumn.PropertyInfo.GetValue(parent);
-                    if (IsDefaultValue(pvValue))
-                    {
-                        pvValue = pkValue;
-                    }
-                    if (IsDefaultValue(pvValue))
-                    {
-                        
-                    }
-                }
+                InsertOneToOne<TChild>(name, nav);
             }
-            parentList = childList;
-        }
-
-        private static bool IsDefaultValue(object pvValue)
-        {
-            return pvValue == null || pvValue == UtilMethods.GetDefaultValue(pvValue.GetType());
-        }
-
-        private List<Type> GetParentList<Type>(List<Type> datas) where Type : class ,new()
-        {
-            List<Type> result = new List<Type>();
-            this.Context.InitMappingInfo<Type>();
-            var entity = this.Context.EntityMaintenance.GetEntityInfo<Type>();
-            var isIdentity = entity.Columns.Where(it=>it.IsIdentity).Any();
-            if (isIdentity)
+            else if (nav.Navigat.NavigatType == NavigateType.OneToMany)
             {
-                foreach (var item in datas)
-                {
-                    this.Context.Insertable(datas).ExecuteCommandIdentityIntoEntity();
-                }
+                InsertOneToMany<TChild>(name, nav);
             }
-            else 
+            else
             {
-                this.Context.Insertable(datas).ExecuteCommand();
+                InsertManyToMany<TChild>(name, nav);
             }
-            this.ParentEntity = entity;
-            result = datas;
-            return result;
-        }
-
-        public InsertNavProvider<Root,Root> AsNav()
-        {
-            return null;
+            return GetResult<TChild>();
         }
     }
 }
