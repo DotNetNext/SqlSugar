@@ -40,8 +40,9 @@ namespace SqlSugar
                         this._Context.Updateable<DbTableInfo>
                             ().AS(parentEntity.DbTableName)
                             .SetColumns(parentColumn.DbColumnName, navPropertyValue)
-                            .Where(parentPkColumn.DbColumnName,"=", navPropertyValue).ExecuteCommand();
+                            .Where(parentPkColumn.DbColumnName,"=", parentPkColumn.PropertyInfo.GetValue(parent)).ExecuteCommand();
                     }
+            
                     thisPkColumn.PropertyInfo.SetValue(childItem, navPropertyValue);
                     childList.Add(childItem);
                 }

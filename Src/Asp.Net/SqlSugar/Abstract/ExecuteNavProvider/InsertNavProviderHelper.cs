@@ -81,9 +81,20 @@ namespace SqlSugar
             children = children.Distinct().ToList();
             var x = this._Context.Storageable(children).WhereColumns(new string[] { pkColumn.PropertyName }).ToStorage();
             var insertData = children = x.InsertList.Select(it => it.Item).ToList();
-            if (pkColumn.IsIdentity)
+            if (pkColumn.IsIdentity||pkColumn.OracleSequenceName.HasValue())
             {
                 InsertIdentity(insertData);
+            }
+            else if (pkColumn.UnderType==UtilConstants.LongType&&pkColumn.IsIdentity==false)
+            {
+                foreach (var child in insertData) 
+                {
+                    if (IsDefaultValue(pkColumn.PropertyInfo.GetValue(child)))
+                    {
+                        pkColumn.PropertyInfo.SetValue(child, SnowFlakeSingle.Instance.NextId());
+                    }
+                }
+                this._Context.Insertable(insertData).ExecuteCommand();
             }
             else
             {
