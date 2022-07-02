@@ -35,6 +35,7 @@ namespace OrmTest
 
 
             var list=db.Queryable<Student_001>()
+                         .Includes(x => x.school_001, x => x.rooms)
                 .Where(x=>x.school_001.rooms.Any(z=>z.rooms.Any())).ToList();
 
             if (list.Count() !=2)
@@ -43,6 +44,7 @@ namespace OrmTest
             }
 
             var list2 = db.Queryable<Student_001>()
+                         .Includes(x => x.school_001, x => x.rooms)
             .Where(x => x.school_001.rooms.Any(z =>
             z.roomName== "北大01室" &&
             z.rooms.Any())).ToList();
@@ -54,6 +56,7 @@ namespace OrmTest
             }
 
             var list3 = db.Queryable<Student_001>()
+                .Includes(x=>x.school_001,x=>x.rooms)
          .Where(x => x.school_001.rooms.Any(z =>
          z.roomName == "青华03室" &&
          z.rooms.Any(c=>c.deskName== "青华03室_01"))).ToList();
