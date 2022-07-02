@@ -107,6 +107,15 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+
+            db.DbMaintenance.TruncateTable<Student_002, School_002, Room_002, Desk_002>();
+
+            db.InsertNav(list.First().school_001)
+             .ThenInclude(x => x.rooms)
+             .ThenInclude(x => x.desk);
+            db.InsertNav(list.Last().school_001)
+              .ThenInclude(x => x.rooms)
+              .ThenInclude(x => x.desk);
         }
 
         public class Student_002 
