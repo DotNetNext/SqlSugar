@@ -94,6 +94,7 @@
     <Compile Include="Abstract\ExecuteNavProvider\InsertNavProviderManyToMany.cs" />
     <Compile Include="Abstract\ExecuteNavProvider\InsertNavProviderOneToOne.cs" />
     <Compile Include="Abstract\ExecuteNavProvider\DeleteNavProvider.cs" />
+    <Compile Include="Abstract\ExecuteNavProvider\InsertNavTask.cs" />
     <Compile Include="Abstract\ExecuteNavProvider\UpdateInsert.cs" />
     <Compile Include="Abstract\ExecuteNavProvider\InsertNavProvider.cs" />
     <Compile Include="Abstract\ExpressionableProvider\Expressionable.cs" />

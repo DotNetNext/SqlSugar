@@ -203,8 +203,8 @@ namespace SqlSugar
         #endregion
 
         #region  Nav CUD
-        InsertNavProvider<T, T> InsertNav<T>(T data) where T : class, new();
-        InsertNavProvider<T, T> InsertNav<T>(List<T> datas) where T : class, new();
+        InsertNavTaskInit<T, T> InsertNav<T>(T data) where T : class, new();
+        InsertNavTaskInit<T, T> InsertNav<T>(List<T> datas) where T : class, new();
         DeleteNavProvider<T, T> DeleteNav<T>(T data);
         DeleteNavProvider<T, T> DeleteNav<T>(List<T> datas);
         UpdateNavProvider<T, T> UpdateNav<T>(T data);
