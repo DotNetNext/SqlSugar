@@ -76,7 +76,10 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
-            db.DbMaintenance.TruncateTable<Student_002, School_002, Room_002, Desk_002>();
+            db.Deleteable<Student_002>().ExecuteCommand();
+            db.Deleteable<School_002>().ExecuteCommand();
+            db.Deleteable<Room_002>().ExecuteCommand();
+            db.Deleteable<Desk_002>().ExecuteCommand(); 
             foreach (var item in list) 
             {
                 item.sid = 0;

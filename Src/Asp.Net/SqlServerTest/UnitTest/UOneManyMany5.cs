@@ -111,11 +111,6 @@ namespace OrmTest
                 .Include(x=>x.books).ExecuteCommand();
 
             db.InsertNav(list.Last())
-
-              .Include(x => x.school_001)
-              .ThenInclude(x => x.rooms)
-              .ThenInclude(x => x.desk)
-
               .Include(x=>x.books).ExecuteCommand();
  
         }
