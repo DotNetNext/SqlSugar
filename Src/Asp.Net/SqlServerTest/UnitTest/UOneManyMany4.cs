@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SqlSugar;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -100,11 +101,11 @@ namespace OrmTest
             db.InsertNav(list.First())
                 .ThenInclude(x => x.school_001)
                 .ThenInclude(x => x.rooms)
-                .ThenInclude(x => x.desk);
+                .ThenInclude(x => x.desk).ExecuteCommand();
             db.InsertNav(list.Last())
               .ThenInclude(x => x.school_001)
               .ThenInclude(x => x.rooms)
-              .ThenInclude(x => x.desk);
+              .ThenInclude(x => x.desk).ExecuteCommand();
 
             if (db.Queryable<Desk_004>().Count() != 4 || db.Queryable<Room_004>().Count() != 4
                 || db.Queryable<School_004>().Count() != 2 || db.Queryable<Student_004>().Count() != 2) 
@@ -116,11 +117,10 @@ namespace OrmTest
 
             db.InsertNav(list.First().school_001)
              .ThenInclude(x => x.rooms)
-             .ThenInclude(x => x.desk);
+             .ThenInclude(x => x.desk).ExecuteCommand();
             db.InsertNav(list.Last().school_001)
               .ThenInclude(x => x.rooms)
-              .ThenInclude(x => x.desk);
-
+              .ThenInclude(x => x.desk).ExecuteCommand(); 
             if (db.Queryable<Desk_004>().Count() != 4 || db.Queryable<Room_004>().Count() != 4
                || db.Queryable<School_004>().Count() != 2 || db.Queryable<Student_004>().Count() != 0)
             {

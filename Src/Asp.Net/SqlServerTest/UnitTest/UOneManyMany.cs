@@ -80,11 +80,11 @@ namespace OrmTest
             db.InsertNav(list.First())
                 .ThenInclude(x => x.school_001)
                 .ThenInclude(x => x.rooms)
-                .ThenInclude(x => x.desk);
+                .ThenInclude(x => x.desk).ExecuteCommand();
             db.InsertNav(list.Last())
               .ThenInclude(x => x.school_001)
               .ThenInclude(x => x.rooms)
-              .ThenInclude(x => x.desk);
+              .ThenInclude(x => x.desk).ExecuteCommand();
 
             if (db.Queryable<Desk_001>().Count() != 4 || db.Queryable<Room_001>().Count() != 4
                 || db.Queryable<School_001>().Count() != 2 || db.Queryable<Student_001>().Count() != 2) 
