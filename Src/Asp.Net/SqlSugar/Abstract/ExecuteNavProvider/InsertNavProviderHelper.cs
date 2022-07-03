@@ -131,7 +131,8 @@ namespace SqlSugar
             {
                 if (IsDefaultValue(pkColumn.PropertyInfo.GetValue(child)))
                 {
-                    Check.ExceptionEasy($"The field {pkColumn. DbColumnName} is not an autoassignment type and requires an assignment", $"字段{pkColumn.DbColumnName}不是可自动赋值类型，需要赋值");
+                    var name = pkColumn.EntityName + " " + pkColumn.DbColumnName;
+                    Check.ExceptionEasy($"The field {name} is not an autoassignment type and requires an assignment", $"字段{name}不是可自动赋值类型，需要赋值");
                 }
             }
             this._Context.Insertable(insertData).ExecuteCommand();
