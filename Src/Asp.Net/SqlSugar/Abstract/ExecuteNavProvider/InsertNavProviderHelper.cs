@@ -83,7 +83,6 @@ namespace SqlSugar
             var insertData = children = x.InsertList.Select(it => it.Item).ToList();
             Check.ExceptionEasy(pkColumn==null&&NavColumn==null,$"The entity is invalid",$"实体错误无法使用导航");
             InitData(pkColumn, insertData);
-            this._Context.Insertable(insertData).ExecuteCommand();
             this._ParentList = children.Cast<object>().ToList();
         }
 
@@ -95,15 +94,15 @@ namespace SqlSugar
             }
             else if (pkColumn.UnderType == UtilConstants.LongType)
             {
-                SetValue(pkColumn, insertData, SnowFlakeSingle.Instance.NextId());
+                SetValue(pkColumn, insertData, ()=>SnowFlakeSingle.Instance.NextId());
             }
             else if (pkColumn.UnderType == UtilConstants.GuidType)
             {
-                SetValue(pkColumn, insertData, Guid.NewGuid());
+                SetValue(pkColumn, insertData, () => Guid.NewGuid());
             }
             else if (pkColumn.UnderType == UtilConstants.StringType)
             {
-                SetValue(pkColumn, insertData, Guid.NewGuid().ToString());
+                SetValue(pkColumn, insertData, () => Guid.NewGuid().ToString());
             }
             else if (pkColumn.UnderType == UtilConstants.IntType)
             {
@@ -115,15 +114,16 @@ namespace SqlSugar
             }
         }
 
-        private void SetValue<TChild>(EntityColumnInfo pkColumn, List<TChild> insertData,object value) where TChild : class, new()
+        private void SetValue<TChild>(EntityColumnInfo pkColumn, List<TChild> insertData,Func<object> value) where TChild : class, new()
         {
             foreach (var child in insertData)
             {
                 if (IsDefaultValue(pkColumn.PropertyInfo.GetValue(child)))
                 {
-                    pkColumn.PropertyInfo.SetValue(child, value);
+                    pkColumn.PropertyInfo.SetValue(child, value());
                 }
             }
+            this._Context.Insertable(insertData).ExecuteCommand();
         }
         private void SetError<TChild>(EntityColumnInfo pkColumn, List<TChild> insertData) where TChild : class, new()
         {
@@ -134,6 +134,7 @@ namespace SqlSugar
                     Check.ExceptionEasy($"The field {pkColumn. DbColumnName} is not an autoassignment type and requires an assignment", $"字段{pkColumn.DbColumnName}不是可自动赋值类型，需要赋值");
                 }
             }
+            this._Context.Insertable(insertData).ExecuteCommand();
         }
     }
 }
