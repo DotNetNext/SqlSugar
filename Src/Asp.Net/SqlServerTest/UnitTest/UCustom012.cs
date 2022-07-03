@@ -209,7 +209,7 @@ namespace OrmTest
             .ThenInclude(z1 => z1.SchoolA)
             .ThenInclude(z1 => z1.RoomList)
             .AsNav()
-            .ThenInclude(z1 => z1.Books);
+            .ThenInclude(z1 => z1.Books).ExecuteCommand();
 
 
         }

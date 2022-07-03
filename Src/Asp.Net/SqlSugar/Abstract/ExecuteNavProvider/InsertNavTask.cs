@@ -81,6 +81,7 @@ namespace SqlSugar
             InsertNavTask<Root, Root> result = new InsertNavTask<Root, Root>();
             Func<InsertNavProvider<Root, Root>> func = () => PreFunc().AsNav();
             result.PreFunc = func;
+            result.Context = this.Context;
             return result;
         }
     }
