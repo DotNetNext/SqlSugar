@@ -76,7 +76,10 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
-            db.DbMaintenance.TruncateTable<Student_002, School_002, Room_002, Desk_002>();
+            db.Deleteable<Student_002>().ExecuteCommand();
+            db.Deleteable<School_002>().ExecuteCommand();
+            db.Deleteable<Room_002>().ExecuteCommand();
+            db.Deleteable<Desk_002>().ExecuteCommand(); 
             foreach (var item in list) 
             {
                 item.sid = 0;
@@ -94,11 +97,11 @@ namespace OrmTest
                 }
             }
             db.InsertNav(list.First())
-                .ThenInclude(x => x.school_001)
+                .Include(x => x.school_001)
                 .ThenInclude(x => x.rooms)
                 .ThenInclude(x => x.desk).ExecuteCommand();
             db.InsertNav(list.Last())
-              .ThenInclude(x => x.school_001)
+              .Include(x => x.school_001)
               .ThenInclude(x => x.rooms)
               .ThenInclude(x => x.desk).ExecuteCommand();
 
@@ -111,10 +114,10 @@ namespace OrmTest
             db.DbMaintenance.TruncateTable<Student_002, School_002, Room_002, Desk_002>();
 
             db.InsertNav(list.First().school_001)
-             .ThenInclude(x => x.rooms)
+             .Include(x => x.rooms)
              .ThenInclude(x => x.desk).ExecuteCommand();
             db.InsertNav(list.Last().school_001)
-              .ThenInclude(x => x.rooms)
+              .Include(x => x.rooms)
               .ThenInclude(x => x.desk).ExecuteCommand();
 
             if (db.Queryable<Desk_002>().Count() != 4 || db.Queryable<Room_002>().Count() != 4

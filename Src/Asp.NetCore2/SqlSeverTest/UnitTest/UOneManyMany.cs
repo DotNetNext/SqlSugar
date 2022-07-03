@@ -78,11 +78,11 @@ namespace OrmTest
             }
             db.DbMaintenance.TruncateTable<Student_001, School_001, Room_001, Desk_001>();
             db.InsertNav(list.First())
-                .ThenInclude(x => x.school_001)
+                .Include(x => x.school_001)
                 .ThenInclude(x => x.rooms)
                 .ThenInclude(x => x.desk).ExecuteCommand();
             db.InsertNav(list.Last())
-              .ThenInclude(x => x.school_001)
+              .Include(x => x.school_001)
               .ThenInclude(x => x.rooms)
               .ThenInclude(x => x.desk).ExecuteCommand();
 

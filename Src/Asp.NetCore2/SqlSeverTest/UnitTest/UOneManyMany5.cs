@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace OrmTest 
 {
-    public class UOneManyMany4
+    public class UOneManyMany5
     {
 
         public static void init()
@@ -21,11 +21,11 @@ namespace OrmTest
             var id2 = Guid.NewGuid();
             var id3 = Guid.NewGuid();
             var id4 = Guid.NewGuid();
-            db.Insertable(new Student_004() { sid = id1, Name = "北大jack", SchoolId = id1 }).ExecuteCommand();
-            db.Insertable(new Student_004() { sid = id2, Name = "青华jack", SchoolId = id2 }).ExecuteCommand();
+            db.Insertable(new Student_004() { sid=Guid.NewGuid(), StudentId = id1, Name = "北大jack", SchoolId = id1 }).ExecuteCommand();
+            db.Insertable(new Student_004() { sid=Guid.NewGuid(), StudentId = id2, Name = "青华jack", SchoolId = id2 }).ExecuteCommand();
 
-            db.Insertable(new School_004() { scid = id1, schname = "北大" }).ExecuteCommand();
-            db.Insertable(new School_004() { scid = id2, schname = "青华" }).ExecuteCommand();
+            db.Insertable(new School_004() {  scid=Guid.NewGuid(), scid2 = id1, schname = "北大" }).ExecuteCommand();
+            db.Insertable(new School_004() { scid = Guid.NewGuid(),scid2 = id2, schname = "青华" }).ExecuteCommand();
             db.Insertable(new Book_004() { StudentId = id1,  Name = "数学001" }).ExecuteCommand();
             db.Insertable(new Book_004() { StudentId = id2,  Name = "语文002" }).ExecuteCommand();
 
@@ -42,65 +42,17 @@ namespace OrmTest
 
 
             var list = db.Queryable<Student_004>()
-                         .Includes(x => x.school_001, x => x.rooms, x => x.desk)
+                         .Includes(x => x.school_001 )
                          .Includes(x=>x.books)
-                .Where(x => x.school_001.rooms.Any(z => z.desk.Any())).ToList();
+                .ToList();
 
-            if (list.Count() != 2)
-            {
-                throw new Exception("unit error");
-            }
-
-            var list2 = db.Queryable<Student_004>()
-                         .Includes(x => x.school_001, x => x.rooms)
-            .Where(x => x.school_001.rooms.Any(z =>
-            z.roomName == "北大01室" &&
-            z.desk.Any())).ToList();
-
-
-            if (list2.Count() != 1)
-            {
-                throw new Exception("unit error");
-            }
-
-            var list3 = db.Queryable<Student_004>()
-                .Includes(x => x.school_001, x => x.rooms)
-         .Where(x => x.school_001.rooms.Any(z =>
-         z.roomName == "青华03室" &&
-         z.desk.Any(c => c.deskName == "青华03室_01"))).ToList();
-
-            if (list3.Count != 1)
-            {
-                throw new Exception("unit error");
-            }
-
-            var list4 = db.Queryable<Student_004>()
-        .Where(x => x.school_001.rooms.Any(z =>
-        z.roomName == "青华03室" &&
-        z.desk.Any(c => c.deskName == "青华04室_01"))).ToList();
-
-
-            if (list4.Count != 0)
-            {
-                throw new Exception("unit error");
-            }
+           
             db.DbMaintenance.TruncateTable<Student_004, School_004, Room_004, Desk_004,Book_004>();
             foreach (var item in list) 
             {
                 item.sid = Guid.Empty;
                 item.SchoolId = Guid.Empty;
                 item.school_001.scid = Guid.Empty;
-                foreach (var r in item.school_001.rooms)
-                {
-                    r.roomId = Guid.Empty;
-                    r.schoolId = Guid.Empty;
-                    foreach (var z in r.desk)
-                    {
-                        z.deskid = Guid.Empty;
-                        z.roomId = Guid.Empty;
-                        
-                    }
-                }
                 foreach (var z in item.books) 
                 {
                     z.bookid = Guid.Empty;
@@ -108,57 +60,34 @@ namespace OrmTest
                 }
             }
             db.InsertNav(list.First())
-
-                .Include(x => x.school_001)
-                .ThenInclude(x => x.rooms)
-                .ThenInclude(x => x.desk)
-
-                .Include(x=>x.books).ExecuteCommand();
+                .Include(x=>x.books)
+                .Include(x=>x.school_001)
+                .ExecuteCommand();
 
             db.InsertNav(list.Last())
-
-              .Include(x => x.school_001)
-              .ThenInclude(x => x.rooms)
-              .ThenInclude(x => x.desk)
-
-              .Include(x=>x.books).ExecuteCommand();
-
-            if (db.Queryable<Desk_004>().Count() != 4 || db.Queryable<Room_004>().Count() != 4
-                || db.Queryable<School_004>().Count() != 2 || db.Queryable<Student_004>().Count() != 2) 
-            {
-                throw new Exception("unit error");
-            }
-
-            db.DbMaintenance.TruncateTable<Student_004, School_004, Room_004, Desk_004,Book_004>();
-
-            db.InsertNav(list.First().school_001)
-             .Include(x => x.rooms)
-             .ThenInclude(x => x.desk).ExecuteCommand();
-            db.InsertNav(list.Last().school_001)
-              .Include(x => x.rooms)
-              .ThenInclude(x => x.desk).ExecuteCommand(); 
-            if (db.Queryable<Desk_004>().Count() != 4 || db.Queryable<Room_004>().Count() != 4
-               || db.Queryable<School_004>().Count() != 2 || db.Queryable<Student_004>().Count() != 0)
-            {
-                throw new Exception("unit error");
-            }
+              .Include(x=>x.books)
+              .Include(x=>x.school_001)
+              .ExecuteCommand();
+ 
         }
 
+        [SugarTable("Student_005")]
         public class Student_004 
         {
             [SqlSugar.SugarColumn(IsPrimaryKey =true)]
             public Guid sid { get; set; } 
+            public Guid StudentId { get; set; }
             public string Name { get; set; }
 
             public Guid SchoolId { get; set; }
-            [SqlSugar.Navigate(SqlSugar.NavigateType.OneToOne,nameof(SchoolId))]
+            [SqlSugar.Navigate(SqlSugar.NavigateType.OneToOne,nameof(SchoolId),nameof(School_004.scid2))]
             public School_004 school_001 { get; set; }
-            [SqlSugar.Navigate(SqlSugar.NavigateType.OneToMany, nameof(Book_004.StudentId))]
+            [SqlSugar.Navigate(SqlSugar.NavigateType.OneToMany, nameof(Book_004.StudentId),nameof(StudentId))]
             public List<Book_004> books { get; set; }
 
         }
 
-
+        [SugarTable("Book_005")]
         public class Book_004 
         {
             [SqlSugar.SugarColumn(IsPrimaryKey = true)]
@@ -167,15 +96,18 @@ namespace OrmTest
             public Guid StudentId { get; set; }
         }
 
+        [SugarTable("School_005")]
         public class School_004
         {
             [SqlSugar.SugarColumn(IsPrimaryKey = true )]
             public Guid scid { get; set; }
+            public Guid scid2 { get; set; }
             public string schname { get; set; }
             [SqlSugar.Navigate(SqlSugar.NavigateType.OneToMany, nameof(Room_004.schoolId))]
             public List<Room_004> rooms { get; set; }
         }
 
+        [SugarTable("Room_005")]
         public class Room_004 
         {
             [SqlSugar.SugarColumn(IsPrimaryKey = true )]
@@ -185,7 +117,7 @@ namespace OrmTest
             [SqlSugar.Navigate(SqlSugar.NavigateType.OneToMany, nameof(Desk_004.roomId))]
             public List<Desk_004> desk { get; set; }
         }
-
+        [SugarTable("Desk_005")]
         public class Desk_004 
         {
             [SqlSugar.SugarColumn(IsPrimaryKey = true)]

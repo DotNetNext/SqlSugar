@@ -94,11 +94,11 @@ namespace OrmTest
                 }
             }
             db.InsertNav(list.First())
-                .ThenInclude(x => x.school_001)
+                .Include(x => x.school_001)
                 .ThenInclude(x => x.rooms)
                 .ThenInclude(x => x.desk).ExecuteCommand();
             db.InsertNav(list.Last())
-              .ThenInclude(x => x.school_001)
+              .Include(x => x.school_001)
               .ThenInclude(x => x.rooms)
               .ThenInclude(x => x.desk).ExecuteCommand();
 
@@ -111,10 +111,10 @@ namespace OrmTest
             db.DbMaintenance.TruncateTable<Student_003, School_003, Room_003, Desk_003>();
 
             db.InsertNav(list.First().school_001)
-             .ThenInclude(x => x.rooms)
+             .Include(x => x.rooms)
              .ThenInclude(x => x.desk).ExecuteCommand();
             db.InsertNav(list.Last().school_001)
-              .ThenInclude(x => x.rooms)
+              .Include(x => x.rooms)
               .ThenInclude(x => x.desk).ExecuteCommand();
 
             if (db.Queryable<Desk_003>().Count() != 4 || db.Queryable<Room_003>().Count() != 4
