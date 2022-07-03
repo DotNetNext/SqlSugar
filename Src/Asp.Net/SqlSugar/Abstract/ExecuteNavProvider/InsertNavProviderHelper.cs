@@ -67,7 +67,7 @@ namespace SqlSugar
             var pkColumn = entity.Columns.FirstOrDefault(it => it.IsPrimarykey == true);
             if (nav.Navigat.Name2.HasValue())
             {
-                pkColumn = _ParentEntity.Columns.FirstOrDefault(it => it.PropertyName == nav.Navigat.Name2);
+                pkColumn = entity.Columns.FirstOrDefault(it => it.PropertyName == nav.Navigat.Name2);
             }
             return pkColumn;
         }
@@ -76,42 +76,64 @@ namespace SqlSugar
             var fkColumn = entity.Columns.FirstOrDefault(it => it.PropertyName == nav.Navigat.Name);
             return fkColumn;
         }
-        private void InsertDatas<TChild>(List<TChild> children, EntityColumnInfo pkColumn) where TChild : class, new()
+        private void InsertDatas<TChild>(List<TChild> children, EntityColumnInfo pkColumn, EntityColumnInfo NavColumn=null) where TChild : class, new()
         {
             children = children.Distinct().ToList();
             var x = this._Context.Storageable(children).WhereColumns(new string[] { pkColumn.PropertyName }).ToStorage();
             var insertData = children = x.InsertList.Select(it => it.Item).ToList();
-            if (pkColumn.IsIdentity||pkColumn.OracleSequenceName.HasValue())
+            Check.ExceptionEasy(pkColumn==null&&NavColumn==null,$"The entity is invalid",$"实体错误无法使用导航");
+            InitData(pkColumn, insertData);
+            this._Context.Insertable(insertData).ExecuteCommand();
+            this._ParentList = children.Cast<object>().ToList();
+        }
+
+        private void InitData<TChild>(EntityColumnInfo pkColumn, List<TChild> insertData) where TChild : class, new()
+        {
+            if (pkColumn.IsIdentity || pkColumn.OracleSequenceName.HasValue())
             {
                 InsertIdentity(insertData);
             }
-            else if (pkColumn.UnderType==UtilConstants.LongType&&pkColumn.IsIdentity==false)
+            else if (pkColumn.UnderType == UtilConstants.LongType)
             {
-                foreach (var child in insertData) 
-                {
-                    if (IsDefaultValue(pkColumn.PropertyInfo.GetValue(child)))
-                    {
-                        pkColumn.PropertyInfo.SetValue(child, SnowFlakeSingle.Instance.NextId());
-                    }
-                }
-                this._Context.Insertable(insertData).ExecuteCommand();
+                SetValue(pkColumn, insertData, SnowFlakeSingle.Instance.NextId());
             }
-            else if (pkColumn.UnderType == UtilConstants.GuidType && pkColumn.IsIdentity == false)
+            else if (pkColumn.UnderType == UtilConstants.GuidType)
             {
-                foreach (var child in insertData)
-                {
-                    if (IsDefaultValue(pkColumn.PropertyInfo.GetValue(child)))
-                    {
-                        pkColumn.PropertyInfo.SetValue(child, Guid.NewGuid());
-                    }
-                }
-                this._Context.Insertable(insertData).ExecuteCommand();
+                SetValue(pkColumn, insertData, Guid.NewGuid());
+            }
+            else if (pkColumn.UnderType == UtilConstants.StringType)
+            {
+                SetValue(pkColumn, insertData, Guid.NewGuid().ToString());
+            }
+            else if (pkColumn.UnderType == UtilConstants.IntType)
+            {
+                SetError(pkColumn, insertData);
             }
             else
             {
-                this._Context.Insertable(insertData).ExecuteCommand();
+
             }
-            this._ParentList = children.Cast<object>().ToList();
+        }
+
+        private void SetValue<TChild>(EntityColumnInfo pkColumn, List<TChild> insertData,object value) where TChild : class, new()
+        {
+            foreach (var child in insertData)
+            {
+                if (IsDefaultValue(pkColumn.PropertyInfo.GetValue(child)))
+                {
+                    pkColumn.PropertyInfo.SetValue(child, value);
+                }
+            }
+        }
+        private void SetError<TChild>(EntityColumnInfo pkColumn, List<TChild> insertData) where TChild : class, new()
+        {
+            foreach (var child in insertData)
+            {
+                if (IsDefaultValue(pkColumn.PropertyInfo.GetValue(child)))
+                {
+                    Check.ExceptionEasy($"The field {pkColumn. DbColumnName} is not an autoassignment type and requires an assignment", $"字段{pkColumn.DbColumnName}不是可自动赋值类型，需要赋值");
+                }
+            }
         }
     }
 }
