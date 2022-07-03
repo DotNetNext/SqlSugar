@@ -60,7 +60,7 @@ namespace SqlSugar
         {
             return AsNav().ThenInclude(expression);
         }
-        public void ExecuteCommand()
+        public bool ExecuteCommand()
         {
             var hasTran = this.Context.Ado.Transaction != null;
             if (hasTran)
@@ -74,14 +74,16 @@ namespace SqlSugar
                     PreFunc();
                 }, ex => throw ex);
             }
+            return true;
         }
-        public async Task ExecuteCommandAsync()
+        public async Task<bool> ExecuteCommandAsync()
         {
             await Task.Run(async () => 
             {
                 ExecuteCommand();
                 await Task.Delay(0);
-            }); 
+            });
+            return true;
         }
 
         private InsertNavTask<Root, Root> AsNav()

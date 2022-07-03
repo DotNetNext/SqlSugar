@@ -15,12 +15,27 @@ namespace SqlSugar
 
         public DeleteNavProvider<Root,TChild> ThenInclude<TChild>(Expression<Func<T,TChild>> expression)
         {
-            return null;
+            throw new Exception("开发中7月15号之前上线");
         }
-
-        public DeleteNavProvider<Root,Root> AsNav()
+        public DeleteNavProvider<Root, TChild>  Include<TChild>(Expression<Func<T, TChild>> expression)
         {
-            return null;
+            throw new Exception("开发中7月15号之前上线");
+        }
+        public DeleteNavProvider<Root, TChild> ThenInclude<TChild>(Expression<Func<T, List<TChild>>> expression)
+        {
+            throw new Exception("开发中7月15号之前上线");
+        }
+        public DeleteNavProvider<Root, TChild> Include<TChild>(Expression<Func<T, List<TChild>>> expression)
+        {
+            throw new Exception("开发中7月15号之前上线");
+        }
+        private DeleteNavProvider<Root,Root> AsNav()
+        {
+            throw new Exception("开发中7月15号之前上线");
+        }
+        public bool ExecuteCommand() 
+        {
+            return true;
         }
     }
 }

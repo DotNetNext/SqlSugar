@@ -15,10 +15,25 @@ namespace SqlSugar
 
         public UpdateNavProvider<Root,TChild> ThenInclude<TChild>(Expression<Func<T,TChild>> expression)
         {
-            return null;
+            throw new Exception("开发中7月15号之前上线");
         }
-
-        public UpdateNavProvider<Root,Root> AsNav()
+        public UpdateNavProvider<Root, TChild>  Include<TChild>(Expression<Func<T, TChild>> expression)
+        {
+            throw new Exception("开发中7月15号之前上线");
+        }
+        public UpdateNavProvider<Root, TChild> ThenInclude<TChild>(Expression<Func<T, List<TChild>>> expression)
+        {
+            throw new Exception("开发中7月15号之前上线");
+        }
+        public UpdateNavProvider<Root, TChild> Include<TChild>(Expression<Func<T, List<TChild>>> expression)
+        {
+            throw new Exception("开发中7月15号之前上线");
+        }
+        public bool ExecuteCommand()
+        {
+            return true;
+        }
+        private UpdateNavProvider<Root,Root> AsNav()
         {
             return null;
         }
