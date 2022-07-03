@@ -14,8 +14,8 @@ namespace OrmTest
         {
 
             var db = NewUnitTest.Db;
-            db.CodeFirst.InitTables<Student_004, School_004, Room_004, Desk_004>();
-            db.DbMaintenance.TruncateTable<Student_004, School_004, Room_004, Desk_004>();
+            db.CodeFirst.InitTables<Student_004, School_004, Room_004, Desk_004, Book_004>();
+            db.DbMaintenance.TruncateTable<Student_004, School_004, Room_004, Desk_004, Book_004>();
 
             var id1 = Guid.NewGuid();
             var id2 = Guid.NewGuid();
@@ -26,6 +26,8 @@ namespace OrmTest
 
             db.Insertable(new School_004() { scid = id1, schname = "北大" }).ExecuteCommand();
             db.Insertable(new School_004() { scid = id2, schname = "青华" }).ExecuteCommand();
+            db.Insertable(new Book_004() { StudentId = id1,  Name = "数学001" }).ExecuteCommand();
+            db.Insertable(new Book_004() { StudentId = id2,  Name = "语文002" }).ExecuteCommand();
 
 
             db.Insertable(new Room_004() { roomId = id1, schoolId = id1, roomName = "北大01室" }).ExecuteCommand();
@@ -41,6 +43,7 @@ namespace OrmTest
 
             var list = db.Queryable<Student_004>()
                          .Includes(x => x.school_001, x => x.rooms, x => x.desk)
+                         .Includes(x=>x.books)
                 .Where(x => x.school_001.rooms.Any(z => z.desk.Any())).ToList();
 
             if (list.Count() != 2)
@@ -81,7 +84,7 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
-            db.DbMaintenance.TruncateTable<Student_004, School_004, Room_004, Desk_004>();
+            db.DbMaintenance.TruncateTable<Student_004, School_004, Room_004, Desk_004,Book_004>();
             foreach (var item in list) 
             {
                 item.sid = Guid.Empty;
@@ -95,17 +98,30 @@ namespace OrmTest
                     {
                         z.deskid = Guid.Empty;
                         z.roomId = Guid.Empty;
+                        
                     }
+                }
+                foreach (var z in item.books) 
+                {
+                    z.bookid = Guid.Empty;
+                    z.StudentId = Guid.Empty;
                 }
             }
             db.InsertNav(list.First())
+
                 .Include(x => x.school_001)
                 .ThenInclude(x => x.rooms)
-                .ThenInclude(x => x.desk).ExecuteCommand();
+                .ThenInclude(x => x.desk)
+
+                .Include(x=>x.books).ExecuteCommand();
+
             db.InsertNav(list.Last())
+
               .Include(x => x.school_001)
               .ThenInclude(x => x.rooms)
-              .ThenInclude(x => x.desk).ExecuteCommand();
+              .ThenInclude(x => x.desk)
+
+              .Include(x=>x.books).ExecuteCommand();
 
             if (db.Queryable<Desk_004>().Count() != 4 || db.Queryable<Room_004>().Count() != 4
                 || db.Queryable<School_004>().Count() != 2 || db.Queryable<Student_004>().Count() != 2) 
@@ -113,7 +129,7 @@ namespace OrmTest
                 throw new Exception("unit error");
             }
 
-            db.DbMaintenance.TruncateTable<Student_004, School_004, Room_004, Desk_004>();
+            db.DbMaintenance.TruncateTable<Student_004, School_004, Room_004, Desk_004,Book_004>();
 
             db.InsertNav(list.First().school_001)
              .Include(x => x.rooms)
@@ -136,8 +152,19 @@ namespace OrmTest
 
             public Guid SchoolId { get; set; }
             [SqlSugar.Navigate(SqlSugar.NavigateType.OneToOne,nameof(SchoolId))]
-            public School_004 school_001 { get; set; }  
+            public School_004 school_001 { get; set; }
+            [SqlSugar.Navigate(SqlSugar.NavigateType.OneToMany, nameof(Book_004.StudentId))]
+            public List<Book_004> books { get; set; }
 
+        }
+
+
+        public class Book_004 
+        {
+            [SqlSugar.SugarColumn(IsPrimaryKey = true)]
+            public Guid bookid { get; set; }
+            public string Name { get; set; }
+            public Guid StudentId { get; set; }
         }
 
         public class School_004
