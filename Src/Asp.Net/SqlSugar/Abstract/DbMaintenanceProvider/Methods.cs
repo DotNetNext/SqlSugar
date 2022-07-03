@@ -263,6 +263,15 @@ namespace SqlSugar
             TruncateTable<T4>();
             return true;
         }
+        public virtual bool TruncateTable<T, T2, T3, T4,T5>()
+        {
+            TruncateTable<T>();
+            TruncateTable<T2>();
+            TruncateTable<T3>();
+            TruncateTable<T4>();
+            TruncateTable<T5>();
+            return true;
+        }
         public virtual bool DropColumn(string tableName, string columnName)
         {
             columnName = this.SqlBuilder.GetTranslationColumnName(columnName);

@@ -85,6 +85,10 @@ namespace SqlSugar
         {
             InitTables(typeof(T), typeof(T2), typeof(T3), typeof(T4));
         }
+        public void InitTables<T, T2, T3, T4,T5>()
+        {
+            InitTables(typeof(T), typeof(T2), typeof(T3), typeof(T4),typeof(T5));
+        }
         public virtual void InitTables(params Type[] entityTypes)
         {
             if (entityTypes.HasValue())
