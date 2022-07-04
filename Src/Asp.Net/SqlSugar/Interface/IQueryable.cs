@@ -59,6 +59,7 @@ namespace SqlSugar
         ISugarQueryable<T> Where(string whereString, object parameters = null);
         ISugarQueryable<T> Where(List<IConditionalModel> conditionalModels);
         ISugarQueryable<T> Where(List<IConditionalModel> conditionalModels,bool isWrap);
+        ISugarQueryable<T> Where(string fieldName, string conditionalType, object fieldValue);
         ISugarQueryable<T> Having(Expression<Func<T, bool>> expression);
         ISugarQueryable<T> HavingIF(bool isHaving,Expression<Func<T, bool>> expression);
         ISugarQueryable<T> Having(string whereString, object parameters = null);
