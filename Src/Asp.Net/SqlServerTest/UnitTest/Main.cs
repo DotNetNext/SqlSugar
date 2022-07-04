@@ -32,6 +32,7 @@ namespace OrmTest
         public static void Init()
         {
 
+            UnitManyToMany2.Init();
             UOneManyMany5.init();
             UOneManyMany4.init();
             UOneManyMany3.init();
