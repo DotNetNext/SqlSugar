@@ -104,13 +104,9 @@ namespace SqlSugar
             {
                 SetValue(pkColumn, insertData, () => Guid.NewGuid().ToString());
             }
-            else if (pkColumn.UnderType == UtilConstants.IntType)
-            {
-                SetError(pkColumn, insertData);
-            }
             else
             {
-
+                SetError(pkColumn, insertData);
             }
         }
 
