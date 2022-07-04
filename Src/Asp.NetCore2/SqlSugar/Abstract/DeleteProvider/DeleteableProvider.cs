@@ -439,6 +439,13 @@ namespace SqlSugar
             tempPrimaryKeys = null;
             return this;
         }
+        public IDeleteable<T> In<PkType>(string inField, List<PkType> primaryKeyValues)
+        {
+            tempPrimaryKeys = new List<string>() { inField };
+            var result = In(primaryKeyValues);
+            tempPrimaryKeys = null;
+            return this;
+        }
 
         public IDeleteable<T> With(string lockString)
         {

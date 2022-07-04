@@ -104,13 +104,9 @@ namespace SqlSugar
             {
                 SetValue(pkColumn, insertData, () => Guid.NewGuid().ToString());
             }
-            else if (pkColumn.UnderType == UtilConstants.IntType)
-            {
-                SetError(pkColumn, insertData);
-            }
             else
             {
-
+                SetError(pkColumn, insertData);
             }
         }
 
@@ -132,7 +128,7 @@ namespace SqlSugar
                 if (IsDefaultValue(pkColumn.PropertyInfo.GetValue(child)))
                 {
                     var name = pkColumn.EntityName + " " + pkColumn.DbColumnName;
-                    Check.ExceptionEasy($"The field {name} is not an autoassignment type and requires an assignment", $"字段{name}不是可自动赋值类型，需要赋值");
+                    Check.ExceptionEasy($"The field {name} is not an autoassignment type and requires an assignment", $"字段{name}不是可自动赋值类型，需要赋值 , 可赋值类型有 自增、long、Guid、string");
                 }
             }
             this._Context.Insertable(insertData).ExecuteCommand();
