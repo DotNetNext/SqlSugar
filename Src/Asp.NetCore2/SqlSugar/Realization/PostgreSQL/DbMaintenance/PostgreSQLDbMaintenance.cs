@@ -249,6 +249,10 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override bool AddDefaultValue(string tableName, string columnName, string defaultValue)
+        {
+            return base.AddDefaultValue(this.SqlBuilder.GetTranslationTableName(tableName), this.SqlBuilder.GetTranslationTableName(columnName), defaultValue);
+        }
         public override bool AddColumnRemark(string columnName, string tableName, string description)
         {
             tableName = this.SqlBuilder.GetTranslationTableName(tableName);

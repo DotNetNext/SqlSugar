@@ -286,7 +286,7 @@ namespace SqlSugar
                 var alterColumns = entityColumns
                                            .Where(ec => !dbColumns.Any(dc => dc.DbColumnName.Equals(ec.OldDbColumnName, StringComparison.CurrentCultureIgnoreCase)))
                                            .Where(ec =>
-                                                          dbColumns.Any(dc => dc.DbColumnName.Equals(ec.DbColumnName)
+                                                          dbColumns.Any(dc => dc.DbColumnName.EqualCase(ec.DbColumnName)
                                                                && ((ec.Length != dc.Length && !UtilMethods.GetUnderType(ec.PropertyInfo).IsEnum() && UtilMethods.GetUnderType(ec.PropertyInfo).IsIn(UtilConstants.StringType)) ||
                                                                     ec.IsNullable != dc.IsNullable ||
                                                                     IsNoSamgeType(ec, dc)))).ToList();
@@ -371,6 +371,7 @@ namespace SqlSugar
                 {
                     this.Context.DbMaintenance.BackupTable(tableName, tableName + DateTime.Now.ToString("yyyyMMddHHmmss"), MaxBackupDataRows);
                 }
+                ExistLogicEnd(entityColumns);
             }
         }
 
@@ -391,6 +392,10 @@ namespace SqlSugar
                 this.Context.DbMaintenance.AddPrimaryKey(tableName, item.DbColumnName);
         }
 
+        protected virtual void ExistLogicEnd(List<EntityColumnInfo> dbColumns) 
+        {
+
+        }
         protected virtual void ConvertColumns(List<DbColumnInfo> dbColumns)
         {
 
