@@ -432,7 +432,7 @@ namespace SqlSugar
                     {
                         FieldName = item,
                         ConditionalType = ConditionalType.Equal,
-                        FieldValue = model[item].ObjToString(),
+                        FieldValue = model[item]==null?"null" : model[item].ObjToString(),
                         CSharpTypeName = model[item] == null ? null : model[item].GetType().Name
                     }));
                     i++;
