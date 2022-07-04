@@ -419,6 +419,10 @@ namespace SqlSugar
             }
             return this;
         }
+        public ISugarQueryable<T> WhereColumns(Dictionary<string, object>  dictionary) 
+        {
+            return WhereColumns(new List<Dictionary<string, object>> { dictionary });
+        }
         public ISugarQueryable<T> WhereColumns(List<Dictionary<string, object>> list)
         {
             List<IConditionalModel> conditionalModels = new List<IConditionalModel>();
