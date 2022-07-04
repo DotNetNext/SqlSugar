@@ -19,6 +19,11 @@ namespace SqlSugar
             var thisPkColumn = GetPkColumnByNav(thisEntity, nav);
             var thisFkColumn= GetFKColumnByNav(thisEntity, nav);
             EntityColumnInfo parentPkColumn = GetParentPkColumn();
+            EntityColumnInfo parentNavColumn = GetParentPkNavColumn(nav);
+            if (parentNavColumn != null) 
+            {
+                parentPkColumn = parentNavColumn;
+            }
             foreach (var item in parentList)
             {
                 var parentValue = parentPkColumn.PropertyInfo.GetValue(item);
@@ -44,6 +49,15 @@ namespace SqlSugar
                 parentPkColumn= _ParentPkColumn = this._ParentEntity.Columns.FirstOrDefault(it => it.IsPrimarykey);
             }
             return parentPkColumn;
+        }
+        private EntityColumnInfo GetParentPkNavColumn(EntityColumnInfo nav)
+        {
+            EntityColumnInfo result = null;
+            if (nav.Navigat.Name2.HasValue())
+            {
+                result = _ParentPkColumn = this._ParentEntity.Columns.FirstOrDefault(it => it.PropertyName== nav.Navigat.Name2);
+            }
+            return result;
         }
 
         private void SetNewParent<TChild>(EntityInfo entityInfo,EntityColumnInfo entityColumnInfo) where TChild : class, new()

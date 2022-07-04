@@ -13,7 +13,7 @@ namespace SqlSugar
         public SqlSugarProvider Context { get; set; }
         public InsertNavProvider<Root, Root> insertNavProvider { get; set; }
 
-        public InsertNavTask<Root, TChild> ThenInclude<TChild>(Expression<Func<Root, TChild>> expression) where TChild : class, new()
+        public InsertNavTask<Root, TChild>  Include<TChild>(Expression<Func<Root, TChild>> expression) where TChild : class, new()
         {
             this.Context = insertNavProvider._Context;
             InsertNavTask<Root, TChild> result = new InsertNavTask<Root, TChild>();
@@ -22,7 +22,7 @@ namespace SqlSugar
             result.Context = this.Context;
             return result;
         }
-        public InsertNavTask<Root, TChild> ThenInclude<TChild>(Expression<Func<Root, List<TChild>>> expression) where TChild : class, new()
+        public InsertNavTask<Root, TChild>  Include<TChild>(Expression<Func<Root, List<TChild>>> expression) where TChild : class, new()
         {
             this.Context = insertNavProvider._Context;
             InsertNavTask<Root, TChild> result = new InsertNavTask<Root, TChild>();
@@ -52,7 +52,15 @@ namespace SqlSugar
             result.Context = this.Context;
             return result;
         }
-        public void ExecuteCommand()
+        public InsertNavTask<Root, TChild> Include<TChild>(Expression<Func<Root, TChild>> expression) where TChild : class, new()
+        {
+            return AsNav().ThenInclude(expression);
+        }
+        public InsertNavTask<Root, TChild> Include<TChild>(Expression<Func<Root, List<TChild>>> expression) where TChild : class, new()
+        {
+            return AsNav().ThenInclude(expression);
+        }
+        public bool ExecuteCommand()
         {
             var hasTran = this.Context.Ado.Transaction != null;
             if (hasTran)
@@ -66,17 +74,19 @@ namespace SqlSugar
                     PreFunc();
                 }, ex => throw ex);
             }
+            return true;
         }
-        public async Task ExecuteCommandAsync()
+        public async Task<bool> ExecuteCommandAsync()
         {
             await Task.Run(async () => 
             {
                 ExecuteCommand();
                 await Task.Delay(0);
-            }); 
+            });
+            return true;
         }
 
-        public InsertNavTask<Root, Root> AsNav()
+        private InsertNavTask<Root, Root> AsNav()
         {
             InsertNavTask<Root, Root> result = new InsertNavTask<Root, Root>();
             Func<InsertNavProvider<Root, Root>> func = () => PreFunc().AsNav();

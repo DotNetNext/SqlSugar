@@ -31,6 +31,14 @@ namespace SqlSugar
                         {
                             navPropertyValue = pkValue;
                         }
+
+                    }
+                    if (!IsDefaultValue(navPropertyValue)) 
+                    {
+                        this._Context.Updateable<DbTableInfo>
+                           ().AS(parentEntity.DbTableName)
+                           .SetColumns(parentColumn.DbColumnName, navPropertyValue)
+                           .Where(parentPkColumn.DbColumnName, "=", parentPkColumn.PropertyInfo.GetValue(parent)).ExecuteCommand();
                     }
                     if (IsDefaultValue(navPropertyValue)) 
                     {
