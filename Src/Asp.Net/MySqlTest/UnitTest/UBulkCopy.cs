@@ -170,8 +170,24 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+            db.CodeFirst.InitTables<UnitBulkdatedate2313111>();
+            db.DbMaintenance.TruncateTable<UnitBulkdatedate2313111>();
+            var bda =new List<UnitBulkdatedate2313111>{ new UnitBulkdatedate2313111()
+            {
+                Id = Guid.NewGuid()
+            } };
+            db.Fastest<UnitBulkdatedate2313111>().BulkCopy(bda);
+            var q = db.Queryable<UnitBulkdatedate2313111>().ToList();
 
         }
+        public class UnitBulkdatedate2313111
+        {
+            [SqlSugar.SugarColumn(IsPrimaryKey = true)]
+            public Guid Id { get; set; }
+            [SqlSugar.SugarColumn(IsNullable = true)]
+            public DateTime? table { get; set; }
+        }
+
         public class UnitBulk2313111
         {
             [SqlSugar.SugarColumn(IsPrimaryKey = true)]
