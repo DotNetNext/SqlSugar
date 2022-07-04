@@ -7,6 +7,16 @@ namespace SqlSugar
 {
     public class PostgreSQLCodeFirst : CodeFirstProvider
     {
+        protected override void ExistLogicEnd(List<EntityColumnInfo> dbColumns)
+        {
+            foreach (EntityColumnInfo column in dbColumns) 
+            {
+                if (column.DefaultValue != null) 
+                {
+                    this.Context.DbMaintenance.AddDefaultValue(column.DbTableName,column.DbColumnName,column.DefaultValue.ToSqlValue());
+                }
+            }
+        }
         public override void NoExistLogic(EntityInfo entityInfo)
         {
             var tableName = GetTableName(entityInfo);

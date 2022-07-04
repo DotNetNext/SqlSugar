@@ -371,6 +371,7 @@ namespace SqlSugar
                 {
                     this.Context.DbMaintenance.BackupTable(tableName, tableName + DateTime.Now.ToString("yyyyMMddHHmmss"), MaxBackupDataRows);
                 }
+                ExistLogicEnd(entityColumns);
             }
         }
 
@@ -391,6 +392,10 @@ namespace SqlSugar
                 this.Context.DbMaintenance.AddPrimaryKey(tableName, item.DbColumnName);
         }
 
+        protected virtual void ExistLogicEnd(List<EntityColumnInfo> dbColumns) 
+        {
+
+        }
         protected virtual void ConvertColumns(List<DbColumnInfo> dbColumns)
         {
 
