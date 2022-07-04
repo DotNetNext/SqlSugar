@@ -164,8 +164,19 @@ namespace SqlSugar
                     switch (item.ConditionalType)
                     {
                         case ConditionalType.Equal:
-                            builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "=", parameterName);
-                            parameters.Add(new SugarParameter(parameterName, GetFieldValue(item)));
+                            if (item.FieldValue!=null&&item.FieldValue == "null"&&item.FieldValue!= "[null]")
+                            {
+                                builder.AppendFormat($" {item.FieldName.ToSqlFilter()} is null ");
+                            }
+                            else
+                            {
+                                if (item.FieldValue == "[null]") 
+                                {
+                                    item.FieldValue = "null";
+                                }
+                                builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "=", parameterName);
+                                parameters.Add(new SugarParameter(parameterName, GetFieldValue(item)));
+                            }
                             break;
                         case ConditionalType.Like:
                             builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "LIKE", parameterName);

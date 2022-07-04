@@ -419,6 +419,10 @@ namespace SqlSugar
             }
             return this;
         }
+        public ISugarQueryable<T> WhereColumns(Dictionary<string, object>  dictionary) 
+        {
+            return WhereColumns(new List<Dictionary<string, object>> { dictionary });
+        }
         public ISugarQueryable<T> WhereColumns(List<Dictionary<string, object>> list)
         {
             List<IConditionalModel> conditionalModels = new List<IConditionalModel>();
@@ -432,7 +436,7 @@ namespace SqlSugar
                     {
                         FieldName = item,
                         ConditionalType = ConditionalType.Equal,
-                        FieldValue = model[item].ObjToString(),
+                        FieldValue = model[item]==null?"null" : model[item].ObjToString(),
                         CSharpTypeName = model[item] == null ? null : model[item].GetType().Name
                     }));
                     i++;
