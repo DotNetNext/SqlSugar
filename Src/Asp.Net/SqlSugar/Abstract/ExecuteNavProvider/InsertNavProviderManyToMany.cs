@@ -27,7 +27,7 @@ namespace SqlSugar
                    .Where(it => it.PropertyName != mappingB.PropertyName)
                    .Where(it => it.IsPrimarykey && !it.IsIdentity && it.OracleSequenceName.IsNullOrEmpty()).FirstOrDefault();
             Check.Exception(mappingA == null || mappingB == null, $"Navigate property {name} error ", $"导航属性{name}配置错误");
-            List<Dictionary<object, object>> mappgingTables = new List<Dictionary<object, object>>();
+            List<Dictionary<string, object>> mappgingTables = new List<Dictionary<string, object>>();
             foreach (var item in parentList)
             {
                 var items= parentNavigateProperty.PropertyInfo.GetValue(item);
@@ -44,6 +44,7 @@ namespace SqlSugar
                     {
                         SetMappingTableDefaultValue(mappingPk, keyValuePairs);
                     }
+                    mappgingTables.Add(keyValuePairs);
                 }
             }
             var ids = mappgingTables.Select(x => x[mappingA.DbColumnName]).ToList();

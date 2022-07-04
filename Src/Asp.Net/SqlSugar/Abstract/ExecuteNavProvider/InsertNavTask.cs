@@ -9,9 +9,9 @@ namespace SqlSugar
 {
     public class InsertNavTaskInit<Root, T> where T : class, new() where Root : class, new() 
     {
-    
-        public SqlSugarProvider Context { get; set; }
-        public InsertNavProvider<Root, Root> insertNavProvider { get; set; }
+
+        internal SqlSugarProvider Context { get; set; }
+        internal InsertNavProvider<Root, Root> insertNavProvider { get; set; }
 
         public InsertNavTask<Root, TChild>  Include<TChild>(Expression<Func<Root, TChild>> expression) where TChild : class, new()
         {
