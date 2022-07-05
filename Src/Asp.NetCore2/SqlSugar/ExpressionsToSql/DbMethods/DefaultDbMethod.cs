@@ -362,6 +362,15 @@ namespace SqlSugar
         {
             return "( 1 = 2 ) ";
         }
+        public virtual string TrueValue()
+        {
+            return "1 ";
+        }
+
+        public virtual string FalseValue()
+        {
+            return "0";
+        }
 
         public string GuidNew()
         {
