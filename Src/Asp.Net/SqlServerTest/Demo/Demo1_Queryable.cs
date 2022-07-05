@@ -166,6 +166,9 @@ namespace OrmTest
             var test44=db.Queryable<Order>().WhereColumns(new List<Dictionary<string, object>>() {
             whereDc
             }).ToList();
+            var test45 = db.Queryable<Order>().
+              Where(it=>it.Price==0?true:it.Name==it.Name)
+              .ToList();
             Console.WriteLine("#### Examples End ####");
         }
 

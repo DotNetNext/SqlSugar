@@ -51,6 +51,9 @@ namespace OrmTest
             var q1 = db.Queryable<Order>().Take(1);
             var q2 = db.Queryable<Order>().Take(2);
             var test05 = db.UnionAll(q1, q2).ToList();
+            var test06 = db.Queryable<Order>().
+              Where(it => it.Price == 0 ? true : it.Name == it.Name)
+              .ToList();
             Console.WriteLine("#### Examples End ####");
             Console.WriteLine("#### Examples End ####");
         }
