@@ -58,6 +58,8 @@ namespace SqlSugar
         string GetSelfAndAutoFill(string shortName,bool isSingle);
         string True();
         string False();
+        string TrueValue();
+        string FalseValue();
         string GuidNew();
         string MergeString(params string[] strings);
         string EqualTrue(string value);

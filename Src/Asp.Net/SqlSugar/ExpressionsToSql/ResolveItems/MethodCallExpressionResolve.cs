@@ -416,7 +416,15 @@ namespace SqlSugar
             }
             if (isRoot && parameter.BaseExpression == null && this.Context.ResolveType.IsIn(ResolveExpressType.WhereMultiple, ResolveExpressType.WhereSingle) && (parameter.CurrentExpression is ConditionalExpression) && ((parameter.CurrentExpression as ConditionalExpression).Type == UtilConstants.BoolType))
             {
-                methodValue = methodValue + "=1 ";
+                var isContainsTrue = MethodValueIsTrue(methodValue);
+                if (isContainsTrue)
+                {
+                    methodValue = methodValue + "=true ";
+                }
+                else
+                {
+                    methodValue = methodValue + "=1 ";
+                }
             }
             if (isRoot && parameter.BaseExpression == null && this.Context.ResolveType.IsIn(ResolveExpressType.WhereMultiple, ResolveExpressType.WhereSingle) && (parameter.CurrentExpression is MethodCallExpression) && ((parameter.CurrentExpression as MethodCallExpression).Method.Name.IsIn("IIF")) && (parameter.CurrentExpression as MethodCallExpression).Method.ReturnType == UtilConstants.BoolType)
             {
@@ -435,6 +443,11 @@ namespace SqlSugar
                 methodValue = methodValue + "=1 ";
             }
             base.AppendValue(parameter, isLeft, methodValue);
+        }
+
+        private static bool MethodValueIsTrue(object methodValue)
+        {
+            return methodValue != null && methodValue.ToString().Contains("THEN true  ELSE false END");
         }
 
         private object packIfElse(object methodValue)
@@ -485,7 +498,41 @@ namespace SqlSugar
             }
             else if (isIFFBoolBinary && !isFirst)
             {
-                AppendModelByIIFBinary(parameter, model, item);
+                var binaryExp = item as BinaryExpression;
+                var binaryExpEqual = binaryExp != null && ExpressionTool.IsComparisonOperatorBool(binaryExp);
+                if (binaryExpEqual)
+                {
+                    var expValue = GetNewExpressionValue(item);
+                    expValue= this.Context.DbMehtods.IIF(new MethodCallExpressionModel()
+                    {
+                        Name = "IIF",
+                        Args = new List<MethodCallExpressionArgs>()
+                        {
+                             new MethodCallExpressionArgs(){
+                               IsMember=true,
+                               MemberName=expValue
+                             },
+                             new MethodCallExpressionArgs(){
+                               IsMember=true,
+                               MemberName= Context.DbMehtods.TrueValue()
+                             },
+                             new MethodCallExpressionArgs(){ 
+                               IsMember=true,
+                               MemberName= Context.DbMehtods.FalseValue()
+                             }
+                        }
+                    });
+                    model.Args.Add(new MethodCallExpressionArgs()
+                    {
+                        IsMember = false,
+                        MemberName = expValue,
+                        MemberValue = expValue
+                    });
+                }
+                else
+                {
+                    AppendModelByIIFBinary(parameter, model, item);
+                }
 
             }
             else if (isIFFBoolMethod && !isFirst)
@@ -521,7 +568,6 @@ namespace SqlSugar
                 AppendModel(parameter, model, item);
             }
         }
-
 
         private void AppendModelByIIFMember(ExpressionParameter parameter, MethodCallExpressionModel model, Expression item)
         {

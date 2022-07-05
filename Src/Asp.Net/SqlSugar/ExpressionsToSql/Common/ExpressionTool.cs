@@ -8,6 +8,13 @@ namespace SqlSugar
 {
     public class ExpressionTool
     {
+        public static bool IsComparisonOperatorBool(BinaryExpression binaryExp)
+        {
+            return binaryExp.NodeType.IsIn(ExpressionType.Equal, 
+                                           ExpressionType.GreaterThan, ExpressionType.GreaterThanOrEqual,
+                                           ExpressionType.LessThan, ExpressionType.LessThanOrEqual);
+        }
+
         public static string GetOperator(ExpressionType expressiontype)
         {
             switch (expressiontype)

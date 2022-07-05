@@ -133,6 +133,14 @@ namespace SqlSugar
     }
     public class PostgreSQLMethod : DefaultDbMethod, IDbMethods
     {
+        public override string TrueValue()
+        {
+            return "true";
+        }
+        public override string FalseValue()
+        {
+            return "false";
+        }
         public override string DateDiff(MethodCallExpressionModel model)
         {
             var parameter = (DateType)(Enum.Parse(typeof(DateType), model.Args[0].MemberValue.ObjToString()));
