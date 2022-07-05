@@ -476,6 +476,10 @@ namespace SqlSugar
                                             filegrowth = 10mb
                                         ); ";
                 }
+                if (databaseName.Contains(".")) 
+                {
+                    databaseName = $"[{databaseName}]";
+                }
                 newDb.Ado.ExecuteCommand(string.Format(sql, databaseName, databaseDirectory));
             }
             return true;
