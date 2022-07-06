@@ -169,6 +169,10 @@ namespace OrmTest
             var test45 = db.Queryable<Order>().
               Where(it=>it.Price==0?true:it.Name==it.Name)
               .ToList();
+            var dr3 = new Dictionary<string, object>();
+            dr3.Add("Id", 0);
+            dr3.Add("Name",null);
+            db.Queryable<Order>().WhereColumns(dr3,true).ToList();
             Console.WriteLine("#### Examples End ####");
         }
 
