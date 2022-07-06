@@ -58,6 +58,8 @@ namespace SqlSugar
             foreach (var tableInfo in tableInfos)
             {
                 TableDifferenceInfo addItem = new TableDifferenceInfo();
+                if (tableInfo.OldTableInfo == null)
+                    tableInfo.OldTableInfo = new DbTableInfo();
                 addItem.TableName = tableInfo.OldTableInfo.Name;
                 addItem.AddColums = GetAddColumn(tableInfo);
                 addItem.UpdateColums = GetUpdateColumn(tableInfo);

@@ -17,6 +17,12 @@ namespace SqlSugar
     public class UtilMethods
     {
 
+        internal static bool IsDefaultValue(object value)
+        {
+            if (value == null) return true;
+            return value.Equals(UtilMethods.GetDefaultValue(value.GetType()));
+        }
+
         internal static DateTime ConvertFromDateTimeOffset(DateTimeOffset dateTime)
         {
             if (dateTime.Offset.Equals(TimeSpan.Zero))

@@ -153,6 +153,10 @@ namespace SqlSugar
                 {
                     sqlParameter.DbType = System.Data.DbType.AnsiString;
                 }
+                else if (sqlParameter.Value is DateTime && sqlParameter.DbType == System.Data.DbType.AnsiString) 
+                {
+                    sqlParameter.DbType = System.Data.DbType.DateTime;
+                }
                 ++index;
             }
             return result;

@@ -423,6 +423,25 @@ namespace SqlSugar
         {
             return WhereColumns(new List<Dictionary<string, object>> { dictionary });
         }
+        public ISugarQueryable<T> WhereColumns(Dictionary<string, object> columns, bool ignoreDefaultValue) 
+        {
+            if (ignoreDefaultValue == false || columns == null)
+            {
+                return WhereColumns(columns);
+            }
+            else 
+            {
+                var newColumns = new Dictionary<string, object>();
+                foreach (var item in columns)
+                {
+                    if (!UtilMethods.IsDefaultValue(item.Value)) 
+                    {
+                        newColumns.Add(item.Key, item.Value);
+                    }
+                }
+                return WhereColumns(newColumns);
+            }
+        }
         public ISugarQueryable<T> WhereColumns(List<Dictionary<string, object>> list)
         {
             List<IConditionalModel> conditionalModels = new List<IConditionalModel>();

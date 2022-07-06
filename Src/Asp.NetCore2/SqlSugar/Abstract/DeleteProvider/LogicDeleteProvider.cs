@@ -31,6 +31,36 @@ namespace SqlSugar
             var result = updateable.Where(where).ExecuteCommand();
             return result;
         }
+        public int ExecuteCommand(string LogicFieldName, object deleteValue, string deleteTimeFieldName,string userNameFieldName,object userNameValue)
+        {
+            ISqlSugarClient db;
+            List<SugarParameter> pars;
+            string where;
+            LogicFieldName = _ExecuteCommand(LogicFieldName, out db, out where, out pars);
+            var updateable = db.Updateable<T>().SetColumns(LogicFieldName, deleteValue);
+            updateable.SetColumns(deleteTimeFieldName, DateTime.Now);
+            updateable.SetColumns(userNameFieldName,userNameValue);
+            if (pars != null)
+                updateable.UpdateBuilder.Parameters.AddRange(pars);
+            Convert(updateable as UpdateableProvider<T>);
+            var result = updateable.Where(where).ExecuteCommand();
+            return result;
+        }
+        public async Task<int> ExecuteCommandAsync(string LogicFieldName, object deleteValue, string deleteTimeFieldName, string userNameFieldName, object userNameValue)
+        {
+            ISqlSugarClient db;
+            List<SugarParameter> pars;
+            string where;
+            LogicFieldName = _ExecuteCommand(LogicFieldName, out db, out where, out pars);
+            var updateable = db.Updateable<T>().SetColumns(LogicFieldName, deleteValue);
+            updateable.SetColumns(deleteTimeFieldName, DateTime.Now);
+            updateable.SetColumns(userNameFieldName, userNameValue);
+            if (pars != null)
+                updateable.UpdateBuilder.Parameters.AddRange(pars);
+            Convert(updateable as UpdateableProvider<T>);
+            var result =await updateable.Where(where).ExecuteCommandAsync();
+            return result;
+        }
         public async Task<int> ExecuteCommandAsync(string LogicFieldName = null, object deleteValue = null, string deleteTimeFieldName = null)
         {
             ISqlSugarClient db;

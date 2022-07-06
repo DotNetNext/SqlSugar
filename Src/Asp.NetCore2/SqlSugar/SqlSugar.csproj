@@ -14,11 +14,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Abstract\AdoProvider\Abstract\**" />
     <Compile Remove="dll\**" />
-    <EmbeddedResource Remove="Abstract\AdoProvider\Abstract\**" />
     <EmbeddedResource Remove="dll\**" />
-    <None Remove="Abstract\AdoProvider\Abstract\**" />
     <None Remove="dll\**" />
   </ItemGroup>
 
