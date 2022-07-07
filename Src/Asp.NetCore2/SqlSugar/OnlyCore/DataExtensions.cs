@@ -370,11 +370,16 @@ namespace SqlSugar
                 for (int i = 0; i < dr.FieldCount; i++)
                 {
                     string name = dr.GetName(i).Trim();
+                    var type = dr.GetFieldType(i);
+                    if (dr.GetDataTypeName(i).EqualCase("datetime")) 
+                    {
+                        type = UtilConstants.DateType;
+                    }
                     if (!columns.Contains(name))
-                        columns.Add(new DataColumn(name, dr.GetFieldType(i)));
+                        columns.Add(new DataColumn(name, type));
                     else
                     {
-                        columns.Add(new DataColumn(name + i, dr.GetFieldType(i)));
+                        columns.Add(new DataColumn(name + i, type));
                     }
                 }
 
@@ -411,11 +416,16 @@ namespace SqlSugar
                     for (int i = 0; i < dr.FieldCount; i++)
                     {
                         string name = dr.GetName(i).Trim();
+                        var type = dr.GetFieldType(i);
+                        if (dr.GetDataTypeName(i).EqualCase("datetime"))
+                        {
+                            type = UtilConstants.DateType;
+                        }
                         if (!columns.Contains(name))
-                            columns.Add(new DataColumn(name, dr.GetFieldType(i)));
+                            columns.Add(new DataColumn(name, type));
                         else
                         {
-                            columns.Add(new DataColumn(name + i, dr.GetFieldType(i)));
+                            columns.Add(new DataColumn(name + i, type));
                         }
                     }
 
