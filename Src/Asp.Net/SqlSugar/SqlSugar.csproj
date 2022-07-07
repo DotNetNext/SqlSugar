@@ -89,11 +89,12 @@
     <Compile Include="Abstract\DeleteProvider\SplitTableDeleteByObjectProvider.cs" />
     <Compile Include="Abstract\DeleteProvider\SplitTableDeleteProvider.cs" />
     <Compile Include="Abstract\EntityMaintenance\EntityMaintenance.cs" />
+    <Compile Include="Abstract\ExecuteNavProvider\DeleteNavProvider.cs" />
     <Compile Include="Abstract\ExecuteNavProvider\InsertNavProviderHelper.cs" />
     <Compile Include="Abstract\ExecuteNavProvider\InsertNavProviderOneToMany.cs" />
     <Compile Include="Abstract\ExecuteNavProvider\InsertNavProviderManyToMany.cs" />
     <Compile Include="Abstract\ExecuteNavProvider\InsertNavProviderOneToOne.cs" />
-    <Compile Include="Abstract\ExecuteNavProvider\DeleteNavProvider.cs" />
+    <Compile Include="Abstract\ExecuteNavProvider\DeleteNavTask.cs" />
     <Compile Include="Abstract\ExecuteNavProvider\InsertNavTask.cs" />
     <Compile Include="Abstract\ExecuteNavProvider\UpdateInsert.cs" />
     <Compile Include="Abstract\ExecuteNavProvider\InsertNavProvider.cs" />

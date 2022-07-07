@@ -7,35 +7,19 @@ using System.Threading.Tasks;
 
 namespace SqlSugar 
 {
-    public class DeleteNavProvider<Root,T>
+    public class DeleteNavProvider<Root, T> where T : class, new() where Root : class, new()
     {
+        public SqlSugarProvider _Context { get; internal set; }
 
-        public List<Root> Roots { get;  set; }
-        public SqlSugarProvider Context { get; internal set; }
-
-        public DeleteNavProvider<Root,TChild> ThenInclude<TChild>(Expression<Func<T,TChild>> expression)
+        public DeleteNavTask<Root, TChild> ThenInclude< TChild>(Expression<Func<Root, TChild>> expression)
+            where TChild : class, new()
         {
-            throw new Exception("开发中7月15号之前上线");
+            throw new NotImplementedException();
         }
-        public DeleteNavProvider<Root, TChild>  Include<TChild>(Expression<Func<T, TChild>> expression)
+        public DeleteNavTask<Root, TChild> ThenInclude<TChild>(Expression<Func<Root, List<TChild>>> expression)
+         where TChild : class, new()
         {
-            throw new Exception("开发中7月15号之前上线");
-        }
-        public DeleteNavProvider<Root, TChild> ThenInclude<TChild>(Expression<Func<T, List<TChild>>> expression)
-        {
-            throw new Exception("开发中7月15号之前上线");
-        }
-        public DeleteNavProvider<Root, TChild> Include<TChild>(Expression<Func<T, List<TChild>>> expression)
-        {
-            throw new Exception("开发中7月15号之前上线");
-        }
-        private DeleteNavProvider<Root,Root> AsNav()
-        {
-            throw new Exception("开发中7月15号之前上线");
-        }
-        public bool ExecuteCommand() 
-        {
-            return true;
+            throw new NotImplementedException();
         }
     }
 }
