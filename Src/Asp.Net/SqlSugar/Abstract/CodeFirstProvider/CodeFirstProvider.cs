@@ -501,6 +501,10 @@ namespace SqlSugar
             {
                 return false;
             }
+            if (properyTypeName?.ToLower() == "bigint" && dataType?.ToLower() == "int64")
+            {
+                return false;
+            }
             if (properyTypeName == null || dataType == null)
             {
                 return properyTypeName != dataType;
