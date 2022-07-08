@@ -910,8 +910,9 @@ namespace SqlSugar
         public DeleteNavTaskInit<T, T> DeleteNav<T>(List<T> datas) where T : class, new()
         {
             var result = new DeleteNavTaskInit<T, T>();
-            result.Roots = datas;
-            result.Context = this;
+            result.deleteNavProvider = new DeleteNavProvider<T, T>();
+            result.deleteNavProvider._Roots = datas;
+            result.deleteNavProvider._Context = this;
             return result;
         }
         public DeleteNavTaskInit<T, T> DeleteNav<T>(Expression<Func<T, bool>> whereExpression) where T : class, new() 

@@ -15,10 +15,12 @@ namespace SqlSugar
         public EntityInfo _ParentEntity { get; set; }
         public EntityColumnInfo _ParentPkColumn { get; set; }
         public SqlSugarProvider _Context { get; set; }
+        public bool _IsDeletedParant { get; set; }
 
-        public DeleteNavTask<Root, TChild> ThenInclude< TChild>(Expression<Func<Root, TChild>> expression)
+        public DeleteNavProvider<Root, TChild> ThenInclude< TChild>(Expression<Func<T, TChild>> expression)
             where TChild : class, new()
         {
+            InitParentList();
             var name = ExpressionTool.GetMemberName(expression);
             var nav = this._ParentEntity.Columns.FirstOrDefault(x => x.PropertyName == name);
             if (nav.Navigat == null)
@@ -37,13 +39,72 @@ namespace SqlSugar
             {
                 DeleteManyToMany<TChild>(name, nav);
             }
-            return null;
+            return GetResult<TChild>();
         }
 
-        public DeleteNavTask<Root, TChild> ThenInclude<TChild>(Expression<Func<Root, List<TChild>>> expression)
+        public DeleteNavProvider<Root, TChild> ThenInclude<TChild>(Expression<Func<T, List<TChild>>> expression)
          where TChild : class, new()
         {
-            throw new NotImplementedException();
+            InitParentList();
+            var name = ExpressionTool.GetMemberName(expression);
+            var nav = this._ParentEntity.Columns.FirstOrDefault(x => x.PropertyName == name);
+            if (nav.Navigat == null)
+            {
+                Check.ExceptionEasy($"{name} no navigate attribute", $"{this._ParentEntity.EntityName}的属性{name}没有导航属性");
+            }
+            if (nav.Navigat.NavigatType == NavigateType.OneToOne || nav.Navigat.NavigatType == NavigateType.ManyToOne)
+            {
+                DeleteOneToOne<TChild>(name, nav);
+            }
+            else if (nav.Navigat.NavigatType == NavigateType.OneToMany)
+            {
+                DeleteOneToMany<TChild>(name, nav);
+            }
+            else
+            {
+                DeleteManyToMany<TChild>(name, nav);
+            }
+            return GetResult<TChild>();
+        }
+        private DeleteNavProvider<Root, TChild> GetResult<TChild>() where TChild : class, new()
+        {
+            return new DeleteNavProvider<Root, TChild>()
+            {
+                _Context = this._Context,
+                _ParentEntity = this._ParentEntity,
+                _ParentList = this._ParentList,
+                _Roots = this._Roots,
+                _ParentPkColumn = this._ParentPkColumn,
+                _RootList = this._RootList,
+                _IsDeletedParant=this._IsDeletedParant
+            };
+        }
+        public DeleteNavProvider<Root, Root> AsNav()
+        {
+            return new DeleteNavProvider<Root, Root>
+            {
+                _Context = _Context,
+                _ParentEntity = null,
+                _ParentList = null,
+                _Roots = _Roots,
+                _IsDeletedParant = this._IsDeletedParant,
+                _ParentPkColumn = this._Context.EntityMaintenance.GetEntityInfo<Root>().Columns.First(it => it.IsPrimarykey)
+            };
+        }
+        private void InitParentList()
+        {
+            this._ParentEntity = this._Context.EntityMaintenance.GetEntityInfo<T>();
+            if (_RootList == null)
+            {
+                _RootList = _ParentList = _Roots.Cast<object>().ToList();
+            }
+            else if (_ParentList == null)
+            {
+                _ParentList = _RootList;
+                var pkColumn = this._Context.EntityMaintenance.GetEntityInfo<T>().Columns.FirstOrDefault(it => it.IsPrimarykey);
+                this._ParentPkColumn = pkColumn;
+            }
+
         }
     }
 }
