@@ -16,6 +16,7 @@ namespace SqlSugar
         List<T> dbDataList = new List<T>();
         List<KeyValuePair<StorageType, Func<StorageableInfo<T>, bool>, string>> whereFuncs = new List<KeyValuePair<StorageType, Func<StorageableInfo<T>, bool>, string>>();
         Expression<Func<T, object>> whereExpression;
+        Func<DateTime, string> formatTime;
         private string asname { get; set; }
         public Storageable(List<T> datas, SqlSugarProvider context)
         {
@@ -261,6 +262,11 @@ namespace SqlSugar
             }
         }
         List<EntityColumnInfo> wherecolumnList;
+        public IStorageable<T> WhereColumns(Expression<Func<T, object>> columns, Func<DateTime, string> formatTime) 
+        {
+            this.formatTime = formatTime;
+            return WhereColumns(columns);
+        }
         public IStorageable<T> WhereColumns(Expression<Func<T, object>> columns)
         {
             if (columns == null)
@@ -300,7 +306,11 @@ namespace SqlSugar
             var exp=ExpressionBuilderHelper.CreateNewFields<T>(this.Context.EntityMaintenance.GetEntityInfo<T>(), list);
             return this.WhereColumns(exp);
         }
-
+        public IStorageable<T> WhereColumns(string[] columns, Func<DateTime, string> formatTime)
+        {
+            this.formatTime = formatTime;
+            return WhereColumns(columns);
+        }
         private  void SetConditList(List<StorageableInfo<T>> itemList, List<EntityColumnInfo> whereColumns, List<IConditionalModel> conditList)
         {
            ;
@@ -331,7 +341,7 @@ namespace SqlSugar
                         FieldName = item.DbColumnName,
                         ConditionalType = ConditionalType.Equal,
                         CSharpTypeName=UtilMethods.GetTypeName(value),
-                        FieldValue = value==null?"null":value.ObjToString(),
+                        FieldValue = value==null?"null":value.ObjToString(formatTime),
                         FieldValueConvertFunc=this.Context.CurrentConnectionConfig.DbType==DbType.PostgreSQL? 
                                                UtilMethods.GetTypeConvert(value):null
                     }));

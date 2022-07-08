@@ -66,6 +66,18 @@ namespace SqlSugar
                 return thisValue == equalValue;
             }
         }
+        public static string ObjToString(this object thisValue,Func<DateTime,string> formatTime)
+        {
+            if (formatTime != null&&thisValue is DateTime)
+            {
+                var dt = Convert.ToDateTime(thisValue);
+                return formatTime(dt);
+            }
+            else 
+            {
+                return thisValue.ObjToString();
+            }
+        }
         public static string ObjToString(this object thisValue)
         {
             if (thisValue != null) return thisValue.ToString().Trim();
