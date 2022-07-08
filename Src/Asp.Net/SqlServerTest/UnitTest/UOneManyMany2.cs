@@ -125,6 +125,16 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+            var id = db.Queryable<School_002>().ToList().Last().scid;
+            db.DeleteNav<School_002>(s => s.scid == id)
+                .Include(it => it.rooms)
+                .ThenInclude(it=>it.desk).ExecuteCommand();
+
+            if (db.Queryable<Desk_002>().Count() != 2 || db.Queryable<Room_002>().Count() !=2
+          || db.Queryable<School_002>().Count() != 1|| db.Queryable<Student_002>().Count() != 0)
+            {
+                throw new Exception("unit error");
+            }
         }
 
         public class Student_002 
