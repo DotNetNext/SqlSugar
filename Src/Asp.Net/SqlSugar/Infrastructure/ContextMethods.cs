@@ -346,6 +346,10 @@ namespace SqlSugar
                         {
                             addValue = Convert.ToInt64(addValue);
                         }
+                        else if (UtilMethods.GetUnderType(item.PropertyType).IsEnum()&& addValue is decimal)
+                        {
+                            addValue = Convert.ToInt64(addValue);
+                        }
                         result.Add(name, addValue);
                     }
                 }
@@ -441,6 +445,10 @@ namespace SqlSugar
                         if (prop.PropertyType == UtilConstants.IntType)
                         {
                             addItem = addItem.ObjToInt();
+                        }
+                        else if (prop.PropertyType.IsEnum()&&addItem is decimal)
+                        {
+                            addItem = Convert.ToInt64(addItem);
                         }
                         result.Add(name, addItem);
                     }
