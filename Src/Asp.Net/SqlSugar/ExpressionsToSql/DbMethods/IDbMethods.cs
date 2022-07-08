@@ -85,5 +85,6 @@ namespace SqlSugar
         string LessThanOrEqual(MethodCallExpressionModel model);
         string Asc(MethodCallExpressionModel model);
         string Desc(MethodCallExpressionModel model);
+        string Stuff(MethodCallExpressionModel model);
     }
 }
