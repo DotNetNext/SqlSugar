@@ -686,13 +686,17 @@ namespace SqlSugar
         {
             return ScopedContext.InsertNav(datas);
         }
-        public DeleteNavProvider<T, T> DeleteNav<T>(T data)
+        public DeleteNavTaskInit<T, T> DeleteNav<T>(T data) where T : class, new()
         {
             return ScopedContext.DeleteNav(data);
         }
-        public DeleteNavProvider<T, T> DeleteNav<T>(List<T> datas)
+        public DeleteNavTaskInit<T, T> DeleteNav<T>(List<T> datas) where T : class, new()
         {
             return ScopedContext.DeleteNav(datas);
+        }
+        public DeleteNavTaskInit<T, T> DeleteNav<T>(Expression<Func<T, bool>> whereExpression) where T : class, new()
+        {
+            return ScopedContext.DeleteNav(whereExpression);
         }
         public UpdateNavProvider<T, T> UpdateNav<T>(T data)
         {

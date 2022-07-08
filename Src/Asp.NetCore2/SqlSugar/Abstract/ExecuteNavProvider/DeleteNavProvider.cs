@@ -7,35 +7,104 @@ using System.Threading.Tasks;
 
 namespace SqlSugar 
 {
-    public class DeleteNavProvider<Root,T>
+    public partial class DeleteNavProvider<Root, T> where T : class, new() where Root : class, new()
     {
+        public List<Root> _Roots { get; set; }
+        public List<object> _ParentList { get; set; }
+        public List<object> _RootList { get; set; }
+        public EntityInfo _ParentEntity { get; set; }
+        public EntityColumnInfo _ParentPkColumn { get; set; }
+        public SqlSugarProvider _Context { get; set; }
+        public bool _IsDeletedParant { get; set; }
 
-        public List<Root> Roots { get;  set; }
-        public SqlSugarProvider Context { get; internal set; }
+        public DeleteNavProvider<Root, TChild> ThenInclude< TChild>(Expression<Func<T, TChild>> expression)
+            where TChild : class, new()
+        {
+            InitParentList();
+            var name = ExpressionTool.GetMemberName(expression);
+            var nav = this._ParentEntity.Columns.FirstOrDefault(x => x.PropertyName == name);
+            if (nav.Navigat == null)
+            {
+                Check.ExceptionEasy($"{name} no navigate attribute", $"{this._ParentEntity.EntityName}的属性{name}没有导航属性");
+            }
+            if (nav.Navigat.NavigatType == NavigateType.OneToOne || nav.Navigat.NavigatType == NavigateType.ManyToOne)
+            {
+                DeleteOneToOne<TChild>(name, nav);
+            }
+            else if (nav.Navigat.NavigatType == NavigateType.OneToMany)
+            {
+                DeleteOneToMany<TChild>(name, nav);
+            }
+            else
+            {
+                DeleteManyToMany<TChild>(name, nav);
+            }
+            return GetResult<TChild>();
+        }
 
-        public DeleteNavProvider<Root,TChild> ThenInclude<TChild>(Expression<Func<T,TChild>> expression)
-        {
-            throw new Exception("开发中7月15号之前上线");
-        }
-        public DeleteNavProvider<Root, TChild>  Include<TChild>(Expression<Func<T, TChild>> expression)
-        {
-            throw new Exception("开发中7月15号之前上线");
-        }
         public DeleteNavProvider<Root, TChild> ThenInclude<TChild>(Expression<Func<T, List<TChild>>> expression)
+         where TChild : class, new()
         {
-            throw new Exception("开发中7月15号之前上线");
+            InitParentList();
+            var name = ExpressionTool.GetMemberName(expression);
+            var nav = this._ParentEntity.Columns.FirstOrDefault(x => x.PropertyName == name);
+            if (nav.Navigat == null)
+            {
+                Check.ExceptionEasy($"{name} no navigate attribute", $"{this._ParentEntity.EntityName}的属性{name}没有导航属性");
+            }
+            if (nav.Navigat.NavigatType == NavigateType.OneToOne || nav.Navigat.NavigatType == NavigateType.ManyToOne)
+            {
+                DeleteOneToOne<TChild>(name, nav);
+            }
+            else if (nav.Navigat.NavigatType == NavigateType.OneToMany)
+            {
+                DeleteOneToMany<TChild>(name, nav);
+            }
+            else
+            {
+                DeleteManyToMany<TChild>(name, nav);
+            }
+            return GetResult<TChild>();
         }
-        public DeleteNavProvider<Root, TChild> Include<TChild>(Expression<Func<T, List<TChild>>> expression)
+        private DeleteNavProvider<Root, TChild> GetResult<TChild>() where TChild : class, new()
         {
-            throw new Exception("开发中7月15号之前上线");
+            return new DeleteNavProvider<Root, TChild>()
+            {
+                _Context = this._Context,
+                _ParentEntity = this._ParentEntity,
+                _ParentList = this._ParentList,
+                _Roots = this._Roots,
+                _ParentPkColumn = this._ParentPkColumn,
+                _RootList = this._RootList,
+                _IsDeletedParant=this._IsDeletedParant
+            };
         }
-        private DeleteNavProvider<Root,Root> AsNav()
+        public DeleteNavProvider<Root, Root> AsNav()
         {
-            throw new Exception("开发中7月15号之前上线");
+            return new DeleteNavProvider<Root, Root>
+            {
+                _Context = _Context,
+                _ParentEntity = null,
+                _ParentList = null,
+                _Roots = _Roots,
+                _IsDeletedParant = this._IsDeletedParant,
+                _ParentPkColumn = this._Context.EntityMaintenance.GetEntityInfo<Root>().Columns.First(it => it.IsPrimarykey)
+            };
         }
-        public bool ExecuteCommand() 
+        private void InitParentList()
         {
-            return true;
+            this._ParentEntity = this._Context.EntityMaintenance.GetEntityInfo<T>();
+            if (_RootList == null)
+            {
+                _RootList = _ParentList = _Roots.Cast<object>().ToList();
+            }
+            else if (_ParentList == null)
+            {
+                _ParentList = _RootList;
+                var pkColumn = this._Context.EntityMaintenance.GetEntityInfo<T>().Columns.FirstOrDefault(it => it.IsPrimarykey);
+                this._ParentPkColumn = pkColumn;
+            }
+
         }
     }
 }
