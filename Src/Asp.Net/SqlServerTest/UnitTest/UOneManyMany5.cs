@@ -70,6 +70,11 @@ namespace OrmTest
               .ExecuteCommand();
 
             var id = db.Queryable<Student_004>().ToList().Last().sid;
+            var data = db.Queryable<Student_004>()
+                .Includes(x => x.books)
+                .Includes(x => x.school_001)
+                .Where(it=>it.sid==id)
+                .ToList();
             db.DeleteNav<Student_004>(s => s.sid == id)
                 .Include(it => it.books)
                 .Include(it=>it.school_001).ExecuteCommand();
