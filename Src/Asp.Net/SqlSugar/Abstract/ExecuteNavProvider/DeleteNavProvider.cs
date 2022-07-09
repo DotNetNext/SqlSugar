@@ -9,6 +9,7 @@ namespace SqlSugar
 {
     public partial class DeleteNavProvider<Root, T> where T : class, new() where Root : class, new()
     {
+        internal DeleteNavOptions deleteNavOptions;
         public List<Root> _Roots { get; set; }
         public List<object> _ParentList { get; set; }
         public List<object> _RootList { get; set; }
