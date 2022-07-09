@@ -310,8 +310,10 @@ namespace SqlSugar
             }));
             if (list.Any()&&navObjectNamePropety.GetValue(list.First()) == null)
             {
-                var navList = selector(this.Context.Queryable<object>().AS(navEntityInfo.DbTableName).Where(conditionalModels));
-
+                var sqlObj = GetWhereSql(navObjectNameColumnInfo.Navigat.Name);
+                var navList = selector(this.Context.Queryable<object>().AS(navEntityInfo.DbTableName)
+                    .WhereIF(sqlObj.WhereString.HasValue(),sqlObj.WhereString)
+                    .AddParameters(sqlObj.Parameters).Where(conditionalModels));
                 var groupQuery = (from l in list
                                  join n in navList
                                       on navColumn.PropertyInfo.GetValue(l).ObjToString() 
