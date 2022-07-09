@@ -31,6 +31,12 @@ namespace SqlSugar
             result.Context = this.Context;
             return result;
         }
+        public DeleteNavTask<Root, TChild> Include<TChild>(Expression<Func<Root, List<TChild>>> expression,DeleteNavOptions deleteNavOptions) where TChild : class, new()
+        {
+            var result= Include(expression);
+            deleteNavProvider.deleteNavOptions = deleteNavOptions;
+            return result;
+        }
     }
     public class DeleteNavTask<Root, T> where T : class, new() where Root : class, new()
     {
@@ -48,6 +54,18 @@ namespace SqlSugar
         {
             DeleteNavTask<Root, TChild> result = new DeleteNavTask<Root, TChild>();
             Func<DeleteNavProvider<Root, TChild>> func = () => PreFunc().ThenInclude(expression);
+            result.PreFunc = func;
+            result.Context = this.Context;
+            return result;
+        }
+        public DeleteNavTask<Root, TChild> ThenInclude<TChild>(Expression<Func<T, List<TChild>>> expression,DeleteNavOptions deleteNavOptions) where TChild : class, new()
+        {
+            DeleteNavTask<Root, TChild> result = new DeleteNavTask<Root, TChild>();
+            Func<DeleteNavProvider<Root, TChild>> func = () => {
+                 var dev = PreFunc();
+                 dev.deleteNavOptions = deleteNavOptions;
+                 return dev.ThenInclude(expression);
+                };
             result.PreFunc = func;
             result.Context = this.Context;
             return result;

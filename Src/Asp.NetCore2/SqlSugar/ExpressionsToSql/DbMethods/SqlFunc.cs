@@ -25,6 +25,12 @@ namespace SqlSugar
         {
             throw new NotSupportedException("Can only be used in expressions");
         }
+
+        public static string Stuff(string sourceString, int start, int length, string AddString)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
         public static bool GreaterThanOrEqual(object thisValue, object gtValue)
         {
             throw new NotSupportedException("Can only be used in expressions");

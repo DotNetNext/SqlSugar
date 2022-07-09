@@ -998,6 +998,8 @@ namespace SqlSugar
                         return this.Context.DbMehtods.Asc(model);
                     case "Desc":
                         return this.Context.DbMehtods.Desc(model);
+                    case "Stuff":
+                        return this.Context.DbMehtods.Stuff(model);
                     default:
                         break;
                 }

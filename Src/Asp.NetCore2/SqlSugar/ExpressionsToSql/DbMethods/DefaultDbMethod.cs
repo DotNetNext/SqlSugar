@@ -544,5 +544,13 @@ namespace SqlSugar
         {
             return model.Args[0].MemberName + " DESC ";
         }
+        public virtual string Stuff(MethodCallExpressionModel model) 
+        {
+            var parameter1 = model.Args[0];
+            var parameter2 = model.Args[1];
+            var parameter3 = model.Args[2];
+            var parameter4 = model.Args[3];
+            return $" STUFF ({parameter1.MemberName}, {parameter2.MemberName}, {parameter3.MemberName},  {parameter4.MemberName}) ";
+        }
     }
 }
