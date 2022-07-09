@@ -93,6 +93,13 @@ namespace OrmTest
 			var list4 = db.Queryable<OperatorInfo>()
 			.Includes(x => x.Roles.Skip(10).Take(1).ToList())
 			.ToList();
+
+			db.DeleteNav<OperatorInfo>(x=>x.id== list4.First().id)
+				.Include(x => x.Roles,new DeleteNavOptions() { 
+					ManyToMayIsDeleteA=true,
+					ManyToMayIsDeleteB=true
+				 })
+				.ExecuteCommand();
 		}
 
 			/// <summary>
