@@ -265,6 +265,17 @@ namespace SqlSugar
                     }
                 }
             }
+            else
+            {
+                foreach (var listItem in list)
+                {
+                    if (navObjectNamePropety.GetValue(listItem) == null)
+                    {
+                        var newinstance = Activator.CreateInstance(navObjectNamePropety.PropertyType, true) as IList;
+                        navObjectNamePropety.SetValue(listItem,newinstance);
+                    }
+                }
+            }
         }
 
         private static void SkipTakeIList(SqlInfo sql, IList instanceCast, IList newinstance)
