@@ -25,6 +25,10 @@ namespace SqlSugar
                             {
                                 break;
                             }
+                            else if (item.Value != null &&Regex.IsMatch(item.Value.Trim(), @"^\w+\,\@\w+\,$"))
+                            {
+                                break;
+                            }
                             sql = sql.Replace(item.Value, item.Value.Replace("@", UtilConstants.ReplaceKey));
                         }
                     }
