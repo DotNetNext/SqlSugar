@@ -44,12 +44,11 @@ namespace SqlSugar.MySqlConnector
                 var type = UtilMethods.GetUnderType(value.GetType());
                 if (type == UtilConstants.DateType)
                 {
-                    var date = value.ObjToDate();
-                    if (date < UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig))
-                    {
-                        date = UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig);
-                    }
-                    return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
+                    return GetDateTimeString(value);
+                }
+                else if (value is DateTimeOffset)
+                {
+                    return GetDateTimeOffsetString(value);
                 }
                 else if (type == UtilConstants.ByteArrayType)
                 {
@@ -84,6 +83,27 @@ namespace SqlSugar.MySqlConnector
                 }
             }
         }
+
+        private object GetDateTimeOffsetString(object value)
+        {
+            var date = UtilMethods.ConvertFromDateTimeOffset((DateTimeOffset)value);
+            if (date < UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig))
+            {
+                date = UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig);
+            }
+            return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
+        }
+
+        private object GetDateTimeString(object value)
+        {
+            var date = value.ObjToDate();
+            if (date < UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig))
+            {
+                date = UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig);
+            }
+            return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
+        }
+
         private string GetString(object value)
         {
             var result = value.ToString();

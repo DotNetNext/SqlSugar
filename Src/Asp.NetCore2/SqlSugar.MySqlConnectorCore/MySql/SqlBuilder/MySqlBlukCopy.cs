@@ -176,6 +176,10 @@ namespace SqlSugar.MySqlConnector
                     {
                         sb.Append(row[colum].ObjToDate().ToString("yyyy-MM-dd HH:mm:ss.fff"));
                     }
+                    else if (colum.DataType == UtilConstants.DateType && row[colum] != null && row[colum] == DBNull.Value)
+                    {
+                        sb.Append("NULL");
+                    }
                     else sb.Append(row[colum].ToString());
                 }
                 sb.AppendLine();

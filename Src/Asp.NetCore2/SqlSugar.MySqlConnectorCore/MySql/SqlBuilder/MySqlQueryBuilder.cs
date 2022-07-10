@@ -66,6 +66,10 @@ namespace SqlSugar.MySqlConnector
             {
                 return "-- No table";
             }
+            if (TranLock != null)
+            {
+                result = result + TranLock;
+            }
             return result;
         }
         private  string ToCountSqlString()
