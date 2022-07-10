@@ -169,6 +169,11 @@ namespace OrmTest
             var test45 = db.Queryable<Order>().
               Where(it=>it.Price==0?true:it.Name==it.Name)
               .ToList();
+            var num = 3;
+            var test46 = db.Queryable<Order>()
+              .Where(it=>-it.Id==1)
+              .Where(it => DateTime.Now.AddDays(-num) ==DateTime.Now.Date)
+              .ToList();
             var dr3 = new Dictionary<string, object>();
             dr3.Add("Id", 0);
             dr3.Add("Name",null);
