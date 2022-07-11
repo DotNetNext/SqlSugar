@@ -128,6 +128,13 @@ namespace SqlSugar
             var leftSql = GetNewExpressionValue(expression.Left);
             var rightExpression = expression.Right as MethodCallExpression;
             var selector = GetNewExpressionValue(rightExpression.Arguments[0]);
+            var selectorExp = rightExpression.Arguments[0];
+            if (selector.Contains(".") && selectorExp is LambdaExpression) 
+            {
+                var selectorExpLam = (selectorExp as LambdaExpression);
+                var name=(selectorExpLam.Parameters[0] as ParameterExpression).Name;
+                selector= selector.Replace(this.Context.GetTranslationColumnName(name)+ ".", "");
+            }
             var rightSql = GetNewExpressionValue(rightExpression.Object).Replace("SELECT FROM", $"SELECT {selector} FROM");
             if (this.Context.IsSingle&&this.Context.SingleTableNameSubqueryShortName==null)
             {
