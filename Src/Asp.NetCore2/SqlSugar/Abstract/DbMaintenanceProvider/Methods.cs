@@ -393,7 +393,8 @@ namespace SqlSugar
         }
         public virtual bool IsAnyIndex(string indexName)
         {
-            string sql = string.Format(this.IsAnyIndexSql, indexName);
+            //string sql = string.Format(this.IsAnyIndexSql, indexName);
+            string sql = string.Format(this.IsAnyIndexSql, indexName, this.Context.Ado.Connection.Database);
             return this.Context.Ado.GetInt(sql)>0;
         }
         public virtual bool AddRemark(EntityInfo entity)

@@ -269,7 +269,7 @@ namespace SqlSugar
         {
             get
             {
-                return "SELECT count(*) FROM information_schema.statistics WHERE index_name = '{0}'";
+                return "SELECT count(*) FROM information_schema.statistics WHERE index_name = '{0}' and index_schema = '{1}'";
             }
         }
         #endregion
