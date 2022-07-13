@@ -17,11 +17,13 @@ namespace SqlSugar
         public EntityColumnInfo _ParentPkColumn { get; set; }
         public SqlSugarProvider _Context { get; set; }
         public bool _IsDeletedParant { get; set; }
-
+        public List<string> _WhereList = new List<string>();
+        public List<SugarParameter> _Parameters = new List<SugarParameter>();
         public DeleteNavProvider<Root, TChild> ThenInclude< TChild>(Expression<Func<T, TChild>> expression)
             where TChild : class, new()
         {
             InitParentList();
+            Expression newExp = GetMamber(expression);
             var name = ExpressionTool.GetMemberName(expression);
             var nav = this._ParentEntity.Columns.FirstOrDefault(x => x.PropertyName == name);
             if (nav.Navigat == null)
@@ -47,7 +49,8 @@ namespace SqlSugar
          where TChild : class, new()
         {
             InitParentList();
-            var name = ExpressionTool.GetMemberName(expression);
+            Expression newExp = GetMamber(expression);
+            var name = ExpressionTool.GetMemberName(newExp);
             var nav = this._ParentEntity.Columns.FirstOrDefault(x => x.PropertyName == name);
             if (nav.Navigat == null)
             {
@@ -67,6 +70,61 @@ namespace SqlSugar
             }
             return GetResult<TChild>();
         }
+
+        private  Expression GetMamber(Expression expression)
+        {
+            int i = 0;
+            Expression newExp =ExpressionTool.GetLambdaExpressionBody(expression);
+            while (newExp is MethodCallExpression)
+            {
+                var callMethod = (newExp as MethodCallExpression);
+                ActionMethodCallExpression(callMethod);
+                newExp = callMethod.Arguments[0];
+                i++;
+                Check.Exception(i > 10000, expression + "  is error");
+            }
+            return newExp;
+        }
+
+
+        private  void ActionMethodCallExpression(MethodCallExpression method)
+        {
+            var queryBuilder = GetQueryBuilder();
+            NavigatManager<T> navigatManager = new NavigatManager<T>()
+            {
+                Context = this._Context 
+            };
+            if (method.Method.Name == "ToList") 
+            {
+
+            }
+            else if (method.Method.Name == "Where")
+            {
+                navigatManager.CheckHasRootShortName(method.Arguments[0], method.Arguments[1]);
+                var exp = method.Arguments[1];
+                _WhereList.Add(" " + queryBuilder.GetExpressionValue(exp, ResolveExpressType.WhereSingle).GetString());
+            }
+            else if (method.Method.Name == "WhereIF")
+            {
+                var isOk = LambdaExpression.Lambda(method.Arguments[1]).Compile().DynamicInvoke();
+                if (isOk.ObjToBool())
+                {
+                    var exp = method.Arguments[2];
+                    navigatManager.CheckHasRootShortName(method.Arguments[1], method.Arguments[2]);
+                    _WhereList.Add(" " + queryBuilder.GetExpressionValue(exp, ResolveExpressType.WhereSingle).GetString());
+                }
+            }
+            if (queryBuilder.Parameters != null)
+            {
+                _Parameters.AddRange(queryBuilder.Parameters);
+            }
+        }
+
+        private QueryBuilder GetQueryBuilder()
+        { 
+            return this._Context.Queryable<T>().QueryBuilder;
+        }
+
         private DeleteNavProvider<Root, TChild> GetResult<TChild>() where TChild : class, new()
         {
             return new DeleteNavProvider<Root, TChild>()

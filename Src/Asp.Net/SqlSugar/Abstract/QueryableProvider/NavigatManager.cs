@@ -649,7 +649,7 @@ namespace SqlSugar
                 result.SelectString = result.SelectString + "," + selectPkName;
             }
         }
-        private void CheckHasRootShortName(Expression rootExpression, Expression childExpression)
+        public void CheckHasRootShortName(Expression rootExpression, Expression childExpression)
         {
             var rootShortName = GetShortName(rootExpression);
             if (rootShortName.HasValue()&& childExpression.ToString().Contains($" {rootShortName}."))

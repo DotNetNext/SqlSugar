@@ -39,7 +39,7 @@ namespace SqlSugar
                 .Rows.Cast<System.Data.DataRow>().Select(it => it[0]).ToList();
 
 
-            var childList = this._Context.Queryable<TChild>().In(thisPkColumn.DbColumnName, bids).ToList();
+            var childList = GetChildList<TChild>().In(thisPkColumn.DbColumnName, bids).ToList();
 
 
             if (IsDeleteB())

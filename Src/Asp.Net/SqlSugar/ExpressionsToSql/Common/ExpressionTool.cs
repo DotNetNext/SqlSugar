@@ -91,6 +91,19 @@ namespace SqlSugar
             else
                 return value;
         }
+
+        public static Expression GetLambdaExpressionBody(Expression expression)
+        {
+            Expression newExp = expression;
+            if (newExp is LambdaExpression)
+            {
+                newExp = (newExp as LambdaExpression).Body;
+            }
+
+            return newExp;
+        }
+
+
         public static Type GetMemberInfoType(MemberInfo member)
         {
             switch (member.MemberType)
