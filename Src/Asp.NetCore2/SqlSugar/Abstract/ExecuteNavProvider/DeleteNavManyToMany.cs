@@ -60,7 +60,7 @@ namespace SqlSugar
             {
                 SetContext(() => _Context.Deleteable<object>().AS(mappingEntity.DbTableName)
                 .In(mappingA.DbColumnName, aids)
-                .In(mappingA.DbColumnName, bids)
+                .In(mappingB.DbColumnName, bids)
                 .ExecuteCommand());
             }
             else
