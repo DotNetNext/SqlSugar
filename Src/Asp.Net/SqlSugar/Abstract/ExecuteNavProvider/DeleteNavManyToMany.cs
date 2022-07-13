@@ -40,6 +40,10 @@ namespace SqlSugar
 
 
             var childList = GetChildList<TChild>().In(thisPkColumn.DbColumnName, bids).ToList();
+            if (bids.Count != childList.Count) 
+            {
+                bids = childList.Select(it => thisPkColumn.PropertyInfo.GetValue(it)).ToList();
+            }
 
 
             if (IsDeleteB())
