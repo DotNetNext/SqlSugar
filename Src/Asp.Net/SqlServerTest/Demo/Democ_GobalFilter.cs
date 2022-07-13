@@ -29,7 +29,11 @@ namespace OrmTest
             db.Queryable<Order>().ToList();
 
             db.Queryable<Order>().ToList();
+            db.Queryable<object>().AS("[Order]").Filter(typeof(Order)).ToList();
             //SELECT [Id],[Name],[Price],[CreateTime],[CustomId] FROM [Order]  WHERE  ([Name] like '%'+@MethodConst0+'%') 
+
+            db.Queryable<object>().AS("[OrderDetail]").Filter(typeof(OrderItem)).ToList();
+            //no filter
 
             //delete Filter
             db.Deleteable<Order>().EnableQueryFilter().Where(it=>it.Id==1).ExecuteCommand();
