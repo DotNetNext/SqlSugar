@@ -222,7 +222,7 @@ namespace SqlSugar
                 CSharpTypeName = bColumn.PropertyInfo.PropertyType.Name
             }));
             var sql = GetWhereSql();
-            var bList = selector(this.Context.Queryable<object>().AS(bEntityInfo.DbTableName).AddParameters(sql.Parameters).Where(conditionalModels2).WhereIF(sql.WhereString.HasValue(),sql.WhereString).Select(sql.SelectString).OrderByIF(sql.OrderByString.HasValue(),sql.OrderByString));  
+            var bList = selector(this.Context.Queryable<object>().AS(bEntityInfo.DbTableName).Filter(bEntityInfo.Type).AddParameters(sql.Parameters).Where(conditionalModels2).WhereIF(sql.WhereString.HasValue(),sql.WhereString).Select(sql.SelectString).OrderByIF(sql.OrderByString.HasValue(),sql.OrderByString));  
             if (bList.HasValue())
             {
                 foreach (var listItem in list)
@@ -371,7 +371,7 @@ namespace SqlSugar
       
             if (list.Any() && navObjectNamePropety.GetValue(list.First()) == null)
             {
-                var navList = selector(this.Context.Queryable<object>().AS(navEntityInfo.DbTableName).AddParameters(sqlObj.Parameters).Where(conditionalModels).WhereIF(sqlObj.WhereString.HasValue(), sqlObj.WhereString).Select(sqlObj.SelectString).OrderByIF(sqlObj.OrderByString.HasValue(), sqlObj.OrderByString));
+                var navList = selector(this.Context.Queryable<object>().AS(navEntityInfo.DbTableName).Filter(navEntityInfo.Type).AddParameters(sqlObj.Parameters).Where(conditionalModels).WhereIF(sqlObj.WhereString.HasValue(), sqlObj.WhereString).Select(sqlObj.SelectString).OrderByIF(sqlObj.OrderByString.HasValue(), sqlObj.OrderByString));
                 if (navList.HasValue())
                 {
                     //var setValue = navList
