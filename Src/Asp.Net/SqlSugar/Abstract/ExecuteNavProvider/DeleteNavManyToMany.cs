@@ -40,7 +40,7 @@ namespace SqlSugar
 
 
             var childList = GetChildList<TChild>().In(thisPkColumn.DbColumnName, bids).ToList();
-            if (bids.Count != childList.Count) 
+            if (_WhereList.HasValue()) 
             {
                 bids = childList.Select(it => thisPkColumn.PropertyInfo.GetValue(it)).ToList();
             }
@@ -55,9 +55,20 @@ namespace SqlSugar
             this._ParentPkColumn = thisPkColumn;
             this._IsDeletedParant = true;
 
-            SetContext(() => _Context.Deleteable<object>().AS(mappingEntity.DbTableName).In(
-                mappingA.DbColumnName, aids
-                ).ExecuteCommand());
+
+            if (_WhereList.HasValue())
+            {
+                SetContext(() => _Context.Deleteable<object>().AS(mappingEntity.DbTableName)
+                .In(mappingA.DbColumnName, aids)
+                .In(mappingB.DbColumnName, bids)
+                .ExecuteCommand());
+            }
+            else
+            {
+                SetContext(() => _Context.Deleteable<object>().AS(mappingEntity.DbTableName).In(
+                    mappingA.DbColumnName, aids
+                    ).ExecuteCommand());
+            }
 
         }
 
