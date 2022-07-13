@@ -28,13 +28,27 @@ namespace SqlSugar
                 SetContext(() => this._Context.Deleteable(prentList).ExecuteCommand());
 
             var ids = _ParentList.Select(it => parentPkColumn.PropertyInfo.GetValue(it)).ToList();
-            var childList = this._Context.Queryable<TChild>().In(thisFkColumn.DbColumnName, ids).ToList();
-           
+            var childList = GetChildList<TChild>().In(thisFkColumn.DbColumnName, ids).ToList();
+
             this._ParentList = childList.Cast<object>().ToList();
             this._ParentPkColumn = thisPkColumn;
             this._IsDeletedParant = true;
 
             SetContext(() => this._Context.Deleteable(childList).ExecuteCommand());
+        }
+
+        private ISugarQueryable<TChild> GetChildList<TChild>() where TChild : class, new()
+        {
+            var queryable = this._Context.Queryable<TChild>();
+            if (_WhereList.HasValue())
+            {
+                foreach (var item in _WhereList)
+                {
+                    queryable.Where(item);
+                }
+                queryable.AddParameters(_Parameters);
+            }
+            return queryable;
         }
 
         private void SetContext(Action action)

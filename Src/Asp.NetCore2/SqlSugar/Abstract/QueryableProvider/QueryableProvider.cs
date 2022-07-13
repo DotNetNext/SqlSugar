@@ -193,7 +193,15 @@ namespace SqlSugar
             _Filter(FilterName, isDisabledGobalFilter);
             return this;
         }
-
+        public ISugarQueryable<T> Filter(Type type) 
+        {
+            var whereString= QueryBuilder.GetFilters(type);
+            if (whereString.HasValue()) 
+            {
+                this.Where(whereString);
+            }
+            return this;
+        }
         public virtual ISugarQueryable<T> Mapper(Action<T> mapperAction)
         {
             this.MapperAction=UtilMethods.IsNullReturnNew(this.MapperAction);
