@@ -981,8 +981,9 @@ namespace SqlSugar
         {
             if (this.QueryBuilder.Includes != null && this.QueryBuilder.Includes.Count > 0)
             {
-                var list = this.ToList().Select(expression.Compile()).ToList();
-                return list;
+                return NavSelectHelper.GetList(expression,this);
+               // var list = this.ToList().Select(expression.Compile()).ToList();
+               // return list;
             }
             else 
             {
@@ -994,9 +995,7 @@ namespace SqlSugar
         {
             if (this.QueryBuilder.Includes != null && this.QueryBuilder.Includes.Count > 0)
             {
-                var result = await this.ToListAsync();
-                var list =  result.Select(expression.Compile()).ToList();
-                return list;
+                return await NavSelectHelper.GetListAsync(expression, this);
             }
             else
             {
@@ -2781,7 +2780,7 @@ namespace SqlSugar
             if (this.QueryBuilder.Includes != null) 
             {
                 var managers=(this.QueryBuilder.Includes  as List<object>);
-                if (this.QueryBuilder.SelectValue.HasValue()) 
+                if (this.QueryBuilder.SelectValue.HasValue()&& this.QueryBuilder.NoCheckInclude==false) 
                 {
                     Check.ExceptionEasy("To use includes, use select after tolist()", "使用Includes请在ToList()之后在使用Select");
                 }

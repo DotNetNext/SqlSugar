@@ -819,5 +819,18 @@ namespace SqlSugar
 
             return result;
         }
+
+        public static void CheckArray<T>(T[] insertObjs) where T : class, new()
+        {
+
+            if (insertObjs != null 
+                && insertObjs.Length == 1
+                && insertObjs.FirstOrDefault()!=null
+                && insertObjs.FirstOrDefault().GetType().FullName.Contains("System.Collections.Generic.List`"))
+            {
+                Check.ExceptionEasy("Insertable(T []) is an array and your argument is a List", "二次封装引起的进错重载,当前方法是 Insertable(T []) 参数是一个数组，而你的参数是一个List");
+            }
+        }
+
     }
 }

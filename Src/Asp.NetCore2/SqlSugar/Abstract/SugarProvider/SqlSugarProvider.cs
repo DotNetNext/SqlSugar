@@ -674,6 +674,7 @@ namespace SqlSugar
         #region Insertable
         public virtual IInsertable<T> Insertable<T>(T[] insertObjs) where T : class, new()
         {
+            UtilMethods.CheckArray(insertObjs);
             InitMappingInfo<T>();
             InsertableProvider<T> result = this.CreateInsertable(insertObjs);
             return result;
