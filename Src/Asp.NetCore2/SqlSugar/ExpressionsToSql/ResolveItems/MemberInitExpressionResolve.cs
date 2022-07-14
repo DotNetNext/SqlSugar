@@ -283,6 +283,19 @@ namespace SqlSugar
                 MemberAssignment memberAssignment = (MemberAssignment)binding;
                 var memberName = memberAssignment.Member.Name;
                 var item = memberAssignment.Expression;
+                if (item.Type.IsClass()&& item is MemberExpression &&(item as MemberExpression).Expression is ParameterExpression) 
+                {
+                    var rootType = ((item as MemberExpression).Expression as ParameterExpression).Type;
+                    if (this.Context.SugarContext != null) 
+                    {
+                        var navColumn = this.Context.SugarContext.Context.EntityMaintenance.GetEntityInfo(rootType)
+                            .Columns.FirstOrDefault(x=>x.PropertyName==memberName);
+                        if (navColumn != null&& navColumn.Navigat!=null) 
+                        {
+                            break;
+                        }
+                    }
+                }
                 if (IsNullable(item) && item is UnaryExpression)
                 {
                     var memtype = ExpressionTool.GetMemberInfoType(memberAssignment.Member);
