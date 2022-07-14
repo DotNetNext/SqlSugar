@@ -36,6 +36,7 @@ namespace SqlSugar
                 result.TableDescription = sugarTable.TableDescription.ToSqlFilter();
                 result.IsDisabledUpdateAll = sugarTable.IsDisabledUpdateAll;
                 result.IsDisabledDelete = sugarTable.IsDisabledDelete;
+                result.IsCreateTableFiledSort = sugarTable.IsCreateTableFiledSort;
             }
             var indexs = type.GetCustomAttributes(typeof(SugarIndexAttribute));
             if (indexs != null && indexs.Any())
@@ -284,7 +285,7 @@ namespace SqlSugar
                         column.IsArray = sugarColumn.IsArray;
                         column.IsTreeKey = sugarColumn.IsTreeKey;
                         column.SqlParameterDbType = sugarColumn.SqlParameterDbType;
-
+                        column.CreateTableFieldSort = sugarColumn.CreateTableFieldSort;
                         if (sugarColumn.IsJson && String.IsNullOrEmpty(sugarColumn.ColumnDataType))
                         {
                             if (this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL)

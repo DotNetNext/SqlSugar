@@ -13,7 +13,7 @@ namespace SqlSugar
         public string TableDescription { get; set; }
         public bool IsDisabledDelete { get; set; }
         public bool IsDisabledUpdateAll { get; set; }
-
+        public bool IsCreateTableFiledSort { get; set; }
         public SugarTable(string tableName) {
             this.TableName = tableName;
         }
@@ -28,6 +28,13 @@ namespace SqlSugar
             this.TableName = tableName;
             this.TableDescription = tableDescription;
             this.IsDisabledDelete = isDisabledDelete;
+        }
+        public SugarTable(string tableName, string tableDescription, bool isDisabledDelete, bool isCreateTableFieldSort)
+        {
+            this.TableName = tableName;
+            this.TableDescription = tableDescription;
+            this.IsDisabledDelete = isDisabledDelete;
+            this.IsCreateTableFiledSort = isCreateTableFieldSort;
         }
     }
    [AttributeUsage(AttributeTargets.Property , Inherited = true)]
@@ -198,6 +205,7 @@ namespace SqlSugar
         }
 
         public object SqlParameterDbType { get; set; }
+        public int CreateTableFieldSort { get; set; }
     }
 
 

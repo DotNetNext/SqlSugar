@@ -39,5 +39,6 @@ namespace SqlSugar
         public bool IsArray { get;  set; }
         public Type UnderType { get;  set; }
         public Navigate Navigat { get; set; }
+        public int CreateTableFieldSort { get; set; }
     }
 }
