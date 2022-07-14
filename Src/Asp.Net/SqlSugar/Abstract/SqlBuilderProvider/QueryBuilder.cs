@@ -762,6 +762,7 @@ namespace SqlSugar
 
         #region NoCopy
         internal bool IsClone { get; set; }
+        public bool NoCheckInclude { get;  set; }
         #endregion
 
         private string GetTableName(string entityName)
