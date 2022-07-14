@@ -18,5 +18,6 @@ namespace SqlSugar
         public bool IsDisabledDelete { get;  set; }
         public bool IsDisabledUpdateAll { get; set; }
         public List<SugarIndexAttribute> Indexs { get;  set; }
+        public bool IsCreateTableFiledSort { get; set; }
     }
 }
