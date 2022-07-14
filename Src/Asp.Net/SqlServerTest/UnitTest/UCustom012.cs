@@ -167,6 +167,32 @@ namespace OrmTest
                 //.Where(it=>it.Child.Any())
                 .ToList();
 
+
+            var xxx2 = db.Queryable<Tree1>()
+             .Includes(it => it.Child)
+              .GroupBy(x=>x.Id)
+              .OrderByDescending(x=>x.Id)
+             .ToList(it => new  ViewTree1{ 
+                  Count=SqlFunc.AggregateMin(it.Id)
+             });
+            if (xxx2.Last().Child == null) 
+            {
+                throw new Exception("unit error");
+            }
+
+            var xxx23 = db.Queryable<Tree1>()
+             .Includes(it => it.Child)
+              .GroupBy(x => x.Id)
+              .OrderByDescending(x => x.Id)
+             .ToListAsync(it => new ViewTree1
+             {
+                 Count = SqlFunc.AggregateMin(it.Id)
+             }).GetAwaiter().GetResult();
+            if (xxx23.Last().Child == null)
+            {
+                throw new Exception("unit error");
+            }
+
             db.ThenMapper(xxx, it =>
             {
                 it.Child = it.Child.OrderBy(x => x.Id).ToList();
@@ -226,6 +252,11 @@ namespace OrmTest
             public int id { get; set; }
             public string name2{ get; set; }
             public string orgid { get; set; }
+        }
+        public class ViewTree1
+        {
+            public int Count { get; set; }
+            public List<Tree1> Child { get; set; }
         }
         public class Tree1
         {
