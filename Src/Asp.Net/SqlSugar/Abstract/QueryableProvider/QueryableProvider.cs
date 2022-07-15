@@ -1990,7 +1990,12 @@ namespace SqlSugar
         {
             if (this.QueryBuilder.Includes!=null&&this.QueryBuilder.Includes.Count > 0)
             {
-                var list = this.ToPageList(pageIndex,pageSize,ref totalNumber).Select(expression.Compile()).ToList();
+                if (pageIndex == 0)
+                    pageIndex = 1;
+                var list = this.Clone().Skip(pageIndex-1*pageSize).Take(pageSize).ToList(expression);
+                var countQueryable = this.Clone();
+                countQueryable.QueryBuilder.Includes = null;
+                totalNumber = countQueryable.Count();
                 return list;
             }
             else
@@ -2272,8 +2277,12 @@ namespace SqlSugar
         {
             if (this.QueryBuilder.Includes!=null&&this.QueryBuilder.Includes.Count > 0)
             {
-                var pList = await this.ToPageListAsync(pageIndex, pageSize, totalNumber);
-                var list = pList.Select(expression.Compile()).ToList();
+                if (pageIndex == 0)
+                    pageIndex = 1;
+                var list =await this.Clone().Skip(pageIndex - 1 * pageSize).Take(pageSize).ToListAsync(expression);
+                var countQueryable = this.Clone();
+                countQueryable.QueryBuilder.Includes = null;
+                totalNumber.Value =await countQueryable.CountAsync();
                 return list;
             }
             else

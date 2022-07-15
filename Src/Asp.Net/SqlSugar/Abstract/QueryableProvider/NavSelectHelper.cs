@@ -13,7 +13,8 @@ namespace SqlSugar
         {
             List<TResult> result = new List <TResult>();
             var isSqlFunc = IsSqlFunc(expression, queryableProvider);
-            if (isSqlFunc&&isGroup(expression, queryableProvider))
+            var isClass = IsClass(expression, queryableProvider);
+            if (isSqlFunc && isGroup(expression, queryableProvider))
             {
                 var sqlfuncQueryable = queryableProvider.Clone();
                 sqlfuncQueryable.QueryBuilder.Includes = null;
@@ -21,26 +22,81 @@ namespace SqlSugar
                     .Select(expression)
                     .ToList();
                 var includeQueryable = queryableProvider.Clone();
-                includeQueryable.Select(GetGroupSelect(typeof(T), queryableProvider.Context,queryableProvider.QueryBuilder));
-                includeQueryable.QueryBuilder.NoCheckInclude=true;
+                includeQueryable.Select(GetGroupSelect(typeof(T), queryableProvider.Context, queryableProvider.QueryBuilder));
+                includeQueryable.QueryBuilder.NoCheckInclude = true;
                 MegerList(result, includeQueryable.ToList(), sqlfuncQueryable.Context);
             }
-            else if (isSqlFunc) 
+            else if (isSqlFunc)
             {
-                var sqlfuncQueryable = queryableProvider.Clone();
-                sqlfuncQueryable.QueryBuilder.Includes = null;
-                result = sqlfuncQueryable
-                    .Select(expression)
-                    .ToList();
-                var includeList = queryableProvider.Clone().ToList();
-                MegerList(result, includeList, sqlfuncQueryable.Context);
+                result = SqlFunc(expression, queryableProvider);
+            }
+            else if (typeof(TResult).IsAnonymousType() && isClass == false) 
+            {
+                result = SqlFunc(expression, queryableProvider);
+            }
+            else if (typeof(TResult).IsAnonymousType() && isClass == true)
+            {
+                result = Action(expression, queryableProvider);
             }
             else
             {
-                result= queryableProvider.ToList().Select(expression.Compile()).ToList();
+                try
+                {
+                    result = SqlFunc(expression, queryableProvider);
+                }
+                catch (Exception ex)
+                {
+                    try
+                    {
+                        result = Action(expression, queryableProvider);
+                    }
+                    catch  
+                    {
+
+                        throw ex;
+                    }
+                }
             }
             return result;
         }
+
+        private static List<TResult> Action<T, TResult>(Expression<Func<T, TResult>> expression, QueryableProvider<T> queryableProvider)
+        {
+            List<TResult> result;
+            var entity = queryableProvider.Context.EntityMaintenance.GetEntityInfo<TResult>();
+            var list = queryableProvider.Clone().ToList();
+            var dt=queryableProvider.Context.Utilities.ListToDataTable(list);
+            foreach (System.Data.DataRow item in dt.Rows)
+            {
+                foreach (System.Data.DataColumn columnInfo in dt.Columns)
+                {
+                    if (columnInfo.DataType.IsClass())
+                    {
+                        if (item[columnInfo.ColumnName] == null || item[columnInfo.ColumnName] == DBNull.Value)
+                        {
+                            item[columnInfo.ColumnName] = Activator.CreateInstance(columnInfo.DataType, true);
+                        }
+                    }
+                }
+            }
+            list = queryableProvider.Context.Utilities.DataTableToList<T>(dt);
+            result = list.Select(expression.Compile()).ToList();
+            return result;
+        }
+
+        private static List<TResult> SqlFunc<T, TResult>(Expression<Func<T, TResult>> expression, QueryableProvider<T> queryableProvider)
+        {
+            List<TResult> result;
+            var sqlfuncQueryable = queryableProvider.Clone();
+            sqlfuncQueryable.QueryBuilder.Includes = null;
+            result = sqlfuncQueryable
+                .Select(expression)
+                .ToList();
+            var includeList = queryableProvider.Clone().ToList();
+            MegerList(result, includeList, sqlfuncQueryable.Context);
+            return result;
+        }
+
         internal static async Task<List<TResult>> GetListAsync<T, TResult>(Expression<Func<T, TResult>> expression, QueryableProvider<T> queryableProvider)
         {
             List<TResult> result = new List<TResult>();
@@ -120,6 +176,26 @@ namespace SqlSugar
                 }
                 i++;
             }
+        }
+        private static bool IsClass<T, TResult>(Expression<Func<T, TResult>> expression, QueryableProvider<T> queryableProvider)
+        {
+            var body = ExpressionTool.GetLambdaExpressionBody(expression);
+            if (body is NewExpression)
+            {
+                var newExp = ((NewExpression)body);
+                foreach (var item in newExp.Arguments)
+                {
+                    if (item is MemberExpression)
+                    {
+                        var member = (MemberExpression)item;
+                        if (member.Type.IsClass())
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
         }
 
         private static bool IsSqlFunc<T, TResult>(Expression<Func<T, TResult>> expression, QueryableProvider<T> queryableProvider)
