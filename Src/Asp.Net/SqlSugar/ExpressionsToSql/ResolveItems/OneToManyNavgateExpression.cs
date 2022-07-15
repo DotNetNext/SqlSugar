@@ -152,6 +152,10 @@ namespace SqlSugar
             if (this.whereSql.HasValue())
             {
                 mapper.Sql = mapper.Sql.TrimEnd(')');
+                if (this.whereSql.Contains($" {PropertyShortName}.")) 
+                {
+                    this.whereSql = this.whereSql.Replace($" {PropertyShortName}.", $" {this.ProPertyEntity.DbTableName}_1.");
+                }
                 mapper.Sql = mapper.Sql + " AND " + this.whereSql+")";
             }
             if (MethodName == "Any")

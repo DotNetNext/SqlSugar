@@ -11,8 +11,8 @@ namespace OrmTest
 		public static void Init()
 		{
 			var db = NewUnitTest.Db;
-			db.CodeFirst.InitTables<OperatorInfo, Role, OptRole>();
-			db.DbMaintenance.TruncateTable<OperatorInfo, Role, OptRole>();
+			db.CodeFirst.InitTables<OperatorInfo, Role, OptRole,RolePart>();
+			db.DbMaintenance.TruncateTable<OperatorInfo, Role, OptRole,RolePart>();
 			db.Insertable(new OperatorInfo()
 			{
 				 id="1",
@@ -69,6 +69,7 @@ namespace OrmTest
 				name = "admin"
 
 			}).ExecuteReturnIdentity();
+			db.Insertable(new RolePart() { Id = 1}).ExecuteCommand();
 			db.Insertable(new OptRole() { operId="1", roleId=id }).ExecuteCommand();
 			db.Insertable(new OptRole() { id=2, operId = "2", roleId = id2 }).ExecuteCommand();
 			db.Queryable<OperatorInfo>()
@@ -94,12 +95,19 @@ namespace OrmTest
 			.Includes(x => x.Roles.Skip(10).Take(1).ToList())
 			.ToList();
 
+			var list5 = db.Queryable<OperatorInfo>()
+	.Where(it => it.Roles.Any(z => z.RolePart.Id == 1))
+	.ToList();
+
 			db.DeleteNav<OperatorInfo>(x=>x.id== list4.First().id)
 				.Include(x => x.Roles,new DeleteNavOptions() { 
 					ManyToMayIsDeleteA=true,
 					ManyToMayIsDeleteB=true
 				 })
 				.ExecuteCommand();
+
+
+		
 		}
 
 			/// <summary>
@@ -196,7 +204,14 @@ namespace OrmTest
 			/// </summary>
 			public DateTime createTime { get; set; }
 
+			[Navigate(NavigateType.OneToOne,nameof(id))]
+			public RolePart RolePart { get; set; }
+		}
 
+		public class RolePart 
+		{
+			[SugarColumn(IsPrimaryKey =true)]
+			public int Id { get; set; }
 		}
 
 		/// <summary>
