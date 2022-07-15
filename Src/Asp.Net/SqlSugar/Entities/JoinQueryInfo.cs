@@ -6,6 +6,7 @@ using System.Text;
 
 namespace SqlSugar
 {
+ 
     public class JoinQueryInfo
     {
         public JoinType JoinType { get; set; }

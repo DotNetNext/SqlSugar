@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Text.RegularExpressions;
+
 namespace SqlSugar
 {
     public class MemberExpressionResolve : BaseResolve
@@ -75,31 +77,39 @@ namespace SqlSugar
                 var navN = new OneToOneNavgateExpressionN(this.Context?.SugarContext?.Context);
                 if (nav.IsNavgate(expression))
                 {
-                    var value = nav.GetSql();
-                    SetNavigateResult();
-                    this.Context.SingleTableNameSubqueryShortName = nav.ShorName;
-                    if (isSetTempData)
+                    if (this.Context?.SugarContext?.QueryBuilder?.JoinQueryInfos != null)
                     {
-                        baseParameter.CommonTempData = value;
+                        var p=expression.Expression.ObjToString();
+                        var querybuilder = this.Context?.SugarContext?.QueryBuilder;
+                        var joinInfos = querybuilder.JoinQueryInfos;
+                        var joinInfo=joinInfos.FirstOrDefault(it => $"{querybuilder.TableShortName}.{ it.ShortName.Replace("pnv_","")}" == p);
+                        if (joinInfo != null)
+                        {
+                            var columnInfo=nav.ProPertyEntity.Columns.FirstOrDefault(it => it.PropertyName == nav.MemberName);
+                            var value =new MapperSql() { Sql = joinInfo.ShortName + "." + columnInfo.DbColumnName };
+                            
+                            if (isSetTempData)
+                            {
+                                baseParameter.CommonTempData = value;
+                            }
+                            else
+                            {
+                                AppendValue(parameter, isLeft, value);
+                            }
+                        }
+                        else 
+                        {
+                            DefaultOneToOne(parameter, baseParameter, isLeft, isSetTempData, nav);
+                        }
                     }
                     else
                     {
-                        AppendValue(parameter, isLeft, value);
+                        DefaultOneToOne(parameter, baseParameter, isLeft, isSetTempData, nav);
                     }
                 }
                 else if (navN.IsNavgate(expression))
                 {
-                    var value = navN.GetMemberSql();
-                    SetNavigateResult();
-                    this.Context.SingleTableNameSubqueryShortName = navN.shorName;
-                    if (isSetTempData)
-                    {
-                        baseParameter.CommonTempData = value;
-                    }
-                    else
-                    {
-                        AppendValue(parameter, isLeft, value);
-                    }
+                    DefaultOneToOneN(parameter, baseParameter, isLeft, isSetTempData, navN);
                 }
                 else
                 {
@@ -113,6 +123,36 @@ namespace SqlSugar
             else
             {
                 ResolveDefault(parameter, baseParameter, expression, isLeft, isSetTempData, isSingle);
+            }
+        }
+
+        private void DefaultOneToOneN(ExpressionParameter parameter, ExpressionParameter baseParameter, bool? isLeft, bool isSetTempData, OneToOneNavgateExpressionN navN)
+        {
+            var value = navN.GetMemberSql();
+            SetNavigateResult();
+            this.Context.SingleTableNameSubqueryShortName = navN.shorName;
+            if (isSetTempData)
+            {
+                baseParameter.CommonTempData = value;
+            }
+            else
+            {
+                AppendValue(parameter, isLeft, value);
+            }
+        }
+
+        private void DefaultOneToOne(ExpressionParameter parameter, ExpressionParameter baseParameter, bool? isLeft, bool isSetTempData, OneToOneNavgateExpression nav)
+        {
+            var value = nav.GetSql();
+            SetNavigateResult();
+            this.Context.SingleTableNameSubqueryShortName = nav.ShorName;
+            if (isSetTempData)
+            {
+                baseParameter.CommonTempData = value;
+            }
+            else
+            {
+                AppendValue(parameter, isLeft, value);
             }
         }
 

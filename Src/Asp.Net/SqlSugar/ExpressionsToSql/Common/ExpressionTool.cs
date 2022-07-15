@@ -60,6 +60,33 @@ namespace SqlSugar
             }
         }
 
+
+        public static void GetOneToOneInfo<T>(SqlSugarProvider context,Expression<Func<T, object>> LeftObject, out MemberExpression memberExpression, out string navObjectName, out EntityColumnInfo navColumn, out EntityInfo navEntityInfo, out EntityColumnInfo navPkColumn)
+        {
+            memberExpression = ((LeftObject as LambdaExpression).Body as MemberExpression);
+            var listItemType = typeof(T);
+            var listItemEntity = context.EntityMaintenance.GetEntityInfo(listItemType);
+            var listPkColumn = listItemEntity.Columns.Where(it => it.IsPrimarykey).FirstOrDefault();
+            navObjectName = memberExpression.Member.Name;
+            var navObjectName2 = navObjectName;
+            var navObjectNamePropety = listItemType.GetProperty(navObjectName);
+            var navObjectNameColumnInfo = listItemEntity.Columns.First(it => it.PropertyName == navObjectName2);
+            Check.ExceptionEasy(navObjectNameColumnInfo.Navigat == null, $"{navObjectName} not [Navigat(..)] ", $"{navObjectName} 没有导航特性 [Navigat(..)] ");
+            Check.ExceptionEasy(navObjectNameColumnInfo.Navigat.NavigatType != NavigateType.OneToOne, $"IncludeLeftJoin can only be one-on-one ", $"IncludeLeftJoin 只能是一对一 ");
+            navColumn = listItemEntity.Columns.FirstOrDefault(it => it.PropertyName == navObjectNameColumnInfo.Navigat.Name);
+            Check.ExceptionEasy(navColumn == null, "OneToOne navigation configuration error", $"OneToOne导航配置错误： 实体{ listItemEntity.EntityName } 不存在{navObjectNameColumnInfo.Navigat.Name}");
+            var navType = navObjectNamePropety.PropertyType;
+            navEntityInfo = context.EntityMaintenance.GetEntityInfo(navType);
+            context.InitMappingInfo(navEntityInfo.Type);
+            navPkColumn = navEntityInfo.Columns.Where(it => it.IsPrimarykey).FirstOrDefault();
+            Check.ExceptionEasy(navPkColumn == null && navObjectNameColumnInfo.Navigat.Name2 == null, navEntityInfo.EntityName + "need primarykey", navEntityInfo.EntityName + " 需要主键");
+            if (navObjectNameColumnInfo.Navigat.Name2.HasValue())
+            {
+                navPkColumn = navEntityInfo.Columns.Where(it => it.PropertyName == navObjectNameColumnInfo.Navigat.Name2).FirstOrDefault();
+            }
+        }
+
+
         public static List<ParameterExpression> ExpressionParameters(Expression expression)
         {
              List<ParameterExpression> parameters = null;
