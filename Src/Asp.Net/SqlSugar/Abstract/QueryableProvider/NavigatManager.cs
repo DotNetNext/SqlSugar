@@ -138,11 +138,15 @@ namespace SqlSugar
             var memberExpression = ((expression as LambdaExpression).Body as MemberExpression);
 
             var listItemType = list.Where(it=>it!=null).FirstOrDefault()?.GetType();
+            if (listItemType == null) 
+            {
+                return;
+            }
             if (listItemType.Name.StartsWith("List`")) 
             {
                 listItemType = listItemType.GetGenericArguments()[0];
             }
-            if (listItemType == null) return;
+            //if (listItemType == null) return;
 
             var listItemEntity = this.Context.EntityMaintenance.GetEntityInfo(listItemType);
             var listPkColumn = listItemEntity.Columns.Where(it => it.IsPrimarykey).FirstOrDefault();
