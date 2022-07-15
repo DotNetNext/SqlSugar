@@ -1992,7 +1992,7 @@ namespace SqlSugar
             {
                 if (pageIndex == 0)
                     pageIndex = 1;
-                var list = this.Clone().Skip(pageIndex-1*pageSize).Take(pageSize).ToList(expression);
+                var list = this.Clone().Skip((pageIndex-1)*pageSize).Take(pageSize).ToList(expression);
                 var countQueryable = this.Clone();
                 countQueryable.QueryBuilder.Includes = null;
                 totalNumber = countQueryable.Count();
@@ -2279,7 +2279,7 @@ namespace SqlSugar
             {
                 if (pageIndex == 0)
                     pageIndex = 1;
-                var list =await this.Clone().Skip(pageIndex - 1 * pageSize).Take(pageSize).ToListAsync(expression);
+                var list =await this.Clone().Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync(expression);
                 var countQueryable = this.Clone();
                 countQueryable.QueryBuilder.Includes = null;
                 totalNumber.Value =await countQueryable.CountAsync();
