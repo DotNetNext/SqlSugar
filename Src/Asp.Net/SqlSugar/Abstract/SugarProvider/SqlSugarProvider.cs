@@ -113,7 +113,7 @@ namespace SqlSugar
         /// </summary>
         public virtual ISugarQueryable<T> Queryable<T>(string shortName)
         {
-            Check.Exception(shortName.HasValue() && shortName.Length > 20, ErrorMessage.GetThrowMessage("shortName参数长度不能超过20，你可能是想用这个方法 db.SqlQueryable(sql)而不是db.Queryable(shortName)", "Queryable.shortName max length 20"));
+            Check.Exception(shortName.HasValue() && shortName.Length > 40, ErrorMessage.GetThrowMessage("shortName参数长度不能超过20，你可能是想用这个方法 db.SqlQueryable(sql)而不是db.Queryable(shortName)", "Queryable.shortName max length 20"));
             var queryable = Queryable<T>();
             queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
             return queryable;
