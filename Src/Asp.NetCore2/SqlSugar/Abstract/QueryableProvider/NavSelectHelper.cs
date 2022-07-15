@@ -21,7 +21,7 @@ namespace SqlSugar
                     .Select(expression)
                     .ToList();
                 var includeQueryable = queryableProvider.Clone();
-                includeQueryable.Select(GetGroupSelect(typeof(T), queryableProvider.Context));
+                includeQueryable.Select(GetGroupSelect(typeof(T), queryableProvider.Context,queryableProvider.QueryBuilder));
                 includeQueryable.QueryBuilder.NoCheckInclude=true;
                 MegerList(result, includeQueryable.ToList(), sqlfuncQueryable.Context);
             }
@@ -53,7 +53,7 @@ namespace SqlSugar
                     .Select(expression)
                     .ToListAsync();
                 var includeQueryable = queryableProvider.Clone();
-                includeQueryable.Select(GetGroupSelect(typeof(T), queryableProvider.Context));
+                includeQueryable.Select(GetGroupSelect(typeof(T), queryableProvider.Context, queryableProvider.QueryBuilder));
                 includeQueryable.QueryBuilder.NoCheckInclude = true;
                 MegerList(result,await includeQueryable.ToListAsync(), sqlfuncQueryable.Context);
             }
@@ -75,13 +75,20 @@ namespace SqlSugar
             return result;
         }
 
-        private static string GetGroupSelect(Type type,SqlSugarProvider context)
+        private static string GetGroupSelect(Type type,SqlSugarProvider context,QueryBuilder queryBuilder)
         {
             var entity = context.EntityMaintenance.GetEntityInfo(type);
             List<string> selector = new List<string>();
             foreach (var item in entity.Columns.Where(it=>it.IsIgnore==false))
             {
-                selector.Add($" min({item.DbColumnName}) as {item.DbColumnName}");
+                if (queryBuilder.TableShortName.HasValue())
+                {
+                    selector.Add($" min({queryBuilder.TableShortName}.{item.DbColumnName}) as {item.DbColumnName}");
+                }
+                else
+                {
+                    selector.Add($" min({item.DbColumnName}) as {item.DbColumnName}");
+                }
             }
             return string.Join(",", selector);
         }
