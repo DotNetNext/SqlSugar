@@ -17,7 +17,7 @@ namespace SqlSugar
         public EntityColumnInfo _ParentPkColumn { get; set; }
         public SqlSugarProvider _Context { get; set; }
 
-
+        public UpdateNavOptions _Options { get; set; }
         public UpdateNavProvider<Root, Root> AsNav()
         {
             return new UpdateNavProvider<Root, Root>
@@ -30,6 +30,28 @@ namespace SqlSugar
             };
         }
         public UpdateNavProvider<Root, TChild> ThenInclude<TChild>(Expression<Func<T, TChild>> expression) where TChild : class, new()
+        {
+            return _ThenInclude(expression);
+        }
+
+        public UpdateNavProvider<Root, TChild> ThenInclude<TChild>(Expression<Func<T, List<TChild>>> expression) where TChild : class, new()
+        {
+            return _ThenInclude(expression);
+        }
+
+        public UpdateNavProvider<Root, TChild> ThenInclude<TChild>(Expression<Func<T, TChild>> expression,UpdateNavOptions options) where TChild : class, new()
+        {
+            _Options= options;  
+            return _ThenInclude(expression);
+        }
+
+        public UpdateNavProvider<Root, TChild> ThenInclude<TChild>(Expression<Func<T, List<TChild>>> expression, UpdateNavOptions options) where TChild : class, new()
+        {
+            _Options = options;
+            return _ThenInclude(expression);
+        }
+
+        private UpdateNavProvider<Root, TChild> _ThenInclude<TChild>(Expression<Func<T, TChild>> expression) where TChild : class, new()
         {
             InitParentList();
             var name = ExpressionTool.GetMemberName(expression);
@@ -52,7 +74,8 @@ namespace SqlSugar
             }
             return GetResult<TChild>();
         }
-        public UpdateNavProvider<Root, TChild> ThenInclude<TChild>(Expression<Func<T, List<TChild>>> expression) where TChild : class, new()
+
+        private UpdateNavProvider<Root, TChild> _ThenInclude<TChild>(Expression<Func<T, List<TChild>>> expression) where TChild : class, new()
         {
             InitParentList();
             var name = ExpressionTool.GetMemberName(expression);

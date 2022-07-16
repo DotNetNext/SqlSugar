@@ -8,7 +8,12 @@ namespace SqlSugar
 {
     public class DeleteNavOptions
     {
-        public bool ManyToMayIsDeleteA { get; set; }
-        public bool ManyToMayIsDeleteB { get; set; }
+        public bool ManyToManyIsDeleteA { get; set; }
+        public bool ManyToManyIsDeleteB { get; set; }
+    }   
+    public class UpdateNavOptions
+    {
+        public bool ManyToManyIsUpdateA { get; set; }
+        public bool ManyToManyIsUpdateB { get; set; }
     }
 }
