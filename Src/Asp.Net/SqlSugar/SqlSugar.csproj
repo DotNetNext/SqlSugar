@@ -89,6 +89,11 @@
     <Compile Include="Abstract\DeleteProvider\SplitTableDeleteByObjectProvider.cs" />
     <Compile Include="Abstract\DeleteProvider\SplitTableDeleteProvider.cs" />
     <Compile Include="Abstract\EntityMaintenance\EntityMaintenance.cs" />
+    <Compile Include="Abstract\ExecuteNavProvider\UpdateNavOneToOne.cs" />
+    <Compile Include="Abstract\ExecuteNavProvider\UpdateNavManyToMany.cs" />
+    <Compile Include="Abstract\ExecuteNavProvider\UpdateNavOneToMany.cs" />
+    <Compile Include="Abstract\ExecuteNavProvider\UpdateNavProviderHelper.cs" />
+    <Compile Include="Abstract\ExecuteNavProvider\UpdateNavProvider.cs" />
     <Compile Include="Abstract\ExecuteNavProvider\DeleteNavManyToMany.cs" />
     <Compile Include="Abstract\ExecuteNavProvider\DeleteNavOneToMany.cs" />
     <Compile Include="Abstract\ExecuteNavProvider\DeleteNavOneToOne.cs" />
@@ -99,7 +104,7 @@
     <Compile Include="Abstract\ExecuteNavProvider\InsertNavProviderOneToOne.cs" />
     <Compile Include="Abstract\ExecuteNavProvider\DeleteNavTask.cs" />
     <Compile Include="Abstract\ExecuteNavProvider\InsertNavTask.cs" />
-    <Compile Include="Abstract\ExecuteNavProvider\UpdateInsert.cs" />
+    <Compile Include="Abstract\ExecuteNavProvider\UpdateNavTask.cs" />
     <Compile Include="Abstract\ExecuteNavProvider\InsertNavProvider.cs" />
     <Compile Include="Abstract\ExpressionableProvider\Expressionable.cs" />
     <Compile Include="Abstract\FastestProvider\FastBuilder.cs" />
