@@ -18,7 +18,9 @@ namespace SqlSugar
         {
             if (_RootList == null)
             {
-                _RootList = _ParentList = GetRootList(_Roots).Cast<object>().ToList();
+                this._Context.Updateable(_Roots).ExecuteCommand();
+                _RootList = _ParentList = _Roots.Cast<object>().ToList();
+                _ParentEntity = this._Context.EntityMaintenance.GetEntityInfo<Root>();
             }
             else if (_ParentList == null)
             {
@@ -26,7 +28,6 @@ namespace SqlSugar
                 var pkColumn = this._Context.EntityMaintenance.GetEntityInfo<T>().Columns.FirstOrDefault(it => it.IsPrimarykey);
                 this._ParentPkColumn = pkColumn;
             }
-
         }
 
         private UpdateNavProvider<Root, TChild> GetResult<TChild>() where TChild : class, new()
@@ -41,18 +42,7 @@ namespace SqlSugar
                 _RootList = this._RootList
             };
         }
-
-        private List<Type> GetRootList<Type>(List<Type> datas) where Type : class, new()
-        {
-            List<Type> result = new List<Type>();
-            this._Context.InitMappingInfo<Type>();
-            var entity = this._Context.EntityMaintenance.GetEntityInfo<Type>();
-            var pkColumn = entity.Columns.FirstOrDefault(it => it.IsPrimarykey);
-            InsertDatas(datas, pkColumn);
-            this._ParentEntity = entity;
-            result = datas;
-            return result;
-        }
+ 
 
         private void InsertIdentity<Type>(List<Type> datas) where Type : class, new()
         {
@@ -80,10 +70,12 @@ namespace SqlSugar
         {
             children = children.Distinct().ToList();
             var x = this._Context.Storageable(children).WhereColumns(new string[] { pkColumn.PropertyName }).ToStorage();
-            var UpdateData = children = x.UpdateList.Select(it => it.Item).ToList();
+            var insertData  = x.InsertList.Select(it => it.Item).ToList();
+            var updateData  = x.UpdateList.Select(it => it.Item).ToList();
             Check.ExceptionEasy(pkColumn == null && NavColumn == null, $"The entity is invalid", $"实体错误无法使用导航");
-            InitData(pkColumn, UpdateData);
-            this._ParentList = children.Cast<object>().ToList();
+            x.AsUpdateable.ExecuteCommand();
+            InitData(pkColumn, insertData);
+            this._ParentList = insertData.Union(updateData).Cast<object>().ToList();
         }
 
         private void InitData<TChild>(EntityColumnInfo pkColumn, List<TChild> UpdateData) where TChild : class, new()

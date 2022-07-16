@@ -24,6 +24,7 @@ namespace SqlSugar
             {
                 parentPkColumn = parentNavColumn;
             }
+            var ids = new List<object>();
             foreach (var item in parentList)
             {
                 var parentValue = parentPkColumn.PropertyInfo.GetValue(item);
@@ -33,10 +34,14 @@ namespace SqlSugar
                     foreach (var child in childs)
                     {
                         thisFkColumn.PropertyInfo.SetValue(child, parentValue, null);
+                        ids.Add(parentValue);
                     }
                     children.AddRange(childs);
                 }
             }
+            this._Context.Deleteable<object>()
+                .AS(thisEntity.DbTableName)
+                .In(thisFkColumn.DbColumnName, ids.Distinct().ToList()).ExecuteCommand();
             InsertDatas(children, thisPkColumn);
             SetNewParent<TChild>(thisEntity, thisPkColumn);
         }
