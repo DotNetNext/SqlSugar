@@ -78,6 +78,10 @@ namespace SqlSugar
         {
             return AsNav().ThenInclude(expression);
         }
+        public DeleteNavTask<Root, TChild> Include<TChild>(Expression<Func<Root, List<TChild>>> expression,DeleteNavOptions options) where TChild : class, new()
+        {
+            return AsNav().ThenInclude(expression, options);
+        }
         public bool ExecuteCommand()
         {
             PreFunc();

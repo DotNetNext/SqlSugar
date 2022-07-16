@@ -74,11 +74,11 @@ namespace SqlSugar
 
         private bool IsDeleteA()
         {
-            return deleteNavOptions != null && deleteNavOptions.ManyToMayIsDeleteA;
+            return deleteNavOptions != null && deleteNavOptions.ManyToManyIsDeleteA;
         }
         private bool IsDeleteB()
         {
-            return deleteNavOptions != null && deleteNavOptions.ManyToMayIsDeleteB;
+            return deleteNavOptions != null && deleteNavOptions.ManyToManyIsDeleteB;
         }
     }
 }
