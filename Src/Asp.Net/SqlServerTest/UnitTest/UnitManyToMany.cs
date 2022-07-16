@@ -101,8 +101,8 @@ namespace OrmTest
 
 			db.DeleteNav<OperatorInfo>(x=>x.id== list4.First().id)
 				.Include(x => x.Roles,new DeleteNavOptions() { 
-					ManyToMayIsDeleteA=true,
-					ManyToMayIsDeleteB=true
+					ManyToManyIsDeleteA=true,
+					ManyToManyIsDeleteB=true
 				 })
 				.ExecuteCommand();
 
