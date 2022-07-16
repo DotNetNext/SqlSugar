@@ -10,7 +10,7 @@ namespace SqlSugar
     {
         public bool ManyToManyIsDeleteA { get; set; }
         public bool ManyToManyIsDeleteB { get; set; }
-    }
+    }   
     public class UpdateNavOptions
     {
         public bool ManyToManyIsUpdateA { get; set; }

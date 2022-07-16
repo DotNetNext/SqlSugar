@@ -10,7 +10,6 @@ namespace SqlSugar
     {
         private void UpdateManyToMany<TChild>(string name, EntityColumnInfo nav) where TChild : class, new()
         {
-            ;
             var parentEntity = _ParentEntity;
             var parentList = _ParentList;
             var parentPkColumn = parentEntity.Columns.FirstOrDefault(it => it.IsPrimarykey == true);
@@ -33,7 +32,14 @@ namespace SqlSugar
             {
                 var items = parentNavigateProperty.PropertyInfo.GetValue(item);
                 var children = ((List<TChild>)items);
-                InsertDatas(children, thisPkColumn);
+                if (this._Options != null && this._Options.ManyToManyIsUpdateB)
+                {
+                    InsertDatas(children, thisPkColumn);
+                }
+                else 
+                {
+                    _ParentList = children.Cast<object>().ToList();
+                }
                 var parentId = parentPkColumn.PropertyInfo.GetValue(item);
                 foreach (var child in children)
                 {
@@ -51,6 +57,7 @@ namespace SqlSugar
             var ids = mappgingTables.Select(x => x[mappingA.DbColumnName]).ToList();
             this._Context.Deleteable<object>().AS(mappingEntity.DbTableName).In(mappingA.DbColumnName, ids).ExecuteCommand();
             this._Context.Insertable(mappgingTables).AS(mappingEntity.DbTableName).ExecuteCommand();
+            _ParentEntity = thisEntity;
         }
 
         private void SetMappingTableDefaultValue(EntityColumnInfo mappingPk, Dictionary<string, object> keyValuePairs)
