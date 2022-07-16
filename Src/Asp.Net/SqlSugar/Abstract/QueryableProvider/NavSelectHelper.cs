@@ -14,7 +14,7 @@ namespace SqlSugar
             List<TResult> result = new List <TResult>();
             var isSqlFunc = IsSqlFunc(expression, queryableProvider);
             var isClass = IsClass(expression, queryableProvider);
-            if (isSqlFunc && isGroup(expression, queryableProvider))
+            if (isGroup(expression, queryableProvider))
             {
                 var sqlfuncQueryable = queryableProvider.Clone();
                 sqlfuncQueryable.QueryBuilder.Includes = null;
@@ -92,10 +92,14 @@ namespace SqlSugar
             result = sqlfuncQueryable
                 .Select(expression)
                 .ToList();
-            var includeList = queryableProvider.Clone().ToList();
+            var selector = GetDefaultSelector(queryableProvider.Context.EntityMaintenance.GetEntityInfo<T>(), queryableProvider.QueryBuilder);
+            var queryable = queryableProvider.Select(selector).Clone();
+            queryable.QueryBuilder.NoCheckInclude = true;
+            var includeList = queryable.ToList();
             MegerList(result, includeList, sqlfuncQueryable.Context);
             return result;
         }
+
 
         internal static async Task<List<TResult>> GetListAsync<T, TResult>(Expression<Func<T, TResult>> expression, QueryableProvider<T> queryableProvider)
         {
@@ -135,7 +139,8 @@ namespace SqlSugar
         {
             var entity = context.EntityMaintenance.GetEntityInfo(type);
             List<string> selector = new List<string>();
-            foreach (var item in entity.Columns.Where(it=>it.IsIgnore==false))
+            List<EntityColumnInfo> columns = GetListNavColumns(entity);
+            foreach (var item in columns)
             {
                 if (queryBuilder.TableShortName.HasValue())
                 {
@@ -147,6 +152,40 @@ namespace SqlSugar
                 }
             }
             return string.Join(",", selector);
+        }
+
+        private static string GetDefaultSelector(EntityInfo entityInfo, QueryBuilder queryBuilder)
+        {
+            List<EntityColumnInfo> columns = GetListNavColumns(entityInfo);
+            var selector = new List<string>();
+            if (columns.Count == 0) return null;
+            foreach (var item in columns)
+            {
+                if (queryBuilder.TableShortName.HasValue())
+                {
+                    selector.Add($" {queryBuilder.TableShortName}.{item.DbColumnName} as {item.DbColumnName}");
+                }
+                else
+                {
+                    selector.Add($" {item.DbColumnName} as {item.DbColumnName}");
+                }
+            }
+            return string.Join(",", selector);
+        }
+
+        private static List<EntityColumnInfo> GetListNavColumns(EntityInfo entityInfo)
+        {
+            var list = entityInfo.Columns.Where(it => it.Navigat != null).Select(
+                 it => it.Navigat.Name
+                ).ToArray();
+            var list2 = entityInfo.Columns.Where(it => it.Navigat != null && it.Navigat.Name2 != null).Select(
+                 it => it.Navigat.Name2
+                ).ToArray();
+            var columns = entityInfo.Columns.Where(it => it.IsPrimarykey ||
+              list.Contains(it.PropertyName) ||
+              list2.Contains(it.PropertyName)
+            ).ToList();
+            return columns;
         }
 
         private static void MegerList<TResult, T>(List<TResult> result, List<T> includeList,SqlSugarProvider context)
