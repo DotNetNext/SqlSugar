@@ -174,11 +174,11 @@ namespace SqlSugar
         {
             return  this.Context.DeleteNav(whereExpression);
         }
-        public UpdateNavProvider<T, T> UpdateNav<T>(T data)
+        public UpdateNavTaskInit<T, T> UpdateNav<T>(T data) where T : class, new()
         {
             return this.Context.UpdateNav(data);
         }
-        public UpdateNavProvider<T, T> UpdateNav<T>(List<T> datas)
+        public UpdateNavTaskInit<T, T> UpdateNav<T>(List<T> datas) where T : class, new()
         {
             return this.Context.UpdateNav(datas);  
         }
