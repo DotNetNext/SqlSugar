@@ -71,6 +71,7 @@ var list=db.Queryable<Test>()
             .ThenInclude(z1 => z1.RoomList)  
             .Include(z1 => z1.Books) 
             .ExecuteCommand(); 
+            
 //delete by nav               
  db.DeleteNav<Student>(it=>it.Id==1) 
             .Include(z1 => z1.SchoolA) 
