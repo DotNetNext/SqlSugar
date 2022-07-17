@@ -2187,7 +2187,7 @@ namespace SqlSugar
              this.QueryBuilder.IsDistinct==false)
             {
                 var list = await this.Clone().Select<int>(" COUNT(1) ").ToListAsync();
-                return list.First();
+                return list.FirstOrDefault();
             }
             MappingTableList expMapping;
             int result;
