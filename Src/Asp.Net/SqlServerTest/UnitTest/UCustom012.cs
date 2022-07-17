@@ -226,7 +226,12 @@ namespace OrmTest
                 .SetColumns(it=>it.Name=="a").Where(x => x.SchoolA.School_Name == "a").ExecuteCommand();
 
 
-     
+            db.QueryFilter.Add(new TableFilterItem<City>(z=>z.ProvinceId==1,true));
+            db.QueryFilter.Add(new TableFilterItem<SchoolA>(z => z.School_Name == "z",true));
+            db.Queryable<StudentA>()
+                .Where(x=>x.SchoolA.SchoolId==1)
+                .Where(x => x.SchoolA.City.Id == 1)
+                .ToList();
 
             db.DbMaintenance.TruncateTable<StudentA, RoomA, BookA>();
 
