@@ -48,7 +48,7 @@ namespace SqlSugar
             var joinInfos = subInfos.Skip(1).ToList();
             var i = 0;
             var masterShortName = formInfo.ThisEntityInfo.DbTableName + i;
-            var queryable = this.context.Queryable<object>(ToShortName(masterShortName)).AS(formInfo.ThisEntityInfo.DbTableName);
+            var queryable = this.context.Queryable<object>(ToShortName(masterShortName)).AS(formInfo.ThisEntityInfo.DbTableName).Filter(null,true);
             i++;
             var lastShortName = "";
             foreach (var item in joinInfos)
