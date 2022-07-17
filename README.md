@@ -64,6 +64,7 @@ var list=db.Queryable<Test>()
            .Includes(x => x.Provinces,x=>x.Citys ,x=>x.Street) //multi-level
            .Includes(x => x.ClassInfo) 
            .ToList();
+           
 //insert by nav
  db.InsertNav(list) //Finer operation than EFCore's SaveChange
             .Include(z1 => z1.SchoolA) 
@@ -76,6 +77,7 @@ var list=db.Queryable<Test>()
             .ThenInclude(z1 => z1.RoomList) st
             .Include(z1 => z1.Books) 
             .ExecuteCommand();  
+            
 //update by nav     
  db.UpdateNav(list)
             .Include(z1 => z1.SchoolA) 
