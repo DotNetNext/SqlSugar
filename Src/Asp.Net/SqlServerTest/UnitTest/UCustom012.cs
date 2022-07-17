@@ -232,7 +232,7 @@ namespace OrmTest
                 .Where(x=>x.SchoolA.SchoolId==1)
                 .Where(x => x.SchoolA.City.Id == 1)
                 .ToList();
-
+            db.QueryFilter = new QueryFilterProvider();
             db.DbMaintenance.TruncateTable<StudentA, RoomA, BookA>();
 
             //开发中
