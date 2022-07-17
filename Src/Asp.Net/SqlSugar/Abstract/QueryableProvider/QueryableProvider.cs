@@ -1170,7 +1170,7 @@ namespace SqlSugar
                 this.QueryBuilder.IsDistinct==false) 
             {
 
-                return this.Clone().Select<int>(" COUNT(1) ").ToList().First();
+                return this.Clone().Select<int>(" COUNT(1) ").ToList().FirstOrDefault();
             }
             MappingTableList expMapping;
             int result;
