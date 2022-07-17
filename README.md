@@ -58,11 +58,29 @@ WHERE
   ([o].[Id] = @Id0)
 ``` 
 ###   Feature2 : Include query
-```cs Include Query
+```cs Include Query、Insert、Delete and Update
 var list=db.Queryable<Test>()
            .Includes(x => x.Provinces,x=>x.Citys ,x=>x.Street) 
            .Includes(x => x.ClassInfo) 
            .ToList();
+
+ db.InsertNav(list)
+            .Include(z1 => z1.SchoolA) 
+            .ThenInclude(z1 => z1.RoomList)  
+            .Include(z1 => z1.Books) 
+            .ExecuteCommand(); 
+               
+ db.DeleteNav<Student>(it=>it.Id==1) 
+            .Include(z1 => z1.SchoolA) 
+            .ThenInclude(z1 => z1.RoomList) st
+            .Include(z1 => z1.Books) 
+            .ExecuteCommand();  
+     
+ db.UpdateNav(list)
+            .Include(z1 => z1.SchoolA) 
+            .ThenInclude(z1 => z1.RoomList)  
+            .Include(z1 => z1.Books) 
+            .ExecuteCommand();           
 ```
 
 ###   Feature3 : Page query
