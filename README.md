@@ -57,12 +57,34 @@ FROM
 WHERE
   ([o].[Id] = @Id0)
 ``` 
-###   Feature2 : Include query
-```cs Include Query
+###   Feature2 :Include Query、Insert、Delete and Update
+```cs 
+//query  by nav
 var list=db.Queryable<Test>()
-           .Includes(x => x.Provinces,x=>x.Citys ,x=>x.Street) 
+           .Includes(x => x.Provinces,x=>x.Citys ,x=>x.Street) //multi-level
            .Includes(x => x.ClassInfo) 
            .ToList();
+           
+//insert by nav
+ db.InsertNav(list) //Finer operation than EFCore's SaveChange
+            .Include(z1 => z1.SchoolA) 
+            .ThenInclude(z1 => z1.RoomList)  
+            .Include(z1 => z1.Books) 
+            .ExecuteCommand(); 
+            
+//delete by nav               
+ db.DeleteNav<Student>(it=>it.Id==1) 
+            .Include(z1 => z1.SchoolA) 
+            .ThenInclude(z1 => z1.RoomList) st
+            .Include(z1 => z1.Books) 
+            .ExecuteCommand();  
+            
+//update by nav     
+ db.UpdateNav(list)
+            .Include(z1 => z1.SchoolA) 
+            .ThenInclude(z1 => z1.RoomList)  
+            .Include(z1 => z1.Books) 
+            .ExecuteCommand();           
 ```
 
 ###   Feature3 : Page query
