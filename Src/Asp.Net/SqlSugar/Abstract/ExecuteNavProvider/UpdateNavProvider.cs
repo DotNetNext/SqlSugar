@@ -53,6 +53,7 @@ namespace SqlSugar
 
         private UpdateNavProvider<Root, TChild> _ThenInclude<TChild>(Expression<Func<T, TChild>> expression) where TChild : class, new()
         {
+            var isRoot = _RootList == null;
             InitParentList();
             var name = ExpressionTool.GetMemberName(expression);
             var nav = this._ParentEntity.Columns.FirstOrDefault(x => x.PropertyName == name);
@@ -60,6 +61,7 @@ namespace SqlSugar
             {
                 Check.ExceptionEasy($"{name} no navigate attribute", $"{this._ParentEntity.EntityName}的属性{name}没有导航属性");
             }
+            UpdateRoot(isRoot, nav);
             if (nav.Navigat.NavigatType == NavigateType.OneToOne || nav.Navigat.NavigatType == NavigateType.ManyToOne)
             {
                 UpdateOneToOne<TChild>(name, nav);
@@ -74,9 +76,9 @@ namespace SqlSugar
             }
             return GetResult<TChild>();
         }
-
         private UpdateNavProvider<Root, TChild> _ThenInclude<TChild>(Expression<Func<T, List<TChild>>> expression) where TChild : class, new()
         {
+            var isRoot = _RootList == null;
             InitParentList();
             var name = ExpressionTool.GetMemberName(expression);
             var nav = this._ParentEntity.Columns.FirstOrDefault(x => x.PropertyName == name);
@@ -84,6 +86,7 @@ namespace SqlSugar
             {
                 Check.ExceptionEasy($"{name} no navigate attribute", $"{this._ParentEntity.EntityName}的属性{name}没有导航属性");
             }
+            UpdateRoot(isRoot, nav);
             if (nav.Navigat.NavigatType == NavigateType.OneToOne || nav.Navigat.NavigatType == NavigateType.ManyToOne)
             {
                 UpdateOneToOne<TChild>(name, nav);
@@ -98,5 +101,20 @@ namespace SqlSugar
             }
             return GetResult<TChild>();
         }
+        private void UpdateRoot(bool isRoot, EntityColumnInfo nav)
+        {
+            if (isRoot && nav.Navigat.NavigatType != NavigateType.ManyToMany)
+            {
+                this._Context.Updateable(_Roots).ExecuteCommand();
+            }
+            else
+            {
+                if (_Options != null && _Options.ManyToManyIsUpdateA)
+                {
+                    this._Context.Updateable(_Roots).ExecuteCommand();
+                }
+            }
+        }
+
     }
 }

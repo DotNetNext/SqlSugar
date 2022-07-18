@@ -18,10 +18,6 @@ namespace SqlSugar
         {
             if (_RootList == null)
             {
-                if (_Options != null && _Options.ManyToManyIsUpdateA)
-                {
-                    this._Context.Updateable(_Roots).ExecuteCommand();
-                }
                 _RootList = _ParentList = _Roots.Cast<object>().ToList();
                 _ParentEntity = this._Context.EntityMaintenance.GetEntityInfo<Root>();
             }
