@@ -440,6 +440,7 @@ namespace SqlSugar
             }
             var oldDatabaseName = this.Context.Ado.Connection.Database;
             var connection = this.Context.CurrentConnectionConfig.ConnectionString;
+            Check.ExceptionEasy(String.IsNullOrEmpty(connection), "ConnectionString is not null", "连接字符串ConnectionString不能为Null");
             connection = connection.Replace(oldDatabaseName, "master");
             var newDb = new SqlSugarClient(new ConnectionConfig()
             {
