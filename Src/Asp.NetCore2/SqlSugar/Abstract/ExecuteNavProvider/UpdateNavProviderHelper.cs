@@ -114,7 +114,7 @@ namespace SqlSugar
                     pkColumn.PropertyInfo.SetValue(child, value());
                 }
             }
-            this._Context.Updateable(UpdateData).ExecuteCommand();
+            this._Context.Insertable(UpdateData).ExecuteCommand();
         }
         private void SetError<TChild>(EntityColumnInfo pkColumn, List<TChild> UpdateData) where TChild : class, new()
         {
@@ -126,7 +126,7 @@ namespace SqlSugar
                     Check.ExceptionEasy($"The field {name} is not an autoassignment type and requires an assignment", $"字段{name}不是可自动赋值类型，需要赋值 , 可赋值类型有 自增、long、Guid、string");
                 }
             }
-            this._Context.Updateable(UpdateData).ExecuteCommand();
+            this._Context.Insertable(UpdateData).ExecuteCommand();
         }
     }
 }
