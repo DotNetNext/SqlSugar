@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>SqlSugar.MySqlConnectorCore</id>
-    <version>5.9.1</version>
+    <version>5.9.5</version>
     <authors>sunkaixuan</authors>
     <owners>Landa</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
