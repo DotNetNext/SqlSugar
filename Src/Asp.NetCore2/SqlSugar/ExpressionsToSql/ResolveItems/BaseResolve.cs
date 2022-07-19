@@ -557,6 +557,14 @@ namespace SqlSugar
                 var asValue =  packIfElse(GetNewExpressionValue(item)).ObjToString();
                 parameter.Context.Result.Append(this.Context.GetAsString(asName, asValue));
             }
+            else if (item is MethodCallExpression && (item as MethodCallExpression).Method.Name.IsIn("Count", "Any"))
+            {
+                if (this.Context.IsSingle && this.Context.SingleTableNameSubqueryShortName == null)
+                {
+                    this.Context.SingleTableNameSubqueryShortName = item.ToString().Split('.').First();
+                }
+                parameter.Context.Result.Append(this.Context.GetAsString(asName, GetNewExpressionValue(item)));
+            }
             else if (item is MethodCallExpression || item is UnaryExpression || item is ConditionalExpression || item.NodeType == ExpressionType.Coalesce)
             {
                 this.Expression = item;
