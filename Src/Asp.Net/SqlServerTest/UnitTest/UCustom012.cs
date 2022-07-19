@@ -215,7 +215,11 @@ namespace OrmTest
                 {
                     x = SqlFunc.Subqueryable<Order>().Where(z => z.Id == it.Id).Any()
                 }).ToList();
-
+            db.Queryable<StudentA>()
+               .Select(x => new {
+                   count = x.Books.Count(),
+                   count2 = x.Books.Count()
+               }).ToList();
             var list6 = db.Queryable<StudentA>()
          .Includes(x => x.SchoolA, x => x.RoomList)
          .Includes(x => x.Books).ToList();
