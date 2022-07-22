@@ -31,7 +31,7 @@ Using SqlSugar is very simple , And it's powerful.
 | ----- | --------- | ----------- | ------- |------- |
  <a href="https://github.com/donet5/SqlSugar/wiki/NUGET">Nuget</a>| [Simple query](https://www.donet5.com/Home/Doc?typeId=1187)  | <a href="https://www.donet5.com/Home/Doc?typeId=1193"> Insert </a> |<a href="https://www.donet5.com/Home/Doc?typeId=1191">Update</a>|    <a href="https://www.donet5.com/Home/Doc?typeId=1195">Delete</a>    | 
 [Start guide](https://github.com/donet5/SqlSugar/wiki/Create--database-operation-object)| <a target="_bank" href="https://www.donet5.com/Home/Doc?typeId=1185">Join query </a> |   |   |    |         |
-| | <a href="https://www.donet5.com/Home/Doc?typeId=1188">Include query</a>| <a href="https://www.donet5.com/Home/Doc?typeId=2432">Include Update</a>|<a href="https://www.donet5.com/Home/Doc?typeId=2430">Include Insert</a>| <a href="https://www.donet5.com/Home/Doc?typeId=2431">Include Delete</a> 
+| | <a href="https://www.donet5.com/Home/Doc?typeId=1188">Include query</a>|<a href="https://www.donet5.com/Home/Doc?typeId=2430">Include Insert</a>| <a href="https://www.donet5.com/Home/Doc?typeId=2432">Include Update</a>| <a href="https://www.donet5.com/Home/Doc?typeId=2431">Include Delete</a> 
 ##  Feature characteristic
 
 ###  Feature1 : Join query  
