@@ -37,6 +37,7 @@ namespace SqlSugar
                     children.AddRange(childs);
                 }
             }
+            Check.ExceptionEasy(thisPkColumn == null, $"{thisEntity.EntityName}need primary key", $"实体{thisEntity.EntityName}需要主键");
             InsertDatas(children, thisPkColumn);
             SetNewParent<TChild>(thisEntity,thisPkColumn);
         }
