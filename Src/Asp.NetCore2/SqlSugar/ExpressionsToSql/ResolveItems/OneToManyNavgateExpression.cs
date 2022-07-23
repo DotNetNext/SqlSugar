@@ -57,11 +57,26 @@ namespace SqlSugar
         private string GetWhereSql(MethodCallExpression memberExp)
         {
             var whereExp = memberExp.Arguments[1];
-            if (PropertyShortName.HasValue()&& Navigat!=null&& Navigat.NavigatType==NavigateType.OneToMany)
+            if (PropertyShortName.HasValue() && Navigat != null && Navigat.NavigatType == NavigateType.OneToMany)
             {
                 InitType(whereExp);
                 var result = this.methodCallExpressionResolve.GetNewExpressionValue(whereExp, ResolveExpressType.WhereMultiple);
                 return result;
+            }
+            else if (whereExp!=null&&whereExp.Type == typeof(List<IConditionalModel>)) 
+            {
+                var value = ExpressionTool.GetExpressionValue(whereExp) as List<IConditionalModel>;
+                //this.context.Utilities.Context.Queryable<object>().Where(value).ToList();
+                if (value.HasValue())
+                {
+                    var sqlObj = this.context.Queryable<object>().SqlBuilder.ConditionalModelToSql(value, 0);
+                    methodCallExpressionResolve.Context.Parameters.AddRange(sqlObj.Value);
+                    return sqlObj.Key;
+                }
+                else
+                {
+                    return " 1=1 ";
+                }
             }
             else
             {
