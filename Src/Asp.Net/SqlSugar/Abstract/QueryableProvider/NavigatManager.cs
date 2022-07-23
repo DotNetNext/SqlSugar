@@ -375,7 +375,7 @@ namespace SqlSugar
       
             if (list.Any() && navObjectNamePropety.GetValue(list.First()) == null)
             {
-                var navList = selector(this.Context.Queryable<object>().AS(navEntityInfo.DbTableName).Filter(navEntityInfo.Type).AddParameters(sqlObj.Parameters).Where(conditionalModels).WhereIF(sqlObj.WhereString.HasValue(), sqlObj.WhereString).Select(sqlObj.SelectString).OrderByIF(sqlObj.OrderByString.HasValue(), sqlObj.OrderByString));
+                var navList = selector(this.Context.Queryable<object>(sqlObj.TableShortName).AS(navEntityInfo.DbTableName).Filter(navEntityInfo.Type).AddParameters(sqlObj.Parameters).Where(conditionalModels).WhereIF(sqlObj.WhereString.HasValue(), sqlObj.WhereString).Select(sqlObj.SelectString).OrderByIF(sqlObj.OrderByString.HasValue(), sqlObj.OrderByString));
                 if (navList.HasValue())
                 {
                     //var setValue = navList
@@ -517,7 +517,8 @@ namespace SqlSugar
                 {
                     CheckHasRootShortName(method.Arguments[0], method.Arguments[1]);
                     var exp = method.Arguments[1];
-                    where.Add(" " +queryable.QueryBuilder.GetExpressionValue(exp, ResolveExpressType.WhereSingle).GetString());
+                    where.Add(" " + queryable.QueryBuilder.GetExpressionValue(exp, ResolveExpressType.WhereSingle).GetString());
+                    SetTableShortName(result, queryable);
                 }
                 else if (method.Method.Name == "WhereIF")
                 {
@@ -527,12 +528,14 @@ namespace SqlSugar
                         var exp = method.Arguments[2];
                         CheckHasRootShortName(method.Arguments[1], method.Arguments[2]);
                         where.Add(" " + queryable.QueryBuilder.GetExpressionValue(exp, ResolveExpressType.WhereSingle).GetString());
+                        SetTableShortName(result, queryable);
                     }
                 }
                 else if (method.Method.Name == "OrderBy")
                 {
                     var exp = method.Arguments[1];
                     oredrBy.Add(" " + queryable.QueryBuilder.GetExpressionValue(exp, ResolveExpressType.WhereSingle).GetString());
+                    SetTableShortName(result, queryable);
                 }
                 else if (method.Method.Name == "MappingField")
                 {
@@ -645,6 +648,14 @@ namespace SqlSugar
             return result;
         }
 
+        private static void SetTableShortName(SqlInfo result, ISugarQueryable<object> queryable)
+        {
+            if (queryable.QueryBuilder.TableShortName.HasValue()&& result.TableShortName.IsNullOrEmpty())
+            {
+                result.TableShortName = queryable.QueryBuilder.TableShortName;
+            }
+        }
+
         private static void AppColumns(SqlInfo result, ISugarQueryable<object> queryable, string columnName)
         {
             var selectPkName = queryable.SqlBuilder.GetTranslationColumnName(columnName);
@@ -692,6 +703,7 @@ namespace SqlSugar
             public string SelectString { get; set; }
             public List<SugarParameter>  Parameters { get; set; }
             public List<MappingFieldsExpression> MappingExpressions { get; set; }
+            public string TableShortName { get;  set; }
         }
 
     }
