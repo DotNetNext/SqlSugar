@@ -96,6 +96,7 @@ namespace OrmTest
 
             Check.Exception(list3333.Select(x=>x.SchoolA).SelectMany(x=>x.TeacherList).Any(it=>it.Id<=2), "unit error");
 
+            
             var list3 = db.Queryable<StudentA>()
            .Includes(x => x.SchoolA, x => x.RoomList)//2个参数就是 then Include 
            .Includes(x => x.SchoolA, x => x.TeacherList)//2个参数就是 then Include 
@@ -103,6 +104,19 @@ namespace OrmTest
            .Where(x => x.Books.Any(z => z.BookId == 1))
            .Where(x => x.SchoolA.School_Name == "北大")
            .ToList();
+
+            List<IConditionalModel> conditionals = new List<IConditionalModel>();
+            conditionals.Add(new  ConditionalModel() { 
+              FieldName="name",
+               ConditionalType=ConditionalType.Equal,
+                FieldValue="1"
+            });
+            var list3_0 = db.Queryable<StudentA>()
+          .Includes(x => x.Books.Select(z => new BookA() { Names = z.Names }).ToList())
+         .Where(x => x.Books.Any(conditionals))
+         .Where(x => x.SchoolA.School_Name == "北大")
+         .ToList();
+
 
 
             var list3_1 = db.Queryable<StudentA>()
