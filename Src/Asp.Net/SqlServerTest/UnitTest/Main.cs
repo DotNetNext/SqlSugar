@@ -31,7 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
-
+            ULock.Init();
             UnitManyToMany2.Init();
             UOneManyMany5.init();
             UOneManyMany4.init();

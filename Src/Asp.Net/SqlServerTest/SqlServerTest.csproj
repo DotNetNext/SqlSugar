@@ -111,6 +111,7 @@
     <Compile Include="UnitTest\UCustom020.cs" />
     <Compile Include="UnitTest\UCustom019.cs" />
     <Compile Include="UnitTest\UintDynamic.cs" />
+    <Compile Include="UnitTest\ULock.cs" />
     <Compile Include="UnitTest\UNavDynamic111N.cs" />
     <Compile Include="UnitTest\UnitManyToMany2.cs" />
     <Compile Include="UnitTest\UnitManyToMany.cs" />
