@@ -30,7 +30,7 @@ namespace OrmTest
                 Id = id,
                 Name = "newname2",
                 Ver = 0
-            }).ExecuteCommandWithOptLock(true);
+            }).ExecuteCommandWithOptLock();
             if (data2 != 0) { throw new Exception("unit error"); };
         }
 
