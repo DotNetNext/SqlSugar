@@ -59,6 +59,15 @@ namespace SqlSugar
             var sqlObj = this.ToSql();
             this.Context.Queues.Add(sqlObj.Key, sqlObj.Value);
         }
+
+        public virtual int ExecuteCommandWithOptLock()
+        {
+            var updateData = UpdateObjs.FirstOrDefault();
+            if (updateData == null) return 0;
+            _ExecuteCommandWithOptLock(updateData);
+            return this.ExecuteCommand();
+        }
+
         public virtual int ExecuteCommand()
         {
             string sql = _ExecuteCommand();
@@ -73,6 +82,13 @@ namespace SqlSugar
         public bool ExecuteCommandHasChange()
         {
             return this.ExecuteCommand() > 0;
+        }
+        public virtual async Task<int> ExecuteCommandWithOptLockAsync()
+        {
+            var updateData = UpdateObjs.FirstOrDefault();
+            if (updateData == null) return 0;
+            _ExecuteCommandWithOptLock(updateData);
+            return await this.ExecuteCommandAsync();
         }
         public virtual async Task<int> ExecuteCommandAsync()
         {
@@ -852,7 +868,28 @@ namespace SqlSugar
                 this.RemoveCacheFunc();
             }
         }
-
+        private void _ExecuteCommandWithOptLock(T updateData)
+        {
+            Check.ExceptionEasy(UpdateParameterIsNull == true, "Optimistic lock can only be an entity update method", "乐观锁只能是实体更新方式");
+            var verColumn = this.EntityInfo.Columns.FirstOrDefault(it => it.IsEnableUpdateVersionValidation);
+            Check.ExceptionEasy(verColumn == null, $" {this.EntityInfo.EntityName } need  IsEnableUpdateVersionValidation=true ", $"实体{this.EntityInfo.EntityName}没有找到版本标识特性 IsEnableUpdateVersionValidation");
+            Check.ExceptionEasy(UpdateObjs.Length > 1, $"Optimistic lock can only handle a single update ", $"乐观锁只能处理单条更新");
+            Check.ExceptionEasy(!verColumn.UnderType.IsIn(UtilConstants.StringType, UtilConstants.LongType, UtilConstants.GuidType, UtilConstants.DateType), $"Optimistic locks can only be guid, long, and string types", $"乐观锁只能是Guid、Long和字符串类型");
+            var oldValue = verColumn.PropertyInfo.GetValue(updateData);
+            var newValue = UtilMethods.GetRandomByType(verColumn.UnderType);
+            verColumn.PropertyInfo.SetValue(updateData, newValue);
+            var data = this.UpdateBuilder.DbColumnInfoList.First(it =>
+            it.PropertyName.EqualCase(verColumn.PropertyName));
+            data.Value = newValue;
+            var pks = GetPrimaryKeys();
+            this.Where(verColumn.DbColumnName, "=", oldValue);
+            foreach (var p in pks)
+            {
+                var pkColumn = this.EntityInfo.Columns.FirstOrDefault(
+                    it => it.DbColumnName.EqualCase(p) || it.PropertyName.EqualCase(p));
+                this.Where(pkColumn.DbColumnName, "=", pkColumn.PropertyInfo.GetValue(updateData));
+            }
+        }
         private void Before(string sql)
         {
             if (this.IsEnableDiffLogEvent)
