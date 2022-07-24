@@ -64,8 +64,13 @@ namespace SqlSugar
         {
             var updateData = UpdateObjs.FirstOrDefault();
             if (updateData == null) return 0;
-            _ExecuteCommandWithOptLock(updateData);
-            return this.ExecuteCommand();
+            var name=_ExecuteCommandWithOptLock(updateData);
+            var result= this.ExecuteCommand();
+            if (result == 0 && IsVersionValidation)
+            {
+                throw new VersionExceptions(string.Format("UpdateVersionValidation {0} Not the latest version ", name));
+            }
+            return result;
         }
 
         public virtual int ExecuteCommand()
@@ -87,8 +92,13 @@ namespace SqlSugar
         {
             var updateData = UpdateObjs.FirstOrDefault();
             if (updateData == null) return 0;
-            _ExecuteCommandWithOptLock(updateData);
-            return await this.ExecuteCommandAsync();
+            var name=_ExecuteCommandWithOptLock(updateData);
+            var result= await this.ExecuteCommandAsync();
+            if (result == 0 && IsVersionValidation) 
+            {
+                throw new VersionExceptions(string.Format("UpdateVersionValidation {0} Not the latest version ", name));
+            }
+            return result;
         }
         public virtual async Task<int> ExecuteCommandAsync()
         {
@@ -868,7 +878,7 @@ namespace SqlSugar
                 this.RemoveCacheFunc();
             }
         }
-        private void _ExecuteCommandWithOptLock(T updateData)
+        private string _ExecuteCommandWithOptLock(T updateData)
         {
             Check.ExceptionEasy(UpdateParameterIsNull == true, "Optimistic lock can only be an entity update method", "乐观锁只能是实体更新方式");
             var verColumn = this.EntityInfo.Columns.FirstOrDefault(it => it.IsEnableUpdateVersionValidation);
@@ -882,6 +892,7 @@ namespace SqlSugar
             it.PropertyName.EqualCase(verColumn.PropertyName));
             data.Value = newValue;
             var pks = GetPrimaryKeys();
+            Check.ExceptionEasy(pks.Count == 0, "need primary key or WhereColumn", "需要主键或者WhereColumn");
             this.Where(verColumn.DbColumnName, "=", oldValue);
             foreach (var p in pks)
             {
@@ -889,6 +900,7 @@ namespace SqlSugar
                     it => it.DbColumnName.EqualCase(p) || it.PropertyName.EqualCase(p));
                 this.Where(pkColumn.DbColumnName, "=", pkColumn.PropertyInfo.GetValue(updateData));
             }
+            return verColumn.PropertyName;
         }
         private void Before(string sql)
         {
