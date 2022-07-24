@@ -120,6 +120,7 @@
     <Compile Include="Abstract\QueryableProvider\NavigatManager.cs" />
     <Compile Include="Abstract\SaveableProvider\StorageableDataTable.cs" />
     <Compile Include="Abstract\SugarProvider\SqlSugarCoreProvider.cs" />
+    <Compile Include="Abstract\UpdateProvider\UpdateableHelper.cs" />
     <Compile Include="Abstract\UpdateProvider\SplitTableUpdateByObjectProvider.cs" />
     <Compile Include="Entities\DbFastestProperties.cs" />
     <Compile Include="Entities\DeleteNavOptions.cs" />

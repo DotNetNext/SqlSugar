@@ -12,8 +12,8 @@ namespace SqlSugar
         UpdateBuilder UpdateBuilder { get; set; }
         bool UpdateParameterIsNull { get; set; }
 
-        int ExecuteCommandWithOptLock();
-        Task<int> ExecuteCommandWithOptLockAsync();
+        int ExecuteCommandWithOptLock(bool IsVersionValidation = false);
+        Task<int> ExecuteCommandWithOptLockAsync(bool IsVersionValidation = false);
         int ExecuteCommand();
         bool ExecuteCommandHasChange();
         Task<int> ExecuteCommandAsync();
