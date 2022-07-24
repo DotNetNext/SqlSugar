@@ -133,6 +133,30 @@ namespace SqlSugar
             };
         }
 
+        internal static object GetRandomByType(Type underType)
+        {
+            if (underType == UtilConstants.GuidType)
+            {
+                return Guid.NewGuid();
+            }
+            else if (underType == UtilConstants.LongType)
+            {
+                return SnowFlakeSingle.Instance.NextId();
+            }
+            else if (underType == UtilConstants.StringType)
+            {
+                return Guid.NewGuid() + "";
+            }
+            else if (underType == UtilConstants.DateType)
+            {
+                return System.DateTime.Now;
+            }
+            else 
+            {
+                return Guid.NewGuid() + "";
+            }
+        }
+
         public static bool IsAsyncMethod(MethodBase method)
         {
             if (method == null)
