@@ -68,6 +68,14 @@ namespace SqlSugar
             queryable.Select($" {ToShortName(lastShortName)}.{queryable.SqlBuilder.GetTranslationColumnName(selectColumnInfo.DbColumnName)}");
             var last = subInfos.First();
             var FirstPkColumn = last.ThisEntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey);
+            if (last.Nav.Name2.HasValue()) 
+            {
+                var nav2 = last.ThisEntityInfo.Columns.FirstOrDefault(it => it.PropertyName == last.Nav.Name2);
+                if (nav2 != null) 
+                {
+                    FirstPkColumn = nav2;
+                }
+            }
             Check.ExceptionEasy(FirstPkColumn == null, $"{ last.ThisEntityInfo.EntityName} need PrimayKey", $"使用导航属性{ last.ThisEntityInfo.EntityName} 缺少主键");
             var PkColumn = last.ParentEntityInfo.Columns.FirstOrDefault(it => it.PropertyName == last.Nav.Name);
             Check.ExceptionEasy(PkColumn == null, $"{ last.ParentEntityInfo.EntityName} no found {last.Nav.Name}", $"{ last.ParentEntityInfo.EntityName} 不存在 {last.Nav.Name}");

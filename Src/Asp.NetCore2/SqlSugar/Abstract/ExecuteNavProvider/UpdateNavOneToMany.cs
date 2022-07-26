@@ -8,7 +8,7 @@ namespace SqlSugar
 {
     public partial class UpdateNavProvider<Root, T> where T : class, new() where Root : class, new()
     {
-
+        public NavigateType? _NavigateType { get; set; }
         private void UpdateOneToMany<TChild>(string name, EntityColumnInfo nav) where TChild : class, new()
         {
             List<TChild> children = new List<TChild>();
@@ -34,15 +34,17 @@ namespace SqlSugar
                     foreach (var child in childs)
                     {
                         thisFkColumn.PropertyInfo.SetValue(child, parentValue, null);
-                        ids.Add(parentValue);
                     }
                     children.AddRange(childs);
                 }
+                ids.Add(parentValue);
             }
             this._Context.Deleteable<object>()
                 .AS(thisEntity.DbTableName)
                 .In(thisFkColumn.DbColumnName, ids.Distinct().ToList()).ExecuteCommand();
+            _NavigateType = NavigateType.OneToMany;
             InsertDatas(children, thisPkColumn);
+            _NavigateType = null;
             SetNewParent<TChild>(thisEntity, thisPkColumn);
         }
 

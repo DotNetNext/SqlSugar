@@ -74,7 +74,14 @@ namespace SqlSugar
             Check.ExceptionEasy(pkColumn == null && NavColumn == null, $"The entity is invalid", $"实体错误无法使用导航");
             x.AsUpdateable.ExecuteCommand();
             InitData(pkColumn, insertData);
-            this._ParentList = insertData.Union(updateData).Cast<object>().ToList();
+            if (_NavigateType == NavigateType.OneToMany)
+            {
+                this._ParentList = children.Cast<object>().ToList();
+            }
+            else
+            {
+                this._ParentList = insertData.Union(updateData).Cast<object>().ToList();
+            }
         }
 
         private void InitData<TChild>(EntityColumnInfo pkColumn, List<TChild> UpdateData) where TChild : class, new()
