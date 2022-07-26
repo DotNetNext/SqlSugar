@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UnitUpdateNav2.Init();
             UnitUpdateNav.Init();
             UnitOneToOneN.Init();
             ULock.Init();

@@ -142,6 +142,7 @@
     <Compile Include="UnitTest\UDelete.cs" />
     <Compile Include="UnitTest\UFastest.cs" />
     <Compile Include="UnitTest\UConfig.cs" />
+    <Compile Include="UnitTest\UnitUpdateNav2.cs" />
     <Compile Include="UnitTest\UnitUpdateNav.cs" />
     <Compile Include="UnitTest\UOneManyMany5.cs" />
     <Compile Include="UnitTest\UOneManyMany4.cs" />
