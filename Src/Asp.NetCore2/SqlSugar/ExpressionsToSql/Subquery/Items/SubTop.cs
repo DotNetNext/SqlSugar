@@ -35,7 +35,7 @@ namespace SqlSugar
         {
             get
             {
-                if (this.Context is SqlServerExpressionContext)
+                if (this.Context is SqlServerExpressionContext || this.Context.GetType().Name.Contains("Access"))
                 {
                     return 150;
                 }
@@ -53,7 +53,7 @@ namespace SqlSugar
 
         public string GetValue(Expression expression)
         {
-            if (this.Context is SqlServerExpressionContext)
+            if (this.Context is SqlServerExpressionContext|| this.Context.GetType().Name.Contains("Access"))
             {
                 return "TOP 1";
             }
