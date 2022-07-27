@@ -409,7 +409,7 @@ namespace SqlSugar
                     if (suagrColumn != null && suagrColumn.IsJson)
                     {
 
-                        if (mappingKeys.ContainsKey(item.Name))
+                        if (mappingKeys!=null&&mappingKeys.ContainsKey(item.Name))
                         {
                             var key = mappingKeys[item.Name];
                             Json(readerValues, result, name, typeName,key);
