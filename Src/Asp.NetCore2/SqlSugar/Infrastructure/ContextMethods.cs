@@ -408,7 +408,16 @@ namespace SqlSugar
                     var suagrColumn=prop.GetCustomAttribute<SugarColumn>();
                     if (suagrColumn != null && suagrColumn.IsJson)
                     {
-                        Json(readerValues, result, name, typeName);
+
+                        if (mappingKeys!=null&&mappingKeys.ContainsKey(item.Name))
+                        {
+                            var key = mappingKeys[item.Name];
+                            Json(readerValues, result, name, typeName,key);
+                        }
+                        else
+                        {
+                            Json(readerValues, result, name, typeName);
+                        }
                     }
                     else if (columns.Any(it => it.IsJson))
                     {
@@ -457,31 +466,42 @@ namespace SqlSugar
             return result;
         }
 
-        private void Json(Dictionary<string, object> readerValues, Dictionary<string, object> result, string name, string typeName)
+        private void Json(Dictionary<string, object> readerValues, Dictionary<string, object> result, string name, string typeName,string shortName=null)
         {
             var key = (typeName + "." + name).ToLower();
             if (readerValues.Any(it => it.Key.EqualCase(key)))
             {
                 var jsonString = readerValues.First(it => it.Key.EqualCase(key)).Value;
-                if (jsonString != null)
-                {
-                    if (jsonString.ToString().First() == '{' && jsonString.ToString().Last() == '}')
-                    {
-                        result.Add(name, this.DeserializeObject<Dictionary<string, object>>(jsonString + ""));
-                    }
-                    else if (jsonString.ToString().Replace(" ", "") != "[]" && !jsonString.ToString().Contains("{") && !jsonString.ToString().Contains("}"))
-                    {
-                        result.Add(name, this.DeserializeObject<dynamic>(jsonString + ""));
-                    }
-                    else
-                    {
-                        result.Add(name, this.DeserializeObject<List<Dictionary<string, object>>>(jsonString + ""));
-
-                    }
-                }
+                AddJson(result, name, jsonString);
             }
             else
             {
+                 key = (shortName+"."+typeName + "." + name).ToLower();
+                if (readerValues.Any(it => it.Key.EqualCase(key)))
+                {
+                    var jsonString = readerValues.First(it => it.Key.EqualCase(key)).Value;
+                    AddJson(result, name, jsonString);
+                }
+            }
+        }
+
+        private void AddJson(Dictionary<string, object> result, string name, object jsonString)
+        {
+            if (jsonString != null)
+            {
+                if (jsonString.ToString().First() == '{' && jsonString.ToString().Last() == '}')
+                {
+                    result.Add(name, this.DeserializeObject<Dictionary<string, object>>(jsonString + ""));
+                }
+                else if (jsonString.ToString().Replace(" ", "") != "[]" && !jsonString.ToString().Contains("{") && !jsonString.ToString().Contains("}"))
+                {
+                    result.Add(name, this.DeserializeObject<dynamic>(jsonString + ""));
+                }
+                else
+                {
+                    result.Add(name, this.DeserializeObject<List<Dictionary<string, object>>>(jsonString + ""));
+
+                }
             }
         }
         #endregion

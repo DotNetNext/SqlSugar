@@ -507,7 +507,11 @@ namespace SqlSugar
                     if (property.PropertyType.IsClass())
                     {
                         var comumnInfo=property.GetCustomAttribute<SugarColumn>();
-                        if (comumnInfo != null && comumnInfo.IsJson)
+                        if (comumnInfo != null && comumnInfo.IsJson && isSameType)
+                        {
+                            asName = GetAsNameAndShortName(item, shortName, property);
+                        }
+                        else if(comumnInfo != null && comumnInfo.IsJson)
                         {
                             asName = GetAsName(item, shortName, property);
                         }
