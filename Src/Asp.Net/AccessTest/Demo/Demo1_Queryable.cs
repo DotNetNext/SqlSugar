@@ -172,8 +172,14 @@ namespace OrmTest
             //      Name=SqlFunc.Subqueryable<Order>().Select(s=>s.Name)
             //   }).ToList();
             var test19 = db.Queryable<Order>().Select<ViewOrder>().ToList();
-            var test20 = db.Queryable<Order>().LeftJoin<Custom>((o, cs) =>o.Id==cs.Id)
-                .ToDictionary(it => it.Id, it => it.Name);
+            var test20 = db.Queryable<Order>()
+                
+                .OrderBy(o=>o.Id )
+                .Select(o => new ViewOrder(){ 
+                Name=SqlFunc.Subqueryable<Custom>().Where(z=>z.Id==o.CustomId).Select(z=>z.Name)
+                ,Id=o.Id
+             })
+                  .ToPageList(2,2 );
 
             //var test21 = db.Queryable<Order>().Where(it=>it.Id.ToString()==1.ToString()).Select(it => it.CreateTime.ToString("24")).First();
             Console.WriteLine("#### Examples End ####");
