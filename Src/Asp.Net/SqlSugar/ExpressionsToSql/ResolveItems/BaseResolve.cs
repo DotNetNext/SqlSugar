@@ -351,6 +351,10 @@ namespace SqlSugar
             {
                 this.Context.Parameters.AddRange(newContext.Parameters);
             }
+            if (this.Context.SingleTableNameSubqueryShortName == "Subqueryable()") 
+            {
+                this.Context.SingleTableNameSubqueryShortName = newContext.SingleTableNameSubqueryShortName;
+            }
             return newContext.Result.GetResultString();
         }
         public string GetNewExpressionValue(Expression item,ResolveExpressType type)
