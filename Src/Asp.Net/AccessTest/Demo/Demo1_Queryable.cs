@@ -13,6 +13,7 @@ namespace OrmTest
         public static void Init()
         {
             EasyExamples();
+            AccessAndSqliteTest();
             //QueryConditions();
             JoinTable();
             //Async();
@@ -23,6 +24,7 @@ namespace OrmTest
             //ReturnType();
             //ConfiQuery();
         }
+
 
         private static void ConfiQuery()
         {
@@ -297,6 +299,17 @@ namespace OrmTest
             Console.WriteLine("#### Subquery End ####");
         }
 
+        private static void AccessAndSqliteTest()
+        {
+            var db = GetInstance();
+            var sqlitedb = GetSqliteInstance();
+            db.Queryable<Order>().ToList();
+            sqlitedb.DbMaintenance.CreateDatabase();
+            sqlitedb.CodeFirst.InitTables<Order>();
+            sqlitedb.Queryable<Order>().ToList();
+            db.Queryable<Order>().ToList();
+        }
+
         private static void SqlFuncTest()
         {
             Console.WriteLine("");
@@ -563,6 +576,24 @@ namespace OrmTest
             {
                 DbType = SqlSugar.DbType.Access,
                 ConnectionString = Config.ConnectionString,
+                InitKeyType = InitKeyType.Attribute,
+                IsAutoCloseConnection = true,
+                AopEvents = new AopEvents
+                {
+                    OnLogExecuting = (sql, p) =>
+                    {
+                        Console.WriteLine(sql);
+                        Console.WriteLine(string.Join(",", p?.Select(it => it.ParameterName + ":" + it.Value)));
+                    }
+                }
+            });
+        }
+        private static SqlSugarClient GetSqliteInstance()
+        {
+            return new SqlSugarClient(new ConnectionConfig()
+            {
+                DbType = SqlSugar.DbType.Sqlite,
+                ConnectionString = "DataSource=/sqlite.db",
                 InitKeyType = InitKeyType.Attribute,
                 IsAutoCloseConnection = true,
                 AopEvents = new AopEvents
