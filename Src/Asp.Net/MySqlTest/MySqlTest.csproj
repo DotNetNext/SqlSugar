@@ -95,6 +95,7 @@
     <Compile Include="UnitTest\UCustom06.cs" />
     <Compile Include="UnitTest\UInsert.cs" />
     <Compile Include="UnitTest\UnitCustom01.cs" />
+    <Compile Include="UnitTest\UnitSameKeyBug.cs" />
     <Compile Include="UnitTest\UOneManyMany.cs" />
     <Compile Include="UnitTest\UQueue.cs" />
     <Compile Include="Program.cs" />
