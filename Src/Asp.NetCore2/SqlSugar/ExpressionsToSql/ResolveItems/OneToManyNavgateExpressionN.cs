@@ -110,31 +110,20 @@ namespace SqlSugar
             var index = 0;
             foreach (var item in joinInfos)
             {
-                var shortName = item.ThisEntityInfo.DbTableName + i;
-                EntityColumnInfo pkColumn;
-                EntityColumnInfo navColum;
-                if (index == 0)
+                if (item.Nav.NavigatType == NavigateType.OneToMany)
                 {
-                    pkColumn = item.ThisEntityInfo.Columns.FirstOrDefault(it => it.PropertyName == item.Nav.Name);
-                    navColum = item.ParentEntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey);
+                    lastShortName = OneToMany(ref formInfo, ref i, queryable, ref index, item);
                 }
                 else
                 {
-                    pkColumn = item.ThisEntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey);
-                    navColum = item.ParentEntityInfo.Columns.FirstOrDefault(it => it.PropertyName == item.Nav.Name);
+                    lastShortName = ManyToMany(ref formInfo, ref i, queryable, ref index, item);
                 }
-                Check.ExceptionEasy(pkColumn == null, $"{item.ThisEntityInfo.EntityName} need PrimayKey", $"使用导航属性{item.ThisEntityInfo.EntityName} 缺少主键");
-                var on = $" {shortName}.{queryable.SqlBuilder.GetTranslationColumnName(pkColumn.DbColumnName)}={formInfo.ThisEntityInfo.DbTableName + (i - 1)}.{queryable.SqlBuilder.GetTranslationColumnName(navColum.DbColumnName)}";
-                queryable.AddJoinInfo(item.ThisEntityInfo.DbTableName, shortName, on, JoinType.Inner);
-                ++i;
-                index++;
-                lastShortName = shortName;
-                formInfo = item;
             }
             var isAny = (memberInfo.Expression as MethodCallExpression).Method.Name == "Any";
             queryable.Select(isAny ? "1" : " COUNT(1) ");
             var last = subInfos.First();
             var FirstPkColumn = last.ThisEntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey);
+            FirstPkColumn = GetFirstPkColumn(last, FirstPkColumn);
             Check.ExceptionEasy(FirstPkColumn == null, $"{ last.ThisEntityInfo.EntityName} need PrimayKey", $"使用导航属性{ last.ThisEntityInfo.EntityName} 缺少主键");
             var PkColumn = last.ParentEntityInfo.Columns.FirstOrDefault(it => it.PropertyName == last.Nav.Name);
             Check.ExceptionEasy(PkColumn == null, $"{ last.ParentEntityInfo.EntityName} no found {last.Nav.Name}", $"{ last.ParentEntityInfo.EntityName} 不存在 {last.Nav.Name}");
@@ -149,6 +138,74 @@ namespace SqlSugar
             return MapperSql;
         }
 
+        private static EntityColumnInfo GetFirstPkColumn(ExpressionItems last, EntityColumnInfo FirstPkColumn)
+        {
+            if (last.Nav.NavigatType == NavigateType.OneToOne && last.Nav.Name2.HasValue())
+            {
+                var name2 = last.ThisEntityInfo.Columns.FirstOrDefault(it => it.PropertyName == last.Nav.Name2);
+                if (name2 != null)
+                {
+                    FirstPkColumn = name2;
+                }
+            }
+            return FirstPkColumn;
+        }
+
+        private static string OneToMany(ref ExpressionItems formInfo, ref int i, ISugarQueryable<object> queryable, ref int index, ExpressionItems item)
+        {
+            string lastShortName;
+            var shortName = item.ThisEntityInfo.DbTableName + i;
+            EntityColumnInfo pkColumn;
+            EntityColumnInfo navColum;
+            if (index == 0)
+            {
+                pkColumn = item.ThisEntityInfo.Columns.FirstOrDefault(it => it.PropertyName == item.Nav.Name);
+                navColum = item.ParentEntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey);
+            }
+            else
+            {
+                pkColumn = item.ThisEntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey);
+                navColum = item.ParentEntityInfo.Columns.FirstOrDefault(it => it.PropertyName == item.Nav.Name);
+            }
+            Check.ExceptionEasy(pkColumn == null, $"{item.ThisEntityInfo.EntityName} need PrimayKey", $"使用导航属性{item.ThisEntityInfo.EntityName} 缺少主键");
+            var on = $" {shortName}.{queryable.SqlBuilder.GetTranslationColumnName(pkColumn.DbColumnName)}={formInfo.ThisEntityInfo.DbTableName + (i - 1)}.{queryable.SqlBuilder.GetTranslationColumnName(navColum.DbColumnName)}";
+            queryable.AddJoinInfo(item.ThisEntityInfo.DbTableName, shortName, on, JoinType.Inner);
+            ++i;
+            index++;
+            lastShortName = shortName;
+            formInfo = item;
+            return lastShortName;
+        }
+
+
+        private  string ManyToMany(ref ExpressionItems formInfo, ref int i, ISugarQueryable<object> queryable, ref int index, ExpressionItems item)
+        {
+            string lastShortName;
+            var bshortName = item.ThisEntityInfo.DbTableName + i;
+            EntityColumnInfo AidColumn;
+            EntityColumnInfo BidColumn;
+
+            BidColumn = item.ThisEntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey);
+            AidColumn = item.ParentEntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey);
+
+            var abEntity =this.context.EntityMaintenance.GetEntityInfo(item.Nav.MappingType);
+            var Ab_Aid = abEntity.Columns.FirstOrDefault(it => item.Nav.MappingAId == it.PropertyName);
+            var Ab_Bid = abEntity.Columns.FirstOrDefault(it => item.Nav.MappingBId == it.PropertyName);
+
+            Check.ExceptionEasy(AidColumn == null, $" {AidColumn.EntityName} need primary key ", $"{AidColumn.EntityName}需要主键");
+            Check.ExceptionEasy(AidColumn == null, $" {BidColumn.EntityName} need primary key ", $"{BidColumn.EntityName}需要主键");
+
+            var abShort = abEntity.EntityName + "_1";
+            var abOn = $" {abShort}.{queryable.SqlBuilder.GetTranslationColumnName(Ab_Aid.DbColumnName)}={formInfo.ThisEntityInfo.DbTableName + (i - 1)}.{queryable.SqlBuilder.GetTranslationColumnName(AidColumn.DbColumnName)}";
+            queryable.AddJoinInfo(abEntity.DbTableName, abShort, abOn, JoinType.Inner);
+            var On = $" {bshortName}.{queryable.SqlBuilder.GetTranslationColumnName(BidColumn.DbColumnName)}={abShort}.{queryable.SqlBuilder.GetTranslationColumnName(Ab_Bid.DbColumnName)}";
+            queryable.AddJoinInfo(BidColumn.DbTableName, bshortName, On, JoinType.Inner);
+            ++i;
+            index++;
+            lastShortName = bshortName;
+            formInfo = item;
+            return lastShortName;
+        }
 
         #region Helper
         private string GetWhereSql1(string wheresql,string lastShortName, List<ExpressionItems> joinInfos,ISqlBuilder sqlBuilder)
