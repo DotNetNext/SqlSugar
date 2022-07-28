@@ -166,7 +166,7 @@ namespace OrmTest
             var fdt2 = GetBitTable(true);
             db.Fastest<System.Data.DataTable>().AS("UnitBulk2313111").BulkUpdate(fdt2,new string[] {"id" });
             var listdt2 = db.Queryable<UnitBulk2313111>().ToList();
-            if (listdt.First().table != false || listdt2.First().table != true) 
+            if (listdt.First().table != null || listdt2.First().table != true) 
             {
                 throw new Exception("unit error");
             }
