@@ -308,7 +308,9 @@ namespace SqlSugar
             }
             var oldDatabaseName = this.Context.Ado.Connection.Database;
             var connection = this.Context.CurrentConnectionConfig.ConnectionString;
-            Check.Exception(Regex.Split(connection,oldDatabaseName).Length > 2, "The user name and password cannot be the same as the database name ");
+            Check.ExceptionEasy(Regex.Split(connection,oldDatabaseName).Length > 2
+                , "The user name and password cannot be the same as the database name ",
+                " 创建数据库失败, 请换一个库名，库名不能 password 或者 username 有重叠 ");
             connection = connection.Replace(oldDatabaseName, "mysql");
             var newDb = new SqlSugarClient(new ConnectionConfig()
             {
