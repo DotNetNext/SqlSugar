@@ -32,6 +32,8 @@ Using SqlSugar is very simple , And it's powerful.
  <a target="_blank" href="https://github.com/donet5/SqlSugar/wiki/NUGET">Nuget</a>| <a href="https://www.donet5.com/Home/Doc?typeId=1187">Query</a> | <a  target="_blank" href="https://www.donet5.com/Home/Doc?typeId=1193"> Insert </a> |<a  target="_blank" href="https://www.donet5.com/Home/Doc?typeId=1191">Update</a>|    <a  target="_blank" href="https://www.donet5.com/Home/Doc?typeId=1195">Delete</a>    | 
 <a target="_blank" href="https://github.com/donet5/SqlSugar/wiki/Create--database-operation-object"> Start guide</a>  | <a target="_bank" href="https://www.donet5.com/Home/Doc?typeId=1185">Join query </a> |<a href="https://www.donet5.com/Home/Doc?typeId=2422">Insert without entity </a> | <a href="https://www.donet5.com/Home/Doc?typeId=2423">Update without entity</a>  | <a href="https://www.donet5.com/Home/Doc?typeId=2424">  Delete without entity </a>   |     |
 |<a href="https://www.donet5.com/Home/Doc?typeId=2246">Multiple databases</a> | <a target="_bank" href="https://www.donet5.com/Home/Doc?typeId=1188">Include query</a>|<a target="_bank" href="https://www.donet5.com/Home/Doc?typeId=2430">Include Insert</a>| <a target="_bank" href="https://www.donet5.com/Home/Doc?typeId=2432">Include Update</a>| <a target="_bank" href="https://www.donet5.com/Home/Doc?typeId=2431">Include Delete</a> 
+### <a  href="https://www.donet5.com/Home/Doc"><font color="red">中文文档</font></a>
+
 ##  Feature characteristic
 
 ###  Feature1 : Join query  
