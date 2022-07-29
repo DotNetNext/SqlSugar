@@ -404,6 +404,9 @@ namespace SqlSugar
                     Check.Exception(InstanceFactory.CustomNamespace.IsNullOrEmpty(), "DbType.Custom: InstanceFactory.CustomNamespace is not null  ");
                     Check.Exception(InstanceFactory.CustomDllName.IsNullOrEmpty(), "DbType.Custom: InstanceFactory.CustomDllName is not null  ");
                     break;
+                case DbType.QuestDB:
+                    Check.Exception(SugarCompatible.IsFramework, "QuestDB only support .net core");
+                    break;
                 default:
                     throw new Exception("ConnectionConfig.DbType is null");
             }
