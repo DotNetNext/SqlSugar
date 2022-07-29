@@ -18,6 +18,7 @@ namespace SqlSugar
         MySqlConnector,
         Access,
         OpenGauss,
+        QuestDB,
         Custom =900
     }
 }
