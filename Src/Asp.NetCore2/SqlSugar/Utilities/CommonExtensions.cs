@@ -28,7 +28,11 @@ namespace SqlSugar
         {
             return new List<T>() { thisValue };
         }
-        public static bool Any<T>(this IEnumerable<T> thisValue,  IEnumerable<IConditionalModel> conditionalModels) 
+        public static bool Any<T>(this IEnumerable<T> thisValue,  List<IConditionalModel> conditionalModels) 
+        {
+            throw new Exception("Can only be used in expressions");
+        }
+        public static IEnumerable<T> Where<T>(this IEnumerable<T> thisValue, List<IConditionalModel> conditionalModels)
         {
             throw new Exception("Can only be used in expressions");
         }
