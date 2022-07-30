@@ -18,7 +18,6 @@ namespace OrmTest
             JoinTable();
             Async();
             NoEntity();
-            Mapper();
             SqlFuncTest();
             Subquery();
             ReturnType();
@@ -31,29 +30,29 @@ namespace OrmTest
             var db = GetInstance();
             var dbTime = db.GetDate();
             var getAll = db.Queryable<Order>().ToList();
+            var getLike = db.Queryable<Order>().Where(it=>it.Name.Contains("order1")).ToList();
+            var getYYYY = db.Queryable<Order>().Select(it => it.CreateTime.ToString("yyyy-MM-dd")).ToList();
             var getOrderBy = db.Queryable<Order>().OrderBy(it => it.Name,OrderByType.Desc).ToList();
             var getOrderBy2 = db.Queryable<Order>().OrderBy(it => it.Id).OrderBy(it => it.Name, OrderByType.Desc).ToList();
             var getOrderBy3 = db.Queryable<Order>().OrderBy(it =>new { it.Name,it.Id}).ToList();
-            var getRandom = db.Queryable<Order>().OrderBy(it => SqlFunc.GetRandom()).First();
+            //var getRandom = db.Queryable<Order>().OrderBy(it => SqlFunc.GetRandom()).First();
             var getByPrimaryKey = db.Queryable<Order>().InSingle(2);
             var getSingleOrDefault = db.Queryable<Order>().Where(it => it.Id == 1).Single();
             var getFirstOrDefault = db.Queryable<Order>().First();
             var getByWhere = db.Queryable<Order>().Where(it => it.Id == 1 || it.Name == "a").ToList();
             var getByWhere2 = db.Queryable<Order>().Where(it => it.Id == DateTime.Now.Year).ToList();
             var getByFuns = db.Queryable<Order>().Where(it => SqlFunc.IsNullOrEmpty(it.Name)).ToList();
-            var getByFuns2 = db.Queryable<Order>().GroupBy(it => it.Name).Select(it => SqlFunc.AggregateDistinctCount(it.Price)).ToList();
+           // var getByFuns2 = db.Queryable<Order>().GroupBy(it => it.Name).Select(it => SqlFunc.AggregateDistinctCount(it.Price)).ToList();
             var btime = Convert.ToDateTime("2021-1-1");
             var etime = Convert.ToDateTime("2022-1-12");
             var test01 = db.Queryable<Order>().Select(it =>  SqlFunc.DateDiff(DateType.Year,btime, etime)).ToList();
             var test02 = db.Queryable<Order>().Select(it => SqlFunc.DateDiff(DateType.Day, btime, etime)).ToList();
             var test03 = db.Queryable<Order>().Select(it => SqlFunc.DateDiff(DateType.Month, btime, etime)).ToList();
-            var test04 = db.Queryable<Order>().Select(it => SqlFunc.DateDiff(DateType.Second, DateTime.Now, DateTime.Now.AddMinutes(2))).ToList();
+            //var test04 = db.Queryable<Order>().Select(it => SqlFunc.DateDiff(DateType.Second, DateTime.Now, DateTime.Now.AddMinutes(2))).ToList();
             var q1 = db.Queryable<Order>().Take(1);
             var q2 = db.Queryable<Order>().Take(2);
             var test05 = db.UnionAll(q1, q2).ToList();
-            var test06 = db.Queryable<Order>().
-              Where(it => it.Price == 0 ? true : it.Name == it.Name)
-              .ToList();
+            var test06 = db.Queryable<Order>().ToList();
             Console.WriteLine("#### Examples End ####");
             Console.WriteLine("#### Examples End ####");
         }
@@ -120,11 +119,11 @@ namespace OrmTest
             Console.WriteLine("#### Subquery Start ####");
             var db = GetInstance();
 
-            var list = db.Queryable<Order>().Take(10).Select(it => new
-            {
-                customName=SqlFunc.Subqueryable<Custom>().Where("it.CustomId=id").Select(s=>s.Name),
-                customName2 = SqlFunc.Subqueryable<Custom>().Where("it.CustomId = id").Where(s => true).Select(s => s.Name)
-            }).ToList();
+            //var list = db.Queryable<Order>().Take(10).Select(it => new
+            //{
+            //    customName=SqlFunc.Subqueryable<Custom>().Where("it.CustomId=id").Select(s=>s.Name),
+            //    customName2 = SqlFunc.Subqueryable<Custom>().Where("it.CustomId = id").Where(s => true).Select(s => s.Name)
+            //}).ToList();
 
             var list2 = db.Queryable<Order>().Where(it => SqlFunc.Subqueryable<OrderItem>().Where(i => i.OrderId == it.Id).Any()).ToList();
 
@@ -137,11 +136,11 @@ namespace OrmTest
             Console.WriteLine("#### SqlFunc Start ####");
             var db = GetInstance();
             var index= db.Queryable<Order>().Select(it => SqlFunc.Contains("a", "cccacc")).First();
-            var list = db.Queryable<Order>().Select(it => new ViewOrder()
-            {
+            //var list = db.Queryable<Order>().Select(it => new ViewOrder()
+            //{
 
-                Id = SqlFunc.AggregateSum(SqlFunc.IF(it.Id > 0).Return(1).End(0))
-            }).ToList();
+            //    Id = SqlFunc.AggregateSum(SqlFunc.IF(it.Id > 0).Return(1).End(0))
+            //}).ToList();
             var list2 = db.Queryable<Order>().Select(it => new
             {
                 date = SqlFunc.ToDateShort(it.CreateTime),
@@ -149,62 +148,7 @@ namespace OrmTest
             }).ToList();
             Console.WriteLine("#### SqlFunc  End ####");
         }
-
-        private static void Mapper()
-        {
-            Console.WriteLine("");
-            Console.WriteLine("#### Mapper Start ####");
-            var db = GetInstance();
-            //Creater Table
-            db.CodeFirst.InitTables(typeof(Tree));
-            db.DbMaintenance.TruncateTable("tree");
-            db.Insertable(new Tree() { Id = 1, Name = "root" }).ExecuteCommand();
-            db.Insertable(new Tree() { Id = 11, Name = "child1",ParentId=1 }).ExecuteCommand();
-            db.Insertable(new Tree() { Id = 12, Name = "child2",ParentId=1 }).ExecuteCommand();
-            db.Insertable(new Tree() { Id = 2, Name = "root" }).ExecuteCommand();
-            db.Insertable(new Tree() { Id = 22, Name = "child3", ParentId = 2 }).ExecuteCommand();
-
-            // Same property name mapping,Both entities have parentId
-            var list = db.Queryable<Tree>().Mapper(it => it.Parent, it => it.ParentId).ToList();
-
-
-            //If both entities have parentId, I don't want to associate with parentId.
-            var list1 =db.Queryable<Tree>()
-                                     //parent=(select * from parent where id=it.parentid)
-                                     .Mapper(it=>it.Parent,it=>it.ParentId, it=>it.Parent.Id)
-                                     //Child=(select * from parent where ParentId=it.id)
-                                     .Mapper(it => it.Child, it => it.Id, it => it.Parent.ParentId)
-                                     .ToList();
-            //one to one
-            var list2 = db.Queryable<OrderItemInfo>().Mapper(it => it.Order, it => it.OrderId).ToList();
-
-            //one to many
-            var list3 = db.Queryable<Order>().Mapper(it => it.Items, it => it.Items.First().OrderId).ToList();
-
-            //many to many
-            db.CodeFirst.InitTables<A, B, ABMapping>();
-
-            db.Insertable(new A() { Name = "A" }).ExecuteCommand();
-            db.Insertable(new B() { Name = "B" }).ExecuteCommand();
-            db.Insertable(new ABMapping() { AId = 1, BId = 1 }).ExecuteCommand();
-
-            var  list4 = db.Queryable<ABMapping>()
-              .Mapper(it => it.A, it => it.AId)
-              .Mapper(it => it.B, it => it.BId)
-              .Where(it => it.A.Id == 1).ToList();
-
-            //Manual mode
-            var result = db.Queryable<OrderInfo>().Take(10).Select<ViewOrder>().Mapper((itemModel, cache) =>
-            {
-                var allItems = cache.Get(orderList => {
-                    var allIds = orderList.Select(it => it.Id).ToList();
-                    return db.Queryable<OrderItem>().Where(it => allIds.Contains(it.OrderId)).ToList();//Execute only once
-                });
-                itemModel.Items = allItems.Where(it => it.OrderId==itemModel.Id).ToList();//Every time it's executed
-            }).ToList();
-
-            Console.WriteLine("#### End Start ####");
-        }
+ 
 
         private static void NoEntity()
         {

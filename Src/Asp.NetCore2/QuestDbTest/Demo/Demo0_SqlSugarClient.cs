@@ -71,13 +71,12 @@ namespace OrmTest
             //db.DbMaintenance.CreateDatabase();
 
             //Use db query
-            var dt = db.Ado.SqlQuery<dynamic>("select 1");
+            var dt = db.Ado.SqlQuery<dynamic>("select @id",new { id=1});
 
             //Create tables
             db.CodeFirst.InitTables(typeof(OrderItem),typeof(Order));
             var xx=db.Insertable(new Order() { Name = "order1", CustomId = 1, Price = 0, CreateTime = DateTime.Now })
-               .ToSqlString();
-            db.Ado.ExecuteCommand(xx);
+              .ExecuteCommand(); 
             //Insert data
          //   db.Insertable(new OrderItem() { OrderId = id, Price = 0, CreateTime=DateTime.Now }).ExecuteCommand();
             Console.WriteLine("#### SqlSugarClient End ####");
@@ -119,12 +118,12 @@ namespace OrmTest
             orderDb.AsInsertable(insertObj).ExecuteCommand();
 
 
-            //Delete
-            orderDb.Delete(insertObj);
-            orderDb.DeleteById(11111);
-            orderDb.DeleteById(new int[] { 1111, 2222 });
-            orderDb.Delete(it => it.Id == 1111);
-            orderDb.AsDeleteable().Where(it => it.Id == 1111).ExecuteCommand();
+            ////Delete
+            //orderDb.Delete(insertObj);
+            //orderDb.DeleteById(11111);
+            //orderDb.DeleteById(new int[] { 1111, 2222 });
+            //orderDb.Delete(it => it.Id == 1111);
+            //orderDb.AsDeleteable().Where(it => it.Id == 1111).ExecuteCommand();
 
             //Update
             orderDb.Update(insertObj);

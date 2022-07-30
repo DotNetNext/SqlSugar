@@ -32,7 +32,7 @@ namespace OrmTest
         [SugarColumn(IsIdentity = true, IsPrimaryKey = true)]
         public int Id { get; set; }
         public string Name { get; set; }
-        [SugarColumn(ColumnDataType = "varchar(255)")]//custom
+        [SugarColumn(ColumnDataType = "string")]//custom
         public string Text { get; set; }
         [SugarColumn(IsNullable = true)]
         public DateTime CreateTime { get; set; }
