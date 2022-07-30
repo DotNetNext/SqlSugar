@@ -10,6 +10,8 @@ namespace OrmTest
     public class Users
     {
         [SugarColumn(IsPrimaryKey = true)]
+        public long Sid { get; set; }
+ 
         public int Id { get; set; }
 
         [SqlSugar.SugarColumn(IsNullable = true)]

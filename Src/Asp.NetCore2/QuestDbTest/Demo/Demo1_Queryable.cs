@@ -63,7 +63,7 @@ namespace OrmTest
             }
  
            var list = new List<Users>();
-            for (var i = 0; i < 10000; i++)
+            for (var i = 0; i < 100000; i++)
             {
 
                 list.Add(new Users
@@ -74,8 +74,9 @@ namespace OrmTest
                     password = "161718",
                 });
             }
-            db.Insertable<Users>(list).ExecuteCommand();
+            db.Insertable<Users>(list).ExecuteReturnSnowflakeId();
 
+            var list2 = db.Queryable<Users>().ToList();
 
             Console.WriteLine("#### Examples End ####");
             Console.WriteLine("#### Examples End ####");
