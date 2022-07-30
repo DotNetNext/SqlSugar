@@ -117,7 +117,9 @@ namespace OrmTest
          .Where(x => x.SchoolA.School_Name == "北大")
          .ToList();
 
-
+            var list3_0_1 = db.Queryable<StudentA>()
+   .Includes(x => x.Books.Where(conditionals).ToList())
+  .ToList();
 
             var list3_1 = db.Queryable<StudentA>()
            .Includes(x => x.Books.MappingField(z=>z.Names,()=>x.Name).ToList())

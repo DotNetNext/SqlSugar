@@ -44,9 +44,7 @@ namespace OrmTest
               .Include(it => it.School)
               .Include(it => it.Room)
                 .ExecuteCommand();
-            Console.WriteLine(result);
-            Console.WriteLine("用例跑完");
-            Console.ReadKey();
+         
         }
         //建类
         public class SchoolA111
