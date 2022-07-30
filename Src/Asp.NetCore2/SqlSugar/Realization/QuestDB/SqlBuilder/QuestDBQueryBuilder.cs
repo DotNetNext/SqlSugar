@@ -12,9 +12,9 @@ namespace SqlSugar
             get
             {
                 /*
-                 SELECT * FROM TABLE WHERE CONDITION ORDER BY ID DESC LIMIT 10 offset 0
+                 SELECT * FROM TABLE WHERE CONDITION ORDER BY ID DESC LIMIT 0,10
                  */
-                var template = "SELECT {0} FROM {1} {2} {3} {4} LIMIT {6} offset {5}";
+                var template = "SELECT {0} FROM {1} {2} {3} {4} LIMIT {5},{6}";
                 return template;
             }
         }
@@ -31,7 +31,7 @@ namespace SqlSugar
         #region Common Methods
         public override bool IsComplexModel(string sql)
         {
-            return Regex.IsMatch(sql, @"AS ""\w+\.\w+""")|| Regex.IsMatch(sql, @"AS ""\w+\.\w+\.\w+""");
+            return Regex.IsMatch(sql, @"AS \`\w+\.\w+\`") || Regex.IsMatch(sql, @"AS \`\w+\.\w+\.\w+\`");
         }
         public override string ToSqlString()
         {
@@ -72,7 +72,54 @@ namespace SqlSugar
             }
             return result;
         }
-
+        private string ToCountSqlString()
+        {
+            //base.AppendFilter();
+            string oldOrderValue = this.OrderByValue;
+            string result = null;
+            sql = new StringBuilder();
+            sql.AppendFormat(SqlTemplate, "Count(*)", GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, (Skip != null || Take != null) ? null : GetOrderByString);
+            if (IsCount)
+            {
+                if (sql.ToString().Contains("-- No table"))
+                {
+                    return "-- No table";
+                }
+                return sql.ToString();
+            }
+            if (Skip != null && Take == null)
+            {
+                if (this.OrderByValue == "ORDER BY ") this.OrderByValue += GetSelectValue.Split(',')[0];
+                result = string.Format(PageTempalte, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, (Skip != null || Take != null) ? null : GetOrderByString, Skip.ObjToInt(), long.MaxValue);
+            }
+            else if (Skip == null && Take != null)
+            {
+                if (this.OrderByValue == "ORDER BY ") this.OrderByValue += GetSelectValue.Split(',')[0];
+                result = string.Format(PageTempalte, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, GetOrderByString, 0, Take.ObjToInt());
+            }
+            else if (Skip != null && Take != null)
+            {
+                if (this.OrderByValue == "ORDER BY ") this.OrderByValue += GetSelectValue.Split(',')[0];
+                result = string.Format(PageTempalte, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, GetOrderByString, Skip.ObjToInt() > 0 ? Skip.ObjToInt() : 0, Take);
+            }
+            else
+            {
+                result = sql.ToString();
+            }
+            this.OrderByValue = oldOrderValue;
+            return result;
+        }
+        public override string ToCountSql(string sql)
+        {
+            if (this.GroupByValue.HasValue())
+            {
+                return base.ToCountSql(sql);
+            }
+            else
+            {
+                return ToCountSqlString();
+            }
+        }
         #endregion
 
         #region Get SQL Partial
@@ -93,9 +140,9 @@ namespace SqlSugar
                 {
                     this.SelectCacheKey = this.SelectCacheKey + string.Join("-", this.JoinQueryInfos.Select(it => it.TableName));
                 }
-                if (IsDistinct) 
+                if (IsDistinct)
                 {
-                    result = "distinct "+result;
+                    result = " DISTINCT " + result;
                 }
                 return result;
             }

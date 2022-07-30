@@ -103,40 +103,7 @@ namespace SqlSugar
                 sqlParameter.Direction = parameter.Direction;
                 if (parameter.IsJson)
                 {
-                    sqlParameter.NpgsqlDbType = NpgsqlDbType.Json;
-                }
-                if (parameter.IsArray)
-                {
-                    //    sqlParameter.Value = this.Context.Utilities.SerializeObject(sqlParameter.Value);
-                    var type = sqlParameter.Value.GetType();
-                    if (ArrayMapping.ContainsKey(type))
-                    {
-                        sqlParameter.NpgsqlDbType = ArrayMapping[type] | NpgsqlDbType.Array;
-                    }
-                    else if (type==DBNull.Value.GetType()) 
-                    {
-                        if (parameter.DbType.IsIn(System.Data.DbType.Int32))
-                        {
-                            sqlParameter.NpgsqlDbType = NpgsqlDbType.Integer | NpgsqlDbType.Array;
-                        }
-                        else if (parameter.DbType.IsIn(System.Data.DbType.Int16))
-                        {
-                            sqlParameter.NpgsqlDbType = NpgsqlDbType.Smallint | NpgsqlDbType.Array;
-                        }
-                        else if (parameter.DbType.IsIn(System.Data.DbType.Int64))
-                        {
-                            sqlParameter.NpgsqlDbType = NpgsqlDbType.Bigint | NpgsqlDbType.Array;
-                        }
-                        else 
-                        {
-                            sqlParameter.NpgsqlDbType =NpgsqlDbType.Text | NpgsqlDbType.Array;
-                        }
-
-                    }
-                    else
-                    {
-                        Check.Exception(true, sqlParameter.Value.GetType().Name + " No Support");
-                    }
+                    sqlParameter.DbType=System.Data.DbType.String;
                 }
                 if (sqlParameter.Direction == 0)
                 {
@@ -149,13 +116,18 @@ namespace SqlSugar
                     this.OutputParameters.RemoveAll(it => it.ParameterName == sqlParameter.ParameterName);
                     this.OutputParameters.Add(sqlParameter);
                 }
-                if (isVarchar && sqlParameter.DbType == System.Data.DbType.String)
+                if (sqlParameter.DbType == System.Data.DbType.String)
                 {
                     sqlParameter.DbType = System.Data.DbType.AnsiString;
                 }
-                if (sqlParameter.Value is DateTime && sqlParameter.DbType == System.Data.DbType.AnsiString)
+                else if (sqlParameter.Value is DateTime && sqlParameter.DbType == System.Data.DbType.AnsiString)
                 {
                     sqlParameter.DbType = System.Data.DbType.DateTime;
+                }
+                else if (sqlParameter.DbType==System.Data.DbType.Decimal)
+                {
+                    sqlParameter.DbType = System.Data.DbType.Double;
+                    sqlParameter.Value = Convert.ToDouble(sqlParameter.Value);
                 }
                 ++index;
             }

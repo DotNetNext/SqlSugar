@@ -46,10 +46,10 @@ namespace SqlSugar
                 string columnParametersString = string.Join(",", this.DbColumnInfoList.Select(it =>
                    {
                        var spk = Builder.SqlParameterKeyWord + it.DbColumnName;
-                       if (it.Value is DateTime)
-                       {
-                           return $"to_timestamp('{it.Value.ObjToString("yyyy-MM-ddTHH:mm:ss")}', 'yyyy-MM-ddTHH:mm:ss')";
-                       }
+                       //if (it.Value is DateTime)
+                       //{
+                       //    return $"to_timestamp('{it.Value.ObjToString("yyyy-MM-ddTHH:mm:ss")}', 'yyyy-MM-ddTHH:mm:ss')";
+                       //}
                        return spk;
                     }
                 
