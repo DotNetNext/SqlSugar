@@ -80,7 +80,7 @@ namespace SqlSugar
                             object value = null;
                             if (it.Value is DateTime)
                             {
-                               return $" cast('{it.Value.ObjToDate().ToString("yyyy-MM-dd HH:mm:ss.fff")}' as timestamp)";
+                               return $" cast('{it.Value.ObjToDate().ToString("yyyy-MM-dd HH:mm:ss.ffffff")}' as timestamp)";
                             }
                             else if (it.Value is int || it.Value is long ||it.Value is short || it.Value is short || it.Value is byte)
                             {
