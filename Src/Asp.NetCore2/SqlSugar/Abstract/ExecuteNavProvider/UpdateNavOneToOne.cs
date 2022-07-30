@@ -12,6 +12,7 @@ namespace SqlSugar
         {
             var parentEntity = _ParentEntity;
             var parentList = _ParentList;
+            var isManyPk = parentEntity.Columns.Count(it => it.IsPrimarykey) > 1;
             var parentColumn = parentEntity.Columns.FirstOrDefault(it => it.PropertyName == nav.Navigat.Name);
             var parentPkColumn = parentEntity.Columns.FirstOrDefault(it => it.IsPrimarykey);
             var thisEntity = this._Context.EntityMaintenance.GetEntityInfo<TChild>();
@@ -33,7 +34,7 @@ namespace SqlSugar
                         }
 
                     }
-                    if (!IsDefaultValue(navPropertyValue))
+                    if (!IsDefaultValue(navPropertyValue)&& isManyPk==false)
                     {
                         this._Context.Updateable<DbTableInfo>
                            ().AS(parentEntity.DbTableName)
