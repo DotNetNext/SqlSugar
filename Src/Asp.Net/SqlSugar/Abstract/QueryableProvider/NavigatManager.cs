@@ -515,10 +515,22 @@ namespace SqlSugar
                 var queryable = this.Context.Queryable<object>();
                 if (method.Method.Name == "Where")
                 {
-                    CheckHasRootShortName(method.Arguments[0], method.Arguments[1]);
-                    var exp = method.Arguments[1];
-                    where.Add(" " + queryable.QueryBuilder.GetExpressionValue(exp, ResolveExpressType.WhereSingle).GetString());
-                    SetTableShortName(result, queryable);
+                    if (method.Arguments[1].Type == typeof(List<IConditionalModel>))
+                    {
+                        //var x=method.Arguments[1];
+                        var conditionals = ExpressionTool.GetExpressionValue(method.Arguments[1])  as List<IConditionalModel>;
+                        var whereObj = queryable.QueryBuilder.Builder.ConditionalModelToSql(conditionals);
+                        where.Add(whereObj.Key);
+                        if(whereObj.Value!=null)
+                          result.Parameters.AddRange(whereObj.Value);
+                    }
+                    else
+                    {
+                        CheckHasRootShortName(method.Arguments[0], method.Arguments[1]);
+                        var exp = method.Arguments[1];
+                        where.Add(" " + queryable.QueryBuilder.GetExpressionValue(exp, ResolveExpressType.WhereSingle).GetString());
+                        SetTableShortName(result, queryable);
+                    }
                 }
                 else if (method.Method.Name == "WhereIF")
                 {
@@ -557,7 +569,7 @@ namespace SqlSugar
                         var type = types[0];
                         var entityInfo = this.Context.EntityMaintenance.GetEntityInfo(type);
                         this.Context.InitMappingInfo(type);
-                        Check.ExceptionEasy(newExp.Type != entityInfo.Type, $" new {newExp.Type .Name}is error ,use Select(it=>new {entityInfo.Type.Name})",$"new {newExp.Type.Name}是错误的，请使用Select(it=>new {entityInfo.Type.Name})");
+                        Check.ExceptionEasy(newExp.Type != entityInfo.Type, $" new {newExp.Type.Name}is error ,use Select(it=>new {entityInfo.Type.Name})", $"new {newExp.Type.Name}是错误的，请使用Select(it=>new {entityInfo.Type.Name})");
                         if (entityInfo.Columns.Count(x => x.Navigat != null) == 0)
                         {
                             result.SelectString = (" " + queryable.QueryBuilder.GetExpressionValue(exp, ResolveExpressType.SelectSingle).GetString());
@@ -570,7 +582,7 @@ namespace SqlSugar
                                 var pkName = pkInfo.DbColumnName;
                                 AppColumns(result, queryable, pkName);
                             }
-                            foreach (var nav in entityInfo.Columns.Where(x => x.Navigat != null&&x.Navigat.NavigatType==NavigateType.OneToOne))
+                            foreach (var nav in entityInfo.Columns.Where(x => x.Navigat != null && x.Navigat.NavigatType == NavigateType.OneToOne))
                             {
                                 var navColumn = entityInfo.Columns.FirstOrDefault(it => it.PropertyName == nav.Navigat.Name);
                                 if (navColumn != null)
