@@ -12,7 +12,7 @@ namespace SqlSugar
         {
             get
             {
-                throw new NotSupportedException("GetDataBase");
+                return CreateDataBaseSql;
             }
         }
         protected override string GetColumnInfosByTableNameSql
@@ -37,7 +37,7 @@ namespace SqlSugar
         {
             get
             {
-                throw new NotSupportedException("GetView");
+                return "select * from (select 1 as id) t where id=0";
             }
         }
         #endregion
@@ -47,7 +47,7 @@ namespace SqlSugar
         {
             get
             {
-                return "";
+                return "select * from (select 1 as id) t where id=0";
             }
         }
         protected override string AddPrimaryKeySql

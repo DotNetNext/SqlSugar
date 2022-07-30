@@ -80,7 +80,7 @@ namespace SqlSugar
                             object value = null;
                             if (it.Value is DateTime)
                             {
-                                value = ((DateTime)it.Value).ToString("O");
+                               return $" cast('{it.Value.ObjToDate().ToString("yyyy-MM-dd HH:mm:ss.fff")}' as date)";
                             }
                             else
                             {
