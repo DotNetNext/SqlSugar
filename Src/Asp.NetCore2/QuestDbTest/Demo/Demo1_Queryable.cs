@@ -52,6 +52,31 @@ namespace OrmTest
             var q2 = db.Queryable<Order>().Take(2);
             var test05 = db.UnionAll(q1, q2).ToList();
             var test06 = db.Queryable<Order>().ToList();
+ 
+            if (db.DbMaintenance.IsAnyTable("users", false))
+            {
+                db.DbMaintenance.DropTable("users");
+            }
+            if (!db.DbMaintenance.IsAnyTable("users", false))
+            {
+                db.CodeFirst.InitTables<Users>();
+            }
+ 
+           var list = new List<Users>();
+            for (var i = 0; i < 10000; i++)
+            {
+
+                list.Add(new Users
+                {
+                    Id = i + 1,
+                    createtime = DateTime.Now,
+                    username = "161718",
+                    password = "161718",
+                });
+            }
+            db.Insertable<Users>(list).ExecuteCommand();
+
+
             Console.WriteLine("#### Examples End ####");
             Console.WriteLine("#### Examples End ####");
         }
