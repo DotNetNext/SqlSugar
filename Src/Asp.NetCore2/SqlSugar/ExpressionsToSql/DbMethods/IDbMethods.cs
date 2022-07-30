@@ -86,6 +86,6 @@ namespace SqlSugar
         string Asc(MethodCallExpressionModel model);
         string Desc(MethodCallExpressionModel model);
         string Stuff(MethodCallExpressionModel model);
-        string GetDateString(string dateValue);
+        string GetDateString(string dateValue,string format);
     }
 }

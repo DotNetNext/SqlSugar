@@ -325,7 +325,7 @@ namespace SqlSugar
                     {
                         var format = (args[0] as ConstantExpression).Value + "";
                         var value = GetNewExpressionValue(express.Object);
-                        var dateString2=this.Context.DbMehtods.GetDateString(value);
+                        var dateString2=this.Context.DbMehtods.GetDateString(value,format);
                         if (dateString2 == null)
                         {
                             var dateString = GeDateFormat(format, value);
@@ -908,7 +908,7 @@ namespace SqlSugar
                     case "ToString":
                         if (model.Args.Count > 1)
                         {
-                            var dateString2 = this.Context.DbMehtods.GetDateString(model.Args.First().MemberName.ObjToString());
+                            var dateString2 = this.Context.DbMehtods.GetDateString(model.Args.First().MemberName.ObjToString(), model.Args.Last().MemberValue.ObjToString());
                             if (dateString2 != null) return dateString2;
                             return GeDateFormat(model.Args.Last().MemberValue.ObjToString(), model.Args.First().MemberName.ObjToString());
                         }
