@@ -135,12 +135,12 @@ namespace SqlSugar
 
         private static bool IsBoolFalse(DataRow dataRow, DataColumn item)
         {
-            return dataRow[item.ColumnName] != null && dataRow[item.ColumnName]  is string && dataRow[item.ColumnName].ToString().IsIn(false.ToString());
+            return dataRow[item.ColumnName] != null && dataRow[item.ColumnName]  is string && dataRow[item.ColumnName].ToString()==("isSqliteCore_False");
         }
 
         private static bool IsBoolTrue(DataRow dataRow, DataColumn item)
         {
-            return dataRow[item.ColumnName] != null && dataRow[item.ColumnName] is string && dataRow[item.ColumnName].ToString().IsIn(true.ToString());
+            return dataRow[item.ColumnName] != null && dataRow[item.ColumnName] is string && dataRow[item.ColumnName].ToString()==("isSqliteCore_True");
         }
 
         private static void Open(SqliteConnection cn)
