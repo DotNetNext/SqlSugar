@@ -7,7 +7,7 @@ namespace SqlSugar
         public SqlSugarProvider Context { get; set; }
         public QuestDBExpressionContext()
         {
-            base.DbMehtods = new PostgreSQLMethod();
+            base.DbMehtods = new QuestDBMethod();
         }
         public override string SqlTranslationLeft
         {
@@ -133,40 +133,61 @@ namespace SqlSugar
     }
     public class QuestDBMethod : DefaultDbMethod, IDbMethods
     {
-        public override string TrueValue()
+        //public override string DateIsSameByType(MethodCallExpressionModel model)
+        //{
+        //    var parameter = model.Args[0];
+        //    var parameter2 = model.Args[1];
+        //    var parameter3 = model.Args[2];
+
+        //    return string.Format(" (DATEDIFF('{2}',{0},{1})=0) ", parameter.MemberName, parameter2.MemberName, parameter3.MemberValue);
+        //}
+        public override string Contains(MethodCallExpressionModel model)
         {
-            return "true";
-        }
-        public override string FalseValue()
-        {
-            return "false";
+            var parameter = model.Args[0];
+            var parameter2 = model.Args[1];
+            return string.Format(" ({0}~{1} ) ", parameter.MemberName, parameter2.MemberName);
         }
         public override string DateDiff(MethodCallExpressionModel model)
         {
-            var parameter = (DateType)(Enum.Parse(typeof(DateType), model.Args[0].MemberValue.ObjToString()));
-            var begin = model.Args[1].MemberName;
-            var end = model.Args[2].MemberName;
-            switch (parameter)
-            {
-                case DateType.Year:
-                    return $" ( DATE_PART('Year',  {end}   ) - DATE_PART('Year',  {begin}) )";
-                case DateType.Month:
-                    return $" (  ( DATE_PART('Year',  {end}   ) - DATE_PART('Year',  {begin}) ) * 12 + (DATE_PART('month', {end}) - DATE_PART('month', {begin})) )";
-                case DateType.Day:
-                    return $" ( DATE_PART('day', {end} - {begin}) )";
-                case DateType.Hour:
-                    return $" ( ( DATE_PART('day', {end} - {begin}) ) * 24 + DATE_PART('hour', {end} - {begin} ) )";
-                case DateType.Minute:
-                    return $" ( ( ( DATE_PART('day', {end} - {begin}) ) * 24 + DATE_PART('hour', {end} - {begin} ) ) * 60 + DATE_PART('minute', {end} - {begin} ) )";
-                case DateType.Second:
-                    return $" ( ( ( DATE_PART('day', {end} - {begin}) ) * 24 + DATE_PART('hour', {end} - {begin} ) ) * 60 + DATE_PART('minute', {end} - {begin} ) ) * 60 + DATE_PART('minute', {end} - {begin} )";
-                case DateType.Millisecond:
-                    break;
-                default:
-                    break;
-            }
-            throw new Exception(parameter + " datediff no support");
+            var parameter = model.Args[0];
+            var parameter2 = model.Args[1];
+            var parameter3 = model.Args[2];
+            return string.Format(" DATEDIFF('{0}',{1},{2}) ", parameter.MemberValue.ObjToString().First(), parameter2.MemberName, parameter3.MemberName);
         }
+        public override string TrueValue()
+        {
+            return "1";
+        }
+        public override string FalseValue()
+        {
+            return "0";
+        }
+        //public override string DateDiff(MethodCallExpressionModel model)
+        //{
+        //    var parameter = (DateType)(Enum.Parse(typeof(DateType), model.Args[0].MemberValue.ObjToString()));
+        //    var begin = model.Args[1].MemberName;
+        //    var end = model.Args[2].MemberName;
+        //    switch (parameter)
+        //    {
+        //        case DateType.Year:
+        //            return $" ( DATE_PART('Year',  {end}   ) - DATE_PART('Year',  {begin}) )";
+        //        case DateType.Month:
+        //            return $" (  ( DATE_PART('Year',  {end}   ) - DATE_PART('Year',  {begin}) ) * 12 + (DATE_PART('month', {end}) - DATE_PART('month', {begin})) )";
+        //        case DateType.Day:
+        //            return $" ( DATE_PART('day', {end} - {begin}) )";
+        //        case DateType.Hour:
+        //            return $" ( ( DATE_PART('day', {end} - {begin}) ) * 24 + DATE_PART('hour', {end} - {begin} ) )";
+        //        case DateType.Minute:
+        //            return $" ( ( ( DATE_PART('day', {end} - {begin}) ) * 24 + DATE_PART('hour', {end} - {begin} ) ) * 60 + DATE_PART('minute', {end} - {begin} ) )";
+        //        case DateType.Second:
+        //            return $" ( ( ( DATE_PART('day', {end} - {begin}) ) * 24 + DATE_PART('hour', {end} - {begin} ) ) * 60 + DATE_PART('minute', {end} - {begin} ) ) * 60 + DATE_PART('minute', {end} - {begin} )";
+        //        case DateType.Millisecond:
+        //            break;
+        //        default:
+        //            break;
+        //    }
+        //    throw new Exception(parameter + " datediff no support");
+        //}
         public override string IIF(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
@@ -184,49 +205,10 @@ namespace SqlSugar
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
-            var format = "dd";
-            if (parameter2.MemberValue.ObjToString() == DateType.Year.ToString())
-            {
-                format = "yyyy";
-            }
-            if (parameter2.MemberValue.ObjToString() == DateType.Month.ToString())
-            {
-                format = "MM";
-            }
-            if (parameter2.MemberValue.ObjToString() == DateType.Day.ToString())
-            {
-                format = "dd";
-            }
-            if (parameter2.MemberValue.ObjToString() == DateType.Hour.ToString())
-            {
-                format = "hh";
-            }
-            if (parameter2.MemberValue.ObjToString() == DateType.Minute.ToString())
-            {
-                format = "mi";
-            }
-            if (parameter2.MemberValue.ObjToString() == DateType.Second.ToString())
-            {
-                format = "ss";
-            }
-            if (parameter2.MemberValue.ObjToString() == DateType.Millisecond.ToString())
-            {
-                format = "ms";
-            }
-            if (parameter2.MemberValue.ObjToString() == DateType.Weekday.ToString())
-            {
-                return $"  extract(DOW FROM cast({parameter.MemberName} as TIMESTAMP)) ";
-            }
+            var format = parameter2.MemberValue.ObjToString();
+            return string.Format("  {1}({0})  ) ", format, parameter.MemberName);
+        }
  
-            return string.Format(" cast( to_char({1},'{0}')as integer ) ", format, parameter.MemberName);
-        }
-
-        public override string Contains(MethodCallExpressionModel model)
-        {
-            var parameter = model.Args[0];
-            var parameter2 = model.Args[1];
-            return string.Format(" ({0} like concat('%',{1},'%')) ", parameter.MemberName, parameter2.MemberName  );
-        }
 
         public override string StartsWith(MethodCallExpressionModel model)
         {
@@ -289,11 +271,16 @@ namespace SqlSugar
             }
             return string.Format(" ( to_char({0},'{2}')=to_char({1},'{2}') ) ", parameter.MemberName, parameter2.MemberName, format);
         }
+        public override string ToDateShort(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            return string.Format("to_date (to_str({0}, 'yyyy-MM-dd'),'yyyy-MM-dd')", parameter.MemberName);
+        }
 
         public override string ToDate(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
-            return string.Format(" CAST({0} AS timestamp)", parameter.MemberName);
+            return string.Format("CAST({0} AS DATE)", parameter.MemberName);
         }
         public override string DateAddByType(MethodCallExpressionModel model)
         {
@@ -369,11 +356,11 @@ namespace SqlSugar
         }
         public override string GetDate()
         {
-            return "NOW()";
+            return "now()";
         }
         public override string GetRandom()
         {
-            return "RANDOM()";
+            return "now()";
         }
 
         public override string EqualTrue(string fieldName)

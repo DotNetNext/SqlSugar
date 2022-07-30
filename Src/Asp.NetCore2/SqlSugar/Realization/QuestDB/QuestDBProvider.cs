@@ -129,6 +129,14 @@ namespace SqlSugar
                     sqlParameter.DbType = System.Data.DbType.Double;
                     sqlParameter.Value = Convert.ToDouble(sqlParameter.Value);
                 }
+                else if (sqlParameter.DbType == System.Data.DbType.Guid)
+                {
+                    sqlParameter.DbType = System.Data.DbType.Double;
+                    if (sqlParameter.Value != null)
+                    {
+                        sqlParameter.Value = (sqlParameter.Value).ToString();
+                    }
+                }
                 ++index;
             }
             return result;
