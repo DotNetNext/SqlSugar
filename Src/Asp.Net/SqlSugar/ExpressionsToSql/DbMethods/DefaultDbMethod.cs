@@ -552,5 +552,9 @@ namespace SqlSugar
             var parameter4 = model.Args[3];
             return $" STUFF ({parameter1.MemberName}, {parameter2.MemberName}, {parameter3.MemberName},  {parameter4.MemberName}) ";
         }
+        public string GetDateString(string dateValue) 
+        {
+            return null;
+        }
     }
 }

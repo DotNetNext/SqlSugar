@@ -325,8 +325,16 @@ namespace SqlSugar
                     {
                         var format = (args[0] as ConstantExpression).Value + "";
                         var value = GetNewExpressionValue(express.Object);
-                        var dateString = GeDateFormat(format, value);
-                        base.AppendValue(parameter, isLeft, dateString);
+                        var dateString2=this.Context.DbMehtods.GetDateString(value);
+                        if (dateString2 == null)
+                        {
+                            var dateString = GeDateFormat(format, value);
+                            base.AppendValue(parameter, isLeft, dateString);
+                        }
+                        else 
+                        {
+                            base.AppendValue(parameter, isLeft, dateString2);
+                        }
                     }
                     else 
                     {
@@ -900,6 +908,8 @@ namespace SqlSugar
                     case "ToString":
                         if (model.Args.Count > 1)
                         {
+                            var dateString2 = this.Context.DbMehtods.GetDateString(model.Args.First().MemberName.ObjToString());
+                            if (dateString2 != null) return dateString2;
                             return GeDateFormat(model.Args.Last().MemberValue.ObjToString(), model.Args.First().MemberName.ObjToString());
                         }
                         //Check.Exception(model.Args.Count > 1, "ToString (Format) is not supported, Use ToString().If time formatting can be used it.Date.Year+\"-\"+it.Data.Month+\"-\"+it.Date.Day ");
