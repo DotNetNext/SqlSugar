@@ -19,7 +19,6 @@ namespace OrmTest
             Async();
             NoEntity();
             SqlFuncTest();
-            Subquery();
             ReturnType();
         }
 
@@ -112,23 +111,7 @@ namespace OrmTest
                 .Select<ExpandoObject>().ToList().Select(it => it.ToDictionary(x => x.Key, x => x.Value)).ToList();
             Console.WriteLine("#### ReturnType End ####");
         }
-
-        private static void Subquery()
-        {
-            Console.WriteLine("");
-            Console.WriteLine("#### Subquery Start ####");
-            var db = GetInstance();
-
-            //var list = db.Queryable<Order>().Take(10).Select(it => new
-            //{
-            //    customName=SqlFunc.Subqueryable<Custom>().Where("it.CustomId=id").Select(s=>s.Name),
-            //    customName2 = SqlFunc.Subqueryable<Custom>().Where("it.CustomId = id").Where(s => true).Select(s => s.Name)
-            //}).ToList();
-
-            var list2 = db.Queryable<Order>().Where(it => SqlFunc.Subqueryable<OrderItem>().Where(i => i.OrderId == it.Id).Any()).ToList();
-
-            Console.WriteLine("#### Subquery End ####");
-        }
+ 
 
         private static void SqlFuncTest()
         {

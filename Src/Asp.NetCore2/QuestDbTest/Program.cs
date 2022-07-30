@@ -11,7 +11,7 @@ namespace OrmTest
             Demo1_Queryable.Init();
             Demo2_Updateable.Init();
             Demo3_Insertable.Init();
-            DemoN_SplitTable.Init();
+            //DemoN_SplitTable.Init();
             Demo4_Deleteable.Init();
             Demo5_SqlQueryable.Init();
             Demo6_Queue.Init();
@@ -25,7 +25,6 @@ namespace OrmTest
             DemoE_CodeFirst.Init();
             DemoF_Utilities.Init();
             DemoG_SimpleClient.Init();
-            DemoJ_Report.Init();
             //Unit test
             //NewUnitTest.Init();
  
