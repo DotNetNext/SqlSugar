@@ -367,5 +367,10 @@ namespace SqlSugar
         {
             return "( " + fieldName + "=true )";
         }
+
+        public override string GetDateString(string dateValue,string format)
+        {
+            return  $"  to_str({dateValue},'{format}') ";
+        }
     }
 }
