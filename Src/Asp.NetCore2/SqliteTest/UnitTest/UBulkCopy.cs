@@ -139,7 +139,18 @@ namespace OrmTest
              new  UnitTestoffset11 {  DateTimeOffset= DateTimeOffset.Now}
             });
             var list5 = db.Queryable<UnitTestoffset11>().ToList();
-            Console.WriteLine("用例跑完");
+
+            Db.CodeFirst.InitTables<UnitIdentity111111111>();
+            Db.DbMaintenance.TruncateTable<UnitIdentity111111111>();
+             Db.Fastest<UnitIdentity111111111>().BulkCopy(new List<UnitIdentity111111111> {
+              new UnitIdentity111111111(){ Id=1, Name="True" }
+            });
+            var list6 = db.Queryable<UnitIdentity111111111>().ToList();
+            if (list6.First().Name != "True") 
+            {
+                throw new Exception("unit error");
+            }
+         Console.WriteLine("用例跑完");
         }
 
     }
