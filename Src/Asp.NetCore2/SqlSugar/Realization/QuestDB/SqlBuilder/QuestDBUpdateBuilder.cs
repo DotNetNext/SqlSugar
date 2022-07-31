@@ -84,9 +84,13 @@ namespace SqlSugar
                     this.Parameters.Add(new SugarParameter(parameterName, value));
                     return parameterName;
                 }
-                else if (type == UtilConstants.BoolType)
+                else if (value is int || value is long || value is short || value is short || value is byte)
                 {
-                    return value.ObjToBool() ? "1" : "0";
+                    return value;
+                }
+                else if (value is bool)
+                {
+                    return value.ObjToString().ToLower();
                 }
                 else if (type == UtilConstants.StringType || type == UtilConstants.ObjType)
                 {
