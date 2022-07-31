@@ -9,7 +9,8 @@ namespace OrmTest
 
     public class Order
     {
-        [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+        //不支持自增和主键 （标识主键是用来更新用的）
+        [SugarColumn(IsPrimaryKey = true)]
         public int Id { get; set; }
 
         public string Name { get; set; }

@@ -8,7 +8,8 @@ namespace OrmTest
     [SqlSugar.SugarTable("OrderDetail")]
     public class OrderItem
     {
-        [SqlSugar.SugarColumn(IsPrimaryKey =true, IsIdentity =true)]
+        //不支持自增和主键 （标识主键是用来更新用的）
+        [SqlSugar.SugarColumn(IsPrimaryKey =true)]
         public int ItemId { get; set; }
         public int OrderId { get; set; }
         public decimal? Price { get; set; }

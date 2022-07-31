@@ -8,7 +8,8 @@ namespace OrmTest
 {
     public class RootTable0
     {
-        [SqlSugar.SugarColumn(IsPrimaryKey =true,IsIdentity =true)]
+        //不支持自增和主键 （标识主键是用来更新用的）
+        [SqlSugar.SugarColumn(IsPrimaryKey =true)]
         public int Id { get; set; }
         public string Name { get; set; }
         [SqlSugar.SugarColumn(IsIgnore =true)]
