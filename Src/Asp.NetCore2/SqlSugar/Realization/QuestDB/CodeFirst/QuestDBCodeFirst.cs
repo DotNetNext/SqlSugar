@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace SqlSugar
@@ -31,6 +32,15 @@ namespace SqlSugar
                 }
             }
             columns = columns.OrderBy(it => it.IsPrimarykey ? 0 : 1).ToList();
+            foreach (var  propety in entityInfo.Type.GetProperties()) 
+            {
+               var timeAttr= propety.GetCustomAttribute<TimeDbSplitFieldAttribute>();
+                if (timeAttr != null) 
+                {
+                    var colName = columns.FirstOrDefault(it => it.PropertyName == propety.Name)?.DbColumnName;
+                    tableName +=$"_TIMESTAMP({colName}) PARTITION BY {timeAttr.DateType} ";
+                }
+            }
             this.Context.DbMaintenance.CreateTable(tableName, columns,true);
         }
         protected override DbColumnInfo EntityColumnToDbColumn(EntityInfo entityInfo, string tableName, EntityColumnInfo item)
@@ -46,6 +56,7 @@ namespace SqlSugar
                 IsNullable = item.IsNullable,
                 DefaultValue = item.DefaultValue,
                 ColumnDescription = item.ColumnDescription,
+                PropertyName=item.PropertyName,
                 Length = item.Length
             };
             if (propertyType == UtilConstants.DecType) 

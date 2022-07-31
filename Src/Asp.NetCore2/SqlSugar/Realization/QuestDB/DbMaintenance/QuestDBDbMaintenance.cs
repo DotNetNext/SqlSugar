@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace SqlSugar
 {
@@ -370,6 +371,12 @@ namespace SqlSugar
         }
         public override bool CreateTable(string tableName, List<DbColumnInfo> columns, bool isCreatePrimaryKey = true)
         {
+            var splitSql = "";
+            if (tableName.Contains("_TIMESTAMP(")) 
+            {
+                splitSql = Regex.Match(tableName,@"_TIMESTAMP\(.+$").Value;
+                tableName = tableName.Replace(splitSql, "");
+            }
             if (columns.HasValue())
             {
                 foreach (var item in columns)
@@ -388,7 +395,7 @@ namespace SqlSugar
 
             }
             sql = sql.Replace("$PrimaryKey", primaryKeyInfo);
-            this.Context.Ado.ExecuteCommand(sql);
+            this.Context.Ado.ExecuteCommand(sql+ splitSql.TrimStart('_'));
             return true;
         }
         protected override string GetCreateTableSql(string tableName, List<DbColumnInfo> columns)
