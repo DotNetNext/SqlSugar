@@ -35,7 +35,6 @@ namespace OrmTest
             var getOrderBy2 = db.Queryable<Order>().OrderBy(it => it.Id).OrderBy(it => it.Name, OrderByType.Desc).ToList();
             var getOrderBy3 = db.Queryable<Order>().OrderBy(it =>new { it.Name,it.Id}).ToList();
             //var getRandom = db.Queryable<Order>().OrderBy(it => SqlFunc.GetRandom()).First();
-            var getByPrimaryKey = db.Queryable<Order>().InSingle(2);
             var getSingleOrDefault = db.Queryable<Order>().Where(it => it.Id == 1).Single();
             var getFirstOrDefault = db.Queryable<Order>().First();
             var getByWhere = db.Queryable<Order>().Where(it => it.Id == 1 || it.Name == "a").ToList();
@@ -63,18 +62,18 @@ namespace OrmTest
             }
  
            var list = new List<Users>();
-            for (var i = 0; i < 100; i++)
+            for (var i = 0; i < 1000; i++)
             {
 
                 list.Add(new Users
                 {
-                    Id = i + 1,
+                    Sid=SnowFlakeSingle.Instance.NextId(),
                     createtime = DateTime.Now,
                     username = "161718",
                     password = "161718",
                 });
             }
-            db.Insertable<Users>(list).ExecuteReturnSnowflakeId();
+            db.Insertable(list).ExecuteCommand();
 
             var list2 = db.Queryable<Users>().ToList();
 
@@ -95,7 +94,7 @@ namespace OrmTest
 
             var json = db.Queryable<Order>().ToJson();
 
-            List<int> listInt = db.Queryable<Order>().Select(it => it.Id).ToList();
+            List<long> listInt = db.Queryable<Order>().Select(it => it.Id).ToList();
 
             var dynamic = db.Queryable<Order>().Select<dynamic>().ToList();
 

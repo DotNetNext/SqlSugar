@@ -73,10 +73,12 @@ namespace OrmTest
             //Use db query
             var dt = db.Ado.SqlQuery<dynamic>("select @id",new { id=1});
 
+        
             //Create tables
             db.CodeFirst.InitTables(typeof(OrderItem),typeof(Order));
+            //db.DbMaintenance.TruncateTable<Order>();
             var xx=db.Insertable(new Order() { Name = "order1", CustomId = 1, Price = 0, CreateTime = DateTime.Now })
-              .ExecuteCommand(); 
+              .ExecuteReturnSnowflakeId(); 
             //Insert data
          //   db.Insertable(new OrderItem() { OrderId = id, Price = 0, CreateTime=DateTime.Now }).ExecuteCommand();
             Console.WriteLine("#### SqlSugarClient End ####");
@@ -87,7 +89,7 @@ namespace OrmTest
         {
             Console.WriteLine("");
             Console.WriteLine("#### DbContext Start ####");
-            var insertObj = new Order { Name = "jack", CreateTime = DateTime.Now };
+            var insertObj = new Order {  Id=SnowFlakeSingle.Instance.NextId(),Name = "jack", CreateTime = DateTime.Now };
             var InsertObjs = new Order[] { insertObj };
 
             DbContext context = new DbContext();
@@ -97,7 +99,7 @@ namespace OrmTest
             var orderDb = context.OrderDb;
 
             //Select
-            var data1 = orderDb.GetById(1);
+         //   var data1 = orderDb.GetById();
             var data2 = orderDb.GetList();
             var data3 = orderDb.GetList(it => it.Id == 1);
             var data4 = orderDb.GetSingle(it => it.Id == 1);

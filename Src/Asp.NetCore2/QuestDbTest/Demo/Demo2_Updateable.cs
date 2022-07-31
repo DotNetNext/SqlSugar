@@ -36,8 +36,8 @@ namespace OrmTest
 
             var updateObj = new Order() { Id = 1, Name = "order1" };
             var updateObjs = new List<Order> {
-                 new Order() { Id = 11, Name = "order11" },
-                 new Order() { Id = 12, Name = "order12" }
+                 new Order() { Id = 11, Name = "order11",CreateTime=DateTime.Now },
+                 new Order() { Id = 12, Name = "order12" ,CreateTime=DateTime.Now}
             };
 
             //update all columns by primary key

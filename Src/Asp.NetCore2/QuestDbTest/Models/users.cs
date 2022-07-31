@@ -10,12 +10,9 @@ namespace OrmTest
     public class Users
     {
         [SugarColumn(IsPrimaryKey = true)]
-        public long Sid { get; set; }
- 
-        public int Id { get; set; }
+        public long Sid { get; set; } 
 
-        [SqlSugar.SugarColumn(IsNullable = true)]
-        public DateTime? createtime { get; set; }
+        public DateTime  createtime { get; set; }
         public string username { get; set; }
 
         public string password { get; set; }

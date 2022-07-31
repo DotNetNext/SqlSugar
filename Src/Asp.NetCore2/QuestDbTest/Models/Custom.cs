@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace OrmTest
 {
+    [SqlSugar.SugarTable("Custom_1")]
     public class Custom
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string Name { get; set; }
     }
 }
