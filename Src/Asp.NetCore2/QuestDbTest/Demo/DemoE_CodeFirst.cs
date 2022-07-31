@@ -19,22 +19,34 @@ namespace OrmTest
                 InitKeyType = InitKeyType.Attribute,
                 IsAutoCloseConnection = true
             });
-            db.DbMaintenance.CreateDatabase(); 
+            db.DbMaintenance.CreateDatabase();
             db.CodeFirst.InitTables(typeof(CodeFirstTable1));//Create CodeFirstTable1 
-            db.Insertable(new CodeFirstTable1() { Name = "a", Text="a" }).ExecuteCommand();
+            db.Insertable(new CodeFirstTable1() { Name = "a", Text = "a" }).ExecuteCommand();
             var list = db.Queryable<CodeFirstTable1>().ToList();
             db.CodeFirst.InitTables<IndexClass>();
+            db.CodeFirst.InitTables<SplitTableEntity>();
             Console.WriteLine("#### CodeFirst end ####");
         }
     }
 
-    [SugarIndex(null,nameof(IndexClass.Name),OrderByType.Asc)]
-    public class IndexClass 
+    [SugarIndex(null, nameof(IndexClass.Name), OrderByType.Asc)]
+    public class IndexClass
     {
         public int Id { get; set; }
-        [SugarColumn(ColumnDataType ="symbol")]
+        [SugarColumn(ColumnDataType = "symbol")]
         public string Name { get; set; }
     }
+
+
+
+    public class SplitTableEntity
+    {
+        public string Id { get; set; }
+        [TimeDbSplitField(DateType.Day)]
+        public DateTime Ts { get; set; }
+    }
+
+
     public class CodeFirstTable1
     {
         [SugarColumn(IsIdentity = true, IsPrimaryKey = true)]

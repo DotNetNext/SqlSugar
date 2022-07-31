@@ -63,7 +63,7 @@ namespace OrmTest
             }
  
            var list = new List<Users>();
-            for (var i = 0; i < 100000; i++)
+            for (var i = 0; i < 100; i++)
             {
 
                 list.Add(new Users
