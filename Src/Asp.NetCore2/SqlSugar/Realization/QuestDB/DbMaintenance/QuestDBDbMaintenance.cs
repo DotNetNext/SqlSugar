@@ -214,6 +214,53 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override void AddIndex(EntityInfo entityInfo)
+        {
+            if (entityInfo.Indexs != null)
+            {
+                foreach (var item in entityInfo.Indexs)
+                {
+                    CreateIndex(entityInfo.DbTableName, item.IndexFields.Select(it => it.Key).ToArray());
+                }
+            }
+        }
+        public override bool CreateIndex(string tableName, string[] columnNames, bool isUnique = false)
+        {
+            if (isUnique)
+                throw new Exception("no support  unique index");
+            var columnInfos = this.Context.Ado.SqlQuery<QuestDbColumn>("SHOW COLUMNS FROM  '" + tableName + "'");
+            foreach (var columnInfo in columnInfos)
+            {
+                if (columnNames.Any(z => z.EqualCase(columnInfo.Column)))
+                {
+                    if (!columnInfo.Type.EqualCase("SYMBOL"))
+                    {
+                        Check.ExceptionEasy(true, "Only the SYMBOL type can be indexed", $"字段{columnInfo.Column} 不是SYMBOL并且实体是string才能添加索引,CodeFirst需要指定类型： SYMBOL");
+                    }
+                    if (columnInfo.Indexed == false)
+                    {
+                        var indexSql = $"ALTER TABLE  '{tableName}'  ALTER COLUMN  {columnInfo.Column}   ADD INDEX ";
+                        this.Context.Ado.ExecuteCommand(indexSql);
+                    }
+                }
+            }
+            return true;
+        }
+        public override bool CreateIndex(string tableName, string[] columnNames, string IndexName, bool isUnique = false)
+        {
+            if(isUnique)
+                throw new Exception("no support  unique index");
+            return  CreateIndex(tableName, columnNames, isUnique);
+        }
+
+        public override bool CreateUniqueIndex(string tableName, string[] columnNames)
+        {
+            throw new Exception("no support  unique index");
+        }
+        public override bool IsAnyIndex(string indexName)
+        {
+            return false;
+        }
         public override List<DbTableInfo> GetTableInfoList(bool isCache = true)
         {
             var dt = this.Context.Ado.GetDataTable(GetTableInfoListSql);
@@ -430,6 +477,15 @@ namespace SqlSugar
             return schema;
         }
 
+        #endregion
+
+        #region HelperClass
+        internal class QuestDbColumn
+        {
+            public string Column  { get; set; }
+            public string Type { get; set; }
+            public bool Indexed { get; set; }
+        }
         #endregion
     }
 }

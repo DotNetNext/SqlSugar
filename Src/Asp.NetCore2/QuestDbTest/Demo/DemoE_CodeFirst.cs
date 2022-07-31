@@ -23,10 +23,18 @@ namespace OrmTest
             db.CodeFirst.InitTables(typeof(CodeFirstTable1));//Create CodeFirstTable1 
             db.Insertable(new CodeFirstTable1() { Name = "a", Text="a" }).ExecuteCommand();
             var list = db.Queryable<CodeFirstTable1>().ToList();
+            db.CodeFirst.InitTables<IndexClass>();
             Console.WriteLine("#### CodeFirst end ####");
         }
     }
 
+    [SugarIndex(null,nameof(IndexClass.Name),OrderByType.Asc)]
+    public class IndexClass 
+    {
+        public int Id { get; set; }
+        [SugarColumn(ColumnDataType ="symbol")]
+        public string Name { get; set; }
+    }
     public class CodeFirstTable1
     {
         [SugarColumn(IsIdentity = true, IsPrimaryKey = true)]
