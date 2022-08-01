@@ -55,6 +55,14 @@ namespace SqlSugar
             {
                 var shortName = item.ThisEntityInfo.DbTableName + i;
                 var pkColumn = item.ThisEntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey);
+                if (item.Nav.Name2.HasValue()) 
+                {
+                    var nav2NameColumn = item.ThisEntityInfo.Columns.FirstOrDefault(it => it.PropertyName==item.Nav.Name2);
+                    if (nav2NameColumn != null) 
+                    {
+                        pkColumn = nav2NameColumn;
+                    }
+                }
                 var navColum = item.ParentEntityInfo.Columns.FirstOrDefault(it => it.PropertyName == item.Nav.Name);
                 Check.ExceptionEasy(pkColumn == null, $"{item.ThisEntityInfo.EntityName} need PrimayKey", $"使用导航属性{item.ThisEntityInfo.EntityName} 缺少主键");
                 var on = $" {ToShortName(shortName)}.{queryable.SqlBuilder.GetTranslationColumnName(pkColumn.DbColumnName)}={ToShortName(formInfo.ThisEntityInfo.DbTableName + (i - 1))}.{queryable.SqlBuilder.GetTranslationColumnName(navColum.DbColumnName)}";
