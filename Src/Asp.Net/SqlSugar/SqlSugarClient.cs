@@ -996,6 +996,10 @@ namespace SqlSugar
         #endregion
 
         #region Other method
+        public SqlSugarClient CopyNew()
+        {
+            return new SqlSugarClient(UtilMethods.CopyConfig(this.Ado.Context.CurrentConnectionConfig));
+        }
         public DateTime GetDate()
         {
             return this.Context.GetDate();
