@@ -25,4 +25,14 @@ namespace SqlSugar
          
         }
     }
+
+    [AttributeUsage(AttributeTargets.Property, Inherited = true)]
+    public class TimeDbSplitFieldAttribute : Attribute
+    {
+        public DateType? DateType { get; set; }  
+        public TimeDbSplitFieldAttribute(DateType type)
+        {
+            DateType = type;
+        }
+    }
 }
