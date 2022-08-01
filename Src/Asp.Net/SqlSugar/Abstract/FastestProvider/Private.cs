@@ -64,6 +64,7 @@ namespace SqlSugar
             dt.TableName = GetTableName();
             var columns = entityInfo.Columns;
             var isMySql = this.context.CurrentConnectionConfig.DbType.IsIn(DbType.MySql, DbType.MySqlConnector);
+            var isSqliteCore = SugarCompatible.IsFramework==false&& this.context.CurrentConnectionConfig.DbType.IsIn(DbType.Sqlite);
             foreach (var item in datas)
             {
                 var dr = dt.NewRow();
@@ -86,7 +87,11 @@ namespace SqlSugar
                             value = DBNull.Value;
                         }
                     }
-                    else if (column.UnderType == UtilConstants.DateTimeOffsetType&& value!=null && value != DBNull.Value) 
+                    else if (isSqliteCore&&column.UnderType == UtilConstants.StringType && value is bool)
+                    {
+                        value = "isSqliteCore_"+value.ObjToString();
+                    }
+                    else if (column.UnderType == UtilConstants.DateTimeOffsetType && value != null && value != DBNull.Value)
                     {
                         if (builder.DbFastestProperties != null && builder.DbFastestProperties.HasOffsetTime == true)
                         {
