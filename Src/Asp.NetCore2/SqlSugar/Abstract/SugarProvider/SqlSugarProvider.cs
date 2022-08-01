@@ -1341,7 +1341,11 @@ namespace SqlSugar
         }
         #endregion
 
-        #region
+        #region Other
+        public SqlSugarClient CopyNew()
+        {
+            return new SqlSugarClient(UtilMethods.CopyConfig(this.Ado.Context.CurrentConnectionConfig));
+        }
         public void ThenMapper<T>(IEnumerable<T> list, Action<T> action)
         {
             MapperContext<T> result = new MapperContext<T>();

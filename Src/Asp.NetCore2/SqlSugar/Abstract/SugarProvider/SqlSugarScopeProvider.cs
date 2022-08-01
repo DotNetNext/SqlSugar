@@ -706,6 +706,10 @@ namespace SqlSugar
         {
             return ScopedContext.UpdateNav(datas);
         }
+        public SqlSugarClient CopyNew()
+        {
+            return new SqlSugarClient(UtilMethods.CopyConfig(this.Ado.Context.CurrentConnectionConfig));
+        }
         #endregion
     }
 }

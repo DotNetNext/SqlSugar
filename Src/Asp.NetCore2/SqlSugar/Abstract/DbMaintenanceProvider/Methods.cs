@@ -106,6 +106,16 @@ namespace SqlSugar
             var result=columns.Any(it => it.IsPrimarykey == true && it.DbColumnName.Equals(columnName, StringComparison.CurrentCultureIgnoreCase));
             return result;
         }
+        public virtual bool IsPrimaryKey(string tableName, string columnName,bool isCache=true)
+        {
+            columnName = this.SqlBuilder.GetNoTranslationColumnName(columnName);
+            var isAny = IsAnyTable(tableName, isCache);
+            Check.Exception(!isAny, string.Format("Table {0} does not exist", tableName));
+            var columns = GetColumnInfosByTableName(tableName,isCache);
+            if (columns.IsNullOrEmpty()) return false;
+            var result = columns.Any(it => it.IsPrimarykey == true && it.DbColumnName.Equals(columnName, StringComparison.CurrentCultureIgnoreCase));
+            return result;
+        }
         public virtual bool IsIdentity(string tableName, string columnName)
         {
             columnName = this.SqlBuilder.GetNoTranslationColumnName(columnName);
