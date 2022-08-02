@@ -454,17 +454,24 @@ namespace SqlSugar
                 }
                 return result;
         }
-        internal static List<NewExpressionInfo> GetNewDynamicexpressionInfos(Expression item)
+        internal static List<NewExpressionInfo> GetNewDynamicexpressionInfos(Expression item, ExpressionContext context)
         {
             List<NewExpressionInfo> result = new List<NewExpressionInfo>();
             foreach (var binding in ((NewExpression)item).Arguments)
             {
-                //var memberAssignment = binding;
-                //NewExpressionInfo additem = new NewExpressionInfo();
-                //additem.Name = memberAssignment.Member.Name;
-                //additem.ShortName = (memberAssignment.Expression as MemberExpression).Expression + "";
-                //additem.Value = "";
-                //result.Add(additem);
+                NewExpressionInfo additem = new NewExpressionInfo();
+                if (binding is MemberExpression)
+                {
+                    var member = (MemberExpression)binding; 
+                    //var memberAssignment = binding;
+                    //NewExpressionInfo additem = new NewExpressionInfo();
+                    additem.RightName = member.Member.Name;
+                    additem.ShortName = member.Expression + "";
+                    additem.RightName = member.Member.Name;
+                    additem.RightDbName = context.GetDbColumnName(member.Type.Name, additem.RightName);
+                    //additem.Value = "";
+                    result.Add(additem);
+                }
             }
             return result;
         }

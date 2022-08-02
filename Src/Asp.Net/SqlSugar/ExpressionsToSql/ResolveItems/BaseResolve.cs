@@ -469,7 +469,7 @@ namespace SqlSugar
                     }
                     else 
                     {
-                        newExpressionInfos = ExpressionTool.GetNewexpressionInfos(item, this.Context);
+                        newExpressionInfos = ExpressionTool.GetNewDynamicexpressionInfos(item, this.Context);
                     }
                     foreach (NewExpressionInfo newExpressionInfo in newExpressionInfos) 
                     {

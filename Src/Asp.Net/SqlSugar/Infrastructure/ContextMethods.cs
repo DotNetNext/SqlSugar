@@ -436,6 +436,11 @@ namespace SqlSugar
                 {
                     var key = typeName + "." + name;
                     var info = readerValues.Select(it => it.Key).FirstOrDefault(it => it.ToLower() == key.ToLower());
+                    if (info == null && typeName !=null && typeName.Contains("<>f__AnonymousType")) 
+                    {
+                        key = item.Name + "." + name;
+                        info = readerValues.Select(it => it.Key).FirstOrDefault(it => it.ToLower() == key.ToLower());
+                    }
                     var oldInfo = info;
                     if (mappingKeys!=null&&mappingKeys.ContainsKey(item.Name)) 
                     {
