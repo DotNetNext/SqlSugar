@@ -460,16 +460,7 @@ namespace SqlSugar
                 CallContextThread<Dictionary<string, string>>.SetData("Exp_Select_Mapping_Key", mappingKeys);
                 CallContextAsync<Dictionary<string, string>>.SetData("Exp_Select_Mapping_Key", mappingKeys);
                 this.Expression = item;
-                if (item is MemberInitExpression)
-                {
-                }
-                else if (item is NewExpression)
-                {
-                }
-                else
-                {
-                    asName = GetAsNameResolveAnObject(parameter, item, asName, isSameType);
-                }
+                asName = GetAsNameResolveAnObject(parameter, item, asName, isSameType);
             }
             else if (item.Type == UtilConstants.BoolType && item is MethodCallExpression && IsNotCaseExpression(item))
             {
