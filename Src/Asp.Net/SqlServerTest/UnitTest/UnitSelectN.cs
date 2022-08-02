@@ -43,7 +43,22 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
-             
+            var data3 = db.Queryable<B>()
+                .LeftJoin<A>((b, a) => b.AId == a.AId)
+                .LeftJoin<AA>((b, a, aa) => a.AId == aa.AId)
+                .LeftJoin<BB>((b, a, aa, bb) => bb.BId == b.BId)
+                .Select((b, a, aa, bb) => new
+                {
+                    b=b.BId,
+                    A=new ADTO() { AId=a.AId },
+                    B = new  BDTO{ BId = b.BId, BName = b.BName, AId = a.AId }
+                })
+                .ToList();
+            if (data3.First().B.BId != 1 && data3.First().B.BName != "a"&& data3.First().b!=1)
+            {
+                throw new Exception("unit error");
+            }
+
         }
         [SqlSugar.SugarTable("unita1")]
         public class A
