@@ -292,6 +292,32 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+            
+            var sql15=db.Updateable(new List<UintAinstringHAHA>()
+            {
+                new UintAinstringHAHA(){  id="1", xame="a" },
+                 new UintAinstringHAHA(){  id="2", xame="a" }
+            }).ToSql().Key;
+            db.CodeFirst.InitTables<UintAinstringHAHA>();
+            db.DbMaintenance.TruncateTable<UintAinstringHAHA>();
+            db.Insertable(new List<UintAinstringHAHA>()
+            {
+                new UintAinstringHAHA(){  id="1", xame="a" },
+                 new UintAinstringHAHA(){  id="2", xame="a" }
+            }).ExecuteCommand();
+            var rows=db.Ado.ExecuteCommand(sql15);
+            if (sql15.ToLower().Contains("n'") || rows != 2) 
+            {
+                throw new Exception("unit error");
+            }
+        }
+
+        public class UintAinstringHAHA 
+        {
+            [SugarColumn(IsPrimaryKey =true,SqlParameterDbType =System.Data.DbType.AnsiString)]
+            public string id { get; set; }
+            [SugarColumn(SqlParameterDbType = System.Data.DbType.AnsiString)]
+            public string xame { get; set; }
         }
         public class VUOrder
         {

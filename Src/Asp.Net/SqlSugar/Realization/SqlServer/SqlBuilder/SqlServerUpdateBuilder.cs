@@ -76,7 +76,7 @@ namespace SqlSugar
             if (it.SqlParameterDbType!=null&&it.SqlParameterDbType.Equals(System.Data.DbType.AnsiString))
             {
                 var value = FormatValue(it.Value);
-                if (value is string&&value.ObjToString().Contains("N'"))
+                if (value is string&&value.ObjToString().StartsWith("N'"))
                 {
                     return value.ObjToString().TrimStart('N');
                 }
