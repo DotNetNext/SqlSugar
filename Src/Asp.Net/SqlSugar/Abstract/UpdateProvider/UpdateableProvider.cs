@@ -62,6 +62,7 @@ namespace SqlSugar
 
         public virtual int ExecuteCommandWithOptLock(bool IsVersionValidation=false)
         {
+            Check.ExceptionEasy(this.UpdateBuilder.IsListUpdate==true, " OptLock can only be used on a single object, and the argument cannot be List", "乐观锁只能用于单个对象,参数不能是List,如果是一对多操作请更新主表统一用主表验证");
             var updateData = UpdateObjs.FirstOrDefault();
             if (updateData == null) return 0;
             var name=_ExecuteCommandWithOptLock(updateData);
@@ -92,6 +93,7 @@ namespace SqlSugar
 
         public virtual async Task<int> ExecuteCommandWithOptLockAsync(bool IsVersionValidation = false)
         {
+            Check.ExceptionEasy(this.UpdateBuilder.IsListUpdate == true, " OptLock can only be used on a single object, and the argument cannot be List", "乐观锁只能用于单个对象,参数不能是List,如果是一对多操作请更新主表统一用主表验证");
             var updateData = UpdateObjs.FirstOrDefault();
             if (updateData == null) return 0;
             var name=_ExecuteCommandWithOptLock(updateData);
