@@ -490,50 +490,11 @@ namespace SqlSugar
             else if (item.Type.IsClass())
             {
                 var mappingKeys = GetMappingColumns(parameter.CurrentExpression);
-                var isSameType = mappingKeys.Keys.Count>0;
-                CallContextThread<Dictionary<string,string>>.SetData("Exp_Select_Mapping_Key", mappingKeys);
+                var isSameType = mappingKeys.Keys.Count > 0;
+                CallContextThread<Dictionary<string, string>>.SetData("Exp_Select_Mapping_Key", mappingKeys);
                 CallContextAsync<Dictionary<string, string>>.SetData("Exp_Select_Mapping_Key", mappingKeys);
                 this.Expression = item;
-                this.Start();
-                var shortName = parameter.CommonTempData;
-                var listProperties = item.Type.GetProperties().Cast<PropertyInfo>().ToList();
-                foreach (var property in listProperties)
-                {
-                    var hasIgnore = this.Context.IgnoreComumnList != null && this.Context.IgnoreComumnList.Any(it => it.EntityName.Equals(item.Type.Name, StringComparison.CurrentCultureIgnoreCase) && it.PropertyName.Equals(property.Name, StringComparison.CurrentCultureIgnoreCase));
-                    if (hasIgnore)
-                    {
-                        continue;
-                    }
-                    if (property.PropertyType.IsClass())
-                    {
-                        var comumnInfo=property.GetCustomAttribute<SugarColumn>();
-                        if (comumnInfo != null && comumnInfo.IsJson && isSameType)
-                        {
-                            asName = GetAsNameAndShortName(item, shortName, property);
-                        }
-                        else if(comumnInfo != null && comumnInfo.IsJson)
-                        {
-                            asName = GetAsName(item, shortName, property);
-                        }
-                        else if (comumnInfo!=null&&this.Context.SugarContext != null&&this.Context.SugarContext.Context != null) 
-                        {
-                           var entityInfo=this.Context.SugarContext.Context.EntityMaintenance.GetEntityInfo(item.Type);
-                           var entityColumn = entityInfo.Columns.FirstOrDefault(it => it.PropertyName == property.Name);
-                           if (entityColumn != null && entityColumn.IsJson) 
-                           {
-                                asName = GetAsName(item, shortName, property);
-                           }
-                        }
-                    }
-                    else if (isSameType)
-                    {
-                        asName = GetAsNameAndShortName(item, shortName, property);
-                    }
-                    else
-                    {
-                        asName = GetAsName(item, shortName, property);
-                    }
-                }
+                asName = ResolveAnObject(parameter, item, asName, isSameType);
             }
             else if (item.Type == UtilConstants.BoolType && item is MethodCallExpression && IsNotCaseExpression(item))
             {
@@ -584,6 +545,53 @@ namespace SqlSugar
                 Check.ThrowNotSupportedException(item.GetType().Name);
             }
         }
+
+        private string ResolveAnObject(ExpressionParameter parameter, Expression item, string asName, bool isSameType)
+        {
+            this.Start();
+            var shortName = parameter.CommonTempData;
+            var listProperties = item.Type.GetProperties().Cast<PropertyInfo>().ToList();
+            foreach (var property in listProperties)
+            {
+                var hasIgnore = this.Context.IgnoreComumnList != null && this.Context.IgnoreComumnList.Any(it => it.EntityName.Equals(item.Type.Name, StringComparison.CurrentCultureIgnoreCase) && it.PropertyName.Equals(property.Name, StringComparison.CurrentCultureIgnoreCase));
+                if (hasIgnore)
+                {
+                    continue;
+                }
+                if (property.PropertyType.IsClass())
+                {
+                    var comumnInfo = property.GetCustomAttribute<SugarColumn>();
+                    if (comumnInfo != null && comumnInfo.IsJson && isSameType)
+                    {
+                        asName = GetAsNameAndShortName(item, shortName, property);
+                    }
+                    else if (comumnInfo != null && comumnInfo.IsJson)
+                    {
+                        asName = GetAsName(item, shortName, property);
+                    }
+                    else if (comumnInfo != null && this.Context.SugarContext != null && this.Context.SugarContext.Context != null)
+                    {
+                        var entityInfo = this.Context.SugarContext.Context.EntityMaintenance.GetEntityInfo(item.Type);
+                        var entityColumn = entityInfo.Columns.FirstOrDefault(it => it.PropertyName == property.Name);
+                        if (entityColumn != null && entityColumn.IsJson)
+                        {
+                            asName = GetAsName(item, shortName, property);
+                        }
+                    }
+                }
+                else if (isSameType)
+                {
+                    asName = GetAsNameAndShortName(item, shortName, property);
+                }
+                else
+                {
+                    asName = GetAsName(item, shortName, property);
+                }
+            }
+
+            return asName;
+        }
+
         public object packIfElse(object methodValue)
         {
             methodValue = this.Context.DbMehtods.CaseWhen(new List<KeyValuePair<string, string>>() {
