@@ -191,6 +191,7 @@ namespace SqlSugar
                     DbColumnName = GetDbColumnName(column.PropertyName),
                     PropertyName = column.PropertyName,
                     PropertyType = UtilMethods.GetUnderType(column.PropertyInfo),
+                    SqlParameterDbType = column.SqlParameterDbType,
                     TableId = i
                 };
                 if (columnInfo.PropertyType.IsEnum() && columnInfo.Value != null)

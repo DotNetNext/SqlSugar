@@ -350,6 +350,10 @@ namespace SqlSugar
                 {
                     return "N'" + value.ToString().ToSqlFilter() + "'";
                 }
+                else if (type==UtilConstants.IntType||type==UtilConstants.LongType)
+                {
+                    return value;
+                }
                 else
                 {
                     return "N'" + value.ToString() + "'";
