@@ -430,5 +430,43 @@ namespace SqlSugar
         {
             return item is UnaryExpression && item.NodeType == ExpressionType.Convert;
         }
+
+        internal static List<NewExpressionInfo> GetNewexpressionInfos(Expression item,ExpressionContext context)
+        {
+            List<NewExpressionInfo> result = new List<NewExpressionInfo>();
+            foreach (MemberBinding binding in ((MemberInitExpression)item).Bindings)
+            {
+                if (binding.BindingType != MemberBindingType.Assignment)
+                {
+                    throw new NotSupportedException();
+                }
+                MemberAssignment memberAssignment = (MemberAssignment)binding;
+                NewExpressionInfo additem = new NewExpressionInfo();
+                if ((memberAssignment.Expression is MemberExpression))
+                {
+                    additem.LeftNameName = memberAssignment.Member.Name;
+                    var member = (memberAssignment.Expression as MemberExpression).Expression;
+                    additem.ShortName = member + "";
+                    additem.RightName = (memberAssignment.Expression as MemberExpression).Member.Name;
+                    additem.RightDbName = context.GetDbColumnName(member.Type.Name, additem.RightName);
+                    result.Add(additem);
+                }
+                }
+                return result;
+        }
+        internal static List<NewExpressionInfo> GetNewDynamicexpressionInfos(Expression item)
+        {
+            List<NewExpressionInfo> result = new List<NewExpressionInfo>();
+            foreach (var binding in ((NewExpression)item).Arguments)
+            {
+                //var memberAssignment = binding;
+                //NewExpressionInfo additem = new NewExpressionInfo();
+                //additem.Name = memberAssignment.Member.Name;
+                //additem.ShortName = (memberAssignment.Expression as MemberExpression).Expression + "";
+                //additem.Value = "";
+                //result.Add(additem);
+            }
+            return result;
+        }
     }
 }

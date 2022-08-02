@@ -460,7 +460,31 @@ namespace SqlSugar
                 CallContextThread<Dictionary<string, string>>.SetData("Exp_Select_Mapping_Key", mappingKeys);
                 CallContextAsync<Dictionary<string, string>>.SetData("Exp_Select_Mapping_Key", mappingKeys);
                 this.Expression = item;
-                asName = GetAsNameResolveAnObject(parameter, item, asName, isSameType);
+                if (this.Context.IsJoin&& (item is MemberInitExpression|| item is NewExpression))
+                {
+                    List<NewExpressionInfo> newExpressionInfos = new List<NewExpressionInfo>();
+                    if (item is MemberInitExpression)
+                    {
+                        newExpressionInfos = ExpressionTool.GetNewexpressionInfos(item,this.Context);
+                    }
+                    else 
+                    {
+                        newExpressionInfos = ExpressionTool.GetNewexpressionInfos(item, this.Context);
+                    }
+                    foreach (NewExpressionInfo newExpressionInfo in newExpressionInfos) 
+                    {
+                        //var property=item.Type.GetProperties().Where(it => it.Name == newExpressionInfo.l).First();
+                        //asName = GetAsName(item, newExpressionInfo.ShortName, property);
+                        parameter.Context.Result.Append(this.Context.GetAsString(
+                               this.Context.SqlTranslationLeft+asName + "." + newExpressionInfo.RightDbName+this.Context.SqlTranslationRight,
+                            newExpressionInfo.ShortName+"."+newExpressionInfo.RightDbName
+                          ));
+                    }
+                }
+                else
+                {
+                    asName = GetAsNameResolveAnObject(parameter, item, asName, isSameType);
+                }
             }
             else if (item.Type == UtilConstants.BoolType && item is MethodCallExpression && IsNotCaseExpression(item))
             {
