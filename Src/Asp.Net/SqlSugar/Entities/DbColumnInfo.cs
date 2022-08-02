@@ -25,5 +25,6 @@ namespace SqlSugar
         internal bool IsJson { get;  set; }
         public bool? IsUnsigned { get; set; }
         public int CreateTableFieldSort { get; set; }
+        internal object SqlParameterDbType { get;  set; }
     }
 }
