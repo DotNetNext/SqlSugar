@@ -62,7 +62,7 @@ namespace OrmTest
             db.Tracking(updateObj);
             updateObj.Name = "a1" + Guid.NewGuid();
             db.Updateable(updateObj).ExecuteCommand();
-
+            db.TempItems = null;
 
 
             /*** 2.by expression ***/
