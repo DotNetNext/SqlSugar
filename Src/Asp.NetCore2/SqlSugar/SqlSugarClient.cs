@@ -996,6 +996,14 @@ namespace SqlSugar
         #endregion
 
         #region Other method
+        public void Tracking<T>(T data) where T : class, new() 
+        {
+            this.Context.Tracking(data);
+        }
+        public void Tracking<T>(List<T> datas) where T : class, new() 
+        {
+            this.Context.Tracking(datas);
+        }
         public SqlSugarClient CopyNew()
         {
             return new SqlSugarClient(UtilMethods.CopyConfig(this.Ado.Context.CurrentConnectionConfig));

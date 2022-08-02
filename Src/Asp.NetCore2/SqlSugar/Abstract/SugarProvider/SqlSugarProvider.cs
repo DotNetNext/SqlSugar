@@ -1342,6 +1342,27 @@ namespace SqlSugar
         #endregion
 
         #region Other
+        public void Tracking<T>(T data) where T : class, new()
+        {
+            if (data != null)
+            {
+                UtilMethods.IsNullReturnNew(this.TempItems);
+                var key = "Tracking_" + data.GetHashCode() + "";
+                if (!this.TempItems.ContainsKey(key))
+                {
+                    var newT = new T();
+                    FastCopy.Copy(data, newT);
+                    this.TempItems.Add(key, newT);
+                }
+            }
+        }
+        public void Tracking<T>(List<T> datas) where T : class, new()
+        {
+            foreach (var data in datas) 
+            {
+                this.Tracking(data);
+            }
+        }
         public SqlSugarClient CopyNew()
         {
             return new SqlSugarClient(UtilMethods.CopyConfig(this.Ado.Context.CurrentConnectionConfig));

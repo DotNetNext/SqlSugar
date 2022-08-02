@@ -179,7 +179,7 @@ namespace SqlSugar
         {
             get
             {
-                return "EXECUTE sp_addextendedproperty N'MS_Description', '{2}', N'user', N'dbo', N'table', N'{1}', N'column', N'{0}'"; ;
+                return "EXECUTE sp_addextendedproperty N'MS_Description', N'{2}', N'user', N'dbo', N'table', N'{1}', N'column', N'{0}'"; ;
             }
         }
 
@@ -440,7 +440,6 @@ namespace SqlSugar
             }
             var oldDatabaseName = this.Context.Ado.Connection.Database;
             var connection = this.Context.CurrentConnectionConfig.ConnectionString;
-            Check.ExceptionEasy(String.IsNullOrEmpty(connection), "ConnectionString is not null", "连接字符串ConnectionString不能为Null");
             connection = connection.Replace(oldDatabaseName, "master");
             var newDb = new SqlSugarClient(new ConnectionConfig()
             {

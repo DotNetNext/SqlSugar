@@ -766,5 +766,13 @@ namespace SqlSugar
         {
             return new SqlSugarClient(UtilMethods.CopyConfig(this.Ado.Context.CurrentConnectionConfig));
         }
+        public void Tracking<T>(T data) where T : class, new()
+        {
+            ScopedContext.Tracking(data);
+        }
+        public void Tracking<T>(List<T> datas) where T : class, new()
+        {
+            ScopedContext.Tracking(datas);
+        }
     }
 }
