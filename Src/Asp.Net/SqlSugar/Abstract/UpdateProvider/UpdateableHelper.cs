@@ -85,6 +85,7 @@ namespace SqlSugar
                 {
                     DataAop(item);
                     SetUpdateItemByEntity(i, item, updateItem);
+                    Tracking(item);
                 }
                 ++i;
             }
@@ -95,6 +96,33 @@ namespace SqlSugar
             {
                 this.IgnoreColumns(ignoreColumns.Select(it => it.PropertyName).ToArray());
             }
+        }
+
+        private void Tracking(T item)
+        {
+            if (IsTrakingData())
+            {
+                var trackingData = this.Context.TempItems.FirstOrDefault(it => it.Key.StartsWith("Tracking_" + item.GetHashCode()));
+                var diffColumns = FastCopy.GetDiff(item, (T)trackingData.Value);
+                if (diffColumns.Count > 0)
+                {
+                    var pks =EntityInfo.Columns
+                        .Where(it => it.IsPrimarykey).Select(it => it.PropertyName).ToList();
+                    diffColumns=diffColumns.Where(it => !pks.Contains(it)).ToList();
+                    if (diffColumns.Count > 0)
+                    {
+                        this.UpdateColumns(diffColumns.ToArray());
+                    }
+                }
+            }
+        }
+
+        private bool IsTrakingData()
+        {
+            return this.UpdateParameterIsNull == false
+                                    && this.Context.TempItems != null
+                                    && this.Context.TempItems.Any(it => it.Key.StartsWith("Tracking_"))
+                                    && this.UpdateObjs.Length == 1;
         }
 
         private void DataAop(T item)

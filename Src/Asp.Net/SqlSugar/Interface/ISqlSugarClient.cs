@@ -44,6 +44,8 @@ namespace SqlSugar
         #endregion
 
         #region Other methods
+        void Tracking<T>(T  data) where T : class, new();
+        void Tracking<T>(List<T> data) where T : class, new();
         SqlSugarClient CopyNew();
         T CreateContext<T>(bool isTran=true) where T : SugarUnitOfWork, new();
         SugarUnitOfWork CreateContext(bool isTran = true);
