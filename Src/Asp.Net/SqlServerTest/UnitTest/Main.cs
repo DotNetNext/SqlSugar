@@ -31,6 +31,8 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UnitInsertNav.Init();
+            UnitInsertNav.Init();
             UnitSelectN.Init();
             UnitOneToOneN2.Init();
             UnitManyToManyUpdate.Init();
