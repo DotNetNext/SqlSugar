@@ -384,6 +384,9 @@ namespace SqlSugar
                 case DbType.OpenGauss:
                     Check.ExceptionEasy("Use DbType.PostgreSQL , ConnectionString add No Reset On Close=true", "OpenGausso数据库可以使用DbType.PostgreSQL 并且连接字符串加上 No Reset On Close=true");
                     break;
+                case DbType.HG:
+                    Check.ExceptionEasy("Use DbType.PostgreSQL", "瀚高数据库可以使用DbType.PostgreSQL");
+                    break;
                 case DbType.Kdbndp:
                     DependencyManagement.TryKdbndb();
                     break;
