@@ -26,7 +26,7 @@ namespace SqlSugar
                 var pkColumn = this._Context.EntityMaintenance.GetEntityInfo<T>().Columns.FirstOrDefault(it => it.IsPrimarykey);
                 this._ParentPkColumn = pkColumn;
             }
-
+            IsFirst = false;
         }
 
         private InsertNavProvider<Root, TChild> GetResult<TChild>() where TChild : class, new()
@@ -81,9 +81,24 @@ namespace SqlSugar
             children = children.Distinct().ToList();
             var x = this._Context.Storageable(children).WhereColumns(new string[] { pkColumn.PropertyName }).ToStorage();
             var insertData = children = x.InsertList.Select(it => it.Item).ToList();
+            if (_NavigateType == NavigateType.OneToMany&&IsFirst==false)
+            {
+                var updateData = x.UpdateList.Select(it => it.Item).ToList();
+                ClearPk(updateData, pkColumn);
+                insertData.AddRange(updateData);
+            }
             Check.ExceptionEasy(pkColumn==null&&NavColumn==null,$"The entity is invalid",$"实体错误无法使用导航");
             InitData(pkColumn, insertData);
             this._ParentList = children.Cast<object>().ToList();
+        }
+
+        private  void ClearPk<TChild>(List<TChild> updateData, EntityColumnInfo pkColumn) where TChild : class, new()
+        {
+            foreach (var child in updateData)
+            {
+                var defaultValue =UtilMethods.DefaultForType(pkColumn.PropertyInfo.PropertyType);
+                pkColumn.PropertyInfo.SetValue(child, defaultValue);
+            }
         }
 
         private void InitData<TChild>(EntityColumnInfo pkColumn, List<TChild> insertData) where TChild : class, new()

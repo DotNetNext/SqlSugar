@@ -16,7 +16,8 @@ namespace SqlSugar
         public EntityInfo _ParentEntity { get; set; }
         public EntityColumnInfo _ParentPkColumn { get; set; }
         public SqlSugarProvider _Context { get;   set; }
-
+        public NavigateType? _NavigateType { get; set; } 
+        public bool IsFirst { get; set; }
 
         public InsertNavProvider<Root, Root> AsNav()
         {
@@ -30,8 +31,13 @@ namespace SqlSugar
         }
         public InsertNavProvider<Root, TChild> ThenInclude<TChild>(Expression<Func<T, TChild>> expression) where TChild : class, new()
         {
-            InitParentList();
+
             var name = ExpressionTool.GetMemberName(expression);
+            if (this._ParentEntity == null)
+            {
+                this._ParentEntity = this._Context.EntityMaintenance.GetEntityInfo<Root>();
+                this.IsFirst = true;
+            }
             var nav = this._ParentEntity.Columns.FirstOrDefault(x => x.PropertyName == name);
             if (nav.Navigat == null)
             {
@@ -39,37 +45,51 @@ namespace SqlSugar
             }
             if (nav.Navigat.NavigatType == NavigateType.OneToOne || nav.Navigat.NavigatType == NavigateType.ManyToOne)
             {
+                InitParentList();
                 InsertOneToOne<TChild>(name, nav);
             }
             else if (nav.Navigat.NavigatType == NavigateType.OneToMany)
             {
+                _NavigateType = NavigateType.OneToMany;
+                InitParentList();
                 InsertOneToMany<TChild>(name, nav);
             }
             else
             {
+                InitParentList();
                 InsertManyToMany<TChild>(name, nav);
             }
             return GetResult<TChild>();
         }
         public InsertNavProvider<Root, TChild> ThenInclude<TChild>(Expression<Func<T,List<TChild>>> expression) where TChild : class, new()
         {
-            InitParentList();
             var name = ExpressionTool.GetMemberName(expression);
+            if (this._ParentEntity == null)
+            {
+                this._ParentEntity = this._Context.EntityMaintenance.GetEntityInfo<Root>();
+                IsFirst = true;
+            }
             var nav = this._ParentEntity.Columns.FirstOrDefault(x => x.PropertyName == name);
+;
+  
             if (nav.Navigat == null)
             {
                 Check.ExceptionEasy($"{name} no navigate attribute", $"{this._ParentEntity.EntityName}的属性{name}没有导航属性");
             }
             if (nav.Navigat.NavigatType == NavigateType.OneToOne || nav.Navigat.NavigatType == NavigateType.ManyToOne)
             {
+                InitParentList();
                 InsertOneToOne<TChild>(name, nav);
             }
             else if (nav.Navigat.NavigatType == NavigateType.OneToMany)
             {
+                _NavigateType = NavigateType.OneToMany;
+                InitParentList();
                 InsertOneToMany<TChild>(name, nav);
             }
             else
             {
+                InitParentList();
                 InsertManyToMany<TChild>(name, nav);
             }
             return GetResult<TChild>();
