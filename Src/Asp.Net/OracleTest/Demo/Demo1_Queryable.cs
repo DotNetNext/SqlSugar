@@ -63,6 +63,11 @@ namespace OrmTest
             var test06 = db.Queryable<Order>().Select(it => SqlFunc.DateDiff(DateType.Hour, DateTime.Now, DateTime.Now.AddHours(3))).ToList();
             var test07 = db.Queryable<Order>().Select(it => it.CreateTime.DayOfWeek.ToString()).ToList();
             var test08 = db.Queryable<Order>().Select(it => it.CreateTime.AddDays(1)).ToList();
+            var test09 = db.Queryable<Order>().Select(it => new
+            {
+                names = SqlFunc.Subqueryable<Order>().Where(z => z.Id==188||z.Id==190).SelectStringJoin(z => z.Name, ",")
+            })
+            .ToList();
             Console.WriteLine("#### Examples End ####");
         }
 

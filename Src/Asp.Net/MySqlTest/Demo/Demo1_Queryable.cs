@@ -90,6 +90,11 @@ namespace OrmTest
             var q1 = db.Queryable<Order>().Take(1);
             var q2 = db.Queryable<Order>().Take(2);
             var test02 = db.Union(q1, q2).ToList();
+            var test03 = db.Queryable<Order>().Select(it => new
+            {
+                names = SqlFunc.Subqueryable<Order>().Where(z => z.Id == it.Id).SelectStringJoin(z => z.Name, ",")
+            })
+          .ToList();
             Console.WriteLine("#### Examples End ####");
         }
 

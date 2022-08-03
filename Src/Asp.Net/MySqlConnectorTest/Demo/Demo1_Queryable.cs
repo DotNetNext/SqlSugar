@@ -86,6 +86,11 @@ namespace OrmTest
             var test05 = db.Queryable<Order>().Where(it => it.CreateTime.Month == dp.Month).ToList();
             var fromatList = db.Queryable<Order>().Select(it => it.CreateTime.ToString("%Y-%m")).ToList();
             var test06 = db.Queryable<Order>().Where(it => it.CreateTime.Date.Day >= DateTime.Now.Date.Day).ToList();
+            var test03 = db.Queryable<Order>().Select(it => new
+            {
+                names = SqlFunc.Subqueryable<Order>().Where(z => z.Id == it.Id).SelectStringJoin(z => z.Name, ",")
+            })
+       .ToList();
             Console.WriteLine("#### Examples End ####");
         }
 

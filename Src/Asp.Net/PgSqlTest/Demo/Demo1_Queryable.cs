@@ -54,6 +54,11 @@ namespace OrmTest
             var test06 = db.Queryable<Order>().
               Where(it => it.Price == 0 ? true : it.Name == it.Name)
               .ToList();
+            var test07 = db.Queryable<Order>().Select(it => new
+            {
+                names = SqlFunc.Subqueryable<Order>().Where(z=>z.Id==it.Id).SelectStringJoin(z => z.Name, ",")
+            })
+            .ToList();
             Console.WriteLine("#### Examples End ####");
             Console.WriteLine("#### Examples End ####");
         }
