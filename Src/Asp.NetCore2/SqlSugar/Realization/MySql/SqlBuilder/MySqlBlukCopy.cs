@@ -170,14 +170,7 @@ namespace SqlSugar
                     }
                     else if (colum.DataType == typeof(bool))
                     {
-                        if (row[colum]==null||row[colum] == DBNull.Value)
-                        {
-                            sb.Append("NULL");
-                        }
-                        else
-                        {
-                            sb.Append(row[colum].ObjToBool() ? 1 : 0);
-                        }
+                        sb.Append(row[colum].ObjToBool() ? 1 : 0);
                     }
                     else if (colum.DataType == UtilConstants.DateType&& row[colum] != null && row[colum] != DBNull.Value) 
                     {
