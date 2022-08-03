@@ -31,7 +31,17 @@ namespace SqlSugar
         }
         public InsertNavProvider<Root, TChild> ThenInclude<TChild>(Expression<Func<T, TChild>> expression) where TChild : class, new()
         {
+            return _ThenInclude(expression);
+        }
+        public InsertNavProvider<Root, TChild> ThenInclude<TChild>(Expression<Func<T, List<TChild>>> expression) where TChild : class, new()
+        {
+            return _ThenInclude(expression);
+        }
 
+
+
+        private InsertNavProvider<Root, TChild> _ThenInclude<TChild>(Expression<Func<T, TChild>> expression) where TChild : class, new()
+        {
             var name = ExpressionTool.GetMemberName(expression);
             if (this._ParentEntity == null)
             {
@@ -61,7 +71,8 @@ namespace SqlSugar
             }
             return GetResult<TChild>();
         }
-        public InsertNavProvider<Root, TChild> ThenInclude<TChild>(Expression<Func<T,List<TChild>>> expression) where TChild : class, new()
+
+        private InsertNavProvider<Root, TChild> _ThenInclude<TChild>(Expression<Func<T, List<TChild>>> expression) where TChild : class, new()
         {
             var name = ExpressionTool.GetMemberName(expression);
             if (this._ParentEntity == null)
@@ -70,8 +81,8 @@ namespace SqlSugar
                 IsFirst = true;
             }
             var nav = this._ParentEntity.Columns.FirstOrDefault(x => x.PropertyName == name);
-;
-  
+            ;
+
             if (nav.Navigat == null)
             {
                 Check.ExceptionEasy($"{name} no navigate attribute", $"{this._ParentEntity.EntityName}的属性{name}没有导航属性");
