@@ -82,10 +82,10 @@ namespace SqlSugar
                     var value = ValueConverter(column, PropertyCallAdapterProvider<T>.GetInstance(column.PropertyName).InvokeGet(item));
                     if (isMySql && column.UnderType == UtilConstants.BoolType)
                     {
-                        if (value.ObjToBool() == false)
-                        {
-                            value = DBNull.Value;
-                        }
+                        //if (value.ObjToBool() == false)
+                        //{
+                        //    value = DBNull.Value;
+                        //}
                     }
                     else if (isSqliteCore&&column.UnderType == UtilConstants.StringType && value is bool)
                     {
@@ -180,10 +180,10 @@ namespace SqlSugar
                     }
                     if (column.DataType==UtilConstants.BoolType&&this.context.CurrentConnectionConfig.DbType.IsIn(DbType.MySql, DbType.MySqlConnector)) 
                     {
-                        if (Convert.ToBoolean(dr[column.ColumnName]) == false) 
-                        {
-                            dr[column.ColumnName] = DBNull.Value;
-                        }
+                        //if (Convert.ToBoolean(dr[column.ColumnName]) == false) 
+                        //{
+                        //    dr[column.ColumnName] = DBNull.Value;
+                        //}
                     }
                 }
                 tempDataTable.Rows.Add(dr);
