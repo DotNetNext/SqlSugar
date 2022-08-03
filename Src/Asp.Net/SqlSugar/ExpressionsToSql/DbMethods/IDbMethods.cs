@@ -88,5 +88,6 @@ namespace SqlSugar
         string Desc(MethodCallExpressionModel model);
         string Stuff(MethodCallExpressionModel model);
         string GetDateString(string dateValue,string format);
+        string GetForXmlPath();
     }
 }

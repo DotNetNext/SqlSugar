@@ -19,6 +19,7 @@ namespace SqlSugar
         private ExpressionContext context = null;
         private string subKey = "$SubAs:";
         private bool hasWhere;
+        private bool isXmlPath = false;
         public SubResolve(MethodCallExpression expression, ExpressionContext context, Expression oppsiteExpression)
         {
             this.context = context;
@@ -124,6 +125,14 @@ namespace SqlSugar
             {
                 sql = string.Join(UtilConstants.Space, sqlItems);
             }
+            if (isXmlPath)
+            {
+                var xmlPath = context.DbMehtods.GetForXmlPath();
+                if (xmlPath.HasValue()) 
+                {
+                    sql = sql + xmlPath;
+                }
+            }
             return this.context.DbMehtods.Pack(sql);
         }
 
@@ -184,6 +193,10 @@ namespace SqlSugar
                  else if (item is SubWhereIF)
                  {
                      item = items.First(s => s is SubAndIF);
+                 }
+                 else if (item is SubSelectStringJoin) 
+                 {
+                     isXmlPath = true;
                  }
 
                  item.Context = this.context;

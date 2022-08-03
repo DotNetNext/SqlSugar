@@ -561,5 +561,9 @@ namespace SqlSugar
         {
             return null;
         }
+        public virtual string GetForXmlPath() 
+        {
+            return null;
+        }
     }
 }
