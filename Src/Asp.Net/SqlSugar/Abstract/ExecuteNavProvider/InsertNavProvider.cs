@@ -18,6 +18,7 @@ namespace SqlSugar
         public SqlSugarProvider _Context { get;   set; }
         public NavigateType? _NavigateType { get; set; } 
         public bool IsFirst { get; set; }
+        public InsertNavOptions _navOptions { get; set; }
 
         public InsertNavProvider<Root, Root> AsNav()
         {
@@ -29,6 +30,18 @@ namespace SqlSugar
                _ParentPkColumn=this._Context.EntityMaintenance.GetEntityInfo<Root>().Columns.First(it=>it.IsPrimarykey)
             };
         }
+
+        public InsertNavProvider<Root, TChild> ThenInclude<TChild>(Expression<Func<T, TChild>> expression,InsertNavOptions options) where TChild : class, new()
+        {
+            _navOptions = options;
+            return _ThenInclude(expression);
+        }
+        public InsertNavProvider<Root, TChild> ThenInclude<TChild>(Expression<Func<T, List<TChild>>> expression, InsertNavOptions options) where TChild : class, new()
+        {
+            _navOptions = options;
+            return _ThenInclude(expression);
+        }
+
         public InsertNavProvider<Root, TChild> ThenInclude<TChild>(Expression<Func<T, TChild>> expression) where TChild : class, new()
         {
             return _ThenInclude(expression);
