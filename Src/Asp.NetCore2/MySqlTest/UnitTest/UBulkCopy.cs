@@ -128,7 +128,49 @@ namespace OrmTest
             });
             var list4 = Db.Queryable<UnitBulk23131>().ToList();
             SqlSugar.Check.Exception(list4.First().table==true, "unit error");
+
+            Db.CodeFirst.InitTables<unitBools>();
+            Db.DbMaintenance.TruncateTable<unitBools>();
+            Db.Fastest<unitBools>().BulkCopy(new List<unitBools>() {
+            new unitBools()
+            {
+                false1 = true,
+                null1 = true,
+                true1 = true,
+                id = 1
+            }});
+            var data2xxx = Db.Queryable<unitBools>().First();
+            var data2 = Db.Queryable<unitBools>().First();
+            if (data2.null1 != true  || data2.true1 != true|| data2.false1 != true) 
+            {
+                throw new Exception("uint error");
+            }
+            Db.Fastest<unitBools>().BulkUpdate(new List<unitBools>() {
+            new unitBools()
+            {
+                false1 = false,
+                null1 = null,
+                true1 = true,
+                id = 1
+            }});
+             data2 = Db.Queryable<unitBools>() .First();
+            if (data2.false1 != false||data2.true1!=true||data2.null1!=null)
+            {
+                throw new Exception("uint error");
+            }
         }
+    }
+
+    public class unitBools 
+    {
+        [SqlSugar.SugarColumn(IsPrimaryKey =true)]
+        public int id { get; set; }
+        [SqlSugar.SugarColumn(IsNullable = true,ColumnDataType = "tinyint", Length = 1)]
+        public bool? false1 { get; set; }
+        [SqlSugar.SugarColumn(IsNullable = true, ColumnDataType = "tinyint", Length = 1)]
+        public bool? true1 { get; set; }
+        [SqlSugar.SugarColumn(IsNullable = true, ColumnDataType = "tinyint", Length = 1)]
+        public bool? null1 { get; set; }
     }
     public class UnitBulk23131 
     {
