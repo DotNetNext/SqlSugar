@@ -222,6 +222,11 @@ namespace SqlSugar
             }
         }
 
+        public virtual string GetStringJoinSelector(string result, string separator) 
+        {
+            return $"string_agg(({result})::text,'{separator}') ";
+        }
+
         public virtual string ToInt32(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];

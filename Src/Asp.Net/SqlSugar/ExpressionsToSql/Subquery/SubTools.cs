@@ -35,7 +35,8 @@ namespace SqlSugar
                                                     new SubAs(){Context=Context},
                                                     new SubHaving(){  Context=Context},
                                                     new SubWithNolock(){ Context=Context },
-                                                    new SubEnableTableFilter(){ Context=Context }
+                                                    new SubEnableTableFilter(){ Context=Context },
+                                                    new SubSelectStringJoin{ Context=Context }
                                                 };
         }
 
