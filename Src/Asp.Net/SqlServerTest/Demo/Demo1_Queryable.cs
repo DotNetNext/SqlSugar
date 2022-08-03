@@ -177,6 +177,13 @@ namespace OrmTest
               .Where(it => -it.Id == 1)
               .Where(it => DateTime.Now.AddDays(-num) == DateTime.Now.Date)
               .ToList();
+
+            var test47 = db.Queryable<Order>().Select(it => new
+            {
+                names = SqlFunc.Subqueryable<Order>().Where(z=>z.Id==it.Id).SelectStringJoin(z => z.Name, ",")
+            })
+           .ToList();
+
             var dr3 = new Dictionary<string, object>();
             dr3.Add("Id", 0);
             dr3.Add("Name", null);
