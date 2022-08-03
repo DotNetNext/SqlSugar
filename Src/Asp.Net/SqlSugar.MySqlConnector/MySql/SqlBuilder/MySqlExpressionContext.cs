@@ -14,6 +14,10 @@ namespace SqlSugar.MySqlConnector
     }
     public class MySqlMethod : DefaultDbMethod, IDbMethods
     {
+        public override string GetStringJoinSelector(string result, string separator)
+        {
+            return $"group_concat({result}  separator '{separator}') ";
+        }
         public override string DateDiff(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
