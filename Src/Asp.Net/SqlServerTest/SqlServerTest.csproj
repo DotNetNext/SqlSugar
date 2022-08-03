@@ -97,6 +97,7 @@
     <Compile Include="Models\OrderItem.cs" />
     <Compile Include="Demo\Demo0_SqlSugarClient.cs" />
     <Compile Include="Models\ViewOrder.cs" />
+    <Compile Include="UnitTest\UnitInsertNav3.cs" />
     <Compile Include="UnitTest\UnitInsertNav2.cs" />
     <Compile Include="UnitTest\UnitInsertNav.cs" />
     <Compile Include="UnitTest\UnitSelectN.cs" />
