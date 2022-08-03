@@ -84,6 +84,11 @@ namespace SqlSugar
             return default(string);
         }
 
+        public string SelectStringJoin(Func<T, string> expression,string separator)
+        {
+            return default(string);
+        }
+
         public TResult Max<TResult>(Func<T, TResult> expression) where TResult : struct
         {
             return default(TResult);

@@ -20,6 +20,14 @@ namespace SqlSugar
     }
     public partial class SqlServerMethod : DefaultDbMethod, IDbMethods
     {
+        public override string GetForXmlPath()
+        {
+            return "  FOR XML PATH('')),1,len(N','),'')  ";
+        }
+        public override string GetStringJoinSelector(string result, string separator)
+        {
+            return $"stuff((SELECT cast(N'{separator}' as nvarchar(max)) + cast({result} as nvarchar(max))";
+        }
         public override string DateValue(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];

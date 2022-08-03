@@ -14,6 +14,10 @@ namespace SqlSugar
     }
     public class SqliteMethod : DefaultDbMethod, IDbMethods
     {
+        public override string GetStringJoinSelector(string result, string separator)
+        {
+            return $"group_concat({result},'{separator},') ";
+        }
         public override string DateDiff(MethodCallExpressionModel model)
         {
             var parameter = (DateType)(Enum.Parse(typeof(DateType), model.Args[0].MemberValue.ObjToString()));

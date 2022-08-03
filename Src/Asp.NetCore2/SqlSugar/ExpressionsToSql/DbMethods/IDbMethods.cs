@@ -33,6 +33,7 @@ namespace SqlSugar
         string StartsWith(MethodCallExpressionModel model);
         string EndsWith(MethodCallExpressionModel model);
         string ToInt32(MethodCallExpressionModel model);
+        string GetStringJoinSelector(string result,string separator);
         string ToInt64(MethodCallExpressionModel model);
         string ToString(MethodCallExpressionModel model);
         string ToVarchar(MethodCallExpressionModel model); 
@@ -87,5 +88,6 @@ namespace SqlSugar
         string Desc(MethodCallExpressionModel model);
         string Stuff(MethodCallExpressionModel model);
         string GetDateString(string dateValue,string format);
+        string GetForXmlPath();
     }
 }
