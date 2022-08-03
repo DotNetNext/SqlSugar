@@ -16,4 +16,9 @@ namespace SqlSugar
         public bool ManyToManyIsUpdateA { get; set; }
         public bool ManyToManyIsUpdateB { get; set; }
     }
+
+    public class InsertNavOptions 
+    {
+        public bool OneToManyIfExistsNoInsert { get; set; }
+    }
 }

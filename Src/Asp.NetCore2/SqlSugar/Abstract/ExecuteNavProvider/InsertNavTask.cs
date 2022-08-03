@@ -31,6 +31,25 @@ namespace SqlSugar
             result.Context = this.Context;
             return result;
         }
+
+        public InsertNavTask<Root, TChild> Include<TChild>(Expression<Func<Root, TChild>> expression,InsertNavOptions options) where TChild : class, new()
+        {
+            this.Context = insertNavProvider._Context;
+            InsertNavTask<Root, TChild> result = new InsertNavTask<Root, TChild>();
+            Func<InsertNavProvider<Root, TChild>> func = () => insertNavProvider.ThenInclude(expression, options);
+            result.PreFunc = func;
+            result.Context = this.Context;
+            return result;
+        }
+        public InsertNavTask<Root, TChild> Include<TChild>(Expression<Func<Root, List<TChild>>> expression, InsertNavOptions options) where TChild : class, new()
+        {
+            this.Context = insertNavProvider._Context;
+            InsertNavTask<Root, TChild> result = new InsertNavTask<Root, TChild>();
+            Func<InsertNavProvider<Root, TChild>> func = () => insertNavProvider.ThenInclude(expression, options);
+            result.PreFunc = func;
+            result.Context = this.Context;
+            return result;
+        }
     }
     public class InsertNavTask<Root, T> where T : class, new() where Root : class, new()
     {
@@ -60,6 +79,36 @@ namespace SqlSugar
         {
             return AsNav().ThenInclude(expression);
         }
+
+
+
+        public InsertNavTask<Root, TChild> ThenInclude<TChild>(Expression<Func<T, TChild>> expression,InsertNavOptions options) where TChild : class, new()
+        {
+            InsertNavTask<Root, TChild> result = new InsertNavTask<Root, TChild>();
+            Func<InsertNavProvider<Root, TChild>> func = () => PreFunc().ThenInclude(expression,options);
+            result.PreFunc = func;
+            result.Context = this.Context;
+            return result;
+        }
+        public InsertNavTask<Root, TChild> ThenInclude<TChild>(Expression<Func<T, List<TChild>>> expression, InsertNavOptions options) where TChild : class, new()
+        {
+            InsertNavTask<Root, TChild> result = new InsertNavTask<Root, TChild>();
+            Func<InsertNavProvider<Root, TChild>> func = () => PreFunc().ThenInclude(expression, options);
+            result.PreFunc = func;
+            result.Context = this.Context;
+            return result;
+        }
+        public InsertNavTask<Root, TChild> Include<TChild>(Expression<Func<Root, TChild>> expression, InsertNavOptions options) where TChild : class, new()
+        {
+            return AsNav().ThenInclude(expression, options);
+        }
+        public InsertNavTask<Root, TChild> Include<TChild>(Expression<Func<Root, List<TChild>>> expression, InsertNavOptions options) where TChild : class, new()
+        {
+            return AsNav().ThenInclude(expression, options);
+        }
+
+
+
         public bool ExecuteCommand()
         {
             var hasTran = this.Context.Ado.Transaction != null;

@@ -81,11 +81,19 @@ namespace SqlSugar
             children = children.Distinct().ToList();
             var x = this._Context.Storageable(children).WhereColumns(new string[] { pkColumn.PropertyName }).ToStorage();
             var insertData = children = x.InsertList.Select(it => it.Item).ToList();
-            if (_NavigateType == NavigateType.OneToMany&&IsFirst==false)
+            var IsNoExistsNoInsert = _navOptions != null && _navOptions.OneToManyIfExistsNoInsert == true;
+            if (_NavigateType == NavigateType.OneToMany && IsFirst == false && IsNoExistsNoInsert == false)
             {
                 var updateData = x.UpdateList.Select(it => it.Item).ToList();
                 ClearPk(updateData, pkColumn);
                 insertData.AddRange(updateData);
+            }
+            else if (_NavigateType == NavigateType.OneToMany && IsNoExistsNoInsert == true) 
+            {
+                children = new List<TChild>();
+                children.AddRange(x.InsertList.Select(it => it.Item).ToList());
+                var updateData = x.UpdateList.Select(it => it.Item).ToList();
+                children.AddRange(updateData);
             }
             Check.ExceptionEasy(pkColumn==null&&NavColumn==null,$"The entity is invalid",$"实体错误无法使用导航");
             InitData(pkColumn, insertData);
