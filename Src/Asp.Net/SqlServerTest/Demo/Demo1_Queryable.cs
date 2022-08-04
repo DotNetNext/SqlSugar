@@ -184,6 +184,14 @@ namespace OrmTest
             })
            .ToList();
 
+            var test48 = db.Queryable<Order>().Select(it => new
+            {
+                count = SqlFunc.RowCount(),
+                index = SqlFunc.RowNumber(it.Name),
+                index2 = SqlFunc.RowNumber(it.Id,it.Name)
+            })
+           .ToList();
+
             var dr3 = new Dictionary<string, object>();
             dr3.Add("Id", 0);
             dr3.Add("Name", null);
