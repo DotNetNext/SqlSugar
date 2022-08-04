@@ -13,7 +13,7 @@ namespace SqlSugarDemo
     {
         [SugarColumn(IsIgnore = true)]
         [Navigate(NavigateType.OneToOne, nameof(user_id))]
-        public user_name_simple CommentUser { set; get; }
+        public user_name_simple UserInfo { set; get; }
 
         [SugarColumn(IsIgnore = true)]
         [Navigate(NavigateType.OneToOne, nameof(reply_user_id))]
