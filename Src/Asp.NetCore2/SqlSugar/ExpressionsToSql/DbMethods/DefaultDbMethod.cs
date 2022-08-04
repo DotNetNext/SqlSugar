@@ -8,6 +8,21 @@ namespace SqlSugar
 {
     public partial class DefaultDbMethod : IDbMethods
     {
+        public virtual string RowNumber(MethodCallExpressionModel model) 
+        {
+            if (model.Args.Count == 1)
+            {
+                return $"row_number() over(order by {model.Args[0].MemberName})";
+            }
+            else
+            {
+                return $"row_number() over( partition by {model.Args[1].MemberName} order by {model.Args[0].MemberName})";
+            }
+        }
+        public virtual string RowCount(MethodCallExpressionModel model) 
+        {
+            return "count(1) over()";
+        }
         public virtual string IIF(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];

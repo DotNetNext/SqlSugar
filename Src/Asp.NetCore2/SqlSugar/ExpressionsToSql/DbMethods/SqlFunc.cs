@@ -9,6 +9,18 @@ namespace SqlSugar
 {
     public partial class SqlFunc
     {
+        public static int RowNumber(object orderByField, object partitionBy) 
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+        public static int RowNumber(object orderByField)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+        public static int RowCount()
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
         public static T Desc<T>(T value)
         {
             throw new NotSupportedException("Can only be used in expressions");

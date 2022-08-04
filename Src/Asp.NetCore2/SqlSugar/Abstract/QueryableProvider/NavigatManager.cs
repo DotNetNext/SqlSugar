@@ -340,9 +340,17 @@ namespace SqlSugar
                                  }).ToList();
                 foreach (var item in groupQuery)
                 {
-                  
-                   // var setValue = navList.FirstOrDefault(x => navPkColumn.PropertyInfo.GetValue(x).ObjToString() == navColumn.PropertyInfo.GetValue(item).ObjToString());
-                    navObjectNamePropety.SetValue(item.l, item.n);
+
+                    // var setValue = navList.FirstOrDefault(x => navPkColumn.PropertyInfo.GetValue(x).ObjToString() == navColumn.PropertyInfo.GetValue(item).ObjToString());
+
+                    if (navObjectNamePropety.GetValue(item.l) == null)
+                    {
+                        navObjectNamePropety.SetValue(item.l, item.n);
+                    }
+                    else
+                    {
+                        //The reserved
+                    }
 
                 }
             }

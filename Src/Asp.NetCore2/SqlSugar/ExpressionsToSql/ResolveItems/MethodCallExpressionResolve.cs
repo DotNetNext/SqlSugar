@@ -1010,6 +1010,10 @@ namespace SqlSugar
                         return this.Context.DbMehtods.Desc(model);
                     case "Stuff":
                         return this.Context.DbMehtods.Stuff(model);
+                    case "RowNumber":
+                        return this.Context.DbMehtods.RowNumber(model);
+                    case "RowCount":
+                        return this.Context.DbMehtods.RowCount(model);
                     default:
                         break;
                 }
