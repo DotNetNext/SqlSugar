@@ -94,9 +94,20 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
-        
+            db.CodeFirst.InitTables<Unitasdfafasx>();
+            db.Queryable<Unitasdfafasx>().ToList();
+            db.Queryable<Unitasdfafasx>()
+                .Select(x1111 => new
+                {
+                    z=SqlFunc.Subqueryable<Unitasdfafasx>().Select(s=>s.id)
+                }).ToList();
         }
 
+        [SugarTable("[1.1.dsfadsaf]")]
+        public class Unitasdfafasx
+        {
+            public string id { get; set; }
+        }
         public class UnitDateTimeOffset
         {
             public DateTimeOffset timeOffset { get; set; }
