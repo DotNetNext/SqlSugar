@@ -178,7 +178,11 @@ namespace SqlSugar
             {
                 var mappingInfo = this.MappingTables.FirstOrDefault(it => it.EntityName.Equals(entityName, StringComparison.CurrentCultureIgnoreCase));
                 var name = (mappingInfo == null ? entityName : mappingInfo.DbTableName);
-                if (name.Contains("."))
+                if (name.Contains(SqlTranslationLeft) && name.Contains(SqlTranslationRight)) 
+                {
+                    return name;
+                }
+                else if (name.Contains("."))
                 {
                     return string.Join(".", name.Split('.').Select(it => SqlTranslationLeft + it + SqlTranslationRight));
                 }
