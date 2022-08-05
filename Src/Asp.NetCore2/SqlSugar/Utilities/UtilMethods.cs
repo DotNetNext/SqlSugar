@@ -589,6 +589,10 @@ namespace SqlSugar
             {
                 return Convert.ToInt32(item.FieldValue);
             }
+            else if (item.FieldValue!=null&&item.CSharpTypeName.EqualCase(UtilConstants.BoolType.Name))
+            {
+                return Convert.ToBoolean(item.FieldValue.ToLower());
+            }
             else if (item.CSharpTypeName.EqualCase(UtilConstants.LongType.Name))
             {
                 return Convert.ToInt64(item.FieldValue);

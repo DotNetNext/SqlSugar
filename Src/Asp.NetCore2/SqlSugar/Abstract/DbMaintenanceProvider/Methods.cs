@@ -221,13 +221,20 @@ namespace SqlSugar
                 var dtColumInfo = dtColums.First(it => it.ColumnName.EqualCase(columnInfo.DbColumnName));
                 var type = UtilMethods.GetUnderType(dtColumInfo.DataType);
                 var value= type==UtilConstants.StringType?(object)"": Activator.CreateInstance(type);
+                if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle)
+                {
+                    value = columnInfo.DefaultValue;
+                    if (value.Equals("")) 
+                    {
+                        value = "empty";
+                    }
+                }
                 var dt = new Dictionary<string, object>();
                 dt.Add(columnInfo.DbColumnName, value);
                 this.Context.Updateable(dt)
                              .AS(tableName)
                              .Where($"{columnInfo.DbColumnName} is null ").ExecuteCommand();
-                if(this.Context.CurrentConnectionConfig.DbType!=DbType.Oracle)
-                   columnInfo.IsNullable = false;
+                columnInfo.IsNullable = false;
                 UpdateColumn(tableName, columnInfo);
             }
             return true;

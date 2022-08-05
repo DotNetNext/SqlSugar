@@ -327,6 +327,7 @@ namespace SqlSugar
             {
                 var sqlObj = GetWhereSql(navObjectNameColumnInfo.Navigat.Name);
                 var navList = selector(this.Context.Queryable<object>().AS(navEntityInfo.DbTableName)
+                    .WhereIF(navObjectNameColumnInfo.Navigat.WhereSql.HasValue(), navObjectNameColumnInfo.Navigat.WhereSql)
                     .WhereIF(sqlObj.WhereString.HasValue(),sqlObj.WhereString)
                     .AddParameters(sqlObj.Parameters).Where(conditionalModels));
                 var groupQuery = (from l in list

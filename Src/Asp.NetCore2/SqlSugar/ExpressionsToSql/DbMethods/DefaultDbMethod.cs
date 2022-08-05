@@ -12,11 +12,11 @@ namespace SqlSugar
         {
             if (model.Args.Count == 1)
             {
-                return $"row_number() over(order by {model.Args[0].MemberName})";
+                return $"row_number() over(order by {model.Args[0].MemberName.ObjToString().TrimEnd('\'').TrimStart('\'')})";
             }
             else
             {
-                return $"row_number() over( partition by {model.Args[1].MemberName} order by {model.Args[0].MemberName})";
+                return $"row_number() over( partition by {model.Args[1].MemberName.ObjToString().TrimEnd('\'').TrimStart('\'')} order by {model.Args[0].MemberName.ObjToString().TrimEnd('\'').TrimStart('\'')})";
             }
         }
         public virtual string RowCount(MethodCallExpressionModel model) 

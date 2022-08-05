@@ -98,6 +98,7 @@ namespace SqlSugar
             selectName = queryable.QueryBuilder.Builder.GetTranslationColumnName(selectName);
             mapper.Sql = queryable
                 .AS(this.ProPertyEntity.DbTableName)
+                .WhereIF(Navigat.WhereSql.HasValue(),Navigat.WhereSql)
                 .Where($" {ShorName}.{name}={pk} ").Select(selectName).ToSql().Key;
             mapper.Sql = $" ({mapper.Sql}) ";
             return mapper;
