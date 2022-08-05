@@ -38,8 +38,11 @@ namespace OrmTest
             Db.CodeFirst.InitTables<UnitCodeFirst131>();
             Db.Insertable(new UnitCodeFirst131() { Id = 1 }).ExecuteCommand();
             Db.CodeFirst.InitTables<UNITCODEFIRST131>();
+            var xxx = Db.Queryable<UNITCODEFIRST131>().ToList();
             Db.CodeFirst.InitTables<UNITCOdEFIRST131>();
             Db.CodeFirst.InitTables<UnitADFA13131>();
+            if (Db.DbMaintenance.IsAnyTable("UnitIndextest", false))
+                Db.DbMaintenance.DropTable("UnitIndextest");
             Db.CodeFirst.InitTables<UnitIndextest>();
         }
         [SqlSugar.SugarIndex("UnitIndextestIndex2", nameof(UnitIndextest.Table1), SqlSugar.OrderByType.Asc)]
