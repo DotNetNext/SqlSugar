@@ -12,13 +12,14 @@ namespace OrmTest
         {
             if (Db.DbMaintenance.IsAnyTable("UnitCodeTest1", false))
                 Db.DbMaintenance.DropTable("UnitCodeTest1");
+            var now = Db.GetDate();
             Db.CodeFirst.InitTables<UnitCodeTest1>();
         }
         public class UnitCodeTest1
         {
             [SqlSugar.SugarColumn(IndexGroupNameList = new string[] { "group1" })]
             public int Id { get; set; }
-            [SqlSugar.SugarColumn(DefaultValue= "now()", IndexGroupNameList =new string[] {"group1" } )]
+            [SqlSugar.SugarColumn(DefaultValue= "sysdate", IndexGroupNameList =new string[] {"group1" } )]
             public DateTime? CreateDate { get; set; }
         }
     }

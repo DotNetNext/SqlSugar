@@ -35,23 +35,23 @@ namespace OrmTest
 
 
 
-            var task6 = Db.Ado.SqlQuery<dynamic>("select @id as id", new { id = 5 });
-            UValidate.Check(5, task6[0].id, "ado");
+            //var task6 = Db.Ado.SqlQuery<dynamic>("select @id as id", new { id = 5 });
+            //UValidate.Check(5, task6[0].id, "ado");
 
 
-            var task7 = Db.Ado.SqlQueryAsync<dynamic>("select @id as id", new { id = 7 });
-            task7.Wait();
-            UValidate.Check(7, task7.Result[0].id, "ado");
+            //var task7 = Db.Ado.SqlQueryAsync<dynamic>("select @id as id", new { id = 7 });
+            //task7.Wait();
+            //UValidate.Check(7, task7.Result[0].id, "ado");
 
 
-            var task8 = Db.Ado.SqlQueryAsync<dynamic>("select 8 as id");
-            task8.Wait();
-            UValidate.Check(8, task8.Result[0].id, "ado");
+            //var task8 = Db.Ado.SqlQueryAsync<dynamic>("select 8 as id");
+            //task8.Wait();
+            //UValidate.Check(8, task8.Result[0].id, "ado");
 
-            var task9=Db.Ado.SqlQuery<Order, OrderItem>(@"select * from ""order"";select * from OrderDetail");
+            //var task9=Db.Ado.SqlQuery<Order, OrderItem>(@"select * from ""order"";select * from OrderDetail");
 
-            var task10 = Db.Ado.SqlQueryAsync<Order, OrderItem>(@"select * from ""order"";select * from OrderDetail");
-            task10.Wait();
+            //var task10 = Db.Ado.SqlQueryAsync<Order, OrderItem>(@"select * from ""order"";select * from OrderDetail");
+            //task10.Wait();
         }
     }
 }
