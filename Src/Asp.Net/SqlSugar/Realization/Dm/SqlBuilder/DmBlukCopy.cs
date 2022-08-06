@@ -5,7 +5,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Dm;
 namespace SqlSugar 
 {
     public class DmBlukCopy
@@ -25,7 +25,7 @@ namespace SqlSugar
                 return WriteToServer();
             }
             DataTable dt = GetCopyData();
-            SqlBulkCopy bulkCopy = GetBulkCopyInstance();
+            DmBulkCopy bulkCopy = GetBulkCopyInstance();
             bulkCopy.DestinationTableName = InsertBuilder.GetTableNameString;
             try
             {
@@ -49,11 +49,12 @@ namespace SqlSugar
                 return WriteToServer();
             }
             DataTable dt=GetCopyData();
-            SqlBulkCopy bulkCopy = GetBulkCopyInstance();
+            DmBulkCopy bulkCopy = GetBulkCopyInstance();
             bulkCopy.DestinationTableName = InsertBuilder.GetTableNameString;
             try
             {
-                await bulkCopy.WriteToServerAsync(dt);
+                bulkCopy.WriteToServer(dt);
+                await Task.Delay(0);
             }
             catch (Exception ex)
             {
@@ -71,7 +72,7 @@ namespace SqlSugar
                 return 0;
             Check.Exception(dt.TableName == "Table", "dt.TableName can't be null ");
             dt = GetCopyWriteDataTable(dt);
-            SqlBulkCopy copy = GetBulkCopyInstance();
+            DmBulkCopy copy = GetBulkCopyInstance();
             copy.DestinationTableName = this.Builder.GetTranslationColumnName(dt.TableName);
             copy.WriteToServer(dt);
             CloseDb();
@@ -100,16 +101,16 @@ namespace SqlSugar
             result.TableName = dt.TableName;
             return result;
         }
-        private SqlBulkCopy GetBulkCopyInstance()
+        private DmBulkCopy GetBulkCopyInstance()
         {
-            SqlBulkCopy copy;
+            DmBulkCopy copy;
             if (this.Context.Ado.Transaction == null)
             {
-                copy = new SqlBulkCopy((SqlConnection)this.Context.Ado.Connection);
+                copy = new DmBulkCopy((DmConnection)this.Context.Ado.Connection);
             }
             else
             {
-                copy = new SqlBulkCopy((SqlConnection)this.Context.Ado.Connection, SqlBulkCopyOptions.CheckConstraints, (SqlTransaction)this.Context.Ado.Transaction);
+                copy = new DmBulkCopy((DmConnection)this.Context.Ado.Connection, DmBulkCopyOptions.Default, (DmTransaction)this.Context.Ado.Transaction);
             }
             if (this.Context.Ado.Connection.State == ConnectionState.Closed)
             {
