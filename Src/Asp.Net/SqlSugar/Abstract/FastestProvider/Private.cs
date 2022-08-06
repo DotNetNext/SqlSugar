@@ -30,7 +30,7 @@ namespace SqlSugar
                     resultConnector.CharacterSet = this.CharacterSet;
                     return resultConnector;
                 case DbType.Dm:
-                    break;
+                    return new DmFastBuilder();
                 case DbType.Kdbndp:
                     break;
                 case DbType.Oscar:

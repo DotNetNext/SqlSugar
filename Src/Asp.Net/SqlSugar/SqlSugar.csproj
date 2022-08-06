@@ -200,6 +200,8 @@
     <Compile Include="Json2Sql\Queryable\QueryableProvider.cs" />
     <Compile Include="Json2Sql\Utils\Json2SqlConfig.cs" />
     <Compile Include="Json2Sql\Utils\Json2SqlHelper.cs" />
+    <Compile Include="Realization\Dm\SqlBuilder\DmBlukCopy.cs" />
+    <Compile Include="Realization\Dm\SqlBuilder\DmFastBuilder.cs" />
     <Compile Include="SugarUnitOfWork.cs" />
     <Compile Include="Entities\SugarAbMapping.cs" />
     <Compile Include="Entities\JoinMapper.cs" />
