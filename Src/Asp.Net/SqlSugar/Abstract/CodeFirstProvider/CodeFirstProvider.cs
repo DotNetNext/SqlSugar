@@ -502,6 +502,10 @@ namespace SqlSugar
             {
                 return false;
             }
+            if (properyTypeName?.ToLower() == "int" && dataType?.ToLower() == "int32")
+            {
+                return false;
+            }
             if (properyTypeName?.ToLower() == "date" && dataType?.ToLower() == "datetime")
             {
                 return false;
