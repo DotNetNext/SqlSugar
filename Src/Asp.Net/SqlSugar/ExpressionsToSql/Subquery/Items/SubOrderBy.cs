@@ -8,6 +8,7 @@ namespace SqlSugar
 {
     public class SubOrderBy : ISubOperation
     {
+        public int OrderIndex { get; set; } = 0;
         public bool HasWhere
         {
             get; set;
@@ -27,7 +28,7 @@ namespace SqlSugar
         {
             get
             {
-                return 480;
+                return 480+OrderIndex;
             }
         }
 
@@ -44,7 +45,7 @@ namespace SqlSugar
             }
             var exp = expression as MethodCallExpression;
             var argExp = exp.Arguments[0];
-            var result = "ORDER BY " + SubTools.GetMethodValue(this.Context, argExp, ResolveExpressType.FieldSingle);
+            var result =(OrderIndex==0? "ORDER BY ":",") + SubTools.GetMethodValue(this.Context, argExp, ResolveExpressType.FieldSingle);
             var selfParameterName = this.Context.GetTranslationColumnName((argExp as LambdaExpression).Parameters.First().Name) + UtilConstants.Dot;
             result = result.Replace(selfParameterName, SubTools.GetSubReplace(this.Context));
             return result;
@@ -52,6 +53,7 @@ namespace SqlSugar
     }
     public class SubOrderByDesc : ISubOperation
     {
+        public int OrderIndex { get; set; } = 0;
         public bool HasWhere
         {
             get; set;
@@ -71,7 +73,7 @@ namespace SqlSugar
         {
             get
             {
-                return 480;
+                return 480+OrderIndex;
             }
         }
 
@@ -84,7 +86,7 @@ namespace SqlSugar
         {
             var exp = expression as MethodCallExpression;
             var argExp = exp.Arguments[0];
-            var result = "ORDER BY " + SubTools.GetMethodValue(this.Context, argExp, ResolveExpressType.FieldSingle)+" DESC";
+            var result = (OrderIndex == 0 ? "ORDER BY " : ",") + SubTools.GetMethodValue(this.Context, argExp, ResolveExpressType.FieldSingle)+" DESC";
             var selfParameterName = this.Context.GetTranslationColumnName((argExp as LambdaExpression).Parameters.First().Name) + UtilConstants.Dot;
             result = result.Replace(selfParameterName, string.Empty);
             return result;
