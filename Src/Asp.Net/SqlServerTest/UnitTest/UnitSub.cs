@@ -20,11 +20,53 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+           db.CodeFirst.InitTables<SubEntity>();
+           db.Queryable<Order>()
+              .Select(it => new
+              {
+                  id = SqlFunc.Subqueryable<SubEntity>()
+                  .OrderBy(o => o.Id)
+                   .OrderByDesc(o => o.name)
+                         .Select(o=>o.Id)
+              }).ToList();
+            db.Queryable<Order>()
+              .Select(it => new
+              {
+                  id = SqlFunc.Subqueryable<SubEntity>()
+                  .OrderByDesc(o => o.Id)
+                   .OrderByDesc(o => o.name)
+                         .Select(o => o.Id)
+              }).ToList();
+            db.Queryable<Order>()
+              .Select(it => new
+              {
+                  id = SqlFunc.Subqueryable<SubEntity>()
+                  .OrderBy(o => o.name)
+                   .OrderBy(o => o.Id)
+                         .Select(o => o.Id)
+              }).ToList();
+            db.Queryable<Order>()
+            .Select(it => new
+            {
+                id = SqlFunc.Subqueryable<SubEntity>()
+                .OrderBy(o => o.Id) 
+                .Select(o => o.Id)
+            }).ToList();
+            db.Queryable<Order>()
+            .Select(it => new
+            {
+                id = SqlFunc.Subqueryable<SubEntity>()
+                .OrderByDesc(o => o.Id)
+                .Select(o => o.Id)
+            }).ToList();
+            db.DbMaintenance.DropTable("UnitSubEntity");
         }
+        [SugarTable("UnitSubEntity")]
         public class SubEntity 
         {
             [SqlSugar.SugarColumn(ColumnName ="id_1")]
-            public decimal Id { get; set; }    
+            public decimal Id { get; set; }  
+            public string name { get; set; }
         }
     }
 }
