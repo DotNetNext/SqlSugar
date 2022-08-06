@@ -118,6 +118,10 @@ namespace SqlSugar
                 sqlParameter.Size = parameter.Size;
                 sqlParameter.Value = parameter.Value;
                 sqlParameter.DbType = parameter.DbType;
+                if (sqlParameter.ParameterName[0] == '@')
+                {
+                    sqlParameter.ParameterName = ':' + sqlParameter.ParameterName.Substring(1, sqlParameter.ParameterName.Length - 1);
+                }
                 if (sqlParameter.DbType == System.Data.DbType.Guid)
                 {
                     sqlParameter.DbType = System.Data.DbType.String;
