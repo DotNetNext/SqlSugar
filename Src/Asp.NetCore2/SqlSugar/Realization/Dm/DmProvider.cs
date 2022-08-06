@@ -16,23 +16,28 @@ namespace SqlSugar
         public DmProvider() {
             this.FormatSql = sql =>
             {
-                var guid = Guid.NewGuid();
                 sql = sql.Replace("+@", "+:");
-                sql = sql.Replace("select @@identity", guid.ToString());
                 if (sql.HasValue() && sql.Contains("@"))
                 {
-                    var exceptionalCaseInfo = Regex.Matches(sql, @"\'.*?\@.*?\'| [\.,\w]+\@[\.,\w]+ | [\.,\w]+\@[\.,\w]+");
+                    var exceptionalCaseInfo = Regex.Matches(sql, @"\'[^\=]*?\@.*?\'|[\.,\w]+\@[\.,\w]+ | [\.,\w]+\@[\.,\w]+|[\.,\w]+\@[\.,\w]+ |\d+\@\d|\@\@");
                     if (exceptionalCaseInfo != null)
                     {
                         foreach (var item in exceptionalCaseInfo.Cast<Match>())
                         {
+                            if (item.Value != null && item.Value.IndexOf(",") == 1 && Regex.IsMatch(item.Value, @"^ \,\@\w+$"))
+                            {
+                                break;
+                            }
+                            else if (item.Value != null && Regex.IsMatch(item.Value.Trim(), @"^\w+\,\@\w+\,$"))
+                            {
+                                break;
+                            }
                             sql = sql.Replace(item.Value, item.Value.Replace("@", UtilConstants.ReplaceKey));
                         }
                     }
                     sql = sql.Replace("@", ":");
                     sql = sql.Replace(UtilConstants.ReplaceKey, "@");
                 }
-                sql = sql.Replace(guid.ToString(), "select @@identity");
                 return sql;
             };
         }
@@ -118,6 +123,10 @@ namespace SqlSugar
                 sqlParameter.Size = parameter.Size;
                 sqlParameter.Value = parameter.Value;
                 sqlParameter.DbType = parameter.DbType;
+                if (sqlParameter.ParameterName[0] == '@')
+                {
+                    sqlParameter.ParameterName = ':' + sqlParameter.ParameterName.Substring(1, sqlParameter.ParameterName.Length - 1);
+                }
                 if (sqlParameter.DbType == System.Data.DbType.Guid)
                 {
                     sqlParameter.DbType = System.Data.DbType.String;

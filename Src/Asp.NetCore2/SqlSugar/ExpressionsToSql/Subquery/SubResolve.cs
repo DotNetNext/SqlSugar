@@ -168,41 +168,42 @@ namespace SqlSugar
         {
             var isSubSubQuery = this.allMethods.Select(it => it.ToString()).Any(it => Regex.Matches(it, "Subquery").Count > 1);
             var isubList = this.allMethods.Select(exp =>
-             {
-                 if (isSubSubQuery) 
-                 {
-                     this.context.JoinIndex = 1;
-                     this.context.SubQueryIndex = 0;
-                 }
-                 var methodName = exp.Method.Name;
-                 var items = SubTools.SubItems(this.context);
-                 var item = items.First(s => s.Name == methodName);
-                 if (item is SubWhere && hasWhere == false)
-                 {
-                     hasWhere = true;
-                 }
-                 else if (item is SubWhere)
-                 {
-                     item = items.First(s => s is SubAnd);
-                 }
+            {
+                if (isSubSubQuery)
+                {
+                    this.context.JoinIndex = 1;
+                    this.context.SubQueryIndex = 0;
+                }
+                var methodName = exp.Method.Name;
+                var items = SubTools.SubItems(this.context);
+                var item = items.First(s => s.Name == methodName);
+                if (item is SubWhere && hasWhere == false)
+                {
+                    hasWhere = true;
+                }
+                else if (item is SubWhere)
+                {
+                    item = items.First(s => s is SubAnd);
+                }
 
-                 if (item is SubWhereIF && hasWhere == false)
-                 {
-                     hasWhere = true;
-                 }
-                 else if (item is SubWhereIF)
-                 {
-                     item = items.First(s => s is SubAndIF);
-                 }
-                 else if (item is SubSelectStringJoin) 
-                 {
-                     isXmlPath = true;
-                 }
+                if (item is SubWhereIF && hasWhere == false)
+                {
+                    hasWhere = true;
+                }
+                else if (item is SubWhereIF)
+                {
+                    item = items.First(s => s is SubAndIF);
+                }
+                else if (item is SubSelectStringJoin)
+                {
+                    isXmlPath = true;
+                }
 
-                 item.Context = this.context;
-                 item.Expression = exp;
-                 return item;
-             }).ToList();
+                item.Context = this.context;
+                item.Expression = exp;
+                return item;
+            }).ToList();
+            SetOrderByIndex(isubList);
             isubList.Insert(0, new SubBegin());
             if (isubList.Any(it => it is SubSelect))
             {
@@ -228,6 +229,29 @@ namespace SqlSugar
             }).ToList();
             this.context.JoinIndex = 0;
             return result;
+        }
+
+        private static void SetOrderByIndex(List<ISubOperation> isubList)
+        {
+            var orderByIndex = 0;
+            var orderByList = isubList.Where(it => it is SubOrderBy || it is SubOrderByDesc).ToList();
+            if (orderByList.Count > 1)
+            {
+                orderByList.Reverse();
+                foreach (var item in orderByList)
+                {
+                    if (item is SubOrderBy)
+                    {
+                        (item as SubOrderBy).OrderIndex = orderByIndex;
+                        orderByIndex++;
+                    }
+                    else if (item is SubOrderByDesc)
+                    {
+                        (item as SubOrderByDesc).OrderIndex = orderByIndex;
+                        orderByIndex++;
+                    }
+                }
+            }
         }
     }
 }
