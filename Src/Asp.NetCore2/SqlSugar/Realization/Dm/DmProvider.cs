@@ -41,6 +41,13 @@ namespace SqlSugar
                 return sql;
             };
         }
+        public override string SqlParameterKeyWord
+        {
+            get
+            {
+                return ":";
+            }
+        }
         public override IDbConnection Connection
         {
             get
