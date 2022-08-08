@@ -7,6 +7,7 @@ namespace OrmTest
         static void Main(string[] args)
         {
             //Demo
+            DemoN_SplitTable.Init();
             Demo0_SqlSugarClient.Init();
             Demo1_Queryable.Init();
             Demo2_Updateable.Init();
