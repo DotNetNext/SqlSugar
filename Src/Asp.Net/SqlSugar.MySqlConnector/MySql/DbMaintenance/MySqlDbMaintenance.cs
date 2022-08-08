@@ -452,12 +452,12 @@ namespace SqlSugar.MySqlConnector
             {
                 defaultValue = "";
             }
-            if (defaultValue.ToLower().IsIn("now()", "current_timestamp")|| defaultValue.ToLower().Contains("current_timestamp"))
+            if (defaultValue.ToLower().IsIn("now()", "current_timestamp") || defaultValue.ToLower().Contains("current_timestamp"))
             {
-                string template = "ALTER table {0} CHANGE COLUMN {1} {1} {3} default {2}";
+                string template = "ALTER table {0} CHANGE COLUMN {1} {1} {3} {4} default {2} COMMENT '{5}'";
                 var dbColumnInfo = this.Context.DbMaintenance.GetColumnInfosByTableName(tableName).First(it => it.DbColumnName.Equals(columnName, StringComparison.CurrentCultureIgnoreCase));
                 var value = Regex.Match(defaultValue, @"\(\d\)$").Value;
-                string sql = string.Format(template, tableName, columnName, defaultValue, dbColumnInfo.DataType+ value);
+                string sql = string.Format(template, tableName, columnName, defaultValue, dbColumnInfo.DataType + value, dbColumnInfo.IsNullable ? " NULL " : " NOT NULL ", dbColumnInfo.ColumnDescription);
                 this.Context.Ado.ExecuteCommand(sql);
                 return true;
             }
