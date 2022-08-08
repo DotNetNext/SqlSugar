@@ -84,6 +84,10 @@ namespace SqlSugar
             {
                 this.Context.Result.AppendFormat(" {0} ", ExpressionTool.GetOperator(expression.NodeType));
             }
+            else if (leftExpression is UnaryExpression && ExpressionTool.RemoveConvert(leftExpression) is BinaryExpression && !this.Context.Result.Contains(ExpressionConst.ExpressionReplace))
+            {
+                this.Context.Result.AppendFormat(" {0} ", ExpressionTool.GetOperator(expression.NodeType));
+            }
             base.IsLeft = false;
             base.Expression = rightExpression;
             base.Start();
