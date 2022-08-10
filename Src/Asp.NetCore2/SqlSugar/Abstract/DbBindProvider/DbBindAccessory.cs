@@ -16,6 +16,7 @@ namespace SqlSugar
             string types = null;
             var fieldNames = GetDataReaderNames(dataReader,ref types);
             string cacheKey = GetCacheKey(type,fieldNames) + types;
+            var dataAfterFunc = context.CurrentConnectionConfig?.AopEvents?.DataExecuted;
             IDataReaderEntityBuilder<T> entytyList = context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey, () =>
             {
                 var cacheResult = new IDataReaderEntityBuilder<T>(context, dataReader,fieldNames).CreateBuilder(type);
@@ -29,6 +30,7 @@ namespace SqlSugar
                 {
                     result.Add(entytyList.Build(dataReader));
                 }
+                ExecuteDataAfterFun(context, dataAfterFunc, result);
             }
             catch (Exception ex)
             {
@@ -36,12 +38,14 @@ namespace SqlSugar
             }
             return result;
         }
+
         protected async Task<List<T>> GetEntityListAsync<T>(SqlSugarProvider context, IDataReader dataReader)
         {
             Type type = typeof(T);
             string types = null;
             var fieldNames = GetDataReaderNames(dataReader,ref types);
             string cacheKey = GetCacheKey(type, fieldNames)+types;
+            var dataAfterFunc = context.CurrentConnectionConfig?.AopEvents?.DataExecuted;
             IDataReaderEntityBuilder<T> entytyList = context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey, () =>
             {
                 var cacheResult = new IDataReaderEntityBuilder<T>(context, dataReader, fieldNames).CreateBuilder(type);
@@ -55,6 +59,7 @@ namespace SqlSugar
                 {
                     result.Add(entytyList.Build(dataReader));
                 }
+                ExecuteDataAfterFun(context, dataAfterFunc, result);
             }
             catch (Exception ex)
             {
@@ -62,8 +67,24 @@ namespace SqlSugar
             }
             return result;
         }
+        private static void ExecuteDataAfterFun<T>(SqlSugarProvider context, Action<object, DataAfterModel> dataAfterFunc, List<T> result)
+        {
+            if (dataAfterFunc != null)
+            {
+                var entity = context.EntityMaintenance.GetEntityInfo<T>();
+                foreach (var item in result)
+                {
+                    dataAfterFunc(item, new DataAfterModel()
+                    {
+                        EntityColumnInfos = entity.Columns,
+                        Entity = entity,
+                        EntityValue = item
+                    });
+                }
+            }
+        }
 
-        private  string GetCacheKey(Type type,List<string> keys)
+        private string GetCacheKey(Type type,List<string> keys)
         {
             StringBuilder sb = new StringBuilder("DataReaderToList.");
             sb.Append(type.FullName);

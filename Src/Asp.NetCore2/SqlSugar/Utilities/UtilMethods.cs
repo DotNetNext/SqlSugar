@@ -87,6 +87,7 @@ namespace SqlSugar
                    OnExecutingChangeSql=it.AopEvents?.OnExecutingChangeSql,
                    OnLogExecuted=it.AopEvents?.OnLogExecuted,
                    OnLogExecuting= it.AopEvents?.OnLogExecuting,
+                   DataExecuted = it.AopEvents?.DataExecuted,
                 },
                 ConfigId = it.ConfigId,
                 ConfigureExternalServices =it.ConfigureExternalServices==null?null:new ConfigureExternalServices() { 

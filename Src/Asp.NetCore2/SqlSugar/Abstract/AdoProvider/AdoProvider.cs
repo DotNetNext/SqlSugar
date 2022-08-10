@@ -87,6 +87,18 @@ namespace SqlSugar
                 return false;
             }
         }
+        public virtual bool IsValidConnectionNoClose()
+        {
+            try
+            {
+                this.Open();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
         public virtual void Open()
         {
             CheckConnection();

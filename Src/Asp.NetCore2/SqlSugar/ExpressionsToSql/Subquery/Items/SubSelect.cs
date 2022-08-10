@@ -43,12 +43,7 @@ namespace SqlSugar
         public string GetValue(Expression expression = null)
         {
             var exp = expression as MethodCallExpression;
-            var entityType = (exp.Arguments[0] as LambdaExpression).Parameters[0].Type;
-            if (this.Context.InitMappingInfo != null)
-            {
-                this.Context.InitMappingInfo(entityType);
-                this.Context.RefreshMapping();
-            }
+            InitType(exp);
             var result = "";
             if (this.Context.JoinIndex == 0)
                 result = SubTools.GetMethodValue(this.Context, exp.Arguments[0], ResolveExpressType.FieldSingle);
@@ -58,6 +53,18 @@ namespace SqlSugar
             SetShortName(exp, result);
 
             return result;
+        }
+
+        private void InitType(MethodCallExpression exp)
+        {
+            foreach (var arg in (exp.Arguments[0] as LambdaExpression).Parameters) 
+            {
+                if (this.Context.InitMappingInfo != null)
+                {
+                    this.Context.InitMappingInfo(arg.Type);
+                    this.Context.RefreshMapping();
+                }
+            }
         }
 
         public void SetShortName(MethodCallExpression exp, string result)
