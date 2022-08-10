@@ -11,7 +11,7 @@ namespace SqlSugar
         {
             if (entityInfo.Columns.HasValue()&&entityInfo.IsDisabledUpdateAll==false)
             {
-                if (entityInfo.Columns.Where(it => it.IsPrimarykey).Count() > 1) 
+                if (entityInfo.Columns.Where(it => it.IsPrimarykey).Count() > 1)
                 {
                     return;
                 }
@@ -102,6 +102,10 @@ namespace SqlSugar
                 {
                     DbColumnInfo dbColumnInfo = this.EntityColumnToDbColumn(entityInfo, tableName, item);
                     columns.Add(dbColumnInfo);
+                }
+                if (entityInfo.IsCreateTableFiledSort)
+                {
+                    columns = columns.OrderBy(c => c.CreateTableFieldSort).ToList();
                 }
             }
             this.Context.DbMaintenance.CreateTable(tableName, columns,true);
