@@ -46,6 +46,7 @@ namespace SqlSugar
             var name =this.Context.GetTranslationColumnName((argExp as LambdaExpression).Parameters[0].Name);
             var parameter = (argExp as LambdaExpression).Parameters.Last();
             Context.InitMappingInfo(parameter.Type);
+            this.Context.RefreshMapping();
             var tableName= Context.GetTranslationTableName(parameter.Type.Name, true);
             var joinString =string.Format(" {2} LEFT JOIN {1} {0} ",
                  this.Context.GetTranslationColumnName(parameter.Name), 
