@@ -97,6 +97,11 @@
     <Compile Include="Models\OrderItem.cs" />
     <Compile Include="Demo\Demo0_SqlSugarClient.cs" />
     <Compile Include="Models\ViewOrder.cs" />
+    <Compile Include="UnitTest\UCustom025.cs" />
+    <Compile Include="UnitTest\Models\ImsBillDtl.cs" />
+    <Compile Include="UnitTest\Models\ImsBillDtlStk.cs" />
+    <Compile Include="UnitTest\Models\ImsBillMst.cs" />
+    <Compile Include="UnitTest\Models\ImsBillStk.cs" />
     <Compile Include="UnitTest\UnitSub.cs" />
     <Compile Include="UnitTest\UnitTestConfigQuery.cs" />
     <Compile Include="UnitTest\UnitUpdateNavN3.cs" />
