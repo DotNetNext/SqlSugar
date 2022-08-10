@@ -103,6 +103,10 @@ namespace SqlSugar
                     DbColumnInfo dbColumnInfo = this.EntityColumnToDbColumn(entityInfo, tableName, item);
                     columns.Add(dbColumnInfo);
                 }
+                if (entityInfo.IsCreateTableFiledSort)
+                {
+                    columns = columns.OrderBy(c => c.CreateTableFieldSort).ToList();
+                }
             }
             this.Context.DbMaintenance.CreateTable(tableName, columns,true);
         }
