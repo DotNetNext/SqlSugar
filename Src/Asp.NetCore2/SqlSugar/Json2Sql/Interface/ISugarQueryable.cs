@@ -12,5 +12,6 @@ namespace SqlSugar
         ISugarQueryable<T> Select(List<SelectModel> models);
         ISugarQueryable<T> AS(string tableName, string shortName);
         ISugarQueryable<T> AddJoinInfo(string tableName, string shortName, IFuncModel models, JoinType type = JoinType.Left);
+        ISugarQueryable<T> AddJoinInfo(List<JoinInfoParameter> joinInfoParameters);
     }
 }

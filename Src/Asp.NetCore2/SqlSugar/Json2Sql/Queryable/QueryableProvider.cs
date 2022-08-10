@@ -13,6 +13,17 @@ namespace SqlSugar
             this.QueryBuilder.Parameters.AddRange(sqlobj.Value);
             return this.AddJoinInfo(tableName, shortName, sqlobj.Key, type);
         }
+        public ISugarQueryable<T> AddJoinInfo(List<JoinInfoParameter> joinInfoParameters) 
+        {
+            if (joinInfoParameters != null)
+            {
+                foreach (var item in joinInfoParameters)
+                {
+                    this.AddJoinInfo(item.TableName,item.ShortName,item.Models,item.Type);
+                }
+            }
+            return this;
+        }
         public ISugarQueryable<T> AS(string tableName, string shortName) 
         {
             return this.AS($"{this.SqlBuilder.GetTranslationTableName(tableName)} {shortName}");
