@@ -125,6 +125,7 @@
     <Compile Include="Abstract\UpdateProvider\SplitTableUpdateByObjectProvider.cs" />
     <Compile Include="Entities\DbFastestProperties.cs" />
     <Compile Include="Entities\DeleteNavOptions.cs" />
+    <Compile Include="Entities\JoinInfoParameter.cs" />
     <Compile Include="ExpressionsToSql\Common\NewExpressionInfo.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubSelectStringJoin.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubWithNoLock.cs" />
