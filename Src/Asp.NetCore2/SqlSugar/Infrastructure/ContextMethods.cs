@@ -456,9 +456,12 @@ namespace SqlSugar
                         var addItem = readerValues[info];
                         if (addItem == DBNull.Value)
                             addItem = null;
-                        if (UtilMethods.GetUnderType(prop.PropertyType) == UtilConstants.IntType)
+                        if (prop.PropertyType == UtilConstants.IntType )
                         {
                             addItem = addItem.ObjToInt();
+                        } else if (UtilMethods.GetUnderType(prop.PropertyType) == UtilConstants.IntType && addItem != null)
+                        {
+                            addItem= addItem.ObjToInt();
                         }
                         else if (prop.PropertyType.IsEnum()&&addItem is decimal)
                         {
