@@ -34,7 +34,9 @@ namespace SqlSugar
             var skipValue = (jsonQueryParameter.PageIndex.Value - 1) * jsonQueryParameter.PageSize.Value;
             var takeValue = jsonQueryParameter.PageSize.Value;
             result.Add(new SqlObjectResult(sugarQueryable.Clone().Skip(skipValue).Take(takeValue).ToSql(), JsonProviderType.Queryable));
-            result.Add(new SqlObjectResult(sugarQueryable.Select("COUNT(1)").ToSql(), JsonProviderType.QueryableCount));
+            var countQueryable = sugarQueryable.Select("COUNT(1)");
+            countQueryable.QueryBuilder.OrderByValue = null;
+            result.Add(new SqlObjectResult(countQueryable.ToSql(), JsonProviderType.QueryableCount));
         }
         #endregion
 

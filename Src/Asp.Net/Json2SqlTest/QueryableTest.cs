@@ -152,7 +152,8 @@ namespace Test
                 {
 	                ""Table"":""order"",
                       PageNumber:""1"",
-                      PageSize:""100""
+                      PageSize:""100"",
+                      OrderBy:[""id""]
                 }
                 ";
             var x1 = jsonToSqlClient.Queryable(json).ToResult();
