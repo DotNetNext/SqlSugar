@@ -331,7 +331,7 @@ namespace SqlSugar
         public override string ToGuid(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
-            return string.Format(" CAST({0} AS VARCHAR)", parameter.MemberName);
+            return string.Format(" CAST({0} AS UUID)", parameter.MemberName);
         }
 
         public override string ToDouble(MethodCallExpressionModel model)
