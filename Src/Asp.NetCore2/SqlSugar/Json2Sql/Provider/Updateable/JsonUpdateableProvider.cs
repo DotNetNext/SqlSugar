@@ -21,7 +21,11 @@ namespace SqlSugar
         }
         public JsonUpdateResult ToResult()
         {
-            return null;
+            var result = new JsonUpdateResult();
+            var sqlInfo = this.ToSqlList();
+            var sqlInfoResult = sqlInfo.First();
+            result.UpdateRows = this.context.Ado.ExecuteCommand(sqlInfoResult.Sql, sqlInfoResult.Parameters);
+            return result;
         }
         public SqlObjectResult ToSql()
         {
