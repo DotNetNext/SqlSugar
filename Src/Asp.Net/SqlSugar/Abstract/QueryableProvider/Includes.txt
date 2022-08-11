@@ -1,0 +1,105 @@
+﻿
+List<int> sourceNumbers = new List<int> { 2, 4, 8, 16, 32, 64, 128 };
+var ram = new Random();
+foreach (var source in sourceNumbers)
+{
+    var index = sourceNumbers.IndexOf(source) + 1;
+    //Console.WriteLine("index=" + index);
+
+    List<List<Test>> result = new List<List<Test>>();
+
+    string sb = "";
+    List<string> sb2 = new List<string>();
+    for (int i = 1; i <= source; i++)
+    {
+
+        List<Test> test = new List<Test>();
+
+        List<Test> test2 = new List<Test>();
+        for (int j = 1; j <= index; j++)
+        {
+
+            test2.Add(new Test() { i = j, b = ram.Next(1, 222) % 2 == 0 });
+            sb += $"[{test2.Last().b}:{test2.Last().i}]";
+            //sb2 += $"[{test2.Last().b}:{test2.Last().i}]";
+            if (j == index)
+            {
+                if (sb2.Count > 0 && sb2.Contains(sb))
+                {
+                    j = 0;
+                    sb = "";
+                    test2 = new List<Test>();
+                }
+                else
+                {
+                    test.AddRange(test2.Select(x => new Test { b = x.b, i = x.i }));
+                    sb2.Add(sb);
+                    sb = "";
+                }
+            }
+
+        }
+
+        test = test.OrderBy(it => it.i).ToList();
+        result.Add(test);
+
+    }
+    foreach (var test in result)
+    {
+        List<string> res = new List<string>();
+        List<string> res2 = new List<string>();
+        List<string> res3 = new List<string>();
+        foreach (var item in test)
+        {
+            res3.Add($"include{ item.i}");
+            if (item.i == 1)
+            {
+                if (item.b == false)
+                {
+                    res.Add($"Expression<Func<T, List<TReturn{item.i }>>> include{item.i}");
+                }
+                else
+                {
+                    res.Add($"Expression<Func<T, TReturn{item.i }>> include{item.i}");
+                }
+
+            }
+            else
+            {
+                if (item.b == false)
+                {
+                    res.Add($"Expression<Func<TReturn{item.i - 1}, List<TReturn{item.i }>>> include{item.i}");
+                }
+                else
+                {
+                    res.Add($"Expression<Func<TReturn{item.i - 1}, TReturn{item.i }>> include{item.i}");
+                }
+            }
+            res2.Add("TReturn" + (item.i));
+        }
+
+        Console.WriteLine($"public ISugarQueryable<T> Includes<{string.Join(",", res2)}>({string.Join(",", res)}){{  _Includes<T,{string.Join(",", res2)}>(this.Context,{string.Join(",", res3)}); return this; }}");
+    }
+    //Console.WriteLine("--");
+}
+
+Console.ReadKey();
+
+public class Test
+{
+    public bool b { get; set; }
+    public int i { get; set; }
+}
+
+
+//1：1 true
+
+//2：
+//  1  true   ,  2 true
+//  1  false   , 2 true
+
+//3：
+// 1   true   , 2 true    3   true
+// 1   true   , 2 false   3   true
+// 1   false  , 2 false   3   true
+// 1   false  , 2 true    3   true

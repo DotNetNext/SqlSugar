@@ -40,6 +40,8 @@ namespace OrmTest
             db.Insertable(insertObj).IgnoreColumns(it => new { it.CreateTime }).ExecuteReturnIdentity();//get identity
             db.Insertable(insertObj).IgnoreColumns("CreateTime").ExecuteReturnIdentity();
 
+            var x=db.Insertable(updateObjs).RemoveDataCache().IgnoreColumns(it => it.CreateTime).UseParameter().ExecuteCommand();
+
             //Only  insert  Name and Price
             db.Insertable(insertObj).InsertColumns(it => new { it.Name, it.Price }).ExecuteReturnIdentity();
             db.Insertable(insertObj).InsertColumns("Name", "Price").ExecuteReturnIdentity();
@@ -73,7 +75,7 @@ namespace OrmTest
                        }
                  }
             })
-            .AddSubList(it => it.Items.First().OrderId).ExecuteReturnPrimaryKey();
+            .AddSubList(it => it.Items.First().OrderId).ExecuteCommand();
        
 
             SubNoIdentity(db);
@@ -228,7 +230,7 @@ namespace OrmTest
                       }
                  }
             })
-            .ExecuteReturnPrimaryKey();
+            .ExecuteCommand();
 
             var list = db.Queryable<Country1>()
                                  .Mapper(it => it.Provinces, it => it.Provinces.First().CountryId)

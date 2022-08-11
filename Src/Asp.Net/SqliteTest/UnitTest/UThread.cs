@@ -25,23 +25,7 @@ namespace OrmTest
                 }
             }
         });
-        public static SqlSugarClient ssDb => new SqlSugarClient(new ConnectionConfig()
-        {
-            DbType = DbType.Sqlite,
-            ConnectionString = Config.ConnectionString,
-            InitKeyType = InitKeyType.Attribute,
-            IsAutoCloseConnection = true,
-            IsShardSameThread = true,
-            AopEvents = new AopEvents
-            {
-                OnLogExecuting = (sql, p) =>
-                {
-                    Console.WriteLine(sql);
-                    Console.WriteLine(string.Join(",", p?.Select(it => it.ParameterName + ":" + it.Value)));
-                }
-            }
-        });
-        public static SqlSugarClient singleDb =  new SqlSugarClient(new ConnectionConfig()
+        public static SqlSugarScope ssDb => new SqlSugarScope(new ConnectionConfig()
         {
             DbType = DbType.Sqlite,
             ConnectionString = Config.ConnectionString,
@@ -56,13 +40,27 @@ namespace OrmTest
                 }
             }
         });
-        public static SqlSugarClient singleAndSsDb = new SqlSugarClient(new ConnectionConfig()
+        public static SqlSugarScope singleDb =  new SqlSugarScope(new ConnectionConfig()
         {
             DbType = DbType.Sqlite,
             ConnectionString = Config.ConnectionString,
             InitKeyType = InitKeyType.Attribute,
             IsAutoCloseConnection = true,
-            IsShardSameThread = true,
+            AopEvents = new AopEvents
+            {
+                OnLogExecuting = (sql, p) =>
+                {
+                    Console.WriteLine(sql);
+                    Console.WriteLine(string.Join(",", p?.Select(it => it.ParameterName + ":" + it.Value)));
+                }
+            }
+        });
+        public static SqlSugarScope singleAndSsDb = new SqlSugarScope(new ConnectionConfig()
+        {
+            DbType = DbType.Sqlite,
+            ConnectionString = Config.ConnectionString,
+            InitKeyType = InitKeyType.Attribute,
+            IsAutoCloseConnection = true,
             AopEvents = new AopEvents
             {
                 OnLogExecuting = (sql, p) =>

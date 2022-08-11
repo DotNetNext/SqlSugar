@@ -78,6 +78,34 @@ namespace OrmTest
                 CheckMan = saleOrderInfo.CheckMan,
                 CheckTime = DateTime.Now
             }, o => o.OrderSn == saleOrderInfo.OrderSn && o.OrderStatus != 1);
+            var list14 = Db.Queryable<Order, Order, Order>((o1, o2, o3) =>
+                           new JoinQueryInfos(JoinType.Inner, o1.Id == o2.Id * 2, JoinType.Inner, o1.Id == o3.Id * 4)
+                           )
+               .Select((o1, o2, o3) => new
+               {
+                   id = o1.Id,
+                   x = o1,
+                   x2 = o2,
+                   x3 = o3
+               }).ToList();
+
+
+            var list15 = Db.Queryable<Order, Order, Order>((o1, o2, o3) =>
+              new JoinQueryInfos(JoinType.Inner, o1.Id == o2.Id * 2, JoinType.Inner, o1.Id == o3.Id * 4)
+            )
+            .Select((o1, o2, o3) => new TestModel1
+            {
+                id = o1.Id.SelectAll(),
+                x = o1,
+                x2 = o2,
+                x3 = o3
+            }).ToList();
+
+            var list16=Db.Queryable<Order>().Select(x => new BoolTest1
+            {
+                // c=SqlFunc.Subqueryable<Order>().Where(z=>z.Id==x.Id).Count(),
+                 a = !string.IsNullOrEmpty(x.Name)
+            }).ToList();
         }
 
         public static class IEnumerbleContains
@@ -319,5 +347,13 @@ namespace OrmTest
         {
             public Guid? Id { get; set; }
         }
+    }
+
+    public class TestModel1
+    {
+        public int id { get; set; }
+        public Order x { get; set; }
+        public Order x2 { get; set; }
+        public Order x3 { get; set; }
     }
 }

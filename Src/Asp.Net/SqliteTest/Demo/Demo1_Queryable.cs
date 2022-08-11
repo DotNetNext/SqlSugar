@@ -42,6 +42,20 @@ namespace OrmTest
             var getByWhere2 = db.Queryable<Order>().Where(it => it.Id == DateTime.Now.Year).ToList();
             var getByFuns = db.Queryable<Order>().Where(it => SqlFunc.IsNullOrEmpty(it.Name)).ToList();
             var getByFuns2 = db.Queryable<Order>().GroupBy(it => it.Name).Select(it => SqlFunc.AggregateDistinctCount(it.Price)).ToList();
+            var fromatList = db.Queryable<Order>().Select(it=>it.CreateTime.ToString("%Y-%m")).ToList();
+            var btime = Convert.ToDateTime("2021-1-1");
+            var etime = Convert.ToDateTime("2022-1-12");
+            var test01 = db.Queryable<Order>().Select(it => SqlFunc.DateDiff(DateType.Year, btime, etime)).ToList();
+            var test02 = db.Queryable<Order>().Select(it => SqlFunc.DateDiff(DateType.Day, btime, etime)).ToList();
+            var test03 = db.Queryable<Order>().Select(it => SqlFunc.DateDiff(DateType.Month, btime, etime)).ToList();
+            var test04 = db.Queryable<Order>().Select(it => SqlFunc.DateDiff(DateType.Second, DateTime.Now, DateTime.Now.AddMinutes(2))).ToList();
+            var test05 = db.Queryable<Order>().Select(it => SqlFunc.DateDiff(DateType.Minute, DateTime.Now, DateTime.Now.AddMinutes(21))).ToList();
+            var test06 = db.Queryable<Order>().Select(it => SqlFunc.DateDiff(DateType.Hour, DateTime.Now, DateTime.Now.AddHours(3))).ToList();
+            var test07 = db.Queryable<Order>().Select(it => new
+            {
+                names = SqlFunc.Subqueryable<Order>().Where(z => z.Id == it.Id).SelectStringJoin(z => z.Name, ",")
+            })
+         .ToList();
             Console.WriteLine("#### Examples End ####");
         }
 

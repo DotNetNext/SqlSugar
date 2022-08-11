@@ -1,0 +1,1 @@
+%~dp0nuget.exe pack %~dp0SqlSugar.MySqlConnector.nuspec -OutputDirectory %~dp0

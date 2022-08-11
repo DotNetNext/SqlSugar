@@ -13,32 +13,24 @@ namespace OrmTest
         public static void Init()
         {
             Console.WriteLine("");
-            Console.WriteLine("#### SimpleClient Start ####");
+            Console.WriteLine("#### DemoH_Tenant Start ####");
             new C1Service().Test();
-            Console.WriteLine("#### SimpleClient End ####");
+            Console.WriteLine("#### DemoH_Tenant End ####");
         }
         public class C1Service : Repository<C1Table>
         {
             public void Test()
             {
-                base.db.BeginTran();
-
+                db.BeginTran();
                 base.GetList(); //调用内部仓储方法
                 base.ChangeRepository<Repository<C2Table>>().GetList();//调用外部仓储
-
-                base.db.CommitTran();
+                db.CommitTran();
             }
         }
-
-
         public class Repository<T> : SimpleClient<T> where T : class, new()
         {
-            public SqlSugarClient db;
-            public Repository(ISqlSugarClient context = null) : base(context)//注意这里要有默认值等于null
-            {
-                if (context == null)
-                {
-                    var db = new SqlSugarClient(new List<ConnectionConfig> {
+            //单例实同db同上下文共享
+            public static SqlSugarScope db = new SqlSugarScope(new List<ConnectionConfig> {
                                                         new ConnectionConfig()
                                                     {
                                                         ConfigId="1",
@@ -54,10 +46,12 @@ namespace OrmTest
                                                         ConnectionString = Config.ConnectionString2
                                                     }
                     });
-                 
-                    var configId = typeof(T).GetCustomAttribute<TenantAttribute>().configId;
-                    Context = db.GetConnection(configId);
-                    this.db = db; 
+            public Repository(ISqlSugarClient context = null) : base(context)//注意这里要有默认值等于null
+            {
+                if (context == null)
+                {
+                    Context = db.GetConnectionWithAttr<T>();
+                    Context.CodeFirst.InitTables<T>();
                 }
             }
 

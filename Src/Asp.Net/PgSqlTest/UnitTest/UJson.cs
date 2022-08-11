@@ -24,9 +24,52 @@ namespace OrmTest
             Db.CodeFirst.InitTables<UnitArray2>();
             Db.Insertable(new UnitArray2() { MenuIds = new float[] { 1, 2 } }).ExecuteCommand();
             var x=Db.Queryable<UnitArray2>().ToList();
+            Db.CodeFirst.InitTables<UnitArray311>();
+            Db.Insertable(new UnitArray311()
+            {
+                 Text=new string[] {"a","a" }
+
+            }).ExecuteCommand();
+            Db.Updateable(new List<UnitArray311> {
+            new UnitArray311()
+            {
+                Text = new string[] { "a12", "a2" },
+                Id=1
+
+            },
+                  new UnitArray311()
+            {
+                Text = new string[] { "a1", "a1" },
+                Id=2
+
+            }
+            }).ExecuteCommand();
+            var xxx = Db.Queryable<UnitArray311>().ToList();
+
+            Db.CodeFirst.InitTables<UnitUUID1XX>();
+            Db.Insertable(new UnitUUID1XX() { ID = Guid.NewGuid() }).ExecuteCommand();
+            var x1 = Db.Queryable<UnitUUID1XX>().ToList();
+            Db.CodeFirst.InitTables<Unitaaar>();
+            Db.Insertable(new Unitaaar() { arr = null }).ExecuteCommand();
         }
     }
-
+    public class Unitaaar 
+    {
+        [SugarColumn(ColumnDataType = "text []", IsArray = true, IsNullable = true)]
+        public string[] arr { get; set; }
+    }
+    public class UnitUUID1XX
+    {
+        [SugarColumn(ColumnDataType ="uuid")]
+        public Guid ID { get; set; }
+    }
+    public class UnitArray311 
+    {
+        [SugarColumn(IsArray =true,ColumnDataType ="text []" )]
+        public string[] Text { get; set; }
+        [SugarColumn(IsPrimaryKey =true,IsIdentity =true)]
+        public int Id { get; set; }
+    }
     public class UnitArray2 
     {
         [SugarColumn(ColumnDataType = "real []", IsArray = true)]

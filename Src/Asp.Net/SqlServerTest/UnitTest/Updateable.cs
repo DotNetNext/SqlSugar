@@ -23,9 +23,9 @@ namespace OrmTest
             Db.Updateable<UnitBoolTest>().SetColumns(it => it.BoolValue == x.BoolValue).Where(it => it.Id == 1).ExecuteCommand();
             Db.Updateable<UnitBoolTest>().SetColumns(it => new UnitBoolTest() { BoolValue = !x.BoolValue }).Where(it => it.Id == 1).ExecuteCommand();
             Db.Updateable<UnitBoolTest>().SetColumns(it => it.BoolValue == !x.BoolValue).Where(it => it.Id == 1).ExecuteCommand();
-            Db.Updateable<UnitBoolTest>(x).ReSetValue(it => it.BoolValue == it.BoolValue).ExecuteCommand();
-            Db.Updateable<UnitBoolTest>(x).ReSetValue(it => it.BoolValue == true).ExecuteCommand();
-            Db.Updateable<UnitBoolTest>(x).ReSetValue(it => it.BoolValue == !it.BoolValue).ExecuteCommand();
+            Db.Updateable<UnitBoolTest>(x).ReSetValue(it => it.BoolValue = it.BoolValue).ExecuteCommand();
+            Db.Updateable<UnitBoolTest>(x).ReSetValue(it => it.BoolValue = true).ExecuteCommand();
+            Db.Updateable<UnitBoolTest>(x).ReSetValue(it => it.BoolValue = !it.BoolValue).ExecuteCommand();
             Db.Updateable<UnitBoolTest>(x).UpdateColumns(it => new { it.BoolValue }).ExecuteCommand();
 
 
@@ -103,7 +103,34 @@ namespace OrmTest
            .Where(it => it.Id == 1).ExecuteCommand();
 
             Db.CodeFirst.InitTables<Unitbluecopy>();
-            Db.Insertable(new Unitbluecopy()).UseSqlServer().ExecuteBlueCopy();
+            Db.Insertable(new Unitbluecopy()).UseSqlServer().ExecuteBulkCopy();
+            Db.Insertable(new Unitbluecopy()).UseSqlServer().ExecuteBulkCopy();
+            Db.CodeFirst.InitTables<BoolTest1>();
+            Db.Updateable<BoolTest1>()
+                .SetColumns(it =>it.a== !it.a)
+                .Where(it=>it.a)
+                .ExecuteCommand();
+
+            Db.Updateable<BoolTest1>()
+              .SetColumns(it=>new BoolTest1() { a = !it.a })
+              .Where(it => it.a)
+      .ExecuteCommand();
+
+
+            Db.Queryable<Unitbluecopy>().Select(it => new Unitbluecopy() { x = it.x - SqlFunc.Subqueryable<Unitbluecopy>().Select(s => s.Id) }).ToList();
+            Db.Updateable<Unitbluecopy>()
+    .SetColumns(it => new Unitbluecopy() { x=it.x- SqlFunc.Subqueryable<Unitbluecopy>().Select(s=>s.Id) })
+    .Where(it => it.Id>0)
+.ExecuteCommand();
+
+            Db.Updateable<Unitbluecopy>()
+.SetColumns(it =>  it.x == it.x - SqlFunc.Subqueryable<Unitbluecopy>().Select(s => s.Id)  )
+.Where(it => it.Id > 0)
+.ExecuteCommand();
+
+
+            Db.Updateable<Unitbluecopy>(new Unitbluecopy() { }).WhereColumns(it => it.Id).ExecuteCommand();
+            Db.Updateable<Unitbluecopy>(Db.Queryable<Unitbluecopy>().ToList()).WhereColumns(it => it.Id).ExecuteCommand();
         }
     }
 

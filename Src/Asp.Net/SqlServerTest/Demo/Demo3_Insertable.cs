@@ -32,9 +32,11 @@ namespace OrmTest
 
             var insertObj = new Order() { Id = 1, Name = "order1", Price = 0 };
             var insertObjs = new List<Order> {
-                 new Order() { Id = 11, Name = "order11", Price=0 },
-                 new Order() { Id = 12, Name = "order12" , Price=0}
+                 new Order() { Id = 11, Name = "XX", Price=0 },
+                 new Order() { Id = 12, Name = "XX2" , Price=0}
             };
+
+            var x=db.Insertable(insertObjs).RemoveDataCache().IgnoreColumns(it=>it.CreateTime).UseParameter().ExecuteCommand();
 
             //Ignore  CreateTime
             db.Insertable(insertObj).IgnoreColumns(it => new { it.CreateTime }).ExecuteReturnIdentity();//get identity
@@ -54,10 +56,10 @@ namespace OrmTest
                  new Order() { Id = 11, Name = "order11", Price=1 },
                  new Order() { Id = 12, Name = "order12" , Price=20, CreateTime=DateTime.Now, CustomId=1}
             };
-            db.Insertable(insertObjs).UseSqlServer().ExecuteBlueCopy();
+            db.Insertable(insertObjs).UseSqlServer().ExecuteBulkCopy();
             var dt = db.Queryable<Order>().Take(5).ToDataTable();
             dt.TableName = "Order";
-            db.Insertable(dt).UseSqlServer().ExecuteBlueCopy();
+            db.Insertable(dt).UseSqlServer().ExecuteBulkCopy();
             db.CodeFirst.InitTables<RootTable0, TwoItem, TwoItem2, TwoItem3>();
             db.CodeFirst.InitTables<ThreeItem2>();
             db.DbMaintenance.TruncateTable("RootTable0");
@@ -89,7 +91,7 @@ namespace OrmTest
                        }
                  }
             })
-            .AddSubList(it => it.Items.First().OrderId).ExecuteReturnPrimaryKey();
+            .AddSubList(it => it.Items.First().OrderId).ExecuteCommand();
 
 
 
@@ -143,10 +145,26 @@ namespace OrmTest
                   }
            })
            .AddSubList(it => it.TwoItem3)
-           .ExecuteReturnPrimaryKey();
+           .ExecuteCommand();
 
             SubNoIdentity(db);
             SubIdentity(db);
+
+
+            var dict = new Dictionary<string, object>();
+            dict.Add("name", "1");
+            dict.Add("CreateTime", DateTime.Now);
+            dict.Add("Price", 1);
+            db.Insertable(dict).AS("[Order]").ExecuteCommand();
+
+            db.Insertable(new List<Order>()).UseParameter().ExecuteCommand();
+
+            db.Fastest<Order>().BulkCopy(insertObjs);
+
+
+            var dataTable= db.Queryable<Order>().Select("id,name,Price").Take(2).ToDataTable();
+            int result= db.Fastest<System.Data.DataTable>().AS("order").BulkCopy("order", dataTable);
+            int result2 = db.Fastest<System.Data.DataTable>().AS("order").BulkCopy( dataTable);
             Console.WriteLine("#### Insertable End ####");
 
         }
@@ -218,7 +236,7 @@ namespace OrmTest
                       }
                  }
             })
-            .ExecuteReturnPrimaryKey();
+            .ExecuteCommand();
 
             var list = db.Queryable<Country>()
                                  .Mapper(it => it.Provinces, it => it.Provinces.First().CountryId)
@@ -298,7 +316,7 @@ namespace OrmTest
                       }
                  }
             })
-            .ExecuteReturnPrimaryKey();
+            .ExecuteCommand();
 
             var list = db.Queryable<Country1>()
                                  .Mapper(it => it.Provinces, it => it.Provinces.First().CountryId)

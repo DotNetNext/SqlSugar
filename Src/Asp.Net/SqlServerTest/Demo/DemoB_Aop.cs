@@ -47,21 +47,33 @@ namespace OrmTest
                 var time = it.Time;
                 var diffType = it.DiffType;//enum insert 、update and delete  
                 Console.WriteLine(businessData);
-                Console.WriteLine(editBeforeData[0].Columns[1].Value);
-                Console.WriteLine("to");
-                Console.WriteLine(editAfterData[0].Columns[1].Value);
                 //Write logic
             };
 
      
-            db.Queryable<Order>().ToList();
+            var list= db.Queryable<Order>().ToList();
             db.Queryable<OrderItem>().ToList();
 
             //OnDiffLogEvent
             var data = db.Queryable<Order>().First();
+
+            db.Insertable(list.Take(5).ToList()).EnableDiffLogEvent().ExecuteCommand();
+
+            db.CodeFirst.InitTables<DiffLong>();
+            db.Insertable(new List<DiffLong>() { new DiffLong() { Id=SnowFlakeSingle.Instance.NextId(), Name="2" },new DiffLong() { Id = SnowFlakeSingle.Instance.NextId(), Name = "2" } }).EnableDiffLogEvent().ExecuteCommand();
+
+            db.Insertable(new Order() { CreateTime=DateTime.Now, CustomId=1, Name="a" ,Price=1 }).EnableDiffLogEvent().ExecuteCommand();
+
             data.Name = "changeName";
             db.Updateable(data).EnableDiffLogEvent("--update Order--").ExecuteCommand();
 
+            db.Updateable(list.Take(5).ToList()).EnableDiffLogEvent("--update Order--").ExecuteCommand();
+
+
+            db.Updateable<Order>().SetColumns(it=>it.Name=="asdfa").Where(it=>it.Id==1).EnableDiffLogEvent("--update Order--").ExecuteCommand();
+
+            db.Updateable<Order>().SetColumns(it => it.Name == "asdfa")
+                .Where(it =>SqlFunc.Subqueryable<Order>().Where(x=>x.Id==it.Id).Any()).EnableDiffLogEvent("--update Order--").ExecuteCommand();
             Console.WriteLine("#### Aop End ####");
         }
     }

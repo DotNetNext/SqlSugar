@@ -1,374 +1,250 @@
 
-## 👨‍🎓果糖大数据科技（南通）有限公司（永久免费开源） ##
-公司地址：南通太阳晶城大厦3幢125室
+<p  align="center">
+    <span>English</span> |  
+    <a  href="https://www.donet5.com/Home/Doc"><font color="red">中文</font></a>
+</p>
+ 
 
-| qq | 微信 | Email | QQ Group |
-| ---------| ---------| ---------| ---------|
-| 610262374 | sabimao | 610262374@qq.com | 225982985 |
+## SqlSugar ORM
+  
+SqlSugar ORM is a library providing Object/Relational Mapping (ORM) 
 
-         服务项目：接收项目外包等服务(高级程序员 & 需求分析 & 软件架构师)，技术咨询，技术顾问
-
-## 👮‍♀️中文文档：
-
-             世界上最简单的ORM，只需要配置连接字符串，F5运行控制台自动建库建表运行DEMO
-
-<font color=#0099ff size=72> 地址：</font> http://donet5.com/Home/Doc 
-
-
-# 🕵️‍♀️English documents
+An ORM framework from the future
 
 Using SqlSugar is very simple , And it's powerful.
 
-SqlSugar=One object+One parameter=16 functions,
+## Description
 
-             Support：MySql、SqlServer、Sqlite、Oracle 、 postgresql 、达梦、人大金仓 
- 
+- Support SqlServer、MySql、PgSql and Oracle  insert blukcopy  
+- Split table big data self-processing 
+- Support Multi-tenant, multi-library transactions
+- Support Support CodeFirst data migration.
+- Support Join query 、  Union all 、 Subquery 
+- Support Configure the query  
+- Support DbFirst import entity class from database, or use Generation Tool.
+- Support one-to-many and many-to-many navigation properties
+- Support MySql、SqlServer、Sqlite、Oracle 、 postgresql 、QuestDb、达梦、人大金仓 、神通数据库、瀚高、MsAccess、华为GaussDB、Custom
+- Support  AOP 、 Diff Log 、 Query Filter 
 
-## 📮Nuget 
+##  Documentation
+|Other |Select  | Insert    | Update  | Delete| 
+| ----- | --------- | ----------- | ------- |------- |
+ <a target="_blank" href="https://github.com/donet5/SqlSugar/wiki/NUGET">Nuget</a>| <a href="https://www.donet5.com/Home/Doc?typeId=1187">Query</a> | <a  target="_blank" href="https://www.donet5.com/Home/Doc?typeId=1193"> Insert </a> |<a  target="_blank" href="https://www.donet5.com/Home/Doc?typeId=1191">Update</a>|    <a  target="_blank" href="https://www.donet5.com/Home/Doc?typeId=1195">Delete</a>    | 
+<a target="_blank" href="https://github.com/donet5/SqlSugar/wiki/Create--database-operation-object"> Start guide</a>  | <a target="_bank" href="https://www.donet5.com/Home/Doc?typeId=1185">Join query </a> |<a href="https://www.donet5.com/Home/Doc?typeId=2422">Insert without entity </a> | <a href="https://www.donet5.com/Home/Doc?typeId=2423">Update without entity</a>  | <a href="https://www.donet5.com/Home/Doc?typeId=2424">  Delete without entity </a>   |     |
+|<a href="https://www.donet5.com/Home/Doc?typeId=2246">Multiple databases</a> | <a target="_bank" href="https://www.donet5.com/Home/Doc?typeId=1188">Include query</a>|<a target="_bank" href="https://www.donet5.com/Home/Doc?typeId=2430">Include Insert</a>| <a target="_bank" href="https://www.donet5.com/Home/Doc?typeId=2432">Include Update</a>| <a target="_bank" href="https://www.donet5.com/Home/Doc?typeId=2431">Include Delete</a> 
+ |<a  href="https://www.donet5.com/Home/Doc"><font color="red">中文文档</font></a>|||||
 
-|.net |.net core |
-|---------| ---------|
-|Install-Package sqlSugar |Install-Package sqlSugarCore|
- 
-##  📑SqlSugar's 16 Functions
-There are 16 methods under SqlSugarClient
-![输入图片说明](http://www.donet5.com/_theme/ueditor/utf8-net/net/upload/image/20190430/6369224056499802674782957.jpg?id=111 "sqlsugar")
+##  Feature characteristic
 
-
-
-## 🎀 Create SqlSugarClient
-All operations are based on SqlSugarClient 
-
-SqlSugarClient parameter and only one ConnectionConfig
+###  Feature1 : Join query  
+Super simple query syntax
 ```cs
-public List<Student> GetStudentList()
-{
-    var db = GetInstance();
-    var list = db.Queryable<Student>().ToList();//Search
-    return list;
-}
-
-/// <summary>
-/// Create SqlSugarClient
-/// </summary>
-/// <returns></returns>
-private SqlSugarClient GetInstance()
-{
-    SqlSugarClient db = new SqlSugarClient(new ConnectionConfig()
-    {
-        ConnectionString = "Server=.xxxxx",
-        DbType = DbType.SqlServer,
-        IsAutoCloseConnection = true,
-        InitKeyType = InitKeyType.Attribute
-    });
-    //Print sql
-    db.Aop.OnLogExecuting = (sql, pars) =>
-    {
-        Console.WriteLine(sql + "\r\n" + db.Utilities.SerializeObject(pars.ToDictionary(it => it.ParameterName, it => it.Value)));
-        Console.WriteLine();
-    };
-    return db;
-}
-
-public class Student
-{
-    [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
-    public int Id { get; set; }
-    public int? SchoolId { get; set; }
-    public string Name { get; set; }
-}
+var query  = db.Queryable<Order>()
+            .LeftJoin<Custom>  ((o, cus) => o.CustomId == cus.Id)
+            .LeftJoin<OrderItem> ((o, cus, oritem ) => o.Id == oritem.OrderId)
+            .LeftJoin<OrderItem> ((o, cus, oritem , oritem2) => o.Id == oritem2.OrderId)
+            .Where(o => o.Id == 1)  
+            .Select((o, cus) => new ViewOrder { Id = o.Id, CustomName = cus.Name })
+            .ToList();   
 ```
-  [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/0.SqlSugarClient) 
-
-
-## 🎉 1. Queryable
-We use it to query
- ![输入图片说明](http://www.donet5.com/_theme/ueditor/utf8-net/net/upload/image/20190502/6369240932997363035197459.png?id=1112 "Queryable")
-
- Here are some examples
-```cs
-//easy
-var getAll = db.Queryable<Student>().ToList();
-var getAllNoLock = db.Queryable<Student>().With(SqlWith.NoLock).ToList();
-var getByPrimaryKey = db.Queryable<Student>().InSingle(2);
-var sum = db.Queryable<Student>().Sum(it => it.Id);
-var isAny = db.Queryable<Student>().Where(it => it.Id == -1).Any();
-var isAny2 = db.Queryable<Student>().Any(it => it.Id == -1);
-var getListByRename = db.Queryable<School>().AS("Student").ToList();
-var getByWhere = db.Queryable<Student>().Where(it => it.Id == 1 || it.Name == "a").ToList();
-var getByFuns = db.Queryable<Student>().Where(it => SqlFunc.IsNullOrEmpty(it.Name)).ToList();
-var group = db.Queryable<Student>().GroupBy(it => it.Id).Select(it => new { id = SqlFunc.AggregateCount(it.Id) }).ToList();
-
-//Page
-var page = db.Queryable<Student>().ToPageList(pageIndex, pageSize, ref totalCount);
-
-//page join
-var pageJoin = db.Queryable<Student, School>((st, sc) => new JoinQueryInfos(JoinType.Left, st.SchoolId == sc.Id))
-.ToPageList(pageIndex, pageSize, ref totalCount);
-
-//top 5
-var top5 = db.Queryable<Student>().Take(5).ToList();
-
-//join Order By (order by st.id desc,sc.id desc)
-var list4 = db.Queryable<Student, School>((st, sc) => new JoinQueryInfos(JoinType.Left, st.SchoolId == sc.Id))
-.OrderBy(st => st.Id, OrderByType.Desc)
-.OrderBy((st, sc) => sc.Id, OrderByType.Desc)
-.Select<ViewModelStudent>().ToList();
-
-```
-[<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/1.Queryable) 
-
-
-
-## 🎊 2. Updateable
-We use it to Update
- ```cs
-//update reutrn Update Count
-var t1= db.Updateable(updateObj).ExecuteCommand();
-
-//Only  update  Name 
-var t3 = db.Updateable(updateObj).UpdateColumns(it => new { it.Name }).ExecuteCommand();
-
-//Ignore  Name and TestId
-var t4 = db.Updateable(updateObj).IgnoreColumns(it => new { it.Name, it.TestId }).ExecuteCommand();
-
-//update List<T>
-var t7 = db.Updateable(updateObjs).ExecuteCommand();
-
-//Where By Expression
-var t9 = db.Updateable(it => new class() { name = "a",createtime = p }).Where(it => it.Id == 1).ExecuteCommand();
-
- ```
- [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/2.Updateable) 
-
-
-## 🎃 3. Insertable
-We use it to Insert
- ```cs
-//Insert reutrn Insert Count
-var t2 = db.Insertable(insertObj).ExecuteCommand();
-
-//Insert reutrn Identity Value
-var t3 = db.Insertable(insertObj).ExecuteReutrnIdentity();
-
-//Only  insert  Name 
-var t4 = db.Insertable(insertObj).InsertColumns(it => new { it.Name, it.SchoolId }).ExecuteReutrnIdentity();
-
-//Ignore TestId
-var t5 = db.Insertable(insertObj).IgnoreColumns(it => new { it.Name, it.TestId }).ExecuteReutrnIdentity();
-
-//Insert List<T>
-var s9 = db.Insertable(insertObjs).InsertColumns(it => new { it.Name }).ExecuteCommand();
-```
- [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/3.Insertable) 
-
-## 🎄 4. Deleteable
-We use it to Delete
-
- ```cs
- //by entity
-db.Deleteable<Student>().Where(new Student() { Id = 1 }).ExecuteCommand();
-
-//by primary key
-db.Deleteable<Student>().In(1).ExecuteCommand();
-
-//by primary key array
-db.Deleteable<Student>().In(new int[] { 1, 2 }).ExecuteCommand();
-
-//by expression
-db.Deleteable<Student>().Where(it => it.Id == 1).ExecuteCommand();
-
- ```
- [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/4.Deleteable ) 
-
-
- ## 🎋 5. SqlQueryable
-```cs
-var list = db.SqlQueryable<Student>("select * from student").ToPageList(1, 2);
-var list2 = db.SqlQueryable<Student>("select * from student").Where(it => it.Id == 1).ToPageList(1, 2);
-var list3 = db.SqlQueryable<Student>("select * from student").Where("id=@id", new { id = 1 }).ToPageList(1, 2);
+```sql
+SELECT
+  [o].[Id] AS [Id],
+  [cus].[Name] AS [CustomName]
+FROM
+  [Order] o
+  Left JOIN [Custom] cus ON ([o].[CustomId] = [cus].[Id])
+  Left JOIN [OrderDetail] oritem ON ([o].[Id] = [oritem].[OrderId])
+  Left JOIN [OrderDetail] oritem2 ON ([o].[Id] = [oritem2].[OrderId])
+WHERE
+  ([o].[Id] = @Id0)
 ``` 
-[<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/5.SqlQueryable ) 
-
-## 🎎 6. SaveQueues
-  Perform multiple operations together with transactions
-```cs
-var db = GetInstance();
-db.Insertable<Student>(new Student() { Name = "a" }).AddQueue();
-db.Insertable<Student>(new Student() { Name = "b" }).AddQueue();
-db.SaveQueues();
-
-db.Insertable<Student>(new Student() { Name = "a" }).AddQueue();
-db.Insertable<Student>(new Student() { Name = "b" }).AddQueue();
-db.Insertable<Student>(new Student() { Name = "c" }).AddQueue();
-db.Insertable<Student>(new Student() { Name = "d" }).AddQueue();
-var ar = db.SaveQueuesAsync();
-
-db.Queryable<Student>().AddQueue();
-db.Queryable<School>().AddQueue();
-db.AddQueue("select * from student where id=@id", new { id = 1 });
-var result2 = db.SaveQueues<Student, School, Student>();  
+###   Feature2 :Include Query、Insert、Delete and Update
+```cs 
+//query  by nav
+var list=db.Queryable<Test>()
+           .Includes(x => x.Provinces,x=>x.Citys ,x=>x.Street) //multi-level
+           .Includes(x => x.ClassInfo) 
+           .ToList();
+           
+//insert by nav
+ db.InsertNav(list) //Finer operation than EFCore's SaveChange
+            .Include(z1 => z1.SchoolA) 
+            .ThenInclude(z1 => z1.RoomList)  
+            .Include(z1 => z1.Books) 
+            .ExecuteCommand(); 
+            
+//delete by nav               
+ db.DeleteNav<Student>(it=>it.Id==1) 
+            .Include(z1 => z1.SchoolA) 
+            .ThenInclude(z1 => z1.RoomList) st
+            .Include(z1 => z1.Books) 
+            .ExecuteCommand();  
+            
+//update by nav     
+ db.UpdateNav(list)
+            .Include(z1 => z1.SchoolA) 
+            .ThenInclude(z1 => z1.RoomList)  
+            .Include(z1 => z1.Books) 
+            .ExecuteCommand();           
 ```
-[<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/6.queue ) 
 
-
-## 🎫 7.Ado
-db.Ado.MethodName，Look at the following example
+###   Feature3 : Page query
 ```cs
-var dt=db.Ado.GetDataTable("select * from table where id=@id and name=@name",new List<SugarParameter>(){
-  new SugarParameter("@id",1),
-  new SugarParameter("@name",2)
+
+ int pageIndex = 1; 
+ int pageSize = 20;
+ int totalCount=0;
+ var page = db.Queryable<Student>().ToPageList(pageIndex, pageSize, ref totalCount);
+```
+ 
+###    Feature4 : Dynamic expression
+```cs
+var names= new string [] { "a","b"};
+Expressionable<Order> exp = new Expressionable<Order>();
+foreach (var item in names)
+{
+    exp.Or(it => it.Name.Contains(item.ToString()));
+}
+var list= db.Queryable<Order>().Where(exp.ToExpression()).ToList();
+ ```
+ ```sql
+SELECT [Id],[Name],[Price],[CreateTime],[CustomId]
+        FROM [Order]  WHERE (
+                      ([Name] like '%'+ CAST(@MethodConst0 AS NVARCHAR(MAX))+'%') OR 
+                      ([Name] like '%'+ CAST(@MethodConst1 AS NVARCHAR(MAX))+'%')
+                     )
+```
+###   Feature5 : Multi-tenant transaction
+```cs
+//Creaate  database object
+SqlSugarClient db = new SqlSugarClient(new List<ConnectionConfig>()
+{
+    new ConnectionConfig(){ ConfigId="0", DbType=DbType.SqlServer,  ConnectionString=Config.ConnectionString, IsAutoCloseConnection=true },
+    new ConnectionConfig(){ ConfigId="1", DbType=DbType.MySql, ConnectionString=Config.ConnectionString4 ,IsAutoCloseConnection=true}
 });
-var dt = db.Ado.GetDataTable("select * from table where id=@id and name=@name", new { id = 1, name = 2 });
 
-//Use Stored Procedure
-var dt2 = db.Ado.UseStoredProcedure().GetDataTable("sp_school", new { name = "张三", age = 0 });//  GetInt SqlQuery<T>  等等都可以用
-var nameP = new SugarParameter("@name", "张三");
-var ageP = new SugarParameter("@age", null, true);//isOutput=true
-var dt2 = db.Ado.UseStoredProcedure().GetDataTable("sp_school", nameP, ageP);
-```
- [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/7.ado ) 
 
-## 🧶 8.Saveable
- Insert or Update
-```cs
-db.Saveable<Student>(entity).ExecuteReturnEntity();
-db.Saveable<Student>(new Student() { Name = "" })
-                  .InsertColumns(it => it.Name)
-                  .UpdateColumns(it => new { it.Name, it.CreateTime }
-                  .ExecuteReturnEntity();
-
-```
-[<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/8.saveable ) 
+var mysqldb = db.GetConnection("1");//mysql db
+var sqlServerdb = db.GetConnection("0");// sqlserver db
  
-  ## 🛒 9.EntityMain
-  ```cs
-var entityInfo=db.EntityMaintenance.GetEntityInfo<Student>();
-foreach (var column in entityInfo.Columns)
-{
-    Console.WriteLine(column.ColumnDescription);
-}
+db.BeginTran();
+            mysqldb.Insertable(new Order()
+            {
+                CreateTime = DateTime.Now,
+                CustomId = 1,
+                Name = "a",
+                Price = 1
+            }).ExecuteCommand();
+            mysqldb.Queryable<Order>().ToList();
+            sqlServerdb.Queryable<Order>().ToList();
+
+db.CommitTran();
 ```
-[<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/9.entityMain ) 
-
-  ## 🥼 10.DbMain
-   ```cs
-  var tables = db.DbMaintenance.GetTableInfoList();
-foreach (var table in tables)
-{
-    Console.WriteLine(table.Description);
-}
-  ```
-  [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/a.DbMain ) 
-  
-
-  ## 🦺 11.Aop
-  ```cs
-db.Aop.OnLogExecuted = (sql, pars) => //SQL executed event
-{
-
-};
-db.Aop.OnLogExecuting = (sql, pars) => //SQL executing event (pre-execution)
-{
-
-};
-db.Aop.OnError = (exp) =>//SQL execution error event
-{
-
-};
-db.Aop.OnExecutingChangeSql = (sql, pars) => //SQL executing event (pre-execution,SQL script can be modified)
-{
-    return new KeyValuePair<string, SugarParameter[]>(sql, pars);
-};
-
+###  Feature6 : Singleton Pattern
+Implement transactions across methods
+```CS
+public static SqlSugarScope Db = new SqlSugarScope(new ConnectionConfig()
+ {
+            DbType = SqlSugar.DbType.SqlServer,
+            ConnectionString = Config.ConnectionString,
+            IsAutoCloseConnection = true 
+  },
+  db=> {
+            db.Aop.OnLogExecuting = (s, p) =>
+            {
+                Console.WriteLine(s);
+            };
+ });
+ 
+ 
+  using (var tran = Db.UseTran())
+  {
+          
+              
+               new Test2().Insert(XX);
+               new Test1().Insert(XX);
+               ..... 
+                ....
+                         
+             tran.CommitTran(); 
+ }
 ```
-  [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/b.aop ) 
+### Feature7 : Query filter
+```cs
+//set filter
+db.QueryFilter.Add(new TableFilterItem<Order>(it => it.Name.Contains("a")));  
+ 
+   
+db.Queryable<Order>().ToList();
+//SELECT [Id],[Name],[Price],[CreateTime],[CustomId] FROM [Order]  WHERE  ([Name] like '%'+@MethodConst0+'%')  
 
-  ## 🎁 12.QueryFilter
-  ```cs
+db.Queryable<OrderItem, Order>((i, o) => i.OrderId == o.Id)
+        .Where(i => i.OrderId != 0)
+        .Select("i.*").ToList();
+//SELECT i.* FROM [OrderDetail] i  ,[Order]  o  WHERE ( [i].[OrderId] = [o].[Id] )  AND 
+//( [i].[OrderId] <> @OrderId0 )  AND  ([o].[Name] like '%'+@MethodConst1+'%')
+ 
+```
 
-//gobal filter
-var db = GetInstance();
-var sql = db.Queryable<Student>().ToSql();
-//SELECT [ID],[SchoolId],[Name],[CreateTime] FROM [STudent]  WHERE  isDelete=0 
-
-
-public static SqlSugarClient GetInstance()
-{
-    SqlSugarClient db = new SqlSugarClient(new ConnectionConfig() { xxx);
-    db.QueryFilter.Add(new SqlFilterItem()
-    {
-        FilterValue = filterDb =>
-        {
-            return new SqlFilterResult() { Sql = " isDelete=0" };
-        }
-    });
-    return db;
-}
+### Feature8 : Insert or update 
+insert or update 
+```cs
+    var x = Db.Storageable(list2).ToStorage();  
+    x.AsInsertable.ExecuteCommand();  
+    x.AsUpdateable.ExecuteCommand();  
+```
+insert into not exists  
+```cs
+var x = Db.Storageable(list).SplitInsert(it => !it.Any()).ToStorage()
+x.AsInsertable.ExecuteCommand(); 
+```
+ 
+### Feature9 ：Auto split table
+Split entity 
+```cs
+[SplitTable(SplitType.Year)]//Table by year (the table supports year, quarter, month, week and day)
+[SugarTable("SplitTestTable_{year}{month}{day}")] 
+ public class SplitTestTable
+ {
+     [SugarColumn(IsPrimaryKey =true)]
+     public long Id { get; set; }
+ 
+     public string Name { get; set; }
+     
+     //When the sub-table field is inserted, which table will be inserted according to this field. 
+     //When it is updated and deleted, it can also be convenient to use this field to      
+     //find out the related table 
+     [SplitField] 
+     public DateTime CreateTime { get; set; }
+ }
  ```
-   [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/c.GobalFilter ) 
+Split query
+```cs
+ var lis2t = db.Queryable<OrderSpliteTest>()
+.SplitTable(DateTime.Now.Date.AddYears(-1), DateTime.Now)
+.ToPageList(1,2);　
+``` 
+
+### Feature10： Big data insert or update 
+```cs
+//Insert A million only takes a few seconds
+db.Fastest<RealmAuctionDatum>().BulkCopy(GetList());
  
-  ## 🍔 13.DbFirst
-  ```cs
-var db = GetInstance();
-//Create all class
-db.DbFirst.CreateClassFile("c:\\Demo\\1");
-
-//Create student calsss
-db.DbFirst.Where("Student").CreateClassFile("c:\\Demo\\2");
-//Where(array)
-
-//Mapping name
-db.MappingTables.Add("ClassStudent", "Student");
-db.MappingColumns.Add("NewId", "Id", "ClassStudent");
-db.DbFirst.Where("Student").CreateClassFile("c:\\Demo\\3");
-
-//Remove mapping
-db.MappingTables.Clear();
-
-//Create class with default value
-db.DbFirst.IsCreateDefaultValue().CreateClassFile("c:\\Demo\\4", "Demo.Models");
-
-
-//Mapping and Attribute
-db.MappingTables.Add("ClassStudent", "Student");
-db.MappingColumns.Add("NewId", "Id", "ClassStudent");
-db.DbFirst.IsCreateAttribute().Where("Student").CreateClassFile("c:\\Demo\\5");
-
+ 
+//update A million only takes a few seconds
+db.Fastest<RealmAuctionDatum>().BulkUpdate(GetList());//A million only takes a few seconds完
+db.Fastest<RealmAuctionDatum>().BulkUpdate(GetList(),new string[]{"id"},new string[]{"name","time"})//no primary key
+ 
+//if exists update, else  insert
+ var x= db.Storageable<Order>(data).ToStorage();
+     x.BulkCopy();
+     x.BulkUpdate(); 
+     
+//set table name
+db.Fastest<RealmAuctionDatum>().AS("tableName").BulkCopy(GetList())
+ 
+//set page 
+db.Fastest<Order>().PageSize(300000).BulkCopy(insertObjs);
 
 ```
-   [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/d.DbFirst ) 
-
-
-  ## 🥙 14.CodeFirst
-```cs
-db.CodeFirst.SetStringDefaultLength(100).BackupTable().InitTables(typeof(CodeTable), typeof(CodeTable2)); //change entity backupTable
-db.CodeFirst.SetStringDefaultLength(100).InitTables(typeof(CodeTable), typeof(CodeTable2));
-```
-   [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/e.CodeFirst ) 
-
-  ## 🧈1 5.Utilities
-  ```cs
-var list = db.Utilities.DataTableToList(datatable);
-  ```
-  
-[<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/f.Utilities ) 
-
-
-  ## 🥫 16.SimpleClient
-```cs
-var db = GetInstance();
-var sdb = db.GetSimpleClient<Student>();
-sdb.GetById(1);
-sdb.GetList();
-sdb.DeleteById(1);
-sdb.Update(obj);
- ```
- 
- 
- [<font color=red>View more >> </font>](https://github.com/sunkaixuan/SqlSugar/wiki/g.SimpleClient ) 
-
-
-## 🕹 Code generator
-https://github.com/sunkaixuan/SoEasyPlatform
- 

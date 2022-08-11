@@ -1,9 +1,8 @@
-ï»¿using Oracle.ManagedDataAccess.Client;
+using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -18,10 +17,18 @@ namespace SqlSugar
             {
                 sql = sql.Replace("+@", "+:");
                 if (sql.HasValue()&&sql.Contains("@")) {
-                    var exceptionalCaseInfo = Regex.Matches(sql, @"\'.*?\@.*?\'| [\.,\w]+\@[\.,\w]+ | [\.,\w]+\@[\.,\w]+");
+                    var exceptionalCaseInfo = Regex.Matches(sql, @"\'[^\=]*?\@.*?\'|[\.,\w]+\@[\.,\w]+ | [\.,\w]+\@[\.,\w]+|[\.,\w]+\@[\.,\w]+ |\d+\@\d|\@\@");
                     if (exceptionalCaseInfo != null) {
                         foreach (var item in exceptionalCaseInfo.Cast<Match>())
                         {
+                            if (item.Value != null && item.Value.IndexOf(",") == 1&&Regex.IsMatch(item.Value, @"^ \,\@\w+$")) 
+                            {
+                                break;
+                            }
+                            else if (item.Value != null &&Regex.IsMatch(item.Value.Trim(), @"^\w+\,\@\w+\,$"))
+                            {
+                                break;
+                            }
                             sql = sql.Replace(item.Value, item.Value.Replace("@", UtilConstants.ReplaceKey));
                         }
                     }
@@ -84,10 +91,12 @@ namespace SqlSugar
         }
         public override DbCommand GetCommand(string sql, SugarParameter[] parameters)
         {
+            sql = ReplaceKeyWordParameterName(sql, parameters);
             OracleCommand sqlCommand = new OracleCommand(sql, (OracleConnection)this.Connection);
             sqlCommand.BindByName = true;
             sqlCommand.CommandType = this.CommandType;
             sqlCommand.CommandTimeout = this.CommandTimeOut;
+            sqlCommand.InitialLONGFetchSize = -1;
             if (this.Transaction != null)
             {
                 sqlCommand.Transaction = (OracleTransaction)this.Transaction;
@@ -100,6 +109,32 @@ namespace SqlSugar
             CheckConnection();
             return sqlCommand;
         }
+
+        private static string ReplaceKeyWordParameterName(string sql, SugarParameter[] parameters)
+        {
+            if (parameters.HasValue())
+            {
+                foreach (var Parameter in parameters)
+                {
+                    if (Parameter.ParameterName != null && Parameter.ParameterName.ToLower().IsIn("@user", "@level",  ":user", ":level"))
+                    {
+                        if (parameters.Count(it => it.ParameterName.StartsWith(Parameter.ParameterName)) == 1)
+                        {
+                            var newName = Parameter.ParameterName + "_01";
+                            sql = sql.Replace(Parameter.ParameterName, newName);
+                            Parameter.ParameterName = newName;
+                        }
+                        else
+                        {
+                            Check.ExceptionEasy($" {Parameter.ParameterName} is key word", $"{Parameter.ParameterName}ÊÇ¹Ø¼ü´Ê");
+                        }
+                    }
+                }
+            }
+
+            return sql;
+        }
+
         public override void SetCommandToAdapter(IDataAdapter dataAdapter, DbCommand command)
         {
             ((OracleDataAdapter)dataAdapter).SelectCommand = (OracleCommand)command;
@@ -134,10 +169,26 @@ namespace SqlSugar
                 {
                     sqlParameter.OracleDbType = OracleDbType.RefCursor;
                 }
+                if (parameter.IsClob)
+                {
+                    sqlParameter.OracleDbType = OracleDbType.Clob;
+                    sqlParameter.Value = parameter.Value;
+                }
+                if (parameter.IsArray)
+                {
+                    sqlParameter.OracleDbType = OracleDbType.Varchar2;
+                    sqlParameter.CollectionType = OracleCollectionType.PLSQLAssociativeArray;
+                }
                 if (sqlParameter.DbType == System.Data.DbType.Guid)
                 {
                     sqlParameter.DbType = System.Data.DbType.String;
                     sqlParameter.Value = sqlParameter.Value.ObjToString();
+                }
+                else if (parameter.DbType == System.Data.DbType.DateTimeOffset)
+                {
+                    if (parameter.Value != DBNull.Value)
+                        sqlParameter.Value = UtilMethods.ConvertFromDateTimeOffset((DateTimeOffset)parameter.Value);
+                    sqlParameter.DbType = System.Data.DbType.DateTime;
                 }
                 else if (parameter.DbType == System.Data.DbType.Boolean)
                 {
@@ -154,7 +205,22 @@ namespace SqlSugar
                 else if (parameter.DbType == System.Data.DbType.DateTime)
                 {
                     sqlParameter.Value = parameter.Value;
+                    sqlParameter.DbType = System.Data.DbType.DateTime;
+                }
+                else if (parameter.DbType == System.Data.DbType.Date)
+                {
+                    sqlParameter.Value = parameter.Value;
                     sqlParameter.DbType = System.Data.DbType.Date;
+                }
+                else if (parameter.DbType == System.Data.DbType.AnsiStringFixedLength)
+                {
+                    sqlParameter.DbType = System.Data.DbType.AnsiStringFixedLength;
+                    sqlParameter.Value = parameter.Value;
+                }
+                else if (parameter.DbType == System.Data.DbType.AnsiString)
+                {
+                    sqlParameter.DbType = System.Data.DbType.AnsiString;
+                    sqlParameter.Value = parameter.Value;
                 }
                 else
                 {
@@ -167,7 +233,7 @@ namespace SqlSugar
                 if (parameter.Direction != 0)
                     sqlParameter.Direction = parameter.Direction;
                 result[index] = sqlParameter;
-                if (sqlParameter.Direction.IsIn(ParameterDirection.Output, ParameterDirection.InputOutput,ParameterDirection.ReturnValue))
+                if (sqlParameter.Direction.IsIn(ParameterDirection.Output, ParameterDirection.InputOutput, ParameterDirection.ReturnValue))
                 {
                     if (this.OutputParameters == null) this.OutputParameters = new List<IDataParameter>();
                     this.OutputParameters.RemoveAll(it => it.ParameterName == sqlParameter.ParameterName);

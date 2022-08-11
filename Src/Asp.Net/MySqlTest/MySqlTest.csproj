@@ -34,10 +34,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="SyntacticSugar, Version=2.4.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\SqlServerTest\OtherDll\SyntacticSugar.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -68,6 +64,8 @@
     <Compile Include="Demo\DemoE_CodeFirst.cs" />
     <Compile Include="Demo\DemoF_Utilities.cs" />
     <Compile Include="Demo\DemoG_SimpleClient.cs" />
+    <Compile Include="Demo\DemoN_SplitTable.cs" />
+    <Compile Include="Demo\DemoO_Fastest.cs" />
     <Compile Include="Models\AttributeTable.cs" />
     <Compile Include="Models\CarType.cs" />
     <Compile Include="Models\Custom.cs" />
@@ -88,7 +86,17 @@
     <Compile Include="Models\Unit\Custom1\PurchaseDetailModel.cs" />
     <Compile Include="Models\ViewOrder.cs" />
     <Compile Include="Demo\DemoJ_Report.cs" />
+    <Compile Include="UnitTest\UDelete.cs" />
+    <Compile Include="UnitTest\UBulkCopy.cs" />
+    <Compile Include="UnitTest\UCustom011.cs" />
+    <Compile Include="UnitTest\UCustom012.cs" />
+    <Compile Include="UnitTest\UCustom014.cs" />
+    <Compile Include="UnitTest\UCustom015.cs" />
+    <Compile Include="UnitTest\UCustom06.cs" />
     <Compile Include="UnitTest\UInsert.cs" />
+    <Compile Include="UnitTest\UnitCustom01.cs" />
+    <Compile Include="UnitTest\UnitSameKeyBug.cs" />
+    <Compile Include="UnitTest\UOneManyMany.cs" />
     <Compile Include="UnitTest\UQueue.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -23,9 +23,9 @@ namespace OrmTest
             Db.Updateable<UnitBoolTest>().SetColumns(it => it.BoolValue == x.BoolValue).Where(it => it.Id == 1).ExecuteCommand();
             Db.Updateable<UnitBoolTest>().SetColumns(it => new UnitBoolTest() { BoolValue = !x.BoolValue }).Where(it => it.Id == 1).ExecuteCommand();
             Db.Updateable<UnitBoolTest>().SetColumns(it => it.BoolValue == !x.BoolValue).Where(it => it.Id == 1).ExecuteCommand();
-            Db.Updateable<UnitBoolTest>(x).ReSetValue(it => it.BoolValue == it.BoolValue).ExecuteCommand();
-            Db.Updateable<UnitBoolTest>(x).ReSetValue(it => it.BoolValue == true).ExecuteCommand();
-            Db.Updateable<UnitBoolTest>(x).ReSetValue(it => it.BoolValue == !it.BoolValue).ExecuteCommand();
+            Db.Updateable<UnitBoolTest>(x).ReSetValue(it => it.BoolValue = it.BoolValue).ExecuteCommand();
+            Db.Updateable<UnitBoolTest>(x).ReSetValue(it => it.BoolValue = true).ExecuteCommand();
+            Db.Updateable<UnitBoolTest>(x).ReSetValue(it => it.BoolValue = !it.BoolValue).ExecuteCommand();
             Db.Updateable<UnitBoolTest>(x).UpdateColumns(it =>new { it.BoolValue }) .ExecuteCommand();
 
 
@@ -43,8 +43,8 @@ namespace OrmTest
             {
                 IsRemind = saveDiary.IsRemind,
             }).Where(it => it.ID == saveDiary.ID).ToSql();
-           // UValidate.Check(sql.Key, @"UPDATE ""UNITBOOLTEST""  SET
-           //""BOOLVALUE"" =:BoolValue  WHERE ""ID"" =:Id"", "Updateable");
+            // UValidate.Check(sql.Key, @"UPDATE ""UNITBOOLTEST""  SET
+            //""BOOLVALUE"" =:BoolValue  WHERE ""ID"" =:Id"", "Updateable");
 
 
             //  sql = Db.Updateable<UnitDiary>().SetColumns(it => new UnitDiary()
@@ -53,8 +53,31 @@ namespace OrmTest
             //}).Where(it => it.ID == saveDiary.ID).ToSql();
             //UValidate.Check(sql.Key, @"UPDATE ""DIARY""  SET
             //""TYPEID"" = @Const0   WHERE ( ""ID"" = :ID1 )", "Updateable");
+            Db.CodeFirst.InitTables<UnitGuidTest>();
+            Db.Updateable(new List<UnitGuidTest> {
+            new UnitGuidTest() { Id = Guid.NewGuid(),name= "a"  ,guid=Guid.NewGuid()},
+            new UnitGuidTest() { Id = Guid.NewGuid(),name= "a" }
+            }).ExecuteCommand();
+
+            var updateObjs = new List<Order> {
+                 new Order() { Id = 11, Name = "order11" }
+            };
+
+            //update all columns by primary key
+
+            if (Db.Updateable(updateObjs).ExecuteCommandAsync().GetAwaiter().GetResult() != 1) 
+            {
+                throw new Exception("unit error");
+            }
 
         }
+    }
+    public class UnitGuidTest 
+    {
+        [SugarColumn(IsPrimaryKey =true)]
+        public Guid Id { get; set; }
+        public string name { get; set; }
+        public Guid guid { get; set; }
     }
     public class UnitSaveDiary
     {

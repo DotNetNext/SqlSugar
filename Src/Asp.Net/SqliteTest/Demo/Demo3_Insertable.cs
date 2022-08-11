@@ -35,7 +35,7 @@ namespace OrmTest
                  new Order() { Id = 11, Name = "order11", Price=0 },
                  new Order() { Id = 12, Name = "order12" , Price=0}
             };
-
+            var x = db.Insertable(updateObjs).RemoveDataCache().IgnoreColumns(it => it.CreateTime).UseParameter().ExecuteCommand();
             //Ignore  CreateTime
             db.Insertable(insertObj).IgnoreColumns(it => new { it.CreateTime }).ExecuteReturnIdentity();//get identity
             db.Insertable(insertObj).IgnoreColumns("CreateTime").ExecuteReturnIdentity();

@@ -103,9 +103,9 @@ namespace OrmTest
             var data4 = orderDb.GetSingle(it => it.Id == 1);
             var p = new PageModel() { PageIndex = 1, PageSize = 2 };
             var data5 = orderDb.GetPageList(it => it.Name == "xx", p);
-            Console.Write(p.PageCount);
+            Console.Write(p.TotalCount);
             var data6 = orderDb.GetPageList(it => it.Name == "xx", p, it => it.Name, OrderByType.Asc);
-            Console.Write(p.PageCount);
+            Console.Write(p.TotalCount);
             List<IConditionalModel> conModels = new List<IConditionalModel>();
             conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Equal, FieldValue = "1", FieldValueConvertFunc=it=>Convert.ToInt32(it) });//id=1
             var data7 = orderDb.GetPageList(conModels, p, it => it.Name, OrderByType.Asc);
@@ -205,7 +205,7 @@ namespace OrmTest
             Console.WriteLine("#### Singleton Pattern end ####");
         }
 
-        static SqlSugarClient singleDb = new SqlSugarClient(
+        static SqlSugarScope singleDb = new SqlSugarScope(
             new ConnectionConfig()
             {
                 ConfigId = 1,
@@ -230,6 +230,7 @@ namespace OrmTest
                 new ConnectionConfig(){ ConfigId="2", DbType=DbType.PostgreSQL, ConnectionString=Config.ConnectionString2 ,InitKeyType=InitKeyType.Attribute ,IsAutoCloseConnection=true}
             });
 
+            var db1 = db.Ado.Connection.Database;
             //use db1
             db.CodeFirst.SetStringDefaultLength(200).InitTables(typeof(Order), typeof(OrderItem));//
             db.Insertable(new Order() { Name = "order1", CreateTime = DateTime.Now }).ExecuteCommand();
@@ -237,11 +238,16 @@ namespace OrmTest
 
             //use db2
             db.ChangeDatabase("2");
+            var db2 = db.Ado.Connection.Database;
             db.DbMaintenance.CreateDatabase();//Create Database2
             db.CodeFirst.SetStringDefaultLength(200).InitTables(typeof(Order), typeof(OrderItem));
             db.Insertable(new Order() { Name = "order1", CreateTime = DateTime.Now }).ExecuteCommand();
             Console.WriteLine(db.CurrentConnectionConfig.DbType + ":" + db.Queryable<Order>().Count());
 
+            if (db2 == db1)
+            {
+                return;
+            }
             // Example 1
             Console.WriteLine("Example 1");
             try
@@ -308,23 +314,23 @@ namespace OrmTest
             // Example 3
             Console.WriteLine("Example 3");
 
-            var result2 = db.UseTranAsync(() =>
+            var result2 = db.UseTranAsync(async () =>
             {
 
                 db.ChangeDatabase("1");//use db1
-                db.Deleteable<Order>().ExecuteCommand();
+                await db.Deleteable<Order>().ExecuteCommandAsync();
                 Console.WriteLine("---Delete all " + db.CurrentConnectionConfig.DbType);
                 Console.WriteLine(db.Queryable<Order>().Count());
 
                 db.ChangeDatabase("2");//use db2
-                db.Deleteable<Order>().ExecuteCommand();
+                await db.Deleteable<Order>().ExecuteCommandAsync();
                 Console.WriteLine("---Delete all " + db.CurrentConnectionConfig.DbType);
                 Console.WriteLine(db.Queryable<Order>().Count());
                 throw new Exception("");
 
             });
             result2.Wait();
-            if (result.IsSuccess == false)
+            if (result2.Result.IsSuccess == false)
             {
                 Console.WriteLine("---Roll back");
                 db.ChangeDatabase("1");//use sqlserver

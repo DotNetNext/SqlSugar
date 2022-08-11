@@ -63,9 +63,14 @@ namespace OrmTest
 
 
             //There are many methods to under db.ado
-            var list= db.Ado.SqlQuery<Order>("select * from [order] ");
-            var intValue=db.Ado.SqlQuerySingle<int>("select 1");
+            var list = db.Ado.SqlQuery<Order>("select * from [order] ");
+            var list2 = db.Ado.SqlQuery<Order, Order>("select * from [order]  where 1=2;select * from [order]  ");
+            var list3 = db.Ado.SqlQuery<int>(" delete from [order]  where 2=15 ");
+            var intValue = db.Ado.SqlQuerySingle<int>("select 1");
             db.Ado.ExecuteCommand("delete [order] where id>1000");
+
+            db.SqlQueryable<Custom>(@"select * 
+from custom").ToList();
             //db.Ado.xxx
             Console.WriteLine("#### Ado End ####");
         }

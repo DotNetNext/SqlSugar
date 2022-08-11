@@ -1,0 +1,1 @@
+%~dp0nuget.exe pack %~dp0SqlSugar.Access.nuspec -OutputDirectory %~dp0

@@ -146,13 +146,202 @@ namespace OrmTest
                 .ToList();
 
 
+            var sql12 = Db.Queryable<Order, OrderItem, Custom>((o, i, c) => true)
+         .AS("[aa]")
+         .AS<OrderItem>("[xx]")
+         .AS<Custom>("[yy]").ToSql();
 
 
 
+            var list12 = Db.Queryable<Order>()
+           .Select(it => new
+           {
+               name = it.Name,
+               customName = SqlFunc.MappingColumn(default(string), " (select top 1 id from [Order] ) ")
+           }).ToList();
+
+            var p1 = "1";
+            var p2 = "2";
+          var list13 = Db.Queryable<Order>()
+            .Select(it => new
+            {
+               name = it.Name,
+               customName = SqlFunc.MappingColumn(default(string), $" (select top 1 id from [Order] where id={p1} or id={p2} ) ")
+            }).ToList();
+
+            //int id = 0;
+            Db.Queryable(Db.Queryable<Order>().Where(it => it.Id == 1)).Where(it => it.Id == 1).ToList();
             _db.QueryFilter.Clear();
 
 
+            Db.CodeFirst.InitTables<UnitEnumTest>();
+            Db.Insertable(new UnitEnumTest() { type = null }).ExecuteCommand();
+            Db.Insertable(new UnitEnumTest() { type = DbType.MySql }).ExecuteCommand();
+            var xx = Db.Queryable<UnitEnumTest>().ToList();
+            var xxx= Db.Storageable(new UnitEnumTest()
+            {
+                Name = "a",
+                 type=DbType.Sqlite
+            }).WhereColumns(it => it.type).ToStorage();
+            xxx.AsUpdateable.ExecuteCommand();
 
+            var getOrderBy2 = Db
+              .Queryable<Order>()
+              .Select(it => new Order { Name = it.Name.Replace("0", "1") }).MergeTable().Select<Order>().Where(it => it.Name.Equals("2"))
+              .ToList();
+
+            var list14 = Db.Queryable<Order, Order, Order>((o1, o2, o3) =>
+                        new JoinQueryInfos(JoinType.Inner, o1.Id == o2.Id * 2, JoinType.Inner, o1.Id == o3.Id * 4)
+                        )
+            .Select((o1, o2, o3) => new
+            {
+                id = o1.Id,
+                x = o1,
+                x2 = o2,
+                x3 = o3
+            }).ToList();
+
+
+            var list15 = Db.Queryable<Order, Order, Order>((o1, o2, o3) =>
+              new JoinQueryInfos(JoinType.Inner, o1.Id == o2.Id * 2, JoinType.Inner, o1.Id == o3.Id * 4)
+            )
+            .Select((o1, o2, o3) => new TestModel1
+            {
+                id = o1.Id.SelectAll(),
+                x = o1,
+                x2 = o2,
+                x3 = o3
+            }).ToList();
+
+           var list16=Db.Queryable<Order>().OrderBy(it => it.CreateTime.ToString("yyyy-MM-dd")).Select(it=> new { x = it.CreateTime.ToString("yyyy-MM-dd") }).ToList();
+
+            Db.CodeFirst.InitTables<TB_ClientConfig, TB_AdminUser>();
+            Db.Insertable(new TB_ClientConfig()
+            {
+                AlipayAppID = "aa",
+                 AlipayPaymentOpen=true,
+                  AlipayPrivateKey="a",
+                   AlipayPublicKey="",
+                    AlipayWithdrawOpen=true,
+                     CreateAdminUserID=1 ,
+                      CreateDateTime=11,
+                       Extension="a",
+                        ModifyAdminUserID=1,
+                         ModifyDateTime=1,
+                          Name="a",
+                           WechatPayMchID="a",
+                            OpenWechatAppID="a",
+                             OpenWechatAppSecret="a",
+                              WechatMiniOriginalID="b",
+                               WechatPayApiKey="a",
+                                WechatPayApiKeyV3="z"
+                        
+            }).ExecuteReturnSnowflakeId();
+          var list17= Db.Queryable<TB_ClientConfig, TB_AdminUser, TB_AdminUser>((f, c, m) => new JoinQueryInfos(
+                    JoinType.Left, f.CreateAdminUserID == c.ID,
+                    JoinType.Left, f.ModifyAdminUserID == m.ID))
+                .OrderBy(f => f.CreateDateTime, OrderByType.Desc)
+                .Select((f, c, m) => new
+                {
+                    f,
+                    CreateAdminUserName = c.Name,
+                    ModifyAdminUserName = m.Name
+                }).ToList();
+       
+            var listxxxxxxxxxxx = Db.Queryable<Tree2, Tree2>((a, b) => new JoinQueryInfos(JoinType.Inner, a.ParentId == b.Id))
+                .Select((a, b) => new {
+                user = a,
+                parentUser = b
+                })
+                .ToList();
+
+            var sql111= Db.SqlQueryable<Order>("select 1 id ").ToSql().Key;
+            var sql222 = Db.SqlQueryable<Order>("select 1 id ").Where(it=>it.Id==1).ToSql().Key;
+            Check.Exception("select 1 id " != sql111, "unit query error");
+            Check.Exception("SELECT t.* FROM  (select 1 id ) t   WHERE ( [Id] = @Id0 )" != sql222, "unit query error");
+
+            var query5 = Db.Queryable<Order>()
+                           .LeftJoin<Custom>((o, cus) => o.CustomId == cus.Id)
+                      
+                           .Where((o) => o.Id>0)
+                           .Select((o, cus) => new VUOrder { Ixd = o.Id.SelectAll()})
+                           .ToList();
+            Check.Exception(query5.Any() && query5.First().Ixd == 0,"unit error");
+
+
+            var query6 = Db.Queryable<Order>()
+                     .LeftJoin<Custom>((o, cus) => o.Id.ToString().Contains(cus.Id.ToString()))
+
+                     .Where((o) => o.Id > 0) 
+                     .ToList();
+            var db = Db;
+            db.CurrentConnectionConfig.MoreSettings = new ConnMoreSettings
+            { 
+                 IsWithNoLockQuery = true,
+            };
+            var sql13 = db.Queryable<Order>().AS("[ORDER]")
+                .LeftJoin<OrderItem>((o,i) => o.Id == i.OrderId).AS<OrderItem>("[ORDERDETAIL]")
+                .LeftJoin<Custom>((o, i, c) => c.Id == o.CustomId).AS<Custom>("[CUSTOM]")
+                .Select<ViewOrder>().ToList();
+
+            var sql14 =db.SqlQueryable<Order>("select * from [ORDER]")
+             .LeftJoin<OrderItem>((o, i) => o.Id == i.OrderId).AS<OrderItem>("[ORDERDETAIL]")
+             .LeftJoin<Custom>((o, i, c) => c.Id == o.CustomId).AS<Custom>("[CUSTOM]")
+             .Select<ViewOrder>().ToSql();
+            if (sql14.Key!=("SELECT c.[Name] AS [CustomName],o.[Id] AS [Id],o.[Name] AS [Name],o.[Price] AS [Price],o.[CreateTime] AS [CreateTime],o.[CustomId] AS [CustomId] FROM  (SELECT * FROM  (select * from [ORDER]) t  WITH(NOLOCK)  ) o Left JOIN [ORDERDETAIL] i  ON ( [o].[Id] = [i].[OrderId] )  Left JOIN [CUSTOM] c  ON ( [c].[Id] = [o].[CustomId] )  ")) 
+            {
+                throw new Exception("unit error");
+            }
+            
+            var sql15=db.Updateable(new List<UintAinstringHAHA>()
+            {
+                new UintAinstringHAHA(){  id="1", xame="a" },
+                 new UintAinstringHAHA(){  id="2", xame="a" }
+            }).ToSql().Key;
+            db.CodeFirst.InitTables<UintAinstringHAHA>();
+            db.DbMaintenance.TruncateTable<UintAinstringHAHA>();
+            db.Insertable(new List<UintAinstringHAHA>()
+            {
+                new UintAinstringHAHA(){  id="1", xame="a" },
+                 new UintAinstringHAHA(){  id="2", xame="a" }
+            }).ExecuteCommand();
+            var rows=db.Ado.ExecuteCommand(sql15);
+            if (sql15.ToLower().Contains("n'") || rows != 2) 
+            {
+                throw new Exception("unit error");
+            }
+        }
+
+        public class UintAinstringHAHA 
+        {
+            [SugarColumn(IsPrimaryKey =true,SqlParameterDbType =System.Data.DbType.AnsiString)]
+            public string id { get; set; }
+            [SugarColumn(SqlParameterDbType = System.Data.DbType.AnsiString)]
+            public string xame { get; set; }
+        }
+        public class VUOrder
+        {
+            [SugarColumn(ColumnName ="Id")]
+            public int Ixd { get; set; }
+            [SugarColumn(ColumnName = "Name")]
+            public string nxxxame { get; set; }
+        }
+        [SugarTable("tree ")]
+        public class Tree2
+        {
+            [SugarColumn(ColumnName = "id", IsPrimaryKey = true)]
+            public int Id { get; set; }
+            [SugarColumn(ColumnName = "ParentId")]
+            public int ParentId { get; set; }
+            [SugarColumn(ColumnName = "name")]
+            public string  Name { get; set; }
+        }
+        public class UnitEnumTest 
+        {
+            [SqlSugar.SugarColumn(IsNullable =true)]
+            public DbType? type { get; set; }
+            [SqlSugar.SugarColumn(IsNullable = true)]
+            public string Name { get; set; }
         }
 
         public class Dat_WorkBill
@@ -190,5 +379,15 @@ namespace OrmTest
             public int id { get; set; }
             public string Name { get; set; }
         }
+        public class TestModel1
+        {
+            public int id { get; set; }
+            public Order x { get; set; }
+            public Order x2 { get; set; }
+            public Order x3 { get; set; }
+            public string name { get; set; }
+        }
     }
+
+
 }

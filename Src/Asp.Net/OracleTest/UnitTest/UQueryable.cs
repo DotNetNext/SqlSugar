@@ -33,27 +33,27 @@ namespace OrmTest
 
             Db.Queryable<Order>().Where(it => SqlSugar.SqlFunc.Equals(it.CreateTime.Date, it.CreateTime.Date)).ToList();
 
-            var sql = Db.Queryable<UnitSelectTest>().Select(it => new UnitSelectTest()
-            {
+            // var sql = Db.Queryable<UnitSelectTest>().Select(it => new UnitSelectTest()
+            // {
 
-                DcNull = it.Dc,
-                Dc = it.Int
-            }).ToSql().Key;
-            UValidate.Check(sql, "SELECT  [Dc] AS [DcNull] , [Int] AS [Dc]  FROM [UnitSelectTest]", "Queryable");
+            //     DcNull = it.Dc,
+            //     Dc = it.Int
+            // }).ToSql().Key;
+            // UValidate.Check(sql, "SELECT  [Dc] AS [DcNull] , [Int] AS [Dc]  FROM [UnitSelectTest]", "Queryable");
 
-            sql = Db.Updateable<UnitSelectTest2>(new UnitSelectTest2()).ToSql().Key;
-            UValidate.Check(sql, @"UPDATE [UnitSelectTest2]  SET
-           [Dc]=@Dc,[IntNull]=@IntNull  WHERE [Int]=@Int", "Queryable");
+            // sql = Db.Updateable<UnitSelectTest2>(new UnitSelectTest2()).ToSql().Key;
+            // UValidate.Check(sql, @"UPDATE [UnitSelectTest2]  SET
+            //[Dc]=@Dc,[IntNull]=@IntNull  WHERE [Int]=@Int", "Queryable");
 
-            sql = Db.Queryable<Order>().IgnoreColumns(it => it.CreateTime).ToSql().Key;
-            UValidate.Check(sql, "SELECT [Id],[Name],[Price],[CustomId] FROM [Order] ", "Queryable");
-            sql = Db.Queryable<Order>().IgnoreColumns(it => new { it.Id, it.Name }).ToSql().Key;
-            UValidate.Check(sql, "SELECT [Price],[CreateTime],[CustomId] FROM [Order] ", "Queryable");
-            sql = Db.Queryable<Order>().IgnoreColumns("id").ToSql().Key;
-            UValidate.Check(sql, "SELECT [Name],[Price],[CreateTime],[CustomId] FROM [Order] ", "Queryable");
+            // sql = Db.Queryable<Order>().IgnoreColumns(it => it.CreateTime).ToSql().Key;
+            // UValidate.Check(sql, "SELECT [Id],[Name],[Price],[CustomId] FROM [Order] ", "Queryable");
+            // sql = Db.Queryable<Order>().IgnoreColumns(it => new { it.Id, it.Name }).ToSql().Key;
+            // UValidate.Check(sql, "SELECT [Price],[CreateTime],[CustomId] FROM [Order] ", "Queryable");
+            // sql = Db.Queryable<Order>().IgnoreColumns("id").ToSql().Key;
+            // UValidate.Check(sql, "SELECT [Name],[Price],[CreateTime],[CustomId] FROM [Order] ", "Queryable");
 
             var cts = IEnumerbleContains.Data();
-            var list2=Db.Queryable<Order>()
+            var list2 = Db.Queryable<Order>()
                     .Where(p => /*ids.*/cts.Select(c => c.Id).Contains(p.Id)).ToList();
 
             var cts2 = IEnumerbleContains.Data().ToList(); ;
@@ -78,6 +78,23 @@ namespace OrmTest
                 CheckMan = saleOrderInfo.CheckMan,
                 CheckTime = DateTime.Now
             }, o => o.OrderSn == saleOrderInfo.OrderSn && o.OrderStatus != 1);
+
+
+              Db.CodeFirst.InitTables<UnitTest0012>();
+              Db.Insertable(new UnitTest0012() { ID = "a" }).ExecuteCommand();
+            //Db.Insertable(new UnitTest0012() { ID = "b" }).ExecuteCommand();
+            //Db.CurrentConnectionConfig.MoreSettings=new ConnMoreSettings { DisableNvarchar = true };
+            var x = Db.Ado.GetDataTable("SELECT  ID  FROM  UNITTEST0012   WHERE ID = :Const0  ",new SugarParameter("Const0", "a",System.Data.DbType.AnsiStringFixedLength));
+            if (x.Rows.Count == 0) 
+            {
+                throw new Exception("unit query error");
+            }
+        }
+
+        public class UnitTest0012
+        {
+            [SugarColumn(ColumnDataType ="char(10)")]
+            public string ID { get; set; }
         }
 
         public static class IEnumerbleContains

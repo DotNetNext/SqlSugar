@@ -70,6 +70,7 @@ namespace OrmTest
             var db = GetInstance();
             var dbTime = db.GetDate();
             var getAll = db.Queryable<Order>().ToList();
+            var getAll2 = db.Queryable<Order>().Where(it=>it.CreateTime.Day>=DateTime.Now.Date.Day).ToList();
             var getOrderBy = db.Queryable<Order>().OrderBy(it => it.Name,OrderByType.Desc).ToList();
             var getOrderBy2 = db.Queryable<Order>().OrderBy(it => it.Id).OrderBy(it => it.Name, OrderByType.Desc).ToList();
             var getOrderBy3 = db.Queryable<Order>().OrderBy(it =>new { it.Name,it.Id}).ToList();
@@ -83,6 +84,17 @@ namespace OrmTest
             var getByFuns2 = db.Queryable<Order>().GroupBy(it => it.Name).Select(it => SqlFunc.AggregateDistinctCount(it.Price)).ToList();
             var dp = DateTime.Now;
             var test05 = db.Queryable<Order>().Where(it => it.CreateTime.Month == dp.Month).ToList();
+            var fromatList = db.Queryable<Order>().Select(it => it.CreateTime.ToString("%Y-%m")).ToList();
+            var test06 = db.Queryable<Order>().Where(it => it.CreateTime.Date.Day >= DateTime.Now.Date.Day).ToList();
+            var test07 = db.Queryable<Order>().Select(it => SqlFunc.DateDiff(DateType.Day, Convert.ToDateTime("2021-1-1"), Convert.ToDateTime("2021-1-12"))).ToList();
+            var q1 = db.Queryable<Order>().Take(1);
+            var q2 = db.Queryable<Order>().Take(2);
+            var test02 = db.Union(q1, q2).ToList();
+            var test03 = db.Queryable<Order>().Select(it => new
+            {
+                names = SqlFunc.Subqueryable<Order>().Where(z => z.Id == it.Id).SelectStringJoin(z => z.Name, ",")
+            })
+          .ToList();
             Console.WriteLine("#### Examples End ####");
         }
 
@@ -346,7 +358,24 @@ namespace OrmTest
             var query2 = db.Queryable<Order>().Where(it => it.Id == 1);
             var list7 = query2.Clone().Where(it => it.Name == "jack").ToList();//id=1 and name = jack
             var list8 = query2.Clone().Where(it => it.Name == "tom").ToList();//id=1 and name = tom
-
+            db.CodeFirst.InitTables<Tree>();                                                                  //无限级高性能导航映射
+            var treeRoot = db.Queryable<Tree>().Where(it => it.Id == 1).ToList();
+            db.ThenMapper(treeRoot, item =>
+            {
+                item.Child = db.Queryable<Tree>().SetContext(x => x.ParentId, () => item.Id, item).ToList();
+            });
+            db.ThenMapper(treeRoot.SelectMany(it => it.Child), it =>
+            {
+                it.Child = db.Queryable<Tree>().SetContext(x => x.ParentId, () => it.Id, it).ToList();
+            });
+            db.ThenMapper(treeRoot.SelectMany(it => it.Child).SelectMany(it => it.Child), it =>
+            {
+                it.Child = db.Queryable<Tree>().SetContext(x => x.ParentId, () => it.Id, it).ToList();
+            });
+            db.ThenMapper(treeRoot.SelectMany(it => it.Child).SelectMany(it => it.Child).SelectMany(it => it.Child), it =>
+            {
+                it.Child = db.Queryable<Tree>().SetContext(x => x.ParentId, () => it.Id, it).ToList();
+            });
             Console.WriteLine("#### Condition Screening End ####");
 
 

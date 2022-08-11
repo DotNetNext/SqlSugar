@@ -23,8 +23,8 @@ namespace OrmTest
             Db.Updateable<UnitBoolTest>().SetColumns(it => it.BoolValue == x.BoolValue).Where(it => it.Id == 1).ExecuteCommand();
             Db.Updateable<UnitBoolTest>().SetColumns(it => new UnitBoolTest() { BoolValue = !x.BoolValue }).Where(it => it.Id == 1).ExecuteCommand();
             //Db.Updateable<UnitBoolTest>().SetColumns(it => it.BoolValue == !x.BoolValue).Where(it => it.Id == 1).ExecuteCommand();
-            Db.Updateable<UnitBoolTest>(x).ReSetValue(it => it.BoolValue == it.BoolValue).ExecuteCommand();
-            Db.Updateable<UnitBoolTest>(x).ReSetValue(it => it.BoolValue == true).ExecuteCommand();
+            Db.Updateable<UnitBoolTest>(x).ReSetValue(it => it.BoolValue = it.BoolValue).ExecuteCommand();
+            Db.Updateable<UnitBoolTest>(x).ReSetValue(it => it.BoolValue = true).ExecuteCommand();
             //Db.Updateable<UnitBoolTest>(x).ReSetValue(it => it.BoolValue == !it.BoolValue).ExecuteCommand();
             Db.Updateable<UnitBoolTest>(x).UpdateColumns(it =>new { it.BoolValue }) .ExecuteCommand();
 
@@ -59,8 +59,56 @@ namespace OrmTest
                 CreateTime = null
             }).Where(it => it.Id == 1).ExecuteCommand();
 
+            Db.CodeFirst.InitTables<BoolTest1>();
+            Db.Updateable<BoolTest1>()
+            .SetColumns(it => it.a == !it.a)
+            .Where(it => it.a)
+            .ExecuteCommand();
+
+            Db.Updateable<BoolTest1>()
+              .SetColumns(it => new BoolTest1() { a = !it.a })
+              .Where(it => it.a)
+      .ExecuteCommand();
+
+            // Db.CodeFirst.InitTables<UnitPk00121>();
+            //Db.CodeFirst.InitTables<UnitPk001212>();
+            //Db.Deleteable<UnitPk00121>().Where(new UnitPk00121() { Id=1, CreateTime=DateTime.Now, Name="a" }).ExecuteCommand();
+            //Db.Deleteable<UnitPk001212>().Where(new List<UnitPk001212> { new UnitPk001212() { Id = 1, CreateTime = DateTime.Now, Name = "a" } , new UnitPk001212() { Id = 2, CreateTime = DateTime.Now, Name = "11a" } }).ExecuteCommand();
+            Db.CodeFirst.InitTables<UnitDSsdfa>();
+            var dt = DateTime.Now;
+            Db.Insertable(new UnitDSsdfa() { pk = dt, value = 1 }).ExecuteCommand();
+            var list = new List<UnitDSsdfa>() { new UnitDSsdfa() { pk = Convert.ToDateTime("2022-1-1"), value = 2 }, new UnitDSsdfa() { pk = dt, value = 2 } };
+            var res1 = Db.Updateable(list).WhereColumns(it => it.pk).ExecuteCommand();
+
         }
     }
+    public class UnitDSsdfa
+    {
+
+        public DateTime pk { get; set; }
+        public int value { get; set; }
+    }
+    public class UnitPk00121 
+    {
+        [SugarColumn(IsPrimaryKey = true)]
+        public int Id { get; set; }
+        [SugarColumn(IsPrimaryKey = true)]
+        public DateTime? CreateTime { get; set; }
+        public string Name { get; set; }
+    }
+    public class UnitPk001212
+    {
+        [SugarColumn(IsPrimaryKey = true)]
+        public int Id { get; set; }
+        public DateTime? CreateTime { get; set; }
+        [SugarColumn(IsPrimaryKey = true)]
+        public string Name { get; set; }
+    }
+    public class BoolTest1
+    {
+        public bool a { get; set; } 
+    }
+
     [SugarTable("order")]
     public class OrderModel 
     {

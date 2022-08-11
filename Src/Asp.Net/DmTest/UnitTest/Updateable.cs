@@ -23,8 +23,8 @@ namespace OrmTest
             Db.Updateable<UnitBoolTest>().SetColumns(it => it.BoolValue == x.BoolValue).Where(it => it.Id == 1).ExecuteCommand();
             Db.Updateable<UnitBoolTest>().SetColumns(it => new UnitBoolTest() { BoolValue = !x.BoolValue }).Where(it => it.Id == 1).ExecuteCommand();
             //Db.Updateable<UnitBoolTest>().SetColumns(it => it.BoolValue == !x.BoolValue).Where(it => it.Id == 1).ExecuteCommand();
-            Db.Updateable<UnitBoolTest>(x).ReSetValue(it => it.BoolValue == it.BoolValue).ExecuteCommand();
-            Db.Updateable<UnitBoolTest>(x).ReSetValue(it => it.BoolValue == true).ExecuteCommand();
+            Db.Updateable<UnitBoolTest>(x).ReSetValue(it => it.BoolValue = it.BoolValue).ExecuteCommand();
+            Db.Updateable<UnitBoolTest>(x).ReSetValue(it => it.BoolValue = true).ExecuteCommand();
             //Db.Updateable<UnitBoolTest>(x).ReSetValue(it => it.BoolValue == !it.BoolValue).ExecuteCommand();
             Db.Updateable<UnitBoolTest>(x).UpdateColumns(it =>new { it.BoolValue }) .ExecuteCommand();
 
@@ -38,21 +38,7 @@ namespace OrmTest
             saveDiary.Content = "内容";
             saveDiary.Time = DateTime.Now;
             saveDiary.IsRemind = false;//无论传false/true 最终执行的结果都是以true执行的
-
-            var sql = Db.Updateable<UnitDiary>().SetColumns(it => new UnitDiary()
-            {
-                IsRemind = saveDiary.IsRemind,
-            }).Where(it => it.ID == saveDiary.ID).ToSql();
-            UValidate.Check(sql.Key, @"UPDATE ""diary""  SET
-            ""isremind"" =  @Const0    WHERE ( ""id"" = @ID1 )", "Updateable");
-
-
-            sql = Db.Updateable<UnitDiary>().SetColumns(it => new UnitDiary()
-            {
-               TypeID = saveDiary.TypeID,
-            }).Where(it => it.ID == saveDiary.ID).ToSql();
-            UValidate.Check(sql.Key, @"UPDATE ""diary""  SET
-            ""typeid"" = @Const0   WHERE ( ""id"" = @ID1 )", "Updateable");
+ 
 
         }
     }

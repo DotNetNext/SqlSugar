@@ -1,0 +1,33 @@
+﻿<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>SqlSugarCore</id>
+    <version>5.1.1</version>
+    <authors>sunkaixuan</authors>
+    <owners>果糖大数据科技</owners>
+    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
+    <projectUrl>https://github.com/sunkaixuan/SqlSugar</projectUrl>
+    <iconUrl>https://secure.gravatar.com/avatar/a82c03402497b2e58fd65038a3699b30</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>.Net Core .Net5 .Net6 .Net7 安装此版本，  版本说明: 5.0.3.5-Max 最低要求.Net Core 3.0+   ，5.0.0-5.0.3.4 最低要求 .Net Core 2.0+  SqlSugar ORM ,High-performance, lightweight </description>
+    <copyright>Copyright 2016</copyright>
+    <tags>SqlSugar Sql Sugar core Asp.net core orm</tags>
+    <dependencies>
+      <group targetFramework=".NETStandard2.1">
+        <dependency id="System.Data.Common" version="4.3.0" />
+        <dependency id="Microsoft.Data.SqlClient" version="2.1.1" />
+        <dependency id="Newtonsoft.Json" version="10.0.3" />
+        <dependency id="Microsoft.Data.Sqlite" version="5.0.5" />
+        <dependency id="System.Reflection.Emit.Lightweight" version="4.3.0" />
+        <dependency id="MySql.Data" version="8.0.29" />
+        <dependency id="Oracle.ManagedDataAccess.Core" version="3.21.1" />
+        <dependency id="Npgsql" version="5.0.7" />
+	    <dependency id="SqlSugarCore.Dm" version="1.0.0" />
+	    <dependency id="SqlSugarCore.Kdbndp" version="1.0.0" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="C:\NugetCore\SqlSugar.dll" target="lib\netstandard2.1"></file>
+  </files>
+</package>

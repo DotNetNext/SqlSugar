@@ -23,9 +23,9 @@ namespace OrmTest
             Db.Updateable<UnitBoolTest>().SetColumns(it => it.BoolValue == x.BoolValue).Where(it => it.Id == 1).ExecuteCommand();
             Db.Updateable<UnitBoolTest>().SetColumns(it => new UnitBoolTest() { BoolValue = !x.BoolValue }).Where(it => it.Id == 1).ExecuteCommand();
             Db.Updateable<UnitBoolTest>().SetColumns(it => it.BoolValue == !x.BoolValue).Where(it => it.Id == 1).ExecuteCommand();
-            Db.Updateable<UnitBoolTest>(x).ReSetValue(it => it.BoolValue == it.BoolValue).ExecuteCommand();
-            Db.Updateable<UnitBoolTest>(x).ReSetValue(it => it.BoolValue == true).ExecuteCommand();
-            Db.Updateable<UnitBoolTest>(x).ReSetValue(it => it.BoolValue == !it.BoolValue).ExecuteCommand();
+            Db.Updateable<UnitBoolTest>(x).ReSetValue(it => it.BoolValue = it.BoolValue).ExecuteCommand();
+            Db.Updateable<UnitBoolTest>(x).ReSetValue(it => it.BoolValue = true).ExecuteCommand();
+            Db.Updateable<UnitBoolTest>(x).ReSetValue(it => it.BoolValue = !it.BoolValue).ExecuteCommand();
             Db.Updateable<UnitBoolTest>(x).UpdateColumns(it =>new { it.BoolValue }) .ExecuteCommand();
 
 
@@ -54,7 +54,22 @@ namespace OrmTest
             UValidate.Check(sql.Key, @"UPDATE `Diary`  SET
             `TypeID` = @Const0   WHERE ( `ID` = @ID1 )", "Updateable");
 
+            Db.CodeFirst.InitTables<UnitDSsdfa>();
+            var dt = DateTime.Now;
+            Db.Insertable(new UnitDSsdfa() { pk = dt, value = 1 }).ExecuteCommand();
+            var list = new List<UnitDSsdfa>() { new UnitDSsdfa() { pk = dt, value = 2 } };
+            for (int i = 0; i < 100; i++)
+            {
+                list.Add(new UnitDSsdfa() { pk = dt, value = 2 });
+            }
+            var res1=Db.Updateable(list).WhereColumns(it=>it.pk).ExecuteCommand();
+
         }
+    }
+    public class UnitDSsdfa { 
+      
+        public DateTime pk { get; set; }
+        public int value { get; set; }
     }
     public class UnitSaveDiary
     {

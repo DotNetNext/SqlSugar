@@ -33,6 +33,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DmProvider, Version=1.1.0.0, Culture=neutral, PublicKeyToken=7a2d44aa446c6d01, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\SqlSugar\References\DmProvider.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -63,6 +67,7 @@
     <Compile Include="Demo\DemoE_CodeFirst.cs" />
     <Compile Include="Demo\DemoF_Utilities.cs" />
     <Compile Include="Demo\DemoG_SimpleClient.cs" />
+    <Compile Include="Demo\DemoN_SplitTable.cs" />
     <Compile Include="Models\Student.cs" />
     <Compile Include="Models\AttributeTable.cs" />
     <Compile Include="Models\CarType.cs" />

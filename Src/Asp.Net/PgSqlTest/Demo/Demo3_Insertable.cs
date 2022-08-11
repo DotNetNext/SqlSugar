@@ -36,6 +36,8 @@ namespace OrmTest
                  new Order() { Id = 12, Name = "order12" , Price=0}
             };
 
+            var x = db.Insertable(updateObjs).RemoveDataCache().IgnoreColumns(it => it.CreateTime).UseParameter().ExecuteCommand();
+
             //Ignore  CreateTime
             db.Insertable(insertObj).IgnoreColumns(it => new { it.CreateTime }).ExecuteReturnIdentity();//get identity
             db.Insertable(insertObj).IgnoreColumns("CreateTime").ExecuteReturnIdentity();
@@ -49,6 +51,94 @@ namespace OrmTest
 
             //Use Lock
             db.Insertable(insertObj).With(SqlWith.UpdLock).ExecuteCommand();
+
+
+            db.CodeFirst.InitTables<RootTable0, TwoItem, TwoItem2, TwoItem3>();
+            db.CodeFirst.InitTables<ThreeItem2>();
+            db.DbMaintenance.TruncateTable("RootTable0");
+            db.DbMaintenance.TruncateTable("TwoItem");
+            db.DbMaintenance.TruncateTable("TwoItem2");
+            db.DbMaintenance.TruncateTable("TwoItem3");
+            db.DbMaintenance.TruncateTable("ThreeItem2");
+            Console.WriteLine("SubInsert Start");
+
+            db.Insertable(new Order()
+            {
+                Name = "订单 1",
+                CustomId = 1,
+                Price = 100,
+                CreateTime = DateTime.Now,
+                Id = 0,
+                Items = new List<OrderItem>() {
+                      new OrderItem(){
+                         
+                           OrderId=0,
+                            Price=1,
+                             ItemId=1
+                       },
+                      new OrderItem(){
+                           CreateTime=DateTime.Now,
+                           OrderId=0,
+                            Price=2,
+                             ItemId=2
+                       }
+                 }
+            })
+            .AddSubList(it => it.Items.First().OrderId).ExecuteCommand();
+
+
+
+            db.Insertable(new List<RootTable0>() {
+                new RootTable0()
+            {
+                 Name="aa",
+                   TwoItem2=new TwoItem2() {
+                      Id="1",
+                       ThreeItem2=new List<ThreeItem2>(){
+                            new ThreeItem2(){ Name="a", TwoItem2Id="1" },
+                            new ThreeItem2(){ Id=2, Name="a2", TwoItem2Id="2" }
+                        }
+                   },
+                   TwoItem=new TwoItem()
+                   {
+                       Name ="itema" ,
+                       RootId=2
+                   },
+                   TwoItem3=new List<TwoItem3>(){
+                       new TwoItem3(){  Id=0, Name="a",Desc="" },
+
+                   }
+            },
+                new RootTable0()
+            {
+                 Name="bb",
+                   TwoItem2=new TwoItem2() {
+                      Id="2"
+                  },
+                    TwoItem=new TwoItem()
+                   {
+                       Name ="itemb" ,
+                       RootId=2,
+
+                   },
+                    TwoItem3=new List<TwoItem3>(){
+                       new TwoItem3(){ Id=1, Name="b",Desc="" },
+                              new TwoItem3(){ Id=2, Name="b1",Desc="1" },
+                   }
+            }
+            })
+           .AddSubList(it => it.TwoItem.RootId)
+           .AddSubList(it => new SubInsertTree()
+           {
+               Expression = it.TwoItem2.RootId,
+               ChildExpression = new List<SubInsertTree>() {
+                       new SubInsertTree(){
+                            Expression=it.TwoItem2.ThreeItem2.First().TwoItem2Id
+                       }
+                  }
+           })
+           .AddSubList(it => it.TwoItem3)
+           .ExecuteCommand();
 
             Console.WriteLine("#### Insertable End ####");
         }

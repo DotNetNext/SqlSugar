@@ -42,6 +42,24 @@ namespace OrmTest
             var getByWhere2 = db.Queryable<Order>().Where(it => it.Id == DateTime.Now.Year).ToList();
             var getByFuns = db.Queryable<Order>().Where(it => SqlFunc.IsNullOrEmpty(it.Name)).ToList();
             var getByFuns2 = db.Queryable<Order>().GroupBy(it => it.Name).Select(it => SqlFunc.AggregateDistinctCount(it.Price)).ToList();
+            var btime = Convert.ToDateTime("2021-1-1");
+            var etime = Convert.ToDateTime("2022-1-12");
+            var test01 = db.Queryable<Order>().Select(it =>  SqlFunc.DateDiff(DateType.Year,btime, etime)).ToList();
+            var test02 = db.Queryable<Order>().Select(it => SqlFunc.DateDiff(DateType.Day, btime, etime)).ToList();
+            var test03 = db.Queryable<Order>().Select(it => SqlFunc.DateDiff(DateType.Month, btime, etime)).ToList();
+            var test04 = db.Queryable<Order>().Select(it => SqlFunc.DateDiff(DateType.Second, DateTime.Now, DateTime.Now.AddMinutes(2))).ToList();
+            var q1 = db.Queryable<Order>().Take(1);
+            var q2 = db.Queryable<Order>().Take(2);
+            var test05 = db.UnionAll(q1, q2).ToList();
+            var test06 = db.Queryable<Order>().
+              Where(it => it.Price == 0 ? true : it.Name == it.Name)
+              .ToList();
+            var test07 = db.Queryable<Order>().Select(it => new
+            {
+                names = SqlFunc.Subqueryable<Order>().Where(z=>z.Id==it.Id).SelectStringJoin(z => z.Name, ",")
+            })
+            .ToList();
+            Console.WriteLine("#### Examples End ####");
             Console.WriteLine("#### Examples End ####");
         }
 
@@ -177,7 +195,8 @@ namespace OrmTest
 
             var  list4 = db.Queryable<ABMapping>()
               .Mapper(it => it.A, it => it.AId)
-              .Mapper(it => it.B, it => it.BId).ToList();
+              .Mapper(it => it.B, it => it.BId)
+              .Where(it => it.A.Id == 1).ToList();
 
             //Manual mode
             var result = db.Queryable<OrderInfo>().Take(10).Select<ViewOrder>().Mapper((itemModel, cache) =>
@@ -305,7 +324,25 @@ namespace OrmTest
             var query2 = db.Queryable<Order>().Where(it => it.Id == 1);
             var list7 = query2.Clone().Where(it => it.Name == "jack").ToList();//id=1 and name = jack
             var list8 = query2.Clone().Where(it => it.Name == "tom").ToList();//id=1 and name = tom
-
+            db.CodeFirst.InitTables<Tree>();
+            //无限级高性能导航映射
+            var treeRoot = db.Queryable<Tree>().Where(it => it.Id == 1).ToList();
+            db.ThenMapper(treeRoot, item =>
+            {
+                item.Child = db.Queryable<Tree>().SetContext(x => x.ParentId, () => item.Id, item).ToList();
+            });
+            db.ThenMapper(treeRoot.SelectMany(it => it.Child), it =>
+            {
+                it.Child = db.Queryable<Tree>().SetContext(x => x.ParentId, () => it.Id, it).ToList();
+            });
+            db.ThenMapper(treeRoot.SelectMany(it => it.Child).SelectMany(it => it.Child), it =>
+            {
+                it.Child = db.Queryable<Tree>().SetContext(x => x.ParentId, () => it.Id, it).ToList();
+            });
+            db.ThenMapper(treeRoot.SelectMany(it => it.Child).SelectMany(it => it.Child).SelectMany(it => it.Child), it =>
+            {
+                it.Child = db.Queryable<Tree>().SetContext(x => x.ParentId, () => it.Id, it).ToList();
+            });
             Console.WriteLine("#### Condition Screening End ####");
 
 

@@ -13,7 +13,8 @@ namespace OrmTest
         {
             var db = Db;
             db.QueryFilter.Add(new SqlSugar.TableFilterItem<UnitFilterClass1>(it=>it.id>0));
-
+            db.QueryFilter.Add(new SqlSugar.TableFilterItem<A>(it => it.Id > 1));
+            db.QueryFilter.Add(new SqlSugar.TableFilterItem<ABMap>(it => it.Aid <1));
             var s1=db.Queryable<Order>().ToSql();
             if (s1.Key.Contains(">"))
             {
@@ -56,6 +57,11 @@ namespace OrmTest
             var s9 = db.Queryable<UnitFilterClass1, UnitFilterClass2>((o, i) => new JoinQueryInfos(JoinType.Left, o.id == i.id))
              .Select("o.*").ToSql();
             UValidate.Check(s9.Key, "SELECT o.* FROM [UnitFilterClass1] o Left JOIN [UnitFilterClass2] i ON ( [o].[id] = [i].[id] )   WHERE ( [o].[id] > @id0 )", "UnitFilter");
+
+
+            var s91 = db.Queryable<UnitFilterClass1>().LeftJoin<UnitFilterClass2>((o, i) =>  o.id == i.id) 
+            .Select("o.*").ToSql();
+            UValidate.Check(s91.Key, "SELECT o.* FROM [UnitFilterClass1] o Left JOIN [UnitFilterClass2] i ON ( [o].[id] = [i].[id] )   WHERE ( [o].[id] > @id0 )", "UnitFilter");
 
 
             var s10= db.Queryable<UnitFilterClass1, UnitFilterClass2>((o, i) => new JoinQueryInfos(JoinType.Left, o.id == i.id))

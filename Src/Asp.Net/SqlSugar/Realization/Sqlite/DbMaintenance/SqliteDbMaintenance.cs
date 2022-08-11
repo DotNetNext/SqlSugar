@@ -84,7 +84,7 @@ namespace SqlSugar
         {
             get
             {
-                return "CREATE TABLE {0}(\r\n{1} )";
+                return "CREATE TABLE {0}(\r\n{1} $PrimaryKey )";
             }
         }
         protected override string CreateTableColumn
@@ -204,7 +204,7 @@ namespace SqlSugar
         {
             get
             {
-                throw new NotSupportedException();
+                throw new NotSupportedException(" Sqlite no support default value");
             }
         }
         protected override string IsAnyIndexSql
@@ -258,6 +258,20 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override bool TruncateTable(string tableName)
+        {
+            base.TruncateTable(tableName);//delete data
+            try
+            {
+                //clear sqlite  identity
+                return this.Context.Ado.ExecuteCommand($"UPDATE sqlite_sequence SET seq = 0 WHERE name = '{tableName}'") > 0;
+            }
+            catch 
+            {
+                //if no identity sqlite_sequence
+                return true;
+            }
+        }
         /// <summary>
         ///by current connection string
         /// </summary>
@@ -270,6 +284,10 @@ namespace SqlSugar
             if (path.IsNullOrEmpty())
             {
                 path = Regex.Match(connString, @"\/.+\/").Value;
+            }
+            if (path.IsNullOrEmpty())
+            {
+                path = Regex.Match(connString, @"[a-z,A-Z]\:\\").Value;
             }
             if (!FileHelper.IsExistDirectory(path))
             {
@@ -285,7 +303,7 @@ namespace SqlSugar
             cacheKey = GetCacheKey(cacheKey);
             if (!isCache)
             {
-                return GetColumnInfosByTableName(tableName);
+                return GetColumnsByTableName(tableName);
             }
             return this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey,
             () =>
@@ -313,7 +331,7 @@ namespace SqlSugar
                 {
                     DbColumnInfo column = new DbColumnInfo()
                     {
-                        TableName = tableName,
+                        TableName =this.SqlBuilder.GetNoTranslationColumnName(tableName+""),
                         DataType = row["DataTypeName"].ToString().Trim(),
                         IsNullable = (bool)row["AllowDBNull"],
                         IsIdentity = (bool)row["IsAutoIncrement"],
@@ -354,10 +372,21 @@ namespace SqlSugar
                 }
             }
             string sql = GetCreateTableSql(tableName, columns);
-            if (!isCreatePrimaryKey)
+            string primaryKeyInfo = null;
+
+            if (!isCreatePrimaryKey || columns.Count(it => it.IsPrimarykey) > 1)
             {
                 sql = sql.Replace("PRIMARY KEY AUTOINCREMENT", "").Replace("PRIMARY KEY", "");
             }
+
+            if (columns.Count(it => it.IsPrimarykey) > 1 && isCreatePrimaryKey)
+            {
+                primaryKeyInfo = string.Format(",\r\n Primary key({0})", string.Join(",", columns.Where(it => it.IsPrimarykey).Select(it => this.SqlBuilder.GetTranslationColumnName(it.DbColumnName))));
+                primaryKeyInfo = primaryKeyInfo.Replace("`", "\"");
+            }
+
+            sql = sql.Replace("$PrimaryKey", primaryKeyInfo);
+
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }

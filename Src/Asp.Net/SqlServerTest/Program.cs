@@ -19,6 +19,7 @@ namespace OrmTest
             Demo3_Insertable.Init();
             Demo4_Deleteable.Init();
             Demo5_SqlQueryable.Init();
+            DemoN_SplitTable.Init();
             Demo6_Queue.Init();
             Demo7_Ado.Init();
             Demo8_Saveable.Init();
@@ -26,12 +27,14 @@ namespace OrmTest
             DemoA_DbMain.Init();
             DemoB_Aop.Init();
             DemoC_GobalFilter.Init();
-            DemoD_DbFirst.Init();;
+            //DemoD_DbFirst.Init();;
             DemoE_CodeFirst.Init();
             DemoF_Utilities.Init();
             DemoG_SimpleClient.Init();
             DemoH_Tenant.Init();
             DemoJ_Report.Init();
+            DemoL_Snowflake.Init();
+            DemoM_UnitOfWork.Init();
             //Unit test
             //NewUnitTest.Init();
 

@@ -23,7 +23,7 @@ namespace OrmTest
             });
             db.Aop.OnLogExecuted = (sql, pars) => //SQL executed event
             {
-                Console.WriteLine("OnLogExecuted"+sql);
+                Console.WriteLine("OnLogExecuted" + sql);
             };
             db.Aop.OnLogExecuting = (sql, pars) => //SQL executing event (pre-execution)
             {
@@ -46,14 +46,14 @@ namespace OrmTest
                 var businessData = it.BusinessData;
                 var time = it.Time;
                 var diffType = it.DiffType;//enum insert 、update and delete  
-                Console.WriteLine(businessData);
-                Console.WriteLine(editBeforeData[0].Columns[1].Value);
-                Console.WriteLine("to");
-                Console.WriteLine(editAfterData[0].Columns[1].Value);
+                //Console.WriteLine(businessData);
+                //Console.WriteLine(editBeforeData[0].Columns[1].Value);
+                //Console.WriteLine("to");
+                //Console.WriteLine(editAfterData[0].Columns[1].Value);
                 //Write logic
             };
 
-     
+
             db.Queryable<Order>().ToList();
             db.Queryable<OrderItem>().ToList();
 
@@ -61,7 +61,7 @@ namespace OrmTest
             var data = db.Queryable<Order>().First();
             data.Name = "changeName";
             db.Updateable(data).EnableDiffLogEvent("--update Order--").ExecuteCommand();
-
+            db.Insertable(data).EnableDiffLogEvent("--inser Order--").ExecuteCommand();
             Console.WriteLine("#### Aop End ####");
         }
     }

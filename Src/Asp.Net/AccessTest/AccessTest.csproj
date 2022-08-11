@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{FA1B8C67-44C2-4937-96A2-7E01B9F5941E}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>AccessTest</RootNamespace>
+    <AssemblyName>AccessTest</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Config.cs" />
+    <Compile Include="Demo\Demo0_SqlSugarClient.cs" />
+    <Compile Include="Demo\Demo1_Queryable.cs" />
+    <Compile Include="Demo\Demo2_Updateable.cs" />
+    <Compile Include="Demo\Demo3_Insertable.cs" />
+    <Compile Include="Demo\Demo4_Deleteable.cs" />
+    <Compile Include="Demo\Demo5_SqlQueryable.cs" />
+    <Compile Include="Demo\Demo6_Queue.cs" />
+    <Compile Include="Demo\Demo7_Ado.cs" />
+    <Compile Include="Demo\Demo8_Saveable.cs" />
+    <Compile Include="Demo\Demo9_EntityMain.cs" />
+    <Compile Include="Demo\DemoA_DbMain.cs" />
+    <Compile Include="Demo\DemoB_Aop.cs" />
+    <Compile Include="Demo\Democ_GobalFilter.cs" />
+    <Compile Include="Demo\DemoD_DbFirst.cs" />
+    <Compile Include="Demo\DemoE_CodeFirst.cs" />
+    <Compile Include="Demo\DemoF_Utilities.cs" />
+    <Compile Include="Demo\DemoG_SimpleClient.cs" />
+    <Compile Include="Demo\DemoH_Tenant.cs" />
+    <Compile Include="Demo\DemoJ_Report.cs" />
+    <Compile Include="Demo\DemoL_Snowflake.cs" />
+    <Compile Include="Demo\DemoM_UnitOfWork.cs" />
+    <Compile Include="Demo\DemoN_SplitTable.cs" />
+    <Compile Include="Models\AttributeTable.cs" />
+    <Compile Include="Models\Custom.cs" />
+    <Compile Include="Models\DataDictionary.cs" />
+    <Compile Include="Models\EntityMapper.cs" />
+    <Compile Include="Models\Mapper.cs" />
+    <Compile Include="Models\Order.cs" />
+    <Compile Include="Models\OrderItem.cs" />
+    <Compile Include="Models\SubInsertTest.cs" />
+    <Compile Include="Models\TestTree.cs" />
+    <Compile Include="Models\Tree.cs" />
+    <Compile Include="Models\ViewOrder.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SqlSugar.Access\SqlSugar.Access.csproj">
+      <Project>{0a27f276-d442-4e0a-b810-32d6074f0155}</Project>
+      <Name>SqlSugar.Access</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SqlSugar\SqlSugar.csproj">
+      <Project>{489bb790-226c-4fad-8d1e-51d72a7ff8e5}</Project>
+      <Name>SqlSugar</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Test.accdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="x64\SQLite.Interop.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="x86\SQLite.Interop.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

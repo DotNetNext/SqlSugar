@@ -31,6 +31,10 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UCustom01.Init();
+            UCustom011.Init();
+            UBulkCopy.Init();
+            Bulk();
             Insert();
             CodeFirst();
             Updateable();
@@ -38,9 +42,9 @@ namespace OrmTest
             Ado();
             Queryable();
             QueryableAsync();
-            //Thread();
-            //Thread2();
-            //Thread3();
+            Thread();
+            Thread2();
+            Thread3();
         }
     }
 }

@@ -54,7 +54,15 @@ namespace OrmTest
             var result5 = db.Updateable(updateObj).WhereColumns(it => new { it.Id }).ExecuteCommand();//update single by id
             var result6 = db.Updateable(updateObjs).WhereColumns(it => new { it.Id }).ExecuteCommand();//update List<Class> by id
 
+            //Re set value
+            var result66 = db.Updateable(new List<Order> { updateObj }).ReSetValue(it => it.Id = 112).IgnoreColumns(it => new { it.CreateTime, it.Price }).ExecuteCommand();
 
+
+            //Update by track
+            db.Tracking(updateObj);
+            updateObj.Name = "a1" + Guid.NewGuid();
+            db.Updateable(updateObj).ExecuteCommand();
+            db.TempItems = null;
 
 
             /*** 2.by expression ***/
@@ -106,6 +114,18 @@ namespace OrmTest
                .Where(a => SqlFunc.StartsWith(a.Name, levelCode))
                .AddQueue();
             db.SaveQueues();
+
+            var dataTable = db.Queryable<Order>().Select("id,name,1 as price").Take(2).ToDataTable();
+            db.Fastest<Order>().BulkUpdate("Order", dataTable,new string[] {"id" },new string[] {"name" });
+            db.Updateable<DbTableInfo>()
+             .AS("[Order]")
+             .SetColumns("name", 1)
+             .Where("id=1").ExecuteCommand();
+            db.Updateable<DbTableInfo>()
+              .AS("[Order]")
+              .SetColumns("name", 1)
+                 .SetColumns("price", 1)
+              .Where("id=1").ExecuteCommand();
             Console.WriteLine("#### Updateable End ####");
         }
 

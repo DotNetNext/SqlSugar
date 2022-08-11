@@ -42,6 +42,32 @@ namespace OrmTest
             var getByWhere2 = db.Queryable<Order>().Where(it => it.Id == DateTime.Now.Year).ToList();
             var getByFuns = db.Queryable<Order>().Where(it => SqlFunc.IsNullOrEmpty(it.Name)).ToList();
             var getByFuns2 = db.Queryable<Order>().GroupBy(it => it.Name).Select(it => SqlFunc.AggregateDistinctCount(it.Price)).ToList();
+            var test1 = db.UnionAll(
+                 db.Queryable<Order>().Select(it=>new ViewOrder() { 
+                   CustomName=SqlFunc.MergeString(it.Name,"/",it.Name)
+                 }),
+                 db.Queryable<Order>().Select(it => new ViewOrder()
+                 {
+                     CustomName = SqlFunc.MergeString(it.Name, "/", it.Name)
+                 })
+                ).ToList();
+            var test2 = db.Queryable<Order>().Select<ViewOrder>().ToList();
+            var test3 = db.Queryable<Order>().Select(it=>new Order() { CreateTime=SqlFunc.GetDate() }).ToList();
+            var btime = Convert.ToDateTime("2021-2-1");
+            var etime = Convert.ToDateTime("2022-1-12");
+            var test01 = db.Queryable<Order>().Select(it => SqlFunc.DateDiff(DateType.Year, btime, etime)).ToList();
+            var test02 = db.Queryable<Order>().Select(it => SqlFunc.DateDiff(DateType.Day, btime, etime)).ToList();
+            var test03 = db.Queryable<Order>().Select(it => SqlFunc.DateDiff(DateType.Month, btime, etime)).ToList();
+            var test04 = db.Queryable<Order>().Select(it => SqlFunc.DateDiff(DateType.Second, DateTime.Now, DateTime.Now.AddMinutes(2))).ToList();
+            var test05 = db.Queryable<Order>().Select(it => SqlFunc.DateDiff(DateType.Minute, DateTime.Now, DateTime.Now.AddMinutes(21))).ToList();
+            var test06 = db.Queryable<Order>().Select(it => SqlFunc.DateDiff(DateType.Hour, DateTime.Now, DateTime.Now.AddHours(3))).ToList();
+            var test07 = db.Queryable<Order>().Select(it => it.CreateTime.DayOfWeek.ToString()).ToList();
+            var test08 = db.Queryable<Order>().Select(it => it.CreateTime.AddDays(1)).ToList();
+            var test09 = db.Queryable<Order>().Select(it => new
+            {
+                names = SqlFunc.Subqueryable<Order>().Where(z => z.Id==188||z.Id==190).SelectStringJoin(z => z.Name, ",")
+            })
+            .ToList();
             Console.WriteLine("#### Examples End ####");
         }
 
@@ -106,6 +132,16 @@ namespace OrmTest
             Console.WriteLine("");
             Console.WriteLine("#### Subquery Start ####");
             var db = GetInstance();
+
+            var list0 = db.Queryable<Order>().Where(it =>
+            SqlFunc.Subqueryable<OrderItem>()
+             .LeftJoin<OrderItem>((i, z) => i.ItemId == z.ItemId)
+             .InnerJoin<OrderItem>((i, z, y) => i.ItemId == z.ItemId)
+             .InnerJoin<OrderItem>((i, z, y, h) => i.ItemId == z.ItemId)
+             .InnerJoin<OrderItem>((i, z, y, h, n) => i.ItemId == z.ItemId)
+             .Where((i, z) => i.ItemId == z.ItemId)
+             .Any()
+            ).ToList();
 
             var list = db.Queryable<Order>().Take(10).Select(it => new
             {

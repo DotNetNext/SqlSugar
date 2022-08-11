@@ -13,6 +13,21 @@
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFrameworkProfile />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -24,6 +39,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -36,10 +53,6 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="SyntacticSugar, Version=2.4.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>OtherDll\SyntacticSugar.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -69,8 +82,12 @@
     <Compile Include="Demo\DemoG_SimpleClient.cs" />
     <Compile Include="Demo\DemoH_Tenant.cs" />
     <Compile Include="Demo\DemoJ_Report.cs" />
+    <Compile Include="Demo\DemoL_Snowflake.cs" />
+    <Compile Include="Demo\DemoM_UnitOfWork.cs" />
+    <Compile Include="Demo\DemoN_SplitTable.cs" />
     <Compile Include="Models\DataDictionary.cs" />
     <Compile Include="Models\Custom.cs" />
+    <Compile Include="Models\DiffLong.cs" />
     <Compile Include="Models\EntityMapper.cs" />
     <Compile Include="Models\Mapper.cs" />
     <Compile Include="Models\SubInsertTest.cs" />
@@ -80,7 +97,82 @@
     <Compile Include="Models\OrderItem.cs" />
     <Compile Include="Demo\Demo0_SqlSugarClient.cs" />
     <Compile Include="Models\ViewOrder.cs" />
-    <Compile Include="UnitTest\Test01.cs" />
+    <Compile Include="UnitTest\UCustom025.cs" />
+    <Compile Include="UnitTest\Models\ImsBillDtl.cs" />
+    <Compile Include="UnitTest\Models\ImsBillDtlStk.cs" />
+    <Compile Include="UnitTest\Models\ImsBillMst.cs" />
+    <Compile Include="UnitTest\Models\ImsBillStk.cs" />
+    <Compile Include="UnitTest\UnitSub.cs" />
+    <Compile Include="UnitTest\UnitTestConfigQuery.cs" />
+    <Compile Include="UnitTest\UnitUpdateNavN3.cs" />
+    <Compile Include="UnitTest\UnitOneToOne12.cs" />
+    <Compile Include="UnitTest\Models\poetry_video_comment.cs" />
+    <Compile Include="UnitTest\Models\user_name_simple.cs" />
+    <Compile Include="UnitTest\UnitInsertNav3.cs" />
+    <Compile Include="UnitTest\UnitInsertNav2.cs" />
+    <Compile Include="UnitTest\UnitInsertNav.cs" />
+    <Compile Include="UnitTest\UnitSelectN.cs" />
+    <Compile Include="UnitTest\UnitOneToOneN2.cs" />
+    <Compile Include="UnitTest\UnitManyToManyUpdate.cs" />
+    <Compile Include="UnitTest\UnitManyToMay1231.cs" />
+    <Compile Include="UnitTest\UnitOneToOneN.cs" />
+    <Compile Include="UnitTest\UCustom024.cs" />
+    <Compile Include="UnitTest\UCustomNavigate01.cs" />
+    <Compile Include="UnitTest\Models\DSPersonScheduleModel.cs" />
+    <Compile Include="UnitTest\Models\PersonScheduleParam.cs" />
+    <Compile Include="UnitTest\Models\T_BAS_AIRPORT.cs" />
+    <Compile Include="UnitTest\Models\V_PERSON_SCHEDULE_A.cs" />
+    <Compile Include="UnitTest\UCustom023.cs" />
+    <Compile Include="UnitTest\UCustom22.cs" />
+    <Compile Include="UnitTest\UCustom021.cs" />
+    <Compile Include="UnitTest\UByteArray.cs" />
+    <Compile Include="UnitTest\UIncludesBigData.cs" />
+    <Compile Include="UnitTest\UCustom020.cs" />
+    <Compile Include="UnitTest\UCustom019.cs" />
+    <Compile Include="UnitTest\UintDynamic.cs" />
+    <Compile Include="UnitTest\ULock.cs" />
+    <Compile Include="UnitTest\UNavDynamic111N.cs" />
+    <Compile Include="UnitTest\UnitManyToMany2.cs" />
+    <Compile Include="UnitTest\UnitManyToMany.cs" />
+    <Compile Include="UnitTest\UCustom018.cs" />
+    <Compile Include="UnitTest\Models\Order.cs" />
+    <Compile Include="UnitTest\Models\RoleEntity.cs" />
+    <Compile Include="UnitTest\Models\TestModel.cs" />
+    <Compile Include="UnitTest\Models\UserEntity.cs" />
+    <Compile Include="UnitTest\Models\UserRoleEntity.cs" />
+    <Compile Include="UnitTest\UCustom017.cs" />
+    <Compile Include="UnitTest\UCustom016.cs" />
+    <Compile Include="UnitTest\UCustom015.cs" />
+    <Compile Include="UnitTest\UCustom014.cs" />
+    <Compile Include="UnitTest\UCustom013.cs" />
+    <Compile Include="UnitTest\UCustom01.cs" />
+    <Compile Include="UnitTest\UCustom012.cs" />
+    <Compile Include="UnitTest\UCustom09.cs" />
+    <Compile Include="UnitTest\UCustom011.cs" />
+    <Compile Include="UnitTest\UCustom02.cs" />
+    <Compile Include="UnitTest\UCustom03.cs" />
+    <Compile Include="UnitTest\UCustom010.cs" />
+    <Compile Include="UnitTest\UCustom08.cs" />
+    <Compile Include="UnitTest\UCustom07.cs" />
+    <Compile Include="UnitTest\UCustom06.cs" />
+    <Compile Include="UnitTest\UCustom05.cs" />
+    <Compile Include="UnitTest\UCustom04.cs" />
+    <Compile Include="UnitTest\UDelete.cs" />
+    <Compile Include="UnitTest\UFastest.cs" />
+    <Compile Include="UnitTest\UConfig.cs" />
+    <Compile Include="UnitTest\UnitUpdateNav2.cs" />
+    <Compile Include="UnitTest\UnitUpdateNav.cs" />
+    <Compile Include="UnitTest\UOneManyMany5.cs" />
+    <Compile Include="UnitTest\UOneManyMany4.cs" />
+    <Compile Include="UnitTest\UOneManyMany3.cs" />
+    <Compile Include="UnitTest\UOneManyMany2.cs" />
+    <Compile Include="UnitTest\UOneManyMany.cs" />
+    <Compile Include="UnitTest\USplit.cs" />
+    <Compile Include="UnitTest\Models\TB_AdminUser.cs" />
+    <Compile Include="UnitTest\Models\TB_ClientConfig.cs" />
+    <Compile Include="UnitTest\UAopTest.cs" />
+    <Compile Include="UnitTest\USubquery.cs" />
+    <Compile Include="UnitTest\UTest01.cs" />
     <Compile Include="UnitTest\UEnum.cs" />
     <Compile Include="UnitTest\UFilter.cs" />
     <Compile Include="UnitTest\UInsert2.cs" />
@@ -119,7 +211,19 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="UnitTest\models\" />
+    <Content Include="UnitTest\Sql\UIncludesBigData.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.6">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.6 %28x86 和 x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
