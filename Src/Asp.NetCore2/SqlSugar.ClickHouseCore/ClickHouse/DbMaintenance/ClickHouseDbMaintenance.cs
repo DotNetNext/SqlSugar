@@ -12,7 +12,7 @@ namespace SqlSugar.ClickHouse
         {
             get
             {
-                return "SELECT datname FROM pg_database";
+                return "SELECT name FROM system.databases where name not in ('system','information_schema','INFORMATION_SCHEMA' )";
             }
         }
         protected override string GetColumnInfosByTableNameSql
@@ -20,33 +20,7 @@ namespace SqlSugar.ClickHouse
             get
             {
                 string schema = GetSchema();
-                string sql = @"select cast (pclass.oid as int4) as TableId,cast(ptables.tablename as varchar) as TableName,
-                                pcolumn.column_name as DbColumnName,pcolumn.udt_name as DataType,
-                                CASE WHEN pcolumn.numeric_scale >0 THEN pcolumn.numeric_precision ELSE pcolumn.character_maximum_length END   as Length,
-                                pcolumn.column_default as DefaultValue,
-                                pcolumn.numeric_scale as DecimalDigits,
-                                pcolumn.numeric_scale as Scale,
-                                col_description(pclass.oid, pcolumn.ordinal_position) as ColumnDescription,
-                                case when pkey.colname = pcolumn.column_name
-                                then true else false end as IsPrimaryKey,
-                                case when pcolumn.column_default like 'nextval%'
-                                then true else false end as IsIdentity,
-                                case when pcolumn.is_nullable = 'YES'
-                                then true else false end as IsNullable
-                                 from (select * from pg_tables where upper(tablename) = upper('{0}') and schemaname='" + schema + @"') ptables inner join pg_class pclass
-                                on ptables.tablename = pclass.relname inner join (SELECT *
-                                FROM information_schema.columns
-                                ) pcolumn on pcolumn.table_name = ptables.tablename
-                                left join (
-	                                select  pg_class.relname,pg_attribute.attname as colname from 
-	                                pg_constraint  inner join pg_class 
-	                                on pg_constraint.conrelid = pg_class.oid 
-	                                inner join pg_attribute on pg_attribute.attrelid = pg_class.oid 
-	                                and  pg_attribute.attnum = pg_constraint.conkey[1]
-	                                inner join pg_type on pg_type.oid = pg_attribute.atttypid
-	                                where pg_constraint.contype='p'
-                                ) pkey on pcolumn.table_name = pkey.relname
-                                order by ptables.tablename";
+                string sql = @"select * from information_schema.columns a where lower(table_name) =lower('{0}')";
                 return sql;
             }
         }
@@ -55,14 +29,7 @@ namespace SqlSugar.ClickHouse
         {
             get
             {
-                var schema = GetSchema();
-                return @"select cast(relname as varchar) as Name,
-                        cast(obj_description(relfilenode,'pg_class') as varchar) as Description from pg_class c 
-                         inner join 
-						 pg_namespace n on n.oid = c.relnamespace and nspname='"+ schema + @"'
-                         inner join 
-                         pg_tables z on z.tablename=c.relname
-                        where  relkind = 'r' and relname not like 'pg_%' and relname not like 'sql_%' and schemaname='" + schema + "' order by relname";
+                return @"SELECT name  FROM system.tables where   database not in('INFORMATION_SCHEMA','system','information_schema'  )";
             }
         }
         protected override string GetViewInfoListSql
@@ -117,7 +84,7 @@ namespace SqlSugar.ClickHouse
         {
             get
             {
-                return "CREATE TABLE {0}(\r\n{1} $PrimaryKey)";
+                return "CREATE TABLE {0}(\r\n{1})";
             }
         }
         protected override string CreateTableColumn
@@ -222,7 +189,7 @@ namespace SqlSugar.ClickHouse
         {
             get
             {
-                return "DEFAULT NULL";
+                return " NULL";
             }
         }
         protected override string CreateTableNotNull
@@ -344,24 +311,7 @@ namespace SqlSugar.ClickHouse
         }
         public override bool CreateTable(string tableName, List<DbColumnInfo> columns, bool isCreatePrimaryKey = true)
         {
-            if (columns.HasValue())
-            {
-                foreach (var item in columns)
-                {
-                    if (item.DbColumnName.Equals("GUID", StringComparison.CurrentCultureIgnoreCase) && item.Length == 0)
-                    {
-                        item.Length = 10;
-                    }
-                }
-            }
             string sql = GetCreateTableSql(tableName, columns);
-            string primaryKeyInfo = null;
-            if (columns.Any(it => it.IsPrimarykey) && isCreatePrimaryKey)
-            {
-                primaryKeyInfo = string.Format(", Primary key({0})", string.Join(",", columns.Where(it => it.IsPrimarykey).Select(it => this.SqlBuilder.GetTranslationColumnName(it.DbColumnName.ToLower()))));
-
-            }
-            sql = sql.Replace("$PrimaryKey", primaryKeyInfo);
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
@@ -369,6 +319,7 @@ namespace SqlSugar.ClickHouse
         {
             List<string> columnArray = new List<string>();
             Check.Exception(columns.IsNullOrEmpty(), "No columns found ");
+            var pkName = "";
             foreach (var item in columns)
             {
                 string columnName = item.DbColumnName;
@@ -377,28 +328,31 @@ namespace SqlSugar.ClickHouse
                 {
                     item.Length = 1;
                 }
-                //if (dataType == "uuid")
-                //{
-                //    item.Length = 50;
-                //    dataType = "varchar";
-                //}
-                string dataSize = item.Length > 0 ? string.Format("({0})", item.Length) : null;
+                string dataSize =item.Length > 0 ? string.Format("({0})", item.Length) : "";
                 if (item.DecimalDigits > 0&&item.Length>0 && dataType == "numeric") 
                 {
                     dataSize = $"({item.Length},{item.DecimalDigits})";
                 }
                 string nullType = item.IsNullable ? this.CreateTableNull : CreateTableNotNull;
-                string primaryKey = null;
+                string primaryKey = "";
                 string addItem = string.Format(this.CreateTableColumn, this.SqlBuilder.GetTranslationColumnName(columnName.ToLower()), dataType, dataSize, nullType, primaryKey, "");
-                if (item.IsIdentity)
-                {
-                    string length = dataType.Substring(dataType.Length - 1);
-                    string identityDataType = "serial" + length;
-                    addItem = addItem.Replace(dataType, identityDataType);
-                }
                 columnArray.Add(addItem);
+                if (pkName.IsNullOrEmpty()&&item.IsPrimarykey) 
+                {
+                    pkName = item.DbColumnName;
+                }
             }
             string tableString = string.Format(this.CreateTableSql, this.SqlBuilder.GetTranslationTableName(tableName.ToLower()), string.Join(",\r\n", columnArray));
+            if (pkName.HasValue())
+            {
+                pkName = this.SqlBuilder.GetTranslationColumnName(pkName);
+                tableString += $"ENGINE = MergeTree()  ORDER BY ( {pkName} )  PRIMARY KEY {pkName} SETTINGS index_granularity = 8192";
+            }
+            else 
+            {
+                pkName = this.SqlBuilder.GetTranslationColumnName(columns.First().DbColumnName);
+                tableString += $"ENGINE = MergeTree()  ORDER BY ( {pkName} )";
+            }
             return tableString;
         }
         public override bool IsAnyConstraint(string constraintName)

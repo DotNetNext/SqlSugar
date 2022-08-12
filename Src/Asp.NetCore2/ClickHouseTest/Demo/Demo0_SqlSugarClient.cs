@@ -68,10 +68,10 @@ namespace OrmTest
             });
 
             //If no exist create datebase 
-            db.DbMaintenance.CreateDatabase();
+           // db.DbMaintenance.CreateDatabase();
 
             //Use db query
-            var dt = db.Ado.GetDataTable("select 1");
+            var dt = db.Ado.GetDataTable("SELECT * FROM system.tables");
 
             //Create tables
             db.CodeFirst.InitTables(typeof(OrderItem),typeof(Order));

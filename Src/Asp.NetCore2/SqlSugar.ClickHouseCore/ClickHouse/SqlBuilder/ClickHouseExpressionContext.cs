@@ -7,7 +7,7 @@ namespace SqlSugar.ClickHouse
         public SqlSugarProvider Context { get; set; }
         public ClickHouseExpressionContext()
         {
-            base.DbMehtods = new PostgreSQLMethod();
+            base.DbMehtods = new ClickHouseMethod();
         }
         public override string SqlTranslationLeft
         {
@@ -131,7 +131,7 @@ namespace SqlSugar.ClickHouse
             }
         }
     }
-    public class PostgreSQLMethod : DefaultDbMethod, IDbMethods
+    public class ClickHouseMethod : DefaultDbMethod, IDbMethods
     {
         public override string TrueValue()
         {

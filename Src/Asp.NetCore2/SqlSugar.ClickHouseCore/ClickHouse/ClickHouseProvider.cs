@@ -37,10 +37,13 @@ namespace SqlSugar.ClickHouse
                 base._DbConnection = value;
             }
         }
-
+        public override void BeginTran()
+        {
+            //No Support
+        }
         public override void BeginTran(string transactionName)
         {
-            base.BeginTran();
+            //No Support
         }
         /// <summary>
         /// Only SqlServer
@@ -49,7 +52,15 @@ namespace SqlSugar.ClickHouse
         /// <param name="transactionName"></param>
         public override void BeginTran(IsolationLevel iso, string transactionName)
         {
-            base.BeginTran(iso);
+            //No Support
+        }
+        public override void CommitTran()
+        {
+            //No Support
+        }
+        public override void RollbackTran()
+        {
+            //No Support
         }
         public override IDataAdapter GetAdapter()
         {
