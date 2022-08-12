@@ -23,7 +23,7 @@ namespace SqlSugar
             var result=new JsonInsertResult();   
             var sqlInfo = this.ToSqlList();
             var sqlInfoResult = sqlInfo.First();
-            if (sqlInfoResult.JsonSqlType == JsonProviderType.InsertableIdentity)
+            if (sqlInfoResult.JsonSqlType != JsonProviderType.InsertableIdentity)
             {
                 result.InsertCount = this.context.Ado.ExecuteCommand(sqlInfoResult.Sql,sqlInfoResult.Parameters);
             }
