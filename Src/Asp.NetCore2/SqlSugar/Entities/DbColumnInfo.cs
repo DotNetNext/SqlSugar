@@ -22,7 +22,7 @@ namespace SqlSugar
         public int DecimalDigits { get; set; }
         public int Scale { get; set; }
         public bool IsArray { get;  set; }
-        internal bool IsJson { get;  set; }
+        public bool IsJson { get;  set; }
         public bool? IsUnsigned { get; set; }
         public int CreateTableFieldSort { get; set; }
         internal object SqlParameterDbType { get;  set; }
