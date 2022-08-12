@@ -410,6 +410,9 @@ namespace SqlSugar
                 case DbType.QuestDB:
                     Check.Exception(SugarCompatible.IsFramework, "QuestDB only support .net core");
                     break;
+                case DbType.ClickHouse:
+                    Check.Exception(SugarCompatible.IsFramework, "ClickHouse only support .net core");
+                    break;
                 default:
                     throw new Exception("ConnectionConfig.DbType is null");
             }

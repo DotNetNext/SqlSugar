@@ -20,6 +20,7 @@ namespace SqlSugar
         OpenGauss,
         QuestDB,
         HG,
+        ClickHouse,
         Custom =900
     }
 }
