@@ -105,7 +105,7 @@ namespace OrmTest
     
  
             var list3=db.Queryable<ApiLog>().ToList();
-            db.Insertable<Dictionary<string,object>>(new ApiLog(1) {  RequestUser="a"}).ExecuteCommand();
+            //db.Insertable<Dictionary<string,object>>(new ApiLog(1) {  RequestUser="a"}).ExecuteCommand();
         }
         /// <summary>
 
