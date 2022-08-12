@@ -100,7 +100,8 @@ namespace SqlSugar
             new Type[] { typeof(IDataRecord) }, type, true);
             ILGenerator generator = method.GetILGenerator();
             LocalBuilder result = generator.DeclareLocal(type);
-            generator.Emit(OpCodes.Newobj, type.GetConstructor(Type.EmptyTypes));
+            generator.Emit(OpCodes.Newobj, type.GetConstructor(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
+                                 null, Type.EmptyTypes, null));
             generator.Emit(OpCodes.Stloc, result);
             this.Context.InitMappingInfo(type);
             var columnInfos = this.Context.EntityMaintenance.GetEntityInfo(type).Columns;
