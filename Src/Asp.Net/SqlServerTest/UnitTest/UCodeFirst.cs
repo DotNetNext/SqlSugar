@@ -101,6 +101,61 @@ namespace OrmTest
                 {
                     z=SqlFunc.Subqueryable<Unitasdfafasx>().Select(s=>s.id)
                 }).ToList();
+            db.CodeFirst.InitTables<ApiLog>();
+    
+ 
+            var list3=db.Queryable<ApiLog>().ToList();
+            db.Insertable<Dictionary<string,object>>(new ApiLog(1) {  RequestUser="a"}).ExecuteCommand();
+        }
+        /// <summary>
+
+        /// 接口请求
+
+        /// </summary>
+
+        public class ApiLog
+
+        {
+
+            /// <summary>
+
+            /// Id
+
+            /// </summary>
+
+            public long Id { get; protected set; }
+
+            /// <summary>
+
+            /// 请求用户
+
+            /// </summary>
+
+            public string  RequestUser { get; set; }
+
+       
+             
+
+
+
+            private ApiLog()
+
+            {
+
+
+
+            }
+
+
+
+            public ApiLog(long Id)
+
+            {
+
+                this.Id = Id;
+
+            }
+
         }
 
         [SugarTable("[1.1.dsfadsaf]")]
