@@ -412,6 +412,7 @@ namespace SqlSugar
                     break;
                 case DbType.ClickHouse:
                     Check.Exception(SugarCompatible.IsFramework, "ClickHouse only support .net core");
+                    InstanceFactory.CustomDllName = SugarCompatible.IsFramework ? "SqlSugar.ClickHouse" : "SqlSugar.ClickHouseCore";
                     break;
                 default:
                     throw new Exception("ConnectionConfig.DbType is null");

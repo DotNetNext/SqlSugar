@@ -313,6 +313,10 @@ namespace SqlSugar
             {
                 return "SqlSugar.Access.Access" + name;
             }
+            else if (type == "ClickHouse")
+            {
+                return "SqlSugar.ClickHouse.ClickHouse" + name;
+            }
             else if (type == "Custom")
             {
                 return CustomNamespace + "."+CustomDbName + name;
