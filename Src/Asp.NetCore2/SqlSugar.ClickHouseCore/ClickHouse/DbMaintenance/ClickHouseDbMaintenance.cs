@@ -65,7 +65,7 @@ namespace SqlSugar.ClickHouse
         {
             get
             {
-                return "ALTER TABLE {0} ADD COLUMN {1} {2}{3} {4} {5} {6}";
+                return "ALTER TABLE {0} ADD COLUMN {1} {2} ";
             }
         }
         protected override string AlterColumnToTableSql
@@ -218,6 +218,17 @@ namespace SqlSugar.ClickHouse
         #endregion
 
         #region Methods
+        public override bool AddColumn(string tableName, DbColumnInfo columnInfo)
+        {
+            if (columnInfo.IsNullable) 
+            {
+                if (!columnInfo.DataType.ObjToString().ToLower().Contains("nullable")) 
+                {
+                    columnInfo.DataType = $"Nullable({columnInfo.DataType})";
+                }
+            }
+            return base.AddColumn(tableName, columnInfo);
+        }
         public override bool AddPrimaryKey(string tableName, string columnName)
         {
             return true;
