@@ -73,6 +73,17 @@ namespace SqlSugar.ClickHouse
             IDataParameter[] ipars = ToIDbDataParameter(parameters);
             ClickHouseCommand sqlCommand =connection.CreateCommand();
             var pars = ToIDbDataParameter(parameters);
+            foreach (var param in pars.OrderByDescending(it=>it.ParameterName.Length)) 
+            {
+                var newName = param.ParameterName.TrimStart('@');
+                object dbtype = param.DbType;
+                if (dbtype.ObjToString() == System.Data.DbType.Decimal.ToString()) 
+                {
+                    dbtype = ClickHouseDbBind.MappingTypesConst.First(it => it.Value == CSharpDataType.@decimal).Key;
+                }
+                sql = sql.Replace(param.ParameterName,"{"+ newName + ":"+ dbtype + "}");
+                param.ParameterName = newName;
+            }
             sqlCommand.CommandText = sql;
             sqlCommand.Parameters.AddRange(pars);
             return sqlCommand;
