@@ -293,21 +293,22 @@ namespace SqlSugar.ClickHouse
         public override string ToDate(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
-            return string.Format(" CAST({0} AS timestamp)", parameter.MemberName);
+            return string.Format(" toDateTime({0})", parameter.MemberName);
         }
         public override string DateAddByType(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
             var parameter3 = model.Args[2];
-            return string.Format(" ({1} +  ({2}||'{0}')::INTERVAL) ", parameter3.MemberValue, parameter.MemberName, parameter2.MemberName);
+            var type = parameter3.MemberValue;
+            return string.Format(" add{0}s(toDateTime({1}), {2}) ", type, parameter.MemberName,  parameter2.MemberName);
         }
 
         public override string DateAddDay(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
-            return string.Format(" ({0} + ({1}||'day')::INTERVAL) ", parameter.MemberName, parameter2.MemberName);
+            return string.Format(" addDays(toDateTime({0}), {1}) ", parameter.MemberName, parameter2.MemberName);
         }
 
         public override string ToInt32(MethodCallExpressionModel model)
@@ -379,6 +380,19 @@ namespace SqlSugar.ClickHouse
         public override string EqualTrue(string fieldName)
         {
             return "( " + fieldName + "=true )";
+        }
+        public override string GetDateString(string dateValue, string format)
+        {
+            if (!format.Contains("%"))
+            {
+                format = format.Replace("yyyy", "%Y");
+                format = format.Replace("MM", "%m");
+                format = format.Replace("dd", "%d");
+                format = format.Replace("HH", "%H");
+                format = format.Replace("mm", "%M");
+                format = format.Replace("ss", "%S");
+            }
+            return $"formatDateTime({dateValue},'{format}') ";
         }
     }
 }
