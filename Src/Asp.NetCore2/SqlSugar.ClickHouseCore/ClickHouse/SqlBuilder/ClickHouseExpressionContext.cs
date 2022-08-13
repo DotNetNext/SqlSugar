@@ -184,41 +184,9 @@ namespace SqlSugar.ClickHouse
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
-            var format = "dd";
-            if (parameter2.MemberValue.ObjToString() == DateType.Year.ToString())
-            {
-                format = "yyyy";
-            }
-            if (parameter2.MemberValue.ObjToString() == DateType.Month.ToString())
-            {
-                format = "MM";
-            }
-            if (parameter2.MemberValue.ObjToString() == DateType.Day.ToString())
-            {
-                format = "dd";
-            }
-            if (parameter2.MemberValue.ObjToString() == DateType.Hour.ToString())
-            {
-                format = "hh";
-            }
-            if (parameter2.MemberValue.ObjToString() == DateType.Minute.ToString())
-            {
-                format = "mi";
-            }
-            if (parameter2.MemberValue.ObjToString() == DateType.Second.ToString())
-            {
-                format = "ss";
-            }
-            if (parameter2.MemberValue.ObjToString() == DateType.Millisecond.ToString())
-            {
-                format = "ms";
-            }
-            if (parameter2.MemberValue.ObjToString() == DateType.Weekday.ToString())
-            {
-                return $"  extract(DOW FROM cast({parameter.MemberName} as TIMESTAMP)) ";
-            }
+             
  
-            return string.Format(" cast( to_char({1},'{0}')as integer ) ", format, parameter.MemberName);
+            return string.Format(" to{0}({1}) ", parameter2.MemberValue.ObjToString(), parameter.MemberName);
         }
 
         public override string Contains(MethodCallExpressionModel model)

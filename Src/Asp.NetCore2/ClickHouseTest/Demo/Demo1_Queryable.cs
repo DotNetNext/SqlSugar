@@ -39,6 +39,7 @@ namespace OrmTest
             var getAll7 = db.Queryable<Order>().Select(x => x.Name.ToString()).ToList();
             var getAll8 = db.Queryable<Order>().Select(x => x.CreateTime.ToString("yyyy-MM-dd")).ToList();
             var getAll9 = db.Queryable<Order>().Select(x => x.CreateTime.ToString("yyyy-MM-dd HH:mm:ss")).ToList();
+            var getAl20 = db.Queryable<Order>().Select(x => x.CreateTime.Year).ToList();
             var getOrderBy = db.Queryable<Order>().OrderBy(it => it.Name,OrderByType.Desc).ToList();
             var getOrderBy2 = db.Queryable<Order>().OrderBy(it => it.Id).OrderBy(it => it.Name, OrderByType.Desc).ToList();
             var getOrderBy3 = db.Queryable<Order>().OrderBy(it =>new { it.Name,it.Id}).ToList();
