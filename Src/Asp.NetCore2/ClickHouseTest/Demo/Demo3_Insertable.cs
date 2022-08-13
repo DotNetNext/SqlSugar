@@ -37,18 +37,18 @@ namespace OrmTest
             };
 
             //Ignore  CreateTime
-            db.Insertable(insertObj).IgnoreColumns(it => new { it.CreateTime }).ExecuteReturnIdentity();//get identity
-            db.Insertable(insertObj).IgnoreColumns("CreateTime").ExecuteReturnIdentity();
+            db.Insertable(insertObj).IgnoreColumns(it => new { it.CreateTime }).ExecuteReturnSnowflakeId();//get identity
+            db.Insertable(insertObj).IgnoreColumns("CreateTime").ExecuteReturnSnowflakeId();
 
             //Only  insert  Name and Price
-            db.Insertable(insertObj).InsertColumns(it => new { it.Name, it.Price }).ExecuteReturnIdentity();
-            db.Insertable(insertObj).InsertColumns("Name", "Price").ExecuteReturnIdentity();
+            db.Insertable(insertObj).InsertColumns(it => new { it.Name, it.Price }).ExecuteReturnSnowflakeId();
+            db.Insertable(insertObj).InsertColumns("Name", "Price").ExecuteReturnSnowflakeId();
 
             //ignore null columns
-            db.Insertable(updateObjs).ExecuteCommand();//get change row count
+            db.Insertable(updateObjs).ExecuteReturnSnowflakeId();//get change row count
 
             //Use Lock
-            db.Insertable(insertObj).With(SqlWith.UpdLock).ExecuteCommand();
+            db.Insertable(insertObj).With(SqlWith.UpdLock).ExecuteReturnSnowflakeId();
 
             Console.WriteLine("#### Insertable End ####");
         }

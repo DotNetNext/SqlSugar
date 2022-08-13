@@ -27,7 +27,7 @@ namespace SqlSugar.ClickHouse
         int i = 0;
         public object FormatValue(object value, string name)
         {
-            var n = "N";
+            var n = "";
             if (this.Context.CurrentConnectionConfig.MoreSettings != null && this.Context.CurrentConnectionConfig.MoreSettings.DisableNvarchar)
             {
                 n = "";
