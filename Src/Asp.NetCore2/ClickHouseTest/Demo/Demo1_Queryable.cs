@@ -31,6 +31,14 @@ namespace OrmTest
             var db = GetInstance();
             var dbTime = db.GetDate();
             var getAll = db.Queryable<Order>().ToList();
+            var getAll2 = db.Queryable<Order>().Select(x => x.CreateTime.Date).ToList();
+            var getAll3 = db.Queryable<Order>().Select(x =>Convert.ToDateTime(x.CreateTime)).ToList();
+            var getAll4 = db.Queryable<Order>().Select(x=>x.CreateTime.AddDays(1)).ToList();
+            var getAll5 = db.Queryable<Order>().Select(x => x.CreateTime.AddMonths(1)).ToList();
+            var getAll6 = db.Queryable<Order>().Select(x => SqlFunc.DateAdd(x.CreateTime, 1)).ToList();
+            var getAll7 = db.Queryable<Order>().Select(x => x.Name.ToString()).ToList();
+            var getAll8 = db.Queryable<Order>().Select(x => x.CreateTime.ToString("yyyy-MM-dd")).ToList();
+            var getAll9 = db.Queryable<Order>().Select(x => x.CreateTime.ToString("yyyy-MM-dd HH:mm:ss")).ToList();
             var getOrderBy = db.Queryable<Order>().OrderBy(it => it.Name,OrderByType.Desc).ToList();
             var getOrderBy2 = db.Queryable<Order>().OrderBy(it => it.Id).OrderBy(it => it.Name, OrderByType.Desc).ToList();
             var getOrderBy3 = db.Queryable<Order>().OrderBy(it =>new { it.Name,it.Id}).ToList();
