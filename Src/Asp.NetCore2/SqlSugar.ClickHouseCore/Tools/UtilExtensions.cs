@@ -11,7 +11,11 @@ namespace SqlSugar.ClickHouse
     {
         public static string ToLower(this string value, bool isLower) 
         {
-            return value.ObjToString().ToLower();
+            if (isLower) 
+            {
+                return value.ObjToString().ToLower();
+            }
+            return value.ObjToString();
         }
         public static int ObjToInt(this object thisValue)
         {

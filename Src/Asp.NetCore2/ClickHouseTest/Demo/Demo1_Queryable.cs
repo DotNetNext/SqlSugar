@@ -58,7 +58,7 @@ namespace OrmTest
 
             var json = db.Queryable<Order>().ToJson();
 
-            List<int> listInt = db.Queryable<Order>().Select(it => it.Id).ToList();
+            List<long> listInt = db.Queryable<Order>().Select(it => it.Id).ToList();
 
             var dynamic = db.Queryable<Order>().Select<dynamic>().ToList();
 

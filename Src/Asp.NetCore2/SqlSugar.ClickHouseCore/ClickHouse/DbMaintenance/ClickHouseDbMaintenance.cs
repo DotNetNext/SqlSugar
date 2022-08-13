@@ -60,7 +60,7 @@ namespace SqlSugar.ClickHouse
         {
             get
             {
-                return "ALTER TABLE {0} ADD PRIMARY KEY({2}) /*{1}*/";
+                return "";
             }
         }
         protected override string AddColumnToTableSql
@@ -220,6 +220,10 @@ namespace SqlSugar.ClickHouse
         #endregion
 
         #region Methods
+        public override bool AddPrimaryKey(string tableName, string columnName)
+        {
+            return true;
+        }
         public override bool AddDefaultValue(string tableName, string columnName, string defaultValue)
         {
             return base.AddDefaultValue(this.SqlBuilder.GetTranslationTableName(tableName), this.SqlBuilder.GetTranslationTableName(columnName), defaultValue);
@@ -324,6 +328,7 @@ namespace SqlSugar.ClickHouse
             List<string> columnArray = new List<string>();
             Check.Exception(columns.IsNullOrEmpty(), "No columns found ");
             var pkName = "";
+            var isLower = ((ClickHouseBuilder)this.SqlBuilder).isAutoToLower;
             foreach (var item in columns)
             {
                 string columnName = item.DbColumnName;
@@ -339,14 +344,14 @@ namespace SqlSugar.ClickHouse
                 }
                 string nullType = item.IsNullable ? this.CreateTableNull : CreateTableNotNull;
                 string primaryKey = "";
-                string addItem = string.Format(this.CreateTableColumn, this.SqlBuilder.GetTranslationColumnName(columnName.ToLower()), dataType, dataSize, nullType, primaryKey, "");
+                string addItem = string.Format(this.CreateTableColumn, this.SqlBuilder.GetTranslationColumnName(columnName.ToLower(isLower)), dataType, dataSize, nullType, primaryKey, "");
                 columnArray.Add(addItem);
                 if (pkName.IsNullOrEmpty()&&item.IsPrimarykey) 
                 {
                     pkName = item.DbColumnName;
                 }
             }
-            string tableString = string.Format(this.CreateTableSql, this.SqlBuilder.GetTranslationTableName(tableName.ToLower()), string.Join(",\r\n", columnArray));
+            string tableString = string.Format(this.CreateTableSql, this.SqlBuilder.GetTranslationTableName(tableName.ToLower(isLower)), string.Join(",\r\n", columnArray));
             if (pkName.HasValue())
             {
                 pkName = this.SqlBuilder.GetTranslationColumnName(pkName);

@@ -86,6 +86,7 @@ namespace SqlSugar.ClickHouse
                     new KeyValuePair<string, CSharpDataType>("Datetime64",CSharpDataType.DateTime),
                     new KeyValuePair<string, CSharpDataType>("Float64",CSharpDataType.@double),
                     new KeyValuePair<string, CSharpDataType>("Float32",CSharpDataType.@float),
+                    new KeyValuePair<string, CSharpDataType>("nullable",CSharpDataType.@object),
                 };
         public override List<string> StringThrow
         {

@@ -4,7 +4,7 @@ namespace SqlSugar.ClickHouse
 {
     public class ClickHouseExpressionContext : ExpressionContext, ILambdaExpressions
     {
-        public SqlSugarProvider Context { get; set; }
+        public SqlSugarProvider Context { get; set; } = new SqlSugarProvider(new ConnectionConfig() { });
         public ClickHouseExpressionContext()
         {
             base.DbMehtods = new ClickHouseMethod();
@@ -31,7 +31,7 @@ namespace SqlSugar.ClickHouse
         {
             get
             {
-                return base.PgSqlIsAutoToLower;
+                return false;
             }
         }
         public override string GetTranslationTableName(string entityName, bool isMapping = true)

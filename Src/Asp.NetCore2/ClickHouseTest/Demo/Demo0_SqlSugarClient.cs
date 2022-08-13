@@ -107,7 +107,7 @@ namespace OrmTest
             var data6 = orderDb.GetPageList(it => it.Name == "xx", p, it => it.Name, OrderByType.Asc);
             Console.Write(p.TotalCount);
             List<IConditionalModel> conModels = new List<IConditionalModel>();
-            conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Equal, FieldValue = "1", FieldValueConvertFunc=it=>Convert.ToInt32(it) });//id=1
+            conModels.Add(new ConditionalModel() { FieldName = "Id", ConditionalType = ConditionalType.Equal, FieldValue = "1", FieldValueConvertFunc=it=>Convert.ToInt32(it) });//id=1
             var data7 = orderDb.GetPageList(conModels, p, it => it.Name, OrderByType.Asc);
             orderDb.AsQueryable().Where(x => x.Id == 1).ToList();
 
