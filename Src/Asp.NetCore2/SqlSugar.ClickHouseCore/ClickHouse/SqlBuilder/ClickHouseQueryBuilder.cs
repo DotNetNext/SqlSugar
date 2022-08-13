@@ -37,7 +37,7 @@ namespace SqlSugar.ClickHouse
         {
             base.AppendFilter();
             string oldOrderValue = this.OrderByValue;
-            string result = null;
+            string result = "";
             sql = new StringBuilder();
             sql.AppendFormat(SqlTemplate, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, (Skip != null || Take != null) ? null : GetOrderByString);
             if (IsCount) { return sql.ToString(); }

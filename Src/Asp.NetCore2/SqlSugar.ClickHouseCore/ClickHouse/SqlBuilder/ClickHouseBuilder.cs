@@ -24,14 +24,14 @@ namespace SqlSugar.ClickHouse
         {
             get
             {
-                return "current_date";
+                return "now()";
             }
         }
         public override string FullSqlDateNow
         {
             get
             {
-                return "select current_date";
+                return "select now()";
             }
         }
 

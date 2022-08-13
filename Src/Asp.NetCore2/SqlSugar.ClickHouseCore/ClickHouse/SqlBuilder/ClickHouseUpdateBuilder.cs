@@ -7,6 +7,7 @@ namespace SqlSugar.ClickHouse
 {
     public class ClickHouseUpdateBuilder : UpdateBuilder
     {
+        public override string SqlTemplate => "ALTER TABLE {0} UPDATE {1} {2}";
         public override string SqlTemplateBatch
         {
             get
