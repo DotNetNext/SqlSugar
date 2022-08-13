@@ -164,9 +164,9 @@ namespace OrmTest
             Console.WriteLine("#### No Entity Start ####");
             var db = GetInstance();
 
-            var list = db.Queryable<dynamic>().AS("order").Where("id=id", new { id = 1 }).ToList();
+            var list = db.Queryable<dynamic>().AS("order_1").Where("id=id", new { id = 1 }).ToList();
 
-            var list2 = db.Queryable<dynamic>("o").AS("order").AddJoinInfo("OrderDetail", "i", "o.id=i.OrderId").Where("id=id", new { id = 1 }).Select("o.*").ToList();
+            var list2 = db.Queryable<dynamic>("o").AS("order_1").AddJoinInfo("OrderDetail", "i", "o.id=i.OrderId").Where("id=id", new { id = 1 }).Select("o.*").ToList();
             Console.WriteLine("#### No Entity End ####");
         }
 
