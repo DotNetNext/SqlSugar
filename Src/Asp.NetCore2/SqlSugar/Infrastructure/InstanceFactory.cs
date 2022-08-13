@@ -15,7 +15,7 @@ namespace SqlSugar
         public static string CustomDbName = "";
         public static string CustomNamespace = "";
         public static bool NoCache = false;
-
+        public static bool IsWebFrom = false;
         public static void RemoveCache()
         {
             typeCache = new Dictionary<string, Type>();
@@ -550,6 +550,11 @@ namespace SqlSugar
                     }
                     else
                     {
+                        if (IsWebFrom) 
+                        {
+                            string newpath = (System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().GetName().CodeBase) + "\\"+CustomDllName + ".dll").Replace("file:\\", "");
+                            return Assembly.LoadFrom(newpath);
+                        }
                         return Assembly.LoadFrom(CustomDllName + ".dll");
                     }
                 }
