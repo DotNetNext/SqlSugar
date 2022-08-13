@@ -6,7 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SqlSugar.ClickHouseCore\SqlSugar.ClickHouseCore.csproj" />
+    <PackageReference Include="SqlSugar.ClickHouseCore" Version="5.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\SqlSugar\SqlSugar.csproj" />
   </ItemGroup>
 
