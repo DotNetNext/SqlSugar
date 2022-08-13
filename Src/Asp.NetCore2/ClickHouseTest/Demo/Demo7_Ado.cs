@@ -30,13 +30,13 @@ namespace OrmTest
                 }
             });
             //sql
-            var dt = db.Ado.GetDataTable("select * from \"Order\" where  @Id>0 or Name=@name", new List<SugarParameter>(){
+            var dt = db.Ado.GetDataTable("select * from \"Order\" where  @id>0 or Name=@name", new List<SugarParameter>(){
               new SugarParameter("@id",1),
               new SugarParameter("@name","2")
             });
 
             //sql  
-            var dt2 = db.Ado.GetDataTable("select * from \"Order\" where @Id>0  or Name=@name", new { id = 1, name = "2" });
+            var dt2 = db.Ado.GetDataTable("select * from \"Order\" where @id>0  or Name=@name", new { id = 1, name = "2" });
 
             //Stored Procedure
             //var dt3 = db.Ado.UseStoredProcedure().GetDataTable("sp_school", new { name = "张三", age = 0 }); 
