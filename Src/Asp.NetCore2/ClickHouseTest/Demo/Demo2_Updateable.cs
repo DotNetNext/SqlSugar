@@ -72,14 +72,14 @@ namespace OrmTest
 
             /*** 3.by Dictionary ***/
             var dt = new Dictionary<string, object>();
-            dt.Add("id", 1);
-            dt.Add("name", "abc");
-            dt.Add("createTime", DateTime.Now);
+            dt.Add("Id", 1);
+            dt.Add("Name", "abc");
+            dt.Add("CreateTime", DateTime.Now);
             var dtList = new List<Dictionary<string, object>>();
             dtList.Add(dt);
 
-            var t66 = db.Updateable(dt).AS("order").WhereColumns("id").ExecuteCommand();
-            var t666 = db.Updateable(dtList).AS("order").WhereColumns("id").ExecuteCommand();
+            var t66 = db.Updateable(dt).AS("Order").WhereColumns("Id").ExecuteCommand();
+            var t666 = db.Updateable(dtList).AS("Order").WhereColumns("Id").ExecuteCommand();
 
 
 

@@ -107,13 +107,13 @@ namespace OrmTest
             Console.WriteLine("#### Subquery Start ####");
             var db = GetInstance();
 
-            var list = db.Queryable<Order>().Take(10).Select(it => new
-            {
-                customName=SqlFunc.Subqueryable<Custom>().Where("it.CustomId=id").Select(s=>s.Name),
-                customName2 = SqlFunc.Subqueryable<Custom>().Where("it.CustomId = id").Where(s => true).Select(s => s.Name)
-            }).ToList();
+            //var list = db.Queryable<Order>().Take(10).Select(it => new
+            //{
+            //    customName=SqlFunc.Subqueryable<Custom>().Where("it.CustomId=Id").Select(s=>s.Name),
+            //    customName2 = SqlFunc.Subqueryable<Custom>().Where("it.CustomId = Id").Where(s => true).Select(s => s.Name)
+            //}).ToList();
 
-            var list2 = db.Queryable<Order>().Where(it => SqlFunc.Subqueryable<OrderItem>().Where(i => i.OrderId == it.Id).Any()).ToList();
+            //var list2 = db.Queryable<Order>().Where(it => SqlFunc.Subqueryable<OrderItem>().Where(i => i.OrderId == it.Id).Any()).ToList();
 
             Console.WriteLine("#### Subquery End ####");
         }
@@ -166,10 +166,10 @@ namespace OrmTest
             db.Insertable(new B() { Name = "B" }).ExecuteCommand();
             db.Insertable(new ABMapping() { AId = 1, BId = 1 }).ExecuteCommand();
 
-            var  list4 = db.Queryable<ABMapping>()
-              .Mapper(it => it.A, it => it.AId)
-              .Mapper(it => it.B, it => it.BId)
-              .Where(it=>it.A.Id==1).ToList();
+            //var  list4 = db.Queryable<ABMapping>()
+            //  .Mapper(it => it.A, it => it.AId)
+            //  .Mapper(it => it.B, it => it.BId)
+            //  .Where(it=>it.A.Id==1).ToList();
 
             //Manual mode
             var result = db.Queryable<OrderInfo>().Take(10).Select<ViewOrder>().Mapper((itemModel, cache) =>
@@ -190,9 +190,9 @@ namespace OrmTest
             Console.WriteLine("#### No Entity Start ####");
             var db = GetInstance();
 
-            var list = db.Queryable<dynamic>().AS("order").Where("id=id", new { id = 1 }).ToList();
+            var list = db.Queryable<dynamic>().AS("Order").Where("Id=Id", new { id = 1 }).ToList();
 
-            var list2 = db.Queryable<dynamic>("o").AS("order").AddJoinInfo("OrderDetail", "i", "o.id=i.OrderId").Where("id=id", new { id = 1 }).Select("o.*").ToList();
+            var list2 = db.Queryable<dynamic>("o").AS("Order").AddJoinInfo("OrderDetail", "i", "o.Id=i.OrderId").Where("Id=Id", new { id = 1 }).Select("o.*").ToList();
             Console.WriteLine("#### No Entity End ####");
         }
 
@@ -251,9 +251,9 @@ namespace OrmTest
             /*** By sql***/
 
             //id=@id
-            var list4 = db.Queryable<Order>().Where("id=@id", new { id = 1 }).ToList();
+            var list4 = db.Queryable<Order>().Where("Id=@id", new { id = 1 }).ToList();
             //id=@id or name like '%'+@name+'%'
-            var list5 = db.Queryable<Order>().Where("id=@id or name like @name ", new { id = 1, name = "%jack%" }).ToList();
+            var list5 = db.Queryable<Order>().Where("Id=@id or Name like @name  ", new { id = 1, name = "%jack%" }).ToList();
 
 
 
@@ -261,12 +261,12 @@ namespace OrmTest
 
             //id=1
             var conModels = new List<IConditionalModel>();
-            conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Equal, FieldValue = "1" , FieldValueConvertFunc=it=>Convert.ToInt32(it) });//id=1
+            conModels.Add(new ConditionalModel() { FieldName = "Id", ConditionalType = ConditionalType.Equal, FieldValue = "1" , FieldValueConvertFunc=it=>Convert.ToInt32(it) });//id=1
             var student = db.Queryable<Order>().Where(conModels).ToList();
 
             //Complex use case
             List<IConditionalModel> Order = new List<IConditionalModel>();
-            conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Equal, FieldValue = "1", FieldValueConvertFunc = it => Convert.ToInt32(it) });//id=1
+            conModels.Add(new ConditionalModel() { FieldName = "Id", ConditionalType = ConditionalType.Equal, FieldValue = "1", FieldValueConvertFunc = it => Convert.ToInt32(it) });//id=1
             //conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Like, FieldValue = "1", FieldValueConvertFunc = it => Convert.ToInt32(it) });// id like '%1%'
             //conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.IsNullOrEmpty });
             //conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.In, FieldValue = "1,2,3" });
@@ -279,8 +279,8 @@ namespace OrmTest
                 ConditionalList = new List<KeyValuePair<WhereType, SqlSugar.ConditionalModel>>()//  (id=1 or id=2 and id=1)
             {
                 //new  KeyValuePair<WhereType, ConditionalModel>( WhereType.And ,new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Equal, FieldValue = "1" }),
-                new  KeyValuePair<WhereType, ConditionalModel> (WhereType.Or,new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Equal, FieldValue = "2" , FieldValueConvertFunc = it => Convert.ToInt32(it) }),
-                new  KeyValuePair<WhereType, ConditionalModel> ( WhereType.And,new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Equal, FieldValue = "2" ,FieldValueConvertFunc = it => Convert.ToInt32(it)})
+                new  KeyValuePair<WhereType, ConditionalModel> (WhereType.Or,new ConditionalModel() { FieldName = "Id", ConditionalType = ConditionalType.Equal, FieldValue = "2" , FieldValueConvertFunc = it => Convert.ToInt32(it) }),
+                new  KeyValuePair<WhereType, ConditionalModel> ( WhereType.And,new ConditionalModel() { FieldName = "Id", ConditionalType = ConditionalType.Equal, FieldValue = "2" ,FieldValueConvertFunc = it => Convert.ToInt32(it)})
             }
             });
             var list6 = db.Queryable<Order>().Where(conModels).ToList();

@@ -6,6 +6,7 @@ using System.Data;
 using System.Data.Common;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
  
 
@@ -35,6 +36,49 @@ namespace SqlSugar.ClickHouse
             set
             {
                 base._DbConnection = value;
+            }
+        }
+        public  string SplitCommandTag => UtilConstants.ReplaceCommaKey;
+        public override int ExecuteCommand(string sql, params SugarParameter[] parameters)
+        {
+            if (sql == null) throw new Exception("sql is null");
+            if (sql.IndexOf(this.SplitCommandTag)>0)
+            {
+                var sqlParts=Regex.Split(sql, this.SplitCommandTag).Where(it => !string.IsNullOrEmpty(it)).ToList();
+                var result = 0;
+                foreach (var item in sqlParts)
+                {
+                    if (item.TrimStart('\r').TrimStart('\n') != "")
+                    {
+                        result += base.ExecuteCommand(item, parameters);
+                    }
+                }
+                return result;
+            }
+            else 
+            {
+                return base.ExecuteCommand(sql, parameters);
+            }
+        }
+        public override async Task<int> ExecuteCommandAsync(string sql, params SugarParameter[] parameters)
+        {
+            if (sql == null) throw new Exception("sql is null");
+            if (sql.IndexOf(this.SplitCommandTag) > 0)
+            {
+                var sqlParts = Regex.Split(sql, this.SplitCommandTag).Where(it => !string.IsNullOrEmpty(it)).ToList();
+                var result = 0;
+                foreach (var item in sqlParts)
+                {
+                    if (item.TrimStart('\r').TrimStart('\n') != "")
+                    {
+                        result +=await base.ExecuteCommandAsync(item, parameters);
+                    }
+                }
+                return result;
+            }
+            else
+            {
+                return await base.ExecuteCommandAsync(sql, parameters);
             }
         }
         public override void BeginTran()
