@@ -125,7 +125,14 @@ namespace SqlSugar.ClickHouse
                 {
                     dbtype = ClickHouseDbBind.MappingTypesConst.First(it => it.Value == CSharpDataType.@decimal).Key;
                 }
-                sql = sql.Replace(param.ParameterName,"{"+ newName + ":"+ dbtype + "}");
+                if (dbtype.ObjToString() == System.Data.DbType.Boolean.ToString())
+                {
+                    sql = sql.Replace(param.ParameterName, param.Value.ObjToBool()?"1":"0");
+                }
+                else
+                {
+                    sql = sql.Replace(param.ParameterName, "{" + newName + ":" + dbtype + "}");
+                }
                 param.ParameterName = newName;
             }
             sqlCommand.CommandText = sql;
