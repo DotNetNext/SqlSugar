@@ -138,7 +138,7 @@ namespace SqlSugar.ClickHouse
                 return "ALTER TABLE {0} RENAME {1} TO {2}";
             }
         }
-        protected override string AddColumnRemarkSql => "comment on column {1}.{0} is '{2}'";
+        protected override string AddColumnRemarkSql => "ALTER TABLE {1}  COMMENT COLUMN {0} '{2}'";
 
         protected override string DeleteColumnRemarkSql => "comment on column {1}.{0} is ''";
 
