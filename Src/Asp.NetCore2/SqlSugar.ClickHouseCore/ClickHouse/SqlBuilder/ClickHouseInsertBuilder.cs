@@ -12,10 +12,7 @@ namespace SqlSugar.ClickHouse
             {
                 if (IsReturnIdentity)
                 {
-                    return @"INSERT INTO {0} 
-           ({1})
-     VALUES
-           ({2}) returning $PrimaryKey";
+                    return @"INSERT INTO {0}  ({1})  VALUES ({2}) ; SELECT 1 ";
                 }
                 else
                 {
@@ -27,10 +24,92 @@ namespace SqlSugar.ClickHouse
                 }
             }
         }
-        public override string SqlTemplateBatch => "INSERT INTO {0} ({1})";
-        public override string SqlTemplateBatchUnion => " VALUES ";
+        int i = 0;
+        public object FormatValue(object value, string name)
+        {
+            var n = "N";
+            if (this.Context.CurrentConnectionConfig.MoreSettings != null && this.Context.CurrentConnectionConfig.MoreSettings.DisableNvarchar)
+            {
+                n = "";
+            }
+            if (value == null)
+            {
+                return "NULL";
+            }
+            else
+            {
+                var type = UtilMethods.GetUnderType(value.GetType());
+                if (type == UtilConstants.DateType)
+                {
+                    return GetDateTimeString(value);
+                }
+                else if (value is DateTimeOffset)
+                {
+                    return GetDateTimeOffsetString(value);
+                }
+                else if (type == UtilConstants.ByteArrayType)
+                {
+                    string bytesString = "0x" + BitConverter.ToString((byte[])value).Replace("-", "");
+                    return bytesString;
+                }
+                else if (type.IsEnum())
+                {
+                    if (this.Context.CurrentConnectionConfig.MoreSettings?.TableEnumIsString == true)
+                    {
+                        return value.ToSqlValue(); ;
+                    }
+                    else
+                    {
+                        return Convert.ToInt64(value);
+                    }
+                }
+                else if (type == UtilConstants.BoolType)
+                {
+                    return value.ObjToBool() ? "1" : "0";
+                }
+                else if (type == UtilConstants.StringType || type == UtilConstants.ObjType)
+                {
+                    ++i;
+                    var parameterName = this.Builder.SqlParameterKeyWord + name + i;
+                    this.Parameters.Add(new SugarParameter(parameterName, value));
+                    return parameterName;
+                }
+                else
+                {
+                    return n + "'" + GetString(value) + "'";
+                }
+            }
+        }
 
-        public override string SqlTemplateBatchSelect => " {0} ";
+        private object GetDateTimeOffsetString(object value)
+        {
+            var date = UtilMethods.ConvertFromDateTimeOffset((DateTimeOffset)value);
+            if (date < UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig))
+            {
+                date = UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig);
+            }
+            return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
+        }
+
+        private object GetDateTimeString(object value)
+        {
+            var date = value.ObjToDate();
+            if (date < UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig))
+            {
+                date = UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig);
+            }
+            return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
+        }
+
+        private string GetString(object value)
+        {
+            var result = value.ToString();
+            if (result.HasValue() && result.Contains("\\"))
+            {
+                result = result.Replace("\\", "\\\\");
+            }
+            return result;
+        }
 
         public override string ToSqlString()
         {
@@ -50,44 +129,29 @@ namespace SqlSugar.ClickHouse
             else
             {
                 StringBuilder batchInsetrSql = new StringBuilder();
-                int pageSize = 200;
-                int pageIndex = 1;
-                int totalRecord = groupList.Count;
-                int pageCount = (totalRecord + pageSize - 1) / pageSize;
-                while (pageCount >= pageIndex)
+                batchInsetrSql.Append("INSERT INTO " + GetTableNameString + " ");
+                batchInsetrSql.Append("(");
+                batchInsetrSql.Append(columnsString);
+                batchInsetrSql.Append(") VALUES");
+                string insertColumns = "";
+                foreach (var item in groupList)
                 {
-                    batchInsetrSql.AppendFormat(SqlTemplateBatch, GetTableNameString, columnsString);
-                    int i = 0;
-                    foreach (var columns in groupList.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList())
+                    batchInsetrSql.Append("(");
+                    insertColumns = string.Join(",", item.Select(it => FormatValue(it.Value, it.PropertyName)));
+                    batchInsetrSql.Append(insertColumns);
+                    if (groupList.Last() == item)
                     {
-                        var isFirst = i == 0;
-                        if (isFirst)
-                        {
-                            batchInsetrSql.Append(SqlTemplateBatchUnion);
-                        }
-                        batchInsetrSql.Append("\r\n ( " + string.Join(",", columns.Select(it =>
-                        {
-                            object value = null;
-                            if (it.Value is DateTime)
-                            {
-                                value = ((DateTime)it.Value).ToString("O");
-                            }
-                            else
-                            {
-                                value = it.Value;
-                            }
-                            if (value == null||value==DBNull.Value)
-                            {
-                                return string.Format(SqlTemplateBatchSelect, "NULL");
-                            }
-                            return string.Format(SqlTemplateBatchSelect, "'" + value.ObjToString().ToSqlFilter() + "'");
-                        })) + "),");
-                        ++i;
+                        batchInsetrSql.Append(") ");
                     }
-                    pageIndex++;
-                    batchInsetrSql.Remove(batchInsetrSql.Length - 1,1).Append("\r\n;\r\n");
+                    else
+                    {
+                        batchInsetrSql.Append("),  ");
+                    }
                 }
-                return batchInsetrSql.ToString();
+
+               // batchInsetrSql.AppendLine(";select @@IDENTITY");
+                var result = batchInsetrSql.ToString();
+                return result;
             }
         }
     }

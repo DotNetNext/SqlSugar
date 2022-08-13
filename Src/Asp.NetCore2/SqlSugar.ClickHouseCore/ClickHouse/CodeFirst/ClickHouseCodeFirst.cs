@@ -7,6 +7,11 @@ namespace SqlSugar.ClickHouse
 {
     public class ClickHouseCodeFirst : CodeFirstProvider
     {
+        protected override int DefultLength
+        {
+            get { return 0; }
+            set { value = 0; }
+        }
         protected override void ExistLogicEnd(List<EntityColumnInfo> dbColumns)
         {
             foreach (EntityColumnInfo column in dbColumns) 
@@ -73,16 +78,17 @@ namespace SqlSugar.ClickHouse
                 {
                     item.Length = 0;
                 }
+
             }
         }
 
         protected override void ChangeKey(EntityInfo entityInfo, string tableName, EntityColumnInfo item)
         {
-            this.Context.DbMaintenance.UpdateColumn(tableName, EntityColumnToDbColumn(entityInfo, tableName, item));
-            if (!item.IsPrimarykey)
-                this.Context.DbMaintenance.DropConstraint(tableName,null);
-            if (item.IsPrimarykey)
-                this.Context.DbMaintenance.AddPrimaryKey(tableName, item.DbColumnName);
+            //this.Context.DbMaintenance.UpdateColumn(tableName, EntityColumnToDbColumn(entityInfo, tableName, item));
+            //if (!item.IsPrimarykey)
+            //    this.Context.DbMaintenance.DropConstraint(tableName,null);
+            //if (item.IsPrimarykey)
+            //    this.Context.DbMaintenance.AddPrimaryKey(tableName, item.DbColumnName);
         }
 
     }

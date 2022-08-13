@@ -20,7 +20,11 @@ namespace SqlSugar.ClickHouse
             get
             {
                 string schema = GetSchema();
-                string sql = @"select * from information_schema.columns a where lower(table_name) =lower('{0}')";
+                string sql = @"select table_name  as TableName,
+ column_type as  DataType ,
+ is_nullable  as IsNullable,
+ column_name DbColumnName,
+ column_comment as  ColumnDescription  from information_schema.columns a  where lower(table_name) =lower('{0}')";
                 return sql;
             }
         }
@@ -368,45 +372,14 @@ namespace SqlSugar.ClickHouse
         public override List<DbColumnInfo> GetColumnInfosByTableName(string tableName, bool isCache = true)
         {
             var result= base.GetColumnInfosByTableName(tableName.TrimEnd('"').TrimStart('"').ToLower(), isCache);
-            if (result == null || result.Count() == 0)
+            foreach (var columnInfo in result) 
             {
-                result = base.GetColumnInfosByTableName(tableName, isCache);
-            }
-            try
-            {
-                string sql = $@"select  
-                               kcu.column_name as key_column
-                               from information_schema.table_constraints tco
-                               join information_schema.key_column_usage kcu 
-                               on kcu.constraint_name = tco.constraint_name
-                               and kcu.constraint_schema = tco.constraint_schema
-                               and kcu.constraint_name = tco.constraint_name
-                               where tco.constraint_type = 'PRIMARY KEY'
-                               and kcu.table_schema='{GetSchema()}' and 
-                               upper(kcu.table_name)=upper('{tableName.TrimEnd('"').TrimStart('"')}')";
-                List<string> pkList = new List<string>();
-                if (isCache)
+                columnInfo.DataType = columnInfo.DataType.Replace(" ", "");
+                if (columnInfo.DataType.StartsWith("Nullable(")) 
                 {
-                    pkList=GetListOrCache<string>("GetColumnInfosByTableName_N_Pk"+tableName, sql);
+                    columnInfo.DataType=columnInfo.DataType.Replace("Nullable", "");
+                    columnInfo.DataType = System.Text.RegularExpressions.Regex.Match(columnInfo.DataType,@"^\((.+)\)$").Groups[1].Value;    
                 }
-                else
-                {
-                    pkList = this.Context.Ado.SqlQuery<string>(sql);
-                }
-                if (pkList.Count >1) 
-                {
-                    foreach (var item in result)
-                    {
-                        if (pkList.Select(it=>it.ToUpper()).Contains(item.DbColumnName.ToUpper())) 
-                        {
-                            item.IsPrimarykey = true;
-                        }
-                    }
-                }
-            }
-            catch  
-            {
-
             }
             return result;
         }

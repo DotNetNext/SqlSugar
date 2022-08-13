@@ -69,12 +69,12 @@ namespace SqlSugar.ClickHouse
         public override DbCommand GetCommand(string sql, SugarParameter[] parameters)
         {
             var connection=(ClickHouseConnection)this.Connection;
+            CheckConnection();
             IDataParameter[] ipars = ToIDbDataParameter(parameters);
             ClickHouseCommand sqlCommand =connection.CreateCommand();
             var pars = ToIDbDataParameter(parameters);
             sqlCommand.CommandText = sql;
             sqlCommand.Parameters.AddRange(pars);
-            CheckConnection();
             return sqlCommand;
         }
         public override void SetCommandToAdapter(IDataAdapter dataAdapter, DbCommand command)
@@ -106,7 +106,9 @@ namespace SqlSugar.ClickHouse
                 sqlParameter.Value = parameter.Value;
                 sqlParameter.DbType = parameter.DbType;
                 sqlParameter.Direction = parameter.Direction;
+                result[index] = sqlParameter;
                 ++index;
+                
             }
             return result;
         }
