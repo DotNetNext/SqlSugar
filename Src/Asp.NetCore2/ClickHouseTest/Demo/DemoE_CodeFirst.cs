@@ -19,7 +19,7 @@ namespace OrmTest
                 InitKeyType = InitKeyType.Attribute,
                 IsAutoCloseConnection = true
             });
-            db.DbMaintenance.CreateDatabase(); 
+            //db.DbMaintenance.CreateDatabase(); 
             db.CodeFirst.InitTables(typeof(CodeFirstTable1));//Create CodeFirstTable1 
             db.Insertable(new CodeFirstTable1() { Name = "a", Text="a" }).ExecuteCommand();
             var list = db.Queryable<CodeFirstTable1>().ToList();
@@ -29,10 +29,10 @@ namespace OrmTest
 
     public class CodeFirstTable1
     {
-        [SugarColumn(IsIdentity = true, IsPrimaryKey = true)]
+        [SugarColumn(IsPrimaryKey = true)]
         public int Id { get; set; }
         public string Name { get; set; }
-        [SugarColumn(ColumnDataType = "varchar(255)")]//custom
+        [SugarColumn(ColumnDataType = "String")]//custom
         public string Text { get; set; }
         [SugarColumn(IsNullable = true)]
         public DateTime CreateTime { get; set; }

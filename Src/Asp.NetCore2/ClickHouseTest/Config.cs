@@ -16,7 +16,7 @@ namespace OrmTest
         /// Account have permission to create database
         /// 用有建库权限的数据库账号
         /// </summary>
-        public static string ConnectionString = "Database=default;Username=default;Password=;Host=localhost;Port=8123;Compression=False;UseSession=False;Timeout=120;";
+        public static string ConnectionString = "Database=SqlSugarTest2;Username=default;Password=;Host=localhost;Port=8123;Compression=False;UseSession=False;Timeout=120;";
         /// <summary>
         /// Account have permission to create database
         /// 用有建库权限的数据库账号

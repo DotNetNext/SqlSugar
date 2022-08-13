@@ -67,7 +67,7 @@ namespace OrmTest
             });
 
             //If no exist create datebase 
-           // db.DbMaintenance.CreateDatabase();
+           db.DbMaintenance.CreateDatabase();
 
             //Use db query
             var dt = db.Ado.GetDataTable("SELECT * FROM system.tables");

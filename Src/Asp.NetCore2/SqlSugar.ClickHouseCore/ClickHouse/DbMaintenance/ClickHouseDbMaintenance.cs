@@ -33,7 +33,8 @@ namespace SqlSugar.ClickHouse
         {
             get
             {
-                return @"SELECT name  FROM system.tables where   database not in('INFORMATION_SCHEMA','system','information_schema'  )";
+                string schema = GetSchema();
+                return @"SELECT name  FROM system.tables where   database not in('INFORMATION_SCHEMA','system','information_schema'  ) and database='"+GetSchema()+"'";
             }
         }
         protected override string GetViewInfoListSql
@@ -281,7 +282,7 @@ namespace SqlSugar.ClickHouse
             }
             var oldDatabaseName = this.Context.Ado.Connection.Database;
             var connection = this.Context.CurrentConnectionConfig.ConnectionString;
-            connection = connection.Replace(oldDatabaseName, "postgres");
+            connection = connection.Replace(oldDatabaseName, "system");
             var newDb = new SqlSugarClient(new ConnectionConfig()
             {
                 DbType = this.Context.CurrentConnectionConfig.DbType,
@@ -390,25 +391,7 @@ namespace SqlSugar.ClickHouse
         #region Helper
         private string GetSchema()
         {
-            var schema = "public";
-            if (System.Text.RegularExpressions.Regex.IsMatch(this.Context.CurrentConnectionConfig.ConnectionString.ToLower(), "searchpath="))
-            {
-                var regValue = System.Text.RegularExpressions.Regex.Match(this.Context.CurrentConnectionConfig.ConnectionString.ToLower(), @"searchpath\=(\w+)").Groups[1].Value;
-                if (regValue.HasValue())
-                {
-                    schema = regValue;
-                }
-            }
-            else if (System.Text.RegularExpressions.Regex.IsMatch(this.Context.CurrentConnectionConfig.ConnectionString.ToLower(), "search path="))
-            {
-                var regValue = System.Text.RegularExpressions.Regex.Match(this.Context.CurrentConnectionConfig.ConnectionString.ToLower(), @"search path\=(\w+)").Groups[1].Value;
-                if (regValue.HasValue())
-                {
-                    schema = regValue;
-                }
-            }
-
-            return schema;
+            return this.Context.Ado.Connection.Database;
         }
 
         #endregion
