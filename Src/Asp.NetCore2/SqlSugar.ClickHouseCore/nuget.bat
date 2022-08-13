@@ -1,0 +1,1 @@
+%~dp0nuget.exe pack %~dp0SqlSugar.ClickHouseCore.nuspec -OutputDirectory %~dp0
