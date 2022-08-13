@@ -373,7 +373,7 @@ namespace SqlSugar.ClickHouse
         }
         public override string GetRandom()
         {
-            return "RANDOM()";
+            return "generateUUIDv4()";
         }
 
         public override string EqualTrue(string fieldName)
