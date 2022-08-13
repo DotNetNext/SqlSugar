@@ -33,7 +33,7 @@ namespace SqlSugar
         #endregion
 
         #region Sql Template
-        public string SqlTemplate
+        public virtual string SqlTemplate
         {
             get
             {
