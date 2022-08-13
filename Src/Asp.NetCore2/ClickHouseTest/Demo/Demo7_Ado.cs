@@ -30,13 +30,13 @@ namespace OrmTest
                 }
             });
             //sql
-            var dt = db.Ado.GetDataTable("select * from \"order\" where  @id>0 or name=@name", new List<SugarParameter>(){
+            var dt = db.Ado.GetDataTable("select * from \"Order\" where  @Id>0 or Name=@name", new List<SugarParameter>(){
               new SugarParameter("@id",1),
               new SugarParameter("@name","2")
             });
 
             //sql  
-            var dt2 = db.Ado.GetDataTable("select * from \"order\" where @id>0  or name=@name", new { id = 1, name = "2" });
+            var dt2 = db.Ado.GetDataTable("select * from \"Order\" where @Id>0  or Name=@name", new { id = 1, name = "2" });
 
             //Stored Procedure
             //var dt3 = db.Ado.UseStoredProcedure().GetDataTable("sp_school", new { name = "张三", age = 0 }); 
@@ -47,9 +47,8 @@ namespace OrmTest
 
 
             //There are many methods to under db.ado
-            var list= db.Ado.SqlQuery<Order>("select * from \"order\" ");
-            var intValue=db.Ado.SqlQuerySingle<int>("select 1");
-            db.Ado.ExecuteCommand("delete  from \"order\" where id>1000");
+            var list= db.Ado.SqlQuery<Order>("select * from \"Order\" ");
+            var intValue=db.Ado.SqlQuerySingle<int>("select 1"); 
             //db.Ado.xxx
             Console.WriteLine("#### Ado End ####");
         }
