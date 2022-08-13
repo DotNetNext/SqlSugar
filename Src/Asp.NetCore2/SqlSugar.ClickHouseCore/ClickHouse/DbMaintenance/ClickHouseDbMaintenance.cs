@@ -253,10 +253,14 @@ namespace SqlSugar.ClickHouse
         {
             tableName = this.SqlBuilder.GetTranslationTableName(tableName);
             var columnName= this.SqlBuilder.GetTranslationColumnName(columnInfo.DbColumnName);
-            string sql = GetUpdateColumnSql(tableName, columnInfo);
-            this.Context.Ado.ExecuteCommand(sql);
-            var isnull = columnInfo.IsNullable?" DROP NOT NULL ": " SET NOT NULL ";
-            this.Context.Ado.ExecuteCommand(string.Format("alter table {0} alter {1} {2}",tableName,columnName, isnull));
+            if (columnInfo.IsNullable)
+            {
+                if (!columnInfo.DataType.ObjToString().ToLower().Contains("nullable"))
+                {
+                    columnInfo.DataType = $"Nullable({columnInfo.DataType})";
+                }
+            }
+            this.Context.Ado.ExecuteCommand(string.Format("ALTER TABLE {0} MODIFY COLUMN {1} {2} ", tableName,columnName,columnInfo.DataType));
             return true;
         }
 
