@@ -131,10 +131,18 @@ namespace SqlSugar
                 }
                 else if (sqlParameter.DbType == System.Data.DbType.Guid)
                 {
-                    sqlParameter.DbType = System.Data.DbType.Double;
+                    sqlParameter.DbType = System.Data.DbType.String;
                     if (sqlParameter.Value != null)
                     {
                         sqlParameter.Value = (sqlParameter.Value).ToString();
+                    }
+                }
+                else if (sqlParameter.DbType == System.Data.DbType.Boolean)
+                {
+                    sqlParameter.DbType = System.Data.DbType.Int32;
+                    if (sqlParameter.Value != null)
+                    {
+                        sqlParameter.Value = sqlParameter.Value.ObjToBool() ? 1 : 0;
                     }
                 }
                 ++index;
