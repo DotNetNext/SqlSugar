@@ -19,6 +19,10 @@ namespace OrmTest
                 InitKeyType = InitKeyType.Attribute,
                 IsAutoCloseConnection = true
             });
+            db.Aop.OnLogExecuting = (s, p) =>
+            {
+                Console.WriteLine(s);
+            };
             db.DbMaintenance.CreateDatabase();
             db.CodeFirst.InitTables(typeof(CodeFirstTable1));//Create CodeFirstTable1 
             db.Insertable(new CodeFirstTable1() { Name = "a", Text = "a" }).ExecuteCommand();
@@ -41,13 +45,14 @@ namespace OrmTest
         }
         private static void TestBool(SqlSugarClient db)
         {
-            db.CodeFirst.InitTables<BoolTest2>();
-            db.DbMaintenance.TruncateTable("BoolTest");
+            db.CodeFirst.InitTables<BoolTest5>();
+            db.DbMaintenance.TruncateTable("BoolTest3");
             var Id = 1;
-            db.Insertable<BoolTest2>(new BoolTest2() { A = true, Id = Id }).ExecuteCommand();
-            Console.Write(db.Queryable<BoolTest2>().First().A);
-            db.Updateable<BoolTest2>(new BoolTest2() { A = false, Id = Id }).ExecuteCommand();
-            Console.Write(db.Queryable<BoolTest2>().First().A);
+            db.Insertable<BoolTest5>(new List<BoolTest5>(){ new BoolTest5() {  dateTime=DateTime.Now,A = true, Id = Id } }).ExecuteCommand();
+            Console.Write(db.Queryable<BoolTest5>().First().A);
+            //db.Updateable<BoolTest4>(new BoolTest4() { dateTime = DateTime.Now,A = false, Id = Id }).ExecuteCommand();
+            db.Insertable<BoolTest5>(new List<BoolTest5>() { new BoolTest5() { dateTime = DateTime.Now, A = true, Id = Id }, new BoolTest5() { dateTime = DateTime.Now, A = false, Id = Id } }).ExecuteCommand();
+            Console.Write(db.Queryable<BoolTest5>().ToList().Last().A);
         }
     }
     public class GuidTest
@@ -56,11 +61,12 @@ namespace OrmTest
         public long Id { get; set; }
         public Guid A { get; set; }
     }
-    public class BoolTest2
+    public class BoolTest5
     {
         [SugarColumn(IsPrimaryKey = true)]
         public long Id { get; set; }
         public bool A { get; set; }
+        public DateTime dateTime { get; set; }
     }
 
     [SugarIndex(null, nameof(IndexClass.Name), OrderByType.Asc)]
