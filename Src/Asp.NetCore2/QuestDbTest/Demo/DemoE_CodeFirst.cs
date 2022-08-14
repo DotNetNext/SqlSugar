@@ -51,7 +51,7 @@ namespace OrmTest
             db.Insertable<BoolTest5>(new List<BoolTest5>(){ new BoolTest5() {  dateTime=DateTime.Now,A = true, Id = Id } }).ExecuteCommand();
             Console.Write(db.Queryable<BoolTest5>().First().A);
             //db.Updateable<BoolTest4>(new BoolTest4() { dateTime = DateTime.Now,A = false, Id = Id }).ExecuteCommand();
-            db.Insertable<BoolTest5>(new List<BoolTest5>() { new BoolTest5() { dateTime = DateTime.Now, A = true, Id = Id }, new BoolTest5() { dateTime = DateTime.Now, A = false, Id = Id } }).ExecuteCommand();
+            db.Updateable<BoolTest5>(  new BoolTest5() { dateTime = DateTime.Now, A = false, Id = Id  }).ExecuteCommand();
             Console.Write(db.Queryable<BoolTest5>().ToList().Last().A);
         }
     }
