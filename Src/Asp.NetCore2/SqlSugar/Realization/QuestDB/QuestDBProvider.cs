@@ -139,10 +139,10 @@ namespace SqlSugar
                 }
                 else if (sqlParameter.DbType == System.Data.DbType.Boolean)
                 {
-                    sqlParameter.DbType = System.Data.DbType.Int32;
+                    sqlParameter.DbType = System.Data.DbType.String;
                     if (sqlParameter.Value != null)
                     {
-                        sqlParameter.Value = sqlParameter.Value.ObjToBool() ? 1 : 0;
+                        sqlParameter.Value = sqlParameter.Value.ObjToString().ToLower();
                     }
                 }
                 ++index;

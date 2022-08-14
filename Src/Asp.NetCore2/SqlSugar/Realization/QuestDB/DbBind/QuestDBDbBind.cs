@@ -79,7 +79,7 @@ namespace SqlSugar
                     new KeyValuePair<string, CSharpDataType>("point",CSharpDataType.@decimal),
                     new KeyValuePair<string, CSharpDataType>("polygon",CSharpDataType.@decimal),
 
-                    new KeyValuePair<string, CSharpDataType>("int",CSharpDataType.@bool),
+                    //new KeyValuePair<string, CSharpDataType>("int",CSharpDataType.@bool),
                     new KeyValuePair<string, CSharpDataType>("boolean",CSharpDataType.@bool),
                     new KeyValuePair<string, CSharpDataType>("bool",CSharpDataType.@bool),
                     new KeyValuePair<string, CSharpDataType>("box",CSharpDataType.@bool),
