@@ -36,8 +36,8 @@ namespace OrmTest
         private static void TestGuid(SqlSugarClient db)
         {
             db.CodeFirst.InitTables<GuidTest>();
-            db.DbMaintenance.TruncateTable("BoolTest");
-            var Id = 1;
+            //db.DbMaintenance.TruncateTable("BoolTest");
+            var Id =SnowFlakeSingle.Instance.NextId();
             db.Insertable<GuidTest>(new GuidTest() { A = Guid.Empty, Id = Id }).ExecuteCommand();
             Console.Write(db.Queryable<GuidTest>().First().A);
             db.Updateable<GuidTest>(new GuidTest() { A = Guid.NewGuid(), Id = Id }).ExecuteCommand();
@@ -46,13 +46,13 @@ namespace OrmTest
         private static void TestBool(SqlSugarClient db)
         {
             db.CodeFirst.InitTables<BoolTest5>();
-            db.DbMaintenance.TruncateTable("BoolTest3");
-            var Id = 1;
+            //db.DbMaintenance.TruncateTable("BoolTest3");
+            var Id = SnowFlakeSingle.Instance.NextId();
             db.Insertable<BoolTest5>(new List<BoolTest5>(){ new BoolTest5() {  dateTime=DateTime.Now,A = true, Id = Id } }).ExecuteCommand();
-            Console.Write(db.Queryable<BoolTest5>().First().A);
+            Console.Write(db.Queryable<BoolTest5>().First(it=>it.Id==Id).A);
             //db.Updateable<BoolTest4>(new BoolTest4() { dateTime = DateTime.Now,A = false, Id = Id }).ExecuteCommand();
             db.Updateable<BoolTest5>(  new BoolTest5() { dateTime = DateTime.Now, A = false, Id = Id  }).ExecuteCommand();
-            Console.Write(db.Queryable<BoolTest5>().ToList().Last().A);
+            Console.Write(db.Queryable<BoolTest5>().First(it => it.Id == Id).A);
         }
     }
     public class GuidTest
