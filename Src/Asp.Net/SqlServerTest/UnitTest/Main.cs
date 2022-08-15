@@ -31,7 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
-
+            UnitEnum22.Init();
             UCustom025.Init();
             UnitTestConfigQuery.Init();
             UnitSub.Init();
