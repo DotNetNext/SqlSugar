@@ -73,7 +73,7 @@ namespace OrmTest
             //Use db query
             var dt = db.Ado.SqlQuery<dynamic>("select @id",new { id=1});
 
-        
+            db.CodeFirst.InitTables<GJ_CN_2011_RtdEntity>();
             //Create tables
             db.CodeFirst.InitTables(typeof(OrderItem),typeof(Order));
             //db.DbMaintenance.TruncateTable<Order>();
