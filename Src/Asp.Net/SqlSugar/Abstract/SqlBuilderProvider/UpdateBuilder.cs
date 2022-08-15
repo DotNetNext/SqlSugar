@@ -156,7 +156,17 @@ namespace SqlSugar
             }
             if (IsNoUpdateDefaultValue)
             {
-                DbColumnInfoList = DbColumnInfoList.Where(it => it.Value.ObjToString() !=UtilMethods.DefaultForType(it.PropertyType).ObjToString()).ToList();
+                DbColumnInfoList = DbColumnInfoList.Where(it => {
+                    if (it.Value.ObjToString()=="0" && it.PropertyType.IsEnum)
+                    {
+                        return it.Value.ObjToInt() != UtilMethods.DefaultForType(it.PropertyType).ObjToInt();
+                    }
+                    else
+                    {
+                      return  it.Value.ObjToString() != UtilMethods.DefaultForType(it.PropertyType).ObjToString();
+                    }
+
+                    }).ToList();
             }
             var groupList = DbColumnInfoList.GroupBy(it => it.TableId).ToList();
             var isSingle = groupList.Count() == 1;
