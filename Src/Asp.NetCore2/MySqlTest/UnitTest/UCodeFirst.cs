@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using SqlSugar;
 namespace OrmTest
 {
     public partial class NewUnitTest
@@ -15,6 +15,29 @@ namespace OrmTest
             Db.CodeFirst.InitTables<UnitCodeTest1>();
             Db.CodeFirst.InitTables<UnitCodeTest111>();
             Db.CodeFirst.InitTables<UnitIndextest>();
+
+     
+            Db.CodeFirst.InitTables(typeof(TestListJson));
+            Db.DbMaintenance.TruncateTable<TestListJson>();
+            Db.Insertable(new TestListJson { Id = 123, NameList = new List<string> { "123abc" } }).ExecuteCommand();
+            var xxx=Db.Queryable<TestListJson>().Where(x => x.Id == 123).Select(x => new TestListJson 
+            { 
+                 Id=x.Id,
+                NameList = x.NameList }).First();
+            if (xxx.NameList == null) 
+            {
+                throw new Exception("unit error");
+            }
+        }
+
+        [SugarTable("testjson")]
+        public class TestListJson
+        {
+            [SugarColumn(IsPrimaryKey = true)]
+            public int Id { get; set; }
+
+            [SugarColumn(ColumnName = "name_list", IsJson = true, ColumnDataType = "json")]
+            public List<string> NameList { get; set; }
         }
         [SqlSugar.SugarIndex("UnitIndextestIndex", nameof(UnitIndextest.Table), SqlSugar.OrderByType.Asc)]
         public class UnitIndextest
