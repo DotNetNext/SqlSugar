@@ -23,7 +23,7 @@ Using SqlSugar is very simple , And it's powerful.
 - Support Configure the query  
 - Support DbFirst import entity class from database, or use Generation Tool.
 - Support one-to-many and many-to-many navigation properties
-- Support MySql、SqlServer、Sqlite、Oracle 、 postgresql 、QuestDb、达梦、人大金仓 、神通数据库、瀚高、MsAccess、华为GaussDB、Custom
+- Support MySql、SqlServer、Sqlite、Oracle 、 postgresql 、QuestDb、ClickHouse、达梦、人大金仓 、神通数据库、瀚高、MsAccess、华为GaussDB、Custom
 - Support  AOP 、 Diff Log 、 Query Filter 
 
 ##  Documentation
