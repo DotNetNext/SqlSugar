@@ -121,6 +121,10 @@ namespace SqlSugar
                         {
                             BindClass(generator, result, columnInfo, ReaderKeys.First(it => it.Equals(fileName, StringComparison.CurrentCultureIgnoreCase)));
                         }
+                        else if (this.ReaderKeys.Any(it => it.Equals(columnInfo.PropertyName, StringComparison.CurrentCultureIgnoreCase)))
+                        {
+                            BindClass(generator, result, columnInfo, ReaderKeys.First(it => it.Equals(columnInfo.PropertyName, StringComparison.CurrentCultureIgnoreCase)));
+                        }
                     }
                     else if (!isGemo && columnInfo.IsJson && columnInfo.PropertyInfo.PropertyType != UtilConstants.StringType)
                     {   //json is struct
