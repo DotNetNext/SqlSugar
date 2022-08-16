@@ -48,8 +48,23 @@ namespace OrmTest
 
 
                         }).ToPageList(1, 10);
-
+            db.CodeFirst.InitTables<BoolTest12313>();
+            var x1 = db.Queryable<BoolTest12313>().Where(it => it.IsDeleted && SqlFunc.HasValue(it.name) ).ToList();
+            var x2 = db.Queryable<BoolTest12313>().Where(it => it.IsDeleted && SqlFunc.HasValue(it.name)==true).ToList();
+            var x3 = db.Queryable<BoolTest12313>().Where(it =>true  && SqlFunc.HasValue(it.name) == true).ToList();
+            var x4 = db.Queryable<BoolTest12313>().Where(it =>SqlFunc.HasValue(it.name) == true).ToList();
+            var x5 = db.Queryable<BoolTest12313>().Where(it => SqlFunc.HasValue(it.name) ).ToList();
+            var x6 = db.Queryable<BoolTest12313>().Select(it => new  { x=SqlFunc.HasValue(it.name)}).ToList();
+            db.DbMaintenance.DropTable("BoolTest12313");
         }
+
+        public class BoolTest12313
+        {
+            public string name { get; set; }
+            public bool IsDeleted { get; set; }
+            public int xx { get; set; }
+        }
+
         [SugarTable("unitUser_Test001")]
         public class User_Test001
         {
