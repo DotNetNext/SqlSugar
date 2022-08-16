@@ -106,13 +106,18 @@ namespace SqlSugar
                 var diffColumns = FastCopy.GetDiff(item, (T)trackingData.Value);
                 if (diffColumns.Count > 0)
                 {
-                    var pks =EntityInfo.Columns
+                    var pks = EntityInfo.Columns
                         .Where(it => it.IsPrimarykey).Select(it => it.PropertyName).ToList();
-                    diffColumns=diffColumns.Where(it => !pks.Contains(it)).ToList();
+                    diffColumns = diffColumns.Where(it => !pks.Contains(it)).ToList();
                     if (diffColumns.Count > 0)
                     {
                         this.UpdateColumns(diffColumns.ToArray());
                     }
+                }
+                else 
+                {
+                    this.UpdateObjs = new T [] { null };
+                    this.UpdateBuilder.DbColumnInfoList = new List<DbColumnInfo>();
                 }
             }
         }
