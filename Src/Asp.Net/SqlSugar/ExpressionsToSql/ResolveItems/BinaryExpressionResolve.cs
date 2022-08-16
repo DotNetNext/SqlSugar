@@ -29,7 +29,7 @@ namespace SqlSugar
             var expression = this.Expression as BinaryExpression;
             var operatorValue = parameter.OperatorValue = ExpressionTool.GetOperator(expression.NodeType);
 
-            if (IsGroupSubquery(expression.Right,operatorValue))
+            if (IsGroupSubquery(expression.Right, operatorValue))
             {
                 if (ExpressionTool.IsUnConvertExpress(expression.Right))
                 {
@@ -37,7 +37,7 @@ namespace SqlSugar
                 }
                 else
                 {
-                    InSubGroupBy(expression, operatorValue=="<>"?"NOT":"");
+                    InSubGroupBy(expression, operatorValue == "<>" ? "NOT" : "");
                 }
                 return;
             }
@@ -54,6 +54,15 @@ namespace SqlSugar
             var lbrb = rightBinary && leftIsBinary;
             var lsbs = !leftIsBinary && !rightBinary;
             var isAppend = !base.Context.Result.Contains(ExpressionConst.FormatSymbol);
+            ConvertExpression(ref leftExpression, ref rightExpression, isAppend);
+            parameter.LeftExpression = leftExpression;
+            parameter.RightExpression = rightExpression;
+            Left(expression, leftExpression);
+            Right(parameter, operatorValue, isEqual, rightExpression, lsbs);
+        }
+
+        private void ConvertExpression(ref Expression leftExpression, ref Expression rightExpression, bool isAppend)
+        {
             if (isAppend)
             {
                 base.Context.Result.Append(ExpressionConst.LeftParenthesis);
@@ -71,23 +80,14 @@ namespace SqlSugar
             {
                 leftExpression = (leftExpression as UnaryExpression).Operand;
             }
-            if (rightExpression is UnaryExpression&& (rightExpression as UnaryExpression).NodeType == ExpressionType.Convert)
+            if (rightExpression is UnaryExpression && (rightExpression as UnaryExpression).NodeType == ExpressionType.Convert)
             {
                 rightExpression = (rightExpression as UnaryExpression).Operand;
             }
-            parameter.LeftExpression = leftExpression;
-            parameter.RightExpression = rightExpression;
-            base.Expression = leftExpression;
-            base.IsLeft = true;
-            base.Start();
-            if (leftExpression is UnaryExpression && leftExpression.Type == UtilConstants.BoolType && !this.Context.Result.Contains(ExpressionConst.ExpressionReplace))
-            {
-                this.Context.Result.AppendFormat(" {0} ", ExpressionTool.GetOperator(expression.NodeType));
-            }
-            else if (leftExpression is UnaryExpression && ExpressionTool.RemoveConvert(leftExpression) is BinaryExpression && !this.Context.Result.Contains(ExpressionConst.ExpressionReplace))
-            {
-                this.Context.Result.AppendFormat(" {0} ", ExpressionTool.GetOperator(expression.NodeType));
-            }
+        }
+
+        private void Right(ExpressionParameter parameter, string operatorValue, bool isEqual, Expression rightExpression, bool lsbs)
+        {
             base.IsLeft = false;
             base.Expression = rightExpression;
             base.Start();
@@ -106,6 +106,21 @@ namespace SqlSugar
             if (parameter.BaseExpression is BinaryExpression && parameter.IsLeft == true)
             {
                 base.Context.Result.Append(" " + ExpressionConst.ExpressionReplace + parameter.BaseParameter.Index + " ");
+            }
+        }
+
+        private void Left(BinaryExpression expression, Expression leftExpression)
+        {
+            base.Expression = leftExpression;
+            base.IsLeft = true;
+            base.Start();
+            if (leftExpression is UnaryExpression && leftExpression.Type == UtilConstants.BoolType && !this.Context.Result.Contains(ExpressionConst.ExpressionReplace))
+            {
+                this.Context.Result.AppendFormat(" {0} ", ExpressionTool.GetOperator(expression.NodeType));
+            }
+            else if (leftExpression is UnaryExpression && ExpressionTool.RemoveConvert(leftExpression) is BinaryExpression && !this.Context.Result.Contains(ExpressionConst.ExpressionReplace))
+            {
+                this.Context.Result.AppendFormat(" {0} ", ExpressionTool.GetOperator(expression.NodeType));
             }
         }
 
