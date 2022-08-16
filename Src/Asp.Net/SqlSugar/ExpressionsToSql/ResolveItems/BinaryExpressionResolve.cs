@@ -46,6 +46,11 @@ namespace SqlSugar
             base.ExactExpression = expression;
             var leftExpression = expression.Left;
             var rightExpression = expression.Right;
+            if (RightIsHasValue(leftExpression, rightExpression,ExpressionTool.IsLogicOperator(expression)))
+            {
+                Expression trueValue = Expression.Constant(true);
+                rightExpression = ExpressionBuilderHelper.CreateExpression(rightExpression, trueValue, ExpressionType.And);
+            }
             var leftIsBinary = leftExpression is BinaryExpression;
             var rightBinary = rightExpression is BinaryExpression;
             var lbrs = leftIsBinary && !rightBinary;
@@ -213,5 +218,15 @@ namespace SqlSugar
             }
             return true;
         }
+
+        private static bool RightIsHasValue(Expression leftExpression, Expression rightExpression,bool isLogic)
+        {
+            return isLogic&&
+                leftExpression.Type == UtilConstants.BoolType && 
+                rightExpression.Type == UtilConstants.BoolType && 
+                rightExpression is MethodCallExpression && 
+                (rightExpression as MethodCallExpression).Method.Name == "HasValue";
+        }
+
     }
 }
