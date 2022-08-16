@@ -59,11 +59,18 @@ namespace OrmTest
 
 
             //Update by track
+            Console.WriteLine(" Tracking 1:");
             db.Tracking(updateObj);
+            //Update set name
             updateObj.Name = "a1" + Guid.NewGuid();
             db.Updateable(updateObj).ExecuteCommand();
             db.TempItems = null;
 
+            Console.WriteLine(" Tracking 2:");
+            db.Tracking(updateObj);
+            //No Update
+            db.Updateable(updateObj).ExecuteCommand();
+            db.TempItems = null;
 
             /*** 2.by expression ***/
 
