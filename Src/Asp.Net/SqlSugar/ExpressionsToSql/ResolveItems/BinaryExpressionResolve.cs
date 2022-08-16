@@ -28,20 +28,19 @@ namespace SqlSugar
         {
             var expression = this.Expression as BinaryExpression;
             var operatorValue = parameter.OperatorValue = ExpressionTool.GetOperator(expression.NodeType);
-
-            if (IsGroupSubquery(expression.Right, operatorValue))
+            var isSubGroup = IsGroupSubquery(expression.Right, operatorValue);
+            if (isSubGroup)
             {
-                if (ExpressionTool.IsUnConvertExpress(expression.Right))
-                {
-                    InSubGroupByConvertExpress(expression);
-                }
-                else
-                {
-                    InSubGroupBy(expression, operatorValue == "<>" ? "NOT" : "");
-                }
-                return;
+                SubGroup(expression, operatorValue);
             }
+            else
+            {
+                DefaultBinary(parameter, expression, operatorValue);
+            }
+        }
 
+        private void DefaultBinary(ExpressionParameter parameter, BinaryExpression expression, string operatorValue)
+        {
             var isEqual = expression.NodeType == ExpressionType.Equal;
             var isComparisonOperator = ExpressionTool.IsComparisonOperator(expression);
             base.ExactExpression = expression;
@@ -59,6 +58,18 @@ namespace SqlSugar
             parameter.RightExpression = rightExpression;
             Left(expression, leftExpression);
             Right(parameter, operatorValue, isEqual, rightExpression, lsbs);
+        }
+
+        private void SubGroup(BinaryExpression expression, string operatorValue)
+        {
+            if (ExpressionTool.IsUnConvertExpress(expression.Right))
+            {
+                InSubGroupByConvertExpress(expression);
+            }
+            else
+            {
+                InSubGroupBy(expression, operatorValue == "<>" ? "NOT" : "");
+            }
         }
 
         private void ConvertExpression(ref Expression leftExpression, ref Expression rightExpression, bool isAppend)
