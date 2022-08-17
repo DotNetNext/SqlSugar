@@ -432,7 +432,7 @@ namespace SqlSugar
                 //}
                 columnArray.Add(addItem);
             }
-            string tableString = string.Format(this.CreateTableSql, this.SqlBuilder.GetTranslationTableName(tableName.ToLower()), string.Join(",\r\n", columnArray));
+            string tableString = string.Format(this.CreateTableSql, this.SqlBuilder.GetTranslationTableName(tableName), string.Join(",\r\n", columnArray));
             return tableString;
         }
         public override bool IsAnyConstraint(string constraintName)

@@ -82,7 +82,7 @@ namespace SqlSugar
                             {
                                return $" cast('{it.Value.ObjToDate().ToString("yyyy-MM-dd HH:mm:ss.ffffff")}' as timestamp)";
                             }
-                            else if (it.Value is int || it.Value is long ||it.Value is short || it.Value is short || it.Value is byte)
+                            else if (it.Value is int || it.Value is long ||it.Value is short || it.Value is short || it.Value is byte || it.Value is double)
                             {
                                 return  it.Value;
                             }

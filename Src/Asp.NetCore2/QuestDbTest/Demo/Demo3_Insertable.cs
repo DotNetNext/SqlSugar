@@ -30,10 +30,10 @@ namespace OrmTest
                 }
             });
 
-            var insertObj = new Order() { Id = 1, Name = "order1",Price=0 };
+            var insertObj = new Order() { Id = 1, Name = "order1",Price=0 ,Value = 10.133};
             var updateObjs = new List<Order> {
-                 new Order() { Id = SnowFlakeSingle.Instance.NextId(), Name = "order11", Price=0 },
-                 new Order() { Id = SnowFlakeSingle.Instance.NextId(), Name = "order12" , Price=0}
+                 new Order() { Id = SnowFlakeSingle.Instance.NextId(), Name = "order11", Price=0 ,Value = 0.242},
+                 new Order() { Id = SnowFlakeSingle.Instance.NextId(), Name = "order12" , Price=0,Value = 3.343}
             };
 
             var x = db.Insertable(updateObjs).RemoveDataCache().IgnoreColumns(it => it.CreateTime).UseParameter().ExecuteCommand();

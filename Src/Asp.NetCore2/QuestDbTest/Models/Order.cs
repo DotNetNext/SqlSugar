@@ -19,6 +19,9 @@ namespace OrmTest
         public DateTime CreateTime { get; set; }
         [SugarColumn(IsNullable =true)]
         public long CustomId { get; set; }
+        
+        public double Value { get; set; }
+        
         [SugarColumn(IsIgnore = true)]
         public List<OrderItem> Items { get; set; }
     }
