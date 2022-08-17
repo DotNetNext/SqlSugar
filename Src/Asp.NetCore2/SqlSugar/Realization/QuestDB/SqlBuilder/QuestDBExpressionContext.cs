@@ -31,7 +31,7 @@ namespace SqlSugar
         {
             get
             {
-                return base.PgSqlIsAutoToLower;
+                return false;
             }
         }
         public override string GetTranslationTableName(string entityName, bool isMapping = true)
