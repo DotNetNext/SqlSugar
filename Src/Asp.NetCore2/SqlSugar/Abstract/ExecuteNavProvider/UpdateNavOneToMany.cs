@@ -39,6 +39,7 @@ namespace SqlSugar
                 }
                 ids.Add(parentValue);
             }
+            DeleteMany(thisEntity, ids, thisFkColumn.DbColumnName);
             this._Context.Deleteable<object>()
                 .AS(thisEntity.DbTableName)
                 .In(thisFkColumn.DbColumnName, ids.Distinct().ToList()).ExecuteCommand();
@@ -46,6 +47,31 @@ namespace SqlSugar
             InsertDatas(children, thisPkColumn);
             _NavigateType = null;
             SetNewParent<TChild>(thisEntity, thisPkColumn);
+        }
+
+        private void DeleteMany(EntityInfo thisEntity, List<object> ids,string fkName)
+        {
+            if (_Options == null||_Options.OneToManyDeleteAll==false) 
+            {
+                return;
+            }
+            var oneToManys = thisEntity.Columns.Where(it => it.Navigat != null && it.Navigat.NavigatType == NavigateType.OneToMany).ToList();
+            foreach (var oneToMany in oneToManys)
+            {
+                var fkFieldName = oneToMany.Navigat.Name2?? thisEntity.Columns.FirstOrDefault(it=>it.IsPrimarykey).PropertyName;
+                var fkDbColumnName = thisEntity.Columns.FirstOrDefault(it => it.PropertyName == fkFieldName).DbColumnName;
+                var fks= this._Context.Queryable<object>()
+                .AS(thisEntity.DbTableName)
+                .In(fkName, ids.Distinct().ToList()).Select(fkDbColumnName).ToDataTable().Rows.Cast<System.Data.DataRow>().Select(x=>x[0]).ToArray();
+
+                var type = oneToMany.PropertyInfo.PropertyType.GenericTypeArguments[0];
+                var entity = this._Context.EntityMaintenance.GetEntityInfo(type);
+                var id = oneToMany.Navigat.Name;
+                var column = entity.Columns.FirstOrDefault(it => it.PropertyName == id).DbColumnName;
+                this._Context.Deleteable<object>()
+                                                .AS(entity.DbTableName)
+                                                .In(column, fks.Distinct().ToList()).ExecuteCommand();
+            }
         }
 
         private EntityColumnInfo GetParentPkColumn()
