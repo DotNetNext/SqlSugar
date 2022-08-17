@@ -162,6 +162,20 @@ namespace SqlSugar
         {
             var leftSql = GetNewExpressionValue(expression.Left);
             var rightExpression = expression.Right as MethodCallExpression;
+            if (rightExpression.Arguments[0] is LambdaExpression) 
+            {
+                if ((rightExpression.Arguments[0] as LambdaExpression).Parameters?.Count > 0) 
+                {
+                    foreach (var item in (rightExpression.Arguments[0] as LambdaExpression).Parameters)
+                    {
+                        if (this.Context.InitMappingInfo != null)
+                        {
+                            this.Context.InitMappingInfo(item.Type);
+                            this.Context.RefreshMapping();
+                        }
+                    }
+                }
+            }
             var selector = GetNewExpressionValue(rightExpression.Arguments[0]);
             var selectorExp = rightExpression.Arguments[0];
             if (selector.Contains(".") && selectorExp is LambdaExpression) 
