@@ -160,55 +160,55 @@ namespace SqlSugar
                   var result = this.Context.EntityMaintenance.GetEntityInfo(type);
                   return result;
               });
-            var copyObj = CopyEntityInfo(entityInfo);
-            InitMappingInfo(copyObj);
+            //var copyObj = CopyEntityInfo(entityInfo);
+            InitMappingInfo(entityInfo);
         }
         public void InitMappingInfoNoCache(Type type)
         {
             var entityInfo = this.Context.EntityMaintenance.GetEntityInfoNoCache(type);
             InitMappingInfo(entityInfo);
         }
-        private EntityInfo CopyEntityInfo(EntityInfo entityInfo)
-        {
-            EntityInfo result = new EntityInfo()
-            {
-                DbTableName = entityInfo.DbTableName,
-                EntityName = entityInfo.EntityName,
-                Type = entityInfo.Type
-            };
-            List<EntityColumnInfo> columns = new List<EntityColumnInfo>();
-            if (entityInfo.Columns.HasValue())
-            {
-                foreach (var item in entityInfo.Columns)
-                {
-                    EntityColumnInfo column = new EntityColumnInfo()
-                    {
-                        ColumnDescription = item.ColumnDescription,
-                        DataType = item.DataType,
-                        DbColumnName = item.DbColumnName,
-                        DbTableName = item.DbTableName,
-                        DecimalDigits = item.DecimalDigits,
-                        DefaultValue = item.DefaultValue,
-                        EntityName = item.EntityName,
-                        IsIdentity = item.IsIdentity,
-                        IsIgnore = item.IsIgnore,
-                        IsNullable = item.IsNullable,
-                        IsOnlyIgnoreInsert = item.IsOnlyIgnoreInsert,
-                        IsPrimarykey = item.IsPrimarykey,
-                        Length = item.Length,
-                        OldDbColumnName = item.OldDbColumnName,
-                        OracleSequenceName = item.OracleSequenceName,
-                        PropertyInfo = item.PropertyInfo,
-                        PropertyName = item.PropertyName,
-                        IsArray=item.IsArray,
-                        IsJson=item.IsJson
-                    };
-                    columns.Add(item);
-                }
-            }
-            result.Columns = columns;
-            return result;
-        }
+        //private EntityInfo CopyEntityInfo(EntityInfo entityInfo)
+        //{
+        //    EntityInfo result = new EntityInfo()
+        //    {
+        //        DbTableName = entityInfo.DbTableName,
+        //        EntityName = entityInfo.EntityName,
+        //        Type = entityInfo.Type
+        //    };
+        //    List<EntityColumnInfo> columns = new List<EntityColumnInfo>();
+        //    if (entityInfo.Columns.HasValue())
+        //    {
+        //        foreach (var item in entityInfo.Columns)
+        //        {
+        //            EntityColumnInfo column = new EntityColumnInfo()
+        //            {
+        //                ColumnDescription = item.ColumnDescription,
+        //                DataType = item.DataType,
+        //                DbColumnName = item.DbColumnName,
+        //                DbTableName = item.DbTableName,
+        //                DecimalDigits = item.DecimalDigits,
+        //                DefaultValue = item.DefaultValue,
+        //                EntityName = item.EntityName,
+        //                IsIdentity = item.IsIdentity,
+        //                IsIgnore = item.IsIgnore,
+        //                IsNullable = item.IsNullable,
+        //                IsOnlyIgnoreInsert = item.IsOnlyIgnoreInsert,
+        //                IsPrimarykey = item.IsPrimarykey,
+        //                Length = item.Length,
+        //                OldDbColumnName = item.OldDbColumnName,
+        //                OracleSequenceName = item.OracleSequenceName,
+        //                PropertyInfo = item.PropertyInfo,
+        //                PropertyName = item.PropertyName,
+        //                IsArray=item.IsArray,
+        //                IsJson=item.IsJson
+        //            };
+        //            columns.Add(item);
+        //        }
+        //    }
+        //    result.Columns = columns;
+        //    return result;
+        //}
 
         private void InitMappingInfo(EntityInfo entityInfo)
         {
