@@ -35,14 +35,7 @@ namespace SqlSugar
             }
         }
 
-        public bool isAutoToLower
-        {
-            get
-            {
-                if (this.Context.CurrentConnectionConfig.MoreSettings == null) return true;
-                return this.Context.CurrentConnectionConfig.MoreSettings.PgSqlIsAutoToLower;
-            }
-        }
+        public bool isAutoToLower => false;
         public override string GetTranslationColumnName(string propertyName)
         {
             if (propertyName.Contains(".")&& !propertyName.Contains(SqlTranslationLeft)) 
