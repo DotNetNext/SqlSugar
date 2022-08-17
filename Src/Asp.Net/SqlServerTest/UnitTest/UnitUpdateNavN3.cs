@@ -43,11 +43,17 @@ namespace OrmTest
             
 
             //导航更新三表数据
-            db.UpdateNav(a).Include(t => t.B).ThenInclude(t => t.C).ExecuteCommand();
+            db.UpdateNav(a)
+            .Include(t => t.B, new UpdateNavOptions()
+            {
+                OneToManyDeleteAll = true//B下面存在一对多将其删除掉
+            })
+            .ThenInclude(t => t.C).ExecuteCommand();
 
             //正常情况C数据库中应该只有1条 如果是多条则说明三级表数据存在垃圾数据
             var count = db.Queryable<ClassC>().ToList();
 
+            if (count.Count() > 1) { throw new Exception("unit error"); }
 
             //清空表中数据
             db.DbMaintenance.DropTable("ClassA");
