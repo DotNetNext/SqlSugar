@@ -234,6 +234,11 @@ namespace SqlSugar
                     {
                         item.IndexName = (this.Context.CurrentConnectionConfig.IndexSuffix+ item.IndexName);
                     }
+                    var database = "{db}";
+                    if (item.IndexName.Contains(database)) 
+                    {
+                        item.IndexName = item.IndexName.Replace(database, this.Context.Ado.Connection.Database);
+                    }
                     if (!this.Context.DbMaintenance.IsAnyIndex(item.IndexName))
                     {
                         var querybulder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
