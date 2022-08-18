@@ -309,7 +309,7 @@ namespace SqlSugar
                         column.ColumnDescription = sugarColumn.ColumnDescription;
                     }
                 }
-                if (column.ColumnDescription.IsNullOrEmpty()) column.ColumnDescription = GetPropertyAnnotation(result.Type, column.DbColumnName);
+                if (column.ColumnDescription.IsNullOrEmpty()) column.ColumnDescription = GetPropertyAnnotation(result.Type, column.PropertyName);
                 if (this.Context.MappingColumns.HasValue())
                 {
                     var golbalMappingInfo = this.Context.MappingColumns.FirstOrDefault(it => it.EntityName.Equals(result.EntityName, StringComparison.CurrentCultureIgnoreCase) && it.PropertyName == column.PropertyName);
