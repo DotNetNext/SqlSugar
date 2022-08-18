@@ -115,7 +115,7 @@ namespace SqlSugar
         }
         public override string ToCountSql(string sql)
         {
-            if (this.GroupByValue.HasValue())
+            if (this.GroupByValue.HasValue()||this.IsDistinct)
             {
                 return base.ToCountSql(sql);
             }
