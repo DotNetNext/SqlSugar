@@ -235,7 +235,7 @@ namespace SqlSugar
                         item.IndexName = (this.Context.CurrentConnectionConfig.IndexSuffix+ item.IndexName);
                     }
                     var database = "{db}";
-                    if (item.IndexName.Contains(database)) 
+                    if (item.IndexName!=null&&item.IndexName.Contains(database)) 
                     {
                         item.IndexName = item.IndexName.Replace(database, this.Context.Ado.Connection.Database);
                     }
