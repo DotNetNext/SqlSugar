@@ -159,7 +159,7 @@ namespace SqlSugar
                 DbColumnInfoList = DbColumnInfoList.Where(it => {
                     if (it.Value.ObjToString()=="0" && it.PropertyType.IsEnum)
                     {
-                        return it.Value.ObjToInt() != UtilMethods.DefaultForType(it.PropertyType).ObjToInt();
+                        return it.Value.ObjToLong() != UtilMethods.DefaultForType(it.PropertyType).ObjToLong();
                     }
                     else
                     {

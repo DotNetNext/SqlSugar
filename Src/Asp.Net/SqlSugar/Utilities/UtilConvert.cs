@@ -22,6 +22,21 @@ namespace SqlSugar
             return reval;
         }
 
+        public static long ObjToLong(this object thisValue)
+        {
+            long reval = 0;
+            if (thisValue == null) return 0;
+            if (thisValue is Enum)
+            {
+                return Convert.ToInt64(thisValue);
+            }
+            if (thisValue != null && thisValue != DBNull.Value && long.TryParse(thisValue.ToString(), out reval))
+            {
+                return reval;
+            }
+            return reval;
+        }
+
         public static int ObjToInt(this object thisValue, int errorValue)
         {
             int reval = 0;
