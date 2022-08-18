@@ -230,6 +230,10 @@ namespace SqlSugar
                     {
                         item.IndexName = item.IndexName + entityInfo.DbTableName;
                     }
+                    if (this.Context.CurrentConnectionConfig.IndexSuffix.HasValue()) 
+                    {
+                        item.IndexName = (this.Context.CurrentConnectionConfig.IndexSuffix+ item.IndexName);
+                    }
                     if (!this.Context.DbMaintenance.IsAnyIndex(item.IndexName))
                     {
                         var querybulder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
