@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UCustom07.Init();
             UCustom016.Init();
             UCustom08.Init();
             UCustom012.Init();
