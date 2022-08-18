@@ -13,7 +13,7 @@ namespace SqlSugar
             if (thisValue == null) return 0;
             if (thisValue is Enum)
             {
-                return (int)thisValue;
+                return Convert.ToInt32(thisValue);
             }
             if (thisValue != null && thisValue != DBNull.Value && int.TryParse(thisValue.ToString(), out reval))
             {
