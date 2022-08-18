@@ -532,13 +532,13 @@ namespace SqlSugar
                             FieldValue = value.ObjToStringNew(),
                             CSharpTypeName = column.PropertyInfo.PropertyType.Name
                         });
-                        if (this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL) 
-                        {
-                            data.Value.FieldValueConvertFunc = it =>
-                            {
-                                return UtilMethods.ChangeType2(it, value.GetType());
-                            };
-                        }
+                        //if (this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL) 
+                        //{
+                        //    data.Value.FieldValueConvertFunc = it =>
+                        //    {
+                        //        return UtilMethods.ChangeType2(it, value.GetType());
+                        //    };
+                        //}
                         cons.ConditionalList.Add(data);
                     }
                     if (cons.HasValue())
