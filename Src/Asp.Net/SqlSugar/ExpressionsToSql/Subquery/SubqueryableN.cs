@@ -248,6 +248,10 @@ namespace SqlSugar
         {
             return this;
         }
+        public string SelectStringJoin(Func<T1, T2, T3, T4, string> expression, string separator)
+        {
+            return default(string);
+        }
     }
     public class Subqueryable<T1, T2, T3> : Subqueryable<T1> where T1 : class, new()
     {
@@ -291,6 +295,10 @@ namespace SqlSugar
         {
             return default(string);
         }
+        public string SelectStringJoin(Func<T1, T2,T3, string> expression, string separator)
+        {
+            return default(string);
+        }
     }
     public class Subqueryable<T1, T2> : Subqueryable<T1> where T1 : class, new()
     {
@@ -327,6 +335,10 @@ namespace SqlSugar
             return default(TResult);
         }
         public string Select(Func<T1, T2, string> expression)  
+        {
+            return default(string);
+        }
+        public string SelectStringJoin(Func<T1,T2, string> expression, string separator)
         {
             return default(string);
         }
