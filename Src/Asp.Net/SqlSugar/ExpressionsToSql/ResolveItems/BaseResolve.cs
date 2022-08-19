@@ -180,7 +180,7 @@ namespace SqlSugar
                             var p = new SugarParameter(appendValue, value, (System.Data.DbType)columnInfo.SqlParameterDbType);
                             if (columnInfo.SqlParameterSize != null) 
                             {
-                                p.Size = columnInfo.SqlParameterSize.Value;
+                                p.Size = columnInfo.SqlParameterSize.ObjToInt();
                             }
                             this.Context.Parameters.Add(p);
                         }
