@@ -177,7 +177,12 @@ namespace SqlSugar
                         EntityColumnInfo columnInfo = GetColumnInfo(oppoSiteExpression);
                         if (columnInfo != null && columnInfo.SqlParameterDbType != null && columnInfo.SqlParameterDbType is System.Data.DbType)
                         {
-                            this.Context.Parameters.Add(new SugarParameter(appendValue, value, (System.Data.DbType)columnInfo.SqlParameterDbType));
+                            var p = new SugarParameter(appendValue, value, (System.Data.DbType)columnInfo.SqlParameterDbType);
+                            if (columnInfo.SqlParameterSize != null) 
+                            {
+                                p.Size = columnInfo.SqlParameterSize.Value;
+                            }
+                            this.Context.Parameters.Add(p);
                         }
                         else
                         {
