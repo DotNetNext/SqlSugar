@@ -67,11 +67,11 @@ namespace SqlSugar
 
         protected override void ChangeKey(EntityInfo entityInfo, string tableName, EntityColumnInfo item)
         {
-            this.Context.DbMaintenance.UpdateColumn(tableName, EntityColumnToDbColumn(entityInfo, tableName, item));
-            if (!item.IsPrimarykey)
-                this.Context.DbMaintenance.DropConstraint(tableName,null);
-            if (item.IsPrimarykey)
-                this.Context.DbMaintenance.AddPrimaryKey(tableName, item.DbColumnName);
+            //this.Context.DbMaintenance.UpdateColumn(tableName, EntityColumnToDbColumn(entityInfo, tableName, item));
+            //if (!item.IsPrimarykey)
+            //    this.Context.DbMaintenance.DropConstraint(tableName,null);
+            //if (item.IsPrimarykey)
+            //    this.Context.DbMaintenance.AddPrimaryKey(tableName, item.DbColumnName);
         }
 
     }

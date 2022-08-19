@@ -244,15 +244,36 @@ INFO_SCHEM.ALL_TAB_COLUMNS WHERE upper(TABLE_NAME)=upper('{0}')
         #region Methods
         public override bool UpdateColumn(string tableName, DbColumnInfo columnInfo)
         {
+
             tableName = this.SqlBuilder.GetTranslationTableName(tableName);
             var columnName= this.SqlBuilder.GetTranslationColumnName(columnInfo.DbColumnName);
-            string sql = GetUpdateColumnSql(tableName, columnInfo);
-            this.Context.Ado.ExecuteCommand(sql);
+            string type = GetType(tableName, columnInfo);
+            //this.Context.Ado.ExecuteCommand(sql);
+
+            string sql= @"ALTER TABLE {table} ALTER TYPE {column} {type};ALTER TABLE {table} ALTER COLUMN {column} {null}";
+
             var isnull = columnInfo.IsNullable?" DROP NOT NULL ": " SET NOT NULL ";
-            this.Context.Ado.ExecuteCommand(string.Format("alter table {0} alter {1} {2}",tableName,columnName, isnull));
+
+            sql = sql.Replace("{table}", tableName)
+                .Replace("{type}", type)
+                .Replace("{column}", columnName)
+                .Replace("{null}", isnull); 
+            this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
 
+        protected string GetType(string tableName, DbColumnInfo columnInfo)
+        {
+            string columnName = this.SqlBuilder.GetTranslationColumnName(columnInfo.DbColumnName);
+            tableName = this.SqlBuilder.GetTranslationTableName(tableName);
+            string dataSize = GetSize(columnInfo);
+            string dataType = columnInfo.DataType;
+            //if (!string.IsNullOrEmpty(dataType))
+            //{
+            //    dataType =  dataType;
+            //}
+            return dataType +""+ dataSize;
+        }
         protected override string GetUpdateColumnSql(string tableName, DbColumnInfo columnInfo)
         {
             string columnName = this.SqlBuilder.GetTranslationColumnName(columnInfo.DbColumnName);
@@ -371,6 +392,13 @@ INFO_SCHEM.ALL_TAB_COLUMNS WHERE upper(TABLE_NAME)=upper('{0}')
         public override List<DbColumnInfo> GetColumnInfosByTableName(string tableName, bool isCache = true)
         {
             var result= base.GetColumnInfosByTableName(tableName.TrimStart('"').TrimEnd('"'), isCache);
+            foreach (var columnInfo in result) 
+            {
+                if (columnInfo.IsIdentity && !columnInfo.DataType.ObjToString().ToLower().Contains("int")) 
+                {
+                    columnInfo.IsIdentity = false;
+                }
+            }
             string sql = "select * from " + SqlBuilder.GetTranslationTableName(tableName) + " WHERE 1=2 ";
             var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
             this.Context.Ado.IsEnableLogEvent = false;
