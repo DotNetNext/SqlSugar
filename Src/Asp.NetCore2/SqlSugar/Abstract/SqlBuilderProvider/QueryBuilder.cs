@@ -263,7 +263,7 @@ namespace SqlSugar
                 resolveExpress.SqlFuncServices = Context.CurrentConnectionConfig.ConfigureExternalServices == null ? null : Context.CurrentConnectionConfig.ConfigureExternalServices.SqlFuncServices;
             };
             resolveExpress.Resolve(expression, resolveType);
-            this.Parameters.AddRange(resolveExpress.Parameters.Select(it => new SugarParameter(it.ParameterName, it.Value,it.DbType)));
+            this.Parameters.AddRange(resolveExpress.Parameters.Select(it => new SugarParameter(it.ParameterName, it.Value, it.DbType) {  Size=it.Size}));
             var result = resolveExpress.Result;
             var isSingleTableHasSubquery = IsSingle() && resolveExpress.SingleTableNameSubqueryShortName.HasValue();
             if (isSingleTableHasSubquery)

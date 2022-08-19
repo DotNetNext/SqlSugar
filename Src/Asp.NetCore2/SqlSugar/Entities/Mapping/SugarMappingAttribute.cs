@@ -205,7 +205,7 @@ namespace SqlSugar
         }
 
         public object SqlParameterDbType { get; set; }
-        public int? SqlParameterSize { get; set; }
+        public object SqlParameterSize { get; set; }
         public int CreateTableFieldSort { get; set; }
     }
 
