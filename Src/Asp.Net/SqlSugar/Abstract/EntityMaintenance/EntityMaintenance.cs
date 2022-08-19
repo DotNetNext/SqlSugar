@@ -285,6 +285,7 @@ namespace SqlSugar
                         column.IsArray = sugarColumn.IsArray;
                         column.IsTreeKey = sugarColumn.IsTreeKey;
                         column.SqlParameterDbType = sugarColumn.SqlParameterDbType;
+                        column.SqlParameterSize = sugarColumn.SqlParameterSize;
                         column.CreateTableFieldSort = sugarColumn.CreateTableFieldSort;
                         if (sugarColumn.IsJson && String.IsNullOrEmpty(sugarColumn.ColumnDataType))
                         {

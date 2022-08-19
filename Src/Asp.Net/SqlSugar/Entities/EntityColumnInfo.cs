@@ -40,5 +40,6 @@ namespace SqlSugar
         public Type UnderType { get;  set; }
         public Navigate Navigat { get; set; }
         public int CreateTableFieldSort { get; set; }
+        public int? SqlParameterSize { get;  set; }
     }
 }
