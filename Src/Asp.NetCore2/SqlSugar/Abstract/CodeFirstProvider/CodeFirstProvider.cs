@@ -63,7 +63,7 @@ namespace SqlSugar
                 });
                 Check.Exception(!executeResult.IsSuccess, executeResult.ErrorMessage);
             }
-            else 
+            else
             {
                 Execute(entityType);
             }
@@ -85,9 +85,9 @@ namespace SqlSugar
         {
             InitTables(typeof(T), typeof(T2), typeof(T3), typeof(T4));
         }
-        public void InitTables<T, T2, T3, T4,T5>()
+        public void InitTables<T, T2, T3, T4, T5>()
         {
-            InitTables(typeof(T), typeof(T2), typeof(T3), typeof(T4),typeof(T5));
+            InitTables(typeof(T), typeof(T2), typeof(T3), typeof(T4), typeof(T5));
         }
         public virtual void InitTables(params Type[] entityTypes)
         {
@@ -102,7 +102,7 @@ namespace SqlSugar
                     catch (Exception ex)
                     {
 
-                        throw new Exception(item.Name +" 创建失败,请认真检查 1、属性需要get set 2、特殊类型需要加Ignore 具体错误内容： "+ex.Message);
+                        throw new Exception(item.Name + " 创建失败,请认真检查 1、属性需要get set 2、特殊类型需要加Ignore 具体错误内容： " + ex.Message);
                     }
                 }
             }
@@ -156,16 +156,16 @@ namespace SqlSugar
             {
                 db.CodeFirst.InitTables(type);
                 var tables = db.DbMaintenance.GetTableInfoList(false);
-                var oldTableInfo = tables.FirstOrDefault(it=>it.Name.EqualCase(oldTableName));
+                var oldTableInfo = tables.FirstOrDefault(it => it.Name.EqualCase(oldTableName));
                 var newTableInfo = tables.FirstOrDefault(it => it.Name.EqualCase(oldTableName));
                 var oldTable = db.DbMaintenance.GetColumnInfosByTableName(oldTableName, false);
                 var tempTable = db.DbMaintenance.GetColumnInfosByTableName(tempTableName, false);
                 result.tableInfos.Add(new DiffTableInfo()
                 {
-                     OldTableInfo= oldTableInfo,
-                     NewTableInfo = newTableInfo,
-                     OldColumnInfos =  oldTable,
-                     NewColumnInfos = tempTable
+                    OldTableInfo = oldTableInfo,
+                    NewTableInfo = newTableInfo,
+                    OldColumnInfos = oldTable,
+                    NewColumnInfos = tempTable
                 });
             }
             catch (Exception ex)
@@ -226,18 +226,26 @@ namespace SqlSugar
             {
                 foreach (var item in entityInfo.Indexs)
                 {
-                    if (entityInfo.Type.GetCustomAttribute<SplitTableAttribute>() != null) 
+                    if (entityInfo.Type.GetCustomAttribute<SplitTableAttribute>() != null)
                     {
                         item.IndexName = item.IndexName + entityInfo.DbTableName;
                     }
-                    if (this.Context.CurrentConnectionConfig.IndexSuffix.HasValue()) 
+                    if (this.Context.CurrentConnectionConfig.IndexSuffix.HasValue())
                     {
-                        item.IndexName = (this.Context.CurrentConnectionConfig.IndexSuffix+ item.IndexName);
+                        item.IndexName = (this.Context.CurrentConnectionConfig.IndexSuffix + item.IndexName);
                     }
-                    var database = "{db}";
-                    if (item.IndexName!=null&&item.IndexName.Contains(database)) 
+                    if (item.IndexName != null)
                     {
-                        item.IndexName = item.IndexName.Replace(database, this.Context.Ado.Connection.Database);
+                        var database = "{db}";
+                        if (item.IndexName.Contains(database))
+                        {
+                            item.IndexName = item.IndexName.Replace(database, this.Context.Ado.Connection.Database);
+                        }
+                        var table = "{table}";
+                        if (item.IndexName.Contains(table))
+                        {
+                            item.IndexName = item.IndexName.Replace(table, entityInfo.DbTableName);
+                        }
                     }
                     if (!this.Context.DbMaintenance.IsAnyIndex(item.IndexName))
                     {
@@ -281,12 +289,12 @@ namespace SqlSugar
         }
         public virtual void ExistLogic(EntityInfo entityInfo)
         {
-            if (entityInfo.Columns.HasValue()&&entityInfo.IsDisabledUpdateAll==false)
+            if (entityInfo.Columns.HasValue() && entityInfo.IsDisabledUpdateAll == false)
             {
                 //Check.Exception(entityInfo.Columns.Where(it => it.IsPrimarykey).Count() > 1, "Multiple primary keys do not support modifications");
 
                 var tableName = GetTableName(entityInfo);
-                var dbColumns = this.Context.DbMaintenance.GetColumnInfosByTableName(tableName,false);
+                var dbColumns = this.Context.DbMaintenance.GetColumnInfosByTableName(tableName, false);
                 ConvertColumns(dbColumns);
                 var entityColumns = entityInfo.Columns.Where(it => it.IsIgnore == false).ToList();
                 var dropColumns = dbColumns
@@ -318,7 +326,7 @@ namespace SqlSugar
                     this.Context.DbMaintenance.AddColumn(tableName, EntityColumnToDbColumn(entityInfo, tableName, item));
                     isChange = true;
                 }
-                if (entityInfo.IsDisabledDelete==false)
+                if (entityInfo.IsDisabledDelete == false)
                 {
                     foreach (var item in dropColumns)
                     {
@@ -329,10 +337,10 @@ namespace SqlSugar
                 foreach (var item in alterColumns)
                 {
 
-                    if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle) 
+                    if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle)
                     {
                         var entityColumnItem = entityColumns.FirstOrDefault(y => y.DbColumnName == item.DbColumnName);
-                        if (entityColumnItem!=null&&!string.IsNullOrEmpty(entityColumnItem.DataType)) 
+                        if (entityColumnItem != null && !string.IsNullOrEmpty(entityColumnItem.DataType))
                         {
                             continue;
                         }
@@ -405,7 +413,7 @@ namespace SqlSugar
                 this.Context.DbMaintenance.AddPrimaryKey(tableName, item.DbColumnName);
         }
 
-        protected virtual void ExistLogicEnd(List<EntityColumnInfo> dbColumns) 
+        protected virtual void ExistLogicEnd(List<EntityColumnInfo> dbColumns)
         {
 
         }
@@ -499,7 +507,7 @@ namespace SqlSugar
             {
                 return false;
             }
-            if (properyTypeName?.ToLower() == "varchar" && dataType?.ToLower() == "string") 
+            if (properyTypeName?.ToLower() == "varchar" && dataType?.ToLower() == "string")
             {
                 return false;
             }
@@ -507,7 +515,7 @@ namespace SqlSugar
             {
                 return false;
             }
-            if (properyTypeName?.ToLower() == "int" && dataType?.ToLower() == "decimal"&&dc.Length==22&&dc.Scale==0&&this.Context.CurrentConnectionConfig.DbType==DbType.Oracle)
+            if (properyTypeName?.ToLower() == "int" && dataType?.ToLower() == "decimal" && dc.Length == 22 && dc.Scale == 0 && this.Context.CurrentConnectionConfig.DbType == DbType.Oracle)
             {
                 return false;
             }
