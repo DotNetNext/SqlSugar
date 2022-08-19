@@ -29,6 +29,10 @@ namespace OrmTest
                 {
                     throw new Exception("unit error");
                 }
+                if (result1.Value.First().Size != 10)
+                {
+                    throw new Exception("unit error");
+                }
             }
             catch (Exception ex)
             {

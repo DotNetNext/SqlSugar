@@ -20,7 +20,7 @@ namespace ICrewApi.Entity
         /// Default:
         /// Nullable:True
         /// </summary>   
-        [SugarColumn(SqlParameterDbType = System.Data.DbType.Date)]
+        [SugarColumn(SqlParameterDbType = System.Data.DbType.Date,SqlParameterSize =10)]
         public DateTime? FROM_DATE {get;set;}
 
         /// <summary>
