@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>SqlSugarCoreNoDrive</id>
-    <version>5.1.2.2</version>
+    <version>5.1.2.3</version>
     <authors>sunkaixuan</authors>
     <owners>Landa</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>

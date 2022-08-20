@@ -122,7 +122,7 @@ namespace SqlSugar
             {
                 MappingTables.Add(type,newTableName);
             }
-            else 
+            else  
             {
                 MappingTables[type]= newTableName;
             }
