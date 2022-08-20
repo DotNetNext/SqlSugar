@@ -61,7 +61,8 @@ namespace SqlSugar
                 DefaultValue = item.DefaultValue,
                 ColumnDescription = item.ColumnDescription,
                 PropertyName=item.PropertyName,
-                Length = item.Length
+                Length = item.Length,
+                CreateTableFieldSort = item.CreateTableFieldSort
             };
             if (propertyType == UtilConstants.DecType) 
             {
