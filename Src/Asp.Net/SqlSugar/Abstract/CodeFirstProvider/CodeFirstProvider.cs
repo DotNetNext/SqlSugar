@@ -14,6 +14,7 @@ namespace SqlSugar
         protected bool IsBackupTable { get; set; }
         protected int MaxBackupDataRows { get; set; }
         protected virtual int DefultLength { get; set; }
+        protected Dictionary<Type, string> MappingTables = new Dictionary<Type, string>();
         public CodeFirstProvider()
         {
             if (DefultLength == 0)
@@ -107,6 +108,19 @@ namespace SqlSugar
                 }
             }
         }
+        public ICodeFirst As(Type type, string newTableName) 
+        {
+            if (!MappingTables.ContainsKey(type)) 
+            {
+                MappingTables.Add(type,newTableName);
+            }
+            return this;
+        }
+        public ICodeFirst As<T>(string newTableName)
+        {
+            return As(typeof(T),newTableName);
+        }
+
         public virtual void InitTables(string entitiesNamespace)
         {
             var types = Assembly.Load(entitiesNamespace).GetTypes();
@@ -180,6 +194,11 @@ namespace SqlSugar
         protected virtual void Execute(Type entityType)
         {
             var entityInfo = this.Context.EntityMaintenance.GetEntityInfoNoCache(entityType);
+            if (this.MappingTables.ContainsKey(entityType)) 
+            {
+                entityInfo.DbTableName = this.MappingTables[entityType];
+                this.Context.MappingTables.Add(entityInfo.EntityName, entityInfo.DbTableName);
+            }
             if (this.DefultLength > 0)
             {
                 foreach (var item in entityInfo.Columns)
