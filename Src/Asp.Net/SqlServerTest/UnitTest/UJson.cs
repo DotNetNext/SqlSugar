@@ -39,7 +39,7 @@ namespace OrmTest
             db.CodeFirst.SetStringDefaultLength(200).InitTables(typeof(SqlSugarSelect.TestModel2));
 
             #region 加入数据
-            var isadd = !db.Queryable<TestModel1>().Any();
+            var isadd = !db.Queryable<SqlSugarSelect.TestModel1>().Any();
             if (isadd)
             {
                 db.Insertable(new SqlSugarSelect.TestModel1
