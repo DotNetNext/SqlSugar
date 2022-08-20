@@ -53,7 +53,21 @@ namespace OrmTest
             Db.Insertable(new UnitCodeFirst131() { Id = 1 }).ExecuteCommand();
             Db.CodeFirst.InitTables<UNITCODEFIRST131>();
             Db.CodeFirst.InitTables<UNITCOdEFIRST131>();
+            Db.CodeFirst.InitTables<UnitTest0123>();
+            if (Db.DbMaintenance.GetColumnInfosByTableName("UnitTest0123", false).First().DbColumnName != "Id") 
+            {
+                throw new Exception("unit error");
+            }
         }
+
+        [SugarTable("UnitTest0123", IsCreateTableFiledSort= true)]
+        public class UnitTest0123
+        {
+            public string Name { get; set; }
+            [SugarColumn(CreateTableFieldSort =-1)]
+            public int Id { get; set; }
+        }
+
         public class UnitCodeFirst131
         {
             public int Id { get; set; }
