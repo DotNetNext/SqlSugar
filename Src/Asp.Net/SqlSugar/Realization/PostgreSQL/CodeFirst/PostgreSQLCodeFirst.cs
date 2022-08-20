@@ -50,7 +50,8 @@ namespace SqlSugar
                 IsNullable = item.IsNullable,
                 DefaultValue = item.DefaultValue,
                 ColumnDescription = item.ColumnDescription,
-                Length = item.Length
+                Length = item.Length,
+                CreateTableFieldSort = item.CreateTableFieldSort
             };
             if (propertyType == UtilConstants.DecType) 
             {
