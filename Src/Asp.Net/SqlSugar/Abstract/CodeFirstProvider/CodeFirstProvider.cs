@@ -10,6 +10,7 @@ namespace SqlSugar
     public partial class CodeFirstProvider : ICodeFirst
     {
         #region Properties
+        internal static object LockObject = new object();
         public virtual SqlSugarProvider Context { get; set; }
         protected bool IsBackupTable { get; set; }
         protected int MaxBackupDataRows { get; set; }
@@ -47,29 +48,36 @@ namespace SqlSugar
 
         public virtual void InitTables(Type entityType)
         {
-
-            //this.Context.Utilities.RemoveCacheAll();
-            this.Context.InitMappingInfoNoCache(entityType);
-            if (!this.Context.DbMaintenance.IsAnySystemTablePermissions())
+            //Prevent concurrent requests if used in your program
+            lock (CodeFirstProvider.LockObject)
             {
-                Check.Exception(true, "Dbfirst and  Codefirst requires system table permissions");
-            }
-            Check.Exception(this.Context.IsSystemTablesConfig, "Please set SqlSugarClent Parameter ConnectionConfig.InitKeyType=InitKeyType.Attribute ");
+                MappingTableList oldTableList = CopyMappingTalbe();
+                //this.Context.Utilities.RemoveCacheAll();
+                this.Context.InitMappingInfoNoCache(entityType);
+                if (!this.Context.DbMaintenance.IsAnySystemTablePermissions())
+                {
+                    Check.Exception(true, "Dbfirst and  Codefirst requires system table permissions");
+                }
+                Check.Exception(this.Context.IsSystemTablesConfig, "Please set SqlSugarClent Parameter ConnectionConfig.InitKeyType=InitKeyType.Attribute ");
 
-            if (this.Context.Ado.Transaction == null)
-            {
-                var executeResult = Context.Ado.UseTran(() =>
+                if (this.Context.Ado.Transaction == null)
+                {
+                    var executeResult = Context.Ado.UseTran(() =>
+                    {
+                        Execute(entityType);
+                    });
+                    Check.Exception(!executeResult.IsSuccess, executeResult.ErrorMessage);
+                }
+                else
                 {
                     Execute(entityType);
-                });
-                Check.Exception(!executeResult.IsSuccess, executeResult.ErrorMessage);
-            }
-            else 
-            {
-                Execute(entityType);
+                }
+
+                RestMappingTables(oldTableList);
             }
 
         }
+
         public void InitTables<T>()
         {
             InitTables(typeof(T));
@@ -113,6 +121,10 @@ namespace SqlSugar
             if (!MappingTables.ContainsKey(type)) 
             {
                 MappingTables.Add(type,newTableName);
+            }
+            else if (!MappingTables.ContainsKey(type))
+            {
+                MappingTables[type]= newTableName;
             }
             return this;
         }
@@ -443,6 +455,28 @@ namespace SqlSugar
         #endregion
 
         #region Helper methods
+        private void RestMappingTables(MappingTableList oldTableList)
+        {
+            this.Context.MappingTables.Clear();
+            foreach (var table in oldTableList)
+            {
+                this.Context.MappingTables.Add(table.EntityName, table.DbTableName);
+            }
+        }
+        private MappingTableList CopyMappingTalbe()
+        {
+            MappingTableList oldTableList = new MappingTableList();
+            if (this.Context.MappingTables == null) 
+            {
+                this.Context.MappingTables = new MappingTableList();
+            }
+            foreach (var table in this.Context.MappingTables)
+            {
+                oldTableList.Add(table.EntityName, table.DbTableName);
+            }
+            return oldTableList;
+        }
+
         public virtual string GetCreateTableString(EntityInfo entityInfo)
         {
             StringBuilder result = new StringBuilder();
