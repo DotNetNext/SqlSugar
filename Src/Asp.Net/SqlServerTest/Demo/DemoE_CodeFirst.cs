@@ -32,6 +32,7 @@ namespace OrmTest
             db.CodeFirst.InitTables<UnituLong>();
             db.Insertable(new UnituLong() { longx = 1 }).ExecuteCommand();
             var ulList=db.Queryable<UnituLong>().Where(x => x.longx > 0).ToList();
+            db.CodeFirst.As<UnituLong>("UnituLong0011").InitTables<UnituLong>();
             Console.WriteLine("#### CodeFirst end ####");
         }
     }
