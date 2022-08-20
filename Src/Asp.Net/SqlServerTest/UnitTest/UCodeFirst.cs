@@ -105,7 +105,27 @@ namespace OrmTest
     
  
             var list3=db.Queryable<ApiLog>().ToList();
-            //db.Insertable<Dictionary<string,object>>(new ApiLog(1) {  RequestUser="a"}).ExecuteCommand();
+
+            db.MappingTables = new MappingTableList();
+            db.MappingTables.Add("a", "b");
+            db.MappingTables.Add("c", "d");
+            db.CodeFirst.As<ApiLog>("ApiLog0001").InitTables<ApiLog>();
+            db.Queryable<ApiLog>().AS("ApiLog0001").ToList();
+            db.CodeFirst.As<ApiLog>("ApiLog0002").InitTables<ApiLog>();
+            db.Queryable<ApiLog>().AS("ApiLog0002").ToList();
+            db.Queryable<ApiLog>().ToList();
+            if (db.MappingTables.Count != 2) 
+            {
+                throw new Exception("unit error");
+            }
+            if (db.MappingTables.First(it=>it.EntityName=="a").DbTableName!="b")
+            {
+                throw new Exception("unit error");
+            }
+            if (db.MappingTables.First(it => it.EntityName == "c").DbTableName != "d")
+            {
+                throw new Exception("unit error");
+            }
         }
         /// <summary>
 
