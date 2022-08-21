@@ -21,6 +21,7 @@ namespace SqlSugar
         QuestDB,
         HG,
         ClickHouse,
+        GBase,
         Custom =900
     }
 }
