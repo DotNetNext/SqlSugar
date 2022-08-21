@@ -261,7 +261,8 @@ namespace OrmTest
             .ThenInclude(z1 => z1.RoomList)
             .Include(z1 => z1.Books).ExecuteCommand();
 
-
+            db.Queryable<StudentA>()
+                .Where(it => it.Books2.Any(z => z.BookId == 1)).ToList();
         }
 
         public class UnitA001
@@ -329,6 +330,9 @@ namespace OrmTest
             public SchoolA SchoolA { get; set; }
             [Navigate(NavigateType.OneToMany, nameof(BookA.studenId))]
             public List<BookA> Books { get; set; }
+
+            [Navigate(NavigateType.OneToMany, nameof(BookA.studenId),nameof(StudentId))]
+            public List<BookA> Books2 { get; set; }
 
         }
         public class SchoolA
