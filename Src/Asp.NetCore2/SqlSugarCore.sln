@@ -47,7 +47,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlSugar.ClickHouseCore", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClickHouseTest", "ClickHouseTest\ClickHouseTest.csproj", "{A5249DEC-D1E8-4D95-8C96-534EF98A3E1B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GbaseTest", "GbaseTest\GbaseTest.csproj", "{1D047616-7B42-403F-A54A-C677074CDACF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GbaseTest", "GbaseTest\GbaseTest.csproj", "{1D047616-7B42-403F-A54A-C677074CDACF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlSugar.GBaseCore", "SqlSugar.GBaseCore\SqlSugar.GBaseCore.csproj", "{73861B80-AC53-441D-A178-C8F3C1FF0FB3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D6090616-041D-4E87-99E2-737DA91CA47C}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -323,6 +330,18 @@ Global
 		{1D047616-7B42-403F-A54A-C677074CDACF}.Release|ARM32.Build.0 = Release|Any CPU
 		{1D047616-7B42-403F-A54A-C677074CDACF}.Release|x86.ActiveCfg = Release|Any CPU
 		{1D047616-7B42-403F-A54A-C677074CDACF}.Release|x86.Build.0 = Release|Any CPU
+		{73861B80-AC53-441D-A178-C8F3C1FF0FB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73861B80-AC53-441D-A178-C8F3C1FF0FB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73861B80-AC53-441D-A178-C8F3C1FF0FB3}.Debug|ARM32.ActiveCfg = Debug|Any CPU
+		{73861B80-AC53-441D-A178-C8F3C1FF0FB3}.Debug|ARM32.Build.0 = Debug|Any CPU
+		{73861B80-AC53-441D-A178-C8F3C1FF0FB3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{73861B80-AC53-441D-A178-C8F3C1FF0FB3}.Debug|x86.Build.0 = Debug|Any CPU
+		{73861B80-AC53-441D-A178-C8F3C1FF0FB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73861B80-AC53-441D-A178-C8F3C1FF0FB3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73861B80-AC53-441D-A178-C8F3C1FF0FB3}.Release|ARM32.ActiveCfg = Release|Any CPU
+		{73861B80-AC53-441D-A178-C8F3C1FF0FB3}.Release|ARM32.Build.0 = Release|Any CPU
+		{73861B80-AC53-441D-A178-C8F3C1FF0FB3}.Release|x86.ActiveCfg = Release|Any CPU
+		{73861B80-AC53-441D-A178-C8F3C1FF0FB3}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -331,6 +350,7 @@ Global
 		{D22873F3-80E1-4415-9CD6-21B1C7EEA4A0} = {88992AAF-146B-4253-9AD7-493E8F415B57}
 		{DD0C850D-86E5-4FFF-BFF3-8797EB448B47} = {88992AAF-146B-4253-9AD7-493E8F415B57}
 		{8C38F3D1-6D72-483C-9DBD-3111D6F5898D} = {88992AAF-146B-4253-9AD7-493E8F415B57}
+		{73861B80-AC53-441D-A178-C8F3C1FF0FB3} = {88992AAF-146B-4253-9AD7-493E8F415B57}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {230A85B9-54F1-41B1-B1DA-80086581B2B4}
