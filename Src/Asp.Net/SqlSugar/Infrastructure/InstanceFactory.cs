@@ -317,6 +317,10 @@ namespace SqlSugar
             {
                 return "SqlSugar.ClickHouse.ClickHouse" + name;
             }
+            else if (type == "GBase")
+            {
+                return "SqlSugar.GBase.GBase" + name;
+            }
             else if (type == "Custom")
             {
                 return CustomNamespace + "."+CustomDbName + name;
