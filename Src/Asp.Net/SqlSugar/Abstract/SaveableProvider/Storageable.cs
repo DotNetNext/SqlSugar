@@ -19,6 +19,7 @@ namespace SqlSugar
         Func<DateTime, string> formatTime;
         DbLockType? lockType;
         private string asname { get; set; }
+        private bool isDisableFilters = false;
         public Storageable(List<T> datas, SqlSugarProvider context)
         {
             this.Context = context;
@@ -61,6 +62,12 @@ namespace SqlSugar
         public IStorageable<T> SplitIgnore(Func<StorageableInfo<T>, bool> conditions, string message = null)
         {
             whereFuncs.Add(new KeyValuePair<StorageType, Func<StorageableInfo<T>, bool>, string>(StorageType.Ignore, conditions, message));
+            return this;
+        }
+
+        public IStorageable<T> DisableFilters() 
+        {
+            this.isDisableFilters = true;
             return this;
         }
 
@@ -120,7 +127,7 @@ namespace SqlSugar
             if (whereExpression == null && pkInfos.Any())
             {
                 this.Context.Utilities.PageEach(allDatas, 300, item => {
-                 var addItems=this.Context.Queryable<T>().TranLock(this.lockType).AS(asname).WhereClassByPrimaryKey(item.Select(it => it.Item).ToList()).ToList();
+                 var addItems=this.Context.Queryable<T>().Filter(null, this.isDisableFilters).TranLock(this.lockType).AS(asname).WhereClassByPrimaryKey(item.Select(it => it.Item).ToList()).ToList();
                     dbDataList.AddRange(addItems);
                 });
             }
@@ -202,7 +209,7 @@ namespace SqlSugar
             if (whereExpression == null && pkInfos.Any())
             {
                 await this.Context.Utilities.PageEachAsync(allDatas, 300,async item => {
-                    var addItems =await this.Context.Queryable<T>().AS(asname).TranLock(this.lockType).WhereClassByPrimaryKey(item.Select(it => it.Item).ToList()).ToListAsync();
+                    var addItems =await this.Context.Queryable<T>().Filter(null,this.isDisableFilters).AS(asname).TranLock(this.lockType).WhereClassByPrimaryKey(item.Select(it => it.Item).ToList()).ToListAsync();
                     dbDataList.AddRange(addItems);
                 });
             }
