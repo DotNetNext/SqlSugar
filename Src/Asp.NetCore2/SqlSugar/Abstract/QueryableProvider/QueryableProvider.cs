@@ -422,8 +422,9 @@ namespace SqlSugar
             _WhereClassByPrimaryKey(new List<T>() { data });
             return this;
         }
-        public ISugarQueryable<T> TranLock(DbLockType LockType = DbLockType.Wait) 
+        public ISugarQueryable<T> TranLock(DbLockType? LockType = DbLockType.Wait) 
         {
+            if (LockType == null) return this;
             Check.ExceptionEasy(this.Context.Ado.Transaction == null, "need BeginTran", "需要事务才能使用TranLock");
             Check.ExceptionEasy(this.QueryBuilder.IsSingle()==false, "TranLock, can only be used for single table query", "TranLock只能用在单表查询");
             if (this.Context.CurrentConnectionConfig.DbType == DbType.SqlServer)

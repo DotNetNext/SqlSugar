@@ -17,6 +17,8 @@ namespace SqlSugar
         IStorageable<T> Saveable(string inserMessage = null, string updateMessage = null);
         IStorageable<T> SplitError(Func<StorageableInfo<T>, bool> conditions, string message = null);
         IStorageable<T> SplitIgnore(Func<StorageableInfo<T>, bool> conditions, string message = null);
+        IStorageable<T> DisableFilters();
+        IStorageable<T> TranLock(DbLockType LockType = DbLockType.Wait);
         IStorageable<T> SplitDelete(Func<StorageableInfo<T>, bool> conditions, string message = null);
         IStorageable<T> SplitOther(Func<StorageableInfo<T>, bool> conditions, string message = null);
         StorageableResult<T> ToStorage();
