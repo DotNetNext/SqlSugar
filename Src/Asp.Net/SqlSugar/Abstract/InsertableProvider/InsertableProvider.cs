@@ -79,62 +79,26 @@ namespace SqlSugar
             var isIdEntity = pkInfo.IsIdentity|| (pkInfo.OracleSequenceName.HasValue()&&this.Context.CurrentConnectionConfig.DbType==DbType.Oracle);
             if (pkInfo.UnderType == UtilConstants.LongType)
             {
-                var list = this.ExecuteReturnSnowflakeIdList();
-                try
-                {
-                    return list.Cast<Type>().ToList();
-                }
-                catch  
-                {
-                    Check.ExceptionEasy($"long to ExecuteReturnPkList<{typeof(Type).Name}> error ", $" long 转换成ExecuteReturnPkList<{typeof(Type).Name}>失败");
-                    return null;
-                }
+                return InsertPkListLong<Type>();
             }
             else if (isIdEntity&&this.InsertObjs.Length==1)
             {
-                if (pkInfo.UnderType == UtilConstants.IntType)
-                {
-                    return new List<Type> { (Type)(object)this.ExecuteReturnIdentity() };
-                }
-                else 
-                {
-                    return new List<Type> { (Type)(object)this.ExecuteReturnBigIdentity() };
-                }
+                return InsertPkListIdentityCount1<Type>(pkInfo);
             }
             else if (isIdEntity && this.InsertBuilder.ConvertInsertReturnIdFunc == null)
             {
-                Check.ExceptionEasy("The current database does not support batch auto increment", "当前数据库不支持批量返回自增");
-                return null;
+                return InsertPkListNoFunc<Type>(pkInfo);
             }
             else if (isIdEntity && this.InsertBuilder.ConvertInsertReturnIdFunc != null)
             {
-                InsertBuilder.IsReturnPkList = true;
-                InsertBuilder.IsNoPage = true;
-                string sql = _ExecuteCommand();
-                sql = this.InsertBuilder.ConvertInsertReturnIdFunc(SqlBuilder.GetTranslationColumnName(pkInfo.DbColumnName),sql);
-                var result = Ado.SqlQuery<Type>(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
-                After(sql, null);
-                return result;
+                return InsertPkListWithFunc<Type>(pkInfo);
             }
             else
             {
-                Check.ExceptionEasy(pkInfo.UnderType.Name != typeof(Type).Name,$"{pkInfo.UnderType.Name} to ExecuteReturnPkList<{typeof(Type).Name}> error ", $" {pkInfo.UnderType.Name} 转换成ExecuteReturnPkList<{typeof(Type).Name}>失败");
-                this.ExecuteCommand();
-                List<Type> result = new List<Type>();
-                if (InsertBuilder.DbColumnInfoList.HasValue())
-                {
-                    foreach (var item in InsertBuilder.DbColumnInfoList)
-                    {
-                        var isPk = item.DbColumnName.EqualCase(pkInfo.DbColumnName);
-                        if (isPk)
-                        {
-                            result.Add((Type)item.Value);
-                        }
-                    }
-                }
-                return result;
+                return InsertPkListGuid<Type>(pkInfo);
             }
         }
+
         public virtual int ExecuteReturnIdentity()
         {
             if (this.InsertObjs.Count() == 1 && this.InsertObjs.First() == null)

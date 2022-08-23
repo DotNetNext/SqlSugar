@@ -512,5 +512,105 @@ namespace SqlSugar
         }
 
         #endregion
+
+        #region Insert PkList
+
+        private List<Type> InsertPkListWithFunc<Type>(EntityColumnInfo pkInfo)
+        {
+            InsertBuilder.IsReturnPkList = true;
+            InsertBuilder.IsNoPage = true;
+            string sql = _ExecuteCommand();
+            sql = this.InsertBuilder.ConvertInsertReturnIdFunc(SqlBuilder.GetTranslationColumnName(pkInfo.DbColumnName), sql);
+            var result = Ado.SqlQuery<Type>(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
+            After(sql, null);
+            return result;
+        }
+
+        private List<Type> InsertPkListNoFunc<Type>(EntityColumnInfo pkInfo)
+        {
+            if (this.Ado.Transaction != null)
+            {
+                return ReturnDefaultIdentity<Type>(pkInfo);
+            }
+            else
+            {
+                try
+                {
+                    this.Context.Ado.BeginTran();
+                    var result = ReturnDefaultIdentity<Type>(pkInfo);
+                    this.Context.Ado.CommitTran();
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    this.Context.Ado.RollbackTran();
+                    throw ex;
+                }
+            }
+        }
+
+        private List<Type> InsertPkListIdentityCount1<Type>(EntityColumnInfo pkInfo)
+        {
+            if (pkInfo.UnderType == UtilConstants.IntType)
+            {
+                return new List<Type> { (Type)(object)this.ExecuteReturnIdentity() };
+            }
+            else
+            {
+                return new List<Type> { (Type)(object)this.ExecuteReturnBigIdentity() };
+            }
+        }
+
+        private List<Type> InsertPkListLong<Type>()
+        {
+            var list = this.ExecuteReturnSnowflakeIdList();
+            try
+            {
+                return list.Cast<Type>().ToList();
+            }
+            catch
+            {
+                Check.ExceptionEasy($"long to ExecuteReturnPkList<{typeof(Type).Name}> error ", $" long 转换成ExecuteReturnPkList<{typeof(Type).Name}>失败");
+                return null;
+            }
+        }
+
+        private List<Type> InsertPkListGuid<Type>(EntityColumnInfo pkInfo)
+        {
+            Check.ExceptionEasy(pkInfo.UnderType.Name != typeof(Type).Name, $"{pkInfo.UnderType.Name} to ExecuteReturnPkList<{typeof(Type).Name}> error ", $" {pkInfo.UnderType.Name} 转换成ExecuteReturnPkList<{typeof(Type).Name}>失败");
+            this.ExecuteCommand();
+            List<Type> result = new List<Type>();
+            if (InsertBuilder.DbColumnInfoList.HasValue())
+            {
+                foreach (var item in InsertBuilder.DbColumnInfoList)
+                {
+                    var isPk = item.DbColumnName.EqualCase(pkInfo.DbColumnName);
+                    if (isPk)
+                    {
+                        result.Add((Type)item.Value);
+                    }
+                }
+            }
+            return result;
+        }
+        private List<Type> ReturnDefaultIdentity<Type>(EntityColumnInfo pkInfo)
+        {
+            List<Type> result = new List<Type>();
+            foreach (var item in this.InsertObjs)
+            {
+                var insertable = this.Context.Insertable(item)
+                    .InsertColumns(this.InsertBuilder.DbColumnInfoList.Select(it => it.DbColumnName).Distinct().ToArray());
+                if (pkInfo.UnderType == UtilConstants.IntType)
+                {
+                    result.Add((Type)(object)insertable.ExecuteReturnIdentity());
+                }
+                else
+                {
+                    result.Add((Type)(object)insertable.ExecuteReturnBigIdentity());
+                }
+            }
+            return result;
+        }
+        #endregion
     }
 }
