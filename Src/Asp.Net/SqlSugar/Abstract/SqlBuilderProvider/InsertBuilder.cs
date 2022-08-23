@@ -120,6 +120,9 @@ namespace SqlSugar
                 return result;
             }
         }
+
+        public virtual Func<string,string,string> ConvertInsertReturnIdFunc { get;   set; }
+
         public virtual ExpressionResult GetExpressionValue(Expression expression, ResolveExpressType resolveType)
         {
             ILambdaExpressions resolveExpress = this.LambdaExpressions;

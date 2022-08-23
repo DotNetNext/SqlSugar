@@ -32,6 +32,10 @@ namespace SqlSugar
 
         public override string SqlTemplateBatchSelect => " {0} ";
 
+        public override Func<string, string, string> ConvertInsertReturnIdFunc { get; set; } = (name, sql) =>
+        {
+            return sql.Trim().TrimEnd(';')+ $"returning {name} ";
+        };
         public override string ToSqlString()
         {
             if (IsNoInsertNull)
