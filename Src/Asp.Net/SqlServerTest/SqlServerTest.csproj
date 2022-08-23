@@ -106,6 +106,7 @@
     <Compile Include="UnitTest\Models\ImsBillStk.cs" />
     <Compile Include="UnitTest\UnitSub.cs" />
     <Compile Include="UnitTest\UnitTestConfigQuery.cs" />
+    <Compile Include="UnitTest\UnitTestReturnPkList.cs" />
     <Compile Include="UnitTest\UnitUpdateNavN3.cs" />
     <Compile Include="UnitTest\UnitOneToOne12.cs" />
     <Compile Include="UnitTest\Models\poetry_video_comment.cs" />
