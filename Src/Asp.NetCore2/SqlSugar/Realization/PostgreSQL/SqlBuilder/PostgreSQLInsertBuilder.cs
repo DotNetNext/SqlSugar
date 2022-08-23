@@ -56,6 +56,10 @@ namespace SqlSugar
                 StringBuilder batchInsetrSql = new StringBuilder();
                 int pageSize = 200;
                 int pageIndex = 1;
+                if (IsNoPage&&IsReturnPkList) 
+                {
+                    pageSize = groupList.Count;
+                }
                 int totalRecord = groupList.Count;
                 int pageCount = (totalRecord + pageSize - 1) / pageSize;
                 while (pageCount >= pageIndex)
