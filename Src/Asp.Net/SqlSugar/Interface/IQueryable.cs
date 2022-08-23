@@ -58,7 +58,7 @@ namespace SqlSugar
         ISugarQueryable<T> WhereColumns(List<Dictionary<string, object>> columns);
         ISugarQueryable<T> WhereColumns(Dictionary<string, object> columns, bool ignoreDefaultValue);
         ISugarQueryable<T> WhereColumns(Dictionary<string, object> columns);
-        ISugarQueryable<T> TranLock(DbLockType LockType = DbLockType.Wait);
+        ISugarQueryable<T> TranLock(DbLockType? LockType = DbLockType.Wait);
         ISugarQueryable<T> Where(Expression<Func<T, bool>> expression);
         ISugarQueryable<T> Where(string whereString, object parameters = null);
         ISugarQueryable<T> Where(List<IConditionalModel> conditionalModels);
