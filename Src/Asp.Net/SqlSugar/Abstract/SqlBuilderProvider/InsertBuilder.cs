@@ -122,6 +122,7 @@ namespace SqlSugar
         }
 
         public virtual Func<string,string,string> ConvertInsertReturnIdFunc { get;   set; }
+        public virtual bool IsNoPage { get;  set; }
 
         public virtual ExpressionResult GetExpressionValue(Expression expression, ResolveExpressType resolveType)
         {

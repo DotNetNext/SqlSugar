@@ -12,6 +12,7 @@ namespace SqlSugar
         {
             return sql.Replace("select SCOPE_IDENTITY();", "").Replace(")\r\n SELECT", $")\r\n OUTPUT INSERTED.{name} as {name}  \r\nSELECT");
         };
+        public override bool IsNoPage { get; set; } = true;
         public override string ToSqlString()
         {
             if (IsNoInsertNull)
@@ -37,6 +38,10 @@ namespace SqlSugar
                 else if (this.EntityInfo.Columns.Count > 20)
                 {
                     pageSize = 100;
+                }
+                if (IsNoPage) 
+                {
+                    pageSize = groupList.Count;
                 }
                 int pageIndex = 1;
                 int totalRecord = groupList.Count;
