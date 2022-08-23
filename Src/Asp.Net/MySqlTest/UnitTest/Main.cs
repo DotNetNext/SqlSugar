@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UnitTestReturnPkList.Init();
             UnitSameKeyBug.Init();
             UOneManyMany.init();
             UDelete.Init();
