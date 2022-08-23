@@ -70,6 +70,35 @@ namespace SqlSugar
             RestoreMapping();
             return new KeyValuePair<string, List<SugarParameter>>(sql, InsertBuilder.Parameters);
         }
+
+        public virtual List<Type> ExecuteReturnPkList<Type>() 
+        {
+           var pkInfo= this.EntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey == true);
+            Check.ExceptionEasy(pkInfo==null,"ExecuteReturnPkList need primary key", "ExecuteReturnPkList需要主键");
+            Check.ExceptionEasy(this.EntityInfo.Columns.Count(it => it.IsPrimarykey == true)>1, "ExecuteReturnPkList ，Only support technology single primary key", "ExecuteReturnPkList只支技单主键");
+            var isIdEntity = pkInfo.IsIdentity|| (pkInfo.OracleSequenceName.HasValue()&&this.Context.CurrentConnectionConfig.DbType==DbType.Oracle);
+            if (pkInfo.UnderType == UtilConstants.LongType)
+            {
+                return InsertPkListLong<Type>();
+            }
+            else if (isIdEntity&&this.InsertObjs.Length==1)
+            {
+                return InsertPkListIdentityCount1<Type>(pkInfo);
+            }
+            else if (isIdEntity && this.InsertBuilder.ConvertInsertReturnIdFunc == null)
+            {
+                return InsertPkListNoFunc<Type>(pkInfo);
+            }
+            else if (isIdEntity && this.InsertBuilder.ConvertInsertReturnIdFunc != null)
+            {
+                return InsertPkListWithFunc<Type>(pkInfo);
+            }
+            else
+            {
+                return InsertPkListGuid<Type>(pkInfo);
+            }
+        }
+
         public virtual int ExecuteReturnIdentity()
         {
             if (this.InsertObjs.Count() == 1 && this.InsertObjs.First() == null)

@@ -8,6 +8,11 @@ namespace SqlSugar
 {
     public class SqlServerInsertBuilder:InsertBuilder
     {
+        public override Func<string, string, string> ConvertInsertReturnIdFunc { get; set; } = (name, sql) =>
+        {
+            return sql.Replace("select SCOPE_IDENTITY();", "").Replace(")\r\n SELECT", $")\r\n OUTPUT INSERTED.{name} as {name}  \r\nSELECT");
+        };
+        public override bool IsNoPage { get; set; } = true;
         public override string ToSqlString()
         {
             if (IsNoInsertNull)
@@ -33,6 +38,10 @@ namespace SqlSugar
                 else if (this.EntityInfo.Columns.Count > 20)
                 {
                     pageSize = 100;
+                }
+                if (IsNoPage && IsReturnPkList) 
+                {
+                    pageSize = groupList.Count;
                 }
                 int pageIndex = 1;
                 int totalRecord = groupList.Count;

@@ -31,6 +31,10 @@ namespace SqlSugar
         public Dictionary<string, int> OracleSeqInfoList { get; set; }
         public bool IsBlukCopy { get; set; }
         public virtual bool IsOleDb { get; set; }
+        public virtual Func<string, string, string> ConvertInsertReturnIdFunc { get; set; }
+        public virtual bool IsNoPage { get; set; }
+
+        public virtual bool IsReturnPkList { get; set; }
         #endregion
 
         #region SqlTemplate
