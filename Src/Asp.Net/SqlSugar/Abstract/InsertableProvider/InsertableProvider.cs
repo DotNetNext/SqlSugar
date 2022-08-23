@@ -108,8 +108,9 @@ namespace SqlSugar
             }
             else if (isIdEntity && this.InsertBuilder.ConvertInsertReturnIdFunc != null)
             {
-                string sql = _ExecuteCommand();
+                InsertBuilder.IsReturnPkList = true;
                 InsertBuilder.IsNoPage = true;
+                string sql = _ExecuteCommand();
                 sql = this.InsertBuilder.ConvertInsertReturnIdFunc(SqlBuilder.GetTranslationColumnName(pkInfo.DbColumnName),sql);
                 var result = Ado.SqlQuery<Type>(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
                 After(sql, null);

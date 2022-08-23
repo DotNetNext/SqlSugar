@@ -39,12 +39,9 @@ namespace SqlSugar
                 {
                     pageSize = 100;
                 }
-                if (IsNoPage) 
+                if (IsNoPage && IsReturnPkList) 
                 {
-                    if(this.EntityInfo.Columns.Any(it => it.IsIdentity))
-                    {
-                        pageSize = groupList.Count; 
-                    }
+                    pageSize = groupList.Count;
                 }
                 int pageIndex = 1;
                 int totalRecord = groupList.Count;
