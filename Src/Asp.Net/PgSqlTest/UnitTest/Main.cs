@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UnitTestReturnPkList.Init();
             UCustom07.Init();
             UCustom016.Init();
             UCustom08.Init();
