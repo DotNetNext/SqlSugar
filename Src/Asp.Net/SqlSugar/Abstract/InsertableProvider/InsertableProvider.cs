@@ -74,7 +74,8 @@ namespace SqlSugar
         public virtual List<Type> ExecuteReturnPkList<Type>() 
         {
            var pkInfo= this.EntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey == true);
-           Check.ExceptionEasy(pkInfo==null,"ExecuteReturnPkList need primary key", "ExecuteReturnPkList需要主键");
+            Check.ExceptionEasy(pkInfo==null,"ExecuteReturnPkList need primary key", "ExecuteReturnPkList需要主键");
+            Check.ExceptionEasy(this.EntityInfo.Columns.Count(it => it.IsPrimarykey == true)>1, "ExecuteReturnPkList ，Only support technology single primary key", "ExecuteReturnPkList只支技单主键");
             var isIdEntity = pkInfo.IsIdentity|| (pkInfo.OracleSequenceName.HasValue()&&this.Context.CurrentConnectionConfig.DbType==DbType.Oracle);
             if (pkInfo.UnderType == UtilConstants.LongType)
             {
@@ -108,7 +109,7 @@ namespace SqlSugar
             else if (isIdEntity && this.InsertBuilder.ConvertInsertReturnIdFunc != null)
             {
                 string sql = _ExecuteCommand();
-                sql= this.InsertBuilder.ConvertInsertReturnIdFunc(pkInfo.DbColumnName,sql);
+                sql= this.InsertBuilder.ConvertInsertReturnIdFunc(SqlBuilder.GetTranslationColumnName(pkInfo.DbColumnName),sql);
                 var result = Ado.SqlQuery<Type>(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
                 After(sql, null);
                 return result;

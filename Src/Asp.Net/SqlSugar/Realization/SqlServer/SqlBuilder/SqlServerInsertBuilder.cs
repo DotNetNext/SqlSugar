@@ -8,6 +8,10 @@ namespace SqlSugar
 {
     public class SqlServerInsertBuilder:InsertBuilder
     {
+        public override Func<string, string, string> ConvertInsertReturnIdFunc { get; set; } = (name, sql) =>
+        {
+            return sql.Replace("select SCOPE_IDENTITY();", "").Replace(")\r\n SELECT", $")\r\n OUTPUT INSERTED.{name} as {name}  \r\nSELECT");
+        };
         public override string ToSqlString()
         {
             if (IsNoInsertNull)
