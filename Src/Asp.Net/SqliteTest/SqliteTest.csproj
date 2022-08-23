@@ -90,6 +90,7 @@
     <Compile Include="UnitTest\UCustom02.cs" />
     <Compile Include="UnitTest\UInsert.cs" />
     <Compile Include="UnitTest\UJson.cs" />
+    <Compile Include="UnitTest\UnitTestReturnPkList.cs" />
     <Compile Include="UnitTest\Updateable.cs" />
     <Compile Include="UnitTest\UQueryable.cs" />
     <Compile Include="UnitTest\UQueryableAsync.cs" />
