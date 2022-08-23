@@ -771,9 +771,13 @@ namespace SqlSugar
                     type = DbType.Oracle;
                 else if (this.Context is PostgreSQLExpressionContext)
                     type = DbType.PostgreSQL;
-                else if (this.Context.GetType().Name.StartsWith("MySql")) 
+                else if (this.Context.GetType().Name.StartsWith("MySql"))
                 {
                     type = DbType.MySql;
+                }
+                else 
+                {
+                    type = GetType(this.Context.GetType().Name);
                 }
                 return this.Context.SqlFuncServices.First(it => it.UniqueMethodName == name).MethodValue(model, type, this.Context);
             }
@@ -1019,6 +1023,20 @@ namespace SqlSugar
                 }
             }
             return null;
+        }
+
+        private DbType GetType(string name)
+        {
+            DbType result = DbType.SqlServer;
+            foreach (var item in UtilMethods.EnumToDictionary<DbType>())
+            {
+                if (name.StartsWith(item.Value.ToString())) 
+                {
+                    result = item.Value;
+                    break;
+                }
+            }
+            return result;
         }
 
         private bool IsContainsArray(MethodCallExpression express, string methodName, bool isValidNativeMethod)
