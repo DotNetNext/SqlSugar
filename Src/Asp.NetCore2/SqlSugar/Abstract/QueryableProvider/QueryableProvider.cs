@@ -855,7 +855,14 @@ namespace SqlSugar
             _GroupBy(expression);
             return this;
         }
-
+        public virtual ISugarQueryable<T> GroupByIF(bool isGroupBy,Expression<Func<T, object>> expression)
+        {
+            if (isGroupBy)
+            {
+                GroupBy(expression);
+            }
+            return this;
+        }
         public virtual ISugarQueryable<T> OrderByIF(bool isOrderBy, string orderFileds)
         {
             if (isOrderBy)
@@ -3703,6 +3710,22 @@ namespace SqlSugar
         #endregion
 
         #region GroupBy
+        public new virtual ISugarQueryable<T,T2> GroupByIF(bool isGroupBy, Expression<Func<T, object>> expression)
+        {
+            if (isGroupBy)
+            {
+                GroupBy(expression);
+            }
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2> GroupByIF(bool isGroupBy, Expression<Func<T, T2, object>> expression)
+        {
+            if (isGroupBy)
+            {
+                GroupBy(expression);
+            }
+            return this;
+        }
         public new virtual ISugarQueryable<T,T2> HavingIF(bool isHaving, Expression<Func<T, bool>> expression)
         {
             if (isHaving)
@@ -4027,6 +4050,30 @@ namespace SqlSugar
         }
 
         #region  Group 
+        public new virtual ISugarQueryable<T, T2, T3> GroupByIF(bool isGroupBy, Expression<Func<T, object>> expression)
+        {
+            if (isGroupBy)
+            {
+                GroupBy(expression);
+            }
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3> GroupByIF(bool isGroupBy, Expression<Func<T, T2, object>> expression)
+        {
+            if (isGroupBy)
+            {
+                GroupBy(expression);
+            }
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3> GroupByIF(bool isGroupBy, Expression<Func<T, T2, T3, object>> expression)
+        {
+            if (isGroupBy)
+            {
+                GroupBy(expression);
+            }
+            return this;
+        }
         public ISugarQueryable<T, T2, T3> GroupBy(Expression<Func<T, T2, T3, object>> expression)
         {
             _GroupBy(expression);
@@ -4729,6 +4776,38 @@ namespace SqlSugar
         #endregion
 
         #region GroupBy
+        public new virtual ISugarQueryable<T, T2, T3, T4> GroupByIF(bool isGroupBy, Expression<Func<T, object>> expression)
+        {
+            if (isGroupBy)
+            {
+                GroupBy(expression);
+            }
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4> GroupByIF(bool isGroupBy, Expression<Func<T, T2, object>> expression)
+        {
+            if (isGroupBy)
+            {
+                GroupBy(expression);
+            }
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4> GroupByIF(bool isGroupBy, Expression<Func<T, T2, T3, object>> expression)
+        {
+            if (isGroupBy)
+            {
+                GroupBy(expression);
+            }
+            return this;
+        }
+        public virtual ISugarQueryable<T, T2, T3, T4> GroupByIF(bool isGroupBy, Expression<Func<T, T2, T3,T4, object>> expression)
+        {
+            if (isGroupBy)
+            {
+                GroupBy(expression);
+            }
+            return this;
+        }
         public new ISugarQueryable<T, T2, T3, T4> GroupBy(Expression<Func<T, object>> expression)
         {
             _GroupBy(expression);
