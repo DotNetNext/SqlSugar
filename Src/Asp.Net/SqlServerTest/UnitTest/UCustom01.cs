@@ -55,6 +55,14 @@ namespace OrmTest
             var x4 = db.Queryable<BoolTest12313>().Where(it =>SqlFunc.HasValue(it.name) == true).ToList();
             var x5 = db.Queryable<BoolTest12313>().Where(it => SqlFunc.HasValue(it.name) ).ToList();
             var x6 = db.Queryable<BoolTest12313>().Select(it => new  { x=SqlFunc.HasValue(it.name)}).ToList();
+            db.CurrentConnectionConfig.MoreSettings = new ConnMoreSettings()
+            { 
+                 IsWithNoLockQuery=true
+            };
+            var sql=db.Queryable<Order>().LeftJoin<Order>((z, y) => z.Id == y.Id).ToSql().Key;
+            if (!sql.Contains(SqlWith.NoLock)) { throw new Exception("unit error"); }
+            var sql2=db.SqlQueryable<Order>("select * from [Order]").With(SqlWith.Null).LeftJoin<OrderItem>((z, y) => z.Id == y.OrderId).ToSql().Key;
+            if (sql2.Contains(SqlWith.NoLock)) { throw new Exception("unit error"); }
             db.DbMaintenance.DropTable("BoolTest12313");
         }
 
