@@ -150,7 +150,14 @@ namespace SqlSugar
         {
             var parameter = model.Args[0];
             var parameter1 = model.Args[1];
-            return string.Format("IFNULL({0},{1})", parameter.MemberName, parameter1.MemberName);
+            if (parameter1.MemberValue is bool)
+            {
+                return string.Format("IFNULL(CAST({0} as SIGNED),{1})", parameter.MemberName, parameter1.MemberName);
+            }
+            else
+            {
+                return string.Format("IFNULL({0},{1})", parameter.MemberName, parameter1.MemberName);
+            }
         }
         public override string GetDate()
         {
