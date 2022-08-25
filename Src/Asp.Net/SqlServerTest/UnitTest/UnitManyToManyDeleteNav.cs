@@ -44,9 +44,13 @@ namespace OrmTest
                  ScheduleId=1,
                   SysUserId=1
             }).ExecuteCommand();
+            db.MappingTables = new MappingTableList();
+            db.MappingColumns = new MappingColumnList();
             db.DeleteNav<ScheduleEntity>(x => true)
                             .Include(x => x.SysUsers.Where(u => u.Id == 1).ToList()) // B表
                             .ExecuteCommand();
+
+        
         }
 
     }
