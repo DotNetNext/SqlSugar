@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UnitManyToManyDeleteNav.Init();
             UnitTestReturnPkList.Init();
             UnitCustom12312.Init();
             UnitEnum22.Init();
