@@ -221,6 +221,15 @@ namespace SqlSugar
             return info;
         }
 
+        internal static object GetConvertValue(object entityValue)
+        {
+            if (entityValue != null && entityValue is DateTime)
+            {
+                entityValue = entityValue.ObjToDate().ToString("yyyy-MM-dd HH:mm:ss.fff");
+            }
+            return entityValue;
+        }
+
         internal static T To<T>(object value)
         {
             return (T)To(value, typeof(T));
