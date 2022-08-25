@@ -100,12 +100,14 @@ namespace SqlSugar
             }
             else if (method.Method.Name == "Where")
             {
+                this._Context.InitMappingInfo<T>();
                 navigatManager.CheckHasRootShortName(method.Arguments[0], method.Arguments[1]);
                 var exp = method.Arguments[1];
                 _WhereList.Add(" " + queryBuilder.GetExpressionValue(exp, ResolveExpressType.WhereSingle).GetString());
             }
             else if (method.Method.Name == "WhereIF")
             {
+                this._Context.InitMappingInfo<T>();
                 var isOk = LambdaExpression.Lambda(method.Arguments[1]).Compile().DynamicInvoke();
                 if (isOk.ObjToBool())
                 {

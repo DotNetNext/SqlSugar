@@ -107,6 +107,7 @@ namespace SqlSugar
                     var entityPropertyName = this.Context.EntityMaintenance.GetPropertyName<T>(primaryField);
                     var columnInfo = EntityInfo.Columns.Single(it => it.PropertyName.Equals(entityPropertyName, StringComparison.CurrentCultureIgnoreCase));
                     var value = columnInfo.PropertyInfo.GetValue(deleteObj, null);
+                    value = UtilMethods.GetConvertValue(value);
                     primaryKeyValues.Add(value);
                 }
                 if (primaryKeyValues.Count < 10000)
@@ -168,6 +169,11 @@ namespace SqlSugar
                         }
                         else
                         {
+                            if ((columnInfo.SqlParameterDbType.ObjToString()==System.Data.DbType.AnsiString.ObjToString()) ||!(entityValue is string)||this.Context.CurrentConnectionConfig?.MoreSettings?.DisableNvarchar==true)
+                            {
+                                tempequals = tempequals.Replace("=N'", "='");
+                            }
+                            entityValue = UtilMethods.GetConvertValue(entityValue);
                             andString.AppendFormat(tempequals, primaryField, entityValue);
                         }
                         ++i;
@@ -179,7 +185,6 @@ namespace SqlSugar
             }
             return this;
         }
-
         public IDeleteable<T> Where(Expression<Func<T, bool>> expression)
         {
             var expResult = DeleteBuilder.GetExpressionValue(expression, ResolveExpressType.WhereSingle);
