@@ -22,6 +22,7 @@ namespace SqlSugar
         public DeleteNavProvider<Root, TChild> ThenInclude< TChild>(Expression<Func<T, TChild>> expression)
             where TChild : class, new()
         {
+            this._Context.InitMappingInfo<TChild>();
             InitParentList();
             Expression newExp = GetMamber(expression);
             var name = ExpressionTool.GetMemberName(expression);
@@ -48,6 +49,7 @@ namespace SqlSugar
         public DeleteNavProvider<Root, TChild> ThenInclude<TChild>(Expression<Func<T, List<TChild>>> expression)
          where TChild : class, new()
         {
+            this._Context.InitMappingInfo<TChild>();
             InitParentList();
             Expression newExp = GetMamber(expression);
             var name = ExpressionTool.GetMemberName(newExp);
@@ -100,14 +102,12 @@ namespace SqlSugar
             }
             else if (method.Method.Name == "Where")
             {
-                this._Context.InitMappingInfo<T>();
                 navigatManager.CheckHasRootShortName(method.Arguments[0], method.Arguments[1]);
                 var exp = method.Arguments[1];
                 _WhereList.Add(" " + queryBuilder.GetExpressionValue(exp, ResolveExpressType.WhereSingle).GetString());
             }
             else if (method.Method.Name == "WhereIF")
             {
-                this._Context.InitMappingInfo<T>();
                 var isOk = LambdaExpression.Lambda(method.Arguments[1]).Compile().DynamicInvoke();
                 if (isOk.ObjToBool())
                 {
