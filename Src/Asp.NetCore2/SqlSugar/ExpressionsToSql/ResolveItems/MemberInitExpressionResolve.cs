@@ -245,6 +245,7 @@ namespace SqlSugar
                     base.Expression = item;
                     base.Start();
                     var subSql = base.Context.GetEqString(memberName, parameter.CommonTempData.ObjToString());
+                    var isSubJoin = subSql.Contains(" JOIN ")&& subSql.Contains(" ON ");
                     if (subSql.Contains(","))
                     {
                         subSql = subSql.Replace(",", UtilConstants.ReplaceCommaKey);
@@ -255,6 +256,11 @@ namespace SqlSugar
                         if (name.Contains("."))
                         {
 
+                        }
+                        else if(isSubJoin)
+                        {
+                            var shortName=(base.BaseParameter.BaseParameter.CurrentExpression as LambdaExpression).Parameters[0].Name;
+                            subSql = subSql.Replace(this.Context.GetTranslationColumnName(shortName), name);
                         }
                         else
                         {
