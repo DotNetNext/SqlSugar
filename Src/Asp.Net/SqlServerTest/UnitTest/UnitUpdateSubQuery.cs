@@ -66,7 +66,7 @@ namespace OrmTest
             db.DbMaintenance.DropTable("StudentEntity");
             Console.WriteLine(result);
             Console.WriteLine("用例跑完");
-            Console.ReadKey();
+       
         }
 
         internal class ClassEntity

@@ -26,8 +26,26 @@ namespace OrmTest
             //if (schIds == null) return;
             //Db.Deleteable<Schedule_SysUser_Mapping>(x => schIds.Contains(x.ScheduleId) && x.SysUserId == userId).ExecuteCommand();
             //只删除关系
-            db.DeleteNav<ScheduleEntity>(x => x.BusinessKey == businessKey)
-                            .Include(x => x.SysUsers.Where(u => u.Id == 100).ToList()) // B表
+            db.DbMaintenance.TruncateTable<ScheduleEntity>();
+            db.DbMaintenance.TruncateTable<Schedule_SysUser_Mapping>();
+            db.DbMaintenance.TruncateTable<SysUserEntity>();
+            db.Insertable(new SysUserEntity()
+            {
+                 Id=1,
+                  userName="A"
+            }).ExecuteCommand();
+            db.Insertable(new ScheduleEntity()
+            {
+                Id = 1,
+                  Route = "A"
+            }).ExecuteCommand();
+            db.Insertable(new Schedule_SysUser_Mapping()
+            {
+                 ScheduleId=1,
+                  SysUserId=1
+            }).ExecuteCommand();
+            db.DeleteNav<ScheduleEntity>(x => true)
+                            .Include(x => x.SysUsers.Where(u => u.Id == 1).ToList()) // B表
                             .ExecuteCommand();
         }
 
