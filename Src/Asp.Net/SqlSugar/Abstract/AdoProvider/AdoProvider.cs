@@ -1528,6 +1528,12 @@ namespace SqlSugar
                             item.Value = DBNull.Value;
                         }
                     }
+                    if (item.ParameterName != null && item.ParameterName.Contains(" ")) 
+                    {
+                        var oldName = item.ParameterName;
+                        item.ParameterName = item.ParameterName.Replace(" ", "");
+                        sql = sql.Replace(oldName, item.ParameterName);
+                    }
                 }
             }
         }
