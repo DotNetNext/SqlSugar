@@ -9,7 +9,12 @@ namespace SqlSugar.GBase
 {
     public class GBaseBuilder : SqlBuilderProvider
     {
-        public override string SqlTranslationLeft { get { return "["; } }
-        public override string SqlTranslationRight { get { return "]"; } }
+        public override string SqlTranslationLeft { get { return ""; } }
+        public override string SqlTranslationRight { get { return ""; } }
+        public override string GetNoTranslationColumnName(string name)
+        {
+            return name;
+        }
     }
+
 }

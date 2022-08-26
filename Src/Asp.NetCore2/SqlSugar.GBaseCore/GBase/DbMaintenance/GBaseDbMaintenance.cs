@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace SqlSugar.GBase
 {
@@ -12,7 +13,7 @@ namespace SqlSugar.GBase
         {
             get
             {
-                return "SELECT NAME FROM master.dbo.sysdatabases ORDER BY NAME";
+                throw new NotSupportedException();
             }
         }
         protected override string GetColumnInfosByTableNameSql
@@ -67,18 +68,24 @@ namespace SqlSugar.GBase
         {
             get
             {
-                return @"SELECT s.Name,Convert(varchar(max),tbp.value) as Description
-                            FROM sysobjects s
-					     	LEFT JOIN sys.extended_properties as tbp ON s.id=tbp.major_id and tbp.minor_id=0 AND (tbp.Name='MS_Description' OR tbp.Name is null)  WHERE s.xtype IN('U') ";
+                return @"select
+trim(a.tabname) as name,
+trim(b.comments) as Description 
+from systables a
+left join syscomments b on b.tabname = a.tabname
+where a.tabtype in ('T')  and not (a.tabname like 'sys%') AND a.tabname <>'dual' ";
             }
         }
         protected override string GetViewInfoListSql
         {
             get
             {
-                return @"SELECT s.Name,Convert(varchar(max),tbp.value) as Description
-                            FROM sysobjects s
-					     	LEFT JOIN sys.extended_properties as tbp ON s.id=tbp.major_id and tbp.minor_id=0  AND (tbp.Name='MS_Description' OR tbp.Name is null) WHERE s.xtype IN('V')  ";
+                return @"select
+trim(a.tabname) as name,
+trim(b.comments) as Description 
+from systables a
+left join syscomments b on b.tabname = a.tabname
+where a.tabtype in ('V')  and not (a.tabname like 'sys%') AND a.tabname <>'dual'  ";
             }
         }
         #endregion
@@ -275,7 +282,7 @@ namespace SqlSugar.GBase
         {
             get
             {
-                return "select top 1 id from sysobjects";
+                return "SELECT TOP 1  * FROM Systables";
             }
         }
         #endregion
@@ -313,94 +320,39 @@ namespace SqlSugar.GBase
         #endregion
 
         #region Methods
-        public override bool IsAnyTable(string tableName, bool isCache = true)
+        protected override string GetCreateTableSql(string tableName, List<DbColumnInfo> columns)
         {
-            if (tableName.Contains("."))
+            List<string> columnArray = new List<string>();
+            Check.Exception(columns.IsNullOrEmpty(), "No columns found ");
+            foreach (var item in columns)
             {
-                var schemas = GetSchemas();
-                var first =this.SqlBuilder.GetNoTranslationColumnName(tableName.Split('.').First());
-                var schemaInfo= schemas.FirstOrDefault(it=>it.EqualCase(first));
-                if (schemaInfo == null)
+                string columnName = this.SqlBuilder.GetTranslationTableName(item.DbColumnName);
+                string dataType = item.DataType;
+                string dataSize = GetSize(item);
+                string nullType = item.IsNullable ? this.CreateTableNull : CreateTableNotNull;
+                if (item.IsIdentity&&item.IsPrimarykey) 
                 {
-                    return base.IsAnyTable(tableName, isCache);
+                    dataSize = "";
+                    dataType = "serial primary key";
                 }
-                else
+                else if (item.IsIdentity)
                 {
-                    var result= this.Context.Ado.GetInt($"select object_id('{tableName}')");
-                    return result > 0;
+                    dataSize = "";
+                    dataType = "serial";
                 }
-            }
-            else
-            {
-                return base.IsAnyTable(tableName, isCache);
-            }
-        }
-        public List<string> GetSchemas()
-        {
-            return this.Context.Ado.SqlQuery<string>("SELECT name FROM  sys.schemas where name <> 'dbo'");
-        }
-        public override bool DeleteTableRemark(string tableName)
-        {
-            string sql = string.Format(this.DeleteTableRemarkSql, tableName);
-            if (tableName.Contains("."))
-            {
-                var schemas = GetSchemas();
-                var tableSchemas = this.SqlBuilder.GetNoTranslationColumnName(tableName.Split('.').First());
-                if (schemas.Any(y => y.EqualCase(tableSchemas)))
+                else if (item.IsPrimarykey)
                 {
-                    sql = string.Format(this.DeleteTableRemarkSql, this.SqlBuilder.GetNoTranslationColumnName(tableName.Split('.').Last()));
-                    if (tableSchemas.EqualCase("user"))
-                    {
-                        sql = sql.Replace("'user'", "'SCHEMA'").Replace("dbo", $"'{tableSchemas}'");
-                    }
-                    else
-                    {
-                        sql = sql.Replace(",dbo,", $",{tableSchemas},").Replace("'user'", "'SCHEMA'");
-                    }
+                    dataType = (dataType + " primary key");
                 }
+                //string identity = item.IsIdentity ? this.CreateTableIdentity : null;
+                string addItem = string.Format(this.CreateTableColumn, columnName, dataType, dataSize, nullType, "", "");
+                columnArray.Add(addItem);
             }
-            this.Context.Ado.ExecuteCommand(sql);
-            return true;
+            string tableString = string.Format(this.CreateTableSql, this.SqlBuilder.GetTranslationTableName(tableName), string.Join(",\r\n", columnArray));
+            return tableString;
         }
-        public override bool IsAnyTableRemark(string tableName)
-        {
-            string sql = string.Format(this.IsAnyTableRemarkSql, tableName);
-            if (tableName.Contains("."))
-            {
-                var schemas = GetSchemas();
-                var tableSchemas = this.SqlBuilder.GetNoTranslationColumnName(tableName.Split('.').First());
-                if (schemas.Any(y => y.EqualCase(tableSchemas)))
-                {
-                    sql = string.Format(this.IsAnyTableRemarkSql, this.SqlBuilder.GetNoTranslationColumnName(tableName.Split('.').Last()));
-                    sql = sql.Replace("'dbo'", $"'{tableSchemas}'");
-                }
-            }
-            var dt = this.Context.Ado.GetDataTable(sql);
-            return dt.Rows != null && dt.Rows.Count > 0;
-        }
-        public override bool AddTableRemark(string tableName, string description)
-        {
-            string sql = string.Format(this.AddTableRemarkSql, tableName, description);
-            if (tableName.Contains(".")) 
-            {
-                var schemas = GetSchemas();
-                var tableSchemas =this.SqlBuilder.GetNoTranslationColumnName(tableName.Split('.').First());
-                if (schemas.Any(y => y.EqualCase(tableSchemas))) 
-                {
-                    sql = string.Format(this.AddTableRemarkSql, this.SqlBuilder.GetNoTranslationColumnName(tableName.Split('.').Last()), description);
-                    if (tableSchemas.EqualCase("user"))
-                    {
-                        sql = sql.Replace("N'user', N'dbo'", $"N'user', '{tableSchemas}'").Replace("N'user'", "N'SCHEMA'");
-                    }
-                    else
-                    {
-                        sql = sql.Replace("N'dbo'", $"N'{tableSchemas}'").Replace("N'user'", "N'SCHEMA'");
-                    }
-                }
-            }
-            this.Context.Ado.ExecuteCommand(sql);
-            return true;
-        }
+
+
         public override bool AddDefaultValue(string tableName, string columnName, string defaultValue)
         {
             if (defaultValue == "''")
@@ -424,65 +376,7 @@ namespace SqlSugar.GBase
         /// <returns></returns>
         public override bool CreateDatabase(string databaseName, string databaseDirectory = null)
         {
-            if (databaseDirectory != null)
-            {
-                try
-                {
-                    if (!FileHelper.IsExistDirectory(databaseDirectory))
-                    {
-                        FileHelper.CreateDirectory(databaseDirectory);
-                    }
-                }
-                catch  
-                {
-                    //Databases and sites are not in the same service
-                }
-            }
-            var oldDatabaseName = this.Context.Ado.Connection.Database;
-            var connection = this.Context.CurrentConnectionConfig.ConnectionString;
-            connection = connection.Replace(oldDatabaseName, "master");
-            var newDb = new SqlSugarClient(new ConnectionConfig()
-            {
-                DbType = this.Context.CurrentConnectionConfig.DbType,
-                IsAutoCloseConnection = true,
-                ConnectionString = connection
-            });
-            if (!GetDataBaseList(newDb).Any(it => it.Equals(databaseName, StringComparison.CurrentCultureIgnoreCase)))
-            {
-                var sql = CreateDataBaseSql;
-                if (databaseDirectory.HasValue())
-                {
-                    sql += @"on primary 
-                                        (
-                                            name = N'{0}',
-                                            filename = N'{1}\{0}.mdf',
-                                            size = 10mb,
-                                            maxsize = 100mb,
-                                            filegrowth = 1mb
-                                        ),
-                                        (
-                                            name = N'{0}_ndf',   
-                                            filename = N'{1}\{0}.ndf',
-                                            size = 10mb,
-                                            maxsize = 100mb,
-                                             filegrowth = 10 %
-                                        )
-                                        log on  
-                                        (
-                                            name = N'{0}_log',
-                                            filename = N'{1}\{0}.ldf',
-                                            size = 100mb,
-                                            maxsize = 1gb,
-                                            filegrowth = 10mb
-                                        ); ";
-                }
-                if (databaseName.Contains(".")) 
-                {
-                    databaseName = $"[{databaseName}]";
-                }
-                newDb.Ado.ExecuteCommand(string.Format(sql, databaseName, databaseDirectory));
-            }
-            return true;
+            throw new NotSupportedException();
         }
         public override bool CreateTable(string tableName, List<DbColumnInfo> columns, bool isCreatePrimaryKey = true)
         {
@@ -497,21 +391,21 @@ namespace SqlSugar.GBase
             }
             string sql = GetCreateTableSql(tableName, columns);
             this.Context.Ado.ExecuteCommand(sql);
-            if (isCreatePrimaryKey)
-            {
-                var pkColumns = columns.Where(it => it.IsPrimarykey).ToList();
-                if (pkColumns.Count > 1)
-                {
-                    this.Context.DbMaintenance.AddPrimaryKeys(tableName, pkColumns.Select(it => it.DbColumnName).ToArray());
-                }
-                else
-                {
-                    foreach (var item in pkColumns)
-                    {
-                        this.Context.DbMaintenance.AddPrimaryKey(tableName, item.DbColumnName);
-                    }
-                }
-            }
+            //if (isCreatePrimaryKey)
+            //{
+            //    var pkColumns = columns.Where(it => it.IsPrimarykey).ToList();
+            //    if (pkColumns.Count > 1)
+            //    {
+            //        this.Context.DbMaintenance.AddPrimaryKeys(tableName, pkColumns.Select(it => it.DbColumnName).ToArray());
+            //    }
+            //    else
+            //    {
+            //        foreach (var item in pkColumns)
+            //        {
+            //            this.Context.DbMaintenance.AddPrimaryKey(tableName, item.DbColumnName);
+            //        }
+            //    }
+            //}
             return true;
         }
         public override List<DbColumnInfo> GetColumnInfosByTableName(string tableName, bool isCache = true)

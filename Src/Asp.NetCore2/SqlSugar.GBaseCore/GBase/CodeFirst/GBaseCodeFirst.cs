@@ -6,6 +6,10 @@ namespace SqlSugar.GBase
 {
     public class GBaseCodeFirst:CodeFirstProvider
     {
+        protected override void ExistLogicEnd(List<EntityColumnInfo> dbColumns)
+        {
+             
+        }
         protected override string GetTableName(EntityInfo entityInfo)
         {
             var table= this.Context.EntityMaintenance.GetTableName(entityInfo.EntityName);
@@ -14,20 +18,12 @@ namespace SqlSugar.GBase
             if (tableArray.Length > 1 && noFormat)
             {
                 var dbMain = new GBaseDbMaintenance() { Context = this.Context };
-                var schmes = dbMain.GetSchemas();
-                if (!schmes.Any(it => it.EqualCase(tableArray.First())))
-                {
-                    return tableArray.Last();
-                }
-                else 
-                {
-                    return dbMain.SqlBuilder.GetTranslationTableName(table);
-                }
+                return dbMain.SqlBuilder.GetTranslationTableName(table);
             }
             else
             {
                 return table;
             }
         }
-    }
+      }
 }
