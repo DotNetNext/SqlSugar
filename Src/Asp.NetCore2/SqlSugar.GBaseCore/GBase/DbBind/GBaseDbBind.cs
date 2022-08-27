@@ -38,6 +38,7 @@ namespace SqlSugar.GBase
                   new KeyValuePair<string, CSharpDataType>("blob",CSharpDataType.byteArray),
                   new KeyValuePair<string, CSharpDataType>("boolean",CSharpDataType.@bool),
                   new KeyValuePair<string, CSharpDataType>("byte",CSharpDataType.@byte),
+                  new KeyValuePair<string, CSharpDataType>("varchar", CSharpDataType.@string),
                   new KeyValuePair<string, CSharpDataType>("char",CSharpDataType.@string),
                   new KeyValuePair<string, CSharpDataType>("clob",CSharpDataType.@string),
                   new KeyValuePair<string, CSharpDataType>("DATETIME YEAR TO FRACTION(3)", CSharpDataType.DateTime),
