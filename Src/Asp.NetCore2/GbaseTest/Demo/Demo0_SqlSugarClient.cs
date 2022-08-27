@@ -79,6 +79,7 @@ from systables a
 left join syscomments b on b.tabname = a.tabname
 where a.tabtype in ('T', 'V')  and not (a.tabname like 'sys%') AND a.tabname <>'dual'");
 
+        
             //Create tables
             db.CodeFirst.InitTables(typeof(OrderItem),typeof(Order));
             var id = db.Insertable(new Order() { Name = "order1", CustomId = 1, Price = 0, CreateTime = DateTime.Now }).ExecuteReturnIdentity();

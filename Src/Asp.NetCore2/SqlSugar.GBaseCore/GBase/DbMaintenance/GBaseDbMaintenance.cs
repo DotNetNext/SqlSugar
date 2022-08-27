@@ -378,6 +378,10 @@ where a.tabtype in ('V')  and not (a.tabname like 'sys%') AND a.tabname <>'dual'
         {
             throw new NotSupportedException();
         }
+        public override void AddDefaultValue(EntityInfo entityInfo)
+        {
+            
+        }
         public override bool CreateTable(string tableName, List<DbColumnInfo> columns, bool isCreatePrimaryKey = true)
         {
             tableName = this.SqlBuilder.GetTranslationTableName(tableName);

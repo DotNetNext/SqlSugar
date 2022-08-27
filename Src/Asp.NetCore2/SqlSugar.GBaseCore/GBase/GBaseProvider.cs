@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Data.Odbc;
+using System.Text.RegularExpressions;
+
 namespace SqlSugar.GBase
 {
     public class GBaseProvider : AdoProvider
@@ -34,6 +36,96 @@ namespace SqlSugar.GBase
                 base._DbConnection = value;
             }
         }
+
+        public string SplitCommandTag => UtilConstants.ReplaceCommaKey.Replace("{", "").Replace("}", "");
+
+       
+        public override object GetScalar(string sql, params SugarParameter[] parameters)
+        {
+            if (sql == null) throw new Exception("sql is null");
+            if (sql.IndexOf(this.SplitCommandTag) > 0)
+            {
+                var sqlParts = Regex.Split(sql, this.SplitCommandTag).Where(it => !string.IsNullOrEmpty(it)).ToList();
+                object result = 0;
+                foreach (var item in sqlParts)
+                {
+                    if (item.TrimStart('\r').TrimStart('\n') != "")
+                    {
+                        result  = base.GetScalar(item, parameters);
+                    }
+                }
+                return result;
+            }
+            else
+            {
+                return base.GetScalar(sql, parameters);
+            }
+        }
+        public override async Task<object> GetScalarAsync(string sql, params SugarParameter[] parameters)
+        {
+            if (sql == null) throw new Exception("sql is null");
+            if (sql.IndexOf(this.SplitCommandTag) > 0)
+            {
+                var sqlParts = Regex.Split(sql, this.SplitCommandTag).Where(it => !string.IsNullOrEmpty(it)).ToList();
+                object result = 0;
+                foreach (var item in sqlParts)
+                {
+                    if (item.TrimStart('\r').TrimStart('\n') != "")
+                    {
+                        result = await base.GetScalarAsync(item, parameters);
+                    }
+                }
+                return result;
+            }
+            else
+            {
+                return await base.GetScalarAsync(sql, parameters);
+            }
+        }
+
+        public override int ExecuteCommand(string sql, SugarParameter [] parameters)
+        {
+            if (sql == null) throw new Exception("sql is null");
+            if (sql.IndexOf(this.SplitCommandTag) > 0)
+            {
+                var sqlParts = Regex.Split(sql, this.SplitCommandTag).Where(it => !string.IsNullOrEmpty(it)).ToList();
+                int result = 0;
+                foreach (var item in sqlParts)
+                {
+                    if (item.TrimStart('\r').TrimStart('\n') != "")
+                    {
+                        result += base.ExecuteCommand(item, parameters);
+                    }
+                }
+                return result;
+            }
+            else
+            {
+                return base.ExecuteCommand(sql, parameters);
+            }
+        }
+        public override async Task<int> ExecuteCommandAsync(string sql, SugarParameter [] parameters)
+        {
+            if (sql == null) throw new Exception("sql is null");
+            if (sql.IndexOf(this.SplitCommandTag) > 0)
+            {
+                var sqlParts = Regex.Split(sql, this.SplitCommandTag).Where(it => !string.IsNullOrEmpty(it)).ToList();
+                int result = 0;
+                foreach (var item in sqlParts)
+                {
+                    if (item.TrimStart('\r').TrimStart('\n') != "")
+                    {
+                        result +=await base.ExecuteCommandAsync(item, parameters);
+                    }
+                }
+                return result;
+            }
+            else
+            {
+                return base.ExecuteCommand(sql, parameters);
+            }
+        }
+
         /// <summary>
         /// Only GBase
         /// </summary>
@@ -53,12 +145,22 @@ namespace SqlSugar.GBase
             CheckConnection();
             base.Transaction = ((OdbcConnection)this.Connection).BeginTransaction(iso);
         }
+     
         public override IDataAdapter GetAdapter()
         {
             return new GBaseDataAdapter();
         }
         public override DbCommand GetCommand(string sql, SugarParameter[] parameters)
         {
+            var helper = new GBaseInsertBuilder();
+            helper.Context = this.Context;
+            if (parameters != null)
+            {
+                foreach (var param in parameters.OrderByDescending(it => it.ParameterName.Length))
+                {
+                    sql = sql.Replace(param.ParameterName, helper.FormatValue(param.Value) + "");
+                }
+            }
             OdbcCommand sqlCommand = new OdbcCommand(sql, (OdbcConnection)this.Connection);
             sqlCommand.CommandType = this.CommandType;
             sqlCommand.CommandTimeout = this.CommandTimeOut;
@@ -66,11 +168,11 @@ namespace SqlSugar.GBase
             {
                 sqlCommand.Transaction = (OdbcTransaction)this.Transaction;
             }
-            if (parameters.HasValue())
-            {
-                OdbcParameter[] ipars = GetSqlParameter(parameters);
-                sqlCommand.Parameters.AddRange(ipars);
-            }
+            //if (parameters.HasValue())
+            //{
+            //    OdbcParameter[] ipars = GetSqlParameter(parameters);
+            //    sqlCommand.Parameters.AddRange(ipars);
+            //}
             CheckConnection();
             return sqlCommand;
         }

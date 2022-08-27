@@ -8,6 +8,40 @@ namespace SqlSugar.GBase
 {
     public class GBaseInsertBuilder:InsertBuilder
     {
+        public override string SqlTemplate
+        {
+            get
+            {
+                if (IsReturnIdentity)
+                {
+                    return @"INSERT INTO {0} 
+           ({1})
+     VALUES
+           ({2})"+UtilConstants.ReplaceCommaKey.Replace("{","").Replace("}", "") + " SELECT dbinfo('sqlca.sqlerrd1') FROM dual";
+                }
+                else
+                {
+                    return @"INSERT INTO {0} 
+           ({1})
+     VALUES
+           ({2}) "+UtilConstants.ReplaceCommaKey.Replace("{", "").Replace("}", "") + "SELECT dbinfo('sqlca.sqlerrd1') FROM dual";
+
+                }
+            }
+        }
+        public override string GetTableNameString
+        {
+            get
+            {
+                var result = Builder.GetTranslationTableName(EntityInfo.EntityName);
+                result += UtilConstants.Space;
+                if (this.TableWithString.HasValue())
+                {
+                    result += TableWithString + UtilConstants.Space;
+                }
+                return result;
+            }
+        }
         public override string ToSqlString()
         {
             if (IsNoInsertNull)
@@ -48,19 +82,83 @@ namespace SqlSugar.GBase
                         {
                             batchInsetrSql.Append(SqlTemplateBatchUnion);
                         }
-                        batchInsetrSql.Append("\r\n SELECT " + string.Join(",", columns.Select(it => string.Format(SqlTemplateBatchSelect, FormatValue(it.Value), Builder.GetTranslationColumnName(it.DbColumnName)))));
+                        batchInsetrSql.Append("\r\n SELECT " + string.Join(",", columns.Select(it => string.Format(SqlTemplateBatchSelect, FormatValue(it.Value), Builder.GetTranslationColumnName(it.DbColumnName))))+" from dual");
                         ++i;
                     }
                     pageIndex++;
                     batchInsetrSql.Append("\r\n;\r\n");
                 }
                 var result = batchInsetrSql.ToString();
-                if (this.Context.CurrentConnectionConfig.DbType == DbType.GBase)
-                {
-                    result += "select SCOPE_IDENTITY();";
-                }
+                //if (this.Context.CurrentConnectionConfig.DbType == DbType.GBase)
+                //{
+                //    result += "";
+                //}
                 return result;
             }
         }
+        public override object FormatValue(object value)
+        {
+            var n = "";
+            if (value == null)
+            {
+                return "NULL";
+            }
+            else
+            {
+                var type = UtilMethods.GetUnderType(value.GetType());
+                if (type == UtilConstants.DateType)
+                {
+                    return GetDateTimeString(value);
+                }
+                else if (value is DateTimeOffset)
+                {
+                    return GetDateTimeOffsetString(value);
+                }
+                else if (type == UtilConstants.ByteArrayType)
+                {
+                    string bytesString = "0x" + BitConverter.ToString((byte[])value).Replace("-", "");
+                    return bytesString;
+                }
+                else if (type.IsEnum())
+                {
+                    if (this.Context.CurrentConnectionConfig.MoreSettings?.TableEnumIsString == true)
+                    {
+                        return value.ToSqlValue(); ;
+                    }
+                    else
+                    {
+                        return Convert.ToInt64(value);
+                    }
+                }
+                else if (type == UtilConstants.BoolType)
+                {
+                    return value.ObjToBool() ? "1" : "0";
+                }
+                else
+                {
+                    return n + "'" + value + "'";
+                }
+            }
+        }
+        private object GetDateTimeOffsetString(object value)
+        {
+            var date = UtilMethods.ConvertFromDateTimeOffset((DateTimeOffset)value);
+            if (date < UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig))
+            {
+                date = UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig);
+            }
+            return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
+        }
+
+        private object GetDateTimeString(object value)
+        {
+            var date = value.ObjToDate();
+            if (date < UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig))
+            {
+                date = UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig);
+            }
+            return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
+        }
+
     }
 }

@@ -6,9 +6,10 @@ namespace SqlSugar.GBase
 {
     public class GBaseCodeFirst:CodeFirstProvider
     {
-        protected override void ExistLogicEnd(List<EntityColumnInfo> dbColumns)
+        public virtual bool IsNoTran { get; set; } = true;
+        public override void ExistLogic(EntityInfo entityInfo) 
         {
-             
+            this.Context.Ado.ExecuteCommand("select '不支持修改表' from dual ");
         }
         protected override string GetTableName(EntityInfo entityInfo)
         {
