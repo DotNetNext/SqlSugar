@@ -17,7 +17,7 @@ namespace SqlSugar
             List<SplitTableInfo> result = new List<SplitTableInfo>();
             foreach (var item in tables)
             {
-                if (tableNames.Any(it => item.TableName.Contains(it))) 
+                if (tableNames.Any(it => item.TableName.ObjToString().ToLower().Contains(it.ObjToString().ToLower()))) 
                 {
                     result.Add(item);
                 }
