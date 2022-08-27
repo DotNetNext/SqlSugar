@@ -8,3 +8,6 @@ dotnet_diagnostic.CS8625.severity = none
 
 # CS8604: 引用类型参数可能为 null。
 dotnet_diagnostic.CS8604.severity = none
+
+# CS8600: 将 null 字面量或可能为 null 的值转换为非 null 类型。
+dotnet_diagnostic.CS8600.severity = none

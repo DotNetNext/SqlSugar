@@ -16,6 +16,8 @@ namespace SqlSugar.GBase
         {
             base.DbMehtods = new GBaseMethod();
         }
+        public override string SqlTranslationLeft { get { return ""; } }
+        public override string SqlTranslationRight { get { return ""; } }
 
     }
     public partial class GBaseMethod : DefaultDbMethod, IDbMethods
@@ -41,6 +43,11 @@ namespace SqlSugar.GBase
                 return string.Format(" datepart({0},{1}) ", parameter2.MemberValue, parameter.MemberName);
             }
         }
+        public override string GetDate()
+        {
+            return " sysdate  ";
+        }
+
         public override string HasValue(MethodCallExpressionModel model)
         {
             if (model.Args[0].Type == UtilConstants.GuidType)

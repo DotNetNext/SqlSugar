@@ -15,6 +15,20 @@ namespace SqlSugar.GBase
         {
             return name;
         }
+        public override string SqlDateNow
+        {
+            get
+            {
+                return "sysdate";
+            }
+        }
+        public override string FullSqlDateNow
+        {
+            get
+            {
+                return "select systimestamp from dual";
+            }
+        }
         public override string GetTranslationTableName(string name)
         {
             Check.ArgumentNullException(name, string.Format(ErrorMessage.ObjNotExist, "Table Name"));
