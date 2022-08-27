@@ -154,7 +154,7 @@ namespace SqlSugar
                     {
                         parameterName = parameterName.Replace("]", "_");
                     }
-                    if (parameterName.Contains(this.SqlTranslationLeft))
+                    if (!string.IsNullOrEmpty(this.SqlTranslationLeft)&&parameterName.Contains(this.SqlTranslationLeft))
                     {
                         parameterName = parameterName.Replace(this.SqlTranslationLeft, "_");
                     }
