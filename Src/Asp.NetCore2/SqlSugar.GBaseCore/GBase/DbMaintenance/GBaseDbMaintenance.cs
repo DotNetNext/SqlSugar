@@ -342,8 +342,8 @@ where a.tabtype in ('V')  and not (a.tabname like 'sys%') AND a.tabname <>'dual'
                 }
                 else if (item.IsPrimarykey)
                 {
-                    dataSize = "";
                     dataType = (dataType + dataSize + " primary key");
+                    dataSize = "";
                 }
                 //string identity = item.IsIdentity ? this.CreateTableIdentity : null;
                 string addItem = string.Format(this.CreateTableColumn, columnName, dataType, dataSize, nullType, "", "");

@@ -11,6 +11,16 @@ namespace SqlSugar.GBase
         {
             this.Context.Ado.ExecuteCommand("select '不支持修改表' from dual ");
         }
+
+        protected override DbColumnInfo EntityColumnToDbColumn(EntityInfo entityInfo, string tableName, EntityColumnInfo item)
+        {
+            var result= base.EntityColumnToDbColumn(entityInfo, tableName, item);
+            if (item.UnderType == UtilConstants.GuidType) 
+            {
+                item.Length = 36;
+            }
+            return result;
+        }
         protected override string GetTableName(EntityInfo entityInfo)
         {
             var table= this.Context.EntityMaintenance.GetTableName(entityInfo.EntityName);

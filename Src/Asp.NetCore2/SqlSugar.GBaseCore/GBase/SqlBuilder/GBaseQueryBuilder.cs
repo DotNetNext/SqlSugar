@@ -9,40 +9,69 @@ namespace SqlSugar.GBase
 {
     public class GBaseQueryBuilder: QueryBuilder
     {
-        public override bool IsComplexModel(string sql)
-        {
-            return Regex.IsMatch(sql, @"AS ""\w+\.\w+""") || Regex.IsMatch(sql, @"AS ""\w+\.\w+\.\w+""");
-        }
-        public override string SqlTemplate
+        #region Sql Template
+        public override string PageTempalte
         {
             get
             {
-                return "SELECT {0}{" + UtilConstants.ReplaceKey + "} FROM {1}{2}{3}{4}";
+                /*
+                 SELECT * FROM TABLE WHERE CONDITION ORDER BY ID DESC LIMIT 0,10
+                 */
+                var template = "SELECT {0} FROM {1} {2} {3} {4} LIMIT {5},{6}";
+                return template;
             }
+        }
+        public override string DefaultOrderByTemplate
+        {
+            get
+            {
+                return "ORDER BY SysDate ";
+            }
+        }
+
+        #endregion
+
+        #region Common Methods
+        public override bool IsComplexModel(string sql)
+        {
+            return Regex.IsMatch(sql, @"AS \`\w+\.\w+\`") || Regex.IsMatch(sql, @"AS \`\w+\.\w+\.\w+\`");
         }
         public override string ToSqlString()
         {
-            var oldTake = Take;
-            var oldSkip = Skip;
-            var isDistinctPage = IsDistinct && (Take > 1 || Skip > 1);
-            if (isDistinctPage)
+            base.AppendFilter();
+            string oldOrderValue = this.OrderByValue;
+            string result = null;
+            sql = new StringBuilder();
+            sql.AppendFormat(SqlTemplate, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, (Skip != null || Take != null) ? null : GetOrderByString);
+            if (IsCount) { return sql.ToString(); }
+            if (Skip != null && Take == null)
             {
-                Take = null;
-                Skip = null;
+                if (this.OrderByValue == "ORDER BY ") this.OrderByValue += GetSelectValue.Split(',')[0];
+                result = string.Format(PageTempalte, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, (Skip != null || Take != null) ? null : GetOrderByString, Skip.ObjToInt(), long.MaxValue);
             }
-            var result = _ToSqlString();
-            if (isDistinctPage)
+            else if (Skip == null && Take != null)
             {
-                if (this.OrderByValue.HasValue())
+                if (this.OrderByValue == "ORDER BY ") this.OrderByValue += GetSelectValue.Split(',')[0];
+                result = string.Format(PageTempalte, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, GetOrderByString, 0, Take.ObjToInt());
+            }
+            else if (Skip != null && Take != null)
+            {
+                if (Skip == 0 && Take == 1 && this.OrderByValue == "ORDER BY SysDate ")
                 {
-                    Take = int.MaxValue;
-                    result = result.Replace("DISTINCT", $" DISTINCT TOP {int.MaxValue} ");
+                    this.OrderByValue = null;
                 }
-                Take = oldTake;
-                Skip = oldSkip;
-                result = this.Context.SqlQueryable<object>(result).Skip(Skip ?? 0).Take(Take ?? 0).ToSql().Key;
-
-
+                if (this.OrderByValue == "ORDER BY ") this.OrderByValue += GetSelectValue.Split(',')[0];
+                result = string.Format(PageTempalte, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, GetOrderByString, Skip.ObjToInt() > 0 ? Skip.ObjToInt() : 0, Take);
+            }
+            else
+            {
+                result = sql.ToString();
+            }
+            this.OrderByValue = oldOrderValue;
+            result = GetSqlQuerySql(result);
+            if (result.IndexOf("-- No table") > 0)
+            {
+                return "-- No table";
             }
             if (TranLock != null)
             {
@@ -50,70 +79,82 @@ namespace SqlSugar.GBase
             }
             return result;
         }
-        public string _ToSqlString()
+        private string ToCountSqlString()
         {
-            string oldOrderBy = this.OrderByValue;
-            string externalOrderBy = oldOrderBy;
-            var isIgnoreOrderBy = this.IsCount && this.PartitionByValue.IsNullOrEmpty();
-            AppendFilter();
+            //base.AppendFilter();
+            string oldOrderValue = this.OrderByValue;
+            string result = null;
             sql = new StringBuilder();
-            if (this.OrderByValue == null && (Skip != null || Take != null)) this.OrderByValue = " ORDER BY " + this.Builder.SqlDateNow + " ";
-            if (this.PartitionByValue.HasValue())
+            sql.AppendFormat(SqlTemplate, "Count(*)", GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, (Skip != null || Take != null) ? null : GetOrderByString);
+            if (IsCount)
             {
-                this.OrderByValue = this.PartitionByValue + this.OrderByValue;
-            }
-            var isRowNumber = Skip != null || Take != null;
-            var rowNumberString = string.Format(",CAST(ROW_NUMBER() OVER({0}) AS INT) AS RowIndex ", GetOrderByString);
-            string groupByValue = GetGroupByString + HavingInfos;
-            string orderByValue = (!isRowNumber && this.OrderByValue.HasValue()) ? GetOrderByString : null;
-            if (isIgnoreOrderBy) { orderByValue = null; }
-            sql.AppendFormat(SqlTemplate, GetSelectValue, GetTableNameString, GetWhereValueString, groupByValue, orderByValue);
-            sql.Replace(UtilConstants.ReplaceKey, isRowNumber ? (isIgnoreOrderBy ? null : rowNumberString) : null);
-            if (isIgnoreOrderBy) { this.OrderByValue = oldOrderBy; return sql.ToString(); }
-            var result = ToPageSql(sql.ToString(), this.Take, this.Skip);
-            if (ExternalPageIndex > 0)
-            {
-                if (externalOrderBy.IsNullOrEmpty())
+                if (sql.ToString().Contains("-- No table"))
                 {
-                    externalOrderBy = " ORDER BY " + this.Builder.SqlDateNow + " ";
+                    return "-- No table";
                 }
-                result = string.Format("SELECT ExternalTable.*,ROW_NUMBER() OVER({0}) AS RowIndex2 FROM ({1}) ExternalTable ", GetExternalOrderBy(externalOrderBy), result);
-                result = ToPageSql2(result, ExternalPageIndex, ExternalPageSize, true);
+                return sql.ToString();
             }
-            this.OrderByValue = oldOrderBy;
-            result = GetSqlQuerySql(result);
-            if (result.IndexOf("-- No table") > 0)
+            if (Skip != null && Take == null)
             {
-                return "-- No table";
+                if (this.OrderByValue == "ORDER BY ") this.OrderByValue += GetSelectValue.Split(',')[0];
+                result = string.Format(PageTempalte, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, (Skip != null || Take != null) ? null : GetOrderByString, Skip.ObjToInt(), long.MaxValue);
             }
-            return result;
-        }
-        public override string ToPageSql(string sql, int? take, int? skip, bool isExternal = false)
-        {
-            string temp = isExternal ? ExternalPageTempalte : PageTempalte;
-            if (skip != null && take == null)
+            else if (Skip == null && Take != null)
             {
-                return string.Format(temp, sql.ToString(), skip.ObjToInt() + 1, long.MaxValue);
+                if (this.OrderByValue == "ORDER BY ") this.OrderByValue += GetSelectValue.Split(',')[0];
+                result = string.Format(PageTempalte, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, GetOrderByString, 0, Take.ObjToInt());
             }
-            else if (skip == null && take != null)
+            else if (Skip != null && Take != null)
             {
-                return string.Format(temp, sql.ToString(), 1, take.ObjToInt());
-            }
-            else if (skip != null && take != null)
-            {
-                return string.Format(temp, sql.ToString(), skip.ObjToInt() + 1, skip.ObjToInt() + take.ObjToInt());
+                if (this.OrderByValue == "ORDER BY ") this.OrderByValue += GetSelectValue.Split(',')[0];
+                result = string.Format(PageTempalte, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, GetOrderByString, Skip.ObjToInt() > 0 ? Skip.ObjToInt() : 0, Take);
             }
             else
             {
-                return sql.ToString();
+                result = sql.ToString();
+            }
+            this.OrderByValue = oldOrderValue;
+            return result;
+        }
+        public override string ToCountSql(string sql)
+        {
+            if (this.GroupByValue.HasValue() || this.IsDistinct)
+            {
+                return base.ToCountSql(sql);
+            }
+            else
+            {
+                return ToCountSqlString();
+            }
+        }
+        #endregion
+
+        #region Get SQL Partial
+        public override string GetSelectValue
+        {
+            get
+            {
+                string result = string.Empty;
+                if (this.SelectValue == null || this.SelectValue is string)
+                {
+                    result = GetSelectValueByString();
+                }
+                else
+                {
+                    result = GetSelectValueByExpression();
+                }
+                if (this.SelectType == ResolveExpressType.SelectMultiple)
+                {
+                    this.SelectCacheKey = this.SelectCacheKey + string.Join("-", this.JoinQueryInfos.Select(it => it.TableName));
+                }
+                if (IsDistinct)
+                {
+                    result = " DISTINCT " + result;
+                }
+                return result;
             }
         }
 
-        public override string ToPageSql2(string sql, int? pageIndex, int? pageSize, bool isExternal = false)
-        {
-            string temp = isExternal ? ExternalPageTempalte : PageTempalte;
-            return string.Format(temp, sql.ToString(), (pageIndex - 1) * pageSize + 1, pageIndex * pageSize);
-        }
-
+        #endregion
     }
 }
