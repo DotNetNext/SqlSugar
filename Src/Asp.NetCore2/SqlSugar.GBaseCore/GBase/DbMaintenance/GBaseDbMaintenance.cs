@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-
+using System.Data.Odbc;
 namespace SqlSugar.GBase
 {
     public class GBaseDbMaintenance : DbMaintenanceProvider
@@ -320,6 +320,55 @@ where a.tabtype in ('V')  and not (a.tabname like 'sys%') AND a.tabname <>'dual'
         #endregion
 
         #region Methods
+        public override List<DbColumnInfo> GetColumnInfosByTableName(string tableName, bool isCache = true)
+        {
+            string cacheKey = "DbMaintenanceProvider.GetColumnInfosByTableName." + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower();
+            cacheKey = GetCacheKey(cacheKey);
+            if (!isCache)
+                return GetColumnInfosByTableName(tableName);
+            else
+                return this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey,
+                        () =>
+                        {
+                            return GetColumnInfosByTableName(tableName);
+
+                        });
+        }
+
+        private List<DbColumnInfo> GetColumnInfosByTableName(string tableName)
+        {
+            string sql = "select *  /* " + Guid.NewGuid() + " */ from " + SqlBuilder.GetTranslationTableName(tableName) + " WHERE 1=2 ";
+            this.Context.Utilities.RemoveCache<List<DbColumnInfo>>("DbMaintenanceProvider.GetFieldComment." + tableName);
+            this.Context.Utilities.RemoveCache<List<string>>("DbMaintenanceProvider.GetPrimaryKeyByTableNames." + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower());
+            var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
+            this.Context.Ado.IsEnableLogEvent = false;
+            using (var reader =  this.Context.Ado.GetDataReader(sql))
+            {
+                this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
+                List<DbColumnInfo> result = new List<DbColumnInfo>();
+                var schemaTable = reader.GetSchemaTable();
+                int i = 0;
+                foreach (System.Data.DataRow row in schemaTable.Rows)
+                {
+                    DbColumnInfo column = new DbColumnInfo()
+                    {
+                        TableName = tableName,
+                        DataType = row["DataType"].ToString().Replace("System.", "").Trim(),
+                        IsNullable = (bool)row["AllowDBNull"],
+                        IsIdentity = (bool)row["IsAutoIncrement"],
+                       // ColumnDescription = GetFieldComment(tableName, row["ColumnName"].ToString()),
+                        DbColumnName = row["ColumnName"].ToString(),
+                        //DefaultValue = row["defaultValue"].ToString(),
+                        IsPrimarykey = i==0,//no support get pk
+                        Length = row["ColumnSize"].ObjToInt(),
+                        Scale = row["numericscale"].ObjToInt()
+                    };
+                    ++i;
+                    result.Add(column);
+                }
+                return result;
+            }
+        }
         protected override string GetCreateTableSql(string tableName, List<DbColumnInfo> columns)
         {
             List<string> columnArray = new List<string>();
@@ -413,12 +462,12 @@ where a.tabtype in ('V')  and not (a.tabname like 'sys%') AND a.tabname <>'dual'
             //}
             return true;
         }
-        public override List<DbColumnInfo> GetColumnInfosByTableName(string tableName, bool isCache = true)
-        {
-            tableName = SqlBuilder.GetNoTranslationColumnName(tableName);
-            var result= base.GetColumnInfosByTableName(tableName, isCache);
-            return result;
-        }
+        //public override List<DbColumnInfo> GetColumnInfosByTableName(string tableName, bool isCache = true)
+        //{
+        //    tableName = SqlBuilder.GetNoTranslationColumnName(tableName);
+        //    var result= base.GetColumnInfosByTableName(tableName, isCache);
+        //    return result;
+        //}
         public override bool RenameColumn(string tableName, string oldColumnName, string newColumnName)
         {
             tableName = this.SqlBuilder.GetTranslationTableName(tableName);

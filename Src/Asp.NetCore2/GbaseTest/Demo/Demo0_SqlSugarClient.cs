@@ -70,14 +70,8 @@ namespace OrmTest
             //db.DbMaintenance.CreateDatabase();
 
             //Use db query
-            var dt = db.Ado.GetDataTable(@"
-select
-trim(a.tabname) as name,
-trim(b.comments) as comment 
-from systables a
-left join syscomments b on b.tabname = a.tabname
-where a.tabtype in ('T', 'V')  and not (a.tabname like 'sys%') AND a.tabname <>'dual'");
-
+      
+           var dt2= db.Ado.GetDataReader("select * from order").GetSchemaTable();
         
             //Create tables
             db.CodeFirst.InitTables(typeof(OrderItem),typeof(Order));

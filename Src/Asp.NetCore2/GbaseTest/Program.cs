@@ -14,6 +14,7 @@ namespace GbaseTest
             Demo2_Updateable.Init();
             Demo7_Ado.Init();
             DemoE_CodeFirst.Init();
+            DemoD_DbFirst.Init();
             Console.WriteLine("Hello World!");
         }
     }
