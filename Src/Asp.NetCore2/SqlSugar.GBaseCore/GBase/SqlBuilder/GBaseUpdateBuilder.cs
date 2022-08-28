@@ -7,73 +7,107 @@ using System.Threading.Tasks;
 
 namespace SqlSugar.GBase
 {
-    public class GBaseUpdateBuilder: UpdateBuilder
+    public class GBaseUpdateBuilder : UpdateBuilder
     {
         protected override string TomultipleSqlString(List<IGrouping<int, DbColumnInfo>> groupList)
         {
-            Check.Exception(PrimaryKeys == null || PrimaryKeys.Count == 0, " Update List<T> need Primary key");
-            int pageSize = 200;
-            int pageIndex = 1;
-            int totalRecord = groupList.Count;
-            int pageCount = (totalRecord + pageSize - 1) / pageSize;
-            StringBuilder batchUpdateSql = new StringBuilder();
-            while (pageCount >= pageIndex)
+            if (groupList == null || groupList.Count == 0) 
             {
-                StringBuilder updateTable = new StringBuilder();
-                string setValues = string.Join(",", groupList.First().Where(it => it.IsPrimarykey == false && (it.IsIdentity == false || (IsOffIdentity && it.IsIdentity))).Select(it =>
+                return "select 0 from DUAL";
+            }  
+            StringBuilder sb = new StringBuilder();
+            int i = 0;
+            sb.AppendLine(string.Join(UtilConstants.ReplaceCommaKey.Replace("{", "").Replace("}", ""), groupList.Select(t =>
+            {
+                var updateTable = string.Format("UPDATE {0} SET ", base.GetTableNameStringNoWith);
+                var setValues = string.Join(",", t.Where(s => !s.IsPrimarykey).Select(m => GetOracleUpdateColums(i, m, false)).ToArray());
+                var pkList = t.Where(s => s.IsPrimarykey).ToList();
+                List<string> whereList = new List<string>();
+                foreach (var item in pkList)
                 {
-                    if (SetValues.IsValuable())
-                    {
-                        var setValue = SetValues.Where(sv => sv.Key == Builder.GetTranslationColumnName(it.DbColumnName));
-                        if (setValue != null && setValue.Any())
-                        {
-                            return setValue.First().Value;
-                        }
-                    }
-                    var result = string.Format("S.{0}=T.{0}", Builder.GetTranslationColumnName(it.DbColumnName));
-                    return result;
-                }));
-                batchUpdateSql.AppendFormat(SqlTemplateBatch.ToString(), setValues, GetTableNameStringNoWith, TableWithString);
-                int i = 0;
-                foreach (var columns in groupList.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList())
-                {
-                    var isFirst = i == 0;
-                    if (!isFirst)
-                    {
-                        updateTable.Append(SqlTemplateBatchUnion);
-                    }
-                    updateTable.Append("\r\n SELECT " + string.Join(",", columns.Select(it => string.Format(base.SqlTemplateBatchSelect, GetValue(it), Builder.GetTranslationColumnName(it.DbColumnName)))));
-                    ++i;
+                    var isFirst = pkList.First() == item;
+                    var whereString = "";
+                    whereString += GetOracleUpdateColums(i, item, true);
+                    whereList.Add(whereString);
                 }
-                pageIndex++;
-                updateTable.Append("\r\n");
-                string whereString = null;
-                if (this.WhereValues.HasValue())
-                {
-                    foreach (var item in WhereValues)
-                    {
-                        var isFirst = whereString == null;
-                        whereString += (isFirst ? null : " AND ");
-                        whereString += Regex.Replace(item, "\\" + this.Builder.SqlTranslationLeft, "S." + this.Builder.SqlTranslationLeft);
-                    }
-                }
-                if (PrimaryKeys!=null&&PrimaryKeys.HasValue())
-                {
-                    foreach (var item in PrimaryKeys)
-                    {
-                        var isFirst = whereString == null;
-                        whereString += (isFirst ? null : " AND ");
-                        whereString += string.Format("S.{0}=T.{0}", Builder.GetTranslationColumnName(item));
-                    }
-                }
-                batchUpdateSql.AppendFormat(SqlTemplateJoin, updateTable, whereString);
-            }
-            return batchUpdateSql.ToString();
+                i++;
+                return string.Format("{0} {1} WHERE {2} ", updateTable, setValues, string.Join(" AND", whereList));
+            }).ToArray()));
+            return sb.ToString();
         }
-
         private object GetValue(DbColumnInfo it)
         {
             return FormatValue(it.Value);
+        }
+        private string GetOracleUpdateColums(int i, DbColumnInfo m, bool iswhere)
+        {
+            return string.Format("{0}={1}", m.DbColumnName, FormatValue(i, m.DbColumnName, m.Value, iswhere));
+        }
+        public object FormatValue(int i, string name, object value, bool iswhere)
+        {
+            if (value == null)
+            {
+                return "NULL";
+            }
+            else
+            {
+                var type = UtilMethods.GetUnderType(value.GetType());
+                if (type == UtilConstants.DateType && iswhere == false)
+                {
+                    var date = value.ObjToDate();
+                    if (date < UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig))
+                    {
+                        date = UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig);
+                    }
+                    if (this.Context.CurrentConnectionConfig?.MoreSettings?.DisableMillisecond == true)
+                    {
+                        return "'" + date.ToString("yyyy-MM-dd HH:mm:ss") + "'";
+                    }
+                    else
+                    {
+                        return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
+                    }
+                }
+                else if (type == UtilConstants.DateType && iswhere)
+                {
+                    var parameterName = this.Builder.SqlParameterKeyWord + name + i;
+                    this.Parameters.Add(new SugarParameter(parameterName, value));
+                    return parameterName;
+                }
+                else if (type.IsEnum())
+                {
+                    if (this.Context.CurrentConnectionConfig.MoreSettings?.TableEnumIsString == true)
+                    {
+                        return value.ToSqlValue();
+                    }
+                    else
+                    {
+                        return Convert.ToInt64(value);
+                    }
+                }
+                else if (type == UtilConstants.ByteArrayType)
+                {
+                    var parameterName = this.Builder.SqlParameterKeyWord + name + i;
+                    this.Parameters.Add(new SugarParameter(parameterName, value));
+                    return parameterName;
+                }
+                else if (value is int || value is long || value is short || value is short || value is byte)
+                {
+                    return value;
+                }
+                else if (value is bool)
+                {
+                    return value.ObjToString().ToLower();
+                }
+                else if (type == UtilConstants.StringType || type == UtilConstants.ObjType)
+                {
+                    return "'" + value.ToString().ToSqlFilter() + "'";
+                }
+                else
+                {
+                    return "'" + value.ToString() + "'";
+                }
+            }
         }
     }
 }

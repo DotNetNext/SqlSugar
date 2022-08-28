@@ -10,6 +10,8 @@ namespace GbaseTest
             Demo0_SqlSugarClient.Init();
             Demo1_Queryable.Init();
             Demo3_Insertable.Init();
+            Demo4_Deleteable.Init();
+            Demo2_Updateable.Init();
             Console.WriteLine("Hello World!");
         }
     }

@@ -8,6 +8,13 @@ namespace SqlSugar.GBase
 {
     public class GBaseInsertBuilder:InsertBuilder
     {
+        public override string SqlTemplateBatch
+        {
+            get
+            {
+                return "INSERT  into {0} ({1})";
+            }
+        }
         public override string SqlTemplate
         {
             get
@@ -59,21 +66,14 @@ namespace SqlSugar.GBase
             else
             {
                 StringBuilder batchInsetrSql = new StringBuilder();
-                int pageSize = 200;
-                if (this.EntityInfo.Columns.Count > 30)
-                {
-                    pageSize = 50;
-                }
-                else if (this.EntityInfo.Columns.Count > 20)
-                {
-                    pageSize = 100;
-                }
+                int pageSize = groupList.Count;
                 int pageIndex = 1;
                 int totalRecord = groupList.Count;
                 int pageCount = (totalRecord + pageSize - 1) / pageSize;
                 while (pageCount >= pageIndex)
                 {
                     batchInsetrSql.AppendFormat(SqlTemplateBatch, GetTableNameString, columnsString);
+                    batchInsetrSql.AppendFormat("SELECT * FROM (");
                     int i = 0;
                     foreach (var columns in groupList.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList())
                     {
@@ -86,7 +86,7 @@ namespace SqlSugar.GBase
                         ++i;
                     }
                     pageIndex++;
-                    batchInsetrSql.Append("\r\n;\r\n");
+                    batchInsetrSql.Append(") temp1\r\n;\r\n");
                 }
                 var result = batchInsetrSql.ToString();
                 //if (this.Context.CurrentConnectionConfig.DbType == DbType.GBase)
