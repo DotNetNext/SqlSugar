@@ -12,6 +12,8 @@ namespace GbaseTest
             Demo3_Insertable.Init();
             Demo4_Deleteable.Init();
             Demo2_Updateable.Init();
+            Demo7_Ado.Init();
+            DemoE_CodeFirst.Init();
             Console.WriteLine("Hello World!");
         }
     }
