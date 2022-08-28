@@ -26,7 +26,7 @@ namespace SqlSugar.GBase
         {
             get
             {
-                return "select systimestamp from dual";
+                return "select sysdate from dual";
             }
         }
         public override string GetTranslationTableName(string name)

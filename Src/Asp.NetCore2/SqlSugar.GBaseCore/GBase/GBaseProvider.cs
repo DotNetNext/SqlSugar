@@ -42,6 +42,51 @@ namespace SqlSugar.GBase
        
         public override object GetScalar(string sql, params SugarParameter[] parameters)
         {
+            if (this.Context.Ado.Transaction != null)
+            {
+                return _GetScalar(sql, parameters);
+            }
+            else 
+            {
+                try
+                {
+                    this.Context.Ado.BeginTran();
+                    var result = _GetScalar(sql, parameters);
+                    this.Context.Ado.CommitTran();
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    this.Context.Ado.RollbackTran();
+                    throw ex;
+                }
+            }
+        }
+
+        public override async Task<object> GetScalarAsync(string sql, params SugarParameter[] parameters)
+        {
+            if (this.Context.Ado.Transaction != null)
+            {
+                return await GetScalarAsync(sql, parameters);
+            }
+            else
+            {
+                try
+                {
+                    this.Context.Ado.BeginTran();
+                    var result =await GetScalarAsync(sql, parameters);
+                    this.Context.Ado.CommitTran();
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    this.Context.Ado.RollbackTran();
+                    throw ex;
+                }
+            }
+        }
+        private object _GetScalar(string sql, SugarParameter[] parameters)
+        {
             if (sql == null) throw new Exception("sql is null");
             if (sql.IndexOf(this.SplitCommandTag) > 0)
             {
@@ -51,7 +96,7 @@ namespace SqlSugar.GBase
                 {
                     if (item.TrimStart('\r').TrimStart('\n') != "")
                     {
-                        result  = base.GetScalar(item, parameters);
+                        result = base.GetScalar(item, parameters);
                     }
                 }
                 return result;
@@ -61,7 +106,7 @@ namespace SqlSugar.GBase
                 return base.GetScalar(sql, parameters);
             }
         }
-        public override async Task<object> GetScalarAsync(string sql, params SugarParameter[] parameters)
+        private async Task<object> _GetScalarAsync(string sql, SugarParameter[] parameters)
         {
             if (sql == null) throw new Exception("sql is null");
             if (sql.IndexOf(this.SplitCommandTag) > 0)

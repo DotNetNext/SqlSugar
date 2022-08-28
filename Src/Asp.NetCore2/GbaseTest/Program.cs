@@ -8,6 +8,7 @@ namespace GbaseTest
         static void Main(string[] args)
         {
             Demo0_SqlSugarClient.Init();
+            Demo1_Queryable.Init();
             Console.WriteLine("Hello World!");
         }
     }

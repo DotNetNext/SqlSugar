@@ -22,6 +22,28 @@ namespace SqlSugar.GBase
     }
     public partial class GBaseMethod : DefaultDbMethod, IDbMethods
     {
+        public override string Length(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            return string.Format(" LENGTH({0}) ", parameter.MemberName);
+        }
+
+        public override string IsNull(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter1 = model.Args[1];
+            return string.Format("NVL({0},{1})", parameter.MemberName, parameter1.MemberName);
+        }
+
+        public override string MergeString(params string[] strings)
+        {
+            return string.Join("||", strings);
+        }
+
+        public override string GetRandom()
+        {
+            return " SYS_GUID() ";
+        }
         public override string GetForXmlPath()
         {
             return "  FOR XML PATH('')),1,len(N','),'')  ";
@@ -60,6 +82,28 @@ namespace SqlSugar.GBase
                 var parameter = model.Args[0];
                 return string.Format("( {0}<>'' AND {0} IS NOT NULL )", parameter.MemberName);
             }
+        }
+        public override string CharIndex(MethodCallExpressionModel model)
+        {
+            return string.Format("instr ({0},{1},1,1) ", model.Args[0].MemberName, model.Args[1].MemberName);
+        }
+        public override string Contains(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter2 = model.Args[1];
+            return string.Format(" ({0} like '%'||{1}||'%') ", parameter.MemberName, parameter2.MemberName);
+        }
+        public override string StartsWith(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter2 = model.Args[1];
+            return string.Format(" ({0} like {1}||'%') ", parameter.MemberName, parameter2.MemberName);
+        }
+        public override string EndsWith(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter2 = model.Args[1];
+            return string.Format("  ({0} like '%'||{1}) ", parameter.MemberName, parameter2.MemberName);
         }
     }
 }
