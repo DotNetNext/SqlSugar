@@ -321,6 +321,10 @@ namespace SqlSugar
             {
                 return "SqlSugar.GBase.GBase" + name;
             }
+            else if (type == "Odbc")
+            {
+                return "SqlSugar.Odbc.Odbc" + name;
+            }
             else if (type == "Custom")
             {
                 return CustomNamespace + "."+CustomDbName + name;
