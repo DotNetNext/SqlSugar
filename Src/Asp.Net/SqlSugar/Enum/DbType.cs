@@ -22,6 +22,7 @@ namespace SqlSugar
         HG,
         ClickHouse,
         GBase,
+        Odbc,
         Custom =900
     }
 }
