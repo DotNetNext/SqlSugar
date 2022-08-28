@@ -18,7 +18,12 @@ namespace SqlSugar.GBase
         }
         public override string SqlTranslationLeft { get { return ""; } }
         public override string SqlTranslationRight { get { return ""; } }
-
+        public override bool IsTranslationText(string name)
+        {
+            var result = name.IsContainsIn( UtilConstants.Space,"(",")");
+            return result;
+        }
+        public override string GetLimit() { return ""; }
     }
     public partial class GBaseMethod : DefaultDbMethod, IDbMethods
     {

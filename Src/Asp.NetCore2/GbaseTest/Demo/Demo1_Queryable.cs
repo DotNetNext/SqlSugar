@@ -87,11 +87,11 @@ namespace OrmTest
             ))
            .Select((o, i, c) => c).ToList();
 
-            var twoClass = db.Queryable<Order, OrderItem, Custom>((o, i, c) => new JoinQueryInfos(
-            JoinType.Left, o.Id == i.OrderId,
-            JoinType.Left, o.CustomId == c.Id
-            ))
-           .Select((o, i, c) => new { o,i}).ToList();
+           // var twoClass = db.Queryable<Order, OrderItem, Custom>((o, i, c) => new JoinQueryInfos(
+           // JoinType.Left, o.Id == i.OrderId,
+           // JoinType.Left, o.CustomId == c.Id
+           // ))
+           //.Select((o, i, c) => new { o,i}).ToList();
 
             List<Dictionary<string, object>> ListDic = db.Queryable<Order, OrderItem, Custom>((o, i, c) => new JoinQueryInfos(
                   JoinType.Left, o.Id == i.OrderId,
