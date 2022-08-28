@@ -158,6 +158,7 @@ namespace SqlSugar
         #endregion
 
         #region Override methods
+        public virtual string GetLimit() { return null; }
         public virtual string GetTranslationTableName(string entityName, bool isMapping = true)
         {
             Check.ArgumentNullException(entityName, string.Format(ErrorMessage.ObjNotExist, "Table Name"));
