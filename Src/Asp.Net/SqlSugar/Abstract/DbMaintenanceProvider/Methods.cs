@@ -378,6 +378,10 @@ namespace SqlSugar
             {
                 defaultValue = "";
             }
+            if (defaultValue.IsDate()) 
+            {
+                defaultValue = "'" + defaultValue + "'";
+            }
             string sql = string.Format(AddDefaultValueSql, tableName, columnName,defaultValue);
             this.Context.Ado.ExecuteCommand(sql);
             return true;
