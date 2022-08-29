@@ -520,6 +520,18 @@ namespace OrmTest
                 .Where(m => m.Id == SqlFunc.Subqueryable<Order>()
                 .Where(z => z.Id == m.Id).GroupBy(z => z.Id).Select(z => z.Id))
                 .ToList();
+            var q2 = db.Queryable<Order>().Select(z => new { id = z.Id }).ToList();
+
+
+            db.Queryable<Order>()
+                .Select(it => new { id = it.Id })
+                .MergeTable()//合并成一个表 和 OrderItem 进行JOIN
+                .LeftJoin<OrderItem>((x, y) => x.id == y.ItemId)
+                .Select((x, y) => new {xid=x.id,yid=y.ItemId})
+                .MergeTable()//合并成一个表 和 OrderItem 进行JOIN
+                .LeftJoin<OrderItem>((x,y)=>x.yid==y.ItemId)// 最后一个表不是匿名对象就行
+                .ToList();
+
             Console.WriteLine("#### Join Table End ####");
         }
 
