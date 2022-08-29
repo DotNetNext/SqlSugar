@@ -47,6 +47,16 @@ namespace OrmTest
             Db.Insertable(new UnitCodeFirst131() { Id = 1 }).ExecuteCommand();
             Db.CodeFirst.InitTables<UNITCODEFIRST131>();
             Db.CodeFirst.InitTables<UNITCOdEFIRST131>();
+            Db.CodeFirst.InitTables<TestTbl>();
+        }
+        [SugarTable("test_tbl")]
+        public class TestTbl
+        {
+            [SugarColumn(ColumnName = "id", IsPrimaryKey = true, IsIdentity = true)]
+            public long Id { get; set; }
+
+            [SugarColumn(ColumnName = "birthday", IsNullable = true, DefaultValue = "1900-01-01")]
+            public DateTime Birthday { get; set; }
         }
         public class UnitCodeFirst131
         {
