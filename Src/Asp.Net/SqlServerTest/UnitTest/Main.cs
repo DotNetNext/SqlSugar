@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UTran2.Init();
             UnitUpdateSubQuery.Init();
             UnitManyToManyDeleteNav.Init();
             UnitTestReturnPkList.Init();

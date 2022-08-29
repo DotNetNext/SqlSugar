@@ -196,6 +196,7 @@
     <Compile Include="UnitTest\UQueryableAsync.cs" />
     <Compile Include="UnitTest\UThread3.cs" />
     <Compile Include="UnitTest\UThread2.cs" />
+    <Compile Include="UnitTest\UTran2.cs" />
     <Compile Include="UnitTest\UValidate.cs" />
     <Compile Include="UnitTest\UJson.cs" />
     <Compile Include="UnitTest\Main.cs" />
