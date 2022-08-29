@@ -30,6 +30,18 @@ namespace OrmTest
             if (Db.DbMaintenance.IsAnyTable("User", false))
                 Db.DbMaintenance.DropTable("User");
             Db.CodeFirst.InitTables<User>();
+            Db.CodeFirst.InitTables<UnitDateOffsetTimex>();
+            Db.DbMaintenance.TruncateTable<UnitDateOffsetTimex>();
+            Db.Insertable(new UnitDateOffsetTimex() { offsetTime = DateTimeOffset.Now }).ExecuteCommand();
+            Db.Insertable(new List<UnitDateOffsetTimex>() {
+                new UnitDateOffsetTimex() { offsetTime = DateTimeOffset.Now },
+                new UnitDateOffsetTimex() { offsetTime = DateTimeOffset.Now }}).ExecuteCommand();
+            var dt=Db.Ado.GetDataTable("select * from UnitDateOffsetTimex");
+        }
+
+        public class UnitDateOffsetTimex
+        {
+            public DateTimeOffset offsetTime { get; set; }
         }
         public class User
         {
