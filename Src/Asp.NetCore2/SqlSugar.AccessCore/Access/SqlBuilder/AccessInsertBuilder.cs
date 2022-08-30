@@ -8,6 +8,13 @@ namespace SqlSugar.Access
 {
     public class AccessInsertBuilder : InsertBuilder
     {
+        public override string SqlTemplateBatch
+        {
+            get
+            {
+                return "INSERT INTO {0} ({1})";
+            }
+        }
         public override bool IsOleDb { get; set; } = true;
         public override string SqlTemplate
         {
@@ -47,42 +54,98 @@ namespace SqlSugar.Access
             else
             {
                 StringBuilder batchInsetrSql = new StringBuilder();
-                int pageSize = 200;
-                if (this.EntityInfo.Columns.Count > 30)
-                {
-                    pageSize = 50;
-                }
-                else if (this.EntityInfo.Columns.Count > 20)
-                {
-                    pageSize = 100;
-                }
+                int pageSize = groupList.Count;
                 int pageIndex = 1;
                 int totalRecord = groupList.Count;
                 int pageCount = (totalRecord + pageSize - 1) / pageSize;
                 while (pageCount >= pageIndex)
                 {
-                    batchInsetrSql.AppendFormat(SqlTemplateBatch, GetTableNameString, columnsString);
+                    var temp=string.Format(SqlTemplateBatch, GetTableNameString, columnsString);
+                    //batchInsetrSql.AppendFormat("\r\nSelect  *  FROM(");
                     int i = 0;
                     foreach (var columns in groupList.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList())
                     {
-                        var isFirst = i == 0;
-                        if (!isFirst)
-                        {
-                            batchInsetrSql.Append(SqlTemplateBatchUnion);
-                        }
-                        batchInsetrSql.Append("\r\n SELECT " + string.Join(",", columns.Select(it => string.Format(SqlTemplateBatchSelect, FormatValue(it.Value), Builder.GetTranslationColumnName(it.DbColumnName)))));
+                        //var isFirst = i == 0;
+                        //if (!isFirst)
+                        //{
+                        //    batchInsetrSql.Append("\t\r\nUNION ");
+                        //}
+                        //temp+" Values ( " + string.Join(",", columns.Select(it =>  FormatValue(it.Value) )+")"
+                        batchInsetrSql.Append($"{temp} values ({string.Join(",", columns.Select(it => FormatValue(it.Value)))}) "+UtilConstants.ReplaceCommaKey);
                         ++i;
                     }
                     pageIndex++;
-                    batchInsetrSql.Append("\r\n;\r\n");
+                    //batchInsetrSql.Append(")  AS tblTemp\r\n");
                 }
                 var result = batchInsetrSql.ToString();
-                if (this.Context.CurrentConnectionConfig.DbType == DbType.SqlServer)
-                {
-                    result += "select SCOPE_IDENTITY();";
-                }
                 return result;
             }
+        }
+        public override object FormatValue(object value)
+        {
+            var n = "";
+            if (value == null)
+            {
+                return "NULL";
+            }
+            else
+            {
+                var type = UtilMethods.GetUnderType(value.GetType());
+                if (type == UtilConstants.DateType)
+                {
+                    return GetDateTimeString(value);
+                }
+                else if (value is DateTimeOffset)
+                {
+                    return GetDateTimeOffsetString(value);
+                }
+                else if (type == UtilConstants.ByteArrayType)
+                {
+                    string bytesString = "0x" + BitConverter.ToString((byte[])value).Replace("-", "");
+                    return bytesString;
+                }
+                else if (type.IsEnum())
+                {
+                    if (this.Context.CurrentConnectionConfig.MoreSettings?.TableEnumIsString == true)
+                    {
+                        return value.ToSqlValue(); ;
+                    }
+                    else
+                    {
+                        return Convert.ToInt64(value);
+                    }
+                }
+                else if (SqlSugar.UtilMethods.IsNumber(type.Name))
+                {
+                    return value;
+                }
+                else if (type == UtilConstants.BoolType)
+                {
+                    return value.ObjToBool() ? "1" : "0";
+                }
+                else
+                {
+                    return n + "'" + value + "'";
+                }
+            }
+        }
+        private object GetDateTimeOffsetString(object value)
+        {
+            var date = UtilMethods.ConvertFromDateTimeOffset((DateTimeOffset)value);
+            if (date == DateTime.MinValue)
+            {
+                date = Convert.ToDateTime("1900-01-01");
+            }
+            return "'" + date.ToString("yyyy-MM-dd HH:mm") + "'";
+        }
+        private object GetDateTimeString(object value)
+        {
+            var date = value.ObjToDate();
+            if (date == DateTime.MinValue) 
+            {
+                date = Convert.ToDateTime("1900-01-01");
+            }
+            return "'" + date.ToString("yyyy-MM-dd HH:mm") + "'";
         }
     }
 }
