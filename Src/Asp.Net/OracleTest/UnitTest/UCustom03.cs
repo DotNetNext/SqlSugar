@@ -17,7 +17,7 @@ namespace OrmTest
 
             };
             //建表 
-            if (!db.DbMaintenance.IsAnyTable("Test0011", false))
+            if (!db.DbMaintenance.IsAnyTable("Test001111", false))
             {
                 db.CodeFirst.InitTables<Test001111>();
             }
