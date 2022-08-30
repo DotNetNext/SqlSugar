@@ -35,13 +35,14 @@ namespace OrmTest
             /*** 1.entity or List ***/
 
             var updateObj = new Order() { Id = 1, Name = "order1" };
-            //var updateObjs = new List<Order> {
-            //     new Order() { Id = 11, Name = "order11" },
-            //     new Order() { Id = 12, Name = "order12" }
-            //};
+            var updateObjs = new List<Order> {
+                 new Order() { Id = 11, Name = "order11" },
+                 new Order() { Id = 12, Name = "order12" }
+            };
 
             //update all columns by primary key
-            var result = db.Updateable(updateObj).ExecuteCommand();//update single
+            var result = db.Updateable(updateObjs).ExecuteCommand();
+            var result2 = db.Updateable(updateObj).ExecuteCommand();//update single
             //var result2 = db.Updateable(updateObjs).ExecuteCommand();//update List<Class>
 
             //Ignore  Name and Price

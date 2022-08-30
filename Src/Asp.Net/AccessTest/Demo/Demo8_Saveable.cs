@@ -41,7 +41,7 @@ namespace OrmTest
             x2.AsInsertable.ExecuteCommand();
 
 
-            db.Saveable(new Order() { Id = 159, Name = "jack" }).ExecuteCommand();
+           // db.Saveable(new Order() { Id = 159, Name = "jack" }).ExecuteCommand();
             Console.WriteLine("");
             Console.WriteLine("#### Saveable End ####");
         }
