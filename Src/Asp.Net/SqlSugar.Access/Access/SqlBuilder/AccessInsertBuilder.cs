@@ -138,7 +138,6 @@ namespace SqlSugar.Access
             }
             return "'" + date.ToString("yyyy-MM-dd HH:mm") + "'";
         }
-
         private object GetDateTimeString(object value)
         {
             var date = value.ObjToDate();

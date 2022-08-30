@@ -137,7 +137,14 @@ namespace SqlSugar.Access
             }
             else
             {
-                return base.ExecuteCommand(sql, parameters);
+                if (sql.TrimStart('\r').TrimStart('\n') != "")
+                {
+                    return base.ExecuteCommand(sql, parameters);
+                }
+                else
+                {
+                    return 0;
+                }
             }
         }
         public override async Task<int> ExecuteCommandAsync(string sql, SugarParameter[] parameters)
