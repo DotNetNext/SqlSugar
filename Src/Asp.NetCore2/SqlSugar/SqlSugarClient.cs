@@ -769,15 +769,15 @@ namespace SqlSugar
             if (db.Context == null)
             {
                 db.Context = new SqlSugarProvider(db.ConnectionConfig);
+                if (_IsAllTran&&db.Context.Ado.Transaction==null) 
+                {
+                    db.Context.Ado.BeginTran();
+                }
             }
             var intiAop=db.Context.Aop;
             if (db.Context.CurrentConnectionConfig.AopEvents == null) 
             {
                 db.Context.CurrentConnectionConfig.AopEvents = new AopEvents();
-            }
-            if (_IsAllTran && db.Context.Ado.Transaction == null)
-            {
-                db.Context.Ado.BeginTran();
             }
             return db.Context;
         }
