@@ -8,6 +8,7 @@ using System.Data.OleDb;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 namespace SqlSugar.Access
 {
@@ -116,6 +117,49 @@ namespace SqlSugar.Access
                 ++index;
             }
             return result;
+        }
+        public string SplitCommandTag = UtilConstants.ReplaceCommaKey;
+        public override int ExecuteCommand(string sql, SugarParameter[] parameters)
+        {
+            if (sql == null) throw new Exception("sql is null");
+            if (sql.IndexOf(this.SplitCommandTag) > 0)
+            {
+                var sqlParts = Regex.Split(sql, this.SplitCommandTag).Where(it => !string.IsNullOrEmpty(it)).ToList();
+                int result = 0;
+                foreach (var item in sqlParts)
+                {
+                    if (item.TrimStart('\r').TrimStart('\n') != "")
+                    {
+                        result += base.ExecuteCommand(item, parameters);
+                    }
+                }
+                return result;
+            }
+            else
+            {
+                return base.ExecuteCommand(sql, parameters);
+            }
+        }
+        public override async Task<int> ExecuteCommandAsync(string sql, SugarParameter[] parameters)
+        {
+            if (sql == null) throw new Exception("sql is null");
+            if (sql.IndexOf(this.SplitCommandTag) > 0)
+            {
+                var sqlParts = Regex.Split(sql, this.SplitCommandTag).Where(it => !string.IsNullOrEmpty(it)).ToList();
+                int result = 0;
+                foreach (var item in sqlParts)
+                {
+                    if (item.TrimStart('\r').TrimStart('\n') != "")
+                    {
+                        result += await base.ExecuteCommandAsync(item, parameters);
+                    }
+                }
+                return result;
+            }
+            else
+            {
+                return base.ExecuteCommand(sql, parameters);
+            }
         }
         /// <summary>
         /// if mysql return MySqlParameter[] pars
