@@ -31,10 +31,10 @@ namespace OrmTest
             });
 
             var insertObj = new Order() { Id = 1, Name = "order1", Price = 0 };
-            //var insertObjs = new List<Order> {
-            //     new Order() { Id = 11, Name = "XX", Price=0 },
-            //     new Order() { Id = 12, Name = "XX2" , Price=0}
-            //};
+            var insertObjs = new List<Order> {
+                new Order() { Id = 11, Name = "XX", Price=0 },
+                 new Order() { Id = 12, Name = "XX2" , Price=0}
+            };
 
             //var x=db.Insertable(insertObjs).RemoveDataCache().IgnoreColumns(it=>it.CreateTime).UseParameter().ExecuteCommand();
 
@@ -56,7 +56,8 @@ namespace OrmTest
             //     new Order() { Id = 11, Name = "order11", Price=1 },
             //     new Order() { Id = 12, Name = "order12" , Price=20, CreateTime=DateTime.Now, CustomId=1}
             //};
-            //db.Insertable(insertObjs).UseSqlServer().ExecuteBulkCopy();
+            db.Insertable(insertObjs).ExecuteCommand();
+
             var dt = db.Queryable<Order>().Take(5).ToDataTable();
             dt.TableName = "Order";
             //db.Insertable(dt).UseSqlServer().ExecuteBulkCopy();
