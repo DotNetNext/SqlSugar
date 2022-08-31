@@ -141,10 +141,10 @@ namespace SqlSugar
                 this.Transaction.Rollback();
                 this.Transaction = null;
             }
-            if (this.Connection != null && this.Connection.State != ConnectionState.Open)
-            {
-                this.Connection.Close();
-            }
+            //if (this.Connection != null && this.Connection.State != ConnectionState.Open)
+            //{
+            //    this.Connection.Close();
+            //}
             if (this.Connection != null)
             {
                 this.Connection.Dispose();
