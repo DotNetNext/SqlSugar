@@ -39,7 +39,7 @@ namespace SqlSugar
             {
                 this.Tenant.RollbackTran();
             }
-            if (IsClose == false)
+            if (this.Db.Ado.Transaction==null&&IsClose == false)
             {
                 this.Db.Close();
             }
@@ -81,7 +81,7 @@ namespace SqlSugar
                 this.Tenant.CommitTran();
                 IsCommit = true;
             }
-            if (this.IsClose == false)
+            if (this.Db.Ado.Transaction==null&&this.IsClose == false)
             {
                 this.Db.Close();
                 IsClose = true;
