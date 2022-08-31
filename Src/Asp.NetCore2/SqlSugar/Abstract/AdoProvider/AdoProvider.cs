@@ -183,6 +183,14 @@ namespace SqlSugar
         #endregion
 
         #region Transaction
+        public virtual bool IsAnyTran() 
+        {
+            return this.Transaction != null;
+        }
+        public virtual bool IsNoTran()
+        {
+            return this.Transaction == null;
+        }
         public virtual void BeginTran()
         {
             CheckConnection();

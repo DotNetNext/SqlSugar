@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,6 +17,8 @@ namespace SqlSugar
         public bool ManyToManyIsUpdateA { get; set; }
         public bool ManyToManyIsUpdateB { get; set; }
         public bool OneToManyDeleteAll { get;  set; }
+        public Expression RootFunc { get; set; }
+        public Expression CurrentFunc { get; set; }
     }
 
     public class InsertNavOptions 
