@@ -21,7 +21,7 @@ namespace SqlSugar
         void ExecuteBefore(string sql, SugarParameter[] pars);
         void ExecuteAfter(string sql, SugarParameter[] pars);
         bool IsAnyTran();
-
+        bool IsNoTran();
         bool IsEnableLogEvent{get;set;}
         StackTraceInfo SqlStackTrace { get; }
         IDataParameterCollection DataReaderParameters { get; set; }

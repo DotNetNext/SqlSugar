@@ -187,6 +187,10 @@ namespace SqlSugar
         {
             return this.Transaction != null;
         }
+        public virtual bool IsNoTran()
+        {
+            return this.Transaction == null;
+        }
         public virtual void BeginTran()
         {
             CheckConnection();
