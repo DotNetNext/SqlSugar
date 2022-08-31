@@ -215,6 +215,7 @@ namespace SqlSugar
                       + Context.ParameterIndex;
                     if (value.ObjToString() != "NULL" && !parameter.ValueIsNull)
                     {
+                        value = this.Context.TableEnumIsString == true ? value.ToString() : value;
                         this.Context.Parameters.Add(new SugarParameter(appendValue, value));
                     }
                     else

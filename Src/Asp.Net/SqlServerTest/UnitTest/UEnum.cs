@@ -28,8 +28,9 @@ namespace OrmTest
              UnitType.a,
              UnitType.b
             };
+            var zz = UnitType.b;
             var x = db.Queryable<Unit00Z1string1>()
-                    .Where(it => it.type == UnitType.b)
+                    .Where(it => it.type == zz)
                 .Where(it=>it.type2== UnitType.b)
                 .Where(it=> ids.Contains(it.type)).Select(it => new
             {
