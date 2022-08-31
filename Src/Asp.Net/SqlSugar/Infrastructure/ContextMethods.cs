@@ -168,7 +168,10 @@ namespace SqlSugar
                 }
                 catch
                 {
-                    result.Add(name, null);
+                    if (!result.ContainsKey(name))
+                    {
+                        result.Add(name, null);
+                    }
                 }
             }
             return result;
@@ -445,6 +448,11 @@ namespace SqlSugar
                     if (mappingKeys!=null&&mappingKeys.ContainsKey(item.Name)) 
                     {
                         key = mappingKeys[item.Name]+"."+typeName + "." + name;
+                        info = readerValues.Select(it => it.Key).FirstOrDefault(it => it.ToLower() == key.ToLower());
+                    }
+                    else if (mappingKeys != null && mappingKeys.ContainsKey("Single_" + name))
+                    {
+                        key =mappingKeys["Single_" + name];
                         info = readerValues.Select(it => it.Key).FirstOrDefault(it => it.ToLower() == key.ToLower());
                     }
                     if (info == null&&oldInfo!=null) 
