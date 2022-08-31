@@ -105,16 +105,32 @@ namespace SqlSugar
         {
             if (isRoot && nav.Navigat.NavigatType != NavigateType.ManyToMany)
             {
-                this._Context.Updateable(_Roots).ExecuteCommand();
+                UpdateRoot();
             }
             else
             {
                 if (_Options != null && _Options.ManyToManyIsUpdateA)
                 {
-                    this._Context.Updateable(_Roots).ExecuteCommand();
+                    UpdateRoot();
                 }
             }
         }
 
+        private void UpdateRoot()
+        {
+            if (_Options != null && _Options.RootFunc != null)
+            {
+                var updateable = this._Context.Updateable(_Roots);
+                var exp= _Options.RootFunc as Expression<Action<IUpdateable<Root>>>;
+                Check.ExceptionEasy(exp == null, "UpdateOptions.RootFunc is error", "UpdateOptions.RootFunc");
+                var com= exp.Compile();
+                com(updateable);
+                updateable.ExecuteCommand();
+            }
+            else
+            {
+                this._Context.Updateable(_Roots).ExecuteCommand();
+            }
+        }
     }
 }
