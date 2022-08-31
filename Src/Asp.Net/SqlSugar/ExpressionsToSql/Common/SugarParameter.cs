@@ -11,6 +11,7 @@ namespace SqlSugar
     {
         public bool IsRefCursor { get; set; }
         public bool IsClob { get; set; }
+        public bool IsNvarchar2 { get; set; }
         public SugarParameter(string name, object value)
         {
             this.Value = value;
