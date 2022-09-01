@@ -1112,11 +1112,11 @@ namespace SqlSugar
             }
             else if (IsSqlite() && formatString == "yyyy-MM-dd HH:mm:ss")
             {
-                return $"strftime('%Y-%m-%d %H:%i:%S', {value})";
+                return $"strftime('%Y-%m-%d %H:%M:%S', {value})";
             }
             else if (IsSqlite() && formatString == "yyyy-MM-dd hh:mm:ss")
             {
-                return $"strftime('%Y-%m-%d %H:%i:%S', {value})";
+                return $"strftime('%Y-%m-%d %H:%M:%S', {value})";
             }
             else if (IsSqlite() && formatString == "yyyy-MM")
             {
