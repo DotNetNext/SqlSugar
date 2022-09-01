@@ -260,7 +260,9 @@ namespace SqlSugar
         }
         public override string DateIsSameDay(MethodCallExpressionModel model)
         {
-            throw new NotSupportedException("Oracle NotSupportedException DateIsSameDay");
+            var parameter = model.Args[0];
+            var parameter2 = model.Args[1];
+            return string.Format(" ( cast({0} as date)= cast( {1} as date) ) ", parameter.MemberName, parameter2.MemberName); ;
         }
         public override string DateIsSameByType(MethodCallExpressionModel model)
         {

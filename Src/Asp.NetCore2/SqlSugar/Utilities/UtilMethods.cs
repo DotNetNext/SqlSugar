@@ -823,6 +823,10 @@ namespace SqlSugar
                     {
                         result = result.Replace(item.ParameterName, item.Value.ObjToString());
                     }
+                    else if (item.Value is DateTime)
+                    {
+                        result = result.Replace(item.ParameterName, "'"+item.Value.ObjToDate().ToString("yyyy-MM-dd HH:mm:ss.fff")+"'");
+                    }
                     else if (item.Value is byte[])
                     {
                         result = result.Replace(item.ParameterName, "0x" + BitConverter.ToString((byte[])item.Value));

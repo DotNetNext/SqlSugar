@@ -262,6 +262,10 @@ namespace SqlSugar
             var parameter3 = model.Args[2];
             DateType dateType =(DateType)parameter3.MemberValue;
             var format = "yyyy-MM-dd";
+            if (dateType == DateType.Quarter)
+            {
+                return string.Format(" (date_trunc('quarter',{0})=date_trunc('quarter',{1}) ) ", parameter.MemberName, parameter2.MemberName,format);
+            }
             switch (dateType)
             {
                 case DateType.Year:
