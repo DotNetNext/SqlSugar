@@ -114,11 +114,19 @@ namespace SqlSugar
             Check.Exception(attribute == null, $"{typeof(T).Name} need SplitTableAttribute");
             groupModels = new List<GroupModel>();
             var db = FastestProvider.context;
+            // 用于处理没有配置SplitField的情况下，仅从数据库读取一次系统时间
+            var hasSplitField = typeof(T).GetProperties().Any(it => it.GetCustomAttribute<SplitFieldAttribute>() != null);
             foreach (var item in datas)
             {
-                var value = db.SplitHelper<T>().GetValue(attribute.SplitType, item);
-                var tableName = db.SplitHelper<T>().GetTableName(attribute.SplitType,value);
-                groupModels.Add(new GroupModel() { GroupName = tableName, Item = item });
+                // 如果没有配置SplitField，使用第一个GroupModel的GroupName
+                if (groupModels.Count > 0 && !hasSplitField)
+                    groupModels.Add(new GroupModel() { GroupName = groupModels[0].GroupName, Item = item });
+                else
+                {
+                    var value = db.SplitHelper<T>().GetValue(attribute.SplitType, item);
+                    var tableName = db.SplitHelper<T>().GetTableName(attribute.SplitType, value);
+                    groupModels.Add(new GroupModel() { GroupName = tableName, Item = item });
+                }
             }
             result = 0;
         }
