@@ -28,6 +28,7 @@ namespace SqlSugar
                    .Where(it => it.IsPrimarykey && !it.IsIdentity && it.OracleSequenceName.IsNullOrEmpty()).FirstOrDefault();
             Check.Exception(mappingA == null || mappingB == null, $"Navigate property {name} error ", $"导航属性{name}配置错误");
             List<Dictionary<string, object>> mappgingTables = new List<Dictionary<string, object>>();
+            var ids=new List<object>();
             foreach (var item in parentList)
             {
                 var items = parentNavigateProperty.PropertyInfo.GetValue(item);
@@ -41,6 +42,10 @@ namespace SqlSugar
                     _ParentList = children.Cast<object>().ToList();
                 }
                 var parentId = parentPkColumn.PropertyInfo.GetValue(item);
+                if (!ids.Contains(parentId))
+                {
+                    ids.Add(parentId);
+                }
                 foreach (var child in children)
                 {
                     var chidId = thisPkColumn.PropertyInfo.GetValue(child);
@@ -54,7 +59,6 @@ namespace SqlSugar
                     mappgingTables.Add(keyValuePairs);
                 }
             }
-            var ids = mappgingTables.Select(x => x[mappingA.DbColumnName]).ToList();
             this._Context.Deleteable<object>().AS(mappingEntity.DbTableName).In(mappingA.DbColumnName, ids).ExecuteCommand();
             this._Context.Insertable(mappgingTables).AS(mappingEntity.DbTableName).ExecuteCommand();
             _ParentEntity = thisEntity;
