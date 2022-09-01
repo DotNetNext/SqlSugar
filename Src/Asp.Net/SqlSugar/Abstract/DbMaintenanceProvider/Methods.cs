@@ -378,7 +378,7 @@ namespace SqlSugar
             {
                 defaultValue = "";
             }
-            if (defaultValue.IsDate()) 
+            if (defaultValue.IsDate() && !AddDefaultValueSql.Contains("'{2}'")) 
             {
                 defaultValue = "'" + defaultValue + "'";
             }
