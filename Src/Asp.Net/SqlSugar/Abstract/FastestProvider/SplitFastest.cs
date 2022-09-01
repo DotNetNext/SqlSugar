@@ -114,11 +114,17 @@ namespace SqlSugar
             Check.Exception(attribute == null, $"{typeof(T).Name} need SplitTableAttribute");
             groupModels = new List<GroupModel>();
             var db = FastestProvider.context;
+            var hasSplitField = typeof(T).GetProperties().Any(it => it.GetCustomAttribute<SplitFieldAttribute>() != null);
             foreach (var item in datas)
             {
-                var value = db.SplitHelper<T>().GetValue(attribute.SplitType, item);
-                var tableName = db.SplitHelper<T>().GetTableName(attribute.SplitType,value);
-                groupModels.Add(new GroupModel() { GroupName = tableName, Item = item });
+                if (groupModels.Count > 0 && !hasSplitField)
+                    groupModels.Add(new GroupModel() { GroupName = groupModels[0].GroupName, Item = item });
+                else
+                {
+                    var value = db.SplitHelper<T>().GetValue(attribute.SplitType, item);
+                    var tableName = db.SplitHelper<T>().GetTableName(attribute.SplitType, value);
+                    groupModels.Add(new GroupModel() { GroupName = tableName, Item = item });
+                }
             }
             result = 0;
         }
