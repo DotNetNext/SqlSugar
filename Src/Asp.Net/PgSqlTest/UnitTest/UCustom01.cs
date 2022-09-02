@@ -22,7 +22,7 @@ namespace OrmTest
             });
             db.Aop.OnLogExecuted = (s, p) =>
             {
-                Console.WriteLine(s);
+                Console.WriteLine(UtilMethods.GetSqlString(SqlSugar.DbType.PostgreSQL,s,p));
             };
             try
             {
@@ -44,9 +44,22 @@ namespace OrmTest
             addRow["UserName"] = "a";
             dt.Rows.Add(addRow);//添加娄据
 
-            var x = db.Storageable(dt).WhereColumns("id").ToStorage();//id作为主键
-            
+            var x1 = db.Storageable(dt).WhereColumns("id").ToStorage();//id作为主键
 
+            string p1 = "p1";
+            db.Queryable<Order>().Where(x11 => x11.Name + "a" == x11.Name).ToList();
+            db.Queryable<Order>().Where(x11 => x11.Name == x11.Name + "a").ToList();
+            db.Queryable<Order>().Where(x11 => "a" + x11.Name + p1 == x11.Name).ToList();
+            db.Queryable<Order>().Where(x11 => x11.Name == "a" + x11.Name + p1).ToList();
+            db.Queryable<Order>().Where(x11 => SqlFunc.ToString("a" + p1 + x11.Name) == x11.Name).ToList();
+            db.Updateable<Order>()
+                .SetColumns(x => x.Name == x.Name + "a")
+                .Where(z => z.Id == 1)
+                .ExecuteCommand();
+            db.Updateable<Order>()
+              .SetColumns(x => new Order() { Name = x.Name + "a" })
+              .Where(z => z.Id == 1)
+              .ExecuteCommand();
         }
         [SugarTable("public.unitUser_Test001")]
         public class User_Test001
