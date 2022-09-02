@@ -172,7 +172,12 @@ namespace SqlSugar
                     string appendValue = Context.SqlParameterKeyWord
                         + ((MemberExpression)oppoSiteExpression).Member.Name
                         + Context.ParameterIndex;
-                    if (value.ObjToString() != "NULL" && !parameter.ValueIsNull)
+                    if (IsNullValue(parameter, value)) 
+                    {
+                        appendValue = $" NULL ";
+                        parameter.BaseParameter.ValueIsNull = true;
+                    }
+                    else if (value.ObjToString() != "NULL" && !parameter.ValueIsNull)
                     {
                         EntityColumnInfo columnInfo = GetColumnInfo(oppoSiteExpression);
                         if (columnInfo != null && columnInfo.SqlParameterDbType != null && columnInfo.SqlParameterDbType is System.Data.DbType)
@@ -726,7 +731,14 @@ namespace SqlSugar
         #endregion
 
         #region Validate
-
+        private bool IsNullValue(ExpressionParameter parameter, object value)
+        {
+            return value == null 
+                    && !parameter.ValueIsNull
+                    && parameter.BaseParameter != null
+                    && parameter.BaseParameter.OperatorValue.IsIn("=","<>")
+                    && this.Context.ResolveType.IsIn(ResolveExpressType.WhereMultiple, ResolveExpressType.WhereSingle);
+        }
         private static bool IsNotCaseExpression(Expression item)
         {
             if ((item as MethodCallExpression).Method.Name == "IIF")
