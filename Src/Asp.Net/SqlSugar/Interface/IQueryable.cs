@@ -191,7 +191,7 @@ namespace SqlSugar
         List<TResult> ToPageList<TResult>(int pageNumber, int pageSize, ref int totalNumber, Expression<Func<T, TResult>> expression);
         List<T> ToPageList(int pageNumber, int pageSize, ref int totalNumber,ref int totalPage);
         Task<List<T>> ToPageListAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber);
-        Task<List<TResult>> ToPageListAsync<TResult>(int pageIndex, int pageSize, RefAsync<int> totalNumber, Expression<Func<T, TResult>> expression);
+        Task<List<TResult>> ToPageListAsync<TResult>(int pageNumber, int pageSize, RefAsync<int> totalNumber, Expression<Func<T, TResult>> expression);
         Task<List<T>> ToPageListAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber, RefAsync<int> totalPage);
         ISugarQueryable<T> WithCache(string cacheKey,int cacheDurationInSeconds = int.MaxValue);
         ISugarQueryable<T> WithCache(int cacheDurationInSeconds = int.MaxValue);
