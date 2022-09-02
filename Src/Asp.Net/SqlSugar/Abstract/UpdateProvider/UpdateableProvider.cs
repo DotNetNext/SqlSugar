@@ -18,6 +18,10 @@ namespace SqlSugar
         public UpdateBuilder UpdateBuilder { get; set; }
         public IAdo Ado { get { return Context.Ado; } }
         public T[] UpdateObjs { get; set; }
+        /// <summary>
+        /// true : by expression  update
+        /// false: by object update
+        /// </summary>
         public bool UpdateParameterIsNull { get; set; }
         public bool IsMappingTable { get { return this.Context.MappingTables != null && this.Context.MappingTables.Any(); } }
         public bool IsMappingColumns { get { return this.Context.MappingColumns != null && this.Context.MappingColumns.Any(); } }
