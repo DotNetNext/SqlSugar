@@ -20,7 +20,7 @@ namespace OrmTest
             });
             db.Aop.OnLogExecuted = (s, p) =>
             {
-                Console.WriteLine(s);
+                Console.WriteLine(UtilMethods.GetSqlString(DbType.SqlServer,s,p));
             };
             //建表 
             if (!db.DbMaintenance.IsAnyTable("User_Test001", false))
@@ -77,6 +77,20 @@ namespace OrmTest
             if (!sql4.Key.Contains("@")) { throw new Exception("unit error"); };
             var sql41 = db.Queryable<Order>().Where(x => x.Name != p1).ToSql();
             if (!sql41.Key.Contains("@")) { throw new Exception("unit error"); };
+
+            db.Queryable<Order>().Where(x11 => x11.Name + "a" == x11.Name).ToList();
+            db.Queryable<Order>().Where(x11 => x11.Name == x11.Name + "a").ToList();
+            db.Queryable<Order>().Where(x11 => "a"+x11.Name+ p1 == x11.Name).ToList();
+            db.Queryable<Order>().Where(x11 => x11.Name == "a" + x11.Name + p1).ToList();
+            db.Queryable<Order>().Where(x11 => SqlFunc.ToString("a"+p1+x11.Name)==x11.Name).ToList();
+            db.Updateable<Order>()
+                .SetColumns(x => x.Name == x.Name + "a")
+                .Where(z => z.Id == 1)
+                .ExecuteCommand();
+            db.Updateable<Order>()
+              .SetColumns(x => new Order() { Name = x.Name + "a" })
+              .Where(z => z.Id == 1)
+              .ExecuteCommand();
         }
 
         public class BoolTest12313
