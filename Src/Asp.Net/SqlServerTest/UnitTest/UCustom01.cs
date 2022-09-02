@@ -64,6 +64,19 @@ namespace OrmTest
             var sql2=db.SqlQueryable<Order>("select * from [Order]").With(SqlWith.Null).LeftJoin<OrderItem>((z, y) => z.Id == y.OrderId).ToSql().Key;
             if (sql2.Contains(SqlWith.NoLock)) { throw new Exception("unit error"); }
             db.DbMaintenance.DropTable("BoolTest12313");
+
+            string p1 = null;
+            var sql3=db.Queryable<Order>().Where(x => x.Name == p1).ToSql();
+            if (!sql3.Key.Contains("IS  NULL ")) { throw new Exception("unit error"); };
+            db.Queryable<Order>().Where(x => x.Name == p1).First();
+            var sql31 = db.Queryable<Order>().Where(x => x.Name != p1).ToSql();
+            if (!sql31.Key.Contains(" IS NOT  NULL ")) { throw new Exception("unit error"); };
+            db.Queryable<Order>().Where(x => x.Name != p1).First();
+            p1 = "";
+            var sql4 = db.Queryable<Order>().Where(x => x.Name == p1).ToSql();
+            if (!sql4.Key.Contains("@")) { throw new Exception("unit error"); };
+            var sql41 = db.Queryable<Order>().Where(x => x.Name != p1).ToSql();
+            if (!sql41.Key.Contains("@")) { throw new Exception("unit error"); };
         }
 
         public class BoolTest12313
