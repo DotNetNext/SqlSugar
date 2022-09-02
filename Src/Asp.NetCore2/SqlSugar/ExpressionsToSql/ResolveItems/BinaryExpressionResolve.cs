@@ -33,11 +33,33 @@ namespace SqlSugar
             {
                 SubGroup(expression, operatorValue);
             }
+            else if (IsJoinString(expression, operatorValue))
+            {
+                JoinString(parameter, expression);
+            }
             else
             {
                 DefaultBinary(parameter, expression, operatorValue);
             }
         }
+
+        private void JoinString(ExpressionParameter parameter, BinaryExpression expression)
+        {
+            var leftString = GetNewExpressionValue(expression.Left);
+            var RightString = GetNewExpressionValue(expression.Right);
+            var joinString = this.Context.DbMehtods.MergeString(leftString, RightString);
+            if (this.Context.Result.Contains(ExpressionConst.FormatSymbol))
+            {
+                base.Context.Result.Replace("{0}", $" {joinString} ");
+                base.Context.Result.Append(" " + ExpressionConst.ExpressionReplace + parameter.BaseParameter.Index + " ");
+            }
+            else
+            {
+                base.Context.Result.Append($" {joinString} ");
+            }
+        }
+
+   
 
         private void DefaultBinary(ExpressionParameter parameter, BinaryExpression expression, string operatorValue)
         {
@@ -232,7 +254,12 @@ namespace SqlSugar
             }
             return true;
         }
-
+        private static bool IsJoinString(BinaryExpression expression, string operatorValue)
+        {
+            return operatorValue == "+" 
+                && expression.Right.Type == UtilConstants.StringType
+                && expression.Left.Type==UtilConstants.StringType;
+        }
         private static bool RightIsHasValue(Expression leftExpression, Expression rightExpression,bool isLogic)
         {
             return isLogic&&
