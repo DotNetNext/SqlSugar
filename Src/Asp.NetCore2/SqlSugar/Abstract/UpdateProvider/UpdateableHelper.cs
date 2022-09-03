@@ -32,6 +32,7 @@ namespace SqlSugar
         }
         private string _ExecuteCommand()
         {
+            CheckWhere();
             PreToSql();
             AutoRemoveDataCache();
             Check.Exception(UpdateBuilder.WhereValues.IsNullOrEmpty() && GetPrimaryKeys().IsNullOrEmpty(), "You cannot have no primary key and no conditions");
@@ -40,6 +41,14 @@ namespace SqlSugar
             RestoreMapping();
             Before(sql);
             return sql;
+        }
+
+        private void CheckWhere()
+        {
+            if (UpdateParameterIsNull && UpdateBuilder.WhereValues.IsNullOrEmpty()) 
+            {
+                Check.ExceptionEasy("Update requires conditions", "更新需要条件 Where");
+            }
         }
 
         private void _WhereColumn(string columnName)

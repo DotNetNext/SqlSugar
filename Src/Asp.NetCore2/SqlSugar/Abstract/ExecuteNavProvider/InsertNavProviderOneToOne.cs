@@ -33,7 +33,7 @@ namespace SqlSugar
                         }
 
                     }
-                    if (!IsDefaultValue(navPropertyValue)) 
+                    if (!IsDefaultValue(navPropertyValue)&& parentColumn.IsPrimarykey==false) 
                     {
                         this._Context.Updateable<DbTableInfo>
                            ().AS(parentEntity.DbTableName)
