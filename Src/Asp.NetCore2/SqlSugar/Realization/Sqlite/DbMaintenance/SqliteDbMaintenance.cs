@@ -410,8 +410,7 @@ namespace SqlSugar
                     //}
                     if (item.IsIdentity && !item.IsPrimarykey)
                     {
-                        item.IsPrimarykey = true;
-                        //Check.Exception(item.DataType == "integer", "Identity only integer type");
+                        Check.Exception(true, "Identity only primary key");
                     }
                 }
             }
