@@ -144,7 +144,7 @@ namespace OrmTest
             var db = GetInstance();
             //Creater Table
             db.CodeFirst.InitTables(typeof(Tree));
-            db.DbMaintenance.TruncateTable("tree");
+            db.DbMaintenance.TruncateTable("Tree");
             db.Insertable(new Tree() { Id = 1, Name = "root" }).ExecuteCommand();
             db.Insertable(new Tree() { Id = 11, Name = "child1",ParentId=1 }).ExecuteCommand();
             db.Insertable(new Tree() { Id = 12, Name = "child2",ParentId=1 }).ExecuteCommand();
