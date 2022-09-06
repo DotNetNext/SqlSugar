@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace SqlSugar
 {
@@ -440,7 +441,22 @@ namespace SqlSugar
             }
             var oldDatabaseName = this.Context.Ado.Connection.Database;
             var connection = this.Context.CurrentConnectionConfig.ConnectionString;
-            connection = connection.Replace(oldDatabaseName, "master");
+            if (Regex.Split(connection, oldDatabaseName).Length > 2)
+            {
+                var name=Regex.Match(connection, @"database\=\w+|datasource\=\w+",RegexOptions.IgnoreCase).Value;
+                if (!string.IsNullOrEmpty(name))
+                {
+                    connection = connection.Replace(name, "database=master");
+                }
+                else 
+                {
+                    Check.ExceptionEasy("Failed to create the database. The database name has a keyword. Please change the name", "建库失败，库名存在关键字，请换一个名字");
+                }
+            }
+            else
+            {
+                connection = connection.Replace(oldDatabaseName, "master");
+            }
             var newDb = new SqlSugarClient(new ConnectionConfig()
             {
                 DbType = this.Context.CurrentConnectionConfig.DbType,
