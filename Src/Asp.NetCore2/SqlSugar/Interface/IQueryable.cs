@@ -61,6 +61,7 @@ namespace SqlSugar
         ISugarQueryable<T> TranLock(DbLockType? LockType = DbLockType.Wait);
         ISugarQueryable<T> Where(Expression<Func<T, bool>> expression);
         ISugarQueryable<T> Where(string whereString, object parameters = null);
+        ISugarQueryable<T> Where(IFuncModel funcModel);
         ISugarQueryable<T> Where(List<IConditionalModel> conditionalModels);
         ISugarQueryable<T> Where(List<IConditionalModel> conditionalModels,bool isWrap);
         ISugarQueryable<T> Where(string fieldName, string conditionalType, object fieldValue);
@@ -220,6 +221,7 @@ namespace SqlSugar
         new ISugarQueryable<T, T2> Where(Expression<Func<T, bool>> expression);
         ISugarQueryable<T, T2> Where(Expression<Func<T, T2, bool>> expression);
         new ISugarQueryable<T, T2> Where(List<IConditionalModel> conditionalModels);
+        new ISugarQueryable<T,T2> Where(IFuncModel funcModel);
 
         new ISugarQueryable<T, T2> WhereIF(bool isWhere, Expression<Func<T, bool>> expression);
         ISugarQueryable<T, T2> WhereIF(bool isWhere, Expression<Func<T, T2, bool>> expression);
@@ -319,7 +321,7 @@ namespace SqlSugar
         ISugarQueryable<T, T2, T3> Where(Expression<Func<T, T2, bool>> expression);
         ISugarQueryable<T, T2, T3> Where(Expression<Func<T, T2, T3, bool>> expression);
         new ISugarQueryable<T, T2, T3> Where(List<IConditionalModel> conditionalModels);
-
+        new ISugarQueryable<T, T2,T3> Where(IFuncModel funcModel);
         new ISugarQueryable<T, T2, T3> WhereIF(bool isWhere, Expression<Func<T, bool>> expression);
         ISugarQueryable<T, T2, T3> WhereIF(bool isWhere, Expression<Func<T, T2, bool>> expression);
         ISugarQueryable<T, T2, T3> WhereIF(bool isWhere, Expression<Func<T, T2, T3, bool>> expression);
@@ -434,7 +436,7 @@ namespace SqlSugar
         ISugarQueryable<T, T2, T3, T4> Where(Expression<Func<T, T2, T3, bool>> expression);
         ISugarQueryable<T, T2, T3, T4> Where(Expression<Func<T, T2, T3, T4, bool>> expression);
         new ISugarQueryable<T, T2, T3, T4> Where(List<IConditionalModel> conditionalModels);
-
+        new ISugarQueryable<T, T2, T3,T4> Where(IFuncModel funcModel);
         new ISugarQueryable<T, T2, T3, T4> WhereIF(bool isWhere, Expression<Func<T, bool>> expression);
         ISugarQueryable<T, T2, T3, T4> WhereIF(bool isWhere, Expression<Func<T, T2, bool>> expression);
         ISugarQueryable<T, T2, T3, T4> WhereIF(bool isWhere, Expression<Func<T, T2, T3, bool>> expression);
@@ -560,7 +562,7 @@ namespace SqlSugar
         ISugarQueryable<T, T2, T3, T4, T5> Where(Expression<Func<T, T2, T3, T4, T5, bool>> expression);
         new ISugarQueryable<T, T2, T3, T4, T5> Where(List<IConditionalModel> conditionalModels);
 
-
+        new ISugarQueryable<T, T2, T3, T4,T5> Where(IFuncModel funcModel);
         new ISugarQueryable<T, T2, T3, T4, T5> WhereIF(bool isWhere, Expression<Func<T, bool>> expression);
         ISugarQueryable<T, T2, T3, T4, T5> WhereIF(bool isWhere, Expression<Func<T, T2, bool>> expression);
         ISugarQueryable<T, T2, T3, T4, T5> WhereIF(bool isWhere, Expression<Func<T, T2, T3, bool>> expression);
@@ -678,7 +680,7 @@ namespace SqlSugar
         ISugarQueryable<T, T2, T3, T4, T5, T6> Where(Expression<Func<T, T2, T3, T4, T5, bool>> expression);
         ISugarQueryable<T, T2, T3, T4, T5, T6> Where(Expression<Func<T, T2, T3, T4, T5, T6, bool>> expression);
         new ISugarQueryable<T, T2, T3, T4, T5, T6> Where(List<IConditionalModel> conditionalModels);
-
+        new ISugarQueryable<T, T2, T3, T4, T5,T6> Where(IFuncModel funcModel);
         new ISugarQueryable<T, T2, T3, T4, T5, T6> WhereIF(bool isWhere, Expression<Func<T, bool>> expression);
         ISugarQueryable<T, T2, T3, T4, T5, T6> WhereIF(bool isWhere, Expression<Func<T, T2, bool>> expression);
         ISugarQueryable<T, T2, T3, T4, T5, T6> WhereIF(bool isWhere, Expression<Func<T, T2, T3, bool>> expression);
