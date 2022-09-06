@@ -645,7 +645,11 @@ namespace SqlSugar
                 this.Where<T>(whereString, whereObj);
             return this;
         }
-
+        public virtual ISugarQueryable<T> Where(IFuncModel funcModel) 
+        {
+            var obj= this.SqlBuilder.FuncModelToSql(funcModel);
+            return this.Where(obj.Key, obj.Value);
+        }
         public virtual ISugarQueryable<T> Where(List<IConditionalModel> conditionalModels)
         {
             if (conditionalModels.IsNullOrEmpty()) return this;
@@ -3626,7 +3630,11 @@ namespace SqlSugar
             base.Where(conditionalModels);
             return this;
         }
-
+        public new ISugarQueryable<T,T2> Where(IFuncModel funcModel)
+        {
+            var obj = this.SqlBuilder.FuncModelToSql(funcModel);
+            return this.Where(obj.Key, obj.Value);
+        }
         public new ISugarQueryable<T, T2> WhereIF(bool isWhere, string whereString, object whereObj)
         {
             if (!isWhere) return this;
@@ -4233,7 +4241,11 @@ namespace SqlSugar
             base.Where(conditionalModels);
             return this;
         }
-
+        public new ISugarQueryable<T, T2,T3> Where(IFuncModel funcModel)
+        {
+            var obj = this.SqlBuilder.FuncModelToSql(funcModel);
+            return this.Where(obj.Key, obj.Value);
+        }
         public ISugarQueryable<T, T2, T3> WhereIF(bool isWhere, Expression<Func<T, T2, T3, bool>> expression)
         {
             if (isWhere)
@@ -4619,7 +4631,11 @@ namespace SqlSugar
             base.Where(conditionalModels);
             return this;
         }
-
+        public new ISugarQueryable<T, T2,T3,T4> Where(IFuncModel funcModel)
+        {
+            var obj = this.SqlBuilder.FuncModelToSql(funcModel);
+            return this.Where(obj.Key, obj.Value);
+        }
         public new ISugarQueryable<T, T2, T3, T4> WhereIF(bool isWhere, Expression<Func<T, bool>> expression)
         {
             if (isWhere)
@@ -5229,7 +5245,11 @@ namespace SqlSugar
             base.Where(conditionalModels);
             return this;
         }
-
+        public new ISugarQueryable<T, T2, T3, T4,T5> Where(IFuncModel funcModel)
+        {
+            var obj = this.SqlBuilder.FuncModelToSql(funcModel);
+            return this.Where(obj.Key, obj.Value);
+        }
         public new ISugarQueryable<T, T2, T3, T4, T5> WhereIF(bool isWhere, Expression<Func<T, bool>> expression)
         {
             if (isWhere)
@@ -5778,7 +5798,11 @@ namespace SqlSugar
             base.Where(conditionalModels);
             return this;
         }
-
+        public new ISugarQueryable<T, T2, T3, T4, T5,T6> Where(IFuncModel funcModel)
+        {
+            var obj = this.SqlBuilder.FuncModelToSql(funcModel);
+            return this.Where(obj.Key, obj.Value);
+        }
         public new ISugarQueryable<T, T2, T3, T4, T5, T6> WhereIF(bool isWhere, Expression<Func<T, bool>> expression)
         {
             if (isWhere)

@@ -8,7 +8,7 @@ namespace SqlSugar
     public abstract partial class SqlBuilderProvider : SqlBuilderAccessory, ISqlBuilder
     {
         #region  Variable
-        private string[] SqlSplicingOperator = new string[] { ">", ">=", "<", "<=", "(", ")", "=", "||", "&&","&","|" }; 
+        private string[] SqlSplicingOperator = new string[] { ">", ">=", "<", "<=", "(", ")", "=", "||", "&&","&","|","null","is","isnot" }; 
         #endregion
 
         #region Root
