@@ -19,6 +19,18 @@ namespace Test
             var x1 = jsonToSqlClient.Queryable(json).ToSqlList();
             var list1 = jsonToSqlClient.Context.Ado.SqlQuery<dynamic>(x1[0].Sql, x1[0].Parameters);
         }
+        private static void WhereTest2(JsonClient jsonToSqlClient)
+        {
+            var onList = new ObjectFuncModel()
+            {
+                FuncName = "SqlFunc_Format",
+                Parameters = new List<object>{
+                "id",">","{int}:1","||","name","is","null"
+           }
+            };
+            //jsonToSqlClient.Context.Queryable<Order>().AddJoinInfo("table1", "a", "id=1 or id=2", JoinType.Left);
+            jsonToSqlClient.Context.Queryable<Order>().Where(onList).ToList();
+        }
         private static void WhereTest(JsonClient jsonToSqlClient)
         {
             jsonToSqlClient.Context.Queryable<object>().AS("order").Max<int>("id");
