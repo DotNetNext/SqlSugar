@@ -215,7 +215,8 @@ namespace SqlSugar
                 FieldValue = String.Join(",", ids),
                 CSharpTypeName = aColumn.PropertyInfo.PropertyType.Name
             }));
-            var abids = this.Context.Queryable<object>().AS(mappingEntity.DbTableName).Where(conditionalModels).Select<SugarAbMapping>($"{aColumn.DbColumnName} as aid,{bColumn.DbColumnName} as bid").ToList();
+            var queryable = this.Context.Queryable<object>();
+            var abids = queryable.AS(mappingEntity.DbTableName).Where(conditionalModels).Select<SugarAbMapping>($"{queryable.SqlBuilder.GetTranslationColumnName(aColumn.DbColumnName)} as aid,{queryable.SqlBuilder.GetTranslationColumnName(bColumn.DbColumnName)} as bid").ToList();
 
             List<IConditionalModel> conditionalModels2 = new List<IConditionalModel>();
             conditionalModels2.Add((new ConditionalModel()
