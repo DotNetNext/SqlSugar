@@ -60,6 +60,10 @@ namespace SqlSugar
                         return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
                     }
                 }
+                else if (type == UtilConstants.DateTimeOffsetType)
+                {
+                    return GetDateTimeOffsetString(value);
+                }
                 else if (type == UtilConstants.DateType && iswhere) 
                 {
                     var parameterName = this.Builder.SqlParameterKeyWord + name + i;
@@ -96,6 +100,16 @@ namespace SqlSugar
                     return "'" + value.ToString() + "'";
                 }
             }
+        }
+
+        private object GetDateTimeOffsetString(object value)
+        {
+            var date = UtilMethods.ConvertFromDateTimeOffset((DateTimeOffset)value);
+            if (date < UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig))
+            {
+                date = UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig);
+            }
+            return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
         }
     }
 }
