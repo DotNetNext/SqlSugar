@@ -163,6 +163,18 @@ namespace SqlSugar
             mappingA = queryable.QueryBuilder.Builder.GetTranslationColumnName(mappingA);
             mappingB = queryable.QueryBuilder.Builder.GetTranslationColumnName(mappingB);
             var bTableName = queryable.QueryBuilder.Builder.GetTranslationTableName(this.ProPertyEntity.DbTableName);
+
+            var queryBuilerAB=this.context.Queryable<object>().QueryBuilder;
+            var filters= queryBuilerAB.GetFilters(mappingType);
+            if (filters.HasValue()) 
+            {
+                aPk += " AND " + filters;
+                if (queryBuilerAB.Parameters != null) 
+                {
+                    this.methodCallExpressionResolve.Context.Parameters.AddRange(queryBuilerAB.Parameters);
+                }
+            }
+
             mapper.Sql = $" (select {(MethodName == "Any" ? "1":" COUNT(1) ")} from {bTableName} {this.ProPertyEntity.DbTableName}_1  where  {this.ProPertyEntity.DbTableName}_1.{bPk} in (select {mappingB} from {mappingTableName} where {mappingA} = {ShorName}.{aPk} )  )";
             if (this.whereSql.HasValue())
             {
