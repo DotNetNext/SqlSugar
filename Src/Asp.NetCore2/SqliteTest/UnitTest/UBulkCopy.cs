@@ -150,10 +150,29 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
-         Console.WriteLine("用例跑完");
+            db.CodeFirst.InitTables<UnitBool01>();
+            db.DbMaintenance.TruncateTable<UnitBool01>();
+            db.Insertable(new UnitBool01() { Bool = true }).ExecuteCommand();
+            db.Insertable(new UnitBool01() { Bool = false }).ExecuteCommand();
+            db.Fastest<UnitBool01>().BulkCopy(new List<UnitBool01>() { new UnitBool01() { Bool = true } });
+            db.Fastest<UnitBool01>().BulkCopy(new List<UnitBool01>() { new UnitBool01() { Bool = false } });
+            var list7=db.Queryable<UnitBool01>().ToList();
+            var list8= db.Queryable<UnitBool01>().ToDataTable();
+            var json=db.Utilities.SerializeObject( db.Utilities.DataTableToDictionaryList(list8));
+            if (json != "[{\"Bool\":1},{\"Bool\":0},{\"Bool\":1},{\"Bool\":0}]") 
+            {
+                throw new Exception("unit error");
+            }
+            Console.WriteLine("用例跑完");
         }
 
     }
+
+    public class UnitBool01
+    {
+        public bool Bool { get; set; }
+    }
+
     public class UnitTestoffset11
     {
         [SqlSugar.SugarColumn(IsNullable = true)]
