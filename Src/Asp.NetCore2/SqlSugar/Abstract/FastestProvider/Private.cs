@@ -91,6 +91,10 @@ namespace SqlSugar
                     {
                         value = "isSqliteCore_"+value.ObjToString();
                     }
+                    else if (isSqliteCore && column.UnderType == UtilConstants.BoolType && value is bool)
+                    {
+                        value =Convert.ToBoolean(value)?1:0;
+                    }
                     else if (column.UnderType == UtilConstants.DateTimeOffsetType && value != null && value != DBNull.Value)
                     {
                         if (builder.DbFastestProperties != null && builder.DbFastestProperties.HasOffsetTime == true)
