@@ -333,6 +333,10 @@ namespace SqlSugar
             {
                 this.Context.SingleTableNameSubqueryShortName = newContext.SingleTableNameSubqueryShortName;
             }
+            else if (newContext.SingleTableNameSubqueryShortName!=null&& newContext.Result !=null && newContext.Result.Contains(this.Context.SqlTranslationLeft+ newContext.SingleTableNameSubqueryShortName+ this.Context.SqlTranslationRight))
+            {
+                this.Context.SingleTableNameSubqueryShortName = newContext.SingleTableNameSubqueryShortName;
+            }
             return newContext.Result.GetResultString();
         }
         public string GetNewExpressionValue(Expression item, ResolveExpressType type)
