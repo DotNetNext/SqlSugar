@@ -496,6 +496,10 @@ namespace SqlSugar
                 {
                     databaseName = $"[{databaseName}]";
                 }
+                else if (Regex.IsMatch(databaseName,@"^\d.*"))
+                {
+                    databaseName = $"[{databaseName}]";
+                }
                 newDb.Ado.ExecuteCommand(string.Format(sql, databaseName, databaseDirectory));
             }
             return true;
