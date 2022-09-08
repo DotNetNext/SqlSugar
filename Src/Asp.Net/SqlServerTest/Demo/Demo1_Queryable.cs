@@ -662,7 +662,7 @@ namespace OrmTest
             var res = db.Queryable<Person>().Select(it => new Person()
             {
                 Id = it.Id.SelectAll(),
-                SexName = it.SexId.GetConfigValue<DataDictionary>("sex"),
+                SexName = "(" + it.SexId.GetConfigValue<DataDictionary>("sex") + ")",
                 ProviceName = it.SexId.GetConfigValue<DataDictionary>("province"),
                 CityName = it.SexId.GetConfigValue<DataDictionary>("city"),
             }).ToList();//也支持支持写在Where或者Orderby
