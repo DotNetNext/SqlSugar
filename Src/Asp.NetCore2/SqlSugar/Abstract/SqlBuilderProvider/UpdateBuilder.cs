@@ -364,6 +364,10 @@ namespace SqlSugar
                 {
                     return value;
                 }
+                else if (UtilMethods.IsNumber(type.Name)) 
+                {
+                    return value;
+                }
                 else
                 {
                     return "N'" + value.ToString() + "'";
