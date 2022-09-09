@@ -71,6 +71,36 @@ namespace SqlSugar
             CheckConnection();
             return sqlCommand;
         }
+        /// <summary>
+        /// Check connection
+        /// </summary>
+        public override void CheckConnection()
+        {
+            if (this.Connection.State != ConnectionState.Open)
+            {
+                try
+                {
+                    int i = 0;
+                    while (i < 10)
+                    {
+                        try
+                        {
+                            //QuestDb loss problem
+                            this.Connection.Open();
+                            break;
+                        }
+                        catch
+                        {
+                            i++;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Check.Exception(true, ErrorMessage.ConnnectionOpen, ex.Message);
+                }
+            }
+        }
         public override void SetCommandToAdapter(IDataAdapter dataAdapter, DbCommand command)
         {
             ((NpgsqlDataAdapter)dataAdapter).SelectCommand = (NpgsqlCommand)command;
