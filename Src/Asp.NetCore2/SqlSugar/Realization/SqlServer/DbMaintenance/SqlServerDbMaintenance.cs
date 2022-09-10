@@ -465,6 +465,7 @@ namespace SqlSugar
             });
             if (!GetDataBaseList(newDb).Any(it => it.Equals(databaseName, StringComparison.CurrentCultureIgnoreCase)))
             {
+                var separatorChar = UtilMethods.GetSeparatorChar();
                 var sql = CreateDataBaseSql;
                 if (databaseDirectory.HasValue())
                 {
@@ -491,8 +492,13 @@ namespace SqlSugar
                                             maxsize = 1gb,
                                             filegrowth = 10mb
                                         ); ";
+                    databaseDirectory = databaseDirectory.Replace("\\", separatorChar);
                 }
                 if (databaseName.Contains(".")) 
+                {
+                    databaseName = $"[{databaseName}]";
+                }
+                else if (Regex.IsMatch(databaseName,@"^\d.*"))
                 {
                     databaseName = $"[{databaseName}]";
                 }

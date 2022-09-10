@@ -433,7 +433,7 @@ namespace SqlSugar
                 CommandType = CommandType.Text;
                 if (ErrorEvent != null)
                     ExecuteErrorEvent(sql, parameters, ex);
-                throw ex;
+                throw;
             }
         }
         public virtual DataSet GetDataSetAll(string sql, params SugarParameter[] parameters)
@@ -466,7 +466,7 @@ namespace SqlSugar
                 CommandType = CommandType.Text;
                 if (ErrorEvent != null)
                     ExecuteErrorEvent(sql, parameters, ex);
-                throw ex;
+                throw;
             }
             finally
             {
@@ -502,7 +502,7 @@ namespace SqlSugar
                 CommandType = CommandType.Text;
                 if (ErrorEvent != null)
                     ExecuteErrorEvent(sql, parameters, ex);
-                throw ex;
+                throw;
             }
             finally
             {
@@ -543,7 +543,7 @@ namespace SqlSugar
                 CommandType = CommandType.Text;
                 if (ErrorEvent != null)
                     ExecuteErrorEvent(sql, parameters, ex);
-                throw ex;
+                throw;
             }
             finally
             {
@@ -588,7 +588,7 @@ namespace SqlSugar
                 CommandType = CommandType.Text;
                 if (ErrorEvent != null)
                     ExecuteErrorEvent(sql, parameters, ex);
-                throw ex;
+                throw;
             }
         }
         public virtual async Task<object> GetScalarAsync(string sql, params SugarParameter[] parameters)
@@ -624,7 +624,7 @@ namespace SqlSugar
                 CommandType = CommandType.Text;
                 if (ErrorEvent != null)
                     ExecuteErrorEvent(sql, parameters, ex);
-                throw ex;
+                throw;
             }
             finally
             {

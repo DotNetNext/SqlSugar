@@ -408,7 +408,7 @@ namespace SqlSugar
                     Check.Exception(InstanceFactory.CustomDllName.IsNullOrEmpty(), "DbType.Custom: InstanceFactory.CustomDllName is not null  ");
                     break;
                 case DbType.QuestDB:
-                    Check.Exception(SugarCompatible.IsFramework, "QuestDB only support .net core");
+                    DependencyManagement.TryPostgreSQL();
                     break;
                 case DbType.ClickHouse:
                     Check.Exception(SugarCompatible.IsFramework, "ClickHouse only support .net core");

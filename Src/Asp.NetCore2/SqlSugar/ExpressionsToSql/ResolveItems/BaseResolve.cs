@@ -480,11 +480,11 @@ namespace SqlSugar
                     List<NewExpressionInfo> newExpressionInfos = new List<NewExpressionInfo>();
                     if (item is MemberInitExpression)
                     {
-                        newExpressionInfos = ExpressionTool.GetNewexpressionInfos(item,this.Context);
+                        newExpressionInfos = ExpressionTool.GetNewexpressionInfos(item,this.Context,this);
                     }
                     else 
                     {
-                        newExpressionInfos = ExpressionTool.GetNewDynamicexpressionInfos(item, this.Context);
+                        newExpressionInfos = ExpressionTool.GetNewDynamicexpressionInfos(item, this.Context,this);
                     }
                     foreach (NewExpressionInfo newExpressionInfo in newExpressionInfos) 
                     {
@@ -501,24 +501,33 @@ namespace SqlSugar
                     List<NewExpressionInfo> newExpressionInfos = new List<NewExpressionInfo>();
                     if (item is MemberInitExpression)
                     {
-                        newExpressionInfos = ExpressionTool.GetNewexpressionInfos(item, this.Context);
+                        newExpressionInfos = ExpressionTool.GetNewexpressionInfos(item, this.Context,this);
                     }
                     else
                     {
-                        newExpressionInfos = ExpressionTool.GetNewDynamicexpressionInfos(item, this.Context);
+                        newExpressionInfos = ExpressionTool.GetNewDynamicexpressionInfos(item, this.Context,this);
                     }
-                    mappingKeys = new Dictionary<string, string>(); 
+                    //mappingKeys = new Dictionary<string, string>(); 
                     foreach (NewExpressionInfo newExpressionInfo in newExpressionInfos)
                     {
                         //var property=item.Type.GetProperties().Where(it => it.Name == newExpressionInfo.l).First();
                         //asName = GetAsName(item, newExpressionInfo.ShortName, property);
-                        mappingKeys.Add("Single_"+newExpressionInfo.LeftNameName,asName + "." + newExpressionInfo.RightDbName );
-                        CallContextThread<Dictionary<string, string>>.SetData("Exp_Select_Mapping_Key", mappingKeys);
-                        CallContextAsync<Dictionary<string, string>>.SetData("Exp_Select_Mapping_Key", mappingKeys);
-                        parameter.Context.Result.Append(this.Context.GetAsString(
-                               this.Context.SqlTranslationLeft + asName + "." + newExpressionInfo.RightDbName + this.Context.SqlTranslationRight,
-                                newExpressionInfo.RightDbName
-                          ));
+                        mappingKeys.Add("Single_" + newExpressionInfo.LeftNameName, asName + "." + newExpressionInfo.LeftNameName);
+                        if (newExpressionInfo.Type == nameof(ConstantExpression))
+                        {
+                            CallContextThread<Dictionary<string, string>>.SetData("Exp_Select_Mapping_Key", mappingKeys);
+                            CallContextAsync<Dictionary<string, string>>.SetData("Exp_Select_Mapping_Key", mappingKeys);
+                            parameter.Context.Result.Append($" {newExpressionInfo.RightDbName} AS { this.Context.SqlTranslationLeft}{asName}.{newExpressionInfo.LeftNameName}{ this.Context.SqlTranslationRight}  ");
+                        }
+                        else
+                        {
+                            CallContextThread<Dictionary<string, string>>.SetData("Exp_Select_Mapping_Key", mappingKeys);
+                            CallContextAsync<Dictionary<string, string>>.SetData("Exp_Select_Mapping_Key", mappingKeys);
+                            parameter.Context.Result.Append(this.Context.GetAsString(
+                                   this.Context.SqlTranslationLeft + asName + "." + newExpressionInfo.LeftNameName + this.Context.SqlTranslationRight,
+                                    newExpressionInfo.RightDbName
+                              ));
+                        }
                     }
                 }
                 else

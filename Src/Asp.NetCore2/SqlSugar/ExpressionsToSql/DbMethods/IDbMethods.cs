@@ -89,7 +89,7 @@ namespace SqlSugar
         string Stuff(MethodCallExpressionModel model);
         string RowNumber(MethodCallExpressionModel model);
         string RowCount(MethodCallExpressionModel model);
-
+        string Exists(MethodCallExpressionModel model);
         string GetDateString(string dateValue,string format);
         string GetForXmlPath();
     }

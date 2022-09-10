@@ -1018,6 +1018,16 @@ namespace SqlSugar
                         return this.Context.DbMehtods.RowNumber(model);
                     case "RowCount":
                         return this.Context.DbMehtods.RowCount(model);
+                    case "Exists":
+                        if (model.Args.Count > 1) 
+                        {
+                            this.Context.Parameters.RemoveAll(it => model.Args[1].MemberName.ObjToString().Contains(it.ParameterName) );
+                            List<IConditionalModel> conditionalModels = (List<IConditionalModel>) model.Args[1].MemberValue;  
+                            var sqlObj = this.Context.SugarContext.Context.Queryable<object>().SqlBuilder.ConditionalModelToSql(conditionalModels, 0);
+                            model.Args[1].MemberName = sqlObj.Key;
+                            this.Context.Parameters.AddRange(sqlObj.Value);
+                        }
+                        return this.Context.DbMehtods.Exists(model);
                     default:
                         break;
                 }

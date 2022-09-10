@@ -44,6 +44,7 @@ namespace SqlSugar
         long InsertReturnBigIdentity(T insertObj);
         long InsertReturnSnowflakeId(T insertObj);
         List<long> InsertReturnSnowflakeId(List<T> insertObjs);
+        T InsertReturnEntity(T insertObj);
 
 
         bool IsAny(Expression<Func<T, bool>> whereExpression);
@@ -79,6 +80,7 @@ namespace SqlSugar
         Task<long> InsertReturnBigIdentityAsync(T insertObj);
         Task<long> InsertReturnSnowflakeIdAsync(T insertObj);
         Task<List<long>> InsertReturnSnowflakeIdAsync(List<T> insertObjs);
+        Task<T> InsertReturnEntityAsync(T insertObj);
 
         Task<bool> IsAnyAsync(Expression<Func<T, bool>> whereExpression);
         Task<bool> UpdateAsync(Expression<Func<T, T>> columns, Expression<Func<T, bool>> whereExpression);

@@ -572,6 +572,31 @@ namespace SqlSugar
             var parameter4 = model.Args[3];
             return $" STUFF ({parameter1.MemberName}, {parameter2.MemberName}, {parameter3.MemberName},  {parameter4.MemberName}) ";
         }
+        public virtual string Exists(MethodCallExpressionModel model) 
+        {
+            var parameter1 = model.Args[0];
+            if (model.Args.Count > 1)
+            {
+                var parameter2 = model.Args[1];
+                if (UtilMethods.IsParentheses(parameter1.MemberName))
+                {
+                    parameter1.MemberName = $" {parameter1.MemberName.ObjToString().Trim().TrimEnd(')')} AND {parameter2.MemberName}) ";
+                }
+                else
+                {
+                    parameter1.MemberName = $" {parameter1.MemberName} AND {parameter2.MemberName} ";
+                }
+            }
+            if (UtilMethods.IsParentheses(parameter1.MemberName))
+            {
+                return $" Exists{parameter1.MemberName} ";
+            }
+            else
+            {
+                return $" Exists({parameter1.MemberName}) ";
+            }
+        }
+
         public virtual string GetDateString(string dateValue, string format)
         {
             return null;

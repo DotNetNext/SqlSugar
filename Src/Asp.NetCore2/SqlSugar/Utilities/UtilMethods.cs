@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -16,6 +17,14 @@ namespace SqlSugar
 {
     public class UtilMethods
     {
+        public static string GetSeparatorChar()
+        {
+            return Path.Combine("a", "a").Replace("a", "");
+        }
+        public static bool IsParentheses(object name)
+        {
+            return name.ObjToString().Trim().Last() == ')' && name.ObjToString().Trim().First() == '(';
+        }
 
         internal static bool IsDefaultValue(object value)
         {
@@ -527,6 +536,26 @@ namespace SqlSugar
             catch
             {
                 return code;
+            }
+        }
+
+        public static string GetSqlValue(object value)
+        {
+            if (value == null)
+            {
+                return "null";
+            }
+            else if (UtilMethods.IsNumber(value.GetType().Name))
+            {
+                return value.ObjToString();
+            }
+            else if (value is DateTime)
+            {
+                return UtilMethods.GetConvertValue(value) + "";
+            }
+            else
+            {
+                return value.ToSqlValue();
             }
         }
 
