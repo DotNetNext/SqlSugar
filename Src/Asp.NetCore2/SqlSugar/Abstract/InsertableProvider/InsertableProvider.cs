@@ -240,7 +240,7 @@ namespace SqlSugar
             var identityKeys = GetIdentityKeys();
             if (identityKeys.Count == 0)
             {
-                var snowColumn = this.EntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey = true && it.UnderType == UtilConstants.LongType);
+                var snowColumn = this.EntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey && it.UnderType == UtilConstants.LongType);
                 if (snowColumn!=null)
                 {
                     var id = this.ExecuteReturnSnowflakeId();
@@ -305,7 +305,7 @@ namespace SqlSugar
             var identityKeys = GetIdentityKeys();
             if (identityKeys.Count == 0)
             {
-                var snowColumn = this.EntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey = true && it.UnderType == UtilConstants.LongType);
+                var snowColumn = this.EntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey&& it.UnderType == UtilConstants.LongType);
                 if (snowColumn != null)
                 {
                     var id =await this.ExecuteReturnSnowflakeIdAsync();
