@@ -16,6 +16,10 @@ namespace SqlSugar
 {
     public class UtilMethods
     {
+        public static bool IsParentheses(object name)
+        {
+            return name.ObjToString().Trim().Last() == ')' && name.ObjToString().Trim().First() == '(';
+        }
 
         internal static bool IsDefaultValue(object value)
         {

@@ -115,6 +115,23 @@ namespace SqlSugar
         {
             return thisValue.Equals(parameterValue);
         }
+
+        public static bool Exists(string subQueryableName_Or_OneToOnePropertyName)  
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+        public static bool Exists<valueType>(valueType subQueryableName_Or_OneToOnePropertyName) where valueType : struct
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+        public static bool Exists(string subQueryableName_Or_OneToOnePropertyName, List<IConditionalModel> conditionalModels)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+        public static bool Exists<valueType>(valueType subQueryableName_Or_OneToOnePropertyName, List<IConditionalModel> conditionalModels) where valueType : struct
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
         public static bool DateIsSame(DateTime date1, DateTime date2)
         {
             return date1.ToString("yyyy-MM-dd") == date2.ToString("yyyy-MM-dd");
