@@ -469,6 +469,7 @@ namespace SqlSugar
                     additem.ShortName = member.Expression + "";
                     additem.RightName = member.Member.Name;
                     additem.RightDbName = context.GetDbColumnName(member.Type.Name, additem.RightName);
+                    additem.LeftNameName = member.Member.Name;
                     //additem.Value = "";
                     result.Add(additem);
                 }
