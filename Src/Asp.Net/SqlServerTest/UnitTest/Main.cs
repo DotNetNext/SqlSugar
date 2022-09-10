@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UCustom24.Init();
             UCustom20.Init();
             UTran2.Init();
             UnitUpdateSubQuery.Init();
