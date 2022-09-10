@@ -12,5 +12,6 @@ namespace SqlSugar
         public string RightName { get; set; }
         public string RightDbName { get; set; }
         public string ShortName { get; set; }
+        public string Type { get; set; }
     }
 }

@@ -539,6 +539,26 @@ namespace SqlSugar
             }
         }
 
+        public static string GetSqlValue(object value)
+        {
+            if (value == null)
+            {
+                return "null";
+            }
+            else if (UtilMethods.IsNumber(value.GetType().Name))
+            {
+                return value.ObjToString();
+            }
+            else if (value is DateTime)
+            {
+                return UtilMethods.GetConvertValue(value) + "";
+            }
+            else
+            {
+                return value.ToSqlValue();
+            }
+        }
+
         public static void DataInoveByExpresson<Type>(Type[] datas, MethodCallExpression callExpresion)
         {
             var methodInfo = callExpresion.Method;

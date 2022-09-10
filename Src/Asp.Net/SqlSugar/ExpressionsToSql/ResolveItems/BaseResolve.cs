@@ -512,13 +512,22 @@ namespace SqlSugar
                     {
                         //var property=item.Type.GetProperties().Where(it => it.Name == newExpressionInfo.l).First();
                         //asName = GetAsName(item, newExpressionInfo.ShortName, property);
-                        mappingKeys.Add("Single_"+newExpressionInfo.LeftNameName,asName + "." + newExpressionInfo.RightDbName );
-                        CallContextThread<Dictionary<string, string>>.SetData("Exp_Select_Mapping_Key", mappingKeys);
-                        CallContextAsync<Dictionary<string, string>>.SetData("Exp_Select_Mapping_Key", mappingKeys);
-                        parameter.Context.Result.Append(this.Context.GetAsString(
-                               this.Context.SqlTranslationLeft + asName + "." + newExpressionInfo.RightDbName + this.Context.SqlTranslationRight,
-                                newExpressionInfo.RightDbName
-                          ));
+                        mappingKeys.Add("Single_" + newExpressionInfo.LeftNameName, asName + "." + newExpressionInfo.RightDbName);
+                        if (newExpressionInfo.Type == nameof(ConstantExpression))
+                        {
+                            CallContextThread<Dictionary<string, string>>.SetData("Exp_Select_Mapping_Key", mappingKeys);
+                            CallContextAsync<Dictionary<string, string>>.SetData("Exp_Select_Mapping_Key", mappingKeys);
+                            parameter.Context.Result.Append($" {newExpressionInfo.RightDbName} as  { this.Context.SqlTranslationLeft}{asName}.{newExpressionInfo.LeftNameName}{ this.Context.SqlTranslationRight}  ");
+                        }
+                        else
+                        {
+                            CallContextThread<Dictionary<string, string>>.SetData("Exp_Select_Mapping_Key", mappingKeys);
+                            CallContextAsync<Dictionary<string, string>>.SetData("Exp_Select_Mapping_Key", mappingKeys);
+                            parameter.Context.Result.Append(this.Context.GetAsString(
+                                   this.Context.SqlTranslationLeft + asName + "." + newExpressionInfo.RightDbName + this.Context.SqlTranslationRight,
+                                    newExpressionInfo.RightDbName
+                              ));
+                        }
                     }
                 }
                 else
