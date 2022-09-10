@@ -238,7 +238,20 @@ namespace SqlSugar
         {
             var result = InsertObjs.First();
             var identityKeys = GetIdentityKeys();
-            if (identityKeys.Count == 0) { return this.ExecuteCommand() > 0; }
+            if (identityKeys.Count == 0)
+            {
+                var snowColumn = this.EntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey = true && it.UnderType == UtilConstants.LongType);
+                if (snowColumn!=null)
+                {
+                    var id = this.ExecuteReturnSnowflakeId();
+                    snowColumn.PropertyInfo.SetValue(result, id);
+                    return true;
+                }
+                else
+                {
+                    return this.ExecuteCommand() > 0;
+                }
+            }
             var idValue = ExecuteReturnBigIdentity();
             Check.Exception(identityKeys.Count > 1, "ExecuteCommandIdentityIntoEntity does not support multiple identity keys");
             var identityKey = identityKeys.First();
@@ -290,7 +303,20 @@ namespace SqlSugar
         {
             var result = InsertObjs.First();
             var identityKeys = GetIdentityKeys();
-            if (identityKeys.Count == 0) { return await this.ExecuteCommandAsync() > 0; }
+            if (identityKeys.Count == 0)
+            {
+                var snowColumn = this.EntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey = true && it.UnderType == UtilConstants.LongType);
+                if (snowColumn != null)
+                {
+                    var id =await this.ExecuteReturnSnowflakeIdAsync();
+                    snowColumn.PropertyInfo.SetValue(result, id);
+                    return true;
+                }
+                else
+                {
+                    return await this.ExecuteCommandAsync() > 0;
+                }
+            }
             var idValue =await ExecuteReturnBigIdentityAsync();
             Check.Exception(identityKeys.Count > 1, "ExecuteCommandIdentityIntoEntity does not support multiple identity keys");
             var identityKey = identityKeys.First();
