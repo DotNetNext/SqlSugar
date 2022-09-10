@@ -492,12 +492,13 @@ namespace SqlSugar
                 if (binding is MemberExpression)
                 {
                     var member = (MemberExpression)binding;
+                    var entityName = member.Expression?.Type?.Name;
                     //var memberAssignment = binding;
                     //NewExpressionInfo additem = new NewExpressionInfo();
                     additem.RightName = member.Member.Name;
                     additem.ShortName = member.Expression + "";
                     additem.RightName = member.Member.Name;
-                    additem.RightDbName = context.GetDbColumnName(member.Type.Name, additem.RightName);
+                    additem.RightDbName = context.GetDbColumnName(entityName, additem.RightName);
                     additem.LeftNameName = member.Member.Name;
                     //additem.Value = "";
                     result.Add(additem);
