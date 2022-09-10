@@ -507,7 +507,7 @@ namespace SqlSugar
                     {
                         newExpressionInfos = ExpressionTool.GetNewDynamicexpressionInfos(item, this.Context,this);
                     }
-                    mappingKeys = new Dictionary<string, string>(); 
+                    //mappingKeys = new Dictionary<string, string>(); 
                     foreach (NewExpressionInfo newExpressionInfo in newExpressionInfos)
                     {
                         //var property=item.Type.GetProperties().Where(it => it.Name == newExpressionInfo.l).First();
@@ -524,7 +524,7 @@ namespace SqlSugar
                             CallContextThread<Dictionary<string, string>>.SetData("Exp_Select_Mapping_Key", mappingKeys);
                             CallContextAsync<Dictionary<string, string>>.SetData("Exp_Select_Mapping_Key", mappingKeys);
                             parameter.Context.Result.Append(this.Context.GetAsString(
-                                   this.Context.SqlTranslationLeft + asName + "." + newExpressionInfo.RightDbName + this.Context.SqlTranslationRight,
+                                   this.Context.SqlTranslationLeft + asName + "." + newExpressionInfo.LeftNameName + this.Context.SqlTranslationRight,
                                     newExpressionInfo.RightDbName
                               ));
                         }
