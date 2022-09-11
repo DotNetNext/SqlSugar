@@ -48,7 +48,7 @@ namespace SqlSugar
                 {
                     try
                     {
-                        Console.WriteLine("ORM Select DTO  ERROR . warning:"+ex.Message);
+                        Console.WriteLine("Select DTO  error  . Warning:"+ex.Message);
                         result = Action(expression, queryableProvider);
                     }
                     catch  
