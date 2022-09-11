@@ -48,6 +48,7 @@ namespace SqlSugar
                 {
                     try
                     {
+                        Console.WriteLine("ORM catch error . warning:"+ex.Message);
                         result = Action(expression, queryableProvider);
                     }
                     catch  
