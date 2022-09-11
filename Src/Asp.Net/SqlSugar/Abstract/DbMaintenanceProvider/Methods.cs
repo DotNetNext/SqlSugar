@@ -253,7 +253,32 @@ namespace SqlSugar
             this.Context.Ado.ExecuteCommand(string.Format(this.DropTableSql, tableName));
             return true;
         }
-
+        public virtual bool DropTable<T>() 
+        {
+           var tableName= this.Context.EntityMaintenance.GetTableName<T>();
+            return DropTable(tableName);
+        }
+        public virtual bool DropTable<T,T2>()
+        {
+            DropTable<T>();
+            DropTable<T2>();
+            return true;
+        }
+        public virtual bool DropTable<T, T2,T3>()
+        {
+            DropTable<T>();
+            DropTable<T2>();
+            DropTable<T3>();
+            return true;
+        }
+        public virtual bool DropTable<T, T2, T3,T4>()
+        {
+            DropTable<T>();
+            DropTable<T2>();
+            DropTable<T3>();
+            DropTable<T4>();
+            return true;
+        }
         public virtual bool TruncateTable<T>()
         {
             this.Context.InitMappingInfo<T>();

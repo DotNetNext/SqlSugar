@@ -32,6 +32,10 @@ namespace SqlSugar
         bool CreateIndex(string tableName, string [] columnNames, bool isUnique=false);
         bool CreateIndex(string tableName, string[] columnNames, string IndexName, bool isUnique = false);
         bool DropTable(string tableName);
+        bool DropTable<T>();
+        bool DropTable<T,T2>();
+        bool DropTable<T, T2,T3>();
+        bool DropTable<T, T2, T3,T4>();
         bool TruncateTable(string tableName);
         bool TruncateTable<T>();
         bool TruncateTable<T,T2>();
