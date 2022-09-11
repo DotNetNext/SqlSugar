@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UJsonFunc.Init();
             UnitTestReturnPkList.Init();
             UCustom07.Init();
             UCustom016.Init();
