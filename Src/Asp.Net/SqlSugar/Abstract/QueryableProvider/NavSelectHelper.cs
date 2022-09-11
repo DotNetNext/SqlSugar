@@ -54,7 +54,7 @@ namespace SqlSugar
                     catch  
                     {
 
-                        throw ex;
+                        throw;
                     }
                 }
             }
