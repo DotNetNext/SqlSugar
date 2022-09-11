@@ -21,6 +21,49 @@ namespace SqlSugar
         {
             throw new NotSupportedException("Can only be used in expressions");
         }
+
+        public static string JsonField(object json,string fieldName)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        public static string JsonField(object json, string fieldName,string includeFieldName)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        public static string JsonField(object json, string fieldName, string includeFieldName, string ThenIncludeFieldName)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+        public static string JsonField(object json, string fieldName, string includeFieldName, string ThenIncludeFieldName, string ThenIncludeFieldName2)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+        public static string JsonField(object json, string fieldName, string includeFieldName, string ThenIncludeFieldName, string ThenIncludeFieldName2, string ThenIncludeFieldName3)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+        public static bool JsonContainsFieldName(object json, string fieldName)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        public static int JsonArrayLength(object json)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        public static string JsonParse(object json)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        public static bool JsonLike(object json,string likeStr)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
         public static T Desc<T>(T value)
         {
             throw new NotSupportedException("Can only be used in expressions");

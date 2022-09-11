@@ -605,5 +605,30 @@ namespace SqlSugar
         {
             return null;
         }
+
+        public virtual string JsonField(MethodCallExpressionModel model)
+        {
+            throw new NotImplementedException("Current database no support");
+        }
+
+        public virtual string JsonContainsFieldName(MethodCallExpressionModel model)
+        {
+            throw new NotImplementedException("Current database no support");
+        }
+
+        public virtual string JsonArrayLength(MethodCallExpressionModel model)
+        {
+            throw new NotImplementedException("Current database no support");
+        }
+
+        public virtual string JsonParse(MethodCallExpressionModel model)
+        {
+            throw new NotImplementedException("Current database no support");
+        }
+        public string JsonLike(MethodCallExpressionModel model) 
+        {
+            model.Args[0].MemberName = ToString(model);
+            return Contains(model);
+        }
     }
 }

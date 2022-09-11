@@ -1028,6 +1028,17 @@ namespace SqlSugar
                             this.Context.Parameters.AddRange(sqlObj.Value);
                         }
                         return this.Context.DbMehtods.Exists(model);
+
+                    case "JsonField":
+                        return this.Context.DbMehtods.JsonField(model);
+                    case "JsonArrayLength":
+                        return this.Context.DbMehtods.JsonArrayLength(model);
+                    case "JsonContainsFieldName":
+                        return this.Context.DbMehtods.JsonContainsFieldName(model);
+                    case "JsonParse":
+                        return this.Context.DbMehtods.JsonParse(model);
+                    case "JsonLike":
+                        return this.Context.DbMehtods.JsonLike(model);
                     default:
                         break;
                 }
