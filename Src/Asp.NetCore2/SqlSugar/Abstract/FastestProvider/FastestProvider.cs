@@ -85,7 +85,28 @@ namespace SqlSugar
         }
         public int BulkUpdate(List<T> datas, string[] whereColumns, string[] updateColumns) 
         {
+            whereColumns = whereColumns.Select(x => this.entityInfo.Columns.FirstOrDefault(it => it.PropertyName.EqualCase(x) || it.DbColumnName.EqualCase(x))?.DbColumnName ?? x).ToArray();
+            updateColumns = updateColumns.Select(x => this.entityInfo.Columns.FirstOrDefault(it => it.PropertyName.EqualCase(x) || it.DbColumnName.EqualCase(x))?.DbColumnName ?? x).ToArray(); 
             return BulkUpdateAsync(datas,whereColumns,updateColumns).ConfigureAwait(true).GetAwaiter().GetResult();
+        }
+
+        public int BulkUpdate(List<T> datas, string[] whereColumns) 
+        {
+            return BulkUpdateAsync(datas, whereColumns).GetAwaiter().GetResult();
+        }
+
+        public async Task<int> BulkUpdateAsync(List<T> datas, string[] whereColumns)
+        {
+            whereColumns = whereColumns.Select(x => this.entityInfo.Columns.FirstOrDefault(it => it.PropertyName.EqualCase(x) || it.DbColumnName.EqualCase(x))?.DbColumnName ?? x).ToArray();
+            var updateColumns = this.entityInfo.Columns
+                 .Where(it => !whereColumns.Any(z => z.EqualCase(it.DbColumnName)))
+                 .Where(it => !it.IsIdentity)
+                 .Where(it => !it.IsPrimarykey)
+                 .Where(it => !it.IsOnlyIgnoreUpdate)
+                 .Where(it => !it.IsIgnore)
+                .Select(it => it.DbColumnName)
+                .ToArray();
+            return await BulkUpdateAsync(datas, whereColumns, updateColumns).ConfigureAwait(true);
         }
         public async Task<int> BulkUpdateAsync(List<T> datas,string [] whereColumns,string [] updateColumns)
         {

@@ -23,6 +23,8 @@ namespace SqlSugar
         int BulkUpdate(List<T> datas);
         Task<int> BulkUpdateAsync(List<T> datas);
         int BulkUpdate(List<T> datas, string[] whereColumns, string[] updateColumns);
+        int BulkUpdate(List<T> datas, string[] whereColumns);
+        Task<int> BulkUpdateAsync(List<T> datas, string[] whereColumns);
         Task<int> BulkUpdateAsync(List<T> datas, string[] whereColumns, string[] updateColumns);
         int BulkUpdate(string tableName,DataTable dataTable, string[] whereColumns, string[] updateColumns);
         int BulkUpdate(DataTable dataTable, string[] whereColumns, string[] updateColumns);

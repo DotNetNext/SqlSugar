@@ -385,6 +385,23 @@ namespace SqlSugar
             AppendSets();
             return this;
         }
+        public IUpdateable<T> SetColumnsIF(bool isUpdateColumns, Expression<Func<T, object>> filedNameExpression, object fieldValue) 
+        {
+            if (isUpdateColumns)
+            {
+                return SetColumns(filedNameExpression, fieldValue);
+            }
+            else
+            {
+                return this;
+            }
+        }
+        public IUpdateable<T> SetColumns(Expression<Func<T, object>> filedNameExpression, object fieldValue) 
+        {
+            var name= UpdateBuilder.GetExpressionValue(filedNameExpression,ResolveExpressType.WhereSingle).GetString();
+            name = UpdateBuilder.Builder.GetNoTranslationColumnName(name);
+            return SetColumns(name, fieldValue);
+        }
         public IUpdateable<T> SetColumns(Expression<Func<T, T>> columns)
         {
             ThrowUpdateByObject();
