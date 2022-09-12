@@ -85,6 +85,8 @@ namespace SqlSugar
         }
         public int BulkUpdate(List<T> datas, string[] whereColumns, string[] updateColumns) 
         {
+            whereColumns = whereColumns.Select(x => this.entityInfo.Columns.First(it => it.PropertyName.EqualCase(x) || it.DbColumnName.EqualCase(x)).DbColumnName).ToArray();
+            updateColumns = updateColumns.Select(x => this.entityInfo.Columns.First(it => it.PropertyName.EqualCase(x) || it.DbColumnName.EqualCase(x)).DbColumnName).ToArray(); 
             return BulkUpdateAsync(datas,whereColumns,updateColumns).ConfigureAwait(true).GetAwaiter().GetResult();
         }
         public async Task<int> BulkUpdateAsync(List<T> datas,string [] whereColumns,string [] updateColumns)
