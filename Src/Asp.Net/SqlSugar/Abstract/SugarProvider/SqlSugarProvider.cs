@@ -1131,7 +1131,16 @@ namespace SqlSugar
             {
                 Queues = new QueueList();
             }
-            this.Queues.Add(sql, this.Context.Ado.GetParameters(parsmeters));
+            var pars = this.Context.Ado.GetParameters(parsmeters);
+            foreach (var par in pars) 
+            {
+                if (par.ParameterName.StartsWith(":")) 
+                {
+                    par.ParameterName=("@"+par.ParameterName.Trim(':'));
+                }
+            }
+            this.Queues.Add(sql, pars);
+            
         }
         public void AddQueue(string sql, SugarParameter parsmeter)
         {
