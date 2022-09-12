@@ -48,12 +48,13 @@ namespace SqlSugar
                 {
                     try
                     {
+                        Console.WriteLine("Select DTO  error  . Warning:"+ex.Message);
                         result = Action(expression, queryableProvider);
                     }
                     catch  
                     {
 
-                        throw ex;
+                        throw;
                     }
                 }
             }
@@ -103,36 +104,7 @@ namespace SqlSugar
 
         internal static async Task<List<TResult>> GetListAsync<T, TResult>(Expression<Func<T, TResult>> expression, QueryableProvider<T> queryableProvider)
         {
-            List<TResult> result = new List<TResult>();
-            var isSqlFunc = IsSqlFunc(expression, queryableProvider);
-            if (isSqlFunc && isGroup(expression, queryableProvider))
-            {
-                var sqlfuncQueryable = queryableProvider.Clone();
-                sqlfuncQueryable.QueryBuilder.Includes = null;
-                result =await sqlfuncQueryable
-                    .Select(expression)
-                    .ToListAsync();
-                var includeQueryable = queryableProvider.Clone();
-                includeQueryable.Select(GetGroupSelect(typeof(T), queryableProvider.Context, queryableProvider.QueryBuilder));
-                includeQueryable.QueryBuilder.NoCheckInclude = true;
-                MegerList(result,await includeQueryable.ToListAsync(), sqlfuncQueryable.Context);
-            }
-            else if (isSqlFunc)
-            {
-                var sqlfuncQueryable = queryableProvider.Clone();
-                sqlfuncQueryable.QueryBuilder.Includes = null;
-                result =await sqlfuncQueryable
-                    .Select(expression)
-                    .ToListAsync();
-                var includeList =await queryableProvider.Clone().ToListAsync();
-                MegerList(result, includeList, sqlfuncQueryable.Context);
-            }
-            else
-            {
-                var list =await queryableProvider.ToListAsync();
-                result = list.Select(expression.Compile()).ToList();
-            }
-            return result;
+            return await Task.Run(()=> { return GetList(expression,queryableProvider); });
         }
 
         private static string GetGroupSelect(Type type,SqlSugarProvider context,QueryBuilder queryBuilder)

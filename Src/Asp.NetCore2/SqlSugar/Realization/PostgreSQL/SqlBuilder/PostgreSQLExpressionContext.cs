@@ -384,5 +384,64 @@ namespace SqlSugar
         {
             return "( " + fieldName + "=true )";
         }
+
+        public override string JsonField(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter1 = model.Args[1];
+            //var parameter2 = model.Args[2];
+            //var parameter3= model.Args[3];
+            var result= GetJson(parameter.MemberName, parameter1.MemberName, model.Args.Count()==2);
+            if (model.Args.Count > 2) 
+            {
+               result = GetJson(result, model.Args[2].MemberName, model.Args.Count() == 3);
+            }
+            if (model.Args.Count > 3)
+            {
+                result = GetJson(result, model.Args[3].MemberName, model.Args.Count() == 4);
+            }
+            if (model.Args.Count > 4)
+            {
+                result = GetJson(result, model.Args[4].MemberName, model.Args.Count() == 5);
+            }
+            if (model.Args.Count > 5)
+            {
+                result = GetJson(result, model.Args[5].MemberName, model.Args.Count() == 6);
+            }
+            return result;
+        }
+
+        public override string JsonContainsFieldName(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter1 = model.Args[1];
+            return $"({parameter.MemberName}::jsonb ?{parameter1.MemberName})";
+        }
+
+        private string GetJson(object memberName1, object memberName2,bool isLast)
+        {
+            if (isLast)
+            {
+                return $"({memberName1}::json->>{memberName2})";
+            }
+            else 
+            {
+                return $"({memberName1}->{memberName2})";
+            }
+        }
+
+        public override string JsonArrayLength(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            //var parameter1 = model.Args[1];
+            return $" json_array_length({parameter.MemberName}::json) ";
+        }
+
+        public override string JsonParse(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            //var parameter1 = model.Args[1];
+            return $" ({parameter.MemberName}::json) ";
+        }
     }
 }
