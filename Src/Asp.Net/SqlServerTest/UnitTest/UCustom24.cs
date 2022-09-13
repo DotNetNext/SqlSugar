@@ -106,6 +106,22 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+            var p = new Order() { };
+            var sqlobj=db.Updateable<Order>().SetColumns(x => x.Name == p.Name)
+                .Where(x => x.Id == 1).ToSql();
+
+            if (!sqlobj.Key.Contains("=")) 
+            {
+                throw new Exception("unit error");
+            }
+
+            var sqlobj2 = db.Updateable<Order>().SetColumns(x => x.Name == null)
+             .Where(x => x.Id == 1).ToSql();
+
+            if (!sqlobj2.Key.Contains("="))
+            {
+                throw new Exception("unit error");
+            }
         }
 
         public class TestDTO
