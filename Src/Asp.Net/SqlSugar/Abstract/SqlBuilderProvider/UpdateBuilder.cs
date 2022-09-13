@@ -366,7 +366,14 @@ namespace SqlSugar
                 }
                 else if (UtilMethods.IsNumber(type.Name)) 
                 {
-                    return value;
+                    if (value.ObjToString().Contains(","))
+                    {
+                        return $"'{value}'";
+                    }
+                    else
+                    {
+                        return value;
+                    }
                 }
                 else
                 {
