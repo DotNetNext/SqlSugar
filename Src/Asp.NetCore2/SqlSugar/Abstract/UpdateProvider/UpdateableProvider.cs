@@ -439,6 +439,10 @@ namespace SqlSugar
             {
                 expResult = Regex.Split(expResult, " IS NULL  ")[0]+" = NULL ";
             }
+            else if (!expResult.Contains("=")&&expResult.Contains("IS  NULL  "))
+            {
+                expResult = Regex.Split(expResult, "IS  NULL  ")[0] + " = NULL ";
+            }
             string key = SqlBuilder.GetNoTranslationColumnName(expResult);
 
             if (EntityInfo.Columns.Where(it=>it.IsJson||it.IsTranscoding).Any(it => it.DbColumnName.EqualCase(key) || it.PropertyName.EqualCase(key)))
