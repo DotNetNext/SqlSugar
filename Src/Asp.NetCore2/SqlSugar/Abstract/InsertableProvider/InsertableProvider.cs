@@ -312,7 +312,10 @@ namespace SqlSugar
                 if (snowColumn != null)
                 {
                     var id =await this.ExecuteReturnSnowflakeIdAsync();
-                    snowColumn.PropertyInfo.SetValue(result, id);
+                    if (Convert.ToInt64(snowColumn.PropertyInfo.GetValue(result)) == 0)
+                    {
+                        snowColumn.PropertyInfo.SetValue(result, id);
+                    }
                     return true;
                 }
                 else
