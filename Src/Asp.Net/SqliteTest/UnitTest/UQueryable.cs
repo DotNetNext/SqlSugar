@@ -83,6 +83,16 @@ namespace OrmTest
             Db.Insertable(new UnitAbc121() {  name="a",uid=null }).ExecuteCommand();
             Db.Insertable(new UnitAbc121() { name = "a", uid=Guid.NewGuid() }).ExecuteCommand();
             var list10= Db.Queryable<UnitAbc121>().ToList();
+
+            var count=Db.Queryable<Order>()
+                .Where(z => z.Id == SqlFunc.Subqueryable<Order>()
+                .GroupBy(x => x.Id).Select(x => x.Id))
+                .Count();
+
+            if (count != Db.Queryable<Order>().Count())
+            {
+                throw new Exception("unit error");
+            }
         }
 
 
