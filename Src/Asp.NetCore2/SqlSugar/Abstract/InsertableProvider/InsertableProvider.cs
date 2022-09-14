@@ -243,10 +243,15 @@ namespace SqlSugar
                 var snowColumn = this.EntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey && it.UnderType == UtilConstants.LongType);
                 if (snowColumn!=null)
                 {
-                    var id = this.ExecuteReturnSnowflakeId();
+              ;
                     if (Convert.ToInt64(snowColumn.PropertyInfo.GetValue(result)) == 0)
                     {
+                        var id = this.ExecuteReturnSnowflakeId();
                         snowColumn.PropertyInfo.SetValue(result, id);
+                    }
+                    else 
+                    {
+                        ExecuteCommand();
                     }
                     return true;
                 }
@@ -311,10 +316,15 @@ namespace SqlSugar
                 var snowColumn = this.EntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey&& it.UnderType == UtilConstants.LongType);
                 if (snowColumn != null)
                 {
-                    var id =await this.ExecuteReturnSnowflakeIdAsync();
+
                     if (Convert.ToInt64(snowColumn.PropertyInfo.GetValue(result)) == 0)
                     {
+                        var id = await this.ExecuteReturnSnowflakeIdAsync();
                         snowColumn.PropertyInfo.SetValue(result, id);
+                    }
+                    else 
+                    {
+                        await this.ExecuteCommandAsync();
                     }
                     return true;
                 }
