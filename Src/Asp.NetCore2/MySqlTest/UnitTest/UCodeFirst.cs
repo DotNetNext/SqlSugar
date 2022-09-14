@@ -16,19 +16,33 @@ namespace OrmTest
             Db.CodeFirst.InitTables<UnitCodeTest111>();
             Db.CodeFirst.InitTables<UnitIndextest>();
 
-     
+
             Db.CodeFirst.InitTables(typeof(TestListJson));
             Db.DbMaintenance.TruncateTable<TestListJson>();
             Db.Insertable(new TestListJson { Id = 123, NameList = new List<string> { "123abc" } }).ExecuteCommand();
-            var xxx=Db.Queryable<TestListJson>().Where(x => x.Id == 123).Select(x => new TestListJson 
-            { 
-                 Id=x.Id,
+            var xxx = Db.Queryable<TestListJson>().Where(x => x.Id == 123).Select(x => new TestListJson
+            {
+                Id = x.Id,
                 NameList = x.NameList }).First();
-            if (xxx.NameList == null) 
+            if (xxx.NameList == null)
             {
                 throw new Exception("unit error");
             }
+            Db.CodeFirst.InitTables<Testlong2>();
+            Db.DbMaintenance.TruncateTable<Testlong2>();
+            Db.Insertable<Testlong2>(new Testlong2() { Id= 1 }).ExecuteReturnEntityAsync().GetAwaiter().GetResult();
+            if (Db.Queryable<Testlong2>().Any(x => x.Id == 1) == false) throw new Exception("unit error");
         }
+
+        [SugarTable("Testlong2")]
+        public class Testlong2
+        {
+            [SugarColumn(IsPrimaryKey = true)]
+            public long Id { get; set; }
+
+           
+        }
+
 
         [SugarTable("testjson")]
         public class TestListJson
