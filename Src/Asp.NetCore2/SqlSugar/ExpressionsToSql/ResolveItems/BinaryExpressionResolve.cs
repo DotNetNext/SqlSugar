@@ -217,7 +217,14 @@ namespace SqlSugar
                 var p = (leftExp as MemberExpression);
                 this.Context.SingleTableNameSubqueryShortName=p.Expression.ToString();
             }
-            base.Context.Result.Append($" {leftSql} {not} in ({rightSql}) ");
+            if (UtilMethods.IsParentheses(rightSql+""))
+            {
+                base.Context.Result.Append($" {leftSql} {not} in {rightSql} ");
+            }
+            else
+            {
+                base.Context.Result.Append($" {leftSql} {not} in ({rightSql}) ");
+            }
         }
 
         private bool IsGroupSubquery(Expression rightExpression, string operatorValue)
