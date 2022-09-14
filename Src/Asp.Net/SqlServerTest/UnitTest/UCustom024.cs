@@ -17,10 +17,24 @@ namespace OrmTest
             var list=db.Queryable<UnitNewP>().Take(2).ToList();
             db.Updateable(list).ExecuteCommand();
             db.Deleteable(list).ExecuteCommand();
+            var p = new TestModel2();
+            db.Queryable<Order>().Where(z => z.Id != p.Id).ToList();
+            var p2 = new Order();
+            db.Queryable<Order>().Where(z => z.Id != p2.Id).ToList();
         }
        
     }
 
+    public class TestModel
+    {
+        public virtual long? Id { get; set; }
+    }
+
+    public class TestModel2 : TestModel
+    {
+        // 关键就是这个地方
+        public new long Id { get; set; }
+    }
     public class UnitNewP: UnitBaseP
     {
         [SqlSugar.SugarColumn(IsPrimaryKey =true)]
