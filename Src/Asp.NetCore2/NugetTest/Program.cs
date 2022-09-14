@@ -1,22 +1,36 @@
-﻿using System;
-using SqlSugar;
-namespace NugetTest
+﻿ 
+using System;
+
+namespace OrmTest
 {
     class Program
     {
         static void Main(string[] args)
         {
-            var db = new SqlSugarClient(new ConnectionConfig() {
-                 ConnectionString=Config.ConnectionString,
-                 IsAutoCloseConnection=true,
-                 DbType=DbType.SqlServer
-            });
-            var list = db.Ado.GetInt("select 1");
-            Console.WriteLine("Hello World!");
+            //Demo
+            Demo0_SqlSugarClient.Init();
+            Demo1_Queryable.Init();
+            Demo2_Updateable.Init();
+            Demo3_Insertable.Init();
+            Demo4_Deleteable.Init();
+            Demo5_SqlQueryable.Init();
+            Demo6_Queue.Init();
+            Demo7_Ado.Init();
+            Demo8_Saveable.Init();
+            Demo9_EntityMain.Init();
+            DemoA_DbMain.Init();
+            DemoB_Aop.Init();
+            DemoC_GobalFilter.Init();
+            DemoD_DbFirst.Init(); ;
+            DemoE_CodeFirst.Init();
+            DemoF_Utilities.Init();
+            DemoG_SimpleClient.Init();
+             
+
+            Console.WriteLine("all successfully.");
+            Console.ReadKey();
         }
-        public class Config
-        {
-            public static string ConnectionString = "server=.;uid=sa;pwd=haosql;database=SQLSUGAR4XTEST";
-        }
+
+ 
     }
 }

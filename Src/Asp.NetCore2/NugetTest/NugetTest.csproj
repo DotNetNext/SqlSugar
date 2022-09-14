@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -6,7 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="sqlSugarCore" Version="5.0.7.6" />
+    <PackageReference Include="SqlSugar.MySqlConnectorCore" Version="5.9.5" />
+    <PackageReference Include="sqlSugarCore" Version="5.1.3.2-preview01" />
   </ItemGroup>
 
 </Project>
