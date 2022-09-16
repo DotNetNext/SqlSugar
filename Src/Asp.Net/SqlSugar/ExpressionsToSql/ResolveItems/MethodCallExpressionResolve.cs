@@ -376,7 +376,16 @@ namespace SqlSugar
             {
                 foreach (var item in args)
                 {
-                    AppendItem(parameter, name, args, model, item);
+                    if (name == "IIF" && item == args.First() && item is MemberExpression)
+                    {
+                        Expression trueValue = Expression.Constant(true);
+                        var newItem = ExpressionBuilderHelper.CreateExpression(item, trueValue, ExpressionType.And);
+                        AppendItem(parameter, name, new List<Expression>() { newItem}, model, newItem);
+                    }
+                    else
+                    {
+                        AppendItem(parameter, name, args, model, item);
+                    }
                 }
                 if (appendArgs != null)
                 {
@@ -392,6 +401,7 @@ namespace SqlSugar
                 parameter.BaseParameter.CommonTempData = GetMethodValue(name, model);
             }
         }
+
         protected void Where(ExpressionParameter parameter, bool? isLeft, string name, IEnumerable<Expression> args, MethodCallExpressionModel model, List<MethodCallExpressionArgs> appendArgs = null)
         {
             foreach (var item in args)
