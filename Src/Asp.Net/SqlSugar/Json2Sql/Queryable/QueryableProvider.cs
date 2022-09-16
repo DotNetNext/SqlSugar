@@ -30,6 +30,10 @@ namespace SqlSugar
         }
         public ISugarQueryable<T> OrderBy(List<OrderByModel> models) 
         {
+            if (models == null || models.Count == 0) 
+            {
+                return this;
+            }
             var orderObj = this.SqlBuilder.OrderByModelToSql(models);
             this.OrderBy(orderObj.Key);
             this.QueryBuilder.Parameters.AddRange(orderObj.Value);
@@ -37,6 +41,10 @@ namespace SqlSugar
         }
         public ISugarQueryable<T> GroupBy(List<GroupByModel> models)
         {
+            if (models == null || models.Count == 0)
+            {
+                return this;
+            }
             var orderObj = this.SqlBuilder.GroupByModelToSql(models);
             this.GroupBy(orderObj.Key);
             this.QueryBuilder.Parameters.AddRange(orderObj.Value);
