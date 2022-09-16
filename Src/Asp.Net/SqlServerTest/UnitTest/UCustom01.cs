@@ -55,6 +55,8 @@ namespace OrmTest
             var x4 = db.Queryable<BoolTest12313>().Where(it =>SqlFunc.HasValue(it.name) == true).ToList();
             var x5 = db.Queryable<BoolTest12313>().Where(it => SqlFunc.HasValue(it.name) ).ToList();
             var x6 = db.Queryable<BoolTest12313>().Select(it => new  { x=SqlFunc.HasValue(it.name)}).ToList();
+            var x7 = db.Queryable<BoolTest12313>().Select(it => new { x = it.IsDeleted?  "a" : "b"  }).ToList();
+            var x8 = db.Queryable<BoolTest12313>().Select(it => new { x = SqlFunc.IIF(it.IsDeleted,"a","b") }).ToList();
             db.CurrentConnectionConfig.MoreSettings = new ConnMoreSettings()
             { 
                  IsWithNoLockQuery=true
