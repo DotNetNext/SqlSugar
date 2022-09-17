@@ -37,6 +37,7 @@ namespace OrmTest
             var getOrderBy = db.Queryable<Order>().OrderBy(it => it.Name, OrderByType.Desc).ToList();
             var getOrderBy2 = db.Queryable<Order>().OrderBy(it => it.Id).OrderBy(it => it.Name, OrderByType.Desc).ToList();
             var getOrderBy3 = db.Queryable<Order>().OrderBy(it => new { it.Name, it.Id }).ToList();
+            var getOrderBy4 = db.Queryable<Order>().OrderBy(it => new { it.CreateTime.Day,it.CreateTime.Year}).ToList();
             var getRandom = db.Queryable<Order>().OrderBy(it => SqlFunc.GetRandom()).First();
             var getByPrimaryKey = db.Queryable<Order>().InSingle(2);
             var getSingleOrDefault = db.Queryable<Order>().Where(it => it.Id == 1).Single();
