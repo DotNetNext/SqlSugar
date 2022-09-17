@@ -211,6 +211,7 @@ namespace SqlSugar
         }
         public ISugarQueryable<T> Filter(Type type) 
         {
+            this.Context.InitMappingInfo(type);
             var whereString= QueryBuilder.GetFilters(type);
             if (whereString.HasValue()) 
             {
@@ -1059,6 +1060,30 @@ namespace SqlSugar
             else
             {
                 var selects = this.QueryBuilder.GetSelectValueByString();
+                if (selects.ObjToString().ToLower().IsContainsIn(".","("," as ")) 
+                {
+                    return this.Select<TResult>(selects);
+                }
+                var resultColumns=this.Context.EntityMaintenance.GetEntityInfo<TResult>().Columns;
+                var dbColumns = this.EntityInfo.Columns.Where(it=>!it.IsIgnore);
+                StringBuilder sb = new StringBuilder();
+                foreach (var item in resultColumns)
+                {
+                    var firstColumn= dbColumns.FirstOrDefault(z =>
+                    z.PropertyName.EqualCase(item.PropertyName) ||
+                    z.DbColumnName.EqualCase(item.PropertyName));
+                    if (firstColumn != null)
+                    {
+                        var dbColumnName = firstColumn.DbColumnName;
+                        var AsName = item.PropertyName;
+                        sb.Append($"{this.SqlBuilder.GetTranslationColumnName(dbColumnName)} AS {AsName} ,");
+                    }
+                }
+                selects = sb.ToString().TrimEnd(',');
+                if (selects == "")
+                {
+                    selects = "*";
+                }
                 return this.Select<TResult>(selects);
             }
         }

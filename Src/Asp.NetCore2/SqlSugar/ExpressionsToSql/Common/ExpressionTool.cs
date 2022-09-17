@@ -130,6 +130,14 @@ namespace SqlSugar
             return newExp;
         }
 
+        public static string GetMethodName(Expression expression) 
+        {
+            if (expression is MethodCallExpression) 
+            {
+                return (expression as MethodCallExpression).Method.Name;
+            }
+            return null;
+        }
 
         public static Type GetMemberInfoType(MemberInfo member)
         {
