@@ -530,6 +530,11 @@ namespace SqlSugar
                         }
                     }
                 }
+                else if (IsExtSqlFuncObj(item))
+                {
+                    var value = GetNewExpressionValue(item);
+                    parameter.Context.Result.Append($" {value} AS {asName} ");
+                }
                 else
                 {
                     asName = GetAsNameResolveAnObject(parameter, item, asName, isSameType);
@@ -744,6 +749,11 @@ namespace SqlSugar
         #endregion
 
         #region Validate
+
+        private bool IsExtSqlFuncObj(Expression item)
+        {
+            return this.Context.SqlFuncServices != null && item is MethodCallExpression && this.Context.SqlFuncServices.Any(it => it.UniqueMethodName == ExpressionTool.GetMethodName(item));
+        }
         private bool IsNullValue(ExpressionParameter parameter, object value)
         {
             return value == null 
