@@ -18,6 +18,7 @@ namespace OrmTest
             db.Insertable(new ClassA() { fId = 1, username = "a" }).ExecuteCommand();
             var list = db.Queryable<ClassA>().Select<ClassDTO>().ToList();
             if (list.First().fId != 1 && list.First().username != "a") throw new Exception("unit error");
+            db.Queryable<ClassA>().OrderBy(it => new { it.fId, it.username }).ToList();
             db.DbMaintenance.DropTable<ClassA>();
         }
 
