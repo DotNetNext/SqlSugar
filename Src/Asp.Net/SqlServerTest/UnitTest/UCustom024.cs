@@ -21,7 +21,33 @@ namespace OrmTest
             db.Queryable<Order>().Where(z => z.Id != p.Id).ToList();
             var p2 = new Order();
             db.Queryable<Order>().Where(z => z.Id != p2.Id).ToList();
+            db.CurrentConnectionConfig.ConfigureExternalServices = new SqlSugar.ConfigureExternalServices()
+            {
+                 SqlFuncServices=new List<SqlSugar.SqlFuncExternal>() 
+                 {
+                     new SqlSugar.SqlFuncExternal()
+                     {
+                       UniqueMethodName = "MyToString",
+                        MethodValue = (expInfo, dbType, expContext) =>
+                        {
+                           return "1";
+                        }
+                     }
+                 }
+            };
+           var sql2= db.Queryable<Order>()
+                .Select(it => new
+                {
+                    name= MyToString()
+                }).ToSql();
+
+            if (sql2.Key != "SELECT  1 AS name  FROM [Order] ") 
+            {
+                throw new Exception("unit error");
+            }
         }
+
+        public static object MyToString() { return null; } 
        
     }
 
