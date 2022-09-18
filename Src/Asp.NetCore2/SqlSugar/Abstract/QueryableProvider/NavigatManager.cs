@@ -529,10 +529,13 @@ namespace SqlSugar
                     {
                         //var x=method.Arguments[1];
                         var conditionals = ExpressionTool.GetExpressionValue(method.Arguments[1])  as List<IConditionalModel>;
-                        var whereObj = queryable.QueryBuilder.Builder.ConditionalModelToSql(conditionals);
-                        where.Add(whereObj.Key);
-                        if(whereObj.Value!=null)
-                          result.Parameters.AddRange(whereObj.Value);
+                        if (conditionals.Count > 0)
+                        {
+                            var whereObj = queryable.QueryBuilder.Builder.ConditionalModelToSql(conditionals);
+                            where.Add(whereObj.Key);
+                            if (whereObj.Value != null)
+                                result.Parameters.AddRange(whereObj.Value);
+                        }
                     }
                     else
                     {
