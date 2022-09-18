@@ -533,7 +533,7 @@ namespace SqlSugar
                         {
                             var whereObj = queryable.QueryBuilder.Builder.ConditionalModelToSql(conditionals);
                             where.Add(whereObj.Key);
-                            if (whereObj.Value != null)
+                            if(whereObj.Value!=null)
                                 result.Parameters.AddRange(whereObj.Value);
                         }
                     }
