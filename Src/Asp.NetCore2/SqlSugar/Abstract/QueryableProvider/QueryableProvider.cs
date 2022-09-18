@@ -2621,9 +2621,23 @@ namespace SqlSugar
             }
             else if ((expression as LambdaExpression).Body is NewExpression)
             {
-                var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.ArraySingle : ResolveExpressType.ArrayMultiple);
-                var items = lamResult.GetResultString().Split(',').Where(it => it.HasValue()).Select(it => it + UtilConstants.Space + type.ToString().ToUpper()).ToList();
-                OrderBy(string.Join(",", items));
+                var newExp = (expression as LambdaExpression).Body as NewExpression;
+                var result = "";
+                foreach (var item in newExp.Arguments)
+                {
+                    if (item is MemberExpression)
+                    {
+                        result +=
+                          QueryBuilder.GetExpressionValue(item, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple).GetResultString() + ",";
+                    }
+                    else
+                    {
+                        result +=
+                            QueryBuilder.GetExpressionValue(item, isSingle ? ResolveExpressType.WhereSingle : ResolveExpressType.WhereMultiple).GetResultString() + ",";
+                    }
+                }
+                result = result.TrimEnd(',');
+                OrderBy(result);
                 return this;
             }
             else
