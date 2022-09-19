@@ -224,7 +224,7 @@ namespace SqlSugar
                 var mi = memberInfos.Pop();
                 if (mi.MemberType == MemberTypes.Property)
                 {
-                    var objProp = objReference.GetType().GetProperties().Where(it=>it.Name== mi.Name).First();
+                    var objProp = objReference.GetType().GetProperties().Where(it=>it.Name== mi.Name).FirstOrDefault();
                     if (objProp == null)
                     {
                         objReference = DynamicInvoke(expression, rootExpression == null ? memberExpr : rootExpression);
