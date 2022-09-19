@@ -519,6 +519,7 @@ namespace SqlSugar
             SqlInfo result = new SqlInfo();
             result.Parameters = new List<SugarParameter>();
             var isList = false;
+            int parameterIndex = 0;
             foreach (var item in _ListCallFunc)
             {
                 var method = item as MethodCallExpression;
@@ -539,10 +540,12 @@ namespace SqlSugar
                     }
                     else
                     {
+                        queryable.QueryBuilder.LambdaExpressions.ParameterIndex = parameterIndex;
                         CheckHasRootShortName(method.Arguments[0], method.Arguments[1]);
                         var exp = method.Arguments[1];
                         where.Add(" " + queryable.QueryBuilder.GetExpressionValue(exp, ResolveExpressType.WhereSingle).GetString());
                         SetTableShortName(result, queryable);
+                        parameterIndex=queryable.QueryBuilder.LambdaExpressions.ParameterIndex ;
                     }
                 }
                 else if (method.Method.Name == "WhereIF")
@@ -550,10 +553,12 @@ namespace SqlSugar
                     var isOk = LambdaExpression.Lambda(method.Arguments[1]).Compile().DynamicInvoke();
                     if (isOk.ObjToBool())
                     {
+                        queryable.QueryBuilder.LambdaExpressions.ParameterIndex = parameterIndex;
                         var exp = method.Arguments[2];
                         CheckHasRootShortName(method.Arguments[1], method.Arguments[2]);
                         where.Add(" " + queryable.QueryBuilder.GetExpressionValue(exp, ResolveExpressType.WhereSingle).GetString());
                         SetTableShortName(result, queryable);
+                        parameterIndex = queryable.QueryBuilder.LambdaExpressions.ParameterIndex;
                     }
                 }
                 else if (method.Method.Name == "OrderBy")
