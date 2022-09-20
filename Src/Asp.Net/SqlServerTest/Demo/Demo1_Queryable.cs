@@ -179,6 +179,11 @@ namespace OrmTest
               .Where(it => DateTime.Now.AddDays(-num) == DateTime.Now.Date)
               .ToList();
 
+           var subQueryable= db.Queryable<Order>().Select(z=>new { id=z.Id});
+           var list= db.Queryable(subQueryable)
+                .LeftJoin<OrderItem>((x, y) => x.id == y.OrderId)
+                .ToList();
+
             var test47 = db.Queryable<Order>().Select(it => new
             {
                 names = SqlFunc.Subqueryable<Order>().Where(z=>z.Id==it.Id).SelectStringJoin(z => z.Name, ",")
