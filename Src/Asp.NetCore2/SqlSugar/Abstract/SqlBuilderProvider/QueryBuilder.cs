@@ -33,6 +33,7 @@ namespace SqlSugar
         #endregion
 
         #region Splicing basic
+        public bool IsSelectSingleFiledJson { get; set; }
         public string TranLock { get; set; }
         public bool IsDisableMasterSlaveSeparation { get;  set; }
         public bool IsEnableMasterSlaveSeparation { get; set; }

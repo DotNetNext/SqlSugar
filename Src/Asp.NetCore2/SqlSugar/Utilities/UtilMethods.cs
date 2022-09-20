@@ -17,6 +17,24 @@ namespace SqlSugar
 {
     public class UtilMethods
     {
+        internal static bool IsJsonMember(Expression expression, SqlSugarProvider context)
+        {
+            if (expression == null)
+                return false;
+            if (!(expression is LambdaExpression))
+                return false;
+            var lambda = (LambdaExpression)expression;
+            if (!(lambda.Body is MemberExpression))
+                return false;
+            var member = lambda.Body as MemberExpression;
+            if (!(member.Type.IsClass()))
+                return false;
+            if (member.Expression == null)
+                return false;
+            var entity = context.EntityMaintenance.GetEntityInfo(member.Expression.Type);
+            var json = entity.Columns.FirstOrDefault(z => z.IsJson && z.PropertyName == member.Member.Name);
+            return json != null;
+        }
         public static string GetSeparatorChar()
         {
             return Path.Combine("a", "a").Replace("a", "");
