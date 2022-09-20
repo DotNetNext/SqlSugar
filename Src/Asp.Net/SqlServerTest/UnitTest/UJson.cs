@@ -77,6 +77,12 @@ namespace OrmTest
             {
                 throw new Exception("unit test");
             }
+
+            var list12 = jsonDb.Queryable<UNITJSONTESTADSGA1>().Select(it =>  it ).ToList();
+            if (!list12.Any(z=>z.os.Count>0))
+            {
+                throw new Exception("unit test");
+            }
         }
     }
     public class UnitJsonTestadsga1
