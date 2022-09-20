@@ -136,7 +136,7 @@ namespace SqlSugar.Access
             {
                 date = Convert.ToDateTime("1900-01-01");
             }
-            return "'" + date.ToString("yyyy-MM-dd HH:mm") + "'";
+            return "'" + date.ToString("yyyy-MM-dd HH:mm:ss") + "'";
         }
         private object GetDateTimeString(object value)
         {
@@ -145,7 +145,7 @@ namespace SqlSugar.Access
             {
                 date = Convert.ToDateTime("1900-01-01");
             }
-            return "'" + date.ToString("yyyy-MM-dd HH:mm") + "'";
+            return "'" + date.ToString("yyyy-MM-dd HH:mm:ss") + "'";
         }
     }
 }
