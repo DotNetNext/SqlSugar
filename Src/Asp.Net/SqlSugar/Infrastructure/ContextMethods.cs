@@ -202,6 +202,30 @@ namespace SqlSugar
                 return reval;
             }
         }
+
+
+        public List<T> DataReaderToSelectJsonList<T>(IDataReader dataReader) 
+        {
+            List<T> result = new List<T>();
+            using (dataReader)
+            {
+                while (dataReader.Read())
+                {
+                    var value = dataReader.GetValue(0);
+                    if (value == null || value == DBNull.Value)
+                    {
+                        result.Add(default(T));
+                    }
+                    else
+                    {
+                        result.Add(Context.Utilities.DeserializeObject<T>(value.ToString()));
+                    }
+                }
+            }
+
+            return result;
+        }
+
         /// <summary>
         /// DataReaderToList
         /// </summary>
@@ -249,6 +273,29 @@ namespace SqlSugar
                 return reval;
             }
         }
+
+
+        public async Task<List<T>> DataReaderToSelectJsonListAsync<T>(IDataReader dataReader)
+        {
+            List<T> result = new List<T>();
+            using (dataReader)
+            {
+                while (await ((DbDataReader)dataReader).ReadAsync())
+                {
+                    var value = dataReader.GetValue(0);
+                    if (value == null || value == DBNull.Value)
+                    {
+                        result.Add(default(T));
+                    }
+                    else
+                    {
+                        result.Add(Context.Utilities.DeserializeObject<T>(value.ToString()));
+                    }
+                }
+            }
+            return result;
+        }
+
         /// <summary>
         /// DataReaderToList
         /// </summary>

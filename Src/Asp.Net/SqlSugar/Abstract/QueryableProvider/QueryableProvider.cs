@@ -2581,6 +2581,7 @@ namespace SqlSugar
             result.SqlBuilder = this.SqlBuilder;
             result.SqlBuilder.QueryBuilder.Parameters = QueryBuilder.Parameters;
             result.SqlBuilder.QueryBuilder.SelectValue = expression;
+            result.SqlBuilder.QueryBuilder.IsSelectSingleFiledJson = UtilMethods.IsJsonMember(expression,this.Context);
             if (this.IsCache) 
             {
                 result.WithCache(this.CacheTime);
@@ -3370,6 +3371,10 @@ namespace SqlSugar
             {
                 result = this.Context.Utilities.DataReaderToExpandoObjectList(dataReader).Select(it => ((TResult)(object)it)).ToList();
             }
+            else if (QueryBuilder.IsSelectSingleFiledJson) 
+            {
+                result= this.Context.Utilities.DataReaderToSelectJsonList<TResult>(dataReader);
+            }
             else if (entityType.IsAnonymousType() || isComplexModel)
             {
                 result = this.Context.Utilities.DataReaderToList<TResult>(dataReader);
@@ -3392,6 +3397,10 @@ namespace SqlSugar
             {
                 var expObj = await this.Context.Utilities.DataReaderToExpandoObjectListAsync(dataReader);
                 result = expObj.Select(it => ((TResult)(object)it)).ToList();
+            }
+            else if (QueryBuilder.IsSelectSingleFiledJson)
+            {
+                result= await this.Context.Utilities.DataReaderToSelectJsonListAsync<TResult>(dataReader);
             }
             else if (entityType.IsAnonymousType() || isComplexModel)
             {
