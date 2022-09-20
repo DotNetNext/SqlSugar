@@ -440,7 +440,7 @@ namespace SqlSugar
             return ScopedContext.Queryable<T>();
         }
 
-        public ISugarQueryable<T> Queryable<T>(ISugarQueryable<T> queryable) where T : class, new()
+        public ISugarQueryable<T> Queryable<T>(ISugarQueryable<T> queryable)  
         {
             return ScopedContext.Queryable(queryable);
         }

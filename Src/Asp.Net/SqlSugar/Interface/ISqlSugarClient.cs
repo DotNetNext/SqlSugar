@@ -131,7 +131,7 @@ namespace SqlSugar
              where T3 : class, new()
              where T4 : class, new();
         ISugarQueryable<T> Queryable<T>();
-        ISugarQueryable<T> Queryable<T>(ISugarQueryable<T> queryable) where T : class, new();
+        ISugarQueryable<T> Queryable<T>(ISugarQueryable<T> queryable);  
         ISugarQueryable<T> Queryable<T>(string shortName);
         #endregion
 
