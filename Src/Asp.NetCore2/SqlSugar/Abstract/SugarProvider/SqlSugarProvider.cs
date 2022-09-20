@@ -407,10 +407,11 @@ namespace SqlSugar
             queryable.Where(joinExpression);
             return queryable;
         }
-        public virtual ISugarQueryable<T> Queryable<T>(ISugarQueryable<T> queryable) where T : class, new()
+        public virtual ISugarQueryable<T> Queryable<T>(ISugarQueryable<T> queryable)  
         {
             var sqlobj = queryable.ToSql();
-            var result = this.SqlQueryable<T>(sqlobj.Key).AddParameters(sqlobj.Value);
+            var newQueryable = this.SqlQueryable<object>(sqlobj.Key).AddParameters(sqlobj.Value);
+            var result = newQueryable.Select<T>(newQueryable.QueryBuilder.SelectValue+"");
             result.QueryBuilder.IsSqlQuery = false;
             return result;
         }
