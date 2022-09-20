@@ -410,7 +410,8 @@ namespace SqlSugar
         public virtual ISugarQueryable<T> Queryable<T>(ISugarQueryable<T> queryable)  
         {
             var sqlobj = queryable.ToSql();
-            var result = this.SqlQueryable<object>(sqlobj.Key).AddParameters(sqlobj.Value).Select<T>("*");
+            string selector = null;
+            var result = this.SqlQueryable<object>(sqlobj.Key).AddParameters(sqlobj.Value).Select<T>(selector);
             result.QueryBuilder.IsSqlQuery = false;
             return result;
         }
