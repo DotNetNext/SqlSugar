@@ -15,6 +15,6 @@
     <tags>asp.net orm</tags>
   </metadata>
   <files>
-         <file src="C:\Nuget\SqlSugar.dll" target="lib"></file>
+         <file src="E:\Git\SqlSugar\Src\Asp.Net\SqlSugar\bin\Debug\SqlSugar.dll" target="lib"></file>
   </files>
 </package>
