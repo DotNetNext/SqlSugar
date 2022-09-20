@@ -163,8 +163,9 @@ namespace SqlSugar
             mappingA = queryable.QueryBuilder.Builder.GetTranslationColumnName(mappingA);
             mappingB = queryable.QueryBuilder.Builder.GetTranslationColumnName(mappingB);
             var bTableName = queryable.QueryBuilder.Builder.GetTranslationTableName(this.ProPertyEntity.DbTableName);
-
+            this.context.InitMappingInfo(mappingType);
             var queryBuilerAB=this.context.Queryable<object>().QueryBuilder;
+            queryBuilerAB.LambdaExpressions.ParameterIndex = 100+this.methodCallExpressionResolve.Index;
             var filters= queryBuilerAB.GetFilters(mappingType);
             if (filters.HasValue()) 
             {
