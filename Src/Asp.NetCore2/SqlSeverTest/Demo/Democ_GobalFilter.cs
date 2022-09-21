@@ -32,6 +32,22 @@ namespace OrmTest
             var sql4 = db.Queryable<Order>().Filter("Myfilter",isDisabledGobalFilter:true).ToSql();//only Myfilter
             //SELECT [Id],[Name],[Price],[CreateTime] FROM [Order]  WHERE Name='jack'  
             Console.WriteLine(sql4);
+
+            db.Aop.DataExecuting = (x, p) =>
+            {
+                if (p.EntityColumnInfo.PropertyName == "CreateTime")
+                {
+                    p.SetValue(DateTime.Now.AddDays(-10));
+                }
+            };
+
+           var sql5=  db.Updateable<Order>()
+                .SetColumns(it => new Order()
+                {
+                     Name="A"
+
+                },appendColumnsByDataFilter:true).Where(it=>it.Id==1).ToSqlString();
+            Console.WriteLine(sql5);
             Console.WriteLine("#### Filter End ####");
         }
     
