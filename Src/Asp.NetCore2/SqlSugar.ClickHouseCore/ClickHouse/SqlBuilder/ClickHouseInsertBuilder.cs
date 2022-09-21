@@ -151,6 +151,10 @@ namespace SqlSugar.ClickHouse
 
                // batchInsetrSql.AppendLine(";select @@IDENTITY");
                 var result = batchInsetrSql.ToString();
+                if (result.Length > 150000) 
+                {
+                    Check.ExceptionEasy("SQL is too long 。Use db.Insertable(List<实体>).UseParameter().ExecuteCommand() ", "Sql太长你可以使用UseParameter内部会分页方式插入。用例：db.Insertable(List<实体>).UseParameter().ExecuteCommand()");
+                }
                 return result;
             }
         }
