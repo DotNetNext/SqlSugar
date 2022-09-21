@@ -68,6 +68,7 @@ namespace SqlSugar
         /// <param name="columns"></param>
         /// <returns></returns>
         IUpdateable<T> SetColumns(Expression<Func<T, T>> columns);
+        IUpdateable<T> SetColumns(Expression<Func<T, T>> columns,bool appendColumnsByDataFilter);
         IUpdateable<T> SetColumns(string fieldName,object fieldValue);
 
         IUpdateable<T> SetColumns(Expression<Func<T,object>> filedNameExpression, object fieldValue);
