@@ -31,7 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
-
+            UJsonsdafa.Init();
             UOneManyMany.init();
             UOneManyMany2.init();
             UOneManyMany3.init();
