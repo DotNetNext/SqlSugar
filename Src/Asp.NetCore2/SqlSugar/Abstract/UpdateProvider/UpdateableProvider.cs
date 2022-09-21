@@ -426,6 +426,50 @@ namespace SqlSugar
             AppendSets();
             return this;
         }
+
+
+        public IUpdateable<T> SetColumns(Expression<Func<T, T>> columns, bool appendColumnsByDataFilter) 
+        {
+            ThrowUpdateByObject();
+            var expResult = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.Update);
+            var resultArray = expResult.GetResultArray();
+            Check.ArgumentNullException(resultArray, "UpdateColumns Parameter error, UpdateColumns(it=>new T{ it.id=1}) is valid, UpdateColumns(it=>T) is error");
+            if (resultArray.HasValue())
+            {
+                foreach (var item in resultArray)
+                {
+                    string key = SqlBuilder.GetNoTranslationColumnName(item);
+                    var value = item;
+                    if (value.Contains("= \"SYSDATE\""))
+                    {
+                        value = value.Replace("= \"SYSDATE\"", "= SYSDATE");
+                    }
+                    UpdateBuilder.SetValues.Add(new KeyValuePair<string, string>(SqlBuilder.GetTranslationColumnName(key), value));
+                }
+            }
+            if (appendColumnsByDataFilter)
+            {
+                var data = ((UpdateableProvider<T>)this.Context.Updateable(new T() { })).UpdateObjs.First();
+                foreach (var item in this.EntityInfo.Columns.Where(it => !it.IsPrimarykey && !it.IsIgnore && !it.IsOnlyIgnoreUpdate))
+                {
+                    var value = item.PropertyInfo.GetValue(data);
+                    if (value != null)
+                    {
+                        if (!value.Equals(UtilMethods.GetDefaultValue(item.UnderType))) 
+                        {
+                            var pName = this.SqlBuilder.SqlParameterKeyWord + item.PropertyName + 1000;
+                            var p = new SugarParameter(pName, value);
+                            this.UpdateBuilder.Parameters.Add(p);
+                            UpdateBuilder.SetValues.Add(new KeyValuePair<string, string>(SqlBuilder.GetTranslationColumnName(item.DbColumnName), SqlBuilder.GetTranslationColumnName(item.DbColumnName)+"="+pName));
+                        }
+                    }
+                }
+            }
+            this.UpdateBuilder.DbColumnInfoList = UpdateBuilder.DbColumnInfoList.Where(it => (UpdateParameterIsNull == false && IsPrimaryKey(it)) || UpdateBuilder.SetValues.Any(v => SqlBuilder.GetNoTranslationColumnName(v.Key).Equals(it.DbColumnName, StringComparison.CurrentCultureIgnoreCase) || SqlBuilder.GetNoTranslationColumnName(v.Key).Equals(it.PropertyName, StringComparison.CurrentCultureIgnoreCase)) || it.IsPrimarykey == true).ToList();
+            CheckTranscodeing(false);
+            AppendSets();
+            return this;
+        }
         public IUpdateable<T> SetColumns(Expression<Func<T, bool>> columns)
         {
             ThrowUpdateByObject();
