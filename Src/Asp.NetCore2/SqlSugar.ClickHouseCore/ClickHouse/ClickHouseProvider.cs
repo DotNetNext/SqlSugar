@@ -128,6 +128,10 @@ namespace SqlSugar.ClickHouse
                 if (dbtype.ObjToString() == System.Data.DbType.Guid.ToString())
                 {
                     dbtype = ClickHouseDbBind.MappingTypesConst.First(it => it.Value == CSharpDataType.Guid).Key;
+                    if (param.Value == DBNull.Value)
+                    {
+                        param.Value = Guid.Empty;
+                    }
                 }
                 if (param.Value!=null&&param.Value!=DBNull.Value&&dbtype.ObjToString() == System.Data.DbType.Boolean.ToString())
                 {
