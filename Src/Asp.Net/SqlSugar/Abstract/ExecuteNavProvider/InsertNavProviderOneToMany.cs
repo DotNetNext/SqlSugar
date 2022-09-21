@@ -17,12 +17,16 @@ namespace SqlSugar
             var parentNavigateProperty = parentEntity.Columns.FirstOrDefault(it => it.PropertyName == name);
             var thisEntity = this._Context.EntityMaintenance.GetEntityInfo<TChild>();
             var thisPkColumn = GetPkColumnByNav(thisEntity, nav);
-            var thisFkColumn= GetFKColumnByNav(thisEntity, nav);
+            var thisFkColumn = GetFKColumnByNav(thisEntity, nav);
             EntityColumnInfo parentPkColumn = GetParentPkColumn();
             EntityColumnInfo parentNavColumn = GetParentPkNavColumn(nav);
-            if (parentNavColumn != null) 
+            if (parentNavColumn != null)
             {
                 parentPkColumn = parentNavColumn;
+            }
+            if (ParentIsPk(parentNavigateProperty))
+            {
+                parentPkColumn = this._ParentEntity.Columns.FirstOrDefault(it => it.IsPrimarykey);
             }
             foreach (var item in parentList)
             {
@@ -39,7 +43,15 @@ namespace SqlSugar
             }
             Check.ExceptionEasy(thisPkColumn == null, $"{thisEntity.EntityName}need primary key", $"实体{thisEntity.EntityName}需要主键");
             InsertDatas(children, thisPkColumn);
-            SetNewParent<TChild>(thisEntity,thisPkColumn);
+            SetNewParent<TChild>(thisEntity, thisPkColumn);
+        }
+
+        private static bool ParentIsPk(EntityColumnInfo parentNavigateProperty)
+        {
+            return parentNavigateProperty != null && 
+                   parentNavigateProperty.Navigat != null && 
+                   parentNavigateProperty.Navigat.NavigatType == NavigateType.OneToMany && 
+                   parentNavigateProperty.Navigat.Name2==null;
         }
 
         private EntityColumnInfo GetParentPkColumn()
