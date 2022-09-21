@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UInsertNav0adsf.Init();
             UExp.Init();
             USelectSinleDTO.Init();
             UCustom024.Init();
