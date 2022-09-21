@@ -36,8 +36,9 @@ namespace OrmTest
             Console.Write(db.Queryable<GuidTest>().First().A);
             db.Updateable<GuidTest>(new GuidTest() { A = Guid.NewGuid(), Id = Id }).ExecuteCommand();
             Console.Write(db.Queryable<GuidTest>().First().A);
-            db.CodeFirst.InitTables<GuidTest2>();
-            db.Insertable(new GuidTest2() { }).ExecuteReturnSnowflakeId();
+            db.CodeFirst.InitTables<GuidTest22>();
+            db.Insertable(new GuidTest22() { }).ExecuteReturnSnowflakeId();
+            var list=db.Queryable<GuidTest22>().ToList();
         }
         private static void TestBool(SqlSugarClient db)
         {
@@ -50,11 +51,14 @@ namespace OrmTest
             Console.Write(db.Queryable<BoolTest>().First().A);
         }
     }
-    public class GuidTest2
+    public class GuidTest22
     {
         [SugarColumn(IsPrimaryKey = true)]
         public long Id { get; set; }
+        [SugarColumn(IsNullable = true)]
         public Guid? A { get; set; }
+        [SugarColumn(IsNullable =true)]
+        public DateTime? Date { get; set; }
     }
     public class GuidTest
     {
