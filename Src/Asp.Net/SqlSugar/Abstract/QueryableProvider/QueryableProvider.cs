@@ -2454,32 +2454,34 @@ namespace SqlSugar
                 exp = (exp as UnaryExpression).Operand;
             }
             var parentIdName = (exp as MemberExpression).Member.Name;
-            var result = list.Where(it =>
-            {
 
-                var value = it.GetType().GetProperty(parentIdName).GetValue(it);
-                if (rootValue != null)
-                {
-                    return value.ObjToString() == rootValue.ObjToString();
-                }
-                else if (value == null || value.ObjToString() == "" || value.ObjToString() == "0" || value.ObjToString() == Guid.Empty.ToString())
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }).ToList();
-            if (result != null && result.Count > 0)
+            return BuildTree(list, pk, parentIdName, childName, rootValue)?.ToList() ?? default;
+        }
+
+        private static IEnumerable<T> BuildTree(IEnumerable<T> list, string idName, string pIdName, string childName, object rootValue)
+        {
+            var type = typeof(T);
+            var mainIdProp = type.GetProperty(idName);
+            var pIdProp = type.GetProperty(pIdName);
+            var childProp = type.GetProperty(childName);
+
+            var kvList = list.ToDictionary(x => mainIdProp.GetValue(x).ObjToString());
+            var group = list.GroupBy(x => pIdProp.GetValue(x).ObjToString());
+
+            var root = rootValue != null ? group.FirstOrDefault(x => x.Key == rootValue.ObjToString()) : group.FirstOrDefault(x => x.Key == null || x.Key == "" || x.Key == "0" || x.Key == Guid.Empty.ToString());
+
+            if (root != null)
             {
-                foreach (var item in result)
+                foreach (var item in group)
                 {
-                    var pkValue = item.GetType().GetProperty(pk).GetValue(item);
-                    item.GetType().GetProperty(childName).SetValue(item, GetTreeChildList(list, pkValue, pk, childName, parentIdName));
+                    if (kvList.TryGetValue(item.Key, out var parent))
+                    {
+                        childProp.SetValue(parent, item.ToList());
+                    }
                 }
             }
-            return result;
+
+            return root;
         }
 
         public List<T> GetTreeChildList(List<T> alllist, object pkValue, string pkName, string childName, string parentIdName)
