@@ -49,8 +49,13 @@ namespace OrmTest
             };
               context.InsertNav(delivery).Include(s => s.DeliveryDetails).ThenInclude(s => s.DeliveryDetailItems).ExecuteCommand();
             var result = context.Queryable<Delivery>().Where(s => s.DeliveryNo == "1").Includes(s => s.DeliveryDetails, dd => dd.DeliveryDetailItems).First();
-
+            context.UpdateNav(result).Include(s => s.DeliveryDetails).ThenInclude(s => s.DeliveryDetailItems).ExecuteCommand();
+            var result2 = context.Queryable<Delivery>().Where(s => s.DeliveryNo == "1").Includes(s => s.DeliveryDetails, dd => dd.DeliveryDetailItems).First();
             if (!result.DeliveryDetails.Any(z => z.DeliveryDetailItems.Any())) 
+            {
+                throw new Exception("unit error");
+            }
+            if (!result2.DeliveryDetails.Any(z => z.DeliveryDetailItems.Any()))
             {
                 throw new Exception("unit error");
             }
