@@ -340,7 +340,7 @@ namespace SqlSugar
                     }
                     else if (IsJsonItem(readerValues, name))
                     {
-                        result.Add(name, DeserializeObject<Dictionary<string, object>>(readerValues.First().Value.ObjToString()));
+                        result.Add(name, DeserializeObject<Dictionary<string, object>>(readerValues.First(it=>it.Key.EqualCase(name)).Value.ObjToString()));
                     }
                     else if (IsJsonList(readerValues, item))
                     {
@@ -416,8 +416,14 @@ namespace SqlSugar
                    readerValues[item.Name.ToLower()].GetType()==UtilConstants.ByteArrayType);
         }
 
-        private static bool IsJsonItem(Dictionary<string, object> readerValues, string name)
+        private static bool IsJsonItem(Dictionary<string, object> readerValuesOld, string name)
         {
+            Dictionary<string, object> readerValues = new Dictionary<string, object>();
+            if (readerValuesOld.Any(it => it.Key.EqualCase(name))) 
+            {
+                var data = readerValuesOld.First(it => it.Key.EqualCase(name));
+                readerValues.Add(data.Key,data.Value);
+            }
             return readerValues != null &&
                                     readerValues.Count == 1 &&
                                     readerValues.First().Key == name &&
@@ -448,6 +454,10 @@ namespace SqlSugar
                 return null;
             }
             var classProperties = type.GetProperties().ToList();
+            if (type.Name.StartsWith("Dictionary`")) 
+            {
+                return null;
+            }
             var columns = this.Context.EntityMaintenance.GetEntityInfo(type).Columns;
             foreach (var prop in classProperties)
             {
