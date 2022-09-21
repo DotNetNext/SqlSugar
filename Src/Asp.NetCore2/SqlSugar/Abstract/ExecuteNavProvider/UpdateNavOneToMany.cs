@@ -24,6 +24,10 @@ namespace SqlSugar
             {
                 parentPkColumn = parentNavColumn;
             }
+            if (ParentIsPk(parentNavigateProperty))
+            {
+                parentPkColumn = this._ParentEntity.Columns.FirstOrDefault(it => it.IsPrimarykey);
+            }
             var ids = new List<object>();
             foreach (var item in parentList)
             {
@@ -48,7 +52,13 @@ namespace SqlSugar
             _NavigateType = null;
             SetNewParent<TChild>(thisEntity, thisPkColumn);
         }
-
+        private static bool ParentIsPk(EntityColumnInfo parentNavigateProperty)
+        {
+            return parentNavigateProperty != null &&
+                   parentNavigateProperty.Navigat != null &&
+                   parentNavigateProperty.Navigat.NavigatType == NavigateType.OneToMany &&
+                   parentNavigateProperty.Navigat.Name2 == null;
+        }
         private void DeleteMany(EntityInfo thisEntity, List<object> ids,string fkName)
         {
             if (_Options == null||_Options.OneToManyDeleteAll==false) 
