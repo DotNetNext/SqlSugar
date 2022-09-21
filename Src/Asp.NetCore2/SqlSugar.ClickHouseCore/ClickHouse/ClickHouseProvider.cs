@@ -144,6 +144,10 @@ namespace SqlSugar.ClickHouse
                 else
                 {
                     sql = sql.Replace(param.ParameterName, "{" + newName + ":" + dbtype + "}");
+                    if (dbtype.ObjToString() == "DateTime"&&param.Value==DBNull.Value) 
+                    {
+                        param.Value = Convert.ToDateTime("1900-01-01");
+                    }
                 }
                 param.ParameterName = newName;
             }
