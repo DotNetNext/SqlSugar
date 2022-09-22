@@ -49,7 +49,17 @@ namespace OrmTest
             Console.Write(db.Queryable<BoolTest>().First().A);
             db.Updateable<BoolTest>(new BoolTest() { A = false, Id = Id }).ExecuteCommand();
             Console.Write(db.Queryable<BoolTest>().First().A);
+            db.CodeFirst.InitTables<CKTest>();
         }
+    }
+
+    [SqlSugar.ClickHouse.CKTable(@"engine = MergeTree PARTITION BY toYYYYMM(dt)
+        ORDER BY(toYYYYMM(dt))
+        SETTINGS index_granularity = 8192;")]
+    public class CKTest 
+    {
+        public string Id { get; set; }
+        public DateTime dt { get; set; }
     }
     public class GuidTest22
     {
