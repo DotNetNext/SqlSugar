@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace SqlSugar.ClickHouse
 {
@@ -338,6 +339,14 @@ namespace SqlSugar.ClickHouse
         }
         protected override string GetCreateTableSql(string tableName, List<DbColumnInfo> columns)
         {
+            string engineEq = null;
+            if (tableName.Contains(UtilConstants.ReplaceKey)) 
+            {
+                var tableInfos = Regex.Split(tableName, UtilConstants.ReplaceKey);
+                tableName = tableInfos.First();
+                engineEq = tableInfos.Last();
+            }
+
             List<string> columnArray = new List<string>();
             Check.Exception(columns.IsNullOrEmpty(), "No columns found ");
             var pkName = "";
@@ -365,7 +374,11 @@ namespace SqlSugar.ClickHouse
                 }
             }
             string tableString = string.Format(this.CreateTableSql, this.SqlBuilder.GetTranslationTableName(tableName.ToLower(isLower)), string.Join(",\r\n", columnArray));
-            if (pkName.HasValue())
+            if (engineEq.HasValue()) 
+            {
+                tableString += (" "+ engineEq);
+            }
+            else if (pkName.HasValue())
             {
                 pkName = this.SqlBuilder.GetTranslationColumnName(pkName);
                 tableString += $"ENGINE = MergeTree()  ORDER BY ( {pkName} )  PRIMARY KEY {pkName} SETTINGS index_granularity = 8192";

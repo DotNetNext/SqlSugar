@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace SqlSugar.ClickHouse
@@ -40,6 +41,10 @@ namespace SqlSugar.ClickHouse
                 }
             }
             columns = columns.OrderBy(it => it.IsPrimarykey ? 0 : 1).ToList();
+            if (entityInfo.Type.GetCustomAttribute<CKTable>() != null) 
+            {
+                tableName = (tableName + UtilConstants.ReplaceKey + entityInfo.Type.GetCustomAttribute<CKTable>().engineValue);
+            }
             this.Context.DbMaintenance.CreateTable(tableName, columns,true);
         }
         protected override DbColumnInfo EntityColumnToDbColumn(EntityInfo entityInfo, string tableName, EntityColumnInfo item)
