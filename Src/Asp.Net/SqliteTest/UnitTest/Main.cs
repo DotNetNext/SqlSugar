@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UNavTest.Init();
             UnitTestReturnPkList.Init();
             UCustom01.Init();
             UCustom011.Init();
