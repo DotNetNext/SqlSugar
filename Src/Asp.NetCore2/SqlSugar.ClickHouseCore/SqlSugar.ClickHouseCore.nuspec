@@ -2,16 +2,16 @@
 <package >
   <metadata>
     <id>SqlSugar.ClickHouseCore</id>
-    <version>5.1.2.1</version>
+    <version>5.1.3.2</version>
     <authors>sunkaixuan</authors>
     <owners>Landa</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
     <projectUrl>https://github.com/sunkaixuan/SqlSugar</projectUrl>
     <iconUrl>https://secure.gravatar.com/avatar/a82c03402497b2e58fd65038a3699b30</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description> SqlSugar.MySqlConnectorCore   .NET CORE 使用 ，DbType.MySqlConnector 使用这个</description>
+    <description>.NET ORM ClickHouse  组件 文档地址：https://www.donet5.com/Home/Doc?typeId=2437</description>
     <copyright>Copyright 2016</copyright>
-    <tags>Asp.net core orm</tags>
+    <tags>ClickHouse .net  ORM</tags>
     <dependencies>
       <group targetFramework=".NETStandard2.1">
         <dependency id="ClickHouse.Client" version="5.0.3" />
@@ -19,6 +19,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="E:\Git\SqlSugarNew\Src\Asp.NetCore2\SqlSugar.ClickHouseCore\bin\Debug\netstandard2.1\SqlSugar.ClickHouseCore.dll" target="lib\netstandard2.1"></file>
+    <file src="E:\Git\SqlSugar\Src\Asp.NetCore2\SqlSugar.ClickHouseCore\bin\Debug\netstandard2.1\SqlSugar.ClickHouseCore.dll" target="lib\netstandard2.1"></file>
   </files>
 </package>
