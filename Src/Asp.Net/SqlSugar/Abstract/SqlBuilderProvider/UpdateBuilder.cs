@@ -353,8 +353,7 @@ namespace SqlSugar
                 }
                 else if (type == UtilConstants.DateTimeOffsetType)
                 {
-                    var date = UtilMethods.ConvertFromDateTimeOffset((DateTimeOffset)value);
-                    return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
+                    return FormatDateTimeOffset(value);
                 }
                 else if (type == UtilConstants.StringType || type == UtilConstants.ObjType)
                 {
@@ -380,6 +379,12 @@ namespace SqlSugar
                     return "N'" + value.ToString() + "'";
                 }
             }
+        }
+
+        public virtual string FormatDateTimeOffset(object value)
+        {
+            var date = UtilMethods.ConvertFromDateTimeOffset((DateTimeOffset)value);
+            return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
         }
     }
 }
