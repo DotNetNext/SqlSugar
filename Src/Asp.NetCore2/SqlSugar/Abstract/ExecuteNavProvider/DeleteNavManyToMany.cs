@@ -34,7 +34,7 @@ namespace SqlSugar
             }
 
             var aids = _ParentList.Select(it => parentPkColumn.PropertyInfo.GetValue(it)).ToList();
-            var bids = _Context.Queryable<object>().AS(mappingEntity.DbTableName).In(mappingA.DbColumnName, aids)
+            var bids = _Context.Queryable<object>().Filter(mappingEntity.Type).AS(mappingEntity.DbTableName).In(mappingA.DbColumnName, aids)
                 .Select(mappingB.DbColumnName).ToDataTable()
                 .Rows.Cast<System.Data.DataRow>().Select(it => it[0]).ToList();
 

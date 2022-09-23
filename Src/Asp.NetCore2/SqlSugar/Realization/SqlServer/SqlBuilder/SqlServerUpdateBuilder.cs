@@ -90,5 +90,9 @@ namespace SqlSugar
                 return FormatValue(it.Value);
             }
         }
+        public override string FormatDateTimeOffset(object value)
+        {
+            return "'"+((DateTimeOffset)value).ToString("o")+"'";
+        }
     }
 }
