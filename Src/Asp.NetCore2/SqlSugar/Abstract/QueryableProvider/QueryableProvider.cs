@@ -3357,8 +3357,12 @@ namespace SqlSugar
             List<TResult> result;
             var isComplexModel = QueryBuilder.IsComplexModel(sqlObj.Key);
             var entityType = typeof(TResult);
+            bool isChangeQueryableSlave = GetIsSlaveQuery();
+            bool isChangeQueryableMasterSlave = GetIsMasterQuery();
             var dataReader = await this.Db.GetDataReaderAsync(sqlObj.Key, sqlObj.Value.ToArray());
             result =await GetDataAsync<TResult>(isComplexModel, entityType, dataReader);
+            RestChangeMasterQuery(isChangeQueryableMasterSlave);
+            RestChangeSlaveQuery(isChangeQueryableSlave);
             return result;
         }
 
