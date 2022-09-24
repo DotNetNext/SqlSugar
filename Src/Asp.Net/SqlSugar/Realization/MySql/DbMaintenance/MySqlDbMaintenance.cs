@@ -299,6 +299,12 @@ namespace SqlSugar
         /// <returns></returns>
         public override bool CreateDatabase(string databaseName, string databaseDirectory = null)
         {
+
+            if (this.Context.Ado.IsValidConnection()) 
+            {
+                return true;
+            }
+
             if (databaseDirectory != null)
             {
                 if (!FileHelper.IsExistDirectory(databaseDirectory))
