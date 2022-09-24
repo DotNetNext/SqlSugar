@@ -73,7 +73,7 @@ namespace SqlSugar
                 else if (type == UtilConstants.StringType || type == UtilConstants.ObjType)
                 {
                     ++i;
-                    var parameterName = this.Builder.SqlParameterKeyWord +"_"+name + i;
+                    var parameterName = this.Builder.SqlParameterKeyWord + name +"_"+ i;
                     this.Parameters.Add(new SugarParameter(parameterName, value));
                     return parameterName;
                 }
