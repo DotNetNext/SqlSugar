@@ -26,11 +26,11 @@ namespace SqlSugar
                    .Where(it => it.PropertyName != mappingA.PropertyName)
                    .Where(it => it.PropertyName != mappingB.PropertyName)
                    .Where(it => it.IsPrimarykey && !it.IsIdentity && it.OracleSequenceName.IsNullOrEmpty()).FirstOrDefault();
-            var mappingBizDeleteColumn = mappingEntity.Columns.FirstOrDefault(it =>
-               it.DbColumnName.EqualCase("isdelete") ||
-               it.PropertyName.EqualCase("isdelete") ||
-               it.DbColumnName.EqualCase("isdeleted") ||
-               it.PropertyName.EqualCase("isdeleted"));
+            var mappingOthers = mappingEntity.Columns
+                   .Where(it => it.PropertyName != mappingA.PropertyName)
+                   .Where(it => it.PropertyName != mappingB.PropertyName)
+                   .Where(it=>!it.IsIdentity)
+                   .Where(it => !it.IsPrimarykey);
             Check.Exception(mappingA == null || mappingB == null, $"Navigate property {name} error ", $"导航属性{name}配置错误");
             List<Dictionary<string, object>> mappgingTables = new List<Dictionary<string, object>>();
             var ids=new List<object>();
@@ -57,9 +57,15 @@ namespace SqlSugar
                     Dictionary<string, object> keyValuePairs = new Dictionary<string, object>();
                     keyValuePairs.Add(mappingA.DbColumnName, parentId);
                     keyValuePairs.Add(mappingB.DbColumnName, chidId);
-                    if (mappingBizDeleteColumn != null)
+                    if (mappingOthers != null)
                     {
-                        keyValuePairs.Add(mappingBizDeleteColumn.DbColumnName, UtilMethods.GetDefaultValue(mappingBizDeleteColumn.UnderType));
+                        foreach (var pair in mappingOthers)
+                        {
+                            if (!keyValuePairs.ContainsKey(pair.DbColumnName))
+                            {
+                                keyValuePairs.Add(pair.DbColumnName, UtilMethods.GetDefaultValue(pair.UnderType));
+                            }
+                        }
                     }
                     if (mappingPk != null)
                     {
