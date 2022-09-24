@@ -67,6 +67,10 @@ namespace SqlSugar
                             {
                                 keyValuePairs.Add(pair.DbColumnName, DateTime.Now);
                             }
+                            else if (pair.UnderType == UtilConstants.StringType)
+                            {
+                                keyValuePairs.Add(pair.DbColumnName, UtilConstants.Space);
+                            }
                             else
                             {
                                 keyValuePairs.Add(pair.DbColumnName, UtilMethods.GetDefaultValue(pair.UnderType));
