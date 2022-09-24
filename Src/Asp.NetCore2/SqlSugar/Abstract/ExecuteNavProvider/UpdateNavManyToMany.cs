@@ -30,7 +30,9 @@ namespace SqlSugar
                    .Where(it => it.PropertyName != mappingA.PropertyName)
                    .Where(it => it.PropertyName != mappingB.PropertyName)
                    .Where(it=>!it.IsIdentity)
-                   .Where(it => !it.IsPrimarykey);
+                   .Where(it => !it.IsPrimarykey)
+                   .Where(it => !it.IsOnlyIgnoreInsert)
+                   .Where(it => !it.IsIgnore);
             Check.Exception(mappingA == null || mappingB == null, $"Navigate property {name} error ", $"导航属性{name}配置错误");
             List<Dictionary<string, object>> mappgingTables = new List<Dictionary<string, object>>();
             var ids=new List<object>();
@@ -61,7 +63,15 @@ namespace SqlSugar
                     {
                         foreach (var pair in mappingOthers)
                         {
-                            if (!keyValuePairs.ContainsKey(pair.DbColumnName))
+                            if (pair.UnderType == UtilConstants.DateType)
+                            {
+                                keyValuePairs.Add(pair.DbColumnName, DateTime.Now);
+                            }
+                            else if (pair.UnderType == UtilConstants.StringType)
+                            {
+                                keyValuePairs.Add(pair.DbColumnName, UtilConstants.Space);
+                            }
+                            else
                             {
                                 keyValuePairs.Add(pair.DbColumnName, UtilMethods.GetDefaultValue(pair.UnderType));
                             }
