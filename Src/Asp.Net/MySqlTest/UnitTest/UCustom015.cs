@@ -59,6 +59,7 @@ namespace OrmTest
               .Includes(x => x.Provinces.OrderByDescending(x111 => x111.Id).ToList())
               .ToList();
             db.CodeFirst.InitTables<SysTimer>();
+            db.DbMaintenance.TruncateTable<SysTimer>();
             db.Insertable(new SysTimer()
             {
                  CreatedTime=DateTime.Now,

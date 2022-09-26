@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SqlSugar;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,6 +18,7 @@ namespace OrmTest
             var list = Db.Queryable<UnitJsonTest>().ToList();
             UValidate.Check("order1", list.First().Order.Name, "Json");
             Db.Updateable(new UnitJsonTest() { Id = 1, Order = new Order { Id = 2, Name = "order2" } }).ExecuteCommand();
+            var json = Db.Queryable<UnitJsonTest>().Select(it => SqlFunc.JsonField(it.Order, "Name")).ToList();
             list = Db.Queryable<UnitJsonTest>().ToList();
             UValidate.Check("order2", list.First().Order.Name, "Json");
 
