@@ -42,6 +42,7 @@ namespace SqlSugar
         public List<string> IgnoreColumns { get; set; }
         public bool IsCount { get; set; }
         public bool IsSqlQuery { get; set; }
+        public bool IsSqlQuerySelect { get; set; }
         public int? Skip { get; set; }
         public int ExternalPageIndex { get; set; }
         public int ExternalPageSize { get; set; }
@@ -555,6 +556,10 @@ namespace SqlSugar
             if (GetTableNameString == " (-- No table ) t  ")
             {
                 result = "-- No table ";
+                return result;
+            }
+            if (this.IsSqlQuerySelect == true) 
+            {
                 return result;
             }
             if (this.IsSqlQuery&&this.OldSql.HasValue() && (Skip == null && Take == null) && (this.WhereInfos == null || this.WhereInfos.Count == 0))

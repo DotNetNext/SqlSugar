@@ -2588,6 +2588,10 @@ namespace SqlSugar
             {
                 result.WithCache(this.CacheTime);
             }
+            if (this.QueryBuilder.IsSqlQuery) 
+            {
+                this.QueryBuilder.IsSqlQuerySelect = true;
+            }
             return result;
         }
         protected void _Where(Expression expression)
@@ -3546,6 +3550,7 @@ namespace SqlSugar
             asyncQueryableBuilder.DisableTop = this.QueryBuilder.DisableTop;
             asyncQueryableBuilder.Offset = this.QueryBuilder.Offset;
             asyncQueryableBuilder.IsSqlQuery = this.QueryBuilder.IsSqlQuery;
+            asyncQueryableBuilder.IsSqlQuerySelect = this.QueryBuilder.IsSqlQuerySelect;
             asyncQueryableBuilder.OldSql = this.QueryBuilder.OldSql;
         }
         protected int SetCacheTime(int cacheDurationInSeconds)
