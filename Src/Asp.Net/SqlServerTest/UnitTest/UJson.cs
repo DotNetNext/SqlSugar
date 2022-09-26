@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SqlSugar;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,6 +17,7 @@ namespace OrmTest
             Db.DbMaintenance.TruncateTable<UnitJsonTest>();
             Db.Insertable(new UnitJsonTest() { Order = new Order { Id = 1, Name = "order1" } }).ExecuteCommand();
             var list = Db.Queryable<UnitJsonTest>().ToList();
+            var json = Db.Queryable<UnitJsonTest>().Select(it => SqlFunc.JsonField(it.Order, "Name")).ToList();
             UValidate.Check("order1", list.First().Order.Name, "Json");
             Db.Updateable(new UnitJsonTest() { Id = 1, Order = new Order { Id = 2, Name = "order2" } }).ExecuteCommand();
             list = Db.Queryable<UnitJsonTest>().ToList();
