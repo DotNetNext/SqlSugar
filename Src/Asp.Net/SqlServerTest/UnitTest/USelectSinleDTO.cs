@@ -25,7 +25,7 @@ namespace OrmTest
         private static void Dto1(SqlSugarClient db)
         {
             var sql = db.Queryable<ClassA>().Select<ClassDTO>().ToSql();
-            if (sql.Key != "SELECT [f_id] AS fId ,[user_name] AS username FROM [ClassA] ")
+            if (sql.Key != "SELECT [f_id] AS [fId] ,[user_name] AS [username] FROM [ClassA] ")
             {
                 throw new Exception("unit error");
             }
@@ -33,7 +33,7 @@ namespace OrmTest
         private static void Dto2(SqlSugarClient db)
         {
             var sql = db.Queryable<ClassA>().Select<ClassDTO2>().ToSql();
-            if (sql.Key != "SELECT [user_name] AS username FROM [ClassA] ")
+            if (sql.Key != "SELECT [user_name] AS [username] FROM [ClassA] ")
             {
                 throw new Exception("unit error");
             }
@@ -41,7 +41,7 @@ namespace OrmTest
         private static void Dto3(SqlSugarClient db)
         {
             var sql = db.Queryable<ClassA>().Select<ClassDTO3>().ToSql();
-            if (sql.Key != "SELECT [f_id] AS f_id ,[user_name] AS username FROM [ClassA] ")
+            if (sql.Key != "SELECT [f_id] AS [f_id] ,[user_name] AS [username] FROM [ClassA] ")
             {
                 throw new Exception("unit error");
             }
