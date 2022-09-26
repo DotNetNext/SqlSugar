@@ -1076,7 +1076,7 @@ namespace SqlSugar
                     {
                         var dbColumnName = firstColumn.DbColumnName;
                         var AsName = item.PropertyName;
-                        sb.Append($"{this.SqlBuilder.GetTranslationColumnName(dbColumnName)} AS {AsName} ,");
+                        sb.Append($"{this.SqlBuilder.GetTranslationColumnName(dbColumnName)} AS {this.SqlBuilder.GetTranslationColumnName(AsName)} ,");
                     }
                 }
                 selects = sb.ToString().TrimEnd(',');
