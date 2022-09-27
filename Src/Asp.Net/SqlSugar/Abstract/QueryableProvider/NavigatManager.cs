@@ -373,6 +373,7 @@ namespace SqlSugar
             if (navObjectNameColumnInfo.Navigat.Name2.HasValue()) 
             {
                 listItemPkColumn = listItemEntity.Columns.Where(it => it.PropertyName== navObjectNameColumnInfo.Navigat.Name2).FirstOrDefault();
+                Check.ExceptionEasy(listItemPkColumn == null, $"{navObjectNameColumnInfo.PropertyName} Navigate is error ", $"{navObjectNameColumnInfo.PropertyName}导航配置错误,可能顺序反了。");
             }
             var ids = list.Select(it => it.GetType().GetProperty(listItemPkColumn.PropertyName).GetValue(it)).Select(it => it == null ? "null" : it).Distinct().ToList();
             List<IConditionalModel> conditionalModels = new List<IConditionalModel>();
