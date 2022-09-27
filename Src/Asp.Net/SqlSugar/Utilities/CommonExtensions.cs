@@ -38,3 +38,13 @@ namespace SqlSugar
         }
     }
 }
+namespace System.Collections.Generic
+{
+    public static class EnumerableExtensions
+    {
+        public static bool Contains<T>(this IEnumerable<T> thisValue, T likeKey, bool isNvarchar)
+        {
+            return thisValue.Contains(likeKey);
+        }
+    }
+}

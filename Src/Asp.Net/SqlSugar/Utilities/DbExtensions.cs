@@ -18,7 +18,17 @@ namespace SqlSugar
                 return string.Join(",", array.Where(c => c != null).Select(it => it.ToSqlValue()));
             }
         }
-
+        public static string ToJoinSqlInValsN<T>(this T[] array)
+        {
+            if (array == null || array.Length == 0)
+            {
+                return ToSqlValue(string.Empty);
+            }
+            else
+            {
+                return string.Join(",", array.Where(c => c != null).Select(it => "N"+it.ToSqlValue()));
+            }
+        }
         public static string ToSqlValue(this object value)
         {
             if (value!=null&& UtilConstants.NumericalTypes.Contains(value.GetType()))
