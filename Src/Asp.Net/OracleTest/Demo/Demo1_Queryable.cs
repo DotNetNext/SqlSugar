@@ -68,6 +68,10 @@ namespace OrmTest
                 names = SqlFunc.Subqueryable<Order>().Where(z => z.Id==188||z.Id==190).SelectStringJoin(z => z.Name, ",")
             })
             .ToList();
+            var ids = new string[] { "a", "c" };
+            var NIds = db.Queryable<Order>().Where(it => ids.Contains(it.Name, true)).ToList();
+            var Ids = db.Queryable<Order>().Where(it => ids.Contains(it.Name, false)).ToList();
+            var Ids2 = db.Queryable<Order>().Where(it => ids.Contains(it.Name)).ToList();
             Console.WriteLine("#### Examples End ####");
         }
 
