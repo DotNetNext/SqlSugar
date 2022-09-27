@@ -135,6 +135,7 @@
     <Compile Include="Json2Sql\Entities\JsonQueryResult.cs" />
     <Compile Include="Json2Sql\Entities\JsonTableConfig.cs" />
     <Compile Include="Json2Sql\Entities\JsonUpdateResult.cs" />
+    <Compile Include="Json2Sql\Enums\AsNameFormatType.cs" />
     <Compile Include="Json2Sql\Enums\Json2SqlType.cs" />
     <Compile Include="Json2Sql\Interface\IFuncModel.cs" />
     <Compile Include="Json2Sql\Interface\IJsonClient.cs" />
