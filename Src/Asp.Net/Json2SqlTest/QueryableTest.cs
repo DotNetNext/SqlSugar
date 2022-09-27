@@ -83,6 +83,17 @@ namespace Test
                            .AddJoinInfo("orderdetail", "d", onList, JoinType.Left)
                            .Select(selectItems)
                            .ToList();
+            var selectItems2 = new List<SelectModel>() {
+                                        new SelectModel()
+                                        {
+                                            AsName = "o.id",
+                                            FiledName = "o.id"
+                                         } };
+            var x2 = jsonToSqlClient.Context.Queryable<object>()
+                        .AS("order", "o")
+                        .AddJoinInfo("orderdetail", "d", onList, JoinType.Left)
+                        .Select(selectItems2, AsNameFormatType.NoConvert)
+                        .ToList();
             var json = @"
 {
 	""Table"":[ ""order"",""o""],
