@@ -491,7 +491,7 @@ namespace SqlSugar
                         //var property=item.Type.GetProperties().Where(it => it.Name == newExpressionInfo.l).First();
                         //asName = GetAsName(item, newExpressionInfo.ShortName, property);
                         parameter.Context.Result.Append(this.Context.GetAsString(
-                               this.Context.SqlTranslationLeft+asName + "." + newExpressionInfo.RightDbName+this.Context.SqlTranslationRight,
+                               this.Context.SqlTranslationLeft+asName + "." + newExpressionInfo.LeftNameName+this.Context.SqlTranslationRight,
                             newExpressionInfo.ShortName+"."+newExpressionInfo.RightDbName
                           ));
                     }

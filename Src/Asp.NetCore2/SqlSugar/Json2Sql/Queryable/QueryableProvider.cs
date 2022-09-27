@@ -57,6 +57,22 @@ namespace SqlSugar
             this.QueryBuilder.Parameters.AddRange(orderObj.Value);
             return this;
         }
+
+        public ISugarQueryable<T> Select(List<SelectModel> models, AsNameFormatType type) 
+        {
+            if (type == AsNameFormatType.NoConvert) 
+            {
+                foreach (var model in models)
+                {
+                    if (!string.IsNullOrEmpty(model.AsName))
+                    {
+                        model.AsName = (UtilConstants.ReplaceKey + SqlBuilder.SqlTranslationLeft + model.AsName + SqlBuilder.SqlTranslationRight);
+                        model.AsName.ToCheckField();
+                    }
+                }
+            }
+            return Select(models);
+        }
         public ISugarQueryable<T> Having(IFuncModel model)
         {
             var orderObj = this.SqlBuilder.FuncModelToSql(model);

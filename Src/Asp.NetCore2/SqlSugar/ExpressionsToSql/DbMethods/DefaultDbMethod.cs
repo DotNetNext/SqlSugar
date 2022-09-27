@@ -99,9 +99,17 @@ namespace SqlSugar
             }
             var value = model.Args[1].MemberName;
             string inValueString = null;
+            var isNvarchar = model.Args.Count == 3;
             if (inValues != null && inValues.Count > 0)
-            {            
-                    inValueString = inValues.ToArray().ToJoinSqlInVals();             
+            {
+                if (isNvarchar&& model.Args[2].MemberValue.Equals(true))
+                {
+                    inValueString = inValues.ToArray().ToJoinSqlInValsN();
+                }
+                else
+                {
+                    inValueString = inValues.ToArray().ToJoinSqlInVals();
+                }
             }
             if (inValueString.IsNullOrEmpty())
             {

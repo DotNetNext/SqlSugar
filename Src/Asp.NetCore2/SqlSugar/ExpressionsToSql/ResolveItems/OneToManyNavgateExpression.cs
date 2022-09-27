@@ -149,8 +149,10 @@ namespace SqlSugar
         private MapperSql GetManyToManySql()
         {
          
-            var bPk = this.ProPertyEntity.Columns.First(it => it.IsPrimarykey == true).DbColumnName;
-            var aPk = this.EntityInfo.Columns.First(it => it.IsPrimarykey == true).DbColumnName;
+            var bPk = this.ProPertyEntity.Columns.FirstOrDefault(it => it.IsPrimarykey == true)?.DbColumnName;
+            var aPk = this.EntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey == true)?.DbColumnName;
+            Check.ExceptionEasy(aPk.IsNullOrEmpty(), $"{this.EntityInfo.EntityName}need primary key", $"{this.EntityInfo.EntityName}需要主键");
+            Check.ExceptionEasy(bPk.IsNullOrEmpty(), $"{this.ProPertyEntity.EntityName}need primary key", $"{this.ProPertyEntity.EntityName}需要主键");
             MapperSql mapper = new MapperSql();
             var queryable = this.context.Queryable<object>();
             bPk = queryable.QueryBuilder.Builder.GetTranslationColumnName(bPk);

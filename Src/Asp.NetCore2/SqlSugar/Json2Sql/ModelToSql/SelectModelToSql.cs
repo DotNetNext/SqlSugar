@@ -34,6 +34,10 @@ namespace SqlSugar
             {
                 orderByModel.AsName = orderByModel.FiledName.ObjToString();
             }
+            if (orderByModel.AsName.StartsWith(UtilConstants.ReplaceKey)) 
+            {
+                return orderByModel.AsName.Replace(UtilConstants.ReplaceKey, string.Empty);
+            }
           return this.GetTranslationColumnName(orderByModel.AsName);
         }
 
