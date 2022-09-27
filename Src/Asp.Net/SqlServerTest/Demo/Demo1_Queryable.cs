@@ -206,6 +206,10 @@ namespace OrmTest
             dr3.Add("Id", 0);
             dr3.Add("Name", null);
             db.Queryable<Order>().WhereColumns(dr3, true).ToList();
+            var ids = new string[] { "a", "c" };
+            var NIds = db.Queryable<Order>().Where(it => ids.Contains(it.Name, true)).ToList();
+            var Ids = db.Queryable<Order>().Where(it => ids.Contains(it.Name, false)).ToList();
+            var Ids2 = db.Queryable<Order>().Where(it => ids.Contains(it.Name)).ToList();
             Console.WriteLine("#### Examples End ####");
         }
 
