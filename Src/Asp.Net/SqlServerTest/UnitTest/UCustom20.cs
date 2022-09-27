@@ -88,6 +88,25 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+            var list = db.Queryable<Order>().ToList();
+            var test7 = db.Queryable<Order>()
+           .LeftJoin<Order>((x,y)=>x.Id==y.Id)
+          .Take(2)
+           .Select((x,y) => new TestDTO
+           {
+               SubOne = new TestSubDTO { NameOne = x.Name, NameTwo = x.Name },
+               SubTwo = new TestSubDTO { NameOne = x.Name, NameTwo = x.Name }
+           })
+          .ToList() ;
+
+            if (test7.First().SubTwo.NameTwo != "jack"|| test7.First().SubTwo.NameOne != "jack") 
+            {
+                throw new Exception("unit error");
+            }
+            if (test7.First().SubOne.NameTwo != "jack" || test7.First().SubOne.NameOne != "jack")
+            {
+                throw new Exception("unit error");
+            }
         }
 
         public class TestDTO
