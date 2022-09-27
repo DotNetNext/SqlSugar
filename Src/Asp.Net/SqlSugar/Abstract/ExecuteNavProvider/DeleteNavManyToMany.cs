@@ -22,6 +22,7 @@ namespace SqlSugar
             var mappingEntity = this._Context.EntityMaintenance.GetEntityInfo(mappingType);
             var mappingA = mappingEntity.Columns.FirstOrDefault(x => x.PropertyName == parentNavigateProperty.Navigat.MappingAId);
             var mappingB = mappingEntity.Columns.FirstOrDefault(x => x.PropertyName == parentNavigateProperty.Navigat.MappingBId);
+            Check.Exception(mappingA == null || mappingB == null, $"Navigate property {name} error ", $"导航属性{name}配置错误");
             var mappingPk = mappingEntity.Columns
                    .Where(it => it.PropertyName != mappingA.PropertyName)
                    .Where(it => it.PropertyName != mappingB.PropertyName)
