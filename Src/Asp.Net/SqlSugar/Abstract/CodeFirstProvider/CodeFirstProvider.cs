@@ -584,6 +584,10 @@ namespace SqlSugar
             {
                 return false;
             }
+            if (properyTypeName?.ToLower() == "blob" && dataType?.ToLower() == "byte[]")
+            {
+                return false;
+            }
             if (properyTypeName == null || dataType == null)
             {
                 return properyTypeName != dataType;
