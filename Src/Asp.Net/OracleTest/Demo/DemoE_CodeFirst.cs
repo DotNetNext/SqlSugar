@@ -22,10 +22,21 @@ namespace OrmTest
             db.CodeFirst.InitTables(typeof(CodeFirstTable1));//Create CodeFirstTable1 
             db.Insertable(new CodeFirstTable1() { Name = "a", Text="a" }).ExecuteCommand();
             var list = db.Queryable<CodeFirstTable1>().ToList();
+            db.CodeFirst.InitTables<PictureData>();
+            db.CodeFirst.InitTables<PictureData>();
             Console.WriteLine("#### CodeFirst end ####");
         }
     }
+    [SugarTable("PictureData")]
+    public class PictureData
+    {
+        [SugarColumn(IsPrimaryKey = true)]
+        public string SampleNo { get; set; }
 
+        [SugarColumn(IsPrimaryKey = true)]
+        public int SerialNo { get; set; }
+        public byte[] Data { get; set; }
+    }
     public class CodeFirstTable1
     {
         [SugarColumn(OracleSequenceName ="SEQ_ID", IsPrimaryKey = true)]
