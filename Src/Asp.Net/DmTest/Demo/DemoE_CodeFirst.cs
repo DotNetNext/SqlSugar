@@ -17,16 +17,35 @@ namespace OrmTest
                 DbType = DbType.Dm,
                 ConnectionString = Config.ConnectionString3,
                 InitKeyType = InitKeyType.Attribute,
-                IsAutoCloseConnection = true
+                IsAutoCloseConnection = true,
+                 AopEvents = new AopEvents
+                  {
+                      OnLogExecuting = (sql, p) =>
+                      {
+                          Console.WriteLine(sql);
+                          Console.WriteLine(string.Join(",", p?.Select(it => it.ParameterName + ":" + it.Value)));
+                      }
+                  }
             });
             // db.DbMaintenance.CreateDatabase(); 
+            if (db.DbMaintenance.IsAnyTable("CodeFirstTable1", false))
+                db.DbMaintenance.DropTable("CodeFirstTable1");
+            if (db.DbMaintenance.IsAnyTable("CodeFirstLong", false))
+                db.DbMaintenance.DropTable("CodeFirstLong");
             db.CodeFirst.InitTables(typeof(CodeFirstTable1));//Create CodeFirstTable1 
             db.Insertable(new CodeFirstTable1() { Name = "a", Text="a" }).ExecuteCommand();
             var list = db.Queryable<CodeFirstTable1>().ToList();
+            db.CodeFirst.InitTables<CodeFirstLong>();
+            var tableInfo=db.DbMaintenance.GetColumnInfosByTableName("CodeFirstLong", false);
             Console.WriteLine("#### CodeFirst end ####");
         }
     }
 
+    public class CodeFirstLong 
+    {
+        [SugarColumn(IsPrimaryKey =true,IsIdentity =true)]
+        public long id { get; set; }
+    }
     public class CodeFirstTable1
     {
         [SugarColumn(IsIdentity = true, IsPrimaryKey = true)]

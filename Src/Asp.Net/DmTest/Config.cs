@@ -15,7 +15,7 @@ namespace OrmTest
         /// Account have permission to create database
         /// 用有建库权限的数据库账号
         /// </summary>
-        public static string ConnectionString = "Server=120.79.19.7:10374;User Id=SYSDBA;PWD=Ldkie#21;DATABASE=DAMENG";
+        public static string ConnectionString = "Server=116.242.92.57:5511;User Id=S;PWD=S0718;DATABASE=DAMENG";
         /// <summary>
         /// Account have permission to create database
         /// 用有建库权限的数据库账号
