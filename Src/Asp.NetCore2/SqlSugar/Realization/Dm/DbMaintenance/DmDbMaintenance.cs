@@ -111,7 +111,7 @@ namespace SqlSugar
         {
             get
             {
-                return "CREATE TABLE {0}(\r\n{1})";
+                return "CREATE TABLE {0}(\r\n{1} )";
             }
         }
         protected override string CreateTableColumn
