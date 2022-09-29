@@ -49,6 +49,7 @@ namespace SqlSugar
 
         bool IsAny(Expression<Func<T, bool>> whereExpression);
         bool Update(Expression<Func<T, T>> columns, Expression<Func<T, bool>> whereExpression);
+        bool UpdateSetColumnsTrue(Expression<Func<T, T>> columns, Expression<Func<T, bool>> whereExpression);
         bool Update(T updateObj);
         bool UpdateRange(List<T> updateObjs);
         bool UpdateRange(T[] updateObjs);
@@ -83,6 +84,7 @@ namespace SqlSugar
         Task<T> InsertReturnEntityAsync(T insertObj);
 
         Task<bool> IsAnyAsync(Expression<Func<T, bool>> whereExpression);
+        Task<bool> UpdateSetColumnsTrueAsync(Expression<Func<T, T>> columns, Expression<Func<T, bool>> whereExpression);
         Task<bool> UpdateAsync(Expression<Func<T, T>> columns, Expression<Func<T, bool>> whereExpression);
         Task<bool> UpdateAsync(T updateObj);
         Task<bool> UpdateRangeAsync(List<T> updateObjs);
