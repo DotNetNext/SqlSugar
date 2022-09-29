@@ -30,6 +30,14 @@ namespace SqlSugar
             }
             this.EntityColumnInfo.PropertyInfo.SetValue(EntityValue, value);
         }
+        public bool IsAnyAttribute<T>() where T : Attribute
+        {
+            return this.EntityColumnInfo.PropertyInfo.GetCustomAttribute<T>() != null;
+        }
+        public T GetAttribute<T>() where T : Attribute
+        {
+            return this.EntityColumnInfo.PropertyInfo.GetCustomAttribute<T>();
+        }
     }
     public class DataAfterModel
     {
