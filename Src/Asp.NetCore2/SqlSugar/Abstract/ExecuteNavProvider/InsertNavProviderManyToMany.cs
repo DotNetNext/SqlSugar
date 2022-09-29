@@ -16,8 +16,8 @@ namespace SqlSugar
             var parentNavigateProperty = parentEntity.Columns.FirstOrDefault(it => it.PropertyName == name);
             var thisEntity = this._Context.EntityMaintenance.GetEntityInfo<TChild>();
             var thisPkColumn = thisEntity.Columns.FirstOrDefault(it => it.IsPrimarykey == true);
-            Check.Exception(thisPkColumn == null, $"{thisPkColumn.EntityName} need primary key", $"{thisPkColumn.EntityName}需要主键");
-            Check.Exception(parentPkColumn == null, $"{parentPkColumn.EntityName} need primary key", $"{parentPkColumn.EntityName}需要主键");
+            Check.ExceptionEasy(thisPkColumn == null, $"{thisPkColumn.EntityName} need primary key", $"{thisPkColumn.EntityName}需要主键");
+            Check.ExceptionEasy(parentPkColumn == null, $"{parentPkColumn.EntityName} need primary key", $"{parentPkColumn.EntityName}需要主键");
             var mappingType=parentNavigateProperty.Navigat.MappingType;
             var mappingEntity = this._Context.EntityMaintenance.GetEntityInfo(mappingType);
             var mappingA = mappingEntity.Columns.FirstOrDefault(x=>x.PropertyName== parentNavigateProperty.Navigat.MappingAId);

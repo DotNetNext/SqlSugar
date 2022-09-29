@@ -20,13 +20,21 @@ namespace SqlSugar
         {
             SqlSugarClient result = null;
             var key = _configs.GetHashCode().ToString();
-            if (Task.CurrentId != null) 
-            {
-                key= $"{key}Task";
-            }
             StackTrace st = new StackTrace(true);
             var methods = st.GetFrames();
             var isAsync = UtilMethods.IsAnyAsyncMethod(methods);
+            if (Task.CurrentId != null) 
+            {
+                foreach (var method in methods) 
+                {   
+                    var methodInfo = method.GetMethod();
+                    if (methodInfo.Name== "MoveNext"&& methodInfo.ReflectedType.FullName.StartsWith("Quartz.")) 
+                    {
+                        key = $"{key}Quartz";
+                        break;
+                    }
+                }
+            }
             if (isAsync)
             {
                 result = GetAsyncContext(key);
