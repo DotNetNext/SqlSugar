@@ -20,6 +20,10 @@ namespace SqlSugar
         {
             SqlSugarClient result = null;
             var key = _configs.GetHashCode().ToString();
+            if (Task.CurrentId != null) 
+            {
+                key= $"{key}Task";
+            }
             StackTrace st = new StackTrace(true);
             var methods = st.GetFrames();
             var isAsync = UtilMethods.IsAnyAsyncMethod(methods);
