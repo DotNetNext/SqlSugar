@@ -212,6 +212,10 @@ namespace SqlSugar
         {
             return this.Context.Updateable<T>().SetColumns(columns).Where(whereExpression).ExecuteCommand() > 0;
         }
+        public virtual bool UpdateSetColumnsTrue(Expression<Func<T, T>> columns, Expression<Func<T, bool>> whereExpression)
+        {
+            return this.Context.Updateable<T>().SetColumns(columns,true).Where(whereExpression).ExecuteCommand() > 0;
+        }
         public virtual bool Delete(T deleteObj)
         {
             return this.Context.Deleteable<T>().Where(deleteObj).ExecuteCommand() > 0;
@@ -341,6 +345,10 @@ namespace SqlSugar
         public virtual async Task<bool> UpdateAsync(Expression<Func<T, T>> columns, Expression<Func<T, bool>> whereExpression)
         {
             return await this.Context.Updateable<T>().SetColumns(columns).Where(whereExpression).ExecuteCommandAsync() > 0;
+        }
+        public virtual async Task<bool> UpdateSetColumnsTrueAsync(Expression<Func<T, T>> columns, Expression<Func<T, bool>> whereExpression)
+        {
+            return await this.Context.Updateable<T>().SetColumns(columns,true).Where(whereExpression).ExecuteCommandAsync() > 0;
         }
         public virtual async Task<bool> DeleteAsync(T deleteObj)
         {
