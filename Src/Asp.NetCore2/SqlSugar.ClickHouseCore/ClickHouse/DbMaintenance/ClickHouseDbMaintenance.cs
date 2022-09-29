@@ -145,7 +145,7 @@ namespace SqlSugar.ClickHouse
 
         protected override string IsAnyColumnRemarkSql { get { throw new NotSupportedException(); } }
 
-        protected override string AddTableRemarkSql => "comment on table {0} is '{1}'";
+        protected override string AddTableRemarkSql => "ALTER TABLE {0} MODIFY COMMENT '{1}'";
 
         protected override string DeleteTableRemarkSql => "comment on table {0} is ''";
 
