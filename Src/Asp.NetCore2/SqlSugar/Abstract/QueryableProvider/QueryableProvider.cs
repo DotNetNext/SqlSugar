@@ -2432,10 +2432,10 @@ namespace SqlSugar
             var groupKv = list.GroupBy(x => pIdProp.GetValue(x).ObjToString()).ToDictionary(k => k.Key, v => v.ToList());
 
             Func<string, List<T>> fc = null;
-            fc = (rootValue) =>
+            fc = (rootVal) =>
             {
                 var finalList = new List<T>();
-                if (groupKv.TryGetValue(rootValue, out var nextChildList))
+                if (groupKv.TryGetValue(rootVal, out var nextChildList))
                 {
                     finalList.AddRange(nextChildList);
                     foreach (var child in nextChildList)

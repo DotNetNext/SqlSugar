@@ -292,6 +292,8 @@ namespace SqlSugar
                         method = isNullableType ? getConvertByte : getByte;
                     if (bindProperyTypeName.IsContainsIn("int16"))
                         method = isNullableType ? getConvertInt16 : getInt16;
+                    if (bindProperyTypeName == "uint32"&&this.Context.CurrentConnectionConfig.DbType.IsIn(DbType.MySql,DbType.MySqlConnector))
+                        method = null;
                     break;
                 case CSharpDataType.@bool:
                     if (bindProperyTypeName == "bool" || bindProperyTypeName == "boolean")
