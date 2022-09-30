@@ -527,7 +527,17 @@ namespace SqlSugar
             else
             {
                 var name = GetType(propertyType.Name);
-                result.DataType = this.Context.Ado.DbBind.GetDbTypeName(name);
+                if (name == "Boolean")
+                {
+                    result.DataType = "tinyint";
+                    result.Length = 1;
+                    result.Scale = 0;
+                    result.DecimalDigits = 0;
+                }
+                else
+                {
+                    result.DataType = this.Context.Ado.DbBind.GetDbTypeName(name);
+                }
             }
         }
 
