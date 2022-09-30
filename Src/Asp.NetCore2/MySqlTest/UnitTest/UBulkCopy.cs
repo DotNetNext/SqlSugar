@@ -169,7 +169,7 @@ namespace OrmTest
                 id = 1
             }});
             var data3= Db.Queryable<unitBools2>().First();
-            if (data3.false1 != null || data2.true1 != true || data2.null1 != null)
+            if (data3.false1 != false || data2.true1 != true || data2.null1 != null)
             {
                 throw new Exception("uint error");
             }
