@@ -58,6 +58,16 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+            Db.CodeFirst.InitTables<UnitUint>();
+            Db.Insertable(new UnitUint { Id= 3833200526 }).ExecuteCommand();
+            var list3=Db.Queryable<UnitUint>().ToList();
+
+        }
+
+        public class UnitUint 
+        {
+            [SugarColumn(ColumnDataType = "int unsigned")]
+            public uint Id { get; set; }
         }
 
         [SugarTable("UnitTest0123", IsCreateTableFiledSort= true)]
