@@ -169,7 +169,7 @@ namespace OrmTest
                 id = 1
             }});
             var data3= Db.Queryable<unitBools2>().First();
-            if (data3.false1 != false || data2.true1 != true || data2.null1 != null)
+            if (data3.false1 != null || data2.true1 != true || data2.null1 != null)
             {
                 throw new Exception("uint error");
             }
@@ -179,11 +179,11 @@ namespace OrmTest
     {
         [SqlSugar.SugarColumn(IsPrimaryKey = true)]
         public int id { get; set; }
-        [SqlSugar.SugarColumn(IsNullable = true)]
+        [SqlSugar.SugarColumn(IsNullable = true, ColumnDataType="bit")]
         public bool? false1 { get; set; }
-        [SqlSugar.SugarColumn(IsNullable = true)]
+        [SqlSugar.SugarColumn(IsNullable = true, ColumnDataType = "bit")]
         public bool? true1 { get; set; }
-        [SqlSugar.SugarColumn(IsNullable = true)]
+        [SqlSugar.SugarColumn(IsNullable = true, ColumnDataType = "bit")]
         public bool? null1 { get; set; }
     }
     public class unitBools 
