@@ -61,9 +61,19 @@ namespace OrmTest
             Db.CodeFirst.InitTables<UnitUint>();
             Db.Insertable(new UnitUint { Id= 3833200526 }).ExecuteCommand();
             var list3=Db.Queryable<UnitUint>().ToList();
-
+            Db.CodeFirst.InitTables<UnitBooll1>();
+            Db.Insertable(new UnitBooll1() { id = true }).ExecuteCommand();
+            Db.Insertable(new UnitBooll1() { id = false }).ExecuteCommand();
+            var list4=Db.Queryable<UnitBooll1>().ToList();
+            Db.DbMaintenance.DropTable<UnitBooll1>();
+            if(!list4.Any(it=>it.id)|| !list4.Any(it => !it.id))
+                throw new Exception("unit error");
         }
 
+        public class UnitBooll1 
+        {
+            public bool id { get; set; }
+        }
         public class UnitUint 
         {
             [SugarColumn(ColumnDataType = "int unsigned")]
