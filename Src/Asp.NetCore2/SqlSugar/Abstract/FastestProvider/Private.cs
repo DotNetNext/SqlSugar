@@ -57,8 +57,13 @@ namespace SqlSugar
             }
             );
             var dt = new DataTable();
+            List<string> uInt64TypeName = new List<string>();
             foreach (DataColumn item in tempDataTable.Columns)
             {
+                if (item.DataType == typeof(UInt64)) 
+                {
+                    uInt64TypeName.Add(item.ColumnName);
+                }
                 dt.Columns.Add(item.ColumnName, item.DataType);
             }
             dt.TableName = GetTableName();
@@ -82,7 +87,8 @@ namespace SqlSugar
                     var value = ValueConverter(column, PropertyCallAdapterProvider<T>.GetInstance(column.PropertyName).InvokeGet(item));
                     if (isMySql && column.UnderType == UtilConstants.BoolType)
                     {
-                        if (value.ObjToBool() == false)
+
+                        if (value.ObjToBool() == false&& uInt64TypeName.Any(z=>z.EqualCase(column.DbColumnName)))
                         {
                             value = DBNull.Value;
                         }
