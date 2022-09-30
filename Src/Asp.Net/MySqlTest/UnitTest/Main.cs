@@ -43,6 +43,7 @@ namespace OrmTest
             UnitCustom01.Init();
             UCustom06.Init();
             Bulk();
+            Bulk2();
             Insert();
             Queue();
             CodeFirst();
