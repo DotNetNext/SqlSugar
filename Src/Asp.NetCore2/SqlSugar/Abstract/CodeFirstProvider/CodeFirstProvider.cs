@@ -597,7 +597,7 @@ namespace SqlSugar
                 return properyTypeName.ToLower() != dataType.ToLower();
             }
         }
-        private static string GetType(string name)
+        protected  string GetType(string name)
         {
             if (name.IsContainsIn("UInt32", "UInt16", "UInt64"))
             {
