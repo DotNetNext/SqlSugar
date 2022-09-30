@@ -173,6 +173,35 @@ namespace OrmTest
             {
                 throw new Exception("uint error");
             }
+            Db.DbMaintenance.TruncateTable<unitBools>();
+            Db.Fastest<unitBools>().BulkCopy(new List<unitBools>() {
+            new unitBools()
+            {
+                false1 = false,
+                null1 = null,
+                true1 = true,
+                id = 1
+            }});
+            var data4 = Db.Queryable<unitBools>().First();
+            if (data4.false1 != false || data4.true1 != true || data4.null1 != null)
+            {
+                throw new Exception("uint error");
+            }
+            var dt = Db.Utilities.ListToDataTable(Db.Queryable<unitBools>().ToList());
+            Db.DbMaintenance.TruncateTable<unitBools>();
+            Db.Fastest<System.Data.DataTable>().AS("unitBools").BulkCopy(dt);
+            data4 = Db.Queryable<unitBools>().First();
+            if (data4.false1 != false || data4.true1 != true || data4.null1 != null)
+            {
+                throw new Exception("uint error");
+            }
+            Db.DbMaintenance.TruncateTable<unitBools2>();
+            Db.Fastest<System.Data.DataTable>().AS("unitBools2").BulkCopy(dt);
+            var data5 = Db.Queryable<unitBools2>().First();
+            if (data5.false1 != null || data5.true1 != true || data5.null1 != null)
+            {
+                throw new Exception("uint error");
+            }
         }
     }
     public class unitBools2
