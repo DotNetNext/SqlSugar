@@ -2418,33 +2418,37 @@ namespace SqlSugar
                 exp = (exp as UnaryExpression).Operand;
             }
             var parentIdName = (exp as MemberExpression).Member.Name;
-            List<T> result = list.Where(it =>
-            {
-                var parentValue = it.GetType().GetProperty(parentIdName).GetValue(it);
-                return  parentValue.ObjToString() == rootValue.ObjToString();
-
-            }).ToList();
-            if (result != null && result.Count > 0)
-            {
-                List<T> childList = new List<T>();
-                foreach (var item in result)
-                {
-                    var pkValue = item.GetType().GetProperty(pkName).GetValue(item);
-                    childList.AddRange(GetChildList(parentIdExpression, pkName, list, pkValue,false));
-                }
-                result.AddRange(childList);
-            }
-            if (isRoot)
-            {
-                result.AddRange(list.Where(it =>
-                {
-                    var pkValue = it.GetType().GetProperty(pkName).GetValue(it);
-                    return pkValue.ObjToString() == rootValue.ObjToString();
-
-                }).ToList());
-            }
+            var result = BuildChildList(list, pkName, parentIdName, rootValue);
             return result;
         }
+
+        private static List<T> BuildChildList(List<T> list, string idName, string pIdName, object rootValue)
+        {
+            var type = typeof(T);
+            var idProp = type.GetProperty(idName);
+            var pIdProp = type.GetProperty(pIdName);
+
+            var kvpList = list.ToDictionary(x => x, v => idProp.GetValue(v).ObjToString());
+            var groupKv = list.GroupBy(x => pIdProp.GetValue(x).ObjToString()).ToDictionary(k => k.Key, v => v.ToList());
+
+            Func<string, List<T>> fc = null;
+            fc = (rootVal) =>
+            {
+                var finalList = new List<T>();
+                if (groupKv.TryGetValue(rootVal, out var nextChildList))
+                {
+                    finalList.AddRange(nextChildList);
+                    foreach (var child in nextChildList)
+                    {
+                        finalList.AddRange(fc(kvpList[child]));
+                    }
+                }
+                return finalList;
+            };
+
+            return fc(rootValue.ObjToString());
+        }
+
         private List<T> GetTreeRoot(Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, string pk, List<T> list,object rootValue)
         {
             var childName = ((childListExpression as LambdaExpression).Body as MemberExpression).Member.Name;
