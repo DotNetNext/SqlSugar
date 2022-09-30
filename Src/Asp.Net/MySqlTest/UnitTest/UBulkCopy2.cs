@@ -208,11 +208,11 @@ namespace OrmTest
     {
         [SqlSugar.SugarColumn(IsPrimaryKey = true)]
         public int id { get; set; }
-        [SqlSugar.SugarColumn(IsNullable = true)]
+        [SqlSugar.SugarColumn(IsNullable = true, ColumnDataType = "bit")]
         public bool? false1 { get; set; }
-        [SqlSugar.SugarColumn(IsNullable = true)]
+        [SqlSugar.SugarColumn(IsNullable = true, ColumnDataType = "bit")]
         public bool? true1 { get; set; }
-        [SqlSugar.SugarColumn(IsNullable = true)]
+        [SqlSugar.SugarColumn(IsNullable = true, ColumnDataType = "bit")]
         public bool? null1 { get; set; }
     }
     public class unitBools
