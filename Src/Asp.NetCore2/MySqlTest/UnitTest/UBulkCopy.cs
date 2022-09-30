@@ -154,13 +154,38 @@ namespace OrmTest
                 id = 1
             }});
              data2 = Db.Queryable<unitBools>() .First();
-            if (data2.false1 != false||data2.true1!=true||data2.null1!=false)
+            if (data2.false1 != false||data2.true1!=true||data2.null1!=null)
+            {
+                throw new Exception("uint error");
+            }
+            Db.CodeFirst.InitTables<unitBools2>();
+            Db.DbMaintenance.TruncateTable<unitBools2>();
+            Db.Fastest<unitBools2>().BulkCopy(new List<unitBools2>() {
+            new unitBools2()
+            {
+                false1 = false,
+                null1 = null,
+                true1 = true,
+                id = 1
+            }});
+            var data3= Db.Queryable<unitBools2>().First();
+            if (data3.false1 != null || data2.true1 != true || data2.null1 != null)
             {
                 throw new Exception("uint error");
             }
         }
     }
-
+    public class unitBools2
+    {
+        [SqlSugar.SugarColumn(IsPrimaryKey = true)]
+        public int id { get; set; }
+        [SqlSugar.SugarColumn(IsNullable = true)]
+        public bool? false1 { get; set; }
+        [SqlSugar.SugarColumn(IsNullable = true)]
+        public bool? true1 { get; set; }
+        [SqlSugar.SugarColumn(IsNullable = true)]
+        public bool? null1 { get; set; }
+    }
     public class unitBools 
     {
         [SqlSugar.SugarColumn(IsPrimaryKey =true)]
