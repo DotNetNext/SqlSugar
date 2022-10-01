@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UCustom20.Init();
             UCustom07.Init();
             UnitTestReturnPkList.Init();
             UnitSameKeyBug.Init();

@@ -86,6 +86,7 @@
     <Compile Include="Models\Unit\Custom1\PurchaseDetailModel.cs" />
     <Compile Include="Models\ViewOrder.cs" />
     <Compile Include="Demo\DemoJ_Report.cs" />
+    <Compile Include="UnitTest\UCustom20.cs" />
     <Compile Include="UnitTest\UBulkCopy2.cs" />
     <Compile Include="UnitTest\UCustom07.cs" />
     <Compile Include="UnitTest\UDelete.cs" />
