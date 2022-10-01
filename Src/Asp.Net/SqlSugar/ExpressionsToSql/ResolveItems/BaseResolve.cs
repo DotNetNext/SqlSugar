@@ -490,10 +490,21 @@ namespace SqlSugar
                     {
                         //var property=item.Type.GetProperties().Where(it => it.Name == newExpressionInfo.l).First();
                         //asName = GetAsName(item, newExpressionInfo.ShortName, property);
-                        parameter.Context.Result.Append(this.Context.GetAsString(
-                               this.Context.SqlTranslationLeft+asName + "." + newExpressionInfo.LeftNameName+this.Context.SqlTranslationRight,
-                            newExpressionInfo.ShortName+"."+newExpressionInfo.RightDbName
+                        if (newExpressionInfo.Type == nameof(ConstantExpression))
+                        {
+                            parameter.Context.Result.Append(
+                                 newExpressionInfo.RightDbName +" AS "+
+                                  this.Context.SqlTranslationLeft + asName + "." + newExpressionInfo.LeftNameName + this.Context.SqlTranslationRight
+                                
+                              );
+                        }
+                        else
+                        {
+                            parameter.Context.Result.Append(this.Context.GetAsString(
+                               this.Context.SqlTranslationLeft + asName + "." + newExpressionInfo.LeftNameName + this.Context.SqlTranslationRight,
+                            newExpressionInfo.ShortName + "." + newExpressionInfo.RightDbName
                           ));
+                        }
                     }
                 }
                 else if (!this.Context.IsJoin && (item is MemberInitExpression || item is NewExpression))
