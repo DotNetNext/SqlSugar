@@ -31,6 +31,9 @@ namespace OrmTest
         }
         public static void Init()
         {
+            CrossDatabase01.Init();
+            CrossDatabase02.Init();
+            CrossDatabase03.Init();
             UInsertNav0adsf.Init();
             UExp.Init();
             USelectSinleDTO.Init();
