@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using SqlSugar;
+using System.Linq;
 namespace OrmTest
 {
     public class CrossDatabase03
@@ -34,6 +35,15 @@ namespace OrmTest
                     .Includes(z => z.Items)
                     .ToList();
 
+
+            if (list.First().Order == null) 
+            {
+                throw new Exception("unit error");
+            }
+            if (list2.First().Items.Count == 0)
+            {
+                throw new Exception("unit error");
+            }
             Console.WriteLine("OrderDb");
             foreach (var item in db.GetConnection("OrderDb").DbMaintenance.GetTableInfoList(false))
             {
