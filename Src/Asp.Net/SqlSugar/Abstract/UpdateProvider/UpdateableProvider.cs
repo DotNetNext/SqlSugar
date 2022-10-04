@@ -453,7 +453,7 @@ namespace SqlSugar
                 foreach (var item in this.EntityInfo.Columns.Where(it => !it.IsPrimarykey && !it.IsIgnore && !it.IsOnlyIgnoreUpdate))
                 {
                     var value = item.PropertyInfo.GetValue(data);
-                    if (value != null)
+                    if (value != null && !value.Equals(""))
                     {
                         if (!value.Equals(UtilMethods.GetDefaultValue(item.UnderType))) 
                         {
