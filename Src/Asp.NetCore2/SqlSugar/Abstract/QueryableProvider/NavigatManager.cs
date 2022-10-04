@@ -205,7 +205,9 @@ namespace SqlSugar
             var bEntityInfo = this.Context.EntityMaintenance.GetEntityInfo(bEntity);
             var bPkColumn = bEntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey);
             Check.ExceptionEasy(bPkColumn==null, $"{bEntityInfo.EntityName} need primary key", $"{bEntityInfo.EntityName} 实体需要配置主键");
-            this.Context.InitMappingInfo(bEntity);
+            var bDb = this.Context;
+            bDb = GetCrossDatabase(bDb,bEntity);
+            bDb.InitMappingInfo(bEntity);
             var listItemPkColumn = listItemEntity.Columns.Where(it => it.IsPrimarykey).FirstOrDefault();
             Check.ExceptionEasy(listItemPkColumn == null, $"{listItemEntity.EntityName} need primary key", $"{listItemEntity.EntityName} 实体需要配置主键");
             var ids = list.Select(it => it.GetType().GetProperty(listItemPkColumn.PropertyName).GetValue(it)).Select(it => it == null ? "null" : it).Distinct().ToList();
@@ -220,7 +222,9 @@ namespace SqlSugar
                 FieldValue = String.Join(",", ids),
                 CSharpTypeName = aColumn.PropertyInfo.PropertyType.Name
             }));
-            var queryable = this.Context.Queryable<object>();
+            var abDb = this.Context;
+            abDb = GetCrossDatabase(abDb, mappingEntity.Type);
+            var queryable = abDb.Queryable<object>();
             var abids = queryable.AS(mappingEntity.DbTableName).Filter(mappingEntity.Type).Where(conditionalModels).Select<SugarAbMapping>($"{queryable.SqlBuilder.GetTranslationColumnName(aColumn.DbColumnName)} as aid,{queryable.SqlBuilder.GetTranslationColumnName(bColumn.DbColumnName)} as bid").ToList();
 
             List<IConditionalModel> conditionalModels2 = new List<IConditionalModel>();
@@ -232,7 +236,7 @@ namespace SqlSugar
                 CSharpTypeName = bColumn.PropertyInfo.PropertyType.Name
             }));
             var sql = GetWhereSql();
-            var bList = selector(this.Context.Queryable<object>().AS(bEntityInfo.DbTableName).Filter(bEntityInfo.Type).AddParameters(sql.Parameters).Where(conditionalModels2).WhereIF(sql.WhereString.HasValue(),sql.WhereString).Select(sql.SelectString).OrderByIF(sql.OrderByString.HasValue(),sql.OrderByString));  
+            var bList = selector(bDb.Queryable<object>().AS(bEntityInfo.DbTableName).Filter(bEntityInfo.Type).AddParameters(sql.Parameters).Where(conditionalModels2).WhereIF(sql.WhereString.HasValue(),sql.WhereString).Select(sql.SelectString).OrderByIF(sql.OrderByString.HasValue(),sql.OrderByString));  
             if (bList.HasValue())
             {
                 foreach (var listItem in list)
