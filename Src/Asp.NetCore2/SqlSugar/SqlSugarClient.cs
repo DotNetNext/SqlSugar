@@ -795,6 +795,7 @@ namespace SqlSugar
             {
                 db.Context.Ado.BeginTran();
             }
+            db.Context.Root = this;
             return db.Context;
         }
 

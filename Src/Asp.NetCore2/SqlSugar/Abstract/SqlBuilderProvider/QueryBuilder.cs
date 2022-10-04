@@ -33,6 +33,8 @@ namespace SqlSugar
         #endregion
 
         #region Splicing basic
+        public bool IsCrossQueryWithAttr { get;  set; }
+        public Dictionary<string,string> CrossQueryItems { get; set; }
         public bool IsSelectSingleFiledJson { get; set; }
         public string TranLock { get; set; }
         public bool IsDisableMasterSlaveSeparation { get;  set; }
