@@ -30,10 +30,10 @@ namespace OrmTest
                 b = new byte[] { 1, 2, 3 }
             })
             .ExecuteCommand();
-            var xx=Db.Queryable<UnitCodeTest2a2c22>().Select(it => new
+            var xx = Db.Queryable<UnitCodeTest2a2c22>().Select(it => new
             {
-                id=it.a,
-                b=it.b
+                id = it.a,
+                b = it.b
             }).ToList();
             Db.CodeFirst.InitTables<UnitTest012213>();
             Db.CodeFirst.InitTables<UnitTest3131>();
@@ -43,10 +43,10 @@ namespace OrmTest
             Db.Insertable(new List<UnitDateOfTime2> { new UnitDateOfTime2() { DateTimeOffset1 = DateTimeOffset.Now }, new UnitDateOfTime2() { DateTimeOffset1 = DateTimeOffset.Now } }).ExecuteCommand();
             var list2 = Db.Queryable<UnitDateOfTime2>().ToList();
             Db.Insertable(new UnitDateOfTime222() { DateTimeOffset1 = null }).ExecuteCommand();
-            if(Db.DbMaintenance.IsAnyTable("Unit1afa113111"))
-              Db.DbMaintenance.DropTable("Unit1afa113111");
+            if (Db.DbMaintenance.IsAnyTable("Unit1afa113111"))
+                Db.DbMaintenance.DropTable("Unit1afa113111");
             Db.CodeFirst.InitTables<Unit1afa113111>();
-            var entity=Db.Insertable(new Unit1afa113111() { Name = "a" }).ExecuteReturnEntity();
+            var entity = Db.Insertable(new Unit1afa113111() { Name = "a" }).ExecuteReturnEntity();
             if (Db.DbMaintenance.IsAnyTable("UnitCodeFirst131", false))
                 Db.DbMaintenance.DropTable("UnitCodeFirst131");
             Db.CodeFirst.InitTables<UnitCodeFirst131>();
@@ -54,20 +54,36 @@ namespace OrmTest
             Db.CodeFirst.InitTables<UNITCODEFIRST131>();
             Db.CodeFirst.InitTables<UNITCOdEFIRST131>();
             Db.CodeFirst.InitTables<UnitTest0123>();
-            if (Db.DbMaintenance.GetColumnInfosByTableName("UnitTest0123", false).First().DbColumnName != "Id") 
+            if (Db.DbMaintenance.GetColumnInfosByTableName("UnitTest0123", false).First().DbColumnName != "Id")
             {
                 throw new Exception("unit error");
             }
             Db.CodeFirst.InitTables<UnitUint>();
-            Db.Insertable(new UnitUint { Id= 3833200526 }).ExecuteCommand();
-            var list3=Db.Queryable<UnitUint>().ToList();
+            Db.Insertable(new UnitUint { Id = 3833200526 }).ExecuteCommand();
+            var list3 = Db.Queryable<UnitUint>().ToList();
             Db.CodeFirst.InitTables<UnitBooll1>();
             Db.Insertable(new UnitBooll1() { id = true }).ExecuteCommand();
             Db.Insertable(new UnitBooll1() { id = false }).ExecuteCommand();
-            var list4=Db.Queryable<UnitBooll1>().ToList();
+            var list4 = Db.Queryable<UnitBooll1>().ToList();
             Db.DbMaintenance.DropTable<UnitBooll1>();
-            if(!list4.Any(it=>it.id)|| !list4.Any(it => !it.id))
+            if (!list4.Any(it => it.id) || !list4.Any(it => !it.id))
                 throw new Exception("unit error");
+            Db.CodeFirst.InitTables<UnitTestint>();
+            var id = Db.Insertable(new UnitTestint()
+            {
+                xx = 1
+            }).ExecuteReturnIdentity();
+            var pass = true;
+            Db.Updateable<UnitTestint>()
+                .SetColumns(x => x.xx , (pass ? 1 : 0))
+                .Where(z => z.id == id).ExecuteCommand();
+        }
+
+        public class UnitTestint
+        {
+            [SugarColumn(IsPrimaryKey =true,IsIdentity =true)]
+            public int id { get; set; }
+            public int xx { get; set; }
         }
 
         public class UnitBooll1 
