@@ -365,30 +365,6 @@ namespace SqlSugar
             }
         }
 
-        private SqlSugarProvider GetCrossDatabase(SqlSugarProvider db,Type type)
-        {
-            if (IsCrossQueryWithAttr == false && this.CrossQueryItems == null)
-            {
-                return db;
-            }
-            else if (IsCrossQueryWithAttr) 
-            {
-                var tenant= type.GetCustomAttribute<TenantAttribute>();
-                if (tenant != null)
-                {
-                    return db.Root.GetConnection(tenant.configId);
-                }
-                else 
-                {
-                    return db;
-                }
-            }
-            else
-            {
-                return db;
-            }
-        }
-
         private void OneToMany(List<object> list, Func<ISugarQueryable<object>, List<object>> selector, EntityInfo listItemEntity, System.Reflection.PropertyInfo navObjectNamePropety, EntityColumnInfo navObjectNameColumnInfo)
         {
             var navEntity = navObjectNameColumnInfo.PropertyInfo.PropertyType.GetGenericArguments()[0];
@@ -715,6 +691,31 @@ namespace SqlSugar
             if (queryable.QueryBuilder.TableShortName.HasValue()&& result.TableShortName.IsNullOrEmpty())
             {
                 result.TableShortName = queryable.QueryBuilder.TableShortName;
+            }
+        }
+
+
+        private SqlSugarProvider GetCrossDatabase(SqlSugarProvider db, Type type)
+        {
+            if (IsCrossQueryWithAttr == false && this.CrossQueryItems == null)
+            {
+                return db;
+            }
+            else if (IsCrossQueryWithAttr)
+            {
+                var tenant = type.GetCustomAttribute<TenantAttribute>();
+                if (tenant != null)
+                {
+                    return db.Root.GetConnection(tenant.configId);
+                }
+                else
+                {
+                    return db;
+                }
+            }
+            else
+            {
+                return db;
             }
         }
 
