@@ -48,7 +48,23 @@ namespace SqlSugar
             _AllClients = configs.Select(it => new SugarTenant() { ConnectionConfig = it }).ToList(); ;
             _AllClients.First(it => it.ConnectionConfig.ConfigId == config.ConfigId).Context = this.Context;
         }
+        public SqlSugarClient(ConnectionConfig config ,Action<SqlSugarClient> configAction)
+        {
+            Check.Exception(config == null, "ConnectionConfig config is null");
+            InitContext(config);
+            configAction(this);
+        }
 
+        public SqlSugarClient(List<ConnectionConfig> configs, Action<SqlSugarClient> configAction)
+        {
+            Check.Exception(configs.IsNullOrEmpty(), "List<ConnectionConfig> configs is null or count=0");
+            InitConfigs(configs);
+            var config = configs.First();
+            InitContext(config);
+            _AllClients = configs.Select(it => new SugarTenant() { ConnectionConfig = it }).ToList(); ;
+            _AllClients.First(it => it.ConnectionConfig.ConfigId == config.ConfigId).Context = this.Context;
+            configAction(this);
+        }
         #endregion
 
         #region Global variable
