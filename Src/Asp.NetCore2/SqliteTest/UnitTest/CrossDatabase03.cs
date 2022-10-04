@@ -28,6 +28,12 @@ namespace OrmTest
                 .Includes(z => z.Order)
                 .ToList();
 
+
+            var list2 = db.QueryableWithAttr<Order>()
+                    .CrossQueryWithAttr()
+                    .Includes(z => z.Items)
+                    .ToList();
+
             Console.WriteLine("OrderDb");
             foreach (var item in db.GetConnection("OrderDb").DbMaintenance.GetTableInfoList(false))
             {

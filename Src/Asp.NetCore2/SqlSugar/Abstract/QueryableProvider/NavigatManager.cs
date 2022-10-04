@@ -369,7 +369,9 @@ namespace SqlSugar
         {
             var navEntity = navObjectNameColumnInfo.PropertyInfo.PropertyType.GetGenericArguments()[0];
             var navEntityInfo = this.Context.EntityMaintenance.GetEntityInfo(navEntity);
-            this.Context.InitMappingInfo(navEntityInfo.Type);
+            var childDb = this.Context;
+            childDb = GetCrossDatabase(childDb, navEntityInfo.Type);
+            childDb.InitMappingInfo(navEntityInfo.Type);
             var navColumn = navEntityInfo.Columns.FirstOrDefault(it => it.PropertyName == navObjectNameColumnInfo.Navigat.Name);
             Check.ExceptionEasy(navColumn == null, $"{navEntityInfo.EntityName} not found {navObjectNameColumnInfo.Navigat.Name} ", $"实体 {navEntityInfo.EntityName} 未找到导航配置列 {navObjectNameColumnInfo.Navigat.Name} ");
             //var navType = navObjectNamePropety.PropertyType;
@@ -393,7 +395,7 @@ namespace SqlSugar
       
             if (list.Any() && navObjectNamePropety.GetValue(list.First()) == null)
             {
-                var navList = selector(this.Context.Queryable<object>(sqlObj.TableShortName).AS(navEntityInfo.DbTableName).Filter(navEntityInfo.Type).AddParameters(sqlObj.Parameters).Where(conditionalModels).WhereIF(sqlObj.WhereString.HasValue(), sqlObj.WhereString).Select(sqlObj.SelectString).OrderByIF(sqlObj.OrderByString.HasValue(), sqlObj.OrderByString));
+                var navList = selector(childDb.Queryable<object>(sqlObj.TableShortName).AS(navEntityInfo.DbTableName).Filter(navEntityInfo.Type).AddParameters(sqlObj.Parameters).Where(conditionalModels).WhereIF(sqlObj.WhereString.HasValue(), sqlObj.WhereString).Select(sqlObj.SelectString).OrderByIF(sqlObj.OrderByString.HasValue(), sqlObj.OrderByString));
                 if (navList.HasValue())
                 {
                     //var setValue = navList
