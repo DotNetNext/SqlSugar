@@ -46,6 +46,19 @@ namespace SqlSugar
                 return this.Context.EntityMaintenance.GetEntityInfo<T>();
             }
         }
+        public ISugarQueryable<T> CrossQueryWithAttr() 
+        {
+            this.QueryBuilder.IsCrossQueryWithAttr = true;
+            return this;
+        }
+        public ISugarQueryable<T> CrossQuery<Type>(string configId)
+        {
+            return this.CrossQuery(typeof(Type),configId);
+        }
+        public ISugarQueryable<T> CrossQuery(Type type, string configId)
+        {
+            return this;
+        }
         public ISugarQueryable<T> IncludeLeftJoin(Expression<Func<T, object>> LeftObject)
         {
             MemberExpression memberExpression;
@@ -3556,6 +3569,8 @@ namespace SqlSugar
             asyncQueryableBuilder.IsSqlQuery = this.QueryBuilder.IsSqlQuery;
             asyncQueryableBuilder.IsSqlQuerySelect = this.QueryBuilder.IsSqlQuerySelect;
             asyncQueryableBuilder.OldSql = this.QueryBuilder.OldSql;
+            asyncQueryableBuilder.IsCrossQueryWithAttr = this.QueryBuilder.IsCrossQueryWithAttr;
+            asyncQueryableBuilder.CrossQueryItems = this.QueryBuilder.CrossQueryItems;
         }
         protected int SetCacheTime(int cacheDurationInSeconds)
         {
