@@ -46,11 +46,11 @@ namespace SqlSugar
                 return this.Context.EntityMaintenance.GetEntityInfo<T>();
             }
         }
-        public ISugarQueryable<T> CrossQueryWithAttr() 
-        {
-            this.QueryBuilder.IsCrossQueryWithAttr = true;
-            return this;
-        }
+        //public ISugarQueryable<T> CrossQueryWithAttr() 
+        //{
+        //    this.QueryBuilder.IsCrossQueryWithAttr = true;
+        //    return this;
+        //}
         public ISugarQueryable<T> CrossQuery<Type>(string configId)
         {
             return this.CrossQuery(typeof(Type),configId);

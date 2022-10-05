@@ -1307,7 +1307,9 @@ namespace SqlSugar
         #region Tenant Crud
         public ISugarQueryable<T> QueryableWithAttr<T>()
         {
-            return this.GetConnectionWithAttr<T>().Queryable<T>();
+            var result= this.GetConnectionWithAttr<T>().Queryable<T>();
+            result.QueryBuilder.IsCrossQueryWithAttr= true;
+            return result;
         }
         public IInsertable<T> InsertableWithAttr<T>(T insertObj) where T : class, new()
         {
