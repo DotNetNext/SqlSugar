@@ -19,7 +19,7 @@ namespace SqlSugar
         ISugarQueryable<T> AS<T2>(string tableName);
         ISugarQueryable<T> AS(string tableName);
         ISugarQueryable<T> With(string withString);
-        ISugarQueryable<T> CrossQueryWithAttr();
+        //ISugarQueryable<T> CrossQueryWithAttr();
         ISugarQueryable<T> CrossQuery<Type>(string configId);
         ISugarQueryable<T> CrossQuery(Type type ,string configId);
         ISugarQueryable<T> IncludeLeftJoin(Expression<Func<T, object>> LeftObject);
