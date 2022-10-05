@@ -25,13 +25,13 @@ namespace OrmTest
             db.GetConnection("OrderItemDb").Insertable(new OrderItem() { OrderId = 1, CreateTime = DateTime.Now , Price=10 }).ExecuteCommand();
  
             var list=db.QueryableWithAttr<OrderItem>()
-                .CrossQueryWithAttr()
+                //.CrossQueryWithAttr()
                 .Includes(z => z.Order)
                 .ToList();
 
 
             var list2 = db.QueryableWithAttr<Order>()
-                    .CrossQueryWithAttr()
+                   // .CrossQueryWithAttr()
                     .Includes(z => z.Items)
                     .ToList();
 
