@@ -29,8 +29,9 @@ namespace OrmTest
             db.GetConnection("B").Insertable(new Role() {  id=101, name="B"}).ExecuteCommand();
             db.GetConnection("AB").Insertable(new OptRole() {  id=1, operId=10, roleId=101}).ExecuteCommand();
 
-             var x=db.Queryable<OperatorInfo>()
-                .CrossQueryWithAttr().Includes(z => z.Roles).ToList();
+             var x=db.QueryableWithAttr<OperatorInfo>()
+                //.CrossQueryWithAttr()
+                .Includes(z => z.Roles).ToList();
 
             if (x.First().Roles.Count == 0) 
             {
