@@ -718,6 +718,11 @@ namespace SqlSugar
                 {
                     return db;
                 }
+            } 
+            else if (this.CrossQueryItems!=null&& this.CrossQueryItems.Count>0&&this.CrossQueryItems.ContainsKey(type.FullName)) 
+            {
+                var result= db.Root.GetConnection(this.CrossQueryItems[type.FullName]);
+                return result;
             }
             else
             {
