@@ -49,57 +49,64 @@ namespace SqlSugar
             }
             else
             {
-                StringBuilder batchInsetrSql = new StringBuilder();
-                batchInsetrSql.AppendLine("INSERT ALL");
-                foreach (var item in groupList)
-                {
-                    batchInsetrSql.Append("INTO " + GetTableNameString + " ");
-                    string insertColumns = "";
-
-                    batchInsetrSql.Append("(");
-                    batchInsetrSql.Append(columnsString);
-                    if (identities.HasValue())
-                    {
-                        batchInsetrSql.Append("," + string.Join(",", identities.Select(it => Builder.GetTranslationColumnName(it.DbColumnName))));
-                    }
-                    batchInsetrSql.Append(") VALUES");
-
-
-                    batchInsetrSql.Append("(");
-                    insertColumns =  string.Join(",", item.Select(it =>FormatValue(it.Value,it.PropertyName)));
-                    batchInsetrSql.Append(insertColumns);
-                    if (identities.HasValue())
-                    {
-                        batchInsetrSql.Append(",");
-                        foreach (var idn in identities)
-                        {
-                            var seqvalue = this.OracleSeqInfoList[idn.OracleSequenceName];
-                            this.OracleSeqInfoList[idn.OracleSequenceName] = this.OracleSeqInfoList[idn.OracleSequenceName] + 1;
-                            if (identities.Last() == idn)
-                            {
-                                batchInsetrSql.Append(seqvalue );
-                            }
-                            else
-                            {
-                                batchInsetrSql.Append(seqvalue + ",");
-                            }
-                        }
-                    }
-                    batchInsetrSql.AppendLine(")  ");
-
-                }
-                if (identities.HasValue())
-                {
-                    batchInsetrSql.AppendLine("SELECT "+ (this.OracleSeqInfoList.First().Value-1) + "  FROM DUAL");
-                }
-                else
-                {
-                    batchInsetrSql.AppendLine("SELECT 1 FROM DUAL");
-                }
-                var result= batchInsetrSql.ToString();
+                string result = Small(identities, groupList, columnsString);
                 return result;
             }
         }
+
+        private string Small(List<EntityColumnInfo> identities, List<IGrouping<int, DbColumnInfo>> groupList, string columnsString)
+        {
+            StringBuilder batchInsetrSql = new StringBuilder();
+            batchInsetrSql.AppendLine("INSERT ALL");
+            foreach (var item in groupList)
+            {
+                batchInsetrSql.Append("INTO " + GetTableNameString + " ");
+                string insertColumns = "";
+
+                batchInsetrSql.Append("(");
+                batchInsetrSql.Append(columnsString);
+                if (identities.HasValue())
+                {
+                    batchInsetrSql.Append("," + string.Join(",", identities.Select(it => Builder.GetTranslationColumnName(it.DbColumnName))));
+                }
+                batchInsetrSql.Append(") VALUES");
+
+
+                batchInsetrSql.Append("(");
+                insertColumns = string.Join(",", item.Select(it => FormatValue(it.Value, it.PropertyName)));
+                batchInsetrSql.Append(insertColumns);
+                if (identities.HasValue())
+                {
+                    batchInsetrSql.Append(",");
+                    foreach (var idn in identities)
+                    {
+                        var seqvalue = this.OracleSeqInfoList[idn.OracleSequenceName];
+                        this.OracleSeqInfoList[idn.OracleSequenceName] = this.OracleSeqInfoList[idn.OracleSequenceName] + 1;
+                        if (identities.Last() == idn)
+                        {
+                            batchInsetrSql.Append(seqvalue);
+                        }
+                        else
+                        {
+                            batchInsetrSql.Append(seqvalue + ",");
+                        }
+                    }
+                }
+                batchInsetrSql.AppendLine(")  ");
+
+            }
+            if (identities.HasValue())
+            {
+                batchInsetrSql.AppendLine("SELECT " + (this.OracleSeqInfoList.First().Value - 1) + "  FROM DUAL");
+            }
+            else
+            {
+                batchInsetrSql.AppendLine("SELECT 1 FROM DUAL");
+            }
+            var result = batchInsetrSql.ToString();
+            return result;
+        }
+
         int i = 0;
         public  object FormatValue(object value,string name)
         {
