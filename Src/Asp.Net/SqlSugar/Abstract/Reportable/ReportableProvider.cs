@@ -108,7 +108,7 @@ namespace SqlSugar
         private object GetSelect<Y>(EntityColumnInfo it,Y  data)
         {
 
-            return string.Format(" {0} AS {1} ", FormatValue(it.PropertyInfo.GetValue(data,null), it),it.PropertyName);
+            return string.Format(" {0} AS {1} ", FormatValue(it.PropertyInfo.GetValue(data,null), it),queryBuilder.Builder.GetTranslationColumnName(it.PropertyName));
         }
 
         private void NoClassMethod<Y>(Y data, StringBuilder sb,bool isLast)
