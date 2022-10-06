@@ -49,8 +49,33 @@ namespace SqlSugar
             }
             else
             {
-                string result = Small(identities, groupList, columnsString);
-                return result;
+                var bigSize = 500;
+                if (groupList.Count < bigSize)
+                {
+                    string result = Small(identities, groupList, columnsString);
+                    return result;
+                }
+                else 
+                {
+                    string result = Big(identities, groupList, columnsString);
+                    return result;
+                }
+            }
+        }
+        private string Big(List<EntityColumnInfo> identities, List<IGrouping<int, DbColumnInfo>> groupList, string columnsString)
+        {
+            this.Context.Utilities.PageEach(groupList, 100, groupListPasge =>
+            {
+                var sql = Small(identities, groupListPasge, columnsString);
+                this.Context.Ado.ExecuteCommand(sql);
+            });
+            if (identities!=null&identities.Count > 0&& this.OracleSeqInfoList!=null&& this.OracleSeqInfoList.Any())
+            {
+                return $"SELECT {this.OracleSeqInfoList.First().Value-1} FROM DUAL";
+            }
+            else
+            {
+                return $"SELECT {groupList.Count} FROM DUAL";
             }
         }
 
