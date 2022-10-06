@@ -57,6 +57,12 @@ namespace SqlSugar
         }
         public ISugarQueryable<T> CrossQuery(Type type, string configId)
         {
+            if (this.QueryBuilder.CrossQueryItems == null) 
+            {
+                this.QueryBuilder.CrossQueryItems = new Dictionary<string, string>();
+            }
+            if(!this.QueryBuilder.CrossQueryItems.ContainsKey(type.FullName))
+               this.QueryBuilder.CrossQueryItems.Add(type.FullName, configId);
             return this;
         }
         public ISugarQueryable<T> IncludeLeftJoin(Expression<Func<T, object>> LeftObject)
