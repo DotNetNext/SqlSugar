@@ -180,7 +180,10 @@ namespace SqlSugar
             db.MappingTables.Add(type.Name, tempTableName);
             try
             {
-                db.CodeFirst.InitTables(type);
+
+                var codeFirst=db.CodeFirst;
+                codeFirst.SetStringDefaultLength(this.DefultLength);
+                codeFirst.InitTables(type);
                 var tables = db.DbMaintenance.GetTableInfoList(false);
                 var oldTableInfo = tables.FirstOrDefault(it=>it.Name.EqualCase(oldTableName));
                 var newTableInfo = tables.FirstOrDefault(it => it.Name.EqualCase(oldTableName));
