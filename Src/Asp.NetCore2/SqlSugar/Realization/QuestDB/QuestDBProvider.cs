@@ -36,7 +36,7 @@ namespace SqlSugar
                 base._DbConnection = value;
             }
         }
-     
+
         public override void BeginTran(string transactionName)
         {
             base.BeginTran();
@@ -101,7 +101,6 @@ namespace SqlSugar
                 }
             }
         }
-
         public override void SetCommandToAdapter(IDataAdapter dataAdapter, DbCommand command)
         {
             ((NpgsqlDataAdapter)dataAdapter).SelectCommand = (NpgsqlCommand)command;
