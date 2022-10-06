@@ -48,9 +48,18 @@ namespace OrmTest
             db.Insertable(insertObj).InsertColumns(it => new { it.Name, it.Price }).ExecuteReturnIdentity();
             db.Insertable(insertObj).InsertColumns("Name", "Price").ExecuteReturnIdentity();
 
+            db.DbMaintenance.TruncateTable<Order>();
+                Console.WriteLine(db.Queryable<Order>().Count());
+
+            for (int i = 0; i < 588; i++) 
+            {
+                updateObjs.Add(new Order() { Id = 11, Name = "order11", Price = i*10 });
+            }
             //ignore null columns
             db.Insertable(updateObjs).ExecuteCommand();//get change row count
 
+            Console.WriteLine(db.Queryable<Order>().Count());
+            db.DbMaintenance.TruncateTable<Order>();
             //Use Lock
             db.Insertable(insertObj).With(SqlWith.UpdLock).ExecuteCommand();
 
