@@ -66,8 +66,9 @@ namespace SqlSugar
         {
             this.Context.Utilities.PageEach(groupList, 100, groupListPasge =>
             {
+                this.Parameters = new List<SugarParameter>();
                 var sql = Small(identities, groupListPasge, columnsString);
-                this.Context.Ado.ExecuteCommand(sql);
+                this.Context.Ado.ExecuteCommand(sql, this.Parameters);
             });
             if (identities!=null&identities.Count > 0&& this.OracleSeqInfoList!=null&& this.OracleSeqInfoList.Any())
             {
