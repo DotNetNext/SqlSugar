@@ -78,6 +78,7 @@ namespace SqlSugar
         T InSingle(object pkValue);
         Task<T> InSingleAsync(object pkValue);
         ISugarQueryable<T> In<TParamter>(params TParamter[] pkValues);
+        ISugarQueryable<T> InIF<TParamter>(bool isIn,params TParamter[] pkValues);
         ISugarQueryable<T> In<FieldType>(string InFieldName, params FieldType[] inValues);
         ISugarQueryable<T> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues);
         ISugarQueryable<T> In<TParamter>(List<TParamter> pkValues);
@@ -291,6 +292,7 @@ namespace SqlSugar
         ISugarQueryable<T, T2> In<FieldType>(Expression<Func<T,T2, object>> expression, params FieldType[] inValues);
         ISugarQueryable<T, T2> In<FieldType>(Expression<Func<T,T2, object>> expression, List<FieldType> inValues);
         ISugarQueryable<T, T2> In<FieldType>(Expression<Func<T,T2, object>> expression, ISugarQueryable<FieldType> childQueryExpression);
+        new ISugarQueryable<T,T2> InIF<TParamter>(bool isIn, params TParamter[] pkValues);
         #endregion
 
         #region Other
@@ -404,6 +406,8 @@ namespace SqlSugar
         ISugarQueryable<T, T2, T3> In<FieldType>(Expression<Func<T, T2,T3, object>> expression, params FieldType[] inValues);
         ISugarQueryable<T, T2, T3> In<FieldType>(Expression<Func<T, T2,T3, object>> expression, List<FieldType> inValues);
         ISugarQueryable<T, T2, T3> In<FieldType>(Expression<Func<T, T2,T3, object>> expression, ISugarQueryable<FieldType> childQueryExpression);
+
+        new ISugarQueryable<T, T2,T3> InIF<TParamter>(bool isIn, params TParamter[] pkValues);
         #endregion
 
         #region Other
@@ -528,6 +532,8 @@ namespace SqlSugar
         ISugarQueryable<T, T2, T3, T4> In<FieldType>(Expression<Func<T, T2, T3,T4, object>> expression, params FieldType[] inValues);
         ISugarQueryable<T, T2, T3, T4> In<FieldType>(Expression<Func<T, T2, T3,T4, object>> expression, List<FieldType> inValues);
         ISugarQueryable<T, T2, T3, T4> In<FieldType>(Expression<Func<T, T2, T3,T4, object>> expression, ISugarQueryable<FieldType> childQueryExpression);
+
+        new ISugarQueryable<T, T2,T3,T4> InIF<TParamter>(bool isIn, params TParamter[] pkValues);
         #endregion
 
         #region Other

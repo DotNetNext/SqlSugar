@@ -742,6 +742,14 @@ namespace SqlSugar
             if (list == null) return default(T);
             else return list.SingleOrDefault();
         }
+        public ISugarQueryable<T> InIF<TParamter>(bool isIn, params TParamter[] pkValues) 
+        {
+            if (isIn) 
+            {
+                In(pkValues);
+            }
+            return this;
+        }
         public virtual ISugarQueryable<T> In<TParamter>(params TParamter[] pkValues)
         {
             if (pkValues == null || pkValues.Length == 0)
@@ -3898,6 +3906,14 @@ namespace SqlSugar
         #endregion
 
         #region In
+        public new ISugarQueryable<T,T2> InIF<TParamter>(bool isIn, params TParamter[] pkValues)
+        {
+            if (isIn)
+            {
+                In(pkValues);
+            }
+            return this;
+        }
         public new ISugarQueryable<T, T2> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues)
         {
             QueryBuilder.CheckExpression(expression, "In");
@@ -4422,6 +4438,14 @@ namespace SqlSugar
         #endregion
 
         #region In
+        public new ISugarQueryable<T, T2,T3> InIF<TParamter>(bool isIn, params TParamter[] pkValues)
+        {
+            if (isIn)
+            {
+                In(pkValues);
+            }
+            return this;
+        }
         public new ISugarQueryable<T, T2, T3> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues)
         {
             QueryBuilder.CheckExpression(expression, "In");
@@ -5005,6 +5029,14 @@ namespace SqlSugar
         #endregion
 
         #region In
+        public new ISugarQueryable<T, T2,T3,T4> InIF<TParamter>(bool isIn, params TParamter[] pkValues)
+        {
+            if (isIn)
+            {
+                In(pkValues);
+            }
+            return this;
+        }
         public new ISugarQueryable<T, T2, T3, T4> In<FieldType>(Expression<Func<T, object>> expression, params FieldType[] inValues)
         {
             QueryBuilder.CheckExpression(expression, "In");
