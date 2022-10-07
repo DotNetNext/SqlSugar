@@ -413,6 +413,8 @@ namespace SqlSugar
             {
                 template = template.Replace("'{2}'", "{2}");
             }
+            tableName=SqlBuilder.GetTranslationTableName(tableName);
+            columnName = SqlBuilder.GetTranslationTableName(columnName);
             string sql = string.Format(template, tableName, columnName, defaultValue);
             this.Context.Ado.ExecuteCommand(sql);
             return true;
