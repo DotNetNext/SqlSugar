@@ -127,6 +127,7 @@
     <Compile Include="Entities\DeleteNavOptions.cs" />
     <Compile Include="Entities\JoinInfoParameter.cs" />
     <Compile Include="ExpressionsToSql\Common\NewExpressionInfo.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\Items\SubDistinctCount.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubSelectStringJoin.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubWithNoLock.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubEnableTableFilter.cs" />

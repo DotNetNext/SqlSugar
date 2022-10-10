@@ -120,6 +120,11 @@ namespace SqlSugar
         {
             return default(string);
         }
+
+        public int DistinctCount(Func<T, object> expression) 
+        {
+            return default(int);
+        }
         public TResult Sum<TResult>(Func<T, TResult> expression) where TResult : struct
         {
             return default(TResult);
