@@ -97,6 +97,12 @@
     <Compile Include="Models\OrderItem.cs" />
     <Compile Include="Demo\Demo0_SqlSugarClient.cs" />
     <Compile Include="Models\ViewOrder.cs" />
+    <Compile Include="UnitTest\Models\EntityBase.cs" />
+    <Compile Include="UnitTest\UnitInsertNavOneToOne.cs" />
+    <Compile Include="UnitTest\Models\SysField.cs" />
+    <Compile Include="UnitTest\Models\SysFormField.cs" />
+    <Compile Include="UnitTest\Models\SysFormFieldInput.cs" />
+    <Compile Include="UnitTest\Models\SysFormUpload.cs" />
     <Compile Include="UnitTest\UnitUpdateNavOneToOne.cs" />
     <Compile Include="UnitTest\CrossDatabase01.cs" />
     <Compile Include="UnitTest\CrossDatabase02.cs" />
