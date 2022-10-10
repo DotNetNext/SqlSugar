@@ -308,6 +308,8 @@ namespace SqlSugar
                         column.IsIgnore = true;
                         column.NoSerialize = sugarColumn.NoSerialize;
                         column.ColumnDescription = sugarColumn.ColumnDescription;
+                        column.IsJson = sugarColumn.IsJson;
+                        column.IsArray = sugarColumn.IsArray;
                     }
                 }
                 if (column.ColumnDescription.IsNullOrEmpty()) column.ColumnDescription = GetPropertyAnnotation(result.Type, column.PropertyName);

@@ -1358,19 +1358,45 @@ namespace SqlSugar
             var list= this.ToPivotList(columnSelector, rowSelector, dataSelector);
             return this.Context.Utilities.SerializeObject(list);
         }
-        public List<T> ToChildList(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue) 
+        public List<T> ToChildList(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue,bool isContainOneself = true) 
         {
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
             var pk = GetTreeKey(entity);
             var list = this.ToList();
-            return GetChildList(parentIdExpression, pk, list, primaryKeyValue);
+            if (isContainOneself)
+            {
+                var result= GetChildList(parentIdExpression, pk, list, primaryKeyValue);
+                var addItem = this.Context.Queryable<T>().In(pk, primaryKeyValue).First();
+                if (addItem != null)
+                {
+                    result.Add(addItem);
+                }
+                return result;
+            }
+            else
+            {
+                return GetChildList(parentIdExpression, pk, list, primaryKeyValue);
+            }
         }
-        public async Task<List<T>> ToChildListAsync(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue) 
+        public async Task<List<T>> ToChildListAsync(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue,bool isContainOneself=true) 
         {
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
             var pk = GetTreeKey(entity);
             var list = await this.ToListAsync();
-            return GetChildList(parentIdExpression,pk,list, primaryKeyValue);
+            if (isContainOneself)
+            {
+                var result = GetChildList(parentIdExpression, pk, list, primaryKeyValue);
+                var addItem = this.Context.Queryable<T>().In(pk, primaryKeyValue).First();
+                if (addItem != null)
+                {
+                    result.Add(addItem);
+                }
+                return result;
+            }
+            else
+            {
+                return GetChildList(parentIdExpression, pk, list, primaryKeyValue);
+            }
         }
         public List<T> ToParentList(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue)
         {
