@@ -44,6 +44,7 @@ namespace SqlSugar
         {
             var exp = expression as MethodCallExpression;
             var argExp = exp.Arguments[0];
+            InitType(exp);
             var parametres = (argExp as LambdaExpression).Parameters;
             if ((argExp as LambdaExpression).Body is UnaryExpression)
             {
@@ -64,5 +65,17 @@ namespace SqlSugar
                 result = result.Replace(selfParameterName, SubTools.GetSubReplace(this.Context));
             return result;
         }
+        private void InitType(MethodCallExpression exp)
+        {
+            foreach (var arg in (exp.Arguments[0] as LambdaExpression).Parameters)
+            {
+                if (this.Context.InitMappingInfo != null)
+                {
+                    this.Context.InitMappingInfo(arg.Type);
+                    this.Context.RefreshMapping();
+                }
+            }
+        }
+
     }
 }
