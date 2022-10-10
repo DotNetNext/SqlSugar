@@ -1366,7 +1366,13 @@ namespace SqlSugar
             if (isContainOneself)
             {
                 var result= GetChildList(parentIdExpression, pk, list, primaryKeyValue);
-                var addItem = this.Context.Queryable<T>().In(pk, primaryKeyValue).First();
+                var pkDb = this.Context.EntityMaintenance.GetEntityInfo<T>().Columns.FirstOrDefault(z=>z.PropertyName==pk);
+                var pkDbName = pk;
+                if (pkDb != null) 
+                {
+                    pkDbName = pkDb.DbColumnName;
+                }
+                var addItem = this.Context.Queryable<T>().In(pkDbName, primaryKeyValue).First();
                 if (addItem != null)
                 {
                     result.Add(addItem);
@@ -1386,7 +1392,13 @@ namespace SqlSugar
             if (isContainOneself)
             {
                 var result = GetChildList(parentIdExpression, pk, list, primaryKeyValue);
-                var addItem = this.Context.Queryable<T>().In(pk, primaryKeyValue).First();
+                var pkDb = this.Context.EntityMaintenance.GetEntityInfo<T>().Columns.FirstOrDefault(z => z.PropertyName == pk);
+                var pkDbName = pk;
+                if (pkDb != null)
+                {
+                    pkDbName = pkDb.DbColumnName;
+                }
+                var addItem =await this.Context.Queryable<T>().In(pkDbName, primaryKeyValue).FirstAsync();
                 if (addItem != null)
                 {
                     result.Add(addItem);
