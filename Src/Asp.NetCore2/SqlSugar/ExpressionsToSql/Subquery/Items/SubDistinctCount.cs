@@ -60,7 +60,8 @@ namespace SqlSugar
             }
             var result = "COUNT(DISTINCT " + SubTools.GetMethodValue(Context, argExp, ResolveExpressType.WhereMultiple) + ")";
             var selfParameterName = Context.GetTranslationColumnName(parametres.First().Name) + UtilConstants.Dot;
-            result = result.Replace(selfParameterName, SubTools.GetSubReplace(this.Context));
+            if (this.Context.JoinIndex == 0)
+                result = result.Replace(selfParameterName, SubTools.GetSubReplace(this.Context));
             return result;
         }
     }

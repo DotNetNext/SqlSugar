@@ -291,7 +291,15 @@ namespace SqlSugar
             foreach (var item in whereColumns)
             {
                 _WhereColumn(item);
-                this.WhereColumnList.Add(item);
+                var columnInfo=this.EntityInfo.Columns.FirstOrDefault(it => it.PropertyName.EqualCase(item));
+                if (columnInfo != null)
+                {
+                    this.WhereColumnList.Add(columnInfo.DbColumnName);
+                }
+                else
+                {
+                    this.WhereColumnList.Add(item);
+                }
             }
             return this;
         }
