@@ -1,4 +1,5 @@
 ﻿using SqlSugar;
+using SqlSugarSelect;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -82,6 +83,12 @@ namespace OrmTest
 
             var list12 = jsonDb.Queryable<UNITJSONTESTADSGA1>().Select(it =>  it ).ToList();
             if (!list12.Any(z=>z.os.Count>0))
+            {
+                throw new Exception("unit test");
+            }
+
+            var list13=db.Queryable<object>().AS("UnitTestModel1").Select<ViewTestModel1>().ToList();
+            if (list13.First().Ids.Count() == 0) 
             {
                 throw new Exception("unit test");
             }
