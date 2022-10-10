@@ -186,7 +186,8 @@ namespace OrmTest
 
             var test47 = db.Queryable<Order>().Select(it => new
             {
-                names = SqlFunc.Subqueryable<Order>().Where(z=>z.Id==it.Id).SelectStringJoin(z => z.Name, ",")
+                names = SqlFunc.Subqueryable<Order>().Where(z=>z.Id==it.Id).SelectStringJoin(z => z.Name, ","),
+                 disCount = SqlFunc.Subqueryable<Order>().DistinctCount(z=>z.Id)
             })
            .ToList();
 
