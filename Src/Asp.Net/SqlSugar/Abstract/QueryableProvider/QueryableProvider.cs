@@ -1358,57 +1358,19 @@ namespace SqlSugar
             var list= this.ToPivotList(columnSelector, rowSelector, dataSelector);
             return this.Context.Utilities.SerializeObject(list);
         }
-        public List<T> ToChildList(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue,bool isContainOneself = true) 
+        public List<T> ToChildList(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue, bool isContainOneself = true) 
         {
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
             var pk = GetTreeKey(entity);
             var list = this.ToList();
-            if (isContainOneself)
-            {
-                var result= GetChildList(parentIdExpression, pk, list, primaryKeyValue);
-                var pkDb = this.Context.EntityMaintenance.GetEntityInfo<T>().Columns.FirstOrDefault(z=>z.PropertyName==pk);
-                var pkDbName = pk;
-                if (pkDb != null) 
-                {
-                    pkDbName = pkDb.DbColumnName;
-                }
-                var addItem = this.Context.Queryable<T>().In(pkDbName, primaryKeyValue).First();
-                if (addItem != null)
-                {
-                    result.Add(addItem);
-                }
-                return result;
-            }
-            else
-            {
-                return GetChildList(parentIdExpression, pk, list, primaryKeyValue);
-            }
+            return GetChildList(parentIdExpression, pk, list, primaryKeyValue, isContainOneself);
         }
-        public async Task<List<T>> ToChildListAsync(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue,bool isContainOneself=true) 
+        public async Task<List<T>> ToChildListAsync(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue, bool isContainOneself=true) 
         {
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
             var pk = GetTreeKey(entity);
             var list = await this.ToListAsync();
-            if (isContainOneself)
-            {
-                var result = GetChildList(parentIdExpression, pk, list, primaryKeyValue);
-                var pkDb = this.Context.EntityMaintenance.GetEntityInfo<T>().Columns.FirstOrDefault(z => z.PropertyName == pk);
-                var pkDbName = pk;
-                if (pkDb != null)
-                {
-                    pkDbName = pkDb.DbColumnName;
-                }
-                var addItem =await this.Context.Queryable<T>().In(pkDbName, primaryKeyValue).FirstAsync();
-                if (addItem != null)
-                {
-                    result.Add(addItem);
-                }
-                return result;
-            }
-            else
-            {
-                return GetChildList(parentIdExpression, pk, list, primaryKeyValue);
-            }
+            return GetChildList(parentIdExpression, pk, list, primaryKeyValue, isContainOneself);
         }
         public List<T> ToParentList(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue)
         {
@@ -2475,7 +2437,7 @@ namespace SqlSugar
             RestoreMapping();
             return new KeyValuePair<string, List<SugarParameter>>(sql, QueryBuilder.Parameters);
         }
-        private List<T> GetChildList(Expression<Func<T, object>> parentIdExpression, string pkName, List<T> list, object rootValue,bool isRoot=true)
+        private List<T> GetChildList(Expression<Func<T, object>> parentIdExpression, string pkName, List<T> list, object rootValue, bool isContainOneself)
         {
             var exp = (parentIdExpression as LambdaExpression).Body;
             if (exp is UnaryExpression)
@@ -2483,11 +2445,11 @@ namespace SqlSugar
                 exp = (exp as UnaryExpression).Operand;
             }
             var parentIdName = (exp as MemberExpression).Member.Name;
-            var result = BuildChildList(list, pkName, parentIdName, rootValue);
+            var result = BuildChildList(list, pkName, parentIdName, rootValue, isContainOneself);
             return result;
         }
 
-        private static List<T> BuildChildList(List<T> list, string idName, string pIdName, object rootValue)
+        private static List<T> BuildChildList(List<T> list, string idName, string pIdName, object rootValue, bool isContainOneself)
         {
             var type = typeof(T);
             var idProp = type.GetProperty(idName);
@@ -2511,7 +2473,19 @@ namespace SqlSugar
                 return finalList;
             };
 
-            return fc(rootValue.ObjToString());
+            var result = new List<T>();
+            result = fc(rootValue.ObjToString());
+
+            if (isContainOneself)
+            {
+                var root = kvpList.FirstOrDefault(x => x.Value == rootValue.ObjToString()).Key;
+                if (root != null)
+                {
+                    result.Insert(0, root);
+                }
+            }
+
+            return result;
         }
 
         private List<T> GetTreeRoot(Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, string pk, List<T> list,object rootValue)
