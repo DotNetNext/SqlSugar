@@ -237,9 +237,16 @@ namespace SqlSugar
                 return "serial";
             }
         }
-          #endregion
+        #endregion
 
         #region Methods
+
+        public override bool IsAnyTable(string tableName, bool isCache = true)
+        {
+            var sql = $"select count(*) from information_schema.tables where table_schema='public' and table_type='BASE TABLE' and UPPER(table_name)='{tableName.ToUpper()}'";
+            return this.Context.Ado.GetInt(sql)>0;
+        }
+
         /// <summary>
         ///by current connection string
         /// </summary>
