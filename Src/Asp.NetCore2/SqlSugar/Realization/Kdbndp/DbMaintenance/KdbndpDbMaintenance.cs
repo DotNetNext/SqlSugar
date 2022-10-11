@@ -243,7 +243,7 @@ namespace SqlSugar
         public override bool IsAnyColumn(string tableName, string columnName, bool isCache = true)
         {
             var sql =
-                $"select count(*) from information_schema.columns WHERE table_schema = 'public'  and UPPER(table_name) = '{tableName.ToLower()}' and UPPER(column_name) = '{columnName.ToLower()}'";
+                $"select count(*) from information_schema.columns WHERE table_schema = 'public'  and UPPER(table_name) = '{tableName.ToUpper()}' and UPPER(column_name) = '{columnName.ToUpper()}'";
             return this.Context.Ado.GetInt(sql) > 0;
         }
 
