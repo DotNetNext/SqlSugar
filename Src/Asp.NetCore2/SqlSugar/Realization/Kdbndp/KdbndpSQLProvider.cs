@@ -36,7 +36,21 @@ namespace SqlSugar
                 base._DbConnection = value;
             }
         }
-
+        public override void CheckConnection()
+        {
+            try
+            {
+                base.CheckConnection();
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Contains("Version string portion was too short or too long"))
+                {
+                    Check.Exception(true, "人大金仓R6请安装 Nuget:SqlSugarCore.Kdbndp到最新版本");
+                }
+                throw;
+            }
+        }
         public override void BeginTran(string transactionName)
         {
             base.BeginTran();
