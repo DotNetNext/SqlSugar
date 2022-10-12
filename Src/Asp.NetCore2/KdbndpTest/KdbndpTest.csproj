@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="SqlSugarCore.Kdbndp" Version="6.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\SqlSugar\SqlSugar.csproj" />
   </ItemGroup>
 
