@@ -386,6 +386,7 @@ namespace OrmTest
             var allchilds = db.Queryable<Tree>().ToChildList(it => it.ParentId, 0);
             var allchilds_2 = db.Queryable<Tree2>().ToChildList(it => it.ParentId, 0);
             var allchilds1 = db.Queryable<Tree>().ToChildList(it => it.ParentId, 1);
+            var allchilds11 = db.Queryable<Tree>().Select<Tree2>().ToChildList(it => it.ParentId, 1);
             var allchilds2 = db.Queryable<Tree>().ToChildList(it => it.ParentId, 2);
             var allchilds2_2 = db.Queryable<Tree2>().ToChildList(it => it.ParentId, 2);
             var parentList = db.Queryable<Tree>().ToParentList(it => it.ParentId, 22);

@@ -237,9 +237,53 @@ namespace SqlSugar
                 return "serial";
             }
         }
-          #endregion
+        #endregion
 
         #region Methods
+        public override bool UpdateColumn(string tableName, DbColumnInfo columnInfo)
+        {
+
+            tableName = this.SqlBuilder.GetTranslationTableName(tableName);
+            var columnName = this.SqlBuilder.GetTranslationColumnName(columnInfo.DbColumnName);
+            string type = GetType(tableName, columnInfo);
+            //this.Context.Ado.ExecuteCommand(sql);
+
+            string sql = @"ALTER TABLE {table} ALTER  {column} TYPE {type};ALTER TABLE {table} ALTER COLUMN {column} {null}";
+
+            var isnull = columnInfo.IsNullable ? " DROP NOT NULL " : " SET NOT NULL ";
+
+            sql = sql.Replace("{table}", tableName)
+                .Replace("{type}", type)
+                .Replace("{column}", columnName)
+                .Replace("{null}", isnull);
+            this.Context.Ado.ExecuteCommand(sql);
+            return true;
+        }
+        protected string GetType(string tableName, DbColumnInfo columnInfo)
+        {
+            string columnName = this.SqlBuilder.GetTranslationColumnName(columnInfo.DbColumnName);
+            tableName = this.SqlBuilder.GetTranslationTableName(tableName);
+            string dataSize = GetSize(columnInfo);
+            string dataType = columnInfo.DataType;
+            //if (!string.IsNullOrEmpty(dataType))
+            //{
+            //    dataType =  dataType;
+            //}
+            return dataType + "" + dataSize;
+        }
+        public override bool IsAnyColumn(string tableName, string columnName, bool isCache = true)
+        {
+            var sql =
+                $"select count(*) from information_schema.columns WHERE table_schema = 'public'  and UPPER(table_name) = '{tableName.ToUpper()}' and UPPER(column_name) = '{columnName.ToUpper()}'";
+            return this.Context.Ado.GetInt(sql) > 0;
+        }
+
+        public override bool IsAnyTable(string tableName, bool isCache = true)
+        {
+            var sql = $"select count(*) from information_schema.tables where table_schema='public' and table_type='BASE TABLE' and UPPER(table_name)='{tableName.ToUpper()}'";
+            return this.Context.Ado.GetInt(sql)>0;
+        }
+
         /// <summary>
         ///by current connection string
         /// </summary>

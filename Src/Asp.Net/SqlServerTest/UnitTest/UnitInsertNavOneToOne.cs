@@ -54,7 +54,7 @@ using System.Data;
       .ExecuteCommand();
 
         Console.WriteLine("用例跑完");
-        Console.ReadKey();
+       // Console.ReadKey();
     }
 
 
