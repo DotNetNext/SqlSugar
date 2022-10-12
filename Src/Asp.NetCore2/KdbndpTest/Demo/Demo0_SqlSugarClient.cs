@@ -66,7 +66,7 @@ namespace OrmTest
                     }
                 }
             });
-            db.Open();
+           // db.Open();
             //If no exist create datebase 
             db.DbMaintenance.CreateDatabase();
 
