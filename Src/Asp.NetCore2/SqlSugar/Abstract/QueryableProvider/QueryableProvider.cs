@@ -1367,15 +1367,13 @@ namespace SqlSugar
             {
                 var result= GetChildList(parentIdExpression, pk, list, primaryKeyValue);
                 var pkDb = this.Context.EntityMaintenance.GetEntityInfo<T>().Columns.FirstOrDefault(z=>z.PropertyName==pk);
-                var pkDbName = pk;
-                if (pkDb != null) 
+                if (pkDb != null)
                 {
-                    pkDbName = pkDb.DbColumnName;
-                }
-                var addItem = this.Context.Queryable<T>().In(pkDbName, primaryKeyValue).First();
-                if (addItem != null)
-                {
-                    result.Add(addItem);
+                    var addItem = list.Where(z => pkDb.PropertyInfo.GetValue(z, null).Equals(primaryKeyValue)).FirstOrDefault();
+                    if (addItem != null)
+                    {
+                        result.Add(addItem);
+                    }
                 }
                 return result;
             }
@@ -1393,15 +1391,13 @@ namespace SqlSugar
             {
                 var result = GetChildList(parentIdExpression, pk, list, primaryKeyValue);
                 var pkDb = this.Context.EntityMaintenance.GetEntityInfo<T>().Columns.FirstOrDefault(z => z.PropertyName == pk);
-                var pkDbName = pk;
                 if (pkDb != null)
                 {
-                    pkDbName = pkDb.DbColumnName;
-                }
-                var addItem =await this.Context.Queryable<T>().In(pkDbName, primaryKeyValue).FirstAsync();
-                if (addItem != null)
-                {
-                    result.Add(addItem);
+                    var addItem = list.Where(z => pkDb.PropertyInfo.GetValue(z, null).Equals(primaryKeyValue)).FirstOrDefault();
+                    if (addItem != null)
+                    {
+                        result.Add(addItem);
+                    }
                 }
                 return result;
             }
