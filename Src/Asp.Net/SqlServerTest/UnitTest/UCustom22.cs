@@ -42,6 +42,27 @@ namespace OrmTest
                 .MergeTable().LeftJoin<Test0011>((x, y) => true)
                 .ToList();
 
+
+            db.CodeFirst.InitTables(typeof(Tree));
+            db.DbMaintenance.TruncateTable("tree");
+            db.Insertable(new Tree() { Id = 1, Name = "root" }).ExecuteCommand();
+            db.Insertable(new Tree() { Id = 11, Name = "child1", ParentId = 1 }).ExecuteCommand();
+            db.Insertable(new Tree() { Id = 12, Name = "child2", ParentId = 1 }).ExecuteCommand();
+            db.Insertable(new Tree() { Id = 2, Name = "root" }).ExecuteCommand();
+            db.Insertable(new Tree() { Id = 22, Name = "child3", ParentId = 2 }).ExecuteCommand();
+
+            var list = db.Queryable<Tree>().ToChildList(it => it.ParentId, 1);
+            if (list.Count != 3) 
+            {
+                throw new Exception("unit error");
+            }
+
+            var list2 = db.Queryable<Tree>().ToChildList(it => it.ParentId, 1,false);
+            if (list2.Count !=2)
+            {
+                throw new Exception("unit error");
+            }
+
         }
 
 
