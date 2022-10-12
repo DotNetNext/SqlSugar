@@ -2473,8 +2473,7 @@ namespace SqlSugar
                 return finalList;
             };
 
-            var result = new List<T>();
-            result = fc(rootValue.ObjToString());
+            var result = fc(rootValue.ObjToString());
 
             if (isContainOneself)
             {
