@@ -141,6 +141,10 @@ namespace SqlSugar
 
         //    return string.Format(" (DATEDIFF('{2}',{0},{1})=0) ", parameter.MemberName, parameter2.MemberName, parameter3.MemberValue);
         //}
+        public override string AggregateCount(MethodCallExpressionModel model)
+        {
+            return " COUNT(*) ";
+        }
         public override string Contains(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
