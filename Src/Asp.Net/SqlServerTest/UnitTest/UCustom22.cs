@@ -62,7 +62,11 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
-
+            var list3 = db.Queryable<Tree>().Select<Tree2>().ToChildList(it => it.ParentId, 1);
+            if (list3.Count != 3)
+            {
+                throw new Exception("unit error");
+            }
         }
 
 
