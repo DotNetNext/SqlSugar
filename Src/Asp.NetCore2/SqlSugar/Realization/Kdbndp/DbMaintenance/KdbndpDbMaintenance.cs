@@ -26,11 +26,11 @@ namespace SqlSugar
                                 col_description(pclass.oid, pcolumn.ordinal_position) as ColumnDescription,
                                 case when pkey.colname = pcolumn.column_name
                                 then true else false end as IsPrimaryKey,
-                                case when pcolumn.column_default like 'NEXTVAL%'
+                                case when UPPER(pcolumn.column_default) like 'NEXTVAL%'
                                 then true else false end as IsIdentity,
-                                case when pcolumn.is_nullable = 'YES'
+                                case when UPPER(pcolumn.is_nullable) = 'YES'
                                 then true else false end as IsNullable
-                                 from (select * from sys_tables where  UPPER(tablename) = UPPER('orderdetail') and UPPER(schemaname)='PUBLIC') ptables inner join sys_class pclass
+                                 from (select * from sys_tables where  UPPER(tablename) = UPPER('{0}') and UPPER(schemaname)='PUBLIC') ptables inner join sys_class pclass
                                 on ptables.tablename = pclass.relname inner join (SELECT *
                                 FROM information_schema.columns
                                 ) pcolumn on pcolumn.table_name = ptables.tablename
@@ -300,7 +300,7 @@ namespace SqlSugar
             }
             var oldDatabaseName = this.Context.Ado.Connection.Database;
             var connection = this.Context.CurrentConnectionConfig.ConnectionString;
-            connection = connection.Replace(oldDatabaseName, "SAMPLES");
+            connection = connection.Replace(oldDatabaseName, "test");
             var newDb = new SqlSugarClient(new ConnectionConfig()
             {
                 DbType = this.Context.CurrentConnectionConfig.DbType,
