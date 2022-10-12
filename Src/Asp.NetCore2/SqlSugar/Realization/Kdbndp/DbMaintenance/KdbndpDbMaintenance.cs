@@ -30,7 +30,7 @@ namespace SqlSugar
                                 then true else false end as IsIdentity,
                                 case when pcolumn.is_nullable = 'YES'
                                 then true else false end as IsNullable
-                                 from (select * from sys_tables where tablename = UPPER('{0}') and schemaname='PUBLIC') ptables inner join sys_class pclass
+                                 from (select * from sys_tables where  UPPER(tablename) = UPPER('orderdetail') and UPPER(schemaname)='PUBLIC') ptables inner join sys_class pclass
                                 on ptables.tablename = pclass.relname inner join (SELECT *
                                 FROM information_schema.columns
                                 ) pcolumn on pcolumn.table_name = ptables.tablename
