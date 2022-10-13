@@ -13,7 +13,7 @@ namespace SqlSugar
         {
             get
             {
-                return "SELECT datname FROM sys_database";
+                return "SELECT datname FROM sys_database ";
             }
         }
         protected override string GetColumnInfosByTableNameSql
