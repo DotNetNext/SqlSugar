@@ -1358,14 +1358,14 @@ namespace SqlSugar
             var list= this.ToPivotList(columnSelector, rowSelector, dataSelector);
             return this.Context.Utilities.SerializeObject(list);
         }
-        public List<T> ToChildList(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue,bool isContainOneself = true) 
+        public List<T> ToChildList(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue, bool isContainOneself = true) 
         {
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
             var pk = GetTreeKey(entity);
             var list = this.ToList();
             return GetChildList(parentIdExpression, pk, list, primaryKeyValue, isContainOneself);
         }
-        public async Task<List<T>> ToChildListAsync(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue,bool isContainOneself=true) 
+        public async Task<List<T>> ToChildListAsync(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue, bool isContainOneself=true) 
         {
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
             var pk = GetTreeKey(entity);
@@ -1999,6 +1999,7 @@ namespace SqlSugar
         {
             if (this.Context.CurrentConnectionConfig.DbType != DbType.SqlServer)
             {
+                this.QueryBuilder.Offset = "true";
                 return this.ToPageList(pageIndex, pageSize);
             }
             else

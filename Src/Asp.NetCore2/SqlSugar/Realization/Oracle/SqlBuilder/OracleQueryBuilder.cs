@@ -22,6 +22,10 @@ namespace SqlSugar
         }
         public override string ToSqlString()
         {
+            if (this.Offset == "true") 
+            {
+                return OffsetPage();
+            }
             var oldTake = Take;
             var oldSkip = Skip;
             var isDistinctPage = IsDistinct && (Take > 1 || Skip > 1);
@@ -50,6 +54,18 @@ namespace SqlSugar
             }
             return result;
         }
+
+        private string OffsetPage()
+        {
+            var skip = this.Skip;
+            var take = this.Take;
+            this.Skip = null;
+            this.Take = null;
+            this.Offset = null;
+            var pageSql = $"SELECT * FROM ( SELECT PAGETABLE1.*,ROWNUM PAGEINDEX FROM( { this.ToSqlString() }) PAGETABLE1 WHERE ROWNUM<={skip+take}) WHERE PAGEINDEX>={(skip==0?skip:(skip+1))}";
+            return pageSql;
+        }
+
         public  string _ToSqlString()
         {
             string oldOrderBy = this.OrderByValue;
