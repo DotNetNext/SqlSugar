@@ -280,6 +280,10 @@ namespace SqlSugar
         public override bool CreateDatabase(string databaseName, string databaseDirectory = null)
         {
             var connString=this.Context.CurrentConnectionConfig.ConnectionString;
+            if (connString == null) 
+            {
+                throw new Exception("ConnectionString is null");
+            }
             var path = Regex.Match(connString, @"[a-z,A-Z]\:\\.+\\").Value;
             if (path.IsNullOrEmpty())
             {
