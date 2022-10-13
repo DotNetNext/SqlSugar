@@ -1999,6 +1999,7 @@ namespace SqlSugar
         {
             if (this.Context.CurrentConnectionConfig.DbType != DbType.SqlServer)
             {
+                this.QueryBuilder.Offset = "true";
                 return this.ToPageList(pageIndex, pageSize);
             }
             else
