@@ -252,6 +252,14 @@ namespace SqlSugar
             tableName = this.SqlBuilder.GetTranslationTableName(tableName);
             this.Context.Ado.ExecuteCommand(string.Format(this.DropTableSql, tableName));
             return true;
+        }       
+        public virtual bool DropTable(string[] tableName)
+        {
+            foreach (var item in tableName)
+            {
+                DropTable(item);
+            }
+            return true;
         }
         public virtual bool DropTable<T>() 
         {

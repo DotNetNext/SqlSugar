@@ -2012,6 +2012,7 @@ namespace SqlSugar
         {
             if (this.Context.CurrentConnectionConfig.DbType != DbType.SqlServer)
             {
+                this.QueryBuilder.Offset = "true";
                 return this.ToPageList(pageIndex, pageSize, ref totalNumber);
             }
             else 
@@ -2025,6 +2026,7 @@ namespace SqlSugar
         {
             if (this.Context.CurrentConnectionConfig.DbType != DbType.SqlServer)
             {
+                this.QueryBuilder.Offset = "true";
                 return this.ToPageListAsync(pageIndex, pageSize);
             }
             else
@@ -2037,6 +2039,7 @@ namespace SqlSugar
         {
             if (this.Context.CurrentConnectionConfig.DbType != DbType.SqlServer)
             {
+                this.QueryBuilder.Offset = "true";
                 return await this.ToPageListAsync(pageIndex, pageSize, totalNumber);
             }
             else 
