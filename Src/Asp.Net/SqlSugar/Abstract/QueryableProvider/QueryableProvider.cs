@@ -2075,7 +2075,12 @@ namespace SqlSugar
         public virtual List<T> ToPageList(int pageIndex, int pageSize, ref int totalNumber)
         {
             var oldMapping = this.Context.MappingTables;
-            totalNumber =  this.Clone().Count();
+            var countQueryable = this.Clone();
+            if (countQueryable.QueryBuilder.Offset == "true") 
+            {
+                countQueryable.QueryBuilder.Offset = null;
+            }
+            totalNumber = countQueryable.Count();
             this.Context.MappingTables = oldMapping;
             return  this.Clone().ToPageList(pageIndex, pageSize);
         }
@@ -2362,7 +2367,12 @@ namespace SqlSugar
         public async Task<List<T>> ToPageListAsync(int pageIndex, int pageSize, RefAsync<int> totalNumber)
         {
             var oldMapping = this.Context.MappingTables;
-            totalNumber.Value = await this.Clone().CountAsync();
+            var countQueryable = this.Clone();
+            if (countQueryable.QueryBuilder.Offset == "true")
+            {
+                countQueryable.QueryBuilder.Offset = null;
+            }
+            totalNumber.Value = await countQueryable.CountAsync();
             this.Context.MappingTables = oldMapping;
             return await this.Clone().ToPageListAsync(pageIndex, pageSize);
         }
