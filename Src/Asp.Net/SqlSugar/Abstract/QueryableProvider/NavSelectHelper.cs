@@ -89,6 +89,10 @@ namespace SqlSugar
         private static List<TResult> SqlFunc<T, TResult>(Expression<Func<T, TResult>> expression, QueryableProvider<T> queryableProvider)
         {
             var mappingColumn = GetMappingColumn(expression);
+            if (mappingColumn.Any(it => it.IsError)) 
+            {
+                return Action(expression,queryableProvider);
+            }
             List<TResult> result;
             var sqlfuncQueryable = queryableProvider.Clone();
             var dtoEntity = sqlfuncQueryable.Context.EntityMaintenance.GetEntityInfo<TResult>().Columns;
@@ -274,9 +278,28 @@ namespace SqlSugar
             List<NavMappingColumn> result = new List<NavMappingColumn>();
             if (body is NewExpression)
             {
-                foreach (var item in ((NewExpression)body).Arguments)
+                var index = 0;
+                var arg = ((NewExpression)body).Arguments;
+                var members = ((NewExpression)body).Members;
+                foreach (var item in arg)
                 {
-                   
+                    var name=members[index].Name;
+                    if (item is MethodCallExpression) 
+                    {
+                        var method = (item as MethodCallExpression);
+                        if (method.Method.Name == "ToList"&&method.Arguments.Count>0&& method.Arguments[0] is MethodCallExpression)
+                        {
+                            method = (MethodCallExpression)method.Arguments[0];
+                        }
+                        if (method.Method.Name == "Select") 
+                        {
+                            if (!item.ToString().Contains("Subqueryable"))
+                            {
+                                result.Add(new NavMappingColumn() { IsError = true });
+                            }
+                        } 
+                    }
+                    index++;
                 }
             }
             else if (body is MemberInitExpression)
@@ -305,6 +328,7 @@ namespace SqlSugar
         {
             public string Key { get; set; }
             public string Value { get; set; }
+            public bool IsError { get;  set; }
         }
     }
 }
