@@ -66,13 +66,18 @@ namespace SqlSugar
                         }
                         if (item.Type == typeof(JoinType))
                         {
+                            var joinValue = item.ObjToString();
+                            if (joinValue.Contains("(")) 
+                            {
+                                joinValue = ExpressionTool.DynamicInvoke(item).ObjToString();
+                            }
                             if (i > 0)
                             {
-                                base.Context.Result.Append("," + item.ToString()+ ",");
+                                base.Context.Result.Append("," + joinValue + ",");
                             }
                             else
                             {
-                                base.Context.Result.Append(item.ToString() + ",");
+                                base.Context.Result.Append(joinValue + ",");
                             }
                             ++i;
                         }
