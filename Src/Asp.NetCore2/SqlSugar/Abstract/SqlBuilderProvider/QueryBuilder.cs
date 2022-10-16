@@ -604,7 +604,19 @@ namespace SqlSugar
         public virtual string GetSelectValueByExpression()
         {
             var expression = this.SelectValue as Expression;
-            var result = GetExpressionValue(expression, this.SelectType).GetResultString();
+            string result = string.Empty;
+            if (this.IgnoreColumns != null && this.IgnoreColumns.Any())
+            {
+                var expArray = GetExpressionValue(expression, this.SelectType).GetResultArray()
+                    .Where(it=>
+                      !this.IgnoreColumns.Any(z=>it.Contains(Builder.GetTranslationColumnName(z)))
+                    ).ToArray();
+                result =string.Join(",", expArray);
+            }
+            else
+            {
+                result= GetExpressionValue(expression, this.SelectType).GetResultString();
+            }
             if (result == null)
             {
                 return "*";
