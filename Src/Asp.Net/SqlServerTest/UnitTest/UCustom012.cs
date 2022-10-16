@@ -289,6 +289,19 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+
+            var xxx4 = db.Queryable<Tree1>()
+             .Includes(it => it.Child)
+              .OrderByDescending(x => x.Id)
+             .ToList(it => new ViewTree1
+             {
+                  Count=1
+             });
+
+            if (xxx4[1].Child.Count() == 0)
+            {
+                throw new Exception("unit error");
+            }
         }
 
         public class UnitA001
