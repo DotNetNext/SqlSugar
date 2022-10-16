@@ -274,6 +274,21 @@ namespace OrmTest
 
             db.Queryable<StudentA>()
                 .Where(it => it.Books2.Any(z => z.BookId == 1)).ToList();
+
+
+            var xxx3 = db.Queryable<Tree1>()
+              .Includes(it => it.Child)
+               .OrderByDescending(x => x.Id)
+              .ToList(it => new Tree2
+              {
+                  Id=it.Id,
+                   Child2=it.Child
+              });
+
+            if (xxx3[1].Child2.Count() == 0) 
+            {
+                throw new Exception("unit error");
+            }
         }
 
         public class UnitA001
@@ -305,6 +320,17 @@ namespace OrmTest
             public Tree1 Parent { get; set; }
             [Navigate(NavigateType.OneToMany,nameof(Tree1.ParentId))]
             public List<Tree1> Child { get; set; }
+        }
+        public class Tree2
+        {
+       
+            public int Id { get; set; }
+            public string Name2 { get; set; }
+            public int ParentId { get; set; }
+     
+            public Tree1 Parent { get; set; }
+     
+            public List<Tree1> Child2 { get; set; }
         }
         public class ABMapping1
         {
