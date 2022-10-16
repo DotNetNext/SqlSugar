@@ -302,6 +302,16 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+
+            var xxx5 = db.Queryable<Tree1>()
+          .Includes(it => it.Child)
+           .OrderByDescending(x => x.Id)
+          .ToList(it => new  
+          {
+              it.Name,name=it.Child.Select(z=>z.Id).ToList(),
+              name2=it.Child.Select(z => z.Id)
+          });
+             
         }
 
         public class UnitA001
