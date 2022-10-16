@@ -11,8 +11,9 @@ namespace OrmTest
     {
         [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
         public int Id { get; set; }
-
+        [SugarColumn(ColumnDescription ="名称")]
         public string Name { get; set; }
+        [SugarColumn(ColumnDescription = "价格")]
         public decimal Price { get; set; }
         [SugarColumn(IsNullable = true)]
         public DateTime CreateTime { get; set; }
