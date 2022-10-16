@@ -24,7 +24,7 @@ namespace SqlSugar
                                 A.COLUMN_NAME AS DbColumnName,
                                 A.TABLE_NAME AS TableName,
                                 A.DATA_TYPE AS DataType,
-                                 C.ATTISAUTO as IsIdentity,
+                                 case when  DATA_DEFAULT like 'NEXTVAL%'  then true else false end as IsIdentity,
                                  case when A.NULLABLE = 'Y'  then true else false end as IsNullable   ,    
                                  A.DATA_LENGTH AS LENGTH,
                                  B.COMMENTS AS ColumnDescription,                             
