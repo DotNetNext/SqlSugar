@@ -48,9 +48,10 @@ namespace SqlSugar
         {
             get
             {
+                //AND t.relnamespace=1 表空间限制。
                 return @" select cast(relname as varchar(500)) as Name , DESCRIPTION AS Description FROM sys_class  t 
                         LEFT JOIN sys_description  d ON t.OID=d.OBJOID AND d.OBJSUBID=0 
-                        WHERE  t.relvbase>0 AND t.relkind = 'r'  
+                        WHERE  t.relvbase>0 AND t.relkind = 'r' 
                         order by relname";
             }
         }
