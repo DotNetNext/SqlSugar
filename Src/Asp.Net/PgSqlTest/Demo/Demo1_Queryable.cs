@@ -259,6 +259,11 @@ namespace OrmTest
             .LeftJoin<OrderItem>((x, y) => x.yid == y.ItemId)// 最后一个表不是匿名对象就行
             .ToList();
 
+            var type = JoinType.Left;
+              db.Queryable<Order, OrderItem>((o, i) => new JoinQueryInfos(
+                 type, o.Id == i.OrderId
+               ))
+            .Where(o => o.Name == "jack").ToList();
             Console.WriteLine("#### Join Table End ####");
         }
 
