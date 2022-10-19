@@ -368,7 +368,7 @@ namespace SqlSugar
                 model.Args.Add(data);
                 if (args.Count() == 2) 
                 {
-                    data.MemberName = (args.Last()).ToString();
+                    data.MemberName = (args.Last()).ToString().Replace("\"","");
                     data.MemberValue = "." ;
                 }
             }
