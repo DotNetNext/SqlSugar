@@ -24,9 +24,29 @@ namespace OrmTest
             var list = db.Queryable<CodeFirstTable1>().ToList();
             db.CodeFirst.InitTables<PictureData>();
             db.CodeFirst.InitTables<PictureData>();
+            db.CodeFirst.InitTables<EnumTypeClass>();
+            db.Insertable(new EnumTypeClass() { enumType= EnumType.x1, SerialNo= Guid.NewGuid() + "" }).ExecuteCommand();
+            var list2=db.Queryable<EnumTypeClass>().Select(x => new EnumTypeClass()
+            {
+                enumType =  x.enumType ,
+                SerialNo = x.SerialNo
+            }).ToList();
             Console.WriteLine("#### CodeFirst end ####");
         }
     }
+
+    public class EnumTypeClass 
+    {
+        [SugarColumn(IsPrimaryKey = true,Length =50)]
+        public string SerialNo { get; set; }
+        [SugarColumn(ColumnDataType ="number(22,0)")]
+        public EnumType enumType { get; set; }
+    }
+    public enum EnumType { 
+       x1=-1,
+       x2=2
+    }
+
     [SugarTable("PictureData")]
     public class PictureData
     {
