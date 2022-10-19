@@ -392,6 +392,10 @@ namespace SqlSugar
                 string primaryKey = null;
                 string identity = item.IsIdentity ? this.CreateTableIdentity : null;
                 string addItem = string.Format(this.CreateTableColumn, this.SqlBuilder.GetTranslationColumnName(columnName), dataType, dataSize, nullType, primaryKey, identity);
+                if (!string.IsNullOrEmpty(item.ColumnDescription))
+                {
+                    addItem += "COMMENT '"+item.ColumnDescription+"' ";
+                }
                 columnArray.Add(addItem);
             }
             string tableString = string.Format(this.CreateTableSql, this.SqlBuilder.GetTranslationTableName(tableName), string.Join(",\r\n", columnArray));
