@@ -12,7 +12,7 @@ namespace SqlSugar
 {
     public class SqlSugarScopeProvider:ISqlSugarClient
     {
-        private  SqlSugarProvider conn;
+        internal  SqlSugarProvider conn;
 
         public SqlSugarScopeProvider(SqlSugarProvider conn)
         {
