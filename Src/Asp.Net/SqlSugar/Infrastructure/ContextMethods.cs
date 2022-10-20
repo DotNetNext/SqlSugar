@@ -909,15 +909,28 @@ namespace SqlSugar
                 {
                     conditionalModel = new ConditionalModel()
                     {
-                        ConditionalType = (ConditionalType)Convert.ToInt32(value["ConditionalType"].Value<int>()),
+                        ConditionalType = GetConditionalType(value),
                         FieldName = value["FieldName"] + "",
-                        CSharpTypeName= value["CSharpTypeName"].ObjToString().IsNullOrEmpty()? null : value["CSharpTypeName"].ObjToString(),
+                        CSharpTypeName = value["CSharpTypeName"].ObjToString().IsNullOrEmpty() ? null : value["CSharpTypeName"].ObjToString(),
                         FieldValue = value["FieldValue"].Value<string>() == null ? null : value["FieldValue"].ToString()
                     };
                 }
                 result.Add(new KeyValuePair<WhereType, IConditionalModel>(type, conditionalModel));
             }
             return result;
+        }
+
+        private static ConditionalType GetConditionalType(JToken value)
+        {
+            if (value["ConditionalType"].Type == JTokenType.String) 
+            {
+                var stringValue = value["ConditionalType"].Value<string>();
+                if (!stringValue.IsInt()) 
+                {
+                    return (ConditionalType)Enum.Parse(typeof(ConditionalType), stringValue);
+                }
+            }
+            return (ConditionalType)Convert.ToInt32(value["ConditionalType"].Value<int>());
         }
     }
 }
