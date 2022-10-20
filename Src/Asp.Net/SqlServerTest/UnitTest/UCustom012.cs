@@ -86,6 +86,11 @@ namespace OrmTest
               .Where(it => SqlFunc.Exists(it.SchoolA.School_Name, conditionalModels))
               .ToList();
 
+
+            List<IConditionalModel> conditionalModels2 = new List<IConditionalModel>();
+            var list2121 = db.Queryable<StudentA>()
+              .Where(it => SqlFunc.Exists(it.SchoolA.School_Name, conditionalModels2))
+              .ToList();
             Check.Exception(string.Join(",", list22.Select(it => it.StudentId)) != string.Join(",", list33.Select(it => it.StudentId)), "unit error");
 
 
