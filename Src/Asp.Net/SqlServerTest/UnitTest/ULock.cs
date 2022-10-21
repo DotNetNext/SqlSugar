@@ -49,7 +49,7 @@ namespace OrmTest
                 Ver = ver.Ver
             })
             .UpdateColumns(z => z.Name).ExecuteCommandWithOptLock();
-            if (data4 != 0) { throw new Exception("unit error"); }
+            if (data4 != 1) { throw new Exception("unit error"); }
         }
 
         public class ULockEntity
