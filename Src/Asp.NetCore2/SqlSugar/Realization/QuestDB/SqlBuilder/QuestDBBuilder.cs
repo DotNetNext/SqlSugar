@@ -24,6 +24,7 @@ namespace SqlSugar
         {
             get
             {
+                //https://questdb.io/docs/guides/working-with-timestamps-timezones/#using-utc-offset-for-conversions
                 //https://questdb.io/docs/reference/function/date-time/#to_timezone
                 //SELECT 
                 //      now(),  --2022-10-21T07:19:50.680134Z
@@ -39,6 +40,7 @@ namespace SqlSugar
         {
             get
             {
+                //https://questdb.io/docs/guides/working-with-timestamps-timezones/#using-utc-offset-for-conversions
                 //https://questdb.io/docs/reference/function/date-time/#to_timezone
                 //SELECT 
                 //      now(),  --2022-10-21T07:19:50.680134Z
