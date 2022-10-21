@@ -275,6 +275,7 @@ namespace SqlSugar
         private static List<NavMappingColumn> GetMappingColumn(Expression expression)
         {
             var body = ExpressionTool.GetLambdaExpressionBody(expression);
+            var parameterName=(expression as LambdaExpression).Parameters.FirstOrDefault().Name;
             List<NavMappingColumn> result = new List<NavMappingColumn>();
             if (body is NewExpression)
             {
@@ -286,7 +287,7 @@ namespace SqlSugar
                     var name=members[index].Name;
                     if (item is MethodCallExpression)
                     {
-                        AddCallError(result, item);
+                        AddCallError(result, item, parameterName);
                     }
                     index++;
                 }
@@ -304,14 +305,14 @@ namespace SqlSugar
                     }
                     else if(memberAssignment.Expression is MethodCallExpression)
                     {
-                        AddCallError(result, memberAssignment.Expression);
+                        AddCallError(result, memberAssignment.Expression,parameterName);
                     }
                 }
             }
             return result;
         }
 
-        private static void AddCallError(List<NavMappingColumn> result, Expression item)
+        private static void AddCallError(List<NavMappingColumn> result, Expression item,string parameterName)
         {
             var method = (item as MethodCallExpression);
             if (method.Method.Name == "ToList" && method.Arguments.Count > 0 && method.Arguments[0] is MethodCallExpression)
@@ -321,6 +322,14 @@ namespace SqlSugar
             if (method.Method.Name == "Select")
             {
                 if (!item.ToString().Contains("Subqueryable"))
+                {
+                    result.Add(new NavMappingColumn() { IsError = true });
+                }
+            }
+            else if (method.Method.Name == "Join")
+            {
+    
+                if (item.ToString().Contains($" {parameterName}."))
                 {
                     result.Add(new NavMappingColumn() { IsError = true });
                 }
