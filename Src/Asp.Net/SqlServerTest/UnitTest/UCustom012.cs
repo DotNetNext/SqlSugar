@@ -316,7 +316,15 @@ namespace OrmTest
               it.Name,name=it.Child.Select(z=>z.Id).ToList(),
               name2=it.Child.Select(z => z.Id)
           });
-             
+            var xxx6 = db.Queryable<Tree1>()
+   .Includes(it => it.Child)
+    .OrderByDescending(x => x.Id)
+   .ToList(it => new DTO
+   {
+       name = it.Child.Select(z => z.Id).ToList(),
+       name2 = it.Child.Select(z => z.Id)
+   });
+            SqlFunc.IIF
         }
 
         public class UnitA001
@@ -439,5 +447,11 @@ namespace OrmTest
             public int studenId { get; set; }
         }
 
+    }
+
+    internal class DTO
+    {
+        public List<int> name { get; set; }
+        public IEnumerable<int> name2 { get; set; }
     }
 }
