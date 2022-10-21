@@ -451,8 +451,13 @@ namespace SqlSugar
             var oldValue = verColumn.PropertyInfo.GetValue(updateData);
             var newValue = UtilMethods.GetRandomByType(verColumn.UnderType);
             verColumn.PropertyInfo.SetValue(updateData, newValue);
-            var data = this.UpdateBuilder.DbColumnInfoList.First(it =>
+            var data = this.UpdateBuilder.DbColumnInfoList.FirstOrDefault(it =>
             it.PropertyName.EqualCase(verColumn.PropertyName));
+            if (data == null) 
+            {
+                data = new DbColumnInfo() { DbColumnName= verColumn.DbColumnName, Value=newValue };
+                this.UpdateBuilder.DbColumnInfoList.Add(data);
+            }
             data.Value = newValue;
             var pks = GetPrimaryKeys();
             Check.ExceptionEasy(pks.Count == 0, "need primary key or WhereColumn", "需要主键或者WhereColumn");
