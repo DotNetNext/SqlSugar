@@ -38,7 +38,16 @@ namespace SqlSugar
         public RepositoryType ChangeRepository<RepositoryType>() where RepositoryType : ISugarRepository
         {
             Type type = typeof(RepositoryType);
-            object o = Activator.CreateInstance(type,new string[]{ null});
+            var isAnyParamter = type.GetConstructors().Any(z => z.GetParameters().Any());
+            object o = null;
+            if (isAnyParamter)
+            {
+                o=Activator.CreateInstance(type, new string[] { null });
+            }
+            else 
+            {
+                o = Activator.CreateInstance(type);
+            }
             var result= (RepositoryType)o;
             if (result.Context == null)
             {

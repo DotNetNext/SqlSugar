@@ -136,6 +136,26 @@ namespace SqlSugar
         {
             return this.Context.GetSimpleClient<T>();
         }
+        public RepositoryType GetRepository<RepositoryType>() where RepositoryType : ISugarRepository , new()  
+        {
+            Type type = typeof(RepositoryType);
+            var isAnyParamter = type.GetConstructors().Any(z => z.GetParameters().Any());
+            object o = null;
+            if (isAnyParamter)
+            {
+                o = Activator.CreateInstance(type, new string[] { null });
+            }
+            else
+            {
+                o = Activator.CreateInstance(type);
+            }
+            var result = (RepositoryType)o;
+            if (result.Context == null)
+            {
+                result.Context = this.Context;
+            }
+            return result;
+        }
         #endregion
 
         #region Insertable
