@@ -55,6 +55,7 @@ namespace SqlSugar
         DateTime GetDate();
         //SimpleClient GetSimpleClient();
         SimpleClient<T> GetSimpleClient<T>() where T : class, new();
+        RepositoryType GetRepository<RepositoryType>() where RepositoryType : ISugarRepository, new();
         void InitMappingInfo(Type type);
         void InitMappingInfo<T>();
         void Open();
