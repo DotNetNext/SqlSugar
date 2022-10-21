@@ -18,6 +18,18 @@ namespace OrmTest
             order.GetList();
             order.GetById(1);
             order.MyTest();
+
+            var db = new SqlSugarClient(new ConnectionConfig()
+            {
+                DbType = SqlSugar.DbType.SqlServer,
+                InitKeyType = InitKeyType.Attribute,
+                IsAutoCloseConnection = true,
+                ConnectionString = Config.ConnectionString
+            });
+            var repository= db.GetRepository<Repository<Order>>();
+            var list=repository.GetList();
+            var repository2 = db.GetRepository<SimpleClient<Order>>();
+            var list2 = repository2.GetList();
             Console.WriteLine("#### SimpleClient End ####");
         }
         public class OrderDal:Repository<Order>
@@ -30,25 +42,22 @@ namespace OrmTest
         }
         public class Repository<T> : SimpleClient<T> where T : class, new()
         {
-            public Repository(ISqlSugarClient context = null) : base(context)//注意这里要有默认值等于null
+            public Repository() 
             {
-                if (context == null)
+                var db = new SqlSugarClient(new ConnectionConfig()
                 {
-                    var db = new SqlSugarClient(new ConnectionConfig()
-                    {
-                        DbType = SqlSugar.DbType.SqlServer,
-                        InitKeyType = InitKeyType.Attribute,
-                        IsAutoCloseConnection = true,
-                        ConnectionString = Config.ConnectionString
-                    });
-                    base.Context = db;
-                    db.Aop.OnLogExecuting = (s, p) =>
-                    {
-                        Console.WriteLine(s);
-                    };
-                }
+                    DbType = SqlSugar.DbType.SqlServer,
+                    InitKeyType = InitKeyType.Attribute,
+                    IsAutoCloseConnection = true,
+                    ConnectionString = Config.ConnectionString
+                });
+                base.Context = db;
+                db.Aop.OnLogExecuting = (s, p) =>
+                {
+                    Console.WriteLine(s);
+                };
             }
-
+           
             /// <summary>
             /// 扩展方法，自带方法不能满足的时候可以添加新方法
             /// </summary>
