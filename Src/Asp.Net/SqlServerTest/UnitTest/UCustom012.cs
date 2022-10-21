@@ -317,14 +317,23 @@ namespace OrmTest
               name2=it.Child.Select(z => z.Id)
           });
             var xxx6 = db.Queryable<Tree1>()
-   .Includes(it => it.Child)
-    .OrderByDescending(x => x.Id)
-   .ToList(it => new DTO
-   {
-       name = it.Child.Select(z => z.Id).ToList(),
-       name2 = it.Child.Select(z => z.Id)
-   });
-            SqlFunc.IIF
+               .Includes(it => it.Child)
+                .OrderByDescending(x => x.Id)
+               .ToList(it => new DTO 
+               {
+                   name = it.Child.Select(z => z.Id).ToList(),
+                   name2 = it.Child.Select(z => z.Id),
+                   name3 = string.Join(",",it.Child.Select(z => z.Id))
+               });
+
+            var xxx7 = db.Queryable<Tree1>()
+            .Includes(it => it.Child)
+            .OrderByDescending(x => x.Id)
+            .ToList(it => new  
+            {
+            name3 = string.Join(",", it.Child.Select(z => z.Id))
+            });
+
         }
 
         public class UnitA001
@@ -451,6 +460,8 @@ namespace OrmTest
 
     internal class DTO
     {
+        public string name3 { get; set; }
+
         public List<int> name { get; set; }
         public IEnumerable<int> name2 { get; set; }
     }
