@@ -284,20 +284,9 @@ namespace SqlSugar
                 foreach (var item in arg)
                 {
                     var name=members[index].Name;
-                    if (item is MethodCallExpression) 
+                    if (item is MethodCallExpression)
                     {
-                        var method = (item as MethodCallExpression);
-                        if (method.Method.Name == "ToList"&&method.Arguments.Count>0&& method.Arguments[0] is MethodCallExpression)
-                        {
-                            method = (MethodCallExpression)method.Arguments[0];
-                        }
-                        if (method.Method.Name == "Select") 
-                        {
-                            if (!item.ToString().Contains("Subqueryable"))
-                            {
-                                result.Add(new NavMappingColumn() { IsError = true });
-                            }
-                        } 
+                        AddCallError(result, item);
                     }
                     index++;
                 }
@@ -309,13 +298,33 @@ namespace SqlSugar
                     MemberAssignment memberAssignment = (MemberAssignment)item;
                     var key= memberAssignment.Member.Name;
                     var value = memberAssignment.Expression;
-                    if (memberAssignment.Expression is MemberExpression) 
+                    if (memberAssignment.Expression is MemberExpression)
                     {
-                        result.Add(new NavMappingColumn() { Key=key,Value= ExpressionTool.GetMemberName(memberAssignment.Expression) });
+                        result.Add(new NavMappingColumn() { Key = key, Value = ExpressionTool.GetMemberName(memberAssignment.Expression) });
+                    }
+                    else if(memberAssignment.Expression is MethodCallExpression)
+                    {
+                        AddCallError(result, memberAssignment.Expression);
                     }
                 }
             }
             return result;
+        }
+
+        private static void AddCallError(List<NavMappingColumn> result, Expression item)
+        {
+            var method = (item as MethodCallExpression);
+            if (method.Method.Name == "ToList" && method.Arguments.Count > 0 && method.Arguments[0] is MethodCallExpression)
+            {
+                method = (MethodCallExpression)method.Arguments[0];
+            }
+            if (method.Method.Name == "Select")
+            {
+                if (!item.ToString().Contains("Subqueryable"))
+                {
+                    result.Add(new NavMappingColumn() { IsError = true });
+                }
+            }
         }
 
         private static bool isGroup<T, TResult>(Expression<Func<T, TResult>> expression, QueryableProvider<T> queryableProvider)
