@@ -188,7 +188,10 @@ namespace SqlSugar
         {
             return ScopedContext.GetSimpleClient<T>();
         }
-
+        public RepositoryType GetRepository<RepositoryType>() where RepositoryType : ISugarRepository, new() 
+        {
+            return ScopedContext.GetRepository<RepositoryType>();   
+        }
         public void InitMappingInfo(Type type)
         {
             ScopedContext.InitMappingInfo(type);
