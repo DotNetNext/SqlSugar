@@ -17,7 +17,7 @@ namespace SqlSugar
         public async Task<int> ExecuteBulkCopyAsync(DataTable dt)
         {
 
-            var dllPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "failFiles");
+            var dllPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "bulkcopyfiles");
             DirectoryInfo dir = new DirectoryInfo(dllPath);
             if (!dir.Exists)
             {
