@@ -224,6 +224,27 @@ namespace SqlSugar
         #endregion
 
         #region GroupBy
+        public new ISugarQueryable<T, T2> PartitionBy(Expression<Func<T, object>> expression) 
+        {
+            if (QueryBuilder.Take == null)
+                QueryBuilder.Take = 1;
+            _PartitionBy(expression);
+            QueryBuilder.DisableTop = true;
+            return this;
+        }
+        public ISugarQueryable<T, T2> PartitionBy(Expression<Func<T, T2, object>> expression) 
+        {
+            if (QueryBuilder.Take == null)
+                QueryBuilder.Take = 1;
+            _PartitionBy(expression);
+            QueryBuilder.DisableTop = true;
+            return this;
+        }
+        public new ISugarQueryable<T, T2> PartitionBy(string groupFileds) 
+        {
+            base.PartitionBy(groupFileds);
+            return this;
+        }
         public new virtual ISugarQueryable<T, T2> GroupByIF(bool isGroupBy, Expression<Func<T, object>> expression)
         {
             if (isGroupBy)
@@ -572,6 +593,35 @@ namespace SqlSugar
         }
 
         #region  Group 
+        public new ISugarQueryable<T, T2,T3> PartitionBy(Expression<Func<T, object>> expression)
+        {
+            if (QueryBuilder.Take == null)
+                QueryBuilder.Take = 1;
+            _PartitionBy(expression);
+            QueryBuilder.DisableTop = true;
+            return this;
+        }
+        public ISugarQueryable<T, T2,T3> PartitionBy(Expression<Func<T, T2, object>> expression)
+        {
+            if (QueryBuilder.Take == null)
+                QueryBuilder.Take = 1;
+            _PartitionBy(expression);
+            QueryBuilder.DisableTop = true;
+            return this;
+        }
+        public ISugarQueryable<T, T2, T3> PartitionBy(Expression<Func<T, T2,T3, object>> expression)
+        {
+            if (QueryBuilder.Take == null)
+                QueryBuilder.Take = 1;
+            _PartitionBy(expression);
+            QueryBuilder.DisableTop = true;
+            return this;
+        }
+        public new ISugarQueryable<T, T2,T3> PartitionBy(string groupFileds)
+        {
+            base.PartitionBy(groupFileds);
+            return this;
+        }
         public new virtual ISugarQueryable<T, T2, T3> GroupByIF(bool isGroupBy, Expression<Func<T, object>> expression)
         {
             if (isGroupBy)
