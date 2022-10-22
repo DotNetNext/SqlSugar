@@ -261,6 +261,15 @@ namespace SqlSugar
             }
             return true;
         }
+        public virtual bool DropTable(Type[] tableEnittyTypes)
+        {
+            foreach (var item in tableEnittyTypes)
+            {
+                var tableName = this.Context.EntityMaintenance.GetTableName(item);
+                DropTable(tableName);
+            }
+            return true;
+        }
         public virtual bool DropTable<T>() 
         {
            var tableName= this.Context.EntityMaintenance.GetTableName<T>();
@@ -340,6 +349,23 @@ namespace SqlSugar
         {
             tableName = this.SqlBuilder.GetTranslationTableName(tableName);
             this.Context.Ado.ExecuteCommand(string.Format(this.TruncateTableSql, tableName));
+            return true;
+        }
+        public bool TruncateTable(params string[] tableNames) 
+        {
+            foreach (var item in tableNames)
+            {
+                TruncateTable(item);
+            }
+            return true;
+        }
+        public bool TruncateTable(params Type[] tableEnittyTypes)
+        {
+            foreach (var item in tableEnittyTypes)
+            {
+                var name = this.Context.EntityMaintenance.GetTableName(item);
+                TruncateTable(name);
+            }
             return true;
         }
         public virtual bool BackupDataBase(string databaseName, string fullFileName)
