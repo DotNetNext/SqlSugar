@@ -275,6 +275,25 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override bool IsAnyTable(string tableName, bool isCache = true)
+        {
+            try
+            {
+                return base.IsAnyTable(tableName, isCache);
+            }
+            catch (Exception ex)
+            {
+                if (SugarCompatible.IsFramework && ex.Message == "Invalid attempt to Read when reader is closed.")
+                {
+                    Check.ExceptionEasy($"To upgrade the MySql.Data. Error:{ex.Message}", $" 请先升级MySql.Data 。 详细错误:{ex.Message}");
+                    return true;
+                }
+                else
+                {
+                    throw;
+                }
+            }
+        }
         public override bool IsAnyColumnRemark(string columnName, string tableName)
         {
             var isAny=this.Context.DbMaintenance.GetColumnInfosByTableName(tableName, false)
