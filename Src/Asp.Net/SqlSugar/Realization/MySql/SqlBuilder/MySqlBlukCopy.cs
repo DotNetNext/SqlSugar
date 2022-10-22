@@ -131,7 +131,7 @@ namespace SqlSugar
         {
             if (this.Chara == null)
             {
-                return "UTF8";
+                return "utf8mb4";
             }
             else
             {
