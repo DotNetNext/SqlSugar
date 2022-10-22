@@ -114,6 +114,8 @@
     <Compile Include="Abstract\FastestProvider\SplitFastest.cs" />
     <Compile Include="Abstract\FilterProvider\FilterProvider.cs" />
     <Compile Include="Abstract\InsertableProvider\InsertableHelper.cs" />
+    <Compile Include="Abstract\QueryableProvider\QueryableHelper.cs" />
+    <Compile Include="Abstract\QueryableProvider\QueryableProvider2-9.cs" />
     <Compile Include="Abstract\QueryableProvider\NavSelectHelper.cs" />
     <Compile Include="Abstract\QueryableProvider\IncludesHelper.cs" />
     <Compile Include="Abstract\QueryableProvider\Includes.cs" />
