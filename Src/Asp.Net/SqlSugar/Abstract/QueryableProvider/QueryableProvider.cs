@@ -1183,6 +1183,35 @@ namespace SqlSugar
             //var values= unionall.QueryBuilder.GetSelectValue;
             //unionall.QueryBuilder.SelectValue = values;
         }
+        public ISugarQueryable<T> WithCache(string cacheKey, int cacheDurationInSeconds = int.MaxValue)
+        {
+            cacheDurationInSeconds = SetCacheTime(cacheDurationInSeconds);
+            Check.ArgumentNullException(this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService, "Use Cache ConnectionConfig.ConfigureExternalServices.DataInfoCacheService is required ");
+            this.IsCache = true;
+            this.CacheTime = cacheDurationInSeconds;
+            this.CacheKey = cacheKey;
+            return this;
+        }
+        public ISugarQueryable<T> WithCache(int cacheDurationInSeconds = int.MaxValue)
+        {
+            cacheDurationInSeconds = SetCacheTime(cacheDurationInSeconds);
+            Check.ArgumentNullException(this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService, "Use Cache ConnectionConfig.ConfigureExternalServices.DataInfoCacheService is required ");
+            this.IsCache = true;
+            this.CacheTime = cacheDurationInSeconds;
+            return this;
+        }
+
+        public ISugarQueryable<T> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue)
+        {
+            cacheDurationInSeconds = SetCacheTime(cacheDurationInSeconds);
+            if (isCache)
+            {
+                this.IsCache = true;
+                this.CacheTime = cacheDurationInSeconds;
+            }
+            return this;
+        }
+
         public ISugarQueryable<T> Distinct()
         {
             QueryBuilder.IsDistinct = true;
@@ -2077,34 +2106,6 @@ namespace SqlSugar
             {
                 return _ToSql();
             }
-        }
-        public ISugarQueryable<T> WithCache(string cacheKey, int cacheDurationInSeconds = int.MaxValue)
-        {
-            cacheDurationInSeconds = SetCacheTime(cacheDurationInSeconds);
-            Check.ArgumentNullException(this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService, "Use Cache ConnectionConfig.ConfigureExternalServices.DataInfoCacheService is required ");
-            this.IsCache = true;
-            this.CacheTime = cacheDurationInSeconds;
-            this.CacheKey = cacheKey;
-            return this;
-        }
-        public ISugarQueryable<T> WithCache(int cacheDurationInSeconds = int.MaxValue)
-        {
-            cacheDurationInSeconds = SetCacheTime(cacheDurationInSeconds);
-            Check.ArgumentNullException(this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService, "Use Cache ConnectionConfig.ConfigureExternalServices.DataInfoCacheService is required ");
-            this.IsCache = true;
-            this.CacheTime = cacheDurationInSeconds;
-            return this;
-        }
-
-        public ISugarQueryable<T> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue)
-        {
-            cacheDurationInSeconds = SetCacheTime(cacheDurationInSeconds);
-            if (isCache)
-            {
-                this.IsCache = true;
-                this.CacheTime = cacheDurationInSeconds;
-            }
-            return this;
         }
         public string ToClassString(string className)
         {
