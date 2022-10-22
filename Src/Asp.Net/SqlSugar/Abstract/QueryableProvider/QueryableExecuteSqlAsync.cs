@@ -24,6 +24,7 @@ namespace SqlSugar
             else
                 return null;
         }
+
         public virtual async Task<T> InSingleAsync(object pkValue)
         {
             Check.Exception(this.QueryBuilder.SelectValue.HasValue(), "'InSingle' and' Select' can't be used together,You can use .Select(it=>...).Single(it.id==1)");
@@ -61,7 +62,6 @@ namespace SqlSugar
                 return result.SingleOrDefault();
             }
         }
-
         public async Task<T> SingleAsync(Expression<Func<T, bool>> expression)
         {
             _Where(expression);
@@ -93,7 +93,6 @@ namespace SqlSugar
                     return default(T);
             }
         }
-
         public async Task<T> FirstAsync(Expression<Func<T, bool>> expression)
         {
             _Where(expression);
@@ -109,7 +108,6 @@ namespace SqlSugar
             this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
             return result;
         }
-
         public async Task<bool> AnyAsync()
         {
             return await this.CountAsync() > 0;
@@ -150,6 +148,7 @@ namespace SqlSugar
             this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
             return result;
         }
+
         public async Task<TResult> MaxAsync<TResult>(string maxField)
         {
             this.Select(string.Format(QueryBuilder.MaxTemplate, maxField));
@@ -157,7 +156,6 @@ namespace SqlSugar
             var result = list.SingleOrDefault();
             return result;
         }
-
         public Task<TResult> MaxAsync<TResult>(Expression<Func<T, TResult>> expression)
         {
             return _MaxAsync<TResult>(expression);
@@ -170,7 +168,6 @@ namespace SqlSugar
             var result = list.SingleOrDefault();
             return result;
         }
-
         public Task<TResult> MinAsync<TResult>(Expression<Func<T, TResult>> expression)
         {
             return _MinAsync<TResult>(expression);
@@ -183,7 +180,6 @@ namespace SqlSugar
             var result = list.SingleOrDefault();
             return result;
         }
-
         public Task<TResult> SumAsync<TResult>(Expression<Func<T, TResult>> expression)
         {
             return _SumAsync<TResult>(expression);
@@ -196,17 +192,29 @@ namespace SqlSugar
             var result = list.SingleOrDefault();
             return result;
         }
-
         public Task<TResult> AvgAsync<TResult>(Expression<Func<T, TResult>> expression)
         {
             return _AvgAsync<TResult>(expression);
         }
 
+        public async virtual Task<List<TResult>> ToListAsync<TResult>(Expression<Func<T, TResult>> expression)
+        {
+            if (this.QueryBuilder.Includes != null && this.QueryBuilder.Includes.Count > 0)
+            {
+                return await NavSelectHelper.GetListAsync(expression, this);
+            }
+            else
+            {
+                var list = await this.Select(expression).ToListAsync();
+                return list;
+            }
+        }
         public Task<List<T>> ToListAsync()
         {
             InitMapping();
             return _ToListAsync<T>();
         }
+
         public Task<List<T>> ToPageListAsync(int pageIndex, int pageSize)
         {
             pageIndex = _PageList(pageIndex, pageSize);
@@ -248,6 +256,7 @@ namespace SqlSugar
             totalPage.Value = (totalNumber.Value + pageSize - 1) / pageSize;
             return result;
         }
+        
         public async Task<string> ToJsonAsync()
         {
             if (IsCache)
@@ -275,6 +284,7 @@ namespace SqlSugar
             this.Context.MappingTables = oldMapping;
             return await this.Clone().ToJsonPageAsync(pageIndex, pageSize);
         }
+        
         public async Task<DataTable> ToDataTableAsync()
         {
             QueryBuilder.ResultType = typeof(SugarCacheDataTable);
@@ -319,6 +329,7 @@ namespace SqlSugar
                 return await this.Clone().ToListAsync();
             }
         }
+        
         public virtual async Task ForEachAsync(Action<T> action, int singleMaxReads = 300, System.Threading.CancellationTokenSource cancellationTokenSource = null)
         {
             Check.Exception(this.QueryBuilder.Skip > 0 || this.QueryBuilder.Take > 0, ErrorMessage.GetThrowMessage("no support Skip take, use PageForEach", "不支持Skip Take,请使用 Queryale.PageForEach"));
@@ -376,6 +387,7 @@ namespace SqlSugar
             }
             totalNumber = count;
         }
+        
         public async Task<List<T>> SetContextAsync<ParameterT>(Expression<Func<T, object>> thisFiled1, Expression<Func<object>> mappingFiled1,
 Expression<Func<T, object>> thisFiled2, Expression<Func<object>> mappingFiled2,
 ParameterT parameter)
@@ -424,7 +436,6 @@ ParameterT parameter)
             var newResult = fieldsHelper.GetSetList(obj, listObj, mappings).Select(it => (T)it).ToList();
             return newResult;
         }
-
         public async Task<List<T>> SetContextAsync<ParameterT>(Expression<Func<T, object>> thisFiled, Expression<Func<object>> mappingFiled, ParameterT parameter)
         {
             List<T> result = new List<T>();
@@ -471,6 +482,7 @@ ParameterT parameter)
             result = result.Where(it => it.GetType().GetProperty(name).GetValue(it).ObjToString() == pkValue.ObjToString()).ToList();
             return result;
         }
+       
         public async Task<Dictionary<string, object>> ToDictionaryAsync(Expression<Func<T, object>> key, Expression<Func<T, object>> value)
         {
             this.QueryBuilder.ResultType = typeof(SugarCacheDictionary);

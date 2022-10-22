@@ -15,6 +15,101 @@ namespace SqlSugar
 
     public partial class QueryableProvider<T> : QueryableAccessory, ISugarQueryable<T>
     {
+        public virtual T Single()
+        {
+            if (QueryBuilder.OrderByValue.IsNullOrEmpty())
+            {
+                QueryBuilder.OrderByValue = QueryBuilder.DefaultOrderByTemplate;
+            }
+            var oldSkip = QueryBuilder.Skip;
+            var oldTake = QueryBuilder.Take;
+            var oldOrderBy = QueryBuilder.OrderByValue;
+            QueryBuilder.Skip = null;
+            QueryBuilder.Take = null;
+            QueryBuilder.OrderByValue = null;
+            var result = this.ToList();
+            QueryBuilder.Skip = oldSkip;
+            QueryBuilder.Take = oldTake;
+            QueryBuilder.OrderByValue = oldOrderBy;
+            if (result == null || result.Count == 0)
+            {
+                return default(T);
+            }
+            else if (result.Count >= 2)
+            {
+                Check.Exception(true, ErrorMessage.GetThrowMessage(".Single()  result must not exceed one . You can use.First()", "使用single查询结果集不能大于1，适合主键查询，如果大于1你可以使用Queryable.First"));
+                return default(T);
+            }
+            else
+            {
+                return result.SingleOrDefault();
+            }
+        }
+        public virtual T Single(Expression<Func<T, bool>> expression)
+        {
+            _Where(expression);
+            var result = Single();
+            this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
+            return result;
+        }
+
+        public virtual T First()
+        {
+            if (QueryBuilder.OrderByValue.IsNullOrEmpty())
+            {
+                QueryBuilder.OrderByValue = QueryBuilder.DefaultOrderByTemplate;
+            }
+            if (QueryBuilder.Skip.HasValue)
+            {
+                QueryBuilder.Take = 1;
+                return this.ToList().FirstOrDefault();
+            }
+            else
+            {
+                QueryBuilder.Skip = 0;
+                QueryBuilder.Take = 1;
+                var result = this.ToList();
+                if (result.HasValue())
+                    return result.FirstOrDefault();
+                else
+                    return default(T);
+            }
+        }
+        public virtual T First(Expression<Func<T, bool>> expression)
+        {
+            _Where(expression);
+            var result = First();
+            this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
+            return result;
+        }
+
+        public virtual bool Any(Expression<Func<T, bool>> expression)
+        {
+            _Where(expression);
+            var result = Any();
+            this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
+            return result;
+        }
+        public virtual bool Any()
+        {
+            return this.Select("1").ToList().Count() > 0;
+        }
+
+        public virtual List<TResult> ToList<TResult>(Expression<Func<T, TResult>> expression)
+        {
+            if (this.QueryBuilder.Includes != null && this.QueryBuilder.Includes.Count > 0)
+            {
+                return NavSelectHelper.GetList(expression, this);
+                // var list = this.ToList().Select(expression.Compile()).ToList();
+                // return list;
+            }
+            else
+            {
+                var list = this.Select(expression).ToList();
+                return list;
+            }
+        }
+
         public virtual int Count()
         {
             if (this.QueryBuilder.Skip == null &&
@@ -43,7 +138,6 @@ namespace SqlSugar
             _CountEnd(expMapping);
             return result;
         }
-
         public virtual int Count(Expression<Func<T, bool>> expression)
         {
             _Where(expression);

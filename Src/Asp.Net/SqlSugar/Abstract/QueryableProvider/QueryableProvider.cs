@@ -918,112 +918,6 @@ namespace SqlSugar
             return this;
         }
 
-        public virtual T Single()
-        {
-            if (QueryBuilder.OrderByValue.IsNullOrEmpty())
-            {
-                QueryBuilder.OrderByValue = QueryBuilder.DefaultOrderByTemplate;
-            }
-            var oldSkip = QueryBuilder.Skip;
-            var oldTake = QueryBuilder.Take;
-            var oldOrderBy = QueryBuilder.OrderByValue;
-            QueryBuilder.Skip = null;
-            QueryBuilder.Take = null;
-            QueryBuilder.OrderByValue = null;
-            var result = this.ToList();
-            QueryBuilder.Skip = oldSkip;
-            QueryBuilder.Take = oldTake;
-            QueryBuilder.OrderByValue = oldOrderBy;
-            if (result == null || result.Count == 0)
-            {
-                return default(T);
-            }
-            else if (result.Count >= 2)
-            {
-                Check.Exception(true, ErrorMessage.GetThrowMessage(".Single()  result must not exceed one . You can use.First()", "使用single查询结果集不能大于1，适合主键查询，如果大于1你可以使用Queryable.First"));
-                return default(T);
-            }
-            else
-            {
-                return result.SingleOrDefault();
-            }
-        }
-        public virtual T Single(Expression<Func<T, bool>> expression)
-        {
-            _Where(expression);
-            var result = Single();
-            this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
-            return result;
-        }
-
-        public virtual T First()
-        {
-            if (QueryBuilder.OrderByValue.IsNullOrEmpty())
-            {
-                QueryBuilder.OrderByValue = QueryBuilder.DefaultOrderByTemplate;
-            }
-            if (QueryBuilder.Skip.HasValue)
-            {
-                QueryBuilder.Take = 1;
-                return this.ToList().FirstOrDefault();
-            }
-            else
-            {
-                QueryBuilder.Skip = 0;
-                QueryBuilder.Take = 1;
-                var result = this.ToList();
-                if (result.HasValue())
-                    return result.FirstOrDefault();
-                else
-                    return default(T);
-            }
-        }
-        public virtual T First(Expression<Func<T, bool>> expression)
-        {
-            _Where(expression);
-            var result = First();
-            this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
-            return result;
-        }
-
-        public virtual bool Any(Expression<Func<T, bool>> expression)
-        {
-            _Where(expression);
-            var result = Any();
-            this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
-            return result;
-        }
-        public virtual bool Any()
-        {
-            return this.Select("1").ToList().Count() > 0;
-        }
-
-        public virtual List<TResult> ToList<TResult>(Expression<Func<T, TResult>> expression)
-        {
-            if (this.QueryBuilder.Includes != null && this.QueryBuilder.Includes.Count > 0)
-            {
-                return NavSelectHelper.GetList(expression,this);
-               // var list = this.ToList().Select(expression.Compile()).ToList();
-               // return list;
-            }
-            else 
-            {
-                var list = this.Select(expression).ToList();
-                return list;
-            }
-        }
-        public async virtual Task<List<TResult>> ToListAsync<TResult>(Expression<Func<T, TResult>> expression)
-        {
-            if (this.QueryBuilder.Includes != null && this.QueryBuilder.Includes.Count > 0)
-            {
-                return await NavSelectHelper.GetListAsync(expression, this);
-            }
-            else
-            {
-                var list = await this.Select(expression).ToListAsync();
-                return list;
-            }
-        }
         public virtual ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, TResult>> expression)
         {
             Check.ExceptionEasy(this.QueryBuilder.Includes.HasValue(), $"use Includes(...).ToList(it=>new {typeof(TResult).Name} {{...}} )", $"Includes()后面禁使用Select，正确写法: ToList(it=>new {typeof(TResult).Name}{{....}})");
@@ -1100,6 +994,7 @@ namespace SqlSugar
             QueryBuilder.SelectValue = selectValue;
             return this;
         }
+
         public virtual ISugarQueryable<T> MergeTable()
         {
             Check.Exception(this.MapperAction != null || this.MapperActionWithCache != null,ErrorMessage.GetThrowMessage( "'Mapper’ needs to be written after ‘MergeTable’ ", "Mapper 只能在 MergeTable 之后使用"));
@@ -1117,6 +1012,7 @@ namespace SqlSugar
             }
             return result;
         }
+
         public ISugarQueryable<T> SplitTable(DateTime beginTime, DateTime endTime) 
         {
             var splitColumn = this.EntityInfo.Columns.FirstOrDefault(it => it.PropertyInfo.GetCustomAttribute<SplitFieldAttribute>() != null);
@@ -1183,6 +1079,7 @@ namespace SqlSugar
             //var values= unionall.QueryBuilder.GetSelectValue;
             //unionall.QueryBuilder.SelectValue = values;
         }
+        
         public ISugarQueryable<T> WithCache(string cacheKey, int cacheDurationInSeconds = int.MaxValue)
         {
             cacheDurationInSeconds = SetCacheTime(cacheDurationInSeconds);
@@ -1200,7 +1097,6 @@ namespace SqlSugar
             this.CacheTime = cacheDurationInSeconds;
             return this;
         }
-
         public ISugarQueryable<T> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue)
         {
             cacheDurationInSeconds = SetCacheTime(cacheDurationInSeconds);
