@@ -34,7 +34,7 @@ namespace SqlSugar
                 // IsolationLevel.Parse
                 MySqlBulkLoader bulk = new MySqlBulkLoader(conn)
                 {
-                    CharacterSet = "UTF8",
+                    CharacterSet = "utf8mb4",
                     FieldTerminator = ",",
                     FieldQuotationCharacter = '"',
                     EscapeCharacter = '"',
