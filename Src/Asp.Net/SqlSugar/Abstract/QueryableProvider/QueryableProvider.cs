@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace SqlSugar
 {
-    #region T1
+
     public partial class QueryableProvider<T> : QueryableAccessory, ISugarQueryable<T>
     {
        
@@ -2407,5 +2407,5 @@ namespace SqlSugar
 
         #endregion
     }
-    #endregion
+
 }
