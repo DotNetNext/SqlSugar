@@ -262,6 +262,9 @@ namespace SqlSugar
         #endregion
 
         #region GroupBy
+        new ISugarQueryable<T, T2> PartitionBy(Expression<Func<T, object>> expression);
+        ISugarQueryable<T,T2> PartitionBy(Expression<Func<T,T2, object>> expression);
+        new ISugarQueryable<T,T2> PartitionBy(string groupFileds);
         new ISugarQueryable<T, T2> GroupBy(Expression<Func<T, object>> expression);
         ISugarQueryable<T, T2> GroupBy(Expression<Func<T, T2, object>> expression);
         new ISugarQueryable<T, T2> GroupByIF(bool isGroupBy, Expression<Func<T, object>> expression);
@@ -368,6 +371,10 @@ namespace SqlSugar
         #endregion
 
         #region GroupBy
+        new ISugarQueryable<T, T2,T3> PartitionBy(Expression<Func<T, object>> expression);
+        ISugarQueryable<T, T2,T3> PartitionBy(Expression<Func<T, T2, object>> expression);
+        ISugarQueryable<T, T2, T3> PartitionBy(Expression<Func<T, T2,T3, object>> expression);
+        new ISugarQueryable<T, T2,T3> PartitionBy(string groupFileds);
         new ISugarQueryable<T, T2, T3> GroupBy(Expression<Func<T, object>> expression);
         ISugarQueryable<T, T2, T3> GroupBy(Expression<Func<T, T2, object>> expression);
         ISugarQueryable<T, T2, T3> GroupBy(Expression<Func<T, T2, T3, object>> expression);
