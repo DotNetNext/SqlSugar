@@ -139,5 +139,14 @@ namespace SqlSugar
             }
             return result;
         }
+        protected override void SugarCatch(Exception ex, string sql, SugarParameter[] parameters)
+        {
+            base.SugarCatch(ex, sql, parameters);
+
+            if (ex is NullReferenceException&&SugarCompatible.IsFramework) 
+            {
+                Check.ExceptionEasy($"To upgrade the MySql.Data. Error:{ex.Message}", $" 请先升级MySql.Data 。 详细错误:{ex.Message}");
+            }
+        }
     }
 }

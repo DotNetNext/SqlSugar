@@ -1310,7 +1310,7 @@ namespace SqlSugar
 
         #region  Helper
 
-        private void SugarCatch(Exception ex, string sql, SugarParameter[] parameters)
+        protected virtual void SugarCatch(Exception ex, string sql, SugarParameter[] parameters)
         {
             if (sql != null && sql.Contains("{year}{month}{day}")) 
             {
