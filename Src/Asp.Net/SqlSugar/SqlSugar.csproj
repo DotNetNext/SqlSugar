@@ -114,6 +114,8 @@
     <Compile Include="Abstract\FastestProvider\SplitFastest.cs" />
     <Compile Include="Abstract\FilterProvider\FilterProvider.cs" />
     <Compile Include="Abstract\InsertableProvider\InsertableHelper.cs" />
+    <Compile Include="Abstract\QueryableProvider\QueryableExecuteSqlAsync.cs" />
+    <Compile Include="Abstract\QueryableProvider\QueryableExecuteSql.cs" />
     <Compile Include="Abstract\QueryableProvider\QueryableProperties.cs" />
     <Compile Include="Abstract\QueryableProvider\QueryableProvider11-12.cs" />
     <Compile Include="Abstract\QueryableProvider\QueryableProvider06-10.cs" />
