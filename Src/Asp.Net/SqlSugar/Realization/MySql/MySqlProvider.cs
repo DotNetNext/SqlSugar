@@ -25,6 +25,10 @@ namespace SqlSugar
                         {
                             mySqlConnectionString = mySqlConnectionString.Trim().TrimEnd(';') + ";charset=utf8;";
                         }
+                        if (!mySqlConnectionString.ToLower().Contains("min"))
+                        {
+                            mySqlConnectionString = mySqlConnectionString.Trim().TrimEnd(';') + ";min pool size=1";
+                        }
                         base._DbConnection = new MySqlConnection(mySqlConnectionString);
                     }
                     catch (Exception ex)
