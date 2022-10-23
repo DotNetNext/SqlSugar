@@ -75,14 +75,32 @@ namespace SqlSugar
                         }
                     }
                 }
-                else if (context.RootExpression!=null&&context.Expression.GetType().Name == "SimpleBinaryExpression")
+                else if (context.RootExpression != null && context.Expression.GetType().Name == "SimpleBinaryExpression")
                 {
                     var name = (this.context.RootExpression as LambdaExpression).Parameters[0].Name;
                     context.SingleTableNameSubqueryShortName = name;
                 }
+                else if (context.Expression is BinaryExpression) 
+                {
+                    var subExp = (context.Expression as BinaryExpression).Left is MethodCallExpression ? (context.Expression as BinaryExpression).Left : (context.Expression as BinaryExpression).Right;
+                    if (subExp is MethodCallExpression)
+                    {
+                        var argus = ((subExp as MethodCallExpression).Object as MethodCallExpression).Arguments;
+                        if (argus.Count > 0)
+                        {
+                            var meExp = argus[0] as LambdaExpression;
+                            var selfParameterName = meExp.Parameters.First().Name;
+                            context.SingleTableNameSubqueryShortName = (((meExp.Body as BinaryExpression).Left as MemberExpression).Expression as ParameterExpression).Name;
+                            if (context.SingleTableNameSubqueryShortName == selfParameterName)
+                            {
+                                context.SingleTableNameSubqueryShortName = (((meExp.Body as BinaryExpression).Right as MemberExpression).Expression as ParameterExpression).Name;
+                            }
+                        }
+                    }
+                }
                 else
                 {
-                    Check.Exception(true, "I'm sorry I can't parse the current expression");
+                    Check.ExceptionEasy( "I'm sorry I can't parse the current expression","不支持当前表达式");
                 }
             }
             var subIndex = this.context.SubQueryIndex;

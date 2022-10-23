@@ -27,6 +27,12 @@ namespace SqlSugar
         private void Other(ExpressionParameter parameter)
         {
             var expression = this.Expression as BinaryExpression;
+            if (expression.NodeType == ExpressionType.ArrayIndex) 
+            {
+                var parameterName=AppendParameter(ExpressionTool.DynamicInvoke(expression));
+                base.Context.Result.Append($" {BaseParameter.BaseParameter.OperatorValue} {parameterName} ");
+                return;
+            }
             var operatorValue = parameter.OperatorValue = ExpressionTool.GetOperator(expression.NodeType);
             var isSubGroup = IsGroupSubquery(expression.Right, operatorValue);
             if (isSubGroup)

@@ -27,23 +27,7 @@ namespace SqlSugar
         public int CacheTime { get; set; }
         public string CacheKey { get; set; }
         public bool IsAs { get; set; }
-        public QueryBuilder QueryBuilder
-        {
-            get
-            {
-                return this.SqlBuilder.QueryBuilder;
-            }
-            set
-            {
-                this.SqlBuilder.QueryBuilder = value;
-            }
-        }
-        public EntityInfo EntityInfo
-        {
-            get
-            {
-                return this.Context.EntityMaintenance.GetEntityInfo<T>();
-            }
-        }
+        public QueryBuilder QueryBuilder { get{ return this.SqlBuilder.QueryBuilder;} set{ this.SqlBuilder.QueryBuilder = value;}}
+        public EntityInfo EntityInfo{get{ return this.Context.EntityMaintenance.GetEntityInfo<T>();}}
     }
 }

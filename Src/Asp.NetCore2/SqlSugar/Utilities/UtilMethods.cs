@@ -17,6 +17,18 @@ namespace SqlSugar
 {
     public class UtilMethods
     {
+        public static string ToUnderLine(string str, bool isToUpper = false)
+        {
+            if (isToUpper)
+            {
+                return string.Concat(str.Select((x, i) => i > 0 && char.IsUpper(x) ? "_" + x.ToString() : x.ToString())).ToUpper();
+            }
+            else
+            {
+                return string.Concat(str.Select((x, i) => i > 0 && char.IsUpper(x) ? "_" + x.ToString() : x.ToString())).ToLower();
+            }
+        }
+ 
         internal static bool IsJsonMember(Expression expression, SqlSugarProvider context)
         {
             if (expression == null)
