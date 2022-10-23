@@ -14,7 +14,7 @@ namespace SqlSugar
 {
     public partial class QueryableProvider<T> : QueryableAccessory, ISugarQueryable<T>
     {
-
+        #region Tree
         private List<T> _ToParentListByTreeKey(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue)
         {
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
@@ -133,14 +133,6 @@ namespace SqlSugar
             return result;
         }
 
-        public virtual KeyValuePair<string, List<SugarParameter>> _ToSql()
-        {
-            InitMapping();
-            ToSqlBefore();
-            string sql = QueryBuilder.ToSqlString();
-            RestoreMapping();
-            return new KeyValuePair<string, List<SugarParameter>>(sql, QueryBuilder.Parameters);
-        }
         private List<T> GetChildList(Expression<Func<T, object>> parentIdExpression, string pkName, List<T> list, object rootValue, bool isContainOneself)
         {
             var exp = (parentIdExpression as LambdaExpression).Body;
@@ -249,44 +241,35 @@ namespace SqlSugar
             }
             return result;
         }
-        protected JoinQueryInfo GetJoinInfo(Expression joinExpression, JoinType joinType)
+        private static string GetTreeKey(EntityInfo entity)
         {
-            QueryBuilder.CheckExpressionNew(joinExpression, "Join");
-            QueryBuilder.JoinExpression = joinExpression;
-            var express = LambdaExpression.Lambda(joinExpression).Body;
-            var lastPareamter = (express as LambdaExpression).Parameters.Last();
-            var expResult = this.QueryBuilder.GetExpressionValue(joinExpression, ResolveExpressType.WhereMultiple);
-            this.Context.InitMappingInfo(lastPareamter.Type);
-            var result = new JoinQueryInfo()
-            {
-                JoinIndex = QueryBuilder.JoinQueryInfos.Count,
-                JoinType = joinType,
-                JoinWhere = expResult.GetResultString(),
-                ShortName = lastPareamter.Name,
-                TableName = this.Context.EntityMaintenance.GetTableName(lastPareamter.Type)
-            };
-            if (result.JoinIndex == 0)
-            {
-                var firstPareamter = (express as LambdaExpression).Parameters.First();
-                this.QueryBuilder.TableShortName = firstPareamter.Name;
-                if (this.QueryBuilder.AsTables != null && this.QueryBuilder.AsTables.Count == 1)
-                {
-                    var tableinfo = this.QueryBuilder.AsTables.First();
-                    if (this.QueryBuilder.TableWithString != SqlWith.Null && this.Context.CurrentConnectionConfig?.MoreSettings?.IsWithNoLockQuery == true && this.QueryBuilder.AsTables.First().Value.ObjToString().Contains(SqlWith.NoLock) == false)
-                    {
-                        this.QueryBuilder.AsTables[tableinfo.Key] = " (SELECT * FROM " + this.QueryBuilder.AsTables.First().Value + $" {SqlWith.NoLock} )";
-                    }
-                    else
-                    {
-                        this.QueryBuilder.AsTables[tableinfo.Key] = " (SELECT * FROM " + this.QueryBuilder.AsTables.First().Value + ")";
-                    }
-                    this.QueryBuilder.SelectValue = this.QueryBuilder.TableShortName + ".*";
-                }
-            }
-            Check.Exception(result.JoinIndex > 10, ErrorMessage.GetThrowMessage("只支持12个表", "Only 12 tables are supported"));
+            Check.Exception(entity.Columns.Where(it => it.IsPrimarykey || it.IsTreeKey).Count() == 0, "need IsPrimary=true Or IsTreeKey=true");
+            string pk = entity.Columns.Where(it => it.IsTreeKey).FirstOrDefault()?.PropertyName;
+            if (pk == null)
+                pk = entity.Columns.Where(it => it.IsPrimarykey).FirstOrDefault()?.PropertyName;
+            return pk;
+        }
+        #endregion
+
+        #region Count
+        protected int GetCount()
+        {
+            var sql = string.Empty;
+            ToSqlBefore();
+            sql = QueryBuilder.ToSqlString();
+            sql = QueryBuilder.ToCountSql(sql);
+            var result = Context.Ado.GetInt(sql, QueryBuilder.Parameters.ToArray());
             return result;
         }
-
+        protected async Task<int> GetCountAsync()
+        {
+            var sql = string.Empty;
+            ToSqlBefore();
+            sql = QueryBuilder.ToSqlString();
+            sql = QueryBuilder.ToCountSql(sql);
+            var result = Convert.ToInt32(await Context.Ado.GetScalarAsync(sql, QueryBuilder.Parameters.ToArray()));
+            return result;
+        }
         private void _CountEnd(MappingTableList expMapping)
         {
             RestoreMapping();
@@ -300,7 +283,6 @@ namespace SqlSugar
                 this.QueryableMappingTableList.Add(expMapping.First());
             }
         }
-
         private void _CountBegin(out MappingTableList expMapping, out int result)
         {
             expMapping = new MappingTableList();
@@ -312,150 +294,9 @@ namespace SqlSugar
             QueryBuilder.IsCount = true;
             result = 0;
         }
-        private static string GetTreeKey(EntityInfo entity)
-        {
-            Check.Exception(entity.Columns.Where(it => it.IsPrimarykey || it.IsTreeKey).Count() == 0, "need IsPrimary=true Or IsTreeKey=true");
-            string pk = entity.Columns.Where(it => it.IsTreeKey).FirstOrDefault()?.PropertyName;
-            if (pk == null)
-                pk = entity.Columns.Where(it => it.IsPrimarykey).FirstOrDefault()?.PropertyName;
-            return pk;
-        }
-        protected ISugarQueryable<TResult> _Select<TResult>(Expression expression)
-        {
-            QueryBuilder.CheckExpression(expression, "Select");
-            this.Context.InitMappingInfo(typeof(TResult));
-            var result = InstanceFactory.GetQueryable<TResult>(this.Context.CurrentConnectionConfig);
-            result.Context = this.Context;
-            result.SqlBuilder = this.SqlBuilder;
-            result.SqlBuilder.QueryBuilder.Parameters = QueryBuilder.Parameters;
-            result.SqlBuilder.QueryBuilder.SelectValue = expression;
-            result.SqlBuilder.QueryBuilder.IsSelectSingleFiledJson = UtilMethods.IsJsonMember(expression, this.Context);
-            if (this.IsCache)
-            {
-                result.WithCache(this.CacheTime);
-            }
-            if (this.QueryBuilder.IsSqlQuery)
-            {
-                this.QueryBuilder.IsSqlQuerySelect = true;
-            }
-            return result;
-        }
-        protected void _Where(Expression expression)
-        {
-            QueryBuilder.CheckExpression(expression, "Where");
-            var isSingle = QueryBuilder.IsSingle();
-            var result = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.WhereSingle : ResolveExpressType.WhereMultiple);
-            QueryBuilder.WhereInfos.Add(SqlBuilder.AppendWhereOrAnd(QueryBuilder.WhereInfos.IsNullOrEmpty(), result.GetResultString()));
-        }
-        protected ISugarQueryable<T> _OrderBy(Expression expression, OrderByType type = OrderByType.Asc)
-        {
-            QueryBuilder.CheckExpression(expression, "OrderBy");
-            var isSingle = QueryBuilder.IsSingle();
-            if (expression.ToString().IsContainsIn("Desc(", "Asc("))
-            {
-                var orderValue = "";
-                var newExp = (expression as LambdaExpression).Body as NewExpression;
-                foreach (var item in newExp.Arguments)
-                {
-                    if (item is MemberExpression)
-                    {
-                        orderValue +=
-                          QueryBuilder.GetExpressionValue(item, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple).GetResultString() + ",";
-                    }
-                    else
-                    {
-                        orderValue +=
-                            QueryBuilder.GetExpressionValue(item, isSingle ? ResolveExpressType.WhereSingle : ResolveExpressType.WhereMultiple).GetResultString() + ",";
-                    }
-                }
-                orderValue = orderValue.TrimEnd(',');
-                OrderBy(orderValue);
-                return this;
-            }
-            else if ((expression as LambdaExpression).Body is NewExpression)
-            {
-                var newExp = (expression as LambdaExpression).Body as NewExpression;
-                var result = "";
-                foreach (var item in newExp.Arguments)
-                {
-                    if (item is MemberExpression)
-                    {
-                        result +=
-                          QueryBuilder.GetExpressionValue(item, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple).GetResultString() + ",";
-                    }
-                    else
-                    {
-                        result +=
-                            QueryBuilder.GetExpressionValue(item, isSingle ? ResolveExpressType.WhereSingle : ResolveExpressType.WhereMultiple).GetResultString() + ",";
-                    }
-                }
-                result = result.TrimEnd(',');
-                OrderBy(result);
-                return this;
-            }
-            else
-            {
-                var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
-                OrderBy(lamResult.GetResultString() + UtilConstants.Space + type.ToString().ToUpper());
-                return this;
-            }
-        }
-        private void _ToOffsetPage(int pageIndex, int pageSize)
-        {
-            QueryBuilder.Offset = $" OFFSET {(pageIndex - 1) * pageSize} ROWS FETCH NEXT {pageSize} ROWS ONLY";
-        }
+        #endregion
 
-        private int _PageList(int pageIndex, int pageSize)
-        {
-            if (pageIndex == 0)
-                pageIndex = 1;
-            if (QueryBuilder.PartitionByValue.HasValue())
-            {
-                QueryBuilder.ExternalPageIndex = pageIndex;
-                QueryBuilder.ExternalPageSize = pageSize;
-            }
-            else
-            {
-                QueryBuilder.Skip = (pageIndex - 1) * pageSize;
-                QueryBuilder.Take = pageSize;
-            }
-
-            return pageIndex;
-        }
-        protected ISugarQueryable<T> _GroupBy(Expression expression)
-        {
-            QueryBuilder.CheckExpression(expression, "GroupBy");
-            LambdaExpression lambda = expression as LambdaExpression;
-            expression = lambda.Body;
-            var isSingle = QueryBuilder.IsSingle();
-            ExpressionResult lamResult = null;
-            string result = null;
-            if (expression is NewExpression)
-            {
-                var newExp = expression as NewExpression;
-                foreach (var item in newExp.Arguments)
-                {
-                    if (item is MemberExpression)
-                    {
-                        result +=
-                          QueryBuilder.GetExpressionValue(item, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple).GetResultString() + ",";
-                    }
-                    else
-                    {
-                        result +=
-                            QueryBuilder.GetExpressionValue(item, isSingle ? ResolveExpressType.WhereSingle : ResolveExpressType.WhereMultiple).GetResultString() + ",";
-                    }
-                }
-                result = result.TrimEnd(',');
-            }
-            else
-            {
-                lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
-                result = lamResult.GetResultString();
-            }
-            GroupBy(result);
-            return this;
-        }
+        #region Min Max Sum Gvg
         protected TResult _Min<TResult>(Expression expression)
         {
             QueryBuilder.CheckExpression(expression, "Main");
@@ -524,78 +365,42 @@ namespace SqlSugar
             QueryBuilder.SelectValue = null;
             return reslut;
         }
-        protected ISugarQueryable<T> _As(string tableName, string entityName)
+        #endregion
+
+        #region Master Slave
+        private void RestChangeMasterQuery(bool isChangeQueryableMasterSlave)
         {
-            if (this.QueryBuilder.AsTables != null && this.QueryBuilder.AsTables.Any(it => it.Key == entityName))
-            {
-                Check.Exception(true, ErrorMessage.GetThrowMessage($"use As<{tableName}>(\"{tableName}\")", $"请把 As(\"{tableName}\"), 改成 As<{tableName}实体>(\"{tableName}\")"));
-            }
-            else
-            {
-                this.QueryBuilder.AsTables.Add(entityName, tableName);
-            }
-            return this;
+            if (isChangeQueryableMasterSlave)
+                this.Context.Ado.IsDisableMasterSlaveSeparation = false;
         }
-        protected void _Filter(string FilterName, bool isDisabledGobalFilter)
+        private bool GetIsMasterQuery()
         {
-            QueryBuilder.IsDisabledGobalFilter = isDisabledGobalFilter;
-            if (this.Context.QueryFilter.GeFilterList.HasValue() && FilterName.HasValue())
-            {
-                var list = this.Context.QueryFilter.GeFilterList.Where(it => it.FilterName == FilterName && it.IsJoinQuery == !QueryBuilder.IsSingle());
-                foreach (var item in list)
-                {
-                    var filterResult = item.FilterValue(this.Context);
-                    Where(filterResult.Sql + UtilConstants.Space, filterResult.Parameters);
-                }
-            }
+            var isChangeQueryableMasterSlave =
+                                   this.QueryBuilder.IsDisableMasterSlaveSeparation == true &&
+                                   this.Context.Ado.IsDisableMasterSlaveSeparation == false &&
+                                   this.Context.Ado.Transaction == null;
+            if (isChangeQueryableMasterSlave)
+                this.Context.Ado.IsDisableMasterSlaveSeparation = true;
+            return isChangeQueryableMasterSlave;
         }
-        public ISugarQueryable<T> _PartitionBy(Expression expression)
+        private void RestChangeSlaveQuery(bool isChangeQueryableSlaveSlave)
         {
-            QueryBuilder.CheckExpression(expression, "PartitionBy");
-            LambdaExpression lambda = expression as LambdaExpression;
-            expression = lambda.Body;
-            var isSingle = QueryBuilder.IsSingle();
-            ExpressionResult lamResult = null;
-            string result = null;
-            if (expression is NewExpression)
-            {
-                lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.ArraySingle : ResolveExpressType.ArrayMultiple);
-                result = string.Join(",", lamResult.GetResultArray());
-            }
-            else
-            {
-                lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
-                result = lamResult.GetResultString();
-            }
-            PartitionBy(result);
-            return this;
+            if (isChangeQueryableSlaveSlave)
+                this.Context.Ado.IsDisableMasterSlaveSeparation = true;
         }
-        protected ISugarQueryable<T> _Having(Expression expression)
+        private bool GetIsSlaveQuery()
         {
-            QueryBuilder.CheckExpression(expression, "Having");
-            var isSingle = QueryBuilder.IsSingle();
-            var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.WhereSingle : ResolveExpressType.WhereMultiple);
-            Having(lamResult.GetResultString());
-            return this;
+            var isChangeQueryableMasterSlave =
+                                   this.QueryBuilder.IsEnableMasterSlaveSeparation == true &&
+                                   this.Context.Ado.IsDisableMasterSlaveSeparation == true &&
+                                   this.Context.Ado.Transaction == null;
+            if (isChangeQueryableMasterSlave)
+                this.Context.Ado.IsDisableMasterSlaveSeparation = false;
+            return isChangeQueryableMasterSlave;
         }
-        protected List<TResult> _ToList<TResult>()
-        {
-            List<TResult> result = null;
-            var sqlObj = this._ToSql();
-            if (IsCache)
-            {
-                var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService;
-                result = CacheSchemeMain.GetOrCreate<List<TResult>>(cacheService, this.QueryBuilder, () => { return GetData<TResult>(sqlObj); }, CacheTime, this.Context, CacheKey);
-            }
-            else
-            {
-                result = GetData<TResult>(sqlObj);
-            }
-            RestoreMapping();
-            _Mapper(result);
-            _InitNavigat(result);
-            return result;
-        }
+        #endregion
+
+        #region Navigate
         private async Task _InitNavigatAsync<TResult>(List<TResult> result)
         {
             if (this.QueryBuilder.Includes != null)
@@ -603,7 +408,6 @@ namespace SqlSugar
                 await Task.Run(() => { _InitNavigat(result); });
             }
         }
-
         private void _InitNavigat<TResult>(List<TResult> result)
         {
             if (this.QueryBuilder.Includes != null)
@@ -621,26 +425,6 @@ namespace SqlSugar
                 }
             }
         }
-
-        protected async Task<List<TResult>> _ToListAsync<TResult>()
-        {
-            List<TResult> result = null;
-            var sqlObj = this._ToSql();
-            if (IsCache)
-            {
-                var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService;
-                result = CacheSchemeMain.GetOrCreate<List<TResult>>(cacheService, this.QueryBuilder, () => { return GetData<TResult>(sqlObj); }, CacheTime, this.Context, CacheKey);
-            }
-            else
-            {
-                result = await GetDataAsync<TResult>(sqlObj);
-            }
-            RestoreMapping();
-            _Mapper(result);
-            await _InitNavigatAsync(result);
-            return result;
-        }
-
         protected void _Mapper<TResult>(List<TResult> result)
         {
             if (this.EntityInfo.Columns.Any(it => it.IsTranscoding))
@@ -706,7 +490,6 @@ namespace SqlSugar
                 }
             }
         }
-
         private ISugarQueryable<T> _Mapper<TObject>(Expression mapperObject, Expression mapperField)
         {
             if ((mapperObject as LambdaExpression).Body is UnaryExpression)
@@ -863,7 +646,6 @@ namespace SqlSugar
 
             return this;
         }
-
         private ISugarQueryable<T> _Mapper<TObject>(Expression mapperObject, Expression mainField, Expression childField)
         {
             if ((mapperObject as LambdaExpression).Body is UnaryExpression)
@@ -1026,25 +808,304 @@ namespace SqlSugar
 
             return this;
         }
-        protected int GetCount()
+        private void SetContextModel<TResult>(List<TResult> result, Type entityType)
         {
-            var sql = string.Empty;
-            ToSqlBefore();
-            sql = QueryBuilder.ToSqlString();
-            sql = QueryBuilder.ToCountSql(sql);
-            var result = Context.Ado.GetInt(sql, QueryBuilder.Parameters.ToArray());
-            return result;
+            if (result.HasValue())
+            {
+                if (UtilMethods.GetRootBaseType(entityType).HasValue() && UtilMethods.GetRootBaseType(entityType) == UtilConstants.ModelType)
+                {
+                    foreach (var item in result)
+                    {
+                        var contextProperty = item.GetType().GetProperty("Context");
+                        SqlSugarProvider newClient = this.Context.Utilities.CopyContext();
+                        newClient.Ado.IsDisableMasterSlaveSeparation = true;
+                        if (newClient.CurrentConnectionConfig.AopEvents == null)
+                            newClient.CurrentConnectionConfig.AopEvents = new AopEvents();
+                        contextProperty.SetValue(item, newClient, null);
+                    }
+                }
+            }
         }
-        protected async Task<int> GetCountAsync()
-        {
-            var sql = string.Empty;
-            ToSqlBefore();
-            sql = QueryBuilder.ToSqlString();
-            sql = QueryBuilder.ToCountSql(sql);
-            var result = Convert.ToInt32(await Context.Ado.GetScalarAsync(sql, QueryBuilder.Parameters.ToArray()));
-            return result;
-        }
+        #endregion
 
+        #region Mapping Type
+        protected void RestoreMapping()
+        {
+            if (IsAs && _RestoreMapping)
+            {
+                this.Context.MappingTables = OldMappingTableList == null ? new MappingTableList() : OldMappingTableList;
+            }
+        }
+        protected void InitMapping()
+        {
+            if (this.QueryableMappingTableList != null)
+                this.Context.MappingTables = this.QueryableMappingTableList;
+        }
+        #endregion
+
+        #region  Other
+        protected JoinQueryInfo GetJoinInfo(Expression joinExpression, JoinType joinType)
+        {
+            QueryBuilder.CheckExpressionNew(joinExpression, "Join");
+            QueryBuilder.JoinExpression = joinExpression;
+            var express = LambdaExpression.Lambda(joinExpression).Body;
+            var lastPareamter = (express as LambdaExpression).Parameters.Last();
+            var expResult = this.QueryBuilder.GetExpressionValue(joinExpression, ResolveExpressType.WhereMultiple);
+            this.Context.InitMappingInfo(lastPareamter.Type);
+            var result = new JoinQueryInfo()
+            {
+                JoinIndex = QueryBuilder.JoinQueryInfos.Count,
+                JoinType = joinType,
+                JoinWhere = expResult.GetResultString(),
+                ShortName = lastPareamter.Name,
+                TableName = this.Context.EntityMaintenance.GetTableName(lastPareamter.Type)
+            };
+            if (result.JoinIndex == 0)
+            {
+                var firstPareamter = (express as LambdaExpression).Parameters.First();
+                this.QueryBuilder.TableShortName = firstPareamter.Name;
+                if (this.QueryBuilder.AsTables != null && this.QueryBuilder.AsTables.Count == 1)
+                {
+                    var tableinfo = this.QueryBuilder.AsTables.First();
+                    if (this.QueryBuilder.TableWithString != SqlWith.Null && this.Context.CurrentConnectionConfig?.MoreSettings?.IsWithNoLockQuery == true && this.QueryBuilder.AsTables.First().Value.ObjToString().Contains(SqlWith.NoLock) == false)
+                    {
+                        this.QueryBuilder.AsTables[tableinfo.Key] = " (SELECT * FROM " + this.QueryBuilder.AsTables.First().Value + $" {SqlWith.NoLock} )";
+                    }
+                    else
+                    {
+                        this.QueryBuilder.AsTables[tableinfo.Key] = " (SELECT * FROM " + this.QueryBuilder.AsTables.First().Value + ")";
+                    }
+                    this.QueryBuilder.SelectValue = this.QueryBuilder.TableShortName + ".*";
+                }
+            }
+            Check.Exception(result.JoinIndex > 10, ErrorMessage.GetThrowMessage("只支持12个表", "Only 12 tables are supported"));
+            return result;
+        }
+        protected ISugarQueryable<TResult> _Select<TResult>(Expression expression)
+        {
+            QueryBuilder.CheckExpression(expression, "Select");
+            this.Context.InitMappingInfo(typeof(TResult));
+            var result = InstanceFactory.GetQueryable<TResult>(this.Context.CurrentConnectionConfig);
+            result.Context = this.Context;
+            result.SqlBuilder = this.SqlBuilder;
+            result.SqlBuilder.QueryBuilder.Parameters = QueryBuilder.Parameters;
+            result.SqlBuilder.QueryBuilder.SelectValue = expression;
+            result.SqlBuilder.QueryBuilder.IsSelectSingleFiledJson = UtilMethods.IsJsonMember(expression, this.Context);
+            if (this.IsCache)
+            {
+                result.WithCache(this.CacheTime);
+            }
+            if (this.QueryBuilder.IsSqlQuery)
+            {
+                this.QueryBuilder.IsSqlQuerySelect = true;
+            }
+            return result;
+        }
+        protected void _Where(Expression expression)
+        {
+            QueryBuilder.CheckExpression(expression, "Where");
+            var isSingle = QueryBuilder.IsSingle();
+            var result = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.WhereSingle : ResolveExpressType.WhereMultiple);
+            QueryBuilder.WhereInfos.Add(SqlBuilder.AppendWhereOrAnd(QueryBuilder.WhereInfos.IsNullOrEmpty(), result.GetResultString()));
+        }
+        protected ISugarQueryable<T> _OrderBy(Expression expression, OrderByType type = OrderByType.Asc)
+        {
+            QueryBuilder.CheckExpression(expression, "OrderBy");
+            var isSingle = QueryBuilder.IsSingle();
+            if (expression.ToString().IsContainsIn("Desc(", "Asc("))
+            {
+                var orderValue = "";
+                var newExp = (expression as LambdaExpression).Body as NewExpression;
+                foreach (var item in newExp.Arguments)
+                {
+                    if (item is MemberExpression)
+                    {
+                        orderValue +=
+                          QueryBuilder.GetExpressionValue(item, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple).GetResultString() + ",";
+                    }
+                    else
+                    {
+                        orderValue +=
+                            QueryBuilder.GetExpressionValue(item, isSingle ? ResolveExpressType.WhereSingle : ResolveExpressType.WhereMultiple).GetResultString() + ",";
+                    }
+                }
+                orderValue = orderValue.TrimEnd(',');
+                OrderBy(orderValue);
+                return this;
+            }
+            else if ((expression as LambdaExpression).Body is NewExpression)
+            {
+                var newExp = (expression as LambdaExpression).Body as NewExpression;
+                var result = "";
+                foreach (var item in newExp.Arguments)
+                {
+                    if (item is MemberExpression)
+                    {
+                        result +=
+                          QueryBuilder.GetExpressionValue(item, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple).GetResultString() + ",";
+                    }
+                    else
+                    {
+                        result +=
+                            QueryBuilder.GetExpressionValue(item, isSingle ? ResolveExpressType.WhereSingle : ResolveExpressType.WhereMultiple).GetResultString() + ",";
+                    }
+                }
+                result = result.TrimEnd(',');
+                OrderBy(result);
+                return this;
+            }
+            else
+            {
+                var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
+                OrderBy(lamResult.GetResultString() + UtilConstants.Space + type.ToString().ToUpper());
+                return this;
+            }
+        }
+        private void _ToOffsetPage(int pageIndex, int pageSize)
+        {
+            QueryBuilder.Offset = $" OFFSET {(pageIndex - 1) * pageSize} ROWS FETCH NEXT {pageSize} ROWS ONLY";
+        }
+        private int _PageList(int pageIndex, int pageSize)
+        {
+            if (pageIndex == 0)
+                pageIndex = 1;
+            if (QueryBuilder.PartitionByValue.HasValue())
+            {
+                QueryBuilder.ExternalPageIndex = pageIndex;
+                QueryBuilder.ExternalPageSize = pageSize;
+            }
+            else
+            {
+                QueryBuilder.Skip = (pageIndex - 1) * pageSize;
+                QueryBuilder.Take = pageSize;
+            }
+
+            return pageIndex;
+        }
+        protected ISugarQueryable<T> _GroupBy(Expression expression)
+        {
+            QueryBuilder.CheckExpression(expression, "GroupBy");
+            LambdaExpression lambda = expression as LambdaExpression;
+            expression = lambda.Body;
+            var isSingle = QueryBuilder.IsSingle();
+            ExpressionResult lamResult = null;
+            string result = null;
+            if (expression is NewExpression)
+            {
+                var newExp = expression as NewExpression;
+                foreach (var item in newExp.Arguments)
+                {
+                    if (item is MemberExpression)
+                    {
+                        result +=
+                          QueryBuilder.GetExpressionValue(item, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple).GetResultString() + ",";
+                    }
+                    else
+                    {
+                        result +=
+                            QueryBuilder.GetExpressionValue(item, isSingle ? ResolveExpressType.WhereSingle : ResolveExpressType.WhereMultiple).GetResultString() + ",";
+                    }
+                }
+                result = result.TrimEnd(',');
+            }
+            else
+            {
+                lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
+                result = lamResult.GetResultString();
+            }
+            GroupBy(result);
+            return this;
+        }
+        protected ISugarQueryable<T> _As(string tableName, string entityName)
+        {
+            if (this.QueryBuilder.AsTables != null && this.QueryBuilder.AsTables.Any(it => it.Key == entityName))
+            {
+                Check.Exception(true, ErrorMessage.GetThrowMessage($"use As<{tableName}>(\"{tableName}\")", $"请把 As(\"{tableName}\"), 改成 As<{tableName}实体>(\"{tableName}\")"));
+            }
+            else
+            {
+                this.QueryBuilder.AsTables.Add(entityName, tableName);
+            }
+            return this;
+        }
+        protected void _Filter(string FilterName, bool isDisabledGobalFilter)
+        {
+            QueryBuilder.IsDisabledGobalFilter = isDisabledGobalFilter;
+            if (this.Context.QueryFilter.GeFilterList.HasValue() && FilterName.HasValue())
+            {
+                var list = this.Context.QueryFilter.GeFilterList.Where(it => it.FilterName == FilterName && it.IsJoinQuery == !QueryBuilder.IsSingle());
+                foreach (var item in list)
+                {
+                    var filterResult = item.FilterValue(this.Context);
+                    Where(filterResult.Sql + UtilConstants.Space, filterResult.Parameters);
+                }
+            }
+        }
+        public ISugarQueryable<T> _PartitionBy(Expression expression)
+        {
+            QueryBuilder.CheckExpression(expression, "PartitionBy");
+            LambdaExpression lambda = expression as LambdaExpression;
+            expression = lambda.Body;
+            var isSingle = QueryBuilder.IsSingle();
+            ExpressionResult lamResult = null;
+            string result = null;
+            if (expression is NewExpression)
+            {
+                lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.ArraySingle : ResolveExpressType.ArrayMultiple);
+                result = string.Join(",", lamResult.GetResultArray());
+            }
+            else
+            {
+                lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
+                result = lamResult.GetResultString();
+            }
+            PartitionBy(result);
+            return this;
+        }
+        protected ISugarQueryable<T> _Having(Expression expression)
+        {
+            QueryBuilder.CheckExpression(expression, "Having");
+            var isSingle = QueryBuilder.IsSingle();
+            var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.WhereSingle : ResolveExpressType.WhereMultiple);
+            Having(lamResult.GetResultString());
+            return this;
+        }
+        protected List<TResult> _ToList<TResult>()
+        {
+            List<TResult> result = null;
+            var sqlObj = this._ToSql();
+            if (IsCache)
+            {
+                var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService;
+                result = CacheSchemeMain.GetOrCreate<List<TResult>>(cacheService, this.QueryBuilder, () => { return GetData<TResult>(sqlObj); }, CacheTime, this.Context, CacheKey);
+            }
+            else
+            {
+                result = GetData<TResult>(sqlObj);
+            }
+            RestoreMapping();
+            _Mapper(result);
+            _InitNavigat(result);
+            return result;
+        }
+        protected async Task<List<TResult>> _ToListAsync<TResult>()
+        {
+            List<TResult> result = null;
+            var sqlObj = this._ToSql();
+            if (IsCache)
+            {
+                var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService;
+                result = CacheSchemeMain.GetOrCreate<List<TResult>>(cacheService, this.QueryBuilder, () => { return GetData<TResult>(sqlObj); }, CacheTime, this.Context, CacheKey);
+            }
+            else
+            {
+                result = await GetDataAsync<TResult>(sqlObj);
+            }
+            RestoreMapping();
+            _Mapper(result);
+            await _InitNavigatAsync(result);
+            return result;
+        }
         private void ToSqlBefore()
         {
             var moreSetts = this.Context.CurrentConnectionConfig.MoreSettings;
@@ -1053,7 +1114,6 @@ namespace SqlSugar
                 this.With(SqlWith.NoLock);
             }
         }
-
         protected List<TResult> GetData<TResult>(KeyValuePair<string, List<SugarParameter>> sqlObj)
         {
             List<TResult> result;
@@ -1067,41 +1127,6 @@ namespace SqlSugar
             RestChangeSlaveQuery(isChangeQueryableSlave);
             return result;
         }
-
-        private void RestChangeMasterQuery(bool isChangeQueryableMasterSlave)
-        {
-            if (isChangeQueryableMasterSlave)
-                this.Context.Ado.IsDisableMasterSlaveSeparation = false;
-        }
-
-        private bool GetIsMasterQuery()
-        {
-            var isChangeQueryableMasterSlave =
-                                   this.QueryBuilder.IsDisableMasterSlaveSeparation == true &&
-                                   this.Context.Ado.IsDisableMasterSlaveSeparation == false &&
-                                   this.Context.Ado.Transaction == null;
-            if (isChangeQueryableMasterSlave)
-                this.Context.Ado.IsDisableMasterSlaveSeparation = true;
-            return isChangeQueryableMasterSlave;
-        }
-
-        private void RestChangeSlaveQuery(bool isChangeQueryableSlaveSlave)
-        {
-            if (isChangeQueryableSlaveSlave)
-                this.Context.Ado.IsDisableMasterSlaveSeparation = true;
-        }
-
-        private bool GetIsSlaveQuery()
-        {
-            var isChangeQueryableMasterSlave =
-                                   this.QueryBuilder.IsEnableMasterSlaveSeparation == true &&
-                                   this.Context.Ado.IsDisableMasterSlaveSeparation == true &&
-                                   this.Context.Ado.Transaction == null;
-            if (isChangeQueryableMasterSlave)
-                this.Context.Ado.IsDisableMasterSlaveSeparation = false;
-            return isChangeQueryableMasterSlave;
-        }
-
         protected async Task<List<TResult>> GetDataAsync<TResult>(KeyValuePair<string, List<SugarParameter>> sqlObj)
         {
             List<TResult> result;
@@ -1115,7 +1140,6 @@ namespace SqlSugar
             RestChangeSlaveQuery(isChangeQueryableSlave);
             return result;
         }
-
         private List<TResult> GetData<TResult>(bool isComplexModel, Type entityType, IDataReader dataReader)
         {
             List<TResult> result;
@@ -1169,7 +1193,6 @@ namespace SqlSugar
             SetContextModel(result, entityType);
             return result;
         }
-
         protected void _InQueryable(Expression expression, KeyValuePair<string, List<SugarParameter>> sqlObj)
         {
             QueryBuilder.CheckExpression(expression, "In");
@@ -1186,7 +1209,6 @@ namespace SqlSugar
             this.QueryBuilder.WhereInfos.Add(SqlBuilder.AppendWhereOrAnd(this.QueryBuilder.WhereInfos.IsNullOrEmpty(), whereSql));
             base._InQueryableIndex += 100;
         }
-
         protected List<string> GetPrimaryKeys()
         {
             if (this.Context.IsSystemTablesConfig)
@@ -1207,38 +1229,6 @@ namespace SqlSugar
             else
             {
                 return this.EntityInfo.Columns.Where(it => it.IsIdentity).Select(it => it.DbColumnName).ToList();
-            }
-        }
-
-        protected void RestoreMapping()
-        {
-            if (IsAs && _RestoreMapping)
-            {
-                this.Context.MappingTables = OldMappingTableList == null ? new MappingTableList() : OldMappingTableList;
-            }
-        }
-        protected void InitMapping()
-        {
-            if (this.QueryableMappingTableList != null)
-                this.Context.MappingTables = this.QueryableMappingTableList;
-        }
-
-        private void SetContextModel<TResult>(List<TResult> result, Type entityType)
-        {
-            if (result.HasValue())
-            {
-                if (UtilMethods.GetRootBaseType(entityType).HasValue() && UtilMethods.GetRootBaseType(entityType) == UtilConstants.ModelType)
-                {
-                    foreach (var item in result)
-                    {
-                        var contextProperty = item.GetType().GetProperty("Context");
-                        SqlSugarProvider newClient = this.Context.Utilities.CopyContext();
-                        newClient.Ado.IsDisableMasterSlaveSeparation = true;
-                        if (newClient.CurrentConnectionConfig.AopEvents == null)
-                            newClient.CurrentConnectionConfig.AopEvents = new AopEvents();
-                        contextProperty.SetValue(item, newClient, null);
-                    }
-                }
             }
         }
         protected void CopyQueryBuilder(QueryBuilder asyncQueryableBuilder)
@@ -1311,5 +1301,14 @@ namespace SqlSugar
 
             return cacheDurationInSeconds;
         }
+        public virtual KeyValuePair<string, List<SugarParameter>> _ToSql()
+        {
+            InitMapping();
+            ToSqlBefore();
+            string sql = QueryBuilder.ToSqlString();
+            RestoreMapping();
+            return new KeyValuePair<string, List<SugarParameter>>(sql, QueryBuilder.Parameters);
+        } 
+        #endregion
     }
 }
