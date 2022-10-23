@@ -93,6 +93,12 @@ namespace OrmTest
               .SetColumns(x => new Order() { Name = x.Name + "a" })
               .Where(z => z.Id == 1)
               .ExecuteCommand();
+            var ids = new string[] { "a", "c" };
+            for (int i = 0; i < 2; i++)
+            {
+                db.Queryable<Order>().Where(z => ids[i] == z.Name).ToList();
+                db.Queryable<Order>().Select(z => ids[i]).ToList();
+            }
         }
 
         public class BoolTest12313
