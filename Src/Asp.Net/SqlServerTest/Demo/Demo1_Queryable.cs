@@ -350,6 +350,14 @@ namespace OrmTest
                 date = it.CreateTime.Date,
                 datetime = DateTime.Now.Date
             }).ToList();
+            var list3 = db.Queryable<Order>().InnerJoin<Order>((it,o)=>it.Id==o.Id).Where(it => it.CreateTime.Date == it.CreateTime).Select(it => new
+            {
+                num = SqlFunc.IF(SqlFunc.Subqueryable<Order>().Count() > 0)
+                 .Return(1)
+                 .ElseIF(SqlFunc.Subqueryable<Order>().Count() > 0)
+                 .Return(it.Id)
+                 .End(1)
+            }).ToList();
             Console.WriteLine("#### SqlFunc  End ####");
         }
 
