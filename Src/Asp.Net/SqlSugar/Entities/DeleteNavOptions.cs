@@ -26,7 +26,7 @@ namespace SqlSugar
     {
         public string IgnoreColumns { get; set; }
         public string[] UpdateColumns { get; set; }
-        public bool IsInsert { get; set; }
+        public bool IsInsertRoot { get; set; }
     }
     public class UpdateNavOptions
     {
