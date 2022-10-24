@@ -187,9 +187,9 @@ namespace SqlSugar
             var currentId = id;
             List<object> result = new List<object>();
             result.Add(id);
-            while (list.Any(it => pkName.PropertyInfo.GetValue(it).Equals(currentId)))
+            while (list.Any(it => pkName.PropertyInfo.GetValue(it).ObjToString()==currentId.ObjToString()))
             {
-                var data = list.First(it => pkName.PropertyInfo.GetValue(it).Equals(currentId));
+                var data = list.First(it => pkName.PropertyInfo.GetValue(it).ObjToString() == currentId.ObjToString());
                 currentId = parentName.PropertyInfo.GetValue(data);
                 result.Add(currentId);
             }
@@ -207,7 +207,7 @@ namespace SqlSugar
             {
                 newIds.AddRange(GetPrentIds(list, id, pkColumn, parentColumn));
             }
-            list = list.Where(z => newIds.Any(it => it.Equals(pkColumn.PropertyInfo.GetValue(z)))).ToList();
+            list = list.Where(z => newIds.Any(it => it.ObjToString()==pkColumn.PropertyInfo.GetValue(z).ObjToString())).ToList();
             return GetTreeRoot(childListExpression, parentIdExpression, pk, list, rootValue);
         }
 
