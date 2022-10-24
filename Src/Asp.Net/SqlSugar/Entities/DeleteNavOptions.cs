@@ -17,6 +17,11 @@ namespace SqlSugar
         public string IgnoreColumns { get; set; }
         public string[] UpdateColumns { get; set; }
     }
+    public class InertNavRootOptions
+    {
+        public string IgnoreColumns { get; set; }
+        public string[] InsertColumns { get; set; }
+    }
     public class UpdateNavRootOptions
     {
         public string IgnoreColumns { get; set; }
