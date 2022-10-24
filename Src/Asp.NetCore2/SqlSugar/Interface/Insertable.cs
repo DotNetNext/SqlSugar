@@ -40,6 +40,7 @@ namespace SqlSugar
         IInsertable<T> CallEntityMethod(Expression<Action<T>> method);
 
         IInsertable<T> EnableDiffLogEvent(object businessData = null);
+        IInsertable<T> EnableDiffLogEventIF(bool isDiffLogEvent, object businessData=null);
         IInsertable<T> RemoveDataCache();
         IInsertable<T> RemoveDataCache(string likeString);
         KeyValuePair<string, List<SugarParameter>> ToSql();

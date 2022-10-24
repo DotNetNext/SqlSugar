@@ -905,6 +905,20 @@ namespace SqlSugar
             result.insertNavProvider = provider;
             return result;
         }
+        public InsertNavTaskInit<T, T> InsertNav<T>(T data, InsertNavRootOptions rootOptions) where T : class, new()
+        {
+            return InsertNav(new List<T>() { data },rootOptions); ;
+        }
+        public InsertNavTaskInit<T, T> InsertNav<T>(List<T> datas, InsertNavRootOptions rootOptions) where T : class, new()
+        {
+            var result = new InsertNavTaskInit<T, T>();
+            var provider = new InsertNavProvider<T, T>();
+            provider._Roots = datas;
+            provider._Context = this;
+            provider._RootOptions = rootOptions;
+            result.insertNavProvider = provider;
+            return result;
+        }
         public DeleteNavTaskInit<T, T> DeleteNav<T>(T data) where T : class, new()
         {
             return DeleteNav(new List<T>() { data });
@@ -933,6 +947,20 @@ namespace SqlSugar
             provider._Context = this;
             result.UpdateNavProvider = provider;
             return result;
+        }
+        public UpdateNavTaskInit<T, T> UpdateNav<T>(T data, UpdateNavRootOptions rootOptions) where T : class, new()
+        {
+            return UpdateNav(new List<T>() { data},rootOptions);
+        }
+        public UpdateNavTaskInit<T, T> UpdateNav<T>(List<T> datas, UpdateNavRootOptions rootOptions) where T : class, new()
+        {
+            var result = new UpdateNavTaskInit<T, T>();
+            var provider = new UpdateNavProvider<T, T>();
+            provider._Roots = datas;
+            provider._RootOptions = rootOptions;
+            provider._Context = this;
+            result.UpdateNavProvider = provider;
+            return result; ;
         }
         #endregion
 

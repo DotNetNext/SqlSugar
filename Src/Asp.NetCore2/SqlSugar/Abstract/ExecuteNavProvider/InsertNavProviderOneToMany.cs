@@ -16,7 +16,7 @@ namespace SqlSugar
             var parentList = _ParentList;
             var parentNavigateProperty = parentEntity.Columns.FirstOrDefault(it => it.PropertyName == name);
             var thisEntity = this._Context.EntityMaintenance.GetEntityInfo<TChild>();
-            var thisPkColumn = GetPkColumnByNav(thisEntity, nav);
+            var thisPkColumn = GetPkColumnByNav2(thisEntity, nav);
             var thisFkColumn = GetFKColumnByNav(thisEntity, nav);
             EntityColumnInfo parentPkColumn = GetParentPkColumn();
             EntityColumnInfo parentNavColumn = GetParentPkNavColumn(nav);

@@ -294,11 +294,7 @@ namespace SqlSugar
             var list = this.ToList();
             return GetTreeRoot(childListExpression, parentIdExpression, pk, list, rootValue);
         }
-        public List<T> ToTree(Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, object rootValue, object[] childIds)
-        {
-            var list = this.ToList();
-            return TreeAndFilterIds(childListExpression, parentIdExpression, rootValue, childIds, ref list);
-        }
+
         public virtual DataTable ToDataTable()
         {
             QueryBuilder.ResultType = typeof(SugarCacheDataTable);

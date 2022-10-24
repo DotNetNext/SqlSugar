@@ -209,11 +209,15 @@ namespace SqlSugar
         #region  Nav CUD
         InsertNavTaskInit<T, T> InsertNav<T>(T data) where T : class, new();
         InsertNavTaskInit<T, T> InsertNav<T>(List<T> datas) where T : class, new();
+        InsertNavTaskInit<T, T> InsertNav<T>(T data,InsertNavRootOptions rootOptions) where T : class, new();
+        InsertNavTaskInit<T, T> InsertNav<T>(List<T> datas, InsertNavRootOptions rootOptions) where T : class, new();
         DeleteNavTaskInit<T, T> DeleteNav<T>(T data) where T : class, new();
         DeleteNavTaskInit<T, T> DeleteNav<T>(List<T> datas) where T : class, new();
         DeleteNavTaskInit<T, T> DeleteNav<T>(Expression<Func<T,bool>> whereExpression) where T : class, new();
         UpdateNavTaskInit<T, T> UpdateNav<T>(T data) where T : class, new ();
-        UpdateNavTaskInit<T, T> UpdateNav<T>(List<T> datas) where T : class, new (); 
+        UpdateNavTaskInit<T, T> UpdateNav<T>(List<T> datas) where T : class, new ();
+        UpdateNavTaskInit<T, T> UpdateNav<T>(T data,UpdateNavRootOptions rootOptions) where T : class, new();
+        UpdateNavTaskInit<T, T> UpdateNav<T>(List<T> datas, UpdateNavRootOptions rootOptions) where T : class, new();
         #endregion
 
     }

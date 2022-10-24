@@ -689,6 +689,14 @@ namespace SqlSugar
         {
             return ScopedContext.InsertNav(datas);
         }
+        public InsertNavTaskInit<T, T> InsertNav<T>(T data,InsertNavRootOptions rootOptions) where T : class, new()
+        {
+            return ScopedContext.InsertNav(data,rootOptions);
+        }
+        public InsertNavTaskInit<T, T> InsertNav<T>(List<T> datas, InsertNavRootOptions rootOptions) where T : class, new()
+        {
+            return ScopedContext.InsertNav(datas,rootOptions);
+        }
         public DeleteNavTaskInit<T, T> DeleteNav<T>(T data) where T : class, new()
         {
             return ScopedContext.DeleteNav(data);
@@ -708,6 +716,14 @@ namespace SqlSugar
         public UpdateNavTaskInit<T, T> UpdateNav<T>(List<T> datas) where T : class, new()
         {
             return ScopedContext.UpdateNav(datas);
+        }
+        public UpdateNavTaskInit<T, T> UpdateNav<T>(List<T> datas, UpdateNavRootOptions rootOptions) where T : class, new()
+        {
+            return this.ScopedContext.UpdateNav(datas, rootOptions);
+        }
+        public UpdateNavTaskInit<T, T> UpdateNav<T>(T data, UpdateNavRootOptions rootOptions) where T : class, new()
+        {
+            return this.ScopedContext.UpdateNav(data, rootOptions);
         }
         public SqlSugarClient CopyNew()
         {

@@ -500,11 +500,7 @@ ParameterT parameter)
             var list = await this.ToListAsync();
             return GetTreeRoot(childListExpression, parentIdExpression, pk, list, rootValue);
         }
-        public async Task<List<T>> ToTreeAsync(Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, object rootValue, object[] childIds)
-        {
-            var list =await this.ToListAsync();
-            return TreeAndFilterIds(childListExpression, parentIdExpression, rootValue, childIds, ref list);
-        }
+
         public async Task<List<T>> ToParentListAsync(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue)
         {
             List<T> result = new List<T>() { };

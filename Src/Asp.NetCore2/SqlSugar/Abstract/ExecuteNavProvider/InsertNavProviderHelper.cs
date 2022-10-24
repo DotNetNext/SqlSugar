@@ -58,7 +58,17 @@ namespace SqlSugar
         {
             foreach (var item in datas)
             {
-                this._Context.Insertable(item).ExecuteCommandIdentityIntoEntity();
+                if (IsFirst&&_RootOptions!=null)
+                {
+                    this._Context.Insertable(item)
+                        .IgnoreColumns(_RootOptions.IgnoreColumns)
+                        .InsertColumns(_RootOptions.InsertColumns)
+                        .ExecuteCommandIdentityIntoEntity();
+                }
+                else
+                {
+                    this._Context.Insertable(item).ExecuteCommandIdentityIntoEntity();
+                }
             }
         }
 
@@ -69,6 +79,11 @@ namespace SqlSugar
             {
                 pkColumn = entity.Columns.FirstOrDefault(it => it.PropertyName == nav.Navigat.Name2);
             }
+            return pkColumn;
+        }
+        private EntityColumnInfo GetPkColumnByNav2(EntityInfo entity, EntityColumnInfo nav)
+        {
+            var pkColumn = entity.Columns.FirstOrDefault(it => it.IsPrimarykey == true);
             return pkColumn;
         }
         private EntityColumnInfo GetFKColumnByNav(EntityInfo entity, EntityColumnInfo nav)
@@ -142,7 +157,17 @@ namespace SqlSugar
                     pkColumn.PropertyInfo.SetValue(child, value());
                 }
             }
-            this._Context.Insertable(insertData).ExecuteCommand();
+            if (IsFirst && _RootOptions != null)
+            {
+                this._Context.Insertable(insertData)
+                    .IgnoreColumns(_RootOptions.IgnoreColumns)
+                    .InsertColumns(_RootOptions.InsertColumns)
+                    .ExecuteCommand();
+            }
+            else
+            {
+                this._Context.Insertable(insertData).ExecuteCommand();
+            }
         }
         private void SetError<TChild>(EntityColumnInfo pkColumn, List<TChild> insertData) where TChild : class, new()
         {
@@ -154,7 +179,17 @@ namespace SqlSugar
                     Check.ExceptionEasy($"The field {name} is not an autoassignment type and requires an assignment", $"字段{name}不是可自动赋值类型需要赋值（并且不能是已存在值） , 可赋值类型有 自增、long、Guid、string");
                 }
             }
-            this._Context.Insertable(insertData).ExecuteCommand();
+            if (IsFirst && _RootOptions != null)
+            {
+                this._Context.Insertable(insertData)
+                    .IgnoreColumns(_RootOptions.IgnoreColumns)
+                    .InsertColumns(_RootOptions.InsertColumns)
+                    .ExecuteCommand();
+            }
+            else
+            {
+                this._Context.Insertable(insertData).ExecuteCommand();
+            }
         }
     }
 }

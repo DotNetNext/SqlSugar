@@ -198,6 +198,14 @@ namespace SqlSugar
             this.Context.MappingTables.Add(entityName, tableName);
             return this; ;
         }
+        public IUpdateable<T> EnableDiffLogEventIF(bool isEnableDiffLog, object businessData = null) 
+        {
+            if (isEnableDiffLog) 
+            {
+                return EnableDiffLogEvent(businessData);
+            }
+            return this;
+        }
         public IUpdateable<T> EnableDiffLogEvent(object businessData = null)
         {
             //Check.Exception(this.UpdateObjs.HasValue() && this.UpdateObjs.Count() > 1, "DiffLog does not support batch operations");
@@ -343,8 +351,11 @@ namespace SqlSugar
         }
         public IUpdateable<T> UpdateColumns(string[] columns)
         {
-            ThrowUpdateByExpression();
-            this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => GetPrimaryKeys().Select(iit => iit.ToLower()).Contains(it.DbColumnName.ToLower()) || columns.Contains(it.PropertyName, StringComparer.OrdinalIgnoreCase)).ToList();
+            if (columns.HasValue())
+            {
+                ThrowUpdateByExpression();
+                this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => GetPrimaryKeys().Select(iit => iit.ToLower()).Contains(it.DbColumnName.ToLower()) || columns.Contains(it.PropertyName, StringComparer.OrdinalIgnoreCase)).ToList();
+            }
             return this;
         }
         public IUpdateable<T> UpdateColumnsIF(bool isUpdateColumns, Expression<Func<T, object>> columns)

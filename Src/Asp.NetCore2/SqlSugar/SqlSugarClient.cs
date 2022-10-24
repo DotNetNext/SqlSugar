@@ -198,6 +198,14 @@ namespace SqlSugar
         {
             return this.Context.InsertNav(datas);
         }
+        public InsertNavTaskInit<T, T> InsertNav<T>(T data, InsertNavRootOptions rootOptions) where T : class, new()
+        {
+            return this.Context.InsertNav(data, rootOptions);
+        }
+        public InsertNavTaskInit<T, T> InsertNav<T>(List<T> datas, InsertNavRootOptions rootOptions) where T : class, new()
+        {
+            return this.Context.InsertNav(datas, rootOptions);
+        }
         public DeleteNavTaskInit<T, T> DeleteNav<T>(T data) where T : class, new()
         {
             return this.Context.DeleteNav(data);
@@ -214,9 +222,17 @@ namespace SqlSugar
         {
             return this.Context.UpdateNav(data);
         }
+        public UpdateNavTaskInit<T, T> UpdateNav<T>(List<T> datas,UpdateNavRootOptions rootOptions) where T : class, new()
+        {
+            return this.Context.UpdateNav(datas, rootOptions);  
+        }
+        public UpdateNavTaskInit<T, T> UpdateNav<T>(T data, UpdateNavRootOptions rootOptions) where T : class, new()
+        {
+            return this.Context.UpdateNav(data,rootOptions);
+        }
         public UpdateNavTaskInit<T, T> UpdateNav<T>(List<T> datas) where T : class, new()
         {
-            return this.Context.UpdateNav(datas);  
+            return this.Context.UpdateNav(datas);
         }
         #endregion
 
