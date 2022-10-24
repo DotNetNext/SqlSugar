@@ -77,6 +77,7 @@
     <Compile Include="Models\TestTree.cs" />
     <Compile Include="Models\Tree.cs" />
     <Compile Include="Models\ViewOrder.cs" />
+    <Compile Include="UnitTest\UnitNavInsertIssue.cs" />
     <Compile Include="UnitTest\UnitInsertNavN.cs" />
     <Compile Include="UnitTest\Main.cs" />
     <Compile Include="UnitTest\Models\Export.cs" />

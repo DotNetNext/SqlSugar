@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UnitNavInsertIssue.Init();
             UnitInsertNavN.Init();
             UNavTest.Init();
             UnitTestReturnPkList.Init();
