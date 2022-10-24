@@ -499,7 +499,14 @@ namespace SqlSugar
         }
 
 
-
+        public IInsertable<T> EnableDiffLogEventIF(bool isDiffLogEvent, object diffLogBizData) 
+        {
+            if (isDiffLogEvent) 
+            {
+                return EnableDiffLogEvent(diffLogBizData);
+            }
+            return this;
+        }
         public IInsertable<T> EnableDiffLogEvent(object businessData = null)
         {
             //Check.Exception(this.InsertObjs.HasValue() && this.InsertObjs.Count() > 1, "DiffLog does not support batch operations");

@@ -92,6 +92,7 @@ namespace SqlSugar
 
         IUpdateable<T> IsEnableUpdateVersionValidation();
         IUpdateable<T> EnableDiffLogEvent(object businessData = null);
+        IUpdateable<T> EnableDiffLogEventIF(bool isEnableDiffLog,object businessData = null);
         IUpdateable<T> ReSetValue(Action<T> setValueExpression);
         IUpdateable<T> RemoveDataCache();
         IUpdateable<T> RemoveDataCache(string likeString);

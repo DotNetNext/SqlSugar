@@ -132,34 +132,39 @@ namespace SqlSugar
                 com(updateable);
                 updateable.ExecuteCommand();
             }
-            else if (IsFirst && _RootOptions != null) 
+            else if (IsFirst && _RootOptions != null)
             {
                 var isInsert = _RootOptions.IsInsertRoot;
                 if (isInsert)
                 {
-                    var newRoots=new List<Root>();
+                    var newRoots = new List<Root>();
                     foreach (var item in _Roots)
                     {
                         var x = this._Context.Storageable(item).ToStorage();
                         if (x.InsertList.HasValue())
                         {
-                            newRoots.Add( x.AsInsertable.ExecuteReturnEntity());
+                            newRoots.Add(x.AsInsertable.EnableDiffLogEventIF(_RootOptions.IsDiffLogEvent, _RootOptions.DiffLogBizData).ExecuteReturnEntity());
                         }
-                        else 
+                        else
                         {
-                            x.AsUpdateable.ExecuteCommand();
+                            x.AsUpdateable.EnableDiffLogEventIF(_RootOptions.IsDiffLogEvent, _RootOptions.DiffLogBizData).ExecuteCommand();
                             newRoots.Add(item);
                         }
                     }
-                    _ParentList=_RootList=newRoots.Cast<object>().ToList();
+                    _ParentList = _RootList = newRoots.Cast<object>().ToList();
                 }
                 else
                 {
                     this._Context.Updateable(_Roots)
+                        .EnableDiffLogEventIF(_RootOptions.IsDiffLogEvent,_RootOptions.DiffLogBizData)
                         .UpdateColumns(_RootOptions.UpdateColumns)
                         .IgnoreColumns(_RootOptions.IgnoreColumns)
                         .ExecuteCommand();
                 }
+            }
+            else if (_RootOptions != null && _RootOptions?.IsDiffLogEvent == true) 
+            {
+                this._Context.Updateable(_Roots).EnableDiffLogEvent(_RootOptions.DiffLogBizData).ExecuteCommand();
             }
             else
             {

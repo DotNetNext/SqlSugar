@@ -198,6 +198,14 @@ namespace SqlSugar
             this.Context.MappingTables.Add(entityName, tableName);
             return this; ;
         }
+        public IUpdateable<T> EnableDiffLogEventIF(bool isEnableDiffLog, object businessData = null) 
+        {
+            if (isEnableDiffLog) 
+            {
+                return EnableDiffLogEvent(businessData);
+            }
+            return this;
+        }
         public IUpdateable<T> EnableDiffLogEvent(object businessData = null)
         {
             //Check.Exception(this.UpdateObjs.HasValue() && this.UpdateObjs.Count() > 1, "DiffLog does not support batch operations");
