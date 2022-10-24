@@ -182,18 +182,51 @@ namespace SqlSugar
 
             return result;
         }
+        private List<object> GetPrentIds(List<T> list, object id,EntityColumnInfo pkName, EntityColumnInfo parentName) 
+        {
+            var currentId = id;
+            List<object> result = new List<object>();
+            result.Add(id);
+            while (list.Any(it => pkName.PropertyInfo.GetValue(it).Equals(currentId))) 
+            {
+                var data = list.First(it => pkName.PropertyInfo.GetValue(it).Equals(currentId));
+                currentId = parentName.PropertyInfo.GetValue(data);
+                result.Add(currentId);
+            }
+            return result;
+        }
+        private List<T> TreeAndFilterIds(Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, object rootValue, object[] childIds, ref List<T> list)
+        {
+            var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            var pk = GetTreeKey(entity);
+            var pkColumn = entity.Columns.FirstOrDefault(z => z.PropertyName == pk);
+            var newIds = new List<object>();
+            string parentIdName = GetParentName(parentIdExpression);
+            var parentColumn = entity.Columns.FirstOrDefault(z => z.PropertyName == parentIdName);
+            foreach (var id in childIds)
+            {
+                newIds.AddRange(GetPrentIds(list, id, pkColumn, parentColumn));
+            }
+            list = list.Where(z => newIds.Any(it => it.Equals(pkColumn.PropertyInfo.GetValue(z)))).ToList();
+            return GetTreeRoot(childListExpression, parentIdExpression, pk, list, rootValue);
+        }
 
         private List<T> GetTreeRoot(Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, string pk, List<T> list, object rootValue)
         {
             var childName = ((childListExpression as LambdaExpression).Body as MemberExpression).Member.Name;
+            string parentIdName = GetParentName(parentIdExpression);
+            return BuildTree(list, pk, parentIdName, childName, rootValue)?.ToList() ?? default;
+        }
+
+        private static string GetParentName(Expression<Func<T, object>> parentIdExpression)
+        {
             var exp = (parentIdExpression as LambdaExpression).Body;
             if (exp is UnaryExpression)
             {
                 exp = (exp as UnaryExpression).Operand;
             }
             var parentIdName = (exp as MemberExpression).Member.Name;
-
-            return BuildTree(list, pk, parentIdName, childName, rootValue)?.ToList() ?? default;
+            return parentIdName;
         }
 
         private static IEnumerable<T> BuildTree(IEnumerable<T> list, string idName, string pIdName, string childName, object rootValue)
