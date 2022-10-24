@@ -934,6 +934,20 @@ namespace SqlSugar
             result.UpdateNavProvider = provider;
             return result;
         }
+        public UpdateNavTaskInit<T, T> UpdateNav<T>(T data, UpdateNavRootOptions rootOptions) where T : class, new()
+        {
+            return UpdateNav(new List<T>() { data},rootOptions);
+        }
+        public UpdateNavTaskInit<T, T> UpdateNav<T>(List<T> datas, UpdateNavRootOptions rootOptions) where T : class, new()
+        {
+            var result = new UpdateNavTaskInit<T, T>();
+            var provider = new UpdateNavProvider<T, T>();
+            provider._Roots = datas;
+            provider._RootOptions = rootOptions;
+            provider._Context = this;
+            result.UpdateNavProvider = provider;
+            return result; ;
+        }
         #endregion
 
         #region DbFirst

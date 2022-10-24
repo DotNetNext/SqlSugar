@@ -765,6 +765,14 @@ namespace SqlSugar
         {
             return ScopedContext.UpdateNav(datas);
         }
+        public UpdateNavTaskInit<T, T> UpdateNav<T>(T data,UpdateNavRootOptions rootOptions) where T : class, new()
+        {
+            return ScopedContext.UpdateNav(data);
+        }
+        public UpdateNavTaskInit<T, T> UpdateNav<T>(List<T> datas, UpdateNavRootOptions rootOptions) where T : class, new()
+        {
+            return ScopedContext.UpdateNav(datas);
+        }
         public SqlSugarClient CopyNew() 
         {
             return new SqlSugarClient(UtilMethods.CopyConfig(this.Ado.Context.CurrentConnectionConfig));

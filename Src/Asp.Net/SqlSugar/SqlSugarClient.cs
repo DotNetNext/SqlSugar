@@ -214,9 +214,17 @@ namespace SqlSugar
         {
             return this.Context.UpdateNav(data);
         }
+        public UpdateNavTaskInit<T, T> UpdateNav<T>(List<T> datas,UpdateNavRootOptions rootOptions) where T : class, new()
+        {
+            return this.Context.UpdateNav(datas, rootOptions);  
+        }
+        public UpdateNavTaskInit<T, T> UpdateNav<T>(T data, UpdateNavRootOptions rootOptions) where T : class, new()
+        {
+            return this.Context.UpdateNav(data,rootOptions);
+        }
         public UpdateNavTaskInit<T, T> UpdateNav<T>(List<T> datas) where T : class, new()
         {
-            return this.Context.UpdateNav(datas);  
+            return this.Context.UpdateNav(datas);
         }
         #endregion
 

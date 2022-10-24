@@ -5,13 +5,24 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SqlSugar 
+namespace SqlSugar
 {
     public class DeleteNavOptions
     {
         public bool ManyToManyIsDeleteA { get; set; }
         public bool ManyToManyIsDeleteB { get; set; }
-    }   
+    }
+    public class InsertNavRootOptions
+    {
+        public string IgnoreColumns { get; set; }
+        public string[] UpdateColumns { get; set; }
+    }
+    public class UpdateNavRootOptions
+    {
+        public string IgnoreColumns { get; set; }
+        public string[] UpdateColumns { get; set; }
+        public bool IsInsert { get; set; }
+    }
     public class UpdateNavOptions
     {
         public bool ManyToManyIsUpdateA { get; set; }

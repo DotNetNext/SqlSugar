@@ -9,7 +9,7 @@ namespace SqlSugar
 {
     public partial class UpdateNavProvider<Root, T> where T : class, new() where Root : class, new()
     {
-
+        internal UpdateNavRootOptions _RootOptions { get; set; }
         public List<Root> _Roots { get; set; }
         public List<object> _ParentList { get; set; }
         public List<object> _RootList { get; set; }
