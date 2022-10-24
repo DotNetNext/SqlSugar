@@ -102,6 +102,19 @@ namespace OrmTest
                 Console.WriteLine($"四级表中不存在脏数据！");
             }
 
+            a.AId = Guid.NewGuid() + "";
+            db.InsertNav(a,new InsertNavRootOptions() { IgnoreColumns=new string[] { nameof(ClassA.UpdateTime) } })
+    .Include(t => t.B)
+    .ThenInclude(t => t.C)
+    .ThenInclude(t => t.D)
+    .ExecuteCommand();
+
+            a.AId = Guid.NewGuid() + "";
+            db.UpdateNav(a)
+             .Include(t => t.B)
+             .ThenInclude(t => t.C)
+             .ThenInclude(t => t.D)
+             .ExecuteCommand();
             Console.WriteLine("----------程序结束----------");
 
         }
