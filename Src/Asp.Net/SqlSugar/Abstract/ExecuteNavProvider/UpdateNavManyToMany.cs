@@ -39,6 +39,10 @@ namespace SqlSugar
             foreach (var item in parentList)
             {
                 var items = parentNavigateProperty.PropertyInfo.GetValue(item);
+                if (items == null) 
+                {
+                    continue;
+                }
                 var children = ((List<TChild>)items);
                 if (this._Options != null && this._Options.ManyToManyIsUpdateB)
                 {
