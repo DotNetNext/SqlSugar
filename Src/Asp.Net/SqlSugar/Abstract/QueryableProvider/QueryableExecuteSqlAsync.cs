@@ -492,7 +492,11 @@ ParameterT parameter)
             var result = list.ToDictionary(it => it.Key.ObjToString(), it => it.Value);
             return result;
         }
-
+        public async Task<List<T>> ToTreeAsync(Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, object rootValue, object[] childIds)
+        {
+            var list = await this.ToListAsync();
+            return TreeAndFilterIds(childListExpression, parentIdExpression, rootValue, childIds, ref list);
+        }
         public async Task<List<T>> ToTreeAsync(Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, object rootValue)
         {
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
