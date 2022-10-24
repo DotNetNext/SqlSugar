@@ -101,20 +101,30 @@ namespace OrmTest
             {
                 Console.WriteLine($"四级表中不存在脏数据！");
             }
-
+            db.Deleteable<ClassB>().ExecuteCommand();
             a.AId = Guid.NewGuid() + "";
+            a.B = new List<ClassB>() { new ClassB() {  BId="b11"}, new ClassB() { BId = "b22" } };
             db.InsertNav(a,new InsertNavRootOptions() { IgnoreColumns=new string[] { nameof(ClassA.UpdateTime) } })
     .Include(t => t.B)
     .ThenInclude(t => t.C)
     .ThenInclude(t => t.D)
     .ExecuteCommand();
-
+            Console.WriteLine("---- Insert ----");
             a.AId = Guid.NewGuid() + "";
-            db.UpdateNav(a)
+            db.UpdateNav(a,new UpdateNavRootOptions() { 
+              IsInsertRoot=true
+             })
              .Include(t => t.B)
              .ThenInclude(t => t.C)
              .ThenInclude(t => t.D)
              .ExecuteCommand();
+
+            var list=db.Queryable<ClassA>().Where(z=>z.AId==a.AId).Includes(z => z.B, z => z.C, z => z.D).ToList();
+            var list2 = db.Queryable<ClassB>().Count();
+            if (list2 != list.First().B.Count()) 
+            {
+                throw new Exception("unit error");
+            }
             Console.WriteLine("----------程序结束----------");
 
         }
