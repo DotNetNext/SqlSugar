@@ -76,7 +76,14 @@ namespace SqlSugar
                 }
             }
             var ids = mappgingTables.Select(x => x[mappingA.DbColumnName]).ToList();
-            this._Context.Deleteable<object>().AS(mappingEntity.DbTableName).In(mappingA.DbColumnName, ids).ExecuteCommand();
+            if (_navOptions != null && _navOptions.ManyToManyNoDeleteMap)
+            {
+                //The reserved
+            }
+            else
+            {
+                this._Context.Deleteable<object>().AS(mappingEntity.DbTableName).In(mappingA.DbColumnName, ids).ExecuteCommand();
+            }
             this._Context.Insertable(mappgingTables).AS(mappingEntity.DbTableName).ExecuteCommand();
             SetNewParent<TChild>(thisEntity, thisPkColumn);
         }
