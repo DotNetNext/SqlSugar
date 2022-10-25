@@ -30,7 +30,14 @@ namespace OrmTest
                     .InsertNav(mail)
                     .Include(p => p.Attachments)
                     .ExecuteCommand();
-            }
+
+            sqlSugarScope
+               .UpdateNav(mail,new UpdateNavRootOptions() {
+                   IgnoreColumns =new  string[]{ "Subject" }
+               })
+               .Include(p => p.Attachments)
+               .ExecuteCommand();
+        }
         }
 
         [SugarTable(nameof(Mail))]
