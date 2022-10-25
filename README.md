@@ -14,7 +14,7 @@ An ORM framework from the future
 Using SqlSugar is very simple , And it's powerful.
 
 ## Description
-
+- Support Cross database query
 - Support SqlServer、MySql、PgSql and Oracle  insert blukcopy  
 - Split table big data self-processing 
 - Support Multi-tenant, multi-library transactions
