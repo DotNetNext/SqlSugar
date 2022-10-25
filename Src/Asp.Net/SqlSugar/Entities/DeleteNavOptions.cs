@@ -42,5 +42,6 @@ namespace SqlSugar
     public class InsertNavOptions 
     {
         public bool OneToManyIfExistsNoInsert { get; set; }
+        public bool ManyToManyNoDeleteMap { get; set; }
     }
 }
