@@ -9,7 +9,7 @@ namespace OrmTest
 
     public class Order
     {
-        [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+        [SugarColumn(IsPrimaryKey = true, IsIdentity = true,ColumnDescription ="主键")]
         public int Id { get; set; }
 
         public string Name { get; set; }
