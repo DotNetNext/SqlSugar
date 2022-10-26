@@ -775,11 +775,11 @@ namespace SqlSugar
         }
         public UpdateNavTaskInit<T, T> UpdateNav<T>(T data,UpdateNavRootOptions rootOptions) where T : class, new()
         {
-            return ScopedContext.UpdateNav(data);
+            return ScopedContext.UpdateNav(data, rootOptions);
         }
         public UpdateNavTaskInit<T, T> UpdateNav<T>(List<T> datas, UpdateNavRootOptions rootOptions) where T : class, new()
         {
-            return ScopedContext.UpdateNav(datas);
+            return ScopedContext.UpdateNav(datas, rootOptions);
         }
         public SqlSugarClient CopyNew() 
         {
