@@ -413,7 +413,7 @@ namespace SqlSugar
                 string addItem = string.Format(this.CreateTableColumn, this.SqlBuilder.GetTranslationColumnName(columnName), dataType, dataSize, nullType, primaryKey, identity);
                 if (!string.IsNullOrEmpty(item.ColumnDescription))
                 {
-                    addItem += "COMMENT '"+item.ColumnDescription.ToSqlFilter()+"' ";
+                    addItem += " COMMENT '"+item.ColumnDescription.ToSqlFilter()+"' ";
                 }
                 columnArray.Add(addItem);
             }
