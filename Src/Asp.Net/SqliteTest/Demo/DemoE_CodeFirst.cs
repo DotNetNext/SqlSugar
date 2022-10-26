@@ -23,10 +23,35 @@ namespace OrmTest
             db.CodeFirst.InitTables(typeof(CodeFirstTable1));//Create CodeFirstTable1 
             db.Insertable(new CodeFirstTable1() { Name = "a", Text="a" }).ExecuteCommand();
             var list = db.Queryable<CodeFirstTable1>().ToList();
+            db.CodeFirst.InitTables<CodeFirstTable1d131>();
+            db.DbMaintenance.TruncateTable<CodeFirstTable1d131>();
+            db.Insertable(new CodeFirstTable1d131()
+            {
+                 date=DateTimeOffset.Now
+            }).ExecuteCommand();
+            db.Insertable(new List<CodeFirstTable1d131>() {
+             {
+               new CodeFirstTable1d131()
+            {
+                 date=DateTimeOffset.Now
+            }
+            },
+              {
+               new CodeFirstTable1d131()
+            {
+                 date=DateTimeOffset.Now
+            }
+            }
+            }).ExecuteCommand();
+            var xxx=db.Queryable<CodeFirstTable1d131>().ToList();
             Console.WriteLine("#### CodeFirst end ####");
         }
     }
-
+    public class CodeFirstTable1d131
+    {
+        public DateTimeOffset date { get; set; }
+        
+    }
     public class CodeFirstTable1
     {
         [SugarColumn(IsIdentity = true, IsPrimaryKey = true)]
