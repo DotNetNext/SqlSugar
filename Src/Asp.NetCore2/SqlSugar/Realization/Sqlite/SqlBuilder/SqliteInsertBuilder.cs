@@ -148,7 +148,7 @@ namespace SqlSugar
             {
                 date = UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig);
             }
-            return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
+            return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fffffff") + "'";
         }
 
         private object GetDateTimeString(object value)
