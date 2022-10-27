@@ -83,7 +83,11 @@ namespace OrmTest
             new  UnitTestoffset11 { },
              new  UnitTestoffset11 {  DateTimeOffset= DateTimeOffset.Now}
             });
-            var list2 = db.Queryable<UnitTestoffset11>().ToList();
+            var list2 = db.Queryable<UnitTable001>().ToList();
+            db.QueryFilter.Add(new SqlSugar.TableFilterItem<UnitTable001>(z => z.Id == 0));
+            db.Fastest<UnitTable001>().BulkUpdate(new List<UnitTable001>() {
+            new UnitTable001() {  Id=1, table="a"}
+            });
             Console.WriteLine("用例跑完");
         }
 
