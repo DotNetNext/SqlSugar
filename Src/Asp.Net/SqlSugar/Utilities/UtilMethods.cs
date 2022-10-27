@@ -370,6 +370,7 @@ namespace SqlSugar
                 else
                     return Enum.ToObject(type, value);
             }
+            if (value is string && type == typeof(Guid?)) return value.IsNullOrEmpty() ? null : (Guid?)new Guid(value as string);
             if (!type.IsInterface && type.IsGenericType)
             {
                 Type innerType = type.GetGenericArguments()[0];
