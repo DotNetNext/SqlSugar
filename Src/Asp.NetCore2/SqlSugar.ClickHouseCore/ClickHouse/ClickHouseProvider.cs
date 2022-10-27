@@ -114,7 +114,6 @@ namespace SqlSugar.ClickHouse
         {
             var connection=(ClickHouseConnection)this.Connection;
             CheckConnection();
-            IDataParameter[] ipars = ToIDbDataParameter(parameters);
             ClickHouseCommand sqlCommand =connection.CreateCommand();
             var pars = ToIDbDataParameter(parameters);
             foreach (var param in pars.OrderByDescending(it=>it.ParameterName.Length)) 
