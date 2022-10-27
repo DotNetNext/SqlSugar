@@ -247,7 +247,7 @@ namespace SqlSugar
                 {
                     method = isNullableType ? getConvertInt32 : getInt32;
                 }
-                else if (bindPropertyType == UtilConstants.DateTimeOffsetType)
+                else if (bindPropertyType == UtilConstants.DateTimeOffsetType&&SugarCompatible.IsFramework)
                 {
                     method = isNullableType ? getConvertdatetimeoffset : getdatetimeoffset;
                 }
