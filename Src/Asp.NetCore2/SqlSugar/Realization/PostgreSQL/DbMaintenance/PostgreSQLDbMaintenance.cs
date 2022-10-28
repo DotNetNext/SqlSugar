@@ -358,7 +358,7 @@ namespace SqlSugar
             string primaryKeyInfo = null;
             if (columns.Any(it => it.IsPrimarykey) && isCreatePrimaryKey)
             {
-                primaryKeyInfo = string.Format(", Primary key({0})", string.Join(",", columns.Where(it => it.IsPrimarykey).Select(it => this.SqlBuilder.GetTranslationColumnName(it.DbColumnName.ToLower()))));
+                primaryKeyInfo = string.Format(", Primary key({0})", string.Join(",", columns.Where(it => it.IsPrimarykey).Select(it => this.SqlBuilder.GetTranslationColumnName(it.DbColumnName.ToLower(isAutoToLowerCodeFirst)))));
 
             }
             sql = sql.Replace("$PrimaryKey", primaryKeyInfo);
@@ -389,7 +389,7 @@ namespace SqlSugar
                 }
                 string nullType = item.IsNullable ? this.CreateTableNull : CreateTableNotNull;
                 string primaryKey = null;
-                string addItem = string.Format(this.CreateTableColumn, this.SqlBuilder.GetTranslationColumnName(columnName.ToLower()), dataType, dataSize, nullType, primaryKey, "");
+                string addItem = string.Format(this.CreateTableColumn, this.SqlBuilder.GetTranslationColumnName(columnName.ToLower(isAutoToLowerCodeFirst)), dataType, dataSize, nullType, primaryKey, "");
                 if (item.IsIdentity)
                 {
                     string length = dataType.Substring(dataType.Length - 1);
@@ -398,7 +398,7 @@ namespace SqlSugar
                 }
                 columnArray.Add(addItem);
             }
-            string tableString = string.Format(this.CreateTableSql, this.SqlBuilder.GetTranslationTableName(tableName.ToLower()), string.Join(",\r\n", columnArray));
+            string tableString = string.Format(this.CreateTableSql, this.SqlBuilder.GetTranslationTableName(tableName.ToLower(isAutoToLowerCodeFirst)), string.Join(",\r\n", columnArray));
             return tableString;
         }
         public override bool IsAnyConstraint(string constraintName)
@@ -459,6 +459,23 @@ namespace SqlSugar
         #endregion
 
         #region Helper
+        private bool isAutoToLowerCodeFirst
+        {
+            get
+            {
+                if (this.Context.CurrentConnectionConfig.MoreSettings == null) return true;
+                else if (
+                    this.Context.CurrentConnectionConfig.MoreSettings.PgSqlIsAutoToLower == false &&
+                    this.Context.CurrentConnectionConfig.MoreSettings?.PgSqlIsAutoToLowerCodeFirst == false)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+        }
         private string GetSchema()
         {
             var schema = "public";
