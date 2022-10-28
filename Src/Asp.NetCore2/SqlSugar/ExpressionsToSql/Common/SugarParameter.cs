@@ -110,10 +110,6 @@ namespace SqlSugar
             {
                 this.DbType = System.Data.DbType.Byte;
             }
-            else if (type == UtilConstants.SByteType)
-            {
-                this.DbType = System.Data.DbType.SByte;
-            }
             else if (type == UtilConstants.FloatType)
             {
                 this.DbType = System.Data.DbType.Single;
