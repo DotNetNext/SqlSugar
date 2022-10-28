@@ -151,6 +151,7 @@ namespace SqlSugar
                     DefaultCacheDurationInSeconds = it.MoreSettings.DefaultCacheDurationInSeconds,
                     DisableNvarchar = it.MoreSettings.DisableNvarchar,
                     PgSqlIsAutoToLower = it.MoreSettings.PgSqlIsAutoToLower,
+                    PgSqlIsAutoToLowerCodeFirst= it.MoreSettings.PgSqlIsAutoToLowerCodeFirst,
                     IsAutoRemoveDataCache = it.MoreSettings.IsAutoRemoveDataCache,
                     IsWithNoLockQuery = it.MoreSettings.IsWithNoLockQuery,
                     TableEnumIsString = it.MoreSettings.TableEnumIsString,
