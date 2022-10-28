@@ -268,6 +268,7 @@ namespace SqlSugar
             #endregion
             if (this.IsSingle)
             {
+                var isDic = this.EntityInfo.DbTableName.StartsWith("Dictionary`");
                 foreach (var item in this.UpdateBuilder.DbColumnInfoList)
                 {
                     if (this.UpdateBuilder.Parameters == null) this.UpdateBuilder.Parameters = new List<SugarParameter>();
@@ -283,6 +284,14 @@ namespace SqlSugar
                     if (item.IsArray)
                     {
                         parameter.IsArray = true;
+                    }
+                    if (item.Value == null && isDic)
+                    {
+                        var type = this.SqlBuilder.GetNullType(this.UpdateBuilder.GetTableNameString, item.DbColumnName);
+                        if (type != null)
+                        {
+                            parameter = new SugarParameter(this.SqlBuilder.SqlParameterKeyWord + item.DbColumnName, item.Value, type);
+                        }
                     }
                     this.UpdateBuilder.Parameters.Add(parameter);
                 }

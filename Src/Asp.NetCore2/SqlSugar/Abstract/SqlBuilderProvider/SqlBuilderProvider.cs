@@ -363,6 +363,10 @@ namespace SqlSugar
         {
             return sql;
         }
+        public virtual Type GetNullType(string tableName,string columnName) 
+        {
+            return null;
+        }
         private void BuilderTree(StringBuilder builder,ConditionalTree item,ref  int indexTree, List<SugarParameter>  parameters,ref int mainIndex)
         {
            var conditionals = ToConditionalCollections(item,ref indexTree, parameters);

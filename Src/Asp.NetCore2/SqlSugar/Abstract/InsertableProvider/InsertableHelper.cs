@@ -103,6 +103,7 @@ namespace SqlSugar
             #endregion
             if (this.IsSingle)
             {
+                var isDic = this.EntityInfo.DbTableName.StartsWith("Dictionary`");
                 foreach (var item in this.InsertBuilder.DbColumnInfoList)
                 {
                     if (this.InsertBuilder.Parameters == null) this.InsertBuilder.Parameters = new List<SugarParameter>();
@@ -118,6 +119,15 @@ namespace SqlSugar
                     if (item.IsArray)
                     {
                         paramters.IsArray = true;
+                    }
+                    if (item.Value == null && isDic)
+                    {
+                        var type = this.SqlBuilder.GetNullType(this.InsertBuilder.GetTableNameString, item.DbColumnName);
+                        if (type != null)
+                        {
+                            paramters = new SugarParameter(this.SqlBuilder.SqlParameterKeyWord + item.DbColumnName, item.Value, type);
+
+                        }
                     }
                     this.InsertBuilder.Parameters.Add(paramters);
                 }
