@@ -108,12 +108,12 @@ namespace SqlSugar
             var columnInfo=this.Context.DbMaintenance.GetColumnInfosByTableName(tableName).FirstOrDefault(z => z.DbColumnName.EqualCase(columnName));
             if (columnInfo != null) 
             {
-                var cTypeName=this.Context.Ado.DbBind.GetCsharpTypeName(UtilConstants.StringType.Name);
-                var value=UtilMethods.ConvertDataByTypeName(cTypeName, "");
+                var cTypeName=this.Context.Ado.DbBind.GetCsharpTypeNameByDbTypeName(columnInfo.DataType);
+                var value=UtilMethods.GetTypeByTypeName(cTypeName);
                 if (value != null) 
                 {
                     var key = "GetNullType_" + tableName + columnName;
-                    return new ReflectionInoCacheService().GetOrCreate(key, () => value.GetType());
+                    return new ReflectionInoCacheService().GetOrCreate(key, () => value);
                 }
             }
             return null;

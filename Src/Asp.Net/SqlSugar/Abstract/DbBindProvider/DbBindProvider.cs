@@ -41,6 +41,17 @@ namespace SqlSugar
             var mappings = this.MappingTypes.Where(it => it.Key == dbTypeName);
             return mappings.HasValue() ? mappings.First().Key : "string";
         }
+
+        public string GetCsharpTypeNameByDbTypeName(string dbTypeName)
+        {
+            var mappings = this.MappingTypes.Where(it => it.Key == dbTypeName);
+            if (mappings == null || mappings.Count() == 0)
+            {
+                return "string";
+            }
+            var result = mappings.First().Value.ObjToString();
+            return result;
+        }
         public virtual string GetConvertString(string dbTypeName)
         {
             string result = string.Empty;

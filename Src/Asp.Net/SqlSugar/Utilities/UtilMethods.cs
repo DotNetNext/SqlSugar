@@ -636,6 +636,103 @@ namespace SqlSugar
             }
             return dic;
         }
+
+        public static Type GetTypeByTypeName(string ctypename)
+        {
+ 
+            if (ctypename.EqualCase(UtilConstants.DecType.Name))
+            {
+                return UtilConstants.DecType;
+            }
+            else if (ctypename.EqualCase(UtilConstants.DobType.Name))
+            {
+                return UtilConstants.DobType;
+            }
+            else if (ctypename.EqualCase(UtilConstants.DateType.Name))
+            {
+                return UtilConstants.DateType;
+            }
+            else if (ctypename.EqualCase(UtilConstants.IntType.Name))
+            {
+                return UtilConstants.IntType;
+            }
+            else if (ctypename.EqualCase(UtilConstants.BoolType.Name))
+            {
+                return UtilConstants.BoolType;
+            }
+            else if (ctypename.EqualCase(UtilConstants.LongType.Name))
+            {
+                return UtilConstants.LongType;
+            }
+            else if (ctypename.EqualCase(UtilConstants.ShortType.Name))
+            {
+                return UtilConstants.ShortType;
+            }
+            else if (ctypename.EqualCase(UtilConstants.DateTimeOffsetType.Name))
+            {
+                return UtilConstants.DateTimeOffsetType;
+            }
+            else if (ctypename.EqualCase(UtilConstants.GuidType.Name))
+            {
+                return UtilConstants.GuidType;
+            }
+            else if (ctypename.EqualCase("int"))
+            {
+                return UtilConstants.IntType;
+            }
+            else if (ctypename.EqualCase("long"))
+            {
+                return UtilConstants.LongType;
+            }
+            else if (ctypename.EqualCase("short"))
+            {
+                return UtilConstants.ShortType;
+            }
+            else if (ctypename.EqualCase("byte"))
+            {
+                return UtilConstants.ByteType;
+            }
+            else if (ctypename.EqualCase("uint"))
+            {
+                return UtilConstants.UIntType;
+            }
+            else if (ctypename.EqualCase("ulong"))
+            {
+                return UtilConstants.ULongType;
+            }
+            else if (ctypename.EqualCase("ushort"))
+            {
+                return UtilConstants.UShortType;
+            }
+            else if (ctypename.EqualCase("uint32"))
+            {
+                return UtilConstants.UIntType;
+            }
+            else if (ctypename.EqualCase("uint64"))
+            {
+                return UtilConstants.ULongType;
+            }
+            else if (ctypename.EqualCase("bool"))
+            {
+                return UtilConstants.BoolType;
+            }
+            else if (ctypename.EqualCase("ToBoolean"))
+            {
+                return UtilConstants.BoolType;
+            }
+            else if (ctypename.EqualCase("uint16"))
+            {
+                return UtilConstants.UShortType;
+            }
+            else if (ctypename.EqualCase(UtilConstants.ByteArrayType.Name))
+            {
+                return UtilConstants.ByteArrayType;
+            }
+            else
+            {
+                return UtilConstants.StringType;
+            }
+        }
         public static object ConvertDataByTypeName(string ctypename,string value)
         {
             var item = new ConditionalModel() {
