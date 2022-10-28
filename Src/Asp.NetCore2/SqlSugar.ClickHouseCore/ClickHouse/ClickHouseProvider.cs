@@ -114,7 +114,6 @@ namespace SqlSugar.ClickHouse
         {
             var connection=(ClickHouseConnection)this.Connection;
             CheckConnection();
-            IDataParameter[] ipars = ToIDbDataParameter(parameters);
             ClickHouseCommand sqlCommand =connection.CreateCommand();
             var pars = ToIDbDataParameter(parameters);
             foreach (var param in pars.OrderByDescending(it=>it.ParameterName.Length)) 
@@ -132,6 +131,10 @@ namespace SqlSugar.ClickHouse
                     {
                         param.Value = Guid.Empty;
                     }
+                }
+                if (dbtype.ObjToString() == System.Data.DbType.SByte.ToString())
+                {
+                    dbtype = ClickHouseDbBind.MappingTypesConst.First(it => it.Value == CSharpDataType.@sbyte).Key;
                 }
                 if (param.Value!=null&&param.Value!=DBNull.Value&&dbtype.ObjToString() == System.Data.DbType.Boolean.ToString())
                 {

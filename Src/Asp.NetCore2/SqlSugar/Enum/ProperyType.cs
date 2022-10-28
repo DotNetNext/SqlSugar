@@ -15,6 +15,7 @@ namespace SqlSugar
         @double,
         @Guid,
         @byte,
+        @sbyte,
         @enum,
         @short,
         @long,

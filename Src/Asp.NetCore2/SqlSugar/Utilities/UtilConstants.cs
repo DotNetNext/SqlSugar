@@ -24,6 +24,7 @@ namespace SqlSugar
         internal static Type BoolType = typeof(bool);
         internal static Type BoolTypeNull = typeof(bool?);
         internal static Type ByteType = typeof(Byte);
+        internal static Type SByteType = typeof(sbyte);
         internal static Type ObjType = typeof(object);
         internal static Type DobType = typeof(double);
         internal static Type FloatType = typeof(float);
