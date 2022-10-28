@@ -77,6 +77,7 @@ namespace OrmTest
             var dt = new Dictionary<string, object>();
             dt.Add("id", 1);
             dt.Add("name", "abc");
+            dt.Add("CustomId", null);
             dt.Add("createTime", DateTime.Now);
             var dtList = new List<Dictionary<string, object>>();
             dtList.Add(dt);

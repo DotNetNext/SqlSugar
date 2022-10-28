@@ -140,6 +140,12 @@ namespace OrmTest
            .AddSubList(it => it.TwoItem3)
            .ExecuteCommand();
 
+
+            var dict = new Dictionary<string, object>();
+            dict.Add("name", "1");
+            dict.Add("Price", 1);
+            dict.Add("CustomId", null);
+            db.Insertable(dict).AS("Order").ExecuteCommand();
             Console.WriteLine("#### Insertable End ####");
         }
     }
