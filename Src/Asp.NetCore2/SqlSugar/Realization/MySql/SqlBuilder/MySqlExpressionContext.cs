@@ -72,6 +72,10 @@ namespace SqlSugar
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
             var parameter3 = model.Args[2];
+            if (parameter3.MemberValue.ObjToString() == DateType.Weekday.ObjToString()) 
+            {
+                parameter3.MemberValue = "Week";
+            }
             return string.Format(" (TIMESTAMPDIFF({2},{0},{1})=0) ", parameter.MemberName, parameter2.MemberName, parameter3.MemberValue);
         }
 
