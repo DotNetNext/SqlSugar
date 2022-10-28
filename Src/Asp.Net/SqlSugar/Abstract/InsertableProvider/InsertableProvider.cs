@@ -375,6 +375,10 @@ namespace SqlSugar
             result.Inserable = this;
             return result;
         }
+        public IInsertable<T> AsType(Type tableNameType) 
+        {
+            return AS(this.Context.EntityMaintenance.GetEntityInfo(tableNameType).DbTableName);
+        }
         public IInsertable<T> AS(string tableName)
         {
             if (tableName == null) return this;

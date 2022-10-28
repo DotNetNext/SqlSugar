@@ -21,6 +21,7 @@ namespace SqlSugar
 
 
         IUpdateable<T> AS(string tableName);
+        IUpdateable<T> AsType(Type tableNameType);
         IUpdateable<T> With(string lockString);
 
 

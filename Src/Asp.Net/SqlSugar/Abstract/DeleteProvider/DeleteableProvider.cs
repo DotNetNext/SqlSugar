@@ -61,6 +61,10 @@ namespace SqlSugar
         {
             return await ExecuteCommandAsync() > 0;
         }
+        public IDeleteable<T> AsType(Type tableNameType) 
+        {
+            return AS(this.Context.EntityMaintenance.GetEntityInfo(tableNameType).DbTableName);
+        }
         public IDeleteable<T> AS(string tableName)
         {
             if (tableName == null) return this;

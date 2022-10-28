@@ -184,6 +184,10 @@ namespace SqlSugar
             this.IsVersionValidation = true;
             return this;
         }
+        public IUpdateable<T> AsType(Type tableNameType) 
+        {
+            return AS(this.Context.EntityMaintenance.GetEntityInfo(tableNameType).DbTableName);
+        }
         public IUpdateable<T> AS(string tableName)
         {
             if (tableName == null) return this;
