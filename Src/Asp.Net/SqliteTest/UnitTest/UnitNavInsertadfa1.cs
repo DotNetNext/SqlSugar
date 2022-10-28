@@ -42,12 +42,20 @@ namespace OrmTest
                .ToList();
             foreach (var item in list)
             {
-                item.id = item.id + 100;
+                item.id = 0;
             }
             bool b = db.InsertNav(list)
             .Include(z1 => z1.detailList)
             .ExecuteCommand();
 
+            List<AssignMission> list2 = db.Queryable<AssignMission>()
+              .Includes(it => it.detailList)
+              .ToList();
+
+            if (list2.Count() != 2) 
+            {
+                throw new Exception("unit error");
+            }
         }
 
         //建类
