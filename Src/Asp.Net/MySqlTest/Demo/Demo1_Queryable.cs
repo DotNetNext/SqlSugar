@@ -95,6 +95,7 @@ namespace OrmTest
                 names = SqlFunc.Subqueryable<Order>().Where(z => z.Id == it.Id).SelectStringJoin(z => z.Name, ",")
             })
           .ToList();
+            var test04 = db.Queryable<Order>().Where(z => SqlFunc.DateIsSame(z.CreateTime, DateTime.Now, DateType.Weekday)).ToList();
             Console.WriteLine("#### Examples End ####");
         }
 
