@@ -15,6 +15,7 @@ namespace SqlSugar
         Task<int> ExecuteCommandAsync();
         Task<bool> ExecuteCommandHasChangeAsync();
         IDeleteable<T> AS(string tableName);
+        IDeleteable<T> AsType(Type tableNameType);
         IDeleteable<T> With(string lockString);
         IDeleteable<T> Where(T deleteObj);
         IDeleteable<T> Where(Expression<Func<T, bool>> expression);

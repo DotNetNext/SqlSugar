@@ -26,6 +26,7 @@ namespace SqlSugar
         long ExecuteReturnBigIdentity();
         Task<long> ExecuteReturnBigIdentityAsync();
         IInsertable<T> AS(string tableName);
+        IInsertable<T> AsType(Type tableNameType);
         IInsertable<T> With(string lockString);
         IInsertable<T> InsertColumns(Expression<Func<T, object>> columns);
         IInsertable<T> InsertColumns(params string[] columns);
