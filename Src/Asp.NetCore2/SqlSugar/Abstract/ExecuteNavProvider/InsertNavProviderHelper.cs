@@ -94,6 +94,10 @@ namespace SqlSugar
         private void InsertDatas<TChild>(List<TChild> children, EntityColumnInfo pkColumn, EntityColumnInfo NavColumn=null) where TChild : class, new()
         {
             children = children.Distinct().ToList();
+            if (pkColumn == null) 
+            {
+                Check.ExceptionEasy($"{typeof(TChild).Name} need primary key ", $"{typeof(TChild).Name}需要主键");
+            }
             var x = this._Context.Storageable(children).WhereColumns(new string[] { pkColumn.PropertyName }).ToStorage();
             var insertData = children = x.InsertList.Select(it => it.Item).ToList();
             var IsNoExistsNoInsert = _navOptions != null && _navOptions.OneToManyIfExistsNoInsert == true;
