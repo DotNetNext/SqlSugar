@@ -143,6 +143,13 @@ namespace SqlSugar
                         var dbType = columnInfo?.DataType;
                         if (dbType == null) {
                             var typeName = it.PropertyType.Name.ToLower();
+                            if (columnInfo==null&&it.PropertyType.IsEnum) 
+                            {
+                                if (this.Context.CurrentConnectionConfig?.MoreSettings?.TableEnumIsString!=true)
+                                {
+                                    typeName = "int";
+                                }
+                            }
                             if (typeName == "int32")
                                 typeName = "int";
                             if (typeName == "int64")
