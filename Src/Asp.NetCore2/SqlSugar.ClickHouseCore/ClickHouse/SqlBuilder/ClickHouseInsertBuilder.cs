@@ -98,7 +98,14 @@ namespace SqlSugar.ClickHouse
             {
                 date = UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig);
             }
-            return "'" + date.ToString("yyyy-MM-dd HH:mm:ss") + "'";
+            if (this.Context.CurrentConnectionConfig?.MoreSettings?.DisableMillisecond == true)
+            {
+                return "'" + date.ToString("yyyy-MM-dd HH:mm:ss") + "'";
+            }
+            else
+            {
+                return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
+            }
         }
 
         private string GetString(object value)
