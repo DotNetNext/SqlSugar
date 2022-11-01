@@ -462,6 +462,9 @@ namespace SqlSugar
         {
             if (Regex.IsMatch(dbTypeName, @"\(.+\)"))
             {
+                if (Regex.IsMatch(dbTypeName, @"SimpleAggregateFunction"))
+                    dbTypeName = Regex.Match(dbTypeName, @"((?<=,\s)[^Nullable]\w+)|((?<=Nullable\()\w+)").Value;
+                else
                 dbTypeName = Regex.Replace(dbTypeName, @"\(.+\)", "");
             }
             dbTypeName = dbTypeName.Trim();
