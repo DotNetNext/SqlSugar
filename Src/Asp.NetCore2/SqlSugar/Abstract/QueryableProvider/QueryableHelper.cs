@@ -893,6 +893,10 @@ namespace SqlSugar
                 ShortName = lastPareamter.Name,
                 TableName = this.Context.EntityMaintenance.GetTableName(lastPareamter.Type)
             };
+            if (this.Context.CurrentConnectionConfig?.MoreSettings?.PgSqlIsAutoToLower == false) 
+            {
+                result.ShortName = this.SqlBuilder.GetTranslationColumnName(result.ShortName);
+            }
             if (result.JoinIndex == 0)
             {
                 var firstPareamter = (express as LambdaExpression).Parameters.First();
