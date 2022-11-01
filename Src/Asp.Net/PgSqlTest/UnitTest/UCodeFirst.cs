@@ -48,7 +48,36 @@ namespace OrmTest
             Db.CodeFirst.InitTables<UNITCODEFIRST131>();
             Db.CodeFirst.InitTables<UNITCOdEFIRST131>();
             Db.CodeFirst.InitTables<TestTbl>();
+            var db = Db;
+            db.CurrentConnectionConfig.MoreSettings = new ConnMoreSettings()
+            {
+                PgSqlIsAutoToLower = false,
+                 PgSqlIsAutoToLowerCodeFirst=false
+            };
+            db.CodeFirst.InitTables<UpperOrder>();
+            var list=db.Queryable<UpperOrder>().LeftJoin<UpperOrder>((X1, Y1) =>
+            X1.Id == Y1.Id)
+                .Where(X1=>X1.Id==1)
+                .Select(X1=>new { 
+                    x1=X1.Id,
+                    x2=X1.Name
+                }).ToList();
         }
+        public class UpperOrder
+        {
+            [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+            public int Id { get; set; }
+
+            public string Name { get; set; }
+            public decimal Price { get; set; }
+            [SugarColumn(IsNullable = true)]
+            public DateTime CreateTime { get; set; }
+            [SugarColumn(IsNullable = true)]
+            public int CustomId { get; set; }
+            [SugarColumn(IsIgnore = true)]
+            public List<OrderItem> Items { get; set; }
+        }
+
         [SugarTable("test_tbl")]
         public class TestTbl
         {
