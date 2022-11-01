@@ -29,6 +29,17 @@ namespace SqlSugar
         #endregion
 
         #region Common Methods
+        public override string GetTableNameString
+        {
+            get
+            {
+                if (this.TableShortName != null&&this.Context.CurrentConnectionConfig?.MoreSettings?.PgSqlIsAutoToLower==false) 
+                {
+                    this.TableShortName = Builder.GetTranslationColumnName(this.TableShortName);
+                }
+                return base.GetTableNameString;
+            }
+        }
         public override bool IsComplexModel(string sql)
         {
             return Regex.IsMatch(sql, @"AS ""\w+\.\w+""")|| Regex.IsMatch(sql, @"AS ""\w+\.\w+\.\w+""");
