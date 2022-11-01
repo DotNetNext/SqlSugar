@@ -146,6 +146,13 @@ namespace OrmTest
             dict.Add("Price", 1);
             dict.Add("CustomId", null);
             db.Insertable(dict).AS("Order").ExecuteCommand();
+
+
+            var dict2 = new Dictionary<string, object>();
+            dict2.Add("name", "1");
+            dict2.Add("Price", 1);
+            dict2.Add("CustomId", null);
+            db.Insertable(dict).AS("Order").ExecuteReturnIdentity();
             Console.WriteLine("#### Insertable End ####");
         }
     }
