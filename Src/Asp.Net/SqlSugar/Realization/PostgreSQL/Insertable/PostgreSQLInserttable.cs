@@ -13,7 +13,8 @@ namespace SqlSugar
         {
             InsertBuilder.IsReturnIdentity = true;
             PreToSql();
-            string sql = InsertBuilder.ToSqlString().Replace("$PrimaryKey",this.SqlBuilder.GetTranslationColumnName(GetIdentityKeys().FirstOrDefault()));
+            string identityColumn = GetIdentityColumn();
+            string sql = InsertBuilder.ToSqlString().Replace("$PrimaryKey", this.SqlBuilder.GetTranslationColumnName(identityColumn));
             RestoreMapping();
             var result = Ado.GetScalar(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray()).ObjToInt();
             After(sql, result);
@@ -23,7 +24,8 @@ namespace SqlSugar
         {
             InsertBuilder.IsReturnIdentity = true;
             PreToSql();
-            string sql = InsertBuilder.ToSqlString().Replace("$PrimaryKey", this.SqlBuilder.GetTranslationColumnName(GetIdentityKeys().FirstOrDefault()));
+            string identityColumn = GetIdentityColumn();
+            string sql = InsertBuilder.ToSqlString().Replace("$PrimaryKey", this.SqlBuilder.GetTranslationColumnName(identityColumn));
             RestoreMapping();
             var obj = await Ado.GetScalarAsync(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
             var result = obj.ObjToInt();
@@ -74,5 +76,17 @@ namespace SqlSugar
             typeof(T).GetProperties().First(t => t.Name.ToUpper() == propertyName.ToUpper()).SetValue(result, setValue, null);
             return idValue > 0;
         }
+
+        private string GetIdentityColumn()
+        {
+            var identityColumn = GetIdentityKeys().FirstOrDefault();
+            if (identityColumn == null)
+            {
+                var columns = this.Context.DbMaintenance.GetColumnInfosByTableName(InsertBuilder.GetTableNameString);
+                identityColumn = columns.First(it => it.IsIdentity || it.IsPrimarykey).DbColumnName;
+            }
+            return identityColumn;
+        }
+
     }
 }
