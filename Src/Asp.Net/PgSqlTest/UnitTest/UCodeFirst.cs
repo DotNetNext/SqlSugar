@@ -55,13 +55,9 @@ namespace OrmTest
                  PgSqlIsAutoToLowerCodeFirst=false
             };
             db.CodeFirst.InitTables<UpperOrder>();
-            var list=db.Queryable<UpperOrder>().LeftJoin<UpperOrder>((X1, Y1) =>
-            X1.Id == Y1.Id)
-                .Where(X1=>X1.Id==1)
-                .Select(X1=>new { 
-                    x1=X1.Id,
-                    x2=X1.Name
-                }).ToList();
+            var list=db.Queryable<UpperOrder, UpperOrder>((X1,Y1)=>new JoinQueryInfos(
+                 JoinType.Left,X1.Id==Y1.Id
+                ) ).ToList();
         }
         public class UpperOrder
         {
