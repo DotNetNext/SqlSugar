@@ -57,7 +57,16 @@ namespace SqlSugar
                              AsName=viewColumns.PropertyName,
                              DbName=columnInfo.it.DbColumnName
                         };
-                        selectItems.Add(new KeyValuePair<string, JoinMapper>(expPars.shortName,joinMapper));
+                        var isNoPgAuto = queryBuilder.Context.CurrentConnectionConfig.MoreSettings?.PgSqlIsAutoToLower == false;
+                        if (isNoPgAuto)
+                        {
+                            var shortName=queryBuilder.Builder.GetTranslationColumnName(expPars.shortName);
+                            selectItems.Add(new KeyValuePair<string, JoinMapper>(shortName, joinMapper));
+                        }
+                        else
+                        {
+                            selectItems.Add(new KeyValuePair<string, JoinMapper>(expPars.shortName, joinMapper));
+                        }
                         isbreak = true;
                     }
                 }
