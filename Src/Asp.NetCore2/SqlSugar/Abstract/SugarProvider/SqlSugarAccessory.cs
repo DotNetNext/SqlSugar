@@ -464,17 +464,22 @@ namespace SqlSugar
                 {
                     joinInfo.TableName = entityType.Name;
                 }
+                var isNoPgAuto = this.Context.CurrentConnectionConfig.MoreSettings?.PgSqlIsAutoToLower == false;
                 if (isFirst)
                 {
                     var firstItem = lambdaParameters.First();
                     lambdaParameters.Remove(firstItem);
                     shortName = firstItem.Name;
+                    if (isNoPgAuto) 
+                        shortName = sqlBuilder.GetTranslationColumnName(shortName);
                 }
                 var joinString = joinArray[i * 2 - 2];
                 joinInfo.ShortName = lambdaParameters[i - 1].Name;
                 joinInfo.JoinType = (JoinType)Enum.Parse(typeof(JoinType), joinString);
                 joinInfo.JoinWhere = joinArray[i * 2 - 1];
                 joinInfo.JoinIndex = i;
+                if (isNoPgAuto)
+                    joinInfo.ShortName = sqlBuilder.GetTranslationColumnName(joinInfo.ShortName);
                 result.Add((joinInfo));
             }
             expressionContext.Clear();
