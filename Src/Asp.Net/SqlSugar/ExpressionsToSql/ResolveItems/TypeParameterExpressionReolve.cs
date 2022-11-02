@@ -25,7 +25,14 @@ namespace SqlSugar
                 case ResolveExpressType.SelectMultiple:
                     if (parameter.BaseParameter!=null&&parameter.BaseParameter.CurrentExpression.NodeType == ExpressionType.Lambda)
                     {
-                        this.Context.Result.Append(expression.Name + ".*");
+                        if (this.Context.PgSqlIsAutoToLower == false&&this.Context is PostgreSQLExpressionContext)
+                        {
+                            this.Context.Result.Append(this.Context.GetTranslationColumnName(expression.Name) + ".*");
+                        }
+                        else 
+                        {
+                            this.Context.Result.Append(expression.Name + ".*");
+                        }
                     }
                     else
                     {
