@@ -21,7 +21,7 @@ namespace OrmTest
                 PgSqlIsAutoToLower = false,
                 PgSqlIsAutoToLowerCodeFirst = false
             };
-            db.CodeFirst.InitTables<UpperOrder>();
+            db.CodeFirst.InitTables<UpperOrder, UpperItem>();
             var list = db.Queryable<UpperOrder>().LeftJoin<UpperOrder>((X1, Y1) =>
               X1.Id == Y1.Id)
                 .Where(X1 => X1.Id == 1)
@@ -29,8 +29,41 @@ namespace OrmTest
                     x1 = X1.Id,
                     x2 = X1.Name
                 }).ToList();
+
+            var list2 = db.Queryable<UpperOrder>().LeftJoin<UpperItem>((X1, Y1) =>
+           X1.Id == Y1.Id)
+             .Where(X1 => X1.Id == 1)
+             .Select<VUpperOrder>().ToList();
+        }
+
+        public class VUpperOrder
+        {
+            [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+            public int Id { get; set; }
+
+            public string Name { get; set; }
+            public decimal Price { get; set; }
+        
+            public DateTime UpperItemCreateTime { get; set; }
+            public int UpperItemCustomId { get; set; }
+
         }
         public class UpperOrder
+        {
+            [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+            public int Id { get; set; }
+
+            public string Name { get; set; }
+            public decimal Price { get; set; }
+            [SugarColumn(IsNullable = true)]
+            public DateTime CreateTime { get; set; }
+            [SugarColumn(IsNullable = true)]
+            public int CustomId { get; set; }
+            [SugarColumn(IsIgnore = true)]
+            public List<OrderItem> Items { get; set; }
+        }
+
+        public class UpperItem
         {
             [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
             public int Id { get; set; }
