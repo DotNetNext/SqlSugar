@@ -342,6 +342,9 @@ namespace SqlSugar
             queryable.SqlBuilder.QueryBuilder.EasyJoinInfos = this.GetEasyJoinInfo(joinExpression, ref shortName, queryable.SqlBuilder, types);
             queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
             queryable.SqlBuilder.QueryBuilder.JoinExpression = joinExpression;
+            var isNoPgAuto = this.Context.CurrentConnectionConfig.MoreSettings?.PgSqlIsAutoToLower == false;
+            if (isNoPgAuto) 
+                queryable.SqlBuilder.QueryBuilder.TableShortName = queryable.SqlBuilder.GetTranslationColumnName(shortName);
         }
         #endregion
 
@@ -522,10 +525,18 @@ namespace SqlSugar
             Dictionary<string, string> result = new Dictionary<string, string>();
             var lambdaParameters = ((LambdaExpression)joinExpression).Parameters.ToList();
             shortName = lambdaParameters.First().Name;
+            var isNoPgAuto = this.Context.CurrentConnectionConfig.MoreSettings?.PgSqlIsAutoToLower == false;
             var index = 1;
             foreach (var item in entityTypeArray)
             {
-                result.Add(UtilConstants.Space + lambdaParameters[index].Name, item.Name);
+                if (isNoPgAuto)
+                {
+                    result.Add(UtilConstants.Space +builder.GetTranslationColumnName(lambdaParameters[index].Name), item.Name);
+                }
+                else
+                {
+                    result.Add(UtilConstants.Space + lambdaParameters[index].Name, item.Name);
+                }
                 ++index;
             }
             return result;
