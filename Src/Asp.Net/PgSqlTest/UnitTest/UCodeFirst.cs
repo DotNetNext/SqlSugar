@@ -58,6 +58,9 @@ namespace OrmTest
             var list=db.Queryable<UpperOrder, UpperOrder>((X1,Y1)=>new JoinQueryInfos(
                  JoinType.Left,X1.Id==Y1.Id
                 ) ).ToList();
+
+            var list3 = db.Queryable<UpperOrder, UpperOrder>((X1, Y1) => X1.Id == Y1.Id)
+              .Select(X1 => X1).ToList();
         }
         public class UpperOrder
         {
