@@ -129,7 +129,17 @@ namespace SqlSugar
                 if (model is ConditionalModel)
                 {
                     var item = model as ConditionalModel;
-                    if (item.FieldName == $"[value=sql{UtilConstants.ReplaceKey}]") 
+                    if (item.CustomConditionalFunc != null) 
+                    {
+                        var colIndex = mainIndex + beginIndex;
+                        var colType = colIndex == 0 ? "" : "AND";
+                        var custom = item.CustomConditionalFunc.GetConditionalSql(item, colIndex);
+                        parameters.AddRange(custom.Value);
+                        builder.AppendFormat(" "+colType + " "+custom.Key);
+                        mainIndex++;
+                        continue;
+                    }
+                    else if (item.FieldName == $"[value=sql{UtilConstants.ReplaceKey}]") 
                     {
                         builder.Append(item.FieldValue);
                         continue;

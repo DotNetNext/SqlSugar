@@ -79,6 +79,17 @@ namespace SqlSugar
             }
             return value;
         }
+        public static string ToCheckRegexW(this string value) 
+        {
+            if (Regex.IsMatch(value,@"^\w+$"))
+            {
+                return value;
+            }
+            else 
+            {
+                throw new Exception($"ToCheckRegexW {value} format error ");
+            }
+        }
         internal static string ToLower(this string value ,bool isAutoToLower)
         {
             if (value == null) return null;
