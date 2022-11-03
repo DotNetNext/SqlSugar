@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace OrmTest
@@ -93,9 +94,32 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+            
+            List<IConditionalModel> conModels = new List<IConditionalModel>();
+            conModels.Add(new ConditionalModel()
+            {
+                    FieldName = "name",
+                    FieldValue = "1",
+                    CustomConditionalFunc= new MyConditional()
+            }); 
+            conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Like, FieldValue = "1" });
+            var list8=Db.Queryable<Order>().Where(conModels).ToList();
         }
 
-
+        public class MyConditional : ICustomConditionalFunc
+        {
+            public KeyValuePair<string,SugarParameter[]> GetConditionalSql(ConditionalModel conditionalModel,int index)
+            {
+                var parameterName= "@myp" + index;
+                SugarParameter[] pars = new SugarParameter[] 
+                {
+                     new SugarParameter(parameterName, conditionalModel.FieldValue )
+                };
+                //自已处理字符串安全，也可以使用我自带的
+                return new KeyValuePair<string, SugarParameter[]>
+                    ($" { conditionalModel.FieldName.ToCheckRegexW() } = {parameterName}", pars);
+            }
+        }
         public class UnitAbc121
         {
             [SugarColumn(IsNullable =true)]
