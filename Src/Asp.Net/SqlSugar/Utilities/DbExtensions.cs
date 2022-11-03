@@ -53,6 +53,7 @@ namespace SqlSugar
             if (!value.IsNullOrEmpty())
             {
                 value = value.Replace("'", "''");
+                if (value.IndexOf(@"\''")>0) value=value.Replace("\\","\\\\");
             }
             return value;
         }
