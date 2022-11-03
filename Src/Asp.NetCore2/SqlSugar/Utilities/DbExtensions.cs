@@ -52,7 +52,9 @@ namespace SqlSugar
         {
             if (!value.IsNullOrEmpty())
             {
+                var oldLength=value.Length;
                 value = value.Replace("'", "''");
+                if (oldLength!=value.Length&& value.IndexOf(")")>0&&value.IndexOf(@"\''")>0) value=value.Replace("\\","\\\\");
             }
             return value;
         }
@@ -76,6 +78,17 @@ namespace SqlSugar
                 }
             }
             return value;
+        }
+        public static string ToCheckRegexW(this string value) 
+        {
+            if (Regex.IsMatch(value,@"^\w+$"))
+            {
+                return value;
+            }
+            else 
+            {
+                throw new Exception($"ToCheckRegexW {value} format error ");
+            }
         }
         internal static string ToLower(this string value ,bool isAutoToLower)
         {
