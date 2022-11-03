@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using SqlSugar;
 namespace OrmTest
 {
     public partial class NewUnitTest
@@ -34,6 +34,54 @@ namespace OrmTest
                     throw new Exception("unit error"); 
                 }
             }
+            var list2=db.Insertable(new List<Order22>() {
+            new Order22()
+            {
+                Name = "a",
+                CreateTime = DateTime.Now,
+                CustomId = 1,
+                Price = 1
+            },new Order22()
+            {
+                Name = "a",
+                CreateTime = DateTime.Now,
+                CustomId = 1,
+                Price = 1
+            }
+            }).AS("Order").ExecuteReturnPkList<long>();
+
+            var list3 = db.Insertable(new List<Order>() {
+            new Order ()
+            {
+                Name = "a",
+                CreateTime = DateTime.Now,
+                CustomId = 1,
+                Price = 1
+            },new Order()
+            {
+                Name = "a",
+                CreateTime = DateTime.Now,
+                CustomId = 1,
+                Price = 1
+            }
+            }).AS("Order").ExecuteReturnPkList<int>();
+        }
+
+        public class Order22
+        {
+            [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+            public long Id { get; set; }
+            /// <summary>
+            /// 姓名
+            /// </summary>
+            public string Name { get; set; }
+            public decimal Price { get; set; }
+            [SugarColumn(IsNullable = true)]
+            public DateTime CreateTime { get; set; }
+            [SugarColumn(IsNullable = true)]
+            public int CustomId { get; set; }
+            [SugarColumn(IsIgnore = true)]
+            public List<OrderItem> Items { get; set; }
         }
         public class Unitsdafa111
         {
