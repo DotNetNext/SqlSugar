@@ -214,7 +214,7 @@ namespace SqlSugar
         {
             get
             {
-                return "EXECUTE sp_addextendedproperty N'MS_Description', '{1}', N'user', N'dbo', N'table', N'{0}', NULL, NULL";
+                return "EXECUTE sp_addextendedproperty N'MS_Description', N'{1}', N'user', N'dbo', N'table', N'{0}', NULL, NULL";
             }
         }
 

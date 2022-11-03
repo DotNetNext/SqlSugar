@@ -13,6 +13,7 @@ namespace SqlSugar
         int ExecuteCommand();
         Task<int> ExecuteCommandAsync();
         List<Type> ExecuteReturnPkList<Type>();
+        Task<List<Type>> ExecuteReturnPkListAsync<Type>();
         long ExecuteReturnSnowflakeId();
         List<long> ExecuteReturnSnowflakeIdList();
         Task<long> ExecuteReturnSnowflakeIdAsync();
