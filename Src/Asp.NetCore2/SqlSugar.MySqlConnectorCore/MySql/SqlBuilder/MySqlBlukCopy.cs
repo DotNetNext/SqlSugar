@@ -1,4 +1,4 @@
-﻿using MySqlConnector;
+﻿using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -131,7 +131,7 @@ namespace SqlSugar.MySqlConnector
         {
             if (this.Chara == null)
             {
-                return "UTF8";
+                return "utf8mb4";
             }
             else
             {
@@ -170,7 +170,14 @@ namespace SqlSugar.MySqlConnector
                     }
                     else if (colum.DataType == typeof(bool))
                     {
-                        sb.Append(row[colum].ObjToBool() ? 1 : 0);
+                        if (row[colum] == DBNull.Value)
+                        {
+                            sb.Append("NULL");
+                        }
+                        else
+                        {
+                            sb.Append(row[colum].ObjToBool() ? 1 : 0);
+                        }
                     }
                     else if (colum.DataType == UtilConstants.DateType&& row[colum] != null && row[colum] != DBNull.Value) 
                     {

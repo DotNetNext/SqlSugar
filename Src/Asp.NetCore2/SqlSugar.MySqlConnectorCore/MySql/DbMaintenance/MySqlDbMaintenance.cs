@@ -275,6 +275,25 @@ namespace SqlSugar.MySqlConnector
         #endregion
 
         #region Methods
+        public override bool IsAnyTable(string tableName, bool isCache = true)
+        {
+            try
+            {
+                return base.IsAnyTable(tableName, isCache);
+            }
+            catch (Exception ex)
+            {
+                if (SugarCompatible.IsFramework && ex.Message == "Invalid attempt to Read when reader is closed.")
+                {
+                    Check.ExceptionEasy($"To upgrade the MySql.Data. Error:{ex.Message}", $" 请先升级MySql.Data 。 详细错误:{ex.Message}");
+                    return true;
+                }
+                else
+                {
+                    throw;
+                }
+            }
+        }
         public override bool IsAnyColumnRemark(string columnName, string tableName)
         {
             var isAny=this.Context.DbMaintenance.GetColumnInfosByTableName(tableName, false)
@@ -299,6 +318,12 @@ namespace SqlSugar.MySqlConnector
         /// <returns></returns>
         public override bool CreateDatabase(string databaseName, string databaseDirectory = null)
         {
+
+            if (this.Context.Ado.IsValidConnection()) 
+            {
+                return true;
+            }
+
             if (databaseDirectory != null)
             {
                 if (!FileHelper.IsExistDirectory(databaseDirectory))
@@ -386,6 +411,10 @@ namespace SqlSugar.MySqlConnector
                 string primaryKey = null;
                 string identity = item.IsIdentity ? this.CreateTableIdentity : null;
                 string addItem = string.Format(this.CreateTableColumn, this.SqlBuilder.GetTranslationColumnName(columnName), dataType, dataSize, nullType, primaryKey, identity);
+                if (!string.IsNullOrEmpty(item.ColumnDescription))
+                {
+                    addItem += " COMMENT '"+item.ColumnDescription.ToSqlFilter()+"' ";
+                }
                 columnArray.Add(addItem);
             }
             string tableString = string.Format(this.CreateTableSql, this.SqlBuilder.GetTranslationTableName(tableName), string.Join(",\r\n", columnArray));

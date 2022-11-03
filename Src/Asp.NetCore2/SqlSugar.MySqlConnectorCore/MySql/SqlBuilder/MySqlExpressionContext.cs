@@ -72,6 +72,10 @@ namespace SqlSugar.MySqlConnector
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
             var parameter3 = model.Args[2];
+            if (parameter3.MemberValue.ObjToString() == DateType.Weekday.ObjToString()) 
+            {
+                parameter3.MemberValue = "Week";
+            }
             return string.Format(" (TIMESTAMPDIFF({2},{0},{1})=0) ", parameter.MemberName, parameter2.MemberName, parameter3.MemberValue);
         }
 
@@ -172,6 +176,37 @@ namespace SqlSugar.MySqlConnector
         public override string CharIndex(MethodCallExpressionModel model)
         {
             return string.Format("instr ({0},{1})", model.Args[0].MemberName, model.Args[1].MemberName);
+        }
+
+        public override string JsonField(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter1 = model.Args[1];
+            //var parameter2 = model.Args[2];
+            //var parameter3= model.Args[3];
+            var result = GetJson(parameter.MemberName, parameter1.MemberValue, model.Args.Count() == 2);
+            if (model.Args.Count > 2)
+            {
+                result = GetJson(result, model.Args[2].MemberValue, model.Args.Count() == 3);
+            }
+            if (model.Args.Count > 3)
+            {
+                result = GetJson(result, model.Args[3].MemberValue, model.Args.Count() == 4);
+            }
+            if (model.Args.Count > 4)
+            {
+                result = GetJson(result, model.Args[4].MemberValue, model.Args.Count() == 5);
+            }
+            if (model.Args.Count > 5)
+            {
+                result = GetJson(result, model.Args[5].MemberValue, model.Args.Count() == 6);
+            }
+            return result;
+        }
+
+        private string GetJson(object memberName1, object memberName2, bool isLast)
+        {
+            return $"{memberName1}->\"$.{memberName2}\"";
         }
     }
 }
