@@ -54,7 +54,7 @@ namespace OrmTest
             UValidate.Check(sql, "SELECT `Name`,`Price`,`CreateTime`,`CustomId` FROM `Order` ", "Queryable");
 
             var cts = IEnumerbleContains.Data();
-            var list2=Db.Queryable<Order>()
+            var list2 = Db.Queryable<Order>()
                     .Where(p => /*ids.*/cts.Select(c => c.Id).Contains(p.Id)).ToList();
 
             var cts2 = IEnumerbleContains.Data().ToList(); ;
@@ -81,11 +81,11 @@ namespace OrmTest
             }, o => o.OrderSn == saleOrderInfo.OrderSn && o.OrderStatus != 1);
 
             Db.CodeFirst.InitTables<UnitAbc121>();
-            Db.Insertable(new UnitAbc121() {  name="a",uid=null }).ExecuteCommand();
-            Db.Insertable(new UnitAbc121() { name = "a", uid=Guid.NewGuid() }).ExecuteCommand();
-            var list10= Db.Queryable<UnitAbc121>().ToList();
+            Db.Insertable(new UnitAbc121() { name = "a", uid = null }).ExecuteCommand();
+            Db.Insertable(new UnitAbc121() { name = "a", uid = Guid.NewGuid() }).ExecuteCommand();
+            var list10 = Db.Queryable<UnitAbc121>().ToList();
 
-            var count=Db.Queryable<Order>()
+            var count = Db.Queryable<Order>()
                 .Where(z => z.Id == SqlFunc.Subqueryable<Order>()
                 .GroupBy(x => x.Id).Select(x => x.Id))
                 .Count();
@@ -94,16 +94,23 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
-            
+
             List<IConditionalModel> conModels = new List<IConditionalModel>();
             conModels.Add(new ConditionalModel()
             {
-                    FieldName = "name",
-                    FieldValue = "1",
-                    CustomConditionalFunc= new MyConditional()
-            }); 
+                FieldName = "name",
+                FieldValue = "1",
+                CustomConditionalFunc = new MyConditional()
+            });
             conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Like, FieldValue = "1" });
-            var list8=Db.Queryable<Order>().Where(conModels).ToList();
+            var list8 = Db.Queryable<Order>().Where(conModels).ToList();
+            Db.Queryable<Order>()
+                .Select(it => new
+                {
+                    time = SqlFunc.Subqueryable<OrderItem>()
+                     .Where(s => s.OrderId == it.Id)
+                     .Select(s => SqlFunc.IF(s.CreateTime <= SqlFunc.DateAdd(it.CreateTime, 15, DateType.Minute)).Return(1).End(0)) 
+                }).ToList();
         }
 
         public class MyConditional : ICustomConditionalFunc
