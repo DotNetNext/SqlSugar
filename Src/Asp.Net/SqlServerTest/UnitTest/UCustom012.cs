@@ -334,6 +334,18 @@ namespace OrmTest
             name3 = string.Join(",", it.Child.Select(z => z.Id))
             });
 
+            if (!db.DbMaintenance.IsAnyTable("order", false)) 
+            {
+                throw new Exception("unit error");
+            }
+            if (db.DbMaintenance.IsAnyTable("ordsafadsfasdfasfasder", false))
+            {
+                throw new Exception("unit error");
+            }
+            if (!db.DbMaintenance.IsAnyTable("Tree1", false))
+            {
+                throw new Exception("unit error");
+            }
         }
 
         public class UnitA001
