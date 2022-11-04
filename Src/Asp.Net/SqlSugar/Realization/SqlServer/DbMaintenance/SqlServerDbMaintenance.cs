@@ -320,7 +320,7 @@ namespace SqlSugar
             {
                 var schemas = GetSchemas();
                 var first =this.SqlBuilder.GetNoTranslationColumnName(tableName.Split('.').First());
-                var schemaInfo= schemas.FirstOrDefault(it=>it.EqualCase(first));
+                var schemaInfo= schemas.FirstOrDefault(it => it.EqualCase(first));
                 if (schemaInfo == null)
                 {
                     return base.IsAnyTable(tableName, isCache);
@@ -331,9 +331,16 @@ namespace SqlSugar
                     return result > 0;
                 }
             }
-            else
+            else if (isCache)
             {
                 return base.IsAnyTable(tableName, isCache);
+            }
+            else 
+            {
+                var sql = @"IF EXISTS (SELECT * FROM sys.objects
+                        WHERE type='u' AND name='"+tableName.ToSqlFilter()+@"')  
+                        SELECT 1 AS res ELSE SELECT 0 AS res;";
+                return this.Context.Ado.GetInt(sql) > 0;
             }
         }
         public List<string> GetSchemas()
