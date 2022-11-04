@@ -28,10 +28,7 @@ namespace SqlSugar
         
 
         public ICustomConditionalFunc CustomConditionalFunc { get; set; }
-        public string CustomP1 { get; set; }
-        public string CustomP2 { get; set; }
-        public string CustomP3 { get; set; }
-        public string CustomP4 { get; set; }
+        public dynamic CustomParameterValue { get; set; }
 
         public ConditionalType ConditionalType { get; set; }
         [Newtonsoft.Json.JsonIgnoreAttribute]
