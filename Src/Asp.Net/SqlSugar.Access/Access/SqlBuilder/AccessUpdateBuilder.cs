@@ -26,13 +26,13 @@ namespace SqlSugar.Access
                     whereList.Add(whereString);
                 }
                 i++;
-                return string.Format("{0} {1} WHERE {2}", updateTable, setValues, string.Join(" AND", whereList)) + UtilConstants.ReplaceCommaKey;
+                return string.Format("{0} {1} WHERE {2}", updateTable, setValues, string.Join(" AND ", whereList)) + UtilConstants.ReplaceCommaKey;
             }).ToArray()));
             return sb.ToString();
         }
         private string GetOracleUpdateColums(int i, DbColumnInfo m, bool iswhere)
         {
-            return string.Format("{0}={1}", m.DbColumnName , FormatValue(m.Value));
+            return string.Format(" {0}={1} ", m.DbColumnName , FormatValue(m.Value));
         }
 
         public override object FormatValue(object value)
