@@ -78,6 +78,10 @@ namespace SqlSugar
             var selfParameterName = Context.GetTranslationColumnName((argExp as LambdaExpression).Parameters.First().Name) + UtilConstants.Dot;
             if (this.Context.JoinIndex == 0)
                 result = result.Replace(selfParameterName, SubTools.GetSubReplace(this.Context));
+            if (!string.IsNullOrEmpty(selfParameterName) && this.Context.IsSingle&& this.Context.JoinIndex == 0) 
+            {
+                this.Context.CurrentShortName = selfParameterName.TrimEnd('.');
+            }
             return result;
         }
 
