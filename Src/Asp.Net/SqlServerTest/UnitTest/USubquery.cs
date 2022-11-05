@@ -11,7 +11,7 @@ namespace OrmTest
         public static void SubQueryTest() 
         {
            var sql= Db.Queryable<Order>().Where(it => SqlFunc.Subqueryable<OrderItem>().Where(s => s.OrderId == it.Id).Any()).ToSql();
-            if (sql.Key != "SELECT [Id],[Name],[Price],[CreateTime],[CustomId] FROM [Order] it  WHERE (EXISTS ( SELECT * FROM [OrderDetail] WHERE ( [OrderId] = [it].[Id] ) ))") 
+            if (sql.Key != "SELECT [Id],[Name],[Price],[CreateTime],[CustomId] FROM [Order] it  WHERE (EXISTS ( SELECT * FROM [OrderDetail] [s]  WHERE ( [OrderId] = [it].[Id] ) ))") 
             {
                 throw new Exception("unit error");
             }

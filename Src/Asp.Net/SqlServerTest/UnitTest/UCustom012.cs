@@ -346,6 +346,15 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+          
+            var list7=db.Queryable<Order>()
+                .Where(z => SqlFunc.Subqueryable<StudentA>().Where(y => y.SchoolA.School_Name == "").NotAny())
+                .ToList();
+            var list8 = db.Queryable<Order>()
+                .Where(z => SqlFunc.Subqueryable<StudentA>()
+                .Where(y => y.SchoolA.School_Name == "")
+                .Select(y=>y.Name)=="a")
+                .ToList();
         }
 
         public class UnitA001
