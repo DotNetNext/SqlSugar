@@ -385,7 +385,7 @@ namespace SqlSugar
                     }
                 }
             }
-            totalNumber = count;
+            totalNumber.Value = count;
         }
         
         public async Task<List<T>> SetContextAsync<ParameterT>(Expression<Func<T, object>> thisFiled1, Expression<Func<object>> mappingFiled1,
