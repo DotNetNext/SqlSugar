@@ -34,7 +34,16 @@ namespace OrmTest
             var ulList=db.Queryable<UnituLong>().Where(x => x.longx > 0).ToList();
             db.CodeFirst.As<UnituLong>("UnituLong0011").InitTables<UnituLong>();
             Console.WriteLine("#### CodeFirst end ####");
+            db.CodeFirst.InitTables<Unituadfasf1>();
         }
+    }
+    [SugarIndex("IndexUnituadfasf1_longx{include:name,id}", nameof(longx), OrderByType.Asc)]
+    public class Unituadfasf1
+    {
+
+        public ulong longx { get; set; }
+        public int id { get; set; }
+        public string name { get; set; }
     }
 
     public class UnituLong
