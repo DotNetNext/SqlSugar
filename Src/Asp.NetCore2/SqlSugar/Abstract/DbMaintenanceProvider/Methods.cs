@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace SqlSugar
 {
@@ -467,7 +468,19 @@ namespace SqlSugar
         }
         public virtual bool CreateIndex(string tableName, string[] columnNames, string IndexName, bool isUnique = false) 
         {
-            string sql = string.Format("CREATE {3} INDEX {2} ON {0}({1})", tableName, string.Join(",", columnNames), IndexName, isUnique ? "UNIQUE" : "");
+            var include = "";
+            if (IndexName.ToLower().Contains("{include:"))
+            {
+                include = Regex.Match(IndexName, @"\{include\:.+$").Value;
+                IndexName = IndexName.Replace(include, "");
+                if (include == null) 
+                {
+                    throw new Exception("include format error");
+                }
+                include = include.Replace("{include:", "").Replace("}", "");
+                include = $"include({include})";
+            }
+            string sql = string.Format("CREATE {3} INDEX {2} ON {0}({1})"+ include, tableName, string.Join(",", columnNames), IndexName, isUnique ? "UNIQUE" : "");
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
