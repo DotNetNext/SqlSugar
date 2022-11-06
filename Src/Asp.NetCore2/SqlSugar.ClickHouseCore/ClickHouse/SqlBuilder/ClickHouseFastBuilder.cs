@@ -30,6 +30,10 @@ namespace SqlSugar.ClickHouse
             CloseDb();
             return dt.Rows.Count;
         }
+        public override Task CreateTempAsync<T>(DataTable dt) 
+        {
+            throw new Exception("The development of BulkCopyUpdate ");
+        }
         public ClickHouseBulkCopy GetBulkCopyInstance()
         {
             ClickHouseBulkCopy copy;
