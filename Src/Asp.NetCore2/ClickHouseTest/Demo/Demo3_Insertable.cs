@@ -50,6 +50,14 @@ namespace OrmTest
             //Use Lock
             db.Insertable(insertObj).With(SqlWith.UpdLock).ExecuteReturnSnowflakeId();
 
+            var updateObjs2 = new List<Order> {
+                 new Order() { Id = 222221, Name = "bk", Price=10 },
+                 new Order() { Id = 222221, Name = "bk2" , Price= 11}
+            };
+            db.Fastest<Order>().BulkCopy(updateObjs2);
+
+            var list3 = db.Queryable<Order>().Where(it => it.Id == updateObjs2[0].Id).ToList();
+      
             Console.WriteLine("#### Insertable End ####");
         }
     }
