@@ -1,37 +1,45 @@
 ﻿using ClickHouse;
 using ClickHouse.Client.ADO;
+using ClickHouse.Client.Copy;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SqlSugar.ClickHouse
 {
     public class ClickHouseFastBuilder : FastBuilder, IFastBuilder
     {
-     
-        public ClickHouseFastBuilder(EntityInfo entityInfo)
-        {
-            throw new NotSupportedException("NotSupportedException");
-        }
-
-        public override string UpdateSql { get; set; } = @"UPDATE  {1}    SET {0}  FROM   {2}  AS TE  WHERE {3}
-";
-
  
         public async Task<int> ExecuteBulkCopyAsync(DataTable dt)
         {
-            await Task.FromResult(0);
-            throw new NotSupportedException("NotSupportedException");
+            var bulkCopy = GetBulkCopyInstance();
+            bulkCopy.DestinationTableName = dt.TableName;
+            try
+            {
+                await bulkCopy.WriteToServerAsync(dt,new CancellationToken());
+            }
+            catch (Exception ex)
+            {
+                CloseDb();
+                throw ex;
+            }
+            CloseDb();
+            return dt.Rows.Count;
         }
-
-        private  void BulkCopy(DataTable dt, string copyString, ClickHouseConnection conn, List<DbColumnInfo> columns)
+        public ClickHouseBulkCopy GetBulkCopyInstance()
         {
-            throw new NotSupportedException("NotSupportedException");
+            ClickHouseBulkCopy copy;
+            copy = new ClickHouseBulkCopy((ClickHouseConnection)this.Context.Ado.Connection);
+            if (this.Context.Ado.Connection.State == ConnectionState.Closed)
+            {
+                this.Context.Ado.Connection.Open();
+            }
+            copy.BatchSize = 100000;
+            return copy;
         }
-      
-        
     }
 }

@@ -31,6 +31,10 @@ namespace SqlSugar
                     return resultConnector;
                 case DbType.Dm:
                     return new DmFastBuilder();
+                case DbType.ClickHouse:
+                    var resultConnectorClickHouse = InstanceFactory.CreateInstance<IFastBuilder>("SqlSugar.ClickHouse.ClickHouseFastBuilder");
+                    resultConnectorClickHouse.CharacterSet = this.CharacterSet;
+                    return resultConnectorClickHouse;
                 case DbType.Kdbndp:
                     break;
                 case DbType.Oscar:
