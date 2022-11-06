@@ -160,7 +160,7 @@ namespace SqlSugar.ClickHouse
                 var result = batchInsetrSql.ToString();
                 if (result.Length > 150000) 
                 {
-                    Check.ExceptionEasy("SQL is too long 。Use db.Insertable(List<实体>).UseParameter().ExecuteCommand() ", "Sql太长你可以使用UseParameter内部会分页方式插入。用例：db.Insertable(List<实体>).UseParameter().ExecuteCommand()");
+                    Check.ExceptionEasy("SQL is too long 。Use db.Fastest<Order>().PageSize(300000).BulkCopy(insertObjs) or  Insertable(List).UseParamter().ExecuteCommand() ", "Sql太长你可以使用 db.Fastest<Order>().PageSize(300000).BulkCopy(insertObjs)或者 Insertable(List).UseParamter().ExecuteCommand()");
                 }
                 return result;
             }
