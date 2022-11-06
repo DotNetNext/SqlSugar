@@ -268,6 +268,7 @@ namespace SqlSugar
                     {
                         item.IndexName = (this.Context.CurrentConnectionConfig.IndexSuffix+ item.IndexName);
                     }
+                    var include = "";
                     if (item.IndexName != null)
                     {
                         var database = "{db}";
@@ -279,6 +280,11 @@ namespace SqlSugar
                         if (item.IndexName.Contains(table))
                         {
                             item.IndexName = item.IndexName.Replace(table, entityInfo.DbTableName);
+                        }
+                        if (item.IndexName.ToLower().Contains("{include:")) 
+                        {
+                            include=Regex.Match( item.IndexName,@"\{include\:.+$").Value;
+                            item.IndexName = item.IndexName.Replace(include, "");
                         }
                     }
                     if (!this.Context.DbMaintenance.IsAnyIndex(item.IndexName))
@@ -296,7 +302,7 @@ namespace SqlSugar
                                 return new KeyValuePair<string, OrderByType>(dbColumn.DbColumnName, it.Value);
                             })
                             .Select(it => querybulder.GetTranslationColumnName(it.Key) + " " + it.Value).ToArray();
-                        this.Context.DbMaintenance.CreateIndex(entityInfo.DbTableName, fileds, item.IndexName, item.IsUnique);
+                        this.Context.DbMaintenance.CreateIndex(entityInfo.DbTableName, fileds, item.IndexName+ include, item.IsUnique);
                     }
                 }
             }
