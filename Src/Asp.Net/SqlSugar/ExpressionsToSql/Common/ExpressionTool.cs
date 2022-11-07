@@ -358,6 +358,11 @@ namespace SqlSugar
                     result = true;
                     break;
                 }
+                else if (memberExpr.Expression is BinaryExpression&&(memberExpr.Expression as BinaryExpression).NodeType==ExpressionType.ArrayIndex) 
+                {
+                    result = true;
+                    break;
+                }
                 memberExpr = memberExpr.Expression as MemberExpression;
             }
             return result;
