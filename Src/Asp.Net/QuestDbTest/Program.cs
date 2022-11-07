@@ -25,9 +25,10 @@ namespace OrmTest
             DemoE_CodeFirst.Init();
             DemoF_Utilities.Init();
             DemoG_SimpleClient.Init();
-            //Unit test
-          
- 
+            Unit01.Init();
+
+
+
 
             Console.WriteLine("all successfully.");
             Console.ReadKey();
