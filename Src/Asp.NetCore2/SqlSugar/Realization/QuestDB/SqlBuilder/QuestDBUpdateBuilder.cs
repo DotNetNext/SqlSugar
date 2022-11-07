@@ -33,7 +33,7 @@ namespace SqlSugar
 
         private string GetOracleUpdateColums(int i, DbColumnInfo m, bool iswhere)
         {
-            return string.Format("\"{0}\"={1}", m.DbColumnName.ToUpper(), FormatValue(i, m.DbColumnName, m.Value, iswhere));
+            return string.Format(" \"{0}\"={1}", m.DbColumnName.ToUpper(), FormatValue(i, m.DbColumnName, m.Value, iswhere));
         }
 
         public object FormatValue(int i, string name, object value, bool iswhere)
@@ -84,7 +84,7 @@ namespace SqlSugar
                     this.Parameters.Add(new SugarParameter(parameterName, value));
                     return parameterName;
                 }
-                else if (value is int || value is long || value is short || value is short || value is byte)
+                else if (value is  double||value is int || value is long || value is short || value is short || value is byte)
                 {
                     return value;
                 }

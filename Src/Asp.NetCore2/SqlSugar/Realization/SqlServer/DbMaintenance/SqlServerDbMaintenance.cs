@@ -68,7 +68,7 @@ namespace SqlSugar
         {
             get
             {
-                return @"SELECT s.Name,Convert(varchar(max),tbp.value) as Description
+                return @"SELECT s.Name,Convert(nvarchar(max),tbp.value) as Description
                             FROM sysobjects s
 					     	LEFT JOIN sys.extended_properties as tbp ON s.id=tbp.major_id and tbp.minor_id=0 AND (tbp.Name='MS_Description' OR tbp.Name is null)  WHERE s.xtype IN('U') ";
             }
