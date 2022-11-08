@@ -226,6 +226,27 @@ namespace SqlSugar
             return result;
         }
 
+        public List<T> DataReaderToSelectArrayList<T>(IDataReader dataReader)
+        {
+            List<T> result = new List<T>();
+            using (dataReader)
+            {
+                while (dataReader.Read())
+                {
+                    var value = dataReader.GetValue(0);
+                    if (value == null || value == DBNull.Value)
+                    {
+                        result.Add(default(T));
+                    }
+                    else
+                    {
+                        result.Add((T)value);
+                    }
+                }
+            }
+
+            return result;
+        }
         /// <summary>
         /// DataReaderToList
         /// </summary>

@@ -928,6 +928,7 @@ namespace SqlSugar
             result.SqlBuilder.QueryBuilder.Parameters = QueryBuilder.Parameters;
             result.SqlBuilder.QueryBuilder.SelectValue = expression;
             result.SqlBuilder.QueryBuilder.IsSelectSingleFiledJson = UtilMethods.IsJsonMember(expression, this.Context);
+            result.SqlBuilder.QueryBuilder.IsSelectSingleFiledArray = UtilMethods.IsArrayMember(expression, this.Context);
             if (this.IsCache)
             {
                 result.WithCache(this.CacheTime);
@@ -1191,6 +1192,10 @@ namespace SqlSugar
             else if (QueryBuilder.IsSelectSingleFiledJson)
             {
                 result = this.Context.Utilities.DataReaderToSelectJsonList<TResult>(dataReader);
+            }
+            else if (QueryBuilder.IsSelectSingleFiledArray)
+            {
+                result = this.Context.Utilities.DataReaderToSelectArrayList<TResult>(dataReader);
             }
             else if (entityType.IsAnonymousType() || isComplexModel)
             {
