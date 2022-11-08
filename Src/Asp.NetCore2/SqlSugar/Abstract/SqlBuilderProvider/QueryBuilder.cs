@@ -273,8 +273,16 @@ namespace SqlSugar
             var isSingleTableHasSubquery = IsSingle() && resolveExpress.SingleTableNameSubqueryShortName.HasValue();
             if (isSingleTableHasSubquery)
             {
-                Check.Exception(!string.IsNullOrEmpty(this.TableShortName) && resolveExpress.SingleTableNameSubqueryShortName != this.TableShortName, "{0} and {1} need same name", resolveExpress.SingleTableNameSubqueryShortName, this.TableShortName);
-                this.TableShortName =resolveExpress.SingleTableNameSubqueryShortName;
+                if (this.TableShortName != null && this.TableShortName.StartsWith("\""))
+                {
+                    Check.Exception(!string.IsNullOrEmpty(this.TableShortName) && resolveExpress.SingleTableNameSubqueryShortName != this.TableShortName.TrimEnd('\"').TrimStart('\"'), "{0} and {1} need same name", resolveExpress.SingleTableNameSubqueryShortName, this.TableShortName);
+                    this.TableShortName = resolveExpress.SingleTableNameSubqueryShortName;
+                }
+                else
+                {
+                    Check.Exception(!string.IsNullOrEmpty(this.TableShortName) && resolveExpress.SingleTableNameSubqueryShortName != this.TableShortName, "{0} and {1} need same name", resolveExpress.SingleTableNameSubqueryShortName, this.TableShortName);
+                    this.TableShortName = resolveExpress.SingleTableNameSubqueryShortName;
+                }
             }
             return result;
         }
