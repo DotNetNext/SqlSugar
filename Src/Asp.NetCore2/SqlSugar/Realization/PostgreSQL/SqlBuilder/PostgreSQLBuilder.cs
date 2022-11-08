@@ -105,6 +105,8 @@ namespace SqlSugar
 
         public override Type GetNullType(string tableName, string columnName) 
         {
+            if (tableName != null)
+                tableName = tableName.Trim();
             var columnInfo=this.Context.DbMaintenance.GetColumnInfosByTableName(tableName).FirstOrDefault(z => z.DbColumnName.EqualCase(columnName));
             if (columnInfo != null) 
             {
