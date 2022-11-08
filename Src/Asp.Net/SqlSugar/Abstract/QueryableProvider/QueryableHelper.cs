@@ -1229,6 +1229,10 @@ namespace SqlSugar
             {
                 result = await this.Context.Utilities.DataReaderToSelectJsonListAsync<TResult>(dataReader);
             }
+            else if (QueryBuilder.IsSelectSingleFiledArray)
+            {
+                result =await this.Context.Utilities.DataReaderToSelectArrayListAsync<TResult>(dataReader);
+            }
             else if (entityType.IsAnonymousType() || isComplexModel)
             {
                 result = await this.Context.Utilities.DataReaderToListAsync<TResult>(dataReader);

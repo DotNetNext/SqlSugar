@@ -316,6 +316,26 @@ namespace SqlSugar
             }
             return result;
         }
+        public async Task<List<T>> DataReaderToSelectArrayListAsync<T>(IDataReader dataReader)
+        {
+            List<T> result = new List<T>();
+            using (dataReader)
+            {
+                while (await ((DbDataReader)dataReader).ReadAsync())
+                {
+                    var value = dataReader.GetValue(0);
+                    if (value == null || value == DBNull.Value)
+                    {
+                        result.Add(default(T));
+                    }
+                    else
+                    {
+                        result.Add((T)value);
+                    }
+                }
+            }
+            return result;
+        }
 
         /// <summary>
         /// DataReaderToList
