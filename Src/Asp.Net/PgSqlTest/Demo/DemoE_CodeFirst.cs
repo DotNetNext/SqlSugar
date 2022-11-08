@@ -29,8 +29,9 @@ namespace OrmTest
                  RoleIds=new long[] { 1,2}
             }).ExecuteCommand();
             var list2=db.Queryable<CodeFirstArrary>().Select(it => 
-            it.RoleIds  ).ToList();
-
+            it.RoleIds  ).First();
+            var list3= db.Queryable<CodeFirstArrary>().Select(it =>
+            it.RoleIds).FirstAsync().GetAwaiter().GetResult();
             Console.WriteLine("#### CodeFirst end ####");
         }
     }
