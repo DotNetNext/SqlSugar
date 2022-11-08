@@ -977,7 +977,7 @@ namespace SqlSugar
                 var result = "";
                 foreach (var item in newExp.Arguments)
                 {
-                    if (item is MemberExpression)
+                    if (item is MemberExpression&&type==OrderByType.Asc)
                     {
                         result +=
                           QueryBuilder.GetExpressionValue(item, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple).GetResultString() + ",";
@@ -985,7 +985,7 @@ namespace SqlSugar
                     else if (type == OrderByType.Desc) 
                     {
                         result +=
-                          QueryBuilder.GetExpressionValue(item, isSingle ? ResolveExpressType.WhereSingle : ResolveExpressType.WhereMultiple).GetResultString() + "Desc ,";
+                          QueryBuilder.GetExpressionValue(item, isSingle ? ResolveExpressType.WhereSingle : ResolveExpressType.WhereMultiple).GetResultString() + " Desc ,";
                     }
                     else
                     {
