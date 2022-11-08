@@ -28,7 +28,24 @@ namespace SqlSugar
                 return string.Concat(str.Select((x, i) => i > 0 && char.IsUpper(x) ? "_" + x.ToString() : x.ToString())).ToLower();
             }
         }
- 
+        internal static bool IsArrayMember(Expression expression, SqlSugarProvider context)
+        {
+            if (expression == null)
+                return false;
+            if (!(expression is LambdaExpression))
+                return false;
+            var lambda = (LambdaExpression)expression;
+            if (!(lambda.Body is MemberExpression))
+                return false;
+            var member = lambda.Body as MemberExpression;
+            if (!(member.Type.IsClass()))
+                return false;
+            if (member.Expression == null)
+                return false;
+            var entity = context.EntityMaintenance.GetEntityInfo(member.Expression.Type);
+            var json = entity.Columns.FirstOrDefault(z => z.IsArray && z.PropertyName == member.Member.Name);
+            return json != null;
+        }
         internal static bool IsJsonMember(Expression expression, SqlSugarProvider context)
         {
             if (expression == null)

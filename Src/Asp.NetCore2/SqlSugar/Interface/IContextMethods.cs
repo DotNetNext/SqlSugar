@@ -18,6 +18,7 @@ namespace SqlSugar
         Task<List<ExpandoObject>> DataReaderToExpandoObjectListAsyncNoUsing(IDataReader dataReader);
         List<T> DataReaderToList<T>(IDataReader reader);
         List<T> DataReaderToSelectJsonList<T>(IDataReader reader);
+        List<T> DataReaderToSelectArrayList<T>(IDataReader reader);
         Task<List<T>> DataReaderToSelectJsonListAsync<T>(IDataReader reader);
         List<T> DataReaderToListNoUsing<T>(IDataReader reader);
         Task<List<T>> DataReaderToListAsync<T>(IDataReader dataReader);

@@ -36,6 +36,7 @@ namespace SqlSugar
         public bool IsCrossQueryWithAttr { get;  set; }
         public Dictionary<string,string> CrossQueryItems { get; set; }
         public bool IsSelectSingleFiledJson { get; set; }
+        public bool IsSelectSingleFiledArray { get; set; }
         public string TranLock { get; set; }
         public bool IsDisableMasterSlaveSeparation { get;  set; }
         public bool IsEnableMasterSlaveSeparation { get; set; }
