@@ -23,10 +23,22 @@ namespace OrmTest
             db.CodeFirst.InitTables(typeof(CodeFirstTable1));//Create CodeFirstTable1 
             db.Insertable(new CodeFirstTable1() { Name = "a", Text="a" }).ExecuteCommand();
             var list = db.Queryable<CodeFirstTable1>().ToList();
+            db.CodeFirst.InitTables<CodeFirstArrary>();
+            db.Insertable(new CodeFirstArrary()
+            {
+                 RoleIds=new long[] { 1,2}
+            }).ExecuteCommand();
+            var list2=db.Queryable<CodeFirstArrary>().Select(it => 
+            it.RoleIds  ).ToList();
+
             Console.WriteLine("#### CodeFirst end ####");
         }
     }
-
+    public class CodeFirstArrary 
+    {
+        [SugarColumn(ColumnDescription = "绑定的角色ids", ColumnDataType = "int8[]", IsArray = true)]
+        public long[] RoleIds { get; set; }
+    }
     public class CodeFirstTable1
     {
         [SugarColumn(IsIdentity = true, IsPrimaryKey = true)]
