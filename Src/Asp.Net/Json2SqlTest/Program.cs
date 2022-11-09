@@ -37,6 +37,7 @@ namespace Test
             SelectTest(jsonToSqlClient);
             JoinTest(jsonToSqlClient);
             WhereTest(jsonToSqlClient);
+            WhereTest2(jsonToSqlClient);
             PageTest(jsonToSqlClient);
             PageTest2(jsonToSqlClient);
             PageTest3(jsonToSqlClient);
