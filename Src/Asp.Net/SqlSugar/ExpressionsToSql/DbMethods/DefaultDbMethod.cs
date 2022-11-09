@@ -512,7 +512,7 @@ namespace SqlSugar
         {
             var str = model.Args[0].MemberValue.ObjToString();
             var array = model.Args.Skip(1).Select(it => it.IsMember?it.MemberName:it.MemberValue).ToArray();
-             return string.Format("'"+str+ "'", array);
+             return string.Format(""+str+ "", array);
         }
 
         public virtual string Abs(MethodCallExpressionModel model)
