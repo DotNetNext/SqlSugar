@@ -175,7 +175,7 @@ namespace SqlSugar
                 }
                 catch (Exception ex)
                 {
-                    Check.Exception(true, ErrorMessage.ConnnectionOpen, ex.Message);
+                    Check.Exception(true, ErrorMessage.ConnnectionOpen, ex.Message+$"DbType=\"{this.Context.CurrentConnectionConfig.DbType}\";ConfigId=\"{this.Context.CurrentConnectionConfig.ConfigId}\"");
                 }
             }
         }

@@ -76,6 +76,7 @@ namespace SqlSugar
         string Oracle_ToChar(MethodCallExpressionModel model);
         string SqlServer_DateDiff(MethodCallExpressionModel model);
         string Format(MethodCallExpressionModel model);
+        string FormatRowNumber(MethodCallExpressionModel model);
         string Abs(MethodCallExpressionModel model);
         string Round(MethodCallExpressionModel model);
 

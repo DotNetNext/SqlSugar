@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
+
 namespace SqlSugar
 {
     public class MySqlExpressionContext : ExpressionContext, ILambdaExpressions
@@ -66,7 +69,7 @@ namespace SqlSugar
             var parameter2 = model.Args[1];
             return string.Format(" (TIMESTAMPDIFF(day,date({0}),date({1}))=0) ", parameter.MemberName, parameter2.MemberName); ;
         }
-
+        
         public override string DateIsSameByType(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];

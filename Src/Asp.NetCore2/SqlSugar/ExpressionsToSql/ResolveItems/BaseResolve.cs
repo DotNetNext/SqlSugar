@@ -677,7 +677,7 @@ namespace SqlSugar
                 .GetEntityInfo(oppsite.Expression.Type).Columns.FirstOrDefault(it => it.PropertyName == oppsite.Member.Name);
             return columnInfo;
         }
-        protected MethodCallExpressionArgs GetMethodCallArgs(ExpressionParameter parameter, Expression item)
+        protected MethodCallExpressionArgs GetMethodCallArgs(ExpressionParameter parameter, Expression item,string name=null)
         {
             var newContext = this.Context.GetCopyContext();
             newContext.MappingColumns = this.Context.MappingColumns;
@@ -685,6 +685,7 @@ namespace SqlSugar
             newContext.IgnoreComumnList = this.Context.IgnoreComumnList;
             newContext.IsSingle = this.Context.IsSingle;
             newContext.SqlFuncServices = this.Context.SqlFuncServices;
+            newContext.MethodName = name;
             newContext.Resolve(item, this.Context.IsJoin ? ResolveExpressType.WhereMultiple : ResolveExpressType.WhereSingle);
             this.Context.Index = newContext.Index;
             this.Context.ParameterIndex = newContext.ParameterIndex;

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 namespace SqlSugar
 {
@@ -508,11 +509,41 @@ namespace SqlSugar
             return string.Format(" DATEDIFF({0},{1},{2}) ", parameter.MemberValue?.ToString().ToSqlFilter(), parameter2.MemberName, parameter3.MemberName); ;
         }
 
-        public virtual string Format(MethodCallExpressionModel model)
+        public virtual string FormatRowNumber(MethodCallExpressionModel model)
         {
             var str = model.Args[0].MemberValue.ObjToString();
-            var array = model.Args.Skip(1).Select(it => it.IsMember?it.MemberName:it.MemberValue).ToArray();
-             return string.Format("'"+str+ "'", array);
+            var array = model.Args.Skip(1).Select(it => it.IsMember ? it.MemberName : it.MemberValue).ToArray();
+            return string.Format("'" + str + "'", array);
+        }
+        public virtual string Format(MethodCallExpressionModel model)
+        {
+           
+            var str ="'"+ model.Args[0].MemberValue.ObjToString()+"'";
+            var revalue = MergeString("'", "$1", "'");
+            if (revalue.Contains("concat("))
+            {
+                return FormatConcat(model);
+            }
+            str =Regex.Replace(str, @"(\{\d+?\})", revalue);
+            var array = model.Args.Skip(1).Select(it => it.IsMember?it.MemberName:it.MemberValue)
+                .Select(it=>ToString(new MethodCallExpressionModel() { Args=new List<MethodCallExpressionArgs>() {
+                 new MethodCallExpressionArgs(){ IsMember=true, MemberName=it }
+                } })).ToArray();
+             return string.Format(""+str+ "", array);
+        }
+        private  string FormatConcat(MethodCallExpressionModel model)
+        {
+
+            var str = "concat('" + model.Args[0].MemberValue.ObjToString() + "')";
+            str = Regex.Replace(str, @"(\{\d+?\})", "',$1,'");
+            var array = model.Args.Skip(1).Select(it => it.IsMember ? it.MemberName : it.MemberValue)
+                .Select(it => ToString(new MethodCallExpressionModel()
+                {
+                    Args = new List<MethodCallExpressionArgs>() {
+                 new MethodCallExpressionArgs(){ IsMember=true, MemberName=it }
+                }
+                })).ToArray();
+            return string.Format("" + str + "", array);
         }
 
         public virtual string Abs(MethodCallExpressionModel model)

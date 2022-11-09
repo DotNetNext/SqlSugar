@@ -559,7 +559,7 @@ namespace SqlSugar
             }
             else if (isBinaryExpression)
             {
-                model.Args.Add(GetMethodCallArgs(parameter, item));
+                model.Args.Add(GetMethodCallArgs(parameter, item,name));
             }
             else if (isSubIIF)
             {
@@ -1002,6 +1002,10 @@ namespace SqlSugar
                     case "Format":
                         var xx=base.BaseParameter;
                         var result = this.Context.DbMehtods.Format(model);
+                        if (this.Context.MethodName.IsIn("RowNumber", "MappingColumn")) 
+                        {
+                            result = this.Context.DbMehtods.FormatRowNumber(model);
+                        }
                         this.Context.Parameters.RemoveAll(it => model.Args.Select(x=>x.MemberName.ObjToString()).Contains(it.ParameterName) );
                         return result;
                     case "Abs":
