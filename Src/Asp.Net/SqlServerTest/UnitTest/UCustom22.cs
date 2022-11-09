@@ -77,7 +77,24 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
- 
+            var list5 = db.Queryable<Order>().Take(10)
+                    .Where(it => $"{it.Id + 1}a" == "2a").Select(it => new Order
+                    {
+                        Name = $"{it.Id + 1}a"
+                    }).ToList();
+
+            var list6 = db.Queryable<Order>().Take(10)
+              .Select(it => new 
+               {
+                   name2=it.Name,
+                   id2=it.Id+1,
+                   Name= $"1{it.Id + 1},ada,{it.Name},fasfaa"
+               }).ToList();
+
+            if (list6.Count > 0 && list6.First().Name!= $"1{list6.First().id2},ada,{list6.First().name2},fasfaa")
+            {
+                throw new Exception("unit error");
+            }
         }
 
 

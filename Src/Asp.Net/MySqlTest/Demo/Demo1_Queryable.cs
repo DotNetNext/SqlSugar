@@ -96,6 +96,11 @@ namespace OrmTest
             })
           .ToList();
             var test04 = db.Queryable<Order>().Where(z => SqlFunc.DateIsSame(z.CreateTime, DateTime.Now, DateType.Weekday)).ToList();
+            var test08= db.Queryable<Order>().Select(it => new
+            {
+                names = $"as{it.Id}fd{it.Id}a"
+            })
+           .ToList();
             Console.WriteLine("#### Examples End ####");
         }
 
