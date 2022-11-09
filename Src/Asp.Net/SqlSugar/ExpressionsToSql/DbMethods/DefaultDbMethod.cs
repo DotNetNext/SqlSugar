@@ -514,12 +514,30 @@ namespace SqlSugar
            
             var str ="'"+ model.Args[0].MemberValue.ObjToString()+"'";
             var revalue = MergeString("'", "$1", "'");
+            if (revalue.Contains("concat("))
+            {
+                return FormatConcat(model);
+            }
             str =Regex.Replace(str, @"(\{\d+?\})", revalue);
             var array = model.Args.Skip(1).Select(it => it.IsMember?it.MemberName:it.MemberValue)
                 .Select(it=>ToString(new MethodCallExpressionModel() { Args=new List<MethodCallExpressionArgs>() {
                  new MethodCallExpressionArgs(){ IsMember=true, MemberName=it }
                 } })).ToArray();
              return string.Format(""+str+ "", array);
+        }
+        private  string FormatConcat(MethodCallExpressionModel model)
+        {
+
+            var str = "concat('" + model.Args[0].MemberValue.ObjToString() + "')";
+            str = Regex.Replace(str, @"(\{\d+?\})", "',$1,'");
+            var array = model.Args.Skip(1).Select(it => it.IsMember ? it.MemberName : it.MemberValue)
+                .Select(it => ToString(new MethodCallExpressionModel()
+                {
+                    Args = new List<MethodCallExpressionArgs>() {
+                 new MethodCallExpressionArgs(){ IsMember=true, MemberName=it }
+                }
+                })).ToArray();
+            return string.Format("" + str + "", array);
         }
 
         public virtual string Abs(MethodCallExpressionModel model)

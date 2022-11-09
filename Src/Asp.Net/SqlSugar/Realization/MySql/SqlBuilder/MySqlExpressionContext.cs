@@ -69,20 +69,20 @@ namespace SqlSugar
             var parameter2 = model.Args[1];
             return string.Format(" (TIMESTAMPDIFF(day,date({0}),date({1}))=0) ", parameter.MemberName, parameter2.MemberName); ;
         }
-        public virtual string Format(MethodCallExpressionModel model)
-        {
+        //public virtual string Format(MethodCallExpressionModel model)
+        //{
 
-            var str = "concat('" + model.Args[0].MemberValue.ObjToString() + "')";
-            str = Regex.Replace(str, @"(\{\d+?\})", "',$1,'");
-            var array = model.Args.Skip(1).Select(it => it.IsMember ? it.MemberName : it.MemberValue)
-                .Select(it => ToString(new MethodCallExpressionModel()
-                {
-                    Args = new List<MethodCallExpressionArgs>() {
-                 new MethodCallExpressionArgs(){ IsMember=true, MemberName=it }
-                }
-                })).ToArray();
-            return string.Format("" + str + "", array);
-        }
+        //    var str = "concat('" + model.Args[0].MemberValue.ObjToString() + "')";
+        //    str = Regex.Replace(str, @"(\{\d+?\})", "',$1,'");
+        //    var array = model.Args.Skip(1).Select(it => it.IsMember ? it.MemberName : it.MemberValue)
+        //        .Select(it => ToString(new MethodCallExpressionModel()
+        //        {
+        //            Args = new List<MethodCallExpressionArgs>() {
+        //         new MethodCallExpressionArgs(){ IsMember=true, MemberName=it }
+        //        }
+        //        })).ToArray();
+        //    return string.Format("" + str + "", array);
+        //}
         public override string DateIsSameByType(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
