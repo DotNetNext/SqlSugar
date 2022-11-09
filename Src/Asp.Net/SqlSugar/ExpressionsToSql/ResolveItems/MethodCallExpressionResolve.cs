@@ -1002,7 +1002,7 @@ namespace SqlSugar
                     case "Format":
                         var xx=base.BaseParameter;
                         var result = this.Context.DbMehtods.Format(model);
-                        if (this.Context.MethodName == "RowNumber") 
+                        if (this.Context.MethodName.IsIn("RowNumber", "MappingColumn")) 
                         {
                             result = this.Context.DbMehtods.FormatRowNumber(model);
                         }
