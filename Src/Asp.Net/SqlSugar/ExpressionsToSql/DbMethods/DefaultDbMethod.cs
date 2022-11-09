@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 namespace SqlSugar
 {
@@ -510,8 +511,14 @@ namespace SqlSugar
 
         public virtual string Format(MethodCallExpressionModel model)
         {
-            var str = model.Args[0].MemberValue.ObjToString();
-            var array = model.Args.Skip(1).Select(it => it.IsMember?it.MemberName:it.MemberValue).ToArray();
+           
+            var str ="'"+ model.Args[0].MemberValue.ObjToString()+"'";
+            var revalue = MergeString("'", "$1", "'");
+            str =Regex.Replace(str, @"(\{\d+?\})", revalue);
+            var array = model.Args.Skip(1).Select(it => it.IsMember?it.MemberName:it.MemberValue)
+                .Select(it=>ToString(new MethodCallExpressionModel() { Args=new List<MethodCallExpressionArgs>() {
+                 new MethodCallExpressionArgs(){ IsMember=true, MemberName=it }
+                } })).ToArray();
              return string.Format(""+str+ "", array);
         }
 
