@@ -60,6 +60,11 @@ namespace OrmTest
                 names = SqlFunc.Subqueryable<Order>().Where(z=>z.Id==it.Id).SelectStringJoin(z => z.Name, ",")
             })
             .ToList();
+            var test08 = db.Queryable<Order>().Select(it => new
+            {
+                names = $"as{it.Id}fd{it.Id}a"
+            })
+             .ToList();
             Console.WriteLine("#### Examples End ####");
             Console.WriteLine("#### Examples End ####");
         }
