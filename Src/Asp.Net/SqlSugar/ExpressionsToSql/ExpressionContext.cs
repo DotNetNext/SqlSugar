@@ -109,6 +109,7 @@ namespace SqlSugar
         public virtual Action<Type> InitMappingInfo { get; set; }
         public virtual Action RefreshMapping { get; set; }
         public virtual Type SubTableType { get;  set; }
+        public string MethodName { get;  set; }
         #endregion
 
         #region Core methods 

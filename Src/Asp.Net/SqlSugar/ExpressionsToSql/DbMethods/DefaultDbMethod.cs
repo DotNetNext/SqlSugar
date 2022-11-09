@@ -509,6 +509,12 @@ namespace SqlSugar
             return string.Format(" DATEDIFF({0},{1},{2}) ", parameter.MemberValue?.ToString().ToSqlFilter(), parameter2.MemberName, parameter3.MemberName); ;
         }
 
+        public virtual string FormatRowNumber(MethodCallExpressionModel model)
+        {
+            var str = model.Args[0].MemberValue.ObjToString();
+            var array = model.Args.Skip(1).Select(it => it.IsMember ? it.MemberName : it.MemberValue).ToArray();
+            return string.Format("'" + str + "'", array);
+        }
         public virtual string Format(MethodCallExpressionModel model)
         {
            
