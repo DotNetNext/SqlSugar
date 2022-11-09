@@ -78,6 +78,11 @@ namespace OrmTest
             var NIds = db.Queryable<Order>().Where(it => ids.Contains(it.Name, true)).ToList();
             var Ids = db.Queryable<Order>().Where(it => ids.Contains(it.Name, false)).ToList();
             var Ids2 = db.Queryable<Order>().Where(it => ids.Contains(it.Name)).ToList();
+            var test10 = db.Queryable<Order>().Select(it => new
+            {
+                names = $"as{it.Id}fd{it.Id}a"
+            })
+           .ToList();
             Console.WriteLine("#### Examples End ####");
         }
 
