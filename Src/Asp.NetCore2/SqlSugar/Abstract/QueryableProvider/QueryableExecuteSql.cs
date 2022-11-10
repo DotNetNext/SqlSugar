@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Reflection;
 using System.Dynamic;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Serialization;
 
 namespace SqlSugar
 {
@@ -388,6 +389,23 @@ namespace SqlSugar
         {
             InitMapping();
             return _ToList<T>();
+        }
+        public List<T> SetContext<ParameterT>(Expression<Func<T, bool>> whereExpression, ParameterT parameter) 
+        {
+            var queryableContext = this.Context.TempItems["Queryable_To_Context"] as MapperContext<ParameterT>;
+            var rootList = queryableContext.list;
+            List<ISugarQueryable<object>> queryableList = new List<ISugarQueryable<object>>();
+            var index = rootList.IndexOf(parameter);
+            var selector = this.Clone().QueryBuilder.GetSelectValue+$",{index} as ";
+            var sqlObj=this.Clone().Where(whereExpression).Select(selector+"")
+            .Select(it => (object) new { it, sql_sugar_index = index });
+            queryableList.Add(sqlObj);
+
+            var allList = this.Context.Union(queryableList)
+                .Select(it=>new { it=default(T), sql_sugar_index =0})
+                .Select("*").ToList();
+            var result = new List<T>();
+            throw new Exception("开发中");
         }
         public List<T> SetContext<ParameterT>(Expression<Func<T, object>> thisFiled, Expression<Func<object>> mappingFiled, ParameterT parameter)
         {
