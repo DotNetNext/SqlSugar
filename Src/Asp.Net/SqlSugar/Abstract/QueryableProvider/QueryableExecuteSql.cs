@@ -406,7 +406,6 @@ namespace SqlSugar
                 .Select("*").ToList();
             var result = new List<T>();
             throw new Exception("开发中");
-            return result;
         }
         public List<T> SetContext<ParameterT>(Expression<Func<T, object>> thisFiled, Expression<Func<object>> mappingFiled, ParameterT parameter)
         {
