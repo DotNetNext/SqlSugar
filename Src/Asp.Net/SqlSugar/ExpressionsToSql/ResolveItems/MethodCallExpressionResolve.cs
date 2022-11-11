@@ -380,6 +380,11 @@ namespace SqlSugar
                     {
                         Expression trueValue = Expression.Constant(true);
                         var newItem = ExpressionBuilderHelper.CreateExpression(item, trueValue, ExpressionType.And);
+                        var member = (item as MemberExpression);
+                        if (member.Member.Name == "HasValue") 
+                        {
+                            newItem = ExpressionBuilderHelper.CreateExpression(member.Expression, Expression.Constant(null), ExpressionType.And);
+                        }
                         AppendItem(parameter, name, new List<Expression>() { newItem}, model, newItem);
                     }
                     else
