@@ -38,6 +38,10 @@ namespace SqlSugar
             foreach (var item in parentList)
             {
                 var items= parentNavigateProperty.PropertyInfo.GetValue(item);
+                if (items == null)
+                {
+                    continue;
+                }
                 var children=((List<TChild>)items);
                 InsertDatas(children, thisPkColumn);
                 var parentId = parentPkColumn.PropertyInfo.GetValue(item);
