@@ -106,7 +106,21 @@ namespace OrmTest
 				 })
 				.ExecuteCommand();
 
-
+			db.InsertNav(new OperatorInfo()
+            {
+                id = "1113",
+                createTime = DateTime.Now,
+                isDel = 1,
+                isDisabled = 1,
+                openid = "",
+                phone = "",
+                pwd = "",
+                realname = "a01",
+                remark = "a",
+                sno = "a",
+                username = "admin",
+				Roles=null
+            }).Include(z => z.Roles).ExecuteCommand();
 		
 		}
 
