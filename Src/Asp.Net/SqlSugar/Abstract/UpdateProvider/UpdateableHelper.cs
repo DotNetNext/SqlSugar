@@ -464,7 +464,7 @@ namespace SqlSugar
             it.PropertyName.EqualCase(verColumn.PropertyName));
             if (data == null) 
             {
-                data = new DbColumnInfo() { DbColumnName= verColumn.DbColumnName, Value=newValue };
+                data = new DbColumnInfo() { DbColumnName= verColumn.DbColumnName,PropertyName=verColumn.PropertyName, Value=newValue };
                 this.UpdateBuilder.DbColumnInfoList.Add(data);
             }
             data.Value = newValue;
