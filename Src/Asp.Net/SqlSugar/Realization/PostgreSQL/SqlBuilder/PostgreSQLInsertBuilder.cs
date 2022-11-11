@@ -88,7 +88,7 @@ namespace SqlSugar
                             {
                                 return string.Format(SqlTemplateBatchSelect, "NULL");
                             }
-                            return string.Format(SqlTemplateBatchSelect, "'" + value.ObjToString().ToSqlFilter() + "'");
+                            return string.Format(SqlTemplateBatchSelect, "'" + value.ObjToStringNoTrim().ToSqlFilter() + "'");
                         })) + "),");
                         ++i;
                     }

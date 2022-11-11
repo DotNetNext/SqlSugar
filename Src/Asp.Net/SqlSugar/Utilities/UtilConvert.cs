@@ -98,6 +98,11 @@ namespace SqlSugar
             if (thisValue != null) return thisValue.ToString().Trim();
             return "";
         }
+        public static string ObjToStringNoTrim(this object thisValue)
+        {
+            if (thisValue != null) return thisValue.ToString();
+            return "";
+        }
         public static string ObjToStringNew(this object thisValue)
         {
             if (thisValue != null && thisValue is byte[])
