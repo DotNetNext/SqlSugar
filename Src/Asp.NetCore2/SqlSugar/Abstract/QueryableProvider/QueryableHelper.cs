@@ -211,7 +211,7 @@ namespace SqlSugar
             return GetTreeRoot(childListExpression, parentIdExpression, pk, list, rootValue);
         }
 
-        private List<T> GetTreeRoot(Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, string pk, List<T> list, object rootValue)
+        internal List<T> GetTreeRoot(Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, string pk, List<T> list, object rootValue)
         {
             var childName = ((childListExpression as LambdaExpression).Body as MemberExpression).Member.Name;
             string parentIdName = GetParentName(parentIdExpression);
