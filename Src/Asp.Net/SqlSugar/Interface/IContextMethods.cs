@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Dynamic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -43,5 +44,6 @@ namespace SqlSugar
         Task PageEachAsync<T, ResultType>(IEnumerable<T> pageItems, int pageSize, Func<List<T>, Task<ResultType>> action);
         List<IConditionalModel> JsonToConditionalModels(string json);
         DataTable DictionaryListToDataTable(List<Dictionary<string, object>> dictionaryList);
+        List<T> ToTree<T>(List<T> list, Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, Expression<Func<T, object>> pkExpression,  object rootValue);
     }
 }

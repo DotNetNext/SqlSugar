@@ -6,6 +6,7 @@ using System.Data;
 using System.Data.Common;
 using System.Dynamic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -888,8 +889,9 @@ namespace SqlSugar
 
         #endregion
 
+        #region Conditional
         public List<IConditionalModel> JsonToConditionalModels(string json)
-        { 
+        {
             List<IConditionalModel> conditionalModels = new List<IConditionalModel>();
             var jarray = this.Context.Utilities.DeserializeObject<JArray>(json);
             foreach (var item in jarray)
@@ -913,16 +915,16 @@ namespace SqlSugar
                         {
                             // ConditionalType = (ConditionalType)Convert.ToInt32(),
                             FieldName = item["FieldName"] + "",
-                            CSharpTypeName = item["CSharpTypeName"].ObjToString().IsNullOrEmpty() ? null: item["CSharpTypeName"].ObjToString(),
-                            FieldValue = item["FieldValue"].Value<string>()==null?null: item["FieldValue"].ToString()
+                            CSharpTypeName = item["CSharpTypeName"].ObjToString().IsNullOrEmpty() ? null : item["CSharpTypeName"].ObjToString(),
+                            FieldValue = item["FieldValue"].Value<string>() == null ? null : item["FieldValue"].ToString()
                         };
                         if (typeValue.IsInt())
                         {
                             conditionalModel.ConditionalType = (ConditionalType)Convert.ToInt32(typeValue);
                         }
-                        else 
+                        else
                         {
-                            conditionalModel.ConditionalType = (ConditionalType)Enum.Parse(typeof(ConditionalType),typeValue.ObjToString());
+                            conditionalModel.ConditionalType = (ConditionalType)Enum.Parse(typeof(ConditionalType), typeValue.ObjToString());
                         }
                         conditionalModels.Add(conditionalModel);
                     }
@@ -960,18 +962,26 @@ namespace SqlSugar
             }
             return result;
         }
-
         private static ConditionalType GetConditionalType(JToken value)
         {
-            if (value["ConditionalType"].Type == JTokenType.String) 
+            if (value["ConditionalType"].Type == JTokenType.String)
             {
                 var stringValue = value["ConditionalType"].Value<string>();
-                if (!stringValue.IsInt()) 
+                if (!stringValue.IsInt())
                 {
                     return (ConditionalType)Enum.Parse(typeof(ConditionalType), stringValue);
                 }
             }
             return (ConditionalType)Convert.ToInt32(value["ConditionalType"].Value<int>());
         }
+        #endregion
+
+        #region Tree
+        public List<T> ToTree<T>(List<T> list, Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, Expression<Func<T, object>> pkExpression, object rootValue) 
+        {
+            var pk = ExpressionTool.GetMemberName(pkExpression);
+          return  (this.Context.Queryable<T>() as QueryableProvider<T>).GetTreeRoot(childListExpression,parentIdExpression,pk,list,rootValue);
+        }
+        #endregion
     }
 }
