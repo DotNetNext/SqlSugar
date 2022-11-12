@@ -15,10 +15,10 @@ Using SqlSugar is very simple , And it's powerful.
 
 ## Description
 - Support Cross database query
-- Support SqlServer、MySql、PgSql and Oracle  insert blukcopy  
+- Support SqlServer、MySql、PgSql and Oracle  insert bulkcopy  
 - Split table big data self-processing 
 - Support Multi-tenant, multi-library transactions
-- Support Support CodeFirst data migration.
+- Support CodeFirst data migration.
 - Support Join query 、  Union all 、 Subquery 
 - Support Configure the query  
 - Support DbFirst import entity class from database, or use Generation Tool.
