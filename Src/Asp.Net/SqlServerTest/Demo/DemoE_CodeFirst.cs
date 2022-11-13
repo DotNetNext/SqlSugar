@@ -41,8 +41,14 @@ namespace OrmTest
                 {
                     Name = it.CreateTime.HasValue ? it.CreateTime.Value.ToString("yyyy-MM-dd") : string.Empty
                 }).ToList();
+            db.CodeFirst.InitTables<CodeFirstimg>();
             Console.WriteLine("#### CodeFirst end ####");
         }
+    }
+    public class CodeFirstimg 
+    {
+        [SugarColumn(Length =100)]
+        public byte[] img { get; set; }
     }
     public class CodeFirstTable111
     {
