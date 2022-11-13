@@ -24,7 +24,7 @@ namespace OrmTest
         /// Account have permission to create database
         /// 用有建库权限的数据库账号
         /// </summary>
-        public static string ConnectionString =  "Provider=Microsoft.ACE.OleDB.15.0;Data Source="+GetCurrentProjectPath+"\\test.accdb";
+        public static string ConnectionString =  "Provider=Microsoft.ACE.OleDB.16.0;Data Source="+GetCurrentProjectPath+"\\test.accdb";
         /// <summary>
         /// Account have permission to create database
         /// 用有建库权限的数据库账号
