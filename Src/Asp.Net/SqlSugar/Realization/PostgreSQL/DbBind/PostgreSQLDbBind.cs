@@ -81,7 +81,7 @@ namespace SqlSugar
                     new KeyValuePair<string, CSharpDataType>("boolean",CSharpDataType.@bool),
                     new KeyValuePair<string, CSharpDataType>("bool",CSharpDataType.@bool),
                     new KeyValuePair<string, CSharpDataType>("box",CSharpDataType.@bool),
-                    new KeyValuePair<string, CSharpDataType>("bytea",CSharpDataType.@bool),
+                    new KeyValuePair<string, CSharpDataType>("bytea",CSharpDataType.byteArray),
 
                     new KeyValuePair<string, CSharpDataType>("varchar",CSharpDataType.@string),
                     new KeyValuePair<string, CSharpDataType>("character varying",CSharpDataType.@string),
