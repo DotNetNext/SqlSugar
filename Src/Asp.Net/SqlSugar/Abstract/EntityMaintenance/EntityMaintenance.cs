@@ -151,6 +151,10 @@ namespace SqlSugar
         /// <returns>the text contents of this XML element node</returns>
         public string GetXElementNodeValue(Type entityType, string nodeAttributeName)
         {
+            if (this.Context.CurrentConnectionConfig?.MoreSettings?.IsNoReadXmlDescription == true)
+            {
+                return "";
+            }
             var path = entityType.Assembly.Location;
             if (string.IsNullOrEmpty(path))
             {
