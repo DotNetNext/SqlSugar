@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UnitByteArray.Init();
             UnitInsertNavOneToOne.Init();
             CrossDatabase01.Init();
             CrossDatabase02.Init();

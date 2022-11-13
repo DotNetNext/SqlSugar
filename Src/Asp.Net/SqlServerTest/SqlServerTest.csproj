@@ -98,6 +98,7 @@
     <Compile Include="Demo\Demo0_SqlSugarClient.cs" />
     <Compile Include="Models\ViewOrder.cs" />
     <Compile Include="UnitTest\Models\EntityBase.cs" />
+    <Compile Include="UnitTest\UnitByteArray.cs" />
     <Compile Include="UnitTest\UnitInsertNavOneToOne.cs" />
     <Compile Include="UnitTest\Models\SysField.cs" />
     <Compile Include="UnitTest\Models\SysFormField.cs" />
