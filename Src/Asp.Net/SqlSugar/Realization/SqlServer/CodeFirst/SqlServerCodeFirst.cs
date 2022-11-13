@@ -44,11 +44,11 @@ namespace SqlSugar
             else
             {
                 var name = GetType(propertyType.Name);
-                if (name == "varbinary" && item.Length == 0) 
-                {
-                    name = "varbinary(max)";
-                }
                 result.DataType = this.Context.Ado.DbBind.GetDbTypeName(name);
+                if (result.DataType == "varbinary" && item.Length == 0)
+                {
+                    result.DataType = "varbinary(max)";
+                }
             }
         }
     }
