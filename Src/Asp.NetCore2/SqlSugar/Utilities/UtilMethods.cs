@@ -173,7 +173,9 @@ namespace SqlSugar
                     IsWithNoLockQuery = it.MoreSettings.IsWithNoLockQuery,
                     TableEnumIsString = it.MoreSettings.TableEnumIsString,
                     DisableMillisecond = it.MoreSettings.DisableMillisecond,
-                    DbMinDate=it.MoreSettings.DbMinDate
+                    DbMinDate=it.MoreSettings.DbMinDate,
+                    IsNoReadXmlDescription=it.MoreSettings.IsNoReadXmlDescription
+                      
                 },
                 SqlMiddle = it.SqlMiddle == null ? null : new SqlMiddle
                 {

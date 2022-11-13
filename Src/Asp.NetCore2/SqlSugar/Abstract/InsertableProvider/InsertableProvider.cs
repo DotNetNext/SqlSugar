@@ -301,7 +301,24 @@ namespace SqlSugar
                 return 0;
             }
             string sql = _ExecuteReturnIdentity();
-            var result =await Ado.GetIntAsync(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
+            var result = 0;
+            if (InsertBuilder.IsOleDb)
+            {
+                var isAuto = false;
+                if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection)
+                {
+                    isAuto = true;
+                    this.Context.CurrentConnectionConfig.IsAutoCloseConnection = false;
+                }
+                result = Ado.GetInt(sql.Split(';').First(), InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
+                result = Ado.GetInt(sql.Split(';').Last(), InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
+                if (isAuto)
+                {
+                    this.Ado.Close();
+                    this.Context.CurrentConnectionConfig.IsAutoCloseConnection = isAuto;
+                }
+            }
+            result =await Ado.GetIntAsync(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
             After(sql, result);
             return result;
         }
