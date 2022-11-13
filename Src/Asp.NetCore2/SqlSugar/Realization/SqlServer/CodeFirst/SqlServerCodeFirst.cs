@@ -30,5 +30,26 @@ namespace SqlSugar
                 return table;
             }
         }
+
+        protected override void GetDbType(EntityColumnInfo item, Type propertyType, DbColumnInfo result)
+        {
+            if (!string.IsNullOrEmpty(item.DataType))
+            {
+                result.DataType = item.DataType;
+            }
+            else if (propertyType.IsEnum())
+            {
+                result.DataType = this.Context.Ado.DbBind.GetDbTypeName(item.Length > 9 ? UtilConstants.LongType.Name : UtilConstants.IntType.Name);
+            }
+            else
+            {
+                var name = GetType(propertyType.Name);
+                if (name == "varbinary" && item.Length == 0) 
+                {
+                    name = "varbinary(max)";
+                }
+                result.DataType = this.Context.Ado.DbBind.GetDbTypeName(name);
+            }
+        }
     }
 }

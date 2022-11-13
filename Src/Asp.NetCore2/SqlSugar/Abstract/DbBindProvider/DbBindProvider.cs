@@ -19,7 +19,7 @@ namespace SqlSugar
         public virtual string GetDbTypeName(string csharpTypeName)
         {
             if (csharpTypeName == UtilConstants.ByteArrayType.Name)
-                return "bytea";
+                return "varbinary";
             if (csharpTypeName.ToLower() == "int32")
                 csharpTypeName = "int";
             if (csharpTypeName.ToLower() == "int16")
