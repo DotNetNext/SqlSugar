@@ -69,22 +69,19 @@ var list=db.Queryable<Test>()
            
 //insert by nav
  db.InsertNav(list) //Finer operation than EFCore's SaveChange
-            .Include(z1 => z1.SchoolA) 
-            .ThenInclude(z1 => z1.RoomList)  
+            .Include(z1 => z1.SchoolA).ThenInclude(z1 => z1.RoomList)//multi-level
             .Include(z1 => z1.Books) 
             .ExecuteCommand(); 
             
 //delete by nav               
  db.DeleteNav<Student>(it=>it.Id==1) 
-            .Include(z1 => z1.SchoolA) 
-            .ThenInclude(z1 => z1.RoomList) st
+            .Include(z1 => z1.SchoolA) .ThenInclude(z1 => z1.RoomList)//multi-level
             .Include(z1 => z1.Books) 
             .ExecuteCommand();  
             
 //update by nav     
  db.UpdateNav(list)
-            .Include(z1 => z1.SchoolA) 
-            .ThenInclude(z1 => z1.RoomList)  
+            .Include(z1 => z1.SchoolA) .ThenInclude(z1 => z1.RoomList)//multi-level
             .Include(z1 => z1.Books) 
             .ExecuteCommand();           
 ```
