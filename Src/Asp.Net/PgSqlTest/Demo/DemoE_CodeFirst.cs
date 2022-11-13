@@ -32,8 +32,15 @@ namespace OrmTest
             it.RoleIds  ).First();
             var list3= db.Queryable<CodeFirstArrary>().Select(it =>
             it.RoleIds).FirstAsync().GetAwaiter().GetResult();
+            db.CodeFirst.InitTables<CodeFirstByte>();
+            db.Insertable(new CodeFirstByte() { array = new byte[] { 1, 2, 4, 5 } }).ExecuteCommand();
+            var list4=db.Queryable<CodeFirstByte>().ToList();
             Console.WriteLine("#### CodeFirst end ####");
         }
+    }
+    public class CodeFirstByte 
+    {
+        public byte[] array { get; set; }
     }
     public class CodeFirstArrary 
     {
