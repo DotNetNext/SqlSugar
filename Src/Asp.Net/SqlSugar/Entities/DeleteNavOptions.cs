@@ -27,6 +27,7 @@ namespace SqlSugar
         public string[] IgnoreColumns { get; set; }
         public string[] UpdateColumns { get; set; }
         public bool IsInsertRoot { get; set; }
+        public bool IsDisableUpdateRoot { get; set; }
         public bool IsDiffLogEvent { get; set; }
         public object  DiffLogBizData { get; set; }
     }

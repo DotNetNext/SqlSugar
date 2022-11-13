@@ -63,7 +63,14 @@ namespace SqlSugar
             {
                 Check.ExceptionEasy($"{name} no navigate attribute", $"{this._ParentEntity.EntityName}的属性{name}没有导航属性");
             }
-            UpdateRoot(isRoot, nav);
+            if (_RootOptions != null && _RootOptions.IsDisableUpdateRoot)
+            {
+                //Future
+            }
+            else
+            {
+                UpdateRoot(isRoot, nav);
+            }
             IsFirst = false;
             if (nav.Navigat.NavigatType == NavigateType.OneToOne || nav.Navigat.NavigatType == NavigateType.ManyToOne)
             {
