@@ -37,9 +37,9 @@ namespace OrmTest
             };
 
             //var x=db.Insertable(insertObjs).RemoveDataCache().IgnoreColumns(it=>it.CreateTime).UseParameter().ExecuteCommand();
-
-            //Ignore  CreateTime
-           var x= db.Insertable(insertObj).IgnoreColumns(it => new { it.CreateTime }).ExecuteReturnIdentity();//get identity
+            var x = db.Insertable(insertObj).IgnoreColumns(it => new { it.CreateTime }).ExecuteReturnIdentity();//get identity
+                                                                                                                                              //Ignore  CreateTime
+            var x1= db.Insertable(insertObj).IgnoreColumns(it => new { it.CreateTime }).ExecuteReturnIdentityAsync().GetAwaiter().GetResult();//get identity
             db.Insertable(insertObj).IgnoreColumns("CreateTime").ExecuteReturnIdentity();
 
             //Only  insert  Name and Price
