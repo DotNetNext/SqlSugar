@@ -764,7 +764,7 @@ namespace SqlSugar
         public  DataTable ListToDataTable<T>(List<T> list)
         {
             DataTable result = new  DataTable();
-            if (list.Count > 0)
+            if (list!=null&&list.Count > 0)
             {
                 PropertyInfo[] propertys = list[0].GetType().GetProperties();
                 foreach (PropertyInfo pi in propertys)

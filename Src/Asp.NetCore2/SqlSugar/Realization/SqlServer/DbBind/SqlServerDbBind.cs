@@ -62,8 +62,8 @@ namespace SqlSugar
                   new KeyValuePair<string, CSharpDataType>("smallint",CSharpDataType.@short),
                   new KeyValuePair<string, CSharpDataType>("tinyint",CSharpDataType.@byte),
                   new KeyValuePair<string, CSharpDataType>("uniqueidentifier",CSharpDataType.Guid),
-                  new KeyValuePair<string, CSharpDataType>("binary",CSharpDataType.byteArray),
                   new KeyValuePair<string, CSharpDataType>("image",CSharpDataType.byteArray),
+                  new KeyValuePair<string, CSharpDataType>("binary",CSharpDataType.byteArray),
                   new KeyValuePair<string, CSharpDataType>("varbinary",CSharpDataType.byteArray),
                   new KeyValuePair<string, CSharpDataType>("datetimeoffset", CSharpDataType.DateTimeOffset),
                   new KeyValuePair<string, CSharpDataType>("datetimeoffset", CSharpDataType.DateTime)};
