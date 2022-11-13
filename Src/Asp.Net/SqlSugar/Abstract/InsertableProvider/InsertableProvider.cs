@@ -312,13 +312,16 @@ namespace SqlSugar
                 }
                 result = Ado.GetInt(sql.Split(';').First(), InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
                 result = Ado.GetInt(sql.Split(';').Last(), InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
-                if(this.Context.Ado.IsAnyTran() == false && isAuto)
+                if (this.Context.Ado.IsAnyTran() == false && isAuto)
                 {
                     this.Ado.Close();
                     this.Context.CurrentConnectionConfig.IsAutoCloseConnection = isAuto;
                 }
             }
-            result =await Ado.GetIntAsync(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
+            else
+            {
+                result = await Ado.GetIntAsync(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
+            }
             After(sql, result);
             return result;
         }
@@ -396,7 +399,10 @@ namespace SqlSugar
                     this.Context.CurrentConnectionConfig.IsAutoCloseConnection = isAuto;
                 }
             }
-            result = Convert.ToInt64(await Ado.GetScalarAsync(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray()));
+            else
+            {
+                result = Convert.ToInt64(await Ado.GetScalarAsync(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray()));
+            }
             After(sql, result);
             return result;
         }
