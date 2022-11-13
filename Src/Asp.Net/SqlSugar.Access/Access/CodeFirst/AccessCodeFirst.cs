@@ -7,6 +7,10 @@ namespace SqlSugar.Access
 {
     public class AccessCodeFirst : CodeFirstProvider
     {
+        protected override void ChangeKey(EntityInfo entityInfo, string tableName, EntityColumnInfo item)
+        {
+            
+        }
         protected override string GetTableName(EntityInfo entityInfo)
         {
             var table= this.Context.EntityMaintenance.GetTableName(entityInfo.EntityName);
