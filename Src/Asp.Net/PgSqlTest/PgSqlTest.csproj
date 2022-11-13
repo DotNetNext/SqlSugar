@@ -104,6 +104,7 @@
     <Compile Include="Models\ViewOrder.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="UnitTest\Unit001.cs" />
+    <Compile Include="UnitTest\UnitByteArray.cs" />
     <Compile Include="UnitTest\UnitPgSplit.cs" />
     <Compile Include="UnitTest\UJsonFunc.cs" />
     <Compile Include="UnitTest\UCustom013.cs" />

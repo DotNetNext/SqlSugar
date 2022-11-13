@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UnitByteArray.Init();
             Unit001.Init();
             UnitPgSplit.Init();
             UJsonFunc.Init();
