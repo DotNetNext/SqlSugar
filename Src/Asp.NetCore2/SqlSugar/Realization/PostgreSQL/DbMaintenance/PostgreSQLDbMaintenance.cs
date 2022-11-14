@@ -201,7 +201,7 @@ namespace SqlSugar
         {
             get
             {
-                return "  Select count(1) from (SELECT to_regclass('{0}') as c ) t where t.c is not null";
+                return "  SELECT count(1) WHERE upper('{0}') IN ( SELECT upper(indexname) FROM pg_indexes )";
             }
         }
 
