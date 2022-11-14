@@ -28,7 +28,7 @@ namespace SqlSugar
             var columns = source.Select(columnSelector).Distinct();
 
             foreach (var column in columns)
-                table.Columns.Add(new DataColumn(column.ToString()));
+                table.Columns.Add(new DataColumn(column?.ToString()));
 
             var rows = source.GroupBy(rowSelector.Compile())
                              .Select(rowGroup => new
@@ -89,7 +89,7 @@ namespace SqlSugar
                 rowName = "Group_"+string.Join("_", ((NewExpression)rowSelector.Body).Arguments.Select(it => it as MemberExpression).Select(it => it.Member.Name));
             var columns = source.Select(columnSelector).Distinct();
 
-            cols = (new[] { rowName }).Concat(columns.Select(x => x.ToString())).ToList();
+            cols = (new[] { rowName }).Concat(columns.Select(x => x?.ToString())).ToList();
 
 
             var rows = source.GroupBy(rowSelector.Compile())
