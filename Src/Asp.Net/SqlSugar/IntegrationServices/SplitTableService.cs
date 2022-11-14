@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -223,7 +223,7 @@ namespace SqlSugar
                 case SplitType.Year:
                     return Convert.ToDateTime(time.ToString("yyyy-01-01"));
                 default:
-                    throw new Exception($"SplitType paramter error ");
+                    throw new Exception($"SplitType parameter error ");
             }
         }
         private DateTime GetMondayDate()
