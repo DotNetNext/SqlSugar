@@ -6,6 +6,15 @@ namespace SqlSugar
 {
     public class OscarDbBind : DbBindProvider
     {
+        public override string GetDbTypeName(string csharpTypeName)
+        {
+            var result= base.GetDbTypeName(csharpTypeName);
+            if (result == "varbinary") 
+            {
+                result = "blob";
+            }
+            return result;
+        }
         public override string GetPropertyTypeName(string dbTypeName)
         {
             dbTypeName = dbTypeName.ToLower();
