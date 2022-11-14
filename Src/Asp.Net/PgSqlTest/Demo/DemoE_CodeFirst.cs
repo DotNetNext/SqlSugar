@@ -47,6 +47,7 @@ namespace OrmTest
         [SugarColumn(ColumnDescription = "绑定的角色ids", ColumnDataType = "int8[]", IsArray = true)]
         public long[] RoleIds { get; set; }
     }
+    [SugarIndex("{table}idindex",nameof(Id),OrderByType.Asc)]
     public class CodeFirstTable1
     {
         [SugarColumn(IsIdentity = true, IsPrimaryKey = true)]
