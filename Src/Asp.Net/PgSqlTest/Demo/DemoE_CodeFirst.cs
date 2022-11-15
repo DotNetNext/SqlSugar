@@ -35,8 +35,17 @@ namespace OrmTest
             db.CodeFirst.InitTables<CodeFirstByte>();
             db.Insertable(new CodeFirstByte() { array = new byte[] { 1, 2, 4, 5 } }).ExecuteCommand();
             var list4=db.Queryable<CodeFirstByte>().ToList();
+            db.CodeFirst.InitTables<CodeFirstEnum>();
+            db.DbMaintenance.TruncateTable<CodeFirstEnum>();
+            db.Storageable(new CodeFirstEnum() { dbType = DbType.Access, Name = "a" }).ExecuteCommand();
             Console.WriteLine("#### CodeFirst end ####");
         }
+    }
+    public class CodeFirstEnum 
+    {
+        [SugarColumn(IsPrimaryKey =true)]
+        public DbType dbType { get; set; }
+        public string Name { get; set; }
     }
     public class CodeFirstByte 
     {
