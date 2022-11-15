@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace OrmTest
@@ -24,11 +25,17 @@ namespace OrmTest
             var db = GetInstance();
 
             //Order add filter  
-            db.QueryFilter.Add(new TableFilterItem<Order>(it => it.Name.Contains("a"),true));
-
+            db.QueryFilter.AddTableFilter<Order>(it => it.Name.Contains("a"));
             db.Queryable<Order>().ToList();
 
+            //dynamic
+            Expression<Func<Order, bool>> dynamicExpression = it => it.Name=="b";//动态构造这种表达式
+            Expression exp = dynamicExpression;
+            Type type = typeof(Order);
+            db.QueryFilter.AddTableFilter(type,exp);
             db.Queryable<Order>().ToList();
+
+
             db.Queryable<object>().AS("[Order]").Filter(typeof(Order)).ToList();
             //SELECT [Id],[Name],[Price],[CreateTime],[CustomId] FROM [Order]  WHERE  ([Name] like '%'+@MethodConst0+'%') 
 
