@@ -12,6 +12,7 @@ namespace SqlSugar
     {
         internal SqlSugarProvider Context { get; set; }
         private List<SqlFilterItem> _Filters { get; set; }
+        private List<SqlFilterItem> _BackUpFilters { get; set; }
 
         public IFilter Add(SqlFilterItem filter)
         {
@@ -48,6 +49,20 @@ namespace SqlSugar
         public void Clear()
         {
             _Filters = new List<SqlFilterItem>();
+        }
+        public void ClearAndBackup()
+        {
+            _BackUpFilters = _Filters;
+            _Filters = new List<SqlFilterItem>();
+        }
+
+        public void Restore() 
+        {
+            _Filters = _BackUpFilters;
+            if (_Filters == null) 
+            {
+                _Filters = new List<SqlFilterItem>();
+            }
         }
 
         public void AddTableFilter<T>(Expression<Func<T,bool>> expression, FilterJoinPosition filterJoinType = FilterJoinPosition.On) where T : class,new()
