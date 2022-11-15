@@ -539,6 +539,11 @@ namespace SqlSugar
                             FieldValue = value.ObjToStringNew(),
                             CSharpTypeName = column.PropertyInfo.PropertyType.Name
                         });
+                        if(value is Enum&&this.Context.CurrentConnectionConfig?.MoreSettings?.TableEnumIsString!=true)
+                        {
+                            data.Value.FieldValue = Convert.ToInt64(value).ObjToString();
+                            data.Value.CSharpTypeName = "int";
+                        }
                         //if (this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL) 
                         //{
                         //    data.Value.FieldValueConvertFunc = it =>
