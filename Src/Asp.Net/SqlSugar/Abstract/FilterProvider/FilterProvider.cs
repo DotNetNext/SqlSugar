@@ -54,7 +54,7 @@ namespace SqlSugar
         {
             var isOn = filterJoinType == FilterJoinPosition.On;
             var tableFilter = new TableFilterItem<T>(expression, isOn);
-            _Filters.Add(tableFilter);
+            this.Add(tableFilter);
         }
         public void AddTableFilterIF<T>(bool isAppendFilter,Expression<Func<T, bool>> expression, FilterJoinPosition filterJoinType = FilterJoinPosition.On) where T : class, new()
         {
@@ -66,7 +66,7 @@ namespace SqlSugar
         public void AddTableFilter(Type type,Expression expression, FilterJoinPosition filterJoinType = FilterJoinPosition.On)
         {
             var isOn = filterJoinType == FilterJoinPosition.On;
-            _Filters.Add(new TableFilterItem<object>(type, expression, isOn));
+            this.Add(new TableFilterItem<object>(type, expression, isOn));
         }
 
         public void AddTableFilterIF(bool isAppendFilter, Type type, Expression expression, FilterJoinPosition posType = FilterJoinPosition.On)
