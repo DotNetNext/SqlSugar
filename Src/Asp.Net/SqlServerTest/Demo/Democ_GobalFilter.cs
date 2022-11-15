@@ -35,6 +35,11 @@ namespace OrmTest
             db.QueryFilter.AddTableFilter(type,exp);
             db.Queryable<Order>().ToList();
 
+            //Clear & Restore
+            db.QueryFilter.ClearAndBackup();
+            db.Queryable<Order>().ToList();
+            db.QueryFilter.Restore();
+            db.Queryable<Order>().ToList();
 
             db.Queryable<object>().AS("[Order]").Filter(typeof(Order)).ToList();
             //SELECT [Id],[Name],[Price],[CreateTime],[CustomId] FROM [Order]  WHERE  ([Name] like '%'+@MethodConst0+'%') 
