@@ -38,8 +38,20 @@ namespace OrmTest
             db.CodeFirst.InitTables<CodeFirstEnum>();
             db.DbMaintenance.TruncateTable<CodeFirstEnum>();
             db.Storageable(new CodeFirstEnum() { dbType = DbType.Access, Name = "a" }).ExecuteCommand();
+            db.CodeFirst.InitTables<CodeFirstArray>();
+            db.Insertable(new List<CodeFirstArray>() { 
+                new CodeFirstArray() {   floats = new float[] { 1 } },
+                   new CodeFirstArray() {   floats = new float[] { 1 } }
+
+            }).ExecuteCommand();
+            var list5=db.Queryable<CodeFirstArray>().ToList();
             Console.WriteLine("#### CodeFirst end ####");
         }
+    }
+    public class CodeFirstArray 
+    {
+        [SugarColumn(IsArray =true,ColumnDataType = "real[]")]
+        public float[] floats { get; set; }
     }
     public class CodeFirstEnum 
     {
