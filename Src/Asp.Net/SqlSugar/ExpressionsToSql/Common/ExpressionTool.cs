@@ -546,5 +546,18 @@ namespace SqlSugar
             }
             return result;
         }
+
+        internal static bool IsSubQuery(Expression it)
+        {
+            if (it is MethodCallExpression) 
+            {
+                var method = (MethodCallExpression)it;
+                if (method.Object != null && method.Object.Type.Name.StartsWith("Subquery")) 
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }
