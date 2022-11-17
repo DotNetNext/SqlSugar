@@ -80,6 +80,10 @@ namespace SqlSugar
                             {
                                 value = ((DateTime)it.Value).ToString("O");
                             }
+                            else if (it.IsArray&&it.Value!=null) 
+                            {
+                                return FormatValue(it.Value,it.PropertyName,i,it);
+                            }
                             else
                             {
                                 value = it.Value;
@@ -98,5 +102,61 @@ namespace SqlSugar
                 return batchInsetrSql.ToString();
             }
         }
+
+        public object FormatValue(object value, string name, int i, DbColumnInfo columnInfo)
+        {
+            if (value == null)
+            {
+                return "NULL";
+            }
+            else
+            {
+                var type = value.GetType();
+                if (type == UtilConstants.DateType || columnInfo.IsArray || columnInfo.IsJson)
+                {
+                    var parameterName = this.Builder.SqlParameterKeyWord + name + i;
+                    var paramter = new SugarParameter(parameterName, value);
+                    if (columnInfo.IsJson)
+                    {
+                        paramter.IsJson = true;
+                    }
+                    if (columnInfo.IsArray)
+                    {
+                        paramter.IsArray = true;
+                    }
+                    this.Parameters.Add(paramter);
+                    return parameterName;
+                }
+                else if (type == UtilConstants.ByteArrayType)
+                {
+                    string bytesString = "0x" + BitConverter.ToString((byte[])value);
+                    return bytesString;
+                }
+                else if (type.IsEnum())
+                {
+                    if (this.Context.CurrentConnectionConfig.MoreSettings?.TableEnumIsString == true)
+                    {
+                        return value.ToSqlValue();
+                    }
+                    else
+                    {
+                        return Convert.ToInt64(value);
+                    }
+                }
+                else if (type == UtilConstants.BoolType)
+                {
+                    return value.ObjToBool() ? "1" : "0";
+                }
+                else if (type == UtilConstants.StringType || type == UtilConstants.ObjType)
+                {
+                    return "'" + value.ToString().ToSqlFilter() + "'";
+                }
+                else
+                {
+                    return "'" + value.ToString() + "'";
+                }
+            }
+        }
+
     }
 }
