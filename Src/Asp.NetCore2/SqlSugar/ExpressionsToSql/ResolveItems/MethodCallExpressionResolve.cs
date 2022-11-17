@@ -497,7 +497,7 @@ namespace SqlSugar
                     var lamExp = (exp as LambdaExpression);
                     if (lamExp.Parameters != null && lamExp.Parameters.Count == 1)
                     {
-                        if (this.Context.CurrentShortName == null)
+                        if (this.Context.SingleTableNameSubqueryShortName == null)
                         {
                             this.Context.SingleTableNameSubqueryShortName = lamExp.Parameters.First().Name;
                         }
