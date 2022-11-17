@@ -489,6 +489,21 @@ namespace SqlSugar
             {
                 item = (item as UnaryExpression).Operand;
             }
+            if (this.Context.IsSingle&& args.Any(it=>ExpressionTool.IsSubQuery(it))&&base.BaseParameter?.BaseParameter?.BaseParameter?.CurrentExpression!=null) 
+            {
+                var exp = base.BaseParameter?.BaseParameter?.BaseParameter?.CurrentExpression;
+                if (exp is LambdaExpression)
+                {
+                    var lamExp = (exp as LambdaExpression);
+                    if (lamExp.Parameters != null && lamExp.Parameters.Count == 1)
+                    {
+                        if (this.Context.CurrentShortName == null)
+                        {
+                            this.Context.SingleTableNameSubqueryShortName = lamExp.Parameters.First().Name;
+                        }
+                    }
+                }
+            }
             var isBinaryExpression = item is BinaryExpression || item is MethodCallExpression;
             var isConst = item is ConstantExpression;
             var isIIF = name == "IIF";
