@@ -203,6 +203,11 @@ namespace OrmTest
                 index = SqlFunc.RowNumber($"{it.Name} asc,{it.Id} desc", $"{it.Id},{it.Name}")
             })
             .ToList();
+
+            var test50 = db.Queryable<Order>()
+            .GroupBy(z => z.Id).Select(it => new { disCount = SqlFunc.IsNull(SqlFunc.Subqueryable<Order>().Where(z => z.Id == it.Id).Select(z => z.Name), "") })
+            .ToList();
+
             var dr3 = new Dictionary<string, object>();
             dr3.Add("Id", 0);
             dr3.Add("Name", null);
