@@ -494,13 +494,14 @@ namespace SqlSugar
                 var exp = base.BaseParameter?.BaseParameter?.BaseParameter?.CurrentExpression;
                 if (exp is LambdaExpression)
                 {
-                    var lamExp = (exp as LambdaExpression);
-                    if (lamExp.Parameters != null && lamExp.Parameters.Count == 1)
+                    SetShortName(exp);
+                }
+                else if (exp is UnaryExpression) 
+                {
+                    exp = base.BaseParameter?.BaseParameter?.BaseParameter?.BaseParameter?.CurrentExpression;
+                    if (exp is LambdaExpression) 
                     {
-                        if (this.Context.SingleTableNameSubqueryShortName == null)
-                        {
-                            this.Context.SingleTableNameSubqueryShortName = lamExp.Parameters.First().Name;
-                        }
+                        SetShortName(exp);
                     }
                 }
             }
@@ -604,6 +605,18 @@ namespace SqlSugar
             else
             {
                 AppendModel(parameter, model, item);
+            }
+        }
+
+        private void SetShortName(Expression exp)
+        {
+            var lamExp = (exp as LambdaExpression);
+            if (lamExp.Parameters != null && lamExp.Parameters.Count == 1)
+            {
+                if (this.Context.SingleTableNameSubqueryShortName == null)
+                {
+                    this.Context.SingleTableNameSubqueryShortName = lamExp.Parameters.First().Name;
+                }
             }
         }
 
