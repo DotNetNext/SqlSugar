@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SqlSugar;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,6 +25,22 @@ namespace OrmTest
                .ToList();
 
             if (test8.First().SubOne.NameOne != false || test8.First().SubOne.NameTwo != "jack")
+            {
+                throw new Exception("unit error");
+            }
+            var servebillIdList = new string[] { };
+            var sql= db.Queryable<BilPayment>().Where(pm1 => SqlFunc.ContainsArray(servebillIdList, pm1.ServebillId))
+                         .GroupBy(pm1 => pm1.ServebillId)
+                         .Select(pm1 => (object)new
+                         {
+                             pm1.ServebillId,
+                             PmCurrencyamount = SqlFunc.AggregateSum(pm1.PmCurrencyamount),
+                             PmAmount = SqlFunc.AggregateSum(pm1.PmAmount),
+                             SbrAmount = SqlFunc.AggregateSum(SqlFunc.Subqueryable<BilSupplierbalancerecord>()
+                                                                     .Where(x => x.IpfCode == "" && x.PmId == pm1.Id)
+                                                                     .Select(x => SqlFunc.AggregateSum(SqlFunc.ToDecimal(x.SbrAmount))))
+                         }).ToSqlString();
+            if (!sql.Contains("`bil_payment` pm1")) 
             {
                 throw new Exception("unit error");
             }
