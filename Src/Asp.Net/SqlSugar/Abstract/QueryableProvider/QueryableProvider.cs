@@ -665,6 +665,15 @@ namespace SqlSugar
         {
             if (conditionalModels.IsNullOrEmpty()) return this;
             var sqlObj = this.SqlBuilder.ConditionalModelToSql(conditionalModels,0);
+            if (sqlObj.Value != null && this.QueryBuilder.Parameters != null) 
+            {
+                if (sqlObj.Value.Any(it => this.QueryBuilder.Parameters.Any(z => z.ParameterName.EqualCase(it.ParameterName)))) 
+                {
+                    var sql = sqlObj.Key;
+                    this.SqlBuilder.RepairReplicationParameters(ref sql,sqlObj.Value,this.QueryBuilder.Parameters.Count*10);
+                    return this.Where(sql, sqlObj.Value);
+                }
+            }
             return this.Where(sqlObj.Key, sqlObj.Value);
         }
         public ISugarQueryable<T> Where(List<IConditionalModel> conditionalModels, bool isWrap)
