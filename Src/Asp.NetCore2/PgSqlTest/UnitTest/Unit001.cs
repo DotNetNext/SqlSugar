@@ -75,12 +75,10 @@ namespace OrmTest {
             });
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
             AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
-            db.Aop.OnError = (ex) =>
+            db.Aop.OnLogExecuting = (sql,p) =>
             {
-                if (ex.Parametres == null) return;
-                Console.ForegroundColor = ConsoleColor.Red;
-                var pars = db.Utilities.SerializeObject(((SugarParameter[])ex.Parametres).ToDictionary(it => it.ParameterName, it => it.Value));
-                Console.WriteLine("【" + DateTime.Now + "——错误SQL】\r\n" + UtilMethods.GetSqlString(SqlSugar.DbType.PostgreSQL, ex.Sql, (SugarParameter[])ex.Parametres) + "\r\n");
+                
+                Console.WriteLine(sql);
 
             };
 
@@ -94,7 +92,7 @@ namespace OrmTest {
             System.Type entityType = typeof(Test0011);
             var seedDataTable = db.Utilities.ListToDataTable(list);
             seedDataTable.TableName = db.EntityMaintenance.GetEntityInfo(entityType).DbTableName;
-            var storage = db.Storageable(seedDataTable).ToStorage();
+            var storage = db.Storageable(seedDataTable).WhereColumns("id").ToStorage();
             var result = storage.AsInsertable.ExecuteCommand();
 
 
