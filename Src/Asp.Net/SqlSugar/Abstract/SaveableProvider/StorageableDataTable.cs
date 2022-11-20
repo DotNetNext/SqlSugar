@@ -211,6 +211,10 @@ namespace SqlSugar
                     if (result)
                     {
                         result = row[name].ObjToString() == it[name].ObjToString();
+                        if (result==false&&it[name] != null && it[name].GetType() == UtilConstants.DecType)
+                        {
+                            result= row[name].ObjToDecimal() == it[name].ObjToDecimal();
+                        }
                         if (result == false) 
                         {
                             break;
