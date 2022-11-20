@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SqlSugar;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -45,6 +46,11 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+            var conditions = new List<IConditionalModel>() { new ConditionalModel { FieldName = "name", FieldValue = "x", ConditionalType = ConditionalType.Equal } };
+            var conditions2 = new List<IConditionalModel>() { new ConditionalModel { FieldName = "name", FieldValue = "x2", ConditionalType = ConditionalType.Equal } };
+            var list2=db.Queryable<Order>()
+                .Where(conditions).MergeTable()
+                .Where(conditions2).ToList();
         }
 
         public static object MyToString() { return null; } 
