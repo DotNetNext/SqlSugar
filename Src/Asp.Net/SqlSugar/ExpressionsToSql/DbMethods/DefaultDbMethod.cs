@@ -525,7 +525,7 @@ namespace SqlSugar
                 return FormatConcat(model);
             }
             str =Regex.Replace(str, @"(\{\d+?\})", revalue);
-            var array = model.Args.Skip(1).Select(it => it.IsMember?it.MemberName:it.MemberValue)
+            var array = model.Args.Skip(1).Select(it => it.IsMember?it.MemberName:(it.MemberValue==null?"''":it.MemberValue.ToSqlValue()))
                 .Select(it=>ToString(new MethodCallExpressionModel() { Args=new List<MethodCallExpressionArgs>() {
                  new MethodCallExpressionArgs(){ IsMember=true, MemberName=it }
                 } })).ToArray();
