@@ -90,7 +90,7 @@ namespace SqlSugar
             }
             else 
             {
-                return thisValue.ObjToString();
+                return thisValue.ObjToStringNoTrim();
             }
         }
         public static string ObjToString(this object thisValue)
