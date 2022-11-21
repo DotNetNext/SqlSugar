@@ -337,6 +337,10 @@ namespace SqlSugar
             }
             else 
             {
+                if (tableName.Contains(SqlBuilder.SqlTranslationLeft)) 
+                {
+                    tableName = SqlBuilder.GetNoTranslationColumnName(tableName);
+                }
                 var sql = @"IF EXISTS (SELECT * FROM sys.objects
                         WHERE type='u' AND name='"+tableName.ToSqlFilter()+@"')  
                         SELECT 1 AS res ELSE SELECT 0 AS res;";
