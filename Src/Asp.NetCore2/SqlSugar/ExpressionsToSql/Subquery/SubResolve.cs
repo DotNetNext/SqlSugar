@@ -90,7 +90,7 @@ namespace SqlSugar
                         {
                             var meExp = argus[0] as LambdaExpression;
                             var selfParameterName = meExp.Parameters.First().Name;
-                            context.SingleTableNameSubqueryShortName = (((meExp.Body as BinaryExpression).Left as MemberExpression).Expression as ParameterExpression).Name;
+                            context.SingleTableNameSubqueryShortName = (((meExp.Body as BinaryExpression).Left as MemberExpression)?.Expression as ParameterExpression)?.Name;
                             if (context.SingleTableNameSubqueryShortName == selfParameterName)
                             {
                                 context.SingleTableNameSubqueryShortName = (((meExp.Body as BinaryExpression).Right as MemberExpression).Expression as ParameterExpression).Name;
