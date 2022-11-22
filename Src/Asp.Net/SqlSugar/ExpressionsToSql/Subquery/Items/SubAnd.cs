@@ -42,13 +42,19 @@ namespace SqlSugar
             var exp = expression as MethodCallExpression;
             var argExp = exp.Arguments[0];
             var copyContext = this.Context;
+
             if (this.Context.JoinIndex > 0) 
             {
                 copyContext = this.Context.GetCopyContextWithMapping();
                 copyContext.IsSingle = false;
             }
-            var result = "AND " + SubTools.GetMethodValue(copyContext, argExp, ResolveExpressType.WhereMultiple);
 
+            var result = "AND " + SubTools.GetMethodValue(copyContext, argExp, ResolveExpressType.WhereMultiple);
+            
+            if (this.Context.JoinIndex > 0)
+            {
+                this.Context.Parameters.AddRange(copyContext.Parameters);
+            }
 
             var regex = @"^AND  (\@Const\d+) $";
             if (this.Context is OracleExpressionContext)
