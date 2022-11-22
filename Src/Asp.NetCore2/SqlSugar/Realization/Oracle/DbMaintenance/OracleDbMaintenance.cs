@@ -221,6 +221,13 @@ namespace SqlSugar
                 return "alter table {0} rename to {1}";
             }
         }
+        protected override string IsAnyProcedureSql
+        {
+            get 
+            {
+                return "SELECT COUNT(*) FROM user_objects WHERE OBJECT_TYPE = 'PROCEDURE' AND OBJECT_NAME ='{0}'";
+            }
+        }
         #endregion
 
         #region Check

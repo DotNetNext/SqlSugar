@@ -204,7 +204,7 @@ namespace SqlSugar
                 return "  SELECT count(1) WHERE upper('{0}') IN ( SELECT upper(indexname) FROM pg_indexes )";
             }
         }
-
+        protected override string IsAnyProcedureSql => throw new NotImplementedException();
         #endregion
 
         #region Check

@@ -598,6 +598,10 @@ namespace SqlSugar
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
+        public virtual bool IsAnyProcedure(string procName) {
+            string sql = string.Format(this.IsAnyProcedureSql, procName);
+            return  this.Context.Ado.GetInt(sql)>0;
+        }
         #endregion
 
         #region Private
