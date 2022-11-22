@@ -55,6 +55,7 @@ namespace SqlSugar
         protected abstract string DeleteTableRemarkSql { get; }
         protected abstract string IsAnyTableRemarkSql { get;  }
         protected abstract string RenameTableSql { get; }
+        protected virtual string IsAnyProcedureSql { get; }
         #endregion
 
         #region Check

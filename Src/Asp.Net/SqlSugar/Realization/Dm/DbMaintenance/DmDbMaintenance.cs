@@ -218,6 +218,7 @@ namespace SqlSugar
                 return "alter table {0} rename to {1}";
             }
         }
+        protected override string IsAnyProcedureSql => throw new NotImplementedException();
         #endregion
 
         #region Check
