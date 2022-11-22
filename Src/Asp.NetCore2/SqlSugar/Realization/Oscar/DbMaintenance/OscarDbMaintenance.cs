@@ -194,6 +194,7 @@ namespace SqlSugar
                 return "  Select count(1) from (SELECT to_regclass('{0}') as c ) t where t.c is not null";
             }
         }
+        protected override string IsAnyProcedureSql => throw new NotImplementedException();
 
         #endregion
 

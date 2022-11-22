@@ -153,6 +153,13 @@ namespace SqlSugar
                 return "alter table {0} change  column {1} {2}";
             }
         }
+        protected override string IsAnyProcedureSql
+        {
+            get 
+            {
+                return "select count(*) from information_schema.Routines where ROUTINE_NAME='{0}' and ROUTINE_TYPE='PROCEDURE'";
+            }
+        }
         #endregion
 
         #region Check

@@ -269,6 +269,13 @@ namespace SqlSugar
                 return "select count(*) from sys.indexes where name='{0}'";
             }
         }
+        protected override string IsAnyProcedureSql
+        {
+            get
+            {
+                return "select count(*) from sys.objects where [object_id] = OBJECT_ID(N'sp_GetSubLedgerJoinWithdrawalApplicationRecords') and [type] in (N'P')";
+            }
+        }
         #endregion
 
         #region Check
@@ -563,7 +570,7 @@ namespace SqlSugar
             string sql = string.Format(this.RenameColumnSql, tableName, oldColumnName, newColumnName);
             this.Context.Ado.ExecuteCommand(sql);
             return true;
-        } 
+        }
         #endregion
     }
 }

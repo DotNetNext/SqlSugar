@@ -136,6 +136,7 @@ namespace SqlSugar
                 throw new NotSupportedException();
             }
         }
+        protected override string IsAnyProcedureSql => throw new NotImplementedException();
         #endregion
 
         #region Check
