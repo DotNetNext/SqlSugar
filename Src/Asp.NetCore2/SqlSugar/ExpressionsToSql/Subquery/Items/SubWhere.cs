@@ -53,7 +53,10 @@ namespace SqlSugar
             }
             var result = "WHERE " + SubTools.GetMethodValue(copyContext, argExp, ResolveExpressType.WhereMultiple);
 
-
+            if (this.Context.JoinIndex > 0) 
+            {
+                this.Context.Parameters.AddRange(copyContext.Parameters);
+            }
 
             var regex = @"^WHERE  (\@Const\d+) $";
             if (this.Context is OracleExpressionContext)
