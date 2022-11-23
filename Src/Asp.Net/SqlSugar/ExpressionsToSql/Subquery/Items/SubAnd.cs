@@ -54,6 +54,8 @@ namespace SqlSugar
             if (this.Context.JoinIndex > 0)
             {
                 this.Context.Parameters.AddRange(copyContext.Parameters);
+                this.Context.Index = copyContext.Index;
+                this.Context.ParameterIndex = copyContext.ParameterIndex;
             }
 
             var regex = @"^AND  (\@Const\d+) $";
