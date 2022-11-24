@@ -609,7 +609,7 @@ namespace SqlSugar
                         else
                         {
                             var pkInfo = entityInfo.Columns.FirstOrDefault(x => x.IsPrimarykey);
-                            result.SelectString = "";
+                            result.SelectString = (" " + queryable.QueryBuilder.GetExpressionValue(exp, ResolveExpressType.SelectSingle).GetString());
                             if (pkInfo != null)
                             {
                                 var pkName = pkInfo.DbColumnName;
