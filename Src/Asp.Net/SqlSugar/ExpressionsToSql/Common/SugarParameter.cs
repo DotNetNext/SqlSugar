@@ -154,6 +154,10 @@ namespace SqlSugar
             {
                 this.DbType = System.Data.DbType.UInt64;
             }
+            else if (type == UtilConstants.UShortType)
+            {
+                this.DbType = System.Data.DbType.UInt16;
+            }
             else if (type == UtilConstants.ShortType)
             {
                 this.DbType = System.Data.DbType.UInt16;
