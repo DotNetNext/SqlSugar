@@ -90,11 +90,12 @@ namespace SqlSugar
             foreach (var parameter in parameters)
             {
                 if (parameter.Value == null) parameter.Value = DBNull.Value;
-                if(parameter.Value is System.Data.SqlTypes.SqlDateTime&&parameter.DbType==System.Data.DbType.AnsiString)
+                if (parameter.Value is System.Data.SqlTypes.SqlDateTime && parameter.DbType == System.Data.DbType.AnsiString)
                 {
                     parameter.DbType = System.Data.DbType.DateTime;
                     parameter.Value = DBNull.Value;
                 }
+                UNumber(parameter);
                 var sqlParameter = new NpgsqlParameter();
                 sqlParameter.ParameterName = parameter.ParameterName;
                 sqlParameter.Size = parameter.Size;
@@ -113,7 +114,7 @@ namespace SqlSugar
                     {
                         sqlParameter.NpgsqlDbType = ArrayMapping[type] | NpgsqlDbType.Array;
                     }
-                    else if (type==DBNull.Value.GetType()) 
+                    else if (type == DBNull.Value.GetType())
                     {
                         if (parameter.DbType.IsIn(System.Data.DbType.Int32))
                         {
@@ -127,9 +128,9 @@ namespace SqlSugar
                         {
                             sqlParameter.NpgsqlDbType = NpgsqlDbType.Bigint | NpgsqlDbType.Array;
                         }
-                        else 
+                        else
                         {
-                            sqlParameter.NpgsqlDbType =NpgsqlDbType.Text | NpgsqlDbType.Array;
+                            sqlParameter.NpgsqlDbType = NpgsqlDbType.Text | NpgsqlDbType.Array;
                         }
 
                     }
@@ -153,7 +154,7 @@ namespace SqlSugar
                 {
                     sqlParameter.DbType = System.Data.DbType.AnsiString;
                 }
-                else if (sqlParameter.Value is DateTime && sqlParameter.DbType == System.Data.DbType.AnsiString) 
+                else if (sqlParameter.Value is DateTime && sqlParameter.DbType == System.Data.DbType.AnsiString)
                 {
                     sqlParameter.DbType = System.Data.DbType.DateTime;
                 }
@@ -162,6 +163,24 @@ namespace SqlSugar
             return result;
         }
 
+        private static void UNumber(SugarParameter parameter)
+        {
+            if (parameter.DbType == System.Data.DbType.UInt16)
+            {
+                parameter.DbType = System.Data.DbType.Int16;
+                parameter.Value = Convert.ToInt16(parameter.Value);
+            }
+            else if (parameter.DbType == System.Data.DbType.UInt32)
+            {
+                parameter.DbType = System.Data.DbType.Int32;
+                parameter.Value = Convert.ToInt32(parameter.Value);
+            }
+            else if (parameter.DbType == System.Data.DbType.UInt64)
+            {
+                parameter.DbType = System.Data.DbType.Int64;
+                parameter.Value = Convert.ToInt64(parameter.Value);
+            }
+        }
 
         static readonly Dictionary<Type, NpgsqlDbType> ArrayMapping = new Dictionary<Type, NpgsqlDbType>()
         {
