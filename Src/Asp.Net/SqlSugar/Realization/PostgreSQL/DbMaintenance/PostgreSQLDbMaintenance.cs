@@ -256,7 +256,7 @@ namespace SqlSugar
         public override bool AddColumnRemark(string columnName, string tableName, string description)
         {
             tableName = this.SqlBuilder.GetTranslationTableName(tableName);
-            string sql = string.Format(this.AddColumnRemarkSql, columnName, tableName, description);
+            string sql = string.Format(this.AddColumnRemarkSql, this.SqlBuilder.GetTranslationColumnName(columnName.ToLower(isAutoToLowerCodeFirst)), tableName, description);
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
