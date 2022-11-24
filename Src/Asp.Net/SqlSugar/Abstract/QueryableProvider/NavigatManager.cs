@@ -609,6 +609,7 @@ namespace SqlSugar
                         else
                         {
                             var pkInfo = entityInfo.Columns.FirstOrDefault(x => x.IsPrimarykey);
+                            result.SelectString = "";
                             if (pkInfo != null)
                             {
                                 var pkName = pkInfo.DbColumnName;
@@ -621,6 +622,19 @@ namespace SqlSugar
                                 {
                                     AppColumns(result, queryable, navColumn.DbColumnName);
                                 }
+                            }
+                            foreach (var nav in entityInfo.Columns.Where(x => x.Navigat != null && x.Navigat.NavigatType == NavigateType.OneToMany&& x.Navigat.Name2!=null))
+                            {
+                                var navColumn = entityInfo.Columns.FirstOrDefault(it => it.PropertyName == nav.Navigat.Name2);
+                                if (navColumn != null)
+                                {
+                                    AppColumns(result, queryable, navColumn.DbColumnName);
+                                }
+                            }
+                            result.SelectString = result.SelectString.TrimStart(',');
+                            if (result.SelectString == "") 
+                            {
+                                result.SelectString = null;
                             }
                         }
                         if (properyName != null)
@@ -733,9 +747,9 @@ namespace SqlSugar
         private static void AppColumns(SqlInfo result, ISugarQueryable<object> queryable, string columnName)
         {
             var selectPkName = queryable.SqlBuilder.GetTranslationColumnName(columnName);
-            if (result.SelectString.HasValue() && !result.SelectString.ToLower().Contains(selectPkName.ToLower()))
+            if (result.SelectString!=null && !result.SelectString.ToLower().Contains(selectPkName.ToLower()))
             {
-                result.SelectString = result.SelectString + "," + selectPkName;
+                result.SelectString = result.SelectString + "," + (selectPkName +" AS "+ selectPkName);
             }
         }
         public void CheckHasRootShortName(Expression rootExpression, Expression childExpression)
