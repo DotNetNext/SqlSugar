@@ -793,5 +793,9 @@ namespace SqlSugar
         {
             ScopedContext.Tracking(datas);
         }
+        public void RemoveConnection(string configId) 
+        {
+            ScopedContext.RemoveConnection(configId);
+        }
     }
 }
