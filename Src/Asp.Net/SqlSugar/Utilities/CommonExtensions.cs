@@ -9,6 +9,10 @@ namespace SqlSugar
 {
     public static class CommonExtensions
     {
+        public static List<T> ToList<T>(this  T thisValue,Func<T,T> action) where T:class,new()
+        {
+            return new List<T> { thisValue };
+        }
         public static IEnumerable<T> WhereIF<T>(this IEnumerable<T> thisValue, bool isOk, Func<T, bool> predicate) 
         {
             if (isOk)
