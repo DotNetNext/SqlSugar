@@ -15,7 +15,7 @@ namespace SqlSugar
                     return @"INSERT INTO {0} 
            ({1})
      VALUES
-           ({2}) returning $PrimaryKey";
+           ({2}) returning ""$PrimaryKey""";
                 }
                 else
                 {
