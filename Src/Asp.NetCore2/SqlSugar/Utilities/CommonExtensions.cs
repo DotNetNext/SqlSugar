@@ -13,6 +13,10 @@ namespace SqlSugar
         {
             return new List<T> { thisValue };
         }
+        public static List<T> ToList<T>(this IEnumerable<T> thisValue, Func<T, T> action) where T : class, new()
+        {
+            return  thisValue.ToList();
+        }
         public static IEnumerable<T> WhereIF<T>(this IEnumerable<T> thisValue, bool isOk, Func<T, bool> predicate) 
         {
             if (isOk)
