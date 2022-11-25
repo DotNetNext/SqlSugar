@@ -59,6 +59,11 @@ namespace OrmTest
            .Where(x => x.SchoolA.SchoolName == "北大")
            .ToList();
 
+
+            var list22 = db.Queryable<StudentA>()
+            .Includes(x => x.SchoolA.ToList(it=>new SchoolA() {  SchoolId=it.SchoolId}), x => x.RoomList.ToList(it=>new RoomA() { RoomId=it.RoomId})) 
+            .ToList();
+
             //先用Mapper导航映射查出第二层
             var list = db.Queryable<StudentA>().Mapper(x => x.SchoolA, x => x.SchoolId).ToList();
 
