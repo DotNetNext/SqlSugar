@@ -341,7 +341,8 @@ namespace SqlSugar
                 var navList = selector(db.Queryable<object>().Filter(navEntityInfo.Type).AS(navEntityInfo.DbTableName)
                     .WhereIF(navObjectNameColumnInfo.Navigat.WhereSql.HasValue(), navObjectNameColumnInfo.Navigat.WhereSql)
                     .WhereIF(sqlObj.WhereString.HasValue(),sqlObj.WhereString)
-                    .AddParameters(sqlObj.Parameters).Where(conditionalModels));
+                    .AddParameters(sqlObj.Parameters).Where(conditionalModels)
+                    .Select(sqlObj.SelectString));
                 var groupQuery = (from l in list
                                  join n in navList
                                       on navColumn.PropertyInfo.GetValue(l).ObjToString() 
@@ -593,60 +594,7 @@ namespace SqlSugar
                 }
                 else if (method.Method.Name == "Select")
                 {
-                    var exp = method.Arguments[1];
-                    var newExp = (exp as LambdaExpression).Body;
-                    var types = exp.Type.GetGenericArguments();
-                    if (types != null && types.Length > 0)
-                    {
-                        var type = types[0];
-                        var entityInfo = this.Context.EntityMaintenance.GetEntityInfo(type);
-                        this.Context.InitMappingInfo(type);
-                        Check.ExceptionEasy(newExp.Type != entityInfo.Type, $" new {newExp.Type.Name}is error ,use Select(it=>new {entityInfo.Type.Name})", $"new {newExp.Type.Name}是错误的，请使用Select(it=>new {entityInfo.Type.Name})");
-                        if (entityInfo.Columns.Count(x => x.Navigat != null) == 0)
-                        {
-                            result.SelectString = (" " + queryable.QueryBuilder.GetExpressionValue(exp, ResolveExpressType.SelectSingle).GetString());
-                        }
-                        else
-                        {
-                            var pkInfo = entityInfo.Columns.FirstOrDefault(x => x.IsPrimarykey);
-                            result.SelectString = (" " + queryable.QueryBuilder.GetExpressionValue(exp, ResolveExpressType.SelectSingle).GetString());
-                            if (pkInfo != null)
-                            {
-                                var pkName = pkInfo.DbColumnName;
-                                AppColumns(result, queryable, pkName);
-                            }
-                            foreach (var nav in entityInfo.Columns.Where(x => x.Navigat != null && x.Navigat.NavigatType == NavigateType.OneToOne))
-                            {
-                                var navColumn = entityInfo.Columns.FirstOrDefault(it => it.PropertyName == nav.Navigat.Name);
-                                if (navColumn != null)
-                                {
-                                    AppColumns(result, queryable, navColumn.DbColumnName);
-                                }
-                            }
-                            foreach (var nav in entityInfo.Columns.Where(x => x.Navigat != null && x.Navigat.NavigatType == NavigateType.OneToMany&& x.Navigat.Name2!=null))
-                            {
-                                var navColumn = entityInfo.Columns.FirstOrDefault(it => it.PropertyName == nav.Navigat.Name2);
-                                if (navColumn != null)
-                                {
-                                    AppColumns(result, queryable, navColumn.DbColumnName);
-                                }
-                            }
-                            result.SelectString = result.SelectString.TrimStart(',');
-                            if (result.SelectString == "") 
-                            {
-                                result.SelectString = null;
-                            }
-                        }
-                        if (properyName != null)
-                        {
-                            var fkColumnsInfo = entityInfo.Columns.FirstOrDefault(x => x.PropertyName == properyName);
-                            if (fkColumnsInfo != null)
-                            {
-                                var fkName = fkColumnsInfo.DbColumnName;
-                                AppColumns(result, queryable, fkName);
-                            }
-                        }
-                    }
+                    Select(properyName, result, method, queryable);
                 }
                 else if (method.Method.Name == "OrderByDescending")
                 {
@@ -679,6 +627,10 @@ namespace SqlSugar
                 }
                 else if (method.Method.Name == "ToList")
                 {
+                    if (method.Arguments.Count > 1) 
+                    {
+                        Select(properyName, result, method, queryable);
+                    }
                     isList = true;
                 }
                 else
@@ -704,6 +656,64 @@ namespace SqlSugar
                 result.OrderByString = String.Join(" , ", oredrBy);
             }
             return result;
+        }
+
+        private void Select(string properyName, SqlInfo result, MethodCallExpression method, ISugarQueryable<object> queryable)
+        {
+            var exp = method.Arguments[1];
+            var newExp = (exp as LambdaExpression).Body;
+            var types = exp.Type.GetGenericArguments();
+            if (types != null && types.Length > 0)
+            {
+                var type = types[0];
+                var entityInfo = this.Context.EntityMaintenance.GetEntityInfo(type);
+                this.Context.InitMappingInfo(type);
+                Check.ExceptionEasy(newExp.Type != entityInfo.Type, $" new {newExp.Type.Name}is error ,use Select(it=>new {entityInfo.Type.Name})", $"new {newExp.Type.Name}是错误的，请使用Select(it=>new {entityInfo.Type.Name})");
+                if (entityInfo.Columns.Count(x => x.Navigat != null) == 0)
+                {
+                    result.SelectString = (" " + queryable.QueryBuilder.GetExpressionValue(exp, ResolveExpressType.SelectSingle).GetString());
+                }
+                else
+                {
+                    var pkInfo = entityInfo.Columns.FirstOrDefault(x => x.IsPrimarykey);
+                    result.SelectString = (" " + queryable.QueryBuilder.GetExpressionValue(exp, ResolveExpressType.SelectSingle).GetString());
+                    if (pkInfo != null)
+                    {
+                        var pkName = pkInfo.DbColumnName;
+                        AppColumns(result, queryable, pkName);
+                    }
+                    foreach (var nav in entityInfo.Columns.Where(x => x.Navigat != null && x.Navigat.NavigatType == NavigateType.OneToOne))
+                    {
+                        var navColumn = entityInfo.Columns.FirstOrDefault(it => it.PropertyName == nav.Navigat.Name);
+                        if (navColumn != null)
+                        {
+                            AppColumns(result, queryable, navColumn.DbColumnName);
+                        }
+                    }
+                    foreach (var nav in entityInfo.Columns.Where(x => x.Navigat != null && x.Navigat.NavigatType == NavigateType.OneToMany && x.Navigat.Name2 != null))
+                    {
+                        var navColumn = entityInfo.Columns.FirstOrDefault(it => it.PropertyName == nav.Navigat.Name2);
+                        if (navColumn != null)
+                        {
+                            AppColumns(result, queryable, navColumn.DbColumnName);
+                        }
+                    }
+                    result.SelectString = result.SelectString.TrimStart(',');
+                    if (result.SelectString == "")
+                    {
+                        result.SelectString = null;
+                    }
+                }
+                if (properyName != null)
+                {
+                    var fkColumnsInfo = entityInfo.Columns.FirstOrDefault(x => x.PropertyName == properyName);
+                    if (fkColumnsInfo != null)
+                    {
+                        var fkName = fkColumnsInfo.DbColumnName;
+                        AppColumns(result, queryable, fkName);
+                    }
+                }
+            }
         }
 
         private static void SetTableShortName(SqlInfo result, ISugarQueryable<object> queryable)
