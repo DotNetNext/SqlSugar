@@ -341,7 +341,8 @@ namespace SqlSugar
                 var navList = selector(db.Queryable<object>().Filter(navEntityInfo.Type).AS(navEntityInfo.DbTableName)
                     .WhereIF(navObjectNameColumnInfo.Navigat.WhereSql.HasValue(), navObjectNameColumnInfo.Navigat.WhereSql)
                     .WhereIF(sqlObj.WhereString.HasValue(),sqlObj.WhereString)
-                    .AddParameters(sqlObj.Parameters).Where(conditionalModels));
+                    .AddParameters(sqlObj.Parameters).Where(conditionalModels)
+                    .Select(sqlObj.SelectString));
                 var groupQuery = (from l in list
                                  join n in navList
                                       on navColumn.PropertyInfo.GetValue(l).ObjToString() 
@@ -626,6 +627,10 @@ namespace SqlSugar
                 }
                 else if (method.Method.Name == "ToList")
                 {
+                    if (method.Arguments.Count > 1) 
+                    {
+                        Select(properyName, result, method, queryable);
+                    }
                     isList = true;
                 }
                 else
