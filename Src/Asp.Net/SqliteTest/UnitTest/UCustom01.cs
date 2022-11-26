@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using F9.DataEntity.Entity;
+using SqliteTest.UnitTest.Models;
 using SqlSugar;
 namespace  OrmTest
 {
@@ -43,6 +44,22 @@ namespace  OrmTest
               .SetColumns(x => new Order() { Name = x.Name + "a" })
               .Where(z => z.Id == 1)
               .ExecuteCommand();
+
+            var sql = db.Queryable<BilCostshare>()
+                               .GroupBy(cs => new { cs.AirmasterNumber, cs.FkCode })
+                               .Select(cs => new
+                               {
+                                   PmAmount = SqlFunc.AggregateSum(SqlFunc.IsNull(SqlFunc.Subqueryable<BilPayment>().Where(x => x.ShareId == cs.Id)
+                                                     .Select(s => SqlFunc.AggregateSum(s.PmAmount)), 0)),
+
+                               })
+                               .Having(cs => cs.PmAmount != 0)
+                               .ToSql();
+
+            if (!sql.Key.Contains("`bil_costshare` cs")) 
+            {
+                throw new Exception("unit error");
+            }
         }
     }
 }
