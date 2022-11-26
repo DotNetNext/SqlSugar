@@ -25,6 +25,14 @@ namespace SqlSugar
                 {
                     formatString = formatString.Replace("hhmm", "hhmi");
                 }
+                else if (formatString.HasValue() && formatString.Contains("HH:mm"))
+                {
+                    formatString = formatString.Replace("HH:mm", "HH:mi");
+                }
+                else if (formatString.HasValue() && formatString.Contains("HHmm"))
+                {
+                    formatString = formatString.Replace("HHmm", "HHmi");
+                }
                 return $"to_char({value},'{formatString}') ";
             }
             else if (IsSqlite() && formatString == "yyyy-MM-dd")
