@@ -1179,6 +1179,14 @@ namespace SqlSugar
             }
             else if (IsOracle() || IsPg())
             {
+                if (formatString.HasValue()&&formatString.Contains("hh:mm")) 
+                {
+                    formatString = formatString.Replace("hh:mm", "hh:mi");
+                }
+                else if (formatString.HasValue() && formatString.Contains("hhmm"))
+                {
+                    formatString = formatString.Replace("hhmm", "hhmi");
+                }
                 return $"to_char({value},'{formatString}') ";
             }
             else if (IsSqlite() && formatString == "yyyy-MM-dd") 
