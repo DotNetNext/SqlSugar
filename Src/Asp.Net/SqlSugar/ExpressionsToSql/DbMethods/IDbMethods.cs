@@ -98,5 +98,7 @@ namespace SqlSugar
         string JsonArrayLength(MethodCallExpressionModel model);
         string JsonParse(MethodCallExpressionModel model);
         string JsonLike(MethodCallExpressionModel model);
+        string Collate(MethodCallExpressionModel model);
+        string AggregateSumNoNull(MethodCallExpressionModel model);
     }
 }

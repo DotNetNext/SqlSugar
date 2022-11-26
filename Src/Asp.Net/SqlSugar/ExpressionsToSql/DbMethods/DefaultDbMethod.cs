@@ -669,5 +669,16 @@ namespace SqlSugar
             model.Args[0].MemberName = ToString(model);
             return Contains(model);
         }
+        public string Collate(MethodCallExpressionModel model) 
+        {
+            var name=model.Args[0].MemberName;
+            return $" {name}  collate Chinese_PRC_CS_AS  ";
+        }
+        public string AggregateSumNoNull(MethodCallExpressionModel model) 
+        {
+            model.Args[0].MemberName = AggregateSum(model);
+            model.Args.Add(new MethodCallExpressionArgs() { MemberValue = 0, MemberName = 0 });
+            return IsNull(model);
+        }
     }
 }
