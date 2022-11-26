@@ -134,6 +134,9 @@
     <Compile Include="Entities\DeleteNavOptions.cs" />
     <Compile Include="Entities\JoinInfoParameter.cs" />
     <Compile Include="ExpressionsToSql\Common\NewExpressionInfo.cs" />
+    <Compile Include="ExpressionsToSql\ResolveItems\BaseResolve_Helper.cs" />
+    <Compile Include="ExpressionsToSql\ResolveItems\BaseResolve_Validate.cs" />
+    <Compile Include="ExpressionsToSql\ResolveItems\BaseResolve_Property.cs" />
     <Compile Include="ExpressionsToSql\ResolveItems\MethodCallExpressionResolve_Helper.cs" />
     <Compile Include="ExpressionsToSql\ResolveItems\MethodCallExpressionResolve_BaseDateFomat.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubDistinctCount.cs" />
