@@ -296,6 +296,12 @@ namespace SqlSugar
             return "dbms_random.value";
         }
 
+        public override string Collate(MethodCallExpressionModel model)
+        {
+            var name = model.Args[0].MemberName;
+            return $"  NLSSORT({0}, 'NLS_SORT = Latin_CI')   ";
+        }
+
         public override string CharIndex(MethodCallExpressionModel model)
         {
             return string.Format("instr ({0},{1},1,1) ", model.Args[0].MemberName, model.Args[1].MemberName);

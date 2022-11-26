@@ -116,6 +116,22 @@ namespace SqlSugar
                     }
                 }
             }
+            else if (this.Context.IsSingle && args.Any(it => ExpressionTool.IsIsNullSubQuery(it)) )
+            {
+                var exp = base.BaseParameter?.BaseParameter?.BaseParameter?.CurrentExpression;
+                if (exp is LambdaExpression)
+                {
+                    SetShortName(exp);
+                }
+                else if (exp is UnaryExpression)
+                {
+                    exp = base.BaseParameter?.BaseParameter?.BaseParameter?.BaseParameter?.CurrentExpression;
+                    if (exp is LambdaExpression)
+                    {
+                        SetShortName(exp);
+                    }
+                }
+            }
             var isBinaryExpression = item is BinaryExpression || item is MethodCallExpression;
             var isConst = item is ConstantExpression;
             var isIIF = name == "IIF";
@@ -732,6 +748,10 @@ namespace SqlSugar
                         return this.Context.DbMehtods.JsonParse(model);
                     case "JsonLike":
                         return this.Context.DbMehtods.JsonLike(model);
+                    case "Collate":
+                        return this.Context.DbMehtods.Collate(model);
+                    case "AggregateSumNoNull":
+                        return this.Context.DbMehtods.AggregateSumNoNull(model);
                     default:
                         break;
                 }

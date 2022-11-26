@@ -176,6 +176,12 @@ namespace SqlSugar
             return "rand()";
         }
 
+        public override string Collate(MethodCallExpressionModel model)
+        {
+            var name = model.Args[0].MemberName;
+            return $" binary {name}  ";
+        }
+
         public override string CharIndex(MethodCallExpressionModel model)
         {
             return string.Format("instr ({0},{1})", model.Args[0].MemberName, model.Args[1].MemberName);
