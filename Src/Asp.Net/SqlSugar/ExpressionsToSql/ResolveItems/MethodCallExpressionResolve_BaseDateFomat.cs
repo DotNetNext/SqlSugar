@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace SqlSugar 
 {
+    /// <summary>
+    /// MethodCall base DateFomat
+    /// </summary>
     public partial class MethodCallExpressionResolve : BaseResolve
     {
         public string GeDateFormat(string formatString, string value)

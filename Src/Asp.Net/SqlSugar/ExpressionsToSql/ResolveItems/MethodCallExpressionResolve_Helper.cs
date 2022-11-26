@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace SqlSugar
 {
+    /// <summary>
+    ///MethodCall Helper
+    /// </summary>
     public partial class MethodCallExpressionResolve : BaseResolve
     {
         private void CusMethod(ExpressionParameter parameter, MethodCallExpression express, bool? isLeft)
