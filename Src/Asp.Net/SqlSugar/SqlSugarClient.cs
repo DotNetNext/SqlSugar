@@ -777,6 +777,23 @@ namespace SqlSugar
         {
             return new SqlSugarTransaction(this);
         }
+        public void RemoveConnection(string configId) 
+        {
+           var removeData= this._AllClients.FirstOrDefault(it => it.ConnectionConfig.ConfigId.ObjToString()== configId.ObjToString());
+           var currentId= this.CurrentConnectionConfig.ConfigId;
+            if (removeData != null) 
+            {
+                if (removeData.Context.Ado.IsAnyTran()) 
+                {
+                    Check.ExceptionEasy("RemoveConnection error  has tran",$"删除失败{removeData.ConnectionConfig.ConfigId}存在未提交事务");
+                }
+                else if (removeData.ConnectionConfig.ConfigId.ObjToString()== currentId.ObjToString())
+                {
+                    Check.ExceptionEasy("Default ConfigId cannot be deleted", $"默认库不能删除{removeData.ConnectionConfig.ConfigId}");
+                }
+                this._AllClients.Remove(removeData);
+            }
+        }
         public void AddConnection(ConnectionConfig connection)
         {
             Check.ArgumentNullException(connection, "AddConnection.connection can't be null");
