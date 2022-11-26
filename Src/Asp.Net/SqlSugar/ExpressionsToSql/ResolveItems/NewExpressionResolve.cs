@@ -40,51 +40,61 @@ namespace SqlSugar
                 case ResolveExpressType.FieldMultiple:
                 case ResolveExpressType.ArrayMultiple:
                 case ResolveExpressType.ArraySingle:
-                    foreach (var item in expression.Arguments)
-                    {
-                        if (IsDateValue(item))
-                        {
-                            var value = GetNewExpressionValue(item);
-                            base.Context.Result.Append(value);
-                        }
-                        else
-                        {
-                            base.Expression = item;
-                            base.Start();
-                        }
-                    }
+                    ArraySingle(expression);
                     break;
                 case ResolveExpressType.Join:
-                    base.Context.ResolveType = ResolveExpressType.WhereMultiple;
-                    int i = 0;
-                    foreach (var item in expression.Arguments)
-                    {
-                        if (item.Type!=typeof(JoinType))
-                        {
-                            base.Expression = item;
-                            base.Start();
-                        }
-                        if (item.Type == typeof(JoinType))
-                        {
-                            var joinValue = item.ObjToString();
-                            if (joinValue.Contains("(")) 
-                            {
-                                joinValue = ExpressionTool.DynamicInvoke(item).ObjToString();
-                            }
-                            if (i > 0)
-                            {
-                                base.Context.Result.Append("," + joinValue + ",");
-                            }
-                            else
-                            {
-                                base.Context.Result.Append(joinValue + ",");
-                            }
-                            ++i;
-                        }
-                    }
+                    Join(expression);
                     break;
                 default:
                     break;
+            }
+        }
+
+        private void Join(NewExpression expression)
+        {
+            base.Context.ResolveType = ResolveExpressType.WhereMultiple;
+            int i = 0;
+            foreach (var item in expression.Arguments)
+            {
+                if (item.Type != typeof(JoinType))
+                {
+                    base.Expression = item;
+                    base.Start();
+                }
+                if (item.Type == typeof(JoinType))
+                {
+                    var joinValue = item.ObjToString();
+                    if (joinValue.Contains("("))
+                    {
+                        joinValue = ExpressionTool.DynamicInvoke(item).ObjToString();
+                    }
+                    if (i > 0)
+                    {
+                        base.Context.Result.Append("," + joinValue + ",");
+                    }
+                    else
+                    {
+                        base.Context.Result.Append(joinValue + ",");
+                    }
+                    ++i;
+                }
+            }
+        }
+
+        private void ArraySingle(NewExpression expression)
+        {
+            foreach (var item in expression.Arguments)
+            {
+                if (IsDateValue(item))
+                {
+                    var value = GetNewExpressionValue(item);
+                    base.Context.Result.Append(value);
+                }
+                else
+                {
+                    base.Expression = item;
+                    base.Start();
+                }
             }
         }
 
