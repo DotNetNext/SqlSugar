@@ -10,6 +10,7 @@ namespace SqlSugar
     public class MemberExpressionResolve : BaseResolve
     {
         public ExpressionParameter Parameter { get; set; }
+
         public MemberExpressionResolve(ExpressionParameter parameter) : base(parameter)
         {
             ExpressionParameter baseParameter;
@@ -60,61 +61,11 @@ namespace SqlSugar
             }
             else if (IsConvertMemberName(expression))
             {
-                var memParameter = (expression.Expression as UnaryExpression).Operand as ParameterExpression;
-                var name = ExpressionTool.GetMemberName(expression);
-                if (this.Context.IsSingle)
-                {
-                    AppendMember(parameter, isLeft, this.Context.GetTranslationColumnName(name));
-                }
-                else 
-                {
-                    AppendMember(parameter, isLeft, this.Context.GetTranslationColumnName(memParameter.Name + "." + name));
-                }
+                ResolveConvertMemberName(parameter, expression, isLeft);
             }
             else if (isMemberValue)
             {
-                var nav = new OneToOneNavgateExpression(this.Context?.SugarContext?.Context);
-                var navN = new OneToOneNavgateExpressionN(this.Context?.SugarContext?.Context);
-                if (nav.IsNavgate(expression))
-                {
-                    if (this.Context?.SugarContext?.QueryBuilder?.JoinQueryInfos != null)
-                    {
-                        var p=expression.Expression.ObjToString();
-                        var querybuilder = this.Context?.SugarContext?.QueryBuilder;
-                        var joinInfos = querybuilder.JoinQueryInfos;
-                        var joinInfo=joinInfos.FirstOrDefault(it => $"{querybuilder.TableShortName}.{ it.ShortName.Replace("pnv_","")}" == p);
-                        if (joinInfo != null)
-                        {
-                            var columnInfo=nav.ProPertyEntity.Columns.FirstOrDefault(it => it.PropertyName == nav.MemberName);
-                            var value =new MapperSql() { Sql = joinInfo.ShortName + "." + columnInfo.DbColumnName };
-                            
-                            if (isSetTempData)
-                            {
-                                baseParameter.CommonTempData = value;
-                            }
-                            else
-                            {
-                                AppendValue(parameter, isLeft, value);
-                            }
-                        }
-                        else 
-                        {
-                            DefaultOneToOne(parameter, baseParameter, isLeft, isSetTempData, nav);
-                        }
-                    }
-                    else
-                    {
-                        DefaultOneToOne(parameter, baseParameter, isLeft, isSetTempData, nav);
-                    }
-                }
-                else if (navN.IsNavgate(expression))
-                {
-                    DefaultOneToOneN(parameter, baseParameter, isLeft, isSetTempData, navN);
-                }
-                else
-                {
-                    ResolveMemberValue(parameter, baseParameter, isLeft, isSetTempData, expression);
-                }
+                ResolveMemberValue(parameter, baseParameter, expression, isLeft, isSetTempData);
             }
             else if (fieldIsBool && !isField && !isSelectField)
             {
@@ -126,6 +77,7 @@ namespace SqlSugar
             }
         }
 
+        #region Navigate
         private void DefaultOneToOneN(ExpressionParameter parameter, ExpressionParameter baseParameter, bool? isLeft, bool isSetTempData, OneToOneNavgateExpressionN navN)
         {
             var value = navN.GetMemberSql();
@@ -156,12 +108,7 @@ namespace SqlSugar
             }
         }
 
-        private static bool IsConvertMemberName(MemberExpression expression)
-        {
-            return expression.Expression is UnaryExpression && (expression.Expression as UnaryExpression).Operand is ParameterExpression;
-        }
-
-
+        #endregion
 
         #region Resolve default
         private void ResolveDefault(ExpressionParameter parameter, ExpressionParameter baseParameter, MemberExpression expression, bool? isLeft, bool isSetTempData, bool isSingle)
@@ -307,6 +254,67 @@ namespace SqlSugar
         #endregion
 
         #region Resolve special member
+
+        private void ResolveMemberValue(ExpressionParameter parameter, ExpressionParameter baseParameter, MemberExpression expression, bool? isLeft, bool isSetTempData)
+        {
+            var nav = new OneToOneNavgateExpression(this.Context?.SugarContext?.Context);
+            var navN = new OneToOneNavgateExpressionN(this.Context?.SugarContext?.Context);
+            if (nav.IsNavgate(expression))
+            {
+                if (this.Context?.SugarContext?.QueryBuilder?.JoinQueryInfos != null)
+                {
+                    var p = expression.Expression.ObjToString();
+                    var querybuilder = this.Context?.SugarContext?.QueryBuilder;
+                    var joinInfos = querybuilder.JoinQueryInfos;
+                    var joinInfo = joinInfos.FirstOrDefault(it => $"{querybuilder.TableShortName}.{it.ShortName.Replace("pnv_", "")}" == p);
+                    if (joinInfo != null)
+                    {
+                        var columnInfo = nav.ProPertyEntity.Columns.FirstOrDefault(it => it.PropertyName == nav.MemberName);
+                        var value = new MapperSql() { Sql = joinInfo.ShortName + "." + columnInfo.DbColumnName };
+
+                        if (isSetTempData)
+                        {
+                            baseParameter.CommonTempData = value;
+                        }
+                        else
+                        {
+                            AppendValue(parameter, isLeft, value);
+                        }
+                    }
+                    else
+                    {
+                        DefaultOneToOne(parameter, baseParameter, isLeft, isSetTempData, nav);
+                    }
+                }
+                else
+                {
+                    DefaultOneToOne(parameter, baseParameter, isLeft, isSetTempData, nav);
+                }
+            }
+            else if (navN.IsNavgate(expression))
+            {
+                DefaultOneToOneN(parameter, baseParameter, isLeft, isSetTempData, navN);
+            }
+            else
+            {
+                ResolveMemberValue(parameter, baseParameter, isLeft, isSetTempData, expression);
+            }
+        }
+
+        private void ResolveConvertMemberName(ExpressionParameter parameter, MemberExpression expression, bool? isLeft)
+        {
+            var memParameter = (expression.Expression as UnaryExpression).Operand as ParameterExpression;
+            var name = ExpressionTool.GetMemberName(expression);
+            if (this.Context.IsSingle)
+            {
+                AppendMember(parameter, isLeft, this.Context.GetTranslationColumnName(name));
+            }
+            else
+            {
+                AppendMember(parameter, isLeft, this.Context.GetTranslationColumnName(memParameter.Name + "." + name));
+            }
+        }
+
         private void ResolveDayOfWeek(ExpressionParameter parameter, bool? isLeft, MemberExpression expression)
         {
             var exp = expression.Expression;
@@ -600,6 +608,11 @@ namespace SqlSugar
         #endregion
 
         #region Helper
+        private static bool IsConvertMemberName(MemberExpression expression)
+        {
+            return expression.Expression is UnaryExpression && (expression.Expression as UnaryExpression).Operand is ParameterExpression;
+        }
+
         private static bool IsDateDiff(MemberExpression expression)
         {
             return
