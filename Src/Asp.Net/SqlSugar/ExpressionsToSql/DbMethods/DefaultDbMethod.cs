@@ -664,17 +664,17 @@ namespace SqlSugar
         {
             throw new NotImplementedException("Current database no support");
         }
-        public string JsonLike(MethodCallExpressionModel model) 
+        public virtual string JsonLike(MethodCallExpressionModel model) 
         {
             model.Args[0].MemberName = ToString(model);
             return Contains(model);
         }
-        public string Collate(MethodCallExpressionModel model) 
+        public virtual string Collate(MethodCallExpressionModel model) 
         {
             var name=model.Args[0].MemberName;
             return $" {name}  collate Chinese_PRC_CS_AS  ";
         }
-        public string AggregateSumNoNull(MethodCallExpressionModel model) 
+        public virtual string AggregateSumNoNull(MethodCallExpressionModel model) 
         {
             model.Args[0].MemberName = AggregateSum(model);
             model.Args.Add(new MethodCallExpressionArgs() { MemberValue = 0, MemberName = 0 });
