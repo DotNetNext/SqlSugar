@@ -11,6 +11,7 @@ namespace SqlSugar
     /// </summary>
     public partial class BaseResolve
     {
+        #region Set Method
         protected void SetNavigateResult()
         {
             if (this.Context != null)
@@ -21,6 +22,24 @@ namespace SqlSugar
                 }
             }
         }
+        private void SetParameter(out Expression expression, out ExpressionParameter parameter)
+        {
+            Context.Index++;
+            expression = this.Expression;
+            parameter = new ExpressionParameter()
+            {
+                Context = this.Context,
+                CurrentExpression = expression,
+                IsLeft = this.IsLeft,
+                BaseExpression = this.ExactExpression,
+                BaseParameter = this.BaseParameter,
+                Index = Context.Index
+            };
+        }
+
+        #endregion
+
+        #region Get Mehtod
         private string GetAsName(Expression item, object shortName, PropertyInfo property)
         {
             string asName;
@@ -163,6 +182,7 @@ namespace SqlSugar
                     new KeyValuePair<string, string>("End","0")
                  });
             return methodValue;
-        }
+        } 
+        #endregion
     }
 }
