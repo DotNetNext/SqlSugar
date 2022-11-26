@@ -557,6 +557,11 @@ namespace OrmTest
                 .LeftJoin<OrderItem>((x,y)=>x.yid==y.ItemId)// 最后一个表不是匿名对象就行
                 .ToList();
 
+           db.Queryable<Order>()
+              .Where(it=>SqlFunc.Collate(it.Name)== "asdfa")
+              .Where(m => m.Id == SqlFunc.Subqueryable<Order>()
+              .Where(z => z.Id == m.Id).GroupBy(z => z.Id).Select(z =>SqlFunc.AggregateSumNoNull(z.Id)))
+              .ToList();
             Console.WriteLine("#### Join Table End ####");
         }
 
