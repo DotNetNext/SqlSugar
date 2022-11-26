@@ -559,5 +559,21 @@ namespace SqlSugar
             }
             return false;
         }
+
+        internal static bool IsIsNullSubQuery(Expression it)
+        {
+            if (it is MethodCallExpression)
+            {
+                var method = (MethodCallExpression)it;
+                if (method.Method.Name == "IsNull")
+                {
+                    if (method.Arguments.Count==2&&IsSubQuery(method.Arguments[0])) 
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
     }
 }
