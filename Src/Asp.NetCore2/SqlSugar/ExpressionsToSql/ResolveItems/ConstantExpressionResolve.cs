@@ -12,22 +12,9 @@ namespace SqlSugar
         {
             var expression = base.Expression as ConstantExpression;
             var isLeft = parameter.IsLeft;
-            object value = ExpressionTool.GetValue(expression.Value,this.Context);
-            if (this.Context.TableEnumIsString == true
-                       && value != null
-                         && value.IsInt()
-                          && base.BaseParameter?.OppsiteExpression != null)
-            {
-                if (base.BaseParameter?.OppsiteExpression is UnaryExpression)
-                {
-                    var oppsiteExpression = base.BaseParameter?.OppsiteExpression as UnaryExpression;
-                    var oppsiteValue = oppsiteExpression.Operand;
-                    if (oppsiteValue.Type.IsEnum())
-                    {
-                        value = UtilMethods.ChangeType2(value, oppsiteValue.Type).ToString();
-                    }
-                }
-            }
+            object value = ExpressionTool.GetValue(expression.Value, this.Context);
+            if (IsEnumString(value))
+                value = ConvertEnum(value);
             var baseParameter = parameter.BaseParameter;
             baseParameter.ChildExpression = expression;
             var isSetTempData = baseParameter.CommonTempData.HasValue() && baseParameter.CommonTempData.Equals(CommonTempDataType.Result);
@@ -80,6 +67,29 @@ namespace SqlSugar
                 default:
                     break;
             }
+        }
+
+        private object ConvertEnum(object value)
+        {
+            if (base.BaseParameter?.OppsiteExpression is UnaryExpression)
+            {
+                var oppsiteExpression = base.BaseParameter?.OppsiteExpression as UnaryExpression;
+                var oppsiteValue = oppsiteExpression.Operand;
+                if (oppsiteValue.Type.IsEnum())
+                {
+                    value = UtilMethods.ChangeType2(value, oppsiteValue.Type).ToString();
+                }
+            }
+
+            return value;
+        }
+
+        private bool IsEnumString(object value)
+        {
+            return this.Context.TableEnumIsString == true
+                                   && value != null
+                                     && value.IsInt()
+                                      && base.BaseParameter?.OppsiteExpression != null;
         }
     }
 }
