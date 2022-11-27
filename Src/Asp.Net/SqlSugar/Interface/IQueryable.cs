@@ -122,6 +122,7 @@ namespace SqlSugar
         Task<bool> AnyAsync();
 
         ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, TResult>> expression);
+        ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, TResult>> expression,bool isAutoFill);
         ISugarQueryable<TResult> Select<TResult>();
         ISugarQueryable<TResult> Select<TResult>(string select);
         ISugarQueryable<T> Select(string select);

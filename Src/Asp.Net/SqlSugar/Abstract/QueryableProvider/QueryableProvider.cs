@@ -958,6 +958,23 @@ namespace SqlSugar
             Check.ExceptionEasy(this.QueryBuilder.Includes.HasValue(), $"use Includes(...).ToList(it=>new {typeof(TResult).Name} {{...}} )", $"Includes()后面禁使用Select，正确写法: ToList(it=>new {typeof(TResult).Name}{{....}})");
             return _Select<TResult>(expression);
         }
+        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, TResult>> expression, bool isAutoFill)
+        {
+            var clone = this.Clone();
+            //clone.QueryBuilder.LambdaExpressions.Index = QueryBuilder.LambdaExpressions.Index+1;
+            var ps = clone.Select(expression).QueryBuilder;
+            var sql = ps.GetSelectValue;
+            if (string.IsNullOrEmpty(sql) || sql.Trim() == "*")
+            {
+                return this.Select<TResult>(expression);
+            }
+            this.QueryBuilder.Parameters = ps.Parameters;
+            this.QueryBuilder.LambdaExpressions.ParameterIndex = clone.QueryBuilder.LambdaExpressions.ParameterIndex;
+            var parameters = (expression as LambdaExpression).Parameters;
+            var columnsResult = this.Context.EntityMaintenance.GetEntityInfo<TResult>().Columns;
+            sql = AppendSelect(this.EntityInfo.Columns,sql, parameters, columnsResult, 0);
+            return this.Select<TResult>(sql);
+        }
 
         public virtual ISugarQueryable<TResult> Select<TResult>()
         {

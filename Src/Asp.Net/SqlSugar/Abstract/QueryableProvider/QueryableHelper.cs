@@ -878,6 +878,20 @@ namespace SqlSugar
         #endregion
 
         #region  Other
+        protected string AppendSelect(List<EntityColumnInfo> entityColumnInfos,string sql, ReadOnlyCollection<ParameterExpression> parameters, List<EntityColumnInfo> columnsResult, int parameterIndex1)
+        {
+            var columns = entityColumnInfos;
+            var parameterName = parameters[parameterIndex1];
+            foreach (var item in columns)
+            {
+                if (item.IsIgnore == false && columnsResult.Any(it => it.PropertyName.EqualCase(item.PropertyName)) && !sql.ToLower().Contains(SqlBuilder.GetTranslationColumnName(item.PropertyName.ToLower())))
+                {
+                    sql = $" {sql},{SqlBuilder.GetTranslationColumnName(item.DbColumnName)} AS {SqlBuilder.GetTranslationColumnName(item.PropertyName)} ";
+                }
+            }
+
+            return sql;
+        }
         protected string AppendSelect<EntityType>(string sql, ReadOnlyCollection<ParameterExpression> parameters, List<EntityColumnInfo> columnsResult, int parameterIndex1)
         {
             var columns = this.Context.EntityMaintenance.GetEntityInfo<EntityType>().Columns;
