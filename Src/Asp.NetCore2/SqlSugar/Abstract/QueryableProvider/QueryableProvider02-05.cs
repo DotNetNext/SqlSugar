@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Reflection;
 using System.Dynamic;
 using System.Threading.Tasks;
+using System.Collections.ObjectModel;
 
 namespace SqlSugar 
 {
@@ -192,7 +193,19 @@ namespace SqlSugar
         {
             return _Select<TResult>(expression);
         }
-
+        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T,T2, TResult>> expression, bool isAutoFill)
+        {
+            var sql = this.Clone().Select(expression).QueryBuilder.GetSelectValue;
+            if (this.QueryBuilder.IsSingle() || string.IsNullOrEmpty(sql) || sql.Trim() == "*")
+            {
+                return this.Select<TResult>(expression);
+            }
+            var parameters = (expression as LambdaExpression).Parameters;
+            var columnsResult = this.Context.EntityMaintenance.GetEntityInfo<TResult>().Columns;
+            sql = AppendSelect<T>(sql, parameters, columnsResult, 0);
+            sql = AppendSelect<T2>(sql, parameters, columnsResult, 1);
+            return this.Select<TResult>(sql);
+        }
         #endregion
 
         #region Order
