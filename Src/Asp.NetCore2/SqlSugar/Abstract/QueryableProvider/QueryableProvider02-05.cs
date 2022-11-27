@@ -202,6 +202,7 @@ namespace SqlSugar
                 return this.Select<TResult>(expression);
             }
             this.QueryBuilder.Parameters = clone.QueryBuilder.Parameters;
+            this.QueryBuilder.LambdaExpressions.ParameterIndex = clone.QueryBuilder.LambdaExpressions.ParameterIndex;
             var parameters = (expression as LambdaExpression).Parameters;
             var columnsResult = this.Context.EntityMaintenance.GetEntityInfo<TResult>().Columns;
             sql = AppendSelect<T>(sql, parameters, columnsResult, 0);
@@ -829,6 +830,7 @@ namespace SqlSugar
                 return this.Select<TResult>(expression);
             }
             this.QueryBuilder.Parameters = clone.QueryBuilder.Parameters;
+            this.QueryBuilder.LambdaExpressions.ParameterIndex = clone.QueryBuilder.LambdaExpressions.ParameterIndex;
             var parameters = (expression as LambdaExpression).Parameters;
             var columnsResult = this.Context.EntityMaintenance.GetEntityInfo<TResult>().Columns;
             sql = AppendSelect<T>(sql, parameters, columnsResult, 0);
@@ -1347,6 +1349,7 @@ namespace SqlSugar
                 return this.Select<TResult>(expression);
             }
             this.QueryBuilder.Parameters = clone.QueryBuilder.Parameters;
+            this.QueryBuilder.LambdaExpressions.ParameterIndex=clone.QueryBuilder.LambdaExpressions.ParameterIndex; 
             var parameters = (expression as LambdaExpression).Parameters;
             var columnsResult = this.Context.EntityMaintenance.GetEntityInfo<TResult>().Columns;
             sql = AppendSelect<T>(sql, parameters, columnsResult, 0);
@@ -1996,6 +1999,7 @@ namespace SqlSugar
                 return this.Select<TResult>(expression);
             }
             this.QueryBuilder.Parameters = clone.QueryBuilder.Parameters;
+            this.QueryBuilder.LambdaExpressions.ParameterIndex = clone.QueryBuilder.LambdaExpressions.ParameterIndex;
             var parameters = (expression as LambdaExpression).Parameters;
             var columnsResult = this.Context.EntityMaintenance.GetEntityInfo<TResult>().Columns;
             sql = AppendSelect<T>(sql, parameters, columnsResult, 0);
