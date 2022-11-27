@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Reflection;
 using System.Dynamic;
 using System.Threading.Tasks;
+using System.Collections.ObjectModel;
 
 namespace SqlSugar
 {
@@ -877,6 +878,21 @@ namespace SqlSugar
         #endregion
 
         #region  Other
+        protected string AppendSelect<EntityType>(string sql, ReadOnlyCollection<ParameterExpression> parameters, List<EntityColumnInfo> columnsResult, int parameterIndex1)
+        {
+            var columns = this.Context.EntityMaintenance.GetEntityInfo<EntityType>().Columns;
+            var parameterName = parameters[parameterIndex1];
+            foreach (var item in columns)
+            {
+                if (item.IsIgnore == false && columnsResult.Any(it => it.PropertyName.EqualCase(item.PropertyName)) && !sql.ToLower().Contains(SqlBuilder.GetTranslationColumnName(item.PropertyName.ToLower())))
+                {
+                    sql = $" {sql},{parameterName.Name}.{SqlBuilder.GetTranslationColumnName(item.DbColumnName)} AS {SqlBuilder.GetTranslationColumnName(item.PropertyName)} ";
+                }
+            }
+
+            return sql;
+        }
+
         protected JoinQueryInfo GetJoinInfo(Expression joinExpression, JoinType joinType)
         {
             QueryBuilder.CheckExpressionNew(joinExpression, "Join");
