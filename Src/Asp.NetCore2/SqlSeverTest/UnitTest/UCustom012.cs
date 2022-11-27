@@ -132,6 +132,23 @@ namespace OrmTest
             {
                 it.UnitA002 = db.Queryable<UnitA002>().SetContext(x => x.orgid, () => it.id, it).First();
             });
+
+           var list4=db.Queryable<SchoolA>()
+                .LeftJoin<StudentA>((x, y) => (x.SchoolId == y.SchoolId))
+                .LeftJoin<BookA>((x,y,z)=>y.SchoolId==y.SchoolId)
+                .Select((x,y,z) => new UnitView01()
+                {
+                     Name=x.SchoolName,
+                },true).ToList();
+        }
+
+        public class UnitView01 
+        {
+            public string Id { get; set; }
+            public string SchoolName { get; set; }
+            public string Name { get; set; }
+            public int BookId { get; set; }
+            public int StudentId { get; set; }
         }
 
         public class UnitA001
