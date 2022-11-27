@@ -254,11 +254,13 @@ namespace SqlSugar
         #region Select
         public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11, TResult>> expression, bool isAutoFill)
         {
-            var sql = this.Clone().Select(expression).QueryBuilder.GetSelectValue;
+            var clone = this.Clone().Select(expression);
+            var sql = clone.QueryBuilder.GetSelectValue;
             if (this.QueryBuilder.IsSingle() || string.IsNullOrEmpty(sql) || sql.Trim() == "*")
             {
                 return this.Select<TResult>(expression);
             }
+            this.QueryBuilder.Parameters = clone.QueryBuilder.Parameters;
             var parameters = (expression as LambdaExpression).Parameters;
             var columnsResult = this.Context.EntityMaintenance.GetEntityInfo<TResult>().Columns;
             sql = AppendSelect<T>(sql, parameters, columnsResult, 0);
@@ -806,11 +808,13 @@ namespace SqlSugar
         #region Select
         public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12, TResult>> expression, bool isAutoFill)
         {
-            var sql = this.Clone().Select(expression).QueryBuilder.GetSelectValue;
+            var clone = this.Clone().Select(expression);
+            var sql = clone.QueryBuilder.GetSelectValue;
             if (this.QueryBuilder.IsSingle() || string.IsNullOrEmpty(sql) || sql.Trim() == "*")
             {
                 return this.Select<TResult>(expression);
             }
+            this.QueryBuilder.Parameters = clone.QueryBuilder.Parameters;
             var parameters = (expression as LambdaExpression).Parameters;
             var columnsResult = this.Context.EntityMaintenance.GetEntityInfo<TResult>().Columns;
             sql = AppendSelect<T>(sql, parameters, columnsResult, 0);
