@@ -676,9 +676,10 @@ namespace SqlSugar
         }
         public virtual string AggregateSumNoNull(MethodCallExpressionModel model) 
         {
-            model.Args[0].MemberName = AggregateSum(model);
             model.Args.Add(new MethodCallExpressionArgs() { MemberValue = 0, MemberName = 0 });
-            return IsNull(model);
+            var name= IsNull(model);
+            model.Args[0].MemberName = name;
+            return AggregateSum(model);
         }
     }
 }
