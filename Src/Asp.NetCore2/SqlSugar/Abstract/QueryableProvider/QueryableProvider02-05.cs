@@ -818,6 +818,21 @@ namespace SqlSugar
         #endregion
 
         #region Select
+        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2,T3, TResult>> expression, bool isAutoFill)
+        {
+            var sql = this.Clone().Select(expression).QueryBuilder.GetSelectValue;
+            if (this.QueryBuilder.IsSingle() || string.IsNullOrEmpty(sql) || sql.Trim() == "*")
+            {
+                return this.Select<TResult>(expression);
+            }
+            var parameters = (expression as LambdaExpression).Parameters;
+            var columnsResult = this.Context.EntityMaintenance.GetEntityInfo<TResult>().Columns;
+            sql = AppendSelect<T>(sql, parameters, columnsResult, 0);
+            sql = AppendSelect<T2>(sql, parameters, columnsResult, 1);
+            sql = AppendSelect<T3>(sql, parameters, columnsResult, 2);
+            return this.Select<TResult>(sql);
+        }
+
         public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, TResult>> expression)
         {
             return _Select<TResult>(expression);

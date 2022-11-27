@@ -884,9 +884,9 @@ namespace SqlSugar
             var parameterName = parameters[parameterIndex1];
             foreach (var item in columns)
             {
-                if (item.IsIgnore == false && columnsResult.Any(it => it.PropertyName == item.PropertyName) && !sql.Contains(SqlBuilder.GetTranslationColumnName(item.PropertyName)))
+                if (item.IsIgnore == false && columnsResult.Any(it => it.PropertyName.EqualCase(item.PropertyName)) && !sql.ToLower().Contains(SqlBuilder.GetTranslationColumnName(item.PropertyName.ToLower())))
                 {
-                    sql = $" {sql},{parameterName.Name}.{item.DbColumnName} AS {item.PropertyName} ";
+                    sql = $" {sql},{parameterName.Name}.{SqlBuilder.GetTranslationColumnName(item.DbColumnName)} AS {SqlBuilder.GetTranslationColumnName(item.PropertyName)} ";
                 }
             }
 

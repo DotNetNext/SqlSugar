@@ -360,6 +360,7 @@ namespace SqlSugar
         #endregion
 
         #region Select
+        ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2,T3, TResult>> expression, bool isAutoFill);
         ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, TResult>> expression);
         ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, TResult>> expression);
         #endregion
