@@ -136,7 +136,7 @@ namespace OrmTest
            var list4=db.Queryable<SchoolA>()
                 .LeftJoin<StudentA>((x, y) => (x.SchoolId == y.SchoolId))
                 .LeftJoin<BookA>((x,y,z)=>y.SchoolId==y.SchoolId)
-                .Select((x,y) => new UnitView01()
+                .Select((x,y,z) => new UnitView01()
                 {
                      Name=x.SchoolName,
                       Id="1"
