@@ -19,7 +19,7 @@ namespace SqlSugar
         {
             get
             {
-                string sql = @"select cast (pclass.oid as int4) as TableId,cast(ptables.tablename as varchar) as TableName,
+                string sql = $@"select cast (pclass.oid as int4) as TableId,cast(ptables.tablename as varchar) as TableName,
                                 pcolumn.column_name as DbColumnName,pcolumn.udt_name as DataType,
                                 pcolumn.character_maximum_length as Length,
                                 pcolumn.column_default as DefaultValue,
@@ -30,7 +30,7 @@ namespace SqlSugar
                                 then true else false end as IsIdentity,
                                 case when UPPER(pcolumn.is_nullable) = 'YES'
                                 then true else false end as IsNullable
-                                 from (select * from sys_tables where  UPPER(tablename) = UPPER('{0}') and UPPER(schemaname)='PUBLIC') ptables inner join sys_class pclass
+                                 from (select * from sys_tables where  UPPER(tablename) = UPPER('{{0}}') and UPPER(schemaname)='{GetSchema()}') ptables inner join sys_class pclass
                                 on ptables.tablename = pclass.relname inner join (SELECT *
                                 FROM information_schema.columns
                                 ) pcolumn on pcolumn.table_name = ptables.tablename
@@ -240,6 +240,28 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        private string GetSchema()
+        {
+            var schema = "public";
+            if (System.Text.RegularExpressions.Regex.IsMatch(this.Context.CurrentConnectionConfig.ConnectionString.ToLower(), "searchpath="))
+            {
+                var regValue = System.Text.RegularExpressions.Regex.Match(this.Context.CurrentConnectionConfig.ConnectionString.ToLower(), @"searchpath\=(\w+)").Groups[1].Value;
+                if (regValue.HasValue())
+                {
+                    schema = regValue;
+                }
+            }
+            else if (System.Text.RegularExpressions.Regex.IsMatch(this.Context.CurrentConnectionConfig.ConnectionString.ToLower(), "search path="))
+            {
+                var regValue = System.Text.RegularExpressions.Regex.Match(this.Context.CurrentConnectionConfig.ConnectionString.ToLower(), @"search path\=(\w+)").Groups[1].Value;
+                if (regValue.HasValue())
+                {
+                    schema = regValue;
+                }
+            }
+
+            return schema.ToUpper();
+        }
         public override bool UpdateColumn(string tableName, DbColumnInfo columnInfo)
         {
 
