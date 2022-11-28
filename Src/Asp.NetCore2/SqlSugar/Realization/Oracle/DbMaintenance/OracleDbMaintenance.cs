@@ -402,7 +402,7 @@ namespace SqlSugar
                             column.Length = row["numericprecision"].ObjToInt();
                             column.Scale = row["numericscale"].ObjToInt();
                             column.DecimalDigits = row["numericscale"].ObjToInt();
-                            if (column.Length == 38 && column.Scale == 0)
+                            if (column.Length == 38 && column.Scale==0)
                             {
                                 column.Length = 22;
                             }
@@ -413,6 +413,7 @@ namespace SqlSugar
                 return result;
             }
         }
+
         private List<DbColumnInfo> GetOracleDbType(string tableName)
         {
             var sql0 = $@"select      
@@ -449,6 +450,7 @@ namespace SqlSugar
             var columns = this.Context.Ado.SqlQuery<DbColumnInfo>(sql0);
             return columns;
         }
+
         private List<string> GetPrimaryKeyByTableNames(string tableName)
         {
             string cacheKey = "DbMaintenanceProvider.GetPrimaryKeyByTableNames." + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower();
