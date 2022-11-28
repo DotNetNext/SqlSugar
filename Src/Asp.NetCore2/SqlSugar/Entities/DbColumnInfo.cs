@@ -11,6 +11,7 @@ namespace SqlSugar
         public string DbColumnName { get; set; }
         public string PropertyName { get; set; }
         public string DataType { get; set; }
+        public string OracleDataType { get; set; }
         public Type PropertyType { get; set; }
         public int Length { get; set; }
         public string ColumnDescription { get; set; }

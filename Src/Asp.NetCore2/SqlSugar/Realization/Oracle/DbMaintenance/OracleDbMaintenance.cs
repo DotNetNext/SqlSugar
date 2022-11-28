@@ -367,6 +367,7 @@ namespace SqlSugar
 
         private List<DbColumnInfo> GetColumnInfosByTableName(string tableName)
         {
+            List<DbColumnInfo> columns = GetOracleDbType(tableName);
             string sql = "select *  /* " + Guid.NewGuid() + " */ from " + SqlBuilder.GetTranslationTableName(tableName) + " WHERE 1=2 ";
             this.Context.Utilities.RemoveCache<List<DbColumnInfo>>("DbMaintenanceProvider.GetFieldComment."+tableName);
             this.Context.Utilities.RemoveCache<List<string>>("DbMaintenanceProvider.GetPrimaryKeyByTableNames." + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower());
@@ -392,12 +393,62 @@ namespace SqlSugar
                         Length = row["ColumnSize"].ObjToInt(),
                         Scale = row["numericscale"].ObjToInt()
                     };
+                    var current = columns.FirstOrDefault(it => it.DbColumnName.EqualCase(column.DbColumnName));
+                    if (current != null)
+                    {
+                        column.OracleDataType = current.DataType;
+                        if (current.DataType.EqualCase("number"))
+                        {
+                            column.Length = row["numericprecision"].ObjToInt();
+                            column.Scale = row["numericscale"].ObjToInt();
+                            column.DecimalDigits = row["numericscale"].ObjToInt();
+                            if (column.Length == 38 && column.Scale == 0)
+                            {
+                                column.Length = 22;
+                            }
+                        }
+                    }
                     result.Add(column);
                 }
                 return result;
             }
         }
+        private List<DbColumnInfo> GetOracleDbType(string tableName)
+        {
+            var sql0 = $@"select      
+                                 t1.table_name as TableName,   
+                                 t6.comments,        
+                                 t1.column_id, 
+                                 t1.column_name as DbColumnName,     
+                                 t5.comments,       
+                                 t1.data_type as DataType,     
+                                 t1.data_length as Length,   
+                                 t1.char_length,   
+                                 t1.data_precision,  
+                                 t1.data_scale,     
+                                 t1.nullable,       
+                                 t4.index_name,     
+                                 t4.column_position,  
+                                 t4.descend          
+                            from user_tab_columns t1   
+                            left join (select t2.table_name,     
+                                              t2.column_name,  
+                                              t2.column_position,  
+                                              t2.descend,      
+                                              t3.index_name        
+                                       from user_ind_columns t2   
+                                       left join user_indexes t3   
+                                         on  t2.table_name = t3.table_name and t2.index_name = t3.index_name
+                                        and t3.status = 'valid' and t3.uniqueness = 'unique') t4   --unique:唯一索引
+                              on  t1.table_name = t4.table_name and t1.column_name = t4.column_name 
+                            left join user_col_comments t5 on   t1.table_name = t5.table_name and t1.column_name = t5.column_name 
+                            left join user_tab_comments t6 on  t1.table_name = t6.table_name
+                            where upper(t1.table_name)=upper('{tableName}')
+                            order by  t1.table_name, t1.column_id";
 
+            var columns = this.Context.Ado.SqlQuery<DbColumnInfo>(sql0);
+            return columns;
+        }
         private List<string> GetPrimaryKeyByTableNames(string tableName)
         {
             string cacheKey = "DbMaintenanceProvider.GetPrimaryKeyByTableNames." + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower();
