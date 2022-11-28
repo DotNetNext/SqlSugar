@@ -968,6 +968,10 @@ namespace SqlSugar
             {
                 return this.Select<TResult>(expression);
             }
+            if (this.QueryBuilder.TableShortName.IsNullOrEmpty()) 
+            {
+                this.QueryBuilder.TableShortName = clone.QueryBuilder.TableShortName;
+            }
             this.QueryBuilder.Parameters = ps.Parameters;
             this.QueryBuilder.LambdaExpressions.ParameterIndex = clone.QueryBuilder.LambdaExpressions.ParameterIndex;
             var parameters = (expression as LambdaExpression).Parameters;
