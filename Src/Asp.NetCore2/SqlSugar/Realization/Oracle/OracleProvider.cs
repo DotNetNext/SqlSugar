@@ -134,6 +134,13 @@ namespace SqlSugar
 
             return sql;
         }
+        public override Action<SqlSugarException> ErrorEvent => it => {
+
+            if (it.Message != null && it.Message.Contains("无效的主机/绑定变量名")) 
+            {
+                Check.ExceptionEasy(it.Message, $"错误：{it.Message}，出现这个错的原因 可能是参数名为关键词（例如 @user ），或者SQL错误。");
+            }
+        };
 
         public override void SetCommandToAdapter(IDataAdapter dataAdapter, DbCommand command)
         {
