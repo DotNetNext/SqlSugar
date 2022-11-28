@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <Version>5.1.3.33</Version>
+    <Version>5.1.3.35</Version>
     <Copyright>sun_kai_xuan</Copyright>
     <PackageProjectUrl>https://github.com/sunkaixuan/SqlSugar</PackageProjectUrl>
     <PackageLicenseUrl></PackageLicenseUrl>
