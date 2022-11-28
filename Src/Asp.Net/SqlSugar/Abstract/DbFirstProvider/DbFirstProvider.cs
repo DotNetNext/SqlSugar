@@ -445,6 +445,14 @@ namespace SqlSugar
             {
                 result = result + "?";
             }
+            if (item.OracleDataType.EqualCase("raw") && item.Length == 16) 
+            {
+                return "Guid";
+            }
+            if (item.OracleDataType.EqualCase("number") && item.Length == 1&&item.Scale==0)
+            {
+                return "bool";
+            }
             return result;
         }
         private string GetPropertyTypeConvert(DbColumnInfo item)
