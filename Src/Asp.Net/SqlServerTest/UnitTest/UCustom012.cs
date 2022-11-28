@@ -363,6 +363,12 @@ namespace OrmTest
                  {
                      Name = x.School_Name,
                  }, true).ToList();
+
+            var list10 = db.Queryable<SchoolA>()
+             .Select(x=>new SchoolA()
+             {
+                   CityId=x.RoomList.Count()
+             }, true).ToList();
         }
 
         public class UnitView01
