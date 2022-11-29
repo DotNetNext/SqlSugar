@@ -6,6 +6,14 @@ namespace SqlSugar
 {
     public class QuestDBDbBind : DbBindProvider
     {
+        public override string GetDbTypeName(string csharpTypeName)
+        {
+            if (csharpTypeName == UtilConstants.ByteArrayType.Name)
+                return "binary";
+
+            var result = base.GetDbTypeName(csharpTypeName);
+            return result;
+        }
         public override string GetPropertyTypeName(string dbTypeName)
         {
             dbTypeName = dbTypeName.ToLower();
