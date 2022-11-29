@@ -8,6 +8,7 @@ namespace SqlSugar
 {
     public interface IStorageable<T> where T : class, new()
     {
+        IStorageable<T> TableDataRange(Expression<Func<T, bool>> exp);
         IStorageable<T> WhereColumns(Expression<Func<T, object>> columns);
         IStorageable<T> WhereColumns(Expression<Func<T, object>> columns,Func<DateTime,string> formatTime);
         IStorageable<T> WhereColumns(string [] columns);
