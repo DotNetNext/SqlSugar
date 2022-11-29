@@ -32,7 +32,7 @@ namespace SqlSugar
         }
 
         Expression<Func<T, bool>> queryableWhereExp;
-        public IStorageable<T> Where(Expression<Func<T, bool>> exp)
+        public IStorageable<T> TableDataRange(Expression<Func<T, bool>> exp)
         {
             this.queryableWhereExp = exp;
             return this;
