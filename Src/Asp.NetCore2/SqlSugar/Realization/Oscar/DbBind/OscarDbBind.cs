@@ -8,11 +8,10 @@ namespace SqlSugar
     {
         public override string GetDbTypeName(string csharpTypeName)
         {
+            if (csharpTypeName == UtilConstants.ByteArrayType.Name)
+                return "bytea";
+
             var result= base.GetDbTypeName(csharpTypeName);
-            if (result == "varbinary") 
-            {
-                result = "blob";
-            }
             return result;
         }
         public override string GetPropertyTypeName(string dbTypeName)
@@ -89,7 +88,7 @@ namespace SqlSugar
                     new KeyValuePair<string, CSharpDataType>("boolean",CSharpDataType.@bool),
                     new KeyValuePair<string, CSharpDataType>("bool",CSharpDataType.@bool),
                     new KeyValuePair<string, CSharpDataType>("box",CSharpDataType.@bool),
-                    new KeyValuePair<string, CSharpDataType>("bytea",CSharpDataType.@bool),
+                    new KeyValuePair<string, CSharpDataType>("bytea",CSharpDataType.byteArray),
 
                     new KeyValuePair<string, CSharpDataType>("varchar",CSharpDataType.@string),
                     new KeyValuePair<string, CSharpDataType>("character varying",CSharpDataType.@string),
