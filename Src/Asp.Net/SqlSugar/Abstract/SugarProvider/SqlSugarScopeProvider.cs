@@ -566,6 +566,14 @@ namespace SqlSugar
         {
             return ScopedContext.SqlQueryable<T>(sql);
         }
+        public StorageableDataTable Storageable(List<Dictionary<string, object>> dictionaryList, string tableName)
+        {
+            return ScopedContext.Storageable(dictionaryList, tableName);
+        }
+        public StorageableDataTable Storageable(Dictionary<string, object> dictionary, string tableName)
+        {
+            return ScopedContext.Storageable(dictionary, tableName);
+        }
 
         public IStorageable<T> Storageable<T>(List<T> dataList) where T : class, new()
         {
