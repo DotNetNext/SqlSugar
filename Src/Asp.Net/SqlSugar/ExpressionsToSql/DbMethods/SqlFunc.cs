@@ -257,12 +257,12 @@ namespace SqlSugar
         public static string Oracle_ToChar(DateTime date, string format) { throw new NotSupportedException("Can only be used in expressions"); }
         public static int SqlServer_DateDiff(string dateType,DateTime date1,DateTime date2) { throw new NotSupportedException("Can only be used in expressions"); }
 
-        public static void JsonListObjectAny(object jsonListObject, string fieldName, string value)
+        public static bool JsonListObjectAny(object jsonListObject, string fieldName, object value)
         {
             throw new NotSupportedException("Can only be used in expressions");
         }
 
-        public static void JsonArrayAny(object jsonArray,string arrayValue) 
+        public static bool JsonArrayAny(object jsonArray,object arrayValue) 
         {
             throw new NotSupportedException("Can only be used in expressions");
         }
