@@ -448,7 +448,7 @@ namespace SqlSugar
         {
             if (UtilMethods.IsNumber(model.Args[1].MemberValue.GetType().Name))
             {
-                return $"{model.Args[0].MemberName}::jsonb @> '[{model.Args[1].MemberValue}]'::jsonb";
+                return $"{model.Args[0].MemberName}::jsonb @> '[{model.Args[1].MemberValue.ObjToStringNoTrim().ToSqlFilter()}]'::jsonb";
             }
             else 
             {
@@ -463,7 +463,7 @@ namespace SqlSugar
             }
             else
             {
-                return $"{model.Args[0].MemberName}::jsonb @> '[{{\"{model.Args[1].MemberValue}\":\"{model.Args[2].MemberValue}\"}}]'::jsonb";
+                return $"{model.Args[0].MemberName}::jsonb @> '[{{\"{model.Args[1].MemberValue}\":\"{model.Args[2].MemberValue.ObjToStringNoTrim().ToSqlFilter()}\"}}]'::jsonb";
             }
         }
     }
