@@ -100,5 +100,7 @@ namespace SqlSugar
         string JsonLike(MethodCallExpressionModel model);
         string Collate(MethodCallExpressionModel model);
         string AggregateSumNoNull(MethodCallExpressionModel model);
+        string JsonListObjectAny(MethodCallExpressionModel model);
+        string JsonArrayAny(MethodCallExpressionModel model);
     }
 }

@@ -752,6 +752,10 @@ namespace SqlSugar
                         return this.Context.DbMehtods.Collate(model);
                     case "AggregateSumNoNull":
                         return this.Context.DbMehtods.AggregateSumNoNull(model);
+                    case "JsonListObjectAny":
+                        return this.Context.DbMehtods.JsonListObjectAny(model);
+                    case "JsonArrayAny":
+                        return this.Context.DbMehtods.JsonArrayAny(model);
                     default:
                         break;
                 }

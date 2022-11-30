@@ -833,6 +833,18 @@ namespace SqlSugar
         {
             return new SaveableProvider<T>(this, saveObject);
         }
+        public StorageableDataTable Storageable(List<Dictionary<string, object>> dictionaryList, string tableName)
+        {
+            DataTable dt = this.Context.Utilities.DictionaryListToDataTable(dictionaryList);
+            dt.TableName = tableName;
+            return this.Context.Storageable(dt);
+        }
+        public StorageableDataTable Storageable(Dictionary<string, object> dictionary, string tableName)
+        {
+            DataTable dt = this.Context.Utilities.DictionaryListToDataTable(new List<Dictionary<string, object>>() { dictionary });
+            dt.TableName = tableName;
+            return this.Context.Storageable(dt);
+        }
         public IStorageable<T> Storageable<T>(List<T> dataList) where T : class, new()
         {
             this.InitMappingInfo<T>();
