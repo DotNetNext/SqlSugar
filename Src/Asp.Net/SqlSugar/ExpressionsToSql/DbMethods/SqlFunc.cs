@@ -256,5 +256,15 @@ namespace SqlSugar
         public static DateTime Oracle_ToDate(string date,string format) { throw new NotSupportedException("Can only be used in expressions"); }
         public static string Oracle_ToChar(DateTime date, string format) { throw new NotSupportedException("Can only be used in expressions"); }
         public static int SqlServer_DateDiff(string dateType,DateTime date1,DateTime date2) { throw new NotSupportedException("Can only be used in expressions"); }
+
+        public static void JsonListObjectAny(object jsonListObject, string fieldName, string value)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        public static void JsonArrayAny(object jsonArray,string arrayValue) 
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
     }
 }

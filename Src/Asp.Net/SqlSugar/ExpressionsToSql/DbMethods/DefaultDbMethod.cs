@@ -681,5 +681,13 @@ namespace SqlSugar
             model.Args[0].MemberName = name;
             return AggregateSum(model);
         }
+        public virtual string JsonListObjectAny(MethodCallExpressionModel model) 
+        {
+            throw new NotImplementedException("Current database no support");
+        }
+        public virtual string JsonArrayAny(MethodCallExpressionModel model) 
+        {
+            throw new NotImplementedException("Current database no support");
+        }
     }
 }
