@@ -35,6 +35,17 @@ namespace OrmTest
                 disCount = SqlFunc.Subqueryable<OrderItem>().Where(s => s.OrderId == it.Id).ToList()
             })
             .ToListAsync().GetAwaiter().GetResult();
+
+            var test22 = db.Queryable<Order>()
+                .LeftJoin<Custom>((it,p)=>p.Id==it.Id)
+                .Where(it => it.Id > 0).Select(it => new myDTO
+                {
+                Id = it.Id,
+                Name = it.Name,
+                disCount = SqlFunc.Subqueryable<OrderItem>()
+                          .Where(s => s.OrderId == it.Id).ToList(s=>new Order() {  CustomId=s.ItemId})
+            })
+             .ToList();
         }
 
         internal class myDTO
@@ -43,5 +54,13 @@ namespace OrmTest
             public string Name { get; set; }
             public List<Order> disCount { get; set; }
         }
+        internal class myDTO2
+        {
+            public int Id { get; set; }
+            public string Name { get; set; }
+            public List<OrderItem> disCount { get; set; }
+        }
     }
+
+
 }
