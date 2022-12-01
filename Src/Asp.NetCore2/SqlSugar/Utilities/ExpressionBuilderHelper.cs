@@ -12,6 +12,27 @@ namespace SqlSugar
 {
     public class ExpressionBuilderHelper
     {
+        public static object CallFunc(Type type, object[] param, object methodData, string methodName)
+        {
+            MethodInfo mi = methodData.GetType().GetMethod(methodName).MakeGenericMethod(new Type[] { type });
+            var ret = mi.Invoke(methodData, param);
+            return ret;
+        }
+        public static T CallFunc<T>(object param, object methodData, string methodName)
+        {
+            Type type = param.GetType();
+            MethodInfo mi = methodData.GetType().GetMethod(methodName).MakeGenericMethod(new Type[] { type });
+            var ret = mi.Invoke(methodData, new object[] { param });
+            return (T)ret;
+        }
+
+        public static T CallStaticFunc<T>(object param, Type methodType, string methodName)
+        {
+            Type type = param.GetType();
+            MethodInfo mi = methodType.GetMethod(methodName).MakeGenericMethod(new Type[] { type });
+            var ret = mi.Invoke(null, new object[] { param });
+            return (T)ret;
+        }
         /// <summary>
         /// Create Expression
         /// </summary>

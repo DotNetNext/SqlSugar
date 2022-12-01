@@ -135,6 +135,14 @@ namespace SqlSugar
                 var value = GetNewExpressionValue(item);
                 parameter.Context.Result.Append($" {value} AS {asName} ");
             }
+            else if (IsSubToList(item))
+            {
+                var value = GetNewExpressionValue(item);
+                if (this.Context.SugarContext.QueryBuilder.SubToListParameters == null)
+                    this.Context.SugarContext.QueryBuilder.SubToListParameters = new Dictionary<string, object>();
+                this.Context.SugarContext.QueryBuilder.SubToListParameters.Add(asName, value);
+                //throw new Exception("子查询ToList开发中..");
+            }
             else
             {
                 asName = GetAsNameResolveAnObject(parameter, item, asName, isSameType);

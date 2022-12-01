@@ -10,6 +10,9 @@ using System.Reflection;
 using System.Dynamic;
 using System.Threading.Tasks;
 using System.Collections.ObjectModel;
+using NetTaste;
+using Newtonsoft.Json.Linq;
+using System.Xml.Linq;
 
 namespace SqlSugar
 {
@@ -1159,8 +1162,12 @@ namespace SqlSugar
             RestoreMapping();
             _Mapper(result);
             _InitNavigat(result);
+            _SubQuery(result);
             return result;
         }
+
+
+
         protected async Task<List<TResult>> _ToListAsync<TResult>()
         {
             List<TResult> result = null;
@@ -1177,6 +1184,7 @@ namespace SqlSugar
             RestoreMapping();
             _Mapper(result);
             await _InitNavigatAsync(result);
+            await _SubQueryAsync(result);
             return result;
         }
         private void ToSqlBefore()
@@ -1389,6 +1397,97 @@ namespace SqlSugar
             string sql = QueryBuilder.ToSqlString();
             RestoreMapping();
             return new KeyValuePair<string, List<SugarParameter>>(sql, QueryBuilder.Parameters);
+        }
+        #endregion
+
+        #region Subquery
+        private void _SubQuery<TResult>(List<TResult> result)
+        {
+            var isSubToList = this.QueryBuilder.SubToListParameters != null && this.QueryBuilder.SubToListParameters.Any();
+            if (!isSubToList)
+            {
+                return;
+            }
+            var isAuto = this.Context.CurrentConnectionConfig.IsAutoCloseConnection;
+
+            if(!this.Context.Ado.IsAnyTran())
+               this.Context.CurrentConnectionConfig.IsAutoCloseConnection = false;
+
+            Console.WriteLine("Subquery long link start");
+            var entityInfo = this.Context.EntityMaintenance.GetEntityInfo(this.QueryBuilder.EntityType);
+            foreach (var paramter in this.QueryBuilder.SubToListParameters)
+            {
+               
+                for (int i = 0; i < result.Count; i++)
+                {
+                    var ps = this.QueryBuilder.Parameters.ToList();
+                    var item = result[i];
+                    var sqlPart = paramter.Value.ObjToString();
+                    int j = 0;
+                    foreach (var column in entityInfo.Columns)
+                    {
+                        j++;
+                        if (column.DbColumnName == null) continue;
+                        var isumber = UtilMethods.IsNumber(column.PropertyInfo.PropertyType.Name);
+                        var name = this.SqlBuilder.GetTranslationColumnName(this.QueryBuilder.TableShortName) + "." + this.SqlBuilder.GetTranslationColumnName(column.DbColumnName);
+                        var guid = Guid.NewGuid() + "-" + Guid.NewGuid();
+                        var oldLength = sqlPart.Length;
+                        sqlPart = sqlPart.Replace(name, guid);
+                        var newLength = sqlPart.Length;
+                        if (oldLength != newLength)
+                        {
+                            PropertyInfo property = item.GetType().GetProperties().FirstOrDefault(it => it.Name.Equals(column.PropertyName));
+                            Check.ExceptionEasy(property == null, $"The subquery condition uses {column.PropertyName}, so the Select DTO must have a {column.PropertyName} column", $"子查询条件用到了{column.PropertyName},所以 Select DTO 中必须要有 {column.PropertyName} 列");
+                            var parameterName = this.SqlBuilder.SqlParameterKeyWord + "sublistp" +column.PropertyName+ j;
+                            var parameter = new SugarParameter(parameterName, property.GetValue(item));
+                            ps.Add(parameter);
+                            sqlPart = sqlPart.Replace(guid, parameterName);
+                        }
+
+                    }
+                    //sqlPart = sqlPart.Replace("@SugarlistRowIndex", 0);
+                    var methodParamters = new object[] { sqlPart, ps };
+                    var itemProperty = item.GetType().GetProperty(paramter.Key);
+                    var callType = itemProperty.PropertyType.GetGenericArguments()[0];
+                    var subList = ExpressionBuilderHelper.CallFunc(callType, methodParamters, this, "SubQueryList");
+                    if (item.GetType().IsAnonymousType())
+                    {
+                        var jobj = JObject.FromObject(item);
+                        var prop = jobj.Property(paramter.Key);
+                        prop.Value = JArray.FromObject(subList);
+                        result[i] = jobj.ToObject<TResult>();
+                    }
+                    else
+                    {
+                        itemProperty.SetValue(item, subList);
+                    }
+                    ++i;
+                }
+            }
+            Console.WriteLine("Subquery long link end");
+
+            if (!this.Context.Ado.IsAnyTran())
+            {
+                this.Context.CurrentConnectionConfig.IsAutoCloseConnection = isAuto;
+                if (isAuto)
+                {
+                    this.Context.Close();
+                }
+            }
+
+        }
+        private async Task _SubQueryAsync<TResult>(List<TResult> result)
+        {
+            var isSubToList = this.QueryBuilder.SubToListParameters != null && this.QueryBuilder.SubToListParameters.Any();
+            if (!isSubToList)
+            {
+                return;
+            }
+            await Task.Run(() =>{_SubQuery(result);});
+        }
+        public List<Type> SubQueryList<Type>(string sql,object parameters) 
+        {
+            return this.Context.Ado.SqlQuery<Type>(sql,parameters);
         }
         #endregion
     }

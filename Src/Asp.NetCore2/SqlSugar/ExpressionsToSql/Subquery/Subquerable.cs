@@ -170,5 +170,15 @@ namespace SqlSugar
         {
             return this;
         }
+
+        public List<T> ToList()
+        {
+            return new List<T>();
+        }
+
+        public List<TResult> ToList<TResult>(Func<T, TResult> selector) where TResult:class,new()
+        {
+            return null;
+        }
     }
 }

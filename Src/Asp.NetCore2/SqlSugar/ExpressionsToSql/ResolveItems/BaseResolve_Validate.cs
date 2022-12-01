@@ -12,6 +12,21 @@ namespace SqlSugar
     public partial class BaseResolve
     {
 
+        private static bool IsSubToList(Expression item)
+        {
+            return ExpressionTool.GetMethodName(item) == "ToList" && IsSubquery(item);
+        }
+
+        private static bool IsSubquery(Expression item)
+        {
+            var method = (item as MethodCallExpression);
+            if (method == null)
+                return false;
+            if (method.Object == null)
+                return false;
+            return method.Object.Type.Name.StartsWith("Subquery");
+        }
+
         private bool IsExtSqlFuncObj(Expression item)
         {
             return this.Context.SqlFuncServices != null && item is MethodCallExpression && this.Context.SqlFuncServices.Any(it => it.UniqueMethodName == ExpressionTool.GetMethodName(item));
