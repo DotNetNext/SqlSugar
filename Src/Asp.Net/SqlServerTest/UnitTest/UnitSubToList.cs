@@ -11,11 +11,37 @@ namespace OrmTest
         public static void Init() 
         {
             var db = NewUnitTest.Db;
-            var test47 = db.Queryable<Order>().Select(it => new
+         //   db.Aop.OnLogExecuting = null;
+            var test1 = db.Queryable<Order>().Select(it => new myDTO
             {
-                disCount = SqlFunc.Subqueryable<Order>().Where(s=>s.Id==it.Id).ToList()
+                Id=it.Id,
+                Name=it.Name,
+                disCount = SqlFunc.Subqueryable<Order>().Where(s=>s.Name ==it.Name).Where(s=>s.Id==it.Id).ToList()
             })
             .ToList();
+
+            var test2 = db.Queryable<Order>().Where(it=>it.Id>0).Select(it => new  
+            {
+                Id = it.Id,
+                Name = it.Name,
+                disCount = SqlFunc.Subqueryable<OrderItem>().Where(s => s.OrderId==it.Id).ToList()
+            })
+           .ToList();
+
+            var test21 = db.Queryable<Order>().Where(it => it.Id > 0).Select(it => new
+            {
+                Id = it.Id,
+                Name = it.Name,
+                disCount = SqlFunc.Subqueryable<OrderItem>().Where(s => s.OrderId == it.Id).ToList()
+            })
+            .ToListAsync().GetAwaiter().GetResult();
+        }
+
+        internal class myDTO
+        {
+            public int Id { get; set; }
+            public string Name { get; set; }
+            public List<Order> disCount { get; set; }
         }
     }
 }
