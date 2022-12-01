@@ -45,9 +45,23 @@ namespace SqlSugar
         {;
             var exp = expression as MethodCallExpression;
             InitType(exp);
-            
-           
-            return "*";
+            if (exp.Arguments.Count == 0)
+                return "*";
+            var argExp = exp.Arguments[0];
+            var parametres = (argExp as LambdaExpression).Parameters;
+            if ((argExp as LambdaExpression).Body is UnaryExpression)
+            {
+                argExp = ((argExp as LambdaExpression).Body as UnaryExpression).Operand;
+            }
+            var argLambda = argExp as LambdaExpression;
+            var copyContext = this.Context.GetCopyContextWithMapping();
+            copyContext.Resolve(argLambda, ResolveExpressType.SelectMultiple);
+            var select= copyContext.Result.GetString();
+            this.Context.Parameters.AddRange(copyContext.Parameters);
+            this.Context.Index = copyContext.Index;
+            this.Context.ParameterIndex = copyContext.ParameterIndex;
+            SetShortName(exp, null);
+            return select;
         }
 
         private void InitType(MethodCallExpression exp)
