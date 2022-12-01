@@ -170,5 +170,10 @@ namespace SqlSugar
         {
             return this;
         }
+
+        public List<T> ToList()
+        {
+            return new List<T>();
+        }
     }
 }

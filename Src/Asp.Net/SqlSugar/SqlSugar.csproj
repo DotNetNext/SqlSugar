@@ -145,6 +145,7 @@
     <Compile Include="ExpressionsToSql\ResolveItems\MethodCallExpressionResolve_BaseDateFomat.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubDistinctCount.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubSelectStringJoin.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\Items\SubToList.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubWithNoLock.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubEnableTableFilter.cs" />
     <Compile Include="Interface\ICustomConditionalFunc.cs" />
