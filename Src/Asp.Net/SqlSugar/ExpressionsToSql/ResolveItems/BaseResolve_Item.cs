@@ -141,7 +141,7 @@ namespace SqlSugar
                 if (this.Context.SugarContext.QueryBuilder.SubToListParameters == null)
                     this.Context.SugarContext.QueryBuilder.SubToListParameters = new Dictionary<string, object>();
                 this.Context.SugarContext.QueryBuilder.SubToListParameters.Add(asName, value);
-                throw new Exception("子查询ToList开发中..");
+                //throw new Exception("子查询ToList开发中..");
             }
             else
             {

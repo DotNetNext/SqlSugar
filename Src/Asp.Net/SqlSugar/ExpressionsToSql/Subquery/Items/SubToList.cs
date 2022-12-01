@@ -47,7 +47,7 @@ namespace SqlSugar
             InitType(exp);
             
            
-            return "*,@SugarlistRowIndex as SugarlistRowIndex";
+            return "*";
         }
 
         private void InitType(MethodCallExpression exp)
