@@ -46,8 +46,9 @@ namespace SqlSugar
             }
             else if (IsUpdateJson(parameter,expression, operatorValue))
             {
-                parameter.CommonTempData = "IsJon=true";
+                parameter.CommonTempData = "IsJson=true";
                 DefaultBinary(parameter, expression, operatorValue);
+                parameter.CommonTempData = null;
             }
             else
             {
