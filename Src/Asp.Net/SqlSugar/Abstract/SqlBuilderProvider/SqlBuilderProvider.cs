@@ -139,7 +139,7 @@ namespace SqlSugar
                         mainIndex++;
                         continue;
                     }
-                    else if (item.FieldName == $"[value=sql{UtilConstants.ReplaceKey}]") 
+                    else if (item.FieldName == UtilMethods.FiledNameSql()) 
                     {
                         builder.Append(item.FieldValue);
                         continue;
