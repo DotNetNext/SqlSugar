@@ -60,11 +60,15 @@ namespace SqlSugar
             var isOk= parameter.Context.ResolveType==ResolveExpressType.WhereSingle&&operatorValue == "=" && (expression.Left is MemberExpression) && expression.Left.Type.IsClass();
             if (isOk&&this.Context.SugarContext != null) 
             {
-                var entity = this.Context.SugarContext.Context.EntityMaintenance.GetEntityInfo(expression.Left.Type);
-                var jsonColumn=entity.Columns.FirstOrDefault(it => it.IsJson && it.PropertyName == ExpressionTool.GetMemberName(expression.Left)) ;
-                if (jsonColumn != null) 
+                var member = (expression.Left as MemberExpression);
+                if (member.Expression != null)
                 {
-                    return true;
+                    var entity = this.Context.SugarContext.Context.EntityMaintenance.GetEntityInfo(member.Expression.Type);
+                    var jsonColumn = entity.Columns.FirstOrDefault(it => it.IsJson && it.PropertyName == ExpressionTool.GetMemberName(expression.Left));
+                    if (jsonColumn != null)
+                    {
+                        return true;
+                    }
                 }
             }
             return false;
