@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -27,9 +28,9 @@ namespace SqlSugar
         private void Other(ExpressionParameter parameter)
         {
             var expression = this.Expression as BinaryExpression;
-            if (expression.NodeType == ExpressionType.ArrayIndex) 
+            if (expression.NodeType == ExpressionType.ArrayIndex)
             {
-                var parameterName=AppendParameter(ExpressionTool.DynamicInvoke(expression));
+                var parameterName = AppendParameter(ExpressionTool.DynamicInvoke(expression));
                 base.Context.Result.Append($" {BaseParameter.BaseParameter.OperatorValue} {parameterName} ");
                 return;
             }
@@ -43,10 +44,34 @@ namespace SqlSugar
             {
                 JoinString(parameter, expression);
             }
+            else if (IsUpdateJson(parameter,expression, operatorValue))
+            {
+                parameter.CommonTempData = "IsJon=true";
+                DefaultBinary(parameter, expression, operatorValue);
+            }
             else
             {
                 DefaultBinary(parameter, expression, operatorValue);
             }
+        }
+
+        private  bool IsUpdateJson(ExpressionParameter parameter,BinaryExpression expression, string operatorValue)
+        {
+            var isOk= parameter.Context.ResolveType==ResolveExpressType.WhereSingle&&operatorValue == "=" && (expression.Left is MemberExpression) && expression.Left.Type.IsClass();
+            if (isOk&&this.Context.SugarContext != null) 
+            {
+                var member = (expression.Left as MemberExpression);
+                if (member.Expression != null)
+                {
+                    var entity = this.Context.SugarContext.Context.EntityMaintenance.GetEntityInfo(member.Expression.Type);
+                    var jsonColumn = entity.Columns.FirstOrDefault(it => it.IsJson && it.PropertyName == ExpressionTool.GetMemberName(expression.Left));
+                    if (jsonColumn != null)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         private void JoinString(ExpressionParameter parameter, BinaryExpression expression)
