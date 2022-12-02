@@ -1054,5 +1054,9 @@ namespace SqlSugar
             }
         }
 
+        public static string FiledNameSql()
+        {
+            return $"[value=sql{UtilConstants.ReplaceKey}]";
+        }
     }
 }
