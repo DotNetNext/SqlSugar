@@ -14,6 +14,7 @@ using NetTaste;
 using Newtonsoft.Json.Linq;
 using System.Xml.Linq;
 
+
 namespace SqlSugar
 {
     public partial class QueryableProvider<T> : QueryableAccessory, ISugarQueryable<T>
@@ -1224,6 +1225,8 @@ namespace SqlSugar
         private List<TResult> GetData<TResult>(bool isComplexModel, Type entityType, IDataReader dataReader)
         {
             List<TResult> result;
+            this.Bind.QueryBuilder = this.QueryBuilder;
+            this.Context.Utilities.QueryBuilder = this.QueryBuilder;
             if (entityType == UtilConstants.DynamicType)
             {
                 result = this.Context.Utilities.DataReaderToExpandoObjectList(dataReader) as List<TResult>;
@@ -1254,6 +1257,8 @@ namespace SqlSugar
         private async Task<List<TResult>> GetDataAsync<TResult>(bool isComplexModel, Type entityType, IDataReader dataReader)
         {
             List<TResult> result;
+            this.Bind.QueryBuilder = this.QueryBuilder;
+            this.Context.Utilities.QueryBuilder = this.QueryBuilder;
             if (entityType == UtilConstants.DynamicType)
             {
                 result = await this.Context.Utilities.DataReaderToExpandoObjectListAsync(dataReader) as List<TResult>;
@@ -1381,6 +1386,8 @@ namespace SqlSugar
             asyncQueryableBuilder.IsCrossQueryWithAttr = this.QueryBuilder.IsCrossQueryWithAttr;
             asyncQueryableBuilder.CrossQueryItems = this.QueryBuilder.CrossQueryItems;
             asyncQueryableBuilder.SubToListParameters= this.QueryBuilder.SubToListParameters;
+            asyncQueryableBuilder.AppendColumns = this.Context.Utilities.TranslateCopy(this.QueryBuilder.AppendColumns);
+            asyncQueryableBuilder.AppendValues = this.Context.Utilities.TranslateCopy(this.QueryBuilder.AppendValues);
         }
         protected int SetCacheTime(int cacheDurationInSeconds)
         {
@@ -1402,6 +1409,7 @@ namespace SqlSugar
         #endregion
 
         #region Subquery
+ 
         private void _SubQuery<TResult>(List<TResult> result)
         {
             var isSubToList = this.QueryBuilder.SubToListParameters != null && this.QueryBuilder.SubToListParameters.Any();
@@ -1409,74 +1417,137 @@ namespace SqlSugar
             {
                 return;
             }
-            var isAuto = this.Context.CurrentConnectionConfig.IsAutoCloseConnection;
-
-            if(!this.Context.Ado.IsAnyTran())
-               this.Context.CurrentConnectionConfig.IsAutoCloseConnection = false;
-
-            Console.WriteLine("Subquery long link start");
-            var entityInfo = this.Context.EntityMaintenance.GetEntityInfo(this.QueryBuilder.EntityType);
-            foreach (var paramter in this.QueryBuilder.SubToListParameters)
+            var appendValues = this.QueryBuilder.AppendValues;
+            var subParamters = this.QueryBuilder.SubToListParameters;
+            foreach (var subPara in subParamters)
             {
-               
-                for (int i = 0; i < result.Count; i++)
-                {
-                    var ps = this.QueryBuilder.Parameters.ToList();
-                    var item = result[i];
-                    var sqlPart = paramter.Value.ObjToString();
-                    int j = 0;
-                    foreach (var column in entityInfo.Columns)
-                    {
-                        j++;
-                        if (column.DbColumnName == null) continue;
-                        var isumber = UtilMethods.IsNumber(column.PropertyInfo.PropertyType.Name);
-                        var name = this.SqlBuilder.GetTranslationColumnName(this.QueryBuilder.TableShortName) + "." + this.SqlBuilder.GetTranslationColumnName(column.DbColumnName);
-                        var guid = Guid.NewGuid() + "-" + Guid.NewGuid();
-                        var oldLength = sqlPart.Length;
-                        sqlPart = sqlPart.Replace(name, guid);
-                        var newLength = sqlPart.Length;
-                        if (oldLength != newLength)
-                        {
-                            PropertyInfo property = item.GetType().GetProperties().FirstOrDefault(it => it.Name.Equals(column.PropertyName));
-                            Check.ExceptionEasy(property == null, $"The subquery condition uses {column.PropertyName}, so the Select DTO must have a {column.PropertyName} column", $"子查询条件用到了{column.PropertyName},所以 Select DTO 中必须要有 {column.PropertyName} 列");
-                            var parameterName = this.SqlBuilder.SqlParameterKeyWord + "sublistp" +column.PropertyName+ j;
-                            var parameter = new SugarParameter(parameterName, property.GetValue(item));
-                            ps.Add(parameter);
-                            sqlPart = sqlPart.Replace(guid, parameterName);
-                        }
-
-                    }
-                    //sqlPart = sqlPart.Replace("@SugarlistRowIndex", 0);
-                    var methodParamters = new object[] { sqlPart, ps };
-                    var itemProperty = item.GetType().GetProperty(paramter.Key);
-                    var callType = itemProperty.PropertyType.GetGenericArguments()[0];
-                    var subList = ExpressionBuilderHelper.CallFunc(callType, methodParamters, this, "SubQueryList");
-                    if (item.GetType().IsAnonymousType())
-                    {
-                        var jobj = JObject.FromObject(item);
-                        var prop = jobj.Property(paramter.Key);
-                        prop.Value = JArray.FromObject(subList);
-                        result[i] = jobj.ToObject<TResult>();
-                    }
-                    else
-                    {
-                        itemProperty.SetValue(item, subList);
-                    }
-                    ++i;
-                }
-            }
-            Console.WriteLine("Subquery long link end");
-
-            if (!this.Context.Ado.IsAnyTran())
-            {
-                this.Context.CurrentConnectionConfig.IsAutoCloseConnection = isAuto;
-                if (isAuto)
-                {
-                    this.Context.Close();
-                }
+                if (appendValues != null)
+                    AppendSubWhereToList(result, appendValues, subPara);
+                else
+                    AppendSubToList(result, appendValues, subPara);
             }
 
         }
+
+        private void AppendSubToList<TResult>(List<TResult> result, List<List<QueryableAppendColumn>> appendValues, KeyValuePair<string, object> subPara)
+        {
+            var ps = this.QueryBuilder.Parameters;
+            var itemProperty = typeof(TResult).GetProperty(subPara.Key);
+            var callType = itemProperty.PropertyType.GetGenericArguments()[0];
+            var methodParamters = new object[] { subPara.Value.ObjToString().Replace("@sugarIndex", "0"), ps };
+            var subList = ExpressionBuilderHelper.CallFunc(callType, methodParamters, this.Clone(), "SubQueryList");
+            for(var i=0;i<result.Count; i++)
+            {
+                var item = result[i];
+                var setValue = Activator.CreateInstance(itemProperty.PropertyType, true) as IList;
+                if (typeof(TResult).IsAnonymousType())
+                {
+                    var jobj = JObject.FromObject(item);
+                    var prop = jobj.Property(itemProperty.Name);
+                    prop.Value = JArray.FromObject(subList);
+                    result[i] = jobj.ToObject<TResult>();
+                }
+                else
+                {
+                    itemProperty.SetValue(item, subList);
+                }
+            }
+        }
+
+        private void AppendSubWhereToList<TResult>(List<TResult> result, List<List<QueryableAppendColumn>> appendValues, KeyValuePair<string, object> subPara)
+        {
+            var ps = this.QueryBuilder.Parameters;
+            var index = 0;
+            List<string> sqls = new List<string>();
+            foreach (var item in result)
+            {
+
+                var sql = subPara.Value.ObjToString();
+                var replaceValues = appendValues[index];
+                foreach (var re in replaceValues)
+                {
+                    var config = this.Context.CurrentConnectionConfig;
+                    var p = new SugarParameter[] {
+                            new SugarParameter("@p",re.Value)
+                        };
+                    var value = UtilMethods.GetSqlString(config.DbType, "@p", p, true);
+                    sql = sql.Replace(re.Name, value);
+                }
+                sql = sql.Replace("@sugarIndex", index + "");
+                sqls.Add(sql);
+
+                index++;
+            }
+
+            var itemProperty = typeof(TResult).GetProperty(subPara.Key);
+            var callType = itemProperty.PropertyType.GetGenericArguments()[0];
+
+            var sqlstring = string.Join(" \r\n UNION ALL  ", sqls);
+            var methodParamters = new object[] { sqlstring, ps.ToArray() };
+            this.QueryBuilder.SubToListParameters = null;
+            this.QueryBuilder.AppendColumns = new List<QueryableAppendColumn>() {
+                 new QueryableAppendColumn(){ Name="sugarIndex",AsName="sugarIndex" }
+                };
+            this.QueryBuilder.AppendValues = null;
+            var subList = ExpressionBuilderHelper.CallFunc(callType, methodParamters, this.Clone(), "SubQueryList");
+            var appendValue = this.QueryBuilder.AppendValues;
+            var list = (subList as IEnumerable).Cast<object>().ToList();
+            if (typeof(TResult).IsAnonymousType())
+            {
+                SetSubListWithAnonymousType(result, itemProperty, appendValue, list, 0);
+            }
+            else
+            {
+                SetSubListWithClass(result, itemProperty, appendValue, list, 0);
+            }
+        }
+        private static int SetSubListWithAnonymousType<TResult>(List<TResult> result, PropertyInfo itemProperty, List<List<QueryableAppendColumn>> appendValue, List<object> list, int resIndex)
+        {
+            for (int i = 0; i < result.Count; i++)
+            {
+                var item = result[i];
+                var setValue = Activator.CreateInstance(itemProperty.PropertyType, true) as IList;
+                var appindex = 0;
+                foreach (var appValue in appendValue)
+                {
+                    if (appValue[0].Value.ObjToInt() == i)
+                    {
+                        var addItem = list[appindex];
+                        setValue.Add(addItem);
+                    }
+                    appindex++;
+                }
+                var jobj = JObject.FromObject(item);
+                var prop = jobj.Property(itemProperty.Name);
+                prop.Value = JArray.FromObject(setValue);
+                result[i] = jobj.ToObject<TResult>();
+                //itemProperty.SetValue(item, setValue);
+            }
+            return resIndex;
+        }
+
+        private static int SetSubListWithClass<TResult>(List<TResult> result, PropertyInfo itemProperty, List<List<QueryableAppendColumn>> appendValue, List<object> list, int resIndex)
+        {
+            foreach (var item in result)
+            {
+                var setValue = Activator.CreateInstance(itemProperty.PropertyType, true) as IList;
+                var appindex = 0;
+                foreach (var appValue in appendValue)
+                {
+                    if (appValue[0].Value.ObjToInt() == resIndex)
+                    {
+                        var addItem = list[appindex];
+                        setValue.Add(addItem);
+                    }
+                    appindex++;
+                }
+                itemProperty.SetValue(item, setValue);
+                resIndex++;
+            }
+
+            return resIndex;
+        }
+
         private async Task _SubQueryAsync<TResult>(List<TResult> result)
         {
             var isSubToList = this.QueryBuilder.SubToListParameters != null && this.QueryBuilder.SubToListParameters.Any();

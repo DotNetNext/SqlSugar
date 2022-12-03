@@ -202,7 +202,11 @@ namespace SqlSugar
         {
             if (name.IsIn("GetSelfAndAutoFill","SelectAll"))
             {
-                var memberValue = (args.First() as MemberExpression).Expression.ToString();
+                var memberValue = (args.First() as MemberExpression)?.Expression?.ToString();
+                if (memberValue == null&& args.First() is ParameterExpression) 
+                {
+                    memberValue = (args.First() as ParameterExpression).Type.GetProperties().First().Name;
+                }
                 var data = new MethodCallExpressionArgs() { MemberValue = memberValue, IsMember = true, MemberName = memberValue };
                 model.Args.Add(data);
                 if (args.Count() == 2) 

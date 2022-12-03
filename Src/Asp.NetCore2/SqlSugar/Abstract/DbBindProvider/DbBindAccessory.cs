@@ -10,6 +10,8 @@ namespace SqlSugar
 {
     public partial class DbBindAccessory
     {
+        public QueryBuilder QueryBuilder { get; set; }
+
         protected List<T> GetEntityList<T>(SqlSugarProvider context, IDataReader dataReader)
         {
             Type type = typeof(T);
@@ -29,6 +31,7 @@ namespace SqlSugar
                 while (dataReader.Read())
                 {
                     result.Add(entytyList.Build(dataReader));
+                    SetAppendColumns(dataReader);
                 }
                 ExecuteDataAfterFun(context, dataAfterFunc, result);
             }
@@ -58,6 +61,7 @@ namespace SqlSugar
                 while (await((DbDataReader)dataReader).ReadAsync())
                 {
                     result.Add(entytyList.Build(dataReader));
+                    SetAppendColumns(dataReader);
                 }
                 ExecuteDataAfterFun(context, dataAfterFunc, result);
             }
@@ -67,6 +71,7 @@ namespace SqlSugar
             }
             return result;
         }
+        
         private static void ExecuteDataAfterFun<T>(SqlSugarProvider context, Action<object, DataAfterModel> dataAfterFunc, List<T> result)
         {
             if (dataAfterFunc != null)
@@ -94,6 +99,28 @@ namespace SqlSugar
                 sb.Append(item);
             }
             return sb.ToString();
+        }
+
+        private void SetAppendColumns(IDataReader dataReader)
+        {
+            if (QueryBuilder != null && QueryBuilder.AppendColumns != null && QueryBuilder.AppendColumns.Any())
+            {
+                if (QueryBuilder.AppendValues == null)
+                    QueryBuilder.AppendValues = new List<List<QueryableAppendColumn>>();
+                List<QueryableAppendColumn> addItems = new List<QueryableAppendColumn>();
+                foreach (var item in QueryBuilder.AppendColumns)
+                {
+                    var vi = dataReader.GetOrdinal(item.AsName);
+                    var value = dataReader.GetValue(vi);
+                    addItems.Add(new QueryableAppendColumn()
+                    {
+                        Name = item.Name,
+                        AsName = item.AsName,
+                        Value = value
+                    });
+                }
+                QueryBuilder.AppendValues.Add(addItems);
+            }
         }
 
         private List<string> GetDataReaderNames(IDataReader dataReader,ref string types)

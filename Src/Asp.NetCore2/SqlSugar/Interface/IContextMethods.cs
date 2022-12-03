@@ -12,6 +12,7 @@ namespace SqlSugar
     public partial interface IContextMethods
     {
         SqlSugarProvider Context { get; set; }
+        QueryBuilder QueryBuilder { get; set; }
         ExpandoObject DataReaderToExpandoObject(IDataReader reader);
         List<ExpandoObject> DataReaderToExpandoObjectList(IDataReader reader);
         Task<List<ExpandoObject>> DataReaderToExpandoObjectListAsync(IDataReader dataReader);
