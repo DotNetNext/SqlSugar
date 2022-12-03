@@ -13,7 +13,7 @@ using System.Collections.ObjectModel;
 using NetTaste;
 using Newtonsoft.Json.Linq;
 using System.Xml.Linq;
-using Microsoft.Data.SqlClient;
+
 
 namespace SqlSugar
 {
@@ -1474,10 +1474,7 @@ namespace SqlSugar
                         };
                     var value = UtilMethods.GetSqlString(config.DbType, "@p", p, true);
                     sql = sql.Replace(re.Name, value);
-                    if (this.Context.CurrentConnectionConfig.DbType == DbType.Sqlite) 
-                    {
-                        sql =SqlBuilder.RemoveParentheses(sql);
-                    }
+                    sql = SqlBuilder.RemoveParentheses(sql);
                 }
                 sql = sql.Replace("@sugarIndex", index + "");
                 sqls.Add(sql);
