@@ -258,6 +258,15 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override void AddDefaultValue(EntityInfo entityInfo)
+        {
+            Console.WriteLine("sqlite no support AddDefaultValue");
+        }
+        public override bool AddDefaultValue(string tableName, string columnName, string defaultValue)
+        {
+            Console.WriteLine("sqlite no support AddDefaultValue");
+            return true;
+        }
         public override bool TruncateTable(string tableName)
         {
             base.TruncateTable(tableName);//delete data
