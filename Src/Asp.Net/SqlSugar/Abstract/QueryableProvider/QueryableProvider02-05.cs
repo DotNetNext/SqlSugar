@@ -195,12 +195,13 @@ namespace SqlSugar
         }
         public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T,T2, TResult>> expression, bool isAutoFill)
         {
-            var clone = this.Clone().Select(expression);
+            var clone = this.Select(expression).Clone();
             var sql = clone.QueryBuilder.GetSelectValue;
             if (this.QueryBuilder.IsSingle() || string.IsNullOrEmpty(sql) || sql.Trim() == "*")
             {
                 return this.Select<TResult>(expression);
             }
+            this.QueryBuilder.SubToListParameters = clone.QueryBuilder.SubToListParameters;
             this.QueryBuilder.Parameters = clone.QueryBuilder.Parameters;
             this.QueryBuilder.LambdaExpressions.ParameterIndex = clone.QueryBuilder.LambdaExpressions.ParameterIndex;
             var parameters = (expression as LambdaExpression).Parameters;
