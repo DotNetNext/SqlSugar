@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NetTaste;
+using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
@@ -34,6 +35,8 @@ namespace SqlSugar
 
         #region Splicing basic
         public Dictionary<string, object> SubToListParameters { get; set; }
+        internal List<QueryableAppendColumn> AppendColumns { get; set; }
+        internal List<List<QueryableAppendColumn>> AppendValues { get; set; }
         public bool IsCrossQueryWithAttr { get;  set; }
         public Dictionary<string,string> CrossQueryItems { get; set; }
         public bool IsSelectSingleFiledJson { get; set; }
@@ -607,6 +610,53 @@ namespace SqlSugar
                 if (IsDistinct)
                 {
                     result = " DISTINCT " + result;
+                }
+                if (this.SubToListParameters!=null&& this.SubToListParameters.Any())
+                {
+                    List<string> names = new List<string>();
+                    var allShortName = new List<string>();
+                    allShortName.Add(this.Builder.SqlTranslationLeft+ Builder.GetNoTranslationColumnName(this.TableShortName.ObjToString().ToLower()+this.Builder.SqlTranslationRight+"."));
+                    if (this.JoinQueryInfos.HasValue()) 
+                    {
+                        foreach (var item in this.JoinQueryInfos)
+                        {
+                            allShortName.Add(this.Builder.SqlTranslationLeft + Builder.GetNoTranslationColumnName(item.ShortName.ObjToString().ToLower() + this.Builder.SqlTranslationRight + "."));
+                        }
+                    }
+                    else if (this.EasyJoinInfos!=null&& this.EasyJoinInfos.Any())
+                    {
+                       Check.ExceptionEasy("No Supprt Subquery.ToList(), Inner Join Or  Left Join","Subquery.ToList请使用Inner方式联表");
+                    }
+                    if (this.TableShortName == null)
+                    {
+                        //Empty
+                    }
+                    else
+                    {
+                        var name = Builder.GetTranslationColumnName(this.TableShortName) + @"\.";
+                        foreach (var paramter in this.SubToListParameters)
+                        {
+                            var regex = $@"\{Builder.SqlTranslationLeft}[\w]{{1,20}}?\{Builder.SqlTranslationRight}\.\{Builder.SqlTranslationLeft}.{{1,50}}?\{Builder.SqlTranslationRight}";
+                            var matches = Regex
+                                .Matches(paramter.Value.ObjToString(), regex, RegexOptions.IgnoreCase).Cast<Match>()
+                                .Where(it => allShortName.Any(z => it.Value.ObjToString().ToLower().Contains(z)))
+                                .Select(it => it.Value).ToList();
+                            names.AddRange(matches);
+                        }
+                        int i = 0;
+                        names = names.Distinct().ToList();
+                        if (names.Any())
+                        {
+                            List<QueryableAppendColumn> colums = new List<QueryableAppendColumn>();
+                            foreach (var item in names)
+                            {
+                                result = (result + $",{item} as app_ext_col_{i}");
+                                colums.Add(new QueryableAppendColumn() { AsName = $"app_ext_col_{i}", Name = item, Index = i });
+                                i++;
+                            }
+                            this.AppendColumns = colums;
+                        }
+                    }
                 }
                 return result;
             }

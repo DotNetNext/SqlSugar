@@ -46,7 +46,7 @@ namespace SqlSugar
             var exp = expression as MethodCallExpression;
             InitType(exp);
             if (exp.Arguments.Count == 0)
-                return "*";
+                return "*,@sugarIndex as sugarIndex";
             var argExp = exp.Arguments[0];
             var parametres = (argExp as LambdaExpression).Parameters;
             if ((argExp as LambdaExpression).Body is UnaryExpression)
@@ -61,7 +61,7 @@ namespace SqlSugar
             this.Context.Index = copyContext.Index;
             this.Context.ParameterIndex = copyContext.ParameterIndex;
             SetShortName(exp, null);
-            return select;
+            return select+",@sugarIndex as sugarIndex";
         }
 
         private void InitType(MethodCallExpression exp)
