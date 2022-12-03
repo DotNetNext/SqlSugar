@@ -45,8 +45,24 @@ namespace SqlSugar
         {;
             var exp = expression as MethodCallExpression;
             InitType(exp);
-            if (exp.Arguments.Count == 0)
+            var type=expression.Type;
+            if (type.FullName.IsCollectionsList()
+                && exp.Arguments.Count == 0&& type.GenericTypeArguments.Length>0
+                && this.Context.SugarContext!=null
+                &&this.Context.SugarContext.QueryBuilder.IsSelectNoAll)
+            {
+                var entity = type.GenericTypeArguments[0];
+                var columnNames=this.Context.SugarContext.Context.EntityMaintenance.GetEntityInfo(entity).Columns;
+                var columnsString = string.Join(",", columnNames
+                    .Where(it => it.IsIgnore == false)
+                    .Where(it => it.DbColumnName.HasValue())
+                    .Select(it => this.Context.GetTranslationColumnName(it.DbColumnName)));
+                return $"{columnsString},@sugarIndex as sugarIndex";
+            }
+            else if (exp.Arguments.Count == 0)
+            {
                 return "*,@sugarIndex as sugarIndex";
+            }
             var argExp = exp.Arguments[0];
             var parametres = (argExp as LambdaExpression).Parameters;
             if ((argExp as LambdaExpression).Body is UnaryExpression)

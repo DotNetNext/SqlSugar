@@ -1510,15 +1510,18 @@ namespace SqlSugar
             {
                 var item = result[i];
                 var setValue = Activator.CreateInstance(itemProperty.PropertyType, true) as IList;
-                var appindex = 0;
-                foreach (var appValue in appendValue)
+                if (appendValue != null)
                 {
-                    if (appValue[0].Value.ObjToInt() == i)
+                    var appindex = 0;
+                    foreach (var appValue in appendValue)
                     {
-                        var addItem = list[appindex];
-                        setValue.Add(addItem);
+                        if (appValue[0].Value.ObjToInt() == i)
+                        {
+                            var addItem = list[appindex];
+                            setValue.Add(addItem);
+                        }
+                        appindex++;
                     }
-                    appindex++;
                 }
                 var jobj = JObject.FromObject(item);
                 var prop = jobj.Property(itemProperty.Name);

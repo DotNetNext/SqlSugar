@@ -50,6 +50,14 @@ namespace SqlSugar
             var result = base.GetTranslationColumnName(propertyName);
             return result.ToUpper();
         }
+        public override string RemoveParentheses(string sql)
+        {
+            if (sql.StartsWith("(") && sql.EndsWith(")"))
+            {
+                sql = sql.Substring(1, sql.Length - 2);
+            }
 
+            return sql;
+        }
     }
 }
