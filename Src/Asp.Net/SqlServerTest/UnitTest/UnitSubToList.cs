@@ -34,6 +34,34 @@ namespace OrmTest
             TestJoin(db);
             TestJoin2(db);
             TestJoin3(db);
+            TestJoin4(db);
+        }
+        private static void TestJoin4(SqlSugarClient db)
+        {
+            var test1 = db.Queryable<Order>()
+                .LeftJoin<Custom>((o, c) => c.Id == o.CustomId)
+                .Select((o, c) => new myDTO5
+                {
+                    OrderName = o.Name,
+                    disCount = SqlFunc.Subqueryable<Custom>().Where(d => d.Name == c.Name).ToList()
+                },
+                true)
+              .ToList();
+            if (test1.Any(z => z.disCount.Any(y => y.Id != z.CustomId)))
+            {
+                throw new Exception("unit error");
+            }
+            var test2= db.Queryable<Order>()
+              .Select(o => new myDTO5
+              { 
+                  disCount = SqlFunc.Subqueryable<Custom>().Where(d => d.Id == o.CustomId).ToList()
+              },
+              true)
+            .ToList();
+            if (test2.Any(z => z.disCount.Any(y => y.Id != z.CustomId))||test2.Any(z=>z.Id==0))
+            {
+                throw new Exception("unit error");
+            }
         }
         private static void TestJoin3(SqlSugarClient db)
         {
@@ -288,6 +316,15 @@ namespace OrmTest
             public string Name { get; set; }
             public List<OrderItem> disCount { get; set; }
         }
+    }
+
+    internal class myDTO5
+    {
+        public int CustomId { get; set; }
+        public int OrderId { get; set; }
+        public string OrderName { get; set; }
+        public List<Custom> disCount { get; set; }
+        public int Id { get; internal set; }
     }
 
     internal class myDTO4
