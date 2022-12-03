@@ -389,7 +389,12 @@ namespace SqlSugar
            indexTree++;
         }
 
-        private  ConditionalCollections ToConditionalCollections(ConditionalTree item,ref int indexTree, List<SugarParameter> parameters)
+        public virtual string RemoveParentheses(string sql)
+        {
+            return sql;
+        }
+
+        private ConditionalCollections ToConditionalCollections(ConditionalTree item,ref int indexTree, List<SugarParameter> parameters)
         {
             List<KeyValuePair<WhereType, ConditionalModel>> list = new List<KeyValuePair<WhereType, ConditionalModel>>();
             var index = 0;

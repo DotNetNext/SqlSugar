@@ -1434,9 +1434,11 @@ namespace SqlSugar
             var ps = this.QueryBuilder.Parameters;
             var itemProperty = typeof(TResult).GetProperty(subPara.Key);
             var callType = itemProperty.PropertyType.GetGenericArguments()[0];
-            var methodParamters = new object[] { subPara.Value.ObjToString().Replace("@sugarIndex", "0"), ps };
+            var sql = subPara.Value.ObjToString().Replace("@sugarIndex", "0");
+            sql =SqlBuilder.RemoveParentheses(sql);
+            var methodParamters = new object[] { sql, ps };
             var subList = ExpressionBuilderHelper.CallFunc(callType, methodParamters, this.Clone(), "SubQueryList");
-            for(var i=0;i<result.Count; i++)
+            for (var i = 0; i < result.Count; i++)
             {
                 var item = result[i];
                 var setValue = Activator.CreateInstance(itemProperty.PropertyType, true) as IList;
@@ -1472,6 +1474,7 @@ namespace SqlSugar
                         };
                     var value = UtilMethods.GetSqlString(config.DbType, "@p", p, true);
                     sql = sql.Replace(re.Name, value);
+                    sql = SqlBuilder.RemoveParentheses(sql);
                 }
                 sql = sql.Replace("@sugarIndex", index + "");
                 sqls.Add(sql);
@@ -1507,15 +1510,18 @@ namespace SqlSugar
             {
                 var item = result[i];
                 var setValue = Activator.CreateInstance(itemProperty.PropertyType, true) as IList;
-                var appindex = 0;
-                foreach (var appValue in appendValue)
+                if (appendValue != null)
                 {
-                    if (appValue[0].Value.ObjToInt() == i)
+                    var appindex = 0;
+                    foreach (var appValue in appendValue)
                     {
-                        var addItem = list[appindex];
-                        setValue.Add(addItem);
+                        if (appValue[0].Value.ObjToInt() == i)
+                        {
+                            var addItem = list[appindex];
+                            setValue.Add(addItem);
+                        }
+                        appindex++;
                     }
-                    appindex++;
                 }
                 var jobj = JObject.FromObject(item);
                 var prop = jobj.Property(itemProperty.Name);
@@ -1531,15 +1537,18 @@ namespace SqlSugar
             foreach (var item in result)
             {
                 var setValue = Activator.CreateInstance(itemProperty.PropertyType, true) as IList;
-                var appindex = 0;
-                foreach (var appValue in appendValue)
+                if (appendValue != null)
                 {
-                    if (appValue[0].Value.ObjToInt() == resIndex)
+                    var appindex = 0;
+                    foreach (var appValue in appendValue)
                     {
-                        var addItem = list[appindex];
-                        setValue.Add(addItem);
+                        if (appValue[0].Value.ObjToInt() == resIndex)
+                        {
+                            var addItem = list[appindex];
+                            setValue.Add(addItem);
+                        }
+                        appindex++;
                     }
-                    appindex++;
                 }
                 itemProperty.SetValue(item, setValue);
                 resIndex++;

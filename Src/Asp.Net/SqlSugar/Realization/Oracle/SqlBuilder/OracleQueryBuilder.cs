@@ -9,6 +9,7 @@ namespace SqlSugar
 {
     public class OracleQueryBuilder : QueryBuilder
     {
+        public override bool IsSelectNoAll { get; set; } = true;
         public override bool IsComplexModel(string sql)
         {
             return Regex.IsMatch(sql, @"AS ""\w+\.\w+""")|| Regex.IsMatch(sql, @"AS ""\w+\.\w+\.\w+""");
