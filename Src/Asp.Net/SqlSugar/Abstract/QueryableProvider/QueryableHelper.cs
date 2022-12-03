@@ -13,9 +13,7 @@ using System.Collections.ObjectModel;
 using NetTaste;
 using Newtonsoft.Json.Linq;
 using System.Xml.Linq;
-using Npgsql.Schema;
-using MySql.Data.MySqlClient;
-using System.Data.SqlTypes;
+
 
 namespace SqlSugar
 {
