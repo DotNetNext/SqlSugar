@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UnitSubToList.Init();
             Bulk();
             CodeFirst();
             Updateable();
