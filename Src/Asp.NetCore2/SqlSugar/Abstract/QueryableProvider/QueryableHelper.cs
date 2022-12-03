@@ -13,7 +13,7 @@ using System.Collections.ObjectModel;
 using NetTaste;
 using Newtonsoft.Json.Linq;
 using System.Xml.Linq;
-
+using Microsoft.Data.SqlClient;
 
 namespace SqlSugar
 {
@@ -1434,9 +1434,11 @@ namespace SqlSugar
             var ps = this.QueryBuilder.Parameters;
             var itemProperty = typeof(TResult).GetProperty(subPara.Key);
             var callType = itemProperty.PropertyType.GetGenericArguments()[0];
-            var methodParamters = new object[] { subPara.Value.ObjToString().Replace("@sugarIndex", "0"), ps };
+            var sql = subPara.Value.ObjToString().Replace("@sugarIndex", "0");
+            sql =SqlBuilder.RemoveParentheses(sql);
+            var methodParamters = new object[] { sql, ps };
             var subList = ExpressionBuilderHelper.CallFunc(callType, methodParamters, this.Clone(), "SubQueryList");
-            for(var i=0;i<result.Count; i++)
+            for (var i = 0; i < result.Count; i++)
             {
                 var item = result[i];
                 var setValue = Activator.CreateInstance(itemProperty.PropertyType, true) as IList;
@@ -1472,6 +1474,10 @@ namespace SqlSugar
                         };
                     var value = UtilMethods.GetSqlString(config.DbType, "@p", p, true);
                     sql = sql.Replace(re.Name, value);
+                    if (this.Context.CurrentConnectionConfig.DbType == DbType.Sqlite) 
+                    {
+                        sql =SqlBuilder.RemoveParentheses(sql);
+                    }
                 }
                 sql = sql.Replace("@sugarIndex", index + "");
                 sqls.Add(sql);

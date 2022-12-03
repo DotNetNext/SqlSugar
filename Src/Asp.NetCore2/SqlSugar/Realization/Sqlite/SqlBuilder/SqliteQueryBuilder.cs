@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using MySqlX.XDevAPI.Common;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -68,7 +69,7 @@ namespace SqlSugar
             }
             return result;
         }
-        
+
         #endregion
 
         #region Get SQL Partial
@@ -92,6 +93,10 @@ namespace SqlSugar
                 if (IsDistinct)
                 {
                     reval = " DISTINCT " + reval;
+                }
+                if (this.SubToListParameters != null && this.SubToListParameters.Any())
+                {
+                    reval = SubToListMethod(reval);
                 }
                 return reval;
             }
