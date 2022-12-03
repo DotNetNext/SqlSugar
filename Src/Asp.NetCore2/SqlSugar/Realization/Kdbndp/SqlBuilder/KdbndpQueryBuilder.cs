@@ -84,6 +84,14 @@ namespace SqlSugar
                 {
                     this.SelectCacheKey = this.SelectCacheKey + string.Join("-", this.JoinQueryInfos.Select(it => it.TableName));
                 }
+                if (IsDistinct)
+                {
+                    result = " DISTINCT " + result;
+                }
+                if (this.SubToListParameters != null && this.SubToListParameters.Any())
+                {
+                    result = SubToListMethod(result);
+                }
                 return result;
             }
         }
