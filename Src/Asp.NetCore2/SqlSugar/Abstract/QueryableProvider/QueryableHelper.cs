@@ -1385,7 +1385,7 @@ namespace SqlSugar
             asyncQueryableBuilder.OldSql = this.QueryBuilder.OldSql;
             asyncQueryableBuilder.IsCrossQueryWithAttr = this.QueryBuilder.IsCrossQueryWithAttr;
             asyncQueryableBuilder.CrossQueryItems = this.QueryBuilder.CrossQueryItems;
-            asyncQueryableBuilder.SubToListParameters= this.QueryBuilder.SubToListParameters;
+            asyncQueryableBuilder.SubToListParameters= this.Context.Utilities.TranslateCopy(this.QueryBuilder.SubToListParameters);
             asyncQueryableBuilder.AppendColumns = this.Context.Utilities.TranslateCopy(this.QueryBuilder.AppendColumns);
             asyncQueryableBuilder.AppendValues = this.Context.Utilities.TranslateCopy(this.QueryBuilder.AppendValues);
         }
