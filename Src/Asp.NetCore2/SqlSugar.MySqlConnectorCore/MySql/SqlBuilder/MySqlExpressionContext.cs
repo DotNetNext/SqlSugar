@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
+
 namespace SqlSugar.MySqlConnector
 {
     public class MySqlExpressionContext : ExpressionContext, ILambdaExpressions
@@ -66,7 +69,7 @@ namespace SqlSugar.MySqlConnector
             var parameter2 = model.Args[1];
             return string.Format(" (TIMESTAMPDIFF(day,date({0}),date({1}))=0) ", parameter.MemberName, parameter2.MemberName); ;
         }
-
+        
         public override string DateIsSameByType(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
@@ -173,6 +176,12 @@ namespace SqlSugar.MySqlConnector
             return "rand()";
         }
 
+        public override string Collate(MethodCallExpressionModel model)
+        {
+            var name = model.Args[0].MemberName;
+            return $" binary {name}  ";
+        }
+
         public override string CharIndex(MethodCallExpressionModel model)
         {
             return string.Format("instr ({0},{1})", model.Args[0].MemberName, model.Args[1].MemberName);
@@ -207,6 +216,29 @@ namespace SqlSugar.MySqlConnector
         private string GetJson(object memberName1, object memberName2, bool isLast)
         {
             return $"{memberName1}->\"$.{memberName2}\"";
+        }
+
+        public override string JsonArrayAny(MethodCallExpressionModel model)
+        {
+            if (SqlSugar.UtilMethods.IsNumber(model.Args[1].MemberValue.GetType().Name))
+            {
+                return $"JSON_CONTAINS({model.Args[0].MemberName}, '{model.Args[1].MemberValue}')";
+            }
+            else
+            {
+                return $"JSON_CONTAINS({model.Args[0].MemberName}, '\"{model.Args[1].MemberValue.ObjToStringNoTrim().ToSqlFilter()}\"')";
+            }
+        }
+        public override string JsonListObjectAny(MethodCallExpressionModel model)
+        {
+            if (SqlSugar.UtilMethods.IsNumber(model.Args[2].MemberValue.GetType().Name))
+            {
+                return $"JSON_CONTAINS({model.Args[0].MemberName},'{{\"{model.Args[1].MemberValue}\":{model.Args[2].MemberValue}}}')";
+            }
+            else
+            {
+                return $"JSON_CONTAINS({model.Args[0].MemberName},'{{\"{model.Args[1].MemberValue}\":\"{model.Args[2].MemberValue.ObjToStringNoTrim().ToSqlFilter()}\"}}')";
+            }
         }
     }
 }

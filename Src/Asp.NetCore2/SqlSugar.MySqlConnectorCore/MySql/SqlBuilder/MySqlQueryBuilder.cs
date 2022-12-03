@@ -148,6 +148,10 @@ namespace SqlSugar.MySqlConnector
                 {
                     result = " DISTINCT " + result;
                 }
+                if (this.SubToListParameters != null && this.SubToListParameters.Any())
+                {
+                    result = SubToListMethod(result);
+                }
                 return result;
             }
         }
