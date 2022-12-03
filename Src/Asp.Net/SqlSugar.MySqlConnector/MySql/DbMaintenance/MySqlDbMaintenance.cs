@@ -153,6 +153,13 @@ namespace SqlSugar.MySqlConnector
                 return "alter table {0} change  column {1} {2}";
             }
         }
+        protected override string IsAnyProcedureSql
+        {
+            get 
+            {
+                return "select count(*) from information_schema.Routines where ROUTINE_NAME='{0}' and ROUTINE_TYPE='PROCEDURE'";
+            }
+        }
         #endregion
 
         #region Check
@@ -269,16 +276,35 @@ namespace SqlSugar.MySqlConnector
         {
             get
             {
-                return "SELECT count(*) FROM information_schema.statistics WHERE index_name = '{0}'";
+                return "SELECT count(*) FROM information_schema.statistics WHERE index_name = '{0}' and index_schema = '{1}'";
             }
         }
         #endregion
 
         #region Methods
+        public override bool IsAnyTable(string tableName, bool isCache = true)
+        {
+            try
+            {
+                return base.IsAnyTable(tableName, isCache);
+            }
+            catch (Exception ex)
+            {
+                if (SugarCompatible.IsFramework && ex.Message == "Invalid attempt to Read when reader is closed.")
+                {
+                    Check.ExceptionEasy($"To upgrade the MySql.Data. Error:{ex.Message}", $" 请先升级MySql.Data 。 详细错误:{ex.Message}");
+                    return true;
+                }
+                else
+                {
+                    throw;
+                }
+            }
+        }
         public override bool IsAnyColumnRemark(string columnName, string tableName)
         {
             var isAny=this.Context.DbMaintenance.GetColumnInfosByTableName(tableName, false)
-                .Any(it => it.ColumnDescription.HasValue() && it.DbColumnName.ToLower()==columnName.ToLower());
+                .Any(it => it.ColumnDescription.HasValue() && it.DbColumnName.EqualCase(columnName));
             return isAny;
         }
         public override bool AddColumnRemark(string columnName, string tableName, string description)
@@ -299,6 +325,12 @@ namespace SqlSugar.MySqlConnector
         /// <returns></returns>
         public override bool CreateDatabase(string databaseName, string databaseDirectory = null)
         {
+
+            if (this.Context.Ado.IsValidConnection()) 
+            {
+                return true;
+            }
+
             if (databaseDirectory != null)
             {
                 if (!FileHelper.IsExistDirectory(databaseDirectory))
@@ -308,7 +340,9 @@ namespace SqlSugar.MySqlConnector
             }
             var oldDatabaseName = this.Context.Ado.Connection.Database;
             var connection = this.Context.CurrentConnectionConfig.ConnectionString;
-            Check.Exception(Regex.Split(connection,oldDatabaseName).Length > 2, "The user name and password cannot be the same as the database name ");
+            Check.ExceptionEasy(Regex.Split(connection,oldDatabaseName).Length > 2
+                , "The user name and password cannot be the same as the database name ",
+                " 创建数据库失败, 请换一个库名，库名不能 password 或者 username 有重叠 ");
             connection = connection.Replace(oldDatabaseName, "mysql");
             var newDb = new SqlSugarClient(new ConnectionConfig()
             {
@@ -384,6 +418,10 @@ namespace SqlSugar.MySqlConnector
                 string primaryKey = null;
                 string identity = item.IsIdentity ? this.CreateTableIdentity : null;
                 string addItem = string.Format(this.CreateTableColumn, this.SqlBuilder.GetTranslationColumnName(columnName), dataType, dataSize, nullType, primaryKey, identity);
+                if (!string.IsNullOrEmpty(item.ColumnDescription))
+                {
+                    addItem += " COMMENT '"+item.ColumnDescription.ToSqlFilter()+"' ";
+                }
                 columnArray.Add(addItem);
             }
             string tableString = string.Format(this.CreateTableSql, this.SqlBuilder.GetTranslationTableName(tableName), string.Join(",\r\n", columnArray));
@@ -461,9 +499,9 @@ namespace SqlSugar.MySqlConnector
                 this.Context.Ado.ExecuteCommand(sql);
                 return true;
             }
-            else if (defaultValue=="0"|| defaultValue == "1")
+            else if (defaultValue == "0" || defaultValue == "1")
             {
-                string sql = string.Format(AddDefaultValueSql.Replace("'",""), tableName, columnName, defaultValue);
+                string sql = string.Format(AddDefaultValueSql.Replace("'", ""), tableName, columnName, defaultValue);
                 this.Context.Ado.ExecuteCommand(sql);
                 return true;
             }

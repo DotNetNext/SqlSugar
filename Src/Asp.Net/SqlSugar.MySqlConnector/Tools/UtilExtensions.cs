@@ -9,6 +9,22 @@ namespace SqlSugar.MySqlConnector
     /// </summary>
     public static class UtilExtensions
     {
+        public static bool EqualCase(this string thisValue, string equalValue)
+        {
+            if (thisValue != null && equalValue != null)
+            {
+                return thisValue.ToLower() == equalValue.ToLower();
+            }
+            else
+            {
+                return thisValue == equalValue;
+            }
+        }
+        public static string ObjToStringNoTrim(this object thisValue)
+        {
+            if (thisValue != null) return thisValue.ToString();
+            return "";
+        }
         public static int ObjToInt(this object thisValue)
         {
             int reval = 0;

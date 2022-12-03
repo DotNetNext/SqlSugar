@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
+
 namespace SqlSugar.MySqlConnector
 {
     public class MySqlExpressionContext : ExpressionContext, ILambdaExpressions
@@ -66,12 +69,16 @@ namespace SqlSugar.MySqlConnector
             var parameter2 = model.Args[1];
             return string.Format(" (TIMESTAMPDIFF(day,date({0}),date({1}))=0) ", parameter.MemberName, parameter2.MemberName); ;
         }
-
+        
         public override string DateIsSameByType(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
             var parameter3 = model.Args[2];
+            if (parameter3.MemberValue.ObjToString() == DateType.Weekday.ObjToString()) 
+            {
+                parameter3.MemberValue = "Week";
+            }
             return string.Format(" (TIMESTAMPDIFF({2},{0},{1})=0) ", parameter.MemberName, parameter2.MemberName, parameter3.MemberValue);
         }
 
@@ -150,7 +157,14 @@ namespace SqlSugar.MySqlConnector
         {
             var parameter = model.Args[0];
             var parameter1 = model.Args[1];
-            return string.Format("IFNULL({0},{1})", parameter.MemberName, parameter1.MemberName);
+            if (parameter1.MemberValue is bool)
+            {
+                return string.Format("IFNULL(CAST({0} as SIGNED),{1})", parameter.MemberName, parameter1.MemberName);
+            }
+            else
+            {
+                return string.Format("IFNULL({0},{1})", parameter.MemberName, parameter1.MemberName);
+            }
         }
         public override string GetDate()
         {
@@ -162,9 +176,69 @@ namespace SqlSugar.MySqlConnector
             return "rand()";
         }
 
+        public override string Collate(MethodCallExpressionModel model)
+        {
+            var name = model.Args[0].MemberName;
+            return $" binary {name}  ";
+        }
+
         public override string CharIndex(MethodCallExpressionModel model)
         {
             return string.Format("instr ({0},{1})", model.Args[0].MemberName, model.Args[1].MemberName);
+        }
+
+        public override string JsonField(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter1 = model.Args[1];
+            //var parameter2 = model.Args[2];
+            //var parameter3= model.Args[3];
+            var result = GetJson(parameter.MemberName, parameter1.MemberValue, model.Args.Count() == 2);
+            if (model.Args.Count > 2)
+            {
+                result = GetJson(result, model.Args[2].MemberValue, model.Args.Count() == 3);
+            }
+            if (model.Args.Count > 3)
+            {
+                result = GetJson(result, model.Args[3].MemberValue, model.Args.Count() == 4);
+            }
+            if (model.Args.Count > 4)
+            {
+                result = GetJson(result, model.Args[4].MemberValue, model.Args.Count() == 5);
+            }
+            if (model.Args.Count > 5)
+            {
+                result = GetJson(result, model.Args[5].MemberValue, model.Args.Count() == 6);
+            }
+            return result;
+        }
+
+        private string GetJson(object memberName1, object memberName2, bool isLast)
+        {
+            return $"{memberName1}->\"$.{memberName2}\"";
+        }
+
+        public override string JsonArrayAny(MethodCallExpressionModel model)
+        {
+            if (SqlSugar.UtilMethods.IsNumber(model.Args[1].MemberValue.GetType().Name))
+            {
+                return $"JSON_CONTAINS({model.Args[0].MemberName}, '{model.Args[1].MemberValue}')";
+            }
+            else
+            {
+                return $"JSON_CONTAINS({model.Args[0].MemberName}, '\"{model.Args[1].MemberValue.ObjToStringNoTrim().ToSqlFilter()}\"')";
+            }
+        }
+        public override string JsonListObjectAny(MethodCallExpressionModel model)
+        {
+            if (SqlSugar.UtilMethods.IsNumber(model.Args[2].MemberValue.GetType().Name))
+            {
+                return $"JSON_CONTAINS({model.Args[0].MemberName},'{{\"{model.Args[1].MemberValue}\":{model.Args[2].MemberValue}}}')";
+            }
+            else
+            {
+                return $"JSON_CONTAINS({model.Args[0].MemberName},'{{\"{model.Args[1].MemberValue}\":\"{model.Args[2].MemberValue.ObjToStringNoTrim().ToSqlFilter()}\"}}')";
+            }
         }
     }
 }
