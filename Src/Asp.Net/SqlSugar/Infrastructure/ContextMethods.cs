@@ -16,6 +16,8 @@ namespace SqlSugar
     public partial class ContextMethods : IContextMethods
     {
         public SqlSugarProvider Context { get; set; }
+        public QueryBuilder QueryBuilder { get; set; }
+
         #region DataReader
 
         /// <summary>
@@ -198,6 +200,7 @@ namespace SqlSugar
                         Dictionary<string, object> result = DataReaderToList(reader, tType, classProperties, reval);
                         var stringValue = SerializeObject(result);
                         reval.Add((T)DeserializeObject<T>(stringValue));
+                        SetAppendColumns(reader);
                     }
                 }
                 return reval;
@@ -290,6 +293,7 @@ namespace SqlSugar
                         Dictionary<string, object> result = DataReaderToList(reader, tType, classProperties, reval);
                         var stringValue = SerializeObject(result);
                         reval.Add((T)DeserializeObject<T>(stringValue));
+                        SetAppendColumns(reader);
                     }
                 }
                 return reval;
@@ -449,7 +453,27 @@ namespace SqlSugar
 
             return result;
         }
-
+        private void SetAppendColumns(IDataReader dataReader)
+        {
+            if (QueryBuilder != null && QueryBuilder.AppendColumns != null && QueryBuilder.AppendColumns.Any())
+            {
+                if (QueryBuilder.AppendValues == null)
+                    QueryBuilder.AppendValues = new List<List<QueryableAppendColumn>>();
+                List<QueryableAppendColumn> addItems = new List<QueryableAppendColumn>();
+                foreach (var item in QueryBuilder.AppendColumns)
+                {
+                    var vi = dataReader.GetOrdinal(item.AsName);
+                    var value = dataReader.GetValue(vi);
+                    addItems.Add(new QueryableAppendColumn()
+                    {
+                        Name = item.Name,
+                        AsName = item.AsName,
+                        Value = value
+                    });
+                }
+                QueryBuilder.AppendValues.Add(addItems);
+            }
+        }
         private static bool IsBytes(Dictionary<string, object> readerValues, PropertyInfo item)
         {
             return item.PropertyType == UtilConstants.ByteArrayType && 

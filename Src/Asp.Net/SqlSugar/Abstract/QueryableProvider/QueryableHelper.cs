@@ -1228,6 +1228,7 @@ namespace SqlSugar
         {
             List<TResult> result;
             this.Bind.QueryBuilder = this.QueryBuilder;
+            this.Context.Utilities.QueryBuilder = this.QueryBuilder;
             if (entityType == UtilConstants.DynamicType)
             {
                 result = this.Context.Utilities.DataReaderToExpandoObjectList(dataReader) as List<TResult>;
@@ -1259,6 +1260,7 @@ namespace SqlSugar
         {
             List<TResult> result;
             this.Bind.QueryBuilder = this.QueryBuilder;
+            this.Context.Utilities.QueryBuilder = this.QueryBuilder;
             if (entityType == UtilConstants.DynamicType)
             {
                 result = await this.Context.Utilities.DataReaderToExpandoObjectListAsync(dataReader) as List<TResult>;
@@ -1386,6 +1388,8 @@ namespace SqlSugar
             asyncQueryableBuilder.IsCrossQueryWithAttr = this.QueryBuilder.IsCrossQueryWithAttr;
             asyncQueryableBuilder.CrossQueryItems = this.QueryBuilder.CrossQueryItems;
             asyncQueryableBuilder.SubToListParameters= this.QueryBuilder.SubToListParameters;
+            asyncQueryableBuilder.AppendColumns = this.Context.Utilities.TranslateCopy(this.QueryBuilder.AppendColumns);
+            asyncQueryableBuilder.AppendValues = this.Context.Utilities.TranslateCopy(this.QueryBuilder.AppendValues);
         }
         protected int SetCacheTime(int cacheDurationInSeconds)
         {
@@ -1429,21 +1433,32 @@ namespace SqlSugar
 
         private void AppendSubToList<TResult>(List<TResult> result, List<List<QueryableAppendColumn>> appendValues, KeyValuePair<string, object> subPara)
         {
-            var ps = this.QueryBuilder.PartitionByTemplate;
+            var ps = this.QueryBuilder.Parameters;
             var itemProperty = typeof(TResult).GetProperty(subPara.Key);
             var callType = itemProperty.PropertyType.GetGenericArguments()[0];
             var methodParamters = new object[] { subPara.Value.ObjToString().Replace("@sugarIndex", "0"), ps };
             var subList = ExpressionBuilderHelper.CallFunc(callType, methodParamters, this.Clone(), "SubQueryList");
-            foreach (var item in result)
+            for(var i=0;i<result.Count; i++)
             {
+                var item = result[i];
                 var setValue = Activator.CreateInstance(itemProperty.PropertyType, true) as IList;
-                itemProperty.SetValue(item, subList);
+                if (typeof(TResult).IsAnonymousType())
+                {
+                    var jobj = JObject.FromObject(item);
+                    var prop = jobj.Property(itemProperty.Name);
+                    prop.Value = JArray.FromObject(subList);
+                    result[i] = jobj.ToObject<TResult>();
+                }
+                else
+                {
+                    itemProperty.SetValue(item, subList);
+                }
             }
         }
 
         private void AppendSubWhereToList<TResult>(List<TResult> result, List<List<QueryableAppendColumn>> appendValues, KeyValuePair<string, object> subPara)
         {
-            var ps = this.QueryBuilder.PartitionByTemplate;
+            var ps = this.QueryBuilder.Parameters;
             var index = 0;
             List<string> sqls = new List<string>();
             foreach (var item in result)
@@ -1470,7 +1485,7 @@ namespace SqlSugar
             var callType = itemProperty.PropertyType.GetGenericArguments()[0];
 
             var sqlstring = string.Join(" \r\n UNION ALL  ", sqls);
-            var methodParamters = new object[] { sqlstring,ps};
+            var methodParamters = new object[] { sqlstring, ps.ToArray() };
             this.QueryBuilder.SubToListParameters = null;
             this.QueryBuilder.AppendColumns = new List<QueryableAppendColumn>() {
                  new QueryableAppendColumn(){ Name="sugarIndex",AsName="sugarIndex" }
@@ -1479,7 +1494,42 @@ namespace SqlSugar
             var subList = ExpressionBuilderHelper.CallFunc(callType, methodParamters, this.Clone(), "SubQueryList");
             var appendValue = this.QueryBuilder.AppendValues;
             var list = (subList as IEnumerable).Cast<object>().ToList();
-            var resIndex = 0;
+            if (typeof(TResult).IsAnonymousType())
+            {
+                SetSubListWithAnonymousType(result, itemProperty, appendValue, list, 0);
+            }
+            else
+            {
+                SetSubListWithClass(result, itemProperty, appendValue, list, 0);
+            }
+        }
+        private static int SetSubListWithAnonymousType<TResult>(List<TResult> result, PropertyInfo itemProperty, List<List<QueryableAppendColumn>> appendValue, List<object> list, int resIndex)
+        {
+            for (int i = 0; i < result.Count; i++)
+            {
+                var item = result[i];
+                var setValue = Activator.CreateInstance(itemProperty.PropertyType, true) as IList;
+                var appindex = 0;
+                foreach (var appValue in appendValue)
+                {
+                    if (appValue[0].Value.ObjToInt() == i)
+                    {
+                        var addItem = list[appindex];
+                        setValue.Add(addItem);
+                    }
+                    appindex++;
+                }
+                var jobj = JObject.FromObject(item);
+                var prop = jobj.Property(itemProperty.Name);
+                prop.Value = JArray.FromObject(setValue);
+                result[i] = jobj.ToObject<TResult>();
+                //itemProperty.SetValue(item, setValue);
+            }
+            return resIndex;
+        }
+
+        private static int SetSubListWithClass<TResult>(List<TResult> result, PropertyInfo itemProperty, List<List<QueryableAppendColumn>> appendValue, List<object> list, int resIndex)
+        {
             foreach (var item in result)
             {
                 var setValue = Activator.CreateInstance(itemProperty.PropertyType, true) as IList;
@@ -1496,6 +1546,8 @@ namespace SqlSugar
                 itemProperty.SetValue(item, setValue);
                 resIndex++;
             }
+
+            return resIndex;
         }
 
         private async Task _SubQueryAsync<TResult>(List<TResult> result)
@@ -1509,7 +1561,7 @@ namespace SqlSugar
         }
         public List<Type> SubQueryList<Type>(string sql,object parameters) 
         {
-            return this.Context.Ado.SqlQuery<Type>(sql);
+            return this.Context.Ado.SqlQuery<Type>(sql,parameters);
         }
         #endregion
     }
