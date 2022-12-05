@@ -590,12 +590,12 @@ namespace SqlSugar
         {
             List<string> names = new List<string>();
             var allShortName = new List<string>();
-            allShortName.Add(this.Builder.SqlTranslationLeft + Builder.GetNoTranslationColumnName(this.TableShortName.ObjToString().ToLower() + this.Builder.SqlTranslationRight + "."));
+            allShortName.Add(this.Builder.SqlTranslationLeft + Builder.GetNoTranslationColumnName(this.TableShortName.ObjToString().ToLower()) + this.Builder.SqlTranslationRight + ".");
             if (this.JoinQueryInfos.HasValue())
             {
                 foreach (var item in this.JoinQueryInfos)
                 {
-                    allShortName.Add(this.Builder.SqlTranslationLeft + Builder.GetNoTranslationColumnName(item.ShortName.ObjToString().ToLower() + this.Builder.SqlTranslationRight + "."));
+                    allShortName.Add(this.Builder.SqlTranslationLeft + Builder.GetNoTranslationColumnName(item.ShortName.ObjToString().ToLower() ) + this.Builder.SqlTranslationRight + ".");
                 }
             }
             else if (this.EasyJoinInfos != null && this.EasyJoinInfos.Any())
