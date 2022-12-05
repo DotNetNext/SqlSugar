@@ -6,7 +6,7 @@ using System.Text;
 
 namespace OrmTest
 {
-
+    [SugarIndex("id_order_name", nameof(Order.Name), OrderByType.Asc)]
     public class Order
     {
         [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
