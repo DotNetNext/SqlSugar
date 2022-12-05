@@ -480,7 +480,7 @@ namespace SqlSugar
                 include = include.Replace("{include:", "").Replace("}", "");
                 include = $"include({include})";
             }
-            string sql = string.Format("CREATE {3} INDEX {2} ON {0}({1})"+ include, tableName, string.Join(",", columnNames), IndexName, isUnique ? "UNIQUE" : "");
+            string sql = string.Format("CREATE {3} INDEX {2} ON {0}({1})"+ include, this.SqlBuilder.GetTranslationColumnName(tableName) , string.Join(",", columnNames), IndexName, isUnique ? "UNIQUE" : "");
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
