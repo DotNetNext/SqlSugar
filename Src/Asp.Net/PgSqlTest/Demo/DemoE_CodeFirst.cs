@@ -45,8 +45,20 @@ namespace OrmTest
 
             }).ExecuteCommand();
             var list5=db.Queryable<CodeFirstArray>().ToList();
+            db.CodeFirst.InitTables<CodeFirstArraryBigInt>();
+            db.Updateable<CodeFirstArraryBigInt>()
+                .SetColumns(it => it.longs == new long[] { 1, 2 })
+                .Where(it=>it.id==1)
+                .ExecuteCommand();
             Console.WriteLine("#### CodeFirst end ####");
         }
+    }
+    public class CodeFirstArraryBigInt 
+    {
+        [SugarColumn(IsPrimaryKey =true)]
+        public int id { get; set; }
+        [SugarColumn(IsArray =true,ColumnDataType ="int8 []")]
+        public long[] longs { get; set; }
     }
     public class CodeFirstArray 
     {
