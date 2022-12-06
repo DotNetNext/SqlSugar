@@ -251,6 +251,24 @@ namespace OrmTest
                 throw new Exception("unit error");
             }
 
+            var test5 = db.Queryable<Order>().Where(it=>false).Select(it => new
+            {
+                CustomId = it.CustomId,
+                OrderId = it.Id,
+                OrderName = it.Name,
+                disCount = SqlFunc.Subqueryable<Custom>().Where(c => c.Id == it.CustomId).ToList()
+            })
+           .ToListAsync().GetAwaiter().GetResult();
+
+            var test6 = db.Queryable<Order>().Where(it => false).Select(it => new
+            {
+                CustomId = it.CustomId,
+                OrderId = it.Id,
+                OrderName = it.Name,
+                disCount = SqlFunc.Subqueryable<Custom>().Where(c => c.Id == it.CustomId).ToList()
+            })
+           .ToList();
+
         }
         private static void TestGetAll(SqlSugarClient db)
         {
