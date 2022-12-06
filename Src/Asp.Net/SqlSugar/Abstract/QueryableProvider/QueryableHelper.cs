@@ -942,9 +942,19 @@ namespace SqlSugar
                     {
                         this.QueryBuilder.AsTables[tableinfo.Key] = " (SELECT * FROM " + this.QueryBuilder.AsTables.First().Value + $" {SqlWith.NoLock} )";
                     }
+                    else if (this.QueryBuilder.IsSqlQuery && this.QueryBuilder.AsTables.First().Value.ObjToString().StartsWith("("))
+                    {
+                        var tableName = this.QueryBuilder.AsTables.First().Value;
+                        this.QueryBuilder.AsTables[tableinfo.Key] = " (SELECT * FROM " + tableName + ")" + this.QueryBuilder.TableShortName;
+                    }
                     else
                     {
-                        this.QueryBuilder.AsTables[tableinfo.Key] = " (SELECT * FROM " + this.QueryBuilder.AsTables.First().Value + ")";
+                        var tableName = this.QueryBuilder.AsTables.First().Value;
+                        if (tableName != null && Regex.IsMatch(tableName, @"^\w+$"))
+                        {
+                            tableName = SqlBuilder.GetTranslationTableName(tableName);
+                        }
+                        this.QueryBuilder.AsTables[tableinfo.Key] = " (SELECT * FROM " + tableName + ")";
                     }
                     this.QueryBuilder.SelectValue = this.QueryBuilder.TableShortName + ".*";
                 }
@@ -1573,6 +1583,18 @@ namespace SqlSugar
         public List<Type> SubQueryList<Type>(string sql,object parameters) 
         {
             return this.Context.Ado.SqlQuery<Type>(sql,parameters);
+        }
+        #endregion
+
+        #region Bool
+
+        private bool MasterHasWhereFirstJoin()
+        {
+            return this.QueryBuilder.JoinIndex == 0 &&
+                             this.QueryBuilder.IsSqlQuery == false &&
+                               !this.QueryBuilder.AsTables.Any() &&
+                                 this.QueryBuilder.IsSingle() &&
+                                  this.QueryBuilder.WhereInfos.Any();
         }
         #endregion
     }

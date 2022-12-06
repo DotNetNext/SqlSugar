@@ -126,6 +126,11 @@ namespace SqlSugar
         }
         public ISugarQueryable<T, T2> FullJoin<T2>(Expression<Func<T, T2, bool>> joinExpression)
         {
+            if (MasterHasWhereFirstJoin())
+            {
+                return this.MergeTable().FullJoin<T2>(joinExpression);
+            }
+
             this.Context.InitMappingInfo<T2>();
             var result = InstanceFactory.GetQueryable<T, T2>(this.Context.CurrentConnectionConfig);
             result.SqlBuilder = this.SqlBuilder;
@@ -135,6 +140,12 @@ namespace SqlSugar
         }
         public ISugarQueryable<T, T2> RightJoin<T2>(Expression<Func<T, T2, bool>> joinExpression)
         {
+
+            if (MasterHasWhereFirstJoin())
+            {
+                return this.MergeTable().RightJoin<T2>(joinExpression);
+            }
+
             this.Context.InitMappingInfo<T2>();
             var result = InstanceFactory.GetQueryable<T, T2>(this.Context.CurrentConnectionConfig);
             result.SqlBuilder = this.SqlBuilder;
@@ -143,8 +154,14 @@ namespace SqlSugar
             return result;
         }
 
-        public ISugarQueryable<T, T2> InnerJoin<T2>(Expression<Func<T, T2, bool>> joinExpression) 
+        public ISugarQueryable<T, T2> InnerJoin<T2>(Expression<Func<T, T2, bool>> joinExpression)
         {
+
+            if (MasterHasWhereFirstJoin())
+            {
+                return this.MergeTable().InnerJoin<T2>(joinExpression);
+            }
+
             this.Context.InitMappingInfo<T2>();
             var result = InstanceFactory.GetQueryable<T, T2>(this.Context.CurrentConnectionConfig);
             result.SqlBuilder = this.SqlBuilder;
@@ -152,6 +169,7 @@ namespace SqlSugar
             result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression, JoinType.Inner));
             return result;
         }
+
         public void Clear()
         {
             QueryBuilder.Clear();
