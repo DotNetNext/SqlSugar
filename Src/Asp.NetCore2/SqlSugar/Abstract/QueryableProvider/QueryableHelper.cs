@@ -1412,6 +1412,10 @@ namespace SqlSugar
  
         private void _SubQuery<TResult>(List<TResult> result)
         {
+            if (result == null || result.Count == 0)
+            {
+                return;
+            }
             var isSubToList = this.QueryBuilder.SubToListParameters != null && this.QueryBuilder.SubToListParameters.Any();
             if (!isSubToList)
             {
