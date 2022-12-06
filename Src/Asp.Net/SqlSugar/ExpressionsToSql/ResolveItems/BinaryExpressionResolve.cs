@@ -50,13 +50,37 @@ namespace SqlSugar
                 DefaultBinary(parameter, expression, operatorValue);
                 parameter.CommonTempData = null;
             }
+            else if (IsUpdateArray(parameter, expression, operatorValue))
+            {
+                parameter.CommonTempData = "IsArray=true";
+                DefaultBinary(parameter, expression, operatorValue);
+                parameter.CommonTempData = null;
+            }
             else
             {
                 DefaultBinary(parameter, expression, operatorValue);
             }
         }
+        private bool IsUpdateArray(ExpressionParameter parameter, BinaryExpression expression, string operatorValue)
+        {
+            var isOk = parameter.Context.ResolveType == ResolveExpressType.WhereSingle && operatorValue == "=" && (expression.Left is MemberExpression) && expression.Left.Type.IsClass();
+            if (isOk && this.Context.SugarContext != null)
+            {
+                var member = (expression.Left as MemberExpression);
+                if (member.Expression != null)
+                {
+                    var entity = this.Context.SugarContext.Context.EntityMaintenance.GetEntityInfo(member.Expression.Type);
+                    var jsonColumn = entity.Columns.FirstOrDefault(it => it.IsArray && it.PropertyName == ExpressionTool.GetMemberName(expression.Left));
+                    if (jsonColumn != null)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
 
-        private  bool IsUpdateJson(ExpressionParameter parameter,BinaryExpression expression, string operatorValue)
+        private bool IsUpdateJson(ExpressionParameter parameter,BinaryExpression expression, string operatorValue)
         {
             var isOk= parameter.Context.ResolveType==ResolveExpressType.WhereSingle&&operatorValue == "=" && (expression.Left is MemberExpression) && expression.Left.Type.IsClass();
             if (isOk&&this.Context.SugarContext != null) 

@@ -145,6 +145,10 @@ namespace SqlSugar
                 {
                     this.Context.Parameters.Add(new SugarParameter(appendValue, new SerializeService().SerializeObject(value)) {  IsJson=true});
                 }
+                else if (parameter?.BaseParameter?.CommonTempData.ObjToString() == "IsArray=true")
+                {
+                    this.Context.Parameters.Add(new SugarParameter(appendValue, value) { IsArray = true });
+                }
                 else
                 {
                     this.Context.Parameters.Add(new SugarParameter(appendValue, value));
