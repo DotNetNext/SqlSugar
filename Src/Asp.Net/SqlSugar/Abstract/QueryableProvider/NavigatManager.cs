@@ -326,6 +326,10 @@ namespace SqlSugar
             {
                 navPkColumn = navEntityInfo.Columns.Where(it => it.PropertyName== navObjectNameColumnInfo.Navigat.Name2).FirstOrDefault();
             }
+            if (navPkColumn == null && navType.FullName.IsCollectionsList()) 
+            {
+                Check.ExceptionEasy($"{navObjectNamePropety.Name} type error ", $"一对一不能是List对象 {navObjectNamePropety.Name} ");
+            }
             var ids = list.Select(it => it.GetType().GetProperty(navObjectNameColumnInfo.Navigat.Name).GetValue(it)).Select(it => it == null ? "null" : it).Distinct().ToList();
             List<IConditionalModel> conditionalModels = new List<IConditionalModel>();
             conditionalModels.Add((new ConditionalModel()
