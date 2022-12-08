@@ -156,6 +156,10 @@ namespace SqlSugar
                 {
                     sqlParameter.DbType = System.Data.DbType.AnsiString;
                 }
+                if (parameter.IsRefCursor) 
+                {
+                    sqlParameter.DmSqlType = DmDbType.Cursor;
+                }
                 ++index;
             }
             return result;
