@@ -573,6 +573,10 @@ namespace SqlSugar
             {
                 return false;
             }
+            if (properyTypeName?.ToLower() == "varchar" && dataType?.ToLower() == "nvarchar")
+            {
+                return false;
+            }
             if (properyTypeName?.ToLower() == "number" && dataType?.ToLower() == "decimal")
             {
                 return false;

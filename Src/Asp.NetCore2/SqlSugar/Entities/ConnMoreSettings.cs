@@ -18,5 +18,6 @@ namespace SqlSugar
         public bool? TableEnumIsString { get; set; }
         public DateTime? DbMinDate { get; set; } = Convert.ToDateTime("1900-01-01");
         public bool IsNoReadXmlDescription { get;  set; }
+        public bool SqlServerCodeFirstNvarchar { get;  set; }
     }
 }

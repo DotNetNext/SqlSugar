@@ -321,6 +321,17 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override bool UpdateColumn(string tableName, DbColumnInfo column)
+        {
+            if (column.DataType != null && this.Context.CurrentConnectionConfig?.MoreSettings?.SqlServerCodeFirstNvarchar == true)
+            {
+                if (!column.DataType.ToLower().Contains("nvarchar"))
+                {
+                    column.DataType = column.DataType.ToLower().Replace("varchar", "nvarchar");
+                }
+            }
+            return base.UpdateColumn(tableName, column);
+        }
         public override bool IsAnyTable(string tableName, bool isCache = true)
         {
             if (tableName.Contains("."))
@@ -536,6 +547,14 @@ namespace SqlSugar
                     item.DecimalDigits = 4;
                     item.Length = 18;
                 }
+                else if (item.DataType != null && this.Context.CurrentConnectionConfig?.MoreSettings?.SqlServerCodeFirstNvarchar == true)
+                {
+                    if (!item.DataType.ToLower().Contains("nvarchar"))
+                    {
+                        item.DataType = item.DataType.ToLower().Replace("varchar", "nvarchar");
+                    }
+                }
+
             }
             string sql = GetCreateTableSql(tableName, columns);
             this.Context.Ado.ExecuteCommand(sql);

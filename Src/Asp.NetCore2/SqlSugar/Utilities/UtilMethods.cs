@@ -174,8 +174,9 @@ namespace SqlSugar
                     TableEnumIsString = it.MoreSettings.TableEnumIsString,
                     DisableMillisecond = it.MoreSettings.DisableMillisecond,
                     DbMinDate=it.MoreSettings.DbMinDate,
-                    IsNoReadXmlDescription=it.MoreSettings.IsNoReadXmlDescription
-                      
+                    IsNoReadXmlDescription=it.MoreSettings.IsNoReadXmlDescription,
+                    SqlServerCodeFirstNvarchar=it.MoreSettings.SqlServerCodeFirstNvarchar
+
                 },
                 SqlMiddle = it.SqlMiddle == null ? null : new SqlMiddle
                 {
