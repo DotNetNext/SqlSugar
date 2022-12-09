@@ -17,6 +17,13 @@ namespace SqlSugar
 {
     public class UtilMethods
     {
+        public static string ToUnderLineNew(string str)
+        {
+            if(!str.Contains("_"))
+               return string.Concat(str.Select((x, i) => i > 0 && char.IsUpper(x) ? "_" + x.ToString() : x.ToString()));
+            else
+            return str;
+        }
         public static string ToUnderLine(string str, bool isToUpper = false)
         {
             if (isToUpper)
