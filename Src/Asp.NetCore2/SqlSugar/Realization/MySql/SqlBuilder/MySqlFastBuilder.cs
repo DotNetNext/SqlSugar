@@ -1,4 +1,4 @@
-﻿using MySql.Data.MySqlClient;
+﻿using MySqlConnector;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -56,9 +56,13 @@ namespace SqlSugar
                     File.Delete(fileName);
                 }
             }
-            catch (MySqlException ex)
+            catch (Exception ex)
             {
                 if (ex.Message == "The used command is not allowed with this MySQL version")
+                {
+                    Check.ExceptionEasy("connection string add : AllowLoadLocalInfile=true", "BulkCopy MySql连接字符串需要添加 AllowLoadLocalInfile=true; 添加后如果还不行Mysql数据库执行一下 SET GLOBAL local_infile=1 ");
+                }
+                else if (ex.Message.Contains("To use MySqlBulkLoader.Local=true, set Allo")) 
                 {
                     Check.ExceptionEasy("connection string add : AllowLoadLocalInfile=true", "BulkCopy MySql连接字符串需要添加 AllowLoadLocalInfile=true; 添加后如果还不行Mysql数据库执行一下 SET GLOBAL local_infile=1 ");
                 }
@@ -67,7 +71,7 @@ namespace SqlSugar
                     this.Context.Ado.ExecuteCommand("SET GLOBAL local_infile=1");
                     Check.ExceptionEasy(ex.Message, " 检测到你没有开启文件，已自动执行 SET GLOBAL local_infile=1 在试一次");
                 }
-                else 
+                else
                 {
                     throw;
                 }
