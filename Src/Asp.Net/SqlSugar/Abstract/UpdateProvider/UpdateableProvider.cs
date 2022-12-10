@@ -201,6 +201,8 @@ namespace SqlSugar
             //}
             //this.Context.MappingTables.Add(entityName, tableName);
             this.UpdateBuilder.TableName = tableName;
+            if (tableName.IsNullOrEmpty())
+                this.UpdateBuilder.TableName = this.EntityInfo.DbTableName;
             return this; ;
         }
         public IUpdateable<T> EnableDiffLogEventIF(bool isEnableDiffLog, object businessData = null) 
