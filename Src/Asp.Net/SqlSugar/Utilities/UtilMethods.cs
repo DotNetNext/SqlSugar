@@ -17,13 +17,6 @@ namespace SqlSugar
 {
     public class UtilMethods
     {
-        public static string ToUnderLineNew(string str)
-        {
-            if(!str.Contains("_"))
-               return string.Concat(str.Select((x, i) => i > 0 && char.IsUpper(x) ? "_" + x.ToString() : x.ToString()));
-            else
-            return str;
-        }
         public static string ToUnderLine(string str, bool isToUpper = false)
         {
             if (isToUpper)
@@ -181,8 +174,9 @@ namespace SqlSugar
                     TableEnumIsString = it.MoreSettings.TableEnumIsString,
                     DisableMillisecond = it.MoreSettings.DisableMillisecond,
                     DbMinDate=it.MoreSettings.DbMinDate,
-                    IsNoReadXmlDescription=it.MoreSettings.IsNoReadXmlDescription
-                      
+                    IsNoReadXmlDescription=it.MoreSettings.IsNoReadXmlDescription,
+                    SqlServerCodeFirstNvarchar=it.MoreSettings.SqlServerCodeFirstNvarchar
+
                 },
                 SqlMiddle = it.SqlMiddle == null ? null : new SqlMiddle
                 {
