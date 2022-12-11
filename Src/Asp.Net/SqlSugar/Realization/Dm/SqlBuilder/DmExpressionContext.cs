@@ -41,7 +41,7 @@ namespace SqlSugar
         {
             get
             {
-                if (this.Context.CurrentConnectionConfig.MoreSettings == null)
+                if (this.SugarContext?.Context?.Context?.CurrentConnectionConfig?.MoreSettings==null)
                 {
                     return true;
                 }
