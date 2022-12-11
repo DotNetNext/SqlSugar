@@ -27,15 +27,29 @@ namespace SqlSugar
         public override string SqlTranslationRight { get { return "\""; } }
         public override string GetTranslationTableName(string entityName, bool isMapping = true)
         {
-            return base.GetTranslationTableName(entityName, isMapping).ToUpper();
+            return base.GetTranslationTableName(entityName, isMapping).ToUpper(IsUppper);
         }
         public override string GetTranslationColumnName(string columnName)
         {
-            return base.GetTranslationColumnName(columnName).ToUpper();
+            return base.GetTranslationColumnName(columnName).ToUpper(IsUppper);
         }
         public override string GetDbColumnName(string entityName, string propertyName)
         {
-            return base.GetDbColumnName(entityName, propertyName).ToUpper();
+            return base.GetDbColumnName(entityName, propertyName).ToUpper(IsUppper);
+        }
+        public bool IsUppper
+        {
+            get
+            {
+                if (this.SugarContext?.Context?.Context?.CurrentConnectionConfig?.MoreSettings==null)
+                {
+                    return true;
+                }
+                else
+                {
+                    return this.SugarContext?.Context?.Context?.CurrentConnectionConfig?.MoreSettings.IsAutoToUpper == true;
+                }
+            }
         }
     }
     public partial class DmMethod : DefaultDbMethod, IDbMethods

@@ -38,17 +38,17 @@ namespace SqlSugar
             if (result.Contains("(") && result.Contains(")"))
                 return result;
             else
-                return result.ToUpper();
+                return result.ToUpper(IsUppper);
         }
         public override string GetTranslationColumnName(string entityName, string propertyName)
         {
             var result = base.GetTranslationColumnName(entityName, propertyName);
-            return result.ToUpper();
+            return result.ToUpper(IsUppper);
         }
         public override string GetTranslationColumnName(string propertyName)
         {
             var result = base.GetTranslationColumnName(propertyName);
-            return result.ToUpper();
+            return result.ToUpper(IsUppper);
         }
         public override string RemoveParentheses(string sql)
         {
@@ -59,5 +59,21 @@ namespace SqlSugar
 
             return sql;
         }
+        #region Helper
+        public bool IsUppper
+        {
+            get
+            {
+                if (this.Context.CurrentConnectionConfig.MoreSettings == null)
+                {
+                    return true;
+                }
+                else
+                {
+                    return this.Context.CurrentConnectionConfig.MoreSettings.IsAutoToUpper == true;
+                }
+            }
+        }
+        #endregion
     }
 }

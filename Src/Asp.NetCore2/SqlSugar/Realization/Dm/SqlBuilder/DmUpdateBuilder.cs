@@ -37,9 +37,22 @@ namespace SqlSugar
 
         private string GetOracleUpdateColums(int i, DbColumnInfo m)
         {
-            return string.Format("\"{0}\"={1}", m.DbColumnName.ToUpper(), FormatValue(i, m.DbColumnName, m.Value));
+            return string.Format("\"{0}\"={1}", m.DbColumnName.ToUpper(IsUppper), FormatValue(i, m.DbColumnName, m.Value));
         }
-
+        public bool IsUppper
+        {
+            get
+            {
+                if (this.Context.CurrentConnectionConfig.MoreSettings == null)
+                {
+                    return true;
+                }
+                else
+                {
+                    return this.Context.CurrentConnectionConfig.MoreSettings.IsAutoToUpper == true;
+                }
+            }
+        }
         public object FormatValue(int i, string name, object value)
         {
             if (value == null)
