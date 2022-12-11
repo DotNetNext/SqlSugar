@@ -179,7 +179,8 @@ namespace SqlSugar
                     DisableMillisecond = it.MoreSettings.DisableMillisecond,
                     DbMinDate=it.MoreSettings.DbMinDate,
                     IsNoReadXmlDescription=it.MoreSettings.IsNoReadXmlDescription,
-                    SqlServerCodeFirstNvarchar=it.MoreSettings.SqlServerCodeFirstNvarchar
+                    SqlServerCodeFirstNvarchar=it.MoreSettings.SqlServerCodeFirstNvarchar,
+                    IsAutoToUpper=it.MoreSettings.IsAutoToUpper
 
                 },
                 SqlMiddle = it.SqlMiddle == null ? null : new SqlMiddle

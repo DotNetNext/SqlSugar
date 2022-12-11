@@ -96,5 +96,11 @@ namespace SqlSugar
             if (isAutoToLower == false) return value;
             return value.ToLower();
         }
+        internal static string ToUpper(this string value, bool isAutoToUpper)
+        {
+            if (value == null) return null;
+            if (isAutoToUpper == false) return value;
+            return value.ToUpper();
+        }
     }
 }

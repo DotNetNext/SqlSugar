@@ -314,14 +314,14 @@ namespace SqlSugar
                 if (item.ColumnDescription != null)
                 {
                     //column remak
-                    if (db.DbMaintenance.IsAnyColumnRemark(item.DbColumnName.ToUpper(), item.DbTableName.ToUpper()))
+                    if (db.DbMaintenance.IsAnyColumnRemark(item.DbColumnName.ToUpper(IsUppper), item.DbTableName.ToUpper(IsUppper)))
                     {
-                        db.DbMaintenance.DeleteColumnRemark(item.DbColumnName.ToUpper(), item.DbTableName.ToUpper());
-                        db.DbMaintenance.AddColumnRemark(item.DbColumnName.ToUpper(), item.DbTableName.ToUpper(), item.ColumnDescription);
+                        db.DbMaintenance.DeleteColumnRemark(item.DbColumnName.ToUpper(IsUppper), item.DbTableName.ToUpper(IsUppper));
+                        db.DbMaintenance.AddColumnRemark(item.DbColumnName.ToUpper(IsUppper), item.DbTableName.ToUpper(IsUppper), item.ColumnDescription);
                     }
                     else
                     {
-                        db.DbMaintenance.AddColumnRemark(item.DbColumnName.ToUpper(), item.DbTableName.ToUpper(), item.ColumnDescription);
+                        db.DbMaintenance.AddColumnRemark(item.DbColumnName.ToUpper(IsUppper), item.DbTableName.ToUpper(IsUppper), item.ColumnDescription);
                     }
                 }
             }
@@ -398,7 +398,7 @@ namespace SqlSugar
                     this.Context.Ado.IsEnableLogEvent = false;
                     string sql = @" select distinct cu.COLUMN_name KEYNAME  from user_cons_columns cu, user_constraints au 
                             where cu.constraint_name = au.constraint_name
-                            and au.constraint_type = 'P' and au.table_name = '" + tableName.ToUpper() + @"'";
+                            and au.constraint_type = 'P' and au.table_name = '" + tableName.ToUpper(IsUppper) + @"'";
                     var pks = this.Context.Ado.SqlQuery<string>(sql);
                     this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
                     return pks;
@@ -414,7 +414,7 @@ namespace SqlSugar
                     string sql = "SELECT COMMENTS FROM USER_TAB_COMMENTS WHERE TABLE_NAME =@tableName ORDER BY TABLE_NAME";
                     var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
                     this.Context.Ado.IsEnableLogEvent = false;
-                    var pks = this.Context.Ado.SqlQuery<string>(sql, new { tableName = tableName.ToUpper() });
+                    var pks = this.Context.Ado.SqlQuery<string>(sql, new { tableName = tableName.ToUpper(IsUppper) });
                     this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
                     return pks;
                 });
@@ -427,7 +427,7 @@ namespace SqlSugar
             var comments = this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey,
                 () =>
                 {
-                    string sql = "SELECT TVNAME AS TableName, COLNAME as DbColumnName ,COMMENT$ AS ColumnDescription   from SYSCOLUMNCOMMENTS   WHERE TVNAME='" + tableName.ToUpper() + "' ORDER BY TVNAME";
+                    string sql = "SELECT TVNAME AS TableName, COLNAME as DbColumnName ,COMMENT$ AS ColumnDescription   from SYSCOLUMNCOMMENTS   WHERE TVNAME='" + tableName.ToUpper(IsUppper) + "' ORDER BY TVNAME";
                     var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
                     this.Context.Ado.IsEnableLogEvent = false;
                     var pks = this.Context.Ado.SqlQuery<DbColumnInfo>(sql);
@@ -468,6 +468,23 @@ namespace SqlSugar
             //sql = sql.Replace("$PrimaryKey", primaryKeyInfo);
             this.Context.Ado.ExecuteCommand(sql);
             return true;
+        }
+        #endregion
+
+        #region Helper
+        public bool IsUppper 
+        {
+            get
+            {
+                if (this.Context.CurrentConnectionConfig.MoreSettings == null)
+                {
+                    return true;
+                }
+                else
+                {
+                    return this.Context.CurrentConnectionConfig.MoreSettings.IsAutoToUpper == true;
+                }
+            }
         }
         #endregion
     }
