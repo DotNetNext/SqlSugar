@@ -116,7 +116,7 @@ namespace SqlSugar
             {
                 foreach (var Parameter in parameters)
                 {
-                    if (Parameter.ParameterName != null && Parameter.ParameterName.ToLower().IsIn("@user", "@level",  ":user", ":level"))
+                    if (Parameter.ParameterName != null && Parameter.ParameterName.ToLower().IsIn("@order",":order","@user", "@level",  ":user", ":level"))
                     {
                         if (parameters.Count(it => it.ParameterName.StartsWith(Parameter.ParameterName)) == 1)
                         {
