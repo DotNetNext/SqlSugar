@@ -816,6 +816,40 @@ namespace SqlSugar
             }
             return result;
         }
+
+        public DataTable ListToDataTableWithAttr<T>(List<T> list)
+        {
+            var entityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            DataTable result = new DataTable();
+            result.TableName = entityInfo.DbTableName;
+            if (list != null && list.Count > 0)
+            {
+                var colimnInfos = entityInfo.Columns.Where(it=>it.IsIgnore==false);
+                foreach (var pi in colimnInfos)
+                {
+                    //获取类型
+                    Type colType = pi.PropertyInfo.PropertyType;
+                    //当类型为Nullable<>时
+                    if ((colType.IsGenericType) && (colType.GetGenericTypeDefinition() == typeof(Nullable<>)))
+                    {
+                        colType = colType.GetGenericArguments()[0];
+                    }
+                    result.Columns.Add(pi.DbColumnName, colType);
+                }
+                for (int i = 0; i < list.Count; i++)
+                {
+                    ArrayList tempList = new ArrayList();
+                    foreach (var pi in colimnInfos)
+                    {
+                        object obj = pi.PropertyInfo.GetValue(list[i], null);
+                        tempList.Add(obj);
+                    }
+                    object[] array = tempList.ToArray();
+                    result.LoadDataRow(array, true);
+                }
+            }
+            return result;
+        }
         public Dictionary<string, object> DataTableToDictionary(DataTable table)
         {
            return table.Rows.Cast<DataRow>().ToDictionary(x => x[0].ToString(), x => x[1]);
