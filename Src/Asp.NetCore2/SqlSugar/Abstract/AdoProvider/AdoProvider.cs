@@ -303,10 +303,10 @@ namespace SqlSugar
             var result = new DbResult<bool>();
             try
             {
-                this.BeginTran();
+                await this.BeginTranAsync();
                 if (action != null)
                     await action();
-                this.CommitTran();
+                await this.CommitTranAsync();
                 result.Data = result.IsSuccess = true;
             }
             catch (Exception ex)
@@ -314,7 +314,7 @@ namespace SqlSugar
                 result.ErrorException = ex;
                 result.ErrorMessage = ex.Message;
                 result.IsSuccess = false;
-                this.RollbackTran();
+                await this.RollbackTranAsync();
                 if (errorCallBack != null)
                 {
                     errorCallBack(ex);
