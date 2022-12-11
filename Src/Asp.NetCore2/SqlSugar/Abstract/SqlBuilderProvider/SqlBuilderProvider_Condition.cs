@@ -245,11 +245,18 @@ namespace SqlSugar
             parameters.Add(new SugarParameter(parameterName, item.FieldValue));
         }
 
-        private static void In(StringBuilder builder, ConditionalModel item, string type, string temp)
+        private  void In(StringBuilder builder, ConditionalModel item, string type, string temp)
         {
             if (item.FieldValue == null) item.FieldValue = string.Empty;
             var inValue1 = string.Empty;
-            inValue1 = In_GetInValue(item);
+            var inArray=item.FieldValue.Split(',');
+            var pageSize = 1000;
+            if (inArray.Length > pageSize&&this.Context.CurrentConnectionConfig.DbType==DbType.Oracle) 
+            {
+                InBig(builder,item,type,temp,inArray, pageSize);
+                return;
+            }
+            inValue1 = In_GetInValue(item, inArray);
             if (item.CSharpTypeName.HasValue() && UtilMethods.IsNumber(item.CSharpTypeName))
             {
                 inValue1 = inValue1.Replace("'", "");
@@ -273,16 +280,38 @@ namespace SqlSugar
             builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "IN", inValue1);
         }
 
-        private static string In_GetInValue(ConditionalModel item)
+        private  void InBig(StringBuilder builder, ConditionalModel item, string type, string temp, string[] inArray, int pageSize)
+        {
+            var sqlList = new List<string>();
+            this.Context.Utilities.PageEach(inArray, pageSize, items =>
+            {
+                if (item.CSharpTypeName.EqualCase("string") || item.CSharpTypeName == null)
+                {
+                    sqlList.Add("(" + item.FieldName.ToSqlFilter() + " IN (" + items.Distinct().ToArray().ToJoinSqlInVals() + "))");
+                }
+                else
+                {
+                    sqlList.Add("(" + item.FieldName.ToSqlFilter() + " IN (" + items.Select(it => it == "" ? "null" : it).Distinct().ToArray().ToJoinSqlInVals() + "))");
+                }
+            });
+            var inValue1 = $" {string.Join(" OR ",sqlList)} ";
+            if (item.CSharpTypeName.HasValue() && UtilMethods.IsNumber(item.CSharpTypeName))
+            {
+                inValue1 = inValue1.Replace("'", "");
+            }
+            builder.AppendFormat(temp, type, "", " ", inValue1);
+        }
+
+        private static string In_GetInValue(ConditionalModel item,string[] inArray)
         {
             string inValue1;
             if (item.CSharpTypeName.EqualCase("string") || item.CSharpTypeName == null)
             {
-                inValue1 = ("(" + item.FieldValue.Split(',').Distinct().ToArray().ToJoinSqlInVals() + ")");
+                inValue1 = ("(" + inArray.Distinct().ToArray().ToJoinSqlInVals() + ")");
             }
             else
             {
-                inValue1 = ("(" + item.FieldValue.Split(',').Select(it => it == "" ? "null" : it).Distinct().ToArray().ToJoinSqlInVals() + ")");
+                inValue1 = ("(" + inArray.Select(it => it == "" ? "null" : it).Distinct().ToArray().ToJoinSqlInVals() + ")");
             }
 
             return inValue1;
