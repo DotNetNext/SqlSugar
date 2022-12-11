@@ -1350,7 +1350,7 @@ namespace SqlSugar
             );
         }
 
-        private void InitContext(ConnectionConfig config)
+        protected virtual void InitContext(ConnectionConfig config)
         {
             var aopIsNull = config.AopEvents == null;
             if (aopIsNull)
