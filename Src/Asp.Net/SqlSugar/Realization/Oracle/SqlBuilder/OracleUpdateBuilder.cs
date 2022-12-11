@@ -33,7 +33,7 @@ namespace SqlSugar
 
         private string GetOracleUpdateColums(DbColumnInfo m)
         {
-            return string.Format("\"{0}\"={1}", m.DbColumnName.ToUpper(), FormatValue(m.Value,m.IsPrimarykey,m.PropertyName));
+            return string.Format("\"{0}\"={1}", m.DbColumnName.ToUpper(IsUppper), FormatValue(m.Value,m.IsPrimarykey,m.PropertyName));
         }
         int i = 0;
         public  object FormatValue(object value,bool isPrimaryKey,string name)
@@ -112,5 +112,22 @@ namespace SqlSugar
                 }
             }
         }
+
+        #region Helper
+        public bool IsUppper
+        {
+            get
+            {
+                if (this.Context.CurrentConnectionConfig.MoreSettings == null)
+                {
+                    return true;
+                }
+                else
+                {
+                    return this.Context.CurrentConnectionConfig.MoreSettings.IsAutoToUpper == true;
+                }
+            }
+        }
+        #endregion
     }
 }
