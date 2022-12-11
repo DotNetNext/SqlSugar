@@ -13,7 +13,7 @@ namespace OrmTest
         {
             AdoTran();
             Tran();
-            RollTest();
+            RollTest().GetAwaiter().GetResult();
             Tran2();
             Console.ReadKey();
         }
