@@ -249,14 +249,7 @@ namespace SqlSugar
         {
             if (item.FieldValue == null) item.FieldValue = string.Empty;
             var inValue1 = string.Empty;
-            if (item.CSharpTypeName.EqualCase("string") || item.CSharpTypeName == null)
-            {
-                inValue1 = ("(" + item.FieldValue.Split(',').Distinct().ToArray().ToJoinSqlInVals() + ")");
-            }
-            else
-            {
-                inValue1 = ("(" + item.FieldValue.Split(',').Select(it => it == "" ? "null" : it).Distinct().ToArray().ToJoinSqlInVals() + ")");
-            }
+            inValue1 = In_GetInValue(item);
             if (item.CSharpTypeName.HasValue() && UtilMethods.IsNumber(item.CSharpTypeName))
             {
                 inValue1 = inValue1.Replace("'", "");
@@ -278,6 +271,21 @@ namespace SqlSugar
                 inValue1 = $"(NULL)";
             }
             builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "IN", inValue1);
+        }
+
+        private static string In_GetInValue(ConditionalModel item)
+        {
+            string inValue1;
+            if (item.CSharpTypeName.EqualCase("string") || item.CSharpTypeName == null)
+            {
+                inValue1 = ("(" + item.FieldValue.Split(',').Distinct().ToArray().ToJoinSqlInVals() + ")");
+            }
+            else
+            {
+                inValue1 = ("(" + item.FieldValue.Split(',').Select(it => it == "" ? "null" : it).Distinct().ToArray().ToJoinSqlInVals() + ")");
+            }
+
+            return inValue1;
         }
 
         private static void Equal(StringBuilder builder, List<SugarParameter> parameters, ConditionalModel item, string type, string temp, string parameterName)
