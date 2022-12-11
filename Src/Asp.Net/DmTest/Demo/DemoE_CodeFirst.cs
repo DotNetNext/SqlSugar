@@ -37,8 +37,29 @@ namespace OrmTest
             var list = db.Queryable<CodeFirstTable1>().ToList();
             db.CodeFirst.InitTables<CodeFirstLong>();
             var tableInfo=db.DbMaintenance.GetColumnInfosByTableName("CodeFirstLong", false);
+            db.CurrentConnectionConfig.MoreSettings = new ConnMoreSettings()
+            {
+                IsAutoToUpper = false
+            };
+            db.CodeFirst.InitTables<CodeFirstNoUpper>();
+            db.Insertable(new CodeFirstNoUpper() { Id = Guid.NewGuid() + "", Name = "a" }).ExecuteCommand();
+            var list2= db.Queryable<CodeFirstNoUpper>().Where(it=>it.Id!=null).ToList();
+            db.Updateable(list2).ExecuteCommand();
+            db.Deleteable(list2).ExecuteCommand();
+            db.Updateable(list2.First()).ExecuteCommand();
+            db.Deleteable<CodeFirstNoUpper>().Where(it => it.Id != null).ExecuteCommand();
+            db.Updateable<CodeFirstNoUpper>().SetColumns(it=>it.Name=="a").Where(it => it.Id != null).ExecuteCommand();
+            db.Updateable<CodeFirstNoUpper>().SetColumns(it =>new CodeFirstNoUpper() { 
+             Name="a"
+            } ).Where(it => it.Id != null).ExecuteCommand();
             Console.WriteLine("#### CodeFirst end ####");
         }
+    }
+    public class CodeFirstNoUpper 
+    {
+        [SugarColumn(IsPrimaryKey =true)]
+        public string Id { get; set; }
+        public string Name { get; set; }
     }
 
     public class CodeFirstLong 
