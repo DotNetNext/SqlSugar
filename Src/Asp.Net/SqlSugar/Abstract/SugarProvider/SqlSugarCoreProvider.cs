@@ -16,7 +16,7 @@ namespace SqlSugar
         private List<ConnectionConfig> _configs;
         private Action<SqlSugarClient> _configAction;
 
-        private SqlSugarClient GetContext()
+        protected virtual SqlSugarClient GetContext()
         {
             SqlSugarClient result = null;
             var key = _configs.GetHashCode().ToString();

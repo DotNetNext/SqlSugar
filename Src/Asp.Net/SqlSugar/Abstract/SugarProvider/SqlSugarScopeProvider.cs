@@ -69,7 +69,7 @@ namespace SqlSugar
                 }
             }
         }
-        private SqlSugarProvider GetContext(bool isInit = false)
+        protected virtual SqlSugarProvider GetContext(bool isInit = false)
         {
             SqlSugarProvider result = null;
             var key = GetKey(); ;
