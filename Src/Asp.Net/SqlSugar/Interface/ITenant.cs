@@ -11,6 +11,9 @@ namespace SqlSugar
         void BeginTran();
         void CommitTran();
         void RollbackTran();
+        Task BeginTranAsync();
+        Task CommitTranAsync();
+        Task RollbackTranAsync();
         void ChangeDatabase(dynamic configId);
         void ChangeDatabase(Func<ConnectionConfig, bool> changeExpression);
         SqlSugarTransaction UseTran();

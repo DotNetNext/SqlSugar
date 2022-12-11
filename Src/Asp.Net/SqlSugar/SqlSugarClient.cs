@@ -903,6 +903,13 @@ namespace SqlSugar
             _IsAllTran = true;
             AllClientEach(it => it.Ado.BeginTran());
         }
+
+        public async Task BeginTranAsync()
+        {
+            _IsAllTran = true;
+            await AllClientEachAsync(async it => await it.Ado.BeginTranAsync());
+        }
+
         public void CommitTran()
         {
             this.Context.Ado.CommitTran();
@@ -918,6 +925,25 @@ namespace SqlSugar
                     SugarRetry.Execute(() => it.Ado.CommitTran(), new TimeSpan(0, 0, 5), 3);
                 }
                 
+            });
+            _IsAllTran = false;
+        }
+
+        public async Task CommitTranAsync()
+        {
+            await this.Context.Ado.CommitTranAsync();
+            await AllClientEachAsync(async it =>
+            {
+
+                try
+                {
+                    await it.Ado.CommitTranAsync();
+                }
+                catch
+                {
+                    SugarRetry.Execute(() => it.Ado.CommitTran(), new TimeSpan(0, 0, 5), 3);
+                }
+
             });
             _IsAllTran = false;
         }
@@ -951,10 +977,10 @@ namespace SqlSugar
             var result = new DbResult<bool>();
             try
             {
-                this.BeginTran();
+                await this.BeginTranAsync();
                 if (action != null)
                     await action();
-                this.CommitTran();
+                await this.CommitTranAsync();
                 result.Data = result.IsSuccess = true;
             }
             catch (Exception ex)
@@ -962,7 +988,7 @@ namespace SqlSugar
                 result.ErrorException = ex;
                 result.ErrorMessage = ex.Message;
                 result.IsSuccess = false;
-                this.RollbackTran();
+                await this.RollbackTranAsync();
                 if (errorCallBack != null)
                 {
                     errorCallBack(ex);
@@ -1034,6 +1060,24 @@ namespace SqlSugar
                     it.Ado.RollbackTran();
                 }
                 catch 
+                {
+                    SugarRetry.Execute(() => it.Ado.RollbackTran(), new TimeSpan(0, 0, 5), 3);
+                }
+
+            });
+            _IsAllTran = false;
+        }
+        public async Task RollbackTranAsync()
+        {
+            await this.Context.Ado.RollbackTranAsync();
+            await AllClientEachAsync(async it =>
+            {
+
+                try
+                {
+                    await it.Ado.RollbackTranAsync();
+                }
+                catch
                 {
                     SugarRetry.Execute(() => it.Ado.RollbackTran(), new TimeSpan(0, 0, 5), 3);
                 }
@@ -1354,6 +1398,22 @@ namespace SqlSugar
             }
         }
 
+
+        private async Task AllClientEachAsync(Func<ISqlSugarClient,Task> action)
+        {
+            if (this._AllClients == null)
+            {
+                this._AllClients = new List<SugarTenant>();
+                this._AllClients.Add(new SugarTenant() { ConnectionConfig = this.CurrentConnectionConfig, Context = this.Context });
+            }
+            if (_AllClients.HasValue())
+            {
+                foreach (var item in _AllClients.Where(it => it.Context.HasValue()))
+                {
+                    await action(item.Context);
+                }
+            }
+        }
         private void InitTenant(SugarTenant Tenant)
         {
             if (Tenant.Context == null)

@@ -180,6 +180,20 @@ namespace SqlSugar
             }
         }
 
+        public virtual async Task CheckConnectionAsync()
+        {
+            if (this.Connection.State != ConnectionState.Open)
+            {
+                try
+                {
+                    await (this.Connection as DbConnection).OpenAsync();
+                }
+                catch (Exception ex)
+                {
+                    Check.Exception(true, ErrorMessage.ConnnectionOpen, ex.Message + $"DbType=\"{this.Context.CurrentConnectionConfig.DbType}\";ConfigId=\"{this.Context.CurrentConnectionConfig.ConfigId}\"");
+                }
+            }
+        }
         #endregion
 
         #region Transaction
@@ -197,6 +211,12 @@ namespace SqlSugar
             if (this.Transaction == null)
                 this.Transaction = this.Connection.BeginTransaction();
         }
+        public virtual async Task BeginTranAsync()
+        {
+            await CheckConnectionAsync();
+            if (this.Transaction == null)
+                this.Transaction =await (this.Connection as DbConnection).BeginTransactionAsync();
+        }
         public virtual void BeginTran(IsolationLevel iso)
         {
             CheckConnection();
@@ -212,6 +232,16 @@ namespace SqlSugar
                 if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection) this.Close();
             }
         }
+
+        public virtual async Task RollbackTranAsync()
+        {
+            if (this.Transaction != null)
+            {
+                await (this.Transaction as DbTransaction).RollbackAsync();
+                this.Transaction = null;
+                if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection) await this.CloseAsync();
+            }
+        }
         public virtual void CommitTran()
         {
             if (this.Transaction != null)
@@ -219,6 +249,15 @@ namespace SqlSugar
                 this.Transaction.Commit();
                 this.Transaction = null;
                 if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection) this.Close();
+            }
+        }
+        public virtual async Task CommitTranAsync()
+        {
+            if (this.Transaction != null)
+            {
+                await (this.Transaction as DbTransaction).CommitAsync();
+                this.Transaction = null;
+                if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection) await this.CloseAsync();
             }
         }
         #endregion
@@ -264,10 +303,10 @@ namespace SqlSugar
             var result = new DbResult<bool>();
             try
             {
-                this.BeginTran();
+                await this.BeginTranAsync();
                 if (action != null)
                     await action();
-                this.CommitTran();
+                await this.CommitTranAsync();
                 result.Data = result.IsSuccess = true;
             }
             catch (Exception ex)
@@ -275,7 +314,7 @@ namespace SqlSugar
                 result.ErrorException = ex;
                 result.ErrorMessage = ex.Message;
                 result.IsSuccess = false;
-                this.RollbackTran();
+                await this.RollbackTranAsync();
                 if (errorCallBack != null)
                 {
                     errorCallBack(ex);
@@ -1309,6 +1348,27 @@ namespace SqlSugar
         #endregion
 
         #region  Helper
+        public async Task CloseAsync()
+        {
+            if (this.Transaction != null)
+            {
+                this.Transaction = null;
+            }
+            if (this.Connection != null && this.Connection.State == ConnectionState.Open)
+            {
+                await (this.Connection as DbConnection).CloseAsync();
+            }
+            if (this.IsMasterSlaveSeparation && this.SlaveConnections.HasValue())
+            {
+                foreach (var slaveConnection in this.SlaveConnections)
+                {
+                    if (slaveConnection != null && slaveConnection.State == ConnectionState.Open)
+                    {
+                        await (slaveConnection as DbConnection).CloseAsync();
+                    }
+                }
+            }
+        }
 
         protected virtual void SugarCatch(Exception ex, string sql, SugarParameter[] parameters)
         {
