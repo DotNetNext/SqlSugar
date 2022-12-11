@@ -47,7 +47,7 @@ namespace SqlSugar
                 }
                 else
                 {
-                    return this.Context.CurrentConnectionConfig.MoreSettings.IsAutoToUpper == true;
+                    return this.SugarContext?.Context?.Context?.CurrentConnectionConfig?.MoreSettings.IsAutoToUpper == true;
                 }
             }
         }

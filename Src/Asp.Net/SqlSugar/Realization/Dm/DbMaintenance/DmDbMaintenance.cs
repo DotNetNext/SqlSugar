@@ -462,7 +462,7 @@ namespace SqlSugar
             //string primaryKeyInfo = null;
             if (columns.Any(it => it.IsPrimarykey) && isCreatePrimaryKey)
             {
-                sql= sql.TrimEnd(')')+ string.Format(", Primary key({0})", string.Join(",", columns.Where(it => it.IsPrimarykey).Select(it => this.SqlBuilder.GetTranslationColumnName(it.DbColumnName.ToLower()))));
+                sql= sql.TrimEnd(')')+ string.Format(", Primary key({0})", string.Join(",", columns.Where(it => it.IsPrimarykey).Select(it => this.SqlBuilder.GetTranslationColumnName(it.DbColumnName.ToUpper(IsUppper)))));
                 sql = sql + ")";
             }
             //sql = sql.Replace("$PrimaryKey", primaryKeyInfo);
