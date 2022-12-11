@@ -119,6 +119,7 @@ namespace OrmTest
             Queryable2();
             QueryableAsync();
             AopTest();
+            UTran3.Init();
             //Thread();
             //Thread2();
             //Thread3();

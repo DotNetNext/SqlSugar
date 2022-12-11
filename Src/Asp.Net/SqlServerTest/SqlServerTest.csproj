@@ -203,6 +203,7 @@
     <Compile Include="UnitTest\UQueryable2.cs" />
     <Compile Include="UnitTest\UQueue.cs" />
     <Compile Include="UnitTest\UTran.cs" />
+    <Compile Include="UnitTest\UTran3.cs" />
     <Compile Include="Models\TestTree.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Program.cs" />
