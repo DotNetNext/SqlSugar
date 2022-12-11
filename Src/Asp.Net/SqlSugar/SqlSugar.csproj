@@ -223,6 +223,7 @@
     <Compile Include="Json2Sql\Queryable\QueryableProvider.cs" />
     <Compile Include="Json2Sql\Utils\Json2SqlConfig.cs" />
     <Compile Include="Json2Sql\Utils\Json2SqlHelper.cs" />
+    <Compile Include="OnlyNet\AsyncHelper.cs" />
     <Compile Include="Realization\Dm\SqlBuilder\DmBlukCopy.cs" />
     <Compile Include="Realization\Dm\SqlBuilder\DmFastBuilder.cs" />
     <Compile Include="Realization\QuestDB\CodeFirst\QuestDBCodeFirst.cs" />
