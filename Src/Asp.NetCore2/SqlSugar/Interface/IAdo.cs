@@ -171,11 +171,14 @@ namespace SqlSugar
         void CheckConnection();
 
         void BeginTran();
+        Task BeginTranAsync();
         void BeginTran(IsolationLevel iso);
         void BeginTran(string transactionName);
         void BeginTran(IsolationLevel iso, string transactionName);
         void RollbackTran();
+        Task RollbackTranAsync();
         void CommitTran();
+        Task CommitTranAsync();
 
         DbResult<bool> UseTran(Action action, Action<Exception> errorCallBack = null);
         DbResult<T> UseTran<T>(Func<T> action, Action<Exception> errorCallBack = null);

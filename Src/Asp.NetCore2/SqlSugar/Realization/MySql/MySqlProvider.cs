@@ -150,27 +150,6 @@ namespace SqlSugar
         }
 
         #region async
-        public async Task CloseAsync()
-        {
-            if (this.Transaction != null)
-            {
-                this.Transaction = null;
-            }
-            if (this.Connection != null && this.Connection.State == ConnectionState.Open)
-            {
-                await (this.Connection as MySqlConnection).CloseAsync();
-            }
-            if (this.IsMasterSlaveSeparation && this.SlaveConnections.HasValue())
-            {
-                foreach (var slaveConnection in this.SlaveConnections)
-                {
-                    if (slaveConnection != null && slaveConnection.State == ConnectionState.Open)
-                    {
-                        await (slaveConnection as MySqlConnection).CloseAsync();
-                    }
-                }
-            }
-        }
         public async Task<DbCommand> GetCommandAsync(string sql, SugarParameter[] parameters)
         {
             MySqlCommand sqlCommand = new MySqlCommand(sql, (MySqlConnection)this.Connection);
