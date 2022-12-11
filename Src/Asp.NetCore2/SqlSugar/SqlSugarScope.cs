@@ -93,7 +93,10 @@ namespace SqlSugar
         {
             ScopedContext.BeginTran();
         }
-
+        public Task BeginTranAsync()
+        {
+           return ScopedContext.BeginTranAsync();
+        }
         public void ChangeDatabase(dynamic configId)
         {
             ScopedContext.ChangeDatabase(configId);
@@ -113,7 +116,10 @@ namespace SqlSugar
         {
             ScopedContext.CommitTran();
         }
-
+        public Task CommitTranAsync()
+        {
+           return ScopedContext.CommitTranAsync();
+        }
         public IDeleteable<T> Deleteable<T>() where T : class, new()
         {
            return ScopedContext.Deleteable<T>();
@@ -472,7 +478,10 @@ namespace SqlSugar
         {
              ScopedContext.RollbackTran();
         }
-
+        public Task RollbackTranAsync()
+        {
+            return ScopedContext.RollbackTranAsync();
+        }
 
         [Obsolete("use Storageable")]
         public ISaveable<T> Saveable<T>(List<T> saveObjects) where T : class, new()
