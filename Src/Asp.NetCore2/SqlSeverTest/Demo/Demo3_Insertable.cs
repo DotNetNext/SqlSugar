@@ -46,7 +46,8 @@ namespace OrmTest
 
             //ignore null columns
             db.Insertable(insertObjs).ExecuteCommand();//get change row count
-
+            db.Insertable(insertObjs).AS("ORDER").ExecuteCommand();//get change row count
+            db.Insertable(insertObjs.First()).AS("ORDER").ExecuteCommand();//get change row count
             //Use Lock
             db.Insertable(insertObj).With(SqlWith.UpdLock).ExecuteCommand();
 
