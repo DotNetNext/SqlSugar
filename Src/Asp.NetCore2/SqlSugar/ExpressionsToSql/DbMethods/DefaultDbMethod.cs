@@ -692,8 +692,8 @@ namespace SqlSugar
         public string CompareTo(MethodCallExpressionModel model) 
         {
             var parameterNameA=model.Args[0].MemberName;
-            var parameterNameB = model.Args[0].MemberName;
-            return $"(case when   '{parameterNameA}'>'{parameterNameB}'  then 1   when '{parameterNameA}'='{parameterNameB}' then 0 else -1 end)";
+            var parameterNameB = model.Args[1].MemberName;
+            return $"(case when   {parameterNameA}>{parameterNameB}  then 1   when {parameterNameA}={parameterNameB} then 0 else -1 end)";
         }
     }
 }

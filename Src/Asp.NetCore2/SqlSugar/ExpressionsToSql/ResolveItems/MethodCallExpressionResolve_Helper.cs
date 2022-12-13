@@ -792,6 +792,10 @@ namespace SqlSugar
             {
                 return true;
             }
+            if (expression.Method.Name == "CompareTo") 
+            {
+                return true;
+            }
             if (expression.Method.Name == "Format" && expression.Method.DeclaringType == UtilConstants.StringType)
             {
                 return true;
