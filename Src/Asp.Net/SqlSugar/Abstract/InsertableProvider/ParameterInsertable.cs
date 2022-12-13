@@ -49,6 +49,7 @@ namespace SqlSugar
                     var itemable = this.Context.Insertable(item);
                     itemable.InsertBuilder.DbColumnInfoList = itemable.InsertBuilder.DbColumnInfoList.Where(it => columns.Contains(it.DbColumnName)).ToList();
                     itemable.InsertBuilder.TableWithString = tableWithString;
+                    itemable.InsertBuilder.AsName = Inserable.InsertBuilder.AsName;
                     (itemable as InsertableProvider<T>).RemoveCacheFunc = removeCacheFunc;
                     itemable.AddQueue();
                 }
@@ -77,6 +78,7 @@ namespace SqlSugar
                     var itemable = this.Context.Insertable(item);
                     itemable.InsertBuilder.DbColumnInfoList = itemable.InsertBuilder.DbColumnInfoList.Where(it => columns.Contains(it.DbColumnName)).ToList();
                     itemable.InsertBuilder.TableWithString = tableWithString;
+                    itemable.InsertBuilder.AsName = Inserable.InsertBuilder.AsName;
                     (itemable as InsertableProvider<T>).RemoveCacheFunc = removeCacheFunc;
                     itemable.AddQueue();
                 }

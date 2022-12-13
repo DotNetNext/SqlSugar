@@ -424,16 +424,7 @@ namespace SqlSugar
         }
         public IInsertable<T> AS(string tableName)
         {
-            if (tableName == null) return this;
-            var entityName = typeof(T).Name;
-            IsAs = true;
-            OldMappingTableList = this.Context.MappingTables;
-            this.Context.MappingTables = this.Context.Utilities.TranslateCopy(this.Context.MappingTables);
-            if (this.Context.MappingTables.Any(it => it.EntityName == entityName))
-            {
-                this.Context.MappingTables.Add(this.Context.MappingTables.First(it => it.EntityName == entityName).DbTableName, tableName);
-            }
-            this.Context.MappingTables.Add(entityName, tableName);
+            this.InsertBuilder.AsName = tableName;
             return this; ;
         }
         public IInsertable<T> IgnoreColumns(Expression<Func<T, object>> columns)

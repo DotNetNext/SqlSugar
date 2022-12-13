@@ -35,6 +35,7 @@ namespace SqlSugar
         public virtual bool IsNoPage { get; set; }
 
         public virtual bool IsReturnPkList { get; set; }
+        public string AsName { get; set; }
         #endregion
 
         #region SqlTemplate
@@ -115,6 +116,10 @@ namespace SqlSugar
         {
             get
             {
+                if (AsName.HasValue()) 
+                {
+                    return Builder.GetTranslationTableName(AsName);
+                }
                 var result = Builder.GetTranslationTableName(EntityInfo.EntityName);
                 result += UtilConstants.Space;
                 if (this.TableWithString.HasValue())
