@@ -9,6 +9,10 @@ namespace SqlSugar
 {
     public partial class SqlFunc
     {
+        public static int CompareTo(string strA, string strB) 
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
         public static int RowNumber(object orderByField, object partitionBy) 
         {
             throw new NotSupportedException("Can only be used in expressions");

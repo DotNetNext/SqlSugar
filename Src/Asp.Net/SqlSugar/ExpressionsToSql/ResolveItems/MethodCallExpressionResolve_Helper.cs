@@ -756,6 +756,8 @@ namespace SqlSugar
                         return this.Context.DbMehtods.JsonListObjectAny(model);
                     case "JsonArrayAny":
                         return this.Context.DbMehtods.JsonArrayAny(model);
+                    case "CompareTo":
+                        return this.Context.DbMehtods.CompareTo(model);
                     default:
                         break;
                 }
