@@ -34,6 +34,7 @@ namespace SqlSugar
         IDeleteable<T> WhereColumns(List<T> list,Expression<Func<T, object>> columns);
         IDeleteable<T> WhereColumns(List<Dictionary<string,object>> columns);
         IDeleteable<T> Where(List<IConditionalModel> conditionalModels);
+        IDeleteable<T> EnableDiffLogEventIF(bool isEnableDiffLogEvent, object businessData = null);
         IDeleteable<T> EnableDiffLogEvent(object businessData = null);
         IDeleteable<T> RemoveDataCache();
         IDeleteable<T> RemoveDataCache(string likeString);

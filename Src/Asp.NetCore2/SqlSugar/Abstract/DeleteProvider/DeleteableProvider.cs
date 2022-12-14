@@ -53,7 +53,7 @@ namespace SqlSugar
             string sql;
             SugarParameter[] paramters;
             _ExecuteCommand(out sql, out paramters);
-            var result =await Db.ExecuteCommandAsync(sql, paramters);
+            var result = await Db.ExecuteCommandAsync(sql, paramters);
             After(sql);
             return result;
         }
@@ -61,7 +61,7 @@ namespace SqlSugar
         {
             return await ExecuteCommandAsync() > 0;
         }
-        public IDeleteable<T> AsType(Type tableNameType) 
+        public IDeleteable<T> AsType(Type tableNameType)
         {
             return AS(this.Context.EntityMaintenance.GetEntityInfo(tableNameType).DbTableName);
         }
@@ -79,7 +79,17 @@ namespace SqlSugar
             this.Context.MappingTables.Add(entityName, tableName);
             return this; ;
         }
-
+        public IDeleteable<T> EnableDiffLogEventIF(bool isEnableDiffLogEvent, object businessData = null)
+        {
+            if (isEnableDiffLogEvent)
+            {
+                return EnableDiffLogEvent(businessData);
+            }
+            else 
+            {
+                return this;
+            }
+        }
         public IDeleteable<T> EnableDiffLogEvent(object businessData = null)
         {
 
