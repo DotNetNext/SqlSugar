@@ -99,7 +99,7 @@ namespace OrmTest {
 
             Console.WriteLine(result);
             Console.WriteLine("用例跑完");
-            Console.ReadKey();
+           
         }
         //建类
         public class Test0011
