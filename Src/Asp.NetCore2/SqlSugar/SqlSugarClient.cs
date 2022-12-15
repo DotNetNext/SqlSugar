@@ -538,6 +538,10 @@ namespace SqlSugar
         {
             return this.Context.Saveable(saveObject);
         }
+        public StorageableMethodInfo StorageableByObject(object singleEntityObjectOrListObject)
+        {
+            return this.Context.StorageableByObject(singleEntityObjectOrListObject);
+        }
         #endregion
 
         #region Reportable
