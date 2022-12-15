@@ -53,7 +53,7 @@ namespace SqlSugar
             {
                 return @"select cast(relname as varchar) as Name,
                         cast(obj_description(relfilenode,'sys_class') as varchar) as Description from sys_class c 
-                        where  relkind = 'r' and relname not like 'sys_%' and relname not like 'pg_%' and relname not like 'sql_%' order by relname";
+                        where  relkind = 'r' and  c.oid > 16384 and c.relnamespace != 99 and c.relname not like '%pl_profiler_saved%' order by relname";
             }
         }
         protected override string GetViewInfoListSql
