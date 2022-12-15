@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Dynamic;
@@ -870,23 +871,51 @@ namespace SqlSugar
             data.Columns.Add(new DataColumn("SugarColumns", typeof(string[])));
             return result;
         }
-        public StorageableMethodInfo StorageableByObject(object singleEntityObject)
+        public StorageableMethodInfo StorageableByObject(object singleEntityObjectOrList)
         {
-            if (singleEntityObject == null)
+            if (singleEntityObjectOrList == null)
                 return new StorageableMethodInfo();
-            var methods = this.Context.GetType().GetMethods()
-                .Where(it => it.Name == "Storageable")
-                .Where(it => it.GetGenericArguments().Any())
-                .Where(it => it.GetParameters().Any(z => z.ParameterType.Name == "T"))
-                .Where(it => it.Name == "Storageable").ToList();
-            var method = methods.Single().MakeGenericMethod(singleEntityObject.GetType());
-            StorageableMethodInfo result = new StorageableMethodInfo()
+            if (singleEntityObjectOrList.GetType().FullName.IsCollectionsList())
             {
-                Context = this.Context,
-                MethodInfo = method,
-                objectValue = singleEntityObject
-            };
-            return result;
+                var list = ((IList)singleEntityObjectOrList);
+                if(list==null|| list.Count==0)
+                    return new StorageableMethodInfo();
+                var type=list[0].GetType();
+                var newList = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(type)) ;
+                foreach (var item in list)
+                {
+                    newList.Add(item);
+                }
+               var methods = this.Context.GetType().GetMethods()
+              .Where(it => it.Name == "Storageable")
+              .Where(it => it.GetGenericArguments().Any())
+              .Where(it => it.GetParameters().Any(z => z.ParameterType.Name.StartsWith("List")))
+              .Where(it => it.Name == "Storageable").ToList();
+                var method = methods.Single().MakeGenericMethod(newList.GetType().GetGenericArguments().First());
+                StorageableMethodInfo result = new StorageableMethodInfo()
+                {
+                    Context = this.Context,
+                    MethodInfo = method,
+                    objectValue = newList
+                };
+                return result;
+            }
+            else
+            {
+                var methods = this.Context.GetType().GetMethods()
+                    .Where(it => it.Name == "Storageable")
+                    .Where(it => it.GetGenericArguments().Any())
+                    .Where(it => it.GetParameters().Any(z => z.ParameterType.Name == "T"))
+                    .Where(it => it.Name == "Storageable").ToList();
+                var method = methods.Single().MakeGenericMethod(singleEntityObjectOrList.GetType());
+                StorageableMethodInfo result = new StorageableMethodInfo()
+                {
+                    Context = this.Context,
+                    MethodInfo = method,
+                    objectValue = singleEntityObjectOrList
+                };
+                return result;
+            }
         }
         #endregion
 
