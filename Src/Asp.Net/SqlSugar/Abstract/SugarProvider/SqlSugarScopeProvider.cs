@@ -588,6 +588,10 @@ namespace SqlSugar
         {
             return ScopedContext.Storageable(data);
         }
+        public StorageableMethodInfo StorageableByObject(object singleEntityObjectOrListObject) 
+        {
+            return ScopedContext.StorageableByObject(singleEntityObjectOrListObject);
+        }
 
         public ISugarQueryable<T> Union<T>(List<ISugarQueryable<T>> queryables) where T : class, new()
         {

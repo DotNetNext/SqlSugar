@@ -4,6 +4,7 @@ using System.Data;
 using System.Dynamic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -867,6 +868,24 @@ namespace SqlSugar
             data.Columns.Add(new DataColumn("SugarUpdateRows", typeof(List<DataRow>)));
             data.Columns.Add(new DataColumn("SugarErrorMessage", typeof(string)));
             data.Columns.Add(new DataColumn("SugarColumns", typeof(string[])));
+            return result;
+        }
+        public StorageableMethodInfo StorageableByObject(object singleEntityObject)
+        {
+            if (singleEntityObject == null)
+                return new StorageableMethodInfo();
+            var methods = this.Context.GetType().GetMethods()
+                .Where(it => it.Name == "Storageable")
+                .Where(it => it.GetGenericArguments().Any())
+                .Where(it => it.GetParameters().Any(z => z.ParameterType.Name == "T"))
+                .Where(it => it.Name == "Storageable").ToList();
+            var method = methods.Single().MakeGenericMethod(singleEntityObject.GetType());
+            StorageableMethodInfo result = new StorageableMethodInfo()
+            {
+                Context = this.Context,
+                MethodInfo = method,
+                objectValue = singleEntityObject
+            };
             return result;
         }
         #endregion
