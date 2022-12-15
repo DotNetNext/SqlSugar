@@ -28,6 +28,11 @@ namespace OrmTest
             {
                 IsAutoToUpper = false
             };
+            if (db.DbMaintenance.IsAnyTable("CodeFirstNoUpper4",false))
+            {
+                db.DbMaintenance.DropTable<CodeFirstNoUpper4>();
+            }
+            db.CodeFirst.InitTables<CodeFirstNoUpper4>();
             db.CodeFirst.InitTables<CodeFirstNoUpper4>();
             db.Insertable(new CodeFirstNoUpper4() { Id = Guid.NewGuid() + "", Name = "a" }).ExecuteCommand();
             var list2 = db.Queryable<CodeFirstNoUpper4>().Where(it => it.Id != null).ToList();
