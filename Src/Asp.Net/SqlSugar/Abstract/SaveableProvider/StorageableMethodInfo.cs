@@ -21,15 +21,21 @@ namespace SqlSugar
             return (int)method.Invoke(objectValue, new object[] { });
         }
 
-        public StorageableAsMethodInfo AsInsertable()
+        public StorageableAsMethodInfo AsInsertable
         {
-            var type = "AsInsertable";
-            return GetAs(type);
+            get
+            {
+                var type = "AsInsertable";
+                return GetAs(type);
+            }
         }
-        public StorageableAsMethodInfo AsUpdateable()
+        public StorageableAsMethodInfo AsUpdateable 
         {
-            var type = "AsUpdateable";
-            return GetAs(type);
+            get
+            {
+                var type = "AsUpdateable";
+                return GetAs(type);
+            }
         }
 
         private StorageableAsMethodInfo GetAs(string type)
