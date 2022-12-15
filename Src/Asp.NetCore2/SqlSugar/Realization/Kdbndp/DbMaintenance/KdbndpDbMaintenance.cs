@@ -375,7 +375,7 @@ namespace SqlSugar
             string primaryKeyInfo = null;
             if (columns.Any(it => it.IsPrimarykey) && isCreatePrimaryKey)
             {
-                primaryKeyInfo = string.Format(", Primary key({0})", string.Join(",", columns.Where(it => it.IsPrimarykey).Select(it => this.SqlBuilder.GetTranslationColumnName(it.DbColumnName.ToLower()))));
+                primaryKeyInfo = string.Format(", Primary key({0})", string.Join(",", columns.Where(it => it.IsPrimarykey).Select(it => this.SqlBuilder.GetTranslationColumnName(it.DbColumnName.ToUpper(IsUpper)))));
 
             }
             sql = sql.Replace("$PrimaryKey", primaryKeyInfo);
@@ -402,7 +402,7 @@ namespace SqlSugar
                 string dataSize = item.Length > 0 ? string.Format("({0})", item.Length) : null;
                 string nullType = item.IsNullable ? this.CreateTableNull : CreateTableNotNull;
                 string primaryKey = null;
-                string addItem = string.Format(this.CreateTableColumn, this.SqlBuilder.GetTranslationColumnName(columnName.ToLower()), dataType, dataSize, nullType, primaryKey, "");
+                string addItem = string.Format(this.CreateTableColumn, this.SqlBuilder.GetTranslationColumnName(columnName.ToUpper(IsUpper)), dataType, dataSize, nullType, primaryKey, "");
                 if (item.IsIdentity)
                 {
                     string length = dataType.Substring(dataType.Length - 1);
@@ -411,7 +411,7 @@ namespace SqlSugar
                 }
                 columnArray.Add(addItem);
             }
-            string tableString = string.Format(this.CreateTableSql, this.SqlBuilder.GetTranslationTableName(tableName.ToLower()), string.Join(",\r\n", columnArray));
+            string tableString = string.Format(this.CreateTableSql, this.SqlBuilder.GetTranslationTableName(tableName.ToUpper(IsUpper)), string.Join(",\r\n", columnArray));
             return tableString;
         }
         public override bool IsAnyConstraint(string constraintName)
