@@ -53,7 +53,7 @@ namespace OrmTest
             UValidate.Check(sql, "SELECT `Name`,`Price`,`CreateTime`,`CustomId` FROM `Order` ", "Queryable");
 
             var cts = IEnumerbleContains.Data();
-            var list2=Db.Queryable<Order>()
+            var list2 = Db.Queryable<Order>()
                     .Where(p => /*ids.*/cts.Select(c => c.Id).Contains(p.Id)).ToList();
 
             var cts2 = IEnumerbleContains.Data().ToList(); ;
@@ -78,6 +78,14 @@ namespace OrmTest
                 CheckMan = saleOrderInfo.CheckMan,
                 CheckTime = DateTime.Now
             }, o => o.OrderSn == saleOrderInfo.OrderSn && o.OrderStatus != 1);
+
+            var sql2 = Db.Queryable<Order>().Where(x => x.Id == 1)
+                .LeftJoin(Db.SqlQueryable<Custom>("select * from Custom"), (x, y) => x.Id == y.Id)
+              .ToSql().Key;
+            if (!sql2.Contains("SELECT x.* FROM  (SELECT * FROM  (SELECT `Id`,`Name`,`Price`,`CreateTime`,`CustomId` FROM `Order`  WHERE ( `Id` = @Id0 ) ) MergeTable ) x Left JOIN (select * from Custom) y  ON ( `x`.`Id` = `y`.`Id` ) ")) 
+            {
+                throw new Exception("unit error");
+            }
         }
 
         public static class IEnumerbleContains
