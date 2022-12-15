@@ -172,7 +172,7 @@ namespace SqlSugar
 
         protected override string IsAnyTableRemarkSql { get { throw new NotSupportedException(); } }
 
-        protected override string RenameTableSql => "alter table 表名 {0} to {1}";
+        protected override string RenameTableSql => "alter table  {0} to {1}";
 
         protected override string CreateIndexSql
         {
