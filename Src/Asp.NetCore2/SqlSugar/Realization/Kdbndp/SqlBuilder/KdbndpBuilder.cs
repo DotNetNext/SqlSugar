@@ -40,11 +40,11 @@ namespace SqlSugar
         {
             if (propertyName.Contains(".") && !propertyName.Contains(SqlTranslationLeft))
             {
-                return string.Join(".", propertyName.Split('.').Select(it => $"{SqlTranslationLeft}{it.ToUpper()}{SqlTranslationRight}"));
+                return string.Join(".", propertyName.Split('.').Select(it => $"{SqlTranslationLeft}{it.ToUpper(IsUpper)}{SqlTranslationRight}"));
             }
             if (propertyName.Contains(SqlTranslationLeft)) return propertyName;
             else
-                return SqlTranslationLeft + propertyName.ToUpper() + SqlTranslationRight;
+                return SqlTranslationLeft + propertyName.ToUpper(IsUpper) + SqlTranslationRight;
         }
 
         //public override string GetNoTranslationColumnName(string name)
@@ -61,7 +61,7 @@ namespace SqlSugar
                  .FirstOrDefault(it =>
                  it.EntityName.Equals(entityName, StringComparison.CurrentCultureIgnoreCase) &&
                  it.PropertyName.Equals(propertyName, StringComparison.CurrentCultureIgnoreCase));
-            return (mappingInfo == null ? SqlTranslationLeft + propertyName.ToUpper()+ SqlTranslationRight : SqlTranslationLeft + mappingInfo.DbColumnName.ToUpper() + SqlTranslationRight);
+            return (mappingInfo == null ? SqlTranslationLeft + propertyName.ToUpper(IsUpper)+ SqlTranslationRight : SqlTranslationLeft + mappingInfo.DbColumnName.ToUpper(IsUpper) + SqlTranslationRight);
         }
 
         public override string GetTranslationTableName(string name)
@@ -75,7 +75,7 @@ namespace SqlSugar
             name = (mappingInfo == null ? name : mappingInfo.DbTableName);
             if (name.Contains(".")&& !name.Contains("("))
             {
-                return string.Join(".", name.ToUpper().Split('.').Select(it => SqlTranslationLeft + it + SqlTranslationRight));
+                return string.Join(".", name.ToUpper(IsUpper).Split('.').Select(it => SqlTranslationLeft + it + SqlTranslationRight));
             }
             else if (name.Contains("("))
             {
@@ -87,7 +87,25 @@ namespace SqlSugar
             }
             else
             {
-                return SqlTranslationLeft + name.ToUpper().TrimEnd('"').TrimStart('"') + SqlTranslationRight;
+                return SqlTranslationLeft + name.ToUpper(IsUpper).TrimEnd('"').TrimStart('"') + SqlTranslationRight;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool IsUpper
+        {
+            get
+            {
+                if (this.Context.CurrentConnectionConfig.MoreSettings == null)
+                {
+                    return true;
+                }
+                else
+                {
+                    return this.Context.CurrentConnectionConfig.MoreSettings.IsAutoToUpper == true;
+                }
             }
         }
     }

@@ -25,7 +25,7 @@ namespace SqlSugar
         }
         public override string GetTranslationText(string name)
         {
-            return SqlTranslationLeft + name.ToUpper() + SqlTranslationRight;
+            return SqlTranslationLeft + name.ToUpper(IsUpper) + SqlTranslationRight;
         }
 
         public override string GetTranslationTableName(string entityName, bool isMapping = true)
@@ -47,7 +47,7 @@ namespace SqlSugar
             else if (isMapping)
             {
                 var mappingInfo = this.MappingTables.FirstOrDefault(it => it.EntityName.Equals(entityName, StringComparison.CurrentCultureIgnoreCase));
-                return SqlTranslationLeft + (mappingInfo == null ? entityName : mappingInfo.DbTableName).ToUpper() + SqlTranslationRight;
+                return SqlTranslationLeft + (mappingInfo == null ? entityName : mappingInfo.DbTableName).ToUpper(IsUpper) + SqlTranslationRight;
             }
             else if (isComplex)
             {
@@ -80,11 +80,25 @@ namespace SqlSugar
             if (this.MappingColumns.HasValue())
             {
                 var mappingInfo = this.MappingColumns.SingleOrDefault(it => it.EntityName == entityName && it.PropertyName == propertyName);
-                return (mappingInfo == null ? propertyName : mappingInfo.DbColumnName).ToUpper();
+                return (mappingInfo == null ? propertyName : mappingInfo.DbColumnName).ToUpper(IsUpper);
             }
             else
             {
-                return propertyName.ToUpper();
+                return propertyName.ToUpper(IsUpper);
+            }
+        }
+        public bool IsUpper
+        {
+            get
+            {
+                if (this.SugarContext?.Context?.Context?.CurrentConnectionConfig?.MoreSettings == null)
+                {
+                    return true;
+                }
+                else
+                {
+                    return this.SugarContext?.Context?.Context?.CurrentConnectionConfig?.MoreSettings.IsAutoToUpper == true;
+                }
             }
         }
     }

@@ -260,7 +260,7 @@ namespace SqlSugar
                 }
             }
 
-            return schema.ToUpper();
+            return schema.ToUpper(IsUpper);
         }
         public override bool UpdateColumn(string tableName, DbColumnInfo columnInfo)
         {
@@ -296,13 +296,13 @@ namespace SqlSugar
         public override bool IsAnyColumn(string tableName, string columnName, bool isCache = true)
         {
             var sql =
-                $"select count(*) from information_schema.columns WHERE table_schema = 'public'  and UPPER(table_name) = '{tableName.ToUpper()}' and UPPER(column_name) = '{columnName.ToUpper()}'";
+                $"select count(*) from information_schema.columns WHERE table_schema = 'public'  and UPPER(table_name) = '{tableName.ToUpper(IsUpper)}' and UPPER(column_name) = '{columnName.ToUpper(IsUpper)}'";
             return this.Context.Ado.GetInt(sql) > 0;
         }
 
         public override bool IsAnyTable(string tableName, bool isCache = true)
         {
-            var sql = $"select count(*) from information_schema.tables where table_schema='public' and table_type='BASE TABLE' and UPPER(table_name)='{tableName.ToUpper()}'";
+            var sql = $"select count(*) from information_schema.tables where table_schema='public' and table_type='BASE TABLE' and UPPER(table_name)='{tableName.ToUpper(IsUpper)}'";
             return this.Context.Ado.GetInt(sql)>0;
         }
 
@@ -427,6 +427,20 @@ namespace SqlSugar
         public override List<DbColumnInfo> GetColumnInfosByTableName(string tableName, bool isCache = true)
         {
             return base.GetColumnInfosByTableName(tableName.TrimEnd('"').TrimStart('"').ToLower(), isCache);
+        }
+        public bool IsUpper
+        {
+            get
+            {
+                if (this.Context.CurrentConnectionConfig.MoreSettings == null)
+                {
+                    return true;
+                }
+                else
+                {
+                    return this.Context.CurrentConnectionConfig.MoreSettings.IsAutoToUpper == true;
+                }
+            }
         }
         #endregion
     }
