@@ -51,7 +51,7 @@ namespace SqlSugar
 
             if (MasterHasWhereFirstJoin())
             {
-                return this.MergeTable().LeftJoin<T2>(joinExpression);
+                return this.MergeTable().LeftJoin<T2>(joinQueryable, joinExpression);
             }
 
             this.Context.InitMappingInfo<T2>();
@@ -73,7 +73,7 @@ namespace SqlSugar
         {
             if (MasterHasWhereFirstJoin())
             {
-                return this.MergeTable().InnerJoin<T2>(joinExpression);
+                return this.MergeTable().InnerJoin<T2>(joinQueryable,joinExpression);
             }
 
             this.Context.InitMappingInfo<T2>();
@@ -96,7 +96,7 @@ namespace SqlSugar
 
             if (MasterHasWhereFirstJoin())
             {
-                return this.MergeTable().RightJoin<T2>(joinExpression);
+                return this.MergeTable().RightJoin<T2>(joinQueryable, joinExpression);
             }
 
             this.Context.InitMappingInfo<T2>();
@@ -119,7 +119,7 @@ namespace SqlSugar
 
             if (MasterHasWhereFirstJoin())
             {
-                return this.MergeTable().FullJoin<T2>(joinExpression);
+                return this.MergeTable().FullJoin<T2>(joinQueryable,joinExpression);
             }
 
             this.Context.InitMappingInfo<T2>();
