@@ -30,7 +30,7 @@ namespace SqlSugar
                                 then true else false end as IsIdentity,
                                 case when UPPER(pcolumn.is_nullable) = 'YES'
                                 then true else false end as IsNullable
-                                 from (select * from sys_tables where  UPPER(tablename) = UPPER('{{0}}') and UPPER(schemaname)='{GetSchema()}') ptables inner join sys_class pclass
+                                 from (select * from sys_tables where  UPPER(tablename) = UPPER('{{0}}') and  schemaname='{GetSchema()}') ptables inner join sys_class pclass
                                 on ptables.tablename = pclass.relname inner join (SELECT *
                                 FROM information_schema.columns
                                 ) pcolumn on pcolumn.table_name = ptables.tablename
@@ -260,7 +260,7 @@ namespace SqlSugar
                 }
             }
 
-            return schema.ToUpper(IsUpper);
+            return schema.ToLower();
         }
         public override bool UpdateColumn(string tableName, DbColumnInfo columnInfo)
         {
@@ -293,16 +293,16 @@ namespace SqlSugar
             //}
             return dataType + "" + dataSize;
         }
-        public override bool IsAnyColumn(string tableName, string columnName, bool isCache = true)
-        {
-            var sql =
-                $"select count(*) from information_schema.columns WHERE table_schema = 'public'  and UPPER(table_name) = '{tableName.ToUpper(IsUpper)}' and UPPER(column_name) = '{columnName.ToUpper(IsUpper)}'";
-            return this.Context.Ado.GetInt(sql) > 0;
-        }
+        //public override bool IsAnyColumn(string tableName, string columnName, bool isCache = true)
+        //{
+        //    var sql =
+        //        $"select count(*) from information_schema.columns WHERE table_schema = '{GetSchema()}'  and UPPER(table_name) = '{tableName.ToUpper(IsUpper)}' and UPPER(column_name) = '{columnName.ToUpper(IsUpper)}'";
+        //    return this.Context.Ado.GetInt(sql) > 0;
+        //}
 
         public override bool IsAnyTable(string tableName, bool isCache = true)
         {
-            var sql = $"select count(*) from information_schema.tables where table_schema='public' and table_type='BASE TABLE' and UPPER(table_name)='{tableName.ToUpper(IsUpper)}'";
+            var sql = $"select count(*) from information_schema.tables where UPPER(table_schema)=UPPER('{GetSchema()}') and UPPER(table_type)=UPPER('BASE TABLE') and UPPER(table_name)=UPPER('{tableName.ToUpper(IsUpper)}')";
             return this.Context.Ado.GetInt(sql)>0;
         }
 
