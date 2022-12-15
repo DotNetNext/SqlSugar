@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            USaveable.Init();
             UnitSubToList.Init();
             UnitByteArray.Init();
             Unit01.Init();

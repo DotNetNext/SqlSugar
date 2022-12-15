@@ -102,6 +102,7 @@
     <Compile Include="UnitTest\Updateable.cs" />
     <Compile Include="UnitTest\UQueryable.cs" />
     <Compile Include="UnitTest\UQueryableAsync.cs" />
+    <Compile Include="UnitTest\USaveable.cs" />
     <Compile Include="UnitTest\UThread.cs" />
     <Compile Include="UnitTest\UThread2.cs" />
     <Compile Include="UnitTest\UThread3.cs" />
