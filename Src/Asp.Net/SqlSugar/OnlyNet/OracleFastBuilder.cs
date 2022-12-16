@@ -9,6 +9,7 @@ namespace SqlSugar
 {
     public class OracleFastBuilder:IFastBuilder
     {
+        public EntityInfo FastEntityInfo { get; set; }
         public string CharacterSet { get; set; }
         public OracleFastBuilder(EntityInfo entityInfo) 
         {
