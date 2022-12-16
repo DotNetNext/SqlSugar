@@ -42,7 +42,10 @@ namespace SqlSugar
                 default:
                     break;
             }
-            throw new Exception(this.context.CurrentConnectionConfig.DbType + "开发中...");
+            var reslut = InstanceFactory.CreateInstance<IFastBuilder>($"SqlSugar.{this.context.CurrentConnectionConfig.DbType}FastBuilder");
+            reslut.CharacterSet = this.CharacterSet;
+            reslut.FastEntityInfo = this.entityInfo;
+            return reslut;
         }
         private DataTable ToDdateTable(List<T> datas)
         {
