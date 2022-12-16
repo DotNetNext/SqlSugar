@@ -884,11 +884,17 @@ namespace SqlSugar
         #region  Other
         protected string AppendSelect(List<EntityColumnInfo> entityColumnInfos,string sql, ReadOnlyCollection<ParameterExpression> parameters, List<EntityColumnInfo> columnsResult, int parameterIndex1)
         {
+            var lowerSql = sql.ToLower();
+            var isSubquery = lowerSql.Contains("select ") && ExpressionTool.IsMemberInit(this.QueryBuilder.SelectValue);
+            if (isSubquery) 
+            {
+                return AppendSelectWithSubQuery(entityColumnInfos, sql, parameters, columnsResult, parameterIndex1);
+            }
             var columns = entityColumnInfos;
             var parameterName = parameters[parameterIndex1];
             foreach (var item in columns)
             {
-                if (item.IsIgnore == false && columnsResult.Any(it => it.PropertyName.EqualCase(item.PropertyName)) && !sql.ToLower().Contains(SqlBuilder.GetTranslationColumnName(item.PropertyName.ToLower())))
+                if (item.IsIgnore == false && columnsResult.Any(it => it.PropertyName.EqualCase(item.PropertyName)) && !lowerSql.Contains(SqlBuilder.GetTranslationColumnName(item.PropertyName.ToLower())))
                 {
                     sql = $" {sql},{SqlBuilder.GetTranslationColumnName(item.DbColumnName)} AS {SqlBuilder.GetTranslationColumnName(item.PropertyName)} ";
                 }
@@ -896,6 +902,28 @@ namespace SqlSugar
 
             return sql;
         }
+
+        private string AppendSelectWithSubQuery(List<EntityColumnInfo> entityColumnInfos, string sql, ReadOnlyCollection<ParameterExpression> parameters, List<EntityColumnInfo> columnsResult, int parameterIndex1)
+        {
+            var list = ExpressionTool.GetMemberInit(this.QueryBuilder.SelectValue).Bindings.Cast<MemberBinding>()
+                 .Select(it => it.Member.Name).ToList();
+            var columns = entityColumnInfos;
+            var parameterName = parameters[parameterIndex1];
+            if (this.QueryBuilder.AutoAppendedColumns == null) 
+            {
+                this.QueryBuilder.AutoAppendedColumns = new List<string>();
+            }
+            foreach (var item in columns)
+            {
+                if (item.IsIgnore == false &&!this.QueryBuilder.AutoAppendedColumns.Contains(item.PropertyName)&& columnsResult.Any(it => it.PropertyName.EqualCase(item.PropertyName))&& !list.Any(it=>it.EqualCase(item.PropertyName)))
+                {
+                    sql = $" {sql},{SqlBuilder.GetTranslationColumnName(item.DbColumnName)} AS {SqlBuilder.GetTranslationColumnName(item.PropertyName)} ";
+                    this.QueryBuilder.AutoAppendedColumns.Add(item.PropertyName);
+                }
+            }
+            return sql;
+        }
+
         protected string AppendSelect<EntityType>(string sql, ReadOnlyCollection<ParameterExpression> parameters, List<EntityColumnInfo> columnsResult, int parameterIndex1)
         {
             var columns = this.Context.EntityMaintenance.GetEntityInfo<EntityType>().Columns;

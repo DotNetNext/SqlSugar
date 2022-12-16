@@ -575,5 +575,47 @@ namespace SqlSugar
             }
             return false;
         }
+
+        internal static bool IsMemberInit(object selectValue)
+        {
+            var result = false;
+            if (selectValue is Expression) 
+            {
+                if (selectValue is MemberInitExpression)
+                {
+                    result = true;
+                }
+                else if (selectValue is LambdaExpression) 
+                {
+                    var lambda = (LambdaExpression)selectValue;
+                    if (lambda.Body is MemberInitExpression) 
+                    {
+                        result = true;
+                    }
+                }
+            }
+            return result;
+        }
+
+        internal static MemberInitExpression GetMemberInit(object selectValue)
+        {
+            MemberInitExpression result = null;
+            if (selectValue is Expression)
+            {
+                if (selectValue is MemberInitExpression)
+                {
+                    result = (MemberInitExpression)selectValue;
+                }
+                else if (selectValue is LambdaExpression)
+                {
+                    var lambda = (LambdaExpression)selectValue;
+                    if (lambda.Body is MemberInitExpression)
+                    {
+                        result = (MemberInitExpression)lambda.Body;
+                    }
+                }
+            }
+            return result;
+        }
     }
 }
