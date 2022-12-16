@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            USelectTest.Init();
             UnitSubToList.Init();
             UnitByteArray.Init();
             UnitInsertNavOneToOne.Init();
