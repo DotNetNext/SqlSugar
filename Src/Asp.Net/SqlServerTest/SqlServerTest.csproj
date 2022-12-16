@@ -97,7 +97,6 @@
     <Compile Include="Models\OrderItem.cs" />
     <Compile Include="Demo\Demo0_SqlSugarClient.cs" />
     <Compile Include="Models\ViewOrder.cs" />
-    <Compile Include="UnitTest\Class1.cs" />
     <Compile Include="UnitTest\UnitSubToList.cs" />
     <Compile Include="UnitTest\Models\EntityBase.cs" />
     <Compile Include="UnitTest\UnitByteArray.cs" />
@@ -191,6 +190,7 @@
     <Compile Include="UnitTest\UOneManyMany2.cs" />
     <Compile Include="UnitTest\UOneManyMany.cs" />
     <Compile Include="UnitTest\USelectSinleDTO.cs" />
+    <Compile Include="UnitTest\USelectTest.cs" />
     <Compile Include="UnitTest\USplit.cs" />
     <Compile Include="UnitTest\Models\TB_AdminUser.cs" />
     <Compile Include="UnitTest\Models\TB_ClientConfig.cs" />
