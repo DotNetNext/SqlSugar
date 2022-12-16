@@ -851,6 +851,7 @@ namespace SqlSugar
         internal bool IsClone { get; set; }
         public bool NoCheckInclude { get;  set; }
         public virtual bool IsSelectNoAll { get; set; } = false;
+        public List<string> AutoAppendedColumns { get;  set; }
         #endregion
 
         private string GetTableName(string entityName)
