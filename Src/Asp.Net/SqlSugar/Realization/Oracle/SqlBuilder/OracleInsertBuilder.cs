@@ -38,7 +38,7 @@ namespace SqlSugar
             string columnsString = string.Join(",", groupList.First().Select(it => Builder.GetTranslationColumnName(it.DbColumnName)));
             if (isSingle&&this.EntityInfo.EntityName!= "Dictionary`2")
             {
-                string columnParametersString = string.Join(",", this.DbColumnInfoList.Select(it => Builder.SqlParameterKeyWord + it.DbColumnName));
+                string columnParametersString = string.Join(",", this.DbColumnInfoList.Select(it =>base.GetDbColumn(it, Builder.SqlParameterKeyWord + it.DbColumnName)));
                 if (identities.HasValue())
                 {
                     columnsString = columnsString.TrimEnd(',') + "," + string.Join(",", identities.Select(it => Builder.GetTranslationColumnName(it.DbColumnName)));
@@ -99,7 +99,7 @@ namespace SqlSugar
 
 
                 batchInsetrSql.Append("(");
-                insertColumns = string.Join(",", item.Select(it => FormatValue(it.Value, it.PropertyName)));
+                insertColumns = string.Join(",", item.Select(it =>GetDbColumn(it, FormatValue(it.Value, it.PropertyName))));
                 batchInsetrSql.Append(insertColumns);
                 if (identities.HasValue())
                 {
