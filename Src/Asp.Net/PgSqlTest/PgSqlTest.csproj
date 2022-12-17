@@ -103,6 +103,7 @@
     <Compile Include="Models\Tree.cs" />
     <Compile Include="Models\ViewOrder.cs" />
     <Compile Include="Config.cs" />
+    <Compile Include="UnitTest\UInsert3.cs" />
     <Compile Include="UnitTest\Unit001.cs" />
     <Compile Include="UnitTest\UnitByteArray.cs" />
     <Compile Include="UnitTest\UnitPgSplit.cs" />
