@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UInsert3.Init();
             Save();
             CodeFirst();
             Updateable();
