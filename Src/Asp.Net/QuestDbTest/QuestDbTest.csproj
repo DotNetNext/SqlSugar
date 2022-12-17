@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Config.cs" />
+    <Compile Include="Demo\UInsert3.cs" />
     <Compile Include="Demo\Unit01.cs" />
     <Compile Include="Demo\Demo0_SqlSugarClient.cs" />
     <Compile Include="Demo\Demo1_Queryable.cs" />
