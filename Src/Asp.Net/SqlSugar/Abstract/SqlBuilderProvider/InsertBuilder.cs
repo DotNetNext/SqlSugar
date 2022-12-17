@@ -272,6 +272,23 @@ namespace SqlSugar
             var date = UtilMethods.ConvertFromDateTimeOffset((DateTimeOffset)value);
             return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
         }
+
+        public virtual string GetDbColumn(DbColumnInfo columnInfo ,object name) 
+        {
+            if (columnInfo.InsertServerTime)
+            {
+                return LambdaExpressions.DbMehtods.GetDate();
+            }
+            else if (columnInfo.InsertSql.HasValue())
+            {
+                return columnInfo.InsertSql;
+            }
+            else 
+            {
+                return name+"";
+            }
+        }
+
         #endregion
     }
 }
