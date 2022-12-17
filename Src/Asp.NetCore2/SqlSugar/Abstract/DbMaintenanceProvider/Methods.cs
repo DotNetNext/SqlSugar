@@ -14,6 +14,10 @@ namespace SqlSugar
         {
             return db.Ado.SqlQuery<string>(this.GetDataBaseSql);
         }
+        public virtual List<string> GetDataBaseList()
+        {
+            return this.Context.Ado.SqlQuery<string>(this.GetDataBaseSql);
+        }
         public virtual List<DbTableInfo> GetViewInfoList(bool isCache = true)
         {
             string cacheKey = "DbMaintenanceProvider.GetViewInfoList" + this.Context.CurrentConnectionConfig.ConfigId;

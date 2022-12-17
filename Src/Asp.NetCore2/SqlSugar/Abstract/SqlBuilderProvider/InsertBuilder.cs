@@ -162,7 +162,7 @@ namespace SqlSugar
             string columnsString = string.Join(",", groupList.First().Select(it => Builder.GetTranslationColumnName(it.DbColumnName)));
             if (isSingle)
             {
-                string columnParametersString = string.Join(",", this.DbColumnInfoList.Select(it => Builder.SqlParameterKeyWord + it.DbColumnName));
+                string columnParametersString = string.Join(",", this.DbColumnInfoList.Select(it =>this.GetDbColumn(it, Builder.SqlParameterKeyWord + it.DbColumnName)));
                 return string.Format(SqlTemplate, GetTableNameString, columnsString, columnParametersString);
             }
             else
@@ -191,7 +191,7 @@ namespace SqlSugar
                         {
                             batchInsetrSql.Append(SqlTemplateBatchUnion);
                         }
-                        batchInsetrSql.Append("\r\n SELECT " + string.Join(",", columns.Select(it => string.Format(SqlTemplateBatchSelect, FormatValue(it.Value),Builder.GetTranslationColumnName(it.DbColumnName)))));
+                        batchInsetrSql.Append("\r\n SELECT " + string.Join(",", columns.Select(it => string.Format(SqlTemplateBatchSelect,this.GetDbColumn(it, FormatValue(it.Value)),Builder.GetTranslationColumnName(it.DbColumnName)))));
                         ++i;
                     }
                     pageIndex++;
@@ -272,6 +272,23 @@ namespace SqlSugar
             var date = UtilMethods.ConvertFromDateTimeOffset((DateTimeOffset)value);
             return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
         }
+
+        public virtual string GetDbColumn(DbColumnInfo columnInfo ,object name) 
+        {
+            if (columnInfo.InsertServerTime)
+            {
+                return LambdaExpressions.DbMehtods.GetDate();
+            }
+            else if (columnInfo.InsertSql.HasValue())
+            {
+                return columnInfo.InsertSql;
+            }
+            else 
+            {
+                return name+"";
+            }
+        }
+
         #endregion
     }
 }

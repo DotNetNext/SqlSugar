@@ -291,6 +291,8 @@ namespace SqlSugar
                         column.SqlParameterDbType = sugarColumn.SqlParameterDbType;
                         column.SqlParameterSize = sugarColumn.SqlParameterSize;
                         column.CreateTableFieldSort = sugarColumn.CreateTableFieldSort;
+                        column.InsertServerTime = sugarColumn.InsertServerTime;
+                        column.InsertSql = sugarColumn.InsertSql;
                         if (sugarColumn.IsJson && String.IsNullOrEmpty(sugarColumn.ColumnDataType))
                         {
                             if (this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL)

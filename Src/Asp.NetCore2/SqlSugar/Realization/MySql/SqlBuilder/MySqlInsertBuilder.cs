@@ -125,7 +125,7 @@ namespace SqlSugar
             string columnsString = string.Join(",", groupList.First().Select(it => Builder.GetTranslationColumnName(it.DbColumnName)));
             if (isSingle)
             {
-                string columnParametersString = string.Join(",", this.DbColumnInfoList.Select(it => Builder.SqlParameterKeyWord + it.DbColumnName));
+                string columnParametersString = string.Join(",", this.DbColumnInfoList.Select(it =>base.GetDbColumn(it, Builder.SqlParameterKeyWord + it.DbColumnName)));
                 ActionMinDate();
                 return string.Format(SqlTemplate, GetTableNameString, columnsString, columnParametersString);
             }
@@ -140,7 +140,7 @@ namespace SqlSugar
                 foreach (var item in groupList)
                 {
                     batchInsetrSql.Append("(");
-                    insertColumns = string.Join(",", item.Select(it => FormatValue(it.Value,it.PropertyName)));
+                    insertColumns = string.Join(",", item.Select(it =>base.GetDbColumn(it, FormatValue(it.Value,it.PropertyName))));
                     batchInsetrSql.Append(insertColumns);
                     if (groupList.Last() == item)
                     {
