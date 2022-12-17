@@ -43,7 +43,7 @@ namespace SqlSugar
             string columnsString = string.Join(",", groupList.First().Select(it => Builder.GetTranslationColumnName(it.DbColumnName)));
             if (isSingle)
             {
-                string columnParametersString = string.Join(",", this.DbColumnInfoList.Select(it => Builder.SqlParameterKeyWord + it.DbColumnName));
+                string columnParametersString = string.Join(",", this.DbColumnInfoList.Select(it =>base.GetDbColumn(it, Builder.SqlParameterKeyWord + it.DbColumnName)));
                 return string.Format(SqlTemplate, GetTableNameString, columnsString, columnParametersString);
             }
             else
@@ -66,6 +66,10 @@ namespace SqlSugar
                         }
                         batchInsetrSql.Append("\r\n ( " + string.Join(",", columns.Select(it =>
                         {
+                            if (it.InsertServerTime || it.InsertSql.HasValue())
+                            {
+                                return GetDbColumn(it, null);
+                            }
                             object value = null;
                             if (it.Value is DateTime)
                             {
