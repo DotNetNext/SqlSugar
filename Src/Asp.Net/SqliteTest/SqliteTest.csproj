@@ -78,6 +78,7 @@
     <Compile Include="Models\Tree.cs" />
     <Compile Include="Models\ViewOrder.cs" />
     <Compile Include="UnitTest\Models\BilPayment.cs" />
+    <Compile Include="UnitTest\UInsert3.cs" />
     <Compile Include="UnitTest\Unit01.cs" />
     <Compile Include="UnitTest\UnitByteArray.cs" />
     <Compile Include="UnitTest\UnitNavInsertadfa1.cs" />
