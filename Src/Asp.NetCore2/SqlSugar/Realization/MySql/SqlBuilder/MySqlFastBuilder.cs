@@ -69,7 +69,7 @@ namespace SqlSugar
                 else if (ex.Message == "Loading local data is disabled; this must be enabled on both the client and server sides")
                 {
                     this.Context.Ado.ExecuteCommand("SET GLOBAL local_infile=1");
-                    Check.ExceptionEasy(ex.Message, " 检测到你没有开启文件，已自动执行 SET GLOBAL local_infile=1 在试一次");
+                    Check.ExceptionEasy(ex.Message, " 检测到你没有开启文件，AllowLoadLocalInfile=true加到自符串上，已自动执行 SET GLOBAL local_infile=1 在试一次");
                 }
                 else
                 {
