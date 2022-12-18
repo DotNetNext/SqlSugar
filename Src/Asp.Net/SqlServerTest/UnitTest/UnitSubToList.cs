@@ -62,6 +62,36 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+
+            var test3 = db.Queryable<Order>()
+            .Select(o => new myDTO5
+            {
+                disCount = SqlFunc.Subqueryable<Custom>().Where(d => d.Id == o.CustomId).ToList()
+            },
+            true)
+            .MergeTable()
+           .ToList();
+
+            if (test3 .First().disCount.Count==0|| test3.Any(z => z.disCount.Any(y => y.Id != z.CustomId)) || test3.Any(z => z.Id == 0))
+            {
+                throw new Exception("unit error");
+            }
+
+            var test4 = db.Queryable<Order>()
+             .LeftJoin<OrderItem>((o,i)=>o.Id==i.OrderId)
+             .LeftJoin<Custom>((o,i, c) => c.Id == o.CustomId)
+             .Select((o,i, c) => new myDTO5
+             {
+                 OrderName = o.Name,
+                 disCount = SqlFunc.Subqueryable<Custom>().Where(d => d.Name == c.Name).ToList()
+             },
+             true)
+           .ToList();
+
+            if (test4.First().OrderId == 0)
+            {
+                throw new Exception("unit error");
+            }
         }
         private static void TestJoin3(SqlSugarClient db)
         {
