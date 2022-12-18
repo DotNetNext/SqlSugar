@@ -896,6 +896,10 @@ namespace SqlSugar
             {
                 if (item.IsIgnore == false && columnsResult.Any(it => it.PropertyName.EqualCase(item.PropertyName)) && !lowerSql.Contains(SqlBuilder.GetTranslationColumnName(item.PropertyName.ToLower())))
                 {
+                    if (item.EntityName == this.QueryBuilder.EntityName&&sql.StartsWith("*,")) 
+                    {
+                        continue;
+                    }
                     sql = $" {sql},{SqlBuilder.GetTranslationColumnName(item.DbColumnName)} AS {SqlBuilder.GetTranslationColumnName(item.PropertyName)} ";
                 }
             }
