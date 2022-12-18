@@ -48,7 +48,7 @@ namespace SqlSugar.Access
             string columnsString = string.Join(",", groupList.First().Select(it => Builder.GetTranslationColumnName(it.DbColumnName)));
             if (isSingle)
             {
-                string columnParametersString = string.Join(",", this.DbColumnInfoList.Select(it => Builder.SqlParameterKeyWord + it.DbColumnName));
+                string columnParametersString = string.Join(",", this.DbColumnInfoList.Select(it =>base.GetDbColumn(it, Builder.SqlParameterKeyWord + it.DbColumnName)));
                 return string.Format(SqlTemplate, GetTableNameString, columnsString, columnParametersString);
             }
             else
@@ -71,7 +71,7 @@ namespace SqlSugar.Access
                         //    batchInsetrSql.Append("\t\r\nUNION ");
                         //}
                         //temp+" Values ( " + string.Join(",", columns.Select(it =>  FormatValue(it.Value) )+")"
-                        batchInsetrSql.Append($"{temp} values ({string.Join(",", columns.Select(it => FormatValue(it.Value)))}) "+UtilConstants.ReplaceCommaKey);
+                        batchInsetrSql.Append($"{temp} values ({string.Join(",", columns.Select(it =>base.GetDbColumn(it,FormatValue(it.Value))))}) "+UtilConstants.ReplaceCommaKey);
                         ++i;
                     }
                     pageIndex++;
