@@ -22,13 +22,13 @@ namespace OrmTest
             });
 
             int total = 0;
-            var list = db.SqlQueryable<Order>("select * from `order`").ToPageList(1, 2, ref total);
+            var list = db.SqlQueryable<Order>("select * from `Order`").ToPageList(1, 2, ref total);
 
 
             //by expression
-            var list2 = db.SqlQueryable<Order>("select * from `order`").Where(it => it.Id == 1).ToPageList(1, 2);
+            var list2 = db.SqlQueryable<Order>("select * from `Order`").Where(it => it.Id == 1).ToPageList(1, 2);
             //by sql
-            var list3 = db.SqlQueryable<Order>("select * from `order`").Where("id=@id", new { id = 1 }).ToPageList(1, 2);
+            var list3 = db.SqlQueryable<Order>("select * from `Order`").Where("id=@id", new { id = 1 }).ToPageList(1, 2);
 
             Console.WriteLine("#### SqlQueryable End ####");
         }
