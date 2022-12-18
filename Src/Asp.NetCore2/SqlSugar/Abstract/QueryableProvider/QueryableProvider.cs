@@ -1104,18 +1104,14 @@ namespace SqlSugar
             {
                 return MergeTableWithSubToList();
             }
-            else if (this.QueryBuilder.IsSingle() == false) 
-            {
-                _ToSql();
-                if (this.QueryBuilder.SubToListParameters != null && this.QueryBuilder.SubToListParameters.Count > 0)
-                {
-                    return MergeTableWithSubToListJoin();
-                }
-            }
             Check.Exception(this.MapperAction != null || this.MapperActionWithCache != null,ErrorMessage.GetThrowMessage( "'Mapper’ needs to be written after ‘MergeTable’ ", "Mapper 只能在 MergeTable 之后使用"));
             //Check.Exception(this.QueryBuilder.SelectValue.IsNullOrEmpty(),ErrorMessage.GetThrowMessage( "MergeTable need to use Queryable.Select Method .", "使用MergeTable之前必须要有Queryable.Select方法"));
             //Check.Exception(this.QueryBuilder.Skip > 0 || this.QueryBuilder.Take > 0 || this.QueryBuilder.OrderByValue.HasValue(),ErrorMessage.GetThrowMessage( "MergeTable  Queryable cannot Take Skip OrderBy PageToList  ", "使用 MergeTable不能有 Take Skip OrderBy PageToList 等操作,你可以在Mergetable之后操作"));
             var sqlobj = this._ToSql();
+            if(this.QueryBuilder.SubToListParameters != null && this.QueryBuilder.SubToListParameters.Count > 0)
+            {
+                 return MergeTableWithSubToListJoin();
+            }
             var index = QueryBuilder.WhereIndex + 1;
             var result = this.Context.Queryable<T>().AS(SqlBuilder.GetPackTable(sqlobj.Key, "MergeTable")).AddParameters(sqlobj.Value).Select("*").With(SqlWith.Null);
             result.QueryBuilder.WhereIndex = index;
