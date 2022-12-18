@@ -14,6 +14,7 @@ namespace OrmTest
         public static void Init() 
         {
             var db = NewUnitTest.Db;
+            db.CodeFirst.InitTables<Order1>();
             db.Insertable(new Order1() { Name = "a" }).ExecuteCommand();
 
             db.Insertable(new List<Order1>() {
