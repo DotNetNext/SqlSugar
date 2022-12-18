@@ -14,17 +14,17 @@ namespace OrmTest
         public static void Init() 
         {
             var db = NewUnitTest.Db;
-            db.Insertable(new Order() { Name = "a" }).ExecuteCommand();
+            db.Insertable(new Order1() { Name = "a" }).ExecuteCommand();
 
-            db.Insertable(new List<Order>() {
-                 new Order() { Name = "a" },
-                  new Order() { Name = "a" }
+            db.Insertable(new List<Order1>() {
+                 new Order1() { Name = "a" },
+                  new Order1() { Name = "a" }
             }).ExecuteCommand();
 
-            db.Insertable(new ORDER() { Name = "a" }).ExecuteCommand();
+            db.Insertable(new ORDER1() { Name = "a" }).ExecuteCommand();
         }
 
-        public class Order
+        public class Order1
         {
             [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
             public int Id { get; set; }
@@ -39,7 +39,7 @@ namespace OrmTest
             public int CustomId { get; set; } 
         }
 
-        public class ORDER
+        public class ORDER1
         {
             [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
             public int Id { get; set; }
