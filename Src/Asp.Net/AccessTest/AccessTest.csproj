@@ -80,6 +80,7 @@
     <Compile Include="Models\ViewOrder.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Unit\UInsert3.cs" />
     <Compile Include="Unit\UnitInsertNavN.cs" />
   </ItemGroup>
   <ItemGroup>
