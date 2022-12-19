@@ -428,6 +428,48 @@ namespace SqlSugar
             return tableString;
         }
 
+
+        public override bool AddColumn(string tableName, DbColumnInfo columnInfo)
+        {
+            tableName = this.SqlBuilder.GetTranslationTableName(tableName);
+            var isAddNotNUll = columnInfo.IsNullable == false && columnInfo.DefaultValue.HasValue();
+            if (isAddNotNUll)
+            {
+                columnInfo = this.Context.Utilities.TranslateCopy(columnInfo);
+                columnInfo.IsNullable = true;
+            }
+            string sql = GetAddColumnSql(tableName, columnInfo);
+            if (sql != null && columnInfo.ColumnDescription.HasValue() &&!sql.ToLower().Contains("comment")) 
+            {
+                sql = $"{sql}{" COMMENT '"+ columnInfo.ColumnDescription.ToSqlFilter()+ "'  "}";
+            }
+            this.Context.Ado.ExecuteCommand(sql);
+            if (isAddNotNUll)
+            {
+                var dtColums = this.Context.Queryable<object>().AS(columnInfo.TableName).Where("1=2")
+                    .Select(this.SqlBuilder.GetTranslationColumnName(columnInfo.DbColumnName)).ToDataTable().Columns.Cast<System.Data.DataColumn>();
+                var dtColumInfo = dtColums.First(it => it.ColumnName.EqualCase(columnInfo.DbColumnName));
+                var type = UtilMethods.GetUnderType(dtColumInfo.DataType);
+                var value = type == UtilConstants.StringType ? (object)"" : Activator.CreateInstance(type);
+                if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle)
+                {
+                    value = columnInfo.DefaultValue;
+                    if (value.Equals(""))
+                    {
+                        value = "empty";
+                    }
+                }
+                var dt = new Dictionary<string, object>();
+                dt.Add(columnInfo.DbColumnName, value);
+                this.Context.Updateable(dt)
+                             .AS(tableName)
+                             .Where($"{columnInfo.DbColumnName} is null ").ExecuteCommand();
+                columnInfo.IsNullable = false;
+                UpdateColumn(tableName, columnInfo);
+            }
+            return true;
+        }
+
         protected override string GetSize(DbColumnInfo item)
         {
             string dataSize = null;
