@@ -28,6 +28,8 @@ namespace SqlSugar
         public int CreateTableFieldSort { get; set; }
         public bool InsertServerTime { get;  set; }
         public string InsertSql { get;  set; }
+        public bool UpdateServerTime { get; set; }
+        public string UpdateSql { get; set; }
         internal object SqlParameterDbType { get;  set; }
     }
 }

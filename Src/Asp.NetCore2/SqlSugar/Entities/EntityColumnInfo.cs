@@ -43,5 +43,7 @@ namespace SqlSugar
         public object SqlParameterSize { get;  set; }
         public string InsertSql { get;  set; }
         public bool InsertServerTime { get;  set; }
+        public bool UpdateServerTime { get; set; }
+        public string UpdateSql { get; set; }
     }
 }
