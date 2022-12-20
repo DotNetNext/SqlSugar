@@ -41,7 +41,15 @@ namespace OrmTest
                 Price = 1,
                 Name = "a"
             } }).ExecuteCommand();
-             
+
+
+            db.Updateable<Order>().SetColumns(it=> new Order()
+            {
+                CustomId = 1, 
+                Price = 1,
+                Name = "a"
+             },true).Where(it=>it.Id==1).ExecuteCommand();
+
         }
 
         public class Order
