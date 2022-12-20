@@ -22,6 +22,26 @@ namespace OrmTest
             }).ExecuteCommand();
 
             db.Insertable(new ORDER() { Name = "a" }).ExecuteCommand();
+
+
+            db.Updateable(new Order()
+            {
+                CustomId = 1,
+                CreateTime = DateTime.Now,
+                Id = 1,
+                Price = 1,
+                Name = "a"
+            }).ExecuteCommand();
+
+            db.Updateable(new List<Order>(){ new Order()
+            {
+                CustomId = 1,
+                CreateTime = DateTime.Now,
+                Id = 1,
+                Price = 1,
+                Name = "a"
+            } }).ExecuteCommand();
+             
         }
 
         public class Order
@@ -33,7 +53,7 @@ namespace OrmTest
             /// </summary>
             public string Name { get; set; }
             public decimal Price { get; set; }
-            [SugarColumn(InsertServerTime =true)]
+            [SugarColumn(InsertServerTime =true,UpdateServerTime =true)]
             public DateTime CreateTime { get; set; }
             [SugarColumn(IsNullable = true)]
             public int CustomId { get; set; } 
