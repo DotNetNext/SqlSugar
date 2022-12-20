@@ -206,7 +206,9 @@ namespace SqlSugar
                     PropertyName = column.PropertyName,
                     PropertyType = UtilMethods.GetUnderType(column.PropertyInfo),
                     SqlParameterDbType = column.SqlParameterDbType,
-                    TableId = i
+                    TableId = i,
+                    UpdateSql=column.UpdateSql,
+                    UpdateServerTime= column.UpdateServerTime
                 };
                 if (columnInfo.PropertyType.IsEnum() && columnInfo.Value != null)
                 {
