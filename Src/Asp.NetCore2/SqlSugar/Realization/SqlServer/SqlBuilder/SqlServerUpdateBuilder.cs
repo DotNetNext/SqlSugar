@@ -42,7 +42,7 @@ namespace SqlSugar
                     {
                         updateTable.Append(SqlTemplateBatchUnion);
                     }
-                    updateTable.Append("\r\n SELECT " + string.Join(",", columns.Select(it => string.Format(base.SqlTemplateBatchSelect, GetValue(it), Builder.GetTranslationColumnName(it.DbColumnName)))));
+                    updateTable.Append("\r\n SELECT " + string.Join(",", columns.Select(it => string.Format(base.SqlTemplateBatchSelect,base.GetDbColumn(it,GetValue(it)), Builder.GetTranslationColumnName(it.DbColumnName)))));
                     ++i;
                 }
                 pageIndex++;
