@@ -127,7 +127,7 @@ namespace SqlSugar
             if (RightIsHasValue(leftExpression, rightExpression,ExpressionTool.IsLogicOperator(expression)))
             {
                 Expression trueValue = Expression.Constant(true);
-                rightExpression = ExpressionBuilderHelper.CreateExpression(rightExpression, trueValue, ExpressionType.And);
+                rightExpression = ExpressionBuilderHelper.CreateExpression(rightExpression, trueValue, ExpressionType.Equal);
             }
             var leftIsBinary = leftExpression is BinaryExpression;
             var rightBinary = rightExpression is BinaryExpression;
