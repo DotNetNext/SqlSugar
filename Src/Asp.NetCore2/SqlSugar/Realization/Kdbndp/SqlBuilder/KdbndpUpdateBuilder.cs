@@ -148,7 +148,7 @@ namespace SqlSugar
                                 dbType = "varchar";
                             }
                         }
-                        return string.Format("CAST({0} AS {1})", FormatValue(it.Value), dbType);
+                        return string.Format("CAST({0} AS {1})", base.GetDbColumn(it,FormatValue(it.Value)), dbType);
 
                     })) + ")");
                     ++i;

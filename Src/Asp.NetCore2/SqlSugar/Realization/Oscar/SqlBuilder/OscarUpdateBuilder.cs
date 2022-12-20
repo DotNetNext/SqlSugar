@@ -100,7 +100,7 @@ namespace SqlSugar
         }
         private string GetOracleUpdateColums(int i, DbColumnInfo m)
         {
-            return string.Format("\"{0}\"={1}", m.DbColumnName.ToUpper(), FormatValue(m.Value));
+            return string.Format("\"{0}\"={1}", m.DbColumnName.ToUpper(), base.GetDbColumn(m,FormatValue(m.Value)));
         }
 
     }
