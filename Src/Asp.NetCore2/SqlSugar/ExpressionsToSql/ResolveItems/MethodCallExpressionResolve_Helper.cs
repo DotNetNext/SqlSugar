@@ -780,7 +780,7 @@ namespace SqlSugar
 
         private bool IsContainsArray(MethodCallExpression express, string methodName, bool isValidNativeMethod)
         {
-            return !isValidNativeMethod && express.Method.DeclaringType.Namespace.IsIn("System.Linq", "System.Collections.Generic") && methodName == "Contains";
+            return !isValidNativeMethod && express.Method.DeclaringType.Namespace.IsIn("System.Collections", "System.Linq", "System.Collections.Generic") && methodName == "Contains";
         }
         private bool IsSubMethod(MethodCallExpression express, string methodName)
         {
