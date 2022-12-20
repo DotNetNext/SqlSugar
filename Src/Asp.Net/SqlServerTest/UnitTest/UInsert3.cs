@@ -50,6 +50,13 @@ namespace OrmTest
                 Name = "a"
              },true).Where(it=>it.Id==1).ExecuteCommand();
 
+            db.Updateable<ORDER>().SetColumns(it => new ORDER()
+            {
+                CustomId = 1,
+                Price = 1,
+                Name = "a"
+            }, true).Where(it => it.Id == 1).ExecuteCommand();
+
         }
 
         public class Order
@@ -76,7 +83,7 @@ namespace OrmTest
             /// </summary>
             public string Name { get; set; }
             public decimal Price { get; set; }
-            [SugarColumn(InsertSql = "'2020-1-1'")]
+            [SugarColumn(InsertSql = "'2020-1-1'",UpdateSql ="'2022-1-1'")]
             public DateTime CreateTime { get; set; }
             [SugarColumn(IsNullable = true)]
             public int CustomId { get; set; }
