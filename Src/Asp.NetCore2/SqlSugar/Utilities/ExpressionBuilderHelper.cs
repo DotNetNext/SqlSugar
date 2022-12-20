@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -48,6 +49,18 @@ namespace SqlSugar
                 //Not implemented, later used in writing
                 return Expression.Equal(left, Expression.Convert(value, left.Type));
             }
+        }
+        public static Expression CreateExpressionLike<ColumnType>(Type entityType,string propertyName,List<ColumnType>  list) 
+        {
+            var parameter = Expression.Parameter(entityType, "p");
+            MemberExpression memberProperty = Expression.PropertyOrField(parameter, propertyName);
+            MethodInfo method = typeof(List<>).MakeGenericType(typeof(ColumnType)).GetMethod("Contains");
+            ConstantExpression constantCollection = Expression.Constant(list);
+
+            MethodCallExpression methodCall = Expression.Call(constantCollection, method, memberProperty);
+
+            var expression = Expression.Lambda(methodCall, parameter);
+            return expression;
         }
         public static Expression<Func<T, object>> CreateNewFields<T>(EntityInfo entity,List<string> propertyNames)
         {
