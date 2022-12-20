@@ -40,6 +40,14 @@ namespace OrmTest
                 Id = 1,
                 Price = 1,
                 Name = "a"
+            },
+            new Order()
+            {
+                CustomId = 1,
+                CreateTime = DateTime.Now,
+                Id = 1,
+                Price = 1,
+                Name = "a"
             } }).ExecuteCommand();
 
 
