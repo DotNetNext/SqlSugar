@@ -33,7 +33,7 @@ namespace SqlSugar
 
         private string GetOracleUpdateColums(DbColumnInfo m)
         {
-            return string.Format("\"{0}\"={1}", m.DbColumnName.ToUpper(IsUppper), FormatValue(m.Value,m.IsPrimarykey,m.PropertyName));
+            return string.Format("\"{0}\"={1}", m.DbColumnName.ToUpper(IsUppper), base.GetDbColumn(m,FormatValue(m.Value,m.IsPrimarykey,m.PropertyName)));
         }
         int i = 0;
         public  object FormatValue(object value,bool isPrimaryKey,string name)
