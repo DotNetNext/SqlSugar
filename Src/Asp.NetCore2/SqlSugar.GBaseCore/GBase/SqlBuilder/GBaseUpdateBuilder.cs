@@ -41,7 +41,7 @@ namespace SqlSugar.GBase
         }
         private string GetOracleUpdateColums(int i, DbColumnInfo m, bool iswhere)
         {
-            return string.Format("{0}={1}", m.DbColumnName, FormatValue(i, m.DbColumnName, m.Value, iswhere));
+            return string.Format("{0}={1}", m.DbColumnName, base.GetDbColumn(m,FormatValue(i, m.DbColumnName, m.Value, iswhere)));
         }
         public object FormatValue(int i, string name, object value, bool iswhere)
         {
