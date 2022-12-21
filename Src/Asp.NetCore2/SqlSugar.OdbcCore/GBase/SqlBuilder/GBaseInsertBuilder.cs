@@ -24,14 +24,14 @@ namespace SqlSugar.Odbc
                     return @"INSERT INTO {0} 
            ({1})
      VALUES
-           ({2})"+UtilConstants.ReplaceCommaKey.Replace("{","").Replace("}", "") + " SELECT dbinfo('sqlca.sqlerrd1') FROM dual";
+           ({2})"+UtilConstants.ReplaceCommaKey.Replace("{","").Replace("}", "") + "";
                 }
                 else
                 {
                     return @"INSERT INTO {0} 
            ({1})
      VALUES
-           ({2}) "+UtilConstants.ReplaceCommaKey.Replace("{", "").Replace("}", "") + "SELECT dbinfo('sqlca.sqlerrd1') FROM dual";
+           ({2}) "+UtilConstants.ReplaceCommaKey.Replace("{", "").Replace("}", "") + "";
 
                 }
             }
