@@ -45,6 +45,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Json2SqlTest", "Json2SqlTes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuestDbTest", "QuestDbTest\QuestDbTest.csproj", "{DF49339D-3642-47EA-914A-5C7C6C066268}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlSugar.Odbc", "SqlSugar.Odbc\SqlSugar.Odbc.csproj", "{2B3B09DF-40A9-49D5-85D3-F67F8D0EA70A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -127,6 +129,10 @@ Global
 		{DF49339D-3642-47EA-914A-5C7C6C066268}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DF49339D-3642-47EA-914A-5C7C6C066268}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DF49339D-3642-47EA-914A-5C7C6C066268}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B3B09DF-40A9-49D5-85D3-F67F8D0EA70A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B3B09DF-40A9-49D5-85D3-F67F8D0EA70A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B3B09DF-40A9-49D5-85D3-F67F8D0EA70A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B3B09DF-40A9-49D5-85D3-F67F8D0EA70A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -137,6 +143,7 @@ Global
 		{629CDF51-682F-4B22-843A-BA76C232ACCD} = {B762D1DA-DFCD-4597-A14D-4F20DA0EE70E}
 		{0A27F276-D442-4E0A-B810-32D6074F0155} = {BD138454-2F77-4085-81EF-66E7F9EBE3DA}
 		{D131EE06-BAD4-4B80-B7DE-D6F539087644} = {BD138454-2F77-4085-81EF-66E7F9EBE3DA}
+		{2B3B09DF-40A9-49D5-85D3-F67F8D0EA70A} = {BD138454-2F77-4085-81EF-66E7F9EBE3DA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AE9BE6D6-3952-4582-B65E-83E0E57FDC8A}
