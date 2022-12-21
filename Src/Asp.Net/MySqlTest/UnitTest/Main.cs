@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UnitSubToList001.Init();
             UInsert3.Init();
             UnitSubToList.Init();
             UCustom20.Init();

@@ -137,6 +137,7 @@
     <Compile Include="UnitTest\UnitCustom01.cs" />
     <Compile Include="UnitTest\UnitSameKeyBug.cs" />
     <Compile Include="UnitTest\UnitSubToList.cs" />
+    <Compile Include="UnitTest\UnitSubToList001.cs" />
     <Compile Include="UnitTest\UnitTestReturnPkList.cs" />
     <Compile Include="UnitTest\UOneManyMany.cs" />
     <Compile Include="UnitTest\UQueue.cs" />
