@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>SqlSugar.OdbcCore</id>
-    <version>5.1.2.1</version>
+    <version>5.1.4.1</version>
     <authors>sunkaixuan</authors>
     <owners>Landa</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
@@ -19,6 +19,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="E:\Git\SqlSugarNew\Src\Asp.NetCore2\SqlSugar.OdbcCore\bin\Debug\netstandard2.1\SqlSugar.OdbcCore.dll" target="lib\netstandard2.1"></file>
+    <file src="G:\Git\SqlSugar\Src\Asp.NetCore2\SqlSugar.OdbcCore\bin\Debug\netstandard2.1\SqlSugar.OdbcCore.dll" target="lib\netstandard2.1"></file>
   </files>
 </package>
