@@ -116,6 +116,19 @@ namespace SqlSugar
                 if (destinationType.IsEnum && value is int)
                     return Enum.ToObject(destinationType, (int)value);
 
+                if (destinationType.Name == "TimeOnly"&& sourceType.Name!= "TimeOnly") 
+                {
+                    var type = Type.GetType("System.TimeOnly", true, true);
+                    var method=type.GetMethods().FirstOrDefault(it => it.GetParameters().Length == 1 && it.Name == "FromTimeSpan");
+                    return method.Invoke(null, new object[] { value });
+                }
+                if (destinationType.Name == "DateOnly" && sourceType.Name != "DateOnly")
+                {
+                    var type = Type.GetType("System.DateOnly", true, true);
+                    var method = type.GetMethods().FirstOrDefault(it => it.GetParameters().Length == 1 && it.Name == "FromDateTime");
+                    return method.Invoke(null, new object[] { value });
+                }
+
                 if (!destinationType.IsInstanceOfType(value))
                     return Convert.ChangeType(value, destinationType, culture);
             }
@@ -1063,6 +1076,20 @@ namespace SqlSugar
         public static string FiledNameSql()
         {
             return $"[value=sql{UtilConstants.ReplaceKey}]";
+        }
+
+        internal static object TimeOnlyToTimeSpan(object value)
+        {
+            if (value == null) return null;
+            var method = value.GetType().GetMethods().First(it => it.GetParameters().Length == 0 && it.Name == "ToTimeSpan");
+            return method.Invoke(value, new object[] { });
+        }
+
+        internal static object DateOnlyToDateTime(object value)
+        {
+            if (value == null) return null;
+            var method = value.GetType().GetMethods().First(it => it.GetParameters().Length == 0 && it.Name == "ToShortDateString");
+            return method.Invoke(value, new object[] { });
         }
     }
 }
