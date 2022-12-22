@@ -386,7 +386,7 @@ namespace SqlSugar
             var date = UtilMethods.ConvertFromDateTimeOffset((DateTimeOffset)value);
             return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
         }
-
+        private int GetDbColumnIndex = 0;
         public virtual string GetDbColumn(DbColumnInfo columnInfo, object name)
         {
             if (columnInfo.UpdateServerTime)
@@ -396,6 +396,14 @@ namespace SqlSugar
             else if (columnInfo.UpdateSql.HasValue())
             {
                 return columnInfo.UpdateSql;
+            }
+            else if (columnInfo.PropertyType.Name == "TimeOnly" && name != null && !name.ObjToString().StartsWith(Builder.SqlParameterKeyWord))
+            {
+                var timeSpan = UtilMethods.TimeOnlyToTimeSpan(columnInfo.Value);
+                var pname = Builder.SqlParameterKeyWord + columnInfo.DbColumnName + "_ts" + GetDbColumnIndex;
+                this.Parameters.Add(new SugarParameter(pname, timeSpan));
+                GetDbColumnIndex++;
+                return pname;
             }
             else
             {
