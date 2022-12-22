@@ -162,6 +162,16 @@ namespace SqlSugar
             {
                 this.DbType = System.Data.DbType.UInt16;
             }
+            else if (type.Name == "TimeOnly")
+            {
+                this.DbType = System.Data.DbType.Time;
+                this.Value = UtilMethods.TimeOnlyToTimeSpan(this.Value);
+            }
+            else if (type.Name == "DateOnly")
+            {
+                this.DbType = System.Data.DbType.Date;
+                this.Value = UtilMethods.DateOnlyToDateTime(this.Value);
+            }
 
         }
         public SugarParameter(string name, object value, bool isOutput)
