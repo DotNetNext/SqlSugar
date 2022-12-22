@@ -1,5 +1,6 @@
 ﻿using SqlSugar;
 
+MyTest();
 ServerTest();
 
 Console.Read();
@@ -7,8 +8,8 @@ static void MyTest()
 {
     var sqlugar = new SqlSugarClient(new ConnectionConfig()
     {
-        DbType = DbType.SqlServer,
-        ConnectionString = "SERVER=.;uid=sa;pwd=sasa;database=SqlSugar4Text4"
+        DbType = DbType.MySql,
+        ConnectionString = "server=localhost;Database=SqlSugar4xTest;Uid=root;Pwd=123456;"
     },
     it =>
     {
