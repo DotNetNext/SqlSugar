@@ -10,6 +10,10 @@ namespace SqlSugar
     {
         protected override string TomultipleSqlString(List<IGrouping<int, DbColumnInfo>> groupList)
         {
+            if (groupList.Count == 0)
+            {
+                return " select 0 from dual";
+            }
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("Begin");
             sb.AppendLine(string.Join("\r\n", groupList.Select(t =>
