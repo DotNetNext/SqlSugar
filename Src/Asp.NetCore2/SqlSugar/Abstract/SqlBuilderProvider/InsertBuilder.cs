@@ -273,6 +273,7 @@ namespace SqlSugar
             return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
         }
 
+        private int GetDbColumnIndex = 0;
         public virtual string GetDbColumn(DbColumnInfo columnInfo ,object name) 
         {
             if (columnInfo.InsertServerTime)
@@ -283,7 +284,15 @@ namespace SqlSugar
             {
                 return columnInfo.InsertSql;
             }
-            else 
+            else if (columnInfo.PropertyType.Name == "TimeOnly" && name!=null&&!name.ObjToString().StartsWith(Builder.SqlParameterKeyWord)) 
+            {
+                var timeSpan = UtilMethods.TimeOnlyToTimeSpan(columnInfo.Value);
+                var pname =Builder.SqlParameterKeyWord+columnInfo.DbColumnName+ "_ts"+ GetDbColumnIndex;
+                this.Parameters.Add(new SugarParameter(pname, timeSpan));
+                GetDbColumnIndex++;
+                return pname;
+            }
+            else
             {
                 return name+"";
             }
