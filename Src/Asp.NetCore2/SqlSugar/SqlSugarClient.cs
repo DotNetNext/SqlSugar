@@ -802,7 +802,7 @@ namespace SqlSugar
         {
             Check.ArgumentNullException(connection, "AddConnection.connection can't be null");
             InitTenant();
-            var db = this._AllClients.FirstOrDefault(it => it.ConnectionConfig.ConfigId == connection.ConfigId);
+            var db = this._AllClients.FirstOrDefault(it => ((object)it.ConnectionConfig.ConfigId).ObjToString() == ((object)connection.ConfigId).ObjToString());
             if (db == null)
             {
                 if (this._AllClients == null)
