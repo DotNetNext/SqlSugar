@@ -60,10 +60,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SqlSugar.Odbc\SqlSugar.Odbc.csproj">
-      <Project>{2b3b09df-40a9-49d5-85d3-f67f8d0ea70a}</Project>
-      <Name>SqlSugar.Odbc</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SqlSugar\SqlSugar.csproj">
       <Project>{489bb790-226c-4fad-8d1e-51d72a7ff8e5}</Project>
       <Name>SqlSugar</Name>
