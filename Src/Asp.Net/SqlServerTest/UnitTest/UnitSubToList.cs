@@ -220,6 +220,16 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+
+            var test3 = db.Queryable<Order>()
+              .LeftJoin<Custom>((o, c) => c.Id == o.CustomId)
+              .LeftJoin<OrderItem>((o, c, i) => i.OrderId == o.Id)
+              .Select((o, c, i) => new
+              {
+                  OrderName = o.Name,
+                  disCount = SqlFunc.Subqueryable<OrderItem>().OrderBy(d=>d.OrderId).Where(d => d.ItemId == i.ItemId).ToList()
+              })
+             .ToList();
         }
         private static void TestWhere(SqlSugarClient db)
         {
