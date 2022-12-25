@@ -17,6 +17,7 @@ namespace SqlSugar
             if (Context == null) return 0;
             object objectValue = null;
             MethodInfo method = GetSaveMethod(ref objectValue);
+            if (method == null) return 0;
             return (int)method.Invoke(objectValue, new object[] { });
         }
 
@@ -41,6 +42,7 @@ namespace SqlSugar
         {
             object objectValue = null;
             MethodInfo method = GetSaveMethod(ref objectValue);
+            if (method == null) return new StorageableAsMethodInfo(null);
             method = objectValue.GetType().GetMethod("ToStorage");
             objectValue = method.Invoke(objectValue, new object[] { });
             StorageableAsMethodInfo result = new StorageableAsMethodInfo(type);
@@ -51,6 +53,8 @@ namespace SqlSugar
 
         private MethodInfo GetSaveMethod(ref object callValue)
         {
+            if (objectValue == null)
+                return null;
             callValue = MethodInfo.Invoke(Context, new object[] { objectValue });
             return callValue.GetType().GetMethod("ExecuteCommand");
         }
@@ -73,6 +77,7 @@ namespace SqlSugar
         internal MethodInfo Method { get;   set; }
         public int ExecuteCommand()
         {
+            if (type == null) return 0;
             PropertyInfo property = ObjectValue.GetType().GetProperty(type);
             var value = property.GetValue(ObjectValue);
             var newObj= value.GetType().GetMethod("ExecuteCommand").Invoke(value, new object[] { });
