@@ -133,6 +133,8 @@
     <Compile Include="Abstract\SaveableProvider\StorageableDataTable.cs" />
     <Compile Include="Abstract\SqlBuilderProvider\SqlBuilderProvider_Condition.cs" />
     <Compile Include="Abstract\SugarProvider\SqlSugarCoreProvider.cs" />
+    <Compile Include="Abstract\DeleteProvider\DeleteMethodInfo.cs" />
+    <Compile Include="Abstract\UpdateProvider\UpdateMethodInfo.cs" />
     <Compile Include="Abstract\UpdateProvider\UpdateableHelper.cs" />
     <Compile Include="Abstract\UpdateProvider\SplitTableUpdateByObjectProvider.cs" />
     <Compile Include="Entities\DbFastestProperties.cs" />

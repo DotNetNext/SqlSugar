@@ -665,6 +665,10 @@ namespace SqlSugar
         #endregion
 
         #region Updateable
+        public UpdateMethodInfo UpdateableByObject(object singleEntityObjectOrListObject)
+        {
+            return this.Context.UpdateableByObject(singleEntityObjectOrListObject);
+        }
         public IUpdateable<T> Updateable<T>() where T : class, new()
         {
             return this.Context.Updateable<T>();
@@ -713,6 +717,10 @@ namespace SqlSugar
         #endregion
 
         #region Deleteable
+        public DeleteMethodInfo DeleteableByObject(object singleEntityObjectOrListObject)
+        {
+            return this.Context.DeleteableByObject(singleEntityObjectOrListObject);
+        }
         public IDeleteable<T> Deleteable<T>() where T : class, new()
         {
             return this.Context.Deleteable<T>();
