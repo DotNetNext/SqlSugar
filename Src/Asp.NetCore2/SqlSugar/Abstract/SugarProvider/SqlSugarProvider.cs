@@ -675,6 +675,11 @@ namespace SqlSugar
         #endregion
 
         #region Insertable
+        public InsertMethodInfo InsertableByObject(object singleEntityObjectOrListObject) 
+        {
+            InsertMethodInfo result = new InsertMethodInfo();
+            return result;
+        }
         public virtual IInsertable<T> Insertable<T>(T[] insertObjs) where T : class, new()
         {
             UtilMethods.CheckArray(insertObjs);

@@ -215,7 +215,10 @@ namespace SqlSugar
         {
             ScopedContext.InitMappingInfo<T>();
         }
-
+        public InsertMethodInfo InsertableByObject(object singleEntityObjectOrListObject)
+        {
+            return ScopedContext.InsertableByObject(singleEntityObjectOrListObject);
+        }
         public IInsertable<T> Insertable<T>(Dictionary<string, object> columnDictionary) where T : class, new()
         {
             return ScopedContext.Insertable<T>(columnDictionary);
