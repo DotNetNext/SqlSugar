@@ -181,6 +181,10 @@ namespace SqlSugar
         public IInsertable<T> Insertable<T>(T insertObj) where T : class, new()
         {
             Check.Exception(typeof(T).FullName.Contains("System.Collections.Generic.List`"), "  need  where T: class, new() ");
+            if (typeof(T).Name == "Object") 
+            {
+                Check.ExceptionEasy("Object type use db.InsertableByObject(obj).ExecuteCommand()", "检测到T为Object类型，请使用 db.InsertableByObject(obj).ExecuteCommand()，Insertable不支持object，InsertableByObject可以(缺点：功能比较少)");
+            }
             return this.Context.Insertable<T>(insertObj);
         }
 
@@ -661,6 +665,10 @@ namespace SqlSugar
         #endregion
 
         #region Updateable
+        public UpdateMethodInfo UpdateableByObject(object singleEntityObjectOrListObject)
+        {
+            return this.Context.UpdateableByObject(singleEntityObjectOrListObject);
+        }
         public IUpdateable<T> Updateable<T>() where T : class, new()
         {
             return this.Context.Updateable<T>();
@@ -709,6 +717,10 @@ namespace SqlSugar
         #endregion
 
         #region Deleteable
+        public DeleteMethodInfo DeleteableByObject(object singleEntityObjectOrListObject)
+        {
+            return this.Context.DeleteableByObject(singleEntityObjectOrListObject);
+        }
         public IDeleteable<T> Deleteable<T>() where T : class, new()
         {
             return this.Context.Deleteable<T>();

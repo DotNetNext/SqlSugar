@@ -767,6 +767,52 @@ namespace SqlSugar
         #endregion
 
         #region Deleteable
+        public DeleteMethodInfo DeleteableByObject(object singleEntityObjectOrListObject)
+        {
+            if (singleEntityObjectOrListObject == null)
+                return new DeleteMethodInfo();
+            if (singleEntityObjectOrListObject.GetType().FullName.IsCollectionsList())
+            {
+                var list = ((IList)singleEntityObjectOrListObject);
+                if (list == null || list.Count == 0)
+                    return new DeleteMethodInfo();
+                var type = list[0].GetType();
+                var newList = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(type));
+                foreach (var item in list)
+                {
+                    newList.Add(item);
+                }
+                var methods = this.Context.GetType().GetMethods()
+               .Where(it => it.Name == "Deleteable")
+               .Where(it => it.GetGenericArguments().Any())
+               .Where(it => it.GetParameters().Any(z => z.ParameterType.Name.StartsWith("List")))
+               .Where(it => it.Name == "Deleteable").ToList();
+                var method = methods.Single().MakeGenericMethod(newList.GetType().GetGenericArguments().FirstOrDefault());
+                DeleteMethodInfo result = new DeleteMethodInfo()
+                {
+                    Context = this.Context,
+                    MethodInfo = method,
+                    objectValue = newList
+                };
+                return result;
+            }
+            else
+            {
+                var methods = this.Context.GetType().GetMethods()
+                    .Where(it => it.Name == "Deleteable")
+                    .Where(it => it.GetGenericArguments().Any())
+                    .Where(it => it.GetParameters().Any(z => z.ParameterType.Name == "T"))
+                    .Where(it => it.Name == "Deleteable").ToList();
+                var method = methods.Single().MakeGenericMethod(singleEntityObjectOrListObject.GetType());
+                DeleteMethodInfo result = new DeleteMethodInfo()
+                {
+                    Context = this.Context,
+                    MethodInfo = method,
+                    objectValue = singleEntityObjectOrListObject
+                };
+                return result;
+            }
+        }
         public virtual IDeleteable<T> Deleteable<T>() where T : class, new()
         {
             InitMappingInfo<T>();
@@ -806,6 +852,52 @@ namespace SqlSugar
         #endregion
 
         #region Updateable
+        public UpdateMethodInfo UpdateableByObject(object singleEntityObjectOrListObject)
+        {
+            if (singleEntityObjectOrListObject == null)
+                return new UpdateMethodInfo();
+            if (singleEntityObjectOrListObject.GetType().FullName.IsCollectionsList())
+            {
+                var list = ((IList)singleEntityObjectOrListObject);
+                if (list == null || list.Count == 0)
+                    return new UpdateMethodInfo();
+                var type = list[0].GetType();
+                var newList = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(type));
+                foreach (var item in list)
+                {
+                    newList.Add(item);
+                }
+                var methods = this.Context.GetType().GetMethods()
+               .Where(it => it.Name == "Updateable")
+               .Where(it => it.GetGenericArguments().Any())
+               .Where(it => it.GetParameters().Any(z => z.ParameterType.Name.StartsWith("List")))
+               .Where(it => it.Name == "Updateable").ToList();
+                var method = methods.Single().MakeGenericMethod(newList.GetType().GetGenericArguments().First());
+                UpdateMethodInfo result = new UpdateMethodInfo()
+                {
+                    Context = this.Context,
+                    MethodInfo = method,
+                    objectValue = newList
+                };
+                return result;
+            }
+            else
+            {
+                var methods = this.Context.GetType().GetMethods()
+                    .Where(it => it.Name == "Updateable")
+                    .Where(it => it.GetGenericArguments().Any())
+                    .Where(it => it.GetParameters().Any(z => z.ParameterType.Name == "T"))
+                    .Where(it => it.Name == "Updateable").ToList();
+                var method = methods.Single().MakeGenericMethod(singleEntityObjectOrListObject.GetType());
+                UpdateMethodInfo result = new UpdateMethodInfo()
+                {
+                    Context = this.Context,
+                    MethodInfo = method,
+                    objectValue = singleEntityObjectOrListObject
+                };
+                return result;
+            }
+        }
         public virtual IUpdateable<T> Updateable<T>(T[] UpdateObjs) where T : class, new()
         {
             InitMappingInfo<T>();

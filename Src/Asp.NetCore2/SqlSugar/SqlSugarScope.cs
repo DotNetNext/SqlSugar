@@ -120,6 +120,10 @@ namespace SqlSugar
         {
            return ScopedContext.CommitTranAsync();
         }
+        public DeleteMethodInfo DeleteableByObject(object singleEntityObjectOrListObject)
+        {
+            return ScopedContext.DeleteableByObject(singleEntityObjectOrListObject);
+        }
         public IDeleteable<T> Deleteable<T>() where T : class, new()
         {
            return ScopedContext.Deleteable<T>();
@@ -626,7 +630,10 @@ namespace SqlSugar
         {
             return ScopedContext.UnionAll(queryables);
         }
-
+        public UpdateMethodInfo UpdateableByObject(object singleEntityObjectOrListObject)
+        {
+            return ScopedContext.UpdateableByObject(singleEntityObjectOrListObject);
+        }
         public IUpdateable<T> Updateable<T>() where T : class, new()
         {
             return ScopedContext.Updateable<T>();

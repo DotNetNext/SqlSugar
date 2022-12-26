@@ -144,6 +144,10 @@ namespace SqlSugar
         {
             ScopedContext.Close();
         }
+        public DeleteMethodInfo DeleteableByObject(object singleEntityObjectOrListObject)
+        {
+            return ScopedContext.DeleteableByObject(singleEntityObjectOrListObject);
+        }
         public IDeleteable<T> Deleteable<T>() where T : class, new()
         {
             return ScopedContext.Deleteable<T>();
@@ -614,6 +618,10 @@ namespace SqlSugar
         public ISugarQueryable<T> UnionAll<T>(params ISugarQueryable<T>[] queryables) where T : class, new()
         {
             return ScopedContext.UnionAll(queryables);
+        }
+        public UpdateMethodInfo UpdateableByObject(object singleEntityObjectOrListObject)
+        {
+            return ScopedContext.UpdateableByObject(singleEntityObjectOrListObject);
         }
 
         public IUpdateable<T> Updateable<T>() where T : class, new()

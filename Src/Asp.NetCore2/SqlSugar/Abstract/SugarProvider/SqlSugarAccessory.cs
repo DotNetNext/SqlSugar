@@ -422,7 +422,6 @@ namespace SqlSugar
                     InstanceFactory.CustomDllName = SugarCompatible.IsFramework ? "SqlSugar.GBase" : "SqlSugar.GBaseCore";
                     break;
                 case DbType.Odbc:
-                    Check.Exception(SugarCompatible.IsFramework, "Odbc only support .net core");
                     InstanceFactory.CustomDllName = SugarCompatible.IsFramework ? "SqlSugar.Odbc" : "SqlSugar.OdbcCore";
                     break;
                 default:
