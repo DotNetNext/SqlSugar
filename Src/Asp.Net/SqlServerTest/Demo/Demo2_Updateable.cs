@@ -133,6 +133,12 @@ namespace OrmTest
               .SetColumns("name", 1)
                  .SetColumns("price", 1)
               .Where("id=1").ExecuteCommand();
+
+
+            object o = db.Queryable<Order>().First();
+            db.UpdateableByObject(o).ExecuteCommand();
+            object os = db.Queryable<Order>().Take(2).ToList();
+            db.UpdateableByObject(os).ExecuteCommand();
             Console.WriteLine("#### Updateable End ####");
         }
 
