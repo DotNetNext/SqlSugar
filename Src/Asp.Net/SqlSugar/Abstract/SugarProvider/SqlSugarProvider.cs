@@ -675,6 +675,52 @@ namespace SqlSugar
         #endregion
 
         #region Insertable
+        public InsertMethodInfo InsertableByObject(object singleEntityObjectOrListObject)
+        {
+            if (singleEntityObjectOrListObject == null)
+                return new InsertMethodInfo();
+            if (singleEntityObjectOrListObject.GetType().FullName.IsCollectionsList())
+            {
+                var list = ((IList)singleEntityObjectOrListObject);
+                if (list == null || list.Count == 0)
+                    return new InsertMethodInfo();
+                var type = list[0].GetType();
+                var newList = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(type));
+                foreach (var item in list)
+                {
+                    newList.Add(item);
+                }
+                var methods = this.Context.GetType().GetMethods()
+               .Where(it => it.Name == "Insertable")
+               .Where(it => it.GetGenericArguments().Any())
+               .Where(it => it.GetParameters().Any(z => z.ParameterType.Name.StartsWith("List")))
+               .Where(it => it.Name == "Insertable").ToList();
+                var method = methods.Single().MakeGenericMethod(newList.GetType().GetGenericArguments().First());
+                InsertMethodInfo result = new InsertMethodInfo()
+                {
+                    Context = this.Context,
+                    MethodInfo = method,
+                    objectValue = newList
+                };
+                return result;
+            }
+            else
+            {
+                var methods = this.Context.GetType().GetMethods()
+                    .Where(it => it.Name == "Insertable")
+                    .Where(it => it.GetGenericArguments().Any())
+                    .Where(it => it.GetParameters().Any(z => z.ParameterType.Name == "T"))
+                    .Where(it => it.Name == "Insertable").ToList();
+                var method = methods.Single().MakeGenericMethod(singleEntityObjectOrListObject.GetType());
+                InsertMethodInfo result = new InsertMethodInfo()
+                {
+                    Context = this.Context,
+                    MethodInfo = method,
+                    objectValue = singleEntityObjectOrListObject
+                };
+                return result;
+            }
+        }
         public virtual IInsertable<T> Insertable<T>(T[] insertObjs) where T : class, new()
         {
             UtilMethods.CheckArray(insertObjs);

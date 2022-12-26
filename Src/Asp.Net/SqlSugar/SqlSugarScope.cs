@@ -232,7 +232,10 @@ namespace SqlSugar
         {
             return ScopedContext.Insertable(insertObjs);
         }
-
+        public InsertMethodInfo InsertableByObject(object singleEntityObjectOrListObject)
+        {
+            return ScopedContext.InsertableByObject(singleEntityObjectOrListObject);
+        }
         public void Open()
         {
             ScopedContext.Open();

@@ -70,6 +70,7 @@ namespace SqlSugar
         IInsertable<T> Insertable<T>(List<T> insertObjs) where T : class, new();
         IInsertable<T> Insertable<T>(T insertObj) where T : class, new();
         IInsertable<T> Insertable<T>(T[] insertObjs) where T : class, new();
+        InsertMethodInfo InsertableByObject(object singleEntityObjectOrListObject);
         #endregion
 
         #region Queryable

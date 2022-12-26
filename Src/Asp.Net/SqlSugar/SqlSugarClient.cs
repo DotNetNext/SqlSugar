@@ -159,6 +159,10 @@ namespace SqlSugar
         #endregion
 
         #region Insertable
+        public InsertMethodInfo InsertableByObject(object singleEntityObjectOrListObject)
+        {
+            return this.Context.InsertableByObject(singleEntityObjectOrListObject);
+        }
         public IInsertable<T> Insertable<T>(Dictionary<string, object> columnDictionary) where T : class, new()
         {
             return this.Context.Insertable<T>(columnDictionary);
