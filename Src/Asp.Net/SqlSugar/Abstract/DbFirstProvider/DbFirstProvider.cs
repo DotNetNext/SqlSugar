@@ -274,11 +274,11 @@ namespace SqlSugar
                     PropertyDescriptionText = GetPropertyDescriptionText(item, PropertyDescriptionText);
                     if (this.IsAttribute && item.DataType?.StartsWith("_") == true && PropertyText.Contains("[]"))
                     {
-                        PropertyDescriptionText += "\r\n           SugarColumn(IsArray=true)";
+                        PropertyDescriptionText += "\r\n           [SugarColumn(IsArray=true)]";
                     }
                     else if (item?.DataType?.StartsWith("json")==true) 
                     {
-                        PropertyDescriptionText += "\r\n           SugarColumn(IsJson=true)";
+                        PropertyDescriptionText += "\r\n           [SugarColumn(IsJson=true)]";
                     }
                     PropertyText = PropertyDescriptionText + PropertyText;
                     classText = classText.Replace(DbFirstTemplate.KeyPropertyName, PropertyText + (isLast ? "" : ("\r\n" + DbFirstTemplate.KeyPropertyName)));
