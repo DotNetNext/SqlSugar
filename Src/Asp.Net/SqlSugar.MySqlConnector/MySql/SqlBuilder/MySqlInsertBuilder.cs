@@ -140,7 +140,7 @@ namespace SqlSugar.MySqlConnector
                 foreach (var item in groupList)
                 {
                     batchInsetrSql.Append("(");
-                    insertColumns = string.Join(",", item.Select(it => base.GetDbColumn(it,FormatValue(it.Value,it.PropertyName))));
+                    insertColumns = string.Join(",", item.Select(it =>base.GetDbColumn(it, FormatValue(it.Value,it.PropertyName))));
                     batchInsetrSql.Append(insertColumns);
                     if (groupList.Last() == item)
                     {
