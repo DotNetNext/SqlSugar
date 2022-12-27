@@ -340,10 +340,22 @@ namespace SqlSugar
             }
             var oldDatabaseName = this.Context.Ado.Connection.Database;
             var connection = this.Context.CurrentConnectionConfig.ConnectionString;
-            Check.ExceptionEasy(Regex.Split(connection,oldDatabaseName).Length > 2
-                , "The user name and password cannot be the same as the database name ",
-                " 创建数据库失败, 请换一个库名，库名不能 password 或者 username 有重叠 ");
-            connection = connection.Replace(oldDatabaseName, "mysql");
+            if (Regex.Split(connection, oldDatabaseName).Length > 2)
+            {
+                var name = Regex.Match(connection, @"database\=\w+|datasource\=\w+", RegexOptions.IgnoreCase).Value;
+                if (!string.IsNullOrEmpty(name))
+                {
+                    connection = connection.Replace(name, "database=mysql");
+                }
+                else
+                {
+                    Check.ExceptionEasy("Failed to create the database. The database name has a keyword. Please change the name", "建库失败，库名存在关键字，请换一个名字");
+                }
+            }
+            else
+            {
+                connection = connection.Replace(oldDatabaseName, "mysql");
+            }
             var newDb = new SqlSugarClient(new ConnectionConfig()
             {
                 DbType = this.Context.CurrentConnectionConfig.DbType,
