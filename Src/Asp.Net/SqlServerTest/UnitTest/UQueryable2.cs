@@ -310,8 +310,40 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+            db.CodeFirst.InitTables<UnitPeople>();
+            db.Insertable(new UnitPeople()
+            {
+                 Name="a",
+                  EntryDate=DateTime.Now,
+                   Work="1",
+                    Company="a"
+                
+            }).ExecuteCommand();
+            var list10=db.Queryable<UnitPeople>().Select(a => new UnitPeople
+            {
+                Name = a.Name,
+                Job = new JobClass { Company = a.Company, Work = a.Work },
+
+                EntryDate = a.EntryDate
+
+            }  ).ToList();
+        }
+        public class UnitPeople
+        {
+            public string Name { get; set; }
+            [SugarColumn(IsIgnore =true)]
+            public JobClass Job { get; set; }
+
+            public DateTime? EntryDate { get; set; }
+            public string Company { get;   set; }
+            public string Work { get;   set; }
         }
 
+        public class JobClass
+        {
+            public string Company { get; set; }
+            public string Work { get; set; }
+        }
         public class UintAinstringHAHA 
         {
             [SugarColumn(IsPrimaryKey =true,SqlParameterDbType =System.Data.DbType.AnsiString)]
