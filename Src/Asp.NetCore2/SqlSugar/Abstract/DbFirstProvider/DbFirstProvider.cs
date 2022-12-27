@@ -272,6 +272,14 @@ namespace SqlSugar
                     string propertyTypeName = GetPropertyTypeName(item);
                     PropertyText =this.PropertyTextTemplateFunc == null? GetPropertyText(item, PropertyText):this.PropertyTextTemplateFunc(item,this.PropertyTemplate, propertyTypeName);
                     PropertyDescriptionText = GetPropertyDescriptionText(item, PropertyDescriptionText);
+                    if (this.IsAttribute && item.DataType?.StartsWith("_") == true && PropertyText.Contains("[]"))
+                    {
+                        PropertyDescriptionText += "\r\n           [SugarColumn(IsArray=true)]";
+                    }
+                    else if (item?.DataType?.StartsWith("json")==true) 
+                    {
+                        PropertyDescriptionText += "\r\n           [SugarColumn(IsJson=true)]";
+                    }
                     PropertyText = PropertyDescriptionText + PropertyText;
                     classText = classText.Replace(DbFirstTemplate.KeyPropertyName, PropertyText + (isLast ? "" : ("\r\n" + DbFirstTemplate.KeyPropertyName)));
                     if (ConstructorText.HasValue() && item.DefaultValue != null)

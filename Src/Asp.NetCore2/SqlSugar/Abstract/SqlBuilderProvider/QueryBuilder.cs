@@ -692,6 +692,10 @@ namespace SqlSugar
             {
                 return result.Replace("/**/*", "");
             }
+            if (this.IsSingle() && this.SubToListParameters != null&& expression is LambdaExpression && this.SubToListParameters.Count > 0 && this.TableShortName == null) 
+            {
+                this.TableShortName =this.Builder.GetTranslationColumnName((expression as LambdaExpression).Parameters[0].Name);
+            }
             if (result.Contains(".*") && this.IsSingle())
             {
                 return "*";
