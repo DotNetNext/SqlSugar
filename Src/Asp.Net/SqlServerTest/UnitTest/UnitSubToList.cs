@@ -309,6 +309,15 @@ namespace OrmTest
             })
            .ToList();
 
+            var test7 = db.Queryable<Order>().Select(it => new
+            {
+                CustomId = it.CustomId,
+                OrderId = it.Id,
+                OrderName = it.Name,
+                disCount = SqlFunc.Subqueryable<Custom>().Where(c => c.Id == it.CustomId|| c.Id == it.CustomId).ToList()
+            })
+         .ToList();
+
         }
         private static void TestGetAll(SqlSugarClient db)
         {
