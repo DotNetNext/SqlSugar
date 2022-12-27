@@ -43,6 +43,10 @@ namespace SqlSugar
             {
                 return "other";
             }
+            else if (dbTypeName == "sbyte")
+            {
+                return "byte";
+            }
             else if (dbTypeName == "xml" || dbTypeName == "string")
             {
                 return "string";
