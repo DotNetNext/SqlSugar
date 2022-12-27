@@ -368,7 +368,11 @@ namespace SqlSugar
         private List<DbColumnInfo> GetColumnInfosByTableName(string tableName)
         {
             List<DbColumnInfo> columns = GetOracleDbType(tableName);
-            string sql = "select *  /* " + Guid.NewGuid() + " */ from \"" +tableName + "\" WHERE 1=2 ";
+            string sql = "select *  /* " + Guid.NewGuid() + " */ from " +SqlBuilder.GetTranslationTableName(tableName) + " WHERE 1=2 ";
+            if (!this.GetTableInfoList(false).Any(it => it.Name == SqlBuilder.GetTranslationTableName(tableName).TrimStart('\"').TrimEnd('\"'))) 
+            {
+                sql = "select *  /* " + Guid.NewGuid() + " */ from \"" + tableName + "\" WHERE 1=2 ";
+            }
             this.Context.Utilities.RemoveCache<List<DbColumnInfo>>("DbMaintenanceProvider.GetFieldComment."+tableName);
             this.Context.Utilities.RemoveCache<List<string>>("DbMaintenanceProvider.GetPrimaryKeyByTableNames." + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower());
             var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
