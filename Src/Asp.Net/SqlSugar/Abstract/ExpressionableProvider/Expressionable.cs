@@ -491,6 +491,50 @@ namespace SqlSugar
             return _exp;
         }
     }
+    public class Expressionable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> where T : class, new() where T2 : class, new() where T3 : class, new() where T4 : class, new() where T5 : class, new() where T6 : class, new() where T7 : class, new() where T8 : class, new() where T9 : class, new()
+    {
+        Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, bool>> _exp = null;
+
+        public Expressionable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> And(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, bool>> exp)
+        {
+            if (_exp == null)
+                _exp = exp;
+            else
+                _exp = Expression.Lambda<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, bool>>(Expression.AndAlso(_exp.Body, exp.Body), _exp.Parameters);
+            return this;
+        }
+
+        public Expressionable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> AndIF(bool isAnd, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, bool>> exp)
+        {
+            if (isAnd)
+                And(exp);
+            return this;
+        }
+
+        public Expressionable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> Or(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, bool>> exp)
+        {
+            if (_exp == null)
+                _exp = exp;
+            else
+                _exp = Expression.Lambda<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, bool>>(Expression.OrElse(_exp.Body, exp.Body), _exp.Parameters);
+            return this;
+        }
+
+        public Expressionable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> OrIF(bool isOr, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, bool>> exp)
+        {
+            if (isOr)
+                Or(exp);
+            return this;
+        }
+
+
+        public Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, bool>> ToExpression()
+        {
+            if (_exp == null)
+                _exp = (it, t2, t3, t4, T5, t6, t7, t8, t9, t10, t11,t12) => true;
+            return _exp;
+        }
+    }
     public class Expressionable
     {
         public static Expressionable<T> Create<T>() where T : class, new()
