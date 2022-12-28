@@ -246,7 +246,6 @@ namespace SqlSugar
                 var snowColumn = this.EntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey && it.UnderType == UtilConstants.LongType);
                 if (snowColumn!=null)
                 {
-              ;
                     if (Convert.ToInt64(snowColumn.PropertyInfo.GetValue(result)) == 0)
                     {
                         var id = this.ExecuteReturnSnowflakeId();
@@ -276,6 +275,14 @@ namespace SqlSugar
             else if (this.EntityInfo.Columns.Any(it => it.IsIdentity && it.PropertyInfo.PropertyType == typeof(ulong)))
             {
                 setValue = Convert.ToUInt64(idValue);
+            }
+            else if (this.EntityInfo.Columns.Any(it => it.IsIdentity && it.PropertyInfo.PropertyType == typeof(ushort)))
+            {
+                setValue = Convert.ToUInt16(idValue);
+            }
+            else if (this.EntityInfo.Columns.Any(it => it.IsIdentity && it.PropertyInfo.PropertyType == typeof(short)))
+            {
+                setValue = Convert.ToInt16(idValue);
             }
             else
                 setValue = Convert.ToInt32(idValue);
@@ -369,6 +376,14 @@ namespace SqlSugar
             else if (this.EntityInfo.Columns.Any(it => it.IsIdentity && it.PropertyInfo.PropertyType == typeof(ulong)))
             {
                 setValue = Convert.ToUInt64(idValue);
+            }
+            else if (this.EntityInfo.Columns.Any(it => it.IsIdentity && it.PropertyInfo.PropertyType == typeof(ushort)))
+            {
+                setValue = Convert.ToUInt16(idValue);
+            }
+            else if (this.EntityInfo.Columns.Any(it => it.IsIdentity && it.PropertyInfo.PropertyType == typeof(short)))
+            {
+                setValue = Convert.ToInt16(idValue);
             }
             else
                 setValue = Convert.ToInt32(idValue);
