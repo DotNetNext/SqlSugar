@@ -828,7 +828,7 @@ namespace SqlSugar
                     var whereIndex = QueryBuilder.WhereIndex;
                     string parameterName = this.SqlBuilder.SqlParameterKeyWord + "InPara" + whereIndex;
                     this.AddParameters(new SugarParameter(parameterName, inValues[0]));
-                    this.Where(string.Format(QueryBuilder.EqualTemplate, filed, parameterName));
+                    this.Where(string.Format(QueryBuilder.EqualTemplate,SqlBuilder.GetTranslationColumnName(filed), parameterName));
                     QueryBuilder.WhereIndex++;
                 }
                 else
@@ -841,7 +841,7 @@ namespace SqlSugar
                             values.Add(item.ToString().ToSqlValue());
                         }
                     }
-                    this.Where(string.Format(QueryBuilder.InTemplate, filed, string.Join(",", values)));
+                    this.Where(string.Format(QueryBuilder.InTemplate, SqlBuilder.GetTranslationColumnName(filed), string.Join(",", values)));
                 }
             }
             else
