@@ -348,7 +348,7 @@ namespace SqlSugar
             {
                 if (item.ColumnDescription != null)
                 {
-                    db.DbMaintenance.AddColumnRemark(item.DbColumnName, item.DbTableName, item.ColumnDescription);
+                    db.DbMaintenance.AddColumnRemark(SqlBuilder.GetTranslationColumnName(item.DbColumnName).ToUpper(IsUpper), SqlBuilder.GetTranslationColumnName(item.DbTableName).ToUpper(IsUpper), item.ColumnDescription);
 
                 }
             }
