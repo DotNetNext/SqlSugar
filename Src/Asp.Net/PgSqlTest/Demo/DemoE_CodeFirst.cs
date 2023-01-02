@@ -50,8 +50,33 @@ namespace OrmTest
                 .SetColumns(it => it.longs == new long[] { 1, 2 })
                 .Where(it=>it.id==1)
                 .ExecuteCommand();
+            db.Aop.OnLogExecuting = (s, p) => Console.WriteLine(s);
+            db.CurrentConnectionConfig.MoreSettings = new ConnMoreSettings()
+            {
+                PgSqlIsAutoToLowerCodeFirst = false,
+                PgSqlIsAutoToLower=false
+            };
+            db.CodeFirst.InitTables<CodeFirstNoUpper>();
+            db.Insertable(new CodeFirstNoUpper() { Id = Guid.NewGuid() + "", Name = "a" }).ExecuteCommand();
+            var list6= db.Queryable<CodeFirstNoUpper>().Where(it => it.Id != null).ToList();
+            db.Updateable(list6).ExecuteCommand();
+            db.Deleteable(list6).ExecuteCommand();
+            db.Updateable(list6.First()).ExecuteCommand();
+            db.Deleteable<CodeFirstNoUpper>().Where(it => it.Id != null).ExecuteCommand();
+            db.Updateable<CodeFirstNoUpper>().SetColumns(it => it.Name == "a").Where(it => it.Id != null).ExecuteCommand();
+            db.Updateable<CodeFirstNoUpper>().SetColumns(it => new CodeFirstNoUpper()
+            {
+                Name = "a"
+            }).Where(it => it.Id != null).ExecuteCommand();
             Console.WriteLine("#### CodeFirst end ####");
         }
+    }
+    [SugarTable(null,"备注表")]
+    public class CodeFirstNoUpper
+    {
+        [SugarColumn(IsPrimaryKey = true, ColumnDescription ="备注列")]
+        public string Id { get; set; }
+        public string Name { get; set; }
     }
     public class CodeFirstArraryBigInt 
     {
