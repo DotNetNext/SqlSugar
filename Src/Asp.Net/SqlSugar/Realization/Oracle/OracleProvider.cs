@@ -29,6 +29,10 @@ namespace SqlSugar
                             {
                                 break;
                             }
+                            else if (item.Value != null &&  item.Value.ObjToString().Contains("||") && Regex.IsMatch(item.Value.Replace(" ","").Trim(), @"\|\|@\w+\|\|"))
+                            {
+                                break;
+                            }
                             sql = sql.Replace(item.Value, item.Value.Replace("@", UtilConstants.ReplaceKey));
                         }
                     }
