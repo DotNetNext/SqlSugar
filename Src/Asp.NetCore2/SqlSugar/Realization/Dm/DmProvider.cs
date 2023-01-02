@@ -32,6 +32,10 @@ namespace SqlSugar
                             {
                                 break;
                             }
+                            else if (item.Value != null && item.Value.ObjToString().Contains("||") && Regex.IsMatch(item.Value.Replace(" ", "").Trim(), @"\|\|@\w+\|\|"))
+                            {
+                                break;
+                            }
                             sql = sql.Replace(item.Value, item.Value.Replace("@", UtilConstants.ReplaceKey));
                         }
                     }
@@ -156,7 +160,7 @@ namespace SqlSugar
                 {
                     sqlParameter.DbType = System.Data.DbType.AnsiString;
                 }
-                if (parameter.IsRefCursor) 
+                if (parameter.IsRefCursor)
                 {
                     sqlParameter.DmSqlType = DmDbType.Cursor;
                 }

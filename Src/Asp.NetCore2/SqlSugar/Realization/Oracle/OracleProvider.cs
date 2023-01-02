@@ -29,6 +29,10 @@ namespace SqlSugar
                             {
                                 break;
                             }
+                            else if (item.Value != null &&  item.Value.ObjToString().Contains("||") && Regex.IsMatch(item.Value.Replace(" ","").Trim(), @"\|\|@\w+\|\|"))
+                            {
+                                break;
+                            }
                             sql = sql.Replace(item.Value, item.Value.Replace("@", UtilConstants.ReplaceKey));
                         }
                     }
@@ -141,7 +145,6 @@ namespace SqlSugar
                 Check.ExceptionEasy(it.Message, $"错误：{it.Message}，出现这个错的原因： 1.可能是参数名为关键词（例如 @user ）2. SQL错误。");
             }
         };
-
         public override void SetCommandToAdapter(IDataAdapter dataAdapter, DbCommand command)
         {
             ((MyOracleDataAdapter)dataAdapter).SelectCommand = (OracleCommand)command;
