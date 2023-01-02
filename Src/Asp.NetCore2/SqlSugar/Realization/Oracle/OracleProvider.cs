@@ -23,15 +23,19 @@ namespace SqlSugar
                         {
                             if (item.Value != null && item.Value.IndexOf(",") == 1&&Regex.IsMatch(item.Value, @"^ \,\@\w+$")) 
                             {
-                                break;
+                                continue;
                             }
                             else if (item.Value != null &&Regex.IsMatch(item.Value.Trim(), @"^\w+\,\@\w+\,$"))
                             {
-                                break;
+                                continue;
                             }
                             else if (item.Value != null &&  item.Value.ObjToString().Contains("||") && Regex.IsMatch(item.Value.Replace(" ","").Trim(), @"\|\|@\w+\|\|"))
                             {
-                                break;
+                                continue;
+                            }
+                            else if (item.Value != null&& Regex.IsMatch(item.Value.Replace(" ", "").Trim(), @"\(\@\w+\,"))
+                            {
+                                continue;
                             }
                             sql = sql.Replace(item.Value, item.Value.Replace("@", UtilConstants.ReplaceKey));
                         }
