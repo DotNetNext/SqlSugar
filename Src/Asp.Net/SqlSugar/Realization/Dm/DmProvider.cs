@@ -40,6 +40,10 @@ namespace SqlSugar
                             {
                                 continue;
                             }
+                            else if (item.Value != null && item.Value.Contains("=") && Regex.IsMatch(item.Value, @"\w+ \@\w+[ ]{0,1}\=[ ]{0,1}\'"))
+                            {
+                                continue;
+                            }
                             sql = sql.Replace(item.Value, item.Value.Replace("@", UtilConstants.ReplaceKey));
                         }
                     }
