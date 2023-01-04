@@ -309,6 +309,7 @@ namespace OrmTest
             //id=1
             var conModels = new List<IConditionalModel>();
             conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Equal, FieldValue = "1" , FieldValueConvertFunc=it=>Convert.ToInt32(it) });//id=1
+            conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.NoEqual, FieldValue = "1",  CSharpTypeName="int"});//id=1
             var student = db.Queryable<Order>().Where(conModels).ToList();
 
             //Complex use case
