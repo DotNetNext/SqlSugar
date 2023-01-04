@@ -111,7 +111,7 @@ namespace SqlSugar
                             break;
                         case ConditionalType.NoEqual:
                             builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "<>", parameterName);
-                            parameters.Add(new SugarParameter(parameterName, item.FieldValue));
+                            parameters.Add(new SugarParameter(parameterName, GetFieldValue(item)));
                             break;
                         case ConditionalType.IsNullOrEmpty:
                             builder.AppendFormat(" {0} (({1}) OR ({2})) ", type, item.FieldName.ToSqlFilter() + " IS NULL ", item.FieldName.ToSqlFilter() + " = '' ");

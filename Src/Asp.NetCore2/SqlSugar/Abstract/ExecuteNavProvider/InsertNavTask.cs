@@ -107,7 +107,33 @@ namespace SqlSugar
             return AsNav().ThenInclude(expression, options);
         }
 
-
+        public Root ExecuteReturnEntity()
+        {
+            var hasTran = this.Context.Ado.Transaction != null;
+            if (hasTran)
+            {
+               return (Root)PreFunc()?._RootList?.FirstOrDefault();
+            }
+            else
+            {
+                Root result = null;
+                this.Context.Ado.UseTran(() =>
+                {
+                    result= (Root)PreFunc()?._RootList?.FirstOrDefault();
+                }, ex => throw ex);
+                return result;
+            }
+        }
+        public async Task<Root> ExecuteReturnEntityAsync()
+        {
+            Root result = null;
+            await Task.Run(async () =>
+            {
+                result=ExecuteReturnEntity();
+                await Task.Delay(0);
+            });
+            return result;
+        }
 
         public bool ExecuteCommand()
         {
