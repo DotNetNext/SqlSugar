@@ -1,6 +1,7 @@
 ﻿using SqlSugar;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -80,10 +81,9 @@ namespace OrmTest
             //only update name
             var result8 = db.Updateable<Order>(it => it.Name == "Name" + "1").Where(it => it.Id == 1).ExecuteCommand();
             var result81 = db.Updateable<Order>().SetColumns(it => it.Name == "Name" + "1").Where(it => it.Id == 1).ExecuteCommand();
-            //
-
-
-
+            var array = new string[] { "1" };
+            var result82 = db.Updateable<Order>().SetColumns(it => it.Name == array[0]).Where(it => it.Id == 1).ExecuteCommand();
+ 
 
             /*** 3.by Dictionary ***/
             var dt = new Dictionary<string, object>();
