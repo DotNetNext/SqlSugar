@@ -118,7 +118,6 @@ namespace SqlSugar
                     isAuto = this.Context.CurrentConnectionConfig.IsAutoCloseConnection;
                     this.Context.CurrentConnectionConfig.IsAutoCloseConnection = false;
                 }
-                result = Ado.GetInt(sql.Split(';').First(), InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
                 result = Ado.GetInt(sql.Split(';').Last(), InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
                 if (this.Context.Ado.IsAnyTran() == false && isAuto)
                 {
@@ -182,6 +181,7 @@ namespace SqlSugar
             {
                 item.Value = id;
             }
+            snowProperty?.PropertyInfo.SetValue(this.InsertObjs.First(), id);
             this.ExecuteCommand();
             return id;
         }
@@ -197,6 +197,11 @@ namespace SqlSugar
                 var id = SnowFlakeSingle.instance.getID();
                 item.Value = id;
                 result.Add(id);
+                var obj =  this.InsertObjs.ElementAtOrDefault(item.TableId);
+                if (obj!=null)
+                {
+                    snowProperty?.PropertyInfo.SetValue(obj, id);
+                }
             }
             this.ExecuteCommand();
             return result;
@@ -212,6 +217,7 @@ namespace SqlSugar
             {
                 item.Value = id;
             }
+            snowProperty?.PropertyInfo.SetValue(this.InsertObjs.First(), id);
             await this.ExecuteCommandAsync();
             return id;
         }
@@ -227,6 +233,11 @@ namespace SqlSugar
                 var id = SnowFlakeSingle.instance.getID();
                 item.Value = id;
                 result.Add(id);
+                var obj = this.InsertObjs.ElementAtOrDefault(item.TableId);
+                if (obj != null)
+                {
+                    snowProperty?.PropertyInfo.SetValue(obj, id);
+                }
             }
             await this.ExecuteCommandAsync();
             return result;
@@ -249,7 +260,6 @@ namespace SqlSugar
                     if (Convert.ToInt64(snowColumn.PropertyInfo.GetValue(result)) == 0)
                     {
                         var id = this.ExecuteReturnSnowflakeId();
-                        snowColumn.PropertyInfo.SetValue(result, id);
                     }
                     else 
                     {
@@ -350,7 +360,6 @@ namespace SqlSugar
                     if (Convert.ToInt64(snowColumn.PropertyInfo.GetValue(result)) == 0)
                     {
                         var id = await this.ExecuteReturnSnowflakeIdAsync();
-                        snowColumn.PropertyInfo.SetValue(result, id);
                     }
                     else 
                     {
