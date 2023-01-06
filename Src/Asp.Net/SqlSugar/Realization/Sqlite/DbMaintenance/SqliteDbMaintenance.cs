@@ -260,7 +260,7 @@ namespace SqlSugar
         #region Methods
         public override void AddDefaultValue(EntityInfo entityInfo)
         {
-            Console.WriteLine("sqlite no support AddDefaultValue");
+           //sqlite no support AddDefaultValue
         }
         public override bool AddDefaultValue(string tableName, string columnName, string defaultValue)
         {
