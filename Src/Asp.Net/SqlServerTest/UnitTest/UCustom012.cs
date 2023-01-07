@@ -370,6 +370,10 @@ namespace OrmTest
              {
                    CityId=x.RoomList.Count()
              }, true).ToList();
+
+
+            db.QueryFilter.AddTableFilter<BookA>(it => it.BookId == 1);
+            db.Queryable<StudentA>().Includes(it => it.Books.Where(z => z.BookId == 1).ToList()).ToList();
         }
 
         public class UnitView01
