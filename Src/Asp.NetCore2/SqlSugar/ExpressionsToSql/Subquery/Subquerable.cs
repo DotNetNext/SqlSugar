@@ -71,7 +71,7 @@ namespace SqlSugar
             return this;
         }
 
-        public TResult Select<TResult>(Func<T, TResult> expression) where TResult :struct
+        public TResult Select<TResult>(Func<T, TResult> expression)  
         {
             return default(TResult);
         }
@@ -89,7 +89,7 @@ namespace SqlSugar
             return default(string);
         }
 
-        public TResult Max<TResult>(Func<T, TResult> expression) where TResult : struct
+        public TResult Max<TResult>(Func<T, TResult> expression)  
         {
             return default(TResult);
         }
@@ -106,7 +106,7 @@ namespace SqlSugar
         {
             return default(string);
         }
-        public TResult Min<TResult>(Func<T, TResult> expression) where TResult : struct
+        public TResult Min<TResult>(Func<T, TResult> expression) 
         {
             return default(TResult);
         }
@@ -125,7 +125,7 @@ namespace SqlSugar
         {
             return default(int);
         }
-        public TResult Sum<TResult>(Func<T, TResult> expression) where TResult : struct
+        public TResult Sum<TResult>(Func<T, TResult> expression) 
         {
             return default(TResult);
         }

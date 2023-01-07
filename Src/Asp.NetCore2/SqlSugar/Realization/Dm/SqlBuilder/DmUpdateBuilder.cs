@@ -28,7 +28,7 @@ namespace SqlSugar
                 return string.Format("{0} {1} WHERE {2};", updateTable, setValues, string.Join("AND", whereList));
             }).ToArray()));
             var result= sb.ToString();
-            if (result == "\r\n") 
+            if (groupList.Count==0) 
             {
                 return null;
             }

@@ -538,7 +538,7 @@ namespace SqlSugar
             SqlInfo result = new SqlInfo();
             result.Parameters = new List<SugarParameter>();
             var isList = false;
-            int parameterIndex = 0;
+            int parameterIndex = 100;
             foreach (var item in _ListCallFunc)
             {
                 var method = item as MethodCallExpression;

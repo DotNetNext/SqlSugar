@@ -436,7 +436,7 @@ namespace SqlSugar
             var lamResult = DeleteBuilder.GetExpressionValue(inField, ResolveExpressType.FieldSingle);
             var fieldName = lamResult.GetResultString();
             tempPrimaryKeys = new List<string>() { fieldName };
-            var result = In(primaryKeyValue);;
+            var result = In(primaryKeyValue);
             tempPrimaryKeys = null;
             return this;
         }
