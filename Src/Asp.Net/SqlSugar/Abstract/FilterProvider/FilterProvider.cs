@@ -65,31 +65,35 @@ namespace SqlSugar
             }
         }
 
-        public void AddTableFilter<T>(Expression<Func<T,bool>> expression, FilterJoinPosition filterJoinType = FilterJoinPosition.On) where T : class,new()
+        public QueryFilterProvider AddTableFilter<T>(Expression<Func<T,bool>> expression, FilterJoinPosition filterJoinType = FilterJoinPosition.On) where T : class,new()
         {
             var isOn = filterJoinType == FilterJoinPosition.On;
             var tableFilter = new TableFilterItem<T>(expression, isOn);
             this.Add(tableFilter);
+            return this;
         }
-        public void AddTableFilterIF<T>(bool isAppendFilter,Expression<Func<T, bool>> expression, FilterJoinPosition filterJoinType = FilterJoinPosition.On) where T : class, new()
+        public QueryFilterProvider AddTableFilterIF<T>(bool isAppendFilter,Expression<Func<T, bool>> expression, FilterJoinPosition filterJoinType = FilterJoinPosition.On) where T : class, new()
         {
             if (isAppendFilter) 
             {
                 AddTableFilter(expression, filterJoinType);
             }
+            return this;
         }
-        public void AddTableFilter(Type type,Expression expression, FilterJoinPosition filterJoinType = FilterJoinPosition.On)
+        public QueryFilterProvider AddTableFilter(Type type,Expression expression, FilterJoinPosition filterJoinType = FilterJoinPosition.On)
         {
             var isOn = filterJoinType == FilterJoinPosition.On;
             this.Add(new TableFilterItem<object>(type, expression, isOn));
+            return this;
         }
 
-        public void AddTableFilterIF(bool isAppendFilter, Type type, Expression expression, FilterJoinPosition posType = FilterJoinPosition.On)
+        public QueryFilterProvider AddTableFilterIF(bool isAppendFilter, Type type, Expression expression, FilterJoinPosition posType = FilterJoinPosition.On)
         {
             if (isAppendFilter)
             {
                 AddTableFilter(type, expression, posType);
             }
+            return this;
         }
         public enum FilterJoinPosition
         {
