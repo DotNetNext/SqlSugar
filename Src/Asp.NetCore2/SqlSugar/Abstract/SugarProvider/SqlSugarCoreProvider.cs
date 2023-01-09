@@ -23,7 +23,7 @@ namespace SqlSugar
             StackTrace st = new StackTrace(true);
             var methods = st.GetFrames();
             var isAsync = UtilMethods.IsAnyAsyncMethod(methods);
-            if (methods.Length>=10) 
+            if (methods.Length>=0) 
             {
                 foreach (var method in methods.Take(10)) 
                 {   
