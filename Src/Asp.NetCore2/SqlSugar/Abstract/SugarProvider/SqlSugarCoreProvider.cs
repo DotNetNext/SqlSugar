@@ -23,14 +23,14 @@ namespace SqlSugar
             StackTrace st = new StackTrace(true);
             var methods = st.GetFrames();
             var isAsync = UtilMethods.IsAnyAsyncMethod(methods);
-            if (Task.CurrentId != null) 
+            if (methods.Length>=10) 
             {
-                foreach (var method in methods) 
+                foreach (var method in methods.Take(10)) 
                 {   
-                    var methodInfo = method.GetMethod();
-                    if (methodInfo.Name== "MoveNext"&& methodInfo.ReflectedType.FullName.StartsWith("Quartz.")) 
+                    var getInterfaces = method.GetMethod()?.ReflectedType?.GetInterfaces();
+                    if (getInterfaces!=null&& getInterfaces.Any(it=>it.Name.IsIn("IJob"))) 
                     {
-                        key = $"{key}Quartz";
+                        key = $"{key}IJob";
                         break;
                     }
                 }
