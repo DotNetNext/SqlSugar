@@ -88,7 +88,21 @@ namespace SqlSugar
         }
         private  dynamic GetKey()
         {
-            return "SqlSugarProviderScope_" + conn.CurrentConnectionConfig.ConfigId;
+            var key= "SqlSugarProviderScope_" + conn.CurrentConnectionConfig.ConfigId;
+            var methods= new StackTrace(true).GetFrames();
+            if (methods.Length >= 0)
+            {
+                foreach (var method in methods.Take(10))
+                {
+                    var getInterfaces = method.GetMethod()?.ReflectedType?.GetInterfaces();
+                    if (getInterfaces != null && getInterfaces.Any(it => it.Name.IsIn("IJob", "IHostedService")))
+                    {
+                        key = $"{key}IJob";
+                        break;
+                    }
+                }
+            }
+            return key;
         }
 
         #region  API
