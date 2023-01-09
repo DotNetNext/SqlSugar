@@ -238,7 +238,7 @@ namespace SqlSugar
                 dt.Add(columnInfo.DbColumnName, value);
                 this.Context.Updateable(dt)
                              .AS(tableName)
-                             .Where($"{columnInfo.DbColumnName} is null ").ExecuteCommand();
+                             .Where($"{this.SqlBuilder.GetTranslationColumnName(columnInfo.DbColumnName)} is null ").ExecuteCommand();
                 columnInfo.IsNullable = false;
                 UpdateColumn(tableName, columnInfo);
             }
