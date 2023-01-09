@@ -13,6 +13,7 @@ namespace SqlSugar
     public class SqlSugarScopeProvider:ISqlSugarClient
     {
         internal  SqlSugarProvider conn;
+        StackFrame[] frames;
 
         public SqlSugarScopeProvider(SqlSugarProvider conn)
         {
@@ -88,7 +89,24 @@ namespace SqlSugar
         }
         private  dynamic GetKey()
         {
-            return "SqlSugarProviderScope_" + conn.CurrentConnectionConfig.ConfigId;
+            var key= "SqlSugarProviderScope_" + conn.CurrentConnectionConfig.ConfigId;
+            if (frames == null)
+            {
+                frames = new StackTrace(true).GetFrames();
+            }
+            if (frames.Length >= 0)
+            {
+                foreach (var method in frames.Take(10))
+                {
+                    var getInterfaces = method.GetMethod()?.ReflectedType?.GetInterfaces();
+                    if (getInterfaces != null && getInterfaces.Any(it => it.Name.IsIn("IJob", "IHostedService")))
+                    {
+                        key = $"{key}IJob";
+                        break;
+                    }
+                }
+            }
+            return key;
         }
 
         #region  API
