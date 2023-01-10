@@ -98,7 +98,7 @@ namespace SqlSugar
             {
                 foreach (var method in frames.Take(10))
                 {
-                    var getInterfaces = method.GetMethod()?.ReflectedType?.GetInterfaces();
+                    var getInterfaces = method.GetMethod()?.ReflectedType?.ReflectedType?.GetInterfaces();
                     if (getInterfaces != null && getInterfaces.Any(it => it.Name.IsIn("IJob", "IHostedService")))
                     {
                         key = $"{key}IJob";
