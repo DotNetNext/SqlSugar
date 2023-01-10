@@ -98,11 +98,15 @@ namespace SqlSugar
             {
                 foreach (var method in frames.Take(10))
                 {
-                    var getInterfaces = method.GetMethod()?.ReflectedType?.ReflectedType?.GetInterfaces();
-                    if (getInterfaces != null && getInterfaces.Any(it => it.Name.IsIn("IJob", "IHostedService")))
+                    var refType = method.GetMethod()?.ReflectedType;
+                    if (refType != null)
                     {
-                        key = $"{key}IJob";
-                        break;
+                        var getInterfaces = refType.Name.StartsWith("<") ? refType?.ReflectedType?.GetInterfaces() : refType?.GetInterfaces();
+                        if (getInterfaces != null && getInterfaces.Any(it => it.Name.IsIn("IJob")))
+                        {
+                            key = $"{key}IJob";
+                            break;
+                        }
                     }
                 }
             }
