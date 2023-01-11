@@ -695,5 +695,9 @@ namespace SqlSugar
             var parameterNameB = model.Args[1].MemberName;
             return $"(case when   {parameterNameA}>{parameterNameB}  then 1   when {parameterNameA}={parameterNameB} then 0 else -1 end)";
         }
+        public virtual string GetTableWithDataBase(string dataBaseName,string tableName) 
+        {
+            return $"{dataBaseName}.{tableName}";
+        }
     }
 }

@@ -258,6 +258,7 @@ namespace SqlSugar
         private void ResolveMemberValue(ExpressionParameter parameter, ExpressionParameter baseParameter, MemberExpression expression, bool? isLeft, bool isSetTempData)
         {
             var nav = new OneToOneNavgateExpression(this.Context?.SugarContext?.Context);
+            nav.ExpContext = this.Context;
             var navN = new OneToOneNavgateExpressionN(this.Context?.SugarContext?.Context);
             if (nav.IsNavgate(expression))
             {
