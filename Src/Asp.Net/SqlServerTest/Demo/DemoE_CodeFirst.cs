@@ -50,7 +50,7 @@ namespace OrmTest
     }
     public class CodeFirstMaxString1
     {
-        [SugarColumn(ColumnDataType = StaticConfig.CodeFirt_BigString)]
+        [SugarColumn(ColumnDataType = StaticConfig.CodeFirst_BigString)]
         public string img { get; set; }
     }
    
