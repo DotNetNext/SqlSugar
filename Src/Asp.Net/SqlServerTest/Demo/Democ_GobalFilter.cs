@@ -76,6 +76,13 @@ namespace OrmTest
                id=SqlFunc.Subqueryable<Order>().EnableTableFilter().Where(z=>true).Select(z=>z.Id)
             }
             ).ToList();
+
+            db.QueryFilter.Clear();
+            db.QueryFilter.AddTableFilter<Order>(it => it.Name.Contains("a"));
+            db.QueryFilter.AddTableFilter<Custom>(it => it.Name.Contains("a"));
+            db.Queryable<Order>().LeftJoin<Order>((x, y) => x.Id == y.Id).Where(x=>x.Id==1).ToList();
+            db.Queryable<Order>().LeftJoin<Order>((x, y) => x.Id == y.Id).ToList();
+            db.Queryable<Order>().LeftJoin<Custom>((x, y) => x.Id == y.Id).ToList();
         }
 
 
