@@ -38,6 +38,7 @@ namespace SqlSugar
                   new KeyValuePair<string, CSharpDataType>("varchar",CSharpDataType.@string),
                   new KeyValuePair<string, CSharpDataType>("nvarchar",CSharpDataType.@string),
                   new KeyValuePair<string, CSharpDataType>("sql_variant",CSharpDataType.@string),
+                  new KeyValuePair<string, CSharpDataType>("varcharmax",CSharpDataType.@string),
                   new KeyValuePair<string, CSharpDataType>("text",CSharpDataType.@string),
                   new KeyValuePair<string, CSharpDataType>("char",CSharpDataType.@string),
                   new KeyValuePair<string, CSharpDataType>("ntext",CSharpDataType.@string),

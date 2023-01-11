@@ -231,6 +231,10 @@ namespace SqlSugar
                         {
                             item.DataType = mappingType;
                         }
+                        if (item.DataType == "varcharmax") 
+                        {
+                            item.DataType = "nvarchar(max)";
+                        }
                     }
                 }
             }
