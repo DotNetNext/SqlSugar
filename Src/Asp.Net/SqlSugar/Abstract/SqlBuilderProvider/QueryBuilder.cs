@@ -409,9 +409,26 @@ namespace SqlSugar
             {
                 if (TableShortName == null)
                     return;
-                var shortName = this.Builder.GetTranslationColumnName(TableShortName) + ".";
-                sql = GetSql(exp, isSingle);
-                sql = sql.Replace(itName, shortName);
+
+                var isSameName =!isSingle&& this.JoinQueryInfos.Count(it => it.TableName == entityInfo.DbTableName)>0;
+                if (isSameName)
+                {
+                    List<string> mysqls = new List<string>();
+                    var mysql = GetSql(exp, isSingle);
+                    foreach (var joinInfoItem in this.JoinQueryInfos.Where(it => it.TableName == entityInfo.DbTableName))
+                    {
+                        var addSql = mysql.Replace(itName, this.Builder.GetTranslationColumnName(joinInfoItem.ShortName)+".");
+                        mysqls.Add(Regex.Replace(addSql,"^ (WHERE|AND) ",""));
+                    }
+                    mysqls.Insert(0,mysql.Replace(itName, this.Builder.GetTranslationColumnName(TableShortName)+ "."));
+                    sql = string.Join(" AND ", mysqls);
+                }
+                else
+                {
+                    var shortName = this.Builder.GetTranslationColumnName(TableShortName) + ".";
+                    sql = GetSql(exp, isSingle);
+                    sql = sql.Replace(itName, shortName);
+                }
             }
             else if (isEasyJoin)
             {
