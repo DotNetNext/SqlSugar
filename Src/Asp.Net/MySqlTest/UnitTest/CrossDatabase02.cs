@@ -12,9 +12,9 @@ namespace OrmTest
 
             var db = new SqlSugarClient(new List<ConnectionConfig>()
             {
-                new ConnectionConfig(){ConfigId="A",DbType=DbType.SqlServer,ConnectionString="server=.;uid=sa;pwd=sasa;database=SQLSUGAR4XTEST",IsAutoCloseConnection=true},
-                new ConnectionConfig(){ConfigId="B",DbType=DbType.SqlServer,ConnectionString="server=.;uid=sa;pwd=sasa;database=SQLSUGAR4XTEST2",IsAutoCloseConnection=true  },
-                new ConnectionConfig(){ConfigId="AB",DbType=DbType.SqlServer,ConnectionString="server=.;uid=sa;pwd=sasa;database=SQLSUGAR4XTEST3",IsAutoCloseConnection=true  }
+                new ConnectionConfig(){ConfigId="A",DbType=DbType.MySql,ConnectionString="server=localhost;Database=SqlSugar4xTest;Uid=root;Pwd=123456;AllowLoadLocalInfile=true",IsAutoCloseConnection=true},
+                new ConnectionConfig(){ConfigId="B",DbType=DbType.MySql,ConnectionString="server=localhost;Database=SqlSugar4xTest2;Uid=root;Pwd=123456;AllowLoadLocalInfile=true",IsAutoCloseConnection=true  },
+                new ConnectionConfig(){ConfigId="AB",DbType=DbType.MySql,ConnectionString="server=localhost;Database=SqlSugar4xTest3;Uid=root;Pwd=123456;AllowLoadLocalInfile=true",IsAutoCloseConnection=true  }
             });
 
             db.GetConnection("A").CodeFirst.InitTables<OperatorInfo>();
