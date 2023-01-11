@@ -42,9 +42,18 @@ namespace OrmTest
                     Name = it.CreateTime.HasValue ? it.CreateTime.Value.ToString("yyyy-MM-dd") : string.Empty
                 }).ToList();
             db.CodeFirst.InitTables<CodeFirstimg>();
+            if (db.DbMaintenance.IsAnyTable("CodeFirstMaxString1",false))
+                db.DbMaintenance.DropTable<CodeFirstMaxString1>();
+            db.CodeFirst.InitTables<CodeFirstMaxString1>();
             Console.WriteLine("#### CodeFirst end ####");
         }
     }
+    public class CodeFirstMaxString1
+    {
+        [SugarColumn(ColumnDataType = StaticConfig.CodeFirt_BigString)]
+        public string img { get; set; }
+    }
+   
     public class CodeFirstimg 
     {
         [SugarColumn(Length =100)]
