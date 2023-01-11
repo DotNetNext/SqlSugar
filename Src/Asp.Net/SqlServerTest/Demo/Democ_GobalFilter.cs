@@ -83,6 +83,9 @@ namespace OrmTest
             db.Queryable<Order>().LeftJoin<Order>((x, y) => x.Id == y.Id).Where(x=>x.Id==1).ToList();
             db.Queryable<Order>().LeftJoin<Order>((x, y) => x.Id == y.Id).ToList();
             db.Queryable<Order>().LeftJoin<Custom>((x, y) => x.Id == y.Id).ToList();
+            db.Queryable<Order>()
+                .LeftJoin<Custom>((x, y) => x.Id == y.Id)
+                .LeftJoin<Custom>((x, y,z) => x.Id == y.Id).ToList();
         }
 
 
