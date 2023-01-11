@@ -413,15 +413,13 @@ namespace SqlSugar
                 var isSameName =!isSingle&& this.JoinQueryInfos.Count(it => it.TableName == entityInfo.DbTableName)>0;
                 if (isSameName)
                 {
-                    List<string> mysqls = new List<string>();
                     var mysql = GetSql(exp, isSingle);
                     foreach (var joinInfoItem in this.JoinQueryInfos.Where(it => it.TableName == entityInfo.DbTableName))
                     {
                         var addSql = mysql.Replace(itName, this.Builder.GetTranslationColumnName(joinInfoItem.ShortName)+".");
-                        mysqls.Add(Regex.Replace(addSql,"^ (WHERE|AND) ",""));
+                        joinInfoItem.JoinWhere+= (" AND "+Regex.Replace(addSql,"^ (WHERE|AND) ",""));
                     }
-                    mysqls.Insert(0,mysql.Replace(itName, this.Builder.GetTranslationColumnName(TableShortName)+ "."));
-                    sql = string.Join(" AND ", mysqls);
+                    sql = mysql.Replace(itName, this.Builder.GetTranslationColumnName(TableShortName) + ".");
                 }
                 else
                 {
@@ -462,15 +460,22 @@ namespace SqlSugar
             }
             else 
             {
+                var isSameName = !isSingle && this.JoinQueryInfos.Count(it => it.TableName == entityInfo.DbTableName) > 1;
                 foreach (var joinInfo in this.JoinQueryInfos)
                 {
                     if (joinInfo.TableName.EqualCase(entityInfo.EntityName)|| joinInfo.TableName.EqualCase(entityInfo.DbTableName)) 
                     {
-                        if (sql.StartsWith(" WHERE ")) 
+                        var mysql = sql;
+                        if (isSameName)
                         {
-                            sql = Regex.Replace(sql, $"^ WHERE ", " AND ");
+                            var firstShortName = this.JoinQueryInfos.First(it => it.TableName == entityInfo.DbTableName).ShortName;
+                            mysql = mysql.Replace(Builder.GetTranslationColumnName(firstShortName), Builder.GetTranslationColumnName(joinInfo.ShortName));
                         }
-                        joinInfo.JoinWhere=joinInfo.JoinWhere + sql;
+                        if (mysql.StartsWith(" WHERE ")) 
+                        {
+                            mysql = Regex.Replace(mysql, $"^ WHERE ", " AND ");
+                        }
+                        joinInfo.JoinWhere=joinInfo.JoinWhere + mysql;
                     }
                 }
             }
