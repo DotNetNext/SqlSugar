@@ -1139,6 +1139,10 @@ namespace SqlSugar
         {
             if (this.QueryBuilder.AsTables != null && this.QueryBuilder.AsTables.Any(it => it.Key == entityName))
             {
+                if (this.QueryBuilder.JoinQueryInfos.Count(it => it.TableName.EqualCase(tableName)) > 1)
+                {
+                    Check.ExceptionEasy($"if same entity name ,.LeftJoin(db.Queryable<{entityName}>,(x,y..)=>....).As(\"{tableName}\")",$"存在相同实体，请使用.LeftJoin(db.Queryable<{entityName}>).As(\"{tableName}\",(x,y..)=>...)");
+                }
                 Check.Exception(true, ErrorMessage.GetThrowMessage($"use As<{tableName}>(\"{tableName}\")", $"请把 As(\"{tableName}\"), 改成 As<{tableName}实体>(\"{tableName}\")"));
             }
             else
