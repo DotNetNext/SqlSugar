@@ -564,11 +564,16 @@ namespace SqlSugar
                 }
             }
             var isSubQuery = name!=null&& name.StartsWith("(") && name.EndsWith(")");
+            var shortName = joinInfo.ShortName;
+            if (shortName.HasValue()) 
+            {
+                shortName = this.Builder.GetTranslationColumnName(shortName);
+            }
             return string.Format(
                 this.JoinTemplate,
                 joinInfo.JoinType.ToString() + UtilConstants.Space,
                 Builder.GetTranslationTableName(name) + UtilConstants.Space,
-                joinInfo.ShortName + UtilConstants.Space + (TableWithString == SqlWith.Null|| isSubQuery ? " " : TableWithString),
+                shortName + UtilConstants.Space + (TableWithString == SqlWith.Null|| isSubQuery ? " " : TableWithString),
                 joinInfo.JoinWhere);
         }
         public virtual void Clear()
@@ -835,11 +840,11 @@ namespace SqlSugar
 
                     if (this.TableWithString.HasValue() && this.TableWithString != SqlWith.Null)
                     {
-                        result += "," + string.Join(",", this.EasyJoinInfos.Select(it => string.Format("{0} {1} {2} ", GetTableName(it.Value), it.Key, TableWithString)));
+                        result += "," + string.Join(",", this.EasyJoinInfos.Select(it => string.Format("{0} {1} {2} ", GetTableName(it.Value)," " +Builder.GetTranslationColumnName(it.Key.ObjToString().Trim()), TableWithString)));
                     }
                     else
                     {
-                        result += "," + string.Join(",", this.EasyJoinInfos.Select(it => string.Format("{0} {1} ", GetTableName(it.Value), it.Key)));
+                        result += "," + string.Join(",", this.EasyJoinInfos.Select(it => string.Format("{0} {1} ", GetTableName(it.Value), " " + Builder.GetTranslationColumnName(it.Key.ObjToString().Trim()))));
                     }
                 }
                 return result;
