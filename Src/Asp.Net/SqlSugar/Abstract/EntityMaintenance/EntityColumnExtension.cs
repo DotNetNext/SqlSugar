@@ -54,12 +54,12 @@ namespace SqlSugar
             return this;
         }
 
-        public EntityColumnable<T> ManyToMany(Expression<Func<T, object>> propertyExpression,NavigateType type, string firstName, string lastName)
+        public EntityColumnable<T> ManyToMany(Expression<Func<T, object>> propertyExpression,Type mapppingType, string mapppingTypeAid, string mapppingTypeBid)
         {
             var name = ExpressionTool.GetMemberName(propertyExpression);
             if (entityColumnInfo.PropertyName == name && IsTable)
             {
-                entityColumnInfo.Navigat = new Navigate(type, firstName, lastName);
+                entityColumnInfo.Navigat = new Navigate(mapppingType, mapppingTypeAid, mapppingTypeBid);
                 entityColumnInfo.IsIgnore = true;
             }
             return this;
