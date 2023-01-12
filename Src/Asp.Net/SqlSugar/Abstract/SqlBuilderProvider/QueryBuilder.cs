@@ -817,7 +817,7 @@ namespace SqlSugar
                 }
                 if (this.TableShortName.HasValue()&&!IsSqlQuery)
                 {
-                    result += (TableShortName + UtilConstants.Space);
+                    result += (Builder.GetTranslationColumnName(TableShortName) + UtilConstants.Space);
                 }
                 if (this.TableWithString.HasValue() && this.TableWithString != SqlWith.Null)
                 {
