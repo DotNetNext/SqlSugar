@@ -56,7 +56,7 @@ namespace  OrmTest
                                .Having(cs => cs.PmAmount != 0)
                                .ToSql();
 
-            if (!sql.Key.Contains("`bil_costshare` cs")) 
+            if (!sql.Key.Contains("`bil_costshare` `cs`")) 
             {
                 throw new Exception("unit error");
             }
