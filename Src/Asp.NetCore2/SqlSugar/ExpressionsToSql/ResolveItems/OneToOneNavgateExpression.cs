@@ -113,7 +113,7 @@ namespace SqlSugar
             mapper.Sql = queryable
                 .AS(tableName)
                 .WhereIF(Navigat.WhereSql.HasValue(),Navigat.WhereSql)
-                .Where($" {ShorName}.{name}={pk} ").Select(selectName).ToSql().Key;
+                .Where($" {queryable.SqlBuilder.GetTranslationColumnName(ShorName)}.{name}={pk} ").Select(selectName).ToSql().Key;
             mapper.Sql = $" ({mapper.Sql}) ";
             return mapper;
         }
