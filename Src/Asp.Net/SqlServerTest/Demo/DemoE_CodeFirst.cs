@@ -45,9 +45,41 @@ namespace OrmTest
             if (db.DbMaintenance.IsAnyTable("CodeFirstMaxString1",false))
                 db.DbMaintenance.DropTable<CodeFirstMaxString1>();
             db.CodeFirst.InitTables<CodeFirstMaxString1>();
+
+
+            db.CurrentConnectionConfig.ConfigureExternalServices = new ConfigureExternalServices()
+            {
+                EntityService = (s, p) => 
+                {
+                    p.IfTable<UnitIFTable>()
+                    .UpdateProperty(it=>it.id,it =>
+                    {
+                        it.IsIdentity = true;
+                        it.IsPrimarykey= true;
+                    })
+                    .UpdateProperty(it => it.Name, it=>{
+                        it.Length = 100;
+                        it.IsNullable = true;
+                        
+                    })
+                    .OneToOne(it=>it.UnitIFTableInfo,nameof(UnitIFTable.id));
+                }
+            };
+            db.CodeFirst.InitTables<UnitIFTable>();
             Console.WriteLine("#### CodeFirst end ####");
         }
     }
+
+    public class UnitIFTable 
+    {
+        //[SugarColumn(IsPrimaryKey =true,IsIdentity =true)]
+        public int id { get; set; }
+       // [SugarColumn(IsNullable =true)]
+        public string Name { get; set; }
+
+        public UnitIFTable UnitIFTableInfo { get; set; }
+    }
+
     public class CodeFirstMaxString1
     {
         [SugarColumn(ColumnDataType = StaticConfig.CodeFirst_BigString)]
