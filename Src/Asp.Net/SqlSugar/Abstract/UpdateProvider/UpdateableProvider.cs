@@ -382,6 +382,26 @@ namespace SqlSugar
         #endregion
 
         #region Update by expression
+        public IUpdateable<T> EnableQueryFilter() 
+        {
+            try
+            {
+                ThrowUpdateByObject();
+            }
+            catch 
+            {
+                Check.ExceptionEasy("Updateable<T>(obj) no support, use Updateable<T>().SetColumn ", "更新过滤器只能用在表达式方式更新 ,更新分为实体更新和表达式更新 。正确用法 Updateable<T>().SetColum(..).Where(..)");
+            }
+            var queryable = this.Context.Queryable<T>();
+            queryable.QueryBuilder.LambdaExpressions.ParameterIndex = 1000;
+            var sqlable = queryable.ToSql();
+            var whereInfos = Regex.Split(sqlable.Key, " Where ", RegexOptions.IgnoreCase);
+            if (whereInfos.Length > 1)
+            {
+                this.Where(whereInfos.Last(), sqlable.Value);
+            }
+            return this;
+        }
         public IUpdateable<T> SetColumns(string fieldName, object fieldValue) 
         {
             ThrowUpdateByObject();
