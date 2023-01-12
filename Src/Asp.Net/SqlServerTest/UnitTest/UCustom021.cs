@@ -34,7 +34,7 @@ namespace OrmTest
                 .Queryable<UserDO, T>((u, a) => new JoinQueryInfos(JoinType.Inner, u.Id == a.UserId))
                 .Where((u, a) => u.Id == 1)
                 .Select((u, a) => a).ToSql();
-            Check.Exception("SELECT a.* FROM [UserDO] [u] Inner JOIN [MyJoin] a ON ( [u].[Id] = [a].[UserId] )   WHERE ( [u].[Id] = @Id0 )" != sql.Key,"unit error");
+            Check.Exception("SELECT a.* FROM [UserDO] [u] Inner JOIN [MyJoin] [a] ON ( [u].[Id] = [a].[UserId] )   WHERE ( [u].[Id] = @Id0 )" != sql.Key,"unit error");
         }
     }
     public class MyJoin : IUserLink 

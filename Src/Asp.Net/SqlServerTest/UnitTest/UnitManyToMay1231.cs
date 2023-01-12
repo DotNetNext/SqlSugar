@@ -42,7 +42,7 @@ namespace OrmTest
 
                 .ToSqlString();//用例代码
 
-            if (result != "SELECT [StudentId],[SchoolNo] FROM [StudentA__1] [student]  WHERE  EXISTS( ( SELECT 1 FROM [SchoolA__1] [SchoolA__10] Inner JOIN [SchoolAndRoomA__1] SchoolAndRoomA__1_1 ON  SchoolAndRoomA__1_1.[SchoolId]=SchoolA__10.[SchoolId]  Inner JOIN [RoomA__1] RoomA__11 ON  RoomA__11.[RoomId]=SchoolAndRoomA__1_1.[RoomId]   WHERE  student.[SchoolNo] = SchoolA__10.[SchoolNo]   ) ) ")
+            if (result != "SELECT [StudentId],[SchoolNo] FROM [StudentA__1] [student]  WHERE  EXISTS( ( SELECT 1 FROM [SchoolA__1] [SchoolA__10] Inner JOIN [SchoolAndRoomA__1] [SchoolAndRoomA__1_1] ON  SchoolAndRoomA__1_1.[SchoolId]=SchoolA__10.[SchoolId]  Inner JOIN [RoomA__1] [RoomA__11] ON  RoomA__11.[RoomId]=SchoolAndRoomA__1_1.[RoomId]   WHERE  student.[SchoolNo] = SchoolA__10.[SchoolNo]   ) ) ")
             {
                 throw new Exception("unit error");
             }
