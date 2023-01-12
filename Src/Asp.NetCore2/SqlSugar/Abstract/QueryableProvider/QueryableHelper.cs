@@ -992,7 +992,7 @@ namespace SqlSugar
                         }
                         this.QueryBuilder.AsTables[tableinfo.Key] = " (SELECT * FROM " + tableName + ")";
                     }
-                    this.QueryBuilder.SelectValue = this.QueryBuilder.TableShortName + ".*";
+                    this.QueryBuilder.SelectValue =this.SqlBuilder.GetTranslationColumnName(this.QueryBuilder.TableShortName) + ".*";
                 }
             }
             Check.Exception(result.JoinIndex > 10, ErrorMessage.GetThrowMessage("只支持12个表", "Only 12 tables are supported"));
