@@ -663,7 +663,7 @@ namespace SqlSugar
                     case "SelectAll":
                     case "GetSelfAndAutoFill":
                         this.Context.Parameters.RemoveAll(it => it.ParameterName == model.Args[0].MemberName.ObjToString());
-                        var result1 = this.Context.DbMehtods.GetSelfAndAutoFill(model.Args[0].MemberValue.ObjToString(), this.Context.IsSingle);
+                        var result1 = this.Context.DbMehtods.GetSelfAndAutoFill(this.Context.GetTranslationColumnName(model.Args[0].MemberValue.ObjToString()), this.Context.IsSingle);
                         if ((model.Args[0].MemberValue + "") == "." && this.Context.IsSingle)
                         {
                             result1 = this.Context.GetTranslationTableName(model.Args[0].MemberName + "", false) + ".*/**/" + result1;
