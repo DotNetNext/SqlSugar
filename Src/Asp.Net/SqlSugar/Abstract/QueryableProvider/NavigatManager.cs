@@ -337,7 +337,7 @@ namespace SqlSugar
                 ConditionalType = ConditionalType.In,
                 FieldName = navPkColumn.DbColumnName,
                 FieldValue = String.Join(",", ids),
-                CSharpTypeName = navObjectNameColumnInfo.PropertyInfo.PropertyType.Name
+                CSharpTypeName = navPkColumn.PropertyInfo.PropertyType.Name
             }));
             if (list.Any()&&navObjectNamePropety.GetValue(list.First()) == null)
             {
