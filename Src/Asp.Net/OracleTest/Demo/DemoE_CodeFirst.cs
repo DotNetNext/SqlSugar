@@ -48,6 +48,11 @@ namespace OrmTest
             {
                 Name = "a"
             }).Where(it => it.Id != null).ExecuteCommand();
+            db.Queryable<CodeFirstNoUpper>()
+                .Select(it => new CodeFirstNoUpper()
+                {
+                    Id = SqlFunc.Subqueryable<CodeFirstNoUpper>().Where(z => z.Id == it.Id).Select(z => z.Id)
+                }).ToList();
             Console.WriteLine("#### CodeFirst end ####");
         }
     }
