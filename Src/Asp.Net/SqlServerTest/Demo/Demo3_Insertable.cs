@@ -89,6 +89,8 @@ namespace OrmTest
             db.InsertableByObject(o).ExecuteCommand();
             object os = db.Queryable<Order>().Take(2).ToList();
             db.InsertableByObject(os).ExecuteCommand();
+
+            db.CodeFirst.InitTables<City>();
             Console.WriteLine("#### Insertable End ####");
 
         }
