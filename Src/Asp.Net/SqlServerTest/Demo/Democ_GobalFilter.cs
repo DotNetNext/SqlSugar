@@ -86,6 +86,13 @@ namespace OrmTest
             db.Queryable<Order>()
                 .LeftJoin<Custom>((x, y) => x.Id == y.Id)
                 .LeftJoin<Custom>((x, y,z) => x.Id == y.Id).ToList();
+          
+            db.Deleteable<Order>().Where(it => it.Id == 1)
+            .EnableQueryFilter().ExecuteCommand();
+            db.Updateable<Order>()
+                .EnableQueryFilter().SetColumns(it => it.Name=="a1")
+
+                .Where(it => true).ExecuteCommand();
         }
 
 
