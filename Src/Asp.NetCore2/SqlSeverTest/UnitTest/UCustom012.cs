@@ -167,7 +167,7 @@ namespace OrmTest
              }, true).ToSql().Key;
 
 
-            if (list6 != "SELECT @constant0 AS [Name] ,x.[SchoolName] AS [SchoolName] ,y.[StudentId] AS [StudentId] ,z.[BookId] AS [BookId] FROM [SchoolA] x Left JOIN [StudentA] y ON ( [x].[SchoolId] = [y].[SchoolId] )  Left JOIN [BookA] z ON ( [y].[SchoolId] = [y].[SchoolId] )  ")
+            if (list6 != "SELECT @constant0 AS [Name] ,x.[SchoolName] AS [SchoolName] ,y.[StudentId] AS [StudentId] ,z.[BookId] AS [BookId] FROM [SchoolA] [x] Left JOIN [StudentA] y ON ( [x].[SchoolId] = [y].[SchoolId] )  Left JOIN [BookA] z ON ( [y].[SchoolId] = [y].[SchoolId] )  ")
             {
                 throw new Exception("unit error");
             }
@@ -206,7 +206,7 @@ namespace OrmTest
              }, true).ToSql().Key;
 
 
-            if (list8 != "SELECT @constant0 AS [Name] ,x.[SchoolName] AS [SchoolName] ,y.[StudentId] AS [StudentId] FROM [SchoolA] x Left JOIN [StudentA] y ON ( [x].[SchoolId] = [y].[SchoolId] )  ")
+            if (list8 != "SELECT @constant0 AS [Name] ,x.[SchoolName] AS [SchoolName] ,y.[StudentId] AS [StudentId] FROM [SchoolA] [x] Left JOIN [StudentA] y ON ( [x].[SchoolId] = [y].[SchoolId] )  ")
             {
                 throw new Exception("unit error");
             }
