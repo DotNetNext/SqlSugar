@@ -20,7 +20,7 @@ namespace SqlSugar
     public partial class QueryableProvider<T> : QueryableAccessory, ISugarQueryable<T>
     {
         #region Tree
-        private List<T> _ToParentListByTreeKey(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue, Expression<Func<T, bool>> parentWhereExpression = default)
+        private List<T> _ToParentListByTreeKey(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue)
         {
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
             var treeKey = entity.Columns.FirstOrDefault(it => it.IsTreeKey);
@@ -40,7 +40,7 @@ namespace SqlSugar
                     tableName = this.QueryBuilder.JoinQueryInfos.First().TableName;
                 }
             }
-            var current = this.Context.Queryable<T>().AS(tableName).WhereIF(parentWhereExpression!=default, parentWhereExpression).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).Where(new List<IConditionalModel>() {
+            var current = this.Context.Queryable<T>().AS(tableName).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).Where(new List<IConditionalModel>() {
                 new ConditionalModel()
                 {
                     ConditionalType = ConditionalType.Equal,
@@ -53,7 +53,7 @@ namespace SqlSugar
                 result.Add(current);
                 object parentId = ParentInfo.PropertyInfo.GetValue(current, null);
                 int i = 0;
-                while (parentId != null && this.Context.Queryable<T>().AS(tableName).WhereIF(parentWhereExpression!=default, parentWhereExpression).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).Where(new List<IConditionalModel>() {
+                while (parentId != null && this.Context.Queryable<T>().AS(tableName).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).Where(new List<IConditionalModel>() {
                 new ConditionalModel()
                 {
                     ConditionalType = ConditionalType.Equal,
@@ -63,7 +63,65 @@ namespace SqlSugar
                 } }).Any())
                 {
                     Check.Exception(i > 100, ErrorMessage.GetThrowMessage("Dead cycle", "出现死循环或超出循环上限（100），检查最顶层的ParentId是否是null或者0"));
-                    var parent = this.Context.Queryable<T>().AS(tableName).WhereIF(parentWhereExpression!=default, parentWhereExpression).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).Where(new List<IConditionalModel>() {
+                    var parent = this.Context.Queryable<T>().AS(tableName).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).Where(new List<IConditionalModel>() {
+                new ConditionalModel()
+                {
+                    ConditionalType = ConditionalType.Equal,
+                    CSharpTypeName = treeKey.PropertyInfo.PropertyType.Name,
+                    FieldValue = parentId + "",
+                    FieldName = treeKey.DbColumnName
+                } }).First();
+                    result.Add(parent);
+                    parentId = ParentInfo.PropertyInfo.GetValue(parent, null);
+                    ++i;
+                }
+            }
+            return result;
+        }
+        private List<T> _ToParentListByTreeKey(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue, Expression<Func<T, bool>> parentWhereExpression)
+        {
+            var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            var treeKey = entity.Columns.FirstOrDefault(it => it.IsTreeKey);
+            List<T> result = new List<T>() { };
+            var parentIdName = UtilConvert.ToMemberExpression((parentIdExpression as LambdaExpression).Body).Member.Name;
+            var ParentInfo = entity.Columns.First(it => it.PropertyName == parentIdName);
+            var parentPropertyName = ParentInfo.DbColumnName;
+            var tableName = this.QueryBuilder.GetTableNameString;
+            if (this.QueryBuilder.IsSingle() == false)
+            {
+                if (this.QueryBuilder.JoinQueryInfos.Count > 0)
+                {
+                    tableName = this.QueryBuilder.JoinQueryInfos.First().TableName;
+                }
+                if (this.QueryBuilder.EasyJoinInfos.Count > 0)
+                {
+                    tableName = this.QueryBuilder.JoinQueryInfos.First().TableName;
+                }
+            }
+            var current = this.Context.Queryable<T>().AS(tableName).WhereIF(parentWhereExpression != default, parentWhereExpression).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).Where(new List<IConditionalModel>() {
+                new ConditionalModel()
+                {
+                    ConditionalType = ConditionalType.Equal,
+                    CSharpTypeName = treeKey.PropertyInfo.PropertyType.Name,
+                    FieldValue = primaryKeyValue + "",
+                    FieldName = treeKey.DbColumnName
+                } }).First();
+            if (current != null)
+            {
+                result.Add(current);
+                object parentId = ParentInfo.PropertyInfo.GetValue(current, null);
+                int i = 0;
+                while (parentId != null && this.Context.Queryable<T>().AS(tableName).WhereIF(parentWhereExpression != default, parentWhereExpression).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).Where(new List<IConditionalModel>() {
+                new ConditionalModel()
+                {
+                    ConditionalType = ConditionalType.Equal,
+                    CSharpTypeName = treeKey.PropertyInfo.PropertyType.Name,
+                    FieldValue = parentId + "",
+                    FieldName = treeKey.DbColumnName
+                } }).Any())
+                {
+                    Check.Exception(i > 100, ErrorMessage.GetThrowMessage("Dead cycle", "出现死循环或超出循环上限（100），检查最顶层的ParentId是否是null或者0"));
+                    var parent = this.Context.Queryable<T>().AS(tableName).WhereIF(parentWhereExpression != default, parentWhereExpression).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).Where(new List<IConditionalModel>() {
                 new ConditionalModel()
                 {
                     ConditionalType = ConditionalType.Equal,
@@ -79,7 +137,66 @@ namespace SqlSugar
             return result;
         }
 
-        private async Task<List<T>> _ToParentListByTreeKeyAsync(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue, Expression<Func<T, bool>> parentWhereExpression = default)
+        private async Task<List<T>> _ToParentListByTreeKeyAsync(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue)
+        {
+            var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            var treeKey = entity.Columns.FirstOrDefault(it => it.IsTreeKey);
+            List<T> result = new List<T>() { };
+            var parentIdName = UtilConvert.ToMemberExpression((parentIdExpression as LambdaExpression).Body).Member.Name;
+            var ParentInfo = entity.Columns.First(it => it.PropertyName == parentIdName);
+            var parentPropertyName = ParentInfo.DbColumnName;
+            var tableName = this.QueryBuilder.GetTableNameString;
+            if (this.QueryBuilder.IsSingle() == false)
+            {
+                if (this.QueryBuilder.JoinQueryInfos.Count > 0)
+                {
+                    tableName = this.QueryBuilder.JoinQueryInfos.First().TableName;
+                }
+                if (this.QueryBuilder.EasyJoinInfos.Count > 0)
+                {
+                    tableName = this.QueryBuilder.JoinQueryInfos.First().TableName;
+                }
+            }
+            var current = await this.Context.Queryable<T>().AS(tableName).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).Where(new List<IConditionalModel>() {
+                new ConditionalModel()
+                {
+                    ConditionalType = ConditionalType.Equal,
+                    CSharpTypeName = treeKey.PropertyInfo.PropertyType.Name,
+                    FieldValue = primaryKeyValue + "",
+                    FieldName = treeKey.DbColumnName
+                } }).FirstAsync();
+            if (current != null)
+            {
+                result.Add(current);
+                object parentId = ParentInfo.PropertyInfo.GetValue(current, null);
+                int i = 0;
+                while (parentId != null && await this.Context.Queryable<T>().AS(tableName).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).Where(new List<IConditionalModel>() {
+                new ConditionalModel()
+                {
+                    ConditionalType = ConditionalType.Equal,
+                    CSharpTypeName = treeKey.PropertyInfo.PropertyType.Name,
+                    FieldValue = parentId + "",
+                    FieldName = treeKey.DbColumnName
+                } }).AnyAsync())
+                {
+                    Check.Exception(i > 100, ErrorMessage.GetThrowMessage("Dead cycle", "出现死循环或超出循环上限（100），检查最顶层的ParentId是否是null或者0"));
+                    var parent = await this.Context.Queryable<T>().AS(tableName).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).Where(new List<IConditionalModel>() {
+                new ConditionalModel()
+                {
+                    ConditionalType = ConditionalType.Equal,
+                    CSharpTypeName = treeKey.PropertyInfo.PropertyType.Name,
+                    FieldValue = parentId + "",
+                    FieldName = treeKey.DbColumnName
+                } }).FirstAsync();
+                    result.Add(parent);
+                    parentId = ParentInfo.PropertyInfo.GetValue(parent, null);
+                    ++i;
+                }
+            }
+            return result;
+        }
+
+        private async Task<List<T>> _ToParentListByTreeKeyAsync(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue, Expression<Func<T, bool>> parentWhereExpression)
         {
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
             var treeKey = entity.Columns.FirstOrDefault(it => it.IsTreeKey);
