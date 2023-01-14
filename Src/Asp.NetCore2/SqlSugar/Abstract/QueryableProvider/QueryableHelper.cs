@@ -78,8 +78,6 @@ namespace SqlSugar
             }
             return result;
         }
-
-
         private List<T> _ToParentListByTreeKey(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue, Expression<Func<T, bool>> parentWhereExpression)
         {
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
@@ -139,7 +137,6 @@ namespace SqlSugar
             return result;
         }
 
-
         private async Task<List<T>> _ToParentListByTreeKeyAsync(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue)
         {
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
@@ -198,6 +195,7 @@ namespace SqlSugar
             }
             return result;
         }
+
         private async Task<List<T>> _ToParentListByTreeKeyAsync(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue, Expression<Func<T, bool>> parentWhereExpression)
         {
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
@@ -231,7 +229,7 @@ namespace SqlSugar
                 result.Add(current);
                 object parentId = ParentInfo.PropertyInfo.GetValue(current, null);
                 int i = 0;
-                while (parentId != null && await this.Context.Queryable<T>().AS(tableName).WhereIF(parentWhereExpression != default, parentWhereExpression).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).Where(new List<IConditionalModel>() {
+                while (parentId != null && await this.Context.Queryable<T>().AS(tableName).WhereIF(parentWhereExpression!=default, parentWhereExpression).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).Where(new List<IConditionalModel>() {
                 new ConditionalModel()
                 {
                     ConditionalType = ConditionalType.Equal,
@@ -241,7 +239,7 @@ namespace SqlSugar
                 } }).AnyAsync())
                 {
                     Check.Exception(i > 100, ErrorMessage.GetThrowMessage("Dead cycle", "出现死循环或超出循环上限（100），检查最顶层的ParentId是否是null或者0"));
-                    var parent = await this.Context.Queryable<T>().AS(tableName).WhereIF(parentWhereExpression != default, parentWhereExpression).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).Where(new List<IConditionalModel>() {
+                    var parent = await this.Context.Queryable<T>().AS(tableName).WhereIF(parentWhereExpression!=default, parentWhereExpression).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).Where(new List<IConditionalModel>() {
                 new ConditionalModel()
                 {
                     ConditionalType = ConditionalType.Equal,
