@@ -68,8 +68,15 @@ namespace OrmTest
             {
                 Name = "a"
             }).Where(it => it.Id != null).ExecuteCommand();
+            db.CodeFirst.InitTables<CodeFirstChartest>();
+            db.Queryable<CodeFirstChartest>().Where(it => it.Test == 's').ToList();
             Console.WriteLine("#### CodeFirst end ####");
         }
+    }
+    public class CodeFirstChartest 
+    {
+        [SugarColumn(ColumnDataType ="varchar(1)")]
+        public char Test { get; set; }
     }
     [SugarTable(null,"备注表")]
     public class CodeFirstNoUpper
