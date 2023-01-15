@@ -388,10 +388,6 @@ namespace SqlSugar
                     {
                         result.Add(name, DeserializeObject<Dictionary<string, object>>(readerValues.First(it => it.Key.EqualCase(name)).Value.ObjToString()));
                     }
-                    else if (IsArrayItem(readerValues, item))
-                    {
-                        result.Add(name, DeserializeObject<string[]>(readerValues.First(y => y.Key.EqualCase(item.Name)).Value + ""));
-                    }
                     else if (IsJsonList(readerValues, item))
                     {
                         var json = readerValues.First(y => y.Key.EqualCase(item.Name)).Value.ToString();
@@ -404,6 +400,10 @@ namespace SqlSugar
                     else if (item.PropertyType == typeof(object))
                     {
                         result.Add(name, readerValues[item.Name.ToLower()]);
+                    }
+                    else if (IsArrayItem(readerValues, item))
+                    {
+                        result.Add(name, DeserializeObject<string[]>(readerValues.First(y => y.Key.EqualCase(item.Name)).Value + ""));
                     }
                     else
                     {
