@@ -386,7 +386,11 @@ namespace SqlSugar
                     }
                     else if (IsJsonItem(readerValues, name))
                     {
-                        result.Add(name, DeserializeObject<Dictionary<string, object>>(readerValues.First(it=>it.Key.EqualCase(name)).Value.ObjToString()));
+                        result.Add(name, DeserializeObject<Dictionary<string, object>>(readerValues.First(it => it.Key.EqualCase(name)).Value.ObjToString()));
+                    }
+                    else if (IsArrayItem(readerValues, item))
+                    {
+                        result.Add(name, DeserializeObject<string[]>(readerValues.First(y => y.Key.EqualCase(item.Name)).Value + ""));
                     }
                     else if (IsJsonList(readerValues, item))
                     {
@@ -397,7 +401,7 @@ namespace SqlSugar
                     {
                         result.Add(name, (byte[])readerValues[item.Name.ToLower()]);
                     }
-                    else if (item.PropertyType == typeof(object)) 
+                    else if (item.PropertyType == typeof(object))
                     {
                         result.Add(name, readerValues[item.Name.ToLower()]);
                     }
@@ -453,6 +457,7 @@ namespace SqlSugar
 
             return result;
         }
+
         private void SetAppendColumns(IDataReader dataReader)
         {
             if (QueryBuilder != null && QueryBuilder.AppendColumns != null && QueryBuilder.AppendColumns.Any())
@@ -496,6 +501,12 @@ namespace SqlSugar
                                     readerValues.First().Value != null &&
                                     readerValues.First().Value.GetType() == UtilConstants.StringType &&
                                     Regex.IsMatch(readerValues.First().Value.ObjToString(), @"^\{.+\}$");
+        }
+
+
+        private static bool IsArrayItem(Dictionary<string, object> readerValues, PropertyInfo item)
+        {
+            return item.PropertyType.IsArray && readerValues.Any(y => y.Key.EqualCase(item.Name)) && readerValues.FirstOrDefault(y => y.Key.EqualCase(item.Name)).Value is string;
         }
 
         private static bool IsJsonList(Dictionary<string, object> readerValues, PropertyInfo item)
