@@ -13,6 +13,7 @@ namespace SqlSugar
             var expression = base.Expression as ConstantExpression;
             var isLeft = parameter.IsLeft;
             object value = ExpressionTool.GetValue(expression.Value, this.Context);
+            value = ConvetValue(parameter, expression, value);
             if (IsEnumString(value))
                 value = ConvertEnum(value);
             var baseParameter = parameter.BaseParameter;
@@ -67,6 +68,19 @@ namespace SqlSugar
                 default:
                     break;
             }
+        }
+
+        private object ConvetValue(ExpressionParameter parameter, ConstantExpression expression, object value)
+        {
+            if (expression.Type == UtilConstants.IntType && parameter.OppsiteExpression != null &&ExpressionTool.IsUnConvertExpress(parameter.OppsiteExpression))
+            {
+                var exp = ExpressionTool.RemoveConvert(parameter.OppsiteExpression);
+                if (exp.Type == typeof(char)&& value is int) {
+                    value = Convert.ToChar(Convert.ToInt32(value));
+                }
+            }
+
+            return value;
         }
 
         private object ConvertEnum(object value)

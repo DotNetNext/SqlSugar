@@ -395,7 +395,7 @@ namespace SqlSugar
                 List<IConditionalModel> conModels = new List<IConditionalModel>();
                 foreach (var item in pks)
                 {
-                    conModels.Add(new ConditionalModel() { FieldName = item.DbColumnName, ConditionalType = ConditionalType.Equal, FieldValue = item.Value.ObjToString() });
+                    conModels.Add(new ConditionalModel() {CSharpTypeName=item.PropertyType.Name, FieldName = item.DbColumnName, ConditionalType = ConditionalType.Equal, FieldValue = item.Value.ObjToString() });
                 }
                 var dbInfo = this.Context.Queryable<T>().Where(conModels).First();
                 if (dbInfo != null)
