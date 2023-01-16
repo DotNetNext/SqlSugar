@@ -59,7 +59,7 @@ namespace OrmTest
             }
             db.CodeFirst.InitTables<OrderMain11, OrderAarray11>();
             var id=db.Insertable(new OrderMain11() { Name = "a" }).ExecuteReturnIdentity();
-            db.Insertable(new OrderAarray11() { fk=id, Json =  new int[] { 1} }).ExecuteCommand();
+            db.Insertable(new OrderAarray11() { fk=id, Json =  new List<string>  { "1"} }).ExecuteCommand();
             var list31 = db.Queryable<OrderAarray11>().ToList();
             var list3=db.Queryable<OrderMain11>().LeftJoin<OrderAarray11>((t1, ti2) => t1.Id == ti2.fk)
                 .Select((t1, ti2) => new { t1.Id, t1.Name,json= ti2.Json }).ToList();
@@ -77,7 +77,7 @@ namespace OrmTest
             public int Id { get; set; }
             public int fk { get; set; }
             [SugarColumn(IsJson =true)]
-            public int[] Json { get; set; }
+            public List<string> Json { get; set; }
         }
 
 
