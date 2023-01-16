@@ -507,7 +507,9 @@ namespace SqlSugar
         private static bool IsArrayItem(Dictionary<string, object> readerValues, PropertyInfo item)
         {
             var isArray= item.PropertyType.IsArray && readerValues.Any(y => y.Key.EqualCase(item.Name)) && readerValues.FirstOrDefault(y => y.Key.EqualCase(item.Name)).Value is string;
-            var isListItem = item.PropertyType.IsIn(typeof(List<string>), typeof(List<int>), typeof(List<short>), typeof(List<long>), typeof(List<object>)) && readerValues.Any(y => y.Key.EqualCase(item.Name)) && readerValues.FirstOrDefault(y => y.Key.EqualCase(item.Name)).Value is string;
+            var isListItem = item.PropertyType.FullName.IsCollectionsList()&& 
+                item.PropertyType.GenericTypeArguments.Length==1&&
+                item.PropertyType.GenericTypeArguments .First().IsClass()==false&& readerValues.FirstOrDefault(y => y.Key.EqualCase(item.Name)).Value is string;
             return isArray || isListItem;
         }
 
