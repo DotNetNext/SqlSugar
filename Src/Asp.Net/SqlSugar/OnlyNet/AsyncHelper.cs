@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,14 @@ namespace SqlSugar
             //.net frame work no BeginTransactionAsync
             return db.BeginTransaction();
         }
+        
+        public static async Task<DbTransaction> BeginTransactionAsync(this DbConnection db, IsolationLevel iso)
+        {
+            await Task.Delay(0);
+            //.net frame work no BeginTransactionAsync
+            return db.BeginTransaction(iso);
+        }
+        
         public static async Task CloseAsync(this DbConnection db)
         {
             await Task.Delay(0);
