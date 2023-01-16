@@ -506,7 +506,11 @@ namespace SqlSugar
 
         private static bool IsArrayItem(Dictionary<string, object> readerValues, PropertyInfo item)
         {
-            return item.PropertyType.IsArray && readerValues.Any(y => y.Key.EqualCase(item.Name)) && readerValues.FirstOrDefault(y => y.Key.EqualCase(item.Name)).Value is string;
+            var isArray= item.PropertyType.IsArray && readerValues.Any(y => y.Key.EqualCase(item.Name)) && readerValues.FirstOrDefault(y => y.Key.EqualCase(item.Name)).Value is string;
+            var isListItem = item.PropertyType.FullName.IsCollectionsList()&& 
+                item.PropertyType.GenericTypeArguments.Length==1&&
+                item.PropertyType.GenericTypeArguments .First().IsClass()==false&& readerValues.FirstOrDefault(y => y.Key.EqualCase(item.Name)).Value is string;
+            return isArray || isListItem;
         }
 
         private static bool IsJsonList(Dictionary<string, object> readerValues, PropertyInfo item)
