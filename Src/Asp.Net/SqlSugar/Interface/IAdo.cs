@@ -172,6 +172,7 @@ namespace SqlSugar
 
         void BeginTran();
         Task BeginTranAsync();
+        Task BeginTranAsync(IsolationLevel iso);
         void BeginTran(IsolationLevel iso);
         void BeginTran(string transactionName);
         void BeginTran(IsolationLevel iso, string transactionName);
