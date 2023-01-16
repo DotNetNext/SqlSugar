@@ -929,6 +929,12 @@ namespace SqlSugar
             _IsAllTran = true;
             await AllClientEachAsync(async it => await it.Ado.BeginTranAsync());
         }
+        
+        public async Task BeginTranAsync(IsolationLevel iso)
+        {
+            _IsAllTran = true;
+            await AllClientEachAsync(async it => await it.Ado.BeginTranAsync(iso));
+        }
 
         public void CommitTran()
         {
