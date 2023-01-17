@@ -217,19 +217,17 @@ namespace SqlSugar
             if (this.Transaction == null)
                 this.Transaction =await (this.Connection as DbConnection).BeginTransactionAsync();
         }
-        
-        public virtual async Task BeginTranAsync(IsolationLevel iso)
-        {
-            await CheckConnectionAsync();
-            if (this.Transaction == null)
-                this.Transaction =await (this.Connection as DbConnection).BeginTransactionAsync(iso);
-        }
-        
         public virtual void BeginTran(IsolationLevel iso)
         {
             CheckConnection();
             if (this.Transaction == null)
                 this.Transaction = this.Connection.BeginTransaction(iso);
+        }
+        public virtual async Task BeginTranAsync(IsolationLevel iso)
+        {
+            await CheckConnectionAsync();
+            if (this.Transaction == null)
+                this.Transaction =await (this.Connection as DbConnection).BeginTransactionAsync(iso);
         }
         public virtual void RollbackTran()
         {
