@@ -24,16 +24,18 @@ namespace SqlSugar
             return Db.CreateContext<T>(isTran);
         }
     }
-    public interface ISugarUnitOfWork 
+    public interface ISaugarUnitOfWorkClear 
+    {
+        RepositoryType GetMyRepository<RepositoryType>() where RepositoryType : new();
+
+        bool Commit();
+    }
+    public interface ISugarUnitOfWork : ISaugarUnitOfWorkClear
     {
         ISqlSugarClient Db { get;  }
         ITenant Tenant { get;  }
 
         SimpleClient<T> GetRepository<T>() where T : class, new();
-
-        RepositoryType GetMyRepository<RepositoryType>() where RepositoryType : ISugarRepository, new();
-
-        bool Commit();
     }
     public class SugarUnitOfWork : IDisposable, ISugarUnitOfWork
     {
@@ -69,9 +71,9 @@ namespace SqlSugar
             }
         }
 
-        public RepositoryType GetMyRepository<RepositoryType>() where RepositoryType : ISugarRepository, new()
+        public RepositoryType GetMyRepository<RepositoryType>() where RepositoryType:new()
         {
-            var result = new RepositoryType();
+            var result = (ISugarRepository)new RepositoryType();
             var type = typeof(RepositoryType).GetGenericArguments()[0];
             TenantAttribute tenantAttribute = type.GetCustomAttribute<TenantAttribute>();
             if (tenantAttribute == null)
@@ -82,7 +84,7 @@ namespace SqlSugar
             {
                 result.Context = this.Db.AsTenant().GetConnection(tenantAttribute.configId);
             }
-            return result;
+            return (RepositoryType)result;
         }
 
         public bool Commit()
