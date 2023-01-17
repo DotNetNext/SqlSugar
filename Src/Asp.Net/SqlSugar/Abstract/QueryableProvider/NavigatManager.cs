@@ -562,6 +562,7 @@ namespace SqlSugar
                         queryable.QueryBuilder.LambdaExpressions.ParameterIndex = parameterIndex;
                         CheckHasRootShortName(method.Arguments[0], method.Arguments[1]);
                         var exp = method.Arguments[1];
+                        InitMappingtType(exp);
                         where.Add(" " + queryable.QueryBuilder.GetExpressionValue(exp, ResolveExpressType.WhereSingle).GetString());
                         SetTableShortName(result, queryable);
                         parameterIndex=queryable.QueryBuilder.LambdaExpressions.ParameterIndex ;
@@ -574,6 +575,7 @@ namespace SqlSugar
                     {
                         queryable.QueryBuilder.LambdaExpressions.ParameterIndex = parameterIndex;
                         var exp = method.Arguments[2];
+                        InitMappingtType(exp);
                         CheckHasRootShortName(method.Arguments[1], method.Arguments[2]);
                         where.Add(" " + queryable.QueryBuilder.GetExpressionValue(exp, ResolveExpressType.WhereSingle).GetString());
                         SetTableShortName(result, queryable);
@@ -795,6 +797,22 @@ namespace SqlSugar
             }
             return shortName;
         }
+
+        private void InitMappingtType(Expression exp)
+        {
+            if (exp is LambdaExpression)
+            {
+                var pars = (exp as LambdaExpression).Parameters;
+                if (pars != null)
+                {
+                    foreach (var item in pars)
+                    {
+                        this.Context.InitMappingInfo(item.Type);
+                    }
+                }
+            }
+        }
+
 
     }
 }
