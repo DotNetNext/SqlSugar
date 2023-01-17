@@ -42,7 +42,7 @@ namespace SqlSugar
         SimpleClient<T> GetRepository<T>() where T : class, new();
     }
     /// <summary>
-    /// SugarUnitOfWork->ISugarUnitOfWork->ISugarUnitOfWork
+    /// SugarUnitOfWork->ISugarUnitOfWork->ISaugarUnitOfWorkClear
     /// ISaugarUnitOfWorkClear  not exists SqlSugar method
     /// ISugarUnitOfWork exists SqlSugar method
     /// </summary>
