@@ -120,6 +120,7 @@
     <Compile Include="Models\Unit\Custom1\PurchaseDetailModel.cs" />
     <Compile Include="Models\ViewOrder.cs" />
     <Compile Include="Demo\DemoJ_Report.cs" />
+    <Compile Include="UnitTest\Unitadsfasf1.cs" />
     <Compile Include="UnitTest\CrossDatabase02.cs" />
     <Compile Include="UnitTest\Models\BilPayment.cs" />
     <Compile Include="UnitTest\Models\BilSupplierbalancerecord.cs" />
