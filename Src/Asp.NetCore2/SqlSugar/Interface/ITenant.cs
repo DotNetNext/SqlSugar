@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,9 +10,11 @@ namespace SqlSugar
     public interface ITenant
     {
         void BeginTran();
+        void BeginTran(IsolationLevel iso);
         void CommitTran();
         void RollbackTran();
         Task BeginTranAsync();
+        Task BeginTranAsync(IsolationLevel iso);
         Task CommitTranAsync();
         Task RollbackTranAsync();
         void ChangeDatabase(dynamic configId);

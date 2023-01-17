@@ -93,9 +93,17 @@ namespace SqlSugar
         {
             ScopedContext.BeginTran();
         }
+        public void BeginTran(IsolationLevel iso)
+        {
+            ScopedContext.BeginTran(iso);
+        }
         public Task BeginTranAsync()
         {
            return ScopedContext.BeginTranAsync();
+        }
+        public async Task BeginTranAsync(IsolationLevel iso)
+        {
+            await ScopedContext.BeginTranAsync(iso);
         }
         public void ChangeDatabase(dynamic configId)
         {
