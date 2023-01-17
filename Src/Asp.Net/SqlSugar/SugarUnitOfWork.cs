@@ -30,6 +30,10 @@ namespace SqlSugar
 
         bool Commit();
     }
+    /// <summary>
+    /// ISaugarUnitOfWorkClear  not exists SqlSugar method
+    /// ISugarUnitOfWork exists SqlSugar method
+    /// </summary>
     public interface ISugarUnitOfWork : ISaugarUnitOfWorkClear
     {
         ISqlSugarClient Db { get;  }
@@ -37,6 +41,11 @@ namespace SqlSugar
 
         SimpleClient<T> GetRepository<T>() where T : class, new();
     }
+    /// <summary>
+    /// SugarUnitOfWork->ISugarUnitOfWork->ISugarUnitOfWork
+    /// ISaugarUnitOfWorkClear  not exists SqlSugar method
+    /// ISugarUnitOfWork exists SqlSugar method
+    /// </summary>
     public class SugarUnitOfWork : IDisposable, ISugarUnitOfWork
     {
         public ISqlSugarClient Db { get; internal set; }
