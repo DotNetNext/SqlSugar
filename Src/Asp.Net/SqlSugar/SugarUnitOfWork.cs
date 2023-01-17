@@ -24,7 +24,18 @@ namespace SqlSugar
             return Db.CreateContext<T>(isTran);
         }
     }
-    public class SugarUnitOfWork : IDisposable
+    public interface ISugarUnitOfWork 
+    {
+        ISqlSugarClient Db { get;  }
+        ITenant Tenant { get;  }
+
+        SimpleClient<T> GetRepository<T>() where T : class, new();
+
+        RepositoryType GetMyRepository<RepositoryType>() where RepositoryType : ISugarRepository, new();
+
+        bool Commit();
+    }
+    public class SugarUnitOfWork : IDisposable, ISugarUnitOfWork
     {
         public ISqlSugarClient Db { get; internal set; }
         public ITenant Tenant { get; internal set; }
