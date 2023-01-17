@@ -113,7 +113,7 @@ namespace SqlSugar
 
         public static void TryKdbndb()
         {
-            throw new Exception("Kdbndb只能在.NetCore版本下使用");
+            //throw new Exception("Kdbndb只能在.NetCore版本下使用");
         }
 
         public static void TryDm()
