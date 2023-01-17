@@ -24,19 +24,28 @@ namespace SqlSugar
             return Db.CreateContext<T>(isTran);
         }
     }
-    public interface ISaugarUnitOfWorkClear 
+    public interface ISugarUnitOfWorkClear
     {
         RepositoryType GetMyRepository<RepositoryType>() where RepositoryType : new();
 
         bool Commit();
     }
-    public interface ISugarUnitOfWork : ISaugarUnitOfWorkClear
+    /// <summary>
+    /// ISugarUnitOfWorkClear  not exists SqlSugar method
+    /// ISugarUnitOfWork exists SqlSugar method
+    /// </summary>
+    public interface ISugarUnitOfWork : ISugarUnitOfWorkClear
     {
         ISqlSugarClient Db { get;  }
         ITenant Tenant { get;  }
 
         SimpleClient<T> GetRepository<T>() where T : class, new();
     }
+    /// <summary>
+    /// SugarUnitOfWork->ISugarUnitOfWork->ISaugarUnitOfWorkClear
+    /// ISaugarUnitOfWorkClear  not exists SqlSugar method
+    /// ISugarUnitOfWork exists SqlSugar method
+    /// </summary>
     public class SugarUnitOfWork : IDisposable, ISugarUnitOfWork
     {
         public ISqlSugarClient Db { get; internal set; }
