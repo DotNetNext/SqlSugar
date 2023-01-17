@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace OrmTest
 {
     /// <summary>
+    /// 注意:Kdbndp_dll里面所有dll都需要引用
     /// Setting up the database name does not require you to create the database
     /// 设置好数据库名不需要你去手动建库
     /// </summary>
@@ -16,7 +17,7 @@ namespace OrmTest
         /// Account have permission to create database
         /// 用有建库权限的数据库账号
         /// </summary>
-        public static string ConnectionString = "Server=59.108.228.18;Port=55001;UID=system;PWD=123456;database=test";
+        public static string ConnectionString = "Server=59.108.228.18;Port=55001;UID=system;PWD=XX;database=test";
         /// <summary>
         /// Account have permission to create database
         /// 用有建库权限的数据库账号
