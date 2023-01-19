@@ -1078,6 +1078,7 @@ namespace SqlSugar
                 JoinType = joinType,
                 JoinWhere = expResult.GetResultString(),
                 ShortName = lastPareamter.Name,
+                EntityType= lastPareamter.Type,
                 TableName = this.Context.EntityMaintenance.GetTableName(lastPareamter.Type)
             };
             if (this.Context.CurrentConnectionConfig?.MoreSettings?.PgSqlIsAutoToLower == false) 
