@@ -458,6 +458,13 @@ namespace SqlSugar
                 sql = GetSql(exp, isSingle);
                 sql = sql.Replace(itName, shortName);
             }
+            if (ChildType.IsInterface) 
+            {
+                foreach (var column in this.Context.EntityMaintenance.GetEntityInfo(this.EntityType).Columns.Where(it=>it.IsIgnore==false))
+                {
+                    sql = sql.Replace(Builder.GetTranslationColumnName(column.PropertyName), Builder.GetTranslationColumnName(column.DbColumnName));
+                }
+            }
             if (item.IsJoinQuery == false||isMain||isSingle|| isEasyJoin)
             {
                 WhereInfos.Add(sql);
