@@ -399,10 +399,14 @@ namespace SqlSugar
             string sql = "";
             if (isSingle)
             {
-                if (ChildType != this.EntityType && isSingle)
+                if (ChildType.IsInterface&&this.EntityType.GetInterfaces().Any(it => it == ChildType)) 
+                {
+                    //future
+                }
+                else if (ChildType != this.EntityType && isSingle)
                 {
                     return;
-                }
+                } 
                 sql = GetSql(exp, isSingle);
             }
             else if (isMain)
