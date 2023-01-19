@@ -305,7 +305,12 @@ namespace SqlSugar
         }
         public override bool CreateDatabase(string databaseName, string databaseDirectory = null)
         {
-            throw new NotSupportedException();
+            if (this.Context.Ado.IsValidConnection())
+            {
+                return true;
+            }
+            Check.ExceptionEasy("dm no support create database ", "达梦不支持建库方法，请写有效连接字符串可以正常运行该方法。");
+            return true;
         }
         public override bool AddRemark(EntityInfo entity)
         {
