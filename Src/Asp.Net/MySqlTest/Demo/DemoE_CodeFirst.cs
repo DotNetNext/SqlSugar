@@ -19,13 +19,22 @@ namespace OrmTest
                 InitKeyType = InitKeyType.Attribute,
                 IsAutoCloseConnection = true
             });
-            db.DbMaintenance.CreateDatabase(); 
+            db.Aop.OnLogExecuting=(s,p)=>Console.WriteLine(s);
+            db.DbMaintenance.CreateDatabase();
             db.CodeFirst.InitTables(typeof(CodeFirstTable1));//Create CodeFirstTable1 
-            db.Insertable(new CodeFirstTable1() { Name = "a", Text="a" }).ExecuteCommand();
+            db.Insertable(new CodeFirstTable1() { Name = "a", Text = "a" }).ExecuteCommand();
             var list = db.Queryable<CodeFirstTable1>().ToList();
+            Console.WriteLine("#### CodeFirst end ####");
+            db.CodeFirst.InitTables<UnitByte1>();
             Console.WriteLine("#### CodeFirst end ####");
         }
     }
+    public class UnitByte1
+    {
+        public byte[] bytes{ get; set; }
+ 
+    }
+
 
     public class CodeFirstTable1
     {
