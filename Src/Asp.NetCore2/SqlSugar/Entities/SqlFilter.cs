@@ -19,7 +19,7 @@ namespace SqlSugar
         public bool IsJoinQuery { get; set; }
     }
 
-    public class TableFilterItem<T>: SqlFilterItem where  T :class,new()
+    public class TableFilterItem<T>: SqlFilterItem     
     {
         private TableFilterItem()
         {
