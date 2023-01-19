@@ -65,7 +65,7 @@ namespace SqlSugar
             }
         }
 
-        public QueryFilterProvider AddTableFilter<T>(Expression<Func<T,bool>> expression, FilterJoinPosition filterJoinType = FilterJoinPosition.On) where T : class,new()
+        public QueryFilterProvider AddTableFilter<T>(Expression<Func<T,bool>> expression, FilterJoinPosition filterJoinType = FilterJoinPosition.On) 
         {
             var isOn = filterJoinType == FilterJoinPosition.On;
             var tableFilter = new TableFilterItem<T>(expression, isOn);

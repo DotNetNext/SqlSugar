@@ -390,7 +390,7 @@ namespace SqlSugar
             Type ChildType = type.GetProperty("type", flag).GetValue(item, null) as Type;
             var entityInfo = this.Context.EntityMaintenance.GetEntityInfo(ChildType);
             var exp = field.GetValue(item, null) as Expression;
-            var isMain = ChildType == this.EntityType;
+            var isMain = ChildType == this.EntityType||(ChildType.IsInterface&& this.EntityType.GetInterfaces().Any(it => it == ChildType));
             var isSingle = IsSingle();
             var itName = (exp as LambdaExpression).Parameters[0].Name;
             itName = this.Builder.GetTranslationColumnName(itName) + ".";
@@ -399,11 +399,20 @@ namespace SqlSugar
             string sql = "";
             if (isSingle)
             {
-                if (ChildType != this.EntityType && isSingle)
+                if (ChildType.IsInterface&&this.EntityType.GetInterfaces().Any(it => it == ChildType)) 
+                {
+                    //future
+                }
+                else if (ChildType != this.EntityType && isSingle)
                 {
                     return;
-                }
+                } 
                 sql = GetSql(exp, isSingle);
+                if (ChildType.IsInterface)
+                {
+                    var filterType = this.EntityType;
+                    sql = ReplaceFilterColumnName(sql, filterType);
+                }
             }
             else if (isMain)
             {
@@ -427,6 +436,11 @@ namespace SqlSugar
                     sql = GetSql(exp, isSingle);
                     sql = sql.Replace(itName, shortName);
                 }
+
+                if (ChildType.IsInterface)
+                {
+                    sql = ReplaceFilterColumnName(sql, this.EntityType);
+                }
             }
             else if (isEasyJoin)
             {
@@ -448,7 +462,14 @@ namespace SqlSugar
                 it.TableName.Equals(entityInfo.EntityName, StringComparison.CurrentCultureIgnoreCase));
                 if (easyInfo == null)
                 {
-                    return;
+                    if (ChildType.IsInterface && JoinQueryInfos.Any(it => it.EntityType.GetInterfaces().Any(z => z == ChildType)))
+                    {
+                        easyInfo = JoinQueryInfos.FirstOrDefault(it => it.EntityType.GetInterfaces().Any(z => z == ChildType));
+                    }
+                    else
+                    {
+                        return;
+                    }
                 }
                 var shortName = this.Builder.GetTranslationColumnName(easyInfo.ShortName.Trim()) + ".";
                 sql = GetSql(exp, isSingle);
@@ -463,7 +484,8 @@ namespace SqlSugar
                 var isSameName = !isSingle && this.JoinQueryInfos.Count(it => it.TableName == entityInfo.DbTableName) > 1;
                 foreach (var joinInfo in this.JoinQueryInfos)
                 {
-                    if (joinInfo.TableName.EqualCase(entityInfo.EntityName)|| joinInfo.TableName.EqualCase(entityInfo.DbTableName)) 
+                    var isInterface = ChildType.IsInterface && joinInfo.EntityType != null && joinInfo.EntityType.GetInterfaces().Any(it => it == ChildType);
+                    if (isInterface||joinInfo.TableName.EqualCase(entityInfo.EntityName)|| joinInfo.TableName.EqualCase(entityInfo.DbTableName)) 
                     {
                         var mysql = sql;
                         if (isSameName)
@@ -475,10 +497,30 @@ namespace SqlSugar
                         {
                             mysql = Regex.Replace(mysql, $"^ WHERE ", " AND ");
                         }
+                        if (isInterface) 
+                        {
+                            mysql = ReplaceFilterColumnName(mysql,joinInfo.EntityType,Builder.GetTranslationColumnName(joinInfo.ShortName));
+                        }
                         joinInfo.JoinWhere=joinInfo.JoinWhere + mysql;
                     }
                 }
             }
+        }
+
+        private string ReplaceFilterColumnName(string sql, Type filterType,string shortName=null)
+        {
+            foreach (var column in this.Context.EntityMaintenance.GetEntityInfo(filterType).Columns.Where(it => it.IsIgnore == false))
+            {
+                if (shortName == null)
+                {
+                    sql = sql.Replace(Builder.GetTranslationColumnName(column.PropertyName), Builder.GetTranslationColumnName(column.DbColumnName));
+                }
+                else 
+                {
+                    sql = sql.Replace(shortName + "."+Builder.GetTranslationColumnName(column.PropertyName), shortName+"." +Builder.GetTranslationColumnName(column.DbColumnName));
+                }
+            }
+            return sql;
         }
 
         private string GetSql(Expression exp, bool isSingle)
