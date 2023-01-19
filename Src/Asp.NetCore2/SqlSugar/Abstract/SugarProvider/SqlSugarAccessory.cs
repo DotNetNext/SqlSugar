@@ -327,7 +327,7 @@ namespace SqlSugar
             string shortName = string.Empty;
             List<SugarParameter> paramters = new List<SugarParameter>();
             queryable.SqlBuilder.QueryBuilder.JoinQueryInfos = this.GetJoinInfos(queryable.SqlBuilder, joinExpression, ref paramters, ref shortName, types);
-            queryable.SqlBuilder.QueryBuilder.JoinQueryInfos.Last().EntityType = typeof(T);
+            queryable.SqlBuilder.QueryBuilder.JoinQueryInfos.Last().EntityType = types.Last();
             queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
             queryable.SqlBuilder.QueryBuilder.JoinExpression = joinExpression;
             if (paramters != null)
