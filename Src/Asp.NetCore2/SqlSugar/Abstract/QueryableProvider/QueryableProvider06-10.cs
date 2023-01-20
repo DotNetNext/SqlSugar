@@ -554,6 +554,11 @@ namespace SqlSugar
             _As(tableName, entityName);
             return this;
         }
+        public new ISugarQueryable<T, T2, T3, T4, T5,T6> ClearFilter()
+        {
+            this.Filter(null, true);
+            return this;
+        }
         public new ISugarQueryable<T, T2, T3, T4, T5, T6> Filter(string FilterName, bool isDisabledGobalFilter = false)
         {
             _Filter(FilterName, isDisabledGobalFilter);
@@ -1134,6 +1139,11 @@ namespace SqlSugar
             _As(tableName, entityName);
             return this;
         }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> ClearFilter()
+        {
+            this.Filter(null, true);
+            return this;
+        }
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> Filter(string FilterName, bool isDisabledGobalFilter = false)
         {
             _Filter(FilterName, isDisabledGobalFilter);
@@ -1704,6 +1714,11 @@ namespace SqlSugar
         {
             var entityName = typeof(T).Name;
             _As(tableName, entityName);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6,T7,T8> ClearFilter()
+        {
+            this.Filter(null, true);
             return this;
         }
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> Filter(string FilterName, bool isDisabledGobalFilter = false)
@@ -2287,6 +2302,11 @@ namespace SqlSugar
         {
             var entityName = typeof(T).Name;
             _As(tableName, entityName);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> ClearFilter()
+        {
+            this.Filter(null, true);
             return this;
         }
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> Filter(string FilterName, bool isDisabledGobalFilter = false)
@@ -2889,6 +2909,11 @@ namespace SqlSugar
         {
             var entityName = typeof(T).Name;
             _As(tableName, entityName);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> ClearFilter()
+        {
+            this.Filter(null, true);
             return this;
         }
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> Filter(string FilterName, bool isDisabledGobalFilter = false)

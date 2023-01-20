@@ -260,6 +260,12 @@ namespace SqlSugar
             _Filter(FilterName, isDisabledGobalFilter);
             return this;
         }
+
+        public ISugarQueryable<T> ClearFilter() 
+        {
+            this.Filter(null, true);
+            return this;
+        }
         public ISugarQueryable<T> Filter(Type type) 
         {
             this.Context.InitMappingInfo(type);
