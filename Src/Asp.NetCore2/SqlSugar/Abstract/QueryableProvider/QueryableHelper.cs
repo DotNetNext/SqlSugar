@@ -1556,6 +1556,7 @@ namespace SqlSugar
             asyncQueryableBuilder.SubToListParameters= this.Context.Utilities.TranslateCopy(this.QueryBuilder.SubToListParameters);
             asyncQueryableBuilder.AppendColumns = this.Context.Utilities.TranslateCopy(this.QueryBuilder.AppendColumns);
             asyncQueryableBuilder.AppendValues = this.Context.Utilities.TranslateCopy(this.QueryBuilder.AppendValues);
+            asyncQueryableBuilder.RemoveFilters = this.QueryBuilder.RemoveFilters?.ToArray();
         }
         protected int SetCacheTime(int cacheDurationInSeconds)
         {

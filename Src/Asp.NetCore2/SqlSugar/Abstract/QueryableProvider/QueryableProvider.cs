@@ -266,6 +266,12 @@ namespace SqlSugar
             this.Filter(null, true);
             return this;
         }
+        public ISugarQueryable<T> ClearFilter(params Type[] types)
+        {
+            this.QueryBuilder.RemoveFilters = types;
+            this.Filter(null, true);
+            return this;
+        }
         public ISugarQueryable<T> Filter(Type type) 
         {
             this.Context.InitMappingInfo(type);
