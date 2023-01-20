@@ -304,6 +304,14 @@ namespace SqlSugar
                 {
                     foreach (var item in db.QueryFilter.GeFilterList)
                     {
+                        if (this.RemoveFilters != null && this.RemoveFilters.Length > 0) 
+                        {
+                            if (this.RemoveFilters.Contains(item.type)) 
+                            {
+                                continue;
+                            }
+                        }
+
                         PropertyInfo field = item.GetType().GetProperty("exp", flag);
                         if (field != null)
                         {
