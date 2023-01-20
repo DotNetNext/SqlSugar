@@ -307,13 +307,18 @@ namespace SqlSugar
                         if (field != null)
                         {
                             Type ChildType = item.GetType().GetProperty("type", flag).GetValue(item, null) as Type;
-                            if (ChildType == type)
+                            var isInterface = ChildType.IsInterface && type.GetInterfaces().Any(it => it == ChildType);
+                            if (ChildType == type|| isInterface)
                             {
                                 var entityInfo = db.EntityMaintenance.GetEntityInfo(ChildType);
                                 var exp = field.GetValue(item, null) as Expression;
                                 var whereStr = index==0 ? " " : " AND ";
                                 index++;
                                 result += (whereStr + GetExpressionValue(exp, ResolveExpressType.WhereSingle).GetString());
+                                if (isInterface) 
+                                {
+                                    result = ReplaceFilterColumnName(result,type);
+                                }
                             }
                         }
                     }
