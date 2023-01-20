@@ -54,6 +54,10 @@ namespace SqlSugar
         {
             _Filters = _Filters.Where(it => !(it is TableFilterItem<T>)).ToList();
         }
+        public void Clear(params Type [] types)
+        {
+            _Filters = _Filters.Where(it => !types.Contains(it.type)).ToList();
+        }
         public void Clear<T,T2>()
         {
             _Filters = _Filters.Where(it => !(it is TableFilterItem<T>) && !(it is TableFilterItem<T2>)).ToList();
@@ -84,6 +88,12 @@ namespace SqlSugar
         {
             _BackUpFilters = _Filters;
             _Filters = _BackUpFilters.Where(it => !(it is TableFilterItem<T>) && !(it is TableFilterItem<T2>) && !(it is TableFilterItem<T3>)).ToList();
+        }
+
+        public void ClearAndBackup(params Type[] types)
+        {
+            _BackUpFilters = _Filters;
+            _Filters = _BackUpFilters.Where(it =>!types.Contains(it.type)).ToList();
         }
 
         public void Restore() 
