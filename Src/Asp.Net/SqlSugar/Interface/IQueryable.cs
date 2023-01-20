@@ -34,6 +34,9 @@ namespace SqlSugar
         ISugarQueryable<T, T2> RightJoin<T2>(Expression<Func<T, T2, bool>> joinExpression);
         ISugarQueryable<T> Filter(string FilterName, bool isDisabledGobalFilter = false);
         ISugarQueryable<T> ClearFilter(params Type[] types);
+        ISugarQueryable<T> ClearFilter<FilterType1>();
+        ISugarQueryable<T> ClearFilter<FilterType1,FilterType2>();
+        ISugarQueryable<T> ClearFilter<FilterType1,FilterType2, FilterType3>();
         ISugarQueryable<T> ClearFilter();
         ISugarQueryable<T> Filter(Type type);
         ISugarQueryable<T> Mapper(Action<T> mapperAction);
@@ -318,6 +321,10 @@ namespace SqlSugar
         new ISugarQueryable<T, T2> AS<AsT>(string tableName);
         new ISugarQueryable<T, T2> AS(string tableName);
         new ISugarQueryable<T,T2> ClearFilter();
+        new ISugarQueryable<T,T2> ClearFilter(params Type[] types);
+        new ISugarQueryable<T,T2> ClearFilter<FilterType1>();
+        new ISugarQueryable<T,T2> ClearFilter<FilterType1, FilterType2>();
+        new ISugarQueryable<T,T2> ClearFilter<FilterType1, FilterType2, FilterType3>();
         new ISugarQueryable<T, T2> Filter(string FilterName, bool isDisabledGobalFilter = false);
         new ISugarQueryable<T, T2> AddParameters(object parameters);
         new ISugarQueryable<T, T2> AddParameters(SugarParameter[] parameters);

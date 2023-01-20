@@ -458,6 +458,26 @@ namespace SqlSugar
             this.Filter(null, true);
             return this;
         }
+        public new ISugarQueryable<T,T2> ClearFilter(params Type[] types)
+        {
+            base.ClearFilter(types);
+            return this;
+        }
+        public new ISugarQueryable<T, T2> ClearFilter<FilterType1>()
+        {
+            this.ClearFilter(typeof(FilterType1));
+            return this;
+        }
+        public new ISugarQueryable<T, T2> ClearFilter<FilterType1, FilterType2>()
+        {
+            this.ClearFilter(typeof(FilterType1), typeof(FilterType2));
+            return this;
+        }
+        public new ISugarQueryable<T, T2> ClearFilter<FilterType1, FilterType2, FilterType3>()
+        {
+            this.ClearFilter(typeof(FilterType1), typeof(FilterType2), typeof(FilterType3));
+            return this;
+        }
         public new ISugarQueryable<T, T2> Filter(string FilterName, bool isDisabledGobalFilter = false)
         {
             _Filter(FilterName, isDisabledGobalFilter);
