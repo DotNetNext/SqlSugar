@@ -34,6 +34,7 @@ namespace SqlSugar
         #endregion
 
         #region Splicing basic
+        public Type[] RemoveFilters { get; set; }
         public Dictionary<string, object> SubToListParameters { get; set; }
         internal List<QueryableAppendColumn> AppendColumns { get; set; }
         internal List<List<QueryableAppendColumn>> AppendValues { get; set; }
@@ -297,23 +298,36 @@ namespace SqlSugar
             if (this.Context != null)
             {
                 var db = Context;
-                BindingFlags flag = BindingFlags.Instance | BindingFlags.NonPublic;
+                BindingFlags flag = BindingFlags.Instance | BindingFlags.NonPublic| BindingFlags.Public;
                 var index = 0;
                 if (db.QueryFilter.GeFilterList != null)
                 {
                     foreach (var item in db.QueryFilter.GeFilterList)
                     {
+                        if (this.RemoveFilters != null && this.RemoveFilters.Length > 0) 
+                        {
+                            if (this.RemoveFilters.Contains(item.type)) 
+                            {
+                                continue;
+                            }
+                        }
+
                         PropertyInfo field = item.GetType().GetProperty("exp", flag);
                         if (field != null)
                         {
-                            Type ChildType = item.GetType().GetProperty("type", flag).GetValue(item, null) as Type;
-                            if (ChildType == type)
+                            Type ChildType = item.type;
+                            var isInterface = ChildType.IsInterface && type.GetInterfaces().Any(it => it == ChildType);
+                            if (ChildType == type|| isInterface)
                             {
                                 var entityInfo = db.EntityMaintenance.GetEntityInfo(ChildType);
                                 var exp = field.GetValue(item, null) as Expression;
                                 var whereStr = index==0 ? " " : " AND ";
                                 index++;
                                 result += (whereStr + GetExpressionValue(exp, ResolveExpressType.WhereSingle).GetString());
+                                if (isInterface) 
+                                {
+                                    result = ReplaceFilterColumnName(result,type);
+                                }
                             }
                         }
                     }
@@ -361,7 +375,10 @@ namespace SqlSugar
             if (!IsDisabledGobalFilter && this.Context.QueryFilter.GeFilterList.HasValue())
             {
                 var gobalFilterList = this.Context.QueryFilter.GeFilterList.Where(it => it.FilterName.IsNullOrEmpty()).ToList();
-
+                if (this.RemoveFilters != null && this.RemoveFilters.Length > 0) 
+                {
+                    gobalFilterList = gobalFilterList.Where(it => !this.RemoveFilters.Contains(it.type)).ToList();
+                }
                 foreach (var item in gobalFilterList)
                 {
                     if (item.GetType().Name.StartsWith("TableFilterItem"))
@@ -384,10 +401,10 @@ namespace SqlSugar
 
         private void AppendTableFilter(SqlFilterItem item)
         {
-            BindingFlags flag = BindingFlags.Instance | BindingFlags.NonPublic;
+            BindingFlags flag = BindingFlags.Instance | BindingFlags.NonPublic |BindingFlags.Public;
             Type type = item.GetType();
             PropertyInfo field = type.GetProperty("exp", flag);
-            Type ChildType = type.GetProperty("type", flag).GetValue(item, null) as Type;
+            Type ChildType = item.type;
             var entityInfo = this.Context.EntityMaintenance.GetEntityInfo(ChildType);
             var exp = field.GetValue(item, null) as Expression;
             var isMain = ChildType == this.EntityType||(ChildType.IsInterface&& this.EntityType.GetInterfaces().Any(it => it == ChildType));

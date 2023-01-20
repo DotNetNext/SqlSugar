@@ -17,6 +17,7 @@ namespace SqlSugar
         /// Is it a multiple table query?
         /// </summary>
         public bool IsJoinQuery { get; set; }
+        internal Type type { get; set; }
     }
 
     public class TableFilterItem<T>: SqlFilterItem     
@@ -26,7 +27,6 @@ namespace SqlSugar
 
         }
         private Expression exp { get; set; }
-        private Type type { get; set; }
         public TableFilterItem(Expression<Func<T,bool>> expression,bool isJoinOn=false)
         {
             exp = expression;

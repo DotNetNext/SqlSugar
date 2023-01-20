@@ -50,10 +50,40 @@ namespace SqlSugar
         {
             _Filters = new List<SqlFilterItem>();
         }
+        public void Clear<T>()
+        {
+            _Filters = _Filters.Where(it => !(it is TableFilterItem<T>)).ToList();
+        }
+        public void Clear<T,T2>()
+        {
+            _Filters = _Filters.Where(it => !(it is TableFilterItem<T>) && !(it is TableFilterItem<T2>)).ToList();
+        }
+        public void Clear<T, T2,T3>()
+        {
+            _Filters = _Filters.Where(it => !(it is TableFilterItem<T>) && !(it is TableFilterItem<T2>) && !(it is TableFilterItem<T3>)).ToList();
+        }
         public void ClearAndBackup()
         {
             _BackUpFilters = _Filters;
             _Filters = new List<SqlFilterItem>();
+        }
+
+        public void ClearAndBackup<T>()
+        {
+            _BackUpFilters = _Filters;
+            _Filters = _BackUpFilters.Where(it=>!(it is TableFilterItem<T>)).ToList();
+        }
+
+        public void ClearAndBackup<T,T2>()
+        {
+            _BackUpFilters = _Filters;
+            _Filters = _BackUpFilters.Where(it => !(it is TableFilterItem<T>)&&!(it is TableFilterItem<T2>)).ToList();
+        }
+
+        public void ClearAndBackup<T, T2 , T3>()
+        {
+            _BackUpFilters = _Filters;
+            _Filters = _BackUpFilters.Where(it => !(it is TableFilterItem<T>) && !(it is TableFilterItem<T2>) && !(it is TableFilterItem<T3>)).ToList();
         }
 
         public void Restore() 

@@ -33,6 +33,8 @@ namespace SqlSugar
         ISugarQueryable<T, T2> InnerJoin<T2>(Expression<Func<T, T2, bool>> joinExpression);
         ISugarQueryable<T, T2> RightJoin<T2>(Expression<Func<T, T2, bool>> joinExpression);
         ISugarQueryable<T> Filter(string FilterName, bool isDisabledGobalFilter = false);
+        ISugarQueryable<T> ClearFilter(params Type[] types);
+        ISugarQueryable<T> ClearFilter();
         ISugarQueryable<T> Filter(Type type);
         ISugarQueryable<T> Mapper(Action<T> mapperAction);
         ISugarQueryable<T> Mapper<AType, BType, MappingType>(Expression<Func<MappingType, ManyToMany>> expression);
@@ -315,6 +317,7 @@ namespace SqlSugar
         new ISugarQueryable<T, T2> Clone();
         new ISugarQueryable<T, T2> AS<AsT>(string tableName);
         new ISugarQueryable<T, T2> AS(string tableName);
+        new ISugarQueryable<T,T2> ClearFilter();
         new ISugarQueryable<T, T2> Filter(string FilterName, bool isDisabledGobalFilter = false);
         new ISugarQueryable<T, T2> AddParameters(object parameters);
         new ISugarQueryable<T, T2> AddParameters(SugarParameter[] parameters);
@@ -436,6 +439,7 @@ namespace SqlSugar
         new ISugarQueryable<T, T2, T3> Clone();
         new ISugarQueryable<T, T2, T3> AS<AsT>(string tableName);
         new ISugarQueryable<T, T2, T3> AS(string tableName);
+        new ISugarQueryable<T, T2,T3> ClearFilter();
         new ISugarQueryable<T, T2, T3> Filter(string FilterName, bool isDisabledGobalFilter = false);
         new ISugarQueryable<T, T2, T3> AddParameters(object parameters);
         new ISugarQueryable<T, T2, T3> AddParameters(SugarParameter[] parameters);
@@ -563,6 +567,7 @@ namespace SqlSugar
         new ISugarQueryable<T, T2, T3, T4> Clone();
         new ISugarQueryable<T, T2, T3, T4> AS<AsT>(string tableName);
         new ISugarQueryable<T, T2, T3, T4> AS(string tableName);
+        new ISugarQueryable<T, T2, T3,T4> ClearFilter();
         new ISugarQueryable<T, T2, T3, T4> Filter(string FilterName, bool isDisabledGobalFilter = false);
         new ISugarQueryable<T, T2, T3, T4> AddParameters(object parameters);
         new ISugarQueryable<T, T2, T3, T4> AddParameters(SugarParameter[] parameters);
@@ -682,6 +687,7 @@ namespace SqlSugar
         new ISugarQueryable<T, T2, T3, T4, T5> Clone();
         new ISugarQueryable<T, T2, T3, T4, T5> AS<AsT>(string tableName);
         new ISugarQueryable<T, T2, T3, T4, T5> AS(string tableName);
+        new ISugarQueryable<T, T2, T3, T4,T5> ClearFilter();
         new ISugarQueryable<T, T2, T3, T4, T5> Filter(string FilterName, bool isDisabledGobalFilter = false);
         new ISugarQueryable<T, T2, T3, T4, T5> AddParameters(object parameters);
         new ISugarQueryable<T, T2, T3, T4, T5> AddParameters(SugarParameter[] parameters);
@@ -810,6 +816,7 @@ namespace SqlSugar
         new ISugarQueryable<T, T2, T3, T4, T5, T6> Clone();
         new ISugarQueryable<T, T2, T3, T4, T5, T6> AS<AsT>(string tableName);
         new ISugarQueryable<T, T2, T3, T4, T5, T6> AS(string tableName);
+        new ISugarQueryable<T, T2, T3, T4, T5,T6> ClearFilter();
         new ISugarQueryable<T, T2, T3, T4, T5, T6> Filter(string FilterName, bool isDisabledGobalFilter = false);
         new ISugarQueryable<T, T2, T3, T4, T5, T6> AddParameters(object parameters);
         new ISugarQueryable<T, T2, T3, T4, T5, T6> AddParameters(SugarParameter[] parameters);
@@ -925,6 +932,7 @@ namespace SqlSugar
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> Clone();
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> AS<AsT>(string tableName);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> AS(string tableName);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> ClearFilter();
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> Filter(string FilterName, bool isDisabledGobalFilter = false);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> AddParameters(object parameters);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> AddParameters(SugarParameter[] parameters);
@@ -1046,6 +1054,7 @@ namespace SqlSugar
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> Clone();
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> AS<AsT>(string tableName);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> AS(string tableName);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> ClearFilter();
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> Filter(string FilterName, bool isDisabledGobalFilter = false);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> AddParameters(object parameters);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> AddParameters(SugarParameter[] parameters);
@@ -1161,6 +1170,7 @@ namespace SqlSugar
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> Clone();
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> AS<AsT>(string tableName);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> AS(string tableName);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> ClearFilter();
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> Filter(string FilterName, bool isDisabledGobalFilter = false);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> AddParameters(object parameters);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> AddParameters(SugarParameter[] parameters);
@@ -1280,6 +1290,7 @@ namespace SqlSugar
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> Clone();
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> AS<AsT>(string tableName);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> AS(string tableName);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9,T10> ClearFilter();
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> Filter(string FilterName, bool isDisabledGobalFilter = false);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> AddParameters(object parameters);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> AddParameters(SugarParameter[] parameters);
@@ -1403,6 +1414,7 @@ namespace SqlSugar
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> Clone();
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> AS<AsT>(string tableName);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> AS(string tableName);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> ClearFilter();
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> Filter(string FilterName, bool isDisabledGobalFilter = false);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> AddParameters(object parameters);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> AddParameters(SugarParameter[] parameters);
@@ -1525,6 +1537,7 @@ namespace SqlSugar
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> Clone();
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> AS<AsT>(string tableName);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> AS(string tableName);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> ClearFilter();
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> Filter(string FilterName, bool isDisabledGobalFilter = false);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> AddParameters(object parameters);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> AddParameters(SugarParameter[] parameters);

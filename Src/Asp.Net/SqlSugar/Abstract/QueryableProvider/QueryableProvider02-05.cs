@@ -453,6 +453,11 @@ namespace SqlSugar
             _As(tableName, entityName);
             return this;
         }
+        public new ISugarQueryable<T,T2> ClearFilter()
+        {
+            this.Filter(null, true);
+            return this;
+        }
         public new ISugarQueryable<T, T2> Filter(string FilterName, bool isDisabledGobalFilter = false)
         {
             _Filter(FilterName, isDisabledGobalFilter);
@@ -1078,6 +1083,11 @@ namespace SqlSugar
         {
             var entityName = typeof(T).Name;
             _As(tableName, entityName);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3> ClearFilter()
+        {
+            this.Filter(null, true);
             return this;
         }
         public new ISugarQueryable<T, T2, T3> Filter(string FilterName, bool isDisabledGobalFilter = false)
@@ -1717,6 +1727,11 @@ namespace SqlSugar
             _As(tableName, entityName);
             return this;
         }
+        public new ISugarQueryable<T, T2, T3,T4> ClearFilter()
+        {
+            this.Filter(null, true);
+            return this;
+        }
         public new ISugarQueryable<T, T2, T3, T4> Filter(string FilterName, bool isDisabledGobalFilter = false)
         {
             _Filter(FilterName, isDisabledGobalFilter);
@@ -2286,6 +2301,11 @@ namespace SqlSugar
         {
             var entityName = typeof(T).Name;
             _As(tableName, entityName);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4,T5> ClearFilter()
+        {
+            this.Filter(null, true);
             return this;
         }
         public new ISugarQueryable<T, T2, T3, T4, T5> Filter(string FilterName, bool isDisabledGobalFilter = false)
