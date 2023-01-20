@@ -272,6 +272,21 @@ namespace SqlSugar
             this.Filter(null, true);
             return this;
         }
+        public ISugarQueryable<T> ClearFilter<FilterType1>() 
+        {
+            this.ClearFilter(typeof(FilterType1));
+            return this;
+        }
+        public ISugarQueryable<T> ClearFilter<FilterType1, FilterType2>() 
+        {
+            this.ClearFilter(typeof(FilterType1),typeof(FilterType2));
+            return this;
+        }
+        public ISugarQueryable<T> ClearFilter<FilterType1, FilterType2, FilterType3>() 
+        {
+            this.ClearFilter(typeof(FilterType1), typeof(FilterType2),typeof(FilterType3));
+            return this;
+        }
         public ISugarQueryable<T> Filter(Type type) 
         {
             this.Context.InitMappingInfo(type);
