@@ -1115,6 +1115,26 @@ namespace SqlSugar
             _Filter(FilterName, isDisabledGobalFilter);
             return this;
         }
+        public new ISugarQueryable<T, T2,T3> ClearFilter(params Type[] types)
+        {
+            base.ClearFilter(types);
+            return this;
+        }
+        public new ISugarQueryable<T, T2,T3> ClearFilter<FilterType1>()
+        {
+            this.ClearFilter(typeof(FilterType1));
+            return this;
+        }
+        public new ISugarQueryable<T, T2,T3> ClearFilter<FilterType1, FilterType2>()
+        {
+            this.ClearFilter(typeof(FilterType1), typeof(FilterType2));
+            return this;
+        }
+        public new ISugarQueryable<T, T2,T3> ClearFilter<FilterType1, FilterType2, FilterType3>()
+        {
+            this.ClearFilter(typeof(FilterType1), typeof(FilterType2), typeof(FilterType3));
+            return this;
+        }
         public new ISugarQueryable<T, T2, T3> AddParameters(object parameters)
         {
             if (parameters != null)
@@ -1757,6 +1777,28 @@ namespace SqlSugar
             _Filter(FilterName, isDisabledGobalFilter);
             return this;
         }
+
+        public new ISugarQueryable<T, T2, T3, T4> ClearFilter(params Type[] types)
+        {
+            base.ClearFilter(types);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4> ClearFilter<FilterType1>()
+        {
+            this.ClearFilter(typeof(FilterType1));
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4> ClearFilter<FilterType1, FilterType2>()
+        {
+            this.ClearFilter(typeof(FilterType1), typeof(FilterType2));
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4> ClearFilter<FilterType1, FilterType2, FilterType3>()
+        {
+            this.ClearFilter(typeof(FilterType1), typeof(FilterType2), typeof(FilterType3));
+            return this;
+        }
+
         public new ISugarQueryable<T, T2, T3, T4> AddParameters(object parameters)
         {
             if (parameters != null)
@@ -2333,6 +2375,29 @@ namespace SqlSugar
             _Filter(FilterName, isDisabledGobalFilter);
             return this;
         }
+
+
+        public new ISugarQueryable<T, T2, T3, T4, T5> ClearFilter(params Type[] types)
+        {
+            base.ClearFilter(types);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5> ClearFilter<FilterType1>()
+        {
+            this.ClearFilter(typeof(FilterType1));
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5> ClearFilter<FilterType1, FilterType2>()
+        {
+            this.ClearFilter(typeof(FilterType1), typeof(FilterType2));
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5> ClearFilter<FilterType1, FilterType2, FilterType3>()
+        {
+            this.ClearFilter(typeof(FilterType1), typeof(FilterType2), typeof(FilterType3));
+            return this;
+        }
+
         public new ISugarQueryable<T, T2, T3, T4, T5> AddParameters(object parameters)
         {
             if (parameters != null)
