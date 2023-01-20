@@ -8,6 +8,10 @@ namespace SqlSugar
     {
         public override string GetPropertyTypeName(string dbTypeName)
         {
+            if (SugarCompatible.IsFramework) 
+            {
+                dbTypeName = dbTypeName.Replace("pg_catalog.", "");
+            }
             dbTypeName = dbTypeName.ToLower();
             var propertyTypes = MappingTypes.Where(it => it.Value.ToString().ToLower() == dbTypeName || it.Key.ToLower() == dbTypeName);
             if (propertyTypes == null)
