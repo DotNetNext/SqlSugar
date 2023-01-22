@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            Unitadfa1231.Init();
             UInsert3.Init();
             USelectTest.Init();
             UnitSubToList.Init();
