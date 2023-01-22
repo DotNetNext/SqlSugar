@@ -335,7 +335,10 @@ namespace SqlSugar
                 }
                 if (this.Context.CurrentConnectionConfig.ConfigureExternalServices != null && this.Context.CurrentConnectionConfig.ConfigureExternalServices.EntityService != null)
                 {
-                    this.Context.CurrentConnectionConfig.ConfigureExternalServices.EntityService(property, column);
+                    if (column.EntityName != null && !column.EntityName.StartsWith("<>f__AnonymousType"))
+                    {
+                        this.Context.CurrentConnectionConfig.ConfigureExternalServices.EntityService(property, column);
+                    }
                 }
                 if (column.PropertyInfo.DeclaringType != null
                     && column.PropertyInfo.DeclaringType != result.Type
