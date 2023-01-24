@@ -617,5 +617,11 @@ namespace SqlSugar
             }
             return result;
         }
+
+
+        public static bool IsNegate(Expression exp)
+        {
+            return exp is UnaryExpression && exp.NodeType == ExpressionType.Negate;
+        }
     }
 }

@@ -48,21 +48,32 @@ namespace SqlSugar
             {
                 var isFirst = allMethods.First() == methodExp;
                 var isLast = allMethods.Last() == methodExp;
+                var isIsNegate = false;
                 if (methodExp.Arguments.Count == 0)
                 {
                     sqls.Add(new KeyValuePair<string, string>(methodExp.Method.Name, "null"));
                 }
                 else
                 {
-                    var sql = SubTools.GetMethodValue(this.context, methodExp.Arguments[0], this.context.IsSingle ? ResolveExpressType.WhereSingle : ResolveExpressType.WhereMultiple);
-                    if (methodExp.Method.Name == "IF") 
+                    var exp = methodExp.Arguments[0];
+                    if (ExpressionTool.IsNegate(exp))
+                    {
+                        isIsNegate = true;
+                        exp = (exp as UnaryExpression).Operand;
+                    }
+                    var sql = SubTools.GetMethodValue(this.context, exp, this.context.IsSingle ? ResolveExpressType.WhereSingle : ResolveExpressType.WhereMultiple);
+                    if (methodExp.Method.Name == "IF")
                     {
                         var parameter = this.context.Parameters.FirstOrDefault(it => it.ParameterName == sql.Trim());
-                        if (parameter!=null&&parameter.Value is bool) 
+                        if (parameter != null && parameter.Value is bool)
                         {
                             sql = Convert.ToBoolean(parameter.Value) ? " 1=1 " : " 1=2 ";
                             this.context.Parameters.Remove(parameter);
                         }
+                    }
+                    if (isIsNegate) 
+                    {
+                        sql = " ("+sql + "*-1) ";
                     }
                     sqls.Add(new KeyValuePair<string, string>(methodExp.Method.Name, sql));
                 }
