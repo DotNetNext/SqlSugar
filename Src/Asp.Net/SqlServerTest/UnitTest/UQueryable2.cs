@@ -327,6 +327,10 @@ namespace OrmTest
                 EntryDate = a.EntryDate
 
             }  ).ToList();
+            var x1 = 0;
+            var x2 = 0;
+            var x3 = 0;
+            db.Queryable<Order>().Where(it => SqlFunc.IF(true).Return(-x1).ElseIF(it.Id==1).Return(-x2).End(-x3) == 1).ToArray();
         }
         public class UnitPeople
         {
