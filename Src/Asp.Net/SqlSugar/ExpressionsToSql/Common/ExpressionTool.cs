@@ -623,5 +623,30 @@ namespace SqlSugar
         {
             return exp is UnaryExpression && exp.NodeType == ExpressionType.Negate;
         }
+
+        public static bool GetIsLength(Expression item)
+        {
+            var isLength=(item is MemberExpression) && ((item as MemberExpression).Member.Name == "Length");
+            if (isLength)
+            {
+                var exp=(item as MemberExpression).Expression;
+                if (exp == null)
+                {
+                    return false;
+                }
+                else if (exp.Type == UtilConstants.StringType&&item.Type==UtilConstants.IntType)
+                {
+                    return true;
+                }
+                else 
+                {
+                    return false;
+                }
+            }
+            else 
+            {
+                return false;
+            }
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -116,7 +117,7 @@ namespace SqlSugar
                     }
                 }
             }
-            else if (this.Context.IsSingle && args.Any(it => ExpressionTool.IsIsNullSubQuery(it)) )
+            else if (this.Context.IsSingle && args.Any(it => ExpressionTool.IsIsNullSubQuery(it)))
             {
                 var exp = base.BaseParameter?.BaseParameter?.BaseParameter?.CurrentExpression;
                 if (exp is LambdaExpression)
@@ -142,9 +143,32 @@ namespace SqlSugar
             var isIFFBoolMethod = isIIF && (item is MethodCallExpression) && (item as MethodCallExpression).Type == UtilConstants.BoolType;
             var isFirst = item == args.First();
             var isBoolValue = item.Type == UtilConstants.BoolType && item.ToString().StartsWith("value(");
+            var isLength =ExpressionTool.GetIsLength(item);
             if (isFirst && isIIF && isConst)
             {
                 var value = (item as ConstantExpression).Value.ObjToBool() ? this.Context.DbMehtods.True() : this.Context.DbMehtods.False();
+                var methodCallExpressionArgs = new MethodCallExpressionArgs()
+                {
+                    IsMember = true,
+                    MemberName = value,
+                    MemberValue = value
+                };
+                model.Args.Add(methodCallExpressionArgs);
+            }
+            else if (isLength)
+            {
+                var sql = GetNewExpressionValue(item);
+                var value = this.Context.DbMehtods.Length(new MethodCallExpressionModel()
+                {
+                    Name = "Length",
+                    Args = new List<MethodCallExpressionArgs>() {
+                     new MethodCallExpressionArgs(){
+                       IsMember=true,
+                       MemberName=sql,
+                       MemberValue=sql
+                     }
+                   }
+                });
                 var methodCallExpressionArgs = new MethodCallExpressionArgs()
                 {
                     IsMember = true,
@@ -234,6 +258,8 @@ namespace SqlSugar
                 AppendModel(parameter, model, item);
             }
         }
+
+
         private void AppendModelByIIFMember(ExpressionParameter parameter, MethodCallExpressionModel model, Expression item)
         {
             parameter.CommonTempData = CommonTempDataType.Result;
