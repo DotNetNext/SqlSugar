@@ -23,7 +23,7 @@ namespace OrmTest
             var data = db.Updateable(new ULockEntity()
             {
                 Id = id,
-                Ver= DateTime.Now,
+                Ver= dt,
                 Name = "newname",
            
             }).ExecuteCommandWithOptLock();
