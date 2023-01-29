@@ -99,6 +99,7 @@
     <Compile Include="Models\ViewOrder.cs" />
     <Compile Include="UnitTest\UInsert3.cs" />
     <Compile Include="UnitTest\Unitadfa1231.cs" />
+    <Compile Include="UnitTest\UnitFilterasdfas.cs" />
     <Compile Include="UnitTest\UnitSubToList.cs" />
     <Compile Include="UnitTest\Models\EntityBase.cs" />
     <Compile Include="UnitTest\UnitByteArray.cs" />
