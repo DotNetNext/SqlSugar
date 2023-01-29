@@ -437,13 +437,24 @@ namespace SqlSugar
                     return;
 
                 var isSameName =!isSingle&& this.JoinQueryInfos.Count(it => it.TableName == entityInfo.DbTableName)>0;
-                if (isSameName)
+                if (isSameName||ChildType.IsInterface)
                 {
                     var mysql = GetSql(exp, isSingle);
-                    foreach (var joinInfoItem in this.JoinQueryInfos.Where(it => it.TableName == entityInfo.DbTableName))
+                    if (ChildType.IsInterface)
                     {
-                        var addSql = mysql.Replace(itName, this.Builder.GetTranslationColumnName(joinInfoItem.ShortName)+".");
-                        joinInfoItem.JoinWhere+= (" AND "+Regex.Replace(addSql,"^ (WHERE|AND) ",""));
+                        foreach (var joinInfoItem in this.JoinQueryInfos.Where(it => it.EntityType.GetInterfaces().Any(z=>z==ChildType)))
+                        {
+                            var addSql = mysql.Replace(itName, this.Builder.GetTranslationColumnName(joinInfoItem.ShortName) + ".");
+                            joinInfoItem.JoinWhere += (" AND " + Regex.Replace(addSql, "^ (WHERE|AND) ", ""));
+                        }
+                    }
+                    else
+                    {
+                        foreach (var joinInfoItem in this.JoinQueryInfos.Where(it => it.TableName == entityInfo.DbTableName))
+                        {
+                            var addSql = mysql.Replace(itName, this.Builder.GetTranslationColumnName(joinInfoItem.ShortName) + ".");
+                            joinInfoItem.JoinWhere += (" AND " + Regex.Replace(addSql, "^ (WHERE|AND) ", ""));
+                        }
                     }
                     sql = mysql.Replace(itName, this.Builder.GetTranslationColumnName(TableShortName) + ".");
                 }
