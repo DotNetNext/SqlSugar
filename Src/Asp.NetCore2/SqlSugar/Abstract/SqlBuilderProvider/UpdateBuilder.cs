@@ -152,18 +152,22 @@ namespace SqlSugar
         {
             if (IsNoUpdateNull)
             {
-                DbColumnInfoList = DbColumnInfoList.Where(it => it.Value != null).ToList();
+                DbColumnInfoList = DbColumnInfoList.Where(it => it.Value != null||(it.UpdateServerTime == true ||!string.IsNullOrEmpty(it.UpdateSql))).ToList();
             }
             if (IsNoUpdateDefaultValue)
             {
                 DbColumnInfoList = DbColumnInfoList.Where(it => {
-                    if (it.Value.ObjToString()=="0" && it.PropertyType.IsEnum)
+                    if (it.Value.ObjToString() == "0" && it.PropertyType.IsEnum)
                     {
                         return it.Value.ObjToLong() != UtilMethods.DefaultForType(it.PropertyType).ObjToLong();
                     }
+                    else if (it.UpdateServerTime == true || !string.IsNullOrEmpty(it.UpdateSql)) 
+                    {
+                        return true;
+                    }
                     else
                     {
-                      return  it.Value.ObjToString() != UtilMethods.DefaultForType(it.PropertyType).ObjToString();
+                        return it.Value.ObjToString() != UtilMethods.DefaultForType(it.PropertyType).ObjToString();
                     }
 
                     }).ToList();
