@@ -124,9 +124,12 @@ namespace SqlSugar
             base.ExactExpression = expression;
             var leftExpression = expression.Left;
             var rightExpression = expression.Right;
-            if (rightExpression is BinaryExpression && leftExpression is BinaryExpression&& expression.NodeType.IsIn(ExpressionType.AndAlso, ExpressionType.OrElse)) 
+            if (rightExpression is BinaryExpression
+                && leftExpression is BinaryExpression
+                && expression.NodeType.IsIn(ExpressionType.AndAlso, ExpressionType.OrElse)
+                && this.Context.ResolveType.IsIn(ResolveExpressType.WhereSingle, ResolveExpressType.WhereMultiple))
             {
-                base.Context.Result.Append($" {GetNewExpressionValue(leftExpression)} {(expression.NodeType==ExpressionType.AndAlso? " AND ":" OR ")} {GetNewExpressionValue(rightExpression)} ");
+                base.Context.Result.Append($" {GetNewExpressionValue(leftExpression, this.Context.ResolveType)} {(expression.NodeType == ExpressionType.AndAlso ? " AND " : " OR ")} {GetNewExpressionValue(rightExpression, this.Context.ResolveType)} ");
                 return;
             }
             if (RightIsHasValue(leftExpression, rightExpression,ExpressionTool.IsLogicOperator(expression)))
