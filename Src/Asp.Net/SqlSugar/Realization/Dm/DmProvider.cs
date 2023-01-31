@@ -180,26 +180,20 @@ namespace SqlSugar
 
         private static string ReplaceKeyWordParameterName(string sql, SugarParameter[] parameters)
         {
-            if (parameters.HasValue())
+            if (parameters.HasValue() && parameters.Count(it => it.ParameterName.ToLower().IsIn("@order", ":order", "@user", "@level", ":user", ":level"))>0)
             {
-                foreach (var Parameter in parameters)
+                int i = 0;
+                foreach (var Parameter in parameters.OrderByDescending(it=>it.ParameterName.Length))
                 {
-                    if (Parameter.ParameterName != null && Parameter.ParameterName.ToLower().IsIn("@order", ":order", "@user", "@level", ":user", ":level"))
+                    if (Parameter.ParameterName != null && Parameter.ParameterName.ToLower().IsContainsIn("@order", ":order", "@user", "@level", ":user", ":level"))
                     {
-                        if (parameters.Count(it => it.ParameterName.StartsWith(Parameter.ParameterName)) == 1)
-                        {
-                            var newName = Parameter.ParameterName + "_01";
-                            sql = sql.Replace(Parameter.ParameterName, newName);
-                            Parameter.ParameterName = newName;
-                        }
-                        else
-                        {
-                            Check.ExceptionEasy($" {Parameter.ParameterName} is key word", $"{Parameter.ParameterName}是关键词");
-                        }
+                        var newName = ":p" + i + 100;
+                        sql = sql.Replace(Parameter.ParameterName, newName);
+                        Parameter.ParameterName = newName;
+                        i++;
                     }
                 }
-            }
-
+            } 
             return sql;
         }
 
