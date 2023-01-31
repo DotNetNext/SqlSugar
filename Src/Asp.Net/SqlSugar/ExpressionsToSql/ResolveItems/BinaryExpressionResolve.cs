@@ -124,6 +124,11 @@ namespace SqlSugar
             base.ExactExpression = expression;
             var leftExpression = expression.Left;
             var rightExpression = expression.Right;
+            if (rightExpression is BinaryExpression && leftExpression is BinaryExpression&& expression.NodeType.IsIn(ExpressionType.AndAlso, ExpressionType.OrElse)) 
+            {
+                base.Context.Result.Append($" {GetNewExpressionValue(leftExpression)} {(expression.NodeType==ExpressionType.AndAlso? " AND ":" OR ")} {GetNewExpressionValue(rightExpression)} ");
+                return;
+            }
             if (RightIsHasValue(leftExpression, rightExpression,ExpressionTool.IsLogicOperator(expression)))
             {
                 Expression trueValue = Expression.Constant(true);
