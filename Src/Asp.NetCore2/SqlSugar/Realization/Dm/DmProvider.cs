@@ -103,6 +103,7 @@ namespace SqlSugar
         }
         public override DbCommand GetCommand(string sql, SugarParameter[] parameters)
         {
+            sql = ReplaceKeyWordParameterName(sql, parameters);
             DmCommand sqlCommand = new DmCommand(sql, (DmConnection)this.Connection);
             sqlCommand.CommandType = this.CommandType;
             sqlCommand.CommandTimeout = this.CommandTimeOut;
@@ -177,7 +178,32 @@ namespace SqlSugar
             return result;
         }
 
+        private static string ReplaceKeyWordParameterName(string sql, SugarParameter[] parameters)
+        {
+            if (parameters.HasValue())
+            {
+                foreach (var Parameter in parameters)
+                {
+                    if (Parameter.ParameterName != null && Parameter.ParameterName.ToLower().IsIn("@order", ":order", "@user", "@level", ":user", ":level"))
+                    {
+                        if (parameters.Count(it => it.ParameterName.StartsWith(Parameter.ParameterName)) == 1)
+                        {
+                            var newName = Parameter.ParameterName + "_01";
+                            sql = sql.Replace(Parameter.ParameterName, newName);
+                            Parameter.ParameterName = newName;
+                        }
+                        else
+                        {
+                            Check.ExceptionEasy($" {Parameter.ParameterName} is key word", $"{Parameter.ParameterName}是关键词");
+                        }
+                    }
+                }
+            }
 
-        
+            return sql;
+        }
+
+
+
     }
 }
