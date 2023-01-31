@@ -99,7 +99,7 @@ namespace SqlSugar
         }
         public override IDataAdapter GetAdapter()
         {
-            return new MyDmDataAdapter();
+            return new DmDataAdapter();
         }
         public override DbCommand GetCommand(string sql, SugarParameter[] parameters)
         {
