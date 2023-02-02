@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>SqlSugarCore.Kdbndp</id>
-    <version>7.0</version>
+    <version>7.03</version>
     <authors>sunkaixuan</authors>
     <owners>果糖大数据科技</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
@@ -11,7 +11,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>人大金仓官方最新驱动，SqlSugar ORM .NET 国产ORM</description>
     <copyright>Copyright 2016</copyright>
-    <tags>SqlSugar Sql Sugar core Asp.net core orm</tags>
+    <tags>人大金仓 .NET ORM C#</tags>
     <dependencies>
       <group targetFramework=".NETStandard2.1">
         
