@@ -179,6 +179,10 @@ namespace SqlSugar
                     PropertyType = column.Value == null ? DBNull.Value.GetType() : UtilMethods.GetUnderType(column.Value.GetType()),
                     TableId = i
                 };
+                if (columnInfo.PropertyType?.FullName == "System.Text.Json.JsonElement") 
+                {
+                    columnInfo.Value = column.Value.ObjToString(); 
+                }
                 if (columnInfo.PropertyType.IsEnum())
                 {
                     if (this.Context.CurrentConnectionConfig.MoreSettings?.TableEnumIsString == true)
