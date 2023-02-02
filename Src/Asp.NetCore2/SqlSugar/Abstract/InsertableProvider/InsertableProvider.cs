@@ -181,6 +181,7 @@ namespace SqlSugar
             foreach (var item in  this.InsertBuilder.DbColumnInfoList.Where(it=>it.PropertyName==snowProperty.PropertyName))
             {
                 item.Value = id;
+                snowProperty?.PropertyInfo.SetValue(this.InsertObjs.First(), id);
             }
             this.ExecuteCommand();
             return id;
@@ -197,6 +198,11 @@ namespace SqlSugar
                 var id = SnowFlakeSingle.instance.getID();
                 item.Value = id;
                 result.Add(id);
+                var obj = this.InsertObjs.ElementAtOrDefault(item.TableId);
+                if (obj != null)
+                {
+                    snowProperty?.PropertyInfo.SetValue(obj, id);
+                }
             }
             this.ExecuteCommand();
             return result;
@@ -211,6 +217,7 @@ namespace SqlSugar
             foreach (var item in this.InsertBuilder.DbColumnInfoList.Where(it => it.PropertyName == snowProperty.PropertyName))
             {
                 item.Value = id;
+                snowProperty?.PropertyInfo.SetValue(this.InsertObjs.First(), id);
             }
             await this.ExecuteCommandAsync();
             return id;
@@ -227,6 +234,11 @@ namespace SqlSugar
                 var id = SnowFlakeSingle.instance.getID();
                 item.Value = id;
                 result.Add(id);
+                var obj = this.InsertObjs.ElementAtOrDefault(item.TableId);
+                if (obj != null)
+                {
+                    snowProperty?.PropertyInfo.SetValue(obj, id);
+                }
             }
             await this.ExecuteCommandAsync();
             return result;

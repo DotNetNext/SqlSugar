@@ -901,6 +901,7 @@ namespace SqlSugar
         public virtual IUpdateable<T> Updateable<T>(T[] UpdateObjs) where T : class, new()
         {
             InitMappingInfo<T>();
+            Check.ExceptionEasy(UpdateObjs is IList&&typeof(T).FullName.IsCollectionsList(), "The methods you encapsulate are loaded incorrectly, so List<T> should be Updateable<T>(List<T> UpdateObjs)where T: class, new()", "你封装的方法进错重载，List<T>应该进Updateable<T>(List<T> UpdateObjs)where T : class, new()重载");
             UpdateableProvider<T> result = this.CreateUpdateable(UpdateObjs);
             return result;
         }
@@ -917,6 +918,7 @@ namespace SqlSugar
         }
         public virtual IUpdateable<T> Updateable<T>(T UpdateObj) where T : class, new()
         {
+
             return this.Context.Updateable(new T[] { UpdateObj });
         }
         public virtual IUpdateable<T> Updateable<T>() where T : class, new()
