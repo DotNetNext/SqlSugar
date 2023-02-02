@@ -1,4 +1,5 @@
-﻿using SqlSugar;
+﻿using NET7Test;
+using SqlSugar;
 
 SqliteTest();
 MyTest();
@@ -64,7 +65,23 @@ static void ServerTest()
 
     var d1 = new UnitDate01231().dateOnly;
     var d2 = new UnitDate01231().timeOnly;
+
+    ////测试demo2,成功
+    string json = @" {    
+                                ""user_name"": ""Jack5"",
+                                ""pwd"": ""123456"",
+                                ""create_user_id"": 1,
+                                ""gmt_modified"": ""2023-02-01T04:40:04.700Z"",
+                                ""deleted"": 0
+                              }";
+
+
+    sqlugar.CodeFirst.InitTables<Userinfo021>();
+    //测试demo3, 5.1.3.47版本不成功， 5.0.9.6版本成功
+    Dictionary<string, object> data3 = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(json);
+    sqlugar.Insertable(data3).AS("Userinfo021").ExecuteReturnBigIdentity();
 }
+
 
 static void SqliteTest()
 {
