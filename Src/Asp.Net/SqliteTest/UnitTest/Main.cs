@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UnitFilterdafa.Init();
             UInsert3.Init();
             USaveable.Init();
             UnitSubToList.Init();
