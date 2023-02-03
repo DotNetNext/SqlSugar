@@ -490,7 +490,7 @@ namespace SqlSugar
                 it.TableName.Equals(entityInfo.EntityName, StringComparison.CurrentCultureIgnoreCase));
                 if (easyInfo == null)
                 {
-                    if (ChildType.IsInterface && JoinQueryInfos.Any(it => it.EntityType.GetInterfaces().Any(z => z == ChildType)))
+                    if (ChildType.IsInterface && JoinQueryInfos.Any(it =>it.EntityType!=null&&it.EntityType.GetInterfaces().Any(z => z == ChildType)))
                     {
                         easyInfo = JoinQueryInfos.FirstOrDefault(it => it.EntityType.GetInterfaces().Any(z => z == ChildType));
                     }
