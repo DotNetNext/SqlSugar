@@ -445,6 +445,7 @@ namespace SqlSugar
                         foreach (var joinInfoItem in this.JoinQueryInfos.Where(it => it.EntityType.GetInterfaces().Any(z=>z==ChildType)))
                         {
                             var addSql = mysql.Replace(itName, this.Builder.GetTranslationColumnName(joinInfoItem.ShortName) + ".");
+                            addSql = ReplaceFilterColumnName(addSql, joinInfoItem.EntityType,joinInfoItem.ShortName);
                             joinInfoItem.JoinWhere += (" AND " + Regex.Replace(addSql, "^ (WHERE|AND) ", ""));
                         }
                     }
@@ -453,6 +454,7 @@ namespace SqlSugar
                         foreach (var joinInfoItem in this.JoinQueryInfos.Where(it => it.TableName == entityInfo.DbTableName))
                         {
                             var addSql = mysql.Replace(itName, this.Builder.GetTranslationColumnName(joinInfoItem.ShortName) + ".");
+                            addSql = ReplaceFilterColumnName(addSql, joinInfoItem.EntityType, joinInfoItem.ShortName);
                             joinInfoItem.JoinWhere += (" AND " + Regex.Replace(addSql, "^ (WHERE|AND) ", ""));
                         }
                     }
@@ -545,6 +547,7 @@ namespace SqlSugar
                 }
                 else 
                 {
+                    sql = sql.Replace(Builder.GetTranslationColumnName(shortName) + "." + Builder.GetTranslationColumnName(column.PropertyName), Builder.GetTranslationColumnName(shortName) + "." + Builder.GetTranslationColumnName(column.DbColumnName));
                     sql = sql.Replace(shortName + "."+Builder.GetTranslationColumnName(column.PropertyName), shortName+"." +Builder.GetTranslationColumnName(column.DbColumnName));
                 }
             }
