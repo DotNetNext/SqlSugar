@@ -438,7 +438,7 @@ namespace SqlSugar
                 defaultValue = "";
             }
             var template = AddDefaultValueSql;
-            if (defaultValue != null && defaultValue.ToLower() == "getdate()") 
+            if (defaultValue != null && defaultValue.Replace(" ","").Contains("()")) 
             {
                 template = template.Replace("'{2}'", "{2}");
             }
