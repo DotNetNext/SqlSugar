@@ -66,10 +66,26 @@ namespace OrmTest
                 }
             };
             db.CodeFirst.InitTables<UnitIFTable>();
+            db.CodeFirst.InitTables<Unittest1011, Unittest22221>();
+            db.Insertable(new Unittest1011() { name = "a" }).ExecuteCommand();
+            db.Insertable(new Unittest22221() { name = "a" }).ExecuteCommand();
             Console.WriteLine("#### CodeFirst end ####");
         }
     }
-
+    public class Unittest22221
+    {
+        [SugarColumn(DefaultValue = " newsequentialid()")]
+        public Guid id { get; set; }
+        [SugarColumn(IsNullable = true)]
+        public string name { get; set; }
+    }
+    public class Unittest1011
+    {
+        [SugarColumn(DefaultValue ="newid()")]
+        public Guid id { get; set; }
+        [SugarColumn(IsNullable =true)]
+        public string name { get; set; }
+    }
     public class UnitIFTable 
     {
         //[SugarColumn(IsPrimaryKey =true,IsIdentity =true)]
