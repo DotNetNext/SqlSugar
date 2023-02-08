@@ -1528,7 +1528,7 @@ namespace SqlSugar
             asyncQueryableBuilder.SelectValue = this.QueryBuilder.SelectValue;
             asyncQueryableBuilder.WhereInfos = this.Context.Utilities.TranslateCopy(this.QueryBuilder.WhereInfos);
             asyncQueryableBuilder.EasyJoinInfos = this.Context.Utilities.TranslateCopy(this.QueryBuilder.EasyJoinInfos);
-            asyncQueryableBuilder.JoinQueryInfos = this.Context.Utilities.TranslateCopy(this.QueryBuilder.JoinQueryInfos);
+            asyncQueryableBuilder.JoinQueryInfos = QueryBuilder.JoinQueryInfos.Select(it => CopyJoinInfo(it)).ToList();
             asyncQueryableBuilder.WhereIndex = this.QueryBuilder.WhereIndex;
             asyncQueryableBuilder.EntityType = this.QueryBuilder.EntityType;
             asyncQueryableBuilder.EntityName = this.QueryBuilder.EntityName;
@@ -1553,11 +1553,25 @@ namespace SqlSugar
             asyncQueryableBuilder.OldSql = this.QueryBuilder.OldSql;
             asyncQueryableBuilder.IsCrossQueryWithAttr = this.QueryBuilder.IsCrossQueryWithAttr;
             asyncQueryableBuilder.CrossQueryItems = this.QueryBuilder.CrossQueryItems;
-            asyncQueryableBuilder.SubToListParameters= this.Context.Utilities.TranslateCopy(this.QueryBuilder.SubToListParameters);
+            asyncQueryableBuilder.SubToListParameters = this.Context.Utilities.TranslateCopy(this.QueryBuilder.SubToListParameters);
             asyncQueryableBuilder.AppendColumns = this.Context.Utilities.TranslateCopy(this.QueryBuilder.AppendColumns);
             asyncQueryableBuilder.AppendValues = this.Context.Utilities.TranslateCopy(this.QueryBuilder.AppendValues);
             asyncQueryableBuilder.RemoveFilters = this.QueryBuilder.RemoveFilters?.ToArray();
         }
+
+        private static JoinQueryInfo CopyJoinInfo(JoinQueryInfo it)
+        {
+            return new JoinQueryInfo()
+            {
+                EntityType = it.EntityType,
+                JoinIndex = it.JoinIndex,
+                JoinType = it.JoinType,
+                JoinWhere = it.JoinWhere,
+                ShortName = it.ShortName,
+                TableName = it.TableName
+            };
+        }
+
         protected int SetCacheTime(int cacheDurationInSeconds)
         {
             if (cacheDurationInSeconds == int.MaxValue && this.Context.CurrentConnectionConfig.MoreSettings != null && this.Context.CurrentConnectionConfig.MoreSettings.DefaultCacheDurationInSeconds > 0)
