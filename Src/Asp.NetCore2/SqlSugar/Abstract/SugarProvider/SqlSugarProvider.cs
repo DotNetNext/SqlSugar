@@ -1561,6 +1561,14 @@ namespace SqlSugar
             };
             return result;
         }
+        public SplitTableContext SplitHelper(Type entityType)  
+        {
+            var result = new SplitTableContext(this.Context)
+            {
+                EntityInfo = this.Context.EntityMaintenance.GetEntityInfo(entityType)
+            };
+            return result;
+        }
         public SplitTableContextResult<T> SplitHelper<T>(T data) where T : class, new()
         {
             var result = new SplitTableContext(this.Context)
