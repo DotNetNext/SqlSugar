@@ -1183,7 +1183,7 @@ namespace SqlSugar
         }
         public SplitTableContext SplitHelper(Type entityType) 
         {
-            return this.Context.SplitHelper<T>();
+            return this.Context.SplitHelper(entityType);
         }
         public SplitTableContextResult<T> SplitHelper<T>(T data) where T : class, new()
         {
