@@ -346,6 +346,14 @@ namespace SqlSugar
                 {
                     continue;
                 }
+                if (column.DataType == null&& property != null&& property.PropertyType.Name.IsIn("TimeOnly")) 
+                {
+                    column.DataType = "time";
+                }
+                if (column.DataType == null && property != null && property.PropertyType.Name.IsIn("DateOnly"))
+                {
+                    column.DataType = "date";
+                }
                 result.Columns.Add(column);
             }
         }
