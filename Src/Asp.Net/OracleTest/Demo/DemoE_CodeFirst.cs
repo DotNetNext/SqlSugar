@@ -53,6 +53,8 @@ namespace OrmTest
                 {
                     Id = SqlFunc.Subqueryable<CodeFirstNoUpper>().Where(z => z.Id == it.Id).Select(z => z.Id)
                 }).ToList();
+            db.Queryable<CodeFirstNoUpper>().LeftJoin<CodeFirstNoUpper>((s, y) => s.Id == y.Id)
+                .Select((s, y) => y).ToList();
             Console.WriteLine("#### CodeFirst end ####");
         }
     }
