@@ -151,7 +151,7 @@ namespace SqlSugar
                 {
                     sqlParameter.DbType = System.Data.DbType.String;
                     if(sqlParameter.Value != DBNull.Value)
-                       sqlParameter.Value = sqlParameter.Value.ToString();
+                        sqlParameter.Value = sqlParameter.Value.ToString();
                 }
                 if (parameter.Direction == 0)
                 {
@@ -177,15 +177,15 @@ namespace SqlSugar
             }
             return result;
         }
-
+        private static string[] KeyWord =new string []{"@order", ":order", "@user", "@level", ":user", ":level",":type","@type"};
         private static string ReplaceKeyWordParameterName(string sql, SugarParameter[] parameters)
         {
-            if (parameters.HasValue() && parameters.Count(it => it.ParameterName.ToLower().IsIn("@order", ":order", "@user", "@level", ":user", ":level"))>0)
+            if (parameters.HasValue() && parameters.Count(it => it.ParameterName.ToLower().IsIn(KeyWord))>0)
             {
                 int i = 0;
                 foreach (var Parameter in parameters.OrderByDescending(it=>it.ParameterName.Length))
                 {
-                    if (Parameter.ParameterName != null && Parameter.ParameterName.ToLower().IsContainsIn("@order", ":order", "@user", "@level", ":user", ":level"))
+                    if (Parameter.ParameterName != null && Parameter.ParameterName.ToLower().IsContainsIn(KeyWord))
                     {
                         var newName = ":p" + i + 100;
                         sql = sql.Replace(Parameter.ParameterName, newName);

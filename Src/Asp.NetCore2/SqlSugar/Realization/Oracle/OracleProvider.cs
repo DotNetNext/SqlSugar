@@ -121,14 +121,14 @@ namespace SqlSugar
             CheckConnection();
             return sqlCommand;
         }
-
+        private static string[] KeyWord = new string[] { "@order", ":order", "@user", "@level", ":user", ":level", ":type", "@type" };
         private static string ReplaceKeyWordParameterName(string sql, SugarParameter[] parameters)
         {
             if (parameters.HasValue())
             {
                 foreach (var Parameter in parameters)
                 {
-                    if (Parameter.ParameterName != null && Parameter.ParameterName.ToLower().IsIn("@order",":order","@user", "@level",  ":user", ":level"))
+                    if (Parameter.ParameterName != null && Parameter.ParameterName.ToLower().IsIn(KeyWord))
                     {
                         if (parameters.Count(it => it.ParameterName.StartsWith(Parameter.ParameterName)) == 1)
                         {
