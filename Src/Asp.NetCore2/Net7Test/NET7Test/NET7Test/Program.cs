@@ -1,9 +1,10 @@
 ﻿using NET7Test;
 using SqlSugar;
 
+ServerTest();
 SqliteTest();
 MyTest();
-ServerTest();
+ 
 
 Console.Read();
 static void MyTest()
@@ -53,6 +54,14 @@ static void ServerTest()
     });
     sqlugar.DbMaintenance.CreateDatabase();
     sqlugar.CodeFirst.InitTables<UnitDate01231>();
+    sqlugar.CodeFirst.InitTables<UnitDatez211afa>();
+    sqlugar.Insertable(new UnitDatez211afa()
+    {
+        dateOnly = DateOnly.FromDateTime(DateTime.Now),
+        timeOnly = TimeOnly.FromDateTime(DateTime.Now),
+    }).ExecuteCommand();
+    var list0=sqlugar.Queryable<UnitDatez211afa>().ToList();
+    sqlugar.DbMaintenance.DropTable<UnitDatez211afa>();
     sqlugar.Insertable(new UnitDate01231()
     {
         dateOnly = DateOnly.FromDateTime(DateTime.Now),
@@ -115,5 +124,10 @@ public class UnitDate01231
     [SugarColumn(ColumnDataType = "time")]
     public TimeOnly timeOnly { get; set; }
     [SugarColumn(ColumnDataType = "datetime")]
+    public DateOnly dateOnly { get; set; }
+}
+public class UnitDatez211afa
+{
+    public TimeOnly timeOnly { get; set; }
     public DateOnly dateOnly { get; set; }
 }
