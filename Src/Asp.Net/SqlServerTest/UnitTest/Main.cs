@@ -124,6 +124,7 @@ namespace OrmTest
             QueryableAsync();
             AopTest();
             UTran3.Init();
+            UnitSqlFunc.Init();
             //Thread();
             //Thread2();
             //Thread3();
