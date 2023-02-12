@@ -278,5 +278,10 @@ namespace SqlSugar
         {
             throw new NotSupportedException("Can only be used in expressions");
         }
+
+        public static bool SplitIn(string CommaSegmentationString, string inValue)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
     }
 }

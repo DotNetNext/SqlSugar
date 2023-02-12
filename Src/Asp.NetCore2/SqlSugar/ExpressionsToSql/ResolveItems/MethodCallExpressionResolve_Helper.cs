@@ -783,6 +783,8 @@ namespace SqlSugar
                         return this.Context.DbMehtods.JsonArrayAny(model);
                     case "CompareTo":
                         return this.Context.DbMehtods.CompareTo(model);
+                    case "SplitIn":
+                        return this.Context.DbMehtods.SplitIn(model);
                     default:
                         break;
                 }

@@ -689,11 +689,41 @@ namespace SqlSugar
         {
             throw new NotImplementedException("Current database no support");
         }
-        public string CompareTo(MethodCallExpressionModel model) 
+        public virtual string CompareTo(MethodCallExpressionModel model) 
         {
             var parameterNameA=model.Args[0].MemberName;
             var parameterNameB = model.Args[1].MemberName;
             return $"(case when   {parameterNameA}>{parameterNameB}  then 1   when {parameterNameA}={parameterNameB} then 0 else -1 end)";
+        }
+        public virtual string SplitIn(MethodCallExpressionModel model)
+        {
+            var fullString = model.Args[0].MemberName+"";
+            var value = model.Args[1].MemberName+"";
+            var value1 = MergeString(value, "','");
+            var value2 = MergeString("','", value);
+            var value3 = MergeString("','", value, "','");
+            var likeString1 = 
+                StartsWith(new MethodCallExpressionModel() { Args = new List<MethodCallExpressionArgs>() { 
+                 new MethodCallExpressionArgs(){ IsMember=true, MemberName=fullString },
+                 new MethodCallExpressionArgs(){ IsMember=true, MemberName=value1 }
+                } });
+            var likeString2 =
+                EndsWith(new MethodCallExpressionModel()
+                {
+                    Args = new List<MethodCallExpressionArgs>() {
+                             new MethodCallExpressionArgs(){ IsMember=true, MemberName=fullString },
+                             new MethodCallExpressionArgs(){ IsMember=true, MemberName=value2 }
+                }
+                });
+            var likeString3 =
+                Contains(new MethodCallExpressionModel()
+                {
+                    Args = new List<MethodCallExpressionArgs>() {
+                                            new MethodCallExpressionArgs(){ IsMember=true, MemberName=fullString },
+                                            new MethodCallExpressionArgs(){ IsMember=true, MemberName=value3 }
+                }
+                });
+            return $" ({likeString1} or {likeString2}  or {likeString3} or {fullString}={value} ) ";
         }
         public virtual string GetTableWithDataBase(string dataBaseName,string tableName) 
         {
