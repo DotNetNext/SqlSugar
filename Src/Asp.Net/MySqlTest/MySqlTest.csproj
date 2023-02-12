@@ -138,6 +138,7 @@
     <Compile Include="UnitTest\UInsert3.cs" />
     <Compile Include="UnitTest\UnitCustom01.cs" />
     <Compile Include="UnitTest\UnitSameKeyBug.cs" />
+    <Compile Include="UnitTest\UnitSqlFunc.cs" />
     <Compile Include="UnitTest\UnitSubToList.cs" />
     <Compile Include="UnitTest\UnitSubToList001.cs" />
     <Compile Include="UnitTest\UnitTestReturnPkList.cs" />
