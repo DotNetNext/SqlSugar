@@ -723,7 +723,7 @@ namespace SqlSugar
                                             new MethodCallExpressionArgs(){ IsMember=true, MemberName=value3 }
                 }
                 });
-            return $" ({likeString1} or {likeString2}  or {likeString3}) ";
+            return $" ({likeString1} or {likeString2}  or {likeString3} or {fullString}={value} ) ";
         }
         public virtual string GetTableWithDataBase(string dataBaseName,string tableName) 
         {
