@@ -143,7 +143,11 @@ namespace SqlSugar
         private UpdateNavTask<Root, Root> AsNav()
         {
             UpdateNavTask<Root, Root> result = new UpdateNavTask<Root, Root>();
-            Func<UpdateNavProvider<Root, Root>> func = () => PreFunc().AsNav();
+            Func<UpdateNavProvider<Root, Root>> func = () => {
+                  var navres=PreFunc().AsNav();
+                  navres.IsAsNav = true;
+                  return navres;
+                };
             result.PreFunc = func;
             result.Context = this.Context;
             return result;

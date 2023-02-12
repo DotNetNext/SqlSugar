@@ -19,6 +19,8 @@ namespace SqlSugar
 
         public UpdateNavOptions _Options { get; set; }
         public bool IsFirst { get; set; }
+        public bool IsAsNav { get;  set; }
+
         public UpdateNavProvider<Root, Root> AsNav()
         {
             return new UpdateNavProvider<Root, Root>
@@ -69,6 +71,7 @@ namespace SqlSugar
             }
             else
             {
+              
                 UpdateRoot(isRoot, nav);
             }
             IsFirst = false;
@@ -130,6 +133,10 @@ namespace SqlSugar
 
         private void UpdateRoot()
         {
+            if (IsAsNav) 
+            {
+                return;
+            }
             if (_Options != null && _Options.RootFunc != null)
             {
                 var updateable = this._Context.Updateable(_Roots);
