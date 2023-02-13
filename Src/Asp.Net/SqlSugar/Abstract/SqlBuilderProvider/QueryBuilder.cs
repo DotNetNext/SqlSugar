@@ -690,6 +690,10 @@ namespace SqlSugar
         {
             List<string> names = new List<string>();
             var allShortName = new List<string>();
+            if (IsSingleSubToList()) 
+            {
+                this.TableShortName = (SelectValue as LambdaExpression).Parameters[0].Name;
+            }
             allShortName.Add(this.Builder.SqlTranslationLeft + Builder.GetNoTranslationColumnName(this.TableShortName.ObjToString().ToLower()) + this.Builder.SqlTranslationRight + ".");
             if (this.JoinQueryInfos.HasValue())
             {
@@ -1017,6 +1021,13 @@ namespace SqlSugar
                     }
                 }
             }
+        }
+        private bool IsSingleSubToList()
+        {
+            return this.SubToListParameters != null
+                             && this.TableShortName == null
+                             && this.SelectValue is Expression
+                             && this.IsSingle();
         }
     }
 }
