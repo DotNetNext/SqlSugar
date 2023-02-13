@@ -1051,9 +1051,7 @@ namespace SqlSugar
             var parameters = (expression as LambdaExpression).Parameters;
             var columnsResult = this.Context.EntityMaintenance.GetEntityInfo<TResult>().Columns;
             sql = AppendSelect(this.EntityInfo.Columns,sql, parameters, columnsResult, 0);
-            var result= this.Select<TResult>(sql);
-            result.QueryBuilder.SelectValue = expression;
-            return result;
+            return this.Select<TResult>(sql);
         }
 
         public virtual ISugarQueryable<TResult> Select<TResult>()
