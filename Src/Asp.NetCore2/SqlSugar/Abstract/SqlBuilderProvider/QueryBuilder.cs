@@ -688,14 +688,19 @@ namespace SqlSugar
         }
         protected string SubToListMethod(string result)
         {
+            string oldResult = result;
             List<string> names = new List<string>();
             var allShortName = new List<string>();
+            if (IsSingleSubToList())
+            {
+                this.TableShortName = (SelectValue as LambdaExpression).Parameters[0].Name;
+            }
             allShortName.Add(this.Builder.SqlTranslationLeft + Builder.GetNoTranslationColumnName(this.TableShortName.ObjToString().ToLower()) + this.Builder.SqlTranslationRight + ".");
             if (this.JoinQueryInfos.HasValue())
             {
                 foreach (var item in this.JoinQueryInfos)
                 {
-                    allShortName.Add(this.Builder.SqlTranslationLeft + Builder.GetNoTranslationColumnName(item.ShortName.ObjToString().ToLower() ) + this.Builder.SqlTranslationRight + ".");
+                    allShortName.Add(this.Builder.SqlTranslationLeft + Builder.GetNoTranslationColumnName(item.ShortName.ObjToString().ToLower()) + this.Builder.SqlTranslationRight + ".");
                 }
             }
             else if (this.EasyJoinInfos != null && this.EasyJoinInfos.Any())
@@ -732,9 +737,13 @@ namespace SqlSugar
                     this.AppendColumns = colums;
                 }
             }
-
+            if (HasAppText(oldResult))
+            {
+                return oldResult;
+            }
             return result;
         }
+
         #endregion
 
         #region Get SQL Partial
@@ -1017,6 +1026,17 @@ namespace SqlSugar
                     }
                 }
             }
+        }
+        private bool IsSingleSubToList()
+        {
+            return this.SubToListParameters != null
+                             && this.TableShortName == null
+                             && this.SelectValue is Expression
+                             && this.IsSingle();
+        }
+        private static bool HasAppText(string result)
+        {
+            return result.HasValue() && result.Contains("app_ext_col_0");
         }
     }
 }
