@@ -1,7 +1,10 @@
 ﻿using SqlSugar;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Runtime.Remoting.Contexts;
 using System.Text;
 using System.Threading.Tasks;
 namespace OrmTest 
@@ -51,14 +54,14 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
-            var test2= db.Queryable<Order>()
+            var test2 = db.Queryable<Order>()
               .Select(o => new myDTO5
-              { 
+              {
                   disCount = SqlFunc.Subqueryable<Custom>().Where(d => d.Id == o.CustomId).ToList()
               },
               true)
             .ToList();
-            if (test2.Any(z => z.disCount.Any(y => y.Id != z.CustomId))||test2.Any(z=>z.Id==0))
+            if (test2.Any(z => z.disCount.Any(y => y.Id != z.CustomId)) || test2.Any(z => z.Id == 0))
             {
                 throw new Exception("unit error");
             }
@@ -72,15 +75,15 @@ namespace OrmTest
             .MergeTable()
            .ToList();
 
-            if (test3 .First().disCount.Count==0|| test3.Any(z => z.disCount.Any(y => y.Id != z.CustomId)) || test3.Any(z => z.Id == 0))
+            if (test3.First().disCount.Count == 0 || test3.Any(z => z.disCount.Any(y => y.Id != z.CustomId)) || test3.Any(z => z.Id == 0))
             {
                 throw new Exception("unit error");
             }
 
             var test4 = db.Queryable<Order>()
-             .LeftJoin<OrderItem>((o,i)=>o.Id==i.OrderId)
-             .LeftJoin<Custom>((o,i, c) => c.Id == o.CustomId)
-             .Select((o,i, c) => new myDTO5
+             .LeftJoin<OrderItem>((o, i) => o.Id == i.OrderId)
+             .LeftJoin<Custom>((o, i, c) => c.Id == o.CustomId)
+             .Select((o, i, c) => new myDTO5
              {
                  OrderName = o.Name,
                  disCount = SqlFunc.Subqueryable<Custom>().Where(d => d.Name == c.Name).ToList()
@@ -92,6 +95,26 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+            var xxx = db.Queryable<Order>().ToList();
+            db.CodeFirst.InitTables<LibBookSubscription1, LibBook1>();
+            db.DbMaintenance.TruncateTable<LibBookSubscription1, LibBook1>();
+            db.Insertable(new LibBookSubscription1()
+            {
+                BookIsbns = "a,b,c"
+            }).ExecuteCommand();
+            db.Insertable(new LibBookSubscription1()
+            {
+                BookIsbns = "a,a,c"
+            }).ExecuteCommand();
+            db.Insertable(new LibBook1()
+            {
+                ISBN = "b"
+            }).ExecuteCommand();
+            int totalCount = 0;
+            var list51 = db.Queryable<LibBookSubscription1>().ToList();
+            var list5= db.Queryable<LibBookSubscription1>()
+                 .Select(st => new LibBookSubscription1() { Books = SqlFunc.Subqueryable<LibBook1>().Where(x =>SqlFunc.SplitIn( st.BookIsbns,x.ISBN )).ToList() }, true)
+                 .ToPageListAsync(1,2, totalCount).GetAwaiter().GetResult();
         }
         private static void TestJoin3(SqlSugarClient db)
         {
@@ -384,7 +407,47 @@ namespace OrmTest
             public List<OrderItem> disCount { get; set; }
         }
     }
+    [SugarTable("LibBookSubscription1xx")]
+    public class LibBookSubscription1
+    {
 
+        /// <summary>
+        /// 主键
+        /// </summary>
+        [SugarColumn(IsIdentity = true, IsPrimaryKey = true)]
+        public int Id { get; set; }
+        /// <summary>
+        /// 书籍isbn,逗号分割
+        /// </summary>
+
+        [SugarColumn(Length = 400)]
+        public string BookIsbns { get; set; }
+
+
+        /// <summary>
+        /// 书籍
+        /// </summary>
+        [SugarColumn(IsIgnore = true)]
+        public List<LibBook1> Books { get; set; }
+
+
+    }
+    public class LibBook1
+    {
+
+        /// <summary>
+        /// 主键
+        /// </summary>
+        [SugarColumn(IsIdentity = true, IsPrimaryKey = true)]
+        public int Id { get; set; }
+
+        /// <summary>
+        /// ISBN
+        /// </summary>
+        [SugarColumn(Length = 50)]
+        public string ISBN { get; set; }
+
+    }
     internal class myDTO5
     {
         public int CustomId { get; set; }
