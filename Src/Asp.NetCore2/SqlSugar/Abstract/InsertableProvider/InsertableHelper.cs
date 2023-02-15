@@ -216,7 +216,9 @@ namespace SqlSugar
                     PropertyType = UtilMethods.GetUnderType(column.PropertyInfo),
                     TableId = i,
                     InsertSql = column.InsertSql,
-                    InsertServerTime = column.InsertServerTime
+                    InsertServerTime = column.InsertServerTime,
+                    DataType=column.DataType
+                     
                 };
                 if (column.DbColumnName == null)
                 {
