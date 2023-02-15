@@ -86,7 +86,7 @@ namespace OrmTest
             int result2 = db.Fastest<System.Data.DataTable>().AS("order").BulkCopy( dataTable);
 
             object o = db.Queryable<Order>().First();
-            db.InsertableByObject(o).ExecuteCommand();
+            db.InsertableByObject(o).ExecuteCommandAsync().GetAwaiter().GetResult();
             object os = db.Queryable<Order>().Take(2).ToList();
             db.InsertableByObject(os).ExecuteCommand();
 

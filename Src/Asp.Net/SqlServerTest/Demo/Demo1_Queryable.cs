@@ -286,7 +286,7 @@ namespace OrmTest
             Console.WriteLine("");
             Console.WriteLine("#### Subquery Start ####");
             var db = GetInstance();
-
+           
             var list = db.Queryable<Order>().Take(10).Select(it => new
             {
                 customName = SqlFunc.Subqueryable<Custom>().Where("it.CustomId=id").Select(s => s.Name),

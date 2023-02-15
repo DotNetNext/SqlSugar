@@ -136,7 +136,7 @@ namespace OrmTest
 
 
             object o = db.Queryable<Order>().First();
-            db.UpdateableByObject(o).ExecuteCommand();
+            db.UpdateableByObject(o).ExecuteCommandAsync().GetAwaiter().GetResult();
             object os = db.Queryable<Order>().Take(2).ToList();
             db.UpdateableByObject(os).ExecuteCommand();
             Console.WriteLine("#### Updateable End ####");
