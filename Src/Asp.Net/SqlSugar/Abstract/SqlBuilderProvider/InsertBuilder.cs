@@ -284,17 +284,26 @@ namespace SqlSugar
             {
                 return columnInfo.InsertSql;
             }
-            else if (columnInfo.PropertyType.Name == "TimeOnly" && name!=null&&!name.ObjToString().StartsWith(Builder.SqlParameterKeyWord)) 
+            else if (columnInfo.DataType?.Equals("nvarchar2")==true) 
+            {
+                var pname = Builder.SqlParameterKeyWord + columnInfo.DbColumnName + "_ts" + GetDbColumnIndex;
+                var p = new SugarParameter(pname, columnInfo.Value);
+                p.IsNvarchar2 = true;
+                this.Parameters.Add(p);
+                GetDbColumnIndex++;
+                return pname;
+            }
+            else if (columnInfo.PropertyType.Name == "TimeOnly" && name != null && !name.ObjToString().StartsWith(Builder.SqlParameterKeyWord))
             {
                 var timeSpan = UtilMethods.TimeOnlyToTimeSpan(columnInfo.Value);
-                var pname =Builder.SqlParameterKeyWord+columnInfo.DbColumnName+ "_ts"+ GetDbColumnIndex;
+                var pname = Builder.SqlParameterKeyWord + columnInfo.DbColumnName + "_ts" + GetDbColumnIndex;
                 this.Parameters.Add(new SugarParameter(pname, timeSpan));
                 GetDbColumnIndex++;
                 return pname;
             }
             else
             {
-                return name+"";
+                return name + "";
             }
         }
 
