@@ -172,6 +172,10 @@ namespace SqlSugar
                 this.DbType = System.Data.DbType.Date;
                 this.Value = UtilMethods.DateOnlyToDateTime(this.Value);
             }
+            else if (type?.FullName == "Newtonsoft.Json.Linq.JObject" || type?.FullName == "Newtonsoft.Json.Linq.JArray" || type?.FullName == "Newtonsoft.Json.Linq.JValue")
+            {
+                this.Value =this.Value==null?default(string):this.Value.ObjToString() ;
+            }
 
         }
         public SugarParameter(string name, object value, bool isOutput)
