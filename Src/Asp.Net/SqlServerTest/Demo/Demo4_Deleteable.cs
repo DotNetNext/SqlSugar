@@ -57,7 +57,7 @@ namespace OrmTest
 
 
             object o = db.Queryable<Order>().First();
-            db.DeleteableByObject(o).ExecuteCommand();
+            db.DeleteableByObject(o).ExecuteCommandAsync().GetAwaiter().GetResult();
             object os = db.Queryable<Order>().Take(2).ToList();
             db.DeleteableByObject(os).ExecuteCommand();
             Console.WriteLine("#### Deleteable End ####");
