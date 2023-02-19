@@ -398,6 +398,10 @@ namespace SqlSugar
 
         public Dictionary<string, object> ToDictionary(Expression<Func<T, object>> key, Expression<Func<T, object>> value)
         {
+            if (this.QueryBuilder.IsSingle() == false && (this.QueryBuilder.AsTables == null||this.QueryBuilder.AsTables.Count==0)) 
+            {
+                return this.MergeTable().ToDictionary(key,value);
+            }
             this.QueryBuilder.ResultType = typeof(SugarCacheDictionary);
             var keyName = QueryBuilder.GetExpressionValue(key, ResolveExpressType.FieldSingle).GetResultString();
             var valueName = QueryBuilder.GetExpressionValue(value, ResolveExpressType.FieldSingle).GetResultString();
