@@ -389,6 +389,10 @@ namespace SqlSugar
                 dataSize = GetSize(item);
                 string dataType = item.DataType;
                 string nullType = item.IsNullable ? this.CreateTableNull : CreateTableNotNull;
+                if(!string.IsNullOrEmpty(item.DefaultValue))
+                {
+                    nullType ="DEFAULT " +item.DefaultValue;
+                }
                 string primaryKey = null;
                 string identity = item.IsIdentity ? this.CreateTableIdentity : null;
                 string addItem = string.Format(this.CreateTableColumn, this.SqlBuilder.GetTranslationColumnName(columnName), dataType, dataSize, nullType, primaryKey, identity);
