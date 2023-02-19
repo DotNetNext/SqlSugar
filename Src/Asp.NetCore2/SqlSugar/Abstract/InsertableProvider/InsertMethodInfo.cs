@@ -27,5 +27,19 @@ namespace SqlSugar
             var result = inertable.GetType().GetMethod("ExecuteCommandAsync").Invoke(inertable, new object[] { });
             return  await (Task<int>)result;
         }
+        public int ExecuteReturnIdentity()
+        {
+            if (Context == null) return 0;
+            var inertable = MethodInfo.Invoke(Context, new object[] { objectValue });
+            var result = inertable.GetType().GetMethod("ExecuteReturnIdentity").Invoke(inertable, new object[] { });
+            return (int)result;
+        }
+        public async Task<int> ExecuteReturnIdentityAsync()
+        {
+            if (Context == null) return 0;
+            var inertable = MethodInfo.Invoke(Context, new object[] { objectValue });
+            var result = inertable.GetType().GetMethod("ExecuteReturnIdentityAsync").Invoke(inertable, new object[] { });
+            return await (Task<int>)result;
+        }
     }
 }
