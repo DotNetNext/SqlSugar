@@ -17,6 +17,12 @@ namespace OrmTest
                 .LeftJoin<UnitOrderB02>((x, t) => x.ID == t.ID)
                 .LeftJoin<UnitOrderB02>((x, t,t2) => x.ID == t2.ID)
                 .ToList();
+
+            var list2 = db.Queryable<UnitOrderA01, UnitOrderB02, UnitOrderB02>((x, t,t2) =>
+                 new SqlSugar.JoinQueryInfos(SqlSugar.JoinType.Left, x.ID == t.ID, SqlSugar.JoinType.Left, x.ID == t2.ID)
+                )
+                .ToList();
+              
         }
         public interface IDeleted
         {
