@@ -47,7 +47,7 @@ namespace SqlSugar
 
         public static bool IsNullOrEmpty(this IEnumerable<object> thisValue)
         {
-            if (thisValue == null || thisValue.Count() == 0) return true;
+            if (thisValue == null || thisValue.Any()) return true;
             return false;
         }
 
@@ -59,13 +59,13 @@ namespace SqlSugar
 
         public static bool HasValue(this IEnumerable<object> thisValue)
         {
-            if (thisValue == null || thisValue.Count() == 0) return false;
+            if (thisValue == null || thisValue.Any()) return false;
             return true;
         }
 
         public static bool IsValuable(this IEnumerable<KeyValuePair<string,string>> thisValue)
         {
-            if (thisValue == null || thisValue.Count() == 0) return false;
+            if (thisValue == null || thisValue.Any()) return false;
             return true;
         }
 
