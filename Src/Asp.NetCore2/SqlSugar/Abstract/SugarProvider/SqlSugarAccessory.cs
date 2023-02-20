@@ -484,6 +484,7 @@ namespace SqlSugar
                 joinInfo.JoinType = (JoinType)Enum.Parse(typeof(JoinType), joinString);
                 joinInfo.JoinWhere = joinArray[i * 2 - 1];
                 joinInfo.JoinIndex = i;
+                joinInfo.EntityType = entityType;
                 if (isNoPgAuto)
                     joinInfo.ShortName = sqlBuilder.GetTranslationColumnName(joinInfo.ShortName);
                 result.Add((joinInfo));
