@@ -41,7 +41,6 @@ namespace SqlSugar
   
         public static bool IsNullOrEmpty(this Guid thisValue)
         {
-            if (thisValue == null) return true;
             return thisValue == Guid.Empty;
         }
 
