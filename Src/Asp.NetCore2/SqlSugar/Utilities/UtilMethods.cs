@@ -782,6 +782,10 @@ namespace SqlSugar
                 CSharpTypeName = ctypename,
                 FieldValue = value
             };
+            if (item.FieldValue == string.Empty && item.CSharpTypeName.HasValue() && !item.CSharpTypeName.EqualCase("string")) 
+            {
+                return null;
+            }
             if (item.CSharpTypeName.EqualCase(UtilConstants.DecType.Name))
             {
                 return Convert.ToDecimal(item.FieldValue);
