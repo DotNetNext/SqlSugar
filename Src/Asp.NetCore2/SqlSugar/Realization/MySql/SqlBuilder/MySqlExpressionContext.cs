@@ -222,22 +222,22 @@ namespace SqlSugar
         {
             if (UtilMethods.IsNumber(model.Args[1].MemberValue.GetType().Name))
             {
-                return $"JSON_CONTAINS({model.Args[0].MemberName}, '{model.Args[1].MemberValue}')";
+                return $" JSON_CONTAINS({model.Args[0].MemberName}, '{model.Args[1].MemberValue}')";
             }
             else
             {
-                return $"JSON_CONTAINS({model.Args[0].MemberName}, '\"{model.Args[1].MemberValue.ObjToStringNoTrim().ToSqlFilter()}\"')";
+                return $" JSON_CONTAINS({model.Args[0].MemberName}, '\"{model.Args[1].MemberValue.ObjToStringNoTrim().ToSqlFilter()}\"')";
             }
         }
         public override string JsonListObjectAny(MethodCallExpressionModel model)
         {
             if (UtilMethods.IsNumber(model.Args[2].MemberValue.GetType().Name))
             {
-                return $"JSON_CONTAINS({model.Args[0].MemberName},'{{\"{model.Args[1].MemberValue}\":{model.Args[2].MemberValue}}}')";
+                return $" JSON_CONTAINS({model.Args[0].MemberName},'{{\"{model.Args[1].MemberValue}\":{model.Args[2].MemberValue}}}')";
             }
             else
             {
-                return $"JSON_CONTAINS({model.Args[0].MemberName},'{{\"{model.Args[1].MemberValue}\":\"{model.Args[2].MemberValue.ObjToStringNoTrim().ToSqlFilter()}\"}}')";
+                return $" JSON_CONTAINS({model.Args[0].MemberName},'{{\"{model.Args[1].MemberValue}\":\"{model.Args[2].MemberValue.ObjToStringNoTrim().ToSqlFilter()}\"}}')";
             }
         }
     }

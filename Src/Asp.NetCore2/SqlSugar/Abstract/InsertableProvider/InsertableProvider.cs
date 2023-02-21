@@ -51,6 +51,7 @@ namespace SqlSugar
             string sql = _ExecuteCommand();
             var result = Ado.ExecuteCommand(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
             After(sql, null);
+            if (result == -1) return this.InsertObjs.Count();
             return result;
         }
         public virtual string ToSqlString()
@@ -311,6 +312,7 @@ namespace SqlSugar
             string sql = _ExecuteCommand();
             var result =await Ado.ExecuteCommandAsync(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
             After(sql, null);
+            if (result == -1) return this.InsertObjs.Count();
             return result;
         }
         public virtual async Task<int> ExecuteReturnIdentityAsync()
