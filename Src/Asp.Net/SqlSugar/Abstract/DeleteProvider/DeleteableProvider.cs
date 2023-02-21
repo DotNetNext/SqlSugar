@@ -624,7 +624,7 @@ namespace SqlSugar
         private void DataAop(object deleteObj)
         {
             var dataEvent = this.Context.CurrentConnectionConfig.AopEvents?.DataExecuting;
-            if (deleteObj != null)
+            if (deleteObj != null&& dataEvent!=null)
             {
                 var model = new DataFilterModel()
                 {
