@@ -56,7 +56,7 @@ namespace SqlSugar
                         if (field != null)
                         {
                             Type ChildType = item.GetType().GetProperty("type", flag).GetValue(item, null) as Type;
-                            if (ChildType == type|| ChildType.IsInterface)
+                            if (ChildType == type|| (ChildType.IsInterface&&type.GetInterfaces().Contains(ChildType)))
                             {
                                 var entityInfo = db.EntityMaintenance.GetEntityInfo(ChildType);
                                 var exp = field.GetValue(item, null) as Expression;
