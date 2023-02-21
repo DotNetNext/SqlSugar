@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SqlSugar;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,7 +23,13 @@ namespace OrmTest
                  new SqlSugar.JoinQueryInfos(SqlSugar.JoinType.Left, x.ID == t.ID, SqlSugar.JoinType.Left, x.ID == t2.ID)
                 )
                 .ToList();
-              
+
+            var list3 = db.Queryable<UnitOrderA01> ()
+              .Select(it=>new { 
+                  x=SqlFunc.Subqueryable<UnitOrderB02>().EnableTableFilter().Select(s=>s.ID)
+              })
+               .ToList();
+
         }
         public interface IDeleted
         {
