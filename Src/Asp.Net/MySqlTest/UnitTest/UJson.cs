@@ -32,7 +32,7 @@ namespace OrmTest
             db.DbMaintenance.TruncateTable<UnitJsonArray>();
             db.Insertable(new UnitJsonArray() { a = new int[] { 1, 2, 3 }, b = new string[] { "a", "b" } }).ExecuteCommand();
             db.Insertable(new UnitJsonArray() { a = new int[] { 5 }, b = new string[] { "c", "d" } }).ExecuteCommand();
-            var isBool = db.Queryable<UnitJsonArray>().Any(it => SqlFunc.JsonArrayAny(it.a, 1));
+            var isBool = db.Queryable<UnitJsonArray>().Any(it => SqlFunc.JsonArrayAny(it.a, 1) || SqlFunc.JsonArrayAny(it.a, 1));
             var isBool2 = db.Queryable<UnitJsonArray>().Any(it => SqlFunc.JsonArrayAny(it.a, 4));
 
             var isBool1 = db.Queryable<UnitJsonArray>().Any(it => SqlFunc.JsonArrayAny(it.b, "a"));
