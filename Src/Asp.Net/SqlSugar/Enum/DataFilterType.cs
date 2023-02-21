@@ -10,7 +10,8 @@ namespace SqlSugar
     public enum DataFilterType
     {
         UpdateByObject = 0,
-        InsertByObject = 1
+        InsertByObject = 1,
+        DeleteByObject =2
     }
     public class DataFilterModel 
     {

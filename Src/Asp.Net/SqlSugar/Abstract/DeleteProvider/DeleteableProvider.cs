@@ -108,6 +108,7 @@ namespace SqlSugar
                 Where(SqlBuilder.SqlFalse);
                 return this;
             }
+            DataAop(deleteObjs);
             string tableName = this.Context.EntityMaintenance.GetTableName<T>();
             var primaryFields = this.GetPrimaryKeys();
             var isSinglePrimaryKey = primaryFields.Count == 1;
@@ -619,6 +620,19 @@ namespace SqlSugar
                 }
             }
             return result;
+        }
+        private void DataAop(object deleteObj)
+        {
+            var dataEvent = this.Context.CurrentConnectionConfig.AopEvents?.DataExecuting;
+            if (deleteObj != null)
+            {
+                var model = new DataFilterModel()
+                {
+                    OperationType = DataFilterType.DeleteByObject,
+                    EntityValue = deleteObj,
+                };
+                dataEvent(deleteObj,model);
+            }
         }
     }
 }
