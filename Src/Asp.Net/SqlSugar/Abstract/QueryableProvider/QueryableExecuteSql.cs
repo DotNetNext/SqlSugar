@@ -737,10 +737,10 @@ namespace SqlSugar
         {
             return IntoTable(typeof(TableEntityType));
         }
-        //public bool IntoTable<TableEntityType>(string[] columnNameList)
-        //{
-        //    return IntoTable(typeof(TableEntityType), columnNameList);
-        //}
+        public bool IntoTable<TableEntityType>(string TableName)
+        {
+            return IntoTable(typeof(TableEntityType), TableName);
+        }
         public bool IntoTable(Type TableEntityType) 
         {
             var entityInfo=this.Context.EntityMaintenance.GetEntityInfo(TableEntityType);
@@ -761,15 +761,27 @@ namespace SqlSugar
             this.Context.Ado.ExecuteCommand(sql, sqlInfo.Value);
             return true;
         }
-        //public bool IntoTable(Type TableEntityType,params string [] columnNameList)
-        //{
-        //    var entityInfo = this.Context.EntityMaintenance.GetEntityInfo(TableEntityType);
-        //    var columnsString =string.Join(",", columnNameList.Select(it => this.SqlBuilder.GetTranslationColumnName(it)));
-        //    var sqlInfo = this.MergeTable().Select(columnsString).ToSql();
-        //    var name = this.SqlBuilder.GetTranslationTableName(entityInfo.DbTableName);
-        //    var sql = $" INSERT  INTO  {name} ({columnsString}) " + sqlInfo.Key;
-        //    this.Context.Ado.ExecuteCommand(sql, sqlInfo.Value);
-        //    return true;
-        //}
+
+        public bool IntoTable(Type TableEntityType,string TableName)
+        {
+            //var entityInfo = this.Context.EntityMaintenance.GetEntityInfo(TableEntityType);
+            var sqlInfo = this.ToSql();
+            var name = this.SqlBuilder.GetTranslationTableName(TableName);
+            var columns = "";
+            if (this.QueryBuilder.GetSelectValue != null && this.QueryBuilder.GetSelectValue.Contains(",")) ;
+            {
+                columns = "(";
+                foreach (var item in this.QueryBuilder.GetSelectValue.Split(','))
+                {
+                    var column = Regex.Split(item, "AS").Last().Trim();
+                    columns += $"{column},";
+                }
+                columns = columns.TrimEnd(',') + ")";
+            }
+            var sql = $" INSERT  INTO {name} {columns} " + sqlInfo.Key;
+            this.Context.Ado.ExecuteCommand(sql, sqlInfo.Value);
+            return true;
+        }
+
     }
 }

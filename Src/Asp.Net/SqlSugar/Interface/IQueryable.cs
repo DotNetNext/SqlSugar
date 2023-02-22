@@ -162,6 +162,8 @@ namespace SqlSugar
 
         bool IntoTable<TableEntityType>();
         bool IntoTable(Type TableEntityType);
+        bool IntoTable<TableEntityType>(string tableName);
+        bool IntoTable(Type TableEntityType,string tableName);
         //bool IntoTable(Type TableEntityType, params string[] columnNameList);
         //bool IntoTable<TableEntityType>(params string[] columnNameList);
         List<T> SetContext<ParameterT>(Expression<Func<T, bool>> whereExpression, ParameterT parameter);
