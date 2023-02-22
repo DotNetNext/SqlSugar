@@ -58,7 +58,12 @@ namespace SqlSugar
                 }
                 else
                 {
-                    string result = Big(identities, groupList, columnsString);
+                    var pageSize = bigSize;
+                    if (pageSize > 100) 
+                    {
+                        pageSize = 100;
+                    }
+                    string result = Big(identities, groupList, columnsString, pageSize);
                     return result;
                 }
             }
@@ -87,9 +92,9 @@ namespace SqlSugar
             return bigSize;
         }
 
-        private string Big(List<EntityColumnInfo> identities, List<IGrouping<int, DbColumnInfo>> groupList, string columnsString)
+        private string Big(List<EntityColumnInfo> identities, List<IGrouping<int, DbColumnInfo>> groupList, string columnsString, int pageSize)
         {
-            this.Context.Utilities.PageEach(groupList, 100, groupListPasge =>
+            this.Context.Utilities.PageEach(groupList, pageSize, groupListPasge =>
             {
                 this.Parameters = new List<SugarParameter>();
                 var sql = Small(identities, groupListPasge, columnsString);
