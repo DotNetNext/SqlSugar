@@ -159,6 +159,13 @@ namespace SqlSugar
         List<TResult> ToList<TResult>(Expression<Func<T, TResult>> expression);
         Task<List<TResult>> ToListAsync<TResult>(Expression<Func<T, TResult>> expression);
         List<T> ToList();
+
+        bool IntoTable<TableEntityType>();
+        bool IntoTable(Type TableEntityType);
+        bool IntoTable<TableEntityType>(string tableName);
+        bool IntoTable(Type TableEntityType,string tableName);
+        //bool IntoTable(Type TableEntityType, params string[] columnNameList);
+        //bool IntoTable<TableEntityType>(params string[] columnNameList);
         List<T> SetContext<ParameterT>(Expression<Func<T, bool>> whereExpression, ParameterT parameter);
         List<T> SetContext<ParameterT>(Expression<Func<T,object>> thisFiled, Expression<Func<object>> mappingFiled, ParameterT parameter);
         List<T> SetContext<ParameterT>(Expression<Func<T, object>> thisFiled1, Expression<Func<object>> mappingFiled1, Expression<Func<T, object>> thisFiled2, Expression<Func<object>> mappingFiled2, ParameterT parameter);
