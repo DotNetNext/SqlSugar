@@ -50,18 +50,43 @@ namespace SqlSugar
             else
             {
                 var bigSize = 500;
+                bigSize = GetBigSize(bigSize);
                 if (groupList.Count < bigSize)
                 {
                     string result = Small(identities, groupList, columnsString);
                     return result;
                 }
-                else 
+                else
                 {
                     string result = Big(identities, groupList, columnsString);
                     return result;
                 }
             }
         }
+
+        private int GetBigSize(int bigSize)
+        {
+            var columnCount = this.EntityInfo.Columns.Count;
+            if (columnCount > 100)
+            {
+                bigSize = 15;
+            }
+            else if (columnCount > 60)
+            {
+                bigSize = 25;
+            }
+            else if (columnCount > 40)
+            {
+                bigSize = 50;
+            }
+            else if (columnCount > 30)
+            {
+                bigSize = 100;
+            }
+
+            return bigSize;
+        }
+
         private string Big(List<EntityColumnInfo> identities, List<IGrouping<int, DbColumnInfo>> groupList, string columnsString)
         {
             this.Context.Utilities.PageEach(groupList, 100, groupListPasge =>
