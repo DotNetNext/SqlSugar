@@ -414,10 +414,10 @@ namespace SqlSugar
                 foreach (DataColumn col in dt2.Columns)
                 {
                     var sugarColumn = this.EntityInfo.Columns.Where(it => it.DbColumnName != null).FirstOrDefault(it =>
-                        it.DbColumnName.Equals(col.ColumnName, StringComparison.CurrentCultureIgnoreCase));
+                        it.PropertyName.Equals(col.ColumnName, StringComparison.CurrentCultureIgnoreCase));
                     DiffLogColumnInfo addItem = new DiffLogColumnInfo();
                     addItem.Value = row[col.ColumnName];
-                    addItem.ColumnName = col.ColumnName;
+                    addItem.ColumnName = sugarColumn?.DbColumnName??col.ColumnName;
                     addItem.IsPrimaryKey = sugarColumn?.IsPrimarykey ?? false;
                     addItem.ColumnDescription = sugarColumn?.ColumnDescription;
                     item.Columns.Add(addItem);

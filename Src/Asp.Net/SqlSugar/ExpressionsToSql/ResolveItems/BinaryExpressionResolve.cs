@@ -31,7 +31,7 @@ namespace SqlSugar
             if (expression.NodeType == ExpressionType.ArrayIndex)
             {
                 var parameterName = AppendParameter(ExpressionTool.DynamicInvoke(expression));
-                base.Context.Result.Append($" {BaseParameter.BaseParameter.OperatorValue} {parameterName} ");
+                base.Context.Result.Append($" {parameterName} ");
                 return;
             }
             var operatorValue = parameter.OperatorValue = ExpressionTool.GetOperator(expression.NodeType);
