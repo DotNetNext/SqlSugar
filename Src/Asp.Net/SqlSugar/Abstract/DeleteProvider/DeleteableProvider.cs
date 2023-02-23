@@ -630,6 +630,7 @@ namespace SqlSugar
                 {
                     OperationType = DataFilterType.DeleteByObject,
                     EntityValue = deleteObj,
+                    EntityColumnInfo=this.EntityInfo.Columns.FirstOrDefault() 
                 };
                 dataEvent(deleteObj,model);
             }
