@@ -96,6 +96,8 @@ namespace OrmTest
             var ids = new string[] { "a", "c" };
             for (int i = 0; i < 2; i++)
             {
+                db.Queryable<Order>().Where(z => z.Name==ids[i] ).ToList();
+                db.Queryable<Order>().Where(z => z.Name ==SqlFunc.ToString( ids[i])).ToList();
                 db.Queryable<Order>().Where(z => ids[i] == z.Name).ToList();
                 db.Queryable<Order>().Select(z => ids[i]).ToList();
             }
