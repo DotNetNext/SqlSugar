@@ -36,9 +36,9 @@ namespace SqlSugar
             var groupList = DbColumnInfoList.GroupBy(it => it.TableId).ToList();
             var isSingle = groupList.Count() == 1;
             string columnsString = string.Join(",", groupList.First().Select(it => Builder.GetTranslationColumnName(it.DbColumnName)));
-            if (isSingle&&this.EntityInfo.EntityName!= "Dictionary`2")
+            if (isSingle && this.EntityInfo.EntityName != "Dictionary`2")
             {
-                string columnParametersString = string.Join(",", this.DbColumnInfoList.Select(it =>base.GetDbColumn(it, Builder.SqlParameterKeyWord + it.DbColumnName)));
+                string columnParametersString = string.Join(",", this.DbColumnInfoList.Select(it => base.GetDbColumn(it, Builder.SqlParameterKeyWord + it.DbColumnName)));
                 if (identities.HasValue())
                 {
                     columnsString = columnsString.TrimEnd(',') + "," + string.Join(",", identities.Select(it => Builder.GetTranslationColumnName(it.DbColumnName)));
@@ -50,7 +50,6 @@ namespace SqlSugar
             else
             {
                 var bigSize = 500;
-                bigSize = GetBigSize(bigSize);
                 if (groupList.Count < bigSize)
                 {
                     string result = Small(identities, groupList, columnsString);
@@ -58,51 +57,22 @@ namespace SqlSugar
                 }
                 else
                 {
-                    var pageSize = bigSize;
-                    if (pageSize > 100) 
-                    {
-                        pageSize = 100;
-                    }
-                    string result = Big(identities, groupList, columnsString, pageSize);
+                    string result = Big(identities, groupList, columnsString);
                     return result;
                 }
             }
         }
-
-        private int GetBigSize(int bigSize)
+        private string Big(List<EntityColumnInfo> identities, List<IGrouping<int, DbColumnInfo>> groupList, string columnsString)
         {
-            var columnCount = this.EntityInfo.Columns.Count;
-            if (columnCount > 100)
-            {
-                bigSize = 15;
-            }
-            else if (columnCount > 60)
-            {
-                bigSize = 25;
-            }
-            else if (columnCount > 40)
-            {
-                bigSize = 50;
-            }
-            else if (columnCount > 30)
-            {
-                bigSize = 100;
-            }
-
-            return bigSize;
-        }
-
-        private string Big(List<EntityColumnInfo> identities, List<IGrouping<int, DbColumnInfo>> groupList, string columnsString, int pageSize)
-        {
-            this.Context.Utilities.PageEach(groupList, pageSize, groupListPasge =>
+            this.Context.Utilities.PageEach(groupList, 100, groupListPasge =>
             {
                 this.Parameters = new List<SugarParameter>();
                 var sql = Small(identities, groupListPasge, columnsString);
                 this.Context.Ado.ExecuteCommand(sql, this.Parameters);
             });
-            if (identities!=null&identities.Count > 0&& this.OracleSeqInfoList!=null&& this.OracleSeqInfoList.Any())
+            if (identities != null & identities.Count > 0 && this.OracleSeqInfoList != null && this.OracleSeqInfoList.Any())
             {
-                return $"SELECT {this.OracleSeqInfoList.First().Value-1} FROM DUAL";
+                return $"SELECT {this.OracleSeqInfoList.First().Value - 1} FROM DUAL";
             }
             else
             {
@@ -129,7 +99,7 @@ namespace SqlSugar
 
 
                 batchInsetrSql.Append("(");
-                insertColumns = string.Join(",", item.Select(it =>GetDbColumn(it, FormatValue(it.Value, it.PropertyName))));
+                insertColumns = string.Join(",", item.Select(it => GetDbColumn(it, FormatValue(it.Value, it.PropertyName))));
                 batchInsetrSql.Append(insertColumns);
                 if (identities.HasValue())
                 {
@@ -164,7 +134,7 @@ namespace SqlSugar
         }
 
         int i = 0;
-        public  object FormatValue(object value,string name)
+        public object FormatValue(object value, string name)
         {
             if (value == null)
             {
@@ -202,16 +172,16 @@ namespace SqlSugar
                 {
                     ++i;
                     var parameterName = this.Builder.SqlParameterKeyWord + name + i;
-                    this.Parameters.Add(new SugarParameter(parameterName, value,System.Data.DbType.Binary));
+                    this.Parameters.Add(new SugarParameter(parameterName, value, System.Data.DbType.Binary));
                     return parameterName;
                 }
                 else if (type == UtilConstants.BoolType)
                 {
                     return value.ObjToBool() ? "1" : "0";
-                } 
-                else if (type==UtilConstants.DateTimeOffsetType) 
+                }
+                else if (type == UtilConstants.DateTimeOffsetType)
                 {
-                    var date= UtilMethods.ConvertFromDateTimeOffset((DateTimeOffset)value);
+                    var date = UtilMethods.ConvertFromDateTimeOffset((DateTimeOffset)value);
                     return "to_timestamp('" + date.ToString("yyyy-MM-dd HH:mm:ss.ffffff") + "', 'YYYY-MM-DD HH24:MI:SS.FF') ";
                 }
                 else if (type == UtilConstants.StringType || type == UtilConstants.ObjType)
