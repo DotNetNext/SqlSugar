@@ -50,7 +50,7 @@ namespace OrmTest
             //There are many methods to under db.ado
             var list= db.Ado.SqlQuery<Order>("select * from \"ORDER\"");
             var intValue=db.Ado.SqlQuerySingle<int>("select 1 from dual");
-            db.Ado.ExecuteCommand("delete \"ORDER\" where id>1000");
+            db.Ado.ExecuteCommand("delete \"ORDER\" where id>@type",new { type=1});
             //db.Ado.xxx
             Console.WriteLine("#### Ado End ####");
         }

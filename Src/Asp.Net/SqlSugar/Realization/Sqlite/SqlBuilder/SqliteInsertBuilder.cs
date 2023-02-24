@@ -46,7 +46,7 @@ namespace SqlSugar
             string columnsString = string.Join(",", groupList.First().Select(it => Builder.GetTranslationColumnName(it.DbColumnName)));
             if (isSingle)
             {
-                string columnParametersString = string.Join(",", this.DbColumnInfoList.Select(it => Builder.SqlParameterKeyWord + it.DbColumnName));
+                string columnParametersString = string.Join(",", this.DbColumnInfoList.Select(it =>base.GetDbColumn(it, Builder.SqlParameterKeyWord + it.DbColumnName)));
                 ActionMinDate();
                 return string.Format(SqlTemplate, GetTableNameString, columnsString, columnParametersString);
             }
@@ -62,7 +62,7 @@ namespace SqlSugar
                 foreach (var item in groupList)
                 {
                     batchInsetrSql.Append("(");
-                    insertColumns = string.Join(",", item.Select(it => FormatValue(i,it.DbColumnName,it.Value)));
+                    insertColumns = string.Join(",", item.Select(it =>base.GetDbColumn(it, FormatValue(i,it.DbColumnName,it.Value))));
                     batchInsetrSql.Append(insertColumns);
                     if (groupList.Last() == item)
                     {
@@ -148,7 +148,7 @@ namespace SqlSugar
             {
                 date = UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig);
             }
-            return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
+            return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fffffff") + "'";
         }
 
         private object GetDateTimeString(object value)

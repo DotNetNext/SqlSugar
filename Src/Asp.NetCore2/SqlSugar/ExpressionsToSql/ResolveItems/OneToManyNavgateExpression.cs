@@ -186,6 +186,10 @@ namespace SqlSugar
                 {
                     this.whereSql = this.whereSql.Replace($" {PropertyShortName}.", $" {this.ProPertyEntity.DbTableName}_1.");
                 }
+                else if (this.whereSql.Contains($" {queryable.QueryBuilder.Builder.GetTranslationColumnName(PropertyShortName)}."))
+                {
+                    this.whereSql = this.whereSql.Replace($" {queryable.QueryBuilder.Builder.GetTranslationColumnName(PropertyShortName)}.", $" {this.ProPertyEntity.DbTableName}_1.");
+                }
                 mapper.Sql = mapper.Sql + " AND " + this.whereSql+")";
             }
             if (MethodName == "Any")

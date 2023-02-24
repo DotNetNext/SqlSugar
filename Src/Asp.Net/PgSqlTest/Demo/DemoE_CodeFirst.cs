@@ -45,8 +45,52 @@ namespace OrmTest
 
             }).ExecuteCommand();
             var list5=db.Queryable<CodeFirstArray>().ToList();
+            db.CodeFirst.InitTables<CodeFirstArraryBigInt>();
+            db.Updateable<CodeFirstArraryBigInt>()
+                .SetColumns(it => it.longs == new long[] { 1, 2 })
+                .Where(it=>it.id==1)
+                .ExecuteCommand();
+            db.Aop.OnLogExecuting = (s, p) => Console.WriteLine(s);
+            db.CurrentConnectionConfig.MoreSettings = new ConnMoreSettings()
+            {
+                PgSqlIsAutoToLowerCodeFirst = false,
+                PgSqlIsAutoToLower=false
+            };
+            db.CodeFirst.InitTables<CodeFirstNoUpper>();
+            db.Insertable(new CodeFirstNoUpper() { Id = Guid.NewGuid() + "", Name = "a" }).ExecuteCommand();
+            var list6= db.Queryable<CodeFirstNoUpper>().Where(it => it.Id != null).ToList();
+            db.Updateable(list6).ExecuteCommand();
+            db.Deleteable(list6).ExecuteCommand();
+            db.Updateable(list6.First()).ExecuteCommand();
+            db.Deleteable<CodeFirstNoUpper>().Where(it => it.Id != null).ExecuteCommand();
+            db.Updateable<CodeFirstNoUpper>().SetColumns(it => it.Name == "a").Where(it => it.Id != null).ExecuteCommand();
+            db.Updateable<CodeFirstNoUpper>().SetColumns(it => new CodeFirstNoUpper()
+            {
+                Name = "a"
+            }).Where(it => it.Id != null).ExecuteCommand();
+            db.CodeFirst.InitTables<CodeFirstChartest>();
+            db.Queryable<CodeFirstChartest>().Where(it => it.Test == 's').ToList();
             Console.WriteLine("#### CodeFirst end ####");
         }
+    }
+    public class CodeFirstChartest 
+    {
+        [SugarColumn(ColumnDataType ="varchar(1)")]
+        public char Test { get; set; }
+    }
+    [SugarTable(null,"备注表")]
+    public class CodeFirstNoUpper
+    {
+        [SugarColumn(IsPrimaryKey = true, ColumnDescription ="备注列")]
+        public string Id { get; set; }
+        public string Name { get; set; }
+    }
+    public class CodeFirstArraryBigInt 
+    {
+        [SugarColumn(IsPrimaryKey =true)]
+        public int id { get; set; }
+        [SugarColumn(IsArray =true,ColumnDataType ="int8 []")]
+        public long[] longs { get; set; }
     }
     public class CodeFirstArray 
     {

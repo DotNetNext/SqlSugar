@@ -16,22 +16,26 @@ namespace SqlSugar
         private List<ConnectionConfig> _configs;
         private Action<SqlSugarClient> _configAction;
 
-        private SqlSugarClient GetContext()
+        protected virtual SqlSugarClient GetContext()
         {
             SqlSugarClient result = null;
             var key = _configs.GetHashCode().ToString();
             StackTrace st = new StackTrace(true);
             var methods = st.GetFrames();
             var isAsync = UtilMethods.IsAnyAsyncMethod(methods);
-            if (Task.CurrentId != null) 
+            if (methods.Length>=0) 
             {
-                foreach (var method in methods) 
-                {   
-                    var methodInfo = method.GetMethod();
-                    if (methodInfo.Name== "MoveNext"&& methodInfo.ReflectedType.FullName.StartsWith("Quartz.")) 
+                foreach (var method in methods.Take(10)) 
+                {
+                    var refType = method.GetMethod()?.ReflectedType;
+                    if (refType != null)
                     {
-                        key = $"{key}Quartz";
-                        break;
+                        var getInterfaces = refType.Name.StartsWith("<") ? refType?.ReflectedType?.GetInterfaces() : refType?.GetInterfaces();
+                        if (getInterfaces != null && getInterfaces.Any(it => it.Name.IsIn("IJob")))
+                        {
+                            key = $"{key}IJob";
+                            break;
+                        }
                     }
                 }
             }

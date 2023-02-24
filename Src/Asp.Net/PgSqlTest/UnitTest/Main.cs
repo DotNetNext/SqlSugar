@@ -31,6 +31,9 @@ namespace OrmTest
         }
         public static void Init()
         {
+            ULock.Init();
+            UInsert3.Init();
+            UnitSubToList.Init();
             UnitByteArray.Init();
             Unit001.Init();
             UnitPgSplit.Init();

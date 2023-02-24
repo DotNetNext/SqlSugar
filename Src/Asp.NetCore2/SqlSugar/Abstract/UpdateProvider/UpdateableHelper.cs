@@ -157,10 +157,10 @@ namespace SqlSugar
             {
                 Check.Exception(true, ErrorMessage.GetThrowMessage("UpdateColumns no support IsTranscoding", "SetColumns方式更新不支持IsTranscoding，你可以使用db.Updateable(实体)的方式更新"));
             }
-            if (checkIsJson && this.EntityInfo.Columns.Any(it => it.IsJson))
-            {
-                Check.Exception(true, ErrorMessage.GetThrowMessage("UpdateColumns no support IsJson", "SetColumns方式更新不支持IsJson，你可以使用db.Updateable(实体)的方式更新"));
-            }
+            //if (checkIsJson && this.EntityInfo.Columns.Any(it => it.IsJson))
+            //{
+            //    Check.Exception(true, ErrorMessage.GetThrowMessage("UpdateColumns no support IsJson", "SetColumns方式更新不支持IsJson，你可以使用db.Updateable(实体)的方式更新"));
+            //}
             //if (this.EntityInfo.Columns.Any(it => it.IsArray))
             //{
             //    Check.Exception(true, ErrorMessage.GetThrowMessage("UpdateColumns no support IsArray", "SetColumns方式更新不支持IsArray，你可以使用db.Updateable(实体)的方式更新"));
@@ -206,7 +206,9 @@ namespace SqlSugar
                     PropertyName = column.PropertyName,
                     PropertyType = UtilMethods.GetUnderType(column.PropertyInfo),
                     SqlParameterDbType = column.SqlParameterDbType,
-                    TableId = i
+                    TableId = i,
+                    UpdateSql=column.UpdateSql,
+                    UpdateServerTime= column.UpdateServerTime
                 };
                 if (columnInfo.PropertyType.IsEnum() && columnInfo.Value != null)
                 {
@@ -393,7 +395,7 @@ namespace SqlSugar
                 List<IConditionalModel> conModels = new List<IConditionalModel>();
                 foreach (var item in pks)
                 {
-                    conModels.Add(new ConditionalModel() { FieldName = item.DbColumnName, ConditionalType = ConditionalType.Equal, FieldValue = item.Value.ObjToString() });
+                    conModels.Add(new ConditionalModel() {CSharpTypeName=item.PropertyType.Name, FieldName = item.DbColumnName, ConditionalType = ConditionalType.Equal, FieldValue = item.Value.ObjToString() });
                 }
                 var dbInfo = this.Context.Queryable<T>().Where(conModels).First();
                 if (dbInfo != null)

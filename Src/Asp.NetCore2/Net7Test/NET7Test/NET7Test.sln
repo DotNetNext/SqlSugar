@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33103.184
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NET7Test", "NET7Test\NET7Test.csproj", "{15BFBF64-4F94-4A42-8ECF-669C5B1C8F73}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlSugar", "..\..\SqlSugar\SqlSugar.csproj", "{76C78B01-FB96-4399-AE20-AFE76632521D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{15BFBF64-4F94-4A42-8ECF-669C5B1C8F73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15BFBF64-4F94-4A42-8ECF-669C5B1C8F73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15BFBF64-4F94-4A42-8ECF-669C5B1C8F73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15BFBF64-4F94-4A42-8ECF-669C5B1C8F73}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76C78B01-FB96-4399-AE20-AFE76632521D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76C78B01-FB96-4399-AE20-AFE76632521D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76C78B01-FB96-4399-AE20-AFE76632521D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76C78B01-FB96-4399-AE20-AFE76632521D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {26877270-2C8D-4E33-B38B-B62D481CFFA4}
+	EndGlobalSection
+EndGlobal

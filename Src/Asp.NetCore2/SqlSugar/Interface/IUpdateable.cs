@@ -103,5 +103,6 @@ namespace SqlSugar
         void AddQueue();
         SplitTableUpdateProvider<T> SplitTable(Func<List<SplitTableInfo>, IEnumerable<SplitTableInfo>> getTableNamesFunc);
         SplitTableUpdateByObjectProvider<T> SplitTable();
+        IUpdateable<T> EnableQueryFilter();
     }
 }

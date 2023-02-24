@@ -11,6 +11,7 @@ namespace SqlSugar
     {
         internal static List<TResult> GetList<T, TResult>(Expression<Func<T, TResult>> expression, QueryableProvider<T> queryableProvider)
         {
+           
             List<TResult> result = new List <TResult>();
             var isSqlFunc = IsSqlFunc(expression, queryableProvider);
             var isClass = IsClass(expression, queryableProvider);
@@ -25,17 +26,21 @@ namespace SqlSugar
                 includeQueryable.Select(GetGroupSelect(typeof(T), queryableProvider.Context, queryableProvider.QueryBuilder));
                 includeQueryable.QueryBuilder.NoCheckInclude = true;
                 var mappingColumn = GetMappingColumn(expression);
-                MegerList(result, includeQueryable.ToList(), sqlfuncQueryable.Context,mappingColumn);
+                MegerList(result, includeQueryable.ToList(), sqlfuncQueryable.Context, mappingColumn);
             }
             else if (isSqlFunc)
             {
                 result = SqlFunc(expression, queryableProvider);
             }
-            else if (typeof(TResult).IsAnonymousType() && isClass == false) 
+            else if (typeof(TResult).IsAnonymousType() && isClass == false)
             {
                 result = SqlFunc(expression, queryableProvider);
             }
             else if (typeof(TResult).IsAnonymousType() && isClass == true)
+            {
+                result = Action(expression, queryableProvider);
+            }
+            else if (expression.ToString().Contains("FirstOrDefault()")) 
             {
                 result = Action(expression, queryableProvider);
             }
@@ -49,10 +54,10 @@ namespace SqlSugar
                 {
                     try
                     {
-                        Console.WriteLine("Select DTO  error  . Warning:"+ex.Message);
+                        Console.WriteLine("Select DTO  error  . Warning:" + ex.Message);
                         result = Action(expression, queryableProvider);
                     }
-                    catch  
+                    catch
                     {
 
                         throw;

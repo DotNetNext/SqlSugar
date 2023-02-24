@@ -108,12 +108,14 @@ namespace OrmTest
         {
             public int Id { get; set; }
         }
+        [SugarTable("UnitCodeFirst131")]
         public class UNITCODEFIRST131
         {
             public int Id { get; set; }
             [SqlSugar.SugarColumn(DefaultValue = "a")]
             public string Name { get; set; }
         }
+        [SugarTable("UnitCodeFirst131")]
         public class UNITCOdEFIRST131
         {
             public int Id { get; set; }

@@ -176,6 +176,12 @@ namespace SqlSugar
             return "rand()";
         }
 
+        public override string Collate(MethodCallExpressionModel model)
+        {
+            var name = model.Args[0].MemberName;
+            return $" binary {name}  ";
+        }
+
         public override string CharIndex(MethodCallExpressionModel model)
         {
             return string.Format("instr ({0},{1})", model.Args[0].MemberName, model.Args[1].MemberName);
@@ -210,6 +216,29 @@ namespace SqlSugar
         private string GetJson(object memberName1, object memberName2, bool isLast)
         {
             return $"{memberName1}->\"$.{memberName2}\"";
+        }
+
+        public override string JsonArrayAny(MethodCallExpressionModel model)
+        {
+            if (UtilMethods.IsNumber(model.Args[1].MemberValue.GetType().Name))
+            {
+                return $" JSON_CONTAINS({model.Args[0].MemberName}, '{model.Args[1].MemberValue}')";
+            }
+            else
+            {
+                return $" JSON_CONTAINS({model.Args[0].MemberName}, '\"{model.Args[1].MemberValue.ObjToStringNoTrim().ToSqlFilter()}\"')";
+            }
+        }
+        public override string JsonListObjectAny(MethodCallExpressionModel model)
+        {
+            if (UtilMethods.IsNumber(model.Args[2].MemberValue.GetType().Name))
+            {
+                return $" JSON_CONTAINS({model.Args[0].MemberName},'{{\"{model.Args[1].MemberValue}\":{model.Args[2].MemberValue}}}')";
+            }
+            else
+            {
+                return $" JSON_CONTAINS({model.Args[0].MemberName},'{{\"{model.Args[1].MemberValue}\":\"{model.Args[2].MemberValue.ObjToStringNoTrim().ToSqlFilter()}\"}}')";
+            }
         }
     }
 }

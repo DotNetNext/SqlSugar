@@ -59,7 +59,7 @@ namespace SqlSugar.MySqlConnector
                     {
                         updateTable.Append(SqlTemplateBatchUnion);
                     }
-                    updateTable.Append("\r\n SELECT " + string.Join(",", columns.Select(it => string.Format(SqlTemplateBatchSelect, FormatValue(it.Value,it.PropertyName),this.Builder.GetTranslationColumnName(it.DbColumnName)))));
+                    updateTable.Append("\r\n SELECT " + string.Join(",", columns.Select(it => string.Format(SqlTemplateBatchSelect, base.GetDbColumn(it,FormatValue(it.Value,it.PropertyName)),this.Builder.GetTranslationColumnName(it.DbColumnName)))));
                     ++i;
                 }
                 pageIndex++;
@@ -106,12 +106,11 @@ namespace SqlSugar.MySqlConnector
                 var type = UtilMethods.GetUnderType(value.GetType());
                 if (type == UtilConstants.DateType)
                 {
-                    var date = value.ObjToDate();
-                    if (date < UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig))
-                    {
-                        date = UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig);
-                    }
-                    return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
+                    return GetDateTimeString(value);
+                }
+                else if (value is DateTimeOffset)
+                {
+                    return GetDateTimeOffsetString(value);
                 }
                 else if (type == UtilConstants.ByteArrayType)
                 {
@@ -144,7 +143,7 @@ namespace SqlSugar.MySqlConnector
                 else if (type == UtilConstants.StringType || type == UtilConstants.ObjType)
                 {
                     ++i;
-                    var parameterName = this.Builder.SqlParameterKeyWord + name + i;
+                    var parameterName = this.Builder.SqlParameterKeyWord + name +"_"+ i;
                     this.Parameters.Add(new SugarParameter(parameterName, value));
                     return parameterName;
                 }
@@ -154,6 +153,27 @@ namespace SqlSugar.MySqlConnector
                 }
             }
         }
+
+        private object GetDateTimeString(object value)
+        {
+            var date = value.ObjToDate();
+            if (date < UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig))
+            {
+                date = UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig);
+            }
+            return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
+        }
+
+        private object GetDateTimeOffsetString(object value)
+        {
+            var date = UtilMethods.ConvertFromDateTimeOffset((DateTimeOffset)value);
+            if (date < UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig))
+            {
+                date = UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig);
+            }
+            return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
+        }
+
         private string GetString(object value)
         {
             var result = value.ToString();

@@ -97,6 +97,11 @@
     <Compile Include="Models\OrderItem.cs" />
     <Compile Include="Demo\Demo0_SqlSugarClient.cs" />
     <Compile Include="Models\ViewOrder.cs" />
+    <Compile Include="UnitTest\UInsert3.cs" />
+    <Compile Include="UnitTest\Unitadfa1231.cs" />
+    <Compile Include="UnitTest\UnitFilterasdfas.cs" />
+    <Compile Include="UnitTest\UnitSqlFunc.cs" />
+    <Compile Include="UnitTest\UnitSubToList.cs" />
     <Compile Include="UnitTest\Models\EntityBase.cs" />
     <Compile Include="UnitTest\UnitByteArray.cs" />
     <Compile Include="UnitTest\UnitInsertNavOneToOne.cs" />
@@ -189,6 +194,7 @@
     <Compile Include="UnitTest\UOneManyMany2.cs" />
     <Compile Include="UnitTest\UOneManyMany.cs" />
     <Compile Include="UnitTest\USelectSinleDTO.cs" />
+    <Compile Include="UnitTest\USelectTest.cs" />
     <Compile Include="UnitTest\USplit.cs" />
     <Compile Include="UnitTest\Models\TB_AdminUser.cs" />
     <Compile Include="UnitTest\Models\TB_ClientConfig.cs" />
@@ -202,6 +208,7 @@
     <Compile Include="UnitTest\UQueryable2.cs" />
     <Compile Include="UnitTest\UQueue.cs" />
     <Compile Include="UnitTest\UTran.cs" />
+    <Compile Include="UnitTest\UTran3.cs" />
     <Compile Include="Models\TestTree.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Program.cs" />

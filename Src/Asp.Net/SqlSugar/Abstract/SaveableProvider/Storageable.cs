@@ -31,6 +31,13 @@ namespace SqlSugar
             }).ToList();
         }
 
+        Expression<Func<T, bool>> queryableWhereExp;
+        public IStorageable<T> TableDataRange(Expression<Func<T, bool>> exp)
+        {
+            this.queryableWhereExp = exp;
+            return this;
+        }
+
         public IStorageable<T> SplitInsert(Func<StorageableInfo<T>, bool> conditions, string message = null)
         {
             whereFuncs.Add(new KeyValuePair<StorageType, Func<StorageableInfo<T>, bool>, string>(StorageType.Insert, conditions, message));
@@ -299,13 +306,20 @@ namespace SqlSugar
                 }
                 if (whereColumns.Count > 0)
                 {
-                    this.Context.Utilities.PageEach(allDatas, 200, itemList =>
+                    if (queryableWhereExp == null)
                     {
-                        List<IConditionalModel> conditList = new List<IConditionalModel>();
-                        SetConditList(itemList, whereColumns, conditList);
-                        var addItem = this.Context.Queryable<T>().AS(asname).Where(conditList).ToList();
-                        this.dbDataList.AddRange(addItem);
-                    });
+                        this.Context.Utilities.PageEach(allDatas, 200, itemList =>
+                        {
+                            List<IConditionalModel> conditList = new List<IConditionalModel>();
+                            SetConditList(itemList, whereColumns, conditList);
+                            var addItem = this.Context.Queryable<T>().AS(asname).Where(conditList).ToList();
+                            this.dbDataList.AddRange(addItem);
+                        });
+                    }
+                    else
+                    {
+                        this.dbDataList.AddRange(this.Context.Queryable<T>().AS(asname).Where(queryableWhereExp).ToList());
+                    }
                 }
                 this.whereExpression = columns;
                 return this;

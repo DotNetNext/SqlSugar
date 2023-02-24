@@ -11,6 +11,7 @@ namespace SqlSugar
         public string DbColumnName { get; set; }
         public string PropertyName { get; set; }
         public string DataType { get; set; }
+        public string OracleDataType { get; set; }
         public Type PropertyType { get; set; }
         public int Length { get; set; }
         public string ColumnDescription { get; set; }
@@ -25,6 +26,10 @@ namespace SqlSugar
         public bool IsJson { get;  set; }
         public bool? IsUnsigned { get; set; }
         public int CreateTableFieldSort { get; set; }
+        public bool InsertServerTime { get;  set; }
+        public string InsertSql { get;  set; }
+        public bool UpdateServerTime { get; set; }
+        public string UpdateSql { get; set; }
         internal object SqlParameterDbType { get;  set; }
     }
 }

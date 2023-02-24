@@ -44,7 +44,7 @@ namespace SqlSugar
                         FieldName = item.LeftEntityColumn.DbColumnName,
                         ConditionalType = ConditionalType.Equal,
                         FieldValue = item.RightEntityColumn.PropertyInfo.GetValue(model).ObjToString(),
-                        CSharpTypeName = item.RightEntityColumn.PropertyInfo.PropertyType.Name
+                        CSharpTypeName =UtilMethods.GetUnderType(item.RightEntityColumn.PropertyInfo.PropertyType).Name
                     }));
                     i++;
                 }

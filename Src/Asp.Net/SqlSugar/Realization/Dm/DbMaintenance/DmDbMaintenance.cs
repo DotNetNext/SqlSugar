@@ -28,7 +28,10 @@ namespace SqlSugar
         {
             get
             {
-                return @"SELECT  table_name name from user_tables where
+                return @"SELECT  
+                        table_name name,
+                        (select COMMENTS from user_tab_comments where t.table_name=table_name )  as Description
+                        from user_tables t where
                         table_name!='HELP' 
                         AND table_name NOT LIKE '%$%'
                         AND table_name NOT LIKE 'LOGMNRC_%'
@@ -302,7 +305,12 @@ namespace SqlSugar
         }
         public override bool CreateDatabase(string databaseName, string databaseDirectory = null)
         {
-            throw new NotSupportedException();
+            if (this.Context.Ado.IsValidConnection())
+            {
+                return true;
+            }
+            Check.ExceptionEasy("dm no support create database ", "达梦不支持建库方法，请写有效连接字符串可以正常运行该方法。");
+            return true;
         }
         public override bool AddRemark(EntityInfo entity)
         {
@@ -314,14 +322,14 @@ namespace SqlSugar
                 if (item.ColumnDescription != null)
                 {
                     //column remak
-                    if (db.DbMaintenance.IsAnyColumnRemark(item.DbColumnName.ToUpper(), item.DbTableName.ToUpper()))
+                    if (db.DbMaintenance.IsAnyColumnRemark(item.DbColumnName.ToUpper(IsUppper), item.DbTableName.ToUpper(IsUppper)))
                     {
-                        db.DbMaintenance.DeleteColumnRemark(item.DbColumnName.ToUpper(), item.DbTableName.ToUpper());
-                        db.DbMaintenance.AddColumnRemark(item.DbColumnName.ToUpper(), item.DbTableName.ToUpper(), item.ColumnDescription);
+                        db.DbMaintenance.DeleteColumnRemark(item.DbColumnName.ToUpper(IsUppper), item.DbTableName.ToUpper(IsUppper));
+                        db.DbMaintenance.AddColumnRemark(item.DbColumnName.ToUpper(IsUppper), item.DbTableName.ToUpper(IsUppper), item.ColumnDescription);
                     }
                     else
                     {
-                        db.DbMaintenance.AddColumnRemark(item.DbColumnName.ToUpper(), item.DbTableName.ToUpper(), item.ColumnDescription);
+                        db.DbMaintenance.AddColumnRemark(item.DbColumnName.ToUpper(IsUppper), item.DbTableName.ToUpper(IsUppper), item.ColumnDescription);
                     }
                 }
             }
@@ -329,15 +337,9 @@ namespace SqlSugar
             //table remak
             if (entity.TableDescription != null)
             {
-                if (db.DbMaintenance.IsAnyTableRemark(entity.DbTableName))
-                {
-                    db.DbMaintenance.DeleteTableRemark(entity.DbTableName);
-                    db.DbMaintenance.AddTableRemark(entity.DbTableName, entity.TableDescription);
-                }
-                else
-                {
-                    db.DbMaintenance.AddTableRemark(entity.DbTableName, entity.TableDescription);
-                }
+                
+                db.DbMaintenance.AddTableRemark(SqlBuilder.GetTranslationColumnName(entity.DbTableName), entity.TableDescription);
+                 
             }
             return true;
         }
@@ -359,6 +361,10 @@ namespace SqlSugar
         private List<DbColumnInfo> GetColumnInfosByTableName(string tableName)
         {
             string sql = "select * from " + SqlBuilder.GetTranslationTableName(tableName) + " WHERE 1=2 ";
+            if (!this.GetTableInfoList(false).Any(it => it.Name == SqlBuilder.GetTranslationTableName(tableName).TrimStart('\"').TrimEnd('\"')))
+            {
+                sql = "select * from \"" + tableName + "\" WHERE 1=2 ";
+            }
             var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
             this.Context.Ado.IsEnableLogEvent = false;
             using(DbDataReader reader = (DbDataReader) this.Context.Ado.GetDataReader(sql))
@@ -398,7 +404,7 @@ namespace SqlSugar
                     this.Context.Ado.IsEnableLogEvent = false;
                     string sql = @" select distinct cu.COLUMN_name KEYNAME  from user_cons_columns cu, user_constraints au 
                             where cu.constraint_name = au.constraint_name
-                            and au.constraint_type = 'P' and au.table_name = '" + tableName.ToUpper() + @"'";
+                            and au.constraint_type = 'P' and au.table_name = '" + tableName.ToUpper(IsUppper) + @"'";
                     var pks = this.Context.Ado.SqlQuery<string>(sql);
                     this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
                     return pks;
@@ -414,7 +420,7 @@ namespace SqlSugar
                     string sql = "SELECT COMMENTS FROM USER_TAB_COMMENTS WHERE TABLE_NAME =@tableName ORDER BY TABLE_NAME";
                     var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
                     this.Context.Ado.IsEnableLogEvent = false;
-                    var pks = this.Context.Ado.SqlQuery<string>(sql, new { tableName = tableName.ToUpper() });
+                    var pks = this.Context.Ado.SqlQuery<string>(sql, new { tableName = tableName.ToUpper(IsUppper) });
                     this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
                     return pks;
                 });
@@ -427,7 +433,7 @@ namespace SqlSugar
             var comments = this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey,
                 () =>
                 {
-                    string sql = "SELECT TVNAME AS TableName, COLNAME as DbColumnName ,COMMENT$ AS ColumnDescription   from SYSCOLUMNCOMMENTS   WHERE TVNAME='" + tableName.ToUpper() + "' ORDER BY TVNAME";
+                    string sql = "SELECT TVNAME AS TableName, COLNAME as DbColumnName ,COMMENT$ AS ColumnDescription   from SYSCOLUMNCOMMENTS   WHERE TVNAME='" + tableName.ToUpper(IsUppper) + "' ORDER BY TVNAME";
                     var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
                     this.Context.Ado.IsEnableLogEvent = false;
                     var pks = this.Context.Ado.SqlQuery<DbColumnInfo>(sql);
@@ -462,12 +468,29 @@ namespace SqlSugar
             //string primaryKeyInfo = null;
             if (columns.Any(it => it.IsPrimarykey) && isCreatePrimaryKey)
             {
-                sql= sql.TrimEnd(')')+ string.Format(", Primary key({0})", string.Join(",", columns.Where(it => it.IsPrimarykey).Select(it => this.SqlBuilder.GetTranslationColumnName(it.DbColumnName.ToLower()))));
+                sql= sql.TrimEnd(')')+ string.Format(", Primary key({0})", string.Join(",", columns.Where(it => it.IsPrimarykey).Select(it => this.SqlBuilder.GetTranslationColumnName(it.DbColumnName.ToUpper(IsUppper)))));
                 sql = sql + ")";
             }
             //sql = sql.Replace("$PrimaryKey", primaryKeyInfo);
             this.Context.Ado.ExecuteCommand(sql);
             return true;
+        }
+        #endregion
+
+        #region Helper
+        public bool IsUppper 
+        {
+            get
+            {
+                if (this.Context.CurrentConnectionConfig.MoreSettings == null)
+                {
+                    return true;
+                }
+                else
+                {
+                    return this.Context.CurrentConnectionConfig.MoreSettings.IsAutoToUpper == true;
+                }
+            }
         }
         #endregion
     }

@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Dynamic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -673,6 +675,52 @@ namespace SqlSugar
         #endregion
 
         #region Insertable
+        public InsertMethodInfo InsertableByObject(object singleEntityObjectOrListObject)
+        {
+            if (singleEntityObjectOrListObject == null)
+                return new InsertMethodInfo();
+            if (singleEntityObjectOrListObject.GetType().FullName.IsCollectionsList())
+            {
+                var list = ((IList)singleEntityObjectOrListObject);
+                if (list == null || list.Count == 0)
+                    return new InsertMethodInfo();
+                var type = list[0].GetType();
+                var newList = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(type));
+                foreach (var item in list)
+                {
+                    newList.Add(item);
+                }
+                var methods = this.Context.GetType().GetMethods()
+               .Where(it => it.Name == "Insertable")
+               .Where(it => it.GetGenericArguments().Any())
+               .Where(it => it.GetParameters().Any(z => z.ParameterType.Name.StartsWith("List")))
+               .Where(it => it.Name == "Insertable").ToList();
+                var method = methods.Single().MakeGenericMethod(newList.GetType().GetGenericArguments().First());
+                InsertMethodInfo result = new InsertMethodInfo()
+                {
+                    Context = this.Context,
+                    MethodInfo = method,
+                    objectValue = newList
+                };
+                return result;
+            }
+            else
+            {
+                var methods = this.Context.GetType().GetMethods()
+                    .Where(it => it.Name == "Insertable")
+                    .Where(it => it.GetGenericArguments().Any())
+                    .Where(it => it.GetParameters().Any(z => z.ParameterType.Name == "T"))
+                    .Where(it => it.Name == "Insertable").ToList();
+                var method = methods.Single().MakeGenericMethod(singleEntityObjectOrListObject.GetType());
+                InsertMethodInfo result = new InsertMethodInfo()
+                {
+                    Context = this.Context,
+                    MethodInfo = method,
+                    objectValue = singleEntityObjectOrListObject
+                };
+                return result;
+            }
+        }
         public virtual IInsertable<T> Insertable<T>(T[] insertObjs) where T : class, new()
         {
             UtilMethods.CheckArray(insertObjs);
@@ -719,6 +767,52 @@ namespace SqlSugar
         #endregion
 
         #region Deleteable
+        public DeleteMethodInfo DeleteableByObject(object singleEntityObjectOrListObject)
+        {
+            if (singleEntityObjectOrListObject == null)
+                return new DeleteMethodInfo();
+            if (singleEntityObjectOrListObject.GetType().FullName.IsCollectionsList())
+            {
+                var list = ((IList)singleEntityObjectOrListObject);
+                if (list == null || list.Count == 0)
+                    return new DeleteMethodInfo();
+                var type = list[0].GetType();
+                var newList = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(type));
+                foreach (var item in list)
+                {
+                    newList.Add(item);
+                }
+                var methods = this.Context.GetType().GetMethods()
+               .Where(it => it.Name == "Deleteable")
+               .Where(it => it.GetGenericArguments().Any())
+               .Where(it => it.GetParameters().Any(z => z.ParameterType.Name.StartsWith("List")))
+               .Where(it => it.Name == "Deleteable").ToList();
+                var method = methods.FirstOrDefault().MakeGenericMethod(newList.GetType().GetGenericArguments().FirstOrDefault());
+                DeleteMethodInfo result = new DeleteMethodInfo()
+                {
+                    Context = this.Context,
+                    MethodInfo = method,
+                    objectValue = newList
+                };
+                return result;
+            }
+            else
+            {
+                var methods = this.Context.GetType().GetMethods()
+                    .Where(it => it.Name == "Deleteable")
+                    .Where(it => it.GetGenericArguments().Any())
+                    .Where(it => it.GetParameters().Any(z => z.ParameterType.Name == "T"))
+                    .Where(it => it.Name == "Deleteable").ToList();
+                var method = methods.Single().MakeGenericMethod(singleEntityObjectOrListObject.GetType());
+                DeleteMethodInfo result = new DeleteMethodInfo()
+                {
+                    Context = this.Context,
+                    MethodInfo = method,
+                    objectValue = singleEntityObjectOrListObject
+                };
+                return result;
+            }
+        }
         public virtual IDeleteable<T> Deleteable<T>() where T : class, new()
         {
             InitMappingInfo<T>();
@@ -758,9 +852,56 @@ namespace SqlSugar
         #endregion
 
         #region Updateable
+        public UpdateMethodInfo UpdateableByObject(object singleEntityObjectOrListObject)
+        {
+            if (singleEntityObjectOrListObject == null)
+                return new UpdateMethodInfo();
+            if (singleEntityObjectOrListObject.GetType().FullName.IsCollectionsList())
+            {
+                var list = ((IList)singleEntityObjectOrListObject);
+                if (list == null || list.Count == 0)
+                    return new UpdateMethodInfo();
+                var type = list[0].GetType();
+                var newList = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(type));
+                foreach (var item in list)
+                {
+                    newList.Add(item);
+                }
+                var methods = this.Context.GetType().GetMethods()
+               .Where(it => it.Name == "Updateable")
+               .Where(it => it.GetGenericArguments().Any())
+               .Where(it => it.GetParameters().Any(z => z.ParameterType.Name.StartsWith("List")))
+               .Where(it => it.Name == "Updateable").ToList();
+                var method = methods.Single().MakeGenericMethod(newList.GetType().GetGenericArguments().First());
+                UpdateMethodInfo result = new UpdateMethodInfo()
+                {
+                    Context = this.Context,
+                    MethodInfo = method,
+                    objectValue = newList
+                };
+                return result;
+            }
+            else
+            {
+                var methods = this.Context.GetType().GetMethods()
+                    .Where(it => it.Name == "Updateable")
+                    .Where(it => it.GetGenericArguments().Any())
+                    .Where(it => it.GetParameters().Any(z => z.ParameterType.Name == "T"))
+                    .Where(it => it.Name == "Updateable").ToList();
+                var method = methods.Single().MakeGenericMethod(singleEntityObjectOrListObject.GetType());
+                UpdateMethodInfo result = new UpdateMethodInfo()
+                {
+                    Context = this.Context,
+                    MethodInfo = method,
+                    objectValue = singleEntityObjectOrListObject
+                };
+                return result;
+            }
+        }
         public virtual IUpdateable<T> Updateable<T>(T[] UpdateObjs) where T : class, new()
         {
             InitMappingInfo<T>();
+            Check.ExceptionEasy(UpdateObjs is IList&&typeof(T).FullName.IsCollectionsList(), "The methods you encapsulate are loaded incorrectly, so List<T> should be Updateable<T>(List<T> UpdateObjs)where T: class, new()", "你封装的方法进错重载，List<T>应该进Updateable<T>(List<T> UpdateObjs)where T : class, new()重载");
             UpdateableProvider<T> result = this.CreateUpdateable(UpdateObjs);
             return result;
         }
@@ -777,6 +918,7 @@ namespace SqlSugar
         }
         public virtual IUpdateable<T> Updateable<T>(T UpdateObj) where T : class, new()
         {
+
             return this.Context.Updateable(new T[] { UpdateObj });
         }
         public virtual IUpdateable<T> Updateable<T>() where T : class, new()
@@ -833,6 +975,18 @@ namespace SqlSugar
         {
             return new SaveableProvider<T>(this, saveObject);
         }
+        public StorageableDataTable Storageable(List<Dictionary<string, object>> dictionaryList, string tableName)
+        {
+            DataTable dt = this.Context.Utilities.DictionaryListToDataTable(dictionaryList);
+            dt.TableName = tableName;
+            return this.Context.Storageable(dt);
+        }
+        public StorageableDataTable Storageable(Dictionary<string, object> dictionary, string tableName)
+        {
+            DataTable dt = this.Context.Utilities.DictionaryListToDataTable(new List<Dictionary<string, object>>() { dictionary });
+            dt.TableName = tableName;
+            return this.Context.Storageable(dt);
+        }
         public IStorageable<T> Storageable<T>(List<T> dataList) where T : class, new()
         {
             this.InitMappingInfo<T>();
@@ -856,6 +1010,52 @@ namespace SqlSugar
             data.Columns.Add(new DataColumn("SugarErrorMessage", typeof(string)));
             data.Columns.Add(new DataColumn("SugarColumns", typeof(string[])));
             return result;
+        }
+        public StorageableMethodInfo StorageableByObject(object singleEntityObjectOrList)
+        {
+            if (singleEntityObjectOrList == null)
+                return new StorageableMethodInfo();
+            if (singleEntityObjectOrList.GetType().FullName.IsCollectionsList())
+            {
+                var list = ((IList)singleEntityObjectOrList);
+                if(list==null|| list.Count==0)
+                    return new StorageableMethodInfo();
+                var type=list[0].GetType();
+                var newList = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(type)) ;
+                foreach (var item in list)
+                {
+                    newList.Add(item);
+                }
+               var methods = this.Context.GetType().GetMethods()
+              .Where(it => it.Name == "Storageable")
+              .Where(it => it.GetGenericArguments().Any())
+              .Where(it => it.GetParameters().Any(z => z.ParameterType.Name.StartsWith("List")))
+              .Where(it => it.Name == "Storageable").ToList();
+                var method = methods.Single().MakeGenericMethod(newList.GetType().GetGenericArguments().First());
+                StorageableMethodInfo result = new StorageableMethodInfo()
+                {
+                    Context = this.Context,
+                    MethodInfo = method,
+                    objectValue = newList
+                };
+                return result;
+            }
+            else
+            {
+                var methods = this.Context.GetType().GetMethods()
+                    .Where(it => it.Name == "Storageable")
+                    .Where(it => it.GetGenericArguments().Any())
+                    .Where(it => it.GetParameters().Any(z => z.ParameterType.Name == "T"))
+                    .Where(it => it.Name == "Storageable").ToList();
+                var method = methods.Single().MakeGenericMethod(singleEntityObjectOrList.GetType());
+                StorageableMethodInfo result = new StorageableMethodInfo()
+                {
+                    Context = this.Context,
+                    MethodInfo = method,
+                    objectValue = singleEntityObjectOrList
+                };
+                return result;
+            }
         }
         #endregion
 
@@ -1358,6 +1558,14 @@ namespace SqlSugar
             var result = new SplitTableContext(this.Context)
             {
                 EntityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>()
+            };
+            return result;
+        }
+        public SplitTableContext SplitHelper(Type entityType)  
+        {
+            var result = new SplitTableContext(this.Context)
+            {
+                EntityInfo = this.Context.EntityMaintenance.GetEntityInfo(entityType)
             };
             return result;
         }

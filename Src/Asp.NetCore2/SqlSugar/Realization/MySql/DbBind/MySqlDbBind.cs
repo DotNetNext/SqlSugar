@@ -10,7 +10,7 @@ namespace SqlSugar
         {
             if (csharpTypeName == UtilConstants.ByteArrayType.Name)
             {
-                return "blob";
+                return "longblob";
             }
             if (csharpTypeName == "Int32")
                 csharpTypeName = "int";

@@ -26,16 +26,80 @@ namespace OrmTest
             list = Db.Queryable<UnitJsonTest>().ToList();
             UValidate.Check("order3", list.First().Order.Name, "Json");
 
+            var db = Db;
             var list2 = Db.Queryable<UnitJsonTest>().ToList();
+            db.CodeFirst.InitTables<UnitJsonArray>();
+            db.DbMaintenance.TruncateTable<UnitJsonArray>();
+            db.Insertable(new UnitJsonArray() { a = new int[] { 1, 2, 3 }, b = new string[] { "a", "b" } }).ExecuteCommand();
+            db.Insertable(new UnitJsonArray() { a = new int[] { 5 }, b = new string[] { "c", "d" } }).ExecuteCommand();
+            var isBool = db.Queryable<UnitJsonArray>().Any(it => SqlFunc.JsonArrayAny(it.a, 1) || SqlFunc.JsonArrayAny(it.a, 1));
+            var isBool2 = db.Queryable<UnitJsonArray>().Any(it => SqlFunc.JsonArrayAny(it.a, 4));
+
+            var isBool1 = db.Queryable<UnitJsonArray>().Any(it => SqlFunc.JsonArrayAny(it.b, "a"));
+            var isBool22 = db.Queryable<UnitJsonArray>().Any(it => SqlFunc.JsonArrayAny(it.b, "e"));
+
+            if (isBool == false || isBool2 == true || isBool1 == false || isBool22 == true)
+            {
+                throw new Exception("unit test");
+            }
+            db.CodeFirst.InitTables<UnitJsonTest2222>();
+            db.Insertable(new UnitJsonTest2222()
+            {
+                A = new List<Order>() { new Order() { Id = 1, Name = "a" } }.ToList()
+            }).ExecuteCommand();
+            var isAny = db.Queryable<UnitJsonTest2222>().Any(it => SqlFunc.JsonListObjectAny(it.A, "Name", "a"));
+            var isAny2 = db.Queryable<UnitJsonTest2222>().Any(it => SqlFunc.JsonListObjectAny(it.A, "Name", "b"));
+
+            var isAny21 = db.Queryable<UnitJsonTest2222>().Any(it => SqlFunc.JsonListObjectAny(it.A, "Id", 1));
+            var isAny22 = db.Queryable<UnitJsonTest2222>().Any(it => SqlFunc.JsonListObjectAny(it.A, "Id", 2));
+
+            if (isAny == false || isAny21 == false || isAny2 == true || isAny22 == true)
+            {
+                throw new Exception("unit test");
+            }
+            db.CodeFirst.InitTables<OrderMain11, OrderAarray11>();
+            var id=db.Insertable(new OrderMain11() { Name = "a" }).ExecuteReturnIdentity();
+            db.Insertable(new OrderAarray11() { fk=id, Json =  new List<string>  { "1"} }).ExecuteCommand();
+            var list31 = db.Queryable<OrderAarray11>().ToList();
+            var list3=db.Queryable<OrderMain11>().LeftJoin<OrderAarray11>((t1, ti2) => t1.Id == ti2.fk)
+                .Select((t1, ti2) => new { t1.Id, t1.Name,json= ti2.Json }).ToList();
         }
-    }
+        public class OrderMain11
+        {
+            [SugarColumn(IsPrimaryKey = true,IsIdentity =true)]
+            public int Id { get; set; }
+
+            public string Name { get; set; }
+        }
+        public class OrderAarray11 
+        {
+            [SugarColumn(IsPrimaryKey =true, IsIdentity = true)]
+            public int Id { get; set; }
+            public int fk { get; set; }
+            [SugarColumn(IsJson =true)]
+            public List<string> Json { get; set; }
+        }
 
 
-    public class UnitJsonTest
-    {
-        [SqlSugar.SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
-        public int Id { get; set; }
-        [SqlSugar.SugarColumn(ColumnDataType = "varchar(4000)", IsJson = true)]
-        public Order Order { get; set; }
+        public class UnitJsonArray
+        {
+            [SqlSugar.SugarColumn(IsJson = true)]
+            public int[] a { get; set; }
+            [SqlSugar.SugarColumn(IsJson = true)]
+            public string[] b { get; set; }
+        }
+        public class UnitJsonTest2222
+        {
+            [SqlSugar.SugarColumn(IsJson = true)]
+            public List<Order> A { get; set; }
+        }
+
+        public class UnitJsonTest
+        {
+            [SqlSugar.SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+            public int Id { get; set; }
+            [SqlSugar.SugarColumn(ColumnDataType = "varchar(4000)", IsJson = true)]
+            public Order Order { get; set; }
+        }
     }
 }

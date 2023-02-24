@@ -43,5 +43,6 @@ namespace SqlSugar
         KeyValuePair<string, SugarParameter[]> ConditionalModelToSql(List<IConditionalModel> models, int beginIndex = 0);
         string GetUnionFomatSql(string sql);
         Type GetNullType(string tableName,string columnName);
+        string RemoveParentheses(string sql);
     }
 }

@@ -40,7 +40,7 @@ namespace OrmTest
                                                                      .Where(x => x.IpfCode == "" && x.PmId == pm1.Id)
                                                                      .Select(x => SqlFunc.AggregateSum(SqlFunc.ToDecimal(x.SbrAmount))))
                          }).ToSqlString();
-            if (!sql.Contains("`bil_payment` pm1")) 
+            if (!sql.Contains("`bil_payment` `pm1`")) 
             {
                 throw new Exception("unit error");
             }

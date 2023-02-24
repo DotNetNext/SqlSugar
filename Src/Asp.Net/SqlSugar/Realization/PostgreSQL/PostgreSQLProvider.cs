@@ -12,7 +12,13 @@ namespace SqlSugar
 {
     public partial class PostgreSQLProvider : AdoProvider
     {
-        public PostgreSQLProvider() { }
+        public PostgreSQLProvider() 
+        {
+            
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+            AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
+         
+        }
         public override IDbConnection Connection
         {
             get

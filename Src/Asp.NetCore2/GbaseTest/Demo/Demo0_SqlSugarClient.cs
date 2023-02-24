@@ -71,7 +71,7 @@ namespace OrmTest
 
             //Use db query
       
-           var dt2= db.Ado.GetDataReader("select * from order").GetSchemaTable();
+           
         
             //Create tables
             db.CodeFirst.InitTables(typeof(OrderItem),typeof(Order));

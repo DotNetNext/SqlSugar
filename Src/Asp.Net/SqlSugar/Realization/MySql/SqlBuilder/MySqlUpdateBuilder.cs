@@ -59,7 +59,7 @@ namespace SqlSugar
                     {
                         updateTable.Append(SqlTemplateBatchUnion);
                     }
-                    updateTable.Append("\r\n SELECT " + string.Join(",", columns.Select(it => string.Format(SqlTemplateBatchSelect, FormatValue(it.Value,it.PropertyName),this.Builder.GetTranslationColumnName(it.DbColumnName)))));
+                    updateTable.Append("\r\n SELECT " + string.Join(",", columns.Select(it => string.Format(SqlTemplateBatchSelect, base.GetDbColumn(it,FormatValue(it.Value,it.PropertyName)),this.Builder.GetTranslationColumnName(it.DbColumnName)))));
                     ++i;
                 }
                 pageIndex++;

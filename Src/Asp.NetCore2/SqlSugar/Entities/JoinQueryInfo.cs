@@ -14,6 +14,7 @@ namespace SqlSugar
         public string ShortName { get; set; }
         public int JoinIndex { get; set; }
         public string JoinWhere { get; set; }
+        public Type EntityType { get;  set; }
     }
     public class JoinQueryInfos
     {

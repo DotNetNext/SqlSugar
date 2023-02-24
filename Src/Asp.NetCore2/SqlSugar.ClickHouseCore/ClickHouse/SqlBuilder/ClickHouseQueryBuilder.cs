@@ -97,6 +97,10 @@ namespace SqlSugar.ClickHouse
                 {
                     result = "distinct "+result;
                 }
+                if (this.SubToListParameters != null && this.SubToListParameters.Any())
+                {
+                    result = SubToListMethod(result);
+                }
                 return result;
             }
         }

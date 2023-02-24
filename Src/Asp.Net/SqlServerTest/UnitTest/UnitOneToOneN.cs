@@ -49,7 +49,7 @@ namespace OrmTest
 
                 .ToSqlString();//用例代码
 
-            if (!result.Contains("student.[SchoolNo] = SchoolA0.[SchoolNo]")) 
+            if (!result.Contains("[student].[SchoolNo] = [SchoolA0].[SchoolNo]")) 
             {
                 throw new Exception("unit error");
             }

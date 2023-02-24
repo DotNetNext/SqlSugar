@@ -1,4 +1,5 @@
 ﻿using SqlSugar;
+using SqlSugar.Extensions;
 using SqlSugarSelect;
 using System;
 using System.Collections.Generic;
@@ -63,6 +64,7 @@ namespace OrmTest
             #endregion
 
             db.CodeFirst.SetStringDefaultLength(2000).InitTables<UnitJsonTestadsga1>();
+            db.DbMaintenance.TruncateTable<UnitJsonTestadsga1>();
             db.Insertable(new UnitJsonTestadsga1() { os = new List<Order>() }).ExecuteCommand();
             db.Insertable(new UnitJsonTestadsga1() { os = new List<Order>() { new Order() { CreateTime = DateTime.Now } } }).ExecuteCommand();
             var list10 = db.Queryable<UnitJsonTestadsga1>().Select(it => new { it }).ToList();
@@ -92,6 +94,14 @@ namespace OrmTest
             {
                 throw new Exception("unit test");
             }
+            var order = new List<Order>() { new Order() {  Id=1} };
+            db.
+                Updateable<UnitJsonTestadsga1>()
+                .SetColumns(it => it.os == order)
+                .Where(it=>true)
+                .ExecuteCommand();
+
+            var list14=db.Queryable<UnitJsonTestadsga1>().ToList();
         }
     }
     public class UnitJsonTestadsga1

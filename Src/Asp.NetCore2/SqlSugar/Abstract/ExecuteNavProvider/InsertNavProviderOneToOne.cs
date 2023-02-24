@@ -16,7 +16,8 @@ namespace SqlSugar
             var parentPkColumn = parentEntity.Columns.FirstOrDefault(it => it.IsPrimarykey);
             var thisEntity = this._Context.EntityMaintenance.GetEntityInfo<TChild>();
             EntityColumnInfo thisPkColumn = GetPkColumnByNav(thisEntity, nav);
-            Check.Exception(thisPkColumn == null, $" Navigate {parentEntity.EntityName} : {name} is error ", $"导航实体 {parentEntity.EntityName} 属性 {name} 配置错误");
+            Check.ExceptionEasy(thisPkColumn == null, $" Navigate {parentEntity.EntityName} : {name} is error ", $"导航实体 {parentEntity.EntityName} 属性 {name} 配置错误");
+            Check.ExceptionEasy(nav.Navigat.WhereSql.HasValue(), $" {name} Navigate(NavType,WhereSql)  no support insert ", $"导航一对一 {name} 配置了 Sql变量 不支持插入");
             List<TChild> childList = new List<TChild>();
             foreach (var parent in parentList)
             {

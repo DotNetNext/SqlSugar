@@ -23,11 +23,23 @@ namespace SqlSugar
                         {
                             if (item.Value != null && item.Value.IndexOf(",") == 1&&Regex.IsMatch(item.Value, @"^ \,\@\w+$")) 
                             {
-                                break;
+                                continue;
                             }
                             else if (item.Value != null &&Regex.IsMatch(item.Value.Trim(), @"^\w+\,\@\w+\,$"))
                             {
-                                break;
+                                continue;
+                            }
+                            else if (item.Value != null &&  item.Value.ObjToString().Contains("||") && Regex.IsMatch(item.Value.Replace(" ","").Trim(), @"\|\|@\w+\|\|"))
+                            {
+                                continue;
+                            }
+                            else if (item.Value != null&& Regex.IsMatch(item.Value.Replace(" ", "").Trim(), @"\(\@\w+\,"))
+                            {
+                                continue;
+                            }
+                            else if (item.Value != null && item.Value.Contains("=") && Regex.IsMatch(item.Value, @"\w+ \@\w+[ ]{0,1}\=[ ]{0,1}\'"))
+                            {
+                                continue;
                             }
                             sql = sql.Replace(item.Value, item.Value.Replace("@", UtilConstants.ReplaceKey));
                         }
@@ -109,14 +121,14 @@ namespace SqlSugar
             CheckConnection();
             return sqlCommand;
         }
-
+        private static string[] KeyWord = new string[] { "@order", ":order", "@user", "@level", ":user", ":level", ":type", "@type" };
         private static string ReplaceKeyWordParameterName(string sql, SugarParameter[] parameters)
         {
             if (parameters.HasValue())
             {
                 foreach (var Parameter in parameters)
                 {
-                    if (Parameter.ParameterName != null && Parameter.ParameterName.ToLower().IsIn("@user", "@level",  ":user", ":level"))
+                    if (Parameter.ParameterName != null && Parameter.ParameterName.ToLower().IsIn(KeyWord))
                     {
                         if (parameters.Count(it => it.ParameterName.StartsWith(Parameter.ParameterName)) == 1)
                         {
@@ -134,7 +146,13 @@ namespace SqlSugar
 
             return sql;
         }
+        public override Action<SqlSugarException> ErrorEvent => it => {
 
+            if (it.Message != null && it.Message.Contains("无效的主机/绑定变量名"))
+            {
+                Check.ExceptionEasy(it.Message, $"错误：{it.Message}，出现这个错的原因： 1.可能是参数名为关键词（例如 @user ）2. SQL错误。");
+            }
+        };
         public override void SetCommandToAdapter(IDataAdapter dataAdapter, DbCommand command)
         {
             ((OracleDataAdapter)dataAdapter).SelectCommand = (OracleCommand)command;

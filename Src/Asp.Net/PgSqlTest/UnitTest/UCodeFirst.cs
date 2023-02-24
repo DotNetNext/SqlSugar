@@ -61,6 +61,36 @@ namespace OrmTest
 
             var list3 = db.Queryable<UpperOrder, UpperOrder>((X1, Y1) => X1.Id == Y1.Id)
               .Select(X1 => X1).ToList();
+
+            db.Insertable(new UpperOrder()
+            {
+                 CreateTime=DateTime.Now,
+                  CustomId=0,
+                   Name="a",
+                    Price=1
+            }).ExecuteReturnIdentity();
+
+            db.Insertable(new UpperOrder()
+            {
+                CreateTime = DateTime.Now,
+                CustomId = 0,
+                Name = "a",
+                Price = 1
+            }).ExecuteReturnBigIdentity();
+
+            db.Insertable(new List<UpperOrder>() { new UpperOrder()
+            {
+                CreateTime = DateTime.Now,
+                CustomId = 0,
+                Name = "a",
+                Price = 1
+            },new UpperOrder()
+            {
+                CreateTime = DateTime.Now,
+                CustomId = 0,
+                Name = "a",
+                Price = 1
+            } }).ExecuteReturnIdentity();
         }
         public class UpperOrder
         {

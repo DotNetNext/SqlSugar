@@ -31,6 +31,11 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UnitFilterasdfas.Init();
+            Unitadfa1231.Init();
+            UInsert3.Init();
+            USelectTest.Init();
+            UnitSubToList.Init();
             UnitByteArray.Init();
             UnitInsertNavOneToOne.Init();
             CrossDatabase01.Init();
@@ -118,6 +123,8 @@ namespace OrmTest
             Queryable2();
             QueryableAsync();
             AopTest();
+            UTran3.Init();
+            UnitSqlFunc.Init();
             //Thread();
             //Thread2();
             //Thread3();

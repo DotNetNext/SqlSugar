@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,8 +10,13 @@ namespace SqlSugar
     public interface ITenant
     {
         void BeginTran();
+        void BeginTran(IsolationLevel iso);
         void CommitTran();
         void RollbackTran();
+        Task BeginTranAsync();
+        Task BeginTranAsync(IsolationLevel iso);
+        Task CommitTranAsync();
+        Task RollbackTranAsync();
         void ChangeDatabase(dynamic configId);
         void ChangeDatabase(Func<ConnectionConfig, bool> changeExpression);
         SqlSugarTransaction UseTran();
@@ -21,6 +27,7 @@ namespace SqlSugar
         Task<DbResult<T>> UseTranAsync<T>(Func<Task<T>> action, Action<Exception> errorCallBack = null);
         void AddConnection(ConnectionConfig connection);
         SqlSugarProvider GetConnection(dynamic configId);
+        void RemoveConnection(dynamic configId);
         SqlSugarScopeProvider GetConnectionScope(dynamic configId);
         SqlSugarProvider GetConnectionWithAttr<T>();
         SqlSugarScopeProvider GetConnectionScopeWithAttr<T>();

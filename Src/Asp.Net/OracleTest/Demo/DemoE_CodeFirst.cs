@@ -31,8 +31,38 @@ namespace OrmTest
                 enumType =  x.enumType ,
                 SerialNo = x.SerialNo
             }).ToList();
+            db.Aop.OnLogExecuting = (s, p) => Console.WriteLine(s);
+            db.CurrentConnectionConfig.MoreSettings = new ConnMoreSettings()
+            {
+                IsAutoToUpper = false
+            };
+            db.CodeFirst.InitTables<CodeFirstNoUpper>();
+            db.Insertable(new CodeFirstNoUpper() { Id = Guid.NewGuid() + "", Name = "a" }).ExecuteCommand();
+            var list3 = db.Queryable<CodeFirstNoUpper>().Where(it => it.Id != null).ToList();
+            db.Updateable(list3).ExecuteCommand();
+            db.Deleteable(list3).ExecuteCommand();
+            db.Updateable(list3.First()).ExecuteCommand();
+            db.Deleteable<CodeFirstNoUpper>().Where(it => it.Id != null).ExecuteCommand();
+            db.Updateable<CodeFirstNoUpper>().SetColumns(it => it.Name == "a").Where(it => it.Id != null).ExecuteCommand();
+            db.Updateable<CodeFirstNoUpper>().SetColumns(it => new CodeFirstNoUpper()
+            {
+                Name = "a"
+            }).Where(it => it.Id != null).ExecuteCommand();
+            db.Queryable<CodeFirstNoUpper>()
+                .Select(it => new CodeFirstNoUpper()
+                {
+                    Id = SqlFunc.Subqueryable<CodeFirstNoUpper>().Where(z => z.Id == it.Id).Select(z => z.Id)
+                }).ToList();
+            db.Queryable<CodeFirstNoUpper>().LeftJoin<CodeFirstNoUpper>((s, y) => s.Id == y.Id)
+                .Select((s, y) => y).ToList();
             Console.WriteLine("#### CodeFirst end ####");
         }
+    }
+    public class CodeFirstNoUpper
+    {
+        [SugarColumn(IsPrimaryKey = true)]
+        public string Id { get; set; }
+        public string Name { get; set; }
     }
 
     public class EnumTypeClass 

@@ -26,11 +26,23 @@ namespace SqlSugar
                         {
                             if (item.Value != null && item.Value.IndexOf(",") == 1 && Regex.IsMatch(item.Value, @"^ \,\@\w+$"))
                             {
-                                break;
+                                continue;
                             }
                             else if (item.Value != null && Regex.IsMatch(item.Value.Trim(), @"^\w+\,\@\w+\,$"))
                             {
-                                break;
+                                continue;
+                            }
+                            else if (item.Value != null && item.Value.ObjToString().Contains("||") && Regex.IsMatch(item.Value.Replace(" ", "").Trim(), @"\|\|@\w+\|\|"))
+                            {
+                                continue;
+                            }
+                            else if (item.Value != null && Regex.IsMatch(item.Value.Replace(" ", "").Trim(), @"\(\@\w+\,"))
+                            {
+                                continue;
+                            }
+                            else if (item.Value != null && item.Value.Contains("=") && Regex.IsMatch(item.Value, @"\w+ \@\w+[ ]{0,1}\=[ ]{0,1}\'"))
+                            {
+                                continue;
                             }
                             sql = sql.Replace(item.Value, item.Value.Replace("@", UtilConstants.ReplaceKey));
                         }
@@ -91,6 +103,7 @@ namespace SqlSugar
         }
         public override DbCommand GetCommand(string sql, SugarParameter[] parameters)
         {
+            sql = ReplaceKeyWordParameterName(sql, parameters);
             DmCommand sqlCommand = new DmCommand(sql, (DmConnection)this.Connection);
             sqlCommand.CommandType = this.CommandType;
             sqlCommand.CommandTimeout = this.CommandTimeOut;
@@ -137,8 +150,8 @@ namespace SqlSugar
                 if (sqlParameter.DbType == System.Data.DbType.Guid)
                 {
                     sqlParameter.DbType = System.Data.DbType.String;
-                    if(sqlParameter.Value != DBNull.Value)
-                       sqlParameter.Value = sqlParameter.Value.ToString();
+                    if (sqlParameter.Value != DBNull.Value)
+                        sqlParameter.Value = sqlParameter.Value.ToString();
                 }
                 if (parameter.Direction == 0)
                 {
@@ -156,12 +169,35 @@ namespace SqlSugar
                 {
                     sqlParameter.DbType = System.Data.DbType.AnsiString;
                 }
+                if (parameter.IsRefCursor)
+                {
+                    sqlParameter.DmSqlType = DmDbType.Cursor;
+                }
                 ++index;
             }
             return result;
         }
+        private static string[] KeyWord =new string []{"@order", ":order", "@user", "@level", ":user", ":level",":type","@type"};
+        private static string ReplaceKeyWordParameterName(string sql, SugarParameter[] parameters)
+        {
+            if (parameters.HasValue() && parameters.Count(it => it.ParameterName.ToLower().IsIn(KeyWord))>0)
+            {
+                int i = 0;
+                foreach (var Parameter in parameters.OrderByDescending(it=>it.ParameterName.Length))
+                {
+                    if (Parameter.ParameterName != null && Parameter.ParameterName.ToLower().IsContainsIn(KeyWord))
+                    {
+                        var newName = ":p" + i + 100;
+                        sql = sql.Replace(Parameter.ParameterName, newName);
+                        Parameter.ParameterName = newName;
+                        i++;
+                    }
+                }
+            } 
+            return sql;
+        }
 
 
-        
+
     }
 }

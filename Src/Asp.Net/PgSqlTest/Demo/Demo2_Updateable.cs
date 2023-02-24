@@ -101,6 +101,11 @@ namespace OrmTest
             //Use Lock
             db.Updateable(updateObj).With(SqlWith.UpdLock).ExecuteCommand();
 
+            db.Updateable<object>()
+                 .AS("Order")
+                 .SetColumns("name", 1)
+                 .Where("id=1").ExecuteCommand();
+
             //Where Sql
             //db.Updateable(updateObj).Where("id=@x", new { x = 1 }).ExecuteCommand();
 

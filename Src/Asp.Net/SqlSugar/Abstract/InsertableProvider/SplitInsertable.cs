@@ -211,7 +211,7 @@ namespace SqlSugar
         {
             var isLog = this.Context.Ado.IsEnableLogEvent;
             this.Context.Ado.IsEnableLogEvent = false;
-            foreach (var item in TableNames)
+            foreach (var item in TableNames.GroupBy(it=>it.Key).Select(it=>it).ToDictionary(it=>it.Key,it=>it.First().Value))
             {
                 if (!this.Context.DbMaintenance.IsAnyTable(item.Key, false)) 
                 {

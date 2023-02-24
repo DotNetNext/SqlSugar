@@ -48,6 +48,12 @@ namespace SqlSugar
 
         public ISugarQueryable<T, T2> LeftJoin<T2>(ISugarQueryable<T2> joinQueryable, Expression<Func<T, T2, bool>> joinExpression)
         {
+
+            if (MasterHasWhereFirstJoin())
+            {
+                return this.MergeTable().LeftJoin<T2>(joinQueryable, joinExpression);
+            }
+
             this.Context.InitMappingInfo<T2>();
             var result = InstanceFactory.GetQueryable<T, T2>(this.Context.CurrentConnectionConfig);
             result.SqlBuilder = this.SqlBuilder;
@@ -65,6 +71,11 @@ namespace SqlSugar
         }
         public ISugarQueryable<T, T2> InnerJoin<T2>(ISugarQueryable<T2> joinQueryable, Expression<Func<T, T2, bool>> joinExpression)
         {
+            if (MasterHasWhereFirstJoin())
+            {
+                return this.MergeTable().InnerJoin<T2>(joinQueryable,joinExpression);
+            }
+
             this.Context.InitMappingInfo<T2>();
             var result = InstanceFactory.GetQueryable<T, T2>(this.Context.CurrentConnectionConfig);
             result.SqlBuilder = this.SqlBuilder;
@@ -82,6 +93,12 @@ namespace SqlSugar
         }
         public ISugarQueryable<T, T2> RightJoin<T2>(ISugarQueryable<T2> joinQueryable, Expression<Func<T, T2, bool>> joinExpression)
         {
+
+            if (MasterHasWhereFirstJoin())
+            {
+                return this.MergeTable().RightJoin<T2>(joinQueryable, joinExpression);
+            }
+
             this.Context.InitMappingInfo<T2>();
             var result = InstanceFactory.GetQueryable<T, T2>(this.Context.CurrentConnectionConfig);
             result.SqlBuilder = this.SqlBuilder;
@@ -99,6 +116,12 @@ namespace SqlSugar
         }
         public ISugarQueryable<T, T2> FullJoin<T2>(ISugarQueryable<T2> joinQueryable, Expression<Func<T, T2, bool>> joinExpression) 
         {
+
+            if (MasterHasWhereFirstJoin())
+            {
+                return this.MergeTable().FullJoin<T2>(joinQueryable,joinExpression);
+            }
+
             this.Context.InitMappingInfo<T2>();
             var result = InstanceFactory.GetQueryable<T, T2>(this.Context.CurrentConnectionConfig);
             result.SqlBuilder = this.SqlBuilder;
@@ -116,6 +139,11 @@ namespace SqlSugar
         }
         public ISugarQueryable<T, T2> LeftJoin<T2>(Expression<Func<T, T2, bool>> joinExpression)
         {
+            if (MasterHasWhereFirstJoin())
+            {
+                return this.MergeTable().LeftJoin<T2>(joinExpression);
+            }
+
             this.Context.InitMappingInfo<T2>();
             var result = InstanceFactory.GetQueryable<T, T2>(this.Context.CurrentConnectionConfig);
             result.SqlBuilder = this.SqlBuilder;
@@ -126,6 +154,11 @@ namespace SqlSugar
         }
         public ISugarQueryable<T, T2> FullJoin<T2>(Expression<Func<T, T2, bool>> joinExpression)
         {
+            if (MasterHasWhereFirstJoin())
+            {
+                return this.MergeTable().FullJoin<T2>(joinExpression);
+            }
+
             this.Context.InitMappingInfo<T2>();
             var result = InstanceFactory.GetQueryable<T, T2>(this.Context.CurrentConnectionConfig);
             result.SqlBuilder = this.SqlBuilder;
@@ -135,6 +168,12 @@ namespace SqlSugar
         }
         public ISugarQueryable<T, T2> RightJoin<T2>(Expression<Func<T, T2, bool>> joinExpression)
         {
+
+            if (MasterHasWhereFirstJoin())
+            {
+                return this.MergeTable().RightJoin<T2>(joinExpression);
+            }
+
             this.Context.InitMappingInfo<T2>();
             var result = InstanceFactory.GetQueryable<T, T2>(this.Context.CurrentConnectionConfig);
             result.SqlBuilder = this.SqlBuilder;
@@ -143,8 +182,14 @@ namespace SqlSugar
             return result;
         }
 
-        public ISugarQueryable<T, T2> InnerJoin<T2>(Expression<Func<T, T2, bool>> joinExpression) 
+        public ISugarQueryable<T, T2> InnerJoin<T2>(Expression<Func<T, T2, bool>> joinExpression)
         {
+
+            if (MasterHasWhereFirstJoin())
+            {
+                return this.MergeTable().InnerJoin<T2>(joinExpression);
+            }
+
             this.Context.InitMappingInfo<T2>();
             var result = InstanceFactory.GetQueryable<T, T2>(this.Context.CurrentConnectionConfig);
             result.SqlBuilder = this.SqlBuilder;
@@ -152,6 +197,7 @@ namespace SqlSugar
             result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression, JoinType.Inner));
             return result;
         }
+
         public void Clear()
         {
             QueryBuilder.Clear();
@@ -212,6 +258,33 @@ namespace SqlSugar
         public virtual ISugarQueryable<T> Filter(string FilterName, bool isDisabledGobalFilter = false)
         {
             _Filter(FilterName, isDisabledGobalFilter);
+            return this;
+        }
+
+        public ISugarQueryable<T> ClearFilter() 
+        {
+            this.Filter(null, true);
+            return this;
+        }
+        public ISugarQueryable<T> ClearFilter(params Type[] types)
+        {
+            this.QueryBuilder.RemoveFilters = types;
+            this.Filter(null, true);
+            return this;
+        }
+        public ISugarQueryable<T> ClearFilter<FilterType1>() 
+        {
+            this.ClearFilter(typeof(FilterType1));
+            return this;
+        }
+        public ISugarQueryable<T> ClearFilter<FilterType1, FilterType2>() 
+        {
+            this.ClearFilter(typeof(FilterType1),typeof(FilterType2));
+            return this;
+        }
+        public ISugarQueryable<T> ClearFilter<FilterType1, FilterType2, FilterType3>() 
+        {
+            this.ClearFilter(typeof(FilterType1), typeof(FilterType2),typeof(FilterType3));
             return this;
         }
         public ISugarQueryable<T> Filter(Type type) 
@@ -782,7 +855,7 @@ namespace SqlSugar
                     var whereIndex = QueryBuilder.WhereIndex;
                     string parameterName = this.SqlBuilder.SqlParameterKeyWord + "InPara" + whereIndex;
                     this.AddParameters(new SugarParameter(parameterName, inValues[0]));
-                    this.Where(string.Format(QueryBuilder.EqualTemplate, filed, parameterName));
+                    this.Where(string.Format(QueryBuilder.EqualTemplate,SqlBuilder.GetTranslationColumnName(filed), parameterName));
                     QueryBuilder.WhereIndex++;
                 }
                 else
@@ -795,7 +868,7 @@ namespace SqlSugar
                             values.Add(item.ToString().ToSqlValue());
                         }
                     }
-                    this.Where(string.Format(QueryBuilder.InTemplate, filed, string.Join(",", values)));
+                    this.Where(string.Format(QueryBuilder.InTemplate, SqlBuilder.GetTranslationColumnName(filed), string.Join(",", values)));
                 }
             }
             else
@@ -958,6 +1031,28 @@ namespace SqlSugar
             Check.ExceptionEasy(this.QueryBuilder.Includes.HasValue(), $"use Includes(...).ToList(it=>new {typeof(TResult).Name} {{...}} )", $"Includes()后面禁使用Select，正确写法: ToList(it=>new {typeof(TResult).Name}{{....}})");
             return _Select<TResult>(expression);
         }
+        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, TResult>> expression, bool isAutoFill)
+        {
+            var clone = this.Select(expression).Clone();
+            //clone.QueryBuilder.LambdaExpressions.Index = QueryBuilder.LambdaExpressions.Index+1;
+            var ps = clone.QueryBuilder;
+            var sql = ps.GetSelectValue;
+            if (string.IsNullOrEmpty(sql) || sql.Trim() == "*")
+            {
+                return this.Select<TResult>(expression);
+            }
+            if (this.QueryBuilder.TableShortName.IsNullOrEmpty()) 
+            {
+                this.QueryBuilder.TableShortName = clone.QueryBuilder.TableShortName;
+            }
+            this.QueryBuilder.Parameters = ps.Parameters;
+            this.QueryBuilder.SubToListParameters = clone.QueryBuilder.SubToListParameters;
+            this.QueryBuilder.LambdaExpressions.ParameterIndex = clone.QueryBuilder.LambdaExpressions.ParameterIndex;
+            var parameters = (expression as LambdaExpression).Parameters;
+            var columnsResult = this.Context.EntityMaintenance.GetEntityInfo<TResult>().Columns;
+            sql = AppendSelect(this.EntityInfo.Columns,sql, parameters, columnsResult, 0);
+            return this.Select<TResult>(sql);
+        }
 
         public virtual ISugarQueryable<TResult> Select<TResult>()
         {
@@ -1032,16 +1127,24 @@ namespace SqlSugar
 
         public virtual ISugarQueryable<T> MergeTable()
         {
-            Check.Exception(this.MapperAction != null || this.MapperActionWithCache != null,ErrorMessage.GetThrowMessage( "'Mapper’ needs to be written after ‘MergeTable’ ", "Mapper 只能在 MergeTable 之后使用"));
+            if (IsSubToList())
+            {
+                return MergeTableWithSubToList();
+            }
+            Check.Exception(this.MapperAction != null || this.MapperActionWithCache != null, ErrorMessage.GetThrowMessage("'Mapper’ needs to be written after ‘MergeTable’ ", "Mapper 只能在 MergeTable 之后使用"));
             //Check.Exception(this.QueryBuilder.SelectValue.IsNullOrEmpty(),ErrorMessage.GetThrowMessage( "MergeTable need to use Queryable.Select Method .", "使用MergeTable之前必须要有Queryable.Select方法"));
             //Check.Exception(this.QueryBuilder.Skip > 0 || this.QueryBuilder.Take > 0 || this.QueryBuilder.OrderByValue.HasValue(),ErrorMessage.GetThrowMessage( "MergeTable  Queryable cannot Take Skip OrderBy PageToList  ", "使用 MergeTable不能有 Take Skip OrderBy PageToList 等操作,你可以在Mergetable之后操作"));
             var sqlobj = this._ToSql();
+            if (IsSubToList())
+            {
+                return MergeTableWithSubToListJoin();
+            }
             var index = QueryBuilder.WhereIndex + 1;
             var result = this.Context.Queryable<T>().AS(SqlBuilder.GetPackTable(sqlobj.Key, "MergeTable")).AddParameters(sqlobj.Value).Select("*").With(SqlWith.Null);
             result.QueryBuilder.WhereIndex = index;
             result.QueryBuilder.LambdaExpressions.ParameterIndex = QueryBuilder.LambdaExpressions.ParameterIndex++;
             result.QueryBuilder.LambdaExpressions.Index = QueryBuilder.LambdaExpressions.Index++;
-            if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle) 
+            if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle)
             {
                 result.Select("MergeTable.*");
             }

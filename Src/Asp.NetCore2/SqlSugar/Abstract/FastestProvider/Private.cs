@@ -42,7 +42,10 @@ namespace SqlSugar
                 default:
                     break;
             }
-            throw new Exception(this.context.CurrentConnectionConfig.DbType + "开发中...");
+            var reslut = InstanceFactory.CreateInstance<IFastBuilder>($"SqlSugar.{this.context.CurrentConnectionConfig.DbType}FastBuilder");
+            reslut.CharacterSet = this.CharacterSet;
+            reslut.FastEntityInfo = this.entityInfo;
+            return reslut;
         }
         private DataTable ToDdateTable(List<T> datas)
         {
@@ -166,19 +169,15 @@ namespace SqlSugar
         }
         private DataTable GetCopyWriteDataTable(DataTable dt)
         {
-            DataTable tempDataTable = ReflectionInoCore<DataTable>.GetInstance().GetOrCreate("BulkCopyAsync_dt" + dt.TableName,
-            () =>
+            DataTable tempDataTable = null;
+            if (AsName == null)
             {
-                if (AsName == null)
-                {
-                    return queryable.Where(it => false).Select("*").ToDataTable();
-                }
-                else
-                {
-                    return queryable.AS(AsName).Where(it => false).Select("*").ToDataTable();
-                }
+                tempDataTable=queryable.Where(it => false).Select("*").ToDataTable();
             }
-            ).Copy();
+            else
+            {
+                tempDataTable=queryable.AS(AsName).Where(it => false).Select("*").ToDataTable();
+            };
             List<string> uInt64TypeName = new List<string>();
             foreach (DataColumn item in tempDataTable.Columns)
             {

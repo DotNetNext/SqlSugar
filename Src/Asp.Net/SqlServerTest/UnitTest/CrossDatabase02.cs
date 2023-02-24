@@ -37,6 +37,9 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+            db.Aop.OnLogExecuting = (s1, p1) => Console.WriteLine(s1);
+            var x2 = db.QueryableWithAttr<OptRole>()
+            .Where(it => it.Roleinfo.id == 101).ToList();
         }
         /// <summary>
         /// 描述：
@@ -112,6 +115,9 @@ namespace OrmTest
             /// 
             /// </summary>
             public int roleId { get; set; }
+
+            [Navigate(NavigateType.OneToOne,nameof(roleId))]
+            public Role Roleinfo { get; set; }
 
 
         }

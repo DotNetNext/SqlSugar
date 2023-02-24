@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -12,6 +13,27 @@ namespace SqlSugar
 {
     public class ExpressionBuilderHelper
     {
+        public static object CallFunc(Type type, object[] param, object methodData, string methodName)
+        {
+            MethodInfo mi = methodData.GetType().GetMethod(methodName).MakeGenericMethod(new Type[] { type });
+            var ret = mi.Invoke(methodData, param);
+            return ret;
+        }
+        public static T CallFunc<T>(object param, object methodData, string methodName)
+        {
+            Type type = param.GetType();
+            MethodInfo mi = methodData.GetType().GetMethod(methodName).MakeGenericMethod(new Type[] { type });
+            var ret = mi.Invoke(methodData, new object[] { param });
+            return (T)ret;
+        }
+
+        public static T CallStaticFunc<T>(object param, Type methodType, string methodName)
+        {
+            Type type = param.GetType();
+            MethodInfo mi = methodType.GetMethod(methodName).MakeGenericMethod(new Type[] { type });
+            var ret = mi.Invoke(null, new object[] { param });
+            return (T)ret;
+        }
         /// <summary>
         /// Create Expression
         /// </summary>
@@ -27,6 +49,18 @@ namespace SqlSugar
                 //Not implemented, later used in writing
                 return Expression.Equal(left, Expression.Convert(value, left.Type));
             }
+        }
+        public static Expression CreateExpressionLike<ColumnType>(Type entityType,string propertyName,List<ColumnType>  list) 
+        {
+            var parameter = Expression.Parameter(entityType, "p");
+            MemberExpression memberProperty = Expression.PropertyOrField(parameter, propertyName);
+            MethodInfo method = typeof(List<>).MakeGenericType(typeof(ColumnType)).GetMethod("Contains");
+            ConstantExpression constantCollection = Expression.Constant(list);
+
+            MethodCallExpression methodCall = Expression.Call(constantCollection, method, memberProperty);
+
+            var expression = Expression.Lambda(methodCall, parameter);
+            return expression;
         }
         public static Expression<Func<T, object>> CreateNewFields<T>(EntityInfo entity,List<string> propertyNames)
         {

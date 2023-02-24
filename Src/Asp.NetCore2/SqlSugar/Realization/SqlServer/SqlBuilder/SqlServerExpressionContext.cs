@@ -20,6 +20,10 @@ namespace SqlSugar
     }
     public partial class SqlServerMethod : DefaultDbMethod, IDbMethods
     {
+        public override string GetTableWithDataBase(string dataBaseName, string tableName)
+        {
+            return $"{dataBaseName}.dbo.{tableName}";
+        }
         public override string GetForXmlPath()
         {
             return "  FOR XML PATH('')),1,len(N','),'')  ";

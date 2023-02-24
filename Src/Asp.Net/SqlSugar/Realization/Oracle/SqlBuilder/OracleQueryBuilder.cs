@@ -9,6 +9,7 @@ namespace SqlSugar
 {
     public class OracleQueryBuilder : QueryBuilder
     {
+        public override bool IsSelectNoAll { get; set; } = true;
         public override bool IsComplexModel(string sql)
         {
             return Regex.IsMatch(sql, @"AS ""\w+\.\w+""")|| Regex.IsMatch(sql, @"AS ""\w+\.\w+\.\w+""");
@@ -31,23 +32,22 @@ namespace SqlSugar
             var isDistinctPage = IsDistinct && (Take > 1 || Skip > 1);
             if (isDistinctPage)
             {
-                Take = null;
-                Skip = null;
+                return OffsetPage();
             }
             var result = _ToSqlString();
-            if (isDistinctPage)
-            {
-                if (this.OrderByValue.HasValue())
-                {
-                    Take = int.MaxValue;
-                    result = result.Replace("DISTINCT", $" DISTINCT TOP {int.MaxValue} ");
-                }
-                Take = oldTake;
-                Skip = oldSkip;
-                result = this.Context.SqlQueryable<object>(result).Skip(Skip??0).Take(Take??0).ToSql().Key;
+            //if (isDistinctPage)
+            //{
+            //    if (this.OrderByValue.HasValue())
+            //    {
+            //        Take = int.MaxValue;
+            //        result = result.Replace("DISTINCT", $" DISTINCT TOP {int.MaxValue} ");
+            //    }
+            //    Take = oldTake;
+            //    Skip = oldSkip;
+            //    result = this.Context.SqlQueryable<object>(result).Skip(Skip??0).Take(Take??0).ToSql().Key;
 
 
-            }
+            //}
             if (TranLock != null)
             {
                 result = result + TranLock;

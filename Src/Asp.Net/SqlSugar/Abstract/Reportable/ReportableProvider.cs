@@ -200,6 +200,10 @@ namespace SqlSugar
             {
                 return $" CAST( NULL AS DATETIME) ";
             }
+            else if (entityColumnInfo != null && entityColumnInfo.UnderType == UtilConstants.DateType && value == null && this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL)
+            {
+                return $" CAST( NULL AS timestamp) ";
+            }
             if (value == null)
                 return "null";
             var type =UtilMethods.GetUnderType(value.GetType());

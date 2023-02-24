@@ -10,6 +10,7 @@ namespace SqlSugar
 {
     public class SqliteFastBuilder : IFastBuilder
     {
+        public EntityInfo FastEntityInfo { get; set; }
         private EntityInfo entityInfo;
         private bool IsUpdate = false;
         public string CharacterSet { get; set; }

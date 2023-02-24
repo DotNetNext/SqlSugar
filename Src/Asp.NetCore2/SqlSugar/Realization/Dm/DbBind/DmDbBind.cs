@@ -43,6 +43,10 @@ namespace SqlSugar
             {
                 return "other";
             }
+            else if (dbTypeName == "sbyte")
+            {
+                return "byte";
+            }
             else if (dbTypeName == "xml" || dbTypeName == "string")
             {
                 return "string";
@@ -97,6 +101,7 @@ namespace SqlSugar
                   new KeyValuePair<string, CSharpDataType>("number",CSharpDataType.@double),
                   new KeyValuePair<string, CSharpDataType>("number",CSharpDataType.@long),
                   new KeyValuePair<string, CSharpDataType>("number",CSharpDataType.@bool),
+                  new KeyValuePair<string, CSharpDataType>("boolean",CSharpDataType.@bool),
                   new KeyValuePair<string, CSharpDataType>("bit",CSharpDataType.@bool),
                   new KeyValuePair<string, CSharpDataType>("number",CSharpDataType.@decimal),
                   new KeyValuePair<string, CSharpDataType>("number",CSharpDataType.Single),

@@ -68,7 +68,7 @@ namespace SqlSugar
             }
             return result;
         }
-        
+
         #endregion
 
         #region Get SQL Partial
@@ -92,6 +92,10 @@ namespace SqlSugar
                 if (IsDistinct)
                 {
                     reval = " DISTINCT " + reval;
+                }
+                if (this.SubToListParameters != null && this.SubToListParameters.Any())
+                {
+                    reval = SubToListMethod(reval);
                 }
                 return reval;
             }

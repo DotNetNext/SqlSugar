@@ -17,7 +17,7 @@ namespace OrmTest
                JoinType.Left, o.CustomId == c.Id
            ))
            .Select<ViewModel>().ToSql().Key;
-            UValidate.Check(sql, @"SELECT o.[Name] AS [Name],o.[Price] AS [Price],i.[OrderId] AS [OrderItemOrderId],i.[Price] AS [OrderItemPrice],c.[Name] AS [CustomName] FROM [Order] o Left JOIN [OrderDetail] i ON ( [o].[Id] = [i].[OrderId] )  Left JOIN [Custom] c ON ( [o].[CustomId] = [c].[Id] )","unit");
+            UValidate.Check(sql, @"SELECT [o].[Name] AS [Name],[o].[Price] AS [Price],[i].[OrderId] AS [OrderItemOrderId],[i].[Price] AS [OrderItemPrice],[c].[Name] AS [CustomName] FROM [Order] [o] Left JOIN [OrderDetail] [i] ON ( [o].[Id] = [i].[OrderId] )  Left JOIN [Custom] [c] ON ( [o].[CustomId] = [c].[Id] )", "unit");
             var list =
                 db.Queryable<Order, OrderItem, Custom>((o, i, c) => new JoinQueryInfos(
                JoinType.Left, o.Id == i.OrderId,

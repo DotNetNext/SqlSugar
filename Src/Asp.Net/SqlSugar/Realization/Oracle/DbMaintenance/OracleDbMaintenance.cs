@@ -307,7 +307,12 @@ namespace SqlSugar
         }
         public override bool CreateDatabase(string databaseDirectory = null)
         {
-            throw new NotSupportedException();
+            if (this.Context.Ado.IsValidConnection())
+            {
+                return true;
+            }
+            Check.ExceptionEasy("Oracle no support create database ", "Oracle不支持建库方法，请写有效连接字符串可以正常运行该方法。");
+            return true;
         }
         public override bool CreateDatabase(string databaseName, string databaseDirectory = null)
         {
@@ -323,14 +328,14 @@ namespace SqlSugar
                 if (item.ColumnDescription != null)
                 {
                     //column remak
-                    if (db.DbMaintenance.IsAnyColumnRemark(item.DbColumnName.ToUpper(), item.DbTableName.ToUpper()))
+                    if (db.DbMaintenance.IsAnyColumnRemark(item.DbColumnName.ToUpper(IsUppper), item.DbTableName.ToUpper(IsUppper)))
                     {
-                        db.DbMaintenance.DeleteColumnRemark(this.SqlBuilder.GetTranslationColumnName(item.DbColumnName) , item.DbTableName.ToUpper());
-                        db.DbMaintenance.AddColumnRemark(this.SqlBuilder.GetTranslationColumnName(item.DbColumnName), item.DbTableName.ToUpper(), item.ColumnDescription);
+                        db.DbMaintenance.DeleteColumnRemark(this.SqlBuilder.GetTranslationColumnName(item.DbColumnName) , item.DbTableName.ToUpper(IsUppper));
+                        db.DbMaintenance.AddColumnRemark(this.SqlBuilder.GetTranslationColumnName(item.DbColumnName), item.DbTableName.ToUpper(IsUppper), item.ColumnDescription);
                     }
                     else
                     {
-                        db.DbMaintenance.AddColumnRemark(item.DbColumnName.ToUpper(), item.DbTableName.ToUpper(), item.ColumnDescription);
+                        db.DbMaintenance.AddColumnRemark(item.DbColumnName.ToUpper(IsUppper), item.DbTableName.ToUpper(IsUppper), item.ColumnDescription);
                     }
                 }
             }
@@ -367,7 +372,12 @@ namespace SqlSugar
 
         private List<DbColumnInfo> GetColumnInfosByTableName(string tableName)
         {
-            string sql = "select *  /* " + Guid.NewGuid() + " */ from " + SqlBuilder.GetTranslationTableName(tableName) + " WHERE 1=2 ";
+            List<DbColumnInfo> columns = GetOracleDbType(tableName);
+            string sql = "select *  /* " + Guid.NewGuid() + " */ from " +SqlBuilder.GetTranslationTableName(tableName) + " WHERE 1=2 ";
+            if (!this.GetTableInfoList(false).Any(it => it.Name == SqlBuilder.GetTranslationTableName(tableName).TrimStart('\"').TrimEnd('\"'))) 
+            {
+                sql = "select *  /* " + Guid.NewGuid() + " */ from \"" + tableName + "\" WHERE 1=2 ";
+            }
             this.Context.Utilities.RemoveCache<List<DbColumnInfo>>("DbMaintenanceProvider.GetFieldComment."+tableName);
             this.Context.Utilities.RemoveCache<List<string>>("DbMaintenanceProvider.GetPrimaryKeyByTableNames." + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower());
             var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
@@ -392,10 +402,62 @@ namespace SqlSugar
                         Length = row["ColumnSize"].ObjToInt(),
                         Scale = row["numericscale"].ObjToInt()
                     };
+                    var current = columns.FirstOrDefault(it => it.DbColumnName.EqualCase(column.DbColumnName));
+                    if (current != null)
+                    {
+                        column.OracleDataType = current.DataType;
+                        if (current.DataType.EqualCase("number"))
+                        {
+                            column.Length = row["numericprecision"].ObjToInt();
+                            column.Scale = row["numericscale"].ObjToInt();
+                            column.DecimalDigits = row["numericscale"].ObjToInt();
+                            if (column.Length == 38 && column.Scale==0)
+                            {
+                                column.Length = 22;
+                            }
+                        }
+                    }
                     result.Add(column);
                 }
                 return result;
             }
+        }
+
+        private List<DbColumnInfo> GetOracleDbType(string tableName)
+        {
+            var sql0 = $@"select      
+                                 t1.table_name as TableName,   
+                                 t6.comments,        
+                                 t1.column_id, 
+                                 t1.column_name as DbColumnName,     
+                                 t5.comments,       
+                                 t1.data_type as DataType,     
+                                 t1.data_length as Length,   
+                                 t1.char_length,   
+                                 t1.data_precision,  
+                                 t1.data_scale,     
+                                 t1.nullable,       
+                                 t4.index_name,     
+                                 t4.column_position,  
+                                 t4.descend          
+                            from user_tab_columns t1   
+                            left join (select t2.table_name,     
+                                              t2.column_name,  
+                                              t2.column_position,  
+                                              t2.descend,      
+                                              t3.index_name        
+                                       from user_ind_columns t2   
+                                       left join user_indexes t3   
+                                         on  t2.table_name = t3.table_name and t2.index_name = t3.index_name
+                                        and t3.status = 'valid' and t3.uniqueness = 'unique') t4   --unique:唯一索引
+                              on  t1.table_name = t4.table_name and t1.column_name = t4.column_name 
+                            left join user_col_comments t5 on   t1.table_name = t5.table_name and t1.column_name = t5.column_name 
+                            left join user_tab_comments t6 on  t1.table_name = t6.table_name
+                            where upper(t1.table_name)=upper('{tableName}')
+                            order by  t1.table_name, t1.column_id";
+
+            var columns = this.Context.Ado.SqlQuery<DbColumnInfo>(sql0);
+            return columns;
         }
 
         private List<string> GetPrimaryKeyByTableNames(string tableName)
@@ -409,7 +471,7 @@ namespace SqlSugar
                         this.Context.Ado.IsEnableLogEvent = false;
                         string sql = @" select distinct cu.COLUMN_name KEYNAME  from user_cons_columns cu, user_constraints au 
                             where cu.constraint_name = au.constraint_name
-                            and au.constraint_type = 'P' and au.table_name = '" + tableName.ToUpper() + @"'";
+                            and au.constraint_type = 'P' and au.table_name = '" + tableName.ToUpper(IsUppper) + @"'";
                         var pks = this.Context.Ado.SqlQuery<string>(sql);
                         this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
                         return pks;
@@ -425,7 +487,7 @@ namespace SqlSugar
                               string sql = "SELECT COMMENTS FROM USER_TAB_COMMENTS WHERE TABLE_NAME =@tableName ORDER BY TABLE_NAME";
                               var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
                               this.Context.Ado.IsEnableLogEvent = false;
-                              var pks = this.Context.Ado.SqlQuery<string>(sql, new { tableName = tableName.ToUpper() });
+                              var pks = this.Context.Ado.SqlQuery<string>(sql, new { tableName = tableName.ToUpper(IsUppper) });
                               this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
                               return pks;
                           });
@@ -441,7 +503,7 @@ namespace SqlSugar
                                string sql = "SELECT TABLE_NAME AS TableName, COLUMN_NAME AS DbColumnName,COMMENTS AS ColumnDescription  FROM user_col_comments   WHERE TABLE_NAME =@tableName ORDER BY TABLE_NAME";
                                var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
                                this.Context.Ado.IsEnableLogEvent = false;
-                               var pks = this.Context.Ado.SqlQuery<DbColumnInfo>(sql, new { tableName = tableName.ToUpper() });
+                               var pks = this.Context.Ado.SqlQuery<DbColumnInfo>(sql, new { tableName = tableName.ToUpper(IsUppper) });
                                this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
                                return pks;
                            });
@@ -483,6 +545,23 @@ namespace SqlSugar
                 }
             }
             return true;
+        }
+        #endregion
+
+        #region Helper
+        public bool IsUppper
+        {
+            get
+            {
+                if (this.Context.CurrentConnectionConfig.MoreSettings == null)
+                {
+                    return true;
+                }
+                else
+                {
+                    return this.Context.CurrentConnectionConfig.MoreSettings.IsAutoToUpper == true;
+                }
+            }
         }
         #endregion
     }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,6 +15,7 @@ namespace SqlSugar
         public EntityInfo entityInfo;
         public List<ExpressionItems> items;
         public SqlSugarProvider context;
+        public ISqlBuilder builder;
         public OneToOneNavgateExpressionN(SqlSugarProvider context)
         {
             this.context = context;
@@ -49,6 +51,7 @@ namespace SqlSugar
             var i = 0;
             var masterShortName = formInfo.ThisEntityInfo.DbTableName + i;
             var queryable = this.context.Queryable<object>(ToShortName(masterShortName)).AS(formInfo.ThisEntityInfo.DbTableName).Filter(null,true);
+            builder = queryable.SqlBuilder;
             i++;
             var lastShortName = "";
             foreach (var item in joinInfos)
@@ -143,14 +146,17 @@ namespace SqlSugar
         #region Helper
         private string ToShortName(string name)
         {
+            var result = "";
             if (name.ObjToString().Contains("."))
             {
-                return name.Replace(".", "_");
+                result= name.Replace(".", "_");
             }
             else
             {
-                return name;
+                result= name;
             }
+            if (builder == null) return name;
+            return builder.GetTranslationColumnName(name);
         }
 
         private static bool IsParameter(Expression child2Expression)

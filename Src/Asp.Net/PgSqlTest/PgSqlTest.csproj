@@ -103,6 +103,8 @@
     <Compile Include="Models\Tree.cs" />
     <Compile Include="Models\ViewOrder.cs" />
     <Compile Include="Config.cs" />
+    <Compile Include="UnitTest\UInsert3.cs" />
+    <Compile Include="UnitTest\ULock.cs" />
     <Compile Include="UnitTest\Unit001.cs" />
     <Compile Include="UnitTest\UnitByteArray.cs" />
     <Compile Include="UnitTest\UnitPgSplit.cs" />
@@ -117,6 +119,8 @@
     <Compile Include="UnitTest\UCustom014.cs" />
     <Compile Include="UnitTest\UCustom015.cs" />
     <Compile Include="UnitTest\UCustom016.cs" />
+    <Compile Include="UnitTest\UnitSqlFunc.cs" />
+    <Compile Include="UnitTest\UnitSubToList.cs" />
     <Compile Include="UnitTest\UnitTestReturnPkList.cs" />
     <Compile Include="UnitTest\USave.cs" />
     <Compile Include="Program.cs" />

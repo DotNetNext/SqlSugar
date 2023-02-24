@@ -58,6 +58,7 @@ namespace SqlSugar
             {
                 copy = new OracleBulkCopy((OracleConnection)this.Context.Ado.Connection, OracleBulkCopyOptions.UseInternalTransaction);
             }
+            copy.BulkCopyTimeout = this.Context.Ado.CommandTimeOut;
             return copy;
 
         }

@@ -288,7 +288,7 @@ namespace OrmTest
              .LeftJoin<OrderItem>((o, i) => o.Id == i.OrderId).AS<OrderItem>("[ORDERDETAIL]")
              .LeftJoin<Custom>((o, i, c) => c.Id == o.CustomId).AS<Custom>("[CUSTOM]")
              .Select<ViewOrder>().ToSql();
-            if (sql14.Key!=("SELECT c.[Name] AS [CustomName],o.[Id] AS [Id],o.[Name] AS [Name],o.[Price] AS [Price],o.[CreateTime] AS [CreateTime],o.[CustomId] AS [CustomId] FROM  (SELECT * FROM  (select * from [ORDER]) t ) o Left JOIN [ORDERDETAIL] i  ON ( [o].[Id] = [i].[OrderId] )  Left JOIN [CUSTOM] c  ON ( [c].[Id] = [o].[CustomId] )  ")) 
+            if (sql14.Key!=("SELECT [c].[Name] AS [CustomName],[o].[Id] AS [Id],[o].[Name] AS [Name],[o].[Price] AS [Price],[o].[CreateTime] AS [CreateTime],[o].[CustomId] AS [CustomId] FROM  (SELECT * FROM  (select * from [ORDER]) t ) [o] Left JOIN [ORDERDETAIL] [i]  ON ( [o].[Id] = [i].[OrderId] )  Left JOIN [CUSTOM] [c]  ON ( [c].[Id] = [o].[CustomId] )  ")) 
             {
                 throw new Exception("unit error");
             }
@@ -310,8 +310,44 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+            db.CodeFirst.InitTables<UnitPeople>();
+            db.Insertable(new UnitPeople()
+            {
+                 Name="a",
+                  EntryDate=DateTime.Now,
+                   Work="1",
+                    Company="a"
+                
+            }).ExecuteCommand();
+            var list10=db.Queryable<UnitPeople>().Select(a => new UnitPeople
+            {
+                Name = a.Name,
+                Job = new JobClass { Company = a.Company, Work = a.Work },
+
+                EntryDate = a.EntryDate
+
+            }  ).ToList();
+            var x1 = 0;
+            var x2 = 0;
+            var x3 = 0;
+            db.Queryable<Order>().Where(it => SqlFunc.IF(true).Return(-x1).ElseIF(it.Id==1).Return(-x2).End(-x3) == 1).ToArray();
+        }
+        public class UnitPeople
+        {
+            public string Name { get; set; }
+            [SugarColumn(IsIgnore =true)]
+            public JobClass Job { get; set; }
+
+            public DateTime? EntryDate { get; set; }
+            public string Company { get;   set; }
+            public string Work { get;   set; }
         }
 
+        public class JobClass
+        {
+            public string Company { get; set; }
+            public string Work { get; set; }
+        }
         public class UintAinstringHAHA 
         {
             [SugarColumn(IsPrimaryKey =true,SqlParameterDbType =System.Data.DbType.AnsiString)]

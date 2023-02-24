@@ -22,9 +22,16 @@ namespace OrmTest
             db.DbMaintenance.CreateDatabase(); 
             db.CodeFirst.InitTables(typeof(CodeFirstTable1));//Create CodeFirstTable1 
             db.Insertable(new CodeFirstTable1() { Name = "a", Text="a" }).ExecuteCommand();
-            var list = db.Queryable<CodeFirstTable1>().ToList();
+            db.CodeFirst.InitTables<CharTest>();
+            db.Insertable(new CharTest() { xx = Guid.NewGuid().ToString() }).ExecuteCommand();
+            var list=db.Queryable<CharTest>().ToList();
             Console.WriteLine("#### CodeFirst end ####");
         }
+    }
+    public class CharTest 
+    {
+        [SugarColumn(ColumnDataType ="char(36)")]
+        public string xx { get; set; }
     }
 
     public class CodeFirstTable1

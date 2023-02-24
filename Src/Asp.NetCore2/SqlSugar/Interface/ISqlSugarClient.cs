@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Dynamic;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace SqlSugar
@@ -49,6 +50,7 @@ namespace SqlSugar
         SqlSugarClient CopyNew();
         T CreateContext<T>(bool isTran=true) where T : SugarUnitOfWork, new();
         SugarUnitOfWork CreateContext(bool isTran = true);
+        SplitTableContext SplitHelper(Type entityType);
         SplitTableContext SplitHelper<T>() where T : class, new();
         SplitTableContextResult<T> SplitHelper<T>(T data) where T : class, new();
         SplitTableContextResult<T> SplitHelper<T>(List<T> data) where T : class, new();
@@ -69,6 +71,7 @@ namespace SqlSugar
         IInsertable<T> Insertable<T>(List<T> insertObjs) where T : class, new();
         IInsertable<T> Insertable<T>(T insertObj) where T : class, new();
         IInsertable<T> Insertable<T>(T[] insertObjs) where T : class, new();
+        InsertMethodInfo InsertableByObject(object singleEntityObjectOrListObject);
         #endregion
 
         #region Queryable
@@ -137,6 +140,8 @@ namespace SqlSugar
         #endregion
 
         #region Saveable
+         StorageableDataTable Storageable(List<Dictionary<string, object>> dictionaryList, string tableName);
+         StorageableDataTable Storageable(Dictionary<string, object> dictionary, string tableName);
         IStorageable<T> Storageable<T>(List<T> dataList) where T : class, new();
         IStorageable<T> Storageable<T>(T data) where T : class, new();
         StorageableDataTable Storageable(DataTable data);
@@ -144,6 +149,9 @@ namespace SqlSugar
         ISaveable<T> Saveable<T>(List<T> saveObjects) where T : class, new();
         [Obsolete("use Storageable")]
         ISaveable<T> Saveable<T>(T saveObject) where T : class, new();
+
+        StorageableMethodInfo StorageableByObject(object singleEntityObjectOrListObject);
+
         #endregion
 
         #region Queue

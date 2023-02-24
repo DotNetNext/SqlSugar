@@ -231,6 +231,10 @@ namespace SqlSugar
                         {
                             item.DataType = mappingType;
                         }
+                        if (item.DataType == "varcharmax") 
+                        {
+                            item.DataType = "nvarchar(max)";
+                        }
                     }
                 }
             }
@@ -570,6 +574,10 @@ namespace SqlSugar
                 return false;
             }
             if (properyTypeName?.ToLower() == "varchar" && dataType?.ToLower() == "string") 
+            {
+                return false;
+            }
+            if (properyTypeName?.ToLower() == "varchar" && dataType?.ToLower() == "nvarchar")
             {
                 return false;
             }

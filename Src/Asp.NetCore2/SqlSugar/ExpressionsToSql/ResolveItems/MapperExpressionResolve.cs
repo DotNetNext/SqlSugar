@@ -325,17 +325,4 @@ namespace SqlSugar
             Check.Exception(isError, ErrorMessage.GetThrowMessage(expression.ToString() + "no support", "不支持表达式" + expression.ToString() + "  ，查看导航是否配置正确等 "));
         }
     }
-
-    public class MapperSql
-    {
-        public string Sql { get; set; }
-    }
-
-    public class MapperExpressionInfo
-    {
-        public Type Type { get; set; }
-        public EntityInfo EntityInfo { get; set; }
-        public string FieldName { get; set; }
-        public string FieldString { get; set; }
-    }
 }

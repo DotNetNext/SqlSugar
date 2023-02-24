@@ -32,7 +32,7 @@ namespace SqlSugar.Access
         }
         private string GetOracleUpdateColums(int i, DbColumnInfo m, bool iswhere)
         {
-            return string.Format(" {0}={1} ", m.DbColumnName , FormatValue(m.Value));
+            return string.Format(" {0}={1} ", m.DbColumnName , base.GetDbColumn(m,FormatValue(m.Value)));
         }
 
         public override object FormatValue(object value)

@@ -95,9 +95,25 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+
+            db.CodeFirst.InitTables<UnitDecmaildfa>();
+            db.DbMaintenance.TruncateTable<UnitDecmaildfa>();
+            db.Insertable(new UnitDecmaildfa() { Id = 1, Name = "a" }).ExecuteCommand();
+            var x1=db.Storageable(new UnitDecmaildfa() { Id = 1, Name = "a" }).ToStorage();
+            if (!x1.UpdateList.Any()) 
+            {
+                throw new Exception("unit error");
+            }
+            db.DbMaintenance.DropTable<UnitDecmaildfa>();
         }
 
+        public class UnitDecmaildfa 
+        {
 
+            [SqlSugar.SugarColumn(IsPrimaryKey =true)]
+            public decimal? Id { get; set; }
+            public string Name { get; set; }
+        }
 
         public static List<T> Search<T>(SqlSugarClient db) where T : ISearch
 

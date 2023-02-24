@@ -9,6 +9,18 @@ namespace SqlSugar
 {
     public partial class SqlFunc
     {
+        public static int CompareTo(decimal numA, decimal numB)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+        public static int CompareTo(int numA, int numB)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+        public static int CompareTo(string strA, string strB) 
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
         public static int RowNumber(object orderByField, object partitionBy) 
         {
             throw new NotSupportedException("Can only be used in expressions");
@@ -221,6 +233,8 @@ namespace SqlSugar
         public static string Replace(object value, string oldChar, string newChar) { return value.ObjToString().Replace(oldChar, newChar); }
         public static int Length(object value) { return value.ObjToString().Length; }
         public static TResult AggregateSum<TResult>(TResult thisValue) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static TResult AggregateSumNoNull<TResult>(TResult thisValue) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static string Collate(string thisValue) { throw new NotSupportedException("Can only be used in expressions"); }
         public static TResult AggregateAvg<TResult>(TResult thisValue) { throw new NotSupportedException("Can only be used in expressions"); }
         public static TResult AggregateMin<TResult>(TResult thisValue) { throw new NotSupportedException("Can only be used in expressions"); }
         public static TResult AggregateMax<TResult>(TResult thisValue) { throw new NotSupportedException("Can only be used in expressions"); }
@@ -254,5 +268,20 @@ namespace SqlSugar
         public static DateTime Oracle_ToDate(string date,string format) { throw new NotSupportedException("Can only be used in expressions"); }
         public static string Oracle_ToChar(DateTime date, string format) { throw new NotSupportedException("Can only be used in expressions"); }
         public static int SqlServer_DateDiff(string dateType,DateTime date1,DateTime date2) { throw new NotSupportedException("Can only be used in expressions"); }
+
+        public static bool JsonListObjectAny(object jsonListObject, string fieldName, object value)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        public static bool JsonArrayAny(object jsonArray,object arrayValue) 
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        public static bool SplitIn(string CommaSegmentationString, string inValue)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
     }
 }

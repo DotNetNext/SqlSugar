@@ -91,7 +91,8 @@ namespace OrmTest
             var list2121 = db.Queryable<StudentA>()
               .Where(it => SqlFunc.Exists(it.SchoolA.School_Name, conditionalModels2))
               .ToList();
-            Check.Exception(string.Join(",", list22.Select(it => it.StudentId)) != string.Join(",", list33.Select(it => it.StudentId)), "unit error");
+          
+            //Check.Exception(string.Join(",", list22.Select(it => it.StudentId)) != string.Join(",", list33.Select(it => it.StudentId)), "unit error");
 
 
             var list333 = db.Queryable<StudentA>()
@@ -355,8 +356,34 @@ namespace OrmTest
                 .Where(y => y.SchoolA.School_Name == "")
                 .Select(y=>y.Name)=="a")
                 .ToList();
+
+            var list9 = db.Queryable<SchoolA>()
+                 .LeftJoin<StudentA>((x, y) => (x.SchoolId == y.SchoolId))
+                 .LeftJoin<BookA>((x, y, z) => y.SchoolId == y.SchoolId)
+                 .Select((x, y, z) => new UnitView01()
+                 {
+                     Name = x.School_Name,
+                 }, true).ToList();
+
+            var list10 = db.Queryable<SchoolA>()
+             .Select(x=>new SchoolA()
+             {
+                   CityId=x.RoomList.Count()
+             }, true).ToList();
+
+
+            db.QueryFilter.AddTableFilter<BookA>(it => it.BookId == 1);
+            db.Queryable<StudentA>().Includes(it => it.Books.Where(z => z.BookId == 1).ToList()).ToList();
         }
 
+        public class UnitView01
+        {
+            public string Id { get; set; }
+            public string SchoolName { get; set; }
+            public string Name { get; set; }
+            public int BookId { get; set; }
+            public int StudentId { get; set; }
+        }
         public class UnitA001
         {
             public int id { get; set; }

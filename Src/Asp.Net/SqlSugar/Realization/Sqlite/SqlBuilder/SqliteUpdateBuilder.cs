@@ -32,7 +32,7 @@ namespace SqlSugar
 
         private string GetOracleUpdateColums(int i,DbColumnInfo m,bool iswhere)
         {
-            return string.Format("\"{0}\"={1}", m.DbColumnName.ToUpper(), FormatValue(i,m.DbColumnName,m.Value,iswhere));
+            return string.Format("\"{0}\"={1}", m.DbColumnName.ToUpper(),base.GetDbColumn(m, FormatValue(i,m.DbColumnName,m.Value,iswhere)));
         }
 
         public  object FormatValue(int i,string name,object value,bool iswhere)
@@ -109,7 +109,7 @@ namespace SqlSugar
             {
                 date = UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig);
             }
-            return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
+            return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fffffff") + "'";
         }
     }
 }

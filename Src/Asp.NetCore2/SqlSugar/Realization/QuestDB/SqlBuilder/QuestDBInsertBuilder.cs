@@ -50,7 +50,7 @@ namespace SqlSugar
                        //{
                        //    return $"to_timestamp('{it.Value.ObjToString("yyyy-MM-ddTHH:mm:ss")}', 'yyyy-MM-ddTHH:mm:ss')";
                        //}
-                       return spk;
+                       return  GetDbColumn(it,spk);
                     }
                 
                 ));
@@ -77,6 +77,10 @@ namespace SqlSugar
                         }
                         batchInsetrSql.Append("\r\n ( " + string.Join(",", columns.Select(it =>
                         {
+                            if (it.InsertServerTime || it.InsertSql.HasValue()) 
+                            {
+                                return GetDbColumn(it,null);
+                            }
                             object value = null;
                             if (it.Value is DateTime)
                             {

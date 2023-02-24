@@ -159,6 +159,10 @@ namespace SqlSugar
         #endregion
 
         #region Insertable
+        public InsertMethodInfo InsertableByObject(object singleEntityObjectOrListObject)
+        {
+            return this.Context.InsertableByObject(singleEntityObjectOrListObject);
+        }
         public IInsertable<T> Insertable<T>(Dictionary<string, object> columnDictionary) where T : class, new()
         {
             return this.Context.Insertable<T>(columnDictionary);
@@ -177,6 +181,10 @@ namespace SqlSugar
         public IInsertable<T> Insertable<T>(T insertObj) where T : class, new()
         {
             Check.Exception(typeof(T).FullName.Contains("System.Collections.Generic.List`"), "  need  where T: class, new() ");
+            if (typeof(T).Name == "Object") 
+            {
+                Check.ExceptionEasy("Object type use db.InsertableByObject(obj).ExecuteCommand()", "检测到T为Object类型，请使用 db.InsertableByObject(obj).ExecuteCommand()，Insertable不支持object，InsertableByObject可以(缺点：功能比较少)");
+            }
             return this.Context.Insertable<T>(insertObj);
         }
 
@@ -538,6 +546,10 @@ namespace SqlSugar
         {
             return this.Context.Saveable(saveObject);
         }
+        public StorageableMethodInfo StorageableByObject(object singleEntityObjectOrListObject)
+        {
+            return this.Context.StorageableByObject(singleEntityObjectOrListObject);
+        }
         #endregion
 
         #region Reportable
@@ -653,6 +665,10 @@ namespace SqlSugar
         #endregion
 
         #region Updateable
+        public UpdateMethodInfo UpdateableByObject(object singleEntityObjectOrListObject)
+        {
+            return this.Context.UpdateableByObject(singleEntityObjectOrListObject);
+        }
         public IUpdateable<T> Updateable<T>() where T : class, new()
         {
             return this.Context.Updateable<T>();
@@ -701,6 +717,10 @@ namespace SqlSugar
         #endregion
 
         #region Deleteable
+        public DeleteMethodInfo DeleteableByObject(object singleEntityObjectOrListObject)
+        {
+            return this.Context.DeleteableByObject(singleEntityObjectOrListObject);
+        }
         public IDeleteable<T> Deleteable<T>() where T : class, new()
         {
             return this.Context.Deleteable<T>();
@@ -777,11 +797,28 @@ namespace SqlSugar
         {
             return new SqlSugarTransaction(this);
         }
+        public void RemoveConnection(dynamic configId) 
+        {
+           var removeData= this._AllClients.FirstOrDefault(it => ((object)it.ConnectionConfig.ConfigId).ObjToString()== ((object)configId).ObjToString());
+          object currentId= this.CurrentConnectionConfig.ConfigId;
+            if (removeData != null) 
+            {
+                if (removeData.Context.Ado.IsAnyTran()) 
+                {
+                    Check.ExceptionEasy("RemoveConnection error  has tran",$"删除失败{removeData.ConnectionConfig.ConfigId}存在未提交事务");
+                }
+                else if (((object)removeData.ConnectionConfig.ConfigId).ObjToString()== currentId.ObjToString())
+                {
+                    Check.ExceptionEasy("Default ConfigId cannot be deleted", $"默认库不能删除{removeData.ConnectionConfig.ConfigId}");
+                }
+                this._AllClients.Remove(removeData);
+            }
+        }
         public void AddConnection(ConnectionConfig connection)
         {
             Check.ArgumentNullException(connection, "AddConnection.connection can't be null");
             InitTenant();
-            var db = this._AllClients.FirstOrDefault(it => it.ConnectionConfig.ConfigId == connection.ConfigId);
+            var db = this._AllClients.FirstOrDefault(it => ((object)it.ConnectionConfig.ConfigId).ObjToString() == ((object)connection.ConfigId).ObjToString());
             if (db == null)
             {
                 if (this._AllClients == null)
@@ -886,6 +923,25 @@ namespace SqlSugar
             _IsAllTran = true;
             AllClientEach(it => it.Ado.BeginTran());
         }
+        
+        public void BeginTran(IsolationLevel iso)
+        {
+            _IsAllTran = true;
+            AllClientEach(it => it.Ado.BeginTran(iso));
+        }
+
+        public async Task BeginTranAsync()
+        {
+            _IsAllTran = true;
+            await AllClientEachAsync(async it => await it.Ado.BeginTranAsync());
+        }
+        
+        public async Task BeginTranAsync(IsolationLevel iso)
+        {
+            _IsAllTran = true;
+            await AllClientEachAsync(async it => await it.Ado.BeginTranAsync(iso));
+        }
+
         public void CommitTran()
         {
             this.Context.Ado.CommitTran();
@@ -901,6 +957,25 @@ namespace SqlSugar
                     SugarRetry.Execute(() => it.Ado.CommitTran(), new TimeSpan(0, 0, 5), 3);
                 }
                 
+            });
+            _IsAllTran = false;
+        }
+
+        public async Task CommitTranAsync()
+        {
+            await this.Context.Ado.CommitTranAsync();
+            await AllClientEachAsync(async it =>
+            {
+
+                try
+                {
+                    await it.Ado.CommitTranAsync();
+                }
+                catch
+                {
+                    SugarRetry.Execute(() => it.Ado.CommitTran(), new TimeSpan(0, 0, 5), 3);
+                }
+
             });
             _IsAllTran = false;
         }
@@ -934,10 +1009,10 @@ namespace SqlSugar
             var result = new DbResult<bool>();
             try
             {
-                this.BeginTran();
+                await this.BeginTranAsync();
                 if (action != null)
                     await action();
-                this.CommitTran();
+                await this.CommitTranAsync();
                 result.Data = result.IsSuccess = true;
             }
             catch (Exception ex)
@@ -945,7 +1020,7 @@ namespace SqlSugar
                 result.ErrorException = ex;
                 result.ErrorMessage = ex.Message;
                 result.IsSuccess = false;
-                this.RollbackTran();
+                await this.RollbackTranAsync();
                 if (errorCallBack != null)
                 {
                     errorCallBack(ex);
@@ -1024,6 +1099,24 @@ namespace SqlSugar
             });
             _IsAllTran = false;
         }
+        public async Task RollbackTranAsync()
+        {
+            await this.Context.Ado.RollbackTranAsync();
+            await AllClientEachAsync(async it =>
+            {
+
+                try
+                {
+                    await it.Ado.RollbackTranAsync();
+                }
+                catch
+                {
+                    SugarRetry.Execute(() => it.Ado.RollbackTran(), new TimeSpan(0, 0, 5), 3);
+                }
+
+            });
+            _IsAllTran = false;
+        }
         public void Close()
         {
             this.Context.Close();
@@ -1087,6 +1180,10 @@ namespace SqlSugar
         public SplitTableContext SplitHelper<T>() where T:class,new()
         {
             return this.Context.SplitHelper<T>();
+        }
+        public SplitTableContext SplitHelper(Type entityType) 
+        {
+            return this.Context.SplitHelper(entityType);
         }
         public SplitTableContextResult<T> SplitHelper<T>(T data) where T : class, new()
         {
@@ -1289,7 +1386,7 @@ namespace SqlSugar
             );
         }
 
-        private void InitContext(ConnectionConfig config)
+        protected virtual void InitContext(ConnectionConfig config)
         {
             var aopIsNull = config.AopEvents == null;
             if (aopIsNull)
@@ -1337,6 +1434,22 @@ namespace SqlSugar
             }
         }
 
+
+        private async Task AllClientEachAsync(Func<ISqlSugarClient,Task> action)
+        {
+            if (this._AllClients == null)
+            {
+                this._AllClients = new List<SugarTenant>();
+                this._AllClients.Add(new SugarTenant() { ConnectionConfig = this.CurrentConnectionConfig, Context = this.Context });
+            }
+            if (_AllClients.HasValue())
+            {
+                foreach (var item in _AllClients.Where(it => it.Context.HasValue()))
+                {
+                    await action(item.Context);
+                }
+            }
+        }
         private void InitTenant(SugarTenant Tenant)
         {
             if (Tenant.Context == null)

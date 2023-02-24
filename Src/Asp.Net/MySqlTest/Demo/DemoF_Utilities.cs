@@ -37,7 +37,7 @@ namespace OrmTest
                 Console.WriteLine(string.Join("," ,list));   
             });
 
-            var list2= db.Utilities.DataTableToList<Order>(db.Ado.GetDataTable("select * from `order`"));
+            var list2= db.Utilities.DataTableToList<Order>(db.Ado.GetDataTable("select * from `Order`"));
 
             //more https://github.com/sunkaixuan/SqlSugar/wiki/f.Utilities
             Console.WriteLine("#### Utilities End ####");

@@ -287,6 +287,48 @@ namespace SqlSugar
             }
             return result;
         }
+        public List<T> ToParentList(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue, Expression<Func<T, bool>> parentWhereExpression)
+        {
+            var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            var isTreeKey = entity.Columns.Any(it => it.IsTreeKey);
+            if (isTreeKey)
+            {
+                return _ToParentListByTreeKey(parentIdExpression, primaryKeyValue,parentWhereExpression);
+            }
+            List<T> result = new List<T>() { };
+            Check.Exception(entity.Columns.Where(it => it.IsPrimarykey).Count() == 0, "No Primary key");
+            var parentIdName = UtilConvert.ToMemberExpression((parentIdExpression as LambdaExpression).Body).Member.Name;
+            var ParentInfo = entity.Columns.First(it => it.PropertyName == parentIdName);
+            var parentPropertyName = ParentInfo.DbColumnName;
+            var tableName = this.QueryBuilder.GetTableNameString;
+            if (this.QueryBuilder.IsSingle() == false)
+            {
+                if (this.QueryBuilder.JoinQueryInfos.Count > 0)
+                {
+                    tableName = this.QueryBuilder.JoinQueryInfos.First().TableName;
+                }
+                if (this.QueryBuilder.EasyJoinInfos.Count > 0)
+                {
+                    tableName = this.QueryBuilder.JoinQueryInfos.First().TableName;
+                }
+            }
+            var current = this.Context.Queryable<T>().AS(tableName).WhereIF(parentWhereExpression!=default, parentWhereExpression).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).InSingle(primaryKeyValue);
+            if (current != null)
+            {
+                result.Add(current);
+                object parentId = ParentInfo.PropertyInfo.GetValue(current, null);
+                int i = 0;
+                while (parentId != null && this.Context.Queryable<T>().AS(tableName).WhereIF(parentWhereExpression!=default, parentWhereExpression).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).In(parentId).Any())
+                {
+                    Check.Exception(i > 100, ErrorMessage.GetThrowMessage("Dead cycle", "出现死循环或超出循环上限（100），检查最顶层的ParentId是否是null或者0"));
+                    var parent = this.Context.Queryable<T>().AS(tableName).WhereIF(parentWhereExpression!=default, parentWhereExpression).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).InSingle(parentId);
+                    result.Add(parent);
+                    parentId = ParentInfo.PropertyInfo.GetValue(parent, null);
+                    ++i;
+                }
+            }
+            return result;
+        }
 
         public List<T> ToTree(Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, object rootValue)
         {
@@ -356,6 +398,10 @@ namespace SqlSugar
 
         public Dictionary<string, object> ToDictionary(Expression<Func<T, object>> key, Expression<Func<T, object>> value)
         {
+            if (this.QueryBuilder.IsSingle() == false && (this.QueryBuilder.AsTables == null||this.QueryBuilder.AsTables.Count==0)) 
+            {
+                return this.MergeTable().ToDictionary(key,value);
+            }
             this.QueryBuilder.ResultType = typeof(SugarCacheDictionary);
             var keyName = QueryBuilder.GetExpressionValue(key, ResolveExpressType.FieldSingle).GetResultString();
             var valueName = QueryBuilder.GetExpressionValue(value, ResolveExpressType.FieldSingle).GetResultString();
@@ -686,5 +732,56 @@ namespace SqlSugar
             var result = ((this.Context.DbFirst) as DbFirstProvider).GetClassString(columns, ref className);
             return result;
         }
+
+        public bool IntoTable<TableEntityType>() 
+        {
+            return IntoTable(typeof(TableEntityType));
+        }
+        public bool IntoTable<TableEntityType>(string TableName)
+        {
+            return IntoTable(typeof(TableEntityType), TableName);
+        }
+        public bool IntoTable(Type TableEntityType) 
+        {
+            var entityInfo=this.Context.EntityMaintenance.GetEntityInfo(TableEntityType);
+            var sqlInfo=this.ToSql();
+            var name = this.SqlBuilder.GetTranslationTableName(entityInfo.DbTableName);
+            var columns = "";
+            if (this.QueryBuilder.GetSelectValue != null && this.QueryBuilder.GetSelectValue.Contains(",")) ;
+            {
+                columns = "(";
+                foreach (var item in this.QueryBuilder.GetSelectValue.Split(','))
+                {
+                    var column = Regex.Split(item,"AS").Last().Trim();
+                    columns += $"{column},";
+                }
+                columns = columns.TrimEnd(',') + ")";
+            }
+            var  sql= $" INSERT  INTO {name} {columns} " + sqlInfo.Key;
+            this.Context.Ado.ExecuteCommand(sql, sqlInfo.Value);
+            return true;
+        }
+
+        public bool IntoTable(Type TableEntityType,string TableName)
+        {
+            //var entityInfo = this.Context.EntityMaintenance.GetEntityInfo(TableEntityType);
+            var sqlInfo = this.ToSql();
+            var name = this.SqlBuilder.GetTranslationTableName(TableName);
+            var columns = "";
+            if (this.QueryBuilder.GetSelectValue != null && this.QueryBuilder.GetSelectValue.Contains(",")) ;
+            {
+                columns = "(";
+                foreach (var item in this.QueryBuilder.GetSelectValue.Split(','))
+                {
+                    var column = Regex.Split(item, "AS").Last().Trim();
+                    columns += $"{column},";
+                }
+                columns = columns.TrimEnd(',') + ")";
+            }
+            var sql = $" INSERT  INTO {name} {columns} " + sqlInfo.Key;
+            this.Context.Ado.ExecuteCommand(sql, sqlInfo.Value);
+            return true;
+        }
+
     }
 }

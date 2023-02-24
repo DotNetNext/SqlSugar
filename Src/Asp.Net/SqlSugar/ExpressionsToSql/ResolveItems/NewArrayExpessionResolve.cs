@@ -20,9 +20,10 @@ namespace SqlSugar
                 case ResolveExpressType.SelectMultiple:
                 case ResolveExpressType.FieldSingle:
                 case ResolveExpressType.FieldMultiple:
+                    #region Filed
                     try
                     {
-                       var value = ExpressionTool.DynamicInvoke(expression);
+                        var value = ExpressionTool.DynamicInvoke(expression);
                         var isLeft = parameter.IsLeft;
                         var baseParameter = parameter.BaseParameter;
                         var isSetTempData = baseParameter.CommonTempData.HasValue() && baseParameter.CommonTempData.Equals(CommonTempDataType.Result);
@@ -64,41 +65,52 @@ namespace SqlSugar
                     catch (Exception)
                     {
                         Check.ThrowNotSupportedException("NewArrayExpression");
-                    }
+                    } 
+                    #endregion
                     break;
                 case ResolveExpressType.ArraySingle:
-                    foreach (var item in expression.Expressions)
-                    {
-                        base.Expression = item;
-                        base.Start();
-                    }
+                    ArraySingle(expression);
                     break;
                 case ResolveExpressType.Join:
-                    base.Context.ResolveType = ResolveExpressType.WhereMultiple;
-                    int i = 0;
-                    foreach (var item in expression.Expressions)
-                    {
-                        if (item is UnaryExpression)
-                        {
-                            base.Expression = item;
-                            base.Start();
-                            if (parameter.CommonTempData is JoinType)
-                            {
-                                if (i > 0)
-                                {
-                                    base.Context.Result.Append("," + parameter.CommonTempData.ObjToString().Replace(",",UtilConstants.ReplaceCommaKey) + ",");
-                                }
-                                else
-                                {
-                                    base.Context.Result.Append(parameter.CommonTempData.ObjToString().Replace(",", UtilConstants.ReplaceCommaKey) + ",");
-                                }
-                                ++i;
-                            }
-                        }
-                    }
+                    Join(parameter, expression);
                     break;
                 default:
                     break;
+            }
+        }
+
+        private void Join(ExpressionParameter parameter, NewArrayExpression expression)
+        {
+            base.Context.ResolveType = ResolveExpressType.WhereMultiple;
+            int i = 0;
+            foreach (var item in expression.Expressions)
+            {
+                if (item is UnaryExpression)
+                {
+                    base.Expression = item;
+                    base.Start();
+                    if (parameter.CommonTempData is JoinType)
+                    {
+                        if (i > 0)
+                        {
+                            base.Context.Result.Append("," + parameter.CommonTempData.ObjToString().Replace(",", UtilConstants.ReplaceCommaKey) + ",");
+                        }
+                        else
+                        {
+                            base.Context.Result.Append(parameter.CommonTempData.ObjToString().Replace(",", UtilConstants.ReplaceCommaKey) + ",");
+                        }
+                        ++i;
+                    }
+                }
+            }
+        }
+
+        private void ArraySingle(NewArrayExpression expression)
+        {
+            foreach (var item in expression.Expressions)
+            {
+                base.Expression = item;
+                base.Start();
             }
         }
     }

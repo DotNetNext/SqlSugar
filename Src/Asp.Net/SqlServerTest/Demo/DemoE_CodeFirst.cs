@@ -42,9 +42,66 @@ namespace OrmTest
                     Name = it.CreateTime.HasValue ? it.CreateTime.Value.ToString("yyyy-MM-dd") : string.Empty
                 }).ToList();
             db.CodeFirst.InitTables<CodeFirstimg>();
+            if (db.DbMaintenance.IsAnyTable("CodeFirstMaxString1",false))
+                db.DbMaintenance.DropTable<CodeFirstMaxString1>();
+            db.CodeFirst.InitTables<CodeFirstMaxString1>();
+
+
+            db.CurrentConnectionConfig.ConfigureExternalServices = new ConfigureExternalServices()
+            {
+                EntityService = (s, p) => 
+                {
+                    p.IfTable<UnitIFTable>()
+                    .UpdateProperty(it=>it.id,it =>
+                    {
+                        it.IsIdentity = true;
+                        it.IsPrimarykey= true;
+                    })
+                    .UpdateProperty(it => it.Name, it=>{
+                        it.Length = 100;
+                        it.IsNullable = true;
+                        
+                    })
+                    .OneToOne(it=>it.UnitIFTableInfo,nameof(UnitIFTable.id));
+                }
+            };
+            db.CodeFirst.InitTables<UnitIFTable>();
+            db.CodeFirst.InitTables<Unittest1011, Unittest22221>();
+            db.Insertable(new Unittest1011() { name = "a" }).ExecuteCommand();
+            db.Insertable(new Unittest22221() { name = "a" }).ExecuteCommand();
             Console.WriteLine("#### CodeFirst end ####");
         }
     }
+    public class Unittest22221
+    {
+        [SugarColumn(DefaultValue = " newsequentialid()")]
+        public Guid id { get; set; }
+        [SugarColumn(IsNullable = true)]
+        public string name { get; set; }
+    }
+    public class Unittest1011
+    {
+        [SugarColumn(DefaultValue ="newid()")]
+        public Guid id { get; set; }
+        [SugarColumn(IsNullable =true)]
+        public string name { get; set; }
+    }
+    public class UnitIFTable 
+    {
+        //[SugarColumn(IsPrimaryKey =true,IsIdentity =true)]
+        public int id { get; set; }
+       // [SugarColumn(IsNullable =true)]
+        public string Name { get; set; }
+
+        public UnitIFTable UnitIFTableInfo { get; set; }
+    }
+
+    public class CodeFirstMaxString1
+    {
+        [SugarColumn(ColumnDataType = StaticConfig.CodeFirst_BigString)]
+        public string img { get; set; }
+    }
+   
     public class CodeFirstimg 
     {
         [SugarColumn(Length =100)]

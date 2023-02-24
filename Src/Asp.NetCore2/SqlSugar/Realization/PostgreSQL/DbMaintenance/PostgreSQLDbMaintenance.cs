@@ -57,9 +57,9 @@ namespace SqlSugar
             {
                 var schema = GetSchema();
                 return @"select cast(relname as varchar) as Name,
-                        cast(obj_description(relfilenode,'pg_class') as varchar) as Description from pg_class c 
+                        cast(obj_description(c.oid,'pg_class') as varchar) as Description from pg_class c 
                          inner join 
-						 pg_namespace n on n.oid = c.relnamespace and nspname='"+ schema + @"'
+						 pg_namespace n on n.oid = c.relnamespace and nspname='" + schema + @"'
                          inner join 
                          pg_tables z on z.tablename=c.relname
                         where  relkind = 'r' and relname not like 'pg_%' and relname not like 'sql_%' and schemaname='" + schema + "' order by relname";
@@ -181,7 +181,7 @@ namespace SqlSugar
 
         protected override string IsAnyTableRemarkSql { get { throw new NotSupportedException(); } }
 
-        protected override string RenameTableSql => "alter table 表名 {0} to {1}";
+        protected override string RenameTableSql => "alter table  {0} to {1}";
 
         protected override string CreateIndexSql
         {

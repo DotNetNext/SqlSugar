@@ -31,6 +31,10 @@ namespace OrmTest
         }
         public static void Init()
         {
+            Unitadsfasf1.Init();
+            UnitSubToList001.Init();
+            UInsert3.Init();
+            UnitSubToList.Init();
             UCustom20.Init();
             UCustom07.Init();
             UnitTestReturnPkList.Init();

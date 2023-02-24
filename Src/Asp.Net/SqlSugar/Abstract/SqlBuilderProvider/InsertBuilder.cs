@@ -35,6 +35,7 @@ namespace SqlSugar
         public virtual bool IsNoPage { get; set; }
 
         public virtual bool IsReturnPkList { get; set; }
+        public string AsName { get; set; }
         #endregion
 
         #region SqlTemplate
@@ -115,6 +116,10 @@ namespace SqlSugar
         {
             get
             {
+                if (AsName.HasValue()) 
+                {
+                    return Builder.GetTranslationTableName(AsName);
+                }
                 var result = Builder.GetTranslationTableName(EntityInfo.EntityName);
                 result += UtilConstants.Space;
                 if (this.TableWithString.HasValue())
@@ -157,7 +162,7 @@ namespace SqlSugar
             string columnsString = string.Join(",", groupList.First().Select(it => Builder.GetTranslationColumnName(it.DbColumnName)));
             if (isSingle)
             {
-                string columnParametersString = string.Join(",", this.DbColumnInfoList.Select(it => Builder.SqlParameterKeyWord + it.DbColumnName));
+                string columnParametersString = string.Join(",", this.DbColumnInfoList.Select(it =>this.GetDbColumn(it, Builder.SqlParameterKeyWord + it.DbColumnName)));
                 return string.Format(SqlTemplate, GetTableNameString, columnsString, columnParametersString);
             }
             else
@@ -186,7 +191,7 @@ namespace SqlSugar
                         {
                             batchInsetrSql.Append(SqlTemplateBatchUnion);
                         }
-                        batchInsetrSql.Append("\r\n SELECT " + string.Join(",", columns.Select(it => string.Format(SqlTemplateBatchSelect, FormatValue(it.Value),Builder.GetTranslationColumnName(it.DbColumnName)))));
+                        batchInsetrSql.Append("\r\n SELECT " + string.Join(",", columns.Select(it => string.Format(SqlTemplateBatchSelect,this.GetDbColumn(it, FormatValue(it.Value)),Builder.GetTranslationColumnName(it.DbColumnName)))));
                         ++i;
                     }
                     pageIndex++;
@@ -267,6 +272,41 @@ namespace SqlSugar
             var date = UtilMethods.ConvertFromDateTimeOffset((DateTimeOffset)value);
             return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
         }
+
+        private int GetDbColumnIndex = 0;
+        public virtual string GetDbColumn(DbColumnInfo columnInfo ,object name) 
+        {
+            if (columnInfo.InsertServerTime)
+            {
+                return LambdaExpressions.DbMehtods.GetDate();
+            }
+            else if (columnInfo.InsertSql.HasValue())
+            {
+                return columnInfo.InsertSql;
+            }
+            else if (columnInfo.DataType?.Equals("nvarchar2")==true) 
+            {
+                var pname = Builder.SqlParameterKeyWord + columnInfo.DbColumnName + "_ts" + GetDbColumnIndex;
+                var p = new SugarParameter(pname, columnInfo.Value);
+                p.IsNvarchar2 = true;
+                this.Parameters.Add(p);
+                GetDbColumnIndex++;
+                return pname;
+            }
+            else if (columnInfo.PropertyType.Name == "TimeOnly" && name != null && !name.ObjToString().StartsWith(Builder.SqlParameterKeyWord))
+            {
+                var timeSpan = UtilMethods.TimeOnlyToTimeSpan(columnInfo.Value);
+                var pname = Builder.SqlParameterKeyWord + columnInfo.DbColumnName + "_ts" + GetDbColumnIndex;
+                this.Parameters.Add(new SugarParameter(pname, timeSpan));
+                GetDbColumnIndex++;
+                return pname;
+            }
+            else
+            {
+                return name + "";
+            }
+        }
+
         #endregion
     }
 }

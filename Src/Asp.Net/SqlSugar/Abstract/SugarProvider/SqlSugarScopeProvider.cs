@@ -13,6 +13,7 @@ namespace SqlSugar
     public class SqlSugarScopeProvider:ISqlSugarClient
     {
         internal  SqlSugarProvider conn;
+        StackFrame[] frames;
 
         public SqlSugarScopeProvider(SqlSugarProvider conn)
         {
@@ -69,7 +70,7 @@ namespace SqlSugar
                 }
             }
         }
-        private SqlSugarProvider GetContext(bool isInit = false)
+        protected virtual SqlSugarProvider GetContext(bool isInit = false)
         {
             SqlSugarProvider result = null;
             var key = GetKey(); ;
@@ -88,7 +89,28 @@ namespace SqlSugar
         }
         private  dynamic GetKey()
         {
-            return "SqlSugarProviderScope_" + conn.CurrentConnectionConfig.ConfigId;
+            var key= "SqlSugarProviderScope_" + conn.CurrentConnectionConfig.ConfigId;
+            if (frames == null)
+            {
+                frames = new StackTrace(true).GetFrames();
+            }
+            if (frames.Length >= 0)
+            {
+                foreach (var method in frames.Take(10))
+                {
+                    var refType = method.GetMethod()?.ReflectedType;
+                    if (refType != null)
+                    {
+                        var getInterfaces = refType.Name.StartsWith("<") ? refType?.ReflectedType?.GetInterfaces() : refType?.GetInterfaces();
+                        if (getInterfaces != null && getInterfaces.Any(it => it.Name.IsIn("IJob")))
+                        {
+                            key = $"{key}IJob";
+                            break;
+                        }
+                    }
+                }
+            }
+            return key;
         }
 
         #region  API
@@ -143,6 +165,10 @@ namespace SqlSugar
         public void Close()
         {
             ScopedContext.Close();
+        }
+        public DeleteMethodInfo DeleteableByObject(object singleEntityObjectOrListObject)
+        {
+            return ScopedContext.DeleteableByObject(singleEntityObjectOrListObject);
         }
         public IDeleteable<T> Deleteable<T>() where T : class, new()
         {
@@ -215,7 +241,10 @@ namespace SqlSugar
         {
             ScopedContext.InitMappingInfo<T>();
         }
-
+        public InsertMethodInfo InsertableByObject(object singleEntityObjectOrListObject)
+        {
+            return ScopedContext.InsertableByObject(singleEntityObjectOrListObject);
+        }
         public IInsertable<T> Insertable<T>(Dictionary<string, object> columnDictionary) where T : class, new()
         {
             return ScopedContext.Insertable<T>(columnDictionary);
@@ -566,6 +595,14 @@ namespace SqlSugar
         {
             return ScopedContext.SqlQueryable<T>(sql);
         }
+        public StorageableDataTable Storageable(List<Dictionary<string, object>> dictionaryList, string tableName)
+        {
+            return ScopedContext.Storageable(dictionaryList, tableName);
+        }
+        public StorageableDataTable Storageable(Dictionary<string, object> dictionary, string tableName)
+        {
+            return ScopedContext.Storageable(dictionary, tableName);
+        }
 
         public IStorageable<T> Storageable<T>(List<T> dataList) where T : class, new()
         {
@@ -579,6 +616,10 @@ namespace SqlSugar
         public StorageableDataTable Storageable(DataTable data)
         {
             return ScopedContext.Storageable(data);
+        }
+        public StorageableMethodInfo StorageableByObject(object singleEntityObjectOrListObject) 
+        {
+            return ScopedContext.StorageableByObject(singleEntityObjectOrListObject);
         }
 
         public ISugarQueryable<T> Union<T>(List<ISugarQueryable<T>> queryables) where T : class, new()
@@ -599,6 +640,10 @@ namespace SqlSugar
         public ISugarQueryable<T> UnionAll<T>(params ISugarQueryable<T>[] queryables) where T : class, new()
         {
             return ScopedContext.UnionAll(queryables);
+        }
+        public UpdateMethodInfo UpdateableByObject(object singleEntityObjectOrListObject)
+        {
+            return ScopedContext.UpdateableByObject(singleEntityObjectOrListObject);
         }
 
         public IUpdateable<T> Updateable<T>() where T : class, new()
@@ -643,6 +688,10 @@ namespace SqlSugar
         public SplitTableContext SplitHelper<T>() where T : class, new()
         {
             return ScopedContext.SplitHelper<T>();
+        }
+        public SplitTableContext SplitHelper(Type entityType)
+        {
+            return ScopedContext.SplitHelper(entityType);
         }
         public SplitTableContextResult<T> SplitHelper<T>(T data) where T : class, new()
         {

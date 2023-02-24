@@ -54,6 +54,12 @@ namespace OrmTest
             db.CodeFirst.InitTables<LogicTest>();
   ;
             db.Deleteable<LogicTest>().Where(it=>it.Id==1).IsLogic().ExecuteCommand();
+
+
+            object o = db.Queryable<Order>().First();
+            db.DeleteableByObject(o).ExecuteCommandAsync().GetAwaiter().GetResult();
+            object os = db.Queryable<Order>().Take(2).ToList();
+            db.DeleteableByObject(os).ExecuteCommand();
             Console.WriteLine("#### Deleteable End ####");
 
         }

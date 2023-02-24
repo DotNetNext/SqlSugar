@@ -26,7 +26,7 @@ namespace SqlSugar
         }
         public string[] GetTableNames(SplitType splitType)
         {
-            List<string> result = new List<string>();;
+            List<string> result = new List<string>();
             foreach (var item in Items)
             {
                 result.Add(Helper.GetTableName(Helper.GetValue(splitType, item)));

@@ -252,6 +252,32 @@ namespace SqlSugar
         #endregion
 
         #region Select
+        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11, TResult>> expression, bool isAutoFill)
+        {
+            var clone = this.Select(expression).Clone();
+            var sql = clone.QueryBuilder.GetSelectValue;
+            if (this.QueryBuilder.IsSingle() || string.IsNullOrEmpty(sql) || sql.Trim() == "*")
+            {
+                return this.Select<TResult>(expression);
+            }
+            this.QueryBuilder.Parameters = clone.QueryBuilder.Parameters;
+            this.QueryBuilder.SubToListParameters = clone.QueryBuilder.SubToListParameters;
+            this.QueryBuilder.LambdaExpressions.ParameterIndex = clone.QueryBuilder.LambdaExpressions.ParameterIndex;
+            var parameters = (expression as LambdaExpression).Parameters;
+            var columnsResult = this.Context.EntityMaintenance.GetEntityInfo<TResult>().Columns;
+            sql = AppendSelect<T>(sql, parameters, columnsResult, 0);
+            sql = AppendSelect<T2>(sql, parameters, columnsResult, 1);
+            sql = AppendSelect<T3>(sql, parameters, columnsResult, 2);
+            sql = AppendSelect<T4>(sql, parameters, columnsResult, 3);
+            sql = AppendSelect<T5>(sql, parameters, columnsResult, 4);
+            sql = AppendSelect<T6>(sql, parameters, columnsResult, 5);
+            sql = AppendSelect<T7>(sql, parameters, columnsResult, 6);
+            sql = AppendSelect<T8>(sql, parameters, columnsResult, 7);
+            sql = AppendSelect<T9>(sql, parameters, columnsResult, 8);
+            sql = AppendSelect<T10>(sql, parameters, columnsResult, 9);
+            sql = AppendSelect<T11>(sql, parameters, columnsResult, 10);
+            return this.Select<TResult>(sql);
+        }
         public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, TResult>> expression)
         {
             return _Select<TResult>(expression);
@@ -556,11 +582,39 @@ namespace SqlSugar
             _As(tableName, entityName);
             return this;
         }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> ClearFilter()
+        {
+            this.Filter(null, true);
+            return this;
+        }
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> Filter(string FilterName, bool isDisabledGobalFilter = false)
         {
             _Filter(FilterName, isDisabledGobalFilter);
             return this;
         }
+
+
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> ClearFilter(params Type[] types)
+        {
+            base.ClearFilter(types);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> ClearFilter<FilterType1>()
+        {
+            this.ClearFilter(typeof(FilterType1));
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> ClearFilter<FilterType1, FilterType2>()
+        {
+            this.ClearFilter(typeof(FilterType1), typeof(FilterType2));
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> ClearFilter<FilterType1, FilterType2, FilterType3>()
+        {
+            this.ClearFilter(typeof(FilterType1), typeof(FilterType2), typeof(FilterType3));
+            return this;
+        }
+
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> AddParameters(object parameters)
         {
             if (parameters != null)
@@ -782,6 +836,33 @@ namespace SqlSugar
         #endregion
 
         #region Select
+        public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12, TResult>> expression, bool isAutoFill)
+        {
+            var clone = this.Select(expression).Clone();
+            var sql = clone.QueryBuilder.GetSelectValue;
+            if (this.QueryBuilder.IsSingle() || string.IsNullOrEmpty(sql) || sql.Trim() == "*")
+            {
+                return this.Select<TResult>(expression);
+            }
+            this.QueryBuilder.Parameters = clone.QueryBuilder.Parameters;
+            this.QueryBuilder.SubToListParameters = clone.QueryBuilder.SubToListParameters;
+            this.QueryBuilder.LambdaExpressions.ParameterIndex = clone.QueryBuilder.LambdaExpressions.ParameterIndex;
+            var parameters = (expression as LambdaExpression).Parameters;
+            var columnsResult = this.Context.EntityMaintenance.GetEntityInfo<TResult>().Columns;
+            sql = AppendSelect<T>(sql, parameters, columnsResult, 0);
+            sql = AppendSelect<T2>(sql, parameters, columnsResult, 1);
+            sql = AppendSelect<T3>(sql, parameters, columnsResult, 2);
+            sql = AppendSelect<T4>(sql, parameters, columnsResult, 3);
+            sql = AppendSelect<T5>(sql, parameters, columnsResult, 4);
+            sql = AppendSelect<T6>(sql, parameters, columnsResult, 5);
+            sql = AppendSelect<T7>(sql, parameters, columnsResult, 6);
+            sql = AppendSelect<T8>(sql, parameters, columnsResult, 7);
+            sql = AppendSelect<T9>(sql, parameters, columnsResult, 8);
+            sql = AppendSelect<T10>(sql, parameters, columnsResult, 9);
+            sql = AppendSelect <T11>(sql, parameters, columnsResult, 10);
+            sql = AppendSelect<T12>(sql, parameters, columnsResult, 11);
+            return this.Select<TResult>(sql);
+        }
         public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, TResult>> expression)
         {
             return _Select<TResult>(expression);
@@ -1105,9 +1186,35 @@ namespace SqlSugar
             _As(tableName, entityName);
             return this;
         }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> ClearFilter()
+        {
+            this.Filter(null, true);
+            return this;
+        }
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> Filter(string FilterName, bool isDisabledGobalFilter = false)
         {
             _Filter(FilterName, isDisabledGobalFilter);
+            return this;
+        }
+
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> ClearFilter(params Type[] types)
+        {
+            base.ClearFilter(types);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> ClearFilter<FilterType1>()
+        {
+            this.ClearFilter(typeof(FilterType1));
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> ClearFilter<FilterType1, FilterType2>()
+        {
+            this.ClearFilter(typeof(FilterType1), typeof(FilterType2));
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> ClearFilter<FilterType1, FilterType2, FilterType3>()
+        {
+            this.ClearFilter(typeof(FilterType1), typeof(FilterType2), typeof(FilterType3));
             return this;
         }
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> AddParameters(object parameters)

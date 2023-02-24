@@ -12,6 +12,7 @@ namespace SqlSugar
     public partial interface IContextMethods
     {
         SqlSugarProvider Context { get; set; }
+        QueryBuilder QueryBuilder { get; set; }
         ExpandoObject DataReaderToExpandoObject(IDataReader reader);
         List<ExpandoObject> DataReaderToExpandoObjectList(IDataReader reader);
         Task<List<ExpandoObject>> DataReaderToExpandoObjectListAsync(IDataReader dataReader);
@@ -33,6 +34,7 @@ namespace SqlSugar
         dynamic DataTableToDynamic(DataTable table);
         List<T> DataTableToList<T>(DataTable table);
         DataTable ListToDataTable<T>(List<T> list);
+        DataTable ListToDataTableWithAttr<T>(List<T> list);
         Dictionary<string, object> DataTableToDictionary(DataTable table);
         List<Dictionary<string, object>> DataTableToDictionaryList(DataTable table);
         ICacheService GetReflectionInoCacheInstance();

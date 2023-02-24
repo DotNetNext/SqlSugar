@@ -153,6 +153,13 @@ namespace SqlSugar.MySqlConnector
                 return "alter table {0} change  column {1} {2}";
             }
         }
+        protected override string IsAnyProcedureSql
+        {
+            get 
+            {
+                return "select count(*) from information_schema.Routines where ROUTINE_NAME='{0}' and ROUTINE_TYPE='PROCEDURE'";
+            }
+        }
         #endregion
 
         #region Check
@@ -297,7 +304,7 @@ namespace SqlSugar.MySqlConnector
         public override bool IsAnyColumnRemark(string columnName, string tableName)
         {
             var isAny=this.Context.DbMaintenance.GetColumnInfosByTableName(tableName, false)
-                .Any(it => it.ColumnDescription.HasValue() && it.DbColumnName.ToLower()==columnName.ToLower());
+                .Any(it => it.ColumnDescription.HasValue() && it.DbColumnName.EqualCase(columnName));
             return isAny;
         }
         public override bool AddColumnRemark(string columnName, string tableName, string description)

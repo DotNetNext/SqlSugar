@@ -23,10 +23,17 @@ namespace OrmTest
             db.CodeFirst.InitTables(typeof(CodeFirstTable1));//Create CodeFirstTable1 
             db.Insertable(new CodeFirstTable1() { Name = "a", Text="a" }).ExecuteCommand();
             var list = db.Queryable<CodeFirstTable1>().ToList();
+            db.CodeFirst.InitTables<CodeFirstChar2>();
+            db.Insertable(new CodeFirstChar2() { CharTest = '1' }).ExecuteCommand();
+            var list2=db.Queryable<CodeFirstChar2>().ToList();
             Console.WriteLine("#### CodeFirst end ####");
         }
     }
-
+    public class CodeFirstChar2 
+    {
+        [SqlSugar.SugarColumn(ColumnDataType ="varchar(1)")]
+        public char CharTest { get; set; }
+    }
     public class CodeFirstTable1
     {
         [SugarColumn(IsIdentity = true, IsPrimaryKey = true)]

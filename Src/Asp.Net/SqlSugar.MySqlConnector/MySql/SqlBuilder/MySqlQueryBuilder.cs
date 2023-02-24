@@ -53,6 +53,10 @@ namespace SqlSugar.MySqlConnector
             }
             else if (Skip != null && Take != null)
             {
+                if (Skip == 0 && Take == 1 && this.OrderByValue == "ORDER BY NOW() ")
+                {
+                    this.OrderByValue = null;
+                }
                 if (this.OrderByValue == "ORDER BY ") this.OrderByValue += GetSelectValue.Split(',')[0];
                 result = string.Format(PageTempalte, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, GetOrderByString, Skip.ObjToInt() > 0 ? Skip.ObjToInt() : 0, Take);
             }
@@ -62,6 +66,14 @@ namespace SqlSugar.MySqlConnector
             }
             this.OrderByValue = oldOrderValue;
             result = GetSqlQuerySql(result);
+            if (result.IndexOf("-- No table") > 0)
+            {
+                return "-- No table";
+            }
+            if (TranLock != null)
+            {
+                result = result + TranLock;
+            }
             return result;
         }
         private  string ToCountSqlString()
@@ -103,7 +115,7 @@ namespace SqlSugar.MySqlConnector
         }
         public override string ToCountSql(string sql)
         {
-            if (this.GroupByValue.HasValue())
+            if (this.GroupByValue.HasValue()||this.IsDistinct)
             {
                 return base.ToCountSql(sql);
             }
@@ -135,6 +147,10 @@ namespace SqlSugar.MySqlConnector
                 if (IsDistinct)
                 {
                     result = " DISTINCT " + result;
+                }
+                if (this.SubToListParameters != null && this.SubToListParameters.Any())
+                {
+                    result = SubToListMethod(result);
                 }
                 return result;
             }

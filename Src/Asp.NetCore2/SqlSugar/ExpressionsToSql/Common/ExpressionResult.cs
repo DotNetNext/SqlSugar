@@ -111,7 +111,7 @@ namespace SqlSugar
         public bool Contains(string value)
         {
             if (this.Result.Equals(value)) return true;
-            return (this.Result.ToString().Contains(value));
+            return (this.Result.ToString().ToLower().Contains(value?.ToLower()));
         }
 
         internal void Insert(int index, string value)

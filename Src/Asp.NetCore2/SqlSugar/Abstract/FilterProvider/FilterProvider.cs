@@ -50,10 +50,50 @@ namespace SqlSugar
         {
             _Filters = new List<SqlFilterItem>();
         }
+        public void Clear<T>()
+        {
+            _Filters = _Filters.Where(it => !(it is TableFilterItem<T>)).ToList();
+        }
+        public void Clear(params Type [] types)
+        {
+            _Filters = _Filters.Where(it => !types.Contains(it.type)).ToList();
+        }
+        public void Clear<T,T2>()
+        {
+            _Filters = _Filters.Where(it => !(it is TableFilterItem<T>) && !(it is TableFilterItem<T2>)).ToList();
+        }
+        public void Clear<T, T2,T3>()
+        {
+            _Filters = _Filters.Where(it => !(it is TableFilterItem<T>) && !(it is TableFilterItem<T2>) && !(it is TableFilterItem<T3>)).ToList();
+        }
         public void ClearAndBackup()
         {
             _BackUpFilters = _Filters;
             _Filters = new List<SqlFilterItem>();
+        }
+
+        public void ClearAndBackup<T>()
+        {
+            _BackUpFilters = _Filters;
+            _Filters = _BackUpFilters.Where(it=>!(it is TableFilterItem<T>)).ToList();
+        }
+
+        public void ClearAndBackup<T,T2>()
+        {
+            _BackUpFilters = _Filters;
+            _Filters = _BackUpFilters.Where(it => !(it is TableFilterItem<T>)&&!(it is TableFilterItem<T2>)).ToList();
+        }
+
+        public void ClearAndBackup<T, T2 , T3>()
+        {
+            _BackUpFilters = _Filters;
+            _Filters = _BackUpFilters.Where(it => !(it is TableFilterItem<T>) && !(it is TableFilterItem<T2>) && !(it is TableFilterItem<T3>)).ToList();
+        }
+
+        public void ClearAndBackup(params Type[] types)
+        {
+            _BackUpFilters = _Filters;
+            _Filters = _BackUpFilters.Where(it =>!types.Contains(it.type)).ToList();
         }
 
         public void Restore() 
@@ -65,31 +105,35 @@ namespace SqlSugar
             }
         }
 
-        public void AddTableFilter<T>(Expression<Func<T,bool>> expression, FilterJoinPosition filterJoinType = FilterJoinPosition.On) where T : class,new()
+        public QueryFilterProvider AddTableFilter<T>(Expression<Func<T,bool>> expression, FilterJoinPosition filterJoinType = FilterJoinPosition.On) 
         {
             var isOn = filterJoinType == FilterJoinPosition.On;
             var tableFilter = new TableFilterItem<T>(expression, isOn);
             this.Add(tableFilter);
+            return this;
         }
-        public void AddTableFilterIF<T>(bool isAppendFilter,Expression<Func<T, bool>> expression, FilterJoinPosition filterJoinType = FilterJoinPosition.On) where T : class, new()
+        public QueryFilterProvider AddTableFilterIF<T>(bool isAppendFilter,Expression<Func<T, bool>> expression, FilterJoinPosition filterJoinType = FilterJoinPosition.On) where T : class, new()
         {
             if (isAppendFilter) 
             {
                 AddTableFilter(expression, filterJoinType);
             }
+            return this;
         }
-        public void AddTableFilter(Type type,Expression expression, FilterJoinPosition filterJoinType = FilterJoinPosition.On)
+        public QueryFilterProvider AddTableFilter(Type type,Expression expression, FilterJoinPosition filterJoinType = FilterJoinPosition.On)
         {
             var isOn = filterJoinType == FilterJoinPosition.On;
             this.Add(new TableFilterItem<object>(type, expression, isOn));
+            return this;
         }
 
-        public void AddTableFilterIF(bool isAppendFilter, Type type, Expression expression, FilterJoinPosition posType = FilterJoinPosition.On)
+        public QueryFilterProvider AddTableFilterIF(bool isAppendFilter, Type type, Expression expression, FilterJoinPosition posType = FilterJoinPosition.On)
         {
             if (isAppendFilter)
             {
                 AddTableFilter(type, expression, posType);
             }
+            return this;
         }
         public enum FilterJoinPosition
         {

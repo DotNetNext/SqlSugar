@@ -20,7 +20,7 @@ namespace SqlSugar
             if (IsBoolMember(express))
             {
                 Expression trueValue = Expression.Constant(true);
-                args[0]= ExpressionBuilderHelper.CreateExpression(express.Test, trueValue, ExpressionType.And);
+                args[0]= ExpressionBuilderHelper.CreateExpression(express.Test, trueValue, ExpressionType.Equal);
             }
             var isLeft = parameter.IsLeft;
             MethodCallExpressionModel model = new MethodCallExpressionModel();

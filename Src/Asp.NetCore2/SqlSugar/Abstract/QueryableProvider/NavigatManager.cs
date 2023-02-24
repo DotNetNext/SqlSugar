@@ -326,6 +326,10 @@ namespace SqlSugar
             {
                 navPkColumn = navEntityInfo.Columns.Where(it => it.PropertyName== navObjectNameColumnInfo.Navigat.Name2).FirstOrDefault();
             }
+            if (navPkColumn == null && navType.FullName.IsCollectionsList()) 
+            {
+                Check.ExceptionEasy($"{navObjectNamePropety.Name} type error ", $"一对一不能是List对象 {navObjectNamePropety.Name} ");
+            }
             var ids = list.Select(it => it.GetType().GetProperty(navObjectNameColumnInfo.Navigat.Name).GetValue(it)).Select(it => it == null ? "null" : it).Distinct().ToList();
             List<IConditionalModel> conditionalModels = new List<IConditionalModel>();
             conditionalModels.Add((new ConditionalModel()
@@ -333,7 +337,7 @@ namespace SqlSugar
                 ConditionalType = ConditionalType.In,
                 FieldName = navPkColumn.DbColumnName,
                 FieldValue = String.Join(",", ids),
-                CSharpTypeName = navObjectNameColumnInfo.PropertyInfo.PropertyType.Name
+                CSharpTypeName = navPkColumn.PropertyInfo.PropertyType.Name
             }));
             if (list.Any()&&navObjectNamePropety.GetValue(list.First()) == null)
             {
@@ -534,7 +538,7 @@ namespace SqlSugar
             SqlInfo result = new SqlInfo();
             result.Parameters = new List<SugarParameter>();
             var isList = false;
-            int parameterIndex = 0;
+            int parameterIndex = 100;
             foreach (var item in _ListCallFunc)
             {
                 var method = item as MethodCallExpression;
@@ -558,6 +562,7 @@ namespace SqlSugar
                         queryable.QueryBuilder.LambdaExpressions.ParameterIndex = parameterIndex;
                         CheckHasRootShortName(method.Arguments[0], method.Arguments[1]);
                         var exp = method.Arguments[1];
+                        InitMappingtType(exp);
                         where.Add(" " + queryable.QueryBuilder.GetExpressionValue(exp, ResolveExpressType.WhereSingle).GetString());
                         SetTableShortName(result, queryable);
                         parameterIndex=queryable.QueryBuilder.LambdaExpressions.ParameterIndex ;
@@ -570,6 +575,7 @@ namespace SqlSugar
                     {
                         queryable.QueryBuilder.LambdaExpressions.ParameterIndex = parameterIndex;
                         var exp = method.Arguments[2];
+                        InitMappingtType(exp);
                         CheckHasRootShortName(method.Arguments[1], method.Arguments[2]);
                         where.Add(" " + queryable.QueryBuilder.GetExpressionValue(exp, ResolveExpressType.WhereSingle).GetString());
                         SetTableShortName(result, queryable);
@@ -792,17 +798,21 @@ namespace SqlSugar
             return shortName;
         }
 
-        public class SqlInfo 
+        private void InitMappingtType(Expression exp)
         {
-            public int? Take { get; set; }
-            public int? Skip { get; set; }
-            public string WhereString { get; set; }
-            public string OrderByString { get; set; }
-            public string SelectString { get; set; }
-            public List<SugarParameter>  Parameters { get; set; }
-            public List<MappingFieldsExpression> MappingExpressions { get; set; }
-            public string TableShortName { get;  set; }
+            if (exp is LambdaExpression)
+            {
+                var pars = (exp as LambdaExpression).Parameters;
+                if (pars != null)
+                {
+                    foreach (var item in pars)
+                    {
+                        this.Context.InitMappingInfo(item.Type);
+                    }
+                }
+            }
         }
+
 
     }
 }

@@ -49,7 +49,7 @@ namespace OrmTest
             //There are many methods to under db.ado
             var list= db.Ado.SqlQuery<Order>("select * from \"ORDER\" ");
             var intValue=db.Ado.SqlQuerySingle<int>("select 1");
-            db.Ado.ExecuteCommand("delete  from \"ORDER\" where id>1000");
+            db.Ado.ExecuteCommand("delete  from \"ORDER\" where id>@order",new { order=1});
             //db.Ado.xxx
             Console.WriteLine("#### Ado End ####");
         }

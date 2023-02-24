@@ -28,7 +28,7 @@ namespace SqlSugar
                 return string.Format("{0} {1} WHERE {2};", updateTable, setValues, string.Join("AND", whereList));
             }).ToArray()));
             var result= sb.ToString();
-            if (result == "\r\n") 
+            if (groupList.Count==0) 
             {
                 return null;
             }
@@ -37,9 +37,22 @@ namespace SqlSugar
 
         private string GetOracleUpdateColums(int i, DbColumnInfo m)
         {
-            return string.Format("\"{0}\"={1}", m.DbColumnName.ToUpper(), FormatValue(i, m.DbColumnName, m.Value));
+            return string.Format("\"{0}\"={1}", m.DbColumnName.ToUpper(IsUppper), base.GetDbColumn(m,FormatValue(i, m.DbColumnName, m.Value)));
         }
-
+        public bool IsUppper
+        {
+            get
+            {
+                if (this.Context.CurrentConnectionConfig.MoreSettings == null)
+                {
+                    return true;
+                }
+                else
+                {
+                    return this.Context.CurrentConnectionConfig.MoreSettings.IsAutoToUpper == true;
+                }
+            }
+        }
         public object FormatValue(int i, string name, object value)
         {
             if (value == null)

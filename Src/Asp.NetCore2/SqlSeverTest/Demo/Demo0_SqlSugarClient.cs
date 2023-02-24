@@ -235,7 +235,7 @@ namespace OrmTest
 
             var db1 = db.Ado.Connection.Database;
             //use db1
-            db.CodeFirst.SetStringDefaultLength(200).InitTables(typeof(Order), typeof(OrderItem));//
+            db.CodeFirst.InitTables(typeof(Order), typeof(OrderItem));//
             db.Insertable(new Order() { Name = "order1", CreateTime = DateTime.Now }).ExecuteCommand();
             Console.WriteLine(db.CurrentConnectionConfig.DbType + ":" + db.Queryable<Order>().Count());
 
@@ -243,7 +243,7 @@ namespace OrmTest
             db.ChangeDatabase("2");
             var db2 = db.Ado.Connection.Database;
             db.DbMaintenance.CreateDatabase();//Create Database2
-            db.CodeFirst.SetStringDefaultLength(200).InitTables(typeof(Order), typeof(OrderItem));
+            db.CodeFirst.InitTables(typeof(Order), typeof(OrderItem));
             db.Insertable(new Order() { Name = "order1", CreateTime = DateTime.Now }).ExecuteCommand();
             Console.WriteLine(db.CurrentConnectionConfig.DbType + ":" + db.Queryable<Order>().Count());
 

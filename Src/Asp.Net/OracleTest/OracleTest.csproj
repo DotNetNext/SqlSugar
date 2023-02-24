@@ -80,6 +80,7 @@
     <Compile Include="Models\ViewOrder.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UnitTest\UInsert3.cs" />
     <Compile Include="UnitTest\Unit001.cs" />
     <Compile Include="UnitTest\UnitStorageableBool.cs" />
     <Compile Include="UnitTest\UCustom03.cs" />

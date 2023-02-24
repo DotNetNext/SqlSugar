@@ -313,9 +313,17 @@ namespace SqlSugar
                     {
                         method = isNullableType ? getConvertStringGuid : getStringGuid;
                     }
-                    else if (bindProperyTypeName == "xelement") 
+                    else if (bindProperyTypeName == "xelement")
                     {
-                        method =  getXelement;
+                        method = getXelement;
+                    }
+                    else if (dbTypeName == "CHAR" && DataRecord.GetDataTypeName(ordinal) == "CHAR(36)")
+                    {
+                        method = null;
+                    }
+                    else if (bindPropertyType.Name == "Char") 
+                    {
+                        method = null;
                     }
                     break;
                 case CSharpDataType.DateTime:

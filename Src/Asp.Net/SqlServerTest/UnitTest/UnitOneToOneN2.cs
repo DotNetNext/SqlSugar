@@ -11,7 +11,7 @@ namespace OrmTest
             var db = NewUnitTest.Db;
 
             ////建表 
-            //db.CodeFirst.InitTables<Country, Province, City>();
+        
             //db.DbMaintenance.TruncateTable<Country, Province, City>();
 
             //用例代码 
@@ -19,7 +19,7 @@ namespace OrmTest
                 .Where(Country => Country.Province.City.CityId == 1)
                 .ToSqlString();//用例代码
 
-            if (!result.Contains("City1.[ProvinceId]=Province0.[ProvinceId]"))
+            if (!result.Contains("[City1].[ProvinceId]=[Province0].[ProvinceId]"))
             {
                 throw new Exception("unit error");
             }

@@ -9,6 +9,11 @@ using System.Text.RegularExpressions;
 using System.Reflection;
 using System.Dynamic;
 using System.Threading.Tasks;
+using System.Collections.ObjectModel;
+using NetTaste;
+using Newtonsoft.Json.Linq;
+using System.Xml.Linq;
+
 
 namespace SqlSugar
 {
@@ -73,6 +78,64 @@ namespace SqlSugar
             }
             return result;
         }
+        private List<T> _ToParentListByTreeKey(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue, Expression<Func<T, bool>> parentWhereExpression)
+        {
+            var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            var treeKey = entity.Columns.FirstOrDefault(it => it.IsTreeKey);
+            List<T> result = new List<T>() { };
+            var parentIdName = UtilConvert.ToMemberExpression((parentIdExpression as LambdaExpression).Body).Member.Name;
+            var ParentInfo = entity.Columns.First(it => it.PropertyName == parentIdName);
+            var parentPropertyName = ParentInfo.DbColumnName;
+            var tableName = this.QueryBuilder.GetTableNameString;
+            if (this.QueryBuilder.IsSingle() == false)
+            {
+                if (this.QueryBuilder.JoinQueryInfos.Count > 0)
+                {
+                    tableName = this.QueryBuilder.JoinQueryInfos.First().TableName;
+                }
+                if (this.QueryBuilder.EasyJoinInfos.Count > 0)
+                {
+                    tableName = this.QueryBuilder.JoinQueryInfos.First().TableName;
+                }
+            }
+            var current = this.Context.Queryable<T>().AS(tableName).WhereIF(parentWhereExpression != default, parentWhereExpression).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).Where(new List<IConditionalModel>() {
+                new ConditionalModel()
+                {
+                    ConditionalType = ConditionalType.Equal,
+                    CSharpTypeName = treeKey.PropertyInfo.PropertyType.Name,
+                    FieldValue = primaryKeyValue + "",
+                    FieldName = treeKey.DbColumnName
+                } }).First();
+            if (current != null)
+            {
+                result.Add(current);
+                object parentId = ParentInfo.PropertyInfo.GetValue(current, null);
+                int i = 0;
+                while (parentId != null && this.Context.Queryable<T>().AS(tableName).WhereIF(parentWhereExpression != default, parentWhereExpression).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).Where(new List<IConditionalModel>() {
+                new ConditionalModel()
+                {
+                    ConditionalType = ConditionalType.Equal,
+                    CSharpTypeName = treeKey.PropertyInfo.PropertyType.Name,
+                    FieldValue = parentId + "",
+                    FieldName = treeKey.DbColumnName
+                } }).Any())
+                {
+                    Check.Exception(i > 100, ErrorMessage.GetThrowMessage("Dead cycle", "出现死循环或超出循环上限（100），检查最顶层的ParentId是否是null或者0"));
+                    var parent = this.Context.Queryable<T>().AS(tableName).WhereIF(parentWhereExpression != default, parentWhereExpression).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).Where(new List<IConditionalModel>() {
+                new ConditionalModel()
+                {
+                    ConditionalType = ConditionalType.Equal,
+                    CSharpTypeName = treeKey.PropertyInfo.PropertyType.Name,
+                    FieldValue = parentId + "",
+                    FieldName = treeKey.DbColumnName
+                } }).First();
+                    result.Add(parent);
+                    parentId = ParentInfo.PropertyInfo.GetValue(parent, null);
+                    ++i;
+                }
+            }
+            return result;
+        }
 
         private async Task<List<T>> _ToParentListByTreeKeyAsync(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue)
         {
@@ -118,6 +181,65 @@ namespace SqlSugar
                 {
                     Check.Exception(i > 100, ErrorMessage.GetThrowMessage("Dead cycle", "出现死循环或超出循环上限（100），检查最顶层的ParentId是否是null或者0"));
                     var parent = await this.Context.Queryable<T>().AS(tableName).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).Where(new List<IConditionalModel>() {
+                new ConditionalModel()
+                {
+                    ConditionalType = ConditionalType.Equal,
+                    CSharpTypeName = treeKey.PropertyInfo.PropertyType.Name,
+                    FieldValue = parentId + "",
+                    FieldName = treeKey.DbColumnName
+                } }).FirstAsync();
+                    result.Add(parent);
+                    parentId = ParentInfo.PropertyInfo.GetValue(parent, null);
+                    ++i;
+                }
+            }
+            return result;
+        }
+
+        private async Task<List<T>> _ToParentListByTreeKeyAsync(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue, Expression<Func<T, bool>> parentWhereExpression)
+        {
+            var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            var treeKey = entity.Columns.FirstOrDefault(it => it.IsTreeKey);
+            List<T> result = new List<T>() { };
+            var parentIdName = UtilConvert.ToMemberExpression((parentIdExpression as LambdaExpression).Body).Member.Name;
+            var ParentInfo = entity.Columns.First(it => it.PropertyName == parentIdName);
+            var parentPropertyName = ParentInfo.DbColumnName;
+            var tableName = this.QueryBuilder.GetTableNameString;
+            if (this.QueryBuilder.IsSingle() == false)
+            {
+                if (this.QueryBuilder.JoinQueryInfos.Count > 0)
+                {
+                    tableName = this.QueryBuilder.JoinQueryInfos.First().TableName;
+                }
+                if (this.QueryBuilder.EasyJoinInfos.Count > 0)
+                {
+                    tableName = this.QueryBuilder.JoinQueryInfos.First().TableName;
+                }
+            }
+            var current = await this.Context.Queryable<T>().AS(tableName).WhereIF(parentWhereExpression!=default, parentWhereExpression).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).Where(new List<IConditionalModel>() {
+                new ConditionalModel()
+                {
+                    ConditionalType = ConditionalType.Equal,
+                    CSharpTypeName = treeKey.PropertyInfo.PropertyType.Name,
+                    FieldValue = primaryKeyValue + "",
+                    FieldName = treeKey.DbColumnName
+                } }).FirstAsync();
+            if (current != null)
+            {
+                result.Add(current);
+                object parentId = ParentInfo.PropertyInfo.GetValue(current, null);
+                int i = 0;
+                while (parentId != null && await this.Context.Queryable<T>().AS(tableName).WhereIF(parentWhereExpression!=default, parentWhereExpression).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).Where(new List<IConditionalModel>() {
+                new ConditionalModel()
+                {
+                    ConditionalType = ConditionalType.Equal,
+                    CSharpTypeName = treeKey.PropertyInfo.PropertyType.Name,
+                    FieldValue = parentId + "",
+                    FieldName = treeKey.DbColumnName
+                } }).AnyAsync())
+                {
+                    Check.Exception(i > 100, ErrorMessage.GetThrowMessage("Dead cycle", "出现死循环或超出循环上限（100），检查最顶层的ParentId是否是null或者0"));
+                    var parent = await this.Context.Queryable<T>().AS(tableName).WhereIF(parentWhereExpression!=default, parentWhereExpression).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).Where(new List<IConditionalModel>() {
                 new ConditionalModel()
                 {
                     ConditionalType = ConditionalType.Equal,
@@ -877,6 +999,71 @@ namespace SqlSugar
         #endregion
 
         #region  Other
+        protected string AppendSelect(List<EntityColumnInfo> entityColumnInfos,string sql, ReadOnlyCollection<ParameterExpression> parameters, List<EntityColumnInfo> columnsResult, int parameterIndex1)
+        {
+            var lowerSql = sql.ToLower();
+            var isSubquery = lowerSql.Contains("select ") && ExpressionTool.IsMemberInit(this.QueryBuilder.SelectValue);
+            if (isSubquery) 
+            {
+                return AppendSelectWithSubQuery(entityColumnInfos, sql, parameters, columnsResult, parameterIndex1);
+            }
+            var columns = entityColumnInfos;
+            var parameterName = parameters[parameterIndex1];
+            foreach (var item in columns)
+            {
+                if (item.IsIgnore == false && columnsResult.Any(it => it.PropertyName.EqualCase(item.PropertyName)) && !lowerSql.Contains(SqlBuilder.GetTranslationColumnName(item.PropertyName.ToLower())))
+                {
+                    if (item.EntityName == this.QueryBuilder.EntityName&&sql.StartsWith("*,")) 
+                    {
+                        continue;
+                    }
+                    sql = $" {sql},{SqlBuilder.GetTranslationColumnName(item.DbColumnName)} AS {SqlBuilder.GetTranslationColumnName(item.PropertyName)} ";
+                }
+            }
+
+            return sql;
+        }
+
+        private string AppendSelectWithSubQuery(List<EntityColumnInfo> entityColumnInfos, string sql, ReadOnlyCollection<ParameterExpression> parameters, List<EntityColumnInfo> columnsResult, int parameterIndex1)
+        {
+            var list = ExpressionTool.GetMemberInit(this.QueryBuilder.SelectValue).Bindings.Cast<MemberBinding>()
+                 .Select(it => it.Member.Name).ToList();
+            var columns = entityColumnInfos;
+            var parameterName = parameters[parameterIndex1];
+            if (this.QueryBuilder.AutoAppendedColumns == null) 
+            {
+                this.QueryBuilder.AutoAppendedColumns = new List<string>();
+            }
+            foreach (var item in columns)
+            {
+                if (item.IsIgnore == false &&!this.QueryBuilder.AutoAppendedColumns.Contains(item.PropertyName)&& columnsResult.Any(it => it.PropertyName.EqualCase(item.PropertyName))&& !list.Any(it=>it.EqualCase(item.PropertyName)))
+                {
+                    sql = $" {sql},{SqlBuilder.GetTranslationColumnName(item.DbColumnName)} AS {SqlBuilder.GetTranslationColumnName(item.PropertyName)} ";
+                    this.QueryBuilder.AutoAppendedColumns.Add(item.PropertyName);
+                }
+            }
+            return sql;
+        }
+
+        protected string AppendSelect<EntityType>(string sql, ReadOnlyCollection<ParameterExpression> parameters, List<EntityColumnInfo> columnsResult, int parameterIndex1)
+        {
+            var columns = this.Context.EntityMaintenance.GetEntityInfo<EntityType>().Columns;
+            var parameterName = parameters[parameterIndex1].Name;
+            if (parameterName.HasValue()) 
+            {
+                parameterName = this.SqlBuilder.GetTranslationColumnName(parameterName);
+            }
+            foreach (var item in columns)
+            {
+                if (item.IsIgnore == false && columnsResult.Any(it => it.PropertyName.EqualCase(item.PropertyName)) && !sql.ToLower().Contains(SqlBuilder.GetTranslationColumnName(item.PropertyName.ToLower())))
+                {
+                    sql = $" {sql},{parameterName}.{SqlBuilder.GetTranslationColumnName(item.DbColumnName)} AS {SqlBuilder.GetTranslationColumnName(item.PropertyName)} ";
+                }
+            }
+
+            return sql;
+        }
+
         protected JoinQueryInfo GetJoinInfo(Expression joinExpression, JoinType joinType)
         {
             QueryBuilder.CheckExpressionNew(joinExpression, "Join");
@@ -891,6 +1078,7 @@ namespace SqlSugar
                 JoinType = joinType,
                 JoinWhere = expResult.GetResultString(),
                 ShortName = lastPareamter.Name,
+                EntityType= lastPareamter.Type,
                 TableName = this.Context.EntityMaintenance.GetTableName(lastPareamter.Type)
             };
             if (this.Context.CurrentConnectionConfig?.MoreSettings?.PgSqlIsAutoToLower == false) 
@@ -908,11 +1096,21 @@ namespace SqlSugar
                     {
                         this.QueryBuilder.AsTables[tableinfo.Key] = " (SELECT * FROM " + this.QueryBuilder.AsTables.First().Value + $" {SqlWith.NoLock} )";
                     }
+                    else if (this.QueryBuilder.IsSqlQuery && this.QueryBuilder.AsTables.First().Value.ObjToString().StartsWith("("))
+                    {
+                        var tableName = this.QueryBuilder.AsTables.First().Value;
+                        this.QueryBuilder.AsTables[tableinfo.Key] = " (SELECT * FROM " + tableName + ")" + this.QueryBuilder.TableShortName;
+                    }
                     else
                     {
-                        this.QueryBuilder.AsTables[tableinfo.Key] = " (SELECT * FROM " + this.QueryBuilder.AsTables.First().Value + ")";
+                        var tableName = this.QueryBuilder.AsTables.First().Value;
+                        if (tableName != null && Regex.IsMatch(tableName, @"^\w+$"))
+                        {
+                            tableName = SqlBuilder.GetTranslationTableName(tableName);
+                        }
+                        this.QueryBuilder.AsTables[tableinfo.Key] = " (SELECT * FROM " + tableName + ")";
                     }
-                    this.QueryBuilder.SelectValue = this.QueryBuilder.TableShortName + ".*";
+                    this.QueryBuilder.SelectValue =this.SqlBuilder.GetTranslationColumnName(this.QueryBuilder.TableShortName) + ".*";
                 }
             }
             Check.Exception(result.JoinIndex > 10, ErrorMessage.GetThrowMessage("只支持12个表", "Only 12 tables are supported"));
@@ -1063,6 +1261,10 @@ namespace SqlSugar
         {
             if (this.QueryBuilder.AsTables != null && this.QueryBuilder.AsTables.Any(it => it.Key == entityName))
             {
+                if (this.QueryBuilder.JoinQueryInfos.Count(it => it.TableName.EqualCase(tableName)) > 1)
+                {
+                    Check.ExceptionEasy($"if same entity name ,.LeftJoin(db.Queryable<{entityName}>,(x,y..)=>....).As(\"{tableName}\")",$"存在相同实体，请使用.LeftJoin(db.Queryable<{entityName}>).As(\"{tableName}\",(x,y..)=>...)");
+                }
                 Check.Exception(true, ErrorMessage.GetThrowMessage($"use As<{tableName}>(\"{tableName}\")", $"请把 As(\"{tableName}\"), 改成 As<{tableName}实体>(\"{tableName}\")"));
             }
             else
@@ -1129,8 +1331,12 @@ namespace SqlSugar
             RestoreMapping();
             _Mapper(result);
             _InitNavigat(result);
+            _SubQuery(result);
             return result;
         }
+
+
+
         protected async Task<List<TResult>> _ToListAsync<TResult>()
         {
             List<TResult> result = null;
@@ -1147,6 +1353,7 @@ namespace SqlSugar
             RestoreMapping();
             _Mapper(result);
             await _InitNavigatAsync(result);
+            await _SubQueryAsync(result);
             return result;
         }
         private void ToSqlBefore()
@@ -1186,6 +1393,8 @@ namespace SqlSugar
         private List<TResult> GetData<TResult>(bool isComplexModel, Type entityType, IDataReader dataReader)
         {
             List<TResult> result;
+            this.Bind.QueryBuilder = this.QueryBuilder;
+            this.Context.Utilities.QueryBuilder = this.QueryBuilder;
             if (entityType == UtilConstants.DynamicType)
             {
                 result = this.Context.Utilities.DataReaderToExpandoObjectList(dataReader) as List<TResult>;
@@ -1216,6 +1425,8 @@ namespace SqlSugar
         private async Task<List<TResult>> GetDataAsync<TResult>(bool isComplexModel, Type entityType, IDataReader dataReader)
         {
             List<TResult> result;
+            this.Bind.QueryBuilder = this.QueryBuilder;
+            this.Context.Utilities.QueryBuilder = this.QueryBuilder;
             if (entityType == UtilConstants.DynamicType)
             {
                 result = await this.Context.Utilities.DataReaderToExpandoObjectListAsync(dataReader) as List<TResult>;
@@ -1317,7 +1528,7 @@ namespace SqlSugar
             asyncQueryableBuilder.SelectValue = this.QueryBuilder.SelectValue;
             asyncQueryableBuilder.WhereInfos = this.Context.Utilities.TranslateCopy(this.QueryBuilder.WhereInfos);
             asyncQueryableBuilder.EasyJoinInfos = this.Context.Utilities.TranslateCopy(this.QueryBuilder.EasyJoinInfos);
-            asyncQueryableBuilder.JoinQueryInfos = this.Context.Utilities.TranslateCopy(this.QueryBuilder.JoinQueryInfos);
+            asyncQueryableBuilder.JoinQueryInfos = QueryBuilder.JoinQueryInfos.Select(it => CopyJoinInfo(it)).ToList();
             asyncQueryableBuilder.WhereIndex = this.QueryBuilder.WhereIndex;
             asyncQueryableBuilder.EntityType = this.QueryBuilder.EntityType;
             asyncQueryableBuilder.EntityName = this.QueryBuilder.EntityName;
@@ -1342,7 +1553,25 @@ namespace SqlSugar
             asyncQueryableBuilder.OldSql = this.QueryBuilder.OldSql;
             asyncQueryableBuilder.IsCrossQueryWithAttr = this.QueryBuilder.IsCrossQueryWithAttr;
             asyncQueryableBuilder.CrossQueryItems = this.QueryBuilder.CrossQueryItems;
+            asyncQueryableBuilder.SubToListParameters = this.Context.Utilities.TranslateCopy(this.QueryBuilder.SubToListParameters);
+            asyncQueryableBuilder.AppendColumns = this.Context.Utilities.TranslateCopy(this.QueryBuilder.AppendColumns);
+            asyncQueryableBuilder.AppendValues = this.Context.Utilities.TranslateCopy(this.QueryBuilder.AppendValues);
+            asyncQueryableBuilder.RemoveFilters = this.QueryBuilder.RemoveFilters?.ToArray();
         }
+
+        private static JoinQueryInfo CopyJoinInfo(JoinQueryInfo it)
+        {
+            return new JoinQueryInfo()
+            {
+                EntityType = it.EntityType,
+                JoinIndex = it.JoinIndex,
+                JoinType = it.JoinType,
+                JoinWhere = it.JoinWhere,
+                ShortName = it.ShortName,
+                TableName = it.TableName
+            };
+        }
+
         protected int SetCacheTime(int cacheDurationInSeconds)
         {
             if (cacheDurationInSeconds == int.MaxValue && this.Context.CurrentConnectionConfig.MoreSettings != null && this.Context.CurrentConnectionConfig.MoreSettings.DefaultCacheDurationInSeconds > 0)
@@ -1359,6 +1588,243 @@ namespace SqlSugar
             string sql = QueryBuilder.ToSqlString();
             RestoreMapping();
             return new KeyValuePair<string, List<SugarParameter>>(sql, QueryBuilder.Parameters);
+        }
+        #endregion
+
+        #region Subquery
+        private bool IsSubToList()
+        {
+            return this.QueryBuilder.SubToListParameters != null && this.QueryBuilder.SubToListParameters.Count > 0;
+        }
+
+        public virtual ISugarQueryable<T> MergeTableWithSubToListJoin()
+        {
+            //_ToSql();
+            var clone = this.Clone();
+
+            clone.QueryBuilder.AppendValues = null;
+            clone.QueryBuilder.SubToListParameters = null;
+            clone.QueryBuilder.AppendColumns = null;
+            Check.Exception(this.MapperAction != null || this.MapperActionWithCache != null, ErrorMessage.GetThrowMessage("'Mapper’ needs to be written after ‘MergeTable’ ", "Mapper 只能在 MergeTable 之后使用"));
+            //Check.Exception(this.QueryBuilder.SelectValue.IsNullOrEmpty(),ErrorMessage.GetThrowMessage( "MergeTable need to use Queryable.Select Method .", "使用MergeTable之前必须要有Queryable.Select方法"));
+            //Check.Exception(this.QueryBuilder.Skip > 0 || this.QueryBuilder.Take > 0 || this.QueryBuilder.OrderByValue.HasValue(),ErrorMessage.GetThrowMessage( "MergeTable  Queryable cannot Take Skip OrderBy PageToList  ", "使用 MergeTable不能有 Take Skip OrderBy PageToList 等操作,你可以在Mergetable之后操作"));
+            var sqlobj = clone.ToSql();
+            var index = QueryBuilder.WhereIndex + 1;
+            var result = this.Context.Queryable<T>().AS(SqlBuilder.GetPackTable(sqlobj.Key, "MergeTable")).AddParameters(sqlobj.Value).Select("*").With(SqlWith.Null);
+            result.QueryBuilder.WhereIndex = index;
+            result.QueryBuilder.LambdaExpressions.ParameterIndex = QueryBuilder.LambdaExpressions.ParameterIndex++;
+            result.QueryBuilder.LambdaExpressions.Index = QueryBuilder.LambdaExpressions.Index++;
+            if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle)
+            {
+                result.Select("MergeTable.*");
+            }
+            result.QueryBuilder.AppendValues = this.QueryBuilder.AppendValues;
+            result.QueryBuilder.SubToListParameters = this.QueryBuilder.SubToListParameters;
+            result.QueryBuilder.AppendColumns = this.QueryBuilder.AppendColumns;
+            return result;
+        }
+        public virtual ISugarQueryable<T> MergeTableWithSubToList()
+        {
+            _ToSql();
+            var clone = this.Clone();
+
+            clone.QueryBuilder.AppendValues = null;
+            clone.QueryBuilder.SubToListParameters = null;
+            clone.QueryBuilder.AppendColumns = null;
+            Check.Exception(this.MapperAction != null || this.MapperActionWithCache != null, ErrorMessage.GetThrowMessage("'Mapper’ needs to be written after ‘MergeTable’ ", "Mapper 只能在 MergeTable 之后使用"));
+            //Check.Exception(this.QueryBuilder.SelectValue.IsNullOrEmpty(),ErrorMessage.GetThrowMessage( "MergeTable need to use Queryable.Select Method .", "使用MergeTable之前必须要有Queryable.Select方法"));
+            //Check.Exception(this.QueryBuilder.Skip > 0 || this.QueryBuilder.Take > 0 || this.QueryBuilder.OrderByValue.HasValue(),ErrorMessage.GetThrowMessage( "MergeTable  Queryable cannot Take Skip OrderBy PageToList  ", "使用 MergeTable不能有 Take Skip OrderBy PageToList 等操作,你可以在Mergetable之后操作"));
+            var sqlobj = clone.ToSql();
+            var index = QueryBuilder.WhereIndex + 1;
+            var result = this.Context.Queryable<T>().AS(SqlBuilder.GetPackTable(sqlobj.Key, "MergeTable")).AddParameters(sqlobj.Value).Select("*").With(SqlWith.Null);
+            result.QueryBuilder.WhereIndex = index;
+            result.QueryBuilder.LambdaExpressions.ParameterIndex = QueryBuilder.LambdaExpressions.ParameterIndex++;
+            result.QueryBuilder.LambdaExpressions.Index = QueryBuilder.LambdaExpressions.Index++;
+            if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle)
+            {
+                result.Select("MergeTable.*");
+            }
+            result.QueryBuilder.AppendValues = this.QueryBuilder.AppendValues;
+            result.QueryBuilder.SubToListParameters = this.QueryBuilder.SubToListParameters;
+            result.QueryBuilder.AppendColumns = this.QueryBuilder.AppendColumns;
+            return result;
+        }
+
+        private void _SubQuery<TResult>(List<TResult> result)
+        {
+            if (result == null || result.Count == 0)
+            {
+                return;
+            }
+            var isSubToList = this.QueryBuilder.SubToListParameters != null && this.QueryBuilder.SubToListParameters.Any();
+            if (!isSubToList)
+            {
+                return;
+            }
+            var appendValues = this.QueryBuilder.AppendValues;
+            var subParamters = this.QueryBuilder.SubToListParameters;
+            foreach (var subPara in subParamters)
+            {
+                if (appendValues != null)
+                    AppendSubWhereToList(result, appendValues, subPara);
+                else
+                    AppendSubToList(result, appendValues, subPara);
+            }
+
+        }
+
+        private void AppendSubToList<TResult>(List<TResult> result, List<List<QueryableAppendColumn>> appendValues, KeyValuePair<string, object> subPara)
+        {
+            var ps = this.QueryBuilder.Parameters;
+            var itemProperty = typeof(TResult).GetProperty(subPara.Key);
+            var callType = itemProperty.PropertyType.GetGenericArguments()[0];
+            var sql = subPara.Value.ObjToString().Replace("@sugarIndex", "0");
+            sql =SqlBuilder.RemoveParentheses(sql);
+            var methodParamters = new object[] { sql, ps };
+            var subList = ExpressionBuilderHelper.CallFunc(callType, methodParamters, this.Clone(), "SubQueryList");
+            for (var i = 0; i < result.Count; i++)
+            {
+                var item = result[i];
+                var setValue = Activator.CreateInstance(itemProperty.PropertyType, true) as IList;
+                if (typeof(TResult).IsAnonymousType())
+                {
+                    var jobj = JObject.FromObject(item);
+                    var prop = jobj.Property(itemProperty.Name);
+                    prop.Value = JArray.FromObject(subList);
+                    result[i] = jobj.ToObject<TResult>();
+                }
+                else
+                {
+                    itemProperty.SetValue(item, subList);
+                }
+            }
+        }
+
+        private void AppendSubWhereToList<TResult>(List<TResult> result, List<List<QueryableAppendColumn>> appendValues, KeyValuePair<string, object> subPara)
+        {
+            var ps = this.QueryBuilder.Parameters;
+            var index = 0;
+            List<string> sqls = new List<string>();
+            foreach (var item in result)
+            {
+
+                var sql = subPara.Value.ObjToString();
+                var replaceValues = appendValues[index];
+                foreach (var re in replaceValues)
+                {
+                    var config = this.Context.CurrentConnectionConfig;
+                    var p = new SugarParameter[] {
+                            new SugarParameter("@p",re.Value)
+                        };
+                    var value = UtilMethods.GetSqlString(config.DbType, "@p", p, true);
+                    sql = sql.Replace(re.Name, value);
+                    sql = SqlBuilder.RemoveParentheses(sql);
+                }
+                sql = sql.Replace("@sugarIndex", index + "");
+                sqls.Add(sql);
+
+                index++;
+            }
+
+            var itemProperty = typeof(TResult).GetProperty(subPara.Key);
+            var callType = itemProperty.PropertyType.GetGenericArguments()[0];
+
+            var sqlstring = string.Join(" \r\n UNION ALL  ", sqls);
+            var methodParamters = new object[] { sqlstring, ps.ToArray() };
+            this.QueryBuilder.SubToListParameters = null;
+            this.QueryBuilder.AppendColumns = new List<QueryableAppendColumn>() {
+                 new QueryableAppendColumn(){ Name="sugarIndex",AsName="sugarIndex" }
+                };
+            this.QueryBuilder.AppendValues = null;
+            var subList = ExpressionBuilderHelper.CallFunc(callType, methodParamters, this.Clone(), "SubQueryList");
+            var appendValue = this.QueryBuilder.AppendValues;
+            var list = (subList as IEnumerable).Cast<object>().ToList();
+            if (typeof(TResult).IsAnonymousType())
+            {
+                SetSubListWithAnonymousType(result, itemProperty, appendValue, list, 0);
+            }
+            else
+            {
+                SetSubListWithClass(result, itemProperty, appendValue, list, 0);
+            }
+        }
+        private static int SetSubListWithAnonymousType<TResult>(List<TResult> result, PropertyInfo itemProperty, List<List<QueryableAppendColumn>> appendValue, List<object> list, int resIndex)
+        {
+            for (int i = 0; i < result.Count; i++)
+            {
+                var item = result[i];
+                var setValue = Activator.CreateInstance(itemProperty.PropertyType, true) as IList;
+                if (appendValue != null)
+                {
+                    var appindex = 0;
+                    foreach (var appValue in appendValue)
+                    {
+                        if (appValue[0].Value.ObjToInt() == i)
+                        {
+                            var addItem = list[appindex];
+                            setValue.Add(addItem);
+                        }
+                        appindex++;
+                    }
+                }
+                var jobj = JObject.FromObject(item);
+                var prop = jobj.Property(itemProperty.Name);
+                prop.Value = JArray.FromObject(setValue);
+                result[i] = jobj.ToObject<TResult>();
+                //itemProperty.SetValue(item, setValue);
+            }
+            return resIndex;
+        }
+
+        private static int SetSubListWithClass<TResult>(List<TResult> result, PropertyInfo itemProperty, List<List<QueryableAppendColumn>> appendValue, List<object> list, int resIndex)
+        {
+            foreach (var item in result)
+            {
+                var setValue = Activator.CreateInstance(itemProperty.PropertyType, true) as IList;
+                if (appendValue != null)
+                {
+                    var appindex = 0;
+                    foreach (var appValue in appendValue)
+                    {
+                        if (appValue[0].Value.ObjToInt() == resIndex)
+                        {
+                            var addItem = list[appindex];
+                            setValue.Add(addItem);
+                        }
+                        appindex++;
+                    }
+                }
+                itemProperty.SetValue(item, setValue);
+                resIndex++;
+            }
+
+            return resIndex;
+        }
+
+        private async Task _SubQueryAsync<TResult>(List<TResult> result)
+        {
+            var isSubToList = this.QueryBuilder.SubToListParameters != null && this.QueryBuilder.SubToListParameters.Any();
+            if (!isSubToList)
+            {
+                return;
+            }
+            await Task.Run(() =>{_SubQuery(result);});
+        }
+        public List<Type> SubQueryList<Type>(string sql,object parameters) 
+        {
+            return this.Context.Ado.SqlQuery<Type>(sql,parameters);
+        }
+        #endregion
+
+        #region Bool
+
+        private bool MasterHasWhereFirstJoin()
+        {
+            return this.QueryBuilder.JoinIndex == 0 &&
+                             this.QueryBuilder.IsSqlQuery == false &&
+                               !this.QueryBuilder.AsTables.Any() &&
+                                 this.QueryBuilder.IsSingle() &&
+                                  this.QueryBuilder.WhereInfos.Any();
         }
         #endregion
     }

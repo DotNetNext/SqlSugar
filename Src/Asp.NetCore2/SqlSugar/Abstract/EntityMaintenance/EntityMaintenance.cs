@@ -291,6 +291,10 @@ namespace SqlSugar
                         column.SqlParameterDbType = sugarColumn.SqlParameterDbType;
                         column.SqlParameterSize = sugarColumn.SqlParameterSize;
                         column.CreateTableFieldSort = sugarColumn.CreateTableFieldSort;
+                        column.InsertServerTime = sugarColumn.InsertServerTime;
+                        column.InsertSql = sugarColumn.InsertSql;
+                        column.UpdateServerTime= sugarColumn.UpdateServerTime;
+                        column.UpdateSql= sugarColumn.UpdateSql;
                         if (sugarColumn.IsJson && String.IsNullOrEmpty(sugarColumn.ColumnDataType))
                         {
                             if (this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL)
@@ -331,13 +335,24 @@ namespace SqlSugar
                 }
                 if (this.Context.CurrentConnectionConfig.ConfigureExternalServices != null && this.Context.CurrentConnectionConfig.ConfigureExternalServices.EntityService != null)
                 {
-                    this.Context.CurrentConnectionConfig.ConfigureExternalServices.EntityService(property, column);
+                    if (!column.EntityName.ObjToString().StartsWith("<>f__AnonymousType"))
+                    {
+                        this.Context.CurrentConnectionConfig.ConfigureExternalServices.EntityService(property, column);
+                    }
                 }
                 if (column.PropertyInfo.DeclaringType != null
                     && column.PropertyInfo.DeclaringType != result.Type
                     &&result.Columns.Any(x=>x.PropertyName==column.PropertyName)) 
                 {
                     continue;
+                }
+                if (column.DataType == null&& property != null&& property.PropertyType.Name.IsIn("TimeOnly")) 
+                {
+                    column.DataType = "time";
+                }
+                if (column.DataType == null && property != null && property.PropertyType.Name.IsIn("DateOnly"))
+                {
+                    column.DataType = "date";
                 }
                 result.Columns.Add(column);
             }

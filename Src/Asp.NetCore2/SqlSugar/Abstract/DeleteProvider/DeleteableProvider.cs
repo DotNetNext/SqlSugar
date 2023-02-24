@@ -53,7 +53,7 @@ namespace SqlSugar
             string sql;
             SugarParameter[] paramters;
             _ExecuteCommand(out sql, out paramters);
-            var result =await Db.ExecuteCommandAsync(sql, paramters);
+            var result = await Db.ExecuteCommandAsync(sql, paramters);
             After(sql);
             return result;
         }
@@ -61,7 +61,7 @@ namespace SqlSugar
         {
             return await ExecuteCommandAsync() > 0;
         }
-        public IDeleteable<T> AsType(Type tableNameType) 
+        public IDeleteable<T> AsType(Type tableNameType)
         {
             return AS(this.Context.EntityMaintenance.GetEntityInfo(tableNameType).DbTableName);
         }
@@ -79,7 +79,17 @@ namespace SqlSugar
             this.Context.MappingTables.Add(entityName, tableName);
             return this; ;
         }
-
+        public IDeleteable<T> EnableDiffLogEventIF(bool isEnableDiffLogEvent, object businessData = null)
+        {
+            if (isEnableDiffLogEvent)
+            {
+                return EnableDiffLogEvent(businessData);
+            }
+            else 
+            {
+                return this;
+            }
+        }
         public IDeleteable<T> EnableDiffLogEvent(object businessData = null)
         {
 
@@ -98,6 +108,7 @@ namespace SqlSugar
                 Where(SqlBuilder.SqlFalse);
                 return this;
             }
+            DataAop(deleteObjs);
             string tableName = this.Context.EntityMaintenance.GetTableName<T>();
             var primaryFields = this.GetPrimaryKeys();
             var isSinglePrimaryKey = primaryFields.Count == 1;
@@ -199,6 +210,7 @@ namespace SqlSugar
             else if (expResult.IsNavicate)
             {
                 whereString = whereString.Replace(expression.Parameters.First().Name + ".", this.SqlBuilder.GetTranslationTableName(this.EntityInfo.DbTableName) + ".");
+                whereString = whereString.Replace(this.SqlBuilder.GetTranslationColumnName(expression.Parameters.First().Name) + ".", this.SqlBuilder.GetTranslationTableName(this.EntityInfo.DbTableName) + ".");
             }
             DeleteBuilder.WhereInfos.Add(whereString);
             return this;
@@ -426,7 +438,7 @@ namespace SqlSugar
             var lamResult = DeleteBuilder.GetExpressionValue(inField, ResolveExpressType.FieldSingle);
             var fieldName = lamResult.GetResultString();
             tempPrimaryKeys = new List<string>() { fieldName };
-            var result = In(primaryKeyValue);;
+            var result = In(primaryKeyValue);
             tempPrimaryKeys = null;
             return this;
         }
@@ -608,6 +620,20 @@ namespace SqlSugar
                 }
             }
             return result;
+        }
+        private void DataAop(object deleteObj)
+        {
+            var dataEvent = this.Context.CurrentConnectionConfig.AopEvents?.DataExecuting;
+            if (deleteObj != null&& dataEvent!=null)
+            {
+                var model = new DataFilterModel()
+                {
+                    OperationType = DataFilterType.DeleteByObject,
+                    EntityValue = deleteObj,
+                    EntityColumnInfo=this.EntityInfo.Columns.FirstOrDefault() 
+                };
+                dataEvent(deleteObj,model);
+            }
         }
     }
 }

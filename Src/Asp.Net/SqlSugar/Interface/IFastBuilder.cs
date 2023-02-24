@@ -9,6 +9,7 @@ namespace SqlSugar
 {
     public interface  IFastBuilder
     {
+        EntityInfo FastEntityInfo { get; set; }
         bool IsActionUpdateColumns { get; set; }
         DbFastestProperties DbFastestProperties { get; set; }
         SqlSugarProvider Context { get; set; }

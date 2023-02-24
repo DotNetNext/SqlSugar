@@ -179,6 +179,10 @@ namespace SqlSugar
                     PropertyType = column.Value == null ? DBNull.Value.GetType() : UtilMethods.GetUnderType(column.Value.GetType()),
                     TableId = i
                 };
+                if (columnInfo.PropertyType?.FullName == "System.Text.Json.JsonElement") 
+                {
+                    columnInfo.Value = column.Value.ObjToString(); 
+                }
                 if (columnInfo.PropertyType.IsEnum())
                 {
                     if (this.Context.CurrentConnectionConfig.MoreSettings?.TableEnumIsString == true)
@@ -210,7 +214,11 @@ namespace SqlSugar
                     DbColumnName = column.DbColumnName,
                     PropertyName = column.PropertyName,
                     PropertyType = UtilMethods.GetUnderType(column.PropertyInfo),
-                    TableId = i
+                    TableId = i,
+                    InsertSql = column.InsertSql,
+                    InsertServerTime = column.InsertServerTime,
+                    DataType=column.DataType
+                     
                 };
                 if (column.DbColumnName == null)
                 {
@@ -406,10 +414,10 @@ namespace SqlSugar
                 foreach (DataColumn col in dt2.Columns)
                 {
                     var sugarColumn = this.EntityInfo.Columns.Where(it => it.DbColumnName != null).FirstOrDefault(it =>
-                        it.DbColumnName.Equals(col.ColumnName, StringComparison.CurrentCultureIgnoreCase));
+                        it.PropertyName.Equals(col.ColumnName, StringComparison.CurrentCultureIgnoreCase));
                     DiffLogColumnInfo addItem = new DiffLogColumnInfo();
                     addItem.Value = row[col.ColumnName];
-                    addItem.ColumnName = col.ColumnName;
+                    addItem.ColumnName = sugarColumn?.DbColumnName??col.ColumnName;
                     addItem.IsPrimaryKey = sugarColumn?.IsPrimarykey ?? false;
                     addItem.ColumnDescription = sugarColumn?.ColumnDescription;
                     item.Columns.Add(addItem);

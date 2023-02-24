@@ -16,6 +16,8 @@ namespace SqlSugar
     public partial class ContextMethods : IContextMethods
     {
         public SqlSugarProvider Context { get; set; }
+        public QueryBuilder QueryBuilder { get; set; }
+
         #region DataReader
 
         /// <summary>
@@ -198,6 +200,7 @@ namespace SqlSugar
                         Dictionary<string, object> result = DataReaderToList(reader, tType, classProperties, reval);
                         var stringValue = SerializeObject(result);
                         reval.Add((T)DeserializeObject<T>(stringValue));
+                        SetAppendColumns(reader);
                     }
                 }
                 return reval;
@@ -290,6 +293,7 @@ namespace SqlSugar
                         Dictionary<string, object> result = DataReaderToList(reader, tType, classProperties, reval);
                         var stringValue = SerializeObject(result);
                         reval.Add((T)DeserializeObject<T>(stringValue));
+                        SetAppendColumns(reader);
                     }
                 }
                 return reval;
@@ -382,7 +386,7 @@ namespace SqlSugar
                     }
                     else if (IsJsonItem(readerValues, name))
                     {
-                        result.Add(name, DeserializeObject<Dictionary<string, object>>(readerValues.First(it=>it.Key.EqualCase(name)).Value.ObjToString()));
+                        result.Add(name, DeserializeObject<Dictionary<string, object>>(readerValues.First(it => it.Key.EqualCase(name)).Value.ObjToString()));
                     }
                     else if (IsJsonList(readerValues, item))
                     {
@@ -393,9 +397,13 @@ namespace SqlSugar
                     {
                         result.Add(name, (byte[])readerValues[item.Name.ToLower()]);
                     }
-                    else if (item.PropertyType == typeof(object)) 
+                    else if (item.PropertyType == typeof(object))
                     {
                         result.Add(name, readerValues[item.Name.ToLower()]);
+                    }
+                    else if (IsArrayItem(readerValues, item))
+                    {
+                        result.Add(name, DeserializeObject<string[]>(readerValues.First(y => y.Key.EqualCase(item.Name)).Value + ""));
                     }
                     else
                     {
@@ -450,6 +458,27 @@ namespace SqlSugar
             return result;
         }
 
+        private void SetAppendColumns(IDataReader dataReader)
+        {
+            if (QueryBuilder != null && QueryBuilder.AppendColumns != null && QueryBuilder.AppendColumns.Any())
+            {
+                if (QueryBuilder.AppendValues == null)
+                    QueryBuilder.AppendValues = new List<List<QueryableAppendColumn>>();
+                List<QueryableAppendColumn> addItems = new List<QueryableAppendColumn>();
+                foreach (var item in QueryBuilder.AppendColumns)
+                {
+                    var vi = dataReader.GetOrdinal(item.AsName);
+                    var value = dataReader.GetValue(vi);
+                    addItems.Add(new QueryableAppendColumn()
+                    {
+                        Name = item.Name,
+                        AsName = item.AsName,
+                        Value = value
+                    });
+                }
+                QueryBuilder.AppendValues.Add(addItems);
+            }
+        }
         private static bool IsBytes(Dictionary<string, object> readerValues, PropertyInfo item)
         {
             return item.PropertyType == UtilConstants.ByteArrayType && 
@@ -472,6 +501,16 @@ namespace SqlSugar
                                     readerValues.First().Value != null &&
                                     readerValues.First().Value.GetType() == UtilConstants.StringType &&
                                     Regex.IsMatch(readerValues.First().Value.ObjToString(), @"^\{.+\}$");
+        }
+
+
+        private static bool IsArrayItem(Dictionary<string, object> readerValues, PropertyInfo item)
+        {
+            var isArray= item.PropertyType.IsArray && readerValues.Any(y => y.Key.EqualCase(item.Name)) && readerValues.FirstOrDefault(y => y.Key.EqualCase(item.Name)).Value is string;
+            var isListItem = item.PropertyType.FullName.IsCollectionsList()&& 
+                item.PropertyType.GenericTypeArguments.Length==1&&
+                item.PropertyType.GenericTypeArguments .First().IsClass()==false&& readerValues.FirstOrDefault(y => y.Key.EqualCase(item.Name)).Value is string;
+            return isArray || isListItem;
         }
 
         private static bool IsJsonList(Dictionary<string, object> readerValues, PropertyInfo item)
@@ -784,6 +823,40 @@ namespace SqlSugar
                     foreach (PropertyInfo pi in propertys)
                     {
                         object obj = pi.GetValue(list[i], null);
+                        tempList.Add(obj);
+                    }
+                    object[] array = tempList.ToArray();
+                    result.LoadDataRow(array, true);
+                }
+            }
+            return result;
+        }
+
+        public DataTable ListToDataTableWithAttr<T>(List<T> list)
+        {
+            var entityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            DataTable result = new DataTable();
+            result.TableName = entityInfo.DbTableName;
+            if (list != null && list.Count > 0)
+            {
+                var colimnInfos = entityInfo.Columns.Where(it=>it.IsIgnore==false);
+                foreach (var pi in colimnInfos)
+                {
+                    //获取类型
+                    Type colType = pi.PropertyInfo.PropertyType;
+                    //当类型为Nullable<>时
+                    if ((colType.IsGenericType) && (colType.GetGenericTypeDefinition() == typeof(Nullable<>)))
+                    {
+                        colType = colType.GetGenericArguments()[0];
+                    }
+                    result.Columns.Add(pi.DbColumnName, colType);
+                }
+                for (int i = 0; i < list.Count; i++)
+                {
+                    ArrayList tempList = new ArrayList();
+                    foreach (var pi in colimnInfos)
+                    {
+                        object obj = pi.PropertyInfo.GetValue(list[i], null);
                         tempList.Add(obj);
                     }
                     object[] array = tempList.ToArray();

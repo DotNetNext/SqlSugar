@@ -25,6 +25,10 @@ namespace SqlSugar.MySqlConnector
                     DbColumnInfo dbColumnInfo = this.EntityColumnToDbColumn(entityInfo, tableName, item);
                     columns.Add(dbColumnInfo);
                 }
+                if (entityInfo.IsCreateTableFiledSort)
+                {
+                    columns = columns.OrderBy(c => c.CreateTableFieldSort).ToList();
+                }
             }
             this.Context.DbMaintenance.CreateTable(tableName, columns,true);
         }
@@ -42,7 +46,8 @@ namespace SqlSugar.MySqlConnector
                 DefaultValue = item.DefaultValue,
                 ColumnDescription = item.ColumnDescription,
                 Length = item.Length,
-                DecimalDigits=item.DecimalDigits
+                DecimalDigits=item.DecimalDigits,
+                CreateTableFieldSort = item.CreateTableFieldSort
             };
             GetDbType(item, propertyType, result);
             if (result.DataType.Equals("varchar", StringComparison.CurrentCultureIgnoreCase) && result.Length == 0)
@@ -76,5 +81,33 @@ namespace SqlSugar.MySqlConnector
         {
             return EntityColumnToDbColumn(entity,dbTableName,item);
         }
+
+        protected override void GetDbType(EntityColumnInfo item, Type propertyType, DbColumnInfo result)
+        {
+            if (!string.IsNullOrEmpty(item.DataType))
+            {
+                result.DataType = item.DataType;
+            }
+            else if (propertyType.IsEnum())
+            {
+                result.DataType = this.Context.Ado.DbBind.GetDbTypeName(item.Length > 9 ? UtilConstants.LongType.Name : UtilConstants.IntType.Name);
+            }
+            else
+            {
+                var name = GetType(propertyType.Name);
+                if (name == "Boolean")
+                {
+                    result.DataType = "tinyint";
+                    result.Length = 1;
+                    result.Scale = 0;
+                    result.DecimalDigits = 0;
+                }
+                else
+                {
+                    result.DataType = this.Context.Ado.DbBind.GetDbTypeName(name);
+                }
+            }
+        }
+
     }
 }

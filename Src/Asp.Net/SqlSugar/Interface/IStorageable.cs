@@ -8,6 +8,7 @@ namespace SqlSugar
 {
     public interface IStorageable<T> where T : class, new()
     {
+        IStorageable<T> TableDataRange(Expression<Func<T, bool>> exp);
         IStorageable<T> WhereColumns(Expression<Func<T, object>> columns);
         IStorageable<T> WhereColumns(Expression<Func<T, object>> columns,Func<DateTime,string> formatTime);
         IStorageable<T> WhereColumns(string [] columns);
@@ -57,13 +58,13 @@ namespace SqlSugar
             var rightValue = Item.GetType().GetProperty(pk).GetValue(Item, null);
             var left = leftValue.ObjToString();
             var rigth = rightValue.ObjToString();
-            if (it.GetType().GetProperty(pk).PropertyType == UtilConstants.DecType)
+            if (leftValue!=null&& (leftValue is decimal||leftValue is decimal?))
             {
                 return Convert.ToDecimal(leftValue) == Convert.ToDecimal(rightValue);
             }
             else
             {
-                return left == rigth;
+                return left.EqualCase(rigth);
             }
         }
 

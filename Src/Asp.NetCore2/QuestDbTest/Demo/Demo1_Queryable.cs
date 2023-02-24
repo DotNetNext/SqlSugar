@@ -119,11 +119,11 @@ namespace OrmTest
                 .Select((o, i, c) => new ViewOrder {  Name=o.Name,  CustomName=c.Name }).ToList();
 
 
-            var oneClass = db.Queryable<Order, OrderItem, Custom>((o, i, c) => new JoinQueryInfos(
-              JoinType.Left, o.Id == i.OrderId,
-              JoinType.Left, o.CustomId == c.Id
-            ))
-           .Select((o, i, c) => c).ToList();
+           // var oneClass = db.Queryable<Order, OrderItem, Custom>((o, i, c) => new JoinQueryInfos(
+           //   JoinType.Left, o.Id == i.OrderId,
+           //   JoinType.Left, o.CustomId == c.Id
+           // ))
+           //.Select((o, i, c) => c).ToList();
 
             var twoClass = db.Queryable<Order, OrderItem, Custom>((o, i, c) => new JoinQueryInfos(
             JoinType.Left, o.Id == i.OrderId,

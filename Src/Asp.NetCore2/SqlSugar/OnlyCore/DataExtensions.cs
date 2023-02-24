@@ -1,7 +1,7 @@
 ﻿using Dm;
 using Kdbndp;
 using Microsoft.Data.Sqlite;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 using Npgsql;
 using Oracle.ManagedDataAccess.Client;
 using System;

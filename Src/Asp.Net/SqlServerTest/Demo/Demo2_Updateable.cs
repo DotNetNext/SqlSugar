@@ -1,6 +1,7 @@
 ﻿using SqlSugar;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -80,10 +81,9 @@ namespace OrmTest
             //only update name
             var result8 = db.Updateable<Order>(it => it.Name == "Name" + "1").Where(it => it.Id == 1).ExecuteCommand();
             var result81 = db.Updateable<Order>().SetColumns(it => it.Name == "Name" + "1").Where(it => it.Id == 1).ExecuteCommand();
-            //
-
-
-
+            var array = new string[] { "1" };
+            var result82 = db.Updateable<Order>().SetColumns(it => it.Name == array[0]).Where(it => it.Id == 1).ExecuteCommand();
+ 
 
             /*** 3.by Dictionary ***/
             var dt = new Dictionary<string, object>();
@@ -124,15 +124,21 @@ namespace OrmTest
 
             var dataTable = db.Queryable<Order>().Select("id,name,1 as price").Take(2).ToDataTable();
             db.Fastest<Order>().BulkUpdate("Order", dataTable,new string[] {"id" },new string[] {"name" });
-            db.Updateable<DbTableInfo>()
+            db.Updateable<object>()
              .AS("[Order]")
              .SetColumns("name", 1)
              .Where("id=1").ExecuteCommand();
-            db.Updateable<DbTableInfo>()
+            db.Updateable<object>()
               .AS("[Order]")
               .SetColumns("name", 1)
                  .SetColumns("price", 1)
               .Where("id=1").ExecuteCommand();
+
+
+            object o = db.Queryable<Order>().First();
+            db.UpdateableByObject(o).ExecuteCommandAsync().GetAwaiter().GetResult();
+            object os = db.Queryable<Order>().Take(2).ToList();
+            db.UpdateableByObject(os).ExecuteCommand();
             Console.WriteLine("#### Updateable End ####");
         }
 

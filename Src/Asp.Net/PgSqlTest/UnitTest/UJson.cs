@@ -51,8 +51,26 @@ namespace OrmTest
             var x1 = Db.Queryable<UnitUUID1XX>().ToList();
             Db.CodeFirst.InitTables<Unitaaar>();
             Db.Insertable(new Unitaaar() { arr = null }).ExecuteCommand();
+
+            var order = new List<Order>() { new Order() { Id = 1 } };
+            var db = Db;
+            db.CodeFirst.InitTables<UnitJsonTestadsga1>();
+            db.Insertable(new UnitJsonTestadsga1() { os = new List<Order>() }).ExecuteCommand();
+            db.
+                Updateable<UnitJsonTestadsga1>()
+                .SetColumns(it => it.os == order)
+                .Where(it => true)
+                .ExecuteCommand();
+
+            var list14 = db.Queryable<UnitJsonTestadsga1>().ToList();
         }
     }
+    public class UnitJsonTestadsga1
+    {
+        [SqlSugar.SugarColumn( IsJson = true)]
+        public List<Order> os { get; set; }
+    }
+ 
     public class Unitaaar 
     {
         [SugarColumn(ColumnDataType = "text []", IsArray = true, IsNullable = true)]

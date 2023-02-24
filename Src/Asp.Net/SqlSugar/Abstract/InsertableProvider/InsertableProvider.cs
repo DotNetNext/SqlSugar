@@ -51,6 +51,7 @@ namespace SqlSugar
             string sql = _ExecuteCommand();
             var result = Ado.ExecuteCommand(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
             After(sql, null);
+            if (result == -1) return this.InsertObjs.Count();
             return result;
         }
         public virtual string ToSqlString()
@@ -181,6 +182,7 @@ namespace SqlSugar
             foreach (var item in  this.InsertBuilder.DbColumnInfoList.Where(it=>it.PropertyName==snowProperty.PropertyName))
             {
                 item.Value = id;
+                snowProperty?.PropertyInfo.SetValue(this.InsertObjs.First(), id);
             }
             this.ExecuteCommand();
             return id;
@@ -197,6 +199,11 @@ namespace SqlSugar
                 var id = SnowFlakeSingle.instance.getID();
                 item.Value = id;
                 result.Add(id);
+                var obj = this.InsertObjs.ElementAtOrDefault(item.TableId);
+                if (obj != null)
+                {
+                    snowProperty?.PropertyInfo.SetValue(obj, id);
+                }
             }
             this.ExecuteCommand();
             return result;
@@ -211,6 +218,7 @@ namespace SqlSugar
             foreach (var item in this.InsertBuilder.DbColumnInfoList.Where(it => it.PropertyName == snowProperty.PropertyName))
             {
                 item.Value = id;
+                snowProperty?.PropertyInfo.SetValue(this.InsertObjs.First(), id);
             }
             await this.ExecuteCommandAsync();
             return id;
@@ -227,6 +235,11 @@ namespace SqlSugar
                 var id = SnowFlakeSingle.instance.getID();
                 item.Value = id;
                 result.Add(id);
+                var obj = this.InsertObjs.ElementAtOrDefault(item.TableId);
+                if (obj != null)
+                {
+                    snowProperty?.PropertyInfo.SetValue(obj, id);
+                }
             }
             await this.ExecuteCommandAsync();
             return result;
@@ -246,7 +259,6 @@ namespace SqlSugar
                 var snowColumn = this.EntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey && it.UnderType == UtilConstants.LongType);
                 if (snowColumn!=null)
                 {
-              ;
                     if (Convert.ToInt64(snowColumn.PropertyInfo.GetValue(result)) == 0)
                     {
                         var id = this.ExecuteReturnSnowflakeId();
@@ -277,6 +289,14 @@ namespace SqlSugar
             {
                 setValue = Convert.ToUInt64(idValue);
             }
+            else if (this.EntityInfo.Columns.Any(it => it.IsIdentity && it.PropertyInfo.PropertyType == typeof(ushort)))
+            {
+                setValue = Convert.ToUInt16(idValue);
+            }
+            else if (this.EntityInfo.Columns.Any(it => it.IsIdentity && it.PropertyInfo.PropertyType == typeof(short)))
+            {
+                setValue = Convert.ToInt16(idValue);
+            }
             else
                 setValue = Convert.ToInt32(idValue);
             this.Context.EntityMaintenance.GetProperty<T>(identityKey).SetValue(result, setValue, null);
@@ -292,6 +312,7 @@ namespace SqlSugar
             string sql = _ExecuteCommand();
             var result =await Ado.ExecuteCommandAsync(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
             After(sql, null);
+            if (result == -1) return this.InsertObjs.Count();
             return result;
         }
         public virtual async Task<int> ExecuteReturnIdentityAsync()
@@ -370,6 +391,14 @@ namespace SqlSugar
             {
                 setValue = Convert.ToUInt64(idValue);
             }
+            else if (this.EntityInfo.Columns.Any(it => it.IsIdentity && it.PropertyInfo.PropertyType == typeof(ushort)))
+            {
+                setValue = Convert.ToUInt16(idValue);
+            }
+            else if (this.EntityInfo.Columns.Any(it => it.IsIdentity && it.PropertyInfo.PropertyType == typeof(short)))
+            {
+                setValue = Convert.ToInt16(idValue);
+            }
             else
                 setValue = Convert.ToInt32(idValue);
             this.Context.EntityMaintenance.GetProperty<T>(identityKey).SetValue(result, setValue, null);
@@ -424,16 +453,7 @@ namespace SqlSugar
         }
         public IInsertable<T> AS(string tableName)
         {
-            if (tableName == null) return this;
-            var entityName = typeof(T).Name;
-            IsAs = true;
-            OldMappingTableList = this.Context.MappingTables;
-            this.Context.MappingTables = this.Context.Utilities.TranslateCopy(this.Context.MappingTables);
-            if (this.Context.MappingTables.Any(it => it.EntityName == entityName))
-            {
-                this.Context.MappingTables.Add(this.Context.MappingTables.First(it => it.EntityName == entityName).DbTableName, tableName);
-            }
-            this.Context.MappingTables.Add(entityName, tableName);
+            this.InsertBuilder.AsName = tableName;
             return this; ;
         }
         public IInsertable<T> IgnoreColumns(Expression<Func<T, object>> columns)

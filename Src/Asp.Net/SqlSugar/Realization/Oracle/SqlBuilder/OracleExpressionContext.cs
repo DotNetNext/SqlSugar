@@ -28,7 +28,7 @@ namespace SqlSugar
         public override string SqlTranslationRight { get { return "\""; } }
         public override string GetTranslationTableName(string entityName, bool isMapping = true)
         {
-            return base.GetTranslationTableName(entityName, isMapping).ToUpper();
+            return base.GetTranslationTableName(entityName, isMapping).ToUpper(IsUppper);
         }
         public override string GetTranslationColumnName(string columnName)
         {
@@ -39,11 +39,11 @@ namespace SqlSugar
                 return columnName;
             }
             else
-            return base.GetTranslationColumnName(columnName).ToUpper();
+            return base.GetTranslationColumnName(columnName).ToUpper(IsUppper);
         }
         public override string GetDbColumnName(string entityName, string propertyName)
         {
-            return base.GetDbColumnName(entityName,propertyName).ToUpper();
+            return base.GetDbColumnName(entityName,propertyName).ToUpper(IsUppper);
         }
         public override bool IsTranslationText(string name)
         {
@@ -53,6 +53,20 @@ namespace SqlSugar
             }
             var result = name.IsContainsIn(SqlTranslationLeft, SqlTranslationRight, UtilConstants.Space, ExpressionConst.LeftParenthesis, ExpressionConst.RightParenthesis);
             return result;
+        }
+        public bool IsUppper
+        {
+            get
+            {
+                if (this.SugarContext?.Context?.Context?.CurrentConnectionConfig?.MoreSettings == null)
+                {
+                    return true;
+                }
+                else
+                {
+                    return this.SugarContext?.Context?.Context?.CurrentConnectionConfig?.MoreSettings.IsAutoToUpper == true;
+                }
+            }
         }
     }
     public partial class OracleMethod : DefaultDbMethod, IDbMethods
@@ -294,6 +308,12 @@ namespace SqlSugar
         public override string GetRandom()
         {
             return "dbms_random.value";
+        }
+
+        public override string Collate(MethodCallExpressionModel model)
+        {
+            var name = model.Args[0].MemberName;
+            return $"  NLSSORT({0}, 'NLS_SORT = Latin_CI')   ";
         }
 
         public override string CharIndex(MethodCallExpressionModel model)

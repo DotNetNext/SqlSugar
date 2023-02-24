@@ -27,6 +27,10 @@ namespace SqlSugar
 
         public virtual async Task<T> InSingleAsync(object pkValue)
         {
+            if (pkValue == null) 
+            {
+                return default(T);
+            }
             Check.Exception(this.QueryBuilder.SelectValue.HasValue(), "'InSingle' and' Select' can't be used together,You can use .Select(it=>...).Single(it.id==1)");
             var list = await In(pkValue).ToListAsync();
             if (list == null) return default(T);
@@ -485,6 +489,10 @@ ParameterT parameter)
        
         public async Task<Dictionary<string, object>> ToDictionaryAsync(Expression<Func<T, object>> key, Expression<Func<T, object>> value)
         {
+            if (this.QueryBuilder.IsSingle() == false && (this.QueryBuilder.AsTables == null || this.QueryBuilder.AsTables.Count == 0))
+            {
+                return await this.MergeTable().ToDictionaryAsync(key, value);
+            }
             this.QueryBuilder.ResultType = typeof(SugarCacheDictionary);
             var keyName = QueryBuilder.GetExpressionValue(key, ResolveExpressType.FieldSingle).GetResultString();
             var valueName = QueryBuilder.GetExpressionValue(value, ResolveExpressType.FieldSingle).GetResultString();
@@ -504,7 +512,6 @@ ParameterT parameter)
             var list = await this.ToListAsync();
             return GetTreeRoot(childListExpression, parentIdExpression, pk, list, rootValue);
         }
-
         public async Task<List<T>> ToParentListAsync(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue)
         {
             List<T> result = new List<T>() { };
@@ -540,6 +547,48 @@ ParameterT parameter)
                 {
                     Check.Exception(i > 100, ErrorMessage.GetThrowMessage("Dead cycle", "出现死循环或超出循环上限（100），检查最顶层的ParentId是否是null或者0"));
                     var parent = await this.Context.Queryable<T>().AS(tableName).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).InSingleAsync(parentId);
+                    result.Add(parent);
+                    parentId = ParentInfo.PropertyInfo.GetValue(parent, null);
+                    ++i;
+                }
+            }
+            return result;
+        }
+        public async Task<List<T>> ToParentListAsync(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue, Expression<Func<T, bool>> parentWhereExpression)
+        {
+            List<T> result = new List<T>() { };
+            var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            var isTreeKey = entity.Columns.Any(it => it.IsTreeKey);
+            if (isTreeKey)
+            {
+                return await _ToParentListByTreeKeyAsync(parentIdExpression, primaryKeyValue,parentWhereExpression);
+            }
+            Check.Exception(entity.Columns.Where(it => it.IsPrimarykey).Count() == 0, "No Primary key");
+            var parentIdName = UtilConvert.ToMemberExpression((parentIdExpression as LambdaExpression).Body).Member.Name;
+            var ParentInfo = entity.Columns.First(it => it.PropertyName == parentIdName);
+            var parentPropertyName = ParentInfo.DbColumnName;
+            var tableName = this.QueryBuilder.GetTableNameString;
+            if (this.QueryBuilder.IsSingle() == false)
+            {
+                if (this.QueryBuilder.JoinQueryInfos.Count > 0)
+                {
+                    tableName = this.QueryBuilder.JoinQueryInfos.First().TableName;
+                }
+                if (this.QueryBuilder.EasyJoinInfos.Count > 0)
+                {
+                    tableName = this.QueryBuilder.JoinQueryInfos.First().TableName;
+                }
+            }
+            var current = await this.Context.Queryable<T>().AS(tableName).WhereIF(parentWhereExpression!=default, parentWhereExpression).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).InSingleAsync(primaryKeyValue);
+            if (current != null)
+            {
+                result.Add(current);
+                object parentId = ParentInfo.PropertyInfo.GetValue(current, null);
+                int i = 0;
+                while (parentId != null && await this.Context.Queryable<T>().AS(tableName).WhereIF(parentWhereExpression!=default, parentWhereExpression).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).In(parentId).AnyAsync())
+                {
+                    Check.Exception(i > 100, ErrorMessage.GetThrowMessage("Dead cycle", "出现死循环或超出循环上限（100），检查最顶层的ParentId是否是null或者0"));
+                    var parent = await this.Context.Queryable<T>().AS(tableName).WhereIF(parentWhereExpression!=default, parentWhereExpression).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).InSingleAsync(parentId);
                     result.Add(parent);
                     parentId = ParentInfo.PropertyInfo.GetValue(parent, null);
                     ++i;

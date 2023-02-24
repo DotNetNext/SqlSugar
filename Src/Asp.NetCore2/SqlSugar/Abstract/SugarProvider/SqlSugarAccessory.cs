@@ -327,6 +327,10 @@ namespace SqlSugar
             string shortName = string.Empty;
             List<SugarParameter> paramters = new List<SugarParameter>();
             queryable.SqlBuilder.QueryBuilder.JoinQueryInfos = this.GetJoinInfos(queryable.SqlBuilder, joinExpression, ref paramters, ref shortName, types);
+            if (queryable.SqlBuilder.QueryBuilder.JoinQueryInfos.Any())
+            {
+                queryable.SqlBuilder.QueryBuilder.JoinQueryInfos.Last().EntityType = types.Last();
+            }
             queryable.SqlBuilder.QueryBuilder.TableShortName = shortName;
             queryable.SqlBuilder.QueryBuilder.JoinExpression = joinExpression;
             if (paramters != null)
@@ -422,7 +426,6 @@ namespace SqlSugar
                     InstanceFactory.CustomDllName = SugarCompatible.IsFramework ? "SqlSugar.GBase" : "SqlSugar.GBaseCore";
                     break;
                 case DbType.Odbc:
-                    Check.Exception(SugarCompatible.IsFramework, "Odbc only support .net core");
                     InstanceFactory.CustomDllName = SugarCompatible.IsFramework ? "SqlSugar.Odbc" : "SqlSugar.OdbcCore";
                     break;
                 default:
@@ -481,6 +484,7 @@ namespace SqlSugar
                 joinInfo.JoinType = (JoinType)Enum.Parse(typeof(JoinType), joinString);
                 joinInfo.JoinWhere = joinArray[i * 2 - 1];
                 joinInfo.JoinIndex = i;
+                joinInfo.EntityType = entityType;
                 if (isNoPgAuto)
                     joinInfo.ShortName = sqlBuilder.GetTranslationColumnName(joinInfo.ShortName);
                 result.Add((joinInfo));

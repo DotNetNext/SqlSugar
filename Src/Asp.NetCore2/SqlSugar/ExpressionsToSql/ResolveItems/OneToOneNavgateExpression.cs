@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,6 +10,7 @@ namespace SqlSugar
 {
     internal class OneToOneNavgateExpression
     {
+        public ExpressionContext ExpContext;
         private SqlSugarProvider context;
         internal EntityInfo EntityInfo;
         internal EntityInfo ProPertyEntity;
@@ -96,10 +98,22 @@ namespace SqlSugar
             pk = queryable.QueryBuilder.Builder.GetTranslationColumnName(pk);
             name = queryable.QueryBuilder.Builder.GetTranslationColumnName(name);
             selectName = queryable.QueryBuilder.Builder.GetTranslationColumnName(selectName);
+            var tableName = this.ProPertyEntity.DbTableName;
+            if (ExpContext?.SugarContext?.QueryBuilder?.IsCrossQueryWithAttr==true) 
+            {
+                var attr= this.ProPertyEntity.Type.GetCustomAttribute<TenantAttribute>();
+                var configId = ((object)this.context.CurrentConnectionConfig.ConfigId).ObjToString();
+                if (attr != null&& configId != attr.configId.ObjToString()) 
+                {
+                    var dbName = this.context.Root.GetConnection(attr.configId).Ado.Connection.Database;
+                    tableName = queryable.QueryBuilder.LambdaExpressions.DbMehtods.GetTableWithDataBase
+                        (queryable.QueryBuilder.Builder.GetTranslationColumnName(dbName), queryable.QueryBuilder.Builder.GetTranslationColumnName(tableName));
+                }
+            }
             mapper.Sql = queryable
-                .AS(this.ProPertyEntity.DbTableName)
+                .AS(tableName)
                 .WhereIF(Navigat.WhereSql.HasValue(),Navigat.WhereSql)
-                .Where($" {ShorName}.{name}={pk} ").Select(selectName).ToSql().Key;
+                .Where($" {queryable.SqlBuilder.GetTranslationColumnName(ShorName)}.{name}={pk} ").Select(selectName).ToSql().Key;
             mapper.Sql = $" ({mapper.Sql}) ";
             return mapper;
         }

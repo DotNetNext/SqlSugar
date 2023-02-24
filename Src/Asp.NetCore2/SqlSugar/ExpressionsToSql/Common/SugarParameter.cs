@@ -162,6 +162,20 @@ namespace SqlSugar
             {
                 this.DbType = System.Data.DbType.UInt16;
             }
+            else if (type?.Name == "TimeOnly")
+            {
+                this.DbType = System.Data.DbType.Time;
+                this.Value = UtilMethods.TimeOnlyToTimeSpan(this.Value);
+            }
+            else if (type?.Name == "DateOnly")
+            {
+                this.DbType = System.Data.DbType.Date;
+                this.Value = UtilMethods.DateOnlyToDateTime(this.Value);
+            }
+            else if (type?.FullName == "Newtonsoft.Json.Linq.JObject" || type?.FullName == "Newtonsoft.Json.Linq.JArray" || type?.FullName == "Newtonsoft.Json.Linq.JValue")
+            {
+                this.Value =this.Value==null?default(string):this.Value.ObjToString() ;
+            }
 
         }
         public SugarParameter(string name, object value, bool isOutput)

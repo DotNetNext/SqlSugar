@@ -6,7 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MySqlConnector" Version="2.2.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\SqlSugar.MySqlConnectorCore\SqlSugar.MySqlConnectorCore.csproj" />
+    <ProjectReference Include="..\SqlSugar\SqlSugar.csproj" />
   </ItemGroup>
 
 </Project>

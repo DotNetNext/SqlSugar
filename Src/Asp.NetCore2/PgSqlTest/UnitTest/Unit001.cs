@@ -69,7 +69,7 @@ namespace OrmTest {
         {
             var db = new SqlSugarScope(new SqlSugar.ConnectionConfig()
             {
-                ConnectionString = "PORT=5432;DATABASE=SqlSugar4xTest;HOST=localhost;PASSWORD=haosql;USER ID=postgres",
+                ConnectionString =Config.ConnectionString2,
                 DbType = SqlSugar.DbType.PostgreSQL,
                 IsAutoCloseConnection = true
             });
@@ -99,7 +99,7 @@ namespace OrmTest {
 
             Console.WriteLine(result);
             Console.WriteLine("用例跑完");
-            Console.ReadKey();
+           
         }
         //建类
         public class Test0011
