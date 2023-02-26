@@ -92,6 +92,10 @@ namespace SqlSugar
             {
                 result.DataType = this.Context.Ado.DbBind.GetDbTypeName(item.Length > 9 ? UtilConstants.LongType.Name : UtilConstants.IntType.Name);
             }
+            else if (item.IsJson && item.DataType == null) 
+            {
+                result.DataType = "json";
+            }
             else
             {
                 var name = GetType(propertyType.Name);
