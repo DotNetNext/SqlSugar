@@ -147,6 +147,10 @@ namespace SqlSugar
                         return Convert.ToInt64(value);
                     }
                 }
+                else if (type == UtilConstants.DateTimeOffsetType)
+                {
+                    return FormatDateTimeOffset(value);
+                }
                 else if (type == UtilConstants.BoolType)
                 {
                     return value.ObjToBool() ? "1" : "0";
@@ -160,6 +164,10 @@ namespace SqlSugar
                     return "'" + value.ToString() + "'";
                 }
             }
+        }
+        public override string FormatDateTimeOffset(object value)
+        {
+            return "'" + ((DateTimeOffset)value).ToString("o") + "'";
         }
 
     }
