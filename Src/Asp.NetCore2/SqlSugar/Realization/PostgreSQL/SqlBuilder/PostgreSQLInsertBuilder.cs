@@ -84,6 +84,10 @@ namespace SqlSugar
                             {
                                 value = ((DateTime)it.Value).ToString("O");
                             }
+                            else if (it.Value  is DateTimeOffset)
+                            {
+                                return FormatDateTimeOffset(it.Value);
+                            }
                             else if (it.IsArray&&it.Value!=null) 
                             {
                                 return FormatValue(it.Value,it.PropertyName,i,it);

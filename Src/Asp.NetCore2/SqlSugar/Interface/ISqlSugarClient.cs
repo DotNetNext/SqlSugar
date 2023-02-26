@@ -72,6 +72,7 @@ namespace SqlSugar
         IInsertable<T> Insertable<T>(T insertObj) where T : class, new();
         IInsertable<T> Insertable<T>(T[] insertObjs) where T : class, new();
         InsertMethodInfo InsertableByObject(object singleEntityObjectOrListObject);
+        IInsertable<Dictionary<string, object>> InsertableByDynamic(object insertDynamicObject);
         #endregion
 
         #region Queryable
@@ -193,6 +194,7 @@ namespace SqlSugar
         IUpdateable<T> Updateable<T>(List<T> UpdateObjs) where T : class, new();
         IUpdateable<T> Updateable<T>(T UpdateObj) where T : class, new();
         IUpdateable<T> Updateable<T>(T[] UpdateObjs) where T : class, new();
+        IUpdateable<Dictionary<string, object>> UpdateableByDynamic(object updateDynamicObject);
         #endregion
 
         #region Reportable

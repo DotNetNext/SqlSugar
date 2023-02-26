@@ -675,6 +675,10 @@ namespace SqlSugar
         #endregion
 
         #region Insertable
+        public IInsertable<Dictionary<string, object>> InsertableByDynamic(object insertDynamicObject)
+        {
+            return this.Insertable<Dictionary<string, object>>(insertDynamicObject);
+        }
         public InsertMethodInfo InsertableByObject(object singleEntityObjectOrListObject)
         {
             if (singleEntityObjectOrListObject == null)
@@ -940,6 +944,10 @@ namespace SqlSugar
             return result;
         }
 
+        public IUpdateable<Dictionary<string, object>> UpdateableByDynamic(object updateDynamicObject) 
+        {
+            return this.Updateable<Dictionary<string, object>>(updateDynamicObject);
+        }
 
         public virtual IUpdateable<T> Updateable<T>(Dictionary<string, object> columnDictionary) where T : class, new()
         {
