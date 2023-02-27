@@ -135,6 +135,14 @@ namespace SqlSugar
                        sqlParameter.Value = UtilMethods.ConvertFromDateTimeOffset((DateTimeOffset)sqlParameter.Value);
                     sqlParameter.DbType = System.Data.DbType.DateTime;
                 }
+                if (sqlParameter.Value is DateTime&&sqlParameter.Value.ObjToDate()==DateTime.MinValue)
+                {
+                    var date = Convert.ToDateTime(sqlParameter.Value);
+                    if (date == DateTime.MinValue)
+                    {
+                        sqlParameter.Value = UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig);
+                    }
+                }
                 ++index;
             }
             return result;
