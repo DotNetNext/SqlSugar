@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace OrmTest
@@ -70,8 +71,22 @@ namespace OrmTest
             }).Where(it => it.Id != null).ExecuteCommand();
             db.CodeFirst.InitTables<CodeFirstChartest>();
             db.Queryable<CodeFirstChartest>().Where(it => it.Test == 's').ToList();
+            db.CodeFirst.InitTables<CodeFloatddfa1a1>();
+            db.Insertable(new CodeFloatddfa1a1() { xx = (float)11.1 }).ExecuteCommand();
+            var list7 = db.Queryable<CodeFloatddfa1a1>().ToList();
+            db.CodeFirst.InitTables<CodeFloatddfa1a2>();
+            db.Insertable(new CodeFloatddfa1a2() { xx = DateTimeOffset.Now }).ExecuteCommand();
+            db.Insertable(new List<CodeFloatddfa1a2> { new CodeFloatddfa1a2() { xx = DateTimeOffset.Now }, new CodeFloatddfa1a2() { xx = DateTimeOffset.Now } }).ExecuteCommand();
             Console.WriteLine("#### CodeFirst end ####");
         }
+    }
+    public class CodeFloatddfa1a2
+    {
+        public DateTimeOffset xx { get; set; }
+    }
+    public class CodeFloatddfa1a1
+    {
+        public float xx { get; set; }
     }
     public class CodeFirstChartest 
     {

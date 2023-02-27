@@ -241,6 +241,10 @@ namespace SqlSugar
         {
             ScopedContext.InitMappingInfo<T>();
         }
+        public IInsertable<Dictionary<string, object>> InsertableByDynamic(object insertDynamicObject)
+        {
+            return ScopedContext.InsertableByDynamic(insertDynamicObject);
+        }
         public InsertMethodInfo InsertableByObject(object singleEntityObjectOrListObject)
         {
             return ScopedContext.InsertableByObject(singleEntityObjectOrListObject);
@@ -644,6 +648,10 @@ namespace SqlSugar
         public UpdateMethodInfo UpdateableByObject(object singleEntityObjectOrListObject)
         {
             return ScopedContext.UpdateableByObject(singleEntityObjectOrListObject);
+        }
+        public IUpdateable<Dictionary<string, object>> UpdateableByDynamic(object updateDynamicObject)
+        {
+            return ScopedContext.UpdateableByDynamic(updateDynamicObject);
         }
 
         public IUpdateable<T> Updateable<T>() where T : class, new()
