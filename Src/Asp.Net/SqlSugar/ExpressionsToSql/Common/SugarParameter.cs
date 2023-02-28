@@ -162,6 +162,18 @@ namespace SqlSugar
             {
                 this.DbType = System.Data.DbType.UInt16;
             }
+            else if (type == UtilConstants.Int32ArrayType)
+            {
+                this.DbType = System.Data.DbType.Int32;
+            }
+            else if (type == UtilConstants.Int64ArrayType)
+            {
+                this.DbType = System.Data.DbType.Int64;
+            }
+            else if (type == UtilConstants.StringArrayType)
+            {
+                this.DbType = System.Data.DbType.AnsiString;
+            }
             else if (type?.Name == "TimeOnly")
             {
                 this.DbType = System.Data.DbType.Time;

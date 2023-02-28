@@ -1453,6 +1453,8 @@ namespace SqlSugar
                             var newName = itemParameter.ParameterName + "_q_" + index;
                             SugarParameter parameter = new SugarParameter(newName, itemParameter.Value);
                             parameter.DbType = itemParameter.DbType;
+                            parameter.IsJson = itemParameter.IsJson;
+                            parameter.IsArray = itemParameter.IsArray;
                             itemSql = UtilMethods.ReplaceSqlParameter(itemSql, itemParameter, newName);
                             addParameters.Add(parameter);
                         }
@@ -1512,6 +1514,8 @@ namespace SqlSugar
                             var newName = itemParameter.ParameterName + "_q_" + index;
                             SugarParameter parameter = new SugarParameter(newName, itemParameter.Value);
                             parameter.DbType = itemParameter.DbType;
+                            parameter.IsJson = itemParameter.IsJson;
+                            parameter.IsArray = itemParameter.IsArray;
                             itemSql = UtilMethods.ReplaceSqlParameter(itemSql, itemParameter, newName);
                             addParameters.Add(parameter);
                         }

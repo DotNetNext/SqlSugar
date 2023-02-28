@@ -20,5 +20,11 @@ namespace OrmTest
         public int CustomId { get; set; }
         [SugarColumn(IsIgnore = true)]
         public List<OrderItem> Items { get; set; }
+
+        [SugarColumn(ColumnDataType = "text []", IsArray = true, IsNullable = true)]
+        public string[] Pics { get; set; }
+
+        [SugarColumn(ColumnDataType = "integer []", IsArray = true, IsNullable = true)]
+        public int[] Hits { get; set; }
     }
 }

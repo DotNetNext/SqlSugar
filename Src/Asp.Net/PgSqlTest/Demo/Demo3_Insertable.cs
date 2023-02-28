@@ -30,11 +30,17 @@ namespace OrmTest
                 }
             });
 
-            var insertObj = new Order() { Id = 1, Name = "order1",Price=0 };
+            var insertObj = new Order() { Id = 100, Name = "order1", Price = 0, Pics = new string[] { "1", "2" } };
             var updateObjs = new List<Order> {
-                 new Order() { Id = 11, Name = "order11", Price=0 },
-                 new Order() { Id = 12, Name = "order12" , Price=0}
+                 new Order() { Id = 11, Name = "order11", Price = 0 ,Pics = new string[] {"3","4"} , Hits = new int[] { 3 , 4 } },
+                 new Order() { Id = 12, Name = "order12" , Price= 0 }
             };
+
+            db.Insertable(insertObj).ExecuteCommand();
+
+            db.Insertable(insertObj).AddQueue();
+            db.SaveQueues();
+
 
             var x = db.Insertable(updateObjs).RemoveDataCache().IgnoreColumns(it => it.CreateTime).UseParameter().ExecuteCommand();
 

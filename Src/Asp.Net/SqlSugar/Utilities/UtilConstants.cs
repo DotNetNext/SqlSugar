@@ -35,6 +35,9 @@ namespace SqlSugar
         internal static Type DateTimeOffsetType = typeof(DateTimeOffset);
         internal static Type TimeSpanType = typeof(TimeSpan);
         internal static Type ByteArrayType = typeof(byte[]);
+        internal static Type Int32ArrayType = typeof(int[]);
+        internal static Type Int64ArrayType = typeof(Int64[]);
+        internal static Type StringArrayType = typeof(string[]);
         internal static Type ModelType= typeof(ModelContext);
         internal static Type DynamicType = typeof(ExpandoObject);
         internal static Type Dicii = typeof(KeyValuePair<int, int>);
