@@ -99,7 +99,7 @@ namespace SqlSugar
         }
         public override IDataAdapter GetAdapter()
         {
-            return new MyOracleDataAdapter();
+            return new OracleDataAdapter();
         }
         public override DbCommand GetCommand(string sql, SugarParameter[] parameters)
         {
@@ -155,7 +155,7 @@ namespace SqlSugar
         };
         public override void SetCommandToAdapter(IDataAdapter dataAdapter, DbCommand command)
         {
-            ((MyOracleDataAdapter)dataAdapter).SelectCommand = (OracleCommand)command;
+            ((OracleDataAdapter)dataAdapter).SelectCommand = (OracleCommand)command;
         }
         /// <summary>
         /// if mysql return MySqlParameter[] pars
