@@ -17,7 +17,7 @@ namespace SqlSugar
             {
                 sql = sql.Replace("+@", "+:");
                 if (sql.HasValue()&&sql.Contains("@")) {
-                    var exceptionalCaseInfo = Regex.Matches(sql, @"\'[^\=]*?\@.*?\'|[\.,\w]+\@[\.,\w]+ | [\.,\w]+\@[\.,\w]+|[\.,\w]+\@[\.,\w]+ |\d+\@\d|\@\@");
+                    var exceptionalCaseInfo = Regex.Matches(sql, @"\'[^\=]*?\@.*?\'|[\.,\w]+\@[\.,\w]+ | [\.,\w]+\@[\.,\w]+|[\.,\w]+\@[\.,\w]+ |\d+\@\d|\@\@|\.""\@\w{1,25}""");
                     if (exceptionalCaseInfo != null) {
                         foreach (var item in exceptionalCaseInfo.Cast<Match>())
                         {
@@ -37,7 +37,7 @@ namespace SqlSugar
                             {
                                 continue;
                             }
-                            else if (item.Value != null && item.Value.Contains("=") && Regex.IsMatch(item.Value, @"\w+ \@\w+[ ]{0,1}\=[ ]{0,1}\'"))
+                            else if (item.Value != null &&item.Value.Contains("=")&& Regex.IsMatch(item.Value, @"\w+ \@\w+[ ]{0,1}\=[ ]{0,1}\'"))
                             {
                                 continue;
                             }
@@ -99,7 +99,7 @@ namespace SqlSugar
         }
         public override IDataAdapter GetAdapter()
         {
-            return new OracleDataAdapter();
+            return new MyOracleDataAdapter();
         }
         public override DbCommand GetCommand(string sql, SugarParameter[] parameters)
         {
@@ -155,7 +155,7 @@ namespace SqlSugar
         };
         public override void SetCommandToAdapter(IDataAdapter dataAdapter, DbCommand command)
         {
-            ((OracleDataAdapter)dataAdapter).SelectCommand = (OracleCommand)command;
+            ((MyOracleDataAdapter)dataAdapter).SelectCommand = (OracleCommand)command;
         }
         /// <summary>
         /// if mysql return MySqlParameter[] pars
