@@ -922,6 +922,20 @@ namespace SqlSugar
             var result = SqlQuery<T, object, object, object, object, object, object>(sql, parameters);
             return result.Item1;
         }
+        public List<T> MasterSqlQuery<T>(string sql, object parameters = null) 
+        {
+            var oldValue = this.Context.Ado.IsDisableMasterSlaveSeparation;
+            this.Context.Ado.IsDisableMasterSlaveSeparation = true;
+            var result = this.Context.Ado.SqlQuery<T>(sql, parameters);
+            return result;
+        }
+        public async Task<List<T>> MasterSqlQueryAasync<T>(string sql, object parameters = null)
+        {
+            var oldValue = this.Context.Ado.IsDisableMasterSlaveSeparation;
+            this.Context.Ado.IsDisableMasterSlaveSeparation = true;
+            var result = await this.Context.Ado.SqlQueryAsync<T>(sql, parameters);
+            return result;
+        }
         public virtual List<T> SqlQuery<T>(string sql, List<SugarParameter> parameters)
         {
             if (parameters != null)

@@ -71,6 +71,10 @@ namespace SqlSugar.DistributedSystem.Snowflake
         }
         public virtual long NextId() 
         {
+            if (StaticConfig.CustomSnowFlakeFunc != null) 
+            {
+                return StaticConfig.CustomSnowFlakeFunc();
+            }
             lock(_lock) 
             {
                 var timestamp = TimeGen();

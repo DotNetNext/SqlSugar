@@ -147,6 +147,8 @@ namespace SqlSugar
         List<T> SqlQuery<T>(string sql, object parameters = null);
         List<T> SqlQuery<T>(string sql, params SugarParameter[] parameters);
         List<T> SqlQuery<T>(string sql, List<SugarParameter> parameters);
+        Task<List<T>> MasterSqlQueryAasync<T>(string sql, object parameters = null);
+        List<T> MasterSqlQuery<T>(string sql, object parameters = null);
 
         Task<List<T>> SqlQueryAsync<T>(string sql, object parameters = null);
         Task<List<T>> SqlQueryAsync<T>(string sql, List<SugarParameter> parameters);
