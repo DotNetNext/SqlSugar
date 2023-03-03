@@ -401,6 +401,17 @@ namespace SqlSugar
             {
                 return columnInfo.UpdateSql;
             }
+            else if (columnInfo.SqlParameterDbType  is Type) 
+            {
+                var type = columnInfo.SqlParameterDbType as Type;
+                var ParameterConverter = type.GetMethod("ParameterConverter");
+                //var obj = Activator.CreateInstance(type);
+                var p = ParameterConverter.Invoke(null,new object[] { columnInfo.Value, GetDbColumnIndex }) as SugarParameter;
+                GetDbColumnIndex++;
+                //this.Parameters.RemoveAll(it => it.ParameterName == it.ParameterName);
+                this.Parameters.Add(p);
+                return p.ParameterName;
+            }
             else if (columnInfo.PropertyType.Name == "TimeOnly" && name != null && !name.ObjToString().StartsWith(Builder.SqlParameterKeyWord))
             {
                 var timeSpan = UtilMethods.TimeOnlyToTimeSpan(columnInfo.Value);
@@ -414,20 +425,20 @@ namespace SqlSugar
                 return name + "";
             }
         }
-        public virtual string GetDbColumn(DbColumnInfo columnInfo, string name)
-        {
-            if (columnInfo.UpdateServerTime)
-            {
-                return LambdaExpressions.DbMehtods.GetDate();
-            }
-            else if (columnInfo.UpdateSql.HasValue())
-            {
-                return columnInfo.UpdateSql;
-            }
-            else
-            {
-                return name + "";
-            }
-        }
+        //public virtual string GetDbColumn(DbColumnInfo columnInfo, string name)
+        //{
+        //    if (columnInfo.UpdateServerTime)
+        //    {
+        //        return LambdaExpressions.DbMehtods.GetDate();
+        //    }
+        //    else if (columnInfo.UpdateSql.HasValue())
+        //    {
+        //        return columnInfo.UpdateSql;
+        //    }
+        //    else
+        //    {
+        //        return name + "";
+        //    }
+        //}
     }
 }

@@ -189,7 +189,7 @@ namespace SqlSugar
                 generator.Emit(OpCodes.Callvirt, columnInfo.PropertyInfo.GetSetMethod(true));
                 generator.MarkLabel(endIfLabel);
             }
-            else if (columnInfo.UnderType == typeof(XElement)) 
+            else if (columnInfo.UnderType == typeof(XElement)||columnInfo.SqlParameterDbType is Type) 
             {
                 int i = DataRecord.GetOrdinal(fieldName);
                 Label endIfLabel = generator.DefineLabel();
@@ -203,7 +203,7 @@ namespace SqlSugar
                 BindMethod(generator, columnInfo, i);
                 generator.Emit(OpCodes.Callvirt, columnInfo.PropertyInfo.GetSetMethod(true));
                 generator.MarkLabel(endIfLabel);
-            }
+            } 
         }
         private void BindField(ILGenerator generator, LocalBuilder result, EntityColumnInfo columnInfo, string fieldName)
         {
@@ -259,7 +259,7 @@ namespace SqlSugar
                 {
                     method = isNullableType ? getOtherNull.MakeGenericMethod(bindPropertyType) : getOther.MakeGenericMethod(bindPropertyType);
                 }
-                else if (dbTypeName.EqualCase("STRING")) 
+                else if (dbTypeName.EqualCase("STRING"))
                 {
                     method = isNullableType ? getOtherNull.MakeGenericMethod(bindPropertyType) : getOther.MakeGenericMethod(bindPropertyType);
                 }
@@ -271,7 +271,7 @@ namespace SqlSugar
                 {
                     method = isNullableType ? getOtherNull.MakeGenericMethod(bindPropertyType) : getOther.MakeGenericMethod(bindPropertyType);
                 }
-
+                method = GetMethodConvert(columnInfo, method);
                 if (method.IsVirtual)
                     generator.Emit(OpCodes.Callvirt, method);
                 else
@@ -403,11 +403,24 @@ namespace SqlSugar
             if (method == null)
                 method = isNullableType ? getOtherNull.MakeGenericMethod(bindPropertyType) : getOther.MakeGenericMethod(bindPropertyType);
 
+            method = GetMethodConvert(columnInfo, method);
+
             if (method.IsVirtual)
                 generator.Emit(OpCodes.Callvirt, method);
             else
                 generator.Emit(OpCodes.Call, method);
             #endregion
+        }
+
+        private static MethodInfo GetMethodConvert(EntityColumnInfo columnInfo, MethodInfo method)
+        {
+            if (columnInfo.SqlParameterDbType is Type)
+            {
+                method = (columnInfo.SqlParameterDbType as Type).GetMethod("QueryConverter");
+                method=method.MakeGenericMethod(new Type[] { columnInfo.PropertyInfo.PropertyType });
+            }
+
+            return method;
         }
 
         private void CheckType(List<string> invalidTypes, string bindProperyTypeName, string validPropertyType, string propertyName)

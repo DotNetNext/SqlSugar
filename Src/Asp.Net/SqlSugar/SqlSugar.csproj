@@ -140,6 +140,7 @@
     <Compile Include="Abstract\UpdateProvider\UpdateableHelper.cs" />
     <Compile Include="Abstract\UpdateProvider\SplitTableUpdateByObjectProvider.cs" />
     <Compile Include="Entities\DbFastestProperties.cs" />
+    <Compile Include="Entities\DefaultCustom.cs" />
     <Compile Include="Entities\DeleteNavOptions.cs" />
     <Compile Include="Entities\JoinInfoParameter.cs" />
     <Compile Include="ExpressionsToSql\Common\MapperSql.cs" />
