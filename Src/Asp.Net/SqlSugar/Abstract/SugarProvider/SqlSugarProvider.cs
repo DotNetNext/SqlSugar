@@ -1156,6 +1156,7 @@ namespace SqlSugar
             provider._Roots = datas;
             provider._Context = this;
             result.UpdateNavProvider = provider;
+            result.NavContext = new NavContext() { Items = new List<NavContextItem>() { } };
             return result;
         }
         public UpdateNavTaskInit<T, T> UpdateNav<T>(T data, UpdateNavRootOptions rootOptions) where T : class, new()
@@ -1170,6 +1171,7 @@ namespace SqlSugar
             provider._RootOptions = rootOptions;
             provider._Context = this;
             result.UpdateNavProvider = provider;
+            result.NavContext = new NavContext() { Items = new List<NavContextItem>() { } };
             return result; ;
         }
         #endregion

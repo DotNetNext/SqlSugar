@@ -20,6 +20,7 @@ namespace SqlSugar
         public UpdateNavOptions _Options { get; set; }
         public bool IsFirst { get; set; }
         public bool IsAsNav { get;  set; }
+        internal NavContext NavContext { get; set; }
 
         public UpdateNavProvider<Root, Root> AsNav()
         {
@@ -87,6 +88,7 @@ namespace SqlSugar
             {
                 UpdateManyToMany<TChild>(name, nav);
             }
+            AddContextInfo(name,isRoot);
             return GetResult<TChild>();
         }
         private UpdateNavProvider<Root, TChild> _ThenInclude<TChild>(Expression<Func<T, List<TChild>>> expression) where TChild : class, new()
@@ -114,6 +116,7 @@ namespace SqlSugar
             {
                 UpdateManyToMany<TChild>(name, nav);
             }
+            AddContextInfo(name, isRoot);
             return GetResult<TChild>();
         }
         private void UpdateRoot(bool isRoot, EntityColumnInfo nav)
@@ -184,6 +187,23 @@ namespace SqlSugar
             {
                 this._Context.Updateable(_Roots).ExecuteCommand();
             }
+        }
+
+        private void AddContextInfo(string name, bool isRoot)
+        {
+            if (IsAsNav || isRoot)
+            {
+                if (this.NavContext != null && this.NavContext.Items != null)
+                {
+                    this.NavContext.Items.Add(new NavContextItem() { Level = 0, RootName = name });
+                }
+            }
+        }
+        private bool NotAny(string name)
+        {
+            if (IsFirst) return true;
+            if (this.NavContext == null) return true;
+            return this.NavContext?.Items?.Any(it => it.RootName == name) == false;
         }
     }
 }
