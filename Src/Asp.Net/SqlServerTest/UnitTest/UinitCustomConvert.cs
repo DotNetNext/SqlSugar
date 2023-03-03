@@ -1,5 +1,6 @@
 ﻿using SqlSugar;
 using SqlSugar.DbConvert;
+using SqlSugar.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -24,6 +25,14 @@ namespace OrmTest
             }
             ).ExecuteCommand();
             var data = db.Queryable<Uinitadfa22122>().ToList();
+            if (data.First().EnumValue != null) 
+            {
+                throw new Exception("unit error");
+            }
+            if (data.First().DcValue["1"].ObjToInt() != 1)
+            {
+                throw new Exception("unit error");
+            }
             db.Updateable(new Uinitadfa22122()
             {
                 Id = 1,
@@ -31,8 +40,25 @@ namespace OrmTest
                 EnumValue=SqlSugar.DbType.MySql
             }
            ).ExecuteCommand();
-
-          data=db.Queryable<Uinitadfa22122>().Where(it=>it.EnumValue==SqlSugar.DbType.MySql).ToList();
+             data =db.Queryable<Uinitadfa22122>().Where(it=>it.EnumValue==SqlSugar.DbType.MySql).ToList();
+             var data2 = db.Queryable<Uinitadfa22122>().Where(it => SqlSugar.DbType.MySql== it.EnumValue   ).ToList();
+            if (data.First().EnumValue != SqlSugar.DbType.MySql)
+            {
+                throw new Exception("unit error");
+            }
+            if (data.First().DcValue["1"].ObjToInt() != 2)
+            {
+                throw new Exception("unit error");
+            }
+            var dt= db.Queryable<Uinitadfa22122>().ToDataTable();
+            if (dt.Columns["EnumValue"].DataType != typeof(string)) 
+            {
+                throw new Exception("unit error");
+            }
+            if (data2.First().EnumValue!=data.First().EnumValue)
+            {
+                throw new Exception("unit error");
+            }
         }
     }
 
@@ -51,7 +77,7 @@ namespace OrmTest
   
     public static  class DictionaryConvert
     {
-        public static SugarParameter ParameterConverter(object value, int i)
+        public static SugarParameter ParameterConverter<T>(object value, int i)
         {
             var name = "@myp" + i;
             var str = new SerializeService().SerializeObject(value);
