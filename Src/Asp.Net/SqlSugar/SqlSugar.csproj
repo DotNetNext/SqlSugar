@@ -90,6 +90,7 @@
     <Compile Include="Abstract\DeleteProvider\SplitTableDeleteProvider.cs" />
     <Compile Include="Abstract\EntityMaintenance\EntityColumnExtension.cs" />
     <Compile Include="Abstract\EntityMaintenance\EntityMaintenance.cs" />
+    <Compile Include="Abstract\ExecuteNavProvider\NavContext.cs" />
     <Compile Include="Abstract\ExecuteNavProvider\UpdateNavOneToOne.cs" />
     <Compile Include="Abstract\ExecuteNavProvider\UpdateNavManyToMany.cs" />
     <Compile Include="Abstract\ExecuteNavProvider\UpdateNavOneToMany.cs" />

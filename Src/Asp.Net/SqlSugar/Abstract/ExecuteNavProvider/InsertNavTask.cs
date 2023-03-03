@@ -12,42 +12,51 @@ namespace SqlSugar
 
         internal SqlSugarProvider Context { get; set; }
         internal InsertNavProvider<Root, Root> insertNavProvider { get; set; }
+        internal NavContext NavContext { get;  set; }
 
         public InsertNavTask<Root, TChild>  Include<TChild>(Expression<Func<Root, TChild>> expression) where TChild : class, new()
         {
             this.Context = insertNavProvider._Context;
+            insertNavProvider.NavContext = this.NavContext;
             InsertNavTask<Root, TChild> result = new InsertNavTask<Root, TChild>();
             Func<InsertNavProvider<Root, TChild>> func = () => insertNavProvider.ThenInclude(expression);
             result.PreFunc = func;
             result.Context = this.Context;
+            result.NavContext = this.NavContext;
             return result;
         }
         public InsertNavTask<Root, TChild>  Include<TChild>(Expression<Func<Root, List<TChild>>> expression) where TChild : class, new()
         {
             this.Context = insertNavProvider._Context;
+            insertNavProvider.NavContext = this.NavContext;
             InsertNavTask<Root, TChild> result = new InsertNavTask<Root, TChild>();
             Func<InsertNavProvider<Root, TChild>> func = () => insertNavProvider.ThenInclude(expression);
             result.PreFunc = func;
             result.Context = this.Context;
+            result.NavContext = this.NavContext;
             return result;
         }
 
         public InsertNavTask<Root, TChild> Include<TChild>(Expression<Func<Root, TChild>> expression,InsertNavOptions options) where TChild : class, new()
         {
             this.Context = insertNavProvider._Context;
+            insertNavProvider.NavContext = this.NavContext;
             InsertNavTask<Root, TChild> result = new InsertNavTask<Root, TChild>();
             Func<InsertNavProvider<Root, TChild>> func = () => insertNavProvider.ThenInclude(expression, options);
             result.PreFunc = func;
             result.Context = this.Context;
+            result.NavContext = this.NavContext;
             return result;
         }
         public InsertNavTask<Root, TChild> Include<TChild>(Expression<Func<Root, List<TChild>>> expression, InsertNavOptions options) where TChild : class, new()
         {
             this.Context = insertNavProvider._Context;
+            insertNavProvider.NavContext =this.NavContext;
             InsertNavTask<Root, TChild> result = new InsertNavTask<Root, TChild>();
             Func<InsertNavProvider<Root, TChild>> func = () => insertNavProvider.ThenInclude(expression, options);
             result.PreFunc = func;
             result.Context = this.Context;
+            result.NavContext = this.NavContext;
             return result;
         }
     }
@@ -55,20 +64,33 @@ namespace SqlSugar
     {
         public SqlSugarProvider Context { get; set; }
         public Func<InsertNavProvider<Root, T>> PreFunc { get;  set; }
+        internal NavContext NavContext { get;  set; }
+
         public InsertNavTask<Root, TChild> ThenInclude<TChild>(Expression<Func<T, TChild>> expression) where TChild : class, new()
         {
             InsertNavTask<Root, TChild> result = new InsertNavTask<Root, TChild>();
-            Func<InsertNavProvider<Root, TChild>> func = () => PreFunc().ThenInclude(expression);
+            Func<InsertNavProvider<Root, TChild>> func = () => {
+                var nav = PreFunc().ThenInclude(expression);
+                nav.NavContext = this.NavContext;
+                return nav;
+            };
             result.PreFunc = func;
             result.Context = this.Context;
+            result.NavContext = this.NavContext;
             return result;
         }
         public InsertNavTask<Root, TChild> ThenInclude<TChild>(Expression<Func<T, List<TChild>>> expression) where TChild : class, new()
         {
             InsertNavTask<Root, TChild> result = new InsertNavTask<Root, TChild>();
-            Func<InsertNavProvider<Root, TChild>> func = () => PreFunc().ThenInclude(expression);
+            Func<InsertNavProvider<Root, TChild>> func = () =>
+            {
+                var nav = PreFunc().ThenInclude(expression);
+                nav.NavContext = this.NavContext;
+                return nav;
+            };
             result.PreFunc = func;
             result.Context = this.Context;
+            result.NavContext = this.NavContext;
             return result;
         }
         public InsertNavTask<Root, TChild> Include<TChild>(Expression<Func<Root, TChild>> expression) where TChild : class, new()
@@ -88,6 +110,7 @@ namespace SqlSugar
             Func<InsertNavProvider<Root, TChild>> func = () => PreFunc().ThenInclude(expression,options);
             result.PreFunc = func;
             result.Context = this.Context;
+            result.NavContext = this.NavContext;
             return result;
         }
         public InsertNavTask<Root, TChild> ThenInclude<TChild>(Expression<Func<T, List<TChild>>> expression, InsertNavOptions options) where TChild : class, new()
@@ -96,6 +119,7 @@ namespace SqlSugar
             Func<InsertNavProvider<Root, TChild>> func = () => PreFunc().ThenInclude(expression, options);
             result.PreFunc = func;
             result.Context = this.Context;
+            result.NavContext = this.NavContext;
             return result;
         }
         public InsertNavTask<Root, TChild> Include<TChild>(Expression<Func<Root, TChild>> expression, InsertNavOptions options) where TChild : class, new()
@@ -164,9 +188,16 @@ namespace SqlSugar
         private InsertNavTask<Root, Root> AsNav()
         {
             InsertNavTask<Root, Root> result = new InsertNavTask<Root, Root>();
-            Func<InsertNavProvider<Root, Root>> func = () => PreFunc().AsNav();
+            Func<InsertNavProvider<Root, Root>> func = () => {
+
+                    var navas= PreFunc().AsNav();
+                    navas.NavContext = this.NavContext;
+                    navas.IsNav = true;
+                    return navas;
+                };
             result.PreFunc = func;
             result.Context = this.Context;
+            result.NavContext = this.NavContext;
             return result;
         }
     }

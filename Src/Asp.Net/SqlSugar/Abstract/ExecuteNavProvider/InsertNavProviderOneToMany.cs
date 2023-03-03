@@ -42,7 +42,14 @@ namespace SqlSugar
                 }
             }
             Check.ExceptionEasy(thisPkColumn == null, $"{thisEntity.EntityName}need primary key", $"实体{thisEntity.EntityName}需要主键");
-            InsertDatas(children, thisPkColumn);
+            if (NotAny(name))
+            {
+                InsertDatas(children, thisPkColumn);
+            }
+            else 
+            {
+                this._ParentList = children.Cast<object>().ToList();
+            }
             SetNewParent<TChild>(thisEntity, thisPkColumn);
         }
 
