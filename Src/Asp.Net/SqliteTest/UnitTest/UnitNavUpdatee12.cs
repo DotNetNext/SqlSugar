@@ -94,6 +94,39 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+            foreach (var item in data)
+            {
+                item.Name = "st" + item.Name;
+                foreach (var s in item.Schools)
+                {
+                    s.Name = "shool" + s.Name;
+                    foreach (var si in s.Rooms)
+                    {
+                        si.Name += "1";
+                    }
+                    foreach (var si in s.Playgrounds)
+                    {
+                        si.Name += "1";
+                    }
+                }
+
+            }
+            db.UpdateNav(data)
+             .Include(s => s.Schools).ThenInclude(sc => sc.Rooms)
+            .Include(s => s.Schools).ThenInclude(sc => sc.Playgrounds)
+            .Include(s => s.Books)
+            .ExecuteCommand();
+          
+            var data2 = db.Queryable<Student>()
+                //.Includes(s => s.Books)
+                .Includes(s => s.Schools, s => s.Rooms)
+                .Includes(s => s.Schools, s => s.Playgrounds)
+                .ToList();
+            if (data2.Count != 1 || data2.First().Schools.Count != 1 || data2.First().Schools.First().Rooms.Count() != 1 || data2.First().Schools.First().Playgrounds.Count() != 1)
+            {
+                throw new Exception("unit error");
+            }
+
         }
     }
 }
