@@ -412,7 +412,7 @@ namespace SqlSugar
                 this.Parameters.Add(p);
                 return p.ParameterName;
             }
-            else if (columnInfo.PropertyType.Name == "TimeOnly" && name != null && !name.ObjToString().StartsWith(Builder.SqlParameterKeyWord))
+            else if (columnInfo.PropertyType!=null&&columnInfo.PropertyType.Name == "TimeOnly" && name != null && !name.ObjToString().StartsWith(Builder.SqlParameterKeyWord))
             {
                 var timeSpan = UtilMethods.TimeOnlyToTimeSpan(columnInfo.Value);
                 var pname = Builder.SqlParameterKeyWord + columnInfo.DbColumnName + "_ts" + GetDbColumnIndex;
