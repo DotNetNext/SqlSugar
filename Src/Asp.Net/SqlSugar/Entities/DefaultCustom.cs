@@ -9,11 +9,19 @@ namespace SqlSugar.DbConvert
 {
     public static class EnumToStringConvert
     {
-        public static SugarParameter ParameterConverter(object value, int i)
+        public static SugarParameter ParameterConverter<T>(object value, int i)
         {
             var name = "@myenmu" + i;
-            var enumToString = value?.ToString();
-            return new SugarParameter(name, enumToString);
+            Type undertype = SqlSugar.UtilMethods.GetUnderType(typeof(T));//获取没有nullable的枚举类型
+            if (value == null)
+            {
+                return new SugarParameter(name, null);
+            }
+            else
+            {
+                var enumObjString = Enum.Parse(undertype, value + "").ToString();
+                return new SugarParameter(name, enumObjString);
+            }
         }
 
         public static T QueryConverter<T>(this IDataRecord dr, int i)

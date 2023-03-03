@@ -216,6 +216,13 @@ namespace SqlSugar
             this.Context.Parameters.Add(new SugarParameter(parameterName, paramterValue));
             return parameterName;
         }
+        protected string AppendParameter(SugarParameter p)
+        {
+             p.ParameterName= p.ParameterName + this.Context.ParameterIndex;
+            this.Context.ParameterIndex++; ;
+            this.Context.Parameters.Add(p);
+            return p.ParameterName;
+        }
         protected void AppendNot(object Value)
         {
             var isAppend = !this.Context.Result.Contains(ExpressionConst.FormatSymbol);

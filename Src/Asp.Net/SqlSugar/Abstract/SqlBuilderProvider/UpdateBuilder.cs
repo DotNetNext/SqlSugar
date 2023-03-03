@@ -404,7 +404,7 @@ namespace SqlSugar
             else if (columnInfo.SqlParameterDbType  is Type) 
             {
                 var type = columnInfo.SqlParameterDbType as Type;
-                var ParameterConverter = type.GetMethod("ParameterConverter");
+                var ParameterConverter = type.GetMethod("ParameterConverter").MakeGenericMethod(columnInfo.PropertyType);
                 //var obj = Activator.CreateInstance(type);
                 var p = ParameterConverter.Invoke(null,new object[] { columnInfo.Value, GetDbColumnIndex }) as SugarParameter;
                 GetDbColumnIndex++;
