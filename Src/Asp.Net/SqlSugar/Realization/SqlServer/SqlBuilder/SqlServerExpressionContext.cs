@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -87,7 +88,22 @@ namespace SqlSugar
 
         private string GetJson(object memberName1, object memberName2, bool isLast)
         {
-            return $"JSON_VALUE({memberName1}, '$.'+"+memberName2+")";
+            return $"JSON_VALUE({memberName1}, '$.'+" + memberName2 + ")";
+        }
+
+        public override string JsonListObjectAny(MethodCallExpressionModel model)
+        {
+            return $"(EXISTS (SELECT * from OPENJSON({model.Args[0].MemberName}) " +
+                         $"WITH([value] NVARCHAR(MAX) '$.{model.Args[1].MemberValue.ToString().ToSqlFilter()}') " +
+                         $"WHERE [value] = {model.Args[2].MemberName}))";
+        }
+
+        public override string JsonArrayAny(MethodCallExpressionModel model)
+        {
+           return string.Format("(EXISTS(SELECT * from OPENJSON({0}) WHERE [value] = {1}))"
+                      , model.Args[0].MemberName
+                      , model.Args[1].MemberName
+                      );
         }
     }
 }
