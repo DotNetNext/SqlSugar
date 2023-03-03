@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UnitNavUpdatee12.Init();
             UnitFilterdafa.Init();
             UInsert3.Init();
             USaveable.Init();
