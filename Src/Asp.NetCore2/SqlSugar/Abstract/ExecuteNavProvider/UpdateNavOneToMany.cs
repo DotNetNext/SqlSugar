@@ -43,12 +43,19 @@ namespace SqlSugar
                 }
                 ids.Add(parentValue);
             }
-            DeleteMany(thisEntity, ids, thisFkColumn.DbColumnName);
-            this._Context.Deleteable<object>()
-                .AS(thisEntity.DbTableName)
-                .In(thisFkColumn.DbColumnName, ids.Distinct().ToList()).ExecuteCommand();
-            _NavigateType = NavigateType.OneToMany;
-            InsertDatas(children, thisPkColumn);
+            if (NotAny(name))
+            {
+                DeleteMany(thisEntity, ids, thisFkColumn.DbColumnName);
+                this._Context.Deleteable<object>()
+                    .AS(thisEntity.DbTableName)
+                    .In(thisFkColumn.DbColumnName, ids.Distinct().ToList()).ExecuteCommand();
+                _NavigateType = NavigateType.OneToMany;
+                InsertDatas(children, thisPkColumn);
+            }
+            else 
+            {
+                this._ParentList = children.Cast<object>().ToList();
+            }
             _NavigateType = null;
             SetNewParent<TChild>(thisEntity, thisPkColumn);
         }

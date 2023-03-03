@@ -12,42 +12,51 @@ namespace SqlSugar
 
         internal SqlSugarProvider Context { get; set; }
         internal UpdateNavProvider<Root, Root> UpdateNavProvider { get; set; }
+        internal NavContext NavContext { get;  set; }
 
         public UpdateNavTask<Root, TChild> Include<TChild>(Expression<Func<Root, TChild>> expression) where TChild : class, new()
         {
             this.Context = UpdateNavProvider._Context;
+            UpdateNavProvider.NavContext = this.NavContext;
             UpdateNavTask<Root, TChild> result = new UpdateNavTask<Root, TChild>();
             Func<UpdateNavProvider<Root, TChild>> func = () => UpdateNavProvider.ThenInclude(expression);
             result.PreFunc = func;
             result.Context = this.Context;
+            result.NavContext = this.NavContext;
             return result;
         }
         public UpdateNavTask<Root, TChild> Include<TChild>(Expression<Func<Root, List<TChild>>> expression) where TChild : class, new()
         {
             this.Context = UpdateNavProvider._Context;
+            UpdateNavProvider.NavContext = this.NavContext;
             UpdateNavTask<Root, TChild> result = new UpdateNavTask<Root, TChild>();
             Func<UpdateNavProvider<Root, TChild>> func = () => UpdateNavProvider.ThenInclude(expression);
             result.PreFunc = func;
             result.Context = this.Context;
+            result.NavContext = UpdateNavProvider.NavContext;
             return result;
         }
 
         public UpdateNavTask<Root, TChild> Include<TChild>(Expression<Func<Root, TChild>> expression,UpdateNavOptions options) where TChild : class, new()
         {
             this.Context = UpdateNavProvider._Context;
+            UpdateNavProvider.NavContext = this.NavContext;
             UpdateNavTask<Root, TChild> result = new UpdateNavTask<Root, TChild>();
             Func<UpdateNavProvider<Root, TChild>> func = () => UpdateNavProvider.ThenInclude(expression,options);
             result.PreFunc = func;
             result.Context = this.Context;
+            result.NavContext = UpdateNavProvider.NavContext;
             return result;
         }
         public UpdateNavTask<Root, TChild> Include<TChild>(Expression<Func<Root, List<TChild>>> expression, UpdateNavOptions options) where TChild : class, new()
         {
             this.Context = UpdateNavProvider._Context;
+            UpdateNavProvider.NavContext = this.NavContext;
             UpdateNavTask<Root, TChild> result = new UpdateNavTask<Root, TChild>();
             Func<UpdateNavProvider<Root, TChild>> func = () => UpdateNavProvider.ThenInclude(expression,options);
             result.PreFunc = func;
             result.Context = this.Context;
+            result.NavContext = UpdateNavProvider.NavContext;
             return result;
         }
     }
@@ -55,6 +64,7 @@ namespace SqlSugar
     {
         public SqlSugarProvider Context { get; set; }
         public Func<UpdateNavProvider<Root, T>> PreFunc { get; set; }
+        internal NavContext NavContext { get; set; }
 
 
         #region +1
@@ -64,6 +74,7 @@ namespace SqlSugar
             Func<UpdateNavProvider<Root, TChild>> func = () => PreFunc().ThenInclude(expression);
             result.PreFunc = func;
             result.Context = this.Context;
+            result.NavContext = this.NavContext;
             return result;
         }
         public UpdateNavTask<Root, TChild> ThenInclude<TChild>(Expression<Func<T, List<TChild>>> expression) where TChild : class, new()
@@ -72,6 +83,7 @@ namespace SqlSugar
             Func<UpdateNavProvider<Root, TChild>> func = () => PreFunc().ThenInclude(expression);
             result.PreFunc = func;
             result.Context = this.Context;
+            result.NavContext = this.NavContext;
             return result;
         }
         public UpdateNavTask<Root, TChild> Include<TChild>(Expression<Func<Root, TChild>> expression) where TChild : class, new()
@@ -90,7 +102,11 @@ namespace SqlSugar
         public UpdateNavTask<Root, TChild> ThenInclude<TChild>(Expression<Func<T, TChild>> expression, UpdateNavOptions options) where TChild : class, new()
         {
             UpdateNavTask<Root, TChild> result = new UpdateNavTask<Root, TChild>();
-            Func<UpdateNavProvider<Root, TChild>> func = () => PreFunc().ThenInclude(expression, options);
+            Func<UpdateNavProvider<Root, TChild>> func = () => {
+                  var nav = PreFunc().ThenInclude(expression, options);
+                  nav.NavContext = this.NavContext;
+                   return nav;
+                };
             result.PreFunc = func;
             result.Context = this.Context;
             return result;
@@ -98,7 +114,11 @@ namespace SqlSugar
         public UpdateNavTask<Root, TChild> ThenInclude<TChild>(Expression<Func<T, List<TChild>>> expression, UpdateNavOptions options) where TChild : class, new()
         {
             UpdateNavTask<Root, TChild> result = new UpdateNavTask<Root, TChild>();
-            Func<UpdateNavProvider<Root, TChild>> func = () => PreFunc().ThenInclude(expression, options);
+            Func<UpdateNavProvider<Root, TChild>> func = () => {
+                var nav = PreFunc().ThenInclude(expression, options);
+                result.NavContext = this.NavContext;
+                return nav;
+            };
             result.PreFunc = func;
             result.Context = this.Context;
             return result;
@@ -146,10 +166,12 @@ namespace SqlSugar
             Func<UpdateNavProvider<Root, Root>> func = () => {
                   var navres=PreFunc().AsNav();
                   navres.IsAsNav = true;
+                navres.NavContext = this.NavContext;
                   return navres;
                 };
             result.PreFunc = func;
             result.Context = this.Context;
+            result.NavContext = this.NavContext;
             return result;
         }
     }
