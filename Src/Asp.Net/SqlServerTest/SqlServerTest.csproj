@@ -109,6 +109,7 @@
     <Compile Include="UnitTest\Models\SysFormField.cs" />
     <Compile Include="UnitTest\Models\SysFormFieldInput.cs" />
     <Compile Include="UnitTest\Models\SysFormUpload.cs" />
+    <Compile Include="UnitTest\UnitTime.cs" />
     <Compile Include="UnitTest\UnitUpdateNavOneToOne.cs" />
     <Compile Include="UnitTest\CrossDatabase01.cs" />
     <Compile Include="UnitTest\CrossDatabase02.cs" />
