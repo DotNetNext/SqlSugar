@@ -278,6 +278,10 @@ namespace SqlSugar
                     {
                         continue;
                     }
+                    if (item.SqlParameterDbType is Type)
+                    {
+                        continue;
+                    }
                     var parameter = new SugarParameter(this.SqlBuilder.SqlParameterKeyWord + item.DbColumnName, item.Value, item.PropertyType);
                     if (item.IsJson)
                     {
