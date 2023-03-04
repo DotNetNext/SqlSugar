@@ -159,6 +159,7 @@
     <Compile Include="ExpressionsToSql\Subquery\Items\SubWithNoLock.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubEnableTableFilter.cs" />
     <Compile Include="Interface\ICustomConditionalFunc.cs" />
+    <Compile Include="Interface\ISugarDataConverter.cs" />
     <Compile Include="Json2Sql\Entities\JsonDeleteResult.cs" />
     <Compile Include="Json2Sql\Entities\JsonInsertResult.cs" />
     <Compile Include="Json2Sql\Entities\JsonQueryResult.cs" />

@@ -7,24 +7,24 @@ using System.Threading.Tasks;
 
 namespace SqlSugar.DbConvert
 {
-    public static class EnumToStringConvert
+    public  class EnumToStringConvert: ISugarDataConverter
     {
-        public static SugarParameter ParameterConverter<T>(object value, int i)
+        public  SugarParameter ParameterConverter<T>(object columnValue, int columnIndex)
         {
-            var name = "@myenmu" + i;
+            var name = "@MyEnmu" + columnIndex;
             Type undertype = SqlSugar.UtilMethods.GetUnderType(typeof(T));//获取没有nullable的枚举类型
-            if (value == null)
+            if (columnValue == null)
             {
                 return new SugarParameter(name, null);
             }
             else
             {
-                var enumObjString = Enum.Parse(undertype, value + "").ToString();
+                var enumObjString = Enum.Parse(undertype, columnValue + "").ToString();
                 return new SugarParameter(name, enumObjString);
             }
         }
 
-        public static T QueryConverter<T>(this IDataRecord dr, int i)
+        public  T QueryConverter<T>(IDataRecord dr, int i)
         {
 
             var str = dr.GetString(i);

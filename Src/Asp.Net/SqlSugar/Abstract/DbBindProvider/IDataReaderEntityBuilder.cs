@@ -155,8 +155,43 @@ namespace SqlSugar
         #endregion
 
         #region Private methods
+        private void BindCustomFunc(ILGenerator generator, LocalBuilder result, EntityColumnInfo columnInfo, string fieldName) 
+        {
+            int i = DataRecord.GetOrdinal(fieldName);
+            Label endIfLabel = generator.DefineLabel();
+            generator.Emit(OpCodes.Ldarg_0);
+            generator.Emit(OpCodes.Ldc_I4, i);
+            generator.Emit(OpCodes.Callvirt, isDBNullMethod);
+            generator.Emit(OpCodes.Brtrue, endIfLabel);
+            generator.Emit(OpCodes.Ldloc, result);
+            //generator.Emit(OpCodes.Ldarg_0);
+            //generator.Emit(OpCodes.Ldc_I4, i);
+            var method = (columnInfo.SqlParameterDbType as Type).GetMethod("QueryConverter");
+            method = method.MakeGenericMethod(new Type[] { columnInfo.PropertyInfo.PropertyType });
+            Type type = (columnInfo.SqlParameterDbType as Type);
+            //ConstructorInfo info = type.GetConstructor(Type.EmptyTypes);
+            //il.Emit(OpCodes.Newobj, info);
+            generator.Emit(OpCodes.Ldtoken, type);
+            generator.Emit(OpCodes.Ldarg_0);
+            generator.Emit(OpCodes.Ldc_I4, i);
+            method = (columnInfo.SqlParameterDbType as Type).GetMethod("QueryConverter");
+            method = method.MakeGenericMethod(new Type[] { columnInfo.PropertyInfo.PropertyType });
+            if (method.IsVirtual)
+                generator.Emit(OpCodes.Callvirt, method);
+            else
+                generator.Emit(OpCodes.Call, method);
+            generator.Emit(OpCodes.Callvirt, columnInfo.PropertyInfo.GetSetMethod(true));
+            generator.MarkLabel(endIfLabel);
+        }
         private void BindClass(ILGenerator generator, LocalBuilder result, EntityColumnInfo columnInfo, string fieldName)
         {
+
+            if (columnInfo.SqlParameterDbType is Type)
+            {
+                BindCustomFunc(generator, result, columnInfo, fieldName);
+                return;
+            }
+
             if (columnInfo.IsJson)
             {
                 MethodInfo jsonMethod = getJson.MakeGenericMethod(columnInfo.PropertyInfo.PropertyType);
@@ -189,7 +224,7 @@ namespace SqlSugar
                 generator.Emit(OpCodes.Callvirt, columnInfo.PropertyInfo.GetSetMethod(true));
                 generator.MarkLabel(endIfLabel);
             }
-            else if (columnInfo.UnderType == typeof(XElement)||columnInfo.SqlParameterDbType is Type) 
+            else if (columnInfo.UnderType == typeof(XElement)) 
             {
                 int i = DataRecord.GetOrdinal(fieldName);
                 Label endIfLabel = generator.DefineLabel();
@@ -207,6 +242,11 @@ namespace SqlSugar
         }
         private void BindField(ILGenerator generator, LocalBuilder result, EntityColumnInfo columnInfo, string fieldName)
         {
+            if (columnInfo.SqlParameterDbType is Type) 
+            {
+                BindCustomFunc(generator,result, columnInfo, fieldName);
+                return;
+            }
             int i = DataRecord.GetOrdinal(fieldName);
             Label endIfLabel = generator.DefineLabel();
             generator.Emit(OpCodes.Ldarg_0);
@@ -271,7 +311,6 @@ namespace SqlSugar
                 {
                     method = isNullableType ? getOtherNull.MakeGenericMethod(bindPropertyType) : getOther.MakeGenericMethod(bindPropertyType);
                 }
-                method = GetMethodConvert(columnInfo, method);
                 if (method.IsVirtual)
                     generator.Emit(OpCodes.Callvirt, method);
                 else
@@ -403,7 +442,6 @@ namespace SqlSugar
             if (method == null)
                 method = isNullableType ? getOtherNull.MakeGenericMethod(bindPropertyType) : getOther.MakeGenericMethod(bindPropertyType);
 
-            method = GetMethodConvert(columnInfo, method);
 
             if (method.IsVirtual)
                 generator.Emit(OpCodes.Callvirt, method);
@@ -412,16 +450,6 @@ namespace SqlSugar
             #endregion
         }
 
-        private static MethodInfo GetMethodConvert(EntityColumnInfo columnInfo, MethodInfo method)
-        {
-            if (columnInfo.SqlParameterDbType is Type)
-            {
-                method = (columnInfo.SqlParameterDbType as Type).GetMethod("QueryConverter");
-                method=method.MakeGenericMethod(new Type[] { columnInfo.PropertyInfo.PropertyType });
-            }
-
-            return method;
-        }
 
         private void CheckType(List<string> invalidTypes, string bindProperyTypeName, string validPropertyType, string propertyName)
         {

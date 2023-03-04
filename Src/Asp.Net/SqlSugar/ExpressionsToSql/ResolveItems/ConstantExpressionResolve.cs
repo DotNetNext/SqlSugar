@@ -54,8 +54,8 @@ namespace SqlSugar
                         {
                             var type = columnInfo.SqlParameterDbType as Type;
                             var ParameterConverter = type.GetMethod("ParameterConverter").MakeGenericMethod(columnInfo.PropertyInfo.PropertyType);
-                            //var obj=Activator.CreateInstance(type);
-                            var p = ParameterConverter.Invoke(null, new object[] { expression.Value, 100 }) as SugarParameter;
+                            var obj=Activator.CreateInstance(type);
+                            var p = ParameterConverter.Invoke(obj, new object[] { expression.Value, 100 }) as SugarParameter;
                             customParameter = base.AppendParameter(p);
 
                         }
