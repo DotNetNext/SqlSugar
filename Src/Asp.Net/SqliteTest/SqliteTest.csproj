@@ -77,6 +77,7 @@
     <Compile Include="Models\TestTree.cs" />
     <Compile Include="Models\Tree.cs" />
     <Compile Include="Models\ViewOrder.cs" />
+    <Compile Include="UnitTest\UinitCustomConvert.cs" />
     <Compile Include="UnitTest\Models\Book.cs" />
     <Compile Include="UnitTest\Models\Playground.cs" />
     <Compile Include="UnitTest\Models\Room.cs" />
