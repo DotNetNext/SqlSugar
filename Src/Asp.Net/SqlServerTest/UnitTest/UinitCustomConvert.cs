@@ -74,17 +74,17 @@ namespace OrmTest
         public SqlSugar.DbType? EnumValue { get;set; }
     }
 
-  
-    public static  class DictionaryConvert
+
+    public class DictionaryConvert : ISugarDataConverter
     {
-        public static SugarParameter ParameterConverter<T>(object value, int i)
+        public SugarParameter ParameterConverter<T>(object value, int i)
         {
             var name = "@myp" + i;
             var str = new SerializeService().SerializeObject(value);
             return new SugarParameter(name, str);
         }
 
-        public  static T QueryConverter<T>(this IDataRecord dr ,int i)
+        public T QueryConverter<T>(IDataRecord dr, int i)
         {
             var str = dr.GetValue(i) + "";
             return new SerializeService().DeserializeObject<T>(str);
