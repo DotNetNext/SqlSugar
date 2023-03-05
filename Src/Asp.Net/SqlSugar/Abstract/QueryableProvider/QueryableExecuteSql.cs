@@ -733,15 +733,15 @@ namespace SqlSugar
             return result;
         }
 
-        public bool IntoTable<TableEntityType>() 
+        public int IntoTable<TableEntityType>() 
         {
             return IntoTable(typeof(TableEntityType));
         }
-        public bool IntoTable<TableEntityType>(string TableName)
+        public int IntoTable<TableEntityType>(string TableName)
         {
             return IntoTable(typeof(TableEntityType), TableName);
         }
-        public bool IntoTable(Type TableEntityType) 
+        public int IntoTable(Type TableEntityType) 
         {
             var entityInfo=this.Context.EntityMaintenance.GetEntityInfo(TableEntityType);
             var sqlInfo=this.ToSql();
@@ -758,11 +758,10 @@ namespace SqlSugar
                 columns = columns.TrimEnd(',') + ")";
             }
             var  sql= $" INSERT  INTO {name} {columns} " + sqlInfo.Key;
-            this.Context.Ado.ExecuteCommand(sql, sqlInfo.Value);
-            return true;
+            return this.Context.Ado.ExecuteCommand(sql, sqlInfo.Value);
         }
 
-        public bool IntoTable(Type TableEntityType,string TableName)
+        public int IntoTable(Type TableEntityType,string TableName)
         {
             //var entityInfo = this.Context.EntityMaintenance.GetEntityInfo(TableEntityType);
             var sqlInfo = this.ToSql();
@@ -779,8 +778,7 @@ namespace SqlSugar
                 columns = columns.TrimEnd(',') + ")";
             }
             var sql = $" INSERT  INTO {name} {columns} " + sqlInfo.Key;
-            this.Context.Ado.ExecuteCommand(sql, sqlInfo.Value);
-            return true;
+            return this.Context.Ado.ExecuteCommand(sql, sqlInfo.Value);
         }
 
     }
