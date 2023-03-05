@@ -30,19 +30,64 @@ namespace SqlSugar
                this.QueryBuilder.CrossQueryItems.Add(type.FullName, configId);
             return this;
         }
-        public ISugarQueryable<T> IncludeLeftJoin(Expression<Func<T, object>> LeftObject)
+        public ISugarQueryable<T> IncludeLeftJoin(Expression<Func<T, object>> leftObjectExp)
         {
             MemberExpression memberExpression;
             string navObjectName;
             EntityColumnInfo navColumn, navPkColumn;
             EntityInfo navEntityInfo;
-            ExpressionTool.GetOneToOneInfo(this.Context,LeftObject, out memberExpression, out navObjectName, out navColumn, out navEntityInfo, out navPkColumn);
+            ExpressionTool.GetOneToOneInfo(this.Context, leftObjectExp, out memberExpression, out navObjectName, out navColumn, out navEntityInfo, out navPkColumn);
             var shortName = $"pnv_{navObjectName}";
             var mainShortName = memberExpression.Expression.ToString();
             this.QueryBuilder.TableShortName = mainShortName;
             var onWhere = $"{shortName}.{navPkColumn.DbColumnName}={mainShortName}.{navColumn.DbColumnName}";
             UtilMethods.IsNullReturnNew(this.Context.TempItems);
             this.AddJoinInfo(navEntityInfo.DbTableName, shortName, onWhere, JoinType.Left);
+            return this;
+        }
+        public ISugarQueryable<T> IncludeInnerJoin(Expression<Func<T, object>> innerObjectExt)
+        {
+            MemberExpression memberExpression;
+            string navObjectName;
+            EntityColumnInfo navColumn, navPkColumn;
+            EntityInfo navEntityInfo;
+            ExpressionTool.GetOneToOneInfo(this.Context, innerObjectExt, out memberExpression, out navObjectName, out navColumn, out navEntityInfo, out navPkColumn);
+            var shortName = $"pnv_{navObjectName}";
+            var mainShortName = memberExpression.Expression.ToString();
+            this.QueryBuilder.TableShortName = mainShortName;
+            var onWhere = $"{shortName}.{navPkColumn.DbColumnName}={mainShortName}.{navColumn.DbColumnName}";
+            UtilMethods.IsNullReturnNew(this.Context.TempItems);
+            this.AddJoinInfo(navEntityInfo.DbTableName, shortName, onWhere, JoinType.Inner);
+            return this;
+        }
+        public ISugarQueryable<T> IncludeFullJoin(Expression<Func<T, object>> fullObjectExp)
+        {
+            MemberExpression memberExpression;
+            string navObjectName;
+            EntityColumnInfo navColumn, navPkColumn;
+            EntityInfo navEntityInfo;
+            ExpressionTool.GetOneToOneInfo(this.Context, fullObjectExp, out memberExpression, out navObjectName, out navColumn, out navEntityInfo, out navPkColumn);
+            var shortName = $"pnv_{navObjectName}";
+            var mainShortName = memberExpression.Expression.ToString();
+            this.QueryBuilder.TableShortName = mainShortName;
+            var onWhere = $"{shortName}.{navPkColumn.DbColumnName}={mainShortName}.{navColumn.DbColumnName}";
+            UtilMethods.IsNullReturnNew(this.Context.TempItems);
+            this.AddJoinInfo(navEntityInfo.DbTableName, shortName, onWhere, JoinType.Full);
+            return this;
+        }
+        public ISugarQueryable<T> IncludeRightJoin(Expression<Func<T, object>> rightObjectExp)
+        {
+            MemberExpression memberExpression;
+            string navObjectName;
+            EntityColumnInfo navColumn, navPkColumn;
+            EntityInfo navEntityInfo;
+            ExpressionTool.GetOneToOneInfo(this.Context, rightObjectExp, out memberExpression, out navObjectName, out navColumn, out navEntityInfo, out navPkColumn);
+            var shortName = $"pnv_{navObjectName}";
+            var mainShortName = memberExpression.Expression.ToString();
+            this.QueryBuilder.TableShortName = mainShortName;
+            var onWhere = $"{shortName}.{navPkColumn.DbColumnName}={mainShortName}.{navColumn.DbColumnName}";
+            UtilMethods.IsNullReturnNew(this.Context.TempItems);
+            this.AddJoinInfo(navEntityInfo.DbTableName, shortName, onWhere, JoinType.Right);
             return this;
         }
 
