@@ -45,6 +45,36 @@ namespace SqlSugar
             this.AddJoinInfo(navEntityInfo.DbTableName, shortName, onWhere, JoinType.Left);
             return this;
         }
+        public ISugarQueryable<T> IncludeInnerJoin(Expression<Func<T, object>> LeftObject)
+        {
+            MemberExpression memberExpression;
+            string navObjectName;
+            EntityColumnInfo navColumn, navPkColumn;
+            EntityInfo navEntityInfo;
+            ExpressionTool.GetOneToOneInfo(this.Context, LeftObject, out memberExpression, out navObjectName, out navColumn, out navEntityInfo, out navPkColumn);
+            var shortName = $"pnv_{navObjectName}";
+            var mainShortName = memberExpression.Expression.ToString();
+            this.QueryBuilder.TableShortName = mainShortName;
+            var onWhere = $"{shortName}.{navPkColumn.DbColumnName}={mainShortName}.{navColumn.DbColumnName}";
+            UtilMethods.IsNullReturnNew(this.Context.TempItems);
+            this.AddJoinInfo(navEntityInfo.DbTableName, shortName, onWhere, JoinType.Inner);
+            return this;
+        }
+        public ISugarQueryable<T> IncludeFullJoin(Expression<Func<T, object>> LeftObject)
+        {
+            MemberExpression memberExpression;
+            string navObjectName;
+            EntityColumnInfo navColumn, navPkColumn;
+            EntityInfo navEntityInfo;
+            ExpressionTool.GetOneToOneInfo(this.Context, LeftObject, out memberExpression, out navObjectName, out navColumn, out navEntityInfo, out navPkColumn);
+            var shortName = $"pnv_{navObjectName}";
+            var mainShortName = memberExpression.Expression.ToString();
+            this.QueryBuilder.TableShortName = mainShortName;
+            var onWhere = $"{shortName}.{navPkColumn.DbColumnName}={mainShortName}.{navColumn.DbColumnName}";
+            UtilMethods.IsNullReturnNew(this.Context.TempItems);
+            this.AddJoinInfo(navEntityInfo.DbTableName, shortName, onWhere, JoinType.Full);
+            return this;
+        }
 
         public ISugarQueryable<T, T2> LeftJoin<T2>(ISugarQueryable<T2> joinQueryable, Expression<Func<T, T2, bool>> joinExpression)
         {

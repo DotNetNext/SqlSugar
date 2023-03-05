@@ -23,7 +23,9 @@ namespace SqlSugar
         //ISugarQueryable<T> CrossQueryWithAttr();
         ISugarQueryable<T> CrossQuery<Type>(string configId);
         ISugarQueryable<T> CrossQuery(Type type ,string configId);
-        ISugarQueryable<T> IncludeLeftJoin(Expression<Func<T, object>> LeftObject);
+        ISugarQueryable<T> IncludeLeftJoin(Expression<Func<T, object>> leftObjectExp);
+        ISugarQueryable<T> IncludeRightJoin(Expression<Func<T, object>> rightObjectExp);
+        ISugarQueryable<T> IncludeFullJoin(Expression<Func<T, object>> fullObjectExp);
         ISugarQueryable<T, T2> LeftJoin<T2>(ISugarQueryable<T2> joinQueryable, Expression<Func<T, T2, bool>> joinExpression);
         ISugarQueryable<T, T2> InnerJoin<T2>(ISugarQueryable<T2> joinQueryable, Expression<Func<T, T2, bool>> joinExpression);
         ISugarQueryable<T, T2> RightJoin<T2>(ISugarQueryable<T2> joinQueryable, Expression<Func<T, T2, bool>> joinExpression);
