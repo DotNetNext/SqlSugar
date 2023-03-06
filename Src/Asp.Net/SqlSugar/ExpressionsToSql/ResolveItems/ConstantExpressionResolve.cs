@@ -11,6 +11,62 @@ namespace SqlSugar
         public ConstantExpressionResolve(ExpressionParameter parameter) : base(parameter)
         {
             var expression = base.Expression as ConstantExpression;
+            string customParameter = GetCustomParameter(parameter, expression);
+            if (customParameter == null)
+            {
+                DefaultConstant(parameter, expression);
+            }
+            else
+            {
+                CustomConstant(parameter, customParameter);
+            }
+        }
+
+        private void CustomConstant(ExpressionParameter parameter, string customParameter)
+        {
+            var baseParameter = parameter.BaseParameter;
+            var isSetTempData = baseParameter.CommonTempData.HasValue() && baseParameter.CommonTempData.Equals(CommonTempDataType.Result);
+            if (isSetTempData)
+            {
+                baseParameter.CommonTempData = customParameter;
+            }
+            else
+            {
+                AppendMember(parameter, parameter.IsLeft, customParameter);
+            }
+        }
+
+        private string GetCustomParameter(ExpressionParameter parameter, ConstantExpression expression)
+        {
+            string customParameter = null;
+            if (parameter.OppsiteExpression != null)
+            {
+                var exp = ExpressionTool.RemoveConvert(parameter.OppsiteExpression);
+                if (exp is MemberExpression)
+                {
+                    var member = (exp as MemberExpression);
+                    var memberParent = member.Expression;
+                    if (memberParent != null&& this.Context?.SugarContext?.Context!=null)
+                    {
+                        var entity = this.Context.SugarContext.Context.EntityMaintenance.GetEntityInfo(memberParent.Type);
+                        var columnInfo = entity.Columns.FirstOrDefault(it => it.PropertyName == member.Member.Name);
+                        if (columnInfo.SqlParameterDbType is Type)
+                        {
+                            var type = columnInfo.SqlParameterDbType as Type;
+                            var ParameterConverter = type.GetMethod("ParameterConverter").MakeGenericMethod(columnInfo.PropertyInfo.PropertyType);
+                            var obj=Activator.CreateInstance(type);
+                            var p = ParameterConverter.Invoke(obj, new object[] { expression.Value, 100 }) as SugarParameter;
+                            customParameter = base.AppendParameter(p);
+
+                        }
+                    }
+                }
+            }
+            return customParameter;
+        }
+
+        private void DefaultConstant(ExpressionParameter parameter, ConstantExpression expression)
+        {
             var isLeft = parameter.IsLeft;
             object value = ExpressionTool.GetValue(expression.Value, this.Context);
             value = ConvetValue(parameter, expression, value);

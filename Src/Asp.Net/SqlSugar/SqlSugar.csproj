@@ -90,6 +90,7 @@
     <Compile Include="Abstract\DeleteProvider\SplitTableDeleteProvider.cs" />
     <Compile Include="Abstract\EntityMaintenance\EntityColumnExtension.cs" />
     <Compile Include="Abstract\EntityMaintenance\EntityMaintenance.cs" />
+    <Compile Include="Abstract\ExecuteNavProvider\NavContext.cs" />
     <Compile Include="Abstract\ExecuteNavProvider\UpdateNavOneToOne.cs" />
     <Compile Include="Abstract\ExecuteNavProvider\UpdateNavManyToMany.cs" />
     <Compile Include="Abstract\ExecuteNavProvider\UpdateNavOneToMany.cs" />
@@ -139,6 +140,7 @@
     <Compile Include="Abstract\UpdateProvider\UpdateableHelper.cs" />
     <Compile Include="Abstract\UpdateProvider\SplitTableUpdateByObjectProvider.cs" />
     <Compile Include="Entities\DbFastestProperties.cs" />
+    <Compile Include="Entities\DefaultCustom.cs" />
     <Compile Include="Entities\DeleteNavOptions.cs" />
     <Compile Include="Entities\JoinInfoParameter.cs" />
     <Compile Include="ExpressionsToSql\Common\MapperSql.cs" />
@@ -157,6 +159,7 @@
     <Compile Include="ExpressionsToSql\Subquery\Items\SubWithNoLock.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubEnableTableFilter.cs" />
     <Compile Include="Interface\ICustomConditionalFunc.cs" />
+    <Compile Include="Interface\ISugarDataConverter.cs" />
     <Compile Include="Json2Sql\Entities\JsonDeleteResult.cs" />
     <Compile Include="Json2Sql\Entities\JsonInsertResult.cs" />
     <Compile Include="Json2Sql\Entities\JsonQueryResult.cs" />

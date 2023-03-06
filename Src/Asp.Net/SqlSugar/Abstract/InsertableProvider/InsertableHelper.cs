@@ -112,6 +112,10 @@ namespace SqlSugar
                     {
                         continue;
                     }
+                    if (item.SqlParameterDbType is Type) 
+                    {
+                        continue;
+                    }
                     if (item.IsJson)
                     {
                         paramters.IsJson = true;
@@ -217,7 +221,8 @@ namespace SqlSugar
                     TableId = i,
                     InsertSql = column.InsertSql,
                     InsertServerTime = column.InsertServerTime,
-                    DataType=column.DataType
+                    DataType=column.DataType,
+                    SqlParameterDbType= column.SqlParameterDbType 
                      
                 };
                 if (column.DbColumnName == null)

@@ -165,6 +165,10 @@ namespace SqlSugar
                     sqlParameter.DbType = System.Data.DbType.DateTime;
                 }
                 ++index;
+                if (parameter.CustomDbType != null&& parameter.CustomDbType is NpgsqlDbType) 
+                {
+                    sqlParameter.NpgsqlDbType =((NpgsqlDbType)parameter.CustomDbType);
+                }
             }
             return result;
         }

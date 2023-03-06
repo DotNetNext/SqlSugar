@@ -131,6 +131,11 @@ namespace SqlSugar
             base.ExactExpression = expression;
             var leftExpression = expression.Left;
             var rightExpression = expression.Right;
+            if (operatorValue == "="&& ExpressionTool.RemoveConvert(leftExpression) is ConstantExpression) 
+            {
+                 leftExpression = expression.Right;
+                 rightExpression = expression.Left;
+            }
             if (RightIsHasValue(leftExpression, rightExpression,ExpressionTool.IsLogicOperator(expression)))
             {
                 Expression trueValue = Expression.Constant(true);

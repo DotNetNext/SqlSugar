@@ -329,7 +329,7 @@ namespace SqlSugar
             }
         }
 
-        internal static Type GetUnderType(Type oldType)
+        public static Type GetUnderType(Type oldType)
         {
             Type type = Nullable.GetUnderlyingType(oldType);
             return type == null ? oldType : type;

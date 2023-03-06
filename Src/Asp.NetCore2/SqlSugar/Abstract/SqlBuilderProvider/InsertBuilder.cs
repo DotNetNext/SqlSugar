@@ -284,6 +284,17 @@ namespace SqlSugar
             {
                 return columnInfo.InsertSql;
             }
+            else if (columnInfo.SqlParameterDbType is Type)
+            {
+                var type=columnInfo.SqlParameterDbType as Type;
+                var ParameterConverter=type.GetMethod("ParameterConverter").MakeGenericMethod(columnInfo.PropertyType);
+                var obj=Activator.CreateInstance(type);
+                var p = ParameterConverter.Invoke(obj,new object[] {columnInfo.Value, GetDbColumnIndex }) as SugarParameter;
+                GetDbColumnIndex++;
+                //this.Parameters.RemoveAll(it => it.ParameterName == it.ParameterName);
+                this.Parameters.Add(p);
+                return p.ParameterName;
+            }
             else if (columnInfo.DataType?.Equals("nvarchar2")==true) 
             {
                 var pname = Builder.SqlParameterKeyWord + columnInfo.DbColumnName + "_ts" + GetDbColumnIndex;
@@ -293,7 +304,7 @@ namespace SqlSugar
                 GetDbColumnIndex++;
                 return pname;
             }
-            else if (columnInfo.PropertyType.Name == "TimeOnly" && name != null && !name.ObjToString().StartsWith(Builder.SqlParameterKeyWord))
+            else if (columnInfo.PropertyType!=null&&columnInfo.PropertyType.Name == "TimeOnly" && name != null && !name.ObjToString().StartsWith(Builder.SqlParameterKeyWord))
             {
                 var timeSpan = UtilMethods.TimeOnlyToTimeSpan(columnInfo.Value);
                 var pname = Builder.SqlParameterKeyWord + columnInfo.DbColumnName + "_ts" + GetDbColumnIndex;

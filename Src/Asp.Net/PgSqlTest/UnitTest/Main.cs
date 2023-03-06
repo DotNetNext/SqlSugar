@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UinitCustomConvert.Init();
             ULock.Init();
             UInsert3.Init();
             UnitSubToList.Init();

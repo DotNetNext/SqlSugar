@@ -23,7 +23,10 @@ namespace SqlSugar
         //ISugarQueryable<T> CrossQueryWithAttr();
         ISugarQueryable<T> CrossQuery<Type>(string configId);
         ISugarQueryable<T> CrossQuery(Type type ,string configId);
-        ISugarQueryable<T> IncludeLeftJoin(Expression<Func<T, object>> LeftObject);
+        ISugarQueryable<T> IncludeLeftJoin(Expression<Func<T, object>> leftObjectExp);
+        ISugarQueryable<T> IncludeInnerJoin(Expression<Func<T, object>> innerObjectExp);
+        ISugarQueryable<T> IncludeRightJoin(Expression<Func<T, object>> rightObjectExp);
+        ISugarQueryable<T> IncludeFullJoin(Expression<Func<T, object>> fullObjectExp);
         ISugarQueryable<T, T2> LeftJoin<T2>(ISugarQueryable<T2> joinQueryable, Expression<Func<T, T2, bool>> joinExpression);
         ISugarQueryable<T, T2> InnerJoin<T2>(ISugarQueryable<T2> joinQueryable, Expression<Func<T, T2, bool>> joinExpression);
         ISugarQueryable<T, T2> RightJoin<T2>(ISugarQueryable<T2> joinQueryable, Expression<Func<T, T2, bool>> joinExpression);
@@ -160,10 +163,10 @@ namespace SqlSugar
         Task<List<TResult>> ToListAsync<TResult>(Expression<Func<T, TResult>> expression);
         List<T> ToList();
 
-        bool IntoTable<TableEntityType>();
-        bool IntoTable(Type TableEntityType);
-        bool IntoTable<TableEntityType>(string tableName);
-        bool IntoTable(Type TableEntityType,string tableName);
+        int IntoTable<TableEntityType>();
+        int IntoTable(Type TableEntityType);
+        int IntoTable<TableEntityType>(string tableName);
+        int IntoTable(Type TableEntityType,string tableName);
         //bool IntoTable(Type TableEntityType, params string[] columnNameList);
         //bool IntoTable<TableEntityType>(params string[] columnNameList);
         List<T> SetContext<ParameterT>(Expression<Func<T, bool>> whereExpression, ParameterT parameter);
