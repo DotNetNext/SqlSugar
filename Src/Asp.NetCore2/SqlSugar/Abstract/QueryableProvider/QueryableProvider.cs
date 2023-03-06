@@ -42,7 +42,7 @@ namespace SqlSugar
             this.QueryBuilder.TableShortName = mainShortName;
             var onWhere = $"{shortName}.{navPkColumn.DbColumnName}={mainShortName}.{navColumn.DbColumnName}";
             UtilMethods.IsNullReturnNew(this.Context.TempItems);
-            this.AddJoinInfo(navEntityInfo.DbTableName, shortName, onWhere, JoinType.Left);
+            this.AddJoinInfo(GetTableName(navPkColumn, navEntityInfo.DbTableName), shortName, onWhere, JoinType.Left);
             return this;
         }
         public ISugarQueryable<T> IncludeInnerJoin(Expression<Func<T, object>> innerObjectExt)
@@ -57,7 +57,7 @@ namespace SqlSugar
             this.QueryBuilder.TableShortName = mainShortName;
             var onWhere = $"{shortName}.{navPkColumn.DbColumnName}={mainShortName}.{navColumn.DbColumnName}";
             UtilMethods.IsNullReturnNew(this.Context.TempItems);
-            this.AddJoinInfo(navEntityInfo.DbTableName, shortName, onWhere, JoinType.Inner);
+            this.AddJoinInfo(GetTableName(navPkColumn, navEntityInfo.DbTableName), shortName, onWhere, JoinType.Inner);
             return this;
         }
         public ISugarQueryable<T> IncludeFullJoin(Expression<Func<T, object>> fullObjectExp)
@@ -72,7 +72,7 @@ namespace SqlSugar
             this.QueryBuilder.TableShortName = mainShortName;
             var onWhere = $"{shortName}.{navPkColumn.DbColumnName}={mainShortName}.{navColumn.DbColumnName}";
             UtilMethods.IsNullReturnNew(this.Context.TempItems);
-            this.AddJoinInfo(navEntityInfo.DbTableName, shortName, onWhere, JoinType.Full);
+            this.AddJoinInfo(GetTableName(navPkColumn, navEntityInfo.DbTableName), shortName, onWhere, JoinType.Full);
             return this;
         }
         public ISugarQueryable<T> IncludeRightJoin(Expression<Func<T, object>> rightObjectExp)
@@ -87,7 +87,7 @@ namespace SqlSugar
             this.QueryBuilder.TableShortName = mainShortName;
             var onWhere = $"{shortName}.{navPkColumn.DbColumnName}={mainShortName}.{navColumn.DbColumnName}";
             UtilMethods.IsNullReturnNew(this.Context.TempItems);
-            this.AddJoinInfo(navEntityInfo.DbTableName, shortName, onWhere, JoinType.Right);
+            this.AddJoinInfo(GetTableName(navPkColumn, navEntityInfo.DbTableName), shortName, onWhere, JoinType.Right);
             return this;
         }
 
