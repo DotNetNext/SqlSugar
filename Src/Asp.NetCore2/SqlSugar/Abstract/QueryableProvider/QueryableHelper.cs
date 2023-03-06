@@ -999,9 +999,9 @@ namespace SqlSugar
         #endregion
 
         #region  Other
-        private string GetTableName(EntityColumnInfo navPkColumn, string tableName)
+        private string GetTableName(EntityInfo entity, string tableName)
         {
-            var attr = navPkColumn?.PropertyInfo?.PropertyType?.GetCustomAttribute<TenantAttribute>();
+            var attr = entity?.Type?.GetCustomAttribute<TenantAttribute>();
             var configId = ((object)this.Context.CurrentConnectionConfig.ConfigId).ObjToString();
             if (attr != null && configId != attr.configId.ObjToString())
             {
