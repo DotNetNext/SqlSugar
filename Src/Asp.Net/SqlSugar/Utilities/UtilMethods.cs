@@ -104,7 +104,12 @@ namespace SqlSugar
             {
                 destinationType = UtilMethods.GetUnderType(destinationType);
                 var sourceType = value.GetType();
-
+                if (destinationType.Name == "DateOnly"&&sourceType==typeof(string)) 
+                {
+                    var type = Type.GetType("System.DateOnly", true, true);
+                    var method = type.GetMethods().FirstOrDefault(it => it.GetParameters().Length == 1 && it.Name == "FromDateTime");
+                    return method.Invoke(null, new object[] {Convert.ToDateTime(value)});
+                }
                 var destinationConverter = TypeDescriptor.GetConverter(destinationType);
                 if (destinationConverter != null && destinationConverter.CanConvertFrom(value.GetType()))
                     return destinationConverter.ConvertFrom(null, culture, value);

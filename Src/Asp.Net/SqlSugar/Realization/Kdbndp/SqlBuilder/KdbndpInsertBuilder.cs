@@ -66,7 +66,7 @@ namespace SqlSugar
                         }
                         batchInsetrSql.Append("\r\n ( " + string.Join(",", columns.Select(it =>
                         {
-                            if (it.InsertServerTime || it.InsertSql.HasValue())
+                            if (it.InsertServerTime || it.InsertSql.HasValue() || it.SqlParameterDbType is Type || it?.PropertyType?.Name == "DateOnly" || it?.PropertyType?.Name == "TimeOnly")
                             {
                                 return GetDbColumn(it, null);
                             }
@@ -74,6 +74,10 @@ namespace SqlSugar
                             if (it.Value is DateTime)
                             {
                                 value = ((DateTime)it.Value).ToString("O");
+                            }
+                            else if (it.Value is DateTimeOffset)
+                            {
+                                return FormatDateTimeOffset(it.Value);
                             }
                             else
                             {

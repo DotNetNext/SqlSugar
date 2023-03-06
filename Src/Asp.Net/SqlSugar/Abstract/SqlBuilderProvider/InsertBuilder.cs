@@ -304,11 +304,19 @@ namespace SqlSugar
                 GetDbColumnIndex++;
                 return pname;
             }
-            else if (columnInfo.PropertyType!=null&&columnInfo.PropertyType.Name == "TimeOnly" && name != null && !name.ObjToString().StartsWith(Builder.SqlParameterKeyWord))
+            else if (columnInfo.PropertyType!=null&&columnInfo.PropertyType.Name == "TimeOnly" )
             {
                 var timeSpan = UtilMethods.TimeOnlyToTimeSpan(columnInfo.Value);
                 var pname = Builder.SqlParameterKeyWord + columnInfo.DbColumnName + "_ts" + GetDbColumnIndex;
                 this.Parameters.Add(new SugarParameter(pname, timeSpan));
+                GetDbColumnIndex++;
+                return pname;
+            }
+            else if (columnInfo.PropertyType != null && columnInfo.PropertyType.Name == "DateOnly")
+            {
+                var timeSpan = UtilMethods.DateOnlyToDateTime(columnInfo.Value);
+                var pname = Builder.SqlParameterKeyWord + columnInfo.DbColumnName + "_ts" + GetDbColumnIndex;
+                this.Parameters.Add(new SugarParameter(pname,Convert.ToDateTime(timeSpan)));
                 GetDbColumnIndex++;
                 return pname;
             }

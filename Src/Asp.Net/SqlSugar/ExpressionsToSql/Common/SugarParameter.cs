@@ -165,12 +165,12 @@ namespace SqlSugar
             else if (type?.Name == "TimeOnly")
             {
                 this.DbType = System.Data.DbType.Time;
-                this.Value = UtilMethods.TimeOnlyToTimeSpan(this.Value);
+                this.Value =UtilMethods.TimeOnlyToTimeSpan(this.Value);
             }
             else if (type?.Name == "DateOnly")
             {
                 this.DbType = System.Data.DbType.Date;
-                this.Value = UtilMethods.DateOnlyToDateTime(this.Value);
+                this.Value =Convert.ToDateTime(UtilMethods.DateOnlyToDateTime(this.Value));
             }
             else if (type?.FullName == "Newtonsoft.Json.Linq.JObject" || type?.FullName == "Newtonsoft.Json.Linq.JArray" || type?.FullName == "Newtonsoft.Json.Linq.JValue")
             {
