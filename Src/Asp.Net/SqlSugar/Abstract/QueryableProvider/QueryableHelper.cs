@@ -999,6 +999,18 @@ namespace SqlSugar
         #endregion
 
         #region  Other
+        private string GetTableName(EntityColumnInfo navPkColumn, string tableName)
+        {
+            var attr = navPkColumn?.PropertyInfo?.PropertyType?.GetCustomAttribute<TenantAttribute>();
+            var configId = ((object)this.Context.CurrentConnectionConfig.ConfigId).ObjToString();
+            if (attr != null && configId != attr.configId.ObjToString())
+            {
+                var dbName = this.Context.Root.GetConnection(attr.configId).Ado.Connection.Database;
+                tableName = this.QueryBuilder.LambdaExpressions.DbMehtods.GetTableWithDataBase
+                (this.QueryBuilder.Builder.GetTranslationColumnName(dbName), this.QueryBuilder.Builder.GetTranslationColumnName(tableName));
+            }
+            return tableName;
+        }
         protected string AppendSelect(List<EntityColumnInfo> entityColumnInfos,string sql, ReadOnlyCollection<ParameterExpression> parameters, List<EntityColumnInfo> columnsResult, int parameterIndex1)
         {
             var lowerSql = sql.ToLower();
@@ -1824,7 +1836,7 @@ namespace SqlSugar
                              this.QueryBuilder.IsSqlQuery == false &&
                                !this.QueryBuilder.AsTables.Any() &&
                                  this.QueryBuilder.IsSingle() &&
-                                  this.QueryBuilder.WhereInfos.Any();
+                                  (this.QueryBuilder.WhereInfos.Any()|| this.QueryBuilder.SelectValue is Expression);
         }
         #endregion
     }
