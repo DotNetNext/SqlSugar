@@ -34,6 +34,7 @@ namespace OrmTest
                    // .CrossQueryWithAttr()
                     .Includes(z => z.Items)
                     .ToList();
+            db.QueryableWithAttr<OrderItem>().IncludeLeftJoin(z => z.Order).ToList();
 
 
             if (list.First().Order == null) 
