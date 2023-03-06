@@ -69,6 +69,9 @@ namespace OrmTest
             {
                 Name = "a"
             }).Where(it => it.Id != null).ExecuteCommand();
+            db.Insertable(new CodeFirstNoUpper() { Name = "a",Id="1" }).ExecuteReturnIdentity();
+            db.Insertable(new CodeFirstNoUpper() { Name = "a" ,Id="2"}).AddQueue();
+            db.SaveQueues();
             db.CodeFirst.InitTables<CodeFirstChartest>();
             db.Queryable<CodeFirstChartest>().Where(it => it.Test == 's').ToList();
             db.CodeFirst.InitTables<CodeFloatddfa1a1>();
