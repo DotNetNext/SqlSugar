@@ -66,7 +66,7 @@ namespace SqlSugar
                         }
                         batchInsetrSql.Append("\r\n ( " + string.Join(",", columns.Select(it =>
                         {
-                            if (it.InsertServerTime || it.InsertSql.HasValue() || it.SqlParameterDbType != null || it?.PropertyType?.Name == "DateOnly" || it?.PropertyType?.Name == "TimeOnly")
+                            if (it.InsertServerTime || it.InsertSql.HasValue() || it.SqlParameterDbType is Type || it?.PropertyType?.Name == "DateOnly" || it?.PropertyType?.Name == "TimeOnly")
                             {
                                 return GetDbColumn(it, null);
                             }
