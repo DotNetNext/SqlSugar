@@ -657,10 +657,17 @@ namespace OrmTest
             var list7 = query2.Clone().Where(it => it.Name == "jack").ToList();//id=1 and name = jack
             var list8 = query2.Clone().Where(it => it.Name == "tom").ToList();//id=1 and name = tom
 
+
+            var isOk = true;
+            //Join table
+            var list9 = db.Queryable<Order, OrderItem, Custom>((o, i, c) => new JoinQueryInfos(
+             JoinType.Left, o.Id == i.OrderId,
+             JoinType.Left, c.Id == o.CustomId
+            ))
+           .Select((o, i, c) => new {
+               xx = isOk ? o.Id : o.Id
+           }).ToList();
             Console.WriteLine("#### Condition Screening End ####");
-
-
-
         }
 
         private static void Async()
