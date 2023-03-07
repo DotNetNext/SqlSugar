@@ -30,14 +30,14 @@ namespace SqlSugar
                 if (dataReader == null) return result;
                 while (dataReader.Read())
                 {
-                    try
-                    {
+                    //try
+                    //{
                         result.Add(entytyList.Build(dataReader));
-                    }
-                    catch (Exception ex)
-                    {
-                        Check.Exception(true, ErrorMessage.EntityMappingError, ex.Message);
-                    }
+                    //}
+                    //catch (Exception ex)
+                    //{
+                    //    Check.Exception(true, ErrorMessage.EntityMappingError, ex.Message);
+                    //}
                     SetAppendColumns(dataReader);
                 }
                 ExecuteDataAfterFun(context, dataAfterFunc, result);
@@ -67,14 +67,14 @@ namespace SqlSugar
                 if (dataReader == null) return result;
                 while (await((DbDataReader)dataReader).ReadAsync())
                 {
-                    try
-                    {
+                    //try
+                    //{
                         result.Add(entytyList.Build(dataReader));
-                    }
-                    catch (Exception ex)
-                    {
-                        Check.Exception(true, ErrorMessage.EntityMappingError, ex.Message);
-                    }
+                    //}
+                    //catch (Exception ex)
+                    //{
+                    //    Check.Exception(true, ErrorMessage.EntityMappingError, ex.Message);
+                    //}
                     SetAppendColumns(dataReader);
                 }
                 ExecuteDataAfterFun(context, dataAfterFunc, result);

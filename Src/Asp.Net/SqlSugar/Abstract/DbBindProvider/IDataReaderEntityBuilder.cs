@@ -242,13 +242,18 @@ namespace SqlSugar
         }
         private void BindField(ILGenerator generator, LocalBuilder result, EntityColumnInfo columnInfo, string fieldName)
         {
-            if (columnInfo.SqlParameterDbType is Type) 
+            if (columnInfo.SqlParameterDbType is Type)
             {
                 BindCustomFunc(generator,result, columnInfo, fieldName);
                 return;
             }
             int i = DataRecord.GetOrdinal(fieldName);
             Label endIfLabel = generator.DefineLabel();
+
+            //2023-3-8
+            Label tryStart = generator.BeginExceptionBlock();//begin try
+            //2023-3-8 
+
             generator.Emit(OpCodes.Ldarg_0);
             generator.Emit(OpCodes.Ldc_I4, i);
             generator.Emit(OpCodes.Callvirt, isDBNullMethod);
@@ -259,6 +264,15 @@ namespace SqlSugar
             BindMethod(generator, columnInfo, i);
             generator.Emit(OpCodes.Callvirt, columnInfo.PropertyInfo.GetSetMethod(true));
             generator.MarkLabel(endIfLabel);
+
+            //2023-3-8
+            generator.Emit(OpCodes.Leave, tryStart);//eng try
+            generator.BeginCatchBlock(typeof(Exception));//begin catch
+            generator.Emit(OpCodes.Ldstr, ErrorMessage.GetThrowMessage($"{columnInfo.EntityName} {columnInfo.PropertyName} bind error", $"{columnInfo.PropertyName}绑定到{columnInfo.EntityName}失败,可以试着换一个类型，或者使用ORM自定义类型实现"));//thow message
+            generator.Emit(OpCodes.Newobj, typeof(Exception).GetConstructor(new Type[] { typeof(string) }));
+            generator.Emit(OpCodes.Throw);
+            generator.EndExceptionBlock();
+            //2023-3-8
         }
         private void BindMethod(ILGenerator generator, EntityColumnInfo columnInfo, int ordinal)
         {
