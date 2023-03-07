@@ -50,7 +50,7 @@ namespace SqlSugar
                     {
                         var entity = this.Context.SugarContext.Context.EntityMaintenance.GetEntityInfo(memberParent.Type);
                         var columnInfo = entity.Columns.FirstOrDefault(it => it.PropertyName == member.Member.Name);
-                        if (columnInfo.SqlParameterDbType is Type)
+                        if (columnInfo?.SqlParameterDbType is Type)
                         {
                             var type = columnInfo.SqlParameterDbType as Type;
                             var ParameterConverter = type.GetMethod("ParameterConverter").MakeGenericMethod(columnInfo.PropertyInfo.PropertyType);
