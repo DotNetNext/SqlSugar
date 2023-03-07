@@ -35,7 +35,12 @@ namespace SqlSugar
         public override KeyValuePair<string, List<SugarParameter>> ToSql()
         {
             var result= base.ToSql();
-            return new KeyValuePair<string, List<SugarParameter>>(result.Key.Replace("$PrimaryKey", this.SqlBuilder.GetTranslationColumnName(GetPrimaryKeys().FirstOrDefault())), result.Value);
+            var primaryKey = GetPrimaryKeys().FirstOrDefault();
+            if (primaryKey != null)
+            {
+                primaryKey = this.SqlBuilder.GetTranslationColumnName(primaryKey);
+            }
+            return new KeyValuePair<string, List<SugarParameter>>(result.Key.Replace("$PrimaryKey", primaryKey), result.Value);
         }
 
         public override long ExecuteReturnBigIdentity()

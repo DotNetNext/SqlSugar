@@ -425,7 +425,8 @@ namespace SqlSugar
                 {
                      DbColumnName=fieldName,
                       Value=fieldValue,
-                      PropertyName=fieldName
+                      PropertyName=fieldName,
+                      PropertyType=fieldValue?.GetType()
                 });
             }
             AppendSets();
