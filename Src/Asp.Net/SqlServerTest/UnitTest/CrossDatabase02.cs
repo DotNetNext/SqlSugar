@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SqlSugar;
+using SqlSugarDemo;
+
 namespace OrmTest
 {
     public class CrossDatabase02
@@ -40,6 +42,10 @@ namespace OrmTest
             db.Aop.OnLogExecuting = (s1, p1) => Console.WriteLine(s1);
             var x2 = db.QueryableWithAttr<OptRole>()
             .Where(it => it.Roleinfo.id == 101).ToList();
+
+            var x3 = db.QueryableWithAttr<OptRole>()
+                .LeftJoin<Role>((x1, y1) => x1.roleId == y1.id).ToSql();
+ 
         }
         /// <summary>
         /// 描述：
