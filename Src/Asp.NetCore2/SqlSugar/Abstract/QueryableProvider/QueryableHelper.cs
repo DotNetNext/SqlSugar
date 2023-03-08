@@ -1093,6 +1093,10 @@ namespace SqlSugar
                 EntityType= lastPareamter.Type,
                 TableName = this.Context.EntityMaintenance.GetTableName(lastPareamter.Type)
             };
+            if (QueryBuilder.IsCrossQueryWithAttr) 
+            {
+               result.TableName=GetTableName(this.Context.EntityMaintenance.GetEntityInfo(lastPareamter.Type), result.TableName);
+            }
             if (this.Context.CurrentConnectionConfig?.MoreSettings?.PgSqlIsAutoToLower == false) 
             {
                 result.ShortName = this.SqlBuilder.GetTranslationColumnName(result.ShortName);

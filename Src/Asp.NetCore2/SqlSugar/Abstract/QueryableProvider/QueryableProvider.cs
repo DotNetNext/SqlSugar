@@ -1169,7 +1169,10 @@ namespace SqlSugar
             QueryBuilder.SelectValue = selectValue;
             return this;
         }
-
+        public virtual ISugarQueryable<TResult> SelectMergeTable<TResult>(Expression<Func<T, TResult>> expression)
+        {
+            return this.Select(expression).MergeTable();
+        }
         public virtual ISugarQueryable<T> MergeTable()
         {
             if (IsSubToList())

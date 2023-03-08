@@ -30,6 +30,7 @@ namespace SqlSugar
         public bool IsDisableUpdateRoot { get; set; }
         public bool IsDiffLogEvent { get; set; }
         public object  DiffLogBizData { get; set; }
+        public string[] IgnoreInsertColumns { get; set; }
     }
     public class UpdateNavOptions
     {

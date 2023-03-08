@@ -160,7 +160,7 @@ namespace SqlSugar
                         var x = this._Context.Storageable(item).ToStorage();
                         if (x.InsertList.HasValue())
                         {
-                            newRoots.Add(x.AsInsertable.EnableDiffLogEventIF(_RootOptions.IsDiffLogEvent, _RootOptions.DiffLogBizData).ExecuteReturnEntity());
+                            newRoots.Add(x.AsInsertable.IgnoreColumns(_RootOptions.IgnoreInsertColumns).EnableDiffLogEventIF(_RootOptions.IsDiffLogEvent, _RootOptions.DiffLogBizData).ExecuteReturnEntity());
                         }
                         else
                         {
