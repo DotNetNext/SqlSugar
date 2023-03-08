@@ -76,6 +76,34 @@ namespace OrmTest
             .Where(o=>o.name=="")
                 .Select("o.*").ToSql();
             UValidate.Check(s13.Key, "SELECT o.* FROM [UnitFilterClass2] [o] Left JOIN [UnitFilterClass1] [i] ON ( [o].[id] = [i].[id] )   WHERE ( [o].[name] = @name0 )  AND ( [i].[id] > @id1 )  AND ( [o].[id] = @id2 )", "UnitFilter");
+
+            db.QueryFilter
+                .AddTableFilter<IDeleted>(it => it.Delete == true)
+                .AddTableFilter<IOrg>(it => it.OrgId == 1);
+            var sql = db.Queryable<FilterTest>().ClearFilter().ToSqlString();
+            if (sql != "SELECT [Delete],[OrgId],[Name] FROM [FilterTest] ")
+            {
+                throw new Exception("unit error");
+            }
+            var sql2= db.Queryable<FilterTest>().ClearFilter<IOrg>().ToSqlString();
+            if (sql2 != "SELECT [Delete],[OrgId],[Name] FROM [FilterTest]  WHERE ( [Delete] = 1 )") 
+            {
+                throw new Exception("unit error");
+            }
+        }
+        public class FilterTest : IDeleted, IOrg
+        {
+            public bool Delete { get; set; }
+            public int OrgId { get; set; }
+            public string Name { get; set; }
+        }
+        public interface IDeleted 
+        {
+            public bool Delete { get; set; }
+        }
+        public interface IOrg
+        {
+            public int OrgId { get; set; }
         }
         public class UnitFilterClass1
         {
