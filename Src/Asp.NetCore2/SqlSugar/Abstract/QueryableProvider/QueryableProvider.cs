@@ -315,12 +315,12 @@ namespace SqlSugar
         {
             this.QueryBuilder.RemoveFilters = types;
             this.Filter(null, true);
+            this.QueryBuilder.IsDisabledGobalFilter = false;
             return this;
         }
         public ISugarQueryable<T> ClearFilter<FilterType1>() 
         {
             this.ClearFilter(typeof(FilterType1));
-            this.QueryBuilder.IsDisabledGobalFilter = false;
             return this;
         }
         public ISugarQueryable<T> ClearFilter<FilterType1, FilterType2>() 
