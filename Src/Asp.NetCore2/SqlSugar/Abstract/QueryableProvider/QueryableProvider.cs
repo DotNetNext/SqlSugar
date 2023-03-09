@@ -1071,7 +1071,11 @@ namespace SqlSugar
             QueryBuilder.Take = num;
             return this;
         }
-
+        public virtual ISugarQueryable<TResult> Select<TResult>(Expression expression)
+        {
+            Check.ExceptionEasy(this.QueryBuilder.Includes.HasValue(), $"use Includes(...).ToList(it=>new {typeof(TResult).Name} {{...}} )", $"Includes()后面禁使用Select，正确写法: ToList(it=>new {typeof(TResult).Name}{{....}})");
+            return _Select<TResult>(expression);
+        }
         public virtual ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, TResult>> expression)
         {
             Check.ExceptionEasy(this.QueryBuilder.Includes.HasValue(), $"use Includes(...).ToList(it=>new {typeof(TResult).Name} {{...}} )", $"Includes()后面禁使用Select，正确写法: ToList(it=>new {typeof(TResult).Name}{{....}})");
