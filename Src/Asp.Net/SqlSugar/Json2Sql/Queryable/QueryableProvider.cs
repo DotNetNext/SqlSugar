@@ -58,6 +58,16 @@ namespace SqlSugar
             return this;
         }
 
+        public ISugarQueryable<TResult> Select<TResult>(List<SelectModel> models) 
+        {
+            var orderObj = this.SqlBuilder.SelectModelToSql(models);
+            var result=this.Select<TResult>(orderObj.Key);
+            result.QueryBuilder.Parameters.AddRange(orderObj.Value);
+            return result;
+        }
+
+
+
         public ISugarQueryable<T> Select(List<SelectModel> models, AsNameFormatType type) 
         {
             if (type == AsNameFormatType.NoConvert) 
