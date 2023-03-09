@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -570,8 +571,33 @@ namespace SqlSugar
         }
         public override bool BackupDataBase(string databaseName, string fullFileName)
         {
-            Check.ThrowNotSupportedException("MySql BackupDataBase NotSupported");
-            return false;
+            if (fullFileName == null)
+            {
+                fullFileName = $"c:\\{databaseName}.sql";
+            }
+            var db = this.Context.CopyNew();
+            using (db.Ado.OpenAlways())
+            {
+                if (databaseName != null) 
+                {
+                    db.Ado.Connection.ChangeDatabase(databaseName);
+                }
+                // Load the MySqlBackup assembly
+                Assembly assembly = Assembly.LoadFrom("MySqlBackup.dll");
+
+                // Get the MySqlBackup type
+                Type mbType = assembly.GetType("MySqlConnector.MySqlBackup");
+
+                // Create an instance of the MySqlBackup class
+                object mb = Activator.CreateInstance(mbType, db.Ado.Connection.CreateCommand());
+
+                // Get the ExportToFile method
+                MethodInfo exportMethod = mbType.GetMethod("ExportToFile");
+
+                // Invoke the ExportToFile method
+                exportMethod.Invoke(mb, new object[] { fullFileName });
+            }
+            return true;
         }
 
         #endregion
