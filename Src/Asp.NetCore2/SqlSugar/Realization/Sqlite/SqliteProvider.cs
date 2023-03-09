@@ -21,6 +21,10 @@ namespace SqlSugar
                     try
                     {
                         var SQLiteConnectionString = base.Context.CurrentConnectionConfig.ConnectionString;
+                        if (SQLiteConnectionString!=null&&!SQLiteConnectionString.Contains("=")) 
+                        {
+                            Check.ExceptionEasy("ConnString format error . Correct format DataSource=...", "字符串格式错误，应该是DataSource=...");
+                        }
                         base._DbConnection = new SqliteConnection(SQLiteConnectionString);
                     }
                     catch (Exception ex)
