@@ -583,11 +583,19 @@ namespace SqlSugar
                     db.Ado.Connection.ChangeDatabase(databaseName);
                 }
                 // Load the MySqlBackup assembly
-                Assembly assembly = Assembly.LoadFrom("MySqlBackup.dll");
+                Assembly assembly = Assembly.LoadFrom("MySqlBackupNet.MySqlConnector.dll");
 
                 // Get the MySqlBackup type
-                Type mbType = assembly.GetType("MySqlConnector.MySqlBackup");
-
+                Type mbType = null;
+                try
+                {
+                    mbType = assembly.GetType("MySqlConnector.MySqlBackup", false);
+                }
+                catch  
+                {
+                    Check.ExceptionEasy("Need MySqlBackup.NET.MySqlConnector", "需要安装:MySqlBackup.NET.MySqlConnector");
+                    throw ;
+                }
                 // Create an instance of the MySqlBackup class
                 object mb = Activator.CreateInstance(mbType, db.Ado.Connection.CreateCommand());
 
