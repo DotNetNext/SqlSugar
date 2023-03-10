@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -127,7 +128,9 @@ namespace SqlSugar
             {
                 string columnParametersString = string.Join(",", this.DbColumnInfoList.Select(it =>base.GetDbColumn(it, Builder.SqlParameterKeyWord + it.DbColumnName)));
                 ActionMinDate();
-                return string.Format(SqlTemplate, GetTableNameString, columnsString, columnParametersString);
+                var result= string.Format(SqlTemplate, GetTableNameString, columnsString, columnParametersString);
+                result = GetMySqlIgnore(result);
+                return result;
             }
             else
             {
@@ -140,7 +143,7 @@ namespace SqlSugar
                 foreach (var item in groupList)
                 {
                     batchInsetrSql.Append("(");
-                    insertColumns = string.Join(",", item.Select(it =>base.GetDbColumn(it, FormatValue(it.Value,it.PropertyName))));
+                    insertColumns = string.Join(",", item.Select(it => base.GetDbColumn(it, FormatValue(it.Value, it.PropertyName))));
                     batchInsetrSql.Append(insertColumns);
                     if (groupList.Last() == item)
                     {
@@ -151,11 +154,22 @@ namespace SqlSugar
                         batchInsetrSql.Append("),  ");
                     }
                 }
-               
+
                 batchInsetrSql.AppendLine(";select @@IDENTITY");
                 var result = batchInsetrSql.ToString();
+                result = GetMySqlIgnore(result);
                 return result;
             }
+        }
+
+        private string GetMySqlIgnore(string result)
+        {
+            if (this.MySqlIgnore)
+            {
+                result = result.Replace("INSERT INTO", " INSERT IGNORE INTO");
+            }
+
+            return result;
         }
     }
 }
