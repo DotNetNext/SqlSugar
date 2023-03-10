@@ -473,6 +473,12 @@ namespace SqlSugar
             return this;
         }
 
+        public IInsertable<T> MySqlIgnore() 
+        {
+            this.InsertBuilder.MySqlIgnore = true; 
+            return this;
+        }
+
         public IInsertable<T> InsertColumns(Expression<Func<T, object>> columns)
         {
             if (columns == null) return this;

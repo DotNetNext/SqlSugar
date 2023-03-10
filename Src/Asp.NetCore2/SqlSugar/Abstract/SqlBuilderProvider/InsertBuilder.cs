@@ -129,6 +129,9 @@ namespace SqlSugar
                 return result;
             }
         }
+
+        public bool MySqlIgnore { get; internal set; }
+
         public virtual ExpressionResult GetExpressionValue(Expression expression, ResolveExpressType resolveType)
         {
             ILambdaExpressions resolveExpress = this.LambdaExpressions;

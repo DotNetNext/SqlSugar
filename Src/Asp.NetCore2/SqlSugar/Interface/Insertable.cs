@@ -54,6 +54,6 @@ namespace SqlSugar
         SplitInsertable<T> SplitTable();
         SplitInsertable<T> SplitTable(SplitType splitType);
         void AddQueue();
-
+        IInsertable<T> MySqlIgnore();
     }
 }
