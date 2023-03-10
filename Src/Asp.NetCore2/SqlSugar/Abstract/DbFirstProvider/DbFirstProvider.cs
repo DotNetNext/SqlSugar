@@ -285,6 +285,10 @@ namespace SqlSugar
                     if (ConstructorText.HasValue() && item.DefaultValue != null)
                     {
                         var hasDefaultValue = columns.Skip(index + 1).Any(it => it.DefaultValue.HasValue());
+                        if (item.DefaultValue.EqualCase("CURRENT_TIMESTAMP"))
+                        {
+                            item.DefaultValue = "DateTime.Now";
+                        }
                         ConstructorText = ConstructorText.Replace(DbFirstTemplate.KeyPropertyName, propertyName);
                         ConstructorText = ConstructorText.Replace(DbFirstTemplate.KeyDefaultValue, GetPropertyTypeConvert(item)) + (!hasDefaultValue ? "" : this.ConstructorTemplate);
                     }
