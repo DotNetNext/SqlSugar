@@ -42,9 +42,16 @@ namespace SqlSugar
                 }
                 ExecuteDataAfterFun(context, dataAfterFunc, result);
             }
-            catch 
+            catch(Exception ex)
             {
-                throw;
+                if (ex.Message == "Common Language Runtime detected an invalid program.")
+                {
+                    Check.Exception(true, ErrorMessage.EntityMappingError, ex.Message);
+                }
+                else
+                {
+                    throw;
+                }
             }
             return result;
         }
@@ -79,9 +86,16 @@ namespace SqlSugar
                 }
                 ExecuteDataAfterFun(context, dataAfterFunc, result);
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                if (ex.Message == "Common Language Runtime detected an invalid program.")
+                {
+                    Check.Exception(true, ErrorMessage.EntityMappingError, ex.Message);
+                }
+                else
+                {
+                    throw;
+                }
             }
             return result;
         }
