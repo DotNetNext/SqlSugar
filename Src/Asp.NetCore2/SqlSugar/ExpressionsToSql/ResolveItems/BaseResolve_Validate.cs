@@ -14,7 +14,7 @@ namespace SqlSugar
 
         private static bool IsSubToList(Expression item)
         {
-            return ExpressionTool.GetMethodName(item) == "ToList" && IsSubquery(item);
+            return ExpressionTool.GetMethodName(item).IsIn("ToList","First") && IsSubquery(item);
         }
 
         private static bool IsSubquery(Expression item)

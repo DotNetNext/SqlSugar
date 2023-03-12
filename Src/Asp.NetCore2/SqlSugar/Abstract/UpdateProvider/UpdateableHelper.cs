@@ -11,14 +11,118 @@ namespace SqlSugar
 {
     public partial class UpdateableProvider<T> : IUpdateable<T> where T : class, new()
     {
- 
+        private bool IsUpdateNullByList()
+        {
+            return this.UpdateObjs.Count() > 1 && (this.UpdateBuilder.IsNoUpdateNull || this.UpdateBuilder.IsNoUpdateDefaultValue);
+        }
+
+        private int DatasTrackingExecommand()
+        {
+            var trakRows = 0;
+            try
+            {
+                if (this.Context.Ado.IsNoTran()) 
+                {
+                    this.Context.Ado.BeginTran();
+                }
+                int i = 0;
+                foreach (var item in this.UpdateObjs)
+                {
+                    var newUpdateable = this.Clone();
+                    (newUpdateable as UpdateableProvider<T>).UpdateObjs = new[] { item };
+                    newUpdateable.UpdateBuilder.IsListUpdate = null;
+                    newUpdateable.UpdateBuilder.DbColumnInfoList =
+                        newUpdateable.UpdateBuilder.DbColumnInfoList.Where(it => it.TableId == i).ToList();
+                    AppendTracking(item, newUpdateable);
+                    if (newUpdateable.UpdateBuilder.DbColumnInfoList?.Any() == true)
+                    {
+                        trakRows += newUpdateable.ExecuteCommand();
+                    }
+                    ++i;
+                }
+                if (this.Context.Ado.IsNoTran())
+                {
+                    this.Context.Ado.CommitTran();
+                }
+            }
+            catch (Exception)
+            {
+                if (this.Context.Ado.IsNoTran())
+                {
+                    this.Context.Ado.RollbackTran();
+                }
+                throw;
+            }
+            return trakRows;
+        }
+        private async Task<int> DatasTrackingExecommandAsync()
+        {
+            var trakRows = 0;
+            try
+            {
+                if (this.Context.Ado.IsNoTran())
+                {
+                    await this.Context.Ado.BeginTranAsync();
+                }
+                int i = 0;
+                foreach (var item in this.UpdateObjs)
+                {
+                    var newUpdateable = this.Clone();
+                    (newUpdateable as UpdateableProvider<T>).UpdateObjs = new[] { item };
+                    newUpdateable.UpdateBuilder.IsListUpdate = null;
+                    newUpdateable.UpdateBuilder.DbColumnInfoList =
+                        newUpdateable.UpdateBuilder.DbColumnInfoList.Where(it => it.TableId == i).ToList();
+                    AppendTracking(item, newUpdateable);
+                    if (newUpdateable.UpdateBuilder.DbColumnInfoList?.Any() == true)
+                    {
+                        trakRows +=await newUpdateable.ExecuteCommandAsync();
+                    }
+                    ++i;
+                }
+                if (this.Context.Ado.IsNoTran())
+                {
+                    await this.Context.Ado.CommitTranAsync();
+                }
+            }
+            catch (Exception)
+            {
+                if (this.Context.Ado.IsNoTran())
+                {
+                   await  this.Context.Ado.RollbackTranAsync();
+                }
+                throw;
+            }
+            return trakRows;
+        }
         private bool UpdateObjectNotWhere()
         {
             return this.Context.CurrentConnectionConfig.DbType != DbType.MySql
                 && this.Context.CurrentConnectionConfig.DbType != DbType.MySqlConnector
                 && this.Context.CurrentConnectionConfig.DbType != DbType.SqlServer;
         }
-
+        private void AppendTracking(T item, IUpdateable<T> newUpdateable)
+        {
+            if (IsTrakingData() || IsTrakingDatas())
+            {
+                var trackingData = this.Context.TempItems.FirstOrDefault(it => it.Key.StartsWith("Tracking_" + item.GetHashCode()));
+                var diffColumns = FastCopy.GetDiff(item, (T)trackingData.Value);
+                if (diffColumns.Count > 0)
+                {
+                    var pks = EntityInfo.Columns
+                        .Where(it => it.IsPrimarykey).Select(it => it.PropertyName).ToList();
+                    diffColumns = diffColumns.Where(it => !pks.Contains(it)).ToList();
+                    if (diffColumns.Count > 0)
+                    {
+                        newUpdateable.UpdateColumns(diffColumns.ToArray());
+                    }
+                }
+                else
+                {
+                    (newUpdateable as UpdateableProvider<T>).UpdateObjs = new T[] { null };
+                    newUpdateable.UpdateBuilder.DbColumnInfoList = new List<DbColumnInfo>();
+                }
+            }
+        }
         private void AppendSets()
         {
             if (SetColumnsIndex > 0)
@@ -139,6 +243,13 @@ namespace SqlSugar
                                     && this.UpdateObjs.Length == 1;
         }
 
+        private bool IsTrakingDatas()
+        {
+            return this.UpdateParameterIsNull == false
+                                    && this.Context.TempItems != null
+                                    && this.Context.TempItems.Any(it => it.Key.StartsWith("Tracking_"))
+                                    && this.UpdateObjs.Length > 1;
+        }
         private void DataAop(T item)
         {
             var dataEvent = this.Context.CurrentConnectionConfig.AopEvents?.DataExecuting;

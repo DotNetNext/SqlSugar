@@ -80,6 +80,11 @@ namespace SqlSugar
 
         public virtual int ExecuteCommand()
         {
+            if (this.IsTrakingDatas() || IsUpdateNullByList())
+            {
+                int trakRows = DatasTrackingExecommand();
+                return trakRows;
+            }
             string sql = _ExecuteCommand();
             if (string.IsNullOrEmpty(sql))
             {
@@ -89,6 +94,7 @@ namespace SqlSugar
             After(sql);
             return result;
         }
+
 
         public bool ExecuteCommandHasChange()
         {
@@ -111,6 +117,11 @@ namespace SqlSugar
        
         public virtual async Task<int> ExecuteCommandAsync()
         {
+            if (this.IsTrakingDatas()||IsUpdateNullByList())
+            {
+                int trakRows =await DatasTrackingExecommandAsync();
+                return trakRows;
+            }
             string sql = _ExecuteCommand();
             if (string.IsNullOrEmpty(sql))
             {
@@ -128,6 +139,46 @@ namespace SqlSugar
         #endregion
 
         #region Common
+        public IUpdateable<T> Clone() 
+        {
+            this.Context.SugarActionType = SugarActionType.Update;
+            var result = InstanceFactory.GetUpdateableProvider<T>(this.Context.CurrentConnectionConfig);
+            var sqlBuilder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig); ;
+            result.Context = this.Context;
+            result.EntityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            result.SqlBuilder = sqlBuilder;
+            result.SqlBuilder.Context = this.Context;
+            result.UpdateObjs = UpdateObjs;
+            result.WhereColumnList= this.WhereColumnList;
+            result.IsWhereColumns = this.IsWhereColumns;
+            result.IgnoreColumnNameList= this.IgnoreColumnNameList;
+            result.IsAs = this.IsAs;
+            result.IsOffIdentity= this.IsOffIdentity;
+            result.IsEnableDiffLogEvent= this.IsEnableDiffLogEvent;
+            result.diffModel = this.diffModel;
+            result.UpdateParameterIsNull= this.UpdateParameterIsNull;
+            result.RemoveCacheFunc= this.RemoveCacheFunc;
+            result.SetColumnsIndex = this.SetColumnsIndex;
+            result.OldMappingTableList= this.OldMappingTableList;
+            result.MappingColumnList= this.MappingColumnList;
+            result.columns = this.columns.ToList();
+            result.UpdateBuilder = InstanceFactory.GetUpdateBuilder(this.Context.CurrentConnectionConfig);
+            result.UpdateBuilder.Builder = sqlBuilder;
+            result.UpdateBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(this.Context.CurrentConnectionConfig);
+            result.Context=this.Context;
+            result.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.ToList();
+            result.UpdateBuilder.TableName= this.UpdateBuilder.TableName;
+            result.UpdateBuilder.WhereValues = this.UpdateBuilder.WhereValues.ToList();
+            result.UpdateBuilder.Parameters= this.UpdateBuilder.Parameters.ToList();
+            result.UpdateBuilder.IsListUpdate= this.UpdateBuilder.IsListUpdate;
+            result.UpdateBuilder.IsWhereColumns= this.UpdateBuilder.IsWhereColumns;
+            result.UpdateBuilder.WhereValues=this.UpdateBuilder.WhereValues.ToList();
+            result.UpdateBuilder.IsNoUpdateDefaultValue = this.UpdateBuilder.IsNoUpdateDefaultValue;
+            result.UpdateBuilder.IsNoUpdateNull= this.UpdateBuilder.IsNoUpdateNull;
+            result.UpdateBuilder.SetValues= this.UpdateBuilder.SetValues.ToList();
+            result.UpdateBuilder.Context = this.Context;
+            return result;
+        }
         public IUpdateable<T> With(string lockString)
         {
             if (this.Context.CurrentConnectionConfig.DbType == DbType.SqlServer)
@@ -227,7 +278,7 @@ namespace SqlSugar
 
         public IUpdateable<T> IgnoreColumns(bool ignoreAllNullColumns, bool isOffIdentity = false, bool ignoreAllDefaultValue = false)
         {
-            Check.Exception(this.UpdateObjs.Count() > 1 && ignoreAllNullColumns, ErrorMessage.GetThrowMessage("ignoreNullColumn NoSupport batch insert", "ignoreNullColumn 不支持批量操作"));
+            //Check.Exception(this.UpdateObjs.Count() > 1 && ignoreAllNullColumns, ErrorMessage.GetThrowMessage("ignoreNullColumn NoSupport batch insert", "ignoreNullColumn 不支持批量操作"));
             UpdateBuilder.IsOffIdentity = isOffIdentity;
             if (this.UpdateBuilder.LambdaExpressions == null)
                 this.UpdateBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(this.Context.CurrentConnectionConfig);

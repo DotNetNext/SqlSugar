@@ -180,5 +180,14 @@ namespace SqlSugar
         {
             return null;
         }
+
+        public T First()
+        {
+            return default(T);
+        }
+        public TResult First<TResult>(Func<T, TResult> selector) where TResult : class, new()
+        {
+            return default(TResult);
+        }
     }
 }

@@ -223,7 +223,7 @@ namespace SqlSugar
             }).ToList();
             SetOrderByIndex(isubList);
             isubList.Insert(0, new SubBegin());
-            if (isubList.Any(it => it is SubSelect))
+            if (isubList.Any(it => it is SubSelect||it is SubFirst))
             {
                 isubList.Add(new SubTop() { Context = this.context });
             }
