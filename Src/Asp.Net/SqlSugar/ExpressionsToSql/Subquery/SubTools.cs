@@ -38,7 +38,8 @@ namespace SqlSugar
                                                     new SubEnableTableFilter(){ Context=Context },
                                                     new SubSelectStringJoin{ Context=Context },
                                                     new SubDistinctCount{ Context=Context },
-                                                    new SubToList{ Context=Context}
+                                                    new SubToList{ Context=Context},
+                                                    new SubFirst(){ Context=Context }
                                                 };
         }
 

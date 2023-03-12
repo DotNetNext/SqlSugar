@@ -1693,7 +1693,13 @@ namespace SqlSugar
         {
             var ps = this.QueryBuilder.Parameters;
             var itemProperty = typeof(TResult).GetProperty(subPara.Key);
-            var callType = itemProperty.PropertyType.GetGenericArguments()[0];
+            var callType = itemProperty.PropertyType.GetGenericArguments().FirstOrDefault();
+            var isFirst = false;
+            if (callType == null) 
+            {
+                callType = itemProperty.PropertyType;
+                isFirst = true;
+            }
             var sql = subPara.Value.ObjToString().Replace("@sugarIndex", "0");
             sql =SqlBuilder.RemoveParentheses(sql);
             var methodParamters = new object[] { sql, ps };
@@ -1711,7 +1717,14 @@ namespace SqlSugar
                 }
                 else
                 {
-                    itemProperty.SetValue(item, subList);
+                    if (isFirst)
+                    {
+                        itemProperty.SetValue(item, (subList as IList)[0] );
+                    }
+                    else
+                    {
+                        itemProperty.SetValue(item, subList);
+                    }
                 }
             }
         }
@@ -1741,10 +1754,14 @@ namespace SqlSugar
 
                 index++;
             }
-
             var itemProperty = typeof(TResult).GetProperty(subPara.Key);
-            var callType = itemProperty.PropertyType.GetGenericArguments()[0];
-
+            var callType = itemProperty.PropertyType.GetGenericArguments().FirstOrDefault();
+            var isFirst = false;
+            if (callType == null)
+            {
+                callType = itemProperty.PropertyType;
+                isFirst = true;
+            }
             var sqlstring = string.Join(" \r\n UNION ALL  ", sqls);
             var methodParamters = new object[] { sqlstring, ps.ToArray() };
             this.QueryBuilder.SubToListParameters = null;
@@ -1755,7 +1772,11 @@ namespace SqlSugar
             var subList = ExpressionBuilderHelper.CallFunc(callType, methodParamters, this.Clone(), "SubQueryList");
             var appendValue = this.QueryBuilder.AppendValues;
             var list = (subList as IEnumerable).Cast<object>().ToList();
-            if (typeof(TResult).IsAnonymousType())
+            if (isFirst) 
+            {
+                SetSubListWithClassFirst(result, itemProperty, appendValue, list, 0);
+            }
+            else if (typeof(TResult).IsAnonymousType())
             {
                 SetSubListWithAnonymousType(result, itemProperty, appendValue, list, 0);
             }
@@ -1789,6 +1810,30 @@ namespace SqlSugar
                 result[i] = jobj.ToObject<TResult>();
                 //itemProperty.SetValue(item, setValue);
             }
+            return resIndex;
+        }
+        private static int SetSubListWithClassFirst<TResult>(List<TResult> result, PropertyInfo itemProperty, List<List<QueryableAppendColumn>> appendValue, List<object> list, int resIndex)
+        {
+            foreach (var item in result)
+            {
+                //var setValue = Activator.CreateInstance(itemProperty.PropertyType, true);
+                if (appendValue != null)
+                {
+                    var appindex = 0;
+                    foreach (var appValue in appendValue)
+                    {
+                        if (appValue[0].Value.ObjToInt() == resIndex)
+                        {
+                            var addItem = list[appindex];
+                            itemProperty.SetValue(item, addItem);
+                        }
+                        appindex++;
+                    }
+                }
+                //itemProperty.SetValue(item, setValue);
+                resIndex++;
+            }
+
             return resIndex;
         }
 

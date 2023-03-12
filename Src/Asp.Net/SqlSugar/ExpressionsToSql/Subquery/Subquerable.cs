@@ -180,5 +180,10 @@ namespace SqlSugar
         {
             return null;
         }
+
+        public T First()
+        {
+            return default(T);
+        }
     }
 }
