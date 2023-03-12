@@ -80,6 +80,11 @@ namespace SqlSugar
 
         public virtual int ExecuteCommand()
         {
+            if (this.IsTrakingDatas())
+            {
+                int trakRows = DatasTrackingExecommand();
+                return trakRows;
+            }
             string sql = _ExecuteCommand();
             if (string.IsNullOrEmpty(sql))
             {
