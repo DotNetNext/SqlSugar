@@ -351,6 +351,7 @@ namespace OrmTest
             })
            .ToList();
 
+
             if (test1.First().disCount.Count != test1.Count) 
             {
                 throw new Exception("unit error");
@@ -392,6 +393,51 @@ namespace OrmTest
                 throw new Exception("unit error");
             }
 
+            var test5 = db.Queryable<Order>().Select(it => new myDTO
+            {
+                Id = it.Id,
+                data = SqlFunc.Subqueryable<Order>().Where(s => s.Id == it.Id + 1).First()
+            })
+             .ToList();
+
+            if (test5.First().Id!= test5.First().data.Id-1)
+            {
+                throw new Exception("unit error");
+            }
+            var test6 = db.Queryable<Order>().Select(it => new myDTO
+            {
+                Id = it.Id,
+                data2 = SqlFunc.Subqueryable<Custom>().First()
+            })
+           .ToList();
+
+            var test7 = db.Queryable<Order>().Select(it => new myDTO
+            {
+                Id = it.Id,
+                data2 = SqlFunc.Subqueryable<Custom>().First(s=>new Custom() { Name=s.Name })
+            })
+          .ToList();
+
+            var test8 = db.Queryable<Order>().Select(it => new myDTO
+            {
+                Id = it.Id,
+                data2 = SqlFunc.Subqueryable<Order>().Where(s => s.Id == it.Id + 1).First(s=>new Custom() { Id=s.Id, Name = s.Name })
+            })
+           .ToList();
+
+            var test9= db.Queryable<Order>().Select(it => new 
+            {
+                Id = it.Id,
+                data2 = SqlFunc.Subqueryable<Order>().Where(s => s.Id == it.Id + 1).First(s => new Custom() { Id = s.Id, Name = s.Name })
+            })
+           .ToList();
+
+            var test10 = db.Queryable<Order>().Select(it => new
+            {
+                Id = it.Id,
+                data2 = SqlFunc.Subqueryable<Order>().First(s => new Custom() { Id = s.Id, Name = s.Name })
+            })
+        .ToList();
         }
 
         internal class myDTO
@@ -399,6 +445,8 @@ namespace OrmTest
             public int Id { get; set; }
             public string Name { get; set; }
             public List<Order> disCount { get; set; }
+            public Order data{ get; set; }
+            public Custom data2 { get; set; }
         }
         internal class myDTO2
         {
