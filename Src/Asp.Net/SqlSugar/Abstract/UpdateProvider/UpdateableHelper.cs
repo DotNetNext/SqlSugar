@@ -11,6 +11,11 @@ namespace SqlSugar
 {
     public partial class UpdateableProvider<T> : IUpdateable<T> where T : class, new()
     {
+        private bool IsUpdateNullByList()
+        {
+            return this.UpdateObjs.Count() > 1 && (this.UpdateBuilder.IsNoUpdateNull || this.UpdateBuilder.IsNoUpdateDefaultValue);
+        }
+
         private int DatasTrackingExecommand()
         {
             var trakRows = 0;
@@ -97,22 +102,25 @@ namespace SqlSugar
         }
         private void AppendTracking(T item, IUpdateable<T> newUpdateable)
         {
-            var trackingData = this.Context.TempItems.FirstOrDefault(it => it.Key.StartsWith("Tracking_" + item.GetHashCode()));
-            var diffColumns = FastCopy.GetDiff(item, (T)trackingData.Value);
-            if (diffColumns.Count > 0)
+            if (IsTrakingData() || IsTrakingDatas())
             {
-                var pks = EntityInfo.Columns
-                    .Where(it => it.IsPrimarykey).Select(it => it.PropertyName).ToList();
-                diffColumns = diffColumns.Where(it => !pks.Contains(it)).ToList();
+                var trackingData = this.Context.TempItems.FirstOrDefault(it => it.Key.StartsWith("Tracking_" + item.GetHashCode()));
+                var diffColumns = FastCopy.GetDiff(item, (T)trackingData.Value);
                 if (diffColumns.Count > 0)
                 {
-                    newUpdateable.UpdateColumns(diffColumns.ToArray());
+                    var pks = EntityInfo.Columns
+                        .Where(it => it.IsPrimarykey).Select(it => it.PropertyName).ToList();
+                    diffColumns = diffColumns.Where(it => !pks.Contains(it)).ToList();
+                    if (diffColumns.Count > 0)
+                    {
+                        newUpdateable.UpdateColumns(diffColumns.ToArray());
+                    }
                 }
-            }
-            else
-            {
-                (newUpdateable as UpdateableProvider<T>).UpdateObjs = new T[] { null };
-                newUpdateable.UpdateBuilder.DbColumnInfoList = new List<DbColumnInfo>();
+                else
+                {
+                    (newUpdateable as UpdateableProvider<T>).UpdateObjs = new T[] { null };
+                    newUpdateable.UpdateBuilder.DbColumnInfoList = new List<DbColumnInfo>();
+                }
             }
         }
         private void AppendSets()
