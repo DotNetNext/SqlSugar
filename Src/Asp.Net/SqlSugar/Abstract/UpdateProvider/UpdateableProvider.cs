@@ -116,6 +116,11 @@ namespace SqlSugar
        
         public virtual async Task<int> ExecuteCommandAsync()
         {
+            if (this.IsTrakingDatas())
+            {
+                int trakRows =await DatasTrackingExecommandAsync();
+                return trakRows;
+            }
             string sql = _ExecuteCommand();
             if (string.IsNullOrEmpty(sql))
             {

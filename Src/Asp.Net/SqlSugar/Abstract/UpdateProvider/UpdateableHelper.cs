@@ -50,6 +50,45 @@ namespace SqlSugar
             }
             return trakRows;
         }
+        private async Task<int> DatasTrackingExecommandAsync()
+        {
+            var trakRows = 0;
+            try
+            {
+                if (this.Context.Ado.IsNoTran())
+                {
+                    await this.Context.Ado.BeginTranAsync();
+                }
+                int i = 0;
+                foreach (var item in this.UpdateObjs)
+                {
+                    var newUpdateable = this.Clone();
+                    (newUpdateable as UpdateableProvider<T>).UpdateObjs = new[] { item };
+                    newUpdateable.UpdateBuilder.IsListUpdate = null;
+                    newUpdateable.UpdateBuilder.DbColumnInfoList =
+                        newUpdateable.UpdateBuilder.DbColumnInfoList.Where(it => it.TableId == i).ToList();
+                    AppendTracking(item, newUpdateable);
+                    if (newUpdateable.UpdateBuilder.DbColumnInfoList?.Any() == true)
+                    {
+                        trakRows +=await newUpdateable.ExecuteCommandAsync();
+                    }
+                    ++i;
+                }
+                if (this.Context.Ado.IsNoTran())
+                {
+                    await this.Context.Ado.CommitTranAsync();
+                }
+            }
+            catch (Exception)
+            {
+                if (this.Context.Ado.IsNoTran())
+                {
+                   await  this.Context.Ado.RollbackTranAsync();
+                }
+                throw;
+            }
+            return trakRows;
+        }
         private bool UpdateObjectNotWhere()
         {
             return this.Context.CurrentConnectionConfig.DbType != DbType.MySql
