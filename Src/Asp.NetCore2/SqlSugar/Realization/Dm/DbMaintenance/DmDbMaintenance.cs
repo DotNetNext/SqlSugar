@@ -239,14 +239,14 @@ namespace SqlSugar
         {
             get
             {
-                return "";
+                return " null ";
             }
         }
         protected override string CreateTableNotNull
         {
             get
             {
-                return "";
+                return " not null ";
             }
         }
         protected override string CreateTablePirmaryKey
