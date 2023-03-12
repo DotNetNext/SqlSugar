@@ -1710,10 +1710,20 @@ namespace SqlSugar
                 var setValue = Activator.CreateInstance(itemProperty.PropertyType, true) as IList;
                 if (typeof(TResult).IsAnonymousType())
                 {
-                    var jobj = JObject.FromObject(item);
-                    var prop = jobj.Property(itemProperty.Name);
-                    prop.Value = JArray.FromObject(subList);
-                    result[i] = jobj.ToObject<TResult>();
+                    if (isFirst)
+                    {
+                        var jobj = JObject.FromObject(item);
+                        var prop = jobj.Property(itemProperty.Name);
+                        prop.Value = JObject.FromObject((subList as IList).Cast<object>().FirstOrDefault());
+                        result[i] = jobj.ToObject<TResult>();
+                    }
+                    else
+                    {
+                        var jobj = JObject.FromObject(item);
+                        var prop = jobj.Property(itemProperty.Name);
+                        prop.Value = JArray.FromObject(subList);
+                        result[i] = jobj.ToObject<TResult>();
+                    }
                 }
                 else
                 {
@@ -1772,9 +1782,13 @@ namespace SqlSugar
             var subList = ExpressionBuilderHelper.CallFunc(callType, methodParamters, this.Clone(), "SubQueryList");
             var appendValue = this.QueryBuilder.AppendValues;
             var list = (subList as IEnumerable).Cast<object>().ToList();
-            if (isFirst) 
+            if (isFirst && !typeof(TResult).IsAnonymousType())
             {
                 SetSubListWithClassFirst(result, itemProperty, appendValue, list, 0);
+            }
+            else if (isFirst && typeof(TResult).IsAnonymousType()) 
+            {
+                SetSubListWithAnonymousTypeFirst(result, itemProperty, appendValue, list, 0);
             }
             else if (typeof(TResult).IsAnonymousType())
             {
@@ -1807,6 +1821,36 @@ namespace SqlSugar
                 var jobj = JObject.FromObject(item);
                 var prop = jobj.Property(itemProperty.Name);
                 prop.Value = JArray.FromObject(setValue);
+                result[i] = jobj.ToObject<TResult>();
+                //itemProperty.SetValue(item, setValue);
+            }
+            return resIndex;
+        }
+        private static int SetSubListWithAnonymousTypeFirst<TResult>(List<TResult> result, PropertyInfo itemProperty, List<List<QueryableAppendColumn>> appendValue, List<object> list, int resIndex)
+        {
+            for (int i = 0; i < result.Count; i++)
+            {
+                var item = result[i];
+                object setValue = null;
+                if (appendValue != null)
+                {
+                    var appindex = 0;
+                    foreach (var appValue in appendValue)
+                    {
+                        if (appValue[0].Value.ObjToInt() == i)
+                        {
+                            setValue = list[appindex];
+                            //setValue.Add(addItem);
+                        }
+                        appindex++;
+                    }
+                }
+                var jobj = JObject.FromObject(item);
+                var prop = jobj.Property(itemProperty.Name);
+                if (setValue != null)
+                {
+                    prop.Value = JObject.FromObject(setValue);
+                }
                 result[i] = jobj.ToObject<TResult>();
                 //itemProperty.SetValue(item, setValue);
             }
