@@ -20,11 +20,11 @@ namespace OrmTest
             db.DbMaintenance.CreateDatabase();
             db.CodeFirst.InitTables<Uinitadfa22122>();
             db.DbMaintenance.TruncateTable<Uinitadfa22122>();
-            db.Insertable(new Uinitadfa22122()
+            var id=db.Insertable(new Uinitadfa22122()
             {
                 DcValue = new Dictionary<string, object>() { { "1", 1 } }
             }
-            ).ExecuteCommand();
+            ).ExecuteReturnIdentity();
             var data = db.Queryable<Uinitadfa22122>().ToList();
             if (data.First().EnumValue != null)
             {
@@ -36,7 +36,7 @@ namespace OrmTest
             }
             db.Updateable(new Uinitadfa22122()
             {
-                Id = 1,
+                Id = id,
                 DcValue = new Dictionary<string, object>() { { "1", 2 } },
                 EnumValue = SqlSugar.DbType.MySql
             }
