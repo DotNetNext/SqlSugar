@@ -210,7 +210,7 @@ namespace SqlSugar
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
             var format = parameter2.MemberValue.ObjToString();
-            return string.Format("  {1}({0})  ) ", format, parameter.MemberName);
+            return string.Format("  {0}({1})  ) ", format, parameter.MemberName);
         }
  
 
