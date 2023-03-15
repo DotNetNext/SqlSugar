@@ -1605,7 +1605,7 @@ namespace SqlSugar
                             {
                                 sql = sql.Replace("@" + item.ParameterName.Substring(1), newValues.ToArray().ToJoinSqlInVals());
                             }
-                            if (item.ParameterName.Substring(0, 1) != this.SqlParameterKeyWord)
+                            if (item.ParameterName.Substring(0, 1) != this.SqlParameterKeyWord&& sql.ObjToString().Contains(this.SqlParameterKeyWord + item.ParameterName))
                             {
                                 sql = sql.Replace(this.SqlParameterKeyWord+item.ParameterName, newValues.ToArray().ToJoinSqlInVals());
                             }
