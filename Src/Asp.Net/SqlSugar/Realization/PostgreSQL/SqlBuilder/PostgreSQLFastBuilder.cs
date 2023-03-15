@@ -100,9 +100,13 @@ namespace SqlSugar
                     foreach (var column in columnViews)
                     {
                         var value = row[column.DataColumn.ColumnName];
-                        if (value == null) 
+                        if (value == null)
                         {
                             value = DBNull.Value;
+                        }
+                        else if (value is double) 
+                        {
+                            column.Type = NpgsqlDbType.Double;
                         }
                         if (column.Type == null)
                         {
