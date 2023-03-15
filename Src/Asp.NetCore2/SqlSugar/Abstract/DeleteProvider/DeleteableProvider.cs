@@ -85,7 +85,7 @@ namespace SqlSugar
             {
                 return EnableDiffLogEvent(businessData);
             }
-            else 
+            else
             {
                 return this;
             }
@@ -159,7 +159,7 @@ namespace SqlSugar
                         var columnInfo = EntityInfo.Columns.Single(it => it.PropertyName == entityPropertyName);
                         var entityValue = columnInfo.PropertyInfo.GetValue(deleteObj, null);
                         var tempequals = DeleteBuilder.WhereInEqualTemplate;
-                        if (this.Context.CurrentConnectionConfig.MoreSettings != null && this.Context.CurrentConnectionConfig.MoreSettings.DisableNvarchar == true) 
+                        if (this.Context.CurrentConnectionConfig.MoreSettings != null && this.Context.CurrentConnectionConfig.MoreSettings.DisableNvarchar == true)
                         {
                             tempequals = $"{SqlBuilder.SqlTranslationLeft}{{0}}{SqlBuilder.SqlTranslationRight}='{{1}}' ";
                         }
@@ -178,13 +178,13 @@ namespace SqlSugar
                         {
                             andString.AppendFormat("\"{0}\"={1} ", primaryField.ToLower(), new PostgreSQLExpressionContext().GetValue(entityValue));
                         }
-                        else if (this.Context.CurrentConnectionConfig.DbType == DbType.SqlServer && entityValue != null && UtilMethods.GetUnderType(entityValue.GetType()) == UtilConstants.DateType) 
+                        else if (this.Context.CurrentConnectionConfig.DbType == DbType.SqlServer && entityValue != null && UtilMethods.GetUnderType(entityValue.GetType()) == UtilConstants.DateType)
                         {
-                            andString.AppendFormat("\"{0}\"={1} ", primaryField,$"'{entityValue.ObjToDate().ToString("yyyy-MM-dd HH:mm:ss.fff")}'");
+                            andString.AppendFormat("\"{0}\"={1} ", primaryField, $"'{entityValue.ObjToDate().ToString("yyyy-MM-dd HH:mm:ss.fff")}'");
                         }
                         else
                         {
-                            if ((columnInfo.SqlParameterDbType.ObjToString()==System.Data.DbType.AnsiString.ObjToString()) ||!(entityValue is string)||this.Context.CurrentConnectionConfig?.MoreSettings?.DisableNvarchar==true)
+                            if ((columnInfo.SqlParameterDbType.ObjToString() == System.Data.DbType.AnsiString.ObjToString()) || !(entityValue is string) || this.Context.CurrentConnectionConfig?.MoreSettings?.DisableNvarchar == true)
                             {
                                 tempequals = tempequals.Replace("=N'", "='");
                             }
@@ -206,7 +206,7 @@ namespace SqlSugar
             var whereString = expResult.GetResultString();
             if (expression.ToString().Contains("Subqueryable()")) {
                 whereString = whereString.Replace(this.SqlBuilder.GetTranslationColumnName(expression.Parameters.First().Name) + ".", this.SqlBuilder.GetTranslationTableName(this.EntityInfo.DbTableName) + ".");
-            } 
+            }
             else if (expResult.IsNavicate)
             {
                 whereString = whereString.Replace(expression.Parameters.First().Name + ".", this.SqlBuilder.GetTranslationTableName(this.EntityInfo.DbTableName) + ".");
@@ -269,7 +269,7 @@ namespace SqlSugar
         }
         public IDeleteable<T> Where(List<IConditionalModel> conditionalModels)
         {
-            if (conditionalModels.Count == 0) 
+            if (conditionalModels.Count == 0)
             {
                 return Where("1=2");
             }
@@ -278,18 +278,22 @@ namespace SqlSugar
             result.Where(sql.Key, sql.Value);
             return result;
         }
-
+        public IDeleteable<T> WhereColumns(T data, Expression<Func<T, object>> columns)
+        {
+            return WhereColumns(new List<T>() { data },columns);
+        }
         public IDeleteable<T> WhereColumns(List<T> list,Expression<Func<T, object>> columns)
         {
             if (this.GetPrimaryKeys().IsNullOrEmpty())
             {
                 tempPrimaryKeys = DeleteBuilder.GetExpressionValue(columns, ResolveExpressType.ArraySingle).GetResultArray().Select(it => this.SqlBuilder.GetNoTranslationColumnName(it)).ToList();
             }
-            this.Where(list);
-            if (columns != null&& tempPrimaryKeys.IsNullOrEmpty())
+            else if (columns != null && tempPrimaryKeys.IsNullOrEmpty())
             {
                 tempPrimaryKeys = DeleteBuilder.GetExpressionValue(columns, ResolveExpressType.ArraySingle).GetResultArray().Select(it => this.SqlBuilder.GetNoTranslationColumnName(it)).ToList();
             }
+            this.Where(list);
+   
             return this;
         }
         public IDeleteable<T> WhereColumns(List<Dictionary<string, object>> list) 
