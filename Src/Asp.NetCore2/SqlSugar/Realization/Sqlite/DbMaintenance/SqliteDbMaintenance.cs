@@ -472,7 +472,7 @@ namespace SqlSugar
         }
         public override bool BackupDataBase(string databaseName, string fullFileName)
         {
-            this.Context.Ado.ExecuteCommandAsync($"PRAGMA main.page_size=1024; PRAGMA main.locking_mode=EXCLUSIVE; PRAGMA main.cache_size=5000; PRAGMA main.synchronous=NORMAL; PRAGMA main.journal_mode=WAL; VACUUM INTO '{fullFileName.ToSqlFilter()}'");
+            this.Context.Ado.ExecuteCommand($"PRAGMA main.page_size=1024; PRAGMA main.locking_mode=EXCLUSIVE; PRAGMA main.cache_size=5000; PRAGMA main.synchronous=NORMAL; PRAGMA main.journal_mode=WAL; VACUUM INTO '{fullFileName.ToSqlFilter()}'");
             return false;
         }
         private List<T> GetListOrCache<T>(string cacheKey, string sql)
