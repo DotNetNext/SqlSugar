@@ -475,18 +475,18 @@ namespace SqlSugar
             this.Context.Ado.ExecuteCommand($"PRAGMA main.page_size=1024; PRAGMA main.locking_mode=EXCLUSIVE; PRAGMA main.cache_size=5000; PRAGMA main.synchronous=NORMAL; PRAGMA main.journal_mode=WAL; VACUUM INTO '{fullFileName.ToSqlFilter()}'");
             return false;
         }
-        private List<T> GetListOrCache<T>(string cacheKey, string sql)
-        {
-            return this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey,
-             () =>
-             {
-                 var isEnableLogEvent = this.Context.Ado.IsEnableLogEvent;
-                 this.Context.Ado.IsEnableLogEvent = false;
-                 var reval = this.Context.Ado.SqlQuery<T>(sql);
-                 this.Context.Ado.IsEnableLogEvent = isEnableLogEvent;
-                 return reval;
-             });
-        }
+        //private List<T> GetListOrCache<T>(string cacheKey, string sql)
+        //{
+        //    return this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey,
+        //     () =>
+        //     {
+        //         var isEnableLogEvent = this.Context.Ado.IsEnableLogEvent;
+        //         this.Context.Ado.IsEnableLogEvent = false;
+        //         var reval = this.Context.Ado.SqlQuery<T>(sql);
+        //         this.Context.Ado.IsEnableLogEvent = isEnableLogEvent;
+        //         return reval;
+        //     });
+        //}
         #endregion
     }
 }
