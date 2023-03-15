@@ -116,6 +116,31 @@ namespace SqlSugar
             result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression, JoinType.Right));
             return result;
         }
+
+        public ISugarQueryable<T, T2, T3> LeftJoin<T3>(Expression<Func<T, T2, T3, bool>> joinExpression, string tableName) 
+        {
+            var result= LeftJoin<T3>(joinExpression);
+            result.QueryBuilder.JoinQueryInfos.Last().TableName = tableName;
+            return result;
+        }
+        public ISugarQueryable<T, T2, T3> FullJoin<T3>(Expression<Func<T, T2, T3, bool>> joinExpression, string tableName) 
+        {
+            var result = FullJoin<T3>(joinExpression);
+            result.QueryBuilder.JoinQueryInfos.Last().TableName = tableName;
+            return result;
+        }
+        public ISugarQueryable<T, T2, T3> InnerJoin<T3>(Expression<Func<T, T2, T3, bool>> joinExpression, string tableName) 
+        {
+            var result = InnerJoin<T3>(joinExpression);
+            result.QueryBuilder.JoinQueryInfos.Last().TableName = tableName;
+            return result;
+        }
+        public ISugarQueryable<T, T2, T3> RightJoin<T3>(Expression<Func<T, T2, T3, bool>> joinExpression, string tableName) 
+        {
+            var result = RightJoin<T3>(joinExpression);
+            result.QueryBuilder.JoinQueryInfos.Last().TableName = tableName;
+            return result;
+        }
         public ISugarQueryable<T, T2, T3> InnerJoin<T3>(Expression<Func<T, T2, T3, bool>> joinExpression)
         {
             this.Context.InitMappingInfo<T3>();
