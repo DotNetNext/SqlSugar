@@ -7,6 +7,7 @@ namespace SqlSugar
 {
     public interface ISimpleClient<T> where T : class, new()
     {
+        RepositoryType CopyNew<RepositoryType>() where RepositoryType : ISugarRepository;
         SimpleClient<ChangeType> Change<ChangeType>() where ChangeType : class, new();
         RepositoryType ChangeRepository<RepositoryType>() where RepositoryType : ISugarRepository ;
         IDeleteable<T> AsDeleteable();
