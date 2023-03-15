@@ -87,7 +87,19 @@ namespace OrmTest
             Db.Fastest<UnitTable001>().BulkUpdate(new List<UnitTable001> {
               new UnitTable001(){   Id=1, table="a" }
             });
+            Db.CodeFirst.InitTables<UnitTable01231101>();
+            Db.Fastest<UnitTable01231101>().BulkCopy(new List<UnitTable01231101>() { new UnitTable01231101() { 
+             table=9.4E-05,
+             Id=new Random().Next(1,9999999)
+            } });
+            var list2=Db.Queryable<UnitTable01231101>().ToList();
         }
+    }
+    public class UnitTable01231101
+    {
+        [SqlSugar.SugarColumn(IsPrimaryKey = true)]
+        public int Id { get; set; }
+        public double table { get; set; }
     }
 
     public class UnitTable001
