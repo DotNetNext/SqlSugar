@@ -702,6 +702,33 @@ namespace SqlSugar
             return result;
         }
 
+        public ISugarQueryable<T, T2, T3, T4> LeftJoin<T4>(Expression<Func<T, T2, T3, T4, bool>> joinExpression, string tableName) 
+        {
+            var result= LeftJoin<T4>(joinExpression);
+            result.QueryBuilder.JoinQueryInfos.Last().TableName = tableName;
+            return result;
+        }
+        public ISugarQueryable<T, T2, T3, T4> FullJoin<T4>(Expression<Func<T, T2, T3, T4, bool>> joinExpression, string tableName) 
+        {
+            var result = FullJoin<T4>(joinExpression);
+            result.QueryBuilder.JoinQueryInfos.Last().TableName = tableName;
+            return result;
+        }
+        public ISugarQueryable<T, T2, T3, T4> InnerJoin<T4>(Expression<Func<T, T2, T3, T4, bool>> joinExpression, string tableName) 
+        {
+            var result = InnerJoin<T4>(joinExpression);
+            result.QueryBuilder.JoinQueryInfos.Last().TableName = tableName;
+            return result;
+        }
+        public ISugarQueryable<T, T2, T3, T4> RightJoin<T4>(Expression<Func<T, T2, T3, T4, bool>> joinExpression, string tableName)
+        {
+            var result = RightJoin<T4>(joinExpression);
+            result.QueryBuilder.JoinQueryInfos.Last().TableName = tableName;
+            return result;
+
+        }
+
+
         #region  Group 
         public new ISugarQueryable<T, T2,T3> PartitionBy(Expression<Func<T, object>> expression)
         {
