@@ -499,6 +499,10 @@ namespace SqlSugar
         ISugarQueryable<T, T2, T3, T4, T5> FullJoin<T5>(Expression<Func<T, T2, T3, T4, T5, bool>> joinExpression);
         ISugarQueryable<T, T2, T3, T4,T5> InnerJoin<T5>(Expression<Func<T, T2, T3, T4,T5, bool>> joinExpression);
         ISugarQueryable<T, T2, T3, T4, T5> RightJoin<T5>(Expression<Func<T, T2, T3, T4, T5, bool>> joinExpression);
+        ISugarQueryable<T, T2, T3, T4, T5> LeftJoin<T5>(Expression<Func<T, T2, T3, T4, T5, bool>> joinExpression,string tableName);
+        ISugarQueryable<T, T2, T3, T4, T5> FullJoin<T5>(Expression<Func<T, T2, T3, T4, T5, bool>> joinExpression, string tableName);
+        ISugarQueryable<T, T2, T3, T4, T5> InnerJoin<T5>(Expression<Func<T, T2, T3, T4, T5, bool>> joinExpression, string tableName);
+        ISugarQueryable<T, T2, T3, T4, T5> RightJoin<T5>(Expression<Func<T, T2, T3, T4, T5, bool>> joinExpression, string tableName);
 
         #region Where
         new ISugarQueryable<T, T2, T3, T4> Where(Expression<Func<T, bool>> expression);
@@ -632,6 +636,10 @@ namespace SqlSugar
         ISugarQueryable<T, T2, T3, T4, T5, T6> FullJoin<T6>(Expression<Func<T, T2, T3, T4, T5, T6, bool>> joinExpression);
         ISugarQueryable<T, T2, T3, T4, T5,T6> InnerJoin<T6>(Expression<Func<T, T2, T3, T4, T5,T6, bool>> joinExpression);
         ISugarQueryable<T, T2, T3, T4, T5, T6> RightJoin<T6>(Expression<Func<T, T2, T3, T4, T5, T6, bool>> joinExpression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6> LeftJoin<T6>(Expression<Func<T, T2, T3, T4, T5, T6, bool>> joinExpression,string tableName);
+        ISugarQueryable<T, T2, T3, T4, T5, T6> FullJoin<T6>(Expression<Func<T, T2, T3, T4, T5, T6, bool>> joinExpression,string tableName);
+        ISugarQueryable<T, T2, T3, T4, T5, T6> InnerJoin<T6>(Expression<Func<T, T2, T3, T4, T5, T6, bool>> joinExpression,string tableName);
+        ISugarQueryable<T, T2, T3, T4, T5, T6> RightJoin<T6>(Expression<Func<T, T2, T3, T4, T5, T6, bool>> joinExpression,string tableName);
 
         #region Where
         new ISugarQueryable<T, T2, T3, T4, T5> Where(Expression<Func<T, bool>> expression);

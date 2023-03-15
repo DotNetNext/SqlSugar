@@ -1361,6 +1361,32 @@ namespace SqlSugar
             return result;
         }
 
+        public ISugarQueryable<T, T2, T3, T4, T5> LeftJoin<T5>(Expression<Func<T, T2, T3, T4, T5, bool>> joinExpression, string tableName) 
+        {
+            var result = LeftJoin<T5>(joinExpression);
+            result.QueryBuilder.JoinQueryInfos.Last().TableName = tableName;
+            return result;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5> FullJoin<T5>(Expression<Func<T, T2, T3, T4, T5, bool>> joinExpression, string tableName) 
+        {
+            var result = FullJoin<T5>(joinExpression);
+            result.QueryBuilder.JoinQueryInfos.Last().TableName = tableName;
+            return result;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5> InnerJoin<T5>(Expression<Func<T, T2, T3, T4, T5, bool>> joinExpression, string tableName) 
+        {
+            var result = InnerJoin<T5>(joinExpression);
+            result.QueryBuilder.JoinQueryInfos.Last().TableName = tableName;
+            return result;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5> RightJoin<T5>(Expression<Func<T, T2, T3, T4, T5, bool>> joinExpression, string tableName) 
+        {
+            var result = RightJoin<T5>(joinExpression);
+            result.QueryBuilder.JoinQueryInfos.Last().TableName = tableName;
+            return result;
+        }
+
+
         #region Where
         public new ISugarQueryable<T, T2, T3, T4> Where(Expression<Func<T, bool>> expression)
         {
@@ -2028,6 +2054,32 @@ namespace SqlSugar
             result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression, JoinType.Inner));
             return result;
         }
+
+        public ISugarQueryable<T, T2, T3, T4, T5, T6> LeftJoin<T6>(Expression<Func<T, T2, T3, T4, T5, T6, bool>> joinExpression, string tableName)
+        {
+            var result = LeftJoin<T6>(joinExpression);
+            result.QueryBuilder.JoinQueryInfos.Last().TableName = tableName;
+            return result;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6> FullJoin<T6>(Expression<Func<T, T2, T3, T4, T5, T6, bool>> joinExpression, string tableName)
+        {
+            var result = FullJoin<T6>(joinExpression);
+            result.QueryBuilder.JoinQueryInfos.Last().TableName = tableName;
+            return result;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6> InnerJoin<T6>(Expression<Func<T, T2, T3, T4, T5, T6, bool>> joinExpression, string tableName)
+        {
+            var result = InnerJoin<T6>(joinExpression);
+            result.QueryBuilder.JoinQueryInfos.Last().TableName = tableName;
+            return result;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6> RightJoin<T6>(Expression<Func<T, T2, T3, T4, T5,T6, bool>> joinExpression, string tableName)
+        {
+            var result = RightJoin<T6>(joinExpression);
+            result.QueryBuilder.JoinQueryInfos.Last().TableName = tableName;
+            return result;
+        }
+
 
         #region Where
         public new ISugarQueryable<T, T2, T3, T4, T5> Where(Expression<Func<T, bool>> expression)
