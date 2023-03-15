@@ -182,6 +182,12 @@ namespace SqlSugar
             result.QueryBuilder.LambdaExpressions.ParameterIndex = this.QueryBuilder.LambdaExpressions.ParameterIndex;
             return result;
         }
+        public ISugarQueryable<T, T2> LeftJoin<T2>(Expression<Func<T, T2, bool>> joinExpression,string tableName) 
+        {
+           var result= LeftJoin<T2>(joinExpression);
+            result.QueryBuilder.JoinQueryInfos.Last().TableName = tableName;
+            return result;
+        }
         public ISugarQueryable<T, T2> LeftJoin<T2>(Expression<Func<T, T2, bool>> joinExpression)
         {
             if (MasterHasWhereFirstJoin())
@@ -211,6 +217,12 @@ namespace SqlSugar
             result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression, JoinType.Full));
             return result;
         }
+        public ISugarQueryable<T, T2> FullJoin<T2>(Expression<Func<T, T2, bool>> joinExpression, string tableName)
+        {
+            var result = FullJoin<T2>(joinExpression);
+            result.QueryBuilder.JoinQueryInfos.Last().TableName = tableName;
+            return result;
+        }
         public ISugarQueryable<T, T2> RightJoin<T2>(Expression<Func<T, T2, bool>> joinExpression)
         {
 
@@ -226,7 +238,12 @@ namespace SqlSugar
             result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression, JoinType.Right));
             return result;
         }
-
+        public ISugarQueryable<T, T2> RightJoin<T2>(Expression<Func<T, T2, bool>> joinExpression, string tableName)
+        {
+            var result = RightJoin<T2>(joinExpression);
+            result.QueryBuilder.JoinQueryInfos.Last().TableName = tableName;
+            return result;
+        }
         public ISugarQueryable<T, T2> InnerJoin<T2>(Expression<Func<T, T2, bool>> joinExpression)
         {
 
@@ -242,7 +259,12 @@ namespace SqlSugar
             result.QueryBuilder.JoinQueryInfos.Add(GetJoinInfo(joinExpression, JoinType.Inner));
             return result;
         }
-
+        public ISugarQueryable<T, T2> InnerJoin<T2>(Expression<Func<T, T2, bool>> joinExpression, string tableName)
+        {
+            var result = InnerJoin<T2>(joinExpression);
+            result.QueryBuilder.JoinQueryInfos.Last().TableName = tableName;
+            return result;
+        }
         public void Clear()
         {
             QueryBuilder.Clear();
