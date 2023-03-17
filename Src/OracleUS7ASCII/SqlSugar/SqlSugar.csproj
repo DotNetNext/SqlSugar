@@ -1,0 +1,610 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{489BB790-226C-4FAD-8D1E-51D72A7FF8E5}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SqlSugar</RootNamespace>
+    <AssemblyName>SqlSugar</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Devart.Data, Version=5.0.2938.0, Culture=neutral, PublicKeyToken=09af7300eec23701, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>References\Devart.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Devart.Data.Oracle, Version=10.0.0.0, Culture=neutral, PublicKeyToken=09af7300eec23701, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>References\Devart.Data.Oracle.dll</HintPath>
+    </Reference>
+    <Reference Include="DmProvider, Version=1.1.0.0, Culture=neutral, PublicKeyToken=7a2d44aa446c6d01, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>References\DmProvider.dll</HintPath>
+    </Reference>
+    <Reference Include="Kdbndp, Version=4.0.7.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>References\Kdbndp.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data, Version=6.9.12.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.6.9.12\lib\net45\MySql.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Lib\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Npgsql, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>References\Npgsql.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.SQLite, Version=1.0.102.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Lib\System.Data.SQLite.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Abstract\AopProvider\AopProvider.cs" />
+    <Compile Include="Abstract\CacheProvider\CacheProvider.cs" />
+    <Compile Include="Abstract\CodeFirstProvider\TableDifferenceProvider.cs" />
+    <Compile Include="Abstract\CodeFirstProvider\CodeFirstProvider.cs" />
+    <Compile Include="Abstract\AdoProvider\AdoAccessory.cs" />
+    <Compile Include="Abstract\CodeFirstProvider\SplitCodeFirstProvider.cs" />
+    <Compile Include="Abstract\DbBindProvider\DbBindAccessory.cs" />
+    <Compile Include="Abstract\DbBindProvider\DbBindProvider.cs" />
+    <Compile Include="Abstract\DbBindProvider\IDataReaderEntityBuilder.cs" />
+    <Compile Include="Abstract\DbBindProvider\IDataRecordExtensions.cs" />
+    <Compile Include="Abstract\DbFirstProvider\DbFirstProvider.cs" />
+    <Compile Include="Abstract\DbFirstProvider\DbFirstTemplate.cs" />
+    <Compile Include="Abstract\DbFirstProvider\DbRazor.cs" />
+    <Compile Include="Abstract\DbMaintenanceProvider\Methods.cs" />
+    <Compile Include="Abstract\DbMaintenanceProvider\Properties.cs" />
+    <Compile Include="Abstract\AdoProvider\AdoProvider.cs" />
+    <Compile Include="Abstract\DeleteProvider\LogicDeleteProvider.cs" />
+    <Compile Include="Abstract\DeleteProvider\SplitTableDeleteByObjectProvider.cs" />
+    <Compile Include="Abstract\DeleteProvider\SplitTableDeleteProvider.cs" />
+    <Compile Include="Abstract\EntityMaintenance\EntityColumnExtension.cs" />
+    <Compile Include="Abstract\EntityMaintenance\EntityMaintenance.cs" />
+    <Compile Include="Abstract\ExecuteNavProvider\NavContext.cs" />
+    <Compile Include="Abstract\ExecuteNavProvider\UpdateNavOneToOne.cs" />
+    <Compile Include="Abstract\ExecuteNavProvider\UpdateNavManyToMany.cs" />
+    <Compile Include="Abstract\ExecuteNavProvider\UpdateNavOneToMany.cs" />
+    <Compile Include="Abstract\ExecuteNavProvider\UpdateNavProviderHelper.cs" />
+    <Compile Include="Abstract\ExecuteNavProvider\UpdateNavProvider.cs" />
+    <Compile Include="Abstract\ExecuteNavProvider\DeleteNavManyToMany.cs" />
+    <Compile Include="Abstract\ExecuteNavProvider\DeleteNavOneToMany.cs" />
+    <Compile Include="Abstract\ExecuteNavProvider\DeleteNavOneToOne.cs" />
+    <Compile Include="Abstract\ExecuteNavProvider\DeleteNavProvider.cs" />
+    <Compile Include="Abstract\ExecuteNavProvider\InsertNavProviderHelper.cs" />
+    <Compile Include="Abstract\ExecuteNavProvider\InsertNavProviderOneToMany.cs" />
+    <Compile Include="Abstract\ExecuteNavProvider\InsertNavProviderManyToMany.cs" />
+    <Compile Include="Abstract\ExecuteNavProvider\InsertNavProviderOneToOne.cs" />
+    <Compile Include="Abstract\ExecuteNavProvider\DeleteNavTask.cs" />
+    <Compile Include="Abstract\ExecuteNavProvider\InsertNavTask.cs" />
+    <Compile Include="Abstract\ExecuteNavProvider\UpdateNavTask.cs" />
+    <Compile Include="Abstract\ExecuteNavProvider\InsertNavProvider.cs" />
+    <Compile Include="Abstract\ExpressionableProvider\Expressionable.cs" />
+    <Compile Include="Abstract\FastestProvider\FastBuilder.cs" />
+    <Compile Include="Abstract\FastestProvider\FastestProvider.cs" />
+    <Compile Include="Abstract\FastestProvider\Private.cs" />
+    <Compile Include="Abstract\FastestProvider\Setting.cs" />
+    <Compile Include="Abstract\FastestProvider\SplitFastest.cs" />
+    <Compile Include="Abstract\FilterProvider\FilterProvider.cs" />
+    <Compile Include="Abstract\InsertableProvider\InsertableHelper.cs" />
+    <Compile Include="Abstract\InsertableProvider\InsertMethodInfo.cs" />
+    <Compile Include="Abstract\QueryableProvider\Entities\QueryableAppendColumn.cs" />
+    <Compile Include="Abstract\QueryableProvider\Entities\SqlInfo.cs" />
+    <Compile Include="Abstract\QueryableProvider\QueryableExecuteSqlAsync.cs" />
+    <Compile Include="Abstract\QueryableProvider\QueryableExecuteSql.cs" />
+    <Compile Include="Abstract\QueryableProvider\QueryableProperties.cs" />
+    <Compile Include="Abstract\QueryableProvider\QueryableProvider11-12.cs" />
+    <Compile Include="Abstract\QueryableProvider\QueryableProvider06-10.cs" />
+    <Compile Include="Abstract\QueryableProvider\QueryableHelper.cs" />
+    <Compile Include="Abstract\QueryableProvider\QueryableProvider02-05.cs" />
+    <Compile Include="Abstract\QueryableProvider\NavSelectHelper.cs" />
+    <Compile Include="Abstract\QueryableProvider\IncludesHelper.cs" />
+    <Compile Include="Abstract\QueryableProvider\Includes.cs" />
+    <Compile Include="Abstract\QueryableProvider\MappingFieldsHelper.cs" />
+    <Compile Include="Abstract\QueryableProvider\NavigatManager.cs" />
+    <Compile Include="Abstract\SaveableProvider\StorageableMethodInfo.cs" />
+    <Compile Include="Abstract\SaveableProvider\StorageableDataTable.cs" />
+    <Compile Include="Abstract\SqlBuilderProvider\SqlBuilderProvider_Condition.cs" />
+    <Compile Include="Abstract\SugarProvider\SqlSugarCoreProvider.cs" />
+    <Compile Include="Abstract\DeleteProvider\DeleteMethodInfo.cs" />
+    <Compile Include="Abstract\UpdateProvider\UpdateMethodInfo.cs" />
+    <Compile Include="Abstract\UpdateProvider\UpdateableHelper.cs" />
+    <Compile Include="Abstract\UpdateProvider\SplitTableUpdateByObjectProvider.cs" />
+    <Compile Include="Entities\DbFastestProperties.cs" />
+    <Compile Include="Entities\DefaultCustom.cs" />
+    <Compile Include="Entities\DeleteNavOptions.cs" />
+    <Compile Include="Entities\JoinInfoParameter.cs" />
+    <Compile Include="ExpressionsToSql\Common\MapperSql.cs" />
+    <Compile Include="ExpressionsToSql\Common\NewExpressionInfo.cs" />
+    <Compile Include="ExpressionsToSql\ResolveItems\BaseResolve_Append.cs" />
+    <Compile Include="ExpressionsToSql\ResolveItems\BaseResolve_Helper.cs" />
+    <Compile Include="ExpressionsToSql\ResolveItems\BaseResolve_Validate.cs" />
+    <Compile Include="ExpressionsToSql\ResolveItems\BaseResolve_Property.cs" />
+    <Compile Include="ExpressionsToSql\ResolveItems\BaseResolve.cs" />
+    <Compile Include="ExpressionsToSql\ResolveItems\BaseResolve_Item.cs" />
+    <Compile Include="ExpressionsToSql\ResolveItems\MethodCallExpressionResolve_Helper.cs" />
+    <Compile Include="ExpressionsToSql\ResolveItems\MethodCallExpressionResolve_BaseDateFomat.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\Items\SubDistinctCount.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\Items\SubFirst.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\Items\SubSelectStringJoin.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\Items\SubToList.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\Items\SubWithNoLock.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\Items\SubEnableTableFilter.cs" />
+    <Compile Include="Interface\ICustomConditionalFunc.cs" />
+    <Compile Include="Interface\ISugarDataConverter.cs" />
+    <Compile Include="Json2Sql\Entities\JsonDeleteResult.cs" />
+    <Compile Include="Json2Sql\Entities\JsonInsertResult.cs" />
+    <Compile Include="Json2Sql\Entities\JsonQueryResult.cs" />
+    <Compile Include="Json2Sql\Entities\JsonTableConfig.cs" />
+    <Compile Include="Json2Sql\Entities\JsonUpdateResult.cs" />
+    <Compile Include="Json2Sql\Enums\AsNameFormatType.cs" />
+    <Compile Include="Json2Sql\Enums\Json2SqlType.cs" />
+    <Compile Include="Json2Sql\Interface\IFuncModel.cs" />
+    <Compile Include="Json2Sql\Interface\IJsonClient.cs" />
+    <Compile Include="Json2Sql\Interface\IJsonDeleteableProvider.cs" />
+    <Compile Include="Json2Sql\Interface\IJsonInsertableProvider.cs" />
+    <Compile Include="Json2Sql\Interface\IJsonProvider.cs" />
+    <Compile Include="Json2Sql\Interface\IJsonQueryableProvider.cs" />
+    <Compile Include="Json2Sql\Interface\IJsonToModel.cs" />
+    <Compile Include="Json2Sql\Interface\IJsonUpdateableProvider.cs" />
+    <Compile Include="Json2Sql\Interface\IModelToSql.cs" />
+    <Compile Include="Json2Sql\Interface\ISugarQueryable.cs" />
+    <Compile Include="JsonClient.cs" />
+    <Compile Include="Json2Sql\JsonModels\FuncModel.cs" />
+    <Compile Include="Json2Sql\JsonModels\GroupByModel.cs" />
+    <Compile Include="Json2Sql\JsonModels\JoinModel.cs" />
+    <Compile Include="Json2Sql\JsonModels\JsonQueryParameter.cs" />
+    <Compile Include="Json2Sql\JsonModels\JsonSqlModels.cs" />
+    <Compile Include="Json2Sql\JsonModels\JsonTableNameInfo.cs" />
+    <Compile Include="Json2Sql\JsonModels\OrderByModel.cs" />
+    <Compile Include="Json2Sql\JsonModels\SelectFieldModel.cs" />
+    <Compile Include="Json2Sql\JsonToModel\Helper.cs" />
+    <Compile Include="Json2Sql\JsonToModel\JsonSqlFuncToModel.cs" />
+    <Compile Include="Json2Sql\JsonToModel\JsonSqlFuncToParameters.cs" />
+    <Compile Include="Json2Sql\JsonToModel\JsonToColumnsModels.cs" />
+    <Compile Include="Json2Sql\JsonToModel\JsonToGroupByModels.cs" />
+    <Compile Include="Json2Sql\JsonToModel\JsonToJoinModels.cs" />
+    <Compile Include="Json2Sql\JsonToModel\JsonToOrderByModels.cs" />
+    <Compile Include="Json2Sql\JsonToModel\JsonToSelectModels.cs" />
+    <Compile Include="Json2Sql\ModelToSql\FuncModelToSql.cs" />
+    <Compile Include="Json2Sql\ModelToSql\GroupByModelToSql.cs" />
+    <Compile Include="Json2Sql\ModelToSql\OrderByModelToSql.cs" />
+    <Compile Include="Json2Sql\ModelToSql\SelectModelToSql.cs" />
+    <Compile Include="Json2Sql\ModelToSql\SqlPart.cs" />
+    <Compile Include="Json2Sql\Provider\Common\JsonCommonProvider.cs" />
+    <Compile Include="Json2Sql\Provider\Deleteable\JsonDeleteableProvider.cs" />
+    <Compile Include="Json2Sql\Provider\Insertable\AppendIdentity.cs" />
+    <Compile Include="Json2Sql\Provider\Insertable\AppendName.cs" />
+    <Compile Include="Json2Sql\Provider\Insertable\AppendRow.cs" />
+    <Compile Include="Json2Sql\Provider\Insertable\Helper.cs" />
+    <Compile Include="Json2Sql\Provider\Insertable\JsonInsertableProvider.cs" />
+    <Compile Include="Json2Sql\Provider\Insertable\PrivateProperty.cs" />
+    <Compile Include="Json2Sql\Provider\Queryable\ApendJoinLastAfter.cs" />
+    <Compile Include="Json2Sql\Provider\Queryable\AppendFrom.cs" />
+    <Compile Include="Json2Sql\Provider\Queryable\AppendGroupBy.cs" />
+    <Compile Include="Json2Sql\Provider\Queryable\AppendHaving.cs" />
+    <Compile Include="Json2Sql\Provider\Queryable\AppendJoin.cs" />
+    <Compile Include="Json2Sql\Provider\Queryable\AppendOrderBy.cs" />
+    <Compile Include="Json2Sql\Provider\Queryable\AppendPage.cs" />
+    <Compile Include="Json2Sql\Provider\Queryable\AppendSelect.cs" />
+    <Compile Include="Json2Sql\Provider\Queryable\AppendWhere.cs" />
+    <Compile Include="Json2Sql\Provider\Queryable\Entities.cs" />
+    <Compile Include="Json2Sql\Provider\Queryable\Helper.cs" />
+    <Compile Include="Json2Sql\Provider\Queryable\JsonQueryableProvider.cs" />
+    <Compile Include="Json2Sql\Provider\Queryable\Property.cs" />
+    <Compile Include="Json2Sql\Provider\Queryable\RegisterAop.cs" />
+    <Compile Include="Json2Sql\Provider\Queryable\ResultDefault.cs" />
+    <Compile Include="Json2Sql\Provider\Queryable\ResultHelper.cs" />
+    <Compile Include="Json2Sql\Provider\Updateable\AppendRow.cs" />
+    <Compile Include="Json2Sql\Provider\Updateable\AppendTable.cs" />
+    <Compile Include="Json2Sql\Provider\Updateable\AppendWhere.cs" />
+    <Compile Include="Json2Sql\Provider\Updateable\AppendWhereColumns.cs" />
+    <Compile Include="Json2Sql\Provider\Updateable\Helpercs.cs" />
+    <Compile Include="Json2Sql\Provider\Updateable\JsonUpdateableProvider.cs" />
+    <Compile Include="Json2Sql\Queryable\QueryableProvider.cs" />
+    <Compile Include="Json2Sql\Utils\Json2SqlConfig.cs" />
+    <Compile Include="Json2Sql\Utils\Json2SqlHelper.cs" />
+    <Compile Include="OnlyNet\AsyncHelper.cs" />
+    <Compile Include="Realization\Dm\SqlBuilder\DmBlukCopy.cs" />
+    <Compile Include="Realization\Dm\SqlBuilder\DmFastBuilder.cs" />
+    <Compile Include="Realization\Kdbndp\CodeFirst\KdbndpCodeFirst.cs" />
+    <Compile Include="Realization\Kdbndp\DbBind\KdbndpBind.cs" />
+    <Compile Include="Realization\Kdbndp\DbFirst\KdbndpDbFirst.cs" />
+    <Compile Include="Realization\Kdbndp\DbMaintenance\KdbndpDbMaintenance.cs" />
+    <Compile Include="Realization\Kdbndp\Insertable\KdbndpInserttable.cs" />
+    <Compile Include="Realization\Kdbndp\KdbndpSQLProvider.cs" />
+    <Compile Include="Realization\Kdbndp\Queryable\KdbndpQueryable.cs" />
+    <Compile Include="Realization\Kdbndp\SqlBuilder\KdbndpBuilder.cs" />
+    <Compile Include="Realization\Kdbndp\SqlBuilder\KdbndpDeleteBuilder.cs" />
+    <Compile Include="Realization\Kdbndp\SqlBuilder\KdbndpExpressionContext.cs" />
+    <Compile Include="Realization\Kdbndp\SqlBuilder\KdbndpFastBuilder.cs" />
+    <Compile Include="Realization\Kdbndp\SqlBuilder\KdbndpInsertBuilder.cs" />
+    <Compile Include="Realization\Kdbndp\SqlBuilder\KdbndpQueryBuilder.cs" />
+    <Compile Include="Realization\Kdbndp\SqlBuilder\KdbndpUpdateBuilder.cs" />
+    <Compile Include="Realization\QuestDB\CodeFirst\QuestDBCodeFirst.cs" />
+    <Compile Include="Realization\QuestDB\DbBind\QuestDBDbBind.cs" />
+    <Compile Include="Realization\QuestDB\DbFirst\QuestDBDbFirst.cs" />
+    <Compile Include="Realization\QuestDB\DbMaintenance\QuestDBDbMaintenance.cs" />
+    <Compile Include="Realization\QuestDB\Queryable\QuestDBQueryable.cs" />
+    <Compile Include="Realization\QuestDB\QuestDBProvider.cs" />
+    <Compile Include="Realization\QuestDB\SqlBuilder\QuestDBBuilder.cs" />
+    <Compile Include="Realization\QuestDB\SqlBuilder\QuestDBDeleteBuilder.cs" />
+    <Compile Include="Realization\QuestDB\SqlBuilder\QuestDBExpressionContext.cs" />
+    <Compile Include="Realization\QuestDB\SqlBuilder\QuestDBFastBuilder.cs" />
+    <Compile Include="Realization\QuestDB\SqlBuilder\QuestDBInsertBuilder.cs" />
+    <Compile Include="Realization\QuestDB\SqlBuilder\QuestDBQueryBuilder.cs" />
+    <Compile Include="Realization\QuestDB\SqlBuilder\QuestDBUpdateBuilder.cs" />
+    <Compile Include="SugarUnitOfWork.cs" />
+    <Compile Include="Entities\SugarAbMapping.cs" />
+    <Compile Include="Entities\JoinMapper.cs" />
+    <Compile Include="Enum\DbLockType.cs" />
+    <Compile Include="Enum\NavigatType.cs" />
+    <Compile Include="Enum\SugarActionType.cs" />
+    <Compile Include="Entities\SugarConnection.cs" />
+    <Compile Include="ExpressionsToSql\Common\ExpressionItems.cs" />
+    <Compile Include="ExpressionsToSql\Common\ExpressionOutParameter.cs" />
+    <Compile Include="ExpressionsToSql\ResolveItems\OneToManyNavgateExpressionN.cs" />
+    <Compile Include="ExpressionsToSql\ResolveItems\OneToManyNavgateExpression.cs" />
+    <Compile Include="ExpressionsToSql\ResolveItems\OneToOneNavgateExpressionN.cs" />
+    <Compile Include="ExpressionsToSql\ResolveItems\OneToOneNavgateExpression.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\SubTemplate.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\SubqueryableN.cs" />
+    <Compile Include="Abstract\QueryableProvider\QueryableContext.cs" />
+    <Compile Include="Infrastructure\StaticConfig.cs" />
+    <Compile Include="Interface\IIncludes.cs" />
+    <Compile Include="Interface\IFastBuilder.cs" />
+    <Compile Include="Interface\IFastest.cs" />
+    <Compile Include="OnlyNet\OracleFastBuilder.cs" />
+    <Compile Include="Realization\MySql\SqlBuilder\MySqlFastBuilder.cs" />
+    <Compile Include="Realization\PostgreSQL\SqlBuilder\PostgreSQLFastBuilder.cs" />
+    <Compile Include="Realization\Sqlite\SqlBuilder\SqliteFastBuilder.cs" />
+    <Compile Include="Realization\SqlServer\SqlBuilder\SqlServerFastBuilder.cs" />
+    <Compile Include="SpliteTable\SplitTableAttribute.cs" />
+    <Compile Include="Abstract\InsertableProvider\InsertableProvider.cs" />
+    <Compile Include="Abstract\DeleteProvider\DeleteableProvider.cs" />
+    <Compile Include="Abstract\InsertableProvider\SplitInsertable.cs" />
+    <Compile Include="Abstract\UpdateProvider\SplitTableUpdateProvider.cs" />
+    <Compile Include="Entities\SqlSguarTransaction.cs" />
+    <Compile Include="Enum\LanguageType.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\Items\SubAs.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\Items\SubHaving.cs" />
+    <Compile Include="Interface\ISugarRepository.cs" />
+    <Compile Include="Interface\IParameterInsertable.cs" />
+    <Compile Include="Abstract\InsertableProvider\ParameterInsertable.cs" />
+    <Compile Include="Abstract\Reportable\ReportableProvider.cs" />
+    <Compile Include="Abstract\SaveableProvider\Storageable.cs" />
+    <Compile Include="DistributedSystem\Snowflake\SnowFlakeSingle.cs" />
+    <Compile Include="DistributedSystem\Snowflake\ValueToStringConverter.cs" />
+    <Compile Include="Entities\ConfigQuery.cs" />
+    <Compile Include="Entities\ManyToManyConfig.cs" />
+    <Compile Include="Entities\SingleColumnsEntity.cs" />
+    <Compile Include="Entities\StackTraceInfo.cs" />
+    <Compile Include="Entities\SubInsertTree.cs" />
+    <Compile Include="Enum\DataFilterType.cs" />
+    <Compile Include="Enum\ReportableDateType.cs" />
+    <Compile Include="ExpressionsToSql\Common\MapperExpression.cs" />
+    <Compile Include="ExpressionsToSql\DbMethods\SqlFuncExtendsion.cs" />
+    <Compile Include="ExpressionsToSql\ResolveItems\MapperExpressionResolve.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\Items\SubInnerJoin.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\Items\SubLeftJoin.cs" />
+    <Compile Include="Interface\IReportable.cs" />
+    <Compile Include="Interface\IStorageable.cs" />
+    <Compile Include="OnlyNet\OracleBlukCopy.cs" />
+    <Compile Include="OnlyNet\Compatible.cs" />
+    <Compile Include="Interface\ISubInsertable.cs" />
+    <Compile Include="Abstract\InsertableProvider\SubInserable.cs" />
+    <Compile Include="Abstract\SaveableProvider\SaveableProvider.cs" />
+    <Compile Include="CacheScheme\CacheKeyBuider.cs" />
+    <Compile Include="CacheScheme\CacheSchemeMain.cs" />
+    <Compile Include="Entities\AsyncRef.cs" />
+    <Compile Include="Entities\CacheKey.cs" />
+    <Compile Include="Entities\SugarTerant.cs" />
+    <Compile Include="Entities\ConditionalModel.cs" />
+    <Compile Include="Entities\ConnMoreSettings.cs" />
+    <Compile Include="Entities\DiffLogModel.cs" />
+    <Compile Include="Entities\DiffType.cs" />
+    <Compile Include="Entities\MapperCache.cs" />
+    <Compile Include="Entities\QueueItem.cs" />
+    <Compile Include="Entities\SlaveConnectionConfig.cs" />
+    <Compile Include="Entities\SugarDebugger.cs" />
+    <Compile Include="Enum\ConditionalType.cs" />
+    <Compile Include="Enum\DbType.cs" />
+    <Compile Include="Enum\SugarDateTimeFormat.cs" />
+    <Compile Include="Enum\WhereType.cs" />
+    <Compile Include="ExpressionsToSql\CaseWhen\CaseWhen.cs" />
+    <Compile Include="ExpressionsToSql\CaseWhen\CaseWhenResolve.cs" />
+    <Compile Include="ExpressionsToSql\DbMethods\SqlFuncExternal.cs" />
+    <Compile Include="ExpressionsToSql\ResolveItems\CoalesceResolveItems.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\Items\ISubOperation.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\Items\SubAnd.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\Items\SubCount.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\Items\SubLeftBracket.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\Items\SubFromTable.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\Items\SubAny.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\Items\SubBegin.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\Items\SubAvg.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\Items\SubGroupBy.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\Items\SubSum.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\Items\SubMin.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\Items\SubMax.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\Items\SubOrderBy.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\Items\SubRightBracket.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\Items\SubSelect.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\Items\SubSelectDefault.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\Items\SubNotAny.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\Items\SubTop.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\Items\SubAndIF.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\Items\SubWhereIF.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\Subquerable.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\Items\SubWhere.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\SubResolve.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\SubTools.cs" />
+    <Compile Include="ExternalServiceInterface\IRazorService.cs" />
+    <Compile Include="OnlyNet\DependencyManagement.cs" />
+    <Compile Include="ExternalServiceInterface\ISerializeService.cs" />
+    <Compile Include="Entities\DefaultServices.cs" />
+    <Compile Include="Infrastructure\Mapper.cs" />
+    <Compile Include="Interface\ISaveable.cs" />
+    <Compile Include="Interface\ISqlSugarClient.cs" />
+    <Compile Include="Interface\ITenant.cs" />
+    <Compile Include="Interface\ISimpleClient.cs" />
+    <Compile Include="Realization\MySql\SqlBuilder\MySqlBlukCopy.cs" />
+    <Compile Include="Realization\Oracle\Deleteable\OracleDeleteable.cs" />
+    <Compile Include="Realization\Oracle\Insertable\OracleInsertable.cs" />
+    <Compile Include="Realization\Oracle\Updateable\OracleUpdateable.cs" />
+    <Compile Include="IntegrationServices\SerializeService.cs" />
+    <Compile Include="Realization\Dm\CodeFirst\DmCodeFirst.cs" />
+    <Compile Include="Realization\Dm\DbBind\DmDbBind.cs" />
+    <Compile Include="Realization\Dm\DbFirst\DmDbFirst.cs" />
+    <Compile Include="Realization\Dm\DbMaintenance\DmDbMaintenance.cs" />
+    <Compile Include="Realization\Dm\Insertable\DmInserttable.cs" />
+    <Compile Include="Realization\Dm\DmProvider.cs" />
+    <Compile Include="Realization\Dm\Queryable\DmQueryable.cs" />
+    <Compile Include="Realization\Dm\SqlBuilder\DmBuilder.cs" />
+    <Compile Include="Realization\Dm\SqlBuilder\DmDeleteBuilder.cs" />
+    <Compile Include="Realization\Dm\SqlBuilder\DmExpressionContext.cs" />
+    <Compile Include="Realization\Dm\SqlBuilder\DmInsertBuilder.cs" />
+    <Compile Include="Realization\Dm\SqlBuilder\DmQueryBuilder.cs" />
+    <Compile Include="Realization\Dm\SqlBuilder\DmUpdateBuilder.cs" />
+    <Compile Include="Realization\PostgreSQL\CodeFirst\PostgreSQLCodeFirst.cs" />
+    <Compile Include="Realization\PostgreSQL\DbBind\PostgreSQLDbBind.cs" />
+    <Compile Include="Realization\PostgreSQL\DbFirst\PostgreSQLDbFirst.cs" />
+    <Compile Include="Realization\PostgreSQL\DbMaintenance\PostgreSQLDbMaintenance.cs" />
+    <Compile Include="Realization\PostgreSQL\Insertable\PostgreSQLInserttable.cs" />
+    <Compile Include="Realization\PostgreSQL\PostgreSQLProvider.cs" />
+    <Compile Include="Realization\PostgreSQL\Queryable\PostgreSqlQueryable.cs" />
+    <Compile Include="Realization\PostgreSQL\SqlBuilder\PostgreSQLBuilder.cs" />
+    <Compile Include="Realization\PostgreSQL\SqlBuilder\PostgreSQLDeleteBuilder.cs" />
+    <Compile Include="Realization\PostgreSQL\SqlBuilder\PostgreSQLExpressionContext.cs" />
+    <Compile Include="Realization\PostgreSQL\SqlBuilder\PostgreSQLInsertBuilder.cs" />
+    <Compile Include="Realization\PostgreSQL\SqlBuilder\PostgreSQLQueryBuilder.cs" />
+    <Compile Include="Realization\PostgreSQL\SqlBuilder\PostgreSQLUpdateBuilder.cs" />
+    <Compile Include="Realization\SqlServer\SqlBuilder\SqlServerBlukCopy.cs" />
+    <Compile Include="DistributedSystem\Snowflake\DisposableAction.cs" />
+    <Compile Include="DistributedSystem\Snowflake\IdWorker.cs" />
+    <Compile Include="DistributedSystem\Snowflake\InvalidSystemClock.cs" />
+    <Compile Include="DistributedSystem\Snowflake\TimeExtensions.cs" />
+    <Compile Include="IntegrationServices\SplitTableService.cs" />
+    <Compile Include="ExternalServiceInterface\ISplitTableService.cs" />
+    <Compile Include="SpliteTable\SplitTableContext.cs" />
+    <Compile Include="SpliteTable\SplitTableInfo.cs" />
+    <Compile Include="SpliteTable\SplitType.cs" />
+    <Compile Include="SpliteTable\SplitTypeExtensions.cs" />
+    <Compile Include="SqlSugarClient.cs" />
+    <Compile Include="Abstract\SugarProvider\SqlSugarScopeProvider.cs" />
+    <Compile Include="Utilities\CallContext.cs" />
+    <Compile Include="Utilities\CallContextAsync.cs" />
+    <Compile Include="Utilities\FastCopy.cs" />
+    <Compile Include="Utilities\ExpressionBuilderHelper.cs" />
+    <Compile Include="Utilities\CommonExtensions.cs" />
+    <Compile Include="Utilities\PropertyCallAdapterProvider.cs" />
+    <Compile Include="Utilities\SugarRetry.cs" />
+    <Compile Include="Utilities\DataTableExtensions.cs" />
+    <Compile Include="Utilities\ReflectionExtensions.cs" />
+    <Compile Include="Realization\MySql\CodeFirst\MySqlCodeFirst.cs" />
+    <Compile Include="Realization\MySql\DbFirst\MySqlDbFirst.cs" />
+    <Compile Include="Realization\MySql\DbMaintenance\MySqlDbMaintenance.cs" />
+    <Compile Include="Realization\Oracle\CodeFirst\OracleCodeFirst.cs" />
+    <Compile Include="Realization\Oracle\DbBind\OracleDbBind.cs" />
+    <Compile Include="Realization\Oracle\DbFirst\OracleDbFirst.cs" />
+    <Compile Include="Realization\Oracle\DbMaintenance\OracleDbMaintenance.cs" />
+    <Compile Include="Realization\Oracle\OracleProvider.cs" />
+    <Compile Include="Realization\Oracle\Queryable\OracleQueryable.cs" />
+    <Compile Include="Realization\Oracle\SqlBuilder\OracleBuilder.cs" />
+    <Compile Include="Realization\Oracle\SqlBuilder\OracleDeleteBuilder.cs" />
+    <Compile Include="Realization\Oracle\SqlBuilder\OracleExpressionContext.cs" />
+    <Compile Include="Realization\Oracle\SqlBuilder\OracleInsertBuilder.cs" />
+    <Compile Include="Realization\Oracle\SqlBuilder\OracleQueryBuilder.cs" />
+    <Compile Include="Realization\Oracle\SqlBuilder\OracleUpdateBuilder.cs" />
+    <Compile Include="Realization\Sqlite\CodeFirst\SqliteCodeFirst.cs" />
+    <Compile Include="Realization\Sqlite\DbBind\SqliteDbBind.cs" />
+    <Compile Include="Realization\Sqlite\DbFirst\SqliteDbFirst.cs" />
+    <Compile Include="Realization\Sqlite\DbMaintenance\SqliteDbMaintenance.cs" />
+    <Compile Include="Realization\Sqlite\SqliteProvider.cs" />
+    <Compile Include="Realization\Sqlite\Queryable\SqliteQueryable.cs" />
+    <Compile Include="Realization\Sqlite\SqlBuilder\SqliteBuilder.cs" />
+    <Compile Include="Realization\Sqlite\SqlBuilder\SqliteDeleteBuilder.cs" />
+    <Compile Include="Realization\Sqlite\SqlBuilder\SqliteExpressionContext.cs" />
+    <Compile Include="Realization\Sqlite\SqlBuilder\SqliteInsertBuilder.cs" />
+    <Compile Include="Realization\Sqlite\SqlBuilder\SqliteQueryBuilder.cs" />
+    <Compile Include="Realization\Sqlite\SqlBuilder\SqliteUpdateBuilder.cs" />
+    <Compile Include="SimpleClient.cs" />
+    <Compile Include="Abstract\UpdateProvider\UpdateableProvider.cs" />
+    <Compile Include="Entities\ModelContext.cs" />
+    <Compile Include="Entities\SchemaInfo.cs" />
+    <Compile Include="Entities\SqlFilter.cs" />
+    <Compile Include="Enum\DbObjectType.cs" />
+    <Compile Include="Enum\ProperyType.cs" />
+    <Compile Include="Utilities\FileHelper.cs" />
+    <Compile Include="ExternalServiceInterface\ICacheService.cs" />
+    <Compile Include="Entities\DbResult.cs" />
+    <Compile Include="Enum\InitKeyType.cs" />
+    <Compile Include="Interface\IFilter.cs" />
+    <Compile Include="Realization\MySql\DbBind\MySqlDbBind.cs" />
+    <Compile Include="Realization\MySql\SqlBuilder\MySqlBuilder.cs" />
+    <Compile Include="Realization\MySql\SqlBuilder\MySqlDeleteBuilder.cs" />
+    <Compile Include="Realization\MySql\SqlBuilder\MySqlExpressionContext.cs" />
+    <Compile Include="Realization\MySql\SqlBuilder\MySqlInsertBuilder.cs" />
+    <Compile Include="Realization\MySql\SqlBuilder\MySqlQueryBuilder.cs" />
+    <Compile Include="Realization\MySql\SqlBuilder\MySqlUpdateBuilder.cs" />
+    <Compile Include="Realization\MySql\Queryable\MySqlQueryable.cs" />
+    <Compile Include="Realization\SqlServer\SqlBuilder\SqlServerDeleteBuilder.cs" />
+    <Compile Include="Realization\SqlServer\SqlBuilder\SqlServerInsertBuilder.cs" />
+    <Compile Include="Entities\EntityColumnInfo.cs" />
+    <Compile Include="Entities\EntityInfo.cs" />
+    <Compile Include="Entities\Mapping\SugarMappingAttribute.cs" />
+    <Compile Include="Abstract\QueryableProvider\QueryableAccessory.cs" />
+    <Compile Include="Abstract\QueryableProvider\QueryableProvider.cs" />
+    <Compile Include="Abstract\SqlBuilderProvider\DeleteBuilder.cs" />
+    <Compile Include="Abstract\SqlBuilderProvider\InsertBuilder.cs" />
+    <Compile Include="Abstract\SqlBuilderProvider\QueryBuilder.cs" />
+    <Compile Include="Abstract\SqlBuilderProvider\SqlQueryBuilder.cs" />
+    <Compile Include="Abstract\SqlBuilderProvider\UpdateBuilder.cs" />
+    <Compile Include="Abstract\SqlBuilderProvider\SqlBuilderAccessory.cs" />
+    <Compile Include="Abstract\SqlBuilderProvider\SqlBuilderProvider.cs" />
+    <Compile Include="IntegrationServices\CacheService.cs" />
+    <Compile Include="Utilities\Check.cs" />
+    <Compile Include="Utilities\DbExtensions.cs" />
+    <Compile Include="Utilities\ErrorMessage.cs" />
+    <Compile Include="SqlSugarScope.cs" />
+    <Compile Include="Utilities\UtilExtensions.cs" />
+    <Compile Include="Utilities\UtilRandom.cs" />
+    <Compile Include="Utilities\ValidateExtensions.cs" />
+    <Compile Include="Utilities\UtilConstants.cs" />
+    <Compile Include="Utilities\UtilConvert.cs" />
+    <Compile Include="Utilities\UtilMethods.cs" />
+    <Compile Include="Utilities\UtilExceptions.cs" />
+    <Compile Include="Infrastructure\ContextMethods.cs" />
+    <Compile Include="Realization\SqlServer\CodeFirst\SqlServerCodeFirst.cs" />
+    <Compile Include="Realization\SqlServer\SqlBuilder\SqlServerUpdateBuilder.cs" />
+    <Compile Include="Realization\SqlServer\DbBind\SqlServerDbBind.cs" />
+    <Compile Include="Realization\SqlServer\DbFirst\SqlServerDbFirst.cs" />
+    <Compile Include="Realization\SqlServer\SqlBuilder\SqlServerBuilder.cs" />
+    <Compile Include="Realization\SqlServer\DbMaintenance\SqlServerDbMaintenance.cs" />
+    <Compile Include="Realization\SqlServer\SqlBuilder\SqlServerQueryBuilder.cs" />
+    <Compile Include="Realization\MySql\MySqlProvider.cs" />
+    <Compile Include="Realization\SqlServer\SqlServerProvider.cs" />
+    <Compile Include="Realization\SqlServer\Queryable\SqlServerQueryable.cs" />
+    <Compile Include="Entities\ConnectionConfig.cs" />
+    <Compile Include="Entities\DbColumnInfo.cs" />
+    <Compile Include="Entities\DbTableInfo.cs" />
+    <Compile Include="Entities\Mapping\IgnoreComumn.cs" />
+    <Compile Include="Entities\SqlWith.cs" />
+    <Compile Include="ExpressionsToSql\Common\CommonTempDataType.cs" />
+    <Compile Include="ExpressionsToSql\Common\DateType.cs" />
+    <Compile Include="ExpressionsToSql\Common\MethodCallExpressionModel.cs" />
+    <Compile Include="ExpressionsToSql\DbMethods\DefaultDbMethod.cs" />
+    <Compile Include="Realization\SqlServer\SqlBuilder\SqlServerExpressionContext.cs" />
+    <Compile Include="ExpressionsToSql\DbMethods\SqlFunc.cs" />
+    <Compile Include="ExpressionsToSql\Common\BinaryExpressionInfo.cs" />
+    <Compile Include="ExpressionsToSql\Common\ExpressionResult.cs" />
+    <Compile Include="ExpressionsToSql\Common\ErrorMessage.cs" />
+    <Compile Include="ExpressionsToSql\Common\ExpressionResultAcceptType.cs" />
+    <Compile Include="ExpressionsToSql\DbMethods\IDbMethods.cs" />
+    <Compile Include="ExpressionsToSql\ResolveItems\MemberConstExpressionResolve.cs" />
+    <Compile Include="ExpressionsToSql\ResolveItems\MemberInitExpressionResolve.cs" />
+    <Compile Include="ExpressionsToSql\ResolveItems\MemberNewExpressionResolve.cs" />
+    <Compile Include="ExpressionsToSql\ResolveItems\MemberNoExpressionResolve.cs" />
+    <Compile Include="ExpressionsToSql\Common\SugarParameter.cs" />
+    <Compile Include="ExpressionsToSql\Common\ExpressionParameter.cs" />
+    <Compile Include="Entities\JoinQueryInfo.cs" />
+    <Compile Include="Entities\Mapping\MappingColumn.cs" />
+    <Compile Include="Entities\Mapping\MappingTable.cs" />
+    <Compile Include="Entities\PageModel.cs" />
+    <Compile Include="Entities\SugarList.cs" />
+    <Compile Include="Enum\ApplyType.cs" />
+    <Compile Include="Enum\JoinType.cs" />
+    <Compile Include="Enum\OrderByType.cs" />
+    <Compile Include="ExpressionsToSql\Common\ResolveExpressType.cs" />
+    <Compile Include="ExpressionsToSql\Common\ExpressionConst.cs" />
+    <Compile Include="ExpressionsToSql\ResolveItems\BaseResolve_NewExp.cs" />
+    <Compile Include="ExpressionsToSql\ResolveItems\BinaryExpressionResolve.cs" />
+    <Compile Include="ExpressionsToSql\ResolveItems\BlockExpressionResolve.cs" />
+    <Compile Include="ExpressionsToSql\ResolveItems\ConditionalExpressionResolve.cs" />
+    <Compile Include="ExpressionsToSql\ResolveItems\ConstantExpressionResolve.cs" />
+    <Compile Include="ExpressionsToSql\ResolveItems\LambdaExpressionResolve.cs" />
+    <Compile Include="ExpressionsToSql\ResolveItems\MemberExpressionResolve.cs" />
+    <Compile Include="ExpressionsToSql\ResolveItems\MethodCallExpressionResolve.cs" />
+    <Compile Include="ExpressionsToSql\ResolveItems\NewArrayExpessionResolve.cs" />
+    <Compile Include="ExpressionsToSql\ResolveItems\NewExpressionResolve.cs" />
+    <Compile Include="ExpressionsToSql\ResolveItems\TypeParameterExpressionReolve.cs" />
+    <Compile Include="ExpressionsToSql\ResolveItems\UnaryExpressionResolve.cs" />
+    <Compile Include="ExpressionsToSql\Common\ExpResolveAccessory.cs" />
+    <Compile Include="ExpressionsToSql\ExpressionContext.cs" />
+    <Compile Include="ExpressionsToSql\Common\ExpressionTool.cs" />
+    <Compile Include="Infrastructure\InstanceFactory.cs" />
+    <Compile Include="Interface\ICodeFirst.cs" />
+    <Compile Include="Interface\IAdo.cs" />
+    <Compile Include="Interface\IDbBind.cs" />
+    <Compile Include="Interface\IDbFirst.cs" />
+    <Compile Include="Interface\IDbMaintenance.cs" />
+    <Compile Include="Interface\IDeleteable.cs" />
+    <Compile Include="Interface\ILambdaExpressions.cs" />
+    <Compile Include="Interface\Insertable.cs" />
+    <Compile Include="Interface\IQueryable.cs" />
+    <Compile Include="Interface\IDMLBuilder.cs" />
+    <Compile Include="Interface\ISqlBuilder.cs" />
+    <Compile Include="Interface\IContextMethods.cs" />
+    <Compile Include="Interface\IUpdateable.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Abstract\SugarProvider\SqlSugarAccessory.cs" />
+    <Compile Include="Abstract\SugarProvider\SqlSugarProvider.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Abstract\QueryableProvider\Includes.txt" />
+    <Content Include="Interface\IIncludes.txt" />
+    <Content Include="References\DmProvider.dll" />
+    <Content Include="References\Kdbndp.dll" />
+    <Content Include="References\Newtonsoft.Json.dll" />
+    <Content Include="References\Npgsql.dll" />
+    <Content Include="References\Oracle.ManagedDataAccess.dll" />
+    <Content Include="References\System.Data.SQLite.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+    <None Include="SqlSugar.nuspec" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
