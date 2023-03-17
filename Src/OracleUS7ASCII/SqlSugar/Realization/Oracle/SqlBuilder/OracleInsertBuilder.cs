@@ -186,17 +186,17 @@ namespace SqlSugar
                 }
                 else if (type == UtilConstants.StringType || type == UtilConstants.ObjType)
                 {
-                    if (value.ToString().Length > 1000)
-                    {
-                        ++i;
+                    //if (value.ToString().Length > 1000)
+                    //{
+                    //    ++i;
                         var parameterName = this.Builder.SqlParameterKeyWord + name + i;
                         this.Parameters.Add(new SugarParameter(parameterName, value));
                         return parameterName;
-                    }
-                    else
-                    {
-                        return N + "'" + value.ToString().ToSqlFilter() + "'";
-                    }
+                    //}
+                    //else
+                    //{
+                    //    return N + "'" + value.ToString().ToSqlFilter() + "'";
+                    //}
                 }
                 else
                 {
