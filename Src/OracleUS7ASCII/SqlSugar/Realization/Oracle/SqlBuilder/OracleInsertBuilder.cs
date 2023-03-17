@@ -188,7 +188,7 @@ namespace SqlSugar
                 {
                     //if (value.ToString().Length > 1000)
                     //{
-                    //    ++i;
+                        ++i;
                         var parameterName = this.Builder.SqlParameterKeyWord + name + i;
                         this.Parameters.Add(new SugarParameter(parameterName, value));
                         return parameterName;
