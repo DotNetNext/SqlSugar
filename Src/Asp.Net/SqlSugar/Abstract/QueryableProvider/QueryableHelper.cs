@@ -1196,6 +1196,11 @@ namespace SqlSugar
                         result +=
                           QueryBuilder.GetExpressionValue(item, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple).GetResultString() + ",";
                     }
+                    else if (item is MemberExpression && type == OrderByType.Desc)
+                    {
+                        result +=
+                          QueryBuilder.GetExpressionValue(item, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple).GetResultString() + " Desc,";
+                    }
                     else if (type == OrderByType.Desc) 
                     {
                         result +=
