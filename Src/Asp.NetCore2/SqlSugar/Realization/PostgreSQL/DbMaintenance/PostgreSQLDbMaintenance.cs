@@ -62,7 +62,7 @@ namespace SqlSugar
 						 pg_namespace n on n.oid = c.relnamespace and nspname='" + schema + @"'
                          inner join 
                          pg_tables z on z.tablename=c.relname
-                        where  relkind = 'r' and relname not like 'pg_%' and relname not like 'sql_%' and schemaname='" + schema + "' order by relname";
+                        where  relkind in('p', 'r') and relname not like 'pg_%' and relname not like 'sql_%' and schemaname='" + schema + "' order by relname";
             }
         }
         protected override string GetViewInfoListSql
