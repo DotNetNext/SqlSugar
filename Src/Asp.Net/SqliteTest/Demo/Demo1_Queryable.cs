@@ -55,12 +55,18 @@ namespace OrmTest
             {
                 names = SqlFunc.Subqueryable<Order>().Where(z => z.Id == it.Id).SelectStringJoin(z => z.Name, ",")
             })
-         .ToList();
+            .ToList();
             var test08 = db.Queryable<Order>().Select(it => new
             {
                 names = $"as{it.Id}fd{it.Id}a"
             })
-       .ToList();
+            .ToList();
+            db.CodeFirst.InitTables<BoolTest>();
+            db.Queryable<BoolTest>().OrderBy(it => it.bb ).ToList();
+            db.Queryable<BoolTest>().OrderByDescending(it => it.bb).ToList();
+            db.Queryable<BoolTest>().OrderBy(it => new { it.bb }).ToList();
+            db.Queryable<BoolTest>().OrderBy(it => new { x=SqlFunc.Desc(it.bb) }).ToList();
+            db.Queryable<BoolTest>().OrderByDescending(it => new { it.bb }).ToList();
             Console.WriteLine("#### Examples End ####");
         }
 
