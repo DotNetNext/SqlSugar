@@ -249,6 +249,11 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override List<string> GetIndexList(string tableName)
+        {
+            var sql = $"SELECT indexname, indexdef FROM pg_indexes WHERE upper(tablename) = upper('{tableName}')";
+            return this.Context.Ado.SqlQuery<string>(sql);
+        }
         public override List<string> GetProcList(string dbName)
         {
             var sql = $"SELECT proname FROM pg_proc p JOIN pg_namespace n ON p.pronamespace = n.oid WHERE n.nspname = '{dbName}'";

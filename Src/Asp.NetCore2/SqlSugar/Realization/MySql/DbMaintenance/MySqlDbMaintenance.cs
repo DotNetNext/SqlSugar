@@ -283,6 +283,11 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override List<string> GetIndexList(string tableName)
+        {
+            var sql = $"SHOW INDEX FROM {this.SqlBuilder.GetTranslationColumnName(tableName)}";
+            return this.Context.Ado.GetDataTable(sql).AsEnumerable().Cast<DataRow>().Select(it => it["key_name"]).Cast<string>().ToList();
+        }
         public override List<string> GetProcList(string dbName)
         {
             var sql = $"SELECT ROUTINE_NAME FROM information_schema.ROUTINES WHERE ROUTINE_TYPE = 'PROCEDURE' AND ROUTINE_SCHEMA = '{dbName}'";
