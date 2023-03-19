@@ -283,6 +283,11 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override List<string> GetProcList(string dbName)
+        {
+            var sql = $"SELECT ROUTINE_NAME FROM information_schema.ROUTINES WHERE ROUTINE_TYPE = 'PROCEDURE' AND ROUTINE_SCHEMA = '{dbName}'";
+            return this.Context.Ado.SqlQuery<string>(sql);
+        }
         public override bool IsAnyTable(string tableName, bool isCache = true)
         {
             try

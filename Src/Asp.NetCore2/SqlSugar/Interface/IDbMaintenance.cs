@@ -16,6 +16,7 @@ namespace SqlSugar
         List<DbColumnInfo> GetColumnInfosByTableName(string tableName,bool isCache=true);
         List<string> GetIsIdentities(string tableName);
         List<string> GetPrimaries(string tableName);
+        List<string> GetProcList(string dbName);
         #endregion
 
         #region Check
