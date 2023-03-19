@@ -84,7 +84,7 @@ namespace SqlSugar
                  return result.Select(it => it.DbColumnName).ToList();
              });
         }
-        public virtual List<string> GetIndexList() 
+        public virtual List<string> GetIndexList(string tableName) 
         {
             return new List<string>();
         }

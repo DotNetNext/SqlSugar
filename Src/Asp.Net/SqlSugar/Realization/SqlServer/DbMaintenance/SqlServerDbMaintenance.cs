@@ -321,9 +321,9 @@ namespace SqlSugar
         #endregion
 
         #region Methods
-        public override List<string> GetIndexList()
+        public override List<string> GetIndexList(string tableName)
         {
-           return this.Context.Ado.SqlQuery<string>("SELECT name FROM sys.indexes WHERE objectproperty(object_id, 'IsUserTable') = 1");
+           return this.Context.Ado.SqlQuery<string>($"SELECT indexname = i.name FROM sys.indexes i\r\nJOIN sys.index_columns ic ON i.object_id = ic.object_id AND i.index_id = ic.index_id\r\nJOIN sys.columns c ON ic.object_id = c.object_id AND ic.column_id = c.column_id\r\nWHERE i.object_id = OBJECT_ID('{tableName}')");
         }
         public override List<string> GetProcList(string dbName)
         {

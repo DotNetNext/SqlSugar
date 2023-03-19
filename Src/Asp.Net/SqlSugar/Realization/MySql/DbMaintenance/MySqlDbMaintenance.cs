@@ -282,9 +282,9 @@ namespace SqlSugar
         #endregion
 
         #region Methods
-        public override List<string> GetIndexList()
+        public override List<string> GetIndexList(string tableName)
         {
-            var sql = $"SELECT index_name FROM information_schema.statistics WHERE table_schema = '" + this.Context.Ado.Connection.Database + "'";
+            var sql = $"SHOW INDEX FROM {this.SqlBuilder.GetTranslationColumnName(tableName)}";
             return this.Context.Ado.SqlQuery<string>(sql);
         }
         public override List<string> GetProcList(string dbName)
