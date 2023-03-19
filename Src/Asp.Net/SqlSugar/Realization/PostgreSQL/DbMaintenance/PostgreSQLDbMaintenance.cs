@@ -249,6 +249,11 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override List<string> GetProcList(string dbName)
+        {
+            var sql = $"SELECT proname FROM pg_proc p JOIN pg_namespace n ON p.pronamespace = n.oid WHERE n.nspname = '{dbName}'";
+            return this.Context.Ado.SqlQuery<string>(sql);
+        }
         public override bool AddDefaultValue(string tableName, string columnName, string defaultValue)
         {
             return base.AddDefaultValue(this.SqlBuilder.GetTranslationTableName(tableName), this.SqlBuilder.GetTranslationTableName(columnName), defaultValue);

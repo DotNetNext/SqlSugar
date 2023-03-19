@@ -321,6 +321,11 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override List<string> GetProcList(string dbName)
+        {
+            var sql = $"SELECT name FROM {dbName}.sys.procedures";
+            return this.Context.Ado.SqlQuery<string>(sql);
+        }
         public override bool UpdateColumn(string tableName, DbColumnInfo column)
         {
             if (column.DataType != null && this.Context.CurrentConnectionConfig?.MoreSettings?.SqlServerCodeFirstNvarchar == true)
