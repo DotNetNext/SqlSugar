@@ -274,7 +274,7 @@ namespace SqlSugar
         #region Methods
         public override List<string> GetIndexList(string tableName)
         {
-            var sql = $"SELECT index_name, index_type, column_name\r\nFROM user_ind_columns\r\nWHERE table_name = '{tableName}'";
+            var sql = $"SELECT index_name FROM user_ind_columns\r\nWHERE table_name = '{tableName}'";
             return this.Context.Ado.SqlQuery<string>(sql);
         }
         public override List<string> GetProcList(string dbName)
