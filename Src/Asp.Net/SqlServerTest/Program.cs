@@ -11,7 +11,7 @@ namespace OrmTest
         /// <param name="args"></param>
         static void Main(string[] args)
         {
-            UinitCustomConvert.Init();
+            
             //Demo
             Demo0_SqlSugarClient.Init();
             Demo1_Queryable.Init();
