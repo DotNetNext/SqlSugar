@@ -84,6 +84,10 @@ namespace SqlSugar
                  return result.Select(it => it.DbColumnName).ToList();
              });
         }
+        public virtual List<string> GetIndexList() 
+        {
+            return new List<string>();
+        }
         #endregion
 
         #region Check

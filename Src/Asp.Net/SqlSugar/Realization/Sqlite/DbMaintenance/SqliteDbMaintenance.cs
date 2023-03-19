@@ -258,6 +258,11 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override List<string> GetIndexList()
+        {
+            var sql = $"SELECT name FROM sqlite_master WHERE type='index'";
+            return this.Context.Ado.SqlQuery<string>(sql);
+        }
         public override void AddDefaultValue(EntityInfo entityInfo)
         {
            //sqlite no support AddDefaultValue

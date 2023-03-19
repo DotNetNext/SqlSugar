@@ -282,6 +282,11 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override List<string> GetIndexList()
+        {
+            var sql = $"SELECT index_name FROM information_schema.statistics WHERE table_schema = '" + this.Context.Ado.Connection.Database + "'";
+            return this.Context.Ado.SqlQuery<string>(sql);
+        }
         public override List<string> GetProcList(string dbName)
         {
             var sql = $"SELECT ROUTINE_NAME FROM information_schema.ROUTINES WHERE ROUTINE_TYPE = 'PROCEDURE' AND ROUTINE_SCHEMA = '{dbName}'";

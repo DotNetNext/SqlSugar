@@ -17,6 +17,7 @@ namespace SqlSugar
         List<string> GetIsIdentities(string tableName);
         List<string> GetPrimaries(string tableName);
         List<string> GetProcList(string dbName);
+        List<string> GetIndexList();
         #endregion
 
         #region Check

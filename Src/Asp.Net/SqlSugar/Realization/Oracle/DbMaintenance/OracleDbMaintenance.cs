@@ -272,6 +272,11 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override List<string> GetIndexList()
+        {
+            var sql = $"SELECT index_name FROM user_indexes";
+            return this.Context.Ado.SqlQuery<string>(sql);
+        }
         public override List<string> GetProcList(string dbName)
         {
             var sql = $"SELECT OBJECT_NAME FROM ALL_OBJECTS WHERE OBJECT_TYPE = 'PROCEDURE' AND OWNER = '{dbName.ToUpper()}'";

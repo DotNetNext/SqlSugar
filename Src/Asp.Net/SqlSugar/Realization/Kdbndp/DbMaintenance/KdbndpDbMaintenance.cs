@@ -240,6 +240,16 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override List<string> GetIndexList()
+        {
+            var sql = $"SELECT indexname FROM pg_indexes WHERE UPPER(schemaname) = UPPER('" + GetSchema() + "') ";
+            return this.Context.Ado.SqlQuery<string>(sql);
+        }
+        public override List<string> GetProcList(string dbName)
+        {
+            var sql = $"SELECT proname FROM pg_proc p JOIN pg_namespace n ON p.pronamespace = n.oid WHERE n.nspname = '{dbName}'";
+            return this.Context.Ado.SqlQuery<string>(sql);
+        }
         private string GetSchema()
         {
             var schema = "public";
