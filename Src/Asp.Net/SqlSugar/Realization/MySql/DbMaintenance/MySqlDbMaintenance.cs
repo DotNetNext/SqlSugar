@@ -285,7 +285,7 @@ namespace SqlSugar
         public override List<string> GetIndexList(string tableName)
         {
             var sql = $"SHOW INDEX FROM {this.SqlBuilder.GetTranslationColumnName(tableName)}";
-            return this.Context.Ado.SqlQuery<string>(sql);
+            return this.Context.Ado.GetDataTable(sql).AsEnumerable().Cast<DataRow>().Select(it => it["key_name"]).Cast<string>().ToList();
         }
         public override List<string> GetProcList(string dbName)
         {
