@@ -340,6 +340,33 @@ namespace OrmTest
             })
          .ToList();
 
+            var test8 = db.Queryable<Order>().Select(it => new
+            {
+                CustomId = it.CustomId,
+                OrderId = it.Id,
+                OrderName = it.Name,
+                disCount = SqlFunc.Subqueryable<Custom>().Where(c =>it.CustomId==c.Id).ToList(c=>c.Id)
+            })
+            .ToList();
+
+            if (test8.First().CustomId != test8.First().disCount.First()) 
+            {
+                throw new Exception("unit error");
+            }
+
+            var test9 = db.Queryable<Order>().Select(it => new xxx
+            {
+                CustomId = it.CustomId,
+                OrderId = it.Id,
+                OrderName = it.Name,
+                disCount = SqlFunc.Subqueryable<Custom>().Where(c => it.CustomId == c.Id).ToList(c => c.Id)
+            })
+           .ToList();
+
+            if (test9.First().CustomId != test8.First().disCount.First())
+            {
+                throw new Exception("unit error");
+            }
         }
         private static void TestGetAll(SqlSugarClient db)
         {
@@ -406,6 +433,15 @@ namespace OrmTest
             public List<OrderItem> disCount { get; set; }
         }
     }
+
+    internal class xxx
+    {
+        public int CustomId { get; set; }
+        public int OrderId { get; set; }
+        public string OrderName { get; set; }
+        public List<int> disCount { get; set; }
+    }
+
     [SugarTable("LibBookSubscription1xx")]
     public class LibBookSubscription1
     {
