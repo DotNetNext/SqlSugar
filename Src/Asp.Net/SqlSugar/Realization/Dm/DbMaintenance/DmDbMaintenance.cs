@@ -30,7 +30,7 @@ namespace SqlSugar
             {
                 return @"SELECT  
                         table_name name,
-                        (select COMMENTS from user_tab_comments where t.table_name=table_name )  as Description
+                        (select TOP 1 COMMENTS from user_tab_comments where t.table_name=table_name )  as Description
                         from user_tables t where
                         table_name!='HELP' 
                         AND table_name NOT LIKE '%$%'
