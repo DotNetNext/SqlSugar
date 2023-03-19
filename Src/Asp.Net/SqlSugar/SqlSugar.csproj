@@ -119,6 +119,7 @@
     <Compile Include="Abstract\InsertableProvider\InsertMethodInfo.cs" />
     <Compile Include="Abstract\QueryableProvider\Entities\QueryableAppendColumn.cs" />
     <Compile Include="Abstract\QueryableProvider\Entities\SqlInfo.cs" />
+    <Compile Include="Abstract\QueryableProvider\Entities\SubQueryToListDefaultT.cs" />
     <Compile Include="Abstract\QueryableProvider\QueryableExecuteSqlAsync.cs" />
     <Compile Include="Abstract\QueryableProvider\QueryableExecuteSql.cs" />
     <Compile Include="Abstract\QueryableProvider\QueryableProperties.cs" />
