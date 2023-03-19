@@ -1778,6 +1778,12 @@ namespace SqlSugar
                 isFirst = true;
             }
             var sqlstring = string.Join(" \r\n UNION ALL  ", sqls);
+            if (callType?.IsClass() == false)
+            {
+                Regex regex = new Regex(@"\,\d{1,10} as sugarIndex");
+                sqlstring = regex.Replace(sqlstring, it=> ("  as id " + it.Value));
+                callType = typeof(SubQueryToListDefaultT);
+            }
             var methodParamters = new object[] { sqlstring, ps.ToArray() };
             this.QueryBuilder.SubToListParameters = null;
             this.QueryBuilder.AppendColumns = new List<QueryableAppendColumn>() {
@@ -1818,6 +1824,10 @@ namespace SqlSugar
                         if (appValue[0].Value.ObjToInt() == i)
                         {
                             var addItem = list[appindex];
+                            if (addItem is SubQueryToListDefaultT) 
+                            {
+                                addItem = (addItem as SubQueryToListDefaultT).id;
+                            }
                             setValue.Add(addItem);
                         }
                         appindex++;
@@ -1899,6 +1909,10 @@ namespace SqlSugar
                         if (appValue[0].Value.ObjToInt() == resIndex)
                         {
                             var addItem = list[appindex];
+                            if (addItem is SubQueryToListDefaultT) 
+                            {
+                                addItem= ((SubQueryToListDefaultT)addItem).id;
+                            }
                             setValue.Add(addItem);
                         }
                         appindex++;
