@@ -88,6 +88,9 @@
     <Compile Include="Abstract\DeleteProvider\LogicDeleteProvider.cs" />
     <Compile Include="Abstract\DeleteProvider\SplitTableDeleteByObjectProvider.cs" />
     <Compile Include="Abstract\DeleteProvider\SplitTableDeleteProvider.cs" />
+    <Compile Include="Abstract\DynamicBuilder\Helper.cs" />
+    <Compile Include="Abstract\DynamicBuilder\EmitTool.cs" />
+    <Compile Include="Abstract\DynamicBuilder\Master.cs" />
     <Compile Include="Abstract\EntityMaintenance\EntityColumnExtension.cs" />
     <Compile Include="Abstract\EntityMaintenance\EntityMaintenance.cs" />
     <Compile Include="Abstract\ExecuteNavProvider\NavContext.cs" />
@@ -140,6 +143,7 @@
     <Compile Include="Abstract\UpdateProvider\UpdateMethodInfo.cs" />
     <Compile Include="Abstract\UpdateProvider\UpdateableHelper.cs" />
     <Compile Include="Abstract\UpdateProvider\SplitTableUpdateByObjectProvider.cs" />
+    <Compile Include="Entities\PropertyMetadata.cs" />
     <Compile Include="Entities\DbFastestProperties.cs" />
     <Compile Include="Entities\DefaultCustom.cs" />
     <Compile Include="Entities\DeleteNavOptions.cs" />
@@ -424,6 +428,7 @@
     <Compile Include="Abstract\SugarProvider\SqlSugarScopeProvider.cs" />
     <Compile Include="Utilities\CallContext.cs" />
     <Compile Include="Utilities\CallContextAsync.cs" />
+    <Compile Include="Abstract\DynamicBuilder\DynamicBuilderHelper.cs" />
     <Compile Include="Utilities\FastCopy.cs" />
     <Compile Include="Utilities\ExpressionBuilderHelper.cs" />
     <Compile Include="Utilities\CommonExtensions.cs" />

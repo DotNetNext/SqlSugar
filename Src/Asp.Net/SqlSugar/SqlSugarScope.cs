@@ -835,6 +835,10 @@ namespace SqlSugar
         {
             return new SqlSugarClient(UtilMethods.CopyConfig(this.Ado.Context.CurrentConnectionConfig));
         }
+        public DynamicBuilder DynamicBuilder()
+        {
+            return ScopedContext.DynamicBuilder();
+        }
         public void Tracking<T>(T data) where T : class, new()
         {
             ScopedContext.Tracking(data);

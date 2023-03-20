@@ -155,6 +155,10 @@ namespace SqlSugar
             {
                 return "";
             }
+            if (entityType.Assembly.IsDynamic&& entityType.Assembly.FullName.StartsWith("Dynamic"))
+            {
+                return null;
+            }
             var path = entityType.Assembly.Location;
             if (string.IsNullOrEmpty(path))
             {
