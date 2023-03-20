@@ -126,6 +126,19 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+
+            var type = db.DynamicBuilder().CreateClass("UnitEntityA",
+                new SugarTable()
+                {
+                    TableDescription = "表备注",
+                    //DisabledUpdateAll=true 可以禁止更新只创建
+                }
+            )
+           .CreateProperty("Id", typeof(int), new SugarColumn() { IsPrimaryKey = true, IsIdentity = true, ColumnDescription = "列备注" }) 
+           .CreateProperty("Name", typeof(string), new SugarColumn() {Length=200, ColumnDescription = "列备注" })
+           .BuilderType();
+
+            db.CodeFirst.InitTables(type);
         }
         /// <summary>
 
