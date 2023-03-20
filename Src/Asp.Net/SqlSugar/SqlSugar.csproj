@@ -88,6 +88,7 @@
     <Compile Include="Abstract\DeleteProvider\LogicDeleteProvider.cs" />
     <Compile Include="Abstract\DeleteProvider\SplitTableDeleteByObjectProvider.cs" />
     <Compile Include="Abstract\DeleteProvider\SplitTableDeleteProvider.cs" />
+    <Compile Include="Abstract\DynamicBuilder\DynamicProperyBuilder.cs" />
     <Compile Include="Abstract\DynamicBuilder\Helper.cs" />
     <Compile Include="Abstract\DynamicBuilder\EmitTool.cs" />
     <Compile Include="Abstract\DynamicBuilder\Master.cs" />

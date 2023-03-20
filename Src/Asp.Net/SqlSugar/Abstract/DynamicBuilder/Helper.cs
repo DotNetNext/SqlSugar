@@ -10,7 +10,7 @@ namespace SqlSugar
 {
     public partial class DynamicBuilder
     {
-        private CustomAttributeBuilder GetEntity(SugarTable sugarTable)
+        internal CustomAttributeBuilder GetEntity(SugarTable sugarTable)
         {
             Type attributeType = typeof(SugarTable);
             ConstructorInfo attributeCtor = attributeType.GetConstructor(new Type[] { typeof(string) });
@@ -29,7 +29,7 @@ namespace SqlSugar
              });
             return attributeBuilder;
         }
-        private CustomAttributeBuilder GetProperty(SugarColumn sugarTable)
+        internal CustomAttributeBuilder GetProperty(SugarColumn sugarTable)
         {
             Type attributeType = typeof(SugarColumn);
             ConstructorInfo attributeCtor = attributeType.GetConstructor(new Type[] { });
