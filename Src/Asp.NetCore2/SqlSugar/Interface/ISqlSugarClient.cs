@@ -45,6 +45,7 @@ namespace SqlSugar
         #endregion
 
         #region Other methods
+        DynamicBuilder DynamicBuilder();
         void Tracking<T>(T  data) where T : class, new();
         void Tracking<T>(List<T> data) where T : class, new();
         SqlSugarClient CopyNew();

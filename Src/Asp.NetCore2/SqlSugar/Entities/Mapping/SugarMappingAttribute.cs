@@ -8,7 +8,7 @@ namespace SqlSugar
 {
     [AttributeUsage(AttributeTargets.Class, Inherited = true)]
     public class SugarTable : Attribute {
-        private SugarTable() { }
+        public SugarTable() { }
         public string TableName { get; set; }
         public string TableDescription { get; set; }
         public bool IsDisabledDelete { get; set; }

@@ -1624,6 +1624,10 @@ namespace SqlSugar
         #endregion
 
         #region Other
+        public DynamicBuilder DynamicBuilder() 
+        {
+            return new DynamicBuilder(this.Context);
+        }
         public void Tracking<T>(T data) where T : class, new()
         {
             if (data != null)
