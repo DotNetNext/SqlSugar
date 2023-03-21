@@ -46,7 +46,7 @@ namespace SqlSugar
 	                                inner join pg_type on pg_type.oid = pg_attribute.atttypid
 	                                where pg_constraint.contype='p'
                                 ) pkey on pcolumn.table_name = pkey.relname
-                                order by ptables.tablename";
+                                order by table_catalog, table_schema, ordinal_position";
                 return sql;
             }
         }
