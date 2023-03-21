@@ -12,6 +12,7 @@ namespace SqlSugar
 
     public class DynamicProperyBuilder
     {
+        private bool IsCache = false;
         public static DynamicProperyBuilder CopyNew() 
         {
             return new DynamicProperyBuilder();
@@ -26,10 +27,29 @@ namespace SqlSugar
             baseBuilder.propertyAttr.Add(addItem);
             return this;
         }
-
+        public DynamicProperyBuilder WithCache(bool isCache=true)
+        {
+            IsCache = isCache;
+            return this;
+        }
         public Type BuilderType()
         {
-            return DynamicBuilderHelper.CreateDynamicClass(baseBuilder.entityName, baseBuilder.propertyAttr, TypeAttributes.Public, baseBuilder.entityAttr, baseBuilder.baseType, baseBuilder.interfaces);
+            if (IsCache)
+            {
+                var key = baseBuilder.entityName + string.Join("_", baseBuilder.propertyAttr.Select(it => it.Name + it.Type.Name));
+                return  new ReflectionInoCacheService().GetOrCreate(key,() =>
+                {
+                    var result = DynamicBuilderHelper.CreateDynamicClass(baseBuilder.entityName, baseBuilder.propertyAttr, TypeAttributes.Public, baseBuilder.entityAttr, baseBuilder.baseType, baseBuilder.interfaces);
+                    return result;
+                });
+            }
+            else
+            {
+                var result = DynamicBuilderHelper.CreateDynamicClass(baseBuilder.entityName, baseBuilder.propertyAttr, TypeAttributes.Public, baseBuilder.entityAttr, baseBuilder.baseType, baseBuilder.interfaces);
+                return result;
+            }
         }
+
+       
     }
 }
