@@ -38,6 +38,14 @@ namespace OrmTest
 
             var list2 = db.Queryable<UnitaStudentA>()
                 .Includes(x => x.Books).Where(x=>x.Books.Any()).ToList();
+
+            var list3 = db.Queryable<UnitaStudentA>()
+              .IncludesAllFirstLayer().ToList();
+
+            if (list3.First().Books.Count() == 0||list3.First().SchoolA==null) 
+            {
+                throw new Exception("unit error");
+            }
         }
         public class UnitaStudentA
         {
