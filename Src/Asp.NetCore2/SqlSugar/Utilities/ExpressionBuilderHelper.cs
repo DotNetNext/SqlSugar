@@ -75,6 +75,19 @@ namespace SqlSugar
             return Expression.Lambda<Func<T, object>>(Expression.MemberInit(
                 Expression.New(dynamicType.GetConstructor(Type.EmptyTypes)), bindings), sourceItem); 
         }
+        public static Expression CreateExpressionSelectField(Type classType, string propertyName, Type propertyType)
+        {
+            ParameterExpression parameter = Expression.Parameter(classType, "it");
+
+            // 创建属性表达式
+            PropertyInfo propertyInfo = classType.GetProperty(propertyName);
+            MemberExpression property = Expression.Property(parameter, propertyInfo);
+
+            // 创建Lambda表达式
+            Type funcType = typeof(Func<,>).MakeGenericType(classType, propertyType);
+            LambdaExpression lambda = Expression.Lambda(funcType, property, parameter);
+            return lambda;
+        }
     }
     internal static class LinqRuntimeTypeBuilder
     {

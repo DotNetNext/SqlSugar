@@ -14,6 +14,8 @@ namespace SqlSugar
     public partial interface ISugarQueryable<T>
     {
         NavISugarQueryable<T> AsNavQueryable();
+        ISugarQueryable<T> IncludesByExpression<TReturn1>(Expression include1);
+        ISugarQueryable<T> IncludesAllFirstLayer(params string[] ignoreProperyNameList);
         ISugarQueryable<T> Includes<TReturn1>(Expression<Func<T, List<TReturn1>>> include1);
         ISugarQueryable<T> Includes<TReturn1>(Expression<Func<T, TReturn1>> include1);
         ISugarQueryable<T> Includes<TReturn1, TReturn2>(Expression<Func<T, List<TReturn1>>> include1, Expression<Func<TReturn1, List<TReturn2>>> include2);
