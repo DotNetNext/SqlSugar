@@ -609,6 +609,14 @@ namespace SqlSugar
             {
                 return properyTypeName != dataType;
             }
+            else if (this.Context.CurrentConnectionConfig.DbType == DbType.SqlServer && dataType.EqualCase("timestamp") && properyTypeName.EqualCase("varbinary"))
+            {
+                return false;
+            }
+            else if (dataType.EqualCase("numeric") && properyTypeName.EqualCase("decimal")) 
+            {
+                return false;
+            }
             else
             {
                 return properyTypeName.ToLower() != dataType.ToLower();
