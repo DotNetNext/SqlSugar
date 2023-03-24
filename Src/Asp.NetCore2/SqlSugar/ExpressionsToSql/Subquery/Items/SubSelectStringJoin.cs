@@ -53,7 +53,7 @@ namespace SqlSugar
             if (this.Context.JoinIndex == 0)
                 result = SubTools.GetMethodValue(this.Context, exp.Arguments[0], ResolveExpressType.FieldSingle);
             else
-                result = SubTools.GetMethodValue(this.Context, exp.Arguments[0], ResolveExpressType.FieldMultiple);
+                result = SubTools.GetMethodValueSubJoin(this.Context, exp.Arguments[0], ResolveExpressType.FieldMultiple);
 
             SetShortName(exp, result);
 

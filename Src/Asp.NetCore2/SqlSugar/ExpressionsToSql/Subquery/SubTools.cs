@@ -69,5 +69,25 @@ namespace SqlSugar
                 context.Parameters.AddRange(newContext.Parameters);
             return newContext.Result.GetResultString();
         }
+        public static string GetMethodValueSubJoin(ExpressionContext context, Expression item, ResolveExpressType type)
+        {
+            var newContext = context.GetCopyContext();
+            newContext.MappingColumns = context.MappingColumns;
+            newContext.MappingTables = context.MappingTables;
+            newContext.InitMappingInfo = context.InitMappingInfo;
+            newContext.RefreshMapping = context.RefreshMapping;
+            newContext.IgnoreComumnList = context.IgnoreComumnList;
+            newContext.SqlFuncServices = context.SqlFuncServices;
+            if (type == ResolveExpressType.WhereMultiple||type==ResolveExpressType.FieldMultiple) 
+            {
+                newContext.IsSingle = false;
+            }
+            newContext.Resolve(item, type);
+            context.Index = newContext.Index;
+            context.ParameterIndex = newContext.ParameterIndex;
+            if (newContext.Parameters.HasValue())
+                context.Parameters.AddRange(newContext.Parameters);
+            return newContext.Result.GetResultString();
+        }
     }
 }
