@@ -46,6 +46,13 @@ namespace OrmTest
             var getByFuns2 = db.Queryable<Order>().GroupBy(it => it.Name).Select(it => SqlFunc.AggregateDistinctCount(it.Price)).ToList();
             var opp = "";
             db.Queryable<Order>().Where(it => it.Name== opp.Substring(0,it.Name.Length)).ToList();
+            db.Queryable<Order>()
+              .Select(it => new {
+                  yyy = SqlFunc.Subqueryable<Order>().LeftJoin<Order>((x, y) => x.Id == y.Id).GroupBy((x, y) => new {
+                      x.Id,
+                      y.Name
+                  }).Any()
+              }).ToList();
             Console.WriteLine("#### Examples End ####");
         }
 
