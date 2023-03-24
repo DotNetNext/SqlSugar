@@ -51,6 +51,18 @@ namespace SqlSugar
             }
             else 
             {
+                if (type == ResolveExpressType.ArraySingle) 
+                {
+                    type= ResolveExpressType.ArrayMultiple;
+                }
+                else if (type == ResolveExpressType.FieldSingle)
+                {
+                    type = ResolveExpressType.FieldMultiple;
+                }
+                else if (type == ResolveExpressType.WhereSingle)
+                {
+                    type = ResolveExpressType.WhereMultiple;
+                }
                 result = result + SubTools.GetMethodValueSubJoin(this.Context, argExp, type);
             }
             result = result.TrimEnd(',');
