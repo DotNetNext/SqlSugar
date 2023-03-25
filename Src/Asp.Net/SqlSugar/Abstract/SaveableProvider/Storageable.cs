@@ -153,7 +153,7 @@ namespace SqlSugar
             var pkInfos = this.Context.EntityMaintenance.GetEntityInfo<T>().Columns.Where(it => it.IsPrimarykey);
             if (whereExpression==null&&!pkInfos.Any())
             {
-                Check.Exception(true, "Need primary key or WhereColumn");
+                Check.ExceptionEasy(true, "Need primary key or WhereColumn", "使用Storageable实体需要主键或者使用WhereColumn指定条件列");
             }
             if (whereExpression == null && pkInfos.Any())
             {
