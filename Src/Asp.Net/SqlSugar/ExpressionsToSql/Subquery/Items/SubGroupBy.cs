@@ -44,10 +44,31 @@ namespace SqlSugar
             if ((argExp as LambdaExpression).Body is NewExpression) {
                 type = ResolveExpressType.ArraySingle;
             }
-            var result = "GROUP BY " + SubTools.GetMethodValue(this.Context, argExp,type);
+            var result = "GROUP BY ";
+            if (this.Context.JoinIndex == 0)
+            {
+                result = result + SubTools.GetMethodValue(this.Context, argExp, type);
+            }
+            else 
+            {
+                if (type == ResolveExpressType.ArraySingle) 
+                {
+                    type= ResolveExpressType.ArrayMultiple;
+                }
+                else if (type == ResolveExpressType.FieldSingle)
+                {
+                    type = ResolveExpressType.FieldMultiple;
+                }
+                else if (type == ResolveExpressType.WhereSingle)
+                {
+                    type = ResolveExpressType.WhereMultiple;
+                }
+                result = result + SubTools.GetMethodValueSubJoin(this.Context, argExp, type);
+            }
             result = result.TrimEnd(',');
             var selfParameterName = this.Context.GetTranslationColumnName((argExp as LambdaExpression).Parameters.First().Name) + UtilConstants.Dot;
-            result = result.Replace(selfParameterName, SubTools.GetSubReplace(this.Context));
+            if (this.Context.JoinIndex == 0)
+                result = result.Replace(selfParameterName, SubTools.GetSubReplace(this.Context));
             return result;
         }
     }
