@@ -27,6 +27,9 @@ namespace SqlSugar
         IStorageable<T> As(string tableName);
         int ExecuteCommand();
         Task<int> ExecuteCommandAsync();
+        int ExecuteSqlBulkCopy();
+        Task<int> ExecuteSqlBulkCopyAsync();
+        IStorageable<T> DefaultAddElseUpdate();
     }
 
     public class StorageableInfo<T> where T : class, new()

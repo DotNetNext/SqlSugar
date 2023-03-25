@@ -89,6 +89,20 @@ namespace SqlSugar
             return this;
         }
 
+        public IStorageable<T> DefaultAddElseUpdate() 
+        {
+            var column = this.Context.EntityMaintenance.GetEntityInfo<T>().Columns.FirstOrDefault(it=>it.IsPrimarykey);
+            if (column == null) Check.ExceptionEasy("DefaultAddElseUpdate() need primary key", "DefaultAddElseUpdate()这个方法只能用于主键");
+            return this.SplitUpdate(it => 
+            {
+                var itemPkValue = column.PropertyInfo.GetValue(it.Item);
+                var defaultValue =UtilMethods.GetDefaultValue(column.PropertyInfo.PropertyType);
+                var result= itemPkValue != null && itemPkValue.ObjToString() != defaultValue.ObjToString();
+                return result;
+
+             }).SplitInsert(it => true);
+        }
+
         public int ExecuteCommand() 
         {
             var result = 0;
@@ -106,6 +120,16 @@ namespace SqlSugar
             result +=await x.AsInsertable.ExecuteCommandAsync();
             result +=await x.AsUpdateable.ExecuteCommandAsync();
             return result;
+        }
+        public int ExecuteSqlBulkCopy()
+        {
+            var storage = this.ToStorage();
+            return storage.BulkCopy() + storage.BulkUpdate();
+        }
+        public async Task<int> ExecuteSqlBulkCopyAsync()
+        {
+            var storage =await this.ToStorageAsync();
+            return await storage.BulkCopyAsync() + await storage.BulkUpdateAsync();
         }
         public StorageableResult<T> ToStorage()
         {
