@@ -38,7 +38,7 @@ namespace SqlSugar.DbConvert
     {
         public SugarParameter ParameterConverter<T>(object columnValue, int columnIndex)
         {
-            var name = "@MyEnmu" + columnIndex;
+            var name = "@Common" + columnIndex;
             Type undertype = SqlSugar.UtilMethods.GetUnderType(typeof(T));//获取没有nullable的枚举类型
             return new SugarParameter(name, columnValue, undertype);
         }
