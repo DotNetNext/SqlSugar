@@ -89,6 +89,20 @@ namespace SqlSugar
             return this;
         }
 
+        public IStorageable<T> DefaultAddElseUpdate() 
+        {
+            var column = this.Context.EntityMaintenance.GetEntityInfo<T>().Columns.FirstOrDefault(it=>it.IsPrimarykey);
+            if (column == null) Check.ExceptionEasy("DefaultAddElseUpdate() need primary key", "DefaultAddElseUpdate()这个方法只能用于主键");
+            var defaultValue = default(T);
+            return this.SplitUpdate(it => 
+            {
+                var itemPkValue = column.PropertyInfo.GetValue(it.Item);
+                var result= itemPkValue != null && itemPkValue.ObjToString() != defaultValue.ObjToString();
+                return result;
+
+             }).SplitInsert(it => true);
+        }
+
         public int ExecuteCommand() 
         {
             var result = 0;
