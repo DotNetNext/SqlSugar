@@ -139,6 +139,7 @@ namespace SqlSugar
             CheckWhere();
             PreToSql();
             AutoRemoveDataCache();
+            Check.ExceptionEasy(this.UpdateParameterIsNull&&this.UpdateBuilder.DbColumnInfoList.Count() == this.UpdateObjs.Length && this.UpdateObjs.Length==this.UpdateBuilder.DbColumnInfoList.Count(it => it.IsPrimarykey), "The primary key cannot be updated", "主键不能更新，更新主键会对代码逻辑存在未知隐患,如果非要更新：建议你删除在插入或者新建一个没主键的类。");
             Check.Exception(UpdateBuilder.WhereValues.IsNullOrEmpty() && GetPrimaryKeys().IsNullOrEmpty(), "You cannot have no primary key and no conditions");
             string sql = UpdateBuilder.ToSqlString();
             ValidateVersion();
