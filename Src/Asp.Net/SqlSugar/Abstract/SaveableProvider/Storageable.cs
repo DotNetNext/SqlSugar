@@ -107,6 +107,16 @@ namespace SqlSugar
             result +=await x.AsUpdateable.ExecuteCommandAsync();
             return result;
         }
+        public int ExecuteSqlBulkCopy()
+        {
+            var storage = this.ToStorage();
+            return storage.BulkCopy() + storage.BulkUpdate();
+        }
+        public async Task<int> ExecuteSqlBulkCopyAsync()
+        {
+            var storage =await this.ToStorageAsync();
+            return await storage.BulkCopyAsync() + await storage.BulkUpdateAsync();
+        }
         public StorageableResult<T> ToStorage()
         {
             if (whereFuncs == null || whereFuncs.Count == 0)
