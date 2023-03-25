@@ -203,6 +203,7 @@ namespace SqlSugar
             { typeof(bool[]),NpgsqlDbType.Boolean},
             {typeof(DateTime[]),NpgsqlDbType.Date},
             {typeof(float[]),NpgsqlDbType.Real},
+            {typeof(Guid[]),NpgsqlDbType.Uuid},
 
 
             { typeof(int?[]),NpgsqlDbType.Integer},
@@ -213,6 +214,7 @@ namespace SqlSugar
             { typeof(byte?[]),NpgsqlDbType.Bytea},
             { typeof(bool?[]),NpgsqlDbType.Boolean},
             {typeof(DateTime?[]),NpgsqlDbType.Date},
+            {typeof(Guid?[]),NpgsqlDbType.Uuid},
 
 
              { typeof(string[]), NpgsqlDbType.Text},
