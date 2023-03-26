@@ -81,6 +81,8 @@ namespace OrmTest
             var res1 = Db.Updateable(list).WhereColumns(it => it.pk).ExecuteCommand();
 
             Db.CodeFirst.InitTables<UnitUUIDARRAY>();
+            Db.DbMaintenance.TruncateTable<UnitUUIDARRAY>();
+            Db.Insertable(new UnitUUIDARRAY()).ExecuteCommand();
             var pars = Db.Updateable(new UnitUUIDARRAY() { id = 0 }).ExecuteCommand();
         }
     }
@@ -88,7 +90,7 @@ namespace OrmTest
     [SugarTable("UnitUUIDARRAY1")]
     public class UnitUUIDARRAY
     {
-        [SugarColumn(ColumnDataType = "uuid []",IsArray =true)]
+        [SugarColumn(ColumnDataType = "uuid []",IsArray =true,IsNullable =true)]
         public Guid[] ids { get; set; }
         [SugarColumn(IsPrimaryKey = true)]
         public int id { get; set; }
