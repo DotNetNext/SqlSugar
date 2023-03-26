@@ -122,22 +122,7 @@ namespace SqlSugar
                     }
                     else if (type == DBNull.Value.GetType())
                     {
-                        if (parameter.DbType.IsIn(System.Data.DbType.Int32))
-                        {
-                            sqlParameter.NpgsqlDbType = NpgsqlDbType.Integer | NpgsqlDbType.Array;
-                        }
-                        else if (parameter.DbType.IsIn(System.Data.DbType.Int16))
-                        {
-                            sqlParameter.NpgsqlDbType = NpgsqlDbType.Smallint | NpgsqlDbType.Array;
-                        }
-                        else if (parameter.DbType.IsIn(System.Data.DbType.Int64))
-                        {
-                            sqlParameter.NpgsqlDbType = NpgsqlDbType.Bigint | NpgsqlDbType.Array;
-                        }
-                        else
-                        {
-                            sqlParameter.NpgsqlDbType = NpgsqlDbType.Text | NpgsqlDbType.Array;
-                        }
+                        DbNullParametrerArray(parameter, sqlParameter);
 
                     }
                     else
@@ -171,6 +156,26 @@ namespace SqlSugar
                 }
             }
             return result;
+        }
+
+        private static void DbNullParametrerArray(SugarParameter parameter, NpgsqlParameter sqlParameter)
+        {
+            if (parameter.DbType.IsIn(System.Data.DbType.Int32))
+            {
+                sqlParameter.NpgsqlDbType = NpgsqlDbType.Integer | NpgsqlDbType.Array;
+            }
+            else if (parameter.DbType.IsIn(System.Data.DbType.Int16))
+            {
+                sqlParameter.NpgsqlDbType = NpgsqlDbType.Smallint | NpgsqlDbType.Array;
+            }
+            else if (parameter.DbType.IsIn(System.Data.DbType.Int64))
+            {
+                sqlParameter.NpgsqlDbType = NpgsqlDbType.Bigint | NpgsqlDbType.Array;
+            }
+            else
+            {
+                sqlParameter.NpgsqlDbType = NpgsqlDbType.Text | NpgsqlDbType.Array;
+            }
         }
 
         private static void UNumber(SugarParameter parameter)
