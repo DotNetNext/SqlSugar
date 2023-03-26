@@ -80,7 +80,18 @@ namespace OrmTest
             var list = new List<UnitDSsdfa>() { new UnitDSsdfa() { pk = Convert.ToDateTime("2022-1-1"), value = 2 }, new UnitDSsdfa() { pk = dt, value = 2 } };
             var res1 = Db.Updateable(list).WhereColumns(it => it.pk).ExecuteCommand();
 
+            Db.CodeFirst.InitTables<UnitUUIDARRAY>();
+            var pars = Db.Updateable(new UnitUUIDARRAY() { id = 0 }).ExecuteCommand();
         }
+    }
+
+    [SugarTable("UnitUUIDARRAY1")]
+    public class UnitUUIDARRAY
+    {
+        [SugarColumn(ColumnDataType = "uuid []",IsArray =true)]
+        public Guid[] ids { get; set; }
+        [SugarColumn(IsPrimaryKey = true)]
+        public int id { get; set; }
     }
     public class UnitDSsdfa
     {
