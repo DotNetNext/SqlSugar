@@ -402,21 +402,9 @@ namespace SqlSugar
                     if (item.IsArray)
                     {
                         parameter.IsArray = true;
-                        if (item.PropertyType.IsIn(typeof(Guid[]), typeof(Guid?[]))) 
+                        if (parameter.Value == null || parameter.Value == DBNull.Value)
                         {
-                            parameter.DbType = System.Data.DbType.Guid;
-                        }
-                        else if (item.PropertyType.IsIn(typeof(int[]), typeof(int?[])))
-                        {
-                            parameter.DbType = System.Data.DbType.Int32;
-                        }
-                        else if (item.PropertyType.IsIn(typeof(long[]), typeof(long?[])))
-                        {
-                            parameter.DbType = System.Data.DbType.Int64;
-                        }
-                        else if (item.PropertyType.IsIn(typeof(short[]), typeof(short?[])))
-                        {
-                            parameter.DbType = System.Data.DbType.Int16;
+                            ArrayNull(item, parameter);
                         }
                     }
                     if (item.Value == null && isDic)
@@ -462,6 +450,27 @@ namespace SqlSugar
                 this.UpdateBuilder.Parameters.RemoveAll(it => this.UpdateBuilder.SetValues.Any(v => (SqlBuilder.SqlParameterKeyWord + SqlBuilder.GetNoTranslationColumnName(v.Key)) == it.ParameterName));
             }
         }
+
+        private static void ArrayNull(DbColumnInfo item, SugarParameter parameter)
+        {
+            if (item.PropertyType.IsIn(typeof(Guid[]), typeof(Guid?[])))
+            {
+                parameter.DbType = System.Data.DbType.Guid;
+            }
+            else if (item.PropertyType.IsIn(typeof(int[]), typeof(int?[])))
+            {
+                parameter.DbType = System.Data.DbType.Int32;
+            }
+            else if (item.PropertyType.IsIn(typeof(long[]), typeof(long?[])))
+            {
+                parameter.DbType = System.Data.DbType.Int64;
+            }
+            else if (item.PropertyType.IsIn(typeof(short[]), typeof(short?[])))
+            {
+                parameter.DbType = System.Data.DbType.Int16;
+            }
+        }
+
         private string GetDbColumnName(string propertyName)
         {
             if (!IsMappingColumns)
