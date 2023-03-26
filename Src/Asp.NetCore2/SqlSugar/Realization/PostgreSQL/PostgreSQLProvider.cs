@@ -114,36 +114,7 @@ namespace SqlSugar
                 }
                 if (parameter.IsArray)
                 {
-                    //    sqlParameter.Value = this.Context.Utilities.SerializeObject(sqlParameter.Value);
-                    var type = sqlParameter.Value.GetType();
-                    if (ArrayMapping.ContainsKey(type))
-                    {
-                        sqlParameter.NpgsqlDbType = ArrayMapping[type] | NpgsqlDbType.Array;
-                    }
-                    else if (type == DBNull.Value.GetType())
-                    {
-                        if (parameter.DbType.IsIn(System.Data.DbType.Int32))
-                        {
-                            sqlParameter.NpgsqlDbType = NpgsqlDbType.Integer | NpgsqlDbType.Array;
-                        }
-                        else if (parameter.DbType.IsIn(System.Data.DbType.Int16))
-                        {
-                            sqlParameter.NpgsqlDbType = NpgsqlDbType.Smallint | NpgsqlDbType.Array;
-                        }
-                        else if (parameter.DbType.IsIn(System.Data.DbType.Int64))
-                        {
-                            sqlParameter.NpgsqlDbType = NpgsqlDbType.Bigint | NpgsqlDbType.Array;
-                        }
-                        else
-                        {
-                            sqlParameter.NpgsqlDbType = NpgsqlDbType.Text | NpgsqlDbType.Array;
-                        }
-
-                    }
-                    else
-                    {
-                        Check.Exception(true, sqlParameter.Value.GetType().Name + " No Support");
-                    }
+                    Array(parameter, sqlParameter);
                 }
                 if (sqlParameter.Direction == 0)
                 {
@@ -171,6 +142,49 @@ namespace SqlSugar
                 }
             }
             return result;
+        }
+
+        private static void Array(SugarParameter parameter, NpgsqlParameter sqlParameter)
+        {
+            //    sqlParameter.Value = this.Context.Utilities.SerializeObject(sqlParameter.Value);
+            var type = sqlParameter.Value.GetType();
+            if (ArrayMapping.ContainsKey(type))
+            {
+                sqlParameter.NpgsqlDbType = ArrayMapping[type] | NpgsqlDbType.Array;
+            }
+            else if (type == DBNull.Value.GetType())
+            {
+                DbNullParametrerArray(parameter, sqlParameter);
+
+            }
+            else
+            {
+                Check.Exception(true, sqlParameter.Value.GetType().Name + " No Support");
+            }
+        }
+
+        private static void DbNullParametrerArray(SugarParameter parameter, NpgsqlParameter sqlParameter)
+        {
+            if (parameter.DbType.IsIn(System.Data.DbType.Int32))
+            {
+                sqlParameter.NpgsqlDbType = NpgsqlDbType.Integer | NpgsqlDbType.Array;
+            }
+            else if (parameter.DbType.IsIn(System.Data.DbType.Int16))
+            {
+                sqlParameter.NpgsqlDbType = NpgsqlDbType.Smallint | NpgsqlDbType.Array;
+            }
+            else if (parameter.DbType.IsIn(System.Data.DbType.Int64))
+            {
+                sqlParameter.NpgsqlDbType = NpgsqlDbType.Bigint | NpgsqlDbType.Array;
+            }
+            else if (parameter.DbType.IsIn(System.Data.DbType.Guid))
+            {
+                sqlParameter.NpgsqlDbType = NpgsqlDbType.Uuid | NpgsqlDbType.Array;
+            }
+            else
+            {
+                sqlParameter.NpgsqlDbType = NpgsqlDbType.Text | NpgsqlDbType.Array;
+            }
         }
 
         private static void UNumber(SugarParameter parameter)

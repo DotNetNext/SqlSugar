@@ -402,6 +402,22 @@ namespace SqlSugar
                     if (item.IsArray)
                     {
                         parameter.IsArray = true;
+                        if (item.PropertyType.IsIn(typeof(Guid[]), typeof(Guid?[]))) 
+                        {
+                            parameter.DbType = System.Data.DbType.Guid;
+                        }
+                        else if (item.PropertyType.IsIn(typeof(int[]), typeof(int?[])))
+                        {
+                            parameter.DbType = System.Data.DbType.Int32;
+                        }
+                        else if (item.PropertyType.IsIn(typeof(long[]), typeof(long?[])))
+                        {
+                            parameter.DbType = System.Data.DbType.Int64;
+                        }
+                        else if (item.PropertyType.IsIn(typeof(short[]), typeof(short?[])))
+                        {
+                            parameter.DbType = System.Data.DbType.Int16;
+                        }
                     }
                     if (item.Value == null && isDic)
                     {
