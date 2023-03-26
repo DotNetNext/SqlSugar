@@ -114,21 +114,7 @@ namespace SqlSugar
                 }
                 if (parameter.IsArray)
                 {
-                    //    sqlParameter.Value = this.Context.Utilities.SerializeObject(sqlParameter.Value);
-                    var type = sqlParameter.Value.GetType();
-                    if (ArrayMapping.ContainsKey(type))
-                    {
-                        sqlParameter.NpgsqlDbType = ArrayMapping[type] | NpgsqlDbType.Array;
-                    }
-                    else if (type == DBNull.Value.GetType())
-                    {
-                        DbNullParametrerArray(parameter, sqlParameter);
-
-                    }
-                    else
-                    {
-                        Check.Exception(true, sqlParameter.Value.GetType().Name + " No Support");
-                    }
+                    Array(parameter, sqlParameter);
                 }
                 if (sqlParameter.Direction == 0)
                 {
@@ -156,6 +142,25 @@ namespace SqlSugar
                 }
             }
             return result;
+        }
+
+        private static void Array(SugarParameter parameter, NpgsqlParameter sqlParameter)
+        {
+            //    sqlParameter.Value = this.Context.Utilities.SerializeObject(sqlParameter.Value);
+            var type = sqlParameter.Value.GetType();
+            if (ArrayMapping.ContainsKey(type))
+            {
+                sqlParameter.NpgsqlDbType = ArrayMapping[type] | NpgsqlDbType.Array;
+            }
+            else if (type == DBNull.Value.GetType())
+            {
+                DbNullParametrerArray(parameter, sqlParameter);
+
+            }
+            else
+            {
+                Check.Exception(true, sqlParameter.Value.GetType().Name + " No Support");
+            }
         }
 
         private static void DbNullParametrerArray(SugarParameter parameter, NpgsqlParameter sqlParameter)
