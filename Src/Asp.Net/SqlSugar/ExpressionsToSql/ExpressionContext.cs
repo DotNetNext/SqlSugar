@@ -246,6 +246,12 @@ namespace SqlSugar
             return string.Format(" {0} {1} {2} ", GetTranslationColumnName(fieldValue), "AS", GetTranslationColumnName(asName));
         }
 
+        public virtual string GetAsString2(string asName, string fieldValue)
+        {
+            if (fieldValue.Contains(".*") || fieldValue == "*") return fieldValue;
+            return string.Format(" {0} {1} {2} ",fieldValue, "AS", GetTranslationColumnName(asName));
+        }
+
         public virtual string GetEqString(string eqName, string fieldValue)
         {
             return string.Format(" {0} {1} {2} ", GetTranslationColumnName(eqName), "=", GetTranslationColumnName(fieldValue));
