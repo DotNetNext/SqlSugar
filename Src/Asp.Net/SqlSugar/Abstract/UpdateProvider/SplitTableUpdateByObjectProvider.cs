@@ -25,6 +25,7 @@ namespace SqlSugar
             {
                 var addList = item.Select(it => it.Item).ToList();
                 result += this.Context.Updateable(addList)
+                    .UpdateColumns(updateobj.UpdateBuilder.UpdateColumns?.ToArray())
                     .IgnoreColumns(this.updateobj.UpdateBuilder.IsNoUpdateNull, this.updateobj.UpdateBuilder.IsOffIdentity,this.updateobj.UpdateBuilder.IsNoUpdateDefaultValue)
                     .IgnoreColumns(GetIgnoreColumns()).AS(item.Key).ExecuteCommand();
             }
