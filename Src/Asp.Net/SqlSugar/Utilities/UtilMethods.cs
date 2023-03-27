@@ -199,8 +199,8 @@ namespace SqlSugar
                     IsNoReadXmlDescription=it.MoreSettings.IsNoReadXmlDescription,
                     SqlServerCodeFirstNvarchar=it.MoreSettings.SqlServerCodeFirstNvarchar,
                     IsAutoToUpper=it.MoreSettings.IsAutoToUpper,
-                    IsAutoDeleteDataFilter=it.MoreSettings.IsAutoDeleteDataFilter,
-                    IsAutoUpdateDataFilter = it.MoreSettings.IsAutoUpdateDataFilter,
+                    IsAutoDeleteQueryFilter=it.MoreSettings.IsAutoDeleteQueryFilter,
+                    IsAutoUpdateQueryFilter = it.MoreSettings.IsAutoUpdateQueryFilter,
 
                 },
                 SqlMiddle = it.SqlMiddle == null ? null : new SqlMiddle
