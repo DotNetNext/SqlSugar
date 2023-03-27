@@ -10,6 +10,11 @@ namespace SqlSugar
 {
     public partial class QueryableProvider<T> : QueryableAccessory, ISugarQueryable<T>
     {
+        public ISugarQueryable<T> IncludesByExpression2<TReturn1, TReturn2>(Expression include1, Expression include2) 
+        {
+            _Includes<T, TReturn1,TReturn2>(this.Context, include1,include2);
+            return this;
+        }
         public ISugarQueryable<T> IncludesByExpression<TReturn1>(Expression include1)
         {
             _Includes<T, TReturn1>(this.Context, include1);
@@ -37,6 +42,38 @@ namespace SqlSugar
                         .First()
                         .MakeGenericMethod(properyItemType);
                     method.Invoke(this, new object[] { exp });
+                }
+            }
+            return this;
+        }
+        public ISugarQueryable<T> IncludesAllSecondLayer<TReturn1>(Expression<Func<T, TReturn1>> expression, params string[] ignoreProperyNameList) 
+        {
+            this.Includes(expression);
+            var type = typeof(TReturn1);
+            if (type.FullName.IsCollectionsList()) 
+            {
+                type = type.GetGenericArguments()[0];
+            }
+            var navs = this.Context.EntityMaintenance.GetEntityInfo(type).Columns.Where(it => it.Navigat != null).ToList();
+            foreach (var item in navs)
+            {
+                if (ignoreProperyNameList != null && ignoreProperyNameList.Any(z => z.EqualCase(item.PropertyName)))
+                {
+                    //future
+                }
+                else
+                {
+                    var properyType = item.PropertyInfo.PropertyType;
+                    var properyItemType = properyType;
+                    if (properyType.FullName.IsCollectionsList())
+                    {
+                        properyItemType = properyType.GetGenericArguments()[0];
+                    }
+                    var exp = ExpressionBuilderHelper.CreateExpressionSelectField(type, item.PropertyName, properyType);
+                    var method = this.GetType().GetMethods().Where(it => it.Name == "IncludesByExpression2")
+                        .First()
+                        .MakeGenericMethod(type, properyItemType);
+                    method.Invoke(this, new object[] { expression, exp });
                 }
             }
             return this;

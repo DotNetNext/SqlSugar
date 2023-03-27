@@ -15,7 +15,14 @@ namespace SqlSugar
         {
             this.Expression = item;
             this.Start();
-            parameter.Context.Result.Append(this.Context.GetAsString(asName, parameter.CommonTempData.ObjToString()));
+            if (ExpressionTool.GetMethodName(item) == "MappingColumn")
+            {
+                parameter.Context.Result.Append(this.Context.GetAsString2(asName, parameter.CommonTempData.ObjToString()));
+            }
+            else
+            {
+                parameter.Context.Result.Append(this.Context.GetAsString(asName, parameter.CommonTempData.ObjToString()));
+            }
         }
 
         private void ResloveCountAny(ExpressionParameter parameter, Expression item, string asName)

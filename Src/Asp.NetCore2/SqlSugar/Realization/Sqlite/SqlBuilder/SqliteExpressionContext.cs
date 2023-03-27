@@ -16,7 +16,7 @@ namespace SqlSugar
     {
         public override string GetStringJoinSelector(string result, string separator)
         {
-            return $"group_concat({result},'{separator},') ";
+            return $"group_concat({result},'{separator}') ";
         }
         public override string DateDiff(MethodCallExpressionModel model)
         {

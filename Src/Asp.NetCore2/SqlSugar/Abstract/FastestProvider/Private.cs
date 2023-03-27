@@ -82,7 +82,7 @@ namespace SqlSugar
                 var dr = dt.NewRow();
                 foreach (var column in columns)
                 {
-                    if (column.IsIgnore || column.IsOnlyIgnoreInsert)
+                    if (column.IsIgnore)
                     {
                         continue;
                     }
