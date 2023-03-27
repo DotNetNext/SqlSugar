@@ -20,5 +20,7 @@ namespace SqlSugar
         public DateTime? DbMinDate { get; set; } = Convert.ToDateTime("1900-01-01");
         public bool IsNoReadXmlDescription { get;  set; }
         public bool SqlServerCodeFirstNvarchar { get;  set; }
+        public bool IsAutoUpdateDataFilter { get; set; }
+        public bool IsAutoDeleteDataFilter { get; set; }
     }
 }

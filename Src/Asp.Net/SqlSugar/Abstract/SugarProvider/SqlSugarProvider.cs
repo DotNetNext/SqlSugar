@@ -821,6 +821,10 @@ namespace SqlSugar
         {
             InitMappingInfo<T>();
             DeleteableProvider<T> result = this.CreateDeleteable<T>();
+            if (this.Context.CurrentConnectionConfig?.MoreSettings?.IsAutoDeleteDataFilter == true)
+            {
+                return result.EnableQueryFilter();
+            }
             return result;
         }
         public virtual IDeleteable<T> Deleteable<T>(Expression<Func<T, bool>> expression) where T : class, new()
@@ -929,6 +933,10 @@ namespace SqlSugar
         {
             var result = this.Context.Updateable(new T[] { new T() });
             result.UpdateParameterIsNull = true;
+            if (this.Context.CurrentConnectionConfig?.MoreSettings?.IsAutoUpdateDataFilter == true)
+            {
+                return result.EnableQueryFilter();
+            }
             return result;
         }
         public virtual IUpdateable<T> Updateable<T>(Expression<Func<T, T>> columns) where T : class, new()
