@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -314,6 +315,12 @@ namespace SqlSugar
         {
             var name = model.Args[0].MemberName;
             return $"  NLSSORT({0}, 'NLS_SORT = Latin_CI')   ";
+        }
+
+        public override string JsonField(MethodCallExpressionModel model)
+        {
+            return $"JSON_VALUE({model.Args[0].MemberName}, '$.{model.Args[1].MemberValue.ToString().ToSqlFilter()}')";
+            //"JSON_VALUE(j.kingorder, '$.Id') = '1'";
         }
 
         public override string CharIndex(MethodCallExpressionModel model)
