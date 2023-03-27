@@ -80,6 +80,11 @@ namespace SqlSugar
 
         public virtual int ExecuteCommand()
         {
+            if (this.UpdateBuilder.UpdateColumns.HasValue())
+            {
+                var columns = this.UpdateBuilder.UpdateColumns;
+                this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => GetPrimaryKeys().Select(iit => iit.ToLower()).Contains(it.DbColumnName.ToLower()) || columns.Contains(it.PropertyName, StringComparer.OrdinalIgnoreCase)).ToList();
+            }
             if (this.IsTrakingDatas() || IsUpdateNullByList())
             {
                 int trakRows = DatasTrackingExecommand();
@@ -117,6 +122,11 @@ namespace SqlSugar
        
         public virtual async Task<int> ExecuteCommandAsync()
         {
+            if (this.UpdateBuilder.UpdateColumns.HasValue())
+            {
+                var columns = this.UpdateBuilder.UpdateColumns;
+                this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => GetPrimaryKeys().Select(iit => iit.ToLower()).Contains(it.DbColumnName.ToLower()) || columns.Contains(it.PropertyName, StringComparer.OrdinalIgnoreCase)).ToList();
+            }
             if (this.IsTrakingDatas()||IsUpdateNullByList())
             {
                 int trakRows =await DatasTrackingExecommandAsync();
@@ -176,6 +186,7 @@ namespace SqlSugar
             result.UpdateBuilder.IsNoUpdateDefaultValue = this.UpdateBuilder.IsNoUpdateDefaultValue;
             result.UpdateBuilder.IsNoUpdateNull= this.UpdateBuilder.IsNoUpdateNull;
             result.UpdateBuilder.SetValues= this.UpdateBuilder.SetValues.ToList();
+            result.UpdateBuilder.UpdateColumns = this.UpdateBuilder.UpdateColumns.ToList();
             result.UpdateBuilder.Context = this.Context;
             return result;
         }
@@ -395,24 +406,34 @@ namespace SqlSugar
         {
             ThrowUpdateByExpression();
             var updateColumns = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.ArraySingle).GetResultArray().Select(it => this.SqlBuilder.GetNoTranslationColumnName(it)).ToList();
-            List<string> primaryKeys = GetPrimaryKeys();
-            foreach (var item in this.UpdateBuilder.DbColumnInfoList)
+            if (this.UpdateBuilder.UpdateColumns == null)
             {
-                var mappingInfo = primaryKeys.SingleOrDefault(i => item.DbColumnName.Equals(i, StringComparison.CurrentCultureIgnoreCase));
-                if (mappingInfo != null && mappingInfo.Any())
-                {
-                    item.IsPrimarykey = true;
-                }
+                this.UpdateBuilder.UpdateColumns = new List<string>();
             }
-            this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => updateColumns.Any(uc => uc.Equals(it.PropertyName, StringComparison.CurrentCultureIgnoreCase) || uc.Equals(it.DbColumnName, StringComparison.CurrentCultureIgnoreCase)) || it.IsPrimarykey || it.IsIdentity).ToList();
+            this.UpdateBuilder.UpdateColumns.AddRange(updateColumns);
+            //List<string> primaryKeys = GetPrimaryKeys();
+            //foreach (var item in this.UpdateBuilder.DbColumnInfoList)
+            //{
+            //    var mappingInfo = primaryKeys.SingleOrDefault(i => item.DbColumnName.Equals(i, StringComparison.CurrentCultureIgnoreCase));
+            //    if (mappingInfo != null && mappingInfo.Any())
+            //    {
+            //        item.IsPrimarykey = true;
+            //    }
+            //}
+            //this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => updateColumns.Any(uc => uc.Equals(it.PropertyName, StringComparison.CurrentCultureIgnoreCase) || uc.Equals(it.DbColumnName, StringComparison.CurrentCultureIgnoreCase)) || it.IsPrimarykey || it.IsIdentity).ToList();
             return this;
         }
         public IUpdateable<T> UpdateColumns(string[] columns)
         {
+            if (this.UpdateBuilder.UpdateColumns == null) 
+            {
+                this.UpdateBuilder.UpdateColumns = new List<string>();
+            }
+            this.UpdateBuilder.UpdateColumns.AddRange(columns);
             if (columns.HasValue())
             {
                 ThrowUpdateByExpression();
-                this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => GetPrimaryKeys().Select(iit => iit.ToLower()).Contains(it.DbColumnName.ToLower()) || columns.Contains(it.PropertyName, StringComparer.OrdinalIgnoreCase)).ToList();
+                //this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => GetPrimaryKeys().Select(iit => iit.ToLower()).Contains(it.DbColumnName.ToLower()) || columns.Contains(it.PropertyName, StringComparer.OrdinalIgnoreCase)).ToList();
             }
             return this;
         }

@@ -33,6 +33,7 @@ namespace SqlSugar
         public bool IsOffIdentity { get; set; }
         public bool IsWhereColumns { get; set; }
         public  bool? IsListUpdate { get; set; }
+        public List<string> UpdateColumns { get; set; }
 
         public virtual string SqlTemplate
         {
