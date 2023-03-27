@@ -425,16 +425,18 @@ namespace SqlSugar
         }
         public IUpdateable<T> UpdateColumns(string[] columns)
         {
+            if (columns == null||columns.Length==0) return this;
+            ThrowUpdateByExpression();
             if (this.UpdateBuilder.UpdateColumns == null) 
             {
                 this.UpdateBuilder.UpdateColumns = new List<string>();
             }
             this.UpdateBuilder.UpdateColumns.AddRange(columns);
-            if (columns.HasValue())
-            {
-                ThrowUpdateByExpression();
-                //this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => GetPrimaryKeys().Select(iit => iit.ToLower()).Contains(it.DbColumnName.ToLower()) || columns.Contains(it.PropertyName, StringComparer.OrdinalIgnoreCase)).ToList();
-            }
+            //if (columns.HasValue())
+            //{
+              
+            //    //this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => GetPrimaryKeys().Select(iit => iit.ToLower()).Contains(it.DbColumnName.ToLower()) || columns.Contains(it.PropertyName, StringComparer.OrdinalIgnoreCase)).ToList();
+            //}
             return this;
         }
         public IUpdateable<T> UpdateColumnsIF(bool isUpdateColumns, Expression<Func<T, object>> columns)
