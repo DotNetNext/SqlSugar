@@ -409,6 +409,7 @@ namespace SqlSugar
         }
         public override bool AddRemark(EntityInfo entity)
         {
+            var oldColumns = this.Context.DbMaintenance.GetColumnInfosByTableName(entity.DbTableName,false);
             var db = this.Context;
             db.DbMaintenance.AddTableRemark(entity.DbTableName, entity.TableDescription);
             List<EntityColumnInfo> columns = entity.Columns.Where(it => it.IsIgnore == false).ToList();
@@ -421,8 +422,12 @@ namespace SqlSugar
                     {
                         item.Length = 36;
                     }
-                    string sql = GetUpdateColumnSql(entity.DbTableName, mySqlCodeFirst.GetEntityColumnToDbColumn(entity, entity.DbTableName, item))+" "+(item.IsIdentity? "AUTO_INCREMENT" : "")+" " + " COMMENT '" + item.ColumnDescription + "'";
-                    db.Ado.ExecuteCommand(sql);
+                    var columnInfo = oldColumns.FirstOrDefault(it => it.DbColumnName.EqualCase(item.DbColumnName));
+                    if (columnInfo.ColumnDescription.ObjToString() != item.ColumnDescription.ObjToString())
+                    {
+                        string sql = GetUpdateColumnSql(entity.DbTableName, mySqlCodeFirst.GetEntityColumnToDbColumn(entity, entity.DbTableName, item)) + " " + (item.IsIdentity ? "AUTO_INCREMENT" : "") + " " + " COMMENT '" + item.ColumnDescription + "'";
+                        db.Ado.ExecuteCommand(sql);
+                    }
                 }
             }
             return true;
