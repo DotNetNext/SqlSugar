@@ -211,7 +211,7 @@ namespace SqlSugar
             var date = dr.GetValue(i);
             if (date is DateTime)
             {
-               return UtilMethods.GetDateTimeOffsetByDateTime((DateTime)(date));
+               return new DateTimeOffset((DateTime)(date));
             }
             else
             {
@@ -229,7 +229,7 @@ namespace SqlSugar
             var date = dr.GetValue(i);
             if (date is DateTime)
             {
-                return UtilMethods.GetDateTimeOffsetByDateTime((DateTime)(date));
+                return new DateTimeOffset((DateTime)(date));
             }
             else
             {
