@@ -424,7 +424,7 @@ namespace SqlSugar
                         item.Length = 36;
                     }
                     var columnInfo = oldColumns.FirstOrDefault(it => it.DbColumnName.EqualCase(item.DbColumnName));
-                    if (columnInfo.ColumnDescription.ObjToString() != item.ColumnDescription.ObjToString())
+                    if (columnInfo?.ColumnDescription.ObjToString() != item.ColumnDescription.ObjToString())
                     {
                         string sql = GetUpdateColumnSql(entity.DbTableName, mySqlCodeFirst.GetEntityColumnToDbColumn(entity, entity.DbTableName, item)) + " " + (item.IsIdentity ? "AUTO_INCREMENT" : "") + " " + " COMMENT '" + item.ColumnDescription + "'";
                         db.Ado.ExecuteCommand(sql);
