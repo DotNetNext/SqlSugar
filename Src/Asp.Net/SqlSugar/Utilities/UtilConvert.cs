@@ -141,6 +141,10 @@ namespace SqlSugar
 
         public static DateTime ObjToDate(this object thisValue)
         {
+            if (thisValue is DateTime)
+            {
+                return (DateTime)thisValue;
+            }
             DateTime reval = DateTime.MinValue;
             if (thisValue != null && thisValue != DBNull.Value && DateTime.TryParse(thisValue.ToString(), out reval))
             {
@@ -151,6 +155,10 @@ namespace SqlSugar
 
         public static DateTime ObjToDate(this object thisValue, DateTime errorValue)
         {
+            if (thisValue is DateTime)
+            {
+                return (DateTime)thisValue;
+            }
             DateTime reval = DateTime.MinValue;
             if (thisValue != null && thisValue != DBNull.Value && DateTime.TryParse(thisValue.ToString(), out reval))
             {
