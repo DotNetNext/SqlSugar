@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UnitDateTimeOffset.Init();
             UinitCustomConvert.Init();
             Unitadsfasf1.Init();
             UnitSubToList001.Init();
