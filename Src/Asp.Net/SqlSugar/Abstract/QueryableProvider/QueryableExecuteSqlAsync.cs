@@ -260,6 +260,16 @@ namespace SqlSugar
             return _ToListAsync<T>();
         }
 
+        public Task<List<T>> ToListAsync(CancellationToken token) 
+        {
+            this.Context.Ado.CancellationToken = token;
+            return ToListAsync();
+        }
+        public Task<List<T>> ToPageListAsync(int pageNumber, int pageSize, CancellationToken token) 
+        {
+            this.Context.Ado.CancellationToken = token;
+            return ToPageListAsync(pageNumber, pageSize);
+        }
         public Task<List<T>> ToPageListAsync(int pageIndex, int pageSize)
         {
             pageIndex = _PageList(pageIndex, pageSize);
@@ -283,6 +293,11 @@ namespace SqlSugar
                 return list;
             }
         }
+        public Task<List<T>> ToPageListAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber, CancellationToken token) 
+        {
+            this.Context.Ado.CancellationToken= token;
+            return ToPageListAsync(pageNumber, pageSize, totalNumber);
+        }
         public async Task<List<T>> ToPageListAsync(int pageIndex, int pageSize, RefAsync<int> totalNumber)
         {
             var oldMapping = this.Context.MappingTables;
@@ -301,7 +316,13 @@ namespace SqlSugar
             totalPage.Value = (totalNumber.Value + pageSize - 1) / pageSize;
             return result;
         }
-        
+
+        public Task<List<T>> ToPageListAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber, RefAsync<int> totalPage, CancellationToken token) 
+        {
+            this.Context.Ado.CancellationToken = token;
+            return ToPageListAsync(pageNumber,pageSize,totalNumber,totalPage);
+        }
+
         public async Task<string> ToJsonAsync()
         {
             if (IsCache)
