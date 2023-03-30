@@ -356,6 +356,14 @@ namespace SqlSugar
 
         private void PreToSql()
         {
+            if (this.UpdateBuilder.UpdateColumns.HasValue())
+            {
+                var columns = this.UpdateBuilder.UpdateColumns;
+                this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => GetPrimaryKeys().Select(
+                iit => iit.ToLower()).Contains(it.DbColumnName.ToLower()) 
+                || columns.Contains(it.PropertyName, StringComparer.OrdinalIgnoreCase)
+                || columns.Contains(it.DbColumnName, StringComparer.OrdinalIgnoreCase)).ToList();
+            }
 
             UpdateBuilder.PrimaryKeys = GetPrimaryKeys();
             if (this.IsWhereColumns)

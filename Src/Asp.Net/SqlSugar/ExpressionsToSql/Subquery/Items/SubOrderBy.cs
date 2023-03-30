@@ -55,7 +55,10 @@ namespace SqlSugar
                 result = (OrderIndex == 0 ? "ORDER BY " : ",") + SubTools.GetMethodValueSubJoin(this.Context, argExp, ResolveExpressType.FieldMultiple);
             }
             var selfParameterName = this.Context.GetTranslationColumnName((argExp as LambdaExpression).Parameters.First().Name) + UtilConstants.Dot;
-            result = result.Replace(selfParameterName, SubTools.GetSubReplace(this.Context));
+            if (this.Context.JoinIndex == 0)
+            {
+                result = result.Replace(selfParameterName, SubTools.GetSubReplace(this.Context));
+            }
             return result;
         }
     }
@@ -104,7 +107,10 @@ namespace SqlSugar
                 result = (OrderIndex == 0 ? "ORDER BY " : ",") + SubTools.GetMethodValueSubJoin(this.Context, argExp, ResolveExpressType.FieldMultiple) + " DESC";
             }
             var selfParameterName = this.Context.GetTranslationColumnName((argExp as LambdaExpression).Parameters.First().Name) + UtilConstants.Dot;
-            result = result.Replace(selfParameterName, string.Empty);
+            if (this.Context.JoinIndex == 0)
+            {
+                result = result.Replace(selfParameterName, string.Empty);
+            }
             return result;
         }
     }
