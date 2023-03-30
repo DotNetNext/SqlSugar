@@ -80,11 +80,11 @@ namespace SqlSugar
 
         public virtual int ExecuteCommand()
         {
-            if (this.UpdateBuilder.UpdateColumns.HasValue())
-            {
-                var columns = this.UpdateBuilder.UpdateColumns;
-                this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => GetPrimaryKeys().Select(iit => iit.ToLower()).Contains(it.DbColumnName.ToLower()) || columns.Contains(it.PropertyName, StringComparer.OrdinalIgnoreCase)).ToList();
-            }
+            //if (this.UpdateBuilder.UpdateColumns.HasValue())
+            //{
+            //    var columns = this.UpdateBuilder.UpdateColumns;
+            //    this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => GetPrimaryKeys().Select(iit => iit.ToLower()).Contains(it.DbColumnName.ToLower()) || columns.Contains(it.PropertyName, StringComparer.OrdinalIgnoreCase)).ToList();
+            //}
             if (this.IsTrakingDatas() || IsUpdateNullByList())
             {
                 int trakRows = DatasTrackingExecommand();
@@ -122,11 +122,11 @@ namespace SqlSugar
        
         public virtual async Task<int> ExecuteCommandAsync()
         {
-            if (this.UpdateBuilder.UpdateColumns.HasValue())
-            {
-                var columns = this.UpdateBuilder.UpdateColumns;
-                this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => GetPrimaryKeys().Select(iit => iit.ToLower()).Contains(it.DbColumnName.ToLower()) || columns.Contains(it.PropertyName, StringComparer.OrdinalIgnoreCase)).ToList();
-            }
+            //if (this.UpdateBuilder.UpdateColumns.HasValue())
+            //{
+            //    var columns = this.UpdateBuilder.UpdateColumns;
+            //    this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => GetPrimaryKeys().Select(iit => iit.ToLower()).Contains(it.DbColumnName.ToLower()) || columns.Contains(it.PropertyName, StringComparer.OrdinalIgnoreCase)).ToList();
+            //}
             if (this.IsTrakingDatas()||IsUpdateNullByList())
             {
                 int trakRows =await DatasTrackingExecommandAsync();
