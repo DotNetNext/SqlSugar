@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SqlSugar
@@ -36,7 +37,7 @@ namespace SqlSugar
         #region Core
         public void AddQueue()
         {
-            if (this.InsertObjs!=null&&this.InsertObjs.Length > 0&& this.InsertObjs[0]!=null)
+            if (this.InsertObjs != null && this.InsertObjs.Length > 0 && this.InsertObjs[0] != null)
             {
                 var sqlObj = this.ToSql();
                 this.Context.Queues.Add(sqlObj.Key, sqlObj.Value);
@@ -71,17 +72,17 @@ namespace SqlSugar
             RestoreMapping();
             return new KeyValuePair<string, List<SugarParameter>>(sql, InsertBuilder.Parameters);
         }
-        public async Task<List<Type>> ExecuteReturnPkListAsync<Type>() 
+        public async Task<List<Type>> ExecuteReturnPkListAsync<Type>()
         {
             return await Task.Run(() => ExecuteReturnPkList<Type>());
         }
-        public virtual List<Type> ExecuteReturnPkList<Type>() 
+        public virtual List<Type> ExecuteReturnPkList<Type>()
         {
-           var pkInfo= this.EntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey == true);
-            Check.ExceptionEasy(pkInfo==null,"ExecuteReturnPkList need primary key", "ExecuteReturnPkList需要主键");
-            Check.ExceptionEasy(this.EntityInfo.Columns.Count(it => it.IsPrimarykey == true)>1, "ExecuteReturnPkList ，Only support technology single primary key", "ExecuteReturnPkList只支技单主键");
-            var isIdEntity = pkInfo.IsIdentity|| (pkInfo.OracleSequenceName.HasValue()&&this.Context.CurrentConnectionConfig.DbType==DbType.Oracle);
-            if (isIdEntity&&this.InsertObjs.Length==1)
+            var pkInfo = this.EntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey == true);
+            Check.ExceptionEasy(pkInfo == null, "ExecuteReturnPkList need primary key", "ExecuteReturnPkList需要主键");
+            Check.ExceptionEasy(this.EntityInfo.Columns.Count(it => it.IsPrimarykey == true) > 1, "ExecuteReturnPkList ，Only support technology single primary key", "ExecuteReturnPkList只支技单主键");
+            var isIdEntity = pkInfo.IsIdentity || (pkInfo.OracleSequenceName.HasValue() && this.Context.CurrentConnectionConfig.DbType == DbType.Oracle);
+            if (isIdEntity && this.InsertObjs.Length == 1)
             {
                 return InsertPkListIdentityCount1<Type>(pkInfo);
             }
@@ -114,7 +115,7 @@ namespace SqlSugar
             if (InsertBuilder.IsOleDb)
             {
                 var isAuto = false;
-                if (this.Context.Ado.IsAnyTran() == false && this.Context.CurrentConnectionConfig.IsAutoCloseConnection) 
+                if (this.Context.Ado.IsAnyTran() == false && this.Context.CurrentConnectionConfig.IsAutoCloseConnection)
                 {
                     isAuto = this.Context.CurrentConnectionConfig.IsAutoCloseConnection;
                     this.Context.CurrentConnectionConfig.IsAutoCloseConnection = false;
@@ -146,7 +147,7 @@ namespace SqlSugar
             if (InsertBuilder.IsOleDb)
             {
                 var isAuto = false;
-                if (this.Context.Ado.IsAnyTran()==false&&this.Context.CurrentConnectionConfig.IsAutoCloseConnection)
+                if (this.Context.Ado.IsAnyTran() == false && this.Context.CurrentConnectionConfig.IsAutoCloseConnection)
                 {
                     isAuto = this.Context.CurrentConnectionConfig.IsAutoCloseConnection;
                     this.Context.CurrentConnectionConfig.IsAutoCloseConnection = false;
@@ -161,25 +162,25 @@ namespace SqlSugar
             }
             else
             {
-                result= Convert.ToInt64(Ado.GetScalar(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray()));
+                result = Convert.ToInt64(Ado.GetScalar(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray()));
             }
             After(sql, result);
             return result;
         }
 
-        public virtual long ExecuteReturnSnowflakeId() 
+        public virtual long ExecuteReturnSnowflakeId()
         {
-            if (this.InsertObjs.Length > 1) 
+            if (this.InsertObjs.Length > 1)
             {
                 return this.ExecuteReturnSnowflakeIdList().First();
             }
 
             var id = SnowFlakeSingle.instance.getID();
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
-            var snowProperty=entity.Columns.FirstOrDefault(it => it.IsPrimarykey && it.PropertyInfo.PropertyType == UtilConstants.LongType);
-            Check.Exception(snowProperty==null, "The entity sets the primary key and is long");
+            var snowProperty = entity.Columns.FirstOrDefault(it => it.IsPrimarykey && it.PropertyInfo.PropertyType == UtilConstants.LongType);
+            Check.Exception(snowProperty == null, "The entity sets the primary key and is long");
             Check.Exception(snowProperty.IsIdentity == true, "SnowflakeId IsIdentity can't true");
-            foreach (var item in  this.InsertBuilder.DbColumnInfoList.Where(it=>it.PropertyName==snowProperty.PropertyName))
+            foreach (var item in this.InsertBuilder.DbColumnInfoList.Where(it => it.PropertyName == snowProperty.PropertyName))
             {
                 item.Value = id;
                 snowProperty?.PropertyInfo.SetValue(this.InsertObjs.First(), id);
@@ -187,7 +188,7 @@ namespace SqlSugar
             this.ExecuteCommand();
             return id;
         }
-        public List<long>  ExecuteReturnSnowflakeIdList() 
+        public List<long> ExecuteReturnSnowflakeIdList()
         {
             List<long> result = new List<long>();
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
@@ -207,6 +208,11 @@ namespace SqlSugar
             }
             this.ExecuteCommand();
             return result;
+        }
+        public Task<long> ExecuteReturnSnowflakeIdAsync(CancellationToken token) 
+        {
+            this.Context.Ado.CancellationToken= token;
+            return ExecuteReturnSnowflakeIdAsync();
         }
         public async Task<long> ExecuteReturnSnowflakeIdAsync() 
         {
@@ -243,6 +249,12 @@ namespace SqlSugar
             }
             await this.ExecuteCommandAsync();
             return result;
+        }
+
+        public Task<List<long>> ExecuteReturnSnowflakeIdListAsync(CancellationToken token) 
+        {
+            this.Ado.CancellationToken= token;
+            return ExecuteReturnSnowflakeIdListAsync();
         }
 
         public virtual T ExecuteReturnEntity()
@@ -302,7 +314,11 @@ namespace SqlSugar
             this.Context.EntityMaintenance.GetProperty<T>(identityKey).SetValue(result, setValue, null);
             return idValue > 0;
         }
-
+        public Task<int> ExecuteCommandAsync(CancellationToken token) 
+        {
+            this.Context.Ado.CancellationToken= token;
+            return ExecuteCommandAsync();
+        }
         public async Task<int> ExecuteCommandAsync()
         {
             if (this.InsertObjs.Count() == 1 && this.InsertObjs.First() == null)
@@ -314,6 +330,11 @@ namespace SqlSugar
             After(sql, null);
             if (result == -1) return this.InsertObjs.Count();
             return result;
+        }
+        public Task<int> ExecuteReturnIdentityAsync(CancellationToken token) 
+        {
+            this.Ado.CancellationToken= token;
+            return ExecuteReturnIdentityAsync();
         }
         public virtual async Task<int> ExecuteReturnIdentityAsync()
         {
@@ -403,6 +424,11 @@ namespace SqlSugar
                 setValue = Convert.ToInt32(idValue);
             this.Context.EntityMaintenance.GetProperty<T>(identityKey).SetValue(result, setValue, null);
             return idValue > 0;
+        }
+        public Task<long> ExecuteReturnBigIdentityAsync(CancellationToken token) 
+        {
+            this.Context.Ado.CancellationToken= token;
+            return ExecuteReturnBigIdentityAsync();
         }
         public virtual async Task<long> ExecuteReturnBigIdentityAsync()
         {

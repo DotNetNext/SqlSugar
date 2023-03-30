@@ -1044,6 +1044,13 @@ namespace SqlSugar
                 return Tuple.Create<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>, List<T7>>(result, result2, result3, result4, result5, result6, result7);
             }
         }
+
+        public Task<List<T>> SqlQueryAsync<T>(string sql, object parameters, CancellationToken token) 
+        {
+            this.CancellationToken = token;
+            return SqlQueryAsync<T>(sql, parameters);
+        }
+
         public virtual Task<List<T>> SqlQueryAsync<T>(string sql, object parameters = null)
         {
             var sugarParameters = this.GetParameters(parameters);
@@ -1349,6 +1356,11 @@ namespace SqlSugar
             {
                 return ExecuteCommand(sql, parameters.ToArray());
             }
+        }
+        public Task<int> ExecuteCommandAsync(string sql, object parameters, CancellationToken cancellationToken) 
+        {
+            this.CancellationToken = CancellationToken;
+            return ExecuteCommandAsync(sql,parameters);
         }
         public virtual Task<int> ExecuteCommandAsync(string sql, object parameters)
         {

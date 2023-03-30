@@ -1,8 +1,10 @@
-﻿using System;
+﻿using NetTaste;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SqlSugar
@@ -17,7 +19,9 @@ namespace SqlSugar
         int ExecuteCommand();
         bool ExecuteCommandHasChange();
         Task<int> ExecuteCommandAsync();
+        Task<int> ExecuteCommandAsync(CancellationToken token);
         Task<bool> ExecuteCommandHasChangeAsync();
+        Task<bool> ExecuteCommandHasChangeAsync(CancellationToken token);
 
 
         IUpdateable<T> AS(string tableName);

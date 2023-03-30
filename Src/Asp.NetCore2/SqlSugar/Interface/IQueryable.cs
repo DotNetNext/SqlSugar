@@ -195,6 +195,7 @@ namespace SqlSugar
         T[] ToArray();
         Task<T[]> ToArrayAsync();
         Task<List<T>> ToListAsync();
+        Task<List<T>> ToListAsync(CancellationToken token);
 
         string ToJson();
         Task<string> ToJsonAsync();
@@ -230,12 +231,15 @@ namespace SqlSugar
         Task<List<T>> ToOffsetPageAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber);
         List<T> ToPageList(int pageNumber, int pageSize);
         Task<List<T>> ToPageListAsync(int pageNumber, int pageSize);
+        Task<List<T>> ToPageListAsync(int pageNumber, int pageSize,CancellationToken token);
         List<T> ToPageList(int pageNumber, int pageSize, ref int totalNumber);
         List<TResult> ToPageList<TResult>(int pageNumber, int pageSize, ref int totalNumber, Expression<Func<T, TResult>> expression);
         List<T> ToPageList(int pageNumber, int pageSize, ref int totalNumber,ref int totalPage);
         Task<List<T>> ToPageListAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber);
+        Task<List<T>> ToPageListAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber,CancellationToken token);
         Task<List<TResult>> ToPageListAsync<TResult>(int pageNumber, int pageSize, RefAsync<int> totalNumber, Expression<Func<T, TResult>> expression);
         Task<List<T>> ToPageListAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber, RefAsync<int> totalPage);
+        Task<List<T>> ToPageListAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber, RefAsync<int> totalPage,CancellationToken token);
         ISugarQueryable<T> WithCache(string cacheKey,int cacheDurationInSeconds = int.MaxValue);
         ISugarQueryable<T> WithCache(int cacheDurationInSeconds = int.MaxValue);
         ISugarQueryable<T> WithCacheIF(bool isCache, int cacheDurationInSeconds = int.MaxValue);
