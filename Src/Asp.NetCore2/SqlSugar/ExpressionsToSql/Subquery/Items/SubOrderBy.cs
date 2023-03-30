@@ -45,7 +45,15 @@ namespace SqlSugar
             }
             var exp = expression as MethodCallExpression;
             var argExp = exp.Arguments[0];
-            var result =(OrderIndex==0? "ORDER BY ":",") + SubTools.GetMethodValue(this.Context, argExp, ResolveExpressType.FieldSingle);
+            var result = "";
+            if (this.Context.JoinIndex == 0)
+            {
+                result = (OrderIndex == 0 ? "ORDER BY " : ",") + SubTools.GetMethodValue(this.Context, argExp, ResolveExpressType.FieldSingle);
+            }
+            else 
+            {
+                result = (OrderIndex == 0 ? "ORDER BY " : ",") + SubTools.GetMethodValueSubJoin(this.Context, argExp, ResolveExpressType.FieldMultiple);
+            }
             var selfParameterName = this.Context.GetTranslationColumnName((argExp as LambdaExpression).Parameters.First().Name) + UtilConstants.Dot;
             result = result.Replace(selfParameterName, SubTools.GetSubReplace(this.Context));
             return result;
@@ -86,7 +94,15 @@ namespace SqlSugar
         {
             var exp = expression as MethodCallExpression;
             var argExp = exp.Arguments[0];
-            var result = (OrderIndex == 0 ? "ORDER BY " : ",") + SubTools.GetMethodValue(this.Context, argExp, ResolveExpressType.FieldSingle)+" DESC";
+            var result = "";
+            if (this.Context.JoinIndex == 0)
+            {
+                result = (OrderIndex == 0 ? "ORDER BY " : ",") + SubTools.GetMethodValue(this.Context, argExp, ResolveExpressType.FieldSingle) + " DESC";
+            }
+            else
+            {
+                result = (OrderIndex == 0 ? "ORDER BY " : ",") + SubTools.GetMethodValueSubJoin(this.Context, argExp, ResolveExpressType.FieldMultiple) + " DESC";
+            }
             var selfParameterName = this.Context.GetTranslationColumnName((argExp as LambdaExpression).Parameters.First().Name) + UtilConstants.Dot;
             result = result.Replace(selfParameterName, string.Empty);
             return result;

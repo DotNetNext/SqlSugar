@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SqlSugar
@@ -125,11 +126,14 @@ namespace SqlSugar
 
         T First();
         Task<T> FirstAsync();
+        Task<T> FirstAsync(CancellationToken token);
         T First(Expression<Func<T, bool>> expression);
         Task<T> FirstAsync(Expression<Func<T, bool>> expression);
+        Task<T> FirstAsync(Expression<Func<T, bool>> expression, CancellationToken token);
 
         bool Any(Expression<Func<T, bool>> expression);
         Task<bool> AnyAsync(Expression<Func<T, bool>> expression);
+        Task<bool> AnyAsync(Expression<Func<T, bool>> expression, CancellationToken token);
         bool Any();
         Task<bool> AnyAsync();
         ISugarQueryable<TResult> Select<TResult>(Expression expression);
@@ -146,12 +150,16 @@ namespace SqlSugar
         Task ForEachByPageAsync(Action<T> action, int pageIndex, int pageSize, RefAsync<int> totalNumber, int singleMaxReads = 300, System.Threading.CancellationTokenSource cancellationTokenSource = null);
         int Count();
         Task<int> CountAsync();
+        Task<int> CountAsync(CancellationToken token);
         int Count(Expression<Func<T, bool>> expression);
         Task<int> CountAsync(Expression<Func<T, bool>> expression);
+        Task<int> CountAsync(Expression<Func<T, bool>> expression,CancellationToken token);
         TResult Max<TResult>(string maxField);
         Task<TResult> MaxAsync<TResult>(string maxField);
+        Task<TResult> MaxAsync<TResult>(string maxField,CancellationToken token);
         TResult Max<TResult>(Expression<Func<T, TResult>> expression);
         Task<TResult> MaxAsync<TResult>(Expression<Func<T, TResult>> expression);
+        Task<TResult> MaxAsync<TResult>(Expression<Func<T, TResult>> expression,CancellationToken token);
         TResult Min<TResult>(string minField);
         Task<TResult> MinAsync<TResult>(string minField);
         TResult Min<TResult>(Expression<Func<T, TResult>> expression);
