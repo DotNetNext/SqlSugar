@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SqlSugar
@@ -12,20 +13,25 @@ namespace SqlSugar
         InsertBuilder InsertBuilder { get; set; }
         int ExecuteCommand();
         Task<int> ExecuteCommandAsync();
+        Task<int> ExecuteCommandAsync(CancellationToken token);
         List<Type> ExecuteReturnPkList<Type>();
         Task<List<Type>> ExecuteReturnPkListAsync<Type>();
         long ExecuteReturnSnowflakeId();
         List<long> ExecuteReturnSnowflakeIdList();
         Task<long> ExecuteReturnSnowflakeIdAsync();
+        Task<long> ExecuteReturnSnowflakeIdAsync(CancellationToken token);
         Task<List<long>> ExecuteReturnSnowflakeIdListAsync();
+        Task<List<long>> ExecuteReturnSnowflakeIdListAsync(CancellationToken token);
         int ExecuteReturnIdentity();
         Task<int> ExecuteReturnIdentityAsync();
+        Task<int> ExecuteReturnIdentityAsync(CancellationToken token);
         T ExecuteReturnEntity();
         Task<T> ExecuteReturnEntityAsync();
         bool ExecuteCommandIdentityIntoEntity();
         Task<bool> ExecuteCommandIdentityIntoEntityAsync();
         long ExecuteReturnBigIdentity();
         Task<long> ExecuteReturnBigIdentityAsync();
+        Task<long> ExecuteReturnBigIdentityAsync(CancellationToken token);
         IInsertable<T> AS(string tableName);
         IInsertable<T> AsType(Type tableNameType);
         IInsertable<T> With(string lockString);
