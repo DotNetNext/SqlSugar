@@ -53,7 +53,7 @@ namespace SqlSugar
         {
             return this;
         }
-        public List<TResult> ToList<TResult>(Func<T1, T2, T3, T4, T5, T6,T7,T8,T9, TResult> selector) where TResult : class, new()
+        public List<TResult> ToList<TResult>(Func<T1, T2, T3, T4, T5, T6,T7,T8,T9, TResult> selector) 
         {
             return null;
         }
@@ -100,7 +100,7 @@ namespace SqlSugar
         {
             return this;
         }
-        public List<TResult> ToList<TResult>(Func<T1, T2, T3, T4, T5, T6,T7,T8, TResult> selector) where TResult : class, new()
+        public List<TResult> ToList<TResult>(Func<T1, T2, T3, T4, T5, T6,T7,T8, TResult> selector) 
         {
             return null;
         }
@@ -143,7 +143,7 @@ namespace SqlSugar
         {
             return this;
         }
-        public List<TResult> ToList<TResult>(Func<T1, T2, T3, T4, T5, T6,T7, TResult> selector) where TResult : class, new()
+        public List<TResult> ToList<TResult>(Func<T1, T2, T3, T4, T5, T6,T7, TResult> selector) 
         {
             return null;
         }
@@ -182,7 +182,7 @@ namespace SqlSugar
         {
             return this;
         }
-        public List<TResult> ToList<TResult>(Func<T1, T2, T3, T4, T5,T6, TResult> selector) where TResult : class, new()
+        public List<TResult> ToList<TResult>(Func<T1, T2, T3, T4, T5,T6, TResult> selector)  
         {
             return null;
         }
@@ -217,7 +217,7 @@ namespace SqlSugar
         {
             return this;
         }
-        public List<TResult> ToList<TResult>(Func<T1, T2, T3, T4,T5, TResult> selector) where TResult : class, new()
+        public List<TResult> ToList<TResult>(Func<T1, T2, T3, T4,T5, TResult> selector)  
         {
             return null;
         }
@@ -272,7 +272,7 @@ namespace SqlSugar
         {
             return default(string);
         }
-        public List<TResult> ToList<TResult>(Func<T1, T2, T3,T4, TResult> selector) where TResult : class, new()
+        public List<TResult> ToList<TResult>(Func<T1, T2, T3,T4, TResult> selector)  
         {
             return null;
         }
@@ -323,7 +323,7 @@ namespace SqlSugar
         {
             return default(string);
         }
-        public List<TResult> ToList<TResult>(Func<T1, T2,T3, TResult> selector) where TResult : class, new()
+        public List<TResult> ToList<TResult>(Func<T1, T2,T3, TResult> selector)  
         {
             return null;
         }
@@ -370,7 +370,7 @@ namespace SqlSugar
         {
             return default(string);
         }
-        public List<TResult> ToList<TResult>(Func<T1,T2, TResult> selector) where TResult : class, new()
+        public List<TResult> ToList<TResult>(Func<T1,T2, TResult> selector)
         {
             return null;
         }
