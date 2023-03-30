@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,6 +11,10 @@ namespace SqlSugar
 {
     public static class CommonExtensions
     {
+        public static MethodInfo GetMyMethod(this Type type,string name, int argCount) 
+        {
+            return type.GetMethods().FirstOrDefault(it => it.Name == name && it.GetParameters().Length == argCount);
+        }
         public static List<T> ToList<T>(this  T thisValue,Func<T,T> action) where T:class,new()
         {
             return new List<T> { thisValue };
