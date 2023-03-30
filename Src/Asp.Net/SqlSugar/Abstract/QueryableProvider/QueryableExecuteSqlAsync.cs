@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Reflection;
 using System.Dynamic;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace SqlSugar
 {
@@ -73,7 +74,11 @@ namespace SqlSugar
             this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
             return result;
         }
-
+        public Task<T> FirstAsync(CancellationToken token) 
+        {
+            this.Context.Ado.CancellationToken = token;
+            return FirstAsync();
+        }
         public async Task<T> FirstAsync()
         {
             if (QueryBuilder.OrderByValue.IsNullOrEmpty())
@@ -97,6 +102,11 @@ namespace SqlSugar
                     return default(T);
             }
         }
+        public Task<T> FirstAsync(Expression<Func<T, bool>> expression, CancellationToken token) 
+        {
+            this.Context.Ado.CancellationToken = token;
+            return FirstAsync(expression);
+        }
         public async Task<T> FirstAsync(Expression<Func<T, bool>> expression)
         {
             _Where(expression);
@@ -112,11 +122,23 @@ namespace SqlSugar
             this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
             return result;
         }
+
+        public Task<bool> AnyAsync(Expression<Func<T, bool>> expression, CancellationToken token) 
+        {
+            this.Context.Ado.CancellationToken = token;
+            return AnyAsync(expression);
+        }
+
         public async Task<bool> AnyAsync()
         {
             return await this.CountAsync() > 0;
         }
 
+        public Task<int> CountAsync(CancellationToken token) 
+        {
+            this.Context.Ado.CancellationToken = token;
+            return CountAsync();
+        }
         public async Task<int> CountAsync()
         {
             if (this.QueryBuilder.Skip == null &&
@@ -153,6 +175,12 @@ namespace SqlSugar
             return result;
         }
 
+        public Task<int> CountAsync(Expression<Func<T, bool>> expression, CancellationToken token) 
+        {
+            this.Context.Ado.CancellationToken = token;
+            return CountAsync(expression);
+        }
+
         public async Task<TResult> MaxAsync<TResult>(string maxField)
         {
             this.Select(string.Format(QueryBuilder.MaxTemplate, maxField));
@@ -160,9 +188,22 @@ namespace SqlSugar
             var result = list.SingleOrDefault();
             return result;
         }
+
+        public Task<TResult> MaxAsync<TResult>(string maxField, CancellationToken token) 
+        {
+            this.Context.Ado.CancellationToken= token;
+            return MaxAsync<TResult>(maxField);
+        }
+
         public Task<TResult> MaxAsync<TResult>(Expression<Func<T, TResult>> expression)
         {
             return _MaxAsync<TResult>(expression);
+        }
+
+        public Task<TResult> MaxAsync<TResult>(Expression<Func<T, TResult>> expression, CancellationToken token) 
+        {
+            this.Context.Ado.CancellationToken = token;
+            return MaxAsync(expression);
         }
 
         public async Task<TResult> MinAsync<TResult>(string minField)
