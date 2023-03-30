@@ -17,6 +17,12 @@ namespace SqlSugar
 {
     public class UtilMethods
     {
+        public static string GetNativeSql(string sql,SugarParameter[] pars)
+        {
+            if (pars == null||pars.Length==0)
+                return "\r\n[Sql]:"+sql+"\r\n";
+            return $"\r\n[Sql]:{sql} \r\n[Pars]:{string.Join(" ",pars.Select(it=>$"\r\n[Name]:{it.ParameterName} [Value]:{it.Value} [Type]:{it.DbType}  "))} \r\n";
+        }
         public static string ToUnderLine(string str, bool isToUpper = false)
         {
             if (str == null || str.Contains("_"))

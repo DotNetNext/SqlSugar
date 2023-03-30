@@ -151,47 +151,58 @@ namespace SqlSugar
         /// <returns>the text contents of this XML element node</returns>
         public string GetXElementNodeValue(Type entityType, string nodeAttributeName)
         {
-            if (this.Context.CurrentConnectionConfig?.MoreSettings?.IsNoReadXmlDescription == true)
+
+            try
             {
-                return "";
-            }
-            if (entityType.Assembly.IsDynamic&& entityType.Assembly.FullName.StartsWith("Dynamic"))
-            {
-                return null;
-            }
-            var path = entityType.Assembly.Location;
-            if (string.IsNullOrEmpty(path))
-            {
-                return null;
-            }
-            FileInfo file = new FileInfo(path);
-            string xmlPath = entityType.Assembly.Location.Replace(file.Extension, ".xml");
-            if (!File.Exists(xmlPath))
-            {
-                return string.Empty;
-            }
-            XElement xe =new ReflectionInoCacheService().GetOrCreate("EntityXml_"+xmlPath,()=> XElement.Load(xmlPath));
-            if (xe == null)
-            {
-                return string.Empty;
-            }
-            var xeNode = xe.Element("members").Elements("member").Where(ele => ele.Attribute("name").Value == nodeAttributeName).FirstOrDefault();
-            if (xeNode == null)
-            {
-                return string.Empty;
-            }
-            var summary = xeNode.Element("summary");
-            if (summary != null)
-            {
-                return summary.Value.ToSqlFilter().Trim();
-            }
-            else 
-            {
-                var summaryValue = xeNode.Elements().Where(x => x.Name.ToString().EqualCase("summary")).Select(it => it.Value).FirstOrDefault();
-                if(summaryValue==null)
-                    return string.Empty;  
+
+                if (this.Context.CurrentConnectionConfig?.MoreSettings?.IsNoReadXmlDescription == true)
+                {
+                    return "";
+                }
+                if (entityType.Assembly.IsDynamic&& entityType.Assembly.FullName.StartsWith("Dynamic"))
+                {
+                    return null;
+                }
+                var path = entityType.Assembly.Location;
+                if (string.IsNullOrEmpty(path))
+                {
+                    return null;
+                }
+                FileInfo file = new FileInfo(path);
+                string xmlPath = entityType.Assembly.Location.Replace(file.Extension, ".xml");
+                if (!File.Exists(xmlPath))
+                {
+                    return string.Empty;
+                }
+                XElement xe =new ReflectionInoCacheService().GetOrCreate("EntityXml_"+xmlPath,()=> XElement.Load(xmlPath));
+                if (xe == null)
+                {
+                    return string.Empty;
+                }
+                var xeNode = xe.Element("members").Elements("member").Where(ele => ele.Attribute("name").Value == nodeAttributeName).FirstOrDefault();
+                if (xeNode == null)
+                {
+                    return string.Empty;
+                }
+                var summary = xeNode.Element("summary");
+                if (summary != null)
+                {
+                    return summary.Value.ToSqlFilter().Trim();
+                }
                 else
-                    return summaryValue.ToSqlFilter().Trim()??"";
+                {
+                    var summaryValue = xeNode.Elements().Where(x => x.Name.ToString().EqualCase("summary")).Select(it => it.Value).FirstOrDefault();
+                    if(summaryValue==null)
+                        return string.Empty;
+                    else
+                        return summaryValue.ToSqlFilter().Trim()??"";
+                }
+
+            }
+            catch
+            {
+                Check.ExceptionEasy("ORM error reading entity class XML, check entity XML or disable reading XML: MoreSettings IsNoReadXmlDescription set to true (same place to set DbType)", "ORM读取实体类的XML出现错误,检查实体XML或者禁用读取XML: MoreSettings里面的IsNoReadXmlDescription设为true （设置DbType的同一个地方）");
+                throw;
             }
         }
         /// <summary>
