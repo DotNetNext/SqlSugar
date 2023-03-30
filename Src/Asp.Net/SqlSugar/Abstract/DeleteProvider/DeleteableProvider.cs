@@ -6,6 +6,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SqlSugar
@@ -47,6 +48,11 @@ namespace SqlSugar
         public bool ExecuteCommandHasChange()
         {
             return ExecuteCommand() > 0;
+        }
+        public Task<int> ExecuteCommandAsync(CancellationToken token) 
+        {
+            this.Context.Ado.CancellationToken= token;
+            return ExecuteCommandAsync();
         }
         public async Task<int> ExecuteCommandAsync()
         {

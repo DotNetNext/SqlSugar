@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SqlSugar
@@ -119,7 +120,11 @@ namespace SqlSugar
             }
             return result;
         }
-       
+        public Task<int> ExecuteCommandAsync(CancellationToken token) 
+        {
+            this.Context.Ado.CancellationToken= token;
+            return ExecuteCommandAsync();
+        }
         public virtual async Task<int> ExecuteCommandAsync()
         {
             //if (this.UpdateBuilder.UpdateColumns.HasValue())
