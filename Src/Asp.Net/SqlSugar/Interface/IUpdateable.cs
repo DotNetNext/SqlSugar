@@ -21,6 +21,7 @@ namespace SqlSugar
         Task<int> ExecuteCommandAsync();
         Task<int> ExecuteCommandAsync(CancellationToken token);
         Task<bool> ExecuteCommandHasChangeAsync();
+        Task<bool> ExecuteCommandHasChangeAsync(CancellationToken token);
 
 
         IUpdateable<T> AS(string tableName);

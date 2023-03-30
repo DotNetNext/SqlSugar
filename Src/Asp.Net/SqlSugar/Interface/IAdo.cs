@@ -78,6 +78,7 @@ namespace SqlSugar
 
         Task<int> ExecuteCommandAsync(string sql, params SugarParameter[] parameters);
         Task<int> ExecuteCommandAsync(string sql, object parameters);
+        Task<int> ExecuteCommandAsync(string sql, object parameters,CancellationToken cancellationToken);
         Task<int> ExecuteCommandAsync(string sql, List<SugarParameter> parameters);
 
         string GetString(string sql, object parameters);
@@ -151,6 +152,7 @@ namespace SqlSugar
         List<T> MasterSqlQuery<T>(string sql, object parameters = null);
 
         Task<List<T>> SqlQueryAsync<T>(string sql, object parameters = null);
+        Task<List<T>> SqlQueryAsync<T>(string sql, object parameters = null,CancellationToken token);
         Task<List<T>> SqlQueryAsync<T>(string sql, List<SugarParameter> parameters);
         Task<List<T>> SqlQueryAsync<T>(string sql, params SugarParameter[] parameters);
 

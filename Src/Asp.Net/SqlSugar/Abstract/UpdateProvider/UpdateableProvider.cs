@@ -146,6 +146,11 @@ namespace SqlSugar
             After(sql);
             return result;
         }
+        public Task<bool> ExecuteCommandHasChangeAsync(CancellationToken token) 
+        {
+            this.Context.Ado.CancellationToken= token;
+            return ExecuteCommandHasChangeAsync();
+        }
 
         public async Task<bool> ExecuteCommandHasChangeAsync()
         {
