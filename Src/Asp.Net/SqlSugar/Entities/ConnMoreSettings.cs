@@ -12,9 +12,9 @@ namespace SqlSugar
        
         public bool DisableNvarchar { get; set; }
         public bool DisableMillisecond { get; set; }
-        public bool PgSqlIsAutoToLower = true;
-        public bool PgSqlIsAutoToLowerCodeFirst = true;
-        public bool IsAutoToUpper = true;
+        public bool PgSqlIsAutoToLower { get; set; } = true;
+        public bool PgSqlIsAutoToLowerCodeFirst { get; set; } = true;
+        public bool IsAutoToUpper { get; set; } = true;
         public int DefaultCacheDurationInSeconds { get; set; }
         public bool? TableEnumIsString { get; set; }
         public DateTime? DbMinDate { get; set; } = Convert.ToDateTime("1900-01-01");
