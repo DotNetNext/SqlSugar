@@ -370,9 +370,16 @@ namespace SqlSugar
 
         public virtual string MappingColumn(MethodCallExpressionModel model)
         {
-            var parameter = model.Args[0];
-            var parameter1 = model.Args[1];
-            return string.Format("{0}", parameter1.MemberValue);
+            if (model.Args.Count == 1)
+            {
+                return string.Format("{0}", model.Args[0].MemberValue);
+            }
+            else
+            {
+                var parameter = model.Args[0];
+                var parameter1 = model.Args[1];
+                return string.Format("{0}", parameter1.MemberValue);
+            }
         }
 
         public virtual string IsNull(MethodCallExpressionModel model)
