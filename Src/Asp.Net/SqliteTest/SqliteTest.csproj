@@ -78,6 +78,12 @@
     <Compile Include="Models\TestTree.cs" />
     <Compile Include="Models\Tree.cs" />
     <Compile Include="Models\ViewOrder.cs" />
+    <Compile Include="UnitTest\Models\AgentUser.cs" />
+    <Compile Include="UnitTest\Models\EntityBase.cs" />
+    <Compile Include="UnitTest\Models\Park.cs" />
+    <Compile Include="UnitTest\Models\ParkPartner.cs" />
+    <Compile Include="UnitTest\Models\SysUser.cs" />
+    <Compile Include="UnitTest\UFilter2.cs" />
     <Compile Include="UnitTest\UinitCustomConvert.cs" />
     <Compile Include="UnitTest\Models\Book.cs" />
     <Compile Include="UnitTest\Models\Playground.cs" />
