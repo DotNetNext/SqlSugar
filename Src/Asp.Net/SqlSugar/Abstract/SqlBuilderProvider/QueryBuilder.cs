@@ -515,6 +515,14 @@ namespace SqlSugar
                 foreach (var joinInfo in this.JoinQueryInfos)
                 {
                     var isInterface = ChildType.IsInterface && joinInfo.EntityType != null && joinInfo.EntityType.GetInterfaces().Any(it => it == ChildType);
+                    if (isInterface
+                        && isSameName == false
+                        &&this.JoinQueryInfos.Where(it=> it.EntityType!=null).Count(it => it.EntityType.GetInterfaces().Any(z=>z==ChildType)) > 1) 
+                    {
+                        sql = GetSql(exp, false);
+                        var shortName = this.Builder.GetTranslationColumnName(joinInfo.ShortName.Trim()) + ".";
+                        sql = sql.Replace(itName, shortName);
+                    }
                     if (isInterface||joinInfo.TableName.EqualCase(entityInfo.EntityName)|| joinInfo.TableName.EqualCase(entityInfo.DbTableName)) 
                     {
                         var mysql = sql;
