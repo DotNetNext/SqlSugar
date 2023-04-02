@@ -87,6 +87,7 @@ namespace OrmTest
 
             object o = db.Queryable<Order>().First();
             db.InsertableByObject(o).ExecuteCommandAsync().GetAwaiter().GetResult();
+            db.InsertableByObject(o).ExecuteReturnIdentityAsync().GetAwaiter().GetResult();
             object os = db.Queryable<Order>().Take(2).ToList();
             db.InsertableByObject(os).ExecuteCommand();
 
