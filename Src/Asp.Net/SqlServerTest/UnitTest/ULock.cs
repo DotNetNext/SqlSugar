@@ -33,14 +33,16 @@ namespace OrmTest
             }).ExecuteCommandWithOptLock();
             if (data2 != 0) { throw new Exception("unit error"); };
 
-            var data3 = db.Updateable(new ULockEntity()
+            var yy = new ULockEntity()
             {
                 Id = id,
                 Name = "newname2",
                 Ver = 0
-            })
+            };
+            var data3 = db.Updateable(yy)
             .UpdateColumns(z=>z.Name).ExecuteCommandWithOptLock();
             if (data3 != 0) { throw new Exception("unit error"); }
+            if(yy.Ver!=0) { throw new Exception("unit error"); }
             var ver = db.Queryable<ULockEntity>().InSingle(id);
             var data4 = db.Updateable(new ULockEntity()
             {
