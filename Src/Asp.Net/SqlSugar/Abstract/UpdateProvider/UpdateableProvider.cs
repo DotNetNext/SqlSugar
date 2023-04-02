@@ -70,8 +70,10 @@ namespace SqlSugar
             Check.ExceptionEasy(this.UpdateBuilder.IsListUpdate==true, " OptLock can only be used on a single object, and the argument cannot be List", "乐观锁只能用于单个对象,参数不能是List,如果是一对多操作请更新主表统一用主表验证");
             var updateData = UpdateObjs.FirstOrDefault();
             if (updateData == null) return 0;
-            var name=_ExecuteCommandWithOptLock(updateData);
+            object oldValue = null;
+            var name=_ExecuteCommandWithOptLock(updateData,ref oldValue);
             var result= this.ExecuteCommand();
+            OptRollBack(result,updateData, oldValue, name);
             if (result == 0 && IsVersionValidation)
             {
                 throw new VersionExceptions(string.Format("UpdateVersionValidation {0} Not the latest version ", name));
@@ -112,8 +114,10 @@ namespace SqlSugar
             Check.ExceptionEasy(this.UpdateBuilder.IsListUpdate == true, " OptLock can only be used on a single object, and the argument cannot be List", "乐观锁只能用于单个对象,参数不能是List,如果是一对多操作请更新主表统一用主表验证");
             var updateData = UpdateObjs.FirstOrDefault();
             if (updateData == null) return 0;
-            var name=_ExecuteCommandWithOptLock(updateData);
+            object oldValue = null;
+            var name=_ExecuteCommandWithOptLock(updateData,ref oldValue);
             var result= await this.ExecuteCommandAsync();
+            OptRollBack(result,updateData, oldValue, name);
             if (result == 0 && IsVersionValidation) 
             {
                 throw new VersionExceptions(string.Format("UpdateVersionValidation {0} Not the latest version ", name));

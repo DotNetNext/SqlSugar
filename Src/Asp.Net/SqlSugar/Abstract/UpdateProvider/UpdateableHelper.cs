@@ -478,7 +478,17 @@ namespace SqlSugar
                 parameter.DbType = System.Data.DbType.Int16;
             }
         }
-
+        private void OptRollBack(int updateRows,T updateData, object oldValue, string name)
+        {
+            if (updateRows == 0)
+            {
+                var verInfo = this.EntityInfo.Columns.FirstOrDefault(it => it.PropertyName == name);
+                if (verInfo != null)
+                {
+                    verInfo.PropertyInfo.SetValue(updateData, oldValue);
+                }
+            }
+        }
         private string GetDbColumnName(string propertyName)
         {
             if (!IsMappingColumns)
@@ -601,7 +611,7 @@ namespace SqlSugar
                 this.RemoveCacheFunc();
             }
         }
-        private string _ExecuteCommandWithOptLock(T updateData)
+        private string _ExecuteCommandWithOptLock(T updateData,ref object oldVerValue)
         {
             Check.ExceptionEasy(UpdateParameterIsNull == true, "Optimistic lock can only be an entity update method", "乐观锁只能是实体更新方式");
             var verColumn = this.EntityInfo.Columns.FirstOrDefault(it => it.IsEnableUpdateVersionValidation);
@@ -609,6 +619,7 @@ namespace SqlSugar
             Check.ExceptionEasy(UpdateObjs.Length > 1, $"Optimistic lock can only handle a single update ", $"乐观锁只能处理单条更新");
             Check.ExceptionEasy(!verColumn.UnderType.IsIn(UtilConstants.StringType, UtilConstants.LongType, UtilConstants.GuidType, UtilConstants.DateType), $"Optimistic locks can only be guid, long, and string types", $"乐观锁只能是Guid、Long和字符串类型");
             var oldValue = verColumn.PropertyInfo.GetValue(updateData);
+            oldVerValue = oldValue;
             var newValue = UtilMethods.GetRandomByType(verColumn.UnderType);
             verColumn.PropertyInfo.SetValue(updateData, newValue);
             var data = this.UpdateBuilder.DbColumnInfoList.FirstOrDefault(it =>
