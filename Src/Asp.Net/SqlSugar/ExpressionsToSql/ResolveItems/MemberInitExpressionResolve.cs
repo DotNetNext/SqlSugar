@@ -41,6 +41,7 @@ namespace SqlSugar
         private void Update(MemberInitExpression expression, ExpressionParameter parameter)
         {
             int i = 0;
+            var entityMaintenance = this.Context?.SugarContext?.Context?.EntityMaintenance;
             foreach (MemberBinding binding in expression.Bindings)
             {
                 ++i;
@@ -73,6 +74,20 @@ namespace SqlSugar
                     var paramterValue = ExpressionTool.DynamicInvoke(item);
                     string parameterName = AppendParameter(paramterValue);
                     this.Context.Result.Append(base.Context.GetEqString(memberName, parameterName));
+                }
+                else if (entityMaintenance != null 
+                    && entityMaintenance.GetEntityInfo(type).Columns.Any(it =>it.SqlParameterDbType is Type 
+                    &&it.PropertyInfo.Name == memberName)
+                    &&IsConst(ExpressionTool.RemoveConvertThanOne(item))) 
+                {
+                    var columnInfo= entityMaintenance.GetEntityInfo(expression.Type).Columns.First(it => it.SqlParameterDbType is Type && it.PropertyInfo.Name == memberName);
+                    var columnDbType = columnInfo.SqlParameterDbType as Type;
+                    var ParameterConverter = columnDbType.GetMethod("ParameterConverter").MakeGenericMethod(columnInfo.PropertyInfo.PropertyType);
+                    var obj = Activator.CreateInstance(columnDbType);
+                    var value = ExpressionTool.DynamicInvoke(item);
+                    var p = ParameterConverter.Invoke(obj, new object[] { value, 100+i }) as SugarParameter;
+                    parameter.Context.Result.Append(base.Context.GetEqString(memberName, p.ParameterName));
+                    this.Context.Parameters.Add(p);
                 }
                 else if (IsNotMember(item))
                 {
@@ -131,7 +146,7 @@ namespace SqlSugar
                 }
                 else if (IsConst(item))
                 {
-                    base.Expression =ExpressionTool.RemoveConvertThanOne(item);
+                    base.Expression = ExpressionTool.RemoveConvertThanOne(item);
                     base.Start();
                     string parameterName = this.Context.SqlParameterKeyWord + ExpressionConst.Const + this.Context.ParameterIndex;
                     parameter.Context.Result.Append(base.Context.GetEqString(memberName, parameterName));
@@ -155,7 +170,7 @@ namespace SqlSugar
 
                         if (this.Context.Parameters != null)
                         {
-                            var memberParameter = this.Context.Parameters?.FirstOrDefault(it =>it.Value==null && it.ParameterName == parameter.CommonTempData.ObjToString());
+                            var memberParameter = this.Context.Parameters?.FirstOrDefault(it => it.Value == null && it.ParameterName == parameter.CommonTempData.ObjToString());
                             if (memberParameter != null)
                             {
                                 ConvertParameterTypeByType(item, memberParameter);
