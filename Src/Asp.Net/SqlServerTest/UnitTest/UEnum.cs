@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SqlSugar.DbConvert;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -60,6 +61,29 @@ namespace OrmTest
                 type = UnitType.a,
                 type2 = UnitType.b
             }).ToList();
+            var type = UnitType.a;
+            var p2=db.Updateable<Unit00Z1string1>().SetColumns(it => new Unit00Z1string1
+            {
+                type = type,
+                type2 = type
+            })
+           .Where(it => true).ToSql();
+            if (!(p2.Value.First().Value is string))
+            {
+                throw new Exception("unit error");
+            }
+
+            db.CurrentConnectionConfig.MoreSettings.TableEnumIsString = false;
+            var p=db.Updateable<Unit00Z1String1>().SetColumns(it => new Unit00Z1String1
+            {
+                type = type,
+                type2 = type
+            })
+          .Where(it => true).ToSql();
+            if (!(p.Value.First().Value is string)) 
+            {
+                throw new Exception("unit error");
+            }
         }
         private static void Int()
         {
@@ -96,7 +120,13 @@ namespace OrmTest
             [SqlSugar.SugarColumn(ColumnDataType ="int",IsNullable =true)]
             public UnitType? type2 { get; set; }
         }
-
+        public class Unit00Z1String1
+        {
+            [SqlSugar.SugarColumn(ColumnDataType = "varchar(50)", IsNullable = false, SqlParameterDbType = typeof(EnumToStringConvert))]
+            public UnitType type { get; set; }
+            [SqlSugar.SugarColumn(ColumnDataType = "varchar(50)", IsNullable = true, SqlParameterDbType = typeof(EnumToStringConvert))]
+            public UnitType? type2 { get; set; }
+        }
         public class Unit00Z1string1
         {
             [SqlSugar.SugarColumn(ColumnDataType = "varchar(50)", IsNullable = false)]
