@@ -45,11 +45,18 @@ namespace SqlSugar
             }
         }
 
-        private static object Select(ExpressionParameter parameter, object value)
+        private  object Select(ExpressionParameter parameter, object value)
         {
             if (value != null && value.GetType().IsEnum())
             {
-                value = Convert.ToInt64(value);
+                if (this.Context?.SugarContext?.Context?.CurrentConnectionConfig?.MoreSettings?.TableEnumIsString == true)
+                {
+                    value = Convert.ToString(value);
+                }
+                else
+                {
+                    value = Convert.ToInt64(value);
+                }
             }
             parameter.BaseParameter.CommonTempData = value;
             return value;
