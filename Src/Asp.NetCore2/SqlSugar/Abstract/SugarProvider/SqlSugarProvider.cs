@@ -1665,37 +1665,18 @@ namespace SqlSugar
         }
         public void ThenMapper<T>(IEnumerable<T> list, Action<T> action)
         {
-            MapperContext<T> result = new MapperContext<T>();
-            result.context = this.Context;
-            if (result.context.TempItems == null)
+            this.Context.Utilities.PageEach(list, 200, pageList =>
             {
-                result.context.TempItems = new Dictionary<string, object>();
-            }
-            var key = "Queryable_To_Context";
-            result.context.TempItems.Add(key, result);
-            result.list = list.ToList();
-            foreach (var item in list)
-            {
-                action.Invoke(item);
-            }
-            result.context.TempItems.Remove(key);
+                _ThenMapper(pageList, action);
+            });
         }
+
         public async Task ThenMapperAsync<T>(IEnumerable<T> list, Func<T, Task> action)
         {
-            MapperContext<T> result = new MapperContext<T>();
-            result.context = this.Context;
-            if (result.context.TempItems == null)
+            await this.Context.Utilities.PageEachAsync(list, 200,async pageList =>
             {
-                result.context.TempItems = new Dictionary<string, object>();
-            }
-            var key = "Queryable_To_Context";
-            result.context.TempItems.Add(key, result);
-            result.list = list.ToList();
-            foreach (var item in list)
-            {
-                await action.Invoke(item);
-            }
-            result.context.TempItems.Remove(key);
+                await _ThenMapperAsync(pageList, action);
+            });
         }
         #endregion
     }

@@ -353,6 +353,40 @@ namespace SqlSugar
         #endregion
 
         #region Private methods
+        private void _ThenMapper<T>(IEnumerable<T> list, Action<T> action)
+        {
+            MapperContext<T> result = new MapperContext<T>();
+            result.context = this.Context;
+            if (result.context.TempItems == null)
+            {
+                result.context.TempItems = new Dictionary<string, object>();
+            }
+            var key = "Queryable_To_Context";
+            result.context.TempItems.Add(key, result);
+            result.list = list.ToList();
+            foreach (var item in list)
+            {
+                action.Invoke(item);
+            }
+            result.context.TempItems.Remove(key);
+        }
+        private async Task _ThenMapperAsync<T>(IEnumerable<T> list, Func<T, Task> action)
+        {
+            MapperContext<T> result = new MapperContext<T>();
+            result.context = this.Context;
+            if (result.context.TempItems == null)
+            {
+                result.context.TempItems = new Dictionary<string, object>();
+            }
+            var key = "Queryable_To_Context";
+            result.context.TempItems.Add(key, result);
+            result.list = list.ToList();
+            foreach (var item in list)
+            {
+                await action.Invoke(item);
+            }
+            result.context.TempItems.Remove(key);
+        }
         internal string GetN()
         {
             var N = "N";
