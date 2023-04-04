@@ -417,7 +417,14 @@ namespace SqlSugar
             {
                 var timeSpan = UtilMethods.TimeOnlyToTimeSpan(columnInfo.Value);
                 var pname = Builder.SqlParameterKeyWord + columnInfo.DbColumnName + "_ts" + GetDbColumnIndex;
-                this.Parameters.Add(new SugarParameter(pname, timeSpan));
+                if (timeSpan == null)
+                {
+                    this.Parameters.Add(new SugarParameter(pname, null) { DbType = System.Data.DbType.Date });
+                }
+                else
+                {
+                    this.Parameters.Add(new SugarParameter(pname, timeSpan));
+                }
                 GetDbColumnIndex++;
                 return pname;
             }

@@ -241,7 +241,17 @@ namespace SqlSugar
             var tableName = GetTableName(entityInfo);
             this.Context.MappingTables.Add(entityInfo.EntityName, tableName);
             entityInfo.DbTableName = tableName;
-            entityInfo.Columns.ForEach(it => { it.DbTableName = tableName; });
+            entityInfo.Columns.ForEach(it => {
+                it.DbTableName = tableName;
+                if (it.UnderType?.Name == "DateOnly" && it.DataType == null)
+                {
+                    it.DataType = "Date";
+                }
+                if (it.UnderType?.Name == "TimeOnly" && it.DataType == null)
+                {
+                    it.DataType = "Time";
+                }
+            });
             var isAny = this.Context.DbMaintenance.IsAnyTable(tableName, false);
             if (isAny && entityInfo.IsDisabledUpdateAll)
             {
