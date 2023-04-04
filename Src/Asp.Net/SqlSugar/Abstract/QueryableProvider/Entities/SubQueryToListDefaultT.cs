@@ -4,9 +4,9 @@ using System.Text;
 
 namespace SqlSugar 
 {
-    internal class SubQueryToListDefaultT
+    internal class SubQueryToListDefaultT  
     {
-        public int id { get; set; }
+        public object id { get; set; }
         public object sugarIndex { get; set; }
     }
 }
