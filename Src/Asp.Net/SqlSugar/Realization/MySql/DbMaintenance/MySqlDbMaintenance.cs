@@ -405,6 +405,7 @@ namespace SqlSugar
             }
             sql = sql.Replace("$PrimaryKey", primaryKeyInfo);
             this.Context.Ado.ExecuteCommand(sql);
+            SetCharSet(tableName, "utf8mb4");
             return true;
         }
         public override bool AddRemark(EntityInfo entity)
@@ -590,6 +591,16 @@ namespace SqlSugar
             return false;
         }
 
+        #endregion
+        #region Helper
+        private void SetCharSet(string tableName, string charset)
+        {
+            if (this.Context.CurrentConnectionConfig.ConnectionString.ObjToString().ToLower().Contains(charset))
+            {
+                var name = this.SqlBuilder.GetTranslationTableName(tableName);
+                this.Context.Ado.ExecuteCommand($"ALTER TABLE {name} CONVERT TO CHARACTER SET utf8mb4;");
+            }
+        }
         #endregion
     }
 }
