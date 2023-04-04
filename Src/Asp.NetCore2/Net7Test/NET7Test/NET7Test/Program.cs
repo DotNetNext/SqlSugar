@@ -40,6 +40,12 @@ static void MyTest()
 
     var d1 = new UnitDate01231().dateOnly;
     var d2 = new UnitDate01231().timeOnly;
+    if(sqlugar.DbMaintenance.IsAnyTable("UnitDatez211afa2222",false))
+       sqlugar.DbMaintenance.DropTable<UnitDatez211afa2222>();
+    sqlugar.CodeFirst.InitTables<UnitDatez211afa2222>();
+    sqlugar.Insertable(new UnitDatez211afa2222()).ExecuteCommand();
+    sqlugar.Insertable(new UnitDatez211afa2222() { dateOnly=DateOnly.FromDateTime(DateTime.Now) }).ExecuteCommand();
+    var list2=sqlugar.Queryable<UnitDatez211afa2222>().ToList();
 }
 static void ServerTest()
 {
@@ -130,4 +136,11 @@ public class UnitDatez211afa
 {
     public TimeOnly timeOnly { get; set; }
     public DateOnly dateOnly { get; set; }
+}
+public class UnitDatez211afa2222
+{
+    [SugarColumn(IsNullable =true)]
+    public TimeOnly? timeOnly { get; set; }
+    [SugarColumn(IsNullable = true)]
+    public DateOnly? dateOnly { get; set; }
 }
