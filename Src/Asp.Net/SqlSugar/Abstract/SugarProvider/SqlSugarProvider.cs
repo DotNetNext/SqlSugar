@@ -789,7 +789,7 @@ namespace SqlSugar
                 var methods = this.Context.GetType().GetMethods()
                .Where(it => it.Name == "Deleteable")
                .Where(it => it.GetGenericArguments().Any())
-               .Where(it => it.GetParameters().Any(z => z.ParameterType.Name.StartsWith("List")))
+               .Where(it => it.GetParameters().Any(z =>z.Name!= "pkValue" && z.ParameterType.Name.StartsWith("List")))
                .Where(it => it.Name == "Deleteable").ToList();
                 var method = methods.FirstOrDefault().MakeGenericMethod(newList.GetType().GetGenericArguments().FirstOrDefault());
                 DeleteMethodInfo result = new DeleteMethodInfo()
