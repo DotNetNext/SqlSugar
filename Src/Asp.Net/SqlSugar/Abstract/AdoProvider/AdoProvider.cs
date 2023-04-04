@@ -935,6 +935,7 @@ namespace SqlSugar
             var oldValue = this.Context.Ado.IsDisableMasterSlaveSeparation;
             this.Context.Ado.IsDisableMasterSlaveSeparation = true;
             var result = await this.Context.Ado.SqlQueryAsync<T>(sql, parameters);
+            this.Context.Ado.IsDisableMasterSlaveSeparation = oldValue;
             return result;
         }
         public virtual List<T> SqlQuery<T>(string sql, List<SugarParameter> parameters)
