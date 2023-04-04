@@ -234,14 +234,15 @@ namespace SqlSugar
         /// <returns>the code annotation for the field</returns>
         public string GetPropertyAnnotation(Type entityType, string dbColumnName)
         {
-            if (entityType.IsClass() == false)
+            if (entityType.IsClass() == false || entityType == typeof(object))
             {
                 return null;
             }
-            var result= GetXElementNodeValue(entityType, $"P:{entityType.FullName}.{dbColumnName}");
+
+            var result = GetXElementNodeValue(entityType, $"P:{entityType.FullName}.{dbColumnName}");
             if (string.IsNullOrEmpty(result))
             {
-                return null;
+                return GetPropertyAnnotation(entityType.BaseType, dbColumnName);
             }
             else
             {
