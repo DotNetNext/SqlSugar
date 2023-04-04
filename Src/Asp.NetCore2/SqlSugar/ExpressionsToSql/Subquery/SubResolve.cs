@@ -34,7 +34,7 @@ namespace SqlSugar
                     this.context.SingleTableNameSubqueryShortName = (context.Expression as LambdaExpression).Parameters.First().Name;
                 }
             }
-            else if (context.IsSingle)
+            else if (context.IsSingle&&  ExpressionTool.GetMethodName(currentExpression) != "ToList")
             {
                 if (context.Expression is LambdaExpression)
                 {
