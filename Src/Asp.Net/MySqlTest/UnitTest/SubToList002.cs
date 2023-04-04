@@ -25,7 +25,7 @@ namespace OrmTest
                         Subjects = SqlFunc.Subqueryable<Subject>().LeftJoin<JournalSubject>((s, js) => s.Id == js.SubjectId).Where((s, js) => js.JournalId == j.Id).ToList(s => s.Name),
                       });
            var a = abc.ToSqlString();
-            if (a != "SELECT *,`j`.`Id` as app_ext_col_0 FROM `Journal` `j` ") 
+            if (a != "SELECT *,`j`.`Id` as app_ext_col_0 FROM `Journal` `j`  ") 
             {
                 throw new Exception("unit error");
             }
