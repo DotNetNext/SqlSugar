@@ -376,7 +376,12 @@ namespace SqlSugar
             });
             if (!GetDataBaseList(newDb).Any(it => it.Equals(databaseName, StringComparison.CurrentCultureIgnoreCase)))
             {
-                newDb.Ado.ExecuteCommand(string.Format(CreateDataBaseSql, databaseName, databaseDirectory));
+                var createSql = CreateDataBaseSql;
+                if (ContainsCharSet("utf8mb4")) 
+                {
+                    createSql = createSql.Replace("utf8 COLLATE utf8_general_ci", "utf8mb4");
+                }
+                newDb.Ado.ExecuteCommand(string.Format(createSql, databaseName, databaseDirectory));
             }
             return true;
         }
@@ -406,7 +411,6 @@ namespace SqlSugar
             }
             sql = sql.Replace("$PrimaryKey", primaryKeyInfo);
             this.Context.Ado.ExecuteCommand(sql);
-            SetCharSet(tableName, "utf8mb4");
             return true;
         }
         public override bool AddRemark(EntityInfo entity)
@@ -630,12 +634,15 @@ namespace SqlSugar
         #endregion
 
         #region Helper
-        private void SetCharSet(string tableName, string charset)
+        private bool ContainsCharSet(string charset)
         {
             if (this.Context.CurrentConnectionConfig.ConnectionString.ObjToString().ToLower().Contains(charset))
             {
-                var name = this.SqlBuilder.GetTranslationTableName(tableName);
-                this.Context.Ado.ExecuteCommand($"ALTER TABLE {name} CONVERT TO CHARACTER SET utf8mb4;");
+                return true;
+            }
+            else 
+            {
+                return false;
             }
         }
         #endregion
