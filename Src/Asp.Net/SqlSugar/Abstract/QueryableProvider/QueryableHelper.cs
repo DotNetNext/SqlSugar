@@ -1067,7 +1067,7 @@ namespace SqlSugar
             }
             foreach (var item in columns)
             {
-                if (item.IsIgnore == false && columnsResult.Any(it => it.PropertyName.EqualCase(item.PropertyName)) && !sql.ToLower().Contains(SqlBuilder.GetTranslationColumnName(item.PropertyName.ToLower())))
+                if (item.IsIgnore == false && columnsResult.Any(it => it.PropertyName.EqualCase(item.PropertyName)) && !sql.ToLower().Contains(SqlBuilder.GetTranslationColumnName(item.PropertyName).ToLower()))
                 {
                     sql = $" {sql},{parameterName}.{SqlBuilder.GetTranslationColumnName(item.DbColumnName)} AS {SqlBuilder.GetTranslationColumnName(item.PropertyName)} ";
                 }
@@ -1350,9 +1350,9 @@ namespace SqlSugar
                 result = GetData<TResult>(sqlObj);
             }
             RestoreMapping();
-            _Mapper(result);
             _InitNavigat(result);
             _SubQuery(result);
+            _Mapper(result);
             return result;
         }
 
@@ -1372,9 +1372,9 @@ namespace SqlSugar
                 result = await GetDataAsync<TResult>(sqlObj);
             }
             RestoreMapping();
-            _Mapper(result);
             await _InitNavigatAsync(result);
             await _SubQueryAsync(result);
+            _Mapper(result);
             return result;
         }
         private void ToSqlBefore()
