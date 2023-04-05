@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
-
+ 
 namespace SqlSugar
 {
     public class MySqlDbMaintenance : DbMaintenanceProvider
@@ -321,13 +321,32 @@ namespace SqlSugar
         }
         public override bool AddColumnRemark(string columnName, string tableName, string description)
         {
-            //base.AddColumnRemark(columnName, tableName, description);
-            var message= @"db.DbMaintenance.UpdateColumn(""tablename"", new DbColumnInfo()
-            {{
-                DataType = ""VARCHAR(30) NOT NULL COMMENT 'xxxxx'"",
-                DbColumnName = ""columnname""
-            }})" ;
-            Check.Exception(true,"MySql no support AddColumnRemark , use " + message);
+
+            tableName = this.SqlBuilder.GetTranslationColumnName(tableName);
+            columnName=this.SqlBuilder.GetTranslationColumnName(columnName);
+            var sql = this.Context.Ado.GetDataTable($"SHOW CREATE TABLE {tableName};").Rows[0][1]+"";
+            var columns=sql.Split('\n');
+            var columnList = columns.Where(it => it.Last()==',').ToList();
+            
+            foreach ( var column in columnList ) 
+            {
+                if (column.Contains(columnName)) 
+                {
+                    Regex regex = new Regex(" COMMENT .+$");
+                    var newcolumn = regex.Replace(column,"");
+                    newcolumn += $" COMMENT '{description.ToSqlFilter()}'  ";
+                    var updateSql = $"ALTER TABLE {tableName} MODIFY COLUMN " + newcolumn.TrimEnd(',');
+                    this.Context.Ado.ExecuteCommand(updateSql);
+                    break;
+                }
+            }
+            ////base.AddColumnRemark(columnName, tableName, description);
+            //var message= @"db.DbMaintenance.UpdateColumn(""tablename"", new DbColumnInfo()
+            //{{
+            //    DataType = ""VARCHAR(30) NOT NULL COMMENT 'xxxxx'"",
+            //    DbColumnName = ""columnname""
+            //}})" ;
+            //Check.Exception(true,"MySql no support AddColumnRemark , use " + message);
             return true;
         }
         /// <summary>
