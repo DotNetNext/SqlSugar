@@ -1,4 +1,5 @@
-﻿using SqlSugar.DbConvert;
+﻿using SqlSugar;
+using SqlSugar.DbConvert;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -84,6 +85,9 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+            var type3 = UnitType.a;
+            var list=db.Queryable<Unit00Z1String1>().Where(it => it.type == type).ToList();
+            var list2 = db.Queryable<Unit00Z1String1>().Where(it => it.type == UnitType.a).ToList();
         }
         private static void Int()
         {
