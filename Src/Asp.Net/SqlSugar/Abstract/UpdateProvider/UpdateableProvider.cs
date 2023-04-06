@@ -192,15 +192,15 @@ namespace SqlSugar
             result.Context=this.Context;
             result.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.ToList();
             result.UpdateBuilder.TableName= this.UpdateBuilder.TableName;
-            result.UpdateBuilder.WhereValues = this.UpdateBuilder.WhereValues.ToList();
-            result.UpdateBuilder.Parameters= this.UpdateBuilder.Parameters.ToList();
+            result.UpdateBuilder.WhereValues = this.UpdateBuilder?.WhereValues?.ToList();
+            result.UpdateBuilder.Parameters= this.UpdateBuilder?.Parameters?.ToList();
             result.UpdateBuilder.IsListUpdate= this.UpdateBuilder.IsListUpdate;
             result.UpdateBuilder.IsWhereColumns= this.UpdateBuilder.IsWhereColumns;
-            result.UpdateBuilder.WhereValues=this.UpdateBuilder.WhereValues.ToList();
+            result.UpdateBuilder.WhereValues=this.UpdateBuilder?.WhereValues?.ToList();
             result.UpdateBuilder.IsNoUpdateDefaultValue = this.UpdateBuilder.IsNoUpdateDefaultValue;
             result.UpdateBuilder.IsNoUpdateNull= this.UpdateBuilder.IsNoUpdateNull;
-            result.UpdateBuilder.SetValues= this.UpdateBuilder.SetValues.ToList();
-            result.UpdateBuilder.UpdateColumns = this.UpdateBuilder.UpdateColumns.ToList();
+            result.UpdateBuilder.SetValues= this.UpdateBuilder?.SetValues?.ToList();
+            result.UpdateBuilder.UpdateColumns = this.UpdateBuilder?.UpdateColumns?.ToList();
             result.UpdateBuilder.Context = this.Context;
             return result;
         }
