@@ -226,7 +226,7 @@ namespace SqlSugar
                         var member = (item as MemberExpression);
                         if (member.Member.Name == "HasValue") 
                         {
-                            newItem = ExpressionBuilderHelper.CreateExpression(member.Expression, Expression.Constant(null), ExpressionType.Equal);
+                            newItem = ExpressionBuilderHelper.CreateExpression(member.Expression, Expression.Constant(null), ExpressionType.NotEqual);
                         }
                         AppendItem(parameter, name, new List<Expression>() { newItem}, model, newItem);
                     }
