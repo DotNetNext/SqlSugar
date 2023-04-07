@@ -44,6 +44,10 @@ namespace SqlSugar
             {
                 return Expression.Equal(left, Expression.Convert(value, left.Type));
             }
+            else if (type == ExpressionType.NotEqual)
+            {
+                return Expression.NotEqual(left, Expression.Convert(value, left.Type));
+            }
             else 
             {
                 //Not implemented, later used in writing
