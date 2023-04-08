@@ -112,7 +112,7 @@ namespace SqlSugar
             this.Add(tableFilter);
             return this;
         }
-        public QueryFilterProvider AddTableFilterIF<T>(bool isAppendFilter,Expression<Func<T, bool>> expression, FilterJoinPosition filterJoinType = FilterJoinPosition.On) where T : class, new()
+        public QueryFilterProvider AddTableFilterIF<T>(bool isAppendFilter,Expression<Func<T, bool>> expression, FilterJoinPosition filterJoinType = FilterJoinPosition.On)  
         {
             if (isAppendFilter) 
             {
