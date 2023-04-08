@@ -11,6 +11,6 @@ namespace SqlSugar
     {
         public string Name { get; set; }
         public Type Type { get; set; }
-        public IEnumerable<CustomAttributeBuilder> CustomAttributes { get; set; }
+        public List<CustomAttributeBuilder> CustomAttributes { get; set; }
     }
 }

@@ -23,7 +23,7 @@ namespace SqlSugar
             this.context = context;
         }
 
-        public DynamicProperyBuilder CreateClass(string entityName, SugarTable table=null, Type baseType = null, Type[] interfaces = null)
+        public DynamicProperyBuilder CreateClass(string entityName, SugarTable table=null, Type baseType = null, Type[] interfaces = null,SplitTableAttribute splitTableAttribute=null)
         {
             this.baseType = baseType;
             this.interfaces = interfaces;
@@ -33,6 +33,10 @@ namespace SqlSugar
                 table = new SugarTable() { TableName = entityName };
             }
             this.entityAttr = new List<CustomAttributeBuilder>() { GetEntity(table) };
+            if (splitTableAttribute != null) 
+            {
+                this.entityAttr.Add(GetSplitEntityAttr(splitTableAttribute));
+            }
             return new DynamicProperyBuilder() {  baseBuilder=this};
         }
 

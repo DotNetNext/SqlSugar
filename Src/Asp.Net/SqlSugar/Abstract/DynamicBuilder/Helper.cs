@@ -10,6 +10,26 @@ namespace SqlSugar
 {
     public partial class DynamicBuilder
     {
+        internal CustomAttributeBuilder GetSplitEntityAttr(SplitTableAttribute sugarTable)
+        {
+            Type attributeType = typeof(SplitTableAttribute);
+            ConstructorInfo attributeCtor = attributeType.GetConstructor(new Type[] {  typeof(SplitType)  });
+            CustomAttributeBuilder attributeBuilder = new CustomAttributeBuilder(attributeCtor, new object[] { sugarTable.SplitType },
+            new PropertyInfo[] {
+                  attributeType.GetProperty(nameof(SplitTableAttribute.SplitType)),
+            }
+            , new object[] {
+                    sugarTable.SplitType
+             });
+            return attributeBuilder;
+        }
+        internal CustomAttributeBuilder GetSplitFieldAttr(SplitFieldAttribute fieldAttribute)
+        {
+            Type attributeType = typeof(SplitFieldAttribute);
+            ConstructorInfo attributeCtor = attributeType.GetConstructor(new Type[] {   });
+            CustomAttributeBuilder attributeBuilder = new CustomAttributeBuilder(attributeCtor, new object[] { });
+            return attributeBuilder;
+        }
         internal CustomAttributeBuilder GetEntity(SugarTable sugarTable)
         {
             Type attributeType = typeof(SugarTable);

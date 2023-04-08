@@ -18,7 +18,7 @@ namespace SqlSugar
             return new DynamicProperyBuilder();
         }
         public DynamicBuilder baseBuilder;
-        public DynamicProperyBuilder CreateProperty(string propertyName, Type properyType, SugarColumn column=null)
+        public DynamicProperyBuilder CreateProperty(string propertyName, Type properyType, SugarColumn column=null,bool isSplitField=false)
         {
             if (column == null) 
             {
@@ -32,6 +32,10 @@ namespace SqlSugar
             addItem.Type = properyType;
             addItem.CustomAttributes = new List<CustomAttributeBuilder>() { baseBuilder.GetProperty(column) };
             baseBuilder.propertyAttr.Add(addItem);
+            if (isSplitField) 
+            {
+                addItem.CustomAttributes.Add(baseBuilder.GetSplitFieldAttr(new SplitFieldAttribute()));
+            }
             return this;
         }
         public DynamicProperyBuilder WithCache(bool isCache=true)
