@@ -23,11 +23,15 @@ namespace SqlSugar
             this.context = context;
         }
 
-        public DynamicProperyBuilder CreateClass(string entityName, SugarTable table, Type baseType = null, Type[] interfaces = null)
+        public DynamicProperyBuilder CreateClass(string entityName, SugarTable table=null, Type baseType = null, Type[] interfaces = null)
         {
             this.baseType = baseType;
             this.interfaces = interfaces;
             this.entityName = entityName;
+            if (table == null) 
+            {
+                table = new SugarTable() { TableName = entityName };
+            }
             this.entityAttr = new List<CustomAttributeBuilder>() { GetEntity(table) };
             return new DynamicProperyBuilder() {  baseBuilder=this};
         }

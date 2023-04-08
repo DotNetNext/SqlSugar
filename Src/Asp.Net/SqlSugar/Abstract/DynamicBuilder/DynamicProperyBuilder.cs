@@ -18,12 +18,19 @@ namespace SqlSugar
             return new DynamicProperyBuilder();
         }
         public DynamicBuilder baseBuilder;
-        public DynamicProperyBuilder CreateProperty(string propertyName, Type properyType, SugarColumn table)
+        public DynamicProperyBuilder CreateProperty(string propertyName, Type properyType, SugarColumn column=null)
         {
+            if (column == null) 
+            {
+                column = new SugarColumn()
+                {
+                     ColumnName=propertyName
+                };
+            }
             PropertyMetadata addItem = new PropertyMetadata();
             addItem.Name = propertyName;
             addItem.Type = properyType;
-            addItem.CustomAttributes = new List<CustomAttributeBuilder>() { baseBuilder.GetProperty(table) };
+            addItem.CustomAttributes = new List<CustomAttributeBuilder>() { baseBuilder.GetProperty(column) };
             baseBuilder.propertyAttr.Add(addItem);
             return this;
         }
