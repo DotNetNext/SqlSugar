@@ -48,6 +48,17 @@ namespace SqlSugar
 
         public virtual void InitTables(Type entityType)
         {
+            var splitTableAttribute = entityType.GetCustomAttribute<SplitTableAttribute>();
+            if (splitTableAttribute != null) 
+            {
+                var mappingInfo=this.Context.MappingTables.FirstOrDefault(it => it.EntityName == entityType.Name);
+                if (mappingInfo == null) 
+                {
+                    this.Context.CodeFirst.SplitTables().InitTables(entityType);
+                    this.Context.MappingTables.RemoveAll(it=>it.EntityName==entityType.Name);
+                    return;
+                }
+            }
             //Prevent concurrent requests if used in your program
             lock (CodeFirstProvider.LockObject)
             {
