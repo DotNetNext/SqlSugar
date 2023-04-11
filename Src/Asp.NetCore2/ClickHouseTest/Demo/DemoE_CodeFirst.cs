@@ -18,6 +18,9 @@ namespace OrmTest
                 ConnectionString = Config.ConnectionString3,
                 InitKeyType = InitKeyType.Attribute,
                 IsAutoCloseConnection = true
+            },
+            db => {
+                db.Aop.OnLogExecuting = (s, p) => Console.WriteLine(s);
             });
             //db.DbMaintenance.CreateDatabase(); 
             db.CodeFirst.InitTables(typeof(CodeFirstTable1));//Create CodeFirstTable1 
@@ -25,6 +28,9 @@ namespace OrmTest
             var list = db.Queryable<CodeFirstTable1>().ToList();
             TestBool(db);
             TestGuid(db);
+            db.CodeFirst.InitTables<CodeFirstTable2>();
+            db.Insertable(new List<CodeFirstTable2>() { new CodeFirstTable2() { CreateTime = DateTime.Now, Name = "a", Text = new ulong[] { 1 } } }).ExecuteCommand();
+            var list2=db.Queryable<CodeFirstTable2>().ToList();
             Console.WriteLine("#### CodeFirst end ####");
         }
         private static void TestGuid(SqlSugarClient db)
@@ -81,6 +87,16 @@ namespace OrmTest
         [SugarColumn(IsPrimaryKey =true)]
         public long Id { get; set; }
         public bool A { get; set; }
+    }
+    public class CodeFirstTable2
+    {
+        [SugarColumn(IsPrimaryKey = true)]
+        public int Id { get; set; }
+        public string Name { get; set; }
+        [SugarColumn(ColumnDataType = "Array(UInt64)",IsArray  =true)]//custom
+        public UInt64[] Text { get; set; }
+        [SugarColumn(IsNullable = true)]
+        public DateTime CreateTime { get; set; }
     }
     public class CodeFirstTable1
     {
