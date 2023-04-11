@@ -35,6 +35,7 @@ namespace SqlSugar
         SugarActionType SugarActionType { get; set; }
 
         #region Deleteable
+        DeleteMethodInfo DeleteableByObject(object singleEntityObjectOrListObject);
         IDeleteable<T> Deleteable<T>() where T : class, new();
         IDeleteable<T> Deleteable<T>(dynamic primaryKeyValue) where T : class, new();
         IDeleteable<T> Deleteable<T>(dynamic[] primaryKeyValues) where T : class, new();
@@ -187,6 +188,7 @@ namespace SqlSugar
         #endregion
 
         #region Updateable
+        UpdateMethodInfo UpdateableByObject(object singleEntityObjectOrListObject);
         IUpdateable<T> Updateable<T>() where T : class, new();
         IUpdateable<T> Updateable<T>(Dictionary<string, object> columnDictionary) where T : class, new();
         IUpdateable<T> Updateable<T>(dynamic updateDynamicObject) where T : class, new();
