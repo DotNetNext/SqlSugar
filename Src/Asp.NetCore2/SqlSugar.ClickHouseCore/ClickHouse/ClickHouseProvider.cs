@@ -116,6 +116,7 @@ namespace SqlSugar.ClickHouse
             CheckConnection();
             ClickHouseCommand sqlCommand =connection.CreateCommand();
             var pars = ToIDbDataParameter(parameters);
+            var arrayPars = parameters?.Where(it =>it.IsArray)?.Where(it=>it.ParameterName!=null)?.Select(it=>it.ParameterName);
             foreach (var param in pars.OrderByDescending(it=>it.ParameterName.Length)) 
             {
                 var newName = param.ParameterName.TrimStart('@');
@@ -136,18 +137,22 @@ namespace SqlSugar.ClickHouse
                 {
                     dbtype = ClickHouseDbBind.MappingTypesConst.First(it => it.Value == CSharpDataType.@sbyte).Key;
                 }
-                if (param.Value!=null&&param.Value!=DBNull.Value&&dbtype.ObjToString() == System.Data.DbType.Boolean.ToString())
+                if (param.Value != null && param.Value != DBNull.Value && dbtype.ObjToString() == System.Data.DbType.Boolean.ToString())
                 {
-                    sql = sql.Replace(param.ParameterName, param.Value.ObjToBool()?"1":"0");
+                    sql = sql.Replace(param.ParameterName, param.Value.ObjToBool() ? "1" : "0");
                 }
                 else if (dbtype.ObjToString() == System.Data.DbType.Boolean.ToString())
                 {
                     sql = sql.Replace(param.ParameterName, "null");
                 }
+                else if (arrayPars != null&& arrayPars.Contains(param.ParameterName)) 
+                {
+                    sql= sql.Replace(param.ParameterName, "'" +this.Context.Utilities.SerializeObject(param.Value).ToSqlFilter() + "'");
+                }
                 else
                 {
                     sql = sql.Replace(param.ParameterName, "{" + newName + ":" + dbtype + "}");
-                    if (dbtype.ObjToString() == "DateTime"&&param.Value==DBNull.Value) 
+                    if (dbtype.ObjToString() == "DateTime" && param.Value == DBNull.Value)
                     {
                         param.Value = Convert.ToDateTime("1900-01-01");
                     }
