@@ -145,9 +145,16 @@ namespace SqlSugar.ClickHouse
                 {
                     sql = sql.Replace(param.ParameterName, "null");
                 }
-                else if (arrayPars != null&& arrayPars.Contains(param.ParameterName)) 
+                else if (arrayPars != null && arrayPars.Contains(param.ParameterName))
                 {
-                    sql= sql.Replace(param.ParameterName, "'" +this.Context.Utilities.SerializeObject(param.Value).ToSqlFilter() + "'");
+                    if (param.Value == null)
+                    {
+                        sql = sql.Replace(param.ParameterName, "null");
+                    }
+                    else
+                    {
+                        sql = sql.Replace(param.ParameterName, "'" + this.Context.Utilities.SerializeObject(param.Value).ToSqlFilter() + "'");
+                    }
                 }
                 else
                 {
