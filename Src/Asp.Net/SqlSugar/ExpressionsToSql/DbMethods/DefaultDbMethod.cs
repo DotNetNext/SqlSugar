@@ -743,15 +743,16 @@ namespace SqlSugar
                 var listPar = model.Args[1].MemberValue as ListAnyParameter;
                 foreach (var item in (model.Args[0].MemberValue as IList))
                 {
+                    var sql = listPar.Sql;
+                    if (sb.Length > 3)
+                    {
+                        sb.Append("OR");
+                    }
                     foreach (var columnInfo in listPar.Columns)
                     {
                         var replace = listPar.ConvetColumnFunc($"{listPar.Name}.{columnInfo.DbColumnName}");
-                        if (listPar.Sql.Contains(replace))
+                        if(sql.Contains(replace))
                         {
-                            if (sb.Length>3) 
-                            {
-                                sb.Append("OR");
-                            }
                             var value = columnInfo.PropertyInfo.GetValue(item);
                             var newValue = "null";
                             if (value != null) 
@@ -791,9 +792,10 @@ namespace SqlSugar
                                     newValue = value.ToSqlValue();
                                 }
                             }
-                            sb.Append(listPar.Sql.Replace(replace, newValue));
+                            sql = sql.Replace(replace, newValue);
                         }
                     }
+                    sb.Append(sql);
                 }
                 sb.Append(" ) ");
             }
