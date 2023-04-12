@@ -16,7 +16,9 @@ static void MyTest()
     },
     it =>
     {
-        it.Aop.OnLogExecuting = (s, p) => Console.WriteLine(s, p);
+        it.Aop.OnLogExecuting = 
+        (s, p) => 
+         Console.WriteLine( UtilMethods.GetNativeSql(s, p));
     });
     sqlugar.DbMaintenance.CreateDatabase();
     sqlugar.CodeFirst.InitTables<UnitDate01231>();
@@ -44,6 +46,7 @@ static void MyTest()
        sqlugar.DbMaintenance.DropTable<UnitDatez211afa2222>();
     sqlugar.CodeFirst.InitTables<UnitDatez211afa2222>();
     sqlugar.Insertable(new UnitDatez211afa2222()).ExecuteCommand();
+    sqlugar.Updateable(new UnitDatez211afa2222()).WhereColumns(it=>it.timeOnly).ExecuteCommand();
     sqlugar.Insertable(new UnitDatez211afa2222() { dateOnly=DateOnly.FromDateTime(DateTime.Now) }).ExecuteCommand();
     var list2=sqlugar.Queryable<UnitDatez211afa2222>().ToList();
 }
