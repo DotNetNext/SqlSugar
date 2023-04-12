@@ -858,6 +858,10 @@ namespace SqlSugar
             {
                 return true;
             }
+            if (expression.Method.Name == "Any"&& ExpressionTool.IsVariable(expression.Arguments[0]) )
+            {
+                return true;
+            }
             if (expression.Method.Name == "Format" && expression.Method.DeclaringType == UtilConstants.StringType)
             {
                 return true;
