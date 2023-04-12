@@ -252,6 +252,31 @@ namespace SqlSugar
                 }
                 model.Args.Add(argItem);
             }
+            else if (name == "ListAny"&& item is LambdaExpression) 
+            {
+                var sql =GetNewExpressionValue(item,ResolveExpressType.WhereMultiple);
+                var lamExp = (item as LambdaExpression);
+                var pExp = lamExp.Parameters[0];
+                var pname = pExp.Name;
+                model.Args.Add(new MethodCallExpressionArgs() {
+                   MemberValue=new ListAnyParameter() {
+                      Sql= sql,
+                      Name=pname,
+                      Columns=this.Context.SugarContext.Context.EntityMaintenance.GetEntityInfo(pExp.Type).Columns,
+                      ConvetColumnFunc = this.Context.GetTranslationColumnName
+                   }
+                });
+                if (this.Context.IsSingle && this.Context.SingleTableNameSubqueryShortName == null) 
+                {
+                    ParameterExpressionVisitor visitor = new ParameterExpressionVisitor();
+                    visitor.Visit(lamExp);
+                    var tableParamter=visitor.Parameters.FirstOrDefault(it => it.Name != pname);
+                    if (tableParamter != null) 
+                    {
+                        this.Context.SingleTableNameSubqueryShortName = tableParamter.Name;
+                    }
+                } 
+            }
             else
             {
                 AppendModel(parameter, model, item);
@@ -792,6 +817,9 @@ namespace SqlSugar
                         return this.Context.DbMehtods.CompareTo(model);
                     case "SplitIn":
                         return this.Context.DbMehtods.SplitIn(model);
+                    case "ListAny":
+                        this.Context.Parameters.RemoveAll(it => model.Args[0].MemberName.ObjToString().Contains(it.ParameterName));
+                        return this.Context.DbMehtods.ListAny(model);
                     default:
                         break;
                 }

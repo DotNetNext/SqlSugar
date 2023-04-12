@@ -732,6 +732,81 @@ namespace SqlSugar
                 });
             return $" ({likeString1} or {likeString2}  or {likeString3} or {fullString}={value} ) ";
         }
+
+
+        public string ListAny(MethodCallExpressionModel model) 
+        {
+            StringBuilder sb = new StringBuilder();
+            if (model.Args[0].MemberValue!=null&&(model.Args[0].MemberValue as IList).Count>0) 
+            {
+                sb.Append(" ( ");
+                var listPar = model.Args[1].MemberValue as ListAnyParameter;
+                foreach (var item in (model.Args[0].MemberValue as IList))
+                {
+                    foreach (var columnInfo in listPar.Columns)
+                    {
+                        var replace = listPar.ConvetColumnFunc($"{listPar.Name}.{columnInfo.DbColumnName}");
+                        if (listPar.Sql.Contains(replace))
+                        {
+                            if (sb.Length>3) 
+                            {
+                                sb.Append("OR");
+                            }
+                            var value = columnInfo.PropertyInfo.GetValue(item);
+                            var newValue = "null";
+                            if (value != null) 
+                            {
+                                if (UtilMethods.IsNumber(columnInfo.UnderType.Name))
+                                {
+                                    newValue = value.ToString();
+                                }
+                                else if(columnInfo.UnderType==SqlSugar.UtilConstants.GuidType)
+                                {
+                                    newValue = ToGuid(new MethodCallExpressionModel()
+                                    {
+                                       Args=new List<MethodCallExpressionArgs>() 
+                                       {
+                                            new MethodCallExpressionArgs(){ 
+                                              MemberValue=value.ToSqlValue(),
+                                              MemberName=value.ToSqlValue()
+                                            }
+                                       }
+                                    });
+                                }
+                                else if (columnInfo.UnderType == SqlSugar.UtilConstants.DateType)
+                                {
+                                    newValue = ToDate(new MethodCallExpressionModel()
+                                    {
+                                        Args = new List<MethodCallExpressionArgs>()
+                                       {
+                                            new MethodCallExpressionArgs(){
+                                              MemberValue=UtilMethods.GetConvertValue( value).ToSqlValue(),
+                                              MemberName=UtilMethods.GetConvertValue( value).ToSqlValue()
+                                            }
+                                       }
+                                    });
+                                }
+                                else  
+                                {
+                                    newValue = value.ToSqlValue();
+                                }
+                            }
+                            sb.Append(listPar.Sql.Replace(replace, newValue));
+                        }
+                    }
+                }
+                sb.Append(" ) ");
+            }
+            var result = sb.ToString();
+            if (result.IsNullOrEmpty())
+            {
+                return " 1=2 ";
+            }
+            else 
+            {
+                return result;
+            }
+        }
         public virtual string GetTableWithDataBase(string dataBaseName,string tableName) 
         {
             return $"{dataBaseName}.{tableName}";

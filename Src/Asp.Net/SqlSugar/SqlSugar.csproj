@@ -149,6 +149,8 @@
     <Compile Include="Entities\DefaultCustom.cs" />
     <Compile Include="Entities\DeleteNavOptions.cs" />
     <Compile Include="Entities\JoinInfoParameter.cs" />
+    <Compile Include="ExpressionsToSql\Common\ParameterExpressionVisitor.cs" />
+    <Compile Include="ExpressionsToSql\Common\ListAnyParameter.cs" />
     <Compile Include="ExpressionsToSql\Common\MapperSql.cs" />
     <Compile Include="ExpressionsToSql\Common\NewExpressionInfo.cs" />
     <Compile Include="ExpressionsToSql\ResolveItems\BaseResolve_Append.cs" />
