@@ -428,6 +428,21 @@ namespace SqlSugar
                 GetDbColumnIndex++;
                 return pname;
             }
+            else if (columnInfo.PropertyType != null && columnInfo.PropertyType.Name == "DateOnly")
+            {
+                var timeSpan = UtilMethods.DateOnlyToDateTime(columnInfo.Value);
+                var pname = Builder.SqlParameterKeyWord + columnInfo.DbColumnName + "_ts" + GetDbColumnIndex;
+                if (timeSpan == null)
+                {
+                    this.Parameters.Add(new SugarParameter(pname, null) { DbType = System.Data.DbType.Date });
+                }
+                else
+                {
+                    this.Parameters.Add(new SugarParameter(pname, Convert.ToDateTime(timeSpan)));
+                }
+                GetDbColumnIndex++;
+                return pname;
+            }
             else
             {
                 return name + "";
