@@ -627,7 +627,9 @@ namespace SqlSugar
 
                 try
                 {
-                    assembly = Assembly.LoadFrom("MySqlBackupNet.MySqlConnector.dll");
+                    Assembly currentAssembly = Assembly.GetExecutingAssembly();
+                    string exePath = currentAssembly.Location.Replace("SqlSugar.dll", "MySqlBackupNet.MySqlConnector.dll");
+                    assembly = Assembly.LoadFrom(exePath);
                 }
                 catch (Exception)
                 {
