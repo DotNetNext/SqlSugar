@@ -284,5 +284,10 @@ namespace SqlSugar
         {
             throw new NotSupportedException("Can only be used in expressions");
         }
+
+        public static bool ListAny<T>(List<T> listConstant, Expression<Func<T,bool>> expression)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
     }
 }

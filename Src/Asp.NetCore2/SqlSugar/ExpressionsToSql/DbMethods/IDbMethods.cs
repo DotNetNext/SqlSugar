@@ -104,6 +104,7 @@ namespace SqlSugar
         string JsonArrayAny(MethodCallExpressionModel model);
         string CompareTo(MethodCallExpressionModel model);
         string SplitIn(MethodCallExpressionModel model);
+        string ListAny(MethodCallExpressionModel model);
         string GetTableWithDataBase(string databaseName,string tableName);
     }
 }

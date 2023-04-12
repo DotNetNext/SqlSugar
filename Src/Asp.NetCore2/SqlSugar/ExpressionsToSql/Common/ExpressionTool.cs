@@ -8,6 +8,12 @@ namespace SqlSugar
 {
     public class ExpressionTool
     {
+        public static bool IsVariable(Expression expr)
+        {
+            var ps = new ParameterExpressionVisitor();
+            ps.Visit(expr);
+            return ps.Parameters.Count==0;
+        }
         public static bool IsComparisonOperatorBool(BinaryExpression binaryExp)
         {
             return binaryExp.NodeType.IsIn(ExpressionType.Equal, 
