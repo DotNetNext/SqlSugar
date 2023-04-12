@@ -53,6 +53,7 @@ namespace OrmTest
                       y.Name
                   }).Any()
               }).ToList();
+            db.Queryable<Order>().Where(it => getByWhere.Any(s => s.Id == it.Id && s.Name == it.Name)).ToList();
             Console.WriteLine("#### Examples End ####");
         }
 
