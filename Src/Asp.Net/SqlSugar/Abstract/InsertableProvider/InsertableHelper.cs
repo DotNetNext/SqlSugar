@@ -198,7 +198,7 @@ namespace SqlSugar
 
         private void SetInsertItemByDic(int i, T item, List<DbColumnInfo> insertItem)
         {
-            foreach (var column in item as Dictionary<string, object>)
+            foreach (var column in (item as Dictionary<string, object>).OrderBy(it=>it.Key))
             {
                 var columnInfo = new DbColumnInfo()
                 {
