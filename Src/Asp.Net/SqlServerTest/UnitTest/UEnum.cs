@@ -10,12 +10,13 @@ namespace OrmTest
 {
     public partial class NewUnitTest
     {
+        public UnitType xxx { get; set; }
         public static void Enum()
         {
-            String();
+            String(new NewUnitTest() { xxx = UnitType.a });
             Int();
         }
-        private static void String()
+        private static void String(NewUnitTest x)
         {
             var db = Db;
 
@@ -31,7 +32,7 @@ namespace OrmTest
              UnitType.b
             };
             var zz = UnitType.b;
-            var x = db.Queryable<Unit00Z1string1>()
+            var x1 = db.Queryable<Unit00Z1string1>()
                     .Where(it => it.type == zz)
                 .Where(it=>it.type2== UnitType.b)
                 .Where(it=> ids.Contains(it.type)).Select(it => new
@@ -73,6 +74,16 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+             p2 = db.Updateable<Unit00Z1string1>().SetColumns(it => new Unit00Z1string1
+            {
+                type = x.xxx,
+                type2 = type
+            })
+              .Where(it => true).ToSql();
+            if (!(p2.Value.First().Value is string))
+            {
+                throw new Exception("unit error");
+            }
 
             db.CurrentConnectionConfig.MoreSettings.TableEnumIsString = false;
             var p=db.Updateable<Unit00Z1String1>().SetColumns(it => new Unit00Z1String1
@@ -88,6 +99,7 @@ namespace OrmTest
             var type3 = UnitType.a;
             var list=db.Queryable<Unit00Z1String1>().Where(it => it.type == type).ToList();
             var list2 = db.Queryable<Unit00Z1String1>().Where(it => it.type == UnitType.a).ToList();
+            var list21 = db.Queryable<Unit00Z1String1>().Where(it => it.type == x.xxx).ToList();
         }
         private static void Int()
         {
