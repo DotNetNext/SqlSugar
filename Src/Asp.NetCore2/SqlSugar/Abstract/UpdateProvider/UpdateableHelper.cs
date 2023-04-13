@@ -280,7 +280,7 @@ namespace SqlSugar
         }
         private void SetUpdateItemByDic(int i, T item, List<DbColumnInfo> updateItem)
         {
-            foreach (var column in item as Dictionary<string, object>)
+            foreach (var column in (item as Dictionary<string, object>).OrderBy(it=>it.Key))
             {
                 var columnInfo = new DbColumnInfo()
                 {
