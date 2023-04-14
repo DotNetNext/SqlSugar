@@ -419,7 +419,7 @@ namespace SqlSugar
                     this.Context.DbMaintenance.RenameColumn(tableName, item.OldDbColumnName, item.DbColumnName);
                     isChange = true;
                 }
-
+                var isAddPrimaryKey = false;
                 foreach (var item in entityColumns)
                 {
                     var dbColumn = dbColumns.FirstOrDefault(dc => dc.DbColumnName.Equals(item.DbColumnName, StringComparison.CurrentCultureIgnoreCase));
@@ -431,6 +431,7 @@ namespace SqlSugar
                         var isAdd = item.IsPrimarykey;
                         if (isAdd)
                         {
+                            isAddPrimaryKey = true;
                             this.Context.DbMaintenance.AddPrimaryKey(tableName, item.DbColumnName);
                         }
                         else
@@ -443,7 +444,7 @@ namespace SqlSugar
                         ChangeKey(entityInfo, tableName, item);
                     }
                 }
-                if (entityColumns.Count(it => it.IsPrimarykey)==1&&dbColumns.Count(it => it.IsPrimarykey) ==0) 
+                if (isAddPrimaryKey==false&&entityColumns.Count(it => it.IsPrimarykey)==1&&dbColumns.Count(it => it.IsPrimarykey) ==0) 
                 {
                     var addPk=entityColumns.First(it => it.IsPrimarykey);
                     this.Context.DbMaintenance.AddPrimaryKey(tableName, addPk.DbColumnName);
