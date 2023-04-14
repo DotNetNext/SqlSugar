@@ -443,6 +443,11 @@ namespace SqlSugar
                         ChangeKey(entityInfo, tableName, item);
                     }
                 }
+                if (entityColumns.Count(it => it.IsPrimarykey)==1&&dbColumns.Count(it => it.IsPrimarykey) ==0) 
+                {
+                    var addPk=entityColumns.First(it => it.IsPrimarykey);
+                    this.Context.DbMaintenance.AddPrimaryKey(tableName, addPk.DbColumnName);
+                }
                 if (isMultiplePrimaryKey)
                 {
                     var oldPkNames = dbColumns.Where(it => it.IsPrimarykey).Select(it => it.DbColumnName.ToLower()).OrderBy(it => it).ToList();
