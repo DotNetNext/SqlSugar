@@ -1189,6 +1189,10 @@ namespace SqlSugar
         #endregion
 
         #region Helper
+        public Task<SugarAsyncLock> AsyncLock(int timeOutSeconds = 30)
+        {
+            return this.Context.AsyncLock(timeOutSeconds);
+        }
         public SplitTableContext SplitHelper<T>() where T:class,new()
         {
             return this.Context.SplitHelper<T>();

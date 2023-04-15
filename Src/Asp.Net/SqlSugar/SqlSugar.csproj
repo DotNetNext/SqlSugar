@@ -436,6 +436,7 @@
     <Compile Include="Utilities\ExpressionBuilderHelper.cs" />
     <Compile Include="Utilities\CommonExtensions.cs" />
     <Compile Include="Utilities\PropertyCallAdapterProvider.cs" />
+    <Compile Include="Utilities\SugarAsyncLock.cs" />
     <Compile Include="Utilities\SugarRetry.cs" />
     <Compile Include="Utilities\DataTableExtensions.cs" />
     <Compile Include="Utilities\ReflectionExtensions.cs" />

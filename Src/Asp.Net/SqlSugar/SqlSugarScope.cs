@@ -851,5 +851,9 @@ namespace SqlSugar
         {
             ScopedContext.RemoveConnection(configId);
         }
+        public Task<SugarAsyncLock> AsyncLock(int timeOutSeconds=30)
+        {
+            return ScopedContext.AsyncLock(timeOutSeconds);
+        }
     }
 }

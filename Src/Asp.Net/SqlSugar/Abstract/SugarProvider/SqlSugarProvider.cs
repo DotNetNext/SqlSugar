@@ -1632,6 +1632,11 @@ namespace SqlSugar
         #endregion
 
         #region Other
+        public Task<SugarAsyncLock> AsyncLock(int timeOutSeconds = 30)
+        {
+            var result = new SugarAsyncLock(this);
+            return result.AsyncLock(timeOutSeconds);
+        }
         public DynamicBuilder DynamicBuilder() 
         {
             return new DynamicBuilder(this.Context);
