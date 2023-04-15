@@ -114,7 +114,10 @@ namespace SqlSugar
         }
 
         #region  API
-
+        public Task<SugarAsyncLock> AsyncLock(int timeOutSeconds = 30)
+        {
+            return ScopedContext.AsyncLock(timeOutSeconds);
+        }
         public SugarActionType SugarActionType { get => ScopedContext.SugarActionType; set => ScopedContext.SugarActionType = value; }
         public MappingTableList MappingTables { get => ScopedContext.MappingTables; set => ScopedContext.MappingTables = value; }
         public MappingColumnList MappingColumns { get => ScopedContext.MappingColumns; set => ScopedContext.MappingColumns = value; }
