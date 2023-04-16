@@ -681,7 +681,9 @@ namespace SqlSugar
         {
             Async();
             //False asynchrony . No Support DataSet
-            return Task.FromResult(GetDataSetAll(sql, parameters));
+            return Task.Run(() => {
+               return  GetDataSetAll(sql, parameters);
+            });
         }
         #endregion
 
