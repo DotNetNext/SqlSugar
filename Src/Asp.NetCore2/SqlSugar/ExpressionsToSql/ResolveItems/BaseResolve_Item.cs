@@ -68,8 +68,7 @@ namespace SqlSugar
         {
             var mappingKeys = GetMappingColumns(parameter.CurrentExpression);
             var isSameType = mappingKeys.Keys.Count > 0;
-            CallContextThread<Dictionary<string, string>>.SetData("Exp_Select_Mapping_Key", mappingKeys);
-            CallContextAsync<Dictionary<string, string>>.SetData("Exp_Select_Mapping_Key", mappingKeys);
+            this.Context.SugarContext.QueryBuilder.MappingKeys = mappingKeys;
             this.Expression = item;
             if (this.Context.IsJoin && (item is MemberInitExpression || item is NewExpression))
             {
