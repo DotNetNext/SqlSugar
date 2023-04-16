@@ -28,7 +28,28 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+            db.CodeFirst.InitTables<ContactInfo>();
+            db.Insertable(new ContactInfo() { Name = Guid.NewGuid() + "", Relationship = "a", Phone = "aa", Phone2 = "a", Address = "a" })
+                .ExecuteCommand();
+            var list2=db.Queryable<ContactInfo>()
+                .LeftJoin<ContactInfo>((x, y) => x.Name == y.Name)
+               .Select((x, y) => new UserInfoDTO()
+               {
+                    Name=x.Name.SelectAll(),
+                      ContacAll=y
+               }).ToList();
+            var list3 = db.Queryable<ContactInfo>()
+             .LeftJoin<ContactInfo>((x, y) => x.Name == y.Name)
+            .Select((x, y) => new UserInfoDTO()
+            {
+                Name = x.Name.SelectAll(),
+                ContacAll = y
+            }).ToListAsync().GetAwaiter().GetResult();
 
+            if (list3.First().ContacAll == null ||   list3.First().ContacAll==null) 
+            {
+                throw new Exception("unit error");
+            }
         }
 
     }
@@ -40,6 +61,15 @@ namespace OrmTest
         public string  Name { get; set; }
         [SugarColumn(IsJson = true)]
         public List<ContactInfo> ContacAll { get; set; }
+    }
+    public class UserInfoDTO
+    {
+        [SqlSugar.SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+        public int Id { get; set; }
+        [SugarColumn(Length = 20, IsNullable = true)]
+        public string Name { get; set; }
+  
+        public  ContactInfo  ContacAll { get; set; }
     }
     public class ContactInfo
     {
