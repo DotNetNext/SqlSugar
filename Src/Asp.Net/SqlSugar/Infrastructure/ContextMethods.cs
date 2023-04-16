@@ -368,11 +368,7 @@ namespace SqlSugar
         private Dictionary<string, object> DataReaderToList<T>(IDataReader reader, Type tType, List<PropertyInfo> classProperties, List<T> reval)
         {
             var readerValues = DataReaderToDictionary(reader, tType);
-            var mappingKeys = CallContextThread<Dictionary<string, string>>.GetData("Exp_Select_Mapping_Key");
-            if (mappingKeys == null) 
-            {
-                mappingKeys = CallContextAsync<Dictionary<string, string>>.GetData("Exp_Select_Mapping_Key");
-            }
+            var mappingKeys = this.QueryBuilder.MappingKeys;
             var result = new Dictionary<string, object>();
             foreach (var item in classProperties)
             {

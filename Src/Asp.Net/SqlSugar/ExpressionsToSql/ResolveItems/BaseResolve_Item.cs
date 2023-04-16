@@ -122,14 +122,12 @@ namespace SqlSugar
                     mappingKeys.Add("Single_" + newExpressionInfo.LeftNameName, asName + "." + newExpressionInfo.LeftNameName);
                     if (newExpressionInfo.Type == nameof(ConstantExpression))
                     {
-                        CallContextThread<Dictionary<string, string>>.SetData("Exp_Select_Mapping_Key", mappingKeys);
-                        CallContextAsync<Dictionary<string, string>>.SetData("Exp_Select_Mapping_Key", mappingKeys);
+                        this.Context.SugarContext.QueryBuilder.MappingKeys = mappingKeys; 
                         parameter.Context.Result.Append($" {newExpressionInfo.RightDbName} AS {this.Context.SqlTranslationLeft}{asName}.{newExpressionInfo.LeftNameName}{this.Context.SqlTranslationRight}  ");
                     }
                     else
                     {
-                        CallContextThread<Dictionary<string, string>>.SetData("Exp_Select_Mapping_Key", mappingKeys);
-                        CallContextAsync<Dictionary<string, string>>.SetData("Exp_Select_Mapping_Key", mappingKeys);
+                        this.Context.SugarContext.QueryBuilder.MappingKeys = mappingKeys;
                         parameter.Context.Result.Append(this.Context.GetAsString(
                                this.Context.SqlTranslationLeft + asName + "." + newExpressionInfo.LeftNameName + this.Context.SqlTranslationRight,
                                 newExpressionInfo.RightDbName
