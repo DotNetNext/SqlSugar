@@ -973,6 +973,7 @@ namespace SqlSugar
         public bool NoCheckInclude { get;  set; }
         public virtual bool IsSelectNoAll { get; set; } = false;
         public List<string> AutoAppendedColumns { get;  set; }
+        public Dictionary<string, string> MappingKeys { get;  set; }
         #endregion
 
         private string GetTableName(string entityName)
