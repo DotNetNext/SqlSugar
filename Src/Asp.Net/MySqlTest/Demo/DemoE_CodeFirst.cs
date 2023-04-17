@@ -26,9 +26,17 @@ namespace OrmTest
             var list = db.Queryable<CodeFirstTable1>().ToList();
             Console.WriteLine("#### CodeFirst end ####");
             db.CodeFirst.InitTables<UnitByte1>();
+            db.CodeFirst.InitTables<CodeFirstGuid>();
+            db.Insertable(new CodeFirstGuid() { Id = Guid.NewGuid() }).ExecuteCommand();
             Console.WriteLine("#### CodeFirst end ####");
         }
     }
+
+    public class CodeFirstGuid 
+    {
+        public Guid? Id { get; set; }
+    }
+
     public class UnitByte1
     {
         public byte[] bytes{ get; set; }
