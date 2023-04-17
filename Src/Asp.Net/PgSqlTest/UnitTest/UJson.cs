@@ -61,7 +61,11 @@ namespace OrmTest
                 .SetColumns(it => it.os == order)
                 .Where(it => true)
                 .ExecuteCommand();
-
+            db.
+             Updateable<UnitJsonTestadsga1>()
+             .SetColumns(it => new UnitJsonTestadsga1() { os = order })
+             .Where(it => true)
+             .ExecuteCommand();
             var list14 = db.Queryable<UnitJsonTestadsga1>().ToList();
         }
     }

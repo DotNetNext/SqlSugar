@@ -78,28 +78,34 @@ namespace OrmTest
                 }
             };
             var list11 = jsonDb.Queryable<UNITJSONTESTADSGA1>().Select(it => new { it }).ToList();
-            if (list11.FirstOrDefault().it.os == null) 
+            if (list11.FirstOrDefault().it.os == null)
             {
                 throw new Exception("unit test");
             }
 
-            var list12 = jsonDb.Queryable<UNITJSONTESTADSGA1>().Select(it =>  it ).ToList();
-            if (!list12.Any(z=>z.os.Count>0))
+            var list12 = jsonDb.Queryable<UNITJSONTESTADSGA1>().Select(it => it).ToList();
+            if (!list12.Any(z => z.os.Count > 0))
             {
                 throw new Exception("unit test");
             }
 
-            var list13=db.Queryable<object>().AS("UnitTestModel1").Select<ViewTestModel1>().ToList();
-            if (list13.First().Ids.Count() == 0) 
+            var list13 = db.Queryable<object>().AS("UnitTestModel1").Select<ViewTestModel1>().ToList();
+            if (list13.First().Ids.Count() == 0)
             {
                 throw new Exception("unit test");
             }
-            var order = new List<Order>() { new Order() {  Id=1} };
+            var order = new List<Order>() { new Order() { Id = 1 } };
             db.
                 Updateable<UnitJsonTestadsga1>()
                 .SetColumns(it => it.os == order)
-                .Where(it=>true)
+                .Where(it => true)
                 .ExecuteCommand();
+
+            db.
+              Updateable<UnitJsonTestadsga1>()
+              .SetColumns(it => new UnitJsonTestadsga1() {  os = order })
+              .Where(it => true)
+              .ExecuteCommand();
 
             var list14=db.Queryable<UnitJsonTestadsga1>().ToList();
         }
