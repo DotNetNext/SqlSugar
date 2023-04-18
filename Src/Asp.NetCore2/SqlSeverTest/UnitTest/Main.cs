@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UnitCustom020.Init();
             UnitSubToList.Init();
             UJsonsdafa.Init();
             UOneManyMany.init();
