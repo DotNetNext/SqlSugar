@@ -20,6 +20,25 @@ namespace SqlSugar
             _Includes<T, TReturn1>(this.Context, include1);
             return this;
         }
+        public ISugarQueryable<T> IncludesByNameString(string navMemberName) 
+        {
+            var navs = this.EntityInfo.Columns.Where(it => it.Navigat != null&&it.PropertyName.EqualCase(navMemberName)).ToList();
+            foreach (var item in navs)
+            {
+                var properyType = item.PropertyInfo.PropertyType;
+                var properyItemType = properyType;
+                if (properyType.FullName.IsCollectionsList())
+                {
+                    properyItemType = properyType.GetGenericArguments()[0];
+                }
+                var exp = ExpressionBuilderHelper.CreateExpressionSelectField(typeof(T), item.PropertyName, properyType);
+                var method = this.GetType().GetMethods().Where(it => it.Name == "IncludesByExpression")
+                    .First()
+                    .MakeGenericMethod(properyItemType);
+                method.Invoke(this, new object[] { exp });
+            }
+            return this;
+        }
         public ISugarQueryable<T> IncludesAllFirstLayer(params string[] ignoreProperyNameList) 
         {
             var navs=this.EntityInfo.Columns.Where(it => it.Navigat != null).ToList();
