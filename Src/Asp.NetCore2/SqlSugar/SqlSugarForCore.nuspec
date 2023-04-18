@@ -9,7 +9,7 @@
     <projectUrl>https://github.com/sunkaixuan/SqlSugar</projectUrl>
     <iconUrl>https://secure.gravatar.com/avatar/a82c03402497b2e58fd65038a3699b30</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>.Net Core .Net5 .Net6 .Net7 安装此版本，支持国外主流和国产人大金仓达梦，  版本说明: 5.0.3.5-Max 最低要求.Net Core 3.0+   ，5.0.0-5.0.3.4 最低要求 .Net Core 2.0+  SqlSugar ORM ,High-performance, lightweight </description>
+    <description>好用的ORM框架 .Net Core .Net5 .Net6 .Net7 安装此版本，支持国外主流和国产人大金仓达梦，  版本说明: 5.0.3.5-Max 最低要求.Net Core 3.0+   ，5.0.0-5.0.3.4 最低要求 .Net Core 2.0+  SqlSugar ORM ,High-performance, lightweight </description>
     <copyright>Copyright 2016</copyright>
     <tags>SqlSugar Sql Sugar core Asp.net core orm 达梦 金仓 ClickHouse Oracle MySql SqlServer Sqlite</tags>
     <dependencies>
