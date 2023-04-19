@@ -68,6 +68,16 @@ namespace OrmTest
             Console.WriteLine();
             ////强制分表类型
             var x4 = db.Insertable(new OrderSpliteTest() { Name = "A" ,Time=DateTime.Now.AddDays(-1) }).SplitTable().ExecuteCommand();
+
+            Console.WriteLine();
+            //InsertByObject
+            var o = new OrderSpliteTest() { Name = "A", Time = DateTime.Now };
+            var x31 = db.DeleteableByObject(o).SplitTable().ExecuteCommand();
+            var x32 = db.DeleteableByObject(o).SplitTable().ExecuteCommandAsync().GetAwaiter().GetResult();
+            var x33 = db.UpdateableByObject(o).SplitTable().ExecuteCommand();
+            var x34 = db.UpdateableByObject(o).SplitTable().ExecuteCommandAsync().GetAwaiter().GetResult();
+            var x35 = db.InsertableByObject((object)new OrderSpliteTest() { Name = "A", Time = DateTime.Now }).SplitTable().ExecuteCommand();
+            var x36 = db.InsertableByObject((object)new OrderSpliteTest() { Name = "A", Time = DateTime.Now }).SplitTable().ExecuteCommandAsync().GetAwaiter().GetResult();
             Console.WriteLine("#### CodeFirst end ####");
         }
 
