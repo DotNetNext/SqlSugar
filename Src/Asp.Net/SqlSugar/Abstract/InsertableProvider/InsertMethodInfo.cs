@@ -41,5 +41,15 @@ namespace SqlSugar
             var result = inertable.GetType().GetMyMethod("ExecuteReturnIdentityAsync",0).Invoke(inertable, new object[] { });
             return await (Task<int>)result;
         }
+        public CommonMethodInfo SplitTable()
+        {
+            var inertable = MethodInfo.Invoke(Context, new object[] { objectValue });
+            var newMethod = inertable.GetType().GetMyMethod("SplitTable", 0);
+            var result = newMethod.Invoke(inertable, new object[] { });
+            return new CommonMethodInfo()
+            {
+                Context = result 
+            };
+        }
     }
 }
