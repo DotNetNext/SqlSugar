@@ -287,6 +287,14 @@ namespace SqlSugar
             {
                 return columnInfo.InsertSql;
             }
+            else if (columnInfo.SqlParameterDbType is Type && (Type)columnInfo.SqlParameterDbType == UtilConstants.SqlConvertType)
+            {
+                var type = columnInfo.SqlParameterDbType as Type;
+                var ParameterConverter = type.GetMethod("ParameterConverter").MakeGenericMethod(typeof(string));
+                var obj = Activator.CreateInstance(type);
+                var p = ParameterConverter.Invoke(obj, new object[] { columnInfo.Value, GetDbColumnIndex }) as SugarParameter;
+                return p.ParameterName;
+            }
             else if (columnInfo.SqlParameterDbType is Type)
             {
                 var type=columnInfo.SqlParameterDbType as Type;
