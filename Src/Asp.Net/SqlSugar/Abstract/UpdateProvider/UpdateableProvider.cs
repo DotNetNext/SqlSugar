@@ -543,6 +543,7 @@ namespace SqlSugar
                 PropertyName = name ,
                 SqlParameterDbType=typeof(SqlSugar.DbConvert.NoParameterCommonPropertyConvert)
             });
+            this.UpdateBuilder.SetValues.Add(new KeyValuePair<string, string>(name,value));
             return this;
         }
         public IUpdateable<T> SetColumns(Expression<Func<T, object>> filedNameExpression, object fieldValue) 
