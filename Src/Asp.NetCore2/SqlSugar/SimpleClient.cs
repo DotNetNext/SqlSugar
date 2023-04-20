@@ -35,6 +35,10 @@ namespace SqlSugar
         {
             return this.Context.GetSimpleClient<ChangeType>();
         }
+        public void CopyNew() 
+        {
+            this.Context = this.Context.CopyNew();
+        }
         public RepositoryType CopyNew<RepositoryType>() where RepositoryType : ISugarRepository 
         {
             Type type = typeof(RepositoryType);
