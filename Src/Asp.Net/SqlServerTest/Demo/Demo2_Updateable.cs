@@ -124,16 +124,29 @@ namespace OrmTest
 
             var dataTable = db.Queryable<Order>().Select("id,name,1 as price").Take(2).ToDataTable();
             db.Fastest<Order>().BulkUpdate("Order", dataTable,new string[] {"id" },new string[] {"name" });
+           
             db.Updateable<object>()
              .AS("[Order]")
              .SetColumns("name", 1)
              .Where("id=1").ExecuteCommand();
+
             db.Updateable<object>()
               .AS("[Order]")
               .SetColumns("name", 1)
-                 .SetColumns("price", 1)
+              .SetColumns("price", 1)
               .Where("id=1").ExecuteCommand();
 
+            db.Updateable<object>()
+            .AS("[Order]")
+            .SetColumns(it => SqlFunc.MappingColumn<string>("name"), it => SqlFunc.MappingColumn<string>("(case when id>0 then name else '' end) "))
+            .SetColumns("price", 1)
+            .Where("id=1").ExecuteCommand();
+
+            db.Updateable<object>()
+            .AS("[Order]")
+            .SetColumns(it => SqlFunc.MappingColumn<string>("name"), it => SqlFunc.MappingColumn<string>("(case when id>0 then name else '' end) "))
+            //.SetColumns("price", 1)
+            .Where("id=1").ExecuteCommand();
 
             object o = db.Queryable<Order>().First();
             db.UpdateableByObject(o).ExecuteCommandAsync().GetAwaiter().GetResult();
