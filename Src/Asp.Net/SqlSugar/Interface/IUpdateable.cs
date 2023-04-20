@@ -77,6 +77,7 @@ namespace SqlSugar
         IUpdateable<T> SetColumns(string fieldName,object fieldValue);
 
         IUpdateable<T> SetColumns(Expression<Func<T,object>> filedNameExpression, object fieldValue);
+        IUpdateable<T> SetColumns(Expression<Func<T, object>> filedNameExpression, Expression<Func<T, object>> valueExpression);
         IUpdateable<T> SetColumnsIF(bool isUpdateColumns, Expression<Func<T, object>> filedNameExpression, object fieldValue);
         IUpdateable<T> UpdateColumnsIF(bool isUpdateColumns,Expression<Func<T, object>> columns);
         IUpdateable<T> UpdateColumnsIF(bool isUpdateColumns, params string[] columns);

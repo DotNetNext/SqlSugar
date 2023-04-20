@@ -33,7 +33,24 @@ namespace SqlSugar.DbConvert
         }
     }
 
+    public class NoParameterCommonPropertyConvert : ISugarDataConverter
+    {
+        public SugarParameter ParameterConverter<T>(object columnValue, int columnIndex)
+        {
+            if (columnValue == null) 
+            {
+                new SugarParameter("null", null, null);
+            }
+            return new SugarParameter(columnValue+"", null, null);
+        }
 
+        public T QueryConverter<T>(IDataRecord dr, int i)
+        {
+
+            var value = dr.GetValue(i);
+            return (T)UtilMethods.ChangeType2(value, typeof(T));
+        }
+    }
     public class CommonPropertyConvert : ISugarDataConverter
     {
         public SugarParameter ParameterConverter<T>(object columnValue, int columnIndex)

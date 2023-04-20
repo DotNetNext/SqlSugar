@@ -531,6 +531,20 @@ namespace SqlSugar
                 return this;
             }
         }
+        public IUpdateable<T> SetColumns(Expression<Func<T, object>> filedNameExpression, Expression<Func<T, object>> valueExpression) 
+        {
+            var name = UpdateBuilder.GetExpressionValue(filedNameExpression, ResolveExpressType.FieldSingle).GetString();
+            name = UpdateBuilder.Builder.GetNoTranslationColumnName(name);
+            var value = UpdateBuilder.GetExpressionValue(valueExpression, ResolveExpressType.FieldSingle).GetString();
+            this.UpdateBuilder.DbColumnInfoList.Add(new DbColumnInfo()
+            {
+                DbColumnName = name,
+                Value = value,
+                PropertyName = name ,
+                SqlParameterDbType=typeof(SqlSugar.DbConvert.NoParameterCommonPropertyConvert)
+            });
+            return this;
+        }
         public IUpdateable<T> SetColumns(Expression<Func<T, object>> filedNameExpression, object fieldValue) 
         {
             var name= UpdateBuilder.GetExpressionValue(filedNameExpression,ResolveExpressType.FieldSingle).GetString();
