@@ -35,27 +35,10 @@ namespace SqlSugar
 
         private void Where(ExpressionParameter parameter, bool? isLeft, object value, ExpressionParameter baseParameter, bool isSetTempData)
         {
-            if (parameter.OppsiteExpression != null) 
+            if (parameter.OppsiteExpression != null)
             {
                 var exp = ExpressionTool.RemoveConvert(parameter.OppsiteExpression);
-                if (exp is MemberExpression) 
-                {
-                    var member=(exp as MemberExpression);
-                    var memberParent = member.Expression;
-                    if (memberParent != null && this.Context?.SugarContext?.Context != null)
-                    {
-                        var entity = this.Context.SugarContext.Context.EntityMaintenance.GetEntityInfo(memberParent.Type);
-                        var columnInfo = entity.Columns.FirstOrDefault(it => it.PropertyName == member.Member.Name);
-                        if (columnInfo?.SqlParameterDbType is Type)
-                        {
-                            var type = columnInfo.SqlParameterDbType as Type;
-                            var ParameterConverter = type.GetMethod("ParameterConverter").MakeGenericMethod(columnInfo.PropertyInfo.PropertyType);
-                            var obj = Activator.CreateInstance(type);
-                            var p = ParameterConverter.Invoke(obj, new object[] { value, 100+this.ContentIndex }) as SugarParameter;
-                            value = p.Value; 
-                        }
-                    }
-                }
+                value = GetMemberValue(value, exp);
             }
             if (isSetTempData)
             {
@@ -66,7 +49,7 @@ namespace SqlSugar
                 AppendValue(parameter, isLeft, value);
             }
         }
-
+  
         private  object Select(ExpressionParameter parameter, object value)
         {
             if (value != null && value.GetType().IsEnum())
