@@ -507,6 +507,7 @@ namespace SqlSugar
     public partial interface ISugarQueryable<T, T2, T3, T4> : ISugarQueryable<T>
     {
         ISugarQueryable<TResult> SelectMergeTable<TResult>(Expression<Func<T, T2, T3,T4, TResult>> expression);
+        ISugarQueryable<T, T2, T3, T4,T5> LeftJoinIF<T5>(bool isLeftJoin, Expression<Func<T, T2, T3, T4,T5, bool>> joinExpression);
         ISugarQueryable<T, T2, T3, T4, T5> LeftJoin<T5>(ISugarQueryable<T5> joinQueryable, Expression<Func<T, T2, T3, T4, T5, bool>> joinExpression);
         ISugarQueryable<T, T2, T3, T4, T5> InnerJoin<T5>(ISugarQueryable<T5> joinQueryable, Expression<Func<T, T2, T3, T4, T5, bool>> joinExpression);
         ISugarQueryable<T, T2, T3, T4, T5> RightJoin<T5>(ISugarQueryable<T5> joinQueryable, Expression<Func<T, T2, T3, T4, T5, bool>> joinExpression);
@@ -644,6 +645,7 @@ namespace SqlSugar
     public partial interface ISugarQueryable<T, T2, T3, T4, T5> : ISugarQueryable<T>
     {
         ISugarQueryable<TResult> SelectMergeTable<TResult>(Expression<Func<T, T2, T3,T4,T5, TResult>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5,T6> LeftJoinIF<T6>(bool isLeftJoin, Expression<Func<T, T2, T3, T4, T5,T6, bool>> joinExpression);
         ISugarQueryable<T, T2, T3, T4, T5, T6> LeftJoin<T6>(ISugarQueryable<T6> joinQueryable, Expression<Func<T, T2, T3, T4, T5, T6, bool>> joinExpression);
         ISugarQueryable<T, T2, T3, T4, T5, T6> InnerJoin<T6>(ISugarQueryable<T6> joinQueryable, Expression<Func<T, T2, T3, T4, T5, T6, bool>> joinExpression);
         ISugarQueryable<T, T2, T3, T4, T5, T6> RightJoin<T6>(ISugarQueryable<T6> joinQueryable, Expression<Func<T, T2, T3, T4, T5, T6, bool>> joinExpression);
@@ -773,6 +775,7 @@ namespace SqlSugar
     public partial interface ISugarQueryable<T, T2, T3, T4, T5, T6> : ISugarQueryable<T>
     {
         ISugarQueryable<TResult> SelectMergeTable<TResult>(Expression<Func<T, T2, T3, T4, T5,T6, TResult>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6,T7> LeftJoinIF<T7>(bool isLeftJoin, Expression<Func<T, T2, T3, T4, T5, T6,T7, bool>> joinExpression);
         ISugarQueryable<T, T2, T3, T4, T5, T6, T7> LeftJoin<T7>(ISugarQueryable<T7> joinQueryable, Expression<Func<T, T2, T3, T4, T5, T6, T7, bool>> joinExpression);
         ISugarQueryable<T, T2, T3, T4, T5, T6, T7> InnerJoin<T7>(ISugarQueryable<T7> joinQueryable, Expression<Func<T, T2, T3, T4, T5, T6, T7, bool>> joinExpression);
         ISugarQueryable<T, T2, T3, T4, T5, T6, T7> RightJoin<T7>(ISugarQueryable<T7> joinQueryable, Expression<Func<T, T2, T3, T4, T5, T6, T7, bool>> joinExpression);
@@ -911,6 +914,7 @@ namespace SqlSugar
     public partial interface ISugarQueryable<T, T2, T3, T4, T5, T6, T7> : ISugarQueryable<T>
     {
         ISugarQueryable<TResult> SelectMergeTable<TResult>(Expression<Func<T, T2, T3, T4, T5, T6,T7, TResult>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> LeftJoinIF<T8>(bool isLeftJoin, Expression<Func<T, T2, T3, T4, T5, T6, T7,T8, bool>> joinExpression);
         ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> LeftJoin<T8>(ISugarQueryable<T8> joinQueryable, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, bool>> joinExpression);
         ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> InnerJoin<T8>(ISugarQueryable<T8> joinQueryable, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, bool>> joinExpression);
         ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> RightJoin<T8>(ISugarQueryable<T8> joinQueryable, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, bool>> joinExpression);

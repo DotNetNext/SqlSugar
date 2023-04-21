@@ -1290,6 +1290,15 @@ namespace SqlSugar
         {
             return this.Select(expression).MergeTable();
         }
+        public ISugarQueryable<T, T2, T3, T4, T5> LeftJoinIF<T5>(bool isLeftJoin, Expression<Func<T, T2, T3, T4, T5, bool>> joinExpression) 
+        {
+            var result = LeftJoin(joinExpression);
+            if (isLeftJoin == false)
+            {
+                result.QueryBuilder.JoinQueryInfos.Remove(result.QueryBuilder.JoinQueryInfos.Last());
+            }
+            return result;
+        }
         public ISugarQueryable<T, T2, T3, T4, T5> LeftJoin<T5>(ISugarQueryable<T5> joinQueryable, Expression<Func<T, T2, T3, T4, T5, bool>> joinExpression)
         {
             this.Context.InitMappingInfo<T5>();
@@ -1984,6 +1993,17 @@ namespace SqlSugar
         {
             return this.Select(expression).MergeTable();
         }
+        
+        public ISugarQueryable<T, T2, T3, T4, T5, T6> LeftJoinIF<T6>(bool isLeftJoin, Expression<Func<T, T2, T3, T4, T5, T6, bool>> joinExpression) 
+        {
+            var result = LeftJoin(joinExpression);
+            if (isLeftJoin == false)
+            {
+                result.QueryBuilder.JoinQueryInfos.Remove(result.QueryBuilder.JoinQueryInfos.Last());
+            }
+            return result;
+        }
+
         public ISugarQueryable<T, T2, T3, T4, T5, T6> LeftJoin<T6>(ISugarQueryable<T6> joinQueryable, Expression<Func<T, T2, T3, T4, T5, T6, bool>> joinExpression)
         {
             this.Context.InitMappingInfo<T6>();
