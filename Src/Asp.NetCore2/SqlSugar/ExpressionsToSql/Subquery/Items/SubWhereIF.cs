@@ -58,7 +58,13 @@ namespace SqlSugar
                 return "WHERE 1=1 ";
             }
             var argExp = exp.Arguments[1];
-            var result = "WHERE " + SubTools.GetMethodValue(Context, argExp, ResolveExpressType.WhereMultiple); ;
+            var copyContext = this.Context;
+            if (this.Context.JoinIndex > 0)
+            {
+                copyContext = this.Context.GetCopyContextWithMapping();
+                copyContext.IsSingle = false;
+            }
+            var result = "WHERE " + SubTools.GetMethodValue(copyContext, argExp, ResolveExpressType.WhereMultiple); ;
             var selfParameterName = Context.GetTranslationColumnName((argExp as LambdaExpression).Parameters.First().Name) + UtilConstants.Dot;
             if (this.Context.JoinIndex == 0)
                 result = result.Replace(selfParameterName, SubTools.GetSubReplace(this.Context));
