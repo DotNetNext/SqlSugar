@@ -136,7 +136,8 @@ namespace OrmTest
             {
                 customName2 = SqlFunc.Subqueryable<Custom>()
              .LeftJoin<Custom>((s, s1) => s.Id == s1.Id).OrderBy((s, s1) => s.Id)
-             .Where((s, s1) => s1.Name.StartsWith("a"))
+             .WhereIF(true,(s, s1) => s1.Name.StartsWith("a"))
+             .WhereIF(true, (s, s1) => s1.Name.StartsWith("a"))
              .Select(s => s.Name)
             }).ToList();
             Console.WriteLine("#### Subquery End ####");
