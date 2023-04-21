@@ -188,6 +188,15 @@ namespace SqlSugar
             result.QueryBuilder.JoinQueryInfos.Last().TableName = tableName;
             return result;
         }
+        public ISugarQueryable<T, T2> LeftJoinIF<T2>(bool isLeftJoin, Expression<Func<T, T2, bool>> joinExpression) 
+        {
+            var result = LeftJoin(joinExpression);
+            if (isLeftJoin == false)
+            {
+                result.QueryBuilder.JoinQueryInfos.Remove(result.QueryBuilder.JoinQueryInfos.Last());
+            }
+            return result;
+        }
         public ISugarQueryable<T, T2> LeftJoin<T2>(Expression<Func<T, T2, bool>> joinExpression)
         {
             if (MasterHasWhereFirstJoin())
