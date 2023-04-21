@@ -100,6 +100,18 @@ namespace OrmTest
             var list=db.Queryable<Unit00Z1String1>().Where(it => it.type == type).ToList();
             var list2 = db.Queryable<Unit00Z1String1>().Where(it => it.type == UnitType.a).ToList();
             var list21 = db.Queryable<Unit00Z1String1>().Where(it => it.type == x.xxx).ToList();
+            List<UnitType> unitTypes = new List<UnitType>()
+            {
+                UnitType.a
+            };
+            List<UnitType?> unitTypes2 = new List<UnitType?>()
+            {
+                UnitType.a
+            };
+            Db.Queryable<Unit00Z1String1>()
+                .Where(it=>""==type3.ToString()) 
+                .Where(it => unitTypes2.Contains(it.type2))
+                .Where(it => unitTypes.Contains(it.type)).ToList();
         }
         private static void Int()
         {
