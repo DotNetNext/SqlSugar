@@ -279,7 +279,7 @@ namespace SqlSugar
             }
             else
             {
-                AppendModel(parameter, model, item);
+                AppendModel(parameter, model, item,name, args);
             }
         }
 
@@ -334,7 +334,7 @@ namespace SqlSugar
                 Check.Exception(true, "The SqlFunc.IIF(arg1,arg2,arg3) , {0} argument  do not support ", item.ToString());
             }
         }
-        private void AppendModel(ExpressionParameter parameter, MethodCallExpressionModel model, Expression item)
+        private void AppendModel(ExpressionParameter parameter, MethodCallExpressionModel model, Expression item,string name, IEnumerable<Expression> args)
         {
             parameter.CommonTempData = CommonTempDataType.Result;
             base.Expression = item;
@@ -408,6 +408,19 @@ namespace SqlSugar
                 var parameterName = this.Context.SqlParameterKeyWord + ExpressionConst.MethodConst + this.Context.ParameterIndex;
                 this.Context.ParameterIndex++;
                 methodCallExpressionArgs.MemberName = parameterName;
+                if (name == "ToString"&&UtilMethods.GetUnderType(base.Expression.Type).IsEnum())
+                {
+                    value = value?.ToString();
+                }
+                else if (name == "ContainsArray"&&args.Count()==2&& value!= null && value is IList) 
+                {
+                    List<object> result = new List<object>();
+                    foreach (var memItem in (value as IList))
+                    {
+                        result.Add(GetMemberValue(memItem, args.Last()));
+                    }
+                    value = result;
+                }
                 methodCallExpressionArgs.MemberValue = value;
                 this.Context.Parameters.Add(new SugarParameter(parameterName, value));
             }

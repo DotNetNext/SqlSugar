@@ -40,6 +40,29 @@ namespace SqlSugar
         #endregion
 
         #region Get Mehtod
+        protected object GetMemberValue(object value, Expression exp)
+        {
+            if (exp is MemberExpression)
+            {
+                var member = (exp as MemberExpression);
+                var memberParent = member.Expression;
+                if (memberParent != null && this.Context?.SugarContext?.Context != null)
+                {
+                    var entity = this.Context.SugarContext.Context.EntityMaintenance.GetEntityInfo(memberParent.Type);
+                    var columnInfo = entity.Columns.FirstOrDefault(it => it.PropertyName == member.Member.Name);
+                    if (columnInfo?.SqlParameterDbType is Type)
+                    {
+                        var type = columnInfo.SqlParameterDbType as Type;
+                        var ParameterConverter = type.GetMethod("ParameterConverter").MakeGenericMethod(columnInfo.PropertyInfo.PropertyType);
+                        var obj = Activator.CreateInstance(type);
+                        var p = ParameterConverter.Invoke(obj, new object[] { value, 100 + this.ContentIndex }) as SugarParameter;
+                        value = p.Value;
+                    }
+                }
+            }
+
+            return value;
+        }
         private string GetAsName(Expression item, object shortName, PropertyInfo property)
         {
             string asName;
