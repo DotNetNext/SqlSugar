@@ -20,7 +20,8 @@ namespace OrmTest
                 InitKeyType = InitKeyType.Attribute,
                 IsAutoCloseConnection = true
             });
-            db.DbMaintenance.CreateDatabase(); 
+            db.DbMaintenance.CreateDatabase();
+            db.Aop.OnLogExecuting = (s, p) =>Console.WriteLine( UtilMethods.GetNativeSql(s, p));
             db.CodeFirst.InitTables(typeof(CodeFirstTable1));//Create CodeFirstTable1 
             db.Insertable(new CodeFirstTable1() { Name = "a", Text="a" }).ExecuteCommand();
             var list = db.Queryable<CodeFirstTable1>().ToList();
@@ -138,7 +139,7 @@ namespace OrmTest
         public string Name { get; set; }
         [SugarColumn(ColumnDataType = "varchar(255)")]//custom
         public string Text { get; set; }
-        [SugarColumn(IsNullable = true)]
+        [SugarColumn(IsNullable = true,DefaultValue = "current_timestamp")]
         public DateTime CreateTime { get; set; }
     }
 }
