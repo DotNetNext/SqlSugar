@@ -454,6 +454,14 @@ namespace SqlSugar
             {
                 defaultValue = "'" + defaultValue + "'";
             }
+            if (defaultValue != null && defaultValue.EqualCase("'current_timestamp'")) 
+            {
+                defaultValue = defaultValue.TrimEnd('\'').TrimStart('\'');
+            }
+            if (defaultValue != null && defaultValue.EqualCase("'current_date'"))
+            {
+                defaultValue = defaultValue.TrimEnd('\'').TrimStart('\'');
+            }
             string sql = string.Format(AddDefaultValueSql, tableName, columnName,defaultValue);
             this.Context.Ado.ExecuteCommand(sql);
             return true;
