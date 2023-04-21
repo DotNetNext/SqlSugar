@@ -53,9 +53,24 @@ namespace SqlSugar
                 return "";
             }
             var argExp = exp.Arguments[1];
-            var result = "AND " + SubTools.GetMethodValue(Context, argExp, ResolveExpressType.WhereMultiple); ;
+            var copyContext = this.Context;
+            if (this.Context.JoinIndex > 0)
+            {
+                copyContext = this.Context.GetCopyContextWithMapping();
+                copyContext.IsSingle = false;
+            }
+            var result = "AND " + SubTools.GetMethodValue(copyContext, argExp, ResolveExpressType.WhereMultiple); ;
+            if (this.Context.JoinIndex > 0)
+            {
+                this.Context.Parameters.AddRange(copyContext.Parameters);
+                this.Context.Index = copyContext.Index;
+                this.Context.ParameterIndex = copyContext.ParameterIndex;
+            }
             var selfParameterName = Context.GetTranslationColumnName((argExp as LambdaExpression).Parameters.First().Name) + UtilConstants.Dot;
-            result = result.Replace(selfParameterName, SubTools.GetSubReplace(this.Context));
+            if (this.Context.JoinIndex==0)
+            {
+                result = result.Replace(selfParameterName, SubTools.GetSubReplace(this.Context));
+            }
             return result;
         }
     }
