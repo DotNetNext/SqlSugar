@@ -216,6 +216,20 @@ namespace OrmTest
             var NIds = db.Queryable<Order>().Where(it => ids.Contains(it.Name, true)).ToList();
             var Ids = db.Queryable<Order>().Where(it => ids.Contains(it.Name, false)).ToList();
             var Ids2 = db.Queryable<Order>().Where(it => ids.Contains(it.Name)).ToList();
+
+            db.CurrentConnectionConfig.MoreSettings = new ConnMoreSettings { EnableModelFuncMappingColumn = true };
+            var test51 = db.Queryable<Order>()
+                .GroupBy(GroupByModel.Create(new GroupByModel() { FieldName="Id" }))
+                .Where(ObjectFuncModel.Create("MappingColumn", "id=1"))
+                .Select(SelectModel.Create(
+                    new SelectModel()
+                    {
+                        FiledName = ObjectFuncModel.Create("MappingColumn", "(select 1 as id)")       ,
+                        AsName = "id",
+                    })
+
+                ).ToList();
+
             Console.WriteLine("#### Examples End ####");
         }
 
