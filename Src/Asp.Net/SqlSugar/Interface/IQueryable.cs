@@ -101,6 +101,7 @@ namespace SqlSugar
         ISugarQueryable<T> In<FieldType>(string InFieldName, List<FieldType> inValues);
         ISugarQueryable<T> In<FieldType>(Expression<Func<T, object>> expression, List<FieldType> inValues);
         ISugarQueryable<T> In<FieldType>(Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression);
+        ISugarQueryable<T> InIF<FieldType>(bool isWhere,Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression);
 
         ISugarQueryable<T> OrderBy(string orderFileds);
         ISugarQueryable<T> OrderBy(Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc);

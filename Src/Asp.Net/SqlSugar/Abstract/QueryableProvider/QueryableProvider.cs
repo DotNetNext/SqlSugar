@@ -1006,6 +1006,16 @@ namespace SqlSugar
             return In(expression, inValues.ToArray());
         }
 
+        public ISugarQueryable<T> InIF<FieldType>(bool isWhere,Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression) 
+        {
+            if (isWhere)
+            {
+                var sqlObj = childQueryExpression.ToSql();
+                _InQueryable(expression, sqlObj);
+            }
+            return this;
+        }
+
         public virtual ISugarQueryable<T> In<FieldType>(Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression)
         {
             var sqlObj = childQueryExpression.ToSql();
