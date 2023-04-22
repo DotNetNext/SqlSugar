@@ -33,5 +33,10 @@ namespace SqlSugar
         public ConditionalType ConditionalType { get; set; }
         [Newtonsoft.Json.JsonIgnoreAttribute]
         public Func<string,object> FieldValueConvertFunc { get; set; }
+
+        public static List<IConditionalModel> Create(params IConditionalModel[] conditionalModel)
+        {
+            return conditionalModel.ToList();
+        }
     }
 }

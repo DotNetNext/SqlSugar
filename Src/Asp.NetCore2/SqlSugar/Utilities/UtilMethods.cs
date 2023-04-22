@@ -207,6 +207,7 @@ namespace SqlSugar
                     IsAutoToUpper=it.MoreSettings.IsAutoToUpper,
                     IsAutoDeleteQueryFilter=it.MoreSettings.IsAutoDeleteQueryFilter,
                     IsAutoUpdateQueryFilter = it.MoreSettings.IsAutoUpdateQueryFilter,
+                    EnableModelFuncMappingColumn=it.MoreSettings.EnableModelFuncMappingColumn
 
                 },
                 SqlMiddle = it.SqlMiddle == null ? null : new SqlMiddle

@@ -22,5 +22,6 @@ namespace SqlSugar
         public bool SqlServerCodeFirstNvarchar { get;  set; }
         public bool IsAutoUpdateQueryFilter { get; set; }
         public bool IsAutoDeleteQueryFilter { get; set; }
+        public bool EnableModelFuncMappingColumn { get; set; }
     }
 }
