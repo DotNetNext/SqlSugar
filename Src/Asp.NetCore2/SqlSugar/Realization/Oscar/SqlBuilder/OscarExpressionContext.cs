@@ -98,6 +98,10 @@ namespace SqlSugar
     }
     public class OscarLMethod : DefaultDbMethod, IDbMethods
     {
+        public override string CharIndex(MethodCallExpressionModel model)
+        {
+            return string.Format(" (strpos ({1},{0})-1)", model.Args[0].MemberName, model.Args[1].MemberName);
+        }
         public override string IIF(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
