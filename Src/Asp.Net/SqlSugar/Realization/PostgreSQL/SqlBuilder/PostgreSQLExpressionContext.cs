@@ -133,6 +133,10 @@ namespace SqlSugar
     }
     public class PostgreSQLMethod : DefaultDbMethod, IDbMethods
     {
+        public override string CharIndex(MethodCallExpressionModel model)
+        {
+            return string.Format(" (strpos ({1},{0})-1)", model.Args[0].MemberName, model.Args[1].MemberName);
+        }
         public override string TrueValue()
         {
             return "true";
