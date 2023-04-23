@@ -32,8 +32,7 @@ namespace SqlSugar
                 {
                     Check.ExceptionEasy("Enable MappingColumn need in ConnectionConfig - > MoreSettings - > EnableModelFuncMappingColumn set to true", "MappingColumn考虑到风险情况需要开启才能使用，请在 ConnectionConfig->MoreSettings->EnableModelFuncMappingColumn设置为true");
                 }
-                resSql= resSql.TrimEnd(Convert.ToChar( this.SqlTranslationRight))
-                              .TrimStart(Convert.ToChar(this.SqlTranslationLeft)); 
+                resSql = parameters.First() +"";
             }
             return new KeyValuePair<string, SugarParameter[]>(resSql, resPars.ToArray());
         }
