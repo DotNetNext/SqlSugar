@@ -73,10 +73,10 @@ namespace SqlSugar
             KdbndpCommand sqlCommand = new KdbndpCommand(sql, (KdbndpConnection)this.Connection);
             sqlCommand.CommandType = this.CommandType;
             sqlCommand.CommandTimeout = this.CommandTimeOut;
-            //if (sqlCommand.CommandType == CommandType.StoredProcedure) 
-            //{
-            //    sqlCommand.DbModeType = DbMode.Oracle;
-            //}
+            if (sqlCommand.CommandType == CommandType.StoredProcedure)
+            {
+                sqlCommand.DbModeType = DbMode.Oracle;
+            }
             if (this.Transaction != null)
             {
                 sqlCommand.Transaction = (KdbndpTransaction)this.Transaction;
