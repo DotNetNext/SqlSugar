@@ -125,6 +125,10 @@ namespace SqlSugar
             {
                 UpdateRoot();
             }
+            else if (isRoot &&_RootOptions?.IsInsertRoot==true&& nav.Navigat.NavigatType == NavigateType.ManyToMany)
+            {
+                UpdateRoot();
+            }
             else
             {
                 if (_Options != null && _Options.ManyToManyIsUpdateA)
