@@ -200,5 +200,18 @@ namespace SqlSugar
             }
             return batchUpdateSql.ToString();
         }
+        protected override string GetJoinUpdate(string columnsString, ref string whereString)
+        {
+            var formString = $"  {Builder.GetTranslationColumnName(this.TableName)}  AS {Builder.GetTranslationColumnName(this.ShortName)} ";
+            var joinString = "";
+            foreach (var item in this.JoinInfos)
+            {
+                whereString += " AND "+item.JoinWhere;
+                joinString += $"\r\n FROM {Builder.GetTranslationColumnName(item.TableName)}  {Builder.GetTranslationColumnName(item.ShortName)} ";
+            }
+            var tableName = formString + "\r\n ";
+            columnsString = columnsString.Replace(Builder.GetTranslationColumnName(this.ShortName)+".","")+joinString; 
+            return string.Format(SqlTemplate, tableName, columnsString, whereString);
+        }
     }
 }
