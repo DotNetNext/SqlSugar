@@ -178,6 +178,11 @@ namespace SqlSugar
             IFastBuilder buider = GetBuider();
             ActionIgnoreColums(whereColumns, updateColumns, dt, buider.IsActionUpdateColumns);
             buider.Context = context;
+            if (buider.DbFastestProperties == null) 
+            {
+                buider.DbFastestProperties = new DbFastestProperties();
+            }
+            buider.DbFastestProperties.WhereColumns = whereColumns;
             await buider.CreateTempAsync<T>(dt);
             await buider.ExecuteBulkCopyAsync(dt);
             //var queryTemp = this.context.Queryable<T>().AS(dt.TableName).ToList();//test

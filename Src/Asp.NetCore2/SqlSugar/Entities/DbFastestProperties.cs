@@ -9,5 +9,6 @@ namespace SqlSugar
     public class DbFastestProperties
     {
         public bool HasOffsetTime { get; set; }
+        public string[] WhereColumns { get; set; }
     }
 }

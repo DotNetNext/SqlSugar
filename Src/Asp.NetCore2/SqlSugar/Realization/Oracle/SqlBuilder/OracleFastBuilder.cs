@@ -25,17 +25,9 @@ namespace SqlSugar
             var oldTableName = dt.TableName;
             var columns = this.Context.EntityMaintenance.GetEntityInfo<T>().Columns.Where(it => it.IsPrimarykey).Select(it => it.DbColumnName).ToList();
             dt.TableName = "Temp" + SnowFlakeSingle.instance.getID().ToString();
-            if (columns.Count() == 0)
+            if (columns.Count() == 0&& DbFastestProperties!=null&& DbFastestProperties.WhereColumns.HasValue())
             {
-                var pkColumn = sqlBuilder.GetTranslationColumnName("sys_guid_Id");
-                var pkColumnName = sqlBuilder.GetNoTranslationColumnName( sqlBuilder.GetTranslationColumnName("sys_guid_Id"));
-                dts.Add("sys_guid() as " + pkColumn);
-                dt.Columns.Add(pkColumnName,typeof(Guid));
-                columns.Add(pkColumnName);
-                foreach (DataRow item in dt.Rows)
-                {
-                    item[pkColumnName] = Guid.NewGuid();
-                }
+                columns.AddRange(DbFastestProperties.WhereColumns);
             }
             var sql = this.Context.Queryable<T>().AS(oldTableName).Where(it => false).Select(string.Join(",", dts)).ToSql().Key;
             await this.Context.Ado.ExecuteCommandAsync($"create table {dt.TableName} as {sql} ");
