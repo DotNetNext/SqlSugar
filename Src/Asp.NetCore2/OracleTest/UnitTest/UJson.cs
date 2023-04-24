@@ -13,7 +13,7 @@ namespace OrmTest
         {
             Db.CodeFirst.InitTables<UnitJsonTest>();
             Db.DbMaintenance.TruncateTable<UnitJsonTest>();
-            Db.Insertable(new UnitJsonTest() { Order = new Order { Id = 1, Name = "order1" } }).ExecuteCommand();
+            Db.Insertable(new UnitJsonTest() { Id=1, Order = new Order { Id = 1, Name = "order1" } }).ExecuteCommand();
             var list = Db.Queryable<UnitJsonTest>().ToList();
             UValidate.Check("order1", list.First().Order.Name, "Json");
             Db.Updateable(new UnitJsonTest() { Id = 1, Order = new Order { Id = 2, Name = "order2" } }).ExecuteCommand();
@@ -23,7 +23,7 @@ namespace OrmTest
         }
     }
 
-
+    [SqlSugar.SugarTable("UnitJsonTesteww")]
     public class UnitJsonTest
     {
         [SqlSugar.SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
