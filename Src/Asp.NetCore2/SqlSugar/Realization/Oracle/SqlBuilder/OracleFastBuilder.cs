@@ -27,8 +27,10 @@ namespace SqlSugar
             dt.TableName = "Temp" + SnowFlakeSingle.instance.getID().ToString();
             var sql = this.Context.Queryable<T>().AS(oldTableName).Where(it => false).Select("*").ToSql().Key;
             await this.Context.Ado.ExecuteCommandAsync($"create table {dt.TableName} as {sql} ");
-            this.Context.DbMaintenance.AddPrimaryKeys(dt.TableName, columns,"Pk_"+ SnowFlakeSingle.instance.getID().ToString());
-            //var xxx = this.Context.Queryable<T>().AS(dt.TableName).ToList();
+            if (columns != null && columns.Any())
+            {
+                this.Context.DbMaintenance.AddPrimaryKeys(dt.TableName, columns, "Pk_" + SnowFlakeSingle.instance.getID().ToString());
+            }
         }
         public override async Task<int> UpdateByTempAsync(string tableName, string tempName, string[] updateColumns, string[] whereColumns)
         {
