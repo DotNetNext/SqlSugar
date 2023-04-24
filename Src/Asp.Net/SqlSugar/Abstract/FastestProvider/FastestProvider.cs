@@ -232,13 +232,18 @@ namespace SqlSugar
             var isAuto = this.context.CurrentConnectionConfig.IsAutoCloseConnection;
             this.context.CurrentConnectionConfig.IsAutoCloseConnection = false;
             dataTable.TableName = this.queryable.SqlBuilder.GetTranslationTableName(tableName);
-            DataTable dt = GetCopyWriteDataTable(dataTable);
+            DataTable dt = GetCopyWriteDataTableUpdate(dataTable);
             IFastBuilder buider = GetBuider();
             if (dt.Columns.Count != dataTable.Columns.Count)
             {
                 ActionIgnoreColums(whereColumns, updateColumns, dt, buider.IsActionUpdateColumns);
             }
             buider.Context = context;
+            if (buider.DbFastestProperties == null)
+            {
+                buider.DbFastestProperties = new DbFastestProperties();
+            }
+            buider.DbFastestProperties.WhereColumns = whereColumns;
             await buider.CreateTempAsync<object>(dt);
             await buider.ExecuteBulkCopyAsync(dt);
             //var queryTemp = this.context.Queryable<T>().AS(dt.TableName).ToList();//test
