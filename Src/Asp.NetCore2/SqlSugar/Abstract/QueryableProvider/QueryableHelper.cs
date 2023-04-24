@@ -1076,7 +1076,7 @@ namespace SqlSugar
             return sql;
         }
 
-        protected JoinQueryInfo GetJoinInfo(Expression joinExpression, JoinType joinType)
+        internal JoinQueryInfo GetJoinInfo(Expression joinExpression, JoinType joinType)
         {
             QueryBuilder.CheckExpressionNew(joinExpression, "Join");
             QueryBuilder.JoinExpression = joinExpression;

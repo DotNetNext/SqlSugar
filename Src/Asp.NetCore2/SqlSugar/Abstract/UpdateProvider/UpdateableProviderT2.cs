@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 using System.Linq;
 namespace SqlSugar 
 {
-    public class Updateable<T, T2> : IUpdateable<T, T2> where T : class,new()
+    public class UpdateableProvider<T, T2> : IUpdateable<T, T2> where T : class,new()
     {
-        public IUpdateable<T> updateableObj { get; set; }
+        public IUpdateable<T> updateableObj { get; set; } 
         public int ExecuteCommand()
         {
             return this.updateableObj.ExecuteCommand();
@@ -24,7 +24,12 @@ namespace SqlSugar
 
         public IUpdateable<T, T2, T3> InnerJoin<T3>(Expression<Func<T, T2, T3, bool>> joinExpress)
         {
-            throw new NotImplementedException();
+            UpdateableProvider<T, T2,T3> result = new UpdateableProvider<T, T2,T3>();
+            result.updateableObj = updateableObj;
+            var joinIno = ((QueryableProvider<T>)updateableObj.UpdateBuilder.Context.Queryable<T>()).GetJoinInfo(joinExpress, JoinType.Inner);
+            result.updateableObj.UpdateBuilder.JoinInfos.Add(joinIno);
+            result.updateableObj.UpdateBuilder.ShortName = joinExpress.Parameters.FirstOrDefault()?.Name;
+            return result;
         }
 
         public IUpdateable<T, T2> SetColumns(Expression<Func<T, T2, T>> columns)
