@@ -232,7 +232,7 @@ namespace SqlSugar
             var isAuto = this.context.CurrentConnectionConfig.IsAutoCloseConnection;
             this.context.CurrentConnectionConfig.IsAutoCloseConnection = false;
             dataTable.TableName = this.queryable.SqlBuilder.GetTranslationTableName(tableName);
-            DataTable dt = GetCopyWriteDataTable(dataTable);
+            DataTable dt = GetCopyWriteDataTableUpdate(dataTable);
             IFastBuilder buider = GetBuider();
             if (dt.Columns.Count != dataTable.Columns.Count)
             {
