@@ -110,5 +110,29 @@ namespace SqlSugar
         SplitTableUpdateByObjectProvider<T> SplitTable();
         IUpdateable<T> EnableQueryFilter();
         IUpdateable<T> Clone();
+        IUpdateable<T,T2> InnerJoin<T2>(Expression<Func<T,T2,bool>> joinExpress);
+    }
+    public interface IUpdateable<T, T2> 
+    {
+        int ExecuteCommand();
+        Task<int> ExecuteCommandAsync();
+        IUpdateable<T, T2,T3> InnerJoin<T3>(Expression<Func<T, T2,T3, bool>> joinExpress);
+        IUpdateable<T, T2> SetColumns(Expression<Func<T, T2,T>> columns);
+        IUpdateable<T, T2> Where(Expression<Func<T, T2,bool>> whereExpression);
+    }
+    public interface IUpdateable<T, T2,T3>
+    {
+        IUpdateable<T, T2, T3,T4> InnerJoin<T4>(Expression<Func<T, T2, T3,T4, bool>> joinExpress);
+        int ExecuteCommand();
+        Task<int> ExecuteCommandAsync();
+        IUpdateable<T, T2,T3> SetColumns(Expression<Func<T, T2,T3, T>> columns);
+        IUpdateable<T, T2,T3> Where(Expression<Func<T, T2,T3, bool>> whereExpression);
+    }
+    public interface IUpdateable<T, T2, T3,T4>
+    {
+        int ExecuteCommand();
+        Task<int> ExecuteCommandAsync();
+        IUpdateable<T, T2, T3,T4> SetColumns(Expression<Func<T, T2, T3,T4, T>> columns);
+        IUpdateable<T, T2, T3,T4> Where(Expression<Func<T, T2, T3,T4, bool>> whereExpression);
     }
 }

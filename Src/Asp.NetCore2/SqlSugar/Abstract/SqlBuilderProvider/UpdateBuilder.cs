@@ -34,6 +34,7 @@ namespace SqlSugar
         public bool IsWhereColumns { get; set; }
         public  bool? IsListUpdate { get; set; }
         public List<string> UpdateColumns { get; set; }
+        public List<JoinQueryInfo> JoinInfos { get; set; } = new List<JoinQueryInfo>();
 
         public virtual string SqlTemplate
         {
