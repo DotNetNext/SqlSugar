@@ -20,6 +20,7 @@ namespace SqlSugar
             }
             else if (IsOracle() || IsPg())
             {
+                formatString = formatString.Replace("HH", "hh24");
                 if (formatString.HasValue() && formatString.Contains("hh:mm"))
                 {
                     formatString = formatString.Replace("hh:mm", "hh:mi");
@@ -234,7 +235,8 @@ namespace SqlSugar
         }
         private bool IsPg()
         {
-            return this.Context is PostgreSQLExpressionContext;
+            return this.Context is PostgreSQLExpressionContext
+                   ||this.Context is KdbndpExpressionContext;
         }
         private bool IsOracle()
         {
