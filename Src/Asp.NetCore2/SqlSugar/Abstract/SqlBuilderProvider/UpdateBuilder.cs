@@ -34,7 +34,8 @@ namespace SqlSugar
         public bool IsWhereColumns { get; set; }
         public  bool? IsListUpdate { get; set; }
         public List<string> UpdateColumns { get; set; }
-        public List<JoinQueryInfo> JoinInfos { get; set; } = new List<JoinQueryInfo>();
+        public List<JoinQueryInfo> JoinInfos { get; set; }
+        public  string ShortName { get; set; }
 
         public virtual string SqlTemplate
         {
@@ -260,6 +261,11 @@ namespace SqlSugar
                     {
                         return setValue.First().Value;
                     }
+                    else if (JoinInfos!=null&&JoinInfos.Any()) 
+                    {
+                        setValue = SetValues.Where(sv => it.IsPrimarykey == false && (it.IsIdentity == false || (IsOffIdentity && it.IsIdentity))).Where(sv => sv.Key == Builder.GetNoTranslationColumnName(it.DbColumnName) || sv.Key == Builder.GetNoTranslationColumnName(it.PropertyName));
+                        return Builder.GetTranslationColumnName(this.ShortName)+"."+ setValue.First().Key+"="+ setValue.First().Value ;
+                    }
                 }
                 var result = Builder.GetTranslationColumnName(it.DbColumnName) + "=" + GetDbColumn(it,this.Context.Ado.SqlParameterKeyWord + it.DbColumnName);
                 return result;
@@ -295,8 +301,26 @@ namespace SqlSugar
                     whereString += Builder.GetTranslationColumnName(item) + "=" + this.Context.Ado.SqlParameterKeyWord + item;
                 }
             }
+            if (this.JoinInfos != null && this.JoinInfos.Any())
+            {
+                return GetJoinUpdate(columnsString, ref whereString);
+            }
             return string.Format(SqlTemplate, GetTableNameString, columnsString, whereString);
         }
+
+        protected virtual string GetJoinUpdate(string columnsString, ref string whereString)
+        {
+            var tableName = Builder.GetTranslationColumnName(this.TableName);
+            this.TableName = Builder.GetTranslationColumnName(this.ShortName);
+            var joinString = $" FROM {tableName} {Builder.GetTranslationColumnName(this.ShortName)} ";
+            foreach (var item in this.JoinInfos)
+            {
+                joinString += $"\r\n JOIN {Builder.GetTranslationColumnName(item.TableName)}  {Builder.GetTranslationColumnName(item.ShortName)} ON {item.JoinWhere} ";
+            }
+            whereString = joinString + "\r\n" + whereString;
+            return string.Format(SqlTemplate, GetTableNameString, columnsString, whereString);
+        }
+
         public virtual void ActionMinDate()
         {
             if (this.Parameters != null)

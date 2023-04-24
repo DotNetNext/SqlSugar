@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -8,6 +9,23 @@ namespace SqlSugar
 {
     public class ExpressionTool
     {
+        public static Dictionary<string, Expression> GetMemberBindingItemList(ReadOnlyCollection<MemberBinding> exp)
+        {
+            Dictionary<string, Expression> dict = new Dictionary<string, Expression>();
+            // 获取MemberInitExpression中的每一个MemberBinding
+            foreach (var binding in exp)
+            {
+                // 判断是MemberAssignment还是MemberListBinding
+                if (binding is MemberAssignment assignment)
+                {
+                    // 获取属性名和属性值
+                    string propertyName = assignment.Member.Name;
+                    dict.Add(assignment.Member.Name, assignment.Expression);
+                }
+
+            }
+            return dict;
+        }
         public static bool IsVariable(Expression expr)
         {
             var ps = new ParameterExpressionVisitor();

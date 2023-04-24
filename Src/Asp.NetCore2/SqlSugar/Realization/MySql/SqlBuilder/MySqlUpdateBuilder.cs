@@ -26,6 +26,16 @@ namespace SqlSugar
                  ";
             }
         }
+        protected override string GetJoinUpdate(string columnsString, ref string whereString)
+        {
+            var joinString = $"  {Builder.GetTranslationColumnName(this.TableName)}  {Builder.GetTranslationColumnName(this.ShortName)} ";
+            foreach (var item in this.JoinInfos)
+            {
+                joinString += $"\r\n JOIN {Builder.GetTranslationColumnName(item.TableName)}  {Builder.GetTranslationColumnName(item.ShortName)} ON {item.JoinWhere} ";
+            }
+            var tableName =   joinString+ "\r\n ";
+            return string.Format(SqlTemplate, tableName, columnsString, whereString);
+        }
         protected override string TomultipleSqlString(List<IGrouping<int, DbColumnInfo>> groupList)
         {
             Check.Exception(PrimaryKeys == null || PrimaryKeys.Count == 0, " Update List<T> need Primary key");

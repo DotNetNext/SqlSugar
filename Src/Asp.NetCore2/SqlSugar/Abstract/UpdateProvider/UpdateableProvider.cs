@@ -169,6 +169,7 @@ namespace SqlSugar
             result.updateableObj = this;
             var querybale=this.Context.Queryable<T>().LeftJoin<T2>(joinExpress);
             result.updateableObj.UpdateBuilder.JoinInfos = querybale.QueryBuilder.JoinQueryInfos;
+            result.updateableObj.UpdateBuilder.ShortName = joinExpress.Parameters.FirstOrDefault()?.Name;
             return result;
         }
         public IUpdateable<T> Clone() 
