@@ -142,6 +142,9 @@
     <Compile Include="Abstract\SqlBuilderProvider\SqlBuilderProvider_Condition.cs" />
     <Compile Include="Abstract\SugarProvider\SqlSugarCoreProvider.cs" />
     <Compile Include="Abstract\DeleteProvider\DeleteMethodInfo.cs" />
+    <Compile Include="Abstract\UpdateProvider\UpdateableProviderT2.cs" />
+    <Compile Include="Abstract\UpdateProvider\UpdateableProviderT3.cs" />
+    <Compile Include="Abstract\UpdateProvider\UpdateableProviderT4.cs" />
     <Compile Include="Abstract\UpdateProvider\UpdateMethodInfo.cs" />
     <Compile Include="Abstract\UpdateProvider\UpdateableHelper.cs" />
     <Compile Include="Abstract\UpdateProvider\SplitTableUpdateByObjectProvider.cs" />
@@ -168,6 +171,7 @@
     <Compile Include="ExpressionsToSql\Subquery\Items\SubToList.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubWithNoLock.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubEnableTableFilter.cs" />
+    <Compile Include="Infrastructure\DependencyManagement.cs" />
     <Compile Include="Interface\ICustomConditionalFunc.cs" />
     <Compile Include="Interface\ISugarDataConverter.cs" />
     <Compile Include="Json2Sql\Entities\JsonDeleteResult.cs" />
