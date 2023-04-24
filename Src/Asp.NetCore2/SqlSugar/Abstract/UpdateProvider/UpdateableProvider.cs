@@ -624,9 +624,9 @@ namespace SqlSugar
                     }
                 }
             }
-            if (this.EntityInfo.Columns.Any(it => it.InsertServerTime || it.UpdateSql.HasValue())) 
+            if (this.EntityInfo.Columns.Any(it => it.UpdateServerTime || it.UpdateSql.HasValue())) 
             {
-                var appendColumns = this.EntityInfo.Columns.Where(it => it.InsertServerTime || it.UpdateSql.HasValue());
+                var appendColumns = this.EntityInfo.Columns.Where(it => it.UpdateServerTime || it.UpdateSql.HasValue());
                 foreach (var item in appendColumns)
                 {
                     if (item.UpdateServerTime)
