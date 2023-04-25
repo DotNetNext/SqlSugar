@@ -46,6 +46,7 @@ namespace SqlSugar
             var result= value.ObjToString();
             if (result == "||") return "OR";
             else if (result == "&&") return "AND";
+            else if (result.EqualCase("isnot")) return " IS NOT ";
             return result;
         }
         private static string GetSqlPartError(object value)
