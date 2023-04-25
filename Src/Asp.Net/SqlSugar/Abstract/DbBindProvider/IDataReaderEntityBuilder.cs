@@ -6,7 +6,7 @@ using System.Data;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Text.RegularExpressions;
-using System.Xml.Linq;
+using System.Xml.Linq; 
 
 namespace SqlSugar
 {
@@ -171,11 +171,11 @@ namespace SqlSugar
             Type type = (columnInfo.SqlParameterDbType as Type);
             //ConstructorInfo info = type.GetConstructor(Type.EmptyTypes);
             //il.Emit(OpCodes.Newobj, info);
-            generator.Emit(OpCodes.Ldtoken, type);
+            generator.Emit(OpCodes.Newobj, type.GetConstructor(Type.EmptyTypes));
             generator.Emit(OpCodes.Ldarg_0);
             generator.Emit(OpCodes.Ldc_I4, i);
-            method = (columnInfo.SqlParameterDbType as Type).GetMethod("QueryConverter");
-            method = method.MakeGenericMethod(new Type[] { columnInfo.PropertyInfo.PropertyType });
+            //method = (columnInfo.SqlParameterDbType as Type).GetMethod("QueryConverter");
+            //method = method.MakeGenericMethod(new Type[] { columnInfo.PropertyInfo.PropertyType });
             if (method.IsVirtual)
                 generator.Emit(OpCodes.Callvirt, method);
             else
