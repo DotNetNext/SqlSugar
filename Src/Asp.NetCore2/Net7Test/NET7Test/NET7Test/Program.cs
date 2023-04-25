@@ -1,5 +1,6 @@
 ﻿using NET7Test;
 using SqlSugar;
+using SqlSugar.DbConvert;
 
 ServerTest();
 SqliteTest();
@@ -98,6 +99,16 @@ static void ServerTest()
     //测试demo3, 5.1.3.47版本不成功， 5.0.9.6版本成功
     Dictionary<string, object> data3 = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(json);
     sqlugar.Insertable(data3).AS("Userinfo021").ExecuteReturnBigIdentity();
+
+    if (sqlugar.DbMaintenance.IsAnyTable("Unitadfafa", false))
+    {
+        sqlugar.DbMaintenance.DropTable<Unitadfafa>();
+    }
+    sqlugar.CodeFirst.InitTables<Unitadfafa>();
+
+    sqlugar.Insertable(new Unitadfafa() { Id =1 }).ExecuteCommand();
+    var list2=sqlugar.Queryable<Unitadfafa>().ToList();
+
 }
 
 
@@ -126,6 +137,13 @@ static void SqliteTest()
 
     var d1 = new UnitDate01231().dateOnly;
     var d2 = new UnitDate01231().timeOnly;
+}
+
+
+public class Unitadfafa 
+{
+    [SugarColumn(SqlParameterDbType =typeof(CommonPropertyConvert))]
+    public int Id { get; set; }
 }
 
 public class UnitDate01231
