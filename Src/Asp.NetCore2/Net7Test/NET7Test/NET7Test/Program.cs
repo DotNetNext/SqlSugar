@@ -1,6 +1,8 @@
 ﻿using NET7Test;
 using SqlSugar;
 using SqlSugar.DbConvert;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 
 ServerTest();
 SqliteTest();
@@ -62,6 +64,13 @@ static void ServerTest()
     {
         it.Aop.OnLogExecuting = (s, p) => Console.WriteLine(s, p);
     });
+
+    var payload = JsonSerializer.SerializeToNode(new { id = 1 });
+    var str=sqlugar.Utilities.SerializeObject(payload);
+
+    var XX=JsonSerializer.Deserialize<JsonNode>(str);
+    var node=sqlugar.Utilities.DeserializeObject<JsonNode>(str);
+
     sqlugar.DbMaintenance.CreateDatabase();
     sqlugar.CodeFirst.InitTables<UnitDate01231>();
     sqlugar.CodeFirst.InitTables<UnitDatez211afa>();
