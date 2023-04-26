@@ -335,12 +335,12 @@ namespace SqlSugar
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
             var pk = GetTreeKey(entity);
             var list = this.ToList();
-            return GetTreeRoot(childListExpression, parentIdExpression, pk, list, rootValue);
+            return GetTreeRoot(childListExpression, parentIdExpression, pk, list, rootValue)??new List<T>();
         }
         public  List<T> ToTree(Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, object rootValue, object[] childIds)
         {
             var list =  this.ToList();
-            return TreeAndFilterIds(childListExpression, parentIdExpression, rootValue, childIds, ref list);
+            return TreeAndFilterIds(childListExpression, parentIdExpression, rootValue, childIds, ref list) ?? new List<T>();
         }
 
         public virtual DataTable ToDataTable()
