@@ -31,7 +31,19 @@ namespace SqlSugar
                                typeof(short?[]),
                                typeof(uint?[]),
                                typeof(ulong?[]),
-                               typeof(ushort?[]));
+                               typeof(ushort?[]),
+                               typeof(List<int>),
+                               typeof(List<long>),
+                               typeof(List<short>),
+                               typeof(List<uint>),
+                               typeof(List<ulong>),
+                               typeof(List<ushort>),
+                               typeof(List<int?>),
+                               typeof(List<long?>),
+                               typeof(List<short?>),
+                               typeof(List<uint?>),
+                               typeof(List<ulong?>),
+                               typeof(List<ushort?>));
         }
         public static string GetNativeSql(string sql,SugarParameter[] pars)
         {
