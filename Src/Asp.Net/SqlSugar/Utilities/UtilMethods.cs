@@ -17,6 +17,34 @@ namespace SqlSugar
 {
     public class UtilMethods
     {
+        internal static bool IsNumberArray(Type type)
+        {
+         
+            return type.IsIn(typeof(int[]),
+                               typeof(long[]),
+                               typeof(short[]),
+                               typeof(uint[]),
+                               typeof(ulong[]),
+                               typeof(ushort[]),
+                               typeof(int?[]),
+                               typeof(long?[]),
+                               typeof(short?[]),
+                               typeof(uint?[]),
+                               typeof(ulong?[]),
+                               typeof(ushort?[]),
+                               typeof(List<int>),
+                               typeof(List<long>),
+                               typeof(List<short>),
+                               typeof(List<uint>),
+                               typeof(List<ulong>),
+                               typeof(List<ushort>),
+                               typeof(List<int?>),
+                               typeof(List<long?>),
+                               typeof(List<short?>),
+                               typeof(List<uint?>),
+                               typeof(List<ulong?>),
+                               typeof(List<ushort?>));
+        }
         public static string GetNativeSql(string sql,SugarParameter[] pars)
         {
             if (pars == null||pars.Length==0)
