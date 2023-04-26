@@ -1244,7 +1244,11 @@ namespace SqlSugar
             }
             return result;
         }
-
+        public ISugarQueryable<T> SplitTable() 
+        {
+            //all table
+            return this.SplitTable(tag => tag);
+        }
         public ISugarQueryable<T> SplitTable(DateTime beginTime, DateTime endTime) 
         {
             var splitColumn = this.EntityInfo.Columns.FirstOrDefault(it => it.PropertyInfo.GetCustomAttribute<SplitFieldAttribute>() != null);
