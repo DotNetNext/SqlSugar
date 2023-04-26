@@ -438,6 +438,13 @@ namespace OrmTest
                 data2 = SqlFunc.Subqueryable<Order>().First(s => new Custom() { Id = s.Id, Name = s.Name })
             })
         .ToList();
+
+            var test11 = db.Queryable<Order>().Select(it => new myDTO
+            {
+                Id = it.Id,
+                data = SqlFunc.Subqueryable<Order>().OrderBy(s=>s.Id).Where(s => s.Id == it.Id + 1).First()
+            })
+          .ToList();
         }
 
         internal class myDTO
