@@ -1621,9 +1621,18 @@ namespace SqlSugar
                             {
                                 sql = sql.Replace("@" + item.ParameterName.Substring(1), newValues.ToArray().ToJoinSqlInVals());
                             }
-                            if (item.ParameterName.Substring(0, 1) != this.SqlParameterKeyWord&& sql.ObjToString().Contains(this.SqlParameterKeyWord + item.ParameterName))
+                            if (item.ParameterName.Substring(0, 1) != this.SqlParameterKeyWord && sql.ObjToString().Contains(this.SqlParameterKeyWord + item.ParameterName))
                             {
-                                sql = sql.Replace(this.SqlParameterKeyWord+item.ParameterName, newValues.ToArray().ToJoinSqlInVals());
+                                sql = sql.Replace(this.SqlParameterKeyWord + item.ParameterName, newValues.ToArray().ToJoinSqlInVals());
+                            }
+                            else if (item.Value!=null&&UtilMethods.IsNumberArray(item.Value.GetType()))
+                            {
+                                if (newValues.Any(it => it == "")) 
+                                {
+                                    newValues.RemoveAll(r => r == "");
+                                    newValues.Add("null");
+                                }
+                                sql = sql.Replace(item.ParameterName, string.Join(",", newValues));
                             }
                             else
                             {
@@ -1641,6 +1650,9 @@ namespace SqlSugar
                 }
             }
         }
+
+ 
+
         private List<TResult> GetData<TResult>(Type entityType, IDataReader dataReader)
         {
             List<TResult> result;
