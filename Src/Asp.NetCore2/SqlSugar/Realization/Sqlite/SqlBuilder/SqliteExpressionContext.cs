@@ -252,7 +252,7 @@ namespace SqlSugar
 
         public override string GetDate()
         {
-            return "DATETIME('now')";
+            return "DATETIME('now', 'localtime')";
         }
 
         public override string GetRandom()
