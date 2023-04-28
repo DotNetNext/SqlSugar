@@ -26,6 +26,12 @@ namespace SqlSugar
             }
             return dict;
         }
+        public static bool ContainsMethodName(BinaryExpression expression, string name)
+        {
+            var visitor = new MethodCallExpressionVisitor(name);
+            var hasMethodCallWithName = visitor.HasMethodCallWithName(expression);
+            return hasMethodCallWithName;
+        }
         public static bool IsVariable(Expression expr)
         {
             var ps = new ParameterExpressionVisitor();
