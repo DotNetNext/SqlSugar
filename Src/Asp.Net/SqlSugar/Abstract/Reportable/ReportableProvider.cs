@@ -224,7 +224,7 @@ namespace SqlSugar
                 });
                 return result;
             }
-            else if (type.IsIn(typeof(DateTime))) 
+            else if (type.IsIn(typeof(DateTime))||type.Name== "DateOnly") 
             {
                 if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle) 
                 {
