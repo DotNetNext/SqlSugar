@@ -146,6 +146,21 @@ namespace SqlSugar
                     .Replace("fff", "%f");
                 return $"DATE_FORMAT({value}, '{newFormt}')";
             }
+            else if (IsSqlite() && !formatString.Contains("%"))
+            {
+                var newFormt = formatString
+                    .Replace("yyyy", "%Y")
+                    .Replace("yy", "%Y")
+                    .Replace("MM", "%m")
+                    .Replace("M", "%m")
+                    .Replace("dd", "%d")
+                    .Replace("HH", "%H")
+                    .Replace("hh", "%h")
+                    .Replace("mm", "%M")
+                    .Replace("ss", "%S")
+                    .Replace("fff", "%f");
+                return $"DATE_FORMAT({value}, '{newFormt}')";
+            }
             var parameter = new MethodCallExpressionArgs() { IsMember = true, MemberValue = DateType.Year };
             var parameter2 = new MethodCallExpressionArgs() { IsMember = true, MemberName = value };
             var parameters = new MethodCallExpressionModel() { Args = new List<MethodCallExpressionArgs>() { parameter2, parameter } };
