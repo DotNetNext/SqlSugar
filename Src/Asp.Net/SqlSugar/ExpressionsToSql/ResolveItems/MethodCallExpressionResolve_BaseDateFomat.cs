@@ -159,7 +159,7 @@ namespace SqlSugar
                     .Replace("mm", "%M")
                     .Replace("ss", "%S")
                     .Replace("fff", "%f");
-                return $"DATE_FORMAT({value}, '{newFormt}')";
+                return $"strftime('{newFormt}',{value})";
             }
             var parameter = new MethodCallExpressionArgs() { IsMember = true, MemberValue = DateType.Year };
             var parameter2 = new MethodCallExpressionArgs() { IsMember = true, MemberName = value };
