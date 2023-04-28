@@ -10,6 +10,7 @@ namespace SqlSugar
         /// <summary>
         /// Init primary key and identity key from the system table 
         /// </summary>
+        [Obsolete("Look at the sqlsugar document entity configuration,This method relies on the database and is abandoned")]
         SystemTable = 0,
         /// <summary>
         /// Init primary key and identity key from the attribute 
