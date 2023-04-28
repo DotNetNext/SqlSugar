@@ -266,7 +266,16 @@ namespace SqlSugar
                     }
                 }
             }
-            var selector = GetNewExpressionValue(rightExpression.Arguments[0]);
+            var selector = "";
+            bool hasMethodCallWithName = ExpressionTool.ContainsMethodName(expression, "Join");
+            if (hasMethodCallWithName)
+            {
+                selector = GetNewExpressionValue(rightExpression.Arguments[0], ResolveExpressType.WhereMultiple);
+            }
+            else
+            {
+                selector = GetNewExpressionValue(rightExpression.Arguments[0]);
+            }
             var selectorExp = rightExpression.Arguments[0];
             if (selector.Contains(".") && selectorExp is LambdaExpression) 
             {
