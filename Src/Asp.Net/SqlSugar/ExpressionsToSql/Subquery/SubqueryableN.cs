@@ -280,6 +280,10 @@ namespace SqlSugar
         {
             return null;
         }
+        public List<TResult> ToList<TResult>(Func<T1, T2, T3,T4, TResult> selector, bool isAutoDto) where TResult : class, new()
+        {
+            return null;
+        }
         public TResult Max<TResult>(Func<T1, T2, T3,T4, TResult> expression)
         {
             return default(TResult);
@@ -364,7 +368,10 @@ namespace SqlSugar
         {
             return null;
         }
-
+        public List<TResult> ToList<TResult>(Func<T1,T2,T3, TResult> selector, bool isAutoDto) where TResult : class, new()
+        {
+            return null;
+        }
         public TResult Max<TResult>(Func<T1, T2,T3, TResult> expression)
         {
             return default(TResult);
@@ -442,6 +449,10 @@ namespace SqlSugar
             return default(string);
         }
         public List<TResult> ToList<TResult>(Func<T1,T2, TResult> selector)
+        {
+            return null;
+        }
+        public List<TResult> ToList<TResult>(Func<T1,T2, TResult> selector, bool isAutoDto) where TResult : class, new()
         {
             return null;
         }
