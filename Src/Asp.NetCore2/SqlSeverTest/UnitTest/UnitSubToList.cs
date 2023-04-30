@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 namespace OrmTest 
@@ -31,12 +32,22 @@ namespace OrmTest
             db.Insertable(new OrderItem() { ItemId = 3,  OrderId =3, Price=3}).ExecuteCommand();
             db.Insertable(new OrderItem() { ItemId = 4,  OrderId=4 , Price=4}).ExecuteCommand();
 
-            TestGetAll(db);
+            TestAutoDto(db);
             TestWhere(db);
             TestJoin(db);
             TestJoin2(db);
             TestJoin3(db);
             TestJoin4(db);
+        }
+        private static void TestAutoDto(SqlSugarClient db)
+        {
+            Expression xx = null;
+            var test1 = db.Queryable<Order>().Select(it => new myDTO
+            {
+                Id = it.Id,
+                disCount = SqlFunc.Subqueryable<Order>().Where(s=>s.Id==it.Id).ToList(s=>new Order() {  } ,true)
+            })
+           .ToList(); 
         }
         private static void TestJoin4(SqlSugarClient db)
         {
