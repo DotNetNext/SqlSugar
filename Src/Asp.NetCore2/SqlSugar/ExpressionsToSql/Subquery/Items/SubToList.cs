@@ -42,8 +42,9 @@ namespace SqlSugar
         }
 
         public string GetValue(Expression expression = null)
-        {;
+        {
             var exp = expression as MethodCallExpression;
+            if (IsAutoSelect(exp)) return GetValueByAuto(exp);
             InitType(exp);
             var type=expression.Type;
             if (type.FullName.IsCollectionsList()
@@ -118,6 +119,63 @@ namespace SqlSugar
                 }
 
             }
+        }
+
+        private string GetValueByAuto(MethodCallExpression exp)
+        {
+            var selectExp = exp.Arguments[0];
+            var bodyExp=ExpressionTool.GetLambdaExpressionBody(selectExp);
+            var newMemExp = (bodyExp as MemberInitExpression);
+            var parameters = (selectExp as LambdaExpression).Parameters;
+            InitType(exp);
+            SetShortName(exp, null);
+            Check.ExceptionEasy(newMemExp == null, $"Subquery ToList(exp,true) expression {exp.ToString()} can only be it=>new class(){{Id = it.id}}", $"子查询ToList(exp,true)表达式{exp.ToString()}只能是it=>new class(){{ id=it.Id}}");
+            var dic=ExpressionTool.GetMemberBindingItemList(newMemExp.Bindings);
+            var db = this.Context.SugarContext.Context;
+            var builder = this.Context.SugarContext.QueryBuilder.Builder;
+            var columnInfos=db.EntityMaintenance.GetEntityInfo(bodyExp.Type);
+            var autoColumns = columnInfos.Columns
+                          .Where(it => !dic.ContainsKey(it.PropertyName))
+                          .Where(it => it.IsIgnore == false)
+                          .ToList();
+            List<string> appendColumns = new List<string>();
+            List<string> completeColumnColumns = new List<string>();
+            foreach (var item in autoColumns)
+            {
+
+                foreach (var parameter in parameters)
+                {
+                    var parameterColumns = db.EntityMaintenance.GetEntityInfo(parameter.Type).Columns;
+                    if (parameterColumns.Any(it=>it.PropertyName==item.PropertyName)) 
+                    {
+                        var completeColumn = parameterColumns.First(it => it.PropertyName == item.PropertyName);
+                        var shortName = builder.GetTranslationColumnName(parameter.Name);
+                        var columnName = builder.GetTranslationColumnName(completeColumn.DbColumnName);
+                        var asName = builder.SqlTranslationLeft + item.PropertyName + builder.SqlTranslationRight; 
+                        appendColumns.Add($"{shortName}.{columnName} as {asName}");
+                        completeColumnColumns.Add(completeColumn.PropertyName);
+                    }
+                }
+            }
+            var copyContext = this.Context.GetCopyContextWithMapping();
+            copyContext.Resolve(bodyExp, ResolveExpressType.SelectMultiple);
+            var select = copyContext.Result.GetString();
+            if (dic.Count > 0 && appendColumns.Count == 0)
+            {
+                return select + ",@sugarIndex as sugarIndex"; ;
+            }
+            else if (dic.Count > 0 && appendColumns.Count > 0) 
+            {
+                return select+","+string.Join(",",appendColumns) + ",@sugarIndex as sugarIndex"; ;
+            }
+            else 
+            {
+                return string.Join(",", appendColumns) + ",@sugarIndex as sugarIndex";
+            }
+        }
+        private static bool IsAutoSelect(MethodCallExpression exp)
+        {
+            return exp.Arguments.Count == 2 && exp.Arguments.Last().Type == UtilConstants.BoolType;
         }
     }
 }
