@@ -31,7 +31,9 @@ namespace SqlSugar
             if (IsDeleteA())
             {
                 if (!_IsDeletedParant)
-                    SetContext(() => this._Context.Deleteable(parentList).ExecuteCommand());
+                    SetContext(() => this._Context.Deleteable(parentList)
+                    .EnableDiffLogEventIF(_RootOptions?.IsDiffLogEvent == true, _RootOptions?.DiffLogBizData)
+                    .ExecuteCommand());
             }
 
             var aids = _ParentList.Select(it => parentPkColumn.PropertyInfo.GetValue(it)).ToList();

@@ -20,7 +20,9 @@ namespace SqlSugar
  
 
             if (!_IsDeletedParant)
-                SetContext(() => this._Context.Deleteable(parentList).ExecuteCommand());
+                SetContext(() => this._Context.Deleteable(parentList)
+                .EnableDiffLogEventIF(_RootOptions?.IsDiffLogEvent == true, _RootOptions?.DiffLogBizData)
+                .ExecuteCommand());
 
 
             var ids = _ParentList.Select(it => parentColumn.PropertyInfo.GetValue(it)).ToList();

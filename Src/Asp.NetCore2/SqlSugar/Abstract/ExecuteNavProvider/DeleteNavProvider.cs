@@ -16,6 +16,7 @@ namespace SqlSugar
         public EntityInfo _ParentEntity { get; set; }
         public EntityColumnInfo _ParentPkColumn { get; set; }
         public SqlSugarProvider _Context { get; set; }
+        internal DeleteNavRootOptions _RootOptions { get; set; }
         public bool _IsDeletedParant { get; set; }
         public List<string> _WhereList = new List<string>();
         public List<SugarParameter> _Parameters = new List<SugarParameter>();

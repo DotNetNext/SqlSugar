@@ -1153,6 +1153,25 @@ namespace SqlSugar
         {
             return DeleteNav(this.Queryable<T>().Where(whereExpression).ToList());
         }
+
+        public DeleteNavTaskInit<T, T> DeleteNav<T>(T data, DeleteNavRootOptions options) where T : class, new()
+        {
+            return DeleteNav(new List<T>() { data }, options);
+        }
+        public DeleteNavTaskInit<T, T> DeleteNav<T>(List<T> datas, DeleteNavRootOptions options) where T : class, new()
+        {
+            var result = new DeleteNavTaskInit<T, T>();
+            result.deleteNavProvider = new DeleteNavProvider<T, T>();
+            result.deleteNavProvider._Roots = datas;
+            result.deleteNavProvider._Context = this;
+            result.deleteNavProvider._RootOptions = options;
+            return result;
+        }
+        public DeleteNavTaskInit<T, T> DeleteNav<T>(Expression<Func<T, bool>> whereExpression, DeleteNavRootOptions options) where T : class, new()
+        {
+            return DeleteNav(this.Queryable<T>().Where(whereExpression).ToList(),options);
+        }
+
         public UpdateNavTaskInit<T, T> UpdateNav<T>(T data) where T : class, new()
         {
             return UpdateNav(new List<T>() { data });
