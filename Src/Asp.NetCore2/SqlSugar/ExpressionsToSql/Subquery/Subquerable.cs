@@ -179,6 +179,10 @@ namespace SqlSugar
         {
             return null;
         }
+        public List<TResult> ToList<TResult>()
+        {
+            return null;
+        }
         public List<TResult> ToList<TResult>(Func<T, TResult> selector,bool isAutoDto)where TResult : class, new()
         {
             return null;
