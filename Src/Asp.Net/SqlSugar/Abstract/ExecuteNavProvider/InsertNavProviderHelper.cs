@@ -63,6 +63,7 @@ namespace SqlSugar
                     this._Context.Insertable(item)
                         .IgnoreColumns(_RootOptions.IgnoreColumns)
                         .InsertColumns(_RootOptions.InsertColumns)
+                        .EnableDiffLogEventIF(_RootOptions.IsDiffLogEvent, _RootOptions.DiffLogBizData)
                         .ExecuteCommandIdentityIntoEntity();
                 }
                 else
@@ -166,6 +167,7 @@ namespace SqlSugar
                 this._Context.Insertable(insertData)
                     .IgnoreColumns(_RootOptions.IgnoreColumns)
                     .InsertColumns(_RootOptions.InsertColumns)
+                    .EnableDiffLogEventIF(_RootOptions.IsDiffLogEvent, _RootOptions.DiffLogBizData)
                     .ExecuteCommand();
             }
             else
