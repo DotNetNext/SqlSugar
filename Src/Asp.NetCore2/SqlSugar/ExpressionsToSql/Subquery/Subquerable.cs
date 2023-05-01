@@ -195,5 +195,9 @@ namespace SqlSugar
         {
             return default(TResult);
         }
+        public TResult First<TResult>() where TResult : class, new()
+        {
+            return default(TResult);
+        }
     }
 }
