@@ -179,6 +179,10 @@ namespace SqlSugar
         {
             return null;
         }
+        public List<TResult> ToList<TResult>()
+        {
+            return null;
+        }
         public List<TResult> ToList<TResult>(Func<T, TResult> selector,bool isAutoDto)where TResult : class, new()
         {
             return null;
@@ -188,6 +192,14 @@ namespace SqlSugar
             return default(T);
         }
         public TResult First<TResult>(Func<T, TResult> selector) where TResult : class, new()
+        {
+            return default(TResult);
+        }
+        public TResult First<TResult>(Func<T, TResult> selector, bool isAutoDto) where TResult : class, new()
+        {
+            return default(TResult);
+        }
+        public TResult First<TResult>() where TResult : class, new()
         {
             return default(TResult);
         }

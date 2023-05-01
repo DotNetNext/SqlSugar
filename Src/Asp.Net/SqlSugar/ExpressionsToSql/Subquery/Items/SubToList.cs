@@ -44,6 +44,7 @@ namespace SqlSugar
         public string GetValue(Expression expression = null)
         {
             var exp = expression as MethodCallExpression;
+            if(IsAutoGeneric(exp)) return GetValueByAuto(exp);
             if (IsAutoSelect(exp)) return GetValueByAuto(exp);
             InitType(exp);
             var type=expression.Type;
@@ -98,7 +99,7 @@ namespace SqlSugar
 
         public void SetShortName(MethodCallExpression exp, string result)
         {
-            if (exp.Arguments[0] is LambdaExpression)
+            if (exp.Arguments.Any()&&exp.Arguments[0] is LambdaExpression)
             {
                 var parameters = (exp.Arguments[0] as LambdaExpression).Parameters;
                 if (parameters != null && parameters.Count > 0)
@@ -123,7 +124,19 @@ namespace SqlSugar
 
         private string GetValueByAuto(MethodCallExpression exp)
         {
-            var selectExp = exp.Arguments[0];
+            var selectExp = exp.Arguments.FirstOrDefault();
+            if (selectExp==null) 
+            {
+                var type = exp.Type.GenericTypeArguments[0];
+                var parameter = Expression.Parameter(type, "it");
+
+                // 构造返回值表达式
+                var body = Expression.MemberInit(Expression.New(type));
+
+                // 将返回值表达式作为lambda表达式的主体
+                selectExp = Expression.Lambda(body, parameter);
+
+            }
             var bodyExp=ExpressionTool.GetLambdaExpressionBody(selectExp);
             var newMemExp = (bodyExp as MemberInitExpression);
             var parameters = (selectExp as LambdaExpression).Parameters;
@@ -176,6 +189,10 @@ namespace SqlSugar
         private static bool IsAutoSelect(MethodCallExpression exp)
         {
             return exp.Arguments.Count == 2 && exp.Arguments.Last().Type == UtilConstants.BoolType;
+        }
+        private static bool IsAutoGeneric(MethodCallExpression exp)
+        {
+            return exp.Arguments.Count == 0&&exp.Method.GetGenericArguments().Count()==1;
         }
     }
 }

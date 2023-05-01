@@ -42,9 +42,10 @@ namespace SqlSugar
         }
 
         public string GetValue(Expression expression = null)
-        {
-            ;
+        { 
             var exp = expression as MethodCallExpression;
+            if (IsAutoGeneric(exp)) return GetValueByAuto(exp);
+            if (IsAutoSelect(exp)) return GetValueByAuto(exp);
             InitType(exp);
             var type = expression.Type;
             if (type.FullName.IsCollectionsList()
@@ -98,7 +99,7 @@ namespace SqlSugar
 
         public void SetShortName(MethodCallExpression exp, string result)
         {
-            if (exp.Arguments[0] is LambdaExpression)
+            if (exp.Arguments.Any()&&exp.Arguments[0] is LambdaExpression)
             {
                 var parameters = (exp.Arguments[0] as LambdaExpression).Parameters;
                 if (parameters != null && parameters.Count > 0)
@@ -119,6 +120,79 @@ namespace SqlSugar
                 }
 
             }
+        }
+
+        private string GetValueByAuto(MethodCallExpression exp)
+        {
+            var selectExp = exp.Arguments.FirstOrDefault();
+            if (selectExp == null)
+            {
+                var type = exp.Type;
+                var parameter = Expression.Parameter(type, "it");
+
+                // 构造返回值表达式
+                var body = Expression.MemberInit(Expression.New(type));
+
+                // 将返回值表达式作为lambda表达式的主体
+                selectExp = Expression.Lambda(body, parameter);
+
+            }
+            var bodyExp = ExpressionTool.GetLambdaExpressionBody(selectExp);
+            var newMemExp = (bodyExp as MemberInitExpression);
+            var parameters = (selectExp as LambdaExpression).Parameters;
+            InitType(exp);
+            SetShortName(exp, null);
+            Check.ExceptionEasy(newMemExp == null, $"Subquery ToList(exp,true) expression {exp.ToString()} can only be it=>new class(){{Id = it.id}}", $"子查询ToList(exp,true)表达式{exp.ToString()}只能是it=>new class(){{ id=it.Id}}");
+            var dic = ExpressionTool.GetMemberBindingItemList(newMemExp.Bindings);
+            var db = this.Context.SugarContext.Context;
+            var builder = this.Context.SugarContext.QueryBuilder.Builder;
+            var columnInfos = db.EntityMaintenance.GetEntityInfo(bodyExp.Type);
+            var autoColumns = columnInfos.Columns
+                          .Where(it => !dic.ContainsKey(it.PropertyName))
+                          .Where(it => it.IsIgnore == false)
+                          .ToList();
+            List<string> appendColumns = new List<string>();
+            List<string> completeColumnColumns = new List<string>();
+            foreach (var item in autoColumns)
+            {
+
+                foreach (var parameter in parameters)
+                {
+                    var parameterColumns = db.EntityMaintenance.GetEntityInfo(parameter.Type).Columns;
+                    if (parameterColumns.Any(it => it.PropertyName == item.PropertyName))
+                    {
+                        var completeColumn = parameterColumns.First(it => it.PropertyName == item.PropertyName);
+                        var shortName = builder.GetTranslationColumnName(parameter.Name);
+                        var columnName = builder.GetTranslationColumnName(completeColumn.DbColumnName);
+                        var asName = builder.SqlTranslationLeft + item.PropertyName + builder.SqlTranslationRight;
+                        appendColumns.Add($"{shortName}.{columnName} as {asName}");
+                        completeColumnColumns.Add(completeColumn.PropertyName);
+                    }
+                }
+            }
+            var copyContext = this.Context.GetCopyContextWithMapping();
+            copyContext.Resolve(bodyExp, ResolveExpressType.SelectMultiple);
+            var select = copyContext.Result.GetString();
+            if (dic.Count > 0 && appendColumns.Count == 0)
+            {
+                return select + ",@sugarIndex as sugarIndex"; ;
+            }
+            else if (dic.Count > 0 && appendColumns.Count > 0)
+            {
+                return select + "," + string.Join(",", appendColumns) + ",@sugarIndex as sugarIndex"; ;
+            }
+            else
+            {
+                return string.Join(",", appendColumns) + ",@sugarIndex as sugarIndex";
+            }
+        }
+        private static bool IsAutoSelect(MethodCallExpression exp)
+        {
+            return exp.Arguments.Count == 2 && exp.Arguments.Last().Type == UtilConstants.BoolType;
+        }
+        private static bool IsAutoGeneric(MethodCallExpression exp)
+        {
+            return exp.Arguments.Count == 0 && exp.Method.GetGenericArguments().Count() == 1;
         }
     }
 }
