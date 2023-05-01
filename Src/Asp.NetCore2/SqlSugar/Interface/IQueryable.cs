@@ -255,6 +255,7 @@ namespace SqlSugar
         string ToPivotJson<TColumn, TRow, TData>(Func<T, TColumn> columnSelector, Expression<Func<T, TRow>> rowSelector, Func<IEnumerable<T>, TData> dataSelector);
         ISugarQueryable<T> SplitTable(Func<List<SplitTableInfo>,IEnumerable<SplitTableInfo>> getTableNamesFunc);
         ISugarQueryable<T> SplitTable(DateTime beginTime,DateTime endTime);
+        ISugarQueryable<T> SplitTable();
     }
     public partial interface ISugarQueryable<T, T2> : ISugarQueryable<T>
     {
