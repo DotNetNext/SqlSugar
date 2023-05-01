@@ -230,6 +230,20 @@ namespace SqlSugar
         {
             return  this.Context.DeleteNav(whereExpression);
         }
+
+        public DeleteNavTaskInit<T, T> DeleteNav<T>(T data, DeleteNavRootOptions options) where T : class, new()
+        {
+            return this.Context.DeleteNav(data, options);
+        }
+        public DeleteNavTaskInit<T, T> DeleteNav<T>(List<T> datas, DeleteNavRootOptions options) where T : class, new()
+        {
+            return this.Context.DeleteNav(datas, options);
+        }
+        public DeleteNavTaskInit<T, T> DeleteNav<T>(Expression<Func<T, bool>> whereExpression, DeleteNavRootOptions options) where T : class, new()
+        {
+            return this.Context.DeleteNav(whereExpression, options);
+        }
+
         public UpdateNavTaskInit<T, T> UpdateNav<T>(T data) where T : class, new()
         {
             return this.Context.UpdateNav(data);

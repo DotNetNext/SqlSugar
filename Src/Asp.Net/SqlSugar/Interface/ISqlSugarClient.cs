@@ -228,6 +228,9 @@ namespace SqlSugar
         DeleteNavTaskInit<T, T> DeleteNav<T>(T data) where T : class, new();
         DeleteNavTaskInit<T, T> DeleteNav<T>(List<T> datas) where T : class, new();
         DeleteNavTaskInit<T, T> DeleteNav<T>(Expression<Func<T,bool>> whereExpression) where T : class, new();
+        DeleteNavTaskInit<T, T> DeleteNav<T>(T data, DeleteNavRootOptions options) where T : class, new();
+        DeleteNavTaskInit<T, T> DeleteNav<T>(List<T> datas, DeleteNavRootOptions options) where T : class, new();
+        DeleteNavTaskInit<T, T> DeleteNav<T>(Expression<Func<T, bool>> whereExpression, DeleteNavRootOptions options) where T : class, new();
         UpdateNavTaskInit<T, T> UpdateNav<T>(T data) where T : class, new ();
         UpdateNavTaskInit<T, T> UpdateNav<T>(List<T> datas) where T : class, new ();
         UpdateNavTaskInit<T, T> UpdateNav<T>(T data,UpdateNavRootOptions rootOptions) where T : class, new();
