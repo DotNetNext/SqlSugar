@@ -11,17 +11,21 @@ namespace SqlSugar
     {
         public bool ManyToManyIsDeleteA { get; set; }
         public bool ManyToManyIsDeleteB { get; set; }
+        public bool IsDiffLogEvent { get; set; }
+        public object DiffLogBizData { get; set; }
     }
     public class InsertNavRootOptions
     {
         public string[] IgnoreColumns { get; set; }
         public string[] InsertColumns { get; set; }
+        public bool IsDiffLogEvent { get; set; }
+        public object DiffLogBizData { get; set; }
     }
-    public class InertNavRootOptions
-    {
-        public string[] IgnoreColumns { get; set; }
-        public string[] InsertColumns { get; set; }
-    }
+    //public class InertNavRootOptions
+    //{
+    //    public string[] IgnoreColumns { get; set; }
+    //    public string[] InsertColumns { get; set; }
+    //}
     public class UpdateNavRootOptions
     {
         public string[] IgnoreColumns { get; set; }
