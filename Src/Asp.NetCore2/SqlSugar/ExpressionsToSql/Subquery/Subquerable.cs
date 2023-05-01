@@ -195,6 +195,10 @@ namespace SqlSugar
         {
             return default(TResult);
         }
+        public TResult First<TResult>(Func<T, TResult> selector, bool isAutoDto) where TResult : class, new()
+        {
+            return default(TResult);
+        }
         public TResult First<TResult>() where TResult : class, new()
         {
             return default(TResult);
