@@ -47,7 +47,13 @@ namespace OrmTest
                 Id = it.Id,
                 disCount = SqlFunc.Subqueryable<Order>().Where(s=>s.Id==it.Id).ToList(s=>new Order() {  } ,true)
             })
-           .ToList(); 
+           .ToList();
+            var test2 = db.Queryable<Order>().Select(it => new 
+            {
+                Id = it.Id,
+                disCount = SqlFunc.Subqueryable<Order>().Where(s => s.Id == it.Id).ToList<Custom>()
+            })
+        .ToList();
         }
         private static void TestJoin4(SqlSugarClient db)
         {
