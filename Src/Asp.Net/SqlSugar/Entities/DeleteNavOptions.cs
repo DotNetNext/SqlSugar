@@ -11,8 +11,6 @@ namespace SqlSugar
     {
         public bool ManyToManyIsDeleteA { get; set; }
         public bool ManyToManyIsDeleteB { get; set; }
-        public bool IsDiffLogEvent { get; set; }
-        public object DiffLogBizData { get; set; }
     }
     public class InsertNavRootOptions
     {
