@@ -9,6 +9,21 @@ namespace SqlSugar
 {
     public class ExpressionTool
     {
+        public static Dictionary<string, Expression> GetNewExpressionItemList(Expression lamExp)
+        {
+            var exp=GetLambdaExpressionBody(lamExp)as NewExpression;
+            var dict = new Dictionary<string, Expression>();
+
+            for (int i = 0; i < exp.Arguments.Count; i++)
+            {
+                var arg = exp.Arguments[i];
+                var parameterInfo = exp.Constructor.GetParameters()[i];
+
+                dict.Add(parameterInfo.Name, arg);
+            }
+
+            return dict;
+        }
         public static Dictionary<string, Expression> GetMemberBindingItemList(ReadOnlyCollection<MemberBinding> exp)
         {
             Dictionary<string, Expression> dict = new Dictionary<string, Expression>();
