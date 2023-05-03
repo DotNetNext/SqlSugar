@@ -556,6 +556,54 @@ namespace SqlSugar
         #endregion
 
         #region Navigate
+        private bool IsAppendNavColumns()
+        {
+            return this.QueryBuilder.Includes.HasValue() && this.QueryBuilder.AppendNavInfo == null;
+        }
+
+        private void SetAppendNavColumns(Expression  expression)
+        {
+            var tResultType = expression.Type;
+            var dic = ExpressionTool.GetNewExpressionItemList(expression);
+            var navs = this.QueryBuilder.Includes;
+            var navManages = navs.Cast<NavigatManager<T>>();
+            if (navManages.FirstOrDefault() == null) return;
+            this.QueryBuilder.AppendNavInfo = new AppendNavInfo();
+            var navInfo = this.QueryBuilder.AppendNavInfo;
+            var entityColumns = this.EntityInfo.Columns;
+            var pkColumns = entityColumns.Where(it => it.IsPrimarykey);
+            foreach (var item in pkColumns)
+            {
+                navInfo.AppendProperties.Add(item.PropertyName,item.DbColumnName);
+            }
+            foreach (var item in dic)
+            {
+                var value=item.Value;
+            }
+            foreach (var item in navManages)
+            {
+                var navName =ExpressionTool.GetMemberName(item.Expressions.First());
+                var navColumn= entityColumns.Where(it=>it.IsPrimarykey==false).Where(it=>it.Navigat!=null).FirstOrDefault(it => it.PropertyName == navName);
+                if (navColumn != null&& navColumn.Navigat.NavigatType!=NavigateType.ManyToMany)
+                {
+                    var name1 = navColumn.Navigat.Name;
+                    var name2 = navColumn.Navigat.Name2;
+                    var name1Column = entityColumns.FirstOrDefault(it => it.PropertyName == name1);
+                    var name2Column = entityColumns.FirstOrDefault(it => it.PropertyName == name1);
+                    if (name1Column!=null) 
+                    {
+                        if(!navInfo.AppendProperties.ContainsKey(name1Column.PropertyName))
+                           navInfo.AppendProperties.Add(name1Column.PropertyName,name1Column.DbColumnName);
+                    }
+                    if (name2Column != null)
+                    {
+                        if (!navInfo.AppendProperties.ContainsKey(name2Column.PropertyName))
+                            navInfo.AppendProperties.Add(name2Column.PropertyName, name2Column.DbColumnName);
+                    }
+                }
+            }
+        }
+
         private async Task _InitNavigatAsync<TResult>(List<TResult> result)
         {
             if (this.QueryBuilder.Includes != null)
@@ -570,13 +618,29 @@ namespace SqlSugar
                 var managers = (this.QueryBuilder.Includes as List<object>);
                 if (this.QueryBuilder.SelectValue.HasValue() && this.QueryBuilder.NoCheckInclude == false)
                 {
-                    Check.ExceptionEasy("To use includes, use select after tolist()", "使用Includes请在ToList()之后在使用Select");
+                    foreach (var it in managers)
+                    {
+                        var manager =it;
+                        var p= it.GetType().GetProperty("RootList");
+                        var tType = it.GetType().GenericTypeArguments[0];
+                        var listType = typeof(List<>).MakeGenericType(tType);
+                        var outList = Activator.CreateInstance(listType);
+                        p.SetValue(it, outList);
+                        foreach (var item in result)
+                        {
+                            (outList as IList).Add(Activator.CreateInstance(tType));
+                        }
+                        it.GetType().GetMethod("Execute").Invoke(it,null); 
+                    }
                 }
-                foreach (var it in managers)
+                else
                 {
-                    var manager = it as NavigatManager<TResult>;
-                    manager.RootList = result;
-                    manager.Execute();
+                    foreach (var it in managers)
+                    {
+                        var manager = it as NavigatManager<TResult>;
+                        manager.RootList = result;
+                        manager.Execute();
+                    }
                 }
             }
         }
@@ -1578,6 +1642,7 @@ namespace SqlSugar
             asyncQueryableBuilder.AppendColumns = this.Context.Utilities.TranslateCopy(this.QueryBuilder.AppendColumns);
             asyncQueryableBuilder.AppendValues = this.Context.Utilities.TranslateCopy(this.QueryBuilder.AppendValues);
             asyncQueryableBuilder.RemoveFilters = this.QueryBuilder.RemoveFilters?.ToArray();
+            asyncQueryableBuilder.AppendNavInfo = this.Context.Utilities.TranslateCopy(this.QueryBuilder.AppendNavInfo);
         }
 
         private static JoinQueryInfo CopyJoinInfo(JoinQueryInfo it)

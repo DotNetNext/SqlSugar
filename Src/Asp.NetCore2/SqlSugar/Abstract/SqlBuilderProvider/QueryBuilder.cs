@@ -34,6 +34,7 @@ namespace SqlSugar
         #endregion
 
         #region Splicing basic
+        internal AppendNavInfo AppendNavInfo { get; set; }
         public Type[] RemoveFilters { get; set; }
         public Dictionary<string, object> SubToListParameters { get; set; }
         internal List<QueryableAppendColumn> AppendColumns { get; set; }
@@ -973,7 +974,7 @@ namespace SqlSugar
         public bool NoCheckInclude { get;  set; }
         public virtual bool IsSelectNoAll { get; set; } = false;
         public List<string> AutoAppendedColumns { get;  set; }
-        public Dictionary<string, string> MappingKeys { get;  set; }
+        public Dictionary<string, string> MappingKeys { get;  set; } 
         #endregion
 
         private string GetTableName(string entityName)

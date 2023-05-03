@@ -11,7 +11,12 @@ namespace SqlSugar
     {
         public static Dictionary<string, Expression> GetNewExpressionItemList(Expression lamExp)
         {
-            var exp=GetLambdaExpressionBody(lamExp)as NewExpression;
+            var caseExp = GetLambdaExpressionBody(lamExp);
+            if (caseExp is MemberInitExpression) 
+            {
+                return GetMemberBindingItemList((caseExp as MemberInitExpression).Bindings);
+            }
+            var exp= caseExp as NewExpression;
             var dict = new Dictionary<string, Expression>();
 
             for (int i = 0; i < exp.Arguments.Count; i++)
