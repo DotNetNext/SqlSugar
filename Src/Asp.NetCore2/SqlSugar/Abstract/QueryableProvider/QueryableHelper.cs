@@ -579,6 +579,21 @@ namespace SqlSugar
             foreach (var item in dic)
             {
                 var value=item.Value;
+                var expressionTree = new ExpressionTreeVisitor().GetExpressions(value);
+                if (expressionTree.Any())
+                {
+                    var name = ExpressionTool.GetMemberName(expressionTree.First());
+                    if (name !=null&& entityColumns.Any(it=>it.Navigat!=null&&it.PropertyName==name))
+                    {
+                        var mappingNavColumnInfo = new MappingNavColumnInfo() 
+                        {
+                            ExpressionList= expressionTree ,
+                            Name=name
+                        };
+                        navInfo.MappingNavProperties.Add(item.Key,mappingNavColumnInfo);
+                    }
+                }
+                 
             }
             foreach (var item in navManages)
             {
