@@ -806,6 +806,11 @@ namespace SqlSugar
             {
                 return "*";
             }
+            if (this.AppendNavInfo?.AppendProperties?.Any() ==true) 
+            {
+                result += ",";
+                result += string.Join(",",this.AppendNavInfo.AppendProperties.Select(it=>it.Value+ " AS SugarNav_" + it.Key));
+            }
             if (result.Contains("/**/*")) 
             {
                 return result.Replace("/**/*", "");

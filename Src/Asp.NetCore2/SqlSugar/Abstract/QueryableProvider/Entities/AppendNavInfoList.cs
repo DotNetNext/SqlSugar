@@ -7,8 +7,13 @@ namespace SqlSugar
 {
     internal class AppendNavInfo 
     {
-        public Dictionary<string, MappingNavColumnInfo> MappingNavProperties = new Dictionary<string, MappingNavColumnInfo>();
-        public Dictionary<string, string> AppendProperties = new Dictionary<string, string>();
+        public Dictionary<string, MappingNavColumnInfo> MappingNavProperties { get; set; }= new Dictionary<string, MappingNavColumnInfo>();
+        public Dictionary<string, string> AppendProperties { get; set; }= new Dictionary<string, string>();
+        public List<AppendNavResult> Result { get; set; } =new List<AppendNavResult>();
+    }
+    internal class AppendNavResult 
+    {
+        public Dictionary<string, object> result = new Dictionary<string, object>();
     }
     internal class MappingNavColumnInfo
     {

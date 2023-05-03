@@ -311,6 +311,10 @@ namespace SqlSugar
                 }
                 MemberAssignment memberAssignment = (MemberAssignment)binding;
                 var memberName = memberAssignment.Member.Name;
+                if (this.Context?.SugarContext?.QueryBuilder?.AppendNavInfo?.MappingNavProperties?.ContainsKey(memberName) == true) 
+                {
+                    continue;
+                }
                 var item = memberAssignment.Expression;
                 if (item.Type.IsClass()&& item is MemberExpression &&(item as MemberExpression).Expression is ParameterExpression) 
                 {
