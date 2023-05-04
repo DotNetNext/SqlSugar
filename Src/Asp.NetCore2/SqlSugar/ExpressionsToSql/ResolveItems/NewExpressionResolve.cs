@@ -148,6 +148,7 @@ namespace SqlSugar
                     string memberName = expression.Members[i].Name;
                     if (this.Context?.SugarContext?.QueryBuilder?.AppendNavInfo?.MappingNavProperties?.ContainsKey(memberName) == true)
                     {
+                        ++i;
                         continue;
                     }
                     ++i;

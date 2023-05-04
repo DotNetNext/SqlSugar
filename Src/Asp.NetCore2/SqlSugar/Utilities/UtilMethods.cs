@@ -17,6 +17,28 @@ namespace SqlSugar
 {
     public class UtilMethods
     {
+        public static object SetAnonymousObjectPropertyValue(object obj, string propertyName, object propertyValue)
+        {
+            if (obj.GetType().IsAnonymousType()) // 判断是否为匿名对象
+            {
+                var objType = obj.GetType();
+                var objFields = objType.GetFields(BindingFlags.Instance | BindingFlags.NonPublic);
+                foreach (var field in objFields) // 遍历字段列表，查找需要修改的属性
+                {
+                    if (field.Name == $"<{propertyName}>i__Field")
+                    {
+                        field.SetValue(obj, propertyValue); // 使用反射修改属性值
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                obj.GetType().GetProperty(propertyName).SetValue(obj, propertyValue);
+            }
+            return obj;
+        }
+
         internal static bool IsNumberArray(Type type)
         {
          

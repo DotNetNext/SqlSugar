@@ -582,8 +582,10 @@ namespace SqlSugar
             {
                 var value = item.Value;
                 var expressionTree = new ExpressionTreeVisitor().GetExpressions(value);
-                if (expressionTree.Any())
+                var isSqlMethod = ExpressionTool.GetMethodName(expressionTree.Last()).IsIn("Any", "Count");
+                if (expressionTree.Any()&&isSqlMethod==false)
                 {
+                   
                     var name = ExpressionTool.GetMemberName(expressionTree.First());
                     if (name != null && entityColumns.Any(it => it.Navigat != null && it.PropertyName == name))
                     {
@@ -704,7 +706,7 @@ namespace SqlSugar
                         var obj = comExp.Compile();
                         // 传递参数值
                         var leftValue = obj.DynamicInvoke(rightObject);
-                        leftObject.GetType().GetProperty(leftName).SetValue(leftObject, leftValue);
+                        UtilMethods.SetAnonymousObjectPropertyValue(leftObject, leftName, rightValue);
                         // // 重新构造Lambda表达式，将参数替换为新的参数，方法调用替换为新的方法调用
                         // var newExpression = Expression.Lambda<Func<X, List<int>>>(newMethodCallExpr, paramExpr);
                         // Expression.Call(callExp, (callExp as MethodCallExpression).Method,new )
@@ -713,12 +715,13 @@ namespace SqlSugar
                     }
                     else 
                     {
-                        leftObject.GetType().GetProperty(leftName).SetValue(leftObject, rightValue);
+                        //leftObject.GetType().GetProperty(leftName).SetValue(leftObject, rightValue);
+                       UtilMethods.SetAnonymousObjectPropertyValue(leftObject, leftName, rightValue);
                     }
                 } 
             }
         }
-
+    
         private IList SelectNavQuery_SetList<TResult>(List<TResult> result, object it, PropertyInfo p, Type tType, List<EntityColumnInfo> columns, Type listType)
         {
             var outList = Activator.CreateInstance(listType);
