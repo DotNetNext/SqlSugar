@@ -104,6 +104,22 @@ namespace OrmTest
            })
            .ToList();
 
+
+
+            var list6 = db.Queryable<Student_004>()
+           .Includes(x => x.school_001, x => x.rooms)
+           .Includes(x => x.books)
+           .LeftJoin<Order>((x, y) => true)
+           .Select((x, y) => new 
+           {
+               SchoolId = x.SchoolId,
+               books = x.books.Select(it=>new Order() {  Name=it.Name } ).ToList(),
+               bookFirst = x.books.Select(it => new Order() { Name = it.Name }  ).FirstOrDefault(),
+               school_001 = x.school_001,
+               Name = y.Name
+           })
+           .ToList();
+
         }
 
 
