@@ -643,7 +643,10 @@ namespace SqlSugar
                 var managers = (this.QueryBuilder.Includes as List<object>);
                 if (IsSelectNavQuery())
                 {
-                    SelectNavQuery(result, managers);
+                    if (result.HasValue())
+                    {
+                        SelectNavQuery(result, managers);
+                    }
                 }
                 else
                 {
@@ -664,26 +667,52 @@ namespace SqlSugar
                 var manager = it;
                 var p = it.GetType().GetProperty("RootList");
                 var tType = it.GetType().GenericTypeArguments[0];
-                var columns = this.Context.EntityMaintenance.GetEntityInfo(tType).Columns;
+                var columns = this.Context.EntityMaintenance.GetEntityInfo(tType)
+                    .Columns
+                    .Where(it=> this.QueryBuilder.AppendNavInfo.Result.First().result.ContainsKey("SugarNav_" + it.PropertyName))
+                    .ToList();
                 var listType = typeof(List<>).MakeGenericType(tType);
-                var outList = Activator.CreateInstance(listType);
-                p.SetValue(it, outList);
-                var index = 0;
-                foreach (var item in result)
-                {
-                    var addItem = Activator.CreateInstance(tType);
-                    var appendResult = this.QueryBuilder.AppendNavInfo.Result[index];
-                    foreach (var kv in appendResult.result)
-                    { 
-                        var propertyName = kv.Key.Replace("SugarNav_", "");
-                        var propertyInfo = columns.First(i => i.PropertyName == propertyName).PropertyInfo;
-                        propertyInfo.SetValue(addItem, kv.Value);
-                    }
-                    (outList as IList).Add(addItem);
-                    index++;
-                }
+                var outList=SelectNavQuery_SetList(result, it, p, tType, columns, listType);
                 it.GetType().GetMethod("Execute").Invoke(it, null);
+                SelectNavQuery_MappingList(it,result, outList);
             }
+        }
+
+        private void SelectNavQuery_MappingList<TResult>(object it,List<TResult> result, IList outList)
+        {
+            for (int i = 0; i < result.Count; i++)
+            {
+                var resultItem = result[i];
+                var outListItem = outList[i];
+                foreach (var item in this.QueryBuilder.AppendNavInfo.MappingNavProperties)
+                {
+                    if (item.Value.ExpressionList.Count > 0) 
+                    {
+
+                    }
+                } 
+            }
+        }
+
+        private IList SelectNavQuery_SetList<TResult>(List<TResult> result, object it, PropertyInfo p, Type tType, List<EntityColumnInfo> columns, Type listType)
+        {
+            var outList = Activator.CreateInstance(listType);
+            p.SetValue(it, outList);
+            var index = 0;
+            foreach (var item in result)
+            {
+                var addItem = Activator.CreateInstance(tType);
+                var appendResult = this.QueryBuilder.AppendNavInfo.Result[index];
+                foreach (var kv in appendResult.result)
+                {
+                    var propertyName = kv.Key.Replace("SugarNav_", "");
+                    var propertyInfo = columns.First(i => i.PropertyName == propertyName).PropertyInfo;
+                    propertyInfo.SetValue(addItem, kv.Value);
+                }
+                (outList as IList).Add(addItem);
+                index++;
+            }
+            return outList as IList;
         }
 
         private bool IsSelectNavQuery()

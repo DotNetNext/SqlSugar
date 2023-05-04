@@ -277,7 +277,7 @@ namespace SqlSugar
                 selector = GetNewExpressionValue(rightExpression.Arguments[0]);
             }
             var selectorExp = rightExpression.Arguments[0];
-            if (selector.Contains(".") && selectorExp is LambdaExpression) 
+            if (hasMethodCallWithName==false&&selector.Contains(".") && selectorExp is LambdaExpression) 
             {
                 var selectorExpLam = (selectorExp as LambdaExpression);
                 var name=(selectorExpLam.Parameters[0] as ParameterExpression).Name;
