@@ -154,7 +154,7 @@ namespace SqlSugar
                 var navResult = new AppendNavResult();
                 foreach (var item in QueryBuilder?.AppendNavInfo.AppendProperties)
                 {
-                    var vi = dataReader.GetOrdinal(item.Key);
+                    var vi = dataReader.GetOrdinal("SugarNav_" + item.Key);
                     var value = dataReader.GetValue(vi);
                     navResult.result.Add("SugarNav_"+item.Key,value);
                 }
