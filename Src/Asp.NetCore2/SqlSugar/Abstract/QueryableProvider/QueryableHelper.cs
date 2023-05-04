@@ -572,43 +572,53 @@ namespace SqlSugar
             var navInfo = this.QueryBuilder.AppendNavInfo;
             var entityColumns = this.EntityInfo.Columns;
             var pkColumns = entityColumns.Where(it => it.IsPrimarykey);
-            foreach (var item in pkColumns)
-            {
-                navInfo.AppendProperties.Add(item.PropertyName,item.DbColumnName);
-            }
+            AddAppendProperties(navManages, navInfo, entityColumns, pkColumns);
+            AddMappingNavProperties(dic, navInfo, entityColumns);
+        }
+
+        private static void AddMappingNavProperties(Dictionary<string, Expression> dic, AppendNavInfo navInfo, List<EntityColumnInfo> entityColumns)
+        {
             foreach (var item in dic)
             {
-                var value=item.Value;
+                var value = item.Value;
                 var expressionTree = new ExpressionTreeVisitor().GetExpressions(value);
                 if (expressionTree.Any())
                 {
                     var name = ExpressionTool.GetMemberName(expressionTree.First());
-                    if (name !=null&& entityColumns.Any(it=>it.Navigat!=null&&it.PropertyName==name))
+                    if (name != null && entityColumns.Any(it => it.Navigat != null && it.PropertyName == name))
                     {
-                        var mappingNavColumnInfo = new MappingNavColumnInfo() 
+                        var mappingNavColumnInfo = new MappingNavColumnInfo()
                         {
-                            ExpressionList= expressionTree ,
-                            Name=name
+                            ExpressionList = expressionTree,
+                            Name = name
                         };
-                        navInfo.MappingNavProperties.Add(item.Key,mappingNavColumnInfo);
+                        navInfo.MappingNavProperties.Add(item.Key, mappingNavColumnInfo);
                     }
                 }
-                 
+
+            }
+        }
+
+        private static void AddAppendProperties(IEnumerable<NavigatManager<T>> navManages, AppendNavInfo navInfo, List<EntityColumnInfo> entityColumns, IEnumerable<EntityColumnInfo> pkColumns)
+        {
+            foreach (var item in pkColumns)
+            {
+                navInfo.AppendProperties.Add(item.PropertyName, item.DbColumnName);
             }
             foreach (var item in navManages)
             {
-                var navName =ExpressionTool.GetMemberName(item.Expressions.First());
-                var navColumn= entityColumns.Where(it=>it.IsPrimarykey==false).Where(it=>it.Navigat!=null).FirstOrDefault(it => it.PropertyName == navName);
-                if (navColumn != null&& navColumn.Navigat.NavigatType!=NavigateType.ManyToMany)
+                var navName = ExpressionTool.GetMemberName(item.Expressions.First());
+                var navColumn = entityColumns.Where(it => it.IsPrimarykey == false).Where(it => it.Navigat != null).FirstOrDefault(it => it.PropertyName == navName);
+                if (navColumn != null && navColumn.Navigat.NavigatType != NavigateType.ManyToMany)
                 {
                     var name1 = navColumn.Navigat.Name;
                     var name2 = navColumn.Navigat.Name2;
                     var name1Column = entityColumns.FirstOrDefault(it => it.PropertyName == name1);
                     var name2Column = entityColumns.FirstOrDefault(it => it.PropertyName == name1);
-                    if (name1Column!=null) 
+                    if (name1Column != null)
                     {
-                        if(!navInfo.AppendProperties.ContainsKey(name1Column.PropertyName))
-                           navInfo.AppendProperties.Add(name1Column.PropertyName,name1Column.DbColumnName);
+                        if (!navInfo.AppendProperties.ContainsKey(name1Column.PropertyName))
+                            navInfo.AppendProperties.Add(name1Column.PropertyName, name1Column.DbColumnName);
                     }
                     if (name2Column != null)
                     {
@@ -631,34 +641,9 @@ namespace SqlSugar
             if (this.QueryBuilder.Includes != null)
             {
                 var managers = (this.QueryBuilder.Includes as List<object>);
-                if (this.QueryBuilder.SelectValue.HasValue() && this.QueryBuilder.NoCheckInclude == false)
+                if (IsSelectNavQuery())
                 {
-                    foreach (var it in managers)
-                    {
-                        var manager =it;
-                        var p= it.GetType().GetProperty("RootList");
-                        var tType = it.GetType().GenericTypeArguments[0];
-                        var columns = this.Context.EntityMaintenance.GetEntityInfo(tType).Columns;
-                        var listType = typeof(List<>).MakeGenericType(tType);
-                        var outList = Activator.CreateInstance(listType);
-                        p.SetValue(it, outList);
-                        var index = 0;
-                        foreach (var item in result)
-                        {
-                            var addItem = Activator.CreateInstance(tType);
-                            var appendResult=this.QueryBuilder.AppendNavInfo.Result[index];
-                            foreach (var kv in appendResult.result)
-                            {
-                              
-                                var propertyName=kv.Key.Replace("SugarNav_", "");
-                                var propertyInfo = columns.First(i => i.PropertyName == propertyName).PropertyInfo;
-                                propertyInfo.SetValue(addItem, kv.Value);
-                            }
-                            (outList as IList).Add(addItem);
-                            index++;
-                        }
-                        it.GetType().GetMethod("Execute").Invoke(it,null); 
-                    }
+                    SelectNavQuery(result, managers);
                 }
                 else
                 {
@@ -671,6 +656,41 @@ namespace SqlSugar
                 }
             }
         }
+
+        private void SelectNavQuery<TResult>(List<TResult> result, List<object> managers)
+        {
+            foreach (var it in managers)
+            {
+                var manager = it;
+                var p = it.GetType().GetProperty("RootList");
+                var tType = it.GetType().GenericTypeArguments[0];
+                var columns = this.Context.EntityMaintenance.GetEntityInfo(tType).Columns;
+                var listType = typeof(List<>).MakeGenericType(tType);
+                var outList = Activator.CreateInstance(listType);
+                p.SetValue(it, outList);
+                var index = 0;
+                foreach (var item in result)
+                {
+                    var addItem = Activator.CreateInstance(tType);
+                    var appendResult = this.QueryBuilder.AppendNavInfo.Result[index];
+                    foreach (var kv in appendResult.result)
+                    { 
+                        var propertyName = kv.Key.Replace("SugarNav_", "");
+                        var propertyInfo = columns.First(i => i.PropertyName == propertyName).PropertyInfo;
+                        propertyInfo.SetValue(addItem, kv.Value);
+                    }
+                    (outList as IList).Add(addItem);
+                    index++;
+                }
+                it.GetType().GetMethod("Execute").Invoke(it, null);
+            }
+        }
+
+        private bool IsSelectNavQuery()
+        {
+            return this.QueryBuilder.SelectValue.HasValue() && this.QueryBuilder.NoCheckInclude == false;
+        }
+
         protected void _Mapper<TResult>(List<TResult> result)
         {
             if (this.EntityInfo.Columns.Any(it => it.IsTranscoding))
