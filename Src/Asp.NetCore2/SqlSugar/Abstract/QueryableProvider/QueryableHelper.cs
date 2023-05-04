@@ -713,7 +713,7 @@ namespace SqlSugar
                         //  var propertyExpr = Expression.Property(paramExpr, rightName);
                         // }
                     }
-                    else 
+                    else if(rightValue != null)
                     {
                         //leftObject.GetType().GetProperty(leftName).SetValue(leftObject, rightValue);
                        UtilMethods.SetAnonymousObjectPropertyValue(leftObject, leftName, rightValue);
