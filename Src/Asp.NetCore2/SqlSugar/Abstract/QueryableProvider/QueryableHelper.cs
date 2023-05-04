@@ -667,28 +667,53 @@ namespace SqlSugar
                 var manager = it;
                 var p = it.GetType().GetProperty("RootList");
                 var tType = it.GetType().GenericTypeArguments[0];
-                var columns = this.Context.EntityMaintenance.GetEntityInfo(tType)
-                    .Columns
+                var allColumns = this.Context.EntityMaintenance.GetEntityInfo(tType)
+                    .Columns;
+                var columns = allColumns
                     .Where(it=> this.QueryBuilder.AppendNavInfo.Result.First().result.ContainsKey("SugarNav_" + it.PropertyName))
                     .ToList();
                 var listType = typeof(List<>).MakeGenericType(tType);
                 var outList=SelectNavQuery_SetList(result, it, p, tType, columns, listType);
                 it.GetType().GetMethod("Execute").Invoke(it, null);
-                SelectNavQuery_MappingList(it,result, outList);
+                SelectNavQuery_MappingList(it,result, outList, allColumns.Where(it=>it.Navigat!=null).ToList());
             }
         }
 
-        private void SelectNavQuery_MappingList<TResult>(object it,List<TResult> result, IList outList)
+        private void SelectNavQuery_MappingList<TResult>(object it,List<TResult> result, IList outList,List<EntityColumnInfo> columnInfos)
         {
             for (int i = 0; i < result.Count; i++)
             {
-                var resultItem = result[i];
-                var outListItem = outList[i];
+                var leftObject = result[i];
+                var rightObject = outList[i];
                 foreach (var item in this.QueryBuilder.AppendNavInfo.MappingNavProperties)
                 {
-                    if (item.Value.ExpressionList.Count > 0) 
+                    var rightName = item.Value.Name;
+                    var rightColumnInfo = columnInfos.FirstOrDefault(it => it.PropertyName == rightName);
+                    var rightValue=rightColumnInfo.PropertyInfo.GetValue(rightObject);
+                    var leftName = item.Key;
+                    ////  var rightColumn=col
+                    //  object value = item;
+                    if (item.Value.ExpressionList.Count > 1 && rightValue != null)
                     {
 
+                        //foreach (var callExp in item.Value.ExpressionList.Skip(1))
+                        //{
+                        MethodCallExpression meExp = (MethodCallExpression)item.Value.ExpressionList.Last();
+                        ParameterExpression ps = ExpressionTool.GetParameters(meExp).First();
+                        var comExp = Expression.Lambda(meExp, ps);
+                        var obj = comExp.Compile();
+                        // 传递参数值
+                        var leftValue = obj.DynamicInvoke(rightObject);
+                        leftObject.GetType().GetProperty(leftName).SetValue(leftObject, leftValue);
+                        // // 重新构造Lambda表达式，将参数替换为新的参数，方法调用替换为新的方法调用
+                        // var newExpression = Expression.Lambda<Func<X, List<int>>>(newMethodCallExpr, paramExpr);
+                        // Expression.Call(callExp, (callExp as MethodCallExpression).Method,new )
+                        //  var propertyExpr = Expression.Property(paramExpr, rightName);
+                        // }
+                    }
+                    else 
+                    {
+                        leftObject.GetType().GetProperty(leftName).SetValue(leftObject, rightValue);
                     }
                 } 
             }

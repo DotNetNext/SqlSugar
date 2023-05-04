@@ -58,6 +58,12 @@ namespace SqlSugar
             ps.Visit(expr);
             return ps.Parameters.Count==0;
         }
+        public static List<ParameterExpression> GetParameters(Expression expr)
+        {
+            var ps = new ParameterExpressionVisitor();
+            ps.Visit(expr);
+            return ps.Parameters;
+        }
         public static bool IsComparisonOperatorBool(BinaryExpression binaryExp)
         {
             return binaryExp.NodeType.IsIn(ExpressionType.Equal, 
