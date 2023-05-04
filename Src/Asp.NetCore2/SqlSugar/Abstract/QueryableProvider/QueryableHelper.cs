@@ -706,7 +706,7 @@ namespace SqlSugar
                         var obj = comExp.Compile();
                         // 传递参数值
                         var leftValue = obj.DynamicInvoke(rightObject);
-                        UtilMethods.SetAnonymousObjectPropertyValue(leftObject, leftName, rightValue);
+                        UtilMethods.SetAnonymousObjectPropertyValue(leftObject, leftName, leftValue);
                         // // 重新构造Lambda表达式，将参数替换为新的参数，方法调用替换为新的方法调用
                         // var newExpression = Expression.Lambda<Func<X, List<int>>>(newMethodCallExpr, paramExpr);
                         // Expression.Call(callExp, (callExp as MethodCallExpression).Method,new )
