@@ -700,13 +700,21 @@ namespace SqlSugar
 
                         //foreach (var callExp in item.Value.ExpressionList.Skip(1))
                         //{
-                        MethodCallExpression meExp = (MethodCallExpression)item.Value.ExpressionList.Last();
-                        ParameterExpression ps = ExpressionTool.GetParameters(meExp).First();
-                        var comExp = Expression.Lambda(meExp, ps);
-                        var obj = comExp.Compile();
-                        // 传递参数值
-                        var leftValue = obj.DynamicInvoke(rightObject);
-                        UtilMethods.SetAnonymousObjectPropertyValue(leftObject, leftName, leftValue);
+                        try
+                        {
+                            MethodCallExpression meExp = (MethodCallExpression)item.Value.ExpressionList.Last();
+                            ParameterExpression ps = ExpressionTool.GetParameters(meExp).First();
+                            var comExp = Expression.Lambda(meExp, ps);
+                            var obj = comExp.Compile();
+                            // 传递参数值
+                            var leftValue = obj.DynamicInvoke(rightObject);
+                            UtilMethods.SetAnonymousObjectPropertyValue(leftObject, leftName, leftValue);
+                        }
+                        catch(Exception ex)
+                        {
+                            var errorExp = item.Value.ExpressionList.Last().ToString();
+                            Check.ExceptionEasy($"{errorExp} no support，{ex.Message}", $"{errorExp}语法不支持，请查SqlSugar文档询导航DTO用法，{ex.Message}");
+                        }
                         // // 重新构造Lambda表达式，将参数替换为新的参数，方法调用替换为新的方法调用
                         // var newExpression = Expression.Lambda<Func<X, List<int>>>(newMethodCallExpr, paramExpr);
                         // Expression.Call(callExp, (callExp as MethodCallExpression).Method,new )
