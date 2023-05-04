@@ -802,12 +802,16 @@ namespace SqlSugar
             {
                 result= GetExpressionValue(expression, this.SelectType).GetResultString();
             }
-            if (result == null)
+            if (result == null&& this.AppendNavInfo?.AppendProperties==null)
             {
                 return "*";
             }
             if (this.AppendNavInfo?.AppendProperties?.Any() ==true) 
             {
+                if (result == null) 
+                {
+                    result = "*";
+                }
                 result += ",";
                 var shortName = "";
                 if (this.TableShortName.HasValue()) 
