@@ -229,6 +229,10 @@ namespace SqlSugar
         #region Select
         public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, TResult>> expression)
         {
+            if (IsAppendNavColumns())
+            {
+                SetAppendNavColumns(expression);
+            }
             return _Select<TResult>(expression);
         }
         public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T,T2, TResult>> expression, bool isAutoFill)
@@ -946,11 +950,19 @@ namespace SqlSugar
 
         public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, TResult>> expression)
         {
+            if (IsAppendNavColumns())
+            {
+                SetAppendNavColumns(expression);
+            }
             return _Select<TResult>(expression);
         }
 
         public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, TResult>> expression)
         {
+            if (IsAppendNavColumns())
+            {
+                SetAppendNavColumns(expression);
+            }
             return _Select<TResult>(expression);
         }
 
@@ -1531,14 +1543,26 @@ namespace SqlSugar
 
         public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, TResult>> expression)
         {
+            if (IsAppendNavColumns())
+            {
+                SetAppendNavColumns(expression);
+            }
             return _Select<TResult>(expression);
         }
         public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, TResult>> expression)
         {
+            if (IsAppendNavColumns())
+            {
+                SetAppendNavColumns(expression);
+            }
             return _Select<TResult>(expression);
         }
         public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, TResult>> expression)
         {
+            if (IsAppendNavColumns())
+            {
+                SetAppendNavColumns(expression);
+            }
             return _Select<TResult>(expression);
         }
         #endregion
@@ -2251,18 +2275,34 @@ namespace SqlSugar
 
         public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, TResult>> expression)
         {
+            if (IsAppendNavColumns())
+            {
+                SetAppendNavColumns(expression);
+            }
             return _Select<TResult>(expression);
         }
         public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, TResult>> expression)
         {
+            if (IsAppendNavColumns())
+            {
+                SetAppendNavColumns(expression);
+            }
             return _Select<TResult>(expression);
         }
         public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, TResult>> expression)
         {
+            if (IsAppendNavColumns())
+            {
+                SetAppendNavColumns(expression);
+            }
             return _Select<TResult>(expression);
         }
         public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, TResult>> expression)
         {
+            if (IsAppendNavColumns())
+            {
+                SetAppendNavColumns(expression);
+            }
             return _Select<TResult>(expression);
         }
         #endregion

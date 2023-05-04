@@ -556,12 +556,12 @@ namespace SqlSugar
         #endregion
 
         #region Navigate
-        private bool IsAppendNavColumns()
+        internal bool IsAppendNavColumns()
         {
             return this.QueryBuilder.Includes.HasValue() && this.QueryBuilder.AppendNavInfo == null;
         }
 
-        private void SetAppendNavColumns(Expression  expression)
+        internal void SetAppendNavColumns(Expression  expression)
         {
             var tResultType = expression.Type;
             var dic = ExpressionTool.GetNewExpressionItemList(expression);

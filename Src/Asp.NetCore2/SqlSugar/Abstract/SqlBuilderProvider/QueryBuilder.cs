@@ -809,7 +809,12 @@ namespace SqlSugar
             if (this.AppendNavInfo?.AppendProperties?.Any() ==true) 
             {
                 result += ",";
-                result += string.Join(",",this.AppendNavInfo.AppendProperties.Select(it=>it.Value+ " AS SugarNav_" + it.Key));
+                var shortName = "";
+                if (this.TableShortName.HasValue()) 
+                {
+                    shortName = $"{Builder.GetTranslationColumnName(this.TableShortName)}.";
+                }
+                result += string.Join(",",this.AppendNavInfo.AppendProperties.Select(it=> shortName+Builder.GetTranslationColumnName(it.Value)+ " AS SugarNav_" + it.Key));
             }
             if (result.Contains("/**/*")) 
             {
