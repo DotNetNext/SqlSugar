@@ -67,4 +67,22 @@ namespace SqlSugar.DbConvert
             return (T)UtilMethods.ChangeType2(value, typeof(T));
         }
     }
+
+
+    public class Nvarchar2PropertyConvert : ISugarDataConverter
+    {
+        public SugarParameter ParameterConverter<T>(object columnValue, int columnIndex)
+        {
+            var name = "@Common" + columnIndex;
+            Type undertype = SqlSugar.UtilMethods.GetUnderType(typeof(T));//获取没有nullable的枚举类型
+            return new SugarParameter(name, columnValue, undertype) { IsNvarchar2=true };
+        }
+
+        public T QueryConverter<T>(IDataRecord dr, int i)
+        {
+
+            var value = dr.GetString(i);
+            return (T)(object)value;
+        }
+    }
 }
