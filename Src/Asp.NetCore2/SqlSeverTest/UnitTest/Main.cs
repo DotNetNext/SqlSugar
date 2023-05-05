@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UOneManyMany7.init();
             UOneManyMany6.init();
             UinitCustomConvert.Init();
             UnitCustom020.Init();
