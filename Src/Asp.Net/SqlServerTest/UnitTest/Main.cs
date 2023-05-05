@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UOneManyMany7.init();
             UinitCustomConvert.Init();
             UnitFilterasdfas.Init();
             Unitadfa1231.Init();
