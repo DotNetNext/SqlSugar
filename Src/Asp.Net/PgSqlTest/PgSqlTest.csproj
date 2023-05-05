@@ -123,6 +123,7 @@
     <Compile Include="UnitTest\UnitSqlFunc.cs" />
     <Compile Include="UnitTest\UnitSubToList.cs" />
     <Compile Include="UnitTest\UnitTestReturnPkList.cs" />
+    <Compile Include="UnitTest\UOneManyMany7.cs" />
     <Compile Include="UnitTest\USave.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
