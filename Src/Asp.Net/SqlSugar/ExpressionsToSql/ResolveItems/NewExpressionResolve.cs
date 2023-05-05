@@ -146,6 +146,11 @@ namespace SqlSugar
                 foreach (var item in expression.Arguments)
                 {
                     string memberName = expression.Members[i].Name;
+                    if (this.Context?.SugarContext?.QueryBuilder?.AppendNavInfo?.MappingNavProperties?.ContainsKey(memberName) == true)
+                    {
+                        ++i;
+                        continue;
+                    }
                     ++i;
                     ResolveNewExpressions(parameter, item, memberName);
                 }

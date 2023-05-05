@@ -474,6 +474,17 @@ namespace SqlSugar
                 }
                 QueryBuilder.AppendValues.Add(addItems);
             }
+            if (QueryBuilder?.AppendNavInfo != null)
+            {
+                var navResult = new AppendNavResult();
+                foreach (var item in QueryBuilder?.AppendNavInfo.AppendProperties)
+                {
+                    var vi = dataReader.GetOrdinal("SugarNav_" + item.Key);
+                    var value = dataReader.GetValue(vi);
+                    navResult.result.Add("SugarNav_" + item.Key, value);
+                }
+                QueryBuilder?.AppendNavInfo.Result.Add(navResult);
+            }
         }
         private static bool IsBytes(Dictionary<string, object> readerValues, PropertyInfo item)
         {

@@ -122,6 +122,7 @@
     <Compile Include="Abstract\FilterProvider\FilterProvider.cs" />
     <Compile Include="Abstract\InsertableProvider\InsertableHelper.cs" />
     <Compile Include="Abstract\InsertableProvider\InsertMethodInfo.cs" />
+    <Compile Include="Abstract\QueryableProvider\Entities\AppendNavInfoList.cs" />
     <Compile Include="Abstract\QueryableProvider\Entities\QueryableAppendColumn.cs" />
     <Compile Include="Abstract\QueryableProvider\Entities\SqlInfo.cs" />
     <Compile Include="Abstract\QueryableProvider\Entities\SubQueryToListDefaultT.cs" />

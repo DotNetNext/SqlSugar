@@ -336,7 +336,10 @@ namespace SqlSugar
                         {
                             List<IConditionalModel> conditList = new List<IConditionalModel>();
                             SetConditList(itemList, whereColumns, conditList);
-                            var addItem = this.Context.Queryable<T>().AS(asname).Where(conditList).ToList();
+                            var addItem = this.Context.Queryable<T>().AS(asname)
+                            .Filter(null, this.isDisableFilters)
+                            .TranLock(this.lockType)
+                            .Where(conditList).ToList();
                             this.dbDataList.AddRange(addItem);
                         });
                     }

@@ -556,6 +556,81 @@ namespace SqlSugar
         #endregion
 
         #region Navigate
+        internal bool IsAppendNavColumns()
+        {
+            return this.QueryBuilder.Includes.HasValue() && this.QueryBuilder.AppendNavInfo == null;
+        }
+
+        internal void SetAppendNavColumns(Expression  expression)
+        {
+            var tResultType = expression.Type;
+            var dic = ExpressionTool.GetNewExpressionItemList(expression);
+            var navs = this.QueryBuilder.Includes;
+            var navManages = navs.Cast<NavigatManager<T>>();
+            if (navManages.FirstOrDefault() == null) return;
+            this.QueryBuilder.AppendNavInfo = new AppendNavInfo();
+            var navInfo = this.QueryBuilder.AppendNavInfo;
+            var entityColumns = this.EntityInfo.Columns;
+            var pkColumns = entityColumns.Where(it => it.IsPrimarykey);
+            AddAppendProperties(navManages, navInfo, entityColumns, pkColumns);
+            AddMappingNavProperties(dic, navInfo, entityColumns);
+        }
+
+        private static void AddMappingNavProperties(Dictionary<string, Expression> dic, AppendNavInfo navInfo, List<EntityColumnInfo> entityColumns)
+        {
+            foreach (var item in dic)
+            {
+                var value = item.Value;
+                var expressionTree = new ExpressionTreeVisitor().GetExpressions(value);
+                var isSqlMethod = ExpressionTool.GetMethodName(expressionTree.Last()).IsIn("Any", "Count");
+                if (expressionTree.Any()&&isSqlMethod==false)
+                {
+                   
+                    var name = ExpressionTool.GetMemberName(expressionTree.First());
+                    if (name != null && entityColumns.Any(it => it.Navigat != null && it.PropertyName == name))
+                    {
+                        var mappingNavColumnInfo = new MappingNavColumnInfo()
+                        {
+                            ExpressionList = expressionTree,
+                            Name = name
+                        };
+                        navInfo.MappingNavProperties.Add(item.Key, mappingNavColumnInfo);
+                    }
+                }
+
+            }
+        }
+
+        private static void AddAppendProperties(IEnumerable<NavigatManager<T>> navManages, AppendNavInfo navInfo, List<EntityColumnInfo> entityColumns, IEnumerable<EntityColumnInfo> pkColumns)
+        {
+            foreach (var item in pkColumns)
+            {
+                navInfo.AppendProperties.Add(item.PropertyName, item.DbColumnName);
+            }
+            foreach (var item in navManages)
+            {
+                var navName = ExpressionTool.GetMemberName(item.Expressions.First());
+                var navColumn = entityColumns.Where(it => it.IsPrimarykey == false).Where(it => it.Navigat != null).FirstOrDefault(it => it.PropertyName == navName);
+                if (navColumn != null && navColumn.Navigat.NavigatType != NavigateType.ManyToMany)
+                {
+                    var name1 = navColumn.Navigat.Name;
+                    var name2 = navColumn.Navigat.Name2;
+                    var name1Column = entityColumns.FirstOrDefault(it => it.PropertyName == name1);
+                    var name2Column = entityColumns.FirstOrDefault(it => it.PropertyName == name1);
+                    if (name1Column != null)
+                    {
+                        if (!navInfo.AppendProperties.ContainsKey(name1Column.PropertyName))
+                            navInfo.AppendProperties.Add(name1Column.PropertyName, name1Column.DbColumnName);
+                    }
+                    if (name2Column != null)
+                    {
+                        if (!navInfo.AppendProperties.ContainsKey(name2Column.PropertyName))
+                            navInfo.AppendProperties.Add(name2Column.PropertyName, name2Column.DbColumnName);
+                    }
+                }
+            }
+        }
+
         private async Task _InitNavigatAsync<TResult>(List<TResult> result)
         {
             if (this.QueryBuilder.Includes != null)
@@ -568,18 +643,119 @@ namespace SqlSugar
             if (this.QueryBuilder.Includes != null)
             {
                 var managers = (this.QueryBuilder.Includes as List<object>);
-                if (this.QueryBuilder.SelectValue.HasValue() && this.QueryBuilder.NoCheckInclude == false)
+                if (IsSelectNavQuery())
                 {
-                    Check.ExceptionEasy("To use includes, use select after tolist()", "使用Includes请在ToList()之后在使用Select");
+                    if (result.HasValue())
+                    {
+                        SelectNavQuery(result, managers);
+                    }
                 }
-                foreach (var it in managers)
+                else
                 {
-                    var manager = it as NavigatManager<TResult>;
-                    manager.RootList = result;
-                    manager.Execute();
+                    foreach (var it in managers)
+                    {
+                        var manager = it as NavigatManager<TResult>;
+                        manager.RootList = result;
+                        manager.Execute();
+                    }
                 }
             }
         }
+
+        private void SelectNavQuery<TResult>(List<TResult> result, List<object> managers)
+        {
+            foreach (var it in managers)
+            {
+                var manager = it;
+                var p = it.GetType().GetProperty("RootList");
+                var tType = it.GetType().GenericTypeArguments[0];
+                var allColumns = this.Context.EntityMaintenance.GetEntityInfo(tType)
+                    .Columns;
+                var columns = allColumns
+                    .Where(it=> this.QueryBuilder.AppendNavInfo.Result.First().result.ContainsKey("SugarNav_" + it.PropertyName))
+                    .ToList();
+                var listType = typeof(List<>).MakeGenericType(tType);
+                var outList=SelectNavQuery_SetList(result, it, p, tType, columns, listType);
+                it.GetType().GetMethod("Execute").Invoke(it, null);
+                SelectNavQuery_MappingList(it,result, outList, allColumns.Where(it=>it.Navigat!=null).ToList());
+            }
+        }
+
+        private void SelectNavQuery_MappingList<TResult>(object it,List<TResult> result, IList outList,List<EntityColumnInfo> columnInfos)
+        {
+            for (int i = 0; i < result.Count; i++)
+            {
+                var leftObject = result[i];
+                var rightObject = outList[i];
+                foreach (var item in this.QueryBuilder.AppendNavInfo.MappingNavProperties)
+                {
+                    var rightName = item.Value.Name;
+                    var rightColumnInfo = columnInfos.FirstOrDefault(it => it.PropertyName == rightName);
+                    var rightValue=rightColumnInfo.PropertyInfo.GetValue(rightObject);
+                    var leftName = item.Key;
+                    ////  var rightColumn=col
+                    //  object value = item;
+                    if (item.Value.ExpressionList.Count > 1 && rightValue != null)
+                    {
+
+                        //foreach (var callExp in item.Value.ExpressionList.Skip(1))
+                        //{
+                        try
+                        {
+                            MethodCallExpression meExp = (MethodCallExpression)item.Value.ExpressionList.Last();
+                            ParameterExpression ps = ExpressionTool.GetParameters(meExp).First();
+                            var comExp = Expression.Lambda(meExp, ps);
+                            var obj = comExp.Compile();
+                            // 传递参数值
+                            var leftValue = obj.DynamicInvoke(rightObject);
+                            UtilMethods.SetAnonymousObjectPropertyValue(leftObject, leftName, leftValue);
+                        }
+                        catch(Exception ex)
+                        {
+                            var errorExp = item.Value.ExpressionList.Last().ToString();
+                            Check.ExceptionEasy($"{errorExp} no support，{ex.Message}", $"{errorExp}语法不支持，请查SqlSugar文档询导航DTO用法，{ex.Message}");
+                        }
+                        // // 重新构造Lambda表达式，将参数替换为新的参数，方法调用替换为新的方法调用
+                        // var newExpression = Expression.Lambda<Func<X, List<int>>>(newMethodCallExpr, paramExpr);
+                        // Expression.Call(callExp, (callExp as MethodCallExpression).Method,new )
+                        //  var propertyExpr = Expression.Property(paramExpr, rightName);
+                        // }
+                    }
+                    else if(rightValue != null)
+                    {
+                        //leftObject.GetType().GetProperty(leftName).SetValue(leftObject, rightValue);
+                       UtilMethods.SetAnonymousObjectPropertyValue(leftObject, leftName, rightValue);
+                    }
+                } 
+            }
+        }
+    
+        private IList SelectNavQuery_SetList<TResult>(List<TResult> result, object it, PropertyInfo p, Type tType, List<EntityColumnInfo> columns, Type listType)
+        {
+            var outList = Activator.CreateInstance(listType);
+            p.SetValue(it, outList);
+            var index = 0;
+            foreach (var item in result)
+            {
+                var addItem = Activator.CreateInstance(tType);
+                var appendResult = this.QueryBuilder.AppendNavInfo.Result[index];
+                foreach (var kv in appendResult.result)
+                {
+                    var propertyName = kv.Key.Replace("SugarNav_", "");
+                    var propertyInfo = columns.First(i => i.PropertyName == propertyName).PropertyInfo;
+                    propertyInfo.SetValue(addItem, kv.Value);
+                }
+                (outList as IList).Add(addItem);
+                index++;
+            }
+            return outList as IList;
+        }
+
+        private bool IsSelectNavQuery()
+        {
+            return this.QueryBuilder.SelectValue.HasValue() && this.QueryBuilder.NoCheckInclude == false;
+        }
+
         protected void _Mapper<TResult>(List<TResult> result)
         {
             if (this.EntityInfo.Columns.Any(it => it.IsTranscoding))
@@ -1578,6 +1754,14 @@ namespace SqlSugar
             asyncQueryableBuilder.AppendColumns = this.Context.Utilities.TranslateCopy(this.QueryBuilder.AppendColumns);
             asyncQueryableBuilder.AppendValues = this.Context.Utilities.TranslateCopy(this.QueryBuilder.AppendValues);
             asyncQueryableBuilder.RemoveFilters = this.QueryBuilder.RemoveFilters?.ToArray();
+            if (this.QueryBuilder.AppendNavInfo != null)
+            {
+                asyncQueryableBuilder.AppendNavInfo = new AppendNavInfo() 
+                {
+                     AppendProperties= this.QueryBuilder.AppendNavInfo.AppendProperties.ToDictionary(it => it.Key, it => it.Value),
+                     MappingNavProperties= this.QueryBuilder.AppendNavInfo.MappingNavProperties.ToDictionary(it=>it.Key,it=>it.Value)
+                } ;
+            }
         }
 
         private static JoinQueryInfo CopyJoinInfo(JoinQueryInfo it)

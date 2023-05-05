@@ -34,6 +34,7 @@ namespace SqlSugar
         #endregion
 
         #region Splicing basic
+        internal AppendNavInfo AppendNavInfo { get; set; }
         public Type[] RemoveFilters { get; set; }
         public Dictionary<string, object> SubToListParameters { get; set; }
         internal List<QueryableAppendColumn> AppendColumns { get; set; }
@@ -801,9 +802,23 @@ namespace SqlSugar
             {
                 result= GetExpressionValue(expression, this.SelectType).GetResultString();
             }
-            if (result == null)
+            if (result == null&& this.AppendNavInfo?.AppendProperties==null)
             {
                 return "*";
+            }
+            if (this.AppendNavInfo?.AppendProperties?.Any() ==true) 
+            {
+                if (result == null) 
+                {
+                    result = "*";
+                }
+                result += ",";
+                var shortName = "";
+                if (this.TableShortName.HasValue()) 
+                {
+                    shortName = $"{Builder.GetTranslationColumnName(this.TableShortName)}.";
+                }
+                result += string.Join(",",this.AppendNavInfo.AppendProperties.Select(it=> shortName+Builder.GetTranslationColumnName(it.Value)+ " AS SugarNav_" + it.Key));
             }
             if (result.Contains("/**/*")) 
             {
@@ -973,7 +988,7 @@ namespace SqlSugar
         public bool NoCheckInclude { get;  set; }
         public virtual bool IsSelectNoAll { get; set; } = false;
         public List<string> AutoAppendedColumns { get;  set; }
-        public Dictionary<string, string> MappingKeys { get;  set; }
+        public Dictionary<string, string> MappingKeys { get;  set; } 
         #endregion
 
         private string GetTableName(string entityName)
