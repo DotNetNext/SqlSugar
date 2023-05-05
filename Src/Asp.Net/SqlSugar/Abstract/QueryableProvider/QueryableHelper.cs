@@ -672,12 +672,12 @@ namespace SqlSugar
                 var allColumns = this.Context.EntityMaintenance.GetEntityInfo(tType)
                     .Columns;
                 var columns = allColumns
-                    .Where(it=> this.QueryBuilder.AppendNavInfo.Result.First().result.ContainsKey("SugarNav_" + it.PropertyName))
+                    .Where(a=> this.QueryBuilder.AppendNavInfo.Result.First().result.ContainsKey("SugarNav_" + a.PropertyName))
                     .ToList();
                 var listType = typeof(List<>).MakeGenericType(tType);
                 var outList=SelectNavQuery_SetList(result, it, p, tType, columns, listType);
                 it.GetType().GetMethod("Execute").Invoke(it, null);
-                SelectNavQuery_MappingList(it,result, outList, allColumns.Where(it=>it.Navigat!=null).ToList());
+                SelectNavQuery_MappingList(it,result, outList, allColumns.Where(a=>a.Navigat!=null).ToList());
             }
         }
 
@@ -690,7 +690,7 @@ namespace SqlSugar
                 foreach (var item in this.QueryBuilder.AppendNavInfo.MappingNavProperties)
                 {
                     var rightName = item.Value.Name;
-                    var rightColumnInfo = columnInfos.FirstOrDefault(it => it.PropertyName == rightName);
+                    var rightColumnInfo = columnInfos.FirstOrDefault(a => a.PropertyName == rightName);
                     var rightValue=rightColumnInfo.PropertyInfo.GetValue(rightObject);
                     var leftName = item.Key;
                     ////  var rightColumn=col
