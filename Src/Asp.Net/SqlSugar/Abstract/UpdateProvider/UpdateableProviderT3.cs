@@ -22,6 +22,7 @@ namespace SqlSugar
 
         public IUpdateable<T, T2, T3, T4> InnerJoin<T4>(Expression<Func<T, T2, T3, T4, bool>> joinExpress)
         {
+            updateableObj.UpdateBuilder.Context.InitMappingInfo<T4>();
             UpdateableProvider<T, T2, T3,T4> result = new UpdateableProvider<T, T2, T3,T4>();
             result.updateableObj = updateableObj;
             var joinIno = ((QueryableProvider<T>)updateableObj.UpdateBuilder.Context.Queryable<T>()).GetJoinInfo(joinExpress, JoinType.Inner);
