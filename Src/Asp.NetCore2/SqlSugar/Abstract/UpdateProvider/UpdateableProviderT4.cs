@@ -21,6 +21,7 @@ namespace SqlSugar
 
         public IUpdateable<T, T2, T3, T4> SetColumns(Expression<Func<T, T2, T3, T4, T>> columns)
         {
+            updateableObj.UpdateBuilder.Context.InitMappingInfo<T4>();
             var exp = ((columns as LambdaExpression).Body as MemberInitExpression).Bindings;
             var items = ExpressionTool.GetMemberBindingItemList(exp);
             var UpdateBuilder = updateableObj.UpdateBuilder;
