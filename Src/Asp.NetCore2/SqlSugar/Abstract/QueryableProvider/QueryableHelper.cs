@@ -664,20 +664,23 @@ namespace SqlSugar
 
         private void SelectNavQuery<TResult>(List<TResult> result, List<object> managers)
         {
-            foreach (var it in managers)
+            if (result.Any())
             {
-                var manager = it;
-                var p = it.GetType().GetProperty("RootList");
-                var tType = it.GetType().GenericTypeArguments[0];
-                var allColumns = this.Context.EntityMaintenance.GetEntityInfo(tType)
-                    .Columns;
-                var columns = allColumns
-                    .Where(a=> this.QueryBuilder.AppendNavInfo.Result.First().result.ContainsKey("SugarNav_" + a.PropertyName))
-                    .ToList();
-                var listType = typeof(List<>).MakeGenericType(tType);
-                var outList=SelectNavQuery_SetList(result, it, p, tType, columns, listType);
-                it.GetType().GetMethod("Execute").Invoke(it, null);
-                SelectNavQuery_MappingList(it,result, outList, allColumns.Where(a=>a.Navigat!=null).ToList());
+                foreach (var it in managers)
+                {
+                    var manager = it;
+                    var p = it.GetType().GetProperty("RootList");
+                    var tType = it.GetType().GenericTypeArguments[0];
+                    var allColumns = this.Context.EntityMaintenance.GetEntityInfo(tType)
+                        .Columns;
+                    var columns = allColumns
+                        .Where(a => this.QueryBuilder.AppendNavInfo.Result.First().result.ContainsKey("SugarNav_" + a.PropertyName))
+                        .ToList();
+                    var listType = typeof(List<>).MakeGenericType(tType);
+                    var outList = SelectNavQuery_SetList(result, it, p, tType, columns, listType);
+                    it.GetType().GetMethod("Execute").Invoke(it, null);
+                    SelectNavQuery_MappingList(it, result, outList, allColumns.Where(a => a.Navigat != null).ToList());
+                }
             }
         }
 
