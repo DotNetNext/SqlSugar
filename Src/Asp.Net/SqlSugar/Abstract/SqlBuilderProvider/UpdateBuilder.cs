@@ -424,7 +424,7 @@ namespace SqlSugar
             {
                 return LambdaExpressions.DbMehtods.GetDate();
             }
-            else if (this.ReSetValueBySqlExpListType!=null&&this.ReSetValueBySqlExpList != null && this.ReSetValueBySqlExpList.ContainsKey(columnInfo.PropertyName)) 
+            else if (IsListSetExp(columnInfo)|| IsSingleSetExp(columnInfo))
             {
                 return this.ReSetValueBySqlExpList[columnInfo.PropertyName].Sql;
             }
@@ -485,6 +485,17 @@ namespace SqlSugar
             {
                 return name + "";
             }
+        }
+        private bool IsSingleSetExp(DbColumnInfo columnInfo) 
+        {
+            return this.ReSetValueBySqlExpList != null && 
+                this.ReSetValueBySqlExpList.ContainsKey(columnInfo.PropertyName) && 
+                this.IsListUpdate == null&& 
+                DbColumnInfoList.GroupBy(it => it.TableId).Count()==1;
+        }
+        private bool IsListSetExp(DbColumnInfo columnInfo)
+        {
+            return this.ReSetValueBySqlExpListType != null && this.ReSetValueBySqlExpList != null && this.ReSetValueBySqlExpList.ContainsKey(columnInfo.PropertyName);
         }
         //public virtual string GetDbColumn(DbColumnInfo columnInfo, string name)
         //{

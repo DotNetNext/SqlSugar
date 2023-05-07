@@ -97,7 +97,24 @@ namespace SqlSugar
                 batchUpdateSql.Replace("${0}",format);
                 batchUpdateSql.Append(";");
             }
+            batchUpdateSql = GetBatchUpdateSql(batchUpdateSql);
             return batchUpdateSql.ToString();
+        }
+
+        private StringBuilder GetBatchUpdateSql(StringBuilder batchUpdateSql)
+        {
+            if (ReSetValueBySqlExpListType == null && ReSetValueBySqlExpList != null)
+            {
+                var result = batchUpdateSql.ToString();
+                foreach (var item in ReSetValueBySqlExpList)
+                {
+                    var dbColumnName = item.Value.DbColumnName;
+                    result = result.Replace($"T.{dbColumnName}", item.Value.Sql.Replace(dbColumnName, "S." + dbColumnName));
+                    batchUpdateSql = new StringBuilder(result);
+                }
+            }
+
+            return batchUpdateSql;
         }
         int i = 0;
         public  object FormatValue(object value,string name)
