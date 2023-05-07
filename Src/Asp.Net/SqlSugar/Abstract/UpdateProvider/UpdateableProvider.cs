@@ -359,7 +359,37 @@ namespace SqlSugar
                 this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => oldColumns.Contains(it.PropertyName)).ToList();
             }
             return this;
-        } 
+        }
+
+        public IUpdateable<T> PublicSetColumns(Expression<Func<T, object>> filedNameExpression, Expression<Func<T, object>> ValueExpExpression) 
+        {
+            if (UpdateParameterIsNull == true)
+            {
+                return SetColumns(filedNameExpression, ValueExpExpression);
+            }
+            else
+            {
+                var name = ExpressionTool.GetMemberName(filedNameExpression);
+                if (name == null)
+                {
+                    Check.ExceptionEasy(filedNameExpression + " format error ", filedNameExpression + "参数格式错误");
+                }
+                var value = this.UpdateBuilder.GetExpressionValue(ValueExpExpression, ResolveExpressType.WhereSingle).GetResultString();
+                if (this.UpdateBuilder.ReSetValueBySqlExpList == null)
+                {
+                    this.UpdateBuilder.ReSetValueBySqlExpList = new Dictionary<string, ReSetValueBySqlExpListModel>();
+                }
+                if (!this.UpdateBuilder.ReSetValueBySqlExpList.ContainsKey(name))
+                {
+                    this.UpdateBuilder.ReSetValueBySqlExpList.Add(name, new ReSetValueBySqlExpListModel()
+                    {
+                        Sql = value,
+                        DbColumnName =this.SqlBuilder.GetTranslationColumnName(this.EntityInfo.Columns.First(it => it.PropertyName == name).DbColumnName)
+                    }); ;
+                }
+            }
+            return this;
+        }
         #endregion
 
         #region Update by object
