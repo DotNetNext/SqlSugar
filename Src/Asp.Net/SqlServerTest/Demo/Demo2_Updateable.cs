@@ -58,6 +58,10 @@ namespace OrmTest
             //Re set value
             var result66 = db.Updateable(new List<Order> { updateObj }).ReSetValue(it => it.Id = 112).IgnoreColumns(it => new { it.CreateTime, it.Price }).ExecuteCommand();
 
+            var result67 =
+              db.Updateable(updateObjs)
+              .PublicSetColumns(it => it.Price, it => it.Price + 1)
+              .ExecuteCommand();
 
             //Update by track
             Console.WriteLine(" Tracking 1:");
