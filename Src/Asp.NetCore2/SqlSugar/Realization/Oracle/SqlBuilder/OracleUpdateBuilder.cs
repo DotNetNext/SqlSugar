@@ -8,6 +8,7 @@ namespace SqlSugar
 {
     public class OracleUpdateBuilder : UpdateBuilder
     {
+        public override string ReSetValueBySqlExpListType { get; set; } = "oracle";
         protected override string TomultipleSqlString(List<IGrouping<int, DbColumnInfo>> groupList)
         {
             if (groupList.Count == 0)

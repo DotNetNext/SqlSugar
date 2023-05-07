@@ -8,6 +8,7 @@ namespace SqlSugar
 {
     public class QuestDBUpdateBuilder : UpdateBuilder
     {
+        public override string ReSetValueBySqlExpListType { get; set; } = "questdb";
         protected override string TomultipleSqlString(List<IGrouping<int, DbColumnInfo>> groupList)
         {
             StringBuilder sb = new StringBuilder();

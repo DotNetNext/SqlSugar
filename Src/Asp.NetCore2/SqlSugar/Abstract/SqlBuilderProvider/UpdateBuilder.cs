@@ -36,7 +36,8 @@ namespace SqlSugar
         public List<string> UpdateColumns { get; set; }
         public List<JoinQueryInfo> JoinInfos { get; set; }
         public  string ShortName { get; set; }
-
+        internal Dictionary<string, ReSetValueBySqlExpListModel> ReSetValueBySqlExpList { get;  set; }
+        public virtual string ReSetValueBySqlExpListType { get; set; }
         public virtual string SqlTemplate
         {
             get
@@ -423,11 +424,15 @@ namespace SqlSugar
             {
                 return LambdaExpressions.DbMehtods.GetDate();
             }
+            else if (IsListSetExp(columnInfo)|| IsSingleSetExp(columnInfo))
+            {
+                return this.ReSetValueBySqlExpList[columnInfo.PropertyName].Sql;
+            }
             else if (columnInfo.UpdateSql.HasValue())
             {
                 return columnInfo.UpdateSql;
             }
-            else if (columnInfo.SqlParameterDbType is Type&& (Type)columnInfo.SqlParameterDbType == UtilConstants.SqlConvertType)
+            else if (columnInfo.SqlParameterDbType is Type && (Type)columnInfo.SqlParameterDbType == UtilConstants.SqlConvertType)
             {
                 var type = columnInfo.SqlParameterDbType as Type;
                 var ParameterConverter = type.GetMethod("ParameterConverter").MakeGenericMethod(typeof(string));
@@ -440,13 +445,13 @@ namespace SqlSugar
                 var type = columnInfo.SqlParameterDbType as Type;
                 var ParameterConverter = type.GetMethod("ParameterConverter").MakeGenericMethod(columnInfo.PropertyType);
                 var obj = Activator.CreateInstance(type);
-                var p = ParameterConverter.Invoke(obj,new object[] { columnInfo.Value, GetDbColumnIndex }) as SugarParameter;
+                var p = ParameterConverter.Invoke(obj, new object[] { columnInfo.Value, GetDbColumnIndex }) as SugarParameter;
                 GetDbColumnIndex++;
                 //this.Parameters.RemoveAll(it => it.ParameterName == it.ParameterName);
                 this.Parameters.Add(p);
                 return p.ParameterName;
             }
-            else if (columnInfo.PropertyType!=null&&columnInfo.PropertyType.Name == "TimeOnly" && name != null && !name.ObjToString().StartsWith(Builder.SqlParameterKeyWord))
+            else if (columnInfo.PropertyType != null && columnInfo.PropertyType.Name == "TimeOnly" && name != null && !name.ObjToString().StartsWith(Builder.SqlParameterKeyWord))
             {
                 var timeSpan = UtilMethods.TimeOnlyToTimeSpan(columnInfo.Value);
                 var pname = Builder.SqlParameterKeyWord + columnInfo.DbColumnName + "_ts" + GetDbColumnIndex;
@@ -480,6 +485,17 @@ namespace SqlSugar
             {
                 return name + "";
             }
+        }
+        private bool IsSingleSetExp(DbColumnInfo columnInfo) 
+        {
+            return this.ReSetValueBySqlExpList != null && 
+                this.ReSetValueBySqlExpList.ContainsKey(columnInfo.PropertyName) && 
+                this.IsListUpdate == null&& 
+                DbColumnInfoList.GroupBy(it => it.TableId).Count()==1;
+        }
+        private bool IsListSetExp(DbColumnInfo columnInfo)
+        {
+            return this.ReSetValueBySqlExpListType != null && this.ReSetValueBySqlExpList != null && this.ReSetValueBySqlExpList.ContainsKey(columnInfo.PropertyName);
         }
         //public virtual string GetDbColumn(DbColumnInfo columnInfo, string name)
         //{
