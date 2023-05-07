@@ -63,6 +63,12 @@ namespace OrmTest
               .PublicSetColumns(it => it.Price, it => it.Price + 1)
               .ExecuteCommand();
 
+            var result68 =
+             db.Updateable(updateObjs.First())
+             .PublicSetColumns(it => it.Price, it => it.Price + 1)
+             .ExecuteCommand();
+
+
             //Update by track
             Console.WriteLine(" Tracking 1:");
             db.Tracking(updateObj);
