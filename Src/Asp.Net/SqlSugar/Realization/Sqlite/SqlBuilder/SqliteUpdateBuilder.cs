@@ -7,6 +7,7 @@ namespace SqlSugar
 {
     public class SqliteUpdateBuilder : UpdateBuilder
     {
+        public override string ReSetValueBySqlExpListType { get; set; }="sqlite";
         protected override string TomultipleSqlString(List<IGrouping<int, DbColumnInfo>> groupList)
         {
             StringBuilder sb = new StringBuilder();

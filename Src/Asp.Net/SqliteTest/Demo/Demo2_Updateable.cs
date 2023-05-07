@@ -55,6 +55,15 @@ namespace OrmTest
             var result6 = db.Updateable(updateObjs).WhereColumns(it => new { it.Id }).ExecuteCommand();//update List<Class> by id
 
 
+            var result67 =
+            db.Updateable(updateObjs)
+            .PublicSetColumns(it => it.Price, it => it.Price + 1)
+            .ExecuteCommand();
+
+            var result68 =
+             db.Updateable(updateObjs.First())
+             .PublicSetColumns(it => it.Price, it => it.Price + 1)
+             .ExecuteCommand();
 
 
             /*** 2.by expression ***/
