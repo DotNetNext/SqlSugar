@@ -7,6 +7,7 @@ namespace SqlSugar
 {
     public class DmUpdateBuilder : UpdateBuilder
     {
+        public override string ReSetValueBySqlExpListType { get; set; } = "dm";
         protected override string GetJoinUpdate(string columnsString, ref string whereString)
         {
             var joinString = $"  {Builder.GetTranslationColumnName(this.TableName)}  {Builder.GetTranslationColumnName(this.ShortName)} ";

@@ -178,9 +178,25 @@ namespace SqlSugar
                 batchUpdateSql.Replace("${0}", format);
                 batchUpdateSql.Append(";");
             }
+            batchUpdateSql = GetBatchUpdateSql(batchUpdateSql);
             return batchUpdateSql.ToString();
         }
 
+        private StringBuilder GetBatchUpdateSql(StringBuilder batchUpdateSql)
+        {
+            if (ReSetValueBySqlExpListType == null && ReSetValueBySqlExpList != null)
+            {
+                var result = batchUpdateSql.ToString();
+                foreach (var item in ReSetValueBySqlExpList)
+                {
+                    var dbColumnName = item.Value.DbColumnName;
+                    result = result.Replace($"{dbColumnName}=T.{dbColumnName}", $"{dbColumnName}={item.Value.Sql.Replace(dbColumnName, $"{Builder.GetTranslationColumnName(this.TableName)}.{dbColumnName}")}");
+                    batchUpdateSql = new StringBuilder(result);
+                }
+            }
+
+            return batchUpdateSql;
+        }
         protected override string GetJoinUpdate(string columnsString, ref string whereString)
         {
             var formString = $"  {Builder.GetTranslationColumnName(this.TableName)}  AS {Builder.GetTranslationColumnName(this.ShortName)} ";
