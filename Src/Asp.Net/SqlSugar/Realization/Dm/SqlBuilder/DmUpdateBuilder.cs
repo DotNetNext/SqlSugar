@@ -7,6 +7,17 @@ namespace SqlSugar
 {
     public class DmUpdateBuilder : UpdateBuilder
     {
+        protected override string GetJoinUpdate(string columnsString, ref string whereString)
+        {
+            var joinString = $"  {Builder.GetTranslationColumnName(this.TableName)}  {Builder.GetTranslationColumnName(this.ShortName)} ";
+            foreach (var item in this.JoinInfos)
+            {
+                joinString += $"\r\n USING {Builder.GetTranslationColumnName(item.TableName)}  {Builder.GetTranslationColumnName(item.ShortName)} ON {item.JoinWhere} ";
+            }
+            var tableName = joinString + "\r\n ";
+            var newTemp = SqlTemplate.Replace("UPDATE", "MERGE INTO").Replace("SET", "WHEN MATCHED THEN \r\nUPDATE SET");
+            return string.Format(newTemp, tableName, columnsString, whereString);
+        }
         protected override string TomultipleSqlString(List<IGrouping<int, DbColumnInfo>> groupList)
         {
             StringBuilder sb = new StringBuilder();
