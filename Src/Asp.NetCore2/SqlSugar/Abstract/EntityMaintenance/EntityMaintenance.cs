@@ -321,11 +321,17 @@ namespace SqlSugar
                             else if (column.Length > 0)
                             {
                                 column.DataType = "varchar";
-                            }
+                            } 
                             else
                             {
                                 column.DataType = "varchar(4000)";
                             }
+                        }
+                        else if (column.UnderType == typeof(TimeSpan) && column.DataType == null)
+                        {
+                            column.DataType = "time";
+                            column.Length = 0;
+                            column.DecimalDigits = 0;
                         }
                         else if (typeof(Nvarchar2PropertyConvert).Equals(sugarColumn.SqlParameterDbType)&&column.DataType==null) 
                         {
