@@ -55,6 +55,11 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+            var list2=db.Queryable<poetry_video_comment>()
+                .Select(it => new
+                {
+                    y= it.UserInfo.create_time .Value.ToString("yyyy-MM-dd")
+                }).ToList();
         }
     }
 }

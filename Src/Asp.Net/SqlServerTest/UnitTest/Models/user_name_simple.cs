@@ -12,7 +12,7 @@ namespace SqlSugarDemo
 
         public int id { set; get; }
         public string name { set; get; }
-        public DateTime create_time { set; get; }
+        public DateTime? create_time { set; get; }
     }
 
  
