@@ -47,6 +47,11 @@ namespace SqlSugar
             {
                 ResolveCallValue(parameter, baseParameter, expression, isLeft, isSetTempData, isSingle);
             }
+            else if (isValue & IsNavValue(expression)) 
+            {
+                expression = expression.Expression as MemberExpression;
+                ResolveMemberValue(parameter, baseParameter, expression, isLeft, isSetTempData);
+            }
             else if (isValue)
             {
                 ResolveValue(parameter, baseParameter, expression, isLeft, isSetTempData, isSingle);
@@ -77,7 +82,15 @@ namespace SqlSugar
             }
         }
 
+
+
         #region Navigate
+        private static bool IsNavValue(MemberExpression expression)
+        {
+            var isDateMember = expression.Type == UtilConstants.DateType && expression.Expression is MemberExpression;
+            return isDateMember && 
+                (expression.Expression as MemberExpression)?.Expression is MemberExpression;
+        }
         private void DefaultOneToOneN(ExpressionParameter parameter, ExpressionParameter baseParameter, bool? isLeft, bool isSetTempData, OneToOneNavgateExpressionN navN)
         {
             var value = navN.GetMemberSql();
