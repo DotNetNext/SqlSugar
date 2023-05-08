@@ -25,10 +25,14 @@ namespace OrmTest
             db.Insertable(new CodeFirstTable1() { Name = "a", Text="a" }).ExecuteCommand();
             var list = db.Queryable<CodeFirstTable1>().ToList();
             db.CodeFirst.InitTables<CodeFirstTable22>();
-            db.Updateable(new List<CodeFirstTable22>() { new CodeFirstTable22() { Name = "a" } })
+            db.Updateable(new List<CodeFirstTable22>() { new CodeFirstTable22() { Name = "a" },new CodeFirstTable22() { Name = "a" } })
                 .ExecuteCommand();
+            db.Updateable(  new CodeFirstTable22() { Name = "a" }  )
+            .ExecuteCommand();
             db.Insertable(new List<CodeFirstTable22>() { new CodeFirstTable22() { Name = "a" }, new CodeFirstTable22() { Name = "a" } })
               .ExecuteCommand();
+            db.Insertable(new    CodeFirstTable22() { Name = "a"   })
+             .ExecuteCommand();
             var list2=db.Queryable<CodeFirstTable22>().ToList();
             Console.WriteLine("#### CodeFirst end ####");
         }
