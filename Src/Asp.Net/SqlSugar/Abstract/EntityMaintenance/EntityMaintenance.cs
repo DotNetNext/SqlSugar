@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SqlSugar.DbConvert;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -317,13 +318,21 @@ namespace SqlSugar
                             {
                                 column.DataType = "json";
                             }
-                            else if (column.Length > 0) 
+                            else if (column.Length > 0)
                             {
                                 column.DataType = "varchar";
                             }
                             else
                             {
                                 column.DataType = "varchar(4000)";
+                            }
+                        }
+                        else if (typeof(Nvarchar2PropertyConvert).Equals(sugarColumn.SqlParameterDbType)&&column.DataType==null) 
+                        {
+                            column.DataType = "nvarchar2";
+                            if (column.Length == 0) 
+                            {
+                                column.Length = 200;
                             }
                         }
                     }
