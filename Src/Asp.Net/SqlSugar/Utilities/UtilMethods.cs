@@ -71,7 +71,7 @@ namespace SqlSugar
         {
             if (pars == null||pars.Length==0)
                 return "\r\n[Sql]:"+sql+"\r\n";
-            return $"\r\n[Sql]:{sql} \r\n[Pars]:{string.Join(" ",pars.Select(it=>$"\r\n[Name]:{it.ParameterName} [Value]:{it.Value} [Type]:{it.DbType}  "))} \r\n";
+            return $"\r\n[Sql]:{sql} \r\n[Pars]:{string.Join(" ",pars.Select(it=>$"\r\n[Name]:{it.ParameterName} [Value]:{it.Value} [Type]:{it.DbType} {(it.IsNvarchar2?"nvarchar2":"")}  "))} \r\n";
         }
         public static string ToUnderLine(string str, bool isToUpper = false)
         {
