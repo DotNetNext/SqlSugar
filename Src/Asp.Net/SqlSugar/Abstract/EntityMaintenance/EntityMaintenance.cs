@@ -321,7 +321,7 @@ namespace SqlSugar
                             else if (column.Length > 0)
                             {
                                 column.DataType = "varchar";
-                            }
+                            } 
                             else
                             {
                                 column.DataType = "varchar(4000)";
@@ -378,6 +378,12 @@ namespace SqlSugar
                 if (column.DataType == null && property != null && property.PropertyType.Name.IsIn("DateOnly"))
                 {
                     column.DataType = "date";
+                }
+                if (column.DataType == null&&column.UnderType == typeof(TimeSpan) )
+                {
+                    column.DataType = "time";
+                    column.Length = 0;
+                    column.DecimalDigits = 0;
                 }
                 result.Columns.Add(column);
             }
