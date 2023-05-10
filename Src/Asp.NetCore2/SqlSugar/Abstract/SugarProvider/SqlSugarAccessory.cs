@@ -474,6 +474,7 @@ namespace SqlSugar
             expressionContext.MappingColumns = this.MappingColumns;
             expressionContext.MappingTables = this.MappingTables;
             expressionContext.IsSingle = false;
+            expressionContext.SugarContext = new ExpressionOutParameter() { Context=this.Context };
             if (this.Context.CurrentConnectionConfig.MoreSettings != null)
             {
                 expressionContext.PgSqlIsAutoToLower = this.Context.CurrentConnectionConfig.MoreSettings.PgSqlIsAutoToLower;
