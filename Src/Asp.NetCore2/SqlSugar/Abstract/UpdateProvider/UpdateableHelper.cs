@@ -19,9 +19,10 @@ namespace SqlSugar
         private int DatasTrackingExecommand()
         {
             var trakRows = 0;
+            var isNoTran = this.Context.Ado.IsNoTran();
             try
             {
-                if (this.Context.Ado.IsNoTran()) 
+                if (isNoTran) 
                 {
                     this.Context.Ado.BeginTran();
                 }
@@ -40,14 +41,14 @@ namespace SqlSugar
                     }
                     ++i;
                 }
-                if (this.Context.Ado.IsNoTran())
+                if (isNoTran)
                 {
                     this.Context.Ado.CommitTran();
                 }
             }
             catch (Exception)
             {
-                if (this.Context.Ado.IsNoTran())
+                if (isNoTran)
                 {
                     this.Context.Ado.RollbackTran();
                 }
@@ -57,10 +58,11 @@ namespace SqlSugar
         }
         private async Task<int> DatasTrackingExecommandAsync()
         {
+            var isNoTran = this.Context.Ado.IsNoTran();
             var trakRows = 0;
             try
             {
-                if (this.Context.Ado.IsNoTran())
+                if (isNoTran)
                 {
                     await this.Context.Ado.BeginTranAsync();
                 }
@@ -79,14 +81,14 @@ namespace SqlSugar
                     }
                     ++i;
                 }
-                if (this.Context.Ado.IsNoTran())
+                if (isNoTran)
                 {
                     await this.Context.Ado.CommitTranAsync();
                 }
             }
             catch (Exception)
             {
-                if (this.Context.Ado.IsNoTran())
+                if (isNoTran)
                 {
                    await  this.Context.Ado.RollbackTranAsync();
                 }
