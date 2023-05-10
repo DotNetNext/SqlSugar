@@ -54,7 +54,14 @@ namespace SqlSugar
                 if (propertyInfo != null)
                 {
                     // 如果找到了该属性，则将其值设置为字典中对应的值
-                    propertyInfo.SetValue(obj, Convert.ChangeType(pair.Value, propertyInfo.PropertyType));
+                    if (pair.Value == null)
+                    {
+                        propertyInfo.SetValue(obj, UtilMethods.ChangeType2(pair.Value, propertyInfo.PropertyType));
+                    }
+                    else
+                    {
+                        propertyInfo.SetValue(obj, Convert.ChangeType(pair.Value, propertyInfo.PropertyType));
+                    }
                 }
             }
 
