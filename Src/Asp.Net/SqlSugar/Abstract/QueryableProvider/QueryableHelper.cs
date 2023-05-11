@@ -1188,6 +1188,11 @@ namespace SqlSugar
                 tableName = this.QueryBuilder.LambdaExpressions.DbMehtods.GetTableWithDataBase
                 (this.QueryBuilder.Builder.GetTranslationColumnName(dbName), this.QueryBuilder.Builder.GetTranslationColumnName(tableName));
             }
+            var dbLinkName = this.Context.CurrentConnectionConfig.DbLinkName;
+            if (dbLinkName.HasValue()) 
+            {
+                tableName = dbLinkName+"."+this.QueryBuilder.Builder.GetTranslationColumnName(tableName);
+            }
             return tableName;
         }
         protected string AppendSelect(List<EntityColumnInfo> entityColumnInfos,string sql, ReadOnlyCollection<ParameterExpression> parameters, List<EntityColumnInfo> columnsResult, int parameterIndex1)

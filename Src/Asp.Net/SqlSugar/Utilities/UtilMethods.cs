@@ -237,6 +237,7 @@ namespace SqlSugar
                 },
                 ConnectionString = it.ConnectionString,
                 DbType = it.DbType,
+                DbLinkName= it.DbLinkName,
                 IndexSuffix = it.IndexSuffix,
                 InitKeyType = it.InitKeyType,
                 IsAutoCloseConnection = it.IsAutoCloseConnection,
