@@ -11,6 +11,16 @@ namespace SqlSugar
 {
     public static class CommonExtensions
     {
+        public static Dictionary<string, object> ToDictionary<T>(this List<T> list, string keyPropertyName, string valuePropertyName)
+        {
+            var keyProperty = typeof(T).GetProperty(keyPropertyName);
+            var valueProperty = typeof(T).GetProperty(valuePropertyName);
+
+            return list.ToDictionary(
+                item => keyProperty.GetValue(item)+"",
+                item => valueProperty.GetValue(item)
+            );
+        }
         public static MethodInfo GetMyMethod(this Type type,string name, int argCount) 
         {
             return type.GetMethods().FirstOrDefault(it => it.Name == name && it.GetParameters().Length == argCount);

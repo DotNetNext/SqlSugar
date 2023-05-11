@@ -410,8 +410,17 @@ namespace SqlSugar
                 keyName = this.QueryBuilder.TableShortName + "." + keyName;
                 valueName = this.QueryBuilder.TableShortName + "." + valueName;
             }
-            var result = this.Select<KeyValuePair<string, object>>(keyName + "," + valueName).ToList().ToDictionary(it => it.Key.ObjToString(), it => it.Value);
-            return result;
+            var isJson=this.Context.EntityMaintenance.GetEntityInfo<T>().Columns.Where(it => it.IsJson && it.PropertyName == ExpressionTool.GetMemberName(value)).Any();
+            if (isJson)
+            {
+                var result = this.Select<T>(keyName + "," + valueName).ToList().ToDictionary(ExpressionTool.GetMemberName(key), ExpressionTool.GetMemberName(value));
+                return result;
+            }
+            else
+            {
+                var result = this.Select<KeyValuePair<string, object>>(keyName + "," + valueName).ToList().ToDictionary(it => it.Key.ObjToString(), it => it.Value);
+                return result;
+            }
         }
 
         public List<Dictionary<string, object>> ToDictionaryList()
