@@ -108,6 +108,8 @@ namespace OrmTest
               .ExecuteCommand();
 
             var list14=db.Queryable<UnitJsonTestadsga1>().ToList();
+            var list150 = db.Queryable<UnitJsonTest>().ToDictionary(it => it.Id, it => it.Order);
+            var list15 = db.Queryable<UnitJsonTest>().ToDictionaryAsync(it=>it.Id,it=>it.Order).GetAwaiter().GetResult();
         }
     }
     public class UnitJsonTestadsga1
