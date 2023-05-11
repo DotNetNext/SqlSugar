@@ -1180,6 +1180,7 @@ namespace SqlSugar
         #region  Other
         private string GetTableName(EntityInfo entity, string tableName)
         {
+            var oldTableName = tableName;
             var attr = entity?.Type?.GetCustomAttribute<TenantAttribute>();
             var configId = ((object)this.Context.CurrentConnectionConfig.ConfigId).ObjToString();
             if (attr != null && configId != attr.configId.ObjToString())
@@ -1191,7 +1192,7 @@ namespace SqlSugar
             var dbLinkName = this.Context.CurrentConnectionConfig.DbLinkName;
             if (dbLinkName.HasValue()) 
             {
-                tableName = dbLinkName+"."+this.QueryBuilder.Builder.GetTranslationColumnName(tableName);
+                tableName = dbLinkName+"."+this.QueryBuilder.Builder.GetTranslationColumnName(oldTableName);
             }
             return tableName;
         }
