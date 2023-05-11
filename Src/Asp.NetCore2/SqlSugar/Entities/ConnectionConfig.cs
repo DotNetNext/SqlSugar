@@ -23,6 +23,10 @@ namespace SqlSugar
         /// </summary>
         public string ConnectionString { get; set; }
         /// <summary>
+        /// QueryableWithAttr queries go to DbLinkName, which is commonly used for cross-library queries
+        /// </summary>
+        public string DbLinkName { get; set; }
+        /// <summary>
         /// true does not need to close the connection
         /// </summary>
         public bool IsAutoCloseConnection { get; set; }
