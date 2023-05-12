@@ -10,6 +10,7 @@ using System.Reflection;
 using System.Dynamic;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Serialization;
+using System.Threading;
 
 namespace SqlSugar
 {
@@ -790,5 +791,37 @@ namespace SqlSugar
             return this.Context.Ado.ExecuteCommand(sql, sqlInfo.Value);
         }
 
+
+        public Task<int> IntoTableAsync<TableEntityType>(CancellationToken cancellationToken = default)
+        {
+            return IntoTableAsync(typeof(TableEntityType), cancellationToken);
+        }
+        public Task<int> IntoTableAsync<TableEntityType>(string TableName, CancellationToken cancellationToken = default)
+        {
+            return IntoTableAsync(typeof(TableEntityType), TableName, cancellationToken);
+        }
+        public Task<int> IntoTableAsync(Type TableEntityType, CancellationToken cancellationToken = default)
+        {
+            var entityInfo = this.Context.EntityMaintenance.GetEntityInfo(TableEntityType);
+            return IntoTableAsync(TableEntityType, entityInfo.DbTableName, cancellationToken);
+        }
+        public Task<int> IntoTableAsync(Type TableEntityType, string TableName, CancellationToken cancellationToken = default)
+        {
+            var sqlInfo = this.ToSql();
+            var name = this.SqlBuilder.GetTranslationTableName(TableName);
+            var columns = "";
+            if (this.QueryBuilder.GetSelectValue != null && this.QueryBuilder.GetSelectValue.Contains(",")) ;
+            {
+                columns = "(";
+                foreach (var item in this.QueryBuilder.GetSelectValue.Split(','))
+                {
+                    var column = Regex.Split(item, "AS").Last().Trim();
+                    columns += $"{column},";
+                }
+                columns = columns.TrimEnd(',') + ")";
+            }
+            var sql = $" INSERT  INTO {name} {columns} " + sqlInfo.Key;
+            return this.Context.Ado.ExecuteCommandAsync(sql, sqlInfo.Value, cancellationToken);
+        }
     }
 }
