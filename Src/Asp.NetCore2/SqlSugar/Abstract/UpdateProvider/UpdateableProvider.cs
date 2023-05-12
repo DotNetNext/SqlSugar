@@ -572,6 +572,10 @@ namespace SqlSugar
         }
         public IUpdateable<T> SetColumns(Expression<Func<T, object>> filedNameExpression, Expression<Func<T, object>> valueExpression) 
         {
+            if (valueExpression == null) 
+            {
+                return SetColumns(filedNameExpression,(object)null);
+            }
             var name = UpdateBuilder.GetExpressionValue(filedNameExpression, ResolveExpressType.FieldSingle).GetString();
             name = UpdateBuilder.Builder.GetNoTranslationColumnName(name);
             var value = UpdateBuilder.GetExpressionValue(valueExpression, ResolveExpressType.FieldSingle).GetString();
