@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SqlSugar
@@ -91,6 +92,42 @@ namespace SqlSugar
         Task<bool> UpdateAsync(T updateObj);
         Task<bool> UpdateRangeAsync(List<T> updateObjs);
         Task<bool> UpdateRangeAsync(T[] updateObjs);
+
+
+
+
+        Task<int> CountAsync(Expression<Func<T, bool>> whereExpression, CancellationToken cancellationToken);
+        Task<bool> DeleteAsync(Expression<Func<T, bool>> whereExpression, CancellationToken cancellationToken);
+        Task<bool> DeleteAsync(T deleteObj, CancellationToken cancellationToken);
+        Task<bool> DeleteAsync(List<T> deleteObjs, CancellationToken cancellationToken);
+        Task<bool> DeleteByIdAsync(dynamic id, CancellationToken cancellationToken);
+        Task<bool> DeleteByIdsAsync(dynamic[] ids, CancellationToken cancellationToken);
+        Task<T> GetByIdAsync(dynamic id, CancellationToken cancellationToken);
+        Task<List<T>> GetListAsync( CancellationToken cancellationToken);
+        Task<List<T>> GetListAsync(Expression<Func<T, bool>> whereExpression, CancellationToken cancellationToken);
+        Task<List<T>> GetPageListAsync(Expression<Func<T, bool>> whereExpression, PageModel page, CancellationToken cancellationToken);
+        Task<List<T>> GetPageListAsync(Expression<Func<T, bool>> whereExpression, PageModel page, Expression<Func<T, object>> orderByExpression = null, OrderByType orderByType = OrderByType.Asc, CancellationToken cancellationToken=default);
+        Task<List<T>> GetPageListAsync(List<IConditionalModel> conditionalList, PageModel page, CancellationToken cancellationToken);
+        Task<List<T>> GetPageListAsync(List<IConditionalModel> conditionalList, PageModel page, Expression<Func<T, object>> orderByExpression = null, OrderByType orderByType = OrderByType.Asc, CancellationToken cancellationToken=default);
+        Task<T> GetSingleAsync(Expression<Func<T, bool>> whereExpression, CancellationToken cancellationToken);
+        Task<T> GetFirstAsync(Expression<Func<T, bool>> whereExpression, CancellationToken cancellationToken);
+        Task<bool> InsertAsync(T insertObj, CancellationToken cancellationToken);
+        Task<bool> InsertOrUpdateAsync(T data, CancellationToken cancellationToken);
+        Task<bool> InsertOrUpdateAsync(List<T> datas, CancellationToken cancellationToken);
+        Task<bool> InsertRangeAsync(List<T> insertObjs, CancellationToken cancellationToken);
+        Task<bool> InsertRangeAsync(T[] insertObjs, CancellationToken cancellationToken);
+        Task<int> InsertReturnIdentityAsync(T insertObj, CancellationToken cancellationToken);
+        Task<long> InsertReturnBigIdentityAsync(T insertObj, CancellationToken cancellationToken);
+        Task<long> InsertReturnSnowflakeIdAsync(T insertObj, CancellationToken cancellationToken);
+        Task<List<long>> InsertReturnSnowflakeIdAsync(List<T> insertObjs, CancellationToken cancellationToken);
+        Task<T> InsertReturnEntityAsync(T insertObj, CancellationToken cancellationToken);
+
+        Task<bool> IsAnyAsync(Expression<Func<T, bool>> whereExpression, CancellationToken cancellationToken);
+        Task<bool> UpdateSetColumnsTrueAsync(Expression<Func<T, T>> columns, Expression<Func<T, bool>> whereExpression, CancellationToken cancellationToken);
+        Task<bool> UpdateAsync(Expression<Func<T, T>> columns, Expression<Func<T, bool>> whereExpression, CancellationToken cancellationToken);
+        Task<bool> UpdateAsync(T updateObj, CancellationToken cancellationToken);
+        Task<bool> UpdateRangeAsync(List<T> updateObjs, CancellationToken cancellationToken);
+        Task<bool> UpdateRangeAsync(T[] updateObjs, CancellationToken cancellationToken);
 
     }
 }
