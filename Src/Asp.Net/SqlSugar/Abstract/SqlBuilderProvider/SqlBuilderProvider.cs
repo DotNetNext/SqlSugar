@@ -28,6 +28,10 @@ namespace SqlSugar
         #endregion
 
         #region abstract Methods
+        public virtual void ChangeJsonType(SugarParameter paramter) 
+        {
+
+        }
         public virtual string GetTranslationTableName(string name)
         {
             Check.ArgumentNullException(name, string.Format(ErrorMessage.ObjNotExist, "Table Name"));

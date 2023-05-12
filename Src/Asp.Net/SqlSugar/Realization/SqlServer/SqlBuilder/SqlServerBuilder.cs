@@ -24,6 +24,12 @@ namespace SqlSugar
             }
             return sql;
         }
-
+        public override void ChangeJsonType(SugarParameter paramter)
+        {
+            if (paramter.DbType ==  System.Data.DbType.AnsiString) 
+            {
+                paramter.DbType = System.Data.DbType.String;
+            }
+        }
     }
 }

@@ -29,6 +29,7 @@ namespace SqlSugar
         string SqlTranslationRight { get; }
         string SqlSelectAll { get;  }
 
+        void ChangeJsonType(SugarParameter paramter);
         string GetTranslationTableName(string name);
         string GetTranslationColumnName(string entityName, string propertyName);
         string GetTranslationColumnName(string propertyName);
