@@ -272,6 +272,10 @@ namespace SqlSugar
             result.SqlBuilder.QueryBuilder.EntityType = typeof(T);
             result.SqlBuilder.QueryBuilder.EntityName = typeof(T).Name;
             result.SqlBuilder.QueryBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(CurrentConnectionConfig);
+            if (StaticConfig.CompleteQueryableFunc != null)
+            {
+                StaticConfig.CompleteQueryableFunc(result);
+            }
             return result;
         }
         protected InsertableProvider<T> CreateInsertable<T>(T[] insertObjs) where T : class, new()
@@ -288,6 +292,10 @@ namespace SqlSugar
             sqlBuilder.InsertBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(this.CurrentConnectionConfig);
             sqlBuilder.Context = result.SqlBuilder.InsertBuilder.Context = this;
             result.Init();
+            if (StaticConfig.CompleteInsertableFunc != null) 
+            {
+                StaticConfig.CompleteInsertableFunc(result);
+            }
             return result;
         }
         protected DeleteableProvider<T> CreateDeleteable<T>() where T : class, new()
@@ -301,6 +309,10 @@ namespace SqlSugar
             sqlBuilder.DeleteBuilder.Builder = sqlBuilder;
             sqlBuilder.DeleteBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(this.CurrentConnectionConfig);
             sqlBuilder.Context = result.SqlBuilder.DeleteBuilder.Context = this;
+            if (StaticConfig.CompleteDeleteableFunc != null)
+            {
+                StaticConfig.CompleteDeleteableFunc(result);
+            }
             return result;
         }
         protected UpdateableProvider<T> CreateUpdateable<T>(T[] UpdateObjs) where T : class, new()
@@ -317,6 +329,10 @@ namespace SqlSugar
             sqlBuilder.UpdateBuilder.LambdaExpressions = InstanceFactory.GetLambdaExpressions(this.CurrentConnectionConfig);
             sqlBuilder.Context = result.SqlBuilder.UpdateBuilder.Context = this;
             result.Init();
+            if (StaticConfig.CompleteUpdateableFunc != null)
+            {
+                StaticConfig.CompleteUpdateableFunc(result);
+            }
             return result;
         }
 

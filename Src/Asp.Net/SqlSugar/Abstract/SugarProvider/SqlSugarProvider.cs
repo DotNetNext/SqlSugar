@@ -28,6 +28,10 @@ namespace SqlSugar
             this.ContextID = Guid.NewGuid();
             Check.ArgumentNullException(config, "config is null");
             CheckDbDependency(config);
+            if (StaticConfig.CompleteDbFunc != null) 
+            {
+                StaticConfig.CompleteDbFunc(this);
+            }
         }
         #endregion
 
