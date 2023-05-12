@@ -240,6 +240,32 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override bool AddDefaultValue(string tableName, string columnName, string defaultValue)
+        {
+            if (defaultValue == "''")
+            {
+                defaultValue = "";
+            }
+            if (defaultValue.IsDate() && !AddDefaultValueSql.Contains("'{2}'"))
+            {
+                defaultValue = "'" + defaultValue + "'";
+            }
+            if (defaultValue != null && defaultValue.EqualCase("'current_timestamp'"))
+            {
+                defaultValue = defaultValue.TrimEnd('\'').TrimStart('\'');
+            }
+            if (defaultValue != null && defaultValue.EqualCase("'current_date'"))
+            {
+                defaultValue = defaultValue.TrimEnd('\'').TrimStart('\'');
+            }
+            if (defaultValue == " ")
+            {
+                defaultValue = "' '";
+            }
+            string sql = string.Format(AddDefaultValueSql,SqlBuilder.GetTranslationColumnName(tableName), SqlBuilder.GetTranslationColumnName(columnName), defaultValue);
+            this.Context.Ado.ExecuteCommand(sql);
+            return true;
+        }
         public override List<string> GetIndexList(string tableName)
         {
             var sql = $"SELECT indexname FROM sys_indexes WHERE UPPER(tablename) = UPPER('{tableName}') AND UPPER(schemaname) = UPPER('" + GetSchema() + "') ";
