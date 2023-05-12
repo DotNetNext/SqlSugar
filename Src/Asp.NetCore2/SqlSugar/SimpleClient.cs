@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SqlSugar
@@ -402,6 +403,179 @@ namespace SqlSugar
             return await this.Context.Deleteable<T>().In(ids).ExecuteCommandAsync() > 0;
         }
         #endregion
- 
+
+        #region Async Method  CancellationToken
+        public virtual Task<long> InsertReturnSnowflakeIdAsync(T insertObj, CancellationToken cancellationToken)
+        {
+            this.Context.Ado.CancellationToken = cancellationToken;
+            return this.Context.Insertable(insertObj).ExecuteReturnSnowflakeIdAsync();
+        }
+        public virtual Task<List<long>> InsertReturnSnowflakeIdAsync(List<T> insertObjs, CancellationToken cancellationToken)
+        {
+            this.Context.Ado.CancellationToken = cancellationToken;
+            return this.Context.Insertable(insertObjs).ExecuteReturnSnowflakeIdListAsync();
+        }
+
+        public virtual Task<T> GetByIdAsync(dynamic id,CancellationToken cancellationToken)
+        {
+            this.Context.Ado.CancellationToken= cancellationToken;
+            return Context.Queryable<T>().InSingleAsync(id);
+        }
+        public virtual Task<List<T>> GetListAsync(CancellationToken cancellationToken)
+        {
+            this.Context.Ado.CancellationToken = cancellationToken;
+            return Context.Queryable<T>().ToListAsync();
+        }
+
+        public virtual Task<List<T>> GetListAsync(Expression<Func<T, bool>> whereExpression, CancellationToken cancellationToken)
+        {
+            this.Context.Ado.CancellationToken = cancellationToken;
+            return Context.Queryable<T>().Where(whereExpression).ToListAsync();
+        }
+        public virtual Task<T> GetSingleAsync(Expression<Func<T, bool>> whereExpression, CancellationToken cancellationToken)
+        {
+            this.Context.Ado.CancellationToken = cancellationToken;
+            return Context.Queryable<T>().SingleAsync(whereExpression);
+        }
+        public virtual Task<T> GetFirstAsync(Expression<Func<T, bool>> whereExpression, CancellationToken cancellationToken)
+        {
+            this.Context.Ado.CancellationToken = cancellationToken;
+            return Context.Queryable<T>().FirstAsync(whereExpression);
+        }
+        public virtual async Task<List<T>> GetPageListAsync(Expression<Func<T, bool>> whereExpression, PageModel page, CancellationToken cancellationToken)
+        {
+            this.Context.Ado.CancellationToken = cancellationToken;
+            RefAsync<int> count = 0;
+            var result = await Context.Queryable<T>().Where(whereExpression).ToPageListAsync(page.PageIndex, page.PageSize, count);
+            page.TotalCount = count;
+            return result;
+        }
+        public virtual async Task<List<T>> GetPageListAsync(Expression<Func<T, bool>> whereExpression, PageModel page, Expression<Func<T, object>> orderByExpression = null, OrderByType orderByType = OrderByType.Asc, CancellationToken cancellationToken = default)
+        {
+            this.Context.Ado.CancellationToken = cancellationToken;
+            RefAsync<int> count = 0;
+            var result = await Context.Queryable<T>().OrderByIF(orderByExpression != null, orderByExpression, orderByType).Where(whereExpression).ToPageListAsync(page.PageIndex, page.PageSize, count);
+            page.TotalCount = count;
+            return result;
+        }
+        public virtual async Task<List<T>> GetPageListAsync(List<IConditionalModel> conditionalList, PageModel page, CancellationToken cancellationToken)
+        {
+            this.Context.Ado.CancellationToken = cancellationToken;
+            RefAsync<int> count = 0;
+            var result = await Context.Queryable<T>().Where(conditionalList).ToPageListAsync(page.PageIndex, page.PageSize, count);
+            page.TotalCount = count;
+            return result;
+        }
+        public virtual async Task<List<T>> GetPageListAsync(List<IConditionalModel> conditionalList, PageModel page, Expression<Func<T, object>> orderByExpression = null, OrderByType orderByType = OrderByType.Asc, CancellationToken cancellationToken=default)
+        {
+            this.Context.Ado.CancellationToken = cancellationToken;
+            RefAsync<int> count = 0;
+            var result = await Context.Queryable<T>().OrderByIF(orderByExpression != null, orderByExpression, orderByType).Where(conditionalList).ToPageListAsync(page.PageIndex, page.PageSize, count);
+            page.TotalCount = count;
+            return result;
+        }
+        public virtual Task<bool> IsAnyAsync(Expression<Func<T, bool>> whereExpression, CancellationToken cancellationToken)
+        {
+            this.Context.Ado.CancellationToken = cancellationToken;
+            return Context.Queryable<T>().Where(whereExpression).AnyAsync();
+        }
+        public virtual Task<int> CountAsync(Expression<Func<T, bool>> whereExpression, CancellationToken cancellationToken)
+        {
+            this.Context.Ado.CancellationToken = cancellationToken;
+            return Context.Queryable<T>().Where(whereExpression).CountAsync();
+        }
+
+        public virtual async Task<bool> InsertOrUpdateAsync(T data, CancellationToken cancellationToken)
+        {
+            this.Context.Ado.CancellationToken = cancellationToken;
+            return await this.Context.Storageable(data).ExecuteCommandAsync() > 0;
+        }
+        public virtual async Task<bool> InsertOrUpdateAsync(List<T> datas, CancellationToken cancellationToken)
+        {
+            this.Context.Ado.CancellationToken = cancellationToken;
+            return await this.Context.Storageable(datas).ExecuteCommandAsync() > 0;
+        }
+        public virtual async Task<bool> InsertAsync(T insertObj, CancellationToken cancellationToken)
+        {
+            this.Context.Ado.CancellationToken = cancellationToken;
+            return await this.Context.Insertable(insertObj).ExecuteCommandAsync() > 0;
+        }
+        public virtual Task<int> InsertReturnIdentityAsync(T insertObj, CancellationToken cancellationToken)
+        {
+            this.Context.Ado.CancellationToken = cancellationToken;
+            return this.Context.Insertable(insertObj).ExecuteReturnIdentityAsync();
+        }
+        public virtual Task<long> InsertReturnBigIdentityAsync(T insertObj, CancellationToken cancellationToken)
+        {
+            this.Context.Ado.CancellationToken = cancellationToken;
+            return this.Context.Insertable(insertObj).ExecuteReturnBigIdentityAsync();
+        }
+        public virtual async Task<T> InsertReturnEntityAsync(T insertObj, CancellationToken cancellationToken)
+        {
+            this.Context.Ado.CancellationToken = cancellationToken;
+            return await this.Context.Insertable(insertObj).ExecuteReturnEntityAsync();
+        }
+        public virtual async Task<bool> InsertRangeAsync(T[] insertObjs, CancellationToken cancellationToken)
+        {
+            this.Context.Ado.CancellationToken = cancellationToken;
+            return await this.Context.Insertable(insertObjs).ExecuteCommandAsync() > 0;
+        }
+        public virtual async Task<bool> InsertRangeAsync(List<T> insertObjs, CancellationToken cancellationToken)
+        {
+            this.Context.Ado.CancellationToken = cancellationToken;
+            return await this.Context.Insertable(insertObjs).ExecuteCommandAsync() > 0;
+        }
+        public virtual async Task<bool> UpdateAsync(T updateObj, CancellationToken cancellationToken)
+        {
+            this.Context.Ado.CancellationToken = cancellationToken;
+            return await this.Context.Updateable(updateObj).ExecuteCommandAsync() > 0;
+        }
+        public virtual async Task<bool> UpdateRangeAsync(T[] updateObjs, CancellationToken cancellationToken)
+        {
+            this.Context.Ado.CancellationToken = cancellationToken;
+            return await this.Context.Updateable(updateObjs).ExecuteCommandAsync() > 0;
+        }
+        public virtual async Task<bool> UpdateRangeAsync(List<T> updateObjs, CancellationToken cancellationToken)
+        {
+            this.Context.Ado.CancellationToken = cancellationToken;
+            return await this.Context.Updateable(updateObjs).ExecuteCommandAsync() > 0;
+        }
+        public virtual async Task<bool> UpdateAsync(Expression<Func<T, T>> columns, Expression<Func<T, bool>> whereExpression, CancellationToken cancellationToken)
+        {
+            this.Context.Ado.CancellationToken = cancellationToken;
+            return await this.Context.Updateable<T>().SetColumns(columns).Where(whereExpression).ExecuteCommandAsync() > 0;
+        }
+        public virtual async Task<bool> UpdateSetColumnsTrueAsync(Expression<Func<T, T>> columns, Expression<Func<T, bool>> whereExpression, CancellationToken cancellationToken)
+        {
+            this.Context.Ado.CancellationToken = cancellationToken;
+            return await this.Context.Updateable<T>().SetColumns(columns, true).Where(whereExpression).ExecuteCommandAsync() > 0;
+        }
+        public virtual async Task<bool> DeleteAsync(T deleteObj, CancellationToken cancellationToken)
+        {
+            this.Context.Ado.CancellationToken = cancellationToken;
+            return await this.Context.Deleteable<T>().Where(deleteObj).ExecuteCommandAsync() > 0;
+        }
+        public virtual async Task<bool> DeleteAsync(List<T> deleteObjs, CancellationToken cancellationToken)
+        {
+            this.Context.Ado.CancellationToken = cancellationToken;
+            return await this.Context.Deleteable<T>().Where(deleteObjs).ExecuteCommandAsync() > 0;
+        }
+        public virtual async Task<bool> DeleteAsync(Expression<Func<T, bool>> whereExpression, CancellationToken cancellationToken)
+        {
+            this.Context.Ado.CancellationToken = cancellationToken;
+            return await this.Context.Deleteable<T>().Where(whereExpression).ExecuteCommandAsync() > 0;
+        }
+        public virtual async Task<bool> DeleteByIdAsync(dynamic id, CancellationToken cancellationToken)
+        {
+            this.Context.Ado.CancellationToken = cancellationToken;
+            return await this.Context.Deleteable<T>().In(id).ExecuteCommandAsync() > 0;
+        }
+        public virtual async Task<bool> DeleteByIdsAsync(dynamic[] ids, CancellationToken cancellationToken)
+        {
+            this.Context.Ado.CancellationToken = cancellationToken;
+            return await this.Context.Deleteable<T>().In(ids).ExecuteCommandAsync() > 0;
+        }
+        #endregion
+
     }
 }
