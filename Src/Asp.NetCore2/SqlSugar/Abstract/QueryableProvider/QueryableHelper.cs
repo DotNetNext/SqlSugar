@@ -1198,10 +1198,14 @@ namespace SqlSugar
                 tableName = this.QueryBuilder.LambdaExpressions.DbMehtods.GetTableWithDataBase
                 (this.QueryBuilder.Builder.GetTranslationColumnName(dbName), this.QueryBuilder.Builder.GetTranslationColumnName(tableName));
             }
-            var dbLinkName = this.Context.CurrentConnectionConfig.DbLinkName;
-            if (dbLinkName.HasValue()) 
+
+            if (attr != null && configId != attr.configId.ObjToString())
             {
-                tableName = dbLinkName+"."+this.QueryBuilder.Builder.GetTranslationColumnName(oldTableName);
+                var dbLinkName = this.Context.Root.GetConnection(attr.configId).CurrentConnectionConfig.DbLinkName;
+                if (dbLinkName != null)
+                {
+                    tableName = dbLinkName + "." + this.QueryBuilder.Builder.GetTranslationColumnName(oldTableName);
+                }
             }
             return tableName;
         }

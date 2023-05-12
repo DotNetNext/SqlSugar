@@ -80,6 +80,10 @@ namespace SqlSugar
             var mappingInfo = context
                 .MappingTables
                 .FirstOrDefault(it => it.EntityName.Equals(name, StringComparison.CurrentCultureIgnoreCase));
+            if (mappingInfo == null && name.Contains(".") && name.Contains("\"")) 
+            {
+                return name;
+            }
             name = (mappingInfo == null ? name : mappingInfo.DbTableName);
             if (name.Contains(".")&& !name.Contains("(")&&!name.Contains("\".\""))
             {
