@@ -317,6 +317,10 @@ namespace SqlSugar
                 {
                     method = isNullableType ? getOtherNull.MakeGenericMethod(bindPropertyType) : getOther.MakeGenericMethod(bindPropertyType);
                 }
+                else if (bindPropertyType == UtilConstants.StringType&&validPropertyName == "int") 
+                {
+                    method = isNullableType ? getOtherNull.MakeGenericMethod(bindPropertyType) : getOther.MakeGenericMethod(bindPropertyType);
+                }
                 else if (bindPropertyType == UtilConstants.StringType)
                 {
                     method = getString;
