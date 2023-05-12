@@ -27,7 +27,7 @@ namespace SqlSugar
                                     TABLE_NAME as TableName, 
                                     column_name AS DbColumnName,
                                     CASE WHEN  left(COLUMN_TYPE,LOCATE('(',COLUMN_TYPE)-1)='' THEN COLUMN_TYPE ELSE  left(COLUMN_TYPE,LOCATE('(',COLUMN_TYPE)-1) END   AS DataType,
-                                    CAST(SUBSTRING(COLUMN_TYPE,LOCATE('(',COLUMN_TYPE)+1,LOCATE(')',COLUMN_TYPE)-LOCATE('(',COLUMN_TYPE)-1) AS int) AS Length,
+                                    CAST(SUBSTRING(COLUMN_TYPE,LOCATE('(',COLUMN_TYPE)+1,LOCATE(')',COLUMN_TYPE)-LOCATE('(',COLUMN_TYPE)-1) AS SIGNED integer) AS Length,
                                     column_default  AS  `DefaultValue`,
                                     column_comment  AS  `ColumnDescription`,
                                     CASE WHEN COLUMN_KEY = 'PRI'
