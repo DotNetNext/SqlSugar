@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            CrossDatabase02.Init();
             UinitCustomConvert.Init();
             ULock.Init();
             UInsert3.Init();
