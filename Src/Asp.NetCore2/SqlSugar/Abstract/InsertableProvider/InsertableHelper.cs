@@ -119,6 +119,7 @@ namespace SqlSugar
                     if (item.IsJson)
                     {
                         paramters.IsJson = true;
+                        SqlBuilder.ChangeJsonType(paramters);
                     }
                     if (item.IsArray)
                     {
