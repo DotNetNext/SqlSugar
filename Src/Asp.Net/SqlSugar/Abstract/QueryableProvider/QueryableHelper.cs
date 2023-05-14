@@ -1188,8 +1188,9 @@ namespace SqlSugar
 
         #region  Other
 
-        private void OutIntoTableSql(string TableName, out KeyValuePair<string, List<SugarParameter>> sqlInfo, out string sql)
+        private void OutIntoTableSql(string TableName, out KeyValuePair<string, List<SugarParameter>> sqlInfo, out string sql,Type tableInfo)
         {
+            var columnList = this.Context.EntityMaintenance.GetEntityInfo(tableInfo).Columns;
             //var entityInfo = this.Context.EntityMaintenance.GetEntityInfo(TableEntityType);
             sqlInfo = this.ToSql();
             var name = this.SqlBuilder.GetTranslationTableName(TableName);
@@ -1202,6 +1203,11 @@ namespace SqlSugar
                 foreach (var item in ExpressionTool.GetNewExpressionItemList((Expression)this.QueryBuilder.SelectValue))
                 {
                     var column = item.Key;
+                    var columnInfo = columnList.FirstOrDefault(it => it.PropertyName == item.Key);
+                    if (columnInfo != null) 
+                    {
+                        column =this.SqlBuilder.GetTranslationColumnName(columnInfo.DbColumnName);
+                    }
                     columns += $"{column},";
                 }
                 columns = columns.TrimEnd(',') + ")";

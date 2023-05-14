@@ -694,7 +694,7 @@ ParameterT parameter)
         {
             KeyValuePair<string, List<SugarParameter>> sqlInfo;
             string sql;
-            OutIntoTableSql(TableName, out sqlInfo, out sql);
+            OutIntoTableSql(TableName, out sqlInfo, out sql,TableEntityType);
             return await this.Context.Ado.ExecuteCommandAsync(sql, sqlInfo.Value);
         }
     }

@@ -760,7 +760,7 @@ namespace SqlSugar
         {
             KeyValuePair<string, List<SugarParameter>> sqlInfo;
             string sql;
-            OutIntoTableSql(TableName, out sqlInfo, out sql);
+            OutIntoTableSql(TableName, out sqlInfo, out sql, TableEntityType);
             return this.Context.Ado.ExecuteCommand(sql, sqlInfo.Value);
         }
   }
