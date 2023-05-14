@@ -678,7 +678,7 @@ ParameterT parameter)
 
         public Task<int> IntoTableAsync<TableEntityType>(CancellationToken cancellationToken = default)
         {
-            return IntoTableAsync(typeof(TableEntityType));
+            return IntoTableAsync(typeof(TableEntityType), cancellationToken);
         }
         public Task<int> IntoTableAsync<TableEntityType>(string TableName, CancellationToken cancellationToken = default)
         {
@@ -688,10 +688,11 @@ ParameterT parameter)
         {
             var entityInfo = this.Context.EntityMaintenance.GetEntityInfo(TableEntityType);
             var name = this.SqlBuilder.GetTranslationTableName(entityInfo.DbTableName);
-            return IntoTableAsync(TableEntityType, name);
+            return IntoTableAsync(TableEntityType, name, cancellationToken);
         }
         public async Task<int> IntoTableAsync(Type TableEntityType, string TableName, CancellationToken cancellationToken = default)
         {
+            this.Context.Ado.CancellationToken= cancellationToken;
             KeyValuePair<string, List<SugarParameter>> sqlInfo;
             string sql;
             OutIntoTableSql(TableName, out sqlInfo, out sql,TableEntityType);
