@@ -182,6 +182,12 @@ namespace SqlSugar
         int IntoTable(Type TableEntityType);
         int IntoTable<TableEntityType>(string tableName);
         int IntoTable(Type TableEntityType,string tableName);
+
+        Task<int> IntoTableAsync<TableEntityType>(CancellationToken cancellationToken = default);
+        Task<int> IntoTableAsync(Type TableEntityType, CancellationToken cancellationToken = default);
+        Task<int> IntoTableAsync<TableEntityType>(string tableName, CancellationToken cancellationToken = default);
+        Task<int> IntoTableAsync(Type TableEntityType, string tableName, CancellationToken cancellationToken = default);
+
         //bool IntoTable(Type TableEntityType, params string[] columnNameList);
         //bool IntoTable<TableEntityType>(params string[] columnNameList);
         List<T> SetContext<ParameterT>(Expression<Func<T, bool>> whereExpression, ParameterT parameter);

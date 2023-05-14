@@ -756,7 +756,6 @@ namespace SqlSugar
             var name = this.SqlBuilder.GetTranslationTableName(entityInfo.DbTableName);
             return IntoTable(TableEntityType, name);
         }
-
         public int IntoTable(Type TableEntityType,string TableName)
         {
             KeyValuePair<string, List<SugarParameter>> sqlInfo;

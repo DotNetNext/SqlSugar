@@ -674,5 +674,28 @@ ParameterT parameter)
             var list = await this.ToListAsync();
             return GetChildList(parentIdExpression, pk, list, primaryKeyValue, isContainOneself);
         }
+
+
+        public Task<int> IntoTableAsync<TableEntityType>(CancellationToken cancellationToken = default)
+        {
+            return IntoTableAsync(typeof(TableEntityType));
+        }
+        public Task<int> IntoTableAsync<TableEntityType>(string TableName, CancellationToken cancellationToken = default)
+        {
+            return IntoTableAsync(typeof(TableEntityType), TableName, cancellationToken );
+        }
+        public Task<int> IntoTableAsync(Type TableEntityType, CancellationToken cancellationToken = default)
+        {
+            var entityInfo = this.Context.EntityMaintenance.GetEntityInfo(TableEntityType);
+            var name = this.SqlBuilder.GetTranslationTableName(entityInfo.DbTableName);
+            return IntoTableAsync(TableEntityType, name);
+        }
+        public async Task<int> IntoTableAsync(Type TableEntityType, string TableName, CancellationToken cancellationToken = default)
+        {
+            KeyValuePair<string, List<SugarParameter>> sqlInfo;
+            string sql;
+            OutIntoTableSql(TableName, out sqlInfo, out sql);
+            return await this.Context.Ado.ExecuteCommandAsync(sql, sqlInfo.Value);
+        }
     }
 }
