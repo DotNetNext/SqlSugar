@@ -776,17 +776,33 @@ namespace SqlSugar
             var sqlInfo = this.ToSql();
             var name = this.SqlBuilder.GetTranslationTableName(TableName);
             var columns = "";
-            if (this.QueryBuilder.GetSelectValue != null && this.QueryBuilder.GetSelectValue.Contains(",")) ;
+            var sql = "";
+            var isSqlFunc = this.QueryBuilder.GetSelectValue?.Contains(")") == true && this.QueryBuilder.SelectValue is Expression;
+            if (isSqlFunc)
             {
                 columns = "(";
-                foreach (var item in this.QueryBuilder.GetSelectValue.Split(','))
+                foreach (var item in ExpressionTool.GetNewExpressionItemList((Expression)this.QueryBuilder.SelectValue))
                 {
-                    var column = Regex.Split(item, "AS").Last().Trim();
+                    var column = item.Key;
                     columns += $"{column},";
                 }
-                columns = columns.TrimEnd(',') + ")";
+                columns = columns.TrimEnd(',') + ")"; 
+                sql = $" INSERT  INTO {name} {columns} " + sqlInfo.Key;
             }
-            var sql = $" INSERT  INTO {name} {columns} " + sqlInfo.Key;
+            else
+            {
+                if (this.QueryBuilder.GetSelectValue != null && this.QueryBuilder.GetSelectValue.Contains(",")) ;
+                {
+                    columns = "(";
+                    foreach (var item in this.QueryBuilder.GetSelectValue.Split(','))
+                    {
+                        var column = Regex.Split(item, "AS").Last().Trim();
+                        columns += $"{column},";
+                    }
+                    columns = columns.TrimEnd(',') + ")";
+                }
+                sql = $" INSERT  INTO {name} {columns} " + sqlInfo.Key;
+            }
             return this.Context.Ado.ExecuteCommand(sql, sqlInfo.Value);
         }
 
