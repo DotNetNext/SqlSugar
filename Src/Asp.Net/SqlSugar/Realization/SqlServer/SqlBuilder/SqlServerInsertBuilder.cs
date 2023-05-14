@@ -22,10 +22,11 @@ namespace SqlSugar
             var groupList = DbColumnInfoList.GroupBy(it => it.TableId).ToList();
             var isSingle = groupList.Count() == 1;
             string columnsString = string.Join(",", groupList.First().Select(it => Builder.GetTranslationColumnName(it.DbColumnName)));
+            var result = "";
             if (isSingle)
             {
                 string columnParametersString = string.Join(",", this.DbColumnInfoList.Select(it =>base.GetDbColumn(it,Builder.SqlParameterKeyWord + it.DbColumnName)));
-                return string.Format(SqlTemplate, GetTableNameString, columnsString, columnParametersString);
+                result= string.Format(SqlTemplate, GetTableNameString, columnsString, columnParametersString);
             }
             else
             {
@@ -63,13 +64,19 @@ namespace SqlSugar
                     pageIndex++;
                     batchInsetrSql.Append("\r\n;\r\n");
                 }
-                var result = batchInsetrSql.ToString();
+                 result = batchInsetrSql.ToString();
                 if (this.Context.CurrentConnectionConfig.DbType == DbType.SqlServer)
                 {
                     result += "select SCOPE_IDENTITY();";
                 }
-                return result;
             }
+
+            if (this.IsOffIdentity)
+            {
+                var tableName = this.GetTableNameString;
+                result= $"SET IDENTITY_INSERT {tableName} ON;" + result.TrimEnd(';') + $";SET IDENTITY_INSERT {tableName} OFF"; ;
+            }
+            return result;
         }
         public override string FormatDateTimeOffset(object value)
         {
