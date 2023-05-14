@@ -752,43 +752,16 @@ namespace SqlSugar
         }
         public int IntoTable(Type TableEntityType) 
         {
-            var entityInfo=this.Context.EntityMaintenance.GetEntityInfo(TableEntityType);
-            var sqlInfo=this.ToSql();
+            var entityInfo = this.Context.EntityMaintenance.GetEntityInfo(TableEntityType);
             var name = this.SqlBuilder.GetTranslationTableName(entityInfo.DbTableName);
-            var columns = "";
-            if (this.QueryBuilder.GetSelectValue != null && this.QueryBuilder.GetSelectValue.Contains(",")) ;
-            {
-                columns = "(";
-                foreach (var item in this.QueryBuilder.GetSelectValue.Split(','))
-                {
-                    var column = Regex.Split(item,"AS").Last().Trim();
-                    columns += $"{column},";
-                }
-                columns = columns.TrimEnd(',') + ")";
-            }
-            var  sql= $" INSERT  INTO {name} {columns} " + sqlInfo.Key;
-            return this.Context.Ado.ExecuteCommand(sql, sqlInfo.Value);
+            return IntoTable(TableEntityType, name);
         }
-
         public int IntoTable(Type TableEntityType,string TableName)
         {
-            //var entityInfo = this.Context.EntityMaintenance.GetEntityInfo(TableEntityType);
-            var sqlInfo = this.ToSql();
-            var name = this.SqlBuilder.GetTranslationTableName(TableName);
-            var columns = "";
-            if (this.QueryBuilder.GetSelectValue != null && this.QueryBuilder.GetSelectValue.Contains(",")) ;
-            {
-                columns = "(";
-                foreach (var item in this.QueryBuilder.GetSelectValue.Split(','))
-                {
-                    var column = Regex.Split(item, "AS").Last().Trim();
-                    columns += $"{column},";
-                }
-                columns = columns.TrimEnd(',') + ")";
-            }
-            var sql = $" INSERT  INTO {name} {columns} " + sqlInfo.Key;
+            KeyValuePair<string, List<SugarParameter>> sqlInfo;
+            string sql;
+            OutIntoTableSql(TableName, out sqlInfo, out sql, TableEntityType);
             return this.Context.Ado.ExecuteCommand(sql, sqlInfo.Value);
         }
-
-    }
+  }
 }
