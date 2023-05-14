@@ -759,39 +759,10 @@ namespace SqlSugar
 
         public int IntoTable(Type TableEntityType,string TableName)
         {
-            //var entityInfo = this.Context.EntityMaintenance.GetEntityInfo(TableEntityType);
-            var sqlInfo = this.ToSql();
-            var name = this.SqlBuilder.GetTranslationTableName(TableName);
-            var columns = "";
-            var sql = "";
-            var isSqlFunc = this.QueryBuilder.GetSelectValue?.Contains(")") == true && this.QueryBuilder.SelectValue is Expression;
-            if (isSqlFunc)
-            {
-                columns = "(";
-                foreach (var item in ExpressionTool.GetNewExpressionItemList((Expression)this.QueryBuilder.SelectValue))
-                {
-                    var column = item.Key;
-                    columns += $"{column},";
-                }
-                columns = columns.TrimEnd(',') + ")"; 
-                sql = $" INSERT  INTO {name} {columns} " + sqlInfo.Key;
-            }
-            else
-            {
-                if (this.QueryBuilder.GetSelectValue != null && this.QueryBuilder.GetSelectValue.Contains(",")) ;
-                {
-                    columns = "(";
-                    foreach (var item in this.QueryBuilder.GetSelectValue.Split(','))
-                    {
-                        var column = Regex.Split(item, "AS").Last().Trim();
-                        columns += $"{column},";
-                    }
-                    columns = columns.TrimEnd(',') + ")";
-                }
-                sql = $" INSERT  INTO {name} {columns} " + sqlInfo.Key;
-            }
+            KeyValuePair<string, List<SugarParameter>> sqlInfo;
+            string sql;
+            OutIntoTableSql(TableName, out sqlInfo, out sql);
             return this.Context.Ado.ExecuteCommand(sql, sqlInfo.Value);
         }
-
-    }
+  }
 }

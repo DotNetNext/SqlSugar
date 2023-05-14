@@ -1187,6 +1187,42 @@ namespace SqlSugar
         #endregion
 
         #region  Other
+
+        private void OutIntoTableSql(string TableName, out KeyValuePair<string, List<SugarParameter>> sqlInfo, out string sql)
+        {
+            //var entityInfo = this.Context.EntityMaintenance.GetEntityInfo(TableEntityType);
+            sqlInfo = this.ToSql();
+            var name = this.SqlBuilder.GetTranslationTableName(TableName);
+            var columns = "";
+            sql = "";
+            var isSqlFunc = this.QueryBuilder.GetSelectValue?.Contains(")") == true && this.QueryBuilder.SelectValue is Expression;
+            if (isSqlFunc)
+            {
+                columns = "(";
+                foreach (var item in ExpressionTool.GetNewExpressionItemList((Expression)this.QueryBuilder.SelectValue))
+                {
+                    var column = item.Key;
+                    columns += $"{column},";
+                }
+                columns = columns.TrimEnd(',') + ")";
+                sql = $" INSERT  INTO {name} {columns} " + sqlInfo.Key;
+            }
+            else
+            {
+                if (this.QueryBuilder.GetSelectValue != null && this.QueryBuilder.GetSelectValue.Contains(",")) ;
+                {
+                    columns = "(";
+                    foreach (var item in this.QueryBuilder.GetSelectValue.Split(','))
+                    {
+                        var column = Regex.Split(item, "AS").Last().Trim();
+                        columns += $"{column},";
+                    }
+                    columns = columns.TrimEnd(',') + ")";
+                }
+                sql = $" INSERT  INTO {name} {columns} " + sqlInfo.Key;
+            }
+        }
+
         private string GetTableName(EntityInfo entity, string tableName)
         {
             var oldTableName = tableName;
