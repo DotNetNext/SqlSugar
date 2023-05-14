@@ -303,6 +303,7 @@ namespace SqlSugar
                 var p = ParameterConverter.Invoke(obj,new object[] {columnInfo.Value, GetDbColumnIndex }) as SugarParameter;
                 GetDbColumnIndex++;
                 //this.Parameters.RemoveAll(it => it.ParameterName == it.ParameterName);
+                UtilMethods.ConvertParameter(p,this.Builder);
                 this.Parameters.Add(p);
                 return p.ParameterName;
             }
