@@ -36,6 +36,7 @@ namespace SqlSugar
 
         public virtual bool IsReturnPkList { get; set; }
         public string AsName { get; set; }
+        public bool IsOffIdentity { get;  set; }
         #endregion
 
         #region SqlTemplate
