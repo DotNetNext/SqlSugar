@@ -17,6 +17,13 @@ namespace SqlSugar
 {
     public class UtilMethods
     {
+        public static void ConvertParameter(SugarParameter p, ISqlBuilder builder)
+        {
+            if (!p.ParameterName.StartsWith(builder.SqlParameterKeyWord))
+            {
+                p.ParameterName = (builder.SqlParameterKeyWord + p.ParameterName.TrimStart('@'));
+            }
+        }
         public static object SetAnonymousObjectPropertyValue(object obj, string propertyName, object propertyValue)
         {
             if (obj.GetType().IsAnonymousType()) // 判断是否为匿名对象
