@@ -24,6 +24,10 @@ namespace SqlSugar
         {
             return "count(1) over()";
         }
+        public string RowSum(MethodCallExpressionModel model) 
+        {
+             return "SUM(" + model.Args[0].MemberName +") over()";
+        }
         public virtual string IIF(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
