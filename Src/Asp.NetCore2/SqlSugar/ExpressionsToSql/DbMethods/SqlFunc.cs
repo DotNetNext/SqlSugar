@@ -33,6 +33,10 @@ namespace SqlSugar
         {
             throw new NotSupportedException("Can only be used in expressions");
         }
+        public static TRestult RowSum<TRestult>(TRestult filedName)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
 
         public static string JsonField(object json,string fieldName)
         {
