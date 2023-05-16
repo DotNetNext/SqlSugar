@@ -299,6 +299,30 @@ namespace SqlSugar
             {
                 this.context.CurrentConnectionConfig?.AopEvents?.OnLogExecuting($"Begin {title} name:{GetTableName()} ,count: {datas.Count},current time: {DateTime.Now} ", new SugarParameter[] { });
             }
+            var dataEvent = this.context.CurrentConnectionConfig.AopEvents?.DataExecuting;
+            if (IsDataAop&&dataEvent!=null) 
+            {
+                var entity = this.context.EntityMaintenance.GetEntityInfo(typeof(Type));
+                foreach (var item in datas)
+                {
+                    DataAop(item, isAdd
+                                   ? 
+                                   DataFilterType.InsertByObject:
+                                   DataFilterType.UpdateByObject
+                                   , entity);
+                }
+            }
+        }
+        private void DataAop<Type>(Type item, DataFilterType type,EntityInfo entity)
+        {
+            var dataEvent = this.context.CurrentConnectionConfig.AopEvents?.DataExecuting;
+            if (dataEvent != null && item != null)
+            {
+                foreach (var columnInfo in entity.Columns)
+                {
+                    dataEvent(columnInfo.PropertyInfo.GetValue(item, null), new DataFilterModel() { OperationType = type, EntityValue = item, EntityColumnInfo = columnInfo });
+                }
+            }
         }
         #endregion
 
