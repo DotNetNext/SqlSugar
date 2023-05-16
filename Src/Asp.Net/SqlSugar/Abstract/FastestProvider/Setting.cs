@@ -13,9 +13,15 @@ namespace SqlSugar
         private string CacheKey { get; set; }
         private string CacheKeyLike { get; set; }
         private string CharacterSet { get; set; }
+        private bool IsDataAop { get; set; }
         public IFastest<T> SetCharacterSet(string CharacterSet) 
         {
             this.CharacterSet = CharacterSet;
+            return this;
+        }
+        public IFastest<T> EnableDataAop()
+        {
+            this.IsDataAop = true;
             return this;
         }
         public IFastest<T> RemoveDataCache() 
