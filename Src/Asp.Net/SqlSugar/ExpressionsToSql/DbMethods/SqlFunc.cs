@@ -9,6 +9,10 @@ namespace SqlSugar
 {
     public partial class SqlFunc
     {
+        public static int Modulo(decimal numA, decimal numB)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
         public static int CompareTo(decimal numA, decimal numB)
         {
             throw new NotSupportedException("Can only be used in expressions");

@@ -72,6 +72,10 @@ namespace SqlSugar
     }
     public partial class OracleMethod : DefaultDbMethod, IDbMethods
     {
+        public override string Modulo(MethodCallExpressionModel model)
+        {
+            return " MOD(" + model.Args[0].MemberName+ " , " + model.Args[1].MemberName+")";
+        }
         public override string GetStringJoinSelector(string result, string separator)
         {
             return $"listagg(to_char({result}),'{separator}') within group(order by {result}) ";

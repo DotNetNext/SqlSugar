@@ -107,5 +107,6 @@ namespace SqlSugar
         string SplitIn(MethodCallExpressionModel model);
         string ListAny(MethodCallExpressionModel model);
         string GetTableWithDataBase(string databaseName,string tableName);
+        string Modulo(MethodCallExpressionModel mode);
     }
 }
