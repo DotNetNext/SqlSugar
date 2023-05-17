@@ -317,6 +317,10 @@ namespace SqlSugar
         {
             return default(string);
         }
+        public TResult Sum<TResult>(Func<T1, T2,T3,T4, TResult> expression)
+        {
+            return default(TResult);
+        }
     }
     public class Subqueryable<T1, T2, T3> : Subqueryable<T1> where T1 : class, new()
     {
@@ -409,6 +413,10 @@ namespace SqlSugar
         {
             return default(string);
         }
+        public TResult Sum<TResult>(Func<T1, T2,T3, TResult> expression)
+        {
+            return default(TResult);
+        }
     }
     public class Subqueryable<T1, T2> : Subqueryable<T1> where T1 : class, new()
     {
@@ -496,6 +504,10 @@ namespace SqlSugar
         public string Sum(Func<T1, T2, string> expression)
         {
             return default(string);
+        }
+        public TResult Sum<TResult>(Func<T1, T2, TResult> expression)
+        {
+            return default(TResult);
         }
     }
 }
