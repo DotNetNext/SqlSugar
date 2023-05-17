@@ -817,5 +817,10 @@ namespace SqlSugar
         {
             return $"{dataBaseName}.{tableName}";
         }
+
+        public virtual string Modulo(MethodCallExpressionModel model) 
+        {
+            return "("+model.Args[0].MemberName + " % "+ model.Args[1].MemberName+")";
+        }
     }
 }

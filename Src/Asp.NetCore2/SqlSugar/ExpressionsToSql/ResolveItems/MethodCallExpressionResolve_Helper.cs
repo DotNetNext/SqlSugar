@@ -835,6 +835,8 @@ namespace SqlSugar
                     case "ListAny":
                         this.Context.Parameters.RemoveAll(it => model.Args[0].MemberName.ObjToString().Contains(it.ParameterName));
                         return this.Context.DbMehtods.ListAny(model);
+                    case "Modulo":
+                        return this.Context.DbMehtods.Modulo(model);
                     default:
                         break;
                 }
