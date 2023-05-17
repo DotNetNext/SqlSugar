@@ -1275,6 +1275,26 @@ namespace SqlSugar
 
             return sql;
         }
+        private string AppendSelectWithSubQuery(List<EntityColumnInfo> entityColumnInfos, string sql, ReadOnlyCollection<ParameterExpression> parameters, List<EntityColumnInfo> columnsResult, int parameterIndex1,string parameterName)
+        {
+            var list = ExpressionTool.GetMemberInit(this.QueryBuilder.SelectValue).Bindings.Cast<MemberBinding>()
+                 .Select(it => it.Member.Name).ToList();
+            var columns = entityColumnInfos;
+            //var parameterName = parameters[parameterIndex1];
+            if (this.QueryBuilder.AutoAppendedColumns == null)
+            {
+                this.QueryBuilder.AutoAppendedColumns = new List<string>();
+            }
+            foreach (var item in columns)
+            {
+                if (item.IsIgnore == false && !this.QueryBuilder.AutoAppendedColumns.Contains(item.PropertyName) && columnsResult.Any(it => it.PropertyName.EqualCase(item.PropertyName)) && !list.Any(it => it.EqualCase(item.PropertyName)))
+                {
+                    sql = $" {sql},{SqlBuilder.GetTranslationColumnName(parameterName)}.{SqlBuilder.GetTranslationColumnName(item.DbColumnName)} AS {SqlBuilder.GetTranslationColumnName(item.PropertyName)} ";
+                    this.QueryBuilder.AutoAppendedColumns.Add(item.PropertyName);
+                }
+            }
+            return sql;
+        }
 
         private string AppendSelectWithSubQuery(List<EntityColumnInfo> entityColumnInfos, string sql, ReadOnlyCollection<ParameterExpression> parameters, List<EntityColumnInfo> columnsResult, int parameterIndex1)
         {
@@ -1300,6 +1320,12 @@ namespace SqlSugar
         protected string AppendSelect<EntityType>(string sql, ReadOnlyCollection<ParameterExpression> parameters, List<EntityColumnInfo> columnsResult, int parameterIndex1)
         {
             var columns = this.Context.EntityMaintenance.GetEntityInfo<EntityType>().Columns;
+            var lowerSql = sql.ToLower();
+            var isSubquery = lowerSql.Contains("select ") && ExpressionTool.IsMemberInit(this.QueryBuilder.SelectValue);
+            if (isSubquery)
+            {
+                return AppendSelectWithSubQuery(columns, sql, parameters, columnsResult, parameterIndex1, parameters[parameterIndex1].Name);
+            }
             var parameterName = parameters[parameterIndex1].Name;
             if (parameterName.HasValue()) 
             {
