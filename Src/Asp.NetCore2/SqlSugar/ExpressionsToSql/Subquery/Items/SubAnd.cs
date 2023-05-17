@@ -89,7 +89,7 @@ namespace SqlSugar
             {
                 this.Context.CurrentShortName = selfParameterName;
             }
-            else  if (this.Context.JoinIndex == 0)
+            else  if (this.Context.JoinIndex == 0 && this.Context.CurrentShortName != selfParameterName.TrimEnd('.'))
                 result = result.Replace(selfParameterName, SubTools.GetSubReplace(this.Context));
             return result;
         }
