@@ -358,7 +358,7 @@ namespace SqlSugar
                         });
         }
 
-        private List<DbColumnInfo> GetColumnInfosByTableName(string tableName)
+        private List<DbColumnInfo> GetColumnInfosByTableName2(string tableName)
         {
             string sql = "select *  /* " + Guid.NewGuid() + " */ from " + SqlBuilder.GetTranslationTableName(tableName) + " WHERE 1=2 ";
             this.Context.Utilities.RemoveCache<List<DbColumnInfo>>("DbMaintenanceProvider.GetFieldComment."+tableName);
@@ -390,7 +390,38 @@ namespace SqlSugar
                 return result;
             }
         }
+        public virtual List<DbColumnInfo> GetColumnInfosByTableName(string tableName)
+        {
+            if (string.IsNullOrEmpty(tableName)) return new List<DbColumnInfo>();
+            string sql = @"SELECT T.TABLE_NAME TableName,
+       T.COLUMN_NAME DbColumnName,
+       T.DATA_TYPE DataType,
+       T.DATA_LENGTH Length,
+       (CASE WHEN T.NULLABLE='Y' THEN 1 ELSE 0 END) IsNullable,
+       T.COLUMN_ID,
+       T.DATA_SCALE Scale,
+       T.DATA_PRECISION DecimalDigits,
+       T.DATA_DEFAULT DefaultValue,
+       C.COMMENTS
+			 ,(SELECT COUNT(0)  FROM USER_CONSTRAINTS S, USER_CONS_COLUMNS M where  M.CONSTRAINT_NAME = S.CONSTRAINT_NAME
+           AND S.CONSTRAINT_TYPE = 'P'  AND M.TABLE_NAME = T.TABLE_NAME
+           AND M.TABLE_NAME = S.TABLE_NAME  AND M.COLUMN_NAME=T.COLUMN_NAME ) IsPrimarykey			
+  FROM USER_TAB_COLS T ,
+       USER_COL_COMMENTS C
+ WHERE T.TABLE_NAME = @name
+   AND C.TABLE_NAME = T.TABLE_NAME
+   AND C.COLUMN_NAME = T.COLUMN_NAME
+   AND T.HIDDEN_COLUMN = 'NO'
+ ORDER BY T.COLUMN_ID";
+            //sql = string.Format(sql, SqlBuilder.GetTranslationTableName(tableName));
+          
+            this.Context.Utilities.RemoveCache<List<DbColumnInfo>>("DbMaintenanceProvider.GetFieldComment." + tableName);
+            this.Context.Utilities.RemoveCache<List<string>>("DbMaintenanceProvider.GetPrimaryKeyByTableNames." + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower());
+            var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
+          
+            return this.Context.Ado.SqlQuery<DbColumnInfo>(sql,new { name=tableName}).GroupBy(it => it.DbColumnName).Select(it => it.First()).ToList();
 
+        }
         private List<string> GetPrimaryKeyByTableNames(string tableName)
         {
             string cacheKey = "DbMaintenanceProvider.GetPrimaryKeyByTableNames." + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower();
