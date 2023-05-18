@@ -402,7 +402,7 @@ namespace SqlSugar
        T.DATA_SCALE Scale,
        T.DATA_PRECISION DecimalDigits,
        T.DATA_DEFAULT DefaultValue,
-       C.COMMENTS
+       C.COMMENTS ColumnDescription
 			 ,(SELECT COUNT(0)  FROM USER_CONSTRAINTS S, USER_CONS_COLUMNS M where  M.CONSTRAINT_NAME = S.CONSTRAINT_NAME
            AND S.CONSTRAINT_TYPE = 'P'  AND M.TABLE_NAME = T.TABLE_NAME
            AND M.TABLE_NAME = S.TABLE_NAME  AND M.COLUMN_NAME=T.COLUMN_NAME ) IsPrimarykey			
