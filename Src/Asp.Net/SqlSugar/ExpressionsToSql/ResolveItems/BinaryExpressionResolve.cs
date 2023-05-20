@@ -327,15 +327,15 @@ namespace SqlSugar
             {
                 return false;
             }
-            var methodString = method.ToString();
-            if (methodString.IndexOf("GroupBy(")<=0) 
+            var topMethods =ExpressionTool.GetTopLevelMethodCalls(method);
+            if (!topMethods.Contains("Subqueryable")) 
             {
                 return false;
             }
-            if (Regex.Matches(methodString, @"Subqueryable\(").Count!=1)
+            if (!topMethods.Contains("GroupBy"))
             {
                 return false;
-            }
+            } 
             return true;
         }
         private static bool IsJoinString(BinaryExpression expression, string operatorValue)
