@@ -544,7 +544,15 @@ namespace SqlSugar
                 UpdateBuilder.Parameters = new List<SugarParameter>();
             }
             UpdateBuilder.Parameters.Add(new SugarParameter(parameterName, fieldValue));
-            UpdateBuilder.SetValues.Add(new KeyValuePair<string, string>(SqlBuilder.GetTranslationColumnName(fieldName), $"{SqlBuilder.GetTranslationColumnName(fieldName)}={parameterName}"));
+            if (columnInfo?.UpdateServerTime == true)
+            {
+                var nowTime= this.Context.Queryable<object>().QueryBuilder.LambdaExpressions.DbMehtods.GetDate();
+                UpdateBuilder.SetValues.Add(new KeyValuePair<string, string>(SqlBuilder.GetTranslationColumnName(fieldName), $"{SqlBuilder.GetTranslationColumnName(fieldName)}={nowTime}"));
+            }
+            else
+            {
+                UpdateBuilder.SetValues.Add(new KeyValuePair<string, string>(SqlBuilder.GetTranslationColumnName(fieldName), $"{SqlBuilder.GetTranslationColumnName(fieldName)}={parameterName}"));
+            }
             this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => (UpdateParameterIsNull == false && IsPrimaryKey(it)) || UpdateBuilder.SetValues.Any(v => SqlBuilder.GetNoTranslationColumnName(v.Key).Equals(it.DbColumnName, StringComparison.CurrentCultureIgnoreCase) || SqlBuilder.GetNoTranslationColumnName(v.Key).Equals(it.PropertyName, StringComparison.CurrentCultureIgnoreCase)) || it.IsPrimarykey == true).ToList();
             if (!this.UpdateBuilder.DbColumnInfoList.Any(it => it.DbColumnName.EqualCase(fieldName))) 
             {

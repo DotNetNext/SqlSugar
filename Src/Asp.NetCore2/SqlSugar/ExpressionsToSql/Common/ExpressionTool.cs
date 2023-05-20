@@ -9,6 +9,30 @@ namespace SqlSugar
 {
     public class ExpressionTool
     {
+
+        public static List<string> GetTopLevelMethodCalls(Expression expression)
+        {
+            var methodCalls = new List<string>();
+            GetTopLevelMethodCalls(expression, methodCalls);
+            return methodCalls;
+        }
+
+        public static void GetTopLevelMethodCalls(Expression expression, List<string> methodCalls)
+        {
+            if (expression is MethodCallExpression methodCallExpression)
+            {
+                methodCalls.Add(methodCallExpression.Method.Name);
+                if (methodCallExpression.Object is MethodCallExpression parentMethodCallExpression)
+                {
+                    GetTopLevelMethodCalls(parentMethodCallExpression, methodCalls);
+                }
+            }
+            else if (expression is LambdaExpression lambdaExpression)
+            {
+                GetTopLevelMethodCalls(lambdaExpression.Body, methodCalls);
+            }
+        }
+
         public static Dictionary<string, Expression> GetNewExpressionItemList(Expression lamExp)
         {
             var caseExp = GetLambdaExpressionBody(lamExp);
