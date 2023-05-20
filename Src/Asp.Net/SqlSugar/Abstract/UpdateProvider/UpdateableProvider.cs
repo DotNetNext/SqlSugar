@@ -561,8 +561,7 @@ namespace SqlSugar
                      DbColumnName=fieldName,
                       Value=fieldValue,
                       PropertyName=fieldName,
-                      PropertyType=fieldValue?.GetType(),
-                      UpdateServerTime= columnInfo?.UpdateServerTime==true
+                      PropertyType=fieldValue?.GetType()
                 });
             }
             AppendSets();
