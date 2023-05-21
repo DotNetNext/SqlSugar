@@ -426,7 +426,14 @@ namespace SqlSugar
             }
             else if (IsListSetExp(columnInfo)|| IsSingleSetExp(columnInfo))
             {
-                return this.ReSetValueBySqlExpList[columnInfo.PropertyName].Sql;
+                if (this.ReSetValueBySqlExpList[columnInfo.PropertyName].Type == ReSetValueBySqlExpListModelType.List)
+                {
+                    return columnInfo.DbColumnName+this.ReSetValueBySqlExpList[columnInfo.PropertyName].Sql+name;
+                }
+                else
+                {
+                    return this.ReSetValueBySqlExpList[columnInfo.PropertyName].Sql;
+                }
             }
             else if (columnInfo.UpdateSql.HasValue())
             {
