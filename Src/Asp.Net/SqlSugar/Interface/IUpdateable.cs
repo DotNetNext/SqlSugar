@@ -100,6 +100,7 @@ namespace SqlSugar
         IUpdateable<T> EnableDiffLogEvent(object businessData = null);
         IUpdateable<T> EnableDiffLogEventIF(bool isEnableDiffLog,object businessData = null);
         IUpdateable<T> ReSetValue(Action<T> setValueExpression);
+        IUpdateable<T> PublicSetColumns(Expression<Func<T, object>> filedNameExpression,string computationalSymbol);
         IUpdateable<T> PublicSetColumns (Expression<Func<T,object>> filedNameExpression, Expression<Func<T, object>> ValueExpExpression);
         IUpdateable<T> RemoveDataCache();
         IUpdateable<T> RemoveDataCache(string likeString);

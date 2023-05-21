@@ -80,7 +80,14 @@ namespace SqlSugar
                 foreach (var item in ReSetValueBySqlExpList)
                 {
                     var dbColumnName = item.Value.DbColumnName;
-                    result = result.Replace($"T.{dbColumnName}", item.Value.Sql.Replace(dbColumnName,"S."+ dbColumnName));
+                    if (item.Value.Type==ReSetValueBySqlExpListModelType.List)
+                    { 
+                        result = result.Replace($"T.{dbColumnName}", $" T.{dbColumnName}{item.Value.Sql}S.{dbColumnName}");
+                    }
+                    else
+                    {
+                        result = result.Replace($"T.{dbColumnName}", item.Value.Sql.Replace(dbColumnName, "S." + dbColumnName));
+                    }
                     batchUpdateSql = new StringBuilder(result);
                 }
             }
