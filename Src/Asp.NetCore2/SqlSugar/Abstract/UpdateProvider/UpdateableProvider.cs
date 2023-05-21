@@ -360,6 +360,36 @@ namespace SqlSugar
             }
             return this;
         }
+        public IUpdateable<T> PublicSetColumns(Expression<Func<T, object>> filedNameExpression, string computationalSymbol) 
+        {
+            if (UpdateParameterIsNull == true)
+            {
+                Check.Exception(UpdateParameterIsNull == true, ErrorMessage.GetThrowMessage("The PublicSetColumns(exp,string) overload can only be used to update entity objects: db.Updateable(object)", "PublicSetColumns(exp,string)重载只能用在实体对象更新：db.Updateable(对象)，请区分表达式更新和实体对象更不同用法 "));
+            }
+            else
+            {
+                var name = ExpressionTool.GetMemberName(filedNameExpression);
+                if (name == null)
+                {
+                    Check.ExceptionEasy(filedNameExpression + " format error ", filedNameExpression + "参数格式错误");
+                }
+                //var value = this.UpdateBuilder.GetExpressionValue(ValueExpExpression, ResolveExpressType.WhereSingle).GetResultString();
+                if (this.UpdateBuilder.ReSetValueBySqlExpList == null)
+                {
+                    this.UpdateBuilder.ReSetValueBySqlExpList = new Dictionary<string, ReSetValueBySqlExpListModel>();
+                }
+                if (!this.UpdateBuilder.ReSetValueBySqlExpList.ContainsKey(name))
+                {
+                    this.UpdateBuilder.ReSetValueBySqlExpList.Add(name, new ReSetValueBySqlExpListModel()
+                    {
+                        Type= ReSetValueBySqlExpListModelType.List,
+                        Sql = computationalSymbol,
+                        DbColumnName = this.SqlBuilder.GetTranslationColumnName(this.EntityInfo.Columns.First(it => it.PropertyName == name).DbColumnName)
+                    });  
+                }
+            }
+            return this;
+        }
 
         public IUpdateable<T> PublicSetColumns(Expression<Func<T, object>> filedNameExpression, Expression<Func<T, object>> ValueExpExpression) 
         {

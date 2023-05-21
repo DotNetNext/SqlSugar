@@ -10,5 +10,11 @@ namespace SqlSugar
     {
         public string DbColumnName { get; set; }
         public string Sql { get; set; }
+        public ReSetValueBySqlExpListModelType? Type { get; set; }
+    }
+    internal enum ReSetValueBySqlExpListModelType 
+    {
+        Default,
+        List
     }
 }
