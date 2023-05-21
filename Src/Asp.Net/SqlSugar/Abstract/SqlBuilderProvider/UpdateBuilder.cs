@@ -428,7 +428,7 @@ namespace SqlSugar
             {
                 if (this.ReSetValueBySqlExpList[columnInfo.PropertyName].Type == ReSetValueBySqlExpListModelType.List)
                 {
-                    return columnInfo.DbColumnName+this.ReSetValueBySqlExpList[columnInfo.PropertyName].Sql+name;
+                    return Builder.GetTranslationColumnName(columnInfo.DbColumnName)+this.ReSetValueBySqlExpList[columnInfo.PropertyName].Sql+name;
                 }
                 else
                 {
