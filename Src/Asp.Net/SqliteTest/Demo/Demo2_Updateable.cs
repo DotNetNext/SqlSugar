@@ -65,6 +65,16 @@ namespace OrmTest
              .PublicSetColumns(it => it.Price, it => it.Price + 1)
              .ExecuteCommand();
 
+            var list = db.Queryable<Order>().OrderBy(it => it.Id).Take(2).ToList();
+            if (list.Count >= 2)
+            {
+                list[0].Price = 10;
+                list[1].Price = 2;
+                var result69 =
+                db.Updateable(list)
+                .PublicSetColumns(it => it.Price, "+")
+                .ExecuteCommand();
+            }
 
             /*** 2.by expression ***/
 
