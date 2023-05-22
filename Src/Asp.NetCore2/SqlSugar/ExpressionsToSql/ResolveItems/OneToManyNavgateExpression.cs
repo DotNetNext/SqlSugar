@@ -72,7 +72,7 @@ namespace SqlSugar
                     var sqlbuilder = this.context.Queryable<object>().SqlBuilder;
                     var sqlObj = sqlbuilder.ConditionalModelToSql(value, 0);
                     var sql = sqlObj.Key;
-                    sqlbuilder.RepairReplicationParameters(ref sql, sqlObj.Value,100);
+                   UtilMethods.RepairReplicationParameters(ref sql, sqlObj.Value,0,"_A_");
                     methodCallExpressionResolve.Context.Parameters.AddRange(sqlObj.Value);
                     return sql;
                 }
