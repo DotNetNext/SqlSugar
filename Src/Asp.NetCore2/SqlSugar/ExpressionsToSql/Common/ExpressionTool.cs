@@ -384,6 +384,10 @@ namespace SqlSugar
                 {
                     return (expression as ConstantExpression).Value;
                 }
+                else if (expression is MethodCallExpression) 
+                {
+                    return LambdaExpression.Lambda(expression).Compile().DynamicInvoke();
+                }
                 else
                 {
                     return GetMemberValue((expression as MemberExpression).Member, expression);
