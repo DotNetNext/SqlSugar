@@ -798,7 +798,9 @@ namespace SqlSugar
                             this.Context.Parameters.RemoveAll(it => model.Args[1].MemberName.ObjToString().Contains(it.ParameterName));
                             List<IConditionalModel> conditionalModels = (List<IConditionalModel>)model.Args[1].MemberValue;
                             var sqlObj = this.Context.SugarContext.Context.Queryable<object>().SqlBuilder.ConditionalModelToSql(conditionalModels, 0);
-                            model.Args[1].MemberName = sqlObj.Key;
+                            var sql = sqlObj.Key;
+                            UtilMethods.RepairReplicationParameters(ref sql, sqlObj.Value, 0, "_" + this.Context.ParameterIndex + "_B");
+                            model.Args[1].MemberName = sql;
                             if (sqlObj.Value != null)
                             {
                                 this.Context.Parameters.AddRange(sqlObj.Value);
