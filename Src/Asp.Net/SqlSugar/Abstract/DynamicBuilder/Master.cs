@@ -54,7 +54,7 @@ namespace SqlSugar
                 if (propertyInfo != null)
                 {
                     // 如果找到了该属性，则将其值设置为字典中对应的值
-                    if (pair.Value == null)
+                    if (pair.Value == null||UtilMethods.GetUnderType( propertyInfo.PropertyType)==UtilConstants.GuidType)
                     {
                         propertyInfo.SetValue(obj, UtilMethods.ChangeType2(pair.Value, propertyInfo.PropertyType));
                     }
