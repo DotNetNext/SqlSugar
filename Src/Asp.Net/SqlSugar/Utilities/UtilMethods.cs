@@ -709,28 +709,31 @@ namespace SqlSugar
             var methodInfo = callExpresion.Method;
             foreach (var item in datas)
             {
-                if (callExpresion.Arguments.Count == 0)
+                if (item != null)
                 {
-                    methodInfo.Invoke(item, null);
-                }
-                else
-                {
-                    List<object> methodParameters = new List<object>();
-                    foreach (var callItem in callExpresion.Arguments)
+                    if (callExpresion.Arguments.Count == 0)
                     {
-                        var parameter = callItem.GetType().GetProperties().FirstOrDefault(it => it.Name == "Value");
-                        if (parameter == null)
-                        {
-                            var value = LambdaExpression.Lambda(callItem).Compile().DynamicInvoke();
-                            methodParameters.Add(value);
-                        }
-                        else
-                        {
-                            var value = parameter.GetValue(callItem, null);
-                            methodParameters.Add(value);
-                        }
+                        methodInfo.Invoke(item, null);
                     }
-                    methodInfo.Invoke(item, methodParameters.ToArray());
+                    else
+                    {
+                        List<object> methodParameters = new List<object>();
+                        foreach (var callItem in callExpresion.Arguments)
+                        {
+                            var parameter = callItem.GetType().GetProperties().FirstOrDefault(it => it.Name == "Value");
+                            if (parameter == null)
+                            {
+                                var value = LambdaExpression.Lambda(callItem).Compile().DynamicInvoke();
+                                methodParameters.Add(value);
+                            }
+                            else
+                            {
+                                var value = parameter.GetValue(callItem, null);
+                                methodParameters.Add(value);
+                            }
+                        }
+                        methodInfo.Invoke(item, methodParameters.ToArray());
+                    }
                 }
             }
         }
