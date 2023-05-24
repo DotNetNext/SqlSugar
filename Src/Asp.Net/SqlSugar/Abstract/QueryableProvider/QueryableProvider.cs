@@ -1138,6 +1138,16 @@ namespace SqlSugar
             {
                 return this.Select<TResult>(expression);
             }
+           if (sql.StartsWith("*,")) 
+           {
+                var columns = this.Context.EntityMaintenance.GetEntityInfo<T>()
+                         .Columns.Where(it => typeof(TResult).GetProperties().Any(s => s.Name.EqualCase(it.PropertyName))).Where(it => it.IsIgnore == false).ToList();
+                if (columns.Any())
+                {
+                    sql = string.Join(",", columns.Select(it => $"{SqlBuilder.GetTranslationColumnName(it.DbColumnName)} AS  {SqlBuilder.GetTranslationColumnName(it.PropertyName)} "))
+                         + "," + sql.TrimStart('*').TrimStart(',');
+                }
+            }
             if (this.QueryBuilder.TableShortName.IsNullOrEmpty()) 
             {
                 this.QueryBuilder.TableShortName = clone.QueryBuilder.TableShortName;
