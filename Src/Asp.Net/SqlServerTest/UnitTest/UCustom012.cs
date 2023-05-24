@@ -54,6 +54,14 @@ namespace OrmTest
             db.Insertable(new BookA() { BookId = 5, Names = "js", studenId = 4 }).ExecuteCommand();
             db.Insertable(new BookA() { BookId = 6, Names = "北大jack", studenId = 1 }).ExecuteCommand();
 
+            var list1 = db.Queryable<StudentA>()
+                .Includes(it=>it.Books)
+                .Select(it => new StudentADTO() {  Books = it.Books }, true).ToList();
+
+            if (list1.First().Books.Count() == 0 || list1.First().StudentId == 0) 
+            {
+                throw new Exception("unit error");
+            }
             var list2 = db.Queryable<StudentA>()
            .Includes(x => x.SchoolA, x => x.RoomList)//2个参数就是 then Include 
            .Includes(x => x.SchoolA, x => x.TeacherList)//2个参数就是 then Include 
@@ -504,6 +512,13 @@ namespace OrmTest
             public int studenId { get; set; }
         }
 
+    }
+
+    public class StudentADTO
+    {
+       public int StudentId { get; set; }
+
+        public List<UCustom012.BookA> Books { get; set; }
     }
 
     internal class DTO
