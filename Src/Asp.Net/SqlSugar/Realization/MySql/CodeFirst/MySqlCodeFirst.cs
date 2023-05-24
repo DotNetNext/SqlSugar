@@ -115,6 +115,10 @@ namespace SqlSugar
                 else
                 {
                     result.DataType = this.Context.Ado.DbBind.GetDbTypeName(name);
+                    if (name == "Guid" && result.DataType == "varchar"&&result.Length<=1) 
+                    {
+                        result.Length = 36;
+                    }
                 }
             }
         }
