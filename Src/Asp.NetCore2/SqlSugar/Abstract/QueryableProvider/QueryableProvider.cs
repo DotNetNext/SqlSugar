@@ -1327,6 +1327,11 @@ namespace SqlSugar
             else
             {
                 var unionall = this.Context._UnionAll(tableQueryables.ToArray());
+                unionall.QueryBuilder.Includes = this.QueryBuilder.Includes;
+                if (unionall.QueryBuilder.Includes?.Any()==true) 
+                {
+                    unionall.QueryBuilder.NoCheckInclude = true;
+                }
                 return unionall;
             }
             //var values= unionall.QueryBuilder.GetSelectValue;
