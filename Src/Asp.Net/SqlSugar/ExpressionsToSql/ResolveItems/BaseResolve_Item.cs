@@ -19,6 +19,11 @@ namespace SqlSugar
             {
                 parameter.Context.Result.Append(this.Context.GetAsString2(asName, parameter.CommonTempData.ObjToString()));
             }
+            else if (parameter.CommonTempData?.Equals(CommonTempDataType.Append) == true) 
+            {
+                parameter.Context.Result.TrimEnd();
+                parameter.Context.Result.Append(" AS " + this.Context.GetTranslationColumnName(asName));
+            }
             else
             {
                 parameter.Context.Result.Append(this.Context.GetAsString(asName, parameter.CommonTempData.ObjToString()));
