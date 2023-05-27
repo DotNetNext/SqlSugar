@@ -149,7 +149,16 @@ namespace SqlSugar
             var result = "";
             if (name.ObjToString().Contains("."))
             {
-                result= name.Replace(".", "_");
+                if (this.context!= null)
+                {
+                    var sqlBuilder = this.context.Queryable<object>().SqlBuilder;
+                    result = sqlBuilder.SqlTranslationLeft + name.Replace(".", "_") + sqlBuilder.SqlTranslationRight;
+                    return result;
+                }
+                else 
+                {
+                    result = name.Replace(".", "_");
+                }
             }
             else
             {
