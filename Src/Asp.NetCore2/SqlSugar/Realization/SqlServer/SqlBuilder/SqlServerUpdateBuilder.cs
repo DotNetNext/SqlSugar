@@ -82,7 +82,7 @@ namespace SqlSugar
                     var dbColumnName = item.Value.DbColumnName;
                     if (item.Value.Type==ReSetValueBySqlExpListModelType.List)
                     { 
-                        result = result.Replace($"T.{dbColumnName}", $" T.{dbColumnName}{item.Value.Sql}S.{dbColumnName}");
+                        result = result.Replace($"T.{dbColumnName}", $" S.{dbColumnName}{item.Value.Sql}T.{dbColumnName}");
                     }
                     else
                     {
