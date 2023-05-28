@@ -1009,6 +1009,7 @@ namespace SqlSugar
         }
         public IStorageable<T> Storageable<T>(List<T> dataList) where T : class, new()
         {
+            dataList = dataList.Where(it => it != null).ToList();
             this.InitMappingInfo<T>();
             var sqlBuilder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
             var result= new Storageable<T>(dataList,this);
