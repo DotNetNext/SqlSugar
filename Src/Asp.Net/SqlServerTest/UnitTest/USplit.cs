@@ -99,6 +99,7 @@ namespace OrmTest
         public static void SplitTest2()
         {
             var db = Db;
+            db.CodeFirst.SplitTables().InitTables<WordTestTable2>();
             db.CodeFirst.InitTables<WordTestTable2>();
             //使用自定义分表
          //   db.CurrentConnectionConfig.ConfigureExternalServices.SplitTableService = new WordSplitService();
