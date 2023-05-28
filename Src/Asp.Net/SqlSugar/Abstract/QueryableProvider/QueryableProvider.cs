@@ -1262,11 +1262,13 @@ namespace SqlSugar
         }
         public ISugarQueryable<T> SplitTable() 
         {
+            UtilMethods.StartCustomSplitTable(this.Context, typeof(T));
             //all table
             return this.SplitTable(tag => tag);
         }
         public ISugarQueryable<T> SplitTable(DateTime beginTime, DateTime endTime) 
         {
+            UtilMethods.StartCustomSplitTable(this.Context, typeof(T));
             var splitColumn = this.EntityInfo.Columns.FirstOrDefault(it => it.PropertyInfo.GetCustomAttribute<SplitFieldAttribute>() != null);
             Check.ExceptionEasy(splitColumn==null,"[SplitFieldAttribute] need to be added to the table field", "需要在分表字段加上属性[SplitFieldAttribute]");
             var columnName = this.SqlBuilder.GetTranslationColumnName(splitColumn.DbColumnName);
@@ -1307,6 +1309,7 @@ namespace SqlSugar
         }
         public ISugarQueryable<T> SplitTable(Func<List<SplitTableInfo>, IEnumerable<SplitTableInfo>> getTableNamesFunc) 
         {
+            UtilMethods.StartCustomSplitTable(this.Context, typeof(T));
             SplitTableContext helper = new SplitTableContext(Context)
             {
                 EntityInfo = this.EntityInfo
