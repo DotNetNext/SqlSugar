@@ -19,7 +19,15 @@ namespace SqlSugar
     {
         internal static void EndCustomSplitTable(ISqlSugarClient context,Type entityType)
         {
+            if (context == null || entityType == null) 
+            {
+                return;
+            }
             var splitTableAttribute = entityType.GetCustomAttribute<SplitTableAttribute>();
+            if (splitTableAttribute == null) 
+            {
+                return;
+            }
             if (splitTableAttribute.CustomSplitTableService != null)
             {
                 context.CurrentConnectionConfig.ConfigureExternalServices.SplitTableService = null;
@@ -28,6 +36,15 @@ namespace SqlSugar
 
         internal static void StartCustomSplitTable(ISqlSugarClient context, Type entityType)
         {
+            if (context == null || entityType == null)
+            {
+                return;
+            }
+            var splitTableAttribute = entityType.GetCustomAttribute<SplitTableAttribute>();
+            if (splitTableAttribute == null)
+            {
+                return;
+            }
             var splitTableAttribute = entityType.GetCustomAttribute<SplitTableAttribute>();
             if (splitTableAttribute.CustomSplitTableService != null)
             {
