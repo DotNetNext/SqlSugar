@@ -45,7 +45,6 @@ namespace SqlSugar
             {
                 return;
             }
-            var splitTableAttribute = entityType.GetCustomAttribute<SplitTableAttribute>();
             if (splitTableAttribute.CustomSplitTableService != null)
             {
                 context.CurrentConnectionConfig.ConfigureExternalServices.SplitTableService
