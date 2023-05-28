@@ -48,7 +48,14 @@ namespace SqlSugar
         private void ResloveBoolMethod(ExpressionParameter parameter, Expression item, string asName)
         {
             this.Expression = item;
-            this.Start();
+            if (ExpressionTool.GetMethodName(item) == "Any")
+            {
+                parameter.CommonTempData = GetNewExpressionValue(item);
+            }
+            else
+            {
+                this.Start();
+            }
             var sql = this.Context.DbMehtods.IIF(new MethodCallExpressionModel()
             {
                 Args = new List<MethodCallExpressionArgs>() {
