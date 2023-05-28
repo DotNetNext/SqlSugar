@@ -1599,6 +1599,7 @@ namespace SqlSugar
         #region Split table
         public SplitTableContext SplitHelper<T>() where T : class, new()
         {
+            UtilMethods.StartCustomSplitTable(this, typeof(T));
             var result = new SplitTableContext(this.Context)
             {
                 EntityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>()
@@ -1607,6 +1608,7 @@ namespace SqlSugar
         }
         public SplitTableContext SplitHelper(Type entityType)  
         {
+            UtilMethods.StartCustomSplitTable(this,entityType);
             var result = new SplitTableContext(this.Context)
             {
                 EntityInfo = this.Context.EntityMaintenance.GetEntityInfo(entityType)
@@ -1615,6 +1617,7 @@ namespace SqlSugar
         }
         public SplitTableContextResult<T> SplitHelper<T>(T data) where T : class, new()
         {
+            UtilMethods.StartCustomSplitTable(this, typeof(T));
             var result = new SplitTableContext(this.Context)
             {
                 EntityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>()
@@ -1627,6 +1630,7 @@ namespace SqlSugar
         }
         public SplitTableContextResult<T> SplitHelper<T>(List<T> data) where T : class, new()
         {
+            UtilMethods.StartCustomSplitTable(this, typeof(T));
             var result = new SplitTableContext(this.Context)
             {
                 EntityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>()

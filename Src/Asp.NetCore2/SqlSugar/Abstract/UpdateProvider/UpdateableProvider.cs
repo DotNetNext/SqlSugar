@@ -221,6 +221,7 @@ namespace SqlSugar
         }
         public SplitTableUpdateProvider<T> SplitTable(Func<List<SplitTableInfo>, IEnumerable<SplitTableInfo>> getTableNamesFunc)
         {
+            UtilMethods.StartCustomSplitTable(this.Context, typeof(T));
             this.Context.MappingTables.Add(this.EntityInfo.EntityName, this.EntityInfo.DbTableName);
             SplitTableUpdateProvider<T> result = new SplitTableUpdateProvider<T>();
             result.Context = this.Context;
@@ -235,6 +236,7 @@ namespace SqlSugar
         }
         public SplitTableUpdateByObjectProvider<T> SplitTable()
         {
+            UtilMethods.StartCustomSplitTable(this.Context, typeof(T));
             Check.ExceptionEasy(UpdateParameterIsNull, "SplitTable() not supported db.Updateable<T>(),use db.Updateable(list)", ".SplitTable()不支持 db.Updateable<T>()方式更新,请使用 db.Updateable(list) 对象方式更新, 或者使用 .SplitTable(+1)重载");
             SplitTableUpdateByObjectProvider<T> result = new SplitTableUpdateByObjectProvider<T>();
             result.Context = this.Context;
