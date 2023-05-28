@@ -42,7 +42,7 @@ namespace SqlSugar
             }
             else
             {
-                var type = value.GetType();
+                var type =UtilMethods.GetUnderType(value.GetType());
                 if (type == UtilConstants.DateType||columnInfo.IsArray||columnInfo.IsJson)
                 {
                     var parameterName = this.Builder.SqlParameterKeyWord + name + i;
@@ -57,6 +57,10 @@ namespace SqlSugar
                     }
                     this.Parameters.Add(paramter);
                     return parameterName;
+                }
+                else if (type == UtilConstants.DateTimeOffsetType)
+                {
+                    return FormatDateTimeOffset(value);
                 }
                 else if (type == UtilConstants.ByteArrayType)
                 {
@@ -236,6 +240,10 @@ namespace SqlSugar
             var tableName = formString + "\r\n ";
             columnsString = columnsString.Replace(Builder.GetTranslationColumnName(this.ShortName)+".","")+joinString; 
             return string.Format(SqlTemplate, tableName, columnsString, whereString);
+        }
+        public override string FormatDateTimeOffset(object value)
+        {
+            return "'" + ((DateTimeOffset)value).ToString("o") + "'";
         }
     }
 }
