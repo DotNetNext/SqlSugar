@@ -350,6 +350,7 @@ namespace SqlSugar
         }
         public SplitTableDeleteProvider<T> SplitTable(Func<List<SplitTableInfo>, IEnumerable<SplitTableInfo>> getTableNamesFunc) 
         {
+            UtilMethods.StartCustomSplitTable(this.Context, typeof(T));
             this.Context.MappingTables.Add(this.EntityInfo.EntityName, this.EntityInfo.DbTableName);
             SplitTableDeleteProvider<T> result = new SplitTableDeleteProvider<T>();
             result.Context = this.Context;
@@ -360,11 +361,11 @@ namespace SqlSugar
             var tables = getTableNamesFunc(helper.GetTables());
             result.Tables = tables;
             result.deleteobj = this;
-            UtilMethods.StartCustomSplitTable(this.Context, typeof(T));
             return result;
         }
         public SplitTableDeleteByObjectProvider<T> SplitTable()
         {
+            UtilMethods.StartCustomSplitTable(this.Context, typeof(T));
             SplitTableDeleteByObjectProvider<T> result = new SplitTableDeleteByObjectProvider<T>();
             result.Context = this.Context;
             Check.ExceptionEasy(this.DeleteObjects == null, "SplitTable() +0  only List<T> can be deleted", "SplitTable()无参数重载只支持根据实体集合删除");
@@ -374,7 +375,6 @@ namespace SqlSugar
                 EntityInfo = this.EntityInfo
             };
             result.deleteobj = this;
-            UtilMethods.StartCustomSplitTable(this.Context, typeof(T));
             return result;
         }
         public LogicDeleteProvider<T> IsLogic() 
