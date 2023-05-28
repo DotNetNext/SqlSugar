@@ -21,7 +21,9 @@ namespace SqlSugar
             var isSplitEntity = type.GetCustomAttribute<SplitTableAttribute>() != null;
             if (isSplitEntity)
             {
+                UtilMethods.StartCustomSplitTable(this.Context, type);
                 _InitTables(type);
+                UtilMethods.EndCustomSplitTable(this.Context, type);
             }
             else 
             {
