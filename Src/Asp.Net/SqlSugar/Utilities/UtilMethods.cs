@@ -17,6 +17,24 @@ namespace SqlSugar
 {
     public class UtilMethods
     {
+        internal static void EndCustomSplitTable(ISqlSugarClient context,Type entityType)
+        {
+            var splitTableAttribute = entityType.GetCustomAttribute<SplitTableAttribute>();
+            if (splitTableAttribute.CustomSplitTableService != null)
+            {
+                context.CurrentConnectionConfig.ConfigureExternalServices.SplitTableService = null;
+            }
+        }
+
+        internal static void StartCustomSplitTable(ISqlSugarClient context, Type entityType)
+        {
+            var splitTableAttribute = entityType.GetCustomAttribute<SplitTableAttribute>();
+            if (splitTableAttribute.CustomSplitTableService != null)
+            {
+                context.CurrentConnectionConfig.ConfigureExternalServices.SplitTableService
+                    = (ISplitTableService)Activator.CreateInstance(splitTableAttribute.CustomSplitTableService);
+            }
+        }
         public static void ConvertParameter(SugarParameter p, ISqlBuilder builder)
         {
             if (!p.ParameterName.StartsWith(builder.SqlParameterKeyWord))

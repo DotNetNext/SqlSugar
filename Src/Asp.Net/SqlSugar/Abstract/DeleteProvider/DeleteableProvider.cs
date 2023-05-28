@@ -360,6 +360,7 @@ namespace SqlSugar
             var tables = getTableNamesFunc(helper.GetTables());
             result.Tables = tables;
             result.deleteobj = this;
+            UtilMethods.StartCustomSplitTable(this.Context, typeof(T));
             return result;
         }
         public SplitTableDeleteByObjectProvider<T> SplitTable()
@@ -373,6 +374,7 @@ namespace SqlSugar
                 EntityInfo = this.EntityInfo
             };
             result.deleteobj = this;
+            UtilMethods.StartCustomSplitTable(this.Context, typeof(T));
             return result;
         }
         public LogicDeleteProvider<T> IsLogic() 

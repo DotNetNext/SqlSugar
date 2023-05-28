@@ -665,6 +665,7 @@ namespace SqlSugar
         }
         public SplitInsertable<T> SplitTable(SplitType splitType)
         {
+            UtilMethods.StartCustomSplitTable(this.Context, typeof(T));
             SplitTableContext helper = new SplitTableContext(Context)
             {
                 EntityInfo = this.EntityInfo
@@ -688,6 +689,7 @@ namespace SqlSugar
 
         public SplitInsertable<T> SplitTable()
         {
+            UtilMethods.StartCustomSplitTable(this.Context, typeof(T));
             var splitTableAttribute = typeof(T).GetCustomAttribute<SplitTableAttribute>();
             if (splitTableAttribute != null)
             {

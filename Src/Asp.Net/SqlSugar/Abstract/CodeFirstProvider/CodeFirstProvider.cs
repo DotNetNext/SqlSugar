@@ -54,8 +54,10 @@ namespace SqlSugar
                 var mappingInfo=this.Context.MappingTables.FirstOrDefault(it => it.EntityName == entityType.Name);
                 if (mappingInfo == null) 
                 {
+                    UtilMethods.StartCustomSplitTable(this.Context,entityType);
                     this.Context.CodeFirst.SplitTables().InitTables(entityType);
                     this.Context.MappingTables.RemoveAll(it=>it.EntityName==entityType.Name);
+                    UtilMethods.EndCustomSplitTable(this.Context, entityType);
                     return;
                 }
             }
