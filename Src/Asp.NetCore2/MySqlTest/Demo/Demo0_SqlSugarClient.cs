@@ -70,8 +70,8 @@ namespace OrmTest
             //If no exist create datebase 
             db.DbMaintenance.CreateDatabase();
 
-            //Use db query
-            var dt = db.Ado.GetDataTable("select 1");
+            //Use sql
+            var dt = db.Ado.ExecuteCommand("SET GLOBAL local_infile=1");
 
             //Create tables
             db.CodeFirst.InitTables(typeof(OrderItem),typeof(Order));
