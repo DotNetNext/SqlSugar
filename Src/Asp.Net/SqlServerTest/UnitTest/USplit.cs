@@ -92,6 +92,39 @@ namespace OrmTest
             var listall1 = db.Queryable<WordTestTable>().Where(it => it.Name == "all").SplitTable(tas => tas.InTableNames(tableName2)).ToList();
             var listall = db.Queryable<WordTestTable>().Where(it => it.Name == "all").SplitTable(tas => tas.ContainsTableNames("_FirstA")).ToList();
          
+
+        }
+
+
+        public static void SplitTest2()
+        {
+            var db = Db;
+            db.CodeFirst.InitTables<WordTestTable2>();
+            //使用自定义分表
+         //   db.CurrentConnectionConfig.ConfigureExternalServices.SplitTableService = new WordSplitService();
+            db.Insertable(new WordTestTable2()
+            {
+                CreateTime = DateTime.Now,
+                Name = "BC"
+            }).SplitTable().ExecuteReturnSnowflakeId();
+            db.Insertable(new WordTestTable2()
+            {
+                CreateTime = DateTime.Now,
+                Name = "AC"
+            }).SplitTable().ExecuteReturnSnowflakeId();
+            db.Insertable(new WordTestTable2()
+            {
+                CreateTime = DateTime.Now,
+                Name = "ZBZ"
+            }).SplitTable().ExecuteReturnSnowflakeId();
+
+            //只查A表
+            var tableName2 = db.SplitHelper(new WordTestTable2() { Name = "A" }).GetTableNames();
+            db.Updateable(new WordTestTable2() { Name="A" }).SplitTable(tas => tas.InTableNames("WordTestTable_FirstZ")).ExecuteCommand();
+            var listall1 = db.Queryable<WordTestTable2>().Where(it => it.Name == "all").SplitTable(tas => tas.InTableNames(tableName2)).ToList();
+            var listall = db.Queryable<WordTestTable2>().Where(it => it.Name == "all").SplitTable(tas => tas.ContainsTableNames("_FirstA")).ToList();
+
+
         }
     }
 
@@ -110,6 +143,24 @@ namespace OrmTest
         public string Name { get; set; }
 
    
+        public DateTime CreateTime { get; set; }
+
+    }
+
+
+    /// <summary>
+    /// 随便设置一个分类
+    /// </summary>
+    [SplitTable(SplitType._Custom01,typeof(WordSplitService))]
+    public class WordTestTable2
+    {
+        [SugarColumn(IsPrimaryKey = true)]
+        public long Id { get; set; }
+
+        [SplitField] //标识一下分表字段
+        public string Name { get; set; }
+
+
         public DateTime CreateTime { get; set; }
 
     }
