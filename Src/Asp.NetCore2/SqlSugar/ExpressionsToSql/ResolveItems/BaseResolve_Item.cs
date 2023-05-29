@@ -48,7 +48,7 @@ namespace SqlSugar
         private void ResloveBoolMethod(ExpressionParameter parameter, Expression item, string asName)
         {
             this.Expression = item;
-            if (ExpressionTool.GetMethodName(item) == "Any")
+            if (ExpressionTool.GetMethodName(item) == "Any"&&!ExpressionTool.GetTopLevelMethodCalls(item).Contains("Subqueryable"))
             {
                 parameter.CommonTempData = GetNewExpressionValue(item);
             }
