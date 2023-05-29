@@ -39,6 +39,10 @@ namespace SqlSugar
                 
 
             }
+            if (IsDistinct && oldTake == 1 && oldSkip == null) 
+            {
+                result = result.Replace(" TOP 1  DISTINCT", " TOP 1 ");
+            }
             if (result.IndexOf("-- No table") > 0) 
             {
                 return  "-- No table";
