@@ -219,6 +219,11 @@ namespace SqlSugar
                     sqlParameter.OracleDbType = OracleDbType.Clob;
                     sqlParameter.Value = parameter.Value;
                 }
+                if (parameter.IsNClob)
+                {
+                    sqlParameter.OracleDbType = OracleDbType.NClob;
+                    sqlParameter.Value = parameter.Value;
+                }
                 if (parameter.IsArray)
                 {
                     sqlParameter.OracleDbType = OracleDbType.Varchar2;
@@ -287,7 +292,7 @@ namespace SqlSugar
                 if (isVarchar && sqlParameter.DbType == System.Data.DbType.String)
                 {
                     sqlParameter.DbType = System.Data.DbType.AnsiString;
-                }
+                } 
                 ++index;
             }
             return result;
