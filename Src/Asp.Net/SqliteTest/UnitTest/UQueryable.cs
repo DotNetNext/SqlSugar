@@ -1,10 +1,12 @@
 ﻿using SqlSugar;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace OrmTest
 {
@@ -111,6 +113,14 @@ namespace OrmTest
                      .Where(s => s.OrderId == it.Id)
                      .Select(s => SqlFunc.IF(s.CreateTime <= SqlFunc.DateAdd(it.CreateTime, 15, DateType.Minute)).Return(1).End(0)) 
                 }).ToList();
+            Db.CodeFirst.InitTables<sign_rule, sign_info>();
+            var list9 = Db.Queryable<sign_rule>()
+              .Where(it => it.skey == "30-30")
+              .Select(item => new
+              {
+                  type = SqlFunc.Subqueryable<sign_info>().Where(s => s.sid == item.sid && s.mno == "123456789" && s.uno == "7d8b1d8752a7c3b3").Any()
+              })
+              .ToListAsync().GetAwaiter().GetResult();
         }
 
         public class MyConditional : ICustomConditionalFunc
@@ -371,6 +381,229 @@ namespace OrmTest
         public class UnitGuidTable
         {
             public Guid? Id { get; set; }
+        }
+        ///签到规则
+        ///</summary>
+        [SugarTable("sign_rule")]
+        public class sign_rule
+        {
+            public sign_rule()
+            {
+            }
+
+            /// <summary>
+            /// 描述 : 关键标识（可重复） 
+            /// 空值 : False
+            /// 默认 : 
+            /// </summary>
+            [Display(Name = "关键标识（可重复）")]
+            public string skey { get; set; }
+
+            /// <summary>
+            /// 描述 : 名称 
+            /// 空值 : True
+            /// 默认 : 
+            /// </summary>
+            [Display(Name = "名称")]
+            public string name { get; set; }
+
+            /// <summary>
+            /// 描述 : 前端显示校验使用 
+            /// 空值 : True
+            /// 默认 : 
+            /// </summary>
+            [Display(Name = "前端显示校验使用")]
+            public string check_json { get; set; }
+
+            /// <summary>
+            /// 描述 : 签到规则 
+            /// 空值 : True
+            /// 默认 : 
+            /// </summary>
+            [Display(Name = "签到规则")]
+            public string rule_json { get; set; }
+
+            /// <summary>
+            /// 描述 : 开始时间 
+            /// 空值 : True
+            /// 默认 : 
+            /// </summary>
+            [Display(Name = "开始时间")]
+            public DateTime? stime { get; set; }
+
+            /// <summary>
+            /// 描述 : 结束时间 
+            /// 空值 : True
+            /// 默认 : 
+            /// </summary>
+            [Display(Name = "结束时间")]
+            public DateTime? etime { get; set; }
+
+            /// <summary>
+            /// 描述 : 更新时间 
+            /// 空值 : True
+            /// 默认 : 
+            /// </summary>
+            [Display(Name = "更新时间")]
+            public DateTime? updatetime { get; set; }
+
+            /// <summary>
+            /// 描述 : 自增ID 
+            /// 空值 : False
+            /// 默认 : 
+            /// </summary>
+            [Display(Name = "自增ID")]
+            [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+            public int sid { get; set; }
+
+            /// <summary>
+            /// 描述 : 签到按钮图片 
+            /// 空值 : True
+            /// 默认 : 
+            /// </summary>
+            [Display(Name = "签到按钮图片")]
+            public string imgurl { get; set; }
+
+        }
+        ///<summary>
+        ///签到详情
+        ///</summary>
+        [SugarTable("sign_info")]
+        public class sign_info
+        {
+            public sign_info()
+            {
+            }
+
+            /// <summary>
+            /// 描述 :  
+            /// 空值 : False
+            /// 默认 : 
+            /// </summary>
+            [Display(Name = "")]
+            [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+            public int signid { get; set; }
+
+            /// <summary>
+            /// 描述 : 与user表uno对应 
+            /// 空值 : False
+            /// 默认 : 
+            /// </summary>
+            [Display(Name = "与user表uno对应")]
+            public string uno { get; set; }
+
+            /// <summary>
+            /// 描述 : 会议编号 
+            /// 空值 : False
+            /// 默认 : 
+            /// </summary>
+            [Display(Name = "会议编号")]
+            public string mno { get; set; }
+
+            /// <summary>
+            /// 描述 : 姓名 
+            /// 空值 : True
+            /// 默认 : 
+            /// </summary>
+            [Display(Name = "姓名")]
+            public string name { get; set; }
+
+            /// <summary>
+            /// 描述 : 电话 
+            /// 空值 : True
+            /// 默认 : 
+            /// </summary>
+            [Display(Name = "电话")]
+            public string phone { get; set; }
+
+            /// <summary>
+            /// 描述 : 性别 
+            /// 空值 : True
+            /// 默认 : 
+            /// </summary>
+            [Display(Name = "性别")]
+            public string sex { get; set; }
+
+            /// <summary>
+            /// 描述 : 生日 
+            /// 空值 : True
+            /// 默认 : 
+            /// </summary>
+            [Display(Name = "生日")]
+            public string birthday { get; set; }
+
+            /// <summary>
+            /// 描述 : 身份证 
+            /// 空值 : True
+            /// 默认 : 
+            /// </summary>
+            [Display(Name = "身份证")]
+            public string idcard { get; set; }
+
+            /// <summary>
+            /// 描述 : 学历 
+            /// 空值 : True
+            /// 默认 : 
+            /// </summary>
+            [Display(Name = "学历")]
+            public string education { get; set; }
+
+            /// <summary>
+            /// 描述 : 医院 
+            /// 空值 : True
+            /// 默认 : 
+            /// </summary>
+            [Display(Name = "医院")]
+            public string hospital { get; set; }
+
+            /// <summary>
+            /// 描述 : 医院所在省份城市 
+            /// 空值 : True
+            /// 默认 : 
+            /// </summary>
+            [Display(Name = "医院所在省份城市")]
+            public string province_city { get; set; }
+
+            /// <summary>
+            /// 描述 : 科室 
+            /// 空值 : True
+            /// 默认 : 
+            /// </summary>
+            [Display(Name = "科室")]
+            public string department { get; set; }
+
+            /// <summary>
+            /// 描述 : 职称 
+            /// 空值 : True
+            /// 默认 : 
+            /// </summary>
+            [Display(Name = "职称")]
+            public string title { get; set; }
+
+            /// <summary>
+            /// 描述 : 是否授予学分 
+            /// 空值 : True
+            /// 默认 : 
+            /// </summary>
+            [Display(Name = "是否授予学分")]
+            public string iscredit { get; set; }
+
+            /// <summary>
+            /// 描述 : 最后更新时间 
+            /// 空值 : True
+            /// 默认 : 
+            /// </summary>
+            [Display(Name = "最后更新时间")]
+            public DateTime? updatetime { get; set; }
+
+            /// <summary>
+            /// 描述 : 规则ID（后台获取） 
+            /// 空值 : False
+            /// 默认 : 
+            /// </summary>
+            [Display(Name = "规则ID（后台获取）")]
+            public int sid { get; set; }
+
         }
     }
 }
