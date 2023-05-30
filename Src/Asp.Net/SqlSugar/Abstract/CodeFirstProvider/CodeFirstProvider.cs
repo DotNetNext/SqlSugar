@@ -202,6 +202,11 @@ namespace SqlSugar
                 var newTableInfo = tables.FirstOrDefault(it => it.Name.EqualCase(oldTableName));
                 var oldTable = db.DbMaintenance.GetColumnInfosByTableName(oldTableName, false);
                 var tempTable = db.DbMaintenance.GetColumnInfosByTableName(tempTableName, false);
+                if (oldTableInfo == null)
+                {
+                    oldTableInfo =new DbTableInfo() { Name = "还未创建:" + oldTableName };
+                    newTableInfo = new DbTableInfo() { Name = "还未创建:" + oldTableName };
+                }
                 result.tableInfos.Add(new DiffTableInfo()
                 {
                      OldTableInfo= oldTableInfo,
