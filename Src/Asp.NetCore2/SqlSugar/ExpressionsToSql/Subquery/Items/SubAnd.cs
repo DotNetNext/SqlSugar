@@ -43,7 +43,8 @@ namespace SqlSugar
             var argExp = exp.Arguments[0];
             var copyContext = this.Context;
 
-            if (this.Context.JoinIndex > 0) 
+            var pars = ExpressionTool.GetParameters(expression).Distinct();
+            if (this.Context.JoinIndex > 0|| pars.Count()>1) 
             {
                 copyContext = this.Context.GetCopyContextWithMapping();
                 copyContext.IsSingle = false;
@@ -51,7 +52,7 @@ namespace SqlSugar
 
             var result = "AND " + SubTools.GetMethodValue(copyContext, argExp, ResolveExpressType.WhereMultiple);
             
-            if (this.Context.JoinIndex > 0)
+            if (this.Context.JoinIndex > 0 || pars.Count() > 1)
             {
                 this.Context.Parameters.AddRange(copyContext.Parameters);
                 this.Context.Index = copyContext.Index;
