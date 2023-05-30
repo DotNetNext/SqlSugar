@@ -331,6 +331,27 @@ namespace OrmTest
             var x2 = 0;
             var x3 = 0;
             db.Queryable<Order>().Where(it => SqlFunc.IF(true).Return(-x1).ElseIF(it.Id==1).Return(-x2).End(-x3) == 1).ToArray();
+
+            var test52 = db.Queryable<Order>()
+            .Select(m => new
+            {
+                ChildCount = SqlFunc.Subqueryable<Custom>()
+                            .Where((x) => x.Name.Substring(0, m.Name.Length + 1) == m.Name + "-")
+                            .Count(),
+            })
+            .ToSqlString();
+            var test53 = db.Queryable<Order>()
+                .Select(m => new
+                {
+                    ChildCount = SqlFunc.Subqueryable<Custom>()
+                                .Where((x) => x.Name.Substring(0, m.Name.Length + 1) == m.Name + "-")
+                                .Count(),
+                })
+                .ToList();
+            if (!test52.Contains("[m].[Name]")) 
+            {
+                throw new Exception("unit error");
+            }
         }
         public class UnitPeople
         {
