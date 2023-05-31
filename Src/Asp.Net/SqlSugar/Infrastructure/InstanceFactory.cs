@@ -280,6 +280,10 @@ namespace SqlSugar
                             currentConnectionConfig.DbType != DbType.Access &&
                             currentConnectionConfig.DbType != DbType.QuestDB &&
                             currentConnectionConfig.DbType != DbType.MySql &&
+                            currentConnectionConfig.DbType != DbType.Oracle &&
+                            currentConnectionConfig.DbType != DbType.PostgreSQL &&
+                            currentConnectionConfig.DbType != DbType.ClickHouse &&
+                            currentConnectionConfig.DbType != DbType.GBase &&
                             GetCustomTypeByClass("SqlSugar." + currentConnectionConfig.DbType + "." + currentConnectionConfig.DbType + "Provider") != null;
         }
 
