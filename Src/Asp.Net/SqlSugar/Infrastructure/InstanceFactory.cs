@@ -284,6 +284,7 @@ namespace SqlSugar
                             currentConnectionConfig.DbType != DbType.PostgreSQL &&
                             currentConnectionConfig.DbType != DbType.ClickHouse &&
                             currentConnectionConfig.DbType != DbType.GBase &&
+                            currentConnectionConfig.DbType != DbType.Sqlite &&
                             GetCustomTypeByClass("SqlSugar." + currentConnectionConfig.DbType + "." + currentConnectionConfig.DbType + "Provider") != null;
         }
 
