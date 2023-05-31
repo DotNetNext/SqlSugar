@@ -36,7 +36,7 @@ namespace SqlSugar
         public List<string> UpdateColumns { get; set; }
         public List<JoinQueryInfo> JoinInfos { get; set; }
         public  string ShortName { get; set; }
-        internal Dictionary<string, ReSetValueBySqlExpListModel> ReSetValueBySqlExpList { get;  set; }
+        public Dictionary<string, ReSetValueBySqlExpListModel> ReSetValueBySqlExpList { get;  set; }
         public virtual string ReSetValueBySqlExpListType { get; set; }
         public virtual string SqlTemplate
         {

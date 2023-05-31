@@ -412,7 +412,7 @@ namespace SqlSugar
             }
             return N;
         }
-        internal bool IsVarchar()
+        public bool IsVarchar()
         {
             if (_Context.CurrentConnectionConfig.MoreSettings != null && _Context.CurrentConnectionConfig.MoreSettings.DisableNvarchar)
             {

@@ -30,6 +30,6 @@ namespace SqlSugar
         public string InsertSql { get;  set; }
         public bool UpdateServerTime { get; set; }
         public string UpdateSql { get; set; }
-        internal object SqlParameterDbType { get;  set; }
+        public object SqlParameterDbType { get;  set; }
     }
 }
