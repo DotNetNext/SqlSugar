@@ -62,7 +62,7 @@ namespace SqlSugar.HG
 						 pg_namespace n on n.oid = c.relnamespace and nspname='" + schema + @"'
                          inner join 
                          pg_tables z on z.tablename=c.relname
-                        where  relkind in('p', 'r') and relname not like 'pg_%' and relname not like 'sql_%' and schemaname='" + schema + "' order by relname";
+                        where  relkind in('p', 'r') and relname not like 'hg_%' and relname not like 'sql_%' and schemaname='" + schema + "' order by relname";
             }
         }
         protected override string GetViewInfoListSql
@@ -317,19 +317,21 @@ namespace SqlSugar.HG
                     FileHelper.CreateDirectory(databaseDirectory);
                 }
             }
-            var oldDatabaseName = this.Context.Ado.Connection.Database;
-            var connection = this.Context.CurrentConnectionConfig.ConnectionString;
-            connection = connection.Replace(oldDatabaseName, "postgres");
-            var newDb = new SqlSugarClient(new ConnectionConfig()
+            // var oldDatabaseName = this.Context.Ado.Connection.Database;
+            //var connection = this.Context.CurrentConnectionConfig.ConnectionString;
+            //connection = connection.Replace(oldDatabaseName, "");
+            if (this.Context.Ado.IsValidConnection()) 
             {
-                DbType = this.Context.CurrentConnectionConfig.DbType,
-                IsAutoCloseConnection = true,
-                ConnectionString = connection
-            });
+                return true;
+            }
+            var newDb = this.Context.CopyNew();
+            newDb.Ado.Connection.ChangeDatabase("highgo");
+            newDb.Open();
             if (!GetDataBaseList(newDb).Any(it => it.Equals(databaseName, StringComparison.CurrentCultureIgnoreCase)))
             {
                 newDb.Ado.ExecuteCommand(string.Format(CreateDataBaseSql, this.SqlBuilder.SqlTranslationLeft+databaseName+this.SqlBuilder.SqlTranslationRight, databaseDirectory));
             }
+            newDb.Close();
             return true;
         }
         public override bool AddRemark(EntityInfo entity)
