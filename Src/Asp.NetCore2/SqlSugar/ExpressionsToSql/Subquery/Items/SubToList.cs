@@ -139,7 +139,7 @@ namespace SqlSugar
             }
             var bodyExp=ExpressionTool.GetLambdaExpressionBody(selectExp);
             var newMemExp = (bodyExp as MemberInitExpression);
-            var parameters = (selectExp as LambdaExpression).Parameters;
+            var parameters = ExpressionTool.GetParameters(exp);
             InitType(exp);
             SetShortName(exp, null);
             Check.ExceptionEasy(newMemExp == null, $"Subquery ToList(exp,true) expression {exp.ToString()} can only be it=>new class(){{Id = it.id}}", $"子查询ToList(exp,true)表达式{exp.ToString()}只能是it=>new class(){{ id=it.Id}}");
