@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SqlSugar.HG
 {
-    public class HGInserttable<T> : InsertableProvider<T> where T : class, new()
+    public class HGInsertable<T> : InsertableProvider<T> where T : class, new()
     {
         public override int ExecuteReturnIdentity()
         {
