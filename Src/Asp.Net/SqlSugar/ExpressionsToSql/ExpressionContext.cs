@@ -154,6 +154,7 @@ namespace SqlSugar
             copyContext.TableEnumIsString = this.TableEnumIsString;
             copyContext.IsSingle = this.IsSingle;
             copyContext.RootExpression = this.RootExpression;
+            copyContext.SugarContext= this.SugarContext;
             return copyContext;
         }
         #endregion
