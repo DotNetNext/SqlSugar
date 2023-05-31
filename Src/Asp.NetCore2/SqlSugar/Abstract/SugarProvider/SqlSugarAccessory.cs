@@ -442,7 +442,7 @@ namespace SqlSugar
                     Check.ExceptionEasy("Use DbType.PostgreSQL , ConnectionString add No Reset On Close=true", "OpenGausso数据库请使用DbType.PostgreSQL 并且连接字符串加上 No Reset On Close=true");
                     break;
                 case DbType.HG:
-                    Check.ExceptionEasy("Use DbType.PostgreSQL", "瀚高数据库请使用DbType.PostgreSQL");
+                    InstanceFactory.CustomDllName = SugarCompatible.IsFramework ? throw new Exception("Only.NET CORE is supported") : "SqlSugar.HGCore";
                     break;
                 case DbType.Kdbndp:
                     DependencyManagement.TryKdbndb();
