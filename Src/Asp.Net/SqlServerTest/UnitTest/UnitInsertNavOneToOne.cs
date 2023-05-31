@@ -52,10 +52,21 @@ using System.Data;
       .Include(x => x.SysField)
       .Include(x => x.FormUpload)
       .ExecuteCommand();
-
+        db.Queryable<SysFormField>()
+            .Select(it => new xxx
+            {
+                id = 1,
+                NAME= it.SysField.FieldName+":"+it.FieldName.ToString()
+            }).ToList();
         Console.WriteLine("用例跑完");
        // Console.ReadKey();
     }
 
 
+}
+
+public class xxx
+{
+    public int id { get; set; }
+    public string NAME { get;   set; }
 }
