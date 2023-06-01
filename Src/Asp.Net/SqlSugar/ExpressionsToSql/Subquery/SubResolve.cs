@@ -46,23 +46,26 @@ namespace SqlSugar
                     if (expArgs != null && expArgs.Any())
                     {
                         var meExp = expArgs[0] as LambdaExpression;
-                        var selfParameterName = meExp.Parameters.First().Name;
-                        if ((meExp.Body is BinaryExpression))
+                        if (meExp != null)
                         {
-                            context.SingleTableNameSubqueryShortName = (((meExp.Body as BinaryExpression).Left as MemberExpression)?.Expression as ParameterExpression)?.Name;
-                        }
-                        if (ExpressionTool.GetMethodName(context.Expression).IsContainsIn("ToList")&& meExp.Parameters.Any(it=>it.Name==selfParameterName)) 
-                        {
-                            if (meExp.Body is BinaryExpression)
+                            var selfParameterName = meExp.Parameters.First().Name;
+                            if ((meExp.Body is BinaryExpression))
                             {
-                                context.SingleTableNameSubqueryShortName = (((meExp.Body as BinaryExpression).Right as MemberExpression)?.Expression as ParameterExpression)?.Name;
+                                context.SingleTableNameSubqueryShortName = (((meExp.Body as BinaryExpression).Left as MemberExpression)?.Expression as ParameterExpression)?.Name;
                             }
-                        }
-                        if (context.SingleTableNameSubqueryShortName == selfParameterName)
-                        {
-                            if (meExp.Body is BinaryExpression)
+                            if (ExpressionTool.GetMethodName(context.Expression).IsContainsIn("ToList") && meExp.Parameters.Any(it => it.Name == selfParameterName))
                             {
-                                context.SingleTableNameSubqueryShortName = (((meExp.Body as BinaryExpression).Right as MemberExpression)?.Expression as ParameterExpression)?.Name;
+                                if (meExp.Body is BinaryExpression)
+                                {
+                                    context.SingleTableNameSubqueryShortName = (((meExp.Body as BinaryExpression).Right as MemberExpression)?.Expression as ParameterExpression)?.Name;
+                                }
+                            }
+                            if (context.SingleTableNameSubqueryShortName == selfParameterName)
+                            {
+                                if (meExp.Body is BinaryExpression)
+                                {
+                                    context.SingleTableNameSubqueryShortName = (((meExp.Body as BinaryExpression).Right as MemberExpression)?.Expression as ParameterExpression)?.Name;
+                                }
                             }
                         }
                     }
