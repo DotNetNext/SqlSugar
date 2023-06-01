@@ -54,6 +54,13 @@ namespace OrmTest
                   }).Any()
               }).ToList();
             db.Queryable<Order>().Where(it => getByWhere.Any(s => s.Id == it.Id && s.Name == it.Name)).ToList();
+            var list = db.Queryable<Order>()
+                               .Where(it => it.Id == SqlFunc.Subqueryable<Custom>()
+                                                               .Where(z => z.Id == 28160)
+                                                               .WhereIF(b, z => z.Id == 1)
+                                                               .GroupBy(z => z.Id)
+                                                               .Select(z => z.Id)
+                                                               ).ToListAsync().GetAwaiter().GetResult();
             Console.WriteLine("#### Examples End ####");
         }
 
