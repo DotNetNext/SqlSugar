@@ -54,6 +54,7 @@ namespace OrmTest
                   }).Any()
               }).ToList();
             db.Queryable<Order>().Where(it => getByWhere.Any(s => s.Id == it.Id && s.Name == it.Name)).ToList();
+            var b = true;
             var list = db.Queryable<Order>()
                                .Where(it => it.Id == SqlFunc.Subqueryable<Custom>()
                                                                .Where(z => z.Id == 28160)
