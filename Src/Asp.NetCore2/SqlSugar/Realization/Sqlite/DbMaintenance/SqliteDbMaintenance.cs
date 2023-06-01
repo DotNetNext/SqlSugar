@@ -328,10 +328,11 @@ namespace SqlSugar
 
         private List<DbColumnInfo> GetColumnInfosByTableName(string tableName)
         {
-            var columns = GetColumnsByTableName2(tableName);
+            //var columns = GetColumnsByTableName2(tableName);
             string sql = "PRAGMA table_info(" +SqlBuilder.GetTranslationTableName(tableName) + ")";
             var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
             this.Context.Ado.IsEnableLogEvent = false;
+            var tableSript=this.Context.Ado.GetString($"SELECT sql FROM sqlite_master WHERE name='{tableName}' AND type='table'");
             using (DbDataReader dataReader = (SqliteDataReader)this.Context.Ado.GetDataReader(sql))
             {
                 this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
@@ -355,13 +356,13 @@ namespace SqlSugar
                         }
                         type = type.Split('(').First();
                     }
-                    bool isIdentity = columns.FirstOrDefault(it => it.DbColumnName.Equals(dataReader.GetString(1),StringComparison.CurrentCultureIgnoreCase)).IsIdentity;
+                    //bool isIdentity = columns.FirstOrDefault(it => it.DbColumnName.Equals(dataReader.GetString(1),StringComparison.CurrentCultureIgnoreCase)).IsIdentity;
                     DbColumnInfo column = new DbColumnInfo()
                     {
                         TableName = this.SqlBuilder.GetNoTranslationColumnName(tableName + ""),
                         DataType = type,
                         IsNullable = !dataReader.GetBoolean(3),
-                        IsIdentity = isIdentity,
+                        IsIdentity = tableSript.Contains("AUTOINCREMENT")&& dataReader.GetBoolean(5).ObjToBool(),
                         ColumnDescription = null,
                         DbColumnName = dataReader.GetString(1),
                         DefaultValue = dataReader.GetValue(4).ObjToString(),
