@@ -70,7 +70,17 @@ namespace OrmTest
             var list = query.ToList();
 
 
+            var query2 = db.Queryable<Demo_Comment>()
+                        .LeftJoin<Order>((u,p)=>true)
+                        .Where(u => u.ArticleId == 100)
+                         .Select(u => new SysCommentOutput
+                         {
+                             SysUser = SqlFunc.Subqueryable<Demo_User>().Where(user => user.Id == u.UserId).First<SysUserOutput>(),
+                             SysUsers = SqlFunc.Subqueryable<Demo_User>().Where(user => user.Id == u.UserId).ToList<SysUserOutput>()
+                         }, true);
 
+
+            var list22 = query2.ToList();
         }
 
         //评论表
