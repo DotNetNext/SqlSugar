@@ -792,6 +792,12 @@ namespace SqlSugar
                         return this.Context.DbMehtods.RowCount(model);
                     case "RowSum":
                         return this.Context.DbMehtods.RowSum(model);
+                    case "RowMax":
+                        return this.Context.DbMehtods.RowMax(model);
+                    case "RowMin":
+                        return this.Context.DbMehtods.RowMin(model);
+                    case "RowAvg":
+                        return this.Context.DbMehtods.RowAvg(model);
                     case "Exists":
                         if (model.Args.Count > 1)
                         {

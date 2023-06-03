@@ -28,6 +28,18 @@ namespace SqlSugar
         {
              return "SUM(" + model.Args[0].MemberName +") over()";
         }
+        public string RowAvg(MethodCallExpressionModel model)
+        {
+            return "AVG(" + model.Args[0].MemberName + ") over()";
+        }
+        public string RowMin(MethodCallExpressionModel model)
+        {
+            return "Min(" + model.Args[0].MemberName + ") over()";
+        }
+        public string RowMax(MethodCallExpressionModel model)
+        {
+            return "Max(" + model.Args[0].MemberName + ") over()";
+        }
         public virtual string IIF(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
