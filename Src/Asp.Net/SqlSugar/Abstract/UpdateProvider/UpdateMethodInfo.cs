@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.SqlServer.Server;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
@@ -28,7 +29,16 @@ namespace SqlSugar
             var result = inertable.GetType().GetMyMethod("ExecuteCommandAsync",0).Invoke(inertable, new object[] { });
             return await (Task<int>)result;
         }
-
+        public CommonMethodInfo IgnoreColumns(params string[] ignoreColumns)
+        {
+            var inertable = MethodInfo.Invoke(Context, new object[] { objectValue });
+            var newMethod = inertable.GetType().GetMyMethod("IgnoreColumns", 1,typeof(string[]));
+            var result = newMethod.Invoke(inertable, new object[] { ignoreColumns });
+            return new CommonMethodInfo()
+            {
+                Context = result
+            };
+        }
         public CommonMethodInfo SplitTable()
         {
             var inertable = MethodInfo.Invoke(Context, new object[] { objectValue });
