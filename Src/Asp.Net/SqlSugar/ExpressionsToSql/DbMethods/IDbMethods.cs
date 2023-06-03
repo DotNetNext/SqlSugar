@@ -91,6 +91,9 @@ namespace SqlSugar
         string RowNumber(MethodCallExpressionModel model);
         string RowCount(MethodCallExpressionModel model);
         string RowSum(MethodCallExpressionModel model);
+        string RowMin(MethodCallExpressionModel model);
+        string RowMax(MethodCallExpressionModel model);
+        string RowAvg(MethodCallExpressionModel model);
         string Exists(MethodCallExpressionModel model);
         string GetDateString(string dateValue,string format);
         string GetForXmlPath();
