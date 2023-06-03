@@ -91,6 +91,11 @@ namespace OrmTest
             object os = db.Queryable<Order>().Take(2).ToList();
             db.InsertableByObject(os).ExecuteCommand();
 
+
+            db.InsertableByObject(o).IgnoreColumns("CustomId").ExecuteCommand();
+            db.InsertableByObject(o).IgnoreColumns("CustomId").ExecuteCommandAsync().GetAwaiter().GetResult();
+            var id=db.InsertableByObject(o).IgnoreColumns("CustomId").ExecuteReturnIdentity();
+            var id2 = db.InsertableByObject(o).IgnoreColumns("CustomId").ExecuteReturnIdentityAsync().GetAwaiter().GetResult();
             db.CodeFirst.InitTables<City>();
             Console.WriteLine("#### Insertable End ####");
 
