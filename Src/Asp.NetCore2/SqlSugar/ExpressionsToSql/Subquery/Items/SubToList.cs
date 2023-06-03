@@ -141,10 +141,7 @@ namespace SqlSugar
             var newMemExp = (bodyExp as MemberInitExpression);
             var parameters = ExpressionTool.GetParameters(exp);
             InitType(exp);
-            if (parameters.Any())
-            {
-                this.Context.CurrentShortName = this.Context.GetTranslationColumnName(parameters.FirstOrDefault().Name);
-            }
+            SetShortName(exp, null);
             Check.ExceptionEasy(newMemExp == null, $"Subquery ToList(exp,true) expression {exp.ToString()} can only be it=>new class(){{Id = it.id}}", $"子查询ToList(exp,true)表达式{exp.ToString()}只能是it=>new class(){{ id=it.Id}}");
             var dic=ExpressionTool.GetMemberBindingItemList(newMemExp.Bindings);
             var db = this.Context.SugarContext.Context;
