@@ -1,1 +1,1 @@
-%~dp0nuget.exe pack %~dp0SqlSugar.GBaseCore.nuspec -OutputDirectory %~dp0
+%~dp0nuget.exe pack %~dp0SqlSugar.Nhgdb.nuspec -OutputDirectory %~dp0
