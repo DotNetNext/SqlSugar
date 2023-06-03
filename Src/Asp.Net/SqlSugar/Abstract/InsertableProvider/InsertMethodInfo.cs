@@ -11,8 +11,7 @@ namespace SqlSugar
     {
         internal SqlSugarProvider Context { get; set; }
         internal MethodInfo MethodInfo { get; set; }
-        internal object objectValue { get; set; }
-        internal string[] ignoreColumns { get; set; }
+        internal object objectValue { get; set; } 
 
         public int ExecuteCommand()
         {
