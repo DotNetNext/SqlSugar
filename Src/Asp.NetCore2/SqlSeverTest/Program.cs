@@ -12,7 +12,7 @@ namespace OrmTest
         /// <param name="args"></param>
         static void Main(string[] args)
         {
-            UnitSubToList.Init();
+             
             //Demo
             Demo0_SqlSugarClient.Init();
             Demo1_Queryable.Init();
