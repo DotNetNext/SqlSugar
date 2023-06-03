@@ -176,6 +176,7 @@ namespace OrmTest
             db.UpdateableByObject(o).ExecuteCommandAsync().GetAwaiter().GetResult();
             object os = db.Queryable<Order>().Take(2).ToList();
             db.UpdateableByObject(os).ExecuteCommand();
+            db.UpdateableByObject(os).IgnoreColumns("name","price").ExecuteCommand();
             Console.WriteLine("#### Updateable End ####");
         }
 
