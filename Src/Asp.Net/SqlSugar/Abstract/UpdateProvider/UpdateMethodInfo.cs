@@ -29,22 +29,22 @@ namespace SqlSugar
             var result = inertable.GetType().GetMyMethod("ExecuteCommandAsync",0).Invoke(inertable, new object[] { });
             return await (Task<int>)result;
         }
-        public CommonMethodInfo IgnoreColumns(params string[] ignoreColumns)
+        public UpdateCommonMethodInfo IgnoreColumns(params string[] ignoreColumns)
         {
             var inertable = MethodInfo.Invoke(Context, new object[] { objectValue });
             var newMethod = inertable.GetType().GetMyMethod("IgnoreColumns", 1,typeof(string[]));
             var result = newMethod.Invoke(inertable, new object[] { ignoreColumns });
-            return new CommonMethodInfo()
+            return new UpdateCommonMethodInfo()
             {
                 Context = result
             };
         }
-        public CommonMethodInfo SplitTable()
+        public UpdateCommonMethodInfo SplitTable()
         {
             var inertable = MethodInfo.Invoke(Context, new object[] { objectValue });
             var newMethod = inertable.GetType().GetMyMethod("SplitTable", 0);
             var result = newMethod.Invoke(inertable, new object[] { });
-            return new CommonMethodInfo()
+            return new UpdateCommonMethodInfo()
             {
                 Context = result
             };

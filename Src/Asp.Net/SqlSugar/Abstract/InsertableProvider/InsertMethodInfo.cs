@@ -54,12 +54,12 @@ namespace SqlSugar
             };
         }
 
-        public CommonMethodInfo SplitTable()
+        public SplitMethodInfo SplitTable()
         {
             var inertable = MethodInfo.Invoke(Context, new object[] { objectValue });
             var newMethod = inertable.GetType().GetMyMethod("SplitTable", 0);
             var result = newMethod.Invoke(inertable, new object[] { });
-            return new CommonMethodInfo()
+            return new SplitMethodInfo()
             {
                 Context = result 
             };
