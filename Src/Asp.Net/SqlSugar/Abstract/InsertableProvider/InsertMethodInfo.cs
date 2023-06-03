@@ -12,6 +12,7 @@ namespace SqlSugar
         internal SqlSugarProvider Context { get; set; }
         internal MethodInfo MethodInfo { get; set; }
         internal object objectValue { get; set; }
+        internal string[] ignoreColumns { get; set; }
 
         public int ExecuteCommand()
         {
@@ -41,6 +42,18 @@ namespace SqlSugar
             var result = inertable.GetType().GetMyMethod("ExecuteReturnIdentityAsync",0).Invoke(inertable, new object[] { });
             return await (Task<int>)result;
         }
+
+        public CommonMethodInfo IgnoreColumns(params string [] ignoreColumns)
+        {
+            var inertable = MethodInfo.Invoke(Context, new object[] { objectValue });
+            var newMethod = inertable.GetType().GetMyMethod("IgnoreColumns", 1, typeof(string[]));
+            var result = newMethod.Invoke(inertable, new object[] { ignoreColumns });
+            return new CommonMethodInfo()
+            {
+                Context = result
+            };
+        }
+
         public CommonMethodInfo SplitTable()
         {
             var inertable = MethodInfo.Invoke(Context, new object[] { objectValue });
