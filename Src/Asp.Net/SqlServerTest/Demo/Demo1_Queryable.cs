@@ -230,6 +230,15 @@ namespace OrmTest
 
                 ).ToList();
 
+            var ss = new string[] { "a", "b" };
+            var test52 = db.Queryable<Order>()
+                .Where(it => ss.Any(y => it.Name.Contains(y))).First();
+            var test53 = db.Queryable<Order>()
+             .Where(it => ss.Any(y => y==it.Name)).First();
+            var test54 = db.Queryable<Order>()
+            .Where(it => ss.Any(y => it.Name==y)).First();
+            var test55= db.Queryable<Order>()
+             .Where(it => test38.Any(y => it.Name == y.Name&&it.Id==y.Id)).First();
             Console.WriteLine("#### Examples End ####");
         }
 
