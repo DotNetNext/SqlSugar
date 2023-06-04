@@ -901,9 +901,13 @@ namespace SqlSugar
                             }
                         }
                         //Regex regex = new Regex("\@");
-                        if (sql.EndsWith(" =)"))
+                        if (!sql.Contains("@"))
                         {
                             sql = sql.Replace(" =)", $" = {newValue})");
+                            if (!sql.Contains(newValue))
+                            {
+                                sql = sql.Replace(" )", $" = {newValue})");
+                            }
                         }
                         else
                         {
