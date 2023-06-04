@@ -20,14 +20,14 @@ namespace SqlSugar
         {
             get
             {
-                string sql = @" SELECT 
+                string sql = @" SELECT
                                 A.COLUMN_NAME AS DbColumnName,
                                 A.TABLE_NAME AS TableName,
                                 A.DATA_TYPE AS DataType,
                                  case when  DATA_DEFAULT like 'NEXTVAL%'  then true else false end as IsIdentity,
-                                 case when A.NULLABLE = 'Y'  then true else false end as IsNullable   ,    
+                                 case when A.NULLABLE = 'Y'  then true else false end as IsNullable   ,
                                  A.DATA_LENGTH AS LENGTH,
-                                 B.COMMENTS AS ColumnDescription,                             
+                                 B.COMMENTS AS ColumnDescription,
                                  CASE WHEN K.COLUMN_NAME IS NULL THEN FALSE ELSE TRUE END AS IsPrimarykey,
                                  DATA_SCALE AS DecimalDigits,
                                  A.DATA_PRECISION AS  SCALE,
@@ -35,11 +35,11 @@ namespace SqlSugar
                                 FROM
                                 INFO_SCHEM.ALL_TAB_COLUMNS A
                                 LEFT JOIN INFO_SCHEM.SYS_CLASS T ON T.RELNAME=A.TABLE_NAME
-                                LEFT JOIN INFO_SCHEM.ALL_COL_COMMENTS B  ON A.TABLE_NAME=B.TABLE_NAME AND A.COLUMN_NAME=B.COLUMN_NAME 
+                                LEFT JOIN INFO_SCHEM.ALL_COL_COMMENTS B  ON A.TABLE_NAME=B.TABLE_NAME AND A.COLUMN_NAME=B.COLUMN_NAME  AND  B.OWNER=USER 
                                 LEFT JOIN INFO_SCHEM.SYS_ATTRIBUTE C ON C.ATTNAME=A.COLUMN_NAME AND C.ATTRELID=T.OID
                                 LEFT JOIN INFO_SCHEM.V_SYS_PRIMARY_KEYS K ON A.TABLE_NAME=K.TABLE_NAME AND  K.COLUMN_NAME=A.COLUMN_NAME
-                                WHERE upper(A.TABLE_NAME)=upper('{0}')  
-                                 ORDER BY c.ATTNUM 
+                                WHERE upper(A.TABLE_NAME)=upper('{0}')  AND A.OWNER=USER    AND t.relnamespace=(SELECT OID FROM  sys_namespace WHERE nspname =USER) 
+                                ORDER BY c.ATTNUM
                                 ";
                 return sql;
             }
