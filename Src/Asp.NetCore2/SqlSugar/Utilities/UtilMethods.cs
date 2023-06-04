@@ -17,6 +17,57 @@ namespace SqlSugar
 {
     public class UtilMethods
     {
+        public static bool IsValueTypeArray(object memberValue)
+        {
+            return memberValue is List<string> ||
+                   memberValue is string[] ||
+                   memberValue is List<int> ||
+                   memberValue is int[] ||
+                   memberValue is List<Guid> ||
+                   memberValue is Guid[] ||
+                   memberValue is List<long> ||
+                   memberValue is long[] ||
+                   memberValue is List<int?> ||
+                   memberValue is int?[] ||
+                   memberValue is List<Guid?> ||
+                   memberValue is Guid?[] ||
+                   memberValue is List<long?> ||
+                   memberValue is long?[] ||
+                   memberValue is List<float> ||
+                   memberValue is float[] ||
+                   memberValue is List<double> ||
+                   memberValue is double[] ||
+                   memberValue is List<decimal> ||
+                   memberValue is decimal[] ||
+                   memberValue is List<DateTime> ||
+                   memberValue is DateTime[] ||
+                   memberValue is List<TimeSpan> ||
+                   memberValue is TimeSpan[] ||
+                   memberValue is List<bool> ||
+                   memberValue is bool[] ||
+                   memberValue is List<byte> ||
+                   memberValue is byte[] ||
+                   memberValue is List<char> ||
+                   memberValue is char[] ||
+                   memberValue is List<short> ||
+                   memberValue is short[] ||
+                   memberValue is List<ushort> ||
+                   memberValue is ushort[] ||
+                   memberValue is List<uint> ||
+                   memberValue is uint[] ||
+                   memberValue is List<ulong> ||
+                   memberValue is ulong[] ||
+                   memberValue is List<sbyte> ||
+                   memberValue is sbyte[] ||
+                   memberValue is List<object> ||
+                   memberValue is object[] ||
+                   memberValue is List<int?> ||
+                   memberValue is int?[] ||
+                   memberValue is List<Guid?> ||
+                   memberValue is Guid?[] ||
+                   memberValue is List<long?> ||
+                   memberValue is long?[];
+        }
         internal static void EndCustomSplitTable(ISqlSugarClient context,Type entityType)
         {
             if (context == null || entityType == null) 
