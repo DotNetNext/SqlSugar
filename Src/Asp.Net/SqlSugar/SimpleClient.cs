@@ -18,9 +18,13 @@ namespace SqlSugar
         public ITenant AsTenant()
         {
             var result= this.Context as ITenant;
-            if (result == null) 
+            if (result == null&& this.Context is SqlSugarProvider) 
             {
-                Check.ExceptionEasy("Context= is a child db. AsTenant() method is not available. You can store the master db in variables of the warehouse class, and then use the master db to implement tenants and transactions and so on", "仓储.Context=的是子db无法使用AsTenant()方法，你可以将主db存在仓储类里面的变量中，然后用主db变量实现租户和事务等作");
+                result = (this.Context as SqlSugarProvider).Root as ITenant;
+            }
+            else if (result == null && this.Context is SqlSugarScopeProvider)
+            {
+                result = (this.Context as SqlSugarScopeProvider).conn.Root as ITenant;
             }
             return result;
         }
