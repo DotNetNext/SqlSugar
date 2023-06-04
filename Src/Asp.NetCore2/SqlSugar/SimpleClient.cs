@@ -17,7 +17,16 @@ namespace SqlSugar
 
         public ITenant AsTenant()
         {
-            return this.Context as ITenant;
+            var result= this.Context as ITenant;
+            if (result == null&& this.Context is SqlSugarProvider) 
+            {
+                result = (this.Context as SqlSugarProvider).Root as ITenant;
+            }
+            else if (result == null && this.Context is SqlSugarScopeProvider)
+            {
+                result = (this.Context as SqlSugarScopeProvider).conn.Root as ITenant;
+            }
+            return result;
         }
         public ISqlSugarClient AsSugarClient()
         {
