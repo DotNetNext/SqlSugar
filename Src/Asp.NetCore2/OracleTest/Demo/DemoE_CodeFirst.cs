@@ -3,6 +3,7 @@ using SqlSugar.DbConvert;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 
 namespace OrmTest
@@ -34,8 +35,14 @@ namespace OrmTest
             db.Insertable(new CodeFirstTable22x2() { Name = "a"   })
              .ExecuteCommand();
             var list2=db.Queryable<CodeFirstTable22x2>().ToList();
+            db.CodeFirst.InitTables<CodeFirstUnitrew>();
+            db.Insertable(new CodeFirstUnitrew() { Index = 1 }).ExecuteCommand();
             Console.WriteLine("#### CodeFirst end ####");
         }
+    }
+    public class CodeFirstUnitrew 
+    {
+        public int Index { get; set; }
     }
     [SugarTable("CodeFirstTable22r2")]
     public class CodeFirstTable22x2
