@@ -21,7 +21,7 @@ namespace OrmTest
             DemoA_DbMain.Init();
             DemoB_Aop.Init();
             DemoC_GobalFilter.Init();
-            DemoD_DbFirst.Init(); ;
+           // DemoD_DbFirst.Init(); ;
             DemoE_CodeFirst.Init();
             DemoF_Utilities.Init();
             DemoG_SimpleClient.Init();

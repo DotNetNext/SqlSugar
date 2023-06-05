@@ -781,7 +781,7 @@ namespace SqlSugar
             }
             var columns = dt.Columns;
             var rows = dt.Rows;
-            using (DmDataReader dr = command.ExecuteReader())
+            using (var dr = command.ExecuteReader())
             {
                 for (int i = 0; i < dr.FieldCount; i++)
                 {
@@ -817,7 +817,7 @@ namespace SqlSugar
             {
                 ds = new DataSet();
             }
-            using (DmDataReader dr = command.ExecuteReader())
+            using (var dr = command.ExecuteReader())
             {
                 do
                 {
