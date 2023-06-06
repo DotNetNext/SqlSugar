@@ -676,6 +676,7 @@ namespace SqlSugar
             var result= this.Context.Queryable<T>().AS(sqlBuilder.GetPackTable(sql, sqlBuilder.GetDefaultShortName())).With(SqlWith.Null).Select(sqlBuilder.GetDefaultShortName() + ".*");
             result.QueryBuilder.IsSqlQuery = true;
             result.QueryBuilder.OldSql = sql;
+            result.QueryBuilder.NoCheckInclude = true;
             return result;
         }
         #endregion
