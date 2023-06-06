@@ -419,6 +419,8 @@ namespace SqlSugar
             var newQueryable = this.SqlQueryable<object>(sqlobj.Key).AddParameters(sqlobj.Value);
             var result = newQueryable.Select<T>(newQueryable.QueryBuilder.SelectValue+"");
             result.QueryBuilder.IsSqlQuery = false;
+            result.QueryBuilder.NoCheckInclude = true;
+            result.QueryBuilder.Includes = queryable.QueryBuilder.Includes?.ToList();
             return result;
         }
         public virtual ISugarQueryable<T, T2> Queryable<T, T2>(
@@ -674,6 +676,7 @@ namespace SqlSugar
             var result= this.Context.Queryable<T>().AS(sqlBuilder.GetPackTable(sql, sqlBuilder.GetDefaultShortName())).With(SqlWith.Null).Select(sqlBuilder.GetDefaultShortName() + ".*");
             result.QueryBuilder.IsSqlQuery = true;
             result.QueryBuilder.OldSql = sql;
+            result.QueryBuilder.NoCheckInclude = true;
             return result;
         }
         #endregion
