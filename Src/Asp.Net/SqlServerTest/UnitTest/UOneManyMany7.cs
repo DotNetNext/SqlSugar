@@ -153,6 +153,13 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+
+            var list10 = db.SqlQueryable<Student_004>("select * from [Student_005]")
+          .Includes(x => x.school_001)
+          .Select(x=>new { 
+             xxx=  x.school_001
+          })
+          .ToList();
         }
 
 
