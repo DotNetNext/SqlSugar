@@ -1,6 +1,7 @@
 ﻿using SqlSugar;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -120,6 +121,38 @@ namespace OrmTest
            })
            .ToList();
 
+            if (!list6.First().books.Any()) 
+            {
+                throw new Exception("unit error");
+            }
+
+           var list7=db.SqlQueryable<Student_004>("select * from [Student_005]")
+                .Includes(x => x.school_001)
+                .ToList();
+
+            if (list7.First().school_001==null)
+            {
+                throw new Exception("unit error");
+            }
+
+            var list8 = db.Queryable(db.Queryable<Student_004>())
+               .Includes(x => x.school_001)
+               .ToList();
+
+            if (list8.First().school_001 == null)
+            {
+                throw new Exception("unit error");
+            }
+
+            var list9 = db.Queryable<Student_004>()
+                .MergeTable()
+             .Includes(x => x.school_001)
+             .ToList();
+
+            if (list9.First().school_001 == null)
+            {
+                throw new Exception("unit error");
+            }
         }
 
 
