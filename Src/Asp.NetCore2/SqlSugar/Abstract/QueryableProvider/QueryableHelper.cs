@@ -643,7 +643,7 @@ namespace SqlSugar
             if (this.QueryBuilder.Includes != null)
             {
                 var managers = (this.QueryBuilder.Includes as List<object>);
-                if (IsSelectNavQuery())
+                if (this.QueryBuilder.AppendNavInfo?.AppendProperties?.Any()==true)
                 {
                     if (result.HasValue())
                     {
