@@ -1170,6 +1170,10 @@ namespace SqlSugar
             {
                 foreach (var item in sqlObj.Value.OrderByDescending(it => it.ParameterName.Length))
                 {
+                    if (item.ParameterName.StartsWith(":")&&!result.Contains(item.ParameterName)) 
+                    {
+                        item.ParameterName = "@"+item.ParameterName.TrimStart(':');
+                    }
                     if (connectionConfig.MoreSettings == null) 
                     {
                         connectionConfig.MoreSettings = new ConnMoreSettings();
