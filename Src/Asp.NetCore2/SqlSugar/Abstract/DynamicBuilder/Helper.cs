@@ -71,7 +71,8 @@ namespace SqlSugar
                   attributeType.GetProperty(nameof(SugarColumn.OldColumnName)),
                   attributeType.GetProperty(nameof(SugarColumn.SqlParameterDbType)),
                   attributeType.GetProperty(nameof(SugarColumn.SqlParameterSize)),
-                  attributeType.GetProperty(nameof(SugarColumn.IsArray))
+                  attributeType.GetProperty(nameof(SugarColumn.IsArray)),
+                  attributeType.GetProperty(nameof(SugarColumn.ColumnName))
             }
             , new object[] {
                     sugarTable.IsPrimaryKey,
@@ -90,7 +91,8 @@ namespace SqlSugar
                     sugarTable.OldColumnName,
                     sugarTable.SqlParameterDbType,
                     sugarTable.SqlParameterSize,
-                    sugarTable.IsArray
+                    sugarTable.IsArray,
+                    sugarTable.ColumnName
              });
             return attributeBuilder;
         }
