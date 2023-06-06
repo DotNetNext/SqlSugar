@@ -799,7 +799,9 @@ namespace SqlSugar
         }
         public SqlSugarClient CopyNew()
         {
-            return new SqlSugarClient(UtilMethods.CopyConfig(this.Ado.Context.CurrentConnectionConfig));
+            var result= new SqlSugarClient(UtilMethods.CopyConfig(this.Ado.Context.CurrentConnectionConfig));
+            result.QueryFilter = this.QueryFilter;
+            return result;
         }
         public DynamicBuilder DynamicBuilder()
         {
