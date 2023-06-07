@@ -211,6 +211,7 @@ namespace SqlSugar
         public string InsertSql { get; set; }
         public bool UpdateServerTime { get; set; }
         public string UpdateSql { get; set; }
+        public object ExtendedAttribute{ get; set; }
     }
 
 

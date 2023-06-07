@@ -45,5 +45,6 @@ namespace SqlSugar
         public bool InsertServerTime { get;  set; }
         public bool UpdateServerTime { get; set; }
         public string UpdateSql { get; set; }
+        public object ExtendedAttribute { get;  set; }
     }
 }
