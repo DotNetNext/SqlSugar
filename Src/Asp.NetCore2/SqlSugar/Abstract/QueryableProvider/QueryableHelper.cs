@@ -454,6 +454,10 @@ namespace SqlSugar
         #region Min Max Sum Gvg
         protected TResult _Min<TResult>(Expression expression)
         {
+            if (this.QueryBuilder.IsSqlQuery)
+            {
+                this.QueryBuilder.IsSqlQuery = false;
+            }
             QueryBuilder.CheckExpression(expression, "Main");
             var isSingle = QueryBuilder.IsSingle();
             var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
@@ -463,6 +467,10 @@ namespace SqlSugar
         }
         protected async Task<TResult> _MinAsync<TResult>(Expression expression)
         {
+            if (this.QueryBuilder.IsSqlQuery)
+            {
+                this.QueryBuilder.IsSqlQuery = false;
+            }
             QueryBuilder.CheckExpression(expression, "Main");
             var isSingle = QueryBuilder.IsSingle();
             var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
@@ -472,6 +480,10 @@ namespace SqlSugar
         }
         protected TResult _Avg<TResult>(Expression expression)
         {
+            if (this.QueryBuilder.IsSqlQuery)
+            {
+                this.QueryBuilder.IsSqlQuery = false;
+            }
             QueryBuilder.CheckExpression(expression, "Avg");
             var isSingle = QueryBuilder.IsSingle();
             var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
@@ -479,6 +491,10 @@ namespace SqlSugar
         }
         protected async Task<TResult> _AvgAsync<TResult>(Expression expression)
         {
+            if (this.QueryBuilder.IsSqlQuery)
+            {
+                this.QueryBuilder.IsSqlQuery = false;
+            }
             QueryBuilder.CheckExpression(expression, "Avg");
             var isSingle = QueryBuilder.IsSingle();
             var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
@@ -486,6 +502,10 @@ namespace SqlSugar
         }
         protected TResult _Max<TResult>(Expression expression)
         {
+            if (this.QueryBuilder.IsSqlQuery)
+            {
+                this.QueryBuilder.IsSqlQuery = false;
+            }
             QueryBuilder.CheckExpression(expression, "Max");
             var isSingle = QueryBuilder.IsSingle();
             var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
@@ -495,6 +515,10 @@ namespace SqlSugar
         }
         protected async Task<TResult> _MaxAsync<TResult>(Expression expression)
         {
+            if (this.QueryBuilder.IsSqlQuery)
+            {
+                this.QueryBuilder.IsSqlQuery = false;
+            }
             QueryBuilder.CheckExpression(expression, "Max");
             var isSingle = QueryBuilder.IsSingle();
             var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
@@ -504,6 +528,10 @@ namespace SqlSugar
         }
         protected TResult _Sum<TResult>(Expression expression)
         {
+            if (this.QueryBuilder.IsSqlQuery)
+            {
+                this.QueryBuilder.IsSqlQuery = false;
+            }
             QueryBuilder.CheckExpression(expression, "Sum");
             var isSingle = QueryBuilder.IsSingle();
             var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
@@ -513,6 +541,10 @@ namespace SqlSugar
         }
         protected async Task<TResult> _SumAsync<TResult>(Expression expression)
         {
+            if (this.QueryBuilder.IsSqlQuery)
+            {
+                this.QueryBuilder.IsSqlQuery = false;
+            }
             QueryBuilder.CheckExpression(expression, "Sum");
             var isSingle = QueryBuilder.IsSingle();
             var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
