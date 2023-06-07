@@ -307,7 +307,7 @@ namespace SqlSugar
 
         public override string GetDate()
         {
-            return "sysdate";
+            return "systimestamp";
         }
 
         public override string GetRandom()
