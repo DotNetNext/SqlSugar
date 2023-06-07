@@ -9,6 +9,7 @@ namespace SqlSugar
 {
     public partial class DefaultDbMethod : IDbMethods
     {
+        public virtual string ParameterKeyWord { get; set; }= "@";
         public virtual string RowNumber(MethodCallExpressionModel model) 
         {
             if (model.Args.Count == 1)
@@ -901,7 +902,7 @@ namespace SqlSugar
                             }
                         }
                         //Regex regex = new Regex("\@");
-                        if (!sql.Contains("@"))
+                        if (!sql.Contains(ParameterKeyWord))
                         {
                             sql = sql.Replace(" =)", $" = {newValue})");
                             if (!sql.Contains(newValue))
@@ -911,7 +912,7 @@ namespace SqlSugar
                         }
                         else
                         {
-                            Regex reg = new Regex(@"@MethodConst\d+");
+                            Regex reg = new Regex(ParameterKeyWord + @"MethodConst\d+");
                             sql = reg.Replace(sql, it =>
                             {
                                 return " " + newValue + " ";

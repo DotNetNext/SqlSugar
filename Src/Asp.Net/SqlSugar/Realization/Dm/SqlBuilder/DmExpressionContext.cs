@@ -54,6 +54,7 @@ namespace SqlSugar
     }
     public partial class DmMethod : DefaultDbMethod, IDbMethods
     {
+        public override string ParameterKeyWord { get; set; } = ":";
         public override string GetStringJoinSelector(string result, string separator)
         {
             return $"listagg(to_char({result}),'{separator}') within group(order by {result}) ";
