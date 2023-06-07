@@ -72,6 +72,7 @@ namespace SqlSugar
     }
     public partial class OracleMethod : DefaultDbMethod, IDbMethods
     {
+        public override string ParameterKeyWord { get; set; } = ":";
         public override string Modulo(MethodCallExpressionModel model)
         {
             return " MOD(" + model.Args[0].MemberName+ " , " + model.Args[1].MemberName+")";
