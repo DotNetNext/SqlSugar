@@ -269,6 +269,7 @@ namespace SqlSugar
                 .Where(it => it is SugarColumn)
                 .Select(it => (SugarColumn)it)
                 .FirstOrDefault();
+                column.ExtendedAttribute = sugarColumn.ExtendedAttribute;
                 column.DbTableName = result.DbTableName;
                 column.EntityName = result.EntityName;
                 column.PropertyName = property.Name;
