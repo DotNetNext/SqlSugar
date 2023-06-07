@@ -136,7 +136,10 @@ namespace SqlSugar
                 if (isTime)
                 {
                     sqlParameter.SqlDbType = SqlDbType.Time;
-                    sqlParameter.Value = DateTime.Parse(parameter.Value?.ToString()).TimeOfDay;
+                    if (sqlParameter.Value != DBNull.Value)
+                    {
+                        sqlParameter.Value = DateTime.Parse(parameter.Value?.ToString()).TimeOfDay;
+                    }
                 }
                 else if (parameter.Value != null && parameter.Value is XElement)
                 {
