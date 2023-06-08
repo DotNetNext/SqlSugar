@@ -262,7 +262,8 @@ namespace SqlSugar
         }
         public override bool AddDefaultValue(string tableName, string columnName, string defaultValue)
         {
-            if (defaultValue?.StartsWith("'")==true&& defaultValue?.EndsWith("'") == true&& defaultValue?.Contains("(") == false)
+            if (defaultValue?.StartsWith("'")==true&& defaultValue?.EndsWith("'") == true&& defaultValue?.Contains("(") == false
+                &&!defaultValue.EqualCase("'current_timestamp'") && !defaultValue.EqualCase("'current_date'")) 
             {
                 string sql = string.Format(AddDefaultValueSql, tableName, columnName, defaultValue);
                 return this.Context.Ado.ExecuteCommand(sql) > 0;
