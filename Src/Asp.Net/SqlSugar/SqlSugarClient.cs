@@ -184,7 +184,7 @@ namespace SqlSugar
 
         public IInsertable<T> Insertable<T>(T insertObj) where T : class, new()
         {
-            Check.Exception(typeof(T).FullName.Contains("System.Collections.Generic.List`"), "  need  where T: class, new() ");
+            Check.ExceptionEasy(typeof(T).FullName.Contains("System.Collections.Generic.List`"), "  need  where T: class, new() ","需要Class,new()约束，并且类属性中不能有required修饰符");
             if (typeof(T).Name == "Object") 
             {
                 Check.ExceptionEasy("Object type use db.InsertableByObject(obj).ExecuteCommand()", "检测到T为Object类型，请使用 db.InsertableByObject(obj).ExecuteCommand()，Insertable不支持object，InsertableByObject可以(缺点：功能比较少)");

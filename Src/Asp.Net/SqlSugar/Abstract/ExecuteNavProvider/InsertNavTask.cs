@@ -16,6 +16,7 @@ namespace SqlSugar
 
         public InsertNavTask<Root, TChild>  Include<TChild>(Expression<Func<Root, TChild>> expression) where TChild : class, new()
         {
+            Check.ExceptionEasy(typeof(TChild).FullName.Contains("System.Collections.Generic.List`"), "  need  where T: class, new() ", "需要Class,new()约束，并且类属性中不能有required修饰符");
             this.Context = insertNavProvider._Context;
             insertNavProvider.NavContext = this.NavContext;
             InsertNavTask<Root, TChild> result = new InsertNavTask<Root, TChild>();
@@ -39,6 +40,7 @@ namespace SqlSugar
 
         public InsertNavTask<Root, TChild> Include<TChild>(Expression<Func<Root, TChild>> expression,InsertNavOptions options) where TChild : class, new()
         {
+            Check.ExceptionEasy(typeof(TChild).FullName.Contains("System.Collections.Generic.List`"), "  need  where T: class, new() ", "需要Class,new()约束，并且类属性中不能有required修饰符");
             this.Context = insertNavProvider._Context;
             insertNavProvider.NavContext = this.NavContext;
             InsertNavTask<Root, TChild> result = new InsertNavTask<Root, TChild>();
