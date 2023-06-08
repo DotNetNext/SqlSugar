@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace SqlSugar
 {
@@ -261,7 +262,15 @@ namespace SqlSugar
         }
         public override bool AddDefaultValue(string tableName, string columnName, string defaultValue)
         {
-            return base.AddDefaultValue(this.SqlBuilder.GetTranslationTableName(tableName), this.SqlBuilder.GetTranslationTableName(columnName), defaultValue);
+            if (defaultValue?.StartsWith("'")==true&& defaultValue?.EndsWith("'") == true&& defaultValue?.Contains("(") == false)
+            {
+                string sql = string.Format(AddDefaultValueSql, tableName, columnName, defaultValue);
+                return this.Context.Ado.ExecuteCommand(sql) > 0;
+            }
+            else
+            {
+                return base.AddDefaultValue(this.SqlBuilder.GetTranslationTableName(tableName), this.SqlBuilder.GetTranslationTableName(columnName), defaultValue);
+            }
         }
         public override bool AddColumnRemark(string columnName, string tableName, string description)
         {
