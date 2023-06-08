@@ -27,7 +27,7 @@ namespace SqlSugar
                            COLUMNPROPERTY(syscolumns.id,syscolumns.name,'PRECISION') as [length],
                            isnull(COLUMNPROPERTY(syscolumns.id,syscolumns.name,'Scale'),0) as Scale, 
 						   isnull(COLUMNPROPERTY(syscolumns.id,syscolumns.name,'Scale'),0) as DecimalDigits,
-                           sys.extended_properties.[value] AS [ColumnDescription],
+                           Cast( sys.extended_properties.[value] as nvarchar(2000)) AS [ColumnDescription],
                            syscomments.text AS DefaultValue,
                            syscolumns.isnullable AS IsNullable,
 	                       columnproperty(syscolumns.id,syscolumns.name,'IsIdentity')as IsIdentity,
