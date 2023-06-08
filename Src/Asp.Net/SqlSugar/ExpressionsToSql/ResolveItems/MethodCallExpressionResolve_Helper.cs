@@ -875,6 +875,10 @@ namespace SqlSugar
         }
         private bool CheckMethod(MethodCallExpression expression)
         {
+            if (expression?.Object?.Type?.Name?.StartsWith("ISugarQueryable`") == true) 
+            {
+                Check.ExceptionEasy("Sublookup is implemented using SqlFunc.Subquery<Order>(); Queryable objects cannot be used", "子查请使用SqlFunc.Subquery<Order>()来实现，不能用Queryable对象");
+            }
             if (expression.Method.Name == "SelectAll")
             {
                 return true;
@@ -883,7 +887,7 @@ namespace SqlSugar
             {
                 return true;
             }
-            if (expression.Method.Name == "Any"&& ExpressionTool.IsVariable(expression.Arguments[0]) )
+            if (expression.Method.Name == "Any"&& expression.Arguments.Count()>0&& ExpressionTool.IsVariable(expression.Arguments[0]) )
             {
                 return true;
             }
