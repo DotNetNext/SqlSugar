@@ -26,9 +26,12 @@ namespace OrmTest
             db.CodeFirst.InitTables<CodeFirstChar2>();
             db.Insertable(new CodeFirstChar2() { CharTest = '1' }).ExecuteCommand();
             var list2=db.Queryable<CodeFirstChar2>().ToList();
-            db.Aop.OnLogExecuting = (s, p) => Console.WriteLine(UtilMethods.GetNativeSql(s, p));
-            db.CodeFirst.InitTables<CodeFirstsaf>();
+            db.Aop.OnLogExecuting = (s, p) => Console.WriteLine(UtilMethods.GetNativeSql(s, p));;
             db.CodeFirst.InitTables<CODEFIRSTSAF>();
+            db.CodeFirst.InitTables<CodeFirstsaf>();
+            db.Insertable(new CodeFirstsaf() { Json = "a" })
+                .ExecuteCommand();
+            var list3=db.Queryable<CodeFirstsaf>().ToList();
             Console.WriteLine("#### CodeFirst end ####");
         }
     }
@@ -36,6 +39,8 @@ namespace OrmTest
     {
         [SugarColumn(DefaultValue ="")]
         public string Json { get; set; }
+        [SugarColumn(DefaultValue = "1")]
+        public bool x { get; set; }
     }
     public class CODEFIRSTSAF
     {
