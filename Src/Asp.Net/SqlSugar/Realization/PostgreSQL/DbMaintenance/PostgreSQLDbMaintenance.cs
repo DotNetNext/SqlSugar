@@ -265,7 +265,13 @@ namespace SqlSugar
             if (defaultValue?.StartsWith("'")==true&& defaultValue?.EndsWith("'") == true&& defaultValue?.Contains("(") == false
                 &&!defaultValue.EqualCase("'current_timestamp'") && !defaultValue.EqualCase("'current_date'")) 
             {
-                string sql = string.Format(AddDefaultValueSql, tableName, columnName, defaultValue);
+                string sql = string.Format(AddDefaultValueSql,this.SqlBuilder.GetTranslationColumnName( tableName), this.SqlBuilder.GetTranslationColumnName(columnName), defaultValue);
+                return this.Context.Ado.ExecuteCommand(sql) > 0;
+            }
+            else if (defaultValue?.Contains("(") == false
+         && !defaultValue.EqualCase("'current_timestamp'") && !defaultValue.EqualCase("'current_date'"))
+            {
+                string sql = string.Format(AddDefaultValueSql, this.SqlBuilder.GetTranslationColumnName(tableName), this.SqlBuilder.GetTranslationColumnName(columnName), "'"+defaultValue+"'");
                 return this.Context.Ado.ExecuteCommand(sql) > 0;
             }
             else
