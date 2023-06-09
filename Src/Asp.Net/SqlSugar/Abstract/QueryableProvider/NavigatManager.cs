@@ -481,18 +481,22 @@ namespace SqlSugar
                 return;
             }
             var navEntity = args[0];
-            this.Context.InitMappingInfo(navEntity);
-            var navEntityInfo = this.Context.EntityMaintenance.GetEntityInfo(navEntity);
+
+            var childDb = this.Context;
+            childDb = GetCrossDatabase(childDb, navEntity);
+
+            childDb.InitMappingInfo(navEntity);
+            var navEntityInfo = childDb.EntityMaintenance.GetEntityInfo(navEntity);
             var sqlObj = GetWhereSql(navObjectNameColumnInfo.Navigat.Name);
             Check.ExceptionEasy(sqlObj.MappingExpressions.IsNullOrEmpty(), $"{expression} error,dynamic need MappingField ,Demo: Includes(it => it.Books.MappingField(z=>z.studenId,()=>it.StudentId).ToList())", $"{expression} 解析出错,自定义映射需要 MappingField ,例子: Includes(it => it.Books.MappingField(z=>z.studenId,()=>it.StudentId).ToList())");
             if (list.Any() && navObjectNamePropety.GetValue(list.First()) == null)
             {
                 MappingFieldsHelper<T> helper = new MappingFieldsHelper<T>();
-                helper.Context = this.Context;
+                helper.Context = childDb;
                 helper.NavEntity = navEntityInfo;
-                helper.RootEntity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+                helper.RootEntity = childDb.EntityMaintenance.GetEntityInfo<T>();
                 var whereSql = helper.GetMppingSql(list, sqlObj.MappingExpressions);
-                var navList = selector(this.Context.Queryable<object>().AS(navEntityInfo.DbTableName).AddParameters(sqlObj.Parameters).Where(whereSql,true).WhereIF(sqlObj.WhereString.HasValue(), sqlObj.WhereString).Select(sqlObj.SelectString).OrderByIF(sqlObj.OrderByString.HasValue(), sqlObj.OrderByString));
+                var navList = selector(childDb.Queryable<object>().AS(navEntityInfo.DbTableName).AddParameters(sqlObj.Parameters).Where(whereSql,true).WhereIF(sqlObj.WhereString.HasValue(), sqlObj.WhereString).Select(sqlObj.SelectString).OrderByIF(sqlObj.OrderByString.HasValue(), sqlObj.OrderByString));
                 if (navList.HasValue())
                 {
                     foreach (var item in list)
