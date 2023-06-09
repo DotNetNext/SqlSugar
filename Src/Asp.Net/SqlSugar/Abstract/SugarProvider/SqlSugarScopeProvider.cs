@@ -815,6 +815,10 @@ namespace SqlSugar
         {
             ScopedContext.Tracking(datas);
         }
+        public QueryMethodInfo QueryableByObject(Type entityType)
+        {
+            return ScopedContext.QueryableByObject(entityType);
+        }
         #endregion
     }
 }

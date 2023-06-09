@@ -79,6 +79,7 @@ namespace SqlSugar
         #endregion
 
         #region Queryable
+        QueryMethodInfo QueryableByObject(Type entityType);
         ISugarQueryable<T> MasterQueryable<T>();
         ISugarQueryable<T> SlaveQueryable<T>();
         ISugarQueryable<T> SqlQueryable<T>(string sql) where T : class, new();

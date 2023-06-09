@@ -138,6 +138,7 @@
     <Compile Include="Abstract\QueryableProvider\Includes.cs" />
     <Compile Include="Abstract\QueryableProvider\MappingFieldsHelper.cs" />
     <Compile Include="Abstract\QueryableProvider\NavigatManager.cs" />
+    <Compile Include="Abstract\QueryableProvider\QueryMethodInfo.cs" />
     <Compile Include="Abstract\SaveableProvider\StorageableMethodInfo.cs" />
     <Compile Include="Abstract\SaveableProvider\StorageableDataTable.cs" />
     <Compile Include="Abstract\SqlBuilderProvider\Entities.cs" />

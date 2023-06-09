@@ -284,6 +284,10 @@ namespace SqlSugar
         }
         #endregion
 
+        public QueryMethodInfo QueryableByObject(Type entityType) 
+        {
+            return this.Context.QueryableByObject(entityType);
+        }
         public ISugarQueryable<T> MasterQueryable<T>()
         {
             return this.Context.MasterQueryable<T>();
