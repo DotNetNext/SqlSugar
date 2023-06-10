@@ -38,6 +38,11 @@ namespace SqlSugar
             {
                 return orderByModel.AsName.Replace(UtilConstants.ReplaceKey, string.Empty);
             }
+            if (orderByModel.AsName?.Contains("[")==true) 
+            {
+                orderByModel.AsName = orderByModel.AsName.Trim('[').Trim(']');
+                return this.SqlTranslationLeft + orderByModel.AsName + this.SqlTranslationRight;
+            }
           return this.GetTranslationColumnName(orderByModel.AsName);
         }
 
