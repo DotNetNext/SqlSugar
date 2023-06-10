@@ -872,5 +872,9 @@ namespace SqlSugar
         {
             return ScopedContext.AsyncLock(timeOutSeconds);
         }
+        public QueryMethodInfo QueryableByObject(Type entityType)
+        {
+            return ScopedContext.QueryableByObject(entityType);
+        }
     }
 }

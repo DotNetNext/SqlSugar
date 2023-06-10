@@ -82,6 +82,16 @@ namespace SqlSugar
         #endregion
 
         #region Queryable
+        public QueryMethodInfo QueryableByObject(Type entityType) 
+        {
+            QueryMethodInfo result = new QueryMethodInfo();
+            var method=this.GetType().GetMyMethod("Queryable", 0);
+            var methodT=method.MakeGenericMethod(entityType);
+            var queryableObj=methodT.Invoke(this,new object[] {});
+            result.QueryableObj = queryableObj;
+            result.Context = this.Context;
+            return result;
+        }
         /// <summary>
         /// Get datebase time
         /// </summary>
