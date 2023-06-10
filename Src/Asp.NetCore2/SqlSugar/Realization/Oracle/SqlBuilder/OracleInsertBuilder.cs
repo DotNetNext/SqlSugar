@@ -91,7 +91,7 @@ namespace SqlSugar
 
                 batchInsetrSql.Append("(");
                 batchInsetrSql.Append(columnsString);
-                if (identities.HasValue())
+                if (identities.HasValue()&& this.IsOffIdentity==false)
                 {
                     batchInsetrSql.Append("," + string.Join(",", identities.Select(it => Builder.GetTranslationColumnName(it.DbColumnName))));
                 }
@@ -101,20 +101,23 @@ namespace SqlSugar
                 batchInsetrSql.Append("(");
                 insertColumns = string.Join(",", item.Select(it => GetDbColumn(it, FormatValue(it.Value, it.PropertyName))));
                 batchInsetrSql.Append(insertColumns);
-                if (identities.HasValue())
+                if (this.IsOffIdentity == false)
                 {
-                    batchInsetrSql.Append(",");
-                    foreach (var idn in identities)
+                    if (identities.HasValue())
                     {
-                        var seqvalue = this.OracleSeqInfoList[idn.OracleSequenceName];
-                        this.OracleSeqInfoList[idn.OracleSequenceName] = this.OracleSeqInfoList[idn.OracleSequenceName] + 1;
-                        if (identities.Last() == idn)
+                        batchInsetrSql.Append(",");
+                        foreach (var idn in identities)
                         {
-                            batchInsetrSql.Append(seqvalue);
-                        }
-                        else
-                        {
-                            batchInsetrSql.Append(seqvalue + ",");
+                            var seqvalue = this.OracleSeqInfoList[idn.OracleSequenceName];
+                            this.OracleSeqInfoList[idn.OracleSequenceName] = this.OracleSeqInfoList[idn.OracleSequenceName] + 1;
+                            if (identities.Last() == idn)
+                            {
+                                batchInsetrSql.Append(seqvalue);
+                            }
+                            else
+                            {
+                                batchInsetrSql.Append(seqvalue + ",");
+                            }
                         }
                     }
                 }
