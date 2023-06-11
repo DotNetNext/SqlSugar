@@ -3,21 +3,39 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
- 
 namespace SqlSugar 
 {
     public class QueryMethodInfo
     {
         public object QueryableObj { get; internal set; }
         public SqlSugarProvider Context { get; internal set; }
+        public Type EntityType { get;  set; }
 
-        public QueryMethodInfo Where(string sql, object parameters)
+        public QueryMethodInfo OrderBy(string orderBySql)
+        {
+            var method = QueryableObj.GetType().GetMyMethod("OrderBy", 1, typeof(string));
+            this.QueryableObj = method.Invoke(QueryableObj, new object[] { orderBySql });
+            return this;
+        }
+
+        public QueryMethodInfo GroupBy(string groupBySql)
+        {
+            var method = QueryableObj.GetType().GetMyMethod("GroupBy", 1, typeof(string));
+            this.QueryableObj = method.Invoke(QueryableObj, new object[] { groupBySql });
+            return this;
+        }
+        public QueryMethodInfo Where(string sql, object parameters=null)
         {
             var method = QueryableObj.GetType().GetMyMethod("Where", 2, typeof(string), typeof(object));
             this.QueryableObj= method.Invoke(QueryableObj, new object[] { sql, parameters });
             return this;
         }
-     
+        public QueryMethodInfo Having(string sql, object parameters = null)
+        {
+            var method = QueryableObj.GetType().GetMyMethod("Having", 2, typeof(string), typeof(object));
+            this.QueryableObj = method.Invoke(QueryableObj, new object[] { sql, parameters });
+            return this;
+        }
         public QueryMethodInfo SplitTable(Func<List<SplitTableInfo>, IEnumerable<SplitTableInfo>> getTableNamesFunc)
         {
             var method = QueryableObj.GetType().GetMyMethod("SplitTable", 1, typeof(Func<List<SplitTableInfo>, IEnumerable<SplitTableInfo>>));
@@ -36,7 +54,15 @@ namespace SqlSugar
             this.QueryableObj = method.Invoke(QueryableObj, new object[] { });
             return this;
         }
-         
+
+        public QueryMethodInfo Select(string selectorSql)
+        {
+            var method = QueryableObj.GetType().GetMyMethod("Select", 1, typeof(string))
+             .MakeGenericMethod(EntityType);
+            this.QueryableObj = method.Invoke(QueryableObj, new object[] { selectorSql });
+            return this;
+        }
+
         public QueryMethodInfo Select(string   selectorSql, Type   selectType)
         {
             var method = QueryableObj.GetType().GetMyMethod("Select", 1, typeof(string)) 

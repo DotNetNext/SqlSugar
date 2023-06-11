@@ -90,6 +90,7 @@ namespace SqlSugar
             var queryableObj=methodT.Invoke(this,new object[] {});
             result.QueryableObj = queryableObj;
             result.Context = this.Context;
+            result.EntityType = entityType;
             return result;
         }
         /// <summary>
