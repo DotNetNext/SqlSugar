@@ -202,6 +202,7 @@
     <Compile Include="UnitTest\UOneManyMany2.cs" />
     <Compile Include="UnitTest\UOneManyMany.cs" />
     <Compile Include="UnitTest\UOneManyMany7.cs" />
+    <Compile Include="UnitTest\UQueryableByObject.cs" />
     <Compile Include="UnitTest\USelectSinleDTO.cs" />
     <Compile Include="UnitTest\USelectTest.cs" />
     <Compile Include="UnitTest\USplit.cs" />
