@@ -517,7 +517,14 @@ namespace SqlSugar
             var isConst = parameter.CommonTempData.GetType() == UtilConstants.DateType;
             if (isConst)
             {
-                AppendValue(parameter, isLeft, parameter.CommonTempData.ObjToDate().Date);
+                if (this.Context?.Case?.IsDateString==true)
+                {
+                    AppendMember(parameter, isLeft, GetToDateShort("'" + parameter.CommonTempData.ObjToDate().Date.ToString("yyyy-MM-dd") + "'"));
+                }
+                else
+                {
+                    AppendValue(parameter, isLeft, parameter.CommonTempData.ObjToDate().Date);
+                }
             }
             else
             {
