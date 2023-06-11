@@ -4,6 +4,9 @@ namespace SqlSugar
 {
     public class SqliteExpressionContext : ExpressionContext, ILambdaExpressions
     {
+        public override ExpressionContextCase Case { get; set; } = new ExpressionContextCase() { 
+         IsDateString= true,
+        };
         public SqlSugarProvider Context { get; set; }
         public SqliteExpressionContext()
         {
