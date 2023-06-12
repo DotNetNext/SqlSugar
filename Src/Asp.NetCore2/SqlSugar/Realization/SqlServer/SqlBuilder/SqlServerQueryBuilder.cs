@@ -104,6 +104,10 @@ namespace SqlSugar
                     this.OldSql += this.Offset;
             }
             result = GetSqlQuerySql(result);
+            if (isFirst && IsDistinct) 
+            {
+                result = result.Replace("TOP 1  DISTINCT", "TOP 1 ");
+            }
             return result;
         }
 
