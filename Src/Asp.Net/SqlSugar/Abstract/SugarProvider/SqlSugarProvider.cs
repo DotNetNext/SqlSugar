@@ -93,6 +93,10 @@ namespace SqlSugar
             result.EntityType = entityType;
             return result;
         }
+        public QueryMethodInfo QueryableByObject(Type entityType, string shortName)
+        {
+            return this.QueryableByObject(entityType).AS(this.Context.EntityMaintenance.GetTableName(entityType),shortName);
+        }
         /// <summary>
         /// Get datebase time
         /// </summary>
