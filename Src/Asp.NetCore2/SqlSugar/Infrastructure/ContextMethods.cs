@@ -46,7 +46,7 @@ namespace SqlSugar
                         var propertyType = propertyTypes[i];
 
                         var propertyInfo = tupleType.GetFields()[i];
-                        propertyInfo.SetValue(tupleInstance, Convert.ChangeType(propertyValue, propertyType));
+                        propertyInfo.SetValue(tupleInstance, UtilMethods.ChangeType2(propertyValue, propertyType));
                     }
 
                     // Add the tuple instance to the result list
