@@ -62,6 +62,8 @@ namespace OrmTest
                                                                .GroupBy(z => z.Id)
                                                                .Select(z => z.Id)
                                                                ).ToListAsync().GetAwaiter().GetResult();
+            List<(int id, string name)> list2=db.Queryable<Order>().Select<(int id, string name)>("id,name")  
+                .ToList();
             Console.WriteLine("#### Examples End ####");
         }
 
