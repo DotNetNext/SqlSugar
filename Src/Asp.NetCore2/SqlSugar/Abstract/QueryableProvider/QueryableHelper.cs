@@ -1718,6 +1718,10 @@ namespace SqlSugar
             {
                 result = this.Context.Utilities.DataReaderToExpandoObjectList(dataReader) as List<TResult>;
             }
+            else if (entityType.Name?.StartsWith("ValueTuple`")==true) 
+            {
+                result = Db.Context.Utilities.DataReaderToValueTupleType<TResult>(dataReader);
+            }
             else if (entityType == UtilConstants.ObjType)
             {
                 result = this.Context.Utilities.DataReaderToExpandoObjectList(dataReader).Select(it => ((TResult)(object)it)).ToList();
@@ -1749,6 +1753,10 @@ namespace SqlSugar
             if (entityType == UtilConstants.DynamicType)
             {
                 result = await this.Context.Utilities.DataReaderToExpandoObjectListAsync(dataReader) as List<TResult>;
+            }
+            else if (entityType.Name?.StartsWith("ValueTuple`") == true)
+            {
+                result =await Db.Context.Utilities.DataReaderToValueTupleTypeAsync<TResult>(dataReader);
             }
             else if (entityType == UtilConstants.ObjType)
             {

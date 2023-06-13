@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.DirectoryServices.ActiveDirectory;
 using System.Dynamic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -19,6 +20,77 @@ namespace SqlSugar
         public QueryBuilder QueryBuilder { get; set; }
 
         #region DataReader
+        public List<T> DataReaderToValueTupleType<T>(IDataReader reader)
+        {
+            var result = new List<T>();
+
+            // Get the property names and types dynamically
+            var propertyNames = Enumerable.Range(0, reader.FieldCount)
+                                           .Select(reader.GetName).ToList();
+            var propertyTypes = Enumerable.Range(0, reader.FieldCount)
+                                           .Select(reader.GetFieldType).ToList();
+
+            using (reader)
+            {
+                while (reader.Read())
+                {
+                    // Create a new instance of the tuple type using the property types
+                    var tupleType = typeof(T);
+                    var tupleInstance = Activator.CreateInstance(tupleType);
+
+                    // Set the property values dynamically
+                    for (int i = 0; i < reader.FieldCount; i++)
+                    {
+                        var propertyName = propertyNames[i];
+                        var propertyValue = reader.GetValue(i);
+                        var propertyType = propertyTypes[i];
+
+                        var propertyInfo = tupleType.GetFields()[i];
+                        propertyInfo.SetValue(tupleInstance, Convert.ChangeType(propertyValue, propertyType));
+                    }
+
+                    // Add the tuple instance to the result list
+                    result.Add((T)tupleInstance);
+                }
+            }
+            return result;
+        }
+        public async Task<List<T>> DataReaderToValueTupleTypeAsync<T>(IDataReader reader)
+        {
+            var result = new List<T>();
+
+            // Get the property names and types dynamically
+            var propertyNames = Enumerable.Range(0, reader.FieldCount)
+                                           .Select(reader.GetName).ToList();
+            var propertyTypes = Enumerable.Range(0, reader.FieldCount)
+                                           .Select(reader.GetFieldType).ToList();
+
+            using (reader)
+            {
+                while ( await ((DbDataReader)reader).ReadAsync())
+                {
+                    // Create a new instance of the tuple type using the property types
+                    var tupleType = typeof(T);
+                    var tupleInstance = Activator.CreateInstance(tupleType);
+
+                    // Set the property values dynamically
+                    for (int i = 0; i < reader.FieldCount; i++)
+                    {
+                        var propertyName = propertyNames[i];
+                        var propertyValue = reader.GetValue(i);
+                        var propertyType = propertyTypes[i];
+
+                        var propertyInfo = tupleType.GetFields()[i];
+                        propertyInfo.SetValue(tupleInstance, Convert.ChangeType(propertyValue, propertyType));
+                    }
+
+                    // Add the tuple instance to the result list
+                    result.Add((T)tupleInstance);
+                }
+            }
+            return result;
+        }
+
 
         /// <summary>
         ///DataReader to Dynamic
@@ -78,7 +150,7 @@ namespace SqlSugar
                 List<ExpandoObject> result = new List<ExpandoObject>();
                 if (reader != null && !reader.IsClosed)
                 {
-                    while (await((DbDataReader)reader).ReadAsync())
+                    while (await ((DbDataReader)reader).ReadAsync())
                     {
                         result.Add(DataReaderToExpandoObject(reader));
                     }
@@ -208,7 +280,7 @@ namespace SqlSugar
         }
 
 
-        public List<T> DataReaderToSelectJsonList<T>(IDataReader dataReader) 
+        public List<T> DataReaderToSelectJsonList<T>(IDataReader dataReader)
         {
             List<T> result = new List<T>();
             using (dataReader)
@@ -259,19 +331,19 @@ namespace SqlSugar
         /// <returns></returns>
         public List<T> DataReaderToListNoUsing<T>(IDataReader reader)
         {
-                var tType = typeof(T);
-                var classProperties = tType.GetProperties().ToList();
-                var reval = new List<T>();
-                if (reader != null && !reader.IsClosed)
+            var tType = typeof(T);
+            var classProperties = tType.GetProperties().ToList();
+            var reval = new List<T>();
+            if (reader != null && !reader.IsClosed)
+            {
+                while (reader.Read())
                 {
-                    while (reader.Read())
-                    {
-                        Dictionary<string, object> result = DataReaderToList(reader, tType, classProperties, reval);
-                        var stringValue = SerializeObject(result);
-                        reval.Add((T)DeserializeObject<T>(stringValue));
-                    }
+                    Dictionary<string, object> result = DataReaderToList(reader, tType, classProperties, reval);
+                    var stringValue = SerializeObject(result);
+                    reval.Add((T)DeserializeObject<T>(stringValue));
                 }
-                return reval;
+            }
+            return reval;
         }
         /// <summary>
         /// DataReaderToList
@@ -442,7 +514,7 @@ namespace SqlSugar
                         {
                             addValue = Convert.ToInt64(addValue);
                         }
-                        else if (UtilMethods.GetUnderType(item.PropertyType).IsEnum()&& addValue is decimal)
+                        else if (UtilMethods.GetUnderType(item.PropertyType).IsEnum() && addValue is decimal)
                         {
                             addValue = Convert.ToInt64(addValue);
                         }
@@ -488,19 +560,19 @@ namespace SqlSugar
         }
         private static bool IsBytes(Dictionary<string, object> readerValues, PropertyInfo item)
         {
-            return item.PropertyType == UtilConstants.ByteArrayType && 
-                   readerValues.ContainsKey(item.Name.ToLower())&&
-                   (readerValues[item.Name.ToLower()]==null||
-                   readerValues[item.Name.ToLower()].GetType()==UtilConstants.ByteArrayType);
+            return item.PropertyType == UtilConstants.ByteArrayType &&
+                   readerValues.ContainsKey(item.Name.ToLower()) &&
+                   (readerValues[item.Name.ToLower()] == null ||
+                   readerValues[item.Name.ToLower()].GetType() == UtilConstants.ByteArrayType);
         }
 
         private static bool IsJsonItem(Dictionary<string, object> readerValuesOld, string name)
         {
             Dictionary<string, object> readerValues = new Dictionary<string, object>();
-            if (readerValuesOld.Any(it => it.Key.EqualCase(name))) 
+            if (readerValuesOld.Any(it => it.Key.EqualCase(name)))
             {
                 var data = readerValuesOld.First(it => it.Key.EqualCase(name));
-                readerValues.Add(data.Key,data.Value);
+                readerValues.Add(data.Key, data.Value);
             }
             return readerValues != null &&
                                     readerValues.Count == 1 &&
@@ -513,23 +585,23 @@ namespace SqlSugar
 
         private static bool IsArrayItem(Dictionary<string, object> readerValues, PropertyInfo item)
         {
-            var isArray= item.PropertyType.IsArray && readerValues.Any(y => y.Key.EqualCase(item.Name)) && readerValues.FirstOrDefault(y => y.Key.EqualCase(item.Name)).Value is string;
-            var isListItem = item.PropertyType.FullName.IsCollectionsList()&& 
-                item.PropertyType.GenericTypeArguments.Length==1&&
-                item.PropertyType.GenericTypeArguments .First().IsClass()==false&& readerValues.FirstOrDefault(y => y.Key.EqualCase(item.Name)).Value is string;
+            var isArray = item.PropertyType.IsArray && readerValues.Any(y => y.Key.EqualCase(item.Name)) && readerValues.FirstOrDefault(y => y.Key.EqualCase(item.Name)).Value is string;
+            var isListItem = item.PropertyType.FullName.IsCollectionsList() &&
+                item.PropertyType.GenericTypeArguments.Length == 1 &&
+                item.PropertyType.GenericTypeArguments.First().IsClass() == false && readerValues.FirstOrDefault(y => y.Key.EqualCase(item.Name)).Value is string;
             return isArray || isListItem;
         }
 
         private static bool IsJsonList(Dictionary<string, object> readerValues, PropertyInfo item)
         {
             return item.PropertyType.FullName.IsCollectionsList() &&
-                                        readerValues.Any(y=>y.Key.EqualCase(item.Name)) &&
+                                        readerValues.Any(y => y.Key.EqualCase(item.Name)) &&
                                         readerValues.First(y => y.Key.EqualCase(item.Name)).Value != null &&
                                         readerValues.First(y => y.Key.EqualCase(item.Name)).Value.GetType() == UtilConstants.StringType &&
                                         Regex.IsMatch(readerValues.First(y => y.Key.EqualCase(item.Name)).Value.ToString(), @"^\[{.+\}]$");
         }
 
-        private Dictionary<string, object> DataReaderToDynamicList_Part<T>(Dictionary<string, object> readerValues, PropertyInfo item, List<T> reval, Dictionary<string, string> mappingKeys=null)
+        private Dictionary<string, object> DataReaderToDynamicList_Part<T>(Dictionary<string, object> readerValues, PropertyInfo item, List<T> reval, Dictionary<string, string> mappingKeys = null)
         {
             Dictionary<string, object> result = new Dictionary<string, object>();
             var type = item.PropertyType;
@@ -542,7 +614,7 @@ namespace SqlSugar
                 return null;
             }
             var classProperties = type.GetProperties().ToList();
-            if (type.Name.StartsWith("Dictionary`")) 
+            if (type.Name.StartsWith("Dictionary`"))
             {
                 return null;
             }
@@ -553,14 +625,14 @@ namespace SqlSugar
                 var typeName = type.Name;
                 if (prop.PropertyType.IsClass())
                 {
-                    var suagrColumn=prop.GetCustomAttribute<SugarColumn>();
+                    var suagrColumn = prop.GetCustomAttribute<SugarColumn>();
                     if (suagrColumn != null && suagrColumn.IsJson)
                     {
 
-                        if (mappingKeys!=null&&mappingKeys.ContainsKey(item.Name))
+                        if (mappingKeys != null && mappingKeys.ContainsKey(item.Name))
                         {
                             var key = mappingKeys[item.Name];
-                            Json(readerValues, result, name, typeName,key);
+                            Json(readerValues, result, name, typeName, key);
                         }
                         else
                         {
@@ -570,7 +642,7 @@ namespace SqlSugar
                     else if (columns.Any(it => it.IsJson))
                     {
                         var column = columns.FirstOrDefault(it => it.PropertyName == name);
-                        if (column != null && column.IsJson) 
+                        if (column != null && column.IsJson)
                         {
                             Json(readerValues, result, name, typeName);
                         }
@@ -584,23 +656,23 @@ namespace SqlSugar
                 {
                     var key = typeName + "." + name;
                     var info = readerValues.Select(it => it.Key).FirstOrDefault(it => it.ToLower() == key.ToLower());
-                    if (info == null) 
+                    if (info == null)
                     {
                         key = item.Name + "." + name;
                         info = readerValues.Select(it => it.Key).FirstOrDefault(it => it.ToLower() == key.ToLower());
                     }
                     var oldInfo = info;
-                    if (mappingKeys!=null&&mappingKeys.ContainsKey(item.Name)) 
+                    if (mappingKeys != null && mappingKeys.ContainsKey(item.Name))
                     {
-                        key = mappingKeys[item.Name]+"."+typeName + "." + name;
+                        key = mappingKeys[item.Name] + "." + typeName + "." + name;
                         info = readerValues.Select(it => it.Key).FirstOrDefault(it => it.ToLower() == key.ToLower());
                     }
                     else if (mappingKeys != null && mappingKeys.ContainsKey("Single_" + name))
                     {
-                        key =mappingKeys["Single_" + name];
+                        key = mappingKeys["Single_" + name];
                         info = readerValues.Select(it => it.Key).FirstOrDefault(it => it.ToLower() == key.ToLower());
                     }
-                    if (info == null&&oldInfo!=null) 
+                    if (info == null && oldInfo != null)
                     {
                         info = oldInfo;
                     }
@@ -609,14 +681,15 @@ namespace SqlSugar
                         var addItem = readerValues[info];
                         if (addItem == DBNull.Value)
                             addItem = null;
-                        if (prop.PropertyType == UtilConstants.IntType )
+                        if (prop.PropertyType == UtilConstants.IntType)
                         {
                             addItem = addItem.ObjToInt();
-                        } else if (UtilMethods.GetUnderType(prop.PropertyType) == UtilConstants.IntType && addItem != null)
-                        {
-                            addItem= addItem.ObjToInt();
                         }
-                        else if (prop.PropertyType.IsEnum()&&addItem is decimal)
+                        else if (UtilMethods.GetUnderType(prop.PropertyType) == UtilConstants.IntType && addItem != null)
+                        {
+                            addItem = addItem.ObjToInt();
+                        }
+                        else if (prop.PropertyType.IsEnum() && addItem is decimal)
                         {
                             addItem = Convert.ToInt64(addItem);
                         }
@@ -627,7 +700,7 @@ namespace SqlSugar
             return result;
         }
 
-        private void Json(Dictionary<string, object> readerValues, Dictionary<string, object> result, string name, string typeName,string shortName=null)
+        private void Json(Dictionary<string, object> readerValues, Dictionary<string, object> result, string name, string typeName, string shortName = null)
         {
             var key = (typeName + "." + name).ToLower();
             if (readerValues.Any(it => it.Key.EqualCase(key)))
@@ -637,7 +710,7 @@ namespace SqlSugar
             }
             else
             {
-                 key = (shortName+"."+typeName + "." + name).ToLower();
+                key = (shortName + "." + typeName + "." + name).ToLower();
                 if (readerValues.Any(it => it.Key.EqualCase(key)))
                 {
                     var jsonString = readerValues.First(it => it.Key.EqualCase(key)).Value;
@@ -687,7 +760,7 @@ namespace SqlSugar
             }
             else
             {
-                var isSugar = this.Context.EntityMaintenance.GetEntityInfo(type).Columns.Any(it=>it.NoSerialize || it.SerializeDateTimeFormat.HasValue());
+                var isSugar = this.Context.EntityMaintenance.GetEntityInfo(type).Columns.Any(it => it.NoSerialize || it.SerializeDateTimeFormat.HasValue());
                 if (isSugar)
                 {
                     return Context.CurrentConnectionConfig.ConfigureExternalServices.SerializeService.SugarSerializeObject(value);
@@ -746,7 +819,7 @@ namespace SqlSugar
         #endregion
 
         #region DataTable
-        public DataTable DictionaryListToDataTable(List<Dictionary<string, object>> list) 
+        public DataTable DictionaryListToDataTable(List<Dictionary<string, object>> list)
         {
             DataTable result = new DataTable();
             if (list.Count == 0)
@@ -755,7 +828,7 @@ namespace SqlSugar
             var columnNames = list.First();
             foreach (var item in columnNames)
             {
-                result.Columns.Add(item.Key,item.Value==null?typeof(object):item.Value.GetType());
+                result.Columns.Add(item.Key, item.Value == null ? typeof(object) : item.Value.GetType());
             }
             foreach (var item in list)
             {
@@ -807,10 +880,10 @@ namespace SqlSugar
             }
             return this.DeserializeObject<List<T>>(this.SerializeObject(deserializeObject));
         }
-        public  DataTable ListToDataTable<T>(List<T> list)
+        public DataTable ListToDataTable<T>(List<T> list)
         {
-            DataTable result = new  DataTable();
-            if (list!=null&&list.Count > 0)
+            DataTable result = new DataTable();
+            if (list != null && list.Count > 0)
             {
                 PropertyInfo[] propertys = list[0].GetType().GetProperties();
                 foreach (PropertyInfo pi in propertys)
@@ -846,7 +919,7 @@ namespace SqlSugar
             result.TableName = entityInfo.DbTableName;
             if (list != null && list.Count > 0)
             {
-                var colimnInfos = entityInfo.Columns.Where(it=>it.IsIgnore==false);
+                var colimnInfos = entityInfo.Columns.Where(it => it.IsIgnore == false);
                 foreach (var pi in colimnInfos)
                 {
                     //获取类型
@@ -874,7 +947,7 @@ namespace SqlSugar
         }
         public Dictionary<string, object> DataTableToDictionary(DataTable table)
         {
-           return table.Rows.Cast<DataRow>().ToDictionary(x => x[0].ToString(), x => x[1]);
+            return table.Rows.Cast<DataRow>().ToDictionary(x => x[0].ToString(), x => x[1]);
         }
 
         public List<Dictionary<string, object>> DataTableToDictionaryList(DataTable dt)
@@ -926,9 +999,9 @@ namespace SqlSugar
         #endregion
 
         #region Page Each
-        public void PageEach<T>(IEnumerable<T> pageItems,int pageSize, Action<List<T>> action)
+        public void PageEach<T>(IEnumerable<T> pageItems, int pageSize, Action<List<T>> action)
         {
-            if (pageItems != null&& pageItems.Any())
+            if (pageItems != null && pageItems.Any())
             {
                 int totalRecord = pageItems.Count();
                 int pageCount = (totalRecord + pageSize - 1) / pageSize;
@@ -940,7 +1013,7 @@ namespace SqlSugar
             }
         }
 
-        public async Task PageEachAsync<T>(IEnumerable<T> pageItems, int pageSize, Func<List<T>,Task> action)
+        public async Task PageEachAsync<T>(IEnumerable<T> pageItems, int pageSize, Func<List<T>, Task> action)
         {
             if (pageItems != null && pageItems.Any())
             {
@@ -1057,10 +1130,10 @@ namespace SqlSugar
         #endregion
 
         #region Tree
-        public List<T> ToTree<T>(List<T> list, Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, Expression<Func<T, object>> pkExpression, object rootValue) 
+        public List<T> ToTree<T>(List<T> list, Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, Expression<Func<T, object>> pkExpression, object rootValue)
         {
             var pk = ExpressionTool.GetMemberName(pkExpression);
-          return  (this.Context.Queryable<T>() as QueryableProvider<T>).GetTreeRoot(childListExpression,parentIdExpression,pk,list,rootValue);
+            return (this.Context.Queryable<T>() as QueryableProvider<T>).GetTreeRoot(childListExpression, parentIdExpression, pk, list, rootValue);
         }
         #endregion
     }

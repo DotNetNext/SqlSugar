@@ -13,6 +13,8 @@ namespace SqlSugar
     {
         SqlSugarProvider Context { get; set; }
         QueryBuilder QueryBuilder { get; set; }
+        List<T> DataReaderToValueTupleType<T>(IDataReader reader);
+        Task<List<T>> DataReaderToValueTupleTypeAsync<T>(IDataReader reader);
         ExpandoObject DataReaderToExpandoObject(IDataReader reader);
         List<ExpandoObject> DataReaderToExpandoObjectList(IDataReader reader);
         Task<List<ExpandoObject>> DataReaderToExpandoObjectListAsync(IDataReader dataReader);
