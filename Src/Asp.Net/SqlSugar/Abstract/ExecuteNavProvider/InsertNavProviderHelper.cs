@@ -99,7 +99,7 @@ namespace SqlSugar
             {
                 Check.ExceptionEasy($"{typeof(TChild).Name} need primary key ", $"{typeof(TChild).Name}需要主键");
             }
-            var x = this._Context.Storageable(children).WhereColumns(new string[] { pkColumn.PropertyName }).ToStorage();
+            var x = this._Context.Storageable(children).WhereColumns(new string[] { pkColumn.PropertyName }).GetStorageableResult();
             var insertData = children = x.InsertList.Select(it => it.Item).ToList();
             var IsNoExistsNoInsert = _navOptions != null && _navOptions.OneToManyIfExistsNoInsert == true;
             if (_NavigateType == NavigateType.OneToMany && IsFirst == false && IsNoExistsNoInsert == false)
