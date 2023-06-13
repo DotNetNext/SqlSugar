@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using static Dm.parser.SQLProcessor;
+
 namespace SqlSugar 
 {
     public class QueryMethodInfo
@@ -29,6 +32,12 @@ namespace SqlSugar
             this.QueryableObj = method.Invoke(QueryableObj, new object[] { tableName, shortName });
             return this;
         }
+        public QueryMethodInfo OrderBy(List<OrderByModel> models) 
+        {
+            var method = QueryableObj.GetType().GetMyMethod("OrderBy", 1, typeof(List<OrderByModel>));
+            this.QueryableObj = method.Invoke(QueryableObj, new object[] { models });
+            return this;
+        }
         public QueryMethodInfo OrderBy(string orderBySql)
         {
             var method = QueryableObj.GetType().GetMyMethod("OrderBy", 1, typeof(string));
@@ -47,16 +56,49 @@ namespace SqlSugar
             this.QueryableObj = method.Invoke(QueryableObj, new object[] { this.Context.EntityMaintenance.GetTableName(joinEntityType), shortName, onWhere, type });
             return this;
         }
+        public QueryMethodInfo GroupBy(List<GroupByModel> models) 
+        {
+            var method = QueryableObj.GetType().GetMyMethod("GroupBy", 1, typeof(List<GroupByModel>));
+            this.QueryableObj = method.Invoke(QueryableObj, new object[] { models });
+            return this;
+        }
         public QueryMethodInfo GroupBy(string groupBySql)
         {
             var method = QueryableObj.GetType().GetMyMethod("GroupBy", 1, typeof(string));
             this.QueryableObj = method.Invoke(QueryableObj, new object[] { groupBySql });
             return this;
         }
+        
+        public QueryMethodInfo Where(List<IConditionalModel> conditionalModels) 
+        {
+            var method = QueryableObj.GetType().GetMyMethod("Where", 1, typeof(List<IConditionalModel>));
+            this.QueryableObj = method.Invoke(QueryableObj, new object[] { conditionalModels });
+            return this;
+        }
+
+        public QueryMethodInfo Where(IFuncModel model)
+        {
+            var method = QueryableObj.GetType().GetMyMethod("Where", 1, typeof(IFuncModel));
+            this.QueryableObj = method.Invoke(QueryableObj, new object[] { model });
+            return this;
+        }
+
+        public QueryMethodInfo Where(List<IConditionalModel> conditionalModels, bool isWrap)
+        {
+            var method = QueryableObj.GetType().GetMyMethod("Where", 2, typeof(List<IConditionalModel>),typeof(bool));
+            this.QueryableObj = method.Invoke(QueryableObj, new object[] { conditionalModels,isWrap });
+            return this;
+        }
         public QueryMethodInfo Where(string sql, object parameters = null)
         {
             var method = QueryableObj.GetType().GetMyMethod("Where", 2, typeof(string), typeof(object));
             this.QueryableObj = method.Invoke(QueryableObj, new object[] { sql, parameters });
+            return this;
+        }
+        public QueryMethodInfo Having(IFuncModel model) 
+        {
+            var method = QueryableObj.GetType().GetMyMethod("Having", 1, typeof(IFuncModel));
+            this.QueryableObj = method.Invoke(QueryableObj, new object[] {model});
             return this;
         }
         public QueryMethodInfo Having(string sql, object parameters = null)
@@ -84,6 +126,12 @@ namespace SqlSugar
             return this;
         }
 
+        public QueryMethodInfo Select(List<SelectModel> models) 
+        {
+            var method = QueryableObj.GetType().GetMyMethod("Select", 1, typeof(List<SelectModel>));
+            this.QueryableObj = method.Invoke(QueryableObj, new object[] { models });
+            return this;
+        }
         public QueryMethodInfo Select(string selectorSql)
         {
             var method = QueryableObj.GetType().GetMyMethod("Select", 1, typeof(string))
