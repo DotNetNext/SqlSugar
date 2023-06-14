@@ -155,6 +155,10 @@ namespace SqlSugar
         }
         public static bool IsIterator(this Type type)
         {
+            if (type.BaseType == null)
+            {
+                return false;
+            }
             if (type.BaseType.IsGenericType)
             {
                 return type.BaseType?.GetGenericTypeDefinition()?.FullName == "System.Linq.Enumerable+Iterator`1";
