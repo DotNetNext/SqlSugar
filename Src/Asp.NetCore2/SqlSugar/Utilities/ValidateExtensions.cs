@@ -157,7 +157,7 @@ namespace SqlSugar
         {
             if (type.BaseType.IsGenericType)
             {
-                return type.BaseType.GetGenericTypeDefinition().FullName == "System.Linq.Enumerable+Iterator`1";
+                return type.BaseType?.GetGenericTypeDefinition()?.FullName == "System.Linq.Enumerable+Iterator`1";
             }
             return false;
         }
