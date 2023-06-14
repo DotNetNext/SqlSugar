@@ -153,6 +153,18 @@ namespace SqlSugar
         {
             return (thisValue + "").StartsWith("System.Collections.Generic.List")|| (thisValue + "").StartsWith("System.Collections.Generic.IEnumerable");
         }
+        public static bool IsIterator(this Type type)
+        {
+            if (type.BaseType == null)
+            {
+                return false;
+            }
+            if (type.BaseType.IsGenericType)
+            {
+                return type.BaseType?.GetGenericTypeDefinition()?.FullName == "System.Linq.Enumerable+Iterator`1";
+            }
+            return false;
+        }
         public static bool IsStringArray(this string thisValue)
         {
             return (thisValue + "").IsMatch(@"System\.[a-z,A-Z,0-9]+?\[\]");
