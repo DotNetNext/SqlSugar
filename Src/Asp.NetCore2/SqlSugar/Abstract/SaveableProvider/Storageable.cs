@@ -211,6 +211,86 @@ namespace SqlSugar
             return result;
         }
 
+        public StorageableResult<T> GetStorageableResult()
+        {
+            if (whereFuncs == null || whereFuncs.Count == 0)
+            {
+                return this.Saveable().GetStorageableResult();
+            }
+            if (this.allDatas.Count == 0)
+                return new StorageableResult<T>()
+                {
+                    //AsDeleteable = this.Context.Deleteable<T>().AS(asname).Where(it => false),
+                    //AsInsertable = this.Context.Insertable(new List<T>()).AS(asname),
+                    //AsUpdateable = this.Context.Updateable(new List<T>()).AS(asname),
+                    InsertList = new List<StorageableMessage<T>>(),
+                    UpdateList = new List<StorageableMessage<T>>(),
+                    DeleteList = new List<StorageableMessage<T>>(),
+                    ErrorList = new List<StorageableMessage<T>>(),
+                    IgnoreList = new List<StorageableMessage<T>>(),
+                    OtherList = new List<StorageableMessage<T>>(),
+                    TotalList = new List<StorageableMessage<T>>()
+                };
+            var pkInfos = this.Context.EntityMaintenance.GetEntityInfo<T>().Columns.Where(it => it.IsPrimarykey);
+            if (whereExpression == null && !pkInfos.Any())
+            {
+                Check.ExceptionEasy(true, "Need primary key or WhereColumn", "使用Storageable实体需要主键或者使用WhereColumn指定条件列");
+            }
+            if (whereExpression == null && pkInfos.Any())
+            {
+                this.Context.Utilities.PageEach(allDatas, 300, item => {
+                    var addItems = this.Context.Queryable<T>().Filter(null, this.isDisableFilters).TranLock(this.lockType).AS(asname).WhereClassByPrimaryKey(item.Select(it => it.Item).ToList()).ToList();
+                    dbDataList.AddRange(addItems);
+                });
+            }
+            var pkProperties = GetPkProperties(pkInfos);
+            var messageList = allDatas.Select(it => new StorageableMessage<T>()
+            {
+                Item = it.Item,
+                Database = dbDataList,
+                PkFields = pkProperties
+            }).ToList();
+            foreach (var item in whereFuncs.OrderByDescending(it => (int)it.key))
+            {
+                List<StorageableMessage<T>> whereList = messageList.Where(it => it.StorageType == null).ToList();
+                Func<StorageableMessage<T>, bool> exp = item.value1;
+                var list = whereList.Where(exp).ToList();
+                foreach (var it in list)
+                {
+                    it.StorageType = item.key;
+                    it.StorageMessage = item.value2;
+                }
+            }
+            var delete = messageList.Where(it => it.StorageType == StorageType.Delete).ToList();
+            var update = messageList.Where(it => it.StorageType == StorageType.Update).ToList();
+            var inset = messageList.Where(it => it.StorageType == StorageType.Insert).ToList();
+            var error = messageList.Where(it => it.StorageType == StorageType.Error).ToList();
+            var ignore = messageList.Where(it => it.StorageType == StorageType.Ignore || it.StorageType == null).ToList();
+            var other = messageList.Where(it => it.StorageType == StorageType.Other).ToList();
+            StorageableResult<T> result = new StorageableResult<T>()
+            {
+                _WhereColumnList = wherecolumnList,
+                _AsName = asname,
+                _Context = this.Context,
+                //AsDeleteable = this.Context.Deleteable<T>().AS(asname),
+                //AsUpdateable = this.Context.Updateable(update.Select(it => it.Item).ToList()).AS(asname),
+                //AsInsertable = this.Context.Insertable(inset.Select(it => it.Item).ToList()).AS(asname),
+                OtherList = other,
+                InsertList = inset,
+                DeleteList = delete,
+                UpdateList = update,
+                ErrorList = error,
+                IgnoreList = ignore,
+                TotalList = messageList
+            };
+            //if (this.whereExpression != null)
+            //{
+            //    result.AsUpdateable.WhereColumns(whereExpression);
+            //    result.AsDeleteable.WhereColumns(update.Select(it => it.Item).ToList(), whereExpression);
+            //}
+            //result.AsDeleteable.Where(delete.Select(it => it.Item).ToList());
+            return result;
+        }
 
         public async Task<StorageableResult<T>> ToStorageAsync()
         {

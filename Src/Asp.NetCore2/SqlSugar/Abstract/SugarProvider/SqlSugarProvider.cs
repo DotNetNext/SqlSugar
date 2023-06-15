@@ -90,7 +90,12 @@ namespace SqlSugar
             var queryableObj=methodT.Invoke(this,new object[] {});
             result.QueryableObj = queryableObj;
             result.Context = this.Context;
+            result.EntityType = entityType;
             return result;
+        }
+        public QueryMethodInfo QueryableByObject(Type entityType, string shortName)
+        {
+            return this.QueryableByObject(entityType).AS(this.Context.EntityMaintenance.GetTableName(entityType),shortName);
         }
         /// <summary>
         /// Get datebase time

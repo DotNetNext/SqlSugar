@@ -876,5 +876,9 @@ namespace SqlSugar
         {
             return ScopedContext.QueryableByObject(entityType);
         }
+        public QueryMethodInfo QueryableByObject(Type entityType, string shortName)
+        {
+            return ScopedContext.QueryableByObject(entityType, shortName);
+        }
     }
 }

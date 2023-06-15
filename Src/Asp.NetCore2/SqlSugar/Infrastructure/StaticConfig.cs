@@ -17,5 +17,7 @@ namespace SqlSugar
         public static Action<object> CompleteUpdateableFunc;
         public static Action<object> CompleteDeleteableFunc;
         public static Action<ISqlSugarClient> CompleteDbFunc;
+
+        public static Func<List<SplitTableInfo>> SplitTableGetTablesFunc;
     }
 }

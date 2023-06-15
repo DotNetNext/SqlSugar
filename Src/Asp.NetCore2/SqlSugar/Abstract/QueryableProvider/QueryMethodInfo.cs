@@ -1,33 +1,122 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
- 
+
+
 namespace SqlSugar 
 {
     public class QueryMethodInfo
     {
         public object QueryableObj { get; internal set; }
         public SqlSugarProvider Context { get; internal set; }
+        public Type EntityType { get;  set; }
 
-        public QueryMethodInfo Where(string sql, object parameters)
+
+        #region Json 2 sql api
+        #endregion
+
+        #region Sql API
+        public QueryMethodInfo AS(string tableName)
         {
-            var method = QueryableObj.GetType().GetMyMethod("Where", 2, typeof(string), typeof(object));
-            this.QueryableObj= method.Invoke(QueryableObj, new object[] { sql, parameters });
+            string shortName = $"{tableName}_1";
+            var method = QueryableObj.GetType().GetMyMethod("AS", 2, typeof(string), typeof(string));
+            this.QueryableObj = method.Invoke(QueryableObj, new object[] { tableName, shortName });
             return this;
         }
-     
+        public QueryMethodInfo AS(string tableName, string shortName)
+        {
+            var method = QueryableObj.GetType().GetMyMethod("AS", 2, typeof(string), typeof(string));
+            this.QueryableObj = method.Invoke(QueryableObj, new object[] { tableName, shortName });
+            return this;
+        }
+        public QueryMethodInfo OrderBy(List<OrderByModel> models) 
+        {
+            var method = QueryableObj.GetType().GetMyMethod("OrderBy", 1, typeof(List<OrderByModel>));
+            this.QueryableObj = method.Invoke(QueryableObj, new object[] { models });
+            return this;
+        }
+        public QueryMethodInfo OrderBy(string orderBySql)
+        {
+            var method = QueryableObj.GetType().GetMyMethod("OrderBy", 1, typeof(string));
+            this.QueryableObj = method.Invoke(QueryableObj, new object[] { orderBySql });
+            return this;
+        }
+        public QueryMethodInfo AddJoinInfo(string tableName, string shortName,string onWhere, JoinType type = JoinType.Left) 
+        {
+            var method = QueryableObj.GetType().GetMyMethod("AddJoinInfo", 4, typeof(string),typeof(string),typeof(string),typeof(JoinType));
+            this.QueryableObj = method.Invoke(QueryableObj, new object[] { tableName,shortName,onWhere,type });
+            return this;
+        }
+        public QueryMethodInfo AddJoinInfo(Type joinEntityType, string shortName, string onWhere, JoinType type = JoinType.Left)
+        {
+            var method = QueryableObj.GetType().GetMyMethod("AddJoinInfo", 4, typeof(string), typeof(string), typeof(string), typeof(JoinType));
+            this.QueryableObj = method.Invoke(QueryableObj, new object[] { this.Context.EntityMaintenance.GetTableName(joinEntityType), shortName, onWhere, type });
+            return this;
+        }
+        public QueryMethodInfo GroupBy(List<GroupByModel> models) 
+        {
+            var method = QueryableObj.GetType().GetMyMethod("GroupBy", 1, typeof(List<GroupByModel>));
+            this.QueryableObj = method.Invoke(QueryableObj, new object[] { models });
+            return this;
+        }
+        public QueryMethodInfo GroupBy(string groupBySql)
+        {
+            var method = QueryableObj.GetType().GetMyMethod("GroupBy", 1, typeof(string));
+            this.QueryableObj = method.Invoke(QueryableObj, new object[] { groupBySql });
+            return this;
+        }
+        
+        public QueryMethodInfo Where(List<IConditionalModel> conditionalModels) 
+        {
+            var method = QueryableObj.GetType().GetMyMethod("Where", 1, typeof(List<IConditionalModel>));
+            this.QueryableObj = method.Invoke(QueryableObj, new object[] { conditionalModels });
+            return this;
+        }
+
+        public QueryMethodInfo Where(IFuncModel model)
+        {
+            var method = QueryableObj.GetType().GetMyMethod("Where", 1, typeof(IFuncModel));
+            this.QueryableObj = method.Invoke(QueryableObj, new object[] { model });
+            return this;
+        }
+
+        public QueryMethodInfo Where(List<IConditionalModel> conditionalModels, bool isWrap)
+        {
+            var method = QueryableObj.GetType().GetMyMethod("Where", 2, typeof(List<IConditionalModel>),typeof(bool));
+            this.QueryableObj = method.Invoke(QueryableObj, new object[] { conditionalModels,isWrap });
+            return this;
+        }
+        public QueryMethodInfo Where(string sql, object parameters = null)
+        {
+            var method = QueryableObj.GetType().GetMyMethod("Where", 2, typeof(string), typeof(object));
+            this.QueryableObj = method.Invoke(QueryableObj, new object[] { sql, parameters });
+            return this;
+        }
+        public QueryMethodInfo Having(IFuncModel model) 
+        {
+            var method = QueryableObj.GetType().GetMyMethod("Having", 1, typeof(IFuncModel));
+            this.QueryableObj = method.Invoke(QueryableObj, new object[] {model});
+            return this;
+        }
+        public QueryMethodInfo Having(string sql, object parameters = null)
+        {
+            var method = QueryableObj.GetType().GetMyMethod("Having", 2, typeof(string), typeof(object));
+            this.QueryableObj = method.Invoke(QueryableObj, new object[] { sql, parameters });
+            return this;
+        }
         public QueryMethodInfo SplitTable(Func<List<SplitTableInfo>, IEnumerable<SplitTableInfo>> getTableNamesFunc)
         {
             var method = QueryableObj.GetType().GetMyMethod("SplitTable", 1, typeof(Func<List<SplitTableInfo>, IEnumerable<SplitTableInfo>>));
-            this.QueryableObj = method.Invoke(QueryableObj, new object[] { getTableNamesFunc});
+            this.QueryableObj = method.Invoke(QueryableObj, new object[] { getTableNamesFunc });
             return this;
         }
-        public QueryMethodInfo SplitTable(DateTime begintTime,DateTime endTime)
+        public QueryMethodInfo SplitTable(DateTime begintTime, DateTime endTime)
         {
             var method = QueryableObj.GetType().GetMyMethod("SplitTable", 2, typeof(DateTime), typeof(DateTime));
-            this.QueryableObj = method.Invoke(QueryableObj, new object[] {begintTime,endTime });
+            this.QueryableObj = method.Invoke(QueryableObj, new object[] { begintTime, endTime });
             return this;
         }
         public QueryMethodInfo SplitTable()
@@ -36,15 +125,31 @@ namespace SqlSugar
             this.QueryableObj = method.Invoke(QueryableObj, new object[] { });
             return this;
         }
-         
-        public QueryMethodInfo Select(string   selectorSql, Type   selectType)
+
+        public QueryMethodInfo Select(List<SelectModel> models) 
         {
-            var method = QueryableObj.GetType().GetMyMethod("Select", 1, typeof(string)) 
+            var method = QueryableObj.GetType().GetMyMethod("Select", 1, typeof(List<SelectModel>));
+            this.QueryableObj = method.Invoke(QueryableObj, new object[] { models });
+            return this;
+        }
+        public QueryMethodInfo Select(string selectorSql)
+        {
+            var method = QueryableObj.GetType().GetMyMethod("Select", 1, typeof(string))
+             .MakeGenericMethod(EntityType);
+            this.QueryableObj = method.Invoke(QueryableObj, new object[] { selectorSql });
+            return this;
+        }
+
+        public QueryMethodInfo Select(string selectorSql, Type selectType)
+        {
+            var method = QueryableObj.GetType().GetMyMethod("Select", 1, typeof(string))
              .MakeGenericMethod(selectType);
             this.QueryableObj = method.Invoke(QueryableObj, new object[] { selectorSql });
             return this;
         }
-         
+
+        #endregion
+
         #region Result
         public object ToPageList(int pageNumber, int pageSize)
         {

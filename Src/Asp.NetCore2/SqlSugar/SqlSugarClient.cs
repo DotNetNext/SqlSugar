@@ -288,6 +288,10 @@ namespace SqlSugar
         {
             return this.Context.QueryableByObject(entityType);
         }
+        public QueryMethodInfo QueryableByObject(Type entityType,string shortName)
+        {
+            return this.Context.QueryableByObject(entityType,shortName);
+        }
         public ISugarQueryable<T> MasterQueryable<T>()
         {
             return this.Context.MasterQueryable<T>();
