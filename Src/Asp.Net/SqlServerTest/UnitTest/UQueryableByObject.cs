@@ -65,10 +65,22 @@ namespace OrmTest
 
 
             var whereFunc = ObjectFuncModel.Create("Format", "o.id", ">", "{int}:1", "&&", "o.name", "=", "{string}:a");
+
+            var data661 = db.Queryable<object>().AS("[order]", "o")
+                 .AddJoinInfo("order", "y", "o.id=y.id", SqlSugar.JoinType.Left)
+                 .Where(whereFunc)
+                 .GroupBy(groupList).Having(having).Select(selector).ToList();
             var data66 = db.QueryableByObject(type, "o")
             .AddJoinInfo(typeof(Custom), "y", "o.id=y.id", SqlSugar.JoinType.Left)
             .Where(whereFunc)
             .GroupBy(groupList).Having(having).Select(selector).ToList();
+
+            var data67 = db.QueryableByObject(type, "o")
+            .AddJoinInfo("order", "y", ObjectFuncModel.Create("Equals", "y.id", "o.id"), SqlSugar.JoinType.Left)
+            .Where(whereFunc)
+            .GroupBy(groupList).Having(having).Select(selector).ToList();
+
+           
         }
     }
 }

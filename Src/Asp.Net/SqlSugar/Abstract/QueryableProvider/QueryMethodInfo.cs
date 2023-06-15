@@ -50,6 +50,20 @@ namespace SqlSugar
             this.QueryableObj = method.Invoke(QueryableObj, new object[] { tableName,shortName,onWhere,type });
             return this;
         }
+        public QueryMethodInfo AddJoinInfo(string tableName, string shortName, IFuncModel onFunc, JoinType type = JoinType.Left)
+        {
+            var method = QueryableObj.GetType().GetMyMethod("AddJoinInfo", 4, typeof(string), typeof(string), typeof(string), typeof(JoinType));
+            this.QueryableObj = method.Invoke(QueryableObj, new object[] { tableName, shortName, onFunc, type });
+            return this;
+        }
+        public QueryMethodInfo AddJoinInfo(List<JoinInfoParameter> joinInfoParameters) 
+        {
+            foreach (var item in joinInfoParameters)
+            {
+                AddJoinInfo(item.TableName,item.ShortName,item.Models,item.Type);
+            }
+            return this;
+        }
         public QueryMethodInfo AddJoinInfo(Type joinEntityType, string shortName, string onWhere, JoinType type = JoinType.Left)
         {
             var method = QueryableObj.GetType().GetMyMethod("AddJoinInfo", 4, typeof(string), typeof(string), typeof(string), typeof(JoinType));
