@@ -54,6 +54,10 @@ namespace SqlSugar
         }
         public List<SplitTableInfo> GetTables()
         {
+            if (StaticConfig.SplitTableGetTablesFunc != null) 
+            {
+                return StaticConfig.SplitTableGetTablesFunc();
+            }
             var oldIsEnableLogEvent = this.Context.Ado.IsEnableLogEvent;
             this.Context.Ado.IsEnableLogEvent = false;
             var tableInfos = this.Context.DbMaintenance.GetTableInfoList(false);
