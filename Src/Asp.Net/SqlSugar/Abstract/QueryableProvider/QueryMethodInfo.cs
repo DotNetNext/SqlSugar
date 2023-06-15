@@ -52,7 +52,7 @@ namespace SqlSugar
         }
         public QueryMethodInfo AddJoinInfo(string tableName, string shortName, IFuncModel onFunc, JoinType type = JoinType.Left)
         {
-            var method = QueryableObj.GetType().GetMyMethod("AddJoinInfo", 4, typeof(string), typeof(string), typeof(string), typeof(JoinType));
+            var method = QueryableObj.GetType().GetMyMethod("AddJoinInfo", 4, typeof(string), typeof(string), typeof(IFuncModel), typeof(JoinType));
             this.QueryableObj = method.Invoke(QueryableObj, new object[] { tableName, shortName, onFunc, type });
             return this;
         }
