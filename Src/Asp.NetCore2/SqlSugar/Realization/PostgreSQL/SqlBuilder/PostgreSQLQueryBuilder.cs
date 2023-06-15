@@ -48,6 +48,11 @@ namespace SqlSugar
         {
             base.AppendFilter();
             string oldOrderValue = this.OrderByValue;
+            var isNullOrderValue = Skip == 0 && Take == 1 && oldOrderValue == "ORDER BY NOW() ";
+            if (isNullOrderValue) 
+            {
+                this.OrderByValue = null;
+            }
             string result = null;
             sql = new StringBuilder();
             sql.AppendFormat(SqlTemplate, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, (Skip != null || Take != null) ? null : GetOrderByString);
