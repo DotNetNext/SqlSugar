@@ -80,7 +80,10 @@ namespace OrmTest
             .Where(whereFunc)
             .GroupBy(groupList).Having(having).Select(selector).ToList();
 
-           
+            var data68 = db.QueryableByObject(type).AS("order","o")
+           .AddJoinInfo("order", "y", ObjectFuncModel.Create("Equals", "y.id", "o.id"), SqlSugar.JoinType.Left)
+           .Where(whereFunc)
+           .GroupBy(groupList).Having(having).Select(selector).ToList();
         }
     }
 }
