@@ -85,6 +85,7 @@ namespace SqlSugar
         }
         public ISugarQueryable<T> Having(IFuncModel model)
         {
+            this.QueryBuilder.WhereIndex++;
             var orderObj = this.SqlBuilder.FuncModelToSql(model);
             this.Having(orderObj.Key);
             this.QueryBuilder.Parameters.AddRange(orderObj.Value);
