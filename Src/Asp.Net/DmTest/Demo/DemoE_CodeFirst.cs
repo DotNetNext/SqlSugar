@@ -37,6 +37,8 @@ namespace OrmTest
             var list = db.Queryable<CodeFirstTable1>().ToList();
             db.CodeFirst.InitTables<CodeFirstLong>();
             var tableInfo=db.DbMaintenance.GetColumnInfosByTableName("CodeFirstLong", false);
+            db.CodeFirst.InitTables<CodeFirstadfafa>();
+            db.Insertable(new CodeFirstadfafa() { index = "a" }).ExecuteCommand();
             db.CurrentConnectionConfig.MoreSettings = new ConnMoreSettings()
             {
                 IsAutoToUpper = false
@@ -54,6 +56,10 @@ namespace OrmTest
             } ).Where(it => it.Id != null).ExecuteCommand();
             Console.WriteLine("#### CodeFirst end ####");
         }
+    }
+    public class CodeFirstadfafa 
+    {
+        public string index { get; set; }
     }
     public class CodeFirstNoUpper 
     {
