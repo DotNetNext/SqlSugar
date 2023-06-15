@@ -172,7 +172,7 @@ namespace SqlSugar
                                 dbType = "varchar";
                             }
                         }
-                        return string.Format("CAST({0} AS {1})", base.GetDbColumn(it,FormatValue(it.Value,it.DbColumnName,i,it)), dbType);
+                        return string.Format("CAST({0} AS {1})", base.GetDbColumn(it,FormatValue(it.Value,it.DbColumnName,i+(pageIndex-1)*100000,it)), dbType);
 
                     })) + ")");
                     ++i;
