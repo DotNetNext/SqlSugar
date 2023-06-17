@@ -382,6 +382,13 @@ namespace OrmTest
 
             db.QueryFilter.AddTableFilter<BookA>(it => it.BookId == 1);
             db.Queryable<StudentA>().Includes(it => it.Books.Where(z => z.BookId == 1).ToList()).ToList();
+
+            var data = typeof(StudentA);
+            var list101 = db.QueryableByObject(data).Includes("Books2").ToList();
+            var list102 = db.QueryableByObject(data)
+                .IncludesAllFirstLayer().ToList();
+            var list103 = db.QueryableByObject(data)
+                .IncludesAllFirstLayer("Books2").ToList();
         }
 
         public class UnitView01
