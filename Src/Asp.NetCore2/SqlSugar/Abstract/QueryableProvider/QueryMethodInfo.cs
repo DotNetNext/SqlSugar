@@ -164,6 +164,22 @@ namespace SqlSugar
 
         #endregion
 
+        #region Nav
+        
+        public QueryMethodInfo IncludesAllFirstLayer(params string[] ignoreNavPropertyNames)
+        {
+            var method = QueryableObj.GetType().GetMyMethod("IncludesAllFirstLayer",1,typeof(string[]));
+            this.QueryableObj = method.Invoke(QueryableObj, new object[] { ignoreNavPropertyNames });
+            return this;
+        }
+        public QueryMethodInfo Includes(string navProperyName)
+        {
+            var method = QueryableObj.GetType().GetMyMethod("IncludesByNameString", 1, typeof(string));
+            this.QueryableObj = method.Invoke(QueryableObj, new object[] { navProperyName });
+            return this;
+        }
+        #endregion
+
         #region Result
         public object ToPageList(int pageNumber, int pageSize)
         {
