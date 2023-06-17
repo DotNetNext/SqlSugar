@@ -197,6 +197,15 @@ namespace SqlSugar
             }
             return result;
         }
+        public ISugarQueryable<T, T2> InnerJoinIF<T2>(bool isJoin, Expression<Func<T, T2, bool>> joinExpression)
+        {
+            var result = InnerJoin(joinExpression);
+            if (isJoin == false)
+            {
+                result.QueryBuilder.JoinQueryInfos.Remove(result.QueryBuilder.JoinQueryInfos.Last());
+            }
+            return result;
+        }
         public ISugarQueryable<T, T2> LeftJoin<T2>(Expression<Func<T, T2, bool>> joinExpression)
         {
             if (MasterHasWhereFirstJoin())

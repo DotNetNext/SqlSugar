@@ -28,6 +28,15 @@ namespace SqlSugar
             }
             return result;
         }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> InnerJoinIF<T12>(bool isJoin, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, bool>> joinExpression)
+        {
+            var result = InnerJoin(joinExpression);
+            if (isJoin == false)
+            {
+                result.QueryBuilder.JoinQueryInfos.Remove(result.QueryBuilder.JoinQueryInfos.Last());
+            }
+            return result;
+        }
         public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> LeftJoin<T12>(ISugarQueryable<T12> joinQueryable, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, bool>> joinExpression)
         {
             this.Context.InitMappingInfo<T12>();
