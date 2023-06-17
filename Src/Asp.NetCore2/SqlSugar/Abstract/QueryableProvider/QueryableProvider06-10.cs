@@ -28,6 +28,15 @@ namespace SqlSugar
             }
             return result;
         }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> InnerJoinIF<T7>(bool isJoin, Expression<Func<T, T2, T3, T4, T5, T6, T7, bool>> joinExpression)
+        {
+            var result = InnerJoin(joinExpression);
+            if (isJoin == false)
+            {
+                result.QueryBuilder.JoinQueryInfos.Remove(result.QueryBuilder.JoinQueryInfos.Last());
+            }
+            return result;
+        }
         public ISugarQueryable<T, T2, T3, T4, T5, T6, T7> LeftJoin<T7>(ISugarQueryable<T7> joinQueryable, Expression<Func<T, T2, T3, T4, T5, T6, T7, bool>> joinExpression)
         {
             this.Context.InitMappingInfo<T7>();
@@ -727,6 +736,15 @@ namespace SqlSugar
          {
             var result = LeftJoin(joinExpression);
             if (isLeftJoin == false)
+            {
+                result.QueryBuilder.JoinQueryInfos.Remove(result.QueryBuilder.JoinQueryInfos.Last());
+            }
+            return result;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8> InnerJoinIF<T8>(bool isJoin, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, bool>> joinExpression)
+        {
+            var result = InnerJoin(joinExpression);
+            if (isJoin == false)
             {
                 result.QueryBuilder.JoinQueryInfos.Remove(result.QueryBuilder.JoinQueryInfos.Last());
             }
@@ -1438,6 +1456,15 @@ namespace SqlSugar
             }
             return result;
         }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> InnerJoinIF<T9>(bool isJoin, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, bool>> joinExpression)
+        {
+            var result = InnerJoin(joinExpression);
+            if (isJoin == false)
+            {
+                result.QueryBuilder.JoinQueryInfos.Remove(result.QueryBuilder.JoinQueryInfos.Last());
+            }
+            return result;
+        }
         public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> LeftJoin<T9>(ISugarQueryable<T9> joinQueryable, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, bool>> joinExpression)
         {
             this.Context.InitMappingInfo<T9>();
@@ -2144,6 +2171,15 @@ namespace SqlSugar
             }
             return result;
         }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> InnerJoinIF<T10>(bool isJoin, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, bool>> joinExpression)
+        {
+            var result = InnerJoin(joinExpression);
+            if (isJoin == false)
+            {
+                result.QueryBuilder.JoinQueryInfos.Remove(result.QueryBuilder.JoinQueryInfos.Last());
+            }
+            return result;
+        }
         public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> LeftJoin<T10>(ISugarQueryable<T10> joinQueryable, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, bool>> joinExpression)
         {
             this.Context.InitMappingInfo<T10>();
@@ -2805,6 +2841,15 @@ namespace SqlSugar
         {
             var result = LeftJoin(joinExpression);
             if (isLeftJoin == false)
+            {
+                result.QueryBuilder.JoinQueryInfos.Remove(result.QueryBuilder.JoinQueryInfos.Last());
+            }
+            return result;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> InnerJoinIF<T11>(bool isJoin, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, bool>> joinExpression)
+        {
+            var result = InnerJoin(joinExpression);
+            if (isJoin == false)
             {
                 result.QueryBuilder.JoinQueryInfos.Remove(result.QueryBuilder.JoinQueryInfos.Last());
             }
