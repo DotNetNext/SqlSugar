@@ -389,6 +389,8 @@ namespace OrmTest
                 .IncludesAllFirstLayer().ToList();
             var list103 = db.QueryableByObject(data)
                 .IncludesAllFirstLayer("Books2").ToList();
+
+            var list104 = db.QueryableByObject(data).Includes("SchoolA", "RoomList").ToList();
         }
 
         public class UnitView01
