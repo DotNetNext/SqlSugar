@@ -208,6 +208,11 @@ namespace OrmTest
                 //.Where(it=>it.Child.Any())
                 .ToList();
 
+            var xxx21 = db.QueryableByObject(typeof(Tree1))
+            .Includes("Child", "Child", "Child")
+            .Includes("Parent", "Parent", "Parent")
+            //.Where(it=>it.Child.Any())
+            .ToList();
 
             var xxx2 = db.Queryable<Tree1>()
              .Includes(it => it.Child)
