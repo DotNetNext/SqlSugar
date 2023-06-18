@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,6 +21,55 @@ namespace SqlSugar
             _Includes<T, TReturn1>(this.Context, include1);
             return this;
         }
+        public ISugarQueryable<T> IncludesByNameString(string navMemberName, string thenNavMemberName2)
+        {
+            var method = this.GetType().GetMethods().Where(it => it.Name == "IncludesByExpression2")
+            .First();
+            List<Expression> parametres = new List<Expression>();
+            List<Type> types = new List<Type>();
+            var entityInfo = this.EntityInfo;
+            method = GetIncludesByNameStringMethod(types,navMemberName, method, parametres, entityInfo);
+            //var navFirst = GetNavColumnInfo(navMemberName, entityInfo);
+            var entityInfo2 = this.Context.EntityMaintenance.GetEntityInfo(types.Last());
+            method = GetIncludesByNameStringMethod(types,thenNavMemberName2, method, parametres, entityInfo2);
+            method.MakeGenericMethod(types.ToArray()).Invoke(this, parametres.Cast<object>().ToArray());
+            return this;
+        }
+
+        private static MethodInfo GetIncludesByNameStringMethod(List<Type> types,string navMemberName, MethodInfo method, List<Expression> parametres, EntityInfo entityInfo)
+        {
+            var navFirst = GetNavColumnInfo(navMemberName, entityInfo);
+            parametres.AddRange(GetIncludesByNameStringParameters(entityInfo.Type, navFirst));
+            if (navFirst.PropertyInfo.PropertyType.FullName.IsCollectionsList())
+            {
+                types.Add(navFirst.PropertyInfo.PropertyType.GetGenericArguments()[0]);
+            }
+            else
+            {
+                types.Add(navFirst.PropertyInfo.PropertyType);
+            }
+            return method;
+        }
+
+        private static EntityColumnInfo GetNavColumnInfo(string navMemberName, EntityInfo entityInfo)
+        {
+            return entityInfo.Columns.Where(it => it.Navigat != null && it.PropertyName.EqualCase(navMemberName)).FirstOrDefault();
+        }
+
+        private static List<Expression> GetIncludesByNameStringParameters(Type type,EntityColumnInfo item)
+        {
+            var parametres = new List<Expression> { };
+            var properyType = item.PropertyInfo.PropertyType;
+            var properyItemType = properyType;
+            if (properyType.FullName.IsCollectionsList())
+            {
+                properyItemType = properyType.GetGenericArguments()[0];
+            }
+            var exp = ExpressionBuilderHelper.CreateExpressionSelectField(type, item.PropertyName, properyType);
+            parametres.Add(exp);
+            return parametres;
+        }
+
         public ISugarQueryable<T> IncludesByNameString(string navMemberName) 
         {
             var navs = this.EntityInfo.Columns.Where(it => it.Navigat != null&&it.PropertyName.EqualCase(navMemberName)).ToList();
