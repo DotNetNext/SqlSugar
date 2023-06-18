@@ -184,6 +184,12 @@ namespace SqlSugar
             this.QueryableObj = method.Invoke(QueryableObj, new object[] { navProperyName , thenNavProperyName2 });
             return this;
         }
+        public QueryMethodInfo Includes(string navProperyName, string thenNavProperyName2, string thenNavProperyName3)
+        {
+            var method = QueryableObj.GetType().GetMyMethod("IncludesByNameString", 3, typeof(string), typeof(string),typeof(string));
+            this.QueryableObj = method.Invoke(QueryableObj, new object[] { navProperyName, thenNavProperyName2 , thenNavProperyName3 });
+            return this;
+        }
         #endregion
 
         #region Result
