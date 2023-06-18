@@ -18,6 +18,7 @@ namespace SqlSugar
         ISugarQueryable<T> IncludesByExpression<TReturn1>(Expression include1);
         ISugarQueryable<T> IncludesByNameString(string navMemberName);
         ISugarQueryable<T> IncludesByNameString(string navMemberName,string thenNavMemberName2);
+        ISugarQueryable<T> IncludesByNameString(string navMemberName, string thenNavMemberName2, string thenNavMemberName3);
         ISugarQueryable<T> IncludesAllFirstLayer(params string[] ignoreProperyNameList);
         ISugarQueryable<T> IncludesAllSecondLayer<TReturn1>(Expression<Func<T, TReturn1>> expression,params string[] ignoreProperyNameList);
         ISugarQueryable<T> Includes<TReturn1>(Expression<Func<T, List<TReturn1>>> include1);
