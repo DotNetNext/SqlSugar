@@ -33,6 +33,10 @@ namespace SqlSugar
         }
         public override string GetTranslationColumnName(string columnName)
         {
+            if (columnName == "systimestamp") 
+            {
+                return columnName;
+            }
             if (columnName.Contains(":"))
                 return base.GetTranslationColumnName(columnName);
             else if (columnName.Contains("\".\""))

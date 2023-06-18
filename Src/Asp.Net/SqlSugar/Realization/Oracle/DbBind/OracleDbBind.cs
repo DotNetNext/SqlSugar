@@ -113,6 +113,7 @@ namespace SqlSugar
                   new KeyValuePair<string, CSharpDataType>("rowid",CSharpDataType.@string),
 
                   new KeyValuePair<string, CSharpDataType>("date",CSharpDataType.DateTime),
+                  new KeyValuePair<string, CSharpDataType>("timestamptz",CSharpDataType.DateTime),
                   new KeyValuePair<string, CSharpDataType>("timestamp",CSharpDataType.DateTime),
                   new KeyValuePair<string, CSharpDataType>("timestamp with local time zone",CSharpDataType.DateTime),
                   new KeyValuePair<string, CSharpDataType>("timestamp with time zone",CSharpDataType.DateTime),
