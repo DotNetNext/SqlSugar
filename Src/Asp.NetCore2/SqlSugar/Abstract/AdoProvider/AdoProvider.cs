@@ -39,6 +39,10 @@ namespace SqlSugar
         internal bool OldClearParameters { get; set; }
         public IDataParameterCollection DataReaderParameters { get; set; }
         public TimeSpan SqlExecutionTime { get { return AfterTime - BeforeTime; } }
+        /// <summary>
+        /// Add, delete and modify: the number of affected items;
+        /// </summary>
+        public int SqlExecuteCount { get; private set; } = 0;
         public StackTraceInfo SqlStackTrace { get { return UtilMethods.GetStackTrace(); } }
         public bool IsDisableMasterSlaveSeparation { get; set; }
         internal DateTime BeforeTime = DateTime.MinValue;
@@ -428,6 +432,8 @@ namespace SqlSugar
                 int count = sqlCommand.ExecuteNonQuery();
                 if (this.IsClearParameters)
                     sqlCommand.Parameters.Clear();
+                // 影响条数
+                this.SqlExecuteCount = count;
                 ExecuteAfter(sql, parameters);
                 sqlCommand.Dispose();
                 return count;
