@@ -100,6 +100,8 @@ namespace OrmTest
             var list3 = db.Queryable<Country111>()
                 .Includes(x => x.Provinces,x=>x.citys)
                 .ToList();
+           var list4=db.Queryable<Country111>()
+                .IncludesByNameString("Provinces", "citys").ToList();
         }
 
         [SugarTable("Country_111")]
