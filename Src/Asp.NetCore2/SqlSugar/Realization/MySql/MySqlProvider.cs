@@ -143,6 +143,10 @@ namespace SqlSugar
                         sqlParameter.Value = UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig);
                     }
                 }
+                if (parameter.IsJson == false&& sqlParameter.Value!=null&& sqlParameter.Value is JArray) 
+                {
+                    sqlParameter.Value = sqlParameter.Value.ToString();
+                }
                 ++index;
             }
             return result;
