@@ -974,7 +974,7 @@ namespace SqlSugar
                         }
                     }
                 }
-                this.Where(string.Format(QueryBuilder.InTemplate, filed, string.Join(",", values)));
+                this.Where(string.Format(QueryBuilder.InTemplate, SqlBuilder.GetTranslationColumnName(filed), string.Join(",", values)));
 
             }
             return this;
