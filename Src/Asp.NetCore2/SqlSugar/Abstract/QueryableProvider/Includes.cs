@@ -127,6 +127,7 @@ namespace SqlSugar
         private static List<Expression> GetIncludesByNameStringParameters(Type type,EntityColumnInfo item)
         {
             var parametres = new List<Expression> { };
+            Check.ExceptionEasy(item == null, "\r\nThe \"IncludesByNameString\" method encountered an error. The navigation object does not exist. Please check the parameters and navigation configuration.", "IncludesByNameString方法出错，导航对象不存在，请检查参数和导航配置");
             var properyType = item.PropertyInfo.PropertyType;
             var properyItemType = properyType;
             if (properyType.FullName.IsCollectionsList())
