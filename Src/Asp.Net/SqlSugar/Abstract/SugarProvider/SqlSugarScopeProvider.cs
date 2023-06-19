@@ -96,7 +96,7 @@ namespace SqlSugar
             }
             if (frames.Length >= 0)
             {
-                foreach (var method in frames.Take(10))
+                foreach (var method in frames.Take(15))
                 {
                     var refType = method.GetMethod()?.ReflectedType;
                     if (refType != null)

@@ -25,7 +25,7 @@ namespace SqlSugar
             var isAsync = UtilMethods.IsAnyAsyncMethod(methods);
             if (methods.Length>=0) 
             {
-                foreach (var method in methods.Take(10)) 
+                foreach (var method in methods.Take(15)) 
                 {
                     var refType = method.GetMethod()?.ReflectedType;
                     if (refType != null)
