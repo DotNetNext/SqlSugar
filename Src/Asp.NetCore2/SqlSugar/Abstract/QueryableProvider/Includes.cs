@@ -21,6 +21,16 @@ namespace SqlSugar
             _Includes<T, TReturn1, TReturn2, TReturn3>(this.Context, include1, include2, include3);
             return this;
         }
+        public ISugarQueryable<T> IncludesByExpression4<TReturn1, TReturn2, TReturn3, TReturn4>(Expression include1, Expression include2, Expression include3, Expression include4)
+        {
+            _Includes<T, TReturn1, TReturn2, TReturn3, TReturn4>(this.Context, include1, include2, include3, include4);
+            return this;
+        }
+        public ISugarQueryable<T> IncludesByExpression5<TReturn1, TReturn2, TReturn3, TReturn4, TReturn5>(Expression include1, Expression include2, Expression include3, Expression include4, Expression include5)
+        {
+            _Includes<T, TReturn1, TReturn2, TReturn3, TReturn4, TReturn5>(this.Context, include1, include2, include3, include4, include5);
+            return this;
+        }
         public ISugarQueryable<T> IncludesByExpression<TReturn1>(Expression include1)
         {
             _Includes<T, TReturn1>(this.Context, include1);
@@ -56,7 +66,44 @@ namespace SqlSugar
             method.MakeGenericMethod(types.ToArray()).Invoke(this, parametres.Cast<object>().ToArray());
             return this;
         }
-
+        public ISugarQueryable<T> IncludesByNameString(string navMemberName, string thenNavMemberName2, string thenNavMemberName3, string thenNavMemberName4) 
+        {
+            var method = this.GetType().GetMethods().Where(it => it.Name == "IncludesByExpression4")
+            .First();
+            List<Expression> parametres = new List<Expression>();
+            List<Type> types = new List<Type>();
+            var entityInfo = this.EntityInfo;
+            method = GetIncludesByNameStringMethod(types, navMemberName, method, parametres, entityInfo);
+            //var navFirst = GetNavColumnInfo(navMemberName, entityInfo);
+            var entityInfo2 = this.Context.EntityMaintenance.GetEntityInfo(types.Last());
+            method = GetIncludesByNameStringMethod(types, thenNavMemberName2, method, parametres, entityInfo2);
+            var entityInfo3 = this.Context.EntityMaintenance.GetEntityInfo(types.Last());
+            method = GetIncludesByNameStringMethod(types, thenNavMemberName3, method, parametres, entityInfo3);
+            var entityInfo4 = this.Context.EntityMaintenance.GetEntityInfo(types.Last());
+            method = GetIncludesByNameStringMethod(types, thenNavMemberName4, method, parametres, entityInfo4);
+            method.MakeGenericMethod(types.ToArray()).Invoke(this, parametres.Cast<object>().ToArray());
+            return this;
+        }
+        public ISugarQueryable<T> IncludesByNameString(string navMemberName, string thenNavMemberName2, string thenNavMemberName3, string thenNavMemberName4, string thenNavMemberName5) 
+        {
+            var method = this.GetType().GetMethods().Where(it => it.Name == "IncludesByExpression5")
+        .First();
+            List<Expression> parametres = new List<Expression>();
+            List<Type> types = new List<Type>();
+            var entityInfo = this.EntityInfo;
+            method = GetIncludesByNameStringMethod(types, navMemberName, method, parametres, entityInfo);
+            //var navFirst = GetNavColumnInfo(navMemberName, entityInfo);
+            var entityInfo2 = this.Context.EntityMaintenance.GetEntityInfo(types.Last());
+            method = GetIncludesByNameStringMethod(types, thenNavMemberName2, method, parametres, entityInfo2);
+            var entityInfo3 = this.Context.EntityMaintenance.GetEntityInfo(types.Last());
+            method = GetIncludesByNameStringMethod(types, thenNavMemberName3, method, parametres, entityInfo3);
+            var entityInfo4 = this.Context.EntityMaintenance.GetEntityInfo(types.Last());
+            method = GetIncludesByNameStringMethod(types, thenNavMemberName4, method, parametres, entityInfo4);
+            var entityInfo5 = this.Context.EntityMaintenance.GetEntityInfo(types.Last());
+            method = GetIncludesByNameStringMethod(types, thenNavMemberName5, method, parametres, entityInfo5);
+            method.MakeGenericMethod(types.ToArray()).Invoke(this, parametres.Cast<object>().ToArray());
+            return this;
+        }
         private static MethodInfo GetIncludesByNameStringMethod(List<Type> types,string navMemberName, MethodInfo method, List<Expression> parametres, EntityInfo entityInfo)
         {
             var navFirst = GetNavColumnInfo(navMemberName, entityInfo);
