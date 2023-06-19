@@ -113,12 +113,14 @@ namespace SqlSugar
             var parname = GetParameterName(pars, parvalue);
             return parname;
         }
+        private int GetParameterNameIndex = 100;
 
         private   string GetParameterName(List<SugarParameter> pars, object parvalue)
         {
-            var parname = "@p" + pars.Count()+"_"+this.QueryBuilder.WhereIndex;
+            var parname = "@p" + pars.Count()+"_"+(this?.QueryBuilder?.WhereIndex?? GetParameterNameIndex);
             SugarParameter parameter = new SugarParameter(parname, parvalue);
             pars.Add(parameter);
+            GetParameterNameIndex++;
             return parname;
         }
         #endregion
