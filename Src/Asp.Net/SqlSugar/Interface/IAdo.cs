@@ -31,6 +31,7 @@ namespace SqlSugar
         bool IsClearParameters { get; set; }
         int CommandTimeOut { get; set; }
         TimeSpan SqlExecutionTime { get; }
+        int SqlExecuteCount { get; }
         IDbBind DbBind { get; }
         void SetCommandToAdapter(IDataAdapter adapter, DbCommand command);
         IDataAdapter GetAdapter();
