@@ -1,4 +1,5 @@
-﻿using SqlSugar;
+﻿using Newtonsoft.Json.Linq;
+using SqlSugar;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,8 +30,15 @@ namespace OrmTest
             db.CodeFirst.InitTables<Charafafa2>();
             db.Insertable(new Charafafa2() { TimeSpanTimeSpan = TimeSpan.FromSeconds(1) }).ExecuteCommand();
             var list2=db.Queryable<Charafafa2>().ToList();
+            db.CodeFirst.InitTables<Codeafadfa>();
+            db.Insertable(new Codeafadfa() { Array = JArray.FromObject(new string[] { "a" }) }).ExecuteCommand();
             Console.WriteLine("#### CodeFirst end ####");
         }
+    }
+    public class Codeafadfa 
+    {
+        [SugarColumn(ColumnDataType ="varchar(500)" )]
+        public object Array { get; set; } 
     }
     public class Charafafa2 
     {
