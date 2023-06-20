@@ -11,6 +11,7 @@ namespace SqlSugar
         Day = 0,
         Week = 1,
         Month = 2,
+        Month_6=1000,
         Season = 3,
         Year = 4,
         _Custom01 = 5,

@@ -102,6 +102,8 @@ namespace SqlSugar
                     break;
                 case SplitType.Year:
                     break;
+                case SplitType.Month_6:
+                    break;
                 default:
                     throw new Exception("DateSplitTableService no support " + splitType.ToString());
             }
@@ -222,6 +224,15 @@ namespace SqlSugar
                     }
                 case SplitType.Year:
                     return Convert.ToDateTime(time.ToString("yyyy-01-01"));
+                case SplitType.Month_6:
+                    if (time.Month <= 6)
+                    {
+                        return Convert.ToDateTime(time.ToString("yyyy-01-01"));
+                    }
+                    else
+                    {
+                        return Convert.ToDateTime(time.ToString("yyyy-07-01"));
+                    }
                 default:
                     throw new Exception($"SplitType parameter error ");
             }

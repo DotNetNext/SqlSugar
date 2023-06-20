@@ -1302,6 +1302,13 @@ namespace SqlSugar
                     result = result.Where(y => 
                         y.Date >= begtinWeek&& y.Date  <= endWeek).ToList();
                 }
+                else if (SplitType.Month_6 == type.SplitType)
+                {
+                    var begtinWeek = beginTime.Month<=6?beginTime.ToString("yyyy-01-01"): beginTime.ToString("yyyy-06-01");
+                    var endWeek = endTime.Month <= 6 ? endTime.ToString("yyyy-07-01") : endTime.ToString("yyyy-12-01");
+                    result = result.Where(y =>
+                        y.Date >= begtinWeek.ObjToDate() && y.Date <= endWeek.ObjToDate().AddMonths(1).AddDays(-1)).ToList();
+                }
                 else if (SplitType.Season == type.SplitType)
                 {
 
