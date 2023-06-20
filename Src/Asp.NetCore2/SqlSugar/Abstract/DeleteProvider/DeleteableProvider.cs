@@ -190,7 +190,17 @@ namespace SqlSugar
                         //}
                         else if (entityValue != null && UtilMethods.GetUnderType(entityValue.GetType()) == UtilConstants.DateType)
                         {
-                            andString.AppendFormat("{0}={1} ",this.SqlBuilder.GetTranslationColumnName(primaryField), $"'{entityValue.ObjToDate().ToString("yyyy-MM-dd HH:mm:ss.fff")}'");
+                            andString.AppendFormat("{0}={1} ", this.SqlBuilder.GetTranslationColumnName(primaryField), this.DeleteBuilder.LambdaExpressions.DbMehtods.ToDate(new MethodCallExpressionModel()
+                            {
+                                Args = new List<MethodCallExpressionArgs>()
+                             {
+                                 new MethodCallExpressionArgs()
+                                 {
+                                      IsMember=false,
+                                      MemberName="'"+entityValue.ObjToDate().ToString("yyyy-MM-dd HH:mm:ss.fff")+"'"
+                                 }
+                             }
+                            })); ;
                         }
                         else
                         {
