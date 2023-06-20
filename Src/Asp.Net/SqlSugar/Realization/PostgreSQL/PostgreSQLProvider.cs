@@ -14,9 +14,12 @@ namespace SqlSugar
     {
         public PostgreSQLProvider() 
         {
-            
-            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
-            AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
+
+            if (StaticConfig.AppContext_ConvertInfinityDateTime == false)
+            {
+                AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+                AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
+            }
          
         }
         public override IDbConnection Connection
