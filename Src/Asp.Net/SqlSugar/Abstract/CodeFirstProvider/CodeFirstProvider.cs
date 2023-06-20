@@ -619,6 +619,10 @@ namespace SqlSugar
             {
                 return false;
             }
+            if (this.Context.CurrentConnectionConfig?.MoreSettings?.EnableOracleIdentity==true&&properyTypeName?.ToLower() == "int" && dataType?.ToLower() == "decimal")
+            {
+                return false;
+            }
             if (properyTypeName?.ToLower() == "int" && dataType?.ToLower() == "decimal"&&dc.Length==22&&dc.Scale==0&&this.Context.CurrentConnectionConfig.DbType==DbType.Oracle)
             {
                 return false;

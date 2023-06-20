@@ -28,6 +28,18 @@ namespace SqlSugar
             InsertBuilder.IsReturnIdentity = true;
             PreToSql();
             string sql = InsertBuilder.ToSqlString();
+            if (isIdEntityEnable())
+            {
+                if (sql?.StartsWith("INSERT ALL")==true)
+                {
+                    return this.UseParameter().ExecuteCommand();
+                }
+                else
+                {
+                    sql = sql + " RETURNING ID INTO :newId01 ";
+                }
+                InsertBuilder.Parameters.Add(new SugarParameter(":newId01", 0,true));
+            }
             RestoreMapping();
             var isDisableMasterSlaveSeparation = this.Context.Ado.IsDisableMasterSlaveSeparation;
             this.Context.Ado.IsDisableMasterSlaveSeparation = true;
@@ -36,7 +48,15 @@ namespace SqlSugar
             this.Context.Ado.IsDisableMasterSlaveSeparation = isDisableMasterSlaveSeparation;
             After(sql,result);
             AutoEnd(oldIsAuto);
+            if (isIdEntityEnable()) 
+            {
+                return this.InsertBuilder.Parameters.FirstOrDefault(it => it.ParameterName == ":newId01")?.Value?.ObjToInt()??0;
+            }
             return result;
+        }
+        private bool isIdEntityEnable()
+        {
+            return this.Context.CurrentConnectionConfig?.MoreSettings?.EnableOracleIdentity == true;
         }
 
         public override long ExecuteReturnBigIdentity()
@@ -46,6 +66,18 @@ namespace SqlSugar
             InsertBuilder.IsReturnIdentity = true;
             PreToSql();
             string sql = InsertBuilder.ToSqlString();
+            if (isIdEntityEnable())
+            {
+                if (sql?.StartsWith("INSERT ALL") == true)
+                {
+                    return  this.UseParameter().ExecuteCommand();
+                }
+                else
+                {
+                    sql = sql + " RETURNING ID INTO :newId01 ";
+                }
+                InsertBuilder.Parameters.Add(new SugarParameter(":newId01", Convert.ToInt64(0), true));
+            }
             RestoreMapping();
             var isDisableMasterSlaveSeparation = this.Context.Ado.IsDisableMasterSlaveSeparation;
             this.Context.Ado.IsDisableMasterSlaveSeparation = true;
@@ -54,6 +86,10 @@ namespace SqlSugar
             this.Context.Ado.IsDisableMasterSlaveSeparation = isDisableMasterSlaveSeparation;
             After(sql, result);
             AutoEnd(oldIsAuto);
+            if (isIdEntityEnable())
+            {
+                return this.InsertBuilder.Parameters.FirstOrDefault(it => it.ParameterName == ":newId01")?.Value?.ObjToLong() ?? 0;
+            }
             return result;
         }
 
@@ -64,6 +100,18 @@ namespace SqlSugar
             InsertBuilder.IsReturnIdentity = true;
             PreToSql();
             string sql = InsertBuilder.ToSqlString();
+            if (isIdEntityEnable())
+            {
+                if (sql?.StartsWith("INSERT ALL") == true)
+                {
+                    return await this.UseParameter().ExecuteCommandAsync();
+                }
+                else
+                {
+                    sql = sql + " RETURNING ID INTO :newId01 ";
+                }
+                InsertBuilder.Parameters.Add(new SugarParameter(":newId01", 0, true));
+            }
             RestoreMapping();
             var isDisableMasterSlaveSeparation = this.Context.Ado.IsDisableMasterSlaveSeparation;
             this.Context.Ado.IsDisableMasterSlaveSeparation = true;
@@ -72,6 +120,10 @@ namespace SqlSugar
             this.Context.Ado.IsDisableMasterSlaveSeparation = isDisableMasterSlaveSeparation;
             After(sql, result);
             AutoEnd(oldIsAuto);
+            if (isIdEntityEnable())
+            {
+                return this.InsertBuilder.Parameters.FirstOrDefault(it => it.ParameterName == ":newId01")?.Value?.ObjToInt() ?? 0;
+            }
             return result;
         }
 
@@ -82,6 +134,18 @@ namespace SqlSugar
             InsertBuilder.IsReturnIdentity = true;
             PreToSql();
             string sql = InsertBuilder.ToSqlString();
+            if (isIdEntityEnable())
+            {
+                if (sql?.StartsWith("INSERT ALL") == true)
+                {
+                    return await this.UseParameter().ExecuteCommandAsync();
+                }
+                else
+                {
+                    sql = sql + " RETURNING ID INTO :newId01 ";
+                }
+                InsertBuilder.Parameters.Add(new SugarParameter(":newId01", Convert.ToInt64(0), true));
+            }
             RestoreMapping();
             var isDisableMasterSlaveSeparation = this.Context.Ado.IsDisableMasterSlaveSeparation;
             this.Context.Ado.IsDisableMasterSlaveSeparation = true;
@@ -90,6 +154,10 @@ namespace SqlSugar
             this.Context.Ado.IsDisableMasterSlaveSeparation = isDisableMasterSlaveSeparation;
             After(sql, result);
             AutoEnd(oldIsAuto);
+            if (isIdEntityEnable())
+            {
+                return this.InsertBuilder.Parameters.FirstOrDefault(it => it.ParameterName == ":newId01")?.Value?.ObjToLong() ?? 0;
+            }
             return result;
         }
 

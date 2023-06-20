@@ -248,7 +248,8 @@ namespace SqlSugar
                     InsertSql = column.InsertSql,
                     InsertServerTime = column.InsertServerTime,
                     DataType=column.DataType,
-                    SqlParameterDbType= column.SqlParameterDbType 
+                    SqlParameterDbType= column.SqlParameterDbType ,
+                    IsIdentity= column.IsIdentity
                      
                 };
                 if (column.DbColumnName == null)

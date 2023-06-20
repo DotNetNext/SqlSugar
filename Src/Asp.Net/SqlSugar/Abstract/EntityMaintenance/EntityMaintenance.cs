@@ -386,6 +386,11 @@ namespace SqlSugar
                     column.Length = 0;
                     column.DecimalDigits = 0;
                 }
+                if (column.OracleSequenceName.HasValue() &&
+                     this.Context.CurrentConnectionConfig?.MoreSettings?.EnableOracleIdentity == true) 
+                {
+                    column.OracleSequenceName = null;
+                }
                 result.Columns.Add(column);
             }
         }
