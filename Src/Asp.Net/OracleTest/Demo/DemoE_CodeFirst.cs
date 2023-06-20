@@ -55,8 +55,34 @@ namespace OrmTest
                 }).ToList();
             db.Queryable<CodeFirstNoUpper>().LeftJoin<CodeFirstNoUpper>((s, y) => s.Id == y.Id)
                 .Select((s, y) => y).ToList();
+
+            SqlSugarClient db2 = new SqlSugarClient(new ConnectionConfig()
+            {
+                DbType = DbType.Oracle,
+                ConnectionString = Config.ConnectionString3,
+                InitKeyType = InitKeyType.Attribute,
+                IsAutoCloseConnection = true,
+                MoreSettings=new ConnMoreSettings() 
+                {
+                      EnableOracleIdentity=true
+                }
+            });
+            db2.Aop.OnLogExecuting = (s, p) => Console.WriteLine(s);
+            db2.CodeFirst.InitTables<CodeFIrstadfa>();
+            var id = db2.Insertable(new CodeFIrstadfa() { Id = 1, Name = "a" }).ExecuteReturnIdentity();
+            var id11 = db2.Insertable(new CodeFIrstadfa() { Id = 1, Name = "a" }).ExecuteReturnIdentityAsync().GetAwaiter().GetResult();
+            var id111 = db2.Insertable(new CodeFIrstadfa() { Id = 1, Name = "a" }).ExecuteReturnBigIdentityAsync().GetAwaiter().GetResult();
+            var id1111 = db2.Insertable(new CodeFIrstadfa() { Id = 1, Name = "a" }).ExecuteReturnBigIdentity();
+            var id2 = db2.Insertable(new List<CodeFIrstadfa>() { new CodeFIrstadfa() { Id = 1, Name = "a" }, new CodeFIrstadfa() { Id = 1, Name = "a" } }).ExecuteReturnIdentity();
             Console.WriteLine("#### CodeFirst end ####");
         }
+    }
+    public class CodeFIrstadfa 
+    {
+        [SugarColumn(IsIdentity =true,IsPrimaryKey =true)]
+        public int Id { get; set; }
+        [SugarColumn(IsNullable =true)]
+        public string Name { get; set; }
     }
     public class CodeFirstNoUpper
     {
