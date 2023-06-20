@@ -1278,7 +1278,18 @@ namespace SqlSugar
                 var dbLinkName = this.Context.Root.GetConnection(attr.configId).CurrentConnectionConfig.DbLinkName;
                 if (dbLinkName != null)
                 {
-                    tableName = dbLinkName + "." + this.QueryBuilder.Builder.GetTranslationColumnName(oldTableName);
+                    if (dbLinkName.First()== '@')
+                    {
+                        tableName = this.QueryBuilder.Builder.GetTranslationColumnName(oldTableName) +dbLinkName;
+                    }
+                    else if (dbLinkName.Last() == '_')
+                    {
+                        tableName = dbLinkName+this.QueryBuilder.Builder.GetTranslationColumnName(oldTableName);
+                    }
+                    else
+                    {
+                        tableName = dbLinkName + "." + this.QueryBuilder.Builder.GetTranslationColumnName(oldTableName);
+                    }
                 }
             }
             return tableName;
