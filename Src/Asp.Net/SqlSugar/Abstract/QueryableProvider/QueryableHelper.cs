@@ -1284,7 +1284,7 @@ namespace SqlSugar
                     }
                     else if (dbLinkName.Last() == '_')
                     {
-                        tableName = dbLinkName+this.QueryBuilder.Builder.GetTranslationColumnName(oldTableName);
+                        tableName = dbLinkName+oldTableName;
                     }
                     else
                     {
