@@ -82,8 +82,14 @@ namespace OrmTest
             db.Insertable(new CodeFloatddfa1a2() { xx = DateTimeOffset.Now }).ExecuteCommand();
             db.Insertable(new List<CodeFloatddfa1a2> { new CodeFloatddfa1a2() { xx = DateTimeOffset.Now }, new CodeFloatddfa1a2() { xx = DateTimeOffset.Now } }).ExecuteCommand();
             db.CodeFirst.InitTables<Area>();
+            db.CodeFirst.InitTables<CodeFirstadfa>();
             Console.WriteLine("#### CodeFirst end ####");
         }
+    }
+    public class CodeFirstadfa 
+    {
+        [SugarColumn(IsNullable = true, DefaultValue = "CURRENT_TIMESTAMP")]
+        public DateTime CreateTime { get; set; } = DateTime.Now;
     }
 
     [SugarTable("TNL_Tunnel1")]
