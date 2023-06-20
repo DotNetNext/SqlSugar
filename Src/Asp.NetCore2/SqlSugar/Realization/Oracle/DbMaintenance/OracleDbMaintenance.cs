@@ -535,6 +535,10 @@ namespace SqlSugar
                     {
                         item.Length = 50;
                     }
+                    if (item.IsIdentity && this.Context.CurrentConnectionConfig?.MoreSettings?.EnableOracleIdentity == true) 
+                    {
+                        item.DataType = "NUMBER GENERATED ALWAYS AS IDENTITY";
+                    }
                 }
             }
             string sql = GetCreateTableSql(tableName, columns);
