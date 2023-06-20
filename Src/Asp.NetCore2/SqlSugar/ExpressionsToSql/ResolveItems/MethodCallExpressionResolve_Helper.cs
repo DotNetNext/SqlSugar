@@ -841,6 +841,7 @@ namespace SqlSugar
                     case "SplitIn":
                         return this.Context.DbMehtods.SplitIn(model);
                     case "ListAny":
+                        this.Context.Result.IsNavicate = true;
                         this.Context.Parameters.RemoveAll(it => model.Args[0].MemberName.ObjToString().Contains(it.ParameterName));
                         return this.Context.DbMehtods.ListAny(model);
                     case "Modulo":
