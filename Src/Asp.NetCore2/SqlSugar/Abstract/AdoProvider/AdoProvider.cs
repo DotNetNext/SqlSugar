@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
@@ -1602,6 +1602,7 @@ namespace SqlSugar
 
         protected void ExecuteErrorEvent(string sql, SugarParameter[] parameters, Exception ex)
         {
+            this.AfterTime = DateTime.Now;
             ErrorEvent(new SqlSugarException(this.Context, ex, sql, parameters));
         }
         protected void InitParameters(ref string sql, SugarParameter[] parameters)
