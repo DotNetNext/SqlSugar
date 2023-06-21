@@ -52,8 +52,22 @@ namespace OrmTest
             Console.Write(db.Queryable<BoolTest5>().First(it=>it.Id==Id).A);
             //db.Updateable<BoolTest4>(new BoolTest4() { dateTime = DateTime.Now,A = false, Id = Id }).ExecuteCommand();
             db.Updateable<BoolTest5>(  new BoolTest5() { dateTime = DateTime.Now, A = false, Id = Id  }).ExecuteCommand();
+            db.CodeFirst.InitTables<UnitSiafayyy>();
+            var list=db.Queryable<UnitSiafayyy>().SampleBy(1, SampleByUnit.Minute)
+                .Select(it=>new { 
+                  Id=SqlFunc.AggregateMin(it.Id),
+                  Count=SqlFunc.AggregateCount(it.Id)
+                })
+                .ToList();
             Console.Write(db.Queryable<BoolTest5>().First(it => it.Id == Id).A);
         }
+    }
+    public class UnitSiafayyy
+    {
+        [SugarColumn(IsPrimaryKey = true)]
+        public long Id { get; set; }
+        [TimeDbSplitField(DateType.Day)]
+        public DateTime DateTime { get; set; }
     }
     public class GuidTest
     {
