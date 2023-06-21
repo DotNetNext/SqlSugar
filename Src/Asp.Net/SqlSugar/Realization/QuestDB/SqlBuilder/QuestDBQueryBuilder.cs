@@ -15,6 +15,10 @@ namespace SqlSugar
                  SELECT * FROM TABLE WHERE CONDITION ORDER BY ID DESC LIMIT 0,10
                  */
                 var template = "SELECT {0} FROM {1} {2} {3} {4} LIMIT {5},{6}";
+                if (this.SampleBy.HasValue()) 
+                {
+                    template = "SELECT {0} FROM {1} {2} "+this.SampleBy+" {3} {4} LIMIT {5},{6}";
+                }
                 return template;
             }
         }

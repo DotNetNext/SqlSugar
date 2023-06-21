@@ -109,6 +109,8 @@ namespace SqlSugar
         ISugarQueryable<T> OrderByDescending(Expression<Func<T, object>> expression);
         ISugarQueryable<T> OrderByIF(bool isOrderBy, string orderFileds);
         ISugarQueryable<T> OrderByIF(bool isOrderBy, Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T> SampleBy(int timeNumber, SampleByUnit timeType);
+        ISugarQueryable<T> SampleBy(int timeNumber, string timeType);
 
 
         ISugarQueryable<T> GroupBy(Expression<Func<T, object>> expression);
@@ -266,6 +268,8 @@ namespace SqlSugar
     }
     public partial interface ISugarQueryable<T, T2> : ISugarQueryable<T>
     {
+        new ISugarQueryable<T,T2> SampleBy(int timeNumber, SampleByUnit timeType);
+        new ISugarQueryable<T,T2> SampleBy(int timeNumber, string timeType);
         ISugarQueryable<TResult> SelectMergeTable<TResult>(Expression<Func<T,T2, TResult>> expression);
         ISugarQueryable<T, T2,T3> LeftJoinIF<T3>(bool isLeftJoin, Expression<Func<T, T2,T3, bool>> joinExpression);
         ISugarQueryable<T, T2,T3> InnerJoinIF<T3>(bool isJoin, Expression<Func<T, T2,T3, bool>> joinExpression);
@@ -384,6 +388,8 @@ namespace SqlSugar
     }
     public partial interface ISugarQueryable<T, T2, T3> : ISugarQueryable<T>
     {
+        new ISugarQueryable<T, T2,T3> SampleBy(int timeNumber, SampleByUnit timeType);
+        new ISugarQueryable<T, T2,T3> SampleBy(int timeNumber, string timeType);
         ISugarQueryable<TResult> SelectMergeTable<TResult>(Expression<Func<T, T2,T3, TResult>> expression);
         ISugarQueryable<T, T2, T3,T4> LeftJoinIF<T4>(bool isLeftJoin, Expression<Func<T, T2, T3,T4, bool>> joinExpression);
         ISugarQueryable<T, T2, T3,T4> InnerJoinIF<T4>(bool isJoin, Expression<Func<T, T2, T3,T4, bool>> joinExpression);
@@ -517,6 +523,8 @@ namespace SqlSugar
     }
     public partial interface ISugarQueryable<T, T2, T3, T4> : ISugarQueryable<T>
     {
+        new ISugarQueryable<T, T2, T3,T4> SampleBy(int timeNumber, SampleByUnit timeType);
+        new ISugarQueryable<T, T2, T3,T4> SampleBy(int timeNumber, string timeType);
         ISugarQueryable<TResult> SelectMergeTable<TResult>(Expression<Func<T, T2, T3,T4, TResult>> expression);
         ISugarQueryable<T, T2, T3, T4,T5> LeftJoinIF<T5>(bool isLeftJoin, Expression<Func<T, T2, T3, T4,T5, bool>> joinExpression);
         ISugarQueryable<T, T2, T3, T4,T5> InnerJoinIF<T5>(bool isJoin, Expression<Func<T, T2, T3, T4,T5, bool>> joinExpression);
@@ -656,6 +664,8 @@ namespace SqlSugar
     }
     public partial interface ISugarQueryable<T, T2, T3, T4, T5> : ISugarQueryable<T>
     {
+        new ISugarQueryable<T, T2, T3, T4,T5> SampleBy(int timeNumber, SampleByUnit timeType);
+        new ISugarQueryable<T, T2, T3, T4,T5> SampleBy(int timeNumber, string timeType);
         ISugarQueryable<TResult> SelectMergeTable<TResult>(Expression<Func<T, T2, T3,T4,T5, TResult>> expression);
         ISugarQueryable<T, T2, T3, T4, T5,T6> LeftJoinIF<T6>(bool isLeftJoin, Expression<Func<T, T2, T3, T4, T5,T6, bool>> joinExpression);
         ISugarQueryable<T, T2, T3, T4, T5,T6> InnerJoinIF<T6>(bool isJoin, Expression<Func<T, T2, T3, T4, T5,T6, bool>> joinExpression);

@@ -57,6 +57,7 @@ namespace SqlSugar
         public int ExternalPageSize { get; set; }
         public int? Take { get; set; }
         public bool DisableTop { get; set; }
+        public string SampleBy { get; set; }
         public string OrderByValue { get; set; }
         public object SelectValue { get; set; }
         public string SelectCacheKey { get; set; }
@@ -138,6 +139,10 @@ namespace SqlSugar
         {
             get
             {
+                if (this.SampleBy.HasValue())
+                {
+                   return "SELECT {0} FROM {1}{2} "+ this.SampleBy + " {3}{4}";
+                }
                 return "SELECT {0} FROM {1}{2}{3}{4} ";
             }
         }

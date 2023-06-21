@@ -1031,6 +1031,19 @@ namespace SqlSugar
             _InQueryable(expression, sqlObj);
             return this;
         }
+        public ISugarQueryable<T> SampleBy(int timeNumber, SampleByUnit timeType) 
+        {
+            SampleByUnit sampleBy = timeType;
+            string sql = "SAMPLE BY "+timeNumber + sampleBy.ToString().Substring(0, 1).ToLower();
+            this.QueryBuilder.SampleBy = sql;
+            return this;
+        }
+        public ISugarQueryable<T> SampleBy(int timeNumber, string timeType)
+        {
+            string sql = "SAMPLE BY " + timeType;
+            this.QueryBuilder.SampleBy = sql;
+            return this;
+        }
         public virtual ISugarQueryable<T> OrderBy(string orderFileds)
         {
             orderFileds = orderFileds.ToCheckField();
