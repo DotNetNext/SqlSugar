@@ -44,6 +44,8 @@ namespace OrmTest
             //logic delete
             db.CodeFirst.InitTables<LogicDeleteTezt>();
             db.Deleteable<LogicDeleteTezt>().Where(it=>it.Name=="a").IsLogic().ExecuteCommand();
+
+            db.Deleteable<Order>().WhereColumns(db.Queryable<Order>().Take(2).ToList(), it => new { it.Id, it.Name }).ExecuteCommand();
             Console.WriteLine("#### Deleteable End ####");
 
         }
