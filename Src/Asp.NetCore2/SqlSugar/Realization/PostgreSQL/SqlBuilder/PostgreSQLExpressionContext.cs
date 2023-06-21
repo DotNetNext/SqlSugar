@@ -203,7 +203,7 @@ namespace SqlSugar
             }
             if (parameter2.MemberValue.ObjToString() == DateType.Hour.ToString())
             {
-                format = "hh";
+                format = "hh24";
             }
             if (parameter2.MemberValue.ObjToString() == DateType.Minute.ToString())
             {
