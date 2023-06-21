@@ -16,6 +16,16 @@ namespace SqlSugar
     #region T2
     public partial class QueryableProvider<T, T2> : QueryableProvider<T>, ISugarQueryable<T, T2>
     {
+        public new ISugarQueryable<T, T2> SampleBy(int timeNumber, SampleByUnit timeType) 
+        {
+             base.SampleBy(timeNumber, timeType);
+             return this;
+        }
+        public new ISugarQueryable<T, T2> SampleBy(int timeNumber, string timeType) 
+        {
+            base.SampleBy(timeNumber, timeType);
+            return this;
+        }
         public virtual ISugarQueryable<TResult> SelectMergeTable<TResult>(Expression<Func<T,T2, TResult>> expression)
         {
             return this.Select(expression).MergeTable();
@@ -613,6 +623,16 @@ namespace SqlSugar
     #region T3
     public partial class QueryableProvider<T, T2, T3> : QueryableProvider<T>, ISugarQueryable<T, T2, T3>
     {
+        public new ISugarQueryable<T, T2,T3> SampleBy(int timeNumber, SampleByUnit timeType)
+        {
+            base.SampleBy(timeNumber, timeType);
+            return this;
+        }
+        public new ISugarQueryable<T, T2,T3> SampleBy(int timeNumber, string timeType)
+        {
+            base.SampleBy(timeNumber, timeType);
+            return this;
+        }
         public virtual ISugarQueryable<TResult> SelectMergeTable<TResult>(Expression<Func<T, T2,T3, TResult>> expression)
         {
             return this.Select(expression).MergeTable();
@@ -1316,6 +1336,16 @@ namespace SqlSugar
     #region T4
     public partial class QueryableProvider<T, T2, T3, T4> : QueryableProvider<T>, ISugarQueryable<T, T2, T3, T4>
     {
+        public new ISugarQueryable<T, T2,T3,T4> SampleBy(int timeNumber, SampleByUnit timeType)
+        {
+            base.SampleBy(timeNumber, timeType);
+            return this;
+        }
+        public new ISugarQueryable<T, T2,T3, T4> SampleBy(int timeNumber, string timeType)
+        {
+            base.SampleBy(timeNumber, timeType);
+            return this;
+        }
         public virtual ISugarQueryable<TResult> SelectMergeTable<TResult>(Expression<Func<T, T2, T3,T4, TResult>> expression)
         {
             return this.Select(expression).MergeTable();
@@ -2040,6 +2070,16 @@ namespace SqlSugar
     #region T5   
     public partial class QueryableProvider<T, T2, T3, T4, T5> : QueryableProvider<T>, ISugarQueryable<T, T2, T3, T4, T5>
     {
+        public new ISugarQueryable<T, T2,T3, T4,T5> SampleBy(int timeNumber, SampleByUnit timeType)
+        {
+            base.SampleBy(timeNumber, timeType);
+            return this;
+        }
+        public new ISugarQueryable<T, T2,T3, T4,T5> SampleBy(int timeNumber, string timeType)
+        {
+            base.SampleBy(timeNumber, timeType);
+            return this;
+        }
         public virtual ISugarQueryable<TResult> SelectMergeTable<TResult>(Expression<Func<T, T2, T3, T4, T5, TResult>> expression)
         {
             return this.Select(expression).MergeTable();
