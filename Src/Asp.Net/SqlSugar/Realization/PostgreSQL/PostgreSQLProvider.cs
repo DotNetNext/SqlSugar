@@ -98,6 +98,8 @@ namespace SqlSugar
             var isVarchar = this.Context.IsVarchar();
             foreach (var parameter in parameters)
             {
+                //No support unumber 
+                ConvertUNumber(parameter);
                 if (parameter.Value == null) parameter.Value = DBNull.Value;
                 if (parameter.Value is System.Data.SqlTypes.SqlDateTime && parameter.DbType == System.Data.DbType.AnsiString)
                 {
@@ -139,12 +141,24 @@ namespace SqlSugar
                     sqlParameter.DbType = System.Data.DbType.DateTime;
                 }
                 ++index;
-                if (parameter.CustomDbType != null&& parameter.CustomDbType is NpgsqlDbType) 
+                if (parameter.CustomDbType != null&& parameter.CustomDbType is NpgsqlDbType)
                 {
                     sqlParameter.NpgsqlDbType =((NpgsqlDbType)parameter.CustomDbType);
                 }
             }
             return result;
+        }
+
+        private static void ConvertUNumber(SugarParameter parameter)
+        {
+            if (parameter.DbType == System.Data.DbType.UInt32)
+            {
+                parameter.DbType = System.Data.DbType.Int32;
+            }
+            else if (parameter.DbType == System.Data.DbType.UInt64)
+            {
+                parameter.DbType = System.Data.DbType.UInt64;
+            }
         }
 
         private static void Array(SugarParameter parameter, NpgsqlParameter sqlParameter)
