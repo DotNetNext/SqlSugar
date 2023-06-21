@@ -29,6 +29,14 @@ namespace OrmTest
             {
                 id2 = 1
             }).ExecuteCommand();
+            db.Updateable<CodeFirstunitea>().SetColumns(it => new CodeFirstunitea()
+            {
+                id2 = 1
+            }).Where(it=>it.id>0).ExecuteCommand();
+            db.Updateable<CodeFirstunitea>().SetColumns(it => new CodeFirstunitea()
+            {
+                id2 = null
+            }).Where(it => it.id > 0).ExecuteCommand();
             db.CodeFirst.InitTables(typeof(CodeFirstTable1));//Create CodeFirstTable1 
             db.Insertable(new CodeFirstTable1() { Name = "a", Text="a" }).ExecuteCommand();
             var list = db.Queryable<CodeFirstTable1>().ToList();
