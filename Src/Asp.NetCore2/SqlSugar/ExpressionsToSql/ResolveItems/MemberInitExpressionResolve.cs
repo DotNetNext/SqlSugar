@@ -235,7 +235,7 @@ namespace SqlSugar
             {
                 addItem.DbType = System.Data.DbType.Date;
             }
-            if (addItem.Value == null && dataType.IsIn(UtilConstants.FloatType, UtilConstants.IntType, UtilConstants.LongType, UtilConstants.DecType, UtilConstants.DobType))
+            if (addItem.Value == null && dataType.IsIn(UtilConstants.ULongType,UtilConstants.UIntType,UtilConstants.FloatType, UtilConstants.IntType, UtilConstants.LongType, UtilConstants.DecType, UtilConstants.DobType))
             {
                 addItem.DbType = System.Data.DbType.Int32;
             }
