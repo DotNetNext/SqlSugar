@@ -109,6 +109,8 @@ namespace SqlSugar
         ISugarQueryable<T> OrderByDescending(Expression<Func<T, object>> expression);
         ISugarQueryable<T> OrderByIF(bool isOrderBy, string orderFileds);
         ISugarQueryable<T> OrderByIF(bool isOrderBy, Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T> SampleBy(int timeNumber, SampleByUnit timeType);
+        ISugarQueryable<T> SampleBy(int timeNumber, string timeType);
 
 
         ISugarQueryable<T> GroupBy(Expression<Func<T, object>> expression);
