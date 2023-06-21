@@ -23,6 +23,13 @@ namespace SqlSugar.Access
         public override string ToDate(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
+            if (parameter.MemberName?.ToString()?.Contains(":")==true
+                && parameter.MemberName?.ToString()?.Contains("-") == true
+                 &&parameter.MemberName?.ToString()?.StartsWith("'") == true) 
+            {
+                parameter.MemberName ="'"+ parameter.MemberName.ToString()
+                    .ToString().TrimEnd('\'').TrimStart('\'').ObjToDate().ToString("yyyy-MM-dd HH:mm:ss")+"'";
+            }
             return string.Format(" CDate({0}) ", parameter.MemberName);
         }
         public override string ToBool(MethodCallExpressionModel model)
