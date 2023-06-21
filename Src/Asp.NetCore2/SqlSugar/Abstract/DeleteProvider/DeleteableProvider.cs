@@ -184,10 +184,10 @@ namespace SqlSugar
                         {
                             andString.AppendFormat("\"{0}\"={1} ", primaryField.ToLower(), new PostgreSQLExpressionContext().GetValue(entityValue));
                         }
-                        //else if (this.Context.CurrentConnectionConfig.DbType == DbType.SqlServer && entityValue != null && UtilMethods.GetUnderType(entityValue.GetType()) == UtilConstants.DateType)
-                        //{
-                        //    andString.AppendFormat("[{0}]={1} ", primaryField, $"'{entityValue.ObjToDate().ToString("yyyy-MM-dd HH:mm:ss.fff")}'");
-                        //}
+                        else if ( entityValue != null &&UtilMethods.IsNumber( UtilMethods.GetUnderType(entityValue.GetType()).Name))
+                        {
+                            andString.AppendFormat("[{0}]={1} ", primaryField, $"{entityValue}");
+                        }
                         else if (entityValue != null && UtilMethods.GetUnderType(entityValue.GetType()) == UtilConstants.DateType)
                         {
                             andString.AppendFormat("{0}={1} ", this.SqlBuilder.GetTranslationColumnName(primaryField), this.DeleteBuilder.LambdaExpressions.DbMehtods.ToDate(new MethodCallExpressionModel()
