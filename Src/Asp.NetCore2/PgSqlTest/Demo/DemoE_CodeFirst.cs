@@ -19,7 +19,16 @@ namespace OrmTest
                 InitKeyType = InitKeyType.Attribute,
                 IsAutoCloseConnection = true
             });
-            db.DbMaintenance.CreateDatabase(); 
+            db.DbMaintenance.CreateDatabase();
+            db.CodeFirst.InitTables<CodeFirstunitea>();
+            db.Insertable(new CodeFirstunitea()
+            {
+                id2 = null
+            }).ExecuteCommand();
+            db.Insertable(new CodeFirstunitea()
+            {
+                id2 = 1
+            }).ExecuteCommand();
             db.CodeFirst.InitTables(typeof(CodeFirstTable1));//Create CodeFirstTable1 
             db.Insertable(new CodeFirstTable1() { Name = "a", Text="a" }).ExecuteCommand();
             var list = db.Queryable<CodeFirstTable1>().ToList();
@@ -34,6 +43,13 @@ namespace OrmTest
             var list3=db.Queryable<CodeFirstsaf>().ToList();
             Console.WriteLine("#### CodeFirst end ####");
         }
+    }
+    public class CodeFirstunitea 
+    {
+        [SugarColumn(IsIdentity =true,IsPrimaryKey =true)]
+        public uint id { get; set; }
+        [SugarColumn(IsNullable =true)]
+        public uint? id2 { get; set; }
     }
     public class CodeFirstsaf 
     {
