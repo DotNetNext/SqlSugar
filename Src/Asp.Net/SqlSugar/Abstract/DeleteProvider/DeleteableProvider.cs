@@ -186,7 +186,7 @@ namespace SqlSugar
                         }
                         else if ( entityValue != null &&UtilMethods.IsNumber( UtilMethods.GetUnderType(entityValue.GetType()).Name))
                         {
-                            andString.AppendFormat("[{0}]={1} ", primaryField, $"{entityValue}");
+                            andString.AppendFormat("{0}={1} ", this.SqlBuilder.GetTranslationColumnName(primaryField), $"{entityValue}");
                         }
                         else if (entityValue != null && UtilMethods.GetUnderType(entityValue.GetType()) == UtilConstants.DateType)
                         {
