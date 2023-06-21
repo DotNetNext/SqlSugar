@@ -221,6 +221,14 @@ namespace SqlSugar
                 parameter.DbType = System.Data.DbType.Int64;
                 parameter.Value = Convert.ToInt64(parameter.Value);
             }
+            if (parameter.Value is uint)
+            {
+                parameter.Value = Convert.ToInt32(parameter.Value);
+            }
+            else if (parameter.Value is ulong)
+            {
+                parameter.Value = Convert.ToInt64(parameter.Value);
+            }
         }
 
         static readonly Dictionary<Type, NpgsqlDbType> ArrayMapping = new Dictionary<Type, NpgsqlDbType>()
