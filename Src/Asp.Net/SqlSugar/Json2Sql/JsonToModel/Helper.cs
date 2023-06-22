@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json.Linq;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -37,9 +36,7 @@ namespace SqlSugar
         }
         private bool IsFieldName(JToken item)
         {
-            return
-                item?.GetType() == typeof(JObject)&&
-                item.ObjToString().ToLower().Contains("fieldname");
+            return item.ObjToString().ToLower().Contains("fieldname");
         }
         private bool IsArraySingleItem(JToken item)
         {
