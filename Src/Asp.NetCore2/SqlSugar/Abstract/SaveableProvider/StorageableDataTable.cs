@@ -32,7 +32,13 @@ namespace SqlSugar
             {
                 List<IConditionalModel> conditList = new List<IConditionalModel>();
                 SetConditList(itemList, Columns, conditList);
-                var addItem = this.Context.Queryable<object>().AS(tableName).Where(conditList).ToDataTable().Rows.Cast<DataRow>().ToList();
+                string selector = null;
+                if (queryable.SqlBuilder.SqlParameterKeyWord == ":") 
+                {
+                    //Oracle driver bug: Error when querying DataTable after dynamically adding columns using '*'.
+                    selector = " * /*" + Guid.NewGuid() + "*/";
+                }
+                var addItem = this.Context.Queryable<object>().AS(tableName).Where(conditList).Select(selector).ToDataTable().Rows.Cast<DataRow>().ToList();
                 this.dbDataList.AddRange(addItem);
             });
             return this;
