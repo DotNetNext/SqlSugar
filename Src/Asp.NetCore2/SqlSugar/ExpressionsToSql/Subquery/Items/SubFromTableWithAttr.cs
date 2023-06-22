@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
 
 namespace SqlSugar
 {
-    public class SubFromTable : ISubOperation
+    public class SubFromTableWithAttr : ISubOperation
     {
         public bool HasWhere
         {
@@ -18,7 +15,7 @@ namespace SqlSugar
         {
             get
             {
-                return "Subqueryable";
+                return "SubqueryableWithAttr";
             }
         }
 
@@ -37,7 +34,7 @@ namespace SqlSugar
 
         public ExpressionContext Context
         {
-            get; set;
+            get;set;
         }
 
         public string GetValue(Expression expression)
@@ -53,21 +50,14 @@ namespace SqlSugar
                 this.Context.RefreshMapping();
             }
             var result = "FROM ";
-            if (exp.Arguments.Any())
+            var tenant = entityType.GetCustomAttribute<TenantAttribute>();
+            if (tenant != null)
             {
-                if (exp.Arguments[0].ToString() == "True")
-                {
-                    var tenant = entityType.GetCustomAttribute<TenantAttribute>();
-                    if (tenant != null)
-                    {
-                        result += $"{this.Context.SqlTranslationLeft}{tenant.configId}{this.Context.SqlTranslationRight}{UtilConstants.Dot}dbo{UtilConstants.Dot}";
-                    }
-                }
+                result += $"{this.Context.SqlTranslationLeft}{tenant.configId}{this.Context.SqlTranslationRight}{UtilConstants.Dot}dbo{UtilConstants.Dot}";
             }
             result += this.Context.GetTranslationTableName(name, true);
-            if (this.Context.SubQueryIndex > 0)
-            {
-                result += " subTableIndex" + this.Context.SubQueryIndex;
+            if (this.Context.SubQueryIndex > 0) {
+                result += " subTableIndex"+this.Context.SubQueryIndex;
             }
             return result;
         }

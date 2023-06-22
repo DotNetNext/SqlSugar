@@ -24,6 +24,7 @@ namespace SqlSugar
                                                     new SubNotAny(){ Context=Context },
                                                     new SubBegin(){ Context=Context },
                                                     new SubFromTable(){ Context=Context },
+                                                    new SubFromTableWithAttr(){ Context=Context },
                                                     new SubCount(){ Context=Context },
                                                     new SubMax(){ Context=Context },
                                                     new SubMin(){ Context=Context },
@@ -48,7 +49,7 @@ namespace SqlSugar
             if (context.SubQueryIndex == 0)
                 return string.Empty;
             else
-                return "subTableIndex"+context.SubQueryIndex+".";
+                return "subTableIndex" + context.SubQueryIndex + ".";
         }
 
         public static List<ISubOperation> SubItemsConst = SubItems(null);
@@ -78,7 +79,7 @@ namespace SqlSugar
             newContext.RefreshMapping = context.RefreshMapping;
             newContext.IgnoreComumnList = context.IgnoreComumnList;
             newContext.SqlFuncServices = context.SqlFuncServices;
-            if (type == ResolveExpressType.WhereMultiple||type==ResolveExpressType.FieldMultiple) 
+            if (type == ResolveExpressType.WhereMultiple || type == ResolveExpressType.FieldMultiple)
             {
                 newContext.IsSingle = false;
             }

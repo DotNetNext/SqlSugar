@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SqlSugar
 {
@@ -21,11 +19,11 @@ namespace SqlSugar
         {
             throw new NotSupportedException("Can only be used in expressions");
         }
-        public static int CompareTo(string strA, string strB) 
+        public static int CompareTo(string strA, string strB)
         {
             throw new NotSupportedException("Can only be used in expressions");
         }
-        public static int RowNumber(object orderByField, object partitionBy) 
+        public static int RowNumber(object orderByField, object partitionBy)
         {
             throw new NotSupportedException("Can only be used in expressions");
         }
@@ -53,12 +51,12 @@ namespace SqlSugar
         {
             throw new NotSupportedException("Can only be used in expressions");
         }
-        public static string JsonField(object json,string fieldName)
+        public static string JsonField(object json, string fieldName)
         {
             throw new NotSupportedException("Can only be used in expressions");
         }
 
-        public static string JsonField(object json, string fieldName,string includeFieldName)
+        public static string JsonField(object json, string fieldName, string includeFieldName)
         {
             throw new NotSupportedException("Can only be used in expressions");
         }
@@ -90,7 +88,7 @@ namespace SqlSugar
             throw new NotSupportedException("Can only be used in expressions");
         }
 
-        public static bool JsonLike(object json,string likeStr)
+        public static bool JsonLike(object json, string likeStr)
         {
             throw new NotSupportedException("Can only be used in expressions");
         }
@@ -103,11 +101,11 @@ namespace SqlSugar
         {
             throw new NotSupportedException("Can only be used in expressions");
         }
-        public static int DateDiff(DateType dateType,DateTime littleTime, DateTime bigTime) 
+        public static int DateDiff(DateType dateType, DateTime littleTime, DateTime bigTime)
         {
             throw new NotSupportedException("Can only be used in expressions");
         }
-        public static bool GreaterThan(object thisValue,object gtValue)
+        public static bool GreaterThan(object thisValue, object gtValue)
         {
             throw new NotSupportedException("Can only be used in expressions");
         }
@@ -185,12 +183,12 @@ namespace SqlSugar
         {
             return thisValue.Equals(parameterValue);
         }
-        public  static bool EqualsNull(object thisValue, object parameterValue)
+        public static bool EqualsNull(object thisValue, object parameterValue)
         {
             return thisValue.Equals(parameterValue);
         }
 
-        public static bool Exists(string subQueryableName_Or_OneToOnePropertyName)  
+        public static bool Exists(string subQueryableName_Or_OneToOnePropertyName)
         {
             throw new NotSupportedException("Can only be used in expressions");
         }
@@ -221,12 +219,12 @@ namespace SqlSugar
         public static bool Between(object value, object start, object end) { throw new NotSupportedException("Can only be used in expressions"); }
         public static TResult IIF<TResult>(bool isTrue, TResult thenValue, TResult elseValue) { return isTrue ? thenValue : elseValue; }
         public static TResult IsNull<TResult>(TResult thisValue, TResult ifNullValue) { throw new NotSupportedException("Can only be used in expressions"); }
-        public static string MergeString(string value1,string value2) { throw new NotSupportedException("Can only be used in expressions"); }
-        public static string MergeString(string value1, string value2,string value3) { throw new NotSupportedException("Can only be used in expressions"); }
-        public static string MergeString(string value1, string value2,string value3,string value4) { throw new NotSupportedException("Can only be used in expressions"); }
-        public static string MergeString(string value1, string value2, string value3, string value4,string value5) { throw new NotSupportedException("Can only be used in expressions"); }
-        public static string MergeString(string value1, string value2, string value3, string value4, string value5,string value6) { throw new NotSupportedException("Can only be used in expressions"); }
-        public static string MergeString(string value1, string value2, string value3, string value4, string value5, string value6,string value7) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static string MergeString(string value1, string value2) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static string MergeString(string value1, string value2, string value3) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static string MergeString(string value1, string value2, string value3, string value4) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static string MergeString(string value1, string value2, string value3, string value4, string value5) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static string MergeString(string value1, string value2, string value3, string value4, string value5, string value6) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static string MergeString(string value1, string value2, string value3, string value4, string value5, string value6, string value7) { throw new NotSupportedException("Can only be used in expressions"); }
         public static int ToInt32(object value) { return value.ObjToInt(); }
         public static long ToInt64(object value) { return Convert.ToInt64(value); }
         /// <summary>
@@ -259,7 +257,7 @@ namespace SqlSugar
         public static TResult AggregateMax<TResult>(TResult thisValue) { throw new NotSupportedException("Can only be used in expressions"); }
         public static int AggregateCount<TResult>(TResult thisValue) { throw new NotSupportedException("Can only be used in expressions"); }
         public static int AggregateDistinctCount<TResult>(TResult thisValue) { throw new NotSupportedException("Can only be used in expressions"); }
-        public static TResult MappingColumn<TResult>(TResult type,string newColumnName) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static TResult MappingColumn<TResult>(TResult type, string newColumnName) { throw new NotSupportedException("Can only be used in expressions"); }
         public static TResult MappingColumn<TResult>(string newColumnName) { throw new NotSupportedException("Can only be used in expressions"); }
         /// <summary>
         ///Example: new NewT(){name=SqlFunc.GetSelfAndAutoFill(it)}  Generated SQL   it.*
@@ -272,29 +270,31 @@ namespace SqlSugar
         public static string GetRandom() { throw new NotSupportedException("Can only be used in expressions"); }
 
 
-        public static T Abs<T>( T value) { throw new NotSupportedException("Can only be used in expressions"); }
-        public static T Round<T>(T value,int precision) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static T Abs<T>(T value) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static T Round<T>(T value, int precision) { throw new NotSupportedException("Can only be used in expressions"); }
 
         /// <summary>
         /// Subquery
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static Subqueryable<T> Subqueryable<T>() where T:class,new(){ throw new NotSupportedException("Can only be used in expressions");}
-        public static CaseThen  IF(bool condition) { throw new NotSupportedException("Can only be used in expressions"); }
-        public static int CharIndex(string findChar,string searchValue) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static Subqueryable<T> Subqueryable<T>() where T : class, new() { throw new NotSupportedException("Can only be used in expressions"); }
+        public static Subqueryable<T> Subqueryable<T>(bool IsCrossQueryWithAttr = false) where T : class, new() { throw new NotSupportedException("Can only be used in expressions"); }
+        public static Subqueryable<T> SubqueryableWithAttr<T>() where T : class, new() { throw new NotSupportedException("Can only be used in expressions"); }
+        public static CaseThen IF(bool condition) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static int CharIndex(string findChar, string searchValue) { throw new NotSupportedException("Can only be used in expressions"); }
         public static int BitwiseAnd(int left, int right) { throw new NotSupportedException("Can only be used in expressions"); }
         public static int BitwiseInclusiveOR(int left, int right) { throw new NotSupportedException("Can only be used in expressions"); }
-        public static DateTime Oracle_ToDate(string date,string format) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static DateTime Oracle_ToDate(string date, string format) { throw new NotSupportedException("Can only be used in expressions"); }
         public static string Oracle_ToChar(DateTime date, string format) { throw new NotSupportedException("Can only be used in expressions"); }
-        public static int SqlServer_DateDiff(string dateType,DateTime date1,DateTime date2) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static int SqlServer_DateDiff(string dateType, DateTime date1, DateTime date2) { throw new NotSupportedException("Can only be used in expressions"); }
 
         public static bool JsonListObjectAny(object jsonListObject, string fieldName, object value)
         {
             throw new NotSupportedException("Can only be used in expressions");
         }
 
-        public static bool JsonArrayAny(object jsonArray,object arrayValue) 
+        public static bool JsonArrayAny(object jsonArray, object arrayValue)
         {
             throw new NotSupportedException("Can only be used in expressions");
         }
@@ -304,7 +304,7 @@ namespace SqlSugar
             throw new NotSupportedException("Can only be used in expressions");
         }
 
-        public static bool ListAny<T>(List<T> listConstant, Expression<Func<T,bool>> expression)
+        public static bool ListAny<T>(List<T> listConstant, Expression<Func<T, bool>> expression)
         {
             throw new NotSupportedException("Can only be used in expressions");
         }

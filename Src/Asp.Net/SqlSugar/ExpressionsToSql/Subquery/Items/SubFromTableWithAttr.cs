@@ -7,7 +7,7 @@ using System.Text;
 
 namespace SqlSugar
 {
-    public class SubFromTable : ISubOperation
+    public class SubFromTableWithAttr : ISubOperation
     {
         public bool HasWhere
         {
@@ -18,7 +18,7 @@ namespace SqlSugar
         {
             get
             {
-                return "Subqueryable";
+                return "SubqueryableWithAttr";
             }
         }
 
@@ -53,16 +53,10 @@ namespace SqlSugar
                 this.Context.RefreshMapping();
             }
             var result = "FROM ";
-            if (exp.Arguments.Any())
+            var tenant = entityType.GetCustomAttribute<TenantAttribute>();
+            if (tenant != null)
             {
-                if (exp.Arguments[0].ToString() == "True")
-                {
-                    var tenant = entityType.GetCustomAttribute<TenantAttribute>();
-                    if (tenant != null)
-                    {
-                        result += $"{this.Context.SqlTranslationLeft}{tenant.configId}{this.Context.SqlTranslationRight}{UtilConstants.Dot}dbo{UtilConstants.Dot}";
-                    }
-                }
+                result += $"{this.Context.SqlTranslationLeft}{tenant.configId}{this.Context.SqlTranslationRight}{UtilConstants.Dot}dbo{UtilConstants.Dot}";
             }
             result += this.Context.GetTranslationTableName(name, true);
             if (this.Context.SubQueryIndex > 0)

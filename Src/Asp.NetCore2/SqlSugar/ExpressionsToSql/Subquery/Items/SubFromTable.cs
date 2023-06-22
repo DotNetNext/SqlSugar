@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
+using System.Reflection;
 
 namespace SqlSugar
 {
@@ -51,7 +49,19 @@ namespace SqlSugar
                 this.Context.InitMappingInfo(entityType);
                 this.Context.RefreshMapping();
             }
-            var result= "FROM "+this.Context.GetTranslationTableName(name,true);
+            var result = "FROM ";
+            if (exp.Arguments.Any())
+            {
+                if (exp.Arguments[0].ToString() == "True")
+                {
+                    var tenant = entityType.GetCustomAttribute<TenantAttribute>();
+                    if (tenant != null)
+                    {
+                        result += $"{this.Context.SqlTranslationLeft}{tenant.configId}{this.Context.SqlTranslationRight}{UtilConstants.Dot}dbo{UtilConstants.Dot}";
+                    }
+                }
+            }
+            result += this.Context.GetTranslationTableName(name, true);
             if (this.Context.SubQueryIndex > 0) {
                 result += " subTableIndex"+this.Context.SubQueryIndex;
             }
