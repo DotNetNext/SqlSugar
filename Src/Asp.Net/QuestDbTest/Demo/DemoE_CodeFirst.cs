@@ -31,6 +31,8 @@ namespace OrmTest
             db.CodeFirst.InitTables<SplitTableEntity>();
             TestBool(db);
             TestGuid(db);
+            var list2=db.Queryable<SplitTableEntity>()
+                .PartitionBy(it => new { it.Ts,  it.Id }).ToList();
             Console.WriteLine("#### CodeFirst end ####");
         }
         private static void TestGuid(SqlSugarClient db)
