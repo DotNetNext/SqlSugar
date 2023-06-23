@@ -15,7 +15,11 @@ namespace SqlSugar
 
         public override ISugarQueryable<T> PartitionBy(string groupFileds)
         {
-            this.GroupBy(groupFileds);
+            if (this.QueryBuilder.Take == 1) 
+            {
+                this.QueryBuilder.Take = null;
+            }
+            this.QueryBuilder.PartitionByValue=groupFileds;
             return this;
         }
     }

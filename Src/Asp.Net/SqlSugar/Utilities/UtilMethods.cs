@@ -496,6 +496,11 @@ namespace SqlSugar
         {
             return type.IsValueType ? Activator.CreateInstance(type) : null;
         }
+        public static string ReplaceFirstMatch(string input, string pattern, string replacement)
+        {
+            Regex regex = new Regex(pattern);
+            return regex.Replace(input, replacement, 1);
+        }
         public static string ReplaceSqlParameter(string itemSql, SugarParameter itemParameter, string newName)
         {
             itemSql = Regex.Replace(itemSql, string.Format(@"{0} ", "\\" + itemParameter.ParameterName), newName + " ", RegexOptions.IgnoreCase);

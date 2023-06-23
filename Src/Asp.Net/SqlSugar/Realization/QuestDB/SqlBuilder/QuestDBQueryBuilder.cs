@@ -78,6 +78,11 @@ namespace SqlSugar
             {
                 result = result + TranLock;
             }
+            if (this.PartitionByValue.HasValue()) 
+            {
+                var addSql = " LATEST ON " + UtilMethods.ReplaceFirstMatch(this.PartitionByValue, ",", " PARTITION BY ");
+                result =result+ addSql;
+            }
             return result;
         }
         private string ToCountSqlString()
