@@ -58,6 +58,15 @@ namespace OrmTest
                 IsAny = k.map_app_revision.Any(),
             },true)
                 .ToList() ;
+            db.CodeFirst.InitTables<Order, Custom>();
+            var exp = Expressionable.Create<Custom>().And(s => s.Id == 1);
+            var list4 = db.Queryable<Order>().Take(10).Select(it => new
+            {
+                customName2 = SqlFunc.Subqueryable<Custom>()
+              .Where(exp.ToExpression())
+                    .Where(exp.ToExpression())
+             .Select(s => s.Name)
+            }).ToList();
             //Console.WriteLine("用例跑完");
             //Console.ReadKey();
         }
