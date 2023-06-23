@@ -49,7 +49,10 @@ namespace SqlSugar
                 copyContext = this.Context.GetCopyContextWithMapping();
                 copyContext.IsSingle = false;
             }
-
+            if (ExpressionTool.GetMethodName(argExp) == "ToExpression")
+            {
+                argExp = ExpressionTool.DynamicInvoke(argExp) as Expression;
+            }
             var result = "AND " + SubTools.GetMethodValue(copyContext, argExp, ResolveExpressType.WhereMultiple);
             
             if (this.Context.JoinIndex > 0 || pars.Count() > 1)

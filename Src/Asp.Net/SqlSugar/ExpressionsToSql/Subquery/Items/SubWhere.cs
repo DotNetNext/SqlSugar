@@ -45,6 +45,10 @@ namespace SqlSugar
                 new SubSelect() { Context = this.Context }.SetShortName(exp, "+");
             }
             var argExp = exp.Arguments[0];
+            if (ExpressionTool.GetMethodName(argExp) == "ToExpression")
+            {
+                argExp= ExpressionTool.DynamicInvoke(argExp) as Expression;
+            }
             var copyContext = this.Context;
             var pars=ExpressionTool.GetParameters(expression).Distinct();
             if (this.Context.JoinIndex > 0|| pars.Count()>1) 
