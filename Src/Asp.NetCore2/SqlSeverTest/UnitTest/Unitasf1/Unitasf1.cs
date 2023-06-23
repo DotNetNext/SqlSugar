@@ -67,6 +67,14 @@ namespace OrmTest
                     .Where(exp.ToExpression())
              .Select(s => s.Name)
             }).ToList();
+
+            var list2 = db.Queryable<Order>().Take(10).Select(it => new
+            {
+                customName2 = SqlFunc.Subqueryable<Custom>()
+            .AS("CUSTOM".ToString())
+                  .Where(exp.ToExpression())
+           .Select(s => s.Name)
+            }).ToList();
             //Console.WriteLine("用例跑完");
             //Console.ReadKey();
         }
