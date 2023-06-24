@@ -43,6 +43,7 @@ namespace SqlSugar
     {
         public bool ManyToManyIsUpdateA { get; set; }
         public bool ManyToManyIsUpdateB { get; set; }
+        public object ManyToManySaveMappingTemplate { get; set; }
         public bool OneToManyDeleteAll { get;  set; }
         public bool OneToManyEnableLogicDelete { get; set; }
         public Expression RootFunc { get; set; }
@@ -53,5 +54,6 @@ namespace SqlSugar
     {
         public bool OneToManyIfExistsNoInsert { get; set; }
         public bool ManyToManyNoDeleteMap { get; set; }
+        public object ManyToManySaveMappingTemplate { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -89,8 +90,60 @@ namespace SqlSugar
                 }
             }
             this._Context.Deleteable<object>().AS(mappingEntity.DbTableName).In(mappingA.DbColumnName, ids).ExecuteCommand();
-            this._Context.Insertable(mappgingTables).AS(mappingEntity.DbTableName).ExecuteCommand();
+            if (HasMappingTemplate(mappingEntity))
+            {
+                InertMappingWithTemplate(mappingEntity, mappingA, mappingB, mappgingTables);
+            }
+            else
+            {
+                this._Context.Insertable(mappgingTables).AS(mappingEntity.DbTableName).ExecuteCommand();
+            }
             _ParentEntity = thisEntity;
+        }
+
+        private bool HasMappingTemplate(EntityInfo mappingEntity)
+        {
+            return this._Options?.ManyToManySaveMappingTemplate?.GetType() == mappingEntity.Type;
+        }
+
+        private void InertMappingWithTemplate(EntityInfo mappingEntity, EntityColumnInfo mappingA, EntityColumnInfo mappingB, List<Dictionary<string, object>> mappgingTables)
+        {
+            var template = this._Options?.ManyToManySaveMappingTemplate;
+            List<object> mappingObjects = new List<object>();
+            foreach (var item in mappgingTables)
+            {
+                // 序列化模板对象
+                var serializedTemplate = JsonConvert.SerializeObject(template);
+
+                // 反序列化模板对象，创建新的映射对象
+                var mappingObject = JsonConvert.DeserializeObject(serializedTemplate, template.GetType());
+
+                // 获取映射对象的所有字段
+                var fields = mappingEntity.Columns;
+
+                // 遍历字典中的键值对，并将值赋给映射对象的对应字段
+                foreach (var kvp in item)
+                {
+                    var fieldName = kvp.Key;
+                    var fieldValue = kvp.Value;
+
+                    // 查找与字段名匹配的字段
+                    var field = fields.FirstOrDefault(f => f.DbColumnName.EqualCase(fieldName));
+                    // 如果字段存在且值的类型与字段类型匹配，则赋值给字段
+                    if (field != null)
+                    {
+                        var isSetValue = field.IsPrimarykey
+                        || field.DbColumnName == mappingA.DbColumnName
+                        || field.DbColumnName == mappingB.DbColumnName;
+                        if (isSetValue)
+                            field.PropertyInfo.SetValue(mappingObject, fieldValue);
+                    }
+                }
+
+                // 将映射对象添加到列表中
+                mappingObjects.Add(mappingObject);
+            }
+            this._Context.InsertableByObject(mappingObjects).ExecuteCommand();
         }
 
         private void SetMappingTableDefaultValue(EntityColumnInfo mappingPk, Dictionary<string, object> keyValuePairs)
