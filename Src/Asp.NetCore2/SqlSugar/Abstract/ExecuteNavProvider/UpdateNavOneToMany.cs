@@ -59,7 +59,7 @@ namespace SqlSugar
                         FieldName = thisFkColumn.DbColumnName,
                         FieldValue = string.Join(",", ids.Distinct()),
                         ConditionalType = ConditionalType.In,
-                        CSharpTypeName = thisFkColumn.PropertyName
+                        CSharpTypeName = thisFkColumn?.PropertyInfo?.PropertyType?.Name
                     });
                     var sqlObj = _Context.Queryable<object>().SqlBuilder.ConditionalModelToSql(conditionalModels);
                     this._Context.Updateable<object>()
