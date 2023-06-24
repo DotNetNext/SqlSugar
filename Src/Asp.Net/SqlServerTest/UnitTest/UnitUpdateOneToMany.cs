@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Linq;
 using SqlSugar;
 
 namespace OrmTest
@@ -55,6 +55,10 @@ namespace OrmTest
             var list3=db.Queryable<Country>().Includes(x => x.Provinces).ToList();
             db.QueryFilter.Clear<Province>();
             var list4 = db.Queryable<Country>().Includes(x => x.Provinces).ToList();
+            if (list3.First().Provinces.Count != 1 || list4.First().Provinces.Count != 2) 
+            {
+                throw new Exception("unit error");
+            }
 
         }
 
