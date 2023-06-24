@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UnitManyToMany4.Init();
             UnitManyToMany3.Init();
             UnitUpdateOneToMany.Init();
             UQueryableByObject.Init();
