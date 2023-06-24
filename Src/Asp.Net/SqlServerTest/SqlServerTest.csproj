@@ -126,6 +126,7 @@
     <Compile Include="UnitTest\UExp.cs" />
     <Compile Include="UnitTest\UCustom24.cs" />
     <Compile Include="UnitTest\UCustom20.cs" />
+    <Compile Include="UnitTest\UnitUpdateOneToMany.cs" />
     <Compile Include="UnitTest\UnitUpdateSubQuery.cs" />
     <Compile Include="UnitTest\UnitManyToManyDeleteNav.cs" />
     <Compile Include="UnitTest\UnitCustom12312.cs" />
