@@ -17,6 +17,15 @@ namespace SqlSugar
     }
     public class SqliteMethod : DefaultDbMethod, IDbMethods
     {
+        public override string Equals(MethodCallExpressionModel model)
+        {
+            var  result= base.Equals(model);
+            if (model.Args.Count == 3&& result.Trim().Last()==')') 
+            {
+                result = (" "+result.Trim().TrimEnd(')') + " COLLATE NOCASE )  ");
+            }
+            return result;
+        }
         public override string GetStringJoinSelector(string result, string separator)
         {
             return $"group_concat({result},'{separator}') ";
