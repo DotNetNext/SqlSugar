@@ -46,9 +46,34 @@ namespace SqlSugar
             if (NotAny(name))
             {
                 DeleteMany(thisEntity, ids, thisFkColumn.DbColumnName);
-                this._Context.Deleteable<object>()
-                    .AS(thisEntity.DbTableName)
-                    .In(thisFkColumn.DbColumnName, ids.Distinct().ToList()).ExecuteCommand();
+                if (this._Options?.OneToManyEnableLogicDelete == true)
+                {
+                    var locgicColumn = thisEntity.Columns.FirstOrDefault(it => it.PropertyName.EqualCase("IsDeleted") || it.PropertyName.EqualCase("IsDelete"));
+                    Check.ExceptionEasy(
+                         locgicColumn==null, 
+                         thisEntity.EntityName + "Logical deletion requires the entity to have the IsDeleted property", 
+                         thisEntity.EntityName+"假删除需要实体有IsDeleted属性");
+                    List<IConditionalModel> conditionalModels = new List<IConditionalModel>();
+                    conditionalModels.Add(new ConditionalModel()
+                    {
+                        FieldName = thisFkColumn.DbColumnName,
+                        FieldValue = string.Join(",", ids.Distinct()),
+                        ConditionalType = ConditionalType.In,
+                        CSharpTypeName = thisFkColumn.PropertyName
+                    });
+                    var sqlObj = _Context.Queryable<object>().SqlBuilder.ConditionalModelToSql(conditionalModels);
+                    this._Context.Updateable<object>()
+                      .AS(thisEntity.DbTableName)
+                      .Where(sqlObj.Key, sqlObj.Value)
+                      .SetColumns(locgicColumn.DbColumnName, true)
+                      .ExecuteCommand();
+                }
+                else
+                {
+                    this._Context.Deleteable<object>()
+                        .AS(thisEntity.DbTableName)
+                        .In(thisFkColumn.DbColumnName, ids.Distinct().ToList()).ExecuteCommand();
+                }
                 _NavigateType = NavigateType.OneToMany;
                 InsertDatas(children, thisPkColumn);
             }
