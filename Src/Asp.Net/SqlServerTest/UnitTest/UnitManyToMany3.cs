@@ -105,8 +105,34 @@ namespace OrmTest
 			{
 				throw new Exception("unit error");
 			}
-		
-		}
+
+            db.UpdateNav(new OperatorInfo()
+            {
+                id = "1113",
+                createTime = DateTime.Now,
+                isDel = 1,
+                isDisabled = 1,
+                openid = "",
+                phone = "",
+                pwd = "",
+                realname = "a01",
+                remark = "a",
+                sno = "a",
+                username = "admin",
+                Roles = new List<Role>() { new Role() { id = 2 } }
+            }).Include(z => z.Roles,
+                                    new UpdateNavOptions()
+                                    {
+                                        ManyToManySaveMappingTemplate = new OptRole()
+                                        {
+                                            CreateTime = "1010",
+                                            OrgId = "1x"
+
+                                        }
+                                    })
+            .ExecuteCommand();
+
+        }
 
 			/// <summary>
 			/// 描述：
