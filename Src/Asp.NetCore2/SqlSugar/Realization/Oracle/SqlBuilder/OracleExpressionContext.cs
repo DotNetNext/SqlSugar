@@ -76,6 +76,18 @@ namespace SqlSugar
     }
     public partial class OracleMethod : DefaultDbMethod, IDbMethods
     {
+        public override string BitwiseAnd(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter2 = model.Args[1];
+            return string.Format(" BITAND({0},{1}) ", parameter.MemberName, parameter2.MemberName);
+        }
+        public override string BitwiseInclusiveOR(MethodCallExpressionModel model)
+        { 
+            var parameter = model.Args[0];
+            var parameter2 = model.Args[1];
+            return string.Format(" BITOR({0},{1}) ", parameter.MemberName, parameter2.MemberName);
+        }
         public override string ParameterKeyWord { get; set; } = ":";
         public override string Modulo(MethodCallExpressionModel model)
         {
