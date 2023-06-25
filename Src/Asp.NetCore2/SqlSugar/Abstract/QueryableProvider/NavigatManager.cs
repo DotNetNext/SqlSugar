@@ -586,7 +586,7 @@ namespace SqlSugar
                         parameterIndex = queryable.QueryBuilder.LambdaExpressions.ParameterIndex;
                     }
                 }
-                else if (method.Method.Name == "OrderBy")
+                else if (method.Method.Name.IsIn( "OrderBy", "ThenBy"))
                 {
                     var exp = method.Arguments[1];
                     oredrBy.Add(" " + queryable.QueryBuilder.GetExpressionValue(exp, ResolveExpressType.WhereSingle).GetString());
@@ -606,7 +606,7 @@ namespace SqlSugar
                 {
                     Select(properyName, result, method, queryable);
                 }
-                else if (method.Method.Name == "OrderByDescending")
+                else if (method.Method.Name.IsIn("OrderByDescending", "ThenByDescending"))
                 {
                     var exp = method.Arguments[1];
                     oredrBy.Add(" " + queryable.QueryBuilder.GetExpressionValue(exp, ResolveExpressType.WhereSingle).GetString() + " DESC");
