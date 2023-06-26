@@ -95,7 +95,8 @@ namespace SqlSugar
                 if (parameter.Value == null) parameter.Value = DBNull.Value;
                 var sqlParameter = new SqlParameter();
                 sqlParameter.ParameterName = parameter.ParameterName;
-                sqlParameter.UdtTypeName = parameter.UdtTypeName;
+                if(parameter.UdtTypeName!=null)
+                  sqlParameter.UdtTypeName = parameter.UdtTypeName;
                 sqlParameter.Size = parameter.Size;
                 sqlParameter.Value = parameter.Value;
                 sqlParameter.DbType = parameter.DbType;
