@@ -35,7 +35,7 @@ namespace SqlSugar
                         }
 
                     }
-                    if (!IsDefaultValue(navPropertyValue)&& isManyPk==false)
+                    if (!IsDefaultValue(navPropertyValue)&& isManyPk==false&& parentPkColumn.IsIdentity==false)
                     {
                         this._Context.Updateable<DbTableInfo>
                            ().AS(parentEntity.DbTableName)
