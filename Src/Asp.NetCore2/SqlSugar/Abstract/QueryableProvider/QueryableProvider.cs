@@ -1078,6 +1078,18 @@ namespace SqlSugar
             }
             return this;
         }
+
+        public ISugarQueryable<T> GroupByIF(bool isGroupBy, string groupFields)
+        {
+            if (isGroupBy)
+            {
+                GroupBy(groupFields);
+            }
+
+            return this;
+        }
+
+
         public virtual ISugarQueryable<T> OrderByIF(bool isOrderBy, string orderFileds)
         {
             if (isOrderBy)

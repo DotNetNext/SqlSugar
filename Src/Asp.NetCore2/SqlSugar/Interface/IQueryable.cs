@@ -117,6 +117,8 @@ namespace SqlSugar
         ISugarQueryable<T> GroupBy(string groupFileds);
         ISugarQueryable<T> GroupByIF(bool isGroupBy, Expression<Func<T, object>> expression);
 
+        ISugarQueryable<T> GroupByIF(bool isGroupBy, string groupFields);
+
         ISugarQueryable<T> PartitionBy(Expression<Func<T, object>> expression);
         ISugarQueryable<T> PartitionBy(string groupFileds);
 
