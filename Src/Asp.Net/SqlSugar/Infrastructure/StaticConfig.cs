@@ -21,5 +21,7 @@ namespace SqlSugar
         public static Action<ISqlSugarClient> CompleteDbFunc;
 
         public static Func<List<SplitTableInfo>> SplitTableGetTablesFunc;
+
+        public static bool Check_StringIdentity = true;
     }
 }

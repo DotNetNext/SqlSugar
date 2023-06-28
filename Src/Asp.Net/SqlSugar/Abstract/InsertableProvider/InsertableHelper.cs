@@ -335,8 +335,11 @@ namespace SqlSugar
             else
             {
                 return this.EntityInfo.Columns.Where(it => {
-
-                    Check.Exception(it.IsIdentity && it.UnderType == typeof(string), "IsIdentity key can not be type of string");
+                    
+                    if (StaticConfig.Check_StringIdentity)
+                    {
+                        Check.ExceptionEasy(it.IsIdentity && it.UnderType == typeof(string), "Auto-incremented is not a string, how can I use a executable startup configuration: StaticConfig.Check_StringIdentity=false ", "自增不是能string,如何非要用可以程序启动配置：StaticConfig.Check_StringIdentity=false");
+                    }
                     return it.IsIdentity;
 
                 }).Select(it => it.DbColumnName).ToList();
