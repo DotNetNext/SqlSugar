@@ -16,6 +16,26 @@ namespace SqlSugar
         {
             return GetEntityInfo(typeof(T));
         }
+        public EntityInfo GetEntityInfoWithAttr(Type type)
+        {
+            var attr = type?.GetCustomAttribute<TenantAttribute>();
+            if (attr == null)
+            {
+                return GetEntityInfo(type);
+            }
+            else if (attr.configId.ObjToString() == this.Context?.CurrentConnectionConfig?.ConfigId+"")
+            {
+                return GetEntityInfo(type);
+            }
+            else if (this.Context.Root == null)
+            {
+                return GetEntityInfo(type);
+            }
+            else 
+            {
+                return this.Context.Root.GetConnection(attr.configId).EntityMaintenance.GetEntityInfo(type);
+            }
+        }
         public EntityInfo GetEntityInfo(Type type)
         {
             string cacheKey = "GetEntityInfo" + type.GetHashCode() + type.FullName+this.Context?.CurrentConnectionConfig?.ConfigId;

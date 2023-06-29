@@ -306,7 +306,7 @@ namespace SqlSugar
             var sql = clone.QueryBuilder.GetSelectValue;
             if (this.QueryBuilder.IsSingle() || string.IsNullOrEmpty(sql) || sql.Trim() == "*")
             {
-                return this.Select<TResult>(expression);
+                sql = " ";
             }
             this.QueryBuilder.Parameters = clone.QueryBuilder.Parameters;
             this.QueryBuilder.SubToListParameters = clone.QueryBuilder.SubToListParameters;
@@ -895,7 +895,7 @@ namespace SqlSugar
             var sql = clone.QueryBuilder.GetSelectValue;
             if (this.QueryBuilder.IsSingle() || string.IsNullOrEmpty(sql) || sql.Trim() == "*")
             {
-                return this.Select<TResult>(expression);
+                sql = " ";
             }
             this.QueryBuilder.Parameters = clone.QueryBuilder.Parameters;
             this.QueryBuilder.SubToListParameters = clone.QueryBuilder.SubToListParameters;
