@@ -104,7 +104,7 @@ namespace SqlSugar
                                  null, Type.EmptyTypes, null));
             generator.Emit(OpCodes.Stloc, result);
             this.Context.InitMappingInfo(type);
-            var columnInfos = this.Context.EntityMaintenance.GetEntityInfo(type).Columns;
+            var columnInfos = this.Context.EntityMaintenance.GetEntityInfoWithAttr(type).Columns;
             foreach (var columnInfo in columnInfos)
             {
                 string fileName = columnInfo.DbColumnName ?? columnInfo.PropertyName;
