@@ -316,7 +316,7 @@ namespace SqlSugar
             var sql = clone.QueryBuilder.GetSelectValue;
             if (this.QueryBuilder.IsSingle() || string.IsNullOrEmpty(sql) || sql.Trim() == "*")
             {
-                return this.Select<TResult>(expression);
+                sql = " ";
             }
             this.QueryBuilder.Parameters = clone.QueryBuilder.Parameters;
             this.QueryBuilder.SubToListParameters = clone.QueryBuilder.SubToListParameters;
@@ -329,6 +329,10 @@ namespace SqlSugar
             sql = AppendSelect<T4>(sql, parameters, columnsResult, 3);
             sql = AppendSelect<T5>(sql, parameters, columnsResult, 4);
             sql = AppendSelect<T6>(sql, parameters, columnsResult, 5);
+            if (sql.Trim().First() == ',')
+            {
+                sql = sql.TrimStart(' ').TrimStart(',');
+            }
             return this.Select<TResult>(sql);
         }
         #endregion
@@ -1044,7 +1048,7 @@ namespace SqlSugar
             var sql = clone.QueryBuilder.GetSelectValue;
             if (this.QueryBuilder.IsSingle() || string.IsNullOrEmpty(sql) || sql.Trim() == "*")
             {
-                return this.Select<TResult>(expression);
+                sql = " ";
             }
             this.QueryBuilder.Parameters = clone.QueryBuilder.Parameters;
             this.QueryBuilder.SubToListParameters = clone.QueryBuilder.SubToListParameters;
@@ -1058,6 +1062,10 @@ namespace SqlSugar
             sql = AppendSelect<T5>(sql, parameters, columnsResult, 4);
             sql = AppendSelect<T6>(sql, parameters, columnsResult, 5);
             sql = AppendSelect<T7>(sql, parameters, columnsResult, 6);
+            if (sql.Trim().First() == ',')
+            {
+                sql = sql.TrimStart(' ').TrimStart(',');
+            }
             return this.Select<TResult>(sql);
         }
 
@@ -1779,7 +1787,7 @@ namespace SqlSugar
             var sql = clone.QueryBuilder.GetSelectValue;
             if (this.QueryBuilder.IsSingle() || string.IsNullOrEmpty(sql) || sql.Trim() == "*")
             {
-                return this.Select<TResult>(expression);
+                sql = " ";
             }
             this.QueryBuilder.Parameters = clone.QueryBuilder.Parameters;
             this.QueryBuilder.SubToListParameters = clone.QueryBuilder.SubToListParameters;
@@ -1794,6 +1802,10 @@ namespace SqlSugar
             sql = AppendSelect<T6>(sql, parameters, columnsResult, 5);
             sql = AppendSelect<T7>(sql, parameters, columnsResult, 6);
             sql = AppendSelect<T8>(sql, parameters, columnsResult, 7);
+            if (sql.Trim().First() == ',')
+            {
+                sql = sql.TrimStart(' ').TrimStart(',');
+            }
             return this.Select<TResult>(sql);
         }
 
@@ -2428,7 +2440,7 @@ namespace SqlSugar
             var sql = clone.QueryBuilder.GetSelectValue;
             if (this.QueryBuilder.IsSingle() || string.IsNullOrEmpty(sql) || sql.Trim() == "*")
             {
-                return this.Select<TResult>(expression);
+                sql = " ";
             }
             this.QueryBuilder.Parameters = clone.QueryBuilder.Parameters;
             this.QueryBuilder.SubToListParameters = clone.QueryBuilder.SubToListParameters;
@@ -2444,6 +2456,10 @@ namespace SqlSugar
             sql = AppendSelect<T7>(sql, parameters, columnsResult, 6);
             sql = AppendSelect<T8>(sql, parameters, columnsResult, 7);
             sql = AppendSelect<T9>(sql, parameters, columnsResult, 8);
+            if (sql.Trim().First() == ',')
+            {
+                sql = sql.TrimStart(' ').TrimStart(',');
+            }
             return this.Select<TResult>(sql);
         }
 
@@ -3114,7 +3130,7 @@ namespace SqlSugar
             var sql = clone.QueryBuilder.GetSelectValue;
             if (this.QueryBuilder.IsSingle() || string.IsNullOrEmpty(sql) || sql.Trim() == "*")
             {
-                return this.Select<TResult>(expression);
+                sql = " ";
             }
             this.QueryBuilder.Parameters = clone.QueryBuilder.Parameters;
             this.QueryBuilder.SubToListParameters = clone.QueryBuilder.SubToListParameters;
@@ -3131,6 +3147,10 @@ namespace SqlSugar
             sql = AppendSelect<T8>(sql, parameters, columnsResult, 7);
             sql = AppendSelect<T9>(sql, parameters, columnsResult, 8);
             sql = AppendSelect<T10>(sql, parameters, columnsResult, 9);
+            if (sql.Trim().First() == ',')
+            {
+                sql = sql.TrimStart(' ').TrimStart(',');
+            }
             return this.Select<TResult>(sql);
         }
 

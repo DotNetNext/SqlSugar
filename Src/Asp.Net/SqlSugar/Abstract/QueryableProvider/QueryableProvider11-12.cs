@@ -306,7 +306,7 @@ namespace SqlSugar
             var sql = clone.QueryBuilder.GetSelectValue;
             if (this.QueryBuilder.IsSingle() || string.IsNullOrEmpty(sql) || sql.Trim() == "*")
             {
-                return this.Select<TResult>(expression);
+                sql = " ";
             }
             this.QueryBuilder.Parameters = clone.QueryBuilder.Parameters;
             this.QueryBuilder.SubToListParameters = clone.QueryBuilder.SubToListParameters;
@@ -324,6 +324,10 @@ namespace SqlSugar
             sql = AppendSelect<T9>(sql, parameters, columnsResult, 8);
             sql = AppendSelect<T10>(sql, parameters, columnsResult, 9);
             sql = AppendSelect<T11>(sql, parameters, columnsResult, 10);
+            if (sql.Trim().First() == ',')
+            {
+                sql = sql.TrimStart(' ').TrimStart(',');
+            }
             return this.Select<TResult>(sql);
         }
         public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, TResult>> expression)
@@ -895,7 +899,7 @@ namespace SqlSugar
             var sql = clone.QueryBuilder.GetSelectValue;
             if (this.QueryBuilder.IsSingle() || string.IsNullOrEmpty(sql) || sql.Trim() == "*")
             {
-                return this.Select<TResult>(expression);
+                sql = " ";
             }
             this.QueryBuilder.Parameters = clone.QueryBuilder.Parameters;
             this.QueryBuilder.SubToListParameters = clone.QueryBuilder.SubToListParameters;
@@ -914,6 +918,10 @@ namespace SqlSugar
             sql = AppendSelect<T10>(sql, parameters, columnsResult, 9);
             sql = AppendSelect <T11>(sql, parameters, columnsResult, 10);
             sql = AppendSelect<T12>(sql, parameters, columnsResult, 11);
+            if (sql.Trim().First() == ',')
+            {
+                sql = sql.TrimStart(' ').TrimStart(',');
+            }
             return this.Select<TResult>(sql);
         }
         public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, TResult>> expression)

@@ -1364,7 +1364,7 @@ namespace SqlSugar
 
         protected string AppendSelect<EntityType>(string sql, ReadOnlyCollection<ParameterExpression> parameters, List<EntityColumnInfo> columnsResult, int parameterIndex1)
         {
-            var columns = this.Context.EntityMaintenance.GetEntityInfo<EntityType>().Columns;
+            var columns = this.Context.EntityMaintenance.GetEntityInfoWithAttr(typeof(EntityType)).Columns;
             var lowerSql = sql.ToLower();
             var isSubquery = lowerSql.Contains("select ") && ExpressionTool.IsMemberInit(this.QueryBuilder.SelectValue);
             if (isSubquery)
