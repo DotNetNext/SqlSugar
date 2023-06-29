@@ -755,7 +755,16 @@ namespace SqlSugar
             return $" ({likeString1} or {likeString2}  or {likeString3} or {fullString}={value} ) ";
         }
 
-
+        public string Like(MethodCallExpressionModel model) 
+        {
+            var parameter = model.Args[0];
+            var parameter2 = model.Args[1];
+            return string.Format(" ({0} like  {1} ) ", parameter.MemberName, parameter2.MemberName);
+        }
+        public string ToSingle(MethodCallExpressionModel model) 
+        {
+            return ToDecimal(model);
+        }
         public string ListAny(MethodCallExpressionModel model) 
         {
             if (IsArrayAnyParameter(model)) 

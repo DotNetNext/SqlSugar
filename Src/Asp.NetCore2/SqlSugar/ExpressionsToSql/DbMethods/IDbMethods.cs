@@ -111,5 +111,7 @@ namespace SqlSugar
         string ListAny(MethodCallExpressionModel model);
         string GetTableWithDataBase(string databaseName,string tableName);
         string Modulo(MethodCallExpressionModel mode);
+        string Like(MethodCallExpressionModel mode);
+        string ToSingle(MethodCallExpressionModel mode);
     }
 }

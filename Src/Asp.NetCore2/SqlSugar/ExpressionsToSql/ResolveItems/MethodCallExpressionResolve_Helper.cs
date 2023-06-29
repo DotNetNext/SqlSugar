@@ -846,6 +846,10 @@ namespace SqlSugar
                         return this.Context.DbMehtods.ListAny(model);
                     case "Modulo":
                         return this.Context.DbMehtods.Modulo(model);
+                    case "Like":
+                        return this.Context.DbMehtods.Like(model);
+                    case "ToSingle":
+                        return this.Context.DbMehtods.ToSingle(model);
                     default:
                         break;
                 }
