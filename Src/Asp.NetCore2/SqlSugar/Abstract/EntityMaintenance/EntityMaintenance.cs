@@ -31,6 +31,10 @@ namespace SqlSugar
             {
                 return GetEntityInfo(type);
             }
+            else if (!this.Context.Root.IsAnyConnection(attr.configId))
+            {
+                return GetEntityInfo(type);
+            }
             else 
             {
                 return this.Context.Root.GetConnection(attr.configId).EntityMaintenance.GetEntityInfo(type);
