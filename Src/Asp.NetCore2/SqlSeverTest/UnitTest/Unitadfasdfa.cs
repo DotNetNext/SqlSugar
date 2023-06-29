@@ -57,9 +57,9 @@ namespace OrmTest
                 //每次Sql执行前事件            
                 db.GetConnectionScope(configId).Aop.OnLogExecuting = (sql, pars) =>
                 {
-                  
 
-                 
+
+
                     Console.WriteLine("【" + DateTime.Now + "——执行SQL】\r\n" + UtilMethods.GetSqlString(db.CurrentConnectionConfig.DbType, sql, pars) + "\r\n");
                 };
                 //出错打印日志
@@ -75,12 +75,12 @@ namespace OrmTest
             //{
             //    db.CodeFirst.InitTables<KingJsonTest>();
             //}
-             
 
 
-           
-         var sql = db.QueryableWithAttr<KingJsonTest>().LeftJoin<KingTree>((t, j) => t.Id == j.Id).ToSqlString();
-            if (!sql.Contains("\"KINGTREE\"")) 
+
+
+            var sql = db.QueryableWithAttr<KingJsonTest>().LeftJoin<KingTree>((t, j) => t.Id == j.Id).ToSqlString();
+            if (!sql.Contains("\"KINGTREE\""))
             {
                 throw new Exception("unit error");
             }
@@ -88,6 +88,22 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+            var sq2 = db.QueryableWithAttr<KingJsonTest>()
+                   .LeftJoin<KingTree>((t, j) => t.Id == j.Id)
+                   .Where((t, j) => t.CreateTime == null || j.ParentId == 1)
+                   .Select((t, j) => new KingOutPut() { }, true)
+                   .ToSqlString();
+            var sql3 = "SELECT \"T\".\"CREATE_TIME\" AS \"CREATETIME\" ,\"J\".\"PARENTID\" AS \"PARENTID\" FROM \"KING_JSON_TEST\" \"T\" Left JOIN HGT.\"KINGTREE\" \"J\" ON ( \"T\".\"ID\" = \"J\".\"ID\" )   WHERE (( \"T\".\"CREATE_TIME\" IS NULL ) OR ( \"J\".\"PARENTID\" = 1 ))";
+            if (sq2 != sql3)
+            {
+                throw new Exception("unit error");
+            }
+
+        }
+        public class KingOutPut
+        {
+            public DateTime CreateTime { get; set; }
+            public int ParentId { get; set; }
 
         }
         //Json字段实体
@@ -115,5 +131,5 @@ namespace OrmTest
             [SqlSugar.SugarColumn(IsIgnore = true)]
             public List<KingTree> Child { get; set; }
         }
-    } 
+    }
 }
