@@ -324,6 +324,10 @@ namespace SqlSugar
             sql = AppendSelect<T9>(sql, parameters, columnsResult, 8);
             sql = AppendSelect<T10>(sql, parameters, columnsResult, 9);
             sql = AppendSelect<T11>(sql, parameters, columnsResult, 10);
+            if (sql.Trim().First() == ',')
+            {
+                sql = sql.TrimStart(' ').TrimStart(',');
+            }
             return this.Select<TResult>(sql);
         }
         public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, TResult>> expression)
@@ -914,6 +918,10 @@ namespace SqlSugar
             sql = AppendSelect<T10>(sql, parameters, columnsResult, 9);
             sql = AppendSelect <T11>(sql, parameters, columnsResult, 10);
             sql = AppendSelect<T12>(sql, parameters, columnsResult, 11);
+            if (sql.Trim().First() == ',')
+            {
+                sql = sql.TrimStart(' ').TrimStart(',');
+            }
             return this.Select<TResult>(sql);
         }
         public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, TResult>> expression)

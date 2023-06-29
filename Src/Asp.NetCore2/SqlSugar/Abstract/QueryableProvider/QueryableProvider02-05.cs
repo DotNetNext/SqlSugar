@@ -269,6 +269,10 @@ namespace SqlSugar
             var columnsResult = this.Context.EntityMaintenance.GetEntityInfo<TResult>().Columns;
             sql = AppendSelect<T>(sql, parameters, columnsResult, 0);
             sql = AppendSelect<T2>(sql, parameters, columnsResult, 1);
+            if (sql.Trim().First()==',')
+            {
+                sql = sql.TrimStart(' ').TrimStart(',');
+            }
             return this.Select<TResult>(sql);
         }
         #endregion
@@ -983,6 +987,10 @@ namespace SqlSugar
             sql = AppendSelect<T>(sql, parameters, columnsResult, 0);
             sql = AppendSelect<T2>(sql, parameters, columnsResult, 1);
             sql = AppendSelect<T3>(sql, parameters, columnsResult, 2);
+            if (sql.Trim().First() == ',')
+            {
+                sql = sql.TrimStart(' ').TrimStart(',');
+            }
             return this.Select<TResult>(sql);
         }
 
@@ -1595,6 +1603,10 @@ namespace SqlSugar
             sql = AppendSelect<T2>(sql, parameters, columnsResult, 1);
             sql = AppendSelect<T3>(sql, parameters, columnsResult, 2);
             sql = AppendSelect<T4>(sql, parameters, columnsResult, 3);
+            if (sql.Trim().First() == ',')
+            {
+                sql = sql.TrimStart(' ').TrimStart(',');
+            }
             return this.Select<TResult>(sql);
         }
 
@@ -2346,6 +2358,10 @@ namespace SqlSugar
             sql = AppendSelect<T3>(sql, parameters, columnsResult, 2);
             sql = AppendSelect<T4>(sql, parameters, columnsResult, 3);
             sql = AppendSelect<T5>(sql, parameters, columnsResult, 4);
+            if (sql.Trim().First() == ',')
+            {
+                sql = sql.TrimStart(' ').TrimStart(',');
+            }
             return this.Select<TResult>(sql);
         }
 

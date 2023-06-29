@@ -153,11 +153,11 @@ namespace SqlSugar
         }
         public void InitMappingInfo(Type type)
         {
-            string cacheKey = "Context.InitAttributeMappingTables" + type.FullName;
+            string cacheKey = "Context.InitAttributeMappingTables" + type.FullName+this.Context?.CurrentConnectionConfig?.ConfigId;
             var entityInfo = this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate<EntityInfo>(cacheKey,
               () =>
               {
-                  var result = this.Context.EntityMaintenance.GetEntityInfo(type);
+                  var result = this.Context.EntityMaintenance.GetEntityInfoWithAttr(type);
                   return result;
               });
             //var copyObj = CopyEntityInfo(entityInfo);
