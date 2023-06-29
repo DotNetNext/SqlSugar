@@ -104,6 +104,11 @@ namespace SqlSugar
                     {
                         inValues.Add(Convert.ToInt64(item));
                     }
+                    else if (item != null && item.GetType() == UtilConstants.DateType)
+                    {
+                        var inStr = Convert.ToDateTime(item).ToString("yyyy-MM-dd HH:mm:ss.fff");
+                        inValues.Add(inStr);
+                    }
                     else if (item != null && item.GetType()==UtilConstants.ByteArrayType)
                     {
                         var inStr= BitConverter.ToString((byte[])item).Replace("-", "");
