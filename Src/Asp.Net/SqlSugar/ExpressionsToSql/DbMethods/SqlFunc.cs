@@ -9,6 +9,10 @@ namespace SqlSugar
 {
     public partial class SqlFunc
     {
+        public static bool Like(string fieldName, string likeValue) 
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
         public static int Modulo(decimal numA, decimal numB)
         {
             throw new NotSupportedException("Can only be used in expressions");
@@ -228,6 +232,7 @@ namespace SqlSugar
         public static string MergeString(string value1, string value2, string value3, string value4, string value5,string value6) { throw new NotSupportedException("Can only be used in expressions"); }
         public static string MergeString(string value1, string value2, string value3, string value4, string value5, string value6,string value7) { throw new NotSupportedException("Can only be used in expressions"); }
         public static int ToInt32(object value) { return value.ObjToInt(); }
+        public static float ToSingle(object value) { return Convert.ToSingle(value); }
         public static long ToInt64(object value) { return Convert.ToInt64(value); }
         /// <summary>
         /// yyyy-MM-dd HH:mm:ss.fff
