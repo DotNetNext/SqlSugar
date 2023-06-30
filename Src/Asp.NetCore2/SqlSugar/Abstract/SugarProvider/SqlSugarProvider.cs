@@ -1664,8 +1664,15 @@ namespace SqlSugar
         #region AsTenant
         public ITenant AsTenant()
         {
-            Check.Exception(true,ErrorMessage.GetThrowMessage("Child objects do not support tenant methods, var childDb= Db.GetConnection(confid)  ,Db is master  ", "Db子对象不支持租户方法，请使用主对象,例如：var childDb= Db.GetConnection(confid)  Db是主对象，childDb是子对象 "));
-            return null;
+            if (this.Root != null)
+            {
+                return this.Root;
+            }
+            else
+            {
+                Check.Exception(true, ErrorMessage.GetThrowMessage("Child objects do not support tenant methods, var childDb= Db.GetConnection(confid)  ,Db is master  ", "Db子对象不支持租户方法，请使用主对象,例如：var childDb= Db.GetConnection(confid)  Db是主对象，childDb是子对象 "));
+                return null;
+            }
         }
 
         #endregion
