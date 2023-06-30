@@ -1287,6 +1287,8 @@ namespace SqlSugar
             var result = this.Context.Queryable<T>().AS(SqlBuilder.GetPackTable(sqlobj.Key, "MergeTable")).AddParameters(sqlobj.Value).Select("*").With(SqlWith.Null);
             result.QueryBuilder.WhereIndex = index;
             result.QueryBuilder.NoCheckInclude = true;
+            result.QueryBuilder.Includes = this.QueryBuilder.Includes;
+            result.QueryBuilder.AppendNavInfo = this.QueryBuilder.AppendNavInfo;
             result.QueryBuilder.LambdaExpressions.ParameterIndex = QueryBuilder.LambdaExpressions.ParameterIndex++;
             result.QueryBuilder.LambdaExpressions.Index = QueryBuilder.LambdaExpressions.Index++;
             if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle)
