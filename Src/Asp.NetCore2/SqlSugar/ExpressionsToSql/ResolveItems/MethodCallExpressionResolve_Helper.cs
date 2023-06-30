@@ -711,6 +711,10 @@ namespace SqlSugar
                         return this.Context.DbMehtods.AggregateDistinctCount(model);
                     case "MappingColumn":
                         var mappingColumnResult = this.Context.DbMehtods.MappingColumn(model);
+                        if (model.Args.Count == 1) 
+                        {
+                            return model.Args[0].MemberName.ObjToString().TrimStart('\'').TrimEnd('\'');
+                        }
                         var isValid = model.Args[0].IsMember && model.Args[1].IsMember == false;
                         //Check.Exception(!isValid, "SqlFunc.MappingColumn parameters error, The property name on the left, string value on the right");
                         if (model.Args.Count > 1)
