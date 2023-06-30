@@ -1402,11 +1402,15 @@ namespace SqlSugar
                 JoinWhere = expResult.GetResultString(),
                 ShortName = lastPareamter.Name,
                 EntityType= lastPareamter.Type,
-                TableName = this.Context.EntityMaintenance.GetTableName(lastPareamter.Type)
+                TableName = null
             };
-            if (QueryBuilder.IsCrossQueryWithAttr) 
+            if (QueryBuilder.IsCrossQueryWithAttr)
             {
-               result.TableName=GetTableName(this.Context.EntityMaintenance.GetEntityInfo(lastPareamter.Type), result.TableName);
+                result.TableName = GetTableName(this.Context.EntityMaintenance.GetEntityInfoWithAttr(lastPareamter.Type), result.TableName);
+            }
+            else 
+            {
+                result.TableName= this.Context.EntityMaintenance.GetTableName(lastPareamter.Type);
             }
             if (this.Context.CurrentConnectionConfig?.MoreSettings?.PgSqlIsAutoToLower == false) 
             {
