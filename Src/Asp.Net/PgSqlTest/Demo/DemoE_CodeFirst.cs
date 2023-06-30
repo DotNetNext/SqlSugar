@@ -83,9 +83,57 @@ namespace OrmTest
             db.Insertable(new List<CodeFloatddfa1a2> { new CodeFloatddfa1a2() { xx = DateTimeOffset.Now }, new CodeFloatddfa1a2() { xx = DateTimeOffset.Now } }).ExecuteCommand();
             db.CodeFirst.InitTables<Area>();
             db.CodeFirst.InitTables<CodeFirstadfa>();
+            //db.Ado.ExecuteCommand("CREATE SCHEMA IF NOT EXISTS haha;");
+            //SqlSugarClient db2 = new SqlSugarClient(new ConnectionConfig()
+            //{
+            //    DbType = DbType.PostgreSQL,
+            //    ConnectionString = Config.ConnectionString+ "searchpath=haha",
+            //    InitKeyType = InitKeyType.Attribute,
+            //    IsAutoCloseConnection = true
+            //});
+            //db2.CodeFirst.InitTables<test1>();
+            //var list10 = db2.Queryable<test1>().ToList();
+            //db.CurrentConnectionConfig.MoreSettings = new ConnMoreSettings()
+            //{
+            //    PgSqlIsAutoToLowerCodeFirst = true,
+            //    PgSqlIsAutoToLower = true
+            //};
+            //var list11=db.Queryable<test1>().AS("haha.系统用户角色表").ToList();
             Console.WriteLine("#### CodeFirst end ####");
         }
     }
+    [SugarTable("系统用户角色表")]
+
+    public class test1
+
+    {
+
+        /// <summary>
+
+        /// 用户Id
+
+        /// </summary>
+
+        [SugarColumn(ColumnDescription = "用户Id")]
+
+        public int Id { get; set; }
+
+
+
+        /// <summary>
+
+        /// 名称
+
+        /// </summary>
+
+        [SugarColumn(ColumnDescription = "名称")]
+
+        public string name { get; set; }
+
+
+
+    }
+
     public class CodeFirstadfa 
     {
         [SugarColumn(IsNullable = true, DefaultValue = "CURRENT_TIMESTAMP")]
