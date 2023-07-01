@@ -16,34 +16,34 @@ namespace SqlSugar.ClickHouse
  
         public async Task<int> ExecuteBulkCopyAsync(DataTable dt)
         {
-            var bulkCopy = GetBulkCopyInstance();
+            ClickHouseBulkCopy bulkCopy;
+            var conn = new ClickHouseConnection(this.Context.CurrentConnectionConfig.ConnectionString);
+            bulkCopy = new ClickHouseBulkCopy(conn);
+            await conn.OpenAsync();
+            bulkCopy.BatchSize = 100000;
             bulkCopy.DestinationTableName = dt.TableName;
             try
             {
-                await bulkCopy.WriteToServerAsync(dt,new CancellationToken());
+                await bulkCopy.WriteToServerAsync(dt, new CancellationToken());
             }
             catch (Exception ex)
             {
-                CloseDb();
                 throw ex;
             }
-            CloseDb();
+            finally 
+            {
+                await conn.CloseAsync();
+            } 
             return dt.Rows.Count;
         }
         public override Task CreateTempAsync<T>(DataTable dt) 
         {
             throw new Exception("The development of BulkCopyUpdate ");
         }
-        public ClickHouseBulkCopy GetBulkCopyInstance()
-        {
-            ClickHouseBulkCopy copy;
-            copy = new ClickHouseBulkCopy((ClickHouseConnection)this.Context.Ado.Connection);
-            if (this.Context.Ado.Connection.State == ConnectionState.Closed)
-            {
-                this.Context.Ado.Connection.Open();
-            }
-            copy.BatchSize = 100000;
-            return copy;
-        }
+        //public async Task<ClickHouseBulkCopy> GetBulkCopyInstance()
+        //{
+         
+        //    return copy;
+        //}
     }
 }
