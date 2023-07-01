@@ -71,7 +71,14 @@ namespace SqlSugar
                 {
                     uInt64TypeName.Add(item.ColumnName);
                 }
-                dt.Columns.Add(item.ColumnName, item.DataType);
+                if (item.DataType.Name == "ClickHouseDecimal")
+                {
+                    dt.Columns.Add(item.ColumnName, typeof(decimal));
+                }
+                else
+                {
+                    dt.Columns.Add(item.ColumnName, item.DataType);
+                }
             }
             dt.TableName = GetTableName();
             var columns = entityInfo.Columns;
