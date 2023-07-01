@@ -23,8 +23,16 @@ namespace OrmTest
             db.CodeFirst.InitTables(typeof(CodeFirstTable1));//Create CodeFirstTable1 
             db.Insertable(new CodeFirstTable1() { Name = "a", Text="a" }).ExecuteCommand();
             var list = db.Queryable<CodeFirstTable1>().ToList();
+            if (db.DbMaintenance.IsAnyTable("CodeFirstafdasdfa"))
+                db.DbMaintenance.DropTable("CodeFirstafdasdfa");
+            db.CodeFirst.InitTables<CodeFirstafdasdfa>();
+            db.Insertable(new CodeFirstafdasdfa() { Id = Guid.NewGuid() }).ExecuteCommand();
             Console.WriteLine("#### CodeFirst end ####");
         }
+    }
+    public class CodeFirstafdasdfa 
+    {
+        public Guid Id { get; set; }
     }
 
     public class CodeFirstTable1
