@@ -321,6 +321,23 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override void AddDefaultValue(EntityInfo entityInfo)
+        {
+            var dbColumns = this.GetColumnInfosByTableName(entityInfo.DbTableName, false);
+            var db = this.Context;
+            var columns = entityInfo.Columns.Where(it => it.IsIgnore == false).ToList();
+            foreach (var item in columns)
+            {
+                if (item.DefaultValue.HasValue() || (item.DefaultValue == "" && item.UnderType == UtilConstants.StringType))
+                {
+                    if (!IsAnyDefaultValue(entityInfo.DbTableName, item.DbColumnName, dbColumns))
+                    {
+                        this.AddDefaultValue(entityInfo.DbTableName, item.DbColumnName, item.DefaultValue);
+                    }
+                }
+            }
+        }
+
         public override List<string> GetIndexList(string tableName)
         {
            return this.Context.Ado.SqlQuery<string>($"SELECT indexname = i.name FROM sys.indexes i\r\nJOIN sys.index_columns ic ON i.object_id = ic.object_id AND i.index_id = ic.index_id\r\nJOIN sys.columns c ON ic.object_id = c.object_id AND ic.column_id = c.column_id\r\nWHERE i.object_id = OBJECT_ID('{tableName}')");
