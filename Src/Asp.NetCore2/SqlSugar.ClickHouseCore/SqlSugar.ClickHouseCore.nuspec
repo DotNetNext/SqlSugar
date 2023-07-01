@@ -14,7 +14,7 @@
     <tags>ClickHouse .net  ORM</tags>
     <dependencies>
       <group targetFramework=".NETStandard2.1">
-        <dependency id="ClickHouse.Client" version="5.0.3" />
+        <dependency id="ClickHouse.Client" version="6.6.0" />
       </group>
     </dependencies>
   </metadata>
