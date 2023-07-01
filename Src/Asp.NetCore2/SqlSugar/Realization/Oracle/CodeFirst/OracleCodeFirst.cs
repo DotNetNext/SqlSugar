@@ -28,6 +28,10 @@ namespace SqlSugar
                 if (propertyType.Name.Equals("Guid", StringComparison.CurrentCultureIgnoreCase))
                 {
                     result.DataType = this.Context.Ado.DbBind.GetDbTypeName(UtilConstants.StringType.Name);
+                    if (result.Length <= 1)
+                    {
+                        result.Length = 36;
+                    }
                 }
                 else
                 {
