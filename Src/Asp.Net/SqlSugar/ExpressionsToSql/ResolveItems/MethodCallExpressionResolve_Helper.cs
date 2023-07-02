@@ -711,7 +711,7 @@ namespace SqlSugar
                         return this.Context.DbMehtods.AggregateDistinctCount(model);
                     case "MappingColumn":
                         var mappingColumnResult = this.Context.DbMehtods.MappingColumn(model);
-                        if (model.Args.Count == 1) 
+                        if (model.Args.Count == 1&& mappingColumnResult.IsNullOrEmpty()) 
                         {
                             return model.Args[0].MemberName.ObjToString().TrimStart('\'').TrimEnd('\'');
                         }
