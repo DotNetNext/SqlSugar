@@ -160,11 +160,11 @@ namespace SqlSugar.ClickHouse
                 }
                 else if (dbColumnInfo.IsArray && value != null)
                 {
-                    return n + "'" + this.Context.Utilities.SerializeObject(value) + "'";
+                    return   "'" + this.Context.Utilities.SerializeObject(value) + "'";
                 }
                 else if (dbColumnInfo.IsJson && value != null)
                 {
-                    return n + "'" + this.Context.Utilities.SerializeObject(value) + "'";
+                    return  "'" + this.Context.Utilities.SerializeObject(value) + "'";
                 }
                 else if (type == UtilConstants.ByteArrayType)
                 {
