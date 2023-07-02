@@ -26,6 +26,6 @@ namespace OrmTest
         /// Account have permission to create database
         /// 用有建库权限的数据库账号
         /// </summary>
-        public static string ConnectionString3 = "PORT=5432;DATABASE=SqlSugar4xTest3;HOST=localhost;PASSWORD=postgres4;USER ID=postgres";
+        public static string ConnectionString3 = "PORT=5432;DATABASE=SqlSugar4xTest3;HOST=localhost;PASSWORD=postgres;USER ID=postgres";
     }
 }
