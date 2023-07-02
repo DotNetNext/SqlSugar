@@ -114,9 +114,9 @@ namespace SqlSugar.ClickHouse
         }
         private string GetOracleUpdateColums(int i, DbColumnInfo m, bool iswhere)
         {
-            return string.Format("\"{0}\"={1}", m.DbColumnName, base.GetDbColumn(m,FormatValue(i, m.DbColumnName, m.Value, iswhere)));
+            return string.Format("\"{0}\"={1}", m.DbColumnName, base.GetDbColumn(m,FormatValue(i, m.DbColumnName, m.Value, iswhere,m)));
         }
-        public object FormatValue(int i, string name, object value, bool iswhere)
+        public object FormatValue(int i, string name, object value, bool iswhere,DbColumnInfo dbColumnInfo)
         {
             if (value == null)
             {
@@ -157,6 +157,14 @@ namespace SqlSugar.ClickHouse
                     {
                         return Convert.ToInt64(value);
                     }
+                }
+                else if (dbColumnInfo.IsArray && value != null)
+                {
+                    return n + "'" + this.Context.Utilities.SerializeObject(value) + "'";
+                }
+                else if (dbColumnInfo.IsJson && value != null)
+                {
+                    return n + "'" + this.Context.Utilities.SerializeObject(value) + "'";
                 }
                 else if (type == UtilConstants.ByteArrayType)
                 {

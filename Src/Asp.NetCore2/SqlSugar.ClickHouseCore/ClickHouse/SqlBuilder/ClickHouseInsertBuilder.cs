@@ -25,7 +25,7 @@ namespace SqlSugar.ClickHouse
             }
         }
         int i = 0;
-        public object FormatValue(object value, string name)
+        public object FormatValue(object value, string name,DbColumnInfo dbColumnInfo)
         {
             var n = "";
             if (this.Context.CurrentConnectionConfig.MoreSettings != null && this.Context.CurrentConnectionConfig.MoreSettings.DisableNvarchar)
@@ -62,6 +62,14 @@ namespace SqlSugar.ClickHouse
                     {
                         return Convert.ToInt64(value);
                     }
+                }
+                else if (dbColumnInfo.IsArray&& value!=null) 
+                {
+                    return  n+"'"+this.Context.Utilities.SerializeObject(value)+"'";
+                }
+                else if (dbColumnInfo.IsJson && value != null)
+                {
+                    return n + "'" + this.Context.Utilities.SerializeObject(value) + "'";
                 }
                 else if (type == UtilConstants.BoolType)
                 {
@@ -144,7 +152,7 @@ namespace SqlSugar.ClickHouse
                 foreach (var item in groupList)
                 {
                     batchInsetrSql.Append("(");
-                    insertColumns = string.Join(",", item.Select(it =>base.GetDbColumn(it, FormatValue(it.Value, it.PropertyName))));
+                    insertColumns = string.Join(",", item.Select(it =>base.GetDbColumn(it, FormatValue(it.Value, it.PropertyName,it))));
                     batchInsetrSql.Append(insertColumns);
                     if (groupList.Last() == item)
                     {
