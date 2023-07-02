@@ -57,7 +57,7 @@ namespace SqlSugar
                          WHERE upper(xtype) IN('U',
                                         'V') )
                       AND (systypes.name <> 'sysname')
-                      AND sysobjects.name='{0}'
+                      AND sysobjects.name=N'{0}'
                       AND systypes.name<>'geometry'
                       AND systypes.name<>'geography'
                     ORDER BY syscolumns.colid";
@@ -371,7 +371,7 @@ namespace SqlSugar
                 }
                 else
                 {
-                    var result= this.Context.Ado.GetInt($"select object_id('{tableName}')");
+                    var result= this.Context.Ado.GetInt($"select object_id(N'{tableName}')");
                     return result > 0;
                 }
             }
@@ -386,7 +386,7 @@ namespace SqlSugar
                     tableName = SqlBuilder.GetNoTranslationColumnName(tableName);
                 }
                 var sql = @"IF EXISTS (SELECT * FROM sys.objects
-                        WHERE type='u' AND name='"+tableName.ToSqlFilter()+@"')  
+                        WHERE type='u' AND name=N'"+tableName.ToSqlFilter()+@"')  
                         SELECT 1 AS res ELSE SELECT 0 AS res;";
                 return this.Context.Ado.GetInt(sql) > 0;
             }
