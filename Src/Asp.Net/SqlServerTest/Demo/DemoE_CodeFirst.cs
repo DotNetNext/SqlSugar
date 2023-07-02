@@ -69,8 +69,15 @@ namespace OrmTest
             db.CodeFirst.InitTables<Unittest1011, Unittest22221>();
             db.Insertable(new Unittest1011() { name = "a" }).ExecuteCommand();
             db.Insertable(new Unittest22221() { name = "a" }).ExecuteCommand();
+            db.CodeFirst.InitTables<Unitrtqqqadfa>();
             Console.WriteLine("#### CodeFirst end ####");
         }
+    }
+    [SugarTable("dbo.Unitrtqqqadfa")]
+    public class Unitrtqqqadfa
+    {
+        [SugarColumn(ColumnDescription ="aa")]
+        public string Name { get; set; }
     }
     public class Unittest22221
     {
