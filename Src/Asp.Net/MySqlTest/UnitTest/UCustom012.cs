@@ -3,6 +3,7 @@ using SqlSugar;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Management;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -127,6 +128,16 @@ namespace OrmTest
             {
                 it.UnitA002 = db.Queryable<UnitA002>().SetContext(x => x.orgid, () => it.orgid, it).First();
             });
+            var sql=db.Queryable<Unirtewqtq<string>>().ToSqlString();
+            if (sql.Contains("dfafaafs") == false)
+            {
+                throw new Exception("unit error");
+            }
+        }
+        [SugarTable("dfafaafs")]
+        public class Unirtewqtq<T>
+        {
+            public T name { get; set; }
         }
 
         public class UnitA001
