@@ -37,6 +37,13 @@ namespace SqlSugar
             Check.ArgumentNullException(name, string.Format(ErrorMessage.ObjNotExist, "Table Name"));
             if (!name.Contains("<>f__AnonymousType") &&name.IsContainsIn("(", ")", SqlTranslationLeft)&&name!= "Dictionary`2")
             {
+                var tableInfo = this.Context
+                .MappingTables?
+                .FirstOrDefault(it => it.EntityName.Equals(name, StringComparison.CurrentCultureIgnoreCase));
+                if (tableInfo != null) 
+                {
+                    return GetTranslationColumnName(tableInfo.DbTableName);
+                }
                 return name;
             }
             if (Context.MappingTables == null) 
