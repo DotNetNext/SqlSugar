@@ -68,13 +68,22 @@ namespace SqlSugar
         {
             if (value != null)
             {
-                if (value.IsContainsIn(";", "--")) 
+                if (value.IsContainsIn(";", "--"))
                 {
                     throw new Exception($"{value} format error ");
                 }
                 else if (value.IsContainsIn("'")&&(value.Length- value.Replace("'","").Length)%2!=0)
                 {
                     throw new Exception($"{value} format error ");
+                }
+                else if (value.ToLower().Contains(" update ") 
+                    || value.ToLower().Contains(" delete ")
+                    || value.ToLower().Contains(" drop ")
+                    || value.ToLower().Contains(" alert ")
+                    || value.ToLower().Contains(" create ")
+                    || value.ToLower().Contains(" insert "))
+                {
+                   Check.ExceptionEasy($"{value} format error  ", value+ "不能存在  空格+【update drop 等】+空格 ");
                 }
             }
             return value;
