@@ -660,6 +660,10 @@ namespace SqlSugar
             string columnName = this.SqlBuilder.GetTranslationColumnName(columnInfo.DbColumnName);
             tableName = this.SqlBuilder.GetTranslationTableName(tableName);
             string dataType = columnInfo.DataType;
+            if (dataType.EqualCase("varchar")&&this.Context.CurrentConnectionConfig?.MoreSettings?.SqlServerCodeFirstNvarchar == true) 
+            {
+                dataType = "nvarchar";
+            }
             string dataSize = GetSize(columnInfo);
             string nullType = columnInfo.IsNullable ? this.CreateTableNull : CreateTableNotNull;
             string primaryKey = null;
