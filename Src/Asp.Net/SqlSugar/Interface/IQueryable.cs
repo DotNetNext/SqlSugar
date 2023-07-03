@@ -105,6 +105,7 @@ namespace SqlSugar
         ISugarQueryable<T> InIF<FieldType>(bool isWhere,Expression<Func<T, object>> expression, ISugarQueryable<FieldType> childQueryExpression);
 
         ISugarQueryable<T> OrderBy(string orderFileds);
+        ISugarQueryable<T> OrderByPropertyName(string orderPropertyName,OrderByType? orderByType=null);
         ISugarQueryable<T> OrderBy(Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc);
         ISugarQueryable<T> OrderByDescending(Expression<Func<T, object>> expression);
         ISugarQueryable<T> OrderByIF(bool isOrderBy, string orderFileds);

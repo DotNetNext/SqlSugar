@@ -1044,6 +1044,26 @@ namespace SqlSugar
             this.QueryBuilder.SampleBy = sql;
             return this;
         }
+        public ISugarQueryable<T> OrderByPropertyName(string orderPropertyName, OrderByType? orderByType = null) 
+        {
+            if (orderPropertyName != null) 
+            {
+                if (this.Context.EntityMaintenance.GetEntityInfoWithAttr(typeof(T)).Columns.Any(it =>
+                it.DbColumnName?.EqualCase(orderPropertyName)==true
+                || it.PropertyName?.EqualCase(orderPropertyName)==true))
+                {
+                    var name = this.Context.EntityMaintenance.GetEntityInfoWithAttr(typeof(T)).Columns.FirstOrDefault(it =>
+                it.DbColumnName?.EqualCase(orderPropertyName) == true
+                || it.PropertyName?.EqualCase(orderPropertyName) == true)?.DbColumnName;
+                    return this.OrderBy(this.SqlBuilder.GetTranslationColumnName( name) + " "+orderByType);
+                }
+                else 
+                {
+                    Check.ExceptionEasy($"OrderByPropertyName error.{orderPropertyName} does not exist in the entity class", $"OrderByPropertyName出错实体类中不存在{orderPropertyName}");
+                }
+            }
+            return this;
+        }
         public virtual ISugarQueryable<T> OrderBy(string orderFileds)
         {
             orderFileds = orderFileds.ToCheckField();
