@@ -80,7 +80,8 @@ namespace SqlSugar
                     || value.ToLower().Contains(" delete ")
                     || value.ToLower().Contains(" drop ")
                     || value.ToLower().Contains(" alert ")
-                    || value.ToLower().Contains(" create "))
+                    || value.ToLower().Contains(" create ")
+                    || value.ToLower().Contains(" insert "))
                 {
                    Check.ExceptionEasy($"{value} format error  ", value+ "不能存在  空格+【update drop 等】+空格 ");
                 }
