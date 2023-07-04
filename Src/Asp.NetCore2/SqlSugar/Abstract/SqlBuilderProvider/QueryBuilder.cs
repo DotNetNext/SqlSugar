@@ -495,7 +495,8 @@ namespace SqlSugar
             {
                 var easyInfo = JoinQueryInfos.FirstOrDefault(it =>
                 it.TableName.Equals(entityInfo.DbTableName, StringComparison.CurrentCultureIgnoreCase) ||
-                it.TableName.Equals(entityInfo.EntityName, StringComparison.CurrentCultureIgnoreCase));
+                it.TableName.Equals(entityInfo.EntityName, StringComparison.CurrentCultureIgnoreCase)||
+                it.EntityType==ChildType);
                 if (easyInfo == null)
                 {
                     if (ChildType.IsInterface && JoinQueryInfos.Any(it =>it.EntityType!=null&&it.EntityType.GetInterfaces().Any(z => z == ChildType)))
@@ -529,7 +530,7 @@ namespace SqlSugar
                         var shortName = this.Builder.GetTranslationColumnName(joinInfo.ShortName.Trim()) + ".";
                         sql = sql.Replace(itName, shortName);
                     }
-                    if (isInterface||joinInfo.TableName.EqualCase(entityInfo.EntityName)|| joinInfo.TableName.EqualCase(entityInfo.DbTableName)) 
+                    if (isInterface||joinInfo.TableName.EqualCase(entityInfo.EntityName)|| joinInfo.TableName.EqualCase(entityInfo.DbTableName)||joinInfo.EntityType==ChildType) 
                     {
                         var mysql = sql;
                         if (isSameName)
