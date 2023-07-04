@@ -4,6 +4,7 @@ using SqlSugar.DbConvert;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
+//OracleTest();
 ServerTest();
 SqliteTest();
 MyTest();
@@ -146,6 +147,21 @@ static void SqliteTest()
 
     var d1 = new UnitDate01231().dateOnly;
     var d2 = new UnitDate01231().timeOnly;
+}
+static void OracleTest()
+{
+    var db = new SqlSugarClient(new ConnectionConfig()
+    {
+        DbType = DbType.Oracle,
+        IsAutoCloseConnection= true,
+        ConnectionString = "Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=150.158.37.115)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=ORCL)));User Id= ;Password=Qdies123test;Pooling='true';Max Pool Size=150"
+    },
+    it =>
+    {
+        it.Aop.OnLogExecuting = (s, p) => Console.WriteLine(s, p);
+    });
+    List< (int id, string name)> x = db.SqlQueryable<object>("select id,name from  \"ORDER\"")
+        .Select<(int id, string name)>().ToList();
 }
 
 
