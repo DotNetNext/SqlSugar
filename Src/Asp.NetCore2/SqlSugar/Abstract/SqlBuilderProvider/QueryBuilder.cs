@@ -554,7 +554,7 @@ namespace SqlSugar
 
         private string ReplaceFilterColumnName(string sql, Type filterType,string shortName=null)
         {
-            foreach (var column in this.Context.EntityMaintenance.GetEntityInfo(filterType).Columns.Where(it => it.IsIgnore == false))
+            foreach (var column in this.Context.EntityMaintenance.GetEntityInfoWithAttr(filterType).Columns.Where(it => it.IsIgnore == false))
             {
                 if (shortName == null)
                 {
