@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            Unitrasdfa.Init();
             Unitadfasdfa.Init();
             UpdateNavOneToOne.Init();
             Unitasf1.Init();
