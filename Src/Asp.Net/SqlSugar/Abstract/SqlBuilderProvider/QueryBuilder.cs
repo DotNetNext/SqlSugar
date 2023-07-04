@@ -411,7 +411,7 @@ namespace SqlSugar
             Type type = item.GetType();
             PropertyInfo field = type.GetProperty("exp", flag);
             Type ChildType = item.type;
-            var entityInfo = this.Context.EntityMaintenance.GetEntityInfo(ChildType);
+            var entityInfo = this.Context.EntityMaintenance.GetEntityInfoWithAttr(ChildType);
             var exp = field.GetValue(item, null) as Expression;
             var isMain = ChildType == this.EntityType||(ChildType.IsInterface&& this.EntityType.GetInterfaces().Any(it => it == ChildType));
             var isSingle = IsSingle();
