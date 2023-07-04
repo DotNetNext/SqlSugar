@@ -1294,6 +1294,10 @@ namespace SqlSugar
                     }
                 }
             }
+            if (tableName == null) 
+            {
+                tableName = entity.DbTableName;
+            }
             return tableName;
         }
         protected string AppendSelect(List<EntityColumnInfo> entityColumnInfos,string sql, ReadOnlyCollection<ParameterExpression> parameters, List<EntityColumnInfo> columnsResult, int parameterIndex1)
