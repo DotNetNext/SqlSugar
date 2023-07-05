@@ -83,8 +83,8 @@ namespace SqlSugar
         public RepositoryType GetMyRepository<RepositoryType>() where RepositoryType:new()
         {
             var result = (ISugarRepository)new RepositoryType();
-            var type = typeof(RepositoryType).GetGenericArguments()[0];
-            TenantAttribute tenantAttribute = type.GetCustomAttribute<TenantAttribute>();
+            var type = typeof(RepositoryType).GetGenericArguments().FirstOrDefault();
+            TenantAttribute tenantAttribute = type?.GetCustomAttribute<TenantAttribute>();
             if (tenantAttribute == null)
             {
                 result.Context = this.Db;
