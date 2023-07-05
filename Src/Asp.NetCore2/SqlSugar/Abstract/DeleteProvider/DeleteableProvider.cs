@@ -169,15 +169,16 @@ namespace SqlSugar
                         {
                             tempequals = $"{SqlBuilder.SqlTranslationLeft}{{0}}{SqlBuilder.SqlTranslationRight}='{{1}}' ";
                         }
-                        if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle)
+                        if (SqlBuilder.SqlParameterKeyWord==":")
                         {
+                            var isAutoToUpper =this.Context.CurrentConnectionConfig?.MoreSettings?.IsAutoToUpper??true;
                             if (entityValue != null && UtilMethods.GetUnderType(entityValue.GetType()) == UtilConstants.DateType)
                             {
-                                andString.AppendFormat("\"{0}\"={1} ", primaryField.ToUpper(), "to_date('" + entityValue.ObjToDate().ToString("yyyy-MM-dd HH:mm:ss") + "', 'YYYY-MM-DD HH24:MI:SS') ");
+                                andString.AppendFormat("\"{0}\"={1} ", primaryField.ToUpper(isAutoToUpper), "to_date('" + entityValue.ObjToDate().ToString("yyyy-MM-dd HH:mm:ss") + "', 'YYYY-MM-DD HH24:MI:SS') ");
                             }
                             else
                             {
-                                andString.AppendFormat(tempequals, primaryField.ToUpper(), entityValue);
+                                andString.AppendFormat(tempequals, primaryField.ToUpper(isAutoToUpper), entityValue);
                             }
                         }
                         else if (this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL && (this.Context.CurrentConnectionConfig.MoreSettings == null || this.Context.CurrentConnectionConfig.MoreSettings?.PgSqlIsAutoToLower == true))
