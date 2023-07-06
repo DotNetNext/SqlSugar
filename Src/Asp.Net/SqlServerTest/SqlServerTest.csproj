@@ -102,6 +102,7 @@
     <Compile Include="UnitTest\Models\001\ShoujiSubnum.cs" />
     <Compile Include="UnitTest\Models\001\ShoujiViewDto.cs" />
     <Compile Include="UnitTest\Models\Unit23131.cs" />
+    <Compile Include="UnitTest\UEnum2.cs" />
     <Compile Include="UnitTest\UinitCustomConvert.cs" />
     <Compile Include="UnitTest\UInsert3.cs" />
     <Compile Include="UnitTest\UJson2.cs" />
