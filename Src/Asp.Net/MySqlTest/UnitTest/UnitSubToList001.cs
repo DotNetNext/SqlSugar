@@ -56,8 +56,8 @@ namespace OrmTest
  
 
             //测试用例 
-           var list = db.Queryable<GWoBase>().AS<GWoBase>("zd_mes_wo.g_wo_base")
-                .LeftJoin<SysOrg>((g, s) => g.OrgId == s.Id).AS<SysOrg>("zd_mes_bd.sys_org")
+           var list = db.Queryable<GWoBase>().AS<GWoBase>("SqlSugar4xTest.g_wo_base")
+                .LeftJoin<SysOrg>((g, s) => g.OrgId == s.Id).AS<SysOrg>("SqlSugar4xTest.sys_org")
                 .Where(g => g.WorkOrder == "W001")
                 .Select((g, s) => new GWoBase
                 {
