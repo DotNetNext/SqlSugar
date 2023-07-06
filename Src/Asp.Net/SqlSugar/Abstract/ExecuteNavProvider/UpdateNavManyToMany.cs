@@ -89,7 +89,32 @@ namespace SqlSugar
                     mappgingTables.Add(keyValuePairs);
                 }
             }
-            this._Context.Deleteable<object>().AS(mappingEntity.DbTableName).In(mappingA.DbColumnName, ids).ExecuteCommand();
+            if (this._Options?.ManyToManyEnableLogicDelete == true)
+            {
+                var locgicColumn = thisEntity.Columns.FirstOrDefault(it => it.PropertyName.EqualCase("IsDeleted") || it.PropertyName.EqualCase("IsDelete"));
+                Check.ExceptionEasy(
+                     locgicColumn == null,
+                     thisEntity.EntityName + "Logical deletion requires the entity to have the IsDeleted property",
+                     thisEntity.EntityName + "假删除需要实体有IsDeleted属性");
+                List<IConditionalModel> conditionalModels = new List<IConditionalModel>();
+                conditionalModels.Add(new ConditionalModel()
+                {
+                    FieldName = mappingA.DbColumnName,
+                    FieldValue = string.Join(",", ids.Distinct()),
+                    ConditionalType = ConditionalType.In,
+                    CSharpTypeName = mappingA?.PropertyInfo?.PropertyType?.Name
+                });
+                var sqlObj = _Context.Queryable<object>().SqlBuilder.ConditionalModelToSql(conditionalModels);
+                this._Context.Updateable<object>()
+                  .AS(mappingEntity.DbTableName)
+                  .Where(sqlObj.Key, sqlObj.Value)
+                  .SetColumns(locgicColumn.DbColumnName, true)
+                  .ExecuteCommand();
+            }
+            else
+            {
+                this._Context.Deleteable<object>().AS(mappingEntity.DbTableName).In(mappingA.DbColumnName, ids).ExecuteCommand();
+            }
             if (HasMappingTemplate(mappingEntity))
             {
                 InertMappingWithTemplate(mappingEntity, mappingA, mappingB, mappgingTables);
