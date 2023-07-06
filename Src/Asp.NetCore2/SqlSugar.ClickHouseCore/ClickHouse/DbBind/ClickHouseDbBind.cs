@@ -79,8 +79,9 @@ namespace SqlSugar.ClickHouse
                     new KeyValuePair<string, CSharpDataType>("String",CSharpDataType.@string),
                     new KeyValuePair<string, CSharpDataType>("Fixedstring",CSharpDataType.@string),
                     new KeyValuePair<string, CSharpDataType>("UUID",CSharpDataType.Guid),
-                    new KeyValuePair<string, CSharpDataType>("DateTime('Asia/Shanghai')",CSharpDataType.DateTime),
+
                     new KeyValuePair<string, CSharpDataType>("DateTime",CSharpDataType.DateTime),
+                                        new KeyValuePair<string, CSharpDataType>("DateTime('Asia/Shanghai')",CSharpDataType.DateTime),
                     new KeyValuePair<string, CSharpDataType>("DATE",CSharpDataType.DateTime),
                     new KeyValuePair<string, CSharpDataType>("Datetime64",CSharpDataType.DateTime),
                     new KeyValuePair<string, CSharpDataType>("Datetime64",CSharpDataType.DateTime),
