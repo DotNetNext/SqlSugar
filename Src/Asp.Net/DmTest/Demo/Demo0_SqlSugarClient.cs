@@ -71,7 +71,7 @@ namespace OrmTest
             //db.DbMaintenance.CreateDatabase();
 
             //Use db query
-            var dt = db.Ado.GetDataTable("select 1");
+            var dt = db.Ado.GetDataTable("select 1",new { id=1});
 
             //Create tables
             db.CodeFirst.InitTables(typeof(OrderItem),typeof(Order));
