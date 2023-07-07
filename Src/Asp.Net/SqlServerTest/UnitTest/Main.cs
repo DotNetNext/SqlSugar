@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            Unitadf1131.Init();
             UEnum2.Init();
             UnitManyToMany4.Init();
             UnitManyToMany3.Init();
