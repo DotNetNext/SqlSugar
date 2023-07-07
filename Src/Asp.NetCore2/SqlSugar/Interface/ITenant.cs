@@ -39,7 +39,9 @@ namespace SqlSugar
         IUpdateable<T> UpdateableWithAttr<T>(List<T> updateObjs) where T : class, new();
         IDeleteable<T> DeleteableWithAttr<T>(T deleteObjs) where T : class, new();
         IDeleteable<T> DeleteableWithAttr<T>(List<T> deleteObjs) where T : class, new();
-        bool IsAnyConnection(dynamic configId);
+        IDeleteable<T> DeleteableWithAttr<T>() where T : class, new();
+
+       bool IsAnyConnection(dynamic configId);
 
         void Close();
         void Open();
