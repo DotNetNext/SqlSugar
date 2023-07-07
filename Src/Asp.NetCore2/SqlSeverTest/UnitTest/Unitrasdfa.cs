@@ -17,6 +17,8 @@ namespace OrmTest
                 .ToSqlString();
 
 
+            var test =db.Queryable<PRT_BMS_SA_WEBCON_DOC_V>().Where(a =>  a.SALESID == (long)SqlFunc.Subqueryable<PRT_BMS_SA_WEBCON_DTL_VP>().GroupBy(z => z.SALESID).Select(z => z.SALESID)).Select(a => new { a.SALESID, a.SACONNO }).Clone()
+             .ToSqlString();
         }
     }
     [SugarTable("FLOW_TEMPLATE")]
