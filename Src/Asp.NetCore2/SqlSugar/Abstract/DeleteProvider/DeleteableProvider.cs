@@ -226,7 +226,7 @@ namespace SqlSugar
             var expResult = DeleteBuilder.GetExpressionValue(expression, ResolveExpressType.WhereSingle);
             var whereString = expResult.GetResultString();
             if (expression.ToString().Contains("Subqueryable()")) {
-                if (expression.Parameters.First().Type == typeof(T))
+                if (ExpressionTool.GetParameters(expression).First().Type == typeof(T))
                 {
                     var tableName = this.SqlBuilder.GetTranslationColumnName(this.EntityInfo.DbTableName);
                     whereString = whereString.Replace(tableName, $"( SELECT * FROM {tableName})  ");
