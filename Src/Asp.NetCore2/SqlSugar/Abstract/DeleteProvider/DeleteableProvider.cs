@@ -74,15 +74,16 @@ namespace SqlSugar
         public IDeleteable<T> AS(string tableName)
         {
             if (tableName == null) return this;
-            var entityName = typeof(T).Name;
-            IsAs = true;
-            OldMappingTableList = this.Context.MappingTables;
-            this.Context.MappingTables = this.Context.Utilities.TranslateCopy(this.Context.MappingTables);
-            if (this.Context.MappingTables.Any(it => it.EntityName == entityName))
-            {
-                this.Context.MappingTables.Add(this.Context.MappingTables.First(it => it.EntityName == entityName).DbTableName, tableName);
-            }
-            this.Context.MappingTables.Add(entityName, tableName);
+            //var entityName = typeof(T).Name;
+            //IsAs = true;
+            //OldMappingTableList = this.Context.MappingTables;
+            //this.Context.MappingTables = this.Context.Utilities.TranslateCopy(this.Context.MappingTables);
+            //if (this.Context.MappingTables.Any(it => it.EntityName == entityName))
+            //{
+            //    this.Context.MappingTables.Add(this.Context.MappingTables.First(it => it.EntityName == entityName).DbTableName, tableName);
+            //}
+            //this.Context.MappingTables.Add(entityName, tableName);
+            this.DeleteBuilder.AsName = tableName;
             return this; ;
         }
         public IDeleteable<T> EnableDiffLogEventIF(bool isEnableDiffLogEvent, object businessData = null)
@@ -628,7 +629,7 @@ namespace SqlSugar
         {
             List<DiffLogTableInfo> result = new List<DiffLogTableInfo>();
             var whereSql = Regex.Replace(sql, ".* WHERE ", "", RegexOptions.Singleline);
-            var dt = this.Context.Queryable<T>().Filter(null, true).Where(whereSql).AddParameters(parameters).ToDataTable();
+            var dt = this.Context.Queryable<T>().AS(this.DeleteBuilder.AsName).Filter(null, true).Where(whereSql).AddParameters(parameters).ToDataTable();
             if (dt.Rows != null && dt.Rows.Count > 0)
             {
                 foreach (DataRow row in dt.Rows)
