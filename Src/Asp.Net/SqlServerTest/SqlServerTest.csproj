@@ -106,6 +106,7 @@
     <Compile Include="UnitTest\UinitCustomConvert.cs" />
     <Compile Include="UnitTest\UInsert3.cs" />
     <Compile Include="UnitTest\UJson2.cs" />
+    <Compile Include="UnitTest\Unitadf1131.cs" />
     <Compile Include="UnitTest\Unitadfa1231.cs" />
     <Compile Include="UnitTest\UnitFilterasdfas.cs" />
     <Compile Include="UnitTest\UnitManyToMany4.cs" />
