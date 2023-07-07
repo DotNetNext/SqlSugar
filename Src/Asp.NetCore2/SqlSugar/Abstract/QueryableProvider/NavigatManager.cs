@@ -332,12 +332,16 @@ namespace SqlSugar
             }
             var ids = list.Select(it => it.GetType().GetProperty(navObjectNameColumnInfo.Navigat.Name).GetValue(it)).Select(it => it == null ? "null" : it).Distinct().ToList();
             List<IConditionalModel> conditionalModels = new List<IConditionalModel>();
+            if (IsEnumNumber(navColumn))
+            {
+                ids = ids.Select(it => Convert.ToInt64(it)).Cast<object>().ToList();
+            }
             conditionalModels.Add((new ConditionalModel()
             {
                 ConditionalType = ConditionalType.In,
                 FieldName = navPkColumn.DbColumnName,
                 FieldValue = String.Join(",", ids),
-                CSharpTypeName = navPkColumn.PropertyInfo.PropertyType.Name
+                CSharpTypeName = navPkColumn?.UnderType?.Name
             }));
             if (list.Any()&&navObjectNamePropety.GetValue(list.First()) == null)
             {
@@ -393,12 +397,16 @@ namespace SqlSugar
             }
             var ids = list.Select(it => it.GetType().GetProperty(listItemPkColumn.PropertyName).GetValue(it)).Select(it => it == null ? "null" : it).Distinct().ToList();
             List<IConditionalModel> conditionalModels = new List<IConditionalModel>();
+            if (IsEnumNumber(navColumn)) 
+            {
+                ids = ids.Select(it => Convert.ToInt64(it)).Cast<object>().ToList();
+            }
             conditionalModels.Add((new ConditionalModel()
             {
                 ConditionalType = ConditionalType.In,
                 FieldName = navColumn.DbColumnName,
                 FieldValue = String.Join(",", ids),
-                CSharpTypeName = listItemPkColumn.PropertyInfo.PropertyType.Name
+                CSharpTypeName = listItemPkColumn?.UnderType?.Name
             }));
             var sqlObj = GetWhereSql(navObjectNameColumnInfo.Navigat.Name);
       
@@ -818,5 +826,12 @@ namespace SqlSugar
         }
 
 
+        private bool IsEnumNumber(EntityColumnInfo navPkColumn)
+        {
+            return
+                navPkColumn?.UnderType?.IsEnum()==true &&
+                navPkColumn?.SqlParameterDbType == null &&
+                this.Context?.CurrentConnectionConfig?.MoreSettings?.TableEnumIsString != true;
+        }
     }
 }
