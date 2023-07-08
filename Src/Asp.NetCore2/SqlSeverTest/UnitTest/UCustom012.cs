@@ -240,6 +240,12 @@ namespace OrmTest
           {
                 throw new Exception("unit error");
           }
+            var listxxxx2 = db.Queryable<SchoolA>()
+        .Includes(it => it.RoomList)
+        .LeftJoin<StudentA>((x, y) => (x.SchoolId == y.SchoolId))
+       //.LeftJoin<BookA>((x, y, z) => y.SchoolId == y.SchoolId)
+       .Sum(x=>x.SchoolId);
+
         }
 
         public class UnitView01 
