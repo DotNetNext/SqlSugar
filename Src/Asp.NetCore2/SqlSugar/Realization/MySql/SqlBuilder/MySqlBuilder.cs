@@ -12,14 +12,14 @@ namespace SqlSugar
         {
             get
             {
-                return "sysdate()";
+                return "NOW(6)";
             }
         }
         public override string FullSqlDateNow
         {
             get
             {
-                return "select sysdate()";
+                return "select NOW(6)";
             }
         }
         public override string GetUnionFomatSql(string sql)
