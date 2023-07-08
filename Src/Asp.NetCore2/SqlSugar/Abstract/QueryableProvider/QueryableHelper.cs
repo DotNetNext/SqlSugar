@@ -687,8 +687,11 @@ namespace SqlSugar
                     foreach (var it in managers)
                     {
                         var manager = it as NavigatManager<TResult>;
-                        manager.RootList = result;
-                        manager.Execute();
+                        if (manager != null)
+                        {
+                            manager.RootList = result;
+                            manager.Execute();
+                        }
                     }
                 }
             }
