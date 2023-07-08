@@ -614,7 +614,7 @@ namespace SqlSugar
             {
                 var value = item.Value;
                 var expressionTree = new ExpressionTreeVisitor().GetExpressions(value);
-                var isSqlMethod = ExpressionTool.GetMethodName(expressionTree.Last()).IsIn("Any", "Count");
+                var isSqlMethod = expressionTree.Any()&&ExpressionTool.GetMethodName(expressionTree.Last()).IsIn("Any", "Count");
                 if (expressionTree.Any()&&isSqlMethod==false)
                 {
                    

@@ -41,6 +41,10 @@ namespace SqlSugar
                 return GetMemberBindingItemList((caseExp as MemberInitExpression).Bindings);
             }
             var exp= caseExp as NewExpression;
+            if (exp == null) 
+            {
+                Check.ExceptionEasy("Use Select(it=>new class(){})", "导航查询请使用Select(it=>new class(){})");
+            }
             var dict = new Dictionary<string, Expression>();
 
             for (int i = 0; i < exp.Arguments.Count; i++)
