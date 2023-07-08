@@ -226,6 +226,20 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+            var listxxxx = db.Queryable<SchoolA>()
+           .Includes(it => it.RoomList)
+           .LeftJoin<StudentA>((x, y) => (x.SchoolId == y.SchoolId))
+          //.LeftJoin<BookA>((x, y, z) => y.SchoolId == y.SchoolId)
+          .Select(x => new SchoolA()
+          {
+              SchoolId = 1,
+              SchoolName=x.SchoolName,
+              RoomList = x.RoomList
+          }).ToList();
+          if (!listxxxx.First().RoomList.Any())
+          {
+                throw new Exception("unit error");
+          }
         }
 
         public class UnitView01 
