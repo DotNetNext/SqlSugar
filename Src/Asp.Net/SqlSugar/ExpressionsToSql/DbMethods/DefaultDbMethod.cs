@@ -23,22 +23,42 @@ namespace SqlSugar
         }
         public virtual string RowCount(MethodCallExpressionModel model) 
         {
-            return "count(1) over()";
+            if (model.Args.Count > 1)
+            {
+                return $"COUNT({model.Args[0].MemberName}) over( partition by {model.Args[2].MemberName.ObjToString().TrimEnd('\'').TrimStart('\'')} order by {model.Args[1].MemberName.ObjToString().TrimEnd('\'').TrimStart('\'')})";
+            }
+            return "COUNT(1) over()";
         }
         public string RowSum(MethodCallExpressionModel model) 
         {
-             return "SUM(" + model.Args[0].MemberName +") over()";
+            if (model.Args.Count > 1) 
+            {
+                return $"SUM({model.Args[0].MemberName}) over( partition by {model.Args[2].MemberName.ObjToString().TrimEnd('\'').TrimStart('\'')} order by {model.Args[1].MemberName.ObjToString().TrimEnd('\'').TrimStart('\'')})";
+            }
+            return "SUM(" + model.Args[0].MemberName +") over()";
         }
         public string RowAvg(MethodCallExpressionModel model)
         {
+            if (model.Args.Count > 1)
+            {
+                return $"AVG({model.Args[0].MemberName}) over( partition by {model.Args[2].MemberName.ObjToString().TrimEnd('\'').TrimStart('\'')} order by {model.Args[1].MemberName.ObjToString().TrimEnd('\'').TrimStart('\'')})";
+            }
             return "AVG(" + model.Args[0].MemberName + ") over()";
         }
         public string RowMin(MethodCallExpressionModel model)
         {
+            if (model.Args.Count > 1)
+            {
+                return $"Min({model.Args[0].MemberName}) over( partition by {model.Args[2].MemberName.ObjToString().TrimEnd('\'').TrimStart('\'')} order by {model.Args[1].MemberName.ObjToString().TrimEnd('\'').TrimStart('\'')})";
+            }
             return "Min(" + model.Args[0].MemberName + ") over()";
         }
         public string RowMax(MethodCallExpressionModel model)
         {
+            if (model.Args.Count > 1)
+            {
+                return $"Max({model.Args[0].MemberName}) over( partition by {model.Args[2].MemberName.ObjToString().TrimEnd('\'').TrimStart('\'')} order by {model.Args[1].MemberName.ObjToString().TrimEnd('\'').TrimStart('\'')})";
+            }
             return "Max(" + model.Args[0].MemberName + ") over()";
         }
         public virtual string IIF(MethodCallExpressionModel model)
