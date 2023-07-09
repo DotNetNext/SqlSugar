@@ -250,7 +250,7 @@ namespace SqlSugar
         }
         private void InSubGroupBy(BinaryExpression expression,string not)
         {
-            var leftSql = GetNewExpressionValue(expression.Left);
+            var leftSql = GetNewExpressionValue(ExpressionTool.RemoveConvert(expression.Left));
             var rightExpression = expression.Right as MethodCallExpression;
             if (rightExpression.Arguments[0] is LambdaExpression) 
             {
