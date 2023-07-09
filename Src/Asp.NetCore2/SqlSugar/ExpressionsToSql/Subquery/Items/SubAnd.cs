@@ -54,7 +54,17 @@ namespace SqlSugar
                 argExp = ExpressionTool.DynamicInvoke(argExp) as Expression;
             }
             var result = "AND " + SubTools.GetMethodValue(copyContext, argExp, ResolveExpressType.WhereMultiple);
-            
+            if (argExp.Type == typeof(List<IConditionalModel>))
+            {
+                var p = this.Context.Parameters.Last();
+                this.Context.Parameters.Remove(p);
+                var cols = p.Value as List<IConditionalModel>;
+                var sqlObj = this.Context.SugarContext.QueryBuilder.Builder.ConditionalModelToSql(cols, this.Context.ParameterIndex * 100);
+                this.Context.ParameterIndex = this.Context.ParameterIndex + this.Context.ParameterIndex * 100;
+                result = "AND " + sqlObj.Key;
+                this.Context.Parameters.AddRange(sqlObj.Value);
+                return result;
+            }
             if (this.Context.JoinIndex > 0 || pars.Count() > 1)
             {
                 this.Context.Parameters.AddRange(copyContext.Parameters);

@@ -150,6 +150,10 @@ namespace SqlSugar
     }
     public class Subqueryable<T1, T2, T3, T4, T5, T6> : Subqueryable<T1> where T1 : class, new()
     {
+        public new Subqueryable<T1, T2, T3, T4, T5, T6> Where(List<IConditionalModel> conditionals)
+        {
+            return this;
+        }
         public Subqueryable<T1, T2, T3, T4, T5, T6, JoinType> InnerJoin<JoinType>(Func<T1, T2, T3, T4, T5, T6, JoinType, bool> expression)
         {
             return new Subqueryable<T1, T2, T3, T4, T5, T6, JoinType>();
@@ -189,6 +193,10 @@ namespace SqlSugar
     }
     public class Subqueryable<T1, T2, T3, T4, T5> : Subqueryable<T1> where T1 : class, new()
     {
+        public new Subqueryable<T1, T2, T3, T4,T5> Where(List<IConditionalModel> conditionals)
+        {
+            return this;
+        }
         public Subqueryable<T1, T2, T3, T4, T5, JoinType> InnerJoin<JoinType>(Func<T1, T2, T3, T4, T5, JoinType, bool> expression)
         {
             return new Subqueryable<T1, T2, T3, T4, T5, JoinType>();
@@ -224,6 +232,10 @@ namespace SqlSugar
     }
     public class Subqueryable<T1, T2, T3, T4> : Subqueryable<T1> where T1 : class, new()
     {
+        public new Subqueryable<T1, T2, T3,T4> Where(List<IConditionalModel> conditionals)
+        {
+            return this;
+        }
         public Subqueryable<T1, T2, T3, T4, JoinType> InnerJoin<JoinType>(Func<T1, T2, T3, T4, JoinType, bool> expression)
         {
             return new Subqueryable<T1, T2, T3, T4, JoinType>();
@@ -324,6 +336,10 @@ namespace SqlSugar
     }
     public class Subqueryable<T1, T2, T3> : Subqueryable<T1> where T1 : class, new()
     {
+        public new Subqueryable<T1, T2,T3> Where(List<IConditionalModel> conditionals)
+        {
+            return this;
+        }
         public Subqueryable<T1, T2, T3, JoinType> InnerJoin<JoinType>(Func<T1, T2, T3, JoinType, bool> expression)
         {
             return new Subqueryable<T1, T2, T3, JoinType>();
@@ -420,6 +436,10 @@ namespace SqlSugar
     }
     public class Subqueryable<T1, T2> : Subqueryable<T1> where T1 : class, new()
     {
+        public new Subqueryable<T1,T2> Where(List<IConditionalModel> conditionals)
+        {
+            return this;
+        }
         public Subqueryable<T1, T2, JoinType> InnerJoin<JoinType>(Func<T1, T2, JoinType, bool> expression)
         {
             return new Subqueryable<T1, T2, JoinType>();
