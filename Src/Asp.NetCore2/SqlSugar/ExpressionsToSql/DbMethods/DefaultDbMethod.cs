@@ -25,9 +25,9 @@ namespace SqlSugar
         {
             if (model.Args.Count > 1)
             {
-                return $"count({model.Args[0].MemberName}) over( partition by {model.Args[2].MemberName.ObjToString().TrimEnd('\'').TrimStart('\'')} order by {model.Args[1].MemberName.ObjToString().TrimEnd('\'').TrimStart('\'')})";
+                return $"COUNT({model.Args[0].MemberName}) over( partition by {model.Args[2].MemberName.ObjToString().TrimEnd('\'').TrimStart('\'')} order by {model.Args[1].MemberName.ObjToString().TrimEnd('\'').TrimStart('\'')})";
             }
-            return "count(1) over()";
+            return "COUNT(1) over()";
         }
         public string RowSum(MethodCallExpressionModel model) 
         {
