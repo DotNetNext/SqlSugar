@@ -20,7 +20,7 @@ namespace SqlSugar
         public override string WeekOfYear(MethodCallExpressionModel mode)
         {
             var parameterNameA = mode.Args[0].MemberName;
-            return $"STRFTIME('%W', {parameterNameA}) ";
+            return $"STRFTIME('%W', {parameterNameA})+1 ";
         }
         public override string Equals(MethodCallExpressionModel model)
         {
