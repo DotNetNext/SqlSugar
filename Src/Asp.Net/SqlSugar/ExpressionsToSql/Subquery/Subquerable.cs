@@ -26,6 +26,10 @@ namespace SqlSugar
         {
             return this;
         }
+        public Subqueryable<T> Where(List<IConditionalModel> conditionals)
+        {
+            return this;
+        }
         public Subqueryable<T> Where(Expression exp)
         {
             return this;
