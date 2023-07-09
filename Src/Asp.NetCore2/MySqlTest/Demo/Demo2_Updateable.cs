@@ -70,7 +70,11 @@ namespace OrmTest
             .InnerJoin<Custom>((x, y) => x.CustomId == y.Id)
             .SetColumns((x, y) => new Order() { Name = y.Name, Price = y.Id })
             .Where((x, y) => x.Id == 1)
-            .ExecuteCommand(); 
+            .ExecuteCommand();
+
+            db.Updateable<Order>().SetColumns(it => it.Name == "a")
+                .Where(it => SqlFunc.Subqueryable<Order>().Where(s=>s.Id==it.Id).Any())
+                .ExecuteCommand();
 
 
             /*** 3.by Dictionary ***/
