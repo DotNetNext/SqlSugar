@@ -64,7 +64,17 @@ namespace SqlSugar
             var sqlObj = this.ToSql();
             this.Context.Queues.Add(sqlObj.Key, sqlObj.Value);
         }
-
+        public virtual int ExecuteCommandWithOptLockIF(bool? IsVersionValidation ,bool? IsOptLock=null) 
+        {
+            if (IsOptLock==true)
+            {
+                return ExecuteCommandWithOptLock(IsVersionValidation??false);
+            }
+            else 
+            {
+                return this.ExecuteCommand();
+            }
+        }
         public virtual int ExecuteCommandWithOptLock(bool IsVersionValidation=false)
         {
             Check.ExceptionEasy(this.UpdateBuilder.IsListUpdate==true, " OptLock can only be used on a single object, and the argument cannot be List", "乐观锁只能用于单个对象,参数不能是List,如果是一对多操作请更新主表统一用主表验证");
