@@ -98,17 +98,17 @@ namespace SqlSugar
 
         public virtual List<TResult> ToList<TResult>(Expression<Func<T, TResult>> expression)
         {
-            //if (this.QueryBuilder.Includes != null && this.QueryBuilder.Includes.Count > 0)
-            //{
-            //    return NavSelectHelper.GetList(expression, this);
-            //    // var list = this.ToList().Select(expression.Compile()).ToList();
-            //    // return list;
-            //}
-            //else
-            //{
+            if (this.QueryBuilder.Includes != null && this.QueryBuilder.Includes.Count > 0)
+            {
+                return NavSelectHelper.GetList(expression, this);
+                // var list = this.ToList().Select(expression.Compile()).ToList();
+                // return list;
+            }
+            else
+            {
                 var list = this.Select(expression).ToList();
                 return list;
-            //}
+            }
         }
 
         public virtual int Count()
@@ -668,21 +668,21 @@ namespace SqlSugar
         }
         public virtual List<TResult> ToPageList<TResult>(int pageIndex, int pageSize, ref int totalNumber, Expression<Func<T, TResult>> expression)
         {
-            //if (this.QueryBuilder.Includes != null && this.QueryBuilder.Includes.Count > 0)
-            //{
-            //    if (pageIndex == 0)
-            //        pageIndex = 1;
-            //    var list = this.Clone().Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList(expression);
-            //    var countQueryable = this.Clone();
-            //    countQueryable.QueryBuilder.Includes = null;
-            //    totalNumber = countQueryable.Count();
-            //    return list;
-            //}
-            //else
-            //{
+            if (this.QueryBuilder.Includes != null && this.QueryBuilder.Includes.Count > 0)
+            {
+                if (pageIndex == 0)
+                    pageIndex = 1;
+                var list = this.Clone().Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList(expression);
+                var countQueryable = this.Clone();
+                countQueryable.QueryBuilder.Includes = null;
+                totalNumber = countQueryable.Count();
+                return list;
+            }
+            else
+            {
                 var list = this.Select(expression).ToPageList(pageIndex, pageSize, ref totalNumber).ToList();
                 return list;
-            //}
+            }
         }
         public virtual List<T> ToPageList(int pageIndex, int pageSize, ref int totalNumber)
         {

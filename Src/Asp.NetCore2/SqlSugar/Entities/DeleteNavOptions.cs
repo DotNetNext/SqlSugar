@@ -38,6 +38,8 @@ namespace SqlSugar
         public bool IsDiffLogEvent { get; set; }
         public object  DiffLogBizData { get; set; }
         public string[] IgnoreInsertColumns { get; set; }
+        public bool IsOptLock { get; set; }
+ 
     }
     public class UpdateNavOptions
     {
