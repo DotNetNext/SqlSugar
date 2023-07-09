@@ -64,6 +64,20 @@ namespace OrmTest
                                                                ).ToListAsync().GetAwaiter().GetResult();
             List<(int id, string name)> list2=db.Queryable<Order>().Select<(int id, string name)>("id,name")  
                 .ToList();
+
+
+            var list3 = db.Queryable<Order>().Select(it => new {
+                mx1 = SqlFunc.RowMax(it.Id, it.Id, it.Name),
+                mx2 = SqlFunc.RowMax(it.Id),
+                mi1 = SqlFunc.RowMin(it.Id, it.Id, it.Name),
+                mi2 = SqlFunc.RowMin(it.Id),
+                c1 = SqlFunc.RowCount(it.Id, it.Id, it.Name),
+                c2 = SqlFunc.RowCount(),
+                a = SqlFunc.RowAvg(it.Id, it.Id, it.Name),
+                a2 = SqlFunc.RowAvg(it.Id),
+                s = SqlFunc.RowSum(it.Id, it.Id, it.Name),
+                s2 = SqlFunc.RowSum(it.Id),
+            }).ToList();
             Console.WriteLine("#### Examples End ####");
         }
 
