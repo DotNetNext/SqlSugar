@@ -76,6 +76,11 @@ namespace SqlSugar
     }
     public partial class OracleMethod : DefaultDbMethod, IDbMethods
     {
+        public override string WeekOfYear(MethodCallExpressionModel mode)
+        {
+            var parameterNameA = mode.Args[0].MemberName;
+            return $"TO_NUMBER(TO_CHAR({parameterNameA}, 'WW')) ";
+        }
         public override string BitwiseAnd(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];

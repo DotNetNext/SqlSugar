@@ -968,5 +968,11 @@ namespace SqlSugar
                 return result;
             }
         }
+
+        public virtual string WeekOfYear(MethodCallExpressionModel mode) 
+        {
+            var parameterNameA = mode.Args[0].MemberName;
+            return $" DATE_PART('week', {parameterNameA}) ";
+        }
     }
 }

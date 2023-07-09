@@ -17,6 +17,11 @@ namespace SqlSugar
     }
     public class SqliteMethod : DefaultDbMethod, IDbMethods
     {
+        public override string WeekOfYear(MethodCallExpressionModel mode)
+        {
+            var parameterNameA = mode.Args[0].MemberName;
+            return $"STRFTIME('%W', {parameterNameA}) ";
+        }
         public override string Equals(MethodCallExpressionModel model)
         {
             var  result= base.Equals(model);

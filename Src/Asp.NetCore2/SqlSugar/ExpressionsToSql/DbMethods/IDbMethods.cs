@@ -113,5 +113,6 @@ namespace SqlSugar
         string Modulo(MethodCallExpressionModel mode);
         string Like(MethodCallExpressionModel mode);
         string ToSingle(MethodCallExpressionModel mode);
+        string WeekOfYear(MethodCallExpressionModel mode);
     }
 }

@@ -855,6 +855,10 @@ namespace SqlSugar
                     case "ToSingle":
                         return this.Context.DbMehtods.ToSingle(model);
                     default:
+                        if (typeof(IDbMethods).GetMethods().Any(it => it.Name == name))
+                        {
+                            return this.Context.DbMehtods.GetType().GetMethod(name).Invoke(this.Context.DbMehtods,new object[] { model});
+                        }
                         break;
                 }
             }
