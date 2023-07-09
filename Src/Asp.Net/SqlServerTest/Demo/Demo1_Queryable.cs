@@ -645,6 +645,10 @@ namespace OrmTest
             var conModels = new List<IConditionalModel>();
             conModels.Add(new ConditionalModel() { FieldName = "id", ConditionalType = ConditionalType.Equal, FieldValue = "1" });//id=1
             var student = db.Queryable<Order>().Where(conModels).ToList();
+            var student2= db.Queryable<Order>()
+                .Where(conModels)
+                .Where(it=>SqlFunc.Subqueryable<Order>().Where(conModels).Any())
+                .Where(it => SqlFunc.Subqueryable<Order>().Where(conModels).Any()).ToList();
 
             //Complex use case
             List<IConditionalModel> Order = new List<IConditionalModel>();
