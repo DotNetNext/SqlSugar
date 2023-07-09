@@ -29,7 +29,23 @@ namespace OrmTest
                TemplateFileName="a"
             }).ExecuteCommand();
             var list=db.Queryable<PmtSetting>().Includes(x => x.Template).ToList();
+            var sql=db.Queryable<Unitadfaasdfasfa>()
+                .Where(it => it.num == SqlFunc.Subqueryable<UnitadfaasdfasfaDTO>().GroupBy(s => s.num).Select(s => s.num))
+                .ToSqlString();
+            if (!sql.Contains("[num]  in")) { throw new Exception("unit error"); }
         }
+        public class Unitadfaasdfasfa 
+        {
+            public string Id { get; set; }
+            public long num { get; set; }
+        }
+
+        public class UnitadfaasdfasfaDTO
+        {
+            public string Id { get; set; }
+            public long? num { get; set; }
+        }
+
         // 主表
         public class PmtSetting  
         {
