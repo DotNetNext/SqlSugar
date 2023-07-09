@@ -9,6 +9,10 @@ namespace SqlSugar
 {
     public partial class SqlFunc
     {
+        public static int WeekOfYear(DateTime fieldName) 
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
         public static bool Like(string fieldName, string likeValue) 
         {
             throw new NotSupportedException("Can only be used in expressions");

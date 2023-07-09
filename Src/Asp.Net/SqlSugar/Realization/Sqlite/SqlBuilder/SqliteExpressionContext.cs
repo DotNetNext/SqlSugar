@@ -17,12 +17,17 @@ namespace SqlSugar
     }
     public class SqliteMethod : DefaultDbMethod, IDbMethods
     {
+        public override string WeekOfYear(MethodCallExpressionModel mode)
+        {
+            var parameterNameA = mode.Args[0].MemberName;
+            return $"STRFTIME('%W', {parameterNameA})+1 ";
+        }
         public override string Equals(MethodCallExpressionModel model)
         {
-            var result = base.Equals(model);
-            if (model.Args.Count == 3 && result.Trim().Last() == ')')
+            var  result= base.Equals(model);
+            if (model.Args.Count == 3&& result.Trim().Last()==')') 
             {
-                result = (" " + result.Trim().TrimEnd(')') + " COLLATE NOCASE )  ");
+                result = (" "+result.Trim().TrimEnd(')') + " COLLATE NOCASE )  ");
             }
             return result;
         }

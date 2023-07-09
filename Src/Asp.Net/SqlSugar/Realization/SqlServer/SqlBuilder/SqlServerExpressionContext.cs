@@ -20,6 +20,11 @@ namespace SqlSugar
     }
     public partial class SqlServerMethod : DefaultDbMethod, IDbMethods
     {
+        public override string WeekOfYear(MethodCallExpressionModel mode)
+        {
+            var parameterNameA = mode.Args[0].MemberName;
+            return $"DATEPART(WEEK, {parameterNameA})  ";
+        }
         public override string GetTableWithDataBase(string dataBaseName, string tableName)
         {
             return $"{dataBaseName}.dbo.{tableName}";

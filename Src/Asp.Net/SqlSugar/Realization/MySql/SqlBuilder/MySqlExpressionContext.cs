@@ -17,6 +17,11 @@ namespace SqlSugar
     }
     public class MySqlMethod : DefaultDbMethod, IDbMethods
     {
+        public override string WeekOfYear(MethodCallExpressionModel mode)
+        {
+            var parameterNameA = mode.Args[0].MemberName;
+            return $" WEEK({parameterNameA})  ";
+        }
         public override string GetStringJoinSelector(string result, string separator)
         {
             return $"group_concat({result}  separator '{separator}') ";
