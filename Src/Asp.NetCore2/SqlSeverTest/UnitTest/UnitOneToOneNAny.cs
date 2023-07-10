@@ -12,8 +12,8 @@ namespace OrmTest
             var db = NewUnitTest.Db;
             db.CodeFirst.InitTables<EmpLicenseLogOff, EmpInformation, EmpDepartmentJob,EmpLicense>();
             db.Queryable<EmpLicenseLogOff>()
-                .Where(it => it.EmpLicense.EmpInformation.EmpDepartmentJobs.Any(z => z.DepId == 1))
-                .ToList();
+                .Where(it => it.EmpLicense.EmpInformation.EmpDepartmentJobs.Any())
+                .ToList(); 
         }
     }
 }
