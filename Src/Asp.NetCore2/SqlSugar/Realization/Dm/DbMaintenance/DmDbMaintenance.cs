@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.Common;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace SqlSugar
 {
@@ -479,6 +480,30 @@ namespace SqlSugar
             //sql = sql.Replace("$PrimaryKey", primaryKeyInfo);
             this.Context.Ado.ExecuteCommand(sql);
             return true;
+        }
+        public static string ExtractSchema(string connectionString)
+        {
+            string pattern = @"(?i)(?:^|;)schema=(\w+)";
+            Match match = Regex.Match(connectionString, pattern,RegexOptions.IgnoreCase);
+            return match.Success ? match.Groups[1].Value : null;
+        }
+        public override bool IsAnyTable(string tableName, bool isCache = true)
+        {
+            var isSchema = this.Context.CurrentConnectionConfig?.ConnectionString?.Replace(" ","")?.ToLower()?.Contains("schema=") == true;
+            if (isSchema)
+            {
+                var schema= ExtractSchema(this.Context.CurrentConnectionConfig?.ConnectionString);
+                Check.ExceptionEasy(schema == null, "ConnectionString schema format error, please use schema=(\\w+)", "连接字符串schema格式错误,请用schema=(\\w+)");
+                return this.Context.Ado.GetInt($@"SELECT COUNT(*)
+FROM ALL_TABLES t
+WHERE upper(t.TABLE_NAME) = upper('{tableName}')
+  AND upper(t.OWNER) = upper('{schema}')
+") > 0;
+              
+            }
+            else {
+                return base.IsAnyTable(tableName, isCache);
+            }
         }
         #endregion
 
