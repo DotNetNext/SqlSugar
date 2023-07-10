@@ -66,7 +66,14 @@ namespace SqlSugar
         /// <returns></returns>
         public static string ToCheckField(this string value)
         {
-            if (value != null)
+            //You can override it because the default security level is very high
+            if (StaticConfig.Check_FieldFunc != null) 
+            {
+                return StaticConfig.Check_FieldFunc(value);
+            }
+
+            //Default method
+            else  if (value != null)
             {
                 if (value.IsContainsIn(";", "--"))
                 {
