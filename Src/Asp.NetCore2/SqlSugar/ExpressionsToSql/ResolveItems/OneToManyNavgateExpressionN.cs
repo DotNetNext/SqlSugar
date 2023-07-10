@@ -117,6 +117,10 @@ namespace SqlSugar
                 else
                 {
                     lastShortName = ManyToMany(ref formInfo, ref i, queryable, ref index, item);
+                    if (lastShortName == null) 
+                    {
+                        lastShortName = masterShortName;
+                    }
                 }
             }
             var isAny = (memberInfo.Expression as MethodCallExpression).Method.Name == "Any";
@@ -188,6 +192,10 @@ namespace SqlSugar
             BidColumn = item.ThisEntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey);
             AidColumn = item.ParentEntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey);
 
+            if (item.Nav.MappingType == null) 
+            {
+                return null;
+            }
             var abEntity =this.context.EntityMaintenance.GetEntityInfo(item.Nav.MappingType);
             var Ab_Aid = abEntity.Columns.FirstOrDefault(it => item.Nav.MappingAId == it.PropertyName);
             var Ab_Bid = abEntity.Columns.FirstOrDefault(it => item.Nav.MappingBId == it.PropertyName);
