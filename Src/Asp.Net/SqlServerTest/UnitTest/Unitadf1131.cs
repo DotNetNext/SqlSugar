@@ -33,6 +33,13 @@ namespace OrmTest
                 .Where(it => it.num == SqlFunc.Subqueryable<UnitadfaasdfasfaDTO>().GroupBy(s => s.num).Select(s => s.num))
                 .ToSqlString();
             if (!sql.Contains("[num]  in")) { throw new Exception("unit error"); }
+
+            db.CodeFirst.InitTables<Unitadfaasdfasfa, UnitadfaasdfasfaDTO>();
+            var sql2 = db.Queryable<Unitadfaasdfasfa>()
+              .Where(
+                it => it.num == SqlFunc.Subqueryable<UnitadfaasdfasfaDTO>().GroupBy(s => s.num).Select(s => s.num)
+               && it.num == SqlFunc.Subqueryable<UnitadfaasdfasfaDTO>().GroupBy(s => s.num).Select(s => s.num))
+              .ToList(); 
         }
         public class Unitadfaasdfasfa 
         {
