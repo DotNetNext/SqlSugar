@@ -214,6 +214,16 @@ namespace SqlSugar
 
             return sql;
         }
-
+        public override Action<SqlSugarException> ErrorEvent => it =>
+        {
+            if (base.ErrorEvent != null)
+            {
+                base.ErrorEvent(it);
+            }
+            if (it.Message != null && it.Message.Contains("Detail redacted as it may contain sensitive data."))
+            {
+                Check.ExceptionEasy(it.Message, $"错误：可能是字段太小超出,详细错误：{it.Message} ");
+            }
+        };
     }
 }
