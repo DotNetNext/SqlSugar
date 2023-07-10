@@ -36,6 +36,18 @@ namespace OrmTest
             //导航插入三表数据
             db.InsertNav(a).Include(t => t.B).ThenInclude(t => t.C).ExecuteCommand();
 
+     
+            var list3 = db.Queryable<ClassA>()
+           .Includes(t => t.B, t => t.C).Where(it=>it.B.Any(z=>z.C.Any(s=>s.CId=="a5"))).ToList();
+
+            var list4 = db.Queryable<ClassA>()
+             .Includes(t => t.B, t => t.C).Where(it => it.B.Any(z => z.C.Any(s => s.CId == "c"))).ToList();
+
+            if (list3.Count > 0 || list4.Count == 0) 
+            {
+                throw new Exception("unit error");
+            }
+
             //修改数据 修改b表id 修改c表对应b表id
             b.BId = "bb";
             c.BId = "bb";
