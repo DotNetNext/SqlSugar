@@ -114,9 +114,13 @@ namespace SqlSugar
                 {
                     lastShortName = OneToMany(ref formInfo, ref i, queryable, ref index, item);
                 }
+                else if (item.Nav.NavigatType == NavigateType.OneToOne)
+                {
+                    lastShortName = OneToOne(ref formInfo, ref i, queryable, ref index, item);
+                }
                 else
                 {
-                    lastShortName = ManyToMany(ref formInfo, ref i, queryable, ref index, item);
+                    lastShortName = ManyToMany(ref formInfo, ref i, queryable, ref index, item); 
                 }
             }
             var isAny = (memberInfo.Expression as MethodCallExpression).Method.Name == "Any";
@@ -157,16 +161,50 @@ namespace SqlSugar
             var shortName = item.ThisEntityInfo.DbTableName + i;
             EntityColumnInfo pkColumn;
             EntityColumnInfo navColum;
-            if (index == 0)
-            {
+            //if (index == 0)
+            //{
                 pkColumn = item.ThisEntityInfo.Columns.FirstOrDefault(it => it.PropertyName == item.Nav.Name);
                 navColum = item.ParentEntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey);
-            }
-            else
-            {
-                pkColumn = item.ThisEntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey);
+                if (item.Nav.Name2.HasValue()) 
+                {
+                    navColum = item.ParentEntityInfo.Columns.FirstOrDefault(it => it.PropertyName == item.Nav.Name2);
+                }
+            //}
+            //else
+            //{
+            //    pkColumn = item.ThisEntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey);
+            //    navColum = item.ParentEntityInfo.Columns.FirstOrDefault(it => it.PropertyName == item.Nav.Name);
+            //}
+            Check.ExceptionEasy(pkColumn == null, $"{item.ThisEntityInfo.EntityName} need PrimayKey", $"使用导航属性{item.ThisEntityInfo.EntityName} 缺少主键");
+            var on = $" {shortName}.{queryable.SqlBuilder.GetTranslationColumnName(pkColumn.DbColumnName)}={formInfo.ThisEntityInfo.DbTableName + (i - 1)}.{queryable.SqlBuilder.GetTranslationColumnName(navColum.DbColumnName)}";
+            queryable.AddJoinInfo(item.ThisEntityInfo.DbTableName, shortName, on, JoinType.Inner);
+            ++i;
+            index++;
+            lastShortName = shortName;
+            formInfo = item;
+            return lastShortName;
+        }
+
+        private static string OneToOne(ref ExpressionItems formInfo, ref int i, ISugarQueryable<object> queryable, ref int index, ExpressionItems item)
+        {
+            string lastShortName;
+            var shortName = item.ThisEntityInfo.DbTableName + i;
+            EntityColumnInfo pkColumn;
+            EntityColumnInfo navColum;
+            //if (index == 0)
+            //{
+            //    pkColumn = item.ThisEntityInfo.Columns.FirstOrDefault(it => it.PropertyName == item.Nav.Name);
+            //    navColum = item.ParentEntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey);
+            //}
+            //else
+            //{
+                pkColumn = item.ThisEntityInfo.Columns.FirstOrDefault(it =>it.IsPrimarykey );
                 navColum = item.ParentEntityInfo.Columns.FirstOrDefault(it => it.PropertyName == item.Nav.Name);
-            }
+                if (item.Nav.Name2.HasValue())
+                {
+                   pkColumn = item.ThisEntityInfo.Columns.FirstOrDefault(it => it.PropertyName == item.Nav.Name2);
+                }
+            //}
             Check.ExceptionEasy(pkColumn == null, $"{item.ThisEntityInfo.EntityName} need PrimayKey", $"使用导航属性{item.ThisEntityInfo.EntityName} 缺少主键");
             var on = $" {shortName}.{queryable.SqlBuilder.GetTranslationColumnName(pkColumn.DbColumnName)}={formInfo.ThisEntityInfo.DbTableName + (i - 1)}.{queryable.SqlBuilder.GetTranslationColumnName(navColum.DbColumnName)}";
             queryable.AddJoinInfo(item.ThisEntityInfo.DbTableName, shortName, on, JoinType.Inner);
@@ -178,7 +216,7 @@ namespace SqlSugar
         }
 
 
-        private  string ManyToMany(ref ExpressionItems formInfo, ref int i, ISugarQueryable<object> queryable, ref int index, ExpressionItems item)
+        private string ManyToMany(ref ExpressionItems formInfo, ref int i, ISugarQueryable<object> queryable, ref int index, ExpressionItems item)
         {
             string lastShortName;
             var bshortName = item.ThisEntityInfo.DbTableName + i;
