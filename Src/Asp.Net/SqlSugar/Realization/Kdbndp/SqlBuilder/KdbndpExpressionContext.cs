@@ -459,6 +459,10 @@ namespace SqlSugar
             {
                 formatString = formatString.Replace("HHmm", "HHmi");
             }
+            if (formatString.Contains("HH")) 
+            {
+                formatString = formatString.Replace("HH", "hh24");
+            }
             return $" to_char({dateValue},'{formatString}') ";
         }
     }
