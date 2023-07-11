@@ -562,7 +562,14 @@ namespace SqlSugar
         {
             var str = model.Args[0].MemberValue.ObjToString();
             var array = model.Args.Skip(1).Select(it => it.IsMember ? it.MemberName : it.MemberValue).ToArray();
-            return string.Format("'" + str + "'", array);
+            if (array.Length == 1 && array[0] is string[])
+            {
+                return string.Format("'" + str + "'", array[0] as string[]);
+            }
+            else
+            {
+                return string.Format("'" + str + "'", array);
+            }
         }
         public virtual string Format(MethodCallExpressionModel model)
         {
@@ -572,6 +579,10 @@ namespace SqlSugar
             if (revalue.Contains("concat("))
             {
                 return FormatConcat(model);
+            }
+            if (model.Args.Count == 2 && model.Args[1].MemberValue is string[]) 
+            {
+                return string.Format("" + str + "", model.Args[1].MemberValue as string[]);
             }
             str =Regex.Replace(str, @"(\{\d+?\})", revalue);
             var array = model.Args.Skip(1).Select(it => it.IsMember?it.MemberName:(it.MemberValue==null?"''":it.MemberValue.ToSqlValue()))
