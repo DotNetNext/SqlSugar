@@ -244,7 +244,18 @@ namespace SqlSugar
             var list = this.ToList();
             return GetChildList(parentIdExpression, pk, list, primaryKeyValue, isContainOneself);
         }
-
+        public List<T> ToChildList(Expression<Func<T, object>> parentIdExpression, object [] primaryKeyValues, bool isContainOneself = true)
+        {
+            var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            var pk = GetTreeKey(entity);
+            var list = this.ToList();
+            List<T> result = new List<T>();
+            foreach (var item in primaryKeyValues)
+            {
+                result.AddRange(GetChildList(parentIdExpression, pk, list, item, isContainOneself));
+            }
+            return result;
+        }
         public List<T> ToParentList(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue)
         {
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
