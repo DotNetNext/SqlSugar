@@ -675,7 +675,18 @@ ParameterT parameter)
             return GetChildList(parentIdExpression, pk, list, primaryKeyValue, isContainOneself);
         }
 
-
+        public async Task<List<T>> ToChildListAsync(Expression<Func<T, object>> parentIdExpression, object[] primaryKeyValues, bool isContainOneself = true)
+        {
+            var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            var pk = GetTreeKey(entity);
+            var list =await this.ToListAsync();
+            List<T> result = new List<T>();
+            foreach (var item in primaryKeyValues)
+            {
+                result.AddRange(GetChildList(parentIdExpression, pk, list, item, isContainOneself));
+            }
+            return result;
+        }
         public Task<int> IntoTableAsync<TableEntityType>(CancellationToken cancellationToken = default)
         {
             return IntoTableAsync(typeof(TableEntityType), cancellationToken);
