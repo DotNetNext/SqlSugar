@@ -366,6 +366,14 @@ namespace SqlSugar
             {
                 parameter.CommonTempData = GetNewExpressionValue(item);
             }
+            else if (name == "Format" && item is NewArrayExpression) 
+            {
+                var exps = (item as NewArrayExpression).Expressions;
+                parameter.CommonTempData = exps.Select(it => {
+                    var res = GetNewExpressionValue(ExpressionTool.RemoveConvert(it));
+                    return res;
+                }).ToArray(); 
+            }
             else
             {
                 base.Start();

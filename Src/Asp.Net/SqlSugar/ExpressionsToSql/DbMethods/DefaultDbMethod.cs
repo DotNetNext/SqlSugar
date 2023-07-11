@@ -562,7 +562,18 @@ namespace SqlSugar
         {
             var str = model.Args[0].MemberValue.ObjToString();
             var array = model.Args.Skip(1).Select(it => it.IsMember ? it.MemberName : it.MemberValue).ToArray();
-            return string.Format("'" + str + "'", array);
+            if (array.Length == 1 && array[0] is string[])
+            {
+                List<MethodCallExpressionArgs> args = GetStringFormatArgs(str, array[0] as string[]);
+                return Format(new MethodCallExpressionModel()
+                {
+                    Args = args
+                }); ;
+            }
+            else
+            {
+                return string.Format("'" + str + "'", array);
+            }
         }
         public virtual string Format(MethodCallExpressionModel model)
         {
@@ -572,6 +583,14 @@ namespace SqlSugar
             if (revalue.Contains("concat("))
             {
                 return FormatConcat(model);
+            }
+            if (model.Args.Count == 2 && model.Args[1].MemberValue is string[]) 
+            {
+                List<MethodCallExpressionArgs> args = GetStringFormatArgs(str, model.Args[1].MemberValue as string[]);
+                return Format(new MethodCallExpressionModel()
+                {
+                    Args = args
+                }); ;
             }
             str =Regex.Replace(str, @"(\{\d+?\})", revalue);
             var array = model.Args.Skip(1).Select(it => it.IsMember?it.MemberName:(it.MemberValue==null?"''":it.MemberValue.ToSqlValue()))
@@ -967,6 +986,24 @@ namespace SqlSugar
             {
                 return result;
             }
+        }
+
+        private static List<MethodCallExpressionArgs> GetStringFormatArgs(string str, object array)
+        {
+            var args = new List<MethodCallExpressionArgs>()
+                      {
+                           new MethodCallExpressionArgs(){
+                                MemberName=str,
+                                 MemberValue=str
+                           }
+                      };
+            args.AddRange((array as string[]).Select(it => new MethodCallExpressionArgs()
+            {
+                MemberValue = it,
+                MemberName = it
+
+            }));
+            return args;
         }
 
         public virtual string WeekOfYear(MethodCallExpressionModel mode) 
