@@ -793,7 +793,14 @@ namespace SqlSugar
             }
             else if (expResult.IsNavicate)
             {
-                whereString = whereString.Replace(expression.Parameters.First().Name + ".", this.SqlBuilder.GetTranslationTableName(this.EntityInfo.DbTableName) + ".");
+                if (this.UpdateBuilder.TableName.HasValue())
+                {
+                    whereString = whereString.Replace(this.SqlBuilder.GetTranslationColumnName(expression.Parameters.First().Name) + ".", "");
+                }
+                else
+                {
+                    whereString = whereString.Replace(expression.Parameters.First().Name + ".", this.SqlBuilder.GetTranslationTableName(this.EntityInfo.DbTableName) + ".");
+                }
                 whereString = whereString.Replace(this.SqlBuilder.GetTranslationColumnName(expression.Parameters.First().Name) + ".", this.SqlBuilder.GetTranslationTableName(this.EntityInfo.DbTableName) + ".");
             }
             UpdateBuilder.WhereValues.Add(whereString);
