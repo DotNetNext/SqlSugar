@@ -17,10 +17,10 @@
         <dependency id="System.Data.Common" version="4.3.0" />
         <dependency id="Microsoft.Data.SqlClient" version="2.1.4" />
         <dependency id="Newtonsoft.Json" version="13.0.2" />
-        <dependency id="Microsoft.Data.Sqlite" version="5.0.5" />
+        <dependency id="Microsoft.Data.Sqlite" version="7.0.5" />
         <dependency id="System.Reflection.Emit.Lightweight" version="4.3.0" />
         <dependency id="MySqlConnector" version="2.2.5" />
-        <dependency id="Oracle.ManagedDataAccess.Core" version="3.21.1" />
+        <dependency id="Oracle.ManagedDataAccess.Core" version="3.21.100" />
         <dependency id="Npgsql" version="5.0.7" />
 	    <dependency id="SqlSugarCore.Dm" version="1.2" />
 	    <dependency id="SqlSugarCore.Kdbndp" version="7.4.0" />
