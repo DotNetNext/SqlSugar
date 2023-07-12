@@ -172,6 +172,11 @@ namespace OrmTest
             //.SetColumns("price", 1)
             .Where("id=1").ExecuteCommand();
 
+            db.Updateable<Custom>()
+             .AS("order")
+             .SetColumns(it=>it.Name=="a")
+             .Where(it => SqlFunc.Subqueryable<Custom>().AS("order").Where(s => s.Id == it.Id).NotAny()).ExecuteCommand();
+
             object o = db.Queryable<Order>().First();
             db.UpdateableByObject(o).ExecuteCommandAsync().GetAwaiter().GetResult();
             object os = db.Queryable<Order>().Take(2).ToList();
