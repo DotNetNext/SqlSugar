@@ -17,7 +17,7 @@ namespace OrmTest
         /// Account have permission to create database
         /// 用有建库权限的数据库账号
         /// </summary>
-        public static string ConnectionString = "Server=59.108.228.18;Port=55001;UID=system;PWD=XX;database=test";
+        public static string ConnectionString = "Server=59.108.228.18 ;Port=54321;UID=system;PWD=pw123456;database=test222";
         /// <summary>
         /// Account have permission to create database
         /// 用有建库权限的数据库账号
