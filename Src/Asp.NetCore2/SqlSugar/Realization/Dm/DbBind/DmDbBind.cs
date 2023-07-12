@@ -106,6 +106,7 @@ namespace SqlSugar
                   new KeyValuePair<string, CSharpDataType>("boolean",CSharpDataType.@bool),
                   new KeyValuePair<string, CSharpDataType>("bit",CSharpDataType.@bool),
                   new KeyValuePair<string, CSharpDataType>("number",CSharpDataType.@decimal),
+                  new KeyValuePair<string, CSharpDataType>("numeric",CSharpDataType.@decimal),
                   new KeyValuePair<string, CSharpDataType>("number",CSharpDataType.Single),
                   new KeyValuePair<string, CSharpDataType>("decimal",CSharpDataType.@decimal),
                   new KeyValuePair<string, CSharpDataType>("decimal",CSharpDataType.Single),
