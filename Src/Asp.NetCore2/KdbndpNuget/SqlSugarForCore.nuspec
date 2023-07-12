@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>SqlSugarCore.Kdbndp</id>
-    <version>7.03</version>
+    <version>7.04</version>
     <authors>sunkaixuan</authors>
     <owners>果糖大数据科技</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>

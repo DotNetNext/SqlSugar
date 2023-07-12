@@ -23,7 +23,7 @@
         <dependency id="Oracle.ManagedDataAccess.Core" version="3.21.1" />
         <dependency id="Npgsql" version="5.0.7" />
 	    <dependency id="SqlSugarCore.Dm" version="1.2" />
-	    <dependency id="SqlSugarCore.Kdbndp" version="7.3.0" />
+	    <dependency id="SqlSugarCore.Kdbndp" version="7.4.0" />
       </group>
     </dependencies>
   </metadata>
