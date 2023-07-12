@@ -246,6 +246,7 @@ namespace SqlSugar
                 {
                     entityTableName2 = this.DeleteBuilder.AsName;
                 }
+                whereString = whereString.Replace(expression.Parameters.First().Name + ".", this.SqlBuilder.GetTranslationTableName(entityTableName2) + ".");
                 whereString = whereString.Replace(this.SqlBuilder.GetTranslationColumnName(expression.Parameters.First().Name) + ".", this.SqlBuilder.GetTranslationTableName(entityTableName2) + ".");
                
             }

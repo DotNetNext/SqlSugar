@@ -803,7 +803,7 @@ namespace SqlSugar
                 {
                     entityTableName2 = this.UpdateBuilder.TableName;
                 }
-                //whereString = whereString.Replace(expression.Parameters.First().Name + ".", this.SqlBuilder.GetTranslationTableName(entityTableName2) + ".");
+                whereString = whereString.Replace(expression.Parameters.First().Name + ".", this.SqlBuilder.GetTranslationTableName(entityTableName2) + ".");
                 whereString = whereString.Replace(this.SqlBuilder.GetTranslationColumnName(expression.Parameters.First().Name) + ".", this.SqlBuilder.GetTranslationTableName(entityTableName2) + ".");
             }
             UpdateBuilder.WhereValues.Add(whereString);
