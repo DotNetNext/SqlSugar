@@ -64,6 +64,10 @@ namespace OrmTest
             db.Deleteable<Custom>()
                 .AS("order")
                 .Where(it =>SqlFunc.Subqueryable<Custom>().AS("order").Where(s=>s.Id==it.Id).NotAny() ).ExecuteCommand();
+            var list = db.Queryable<Order>().Take(2).ToList();
+            db.Deleteable<Custom>()
+             .AS("order")
+           .Where(it => list.Any(s=>s.Name==it.Name)).ExecuteCommand();
             Console.WriteLine("#### Deleteable End ####");
 
         }
