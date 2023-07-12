@@ -784,12 +784,17 @@ namespace SqlSugar
             var whereString = expResult.GetResultString();
             if (expression.ToString().Contains("Subqueryable()"))
             {
+                var entityTableName = this.EntityInfo.DbTableName;
+                if (UpdateBuilder.TableName.HasValue()) 
+                {
+                    entityTableName = UpdateBuilder.TableName;
+                }
                 if (ExpressionTool.GetParameters(expression).First().Type == typeof(T))
                 {
-                    var tableName = this.SqlBuilder.GetTranslationColumnName(this.EntityInfo.DbTableName);
+                    var tableName = this.SqlBuilder.GetTranslationColumnName(entityTableName);
                     whereString = whereString.Replace(tableName, $"( SELECT * FROM {tableName})  ");
                 }
-                whereString = whereString.Replace(this.SqlBuilder.GetTranslationColumnName(expression.Parameters.First().Name) + ".", this.SqlBuilder.GetTranslationTableName(this.EntityInfo.DbTableName) + ".");
+                whereString = whereString.Replace(this.SqlBuilder.GetTranslationColumnName(expression.Parameters.First().Name) + ".", this.SqlBuilder.GetTranslationTableName(entityTableName) + ".");
             }
             else if (expResult.IsNavicate)
             {
