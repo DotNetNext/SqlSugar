@@ -271,6 +271,8 @@ namespace OrmTest
          .Includes(x => x.Books).ToList();
 
             db.Deleteable<StudentA>().Where(x => x.SchoolA.TeacherList.Any()).ExecuteCommand();
+            db.Updateable<StudentA>()
+                .SetColumns(it=>it.Name==it.Name).Where(x => x.SchoolA.TeacherList.Any()).ExecuteCommand();
             db.Deleteable<StudentA>().Where(x => x.SchoolA.School_Name=="a").ExecuteCommand();
             db.Updateable<StudentA>()
                 .SetColumns(it=>it.Name=="a").Where(x => x.SchoolA.School_Name == "a").ExecuteCommand();
