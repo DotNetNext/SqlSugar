@@ -798,15 +798,13 @@ namespace SqlSugar
             }
             else if (expResult.IsNavicate)
             {
+                var entityTableName2 = this.EntityInfo.DbTableName;
                 if (this.UpdateBuilder.TableName.HasValue())
                 {
-                    whereString = whereString.Replace(this.SqlBuilder.GetTranslationColumnName(expression.Parameters.First().Name) + ".", "");
+                    entityTableName2 = this.UpdateBuilder.TableName;
                 }
-                else
-                {
-                    whereString = whereString.Replace(expression.Parameters.First().Name + ".", this.SqlBuilder.GetTranslationTableName(this.EntityInfo.DbTableName) + ".");
-                }
-                whereString = whereString.Replace(this.SqlBuilder.GetTranslationColumnName(expression.Parameters.First().Name) + ".", this.SqlBuilder.GetTranslationTableName(this.EntityInfo.DbTableName) + ".");
+                //whereString = whereString.Replace(expression.Parameters.First().Name + ".", this.SqlBuilder.GetTranslationTableName(entityTableName2) + ".");
+                whereString = whereString.Replace(this.SqlBuilder.GetTranslationColumnName(expression.Parameters.First().Name) + ".", this.SqlBuilder.GetTranslationTableName(entityTableName2) + ".");
             }
             UpdateBuilder.WhereValues.Add(whereString);
             return this;
