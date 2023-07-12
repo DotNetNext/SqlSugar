@@ -125,8 +125,14 @@
       <Name>SqlSugar</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Kdbndp_dll\" />
+    <Content Include="Kdbndp_dll\Kdbndp.dll" />
+    <Content Include="Kdbndp_dll\System.Buffers.dll" />
+    <Content Include="Kdbndp_dll\System.Memory.dll" />
+    <Content Include="Kdbndp_dll\System.Runtime.CompilerServices.Unsafe.dll" />
+    <Content Include="Kdbndp_dll\System.Threading.Tasks.Extensions.dll" />
+    <Content Include="Kdbndp_dll\System.ValueTuple.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
