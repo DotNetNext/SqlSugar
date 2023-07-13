@@ -60,6 +60,7 @@ namespace SqlSugar
         #region Replace Value
         public const string ValueSugarTable = "\r\n"+ClassSpace+"[SugarTable(\"{0}\")]";
         public const string ValueSugarCoulmn = "\r\n"+PropertySpace+"[SugarColumn({0})]";
+        public const string ValueTenant = "\r\n"+ClassSpace+ "[Tenant(\"{0}\")]";
         #endregion
 
         #region Space

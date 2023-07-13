@@ -21,8 +21,8 @@ namespace SqlSugar
         private bool IsDefaultValue { get; set; }
         private Func<string, bool> WhereColumnsfunc;
         private Func<string, string> FormatFileNameFunc { get; set; }
-        private bool IsStringNullable {get;set; }
-        private Func<DbColumnInfo,string,string,string> PropertyTextTemplateFunc { get; set; }
+        private bool IsStringNullable { get; set; }
+        private Func<DbColumnInfo, string, string, string> PropertyTextTemplateFunc { get; set; }
         private ISqlBuilder SqlBuilder
         {
             get
@@ -58,7 +58,7 @@ namespace SqlSugar
         }
 
         #region Setting Template
-        public IDbFirst StringNullable() 
+        public IDbFirst StringNullable()
         {
             IsStringNullable = true;
             return this;
@@ -98,7 +98,7 @@ namespace SqlSugar
             this.PropertyTemplate = func(this.PropertyTemplate);
             return this;
         }
-        public IDbFirst SettingPropertyTemplate(Func<DbColumnInfo, string,string,string> func)
+        public IDbFirst SettingPropertyTemplate(Func<DbColumnInfo, string, string, string> func)
         {
             this.PropertyTextTemplateFunc = func;
             return this;
@@ -233,7 +233,7 @@ namespace SqlSugar
         internal string GetClassString(DbTableInfo tableInfo, ref string className)
         {
             string classText;
-            var columns = this.Context.DbMaintenance.GetColumnInfosByTableName(tableInfo.Name,false);
+            var columns = this.Context.DbMaintenance.GetColumnInfosByTableName(tableInfo.Name, false);
             if (this.Context.IgnoreColumns.HasValue())
             {
                 var entityName = this.Context.EntityMaintenance.GetEntityName(tableInfo.Name);
@@ -259,7 +259,18 @@ namespace SqlSugar
             classText = classText.Replace(DbFirstTemplate.KeyNamespace, this.Namespace);
             classText = classText.Replace(DbFirstTemplate.KeyUsing, IsAttribute ? (this.UsingTemplate + "using " + UtilConstants.AssemblyName + ";\r\n") : this.UsingTemplate);
             classText = classText.Replace(DbFirstTemplate.KeyClassDescription, this.ClassDescriptionTemplate.Replace(DbFirstTemplate.KeyClassDescription, tableInfo.Description + "\r\n"));
-            classText = classText.Replace(DbFirstTemplate.KeySugarTable, IsAttribute ? string.Format(DbFirstTemplate.ValueSugarTable, tableInfo.Name) : null);
+
+            // is create attribute
+            if (IsAttribute)
+            {
+                //add default attribute
+                string attributeValue = string.Format(DbFirstTemplate.ValueSugarTable, tableInfo.Name);
+                //if configId is set, add tenant features
+                if (Context.CurrentConnectionConfig.ConfigId != null) attributeValue += string.Format(DbFirstTemplate.ValueTenant, this.Context.CurrentConnectionConfig.ConfigId);
+
+                classText = classText.Replace(DbFirstTemplate.KeySugarTable, attributeValue);
+            }
+
             if (columns.HasValue())
             {
                 foreach (var item in columns.Where(it => WhereColumnsfunc == null || WhereColumnsfunc(it.DbColumnName)))
@@ -270,13 +281,13 @@ namespace SqlSugar
                     string PropertyDescriptionText = this.PropertyDescriptionTemplate;
                     string propertyName = GetPropertyName(item);
                     string propertyTypeName = GetPropertyTypeName(item);
-                    PropertyText =this.PropertyTextTemplateFunc == null? GetPropertyText(item, PropertyText):this.PropertyTextTemplateFunc(item,this.PropertyTemplate, propertyTypeName);
+                    PropertyText = this.PropertyTextTemplateFunc == null ? GetPropertyText(item, PropertyText) : this.PropertyTextTemplateFunc(item, this.PropertyTemplate, propertyTypeName);
                     PropertyDescriptionText = GetPropertyDescriptionText(item, PropertyDescriptionText);
                     if (this.IsAttribute && item.DataType?.StartsWith("_") == true && PropertyText.Contains("[]"))
                     {
                         PropertyDescriptionText += "\r\n           [SugarColumn(IsArray=true)]";
                     }
-                    else if (item?.DataType?.StartsWith("json")==true) 
+                    else if (item?.DataType?.StartsWith("json") == true)
                     {
                         PropertyDescriptionText += "\r\n           [SugarColumn(IsJson=true)]";
                     }
@@ -352,10 +363,10 @@ namespace SqlSugar
                 foreach (var item in classStringList)
                 {
                     var fileName = item.Key;
-                    if (FormatFileNameFunc!= null)
+                    if (FormatFileNameFunc != null)
                     {
                         fileName = FormatFileNameFunc(fileName);
-                     }
+                    }
                     var filePath = directoryPath.TrimEnd('\\').TrimEnd('/') + string.Format(seChar + "{0}.cs", fileName);
                     FileHelper.CreateFile(filePath, item.Value, Encoding.UTF8);
                 }
@@ -447,21 +458,21 @@ namespace SqlSugar
             }
             if (result == "Int32")
             {
-                result = item.IsNullable?"int?":"int";
+                result = item.IsNullable ? "int?" : "int";
             }
             if (result == "String")
             {
                 result = "string";
             }
-            if (result == "string" && item.IsNullable && IsStringNullable) 
+            if (result == "string" && item.IsNullable && IsStringNullable)
             {
                 result = result + "?";
             }
-            if (item.OracleDataType.EqualCase("raw") && item.Length == 16) 
+            if (item.OracleDataType.EqualCase("raw") && item.Length == 16)
             {
                 return "Guid";
             }
-            if (item.OracleDataType.EqualCase("number") && item.Length == 1&&item.Scale==0)
+            if (item.OracleDataType.EqualCase("number") && item.Length == 1 && item.Scale == 0)
             {
                 return "bool";
             }
@@ -474,7 +485,7 @@ namespace SqlSugar
                 return convertString;
             if (convertString.ObjToString() == "newid()")
             {
-                return "Guid.NewGuid()";
+                return "Guid.NewGuid().ToString()";
             }
             if (item.DataType == "bit")
                 return (convertString == "1" || convertString.Equals("true", StringComparison.CurrentCultureIgnoreCase)).ToString().ToLower();
