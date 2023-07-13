@@ -1452,7 +1452,7 @@ namespace SqlSugar
             {
                 if (item.ConfigId == null)
                 {
-                    item.ConfigId = Guid.NewGuid().ToString();
+                    item.ConfigId = "";
                 }
             }
         }
