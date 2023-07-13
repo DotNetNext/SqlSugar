@@ -485,7 +485,8 @@ namespace SqlSugar
                 return convertString;
             if (convertString.ObjToString() == "newid()")
             {
-                return "Guid.NewGuid().ToString()";
+                //If the field type is string and the default value is newid(), the generated default value is missing a type conversion
+                return $"Guid.NewGuid(){(GetPropertyTypeName(item) == "string" ? ".ToString()" : "")}";
             }
             if (item.DataType == "bit")
                 return (convertString == "1" || convertString.Equals("true", StringComparison.CurrentCultureIgnoreCase)).ToString().ToLower();
