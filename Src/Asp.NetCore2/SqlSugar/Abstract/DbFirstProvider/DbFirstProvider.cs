@@ -263,7 +263,7 @@ namespace SqlSugar
             // is create attribute
             if (IsAttribute)
             {
-                //add default attribute
+                //add sugarTable attribute
                 string attributeValue = string.Format(DbFirstTemplate.ValueSugarTable, tableInfo.Name);
                 //if configId is set, add tenant features
                 if (Context.CurrentConnectionConfig.ConfigId != null) attributeValue += string.Format(DbFirstTemplate.ValueTenant, this.Context.CurrentConnectionConfig.ConfigId);
