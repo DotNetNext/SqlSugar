@@ -754,7 +754,7 @@ namespace SqlSugar
 
             if (columns.ToString().Contains("Subqueryable()."))
             {
-                expResult= expResult.Replace(this.SqlBuilder.SqlTranslationLeft+ (binaryExp.Left as MemberExpression).Expression+this.SqlBuilder.SqlTranslationRight+".",this.UpdateBuilder.GetTableNameString.TrimEnd()+".");
+                expResult= expResult.Replace(this.SqlBuilder.GetTranslationColumnName((binaryExp.Left as MemberExpression).Expression+"") +".",this.UpdateBuilder.GetTableNameString.TrimEnd()+".");
             }
 
             UpdateBuilder.SetValues.Add(new KeyValuePair<string, string>(SqlBuilder.GetTranslationColumnName(key), expResult));
