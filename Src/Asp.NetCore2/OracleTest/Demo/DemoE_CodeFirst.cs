@@ -21,6 +21,9 @@ namespace OrmTest
                 InitKeyType = InitKeyType.Attribute,
                 IsAutoCloseConnection = true
             });
+            db.CodeFirst.InitTables<T_DICT>();
+            db.Updateable(new T_DICT() { LABEL = "a", TYPE = "a", TYPENAME = "a", VALUE = "a" })
+                .ExecuteCommand();
             db.Aop.OnLogExecuting = (s, p) => Console.WriteLine(UtilMethods.GetNativeSql(s,p));
             db.CodeFirst.InitTables(typeof(CodeFirstTable1));//Create CodeFirstTable1 
             db.Insertable(new CodeFirstTable1() { Name = "a", Text="a" }).ExecuteCommand();
@@ -39,6 +42,39 @@ namespace OrmTest
             db.Insertable(new CodeFirstUnitrew() { Index = 1 }).ExecuteCommand();
             Console.WriteLine("#### CodeFirst end ####");
         }
+    }
+    /// <summary>
+    /// 测试表
+    /// </summary>
+    [SugarTable("T_DICT")]
+    public class T_DICT
+    {
+        /// <summary>
+        /// Desc:字典类型
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        [SugarColumn(IsPrimaryKey = true)]
+        public string TYPE { get; set; } = "";
+        /// <summary>
+        /// Desc:字典名称
+        /// Default:
+        /// Nullable:True
+        /// </summary>   
+        public string? TYPENAME { get; set; }
+        /// <summary>
+        /// Desc:字典键值
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        [SugarColumn(IsPrimaryKey = true)]
+        public string VALUE { get; set; } = "";
+        /// <summary>
+        /// Desc:字典标签
+        /// Default:
+        /// Nullable:False
+        /// </summary>           
+        public string? LABEL { get; set; }
     }
     public class CodeFirstUnitrew 
     {
