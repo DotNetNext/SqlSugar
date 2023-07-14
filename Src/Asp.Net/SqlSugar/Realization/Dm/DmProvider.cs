@@ -189,7 +189,7 @@ namespace SqlSugar
                     if (Parameter.ParameterName != null && Parameter.ParameterName.ToLower().IsContainsIn(KeyWord))
                     {
                         var newName = ":p" + i + 100;
-                        sql = sql.Replace(Parameter.ParameterName, newName);
+                        sql = Regex.Replace(sql, Parameter.ParameterName, newName, RegexOptions.IgnoreCase);
                         Parameter.ParameterName = newName;
                         i++;
                     }

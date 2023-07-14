@@ -134,7 +134,7 @@ namespace SqlSugar
                         if (parameters.Count(it => it.ParameterName.StartsWith(Parameter.ParameterName)) == 1)
                         {
                             var newName = Parameter.ParameterName + "_01";
-                            sql = sql.Replace(Parameter.ParameterName, newName);
+                            sql = Regex.Replace(sql, Parameter.ParameterName, newName, RegexOptions.IgnoreCase);
                             Parameter.ParameterName = newName;
                         }
                         else
