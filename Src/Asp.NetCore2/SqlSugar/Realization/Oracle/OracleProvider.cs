@@ -138,7 +138,7 @@ namespace SqlSugar
                             sql = Regex.Replace(sql, Parameter.ParameterName, newName, RegexOptions.IgnoreCase);
                             Parameter.ParameterName = newName;
                         }
-                        else
+                        else if(Parameter.ParameterName.ToLower().IsContainsIn(KeyWord))
                         {
                             Check.ExceptionEasy($" {Parameter.ParameterName} is key word", $"{Parameter.ParameterName}ÊÇ¹Ø¼ü´Ê");
                         }
