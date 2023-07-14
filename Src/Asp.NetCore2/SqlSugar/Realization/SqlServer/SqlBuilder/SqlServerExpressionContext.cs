@@ -109,6 +109,20 @@ namespace SqlSugar
                       , model.Args[1].MemberName
                       );
         }
+        public override string TrimEnd(MethodCallExpressionModel mode)
+        {
+            var parameterNameA = mode.Args[0].MemberName;
+            var parameterNameB = mode.Args[1].MemberName;
+            return $" RTRIM(REPLACE({parameterNameA}, {parameterNameB}, '')) ";
+        }
+        public override string TrimStart(MethodCallExpressionModel mode)
+        {
+
+            var parameterNameA = mode.Args[0].MemberName;
+            var parameterNameB = mode.Args[1].MemberName;
+            return $" LTRIM(REPLACE({parameterNameA},{parameterNameB}, ''))  ";
+        }
     }
+
 
 }

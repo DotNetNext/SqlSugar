@@ -189,7 +189,7 @@ namespace SqlSugar
                     if (Parameter.ParameterName != null && Parameter.ParameterName.ToLower().IsContainsIn(KeyWord))
                     {
                         var newName = ":p" + i + 100;
-                        sql = sql.Replace(Parameter.ParameterName, newName);
+                        sql = Regex.Replace(sql, Parameter.ParameterName, newName, RegexOptions.IgnoreCase);
                         Parameter.ParameterName = newName;
                         i++;
                     }
@@ -214,7 +214,6 @@ namespace SqlSugar
 
             return sql;
         }
-
         public override Action<SqlSugarException> ErrorEvent => it =>
         {
             if (base.ErrorEvent != null)
@@ -226,6 +225,5 @@ namespace SqlSugar
                 Check.ExceptionEasy(it.Message, $"错误：可能是字段太小超出,详细错误：{it.Message} ");
             }
         };
-
     }
 }

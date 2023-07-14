@@ -1011,5 +1011,19 @@ namespace SqlSugar
             var parameterNameA = mode.Args[0].MemberName;
             return $" DATE_PART('week', {parameterNameA})+1 ";
         }
+
+        public virtual string TrimEnd(MethodCallExpressionModel mode) 
+        {
+            var parameterNameA = mode.Args[0].MemberName;
+            var parameterNameB= mode.Args[1].MemberName;
+            return $" TRIM(BOTH "+ parameterNameB + " FROM "+ parameterNameA + ") ";
+        }
+        public virtual string TrimStart(MethodCallExpressionModel mode) 
+        {
+
+            var parameterNameA = mode.Args[0].MemberName;
+            var parameterNameB = mode.Args[1].MemberName;
+            return $" LTRIM(BOTH " + parameterNameB + " FROM " + parameterNameA + ") ";
+        }
     }
 }

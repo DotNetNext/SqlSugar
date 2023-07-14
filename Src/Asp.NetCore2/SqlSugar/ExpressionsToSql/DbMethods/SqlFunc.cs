@@ -181,6 +181,14 @@ namespace SqlSugar
         {
             return thisValue == null ? null : thisValue.ToString().Trim();
         }
+        public static string TrimEnd(object thisValue,string trimChar)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+        public static string TrimStart(object thisValue, string trimChar)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
         public static bool Contains(string thisValue, string parameterValue)
         {
             return thisValue.Contains(parameterValue);
@@ -318,6 +326,7 @@ namespace SqlSugar
         public static int BitwiseInclusiveOR(long left, long right) { throw new NotSupportedException("Can only be used in expressions"); }
         public static DateTime Oracle_ToDate(string date,string format) { throw new NotSupportedException("Can only be used in expressions"); }
         public static string Oracle_ToChar(DateTime date, string format) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static string Oracle_ToChar(object objValue, string format) { throw new NotSupportedException("Can only be used in expressions"); }
         public static int SqlServer_DateDiff(string dateType,DateTime date1,DateTime date2) { throw new NotSupportedException("Can only be used in expressions"); }
 
         public static bool JsonListObjectAny(object jsonListObject, string fieldName, object value)
