@@ -245,5 +245,18 @@ namespace SqlSugar
                 return $" JSON_CONTAINS({model.Args[0].MemberName},'{{\"{model.Args[1].MemberValue}\":\"{model.Args[2].MemberValue.ObjToStringNoTrim().ToSqlFilter()}\"}}')";
             }
         }
+        public override string TrimEnd(MethodCallExpressionModel mode)
+        {
+            var parameterNameA = mode.Args[0].MemberName;
+            var parameterNameB = mode.Args[1].MemberName;
+            return $" TRIM(TRAILING {parameterNameA} FROM {parameterNameB}) ";
+        }
+        public override string TrimStart(MethodCallExpressionModel mode)
+        {
+
+            var parameterNameA = mode.Args[0].MemberName;
+            var parameterNameB = mode.Args[1].MemberName;
+            return $" TRIM(LEADING  {parameterNameA} FROM {parameterNameB}) ";
+        }
     }
 }

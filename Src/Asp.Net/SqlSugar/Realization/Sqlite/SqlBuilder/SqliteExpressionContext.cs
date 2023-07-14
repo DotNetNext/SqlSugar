@@ -279,7 +279,23 @@ namespace SqlSugar
 
         public override string CharIndex(MethodCallExpressionModel model)
         {
-            throw new NotSupportedException("Slqite Not Supported CharIndex");
+            var parameterNameA = model.Args[0].MemberName;
+            var parameterNameB = model.Args[1].MemberName;
+            return $" INSTR(LOWER({parameterNameA}), LOWER({parameterNameB})) ";
+        }
+
+        public override string TrimEnd(MethodCallExpressionModel mode)
+        {
+            var parameterNameA = mode.Args[0].MemberName;
+            var parameterNameB = mode.Args[1].MemberName;
+            return $" RTRIM(REPLACE({parameterNameA}, {parameterNameB}, '')) ";
+        }
+        public override string TrimStart(MethodCallExpressionModel mode)
+        {
+
+            var parameterNameA = mode.Args[0].MemberName;
+            var parameterNameB = mode.Args[1].MemberName;
+            return $" LTRIM(REPLACE({parameterNameA}, {parameterNameB}, '')) ";
         }
     }
 }

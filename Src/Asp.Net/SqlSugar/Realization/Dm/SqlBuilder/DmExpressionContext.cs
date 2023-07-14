@@ -226,5 +226,19 @@ namespace SqlSugar
             var parameter = model.Args[0];
             return string.Format(" CAST({0} AS decimal(18,4))", parameter.MemberName);
         }
+
+        public override string TrimEnd(MethodCallExpressionModel mode)
+        {
+            var parameterNameA = mode.Args[0].MemberName;
+            var parameterNameB = mode.Args[1].MemberName;
+            return $" RTRIM({parameterNameA}, {parameterNameB}) ";
+        }
+        public override string TrimStart(MethodCallExpressionModel mode)
+        {
+
+            var parameterNameA = mode.Args[0].MemberName;
+            var parameterNameB = mode.Args[1].MemberName;
+            return $" LTRIM({parameterNameA}, {parameterNameB}) ";
+        }
     }
 }

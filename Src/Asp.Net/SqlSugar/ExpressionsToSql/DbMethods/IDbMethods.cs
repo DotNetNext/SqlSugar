@@ -114,5 +114,7 @@ namespace SqlSugar
         string Like(MethodCallExpressionModel mode);
         string ToSingle(MethodCallExpressionModel mode);
         string WeekOfYear(MethodCallExpressionModel mode);
+        string TrimEnd(MethodCallExpressionModel mode);    
+        string TrimStart(MethodCallExpressionModel mode);
     }
 }
