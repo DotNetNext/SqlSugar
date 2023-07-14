@@ -127,13 +127,14 @@ namespace SqlSugar
             sql = ReplaceKeyWordWithAd(sql, parameters);
             if (parameters.HasValue())
             {
-                foreach (var Parameter in parameters)
+                foreach (var Parameter in parameters.OrderByDescending(x=>x.ParameterName?.Length))
                 {
-                    if (Parameter.ParameterName != null && Parameter.ParameterName.ToLower().IsIn(KeyWord))
+                    if (Parameter.ParameterName != null && Parameter.ParameterName.ToLower().IsContainsIn(KeyWord))
                     {
                         if (parameters.Count(it => it.ParameterName.StartsWith(Parameter.ParameterName)) == 1)
                         {
                             var newName = Parameter.ParameterName + "_01";
+                            newName = newName.Insert(1, "KW");
                             sql = Regex.Replace(sql, Parameter.ParameterName, newName, RegexOptions.IgnoreCase);
                             Parameter.ParameterName = newName;
                         }
