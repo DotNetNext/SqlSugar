@@ -129,7 +129,7 @@ namespace SqlSugar
             {
                 foreach (var Parameter in parameters.OrderByDescending(x=>x.ParameterName?.Length))
                 {
-                    if (Parameter.ParameterName != null && Parameter.ParameterName.ToLower().IsContainsIn(KeyWord))
+                    if (Parameter.ParameterName != null && Parameter.ParameterName.ToLower().IsContainsStartWithIn(KeyWord))
                     {
                         if (parameters.Count(it => it.ParameterName.StartsWith(Parameter.ParameterName)) == 1)
                         {
