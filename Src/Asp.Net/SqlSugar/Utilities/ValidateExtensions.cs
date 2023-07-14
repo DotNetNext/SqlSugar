@@ -26,6 +26,10 @@ namespace SqlSugar
         {
             return inValues.Any(it => thisValue.Contains(it));
         }
+        public static bool IsContainsStartWithIn(this string thisValue, params string[] inValues)
+        {
+            return inValues.Any(it => thisValue.StartsWith(it));
+        }
 
         public static bool IsNullOrEmpty(this object thisValue)
         {

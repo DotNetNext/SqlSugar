@@ -129,7 +129,7 @@ namespace SqlSugar
             {
                 foreach (var Parameter in parameters.OrderByDescending(x=>x.ParameterName?.Length))
                 {
-                    if (Parameter.ParameterName != null && Parameter.ParameterName.ToLower().IsContainsIn(KeyWord))
+                    if (Parameter.ParameterName != null && Parameter.ParameterName.ToLower().IsContainsStartWithIn(KeyWord))
                     {
                         if (parameters.Count(it => it.ParameterName.StartsWith(Parameter.ParameterName)) == 1)
                         {
@@ -138,7 +138,7 @@ namespace SqlSugar
                             sql = Regex.Replace(sql, Parameter.ParameterName, newName, RegexOptions.IgnoreCase);
                             Parameter.ParameterName = newName;
                         }
-                        else
+                        else if(Parameter.ParameterName.ToLower().IsContainsIn(KeyWord))
                         {
                             Check.ExceptionEasy($" {Parameter.ParameterName} is key word", $"{Parameter.ParameterName}ÊÇ¹Ø¼ü´Ê");
                         }
