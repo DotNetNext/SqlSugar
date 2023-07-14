@@ -113,14 +113,14 @@ namespace SqlSugar
         {
             var parameterNameA = mode.Args[0].MemberName;
             var parameterNameB = mode.Args[1].MemberName;
-            return $" RTRIM(REPLACE({parameterNameA}, {parameterNameB}, '')) ";
+            return $"CASE WHEN RIGHT({parameterNameA}, 1) = {parameterNameB} THEN LEFT({parameterNameA}, LEN({parameterNameA}) - 1) ELSE {parameterNameA} END";
         }
         public override string TrimStart(MethodCallExpressionModel mode)
         {
 
             var parameterNameA = mode.Args[0].MemberName;
             var parameterNameB = mode.Args[1].MemberName;
-            return $" LTRIM(REPLACE({parameterNameA},{parameterNameB}, ''))  ";
+            return $" CASE WHEN LEFT({parameterNameA}, 1) = {parameterNameB} THEN RIGHT({parameterNameA}, LEN({parameterNameA}) - 1) ELSE {parameterNameA} END ";
         }
     }
 
