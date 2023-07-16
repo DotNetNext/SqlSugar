@@ -39,7 +39,121 @@ namespace OrmTest
               .Where(
                 it => it.num == SqlFunc.Subqueryable<UnitadfaasdfasfaDTO>().GroupBy(s => s.num).Select(s => s.num)
                && it.num == SqlFunc.Subqueryable<UnitadfaasdfasfaDTO>().GroupBy(s => s.num).Select(s => s.num))
-              .ToList(); 
+              .ToList();
+
+            decimal tmp1 = 1110; 
+            decimal tmp2 = 2220;
+            var sql3 =   db.Updateable<TbRenWuEx>()
+
+              .SetColumns(it => new TbRenWuEx() { WorkWgt = tmp2 + tmp1 })
+
+              .Where(it => it.PoundNo == "")
+
+              .ToSqlString();
+
+            if (!sql3.Contains("( 2220 + 1110 )")) 
+            {
+                throw new Exception("unit error");
+            }
+        }
+        /// <summary>
+
+        /// </summary>
+
+        [SugarTable("tb_renwuex2")]
+
+        public class TbRenWuEx
+
+        {
+
+            /// <summary>
+
+            /// </summary>
+
+            [SugarColumn(ColumnName = "ID", IsPrimaryKey = true, IsIdentity = true)]
+
+            public int Id { get; set; }
+
+
+
+            /// <summary>
+
+            /// </summary>
+
+            [SugarColumn(ColumnName = "POUND_NO")]
+
+            public string PoundNo { get; set; }
+
+
+
+            /// <summary>
+
+            /// </summary>
+
+            [SugarColumn(ColumnName = "CARGO_NAM")]
+
+            public string CargoNam { get; set; }
+
+
+
+            /// <summary>
+
+            ///
+
+            /// </summary>
+
+            [SugarColumn(ColumnName = "OUT_TOOL")]
+
+            public string OutTool { get; set; }
+
+
+
+            /// <summary>
+
+            /// </summary>
+
+            [SugarColumn(ColumnName = "BARGE_NO")]
+
+            public string BargeNo { get; set; }
+
+
+
+            /// <summary>
+
+            /// </summary>
+
+            [SugarColumn(ColumnName = "WORK_WGT")]
+
+            public decimal? WorkWgt { get; set; }
+
+
+
+            /// <summary>
+
+            /// 是否完成
+
+            /// </summary>
+
+            [SugarColumn(ColumnName = "FinishFlag")]
+
+            public byte? FinishFlag { get; set; }
+
+
+
+            /// <summary>
+
+            /// 记录时间
+
+            /// </summary>
+
+            [SugarColumn(ColumnName = "RecDate")]
+
+            public DateTime? RecDate { get; set; }
+
+
+
+
+
         }
         public class Unitadfaasdfasfa 
         {
