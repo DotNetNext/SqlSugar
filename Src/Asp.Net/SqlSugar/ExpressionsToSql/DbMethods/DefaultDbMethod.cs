@@ -1031,5 +1031,25 @@ namespace SqlSugar
             var parameterNameB = mode.Args[1].MemberName;
             return $" CASE WHEN LEFT({parameterNameA}, 1) = {parameterNameB} THEN RIGHT({parameterNameA}, LEN({parameterNameA}) - 1) ELSE {parameterNameA} END  ";
         }
+
+        public virtual string Left(MethodCallExpressionModel mode)
+        {
+            var parameterNameA = mode.Args[0].MemberName;
+            var parameterNameB = mode.Args[1].MemberName;
+            return $" LEFT({parameterNameA},{parameterNameB}) ";
+        }
+        public virtual string Right(MethodCallExpressionModel mode)
+        {
+            var parameterNameA = mode.Args[0].MemberName;
+            var parameterNameB = mode.Args[1].MemberName;
+            return $" RIGHT({parameterNameA},{parameterNameB}) ";
+        }
+        public virtual string PadLeft(MethodCallExpressionModel mode)
+        {
+            var parameterNameA = mode.Args[0].MemberName;
+            var parameterNameB = mode.Args[1].MemberName;
+            var parameterNameC = mode.Args[2].MemberName;
+            return $" LPAD({parameterNameA},{parameterNameB},{parameterNameC}) ";
+        }
     }
 }
