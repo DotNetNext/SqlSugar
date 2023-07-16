@@ -770,6 +770,12 @@ namespace SqlSugar
             var value1 = MergeString(value, "','");
             var value2 = MergeString("','", value);
             var value3 = MergeString("','", value, "','");
+            if (model.Args.Count == 3)
+            {
+                value1 = value1.Replace("','", model.Args[2].MemberName+"" );
+                value2 = value2.Replace("','", model.Args[2].MemberName + "" );
+                value3 = value3.Replace("','", model.Args[2].MemberName + "" );
+            }
             var likeString1 = 
                 StartsWith(new MethodCallExpressionModel() { Args = new List<MethodCallExpressionArgs>() { 
                  new MethodCallExpressionArgs(){ IsMember=true, MemberName=fullString },
