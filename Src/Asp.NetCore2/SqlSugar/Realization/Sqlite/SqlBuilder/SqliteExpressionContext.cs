@@ -297,5 +297,27 @@ namespace SqlSugar
             var parameterNameB = mode.Args[1].MemberName;
             return $"  CASE WHEN SUBSTR({parameterNameA}, 1, 1) ={parameterNameB} THEN SUBSTR({parameterNameA}, 2) ELSE {parameterNameA} END ";
         }
+
+        public override string PadLeft(MethodCallExpressionModel mode)
+        {
+            var parameterNameA = mode.Args[0].MemberName;
+            var parameterNameB = mode.Args[1].MemberName;
+            var parameterNameC = mode.Args[2].MemberName;
+            var value = new string[mode.Args[1].MemberValue.ObjToInt()].Select(it=> parameterNameC); 
+            return $"substr({string.Join("||", value)} || {parameterNameA}, {parameterNameB}*-1)  ";
+        }
+
+        public override string Left(MethodCallExpressionModel mode)
+        {
+            var parameterNameA = mode.Args[0].MemberName;
+            var parameterNameB = mode.Args[1].MemberName;
+            return $" SUBSTR({parameterNameA}, 1, {parameterNameB})  ";
+        }
+        public override string Right(MethodCallExpressionModel mode)
+        {
+            var parameterNameA = mode.Args[0].MemberName;
+            var parameterNameB = mode.Args[1].MemberName;
+            return $" SUBSTR({parameterNameA}, -2, {parameterNameB})  ";
+        }
     }
 }

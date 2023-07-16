@@ -10,7 +10,7 @@ using System.Reflection;
 using System.Dynamic;
 using System.Threading.Tasks;
 using System.Threading;
-
+ 
 namespace SqlSugar
 {
 
@@ -350,7 +350,11 @@ namespace SqlSugar
             this.Context.MappingTables = oldMapping;
             return await this.Clone().ToJsonPageAsync(pageIndex, pageSize);
         }
-        
+        public async virtual Task<DataTable> ToDataTableByEntityAsync()
+        {
+            var list =await this.ToListAsync();
+            return this.Context.Utilities.ListToDataTable(list);
+        }
         public async Task<DataTable> ToDataTableAsync()
         {
             QueryBuilder.ResultType = typeof(SugarCacheDataTable);
@@ -380,6 +384,11 @@ namespace SqlSugar
             totalNumber.Value = await this.Clone().CountAsync();
             this.Context.MappingTables = oldMapping;
             return await this.Clone().ToDataTablePageAsync(pageIndex, pageSize);
+        }
+        public async Task<DataTable> ToDataTableByEntityPageAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber) 
+        {
+            var list =await this.ToPageListAsync(pageNumber, pageSize, totalNumber);
+            return this.Context.Utilities.ListToDataTable(list);
         }
         public async Task<List<T>> ToOffsetPageAsync(int pageIndex, int pageSize, RefAsync<int> totalNumber)
         {

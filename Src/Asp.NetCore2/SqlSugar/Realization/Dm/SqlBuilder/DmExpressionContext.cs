@@ -240,5 +240,18 @@ namespace SqlSugar
             var parameterNameB = mode.Args[1].MemberName;
             return $" LTRIM({parameterNameA}, {parameterNameB}) ";
         }
+
+        public override string Left(MethodCallExpressionModel mode)
+        {
+            var parameterNameA = mode.Args[0].MemberName;
+            var parameterNameB = mode.Args[1].MemberName;
+            return $" SUBSTR({parameterNameA}, 1, {parameterNameB})  ";
+        }
+        public override string Right(MethodCallExpressionModel mode)
+        {
+            var parameterNameA = mode.Args[0].MemberName;
+            var parameterNameB = mode.Args[1].MemberName;
+            return $" SUBSTR({parameterNameA}, -2, {parameterNameB})  ";
+        }
     }
 }

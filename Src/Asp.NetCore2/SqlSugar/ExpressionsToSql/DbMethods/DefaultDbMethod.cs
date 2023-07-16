@@ -770,6 +770,12 @@ namespace SqlSugar
             var value1 = MergeString(value, "','");
             var value2 = MergeString("','", value);
             var value3 = MergeString("','", value, "','");
+            if (model.Args.Count == 3)
+            {
+                value1 = value1.Replace("','", model.Args[2].MemberName+"" );
+                value2 = value2.Replace("','", model.Args[2].MemberName + "" );
+                value3 = value3.Replace("','", model.Args[2].MemberName + "" );
+            }
             var likeString1 = 
                 StartsWith(new MethodCallExpressionModel() { Args = new List<MethodCallExpressionArgs>() { 
                  new MethodCallExpressionArgs(){ IsMember=true, MemberName=fullString },
@@ -1016,14 +1022,34 @@ namespace SqlSugar
         {
             var parameterNameA = mode.Args[0].MemberName;
             var parameterNameB= mode.Args[1].MemberName;
-            return @$" CASE WHEN RIGHT({parameterNameA}, 1) = {parameterNameB} THEN LEFT({parameterNameA}, LENGTH({parameterNameA}) - 1) ELSE {parameterNameA} END  ";
+            return $" CASE WHEN RIGHT({parameterNameA}, 1) = {parameterNameB} THEN LEFT({parameterNameA}, LENGTH({parameterNameA}) - 1) ELSE {parameterNameA} END  ";
         }
         public virtual string TrimStart(MethodCallExpressionModel mode) 
         {
 
             var parameterNameA = mode.Args[0].MemberName;
             var parameterNameB = mode.Args[1].MemberName;
-            return @$" CASE WHEN LEFT({parameterNameA}, 1) = {parameterNameB} THEN RIGHT({parameterNameA}, LEN({parameterNameA}) - 1) ELSE {parameterNameA} END  ";
+            return $" CASE WHEN LEFT({parameterNameA}, 1) = {parameterNameB} THEN RIGHT({parameterNameA}, LEN({parameterNameA}) - 1) ELSE {parameterNameA} END  ";
+        }
+
+        public virtual string Left(MethodCallExpressionModel mode)
+        {
+            var parameterNameA = mode.Args[0].MemberName;
+            var parameterNameB = mode.Args[1].MemberName;
+            return $" LEFT({parameterNameA},{parameterNameB}) ";
+        }
+        public virtual string Right(MethodCallExpressionModel mode)
+        {
+            var parameterNameA = mode.Args[0].MemberName;
+            var parameterNameB = mode.Args[1].MemberName;
+            return $" RIGHT({parameterNameA},{parameterNameB}) ";
+        }
+        public virtual string PadLeft(MethodCallExpressionModel mode)
+        {
+            var parameterNameA = mode.Args[0].MemberName;
+            var parameterNameB = mode.Args[1].MemberName;
+            var parameterNameC = mode.Args[2].MemberName;
+            return $" LPAD({parameterNameA},{parameterNameB},{parameterNameC}) ";
         }
     }
 }

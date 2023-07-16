@@ -53,7 +53,7 @@ namespace SqlSugar
                 var type = expression.Type;
                 var memberName = this.Context.GetDbColumnName(type.Name, memberAssignment.Member.Name);
                 var item = memberAssignment.Expression;
-
+                item = ExpressionTool.RemoveConvert(item);
                 //Column IsJson Handler
                 if (memberAssignment.Member.CustomAttributes != null)
                 {

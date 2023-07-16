@@ -13,6 +13,18 @@ namespace SqlSugar
         {
             throw new NotSupportedException("Can only be used in expressions");
         }
+        public static string Left(string value,int number) 
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+        public static string Right(string value,int number)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+        public static string PadLeft(string value,int number, char padChar)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
         public static bool Like(string fieldName, string likeValue) 
         {
             throw new NotSupportedException("Can only be used in expressions");
@@ -340,6 +352,11 @@ namespace SqlSugar
         }
 
         public static bool SplitIn(string CommaSegmentationString, string inValue)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        public static bool SplitIn(string CommaSegmentationString, string inValue,char splitChar)
         {
             throw new NotSupportedException("Can only be used in expressions");
         }
