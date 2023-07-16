@@ -353,7 +353,11 @@ namespace SqlSugar
             var list =  this.ToList();
             return TreeAndFilterIds(childListExpression, parentIdExpression, rootValue, childIds, ref list) ?? new List<T>();
         }
-
+        public virtual DataTable ToDataTableByEntity()
+        {
+            var list = this.ToList();
+            return this.Context.Utilities.ListToDataTable(list);
+        }
         public virtual DataTable ToDataTable()
         {
             QueryBuilder.ResultType = typeof(SugarCacheDataTable);
@@ -391,6 +395,11 @@ namespace SqlSugar
                 QueryBuilder.Take = pageSize;
             }
             return ToDataTable();
+        }
+        public DataTable ToDataTableByEntityPage(int pageNumber, int pageSize, ref int totalNumber) 
+        {
+            var  list=this.ToPageList(pageNumber, pageSize,ref totalNumber);
+            return this.Context.Utilities.ListToDataTable(list);    
         }
         public virtual DataTable ToDataTablePage(int pageIndex, int pageSize, ref int totalNumber)
         {

@@ -234,12 +234,16 @@ namespace SqlSugar
         List<T> ToTree(Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, object rootValue, object[] childIds);
         Task<List<T>> ToTreeAsync(Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, object rootValue, object[] childIds);
         DataTable ToDataTable();
+        DataTable ToDataTableByEntity();
         Task<DataTable> ToDataTableAsync();
+        Task<DataTable> ToDataTableByEntityAsync();
         DataTable ToDataTablePage(int pageNumber, int pageSize);
         Task<DataTable> ToDataTablePageAsync(int pageNumber, int pageSize);
         DataTable ToDataTablePage(int pageNumber, int pageSize, ref int totalNumber);
+        DataTable ToDataTableByEntityPage(int pageNumber, int pageSize, ref int totalNumber);
         DataTable ToDataTablePage(int pageNumber, int pageSize, ref int totalNumber,ref int totalPage);
         Task<DataTable> ToDataTablePageAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber);
+        Task<DataTable> ToDataTableByEntityPageAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber);
 
         List<T> ToOffsetPage(int pageNumber, int pageSize);
         List<T> ToOffsetPage(int pageNumber, int pageSize,ref int totalNumber);
