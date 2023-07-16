@@ -68,7 +68,7 @@ namespace OrmTest
 
             }).Where(it => it.id == 1).ToSql();
             UValidate.Check(sql.Key, @"UPDATE [NullTest]  SET
-            [p] =  @Const0    WHERE ( [id] = @id1 )", "Updateable");
+            [p] = @Const0   WHERE ( [id] = @id1 )", "Updateable");
             sql = Db.Updateable<NullTest>().SetColumns(it => new NullTest()
             {
                 p2 = true
