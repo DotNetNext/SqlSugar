@@ -440,6 +440,14 @@ namespace SqlSugar
         #endregion
 
         #region In
+        public new ISugarQueryable<T,T2> InIF<TParamter>(bool isIn, string fieldName, params TParamter[] pkValues)
+        {
+            if (isIn)
+            {
+               In(fieldName, pkValues);
+            }
+            return this;
+        }
         public new ISugarQueryable<T, T2> InIF<TParamter>(bool isIn, params TParamter[] pkValues)
         {
             if (isIn)
@@ -1133,6 +1141,14 @@ namespace SqlSugar
         #endregion
 
         #region In
+        public new ISugarQueryable<T, T2,T3> InIF<TParamter>(bool isIn, string fieldName, params TParamter[] pkValues)
+        {
+            if (isIn)
+            {
+                In(fieldName, pkValues);
+            }
+            return this;
+        }
         public new ISugarQueryable<T, T2, T3> InIF<TParamter>(bool isIn, params TParamter[] pkValues)
         {
             if (isIn)
@@ -1843,6 +1859,14 @@ namespace SqlSugar
         #endregion
 
         #region In
+        public new ISugarQueryable<T, T2, T3,T4> InIF<TParamter>(bool isIn, string fieldName, params TParamter[] pkValues)
+        {
+            if (isIn)
+            {
+                In(fieldName, pkValues);
+            }
+            return this;
+        }
         public new ISugarQueryable<T, T2, T3, T4> InIF<TParamter>(bool isIn, params TParamter[] pkValues)
         {
             if (isIn)
