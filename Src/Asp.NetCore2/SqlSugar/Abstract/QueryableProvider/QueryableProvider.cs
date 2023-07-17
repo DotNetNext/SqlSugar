@@ -901,6 +901,17 @@ namespace SqlSugar
             if (list == null) return default(T);
             else return list.SingleOrDefault();
         }
+        public ISugarQueryable<T> InIF<TParamter>(bool isIn,string fieldName, params TParamter[] pkValues) 
+        {
+            if (isIn)
+            {
+                return In(fieldName, pkValues);
+            }
+            else 
+            {
+                return this;
+            } 
+        }
         public ISugarQueryable<T> InIF<TParamter>(bool isIn, params TParamter[] pkValues) 
         {
             if (isIn) 
