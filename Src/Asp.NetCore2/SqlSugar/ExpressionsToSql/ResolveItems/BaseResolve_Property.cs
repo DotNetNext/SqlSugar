@@ -68,7 +68,7 @@ namespace SqlSugar
                 if (first.Contains("("))
                 {
                     first = first.Split('(').Last().Trim();
-                }
+                } 
                 if (!result.ContainsKey(first))
                 {
                     result.Add(first, last);

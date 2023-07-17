@@ -659,6 +659,10 @@ namespace SqlSugar
                     {
                         key = item.Name + "." + name;
                         info = readerValues.Select(it => it.Key).FirstOrDefault(it => it.ToLower() == key.ToLower());
+                        if (info == null) 
+                        {
+                            info = readerValues.Select(it => it.Key).FirstOrDefault(it => it.ToLower().EndsWith("."+ key.ToLower()));
+                        }
                     }
                     var oldInfo = info;
                     if (mappingKeys != null && mappingKeys.ContainsKey(item.Name))
