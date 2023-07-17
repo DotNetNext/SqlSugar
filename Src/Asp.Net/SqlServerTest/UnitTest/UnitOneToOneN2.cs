@@ -80,14 +80,14 @@ namespace OrmTest
 
             var result3 = db.Queryable<Country, Province, City>(
                (co, pr, ci) => co.ProvinceId == pr.ProvinceId && ci.ProvinceId == ci.ProvinceId)
-          .Select((co, pr, ci) => new Country()
+          .Select((co, pr, ci) => new  
           {
               CountryId = co.CountryId,
               ProvinceId = co.ProvinceId,
-              Province = new Province()
+              Province2= new  
               {
                   ProvinceId = pr.ProvinceId,
-                  City = new City()
+                  City2 = new  
                   {
                       ProvinceId = ci.ProvinceId,
                       CityId = ci.CityId,
@@ -97,8 +97,8 @@ namespace OrmTest
           .ToList();
 
 
-            if (result3.First().Province.City.ProvinceId != 1 ||
-                result3.Last().Province.City.ProvinceId != 2)
+            if (result3.First().Province2.City2.ProvinceId != 1 ||
+                result3.Last().Province2.City2.ProvinceId != 2)
             {
                 throw new Exception("unit error");
             }
