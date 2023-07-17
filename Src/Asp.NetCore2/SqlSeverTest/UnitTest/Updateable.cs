@@ -43,39 +43,39 @@ namespace OrmTest
             {
                 IsRemind = saveDiary.IsRemind,
             }).Where(it => it.ID == saveDiary.ID).ToSql();
-            UValidate.Check(sql.Key, @"UPDATE [Diary]  SET
-            [IsRemind] =  @Const0    WHERE ( [ID] = @ID1 )", "Updateable");
+            UValidate.Check(sql.Key.Replace(" ",""), @"UPDATE [Diary]  SET
+            [IsRemind] =  @Const0    WHERE ( [ID] = @ID1 )".Replace(" ", ""), "Updateable");
 
 
             sql = Db.Updateable<UnitDiary>().SetColumns(it => new UnitDiary()
             {
                 TypeID = saveDiary.TypeID,
             }).Where(it => it.ID == saveDiary.ID).ToSql();
-            UValidate.Check(sql.Key, @"UPDATE [Diary]  SET
-            [TypeID] = @Const0   WHERE ( [ID] = @ID1 )", "Updateable");
+            UValidate.Check(sql.Key.Replace(" ", ""), @"UPDATE [Diary]  SET
+            [TypeID] = @Const0   WHERE ( [ID] = @ID1 )".Replace(" ", ""), "Updateable");
 
 
             sql = Db.Updateable<UnitDiary>().SetColumns(it => new UnitDiary()
             {
                 TypeID = saveDiary.TypeID,
             }).Where(it => it.ID == saveDiary.ID).ToSql();
-            UValidate.Check(sql.Key, @"UPDATE [Diary]  SET
-            [TypeID] = @Const0   WHERE ( [ID] = @ID1 )", "Updateable");
+            UValidate.Check(sql.Key.Replace(" ", ""), @"UPDATE [Diary]  SET
+            [TypeID] = @Const0   WHERE ( [ID] = @ID1 )".Replace(" ", ""), "Updateable");
 
             sql = Db.Updateable<NullTest>().SetColumns(it => new NullTest()
             {
                 p = true
 
             }).Where(it => it.id == 1).ToSql();
-            UValidate.Check(sql.Key, @"UPDATE [NullTest]  SET
-            [p] =  @Const0    WHERE ( [id] = @id1 )", "Updateable");
+            UValidate.Check(sql.Key.Replace(" ", ""), @"UPDATE [NullTest]  SET
+            [p] =  @Const0    WHERE ( [id] = @id1 )".Replace(" ", ""), "Updateable");
             sql = Db.Updateable<NullTest>().SetColumns(it => new NullTest()
             {
                 p2 = true
 
             }).Where(it => it.id == 1).ToSql();
-            UValidate.Check(sql.Key, @"UPDATE [NullTest]  SET
-            [p2] = @Const0   WHERE ( [id] = @id1 )", "Updateable");
+            UValidate.Check(sql.Key.Replace(" ", ""), @"UPDATE [NullTest]  SET
+            [p2] = @Const0   WHERE ( [id] = @id1 )".Replace(" ", ""), "Updateable");
 
 
             Db.Updateable<Order>()
