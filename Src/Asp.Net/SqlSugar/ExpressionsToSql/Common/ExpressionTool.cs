@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -634,6 +635,24 @@ namespace SqlSugar
                     additem.RightDbName = UtilMethods.GetSqlValue(value);
                     //additem.Value = "";
                     result.Add(additem);
+                }
+                else if (binding is MemberInitExpression || binding is NewExpression)
+                {
+
+                    var dic = ExpressionTool.GetNewExpressionItemList(binding);
+                    foreach (var kv in dic)
+                    {
+                        additem = new NewExpressionInfo();
+                        //var leftInfo = keys[i];
+                        additem.Type = nameof(NewExpression);
+                        additem.RightName = kv.Key;
+                        additem.ShortName = ExpressionTool.GetParameters(kv.Value).First().Name;
+                        additem.RightName = kv.Key;
+                        additem.LeftNameName = keys[i].Name+ "." + kv.Key;
+                        additem.RightDbName = kv.Key;
+                        //additem.Value = "";
+                        result.Add(additem);
+                    }
                 }
                 else  
                 {
