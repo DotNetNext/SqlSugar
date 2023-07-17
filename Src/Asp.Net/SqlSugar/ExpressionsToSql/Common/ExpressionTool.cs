@@ -565,7 +565,25 @@ namespace SqlSugar
                     //additem.Value = "";
                     result.Add(additem);
                 }
-                else 
+                else if (memberAssignment.Expression is MemberInitExpression|| memberAssignment.Expression is NewExpression)
+                {
+                 
+                    var dic = ExpressionTool.GetNewExpressionItemList(memberAssignment.Expression);
+                    foreach (var kv in dic)
+                    {
+                        additem = new NewExpressionInfo();
+                        //var leftInfo = keys[i];
+                        additem.Type = nameof(NewExpression);
+                        additem.RightName = kv.Key;
+                        additem.ShortName = ExpressionTool.GetParameters(kv.Value).First().Name;
+                        additem.RightName = kv.Key;
+                        additem.LeftNameName = memberAssignment.Member.Name + "." + kv.Key;
+                        additem.RightDbName = kv.Key;
+                        //additem.Value = "";
+                        result.Add(additem);
+                    }
+                }
+                else
                 {
                     var value = baseResolve.GetNewExpressionValue(memberAssignment.Expression);
                     //var leftInfo = keys[i];

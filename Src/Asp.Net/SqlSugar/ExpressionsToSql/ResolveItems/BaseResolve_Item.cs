@@ -104,7 +104,7 @@ namespace SqlSugar
                               this.Context.SqlTranslationLeft + asName + "." + newExpressionInfo.LeftNameName + this.Context.SqlTranslationRight
 
                           );
-                    }
+                    } 
                     else
                     {
                         parameter.Context.Result.Append(this.Context.GetAsString(
