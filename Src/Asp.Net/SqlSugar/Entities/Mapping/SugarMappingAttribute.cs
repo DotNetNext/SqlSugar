@@ -14,6 +14,7 @@ namespace SqlSugar
         public bool IsDisabledDelete { get; set; }
         public bool IsDisabledUpdateAll { get; set; }
         public bool IsCreateTableFiledSort { get; set; }
+        public string Discrimator { get; set; } 
         public SugarTable(string tableName) {
             this.TableName = tableName;
         }
