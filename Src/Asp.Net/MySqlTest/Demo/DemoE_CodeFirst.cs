@@ -28,6 +28,7 @@ namespace OrmTest
             db.CodeFirst.InitTables<UnitByte1>();
             db.CodeFirst.InitTables<CodeFirstGuid>();
             db.Insertable(new CodeFirstGuid() { Id = Guid.NewGuid() }).ExecuteCommand();
+            var ids=db.Queryable<CodeFirstGuid>().Select(x => x.Id).ToList();
             Console.WriteLine("#### CodeFirst end ####");
         }
     }
