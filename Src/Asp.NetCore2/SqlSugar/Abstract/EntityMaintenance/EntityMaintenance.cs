@@ -62,6 +62,7 @@ namespace SqlSugar
                 result.IsDisabledUpdateAll = sugarTable.IsDisabledUpdateAll;
                 result.IsDisabledDelete = sugarTable.IsDisabledDelete;
                 result.IsCreateTableFiledSort = sugarTable.IsCreateTableFiledSort;
+                result.Discrimator = sugarTable.Discrimator;
             }
             var indexs = type.GetCustomAttributes(typeof(SugarIndexAttribute));
             if (indexs != null && indexs.Any())

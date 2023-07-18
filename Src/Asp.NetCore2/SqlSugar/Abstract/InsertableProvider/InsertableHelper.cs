@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace SqlSugar
@@ -291,6 +292,17 @@ namespace SqlSugar
                     columnInfo.Value = UtilMethods.EncodeBase64(columnInfo.Value.ToString());
                 }
                 insertItem.Add(columnInfo);
+            }
+            if (EntityInfo.Discrimator.HasValue()) 
+            {
+                Check.ExceptionEasy(!Regex.IsMatch(EntityInfo.Discrimator, @"^(?:\w+:\w+)(?:,\w+:\w+)*$"), "The format should be type:cat for this type, and if there are multiple, it can be FieldName:cat,FieldName2:dog ", "格式错误应该是type:cat这种格式，如果是多个可以FieldName:cat,FieldName2:dog，不要有空格");
+                var array = EntityInfo.Discrimator.Split(',');
+                foreach (var disItem in array)
+                {
+                    var name = disItem.Split(':').First();
+                    var value = disItem.Split(':').Last();
+                    insertItem.Add(new DbColumnInfo() { DbColumnName = name, PropertyName = name, PropertyType = typeof(string), Value = value });
+                }
             }
         }
 
