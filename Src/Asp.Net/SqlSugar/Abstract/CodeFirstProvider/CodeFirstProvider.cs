@@ -235,7 +235,7 @@ namespace SqlSugar
                 {
                     var name = disItem.Split(':').First();
                     var value = disItem.Split(':').Last();
-                    entityInfo.Columns.Add(new EntityColumnInfo() { IsOnlyIgnoreUpdate = true, DbColumnName = name, UnderType = typeof(string), PropertyName = name, Length = 50 });
+                    entityInfo.Columns.Add(new EntityColumnInfo() {  PropertyInfo=typeof(DiscriminatorObject).GetProperty(nameof(DiscriminatorObject.FieldName)),IsOnlyIgnoreUpdate = true, DbColumnName = name, UnderType = typeof(string), PropertyName = name, Length = 50 });
                 }
             }
             if (this.MappingTables.ContainsKey(entityType)) 
