@@ -328,7 +328,7 @@ namespace SqlSugar
             }
             else
             {
-                result.Add((T)Convert.ChangeType(value, UtilMethods.GetUnderType(type)));
+                result.Add((T)UtilMethods.ChangeType2(value, type));
             }
         }
     }
