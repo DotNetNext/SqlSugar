@@ -658,6 +658,16 @@ namespace SqlSugar
 
         private static bool IsDateDiff(MemberExpression expression)
         {
+            if (expression.Expression != null &&
+                expression.Expression is BinaryExpression)
+            {
+                var binExp = (expression.Expression as BinaryExpression);
+                var nodeType= binExp.NodeType;
+                if (nodeType == ExpressionType.Subtract&& binExp.Left.Type==UtilConstants.DateType && binExp.Right.Type == UtilConstants.DateType) 
+                {
+                    return true;
+                }
+            }
             return
                 expression.Expression!=null&&
                 expression.Expression is BinaryExpression &&
