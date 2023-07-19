@@ -478,6 +478,10 @@ namespace SqlSugar
                 case DbType.Odbc:
                     InstanceFactory.CustomDllName = SugarCompatible.IsFramework ? "SqlSugar.Odbc" : "SqlSugar.OdbcCore";
                     break;
+                case DbType.OceanBaseForOracle:
+                    Check.Exception(SugarCompatible.IsFramework, "OceanBaseForOracle only support .net core");
+                    InstanceFactory.CustomDllName = SugarCompatible.IsFramework ? "SqlSugar.OceanBaseForOracle" : "SqlSugar.OceanBaseForOracleCore";
+                    break;
                 default:
                     throw new Exception("ConnectionConfig.DbType is null");
             }
