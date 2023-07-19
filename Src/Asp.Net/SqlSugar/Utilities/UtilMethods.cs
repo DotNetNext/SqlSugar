@@ -1265,5 +1265,23 @@ namespace SqlSugar
             var method = value.GetType().GetMethods().First(it => it.GetParameters().Length == 0 && it.Name == "ToShortDateString");
             return method.Invoke(value, new object[] { });
         }
+
+
+        internal static void AddDiscrimator<T>(Type type, ISugarQueryable<T> queryable)
+        {
+            var entityInfo = queryable.Context?.EntityMaintenance?.GetEntityInfoWithAttr(type);
+            if (entityInfo!=null&&entityInfo.Discrimator.HasValue())
+            {
+                Check.ExceptionEasy(!Regex.IsMatch(entityInfo.Discrimator, @"^(?:\w+:\w+)(?:,\w+:\w+)*$"), "The format should be type:cat for this type, and if there are multiple, it can be FieldName:cat,FieldName2:dog ", "格式错误应该是type:cat这种格式，如果是多个可以FieldName:cat,FieldName2:dog，不要有空格");
+                var array = entityInfo.Discrimator.Split(',');
+                foreach (var disItem in array)
+                {
+                    var name = disItem.Split(':').First();
+                    var value = disItem.Split(':').Last();
+                    queryable.Where(name, "=", value);
+                }
+            }
+        }
+
     }
 }
