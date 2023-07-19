@@ -206,11 +206,10 @@ namespace SqlSugar.OceanBaseForOracle
                 //通过正则匹配，为顺序输出，相同也会重复匹配
                 Regex parametersRegx = new Regex(reg);
                 MatchCollection matches = parametersRegx.Matches(sql);
-                for(int index = 0;index< parameters.Length; index++) 
+                foreach (Match pMatch in matches) 
                 {
-                    Match pMatch = matches[index];
                     SugarParameter mP = parameters.FirstOrDefault(m => m.ParameterName == pMatch.Value);
-                    if (mP != null) 
+                    if (mP != null)
                     {
                         orderParameters.Add(mP);
                     }

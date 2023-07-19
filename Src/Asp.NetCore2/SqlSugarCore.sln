@@ -62,6 +62,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HGTest", "HGTest\HGTest.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlSugar.OceanBaseForOracleCore", "SqlSugar.OceanBaseForOracle\SqlSugar.OceanBaseForOracleCore.csproj", "{7CEB3DFE-8337-4B83-AE6A-D159D73E3CD3}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OceanBaseForOracleTest", "OceanBaseForOracleTest\OceanBaseForOracleTest.csproj", "{5E119B71-D17F-42BA-8437-A9F5B941CFD7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -384,6 +386,18 @@ Global
 		{7CEB3DFE-8337-4B83-AE6A-D159D73E3CD3}.Release|ARM32.Build.0 = Release|Any CPU
 		{7CEB3DFE-8337-4B83-AE6A-D159D73E3CD3}.Release|x86.ActiveCfg = Release|Any CPU
 		{7CEB3DFE-8337-4B83-AE6A-D159D73E3CD3}.Release|x86.Build.0 = Release|Any CPU
+		{5E119B71-D17F-42BA-8437-A9F5B941CFD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E119B71-D17F-42BA-8437-A9F5B941CFD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E119B71-D17F-42BA-8437-A9F5B941CFD7}.Debug|ARM32.ActiveCfg = Debug|Any CPU
+		{5E119B71-D17F-42BA-8437-A9F5B941CFD7}.Debug|ARM32.Build.0 = Debug|Any CPU
+		{5E119B71-D17F-42BA-8437-A9F5B941CFD7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5E119B71-D17F-42BA-8437-A9F5B941CFD7}.Debug|x86.Build.0 = Debug|Any CPU
+		{5E119B71-D17F-42BA-8437-A9F5B941CFD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E119B71-D17F-42BA-8437-A9F5B941CFD7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E119B71-D17F-42BA-8437-A9F5B941CFD7}.Release|ARM32.ActiveCfg = Release|Any CPU
+		{5E119B71-D17F-42BA-8437-A9F5B941CFD7}.Release|ARM32.Build.0 = Release|Any CPU
+		{5E119B71-D17F-42BA-8437-A9F5B941CFD7}.Release|x86.ActiveCfg = Release|Any CPU
+		{5E119B71-D17F-42BA-8437-A9F5B941CFD7}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
