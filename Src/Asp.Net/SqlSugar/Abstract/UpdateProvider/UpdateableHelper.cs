@@ -189,6 +189,10 @@ namespace SqlSugar
             }
             //Check.Exception(UpdateObjs == null || UpdateObjs.Count() == 0, "UpdateObjs is null");
             int i = 0;
+            if (this.EntityInfo.Columns.Any(it => it.IsPrimarykey)) 
+            {
+                this.UpdateBuilder.OldPrimaryKeys = this.EntityInfo.Columns.Where(it => it.IsPrimarykey).Select(it=>it.DbColumnName).ToList();
+            }
             foreach (var item in UpdateObjs)
             {
                 List<DbColumnInfo> updateItem = new List<DbColumnInfo>();
