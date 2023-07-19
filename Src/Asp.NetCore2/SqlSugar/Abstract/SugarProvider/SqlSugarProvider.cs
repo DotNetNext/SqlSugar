@@ -127,6 +127,7 @@ namespace SqlSugar
 
             InitMappingInfo<T>();
             var result = this.CreateQueryable<T>();
+            UtilMethods.AddDiscrimator(typeof(T), result);
             return result;
         }
         /// <summary>

@@ -379,16 +379,18 @@ namespace SqlSugar
             this.ClearFilter(typeof(FilterType1), typeof(FilterType2),typeof(FilterType3));
             return this;
         }
-        public ISugarQueryable<T> Filter(Type type) 
+        public ISugarQueryable<T> Filter(Type type)
         {
             this.Context.InitMappingInfo(type);
             var whereString= QueryBuilder.GetFilters(type);
-            if (whereString.HasValue()) 
+            if (whereString.HasValue())
             {
                 this.Where(whereString);
             }
+            UtilMethods.AddDiscrimator(type,this);
             return this;
         }
+
         public virtual ISugarQueryable<T> Mapper(Action<T> mapperAction)
         {
             this.MapperAction=UtilMethods.IsNullReturnNew(this.MapperAction);
