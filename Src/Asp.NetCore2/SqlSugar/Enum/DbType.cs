@@ -24,6 +24,7 @@ namespace SqlSugar
         ClickHouse,
         GBase,
         Odbc,
+        OceanBaseForOracle,
         Custom =900
     }
 }
