@@ -1,1 +1,1 @@
-%~dp0nuget.exe pack %~dp0SqlSugar.OdbcCore.nuspec -OutputDirectory %~dp0
+%~dp0nuget.exe pack %~dp0SqlSugar.OceanBaseForOracle.nuspec -OutputDirectory %~dp0

@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0"?>
 <package >
   <metadata>
-    <id>SqlSugar.OdbcCore</id>
-    <version>5.1.4.2</version>
+    <id>SqlSugar.OceanBaseForOracleCore</id>
+    <version>1.0</version>
     <authors>sunkaixuan</authors>
     <owners>Landa</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
@@ -19,6 +19,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="G:\Git\SqlSugar\Src\Asp.NetCore2\SqlSugar.OdbcCore\bin\Debug\netstandard2.1\SqlSugar.OdbcCore.dll" target="lib\netstandard2.1"></file>
+    <file src="G:\Git\SqlSugar\Src\Asp.NetCore2\SqlSugar.OceanBaseForOracle\bin\Debug\net6.0\SqlSugar.OceanBase.dll" target="lib\netstandard2.1"></file>
   </files>
 </package>
