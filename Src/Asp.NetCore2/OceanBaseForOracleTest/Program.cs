@@ -10,10 +10,12 @@ namespace OceanBaseForOracle
         {
             Console.WriteLine("");
             Console.WriteLine("#### MasterSlave Start ####");
+            //OceanBase Oracle 模式用这个 DbType.OceanBaseForOracle
+            //OceanBase MySql 模式用DbType.MySql不要用这个
             SqlSugarClient db = new SqlSugarClient(new ConnectionConfig()
             {
                 ConnectionString = Config.ConnectionString,//Master Connection
-                DbType = DbType.OceanBaseForOracle,
+                DbType = DbType.OceanBaseForOracle,//Oracle 模式用这个 ，如果是MySql 模式用DbType.MySql
                 InitKeyType = InitKeyType.Attribute,
                 IsAutoCloseConnection = true
             });
