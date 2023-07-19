@@ -162,8 +162,8 @@ namespace SqlSugar
                     {
                         if (i != 0)
                             andString.Append(DeleteBuilder.WhereInAndTemplate + UtilConstants.Space);
-                        var entityPropertyName = this.Context.EntityMaintenance.GetPropertyName<T>(primaryField);
-                        var columnInfo = EntityInfo.Columns.Single(it => it.PropertyName == entityPropertyName);
+                        //var entityPropertyName = this.EntityInfo.Columns.Single(it=>it.PropertyName.EqualCase(primaryField)||it.DbColumnName.EqualCase(primaryField)).PropertyName;
+                        var columnInfo = EntityInfo.Columns.Single(t => t.PropertyName.EqualCase(primaryField) || t.DbColumnName.EqualCase(primaryField));
                         var entityValue = columnInfo.PropertyInfo.GetValue(deleteObj, null);
                         var tempequals = DeleteBuilder.WhereInEqualTemplate;
                         if (this.Context.CurrentConnectionConfig.MoreSettings != null && this.Context.CurrentConnectionConfig.MoreSettings.DisableNvarchar == true)
