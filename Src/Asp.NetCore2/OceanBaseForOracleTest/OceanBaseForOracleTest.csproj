@@ -8,13 +8,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SqlSugar.OceanBaseForOracle\SqlSugar.OceanBaseForOracleCore.csproj" />
-    <ProjectReference Include="..\SqlSugar.OdbcCore\SqlSugar.OdbcCore.csproj" />
-    <ProjectReference Include="..\SqlSugar\SqlSugar.csproj" />
+    <Compile Remove="Demo\**" />
+    <EmbeddedResource Remove="Demo\**" />
+    <None Remove="Demo\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Demo\" />
+    <ProjectReference Include="..\SqlSugar.OceanBaseForOracle\SqlSugar.OceanBaseForOracleCore.csproj" />
+    <ProjectReference Include="..\SqlSugar.OdbcCore\SqlSugar.OdbcCore.csproj" />
+    <ProjectReference Include="..\SqlSugar\SqlSugar.csproj" />
   </ItemGroup>
 
 </Project>
