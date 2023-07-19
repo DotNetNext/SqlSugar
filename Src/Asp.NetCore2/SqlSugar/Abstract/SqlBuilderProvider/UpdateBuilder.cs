@@ -30,6 +30,7 @@ namespace SqlSugar
         public bool IsNoUpdateNull { get; set; }
         public bool IsNoUpdateDefaultValue { get; set; }
         public List<string> PrimaryKeys { get; set; }
+        public List<string> OldPrimaryKeys { get; set; }
         public bool IsOffIdentity { get; set; }
         public bool IsWhereColumns { get; set; }
         public  bool? IsListUpdate { get; set; }
