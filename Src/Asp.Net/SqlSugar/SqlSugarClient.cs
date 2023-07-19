@@ -875,6 +875,14 @@ namespace SqlSugar
             var configId = attr.configId;
             return this.GetConnection(configId);
         }
+        public SqlSugarProvider GetConnectionWithAttr(Type type)
+        {
+            var attr = type.GetCustomAttribute<TenantAttribute>();
+            if (attr == null)
+                return this.GetConnection(this.CurrentConnectionConfig.ConfigId);
+            var configId = attr.configId;
+            return this.GetConnection(configId);
+        }
         public SqlSugarScopeProvider GetConnectionScopeWithAttr<T>()
         {
             var attr = typeof(T).GetCustomAttribute<TenantAttribute>();

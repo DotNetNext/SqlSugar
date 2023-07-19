@@ -327,6 +327,12 @@ namespace SqlSugar
             var entityName = typeof(T).Name;
             return _As(tableName, entityName);
         }
+        public ISugarQueryable<T> AsWithAttr() 
+        {
+            var asName=GetTableName(this.EntityInfo, this.EntityInfo.DbTableName);
+            this.QueryBuilder.IsCrossQueryWithAttr = true;
+            return this.AS(asName);
+        }
         public ISugarQueryable<T> AsType(Type tableNameType)
         {
             return AS(this.Context.EntityMaintenance.GetEntityInfo(tableNameType).DbTableName);

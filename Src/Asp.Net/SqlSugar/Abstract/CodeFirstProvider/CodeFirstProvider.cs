@@ -45,7 +45,22 @@ namespace SqlSugar
             DefultLength = length;
             return this;
         }
-
+        public void InitTablesWithAttr(params Type[] entityTypes) 
+        {
+            foreach (var item in entityTypes)
+            {
+                var attr = item.GetCustomAttribute<TenantAttribute>();
+                if (attr==null||this.Context?.Root == null)
+                {
+                    this.Context.CodeFirst.InitTables(item);
+                }
+                else
+                {
+                    var newDb = this.Context.Root.GetConnectionWithAttr(item);
+                    newDb.CodeFirst.InitTables(item);
+                }
+            }
+        }
         public virtual void InitTables(Type entityType)
         {
             var splitTableAttribute = entityType.GetCustomAttribute<SplitTableAttribute>();
