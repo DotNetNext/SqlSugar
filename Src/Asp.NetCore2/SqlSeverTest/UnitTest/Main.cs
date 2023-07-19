@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            AnimalTest.Init();
             UnitOneToOneNAny.Init();
             Unitrasdfa.Init();
             Unitadfasdfa.Init();
