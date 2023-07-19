@@ -60,7 +60,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlSugar.HGCore", "SqlSugar
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HGTest", "HGTest\HGTest.csproj", "{59CF4F65-0337-4877-A35F-D1B7585A7DB3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlSugar.OceanBaseForOracle", "SqlSugar.OceanBaseForOracle\SqlSugar.OceanBaseForOracle.csproj", "{7CEB3DFE-8337-4B83-AE6A-D159D73E3CD3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlSugar.OceanBaseForOracleCore", "SqlSugar.OceanBaseForOracle\SqlSugar.OceanBaseForOracleCore.csproj", "{7CEB3DFE-8337-4B83-AE6A-D159D73E3CD3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

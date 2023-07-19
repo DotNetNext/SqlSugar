@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>SqlSugar.OceanBaseForOracleCore</id>
-    <version>1.0</version>
+    <version>1.1</version>
     <authors>sunkaixuan</authors>
     <owners>Landa</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
@@ -19,6 +19,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="G:\Git\SqlSugar\Src\Asp.NetCore2\SqlSugar.OceanBaseForOracle\bin\Debug\net6.0\SqlSugar.OceanBase.dll" target="lib\netstandard2.1"></file>
+    <file src="G:\Git\SqlSugar\Src\Asp.NetCore2\SqlSugar.OceanBaseForOracle\bin\Debug\net6.0\SqlSugar.OceanBaseForOracleCore.dll" target="lib\netstandard2.1"></file>
   </files>
 </package>
