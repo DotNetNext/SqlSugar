@@ -19,6 +19,7 @@ namespace SqlSugar
         ISugarQueryable<T> Clone();
         ISugarQueryable<T> AS<T2>(string tableName);
         ISugarQueryable<T> AS(string tableName);
+        ISugarQueryable<T> AsWithAttr();
         ISugarQueryable<T> AsType(Type tableNameType);
         ISugarQueryable<T> With(string withString);
         //ISugarQueryable<T> CrossQueryWithAttr();
