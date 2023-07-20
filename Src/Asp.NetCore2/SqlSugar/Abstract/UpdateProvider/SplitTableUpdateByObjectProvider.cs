@@ -15,7 +15,21 @@ namespace SqlSugar
         public T[] UpdateObjects { get; set; }
 
         public IEnumerable<SplitTableInfo> Tables { get; set; }
-
+        public int ExecuteCommandWithOptLock(bool isThrowError = false) 
+        {
+            List<GroupModel> groupModels;
+            int result;
+            GroupDataList(UpdateObjects, out groupModels, out result);
+            foreach (var item in groupModels.GroupBy(it => it.GroupName))
+            {
+                var addList = item.Select(it => it.Item).ToList();
+                result += this.Context.Updateable(addList)
+                    .UpdateColumns(updateobj.UpdateBuilder.UpdateColumns?.ToArray())
+                    .IgnoreColumns(this.updateobj.UpdateBuilder.IsNoUpdateNull, this.updateobj.UpdateBuilder.IsOffIdentity, this.updateobj.UpdateBuilder.IsNoUpdateDefaultValue)
+                    .IgnoreColumns(GetIgnoreColumns()).AS(item.Key).ExecuteCommandWithOptLock(isThrowError);
+            }
+            return result;
+        }
         public int ExecuteCommand()
         {
             List<GroupModel> groupModels;
@@ -45,6 +59,21 @@ namespace SqlSugar
                     .UpdateColumns(updateobj.UpdateBuilder.UpdateColumns?.ToArray())
                     .IgnoreColumns(this.updateobj.UpdateBuilder.IsNoUpdateNull, this.updateobj.UpdateBuilder.IsOffIdentity, this.updateobj.UpdateBuilder.IsNoUpdateDefaultValue)
                     .IgnoreColumns(GetIgnoreColumns()).AS(item.Key).ExecuteCommandAsync();
+            }
+            return result;
+        }
+        public async Task<int> ExecuteCommandWithOptLockAsync(bool isThrowError = false) 
+        {
+            List<GroupModel> groupModels;
+            int result;
+            GroupDataList(UpdateObjects, out groupModels, out result);
+            foreach (var item in groupModels.GroupBy(it => it.GroupName))
+            {
+                var addList = item.Select(it => it.Item).ToList();
+                result += await this.Context.Updateable(addList)
+                    .UpdateColumns(updateobj.UpdateBuilder.UpdateColumns?.ToArray())
+                    .IgnoreColumns(this.updateobj.UpdateBuilder.IsNoUpdateNull, this.updateobj.UpdateBuilder.IsOffIdentity, this.updateobj.UpdateBuilder.IsNoUpdateDefaultValue)
+                    .IgnoreColumns(GetIgnoreColumns()).AS(item.Key).ExecuteCommandWithOptLockAsync(isThrowError);
             }
             return result;
         }
