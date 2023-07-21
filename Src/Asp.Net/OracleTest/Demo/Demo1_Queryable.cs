@@ -83,6 +83,8 @@ namespace OrmTest
                 names = $"as{it.Id}fd{it.Id}a"
             })
            .ToList();
+            var xx =DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
+            var test11= db.Queryable<Order>().Select(it =>   Convert.ToDateTime(xx)).ToList();
             Console.WriteLine("#### Examples End ####");
         }
 
