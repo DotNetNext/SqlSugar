@@ -28,13 +28,20 @@ namespace OrmTest
             db.CodeFirst.InitTables<UnitByte1>();
             db.CodeFirst.InitTables<CodeFirstGuid>();
             db.Insertable(new CodeFirstGuid() { Id = Guid.NewGuid() }).ExecuteCommand();
+            db.Insertable(new CodeFirstGuid() { Id = null }).ExecuteCommand();
             var ids=db.Queryable<CodeFirstGuid>().Select(x => x.Id).ToList();
+            var ids2 = db.Queryable<CodeFirstGuid>()
+                .Select(x =>new
+                {
+                   ids= SqlFunc.Subqueryable<CodeFirstGuid>().ToList(x1 => x1.Id)
+                }).ToList();
             Console.WriteLine("#### CodeFirst end ####");
         }
     }
 
     public class CodeFirstGuid 
     {
+        [SugarColumn(IsNullable =true)]
         public Guid? Id { get; set; }
     }
 
