@@ -74,8 +74,17 @@ namespace OrmTest
             var id=db.Insertable(new Unitrasdfafa() { Name = "Unitrasdfafa" }).ExecuteReturnIdentity();
             db.Updateable(new Unitrasdfafa() { Name = "Unitrasdfafa", id = id }).ExecuteCommand();
             var xx=db.Queryable<Unitrasdfafa>().Select("*").ToDataTable();
+            db.CodeFirst.InitTables<UintEnumpk>();
+            db.Deleteable<UintEnumpk>().Where(it => true).ExecuteCommand();
+            db.Insertable(new UintEnumpk() { dbType = DbType.Sqlite }).ExecuteCommand();
+            db.Deleteable(new UintEnumpk() { dbType  = DbType.Sqlite }).ExecuteCommand();
             Console.WriteLine("#### CodeFirst end ####");
         }
+    }
+    public class UintEnumpk
+    {
+        [SugarColumn(IsPrimaryKey =true)]
+        public DbType dbType { get; set; }
     }
 
     [SugarTable("Unitrasdfafa",Discrimator ="Type:1,Type2:2")]
