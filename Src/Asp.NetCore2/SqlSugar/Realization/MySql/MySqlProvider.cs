@@ -192,6 +192,8 @@ namespace SqlSugar
         }
         public override async Task<int> ExecuteCommandAsync(string sql, params SugarParameter[] parameters)
         {
+            if (this.Context.CurrentConnectionConfig?.SqlMiddle?.IsSqlMiddle == true)
+                return  await base.ExecuteCommandAsync(sql,parameters);
             try
             {
                 Async();
@@ -232,6 +234,8 @@ namespace SqlSugar
         }
         public override async Task<IDataReader> GetDataReaderAsync(string sql, params SugarParameter[] parameters)
         {
+            if (this.Context.CurrentConnectionConfig?.SqlMiddle?.IsSqlMiddle == true)
+                return await base.GetDataReaderAsync(sql, parameters);
             try
             {
                 Async();
@@ -269,6 +273,8 @@ namespace SqlSugar
         }
         public override async Task<object> GetScalarAsync(string sql, params SugarParameter[] parameters)
         {
+            if (this.Context.CurrentConnectionConfig?.SqlMiddle?.IsSqlMiddle == true)
+                return await base.GetScalarAsync(sql, parameters);
             try
             {
                 Async();
