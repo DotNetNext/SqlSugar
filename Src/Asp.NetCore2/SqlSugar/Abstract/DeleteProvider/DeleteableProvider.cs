@@ -130,6 +130,12 @@ namespace SqlSugar
                     var columnInfo = EntityInfo.Columns.Single(it => it.PropertyName.Equals(entityPropertyName, StringComparison.CurrentCultureIgnoreCase));
                     var value = columnInfo.PropertyInfo.GetValue(deleteObj, null);
                     value = UtilMethods.GetConvertValue(value);
+                    if (this.Context.CurrentConnectionConfig?.MoreSettings?.TableEnumIsString!=true&&
+                        columnInfo.SqlParameterDbType==null&& 
+                        columnInfo.PropertyInfo.PropertyType.IsEnum()) 
+                    {
+                        value = Convert.ToInt64(value);
+                    }
                     primaryKeyValues.Add(value);
                 }
                 if (primaryKeyValues.Count < 10000)
