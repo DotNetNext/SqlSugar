@@ -277,7 +277,14 @@ namespace SqlSugar
             {
                 inValue1 = $"(NULL)";
             }
-            builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "IN", inValue1);
+            if (inArray.Length == 1)
+            {
+                builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "=", inValue1.TrimStart('(').TrimEnd(')'));
+            }
+            else
+            {
+                builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "IN", inValue1);
+            }
         }
 
         private  void InBig(StringBuilder builder, ConditionalModel item, string type, string temp, string[] inArray, int pageSize)
