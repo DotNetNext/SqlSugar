@@ -353,6 +353,14 @@ namespace SqlSugar
             }
             return this;
         }
+        public new virtual ISugarQueryable<T, T2> GroupByIF(bool isGroupBy, string groupFields)
+        {
+            if (isGroupBy)
+            {
+                GroupBy(groupFields);
+            }
+            return this;
+        }
         public virtual ISugarQueryable<T, T2> GroupByIF(bool isGroupBy, Expression<Func<T, T2, object>> expression)
         {
             if (isGroupBy)
@@ -836,6 +844,14 @@ namespace SqlSugar
             if (isGroupBy)
             {
                 GroupBy(expression);
+            }
+            return this;
+        }
+        public new virtual ISugarQueryable<T, T2,T3> GroupByIF(bool isGroupBy, string groupFields)
+        {
+            if (isGroupBy)
+            {
+                GroupBy(groupFields);
             }
             return this;
         }
@@ -1752,6 +1768,14 @@ namespace SqlSugar
             if (isGroupBy)
             {
                 GroupBy(expression);
+            }
+            return this;
+        }
+        public new virtual ISugarQueryable<T, T2,T3,T4> GroupByIF(bool isGroupBy, string groupFields)
+        {
+            if (isGroupBy)
+            {
+                GroupBy(groupFields);
             }
             return this;
         }
