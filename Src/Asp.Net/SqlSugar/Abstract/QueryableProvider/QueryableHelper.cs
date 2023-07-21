@@ -2257,6 +2257,10 @@ namespace SqlSugar
                             {
                                 addItem= ((SubQueryToListDefaultT)addItem).id;
                             }
+                            if (addItem!=null&&addItem is string && itemProperty?.PropertyType?.GenericTypeArguments?.FirstOrDefault() == UtilConstants.GuidType) 
+                            {
+                                addItem = Guid.Parse(addItem+"");
+                            }
                             setValue.Add(addItem);
                         }
                         appindex++;
