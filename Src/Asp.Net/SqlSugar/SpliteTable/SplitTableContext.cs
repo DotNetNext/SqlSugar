@@ -13,6 +13,10 @@ namespace SqlSugar
         public List<T> Items { get;  set; }
         public SplitTableContext Helper { get;  set; }
 
+        public string  GetTableName()
+        {
+            return GetTableNames().First();
+        }
         public string [] GetTableNames() 
         {
             List<string> result = new List<string>();
