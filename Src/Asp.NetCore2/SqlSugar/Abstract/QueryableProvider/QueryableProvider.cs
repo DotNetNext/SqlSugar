@@ -1004,7 +1004,20 @@ namespace SqlSugar
             var isSingle = QueryBuilder.IsSingle();
             var lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
             var fieldName = lamResult.GetResultString();
-            return In(fieldName, inValues);
+            var propertyName = ExpressionTool.GetMemberName(expression);
+            var propertyColumn = this.EntityInfo.Columns.FirstOrDefault(it => it.PropertyName == propertyName);
+            if (inValues?.Length==1&& inValues[0]?.GetType()?.FullName?.IsCollectionsList()==true && propertyColumn != null && propertyColumn?.UnderType?.FullName?.IsCollectionsList()!=true) 
+            { 
+                return In(fieldName, UtilMethods.ConvertToListOfObjects(inValues[0]));
+            }
+            else if (inValues?.Length == 1 && inValues[0]?.GetType()?.IsArray == true && propertyColumn != null && propertyColumn?.UnderType?.IsArray != true)
+            {
+                return In(fieldName, UtilMethods.ConvertToListOfObjects(inValues[0]));
+            }
+            else
+            {
+                return In(fieldName, inValues);
+            }
         }
         public virtual ISugarQueryable<T> In<TParamter>(List<TParamter> pkValues)
         {
