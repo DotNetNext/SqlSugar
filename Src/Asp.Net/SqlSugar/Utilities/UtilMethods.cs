@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -17,6 +18,17 @@ namespace SqlSugar
 {
     public class UtilMethods
     {
+        public static List<object> ConvertToListOfObjects(object inValues)
+        {
+            // 创建一个新的List<object>并逐个将元素转换并添加到其中
+            List<object> resultList = new List<object>();
+            foreach (var item in (IEnumerable)inValues )
+            {
+                resultList.Add(item);
+            }
+
+            return resultList;
+        }
         public static bool IsValueTypeArray(object memberValue)
         {
             return memberValue is List<string> ||
