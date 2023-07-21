@@ -125,28 +125,19 @@ namespace SqlSugar.ClickHouse
             else
             {
                 var type = UtilMethods.GetUnderType(value.GetType());
-                if (type == UtilConstants.DateType && iswhere == false)
-                {
-                    var date = value.ObjToDate();
-                    if (date < UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig))
-                    {
-                        date = UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig);
-                    }
-                    if (this.Context.CurrentConnectionConfig?.MoreSettings?.DisableMillisecond == true)
-                    {
-                        return "'" + date.ToString("yyyy-MM-dd HH:mm:ss") + "'";
-                    }
-                    else
-                    {
-                        return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
-                    }
-                }
-                else if (type == UtilConstants.DateType && iswhere)
+                if (type == UtilConstants.DateType)
                 {
                     var parameterName = this.Builder.SqlParameterKeyWord + name + i;
                     this.Parameters.Add(new SugarParameter(parameterName, value));
+                    i++;
                     return parameterName;
                 }
+                //else if (type == UtilConstants.DateType && iswhere)
+                //{
+                //    var parameterName = this.Builder.SqlParameterKeyWord + name + i;
+                //    this.Parameters.Add(new SugarParameter(parameterName, value));
+                //    return parameterName;
+                //}
                 else if (type.IsEnum())
                 {
                     if (this.Context.CurrentConnectionConfig.MoreSettings?.TableEnumIsString == true)

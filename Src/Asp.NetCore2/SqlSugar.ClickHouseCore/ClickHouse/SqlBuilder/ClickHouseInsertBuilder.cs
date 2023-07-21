@@ -41,7 +41,10 @@ namespace SqlSugar.ClickHouse
                 var type = UtilMethods.GetUnderType(value.GetType());
                 if (type == UtilConstants.DateType)
                 {
-                    return GetDateTimeString(value);
+                    var parameterName = this.Builder.SqlParameterKeyWord + name + i;
+                    this.Parameters.Add(new SugarParameter(parameterName, value));
+                    i++;
+                    return parameterName;
                 }
                 else if (value is DateTimeOffset)
                 {
