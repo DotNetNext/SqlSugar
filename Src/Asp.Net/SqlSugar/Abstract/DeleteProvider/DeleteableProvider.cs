@@ -171,6 +171,12 @@ namespace SqlSugar
                         //var entityPropertyName = this.EntityInfo.Columns.Single(it=>it.PropertyName.EqualCase(primaryField)||it.DbColumnName.EqualCase(primaryField)).PropertyName;
                         var columnInfo = EntityInfo.Columns.Single(t => t.PropertyName.EqualCase(primaryField) || t.DbColumnName.EqualCase(primaryField));
                         var entityValue = columnInfo.PropertyInfo.GetValue(deleteObj, null);
+                        if (this.Context.CurrentConnectionConfig?.MoreSettings?.TableEnumIsString != true &&
+                        columnInfo.SqlParameterDbType == null &&
+                        columnInfo.PropertyInfo.PropertyType.IsEnum())
+                         {
+                            entityValue = Convert.ToInt64(entityValue);
+                         }
                         var tempequals = DeleteBuilder.WhereInEqualTemplate;
                         if (this.Context.CurrentConnectionConfig.MoreSettings != null && this.Context.CurrentConnectionConfig.MoreSettings.DisableNvarchar == true)
                         {
