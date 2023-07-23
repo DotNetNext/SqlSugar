@@ -455,6 +455,10 @@ namespace SqlSugar
                     break;
                 case DbType.MySqlConnector:
                     InstanceFactory.CustomDllName = SugarCompatible.IsFramework?"SqlSugar.MySqlConnector": "SqlSugar.MySqlConnectorCore";
+                    if (SugarCompatible.IsFramework.ObjToBool() == false) 
+                    {
+                        config.DbType= DbType.MySql; ;
+                    }
                     break;
                 case DbType.Access:
                     InstanceFactory.CustomDllName = SugarCompatible.IsFramework?"SqlSugar.Access": "SqlSugar.AccessCore";
