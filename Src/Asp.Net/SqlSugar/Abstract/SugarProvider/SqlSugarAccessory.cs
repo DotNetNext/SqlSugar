@@ -457,7 +457,8 @@ namespace SqlSugar
                     InstanceFactory.CustomDllName = SugarCompatible.IsFramework?"SqlSugar.MySqlConnector": "SqlSugar.MySqlConnectorCore";
                     if (SugarCompatible.IsFramework.ObjToBool() == false) 
                     {
-                        config.DbType= DbType.MySql; ;
+                        config.DbType= DbType.MySql;
+                        InstanceFactory.CustomDllName = null;
                     }
                     break;
                 case DbType.Access:
