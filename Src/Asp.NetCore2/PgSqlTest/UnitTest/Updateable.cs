@@ -43,16 +43,16 @@ namespace OrmTest
             {
                 IsRemind = saveDiary.IsRemind,
             }).Where(it => it.ID == saveDiary.ID).ToSql();
-            UValidate.Check(sql.Key, @"UPDATE ""diary""  SET
-            ""isremind"" =  @Const0    WHERE ( ""id"" = @ID1 )", "Updateable");
+            UValidate.Check(sql.Key.Replace(" ",""), @"UPDATE ""diary""  SET
+            ""isremind"" =  @Const0    WHERE ( ""id"" = @ID1 )".Replace(" ", ""), "Updateable");
 
 
             sql = Db.Updateable<UnitDiary>().SetColumns(it => new UnitDiary()
             {
                TypeID = saveDiary.TypeID,
             }).Where(it => it.ID == saveDiary.ID).ToSql();
-            UValidate.Check(sql.Key, @"UPDATE ""diary""  SET
-            ""typeid"" = @Const0   WHERE ( ""id"" = @ID1 )", "Updateable");
+            UValidate.Check(sql.Key.Replace(" ", ""), @"UPDATE ""diary""  SET
+            ""typeid"" = @Const0   WHERE ( ""id"" = @ID1 )".Replace(" ", ""), "Updateable");
 
         }
     }
