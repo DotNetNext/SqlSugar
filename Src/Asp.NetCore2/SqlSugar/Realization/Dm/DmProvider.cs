@@ -153,6 +153,16 @@ namespace SqlSugar
                     if (sqlParameter.Value != DBNull.Value)
                         sqlParameter.Value = sqlParameter.Value.ToString();
                 }
+                if (parameter.IsClob)
+                {
+                    sqlParameter.DmSqlType = DmDbType.Clob;
+                    sqlParameter.Value = parameter.Value;
+                }
+                if (parameter.IsNClob)
+                {
+                    sqlParameter.DmSqlType = DmDbType.Clob;
+                    sqlParameter.Value = parameter.Value;
+                }
                 if (parameter.Direction == 0)
                 {
                     parameter.Direction = ParameterDirection.Input;
