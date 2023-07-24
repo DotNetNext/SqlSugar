@@ -1347,7 +1347,8 @@ namespace SqlSugar
             {
                 if (item.IsIgnore == false && !this.QueryBuilder.AutoAppendedColumns.Contains(item.PropertyName) && columnsResult.Any(it => it.PropertyName.EqualCase(item.PropertyName)) && !list.Any(it => it.EqualCase(item.PropertyName)))
                 {
-                    if (!sql.Contains($"{SqlBuilder.GetTranslationColumnName(parameterName)}.{SqlBuilder.GetTranslationColumnName(item.DbColumnName)} AS {SqlBuilder.GetTranslationColumnName(item.PropertyName)}"))
+                    if (!sql.Contains($"{SqlBuilder.GetTranslationColumnName(parameterName)}.{SqlBuilder.GetTranslationColumnName(item.DbColumnName)} AS {SqlBuilder.GetTranslationColumnName(item.PropertyName)}")&&
+                        !sql.Contains($"{SqlBuilder.GetTranslationColumnName(parameterName)}.{SqlBuilder.GetTranslationColumnName(item.DbColumnName)} AS  {SqlBuilder.GetTranslationColumnName(item.PropertyName)}"))
                     {
                         sql = $" {sql},{SqlBuilder.GetTranslationColumnName(parameterName)}.{SqlBuilder.GetTranslationColumnName(item.DbColumnName)} AS {SqlBuilder.GetTranslationColumnName(item.PropertyName)} ";
                         this.QueryBuilder.AutoAppendedColumns.Add(item.PropertyName);
@@ -1371,7 +1372,8 @@ namespace SqlSugar
             {
                 if (item.IsIgnore == false &&!this.QueryBuilder.AutoAppendedColumns.Contains(item.PropertyName)&& columnsResult.Any(it => it.PropertyName.EqualCase(item.PropertyName))&& !list.Any(it=>it.EqualCase(item.PropertyName)))
                 {
-                    if (!sql.Contains($"{SqlBuilder.GetTranslationColumnName(item.DbColumnName)} AS {SqlBuilder.GetTranslationColumnName(item.PropertyName)}"))
+                    if (!sql.Contains($"{SqlBuilder.GetTranslationColumnName(item.DbColumnName)} AS {SqlBuilder.GetTranslationColumnName(item.PropertyName)}")&&
+                        !sql.Contains($"{SqlBuilder.GetTranslationColumnName(item.DbColumnName)} AS  {SqlBuilder.GetTranslationColumnName(item.PropertyName)}"))
                     {
                         sql = $" {sql},{SqlBuilder.GetTranslationColumnName(item.DbColumnName)} AS {SqlBuilder.GetTranslationColumnName(item.PropertyName)} ";
                         this.QueryBuilder.AutoAppendedColumns.Add(item.PropertyName);
@@ -1399,7 +1401,8 @@ namespace SqlSugar
             {
                 if (item.IsIgnore == false && columnsResult.Any(it => it.PropertyName.EqualCase(item.PropertyName)) && !sql.ToLower().Contains(SqlBuilder.GetTranslationColumnName(item.PropertyName).ToLower()))
                 {
-                    if (!sql.Contains($"{parameterName}.{SqlBuilder.GetTranslationColumnName(item.DbColumnName)} AS {SqlBuilder.GetTranslationColumnName(item.PropertyName)}"))
+                    if (!sql.Contains($"{parameterName}.{SqlBuilder.GetTranslationColumnName(item.DbColumnName)} AS {SqlBuilder.GetTranslationColumnName(item.PropertyName)}")&&
+                        !sql.Contains($"{parameterName}.{SqlBuilder.GetTranslationColumnName(item.DbColumnName)} AS  {SqlBuilder.GetTranslationColumnName(item.PropertyName)}"))
                     {
                         sql = $" {sql},{parameterName}.{SqlBuilder.GetTranslationColumnName(item.DbColumnName)} AS {SqlBuilder.GetTranslationColumnName(item.PropertyName)} ";
                     }
