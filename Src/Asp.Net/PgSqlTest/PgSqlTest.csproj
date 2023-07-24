@@ -108,6 +108,7 @@
     <Compile Include="UnitTest\UInsert3.cs" />
     <Compile Include="UnitTest\ULock.cs" />
     <Compile Include="UnitTest\Unit001.cs" />
+    <Compile Include="UnitTest\Unitadfaafsd.cs" />
     <Compile Include="UnitTest\UnitByteArray.cs" />
     <Compile Include="UnitTest\UnitPgSplit.cs" />
     <Compile Include="UnitTest\UJsonFunc.cs" />
