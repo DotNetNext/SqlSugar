@@ -8,7 +8,7 @@ namespace OrmTest
 {
     internal class Unitadfaafsd
     {
-        public static void Init() 
+        public static void Init()
         {
             SqlSugarClient _db = new SqlSugarClient(new ConnectionConfig()
             {
@@ -37,7 +37,7 @@ namespace OrmTest
                      }
                 }
             }).Include(x => x.Jqdsrgxbs).ExecuteCommand();
-            var items =   _db.Queryable<JqdsrdbEntity>()
+            var items = _db.Queryable<JqdsrdbEntity>()
                  .Includes(dsr => dsr.Jqdsrgxbs)
                  .Select((dsr) =>
                          new Resp
@@ -47,8 +47,65 @@ namespace OrmTest
                          },
                          isAutoFill: true)
                  .ToListAsync().GetAwaiter().GetResult();
+
+            Check(items);
+
+            var items2 = _db.Queryable<JqdsrdbEntity>()
+          .Includes(dsr => dsr.Jqdsrgxbs)
+          .LeftJoin<JqdsrdbEntity>((x,y)=>x.Jqdsrdbh==y.Jqdsrdbh)
+          .Select((x,y) =>
+                  new Resp
+                  {
+                      Sf = x.Jqdsrgxbs.Select(sf => sf.Sfmc),
+                      IsShowOperationButton = true
+                  },
+                  isAutoFill: true)
+          .ToListAsync().GetAwaiter().GetResult();
+
+            Check(items2);
+
+            var items3 = _db.Queryable<JqdsrdbEntity>()
+            .Includes(dsr => dsr.Jqdsrgxbs)
+            .LeftJoin<JqdsrdbEntity>((x, y) => x.Jqdsrdbh == y.Jqdsrdbh)
+            .Select((x, y) =>
+                    new Resp
+                    {
+                        Sf = x.Jqdsrgxbs.Select(sf => sf.Sfmc)  
+                    },
+                    isAutoFill: true)
+            .ToListAsync().GetAwaiter().GetResult();
+
+            if (items3.First().IsShowOperationButton == false) 
+            {
+                items3.First().IsShowOperationButton = true;
+            }
+            Check(items3);
+
+            var items4= _db.Queryable<JqdsrdbEntity>()
+            .Includes(dsr => dsr.Jqdsrgxbs)
+            .LeftJoin<JqdsrdbEntity>((x, y) => x.Jqdsrdbh == y.Jqdsrdbh)
+            .Select((x, y) =>
+                    new Resp
+                    {
+                        Sf = x.Jqdsrgxbs.Select(sf => sf.Sfmc)
+                    },
+                    isAutoFill: true)
+            .MergeTable()
+            .ToListAsync().GetAwaiter().GetResult();
+            if (items4.First().IsShowOperationButton == false)
+            {
+                items4.First().IsShowOperationButton = true;
+            }
+            Check(items4);
+
+
+
+        }
+
+        private static void Check(List<Resp> items)
+        {
             if (items.First().Jqdsrdbh != "a" || items.First().IsShowOperationButton == false ||
-            items.First().Sf.Count() == 0) 
+            items.First().Sf.Count() == 0)
             {
                 throw new Exception("unit error");
             }
