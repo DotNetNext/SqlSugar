@@ -648,7 +648,7 @@ namespace SqlSugar
                     var name1 = navColumn.Navigat.Name;
                     var name2 = navColumn.Navigat.Name2;
                     var name1Column = entityColumns.FirstOrDefault(it => it.PropertyName == name1);
-                    var name2Column = entityColumns.FirstOrDefault(it => it.PropertyName == name1);
+                    var name2Column = entityColumns.FirstOrDefault(it => it.PropertyName == name2);
                     if (name1Column != null)
                     {
                         if (!navInfo.AppendProperties.ContainsKey(name1Column.PropertyName))
