@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UnitNavOneToManyDTO.Init();
             Unitadfaafsd.Init();
             UFilter2.Init();
             UinitCustomConvert.Init();

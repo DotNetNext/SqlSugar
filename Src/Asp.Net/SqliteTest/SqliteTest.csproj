@@ -113,6 +113,7 @@
     <Compile Include="UnitTest\UInsert.cs" />
     <Compile Include="UnitTest\UJson.cs" />
     <Compile Include="UnitTest\UNavTest.cs" />
+    <Compile Include="UnitTest\UnitNavOneToManyDTO.cs" />
     <Compile Include="UnitTest\UnitNavUpdatee12.cs" />
     <Compile Include="UnitTest\UnitSubToList.cs" />
     <Compile Include="UnitTest\UnitTestReturnPkList.cs" />
