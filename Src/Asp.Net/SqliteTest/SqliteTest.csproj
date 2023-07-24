@@ -90,6 +90,7 @@
     <Compile Include="UnitTest\Models\Room.cs" />
     <Compile Include="UnitTest\Models\School.cs" />
     <Compile Include="UnitTest\Models\Student.cs" />
+    <Compile Include="UnitTest\Unitadfaafsd.cs" />
     <Compile Include="UnitTest\UnitFilterdafa.cs" />
     <Compile Include="UnitTest\Models\BilPayment.cs" />
     <Compile Include="UnitTest\UInsert3.cs" />
