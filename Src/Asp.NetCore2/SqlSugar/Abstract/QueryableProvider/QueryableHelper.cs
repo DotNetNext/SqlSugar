@@ -1311,27 +1311,27 @@ namespace SqlSugar
         }
         protected string AppendSelect(List<EntityColumnInfo> entityColumnInfos,string sql, ReadOnlyCollection<ParameterExpression> parameters, List<EntityColumnInfo> columnsResult, int parameterIndex1)
         {
-            var lowerSql = sql.ToLower();
-            var isSubquery = lowerSql.Contains("select ") && ExpressionTool.IsMemberInit(this.QueryBuilder.SelectValue);
-            if (isSubquery) 
-            {
+            //var lowerSql = sql.ToLower();
+            //var isSubquery = lowerSql.Contains("select ") && ExpressionTool.IsMemberInit(this.QueryBuilder.SelectValue);
+            //if (isSubquery) 
+            //{
                 return AppendSelectWithSubQuery(entityColumnInfos, sql, parameters, columnsResult, parameterIndex1);
-            }
-            var columns = entityColumnInfos;
-            var parameterName = parameters[parameterIndex1];
-            foreach (var item in columns)
-            {
-                if (item.IsIgnore == false && columnsResult.Any(it => it.PropertyName.EqualCase(item.PropertyName)) && !lowerSql.Contains(SqlBuilder.GetTranslationColumnName(item.PropertyName.ToLower())))
-                {
-                    if (item.EntityName == this.QueryBuilder.EntityName&&sql.StartsWith("*,")) 
-                    {
-                        continue;
-                    }
-                    sql = $" {sql},{SqlBuilder.GetTranslationColumnName(item.DbColumnName)} AS {SqlBuilder.GetTranslationColumnName(item.PropertyName)} ";
-                }
-            }
+            //}
+            //var columns = entityColumnInfos;
+            //var parameterName = parameters[parameterIndex1];
+            //foreach (var item in columns)
+            //{
+            //    if (item.IsIgnore == false && columnsResult.Any(it => it.PropertyName.EqualCase(item.PropertyName)) && !lowerSql.Contains(SqlBuilder.GetTranslationColumnName(item.PropertyName.ToLower())))
+            //    {
+            //        if (item.EntityName == this.QueryBuilder.EntityName&&sql.StartsWith("*,")) 
+            //        {
+            //            continue;
+            //        }
+            //        sql = $" {sql},{SqlBuilder.GetTranslationColumnName(item.DbColumnName)} AS {SqlBuilder.GetTranslationColumnName(item.PropertyName)} ";
+            //    }
+            //}
 
-            return sql;
+            //return sql;
         }
         private string AppendSelectWithSubQuery(List<EntityColumnInfo> entityColumnInfos, string sql, ReadOnlyCollection<ParameterExpression> parameters, List<EntityColumnInfo> columnsResult, int parameterIndex1,string parameterName)
         {
