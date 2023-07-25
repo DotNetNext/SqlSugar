@@ -127,7 +127,11 @@ namespace SqlSugar
                 case ResolveExpressType.FieldMultiple:
                     if (express.Method.Name == "ToString" && express.Object != null && express.Object?.Type == UtilConstants.DateType)
                     {
-                        var format = (args[0] as ConstantExpression).Value + "";
+                        var format = (args[0] as ConstantExpression)?.Value + "";
+                        if (format == ""&& args[0] is MemberExpression) 
+                        {
+                            format = ExpressionTool.GetExpressionValue(args[0]) + "";
+                        }
                         var value = GetNewExpressionValue(express.Object);
                         var dateString2 = this.Context.DbMehtods.GetDateString(value, format);
                         if (dateString2 == null)
