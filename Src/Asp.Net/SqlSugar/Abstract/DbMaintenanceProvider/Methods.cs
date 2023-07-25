@@ -660,7 +660,9 @@ namespace SqlSugar
             string columnName = this.SqlBuilder.GetTranslationColumnName(columnInfo.DbColumnName);
             tableName = this.SqlBuilder.GetTranslationTableName(tableName);
             string dataType = columnInfo.DataType;
-            if (dataType.EqualCase("varchar")&&this.Context.CurrentConnectionConfig?.MoreSettings?.SqlServerCodeFirstNvarchar == true) 
+            if (dataType.EqualCase("varchar")
+                &&this.Context.CurrentConnectionConfig?.MoreSettings?.SqlServerCodeFirstNvarchar == true
+                &&this.Context.CurrentConnectionConfig?.DbType == DbType.SqlServer) 
             {
                 dataType = "nvarchar";
             }
