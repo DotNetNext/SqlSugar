@@ -29,6 +29,12 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+            var xx = db.DbMaintenance.IsAnyColumnRemark("Id", "DBO.Order");
+            if (xx)
+            {
+                db.DbMaintenance.DeleteColumnRemark("Id", "DBO.Order");
+            }
+            db.DbMaintenance.AddColumnRemark("Id", "DBO.Order", "a");
         }
     }
     [SugarTable("Animal",IsDisabledDelete =true)]
