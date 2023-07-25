@@ -321,6 +321,57 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        private bool IsAnySchemaTable(string tableName)
+        {
+            if (tableName == null||!tableName.Contains(".") )
+            {
+                return false;
+            }
+            var list = GetSchemas() ?? new List<string>();
+            list.Add("dbo");
+            var isAnySchemas = list.Any(it => it.EqualCase(tableName?.Split('.').FirstOrDefault()));
+            return isAnySchemas;
+        }
+        public override bool IsAnyColumnRemark(string columnName, string tableName)
+        {
+            if (IsAnySchemaTable(tableName))
+            {
+                var schema = tableName.Split('.').First();
+                tableName = tableName.Split('.').Last();
+                var temp = this.IsAnyColumnRemarkSql.Replace("'dbo'", $"'{schema}'");
+                string sql = string.Format(temp, columnName, tableName);
+                var dt = this.Context.Ado.GetDataTable(sql);
+                return dt.Rows != null && dt.Rows.Count > 0;
+            }
+            return base.IsAnyColumnRemark(columnName, tableName);
+        }
+        public override bool DeleteColumnRemark(string columnName, string tableName)
+        {
+            if (IsAnySchemaTable(tableName))
+            {
+                var schema = tableName.Split('.').First();
+                tableName = tableName.Split('.').Last();
+                var temp = this.DeleteColumnRemarkSql.Replace(",dbo,", $",{schema},");
+                string sql = string.Format(temp, columnName, tableName);
+                this.Context.Ado.ExecuteCommand(sql);
+                return true;
+            }
+            return base.DeleteColumnRemark(columnName, tableName);
+        }
+        public override bool AddColumnRemark(string columnName, string tableName, string description)
+        {
+            if (IsAnySchemaTable(tableName))
+            {
+                var schema = tableName.Split('.').First();
+                tableName = tableName.Split('.').Last();
+                var temp = this.AddColumnRemarkSql.Replace("N'dbo'", $"N'{schema}'");
+                string sql = string.Format(temp, columnName, tableName, description);
+                this.Context.Ado.ExecuteCommand(sql);
+                return true;
+            }
+            return base.AddColumnRemark(columnName, tableName, description);
+        }
+
         public override void AddDefaultValue(EntityInfo entityInfo)
         {
             var dbColumns = this.GetColumnInfosByTableName(entityInfo.DbTableName, false);
