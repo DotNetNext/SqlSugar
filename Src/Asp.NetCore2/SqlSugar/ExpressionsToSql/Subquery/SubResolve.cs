@@ -243,6 +243,17 @@ namespace SqlSugar
                 isubList.Add(new SubRightBracket());
                 isubList.Add(new SubSelectDefault());
             }
+            var db = this.context?.SugarContext?.Context;
+            if (db != null&& db?.CurrentConnectionConfig?.DbType == DbType.SqlServer)
+            {
+                if (db.CurrentConnectionConfig?.MoreSettings?.IsWithNoLockSubquery == true)
+                {
+                    if (!isubList.Any(it => it is SubWithNolock))
+                    {
+                        isubList.Add(new SubWithNolock() { Context = this.context });
+                    }
+                }
+            }
             isubList = isubList.OrderBy(it => it.Sort).ToList();
             var isHasWhere = isubList.Where(it => it is SubWhere).Any();
             var isJoin = isubList.Any(it => it is SubInnerJoin || it is SubLeftJoin);
