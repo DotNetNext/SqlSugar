@@ -9,7 +9,8 @@ namespace SqlSugar
     {
         public bool IsAutoRemoveDataCache { get; set; }
         public bool IsWithNoLockQuery { get; set; }
-       
+        public bool IsWithNoLockSubquery { get; set; }
+
         public bool DisableNvarchar { get; set; }
         public bool DisableMillisecond { get; set; }
         public bool PgSqlIsAutoToLower { get; set; } = true;

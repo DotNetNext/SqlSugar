@@ -30,7 +30,7 @@ namespace SqlSugar
         {
             get
             {
-                return 301;
+                return 302;
             }
         }
 
