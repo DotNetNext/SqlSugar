@@ -244,7 +244,7 @@ namespace SqlSugar
                 isubList.Add(new SubSelectDefault());
             }
             var db = this.context?.SugarContext?.Context;
-            if (db != null)
+            if (db != null&& db?.CurrentConnectionConfig?.DbType == DbType.SqlServer)
             {
                 if (db.CurrentConnectionConfig?.MoreSettings?.IsWithNoLockSubquery == true)
                 {

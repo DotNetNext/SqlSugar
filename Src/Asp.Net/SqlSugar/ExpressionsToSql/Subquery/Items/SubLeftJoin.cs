@@ -55,6 +55,10 @@ namespace SqlSugar
                  this.Context.GetTranslationColumnName(parameter.Name), 
                  tableName,
                  null);
+            if (this.Context?.SugarContext?.Context?.CurrentConnectionConfig?.DbType == DbType.SqlServer && this.Context?.SugarContext?.Context?.CurrentConnectionConfig?.MoreSettings?.IsWithNoLockSubquery == true)
+            {
+                joinString = $"{joinString} {SqlWith.NoLock} ";
+            }
             var result = joinString+ "ON " + SubTools.GetMethodValue(Context, argExp, ResolveExpressType.WhereMultiple);
             //var selfParameterName = Context.GetTranslationColumnName((argExp as LambdaExpression).Parameters.First().Name) + UtilConstants.Dot;
             this.Context.JoinIndex++;
