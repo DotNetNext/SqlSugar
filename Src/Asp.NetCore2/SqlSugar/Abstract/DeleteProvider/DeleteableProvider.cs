@@ -191,7 +191,7 @@ namespace SqlSugar
                             }
                             else
                             {
-                                andString.AppendFormat(tempequals, primaryField.ToUpper(isAutoToUpper), entityValue);
+                                andString.AppendFormat(tempequals.Replace("N","")+" ", primaryField.ToUpper(isAutoToUpper), entityValue);
                             }
                         }
                         else if (this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL && (this.Context.CurrentConnectionConfig.MoreSettings == null || this.Context.CurrentConnectionConfig.MoreSettings?.PgSqlIsAutoToLower == true))
