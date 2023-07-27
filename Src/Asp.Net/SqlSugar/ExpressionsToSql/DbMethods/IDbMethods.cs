@@ -119,5 +119,7 @@ namespace SqlSugar
         string Left(MethodCallExpressionModel mode);
         string Right(MethodCallExpressionModel mode);
         string PadLeft(MethodCallExpressionModel mode);
+        string Floor(MethodCallExpressionModel mode);
+        string Ceil(MethodCallExpressionModel mode);
     }
 }
