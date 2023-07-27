@@ -57,7 +57,7 @@ namespace SqlSugar
 
         private string OffsetPage()
         {
-            var skip = this.Skip;
+            var skip = this.Skip??1;
             var take = this.Take;
             this.Skip = null;
             this.Take = null;
