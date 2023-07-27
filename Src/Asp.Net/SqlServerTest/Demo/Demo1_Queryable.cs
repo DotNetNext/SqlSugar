@@ -204,6 +204,12 @@ namespace OrmTest
             })
             .ToList();
 
+            var test491 = db.Queryable<Order>().Select(it => new
+            {
+                index = SqlFunc.RowNumber($"{it.Name} asc,{it.Id} desc", $"{it.Id},{it.Name},{it.CustomId},{it.Price}")
+            })
+           .ToList();
+
             var test50 = db.Queryable<Order>()
             .GroupBy(z => z.Id).Select(it => new { disCount = SqlFunc.IsNull(SqlFunc.Subqueryable<Order>().Where(z => z.Id == it.Id).Select(z => z.Name), "") })
             .ToList();
