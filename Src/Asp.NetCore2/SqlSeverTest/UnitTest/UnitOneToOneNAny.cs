@@ -20,7 +20,7 @@ namespace OrmTest
             var sql = db.Queryable<Order>()
                .Where(b =>
                        $"{b.Name}^{b.Name}^{b.Name}^{b.Id}^{1}  ".Contains("a")).ToSqlString();
-            if (!sql.Contains("(''+ CAST('[Name]' AS NVARCHAR(MAX))+'^'+ CAST('[Name]' AS NVARCHAR(MAX))+'^'+ CAST('[Name]' AS NVARCHAR(MAX))+'^'+ CAST('[Id]' AS NVARCHAR(MAX))+'^'+ CAST(' 1 ' AS NVARCHAR(MAX))+'' like")) 
+            if (!sql.Contains("(''+ CAST([Name] AS NVARCHAR(MAX))+'^'+ CAST([Name] AS NVARCHAR(MAX))+'^'+ CAST([Name] AS NVARCHAR(MAX))+'^'+ CAST([Id] AS NVARCHAR(MAX))+'^'+ CAST(' 1 ' AS NVARCHAR(MAX))+'' like")) 
             {
                 throw new Exception("unit error");
             }
