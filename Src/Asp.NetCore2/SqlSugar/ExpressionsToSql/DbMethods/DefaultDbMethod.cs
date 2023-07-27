@@ -1006,8 +1006,10 @@ namespace SqlSugar
             args.AddRange((array as string[]).Select(it => new MethodCallExpressionArgs()
             {
                 MemberValue = it,
-                MemberName = it
-
+                MemberName = it,
+                IsMember = (it?.StartsWith("[") == true || it?.StartsWith("`") == true || it?.StartsWith("\"") == true)
+                                           &&
+                                           (it?.EndsWith("]") == true || it?.EndsWith("`") == true || it?.EndsWith("\"") == true)
             }));
             return args;
         }
