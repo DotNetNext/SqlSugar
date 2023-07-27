@@ -81,10 +81,14 @@ namespace SqlSugar.DistributedSystem.Snowflake
 
                 if (timestamp < _lastTimestamp) 
                 {
+                    if (StaticConfig.CustomSnowFlakeTimeErrorFunc != null) 
+                    {
+                        return StaticConfig.CustomSnowFlakeTimeErrorFunc();
+                    } 
                     //exceptionCounter.incr(1);
                     //log.Error("clock is moving backwards.  Rejecting requests until %d.", _lastTimestamp);
                     throw new InvalidSystemClock(String.Format(
-                        "Clock moved backwards.  Refusing to generate id for {0} milliseconds", _lastTimestamp - timestamp));
+                        "服务器时间出现回退你可以使用StaticConfig.CustomSnowFlakeTimeErrorFunc=【自定义方法】处理让他不报错返回新ID,Clock moved backwards.  Refusing to generate id for {0} milliseconds", _lastTimestamp - timestamp));
                 }
 
                 if (_lastTimestamp == timestamp) 
