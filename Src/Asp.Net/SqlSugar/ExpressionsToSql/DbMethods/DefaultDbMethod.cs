@@ -564,11 +564,7 @@ namespace SqlSugar
             var array = model.Args.Skip(1).Select(it => it.IsMember ? it.MemberName : it.MemberValue).ToArray();
             if (array.Length == 1 && array[0] is string[])
             {
-                List<MethodCallExpressionArgs> args = GetStringFormatArgs(str, array[0] as string[]);
-                return Format(new MethodCallExpressionModel()
-                {
-                    Args = args
-                }); ;
+                return string.Format("'" + str + "'", array[0] as string[]); ;
             }
             else
             {
@@ -579,6 +575,10 @@ namespace SqlSugar
         {
            
             var str ="'"+ model.Args[0].MemberValue.ObjToString()+"'";
+            if (model.Args[0].MemberValue.ObjToString().StartsWith("'") && model.Args[0].MemberValue.ObjToString().EndsWith("'")) 
+            {
+                str = model.Args[0].MemberValue.ObjToString() ;
+            }
             var revalue = MergeString("'", "$1", "'");
             if (revalue.Contains("concat("))
             {
