@@ -1078,7 +1078,7 @@ namespace SqlSugar
         }
         public ISugarQueryable<T> OrderByPropertyName(string orderPropertyName, OrderByType? orderByType = null) 
         {
-            if (orderPropertyName != null) 
+            if (orderPropertyName.HasValue()) 
             {
                 if (this.Context.EntityMaintenance.GetEntityInfoWithAttr(typeof(T)).Columns.Any(it =>
                 it.DbColumnName?.EqualCase(orderPropertyName)==true
