@@ -1053,5 +1053,16 @@ namespace SqlSugar
             var parameterNameC = mode.Args[2].MemberName;
             return $" LPAD({parameterNameA},{parameterNameB},{parameterNameC}) ";
         }
+
+        public virtual string Floor(MethodCallExpressionModel mode)
+        {
+            var parameterNameA = mode.Args[0].MemberName;
+            return $" FLOOR({parameterNameA})";
+        }
+        public virtual string Ceil(MethodCallExpressionModel mode)
+        {
+            var parameterNameA = mode.Args[0].MemberName; 
+            return $" CEILING({parameterNameA}) ";
+        }
     }
 }

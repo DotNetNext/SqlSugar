@@ -253,5 +253,11 @@ namespace SqlSugar
             var parameterNameB = mode.Args[1].MemberName;
             return $" SUBSTR({parameterNameA}, -2, {parameterNameB})  ";
         }
+
+        public override string Ceil(MethodCallExpressionModel mode)
+        {
+            var parameterNameA = mode.Args[0].MemberName;
+            return $" CEIL({parameterNameA}) ";
+        }
     }
 }

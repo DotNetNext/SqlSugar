@@ -9,6 +9,14 @@ namespace SqlSugar
 {
     public partial class SqlFunc
     {
+        public static int Floor(object value)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+        public static int Ceil(object value)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
         public static int WeekOfYear(DateTime fieldName) 
         {
             throw new NotSupportedException("Can only be used in expressions");
