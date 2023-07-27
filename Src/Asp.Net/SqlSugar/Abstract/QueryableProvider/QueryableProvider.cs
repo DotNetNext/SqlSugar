@@ -1080,6 +1080,14 @@ namespace SqlSugar
         {
             if (orderPropertyName.HasValue()) 
             {
+                if (orderPropertyName.Contains(",")) 
+                {
+                    foreach (var item in orderPropertyName.Split(','))
+                    {
+                        this.OrderByPropertyName(item,orderByType);
+                    }
+                    return this;
+                }
                 if (this.Context.EntityMaintenance.GetEntityInfoWithAttr(typeof(T)).Columns.Any(it =>
                 it.DbColumnName?.EqualCase(orderPropertyName)==true
                 || it.PropertyName?.EqualCase(orderPropertyName)==true))
