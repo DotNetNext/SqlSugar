@@ -625,6 +625,20 @@ namespace SqlSugar
 
         private void ResolveLength(ExpressionParameter parameter, bool? isLeft, MemberExpression expression)
         {
+             var ps=ExpressionTool.GetParameters(expression);
+            if (expression.Expression!=null&&ps.Count == 0)
+            {
+                var p = base.AppendParameter(ExpressionTool.DynamicInvoke(expression.Expression));
+                var methodParamter2 = new MethodCallExpressionArgs() { IsMember =true, MemberName =p, MemberValue = null };
+                var result2 = this.Context.DbMehtods.Length(new MethodCallExpressionModel()
+                {
+                    Args = new List<MethodCallExpressionArgs>() {
+                      methodParamter2
+                  }
+                });
+                base.AppendMember(parameter, isLeft, result2);
+                return;
+            }
             if (parameter.Context.ResolveType == ResolveExpressType.FieldSingle)
             {
                 parameter.Context.ResolveType = ResolveExpressType.WhereSingle;
