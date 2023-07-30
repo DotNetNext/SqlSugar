@@ -439,7 +439,7 @@ namespace SqlSugar
                     DependencyManagement.TryPostgreSQL();
                     break;
                 case DbType.OpenGauss:
-                    Check.ExceptionEasy("Use DbType.PostgreSQL , ConnectionString add No Reset On Close=true", "OpenGausso数据库请使用DbType.PostgreSQL 并且连接字符串加上 No Reset On Close=true");
+                    config.DbType = DbType.PostgreSQL; 
                     break;
                 case DbType.HG:
                     InstanceFactory.CustomDllName = SugarCompatible.IsFramework ? throw new Exception("Only.NET CORE is supported") : "SqlSugar.HGCore";
@@ -486,6 +486,19 @@ namespace SqlSugar
                 case DbType.OceanBaseForOracle:
                     Check.Exception(SugarCompatible.IsFramework, "OceanBaseForOracle only support .net core");
                     InstanceFactory.CustomDllName = SugarCompatible.IsFramework ? "SqlSugar.OceanBaseForOracle" : "SqlSugar.OceanBaseForOracleCore";
+                    break;
+                case DbType.GaussDB:
+                    config.DbType = DbType.PostgreSQL; 
+                    break;
+                case DbType.OceanBase:
+                    config.DbType = DbType.MySql; 
+                    break;
+                case DbType.Tidb:
+                    config.DbType = DbType.MySql;
+                    break;
+                case DbType.TDengine:
+                    Check.Exception(SugarCompatible.IsFramework, "GBase only support .net core");
+                    InstanceFactory.CustomDllName = SugarCompatible.IsFramework ? "SqlSugar.TDengine" : "SqlSugar.TDengineCore";
                     break;
                 default:
                     throw new Exception("ConnectionConfig.DbType is null");
