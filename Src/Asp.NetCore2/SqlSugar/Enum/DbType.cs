@@ -24,6 +24,10 @@ namespace SqlSugar
         GBase,
         Odbc,
         OceanBaseForOracle,
+        TDengine,
+        GaussDB,
+        OceanBase,
+        Tidb,
         Custom =900
     }
 }
