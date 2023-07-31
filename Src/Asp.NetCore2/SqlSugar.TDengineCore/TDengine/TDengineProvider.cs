@@ -76,7 +76,7 @@ namespace SqlSugar.TDengine
         }
         public override void SetCommandToAdapter(IDataAdapter dataAdapter, DbCommand command)
         {
-            ((TDengineDataAdapter)dataAdapter).SelectCommand = (TDengineCommand)command;
+            ((SqlSugar.TDengineCore.TDengineDataAdapter)dataAdapter).SelectCommand = (TDengineCommand)command;
         }
         /// <summary>
         /// if mysql return MySqlParameter[] pars
@@ -94,7 +94,7 @@ namespace SqlSugar.TDengine
                 if (parameter.Value == null) parameter.Value = DBNull.Value;
                  
                 var sqlParameter = new TDengineParameter(parameter.ParameterName,parameter.Value,parameter.DbType,0);
-                result[0]=sqlParameter;
+                result[i]=sqlParameter;
                 i++;
             }
             return result;

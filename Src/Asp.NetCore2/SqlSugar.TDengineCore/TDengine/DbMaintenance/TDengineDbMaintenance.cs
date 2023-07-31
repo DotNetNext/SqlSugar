@@ -19,35 +19,7 @@ namespace SqlSugar.TDengine
         {
             get
             {
-                string schema = GetSchema();
-                string sql = @"select cast (pclass.oid as int4) as TableId,cast(ptables.tablename as varchar) as TableName,
-                                pcolumn.column_name as DbColumnName,pcolumn.udt_name as DataType,
-                                CASE WHEN pcolumn.numeric_scale >0 THEN pcolumn.numeric_precision ELSE pcolumn.character_maximum_length END   as Length,
-                                pcolumn.column_default as DefaultValue,
-                                pcolumn.numeric_scale as DecimalDigits,
-                                pcolumn.numeric_scale as Scale,
-                                col_description(pclass.oid, pcolumn.ordinal_position) as ColumnDescription,
-                                case when pkey.colname = pcolumn.column_name
-                                then true else false end as IsPrimaryKey,
-                                case when pcolumn.column_default like 'nextval%'
-                                then true else false end as IsIdentity,
-                                case when pcolumn.is_nullable = 'YES'
-                                then true else false end as IsNullable
-                                 from (select * from pg_tables where upper(tablename) = upper('{0}') and schemaname='" + schema + @"') ptables inner join pg_class pclass
-                                on ptables.tablename = pclass.relname inner join (SELECT *
-                                FROM information_schema.columns
-                                ) pcolumn on pcolumn.table_name = ptables.tablename
-                                left join (
-	                                select  pg_class.relname,pg_attribute.attname as colname from 
-	                                pg_constraint  inner join pg_class 
-	                                on pg_constraint.conrelid = pg_class.oid 
-	                                inner join pg_attribute on pg_attribute.attrelid = pg_class.oid 
-	                                and  pg_attribute.attnum = pg_constraint.conkey[1]
-	                                inner join pg_type on pg_type.oid = pg_attribute.atttypid
-	                                where pg_constraint.contype='p'
-                                ) pkey on pcolumn.table_name = pkey.relname
-                                order by table_catalog, table_schema, ordinal_position";
-                return sql;
+                throw new NotSupportedException("TDengineCode暂时不支持DbFirst等方法,还在开发");
             }
         }
 
@@ -212,7 +184,7 @@ namespace SqlSugar.TDengine
         {
             get
             {
-                return "select 1 from information_schema.columns limit 1 offset 0";
+                throw new NotSupportedException("TDengine 暂时不支持DbFirst等方法,还在开发");
             }
         }
         #endregion

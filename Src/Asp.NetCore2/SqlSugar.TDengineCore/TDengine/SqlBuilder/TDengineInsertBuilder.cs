@@ -15,14 +15,14 @@ namespace SqlSugar.TDengine
                     return @"INSERT INTO {0} 
            ({1})
      VALUES
-           ({2}) returning $PrimaryKey";
+           ({2}) ";
                 }
                 else
                 {
                     return @"INSERT INTO {0} 
            ({1})
      VALUES
-           ({2}) ;";
+           ({2})";
 
                 }
             }

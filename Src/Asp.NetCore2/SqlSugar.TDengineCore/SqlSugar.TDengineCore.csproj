@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="TDengine.Ado.Data" Version="1.4.0" />
+    <PackageReference Include="TDengine.Ado.Data" Version="1.6.2" />
   </ItemGroup>
 
   <ItemGroup>

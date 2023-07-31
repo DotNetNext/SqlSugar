@@ -10,14 +10,14 @@ namespace SqlSugar.TDengine
         {
             get
             {
-                return "\"";
+                return "`";
             }
         }
         public override string SqlTranslationRight
         {
             get
             {
-                return "\"";
+                return "`";
             }
         }
         public override string SqlDateNow
@@ -80,7 +80,7 @@ namespace SqlSugar.TDengine
             var mappingInfo = context
                 .MappingTables
                 .FirstOrDefault(it => it.EntityName.Equals(name, StringComparison.CurrentCultureIgnoreCase));
-            if (mappingInfo == null && name.Contains(".") && name.Contains("\"")) 
+            if (mappingInfo == null && name.Contains(".") && name.Contains("`")) 
             {
                 return name;
             }

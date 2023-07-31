@@ -13,14 +13,14 @@ namespace SqlSugar.TDengine
         {
             get
             {
-                return "\"";
+                return "`";
             }
         }
         public override string SqlTranslationRight
         {
             get
             {
-                return "\"";
+                return "`";
             }
         }
         public override string GetTranslationText(string name)
