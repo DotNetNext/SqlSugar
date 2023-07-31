@@ -49,6 +49,7 @@ namespace OrmTest
             //查询超级表
             var dt2 = db.Ado.GetDataTable("select * from MyTable");
 
+            //插入子表
             db.Insertable(new MyTable01()
             {
                 ts = DateTime.Now,
@@ -59,11 +60,19 @@ namespace OrmTest
                 voltage = 11
             }).ExecuteCommand();
 
+
+            //查询子表(主表字段也能查出来)
             var list = db.Queryable<MyTable01>().ToList();
+              
+
+            //删除子表
+            var ts = list.First().ts;
+            var count=db.Deleteable<MyTable01>().Where(it=>it.ts==ts).ExecuteCommand();
         }
 
         public class MyTable01
         {
+            [SugarColumn(IsPrimaryKey =true)]
             public DateTime ts { get; set; }
             public float current { get; set; }
             public int voltage { get; set; }
@@ -72,8 +81,7 @@ namespace OrmTest
             public string location { get; set; }
             [SugarColumn(IsOnlyIgnoreInsert = true, IsOnlyIgnoreUpdate = true)]
             public int groupId { get; set; }
-        }
-
+        } 
 
     }
 

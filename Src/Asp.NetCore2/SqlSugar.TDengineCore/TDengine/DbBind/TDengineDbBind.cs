@@ -27,42 +27,24 @@ namespace SqlSugar.TDengine
                 return "varchar";
         }
         public override string GetPropertyTypeName(string dbTypeName)
-        {
-            dbTypeName = dbTypeName.ToLower();
-            var propertyTypes = MappingTypes.Where(it => it.Value.ToString().ToLower() == dbTypeName || it.Key.ToLower() == dbTypeName);
-            if (propertyTypes == null)
+        { 
+            if (dbTypeName.ToLower() == "int32")
             {
-                return "other";
+                dbTypeName = "int";
             }
-            else if (dbTypeName == "xml" || dbTypeName == "string"|| dbTypeName == "jsonb"|| dbTypeName == "json")
+            else if (dbTypeName.ToLower() == "int16")
             {
-                return "string";
-            }else if (dbTypeName == "bpchar")//数据库char datatype 查询出来的时候是 bpchar
-            {
-                return "char";
+                dbTypeName = "short";
             }
-            if (dbTypeName == "byte[]")
+            else if (dbTypeName.ToLower() == "int64")
             {
-                return "byte[]";
+                dbTypeName = "long";
             }
-            else if (propertyTypes == null || propertyTypes.Count() == 0)
+            else if (dbTypeName.ToLower() == "string")
             {
-                if (dbTypeName.StartsWith("_"))
-                {
-                    var dbTypeName2 = dbTypeName.TrimStart('_');
-                    return MappingTypes.Where(it => it.Value.ToString().ToLower() == dbTypeName2  || it.Key.ToLower() == dbTypeName2).Select(it => it.Value + "[]").First();
-                }
-                Check.ThrowNotSupportedException(string.Format(" \"{0}\" Type NotSupported, DbBindProvider.GetPropertyTypeName error.", dbTypeName));
-                return null;
+                dbTypeName = "string";
             }
-            else if (propertyTypes.First().Value == CSharpDataType.byteArray)
-            {
-                return "byte[]";
-            }
-            else
-            {
-                return propertyTypes.First().Value.ToString();
-            }
+            return dbTypeName;
         }
         public override List<KeyValuePair<string, CSharpDataType>> MappingTypes
         {
@@ -81,66 +63,22 @@ namespace SqlSugar.TDengine
         }
         public static List<KeyValuePair<string, CSharpDataType>> MappingTypesConst = new List<KeyValuePair<string, CSharpDataType>>(){
 
-                    new KeyValuePair<string, CSharpDataType>("int2",CSharpDataType.@short),
-                    new KeyValuePair<string, CSharpDataType>("int1",CSharpDataType.@byte),
-                    new KeyValuePair<string, CSharpDataType>("smallint",CSharpDataType.@short),
-                    new KeyValuePair<string, CSharpDataType>("int4",CSharpDataType.@int),
-                    new KeyValuePair<string, CSharpDataType>("serial",CSharpDataType.@int),
-                    new KeyValuePair<string, CSharpDataType>("integer",CSharpDataType.@int),
-                    new KeyValuePair<string, CSharpDataType>("int8",CSharpDataType.@long),
-                    new KeyValuePair<string, CSharpDataType>("bigint",CSharpDataType.@long),
-                    new KeyValuePair<string, CSharpDataType>("float4",CSharpDataType.@float),
-                    new KeyValuePair<string, CSharpDataType>("float4",CSharpDataType.Single),
-                    new KeyValuePair<string, CSharpDataType>("real",CSharpDataType.@float),
+                    new KeyValuePair<string, CSharpDataType>("BOOL",CSharpDataType.@bool),
+                    new KeyValuePair<string, CSharpDataType>("TINYINT",CSharpDataType.@byte),
+                    new KeyValuePair<string, CSharpDataType>("SMALLINT",CSharpDataType.@short),
+                    new KeyValuePair<string, CSharpDataType>("INT",CSharpDataType.@int),
+                    new KeyValuePair<string, CSharpDataType>("BIGINT",CSharpDataType.@long),
+                    new KeyValuePair<string, CSharpDataType>("TINYINT UNSIGNED",CSharpDataType.@byte),
+                    new KeyValuePair<string, CSharpDataType>("SMALLINT UNSIGNED",CSharpDataType.@short),
+                    new KeyValuePair<string, CSharpDataType>("INT UNSIGNED",CSharpDataType.@int),
+                    new KeyValuePair<string, CSharpDataType>("BIGINT UNSIGNED",CSharpDataType.@long),
+                    new KeyValuePair<string, CSharpDataType>("FLOAT",CSharpDataType.Single),
+                    new KeyValuePair<string, CSharpDataType>("DOUBLE",CSharpDataType.@double),
                     new KeyValuePair<string, CSharpDataType>("float8",CSharpDataType.@double),
-                    new KeyValuePair<string, CSharpDataType>("double precision",CSharpDataType.@int),
-                    new KeyValuePair<string, CSharpDataType>("numeric",CSharpDataType.@decimal),
-                    new KeyValuePair<string, CSharpDataType>("decimal",CSharpDataType.@decimal),
-                    new KeyValuePair<string, CSharpDataType>("path",CSharpDataType.@decimal),
-                    new KeyValuePair<string, CSharpDataType>("point",CSharpDataType.@decimal),
-                    new KeyValuePair<string, CSharpDataType>("polygon",CSharpDataType.@decimal),
-
-                    new KeyValuePair<string, CSharpDataType>("boolean",CSharpDataType.@bool),
-                    new KeyValuePair<string, CSharpDataType>("bool",CSharpDataType.@bool),
-                    new KeyValuePair<string, CSharpDataType>("box",CSharpDataType.@bool),
-                    new KeyValuePair<string, CSharpDataType>("bytea",CSharpDataType.byteArray),
-
-                    new KeyValuePair<string, CSharpDataType>("varchar",CSharpDataType.@string),
-                    new KeyValuePair<string, CSharpDataType>("character varying",CSharpDataType.@string),
-                    new KeyValuePair<string, CSharpDataType>("geometry",CSharpDataType.@string),
-                    new KeyValuePair<string, CSharpDataType>("name",CSharpDataType.@string),
-                    new KeyValuePair<string, CSharpDataType>("text",CSharpDataType.@string),
-                    new KeyValuePair<string, CSharpDataType>("char",CSharpDataType.@string),
-                    new KeyValuePair<string, CSharpDataType>("character",CSharpDataType.@string),
-                    new KeyValuePair<string, CSharpDataType>("cidr",CSharpDataType.@string),
-                    new KeyValuePair<string, CSharpDataType>("circle",CSharpDataType.@string),
-                    new KeyValuePair<string, CSharpDataType>("tsquery",CSharpDataType.@string),
-                    new KeyValuePair<string, CSharpDataType>("tsvector",CSharpDataType.@string),
-                    new KeyValuePair<string, CSharpDataType>("txid_snapshot",CSharpDataType.@string),
-                    new KeyValuePair<string, CSharpDataType>("uuid",CSharpDataType.Guid),
-                    new KeyValuePair<string, CSharpDataType>("xml",CSharpDataType.@string),
-                    new KeyValuePair<string, CSharpDataType>("json",CSharpDataType.@string),
-
-                    new KeyValuePair<string, CSharpDataType>("interval",CSharpDataType.@decimal),
-                    new KeyValuePair<string, CSharpDataType>("lseg",CSharpDataType.@decimal),
-                    new KeyValuePair<string, CSharpDataType>("macaddr",CSharpDataType.@decimal),
-                    new KeyValuePair<string, CSharpDataType>("money",CSharpDataType.@decimal),
-                    new KeyValuePair<string, CSharpDataType>("timestamp",CSharpDataType.DateTime),
-                    new KeyValuePair<string, CSharpDataType>("timestamp with time zone",CSharpDataType.DateTime),
-                    new KeyValuePair<string, CSharpDataType>("timestamptz",CSharpDataType.DateTime),
-                    new KeyValuePair<string, CSharpDataType>("timestamp without time zone",CSharpDataType.DateTime),
-                    new KeyValuePair<string, CSharpDataType>("date",CSharpDataType.DateTime),
-                    new KeyValuePair<string, CSharpDataType>("time",CSharpDataType.DateTime),
-                    new KeyValuePair<string, CSharpDataType>("time with time zone",CSharpDataType.DateTime),
-                    new KeyValuePair<string, CSharpDataType>("timetz",CSharpDataType.DateTime),
-                    new KeyValuePair<string, CSharpDataType>("time without time zone",CSharpDataType.DateTime),
-
-                    new KeyValuePair<string, CSharpDataType>("bit",CSharpDataType.byteArray),
-                    new KeyValuePair<string, CSharpDataType>("bit varying",CSharpDataType.byteArray),
-                    new KeyValuePair<string, CSharpDataType>("varbit",CSharpDataType.@byte),
-                    new KeyValuePair<string, CSharpDataType>("time",CSharpDataType.TimeSpan),
-                    new KeyValuePair<string, CSharpDataType>("public.geometry",CSharpDataType.@object),
-                    new KeyValuePair<string, CSharpDataType>("inet",CSharpDataType.@object)
+                    new KeyValuePair<string, CSharpDataType>("BINARY",CSharpDataType.@string),
+                    new KeyValuePair<string, CSharpDataType>("TIMESTAMP",CSharpDataType.DateTime),
+                    new KeyValuePair<string, CSharpDataType>("NCHAR",CSharpDataType.@string),
+                    new KeyValuePair<string, CSharpDataType>("JSON",CSharpDataType.@string)
                 };
         public override List<string> StringThrow
         {
