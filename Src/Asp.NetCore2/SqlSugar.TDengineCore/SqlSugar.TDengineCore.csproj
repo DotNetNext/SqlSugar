@@ -6,8 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SqlSugarCore" Version="5.1.4.93" />
     <PackageReference Include="TDengine.Ado.Data" Version="1.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SqlSugar\SqlSugar.csproj" />
   </ItemGroup>
 
 </Project>
