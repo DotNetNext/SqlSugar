@@ -1523,6 +1523,7 @@ namespace SqlSugar
                             else
                             {
                                 parameter.ParameterName = itemParameter.ParameterName;
+                                addParameters.Add(parameter);
                             }
                         }
                         parsmeters.AddRange(addParameters);
