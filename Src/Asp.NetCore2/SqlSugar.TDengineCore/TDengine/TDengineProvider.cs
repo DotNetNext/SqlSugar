@@ -92,7 +92,10 @@ namespace SqlSugar.TDengine
             foreach (var parameter in parameters)
             {
                 if (parameter.Value == null) parameter.Value = DBNull.Value;
-                 
+                if (parameter.Value is bool) 
+                {
+                    parameter.Value = parameter.Value?.ToString()?.ToLower();
+                }
                 var sqlParameter = new TDengineParameter(parameter.ParameterName,parameter.Value,parameter.DbType,0);
                 result[i]=sqlParameter;
                 i++;

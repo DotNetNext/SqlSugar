@@ -44,6 +44,10 @@ namespace SqlSugar.TDengine
             {
                 dbTypeName = "string";
             }
+            else if (dbTypeName.ToLower() == "boolean") 
+            {
+                dbTypeName = "bool";
+            }
             return dbTypeName;
         }
         public override List<KeyValuePair<string, CSharpDataType>> MappingTypes
