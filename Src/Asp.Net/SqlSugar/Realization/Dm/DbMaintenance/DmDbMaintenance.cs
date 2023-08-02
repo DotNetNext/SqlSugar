@@ -59,7 +59,7 @@ namespace SqlSugar
         {
             get
             {
-                return "select count(1) from user_ind_columns where index_name=('{0}')";
+                return "select count(1) from user_ind_columns where upper(index_name)=upper('{0}')";
             }
         }
         protected override string CreateIndexSql
