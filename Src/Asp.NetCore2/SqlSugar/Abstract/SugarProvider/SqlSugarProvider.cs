@@ -1494,6 +1494,13 @@ namespace SqlSugar
                 var index = 1;
                 if (this.Queues.HasValue())
                 {
+                    var repeatList =
+                        Queues.SelectMany(it => it.Parameters ?? new SugarParameter[] { }).Select(it => it.ParameterName)
+                       .GroupBy(it => it)
+                       .Where(it => it.Count() > 1);
+                    var repeatCount = repeatList.Count();
+                    var isParameterNameRepeat = repeatList
+                        .Count() > 0;
                     foreach (var item in Queues)
                     {
                         if (item.Sql == null)
@@ -1508,8 +1515,16 @@ namespace SqlSugar
                             var newName = itemParameter.ParameterName + "_q_" + index;
                             SugarParameter parameter = new SugarParameter(newName, itemParameter.Value);
                             parameter.DbType = itemParameter.DbType;
-                            itemSql = UtilMethods.ReplaceSqlParameter(itemSql, itemParameter, newName);
-                            addParameters.Add(parameter);
+                            if (repeatCount>500||(isParameterNameRepeat&& repeatList.Any(it=>it.Key.EqualCase(itemParameter.ParameterName))))
+                            {
+                                itemSql = UtilMethods.ReplaceSqlParameter(itemSql, itemParameter, newName);
+                                addParameters.Add(parameter);
+                            }
+                            else
+                            {
+                                parameter.ParameterName = itemParameter.ParameterName;
+                                addParameters.Add(parameter);
+                            }
                         }
                         parsmeters.AddRange(addParameters);
                         itemSql = itemSql
@@ -1553,6 +1568,13 @@ namespace SqlSugar
                 var index = 1;
                 if (this.Queues.HasValue())
                 {
+                    var repeatList =
+                         Queues.SelectMany(it => it.Parameters ?? new SugarParameter[] { }).Select(it => it.ParameterName)
+                        .GroupBy(it => it)
+                        .Where(it => it.Count() > 1);
+                    var repeatCount = repeatList.Count();
+                    var isParameterNameRepeat = repeatList
+                        .Count() > 0;
                     foreach (var item in Queues)
                     {
                         if (item.Sql == null)
@@ -1567,7 +1589,14 @@ namespace SqlSugar
                             var newName = itemParameter.ParameterName + "_q_" + index;
                             SugarParameter parameter = new SugarParameter(newName, itemParameter.Value);
                             parameter.DbType = itemParameter.DbType;
-                            itemSql = UtilMethods.ReplaceSqlParameter(itemSql, itemParameter, newName);
+                            if (repeatCount>500||(isParameterNameRepeat&& repeatList.Any(it=>it.Key.EqualCase(itemParameter.ParameterName))))
+                            {
+                                itemSql = UtilMethods.ReplaceSqlParameter(itemSql, itemParameter, newName);
+                            }
+                            else 
+                            {
+                                parameter.ParameterName = itemParameter.ParameterName;
+                            }
                             addParameters.Add(parameter);
                         }
                         parsmeters.AddRange(addParameters);
