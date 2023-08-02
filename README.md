@@ -4,7 +4,16 @@
     <a  href="https://www.donet5.com/Home/Doc"><font color="red">中文</font></a>
 </p>
  
+MySql、SqlServer、Sqlite、Oracle 、 postgresql、达梦、
 
+人大金仓(国产推荐)、神通数据库、瀚高、Access 、OceanBase
+
+MySqlConnector、华为 GaussDB 、南大通用 GBase、MariaDB、Tidb、
+
+Odbc、Percona Server, Amazon Aurora、Azure Database for MySQL、
+
+ Google Cloud SQL for MySQL、custom database
+ 
 ## SqlSugar ORM
   
 SqlSugar ORM is a library providing Object/Relational Mapping (ORM) 
