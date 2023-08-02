@@ -12,7 +12,7 @@ An ORM framework from the future
 
 Using SqlSugar is very simple , And it's powerful.
 
-## Database 
+## Support database 
 
 MySql、SqlServer、Sqlite、Oracle 、 postgresql、达梦、
 
