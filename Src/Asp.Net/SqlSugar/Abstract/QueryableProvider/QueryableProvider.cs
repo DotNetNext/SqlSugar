@@ -1088,6 +1088,11 @@ namespace SqlSugar
                     }
                     return this;
                 }
+                if (this.QueryBuilder.IsSingle() == false && orderPropertyName.Contains(".")) 
+                {
+                    orderPropertyNameByJoin(orderPropertyName, orderByType);
+                    return this;
+                }
                 if (this.Context.EntityMaintenance.GetEntityInfoWithAttr(typeof(T)).Columns.Any(it =>
                 it.DbColumnName?.EqualCase(orderPropertyName)==true
                 || it.PropertyName?.EqualCase(orderPropertyName)==true))

@@ -1229,6 +1229,30 @@ namespace SqlSugar
 
         #region  Other
 
+        private void orderPropertyNameByJoin(string orderPropertyName, OrderByType? orderByType)
+        {
+            var shortName = orderPropertyName.Split('.').FirstOrDefault();
+            orderPropertyName = orderPropertyName.Split('.').Last();
+            var entityType = this.QueryBuilder.JoinQueryInfos.FirstOrDefault(it => it.ShortName.EqualCase(shortName))?.EntityType;
+            if (entityType == null)
+            {
+                entityType=this.EntityInfo.Type;
+            }
+            if (this.Context.EntityMaintenance.GetEntityInfoWithAttr(entityType).Columns.Any(it =>
+                it.DbColumnName?.EqualCase(orderPropertyName) == true
+                || it.PropertyName?.EqualCase(orderPropertyName) == true))
+            {
+                var name = this.Context.EntityMaintenance.GetEntityInfoWithAttr(entityType).Columns.FirstOrDefault(it =>
+            it.DbColumnName?.EqualCase(orderPropertyName) == true
+            || it.PropertyName?.EqualCase(orderPropertyName) == true)?.DbColumnName;
+                  this.OrderBy(this.SqlBuilder.GetTranslationColumnName(shortName)+"."+this.SqlBuilder.GetTranslationColumnName(name) + " " + orderByType);
+            }
+            else
+            {
+                Check.ExceptionEasy($"OrderByPropertyName error.{orderPropertyName} does not exist in the entity class", $"OrderByPropertyName出错实体类中不存在{orderPropertyName}");
+            }
+        }
+
         private void OutIntoTableSql(string TableName, out KeyValuePair<string, List<SugarParameter>> sqlInfo, out string sql,Type tableInfo)
         {
             var columnList = this.Context.EntityMaintenance.GetEntityInfo(tableInfo).Columns;
