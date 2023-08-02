@@ -6,11 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SqlSugar;
-using TDengineDriver;
+using TDengineDriver; 
 
 namespace OrmTest
 {
-    public class Demo0_SqlSugarClient
+    public class ORMTest
     {
 
         public static void Init()
@@ -34,27 +34,24 @@ namespace OrmTest
             db.Ado.ExecuteCommand("CREATE DATABASE IF NOT EXISTS power WAL_RETENTION_PERIOD 3600");
 
             //建超级表
-            db.Ado.ExecuteCommand("CREATE STABLE IF NOT EXISTS  MyTable (ts TIMESTAMP, current FLOAT, voltage INT, phase FLOAT) TAGS (location BINARY(64), groupId INT)");
+            db.Ado.ExecuteCommand("CREATE STABLE IF NOT EXISTS  St01 (ts TIMESTAMP, current FLOAT, voltage INT, phase FLOAT, isdelete BOOL, name BINARY(64)) TAGS (location BINARY(64), groupId INT)");
 
             //创建子表
-            db.Ado.ExecuteCommand(@"create table IF NOT EXISTS  MyTable01 using MyTable tags('California.SanFrancisco',1)");
-
-        
-            //insert sql
-            //db.Ado.ExecuteCommand(insrtSql);
+            db.Ado.ExecuteCommand(@"create table IF NOT EXISTS  MyTable02 using St01 tags('California.SanFrancisco',1)");
+             
 
             //查询子表
-            var dt = db.Ado.GetDataTable("select * from MyTable01");
+            var dt = db.Ado.GetDataTable("select * from MyTable02");
 
-            //查询超级表
-            var dt2 = db.Ado.GetDataTable("select * from MyTable");
 
             //插入子表
-            db.Insertable(new MyTable01()
+            db.Insertable(new MyTable02()
             {
                 ts = DateTime.Now,
                 current = Convert.ToSingle(1.1),
                 groupId = 1,
+                isdelete=true,
+                name="haha",
                 location = "aa",
                 phase = Convert.ToSingle(1.1),
                 voltage = 11
@@ -62,19 +59,21 @@ namespace OrmTest
 
 
             //查询子表(主表字段也能查出来)
-            var list = db.Queryable<MyTable01>().ToList();
+            var list = db.Queryable<MyTable02>().ToList();
               
 
             //删除子表
             var ts = list.First().ts;
-            var count=db.Deleteable<MyTable01>().Where(it=>it.ts==ts).ExecuteCommand();
+            var count=db.Deleteable<MyTable02>().Where(it=>it.ts==ts).ExecuteCommand();
         }
 
-        public class MyTable01
+        public class MyTable02
         {
             [SugarColumn(IsPrimaryKey =true)]
             public DateTime ts { get; set; }
             public float current { get; set; }
+            public bool isdelete { get; set; }
+            public string name { get; set; }
             public int voltage { get; set; }
             public float phase { get; set; }
             [SugarColumn(IsOnlyIgnoreInsert =true,IsOnlyIgnoreUpdate =true)]

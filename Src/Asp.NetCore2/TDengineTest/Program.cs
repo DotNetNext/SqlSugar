@@ -1,5 +1,6 @@
 ﻿ 
 using System;
+using TDengineTest;
 
 namespace OrmTest
 {
@@ -7,8 +8,11 @@ namespace OrmTest
     {
         static void Main(string[] args)
         {
-            //Demo
-            Demo0_SqlSugarClient.Init();
+            //orm用例
+            ORMTest.Init();
+            //原生ado用例
+            AdoDemo.Init();
+         
             
             Console.WriteLine("all successfully.");
             Console.ReadKey();
