@@ -328,6 +328,7 @@ namespace SqlSugar
         #endregion
 
         #region OrderBy
+        new ISugarQueryable<T,T2> OrderByPropertyName(string orderPropertyName, OrderByType? orderByType = null);
         new ISugarQueryable<T,T2> OrderByDescending(Expression<Func<T, object>> expression);
         ISugarQueryable<T, T2> OrderByDescending(Expression<Func<T,T2, object>> expression);
         new ISugarQueryable<T, T2> OrderBy(string orderFileds);
@@ -452,6 +453,7 @@ namespace SqlSugar
         #endregion
 
         #region OrderBy
+        new ISugarQueryable<T,T2,T3> OrderByPropertyName(string orderPropertyName, OrderByType? orderByType = null);
         new ISugarQueryable<T, T2,T3> OrderByDescending(Expression<Func<T, object>> expression);
         ISugarQueryable<T, T2,T3> OrderByDescending(Expression<Func<T, T2, object>> expression);
         ISugarQueryable<T, T2, T3> OrderByDescending(Expression<Func<T, T2,T3, object>> expression);
@@ -592,6 +594,7 @@ namespace SqlSugar
         #endregion
 
         #region OrderBy
+        new ISugarQueryable<T, T2, T3,T4> OrderByPropertyName(string orderPropertyName, OrderByType? orderByType = null);
         new ISugarQueryable<T, T2, T3,T4> OrderByDescending(Expression<Func<T, object>> expression);
         ISugarQueryable<T, T2, T3, T4> OrderByDescending(Expression<Func<T, T2, object>> expression);
         ISugarQueryable<T, T2, T3, T4> OrderByDescending(Expression<Func<T, T2, T3, object>> expression);
@@ -739,6 +742,7 @@ namespace SqlSugar
         #endregion
 
         #region OrderBy
+        new ISugarQueryable<T, T2, T3, T4,T5> OrderByPropertyName(string orderPropertyName, OrderByType? orderByType = null);
         new ISugarQueryable<T, T2, T3, T4, T5> OrderByDescending(Expression<Func<T, object>> expression);
         ISugarQueryable<T, T2, T3, T4, T5> OrderByDescending(Expression<Func<T, T2, object>> expression);
         ISugarQueryable<T, T2, T3, T4, T5> OrderByDescending(Expression<Func<T, T2, T3, object>> expression);
@@ -873,6 +877,7 @@ namespace SqlSugar
         #endregion
 
         #region OrderBy
+        new ISugarQueryable<T, T2, T3, T4, T5,T6> OrderByPropertyName(string orderPropertyName, OrderByType? orderByType = null);
         new ISugarQueryable<T, T2, T3, T4, T5, T6> OrderByDescending(Expression<Func<T, object>> expression);
         ISugarQueryable<T, T2, T3, T4, T5, T6> OrderByDescending(Expression<Func<T, T2, object>> expression);
         ISugarQueryable<T, T2, T3, T4, T5, T6> OrderByDescending(Expression<Func<T, T2, T3, object>> expression);
@@ -1016,6 +1021,7 @@ namespace SqlSugar
         #endregion
 
         #region OrderBy
+        new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> OrderByPropertyName(string orderPropertyName, OrderByType? orderByType = null);
         new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> OrderByDescending(Expression<Func<T, object>> expression);
         ISugarQueryable<T, T2, T3, T4, T5, T6,T7> OrderByDescending(Expression<Func<T, T2, object>> expression);
         ISugarQueryable<T, T2, T3, T4, T5, T6,T7> OrderByDescending(Expression<Func<T, T2, T3, object>> expression);
@@ -1153,6 +1159,7 @@ namespace SqlSugar
         #endregion
 
         #region OrderBy
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> OrderByPropertyName(string orderPropertyName, OrderByType? orderByType = null);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> OrderByDescending(Expression<Func<T, object>> expression);
         ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> OrderByDescending(Expression<Func<T, T2, object>> expression);
         ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> OrderByDescending(Expression<Func<T, T2, T3, object>> expression);
@@ -1285,6 +1292,7 @@ namespace SqlSugar
         #endregion
 
         #region OrderBy
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> OrderByPropertyName(string orderPropertyName, OrderByType? orderByType = null);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> OrderBy(string orderFileds);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> OrderBy(Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc);
         ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> OrderBy(Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc);
@@ -1411,6 +1419,7 @@ namespace SqlSugar
         #endregion
 
         #region OrderBy
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> OrderByPropertyName(string orderPropertyName, OrderByType? orderByType = null);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9,T10> OrderBy(string orderFileds);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> OrderBy(Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc);
         ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> OrderBy(Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc);
@@ -1545,6 +1554,7 @@ namespace SqlSugar
         #endregion
 
         #region OrderBy
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> OrderByPropertyName(string orderPropertyName, OrderByType? orderByType = null);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> OrderBy(string orderFileds);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> OrderBy(Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc);
         ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> OrderBy(Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc);
@@ -1669,6 +1679,7 @@ namespace SqlSugar
         #endregion
 
         #region OrderBy
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> OrderByPropertyName(string orderPropertyName, OrderByType? orderByType = null);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> OrderBy(string orderFileds);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> OrderBy(Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc);
         ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> OrderBy(Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc);
