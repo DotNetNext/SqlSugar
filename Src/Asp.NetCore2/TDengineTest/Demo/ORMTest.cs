@@ -29,9 +29,9 @@ namespace OrmTest
                     }
                 }
             });
-
+              
             //建库
-            db.Ado.ExecuteCommand("CREATE DATABASE IF NOT EXISTS power WAL_RETENTION_PERIOD 3600");
+            db.DbMaintenance.CreateDatabase();
 
             //建超级表
             db.Ado.ExecuteCommand("CREATE STABLE IF NOT EXISTS  St01 (ts TIMESTAMP, current FLOAT, voltage INT, phase FLOAT, isdelete BOOL, name BINARY(64)) TAGS (location BINARY(64), groupId INT)");
@@ -41,7 +41,7 @@ namespace OrmTest
              
 
             //查询子表
-            var dt = db.Ado.GetDataTable("select * from MyTable02");
+            var dt = db.Ado.GetDataTable("SHOW DATABASES");
 
 
             //插入子表

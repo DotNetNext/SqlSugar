@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SqlSugar.TDengineAdo;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -54,7 +55,7 @@ namespace SqlSugar.TDengine
         {
             get
             {
-                return "CREATE DATABASE {0}";
+                return "CREATE DATABASE IF NOT EXISTS {0} WAL_RETENTION_PERIOD 3600";
             }
         }
         protected override string AddPrimaryKeySql
@@ -221,6 +222,13 @@ namespace SqlSugar.TDengine
         #endregion
 
         #region Methods
+        public override bool CreateDatabase(string databaseName,string databaseDirectory = null)
+        {
+            var db=this.Context.CopyNew(); 
+            db.Ado.Connection.ChangeDatabase(""); 
+            db.Ado.ExecuteCommand(string.Format(CreateDataBaseSql,databaseName));
+            return true;
+        }
         public override List<string> GetIndexList(string tableName)
         {
             var sql = $"SELECT indexname, indexdef FROM pg_indexes WHERE upper(tablename) = upper('{tableName}')";
@@ -275,37 +283,6 @@ namespace SqlSugar.TDengine
             return result;
         }
 
-        /// <summary>
-        ///by current connection string
-        /// </summary>
-        /// <param name="databaseDirectory"></param>
-        /// <returns></returns>
-        public override bool CreateDatabase(string databaseName, string databaseDirectory = null)
-        {
-            if (databaseDirectory != null)
-            {
-                if (!FileHelper.IsExistDirectory(databaseDirectory))
-                {
-                    FileHelper.CreateDirectory(databaseDirectory);
-                }
-            }
-            // var oldDatabaseName = this.Context.Ado.Connection.Database;
-            //var connection = this.Context.CurrentConnectionConfig.ConnectionString;
-            //connection = connection.Replace(oldDatabaseName, "");
-            if (this.Context.Ado.IsValidConnection()) 
-            {
-                return true;
-            }
-            var newDb = this.Context.CopyNew();
-            newDb.Ado.Connection.ChangeDatabase("highgo");
-            newDb.Open();
-            if (!GetDataBaseList(newDb).Any(it => it.Equals(databaseName, StringComparison.CurrentCultureIgnoreCase)))
-            {
-                newDb.Ado.ExecuteCommand(string.Format(CreateDataBaseSql, this.SqlBuilder.SqlTranslationLeft+databaseName+this.SqlBuilder.SqlTranslationRight, databaseDirectory));
-            }
-            newDb.Close();
-            return true;
-        }
         public override bool AddRemark(EntityInfo entity)
         {
             var db = this.Context;
