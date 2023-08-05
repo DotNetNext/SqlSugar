@@ -109,6 +109,16 @@ namespace OrmTest
                       .Where((x, y) => x.Id == 1)
                       .ExecuteCommand();
 
+            db.Updateable<Order>()
+                .Where(it=>it.Id==1)
+                .SetColumns(it =>new Order 
+                {  
+                    Name=it.Name,
+                    CustomId=0,
+                    Price = (decimal) (it.CreateTime - it.CreateTime).TotalDays 
+                })
+                .ExecuteCommand();
+
             /*** 3.by Dictionary ***/
             var dt = new Dictionary<string, object>();
             dt.Add("id", 1);
