@@ -338,7 +338,8 @@ namespace SqlSugar
         }
         public override string MergeString(params string[] strings)
         {
-            return " concat(" + string.Join(",", strings).Replace("+", "") + ") ";
+            var key = Guid.NewGuid() + "";
+            return " concat(" + string.Join(",", strings.Select(it => it?.Replace("+", key))).Replace("+", "").Replace(key, "+") + ") ";
         }
         public override string IsNull(MethodCallExpressionModel model)
         {
