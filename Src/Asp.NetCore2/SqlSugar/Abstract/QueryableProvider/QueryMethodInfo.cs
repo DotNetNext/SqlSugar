@@ -105,7 +105,7 @@ namespace SqlSugar
         }
         public QueryMethodInfo Where(string sql, object parameters = null)
         {
-            var method = QueryableObj.GetType().GetMyMethod("Where", 2, typeof(string), typeof(object));
+            var method = QueryableObj.GetType().GetMyMethodNoGen("Where", 2, typeof(string), typeof(object));
             this.QueryableObj = method.Invoke(QueryableObj, new object[] { sql, parameters });
             return this;
         }
