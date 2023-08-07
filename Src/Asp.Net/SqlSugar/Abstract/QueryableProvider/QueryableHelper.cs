@@ -1359,8 +1359,8 @@ namespace SqlSugar
         }
         private string AppendSelectWithSubQuery(List<EntityColumnInfo> entityColumnInfos, string sql, ReadOnlyCollection<ParameterExpression> parameters, List<EntityColumnInfo> columnsResult, int parameterIndex1,string parameterName)
         {
-            var list = ExpressionTool.GetMemberInit(this.QueryBuilder.SelectValue).Bindings.Cast<MemberBinding>()
-                 .Select(it => it.Member.Name).ToList();
+            var list = ExpressionTool.GetMemberInit(this.QueryBuilder.SelectValue)?.Bindings?.Cast<MemberBinding>()
+                 ?.Select(it => it.Member.Name)?.ToList()??new List<string>();
             var columns = entityColumnInfos;
             //var parameterName = parameters[parameterIndex1];
             if (this.QueryBuilder.AutoAppendedColumns == null)
