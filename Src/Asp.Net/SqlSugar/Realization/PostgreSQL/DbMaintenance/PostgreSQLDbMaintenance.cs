@@ -36,7 +36,7 @@ namespace SqlSugar
                                 then true else false end as IsNullable
                                  from (select * from pg_tables where upper(tablename) = upper('{0}') and schemaname='" + schema + @"') ptables inner join pg_class pclass
                                 on ptables.tablename = pclass.relname inner join (SELECT *
-                                FROM information_schema.columns
+                                FROM information_schema.columns where table_schema='" + schema + @"'
                                 ) pcolumn on pcolumn.table_name = ptables.tablename
                                 left join (
 	                                select  pg_class.relname,pg_attribute.attname as colname from 
