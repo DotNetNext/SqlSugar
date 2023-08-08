@@ -57,6 +57,31 @@ namespace OrmTest
                 voltage = 11
             }).ExecuteCommand();
 
+            db.Insertable(new List<MyTable02>() {
+            new MyTable02()
+            {
+                ts = DateTime.Now,
+                current = Convert.ToSingle(1.1),
+                groupId = 1,
+                isdelete = true,
+                name = "haha",
+                location = "aa",
+                phase = Convert.ToSingle(1.1),
+                voltage = 11
+            },
+                new MyTable02()
+            {
+                ts = DateTime.Now,
+                current = Convert.ToSingle(1.1),
+                groupId = 1,
+                isdelete = true,
+                name = "haha",
+                location = "aa",
+                phase = Convert.ToSingle(1.1),
+                voltage = 11
+            }
+            }).ExecuteCommand();
+
 
             //查询子表(主表字段也能查出来)
             var list = db.Queryable<MyTable02>().ToList();

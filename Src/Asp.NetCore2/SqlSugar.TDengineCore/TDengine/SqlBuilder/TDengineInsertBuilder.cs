@@ -80,9 +80,13 @@ namespace SqlSugar.TDengine
                                 return GetDbColumn(it, null);
                             }
                             object value = null;
-                            if (it.Value is DateTime)
+                            if (it?.Value is DateTime)
                             {
-                                value = ((DateTime)it.Value).ToString("O");
+                                value = it.Value.ObjToDate().ToString("yyyy-MM-dd HH:mm:ss.fff");
+                            }
+                            else if (it?.Value is bool)
+                            {
+                                value = value?.ToString()?.ToLower();
                             }
                             else if (it.Value  is DateTimeOffset)
                             {

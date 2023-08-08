@@ -11,3 +11,9 @@ dotnet_diagnostic.CS8604.severity = none
 
 # CS8600: 将 null 字面量或可能为 null 的值转换为非 null 类型。
 dotnet_diagnostic.CS8600.severity = none
+
+# IDE0058: 永远不会使用表达式值
+dotnet_diagnostic.IDE0058.severity = silent
+
+# CS8602: 解引用可能出现空引用。
+dotnet_diagnostic.CS8602.severity = none

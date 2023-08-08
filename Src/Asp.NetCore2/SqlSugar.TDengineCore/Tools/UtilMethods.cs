@@ -16,6 +16,19 @@ namespace SqlSugar.TDengine
 {
     public class UtilMethods
     {
+        public static long ToUnixTimestamp(DateTime dateTime)
+        {
+            // If the DateTime is Utc, use ToUnixTimeMilliseconds directly
+            if (dateTime.Kind == DateTimeKind.Utc)
+            {
+                return new DateTimeOffset(dateTime).ToUnixTimeMilliseconds();
+            }
+            else
+            {
+                // Convert local DateTime to Utc before converting to Unix timestamp
+                return new DateTimeOffset(dateTime.ToUniversalTime()).ToUnixTimeMilliseconds();
+            }
+        }
         internal static DateTime GetMinDate(ConnectionConfig currentConnectionConfig)
         {
             if (currentConnectionConfig.MoreSettings == null)
