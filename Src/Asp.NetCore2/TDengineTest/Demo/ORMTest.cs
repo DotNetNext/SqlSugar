@@ -41,7 +41,7 @@ namespace OrmTest
              
 
             //查询子表
-            var dt = db.Ado.GetDataTable("SHOW DATABASES");
+            var dt = db.Ado.GetDataTable("select * from MyTable02 ");
 
 
             //插入子表
@@ -60,14 +60,25 @@ namespace OrmTest
             db.Insertable(new List<MyTable02>() {
             new MyTable02()
             {
-                ts = DateTime.Now,
+                ts = DateTime.Now.AddDays(-1),
                 current = Convert.ToSingle(1.1),
                 groupId = 1,
-                isdelete = true,
-                name = "haha",
-                location = "aa",
+                isdelete = false,
+                name = "测试1",
+                location = "false",
                 phase = Convert.ToSingle(1.1),
-                voltage = 11
+                voltage = 222
+            },
+             new MyTable02()
+            {
+                ts = DateTime.Now.AddDays(-2),
+                current = Convert.ToSingle(1.1),
+                groupId = 1,
+                isdelete = false,
+                name = "测试2",
+                location = "false",
+                phase = Convert.ToSingle(1.1),
+                voltage = 222
             },
                 new MyTable02()
             {
@@ -75,21 +86,33 @@ namespace OrmTest
                 current = Convert.ToSingle(1.1),
                 groupId = 1,
                 isdelete = true,
-                name = "haha",
-                location = "aa",
+                name = "测试3",
+                location = "true",
                 phase = Convert.ToSingle(1.1),
-                voltage = 11
+                voltage = 111
             }
             }).ExecuteCommand();
 
 
             //查询子表(主表字段也能查出来)
-            var list = db.Queryable<MyTable02>().ToList();
-              
+            var list = db.Queryable<MyTable02>().OrderBy(it=>it.ts).ToList();
+
+            //条件查询
+            var list2 = db.Queryable<MyTable02>().Where(it=>it.voltage==111).ToList();
+             
+
+            //模糊查询
+            var list3 = db.Queryable<MyTable02>().Where(it => it.name.Contains("a")).ToList();
+
+
+            //分页
+            var list4 = db.Queryable<MyTable02>().Where(it => it.voltage == 111)
+                .ToPageList(1,2);
 
             //删除子表
             var ts = list.First().ts;
-            var count=db.Deleteable<MyTable02>().Where(it=>it.ts==ts).ExecuteCommand();
+            var de = DateTime.Now.AddYears(-1);
+            var count=db.Deleteable<MyTable02>().Where(it=>it.ts>de).ExecuteCommand();
         }
 
         public class MyTable02
