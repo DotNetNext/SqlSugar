@@ -86,7 +86,7 @@ namespace SqlSugar.TDengine
                             }
                             else if (it?.Value is bool)
                             {
-                                value = value?.ToString()?.ToLower();
+                                value = it.Value?.ToString()?.ToLower();
                             }
                             else if (it.Value  is DateTimeOffset)
                             {
