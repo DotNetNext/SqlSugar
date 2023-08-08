@@ -24,8 +24,7 @@ namespace OrmTest
                 {
                     OnLogExecuting = (sql, p) =>
                     {
-                        Console.WriteLine(sql);
-                        Console.WriteLine(string.Join(",", p?.Select(it => it.ParameterName + ":" + it.Value)));
+                        Console.WriteLine(UtilMethods.GetNativeSql(sql,p)); 
                     }
                 }
             });
