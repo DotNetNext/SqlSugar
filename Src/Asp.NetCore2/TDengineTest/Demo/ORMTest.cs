@@ -82,6 +82,22 @@ namespace OrmTest
             var ts = list.First().ts;
             var de = DateTime.Now.AddYears(-1);
             var count = db.Deleteable<MyTable02>().Where(it => it.ts > de).ExecuteCommand();
+
+
+            //异步
+            db.Insertable(new MyTable02()
+            {
+                ts = DateTime.Now,
+                current = Convert.ToSingle(1.1),
+                groupId = 1,
+                isdelete = true,
+                name = "haha",
+                location = "aa",
+                phase = Convert.ToSingle(1.2),
+                voltage = 11
+            }).ExecuteCommandAsync().GetAwaiter().GetResult();
+
+            var list100 = db.Queryable<MyTable02>().ToListAsync().GetAwaiter().GetResult();
         }
 
         private static List<MyTable02> GetInsertDatas()
