@@ -97,7 +97,7 @@ namespace SqlSugar.GBase
                 }
                 else if (value is bool)
                 {
-                    return value.ObjToString().ToLower();
+                    return string.Format("CAST({0} AS boolean)", value.ObjToBool() ? 1 : 0);
                 }
                 else if (type == UtilConstants.StringType || type == UtilConstants.ObjType)
                 {
