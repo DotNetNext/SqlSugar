@@ -132,7 +132,7 @@ namespace SqlSugar.GBase
                 }
                 else if (type == UtilConstants.BoolType)
                 {
-                    return value.ObjToBool() ? "1" : "0";
+                    return value.ObjToBool() ? "true" : "false";
                 }
                 else
                 {
