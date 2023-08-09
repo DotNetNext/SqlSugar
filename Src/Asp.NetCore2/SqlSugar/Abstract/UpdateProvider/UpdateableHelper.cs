@@ -676,7 +676,7 @@ namespace SqlSugar
             if (this.UpdateParameterIsNull)
             {
                 var whereSql = Regex.Replace(sql, ".* WHERE ", "", RegexOptions.Singleline);
-                if (sql.Contains("WHERE (EXISTS"))
+                if (IsExists(sql))
                 {
                     whereSql = Regex.Match(sql, @"\(EXISTS.+").Value;
                 }
@@ -716,6 +716,11 @@ namespace SqlSugar
                 }
             }
             return result;
+        }
+
+        private static bool IsExists(string sql)
+        {
+            return sql.Contains("WHERE (EXISTS") || sql.Contains("((EXISTS (");
         }
 
         private void ThrowUpdateByExpression()
