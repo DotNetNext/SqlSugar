@@ -476,6 +476,10 @@ namespace SqlSugar
             {
                 return "Guid.NewGuid()";
             }
+            if (item.DataType?.ToString()?.EndsWith("unsigned")==true) 
+            {
+                return convertString;
+            }
             if (item.DataType == "bit")
                 return (convertString == "1" || convertString.Equals("true", StringComparison.CurrentCultureIgnoreCase)).ToString().ToLower();
             string result = this.Context.Ado.DbBind.GetConvertString(item.DataType) + "(\"" + convertString + "\")";
