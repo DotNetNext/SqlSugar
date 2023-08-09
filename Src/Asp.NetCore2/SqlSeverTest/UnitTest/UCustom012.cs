@@ -60,7 +60,14 @@ namespace OrmTest
            .ToList();
 
 
+            db.QueryFilter.AddTableFilter<BookA>(x => x.Name == "a");
             var list22 = db.Queryable<StudentA>()
+           .Includes(x => x.Books)
+           .Where(x => x.Books.Any(z => z.BookId == 1) || x.Books.Any(z => z.BookId == 1))
+           .ToList();
+
+
+            var list222 = db.Queryable<StudentA>()
             .Includes(x => x.SchoolA.ToList(it=>new SchoolA() {  SchoolId=it.SchoolId}), x => x.RoomList.ToList(it=>new RoomA() { RoomId=it.RoomId})) 
             .ToList();
 
