@@ -19,6 +19,8 @@ namespace SqlSugar
             try
             {
                 OneToManyNavgateExpression nav = new OneToManyNavgateExpression(this.Context?.SugarContext?.Context, this);
+                nav.ParameterIndex = this.Context.ParameterIndex;
+                this.Context.ParameterIndex++;
                 if (nav.IsNavgate(express))
                 {
                     var sql = nav.GetSql();

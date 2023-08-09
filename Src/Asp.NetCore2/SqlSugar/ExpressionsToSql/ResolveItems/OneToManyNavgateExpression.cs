@@ -18,6 +18,7 @@ namespace SqlSugar
         private string MemberName;
         private string MethodName;
         private string whereSql;
+        public int ParameterIndex = 0;
         private MethodCallExpressionResolve methodCallExpressionResolve;
         public OneToManyNavgateExpression(SqlSugarProvider context, MethodCallExpressionResolve methodCallExpressionResolve)
         {
@@ -171,7 +172,7 @@ namespace SqlSugar
             var bTableName = queryable.QueryBuilder.Builder.GetTranslationTableName(this.ProPertyEntity.DbTableName);
             this.context.InitMappingInfo(mappingType);
             var queryBuilerAB=this.context.Queryable<object>().QueryBuilder;
-            queryBuilerAB.LambdaExpressions.ParameterIndex = 100+this.methodCallExpressionResolve.Index;
+            queryBuilerAB.LambdaExpressions.ParameterIndex = 100+this.ParameterIndex;
             var filters= queryBuilerAB.GetFilters(mappingType);
             if (filters.HasValue()) 
             {
