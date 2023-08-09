@@ -18,6 +18,7 @@ namespace SqlSugar
         private string MemberName;
         private string MethodName;
         private string whereSql;
+        public int ParameterIndex = 0;
         private MethodCallExpressionResolve methodCallExpressionResolve;
         public OneToManyNavgateExpression(SqlSugarProvider context, MethodCallExpressionResolve methodCallExpressionResolve)
         {
@@ -171,7 +172,7 @@ namespace SqlSugar
             var bTableName = queryable.QueryBuilder.Builder.GetTranslationTableName(this.ProPertyEntity.DbTableName);
             this.context.InitMappingInfo(mappingType);
             var queryBuilerAB=this.context.Queryable<object>().QueryBuilder;
-            queryBuilerAB.LambdaExpressions.ParameterIndex = 100+this.methodCallExpressionResolve.Index;
+            queryBuilerAB.LambdaExpressions.ParameterIndex = 100+this.ParameterIndex;
             var filters= queryBuilerAB.GetFilters(mappingType);
             if (filters.HasValue()) 
             {
@@ -206,7 +207,7 @@ namespace SqlSugar
             }
             mapper.Sql = GetMethodSql(mapper.Sql);
             return mapper;
-        }
+        } 
         private MapperSql GetOneToManySql()
         {
             var pkColumn = this.EntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey == true);
@@ -228,10 +229,22 @@ namespace SqlSugar
             {
                 queryable.QueryBuilder.TableShortName = PropertyShortName;
             }
-            mapper.Sql = queryable
+            var sqlObj = queryable
                 .AS(this.ProPertyEntity.DbTableName)
+                .Filter(this.ProPertyEntity.Type)
                 .WhereIF(!string.IsNullOrEmpty(whereSql), whereSql)
-                .Where($" {name}={ShorName}.{pk} ").Select(MethodName=="Any"?"1":" COUNT(1) ").ToSql().Key;
+                .Where($" {name}={ShorName}.{pk} ").Select(MethodName == "Any" ? "1" : " COUNT(1) ").ToSql();
+            if (sqlObj.Value?.Any() == true)
+            {
+                foreach (var item in sqlObj.Value)
+                {
+                    if (!this.methodCallExpressionResolve.Context.Parameters.Any(it => it.ParameterName == item.ParameterName)) 
+                    {
+                        this.methodCallExpressionResolve.Context.Parameters.Add(item);
+                    } 
+                }
+            }
+            mapper.Sql = sqlObj.Key;
             mapper.Sql = $" ({mapper.Sql}) ";
             mapper.Sql = GetMethodSql(mapper.Sql);
             return mapper;
