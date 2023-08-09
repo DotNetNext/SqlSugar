@@ -93,7 +93,13 @@ namespace OrmTest
 			var list4 = db.Queryable<OperatorInfo>()
 			.Includes(x => x.Roles.Skip(10).Take(1).ToList())
 			.ToList();
-		}
+
+            db.QueryFilter.AddTableFilter<OptRole>(x => x.roleId == 2);
+            db.Queryable<OperatorInfo>()
+                .Includes(x => x.Roles)
+                .Where(x => x.Roles.Any() || x.Roles.Any())
+                .ToList();
+        }
 
 			/// <summary>
 			/// 描述：
