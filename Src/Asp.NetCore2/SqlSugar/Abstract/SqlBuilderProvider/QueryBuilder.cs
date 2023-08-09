@@ -824,7 +824,14 @@ namespace SqlSugar
                 {
                     shortName = $"{Builder.GetTranslationColumnName(this.TableShortName)}.";
                 }
-                result += string.Join(",",this.AppendNavInfo.AppendProperties.Select(it=> shortName+Builder.GetTranslationColumnName(it.Value)+ " AS SugarNav_" + it.Key));
+                if (this.GroupByValue.HasValue())
+                {
+                    result += string.Join(",",this.AppendNavInfo.AppendProperties.Select(it => "max(" + shortName + Builder.GetTranslationColumnName(it.Value) + ") AS SugarNav_" + it.Key));
+                }
+                else
+                {
+                    result += string.Join(",", this.AppendNavInfo.AppendProperties.Select(it => shortName + Builder.GetTranslationColumnName(it.Value) + " AS SugarNav_" + it.Key));
+                }
             }
             if (result.Contains("/**/*")) 
             {
