@@ -34,6 +34,8 @@ namespace OrmTest
             {
                 db.DbMaintenance.DeleteColumnRemark("Id", "DBO.Order");
             }
+            db.Queryable<Dog>().MergeTable().LeftJoin<Order>((x, y) => x.DogId == y.Id)
+                .ToList();
             db.DbMaintenance.AddColumnRemark("Id", "DBO.Order", "a");
         }
     }
