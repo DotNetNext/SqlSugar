@@ -51,6 +51,10 @@ namespace SqlSugar
             }
             this.Context.RefreshMapping();
             var tableName= Context.GetTranslationTableName(parameter.Type.Name, true);
+            if (exp.Arguments.Count == 2 && exp.Arguments.Last().HasValue()) 
+            {
+                tableName=Context.GetTranslationTableName(ExpressionTool.DynamicInvoke(exp.Arguments.Last())+"");
+            }
             var joinString =string.Format(" {2} LEFT JOIN {1} {0} ",
                  this.Context.GetTranslationColumnName(parameter.Name), 
                  tableName,

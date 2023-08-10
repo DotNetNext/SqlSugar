@@ -17,6 +17,14 @@ namespace SqlSugar
         {
             return new Subqueryable<T1, T2, T3, T4, T5, T6, T7, T8, T9, JoinType>();
         }
+        public Subqueryable<T1, T2, T3, T4, T5, T6, T7, T8, T9, JoinType> InnerJoin<JoinType>(Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, JoinType, bool> expression,string tableName)
+        {
+            return new Subqueryable<T1, T2, T3, T4, T5, T6, T7, T8, T9, JoinType>();
+        }
+        public Subqueryable<T1, T2, T3, T4, T5, T6, T7, T8, T9, JoinType> LeftJoin<JoinType>(Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, JoinType, bool> expression,string tableName)
+        {
+            return new Subqueryable<T1, T2, T3, T4, T5, T6, T7, T8, T9, JoinType>();
+        }
         public new Subqueryable<T1, T2, T3, T4, T5, T6, T7, T8, T9> Where(Func<T1, bool> expression)
         {
             return this;
@@ -68,6 +76,14 @@ namespace SqlSugar
         {
             return new Subqueryable<T1, T2, T3, T4, T5, T6, T7, T8, JoinType>();
         }
+        public Subqueryable<T1, T2, T3, T4, T5, T6, T7, T8, JoinType> InnerJoin<JoinType>(Func<T1, T2, T3, T4, T5, T6, T7, T8, JoinType, bool> expression,string tableName)
+        {
+            return new Subqueryable<T1, T2, T3, T4, T5, T6, T7, T8, JoinType>();
+        }
+        public Subqueryable<T1, T2, T3, T4, T5, T6, T7, T8, JoinType> LeftJoin<JoinType>(Func<T1, T2, T3, T4, T5, T6, T7, T8, JoinType, bool> expression,string tableName)
+        {
+            return new Subqueryable<T1, T2, T3, T4, T5, T6, T7, T8, JoinType>();
+        }
         public new Subqueryable<T1, T2, T3, T4, T5, T6, T7, T8> Where(Func<T1, bool> expression)
         {
             return this;
@@ -112,6 +128,14 @@ namespace SqlSugar
             return new Subqueryable<T1, T2, T3, T4, T5, T6, T7, JoinType>();
         }
         public Subqueryable<T1, T2, T3, T4, T5, T6, T7, JoinType> LeftJoin<JoinType>(Func<T1, T2, T3, T4, T5, T6, T7, JoinType, bool> expression)
+        {
+            return new Subqueryable<T1, T2, T3, T4, T5, T6, T7, JoinType>();
+        }
+        public Subqueryable<T1, T2, T3, T4, T5, T6, T7, JoinType> InnerJoin<JoinType>(Func<T1, T2, T3, T4, T5, T6, T7, JoinType, bool> expression,string tableName)
+        {
+            return new Subqueryable<T1, T2, T3, T4, T5, T6, T7, JoinType>();
+        }
+        public Subqueryable<T1, T2, T3, T4, T5, T6, T7, JoinType> LeftJoin<JoinType>(Func<T1, T2, T3, T4, T5, T6, T7, JoinType, bool> expression,string tableName)
         {
             return new Subqueryable<T1, T2, T3, T4, T5, T6, T7, JoinType>();
         }
@@ -162,6 +186,15 @@ namespace SqlSugar
         {
             return new Subqueryable<T1, T2, T3, T4, T5, T6, JoinType>();
         }
+
+        public Subqueryable<T1, T2, T3, T4, T5, T6, JoinType> InnerJoin<JoinType>(Func<T1, T2, T3, T4, T5, T6, JoinType, bool> expression,string tableName)
+        {
+            return new Subqueryable<T1, T2, T3, T4, T5, T6, JoinType>();
+        }
+        public Subqueryable<T1, T2, T3, T4, T5, T6, JoinType> LeftJoin<JoinType>(Func<T1, T2, T3, T4, T5, T6, JoinType, bool> expression,string tableName)
+        {
+            return new Subqueryable<T1, T2, T3, T4, T5, T6, JoinType>();
+        }
         public new Subqueryable<T1, T2, T3, T4, T5, T6> Where(Func<T1, bool> expression)
         {
             return this;
@@ -205,6 +238,15 @@ namespace SqlSugar
         {
             return new Subqueryable<T1, T2, T3, T4, T5, JoinType>();
         }
+
+        public Subqueryable<T1, T2, T3, T4, T5, JoinType> InnerJoin<JoinType>(Func<T1, T2, T3, T4, T5, JoinType, bool> expression,string tableName)
+        {
+            return new Subqueryable<T1, T2, T3, T4, T5, JoinType>();
+        }
+        public Subqueryable<T1, T2, T3, T4, T5, JoinType> LeftJoin<JoinType>(Func<T1, T2, T3, T4, T5, JoinType, bool> expression,string tableName)
+        {
+            return new Subqueryable<T1, T2, T3, T4, T5, JoinType>();
+        }
         public new Subqueryable<T1, T2, T3, T4, T5> Where(Func<T1, bool> expression)
         {
             return this;
@@ -241,6 +283,14 @@ namespace SqlSugar
             return new Subqueryable<T1, T2, T3, T4, JoinType>();
         }
         public Subqueryable<T1, T2, T3, T4, JoinType> LeftJoin<JoinType>(Func<T1, T2, T3, T4, JoinType, bool> expression)
+        {
+            return new Subqueryable<T1, T2, T3, T4, JoinType>();
+        }
+        public Subqueryable<T1, T2, T3, T4, JoinType> InnerJoin<JoinType>(Func<T1, T2, T3, T4, JoinType, bool> expression,string tableName)
+        {
+            return new Subqueryable<T1, T2, T3, T4, JoinType>();
+        }
+        public Subqueryable<T1, T2, T3, T4, JoinType> LeftJoin<JoinType>(Func<T1, T2, T3, T4, JoinType, bool> expression,string tableName)
         {
             return new Subqueryable<T1, T2, T3, T4, JoinType>();
         }
@@ -445,6 +495,14 @@ namespace SqlSugar
             return new Subqueryable<T1, T2, JoinType>();
         }
         public Subqueryable<T1, T2, JoinType> LeftJoin<JoinType>(Func<T1, T2, JoinType, bool> expression)
+        {
+            return new Subqueryable<T1, T2, JoinType>();
+        }
+        public Subqueryable<T1, T2, JoinType> InnerJoin<JoinType>(Func<T1, T2, JoinType, bool> expression,string tableName)
+        {
+            return new Subqueryable<T1, T2, JoinType>();
+        }
+        public Subqueryable<T1, T2, JoinType> LeftJoin<JoinType>(Func<T1, T2, JoinType, bool> expression, string tableName)
         {
             return new Subqueryable<T1, T2, JoinType>();
         }

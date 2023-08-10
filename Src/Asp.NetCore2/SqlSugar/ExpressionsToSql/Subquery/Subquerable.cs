@@ -17,11 +17,23 @@ namespace SqlSugar
         {
             return new Subqueryable<T, JoinType>();
         }
+
+        public Subqueryable<T, JoinType> InnerJoin<JoinType>(Func<T, JoinType, bool> expression,string tableName)
+        {
+            return new Subqueryable<T, JoinType>();
+        }
+
         public Subqueryable<T, JoinType> LeftJoin<JoinType>(Func<T, JoinType, bool> expression)
         {
             return new Subqueryable<T, JoinType>();
         }
-   
+
+        public Subqueryable<T, JoinType> LeftJoin<JoinType>(Func<T, JoinType, bool> expression,string tableName)
+        {
+            return new Subqueryable<T, JoinType>();
+        }
+         
+
         public Subqueryable<T> Where(string where)
         {
             return this;
