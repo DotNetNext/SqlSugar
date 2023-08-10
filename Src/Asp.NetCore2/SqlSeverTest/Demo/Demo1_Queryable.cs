@@ -29,7 +29,7 @@ namespace OrmTest
             Console.WriteLine("");
             Console.WriteLine("#### Examples Start ####");
             var db = GetInstance();
-            var dbTime = db.GetDate();
+            var dbTime = db.GetDate(); 
             var getAll = db.Queryable<Order>().Where(it=> SqlFunc.EqualsNull(it.Name,null)).ToList();
             var getOrderBy = db.Queryable<Order>().OrderBy(it => it.Name,OrderByType.Desc).ToList();
             var getOrderBy2 = db.Queryable<Order>().OrderBy(it => it.Id).OrderBy(it => it.Name, OrderByType.Desc).ToList();
@@ -172,7 +172,15 @@ namespace OrmTest
             Console.WriteLine("");
             Console.WriteLine("#### SqlFunc Start ####");
             var db = GetInstance();
-            var index= db.Queryable<Order>().Select(it => SqlFunc.CharIndex("a", "cccacc")).First();
+            var list0= db.Queryable<Order>()
+                .Select(it =>
+                new { 
+                  id=SqlFunc.Subqueryable<Order>()
+                 .AS("order")
+                 .InnerJoin<Custom>((x,y)=>x.Id==y.Id,"CuStom")
+                 .InnerJoin<Custom>((x, y,s) => x.Id == s.Id, "cuStoM")
+                 .Select(it=>it.Id)
+                }).First();
             var list = db.Queryable<Order>().Select(it =>new ViewOrder()
             {
 
