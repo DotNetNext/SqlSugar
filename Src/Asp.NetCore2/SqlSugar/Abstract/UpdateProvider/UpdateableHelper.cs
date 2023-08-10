@@ -679,6 +679,10 @@ namespace SqlSugar
                 if (IsExists(sql))
                 {
                     whereSql = Regex.Match(sql, @"\(EXISTS.+").Value;
+                    if (sql.Contains("((EXISTS")) 
+                    {
+                        whereSql = $"({whereSql}";
+                    }
                 }
                 dt = this.Context.Queryable<T>().Filter(null, true).Where(whereSql).AddParameters(parameters).ToDataTable();
             }
