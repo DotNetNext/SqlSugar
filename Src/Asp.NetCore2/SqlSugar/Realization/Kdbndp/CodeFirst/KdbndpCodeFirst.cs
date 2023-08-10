@@ -40,7 +40,9 @@ namespace SqlSugar
                 DefaultValue = item.DefaultValue,
                 ColumnDescription = item.ColumnDescription,
                 Length = item.Length,
-                CreateTableFieldSort = item.CreateTableFieldSort
+                CreateTableFieldSort = item.CreateTableFieldSort,
+                DecimalDigits = item.DecimalDigits,
+                Scale = item.DecimalDigits
             };
             GetDbType(item, propertyType, result);
             if (result.DataType.Equals("varchar", StringComparison.CurrentCultureIgnoreCase) && result.Length == 0)
