@@ -1349,7 +1349,11 @@ namespace SqlSugar
                 return MergeTableWithSubToListJoin();
             }
             var index = QueryBuilder.WhereIndex + 1;
-            var result = this.Context.Queryable<T>().AS(SqlBuilder.GetPackTable(sqlobj.Key, "MergeTable")).AddParameters(sqlobj.Value).Select("*").With(SqlWith.Null);
+            var result = 
+                this.EntityInfo.Discrimator.HasValue()?
+                this.Context.Queryable<object>().AS(SqlBuilder.GetPackTable(sqlobj.Key, "MergeTable")).AddParameters(sqlobj.Value).Select<T>("*").With(SqlWith.Null) 
+                :
+                this.Context.Queryable<T>().AS(SqlBuilder.GetPackTable(sqlobj.Key, "MergeTable")).AddParameters(sqlobj.Value).Select("*").With(SqlWith.Null);
             result.QueryBuilder.WhereIndex = index;
             result.QueryBuilder.NoCheckInclude = true;
             result.QueryBuilder.Includes = this.QueryBuilder.Includes;
