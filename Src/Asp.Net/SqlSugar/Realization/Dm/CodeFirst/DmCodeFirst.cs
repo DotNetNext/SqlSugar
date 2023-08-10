@@ -41,6 +41,8 @@ namespace SqlSugar
                 DefaultValue = item.DefaultValue,
                 ColumnDescription = item.ColumnDescription,
                 Length = item.Length,
+                DecimalDigits= item.DecimalDigits,
+                Scale=item.DecimalDigits,
                 CreateTableFieldSort = item.CreateTableFieldSort
             };
             GetDbType(item, propertyType, result);
