@@ -136,6 +136,13 @@ namespace SqlSugar
                   new KeyValuePair<string, CSharpDataType>("timestamp with local time zone",CSharpDataType.DateTime),
                   new KeyValuePair<string, CSharpDataType>("timestamp with time zone",CSharpDataType.DateTime),
                   new KeyValuePair<string, CSharpDataType>("timestamp with time zone",CSharpDataType.DateTime),
+
+
+
+                  new KeyValuePair<string, CSharpDataType>("timestamp with local time zone",CSharpDataType.DateTimeOffset),
+                  new KeyValuePair<string, CSharpDataType>("timestamp with time zone",CSharpDataType.DateTimeOffset),
+                  new KeyValuePair<string, CSharpDataType>("timestamp with time zone",CSharpDataType.DateTimeOffset),
+
                   new KeyValuePair<string, CSharpDataType>("time",CSharpDataType.TimeSpan),
 
                   new KeyValuePair<string, CSharpDataType>("float",CSharpDataType.@decimal),
