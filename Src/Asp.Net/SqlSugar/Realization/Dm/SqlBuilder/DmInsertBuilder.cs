@@ -37,7 +37,11 @@ namespace SqlSugar
         public override string SqlTemplateBatch => "INSERT INTO {0} ({1})";
  
         public override string SqlTemplateBatchSelect => " {0} ";
-
+        public override string FormatDateTimeOffset(object value)
+        {
+            var date = UtilMethods.ConvertFromDateTimeOffset((DateTimeOffset)value);
+            return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff zzz") + "'";
+        }
         public override string ToSqlString()
         {
             return base.ToSqlString();
