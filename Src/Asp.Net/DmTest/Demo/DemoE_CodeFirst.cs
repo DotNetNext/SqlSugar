@@ -27,6 +27,11 @@ namespace OrmTest
                       }
                   }
             });
+            db.CodeFirst.InitTables<CodeFirstDFAAFA>();
+            db.Insertable(new List<CodeFirstDFAAFA>() {
+            new CodeFirstDFAAFA(){ timeOffset=DateTimeOffset.Now,timeOffset2=DateTimeOffset.Now },
+                  new CodeFirstDFAAFA() { timeOffset = DateTimeOffset.Now, timeOffset2 = DateTimeOffset.Now }
+            }).ExecuteCommand();
             // db.DbMaintenance.CreateDatabase(); 
             if (db.DbMaintenance.IsAnyTable("CodeFirstTable1", false))
                 db.DbMaintenance.DropTable("CodeFirstTable1");
@@ -56,6 +61,12 @@ namespace OrmTest
             } ).Where(it => it.Id != null).ExecuteCommand();
             Console.WriteLine("#### CodeFirst end ####");
         }
+    }
+    public class CodeFirstDFAAFA
+    {
+        public DateTimeOffset timeOffset { get; set; }
+        [SugarColumn(ColumnDataType = "timestamp with time zone")]
+        public DateTimeOffset timeOffset2 { get; set; }
     }
     public class CodeFirstadfafa 
     {
