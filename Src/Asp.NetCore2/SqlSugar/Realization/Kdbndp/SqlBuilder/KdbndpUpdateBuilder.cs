@@ -223,7 +223,8 @@ namespace SqlSugar
         }
         public override string FormatDateTimeOffset(object value)
         {
-            return "'" + ((DateTimeOffset)value).ToString("o") + "'";
+            var date = UtilMethods.ConvertFromDateTimeOffset((DateTimeOffset)value);
+            return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff zzz") + "'";
         }
     }
 }
