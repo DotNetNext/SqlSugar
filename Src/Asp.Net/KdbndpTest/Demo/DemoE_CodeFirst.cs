@@ -45,8 +45,20 @@ namespace OrmTest
             {
                 Name = "a"
             }).Where(it => it.Id != null).ExecuteCommand();
+            db.CodeFirst.InitTables<CodeFirstDFAAFA>();
+            db.Insertable(new List<CodeFirstDFAAFA>() {
+            new CodeFirstDFAAFA(){ timeOffset=DateTimeOffset.Now,timeOffset2=DateTimeOffset.Now },
+                  new CodeFirstDFAAFA() { timeOffset = DateTimeOffset.Now, timeOffset2 = DateTimeOffset.Now }
+            }).ExecuteCommand();
+
             Console.WriteLine("#### CodeFirst end ####");
         }
+    }
+    public class CodeFirstDFAAFA 
+    {
+        public DateTimeOffset timeOffset{ get; set; }
+        [SugarColumn(ColumnDataType = "timestamp with time zone")]
+        public DateTimeOffset timeOffset2 { get; set; }
     }
     public class CodeFirstNoUpper4
     {
