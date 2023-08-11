@@ -97,5 +97,12 @@ namespace SqlSugar
                 return batchInsetrSql.ToString();
             }
         }
+
+
+        public override string FormatDateTimeOffset(object value)
+        {
+            var date = UtilMethods.ConvertFromDateTimeOffset((DateTimeOffset)value);
+            return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff zzz") + "'";
+        }
     }
 }
