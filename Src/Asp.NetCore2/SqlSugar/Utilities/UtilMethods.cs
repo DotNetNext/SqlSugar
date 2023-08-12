@@ -18,6 +18,11 @@ namespace SqlSugar
 {
     public class UtilMethods
     {
+        public  static int CountSubstringOccurrences(string mainString, string searchString)
+        {
+            string[] substrings = mainString.Split(new string[] { searchString }, StringSplitOptions.None);
+            return substrings.Length - 1;
+        }
         public static string RemoveBeforeFirstWhere(string query)
         {
             int whereIndex = query.IndexOf("WHERE", StringComparison.OrdinalIgnoreCase);

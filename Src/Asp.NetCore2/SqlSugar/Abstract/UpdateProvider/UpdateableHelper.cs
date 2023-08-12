@@ -720,7 +720,7 @@ namespace SqlSugar
 
         private static bool IsExists(string sql)
         {
-            return sql.Contains("WHERE (EXISTS") || sql.Contains("((EXISTS (");
+            return UtilMethods.CountSubstringOccurrences(sql,"WHERE")>1;
         }
 
         private void ThrowUpdateByExpression()
