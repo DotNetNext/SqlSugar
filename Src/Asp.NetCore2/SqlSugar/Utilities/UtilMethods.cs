@@ -1312,6 +1312,22 @@ namespace SqlSugar
                 }
             }
         }
+        internal static string GetDiscrimator(EntityInfo entityInfo,ISqlBuilder  builer)
+        { 
+            List<string> wheres = new List<string>();
+            if (entityInfo != null && entityInfo.Discrimator.HasValue())
+            {
+                Check.ExceptionEasy(!Regex.IsMatch(entityInfo.Discrimator, @"^(?:\w+:\w+)(?:,\w+:\w+)*$"), "The format should be type:cat for this type, and if there are multiple, it can be FieldName:cat,FieldName2:dog ", "格式错误应该是type:cat这种格式，如果是多个可以FieldName:cat,FieldName2:dog，不要有空格");
+                var array = entityInfo.Discrimator.Split(',');
+                foreach (var disItem in array)
+                {
+                    var name = disItem.Split(':').First();
+                    var value = disItem.Split(':').Last();
+                    wheres.Add($"{builer.GetTranslationColumnName(name)}={value.ToSqlValue()} ");
+                }
+            }
+            return string.Join(" AND ", wheres);
+        }
 
     }
 }

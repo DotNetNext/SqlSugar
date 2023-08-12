@@ -657,12 +657,18 @@ namespace SqlSugar
             {
                 shortName = this.Builder.GetTranslationColumnName(shortName);
             }
-            return string.Format(
+            var result= string.Format(
                 this.JoinTemplate,
                 joinInfo.JoinType.ToString() + UtilConstants.Space,
                 Builder.GetTranslationTableName(name) + UtilConstants.Space,
                 shortName + UtilConstants.Space + (TableWithString == SqlWith.Null|| isSubQuery ? " " : TableWithString),
                 joinInfo.JoinWhere);
+            if (joinInfo.EntityType!=null&&this.Context.EntityMaintenance.GetEntityInfoWithAttr(joinInfo.EntityType).Discrimator.HasValue()) 
+            {
+                var entityInfo = this.Context.EntityMaintenance.GetEntityInfoWithAttr(joinInfo.EntityType);
+                result = $" {result} AND {shortName}.{UtilMethods.GetDiscrimator(entityInfo,this.Builder)}";
+            }
+            return result;
         }
         public virtual void Clear()
         {
