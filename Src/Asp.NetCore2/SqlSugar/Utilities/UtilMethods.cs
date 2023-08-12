@@ -18,6 +18,18 @@ namespace SqlSugar
 {
     public class UtilMethods
     {
+        public static string RemoveBeforeFirstWhere(string query)
+        {
+            int whereIndex = query.IndexOf("WHERE", StringComparison.OrdinalIgnoreCase);
+            if (whereIndex >= 0)
+            {
+                return query.Substring(whereIndex + "WHERE".Length);
+            }
+            else
+            {
+                return query;
+            }
+        }
         public static List<object> ConvertToListOfObjects(object inValues)
         {
             // 创建一个新的List<object>并逐个将元素转换并添加到其中
