@@ -36,6 +36,13 @@ namespace OrmTest
             }
             db.Queryable<Dog>().MergeTable().LeftJoin<Order>((x, y) => x.DogId == y.Id)
                 .ToList();
+
+            db.QueryFilter.AddTableFilter<Dog>(x => x.DogId == 2);
+            db.Queryable<Dog>()
+                .LeftJoin<Dog>((x, y) => x.DogId == y.DogId)
+                    .LeftJoin<Dog>((x, y,z) => x.DogId == z.DogId)
+             .ToList();
+
             db.DbMaintenance.AddColumnRemark("Id", "DBO.Order", "a");
         }
     }
