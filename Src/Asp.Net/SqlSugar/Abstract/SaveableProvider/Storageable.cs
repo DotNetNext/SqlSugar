@@ -419,7 +419,7 @@ namespace SqlSugar
                             var addItem = this.Context.Queryable<T>().AS(asname)
                             .Filter(null, this.isDisableFilters)
                             .TranLock(this.lockType)
-                            .Where(conditList).ToList();
+                            .Where(conditList,true).ToList();
                             this.dbDataList.AddRange(addItem);
                         });
                     }

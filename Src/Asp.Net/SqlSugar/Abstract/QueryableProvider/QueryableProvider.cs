@@ -725,7 +725,7 @@ namespace SqlSugar
                         whereModels.Add(cons);
                     }
                 }
-                this.Where(whereModels);
+                this.Where(whereModels,true);
             }
             else
             {
