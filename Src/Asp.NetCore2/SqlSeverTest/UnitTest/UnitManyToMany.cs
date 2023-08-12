@@ -99,6 +99,13 @@ namespace OrmTest
                 .Includes(x => x.Roles)
                 .Where(x => x.Roles.Any() || x.Roles.Any())
                 .ToList();
+
+			db.QueryFilter.Clear();
+			List<int> tags = new List<int>() {1, 2 };
+            db.Queryable<OperatorInfo>()
+                .Includes(x => x.Roles)
+                .Where(x => x.Roles.Any(s=> tags.Contains(s.id)))
+                .ToList();
         }
 
 			/// <summary>
