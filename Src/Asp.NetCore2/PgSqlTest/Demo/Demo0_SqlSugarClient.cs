@@ -70,8 +70,8 @@ namespace OrmTest
             //If no exist create datebase 
             db.DbMaintenance.CreateDatabase();
 
-            //Use db query
-            var dt = db.Ado.GetDataTable("select 1");
+            //Use db ado
+            var dt = db.Ado.ExecuteCommand(" CREATE EXTENSION IF NOT EXISTS pgcrypto;CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\"");
 
             //Create tables
             db.CodeFirst.InitTables(typeof(OrderItem),typeof(Order));
