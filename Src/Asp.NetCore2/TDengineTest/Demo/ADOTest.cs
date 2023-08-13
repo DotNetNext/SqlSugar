@@ -73,6 +73,7 @@ namespace TDengineTest
             comm.Connection = conn;
             comm.CommandText = "select count(*) from `power`.`meters` ";
             var dr = comm.ExecuteScalar();
+            conn.Close();
             return comm;
         }
         private static TDengineCommand ExecuteScalar2()
@@ -86,6 +87,7 @@ namespace TDengineTest
             comm.CommandText = "select count(*) from power.meters where ts=@ts";
             comm.Parameters.Add(new TDengineParameter("ts", Convert.ToDateTime("2018-10-03 14:38:05.000")));
             var dr = comm.ExecuteScalar();
+            conn.Close();
             return comm;
         }
         private static TDengineCommand DataReader()
@@ -99,6 +101,7 @@ namespace TDengineTest
             var dr = comm.ExecuteReader();
             dr.Read();
             var xx = dr.GetInt32(2);
+            conn.Close();
             return comm;
         }
 
