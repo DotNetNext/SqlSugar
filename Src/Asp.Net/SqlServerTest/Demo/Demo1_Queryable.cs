@@ -245,6 +245,20 @@ namespace OrmTest
             .Where(it => ss.Any(y => it.Name==y)).First();
             var test55= db.Queryable<Order>()
              .Where(it => test38.Any(y => it.Name == y.Name&&it.Id==y.Id)).First();
+
+            var test56 = db.Queryable<Order>().Select(it => new  
+            {
+                name = it.Name,
+                id = it.Price.ToString("0.0") 
+            }).ToList();
+            var test57 = db.Queryable<Order>().Select(it => new Order
+            {  
+                Name = it.Price.ToString("0.0")
+            }).ToList();
+            var test58 = db.Queryable<Order>().Select(it => new Order
+            {
+                Name = Guid.NewGuid().ToString("n")
+            }).ToList();
             Console.WriteLine("#### Examples End ####");
         }
 
