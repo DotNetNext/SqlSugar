@@ -247,7 +247,7 @@ namespace SqlSugar
         }
         public override string NewUid(MethodCallExpressionModel mode)
         {
-            return " CONCAT(\r\n    SUBSTR(UPPER(HEX(RANDOM_BYTES(4))), 1, 8), '-',\r\n    SUBSTR(UPPER(HEX(RANDOM_BYTES(2))), 1, 4), '-',\r\n    '4', SUBSTR(UPPER(HEX(RANDOM_BYTES(2))), 2, 3), '-',\r\n    SUBSTR('89ab', 1 + (ABS(RANDOM()) % 4), 1), SUBSTR(UPPER(HEX(RANDOM_BYTES(2))), 2, 3), '-',\r\n    SUBSTR(UPPER(HEX(RANDOM_BYTES(6))), 1, 12)\r\n)  ";
+            return "    CONCAT(\r\n        LPAD(UPPER(HEX(FLOOR(UUID_SHORT() / 0x100000000))), 8, '0'),\r\n        '-',\r\n        LPAD(UPPER(HEX(FLOOR(UUID_SHORT() / 0x10000) & 0xFFFF)), 4, '0'),\r\n        '-',\r\n        LPAD(UPPER(HEX(FLOOR(UUID_SHORT() / 0x100) & 0xFFFF)), 4, '0'),\r\n        '-',\r\n        LPAD(UPPER(HEX(UUID_SHORT() & 0xFF)), 4, '0'),\r\n        '-000000000000'\r\n    )  ";
         }
         //public override string TrimEnd(MethodCallExpressionModel mode)
         //{
