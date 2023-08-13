@@ -259,5 +259,10 @@ namespace SqlSugar
             var parameterNameA = mode.Args[0].MemberName;
             return $" CEIL({parameterNameA}) ";
         }
+
+        public override string NewUid(MethodCallExpressionModel mode)
+        {
+            return "  SYS_GUID() ";
+        }
     }
 }

@@ -245,6 +245,10 @@ namespace SqlSugar
                 return $" JSON_CONTAINS({model.Args[0].MemberName},'{{\"{model.Args[1].MemberValue}\":\"{model.Args[2].MemberValue.ObjToStringNoTrim().ToSqlFilter()}\"}}')";
             }
         }
+        public override string NewUid(MethodCallExpressionModel mode)
+        {
+            return " CONCAT(\r\n    SUBSTR(UPPER(HEX(RANDOM_BYTES(4))), 1, 8), '-',\r\n    SUBSTR(UPPER(HEX(RANDOM_BYTES(2))), 1, 4), '-',\r\n    '4', SUBSTR(UPPER(HEX(RANDOM_BYTES(2))), 2, 3), '-',\r\n    SUBSTR('89ab', 1 + (ABS(RANDOM()) % 4), 1), SUBSTR(UPPER(HEX(RANDOM_BYTES(2))), 2, 3), '-',\r\n    SUBSTR(UPPER(HEX(RANDOM_BYTES(6))), 1, 12)\r\n)  ";
+        }
         //public override string TrimEnd(MethodCallExpressionModel mode)
         //{
         //    var parameterNameA = mode.Args[0].MemberName;

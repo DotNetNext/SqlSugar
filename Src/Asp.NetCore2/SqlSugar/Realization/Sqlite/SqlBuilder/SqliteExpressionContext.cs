@@ -319,5 +319,10 @@ namespace SqlSugar
             var parameterNameB = mode.Args[1].MemberName;
             return $" SUBSTR({parameterNameA}, -2, {parameterNameB})  ";
         }
+
+        public override string NewUid(MethodCallExpressionModel mode)
+        {
+            return " substr(upper(hex(randomblob(4))), 1, 8) || '-' ||\r\n    substr(upper(hex(randomblob(2))), 1, 4) || '-' ||\r\n    '4' || substr(upper(hex(randomblob(2))), 2, 3) || '-' ||\r\n    substr('89ab', 1 + (abs(random()) % 4), 1) || substr(upper(hex(randomblob(2))), 2, 3) || '-' ||\r\n    substr(upper(hex(randomblob(6))), 1, 12) ";
+        }
     }
 }
