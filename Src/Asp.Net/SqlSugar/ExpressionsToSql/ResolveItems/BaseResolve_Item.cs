@@ -18,6 +18,28 @@ namespace SqlSugar
                 parameter.Context.Result.Append(this.Context.GetAsString2(asName, this.Context.DbMehtods.NewUid(null)));
                 return;
             }
+            else if (ExpressionTool.GetMethodName(item) == "ToString"   
+                                      &&(item as MethodCallExpression)?.Arguments?.Count()==1
+                                      && (item as MethodCallExpression)?.Object?.Type!=UtilConstants.DateType
+                                      && this.Context?.SugarContext?.QueryBuilder!=null)
+            {
+                var format=ExpressionTool.GetExpressionValue((item as MethodCallExpression)?.Arguments[0]);
+                var childExpression = (item as MethodCallExpression)?.Object;
+                var type=childExpression.Type;
+                if (this.Context.SugarContext.QueryBuilder.QueryableFormats == null) 
+                {
+                    this.Context.SugarContext.QueryBuilder.QueryableFormats = new List<QueryableFormat>();
+                }
+                this.Context.SugarContext.QueryBuilder.QueryableFormats.Add(new QueryableFormat() {
+                    Format=format+"",
+                    PropertyName=asName,
+                    Type=type,
+                    TypeString=type.FullName, 
+                    MethodName= "ToString"
+                });
+                parameter.Context.Result.Append(this.Context.GetAsString2(asName, GetNewExpressionValue(childExpression)));
+                return;
+            }
             this.Expression = item;
             this.Start();
             if (ExpressionTool.GetMethodName(item) == "MappingColumn")

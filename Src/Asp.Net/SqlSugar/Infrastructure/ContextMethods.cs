@@ -482,6 +482,12 @@ namespace SqlSugar
                     if (readerValues.Any(it => it.Key.Equals(name, StringComparison.CurrentCultureIgnoreCase)))
                     {
                         var addValue = readerValues.ContainsKey(name) ? readerValues[name] : readerValues.First(it => it.Key.Equals(name, StringComparison.CurrentCultureIgnoreCase)).Value;
+                        if (addValue!=null&&this.QueryBuilder?.QueryableFormats?.Any(it=>it.PropertyName==name)==true) 
+                        {
+                            var valueFomatInfo = this.QueryBuilder?.QueryableFormats?.First(it => it.PropertyName == name);
+                            addValue =UtilMethods.GetFormatValue(addValue,valueFomatInfo);
+                           
+                        }
                         if (addValue == DBNull.Value || addValue == null)
                         {
                             if (item.PropertyType.IsIn(UtilConstants.IntType, UtilConstants.DecType, UtilConstants.DobType, UtilConstants.ByteType))
@@ -524,6 +530,7 @@ namespace SqlSugar
 
             return result;
         }
+         
 
         private void SetAppendColumns(IDataReader dataReader)
         {
