@@ -388,7 +388,7 @@ namespace SqlSugar
 
         public override string NewUid(MethodCallExpressionModel mode)
         {
-            return "  SYS_GUID() ";
+            return "   SUBSTR(LOWER(RAWTOHEX(SYS_GUID())), 1, 8) ||\r\n  '-' ||\r\n  SUBSTR(LOWER(RAWTOHEX(SYS_GUID())), 9, 4) ||\r\n  '-' ||\r\n  SUBSTR(LOWER(RAWTOHEX(SYS_GUID())), 13, 4) ||\r\n  '-' ||\r\n  SUBSTR(LOWER(RAWTOHEX(SYS_GUID())), 17, 4) ||\r\n  '-' ||\r\n  SUBSTR(LOWER(RAWTOHEX(SYS_GUID())), 21)  ";
         }
     }
 }
