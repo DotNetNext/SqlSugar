@@ -145,7 +145,17 @@ namespace SqlSugar
             }
             return result;
         }
-
+        public override Action<SqlSugarException> ErrorEvent => it =>
+        {
+            if (base.ErrorEvent != null)
+            {
+                base.ErrorEvent(it);
+            }
+            if (it.Message != null && it.Message.StartsWith("42883:"))
+            {
+                Check.ExceptionEasy(it.Message, $"使用uuid_generate_v4()函数需要创建 CREATE EXTENSION IF NOT EXISTS kbcrypto;CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\" ");
+            }
+        };
 
         static readonly Dictionary<Type, KdbndpDbType> ArrayMapping = new Dictionary<Type, KdbndpDbType>()
         {
