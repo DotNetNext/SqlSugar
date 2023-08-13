@@ -120,6 +120,7 @@ namespace SqlSugar
         string Right(MethodCallExpressionModel mode);
         string PadLeft(MethodCallExpressionModel mode);
         string Floor(MethodCallExpressionModel mode);
-        string Ceil(MethodCallExpressionModel mode);
+        string Ceil(MethodCallExpressionModel mode); 
+        string NewUid(MethodCallExpressionModel mode);
     }
 }

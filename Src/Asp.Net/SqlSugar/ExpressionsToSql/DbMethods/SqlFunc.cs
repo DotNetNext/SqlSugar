@@ -303,6 +303,7 @@ namespace SqlSugar
         public static string ToVarchar(object value) { return value.ObjToString(); }
         public static decimal ToDecimal(object value) { return value.ObjToDecimal(); }
         public static Guid ToGuid(object value) { return Guid.Parse(value.ObjToString()); }
+        public static Guid NewUid() { throw new NotSupportedException("Can only be used in expressions"); }
         public static double ToDouble(object value) { return value.ObjToMoney(); }
         public static bool ToBool(object value) { return value.ObjToBool(); }
         public static string Substring(object value, int index, int length) { return value.ObjToString().Substring(index, length); }

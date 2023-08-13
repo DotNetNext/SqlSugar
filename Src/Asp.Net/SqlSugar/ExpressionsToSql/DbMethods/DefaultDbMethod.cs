@@ -1064,5 +1064,10 @@ namespace SqlSugar
             var parameterNameA = mode.Args[0].MemberName; 
             return $" CEILING({parameterNameA}) ";
         }
+        public virtual string NewUid(MethodCallExpressionModel mode)
+        {
+            return $" uuid_generate_v4() ";
+        }
+
     }
 }

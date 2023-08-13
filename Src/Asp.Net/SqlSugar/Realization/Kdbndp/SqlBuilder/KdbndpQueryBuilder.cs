@@ -37,6 +37,11 @@ namespace SqlSugar
         {
             base.AppendFilter();
             string oldOrderValue = this.OrderByValue;
+            var isNullOrderValue = Skip == 0 && Take == 1 && oldOrderValue == "ORDER BY NOW() ";
+            if (isNullOrderValue)
+            {
+                this.OrderByValue = null;
+            }
             string result = null;
             sql = new StringBuilder();
             sql.AppendFormat(SqlTemplate, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, (Skip != null || Take != null) ? null : GetOrderByString);
@@ -61,6 +66,19 @@ namespace SqlSugar
                 result = sql.ToString();
             }
             this.OrderByValue = oldOrderValue;
+            result = GetSqlQuerySql(result);
+            if (result.IndexOf("-- No table") > 0)
+            {
+                return "-- No table";
+            }
+            if (TranLock != null)
+            {
+                result = result + TranLock;
+            }
+            if (result.Contains("uuid_generate_v4()"))
+            {
+                result = " CREATE EXTENSION IF NOT EXISTS pgcrypto;CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\"; " + result;
+            }
             return result;
         }
 

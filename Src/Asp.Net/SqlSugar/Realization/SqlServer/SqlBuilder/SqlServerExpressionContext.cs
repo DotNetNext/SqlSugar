@@ -130,6 +130,11 @@ namespace SqlSugar
             var parameterNameC = mode.Args[2].MemberName;
             return $" CONCAT(REPLICATE({parameterNameC}, {parameterNameB} - LEN({parameterNameA})), {parameterNameA})  ";
         }
+
+        public override string NewUid(MethodCallExpressionModel mode)
+        {
+            return " NEWID() ";
+        }
     }
 
 
