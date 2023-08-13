@@ -1,6 +1,7 @@
 ﻿using SqlSugar;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace OrmTest
@@ -29,7 +30,20 @@ namespace OrmTest
                     //Console.WriteLine(sql);//输出sql
                 };
             });
-
+             
+            List<Guid> ids = new List<Guid>();
+            for (int i = 0; i < 100; i++)
+            {
+                var guids = db.Queryable<Order>().Select(it =>
+                 SqlFunc.NewUid()
+                ).Take(10).ToList(); ;
+                ids.AddRange(guids);
+            }
+            var count= ids.Distinct().Count();
+            if (count != ids.Count) 
+            {
+                throw new Exception("unit error");
+            }
             db.DbMaintenance.CreateDatabase();
             var type = db.DynamicBuilder().CreateClass("UnitEntityA",
              new SugarTable()
