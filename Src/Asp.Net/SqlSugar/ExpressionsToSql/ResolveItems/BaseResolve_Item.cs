@@ -13,6 +13,11 @@ namespace SqlSugar
     {
         private void ResloveOtherMUC(ExpressionParameter parameter, Expression item, string asName)
         {
+            if (ExpressionTool.GetMethodName(item) == "NewGuid")
+            {
+                parameter.Context.Result.Append(this.Context.GetAsString2(asName, this.Context.DbMehtods.NewUid(null)));
+                return;
+            }
             this.Expression = item;
             this.Start();
             if (ExpressionTool.GetMethodName(item) == "MappingColumn")
