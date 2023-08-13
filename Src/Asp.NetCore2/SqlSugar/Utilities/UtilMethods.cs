@@ -18,6 +18,51 @@ namespace SqlSugar
 {
     public class UtilMethods
     {
+        /// <summary>
+        /// Available only in Select,Handles logic that cannot be completed by an expression
+        /// </summary>
+        /// <param name="addValue"></param>
+        /// <param name="valueFomatInfo"></param>
+        /// <returns></returns>
+        internal static object GetFormatValue(object addValue, QueryableFormat valueFomatInfo)
+        {
+            if (valueFomatInfo.MethodName == "ToString")
+            {
+                if (valueFomatInfo.Type == UtilConstants.GuidType)
+                {
+                    addValue = Guid.Parse(addValue + "").ToString(valueFomatInfo.Format);
+                }
+                else if (valueFomatInfo.Type == UtilConstants.ByteType)
+                {
+                    addValue = Convert.ToByte(addValue + "").ToString(valueFomatInfo.Format);
+                }
+                else if (valueFomatInfo.Type == UtilConstants.IntType)
+                {
+                    addValue = Convert.ToInt32(addValue + "").ToString(valueFomatInfo.Format);
+                }
+                else if (valueFomatInfo.Type == UtilConstants.LongType)
+                {
+                    addValue = Convert.ToInt64(addValue + "").ToString(valueFomatInfo.Format);
+                }
+                else if (valueFomatInfo.Type == UtilConstants.UIntType)
+                {
+                    addValue = Convert.ToUInt32(addValue + "").ToString(valueFomatInfo.Format);
+                }
+                else if (valueFomatInfo.Type == UtilConstants.ULongType)
+                {
+                    addValue = Convert.ToUInt64(addValue + "").ToString(valueFomatInfo.Format);
+                }
+                else if (valueFomatInfo.Type == UtilConstants.DecType)
+                {
+                    addValue = Convert.ToDecimal(addValue + "").ToString(valueFomatInfo.Format);
+                }
+                else if (valueFomatInfo.Type == UtilConstants.DobType)
+                {
+                    addValue = Convert.ToDouble(addValue + "").ToString(valueFomatInfo.Format);
+                }
+            }
+            return addValue;
+        }
         public  static int CountSubstringOccurrences(string mainString, string searchString)
         {
             string[] substrings = mainString.Split(new string[] { searchString }, StringSplitOptions.None);

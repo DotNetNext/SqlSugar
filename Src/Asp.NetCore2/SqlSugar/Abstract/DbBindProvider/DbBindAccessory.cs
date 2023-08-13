@@ -32,7 +32,12 @@ namespace SqlSugar
                 {
                     //try
                     //{
-                        result.Add(entytyList.Build(dataReader));
+                        var addItem = entytyList.Build(dataReader);
+                        if (this.QueryBuilder?.QueryableFormats?.Any() == true) 
+                        {
+                          FormatT(addItem);
+                        }
+                        result.Add(addItem);
                     //}
                     //catch (Exception ex)
                     //{
@@ -76,7 +81,12 @@ namespace SqlSugar
                 {
                     //try
                     //{
-                        result.Add(entytyList.Build(dataReader));
+                    var addItem = entytyList.Build(dataReader);
+                    if (this.QueryBuilder?.QueryableFormats?.Any() == true)
+                    {
+                        FormatT(addItem);
+                    }
+                    result.Add(addItem);
                     //}
                     //catch (Exception ex)
                     //{
@@ -99,7 +109,24 @@ namespace SqlSugar
             }
             return result;
         }
-        
+
+        private void FormatT<T>(T addItem)
+        {
+            var formats = this.QueryBuilder.QueryableFormats;
+            var columns = this.QueryBuilder.Context.EntityMaintenance.GetEntityInfoWithAttr(typeof(T))
+                .Columns.Where(it => formats.Any(y => y.PropertyName == it.PropertyName)).ToList();
+            if (columns.Any())
+            {
+                foreach (var item in formats)
+                {
+                    var columnInfo = columns.FirstOrDefault(it => it.PropertyName == item.PropertyName);
+                    var value = columnInfo.PropertyInfo.GetValue(addItem);
+                    value = UtilMethods.GetFormatValue(value, item);
+                    columnInfo.PropertyInfo.SetValue(addItem, value);
+                }
+            }
+        }
+
         private static void ExecuteDataAfterFun<T>(SqlSugarProvider context, Action<object, DataAfterModel> dataAfterFunc, List<T> result)
         {
             if (dataAfterFunc != null)

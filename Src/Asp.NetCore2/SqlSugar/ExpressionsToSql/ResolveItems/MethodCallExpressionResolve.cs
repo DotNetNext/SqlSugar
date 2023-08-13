@@ -44,7 +44,7 @@ namespace SqlSugar
             }
             else if (methodName == "NewGuid")
             {
-                this.Context.Result.Append(this.Context.DbMehtods.GuidNew());
+                this.Context.Result.Append(this.Context.DbMehtods.NewUid(null));
                 return;
             }
             else if (methodName == "GetConfigValue") 

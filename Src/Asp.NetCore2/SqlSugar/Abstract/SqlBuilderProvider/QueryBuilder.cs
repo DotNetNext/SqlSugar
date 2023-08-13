@@ -1003,6 +1003,8 @@ namespace SqlSugar
         #endregion
 
         #region NoCopy
+
+        internal List<QueryableFormat> QueryableFormats { get; set; }
         internal bool IsClone { get; set; }
         public bool NoCheckInclude { get;  set; }
         public virtual bool IsSelectNoAll { get; set; } = false;
