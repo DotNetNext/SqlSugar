@@ -75,10 +75,10 @@ namespace SqlSugar
             {
                 result = result + TranLock;
             }
-            if (result.Contains("uuid_generate_v4()"))
-            {
-                result = " CREATE EXTENSION IF NOT EXISTS pgcrypto;CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\"; " + result;
-            }
+            //if (result.Contains("uuid_generate_v4()"))
+            //{
+            //    result = " CREATE EXTENSION IF NOT EXISTS kbcrypto;CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\"; " + result;
+            //}
             return result;
         }
 
