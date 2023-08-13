@@ -38,6 +38,14 @@ namespace OrmTest
                     Date = x.CreateTime!.Value.Date,
                     SumPrice = SqlFunc.AggregateSum(x.Price)
                 }).MergeTable().ToList();
+             
+            for (int i = 0; i < 100; i++)
+            {
+                var guids = Db.Queryable<Order>().Select(it => new
+                {
+                    id = SqlFunc.NewUid()
+                }).Take(10).ToList(); 
+            }
 
             Console.WriteLine(list.Count);
         }

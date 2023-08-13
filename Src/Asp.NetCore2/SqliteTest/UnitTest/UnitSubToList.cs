@@ -11,6 +11,14 @@ namespace OrmTest
         public static void Init()
         {
             var db = NewUnitTest.Db;
+
+            for (int i = 0; i < 100; i++)
+            {
+                var guids = db.Queryable<Order>().Select(it => new
+                {
+                    id = SqlFunc.NewUid()
+                }).Take(10).ToList();
+            }
             //   db.Aop.OnLogExecuting = null;
 
             db.DbMaintenance.TruncateTable<Order, OrderItem, Custom>();

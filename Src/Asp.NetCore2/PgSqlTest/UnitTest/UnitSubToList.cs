@@ -11,6 +11,17 @@ namespace OrmTest
         public static void Init()
         {
             var db = NewUnitTest.Db;
+            List<Guid> dis = new List<Guid>(); 
+ 
+            for (int i = 0; i < 100; i++)
+            {
+                var guids = db.Queryable<Order>().Select(it => 
+                 
+                      SqlFunc.NewUid()
+                ).Take(10) .ToList();
+                dis.AddRange(guids);
+            }
+            var count = dis.Distinct().Count();
             //   db.Aop.OnLogExecuting = null;
 
             db.CodeFirst.InitTables<Order, OrderItem, Custom>();
