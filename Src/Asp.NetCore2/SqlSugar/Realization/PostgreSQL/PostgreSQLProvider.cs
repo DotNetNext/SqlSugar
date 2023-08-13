@@ -228,6 +228,17 @@ namespace SqlSugar
                 parameter.Value = Convert.ToInt64(parameter.Value);
             }
         }
+        public override Action<SqlSugarException> ErrorEvent => it =>
+        {
+            if (base.ErrorEvent != null)
+            {
+                base.ErrorEvent(it);
+            }
+            if (it.Message != null && it.Message.StartsWith("42883:"))
+            {
+                Check.ExceptionEasy(it.Message, $"使用uuid_generate_v4()函数需要创建 CREATE EXTENSION IF NOT EXISTS pgcrypto;CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\" ");
+            }
+        };
 
         static readonly Dictionary<Type, NpgsqlDbType> ArrayMapping = new Dictionary<Type, NpgsqlDbType>()
         {
