@@ -679,8 +679,8 @@ namespace SqlSugar
                 if (IsExists(sql))
                 {
                     whereSql = UtilMethods.RemoveBeforeFirstWhere(sql);
-                }
-                dt = this.Context.Queryable<T>().Filter(null, true).Where(whereSql).AddParameters(parameters).ToDataTable();
+                } 
+                dt = this.Context.Queryable<T>().AS(this.UpdateBuilder.TableName).Filter(null, true).Where(whereSql).AddParameters(parameters).ToDataTable();
             }
             else
             {
