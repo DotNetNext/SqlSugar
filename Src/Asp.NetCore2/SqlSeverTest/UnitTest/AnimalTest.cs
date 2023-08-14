@@ -42,7 +42,15 @@ namespace OrmTest
                 .LeftJoin<Dog>((x, y) => x.DogId == y.DogId)
                     .LeftJoin<Dog>((x, y,z) => x.DogId == z.DogId)
              .ToList();
-
+            db.Queryable<Dog, Cat>((d, c) => new JoinQueryInfos(
+                 JoinType.Left, d.AnimalId == c.AnimalId
+                ))
+             .ToList();
+            db.Queryable<Dog, Cat,Cat>((d, c,cat) => new JoinQueryInfos(
+              JoinType.Left, d.AnimalId == c.AnimalId,
+               JoinType.Left, d.AnimalId == cat.AnimalId
+             ))
+            .ToList();
             db.DbMaintenance.AddColumnRemark("Id", "DBO.Order", "a");
         }
     }
