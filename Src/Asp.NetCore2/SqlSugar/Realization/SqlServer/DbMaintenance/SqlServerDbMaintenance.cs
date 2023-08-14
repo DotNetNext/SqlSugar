@@ -334,6 +334,10 @@ namespace SqlSugar
         }
         public override bool IsAnyColumnRemark(string columnName, string tableName)
         {
+            if (tableName!=null&&tableName.Contains(".") && tableName.Contains(SqlBuilder.SqlTranslationLeft)) 
+            {
+                tableName =string.Join(".", tableName.Split(".").Select(it => SqlBuilder.GetNoTranslationColumnName(it)));
+            }
             if (IsAnySchemaTable(tableName))
             {
                 var schema = tableName.Split('.').First();
@@ -347,6 +351,10 @@ namespace SqlSugar
         }
         public override bool DeleteColumnRemark(string columnName, string tableName)
         {
+            if (tableName != null&&tableName.Contains(".") && tableName.Contains(SqlBuilder.SqlTranslationLeft))
+            {
+                tableName = string.Join(".", tableName.Split(".").Select(it => SqlBuilder.GetNoTranslationColumnName(it)));
+            }
             if (IsAnySchemaTable(tableName))
             {
                 var schema = tableName.Split('.').First();
@@ -360,6 +368,10 @@ namespace SqlSugar
         }
         public override bool AddColumnRemark(string columnName, string tableName, string description)
         {
+            if (tableName != null&&tableName.Contains(".") && tableName.Contains(SqlBuilder.SqlTranslationLeft))
+            {
+                tableName = string.Join(".", tableName.Split(".").Select(it => SqlBuilder.GetNoTranslationColumnName(it)));
+            }
             if (IsAnySchemaTable(tableName))
             {
                 var schema = tableName.Split('.').First();
