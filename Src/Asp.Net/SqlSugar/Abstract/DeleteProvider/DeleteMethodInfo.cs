@@ -28,6 +28,17 @@ namespace SqlSugar
             return  await(Task<int>)result;
         }
 
+        public CommonMethodInfo AS(string tableName)
+        {
+            var inertable = MethodInfo.Invoke(Context, new object[] { objectValue });
+            var newMethod = inertable.GetType().GetMyMethod("AS", 1, typeof(string));
+            var result = newMethod.Invoke(inertable, new object[] { tableName });
+            return new CommonMethodInfo()
+            {
+                Context = result
+            };
+        }
+
         public CommonMethodInfo SplitTable()
         {
             var inertable = MethodInfo.Invoke(Context, new object[] { objectValue });
