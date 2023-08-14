@@ -60,6 +60,10 @@ namespace SqlSugar
                 {
                     addValue = Convert.ToDouble(addValue + "").ToString(valueFomatInfo.Format);
                 }
+                else if (valueFomatInfo.TypeString == "Enum") 
+                {
+                    addValue =ChangeType2( addValue,valueFomatInfo.Type)?.ToString();
+                }
             }
             return addValue;
         }
