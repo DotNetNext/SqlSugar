@@ -17,6 +17,15 @@ namespace OrmTest
                 x2=it.type2
             }).ToList();
 
+            var xx = Db.Queryable<Unit00Z11C12>().Select(it => new {
+                x = it.type.ToString()
+            }).ToList();
+
+            if (xx.First().x != "a") 
+            {
+                throw new Exception("unit error");
+            }
+
             var x2 = Db.Queryable<Unit00Z11C12>().ToList();
             Db.Updateable<Unit00Z11C12>().SetColumns(it => it.type2 == UnitType.b)
                 .Where(it=>true).ExecuteCommand();
