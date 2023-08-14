@@ -102,10 +102,16 @@ namespace OrmTest
 
 			db.QueryFilter.Clear();
 			List<int> tags = new List<int>() {1, 2 };
-            db.Queryable<OperatorInfo>()
+            var list5=db.Queryable<OperatorInfo>()
                 .Includes(x => x.Roles)
                 .Where(x => x.Roles.Any(s=> tags.Contains(s.id)))
                 .ToList();
+
+            var list6 = db.Queryable<OperatorInfo>()
+              .Includes(x => x.Roles)
+              .LeftJoin<OperatorInfo>((x, y) => x.id == y.id)
+              .Where(x => x.Roles.Any(s => tags.Contains(s.id)))
+              .ToList();
         }
 
 			/// <summary>
