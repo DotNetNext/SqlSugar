@@ -20,7 +20,13 @@ namespace SqlSugar
             this.Context.ParameterIndex = newContext.ParameterIndex;
             if (newContext.Parameters.HasValue())
             {
-                this.Context.Parameters.AddRange(newContext.Parameters);
+                foreach (var p in newContext.Parameters)
+                {
+                    if (!this.Context.Parameters.Any(it => it.ParameterName == p.ParameterName))
+                    {
+                        this.Context.Parameters.Add(p);
+                    }
+                }
             }
             if (this.Context.SingleTableNameSubqueryShortName == "Subqueryable()")
             {
