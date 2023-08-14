@@ -68,7 +68,15 @@ namespace OrmTest
               .Include(x=>x.books)
               .Include(x=>x.school_001)
               .ExecuteCommand();
- 
+
+            db.QueryFilter.AddTableFilter<Book_004>(x => x.StudentId == Guid.NewGuid());
+            db.Queryable<Student_004>()
+
+                .ToList(it => new {
+                    list = it.books.Count(),
+                    list2 = it.books.Count(),
+                });
+
         }
 
         [SugarTable("Student_005")]

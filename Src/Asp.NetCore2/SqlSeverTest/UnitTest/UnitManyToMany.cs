@@ -112,14 +112,23 @@ namespace OrmTest
               .LeftJoin<OperatorInfo>((x, y) => x.id == y.id)
               .Where(x => x.Roles.Any(s => tags.Contains(s.id)))
               .ToList();
+
+            db.QueryFilter.AddTableFilter<OptRole>(x => x.roleId == 2);
+            db.Queryable<OperatorInfo>()
+                
+                .ToList(it=>new { 
+				 list=it.Roles.Count(),
+                    list2 = it.Roles.Count(),
+                });
+
         }
 
-			/// <summary>
-			/// 描述：
-			/// 作者：synjones
-			/// 时间：2022-04-20 21:30:28
-			/// </summary>
-			[SugarTable("unit_operatorinfo")]
+        /// <summary>
+        /// 描述：
+        /// 作者：synjones
+        /// 时间：2022-04-20 21:30:28
+        /// </summary>
+        [SugarTable("unit_operatorinfo")]
 		public partial class OperatorInfo
 		{           /// <summary>
 					/// 多角色
