@@ -233,6 +233,7 @@ namespace SqlSugar
             {
                 queryable.QueryBuilder.TableShortName = PropertyShortName;
             }
+            queryable.QueryBuilder.LambdaExpressions.ParameterIndex = 500;
             var sqlObj = queryable
                 .AS(this.ProPertyEntity.DbTableName)
                 .Filter(this.ProPertyEntity.Type)
