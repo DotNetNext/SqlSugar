@@ -528,7 +528,7 @@ namespace SqlSugar
         }
         public ISugarQueryable<T> Where(string fieldName, string conditionalType, object fieldValue)
         {
-            string parameterName = fieldName+ this.QueryBuilder.WhereIndex;
+            string parameterName = fieldName.Replace(".","_")+ this.QueryBuilder.WhereIndex;
             var whereSql = this.SqlBuilder.GetWhere(fieldName, conditionalType, this.QueryBuilder.WhereIndex);
             this.Where(whereSql);
             this.QueryBuilder.WhereIndex++;

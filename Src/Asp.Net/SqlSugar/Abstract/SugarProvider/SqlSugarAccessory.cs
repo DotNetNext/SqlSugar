@@ -353,6 +353,7 @@ namespace SqlSugar
             {
                 queryable.SqlBuilder.QueryBuilder.Parameters.AddRange(paramters);
             }
+            UtilMethods.AddDiscrimator(typeof(T), queryable, queryable.QueryBuilder.TableShortName + ".");
         }
         protected void CreateEasyQueryJoin<T>(Expression joinExpression, Type[] types, ISugarQueryable<T> queryable)
         {
