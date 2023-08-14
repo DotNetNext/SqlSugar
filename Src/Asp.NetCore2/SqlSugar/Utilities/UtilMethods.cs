@@ -1342,7 +1342,7 @@ namespace SqlSugar
         }
 
 
-        internal static void AddDiscrimator<T>(Type type, ISugarQueryable<T> queryable)
+        internal static void AddDiscrimator<T>(Type type, ISugarQueryable<T> queryable,string shortName=null)
         {
             var entityInfo = queryable.Context?.EntityMaintenance?.GetEntityInfoWithAttr(type);
             if (entityInfo!=null&&entityInfo.Discrimator.HasValue())
@@ -1353,7 +1353,7 @@ namespace SqlSugar
                 {
                     var name = disItem.Split(':').First();
                     var value = disItem.Split(':').Last();
-                    queryable.Where(name, "=", value);
+                    queryable.Where(shortName+name, "=", value);
                 }
             }
         }
