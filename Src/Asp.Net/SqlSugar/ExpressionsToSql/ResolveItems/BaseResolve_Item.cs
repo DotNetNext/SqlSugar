@@ -40,6 +40,27 @@ namespace SqlSugar
                 parameter.Context.Result.Append(this.Context.GetAsString2(asName, GetNewExpressionValue(childExpression)));
                 return;
             }
+            else if (ExpressionTool.GetMethodName(item) == "ToString"
+                              && (item as MethodCallExpression)?.Arguments?.Count() == 0
+                              && (item as MethodCallExpression)?.Object?.Type?.IsEnum==true
+                              && this.Context?.SugarContext?.QueryBuilder != null)
+            {
+                var childExpression = (item as MethodCallExpression)?.Object;
+                var type = childExpression.Type;
+                if (this.Context.SugarContext.QueryBuilder.QueryableFormats == null)
+                {
+                    this.Context.SugarContext.QueryBuilder.QueryableFormats = new List<QueryableFormat>();
+                }
+                this.Context.SugarContext.QueryBuilder.QueryableFormats.Add(new QueryableFormat()
+                { 
+                    PropertyName = asName,
+                    Type = type,
+                    TypeString = "Enum",
+                    MethodName = "ToString"
+                });
+                parameter.Context.Result.Append(this.Context.GetAsString2(asName, GetNewExpressionValue(childExpression)));
+                return;
+            }
             this.Expression = item;
             this.Start();
             if (ExpressionTool.GetMethodName(item) == "MappingColumn")
