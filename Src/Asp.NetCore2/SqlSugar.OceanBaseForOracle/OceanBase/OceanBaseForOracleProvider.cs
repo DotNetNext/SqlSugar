@@ -12,6 +12,7 @@ namespace SqlSugar.OceanBaseForOracle
 {
     public class OceanBaseForOracleProvider : AdoProvider
     {
+        public override string SqlParameterKeyWord { get { return ":"; } }
         public OceanBaseForOracleProvider() { }
         public override IDbConnection Connection
         {
@@ -201,12 +202,19 @@ namespace SqlSugar.OceanBaseForOracle
             List<SugarParameter> orderParameters = new List<SugarParameter>();
             if (parameters.HasValue())
             {
+                foreach (var p in parameters)
+                {
+                    if (!p.ParameterName.StartsWith(this.SqlParameterKeyWord))
+                    {
+                        p.ParameterName = this.SqlParameterKeyWord + p.ParameterName;
+                    }
+                }
                 //由于Odbc参数都为?，用顺序进行匹配，则进行参数排序
                 string reg = string.Join('|', parameters.Select(m => m.ParameterName));
                 //通过正则匹配，为顺序输出，相同也会重复匹配
                 Regex parametersRegx = new Regex(reg);
                 MatchCollection matches = parametersRegx.Matches(sql);
-                foreach (Match pMatch in matches) 
+                foreach (Match pMatch in matches)
                 {
                     SugarParameter mP = parameters.FirstOrDefault(m => m.ParameterName == pMatch.Value);
                     if (mP != null)
@@ -226,7 +234,7 @@ namespace SqlSugar.OceanBaseForOracle
             {
                 sqlCommand.Transaction = (OdbcTransaction)this.Transaction;
             }
-            if (parameters.HasValue())
+            if (orderParameters.HasValue())
             {
                 OdbcParameter[] ipars = GetSqlParameter(orderParameters.ToArray());
                 sqlCommand.Parameters.AddRange(ipars);
