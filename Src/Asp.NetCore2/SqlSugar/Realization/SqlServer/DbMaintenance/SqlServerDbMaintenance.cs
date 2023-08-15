@@ -336,7 +336,7 @@ namespace SqlSugar
         {
             if (tableName!=null&&tableName.Contains(".") && tableName.Contains(SqlBuilder.SqlTranslationLeft)) 
             {
-                tableName =string.Join(".", tableName.Split(".").Select(it => SqlBuilder.GetNoTranslationColumnName(it)));
+                tableName =string.Join(".", tableName.Split('.').Select(it => SqlBuilder.GetNoTranslationColumnName(it)));
             }
             if (IsAnySchemaTable(tableName))
             {
@@ -353,7 +353,7 @@ namespace SqlSugar
         {
             if (tableName != null&&tableName.Contains(".") && tableName.Contains(SqlBuilder.SqlTranslationLeft))
             {
-                tableName = string.Join(".", tableName.Split(".").Select(it => SqlBuilder.GetNoTranslationColumnName(it)));
+                tableName = string.Join(".", tableName.Split('.').Select(it => SqlBuilder.GetNoTranslationColumnName(it)));
             }
             if (IsAnySchemaTable(tableName))
             {
@@ -370,7 +370,7 @@ namespace SqlSugar
         {
             if (tableName != null&&tableName.Contains(".") && tableName.Contains(SqlBuilder.SqlTranslationLeft))
             {
-                tableName = string.Join(".", tableName.Split(".").Select(it => SqlBuilder.GetNoTranslationColumnName(it)));
+                tableName = string.Join(".", tableName.Split('.').Select(it => SqlBuilder.GetNoTranslationColumnName(it)));
             }
             if (IsAnySchemaTable(tableName))
             {
