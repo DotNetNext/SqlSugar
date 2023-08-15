@@ -156,6 +156,18 @@ namespace SqlSugar
                 };
                 model.Args.Add(methodCallExpressionArgs);
             }
+            else if (ExpressionTool.GetMethodName(item)== "Format" && ExpressionTool.GetParameters(item).Count==0) 
+            {
+                var value =  ExpressionTool.DynamicInvoke(item);
+                var p = AppendParameter(value);
+                var methodCallExpressionArgs = new MethodCallExpressionArgs()
+                {
+                    IsMember = true,
+                    MemberName = p,
+                    MemberValue = p
+                };
+                model.Args.Add(methodCallExpressionArgs);
+            }
             else if (isLength)
             {
                 var sql = GetNewExpressionValue(item);
@@ -254,34 +266,36 @@ namespace SqlSugar
                 }
                 model.Args.Add(argItem);
             }
-            else if (name == "ListAny"&& item is LambdaExpression) 
+            else if (name == "ListAny" && item is LambdaExpression)
             {
-                var sql =GetNewExpressionValue(item,ResolveExpressType.WhereMultiple);
+                var sql = GetNewExpressionValue(item, ResolveExpressType.WhereMultiple);
                 var lamExp = (item as LambdaExpression);
                 var pExp = lamExp.Parameters[0];
                 var pname = pExp.Name;
-                model.Args.Add(new MethodCallExpressionArgs() {
-                   MemberValue=new ListAnyParameter() {
-                      Sql= sql,
-                      Name=pname,
-                      Columns=this.Context.SugarContext.Context.EntityMaintenance.GetEntityInfo(pExp.Type).Columns,
-                      ConvetColumnFunc = this.Context.GetTranslationColumnName
-                   }
+                model.Args.Add(new MethodCallExpressionArgs()
+                {
+                    MemberValue = new ListAnyParameter()
+                    {
+                        Sql = sql,
+                        Name = pname,
+                        Columns = this.Context.SugarContext.Context.EntityMaintenance.GetEntityInfo(pExp.Type).Columns,
+                        ConvetColumnFunc = this.Context.GetTranslationColumnName
+                    }
                 });
-                if (this.Context.IsSingle && this.Context.SingleTableNameSubqueryShortName == null) 
+                if (this.Context.IsSingle && this.Context.SingleTableNameSubqueryShortName == null)
                 {
                     ParameterExpressionVisitor visitor = new ParameterExpressionVisitor();
                     visitor.Visit(lamExp);
-                    var tableParamter=visitor.Parameters.FirstOrDefault(it => it.Name != pname);
-                    if (tableParamter != null) 
+                    var tableParamter = visitor.Parameters.FirstOrDefault(it => it.Name != pname);
+                    if (tableParamter != null)
                     {
                         this.Context.SingleTableNameSubqueryShortName = tableParamter.Name;
                     }
-                } 
+                }
             }
             else
             {
-                AppendModel(parameter, model, item,name, args);
+                AppendModel(parameter, model, item, name, args);
             }
         }
 
@@ -368,13 +382,18 @@ namespace SqlSugar
             {
                 parameter.CommonTempData = GetNewExpressionValue(item);
             }
-            else if (name == "Format" && item is NewArrayExpression) 
+            else if (name == "Format" && item is NewArrayExpression)
             {
                 var exps = (item as NewArrayExpression).Expressions;
-                parameter.CommonTempData = exps.Select(it => {
+                parameter.CommonTempData = exps.Select(it =>
+                {
                     var res = GetNewExpressionValue(ExpressionTool.RemoveConvert(it));
                     return res;
-                }).ToArray(); 
+                }).ToArray();
+            }
+            else if (name == "Format" && item is ConstantExpression) 
+            {
+                parameter.CommonTempData = ExpressionTool.GetExpressionValue(item);
             }
             else
             {
