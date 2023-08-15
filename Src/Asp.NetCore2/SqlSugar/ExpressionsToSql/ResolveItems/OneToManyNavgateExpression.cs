@@ -163,6 +163,7 @@ namespace SqlSugar
             bPk = queryable.QueryBuilder.Builder.GetTranslationColumnName(bPk);
             aPk = queryable.QueryBuilder.Builder.GetTranslationColumnName(aPk);
             var mappingType = Navigat.MappingType;
+            Check.ExceptionEasy(mappingType == null, "ManyToMany misconfiguration", "多对多配置错误");
             var mappingEntity = this.context.EntityMaintenance.GetEntityInfo(mappingType);
             var mappingTableName=queryable.QueryBuilder.Builder.GetTranslationTableName(mappingEntity.DbTableName);
             var mappingA = mappingEntity.Columns.First(it => it.PropertyName == Navigat.MappingAId).DbColumnName;
