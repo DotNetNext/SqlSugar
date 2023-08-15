@@ -241,6 +241,21 @@ namespace OrmTest
                    Sub003Count = t.Sub003.Count(),
                })
                .ToList();
+
+                var riskList2 = db.Queryable<Test001>()
+                    .Where(it=>
+                    it.Sub001.Any(s=>s.Commons.Any(t=>t.TenantId==1))||
+                    it.Sub002.Any(s => s.Commons.Any(t => t.TenantId == 1))||
+                    it.Sub003.Any(s => s.Commons.Any(t => t.TenantId == 1)))
+            .Select(it => new
+            {
+                Name = it.Name,
+                Other = it.Other,
+                Sub001Count = it.Sub001.Count(),
+                Sub002Count = it.Sub002.Count(),
+                Sub003Count = it.Sub003.Count(),
+            })
+            .ToList();
             }
             catch (Exception e)
             {
