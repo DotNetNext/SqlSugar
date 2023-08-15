@@ -381,6 +381,10 @@ namespace SqlSugar
         }
         public ISugarQueryable<T> Filter(Type type)
         {
+            if (type == null) 
+            {
+                return this;
+            }
             this.Context.InitMappingInfo(type);
             var whereString= QueryBuilder.GetFilters(type);
             if (whereString.HasValue())
@@ -1229,6 +1233,10 @@ namespace SqlSugar
         }
         public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, TResult>> expression, bool isAutoFill)
         {
+            if (typeof(TResult).IsAnonymousType()) 
+            {
+                return Select(expression);
+            }
             var clone = this.Select(expression).Clone();
             //clone.QueryBuilder.LambdaExpressions.Index = QueryBuilder.LambdaExpressions.Index+1;
             var ps = clone.QueryBuilder;
