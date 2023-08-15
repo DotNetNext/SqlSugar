@@ -174,7 +174,7 @@ namespace SqlSugar
             var queryBuilerAB=this.context.Queryable<object>().QueryBuilder;
             queryBuilerAB.LambdaExpressions.ParameterIndex = 100+this.ParameterIndex;
             var filters= queryBuilerAB.GetFilters(mappingType);
-            if (filters.HasValue()) 
+            if (filters.HasValue()&& this.methodCallExpressionResolve?.Context?.SugarContext?.QueryBuilder?.IsDisabledGobalFilter!=true) 
             {
                 aPk += " AND " + filters;
                 if (queryBuilerAB.Parameters != null) 
@@ -234,14 +234,16 @@ namespace SqlSugar
                 queryable.QueryBuilder.TableShortName = PropertyShortName;
             }
             queryable.QueryBuilder.LambdaExpressions.ParameterIndex = 500;
+            var isClearFilter = false;
             if (this.methodCallExpressionResolve?.Context?.SugarContext?.QueryBuilder != null) 
             {
                 queryable.QueryBuilder.LambdaExpressions.ParameterIndex=500+ this.methodCallExpressionResolve.Context.SugarContext.QueryBuilder.LambdaExpressions.ParameterIndex;
                 this.methodCallExpressionResolve.Context.SugarContext.QueryBuilder.LambdaExpressions.ParameterIndex++;
+                isClearFilter=this.methodCallExpressionResolve.Context.SugarContext.QueryBuilder.IsDisabledGobalFilter;
             }
             var sqlObj = queryable
                 .AS(this.ProPertyEntity.DbTableName)
-                .Filter(this.ProPertyEntity.Type)
+                .Filter(isClearFilter?null:this.ProPertyEntity.Type)
                 .WhereIF(!string.IsNullOrEmpty(whereSql), whereSql)
                 .Where($" {name}={ShorName}.{pk} ").Select(MethodName == "Any" ? "1" : " COUNT(1) ").ToSql();
             if (sqlObj.Value?.Any() == true)

@@ -381,6 +381,10 @@ namespace SqlSugar
         }
         public ISugarQueryable<T> Filter(Type type)
         {
+            if (type == null) 
+            {
+                return this;
+            }
             this.Context.InitMappingInfo(type);
             var whereString= QueryBuilder.GetFilters(type);
             if (whereString.HasValue())
