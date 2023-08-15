@@ -78,6 +78,8 @@ namespace OrmTest
                 s = SqlFunc.RowSum(it.Id, it.Id, it.Name),
                 s2 = SqlFunc.RowSum(it.Id),
             }).ToList();
+            var Period = "1";
+            var list4 = db.Queryable<Order>().Where(it => it.Name.Contains($"P{Period:00}-")).ToList();
             Console.WriteLine("#### Examples End ####");
         }
 
