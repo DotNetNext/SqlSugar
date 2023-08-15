@@ -156,7 +156,7 @@ namespace SqlSugar
                 };
                 model.Args.Add(methodCallExpressionArgs);
             }
-            else if (ExpressionTool.GetMethodName(item)== "Format" && ExpressionTool.GetParameters(item).Count==0) 
+            else if (name!=null && name != "MappingColumn" && !name.StartsWith("Row") &&ExpressionTool.GetMethodName(item)== "Format" && ExpressionTool.GetParameters(item).Count==0) 
             {
                 var value =  ExpressionTool.DynamicInvoke(item);
                 var p = AppendParameter(value);
