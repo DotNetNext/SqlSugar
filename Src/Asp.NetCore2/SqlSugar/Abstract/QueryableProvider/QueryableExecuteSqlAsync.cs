@@ -585,10 +585,22 @@ ParameterT parameter)
             var list = await this.ToListAsync();
             return TreeAndFilterIds(childListExpression, parentIdExpression, rootValue, childIds, ref list) ?? new List<T>();
         }
+        public async Task<List<T>> ToTreeAsync(Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, Expression<Func<T, object>> primaryKeyExpression, object rootValue, object[] childIds)
+        {
+            var list = await this.ToListAsync();
+            return TreeAndFilterIds(childListExpression, parentIdExpression,primaryKeyExpression, rootValue, childIds, ref list) ?? new List<T>();
+        }
         public async Task<List<T>> ToTreeAsync(Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, object rootValue)
         {
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
             var pk = GetTreeKey(entity); ;
+            var list = await this.ToListAsync();
+            return GetTreeRoot(childListExpression, parentIdExpression, pk, list, rootValue) ?? new List<T>();
+        }
+        public async Task<List<T>> ToTreeAsync(Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, Expression<Func<T, object>> primaryKeyExpression, object rootValue)
+        {
+            var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            var pk = ExpressionTool.GetMemberName(primaryKeyExpression); ;
             var list = await this.ToListAsync();
             return GetTreeRoot(childListExpression, parentIdExpression, pk, list, rootValue) ?? new List<T>();
         }
