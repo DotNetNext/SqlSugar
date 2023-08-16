@@ -18,6 +18,12 @@ namespace SqlSugar
 {
     public class UtilMethods
     {
+
+        public static string RemoveEqualOne(string value)
+        {
+            value = value.TrimEnd(' ').TrimEnd('1').TrimEnd('=');
+            return value;
+        }
         /// <summary>
         /// Available only in Select,Handles logic that cannot be completed by an expression
         /// </summary>
