@@ -24,11 +24,20 @@ namespace OrmTest
                 {
                     OnLogExecuting = (sql, p) =>
                     {
-                        Console.WriteLine(UtilMethods.GetNativeSql(sql,p)); 
+                        Console.WriteLine(UtilMethods.GetNativeSql(sql, p));
                     }
                 }
             });
+             
+            //简单用例
+            Demo1(db);
 
+            //测试用例
+            UnitTest(db);
+        }
+
+        private static void Demo1(SqlSugarClient db)
+        {
             //建库
             db.DbMaintenance.CreateDatabase();
 
@@ -64,10 +73,10 @@ namespace OrmTest
             var list = db.Queryable<MyTable02>().OrderBy(it => it.ts).ToList();
 
             //条件查询
-            var list2 = db.Queryable<MyTable02>().Where(it => it.name== "测试2").ToList();
+            var list2 = db.Queryable<MyTable02>().Where(it => it.name == "测试2").ToList();
             var list22 = db.Queryable<MyTable02>().Where(it => it.voltage == 222).ToList();
             var list222 = db.Queryable<MyTable02>().Where(it => it.phase == 1.2).ToList();
-            var list2222 = db.Queryable<MyTable02>().Where(it => it.isdelete==true).ToList();
+            var list2222 = db.Queryable<MyTable02>().Where(it => it.isdelete == true).ToList();
 
             //模糊查询
             var list3 = db.Queryable<MyTable02>().Where(it => it.name.Contains("a")).ToList();
@@ -98,6 +107,21 @@ namespace OrmTest
             }).ExecuteCommandAsync().GetAwaiter().GetResult();
 
             var list100 = db.Queryable<MyTable02>().ToListAsync().GetAwaiter().GetResult();
+        }
+        private static void UnitTest(SqlSugarClient db)
+        {
+            //更多类型查询测试
+            db.Ado.ExecuteCommand(@"
+                                CREATE STABLE IF NOT EXISTS  `fc_data` (
+                                `upload_time` TIMESTAMP, 
+                                `voltage` SMALLINT,
+                                `temperature` FLOAT,
+                                `data_id` SMALLINT,
+                                `speed_hex` VARCHAR(80),
+                                `gateway_mac` VARCHAR(8),
+                                `ruminate` SMALLINT, 
+                                `rssi` TINYINT) TAGS (`tag_id` VARCHAR(12))");
+            var list=db.Queryable<fc_data>().ToList(); 
         }
 
         private static List<MyTable02> GetInsertDatas()
@@ -138,7 +162,28 @@ namespace OrmTest
             }
             };
         }
+        public class fc_data
+        {
+            public DateTime upload_time { get; set; }
 
+            public int voltage { get; set; }
+
+            public float temperature { get; set; }
+
+            public int data_id { get; set; }
+
+
+            public string speed_hex { get; set; }
+
+
+            public string gateway_mac { get; set; }
+
+
+            public int ruminate { get; set; }
+
+            public sbyte rssi { get; set; }
+
+        }
         public class MyTable02
         {
             [SugarColumn(IsPrimaryKey =true)]

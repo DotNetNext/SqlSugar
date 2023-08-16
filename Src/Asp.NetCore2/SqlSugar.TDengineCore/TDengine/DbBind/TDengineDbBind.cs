@@ -27,7 +27,7 @@ namespace SqlSugar.TDengine
                 return "varchar";
         }
         public override string GetPropertyTypeName(string dbTypeName)
-        { 
+        {
             if (dbTypeName.ToLower() == "int32")
             {
                 dbTypeName = "int";
@@ -44,9 +44,13 @@ namespace SqlSugar.TDengine
             {
                 dbTypeName = "string";
             }
-            else if (dbTypeName.ToLower() == "boolean") 
+            else if (dbTypeName.ToLower() == "boolean")
             {
                 dbTypeName = "bool";
+            }
+            else if (dbTypeName.ToLower() == "sbyte") 
+            {
+                dbTypeName = "sbyte";
             }
             return dbTypeName;
         }
