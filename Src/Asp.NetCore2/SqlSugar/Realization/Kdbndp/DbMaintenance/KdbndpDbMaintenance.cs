@@ -430,11 +430,11 @@ namespace SqlSugar
                 {
                     item.Length = 1;
                 }
-                if (dataType == "uuid")
-                {
-                    item.Length = 50;
-                    dataType = "varchar";
-                }
+                //if (dataType == "uuid")
+                //{
+                //    item.Length = 50;
+                //    dataType = "varchar";
+                //}
                 string dataSize = item.Length > 0 ? string.Format("({0})", item.Length) : null;
                 string nullType = item.IsNullable ? this.CreateTableNull : CreateTableNotNull;
                 string primaryKey = null;
