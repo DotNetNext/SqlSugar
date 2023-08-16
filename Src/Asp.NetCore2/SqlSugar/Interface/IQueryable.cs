@@ -75,6 +75,7 @@ namespace SqlSugar
         /// <returns></returns>
         ISugarQueryable<T> WhereClass<ClassType>(List<ClassType> whereClassList,bool ignoreDefaultValue = false) where ClassType : class, new();
         ISugarQueryable<T> WhereClassByPrimaryKey(List<T> list);
+        ISugarQueryable<T> WhereClassByWhereColumns(List<T> list,string[] whereColumns);
         ISugarQueryable<T> WhereClassByPrimaryKey(T data) ;
         ISugarQueryable<T> WhereColumns(List<Dictionary<string, object>> columns);
         ISugarQueryable<T> WhereColumns(Dictionary<string, object> columns, bool ignoreDefaultValue);

@@ -688,6 +688,10 @@ namespace SqlSugar
                 {
                     dt = new DataTable();
                 }
+                else if (this.WhereColumnList?.Any() == true) 
+                { 
+                    dt = this.Context.Queryable<T>().Filter(null, true).WhereClassByWhereColumns(this.UpdateObjs.ToList(), this.WhereColumnList.ToArray()).ToDataTable();
+                }
                 else
                 {
                     dt = this.Context.Queryable<T>().Filter(null, true).WhereClassByPrimaryKey(this.UpdateObjs.ToList()).ToDataTable();

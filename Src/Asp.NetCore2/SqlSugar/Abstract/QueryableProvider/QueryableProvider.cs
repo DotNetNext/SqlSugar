@@ -594,6 +594,12 @@ namespace SqlSugar
             _WhereClassByPrimaryKey(list);
             return this;
         }
+
+        public ISugarQueryable<T> WhereClassByWhereColumns(List<T> list, string[] whereColumns) 
+        {
+            _WhereClassByWhereColumns(list,whereColumns);
+            return this;
+        }
         public ISugarQueryable<T> WhereClassByPrimaryKey(T data)
         {
             _WhereClassByPrimaryKey(new List<T>() { data });
@@ -730,6 +736,73 @@ namespace SqlSugar
                     }
                 }
                 this.Where(whereModels,true);
+            }
+            else
+            {
+                this.Where(" 1=2 ");
+            }
+            return this;
+        }
+        /// <summary>
+        ///  if a property that is whereColumns key is a condition
+        /// </summary>
+        /// <param name="whereClassTypes"></param>
+        /// <returns></returns>
+        public ISugarQueryable<T> _WhereClassByWhereColumns(List<T> whereClassTypes,string[] whereColumns)
+        {
+
+            if (whereClassTypes.HasValue())
+            {
+                var columns = this.Context.EntityMaintenance.GetEntityInfo<T>().Columns.Where(it => whereColumns.Any(x=>x==it.PropertyName)|| whereColumns.Any(x => x.EqualCase(it.DbColumnName))).ToList();
+                Check.Exception(columns == null || columns.Count == 0, "{0} no primary key, Can not use whereColumns ", typeof(T).Name);
+                Check.Exception(this.QueryBuilder.IsSingle() == false, "No support join query");
+                List<IConditionalModel> whereModels = new List<IConditionalModel>();
+                foreach (var item in whereClassTypes)
+                {
+                    var cons = new ConditionalCollections();
+                    foreach (var column in columns)
+                    {
+                        WhereType WhereType = WhereType.And;
+                        var value = column.PropertyInfo.GetValue(item, null);
+                        if (cons.ConditionalList == null)
+                        {
+                            cons.ConditionalList = new List<KeyValuePair<WhereType, ConditionalModel>>();
+                            if (QueryBuilder.WhereInfos.IsNullOrEmpty() && whereModels.IsNullOrEmpty())
+                            {
+
+                            }
+                            else
+                            {
+                                WhereType = WhereType.Or;
+                            }
+                        }
+                        var data = new KeyValuePair<WhereType, ConditionalModel>(WhereType, new ConditionalModel()
+                        {
+                            ConditionalType = ConditionalType.Equal,
+                            FieldName = this.QueryBuilder.Builder.GetTranslationColumnName(column.DbColumnName),
+                            FieldValue = value.ObjToStringNew(),
+                            CSharpTypeName = column.PropertyInfo.PropertyType.Name
+                        });
+                        if (value is Enum && this.Context.CurrentConnectionConfig?.MoreSettings?.TableEnumIsString != true)
+                        {
+                            data.Value.FieldValue = Convert.ToInt64(value).ObjToString();
+                            data.Value.CSharpTypeName = "int";
+                        }
+                        //if (this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL) 
+                        //{
+                        //    data.Value.FieldValueConvertFunc = it =>
+                        //    {
+                        //        return UtilMethods.ChangeType2(it, value.GetType());
+                        //    };
+                        //}
+                        cons.ConditionalList.Add(data);
+                    }
+                    if (cons.HasValue())
+                    {
+                        whereModels.Add(cons);
+                    }
+                }
+                this.Where(whereModels, true);
             }
             else
             {
