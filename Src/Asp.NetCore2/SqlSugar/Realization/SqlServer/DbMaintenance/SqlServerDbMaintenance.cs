@@ -360,6 +360,10 @@ namespace SqlSugar
                 var schema = tableName.Split('.').First();
                 tableName = tableName.Split('.').Last();
                 var temp = this.DeleteColumnRemarkSql.Replace(",dbo,", $",{schema},");
+                if (!schema.EqualCase("dbo"))
+                {
+                    temp = temp.Replace("N'user'", $"N'schema'");
+                }
                 string sql = string.Format(temp, columnName, tableName);
                 this.Context.Ado.ExecuteCommand(sql);
                 return true;
@@ -377,6 +381,10 @@ namespace SqlSugar
                 var schema = tableName.Split('.').First();
                 tableName = tableName.Split('.').Last();
                 var temp = this.AddColumnRemarkSql.Replace("N'dbo'", $"N'{schema}'");
+                if (!schema.EqualCase("dbo")) 
+                {
+                    temp= temp.Replace("N'user'", $"N'schema'");
+                }
                 string sql = string.Format(temp, columnName, tableName, description);
                 this.Context.Ado.ExecuteCommand(sql);
                 return true;
