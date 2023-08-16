@@ -61,7 +61,7 @@ namespace OrmTest
             var data = db.Queryable<Order>().First();
             data.Name = "changeName";
             db.Updateable(data).EnableDiffLogEvent("--update Order--").ExecuteCommand();
-
+            db.Updateable(data).UpdateColumns(it=>it.Price).WhereColumns("name").EnableDiffLogEvent("--update Order--").ExecuteCommand();
             Console.WriteLine("#### Aop End ####");
         }
     }
