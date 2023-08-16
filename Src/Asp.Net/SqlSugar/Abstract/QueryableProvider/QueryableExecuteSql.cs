@@ -340,7 +340,13 @@ namespace SqlSugar
             }
             return result;
         }
-
+        public List<T> ToTree(Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, Expression<Func<T, object>> primaryKeyExpression, object rootValue)
+        {
+            var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            var pk = ExpressionTool.GetMemberName(primaryKeyExpression);
+            var list = this.ToList();
+            return GetTreeRoot(childListExpression, parentIdExpression, pk, list, rootValue) ?? new List<T>();
+        }
         public List<T> ToTree(Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, object rootValue)
         {
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
@@ -352,6 +358,11 @@ namespace SqlSugar
         {
             var list =  this.ToList();
             return TreeAndFilterIds(childListExpression, parentIdExpression, rootValue, childIds, ref list) ?? new List<T>();
+        } 
+        public List<T> ToTree(Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, Expression<Func<T, object>> primaryKeyExpression, object rootValue, object[] childIds)
+        {
+            var list = this.ToList();
+            return TreeAndFilterIds(childListExpression, parentIdExpression,primaryKeyExpression, rootValue, childIds, ref list) ?? new List<T>();
         }
         public virtual DataTable ToDataTableByEntity()
         {

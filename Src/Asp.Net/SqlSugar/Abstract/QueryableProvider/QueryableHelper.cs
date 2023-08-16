@@ -332,6 +332,21 @@ namespace SqlSugar
             list = list.Where(z => newIds.Any(it => it.ObjToString()==pkColumn.PropertyInfo.GetValue(z).ObjToString())).ToList();
             return GetTreeRoot(childListExpression, parentIdExpression, pk, list, rootValue);
         }
+        private List<T> TreeAndFilterIds(Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, Expression<Func<T, object>> primaryKeyExpresion, object rootValue, object[] childIds, ref List<T> list)
+        {
+            var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            var pk = ExpressionTool.GetMemberName(primaryKeyExpresion);
+            var pkColumn = entity.Columns.FirstOrDefault(z => z.PropertyName == pk);
+            var newIds = new List<object>();
+            string parentIdName = GetParentName(parentIdExpression);
+            var parentColumn = entity.Columns.FirstOrDefault(z => z.PropertyName == parentIdName);
+            foreach (var id in childIds)
+            {
+                newIds.AddRange(GetPrentIds(list, id, pkColumn, parentColumn));
+            }
+            list = list.Where(z => newIds.Any(it => it.ObjToString() == pkColumn.PropertyInfo.GetValue(z).ObjToString())).ToList();
+            return GetTreeRoot(childListExpression, parentIdExpression, pk, list, rootValue);
+        }
 
         internal List<T> GetTreeRoot(Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, string pk, List<T> list, object rootValue)
         {
