@@ -142,6 +142,7 @@
     <Compile Include="Abstract\QueryableProvider\QueryMethodInfo.cs" />
     <Compile Include="Abstract\SaveableProvider\StorageableMethodInfo.cs" />
     <Compile Include="Abstract\SaveableProvider\StorageableDataTable.cs" />
+    <Compile Include="Abstract\SaveableProvider\StorageableSplitProvider.cs" />
     <Compile Include="Abstract\SqlBuilderProvider\Entities.cs" />
     <Compile Include="Abstract\SqlBuilderProvider\SqlBuilderProvider_Condition.cs" />
     <Compile Include="Abstract\SugarProvider\SqlSugarCoreProvider.cs" />
