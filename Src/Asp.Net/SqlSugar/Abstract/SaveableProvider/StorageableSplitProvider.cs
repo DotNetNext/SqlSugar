@@ -73,7 +73,7 @@ namespace SqlSugar
             foreach (var item in groupModels.GroupBy(it => it.GroupName))
             {
                 var addList = item.Select(it => it.Item).ToList();
-                resultValue += this.Context.Storageable(addList).ExecuteCommand();
+                resultValue += this.Context.Storageable(addList).As(item.Key).ExecuteCommand();
             }
             return result;
         }
