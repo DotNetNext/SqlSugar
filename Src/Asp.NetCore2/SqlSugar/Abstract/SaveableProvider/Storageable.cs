@@ -88,7 +88,15 @@ namespace SqlSugar
             whereFuncs.Add(new KeyValuePair<StorageType, Func<StorageableInfo<T>, bool>, string>(StorageType.Other, conditions, message));
             return this;
         }
-
+        public StorageableSplitProvider<T> SplitTable() 
+        {
+            StorageableSplitProvider<T> result = new StorageableSplitProvider<T>();
+            result.Context = this.Context;
+            result.SaveInfo = this;
+            result.List = allDatas.Select(it=>it.Item).ToList();
+            result.EntityInfo = this.Context.EntityMaintenance.GetEntityInfoWithAttr(typeof(T));
+            return result;
+        }
         public IStorageable<T> DefaultAddElseUpdate() 
         {
             var column = this.Context.EntityMaintenance.GetEntityInfo<T>().Columns.FirstOrDefault(it=>it.IsPrimarykey);
