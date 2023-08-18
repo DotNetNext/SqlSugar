@@ -121,7 +121,22 @@ namespace OrmTest
                                 `gateway_mac` VARCHAR(8),
                                 `ruminate` SMALLINT, 
                                 `rssi` TINYINT) TAGS (`tag_id` VARCHAR(12))");
-            var list=db.Queryable<fc_data>().ToList(); 
+            var list=db.Queryable<fc_data>().ToList();
+            //创建子表
+            db.Ado.ExecuteCommand(@"create table IF NOT EXISTS  fc_data01 using `fc_data` tags('1')");
+            db.Insertable(new fc_data() { 
+               data_id= 1,
+                gateway_mac="mac",
+                 rssi=11,
+                  ruminate=1,
+                   speed_hex="x",
+                    temperature=1,
+                     upload_time=DateTime.Now,
+                    voltage=1
+
+            }).AS("fc_data01").ExecuteCommand();
+
+            var list2 = db.Queryable<fc_data>().AS("fc_data01").ToList();
         }
 
         private static List<MyTable02> GetInsertDatas()
