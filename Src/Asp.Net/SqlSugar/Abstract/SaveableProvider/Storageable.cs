@@ -207,7 +207,14 @@ namespace SqlSugar
                 result.AsUpdateable.WhereColumns(whereExpression);
                 result.AsDeleteable.WhereColumns(update.Select(it => it.Item).ToList(),whereExpression);
             }
-            result.AsDeleteable.Where(delete.Select(it => it.Item).ToList());
+            if (this.whereExpression != null)
+            {
+                result.AsDeleteable.WhereColumns(delete.Select(it => it.Item).ToList(), whereExpression);
+            }
+            else
+            {
+                result.AsDeleteable.Where(delete.Select(it => it.Item).ToList());
+            }
             return result;
         }
 
