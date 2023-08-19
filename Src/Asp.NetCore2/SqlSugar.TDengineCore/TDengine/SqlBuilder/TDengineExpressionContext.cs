@@ -169,41 +169,8 @@ namespace SqlSugar.TDengine
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
-            var format = "dd";
-            if (parameter2.MemberValue.ObjToString() == DateType.Year.ToString())
-            {
-                format = "yyyy";
-            }
-            if (parameter2.MemberValue.ObjToString() == DateType.Month.ToString())
-            {
-                format = "MM";
-            }
-            if (parameter2.MemberValue.ObjToString() == DateType.Day.ToString())
-            {
-                format = "dd";
-            }
-            if (parameter2.MemberValue.ObjToString() == DateType.Hour.ToString())
-            {
-                format = "hh";
-            }
-            if (parameter2.MemberValue.ObjToString() == DateType.Minute.ToString())
-            {
-                format = "mi";
-            }
-            if (parameter2.MemberValue.ObjToString() == DateType.Second.ToString())
-            {
-                format = "ss";
-            }
-            if (parameter2.MemberValue.ObjToString() == DateType.Millisecond.ToString())
-            {
-                format = "ms";
-            }
-            if (parameter2.MemberValue.ObjToString() == DateType.Weekday.ToString())
-            {
-                return $"  extract(DOW FROM cast({parameter.MemberName} as TIMESTAMP)) ";
-            }
- 
-            return string.Format(" cast( to_char({1},'{0}')as integer ) ", format, parameter.MemberName);
+            var format = parameter2.MemberValue.ObjToString();
+            return string.Format("  {0}({1})   ", format, parameter.MemberName);
         }
 
         public override string Contains(MethodCallExpressionModel model)
@@ -289,8 +256,9 @@ namespace SqlSugar.TDengine
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
             var parameter3 = model.Args[2];
-            return string.Format(" ({1} +  ({2}||'{0}')::INTERVAL) ", parameter3.MemberValue, parameter.MemberName, parameter2.MemberName);
+            return string.Format(" {1}+{2}{0} ", parameter3.MemberValue.ObjToString().ToLower().First(), parameter.MemberName, parameter2.MemberValue);
         }
+
 
         public override string DateAddDay(MethodCallExpressionModel model)
         {
