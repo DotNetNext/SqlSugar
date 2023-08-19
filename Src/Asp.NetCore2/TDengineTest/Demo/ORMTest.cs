@@ -138,6 +138,13 @@ namespace OrmTest
                     xts=x.ts,
                     yts=y.ts
                 }).ToList();
+            //联表查询在分页
+            var list102 = db.Queryable<MyTable02, MyTable02>((x, y) => x.ts == y.ts)
+            .Select((x, y) => new
+            {
+                xts = x.ts,
+                yts = y.ts
+            }).ToPageList(1,2);
         }
         private static void UnitTest(SqlSugarClient db)
         {
