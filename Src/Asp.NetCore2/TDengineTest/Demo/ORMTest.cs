@@ -81,7 +81,23 @@ namespace OrmTest
             //模糊查询
             var list3 = db.Queryable<MyTable02>().Where(it => it.name.Contains("a")).ToList();
 
+            //时间差函数 
+            var list31 = db.Queryable<MyTable02>().Select(it =>
+            new
+            {
+                diff = SqlFunc.DateDiff(DateType.Day, it.ts, DateTime.Now),
+                time=it.ts
+            }).ToList();
 
+            //时间加1天
+            var list32 = db.Queryable<MyTable02>().Select(it =>
+              new
+              {
+                  addTime = SqlFunc.DateAdd(it.ts,1, DateType.Day),
+                  oldime = it.ts
+              }).ToList();
+
+           
             //分页
             var Count = 0;
             var list4 = db.Queryable<MyTable02>().Where(it => it.voltage == 111)
