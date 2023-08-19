@@ -698,7 +698,7 @@ namespace SqlSugar
             {
                 return result;
             }
-            if (string.IsNullOrEmpty(OrderByValue)&&this.IsSqlQuery&&this.OldSql.HasValue() && (Skip == null && Take == null) && (this.WhereInfos == null || this.WhereInfos.Count == 0))
+            if (this.JoinQueryInfos.Count==0&&string.IsNullOrEmpty(OrderByValue)&&this.IsSqlQuery&&this.OldSql.HasValue() && (Skip == null && Take == null) && (this.WhereInfos == null || this.WhereInfos.Count == 0))
             {
                 return this.OldSql;
             }
