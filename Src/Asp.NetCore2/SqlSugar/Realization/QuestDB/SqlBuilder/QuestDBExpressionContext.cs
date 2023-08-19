@@ -294,12 +294,12 @@ namespace SqlSugar
             var parameter3 = model.Args[2];
             return string.Format(" (DATEADD('{0}',{2}, {1})) ", parameter3.MemberValue.ObjToString().ToLower().First(), parameter.MemberName, parameter2.MemberValue);
         }
-
+        
         public override string DateAddDay(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
-            return string.Format(" ({0} + ({1}||'day')::INTERVAL) ", parameter.MemberName, parameter2.MemberName);
+            return string.Format(" (DATEADD('d',{1}, {0}))  ", parameter.MemberName, parameter2.MemberName);
         }
 
         public override string ToInt32(MethodCallExpressionModel model)
