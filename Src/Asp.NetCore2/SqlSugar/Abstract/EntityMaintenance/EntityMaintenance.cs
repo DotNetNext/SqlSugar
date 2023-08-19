@@ -18,31 +18,36 @@ namespace SqlSugar
         }
         public EntityInfo GetEntityInfoWithAttr(Type type)
         {
+            return GetEntityInfo(type);
+        }
+        public EntityInfo GetEntityInfo(Type type)
+        {
             var attr = type?.GetCustomAttribute<TenantAttribute>();
             if (attr == null)
             {
-                return GetEntityInfo(type);
+                return _GetEntityInfo(type);
             }
-            else if (attr.configId.ObjToString() == this.Context?.CurrentConnectionConfig?.ConfigId+"")
+            else if (attr.configId.ObjToString() == this.Context?.CurrentConnectionConfig?.ConfigId + "")
             {
-                return GetEntityInfo(type);
+                return _GetEntityInfo(type);
             }
             else if (this.Context.Root == null)
             {
-                return GetEntityInfo(type);
+                return _GetEntityInfo(type);
             }
             else if (!this.Context.Root.IsAnyConnection(attr.configId))
             {
-                return GetEntityInfo(type);
+                return _GetEntityInfo(type);
             }
-            else 
+            else
             {
                 return this.Context.Root.GetConnection(attr.configId).EntityMaintenance.GetEntityInfo(type);
             }
         }
-        public EntityInfo GetEntityInfo(Type type)
+
+        private EntityInfo _GetEntityInfo(Type type)
         {
-            string cacheKey = "GetEntityInfo" + type.GetHashCode() + type.FullName+this.Context?.CurrentConnectionConfig?.ConfigId;
+            string cacheKey = "GetEntityInfo" + type.GetHashCode() + type.FullName + this.Context?.CurrentConnectionConfig?.ConfigId;
             return this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey,
             () =>
             {
