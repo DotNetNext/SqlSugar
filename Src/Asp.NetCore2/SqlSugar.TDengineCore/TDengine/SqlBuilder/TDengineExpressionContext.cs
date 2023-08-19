@@ -147,29 +147,10 @@ namespace SqlSugar.TDengine
         }
         public override string DateDiff(MethodCallExpressionModel model)
         {
-            var parameter = (DateType)(Enum.Parse(typeof(DateType), model.Args[0].MemberValue.ObjToString()));
-            var begin = model.Args[1].MemberName;
-            var end = model.Args[2].MemberName;
-            switch (parameter)
-            {
-                case DateType.Year:
-                    return $" ( DATE_PART('Year',  {end}   ) - DATE_PART('Year',  {begin}) )";
-                case DateType.Month:
-                    return $" (  ( DATE_PART('Year',  {end}   ) - DATE_PART('Year',  {begin}) ) * 12 + (DATE_PART('month', {end}) - DATE_PART('month', {begin})) )";
-                case DateType.Day:
-                    return $" ( DATE_PART('day', {end} - {begin}) )";
-                case DateType.Hour:
-                    return $" ( ( DATE_PART('day', {end} - {begin}) ) * 24 + DATE_PART('hour', {end} - {begin} ) )";
-                case DateType.Minute:
-                    return $" ( ( ( DATE_PART('day', {end} - {begin}) ) * 24 + DATE_PART('hour', {end} - {begin} ) ) * 60 + DATE_PART('minute', {end} - {begin} ) )";
-                case DateType.Second:
-                    return $" ( ( ( DATE_PART('day', {end} - {begin}) ) * 24 + DATE_PART('hour', {end} - {begin} ) ) * 60 + DATE_PART('minute', {end} - {begin} ) ) * 60 + DATE_PART('second', {end} - {begin} )";
-                case DateType.Millisecond:
-                    break;
-                default:
-                    break;
-            }
-            throw new Exception(parameter + " datediff no support");
+            var parameter = model.Args[0];
+            var parameter2 = model.Args[1];
+            var parameter3 = model.Args[2];
+            return string.Format(" TIMEDIFF({1},{2},1{0}) ", parameter.MemberValue.ObjToString().ToLower().First(), parameter2.MemberName, parameter3.MemberName);
         }
         public override string IIF(MethodCallExpressionModel model)
         {
