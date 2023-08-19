@@ -97,7 +97,14 @@ namespace OrmTest
                   oldime = it.ts
               }).ToList();
 
-           
+            //自定义函数:实现时间加1天
+            var list33 = db.Queryable<MyTable02>().Select(it =>
+              new
+              {
+                  addTime =SqlFunc.MappingColumn<DateTime>(" `ts`+1d "),
+                  oldime = it.ts
+              }).ToList();
+
             //分页
             var Count = 0;
             var list4 = db.Queryable<MyTable02>().Where(it => it.voltage == 111)
