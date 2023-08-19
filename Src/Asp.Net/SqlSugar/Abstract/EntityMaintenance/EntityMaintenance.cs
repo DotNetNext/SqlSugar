@@ -41,7 +41,7 @@ namespace SqlSugar
             }
             else
             {
-                return this.Context.Root.GetConnection(attr.configId).EntityMaintenance.GetEntityInfo(type);
+                return this.Context.Root.GetConnection(attr.configId).EntityMaintenance._GetEntityInfo(type);
             }
         }
 
