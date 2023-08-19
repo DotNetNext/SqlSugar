@@ -130,6 +130,14 @@ namespace OrmTest
             }).ExecuteCommandAsync().GetAwaiter().GetResult();
 
             var list100 = db.Queryable<MyTable02>().ToListAsync().GetAwaiter().GetResult();
+
+            //联表查询:不支持left join只能这样
+            var list101= db.Queryable<MyTable02, MyTable02>((x, y) => x.ts == y.ts)
+                .Select((x,y) => new
+                {
+                    xts=x.ts,
+                    yts=y.ts
+                }).ToList();
         }
         private static void UnitTest(SqlSugarClient db)
         {
