@@ -90,7 +90,15 @@ namespace SqlSugar
             this.AddJoinInfo(GetTableName(navEntityInfo, navEntityInfo.DbTableName), shortName, onWhere, JoinType.Right);
             return this;
         }
-
+        public ISugarQueryable<T, T2> LeftJoinIF<T2>(bool isJoin, ISugarQueryable<T2> joinQueryable, Expression<Func<T, T2, bool>> joinExpression) 
+        {
+            var result = LeftJoin(joinQueryable, joinExpression);
+            if (isJoin == false)
+            {
+                result.QueryBuilder.JoinQueryInfos.Remove(result.QueryBuilder.JoinQueryInfos.Last());
+            }
+            return result;
+        }
         public ISugarQueryable<T, T2> LeftJoin<T2>(ISugarQueryable<T2> joinQueryable, Expression<Func<T, T2, bool>> joinExpression)
         {
 
