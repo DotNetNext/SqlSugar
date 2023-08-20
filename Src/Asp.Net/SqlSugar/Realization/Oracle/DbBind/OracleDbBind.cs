@@ -94,7 +94,7 @@ namespace SqlSugar
                   new KeyValuePair<string, CSharpDataType>("number",CSharpDataType.@short),
                   new KeyValuePair<string, CSharpDataType>("number",CSharpDataType.@byte),
                   new KeyValuePair<string, CSharpDataType>("number",CSharpDataType.@double),
-                  new KeyValuePair<string, CSharpDataType>("binary double",CSharpDataType.@double),
+                  new KeyValuePair<string, CSharpDataType>("binaryfloat",CSharpDataType.@float),
                   new KeyValuePair<string, CSharpDataType>("binarydouble",CSharpDataType.@double),
                   new KeyValuePair<string, CSharpDataType>("number",CSharpDataType.@long),
                   new KeyValuePair<string, CSharpDataType>("number",CSharpDataType.@bool),
