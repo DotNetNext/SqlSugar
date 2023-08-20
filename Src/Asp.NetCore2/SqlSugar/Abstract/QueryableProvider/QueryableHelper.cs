@@ -656,7 +656,12 @@ namespace SqlSugar
             }
             foreach (var item in navManages)
             {
-                var navName = ExpressionTool.GetMemberName(item.Expressions.First());
+                var FirstExp = item.Expressions.First();
+                var navName = ExpressionTool.GetMemberName(FirstExp);
+                if (FirstExp is LambdaExpression &&ExpressionTool.GetMethodName((FirstExp as LambdaExpression).Body) == "ToList")
+                { 
+                    navName = ExpressionTool.GetFirstTypeNameFromExpression(FirstExp);
+                }
                 var navColumn = entityColumns.Where(it => it.IsPrimarykey == false).Where(it => it.Navigat != null).FirstOrDefault(it => it.PropertyName == navName);
                 if (navColumn != null && navColumn.Navigat.NavigatType != NavigateType.ManyToMany)
                 {

@@ -215,6 +215,28 @@ namespace SqlSugar
             return newExp;
         }
 
+
+        public static string GetFirstTypeNameFromExpression(Expression expression)
+        {
+            if (expression is LambdaExpression lambda)
+            {
+                return GetFirstTypeNameFromExpression(lambda.Body);
+            }
+            else if (expression is MemberExpression member)
+            {
+                return  member.Member.Name;
+            }
+            else if (expression is NewExpression newExpr)
+            {
+                return newExpr.Type.Name;
+            }
+            else if (expression is MethodCallExpression methodCall)
+            {
+                return GetFirstTypeNameFromExpression(methodCall.Arguments.FirstOrDefault());
+            } 
+            return "";
+        }
+
         public static string GetMethodName(Expression expression) 
         {
             if (expression is MethodCallExpression) 

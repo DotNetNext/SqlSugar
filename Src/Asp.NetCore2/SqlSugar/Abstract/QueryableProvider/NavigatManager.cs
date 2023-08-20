@@ -727,10 +727,15 @@ namespace SqlSugar
                 if (properyName != null)
                 {
                     var fkColumnsInfo = entityInfo.Columns.FirstOrDefault(x => x.PropertyName == properyName);
+                    var pkColumnsInfo = entityInfo.Columns.FirstOrDefault(x => x.IsPrimarykey);
                     if (fkColumnsInfo != null)
                     {
                         var fkName = fkColumnsInfo.DbColumnName;
                         AppColumns(result, queryable, fkName);
+                    }
+                    if (pkColumnsInfo!=null&&fkColumnsInfo == null&&result.SelectString != null && !result.SelectString.Contains(queryable.SqlBuilder.GetTranslationColumnName(pkColumnsInfo.DbColumnName))) 
+                    {
+                        AppColumns(result, queryable, pkColumnsInfo.DbColumnName);
                     }
                 }
             }
