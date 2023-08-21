@@ -246,7 +246,7 @@ namespace SqlSugar
                 .AS(this.ProPertyEntity.DbTableName)
                 .Filter(isClearFilter?null:this.ProPertyEntity.Type)
                 .WhereIF(!string.IsNullOrEmpty(whereSql), whereSql)
-                .Where($" {name}={ShorName}.{pk} ").Select(MethodName == "Any" ? "1" : " COUNT(1) ").ToSql();
+                .Where($" {name}={queryable.QueryBuilder.Builder.GetTranslationColumnName( ShorName)}.{pk} ").Select(MethodName == "Any" ? "1" : " COUNT(1) ").ToSql();
             if (sqlObj.Value?.Any() == true)
             {
                 foreach (var item in sqlObj.Value)
