@@ -261,6 +261,14 @@ namespace SqlSugar
                             .Replace(sqlBuilder.SqlTranslationRight, "\\" + sqlBuilder.SqlTranslationRight)
                             .Replace("\\\\","\\");
 
+                        if (!regex.IsMatch(this.whereSql)) 
+                        {
+                            regex = $@"\{sqlBuilder.SqlTranslationLeft}\w+\{sqlBuilder.SqlTranslationRight}\." + sqlBuilder.GetTranslationColumnName(it.DbColumnName)
+                            .Replace(sqlBuilder.SqlTranslationLeft, "\\" + sqlBuilder.SqlTranslationLeft)
+                            .Replace(sqlBuilder.SqlTranslationRight, "\\" + sqlBuilder.SqlTranslationRight)
+                            .Replace("\\\\", "\\");
+                        }
+
                         this.whereSql =Regex.Replace(this.whereSql, regex,
                              lastShortName + "." + sqlBuilder.GetTranslationColumnName(it.DbColumnName));
                     }
