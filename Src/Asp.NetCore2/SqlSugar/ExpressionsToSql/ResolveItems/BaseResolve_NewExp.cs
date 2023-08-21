@@ -79,7 +79,7 @@ namespace SqlSugar
             {
                 ResolveUnaryExpConst(parameter, item, asName);
             }
-            else if (item is BinaryExpression)
+            else if (ExpressionTool.RemoveConvert(item) is BinaryExpression)
             {
                 ResolveBinary(item, asName);
             }
