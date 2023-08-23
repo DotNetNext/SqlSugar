@@ -22,7 +22,7 @@ namespace SqlSugar
                                       &&(item as MethodCallExpression)?.Arguments?.Count()==1
                                       && (item as MethodCallExpression)?.Object?.Type!=UtilConstants.DateType
                                       && this.Context?.SugarContext?.QueryBuilder!=null
-                                      && !ExpressionTool.GetParameters((item as MethodCallExpression)?.Arguments.First()).Any())
+                                      && (item as MethodCallExpression)?.Method?.ReflectedType?.Name!="SqlFunc")
             {
                 var format=ExpressionTool.GetExpressionValue((item as MethodCallExpression)?.Arguments[0]);
                 var childExpression = (item as MethodCallExpression)?.Object;
