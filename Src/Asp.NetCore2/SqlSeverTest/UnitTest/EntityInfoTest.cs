@@ -44,9 +44,28 @@ namespace OrmTest
                    || db.EntityMaintenance.GetEntityInfo<classTest>().Columns.First().IsPrimarykey != true)
                 {
                     throw new Exception("unit error");
-                } 
+                }
+                db = NewUnitTest.Db;
+
+                db.CodeFirst.InitTables<Unitadfafa11>();
+                db.Insertable(new Unitadfafa11() { dob = 1.11 }).ExecuteCommand();
+                db.Queryable<Unitadfafa11>()
+                    .Select(IT => new Unitadfafa1DTO()
+                    {
+                         dob=(IT.dob??0).ToString("0.0")
+                    }).ToList();
             }
         }
+    }
+    public class Unitadfafa1DTO
+    {
+        [SugarColumn(ColumnDataType = "double")]
+        public string dob { get; set; }
+    }
+    public class Unitadfafa11
+    {
+        [SugarColumn(ColumnDataType = "float", IsNullable =true)]
+        public double? dob { get; set; }
     }
     public class classTest 
     {
