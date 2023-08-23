@@ -416,6 +416,10 @@ namespace SqlSugar
                     {
                         method = isNullableType ? getOtherNull.MakeGenericMethod(bindPropertyType) : getOther.MakeGenericMethod(bindPropertyType);
                     }
+                    if (bindProperyTypeName == "string") 
+                    {
+                        method = null;
+                    }
                     break;
                 case CSharpDataType.Guid:
                     CheckType(bind.GuidThrow, bindProperyTypeName, validPropertyName, propertyName);
