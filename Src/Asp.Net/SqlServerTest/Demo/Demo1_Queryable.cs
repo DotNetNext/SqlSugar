@@ -625,6 +625,15 @@ namespace OrmTest
               .Where(m => m.Id == SqlFunc.Subqueryable<Order>()
               .Where(z => z.Id == m.Id).GroupBy(z => z.Id).Select(z =>SqlFunc.AggregateSumNoNull(z.Id)))
               .ToList();
+
+            var list21 = db.Queryable<Order, OrderItem, Custom>((o, i, c) => new JoinQueryInfos(
+                JoinType.Left, o.Id == i.OrderId,
+                JoinType.Left, c.Id == o.CustomId
+               ))
+              .Select((o,i,c)=>new  { 
+                Name=i.ItemId.ToString("0.0"),
+                  Price = SqlFunc.ToString(i.ItemId)
+              }).ToList();
             Console.WriteLine("#### Join Table End ####");
         }
 
