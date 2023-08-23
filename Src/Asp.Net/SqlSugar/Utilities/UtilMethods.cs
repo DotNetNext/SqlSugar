@@ -40,31 +40,31 @@ namespace SqlSugar
                 }
                 else if (valueFomatInfo.Type == UtilConstants.ByteType)
                 {
-                    addValue = Convert.ToByte(addValue).ToString(valueFomatInfo.Format);
+                    addValue = Convert.ToByte(addValue + "").ToString(valueFomatInfo.Format);
                 }
                 else if (valueFomatInfo.Type == UtilConstants.IntType)
                 {
-                    addValue = Convert.ToInt32(addValue).ToString(valueFomatInfo.Format);
+                    addValue = Convert.ToInt32(addValue + "").ToString(valueFomatInfo.Format);
                 }
                 else if (valueFomatInfo.Type == UtilConstants.LongType)
                 {
-                    addValue = Convert.ToInt64(addValue).ToString(valueFomatInfo.Format);
+                    addValue = Convert.ToInt64(addValue + "").ToString(valueFomatInfo.Format);
                 }
                 else if (valueFomatInfo.Type == UtilConstants.UIntType)
                 {
-                    addValue = Convert.ToUInt32(addValue).ToString(valueFomatInfo.Format);
+                    addValue = Convert.ToUInt32(addValue + "").ToString(valueFomatInfo.Format);
                 }
                 else if (valueFomatInfo.Type == UtilConstants.ULongType)
                 {
-                    addValue = Convert.ToUInt64(addValue).ToString(valueFomatInfo.Format);
+                    addValue = Convert.ToUInt64(addValue + "").ToString(valueFomatInfo.Format);
                 }
                 else if (valueFomatInfo.Type == UtilConstants.DecType)
                 {
-                    addValue = Convert.ToDecimal(addValue).ToString(valueFomatInfo.Format);
+                    addValue = Convert.ToDecimal(addValue + "").ToString(valueFomatInfo.Format);
                 }
                 else if (valueFomatInfo.Type == UtilConstants.DobType)
                 {
-                    addValue = Convert.ToDouble(addValue).ToString(valueFomatInfo.Format);
+                    addValue = Convert.ToDouble(addValue + "").ToString(valueFomatInfo.Format);
                 }
                 else if (valueFomatInfo.TypeString == "Enum") 
                 {
