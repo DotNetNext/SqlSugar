@@ -807,11 +807,15 @@ namespace SqlSugar
                         var changeValue = UtilMethods.ChangeType2(kv.Value, propertyInfo.PropertyType);
                         propertyInfo.SetValue(addItem, changeValue);
                     }
-                    if (kv.Value ==DBNull.Value && UtilMethods.GetUnderType(propertyInfo.PropertyType).IsIn(typeof(int), typeof(long)))
+                    if (kv.Value == DBNull.Value && UtilMethods.GetUnderType(propertyInfo.PropertyType).IsIn(typeof(int), typeof(long)))
                     {
 
                         var changeValue = UtilMethods.ChangeType2(0, propertyInfo.PropertyType);
                         propertyInfo.SetValue(addItem, changeValue);
+                    }
+                    else if (kv.Value == DBNull.Value)
+                    {
+                        propertyInfo.SetValue(addItem,null);
                     }
                     else
                     {
