@@ -90,6 +90,10 @@ namespace SqlSugar
         }
         public StorageablePage<T> PageSize(int PageSize,Action<int> ActionCallBack=null) 
         {
+            if (PageSize > 10000) 
+            {
+                Check.ExceptionEasy("Advanced save page Settings should not exceed 10,000, and the reasonable number of pages is about 2000", "高级保存分页设置不要超过1万，合理分页数在2000左右");
+            }
             StorageablePage<T> page = new StorageablePage<T>();
             page.Context = this.Context;
             page.PageSize = PageSize;
