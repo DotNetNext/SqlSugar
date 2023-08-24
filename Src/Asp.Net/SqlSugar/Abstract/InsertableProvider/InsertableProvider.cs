@@ -474,7 +474,8 @@ namespace SqlSugar
             result.TableName = this.InsertBuilder.AsName;
             result.IsEnableDiffLogEvent = this.IsEnableDiffLogEvent;
             result.DiffModel = this.diffModel;
-            result.InsertColumns = this.InsertBuilder.DbColumnInfoList.GroupBy(it => it.TableId).First().Select(it=>it.DbColumnName).ToList();
+            if(this.InsertBuilder.DbColumnInfoList.Any())
+              result.InsertColumns = this.InsertBuilder.DbColumnInfoList.GroupBy(it => it.TableId).First().Select(it=>it.DbColumnName).ToList();
             return result;
         }
         public IParameterInsertable<T> UseParameter()

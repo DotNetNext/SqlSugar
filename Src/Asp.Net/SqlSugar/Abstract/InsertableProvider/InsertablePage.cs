@@ -18,6 +18,10 @@ namespace SqlSugar
 
         public int ExecuteCommand() 
         {
+            if (DataList.Count() == 1 && DataList.First() == null) 
+            {
+                return 0;
+            }
             if (PageSize == 0) { PageSize = 1000; }
             var result = 0;
             this.Context.Utilities.PageEach(DataList, PageSize, pageItem =>
@@ -28,6 +32,10 @@ namespace SqlSugar
         }
         public async Task<int> ExecuteCommandAsync()
         {
+            if (DataList.Count() == 1 && DataList.First() == null)
+            {
+                return 0;
+            }
             if (PageSize == 0) { PageSize = 1000; }
             var result = 0;
             await this.Context.Utilities.PageEachAsync(DataList, PageSize,async pageItem =>
@@ -39,6 +47,10 @@ namespace SqlSugar
 
         public List<long> ExecuteReturnSnowflakeIdList()
         {
+            if (DataList.Count() == 1 && DataList.First() == null)
+            {
+                return new List<long>();
+            }
             if (PageSize == 0) { PageSize = 1000; }
             var result = new List<long>();
             this.Context.Utilities.PageEach(DataList, PageSize, pageItem =>
@@ -49,6 +61,10 @@ namespace SqlSugar
         }
         public async Task<List<long>> ExecuteReturnSnowflakeIdListAsync()
         {
+            if (DataList.Count() == 1 && DataList.First() == null)
+            {
+                return new List<long>();
+            }
             if (PageSize == 0) { PageSize = 1000; }
             var result = new List<long>();
             await  this.Context.Utilities.PageEachAsync(DataList, PageSize,async pageItem =>
