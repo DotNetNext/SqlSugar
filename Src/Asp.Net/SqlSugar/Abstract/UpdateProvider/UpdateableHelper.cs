@@ -735,6 +735,9 @@ namespace SqlSugar
         {
             Check.Exception(UpdateParameterIsNull == false, ErrorMessage.GetThrowMessage(" no support SetColumns and Where", "根据对像更新 db.Updateabe(对象) 禁止使用 SetColumns和Where ,你可以使用WhereColumns 和  UpdateColumns。 更新分为2种方式 1.根据表达式更新 2.根据实体或者集合更新 ， 具体用法请查看文档 "));
         }
-   
+        private void ThrowUpdateByExpressionByMesage(string message)
+        {
+            Check.Exception(UpdateParameterIsNull == true, ErrorMessage.GetThrowMessage(" no support "+ message, "根据对像更新 db.Updateabe(对象) 禁止使用 SetColumns和Where ,你可以使用 "+ message + "。 更新分为2种方式 1.根据表达式更新 2.根据实体或者集合更新 ， 具体用法请查看文档 "));
+        }
     }
 }
