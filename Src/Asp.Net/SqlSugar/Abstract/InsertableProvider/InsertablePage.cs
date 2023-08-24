@@ -24,10 +24,30 @@ namespace SqlSugar
             }
             if (PageSize == 0) { PageSize = 1000; }
             var result = 0;
-            this.Context.Utilities.PageEach(DataList, PageSize, pageItem =>
+            var isNoTran = this.Context.Ado.IsNoTran();
+            try
             {
-                result += this.Context.Insertable(pageItem).AS(TableName).EnableDiffLogEventIF(IsEnableDiffLogEvent,DiffModel).InsertColumns(InsertColumns.ToArray()).ExecuteCommand();
-            });
+                if (isNoTran)
+                {
+                    this.Context.Ado.BeginTran();
+                }
+                this.Context.Utilities.PageEach(DataList, PageSize, pageItem =>
+                {
+                    result += this.Context.Insertable(pageItem).AS(TableName).EnableDiffLogEventIF(IsEnableDiffLogEvent, DiffModel).InsertColumns(InsertColumns.ToArray()).ExecuteCommand();
+                });
+                if (isNoTran)
+                {
+                    this.Context.Ado.CommitTran();
+                }
+            }
+            catch (Exception)
+            {
+                if (isNoTran)
+                {
+                    this.Context.Ado.RollbackTran();
+                }
+                throw;
+            }
             return result;
         }
         public async Task<int> ExecuteCommandAsync()
@@ -38,10 +58,30 @@ namespace SqlSugar
             }
             if (PageSize == 0) { PageSize = 1000; }
             var result = 0;
-            await this.Context.Utilities.PageEachAsync(DataList, PageSize,async pageItem =>
+            var isNoTran = this.Context.Ado.IsNoTran();
+            try
             {
-                result += await this.Context.Insertable(pageItem).AS(TableName).EnableDiffLogEventIF(IsEnableDiffLogEvent, DiffModel).InsertColumns(InsertColumns.ToArray()).ExecuteCommandAsync();
-            });
+                if (isNoTran)
+                {
+                    await  this.Context.Ado.BeginTranAsync();
+                }
+                await this.Context.Utilities.PageEachAsync(DataList, PageSize, async pageItem  =>
+                {
+                    result +=await this.Context.Insertable(pageItem).AS(TableName).EnableDiffLogEventIF(IsEnableDiffLogEvent, DiffModel).InsertColumns(InsertColumns.ToArray()).ExecuteCommandAsync();
+                });
+                if (isNoTran)
+                {
+                    await  this.Context.Ado.CommitTranAsync();
+                }
+            }
+            catch (Exception)
+            {
+                if (isNoTran)
+                {
+                    await this.Context.Ado.RollbackTranAsync();
+                }
+                throw;
+            }
             return result;
         }
 
@@ -49,14 +89,34 @@ namespace SqlSugar
         {
             if (DataList.Count() == 1 && DataList.First() == null)
             {
-                return new List<long>();
+                return  new List<long>();
             }
             if (PageSize == 0) { PageSize = 1000; }
             var result = new List<long>();
-            this.Context.Utilities.PageEach(DataList, PageSize, pageItem =>
+            var isNoTran = this.Context.Ado.IsNoTran();
+            try
             {
-                result.AddRange( this.Context.Insertable(pageItem).AS(TableName).EnableDiffLogEventIF(IsEnableDiffLogEvent, DiffModel).InsertColumns(InsertColumns.ToArray()).ExecuteReturnSnowflakeIdList());
-            });
+                if (isNoTran)
+                {
+                    this.Context.Ado.BeginTran();
+                }
+                this.Context.Utilities.PageEach(DataList, PageSize, pageItem =>
+                {
+                    result.AddRange(this.Context.Insertable(pageItem).AS(TableName).EnableDiffLogEventIF(IsEnableDiffLogEvent, DiffModel).InsertColumns(InsertColumns.ToArray()).ExecuteReturnSnowflakeIdList());
+                });
+                if (isNoTran)
+                {
+                    this.Context.Ado.CommitTran();
+                }
+            }
+            catch (Exception)
+            {
+                if (isNoTran)
+                {
+                    this.Context.Ado.RollbackTran();
+                }
+                throw;
+            }
             return result;
         }
         public async Task<List<long>> ExecuteReturnSnowflakeIdListAsync()
@@ -67,10 +127,30 @@ namespace SqlSugar
             }
             if (PageSize == 0) { PageSize = 1000; }
             var result = new List<long>();
-            await  this.Context.Utilities.PageEachAsync(DataList, PageSize,async pageItem =>
+            var isNoTran = this.Context.Ado.IsNoTran();
+            try
             {
-                result.AddRange(await  this.Context.Insertable(pageItem).AS(TableName).EnableDiffLogEventIF(IsEnableDiffLogEvent, DiffModel).InsertColumns(InsertColumns.ToArray()).ExecuteReturnSnowflakeIdListAsync());
-            });
+                if (isNoTran)
+                {
+                    await this.Context.Ado.BeginTranAsync();
+                }
+                await this.Context.Utilities.PageEachAsync(DataList, PageSize, async pageItem =>
+                {
+                    result.AddRange(await this.Context.Insertable(pageItem).AS(TableName).EnableDiffLogEventIF(IsEnableDiffLogEvent, DiffModel).InsertColumns(InsertColumns.ToArray()).ExecuteReturnSnowflakeIdListAsync());
+                });
+                if (isNoTran)
+                {
+                    await this.Context.Ado.CommitTranAsync();
+                }
+            }
+            catch (Exception)
+            {
+                if (isNoTran)
+                {
+                    await this.Context.Ado.RollbackTranAsync();
+                }
+                throw;
+            }
             return result;
         }
     }
