@@ -1309,7 +1309,7 @@ namespace SqlSugar
                     columns = "(";
                     foreach (var item in this.QueryBuilder.GetSelectValue.Split(','))
                     {
-                        var column = Regex.Split(item, "AS").Last().Trim();
+                        var column = Regex.Split(item, " AS ").Last().Trim();
                         columns += $"{column},";
                     }
                     columns = columns.TrimEnd(',') + ")";
