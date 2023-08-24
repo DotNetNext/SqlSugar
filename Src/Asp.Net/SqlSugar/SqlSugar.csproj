@@ -120,6 +120,7 @@
     <Compile Include="Abstract\FastestProvider\Setting.cs" />
     <Compile Include="Abstract\FastestProvider\SplitFastest.cs" />
     <Compile Include="Abstract\FilterProvider\FilterProvider.cs" />
+    <Compile Include="Abstract\InsertableProvider\InsertablePage.cs" />
     <Compile Include="Abstract\InsertableProvider\InsertableHelper.cs" />
     <Compile Include="Abstract\InsertableProvider\InsertMethodInfo.cs" />
     <Compile Include="Abstract\QueryableProvider\Entities\AppendNavInfoList.cs" />
@@ -142,11 +143,13 @@
     <Compile Include="Abstract\QueryableProvider\QueryMethodInfo.cs" />
     <Compile Include="Abstract\SaveableProvider\StorageableMethodInfo.cs" />
     <Compile Include="Abstract\SaveableProvider\StorageableDataTable.cs" />
+    <Compile Include="Abstract\SaveableProvider\StorageablePage.cs" />
     <Compile Include="Abstract\SaveableProvider\StorageableSplitProvider.cs" />
     <Compile Include="Abstract\SqlBuilderProvider\Entities.cs" />
     <Compile Include="Abstract\SqlBuilderProvider\SqlBuilderProvider_Condition.cs" />
     <Compile Include="Abstract\SugarProvider\SqlSugarCoreProvider.cs" />
     <Compile Include="Abstract\DeleteProvider\DeleteMethodInfo.cs" />
+    <Compile Include="Abstract\UpdateProvider\UpdateablePage.cs" />
     <Compile Include="Abstract\UpdateProvider\UpdateableProviderT2.cs" />
     <Compile Include="Abstract\UpdateProvider\UpdateableProviderT3.cs" />
     <Compile Include="Abstract\UpdateProvider\UpdateableProviderT4.cs" />
