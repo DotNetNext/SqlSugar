@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Security.Permissions;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -114,6 +115,7 @@ namespace SqlSugar
         IUpdateable<T> EnableQueryFilter();
         IUpdateable<T> Clone();
         IUpdateable<T,T2> InnerJoin<T2>(Expression<Func<T,T2,bool>> joinExpress);
+        UpdateablePage<T> PageSize(int pageSize);
     }
     public interface IUpdateable<T, T2> 
     {

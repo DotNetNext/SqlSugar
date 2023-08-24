@@ -173,6 +173,20 @@ namespace SqlSugar
         #endregion
 
         #region Common
+        public UpdateablePage<T> PageSize(int pageSize) 
+        {
+            ThrowUpdateByExpressionByMesage(" PageSize(num) ");
+            UpdateablePage<T> result = new UpdateablePage<T>();
+            result.PageSize = pageSize;
+            result.Context = this.Context;
+            result.DataList = this.UpdateObjs;
+            result.TableName = this.UpdateBuilder.TableName;
+            result.IsEnableDiffLogEvent = this.IsEnableDiffLogEvent;
+            result.DiffModel = this.diffModel; 
+            if (this.UpdateBuilder.DbColumnInfoList.Any())
+                result.UpdateColumns = this.UpdateBuilder.DbColumnInfoList.GroupBy(it => it.TableId).First().Select(it => it.DbColumnName).ToList();
+            return result;
+        }
         public IUpdateable<T, T2> InnerJoin<T2>(Expression<Func<T, T2, bool>> joinExpress) 
         {
             UpdateableProvider<T, T2> result = new UpdateableProvider<T, T2>();

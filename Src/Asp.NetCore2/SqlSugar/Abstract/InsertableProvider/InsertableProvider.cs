@@ -465,7 +465,19 @@ namespace SqlSugar
         #endregion
 
         #region Setting
-
+        public InsertablePage<T> PageSize(int pageSize) 
+        {
+            InsertablePage<T> result = new InsertablePage<T>();
+            result.PageSize = pageSize;
+            result.Context = this.Context;
+            result.DataList = this.InsertObjs;
+            result.TableName = this.InsertBuilder.AsName;
+            result.IsEnableDiffLogEvent = this.IsEnableDiffLogEvent;
+            result.DiffModel = this.diffModel;
+            if(this.InsertBuilder.DbColumnInfoList.Any())
+              result.InsertColumns = this.InsertBuilder.DbColumnInfoList.GroupBy(it => it.TableId).First().Select(it=>it.DbColumnName).ToList();
+            return result;
+        }
         public IParameterInsertable<T> UseParameter()
         {
             var result = new ParameterInsertable<T>();
