@@ -32,6 +32,7 @@ namespace SqlSugar
         Task<int> ExecuteSqlBulkCopyAsync();
         IStorageable<T> DefaultAddElseUpdate();
         StorageableSplitProvider<T> SplitTable();
+        StorageablePage<T> PageSize(int PaegSize, Action<int> ActionCallBack = null);
     }
 
     public class StorageableInfo<T> where T : class, new()

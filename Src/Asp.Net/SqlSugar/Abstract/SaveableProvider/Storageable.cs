@@ -88,6 +88,17 @@ namespace SqlSugar
             whereFuncs.Add(new KeyValuePair<StorageType, Func<StorageableInfo<T>, bool>, string>(StorageType.Other, conditions, message));
             return this;
         }
+        public StorageablePage<T> PageSize(int PageSize,Action<int> ActionCallBack=null) 
+        {
+            StorageablePage<T> page = new StorageablePage<T>();
+            page.Context = this.Context;
+            page.PageSize = PageSize;
+            page.Data = this.allDatas.Select(it => it.Item).ToList();
+            page.ActionCallBack = ActionCallBack;
+            page.TableName = this.asname;
+            page.whereExpression = this.whereExpression;
+            return page;
+        }
         public StorageableSplitProvider<T> SplitTable() 
         {
             StorageableSplitProvider<T> result = new StorageableSplitProvider<T>();
