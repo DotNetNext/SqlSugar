@@ -97,6 +97,10 @@ namespace SqlSugar.TDengine
                     parameter.Value = parameter.Value?.ToString()?.ToLower();
                 }
                 var sqlParameter = new TDengineParameter(parameter.ParameterName,parameter.Value,parameter.DbType,0);
+                if (parameter.CustomDbType?.Equals(System.Data.DbType.DateTime2) == true)
+                {
+                    sqlParameter.IsMicrosecond= true;
+                }
                 result[i]=sqlParameter;
                 i++;
             }
