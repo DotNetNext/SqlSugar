@@ -50,7 +50,7 @@ namespace SqlSugar
         private DataTable ToDdateTable(List<T> datas)
         {
             var builder = GetBuider();
-            DataTable tempDataTable = ReflectionInoCore<DataTable>.GetInstance().GetOrCreate("BulkCopyAsync" + typeof(T).FullName,
+            DataTable tempDataTable = ReflectionInoCore<DataTable>.GetInstance().GetOrCreate("BulkCopyAsync" + typeof(T).GetHashCode(),
             () =>
             {
                 if (AsName == null)
