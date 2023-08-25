@@ -817,6 +817,10 @@ namespace SqlSugar
                     {
                         propertyInfo.SetValue(addItem,null);
                     }
+                    else if (UtilMethods.GetUnderType(propertyInfo.PropertyType) == typeof(Guid) && kv.Value is string)
+                    {
+                        propertyInfo.SetValue(addItem, new Guid(kv.Value.ToString()));
+                    }
                     else
                     {
                         propertyInfo.SetValue(addItem, kv.Value);
