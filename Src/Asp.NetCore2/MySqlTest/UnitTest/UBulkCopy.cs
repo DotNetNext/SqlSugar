@@ -159,7 +159,7 @@ namespace OrmTest
                 throw new Exception("uint error");
             }
             Db.CodeFirst.InitTables<unitBools2>();
-            Db.DbMaintenance.TruncateTable<unitBools2>();
+            Db.DbMaintenance.TruncateTable<unitBools2>(); 
             Db.Fastest<unitBools2>().BulkCopy(new List<unitBools2>() {
             new unitBools2()
             {
@@ -167,13 +167,27 @@ namespace OrmTest
                 null1 = null,
                 true1 = true,
                 id = 1
-            }});
+            }}); 
             var data3= Db.Queryable<unitBools2>().First();
             if (data3.false1 != null || data2.true1 != true || data2.null1 != null)
             {
                 throw new Exception("uint error");
             }
+            Db.CodeFirst.InitTables<unitBytedfa>();
+ 
+            Db.Fastest<unitBytedfa>().BulkCopy(new List<unitBytedfa>() {
+             new unitBytedfa(){ aaa=new byte[]{ 1,2,3,4,3,1} }
+            });
+            var data4=Db.Queryable<unitBytedfa>().First();
+            if (string.Join("", data4.aaa) != "123431") 
+            {
+                throw new Exception("uint error");
+            }
         }
+    }
+    public class unitBytedfa 
+    {
+        public byte[] aaa { get; set; }
     }
     public class unitBools2
     {
