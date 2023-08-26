@@ -65,6 +65,7 @@ namespace OrmTest
                 {
                     throw new Exception("unit error");
                 }
+                db.Queryable<Order>().OrderBy(it => SqlFunc.Desc(it.Id)).ToList();
             }
         }
     }
