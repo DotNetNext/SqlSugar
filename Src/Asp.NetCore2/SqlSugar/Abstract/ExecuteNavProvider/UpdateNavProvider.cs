@@ -121,7 +121,7 @@ namespace SqlSugar
         }
         private void UpdateRoot(bool isRoot, EntityColumnInfo nav)
         {
-            if (isRoot && nav.Navigat.NavigatType != NavigateType.ManyToMany)
+            if (isRoot && nav.Navigat.NavigatType != NavigateType.ManyToMany&&_RootOptions?.IsDisableUpdateRoot!=true)
             {
                 UpdateRoot();
             }
