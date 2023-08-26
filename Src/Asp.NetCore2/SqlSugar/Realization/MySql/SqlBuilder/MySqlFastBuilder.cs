@@ -11,12 +11,15 @@ using System.Threading.Tasks;
 namespace SqlSugar 
 {
    
-    public class MySqlFastBuilder:FastBuilder,IFastBuilder
+    public partial class MySqlFastBuilder:FastBuilder,IFastBuilder
     {
         public override string UpdateSql { get; set; } = @"UPDATE  {1} TM    INNER JOIN {2} TE  ON {3} SET {0} ";
         public async Task<int> ExecuteBulkCopyAsync(DataTable dt)
-        {
-
+        { 
+            if (dt.Columns.Cast<DataColumn>().Any(it => it.DataType == UtilConstants.ByteArrayType)) 
+            {
+                return await MySqlConnectorBulkCopy(dt);
+            } 
             var dllPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "bulkcopyfiles");
             DirectoryInfo dir = new DirectoryInfo(dllPath);
             if (!dir.Exists)
