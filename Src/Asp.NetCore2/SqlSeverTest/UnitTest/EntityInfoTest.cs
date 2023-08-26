@@ -54,6 +54,17 @@ namespace OrmTest
                     {
                          dob=(IT.dob??0).ToString("0.0")
                     }).ToList();
+
+                var sql = db.Queryable<Order>()
+               .Select(it => new {
+                   //num=SqlFunc.Subqueryable<OrderItem>().Where(s=>s.OrderId==it.Id).Sum(s=>s.Price)??0,
+                   //num2 =SqlFunc.IsNull( SqlFunc.Subqueryable<OrderItem>().Where(s => s.OrderId == it.Id).Sum(s => s.Price),0) ,
+                   num3 = SqlFunc.Subqueryable<OrderItem>().Where(s => s.OrderId == it.Id).Sum(s => s.Price) + it.Id
+               }).ToSqlString();
+                if (sql != "SELECT  ((SELECT SUM([Price]) FROM [OrderDetail] [s]  WHERE ( [OrderId] = [it].[Id] )) + [it].[Id] ) AS [num3]  FROM [Order] [it] ") 
+                {
+                    throw new Exception("unit error");
+                }
             }
         }
     }
