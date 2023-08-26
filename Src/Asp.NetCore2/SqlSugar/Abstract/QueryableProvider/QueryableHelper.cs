@@ -1560,6 +1560,11 @@ namespace SqlSugar
             {
                 var orderValue = "";
                 var newExp = (expression as LambdaExpression).Body as NewExpression;
+                if (newExp == null) 
+                {
+                    orderValue = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple).GetResultString();
+                    return OrderBy(orderValue);
+                }
                 foreach (var item in newExp.Arguments)
                 {
                     if (item is MemberExpression)
