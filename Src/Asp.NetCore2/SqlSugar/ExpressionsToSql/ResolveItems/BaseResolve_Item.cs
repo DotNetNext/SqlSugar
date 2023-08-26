@@ -225,6 +225,14 @@ namespace SqlSugar
             {
                 var newContext = this.Context.GetCopyContextWithMapping();
                 var resolveExpressType = this.Context.IsSingle ? ResolveExpressType.WhereSingle : ResolveExpressType.WhereMultiple;
+                if (resolveExpressType == ResolveExpressType.WhereSingle&& item is BinaryExpression) 
+                {
+                    var binaryExp = (item as BinaryExpression);
+                    if (ExpressionTool.ContainsMethodName(binaryExp, "Subquery")) 
+                    {
+                        resolveExpressType = ResolveExpressType.WhereMultiple;
+                    }
+                }
                 newContext.Resolve(item, resolveExpressType);
                 this.Context.Index = newContext.Index;
                 this.Context.ParameterIndex = newContext.ParameterIndex;
