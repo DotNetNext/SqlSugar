@@ -1069,5 +1069,11 @@ namespace SqlSugar
             return $" uuid_generate_v4() ";
         }
 
+        public virtual string FullTextContains(MethodCallExpressionModel mode) 
+        {
+            var columns = mode.Args[0].MemberName;
+            var searchWord = mode.Args[1].MemberName;
+            return $"to_tsvector('chinese', {columns}) @@ to_tsquery('chinese', {searchWord})";
+        }
     }
 }
