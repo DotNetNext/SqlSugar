@@ -122,5 +122,6 @@ namespace SqlSugar
         string Floor(MethodCallExpressionModel mode);
         string Ceil(MethodCallExpressionModel mode); 
         string NewUid(MethodCallExpressionModel mode);
+        string FullTextContains(MethodCallExpressionModel mode);
     }
 }

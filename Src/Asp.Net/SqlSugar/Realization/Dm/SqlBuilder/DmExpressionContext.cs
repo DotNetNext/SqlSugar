@@ -264,5 +264,12 @@ namespace SqlSugar
         {
             return "   SUBSTR(LOWER(RAWTOHEX(SYS_GUID())), 1, 8) ||\r\n  '-' ||\r\n  SUBSTR(LOWER(RAWTOHEX(SYS_GUID())), 9, 4) ||\r\n  '-' ||\r\n  SUBSTR(LOWER(RAWTOHEX(SYS_GUID())), 13, 4) ||\r\n  '-' ||\r\n  SUBSTR(LOWER(RAWTOHEX(SYS_GUID())), 17, 4) ||\r\n  '-' ||\r\n  SUBSTR(LOWER(RAWTOHEX(SYS_GUID())), 21)  ";
         }
+         
+        public override string FullTextContains(MethodCallExpressionModel mode)
+        {
+            var columns = mode.Args[0].MemberName;
+            var searchWord = mode.Args[1].MemberName;
+            return $" CONTAINS({columns}, {searchWord}, 1) ";
+        }
     }
 }

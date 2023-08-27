@@ -262,5 +262,11 @@ namespace SqlSugar
         //    var parameterNameB = mode.Args[1].MemberName;
         //    return $" TRIM(LEADING  {parameterNameA} FROM {parameterNameB}) ";
         //}
+        public override string FullTextContains(MethodCallExpressionModel mode)
+        {
+            var columns = mode.Args[0].MemberName;
+            var searchWord = mode.Args[1].MemberName;
+            return $" MATCH({columns}) AGAINST({searchWord}) ";
+        }
     }
 }

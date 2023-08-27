@@ -135,6 +135,13 @@ namespace SqlSugar
         {
             return " NEWID() ";
         }
+
+        public override string FullTextContains(MethodCallExpressionModel mode)
+        {
+            var columns = mode.Args[0].MemberName;
+            var searchWord = mode.Args[1].MemberName;
+            return $" CONTAINS({columns},{searchWord}) ";
+        }
     }
 
 
