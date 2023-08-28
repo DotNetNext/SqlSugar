@@ -111,7 +111,7 @@ namespace SqlSugar
             foreach (var item in groupModels.GroupBy(it => it.GroupName))
             {
                 var addList = item.Select(it => it.Item).ToList();
-                resultValue +=await this.Context.Storageable(addList).ExecuteCommandAsync();
+                resultValue +=await this.Context.Storageable(addList).As(item.Key).ExecuteCommandAsync();
                 if (ActionCallBack != null)
                 {
                     ActionCallBack(resultValue);
@@ -142,7 +142,7 @@ namespace SqlSugar
             foreach (var item in groupModels.GroupBy(it => it.GroupName))
             {
                 var addList = item.Select(it => it.Item).ToList();
-                resultValue += await this.Context.Storageable(addList).ExecuteSqlBulkCopyAsync();
+                resultValue += await this.Context.Storageable(addList).As(item.Key).ExecuteSqlBulkCopyAsync();
                 if (ActionCallBack != null)
                 {
                     ActionCallBack(resultValue);
