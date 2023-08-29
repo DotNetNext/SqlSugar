@@ -232,6 +232,10 @@ namespace SqlSugar
                     {
                         resolveExpressType = ResolveExpressType.WhereMultiple;
                     }
+                    if (this.Context.Expression!=null&&this.Context.SingleTableNameSubqueryShortName.IsNullOrEmpty())
+                    {
+                        this.Context.SingleTableNameSubqueryShortName = (this.Context.Expression as LambdaExpression)?.Parameters?.FirstOrDefault()?.Name;
+                    }
                 }
                 newContext.Resolve(item, resolveExpressType);
                 this.Context.Index = newContext.Index;
