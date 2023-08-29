@@ -2147,7 +2147,10 @@ namespace SqlSugar
                 {
                     if (isFirst)
                     {
-                        itemProperty.SetValue(item, (subList as IList)[0] );
+                        if ((subList as IList).Count > 0)
+                        {
+                            itemProperty.SetValue(item, (subList as IList)[0]);
+                        }
                     }
                     else
                     {
