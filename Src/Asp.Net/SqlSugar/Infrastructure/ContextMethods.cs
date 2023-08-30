@@ -699,9 +699,16 @@ namespace SqlSugar
                         {
                             addItem = addItem.ObjToInt();
                         }
-                        else if (prop.PropertyType.IsEnum() && addItem is decimal)
+                        else if (UtilMethods.GetUnderType(prop.PropertyType).IsEnum() && addItem is decimal)
                         {
-                            addItem = Convert.ToInt64(addItem);
+                            if (prop.PropertyType.IsEnum() == false && addItem == null)
+                            {
+                                //Future
+                            }
+                            else
+                            {
+                                addItem = Convert.ToInt64(addItem);
+                            }
                         }
                         result.Add(name, addItem);
                     }
