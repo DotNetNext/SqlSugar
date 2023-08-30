@@ -721,6 +721,7 @@ namespace SqlSugar
         {
             if (result.Any())
             {
+                IList outList = null;
                 foreach (var it in managers)
                 {
                     var manager = it;
@@ -732,7 +733,14 @@ namespace SqlSugar
                         .Where(a => this.QueryBuilder.AppendNavInfo.Result.First().result.ContainsKey("SugarNav_" + a.PropertyName))
                         .ToList();
                     var listType = typeof(List<>).MakeGenericType(tType);
-                    var outList = SelectNavQuery_SetList(result, it, p, tType, columns, listType);
+                    if (outList == null)
+                    {
+                        outList = SelectNavQuery_SetList(result, it, p, tType, columns, listType);
+                    }
+                    else
+                    {
+                        p.SetValue(it, outList);
+                    }
                     it.GetType().GetMethod("Execute").Invoke(it, null);
                     SelectNavQuery_MappingList(it, result, outList, allColumns.Where(a => a.Navigat != null).ToList());
                 }
