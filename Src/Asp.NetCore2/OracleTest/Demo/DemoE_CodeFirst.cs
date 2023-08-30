@@ -40,8 +40,32 @@ namespace OrmTest
             var list2=db.Queryable<CodeFirstTable22x2>().ToList();
             db.CodeFirst.InitTables<CodeFirstUnitrew>();
             db.Insertable(new CodeFirstUnitrew() { Index = 1 }).ExecuteCommand();
+            db = NewUnitTest.Db;
+            db.CodeFirst.InitTables<Unit00Z11C12>();
+            db.DbMaintenance.TruncateTable<Unit00Z11C12>();
+            db.Insertable(new Unit00Z11C12() { type = UnitType.a, type2 = UnitType.b }).ExecuteCommand();
+            var list3=db.Queryable<Unit00Z11C12>().Select(it => new DTO
+            {
+                unit00Z11C12 = it
+            }).ToList();
             Console.WriteLine("#### CodeFirst end ####");
         }
+    }
+    public enum UnitType 
+    {
+        a=0,
+        b=2
+    }
+    public class DTO 
+    {
+        public Unit00Z11C12 unit00Z11C12 { get; set; }
+    }
+    public class Unit00Z11C12
+    {
+        [SqlSugar.SugarColumn(  IsNullable = true)]
+        public UnitType type { get; set; }
+        [SqlSugar.SugarColumn(  IsNullable = true)]
+        public UnitType? type2 { get; set; }
     }
     /// <summary>
     /// 测试表
