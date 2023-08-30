@@ -524,6 +524,18 @@ namespace SqlSugar
             return this;
         }
 
+        public DeleteablePage<T> PageSize(int pageSize) 
+        {
+            Check.ExceptionEasy(this.DeleteObjects == null, "PageSize can only be deleted as a List<Class> entity collection", "Deleteable.PageSize()只能是List<Class>实体集合方式删除,并且集合不能为null");
+            DeleteablePage<T> result = new DeleteablePage<T>();
+            result.DataList = this.DeleteObjects.ToArray();
+            result.Context = this.Context;
+            result.DiffModel = this.diffModel;
+            result.IsEnableDiffLogEvent= this.IsEnableDiffLogEvent;
+            result.TableName = this.DeleteBuilder.AsName;
+            result.PageSize =  pageSize;
+            return result;
+        }
         public IDeleteable<T> With(string lockString)
         {
             if (this.Context.CurrentConnectionConfig.DbType == DbType.SqlServer)
