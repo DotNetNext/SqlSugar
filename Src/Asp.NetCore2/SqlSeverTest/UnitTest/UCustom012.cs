@@ -59,6 +59,19 @@ namespace OrmTest
            .Where(x => x.SchoolA.SchoolName == "北大")
            .ToList();
 
+            var list2222= db.Queryable<StudentA>()
+            .Includes(x => x.SchoolA, x => x.RoomList)//2个参数就是 then Include 
+            .Includes(x => x.Books) 
+            .Select(it=>new { 
+               a1=it.SchoolA,
+               a2=it.Books
+            })
+            .ToList();
+
+            if (list2222.First().a1?.RoomList?.Any() != true || !list2222.First().a2.Any()) 
+            {
+                throw new Exception("unit error");
+            } 
 
             db.QueryFilter.AddTableFilter<BookA>(x => x.Name == "a");
             var list22 = db.Queryable<StudentA>()
