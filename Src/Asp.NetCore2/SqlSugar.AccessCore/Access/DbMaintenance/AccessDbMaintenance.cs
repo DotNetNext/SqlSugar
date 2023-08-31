@@ -482,6 +482,7 @@ namespace SqlSugar.Access
                 info.DbColumnName = dr["COLUMN_NAME"] + "";
                 info.IsNullable = Convert.ToBoolean(dr["IS_NULLABLE"]);
                 info.DataType = dt.Columns[info.DbColumnName].DataType.Name;
+                info.ColumnDescription = dr["DESCRIPTION"] + "";
                 if (info.DataType.EqualCase( "int32")) 
                 {
                     info.DataType = "int";
