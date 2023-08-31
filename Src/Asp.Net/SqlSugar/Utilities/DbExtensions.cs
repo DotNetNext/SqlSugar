@@ -79,6 +79,10 @@ namespace SqlSugar
                 {
                     throw new Exception($"{value} format error ");
                 }
+                else if (value.IsContainsIn("//")&& (value.Length- value.Replace("/","").Length)>=4)
+                {
+                    throw new Exception($"{value} format error ");
+                }
                 else if (value.IsContainsIn("'") && (value.Length - value.Replace("'", "").Length) % 2 != 0)
                 {
                     throw new Exception($"{value} format error ");
