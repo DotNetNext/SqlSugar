@@ -636,6 +636,10 @@ namespace SqlSugar
                 }
             });
             Type type = newAssembly.GetType(className);
+            if (type == null) 
+            {
+                type= assembly.GetType(className);
+            }
             return type;
         }
 
