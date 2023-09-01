@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -423,8 +424,14 @@ namespace SqlSugar
         }
         public IStorageable<T> WhereColumns(Expression<Func<T, object>> columns)
         {
+
             if (columns == null)
                 return this;
+            else if (asname == null && typeof(T).GetCustomAttribute<SplitTableAttribute>() != null)
+            {
+                whereExpression = columns;
+                return this;
+            }
             else
             {
                 List<string> list = GetExpressionValue(columns, ResolveExpressType.ArraySingle).GetResultArray().Select(it => Builder.GetNoTranslationColumnName(it)).ToList();

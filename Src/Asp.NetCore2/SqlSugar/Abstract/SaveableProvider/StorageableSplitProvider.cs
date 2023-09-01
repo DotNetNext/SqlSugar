@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks; 
@@ -13,6 +14,8 @@ namespace SqlSugar
         internal SqlSugarProvider Context { get;   set; }
         internal List<T> List { get;   set; }
         internal EntityInfo EntityInfo { get;   set; }
+        internal Expression<Func<T, object>> whereExpression { get;   set; }
+
         internal int pageSize = 1000;
         internal Action<int>  ActionCallBack =null;
         public StorageableSplitProvider<T> PageSize(int size, Action<int> ActionCallBack = null) 
@@ -111,7 +114,7 @@ namespace SqlSugar
             foreach (var item in groupModels.GroupBy(it => it.GroupName))
             {
                 var addList = item.Select(it => it.Item).ToList();
-                resultValue +=await this.Context.Storageable(addList).As(item.Key).ExecuteCommandAsync();
+                resultValue +=await this.Context.Storageable(addList).As(item.Key).WhereColumns(whereExpression).ExecuteCommandAsync();
                 if (ActionCallBack != null)
                 {
                     ActionCallBack(resultValue);
@@ -128,7 +131,7 @@ namespace SqlSugar
             foreach (var item in groupModels.GroupBy(it => it.GroupName))
             {
                 var addList = item.Select(it => it.Item).ToList();
-                resultValue += this.Context.Storageable(addList).As(item.Key).ExecuteCommand();
+                resultValue += this.Context.Storageable(addList).As(item.Key).WhereColumns(whereExpression).ExecuteCommand();
             }
             return result;
         }
@@ -142,7 +145,7 @@ namespace SqlSugar
             foreach (var item in groupModels.GroupBy(it => it.GroupName))
             {
                 var addList = item.Select(it => it.Item).ToList();
-                resultValue += await this.Context.Storageable(addList).As(item.Key).ExecuteSqlBulkCopyAsync();
+                resultValue += await this.Context.Storageable(addList).As(item.Key).WhereColumns(whereExpression).ExecuteSqlBulkCopyAsync();
                 if (ActionCallBack != null)
                 {
                     ActionCallBack(resultValue);
@@ -159,7 +162,7 @@ namespace SqlSugar
             foreach (var item in groupModels.GroupBy(it => it.GroupName))
             {
                 var addList = item.Select(it => it.Item).ToList();
-                resultValue += this.Context.Storageable(addList).As(item.Key).ExecuteSqlBulkCopy();
+                resultValue += this.Context.Storageable(addList).As(item.Key).WhereColumns(whereExpression).ExecuteSqlBulkCopy();
             }
             return result;
         }
