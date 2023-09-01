@@ -12,14 +12,14 @@ namespace SqlSugar
         {
             get
             {
-                return "DATETIME('now') ";
+                return " DATETIME('now', 'localtime') ";
             }
         }
         public override string FullSqlDateNow
         {
             get
             {
-                return "select DATETIME('now') ";
+                return "select DATETIME('now', 'localtime') ";
             }
         }
         public override string RemoveParentheses(string sql)
