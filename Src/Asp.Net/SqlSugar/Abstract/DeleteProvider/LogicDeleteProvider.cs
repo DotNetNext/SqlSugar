@@ -15,6 +15,13 @@ namespace SqlSugar
             ISqlSugarClient db;
             List<SugarParameter> pars;
             string where;
+            var isAutoDelFilter = 
+                DeleteBuilder.Context?.CurrentConnectionConfig?.MoreSettings?.IsAutoDeleteQueryFilter==true&&
+                DeleteBuilder.Context?.CurrentConnectionConfig?.MoreSettings?.IsAutoUpdateQueryFilter == true;
+            if (isAutoDelFilter) 
+            {
+                DeleteBuilder.Context.CurrentConnectionConfig.MoreSettings.IsAutoUpdateQueryFilter = false;
+            }
             LogicFieldName = _ExecuteCommand(LogicFieldName, out db, out where, out pars);
             if (deleteValue == null) 
             {
@@ -29,6 +36,10 @@ namespace SqlSugar
                 updateable.UpdateBuilder.Parameters.AddRange(pars);
             Convert(updateable as UpdateableProvider<T>);
             var result = updateable.Where(where).ExecuteCommand();
+            if (isAutoDelFilter)
+            {
+                DeleteBuilder.Context.CurrentConnectionConfig.MoreSettings.IsAutoUpdateQueryFilter = true;
+            }
             return result;
         }
         public int ExecuteCommand(string LogicFieldName, object deleteValue, string deleteTimeFieldName,string userNameFieldName,object userNameValue)
