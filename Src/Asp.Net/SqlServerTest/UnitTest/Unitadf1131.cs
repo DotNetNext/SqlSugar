@@ -55,6 +55,14 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+
+            db.CurrentConnectionConfig.MoreSettings = new ConnMoreSettings()
+            {
+                IsAutoDeleteQueryFilter = true,
+                IsAutoUpdateQueryFilter = true
+            };
+            db.QueryFilter.AddTableFilter<LogicTest>(it => it.isdeleted == true);
+            db.Deleteable<LogicTest>().Where(it => it.Id == 1).IsLogic().ExecuteCommand();
         }
         /// <summary>
 
