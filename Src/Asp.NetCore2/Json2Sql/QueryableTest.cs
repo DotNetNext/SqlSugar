@@ -81,6 +81,40 @@ namespace Test
             var x1 = jsonToSqlClient.Queryable(json).ToSqlList();
             var list1 = jsonToSqlClient.Context.Ado.SqlQuery<dynamic>(x1[0].Sql, x1[0].Parameters);
         }
+        private static void JoinTest2(JsonClient jsonToSqlClient)
+        {
+            var onList =
+                new ObjectFuncModel()
+                {
+                    FuncName = "Format",
+                    Parameters = new List<object>{
+                       "d.orderid","=","{int}:1"
+                     }
+
+                };
+            var onList2 =
+                 new ObjectFuncModel()
+                 {
+                     FuncName = "Format",
+                     Parameters = new List<object>{
+                               "c.orderid","=","{int}:1"
+                      }
+
+                 };
+            var selectItems = new List<SelectModel>() {
+                                        new SelectModel()
+                                        {
+                                            AsName = "id",
+                                            FiledName = "o.id"
+                                         }
+            };
+            var x = jsonToSqlClient.Context.Queryable<object>()
+                           .AS("order", "o")
+                           .AddJoinInfo("orderdetail", "d", onList, JoinType.Left)
+                            .AddJoinInfo("orderdetail", "c", onList2, JoinType.Left)
+                           .Select(selectItems)
+                           .ToList(); 
+        }
         private static void GroupByTest(JsonClient jsonToSqlClient)
         {
             jsonToSqlClient.Context.Queryable<object>()
