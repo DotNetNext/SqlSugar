@@ -600,7 +600,7 @@ namespace SqlSugar
         }
         private void After(string sql)
         {
-            if (this.IsEnableDiffLogEvent)
+            if (this.IsEnableDiffLogEvent && !string.IsNullOrEmpty(sql))
             {
                 var isDisableMasterSlaveSeparation = this.Ado.IsDisableMasterSlaveSeparation;
                 this.Ado.IsDisableMasterSlaveSeparation = true;
@@ -650,7 +650,7 @@ namespace SqlSugar
         }
         private void Before(string sql)
         {
-            if (this.IsEnableDiffLogEvent)
+            if (this.IsEnableDiffLogEvent&&!string.IsNullOrEmpty(sql))
             {
                 var isDisableMasterSlaveSeparation = this.Ado.IsDisableMasterSlaveSeparation;
                 this.Ado.IsDisableMasterSlaveSeparation = true;
