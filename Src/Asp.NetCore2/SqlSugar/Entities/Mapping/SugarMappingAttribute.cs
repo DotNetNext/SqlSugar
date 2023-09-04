@@ -264,6 +264,14 @@ namespace SqlSugar
             this.MappingBId = typeBId;
             this.NavigatType = NavigateType.ManyToMany;
         }
+        public Navigate(Type MappingTableType, string typeAiD, string typeBId,string mappingSql)
+        {
+            this.MappingType = MappingTableType;
+            this.MappingAId = typeAiD;
+            this.MappingBId = typeBId;
+            this.NavigatType = NavigateType.ManyToMany;
+            this.WhereSql+= mappingSql;
+        }
     }
 
 
