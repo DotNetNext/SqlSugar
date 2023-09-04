@@ -254,7 +254,7 @@ namespace SqlSugar
             this.Name2 = lastName;
             this.NavigatType = navigatType;
             this.WhereSql = whereSql;
-            Check.ExceptionEasy(navigatType != NavigateType.OneToOne, "Currently, only one-to-one navigation configuration Sql conditions are supported", "目前导航配置Sql条件只支持一对一");
+            //Check.ExceptionEasy(navigatType != NavigateType.OneToOne, "Currently, only one-to-one navigation configuration Sql conditions are supported", "目前导航配置Sql条件只支持一对一");
         }
 
         public Navigate(Type MappingTableType,string typeAiD,string typeBId)

@@ -414,7 +414,7 @@ namespace SqlSugar
       
             if (list.Any() && navObjectNamePropety.GetValue(list.First()) == null)
             {
-                var navList = selector(childDb.Queryable<object>(sqlObj.TableShortName).AS(navEntityInfo.DbTableName).Filter(this.QueryBuilder?.IsDisabledGobalFilter == true ? null : navEntityInfo.Type).AddParameters(sqlObj.Parameters).Where(conditionalModels).WhereIF(sqlObj.WhereString.HasValue(), sqlObj.WhereString).Select(sqlObj.SelectString).OrderByIF(sqlObj.OrderByString.HasValue(), sqlObj.OrderByString));
+                var navList = selector(childDb.Queryable<object>(sqlObj.TableShortName).AS(navEntityInfo.DbTableName).Filter(this.QueryBuilder?.IsDisabledGobalFilter == true ? null : navEntityInfo.Type).AddParameters(sqlObj.Parameters).Where(conditionalModels).WhereIF(sqlObj.WhereString.HasValue(), sqlObj.WhereString).WhereIF(navObjectNameColumnInfo?.Navigat?.WhereSql!=null, navObjectNameColumnInfo?.Navigat?.WhereSql).Select(sqlObj.SelectString).OrderByIF(sqlObj.OrderByString.HasValue(), sqlObj.OrderByString));
                 if (navList.HasValue())
                 {
                     //var setValue = navList
