@@ -850,6 +850,16 @@ namespace SqlSugar
         {
             var result= new SqlSugarClient(UtilMethods.CopyConfig(this.Ado.Context.CurrentConnectionConfig));
             result.QueryFilter = this.QueryFilter;
+            if (this.ScopedContext._AllClients != null)
+            {
+                foreach (var item in this.ScopedContext._AllClients)
+                {
+                    if (!result.IsAnyConnection(item.ConnectionConfig.ConfigId))
+                    {
+                        result.AddConnection(UtilMethods.CopyConfig(item.ConnectionConfig));
+                    }
+                }
+            }
             return result;
         }
         public DynamicBuilder DynamicBuilder()

@@ -18,7 +18,7 @@ namespace SqlSugar
         private SqlSugarProvider _Context = null;
         private string _ThreadId;
         private ConnectionConfig _CurrentConnectionConfig;
-        private List<SugarTenant> _AllClients;
+        internal List<SugarTenant> _AllClients;
         private bool _IsAllTran = false;
         private bool _IsOpen = false;
         private MappingTableList _MappingTables;
@@ -1202,6 +1202,16 @@ namespace SqlSugar
         {
             var result= new SqlSugarClient(UtilMethods.CopyConfig(this.Ado.Context.CurrentConnectionConfig));
             result.QueryFilter = this.QueryFilter;
+            if (_AllClients != null) 
+            {
+                foreach (var item in _AllClients)
+                {
+                    if (!result.IsAnyConnection(item.ConnectionConfig.ConfigId)) 
+                    {
+                        result.AddConnection(UtilMethods.CopyConfig(item.ConnectionConfig)); 
+                    }
+                }
+            }
             return result;
         }
         public DateTime GetDate()
