@@ -37,7 +37,7 @@ namespace SqlSugar
                                  from (select * from pg_tables where upper(tablename) = upper('{0}') and schemaname='" + schema + @"') ptables inner join pg_class pclass
                                 on ptables.tablename = pclass.relname inner join (SELECT *
                                 FROM information_schema.columns where table_schema='" + schema + @"'
-                                ) pcolumn on pcolumn.table_name = ptables.tablename
+                                ) pcolumn on pcolumn.table_name = ptables.tablename and upper(pcolumn.table_name) = upper('{0}')
                                 left join (
 	                                select  pg_class.relname,pg_attribute.attname as colname from 
 	                                pg_constraint  inner join pg_class 
