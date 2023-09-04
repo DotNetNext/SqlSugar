@@ -26,6 +26,7 @@ namespace SqlSugar
         @time,
         @DateTimeOffset,
         @Single,
-	    @TimeSpan
+	    @TimeSpan,
+        @char
     }
 }
