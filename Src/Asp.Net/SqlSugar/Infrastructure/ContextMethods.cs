@@ -852,7 +852,14 @@ namespace SqlSugar
                 var row = result.NewRow();
                 foreach (var key in item.Keys)
                 {
-                    row[key] = item[key];
+                    if (item[key] == null)
+                    {
+                        row[key] = DBNull.Value;
+                    }
+                    else
+                    {
+                        row[key] = item[key];
+                    }
                 }
 
                 result.Rows.Add(row);
