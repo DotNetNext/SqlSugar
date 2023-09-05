@@ -267,6 +267,12 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override bool RenameTable(string oldTableName, string newTableName)
+        {
+            oldTableName = SqlBuilder.GetTranslationColumnName(oldTableName);
+            newTableName = SqlBuilder.GetTranslationColumnName(newTableName); 
+            return base.RenameTable(oldTableName, newTableName);
+        }
         public override List<string> GetIndexList(string tableName)
         {
             var sql = $"SELECT index_name FROM user_ind_columns\r\nWHERE table_name = '{tableName}'";
