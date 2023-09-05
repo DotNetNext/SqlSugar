@@ -11,6 +11,23 @@ namespace OrmTest
         public static void Init() 
         {
             UpdateTerminalAdjustInfo();
+            var dt = DateTime.Now;
+            var db = NewUnitTest.Db;
+            var dt01 = db.Queryable<Order>().Select(it => dt.ToString("yyyy-MM-dd HH:mm:ss")).First();
+            if (dt.ToString("yyyy-MM-dd HH:mm:ss") != dt01)
+            {
+                throw new Exception("unit error");
+            }
+            dt01 = db.Queryable<Order>().Select(it => dt.ToString("HH:mm:ss")).First();
+            if (dt.ToString("HH:mm:ss") != dt01)
+            {
+                throw new Exception("unit error");
+            }
+            dt01 = db.Queryable<Order>().Select(it => dt.ToString("yyyy-MM-dd HH24:mi:ss")).First();
+            if (dt.ToString("yyyy-MM-dd HH:mm:ss") != dt01)
+            {
+                throw new Exception("unit error");
+            }
         }
         public static void UpdateTerminalAdjustInfo(string terminalCode="", decimal sendNum=0, decimal drugNum=0, decimal averageNum=0)
         {
