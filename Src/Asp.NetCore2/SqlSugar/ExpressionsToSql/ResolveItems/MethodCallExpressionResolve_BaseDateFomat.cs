@@ -23,7 +23,10 @@ namespace SqlSugar
                 if (!(formatString?.Contains("24")==true))
                 {
                     formatString = formatString.Replace("HH", "hh24");
-                }
+                    if (!(formatString?.Contains("24") == true))
+                    {
+                        formatString = formatString.Replace("hh", "hh24")
+                    }
                 formatString = formatString.Replace("mm", "mi");
                 //if (formatString.HasValue() && formatString.Contains("hh:mm"))
                 //{
