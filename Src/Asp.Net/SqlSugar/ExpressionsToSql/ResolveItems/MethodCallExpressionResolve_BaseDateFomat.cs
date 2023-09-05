@@ -16,27 +16,35 @@ namespace SqlSugar
         {
             if (IsOracle() && formatString == "yyyy-MM-dd HH:mm:ss")
             {
-                return $"to_char({value},'yyyy-MM-dd HH:mi:ss') ";
+                return $"to_char({value},'yyyy-MM-dd HH24:mi:ss') ";
             }
             else if (IsOracle() || IsPg())
             {
-                formatString = formatString.Replace("HH", "hh24");
-                if (formatString.HasValue() && formatString.Contains("hh:mm"))
+                if (!(formatString?.Contains("24") == true))
                 {
-                    formatString = formatString.Replace("hh:mm", "hh:mi");
+                    formatString = formatString.Replace("HH", "hh24");
+                    if (!(formatString?.Contains("24") == true))
+                    {
+                        formatString = formatString.Replace("hh", "hh24");
+                    }
                 }
-                else if (formatString.HasValue() && formatString.Contains("hhmm"))
-                {
-                    formatString = formatString.Replace("hhmm", "hhmi");
-                }
-                else if (formatString.HasValue() && formatString.Contains("HH:mm"))
-                {
-                    formatString = formatString.Replace("HH:mm", "HH:mi");
-                }
-                else if (formatString.HasValue() && formatString.Contains("HHmm"))
-                {
-                    formatString = formatString.Replace("HHmm", "HHmi");
-                }
+                formatString = formatString.Replace("mm", "mi");
+                //if (formatString.HasValue() && formatString.Contains("hh:mm"))
+                //{
+                //    formatString = formatString.Replace("hh:mm", "hh:mi");
+                //}
+                //else if (formatString.HasValue() && formatString.Contains("hhmm"))
+                //{
+                //    formatString = formatString.Replace("hhmm", "hhmi");
+                //}
+                //else if (formatString.HasValue() && formatString.Contains("HH:mm"))
+                //{
+                //    formatString = formatString.Replace("HH:mm", "HH:mi");
+                //}
+                //else if (formatString.HasValue() && formatString.Contains("HHmm"))
+                //{
+                //    formatString = formatString.Replace("HHmm", "HHmi");
+                //}
                 return $"to_char({value},'{formatString}') ";
             }
             else if (IsSqlite() && formatString == "yyyy-MM-dd")
