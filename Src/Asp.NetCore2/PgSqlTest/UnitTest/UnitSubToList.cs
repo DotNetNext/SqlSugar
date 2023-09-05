@@ -47,6 +47,22 @@ namespace OrmTest
             TestJoin2(db);
             TestJoin3(db);
             TestJoin4(db);
+            var dt = DateTime.Now;
+            var dt01= db.Queryable<Order>().Select(it => dt.ToString("yyyy-MM-dd HH:mm:ss")).First();
+            if (dt.ToString("yyyy-MM-dd HH:mm:ss") != dt01) 
+            {
+                throw new Exception("unit error");
+            }
+            dt01 = db.Queryable<Order>().Select(it => dt.ToString("HH:mm:ss")).First();
+            if (dt.ToString("HH:mm:ss") != dt01)
+            {
+                throw new Exception("unit error");
+            }
+            dt01 = db.Queryable<Order>().Select(it => dt.ToString("yyyy-MM-dd HH24:mi:ss")).First();
+            if (dt.ToString("yyyy-MM-dd HH:mm:ss") != dt01)
+            {
+                throw new Exception("unit error");
+            }
         }
         private static void TestJoin4(SqlSugarClient db)
         {
