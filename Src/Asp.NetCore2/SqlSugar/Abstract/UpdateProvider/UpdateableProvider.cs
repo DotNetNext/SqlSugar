@@ -665,11 +665,14 @@ namespace SqlSugar
             var expResult = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.Update);
             var resultArray = expResult.GetResultArray();
             Check.ArgumentNullException(resultArray, "UpdateColumns Parameter error, UpdateColumns(it=>new T{ it.id=1}) is valid, UpdateColumns(it=>T) is error");
+            var keys= ExpressionTool.GetNewExpressionItemList(columns).ToArray();
             if (resultArray.HasValue())
             {
+                int i = 0;
                 foreach (var item in resultArray)
                 {
-                    string key = SqlBuilder.GetNoTranslationColumnName(item);
+                    string key = key = keys[i].Key;
+                    i++;
                     var value = item;
                     if (value.Contains("= \"SYSDATE\""))
                     {
