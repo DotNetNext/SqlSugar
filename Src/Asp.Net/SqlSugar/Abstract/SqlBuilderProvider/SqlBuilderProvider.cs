@@ -99,6 +99,11 @@ namespace SqlSugar
                name=name.Split('=').First();
             }
             if (!name.Contains(SqlTranslationLeft)) return name;
+            if (name.StartsWith(SqlTranslationLeft) && name.EndsWith(SqlTranslationRight)) 
+            {
+                var result= name.TrimStart(Convert.ToChar(SqlTranslationLeft)).TrimEnd(Convert.ToChar(SqlTranslationRight));
+                return result;
+            }
             return name == null ? string.Empty : Regex.Match(name, @".*" + "\\" + SqlTranslationLeft + "(.*?)" + "\\" + SqlTranslationRight + "").Groups[1].Value;
         }
         public virtual string GetPackTable(string sql, string shortName)
