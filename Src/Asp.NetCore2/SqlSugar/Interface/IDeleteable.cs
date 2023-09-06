@@ -29,6 +29,8 @@ namespace SqlSugar
         IDeleteable<T> In<PkType>(Expression<Func<T,object>> inField,PkType primaryKeyValue);
         IDeleteable<T> In<PkType>(Expression<Func<T, object>> inField,PkType[] primaryKeyValues);
         IDeleteable<T> In<PkType>(Expression<Func<T, object>> inField,List<PkType> primaryKeyValues);
+        IDeleteable<T> In<PkType>(Expression<Func<T, object>> inField, ISugarQueryable<PkType> childQueryExpression);
+      
         IDeleteable<T> In<PkType>(string inField, List<PkType> primaryKeyValues);
         IDeleteable<T> Where(string whereString,object parameters=null);
         IDeleteable<T> Where(string whereString, SugarParameter parameter);
