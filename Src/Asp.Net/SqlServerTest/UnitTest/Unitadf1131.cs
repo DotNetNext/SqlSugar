@@ -63,6 +63,22 @@ namespace OrmTest
             };
             db.QueryFilter.AddTableFilter<LogicTest>(it => it.isdeleted == true);
             db.Deleteable<LogicTest>().Where(it => it.Id == 1).IsLogic().ExecuteCommand();
+            db.CodeFirst.InitTables<UnitTesdfa>();
+            db.Updateable<UnitTesdfa>()
+                .SetColumns(it => new UnitTesdfa
+                { 
+                  Name="aa"
+                })
+                .Where(it => it.Id == 1)
+                .ExecuteCommand();
+        }
+
+        public class UnitTesdfa
+        {
+            [SugarColumn(ColumnName = "iiid")]
+            public int Id { get; set; }
+            [SugarColumn(ColumnName = "nameee")]
+            public string Name { get; set; }
         }
         /// <summary>
 
