@@ -516,6 +516,15 @@ namespace SqlSugar
             tempPrimaryKeys = null;
             return this;
         }
+
+        public IDeleteable<T> In<PkType>(Expression<Func<T, object>> inField, ISugarQueryable<PkType> childQueryExpression) 
+        {
+            var lamResult = DeleteBuilder.GetExpressionValue(inField, ResolveExpressType.FieldSingle);
+            var fieldName = lamResult.GetResultString();
+            var sql= childQueryExpression.ToSql();
+            Where($" {fieldName} IN ( {sql.Key} ) ",sql.Value);
+            return this;
+        }
         public IDeleteable<T> In<PkType>(string inField, List<PkType> primaryKeyValues)
         {
             tempPrimaryKeys = new List<string>() { inField };
