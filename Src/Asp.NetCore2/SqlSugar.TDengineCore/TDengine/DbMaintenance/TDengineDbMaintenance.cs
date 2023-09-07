@@ -13,7 +13,7 @@ namespace SqlSugar.TDengine
         {
             get
             {
-                return "SELECT datname FROM pg_database";
+                return "show databases";
             }
         }
         protected override string GetColumnInfosByTableNameSql
