@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using SqlSugar;
@@ -148,6 +149,18 @@ namespace OrmTest
         }
         private static void UnitTest(SqlSugarClient db)
         {
+            //类型测试
+            DbType(db);
+
+            //纳秒
+            NS();
+
+            //微秒
+            US();
+        }
+
+        private static void DbType(SqlSugarClient db)
+        {
             //更多类型查询测试
             db.Ado.ExecuteCommand(@"
                                 CREATE STABLE IF NOT EXISTS  `fc_data` (
@@ -159,22 +172,109 @@ namespace OrmTest
                                 `gateway_mac` VARCHAR(8),
                                 `ruminate` SMALLINT, 
                                 `rssi` TINYINT) TAGS (`tag_id` VARCHAR(12))");
-            var list=db.Queryable<fc_data>().ToList();
+            var list = db.Queryable<fc_data>().ToList();
             //创建子表
             db.Ado.ExecuteCommand(@"create table IF NOT EXISTS  fc_data01 using `fc_data` tags('1')");
-            db.Insertable(new fc_data() { 
-               data_id= 1,
-                gateway_mac="mac",
-                 rssi=11,
-                  ruminate=1,
-                   speed_hex="x",
-                    temperature=1,
-                     upload_time=DateTime.Now,
-                    voltage=1
+            db.Insertable(new fc_data()
+            {
+                data_id = 1,
+                gateway_mac = "mac",
+                rssi = 11,
+                ruminate = 1,
+                speed_hex = "x",
+                temperature = 1,
+                upload_time = DateTime.Now,
+                voltage = 1
 
             }).AS("fc_data01").ExecuteCommand();
 
             var list2 = db.Queryable<fc_data>().AS("fc_data01").ToList();
+        }
+
+        private static void NS()
+        {
+            //说明:
+            //字符串中指定TsType=config_ns
+            //实体加上 SqlParameterDbType =typeof(DateTime19)
+
+            SqlSugarClient db = new SqlSugarClient(new ConnectionConfig() {
+                DbType=SqlSugar.DbType.TDengine,
+                  IsAutoCloseConnection=true,
+                ConnectionString = "Host=localhost;Port=6030;Username=root;Password=taosdata;Database=nstest;TsType=config_ns" });
+
+            //删除库-库上限比太少只能删了测试
+            if(db.DbMaintenance.GetDataBaseList().Any(it=>it== "nstest"))
+            {
+                db.Ado.ExecuteCommand("drop  database nstest");
+            }
+
+            db.DbMaintenance.CreateDatabase();//创建纳秒库
+            
+            //建超级表
+            db.Ado.ExecuteCommand("CREATE STABLE IF NOT EXISTS  St01 (ts TIMESTAMP, current FLOAT, voltage INT, phase FLOAT, isdelete BOOL, name BINARY(64)) TAGS (location BINARY(64), groupId INT)");
+
+            //创建子表
+            db.Ado.ExecuteCommand(@"create table IF NOT EXISTS  MyTable02 using St01 tags('California.SanFrancisco',1)");
+
+
+            //查询子表
+            var dt = db.Ado.GetDataTable("select * from MyTable02 ");
+
+
+            //插入单条子表
+            db.Insertable(new MyTable02_NS()
+            {
+                ts = DateTime.Now,
+                current = Convert.ToSingle(1.1),
+                groupId = 1,
+                isdelete = true,
+                name = "haha",
+                location = "aa",
+                phase = Convert.ToSingle(1.2),
+                voltage = 11
+            }).ExecuteCommand();
+            var list=db.Queryable<MyTable02_NS>().ToList();
+        }
+        private static void US()
+        {
+            //说明:
+            //字符串中指定TsType=config_ns
+            //实体加上 SqlParameterDbType =typeof(DateTime19)
+            SqlSugarClient db = new SqlSugarClient(new ConnectionConfig()
+            {
+                DbType = SqlSugar.DbType.TDengine,
+                IsAutoCloseConnection = true,
+                ConnectionString = "Host=localhost;Port=6030;Username=root;Password=taosdata;Database=nstest;TsType=config_us"
+            });
+            //删除库-库上限比太少只能删了测试
+            db.Ado.ExecuteCommand("drop   database nstest");
+
+            db.DbMaintenance.CreateDatabase();//创建纳秒库
+
+            //建超级表
+            db.Ado.ExecuteCommand("CREATE STABLE IF NOT EXISTS  St01 (ts TIMESTAMP, current FLOAT, voltage INT, phase FLOAT, isdelete BOOL, name BINARY(64)) TAGS (location BINARY(64), groupId INT)");
+
+            //创建子表
+            db.Ado.ExecuteCommand(@"create table IF NOT EXISTS  MyTable02 using St01 tags('California.SanFrancisco',1)");
+
+
+            //查询子表
+            var dt = db.Ado.GetDataTable("select * from MyTable02 ");
+
+
+            //插入单条子表
+            db.Insertable(new MyTable02_US()
+            {
+                ts = DateTime.Now,
+                current = Convert.ToSingle(1.1),
+                groupId = 1,
+                isdelete = true,
+                name = "haha",
+                location = "aa",
+                phase = Convert.ToSingle(1.2),
+                voltage = 11
+            }).ExecuteCommand();
+            var list = db.Queryable<MyTable02_US>().ToList();
         }
 
         private static List<MyTable02> GetInsertDatas()
