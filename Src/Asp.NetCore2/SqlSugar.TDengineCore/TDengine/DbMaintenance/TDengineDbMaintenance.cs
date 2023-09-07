@@ -225,8 +225,17 @@ namespace SqlSugar.TDengine
         public override bool CreateDatabase(string databaseName,string databaseDirectory = null)
         {
             var db=this.Context.CopyNew(); 
-            db.Ado.Connection.ChangeDatabase(""); 
-            db.Ado.ExecuteCommand(string.Format(CreateDataBaseSql,databaseName));
+            db.Ado.Connection.ChangeDatabase("");
+            var sql = CreateDataBaseSql;
+            if (this.Context.CurrentConnectionConfig.ConnectionString.ToLower().Contains("config_us")) 
+            {
+                sql += " PRECISION 'us'";
+            }
+            else if (this.Context.CurrentConnectionConfig.ConnectionString.ToLower().Contains("config_ns"))
+            {
+                sql += " PRECISION 'ns'";
+            }
+            db.Ado.ExecuteCommand(string.Format(sql, databaseName));
             return true;
         }
         public override List<string> GetIndexList(string tableName)

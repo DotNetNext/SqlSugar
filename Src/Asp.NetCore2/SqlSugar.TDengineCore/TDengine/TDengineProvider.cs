@@ -101,6 +101,10 @@ namespace SqlSugar.TDengine
                 {
                     sqlParameter.IsMicrosecond= true;
                 }
+                else if (parameter.CustomDbType?.Equals(typeof(Date19))==true)
+                {
+                    sqlParameter.IsNanosecond = true;
+                }
                 result[i]=sqlParameter;
                 i++;
             }
