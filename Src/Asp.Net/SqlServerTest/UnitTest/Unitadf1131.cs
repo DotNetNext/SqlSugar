@@ -77,6 +77,8 @@ namespace OrmTest
                  .Where((o) => o.Id <10)
                  .Select((o, cus) => new UnitViewOrder2 { xxx=o.Name, yyyy= o.CreateTime})
                  .IntoTable<UnitViewOrder2>();
+
+            db.Queryable<Order>().Take(10).IgnoreColumns(it=>it.Id).IntoTable<Order>();
         }
         public class UnitViewOrder2 
         {
