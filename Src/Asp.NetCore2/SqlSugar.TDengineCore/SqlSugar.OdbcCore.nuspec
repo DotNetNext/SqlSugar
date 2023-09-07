@@ -2,19 +2,19 @@
 <package >
   <metadata>
     <id>SqlSugar.TDengineCore</id>
-    <version>2.0</version>
+    <version>2.1</version>
     <authors>sunkaixuan</authors>
     <owners>Landa</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
     <projectUrl>https://github.com/sunkaixuan/SqlSugar</projectUrl>
     <iconUrl>https://secure.gravatar.com/avatar/a82c03402497b2e58fd65038a3699b30</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description> SqlSugar 通过ODBC连接数据库 </description>
+    <description> SqlSugar TDengine 核心库 </description>
     <copyright>Copyright 2016</copyright>
     <tags>TDengine Tdengine tdengine</tags>
     <dependencies>
       <group targetFramework=".NETStandard2.1">
-        <dependency id="TDengine.Ado.Data" version="1.6.10" />
+        <dependency id="TDengine.Ado.Data" version="1.6.13" />
       </group>
     </dependencies>
   </metadata>
