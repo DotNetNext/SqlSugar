@@ -1297,9 +1297,9 @@ namespace SqlSugar
             var name = this.SqlBuilder.GetTranslationTableName(TableName);
             var columns = "";
             sql = "";
-            var isSqlFunc = this.QueryBuilder.GetSelectValue?.Contains(")") == true && this.QueryBuilder.SelectValue is Expression;
-            if (isSqlFunc)
-            {
+            //var isSqlFunc = this.QueryBuilder.GetSelectValue?.Contains(")") == true && this.QueryBuilder.SelectValue is Expression;
+            //if (isSqlFunc)
+            //{
                 columns = "(";
                 foreach (var item in ExpressionTool.GetNewExpressionItemList((Expression)this.QueryBuilder.SelectValue))
                 {
@@ -1313,21 +1313,21 @@ namespace SqlSugar
                 }
                 columns = columns.TrimEnd(',') + ")";
                 sql = $" INSERT  INTO {name} {columns} " + sqlInfo.Key;
-            }
-            else
-            {
-                if (this.QueryBuilder.GetSelectValue != null && this.QueryBuilder.GetSelectValue.Contains(",")) ;
-                {
-                    columns = "(";
-                    foreach (var item in this.QueryBuilder.GetSelectValue.Split(','))
-                    {
-                        var column = Regex.Split(item, " AS ").Last().Trim();
-                        columns += $"{column},";
-                    }
-                    columns = columns.TrimEnd(',') + ")";
-                }
-                sql = $" INSERT  INTO {name} {columns} " + sqlInfo.Key;
-            }
+            //}
+            //else
+            //{
+            //    if (this.QueryBuilder.GetSelectValue != null && this.QueryBuilder.GetSelectValue.Contains(",")) ;
+            //    {
+            //        columns = "(";
+            //        foreach (var item in this.QueryBuilder.GetSelectValue.Split(','))
+            //        {
+            //            var column = Regex.Split(item, " AS ").Last().Trim();
+            //            columns += $"{column},";
+            //        }
+            //        columns = columns.TrimEnd(',') + ")";
+            //    }
+            //    sql = $" INSERT  INTO {name} {columns} " + sqlInfo.Key;
+            //}
         }
 
         private string GetTableName(EntityInfo entity, string tableName)
