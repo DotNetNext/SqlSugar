@@ -1297,7 +1297,7 @@ namespace SqlSugar
             var name = this.SqlBuilder.GetTranslationTableName(TableName);
             var columns = "";
             sql = "";
-            var isSqlFunc = this.QueryBuilder.GetSelectValue?.Contains(")") == true && this.QueryBuilder.SelectValue is Expression;
+            var isSqlFunc = this.QueryBuilder.SelectValue is Expression;
             if (isSqlFunc)
             {
                 columns = "(";
