@@ -24,7 +24,7 @@ namespace SqlSugar
                 .EnableDiffLogEventIF(_RootOptions?.IsDiffLogEvent == true, _RootOptions?.DiffLogBizData)
                 .ExecuteCommand());
 
-
+            Check.ExceptionEasy(parentColumn == null, "The one-to-one navigation configuration is incorrect", "一对一导航配置错误");
             var ids = _ParentList.Select(it => parentColumn.PropertyInfo.GetValue(it)).ToList();
             List<TChild> childList = this._Context.Queryable<TChild>().In(thisPkColumn.DbColumnName, ids).ToList();
 
