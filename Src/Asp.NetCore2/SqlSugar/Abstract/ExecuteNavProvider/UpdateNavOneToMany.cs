@@ -42,6 +42,10 @@ namespace SqlSugar
                     children.AddRange(childs);
                 }
                 ids.Add(parentValue);
+                if (_Options?.OneToManyNoDeleteNull == true && childs == null) 
+                {
+                    ids.Remove(parentValue);
+                }
             }
             if (NotAny(name))
             {
