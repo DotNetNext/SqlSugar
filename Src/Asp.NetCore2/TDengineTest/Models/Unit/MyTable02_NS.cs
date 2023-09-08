@@ -11,6 +11,7 @@ namespace OrmTest
     [SugarTable("MyTable02")]
     public class MyTable02_NS
     {
+        //也可以用InsertServerTime =true 
         [SugarColumn(IsPrimaryKey = true,SqlParameterDbType =typeof(DateTime19))]
         public DateTime ts { get; set; }
         public float current { get; set; }
@@ -31,6 +32,7 @@ namespace OrmTest
     [SugarTable("MyTable02")]
     public class MyTable02_US
     {
+        //也可以用InsertServerTime =true 
         [SugarColumn(IsPrimaryKey = true, SqlParameterDbType = typeof(DateTime16))]
         public DateTime ts { get; set; }
         public float current { get; set; }
