@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UnitOneToOneDel.Init();
             EntityInfoTest.Init();
             UnitOneToManyafdaa.Init();
             Unitadfafa.Init();
