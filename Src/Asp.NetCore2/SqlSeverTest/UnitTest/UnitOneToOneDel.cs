@@ -27,7 +27,7 @@ namespace OrmTest
                  Name= "b",
                   SchoolId=1,
             }).ExecuteCommand();
-            Db.DeleteNav<School>(s => s.Id.Equals(4))
+            Db.DeleteNav<School>(s => s.Id.Equals(1))
                 .Include(s => s.Grades).ExecuteCommandAsync().GetAwaiter().GetResult();
             Console.ReadLine();
 
@@ -41,7 +41,7 @@ namespace OrmTest
         [SqlSugar.SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
         public int Id { get; set; }
         public string? Name { get; set; }
-        [Navigate(NavigateType.OneToOne, nameof(Grade.SchoolId))]
+        [Navigate(NavigateType.OneToOne, nameof(Id), nameof(Grade.SchoolId))]
         public Grade Grades { get; set; }
     }
     [SugarTable("unitGradedfadsaa")]
