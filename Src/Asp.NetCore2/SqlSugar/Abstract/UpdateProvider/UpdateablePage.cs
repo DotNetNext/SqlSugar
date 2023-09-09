@@ -16,7 +16,7 @@ namespace SqlSugar
         public DiffLogModel DiffModel { get; internal set; }
         public List<string> UpdateColumns { get; internal set; }
 
-        public UpdateableFilter<T> EnableFilter() 
+        public UpdateableFilter<T> EnableQueryFilter() 
         {
             return new UpdateableFilter<T>()
             {
