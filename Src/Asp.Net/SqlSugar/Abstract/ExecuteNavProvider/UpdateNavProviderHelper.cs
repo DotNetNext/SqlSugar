@@ -86,6 +86,16 @@ namespace SqlSugar
                 com(updateable);
                 updateable.ExecuteCommand();
             }
+            else if (pkColumn.IsPrimarykey == false) 
+            {
+               var pk= this._Context.EntityMaintenance.GetEntityInfo<TChild>().Columns.Where(it => it.IsPrimarykey);
+                List<string> ignoreColumns = new List<string>();
+                if (pk.Any()) 
+                {
+                    ignoreColumns.AddRange(pk.Select(it=>it.PropertyName));
+                }
+                x.AsUpdateable.IgnoreColumns(ignoreColumns.ToArray()).ExecuteCommand();
+            }
             else
             {
                 x.AsUpdateable.ExecuteCommand();
