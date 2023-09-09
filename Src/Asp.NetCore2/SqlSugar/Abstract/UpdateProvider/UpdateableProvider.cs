@@ -104,6 +104,10 @@ namespace SqlSugar
                 return trakRows;
             }
             string sql = _ExecuteCommand();
+            if (this.UpdateBuilder.AppendWhere.HasValue()) 
+            {
+                sql += " AND "+ this.UpdateBuilder.AppendWhere;
+            }
             if (string.IsNullOrEmpty(sql))
             {
                 return 0;
