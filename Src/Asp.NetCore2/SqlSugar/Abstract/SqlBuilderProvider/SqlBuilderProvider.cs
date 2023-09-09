@@ -99,7 +99,7 @@ namespace SqlSugar
                name=name.Split('=').First();
             }
             if (!name.Contains(SqlTranslationLeft)) return name;
-            if (name.StartsWith(SqlTranslationLeft) && name.EndsWith(SqlTranslationRight)) 
+            if (!name.Contains(".")&& name.StartsWith(SqlTranslationLeft) && name.EndsWith(SqlTranslationRight)) 
             {
                 var result= name.TrimStart(Convert.ToChar(SqlTranslationLeft)).TrimEnd(Convert.ToChar(SqlTranslationRight));
                 return result;
