@@ -84,7 +84,14 @@ namespace SqlSugar
                 Check.ExceptionEasy(exp == null, "UpdateOptions.CurrentFunc is error", "UpdateOptions.CurrentFunc参数设置错误");
                 var com = exp.Compile();
                 com(updateable);
-                updateable.ExecuteCommand();
+                if (IsDeleted)
+                {
+                    updateable.PageSize(1).EnableQueryFilter().ExecuteCommand();
+                }
+                else
+                {
+                    updateable.ExecuteCommand();
+                }
             }
             else if (pkColumn.IsPrimarykey == false) 
             {
@@ -94,11 +101,25 @@ namespace SqlSugar
                 {
                     ignoreColumns.AddRange(pk.Select(it=>it.PropertyName));
                 }
-                x.AsUpdateable.IgnoreColumns(ignoreColumns.ToArray()).ExecuteCommand();
+                if (IsDeleted)
+                {
+                    x.AsUpdateable.IgnoreColumns(ignoreColumns.ToArray()).PageSize(1).EnableQueryFilter().ExecuteCommand();
+                }
+                else
+                {
+                    x.AsUpdateable.IgnoreColumns(ignoreColumns.ToArray()).ExecuteCommand();
+                }
             }
             else
             {
-                x.AsUpdateable.ExecuteCommand();
+                if (IsDeleted)
+                {
+                    x.AsUpdateable.PageSize(1).EnableQueryFilter().ExecuteCommand();
+                }
+                else
+                {
+                    x.AsUpdateable.ExecuteCommand();
+                }
             }
             InitData(pkColumn, insertData);
             if (_NavigateType == NavigateType.OneToMany)
