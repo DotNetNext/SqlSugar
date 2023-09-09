@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UnitFilterUpdate.Init();
             USelectDTO.Init();
             UnitNavOneToManyDTO.Init();
             Unitadfaafsd.Init();
