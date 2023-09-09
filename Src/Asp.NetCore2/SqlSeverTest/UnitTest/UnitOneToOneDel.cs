@@ -29,7 +29,7 @@ namespace OrmTest
             }).ExecuteCommand();
             Db.DeleteNav<School>(s => s.Id.Equals(1))
                 .Include(s => s.Grades).ExecuteCommandAsync().GetAwaiter().GetResult();
-            Console.ReadLine();
+            //Console.ReadLine();
 
         }
     }
