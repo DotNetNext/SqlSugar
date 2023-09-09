@@ -68,6 +68,10 @@ DROP TABLE IF EXISTS `school0001`;
 
                 var list=Db.Queryable<School>().Includes(X => X.StudentInfo).ToList();
                 var student= Db.Queryable<Student>().ToList();
+                if (student.Count != 1) 
+                {
+                    throw new Exception("unit error");
+                }
             }
             catch (Exception)
             {
