@@ -94,7 +94,10 @@ namespace SqlSugar
             queryable.QueryBuilder.LambdaExpressions.ParameterIndex = 10000;
             var sqlobj=queryable.ToSql();
             var sql= UtilMethods.RemoveBeforeFirstWhere(sqlobj.Key);
-            updateable.UpdateBuilder.AppendWhere = sql;
+            if (sql!=sqlobj.Key)
+            {
+                updateable.UpdateBuilder.AppendWhere = sql;
+            }
             if (sqlobj.Value != null) 
             {
                 updateable.UpdateBuilder.Parameters.AddRange(sqlobj.Value);
