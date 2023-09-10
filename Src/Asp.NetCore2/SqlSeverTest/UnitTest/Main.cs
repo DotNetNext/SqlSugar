@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UnitOneToMany2.Init();
             UnitOneToMany.Init();
             UnitOneToOneDel.Init();
             EntityInfoTest.Init();
