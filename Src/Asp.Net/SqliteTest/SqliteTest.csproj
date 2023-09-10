@@ -116,6 +116,8 @@
     <Compile Include="UnitTest\UNavTest.cs" />
     <Compile Include="UnitTest\UnitNavOneToManyDTO.cs" />
     <Compile Include="UnitTest\UnitNavUpdatee12.cs" />
+    <Compile Include="UnitTest\UnitOneToMany.cs" />
+    <Compile Include="UnitTest\UnitOneToMany2.cs" />
     <Compile Include="UnitTest\UnitSubToList.cs" />
     <Compile Include="UnitTest\UnitTestReturnPkList.cs" />
     <Compile Include="UnitTest\Updateable.cs" />
