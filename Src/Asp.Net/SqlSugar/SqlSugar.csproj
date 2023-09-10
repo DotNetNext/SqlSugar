@@ -124,6 +124,7 @@
     <Compile Include="Abstract\InsertableProvider\InsertablePage.cs" />
     <Compile Include="Abstract\InsertableProvider\InsertableHelper.cs" />
     <Compile Include="Abstract\InsertableProvider\InsertMethodInfo.cs" />
+    <Compile Include="Abstract\InsertableProvider\InsertNavMethodInfo.cs" />
     <Compile Include="Abstract\QueryableProvider\Entities\AppendNavInfoList.cs" />
     <Compile Include="Abstract\QueryableProvider\Entities\QueryableAppendColumn.cs" />
     <Compile Include="Abstract\QueryableProvider\Entities\QueryableFormat.cs" />
