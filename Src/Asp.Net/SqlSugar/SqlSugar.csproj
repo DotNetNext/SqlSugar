@@ -158,6 +158,7 @@
     <Compile Include="Abstract\UpdateProvider\UpdateMethodInfo.cs" />
     <Compile Include="Abstract\UpdateProvider\UpdateableHelper.cs" />
     <Compile Include="Abstract\UpdateProvider\SplitTableUpdateByObjectProvider.cs" />
+    <Compile Include="Abstract\UpdateProvider\UpdateNavMethodInfo.cs" />
     <Compile Include="Entities\DiscriminatorObject .cs" />
     <Compile Include="Entities\PropertyMetadata.cs" />
     <Compile Include="Entities\DbFastestProperties.cs" />
