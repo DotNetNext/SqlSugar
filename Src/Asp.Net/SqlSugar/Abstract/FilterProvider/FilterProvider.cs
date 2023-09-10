@@ -120,6 +120,11 @@ namespace SqlSugar
             }
             return this;
         }
+        public QueryFilterProvider AddTableFilter(Type type,string shortName, FormattableString expString, FilterJoinPosition filterJoinType = FilterJoinPosition.On)
+        {
+            var exp = DynamicCoreHelper.GetWhere(type, shortName, expString);
+            return AddTableFilter(type, exp, filterJoinType);
+        }
         public QueryFilterProvider AddTableFilter(Type type,Expression expression, FilterJoinPosition filterJoinType = FilterJoinPosition.On)
         {
             var isOn = filterJoinType == FilterJoinPosition.On;
