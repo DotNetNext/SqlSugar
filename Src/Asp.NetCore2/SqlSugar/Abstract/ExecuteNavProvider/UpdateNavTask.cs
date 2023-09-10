@@ -59,6 +59,22 @@ namespace SqlSugar
             result.NavContext = UpdateNavProvider.NavContext;
             return result;
         }
+
+        public UpdateNavMethodInfo IncludeByNameString(string navMemberName, UpdateNavOptions updateNavOptions=null)
+        {
+            UpdateNavMethodInfo result = new UpdateNavMethodInfo();
+            result.Context = UpdateNavProvider._Context;
+            var entityInfo = result.Context.EntityMaintenance.GetEntityInfo<T>();
+            Type properyItemType;
+            Expression exp =UtilMethods.GetIncludeExpression(navMemberName, entityInfo, out properyItemType); 
+            var method = this.GetType().GetMyMethod("Include", 2)
+                            .MakeGenericMethod(properyItemType);
+            var obj = method.Invoke(this, new object[] { exp, updateNavOptions });
+            result.MethodInfos = obj;
+            return result;
+        }
+
+
     }
     public class UpdateNavTask<Root, T> where T : class, new() where Root : class, new()
     {
