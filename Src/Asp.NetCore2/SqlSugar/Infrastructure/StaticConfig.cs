@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace SqlSugar 
@@ -26,5 +27,6 @@ namespace SqlSugar
         public static bool Check_StringIdentity = true;
 
         public static Func<string,string> Check_FieldFunc;
+        public static Type DynamicExpressionParserType;
     }
 }
