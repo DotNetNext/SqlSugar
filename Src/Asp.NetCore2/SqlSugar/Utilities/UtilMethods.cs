@@ -18,7 +18,7 @@ namespace SqlSugar
 {
     public class UtilMethods
     {
-        internal static Expression GetIncludeExpression(string navMemberName, EntityInfo entityInfo, out Type properyItemType)
+        internal static Expression GetIncludeExpression(string navMemberName, EntityInfo entityInfo, out Type properyItemType,out bool isList)
         {
             var navInfo = entityInfo.Columns.Where(it => it.Navigat != null && it.PropertyName.EqualCase(navMemberName)).FirstOrDefault();
             var properyType = navInfo.PropertyInfo.PropertyType;
@@ -26,6 +26,11 @@ namespace SqlSugar
             if (properyType.FullName.IsCollectionsList())
             {
                 properyItemType = properyType.GetGenericArguments()[0];
+                isList = true;
+            }
+            else 
+            {
+                isList = false;
             }
            return ExpressionBuilderHelper.CreateExpressionSelectField(entityInfo.Type, navInfo.PropertyName, properyType);
         }

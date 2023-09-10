@@ -32,6 +32,14 @@ namespace SqlSugar
             it.GetParameters().Length == argCount&&
             it.GetParameters().First().ParameterType==parameterType);
         }
+        public static MethodInfo GetMyMethod(this Type type, string name, int argCount, bool isList)
+        {
+            var methods= type.GetMethods().Where(it => it.Name == name).Where(it =>
+            it.GetParameters().Length == argCount&&
+            it.GetParameters()[0].ToString().Contains("List`") == isList).ToList(); 
+            return methods.First();
+        }
+
         public static MethodInfo GetMyMethod(this Type type, string name, int argCount, Type parameterType,Type parameterType2)
         {
             return type.GetMethods().Where(it=>it.Name == name).FirstOrDefault(it =>

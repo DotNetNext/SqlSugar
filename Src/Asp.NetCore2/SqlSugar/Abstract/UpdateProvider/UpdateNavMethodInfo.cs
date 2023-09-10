@@ -15,24 +15,26 @@ namespace SqlSugar
         public UpdateNavMethodInfo IncludeByNameString(string navMemberName, UpdateNavOptions updateNavOptions = null)
         {
             var type = MethodInfos.GetType().GetGenericArguments()[0];
-            var entityInfo = this.Context.EntityMaintenance.GetEntityInfo(type); 
+            var entityInfo = this.Context.EntityMaintenance.GetEntityInfo(type);
             Type properyItemType;
-            Expression exp = UtilMethods.GetIncludeExpression(navMemberName, entityInfo, out properyItemType);
-            var method = this.GetType().GetMyMethod("Include", 2)
+            bool isList;
+            Expression exp = UtilMethods.GetIncludeExpression(navMemberName, entityInfo, out properyItemType, out isList);
+            var method = this.MethodInfos.GetType().GetMyMethod("Include", 2, isList)
                             .MakeGenericMethod(properyItemType);
-            var obj = method.Invoke(this, new object[] { exp, updateNavOptions });
+            var obj = method.Invoke(this.MethodInfos, new object[] { exp, updateNavOptions });
             this.MethodInfos = obj; 
             return this;
         }
-        public UpdateNavMethodInfo ThenIncludeByNameString(string IncludeByNameString, UpdateNavOptions updateNavOptions = null)
+        public UpdateNavMethodInfo ThenIncludeByNameString(string navMemberName, UpdateNavOptions updateNavOptions = null)
         {
             var type = MethodInfos.GetType().GetGenericArguments()[0];
             var entityInfo = this.Context.EntityMaintenance.GetEntityInfo(type);
             Type properyItemType;
-            Expression exp = UtilMethods.GetIncludeExpression(navMemberName, entityInfo, out properyItemType);
-            var method = this.GetType().GetMyMethod("ThenInclude", 2)
+            bool isList;
+            Expression exp = UtilMethods.GetIncludeExpression(navMemberName, entityInfo, out properyItemType, out isList);
+            var method = this.MethodInfos.GetType().GetMyMethod("ThenInclude", 2, isList)
                             .MakeGenericMethod(properyItemType);
-            var obj = method.Invoke(this, new object[] { exp, updateNavOptions });
+            var obj = method.Invoke(this.MethodInfos, new object[] { exp, updateNavOptions });
             this.MethodInfos = obj;
             return this;
         }

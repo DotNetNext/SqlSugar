@@ -66,8 +66,9 @@ namespace SqlSugar
             result.Context = UpdateNavProvider._Context;
             var entityInfo = result.Context.EntityMaintenance.GetEntityInfo<T>();
             Type properyItemType;
-            Expression exp =UtilMethods.GetIncludeExpression(navMemberName, entityInfo, out properyItemType); 
-            var method = this.GetType().GetMyMethod("Include", 2)
+            bool isList;
+            Expression exp =UtilMethods.GetIncludeExpression(navMemberName, entityInfo, out properyItemType,out isList); 
+            var method = this.GetType().GetMyMethod("Include", 2,isList)
                             .MakeGenericMethod(properyItemType);
             var obj = method.Invoke(this, new object[] { exp, updateNavOptions });
             result.MethodInfos = obj;
