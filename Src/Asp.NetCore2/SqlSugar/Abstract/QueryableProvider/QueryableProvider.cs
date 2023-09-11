@@ -571,7 +571,22 @@ namespace SqlSugar
                 QueryBuilder.Parameters.Add(parameter);
             return this;
         }
-
+        public ISugarQueryable<T> AddJoinInfo(Type JoinType, string shortName, string joinWhere, JoinType type = JoinType.Left) 
+        {
+            var tableName = this.Context.EntityMaintenance.GetEntityInfo(JoinType).DbTableName; 
+            QueryBuilder.JoinIndex = +1;
+            QueryBuilder.JoinQueryInfos
+                .Add(new JoinQueryInfo()
+                {
+                    JoinIndex = QueryBuilder.JoinIndex,
+                    TableName = tableName,
+                    ShortName = shortName,
+                    JoinType = type,
+                    JoinWhere = joinWhere,
+                    EntityType=JoinType
+                });
+            return this;
+        }
         public virtual ISugarQueryable<T> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left)
         {
 
