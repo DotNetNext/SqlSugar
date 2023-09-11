@@ -33,7 +33,15 @@ namespace OrmTest
                 .IncludeByNameString("Persons")
                 .IncludeByNameString("City").ExecuteCommand();
 
+
             var list = db.Queryable<UnitAddress011>().Includes(x => x.Persons).Includes(x => x.City).ToList();
+
+            
+            db.DeleteNav(address).IncludeByNameString("Persons")
+                .IncludeByNameString("City").ExecuteCommand();
+
+
+         
         }
 
         [SqlSugar.SugarTable("UnitPerson01x1")]
