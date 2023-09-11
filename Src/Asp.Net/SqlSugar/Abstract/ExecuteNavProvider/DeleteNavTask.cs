@@ -22,6 +22,20 @@ namespace SqlSugar
             result.Context = this.Context;
             return result;
         }
+        public DeleteNavMethodInfo IncludeByNameString(string navMemberName, UpdateNavOptions updateNavOptions = null)
+        {
+            DeleteNavMethodInfo result = new DeleteNavMethodInfo();
+            result.Context = deleteNavProvider._Context;
+            var entityInfo = result.Context.EntityMaintenance.GetEntityInfo<T>();
+            Type properyItemType;
+            bool isList;
+            Expression exp = UtilMethods.GetIncludeExpression(navMemberName, entityInfo, out properyItemType, out isList);
+            var method = this.GetType().GetMyMethod("Include", 2, isList)
+                            .MakeGenericMethod(properyItemType);
+            var obj = method.Invoke(this, new object[] { exp, updateNavOptions });
+            result.MethodInfos = obj;
+            return result;
+        }
         public DeleteNavTask<Root, TChild> Include<TChild>(Expression<Func<Root, List<TChild>>> expression) where TChild : class, new()
         {
             this.Context = deleteNavProvider._Context;
@@ -50,6 +64,18 @@ namespace SqlSugar
             result.Context = this.Context;
             return result;
         }
+        public DeleteNavTask<Root, TChild> ThenInclude<TChild>(Expression<Func<T, TChild>> expression, DeleteNavOptions deleteNavOptions) where TChild : class, new()
+        {
+            DeleteNavTask<Root, TChild> result = new DeleteNavTask<Root, TChild>();
+            Func<DeleteNavProvider<Root, TChild>> func = () => {
+                var dev = PreFunc();
+                dev.deleteNavOptions = deleteNavOptions;
+                return dev.ThenInclude(expression);
+            };
+            result.PreFunc = func;
+            result.Context = this.Context;
+            return result;
+        }
         public DeleteNavTask<Root, TChild> ThenInclude<TChild>(Expression<Func<T, List<TChild>>> expression) where TChild : class, new()
         {
             DeleteNavTask<Root, TChild> result = new DeleteNavTask<Root, TChild>();
@@ -73,6 +99,10 @@ namespace SqlSugar
         public DeleteNavTask<Root, TChild> Include<TChild>(Expression<Func<Root, TChild>> expression) where TChild : class, new()
         {
             return AsNav().ThenInclude(expression);
+        }
+        public DeleteNavTask<Root, TChild> Include<TChild>(Expression<Func<Root, TChild>> expression, DeleteNavOptions options) where TChild : class, new()
+        {
+            return AsNav().ThenInclude(expression,options);
         }
         public DeleteNavTask<Root, TChild> Include<TChild>(Expression<Func<Root, List<TChild>>> expression) where TChild : class, new()
         {
