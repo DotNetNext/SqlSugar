@@ -573,6 +573,7 @@ namespace SqlSugar
         }
         public ISugarQueryable<T> AddJoinInfo(Type JoinType, string shortName, string joinWhere, JoinType type = JoinType.Left) 
         {
+            this.Context.InitMappingInfo(JoinType);
             var tableName = this.Context.EntityMaintenance.GetEntityInfo(JoinType).DbTableName; 
             QueryBuilder.JoinIndex = +1;
             QueryBuilder.JoinQueryInfos
