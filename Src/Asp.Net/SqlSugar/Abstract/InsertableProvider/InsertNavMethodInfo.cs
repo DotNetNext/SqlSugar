@@ -26,7 +26,7 @@ namespace SqlSugar
         }
         public InsertNavMethodInfo ThenIncludeByNameString(string navMemberName, UpdateNavOptions updateNavOptions = null)
         {
-            var type = MethodInfos.GetType().GetGenericArguments()[0];
+            var type = MethodInfos.GetType().GetGenericArguments()[1];
             var entityInfo = this.Context.EntityMaintenance.GetEntityInfo(type);
             Type properyItemType;
             bool isList;
