@@ -153,7 +153,7 @@ namespace SqlSugar.ClickHouse
                     }
                     else
                     {
-                        sql = sql.Replace(param.ParameterName, "'" + this.Context.Utilities.SerializeObject(param.Value).ToSqlFilter() + "'");
+                        sql = sql.Replace(param.ParameterName,   this.Context.Utilities.SerializeObject(param.Value).Replace("\"","'"));
                     }
                 }
                 else
