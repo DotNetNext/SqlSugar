@@ -29,8 +29,21 @@ namespace OrmTest
             TestBool(db);
             TestGuid(db);
             db.CodeFirst.InitTables<CodeFirstTable2>();
-            db.Insertable(new List<CodeFirstTable2>() { new CodeFirstTable2() { CreateTime = DateTime.Now, Name = "a", Text = new ulong[] { 1 } } }).ExecuteCommand();
+            db.Insertable(new List<CodeFirstTable2>() { new CodeFirstTable2() { CreateTime = DateTime.Now, Name = "a", Text = new ulong[] {   } } }).ExecuteCommand();
             var list2=db.Queryable<CodeFirstTable2>().ToList();
+
+            db.CodeFirst.InitTables<CodeFirstTable3>();
+            db.Insertable(
+            new CodeFirstTable3() { CreateTime = DateTime.Now, Name = "123123123", Text = new string[0] }
+             ).ExecuteCommand();
+
+           db.Insertable(new List<CodeFirstTable3>()
+            {
+                new CodeFirstTable3() { CreateTime = DateTime.Now, Name = "add", Text = new string[] { "sdfsfd" } },
+                new CodeFirstTable3() { CreateTime = DateTime.Now, Name = "addd", Text = new string[]{ "13123123" } },
+            }).ExecuteCommand();
+            var list3 = db.Queryable<CodeFirstTable3>().ToList();
+ 
             Console.WriteLine("#### CodeFirst end ####");
         }
         private static void TestGuid(SqlSugarClient db)
@@ -95,6 +108,16 @@ namespace OrmTest
         public string Name { get; set; }
         [SugarColumn(ColumnDataType = "Array(UInt64)",IsArray  =true)]//custom
         public UInt64[] Text { get; set; }
+        [SugarColumn(IsNullable = true)]
+        public DateTime CreateTime { get; set; }
+    }
+    public class CodeFirstTable3
+    {
+        [SugarColumn(IsPrimaryKey = true)]
+        public int Id { get; set; }
+        public string Name { get; set; }
+        [SugarColumn(ColumnDataType = "Array(String)", IsArray = true)]//custom
+        public string[] Text { get; set; }
         [SugarColumn(IsNullable = true)]
         public DateTime CreateTime { get; set; }
     }
