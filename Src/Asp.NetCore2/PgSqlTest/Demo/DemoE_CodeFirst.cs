@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 
 namespace OrmTest
@@ -49,8 +50,24 @@ namespace OrmTest
             db.Insertable(new CodeFirstsaf() { Json = "a" })
                 .ExecuteCommand();
             var list3=db.Queryable<CodeFirstsaf>().ToList();
+            db.CodeFirst.InitTables<CodeFirstadfafaa>();
+            db.DbMaintenance.TruncateTable<CodeFirstadfafaa>();
+            db.Insertable(new CodeFirstadfafaa() { Id = 1, Name = "a" }).ExecuteCommand();
+            Dictionary<string, object> result = new Dictionary<string, object>();
+            result.Add("id", 1);
+            result.Add("name", "jack");
+            result.Add("price", null);
+            db.Updateable(result).AS("CodeFirstadfafaa").WhereColumns("id").ExecuteCommand();
             Console.WriteLine("#### CodeFirst end ####");
         }
+    }
+    public class CodeFirstadfafaa 
+    {
+        [SugarColumn(IsPrimaryKey =true)]
+        public int Id { get; set; }
+        public string Name { get; set; }
+        [SugarColumn(IsNullable =true)]
+        public int Price { get; set; }
     }
     public class CodeFirstunitea 
     {
