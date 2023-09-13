@@ -25,5 +25,6 @@ namespace SqlSugar
         public bool IsAutoDeleteQueryFilter { get; set; }
         public bool EnableModelFuncMappingColumn { get; set; }
         public bool EnableOracleIdentity { get; set; }
+        public bool EnableCodeFirstUpdatePrecision { get;  set; }
     }
 }
