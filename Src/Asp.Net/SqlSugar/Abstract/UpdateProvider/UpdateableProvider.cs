@@ -518,7 +518,12 @@ namespace SqlSugar
             }
             return this;
         }
-
+        public IUpdateable<T> UpdateColumns(Expression<Func<T, object>> columns, bool appendColumnsByDataFilter) 
+        {
+            ThrowUpdateByExpression();
+            var updateColumns = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.ArraySingle).GetResultArray().Select(it => this.SqlBuilder.GetNoTranslationColumnName(it)).ToList();
+            return UpdateColumns(updateColumns.ToArray(), appendColumnsByDataFilter);
+        }
         public IUpdateable<T> UpdateColumns(Expression<Func<T, object>> columns)
         {
             ThrowUpdateByExpression();
@@ -539,6 +544,29 @@ namespace SqlSugar
             //}
             //this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => updateColumns.Any(uc => uc.Equals(it.PropertyName, StringComparison.CurrentCultureIgnoreCase) || uc.Equals(it.DbColumnName, StringComparison.CurrentCultureIgnoreCase)) || it.IsPrimarykey || it.IsIdentity).ToList();
             return this;
+        }
+        public IUpdateable<T> UpdateColumns(string[] columns, bool appendColumnsByDataFilter) 
+        {
+            List<string> updateColumns = new List<string>();
+            if (appendColumnsByDataFilter)
+            {
+                var newData = new T() { };
+                UtilMethods.ClearPublicProperties(newData, this.EntityInfo);
+                var data = ((UpdateableProvider<T>)this.Context.Updateable(newData)).UpdateObjs.First();
+                foreach (var item in this.EntityInfo.Columns.Where(it => !it.IsPrimarykey && !it.IsIgnore && !it.IsOnlyIgnoreUpdate))
+                {
+                    var value = item.PropertyInfo.GetValue(data);
+                    if (value != null && !value.Equals(""))
+                    {
+                        if (!value.Equals(UtilMethods.GetDefaultValue(item.UnderType)))
+                        {
+                            updateColumns.Add(item.PropertyName);
+                        }
+                    }
+                }
+            }
+            updateColumns.AddRange(columns);
+            return UpdateColumns(updateColumns.ToArray());
         }
         public IUpdateable<T> UpdateColumns(string[] columns)
         {
