@@ -717,7 +717,9 @@ namespace SqlSugar
             }
             if (appendColumnsByDataFilter)
             {
-                var data = ((UpdateableProvider<T>)this.Context.Updateable(new T() { })).UpdateObjs.First();
+                var newData = new T() { };
+                UtilMethods.ClearPublicProperties(newData, this.EntityInfo);
+                var data = ((UpdateableProvider<T>)this.Context.Updateable(newData)).UpdateObjs.First();
                 foreach (var item in this.EntityInfo.Columns.Where(it => !it.IsPrimarykey && !it.IsIgnore && !it.IsOnlyIgnoreUpdate))
                 {
                     var value = item.PropertyInfo.GetValue(data);
