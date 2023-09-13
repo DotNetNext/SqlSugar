@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http.Headers;
 using System.Text;
 
@@ -7,7 +8,7 @@ namespace OrmTest
 {
     internal class UnitOneToMany2
     {
-        public static void Init() 
+        public static void Init()
         {
             var db = NewUnitTest.Db;
             db.CodeFirst.InitTables<UnitPerson011, UnitAddress011, UnitCity>();
@@ -16,19 +17,19 @@ namespace OrmTest
             var address = new UnitAddress011
             {
                 Street = "123 Main Street",
-                 CityId=1,Persons=new List<UnitPerson011>() {
+                CityId = 1, Persons = new List<UnitPerson011>() {
                  new UnitPerson011
                         {
-                            Name = "John Doe" 
-               
+                            Name = "John Doe"
+
                         }
                  },
-                 City=new UnitCity() { 
-                  AddressId=1,
-                   Name="city"
-                 }
-            }; 
-           
+                City = new UnitCity() {
+                    AddressId = 1,
+                    Name = "city"
+                }
+            };
+
             db.InsertNav(address)
                 .IncludeByNameString("Persons")
                 .IncludeByNameString("City").ExecuteCommand();
@@ -36,12 +37,28 @@ namespace OrmTest
 
             var list = db.Queryable<UnitAddress011>().Includes(x => x.Persons).Includes(x => x.City).ToList();
 
-            
+
             db.DeleteNav(address).IncludeByNameString("Persons")
                 .IncludeByNameString("City").ExecuteCommand();
 
-
-         
+            db.CodeFirst.InitTables<UnitTesta>();
+            db.CurrentConnectionConfig.MoreSettings = new SqlSugar.ConnMoreSettings() { EnableCodeFirstUpdatePrecision = true };
+            db.CodeFirst.InitTables<UNITTESTA>();
+            var data= db.DbMaintenance.GetColumnInfosByTableName("UNITTESTA", false);
+            if (data.First().DecimalDigits != 6) 
+            {
+                throw new Exception("unit error");
+            }
+        }
+        public class UnitTesta 
+        {
+            [SqlSugar.SugarColumn(Length =18,DecimalDigits =4)]
+            public decimal xx { get; set; }
+        }
+        public class UNITTESTA
+        {
+            [SqlSugar.SugarColumn(Length = 18, DecimalDigits = 6)]
+            public decimal xx { get; set; }
         }
 
         [SqlSugar.SugarTable("UnitPerson01x1")]
