@@ -18,6 +18,26 @@ namespace SqlSugar
 {
     public class UtilMethods
     {
+        public static void ClearPublicProperties<T>(T obj,EntityInfo entity)
+        {
+            if (obj == null)
+            {
+                throw new ArgumentNullException(nameof(obj));
+            }
+
+            Type type = typeof(T);
+    
+            foreach (var column in entity.Columns)
+            {
+                if (column.PropertyInfo.CanWrite && column.PropertyInfo.GetSetMethod() != null)
+                {
+                    Type propertyType = column.PropertyInfo.PropertyType;
+                    object defaultValue = propertyType.IsValueType ? Activator.CreateInstance(propertyType) : null;
+                    column.PropertyInfo.SetValue(obj, defaultValue);
+                }
+            }
+        }
+
         internal static Expression GetIncludeExpression(string navMemberName, EntityInfo entityInfo, out Type properyItemType,out bool isList)
         {
             var navInfo = entityInfo.Columns.Where(it => it.Navigat != null && it.PropertyName.EqualCase(navMemberName)).FirstOrDefault();
