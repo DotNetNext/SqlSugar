@@ -738,12 +738,16 @@ namespace SqlSugar
                             ConditionalType = ConditionalType.Equal,
                             FieldName = this.QueryBuilder.Builder.GetTranslationColumnName(column.DbColumnName),
                             FieldValue = value.ObjToStringNew(),
-                            CSharpTypeName = column.PropertyInfo.PropertyType.Name
+                            CSharpTypeName = column.UnderType.Name
                         });
-                        if(value is Enum&&this.Context.CurrentConnectionConfig?.MoreSettings?.TableEnumIsString!=true)
+                        if (value is Enum && this.Context.CurrentConnectionConfig?.MoreSettings?.TableEnumIsString != true)
                         {
                             data.Value.FieldValue = Convert.ToInt64(value).ObjToString();
                             data.Value.CSharpTypeName = "int";
+                        }
+                        else if (value != null&&column.UnderType==UtilConstants.DateType) 
+                        {
+                            data.Value.FieldValue = Convert.ToDateTime(value).ToString("yyyy-MM-dd HH:mm:ss.fff");
                         }
                         //if (this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL) 
                         //{
