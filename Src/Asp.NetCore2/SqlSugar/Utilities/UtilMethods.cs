@@ -471,7 +471,8 @@ namespace SqlSugar
                     IsAutoUpdateQueryFilter = it.MoreSettings.IsAutoUpdateQueryFilter,
                     EnableModelFuncMappingColumn=it.MoreSettings.EnableModelFuncMappingColumn,
                     EnableOracleIdentity = it.MoreSettings.EnableOracleIdentity,
-                    IsWithNoLockSubquery=it.MoreSettings.IsWithNoLockSubquery
+                    IsWithNoLockSubquery=it.MoreSettings.IsWithNoLockSubquery,
+                    EnableCodeFirstUpdatePrecision=it.MoreSettings.EnableCodeFirstUpdatePrecision
 
                 },
                 SqlMiddle = it.SqlMiddle == null ? null : new SqlMiddle

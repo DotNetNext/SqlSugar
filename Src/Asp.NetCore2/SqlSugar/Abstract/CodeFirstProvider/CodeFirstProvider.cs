@@ -408,6 +408,7 @@ namespace SqlSugar
                                                           dbColumns.Any(dc => dc.DbColumnName.EqualCase(ec.DbColumnName)
                                                                && ((ec.Length != dc.Length && !UtilMethods.GetUnderType(ec.PropertyInfo).IsEnum() && UtilMethods.GetUnderType(ec.PropertyInfo).IsIn(UtilConstants.StringType)) ||
                                                                     ec.IsNullable != dc.IsNullable ||
+                                                                    IsNoSamePrecision(ec, dc) ||
                                                                     IsNoSamgeType(ec, dc)))).ToList();
                 var renameColumns = entityColumns
                     .Where(it => !string.IsNullOrEmpty(it.OldDbColumnName))
@@ -498,6 +499,15 @@ namespace SqlSugar
                 }
                 ExistLogicEnd(entityColumns);
             }
+        }
+
+        private bool IsNoSamePrecision(EntityColumnInfo ec, DbColumnInfo dc)
+        {
+            if (this.Context.CurrentConnectionConfig.MoreSettings?.EnableCodeFirstUpdatePrecision == true) 
+            {
+                return ec.DecimalDigits != dc.DecimalDigits && ec.UnderType.IsIn(UtilConstants.DobType,UtilConstants.DecType);
+            }
+            return false;
         }
 
         protected virtual void KeyAction(EntityColumnInfo item, DbColumnInfo dbColumn, out bool pkDiff, out bool idEntityDiff)
