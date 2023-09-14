@@ -137,6 +137,10 @@ namespace SqlSugar
         {
             return string.Format(" (strpos ({1},{0})-1)", model.Args[0].MemberName, model.Args[1].MemberName);
         }
+        public override string CharIndexNew(MethodCallExpressionModel model)
+        {
+            return string.Format(" (strpos ({0},{1}))", model.Args[0].MemberName, model.Args[1].MemberName);
+        }
         public override string TrueValue()
         {
             return "true";

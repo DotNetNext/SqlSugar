@@ -20,6 +20,10 @@ namespace SqlSugar
     }
     public partial class SqlServerMethod : DefaultDbMethod, IDbMethods
     {
+        public override string CharIndexNew(MethodCallExpressionModel model)
+        {
+            return string.Format("CHARINDEX ({1},{0})", model.Args[0].MemberName, model.Args[1].MemberName);
+        }
         public override string WeekOfYear(MethodCallExpressionModel mode)
         {
             var parameterNameA = mode.Args[0].MemberName;
