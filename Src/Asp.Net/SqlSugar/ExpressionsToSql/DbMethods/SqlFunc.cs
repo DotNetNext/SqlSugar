@@ -345,7 +345,9 @@ namespace SqlSugar
         /// <returns></returns>
         public static Subqueryable<T> Subqueryable<T>() where T:class,new(){ throw new NotSupportedException("Can only be used in expressions");}
         public static CaseThen  IF(bool condition) { throw new NotSupportedException("Can only be used in expressions"); }
+        [Obsolete("多库下参数顺序不一至，为了保证多库下更好体验请使用 SqlFunc.CharIndexNew")]
         public static int CharIndex(string findChar,string searchValue) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static int CharIndexNew(string stringValue, string charValue) { throw new NotSupportedException("Can only be used in expressions"); }
         public static int BitwiseAnd(int left, int right) { throw new NotSupportedException("Can only be used in expressions"); }
         public static int BitwiseInclusiveOR(int left, int right) { throw new NotSupportedException("Can only be used in expressions"); }
         public static int BitwiseAnd(long left, long right) { throw new NotSupportedException("Can only be used in expressions"); }
