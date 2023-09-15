@@ -774,6 +774,12 @@ namespace SqlSugar
         #endregion
 
         #region GroupBy
+        new ISugarQueryable<T, T2, T3, T4, T5> GroupByIF(bool isGroupBy, Expression<Func<T, object>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5> GroupByIF(bool isGroupBy, Expression<Func<T, T2, object>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5> GroupByIF(bool isGroupBy, Expression<Func<T, T2, T3, object>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5> GroupByIF(bool isGroupBy, Expression<Func<T, T2, T3, T4, object>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5> GroupByIF(bool isGroupBy, Expression<Func<T, T2, T3, T4,T5, object>> expression);
+        new ISugarQueryable<T, T2, T3, T4, T5> GroupByIF(bool isGroupBy, string groupFields);
         new ISugarQueryable<T, T2, T3, T4, T5> GroupBy(Expression<Func<T, object>> expression);
         ISugarQueryable<T, T2, T3, T4, T5> GroupBy(Expression<Func<T, T2, object>> expression);
         ISugarQueryable<T, T2, T3, T4, T5> GroupBy(Expression<Func<T, T2, T3, object>> expression);
@@ -912,6 +918,13 @@ namespace SqlSugar
         #endregion
 
         #region GroupBy
+        new ISugarQueryable<T, T2, T3, T4, T5,T6> GroupByIF(bool isGroupBy, string groupFields);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6> GroupByIF(bool isGroupBy, Expression<Func<T, object>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6> GroupByIF(bool isGroupBy, Expression<Func<T, T2, object>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6> GroupByIF(bool isGroupBy, Expression<Func<T, T2, T3, object>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6> GroupByIF(bool isGroupBy, Expression<Func<T, T2, T3, T4, object>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6> GroupByIF(bool isGroupBy, Expression<Func<T, T2, T3, T4, T5, object>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6> GroupByIF(bool isGroupBy, Expression<Func<T, T2, T3, T4, T5,T6, object>> expression);
         new ISugarQueryable<T, T2, T3, T4, T5, T6> GroupBy(Expression<Func<T, object>> expression);
         ISugarQueryable<T, T2, T3, T4, T5, T6> GroupBy(Expression<Func<T, T2, object>> expression);
         ISugarQueryable<T, T2, T3, T4, T5, T6> GroupBy(Expression<Func<T, T2, T3, object>> expression);
@@ -1059,6 +1072,14 @@ namespace SqlSugar
         #endregion
 
         #region GroupBy
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> GroupByIF(bool isGroupBy, string groupFields);
+        new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> GroupByIF(bool isGroupBy, Expression<Func<T, object>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7> GroupByIF(bool isGroupBy, Expression<Func<T, T2, object>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7> GroupByIF(bool isGroupBy, Expression<Func<T, T2, T3, object>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7> GroupByIF(bool isGroupBy, Expression<Func<T, T2, T3, T4, object>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7> GroupByIF(bool isGroupBy, Expression<Func<T, T2, T3, T4, T5, object>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7> GroupByIF(bool isGroupBy, Expression<Func<T, T2, T3, T4, T5, T6, object>> expression);
+        ISugarQueryable<T, T2, T3, T4, T5, T6, T7> GroupByIF(bool isGroupBy, Expression<Func<T, T2, T3, T4, T5, T6,T7, object>> expression);
         new ISugarQueryable<T, T2, T3, T4, T5, T6, T7> GroupBy(Expression<Func<T, object>> expression);
         ISugarQueryable<T, T2, T3, T4, T5, T6, T7> GroupBy(Expression<Func<T, T2, object>> expression);
         ISugarQueryable<T, T2, T3, T4, T5, T6, T7> GroupBy(Expression<Func<T, T2, T3, object>> expression);
