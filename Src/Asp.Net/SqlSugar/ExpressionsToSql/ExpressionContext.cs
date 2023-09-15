@@ -207,7 +207,7 @@ namespace SqlSugar
         public virtual string GetTranslationColumnName(string columnName)
         {
             Check.ArgumentNullException(columnName, string.Format(ErrorMessage.ObjNotExist, "Column Name"));
-            if (columnName.Substring(0, 1) == this.SqlParameterKeyWord)
+            if (columnName.Substring(0, 1) == this.SqlParameterKeyWord|| columnName.Substring(0, 1) == "@")
             {
                 return columnName;
             }
