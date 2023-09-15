@@ -255,6 +255,10 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override List<string> GetFuncList()
+        {
+            return this.Context.Ado.SqlQuery<string>(" SELECT name\r\nFROM sqlite_master\r\nWHERE type = 'table' AND name NOT LIKE 'sqlite_%' ");
+        }
         public override List<string> GetIndexList(string tableName)
         {
             var sql = $"PRAGMA index_list('{tableName}');";

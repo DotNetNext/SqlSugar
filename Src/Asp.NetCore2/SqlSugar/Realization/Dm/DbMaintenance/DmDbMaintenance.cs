@@ -267,6 +267,10 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override List<string> GetFuncList()
+        {
+            return this.Context.Ado.SqlQuery<string>(" SELECT object_name\r\nFROM all_objects\r\nWHERE object_type = 'FUNCTION' AND owner = USER ");
+        }
         public override bool RenameTable(string oldTableName, string newTableName)
         {
             oldTableName = SqlBuilder.GetTranslationColumnName(oldTableName);

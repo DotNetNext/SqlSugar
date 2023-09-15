@@ -272,6 +272,10 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override List<string> GetFuncList()
+        {
+            return this.Context.Ado.SqlQuery<string>(" SELECT object_name\r\nFROM all_objects\r\nWHERE object_type = 'FUNCTION' AND owner = USER ");
+        }
         public override List<string> GetIndexList(string tableName)
         {
             var sql = $"SELECT index_name FROM user_ind_columns\r\nWHERE table_name = '{tableName}'";
