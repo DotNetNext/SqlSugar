@@ -193,6 +193,7 @@ namespace SqlSugar
         #endregion
 
         #region Result
+
         public object ToPageList(int pageNumber, int pageSize)
         {
             var method = QueryableObj.GetType().GetMyMethod("ToPageList", 2, typeof(int), typeof(int));
@@ -212,6 +213,26 @@ namespace SqlSugar
             var method = QueryableObj.GetType().GetMyMethod("ToList", 0);
             var reslt = method.Invoke(QueryableObj, new object[] { });
             return reslt;
+        }
+        public bool CreateView(string viewNameFomat)
+        {
+            if (viewNameFomat?.Contains("{0}")!=true) 
+            {
+                Check.ExceptionEasy("need{0}", "需要{0}表名的占位符");
+            }
+            var entityInfo = this.Context.EntityMaintenance.GetEntityInfo(EntityType);
+            var viewName = string.Format(viewNameFomat, entityInfo.DbTableName);
+            if (!this.Context.DbMaintenance.GetViewInfoList().Any(it => it.Name.EqualCase(viewName))) {
+                var method = QueryableObj.GetType().GetMyMethod("ToSqlString", 0);
+                var reslt = (string)method.Invoke(QueryableObj, new object[] { });
+                var sql = $"CREATE  VIEW  {viewName} AS {Environment.NewLine} {reslt}";
+                this.Context.Ado.ExecuteCommand(sql);
+                return true;
+            }
+            else 
+            {
+                return false;
+            }
         }
         public object First()
         {
