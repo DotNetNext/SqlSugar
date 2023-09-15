@@ -15,6 +15,7 @@ namespace SqlSugar
         public const string CodeFirst_BigString = "varcharmax,longtext,text,clob";
         public static Func<long> CustomSnowFlakeFunc;
         public static Func<long> CustomSnowFlakeTimeErrorFunc;
+        public static Func<Guid> CustomGuidFunc;
 
         public static Action<object> CompleteQueryableFunc;
         public static Action<object> CompleteInsertableFunc;
