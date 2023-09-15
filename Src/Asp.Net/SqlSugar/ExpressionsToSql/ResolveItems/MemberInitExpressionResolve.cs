@@ -83,7 +83,7 @@ namespace SqlSugar
                 else if (entityMaintenance != null 
                     && entityMaintenance.GetEntityInfo(type).Columns.Any(it =>it.SqlParameterDbType is Type 
                     &&it.PropertyInfo.Name == memberName)
-                    &&IsConst(ExpressionTool.RemoveConvertThanOne(item))) 
+                    &&IsConstNew(ExpressionTool.RemoveConvertThanOne(item))) 
                 {
                     var columnInfo= entityMaintenance.GetEntityInfo(expression.Type).Columns.First(it => it.SqlParameterDbType is Type && it.PropertyInfo.Name == memberName);
                     var columnDbType = columnInfo.SqlParameterDbType as Type;
@@ -247,6 +247,17 @@ namespace SqlSugar
 
         private static bool IsConst(Expression item)
         {
+            return item is UnaryExpression || item.NodeType == ExpressionType.Constant || (item is MemberExpression) && ((MemberExpression)item).Expression.NodeType == ExpressionType.Constant;
+        }
+        private static bool IsConstNew(Expression item)
+        {
+            if (item != null)
+            {
+                if (!ExpressionTool.GetParameters(item).Any())
+                {
+                    return true;
+                }
+            }
             return item is UnaryExpression || item.NodeType == ExpressionType.Constant || (item is MemberExpression) && ((MemberExpression)item).Expression.NodeType == ExpressionType.Constant;
         }
 
