@@ -321,6 +321,10 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override List<string> GetFuncList()
+        {
+            return this.Context.Ado.SqlQuery<string>("SELECT name\r\nFROM sys.objects\r\nWHERE type_desc = 'SQL_SCALAR_FUNCTION' ");
+        }
         private bool IsAnySchemaTable(string tableName)
         {
             if (tableName == null||!tableName.Contains(".") )

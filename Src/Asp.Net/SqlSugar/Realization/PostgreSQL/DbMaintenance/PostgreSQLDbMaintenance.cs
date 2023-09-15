@@ -250,6 +250,10 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override List<string> GetFuncList()
+        {
+            return this.Context.Ado.SqlQuery<string>(" SELECT routine_name\r\nFROM information_schema.routines\r\nWHERE lower( routine_schema ) = '" + GetSchema().ToLower() + "' AND routine_type = 'FUNCTION' ");
+        }
         public override List<string> GetIndexList(string tableName)
         {
             var sql = $"SELECT indexname, indexdef FROM pg_indexes WHERE upper(tablename) = upper('{tableName}')";

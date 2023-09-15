@@ -18,6 +18,7 @@ namespace SqlSugar
         List<string> GetPrimaries(string tableName);
         List<string> GetProcList(string dbName);
         List<string> GetIndexList(string tableName);
+        List<string> GetFuncList();
         #endregion
 
         #region Check

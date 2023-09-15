@@ -88,6 +88,10 @@ namespace SqlSugar
         {
             return new List<string>();
         }
+        public virtual List<string> GetFuncList() 
+        {
+            return new List<string>();
+        }
         #endregion
 
         #region Check
