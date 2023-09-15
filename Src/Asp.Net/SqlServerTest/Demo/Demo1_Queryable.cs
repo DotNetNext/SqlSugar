@@ -387,7 +387,7 @@ namespace OrmTest
             Console.WriteLine("");
             Console.WriteLine("#### SqlFunc Start ####");
             var db = GetInstance();
-            var index = db.Queryable<Order>().Select(it => SqlFunc.CharIndex("a", "cccacc")).First();
+            var index = db.Queryable<Order>().Select(it => SqlFunc.CharIndexNew("cccacc", "a")).First();
             var list = db.Queryable<Order>().Select(it => new ViewOrder()
             {
 
