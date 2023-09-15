@@ -44,7 +44,14 @@ namespace SqlSugar
                     var isPk = pks.Any(y => y.Equals(item.DbColumnName, StringComparison.CurrentCultureIgnoreCase)) || item.IsPrimarykey;
                     if (isPk && item.PropertyType == UtilConstants.GuidType && item.Value.ObjToString() == Guid.Empty.ToString())
                     {
-                        item.Value = Guid.NewGuid();
+                        if (StaticConfig.CustomGuidFunc != null)
+                        {
+                            item.Value = StaticConfig.CustomGuidFunc();
+                        }
+                        else
+                        {
+                            item.Value = Guid.NewGuid();
+                        }
                         if (InsertObjs.First().GetType().GetProperties().Any(it => it.Name == item.PropertyName))
                             InsertObjs.First().GetType().GetProperties().First(it => it.Name == item.PropertyName).SetValue(InsertObjs.First(), item.Value, null);
                     }
