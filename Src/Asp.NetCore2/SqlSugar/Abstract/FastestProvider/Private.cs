@@ -136,6 +136,14 @@ namespace SqlSugar
                             value = UtilMethods.ConvertFromDateTimeOffset((DateTimeOffset)value);
                         }
                     }
+                    else if (value != null && column.UnderType?.FullName == "System.TimeOnly")
+                    {
+                        value = UtilMethods.TimeOnlyToTimeSpan(value);
+                    }
+                    else if (value != null && column.UnderType?.FullName == "System.DateOnly")
+                    {
+                        value = UtilMethods.DateOnlyToDateTime(value);
+                    }
                     dr[name] = value;
                 }
                 dt.Rows.Add(dr);
