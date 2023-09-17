@@ -166,6 +166,24 @@ namespace SqlSugar
         #endregion
 
         #region DDL
+        public virtual bool DropView(string viewName) 
+        {
+            viewName = this.SqlBuilder.GetNoTranslationColumnName(viewName);
+            this.Context.Ado.ExecuteCommand($" DROP VIEW {viewName} ");
+            return true;
+        }
+        public virtual bool DropFunction(string funcName) 
+        {
+            funcName = this.SqlBuilder.GetNoTranslationColumnName(funcName);
+            this.Context.Ado.ExecuteCommand($" DROP FUNCTION  {funcName} ");
+            return true;
+        }
+        public virtual bool DropProc(string procName) 
+        {
+            procName = this.SqlBuilder.GetNoTranslationColumnName(procName);
+            this.Context.Ado.ExecuteCommand($" DROP PROCEDURE  {procName} ");
+            return true;
+        }
         /// <summary>
         ///by current connection string
         /// </summary>
