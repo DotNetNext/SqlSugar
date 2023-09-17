@@ -61,6 +61,7 @@ namespace OrmTest
             Console.WriteLine("#### CodeFirst end ####");
         }
     }
+    [SugarTable("CodeFirstadfafaaxx")]
     public class CodeFirstadfafaa 
     {
         [SugarColumn(IsPrimaryKey =true)]
