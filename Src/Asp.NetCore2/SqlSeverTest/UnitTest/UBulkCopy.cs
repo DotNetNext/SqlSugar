@@ -1,4 +1,6 @@
-﻿using System;
+﻿using SqlSugar;
+using SqlSugar.DbConvert;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -88,9 +90,25 @@ namespace OrmTest
             db.Fastest<UnitTable001>().BulkUpdate(new List<UnitTable001>() {
             new UnitTable001() {  Id=1, table="a"}
             });
+            db.CodeFirst.InitTables<UnitBulkCopyaaa>();
+            db.DbMaintenance.TruncateTable<UnitBulkCopyaaa>();
+            db.Fastest<UnitBulkCopyaaa>().BulkCopy(new List<UnitBulkCopyaaa>()
+            {
+                new UnitBulkCopyaaa(){ a=DbType.GaussDB }
+            });
+            var value=db.Ado.GetString("select a from UnitBulkCopyaaa");
+            if (value != DbType.GaussDB.ToString()) 
+            {
+                throw new Exception("unit error");
+            }
             Console.WriteLine("用例跑完");
         }
 
+    }
+    public class UnitBulkCopyaaa 
+    {
+        [SqlSugar.SugarColumn(ColumnDataType ="varchar(10)",SqlParameterDbType = typeof(EnumToStringConvert))]
+        public DbType a { get; set; }
     }
     public class UnitTestoffset11
     {
