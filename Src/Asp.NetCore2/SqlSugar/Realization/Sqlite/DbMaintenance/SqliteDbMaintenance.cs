@@ -255,6 +255,23 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override List<string> GetDbTypes()
+        {
+            return this.Context.Ado.SqlQuery<string>(@"SELECT 'TEXT' AS Data_Type
+UNION
+SELECT 'INTEGER'
+UNION
+SELECT 'REAL'
+UNION
+SELECT 'BLOB';");
+        }
+        public override List<string> GetTriggerNames(string tableName)
+        {
+            return this.Context.Ado.SqlQuery<string>(@"SELECT name
+FROM sqlite_master
+WHERE type = 'trigger'
+AND sql LIKE '%" + tableName + "%'");
+        }
         public override List<string> GetFuncList()
         {
             return this.Context.Ado.SqlQuery<string>(" SELECT name\r\nFROM sqlite_master\r\nWHERE type = 'table' AND name NOT LIKE 'sqlite_%' ");

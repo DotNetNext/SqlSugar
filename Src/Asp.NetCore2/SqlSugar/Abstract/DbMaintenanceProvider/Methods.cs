@@ -92,6 +92,14 @@ namespace SqlSugar
         {
             return new List<string>();
         }
+        public virtual List<string> GetTriggerNames(string tableName) 
+        {
+            return new List<string>();
+        }
+        public virtual List<string> GetDbTypes() 
+        {
+            return new List<string>();
+        }
         #endregion
 
         #region Check

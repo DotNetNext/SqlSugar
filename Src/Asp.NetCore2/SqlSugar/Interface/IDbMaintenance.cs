@@ -19,6 +19,8 @@ namespace SqlSugar
         List<string> GetProcList(string dbName);
         List<string> GetIndexList(string tableName);
         List<string> GetFuncList();
+        List<string> GetTriggerNames(string tableName);
+        List<string> GetDbTypes();
         #endregion
 
         #region Check
@@ -40,7 +42,7 @@ namespace SqlSugar
         bool DropView(string viewName);
         bool DropFunction(string funcName);
         bool DropProc(string procName);
-;        bool DropTable(params string[] tableName);
+        bool DropTable(params string[] tableName);
         bool DropTable(params Type[] tableEntityTypes);
         bool DropTable<T>();
         bool DropTable<T,T2>();
