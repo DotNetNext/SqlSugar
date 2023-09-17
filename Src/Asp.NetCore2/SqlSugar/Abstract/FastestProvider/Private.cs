@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -99,7 +100,16 @@ namespace SqlSugar
                         name = column.PropertyName;
                     }
                     var value = ValueConverter(column, PropertyCallAdapterProvider<T>.GetInstance(column.PropertyName).InvokeGet(item));
-                    if (isMySql && column.UnderType == UtilConstants.BoolType)
+                    if (column.SqlParameterDbType != null&& column.SqlParameterDbType is Type && UtilMethods.HasInterface((Type)column.SqlParameterDbType, typeof(ISugarDataConverter))) 
+                    {
+                        var columnInfo = column;
+                        var type = columnInfo.SqlParameterDbType as Type;
+                        var ParameterConverter = type.GetMethod("ParameterConverter").MakeGenericMethod(columnInfo.PropertyInfo.PropertyType);
+                        var obj = Activator.CreateInstance(type);
+                        var p = ParameterConverter.Invoke(obj, new object[] { value, 100 }) as SugarParameter;
+                        value = p.Value;
+                    }
+                    else if (isMySql && column.UnderType == UtilConstants.BoolType)
                     {
 
                         if (value.ObjToBool() == false&& uInt64TypeName.Any(z=>z.EqualCase(column.DbColumnName)))

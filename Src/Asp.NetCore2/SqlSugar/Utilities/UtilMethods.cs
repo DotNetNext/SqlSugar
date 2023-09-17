@@ -18,6 +18,15 @@ namespace SqlSugar
 {
     public class UtilMethods
     {
+        public static bool HasInterface(Type targetType, Type interfaceType)
+        {
+            if (targetType == null || interfaceType == null || !interfaceType.IsInterface)
+            {
+                return false;
+            }
+
+            return interfaceType.IsAssignableFrom(targetType);
+        }
         public static void ClearPublicProperties<T>(T obj,EntityInfo entity)
         {
             if (obj == null)
