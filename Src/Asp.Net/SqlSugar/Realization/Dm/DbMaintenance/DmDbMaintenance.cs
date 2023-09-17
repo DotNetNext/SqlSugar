@@ -267,6 +267,12 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override List<string> GetDbTypes()
+        {
+            return this.Context.Ado.SqlQuery<string>(@"SELECT DISTINCT DATA_TYPE
+FROM DBA_TAB_COLUMNS
+WHERE OWNER = user ");
+        }
         public override List<string> GetTriggerNames(string tableName)
         {
             return this.Context.Ado.SqlQuery<string>(@"SELECT trigger_name

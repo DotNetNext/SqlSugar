@@ -250,6 +250,11 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override List<string> GetDbTypes()
+        {
+            return this.Context.Ado.SqlQuery<string>(@"SELECT DISTINCT data_type
+FROM information_schema.columns");
+        }
         public override List<string> GetTriggerNames(string tableName)
         {
             return this.Context.Ado.SqlQuery<string>(@"SELECT tgname

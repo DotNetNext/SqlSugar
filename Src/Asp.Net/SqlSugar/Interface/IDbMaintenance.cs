@@ -20,6 +20,7 @@ namespace SqlSugar
         List<string> GetIndexList(string tableName);
         List<string> GetFuncList();
         List<string> GetTriggerNames(string tableName);
+        List<string> GetDbTypes();
         #endregion
 
         #region Check
