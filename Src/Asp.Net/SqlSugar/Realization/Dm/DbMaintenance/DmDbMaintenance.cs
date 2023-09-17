@@ -267,6 +267,12 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override List<string> GetTriggerNames(string tableName)
+        {
+            return this.Context.Ado.SqlQuery<string>(@"SELECT trigger_name
+FROM all_triggers
+WHERE table_name = '" + tableName + "'");
+        }
         public override List<string> GetFuncList()
         {
             return this.Context.Ado.SqlQuery<string>(" SELECT object_name\r\nFROM all_objects\r\nWHERE object_type = 'FUNCTION' AND owner = USER ");

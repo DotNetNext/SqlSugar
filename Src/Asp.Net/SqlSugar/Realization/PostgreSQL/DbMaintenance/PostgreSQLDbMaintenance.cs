@@ -250,6 +250,12 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override List<string> GetTriggerNames(string tableName)
+        {
+            return this.Context.Ado.SqlQuery<string>(@"SELECT tgname
+FROM pg_trigger
+WHERE tgrelid = '"+tableName+"'::regclass");
+        }
         public override List<string> GetFuncList()
         {
             return this.Context.Ado.SqlQuery<string>(" SELECT routine_name\r\nFROM information_schema.routines\r\nWHERE lower( routine_schema ) = '" + GetSchema().ToLower() + "' AND routine_type = 'FUNCTION' ");

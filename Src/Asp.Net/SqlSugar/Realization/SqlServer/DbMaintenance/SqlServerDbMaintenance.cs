@@ -321,6 +321,14 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override List<string> GetTriggerNames(string tableName)
+        {
+            return this.Context.Ado.SqlQuery<string>(@"SELECT DISTINCT sysobjects.name AS TriggerName
+FROM sysobjects
+JOIN syscomments ON sysobjects.id = syscomments.id
+WHERE sysobjects.xtype = 'TR'
+AND syscomments.text LIKE '%"+tableName+"%'");
+        }
         public override List<string> GetFuncList()
         {
             return this.Context.Ado.SqlQuery<string>("SELECT name\r\nFROM sys.objects\r\nWHERE type_desc = 'SQL_SCALAR_FUNCTION' ");

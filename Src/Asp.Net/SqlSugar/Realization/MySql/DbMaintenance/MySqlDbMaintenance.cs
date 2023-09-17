@@ -283,6 +283,12 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override List<string> GetTriggerNames(string tableName)
+        {
+            return this.Context.Ado.SqlQuery<string>(@"SELECT TRIGGER_NAME
+FROM INFORMATION_SCHEMA.TRIGGERS
+WHERE EVENT_OBJECT_TABLE = '"+tableName+"'");
+        }
         public override List<string> GetFuncList()
         {
             return this.Context.Ado.SqlQuery<string>(" SELECT routine_name\r\nFROM information_schema.ROUTINES\r\nWHERE routine_schema = (SELECT DATABASE()) AND routine_type = 'FUNCTION'; ");
