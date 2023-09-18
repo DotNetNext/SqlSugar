@@ -353,7 +353,7 @@ namespace SqlSugar
                             .Select(it =>
                             {
                                 var dbColumn = entityInfo.Columns.FirstOrDefault(z => z.PropertyName == it.Key);
-                                if (dbColumn == null)
+                                if (dbColumn == null&&entityInfo.Discrimator==null)
                                 {
                                     Check.ExceptionEasy($"{entityInfo.EntityName} no   SugarIndex[ {it.Key} ]  found", $"类{entityInfo.EntityName} 索引特性没找到列 ：{it.Key}");
                                 }
