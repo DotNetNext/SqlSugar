@@ -76,6 +76,11 @@ namespace SqlSugar
     }
     public partial class OracleMethod : DefaultDbMethod, IDbMethods
     {
+        public override string IsNullOrEmpty(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            return string.Format("( {0} IS NULL )", parameter.MemberName);
+        }
         public override string WeekOfYear(MethodCallExpressionModel mode)
         {
             var parameterNameA = mode.Args[0].MemberName;
