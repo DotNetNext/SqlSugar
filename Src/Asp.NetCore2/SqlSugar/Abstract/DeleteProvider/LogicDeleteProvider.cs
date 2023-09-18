@@ -48,7 +48,9 @@ namespace SqlSugar
             List<SugarParameter> pars;
             string where;
             LogicFieldName = _ExecuteCommand(LogicFieldName, out db, out where, out pars);
-            var updateable = db.Updateable<T>().SetColumns(LogicFieldName, deleteValue);
+            var updateable = db.Updateable<T>();
+            updateable.UpdateBuilder.LambdaExpressions.ParameterIndex = 1000;
+            updateable .SetColumns(LogicFieldName, deleteValue);
             updateable.SetColumns(deleteTimeFieldName, DateTime.Now);
             updateable.SetColumns(userNameFieldName,userNameValue);
             if (pars != null)
@@ -63,7 +65,9 @@ namespace SqlSugar
             List<SugarParameter> pars;
             string where;
             LogicFieldName = _ExecuteCommand(LogicFieldName, out db, out where, out pars);
-            var updateable = db.Updateable<T>().SetColumns(LogicFieldName, deleteValue);
+            var updateable = db.Updateable<T>();
+            updateable.UpdateBuilder.LambdaExpressions.ParameterIndex = 1000;
+            updateable.SetColumns(LogicFieldName, deleteValue);
             updateable.SetColumns(deleteTimeFieldName, DateTime.Now);
             updateable.SetColumns(userNameFieldName, userNameValue);
             if (pars != null)
@@ -105,7 +109,7 @@ namespace SqlSugar
         private string _ExecuteCommand(string LogicFieldName, out ISqlSugarClient db, out string where, out List<SugarParameter> pars)
         {
             var entityInfo = Deleteable.EntityInfo;
-            db = Deleteable.Context;
+            db = Deleteable.Context; 
             where = DeleteBuilder.GetWhereString.Substring(5);
             pars = DeleteBuilder.Parameters;
             if (LogicFieldName.IsNullOrEmpty())
