@@ -1,4 +1,4 @@
-﻿using SqlSugar;
+﻿ using SqlSugar;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UnitDynamicaaa.Init();
             UnitBizDel.Init();
             UnitFilterUpdate.Init();
             Unitadf1131.Init();
