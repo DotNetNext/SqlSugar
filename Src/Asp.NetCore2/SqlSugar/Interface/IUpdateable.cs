@@ -32,6 +32,7 @@ namespace SqlSugar
 
 
         IUpdateable<T> Where(Expression<Func<T, bool>> expression);
+        IUpdateable<T> WhereIF(bool isWhere,Expression<Func<T, bool>> expression);
         IUpdateable<T> Where(string whereSql,object parameters=null);
         /// <summary>
         ///  
