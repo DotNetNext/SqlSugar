@@ -507,7 +507,7 @@ namespace SqlSugar
                             value = Convert.ToInt64(value);
                         }
                     }
-                    if (item.SqlParameterDbType != null && item.SqlParameterDbType is Type && UtilMethods.HasInterface((Type)column.SqlParameterDbType, typeof(ISugarDataConverter)))
+                    if (item.SqlParameterDbType != null && item.SqlParameterDbType is Type && UtilMethods.HasInterface((Type)item.SqlParameterDbType, typeof(ISugarDataConverter)))
                     {
                         var columnInfo = item;
                         var type = columnInfo.SqlParameterDbType as Type;
