@@ -176,11 +176,17 @@ namespace SqlSugar
             }
             else if (navObjectNameColumnInfo.Navigat.NavigatType == NavigateType.Dynamic)
             {
-                Dynamic(list, selector, listItemEntity, navObjectNamePropety, navObjectNameColumnInfo,expression);
+                this.Context.Utilities.PageEach(list, 100, pageList =>
+                {
+                    Dynamic(pageList, selector, listItemEntity, navObjectNamePropety, navObjectNameColumnInfo, expression);
+                });
             }
             else
             {
-                ManyToMany(list, selector, listItemEntity, navObjectNamePropety, navObjectNameColumnInfo);
+                this.Context.Utilities.PageEach(list, 100, pageList =>
+                {
+                    ManyToMany(pageList, selector, listItemEntity, navObjectNamePropety, navObjectNameColumnInfo);
+                });
             }
         }
 
