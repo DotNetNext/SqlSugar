@@ -831,7 +831,15 @@ namespace SqlSugar
                 SetColumns(columns);
             return this;
         }
-
+        public IUpdateable<T> WhereIF(bool isWhere, Expression<Func<T, bool>> expression) 
+        {
+            Check.ExceptionEasy(!StaticConfig.EnableAllWhereIF, "Need to program startup configuration StaticConfig. EnableAllWhereIF = true; Tip: This operation is very risky if there are no conditions it is easy to update the entire table", " 需要程序启动时配置StaticConfig.EnableAllWhereIF=true; 提示：该操作存在很大的风险如果没有条件很容易将整个表全部更新");
+            if (isWhere) 
+            {
+                return Where(expression);
+            }
+            return this;
+        }
         public IUpdateable<T> Where(Expression<Func<T, bool>> expression)
         {
             Check.Exception(UpdateObjectNotWhere()&&UpdateObjs.Length > 1, ErrorMessage.GetThrowMessage("update List no support where","集合更新不支持Where请使用WhereColumns"));

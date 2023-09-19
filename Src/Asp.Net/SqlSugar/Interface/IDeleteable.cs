@@ -20,6 +20,7 @@ namespace SqlSugar
         IDeleteable<T> AsType(Type tableNameType);
         IDeleteable<T> With(string lockString);
         IDeleteable<T> Where(T deleteObj);
+        IDeleteable<T> WhereIF(bool isWhere, Expression<Func<T, bool>> expression);
         IDeleteable<T> Where(Expression<Func<T, bool>> expression);
         IDeleteable<T> Where(List<T> deleteObjs);
         DeleteablePage<T> PageSize(int pageSize);

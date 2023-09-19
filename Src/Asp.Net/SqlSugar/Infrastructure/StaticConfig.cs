@@ -26,7 +26,7 @@ namespace SqlSugar
         public static Func<List<SplitTableInfo>> SplitTableGetTablesFunc;
 
         public static bool Check_StringIdentity = true;
-
+        public static bool EnableAllWhereIF = false;
         public static Func<string,string> Check_FieldFunc;
         public static Type DynamicExpressionParserType;
     }
