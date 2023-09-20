@@ -75,7 +75,7 @@ namespace SqlSugar
                 var sql = Small(identities, groupListPasge, columnsString);
                 this.Context.Ado.ExecuteCommand(sql, this.Parameters);
             });
-            if (identities != null & identities.Count > 0 && this.OracleSeqInfoList != null && this.OracleSeqInfoList.Any())
+            if (identities != null && identities.Count > 0 && this.OracleSeqInfoList != null && this.OracleSeqInfoList.Any())
             {
                 return $"SELECT {this.OracleSeqInfoList.First().Value - 1} FROM DUAL";
             }
