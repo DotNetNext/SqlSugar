@@ -16,19 +16,39 @@ namespace SqlSugar
                 Check.ExceptionEasy("Please at program startup assignment: StaticConfig DynamicExpressionParserType = typeof (DynamicExpressionParser); NUGET is required to install Dynamic.Core", "请在程序启动时赋值: StaticConfig.DynamicExpressionParserType = typeof(DynamicExpressionParser); 需要NUGET安装 Dynamic.Core");
             }
 
-            // 查找 ParseLambda 方法
-            MethodInfo parseLambdaMethod = StaticConfig.DynamicExpressionParserType
-                .GetMyMethod("ParseLambda",4, typeof(ParameterExpression[]), typeof(Type), typeof(string), typeof(object[]));
-
-            if (parseLambdaMethod == null)
+            if (StaticConfig.DynamicExpressionParsingConfig != null)
             {
-                throw new InvalidOperationException("ParseLambda method not found in DynamicExpressionParserType.");
+                // 查找 ParseLambda 方法
+                MethodInfo parseLambdaMethod = StaticConfig.DynamicExpressionParserType
+                    .GetMyMethod("ParseLambda", 5, StaticConfig.DynamicExpressionParsingConfig.GetType(), typeof(ParameterExpression[]), typeof(Type), typeof(string), typeof(object[]));
+
+                if (parseLambdaMethod == null)
+                {
+                    throw new InvalidOperationException("ParseLambda method not found in DynamicExpressionParserType.");
+                }
+
+                // 调用 ParseLambda 方法来解析 Lambda 表达式
+                var lambda = (LambdaExpression)parseLambdaMethod.Invoke(null, new object[] { StaticConfig.DynamicExpressionParsingConfig, parameterExpressions, type, sql, objects });
+
+                return lambda;
             }
+            else
+            {
 
-            // 调用 ParseLambda 方法来解析 Lambda 表达式
-            var lambda = (LambdaExpression)parseLambdaMethod.Invoke(null, new object[] { parameterExpressions, type, sql, objects });
+                // 查找 ParseLambda 方法
+                MethodInfo parseLambdaMethod = StaticConfig.DynamicExpressionParserType
+                    .GetMyMethod("ParseLambda",4, typeof(ParameterExpression[]), typeof(Type), typeof(string), typeof(object[]));
 
-            return lambda;
+                if (parseLambdaMethod == null)
+                {
+                    throw new InvalidOperationException("ParseLambda method not found in DynamicExpressionParserType.");
+                }
+
+                // 调用 ParseLambda 方法来解析 Lambda 表达式
+                var lambda = (LambdaExpression)parseLambdaMethod.Invoke(null, new object[] { parameterExpressions, type, sql, objects });
+
+                return lambda;
+            }
         }
 
     }
