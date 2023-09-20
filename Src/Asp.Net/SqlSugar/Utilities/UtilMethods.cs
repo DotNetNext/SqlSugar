@@ -1353,11 +1353,11 @@ namespace SqlSugar
                     }
                     else if (connectionConfig.MoreSettings?.DisableNvarchar == true || item.DbType == System.Data.DbType.AnsiString || connectionConfig.DbType == DbType.Sqlite)
                     {
-                        result = result.Replace(item.ParameterName, $"'{item.Value.ObjToString()}'");
+                        result = result.Replace(item.ParameterName, $"'{item.Value.ObjToString().ToSqlFilter()}'");
                     }
                     else
                     {
-                        result = result.Replace(item.ParameterName, $"N'{item.Value.ObjToString()}'");
+                        result = result.Replace(item.ParameterName, $"N'{item.Value.ObjToString().ToSqlFilter()}'");
                     }
                 }
             }
