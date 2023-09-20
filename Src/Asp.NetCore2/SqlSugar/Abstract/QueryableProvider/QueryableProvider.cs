@@ -917,6 +917,12 @@ namespace SqlSugar
             }
             return this;
         }
+        public virtual ISugarQueryable<T> Where(string expShortName, FormattableString expressionString) 
+        {
+            var exp = DynamicCoreHelper.GetWhere<T>(expShortName, expressionString);
+            _Where(exp);
+            return this;
+        }
         public virtual ISugarQueryable<T> Where(Expression<Func<T, bool>> expression)
         {
             this._Where(expression);
