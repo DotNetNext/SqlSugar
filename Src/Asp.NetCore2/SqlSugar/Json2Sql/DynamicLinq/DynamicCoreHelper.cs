@@ -8,6 +8,10 @@ namespace SqlSugar
 {
     public class DynamicCoreHelper
     {
+        public static Expression<Func<T, bool>> GetWhere<T>(string shortName, FormattableString whereSql) 
+        {
+            return (Expression<Func<T, bool>>)GetWhere(typeof(T), shortName, whereSql);
+        }
         public static LambdaExpression GetWhere(Type entityType, string shortName, FormattableString whereSql)
         {
             var parameter = Expression.Parameter(entityType, "it");
