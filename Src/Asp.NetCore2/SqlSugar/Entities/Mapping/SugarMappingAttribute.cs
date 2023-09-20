@@ -229,12 +229,12 @@ namespace SqlSugar
     [AttributeUsage(AttributeTargets.Property, Inherited = true)]
     public class Navigate: Attribute
     {
-        public string Name { get; set; }
-        public string Name2 { get; set; }
-        public Type MappingType { get; set; }
-        public string MappingAId { get; set; }
-        public string MappingBId { get; set; }
-        public NavigateType NavigatType { get; set; }
+        internal string Name { get; set; }
+        internal string Name2 { get; set; }
+        internal Type MappingType { get; set; }
+        internal string MappingAId { get; set; }
+        internal string MappingBId { get; set; }
+        internal NavigateType NavigatType { get; set; }
         public string WhereSql { get; set; }
         public Navigate(NavigateType navigatType,string IfSingleMasterTableColumn_IfListChildTableColumn)
         {
