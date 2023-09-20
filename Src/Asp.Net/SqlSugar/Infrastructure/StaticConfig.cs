@@ -29,5 +29,6 @@ namespace SqlSugar
         public static bool EnableAllWhereIF = false;
         public static Func<string,string> Check_FieldFunc;
         public static Type DynamicExpressionParserType;
+        public static object DynamicExpressionParsingConfig;
     }
 }

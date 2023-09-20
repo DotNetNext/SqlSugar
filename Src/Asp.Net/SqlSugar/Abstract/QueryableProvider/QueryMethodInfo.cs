@@ -82,7 +82,12 @@ namespace SqlSugar
             this.QueryableObj = method.Invoke(QueryableObj, new object[] { groupBySql });
             return this;
         }
-        
+        public QueryMethodInfo Where(string expShortName, FormattableString expressionString) 
+        {
+            var method = QueryableObj.GetType().GetMyMethod("Where", 2, typeof(string),typeof(FormattableString));
+            this.QueryableObj = method.Invoke(QueryableObj, new object[] { expShortName, expressionString });
+            return this;
+        }
         public QueryMethodInfo Where(List<IConditionalModel> conditionalModels) 
         {
             var method = QueryableObj.GetType().GetMyMethod("Where", 1, typeof(List<IConditionalModel>));
