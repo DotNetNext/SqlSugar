@@ -65,9 +65,13 @@ namespace OrmTest
             };
             var exp = DynamicCoreHelper.GetWhere<UnitPerson011>("it", $"it=>it.Address.Street={"a"}");
             var list2=db.Queryable<UnitPerson011>().Where(exp).ToList();
-
-            var exp2 = DynamicCoreHelper.GetWhere<UnitPerson011>("it", $"it=>SqlFunc.Exists(it.Address.Id)");
-            var list3 = db.Queryable<UnitPerson011>().Where(exp2).ToList();
+             
+            //导航属性动态
+            var list3 = db.Queryable<UnitPerson011>().Where("it", $"SqlFunc.Exists(it.Address.Id)").ToList();
+            //普通条件动态
+            var list4 = db.Queryable<UnitPerson011>().Where("it", $"it.Name={"a"}").ToList();
+            //动态类+动态条件
+            var list5=db.QueryableByObject(typeof(UnitPerson011)).Where("it", $"it.Address.Id=={1}").ToList();
         }
         public class SqlSugarTypeProvider : DefaultDynamicLinqCustomTypeProvider
         {
