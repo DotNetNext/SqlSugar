@@ -235,23 +235,23 @@ namespace SqlSugar
         internal string MappingAId { get; set; }
         internal string MappingBId { get; set; }
         internal NavigateType NavigatType { get; set; }
-        public string WhereSql { get; set; }
+        internal string WhereSql { get; set; }
         public Navigate(NavigateType navigatType,string IfSingleMasterTableColumn_IfListChildTableColumn)
         {
             this.Name = IfSingleMasterTableColumn_IfListChildTableColumn;
             this.NavigatType = navigatType;
         }
-        public Navigate(NavigateType navigatType, string IfSingleMasterTableColumn_IfListChildTableColumn, string lastName)
+        public Navigate(NavigateType navigatType, string IfSingleMasterTableColumn_IfListChildTableColumn, string IfSingleChildTableColumn_IfListMasterTableColumn)
         {
             this.Name = IfSingleMasterTableColumn_IfListChildTableColumn;
-            this.Name2 = lastName;
+            this.Name2 = IfSingleChildTableColumn_IfListMasterTableColumn;
             this.NavigatType = navigatType;
         }
 
-        public Navigate(NavigateType navigatType, string IfSingleMasterTableColumn_IfListChildTableColumn, string lastName,string whereSql)
+        public Navigate(NavigateType navigatType, string IfSingleMasterTableColumn_IfListChildTableColumn, string IfSingleChildTableColumn_IfListMasterTableColumn, string whereSql)
         {
             this.Name = IfSingleMasterTableColumn_IfListChildTableColumn;
-            this.Name2 = lastName;
+            this.Name2 = IfSingleChildTableColumn_IfListMasterTableColumn;
             this.NavigatType = navigatType;
             this.WhereSql = whereSql;
             //Check.ExceptionEasy(navigatType != NavigateType.OneToOne, "Currently, only one-to-one navigation configuration Sql conditions are supported", "目前导航配置Sql条件只支持一对一");
