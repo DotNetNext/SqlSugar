@@ -235,7 +235,7 @@ namespace SqlSugar
         internal string MappingAId { get; set; }
         internal string MappingBId { get; set; }
         internal NavigateType NavigatType { get; set; }
-        public string WhereSql { get; set; }
+        internal string WhereSql { get; set; }
         public Navigate(NavigateType navigatType,string IfSingleMasterTableColumn_IfListChildTableColumn)
         {
             this.Name = IfSingleMasterTableColumn_IfListChildTableColumn;
