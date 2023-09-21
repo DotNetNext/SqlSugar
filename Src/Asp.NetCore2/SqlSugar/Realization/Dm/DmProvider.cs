@@ -187,7 +187,7 @@ namespace SqlSugar
             }
             return result;
         }
-        private static string[] KeyWord =new string []{ ":index", "@index", "@order", ":order", "@user", "@level", ":user", ":level",":type","@type"};
+        private static string[] KeyWord =new string []{ ":index", "@index", "@order", ":order", "@user", "@level", ":user", ":level",":type","@type", ":year", "@year" };
         private static string ReplaceKeyWordParameterName(string sql, SugarParameter[] parameters)
         {
             sql = ReplaceKeyWordWithAd(sql, parameters);
