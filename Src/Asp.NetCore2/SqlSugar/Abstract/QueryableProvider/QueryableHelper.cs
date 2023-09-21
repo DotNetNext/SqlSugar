@@ -1322,6 +1322,11 @@ namespace SqlSugar
                     foreach (var item in this.QueryBuilder.GetSelectValue.Split(','))
                     {
                         var column = Regex.Split(item, " AS ").Last().Trim();
+                        var columnInfo= columnList.FirstOrDefault(it => SqlBuilder.GetTranslationColumnName(it.PropertyName) == column);
+                        if (columnInfo != null) 
+                        {
+                            column = SqlBuilder.GetTranslationColumnName(columnInfo.DbColumnName);
+                        }
                         columns += $"{column},";
                     }
                     columns = columns.TrimEnd(',') + ")";
