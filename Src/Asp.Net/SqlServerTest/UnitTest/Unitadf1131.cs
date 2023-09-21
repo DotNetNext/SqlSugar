@@ -77,8 +77,22 @@ namespace OrmTest
                  .Where((o) => o.Id <10)
                  .Select((o, cus) => new UnitViewOrder2 { xxx=o.Name, yyyy= o.CreateTime})
                  .IntoTable<UnitViewOrder2>();
+            db.CodeFirst.InitTables<UnitViewOrder3>();
+            db.DbMaintenance.TruncateTable<UnitViewOrder3>();
+            var query52 = db.Queryable<Order>()
+             .InnerJoin<Custom>((o, cus) => o.CustomId == cus.Id)
+             .Where((o) => o.Id < 10)
+             .Select((o, cus) => new UnitViewOrder3 {   yyyy=o.CreateTime  },true)
+             .IntoTable<UnitViewOrder3>();
 
             db.Queryable<Order>().Take(10).IgnoreColumns(it=>it.Id).IntoTable<Order>();
+        }
+        public class UnitViewOrder3
+        {
+            [SugarColumn(ColumnName = "Name1")]
+            public string Name { get; set; }
+             
+            public DateTime yyyy { get; set; }
         }
         public class UnitViewOrder2 
         {
