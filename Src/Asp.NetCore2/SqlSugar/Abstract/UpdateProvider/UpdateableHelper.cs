@@ -682,7 +682,10 @@ namespace SqlSugar
                     {
                         foreach (var item in this.UpdateBuilder.SetValues)
                         {
-                            sql = sql.Replace(item.Value, null);
+                            if (item.Value?.Contains("SELECT") == true)
+                            {
+                                sql = sql.Replace(item.Value, null);
+                            }
                         }
                     }
                     whereSql = UtilMethods.RemoveBeforeFirstWhere(sql);
