@@ -19,7 +19,9 @@ namespace SqlSugar
                     result.CharacterSet = this.CharacterSet;
                     return result;
                 case DbType.SqlServer:
-                    return new SqlServerFastBuilder();
+                    var result2= new SqlServerFastBuilder();
+                    result2.DbFastestProperties.IsOffIdentity = this.IsOffIdentity;
+                    return result2;
                 case DbType.Sqlite:
                     return new SqliteFastBuilder(this.entityInfo);
                 case DbType.Oracle:
