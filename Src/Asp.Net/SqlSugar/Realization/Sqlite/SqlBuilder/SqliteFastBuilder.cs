@@ -26,7 +26,7 @@ namespace SqlSugar
 
         public void CloseDb()
         {
-            if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection)
+            if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection && this.Context.Ado.Transaction == null)
             {
                 this.Context.Close();
             }
