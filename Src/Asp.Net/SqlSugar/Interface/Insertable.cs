@@ -62,6 +62,7 @@ namespace SqlSugar
         void AddQueue();
         IInsertable<T> MySqlIgnore();
         IInsertable<T> OffIdentity();
+        IInsertable<T> OffIdentity(bool isSetOn);
         InsertablePage<T> PageSize(int pageSize);
     }
 }
