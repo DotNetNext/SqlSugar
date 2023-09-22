@@ -38,11 +38,26 @@ namespace SqlSugar
             SqlBulkCopy copy;
             if (this.Context.Ado.Transaction == null)
             {
-                copy = new SqlBulkCopy((SqlConnection)this.Context.Ado.Connection);
+                if (this.DbFastestProperties?.IsOffIdentity == true)
+                { 
+                    copy = new SqlBulkCopy((SqlConnection)this.Context.Ado.Connection, SqlBulkCopyOptions.KeepIdentity,null);
+                }
+                else
+                {
+                    copy = new SqlBulkCopy((SqlConnection)this.Context.Ado.Connection);
+                }
             }
             else
             {
-                copy = new SqlBulkCopy((SqlConnection)this.Context.Ado.Connection, SqlBulkCopyOptions.CheckConstraints, (SqlTransaction)this.Context.Ado.Transaction);
+                if (this.DbFastestProperties?.IsOffIdentity == true)
+                {
+                    copy = new SqlBulkCopy((SqlConnection)this.Context.Ado.Connection, SqlBulkCopyOptions.KeepIdentity, (SqlTransaction)this.Context.Ado.Transaction);
+                }
+                else
+                {
+
+                    copy = new SqlBulkCopy((SqlConnection)this.Context.Ado.Connection, SqlBulkCopyOptions.CheckConstraints, (SqlTransaction)this.Context.Ado.Transaction);
+                }
             }
             if (this.Context.Ado.Connection.State == ConnectionState.Closed)
             {
