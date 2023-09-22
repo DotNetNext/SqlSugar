@@ -474,6 +474,7 @@ namespace SqlSugar
             result.TableName = this.InsertBuilder.AsName;
             result.IsEnableDiffLogEvent = this.IsEnableDiffLogEvent;
             result.DiffModel = this.diffModel;
+            result.IsOffIdentity = this.InsertBuilder.IsOffIdentity;
             if(this.InsertBuilder.DbColumnInfoList.Any())
               result.InsertColumns = this.InsertBuilder.DbColumnInfoList.GroupBy(it => it.TableId).First().Select(it=>it.DbColumnName).ToList();
             return result;
@@ -537,6 +538,17 @@ namespace SqlSugar
             if (this.Context.CurrentConnectionConfig.DbType == DbType.SqlServer)
                 this.InsertBuilder.TableWithString = lockString;
             return this;
+        }
+        public IInsertable<T> OffIdentity(bool isSetOn) 
+        {
+            if (isSetOn)
+            {
+                return this.OffIdentity();
+            }
+            else
+            {
+                return this;
+            }
         }
         public IInsertable<T> OffIdentity() 
         {
