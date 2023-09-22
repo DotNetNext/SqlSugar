@@ -1496,7 +1496,7 @@ namespace SqlSugar
                 {
                     var repeatList =
                         Queues.SelectMany(it => it.Parameters ?? new SugarParameter[] { }).Select(it => it.ParameterName)
-                       .GroupBy(it => it)
+                       .GroupBy(it => it?.ToLower())
                        .Where(it => it.Count() > 1);
                     var repeatCount = repeatList.Count();
                     var isParameterNameRepeat = repeatList
