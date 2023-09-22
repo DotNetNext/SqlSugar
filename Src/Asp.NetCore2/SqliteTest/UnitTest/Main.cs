@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UnitBulkCopyUpdateaasfa.Init();
             UnitSubToList.Init();
             CrossDatabase02.Init();
             CrossDatabase03.Init();
