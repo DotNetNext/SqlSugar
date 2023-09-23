@@ -84,6 +84,18 @@ namespace SqlSugar
             this.lockType = dbLockType;
             return this;
         }
+        public IStorageable<T> TranLock(DbLockType? LockType)
+        {
+            if (LockType!=null)
+            {
+                this.lockType = LockType;
+                return this;
+            }
+            else
+            {
+                return this;
+            }
+        }
         public IStorageable<T> SplitOther(Func<StorageableInfo<T>, bool> conditions, string message = null)
         {
             whereFuncs.Add(new KeyValuePair<StorageType, Func<StorageableInfo<T>, bool>, string>(StorageType.Other, conditions, message));
@@ -102,6 +114,7 @@ namespace SqlSugar
             page.ActionCallBack = ActionCallBack;
             page.TableName = this.asname;
             page.whereExpression = this.whereExpression;
+            page.lockType = this.lockType;
             return page;
         }
         public StorageableSplitProvider<T> SplitTable() 

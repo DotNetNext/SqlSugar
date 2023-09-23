@@ -9,6 +9,8 @@ namespace SqlSugar
 {
     public class StorageablePage<T> where T : class,new()
     {
+        internal DbLockType? lockType { get; set; }
+
         public SqlSugarProvider Context { get;  set; }
         public List<T> Data { get;   set; }
         public int PageSize { get; internal set; }
@@ -33,7 +35,7 @@ namespace SqlSugar
                 }
                 this.Context.Utilities.PageEach(Data, PageSize, pageItem =>
                 {
-                    result += this.Context.Storageable(pageItem).As(TableName).WhereColumns(whereExpression).ExecuteCommand();
+                    result += this.Context.Storageable(pageItem).As(TableName).TranLock(lockType).WhereColumns(whereExpression).ExecuteCommand();
                     if (ActionCallBack != null) 
                     {
                         ActionCallBack(result);
@@ -71,7 +73,7 @@ namespace SqlSugar
                 }
                 await this.Context.Utilities.PageEachAsync(Data, PageSize, async pageItem =>
                 {
-                    result += await this.Context.Storageable(pageItem).As(TableName).WhereColumns(whereExpression).ExecuteCommandAsync();
+                    result += await this.Context.Storageable(pageItem).As(TableName).TranLock(lockType).WhereColumns(whereExpression).ExecuteCommandAsync();
                     if (ActionCallBack != null)
                     {
                         ActionCallBack(result);
@@ -106,7 +108,7 @@ namespace SqlSugar
                  
                 this.Context.Utilities.PageEach(Data, PageSize, pageItem =>
                 {
-                    result += this.Context.Storageable(pageItem).As(TableName).WhereColumns(whereExpression).ExecuteSqlBulkCopy();
+                    result += this.Context.Storageable(pageItem).As(TableName).TranLock(lockType).WhereColumns(whereExpression).ExecuteSqlBulkCopy();
                     if (ActionCallBack != null)
                     {
                         ActionCallBack(result);
@@ -132,7 +134,7 @@ namespace SqlSugar
             { 
                 await this.Context.Utilities.PageEachAsync(Data, PageSize, async pageItem =>
                 {
-                    result += await this.Context.Storageable(pageItem).As(TableName).WhereColumns(whereExpression).ExecuteSqlBulkCopyAsync();
+                    result += await this.Context.Storageable(pageItem).As(TableName).TranLock(lockType).WhereColumns(whereExpression).ExecuteSqlBulkCopyAsync();
                     if (ActionCallBack != null)
                     {
                         ActionCallBack(result);
