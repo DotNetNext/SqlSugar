@@ -451,7 +451,14 @@ namespace SqlSugar
                     value = result;
                 }
                 methodCallExpressionArgs.MemberValue = value;
-                this.Context.Parameters.Add(new SugarParameter(parameterName, value));
+                if (value == null&&item!=null)
+                {
+                    this.Context.Parameters.Add(new SugarParameter(parameterName, value,UtilMethods.GetUnderType( item.Type)));
+                }
+                else
+                {
+                    this.Context.Parameters.Add(new SugarParameter(parameterName, value));
+                }
             }
             model.Args.Add(methodCallExpressionArgs);
             parameter.ChildExpression = null;
