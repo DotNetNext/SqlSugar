@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            Unitadfafafasd.Init();
             UintOneToOneDto.Init();
             Unitadfaafsd.Init();
             CrossDatabase02.Init();
