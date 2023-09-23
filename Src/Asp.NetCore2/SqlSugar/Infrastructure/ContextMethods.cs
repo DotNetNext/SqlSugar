@@ -695,6 +695,14 @@ namespace SqlSugar
                         {
                             addItem = addItem.ObjToInt();
                         }
+                        else if (prop.PropertyType == UtilConstants.ShortType)
+                        {
+                            addItem = Convert.ToInt16(addItem);
+                        }
+                        else if (prop.PropertyType == UtilConstants.LongType)
+                        {
+                            addItem = Convert.ToInt64(addItem);
+                        }
                         else if (UtilMethods.GetUnderType(prop.PropertyType) == UtilConstants.IntType && addItem != null)
                         {
                             addItem = addItem.ObjToInt();
