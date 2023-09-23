@@ -465,6 +465,10 @@ namespace SqlSugar
             {
                 return "bool";
             }
+            if (result.EqualCase("char")) 
+            {
+                return "string";
+            }
             return result;
         }
         private string GetPropertyTypeConvert(DbColumnInfo item)
