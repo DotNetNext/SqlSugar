@@ -571,7 +571,8 @@ WHERE table_name = '"+tableName+"'");
                 }
                 else 
                 {
-                    this.Context.DbMaintenance.AddPrimaryKey(tableName, string.Join(",", pkColumns.Select(it=> this.SqlBuilder.GetTranslationColumnName(it.DbColumnName)).ToArray()));
+                    var addItems = pkColumns.Select(it => it.DbColumnName).ToArray();
+                    this.Context.DbMaintenance.AddPrimaryKeys(tableName, addItems);
                 }
             }
             return true;
