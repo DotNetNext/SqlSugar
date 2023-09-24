@@ -72,6 +72,9 @@ namespace OrmTest
             var list4 = db.Queryable<UnitPerson011>().Where("it", $"it.Name={"a"}").ToList();
             //动态类+动态条件
             var list5=db.QueryableByObject(typeof(UnitPerson011)).Where("it", $"it.Address.Id=={1}").ToList();
+
+            var list6 = db.Queryable<UnitPerson011>()
+                .LeftJoin<Order>((it, y) => it.Id == y.Id).Where("it", $"SqlFunc.Exists(it.Address.Id)").OrderBy((it, y) => it.Id).ToList();
         }
         public class SqlSugarTypeProvider : DefaultDynamicLinqCustomTypeProvider
         {
