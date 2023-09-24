@@ -550,6 +550,10 @@ namespace SqlSugar
             {
                 return true;
             }
+            if (method?.DeclaringType?.FullName?.Contains("Furion.InternalApp")==true)
+            {
+                return false;
+            }
             Type attType = typeof(AsyncStateMachineAttribute);
             var attrib = (AsyncStateMachineAttribute)method.GetCustomAttribute(attType);
             return (attrib != null);
