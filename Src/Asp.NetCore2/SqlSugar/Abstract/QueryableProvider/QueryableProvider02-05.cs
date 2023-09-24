@@ -193,6 +193,12 @@ namespace SqlSugar
             return result;
         }
         #region Where
+        public new ISugarQueryable<T, T2> Where(string expShortName, FormattableString expressionString) 
+        {
+            var exp = DynamicCoreHelper.GetWhere<T>(expShortName, expressionString);
+            _Where(exp);
+            return this;
+        }
         public new ISugarQueryable<T, T2> Where(Expression<Func<T, bool>> expression)
         {
             _Where(expression);
@@ -1072,6 +1078,12 @@ namespace SqlSugar
         #endregion
 
         #region Where
+        public new ISugarQueryable<T, T2,T3> Where(string expShortName, FormattableString expressionString)
+        {
+            var exp = DynamicCoreHelper.GetWhere<T>(expShortName, expressionString);
+            _Where(exp);
+            return this;
+        }
         public ISugarQueryable<T, T2, T3> Where(Expression<Func<T, T2, bool>> expression)
         {
             _Where(expression);
@@ -1566,6 +1578,12 @@ namespace SqlSugar
 
 
         #region Where
+        public new ISugarQueryable<T, T2, T3,T4> Where(string expShortName, FormattableString expressionString)
+        {
+            var exp = DynamicCoreHelper.GetWhere<T>(expShortName, expressionString);
+            _Where(exp);
+            return this;
+        }
         public new ISugarQueryable<T, T2, T3, T4> Where(Expression<Func<T, bool>> expression)
         {
             _Where(expression);
@@ -2338,6 +2356,12 @@ namespace SqlSugar
 
 
         #region Where
+        public new ISugarQueryable<T, T2, T3, T4,T5> Where(string expShortName, FormattableString expressionString)
+        {
+            var exp = DynamicCoreHelper.GetWhere<T>(expShortName, expressionString);
+            _Where(exp);
+            return this;
+        }
         public new ISugarQueryable<T, T2, T3, T4, T5> Where(Expression<Func<T, bool>> expression)
         {
             _Where(expression);
