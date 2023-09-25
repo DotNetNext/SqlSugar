@@ -324,6 +324,11 @@ namespace SqlSugar
             ((QueryableProvider<T>)queryable).Mappers = this.Mappers;
             return queryable;
         }
+        public ISugarQueryable<T> Hints(string hints) 
+        {
+            this.QueryBuilder.Hints = hints;
+            return this;
+        }
         public virtual ISugarQueryable<T> AS<T2>(string tableName)
         {
             var entityName = typeof(T2).Name;

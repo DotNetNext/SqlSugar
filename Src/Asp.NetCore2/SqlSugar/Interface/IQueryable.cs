@@ -17,6 +17,7 @@ namespace SqlSugar
         bool IsCache { get; set; }
         int CacheTime { get; set; }
         ISugarQueryable<T> Clone();
+        ISugarQueryable<T> Hints(string hints);
         ISugarQueryable<T> AS<T2>(string tableName);
         ISugarQueryable<T> AS(string tableName);
         ISugarQueryable<T> AsWithAttr();

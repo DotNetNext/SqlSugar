@@ -34,6 +34,7 @@ namespace SqlSugar
         #endregion
 
         #region Splicing basic
+        public string Hints { get; set; }
         internal AppendNavInfo AppendNavInfo { get; set; }
         public Type[] RemoveFilters { get; set; }
         public Dictionary<string, object> SubToListParameters { get; set; }
@@ -689,6 +690,10 @@ namespace SqlSugar
         }
         public string GetSqlQuerySql(string result)
         {
+            if (this.Hints.HasValue())
+            {
+                result = ReplaceHints(result);
+            }
             if (GetTableNameString == " (-- No table ) t  ")
             {
                 result = "-- No table ";
@@ -707,6 +712,16 @@ namespace SqlSugar
                 return result;
             }
         }
+
+        protected virtual string ReplaceHints(string result)
+        {
+            result = Regex.Replace(result, "^SELECT ", it =>
+            {
+                return $"{it} {Hints}  ";
+            });
+            return result;
+        }
+
         protected string SubToListMethod(string result)
         {
             string oldResult = result;
