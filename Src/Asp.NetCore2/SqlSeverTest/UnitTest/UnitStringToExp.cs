@@ -13,6 +13,16 @@ namespace OrmTest
         {
             Test01();
             Test02();
+            Test03();
+        }
+
+        private static void Test03()
+        {
+            var db = NewUnitTest.Db;
+            db.StorageableByObject(new Order() { Id = 1, Name = "jack" }).ExecuteCommand();
+            var xx = db.StorageableByObject(new Order() { Id = 1, Name = "jack" }).ToStorage();
+            xx.AsInsertable.ExecuteCommand();
+            xx.AsUpdateable.ExecuteCommand();
         }
 
         private static void Test01()
