@@ -15,6 +15,11 @@ namespace SqlSugar
     #region T6
     public partial class QueryableProvider<T, T2, T3, T4, T5, T6> : QueryableProvider<T>, ISugarQueryable<T, T2, T3, T4, T5, T6>
     {
+        public new ISugarQueryable<T, T2, T3, T4, T5,T6> Hints(string hints)
+        {
+            this.QueryBuilder.Hints = hints;
+            return this;
+        }
         public new ISugarQueryable<T, T2, T3, T4, T5,T6> OrderByPropertyName(string orderPropertyName, OrderByType? orderByType = null)
         {
             base.OrderByPropertyName(orderPropertyName, orderByType);
@@ -799,6 +804,11 @@ namespace SqlSugar
     #region T7
     public partial class QueryableProvider<T, T2, T3, T4, T5, T6, T7> : QueryableProvider<T>, ISugarQueryable<T, T2, T3, T4, T5, T6, T7>
     {
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> Hints(string hints)
+        {
+            this.QueryBuilder.Hints = hints;
+            return this;
+        }
         public new ISugarQueryable<T, T2, T3, T4, T5, T6,T7> OrderByPropertyName(string orderPropertyName, OrderByType? orderByType = null)
         {
             base.OrderByPropertyName(orderPropertyName, orderByType);
@@ -1593,6 +1603,11 @@ namespace SqlSugar
     #region T8
     public partial class QueryableProvider<T, T2, T3, T4, T5, T6, T7, T8> : QueryableProvider<T>, ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8>
     {
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> Hints(string hints)
+        {
+            this.QueryBuilder.Hints = hints;
+            return this;
+        }
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8> OrderByPropertyName(string orderPropertyName, OrderByType? orderByType = null)
         {
             base.OrderByPropertyName(orderPropertyName, orderByType);
@@ -2323,6 +2338,11 @@ namespace SqlSugar
     #region T9
     public partial class QueryableProvider<T, T2, T3, T4, T5, T6, T7, T8, T9> : QueryableProvider<T>, ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9>
     {
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> Hints(string hints)
+        {
+            this.QueryBuilder.Hints = hints;
+            return this;
+        }
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8,T9> OrderByPropertyName(string orderPropertyName, OrderByType? orderByType = null)
         {
             base.OrderByPropertyName(orderPropertyName, orderByType);
@@ -3013,6 +3033,11 @@ namespace SqlSugar
     #region T10
     public partial class QueryableProvider<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> : QueryableProvider<T>, ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>
     {
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> Hints(string hints)
+        {
+            this.QueryBuilder.Hints = hints;
+            return this;
+        }
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> OrderByPropertyName(string orderPropertyName, OrderByType? orderByType = null)
         {
             base.OrderByPropertyName(orderPropertyName, orderByType);

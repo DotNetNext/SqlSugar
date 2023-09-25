@@ -16,6 +16,11 @@ namespace SqlSugar
     #region T2
     public partial class QueryableProvider<T, T2> : QueryableProvider<T>, ISugarQueryable<T, T2>
     {
+        public new ISugarQueryable<T,T2> Hints(string hints)
+        {
+            this.QueryBuilder.Hints = hints;
+            return this;
+        }
         public new ISugarQueryable<T, T2> OrderByPropertyName(string orderPropertyName, OrderByType? orderByType = null)
         {
             base.OrderByPropertyName(orderPropertyName, orderByType);
@@ -663,6 +668,11 @@ namespace SqlSugar
     #region T3
     public partial class QueryableProvider<T, T2, T3> : QueryableProvider<T>, ISugarQueryable<T, T2, T3>
     {
+        public new ISugarQueryable<T, T2,T3> Hints(string hints)
+        {
+            this.QueryBuilder.Hints = hints;
+            return this;
+        }
         public new ISugarQueryable<T, T2, T3> OrderByPropertyName(string orderPropertyName, OrderByType? orderByType = null)
         {
             base.OrderByPropertyName(orderPropertyName, orderByType);
@@ -1416,6 +1426,11 @@ namespace SqlSugar
     #region T4
     public partial class QueryableProvider<T, T2, T3, T4> : QueryableProvider<T>, ISugarQueryable<T, T2, T3, T4>
     {
+        public new ISugarQueryable<T, T2, T3,T4> Hints(string hints)
+        {
+            this.QueryBuilder.Hints = hints;
+            return this;
+        }
         public new ISugarQueryable<T, T2, T3, T4> OrderByPropertyName(string orderPropertyName, OrderByType? orderByType = null)
         {
             base.OrderByPropertyName(orderPropertyName, orderByType);
@@ -2190,6 +2205,11 @@ namespace SqlSugar
     #region T5   
     public partial class QueryableProvider<T, T2, T3, T4, T5> : QueryableProvider<T>, ISugarQueryable<T, T2, T3, T4, T5>
     {
+        public new ISugarQueryable<T, T2, T3, T4,T5> Hints(string hints)
+        {
+            this.QueryBuilder.Hints = hints;
+            return this;
+        }
         public new ISugarQueryable<T, T2, T3, T4, T5> OrderByPropertyName(string orderPropertyName, OrderByType? orderByType = null)
         {
             base.OrderByPropertyName(orderPropertyName, orderByType);
