@@ -18,6 +18,10 @@ namespace SqlSugar
 {
     public class UtilMethods
     {
+        public static bool StringCheckFirstAndLast(string withString, string first, string last)
+        {
+            return withString.StartsWith(first) && withString.EndsWith(last);
+        }
         public static bool HasInterface(Type targetType, Type interfaceType)
         {
             if (targetType == null || interfaceType == null || !interfaceType.IsInterface)
