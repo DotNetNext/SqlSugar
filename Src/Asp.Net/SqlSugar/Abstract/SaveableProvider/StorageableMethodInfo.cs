@@ -56,7 +56,7 @@ namespace SqlSugar
             if (objectValue == null)
                 return null;
             callValue = MethodInfo.Invoke(Context, new object[] { objectValue });
-            return callValue.GetType().GetMethod("ExecuteCommand");
+            return callValue.GetType().GetMyMethod("ExecuteCommand",0);
         }
 
         public StorageableMethodInfo ToStorage()
