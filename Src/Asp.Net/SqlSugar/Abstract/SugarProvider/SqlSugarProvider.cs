@@ -1006,6 +1006,10 @@ namespace SqlSugar
         #endregion
 
         #region Saveable
+        public IStorageable<T> Storageable<T>(T[] dataList) where T : class, new()
+        {
+            return Storageable(dataList?.ToList());
+        }
         public ISaveable<T> Saveable<T>(List<T> saveObjects) where T : class, new()
         {
             return new SaveableProvider<T>(this, saveObjects);

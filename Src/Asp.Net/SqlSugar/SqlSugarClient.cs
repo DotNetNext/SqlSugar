@@ -556,6 +556,10 @@ namespace SqlSugar
         {
             return this.Context.Storageable(dataList);
         }
+        public IStorageable<T> Storageable<T>(T[] dataList) where T : class, new()
+        {
+            return this.Context.Storageable(dataList?.ToList());
+        }
         public IStorageable<T> Storageable<T>(T data) where T : class, new()
         {
             Check.Exception(typeof(T).FullName.Contains("System.Collections.Generic.List`"), "  need  where T: class, new() ");

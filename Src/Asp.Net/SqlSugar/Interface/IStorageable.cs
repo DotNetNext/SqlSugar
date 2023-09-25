@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 namespace SqlSugar
 {
@@ -29,6 +30,7 @@ namespace SqlSugar
         IStorageable<T> As(string tableName);
         int ExecuteCommand();
         Task<int> ExecuteCommandAsync();
+        Task<int> ExecuteCommandAsync(CancellationToken cancellationToken);
         int ExecuteSqlBulkCopy();
         Task<int> ExecuteSqlBulkCopyAsync();
         IStorageable<T> DefaultAddElseUpdate();
