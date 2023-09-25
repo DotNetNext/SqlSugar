@@ -259,6 +259,10 @@ namespace SqlSugar
             this.Context.Ado.ExecuteCommand(sql);
             if (isAddNotNUll) 
             {
+                if (columnInfo.TableName == null) 
+                {
+                    columnInfo.TableName= tableName;
+                }
                 var dtColums = this.Context.Queryable<object>().AS(columnInfo.TableName).Where("1=2")
                     .Select(this.SqlBuilder.GetTranslationColumnName(columnInfo.DbColumnName)).ToDataTable().Columns.Cast<System.Data.DataColumn>();
                 var dtColumInfo = dtColums.First(it => it.ColumnName.EqualCase(columnInfo.DbColumnName));
