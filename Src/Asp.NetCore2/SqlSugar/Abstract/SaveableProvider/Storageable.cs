@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SqlSugar
@@ -149,6 +150,11 @@ namespace SqlSugar
             if (updateRow < 0) updateRow = 0;
             result += updateRow;
             return result;
+        }
+        public Task<int> ExecuteCommandAsync(CancellationToken cancellationToken) 
+        {
+            this.Context.Ado.CancellationToken=cancellationToken;
+            return ExecuteCommandAsync();
         }
         public async Task<int> ExecuteCommandAsync()
         {

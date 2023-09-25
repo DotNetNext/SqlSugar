@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SqlSugar
@@ -56,8 +57,10 @@ namespace SqlSugar
             }
             return result;
         }
-        public async Task<int> ExecuteCommandAsync()
+        public async Task<int> ExecuteCommandAsync(CancellationToken? cancellationToken=null)
         {
+            if (cancellationToken != null)
+                this.Context.Ado.CancellationToken = cancellationToken.Value;
             if (Data.Count() == 1 && Data.First() == null)
             {
                 return 0;
@@ -121,8 +124,10 @@ namespace SqlSugar
             }
             return result;
         }
-        public async Task<int> ExecuteSqlBulkCopyAsync()
+        public async Task<int> ExecuteSqlBulkCopyAsync(CancellationToken? cancellationToken = null)
         {
+            if(cancellationToken!=null)
+              this.Context.Ado.CancellationToken = cancellationToken.Value;
             if (Data.Count() == 1 && Data.First() == null)
             {
                 return 0;
