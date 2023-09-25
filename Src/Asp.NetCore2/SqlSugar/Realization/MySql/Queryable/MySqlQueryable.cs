@@ -8,11 +8,11 @@
             {
                 return this;
             }
-            if (UtilMethods.StingCheckFirstAndLast(withString.TrimStart(' ').TrimEnd(' '), "/*", "*/"))
+            if (UtilMethods.StringCheckFirstAndLast(withString.TrimStart(' ').TrimEnd(' '), "/*", "*/"))
             {
                 QueryBuilder.TableWithString = withString;
             }
-            else if (UtilMethods.StingCheckFirstAndLast(withString.TrimStart(' ').TrimEnd(' ').ToLower(), "force", ")")) 
+            else if (UtilMethods.StringCheckFirstAndLast(withString.TrimStart(' ').TrimEnd(' ').ToLower(), "force", ")")) 
             {
                 QueryBuilder.TableWithString = withString;
             }
