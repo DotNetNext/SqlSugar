@@ -146,6 +146,7 @@ namespace SqlSugar
         #endregion
 
         #region Saveable
+        IStorageable<T> Storageable<T>(T[] dataList) where T : class, new();
          StorageableDataTable Storageable(List<Dictionary<string, object>> dictionaryList, string tableName);
          StorageableDataTable Storageable(Dictionary<string, object> dictionary, string tableName);
         IStorageable<T> Storageable<T>(List<T> dataList) where T : class, new();
