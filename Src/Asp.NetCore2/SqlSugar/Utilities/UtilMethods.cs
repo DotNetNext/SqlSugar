@@ -18,7 +18,7 @@ namespace SqlSugar
 {
     public class UtilMethods
     {
-        public static bool StingCheckFirstAndLast(string withString, string first, string last)
+        public static bool StringCheckFirstAndLast(string withString, string first, string last)
         {
             return withString.StartsWith(first) && withString.EndsWith(last);
         }
