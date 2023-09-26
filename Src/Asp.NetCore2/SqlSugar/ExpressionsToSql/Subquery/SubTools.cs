@@ -40,7 +40,7 @@ namespace SqlSugar
                                                     new SubDistinctCount{ Context=Context },
                                                     new SubToList{ Context=Context},
                                                     new SubFirst(){ Context=Context },
-                                                    new ISubAsWithAttr(){ Context=Context }
+                                                    new SubAsWithAttr(){ Context=Context }
                                                 };
         }
 
