@@ -78,6 +78,8 @@ namespace SqlSugar.TDengine
         {
             ((SqlSugar.TDengineCore.TDengineDataAdapter)dataAdapter).SelectCommand = (TDengineCommand)command;
         }
+        public static bool _IsIsNanosecond { get; set; }
+        public static bool _IsMicrosecond { get; set; }
         /// <summary>
         /// if mysql return MySqlParameter[] pars
         /// if sqlerver return SqlParameter[] pars ...
@@ -97,13 +99,18 @@ namespace SqlSugar.TDengine
                     parameter.Value = parameter.Value?.ToString()?.ToLower();
                 }
                 var sqlParameter = new TDengineParameter(parameter.ParameterName,parameter.Value,parameter.DbType,0);
-                if (parameter.CustomDbType?.Equals(System.Data.DbType.DateTime2) == true)
+                if (parameter.CustomDbType?.Equals(System.Data.DbType.DateTime2) == true|| _IsMicrosecond)
                 {
-                    sqlParameter.IsMicrosecond= true;
+                    sqlParameter.IsMicrosecond = true;
                 }
-                else if (parameter.CustomDbType?.Equals(typeof(Date19))==true)
+                else if (parameter.CustomDbType?.Equals(typeof(Date19)) == true|| _IsIsNanosecond)
                 {
                     sqlParameter.IsNanosecond = true;
+                }
+                else if (parameter.Value is DateTime&&this.Context.CurrentConnectionConfig.ConnectionString.Contains("config_")) 
+                {
+                    _IsIsNanosecond=sqlParameter.IsNanosecond = this.Context.CurrentConnectionConfig.ConnectionString.Contains("config_ns");
+                    _IsMicrosecond = sqlParameter.IsMicrosecond = this.Context.CurrentConnectionConfig.ConnectionString.Contains("config_ms");
                 }
                 result[i]=sqlParameter;
                 i++;
