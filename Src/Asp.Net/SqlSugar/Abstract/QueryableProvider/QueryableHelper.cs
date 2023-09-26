@@ -1335,7 +1335,7 @@ namespace SqlSugar
             }
         }
 
-        private string GetTableName(EntityInfo entity, string tableName)
+        internal string GetTableName(EntityInfo entity, string tableName)
         {
             var oldTableName = tableName;
             var attr = entity?.Type?.GetCustomAttribute<TenantAttribute>();
