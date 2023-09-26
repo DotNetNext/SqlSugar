@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            CrossDatabase01.Init();
             UnitStringToExp.Init();
             UnitOneToMany2.Init();
             UnitOneToMany.Init();
