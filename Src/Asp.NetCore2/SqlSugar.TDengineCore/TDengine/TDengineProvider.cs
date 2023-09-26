@@ -110,7 +110,7 @@ namespace SqlSugar.TDengine
                 else if (parameter.Value is DateTime&&this.Context.CurrentConnectionConfig.ConnectionString.Contains("config_")) 
                 {
                     _IsIsNanosecond=sqlParameter.IsNanosecond = this.Context.CurrentConnectionConfig.ConnectionString.Contains("config_ns");
-                    _IsMicrosecond = sqlParameter.IsMicrosecond = this.Context.CurrentConnectionConfig.ConnectionString.Contains("config_ms");
+                    _IsMicrosecond = sqlParameter.IsMicrosecond = this.Context.CurrentConnectionConfig.ConnectionString.Contains("config_us");
                 }
                 result[i]=sqlParameter;
                 i++;
