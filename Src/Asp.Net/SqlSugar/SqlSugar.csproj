@@ -181,6 +181,7 @@
     <Compile Include="ExpressionsToSql\ResolveItems\BaseResolve_Item.cs" />
     <Compile Include="ExpressionsToSql\ResolveItems\MethodCallExpressionResolve_Helper.cs" />
     <Compile Include="ExpressionsToSql\ResolveItems\MethodCallExpressionResolve_BaseDateFomat.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\Items\SubAsWithAttr.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubDistinctCount.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubFirst.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubSelectStringJoin.cs" />
