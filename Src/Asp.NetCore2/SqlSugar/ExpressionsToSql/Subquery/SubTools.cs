@@ -39,7 +39,8 @@ namespace SqlSugar
                                                     new SubSelectStringJoin{ Context=Context },
                                                     new SubDistinctCount{ Context=Context },
                                                     new SubToList{ Context=Context},
-                                                    new SubFirst(){ Context=Context }
+                                                    new SubFirst(){ Context=Context },
+                                                    new ISubAsWithAttr(){ Context=Context }
                                                 };
         }
 
