@@ -1480,6 +1480,7 @@ namespace SqlSugar
             result.QueryBuilder.AppendNavInfo = this.QueryBuilder.AppendNavInfo;
             result.QueryBuilder.LambdaExpressions.ParameterIndex = QueryBuilder.LambdaExpressions.ParameterIndex++;
             result.QueryBuilder.LambdaExpressions.Index = QueryBuilder.LambdaExpressions.Index++;
+            result.QueryBuilder.IsCrossQueryWithAttr = QueryBuilder.IsCrossQueryWithAttr;
             if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle)
             {
                 result.Select("MergeTable.*");
