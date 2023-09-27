@@ -372,6 +372,10 @@ namespace SqlSugar
         }
         public ISugarQueryable<T> ClearFilter(params Type[] types)
         {
+            if (types == null|| types.Length==0) 
+            {
+                return this;
+            }
             this.QueryBuilder.RemoveFilters = types;
             this.Filter(null, true);
             this.QueryBuilder.IsDisabledGobalFilter = false;
