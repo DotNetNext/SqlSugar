@@ -263,7 +263,34 @@ SELECT 'INTEGER'
 UNION
 SELECT 'REAL'
 UNION
-SELECT 'BLOB';");
+SELECT 'BLOB'
+UNION SELECT 'bigint' 
+ UNION SELECT 'binary' 
+ UNION SELECT 'bit' 
+ UNION SELECT 'char' 
+ UNION SELECT 'date' 
+ UNION SELECT 'datetime' 
+ UNION SELECT 'datetime2' 
+ UNION SELECT 'datetimeoffset' 
+ UNION SELECT 'decimal' 
+ UNION SELECT 'float'  
+ UNION SELECT 'image' 
+ UNION SELECT 'int' 
+ UNION SELECT 'money' 
+ UNION SELECT 'nchar' 
+ UNION SELECT 'ntext' 
+ UNION SELECT 'numeric' 
+ UNION SELECT 'nvarchar' 
+ UNION SELECT 'smalldatetime' 
+ UNION SELECT 'smallint' 
+ UNION SELECT 'text' 
+ UNION SELECT 'time' 
+ UNION SELECT 'timestamp' 
+ UNION SELECT 'tinyint' 
+ UNION SELECT 'uniqueidentifier' 
+ UNION SELECT 'varbinary' 
+ UNION SELECT 'varchar' 
+ UNION SELECT 'xml' ");
         }
         public override List<string> GetTriggerNames(string tableName)
         {
