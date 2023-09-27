@@ -242,8 +242,19 @@ namespace SqlSugar
         #region Methods
         public override List<string> GetDbTypes()
         {
-            return this.Context.Ado.SqlQuery<string>(@"SELECT DISTINCT data_type
+            var result = this.Context.Ado.SqlQuery<string>(@"SELECT DISTINCT data_type
 FROM information_schema.columns");
+            result.Add("varchar");
+            result.Add("timestamp");
+            result.Add("uuid");
+            result.Add("int2");
+            result.Add("int4");
+            result.Add("int8");
+            result.Add("time");
+            result.Add("date");
+            result.Add("float8");
+            result.Add("float4");
+            return result.Distinct().ToList();
         }
         public override List<string> GetTriggerNames(string tableName)
         {
