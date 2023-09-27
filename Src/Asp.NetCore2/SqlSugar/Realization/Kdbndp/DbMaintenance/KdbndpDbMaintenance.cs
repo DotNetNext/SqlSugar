@@ -254,6 +254,8 @@ FROM information_schema.columns");
             result.Add("date");
             result.Add("float8");
             result.Add("float4");
+            result.Add("json");
+            result.Add("jsonp");
             return result.Distinct().ToList();
         }
         public override List<string> GetTriggerNames(string tableName)
