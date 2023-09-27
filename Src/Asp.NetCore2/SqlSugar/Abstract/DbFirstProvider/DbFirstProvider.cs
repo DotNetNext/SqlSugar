@@ -23,6 +23,7 @@ namespace SqlSugar
         private Func<string, string> FormatFileNameFunc { get; set; }
         private bool IsStringNullable {get;set; }
         private Func<DbColumnInfo,string,string,string> PropertyTextTemplateFunc { get; set; }
+        private Func<string, string> ReplaceClassStringFunc { get; set; }
         private ISqlBuilder SqlBuilder
         {
             get
@@ -166,6 +167,11 @@ namespace SqlSugar
             this.FormatFileNameFunc = formatFileNameFunc;
             return this;
         }
+        public IDbFirst CreatedReplaceClassString(Func<string, string> replaceClassStringFunc) 
+        {
+            this.ReplaceClassStringFunc = replaceClassStringFunc;
+            return this;
+        }
         public IDbFirst IsCreateDefaultValue(bool isCreateDefaultValue = true)
         {
             this.IsDefaultValue = isCreateDefaultValue;
@@ -219,6 +225,10 @@ namespace SqlSugar
                         string className = tableInfo.Name;
                         classText = GetClassString(tableInfo, ref className);
                         result.Remove(className);
+                        if (this.ReplaceClassStringFunc != null) 
+                        {
+                            classText=this.ReplaceClassStringFunc(classText);
+                        }
                         result.Add(className, classText);
                     }
                     catch (Exception ex)
@@ -465,7 +475,7 @@ namespace SqlSugar
             {
                 return "bool";
             }
-            if (result.EqualCase("char")) 
+            if (result.EqualCase("char")|| result.EqualCase("char?")) 
             {
                 return "string";
             }

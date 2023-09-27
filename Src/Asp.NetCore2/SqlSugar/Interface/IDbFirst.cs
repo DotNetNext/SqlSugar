@@ -26,5 +26,6 @@ namespace SqlSugar
         void Init();
         IDbFirst FormatFileName(Func<string,string> formatFileNameFunc);
         IDbFirst StringNullable();
+        IDbFirst CreatedReplaceClassString(Func<string,string> replaceClassStringFunc);
     }
 }
