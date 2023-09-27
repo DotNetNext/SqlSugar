@@ -233,7 +233,7 @@ namespace SqlSugar
             var abDb = this.Context;
             abDb = GetCrossDatabase(abDb, mappingEntity.Type);
             var queryable = abDb.Queryable<object>();
-            var abids = queryable.AS(mappingEntity.DbTableName).WhereIF(navObjectNameColumnInfo?.Navigat?.WhereSql!=null, navObjectNameColumnInfo?.Navigat?.WhereSql).Filter(this.QueryBuilder?.IsDisabledGobalFilter==true?null:mappingEntity.Type).Where(conditionalModels).Select<SugarAbMapping>($"{queryable.SqlBuilder.GetTranslationColumnName(aColumn.DbColumnName)} as aid,{queryable.SqlBuilder.GetTranslationColumnName(bColumn.DbColumnName)} as bid").ToList();
+            var abids = queryable.AS(mappingEntity.DbTableName).WhereIF(navObjectNameColumnInfo?.Navigat?.WhereSql!=null, navObjectNameColumnInfo?.Navigat?.WhereSql).Filter(this.QueryBuilder?.IsDisabledGobalFilter==true?null:mappingEntity.Type).ClearFilter(QueryBuilder.RemoveFilters).Where(conditionalModels).Select<SugarAbMapping>($"{queryable.SqlBuilder.GetTranslationColumnName(aColumn.DbColumnName)} as aid,{queryable.SqlBuilder.GetTranslationColumnName(bColumn.DbColumnName)} as bid").ToList();
 
             List<IConditionalModel> conditionalModels2 = new List<IConditionalModel>();
             conditionalModels2.Add((new ConditionalModel()
@@ -244,7 +244,7 @@ namespace SqlSugar
                 CSharpTypeName = bColumn.PropertyInfo.PropertyType.Name
             }));
             var sql = GetWhereSql();
-            var bList = selector(bDb.Queryable<object>().AS(bEntityInfo.DbTableName).Filter(this.QueryBuilder?.IsDisabledGobalFilter == true ? null : bEntityInfo.Type).AddParameters(sql.Parameters).Where(conditionalModels2).WhereIF(sql.WhereString.HasValue(),sql.WhereString).Select(sql.SelectString).OrderByIF(sql.OrderByString.HasValue(),sql.OrderByString));  
+            var bList = selector(bDb.Queryable<object>().AS(bEntityInfo.DbTableName).Filter(this.QueryBuilder?.IsDisabledGobalFilter == true ? null : bEntityInfo.Type).ClearFilter(QueryBuilder.RemoveFilters).AddParameters(sql.Parameters).Where(conditionalModels2).WhereIF(sql.WhereString.HasValue(),sql.WhereString).Select(sql.SelectString).OrderByIF(sql.OrderByString.HasValue(),sql.OrderByString));  
             if (bList.HasValue())
             {
                 foreach (var listItem in list)
@@ -354,7 +354,7 @@ namespace SqlSugar
             if (list.Any()&&navObjectNamePropety.GetValue(list.First()) == null)
             {
                 var sqlObj = GetWhereSql(navObjectNameColumnInfo.Navigat.Name);
-                var navList = selector(db.Queryable<object>().Filter(navPkColumn.IsPrimarykey?null:this.QueryBuilder?.IsDisabledGobalFilter == true ? null : navEntityInfo.Type).AS(navEntityInfo.DbTableName)
+                var navList = selector(db.Queryable<object>().Filter(navPkColumn.IsPrimarykey?null:this.QueryBuilder?.IsDisabledGobalFilter == true ? null : navEntityInfo.Type).ClearFilter(QueryBuilder.RemoveFilters).AS(navEntityInfo.DbTableName)
                     .WhereIF(navObjectNameColumnInfo.Navigat.WhereSql.HasValue(), navObjectNameColumnInfo.Navigat.WhereSql)
                     .WhereIF(sqlObj.WhereString.HasValue(),sqlObj.WhereString)
                     .AddParameters(sqlObj.Parameters).Where(conditionalModels)
@@ -420,7 +420,7 @@ namespace SqlSugar
       
             if (list.Any() && navObjectNamePropety.GetValue(list.First()) == null)
             {
-                var navList = selector(childDb.Queryable<object>(sqlObj.TableShortName).AS(navEntityInfo.DbTableName).Filter(this.QueryBuilder?.IsDisabledGobalFilter == true ? null : navEntityInfo.Type).AddParameters(sqlObj.Parameters).Where(conditionalModels).WhereIF(sqlObj.WhereString.HasValue(), sqlObj.WhereString).WhereIF(navObjectNameColumnInfo?.Navigat?.WhereSql!=null, navObjectNameColumnInfo?.Navigat?.WhereSql).Select(sqlObj.SelectString).OrderByIF(sqlObj.OrderByString.HasValue(), sqlObj.OrderByString));
+                var navList = selector(childDb.Queryable<object>(sqlObj.TableShortName).AS(navEntityInfo.DbTableName).Filter(this.QueryBuilder?.IsDisabledGobalFilter == true ? null : navEntityInfo.Type).ClearFilter(QueryBuilder.RemoveFilters).AddParameters(sqlObj.Parameters).Where(conditionalModels).WhereIF(sqlObj.WhereString.HasValue(), sqlObj.WhereString).WhereIF(navObjectNameColumnInfo?.Navigat?.WhereSql!=null, navObjectNameColumnInfo?.Navigat?.WhereSql).Select(sqlObj.SelectString).OrderByIF(sqlObj.OrderByString.HasValue(), sqlObj.OrderByString));
                 if (navList.HasValue())
                 {
                     //var setValue = navList
