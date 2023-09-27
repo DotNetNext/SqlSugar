@@ -272,8 +272,8 @@ namespace SqlSugar
             var result = this.Context.Ado.SqlQuery<string>(@"SELECT DISTINCT DATA_TYPE
 FROM DBA_TAB_COLUMNS
 WHERE OWNER = user ");
-            result.Add("timestamp");
-            result.Add("timestamp");
+            result.Add("TIMESTAMP");
+            result.Add("NCLOB");
             return result.Distinct().ToList();
         }
         public override List<string> GetTriggerNames(string tableName)
