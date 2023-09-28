@@ -48,6 +48,7 @@ namespace SqlSugar
         #region Other methods
         Task<SugarAsyncLock> AsyncLock(int timeOutSeconds = 30);
         DynamicBuilder DynamicBuilder();
+        void ClearTracking();
         void Tracking<T>(T  data) where T : class, new();
         void Tracking<T>(List<T> data) where T : class, new();
         SqlSugarClient CopyNew();

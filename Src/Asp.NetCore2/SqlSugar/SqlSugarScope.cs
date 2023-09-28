@@ -902,5 +902,9 @@ namespace SqlSugar
         {
             return ScopedContext.GridSave(saveList);
         }
+        public void ClearTracking()
+        {
+            ScopedContext.ClearTracking();
+        }
     }
 }

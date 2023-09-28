@@ -1206,6 +1206,10 @@ namespace SqlSugar
         {
             this.Context.Tracking(data);
         }
+        public void ClearTracking() 
+        {
+            this.Context.ClearTracking();
+        }
         public void Tracking<T>(List<T> datas) where T : class, new() 
         {
             this.Context.Tracking(datas);
