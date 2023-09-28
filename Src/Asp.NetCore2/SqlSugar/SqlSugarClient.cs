@@ -535,6 +535,10 @@ namespace SqlSugar
         #endregion
 
         #region Saveable
+        public GridSaveProvider<T> GridSave<T>(List<T> oldList, List<T> saveList) where T : class, new()
+        {
+            return this.Context.GridSave(oldList, saveList);
+        }
         public StorageableDataTable Storageable(DataTable data)
         {
             return this.Context.Storageable(data);

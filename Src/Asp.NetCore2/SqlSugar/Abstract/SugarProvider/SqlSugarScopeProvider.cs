@@ -827,6 +827,10 @@ namespace SqlSugar
         {
             return ScopedContext.QueryableByObject(entityType, shortName);
         }
+        public GridSaveProvider<T> GridSave<T>(List<T> oldList, List<T> saveList) where T : class, new()
+        {
+            return ScopedContext.GridSave(oldList, saveList);
+        }
         #endregion
     }
 }
