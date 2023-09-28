@@ -27,6 +27,7 @@ namespace OrmTest
             db.CurrentConnectionConfig.MoreSettings = new ConnMoreSettings()
             {
                SqliteCodeFirstEnableDefaultValue = true,
+                SqliteCodeFirstEnableDescription=true
             };
             db.CodeFirst.InitTables<CodeFirstUnitafa12>();
             var xxx=db.DbMaintenance.GetColumnInfosByTableName("CodeFirstUnitafa12", false);
@@ -35,7 +36,7 @@ namespace OrmTest
     }
     public class CodeFirstUnitafa12   
     {
-        [SugarColumn(IsPrimaryKey =true,IsIdentity =true)]
+        [SugarColumn(IsPrimaryKey =true,IsIdentity =true,ColumnDescription ="aa")]
         public int Id { get; set; }
         [SugarColumn(DefaultValue = "(strftime('%Y-%m-%d %H:%M:%S', 'now', 'localtime'))")]
         public DateTime Name { get; set; }
