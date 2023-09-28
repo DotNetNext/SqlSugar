@@ -122,6 +122,7 @@
     <Compile Include="Abstract\FastestProvider\Setting.cs" />
     <Compile Include="Abstract\FastestProvider\SplitFastest.cs" />
     <Compile Include="Abstract\FilterProvider\FilterProvider.cs" />
+    <Compile Include="Abstract\GridSave\GridSaveProvider.cs" />
     <Compile Include="Abstract\InsertableProvider\InsertablePage.cs" />
     <Compile Include="Abstract\InsertableProvider\InsertableHelper.cs" />
     <Compile Include="Abstract\InsertableProvider\InsertMethodInfo.cs" />
