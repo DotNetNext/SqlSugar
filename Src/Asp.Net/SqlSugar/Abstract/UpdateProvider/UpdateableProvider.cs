@@ -902,6 +902,16 @@ namespace SqlSugar
             result.Where(sql.Key, sql.Value);
             return result;
         }
+
+        public IUpdateable<T> In(object[] ids) 
+        {
+            ThrowUpdateByObjectByMesage(" In(object[] ids) ");
+            List<IConditionalModel> conditionalModels = new List<IConditionalModel>();
+            var column = this.EntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey);
+            Check.ExceptionEasy(column == null, "In need primary key", "In需要实体有主键");
+            conditionalModels.Add(new ConditionalModel() { FieldName= column.DbColumnName, ConditionalType= ConditionalType.In,FieldValue=string.Join(",",ids),CSharpTypeName=column.UnderType?.Name } );
+            return this.Where(conditionalModels);
+        }
         #endregion
 
     }
