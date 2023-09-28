@@ -47,6 +47,13 @@ namespace SqlSugar
             ISqlSugarClient db;
             List<SugarParameter> pars;
             string where;
+            var isAutoDelFilter =
+             DeleteBuilder.Context?.CurrentConnectionConfig?.MoreSettings?.IsAutoDeleteQueryFilter == true &&
+             DeleteBuilder.Context?.CurrentConnectionConfig?.MoreSettings?.IsAutoUpdateQueryFilter == true;
+            if (isAutoDelFilter)
+            {
+                DeleteBuilder.Context.CurrentConnectionConfig.MoreSettings.IsAutoUpdateQueryFilter = false;
+            }
             LogicFieldName = _ExecuteCommand(LogicFieldName, out db, out where, out pars);
             var updateable = db.Updateable<T>();
             updateable.UpdateBuilder.LambdaExpressions.ParameterIndex = 1000;
@@ -64,6 +71,13 @@ namespace SqlSugar
             ISqlSugarClient db;
             List<SugarParameter> pars;
             string where;
+            var isAutoDelFilter =
+             DeleteBuilder.Context?.CurrentConnectionConfig?.MoreSettings?.IsAutoDeleteQueryFilter == true &&
+             DeleteBuilder.Context?.CurrentConnectionConfig?.MoreSettings?.IsAutoUpdateQueryFilter == true;
+            if (isAutoDelFilter)
+            {
+                DeleteBuilder.Context.CurrentConnectionConfig.MoreSettings.IsAutoUpdateQueryFilter = false;
+            }
             LogicFieldName = _ExecuteCommand(LogicFieldName, out db, out where, out pars);
             var updateable = db.Updateable<T>();
             updateable.UpdateBuilder.LambdaExpressions.ParameterIndex = 1000;
