@@ -48,6 +48,7 @@ namespace SqlSugar
         #region Other methods
         Task<SugarAsyncLock> AsyncLock(int timeOutSeconds = 30);
         DynamicBuilder DynamicBuilder();
+        void ClearTracking();
         void Tracking<T>(T  data) where T : class, new();
         void Tracking<T>(List<T> data) where T : class, new();
         SqlSugarClient CopyNew();
@@ -146,6 +147,7 @@ namespace SqlSugar
         #endregion
 
         #region Saveable
+        GridSaveProvider<T> GridSave<T>(List<T> saveList) where T : class, new();
         GridSaveProvider<T> GridSave<T>(List<T> oldList,List<T> saveList) where T : class, new();
         IStorageable<T> Storageable<T>(T[] dataList) where T : class, new();
          StorageableDataTable Storageable(List<Dictionary<string, object>> dictionaryList, string tableName);

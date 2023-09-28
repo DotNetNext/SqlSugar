@@ -535,6 +535,10 @@ namespace SqlSugar
         #endregion
 
         #region Saveable
+        public GridSaveProvider<T> GridSave<T>(List<T> saveList) where T : class, new()
+        {
+           return this.Context.GridSave(saveList);
+        }
         public GridSaveProvider<T> GridSave<T>(List<T> oldList, List<T> saveList) where T : class, new()
         {
             return this.Context.GridSave(oldList, saveList);
@@ -1201,6 +1205,10 @@ namespace SqlSugar
         public void Tracking<T>(T data) where T : class, new() 
         {
             this.Context.Tracking(data);
+        }
+        public void ClearTracking() 
+        {
+            this.Context.ClearTracking();
         }
         public void Tracking<T>(List<T> datas) where T : class, new() 
         {

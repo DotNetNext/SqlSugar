@@ -1006,6 +1006,15 @@ namespace SqlSugar
         #endregion
 
         #region Saveable
+        public GridSaveProvider<T> GridSave<T>(List<T> saveList) where T : class, new()
+        {
+            Check.ExceptionEasy(saveList == null, "saveList is null", "saveList 不能是 null");
+            var isTran = this.Context.TempItems != null
+                                          && this.Context.TempItems.Any(it => it.Key == "OldData_" + saveList.GetHashCode());
+            Check.ExceptionEasy(isTran == false, "saveList no tracking", "saveList 没有使用跟踪");
+            var oldList = (List<T>)this.Context.TempItems.FirstOrDefault(it => it.Key == "OldData_" + saveList.GetHashCode()).Value;
+            return GridSave(oldList, saveList);
+        }
         public GridSaveProvider<T> GridSave<T>(List<T> oldList, List<T> saveList) where T : class, new() 
         {
             GridSaveProvider<T> result = new GridSaveProvider<T>();
@@ -1750,11 +1759,27 @@ namespace SqlSugar
                 }
             }
         }
+        public void ClearTracking() 
+        {
+            if (this.Context.TempItems != null)
+            {
+                var removeKeys = this.Context.TempItems.Where(it => it.Key.StartsWith("Tracking_") || it.Key.StartsWith("OldData_")).Select(it => it.Key).ToList();
+                foreach (string key in removeKeys)
+                {
+                    this.Context.TempItems.Remove(key);
+                } 
+            }
+        }
         public void Tracking<T>(List<T> datas) where T : class, new()
         {
             foreach (var data in datas) 
             {
                 this.Tracking(data);
+            } 
+            if (datas != null)
+            {
+                Check.ExceptionEasy(this.Context.TempItems.ContainsKey("OldData_" + datas.GetHashCode()), "The object already has a trace", "对象已存在跟踪,如果要在跟踪可以先清除 db.ClearTracking() ");
+                this.Context.TempItems.Add("OldData_" + datas.GetHashCode(), datas.Cast<T>().ToList());
             }
         }
         public SqlSugarClient CopyNew()

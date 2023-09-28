@@ -831,6 +831,14 @@ namespace SqlSugar
         {
             return ScopedContext.GridSave(oldList, saveList);
         }
+        public GridSaveProvider<T> GridSave<T>(List<T> saveList) where T : class, new()
+        {
+            return ScopedContext.GridSave(saveList);
+        }
+        public void ClearTracking()
+        {
+            ScopedContext.ClearTracking();
+        }
         #endregion
     }
 }
