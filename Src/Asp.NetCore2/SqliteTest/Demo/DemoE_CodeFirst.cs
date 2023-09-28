@@ -28,12 +28,15 @@ namespace OrmTest
             {
                SqliteCodeFirstEnableDefaultValue = true,
             };
-            db.CodeFirst.InitTables<CodeFirstUnitafa>();
+            db.CodeFirst.InitTables<CodeFirstUnitafa12>();
+            var xxx=db.DbMaintenance.GetColumnInfosByTableName("CodeFirstUnitafa12", false);
             Console.WriteLine("#### CodeFirst end ####");
         }
     }
-    public class CodeFirstUnitafa 
+    public class CodeFirstUnitafa12   
     {
+        [SugarColumn(IsPrimaryKey =true,IsIdentity =true)]
+        public int Id { get; set; }
         [SugarColumn(DefaultValue = "(strftime('%Y-%m-%d %H:%M:%S', 'now', 'localtime'))")]
         public DateTime Name { get; set; }
         [SugarColumn(DefaultValue = "1")]
