@@ -223,6 +223,10 @@ namespace SqlSugar
             if (IsTrakingData())
             {
                 var trackingData = this.Context.TempItems.FirstOrDefault(it => it.Key.StartsWith("Tracking_" + item.GetHashCode()));
+                if (trackingData.Key == null && trackingData.Value == null) 
+                {
+                    return;
+                }
                 var diffColumns = FastCopy.GetDiff(item, (T)trackingData.Value);
                 if (diffColumns.Count > 0)
                 {
