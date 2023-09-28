@@ -17,16 +17,28 @@ namespace OrmTest
                 DbType = DbType.Sqlite,
                 ConnectionString = Config.ConnectionString3,
                 InitKeyType = InitKeyType.Attribute,
-                IsAutoCloseConnection = true
+                IsAutoCloseConnection = true 
             });
             db.DbMaintenance.CreateDatabase(); 
             db.CodeFirst.InitTables(typeof(CodeFirstTable1));//Create CodeFirstTable1 
             db.Insertable(new CodeFirstTable1() { Name = "a", Text="a" }).ExecuteCommand();
             var list = db.Queryable<CodeFirstTable1>().ToList();
+            db = NewUnitTest.Db;
+            db.CurrentConnectionConfig.MoreSettings = new ConnMoreSettings()
+            {
+               SqliteCodeFirstEnableDefaultValue = true,
+            };
+            db.CodeFirst.InitTables<CodeFirstUnitafa>();
             Console.WriteLine("#### CodeFirst end ####");
         }
     }
-
+    public class CodeFirstUnitafa 
+    {
+        [SugarColumn(DefaultValue = "(strftime('%Y-%m-%d %H:%M:%S', 'now', 'localtime'))")]
+        public DateTime Name { get; set; }
+        [SugarColumn(DefaultValue = "1")]
+        public string Name2 { get; set; }
+    }
     public class CodeFirstTable1
     {
         [SugarColumn(IsIdentity = true, IsPrimaryKey = true)]
