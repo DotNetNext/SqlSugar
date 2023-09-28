@@ -22,6 +22,7 @@ namespace SqlSugar
         public bool IsNoReadXmlDescription { get;  set; }
         public bool SqlServerCodeFirstNvarchar { get;  set; }
         public bool SqliteCodeFirstEnableDefaultValue { get; set; }
+        public bool SqliteCodeFirstEnableDescription { get; set; }
         public bool IsAutoUpdateQueryFilter { get; set; }
         public bool IsAutoDeleteQueryFilter { get; set; }
         public bool EnableModelFuncMappingColumn { get; set; }

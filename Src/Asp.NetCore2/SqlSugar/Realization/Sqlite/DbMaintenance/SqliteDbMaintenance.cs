@@ -523,6 +523,10 @@ AND sql LIKE '%" + tableName + "%'");
                     }
                     addItem = $"{addItem} DEFAULT {value}";
                 }
+                if (item.ColumnDescription.HasValue() && this.Context.CurrentConnectionConfig?.MoreSettings?.SqliteCodeFirstEnableDescription == true) 
+                {
+                    addItem = $"{addItem} /*{item.ColumnDescription.Replace("\r","").Replace("\n", "")}*/ ";
+                }
                 columnArray.Add(addItem);
             }
             string tableString = string.Format(this.CreateTableSql, this.SqlBuilder.GetTranslationTableName(tableName), string.Join(",\r\n", columnArray));
