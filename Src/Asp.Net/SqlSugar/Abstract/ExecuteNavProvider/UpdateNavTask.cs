@@ -59,7 +59,21 @@ namespace SqlSugar
             result.NavContext = UpdateNavProvider.NavContext;
             return result;
         }
-
+        public UpdateNavMethodInfo IncludesAllFirstLayer(params string[] ignoreColumns) 
+        {
+            if (ignoreColumns == null) 
+            {
+                ignoreColumns = new string[] { };
+            }
+            var navColumns = this.Context.EntityMaintenance.GetEntityInfo<Root>().Columns.Where(it=> !ignoreColumns.Contains(it.PropertyName) || !ignoreColumns.Any(z=>z.EqualCase(it.DbColumnName))).Where(it => it.Navigat != null).ToList();
+            var updateNavs = this;
+            UpdateNavMethodInfo methodInfo = updateNavs.IncludeByNameString(navColumns[0].PropertyName);
+            foreach (var item in navColumns.Skip(1))
+            {
+                methodInfo = methodInfo.IncludeByNameString(item.PropertyName);
+            }
+            return methodInfo;
+        }
         public UpdateNavMethodInfo IncludeByNameString(string navMemberName, UpdateNavOptions updateNavOptions=null)
         {
             UpdateNavMethodInfo result = new UpdateNavMethodInfo();
