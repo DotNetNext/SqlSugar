@@ -751,7 +751,11 @@ namespace SqlSugar
         }
         private void ThrowUpdateByExpressionByMesage(string message)
         {
-            Check.Exception(UpdateParameterIsNull == true, ErrorMessage.GetThrowMessage(" no support "+ message, "根据对像更新 db.Updateabe(对象) 禁止使用 SetColumns和Where ,你可以使用 "+ message + "。 更新分为2种方式 1.根据表达式更新 2.根据实体或者集合更新 ， 具体用法请查看文档 "));
+            Check.Exception(UpdateParameterIsNull == true, ErrorMessage.GetThrowMessage(" no support "+ message, "根据表达式更新 db.Updateable<T>()禁止使用 " + message+"。 更新分为2种方式 1.根据表达式更新 2.根据实体或者集合更新 ， 具体用法请查看文档 "));
+        }
+        private void ThrowUpdateByObjectByMesage(string message)
+        {
+            Check.Exception(UpdateParameterIsNull == false, ErrorMessage.GetThrowMessage(" no support " + message, "根据对象更新 db.Updateable(对象)禁止使用 " + message + "。 更新分为2种方式 1.根据表达式更新 2.根据实体或者集合更新 ， 具体用法请查看文档 "));
         }
     }
 }
