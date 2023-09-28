@@ -1755,6 +1755,11 @@ namespace SqlSugar
             foreach (var data in datas) 
             {
                 this.Tracking(data);
+            } 
+            if (datas != null)
+            {
+                Check.ExceptionEasy(this.Context.TempItems.ContainsKey("OldData_" + datas.GetHashCode()), "The object already has a trace", "对象已存在跟踪");
+                this.Context.TempItems.Add("OldData_" + datas.GetHashCode(), datas.Cast<T>().ToList());
             }
         }
         public SqlSugarClient CopyNew()
