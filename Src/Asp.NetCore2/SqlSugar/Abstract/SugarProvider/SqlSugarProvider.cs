@@ -1006,6 +1006,15 @@ namespace SqlSugar
         #endregion
 
         #region Saveable
+        public GridSaveProvider<T> GridSave<T>(List<T> saveList) where T : class, new()
+        {
+            Check.ExceptionEasy(saveList == null, "saveList is null", "saveList 不能是 null");
+            var isTran = this.Context.TempItems != null
+                                          && this.Context.TempItems.Any(it => it.Key == "OldData_" + saveList.GetHashCode());
+            Check.ExceptionEasy(isTran == false, "saveList no tracking", "saveList 没有使用跟踪");
+            var oldList = (List<T>)this.Context.TempItems.FirstOrDefault(it => it.Key == "OldData_" + saveList.GetHashCode()).Value;
+            return GridSave(oldList, saveList);
+        }
         public GridSaveProvider<T> GridSave<T>(List<T> oldList, List<T> saveList) where T : class, new() 
         {
             GridSaveProvider<T> result = new GridSaveProvider<T>();
