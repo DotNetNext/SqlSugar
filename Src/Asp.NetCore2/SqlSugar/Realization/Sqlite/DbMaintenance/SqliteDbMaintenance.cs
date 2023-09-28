@@ -514,6 +514,15 @@ AND sql LIKE '%" + tableName + "%'");
                 string primaryKey = item.IsPrimarykey ? this.CreateTablePirmaryKey : null;
                 string identity = item.IsIdentity ? this.CreateTableIdentity : null;
                 string addItem = string.Format(this.CreateTableColumn, this.SqlBuilder.GetTranslationColumnName(columnName), dataType, dataSize, nullType, primaryKey, identity);
+                if (item.DefaultValue.HasValue()&&this.Context.CurrentConnectionConfig?.MoreSettings?.SqliteCodeFirstEnableDefaultValue == true) 
+                {
+                    var value = item.DefaultValue;
+                    if (!value.Contains("(")&&!value.EqualCase( "CURRENT_TIMESTAMP")&&!value.StartsWith("'")) 
+                    {
+                        value = value.ToSqlValue();
+                    }
+                    addItem = $"  {addItem} DEFAULT {value}";
+                }
                 columnArray.Add(addItem);
             }
             string tableString = string.Format(this.CreateTableSql, this.SqlBuilder.GetTranslationTableName(tableName), string.Join(",\r\n", columnArray));

@@ -485,7 +485,8 @@ namespace SqlSugar
                     EnableModelFuncMappingColumn=it.MoreSettings.EnableModelFuncMappingColumn,
                     EnableOracleIdentity = it.MoreSettings.EnableOracleIdentity,
                     IsWithNoLockSubquery=it.MoreSettings.IsWithNoLockSubquery,
-                    EnableCodeFirstUpdatePrecision=it.MoreSettings.EnableCodeFirstUpdatePrecision
+                    EnableCodeFirstUpdatePrecision=it.MoreSettings.EnableCodeFirstUpdatePrecision,
+                    SqliteCodeFirstEnableDefaultValue=it.MoreSettings.SqliteCodeFirstEnableDefaultValue
 
                 },
                 SqlMiddle = it.SqlMiddle == null ? null : new SqlMiddle
