@@ -521,7 +521,7 @@ AND sql LIKE '%" + tableName + "%'");
                     {
                         value = value.ToSqlValue();
                     }
-                    addItem = $"  {addItem} DEFAULT {value}";
+                    addItem = $"{addItem} DEFAULT {value}";
                 }
                 columnArray.Add(addItem);
             }
