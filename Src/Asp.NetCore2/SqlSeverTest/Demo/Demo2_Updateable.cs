@@ -43,6 +43,7 @@ namespace OrmTest
             //update all columns by primary key
             var result = db.Updateable(updateObj).ExecuteCommand();//update single
             var result2 = db.Updateable(updateObjs).ExecuteCommand();//update List<Class>
+            var result22 = db.Updateable(updateObjs).PageSize(2).ExecuteCommand();
 
             //Ignore  Name and Price
             var result3 = db.Updateable(updateObj).IgnoreColumns(it => new { it.CreateTime, it.Price }).ExecuteCommand();
