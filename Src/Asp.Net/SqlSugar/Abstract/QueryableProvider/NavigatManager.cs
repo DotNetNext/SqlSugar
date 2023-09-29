@@ -491,7 +491,7 @@ namespace SqlSugar
         private void Dynamic(List<object> list, Func<ISugarQueryable<object>, List<object>> selector, EntityInfo listItemEntity, System.Reflection.PropertyInfo navObjectNamePropety, EntityColumnInfo navObjectNameColumnInfo,Expression expression)
         {
             var args = navObjectNameColumnInfo.PropertyInfo.PropertyType.GetGenericArguments();
-            if (args.Length == 0) 
+            if (args.Length == 0)
             {
                 DynamicOneToOne(list,selector,listItemEntity, navObjectNamePropety, navObjectNameColumnInfo,expression);
                 return;
@@ -504,6 +504,10 @@ namespace SqlSugar
             childDb.InitMappingInfo(navEntity);
             var navEntityInfo = childDb.EntityMaintenance.GetEntityInfo(navEntity);
             var sqlObj = GetWhereSql(navObjectNameColumnInfo.Navigat.Name);
+            if (IsJsonMapping(navObjectNameColumnInfo, sqlObj))
+            {
+                CreateDynamicMappingExpression(sqlObj, navObjectNameColumnInfo.Navigat.Name, navEntityInfo, listItemEntity);
+            }
             Check.ExceptionEasy(sqlObj.MappingExpressions.IsNullOrEmpty(), $"{expression} error,dynamic need MappingField ,Demo: Includes(it => it.Books.MappingField(z=>z.studenId,()=>it.StudentId).ToList())", $"{expression} 解析出错,自定义映射需要 MappingField ,例子: Includes(it => it.Books.MappingField(z=>z.studenId,()=>it.StudentId).ToList())");
             if (list.Any() && navObjectNamePropety.GetValue(list.First()) == null)
             {
@@ -530,6 +534,10 @@ namespace SqlSugar
             var navEntityInfo = this.Context.EntityMaintenance.GetEntityInfo(navEntity);
             this.Context.InitMappingInfo(navEntity);
             var sqlObj = GetWhereSql(navObjectNameColumnInfo.Navigat.Name);
+            if (IsJsonMapping(navObjectNameColumnInfo, sqlObj))
+            {
+                CreateDynamicMappingExpression(sqlObj, navObjectNameColumnInfo.Navigat.Name, navEntityInfo, listItemEntity);
+            }
             Check.ExceptionEasy(sqlObj.MappingExpressions.IsNullOrEmpty(), $"{expression} error，dynamic need MappingField ,Demo: Includes(it => it.Books.MappingField(z=>z.studenId,()=>it.StudentId).ToList())", $"{expression}解析出错， 自定义映射需要 MappingField ,例子: Includes(it => it.Books.MappingField(z=>z.studenId,()=>it.StudentId).ToList())");
             if (list.Any() && navObjectNamePropety.GetValue(list.First()) == null)
             {
@@ -845,6 +853,32 @@ namespace SqlSugar
                 navPkColumn?.UnderType?.IsEnum()==true &&
                 navPkColumn?.SqlParameterDbType == null &&
                 this.Context?.CurrentConnectionConfig?.MoreSettings?.TableEnumIsString != true;
+        }
+
+        private static bool IsJsonMapping(EntityColumnInfo navObjectNameColumnInfo, SqlInfo sqlObj)
+        {
+            return sqlObj.MappingExpressions == null && navObjectNameColumnInfo.Navigat.Name.HasValue();
+        }
+
+        private void CreateDynamicMappingExpression(SqlInfo sqlObj, string name, EntityInfo navEntityInfo, EntityInfo listItemEntity)
+        {
+            var json = Newtonsoft.Json.Linq.JArray.Parse(name);
+            sqlObj.MappingExpressions = new List<MappingFieldsExpression>();
+            foreach (var item in json)
+            {
+                 string m =  item["m"]+"";
+                 string c = item["c"] + "";
+                 Check.ExceptionEasy(m.IsNullOrEmpty() || c.IsNullOrEmpty(), $"{name} Navigation json format error, see documentation", $"{name}导航json格式错误,请看文档");
+                var cColumn= navEntityInfo.Columns.FirstOrDefault(it => it.PropertyName.EqualCase(c));
+                Check.ExceptionEasy(cColumn==null, $"{c} does not exist in {navEntityInfo.EntityName}", $"{c}不存在于{navEntityInfo.EntityName}");
+                var mColumn = listItemEntity.Columns.FirstOrDefault(it => it.PropertyName.EqualCase(m));
+                Check.ExceptionEasy(cColumn == null, $"{m} does not exist in {listItemEntity.EntityName}", $"{m}不存在于{listItemEntity.EntityName}");
+                sqlObj.MappingExpressions.Add(new MappingFieldsExpression() { 
+                   
+                      LeftEntityColumn = cColumn,
+                     RightEntityColumn = mColumn,
+                });
+            }
         }
     }
 }

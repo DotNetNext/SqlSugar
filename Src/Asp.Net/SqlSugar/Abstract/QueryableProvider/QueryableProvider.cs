@@ -8,7 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Reflection;
 using System.Dynamic;
-using System.Threading.Tasks;
+using System.Threading.Tasks; 
 
 namespace SqlSugar
 {
@@ -1338,6 +1338,15 @@ namespace SqlSugar
                 SetAppendNavColumns(expression);
             }
             return _Select<TResult>(expression);
+        }
+        public ISugarQueryable<TResult> Select<TResult>(string expShortName, FormattableString expSelect, Type propertyType) 
+        {
+            var exp = DynamicCoreHelper.GetMember(typeof(TResult),propertyType, expShortName, expSelect);
+            return _Select<TResult>(exp); 
+        }
+        public ISugarQueryable<T> Select(string expShortName, FormattableString expSelect,Type propertyType) 
+        {
+            return Select<T>(expShortName, expSelect, propertyType);
         }
         public virtual ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, TResult>> expression)
         {

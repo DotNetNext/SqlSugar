@@ -32,6 +32,26 @@ namespace SqlSugar
 
             return lambda;
         }
+        public static LambdaExpression GetMember(Type entityType,Type propertyType, string shortName, FormattableString memberSql)
+        {
+            var parameter = Expression.Parameter(entityType, "it");
+
+            // 提取 FormattableString 中的参数值
+            var arguments = memberSql.GetArguments();
+
+
+            var sql = ReplaceFormatParameters(memberSql.Format);
+
+            // 构建动态表达式，使用常量表达式和 whereSql 中的参数值
+            var lambda = SqlSugarDynamicExpressionParser.ParseLambda(
+                new[] { parameter },
+                propertyType,
+               sql,
+               memberSql.GetArguments()
+            );
+
+            return lambda;
+        }
         private static string ReplaceFormatParameters(string format)
         {
             int parameterIndex = 0; // 起始参数索引
