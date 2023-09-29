@@ -32,6 +32,23 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+
+            db.DeleteNav(list).IncludesAllFirstLayer().ExecuteCommand();
+            if (db.Queryable<UnitAddress011>().Count() != 0|| db.Queryable<UnitPerson011>().Count() != 0) 
+            {
+                throw new Exception("unit error");
+            }
+            db.InsertNav(list).IncludesAllFirstLayer().ExecuteCommand();
+            var list3 = db.Queryable<UnitAddress011>()
+           .Includes(it => it.Persons)
+           .Includes(it => it.Persons2).ToList();
+
+            if (list3.First().Persons.Count != 1 || list3.First().Persons2.Count != 1 ||
+             list3.First().Persons.First().Name != "jack1" ||
+               list3.First().Persons2.First().Name != "jack2")
+            {
+                throw new Exception("unit error");
+            }
         }
     }
     [SqlSugar.SugarTable("UnitPerson0x1x1")]
