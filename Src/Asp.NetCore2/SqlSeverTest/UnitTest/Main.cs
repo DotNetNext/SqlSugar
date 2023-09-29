@@ -32,6 +32,7 @@ namespace OrmTest
         public static void Init()
         {
             UnitGridSave.Init();
+            UnitNavDynamic.Init();
             CrossDatabase01.Init();
             UnitStringToExp.Init();
             UnitOneToMany2.Init();
