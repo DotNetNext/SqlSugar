@@ -12,7 +12,22 @@ namespace SqlSugar
         internal List<T> Roots { get;   set; }
         internal SqlSugarProvider Context { get; set; }
         internal DeleteNavProvider<Root, Root> deleteNavProvider { get; set; }
-
+        public DeleteNavMethodInfo IncludesAllFirstLayer(params string[] ignoreColumns)
+        {
+            if (ignoreColumns == null)
+            {
+                ignoreColumns = new string[] { };
+            }
+            this.Context = deleteNavProvider._Context;
+            var navColumns = this.Context.EntityMaintenance.GetEntityInfo<Root>().Columns.Where(it => !ignoreColumns.Contains(it.PropertyName) || !ignoreColumns.Any(z => z.EqualCase(it.DbColumnName))).Where(it => it.Navigat != null).ToList();
+            var updateNavs = this;
+            DeleteNavMethodInfo methodInfo = updateNavs.IncludeByNameString(navColumns[0].PropertyName);
+            foreach (var item in navColumns.Skip(1))
+            {
+                methodInfo = methodInfo.IncludeByNameString(item.PropertyName);
+            }
+            return methodInfo;
+        }
         public DeleteNavTask<Root, TChild> Include<TChild>(Expression<Func<Root, TChild>> expression) where TChild : class, new()
         {
             this.Context = deleteNavProvider._Context;
