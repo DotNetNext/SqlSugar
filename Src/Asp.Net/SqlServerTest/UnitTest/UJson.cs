@@ -122,6 +122,7 @@ namespace OrmTest
         [SqlSugar.SugarColumn(Length = 2000)]
         public List<Order> os { get; set; }
     }
+    [SugarTable("UnitJsonTest211")]
     public class UnitJsonTest2
     {
         [SqlSugar.SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
