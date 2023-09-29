@@ -85,6 +85,11 @@ namespace OrmTest
 
             var list6 = db.Queryable<UnitPerson011>()
                 .LeftJoin<Order>((it, y) => it.Id == y.Id).Where("it", $"SqlFunc.Exists(it.Address.Id)").OrderBy((it, y) => it.Id).ToList();
+
+             
+            var xxx = DynamicCoreHelper.GetMember(typeof(UnitPerson011), typeof(int), "it", $"it.Address.Id ");
+            var list7= db.Queryable<UnitPerson011>().Select("it", $"it.Address.Id ", typeof(int)).ToList(); 
+
         }
         public class SqlSugarTypeProvider : DefaultDynamicLinqCustomTypeProvider
         {
