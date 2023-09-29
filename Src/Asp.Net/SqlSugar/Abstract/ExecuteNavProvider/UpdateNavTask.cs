@@ -65,6 +65,7 @@ namespace SqlSugar
             {
                 ignoreColumns = new string[] { };
             }
+            this.Context = UpdateNavProvider._Context;
             var navColumns = this.Context.EntityMaintenance.GetEntityInfo<Root>().Columns.Where(it=> !ignoreColumns.Contains(it.PropertyName) || !ignoreColumns.Any(z=>z.EqualCase(it.DbColumnName))).Where(it => it.Navigat != null).ToList();
             var updateNavs = this;
             UpdateNavMethodInfo methodInfo = updateNavs.IncludeByNameString(navColumns[0].PropertyName);

@@ -753,6 +753,13 @@ namespace SqlSugar
             model.Args[0].MemberName = name;
             return AggregateSum(model);
         }
+        public virtual string AggregateAvgNoNull(MethodCallExpressionModel model) 
+        {
+            model.Args.Add(new MethodCallExpressionArgs() { MemberValue = 0, MemberName = 0 });
+            var name = IsNull(model);
+            model.Args[0].MemberName = name;
+            return AggregateAvg(model);
+        }
         public virtual string JsonListObjectAny(MethodCallExpressionModel model) 
         {
             throw new NotImplementedException("Current database no support");

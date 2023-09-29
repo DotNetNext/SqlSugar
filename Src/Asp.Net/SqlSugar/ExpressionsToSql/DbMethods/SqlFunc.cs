@@ -318,6 +318,7 @@ namespace SqlSugar
         public static TResult AggregateSumNoNull<TResult>(TResult thisValue) { throw new NotSupportedException("Can only be used in expressions"); }
         public static string Collate(string thisValue) { throw new NotSupportedException("Can only be used in expressions"); }
         public static TResult AggregateAvg<TResult>(TResult thisValue) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static TResult AggregateAvgNoNull<TResult>(TResult thisValue) { throw new NotSupportedException("Can only be used in expressions"); }
         public static TResult AggregateMin<TResult>(TResult thisValue) { throw new NotSupportedException("Can only be used in expressions"); }
         public static TResult AggregateMax<TResult>(TResult thisValue) { throw new NotSupportedException("Can only be used in expressions"); }
         public static int AggregateCount<TResult>(TResult thisValue) { throw new NotSupportedException("Can only be used in expressions"); }
