@@ -18,6 +18,8 @@ namespace TDengineTest
             //简单建表
             CodeFirst2(db);
 
+            CodeFirst4(db);
+
             //更多建表用例
             db.CodeFirst.InitTables<CodeFirst03>();
             db.Insertable(new CodeFirst03()
@@ -55,6 +57,18 @@ namespace TDengineTest
             db.CodeFirst.InitTables<CodeFirst04>();
             db.Insertable(new CodeFirst04() { Boolean = true, Ts = DateTime.Now }).ExecuteCommand();
             var list = db.Queryable<CodeFirst04>().ToList();
+        }
+        private static void CodeFirst4(SqlSugarClient db) 
+        {
+            db.CurrentConnectionConfig.MoreSettings = new ConnMoreSettings()
+            {
+                 PgSqlIsAutoToLower = false,
+                 PgSqlIsAutoToLowerCodeFirst = false,
+            };
+            db.CodeFirst.InitTables<CodeFirst05>();
+            db.Insertable(new CodeFirst05() { Boolean = true, Ts = DateTime.Now }).ExecuteCommand();
+            var list = db.Queryable<CodeFirst05>().ToList();
+
         }
     }
 }

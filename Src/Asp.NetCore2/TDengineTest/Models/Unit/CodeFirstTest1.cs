@@ -49,5 +49,11 @@ namespace TDengineTest
         [SqlSugar.SugarColumn(IsPrimaryKey = true)]
         public DateTime Ts { get; set; }
         public bool Boolean { get; set; }
-    } 
+    }
+    public class CodeFirst05
+    {
+        [SqlSugar.SugarColumn(IsPrimaryKey = true)]
+        public DateTime Ts { get; set; }
+        public bool Boolean { get; set; }
+    }
 }
