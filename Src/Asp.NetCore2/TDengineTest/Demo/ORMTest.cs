@@ -30,10 +30,17 @@ namespace TDengineTest
                 }
             });
              
-            //简单用例
-            Demo1(db); 
 
-            //测试用例
+            //建表
+            CodeFirst(db);
+
+            //生成实体
+            DbFirst(db);
+
+            //简单用例
+            Demo1(db);
+
+            //测试用例 （纳秒、微妙、类型）
             UnitTest(db);
 
             Console.WriteLine("执行完成");
