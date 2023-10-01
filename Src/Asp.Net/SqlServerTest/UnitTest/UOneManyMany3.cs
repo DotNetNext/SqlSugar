@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static OrmTest.UnitSelectN;
 
 namespace OrmTest 
 {
@@ -122,6 +123,25 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+            db.QueryFilter.AddTableFilter<Room_003>(x => x.roomName =="a");
+            var xxx=db.Queryable<School_003>().ClearFilter<Room_003>().Includes(x => x.rooms).ToList();
+            if (xxx.First().rooms.Count() == 0) 
+            {
+                throw new Exception("unit error");
+            }
+            var xxx2 = db.Queryable<School_003>().Includes(x => x.rooms).ToList();
+            if (xxx2.First().rooms.Count() != 0)
+            {
+                throw new Exception("unit error");
+            }
+            var sql= db.Queryable<School_003>().ClearFilter<Room_003>().Where(x => x.rooms.Any()).ToSql().Key;
+            var sql2 = db.Queryable<School_003>().Where(x => x.rooms.Any()).ToSql().Key;
+            if (sql == sql2) 
+            {
+                throw new Exception("unit error");
+            }
+            db.Queryable<School_003>().Where(x => x.rooms.Any()).ToList();
+            db.Queryable<School_003>().ClearFilter<Room_003>().Where(x => x.rooms.Any()).ToList();
         }
 
         public class Student_003 
