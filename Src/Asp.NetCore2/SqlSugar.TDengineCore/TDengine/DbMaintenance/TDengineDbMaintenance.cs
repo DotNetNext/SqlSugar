@@ -88,7 +88,7 @@ namespace SqlSugar.TDengine
         {
             get
             {
-                return "CREATE STABLE IF NOT EXISTS  {0}(\r\n{1} ) TAGS(TagsTypeId VARCHAR(20))";
+                return "CREATE STABLE IF NOT EXISTS  {0}(\r\n{1} ) TAGS("+SqlBuilder.GetTranslationColumnName("TagsTypeId") +" VARCHAR(20))";
             }
         }
         protected override string CreateTableColumn
@@ -193,14 +193,14 @@ namespace SqlSugar.TDengine
         {
             get
             {
-                return "DEFAULT NULL";
+                return " ";
             }
         }
         protected override string CreateTableNotNull
         {
             get
             {
-                return "NOT NULL";
+                return " ";
             }
         }
         protected override string CreateTablePirmaryKey
@@ -220,6 +220,23 @@ namespace SqlSugar.TDengine
         #endregion
 
         #region Methods  
+        public override bool AddColumn(string tableName, DbColumnInfo columnInfo)
+        {
+            if (columnInfo.DbColumnName == "TagsTypeId") 
+            {
+                return true;
+            }
+            tableName = this.SqlBuilder.GetTranslationTableName(tableName);
+            var isAddNotNUll = columnInfo.IsNullable == false && columnInfo.DefaultValue.HasValue();
+            if (isAddNotNUll)
+            {
+                columnInfo = this.Context.Utilities.TranslateCopy(columnInfo);
+                columnInfo.IsNullable = true;
+            }
+            string sql = GetAddColumnSql(tableName, columnInfo);
+            this.Context.Ado.ExecuteCommand(sql); 
+            return true;
+        }
         public override List<DbTableInfo> GetViewInfoList(bool isCache = true)
         {
             return new List<DbTableInfo>();
@@ -255,7 +272,7 @@ namespace SqlSugar.TDengine
             return base.AddDefaultValue(this.SqlBuilder.GetTranslationTableName(tableName), this.SqlBuilder.GetTranslationTableName(columnName), defaultValue);
         }
         public override bool AddColumnRemark(string columnName, string tableName, string description)
-        {
+        { 
             tableName = this.SqlBuilder.GetTranslationTableName(tableName);
             string sql = string.Format(this.AddColumnRemarkSql, this.SqlBuilder.GetTranslationColumnName(columnName.ToLower(isAutoToLowerCodeFirst)), tableName, description);
             this.Context.Ado.ExecuteCommand(sql);

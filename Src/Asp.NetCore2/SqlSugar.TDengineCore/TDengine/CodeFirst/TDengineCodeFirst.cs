@@ -119,7 +119,7 @@ namespace SqlSugar.TDengine
         public override void NoExistLogic(EntityInfo entityInfo)
         {
             List<DbColumnInfo> dbColumns = new List<DbColumnInfo>();
-            foreach (var item in entityInfo.Columns.OrderBy(it=>it.UnderType==typeof(DateTime)?0:1))
+            foreach (var item in entityInfo.Columns.Where(it=>it.PropertyName!= "TagsTypeId").OrderBy(it=>it.UnderType==typeof(DateTime)?0:1))
             {
                 var addItem = EntityColumnToDbColumn(entityInfo, entityInfo.DbTableName, item);
                 dbColumns.Add(addItem);
@@ -160,6 +160,12 @@ namespace SqlSugar.TDengine
                     return "FLOAT";
                 case "int":
                     return "INT";
+                case "int32":
+                    return "INT";
+                case "int16":
+                    return "INT";
+                case "int64":
+                    return "BIGINT";
                 case "uint":
                     return "INT UNSIGNED";
                 case "long":
