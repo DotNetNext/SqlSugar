@@ -9,8 +9,13 @@ namespace TDengineTest
     {
         public static void CodeFirst(SqlSugarClient db)
         {
+            //建库
+            db.DbMaintenance.CreateDatabase();
+            
+            //简单建表
             CodeFirst1(db);
 
+            //更多建表用例
             db.CodeFirst.InitTables<CodeFirst03>();
             db.Insertable(new CodeFirst03()
             {
