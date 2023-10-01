@@ -1,17 +1,20 @@
-﻿using SqlSugar.TDengine;
+﻿using SqlSugar.DbConvert;
+using SqlSugar.TDengine;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace TDengineTest
 {
-    [SqlSugar.SugarTable("AllCSharpTypes09")]
-    public class AllCSharpTypes : STable
+  
+    public class CodeFirst03 : STable
     {
         [SqlSugar.SugarColumn(IsPrimaryKey = true)]
         public DateTime Ts { get; set; }
         public bool Boolean { get; set; }
+        [SqlSugar.SugarColumn(SqlParameterDbType = typeof(CommonPropertyConvert))]
         public byte Byte { get; set; }
+        [SqlSugar.SugarColumn(SqlParameterDbType =typeof(CommonPropertyConvert))]
         public sbyte SByte { get; set; }
         public char Char { get; set; }
         public decimal Decimal { get; set; }
@@ -19,12 +22,16 @@ namespace TDengineTest
         public decimal Decimal2 { get; set; }
         [SqlSugar.SugarColumn(Length = 18, DecimalDigits = 2)]
         public double Double { get; set; }
+        [SqlSugar.SugarColumn(SqlParameterDbType = typeof(CommonPropertyConvert))]
         public float Float { get; set; }
         public int Int32 { get; set; }
+        [SqlSugar.SugarColumn(SqlParameterDbType = typeof(CommonPropertyConvert))]
         public uint UInt32 { get; set; }
         public long Int64 { get; set; }
+        [SqlSugar.SugarColumn(SqlParameterDbType = typeof(CommonPropertyConvert))]
         public ulong UInt64 { get; set; }
         public short Int16 { get; set; }
+        [SqlSugar.SugarColumn(SqlParameterDbType = typeof(CommonPropertyConvert))]
         public ushort UInt16 { get; set; }
         public string String { get; set; }
         [SqlSugar.SugarColumn(Length = 100)]
@@ -32,7 +39,7 @@ namespace TDengineTest
     }
 
      
-    public class CodeFirst1 : STable
+    public class CodeFirst01 : STable
     {
         [SqlSugar.SugarColumn(IsPrimaryKey = true)]
         public DateTime Ts { get; set; }
