@@ -29,8 +29,7 @@ namespace TDengineTest
                     }
                 }
             });
-             
-
+           
             //建表
             CodeFirst(db);
 
