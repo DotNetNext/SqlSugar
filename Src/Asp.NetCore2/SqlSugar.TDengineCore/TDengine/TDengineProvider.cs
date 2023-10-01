@@ -39,6 +39,10 @@ namespace SqlSugar.TDengine
                 base._DbConnection = value;
             }
         }
+        public override void BeginTran()
+        {
+            
+        }
 
         public override void BeginTran(string transactionName)
         {

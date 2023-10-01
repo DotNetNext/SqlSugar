@@ -31,7 +31,7 @@ namespace SqlSugar.TDengine
         {
             get
             {
-                return "select current_date";
+                return " now() ";
             }
         }
 
@@ -39,8 +39,7 @@ namespace SqlSugar.TDengine
         {
             get
             {
-                if (this.Context.CurrentConnectionConfig.MoreSettings == null) return true;
-                return this.Context.CurrentConnectionConfig.MoreSettings.PgSqlIsAutoToLower;
+                return false;
             }
         }
         public override string GetTranslationColumnName(string propertyName)
