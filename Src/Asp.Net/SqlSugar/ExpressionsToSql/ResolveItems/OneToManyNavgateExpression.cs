@@ -236,15 +236,18 @@ namespace SqlSugar
             }
             queryable.QueryBuilder.LambdaExpressions.ParameterIndex = 500;
             var isClearFilter = false;
+            Type[] clearTypes = null;
             if (this.methodCallExpressionResolve?.Context?.SugarContext?.QueryBuilder != null) 
             {
                 queryable.QueryBuilder.LambdaExpressions.ParameterIndex=500+ this.methodCallExpressionResolve.Context.SugarContext.QueryBuilder.LambdaExpressions.ParameterIndex;
                 this.methodCallExpressionResolve.Context.SugarContext.QueryBuilder.LambdaExpressions.ParameterIndex++;
                 isClearFilter=this.methodCallExpressionResolve.Context.SugarContext.QueryBuilder.IsDisabledGobalFilter;
+                clearTypes = this.methodCallExpressionResolve.Context.SugarContext.QueryBuilder.RemoveFilters;
             }
             var sqlObj = queryable
                 .AS(this.ProPertyEntity.DbTableName)
                 .Filter(isClearFilter?null:this.ProPertyEntity.Type)
+                .ClearFilter(clearTypes)
                 .WhereIF(!string.IsNullOrEmpty(whereSql), whereSql)
                 .Where($" {name}={queryable.QueryBuilder.Builder.GetTranslationColumnName( ShorName)}.{pk} ").Select(MethodName == "Any" ? "1" : " COUNT(1) ").ToSql();
             if (sqlObj.Value?.Any() == true)
