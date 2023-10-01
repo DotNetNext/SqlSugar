@@ -429,7 +429,16 @@ namespace SqlSugar.TDengine
 
             var sql = $"select * from {this.SqlBuilder.GetTranslationColumnName( tableName)} where 1=2 ";
             List<DbColumnInfo> result = new List<DbColumnInfo>();
-            var dt=this.Context.Ado.GetDataTable(sql);
+            DataTable dt = null;
+            try
+            {
+                dt=this.Context.Ado.GetDataTable(sql);
+            }
+            catch (Exception)
+            {
+                sql = $"select * from `{tableName}` where 1=2 ";
+                dt = this.Context.Ado.GetDataTable(sql);
+            }
             foreach (DataColumn item in dt.Columns)
             {
                 var addItem = new DbColumnInfo()
