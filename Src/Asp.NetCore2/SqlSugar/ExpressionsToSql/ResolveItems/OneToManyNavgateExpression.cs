@@ -246,8 +246,8 @@ namespace SqlSugar
             }
             var sqlObj = queryable
                 .AS(this.ProPertyEntity.DbTableName)
-                .Filter(isClearFilter?null:this.ProPertyEntity.Type)
                 .ClearFilter(clearTypes)
+                .Filter(isClearFilter?null:this.ProPertyEntity.Type) 
                 .WhereIF(!string.IsNullOrEmpty(whereSql), whereSql)
                 .Where($" {name}={queryable.QueryBuilder.Builder.GetTranslationColumnName( ShorName)}.{pk} ").Select(MethodName == "Any" ? "1" : " COUNT(1) ").ToSql();
             if (sqlObj.Value?.Any() == true)
