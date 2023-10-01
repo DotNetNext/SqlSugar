@@ -1,6 +1,7 @@
 ﻿using SqlSugar.TDengineAdo;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 
@@ -9,6 +10,8 @@ namespace SqlSugar.TDengine
     public class TDengineDbMaintenance : DbMaintenanceProvider
     {
         #region DML
+
+        protected override string GetViewInfoListSql => throw new NotImplementedException();
         protected override string GetDataBaseSql
         {
             get
@@ -28,26 +31,21 @@ namespace SqlSugar.TDengine
         {
             get
             {
-                var schema = GetSchema();
-                return @"select cast(relname as varchar) as Name,
-                        cast(obj_description(c.oid,'pg_class') as varchar) as Description from pg_class c 
-                         inner join 
-						 pg_namespace n on n.oid = c.relnamespace and nspname='" + schema + @"'
-                         inner join 
-                         pg_tables z on z.tablename=c.relname
-                        where  relkind in('p', 'r') and relname not like 'hg_%' and relname not like 'sql_%' and schemaname='" + schema + "' order by relname";
+                var dt = GetSTables();
+                List<string> sb = new List<string>();
+                foreach (DataRow item in dt.Rows)
+                {
+                    sb.Add($" SELECT '{item["stable_name"].ObjToString().ToSqlFilter()}' AS NAME ");
+                }
+                var dt2 = GetTables();
+                foreach (DataRow item in dt2.Rows)
+                {
+                    sb.Add($" SELECT '{item["table_name"].ObjToString().ToSqlFilter()}' AS NAME ");
+                }
+                return string.Join(" UNION ALL ", sb);
             }
         }
-        protected override string GetViewInfoListSql
-        {
-            get
-            {
-                return @"select cast(relname as varchar) as Name,cast(Description as varchar) from pg_description
-                         join pg_class on pg_description.objoid = pg_class.oid
-                         where objsubid = 0 and relname in (SELECT viewname from pg_views  
-                         WHERE schemaname ='"+GetSchema()+"')";
-            }
-        }
+
         #endregion
 
         #region DDL
@@ -185,7 +183,7 @@ namespace SqlSugar.TDengine
         {
             get
             {
-                throw new NotSupportedException("TDengine 暂时不支持DbFirst等方法,还在开发");
+                return "SHOW DATABASES";
             }
         }
         #endregion
@@ -221,7 +219,11 @@ namespace SqlSugar.TDengine
         }
         #endregion
 
-        #region Methods
+        #region Methods  
+        public override List<DbTableInfo> GetViewInfoList(bool isCache = true)
+        {
+            return new List<DbTableInfo>();
+        }
         public override bool CreateDatabase(string databaseName,string databaseDirectory = null)
         {
             var db=this.Context.CopyNew(); 
@@ -383,46 +385,22 @@ namespace SqlSugar.TDengine
 
         public override List<DbColumnInfo> GetColumnInfosByTableName(string tableName, bool isCache = true)
         {
-            var result= base.GetColumnInfosByTableName(tableName.TrimEnd('"').TrimStart('"').ToLower(), isCache);
-            if (result == null || result.Count() == 0)
-            {
-                result = base.GetColumnInfosByTableName(tableName, isCache);
-            }
-            try
-            {
-                string sql = $@"select  
-                               kcu.column_name as key_column
-                               from information_schema.table_constraints tco
-                               join information_schema.key_column_usage kcu 
-                               on kcu.constraint_name = tco.constraint_name
-                               and kcu.constraint_schema = tco.constraint_schema
-                               and kcu.constraint_name = tco.constraint_name
-                               where tco.constraint_type = 'PRIMARY KEY'
-                               and kcu.table_schema='{GetSchema()}' and 
-                               upper(kcu.table_name)=upper('{tableName.TrimEnd('"').TrimStart('"')}')";
-                List<string> pkList = new List<string>();
-                if (isCache)
-                {
-                    pkList=GetListOrCache<string>("GetColumnInfosByTableName_N_Pk"+tableName, sql);
-                }
-                else
-                {
-                    pkList = this.Context.Ado.SqlQuery<string>(sql);
-                }
-                if (pkList.Count >1) 
-                {
-                    foreach (var item in result)
-                    {
-                        if (pkList.Select(it=>it.ToUpper()).Contains(item.DbColumnName.ToUpper())) 
-                        {
-                            item.IsPrimarykey = true;
-                        }
-                    }
-                }
-            }
-            catch  
-            {
 
+            var sql = $"select * from {tableName} where 1=2 ";
+            List<DbColumnInfo> result = new List<DbColumnInfo>();
+            var dt=this.Context.Ado.GetDataTable(sql);
+            foreach (DataColumn item in dt.Columns)
+            {
+                var addItem = new DbColumnInfo()
+                {
+                     DbColumnName=item.ColumnName,
+                     DataType=item.DataType.Name
+                };
+                result.Add(addItem);
+            }
+            if (result.Count(it => it.DataType == "DateTime") == 1) 
+            {
+                result.First(it => it.DataType == "DateTime").IsPrimarykey = true;
             }
             return result;
         }
@@ -446,6 +424,7 @@ namespace SqlSugar.TDengine
                 }
             }
         }
+         
         private string GetSchema()
         {
             var schema = "public";
@@ -467,6 +446,16 @@ namespace SqlSugar.TDengine
             }
 
             return schema;
+        }
+
+        private DataTable GetTables()
+        {
+            return this.Context.Ado.GetDataTable("SHOW TABLES");
+        }
+
+        private DataTable GetSTables()
+        {
+            return this.Context.Ado.GetDataTable("SHOW STABLES");
         }
 
         #endregion

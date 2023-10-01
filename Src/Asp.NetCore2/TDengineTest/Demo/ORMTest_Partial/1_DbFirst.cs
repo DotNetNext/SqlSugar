@@ -11,7 +11,7 @@ namespace TDengineTest
     {
         public static void DbFirst(SqlSugarClient db)
         {
-
+            db.DbFirst.CreateClassFile("c:\\Demo\\11", "Models");
         }
     }
 }
