@@ -38,8 +38,13 @@ namespace TDengineTest
         public string String2 { get; set; }
     }
 
-     
-    public class CodeFirst01 : STable
+    public class CodeFirst01:STable
+    {
+        [SqlSugar.SugarColumn(IsPrimaryKey = true)]
+        public DateTime Ts { get; set; }
+        public bool Boolean { get; set; }
+    }
+    public class CodeFirst04  
     {
         [SqlSugar.SugarColumn(IsPrimaryKey = true)]
         public DateTime Ts { get; set; }
