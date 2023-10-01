@@ -122,6 +122,32 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+
+            db.QueryFilter.AddTableFilter<Room_003>(x => x.roomName == "a");
+            var listxx= db.Queryable<School_003>()
+            .Includes(x => x.rooms).ToList();
+            var listyyy=  db.Queryable<School_003>()
+                .ClearFilter<Room_003>()
+          .Includes(x => x.rooms).ToList();
+            if (listxx.First().rooms.Count() != 0 || listyyy.First().rooms.Count() == 0) 
+            {
+                throw new Exception("unit error");
+            }
+            //db.QueryFilter.AddTableFilter<Room_003>(x => x.roomName == "a");
+            var sql1 = db.Queryable<School_003>()
+            .Where(x => x.rooms.Any()).ToSql();
+            var sql12 = db.Queryable<School_003>()
+                .ClearFilter<Room_003>()
+           .Where(x => x.rooms.Any()).ToSql();
+            if (sql1.Key == sql12.Key) 
+            {
+                throw new Exception("unit error");
+            }
+            db.Queryable<School_003>()
+        .Where(x => x.rooms.Any()).ToList();
+            db.Queryable<School_003>()
+                .ClearFilter<Room_003>()
+           .Where(x => x.rooms.Any()).ToList();
         }
 
         public class Student_003 
