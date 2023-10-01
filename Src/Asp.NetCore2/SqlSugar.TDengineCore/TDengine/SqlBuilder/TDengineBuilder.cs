@@ -39,7 +39,17 @@ namespace SqlSugar.TDengine
         {
             get
             {
-                return false;
+                if (this.Context.CurrentConnectionConfig.MoreSettings == null) return true;
+                else if (
+                    this.Context.CurrentConnectionConfig.MoreSettings.PgSqlIsAutoToLower == false &&
+                    this.Context.CurrentConnectionConfig.MoreSettings?.PgSqlIsAutoToLowerCodeFirst == false)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
             }
         }
         public override string GetTranslationColumnName(string propertyName)
