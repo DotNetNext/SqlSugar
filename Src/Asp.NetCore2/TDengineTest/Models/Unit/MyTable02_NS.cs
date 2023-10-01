@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace OrmTest
+namespace TDengineTest
 {
     /// <summary>
     /// 纳秒

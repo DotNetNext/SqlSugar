@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace OrmTest
+namespace TDengineTest
 {
     public class ConveryTable
     {
