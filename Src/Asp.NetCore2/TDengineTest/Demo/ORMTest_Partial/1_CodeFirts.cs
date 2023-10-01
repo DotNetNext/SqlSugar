@@ -68,7 +68,11 @@ namespace TDengineTest
             db.CodeFirst.InitTables<CodeFirst05>();
             db.Insertable(new CodeFirst05() { Boolean = true, Ts = DateTime.Now }).ExecuteCommand();
             var list = db.Queryable<CodeFirst05>().ToList();
-
+            db.CurrentConnectionConfig.MoreSettings = new ConnMoreSettings()
+            {
+                PgSqlIsAutoToLower = true,
+                PgSqlIsAutoToLowerCodeFirst = true,
+            };
         }
     }
 }
