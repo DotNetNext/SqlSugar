@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SqlSugar;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -15,6 +16,8 @@ namespace OrmTest
                     x=it.Id==1
                 }).ToList();
             Test(new UnitbModel());
+
+           var sql=db.Queryable<Order>().Where(it => SqlFunc.FullTextContains(new string[] {it.Name, it.Name }, "a")).ToSql();
         }
 
         public static void Test(UnitbModel model)
