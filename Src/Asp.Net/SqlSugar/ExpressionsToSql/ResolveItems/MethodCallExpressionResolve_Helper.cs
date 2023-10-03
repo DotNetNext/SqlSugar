@@ -399,7 +399,7 @@ namespace SqlSugar
             else if (name == "FullTextContains" && item is NewArrayExpression) 
             {
                 var array = ExpressionTool.GetNewArrayMembers(item as NewArrayExpression);
-                parameter.CommonTempData = array;
+                parameter.CommonTempData = array.Select(it=>this.Context.GetTranslationColumnName(it)).ToList();
                 isRemoveParamter = true;
             }
             else
