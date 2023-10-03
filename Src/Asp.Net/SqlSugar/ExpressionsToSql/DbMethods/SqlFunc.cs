@@ -9,7 +9,10 @@ namespace SqlSugar
 {
     public partial class SqlFunc
     {
-        
+        public static bool FullTextContains(string [] columnNames, string keyword)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
         public static bool FullTextContains(string columnName,string keyword)
         {
             throw new NotSupportedException("Can only be used in expressions");

@@ -143,6 +143,10 @@ namespace SqlSugar
         public override string FullTextContains(MethodCallExpressionModel mode)
         {
             var columns = mode.Args[0].MemberName;
+            if (mode.Args[0].MemberValue is List<string>) 
+            {
+                columns = "("+string.Join(",", mode.Args[0].MemberValue as List<string>)+")";
+            }
             var searchWord = mode.Args[1].MemberName;
             return $" CONTAINS({columns},{searchWord}) ";
         }
