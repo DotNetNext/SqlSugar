@@ -10,7 +10,20 @@ namespace SqlSugar
 {
     public class ExpressionTool
     {
-
+        public static List<string> GetNewArrayMembers(NewArrayExpression newArrayExpression)
+        {
+            List<string> strings = new List<string>();
+            // 获取数组元素的 MemberExpression，并输出属性名
+            foreach (var expression in newArrayExpression.Expressions)
+            {
+                var memberExpression = expression as MemberExpression;
+                if (memberExpression != null)
+                {
+                    strings.Add(memberExpression.Member.Name);
+                }
+            }
+            return strings;
+        }
         public static List<string> GetTopLevelMethodCalls(Expression expression)
         {
             var methodCalls = new List<string>();

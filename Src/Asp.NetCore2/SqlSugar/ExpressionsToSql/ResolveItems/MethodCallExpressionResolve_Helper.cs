@@ -354,6 +354,7 @@ namespace SqlSugar
         {
             parameter.CommonTempData = CommonTempDataType.Result;
             base.Expression = item;
+            var isRemoveParamter = false;
             if (item.Type == UtilConstants.DateType && parameter.CommonTempData.ObjToString() == CommonTempDataType.Result.ToString() && item.ToString() == "DateTime.Now.Date")
             {
                 parameter.CommonTempData = DateTime.Now.Date;
@@ -391,9 +392,15 @@ namespace SqlSugar
                     return res;
                 }).ToArray();
             }
-            else if (name == "Format" && item is ConstantExpression) 
+            else if (name == "Format" && item is ConstantExpression)
             {
                 parameter.CommonTempData = ExpressionTool.GetExpressionValue(item);
+            }
+            else if (name == "FullTextContains" && item is NewArrayExpression) 
+            {
+                var array = ExpressionTool.GetNewArrayMembers(item as NewArrayExpression);
+                parameter.CommonTempData = array;
+                isRemoveParamter = true;
             }
             else
             {
@@ -451,15 +458,18 @@ namespace SqlSugar
                     value = result;
                 }
                 methodCallExpressionArgs.MemberValue = value;
-                if (value == null&&item!=null)
+                if (isRemoveParamter != true)
                 {
-                    this.Context.Parameters.Add(new SugarParameter(parameterName, value,UtilMethods.GetUnderType( item.Type)));
+                    if (value == null && item != null)
+                    {
+                        this.Context.Parameters.Add(new SugarParameter(parameterName, value, UtilMethods.GetUnderType(item.Type)));
+                    }
+                    else
+                    {
+                        this.Context.Parameters.Add(new SugarParameter(parameterName, value));
+                    }
                 }
-                else
-                {
-                    this.Context.Parameters.Add(new SugarParameter(parameterName, value));
-                }
-            }
+            } 
             model.Args.Add(methodCallExpressionArgs);
             parameter.ChildExpression = null;
         }
