@@ -281,6 +281,15 @@ namespace SqlSugar
                                         expression.NodeType != ExpressionType.Or &&
                                         expression.NodeType != ExpressionType.OrElse;
         }
+        public static bool IsEqualOrLtOrGt(Expression expression)
+        {
+            return expression.NodeType== ExpressionType.Equal||
+                   expression.NodeType == ExpressionType.GreaterThan||
+                   expression.NodeType == ExpressionType.LessThan||
+                   expression.NodeType == ExpressionType.LessThanOrEqual ||
+                   expression.NodeType == ExpressionType.GreaterThanOrEqual 
+                   ;
+        }
         public static object GetMemberValue(MemberInfo member, Expression expression)
         {
             var rootExpression = expression as MemberExpression;
