@@ -244,7 +244,25 @@ namespace SqlSugar
                 {
                     this.Context.Parameters.AddRange(newContext.Parameters);
                 }
-                this.Context.Result.Append(this.Context.GetAsString(asName, newContext.Result.GetString()));
+                if (ExpressionTool.IsEqualOrLtOrGt(item))
+                {
+                    var sql = newContext.Result.GetString();
+                    var pTrue = AppendParameter(true);
+                    var pFalse = AppendParameter(false);
+                    sql =this.Context.DbMehtods.IIF(new MethodCallExpressionModel() {
+                     Args=new List<MethodCallExpressionArgs>() 
+                     { 
+                         new MethodCallExpressionArgs(){ MemberName=sql,MemberValue=sql,IsMember=true } ,
+                          new MethodCallExpressionArgs(){ MemberName=pTrue,MemberValue=pTrue,IsMember=true },
+                           new MethodCallExpressionArgs(){ MemberName=pFalse,MemberValue=pFalse,IsMember=true }
+                     }
+                    });
+                    this.Context.Result.Append(this.Context.GetAsString(asName, sql));
+                }
+                else
+                {
+                    this.Context.Result.Append(this.Context.GetAsString(asName, newContext.Result.GetString()));
+                }
                 this.Context.Result.CurrentParameter = null;
                 if (this.Context.SingleTableNameSubqueryShortName.IsNullOrEmpty() && newContext.SingleTableNameSubqueryShortName.HasValue())
                 {
