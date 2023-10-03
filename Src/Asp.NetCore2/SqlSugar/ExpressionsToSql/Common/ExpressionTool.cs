@@ -21,6 +21,10 @@ namespace SqlSugar
                 {
                     strings.Add(memberExpression.Member.Name);
                 }
+                else if (expression is ConstantExpression) 
+                {
+                    strings.Add((expression as ConstantExpression).Value+"");
+                }
             }
             return strings;
         }
