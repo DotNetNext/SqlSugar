@@ -14,6 +14,21 @@ namespace OrmTest
                 {   id=it.Id,
                     x=it.Id==1
                 }).ToList();
+            Test(new UnitbModel());
+        }
+
+        public static void Test(UnitbModel model)
+        {
+            var db = NewUnitTest.Db;
+            db.CodeFirst.InitTables<UnitbModel>();
+            var xx = db.Queryable<UnitbModel>()
+             .Where(it=>it.isOk==!model.isOk)
+             .ToList();
+        }
+        
+        public class UnitbModel 
+        {
+            public bool isOk { get; set; }
         }
 
     }
