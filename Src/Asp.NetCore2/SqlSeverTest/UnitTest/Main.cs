@@ -1,4 +1,5 @@
-﻿using SqlSugar;
+﻿using SqlSeverTest.UnitTest;
+using SqlSugar;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UnitBulkMerge.Init();
             UnitBool.Init();
             UnitGridSave.Init();
             UnitNavDynamic.Init();
