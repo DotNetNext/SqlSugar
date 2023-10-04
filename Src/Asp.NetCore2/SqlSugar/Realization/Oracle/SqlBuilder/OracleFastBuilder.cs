@@ -65,6 +65,30 @@ namespace SqlSugar
             return copy;
 
         }
+
+        public override Task<int> Merge(DataTable dt, EntityInfo entityInfo, string[] whereColumns, string[] updateColumns)
+        {
+            var sqlBuilder = this.Context.Queryable<object>().SqlBuilder;
+            var insertColumns = entityInfo.Columns
+                .Where(it => it.IsIgnore == false)
+                .Where(it => it.IsIdentity == false)
+                .Where(it => it.OracleSequenceName == null)
+                .Where(it => it.IsOnlyIgnoreInsert == false);
+            var whereSql =string.Join(" , ",whereColumns.Select(it=> $"tgt.{sqlBuilder.GetTranslationColumnName(it)}=src.{sqlBuilder.GetTranslationColumnName(it)}"));
+            var updateColumnsSql = string.Join(" , ", updateColumns.Select(it => $"tgt.{sqlBuilder.GetTranslationColumnName(it)}=src.{sqlBuilder.GetTranslationColumnName(it)}"));
+            var insertColumnsSqlTgt =string.Join(" , ", insertColumns.Select(it=>"tgt."+ sqlBuilder.GetTranslationColumnName(it.DbColumnName)));
+            var insertColumnsSqlsrc = string.Join(" , ", insertColumns.Select(it => "src." + sqlBuilder.GetTranslationColumnName(it.DbColumnName)));
+            var sql = $@"MERGE INTO {sqlBuilder.GetTranslationColumnName(entityInfo.DbTableName)} tgt
+USING {sqlBuilder.GetTranslationColumnName(dt.TableName)} src
+ON ({whereSql})
+WHEN MATCHED THEN
+    UPDATE SET {updateColumnsSql}
+WHEN NOT MATCHED THEN
+    INSERT ({insertColumnsSqlTgt})
+    VALUES ({insertColumnsSqlsrc})";
+
+            return this.Context.Ado.ExecuteCommandAsync(sql);
+        }
         public Task<int> ExecuteBulkCopyAsync(DataTable dt)
         {
             var identityColumnInfo = this.entityInfo.Columns.FirstOrDefault(it => it.IsIdentity);

@@ -175,5 +175,10 @@ namespace SqlSugar
             }
             return result;
         }
+
+        public Task<int> Merge(DataTable dt, EntityInfo entityInfo, string[] whereColumns, string[] updateColumns)
+        {
+            throw new Exception("未实现");
+        }
     }
 }

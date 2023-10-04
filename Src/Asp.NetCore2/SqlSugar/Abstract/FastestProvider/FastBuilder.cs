@@ -47,5 +47,10 @@ namespace SqlSugar
                 this.Context.Queryable<T>().Filter(null, true).Select(string.Join(",", dt.Columns.Cast<DataColumn>().Select(it => sqlbuilder.GetTranslationColumnName(it.ColumnName)))).Where(it => false).AS(dt.TableName)).Select("top 1 * into #temp").ToListAsync();
             dt.TableName = "#temp";
         }
+
+        public virtual Task<int> Merge(DataTable dt, EntityInfo entityInfo,string[] whereColumns,string [] updateColumns) 
+        {
+            throw new Exception("当前数据库还没有支持Merge方法，请联系作者支持");
+        }
     }
 }
