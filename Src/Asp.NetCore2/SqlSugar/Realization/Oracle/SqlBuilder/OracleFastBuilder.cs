@@ -73,6 +73,8 @@ namespace SqlSugar
             var insertColumns = entityInfo.Columns
                 .Where(it => it.IsIgnore == false)
                 .Where(it => it.IsIdentity == false)
+                .Where(it => it.InsertServerTime == false)
+                .Where(it => it.InsertSql == null)
                 .Where(it => it.OracleSequenceName == null)
                 .Where(it => it.IsOnlyIgnoreInsert == false);
             var whereSql =string.Join(" , ",whereColumns.Select(it=> $"tgt.{sqlBuilder.GetTranslationColumnName(it)}=src.{sqlBuilder.GetTranslationColumnName(it)}"));
