@@ -209,6 +209,8 @@ namespace SqlSugar
 
         private async Task<int> _BulkMerge(List<T> datas, string[] updateColumns, string[] whereColumns)
         {
+            Check.Exception(this.entityInfo.Columns.Any(it => it.IsIdentity || it.OracleSequenceName.HasValue()), "The BulkMerge method cannot be used for increment or sequence", "BulkMerge方法不能用于自增或者序列");
+            Check.Exception(whereColumns == null || whereColumns.Count() == 0, "where columns count=0 or need primary key");
             Check.Exception(whereColumns == null || whereColumns.Count() == 0, "where columns count=0 or need primary key");
             var isAuto = this.context.CurrentConnectionConfig.IsAutoCloseConnection;
             this.context.CurrentConnectionConfig.IsAutoCloseConnection = false;
