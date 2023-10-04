@@ -103,7 +103,7 @@ namespace OrmTest
        x2=2
     }
 
-    [SugarTable("PictureData")]
+    [SugarTable("Picture1")]
     public class PictureData
     {
         [SugarColumn(IsPrimaryKey = true)]
