@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using OrmTest;
 
-namespace SqlSeverTest.UnitTest
+namespace OrmTest
 {
     internal class UnitBulkMerge
     {
@@ -47,7 +48,24 @@ namespace SqlSeverTest.UnitTest
                 db.Fastest<UnitaafdsTest>()
                .BulkMerge(list);
             }
+            db.CodeFirst.InitTables<Unitfadfayy>();
+            db.DbMaintenance.TruncateTable<Unitfadfayy>();
+            List<Unitfadfayy> addItems = new List<Unitfadfayy>();
+            addItems.Add(new Unitfadfayy() { CreateTime = DateTime.Now, Name = "a" });
+            db.Fastest<Unitfadfayy>().BulkMerge(addItems);
+            var list3=db.Queryable<Unitfadfayy>().ToList();
+            list3.First().Name = "j";
+            db.Fastest<Unitfadfayy>().BulkMerge(list3);
+            var list4 = db.Queryable<Unitfadfayy>().ToList();
         }
+    }
+    public class Unitfadfayy 
+    {
+
+        [SqlSugar.SugarColumn(IsPrimaryKey = true,IsIdentity =true)]
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public DateTime CreateTime { get; set; }
     }
     public class UnitaafdsTest
     {
