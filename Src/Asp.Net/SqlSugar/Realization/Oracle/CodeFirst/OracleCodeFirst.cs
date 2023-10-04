@@ -19,7 +19,7 @@ namespace SqlSugar
             {
                 result.DataType = item.DataType;
             }
-            else if (item.DataType == null && item.UnderType == UtilConstants.LongType)
+            else if (item.DataType==null&&item.UnderType == UtilConstants.LongType)
             {
                 result.Length = 0;
                 result.DecimalDigits = 0;
