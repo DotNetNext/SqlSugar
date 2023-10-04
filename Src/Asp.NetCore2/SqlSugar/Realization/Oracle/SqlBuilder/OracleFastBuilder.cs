@@ -67,7 +67,7 @@ namespace SqlSugar
 
         }
 
-        public override Task<int> Merge<T>(DataTable dt, EntityInfo entityInfo, string[] whereColumns, string[] updateColumns,List<T> datas)
+        public override Task<int> Merge<T>(DataTable dt, EntityInfo entityInfo, string[] whereColumns, string[] updateColumns,List<T> datas) where T : class 
         {
             Check.Exception(this.entityInfo.Columns.Any(it => it.OracleSequenceName.HasValue()), "The BulkMerge method cannot be used for  sequence", "BulkMerge方法不能用序列");
             var sqlBuilder = this.Context.Queryable<object>().SqlBuilder;

@@ -48,7 +48,7 @@ namespace SqlSugar
             dt.TableName = "#temp";
         }
 
-        public async virtual Task<int> Merge<T>(DataTable dt, EntityInfo entityInfo, string[] whereColumns, string[] updateColumns, List<T> datas)
+        public async virtual Task<int> Merge<T>(DataTable dt, EntityInfo entityInfo, string[] whereColumns, string[] updateColumns, List<T> datas) where T : class, new()
         {
             var result = 0;
             await this.Context.Utilities.PageEachAsync(datas,2000,async pageItems =>
