@@ -166,6 +166,76 @@ namespace SqlSugar
         }
         #endregion
 
+        #region BulkMerge
+        public Task<int> BulkMergeAsync(List<T> datas)
+        {
+            var updateColumns = entityInfo.Columns.Where(it => !it.IsPrimarykey && !it.IsIdentity && !it.IsOnlyIgnoreUpdate && !it.IsIgnore).Select(it => it.DbColumnName ?? it.PropertyName).ToArray();
+            var whereColumns = entityInfo.Columns.Where(it => it.IsPrimarykey).Select(it => it.DbColumnName ?? it.PropertyName).ToArray(); ;
+            return BulkMergeAsync(datas, whereColumns, updateColumns);
+        }
+        public int BulkMerge(List<T> datas)
+        {
+            return BulkMergeAsync(datas).GetAwaiter().GetResult();
+        }
+        public Task<int> BulkMergeAsync(List<T> datas, string[] whereColumns)
+        {
+            var updateColumns = entityInfo.Columns.Where(it => !it.IsPrimarykey && !it.IsIdentity && !it.IsOnlyIgnoreUpdate && !it.IsIgnore).Select(it => it.DbColumnName ?? it.PropertyName).ToArray();
+            return BulkMergeAsync(datas, updateColumns, whereColumns);
+        }
+        public int BulkMerge(List<T> datas, string[] whereColumns)
+        {
+            return BulkMergeAsync(datas, whereColumns).GetAwaiter().GetResult();
+        }
+        public async Task<int> BulkMergeAsync(List<T> datas, string[] whereColumns, string[] updateColumns)
+        {
+            if (Size > 0)
+            {
+                int resul = 0;
+                await this.context.Utilities.PageEachAsync(datas, Size, async item =>
+                { 
+                    resul += await _BulkMerge(item, updateColumns, whereColumns);
+                });
+                return resul;
+            }
+            else
+            {
+                return await _BulkMerge(datas, updateColumns, whereColumns);
+            }
+        }
+        public int BulkMerge(List<T> datas, string[] whereColumns, string[] updateColumns)
+        {
+            return BulkMergeAsync(datas, whereColumns, updateColumns).GetAwaiter().GetResult();
+        }
+
+        private async Task<int> _BulkMerge(List<T> datas, string[] updateColumns, string[] whereColumns)
+        {
+            Begin(datas, false,true);
+            Check.Exception(whereColumns == null || whereColumns.Count() == 0, "where columns count=0 or need primary key");
+            Check.Exception(whereColumns == null || whereColumns.Count() == 0, "where columns count=0 or need primary key");
+            var isAuto = this.context.CurrentConnectionConfig.IsAutoCloseConnection;
+            this.context.CurrentConnectionConfig.IsAutoCloseConnection = false;
+            DataTable dt = ToDdateTable(datas);
+            IFastBuilder buider = GetBuider();
+            buider.Context = context;
+            if (buider?.DbFastestProperties?.IsMerge == true)
+            {
+                await buider.CreateTempAsync<T>(dt);
+                await buider.ExecuteBulkCopyAsync(dt);
+            }
+            var result = await buider.Merge(dt, this.entityInfo,whereColumns,updateColumns, datas);
+            //var queryTemp = this.context.Queryable<T>().AS(dt.TableName).ToList();//test
+            //var result = await buider.UpdateByTempAsync(GetTableName(), dt.TableName, updateColumns, whereColumns);
+            if (buider?.DbFastestProperties?.IsMerge == true&&this.context.CurrentConnectionConfig.DbType != DbType.Sqlite)
+            {
+                this.context.DbMaintenance.DropTable(dt.TableName);
+            }
+            this.context.CurrentConnectionConfig.IsAutoCloseConnection = isAuto;
+            buider.CloseDb();
+            End(datas, false,true);
+            return result;
+        }
+        #endregion
+
         #region Core
         private async Task<int> _BulkUpdate(List<T> datas, string[] whereColumns, string[] updateColumns)
         {
@@ -280,9 +350,13 @@ namespace SqlSugar
         #endregion
 
         #region AOP
-        private void End<Type>(List<Type> datas,bool isAdd)
+        private void End<Type>(List<Type> datas,bool isAdd,bool isMerge=false)
         {
             var title = isAdd ? "BulkCopy" : "BulkUpdate";
+            if (isMerge) 
+            {
+                title = "BulkMerge";
+            }
             this.context.Ado.IsEnableLogEvent = isLog;
             if (this.context.CurrentConnectionConfig?.AopEvents?.OnLogExecuted != null)
             {
@@ -290,9 +364,13 @@ namespace SqlSugar
             }
             RemoveCache();
         }
-        private void Begin<Type>(List<Type> datas,bool isAdd)
+        private void Begin<Type>(List<Type> datas,bool isAdd, bool isMerge = false)
         {
             var title = isAdd ? "BulkCopy" : "BulkUpdate";
+            if (isMerge)
+            {
+                title = "BulkMerge";
+            }
             isLog = this.context.Ado.IsEnableLogEvent;
             this.context.Ado.IsEnableLogEvent = false;
             if (this.context.CurrentConnectionConfig?.AopEvents?.OnLogExecuting != null)

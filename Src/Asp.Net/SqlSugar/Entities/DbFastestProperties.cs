@@ -11,5 +11,6 @@ namespace SqlSugar
         public bool HasOffsetTime { get; set; }
         public string[] WhereColumns { get; set; }
         public bool IsOffIdentity { get;  set; }
+        public bool IsMerge { get; set; }
     }
 }

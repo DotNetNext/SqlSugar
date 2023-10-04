@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
+using System.Data; 
 using System.Text;
 using System.Threading.Tasks;
 
@@ -34,5 +34,12 @@ namespace SqlSugar
         Task<int> BulkUpdateAsync(string tableName, DataTable dataTable, string[] whereColumns, string[] updateColumns);
         Task<int> BulkUpdateAsync(DataTable dataTable, string[] whereColumns);
         SplitFastest<T> SplitTable();
+        Task<int> BulkMergeAsync(List<T> datas);
+        int BulkMerge(List<T> datas);
+        Task<int> BulkMergeAsync(List<T> datas, string[] whereColumns);
+        int BulkMerge(List<T> datas, string[] whereColumns);
+        Task<int> BulkMergeAsync(List<T> datas, string[] whereColumns, string[] updateColumns);
+        int BulkMerge(List<T> datas, string[] whereColumns, string[] updateColumns);
+
     }
 }
