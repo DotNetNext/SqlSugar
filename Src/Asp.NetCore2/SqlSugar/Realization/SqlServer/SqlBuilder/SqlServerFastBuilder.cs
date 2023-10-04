@@ -66,7 +66,7 @@ namespace SqlSugar
             copy.BulkCopyTimeout = this.Context.Ado.CommandTimeOut;
             return copy;
         }
-        public override Task<int> Merge(DataTable dt, EntityInfo entityInfo, string[] whereColumns, string[] updateColumns)
+        public override Task<int> Merge<T>(DataTable dt, EntityInfo entityInfo, string[] whereColumns, string[] updateColumns, List<T> datas)
         {
             var sqlBuilder = this.Context.Queryable<object>().SqlBuilder;
             var insertColumns = entityInfo.Columns

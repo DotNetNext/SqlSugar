@@ -48,9 +48,17 @@ namespace SqlSugar
             dt.TableName = "#temp";
         }
 
-        public virtual Task<int> Merge(DataTable dt, EntityInfo entityInfo,string[] whereColumns,string [] updateColumns) 
+        public async virtual Task<int> Merge<T>(DataTable dt, EntityInfo entityInfo, string[] whereColumns, string[] updateColumns, List<T> datas)
         {
-            throw new Exception("当前数据库还没有支持Merge方法，请联系作者支持");
+            var result = 0;
+            await this.Context.Utilities.PageEachAsync(datas,2000,async pageItems =>
+            {
+                var x = await this.Context.Storageable(pageItems).WhereColumns(whereColumns).ToStorageAsync();
+                result += await x.BulkCopyAsync();
+                result += await x.BulkUpdateAsync(updateColumns);
+                return result;
+            });
+            return result;
         }
     }
 }
