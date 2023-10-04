@@ -9,6 +9,10 @@ namespace SqlSugar
 {
     public class OracleFastBuilder : FastBuilder, IFastBuilder
     {
+        public override DbFastestProperties DbFastestProperties { get; set; } = new DbFastestProperties()
+        { 
+            IsMerge = true
+        };
         private EntityInfo entityInfo;
 
         public OracleFastBuilder(EntityInfo entityInfo)

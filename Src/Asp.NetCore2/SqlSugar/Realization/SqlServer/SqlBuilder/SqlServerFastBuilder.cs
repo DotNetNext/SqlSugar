@@ -14,7 +14,8 @@ namespace SqlSugar
     {
         public override bool IsActionUpdateColumns { get; set; } = true;
         public override DbFastestProperties DbFastestProperties { get; set; } = new DbFastestProperties() {
-          HasOffsetTime=true
+          HasOffsetTime=true,
+          IsMerge=true
         };
         public async Task<int> ExecuteBulkCopyAsync(DataTable dt)
         {
