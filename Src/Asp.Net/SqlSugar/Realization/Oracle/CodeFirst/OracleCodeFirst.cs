@@ -19,6 +19,18 @@ namespace SqlSugar
             {
                 result.DataType = item.DataType;
             }
+            else if (item.DataType==null&&item.UnderType == UtilConstants.LongType) 
+            {
+                result.Length = 0;
+                result.DecimalDigits = 0;
+                result.DataType = "NUMBER(19,0)";
+            }
+            else if (item.DataType == null && item.UnderType == UtilConstants.IntType)
+            {
+                result.Length = 0;
+                result.DecimalDigits = 0;
+                result.DataType = "NUMBER(9,0)";
+            }
             else if (propertyType.IsEnum())
             {
                 result.DataType = this.Context.Ado.DbBind.GetDbTypeName(item.Length > 9 ? UtilConstants.LongType.Name : UtilConstants.IntType.Name);
