@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UnitBulkMerge.Init();
             UnitBizDelete.Init();
             UnitBulkCopyUpdateaasfa.Init();
             UnitSubToList.Init();
