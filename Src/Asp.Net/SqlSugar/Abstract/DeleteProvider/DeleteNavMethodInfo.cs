@@ -11,7 +11,7 @@ namespace SqlSugar
         internal object MethodInfos { get; set; }
         internal SqlSugarProvider Context { get; set; }
 
-        public DeleteNavMethodInfo IncludeByNameString(string navMemberName, UpdateNavOptions updateNavOptions = null)
+        public DeleteNavMethodInfo IncludeByNameString(string navMemberName, DeleteNavOptions updateNavOptions = null)
         {
             var type = MethodInfos.GetType().GetGenericArguments()[0];
             var entityInfo = this.Context.EntityMaintenance.GetEntityInfo(type);
@@ -24,7 +24,7 @@ namespace SqlSugar
             this.MethodInfos = obj;
             return this;
         }
-        public DeleteNavMethodInfo ThenIncludeByNameString(string navMemberName, UpdateNavOptions updateNavOptions = null)
+        public DeleteNavMethodInfo ThenIncludeByNameString(string navMemberName, DeleteNavOptions updateNavOptions = null)
         {
             var type = MethodInfos.GetType().GetGenericArguments()[1];
             var entityInfo = this.Context.EntityMaintenance.GetEntityInfo(type);

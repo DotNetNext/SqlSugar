@@ -934,9 +934,14 @@ namespace SqlSugar
         }
         public virtual ISugarQueryable<T> Where(Expression<Func<T, bool>> expression)
         {
+            if (IsSingleWithChildTableQuery())
+            {
+                expression = ReplaceMasterTableParameters(expression);
+            }
             this._Where(expression);
             return this;
         }
+
         public virtual ISugarQueryable<T> Where(string whereString, object whereObj = null)
         {
             if (whereString.HasValue())
@@ -1008,6 +1013,10 @@ namespace SqlSugar
         public virtual ISugarQueryable<T> WhereIF(bool isWhere, Expression<Func<T, bool>> expression)
         {
             if (!isWhere) return this;
+            if (IsSingleWithChildTableQuery())
+            {
+                expression = ReplaceMasterTableParameters(expression);
+            }
             _Where(expression);
             return this;
         }

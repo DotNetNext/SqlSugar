@@ -174,6 +174,7 @@
     <Compile Include="ExpressionsToSql\Common\ListAnyParameter.cs" />
     <Compile Include="ExpressionsToSql\Common\MapperSql.cs" />
     <Compile Include="ExpressionsToSql\Common\NewExpressionInfo.cs" />
+    <Compile Include="ExpressionsToSql\Common\ParameterReplacer.cs" />
     <Compile Include="ExpressionsToSql\ResolveItems\BaseResolve_Append.cs" />
     <Compile Include="ExpressionsToSql\ResolveItems\BaseResolve_Helper.cs" />
     <Compile Include="ExpressionsToSql\ResolveItems\BaseResolve_Validate.cs" />
