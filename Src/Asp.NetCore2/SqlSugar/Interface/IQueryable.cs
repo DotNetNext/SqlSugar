@@ -151,8 +151,9 @@ namespace SqlSugar
         Task<bool> AnyAsync(Expression<Func<T, bool>> expression, CancellationToken token);
         bool Any();
         Task<bool> AnyAsync();
-        ISugarQueryable<TResult> Select<TResult>(string expShortName, FormattableString expSelect, Type propertyType);
-        ISugarQueryable<T> Select(string expShortName, FormattableString expSelect, Type propertyType);
+        ISugarQueryable<TResult> Select<TResult>(string expShortName, FormattableString expSelect, Type resultType);
+        ISugarQueryable<TResult> Select<TResult>(string expShortName, FormattableString expSelect,Type EntityType, Type resultType);
+        ISugarQueryable<T> Select(string expShortName, FormattableString expSelect, Type resultType);
         ISugarQueryable<TResult> Select<TResult>(Expression expression);
         ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, TResult>> expression);
         ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, TResult>> expression,bool isAutoFill);
