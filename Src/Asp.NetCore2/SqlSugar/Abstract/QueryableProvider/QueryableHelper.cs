@@ -1265,6 +1265,21 @@ namespace SqlSugar
 
         #region  Other
 
+        private bool IsSingleWithChildTableQuery()
+        {
+            return this.QueryBuilder.IsSingle() && this.QueryBuilder.TableShortName.HasValue();
+        }
+
+        private Expression<Func<T, bool>> ReplaceMasterTableParameters(Expression<Func<T, bool>> expression)
+        {
+            var parameterName = (expression as LambdaExpression)?.Parameters?.FirstOrDefault()?.Name;
+            if (parameterName != null && parameterName != this.QueryBuilder.TableShortName)
+            {
+                expression = ExpressionTool.ChangeLambdaExpression(expression, parameterName, this.QueryBuilder.TableShortName);
+            }
+
+            return expression;
+        }
         private void orderPropertyNameByJoin(string orderPropertyName, OrderByType? orderByType)
         {
             var shortName = orderPropertyName.Split('.').FirstOrDefault();

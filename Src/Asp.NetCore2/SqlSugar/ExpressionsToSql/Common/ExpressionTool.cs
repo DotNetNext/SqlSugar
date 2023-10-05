@@ -10,6 +10,27 @@ namespace SqlSugar
 {
     public class ExpressionTool
     {
+        public static Expression<Func<T, bool>> ChangeLambdaExpression<T>(Expression<Func<T,bool>> exp,string replaceParameterName, string newParameterName)
+        {
+            var parameter = Expression.Parameter(typeof(T), newParameterName);
+
+            // 替换Lambda表达式中指定参数名
+            var visitor = new ParameterReplacer(replaceParameterName, parameter);
+            var newBody = visitor.Visit(exp);
+
+            return (Expression<Func<T, bool>>)newBody;
+        }
+        public static Expression ChangeLambdaExpression(Expression exp, Type targetType, string replaceParameterName, string newParameterName)
+        {
+            var parameter = Expression.Parameter(targetType, newParameterName);
+
+            // 替换Lambda表达式中指定参数名
+            var visitor = new ParameterReplacer(replaceParameterName, parameter);
+            var newBody = visitor.Visit(exp);
+
+            return newBody;
+        }
+
         public static List<string> GetNewArrayMembers(NewArrayExpression newArrayExpression)
         {
             List<string> strings = new List<string>();
