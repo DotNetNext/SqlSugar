@@ -1339,14 +1339,19 @@ namespace SqlSugar
             }
             return _Select<TResult>(expression);
         }
-        public ISugarQueryable<TResult> Select<TResult>(string expShortName, FormattableString expSelect, Type propertyType) 
+        public ISugarQueryable<TResult> Select<TResult>(string expShortName, FormattableString expSelect, Type resultType) 
         {
-            var exp = DynamicCoreHelper.GetMember(typeof(TResult),propertyType, expShortName, expSelect);
+            var exp = DynamicCoreHelper.GetMember(typeof(TResult), resultType, expShortName, expSelect);
             return _Select<TResult>(exp); 
         }
-        public ISugarQueryable<T> Select(string expShortName, FormattableString expSelect,Type propertyType) 
+        public ISugarQueryable<TResult> Select<TResult>(string expShortName, FormattableString expSelect,Type EntityType, Type resultType)
         {
-            return Select<T>(expShortName, expSelect, propertyType);
+            var exp = DynamicCoreHelper.GetMember(EntityType, resultType, expShortName, expSelect);
+            return _Select<TResult>(exp);
+        }
+        public ISugarQueryable<T> Select(string expShortName, FormattableString expSelect,Type resultType) 
+        {
+            return Select<T>(expShortName, expSelect, resultType);
         }
         public virtual ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, TResult>> expression)
         {
