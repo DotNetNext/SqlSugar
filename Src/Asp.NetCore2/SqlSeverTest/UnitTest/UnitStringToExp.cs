@@ -88,8 +88,8 @@ namespace OrmTest
 
              
             var xxx = DynamicCoreHelper.GetMember(typeof(UnitPerson011), typeof(int), "it", $"it.Address.Id ");
-            var list7= db.Queryable<UnitPerson011>().Select("it", $"it.Address.Id ", typeof(int)).ToList();
-            var list8 = db.Queryable<Order>().Select("it", $"new(Id as Id, Name)", typeof(Order)).ToList();
+            var list7= db.Queryable<UnitPerson011>().Select<int>("it", $"it.Address.Id ",typeof(UnitPerson011), typeof(int)).ToList();
+            var list8 = db.Queryable<Order>().Select("it", $"new(it.Id as Id, it.Name)", typeof(Order)).ToList();
 
         }
         public class SqlSugarTypeProvider : DefaultDynamicLinqCustomTypeProvider
