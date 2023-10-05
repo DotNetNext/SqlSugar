@@ -1,6 +1,7 @@
 ﻿using SqlSugar;
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Security.Principal;
 using System.Text;
 
@@ -35,6 +36,14 @@ namespace OrmTest
             var result = db
                 .UpdateNav<RosterCollection>(roster)
                 .Include(c => c.BasicInfo).ExecuteCommand();//用例代码 
+
+           
+
+            db.Queryable<RosterCollection>()
+                .Where(x => x.BasicInfo.BasicInfoId == 1)
+                  .WhereIF(true,z => z.BasicInfo.BasicInfoId == 1)
+                        .Where( z => z.BasicInfo.BasicInfoId == 1)
+                .ToList();
         }
 
         //用例实体
