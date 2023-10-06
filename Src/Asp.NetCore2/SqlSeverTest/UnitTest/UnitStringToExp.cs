@@ -71,7 +71,7 @@ namespace OrmTest
             StaticConfig.DynamicExpressionParserType = typeof(DynamicExpressionParser);
             StaticConfig.DynamicExpressionParsingConfig = new ParsingConfig()
             {
-                CustomTypeProvider = new SqlSugarTypeProvider()
+                CustomTypeProvider = new SqlSugarTypeProvider() 
             };
             var exp = DynamicCoreHelper.GetWhere<UnitPerson011>("it", $"it=>it.Address.Street={"a"}");
             var list2=db.Queryable<UnitPerson011>().Where(exp).ToList();
@@ -84,25 +84,46 @@ namespace OrmTest
             var list5=db.QueryableByObject(typeof(UnitPerson011)).Where("it", $"it.Address.Id=={1}").ToList();
 
             var list6 = db.Queryable<UnitPerson011>()
-                .LeftJoin<Order>((it, y) => it.Id == y.Id).Where("it", $"SqlFunc.Exists(it.Address.Id)").OrderBy((it, y) => it.Id).ToList();
+                .LeftJoin<Order>((it, y) => it.Id == y.Id)
+                .Where("it", $"SqlFunc.Exists(it.Address.Id)")
+                .OrderBy((it, y) => it.Id)
+                .ToList();
 
              
             var xxx = DynamicCoreHelper.GetMember(typeof(UnitPerson011), typeof(int), "it", $"it.Address.Id ");
             var list7= db.Queryable<UnitPerson011>().Select<int>("it", $"it.Address.Id ",typeof(UnitPerson011), typeof(int)).ToList();
             var list8 = db.Queryable<Order>().Select("it", $"new(it.Id as Id, it.Name)", typeof(Order)).ToList();
 
+            //ok  x name
             var list9= db.QueryableByObject(typeof(UnitPerson011))
-                .Select("it", $"new(it.Id as Id, it.Name)", typeof(Order)).ToList();
+                .Select("x", $"x=>new(x.Id as Id)", typeof(Order)).ToList();
+            //ok x name
+            var list91 = db.QueryableByObject(typeof(UnitPerson011))
+            .Select("x", $"x=>new(x.Id as Id)", typeof(Order)).ToList();
+
+            //error y name
+            var list9111 = db.QueryableByObject(typeof(UnitPerson011))
+             .Select("y", $"y=>new(y.Id as Id )", typeof(Order)).ToList();
 
             var xxx2=DynamicCoreHelper.GetMember(
                 new Dictionary<string, Type> { { "o", typeof(Order) }, { "u", typeof(UnitPerson011) } }
                 , typeof(Order), $"new( o.Name as Name, u.Address.Id as Id)");
 
+            var xxx3= DynamicCoreHelper.GetMember(
+            new Dictionary<string, Type> { { "o", typeof(Order) }, { "u", typeof(UnitPerson011) } }
+            , typeof(Order), $"new( o.Name as Name, u.Address.Id as Id)");
 
-            var xxx3 = DynamicCoreHelper.GetWhere(
-              new Dictionary<string, Type> { { "o", typeof(Order) }, { "u", typeof(UnitPerson011) } }
-              ,  $"o.Id == u.Address.Id ");
 
+            var xxx4 = DynamicCoreHelper.GetWhere(
+              new Dictionary<string, Type> { { "z", typeof(Order) }, { "u", typeof(UnitPerson011) } }
+              ,  $"z.Id == u.Address.Id ");
+
+            var shortNames = new Dictionary<string, Type> { { "x", typeof(Order) }, { "u", typeof(OrderItem) } };
+            var xxxx4=db.QueryableByObject(typeof(Order), "x")
+                .AddJoinInfo(typeof(OrderItem), "u", "x.Id=u.OrderId", JoinType.Left)
+                .Where(shortNames, $" x.Id == u.OrderId")
+                .Select(new Dictionary<string, Type> { { "x", typeof(Order) }, { "u", typeof(OrderItem) } }, $"new (x.Name as Name)",typeof(Order))
+                .ToList();
 
         }
         public class SqlSugarTypeProvider : DefaultDynamicLinqCustomTypeProvider
