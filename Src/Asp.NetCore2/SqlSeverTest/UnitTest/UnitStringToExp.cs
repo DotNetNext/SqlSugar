@@ -83,7 +83,7 @@ namespace OrmTest
             //动态类+动态条件
             var list5=db.QueryableByObject(typeof(UnitPerson011)).Where("it", $"it.Address.Id=={1}").ToList();
 
-            var list6 = db.Queryable<UnitPerson011>()
+            var list6 = db.Queryable<UnitPerson011>() 
                 .LeftJoin<Order>((it, y) => it.Id == y.Id)
                 .Where("it", $"SqlFunc.Exists(it.Address.Id)")
                 .OrderBy((it, y) => it.Id)
@@ -118,10 +118,11 @@ namespace OrmTest
             var xxx4 = DynamicCoreHelper.GetWhere(
               DynamicParameters.Create("z", typeof(Order), "u", typeof(UnitPerson011)),  $"z.Id == u.Address.Id ");
 
-            var shortNames = DynamicParameters.Create("x", typeof(Order), "u", typeof(OrderItem));
+            var shortNames = DynamicParameters.Create("x", typeof(Order), "u", typeof(OrderItem) ,"u2", typeof(OrderItem));
 
             var xxxx4=db.QueryableByObject(typeof(Order), "x")
-                .AddJoinInfo(typeof(OrderItem), "u", "x.Id=u.OrderId", JoinType.Left)
+                .AddJoinInfo(typeof(OrderItem), DynamicParameters.Create("x", typeof(Order), "u", typeof(OrderItem)), $"x.Id==u.OrderId", JoinType.Left)
+                .AddJoinInfo(typeof(OrderItem), DynamicParameters.Create("x", typeof(Order), "u", typeof(OrderItem), "u2", typeof(OrderItem)), $"x.Id==u2.OrderId", JoinType.Left)
                 .Where(shortNames, $" x.Id == u.OrderId")
                 .Select(shortNames, $"new (x.Name as Name,u.OrderId as Id)",typeof(ViewOrder))
                 .ToList();
