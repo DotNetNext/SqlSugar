@@ -926,6 +926,12 @@ namespace SqlSugar
             }
             return this;
         }
+        public ISugarQueryable<T> Where(Dictionary<string, Type> keyIsShortName_ValueIsType_Dictionary, FormattableString expressionString) 
+        {
+            var exp = DynamicCoreHelper.GetWhere(keyIsShortName_ValueIsType_Dictionary, expressionString);
+            _Where(exp);
+            return this;
+        }
         public virtual ISugarQueryable<T> Where(string expShortName, FormattableString expressionString) 
         {
             var exp = DynamicCoreHelper.GetWhere<T>(expShortName, expressionString);
@@ -1347,6 +1353,11 @@ namespace SqlSugar
                 SetAppendNavColumns(expression);
             }
             return _Select<TResult>(expression);
+        }
+        public ISugarQueryable<TResult> Select<TResult>(Dictionary<string, Type> keyIsShortName_ValueIsType_Dictionary, FormattableString expSelect, Type resultType) 
+        {
+            var exp = DynamicCoreHelper.GetMember(keyIsShortName_ValueIsType_Dictionary, resultType, expSelect);
+            return _Select<TResult>(exp);
         }
         public ISugarQueryable<TResult> Select<TResult>(string expShortName, FormattableString expSelect, Type resultType) 
         {

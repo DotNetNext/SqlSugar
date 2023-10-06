@@ -88,6 +88,12 @@ namespace SqlSugar
             this.QueryableObj = method.Invoke(QueryableObj, new object[] { expShortName, expressionString });
             return this;
         }
+        public QueryMethodInfo Where(Dictionary<string, Type> keyIsShortName_ValueIsType_Dictionary, FormattableString expressionString)
+        {
+            var method = QueryableObj.GetType().GetMyMethod("Where", 2, typeof(Dictionary<string, Type>), typeof(FormattableString));
+            this.QueryableObj = method.Invoke(QueryableObj, new object[] { keyIsShortName_ValueIsType_Dictionary, expressionString });
+            return this;
+        }
         public QueryMethodInfo Where(List<IConditionalModel> conditionalModels) 
         {
             var method = QueryableObj.GetType().GetMyMethod("Where", 1, typeof(List<IConditionalModel>));
@@ -156,6 +162,13 @@ namespace SqlSugar
             var method = QueryableObj.GetType().GetMyMethod("Select", 3, typeof(string),typeof(FormattableString),typeof(Type));
             method= method.MakeGenericMethod(resultType);
             this.QueryableObj = method.Invoke(QueryableObj, new object[] { expShortName, expSelect, resultType });
+            return this;
+        }
+        public QueryMethodInfo Select(Dictionary<string, Type> keyIsShortName_ValueIsType_Dictionary, FormattableString expSelect, Type resultType)
+        {
+            var method = QueryableObj.GetType().GetMyMethod("Select", 3, typeof(Dictionary<string, Type>), typeof(FormattableString), typeof(Type));
+            method = method.MakeGenericMethod(resultType);
+            this.QueryableObj = method.Invoke(QueryableObj, new object[] { keyIsShortName_ValueIsType_Dictionary, expSelect, resultType });
             return this;
         }
         public QueryMethodInfo Select(string selectorSql)
