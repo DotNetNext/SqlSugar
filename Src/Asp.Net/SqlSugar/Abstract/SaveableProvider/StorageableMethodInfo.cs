@@ -63,6 +63,19 @@ namespace SqlSugar
         {
             return this;
         }
+
+        public StorageableSplitTableMethodInfo SplitTable()
+        {
+            object objectValue = null;
+            MethodInfo method = GetSaveMethod(ref objectValue);
+            if (method == null) return new StorageableSplitTableMethodInfo(null);
+            method = objectValue.GetType().GetMethod("SplitTable");
+            objectValue = method.Invoke(objectValue, new object[] { });
+            StorageableSplitTableMethodInfo result = new StorageableSplitTableMethodInfo(null);
+            result.ObjectValue = objectValue;
+            result.Method = method;
+            return result;
+        }
     }
 
     public class StorageableAsMethodInfo
@@ -84,5 +97,21 @@ namespace SqlSugar
             return (int)newObj;
         }
     }
-      
+
+    public class StorageableSplitTableMethodInfo
+    {
+        private StorageableSplitTableMethodInfo() { }
+        private string type;
+        public StorageableSplitTableMethodInfo(string type)
+        {
+            this.type = type;
+        }
+        internal object ObjectValue { get; set; }
+        internal MethodInfo Method { get; set; }
+        public int ExecuteCommand()
+        { 
+            var newObj = ObjectValue.GetType().GetMethod("ExecuteCommand").Invoke(ObjectValue, new object[] { });
+            return (int)newObj;
+        }
+    }
 }

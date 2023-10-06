@@ -245,11 +245,11 @@ namespace SqlSugar
             var reslt = method.Invoke(QueryableObj, new object[] { });
             return reslt;
         }
-        public object Any()
+        public bool Any()
         {
             var method = QueryableObj.GetType().GetMyMethod("Any", 0);
             var reslt = method.Invoke(QueryableObj, new object[] { });
-            return reslt;
+            return Convert.ToBoolean(reslt);
         }
         #endregion
 
