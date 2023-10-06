@@ -99,6 +99,10 @@ namespace OrmTest
                 , typeof(Order), $"new( o.Name as Name, u.Address.Id as Id)");
 
 
+            var xxx3 = DynamicCoreHelper.GetWhere(
+              new Dictionary<string, Type> { { "o", typeof(Order) }, { "u", typeof(UnitPerson011) } }
+              ,  $"o.Id == u.Address.Id ");
+
 
         }
         public class SqlSugarTypeProvider : DefaultDynamicLinqCustomTypeProvider
