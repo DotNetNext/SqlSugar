@@ -30,5 +30,6 @@ namespace SqlSugar
         public static Func<string,string> Check_FieldFunc;
         public static Type DynamicExpressionParserType;
         public static object DynamicExpressionParsingConfig;
+        public static Action<ICacheService, string> CacheRemoveByLikeStringFunc { get; set; }
     }
 }
