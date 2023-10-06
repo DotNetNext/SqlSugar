@@ -94,6 +94,12 @@ namespace OrmTest
             var list9= db.QueryableByObject(typeof(UnitPerson011))
                 .Select("it", $"new(it.Id as Id, it.Name)", typeof(Order)).ToList();
 
+            var xxx2=DynamicCoreHelper.GetMember(
+                new Dictionary<string, Type> { { "o", typeof(Order) }, { "u", typeof(UnitPerson011) } }
+                , typeof(Order), $"new( o.Name as Name, u.Address.Id as Id)");
+
+
+
         }
         public class SqlSugarTypeProvider : DefaultDynamicLinqCustomTypeProvider
         {
