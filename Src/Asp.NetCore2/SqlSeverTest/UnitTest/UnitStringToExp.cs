@@ -106,23 +106,24 @@ namespace OrmTest
              .Select("y", $"y=>new(y.Id as Id )", typeof(Order)).ToList();
 
             var xxx2=DynamicCoreHelper.GetMember(
-                new Dictionary<string, Type> { { "o", typeof(Order) }, { "u", typeof(UnitPerson011) } }
-                , typeof(Order), $"new( o.Name as Name, u.Address.Id as Id)");
+                DynamicParameters.Create("o",typeof(Order),"u", typeof(UnitPerson011)) , 
+                typeof(Order),
+                $"new( o.Name as Name, u.Address.Id as Id)");
 
             var xxx3= DynamicCoreHelper.GetMember(
-            new Dictionary<string, Type> { { "o", typeof(Order) }, { "u", typeof(UnitPerson011) } }
-            , typeof(Order), $"new( o.Name as Name, u.Address.Id as Id)");
+                DynamicParameters.Create("o", typeof(Order), "u", typeof(UnitPerson011)) , 
+                typeof(Order), $"new( o.Name as Name, u.Address.Id as Id)");
 
 
             var xxx4 = DynamicCoreHelper.GetWhere(
-              new Dictionary<string, Type> { { "z", typeof(Order) }, { "u", typeof(UnitPerson011) } }
-              ,  $"z.Id == u.Address.Id ");
+              DynamicParameters.Create("z", typeof(Order), "u", typeof(UnitPerson011)),  $"z.Id == u.Address.Id ");
 
-            var shortNames = new Dictionary<string, Type> { { "x", typeof(Order) }, { "u", typeof(OrderItem) } };
+            var shortNames = DynamicParameters.Create("x", typeof(Order), "u", typeof(OrderItem));
+
             var xxxx4=db.QueryableByObject(typeof(Order), "x")
                 .AddJoinInfo(typeof(OrderItem), "u", "x.Id=u.OrderId", JoinType.Left)
                 .Where(shortNames, $" x.Id == u.OrderId")
-                .Select(new Dictionary<string, Type> { { "x", typeof(Order) }, { "u", typeof(OrderItem) } }, $"new (x.Name as Name)",typeof(Order))
+                .Select(shortNames, $"new (x.Name as Name,u.OrderId as Id)",typeof(ViewOrder))
                 .ToList();
 
         }
