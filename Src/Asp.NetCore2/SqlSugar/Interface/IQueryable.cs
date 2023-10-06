@@ -63,8 +63,8 @@ namespace SqlSugar
         ISugarQueryable<T> AddParameters(SugarParameter[] parameters);
         ISugarQueryable<T> AddParameters(List<SugarParameter> parameters);
         ISugarQueryable<T> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
-        ISugarQueryable<T> AddJoinInfo(Type JoinType, string shortName, string joinWhere, JoinType type = JoinType.Left);
-
+        ISugarQueryable<T> AddJoinInfo(Type JoinEntityType, string shortName, string joinWhere, JoinType type = JoinType.Left);
+        ISugarQueryable<T> AddJoinInfo(Type JoinEntityType, Dictionary<string, Type> keyIsShortName_ValueIsType_Dictionary, FormattableString onExpString, JoinType type = JoinType.Left);
         /// <summary>
         /// if a property that is not empty is a condition
         /// </summary>

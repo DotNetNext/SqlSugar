@@ -64,6 +64,12 @@ namespace SqlSugar
             }
             return this;
         }
+        public QueryMethodInfo AddJoinInfo(Type joinEntityType,Dictionary<string,Type> keyIsShortName_ValueIsType_Dictionary, FormattableString expOnWhere, JoinType type = JoinType.Left)
+        {
+            var method = QueryableObj.GetType().GetMyMethod("AddJoinInfo", 4,typeof(Type), typeof(Dictionary<string, Type>), typeof(FormattableString), typeof(JoinType));
+            this.QueryableObj = method.Invoke(QueryableObj, new object[] { joinEntityType, keyIsShortName_ValueIsType_Dictionary, expOnWhere, type });
+            return this;
+        }
         public QueryMethodInfo AddJoinInfo(Type joinEntityType, string shortName, string onWhere, JoinType type = JoinType.Left)
         {
             var method = QueryableObj.GetType().GetMyMethod("AddJoinInfo", 4, typeof(string), typeof(string), typeof(string), typeof(JoinType));

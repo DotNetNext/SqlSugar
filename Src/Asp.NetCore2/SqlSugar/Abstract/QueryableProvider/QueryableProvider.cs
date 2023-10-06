@@ -580,6 +580,13 @@ namespace SqlSugar
                 QueryBuilder.Parameters.Add(parameter);
             return this;
         }
+        public ISugarQueryable<T> AddJoinInfo(Type JoinType, Dictionary<string, Type> keyIsShortName_ValueIsType_Dictionary, FormattableString onExpString, JoinType type = JoinType.Left) 
+        {
+            var whereExp = DynamicCoreHelper.GetWhere(keyIsShortName_ValueIsType_Dictionary,onExpString);
+            var name=whereExp.Parameters.Last(it => it.Type == JoinType).Name;
+            var sql = this.QueryBuilder.GetExpressionValue(whereExp, ResolveExpressType.WhereMultiple).GetResultString();
+            return AddJoinInfo(JoinType, name, sql,type);
+        }
         public ISugarQueryable<T> AddJoinInfo(Type JoinType, string shortName, string joinWhere, JoinType type = JoinType.Left) 
         {
             this.Context.InitMappingInfo(JoinType);
