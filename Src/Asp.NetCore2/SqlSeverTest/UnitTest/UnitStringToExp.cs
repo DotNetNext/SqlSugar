@@ -91,6 +91,9 @@ namespace OrmTest
             var list7= db.Queryable<UnitPerson011>().Select<int>("it", $"it.Address.Id ",typeof(UnitPerson011), typeof(int)).ToList();
             var list8 = db.Queryable<Order>().Select("it", $"new(it.Id as Id, it.Name)", typeof(Order)).ToList();
 
+            var list9= db.QueryableByObject(typeof(UnitPerson011))
+                .Select("it", $"new(it.Id as Id, it.Name)", typeof(Order)).ToList();
+
         }
         public class SqlSugarTypeProvider : DefaultDynamicLinqCustomTypeProvider
         {
