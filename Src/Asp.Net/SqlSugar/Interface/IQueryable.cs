@@ -63,8 +63,8 @@ namespace SqlSugar
         ISugarQueryable<T> AddParameters(SugarParameter[] parameters);
         ISugarQueryable<T> AddParameters(List<SugarParameter> parameters);
         ISugarQueryable<T> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left);
-        ISugarQueryable<T> AddJoinInfo(Type JoinType, string shortName, string joinWhere, JoinType type = JoinType.Left);
-
+        ISugarQueryable<T> AddJoinInfo(Type JoinEntityType, string shortName, string joinWhere, JoinType type = JoinType.Left);
+        ISugarQueryable<T> AddJoinInfo(Type JoinEntityType, Dictionary<string, Type> keyIsShortName_ValueIsType_Dictionary, FormattableString onExpString, JoinType type = JoinType.Left);
         /// <summary>
         /// if a property that is not empty is a condition
         /// </summary>
@@ -86,6 +86,7 @@ namespace SqlSugar
         ISugarQueryable<T> TranLock(DbLockType? LockType = DbLockType.Wait);
         ISugarQueryable<T> Where(Expression<Func<T, bool>> expression);
         ISugarQueryable<T> Where(string expShortName, FormattableString expressionString);
+        ISugarQueryable<T> Where(Dictionary<string,Type> keyIsShortName_ValueIsType_Dictionary, FormattableString expressionString);
         ISugarQueryable<T> Where(string whereString, object parameters = null);
         ISugarQueryable<T> Where(IFuncModel funcModel);
         ISugarQueryable<T> Where(List<IConditionalModel> conditionalModels);
@@ -152,6 +153,7 @@ namespace SqlSugar
         bool Any();
         Task<bool> AnyAsync();
         ISugarQueryable<TResult> Select<TResult>(string expShortName, FormattableString expSelect, Type resultType);
+        ISugarQueryable<TResult> Select<TResult>(Dictionary<string, Type> keyIsShortName_ValueIsType_Dictionary, FormattableString expSelect, Type resultType);
         ISugarQueryable<TResult> Select<TResult>(string expShortName, FormattableString expSelect,Type EntityType, Type resultType);
         ISugarQueryable<T> Select(string expShortName, FormattableString expSelect, Type resultType);
         ISugarQueryable<TResult> Select<TResult>(Expression expression);

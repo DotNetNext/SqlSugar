@@ -193,6 +193,7 @@
     <Compile Include="Interface\ICustomConditionalFunc.cs" />
     <Compile Include="Interface\ISugarDataConverter.cs" />
     <Compile Include="Json2Sql\DynamicLinq\DynamicCoreHelper.cs" />
+    <Compile Include="Json2Sql\DynamicLinq\DynamicParameters.cs" />
     <Compile Include="Json2Sql\DynamicLinq\SqlSugarDynamicExpressionParser.cs" />
     <Compile Include="Json2Sql\Entities\JsonDeleteResult.cs" />
     <Compile Include="Json2Sql\Entities\JsonInsertResult.cs" />

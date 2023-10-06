@@ -580,6 +580,13 @@ namespace SqlSugar
                 QueryBuilder.Parameters.Add(parameter);
             return this;
         }
+        public ISugarQueryable<T> AddJoinInfo(Type JoinType, Dictionary<string, Type> keyIsShortName_ValueIsType_Dictionary, FormattableString onExpString, JoinType type = JoinType.Left) 
+        {
+            var whereExp = DynamicCoreHelper.GetWhere(keyIsShortName_ValueIsType_Dictionary,onExpString);
+            var name=whereExp.Parameters.Last(it => it.Type == JoinType).Name;
+            var sql = this.QueryBuilder.GetExpressionValue(whereExp, ResolveExpressType.WhereMultiple).GetResultString();
+            return AddJoinInfo(JoinType, name, sql,type);
+        }
         public ISugarQueryable<T> AddJoinInfo(Type JoinType, string shortName, string joinWhere, JoinType type = JoinType.Left) 
         {
             this.Context.InitMappingInfo(JoinType);
@@ -924,6 +931,12 @@ namespace SqlSugar
                 }
                 this.Where(whereModels);
             }
+            return this;
+        }
+        public ISugarQueryable<T> Where(Dictionary<string, Type> keyIsShortName_ValueIsType_Dictionary, FormattableString expressionString) 
+        {
+            var exp = DynamicCoreHelper.GetWhere(keyIsShortName_ValueIsType_Dictionary, expressionString);
+            _Where(exp);
             return this;
         }
         public virtual ISugarQueryable<T> Where(string expShortName, FormattableString expressionString) 
@@ -1347,6 +1360,11 @@ namespace SqlSugar
                 SetAppendNavColumns(expression);
             }
             return _Select<TResult>(expression);
+        }
+        public ISugarQueryable<TResult> Select<TResult>(Dictionary<string, Type> keyIsShortName_ValueIsType_Dictionary, FormattableString expSelect, Type resultType) 
+        {
+            var exp = DynamicCoreHelper.GetMember(keyIsShortName_ValueIsType_Dictionary, resultType, expSelect);
+            return _Select<TResult>(exp);
         }
         public ISugarQueryable<TResult> Select<TResult>(string expShortName, FormattableString expSelect, Type resultType) 
         {
