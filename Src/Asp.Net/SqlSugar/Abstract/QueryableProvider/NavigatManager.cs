@@ -507,6 +507,10 @@ namespace SqlSugar
             if (IsJsonMapping(navObjectNameColumnInfo, sqlObj))
             {
                 CreateDynamicMappingExpression(sqlObj, navObjectNameColumnInfo.Navigat.Name, navEntityInfo, listItemEntity);
+                if (sqlObj.WhereString == null)
+                {
+                    sqlObj.WhereString = navObjectNameColumnInfo?.Navigat?.Name2;
+                }
             }
             Check.ExceptionEasy(sqlObj.MappingExpressions.IsNullOrEmpty(), $"{expression} error,dynamic need MappingField ,Demo: Includes(it => it.Books.MappingField(z=>z.studenId,()=>it.StudentId).ToList())", $"{expression} 解析出错,自定义映射需要 MappingField ,例子: Includes(it => it.Books.MappingField(z=>z.studenId,()=>it.StudentId).ToList())");
             if (list.Any() && navObjectNamePropety.GetValue(list.First()) == null)
@@ -537,6 +541,10 @@ namespace SqlSugar
             if (IsJsonMapping(navObjectNameColumnInfo, sqlObj))
             {
                 CreateDynamicMappingExpression(sqlObj, navObjectNameColumnInfo.Navigat.Name, navEntityInfo, listItemEntity);
+                if (sqlObj.WhereString == null)
+                {
+                    sqlObj.WhereString = navObjectNameColumnInfo?.Navigat?.Name2;
+                } 
             }
             Check.ExceptionEasy(sqlObj.MappingExpressions.IsNullOrEmpty(), $"{expression} error，dynamic need MappingField ,Demo: Includes(it => it.Books.MappingField(z=>z.studenId,()=>it.StudentId).ToList())", $"{expression}解析出错， 自定义映射需要 MappingField ,例子: Includes(it => it.Books.MappingField(z=>z.studenId,()=>it.StudentId).ToList())");
             if (list.Any() && navObjectNamePropety.GetValue(list.First()) == null)
