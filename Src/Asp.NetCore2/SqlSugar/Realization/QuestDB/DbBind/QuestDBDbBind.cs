@@ -107,6 +107,7 @@ namespace SqlSugar
                     new KeyValuePair<string, CSharpDataType>("tsvector",CSharpDataType.@string),
                     new KeyValuePair<string, CSharpDataType>("txid_snapshot",CSharpDataType.@string),
                     new KeyValuePair<string, CSharpDataType>("string",CSharpDataType.Guid),
+                    new KeyValuePair<string, CSharpDataType>("uuid",CSharpDataType.Guid),
                     new KeyValuePair<string, CSharpDataType>("xml",CSharpDataType.@string),
                     new KeyValuePair<string, CSharpDataType>("json",CSharpDataType.@string),
 
