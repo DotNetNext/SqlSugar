@@ -35,9 +35,9 @@ namespace OrmTest
             public string Name { get; set; }
             public int AddressId { get; set; }
             public int AddressId2 { get; set; }
-            [SqlSugar.Navigate(SqlSugar.NavigateType.Dynamic, "[{m:\"AddressId\",c:\"Id\"},{m:\"AddressId\",c:\"Id\"}]",  "Id=1")]
+            [SqlSugar.Navigate(SqlSugar.NavigateType.Dynamic, "[{m:\"AddressId\",c:\"Id\"},{m:\"AddressId\",c:\"Id\"}]",  "Id>0")]
             public UnitAddress011 adds { get; set; }
-            [SqlSugar.Navigate(SqlSugar.NavigateType.Dynamic, "[{m:\"AddressId2\",c:\"Id\"},{m:\"AddressId2\",c:\"Id\"}]", "Id=1")]
+            [SqlSugar.Navigate(SqlSugar.NavigateType.Dynamic, "[{m:\"AddressId2\",c:\"Id\"},{m:\"AddressId2\",c:\"Id\"}]", "Id>0")]
             public UnitAddress011 adds2 { get; set; }
         }
         [SqlSugar.SugarTable("UnitAddress0x1x1")]
