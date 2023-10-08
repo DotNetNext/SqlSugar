@@ -299,6 +299,10 @@ namespace SqlSugar
                         {
                             item.DefaultValue = "DateTime.Now";
                         }
+                        else if (item.DefaultValue == "b'1'") 
+                        {
+                            item.DefaultValue = "1";
+                        }
                         ConstructorText = ConstructorText.Replace(DbFirstTemplate.KeyPropertyName, propertyName);
                         ConstructorText = ConstructorText.Replace(DbFirstTemplate.KeyDefaultValue, GetPropertyTypeConvert(item)) + (!hasDefaultValue ? "" : this.ConstructorTemplate);
                     }
