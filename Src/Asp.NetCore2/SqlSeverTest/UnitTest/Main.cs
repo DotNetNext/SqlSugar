@@ -30,6 +30,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UnitCreateNavClass.Init();
             UnitBulkMerge.Init();
             UnitBool.Init();
             UnitGridSave.Init();
