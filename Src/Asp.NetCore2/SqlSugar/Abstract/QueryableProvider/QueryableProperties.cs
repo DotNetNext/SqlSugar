@@ -23,6 +23,21 @@ namespace SqlSugar
         public List<Action<T>> MapperAction { get; set; }
         public Action<T, MapperCache<T>> MapperActionWithCache { get; set; }
         public List<Action<List<T>>> Mappers { get; set; }
+        
+        /// <summary>
+        /// 异步Mapper
+        /// </summary>
+        public List<Func<List<T>,Task>> AsyncMappers { get; set;}
+        
+        /// <summary>
+        /// 异步Mapper
+        /// </summary>
+        public List<Func<T,Task>> AsyncMapperAction { get; set; }
+        
+        /// <summary>
+        /// 返回Task的Mapper
+        /// </summary>
+        public Func<T,MapperCache<T>,Task> AsyncMapperActionWithCache { get; set; }
         public bool IsCache { get; set; }
         public int CacheTime { get; set; }
         public string CacheKey { get; set; }

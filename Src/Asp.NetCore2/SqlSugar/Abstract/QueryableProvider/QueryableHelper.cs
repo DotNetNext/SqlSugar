@@ -910,6 +910,79 @@ namespace SqlSugar
                 }
             }
         }
+
+        protected async Task _MapperAsync<TResult>(List<TResult> result)
+        {
+            this._Mapper(result);
+            
+            if (this.MapperActionWithCache != null)
+            {
+                if (typeof(TResult) == typeof(T))
+                {
+                    var list = (List<T>)Convert.ChangeType(result, typeof(List<T>));
+                    var mapperCache = new MapperCache<T>(list, this.Context);
+                    foreach (T item in list)
+                    {
+                        mapperCache.GetIndex = 0;
+                        this.MapperActionWithCache(item, mapperCache);
+                    }
+                }
+                else
+                {
+                    Check.Exception(true, "{0} and {1} are not a type, Try .select().mapper().ToList", typeof(TResult).FullName, typeof(T).FullName);
+                }
+            }
+            
+            if (AsyncMappers.HasValue())
+            {
+                foreach (var mapper in this.AsyncMappers)
+                {
+                    if (typeof(TResult) == typeof(T))
+                    {
+                        await mapper(result.Select(it => (T)Convert.ChangeType(it, typeof(T))).ToList());
+                    }
+                    else
+                    {
+                        Check.Exception(true, "{0} and {1} are not a type, Try .select().mapper().ToList", typeof(TResult).FullName, typeof(T).FullName);
+                    }
+                }
+            }
+            if (AsyncMapperAction != null)
+            {
+                foreach (TResult item in result)
+                {
+                    if (typeof(TResult) == typeof(T))
+                    {
+                        foreach (var mapper in this.AsyncMapperAction)
+                        {
+                            await mapper((T)(item as object));
+                        }
+                    }
+                    else
+                    {
+                        Check.Exception(true, "{0} and {1} are not a type, Try .select().mapper().ToList", typeof(TResult).FullName, typeof(T).FullName);
+                    }
+                }
+            }
+            if (AsyncMapperActionWithCache != null)
+            {
+                if (typeof(TResult) == typeof(T))
+                {
+                    var list = (List<T>)Convert.ChangeType(result, typeof(List<T>));
+                    var mapperCache = new MapperCache<T>(list, this.Context);
+                    foreach (T item in list)
+                    {
+                        mapperCache.GetIndex = 0;
+                        await AsyncMapperActionWithCache(item, mapperCache);
+                    }
+                }
+                else
+                {
+                    Check.Exception(true, "{0} and {1} are not a type, Try .select().mapper().ToList", typeof(TResult).FullName, typeof(T).FullName);
+                }
+            }
+        }
+        
         private ISugarQueryable<T> _Mapper<TObject>(Expression mapperObject, Expression mapperField)
         {
             if ((mapperObject as LambdaExpression).Body is UnaryExpression)
@@ -1799,7 +1872,7 @@ namespace SqlSugar
             RestoreMapping();
             await _InitNavigatAsync(result);
             await _SubQueryAsync(result);
-            _Mapper(result);
+            await _MapperAsync(result);
             return result;
         }
         private void ToSqlBefore()

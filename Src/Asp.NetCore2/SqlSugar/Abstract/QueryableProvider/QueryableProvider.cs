@@ -418,6 +418,14 @@ namespace SqlSugar
             this.MapperAction.Add(mapperAction);
             return this;
         }
+
+        public virtual ISugarQueryable<T> Mapper(Func<T, Task> asyncMapperAction)
+        {
+            AsyncMapperAction = UtilMethods.IsNullReturnNew(AsyncMapperAction);
+            AsyncMapperAction.Add(asyncMapperAction);
+            return this;
+        }
+        
         public ISugarQueryable<T> Mapper<AType, BType, MappingType>(Expression<Func<MappingType, ManyToMany>> expression)
         {
             var args = ((expression as LambdaExpression).Body as MethodCallExpression).Arguments;
@@ -514,6 +522,13 @@ namespace SqlSugar
             this.MapperActionWithCache += mapperAction;
             return this;
         }
+
+        public virtual ISugarQueryable<T> Mapper(Func<T, MapperCache<T>, Task> asyncMapperAction)
+        {
+            this.AsyncMapperActionWithCache += asyncMapperAction;
+            return this;
+        }
+        
         public ISugarQueryable<T> Mapper<TObject>(Expression<Func<T, TObject>> mapperObject, Expression<Func<T, object>> mainField, Expression<Func<T, object>> childField)
         {
             Check.Exception(mapperObject.ReturnType.Name == "IList`1", "Mapper no support IList , Use List<T>");
