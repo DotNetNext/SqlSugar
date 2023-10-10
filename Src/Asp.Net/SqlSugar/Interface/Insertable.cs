@@ -26,7 +26,9 @@ namespace SqlSugar
         Task<int> ExecuteReturnIdentityAsync();
         Task<int> ExecuteReturnIdentityAsync(CancellationToken token);
         T ExecuteReturnEntity();
+        T ExecuteReturnEntity(bool isIncludesAllFirstLayer);
         Task<T> ExecuteReturnEntityAsync();
+        Task<T> ExecuteReturnEntityAsync(bool isIncludesAllFirstLayer);
         bool ExecuteCommandIdentityIntoEntity();
         Task<bool> ExecuteCommandIdentityIntoEntityAsync();
         long ExecuteReturnBigIdentity();

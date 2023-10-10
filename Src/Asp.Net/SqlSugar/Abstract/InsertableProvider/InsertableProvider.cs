@@ -367,10 +367,20 @@ namespace SqlSugar
             After(sql, result);
             return result;
         }
+        public T ExecuteReturnEntity(bool isIncludesAllFirstLayer)
+        {
+            var data =  ExecuteReturnEntity();
+            return  this.Context.Queryable<T>().WhereClassByPrimaryKey(data).IncludesAllFirstLayer().First();
+        }
         public async Task<T> ExecuteReturnEntityAsync()
         {
             await ExecuteCommandIdentityIntoEntityAsync();
             return InsertObjs.First();
+        }
+        public async Task<T> ExecuteReturnEntityAsync(bool isIncludesAllFirstLayer) 
+        {
+            var data=await ExecuteReturnEntityAsync();
+            return await this.Context.Queryable<T>().WhereClassByPrimaryKey(data).IncludesAllFirstLayer().FirstAsync();
         }
         public async Task<bool> ExecuteCommandIdentityIntoEntityAsync()
         {
