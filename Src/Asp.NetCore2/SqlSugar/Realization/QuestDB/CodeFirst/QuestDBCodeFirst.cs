@@ -70,6 +70,10 @@ namespace SqlSugar
                 result.DecimalDigits = item.DecimalDigits;
             }
             GetDbType(item, propertyType, result);
+            if (item.IsJson) 
+            {
+                result.DataType = "string";
+            }
             if (result.DataType.Equals("varchar", StringComparison.CurrentCultureIgnoreCase) && result.Length == 0)
             {
                 result.Length = 1;
