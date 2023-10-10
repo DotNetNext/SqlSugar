@@ -47,6 +47,11 @@ namespace OrmTest
                 names = SqlFunc.Subqueryable<Order>().Where(z => z.Id == it.Id).SelectStringJoin(z => z.Name, ",")
             })
             .ToList();
+            var test48 = db.Queryable<Order>().Select(it => new {
+                Name = Convert.ToString(it.Name),
+                Name2 = it.Id.ToString("0.0"),
+                Name3= SqlFunc.ToString(it.Id)
+            }).ToList();
             Console.WriteLine("#### Examples End ####");
         }
 
