@@ -377,7 +377,13 @@ WHERE tgrelid = '"+tableName+"'::regclass");
             });
             if (!GetDataBaseList(newDb).Any(it => it.Equals(databaseName, StringComparison.CurrentCultureIgnoreCase)))
             {
-                newDb.Ado.ExecuteCommand(string.Format(CreateDataBaseSql, this.SqlBuilder.SqlTranslationLeft+databaseName+this.SqlBuilder.SqlTranslationRight, databaseDirectory));
+                var isVast = this.Context?.TempItems?.ContainsKey("DbType.Vastbase")==true;
+                var dbcompatibility = "";
+                if (isVast) 
+                {
+                    dbcompatibility=" dbcompatibility = 'PG'";
+                }
+                newDb.Ado.ExecuteCommand(string.Format(CreateDataBaseSql, this.SqlBuilder.SqlTranslationLeft+databaseName+this.SqlBuilder.SqlTranslationRight, databaseDirectory)+ dbcompatibility);
             }
             return true;
         }
