@@ -344,13 +344,10 @@ namespace SqlSugar
                             include=Regex.Match( item.IndexName,@"\{include\:.+$").Value;
                             item.IndexName = item.IndexName.Replace(include, "");
                         }
-                        if (item.IndexName.Contains("."))
+                        if (item.IndexName.Contains(".")&& item.IndexName.Contains("["))
                         {
                             item.IndexName = item.IndexName.Replace(",","_");
-                            if (item.IndexName.Contains("[")) 
-                            {
-                                item.IndexName = item.IndexName.Replace("[", "").Replace("]", "");
-                            }
+                            item.IndexName = item.IndexName.Replace("[", "").Replace("]", "");
                         }
                     }
                     if (!this.Context.DbMaintenance.IsAnyIndex(item.IndexName))
