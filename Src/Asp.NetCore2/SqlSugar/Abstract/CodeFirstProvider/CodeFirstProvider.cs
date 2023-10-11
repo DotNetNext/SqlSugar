@@ -346,7 +346,7 @@ namespace SqlSugar
                         }
                         if (item.IndexName.Contains(".")&& item.IndexName.Contains("["))
                         {
-                            item.IndexName = item.IndexName.Replace(",","_");
+                            item.IndexName = item.IndexName.Replace(".","_");
                             item.IndexName = item.IndexName.Replace("[", "").Replace("]", "");
                         }
                     }
