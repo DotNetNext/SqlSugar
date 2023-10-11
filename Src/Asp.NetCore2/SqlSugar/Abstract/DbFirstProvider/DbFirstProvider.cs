@@ -452,7 +452,7 @@ namespace SqlSugar
                 return item.DbColumnName;
             }
         }
-        private string GetPropertyTypeName(DbColumnInfo item)
+        protected virtual string GetPropertyTypeName(DbColumnInfo item)
         {
             string result = item.PropertyType != null ? item.PropertyType.Name : this.Context.Ado.DbBind.GetPropertyTypeName(item.DataType);
             if (result != "string" && result != "byte[]" && result != "object" && item.IsNullable)
@@ -482,6 +482,14 @@ namespace SqlSugar
             if (result.EqualCase("char")|| result.EqualCase("char?")) 
             {
                 return "string";
+            }
+            if (item.DataType == "tinyint unsigned") 
+            {
+                return "short"; 
+            }
+            if (item.DataType == "smallint unsigned")
+            {
+                return "ushort";
             }
             return result;
         }
