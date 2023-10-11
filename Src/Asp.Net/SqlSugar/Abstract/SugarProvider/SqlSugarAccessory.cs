@@ -421,7 +421,7 @@ namespace SqlSugar
             }
             return false;
         }
-        private static void CheckDbDependency(ConnectionConfig config)
+        private  void CheckDbDependency(ConnectionConfig config)
         {
             switch (config.DbType)
             {
@@ -490,6 +490,14 @@ namespace SqlSugar
                     break;
                 case DbType.GaussDB:
                     config.DbType = DbType.PostgreSQL; 
+                    break;
+                case DbType.Vastbase:
+                    config.DbType = DbType.PostgreSQL;
+                    if (this.TempItems == null) 
+                    {
+                        this.TempItems = new Dictionary<string, object>();
+                    }
+                    this.TempItems.Add("DbType.Vastbase", "DbType.Vastbase");
                     break;
                 case DbType.OceanBase:
                     config.DbType = DbType.MySql; 

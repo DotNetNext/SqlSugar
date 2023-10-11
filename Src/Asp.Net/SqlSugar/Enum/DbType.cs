@@ -28,6 +28,7 @@ namespace SqlSugar
         GaussDB,
         OceanBase,
         Tidb,
+        Vastbase,
         Custom =900
     }
 }
