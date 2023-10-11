@@ -75,11 +75,11 @@ namespace SqlSugar
             return methodValue != null && methodValue.ToString().Contains("THEN true  ELSE false END");
         }
         private object packIfElse(object methodValue)
-        {
+        { 
             methodValue = this.Context.DbMehtods.CaseWhen(new List<KeyValuePair<string, string>>() {
                     new KeyValuePair<string, string>("IF",methodValue.ObjToString()),
-                    new KeyValuePair<string, string>("Return","1"),
-                    new KeyValuePair<string, string>("End","0")
+                    new KeyValuePair<string, string>("Return", this.Context.DbMehtods.TrueValue()),
+                    new KeyValuePair<string, string>("End", this.Context.DbMehtods.FalseValue())
                  });
             return methodValue;
         }
