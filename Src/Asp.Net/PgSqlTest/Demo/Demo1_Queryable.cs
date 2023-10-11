@@ -65,6 +65,8 @@ namespace OrmTest
                 names = $"as{it.Id}fd{it.Id}a"
             })
              .ToList();
+            var test09 =  db.Queryable<Order>().Where(it => string.IsNullOrEmpty(it.Name) == true)
+             .ToList(); 
             Console.WriteLine("#### Examples End ####");
             Console.WriteLine("#### Examples End ####");
         }
