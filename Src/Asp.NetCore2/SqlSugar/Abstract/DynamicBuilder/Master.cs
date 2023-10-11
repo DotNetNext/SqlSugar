@@ -51,6 +51,11 @@ namespace SqlSugar
                 // 获取对象中的属性
                 PropertyInfo propertyInfo = type.GetProperty(pair.Key);
 
+                if (propertyInfo == null) 
+                {
+                    propertyInfo = type.GetProperties().FirstOrDefault(it=>it.Name.EqualCase(pair.Key));
+                }
+
                 if (propertyInfo != null)
                 {
                     propertyInfo.SetValue(obj, UtilMethods.ChangeType2(pair.Value, propertyInfo.PropertyType));
