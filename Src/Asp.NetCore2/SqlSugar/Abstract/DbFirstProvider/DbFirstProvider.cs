@@ -491,6 +491,22 @@ namespace SqlSugar
             {
                 return "ushort";
             }
+            if (item.DataType == "bigint unsigned")
+            {
+                return "ulong";
+            }
+            if (item.DataType == "int unsigned")
+            {
+                return "uint";
+            }
+            if (item.DataType == "MediumInt")
+            {
+                return "int";
+            }
+            if (item.DataType == "MediumInt unsigned")
+            {
+                return "uint";
+            }
             return result;
         }
         private string GetPropertyTypeConvert(DbColumnInfo item)
