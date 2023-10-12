@@ -25,6 +25,12 @@ namespace SqlSugar
                 result.DecimalDigits = 0;
                 result.DataType = "NUMBER(19,0)";
             }
+            else if (item.DataType == null && item.UnderType == UtilConstants.BoolType)
+            {
+                result.Length = 0;
+                result.DecimalDigits = 0;
+                result.DataType = "NUMBER(1,0)";
+            }
             //else if (item.DataType == null && item.UnderType == UtilConstants.IntType)
             //{
             //    result.Length = 0;
