@@ -12,6 +12,10 @@ namespace SqlSugar
                 return "binary";
 
             var result = base.GetDbTypeName(csharpTypeName);
+            if (csharpTypeName == "Single") 
+            {
+                result = "double";
+            }
             return result;
         }
         public override string GetPropertyTypeName(string dbTypeName)
