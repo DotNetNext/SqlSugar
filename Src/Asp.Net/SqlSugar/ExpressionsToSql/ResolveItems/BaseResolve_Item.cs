@@ -77,7 +77,7 @@ namespace SqlSugar
             }
             else
             {
-                parameter.Context.Result.Append(this.Context.GetAsString(asName, parameter.CommonTempData.ObjToString()));
+                parameter.Context.Result.Append(this.Context.GetAsString2(asName, parameter.CommonTempData.ObjToString()));
             }
         }
 
