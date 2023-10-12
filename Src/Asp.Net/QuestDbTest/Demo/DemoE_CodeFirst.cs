@@ -35,6 +35,9 @@ namespace OrmTest
                 .PartitionBy(it => new { it.Ts,  it.Id }).ToList();
             db.CodeFirst.InitTables<GuidTest22>();
             db.DbFirst.CreateClassFile("c:\\demo\\11");
+            db.CodeFirst.InitTables<FloatTestdfa>();
+            db.Insertable(new FloatTestdfa() { A = 1 }).ExecuteCommand();
+            var list3=db.Queryable<FloatTestdfa>().ToList();
             Console.WriteLine("#### CodeFirst end ####");
         }
         private static void TestGuid(SqlSugarClient db)
@@ -58,6 +61,11 @@ namespace OrmTest
             db.Updateable<BoolTest5>(  new BoolTest5() { dateTime = DateTime.Now, A = false, Id = Id  }).ExecuteCommand();
             Console.Write(db.Queryable<BoolTest5>().First(it => it.Id == Id).A);
         }
+    }
+    [SugarTable("FloatTestdfa1")]
+    public class FloatTestdfa 
+    {
+        public float A { get; set; }
     }
     public class GuidTest
     {
