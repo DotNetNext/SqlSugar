@@ -48,8 +48,13 @@ namespace OrmTest
             {
                 unit00Z11C12 = it
             }).ToList();
+            db.CodeFirst.InitTables<Unitadfafa1>();
             Console.WriteLine("#### CodeFirst end ####");
         }
+    }
+    public class Unitadfafa1 
+    {
+        public bool xx { get; set; }
     }
     public enum UnitType 
     {
