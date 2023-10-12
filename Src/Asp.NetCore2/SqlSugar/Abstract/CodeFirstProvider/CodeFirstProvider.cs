@@ -692,11 +692,15 @@ namespace SqlSugar
             {
                 return false;
             }
-            else if (properyTypeName.IsIn("int", "long") && dataType.EqualCase("decimal") && dc.Length == 38 && dc.DecimalDigits == 127) 
+            else if (properyTypeName.IsIn("int", "long") && dataType.EqualCase("decimal") && dc.Length == 38 && dc.DecimalDigits == 127)
             {
                 return false;
             }
             else if (dataType.EqualCase("numeric") && properyTypeName.EqualCase("decimal"))
+            {
+                return false;
+            }
+            else if (ec.UnderType == UtilConstants.BoolType && dc.OracleDataType?.EqualCase("number")==true) 
             {
                 return false;
             }
