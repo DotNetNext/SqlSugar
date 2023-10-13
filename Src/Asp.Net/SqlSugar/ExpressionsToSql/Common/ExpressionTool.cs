@@ -10,6 +10,21 @@ namespace SqlSugar
 {
     public class ExpressionTool
     {
+        public static List<string> ExtractMemberNames(Expression expression)
+        {
+            var memberNames = new List<string>();
+            var currentExpression = (expression as LambdaExpression).Body;
+
+            while (currentExpression != null && currentExpression.NodeType == ExpressionType.MemberAccess)
+            {
+                var memberExpression = (MemberExpression)currentExpression;
+                memberNames.Add(memberExpression.Member.Name);
+                currentExpression = memberExpression.Expression;
+            }
+
+            memberNames.Reverse(); // Reverse the list to get the correct order of member names
+            return memberNames;
+        } 
         public static Expression<Func<T, bool>> ChangeLambdaExpression<T>(Expression<Func<T,bool>> exp,string replaceParameterName, string newParameterName)
         {
             var parameter = Expression.Parameter(typeof(T), newParameterName);
