@@ -272,6 +272,10 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override bool RenameTable(string oldTableName, string newTableName)
+        {
+            return base.RenameTable(SqlBuilder.GetTranslationColumnName(oldTableName), SqlBuilder.GetTranslationColumnName(newTableName));
+        }
         public override List<string> GetDbTypes()
         {
             var result= this.Context.Ado.SqlQuery<string>(@"SELECT DISTINCT DATA_TYPE
