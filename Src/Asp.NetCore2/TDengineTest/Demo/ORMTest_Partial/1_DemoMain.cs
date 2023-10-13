@@ -44,6 +44,11 @@ namespace TDengineTest
 
             //查询子表(主表字段也能查出来)
             var list = db.Queryable<MyTable02>().OrderBy(it => it.ts).ToList();
+            var list1 = db.Queryable<MyTable02>().OrderBy(it => it.ts)
+                .Select(it=>new {
+                  date=it.ts.Date,
+                  ts=it.ts
+                }).ToList();
 
             //条件查询
             var list2 = db.Queryable<MyTable02>().Where(it => it.name == "测试2").ToList();
