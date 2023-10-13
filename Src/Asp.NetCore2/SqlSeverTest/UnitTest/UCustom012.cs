@@ -126,8 +126,22 @@ namespace OrmTest
             db.Insertable(new Tree1() { Id = 4, Name = "02" }).ExecuteCommand();
             db.Insertable(new Tree1() { Id = 5, Name = "0201", ParentId = 2 }).ExecuteCommand(); 
             db.Insertable(new Tree1() { Id = 6, Name = "020101", ParentId = 5 }).ExecuteCommand();
-
-
+            db.Insertable(new Tree1() { Id = 7, Name = "02010101", ParentId = 6 }).ExecuteCommand();
+            var tree1=db.Queryable<Tree1>().Includes(x => x.Parent.Parent).ToList();
+            if (tree1.Last().Parent.Parent == null) 
+            {
+                throw new Exception("unit error");
+            }
+            var tree2 = db.Queryable<Tree1>().Includes(x => x.Parent.Parent.Parent).ToList();
+            if (tree2.Last().Parent.Parent.Parent == null)
+            {
+                throw new Exception("unit error");
+            }
+            var tree3 = db.Queryable<Tree1>().Includes(x => x.Parent.Parent.Parent.Parent).ToList();
+            if (tree3.Last().Parent.Parent.Parent.Parent == null)
+            {
+                throw new Exception("unit error");
+            }
             var list21111 = new List<Tree1>();
            var xxx= db.Queryable<Tree1>()
                 .Includes(it => it.Child)
