@@ -1331,8 +1331,8 @@ namespace SqlSugar
             }
             else
             {
-                if (this.QueryBuilder.GetSelectValue != null && this.QueryBuilder.GetSelectValue.Contains(",")) ;
-                {
+               //if (this.QueryBuilder.GetSelectValue != null && this.QueryBuilder.GetSelectValue.Contains(",")) ;
+               //{
                     columns = "(";
                     foreach (var item in this.QueryBuilder.GetSelectValue.Split(','))
                     {
@@ -1345,7 +1345,7 @@ namespace SqlSugar
                         columns += $"{column},";
                     }
                     columns = columns.TrimEnd(',') + ")";
-                }
+                //}
                 sql = $" INSERT  INTO {name} {columns} " + sqlInfo.Key;
             }
         }
