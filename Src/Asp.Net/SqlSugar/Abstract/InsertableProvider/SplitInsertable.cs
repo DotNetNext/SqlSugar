@@ -8,6 +8,7 @@ namespace SqlSugar
 {
     public class SplitInsertable<T>  where T:class ,new()
     {
+        private static readonly object SplitLockObj = new object();
         public SqlSugarProvider Context;
         internal SplitTableContext Helper;
         public EntityInfo EntityInfo;
@@ -215,10 +216,16 @@ namespace SqlSugar
             {
                 if (!this.Context.DbMaintenance.IsAnyTable(item.Key, false)) 
                 {
-                    if (item.Value != null)
+                    lock (SplitLockObj)
                     {
-                        this.Context.MappingTables.Add(EntityInfo.EntityName, item.Key);
-                        this.Context.CodeFirst.InitTables<T>();
+                        if (!this.Context.DbMaintenance.IsAnyTable(item.Key, false))
+                        {
+                            if (item.Value != null)
+                            {
+                                this.Context.MappingTables.Add(EntityInfo.EntityName, item.Key);
+                                this.Context.CodeFirst.InitTables<T>();
+                            }
+                        }
                     }
                 }
             }
