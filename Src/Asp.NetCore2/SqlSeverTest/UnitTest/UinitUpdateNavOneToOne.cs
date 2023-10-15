@@ -28,8 +28,8 @@ namespace OrmTest
             }
 
 
-            while (true)
-            {
+            //while (true)
+            //{
                 string uName = "测试用户名";
                 if (!db.Queryable<UserTest>().Where(u => u.Name == uName).Any())
                 {
@@ -66,7 +66,7 @@ namespace OrmTest
 
                 var address= userData2.ShopDataTest.AddressTest;
 
-            }
+           // }
 
         }
         [SugarTable("AddressTest")]
