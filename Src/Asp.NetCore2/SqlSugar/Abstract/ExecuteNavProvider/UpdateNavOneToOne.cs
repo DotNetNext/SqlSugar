@@ -33,6 +33,12 @@ namespace SqlSugar
                         var pkValue = thisPkColumn.PropertyInfo.GetValue(childItem);
                         if (IsDefaultValue(navPropertyValue))
                         {
+                            if (parentColumn.IsPrimarykey==false&&isManyPk == false && parentColumn.IsIdentity == false)
+                            {
+                                this._Context.Updateable<DbTableInfo>().AS(parentEntity.DbTableName)
+                               .SetColumns(parentColumn.DbColumnName, pkValue)
+                               .Where(parentPkColumn.DbColumnName, "=", parentPkColumn.PropertyInfo.GetValue(parent)).ExecuteCommand();
+                            }
                             navPropertyValue = pkValue;
                         }
 
