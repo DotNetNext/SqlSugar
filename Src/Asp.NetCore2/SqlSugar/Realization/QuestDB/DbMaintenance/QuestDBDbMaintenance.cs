@@ -220,8 +220,8 @@ namespace SqlSugar
             if (entityInfo.Indexs != null)
             {
                 foreach (var item in entityInfo.Indexs)
-                {
-                    CreateIndex(entityInfo.DbTableName, item.IndexFields.Select(it => it.Key).ToArray());
+                { 
+                    CreateIndex(entityInfo.DbTableName, item.IndexFields.Select(it => it.Key).ToArray(),item.IsUnique);
                 }
             }
         }
