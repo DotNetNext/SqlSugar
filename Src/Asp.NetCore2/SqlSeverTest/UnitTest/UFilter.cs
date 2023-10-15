@@ -107,6 +107,12 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+            db.CodeFirst.InitTables<FilterTest>();
+            db.Queryable<FilterTest, FilterTest, FilterTest>((x, y, z) => x.OrgId == y.OrgId)
+                .Select("x.*").ToList();
+            db.QueryFilter.Clear();
+            db.Queryable<FilterTest, FilterTest, FilterTest>((x, y, z) => x.OrgId == y.OrgId)
+              .Select("x.*").ToList();
         }
         public class FilterTest : IDeleted, IOrg
         {
