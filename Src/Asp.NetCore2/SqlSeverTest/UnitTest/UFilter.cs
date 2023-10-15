@@ -90,6 +90,23 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+            db.QueryFilter.Clear();
+            //db.QueryFilter.AddTableFilter<Order>(x => x.Id==1);
+            db.QueryFilter.AddTableFilter<IOrg>(x => x.OrgId == 1);
+            var sql3 = db.Queryable< FilterTest, Order>((y, x) => x.Id == y.OrgId)
+                .ToSqlString();
+            var sql4=db.Queryable<Order, FilterTest, FilterTest>((x, y,z) => x.Id == y.OrgId)
+                .ToSqlString();
+            if (!sql4.Contains("AND ( [y].[OrgId] = 1 ) AND ( [z].[OrgId] = 1")) 
+            {
+                throw new Exception("unit error");
+            }
+            var sql5 = db.Queryable<FilterTest, FilterTest, FilterTest>((x, y, z) => x.OrgId == y.OrgId)
+             .ToSqlString();
+            if (!sql5.Contains("WHERE ( [x].[OrgId] = [y].[OrgId] )  AND ( [x].[OrgId] = 1 ) AND ( [y].[OrgId] = 1 ) AND ( [z].[OrgId] = 1 )"))
+            {
+                throw new Exception("unit error");
+            }
         }
         public class FilterTest : IDeleted, IOrg
         {
