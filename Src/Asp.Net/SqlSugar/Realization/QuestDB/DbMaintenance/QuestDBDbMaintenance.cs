@@ -220,15 +220,18 @@ namespace SqlSugar
             if (entityInfo.Indexs != null)
             {
                 foreach (var item in entityInfo.Indexs)
-                {
-                    CreateIndex(entityInfo.DbTableName, item.IndexFields.Select(it => it.Key).ToArray());
+                { 
+                    CreateIndex(entityInfo.DbTableName, item.IndexFields.Select(it => it.Key).ToArray(),item.IsUnique);
                 }
             }
         }
         public override bool CreateIndex(string tableName, string[] columnNames, bool isUnique = false)
         {
             if (isUnique)
-                throw new Exception("no support  unique index");
+            {
+                this.Context.Ado.ExecuteCommand($"ALTER TABLE {tableName} DEDUP ENABLE UPSERT KEYS({string.Join(",",columnNames)})");
+                return true;
+            }
             var columnInfos = this.Context.Ado.SqlQuery<QuestDbColumn>("SHOW COLUMNS FROM  '" + tableName + "'");
             foreach (var columnInfo in columnInfos)
             {
