@@ -438,6 +438,16 @@ namespace SqlSugar
                     sql = ReplaceFilterColumnName(sql, filterType);
                 }
             }
+            else if (isEasyJoin && ChildType.IsInterface && this.JoinExpression != null && (this.JoinExpression as LambdaExpression)?.Parameters?.Any(it => it.Type.GetInterfaces().Any(z => z == ChildType)) == true)
+            {
+                var parameters = (this.JoinExpression as LambdaExpression).Parameters.Where(it => it.Type.GetInterfaces().Any(z => z == ChildType)).ToList();
+                foreach (var parameter in parameters)
+                {
+                    var shortName = this.Builder.GetTranslationColumnName(parameter.Name) + ".";
+                    var mysql = GetSql(exp, isSingle);
+                    sql += mysql.Replace(itName, shortName);
+                }
+            }
             else if (isMain)
             {
                 if (TableShortName == null)
