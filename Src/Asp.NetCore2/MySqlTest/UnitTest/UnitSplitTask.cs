@@ -20,7 +20,8 @@ namespace OrmTest
             };
 
              Task.WhenAll(tasks).GetAwaiter().GetResult();
-            client.Deleteable(new SpitDemoModel()).SplitTable().ExecuteCommand();
+            var table = client.SplitHelper<SpitDemoModel>().GetTableName(SplitType.Day);
+            client.DbMaintenance.DropTable(table);
         }
 
 
