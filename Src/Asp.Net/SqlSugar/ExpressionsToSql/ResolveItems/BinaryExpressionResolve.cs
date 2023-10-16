@@ -85,10 +85,15 @@ namespace SqlSugar
 
                 var leftChild = ExpressionTool.RemoveConvert((left as BinaryExpression).Right);
                 var rightChild = ExpressionTool.RemoveConvert((right as BinaryExpression).Right);
-                if (ExpressionTool.GetMethodName(leftChild)=="Select"
-                    && ExpressionTool.GetMethodName(rightChild) == "Select"
-                    && ExpressionTool.ContainsMethodName(left as BinaryExpression, "Group")
-                    &&ExpressionTool.ContainsMethodName(right as BinaryExpression, "Group")) 
+                var isLeftSelect = ExpressionTool.GetMethodName(leftChild) == "Select";
+                var isRightSelect = ExpressionTool.GetMethodName(rightChild) == "Select";
+                var isLeftGroup = ExpressionTool.ContainsMethodName(left as BinaryExpression, "Group");
+                var isRightGroup = ExpressionTool.ContainsMethodName(right as BinaryExpression, "Group");
+                if ( 
+                     (isLeftSelect && isLeftGroup)
+                     || 
+                     (isRightSelect && isRightGroup) 
+                 ) 
                 {
                     return true;
                 }
