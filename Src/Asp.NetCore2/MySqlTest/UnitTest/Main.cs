@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UnitSplitTask.Init();
             UnitBulkMerge.Init();
             UnitUpdateNavOneToOneFalse.Init();
             UnitCreateType.Init();
