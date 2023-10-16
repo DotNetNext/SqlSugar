@@ -85,6 +85,18 @@ namespace OrmTest
             {
                 xxx = SqlFunc.AggregateCount(it.Id)
             }, true).ToList();
+            var list6 = db.Queryable<Order>().Where(m => m.Id == SqlFunc.Subqueryable<Order>()
+                     .Where(o => o.Price > 200)
+                     .GroupBy(o => o.Id)
+                     .Select(o => o.Id) && m.CreateTime >= DateTime.Now)
+                     .OrderBy("id desc")
+                     .ToPageList(1, 10);
+            var list7 = db.Queryable<Order>().Where(m => m.CreateTime >= DateTime.Now&&m.Id == SqlFunc.Subqueryable<Order>()
+                     .Where(o => o.Price > 200)
+                     .GroupBy(o => o.Id)
+                     .Select(o => o.Id))
+                     .OrderBy("id desc")
+                     .ToPageList(1, 10);
             Console.WriteLine("#### Examples End ####");
         }
 
