@@ -214,11 +214,11 @@ namespace SqlSugar
             this.Context.Ado.IsEnableLogEvent = false;
             foreach (var item in TableNames.GroupBy(it=>it.Key).Select(it=>it).ToDictionary(it=>it.Key,it=>it.First().Value))
             {
-                if (!this.Context.DbMaintenance.IsAnyTable(item.Key, false)) 
+                if (!this.Context.CopyNew().DbMaintenance.IsAnyTable(item.Key, false)) 
                 {
                     lock (SplitLockObj)
                     {
-                        if (!this.Context.DbMaintenance.IsAnyTable(item.Key, false))
+                        if (!this.Context.CopyNew().DbMaintenance.IsAnyTable(item.Key, false))
                         {
                             if (item.Value != null)
                             {
