@@ -1,4 +1,5 @@
-﻿using SqlSugar;
+﻿using OrmTest;
+using SqlSugar;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -19,6 +20,8 @@ namespace TDengineTest
             CodeFirst2(db);
 
             CodeFirst4(db);
+
+            db.CodeFirst.InitTables<TDHistoryValue>();
 
             //更多建表用例
             db.CodeFirst.InitTables<CodeFirst03>();
