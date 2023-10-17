@@ -1,6 +1,7 @@
 ﻿using SqlSugar;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Text;
 
 namespace OrmTest
@@ -47,6 +48,20 @@ namespace OrmTest
                 }).Take(10).ToList(); 
             }
 
+             var sql= Db.Queryable<Order>()
+               .Select(it => new {
+                   xx = SqlFunc.IIF(true, 1, -it.Id)
+               }).ToSqlString();
+
+            if(sql!= "SELECT  ( CASE  WHEN ( 1 = 1 )  THEN 1  ELSE [Id] * -1  END ) AS [xx]  FROM [Order] ")
+            { 
+                throw new Exception("unit error");
+            }
+            Db.Queryable<Order>()
+               .Select(it => new
+               {
+                   xx = SqlFunc.IIF(true, 1, -it.Id)
+               }).ToList();
             Console.WriteLine(list.Count);
         }
 
