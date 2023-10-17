@@ -77,7 +77,7 @@ namespace SqlSugar
                 .Where(it => it.InsertServerTime == false)
                 .Where(it => it.InsertSql == null)
                 .Where(it => it.IsOnlyIgnoreInsert == false);
-            var whereSql = string.Join(" , ", whereColumns.Select(it => $"tgt.{sqlBuilder.GetTranslationColumnName(it)}=src.{sqlBuilder.GetTranslationColumnName(it)}"));
+            var whereSql = string.Join(" AND ", whereColumns.Select(it => $"tgt.{sqlBuilder.GetTranslationColumnName(it)}=src.{sqlBuilder.GetTranslationColumnName(it)}"));
             var updateColumnsSql = string.Join(" , ", updateColumns.Select(it => $"tgt.{sqlBuilder.GetTranslationColumnName(it)}=src.{sqlBuilder.GetTranslationColumnName(it)}"));
             var insertColumnsSqlTgt = string.Join(" , ", insertColumns.Select(it =>  sqlBuilder.GetTranslationColumnName(it.DbColumnName)));
             var insertColumnsSqlsrc = string.Join(" , ", insertColumns.Select(it => "src." + sqlBuilder.GetTranslationColumnName(it.DbColumnName)));
