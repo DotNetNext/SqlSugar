@@ -180,7 +180,7 @@ namespace SqlSugar
         public Task<int> BulkMergeAsync(List<T> datas, string[] whereColumns)
         {
             var updateColumns = entityInfo.Columns.Where(it => !it.IsPrimarykey && !it.IsIdentity && !it.IsOnlyIgnoreUpdate && !it.IsIgnore).Select(it => it.DbColumnName ?? it.PropertyName).ToArray();
-            return BulkMergeAsync(datas, updateColumns, whereColumns);
+            return BulkMergeAsync(datas, whereColumns, updateColumns);
         }
         public int BulkMerge(List<T> datas, string[] whereColumns)
         {
