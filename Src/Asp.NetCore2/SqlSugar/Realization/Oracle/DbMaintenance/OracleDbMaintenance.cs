@@ -322,6 +322,9 @@ WHERE table_name = '"+tableName+"'");
         }
         public override bool AddDefaultValue(string tableName, string columnName, string defaultValue)
         {
+            columnName = SqlBuilder.GetTranslationColumnName(columnName);
+            tableName = SqlBuilder.GetTranslationColumnName(tableName);
+
             if (defaultValue == "''")
             {
                 defaultValue = "";
