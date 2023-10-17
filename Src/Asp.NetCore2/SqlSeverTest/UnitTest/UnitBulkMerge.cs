@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using OrmTest;
+using SqlSugar;
 
 namespace OrmTest
 {
@@ -43,7 +44,7 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
-            for (int i = 0; i < 1000; i++)
+            for (int i = 0; i < 1; i++)
             {
                 db.Fastest<UnitaafdsTest>()
                .BulkMerge(list);
@@ -57,7 +58,30 @@ namespace OrmTest
             list3.First().Name = "j";
             db.Fastest<Unitfadfayy>().BulkMerge(list3);
             var list4 = db.Queryable<Unitfadfayy>().ToList();
+            db.CodeFirst.InitTables<TableA>();
+            db.Insertable(new TableA() { key1 = Guid.NewGuid() + "" })
+                .ExecuteCommand();
+            db.Insertable(new TableA() { key1 = Guid.NewGuid() + "" })
+                .ExecuteCommand();
+            var datas = db.Queryable<TableA>().ToList();
+            db.Fastest<TableA>().PageSize(10000).BulkMerge(datas);
         }
+    }
+    [SugarTable("Unitadfadf")]
+    public class TableA
+    {
+        [SugarColumn(IsPrimaryKey = true)]
+        public string key1 { get; set; } = "a";
+        [SugarColumn(IsPrimaryKey = true)]
+        public string key2 { get; set; } = "b";
+        [SugarColumn(IsPrimaryKey = true)]
+        public string key3 { get; set; } = "c";
+        public string str1 { get; set; } = "c";
+        public string str2 { get; set; } = "c";
+        public DateTime? date1 { get; set; } = DateTime.Now;
+        public DateTime? date2 { get; set; } = DateTime.Now;
+        public decimal? num1 { get; set; } = 0;
+        public decimal? num2 { get; set; } = 0;
     }
     public class Unitfadfayy 
     {
