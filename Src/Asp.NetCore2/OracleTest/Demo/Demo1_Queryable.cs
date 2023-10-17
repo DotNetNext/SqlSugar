@@ -30,7 +30,8 @@ namespace OrmTest
             Console.WriteLine("#### Examples Start ####");
             var db = GetInstance();
             var dbTime = db.GetDate();
-            var getAll = db.Queryable<Order>().ToList();
+            var getAll = db.Queryable<Order>().GroupBy(it=>it.CreateTime.Hour)
+                .Select(it=>new { it.CreateTime.Hour}).ToList();
             var getpage = db.Queryable<Order>().ToPageList(0, 5);
             var getpage2 = db.Queryable<Order>().ToOffsetPage(0, 5);
             int count = 0;
@@ -48,6 +49,8 @@ namespace OrmTest
             var getByWhere2 = db.Queryable<Order>().Where(it => it.Id == DateTime.Now.Year).ToList();
             var getByFuns = db.Queryable<Order>().Where(it => SqlFunc.IsNullOrEmpty(it.Name)).ToList();
             var getByFuns2 = db.Queryable<Order>().GroupBy(it => it.Name).Select(it => SqlFunc.AggregateDistinctCount(it.Price)).ToList();
+            var getList2 = db.Queryable<Order>().GroupBy(it => it.CreateTime.Hour)
+                .Select(it => new { it.CreateTime.Hour }).ToList();
             Console.WriteLine("#### Examples End ####");
         }
 
