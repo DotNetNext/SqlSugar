@@ -363,12 +363,12 @@ WHERE table_name = '"+tableName+"'");
                     //column remak
                     if (db.DbMaintenance.IsAnyColumnRemark(item.DbColumnName.ToUpper(IsUppper), item.DbTableName.ToUpper(IsUppper)))
                     {
-                        db.DbMaintenance.DeleteColumnRemark(this.SqlBuilder.GetTranslationColumnName(item.DbColumnName) , item.DbTableName.ToUpper(IsUppper));
+                        db.DbMaintenance.DeleteColumnRemark(this.SqlBuilder.GetTranslationColumnName(item.DbColumnName), item.DbTableName.ToUpper(IsUppper));
                         db.DbMaintenance.AddColumnRemark(this.SqlBuilder.GetTranslationColumnName(item.DbColumnName), item.DbTableName.ToUpper(IsUppper), item.ColumnDescription);
                     }
                     else
                     {
-                        db.DbMaintenance.AddColumnRemark(item.DbColumnName.ToUpper(IsUppper), item.DbTableName.ToUpper(IsUppper), item.ColumnDescription);
+                        db.DbMaintenance.AddColumnRemark(this.SqlBuilder.GetTranslationColumnName(item.DbColumnName), item.DbTableName.ToUpper(IsUppper), item.ColumnDescription);
                     }
                 }
             }
