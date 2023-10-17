@@ -355,6 +355,7 @@ namespace SqlSugar
             parameter.CommonTempData = CommonTempDataType.Result;
             base.Expression = item;
             var isRemoveParamter = false;
+            var isNegate = false;
             if (item.Type == UtilConstants.DateType && parameter.CommonTempData.ObjToString() == CommonTempDataType.Result.ToString() && item.ToString() == "DateTime.Now.Date")
             {
                 parameter.CommonTempData = DateTime.Now.Date;
@@ -402,6 +403,13 @@ namespace SqlSugar
                 parameter.CommonTempData = array.Select(it=>this.Context.GetTranslationColumnName(it)).ToList();
                 isRemoveParamter = true;
             }
+            else if (ExpressionTool.IsNegate(item) && (item as UnaryExpression)?.Operand is MemberExpression)
+            {
+                var exp = (item as UnaryExpression)?.Operand;
+                parameter.CommonTempData = GetNewExpressionValue(exp) + " * -1 ";
+                isRemoveParamter = true;
+                isNegate = true;
+            }
             else
             {
                 base.Start();
@@ -439,7 +447,7 @@ namespace SqlSugar
                 methodCallExpressionArgs.MemberName = value;
                 methodCallExpressionArgs.MemberValue = null;
             }
-            else if (methodCallExpressionArgs.IsMember == false)
+            else if (methodCallExpressionArgs.IsMember == false&&isNegate==false)
             {
                 var parameterName = this.Context.SqlParameterKeyWord + ExpressionConst.MethodConst + this.Context.ParameterIndex;
                 this.Context.ParameterIndex++;
