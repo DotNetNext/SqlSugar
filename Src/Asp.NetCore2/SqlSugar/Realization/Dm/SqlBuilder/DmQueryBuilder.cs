@@ -19,6 +19,12 @@ namespace SqlSugar
         }
         public override string ToSqlString()
         {
+            var isDistinctPage = IsDistinct && (Take > 1 || Skip > 1);
+            if (isDistinctPage)
+            {
+                return OffsetPage();
+            }
+
             string oldOrderBy = this.OrderByValue;
             string externalOrderBy = oldOrderBy;
             var isIgnoreOrderBy = this.IsCount && this.PartitionByValue.IsNullOrEmpty();
@@ -54,6 +60,16 @@ namespace SqlSugar
                 return "select * from (select 1 as id) where id=0 -- No table";
             }
             return result;
+        }
+        private string OffsetPage()
+        {
+            var skip = this.Skip ?? 1;
+            var take = this.Take;
+            this.Skip = null;
+            this.Take = null;
+            this.Offset = null;
+            var pageSql = $"SELECT * FROM ( SELECT PAGETABLE1.*,ROWNUM PAGEINDEX FROM( {this.ToSqlString()}) PAGETABLE1 WHERE ROWNUM<={skip + take}) WHERE PAGEINDEX>={(skip == 0 ? skip : (skip + 1))}";
+            return pageSql;
         }
         public override string ToPageSql(string sql, int? take, int? skip, bool isExternal = false)
         {
