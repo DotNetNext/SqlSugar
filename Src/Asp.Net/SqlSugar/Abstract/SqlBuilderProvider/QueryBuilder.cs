@@ -811,7 +811,7 @@ namespace SqlSugar
                 {
                     this.SelectCacheKey = this.SelectCacheKey + string.Join("-", this._JoinQueryInfos.Select(it => it.TableName));
                 }
-                if (IsDistinct)
+                if (IsDistinct&&result?.StartsWith("DISTINCT ")!=true)
                 {
                     result = " DISTINCT " + result;
                 }
