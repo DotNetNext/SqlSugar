@@ -130,7 +130,7 @@ namespace SqlSugar.ClickHouse
                     dbtype = ClickHouseDbBind.MappingTypesConst.First(it => it.Value == CSharpDataType.Guid).Key;
                     if (param.Value == DBNull.Value)
                     {
-                        param.Value = Guid.Empty;
+                        sql = sql.Replace(param.ParameterName, "null");
                     }
                 }
                 if (dbtype.ObjToString() == System.Data.DbType.SByte.ToString())
@@ -156,13 +156,18 @@ namespace SqlSugar.ClickHouse
                         sql = sql.Replace(param.ParameterName,   this.Context.Utilities.SerializeObject(param.Value).Replace("\"","'"));
                     }
                 }
+                else if (dbtype.ObjToString() == "DateTime" && param.Value == DBNull.Value)
+                {
+                    sql = sql.Replace(param.ParameterName, "null");
+                }
+                else if (dbtype.ObjToString() == "UUID" && param.Value == DBNull.Value)
+                {
+                    sql = sql.Replace(param.ParameterName, "null");
+                }
                 else
                 {
                     sql = sql.Replace(param.ParameterName, "{" + newName + ":" + dbtype + "}");
-                    if (dbtype.ObjToString() == "DateTime" && param.Value == DBNull.Value)
-                    {
-                        param.Value = Convert.ToDateTime("1900-01-01");
-                    }
+                    
                 }
                 param.ParameterName = newName;
             }
