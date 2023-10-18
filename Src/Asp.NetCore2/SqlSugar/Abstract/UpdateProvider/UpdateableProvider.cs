@@ -366,6 +366,17 @@ namespace SqlSugar
             if (IsIgnore) this.IgnoreColumns(columns);
             return this;
         }
+        public IUpdateable<T> IgnoreNullColumns(bool isIgnoreNull = true) 
+        {
+            if (isIgnoreNull)
+            {
+                return IgnoreColumns(isIgnoreNull);
+            }
+            else
+            {
+                return this;
+            }
+        }
         public IUpdateable<T> IgnoreColumns(string[] columns)
         {
             if (columns.HasValue())
