@@ -746,6 +746,15 @@ namespace SqlSugar
                     case "ToBoolean":
                         return this.Context.DbMehtods.ToBool(model);
                     case "Substring":
+                        if (model.Args.Count == 2) 
+                        {
+                            model.Args.Add(new MethodCallExpressionArgs()
+                            {
+                                 MemberName="100000",
+                                 IsMember=true,
+                                  MemberValue= "100000",
+                            });
+                        }
                         return this.Context.DbMehtods.Substring(model);
                     case "Replace":
                         return this.Context.DbMehtods.Replace(model);
