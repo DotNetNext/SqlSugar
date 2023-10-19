@@ -22,7 +22,21 @@ namespace OrmTest
             Db.CodeFirst.InitTables<UNITCODEFIRST131>();
             Db.CodeFirst.InitTables<UNITCOdEFIRST131>();
             Db.CodeFirst.InitTables<UnitIndextest>();
+            Db.CodeFirst.InitTables<UnitXXXYYYZZZ>();
+            Db.CodeFirst.InitTables<unitxxxyyyzzz>();
         }
+
+        public class UnitXXXYYYZZZ
+        {
+            public string Id { get; set; }
+            [SqlSugar.SugarColumn(DefaultValue ="")]
+            public string Id2 { get; set; }
+        }
+        public class unitxxxyyyzzz
+        {
+            public string Id { get; set; } 
+        }
+
         [SqlSugar.SugarIndex("UnitIndextestIndex", nameof(UnitIndextest.Table),SqlSugar.OrderByType.Asc)]
         public class UnitIndextest
         {
