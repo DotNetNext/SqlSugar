@@ -517,7 +517,7 @@ WHERE table_name = '" + tableName + "'");
         public static string ExtractSchema(string connectionString)
         {
             string pattern = @"(?i)(?:^|;)schema=(\w+)";
-            Match match = Regex.Match(connectionString, pattern,RegexOptions.IgnoreCase);
+            Match match = Regex.Match(connectionString?.Replace(" ",""), pattern,RegexOptions.IgnoreCase);
             return match.Success ? match.Groups[1].Value : null;
         }
         public override bool IsAnyTable(string tableName, bool isCache = true)
