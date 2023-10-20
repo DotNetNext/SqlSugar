@@ -118,6 +118,7 @@ namespace SqlSugar
         IUpdateable<T> EnableQueryFilter();
         IUpdateable<T> Clone();
         IUpdateable<T,T2> InnerJoin<T2>(Expression<Func<T,T2,bool>> joinExpress);
+        IUpdateable<T, T2> InnerJoin<T2>(Expression<Func<T, T2, bool>> joinExpress,string tableName);
         UpdateablePage<T> PageSize(int pageSize);
         IUpdateable<T> In(object[] ids);
     }
