@@ -366,12 +366,12 @@ WHERE table_name = '"+tableName+"'");
                     //column remak
                     if (db.DbMaintenance.IsAnyColumnRemark(item.DbColumnName.ToUpper(IsUppper), item.DbTableName.ToUpper(IsUppper)))
                     {
-                        db.DbMaintenance.DeleteColumnRemark(this.SqlBuilder.GetTranslationColumnName(item.DbColumnName), item.DbTableName.ToUpper(IsUppper));
-                        db.DbMaintenance.AddColumnRemark(this.SqlBuilder.GetTranslationColumnName(item.DbColumnName), item.DbTableName.ToUpper(IsUppper), item.ColumnDescription);
+                        db.DbMaintenance.DeleteColumnRemark(this.SqlBuilder.GetTranslationColumnName(item.DbColumnName), this.SqlBuilder.GetTranslationColumnName(item.DbTableName));
+                        db.DbMaintenance.AddColumnRemark(this.SqlBuilder.GetTranslationColumnName(item.DbColumnName), this.SqlBuilder.GetTranslationColumnName(item.DbTableName), item.ColumnDescription);
                     }
                     else
                     {
-                        db.DbMaintenance.AddColumnRemark(this.SqlBuilder.GetTranslationColumnName(item.DbColumnName), item.DbTableName.ToUpper(IsUppper), item.ColumnDescription);
+                        db.DbMaintenance.AddColumnRemark(this.SqlBuilder.GetTranslationColumnName(item.DbColumnName), this.SqlBuilder.GetTranslationColumnName(item.DbTableName), item.ColumnDescription);
                     }
                 }
             }
@@ -381,12 +381,12 @@ WHERE table_name = '"+tableName+"'");
             {
                 if (db.DbMaintenance.IsAnyTableRemark(entity.DbTableName))
                 {
-                    db.DbMaintenance.DeleteTableRemark(entity.DbTableName);
-                    db.DbMaintenance.AddTableRemark(entity.DbTableName, entity.TableDescription);
+                    db.DbMaintenance.DeleteTableRemark(SqlBuilder.GetTranslationColumnName( entity.DbTableName));
+                    db.DbMaintenance.AddTableRemark(SqlBuilder.GetTranslationColumnName(entity.DbTableName), entity.TableDescription);
                 }
                 else
                 {
-                    db.DbMaintenance.AddTableRemark(entity.DbTableName, entity.TableDescription);
+                    db.DbMaintenance.AddTableRemark(SqlBuilder.GetTranslationColumnName(entity.DbTableName), entity.TableDescription);
                 }
             }
             return true;
