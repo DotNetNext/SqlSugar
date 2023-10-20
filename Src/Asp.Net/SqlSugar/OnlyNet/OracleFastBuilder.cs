@@ -40,7 +40,7 @@ namespace SqlSugar
             throw new NotImplementedException();
         }
 
-        public Task<int> Merge<T>(DataTable dt, EntityInfo entityInfo, string[] whereColumns, string[] updateColumns, List<T> datas) where T : class, new()
+        public Task<int> Merge<T>(string tableName, DataTable dt, EntityInfo entityInfo, string[] whereColumns, string[] updateColumns, List<T> datas) where T : class, new()
         {
             throw new Exception("Only.net CORE is supported");
         }

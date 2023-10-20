@@ -66,7 +66,7 @@ namespace SqlSugar
             copy.BulkCopyTimeout = this.Context.Ado.CommandTimeOut;
             return copy;
         }
-        public override Task<int> Merge<T>(DataTable dt, EntityInfo entityInfo, string[] whereColumns, string[] updateColumns, List<T> datas) 
+        public override Task<int> Merge<T>(string tableName,DataTable dt, EntityInfo entityInfo, string[] whereColumns, string[] updateColumns, List<T> datas) 
         {
             var sqlBuilder = this.Context.Queryable<object>().SqlBuilder;
             var insertColumns = entityInfo.Columns
@@ -80,7 +80,7 @@ namespace SqlSugar
             var updateColumnsSql = string.Join(" , ", updateColumns.Select(it => $"tgt.{sqlBuilder.GetTranslationColumnName(it)}=src.{sqlBuilder.GetTranslationColumnName(it)}"));
             var insertColumnsSqlTgt = string.Join(" , ", insertColumns.Select(it =>  sqlBuilder.GetTranslationColumnName(it.DbColumnName)));
             var insertColumnsSqlsrc = string.Join(" , ", insertColumns.Select(it => "src." + sqlBuilder.GetTranslationColumnName(it.DbColumnName)));
-            var sql = $@"MERGE INTO {sqlBuilder.GetTranslationColumnName(entityInfo.DbTableName)} tgt
+            var sql = $@"MERGE INTO {sqlBuilder.GetTranslationColumnName(tableName)} tgt
 USING {sqlBuilder.GetTranslationColumnName(dt.TableName)} src
 ON ({whereSql})
 WHEN MATCHED THEN
