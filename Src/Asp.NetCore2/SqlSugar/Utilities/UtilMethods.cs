@@ -18,6 +18,13 @@ namespace SqlSugar
 {
     public class UtilMethods
     {
+
+        internal static bool IsErrorParameterName(ConnectionConfig connectionConfig,DbColumnInfo columnInfo)
+        {
+            return connectionConfig.MoreSettings?.IsCorrectErrorSqlParameterName == true &&
+                            columnInfo.DbColumnName.IsContainsIn("-"," ", ".", "(", ")", "（", "）");
+        }
+
         public static bool StringCheckFirstAndLast(string withString, string first, string last)
         {
             return withString.StartsWith(first) && withString.EndsWith(last);
@@ -487,7 +494,8 @@ namespace SqlSugar
                     IsWithNoLockSubquery=it.MoreSettings.IsWithNoLockSubquery,
                     EnableCodeFirstUpdatePrecision=it.MoreSettings.EnableCodeFirstUpdatePrecision,
                     SqliteCodeFirstEnableDefaultValue=it.MoreSettings.SqliteCodeFirstEnableDefaultValue,
-                    SqliteCodeFirstEnableDescription=it.MoreSettings.SqliteCodeFirstEnableDescription
+                    SqliteCodeFirstEnableDescription=it.MoreSettings.SqliteCodeFirstEnableDescription,
+                    IsCorrectErrorSqlParameterName = it.MoreSettings.IsCorrectErrorSqlParameterName
 
                 },
                 SqlMiddle = it.SqlMiddle == null ? null : new SqlMiddle

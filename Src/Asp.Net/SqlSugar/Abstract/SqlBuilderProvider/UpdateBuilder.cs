@@ -490,6 +490,15 @@ namespace SqlSugar
                 GetDbColumnIndex++;
                 return pname;
             }
+            else if (UtilMethods.IsErrorParameterName(this.Context.CurrentConnectionConfig, columnInfo))
+            {
+                var pname = Builder.SqlParameterKeyWord + "CrorrPara" + GetDbColumnIndex;
+                var p = new SugarParameter(pname, columnInfo.Value);
+                this.Parameters.Add(p);
+                GetDbColumnIndex++;
+                return pname;
+
+            }
             else
             {
                 return name + "";
