@@ -222,7 +222,7 @@ namespace SqlSugar
                 await buider.CreateTempAsync<T>(dt);
                 await buider.ExecuteBulkCopyAsync(dt);
             }
-            var result = await buider.Merge(dt, this.entityInfo,whereColumns,updateColumns, datas);
+            var result = await buider.Merge(GetTableName(),dt, this.entityInfo,whereColumns,updateColumns, datas);
             //var queryTemp = this.context.Queryable<T>().AS(dt.TableName).ToList();//test
             //var result = await buider.UpdateByTempAsync(GetTableName(), dt.TableName, updateColumns, whereColumns);
             if (buider?.DbFastestProperties?.IsMerge == true&&this.context.CurrentConnectionConfig.DbType != DbType.Sqlite)
