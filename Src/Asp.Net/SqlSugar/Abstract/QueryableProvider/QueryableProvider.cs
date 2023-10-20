@@ -43,6 +43,7 @@ namespace SqlSugar
             var onWhere = $"{shortName}.{navPkColumn.DbColumnName}={mainShortName}.{navColumn.DbColumnName}";
             UtilMethods.IsNullReturnNew(this.Context.TempItems);
             this.AddJoinInfo(GetTableName(navEntityInfo, navEntityInfo.DbTableName), shortName, onWhere, JoinType.Left);
+            this.QueryBuilder.JoinQueryInfos.Last().EntityType = navEntityInfo.Type;
             return this;
         }
         public ISugarQueryable<T> IncludeInnerJoin(Expression<Func<T, object>> innerObjectExt)
