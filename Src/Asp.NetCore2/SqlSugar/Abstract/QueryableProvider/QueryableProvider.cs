@@ -59,6 +59,7 @@ namespace SqlSugar
             var onWhere = $"{shortName}.{navPkColumn.DbColumnName}={mainShortName}.{navColumn.DbColumnName}";
             UtilMethods.IsNullReturnNew(this.Context.TempItems);
             this.AddJoinInfo(GetTableName(navEntityInfo, navEntityInfo.DbTableName), shortName, onWhere, JoinType.Inner);
+            this.QueryBuilder.JoinQueryInfos.Last().EntityType = navEntityInfo.Type;
             return this;
         }
         public ISugarQueryable<T> IncludeFullJoin(Expression<Func<T, object>> fullObjectExp)
@@ -74,6 +75,7 @@ namespace SqlSugar
             var onWhere = $"{shortName}.{navPkColumn.DbColumnName}={mainShortName}.{navColumn.DbColumnName}";
             UtilMethods.IsNullReturnNew(this.Context.TempItems);
             this.AddJoinInfo(GetTableName(navEntityInfo, navEntityInfo.DbTableName), shortName, onWhere, JoinType.Full);
+            this.QueryBuilder.JoinQueryInfos.Last().EntityType = navEntityInfo.Type;
             return this;
         }
         public ISugarQueryable<T> IncludeRightJoin(Expression<Func<T, object>> rightObjectExp)
@@ -89,6 +91,7 @@ namespace SqlSugar
             var onWhere = $"{shortName}.{navPkColumn.DbColumnName}={mainShortName}.{navColumn.DbColumnName}";
             UtilMethods.IsNullReturnNew(this.Context.TempItems);
             this.AddJoinInfo(GetTableName(navEntityInfo, navEntityInfo.DbTableName), shortName, onWhere, JoinType.Right);
+            this.QueryBuilder.JoinQueryInfos.Last().EntityType = navEntityInfo.Type;
             return this;
         }
         public ISugarQueryable<T, T2> LeftJoinIF<T2>(bool isJoin, ISugarQueryable<T2> joinQueryable, Expression<Func<T, T2, bool>> joinExpression) 
