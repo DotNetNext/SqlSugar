@@ -168,6 +168,10 @@ namespace SqlSugar
                 {
                     name = "ListAny";
                 }
+                else if (name == "All" && ExpressionTool.IsVariable(express.Arguments[0]))
+                {
+                    name = "ListAll";
+                }
                 var args = express.Arguments.Cast<Expression>().ToList();
                 MethodCallExpressionModel model = new MethodCallExpressionModel();
                 model.Args = new List<MethodCallExpressionArgs>();
