@@ -354,6 +354,12 @@ namespace SqlSugar
             if (list.Any()&&navObjectNamePropety.GetValue(list.First()) == null)
             {
                 var sqlObj = GetWhereSql(navObjectNameColumnInfo.Navigat.Name);
+                if (sqlObj.SelectString == null) 
+                {
+                    var columns=navEntityInfo.Columns.Where(it => !it.IsIgnore)
+                        .Select(it=>QueryBuilder.Builder.GetTranslationColumnName(it.DbColumnName)+" AS "+ QueryBuilder.Builder.GetTranslationColumnName(it.PropertyName)).ToList();
+                    sqlObj.SelectString= String.Join(",", columns);
+                }
                 var navList = selector(db.Queryable<object>().ClearFilter(QueryBuilder.RemoveFilters).Filter(navPkColumn.IsPrimarykey?null:this.QueryBuilder?.IsDisabledGobalFilter == true ? null : navEntityInfo.Type).AS(navEntityInfo.DbTableName)
                     .WhereIF(navObjectNameColumnInfo.Navigat.WhereSql.HasValue(), navObjectNameColumnInfo.Navigat.WhereSql)
                     .WhereIF(sqlObj.WhereString.HasValue(),sqlObj.WhereString)
@@ -420,6 +426,12 @@ namespace SqlSugar
       
             if (list.Any() && navObjectNamePropety.GetValue(list.First()) == null)
             {
+                if (sqlObj.SelectString == null)
+                {
+                    var columns = navEntityInfo.Columns.Where(it => !it.IsIgnore)
+                        .Select(it => QueryBuilder.Builder.GetTranslationColumnName(it.DbColumnName) + " AS " + QueryBuilder.Builder.GetTranslationColumnName(it.PropertyName)).ToList();
+                    sqlObj.SelectString = String.Join(",", columns);
+                }
                 var navList = selector(childDb.Queryable<object>(sqlObj.TableShortName).AS(navEntityInfo.DbTableName).ClearFilter(QueryBuilder.RemoveFilters).Filter(this.QueryBuilder?.IsDisabledGobalFilter == true ? null : navEntityInfo.Type).AddParameters(sqlObj.Parameters).Where(conditionalModels).WhereIF(sqlObj.WhereString.HasValue(), sqlObj.WhereString).WhereIF(navObjectNameColumnInfo?.Navigat?.WhereSql!=null, navObjectNameColumnInfo?.Navigat?.WhereSql).Select(sqlObj.SelectString).OrderByIF(sqlObj.OrderByString.HasValue(), sqlObj.OrderByString));
                 if (navList.HasValue())
                 {
