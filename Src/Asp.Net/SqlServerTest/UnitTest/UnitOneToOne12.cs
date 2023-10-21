@@ -47,6 +47,14 @@ namespace OrmTest
                               .Includes(o => o.FirstReply, o => o.ReplyUser)
                             .Includes(o => o.FirstReply, o => o.UserInfo)
                              .ToList();
+            db.Queryable<poetry_video_comment>().IncludeFullJoin(it => it.FirstReply)
+                .ToList();
+            db.Queryable<poetry_video_comment>().IncludeLeftJoin(it => it.FirstReply)
+               .ToList();
+            db.Queryable<poetry_video_comment>().IncludeRightJoin(it => it.FirstReply)
+              .ToList();
+            db.Queryable<poetry_video_comment>().IncludeInnerJoin(it => it.FirstReply)
+             .ToList();
             if (list.Last().FirstReply.UserInfo == null) 
             {
                 throw new Exception("unit error");
