@@ -103,6 +103,10 @@ namespace SqlSugar
             {
                 parameter.CommonTempData = GetNewExpressionValue(item);
             }
+            else if (ExpressionTool.GetMethodName(item) == "All" && !ExpressionTool.GetTopLevelMethodCalls(item).Contains("Subqueryable"))
+            {
+                parameter.CommonTempData = GetNewExpressionValue(item);
+            }
             else
             {
                 this.Start();

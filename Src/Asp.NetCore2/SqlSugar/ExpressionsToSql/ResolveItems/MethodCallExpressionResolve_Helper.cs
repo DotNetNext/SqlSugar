@@ -266,7 +266,7 @@ namespace SqlSugar
                 }
                 model.Args.Add(argItem);
             }
-            else if (name == "ListAny" && item is LambdaExpression)
+            else if (name.IsIn("ListAny","ListAll") && item is LambdaExpression)
             {
                 var sql = GetNewExpressionValue(item, ResolveExpressType.WhereMultiple);
                 var lamExp = (item as LambdaExpression);
@@ -911,6 +911,10 @@ namespace SqlSugar
                         this.Context.Result.IsNavicate = true;
                         this.Context.Parameters.RemoveAll(it => model.Args[0].MemberName.ObjToString().Contains(it.ParameterName));
                         return this.Context.DbMehtods.ListAny(model);
+                    case "ListAll":
+                        this.Context.Result.IsNavicate = true;
+                        this.Context.Parameters.RemoveAll(it => model.Args[0].MemberName.ObjToString().Contains(it.ParameterName));
+                        return this.Context.DbMehtods.ListAll(model);
                     case "Modulo":
                         return this.Context.DbMehtods.Modulo(model);
                     case "Like":
@@ -964,6 +968,10 @@ namespace SqlSugar
                 return true;
             }
             if (expression.Method.Name == "Any"&& expression.Arguments.Count()>0&& ExpressionTool.IsVariable(expression.Arguments[0]) )
+            {
+                return true;
+            }
+            if (expression.Method.Name == "All" && expression.Arguments.Count() > 0 && ExpressionTool.IsVariable(expression.Arguments[0]))
             {
                 return true;
             }
