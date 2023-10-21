@@ -266,7 +266,7 @@ namespace SqlSugar
                 }
                 model.Args.Add(argItem);
             }
-            else if (name == "ListAny" && item is LambdaExpression)
+            else if (name.IsIn("ListAny","ListAll") && item is LambdaExpression)
             {
                 var sql = GetNewExpressionValue(item, ResolveExpressType.WhereMultiple);
                 var lamExp = (item as LambdaExpression);
