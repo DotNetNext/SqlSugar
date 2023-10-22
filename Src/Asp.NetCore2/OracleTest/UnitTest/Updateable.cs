@@ -43,8 +43,8 @@ namespace OrmTest
             {
                 IsRemind = saveDiary.IsRemind,
             }).Where(it => it.ID == saveDiary.ID).ToSql();
-            UValidate.Check(sql.Key, @"UPDATE ""DIARY""  SET
-            ""ISREMIND"" =  :Const0    WHERE ( ""ID"" = :ID1 )", "Updateable");
+            UValidate.Check(sql.Key , @"UPDATE ""DIARY""  SET
+            ""ISREMIND"" = :Const0   WHERE ( ""ID"" = :ID1 )", "Updateable");
 
 
             sql = Db.Updateable<UnitDiary>().SetColumns(it => new UnitDiary()
