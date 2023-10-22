@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -66,15 +67,31 @@ namespace OrmTest
              .SetColumns(it => new UnitJsonTestadsga1() { os = order })
              .Where(it => true)
              .ExecuteCommand();
-            var list14 = db.Queryable<UnitJsonTestadsga1>().ToList();
+
+            db.CodeFirst.InitTables<Unitaaar2>();
+            db.Insertable(new Unitaaar2() { arr = new string[] { "a", "c" } }).ExecuteCommand();
+            var list14 = db.Queryable<Unitaaar2>()
+                .Select(it=>new { 
+                 x=SqlFunc.JsonIndex(it.arr, 0),
+                 x2 = SqlFunc.JsonIndex(it.arr, 1)
+                }).ToList();
+            if (list14.First().x != "a"&& list14.Last().x != "c") 
+            {
+                throw new Exception("unit error");
+            }
         }
+    }
+    public class Unitaaar2
+    {
+        [SugarColumn(IsJson = true, IsNullable = true)]
+        public string[] arr { get; set; }
     }
     public class UnitJsonTestadsga1
     {
         [SqlSugar.SugarColumn( IsJson = true)]
         public List<Order> os { get; set; }
     }
- 
+  
     public class Unitaaar 
     {
         [SugarColumn(ColumnDataType = "text []", IsArray = true, IsNullable = true)]
