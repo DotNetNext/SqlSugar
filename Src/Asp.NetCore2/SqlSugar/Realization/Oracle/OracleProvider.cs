@@ -104,7 +104,7 @@ namespace SqlSugar
         public override DbCommand GetCommand(string sql, SugarParameter[] parameters)
         {
             sql = ReplaceKeyWordParameterName(sql, parameters);
-            if (sql?.EndsWith(';')==true) 
+            if (sql?.EndsWith(';')==true&& sql?.TrimStart()?.StartsWith("begin")!=true) 
             {
                 sql=sql.TrimEnd(';');
             }
