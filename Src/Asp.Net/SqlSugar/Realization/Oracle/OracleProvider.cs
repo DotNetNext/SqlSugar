@@ -104,6 +104,10 @@ namespace SqlSugar
         public override DbCommand GetCommand(string sql, SugarParameter[] parameters)
         {
             sql = ReplaceKeyWordParameterName(sql, parameters);
+            if (sql?.EndsWith(";")==true&& sql?.TrimStart()?.StartsWith("begin")!=true) 
+            {
+                sql=sql.TrimEnd(';');
+            }
             OracleCommand sqlCommand = new OracleCommand(sql, (OracleConnection)this.Connection);
             sqlCommand.BindByName = true;
             sqlCommand.CommandType = this.CommandType;

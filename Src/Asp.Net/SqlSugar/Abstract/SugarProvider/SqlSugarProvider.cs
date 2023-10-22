@@ -1563,6 +1563,8 @@ namespace SqlSugar
                     }
                 }
                 this.Queues.Clear();
+                var builder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
+                builder.FormatSaveQueueSql(sqlBuilder);
                 var result = await func(sqlBuilder.ToString(), parsmeters);
                 if (isTran) this.Ado.CommitTran();
                 return result;
@@ -1636,6 +1638,8 @@ namespace SqlSugar
                     }
                 }
                 this.Queues.Clear();
+                var builder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
+                builder.FormatSaveQueueSql(sqlBuilder);
                 var result = func(sqlBuilder.ToString(), parsmeters);
                 if (isTran) this.Ado.CommitTran();
                 return result;
