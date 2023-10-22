@@ -17,6 +17,12 @@ namespace SqlSugar
     }
     public class MySqlMethod : DefaultDbMethod, IDbMethods
     {
+        public override string JsonIndex(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter1 = model.Args[1];
+            return $"JSON_UNQUOTE(JSON_EXTRACT({parameter.MemberName}, '$[{parameter1.MemberValue}]'))";
+        }
         public override string WeekOfYear(MethodCallExpressionModel mode)
         {
             var parameterNameA = mode.Args[0].MemberName;
