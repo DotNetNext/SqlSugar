@@ -110,7 +110,24 @@ namespace OrmTest
             var list14=db.Queryable<UnitJsonTestadsga1>().ToList();
             var list150 = db.Queryable<UnitJsonTest>().ToDictionary(it => it.Id, it => it.Order);
             var list15 = db.Queryable<UnitJsonTest>().ToDictionaryAsync(it=>it.Id,it=>it.Order).GetAwaiter().GetResult();
+
+            db.CodeFirst.InitTables<Unitaaar2>();
+            db.Insertable(new Unitaaar2() { arr = new string[] { "a", "c" } }).ExecuteCommand();
+            var list141 = db.Queryable<Unitaaar2>()
+                .Select(it => new {
+                    x = SqlFunc.JsonIndex(it.arr, 0),
+                    x2 = SqlFunc.JsonIndex(it.arr, 1)
+                }).ToList();
+            if (list141.First().x != "a" && list141.Last().x != "c")
+            {
+                throw new Exception("unit error");
+            }
         }
+    }
+    public class Unitaaar2
+    {
+        [SugarColumn(IsJson = true, IsNullable = true)]
+        public string[] arr { get; set; }
     }
     public class UnitJsonTestadsga1
     {

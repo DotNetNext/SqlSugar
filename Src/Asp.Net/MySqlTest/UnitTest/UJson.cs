@@ -63,8 +63,25 @@ namespace OrmTest
             var list31 = db.Queryable<OrderAarray11>().ToList();
             var list3=db.Queryable<OrderMain11>().LeftJoin<OrderAarray11>((t1, ti2) => t1.Id == ti2.fk)
                 .Select((t1, ti2) => new { t1.Id, t1.Name,json= ti2.Json }).ToList();
+            db.CodeFirst.InitTables<Unitaaar2>();
+            db.Insertable(new Unitaaar2() { arr = new string[] { "a", "c" } }).ExecuteCommand();
+            var list141 = db.Queryable<Unitaaar2>()
+                .Select(it => new {
+                    x = SqlFunc.JsonIndex(it.arr, 0),
+                    x2 = SqlFunc.JsonIndex(it.arr, 1)
+                }).ToList();
+            if (list141.First().x != "a" && list141.Last().x != "c")
+            {
+                throw new Exception("unit error");
+            }
         }
-        public class OrderMain11
+    
+    public class Unitaaar2
+    {
+        [SugarColumn(IsJson = true, IsNullable = true)]
+        public string[] arr { get; set; }
+    }
+    public class OrderMain11
         {
             [SugarColumn(IsPrimaryKey = true,IsIdentity =true)]
             public int Id { get; set; }
