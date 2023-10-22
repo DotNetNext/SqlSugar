@@ -45,5 +45,6 @@ namespace SqlSugar
         string GetUnionFomatSql(string sql);
         Type GetNullType(string tableName,string columnName);
         string RemoveParentheses(string sql);
+        void FormatSaveQueueSql(StringBuilder sqlBuilder); 
     }
 }

@@ -59,6 +59,17 @@ namespace SqlSugar
 
             return sql;
         }
+        public override void FormatSaveQueueSql(StringBuilder sqlBuilder)
+        {
+            var sql = sqlBuilder?.ToString();
+            if (sql?.TrimStart()?.Substring(0, 5)?.EqualCase("begin") != true)
+            { 
+                sqlBuilder.Clear();
+                sqlBuilder.AppendLine("begin");
+                sqlBuilder.Append(sql);
+                sqlBuilder.AppendLine("end; ");
+            }
+        }
         #region Helper
         public bool IsUppper
         {

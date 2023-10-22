@@ -161,6 +161,9 @@ namespace SqlSugar
                 return item.FieldValue;
             }
         }
+        public virtual void FormatSaveQueueSql(StringBuilder sqlBuilder)
+        {
+        }
         #endregion
 
         #region Common SqlTemplate
