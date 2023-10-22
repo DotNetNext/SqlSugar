@@ -20,6 +20,12 @@ namespace SqlSugar
     }
     public partial class SqlServerMethod : DefaultDbMethod, IDbMethods
     {
+        public override string JsonIndex(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter1 = model.Args[1];
+            return $"JSON_VALUE({parameter.MemberName}, '$[{parameter1.MemberValue}]')";
+        }
         public override string CharIndexNew(MethodCallExpressionModel model)
         {
             return string.Format("CHARINDEX ({1},{0})", model.Args[0].MemberName, model.Args[1].MemberName);

@@ -98,6 +98,7 @@ namespace SqlSugar
         string Exists(MethodCallExpressionModel model);
         string GetDateString(string dateValue,string format);
         string GetForXmlPath();
+        string JsonIndex(MethodCallExpressionModel model);
         string JsonField(MethodCallExpressionModel model);
         string JsonContainsFieldName(MethodCallExpressionModel model);
         string JsonArrayLength(MethodCallExpressionModel model);
