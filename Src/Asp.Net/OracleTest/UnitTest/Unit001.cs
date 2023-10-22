@@ -22,6 +22,7 @@ namespace OrmTest
                 //5.0.8.2 获取无参数化 SQL  对性能有影响，特别大的SQL参数多的，调试使用
                 //UtilMethods.GetSqlString(DbType.SqlServer,sql,pars)
             };
+         
             db.CodeFirst.InitTables<SfbaT, ImaalT, InagT>();
             var result = db.Queryable<SfbaT>()
                 .LeftJoin<ImaalT>((a, l) => a.Sfbaent == l.Imaalent && a.Sfba006 == l.Imaal001 && l.Imaal002 == "zh_CH")
@@ -62,17 +63,17 @@ namespace OrmTest
             /// <summary>
             /// 单号 
             ///</summary>
-            [SugarColumn(ColumnName = "SFBADOCNO", IsPrimaryKey = true)]
+            [SugarColumn(ColumnName = "SFBADOCNO" )]
             public string Sfbadocno { get; set; }
             /// <summary>
             /// 项次 
             ///</summary>
-            [SugarColumn(ColumnName = "SFBASEQ", IsPrimaryKey = true)]
+            [SugarColumn(ColumnName = "SFBASEQ" )]
             public long Sfbaseq { get; set; }
             /// <summary>
             /// 项序 
             ///</summary>
-            [SugarColumn(ColumnName = "SFBASEQ1", IsPrimaryKey = true)]
+            [SugarColumn(ColumnName = "SFBASEQ1")]
             public long Sfbaseq1 { get; set; }
             /// <summary>
             /// 上阶料号 
@@ -426,12 +427,12 @@ namespace OrmTest
             /// <summary>
             /// 料号 
             ///</summary>
-            [SugarColumn(ColumnName = "IMAAL001", IsPrimaryKey = true)]
+            [SugarColumn(ColumnName = "IMAAL001" )]
             public string Imaal001 { get; set; }
             /// <summary>
             /// 语种 
             ///</summary>
-            [SugarColumn(ColumnName = "IMAAL002", IsPrimaryKey = true)]
+            [SugarColumn(ColumnName = "IMAAL002" )]
             public string Imaal002 { get; set; }
             /// <summary>
             /// 名称 
@@ -458,12 +459,12 @@ namespace OrmTest
             /// <summary>
             /// 企业编号 
             ///</summary>
-            [SugarColumn(ColumnName = "INAGENT", IsPrimaryKey = true)]
+            [SugarColumn(ColumnName = "INAGENT" )]
             public string Inagent { get; set; }
             /// <summary>
             /// 营运据点 
             ///</summary>
-            [SugarColumn(ColumnName = "INAGSITE", IsPrimaryKey = true)]
+            [SugarColumn(ColumnName = "INAGSITE" )]
             public string Inagsite { get; set; }
             /// <summary>
             /// 料件编号 
@@ -473,32 +474,32 @@ namespace OrmTest
             /// <summary>
             /// 产品特征 
             ///</summary>
-            [SugarColumn(ColumnName = "INAG002", IsPrimaryKey = true)]
+            [SugarColumn(ColumnName = "INAG002" )]
             public string Inag002 { get; set; }
             /// <summary>
             /// 库存管理特征 
             ///</summary>
-            [SugarColumn(ColumnName = "INAG003", IsPrimaryKey = true)]
+            [SugarColumn(ColumnName = "INAG003" )]
             public string Inag003 { get; set; }
             /// <summary>
             /// 库位编号 
             ///</summary>
-            [SugarColumn(ColumnName = "INAG004", IsPrimaryKey = true)]
+            [SugarColumn(ColumnName = "INAG004" )]
             public string Inag004 { get; set; }
             /// <summary>
             /// 储位编号 
             ///</summary>
-            [SugarColumn(ColumnName = "INAG005", IsPrimaryKey = true)]
+            [SugarColumn(ColumnName = "INAG005" )]
             public string Inag005 { get; set; }
             /// <summary>
             /// 批号 
             ///</summary>
-            [SugarColumn(ColumnName = "INAG006", IsPrimaryKey = true)]
+            [SugarColumn(ColumnName = "INAG006" )]
             public string Inag006 { get; set; }
             /// <summary>
             /// 库存单位 
             ///</summary>
-            [SugarColumn(ColumnName = "INAG007", IsPrimaryKey = true)]
+            [SugarColumn(ColumnName = "INAG007" )]
             public string Inag007 { get; set; }
             /// <summary>
             /// 账面库存数量 
