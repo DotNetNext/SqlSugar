@@ -716,6 +716,13 @@ namespace SqlSugar
         {
             return null;
         }
+        public virtual string JsonIndex(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter1 = model.Args[1];
+            return $"({parameter.MemberName}::json ->> {parameter1.MemberValue})";
+        }
+
 
         public virtual string JsonField(MethodCallExpressionModel model)
         {

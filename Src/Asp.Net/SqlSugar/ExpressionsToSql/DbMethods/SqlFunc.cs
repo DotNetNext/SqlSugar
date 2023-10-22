@@ -113,7 +113,10 @@ namespace SqlSugar
         {
             throw new NotSupportedException("Can only be used in expressions");
         }
-
+        public static string JsonIndex(object json, int jsonIndex)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
         public static string JsonField(object json, string fieldName,string includeFieldName)
         {
             throw new NotSupportedException("Can only be used in expressions");
