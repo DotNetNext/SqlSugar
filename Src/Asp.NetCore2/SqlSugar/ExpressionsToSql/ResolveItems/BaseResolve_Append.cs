@@ -153,11 +153,15 @@ namespace SqlSugar
                 }
                 else if (parameter?.BaseParameter?.CommonTempData.ObjToString() == "IsJson=true")
                 {
-                    this.Context.Parameters.Add(new SugarParameter(appendValue, new SerializeService().SerializeObject(value)) {  IsJson=true});
+                    this.Context.Parameters.Add(new SugarParameter(appendValue, new SerializeService().SerializeObject(value)) { IsJson = true });
                 }
                 else if (parameter?.BaseParameter?.CommonTempData.ObjToString() == "IsArray=true")
                 {
                     this.Context.Parameters.Add(new SugarParameter(appendValue, value) { IsArray = true });
+                }
+                else if (value!=null&&(value is Enum) &&this.Context?.SugarContext?.Context?.CurrentConnectionConfig?.MoreSettings?.TableEnumIsString == true) 
+                {
+                    this.Context.Parameters.Add(new SugarParameter(appendValue,Convert.ToString(value)));
                 }
                 else
                 {
