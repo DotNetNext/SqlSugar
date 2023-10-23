@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json.Converters;
+using SqlSugar.DbConvert;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -36,6 +38,24 @@ namespace OrmTest
             }
             Db.Updateable<Unit00Z11C12>(x3).WhereColumns(it=>it.type).ExecuteCommand();
             var x4 = Db.Queryable<Unit00Z11C12>().ToList();
+            var db = NewUnitTest.Db;
+            db.CodeFirst.InitTables<Unit00Z11C1yyafa>();
+            var type = UnitType.a;
+            xxx.unitType = type;
+            var list=db.Queryable<Unit00Z11C1yyafa>() 
+                 .Where(it=>it.type==xxx.unitType)
+                 .ToList();
+        }
+        public class xxx 
+        {
+            public static UnitType unitType { get; set; }
+        }
+        public class Unit00Z11C1yyafa
+        {
+            [SqlSugar.SugarColumn(ColumnDataType = "varchar(20)",SqlParameterDbType =typeof(EnumToStringConvert), IsNullable = false)]
+            public UnitType type { get; set; }
+            [SqlSugar.SugarColumn(ColumnDataType = "varchar(20)", SqlParameterDbType = typeof(EnumToStringConvert), IsNullable = true)]
+            public UnitType? type2 { get; set; }
         }
         public class Unit00Z11C12
         {
