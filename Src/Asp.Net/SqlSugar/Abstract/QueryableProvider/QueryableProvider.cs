@@ -703,12 +703,19 @@ namespace SqlSugar
                 var clist = new List<KeyValuePair<WhereType, ConditionalModel>>();
                 foreach (var item in model.Keys)
                 {
+                    var value = model[item] == null ? "null" : model[item].ObjToString();
+                    var csType = model[item] == null ? null : model[item].GetType().Name;
+                    if (model[item] is Enum&&this.Context?.CurrentConnectionConfig?.MoreSettings?.TableEnumIsString!=true) 
+                    {
+                        value = Convert.ToInt64(model[item])+"";
+                        csType = "Int64";
+                    }
                     clist.Add(new KeyValuePair<WhereType, ConditionalModel>(i == 0 ? WhereType.Or : WhereType.And, new ConditionalModel()
                     {
                         FieldName = item,
                         ConditionalType = ConditionalType.Equal,
-                        FieldValue = model[item]==null?"null" : model[item].ObjToString(),
-                        CSharpTypeName = model[item] == null ? null : model[item].GetType().Name
+                        FieldValue = value,
+                        CSharpTypeName = csType
                     }));
                     i++;
                 }
