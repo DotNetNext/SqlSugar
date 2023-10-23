@@ -19,6 +19,20 @@ namespace SqlSugar
     public class UtilMethods
     {
 
+        internal static bool IsParameterConverter(EntityColumnInfo columnInfo)
+        {
+            return columnInfo != null && columnInfo.SqlParameterDbType != null && columnInfo.SqlParameterDbType is Type
+                && typeof(ISugarDataConverter).IsAssignableFrom(columnInfo.SqlParameterDbType as Type);
+        }
+        internal static SugarParameter GetParameterConverter(ISqlSugarClient db,object value, Expression oppoSiteExpression, EntityColumnInfo columnInfo)
+        {
+            var entity = db.EntityMaintenance.GetEntityInfo(oppoSiteExpression.Type);
+            var type = columnInfo.SqlParameterDbType as Type;
+            var ParameterConverter = type.GetMethod("ParameterConverter").MakeGenericMethod(columnInfo.PropertyInfo.PropertyType);
+            var obj = Activator.CreateInstance(type);
+            var p = ParameterConverter.Invoke(obj, new object[] { value, 100 }) as SugarParameter;
+            return p;
+        }
         internal static bool IsErrorParameterName(ConnectionConfig connectionConfig,DbColumnInfo columnInfo)
         {
             return connectionConfig.MoreSettings?.IsCorrectErrorSqlParameterName == true &&

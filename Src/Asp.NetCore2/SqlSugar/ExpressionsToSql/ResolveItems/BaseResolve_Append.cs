@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.Generic; 
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -45,6 +45,10 @@ namespace SqlSugar
                 else if (oppoSiteExpression is MemberExpression)
                 {
                     AppendMember(parameter, isLeft, value, oppoSiteExpression);
+                }
+                else if (ExpressionTool.RemoveConvert(oppoSiteExpression) is MemberExpression)
+                {
+                    AppendMember(parameter, isLeft, value, ExpressionTool.RemoveConvert(oppoSiteExpression));
                 }
                 else if ((oppoSiteExpression is UnaryExpression && (oppoSiteExpression as UnaryExpression).Operand is MemberExpression))
                 {
@@ -141,7 +145,13 @@ namespace SqlSugar
                     }
                     this.Context.Parameters.Add(p);
                 }
-                else if (parameter?.BaseParameter?.CommonTempData.ObjToString() == "IsJson=true") 
+                else if (UtilMethods.IsParameterConverter(columnInfo))
+                {
+                    SugarParameter p = UtilMethods.GetParameterConverter(this.Context.SugarContext.Context, value, oppoSiteExpression, columnInfo);
+                    appendValue = p.ParameterName;
+                    this.Context.Parameters.Add(p);
+                }
+                else if (parameter?.BaseParameter?.CommonTempData.ObjToString() == "IsJson=true")
                 {
                     this.Context.Parameters.Add(new SugarParameter(appendValue, new SerializeService().SerializeObject(value)) {  IsJson=true});
                 }
