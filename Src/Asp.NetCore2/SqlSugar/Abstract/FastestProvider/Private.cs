@@ -302,6 +302,14 @@ namespace SqlSugar
                     CacheSchemeMain.RemoveCacheByLike(service, CacheKeyLike);
                 }
             }
+            if (this.context.CurrentConnectionConfig?.MoreSettings?.IsAutoRemoveDataCache == true) 
+            {
+                var cacheService = this.context.CurrentConnectionConfig?.ConfigureExternalServices?.DataInfoCacheService;
+                if (cacheService != null)
+                {
+                    CacheSchemeMain.RemoveCache(cacheService, this.context.EntityMaintenance.GetTableName<T>());
+                }
+            }
         }
 
     }
