@@ -419,7 +419,7 @@ WHERE tgrelid = '" + tableName + "'::regclass");
             //table remak
             if (entity.TableDescription != null)
             {
-                db.DbMaintenance.AddTableRemark(entity.DbTableName, entity.TableDescription);
+                db.DbMaintenance.AddTableRemark(SqlBuilder.GetTranslationColumnName(entity.DbTableName), entity.TableDescription);
             }
             return true;
         }
