@@ -619,6 +619,10 @@ namespace SqlSugar
             {
                 return null;
             }
+            if (type == typeof(string[]))
+            {
+                return null;
+            }
             var classProperties = type.GetProperties().ToList();
             if (type.Name.StartsWith("Dictionary`"))
             {
