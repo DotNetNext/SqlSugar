@@ -48,9 +48,24 @@ namespace OrmTest
             {
                 unit00Z11C12 = it
             }).ToList();
-            db.CodeFirst.InitTables<Unitadfafa1>();
+            db.CodeFirst.InitTables<Unitadfafa1>(); 
+            var db2 = NewUnitTest.Db;
+            db2.CodeFirst.InitTables<OneTable>();
+            db2.CodeFirst.InitTables<ONETABLE>();
             Console.WriteLine("#### CodeFirst end ####");
         }
+    }
+    [SugarTable(null, "测试表")]
+    public class OneTable
+    {
+        [SqlSugar.SugarColumn]
+        public int OneFiled { get; set; }
+    }
+    [SugarTable(null, "测试表")]
+    public class ONETABLE
+    {
+        [SqlSugar.SugarColumn]
+        public string OneFiled { get; set; }
     }
     public class Unitadfafa1 
     {
