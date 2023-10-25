@@ -245,7 +245,7 @@ namespace SqlSugar
         {
             get
             {
-                return "null";
+                return "";
             } 
         }
         protected override string CreateTableNotNull
