@@ -278,7 +278,7 @@ namespace SqlSugar
                 .FirstOrDefault(it=>it.DbColumnName.EqualCase(column.DbColumnName));
             if (oldColumn != null) 
             {
-                if (oldColumn.IsNullable == column.IsNullable&&oldColumn.IsPrimarykey==false&&oldColumn.IsIdentity==false) 
+                if (oldColumn.IsNullable == column.IsNullable) 
                 {
                     var sql=GetUpdateColumnSqlOnlyType(tableName, column);
                     this.Context.Ado.ExecuteCommand(sql);
