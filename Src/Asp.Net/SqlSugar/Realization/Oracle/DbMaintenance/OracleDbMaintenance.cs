@@ -246,7 +246,7 @@ namespace SqlSugar
             get
             {
                 return "";
-            }
+            } 
         }
         protected override string CreateTableNotNull
         {
@@ -272,6 +272,33 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override bool UpdateColumn(string tableName, DbColumnInfo column)
+        {
+            var oldColumn = this.Context.DbMaintenance.GetColumnInfosByTableName(tableName, false)
+                .FirstOrDefault(it=>it.DbColumnName.EqualCase(column.DbColumnName));
+            if (oldColumn != null) 
+            {
+                if (oldColumn.IsNullable == column.IsNullable&&oldColumn.IsPrimarykey==false&&oldColumn.IsIdentity==false) 
+                {
+                    var sql=GetUpdateColumnSqlOnlyType(tableName, column);
+                    this.Context.Ado.ExecuteCommand(sql);
+                    return true;
+                }
+            }
+            return base.UpdateColumn(tableName, column);
+        }
+        protected virtual string GetUpdateColumnSqlOnlyType(string tableName, DbColumnInfo columnInfo)
+        {
+            string columnName = this.SqlBuilder.GetTranslationColumnName(columnInfo.DbColumnName);
+            tableName = this.SqlBuilder.GetTranslationTableName(tableName);
+            string dataSize = GetSize(columnInfo);
+            string dataType = columnInfo.DataType;
+            string nullType ="";
+            string primaryKey = null;
+            string identity = null;
+            string result = string.Format(this.AlterColumnToTableSql, tableName, columnName, dataType, dataSize, nullType, primaryKey, identity);
+            return result;
+        }
         public override bool RenameTable(string oldTableName, string newTableName)
         {
             return base.RenameTable(SqlBuilder.GetTranslationColumnName(oldTableName), SqlBuilder.GetTranslationColumnName(newTableName));
