@@ -128,6 +128,14 @@ namespace SqlSugar
                 return mappingInfo == null ? tableName : mappingInfo.EntityName;
             }
         }
+        public string GetEntityName<T>()
+        {
+            return this.Context.EntityMaintenance.GetEntityInfo<T>().EntityName;
+        }
+        public string GetEntityName(Type type)
+        {
+            return this.Context.EntityMaintenance.GetEntityInfo(type).EntityName;
+        }
         public string GetDbColumnName<T>(string propertyName)
         {
             return GetDbColumnName(propertyName, typeof(T));
@@ -151,6 +159,11 @@ namespace SqlSugar
         }
         public string GetPropertyName<T>(string dbColumnName)
         {
+            var columnInfo=this.Context.EntityMaintenance.GetEntityInfo<T>().Columns.FirstOrDefault(it=>it.DbColumnName.EqualCase(dbColumnName));
+            if (columnInfo != null) 
+            {
+                return columnInfo.PropertyName;
+            }
             var typeName = typeof(T).Name;
             if (this.Context.MappingColumns == null || this.Context.MappingColumns.Count == 0) return dbColumnName;
             else
