@@ -11,7 +11,19 @@ namespace SqlSugar
     {
         static Assembly assembly = Assembly.GetExecutingAssembly();
         static Dictionary<string, Type> typeCache = new Dictionary<string, Type>();
-        public static string CustomDllName = "";
+        private static string _CustomDllName = "";
+        private static List<string> CustomDlls = new List<string>();
+        public static string CustomDllName {
+            get { return _CustomDllName; }
+            set 
+            {
+                if (!CustomDlls.Contains(value)) 
+                {
+                    CustomDlls.Add(value);
+                }
+                _CustomDllName = value;
+            }
+        }
         public static string CustomDbName = "";
         public static string CustomNamespace = "";
         public static bool NoCache = false;
@@ -605,14 +617,30 @@ namespace SqlSugar
 
         internal static Type GetCustomTypeByClass(string className)
         {
-            var key = "Assembly_"+ CustomDllName+assembly.GetHashCode();
+            Type type = null;
+            foreach (var item in CustomDlls.AsEnumerable())
+            {
+                if (type == null)
+                {
+                    type = GetCustomTypeByClass(className, item);
+                }
+                if(type != null) 
+                {
+                    break;
+                }
+            }
+            return type;
+        }
+        internal static Type GetCustomTypeByClass(string className,string customDllName)
+        {
+            var key = "Assembly_" + customDllName + assembly.GetHashCode();
             var newAssembly = new ReflectionInoCacheService().GetOrCreate<Assembly>(key, () => {
                 try
                 {
                     var path = Assembly.GetExecutingAssembly().Location;
                     if (path.HasValue())
                     {
-                        path =System.IO.Path.Combine( System.IO.Path.GetDirectoryName(path), CustomDllName + ".dll");
+                        path = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(path), customDllName + ".dll");
                     }
                     if (path.HasValue() && FileHelper.IsExistFile(path))
                     {
@@ -620,15 +648,15 @@ namespace SqlSugar
                     }
                     else
                     {
-                        if (IsWebFrom) 
+                        if (IsWebFrom)
                         {
-                            string newpath = (System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().GetName().CodeBase) + "\\"+CustomDllName + ".dll").Replace("file:\\", "");
+                            string newpath = (System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().GetName().CodeBase) + "\\" + CustomDllName + ".dll").Replace("file:\\", "");
                             return Assembly.LoadFrom(newpath);
                         }
                         return Assembly.LoadFrom(CustomDllName + ".dll");
                     }
                 }
-                catch 
+                catch
                 {
                     var message = "Not Found " + CustomDllName + ".dll";
                     Check.Exception(true, message);
@@ -636,23 +664,38 @@ namespace SqlSugar
                 }
             });
             Type type = newAssembly.GetType(className);
-            if (type == null) 
+            if (type == null)
             {
-                type= assembly.GetType(className);
+                type = assembly.GetType(className);
             }
             return type;
         }
-
         internal static Type GetCustomTypeByClass<T>(string className)
         {
-            var key = "Assembly_" + CustomDllName + assembly.GetHashCode();
+            Type type = null;
+            foreach (var item in CustomDlls.AsEnumerable())
+            {
+                if (type == null)
+                {
+                    type = GetCustomTypeByClass<T>(className, item);
+                }
+                if (type != null)
+                {
+                    break;
+                }
+            }
+            return type;
+        }
+        internal static Type GetCustomTypeByClass<T>(string className,string customDllName)
+        {
+            var key = "Assembly_" + customDllName + assembly.GetHashCode();
             var newAssembly = new ReflectionInoCacheService().GetOrCreate<Assembly>(key, () => {
                 try
                 {
                     var path = Assembly.GetExecutingAssembly().Location;
                     if (path.HasValue())
                     {
-                        path = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(path), CustomDllName + ".dll");
+                        path = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(path), customDllName + ".dll");
                     }
                     if (path.HasValue() && FileHelper.IsExistFile(path))
                     {
