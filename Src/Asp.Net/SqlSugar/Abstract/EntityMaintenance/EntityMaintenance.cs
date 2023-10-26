@@ -174,6 +174,11 @@ namespace SqlSugar
         }
         public string GetPropertyName(string dbColumnName, Type entityType)
         {
+            var columnInfo = this.Context.EntityMaintenance.GetEntityInfo(entityType).Columns.FirstOrDefault(it => it.DbColumnName.EqualCase(dbColumnName));
+            if (columnInfo != null)
+            {
+                return columnInfo.PropertyName;
+            }
             var typeName = entityType.Name;
             if (this.Context.MappingColumns == null || this.Context.MappingColumns.Count == 0) return dbColumnName;
             else
