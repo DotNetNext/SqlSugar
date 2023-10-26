@@ -265,6 +265,10 @@ namespace SqlSugar
             {
                 inValue1 = inValue1.Replace("'null'", "null");
             }
+            else if (inValue1.Contains("[comma]")) 
+            {
+                inValue1 = inValue1.Replace("[comma]", ",");
+            }
             else if (inValue1.Contains("[null]"))
             {
                 inValue1 = inValue1.Replace("[null]", "null");
