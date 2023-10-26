@@ -618,7 +618,7 @@ namespace SqlSugar
         internal static Type GetCustomTypeByClass(string className)
         {
             Type type = null;
-            foreach (var item in CustomDlls.AsEnumerable())
+            foreach (var item in CustomDlls.ToArray())
             {
                 if (type == null)
                 {
@@ -673,7 +673,7 @@ namespace SqlSugar
         internal static Type GetCustomTypeByClass<T>(string className)
         {
             Type type = null;
-            foreach (var item in CustomDlls.AsEnumerable())
+            foreach (var item in CustomDlls.ToArray())
             {
                 if (type == null)
                 {
