@@ -650,15 +650,15 @@ namespace SqlSugar
                     {
                         if (IsWebFrom)
                         {
-                            string newpath = (System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().GetName().CodeBase) + "\\" + CustomDllName + ".dll").Replace("file:\\", "");
+                            string newpath = (System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().GetName().CodeBase) + "\\" + customDllName + ".dll").Replace("file:\\", "");
                             return Assembly.LoadFrom(newpath);
                         }
-                        return Assembly.LoadFrom(CustomDllName + ".dll");
+                        return Assembly.LoadFrom(customDllName + ".dll");
                     }
                 }
                 catch
                 {
-                    var message = "Not Found " + CustomDllName + ".dll";
+                    var message = "Not Found " + customDllName + ".dll";
                     Check.Exception(true, message);
                     return null;
                 }
@@ -705,15 +705,15 @@ namespace SqlSugar
                     {
                         if (IsWebFrom)
                         {
-                            string newpath = (System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().GetName().CodeBase) + "\\" + CustomDllName + ".dll").Replace("file:\\", "");
+                            string newpath = (System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().GetName().CodeBase) + "\\" + customDllName + ".dll").Replace("file:\\", "");
                             return Assembly.LoadFrom(newpath);
                         }
-                        return Assembly.LoadFrom(CustomDllName + ".dll");
+                        return Assembly.LoadFrom(customDllName + ".dll");
                     }
                 }
                 catch
                 {
-                    var message = "Not Found " + CustomDllName + ".dll";
+                    var message = "Not Found " + customDllName + ".dll";
                     Check.Exception(true, message);
                     return null;
                 }
