@@ -344,6 +344,10 @@ namespace SqlSugar
             {
                 ids = ids.Select(it => Convert.ToInt64(it)).Cast<object>().ToList();
             }
+            if (navPkColumn?.UnderType?.Name == UtilConstants.StringType.Name)
+            {
+                ids = ids.Select(it => it?.ToString()?.Replace(",", "[comma]")).Cast<object>().ToList();
+            }
             conditionalModels.Add((new ConditionalModel()
             {
                 ConditionalType = ConditionalType.In,
@@ -414,6 +418,10 @@ namespace SqlSugar
             if (IsEnumNumber(navColumn)) 
             {
                 ids = ids.Select(it => Convert.ToInt64(it)).Cast<object>().ToList();
+            }
+            if (navColumn?.UnderType?.Name == UtilConstants.StringType.Name)
+            {
+                ids = ids.Select(it => it?.ToString()?.Replace(",", "[comma]")).Cast<object>().ToList();
             }
             conditionalModels.Add((new ConditionalModel()
             {
