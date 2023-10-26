@@ -69,7 +69,7 @@ namespace SqlSugar
                             .FirstOrDefault();
         }
         private static string GetMethodName(string name, List<string> methods)
-        {
+        { 
             var result = methods.FirstOrDefault(it => name.EqualCase("SqlFunc_" + it) || name.EqualCase(it));
             Check.Exception(result == null, $" { name } is error ");
             return result;
@@ -92,12 +92,12 @@ namespace SqlSugar
             string resSql;
             var args = new List<MethodCallExpressionArgs>();
             foreach (var item in parameters)
-            {
+            {             
                 var value = GetSqlPart(item, resPars);
                 args.Add(new MethodCallExpressionArgs
                 {
                     MemberName = value,
-                    MemberValue = value,
+                    MemberValue = resPars.FirstOrDefault(it => it.ParameterName == value)?.Value?? value,
                     IsMember = true
                 });
             }
