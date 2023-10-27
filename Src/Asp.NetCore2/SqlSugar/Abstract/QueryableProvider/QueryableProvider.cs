@@ -1556,7 +1556,7 @@ namespace SqlSugar
             Check.ExceptionEasy(splitColumn==null,"[SplitFieldAttribute] need to be added to the table field", "需要在分表字段加上属性[SplitFieldAttribute]");
             var columnName = this.SqlBuilder.GetTranslationColumnName(splitColumn.DbColumnName);
             var sqlParameterKeyWord = this.SqlBuilder.SqlParameterKeyWord;
-            var result= this.Where($" {columnName}>={sqlParameterKeyWord}spBeginTime AND {columnName}<= {sqlParameterKeyWord}spEndTime",new { spBeginTime = beginTime , spEndTime = endTime}).SplitTable(tas => {
+            var resultQueryale= this.Where($" {columnName}>={sqlParameterKeyWord}spBeginTime AND {columnName}<= {sqlParameterKeyWord}spEndTime",new { spBeginTime = beginTime , spEndTime = endTime}).SplitTable(tas => {
                 var result = tas;
                 var  type= this.EntityInfo.Type.GetCustomAttribute<SplitTableAttribute>();
                 Check.ExceptionEasy(type == null, $"{this.EntityInfo.EntityName}need SplitTableAttribute", $"{this.EntityInfo.EntityName}需要特性 SplitTableAttribute");
@@ -1598,7 +1598,7 @@ namespace SqlSugar
                 });
             if (splitColumn.SqlParameterDbType is System.Data.DbType)
             {
-                foreach (var item in result.QueryBuilder.Parameters)
+                foreach (var item in resultQueryale.QueryBuilder.Parameters)
                 {
                     if (item.ParameterName.IsContainsIn("spBeginTime", "spEndTime")) 
                     {
@@ -1606,7 +1606,7 @@ namespace SqlSugar
                     }
                 }
             }
-            return result;
+            return resultQueryale;
         }
         public ISugarQueryable<T> SplitTable(Func<List<SplitTableInfo>, IEnumerable<SplitTableInfo>> getTableNamesFunc) 
         {
