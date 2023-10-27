@@ -294,7 +294,7 @@ WHERE table_name = '" + tableName + "'");
         }
         public override List<string> GetIndexList(string tableName)
         {
-            var sql = $"SELECT index_name FROM user_ind_columns\r\nWHERE table_name = '{tableName}'";
+            var sql = $"SELECT index_name FROM user_ind_columns\r\nWHERE upper(table_name) = upper('{tableName}')";
             return this.Context.Ado.SqlQuery<string>(sql);
         }
         public override bool AddColumn(string tableName, DbColumnInfo columnInfo)
