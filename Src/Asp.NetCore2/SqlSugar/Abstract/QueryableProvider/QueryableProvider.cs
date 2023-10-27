@@ -1598,7 +1598,7 @@ namespace SqlSugar
                 });
             if (splitColumn.SqlParameterDbType is System.Data.DbType)
             {
-                foreach (var item in this.QueryBuilder.Parameters)
+                foreach (var item in result.QueryBuilder.Parameters)
                 {
                     if (item.ParameterName.IsContainsIn("spBeginTime", "spEndTime")) 
                     {
