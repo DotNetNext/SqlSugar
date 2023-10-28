@@ -174,6 +174,12 @@ namespace SqlSugar
         #endregion
 
         #region DDL
+        public  virtual bool DropIndex(string indexName)
+        {
+            indexName = this.SqlBuilder.GetNoTranslationColumnName(indexName);
+            this.Context.Ado.ExecuteCommand($" DROP INDEX  {indexName} ");
+            return true;
+        }
         public virtual bool DropView(string viewName) 
         {
             viewName = this.SqlBuilder.GetNoTranslationColumnName(viewName);
