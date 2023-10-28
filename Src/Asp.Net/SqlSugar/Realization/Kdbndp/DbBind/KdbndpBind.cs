@@ -17,6 +17,7 @@ namespace SqlSugar
         public override string GetPropertyTypeName(string dbTypeName)
         {
             dbTypeName = dbTypeName.Replace("pg_catalog.", "");
+            dbTypeName = dbTypeName.Replace("sys.", "");
             dbTypeName = dbTypeName.ToLower();
             var propertyTypes = MappingTypes.Where(it => it.Value.ToString().ToLower() == dbTypeName || it.Key.ToLower() == dbTypeName);
             if (propertyTypes == null)
