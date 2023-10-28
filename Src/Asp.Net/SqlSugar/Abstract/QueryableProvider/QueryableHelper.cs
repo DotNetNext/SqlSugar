@@ -1584,7 +1584,8 @@ namespace SqlSugar
         {
             QueryBuilder.CheckExpression(expression, "OrderBy");
             var isSingle = QueryBuilder.IsSingle();
-            if (expression.ToString().IsContainsIn("Desc(", "Asc("))
+            var member=  ExpressionTool.RemoveConvert(ExpressionTool.GetLambdaExpressionBody(expression)) is MemberExpression;
+            if (member==false&&expression.ToString().IsContainsIn("Desc(", "Asc("))
             {
                 var orderValue = "";
                 var newExp = (expression as LambdaExpression).Body as NewExpression;
