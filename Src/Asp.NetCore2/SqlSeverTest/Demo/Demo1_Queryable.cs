@@ -97,6 +97,15 @@ namespace OrmTest
                      .Select(o => o.Id))
                      .OrderBy("id desc")
                      .ToPageList(1, 10);
+
+            var methodInfo = typeof(UnitTool).GetMethod("GetName");
+
+            var list8 = db.Queryable<Order>()
+              .Select(it => new
+              {
+                  n = it.Name,
+                  name = SqlFunc.OnlyInSelectConvertToString(it.Name, methodInfo)
+              }).ToList();
             Console.WriteLine("#### Examples End ####");
         }
 
