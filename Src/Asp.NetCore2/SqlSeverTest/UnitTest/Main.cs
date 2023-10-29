@@ -30,6 +30,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UnitOneToMany1231123.Init();
             OneToManyInString.Init();
             UnitSplitTask.Init();
             UinitUpdateNavOneToOne.Init();
