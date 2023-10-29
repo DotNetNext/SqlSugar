@@ -11,6 +11,11 @@ namespace SqlSugar
         public NavigateType? _NavigateType { get; set; }
         private void UpdateOneToMany<TChild>(string name, EntityColumnInfo nav) where TChild : class, new()
         {
+            DeleteInsert<TChild>(name, nav);
+        }
+
+        private void DeleteInsert<TChild>(string name, EntityColumnInfo nav) where TChild : class, new()
+        {
             List<TChild> children = new List<TChild>();
             var parentEntity = _ParentEntity;
             var parentList = _ParentList;
@@ -42,7 +47,7 @@ namespace SqlSugar
                     children.AddRange(childs);
                 }
                 ids.Add(parentValue);
-                if (_Options?.OneToManyNoDeleteNull == true && childs == null) 
+                if (_Options?.OneToManyNoDeleteNull == true && childs == null)
                 {
                     ids.Remove(parentValue);
                 }
@@ -54,9 +59,9 @@ namespace SqlSugar
                 {
                     var locgicColumn = thisEntity.Columns.FirstOrDefault(it => it.PropertyName.EqualCase("IsDeleted") || it.PropertyName.EqualCase("IsDelete"));
                     Check.ExceptionEasy(
-                         locgicColumn==null, 
-                         thisEntity.EntityName + "Logical deletion requires the entity to have the IsDeleted property", 
-                         thisEntity.EntityName+"假删除需要实体有IsDeleted属性");
+                         locgicColumn == null,
+                         thisEntity.EntityName + "Logical deletion requires the entity to have the IsDeleted property",
+                         thisEntity.EntityName + "假删除需要实体有IsDeleted属性");
                     List<IConditionalModel> conditionalModels = new List<IConditionalModel>();
                     conditionalModels.Add(new ConditionalModel()
                     {
@@ -81,13 +86,14 @@ namespace SqlSugar
                 _NavigateType = NavigateType.OneToMany;
                 InsertDatas(children, thisPkColumn);
             }
-            else 
+            else
             {
                 this._ParentList = children.Cast<object>().ToList();
             }
             _NavigateType = null;
             SetNewParent<TChild>(thisEntity, thisPkColumn);
         }
+
         private static bool ParentIsPk(EntityColumnInfo parentNavigateProperty)
         {
             return parentNavigateProperty != null &&
