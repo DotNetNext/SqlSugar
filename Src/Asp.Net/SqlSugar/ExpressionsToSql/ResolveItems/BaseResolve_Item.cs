@@ -18,6 +18,11 @@ namespace SqlSugar
                 parameter.Context.Result.Append(this.Context.GetAsString2(asName, this.Context.DbMehtods.NewUid(null)));
                 return;
             }
+            else if (ExpressionTool.GetMethodName(item) == "OnlyInSelectConvertToString")
+            {
+                AppendOnlyInSelectConvertToString(parameter, item, asName);
+                return;
+            }
             else if (ExpressionTool.GetMethodName(item) == "ToString"   
                                       &&(item as MethodCallExpression)?.Arguments?.Count()==1
                                       && (item as MethodCallExpression)?.Object?.Type!=UtilConstants.DateType

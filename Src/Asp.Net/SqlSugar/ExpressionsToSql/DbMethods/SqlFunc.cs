@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -389,6 +390,11 @@ namespace SqlSugar
             throw new NotSupportedException("Can only be used in expressions");
         }
         public static bool ListAll<T>(List<T> listConstant, Expression<Func<T, bool>> expression)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+         
+        public static string OnlyInSelectConvertToString(string stringValue, MethodInfo methodInfo)
         {
             throw new NotSupportedException("Can only be used in expressions");
         }
