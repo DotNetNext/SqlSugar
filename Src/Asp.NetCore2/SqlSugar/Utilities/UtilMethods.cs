@@ -135,9 +135,25 @@ namespace SqlSugar
                 {
                     addValue = Convert.ToDouble(addValue + "").ToString(valueFomatInfo.Format);
                 }
-                else if (valueFomatInfo.TypeString == "Enum") 
+                else if (valueFomatInfo.TypeString == "Enum")
                 {
-                    addValue =ChangeType2( addValue,valueFomatInfo.Type)?.ToString();
+                    addValue =ChangeType2(addValue, valueFomatInfo.Type)?.ToString();
+                }
+            }
+            else if (valueFomatInfo.MethodName== "OnlyInSelectConvertToString") 
+            {
+
+                var methodInfo = valueFomatInfo.MethodInfo;
+                if (methodInfo != null)
+                {
+                    // 如果方法是静态的，传递null作为第一个参数，否则传递类的实例
+                    object instance = methodInfo.IsStatic ? null : Activator.CreateInstance(methodInfo.ReflectedType);
+
+                    // 创建一个包含参数值的object数组
+                    object[] parameters = new object[] { addValue };
+
+                    // 调用方法
+                    addValue=methodInfo.Invoke(instance, parameters);  
                 }
             }
             return addValue;

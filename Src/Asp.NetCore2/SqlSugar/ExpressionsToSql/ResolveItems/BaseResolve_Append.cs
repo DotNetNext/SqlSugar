@@ -263,5 +263,20 @@ namespace SqlSugar
                 this.Context.Result.Replace(ExpressionConst.FormatSymbol, "-");
             }
         }
+        private void AppendOnlyInSelectConvertToString(ExpressionParameter parameter, Expression item, string asName)
+        {
+            var name =GetNewExpressionValue((item as MethodCallExpression)?.Arguments[0]);
+            var methodInfo = ExpressionTool.DynamicInvoke(((item as MethodCallExpression)?.Arguments[1]));
+            if (this.Context.SugarContext.QueryBuilder.QueryableFormats == null)
+                this.Context.SugarContext.QueryBuilder.QueryableFormats = new List<QueryableFormat>();
+            this.Context.SugarContext.QueryBuilder.QueryableFormats.Add(new QueryableFormat()
+            {
+                Format = "",
+                PropertyName = asName,  
+                MethodName = "OnlyInSelectConvertToString",
+                MethodInfo= (MethodInfo)methodInfo
+            });
+            parameter.Context.Result.Append(this.Context.GetAsString2(asName, name));
+        }
     }
 }
