@@ -447,6 +447,14 @@ namespace SqlSugar
                 var result = this.Select<T>(keyName + "," + valueName).ToList().ToDictionary(ExpressionTool.GetMemberName(key), ExpressionTool.GetMemberName(value));
                 return result;
             }
+            else if (valueName == null) 
+            {
+                // 编译key和value的表达式树为委托
+                var keySelector = key.Compile();
+                var valueSelector = value.Compile();
+                Dictionary<object,object> objDic= this.ToList().ToDictionary(keySelector, valueSelector); 
+                return objDic.ToDictionary(it=>it.Key?.ToString(),it=>it.Value);
+            }
             else
             {
                 var result = this.Select<KeyValuePair<string, object>>(keyName + "," + valueName).ToList().ToDictionary(it => it.Key.ObjToString(), it => it.Value);
