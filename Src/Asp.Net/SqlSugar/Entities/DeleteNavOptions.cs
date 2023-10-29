@@ -51,6 +51,7 @@ namespace SqlSugar
         public bool OneToManyDeleteAll { get;  set; }
         public bool OneToManyEnableLogicDelete { get; set; }
         public bool OneToManyNoDeleteNull { get; set; }
+        public bool OneToManyInsertOrUpdate { get; set; }
         public Expression RootFunc { get; set; }
         public Expression CurrentFunc { get; set; }
     }
