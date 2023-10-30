@@ -490,7 +490,48 @@ WHERE tgrelid = '" + tableName + "'::regclass");
 
         public override List<DbColumnInfo> GetColumnInfosByTableName(string tableName, bool isCache = true)
         {
-            return base.GetColumnInfosByTableName(tableName.TrimEnd('"').TrimStart('"').ToLower(), isCache);
+            var result = base.GetColumnInfosByTableName(tableName.TrimEnd('"').TrimStart('"').ToLower(), isCache);
+            if (result == null || result.Count() == 0)
+            {
+                result = base.GetColumnInfosByTableName(tableName, isCache);
+            }
+            try
+            {
+                string sql = $@"select  
+                               kcu.column_name as key_column
+                               from information_schema.table_constraints tco
+                               join information_schema.key_column_usage kcu 
+                               on kcu.constraint_name = tco.constraint_name
+                               and kcu.constraint_schema = tco.constraint_schema
+                               and kcu.constraint_name = tco.constraint_name
+                               where tco.constraint_type = 'PRIMARY KEY'
+                               and kcu.table_schema='{GetSchema()}' and 
+                               upper(kcu.table_name)=upper('{tableName.TrimEnd('"').TrimStart('"')}')";
+                List<string> pkList = new List<string>();
+                if (isCache)
+                {
+                    pkList = GetListOrCache<string>("GetColumnInfosByTableName_N_Pk" + tableName, sql);
+                }
+                else
+                {
+                    pkList = this.Context.Ado.SqlQuery<string>(sql);
+                }
+                if (pkList.Count > 1)
+                {
+                    foreach (var item in result)
+                    {
+                        if (pkList.Select(it => it.ToUpper()).Contains(item.DbColumnName.ToUpper()))
+                        {
+                            item.IsPrimarykey = true;
+                        }
+                    }
+                }
+            }
+            catch
+            {
+
+            }
+            return result;
         }
         public bool IsUpper
         {
