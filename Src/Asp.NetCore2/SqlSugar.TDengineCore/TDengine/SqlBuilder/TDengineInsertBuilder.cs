@@ -54,7 +54,7 @@ namespace SqlSugar.TDengine
             else
             {
                 StringBuilder batchInsetrSql = new StringBuilder();
-                int pageSize = 200;
+                int pageSize = 1000000;
                 int pageIndex = 1;
                 if (IsNoPage&&IsReturnPkList) 
                 {
