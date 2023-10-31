@@ -31,7 +31,10 @@ namespace OrmTest
             var db = GetInstance();
             var dbTime = db.GetDate();
             var getAll = db.Queryable<Order>().ToList();
+            var first = db.Queryable<Order>().First();
+            var first2 = db.Queryable<Order>().Where(it=>it.Id>2).First();
             var getpage = db.Queryable<Order>().ToPageList(0,5);
+            var getpage1 = db.Queryable<Order>().ToPageList(1, 1);
             var getpage2 = db.Queryable<Order>().ToOffsetPage(0,5);
             int count= 0;
             var getpage3 = db.Queryable<Order>().ToOffsetPage(0, 5,ref count);
