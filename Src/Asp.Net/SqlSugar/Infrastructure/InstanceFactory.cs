@@ -6,13 +6,14 @@ using System.Text;
 using System.Threading.Tasks;
 namespace SqlSugar
 {
-    
+
     public class InstanceFactory
     {
         static Assembly assembly = Assembly.GetExecutingAssembly();
         static Dictionary<string, Type> typeCache = new Dictionary<string, Type>();
         private static string _CustomDllName = "";
         private static List<string> CustomDlls = new List<string>();
+        public static Assembly[] CustomAssemblies = new Assembly[]{};
         public static string CustomDllName {
             get { return _CustomDllName; }
             set 
@@ -637,6 +638,10 @@ namespace SqlSugar
             var newAssembly = new ReflectionInoCacheService().GetOrCreate<Assembly>(key, () => {
                 try
                 {
+                    if (CustomAssemblies?.Any(it => it.FullName.StartsWith(customDllName))==true) 
+                    {
+                        return CustomAssemblies?.First(it => it.FullName.StartsWith(customDllName));
+                    }
                     var path = Assembly.GetExecutingAssembly().Location;
                     if (path.HasValue())
                     {
@@ -692,6 +697,10 @@ namespace SqlSugar
             var newAssembly = new ReflectionInoCacheService().GetOrCreate<Assembly>(key, () => {
                 try
                 {
+                    if (CustomAssemblies?.Any(it => it.FullName.StartsWith(customDllName)) == true)
+                    {
+                        return CustomAssemblies?.First(it => it.FullName.StartsWith(customDllName));
+                    }
                     var path = Assembly.GetExecutingAssembly().Location;
                     if (path.HasValue())
                     {
