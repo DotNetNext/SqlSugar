@@ -151,7 +151,7 @@ namespace SqlSugar
             {
                 base.ErrorEvent(it);
             }
-            if (it.Message != null && it.Message.StartsWith("42883:"))
+            if (it.Message != null && it.Message.StartsWith("42883: function uuid_generate_v4() does not exist"))
             {
                 Check.ExceptionEasy(it.Message, $"使用uuid_generate_v4()函数需要创建 CREATE EXTENSION IF NOT EXISTS kbcrypto;CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\" ");
             }
