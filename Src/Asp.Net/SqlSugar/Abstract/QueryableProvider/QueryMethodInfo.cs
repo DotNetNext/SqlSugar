@@ -316,7 +316,13 @@ namespace SqlSugar
             var method = QueryableObj.GetType().GetMyMethod("AnyAsync", 0);
             var reslt = method.Invoke(QueryableObj, new object[] { });
             return await (Task<bool>) reslt;
-        } 
+        }
+        public async Task<object> InSingleAsync(object pkValue)
+        {
+            var method = QueryableObj.GetType().GetMyMethod("InSingleAsync", 1);
+            var task = (Task)method.Invoke(QueryableObj, new object[] { pkValue });
+            return await GetTask(task).ConfigureAwait(false);
+        }
         #endregion
 
         #region Helper
