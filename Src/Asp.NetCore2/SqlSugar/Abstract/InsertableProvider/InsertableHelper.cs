@@ -179,6 +179,10 @@ namespace SqlSugar
             foreach (var item in InsertObjs)
             {
                 List<DbColumnInfo> insertItem = new List<DbColumnInfo>();
+                if (item is Dictionary<string, string>)
+                {
+                    Check.ExceptionEasy("To use Insertable dictionary, use string or object", "Insertable字典请使用string,object类型");
+                }
                 if (item is Dictionary<string, object>)
                 {
                     SetInsertItemByDic(i, item, insertItem);

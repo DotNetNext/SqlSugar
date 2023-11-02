@@ -197,6 +197,10 @@ namespace SqlSugar
             {
                 List<DbColumnInfo> updateItem = new List<DbColumnInfo>();
                 var isDic = item is Dictionary<string, object>;
+                if (item is Dictionary<string, string>) 
+                {
+                    Check.ExceptionEasy("To use Updateable dictionary, use string or object", "Updateable字典请使用string,object类型");
+                }
                 if (isDic)
                 {
                     SetUpdateItemByDic(i, item, updateItem);
