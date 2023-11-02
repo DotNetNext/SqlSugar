@@ -320,8 +320,8 @@ namespace SqlSugar
         public async Task<object> InSingleAsync(object pkValue)
         {
             var method = QueryableObj.GetType().GetMyMethod("InSingleAsync", 1);
-            var reslt = method.Invoke(QueryableObj, new object[] { pkValue });
-            return await(Task<object>)reslt;
+            var task = (Task)method.Invoke(QueryableObj, new object[] { pkValue });
+            return await GetTask(task).ConfigureAwait(false);
         }
         #endregion
 
