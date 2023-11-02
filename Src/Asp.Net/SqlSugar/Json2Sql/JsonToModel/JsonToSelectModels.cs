@@ -22,7 +22,7 @@ namespace SqlSugar
                 }
                 else if (IsString(item))
                 {
-                    conditionalModels.Add(new SelectModel() { FiledName = item.ObjToString().ToCheckField(), AsName = item.ObjToString().Replace(".", "_") });
+                    conditionalModels.Add(new SelectModel() { FieldName = item.ObjToString().ToCheckField(), AsName = item.ObjToString().Replace(".", "_") });
                 }
                 else if (IsArraySingleItem(item))
                 {
@@ -34,7 +34,7 @@ namespace SqlSugar
                     }
                     conditionalModels.Add(new SelectModel()
                     {
-                        FiledName = fileName,
+                        FieldName = fileName,
                         AsName = asName
                     });
 
@@ -49,7 +49,7 @@ namespace SqlSugar
                     }
                     conditionalModels.Add(new SelectModel()
                     {
-                        FiledName = fileName,
+                        FieldName = fileName,
                         AsName = asName
                     });
 
@@ -58,7 +58,7 @@ namespace SqlSugar
                 {
                     conditionalModels.Add(new SelectModel()
                     {
-                        FiledName = item.ObjToString().Trim(),
+                        FieldName = item.ObjToString().Trim(),
                         AsName = item.ObjToString().Trim()
                     });
                 }
