@@ -43,7 +43,11 @@ namespace SqlSugar
                 orderByModel.AsName = orderByModel.AsName.Trim('[').Trim(']');
                 return this.SqlTranslationLeft + orderByModel.AsName + this.SqlTranslationRight;
             }
-          return this.GetTranslationColumnName(orderByModel.AsName);
+            if (this.SqlTranslationLeft != null && orderByModel.AsName?.Contains(this.SqlTranslationLeft) == true) 
+            {
+                return orderByModel.AsName;
+            }
+            return this.SqlTranslationLeft + orderByModel.AsName + this.SqlTranslationRight;
         }
 
         private  void AppendFiledName(StringBuilder sql, SelectModel orderByModel)
