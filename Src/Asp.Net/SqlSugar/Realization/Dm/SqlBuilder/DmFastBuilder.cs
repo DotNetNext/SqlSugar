@@ -17,7 +17,38 @@ namespace SqlSugar
         };
         public async Task<int> ExecuteBulkCopyAsync(DataTable dt)
         {
+            if (DbFastestProperties?.IsOffIdentity == true)
+            {
+                var isNoTran = this.Context.Ado.IsNoTran()&&this.Context.CurrentConnectionConfig.IsAutoCloseConnection;
+                try
+                {
+                    if(isNoTran)
+                     this.Context.Ado.BeginTran();
 
+                    this.Context.Ado.ExecuteCommand($"SET IDENTITY_INSERT {dt.TableName} ON");
+                     var result=await _Execute(dt);
+                    this.Context.Ado.ExecuteCommand($"SET IDENTITY_INSERT {dt.TableName} OFF");
+
+                    if (isNoTran)
+                        this.Context.Ado.CommitTran();
+
+                    return result;
+                }
+                catch (Exception)
+                {
+                    if (isNoTran)
+                        this.Context.Ado.CommitTran();
+                    throw;
+                }
+            }
+            else
+            {
+                return await _Execute(dt);
+            }
+        }
+
+        private async Task<int> _Execute(DataTable dt)
+        {
             DmBulkCopy bulkCopy = GetBulkCopyInstance();
             bulkCopy.DestinationTableName = dt.TableName;
             try
@@ -33,6 +64,7 @@ namespace SqlSugar
             CloseDb();
             return dt.Rows.Count;
         }
+
         public DmBulkCopy GetBulkCopyInstance()
         {
             DmBulkCopy copy;
