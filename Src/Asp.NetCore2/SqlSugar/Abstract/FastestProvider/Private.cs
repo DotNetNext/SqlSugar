@@ -33,7 +33,9 @@ namespace SqlSugar
                     resultConnector.CharacterSet = this.CharacterSet;
                     return resultConnector;
                 case DbType.Dm:
-                    return new DmFastBuilder();
+                    var result3= new DmFastBuilder();
+                    result3.DbFastestProperties.IsOffIdentity = this.IsOffIdentity;
+                    return result3;
                 case DbType.ClickHouse:
                     var resultConnectorClickHouse = InstanceFactory.CreateInstance<IFastBuilder>("SqlSugar.ClickHouse.ClickHouseFastBuilder");
                     resultConnectorClickHouse.CharacterSet = this.CharacterSet;
