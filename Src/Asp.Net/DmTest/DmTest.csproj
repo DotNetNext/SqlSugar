@@ -87,6 +87,7 @@
     <Compile Include="UnitTest\UCodeFirst.cs" />
     <Compile Include="UnitTest\UInsert3.cs" />
     <Compile Include="UnitTest\UJson.cs" />
+    <Compile Include="UnitTest\UnitBulkCopy.cs" />
     <Compile Include="UnitTest\Updateable.cs" />
     <Compile Include="UnitTest\UQueryable.cs" />
     <Compile Include="UnitTest\UQueryableAsync.cs" />
