@@ -565,7 +565,7 @@ WHERE EVENT_OBJECT_TABLE = '"+tableName+"'");
 
         public override bool RenameColumn(string tableName, string oldColumnName, string newColumnName)
         {
-            var columns=GetColumnInfosByTableName(tableName).Where(it=>it.DbColumnName.Equals(oldColumnName,StringComparison.CurrentCultureIgnoreCase));
+            var columns=GetColumnInfosByTableName(tableName,false).Where(it=>it.DbColumnName.Equals(oldColumnName,StringComparison.CurrentCultureIgnoreCase));
             if (columns != null && columns.Any())
             {
                 var column = columns.First();
