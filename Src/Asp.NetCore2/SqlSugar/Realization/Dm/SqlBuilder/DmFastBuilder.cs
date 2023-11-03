@@ -17,7 +17,11 @@ namespace SqlSugar
         };
         public async Task<int> ExecuteBulkCopyAsync(DataTable dt)
         {
+            return await _Execute(dt);
+        }
 
+        private async Task<int> _Execute(DataTable dt)
+        {
             DmBulkCopy bulkCopy = GetBulkCopyInstance();
             bulkCopy.DestinationTableName = dt.TableName;
             try
@@ -33,6 +37,7 @@ namespace SqlSugar
             CloseDb();
             return dt.Rows.Count;
         }
+
         public DmBulkCopy GetBulkCopyInstance()
         {
             DmBulkCopy copy;
