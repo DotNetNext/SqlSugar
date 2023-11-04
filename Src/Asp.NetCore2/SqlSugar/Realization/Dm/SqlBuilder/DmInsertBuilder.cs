@@ -51,6 +51,31 @@ namespace SqlSugar
             }
             return result;
         }
+
+        public override object FormatValue(object value)
+        {
+            if (value != null && value is DateTime)
+            {
+                var date = value.ObjToDate();
+                if (date < UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig))
+                {
+                    date = UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig);
+                }
+                if (this.Context.CurrentConnectionConfig?.MoreSettings?.DisableMillisecond == true)
+                {
+                    return "to_date('" + date.ToString("yyyy-MM-dd HH:mm:ss") + "', 'YYYY-MM-DD HH24:MI:SS')  ";
+                }
+                else
+                {
+                    return "to_timestamp('" + date.ToString("yyyy-MM-dd HH:mm:ss.ffffff") + "', 'YYYY-MM-DD HH24:MI:SS.FF') ";
+                }
+            }
+            else
+            {
+                return base.FormatValue(value);
+            }
+        }
+
         //public override string ToSqlString()
         //{
         //    if (IsNoInsertNull)
