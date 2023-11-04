@@ -274,8 +274,8 @@ namespace SqlSugar
                     }
                     else
                     {
-                        this.whereSql = this.whereSql.Replace(sqlBuilder.GetTranslationColumnName(it.DbColumnName),
-                            lastShortName + "." + sqlBuilder.GetTranslationColumnName(it.DbColumnName));
+                        //this.whereSql = this.whereSql.Replace(sqlBuilder.GetTranslationColumnName(it.DbColumnName),
+                        //    lastShortName + "." + sqlBuilder.GetTranslationColumnName(it.DbColumnName));
                     }
                 }
             });
