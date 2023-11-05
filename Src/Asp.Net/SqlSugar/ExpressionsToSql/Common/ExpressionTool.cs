@@ -563,7 +563,7 @@ namespace SqlSugar
                 {
                     reval = fieInfo.GetValue(reval);
                 }
-                if (fieInfo == null && proInfo == null)
+                if (fieInfo == null && proInfo == null&& !reval.GetType().FullName.IsCollectionsList())
                 {
                     Check.Exception(true, string.Format(" Property \"{0}\" can't be private ", pro.Name));
                 }
