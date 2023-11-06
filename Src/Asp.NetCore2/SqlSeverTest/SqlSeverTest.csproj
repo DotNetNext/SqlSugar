@@ -6,12 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="UnitTest\models\**" />
-    <EmbeddedResource Remove="UnitTest\models\**" />
-    <None Remove="UnitTest\models\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
   </ItemGroup>
 
