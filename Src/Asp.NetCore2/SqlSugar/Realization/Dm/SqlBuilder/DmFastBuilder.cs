@@ -46,6 +46,15 @@ namespace SqlSugar
                 return await _Execute(dt);
             }
         }
+        public override async Task CreateTempAsync<T>(DataTable dt)
+        {
+            var queryable = this.Context.Queryable<T>();
+            var tableName = queryable.SqlBuilder.GetTranslationTableName(dt.TableName);
+            dt.TableName = "temp" + SnowFlakeSingle.instance.getID();
+            var sql = queryable.AS(tableName).Where(it => false).ToSql().Key;
+            await this.Context.Ado.ExecuteCommandAsync($"CREATE  TABLE {dt.TableName}    as ( {sql} ) ");
+        }
+        public override string UpdateSql { get; set; } = @"UPDATE  {1} TM    INNER JOIN {2} TE  ON {3} SET {0} ";
 
         private async Task<int> _Execute(DataTable dt)
         {
