@@ -7,7 +7,9 @@ namespace OrmTest
     public class Program
     {
         static void Main(string[] args)
-        { 
+        {
+            //The statement translates to: "Each example will automatically create a table and can run independently."
+            //每个例子都会自动建表 并且可以独立运行   理解这话反应成英文
             _1_CodeFirst.Init();
             _2_DbFirst.Init();
             _3_EasyQuery.Init();
