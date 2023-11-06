@@ -39,7 +39,9 @@ namespace OrmTest
             {
                 IsAutoCloseConnection = true,
                 DbType = DbType.SqlServer,
-                ConnectionString = Connection
+                ConnectionString = Connection,
+                LanguageType=LanguageType.Default//Set language
+
             },
             it => {
                 // Logging SQL statements and parameters before execution
