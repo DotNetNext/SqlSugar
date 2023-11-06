@@ -61,7 +61,7 @@ namespace OrmTest
         public static List<ViewOrder2> SyntaxSugar3()
         {
             var db = DbHelper.GetNewDb();
-            var list = db.Queryable<Order, OrderItem, Custom>((o, i, c) => o.Id == i.OrderId && c.Id == o.CustomId)
+            var list = db.Queryable<Order, OrderDetail, Custom>((o, i, c) => o.Id == i.OrderId && c.Id == o.CustomId)
                 .Select((o, i, c) => new ViewOrder2 { Id = o.Id, Name = o.Name, CustomName = c.Name })
                 .ToList();
 
