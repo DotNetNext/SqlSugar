@@ -11,7 +11,7 @@ namespace OrmTest
             _1_CodeFirst.Init();
             _2_DbFirst.Init();
             _3_EasyQuery.Init();
-
+            _4_JoinQuery.Init();
             Console.ReadKey();
         }
     }

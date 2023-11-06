@@ -66,6 +66,7 @@
   <ItemGroup>
     <Compile Include="1_CodeFirst.cs" />
     <Compile Include="2_DbFirst.cs" />
+    <Compile Include="4_JoinQuery.cs" />
     <Compile Include="UnitTest\Description.cs" />
     <Compile Include="3_EasyQuery.cs" />
     <Compile Include="UserTestCases\Cases\OldDemo\Demo2_Updateable.cs" />
