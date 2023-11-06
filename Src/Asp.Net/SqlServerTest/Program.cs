@@ -25,7 +25,7 @@ namespace OrmTest
         /// Database connection string
         /// 数据库连接字符串
         /// </summary>
-        public readonly static string Connection = "server=.;uid=sa;pwd=sasa;database=SQLSUGAR4XTEST";
+        public readonly static string Connection = "server=.;uid=sa;pwd=sasa;database=SqlSugar5Demo";
 
         /// <summary>
         /// Get a new SqlSugarClient instance with specific configurations
