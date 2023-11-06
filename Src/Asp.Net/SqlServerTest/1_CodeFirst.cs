@@ -112,7 +112,7 @@ namespace OrmTest
         /// User information entity class
         /// 用户信息实体类
         /// </summary> 
-        [SugarTable("UserInfoA")]
+        [SugarTable("UserInfoAAA01")]
         public class UserInfo002
         {
             /// <summary>
