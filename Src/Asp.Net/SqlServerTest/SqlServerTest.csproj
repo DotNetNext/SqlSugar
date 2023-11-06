@@ -64,13 +64,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="a_Delete.cs" />
     <Compile Include="1_CodeFirst.cs" />
     <Compile Include="2_DbFirst.cs" />
     <Compile Include="4_JoinQuery.cs" />
     <Compile Include="5_PageQuery.cs" />
+    <Compile Include="9_Update.cs" />
     <Compile Include="UnitTest\Description.cs" />
     <Compile Include="3_EasyQuery.cs" />
     <Compile Include="7_GroupQuery.cs" />
+    <Compile Include="8_Insert.cs" />
     <Compile Include="UserTestCases\Cases\OldDemo\Demo2_Updateable.cs" />
     <Compile Include="UserTestCases\Cases\OldDemo\Demo3_Insertable.cs" />
     <Compile Include="UserTestCases\Cases\OldDemo\Demo4_Deleteable.cs" />
