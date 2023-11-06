@@ -250,6 +250,7 @@
     <Compile Include="UserTestCases\Cases\UJson.cs" />
     <Compile Include="UserTestCases\Cases\Main.cs" />
     <Compile Include="UserTestCases\Cases\UThread.cs" />
+    <Compile Include="6_NavigationProperty.cs" />
     <Compile Include="UserTestCases\UserTestMain.cs" />
   </ItemGroup>
   <ItemGroup>
