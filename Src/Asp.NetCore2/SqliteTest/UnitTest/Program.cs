@@ -3,9 +3,9 @@ using OrmTest;
 
 namespace SqliteTest.UnitTest
 {
-    class Program
+    public class cases
     {
-        static void Main(string[] args)
+        static void Init()
         {
             //Demo
             Demo0_SqlSugarClient.Init();
