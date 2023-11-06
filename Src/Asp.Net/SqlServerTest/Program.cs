@@ -10,6 +10,7 @@ namespace OrmTest
         { 
             _1_CodeFirst.Init();
             _2_DbFirst.Init();
+            _3_EasyQuery.Init();
 
             Console.ReadKey();
         }

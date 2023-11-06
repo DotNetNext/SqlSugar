@@ -1,6 +1,7 @@
 ﻿using SqlSugar;
 using System;
 using System.Collections.Generic;
+using System.Data.Linq;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,6 +28,10 @@ namespace OrmTest
             // Initialize tables based on UserInfo001 entity class
             // 根据 UserInfo001 实体类初始化表
             db.CodeFirst.InitTables<UserInfo001>();
+
+            //Table structure and class are different
+            //表结构和类存在差异 初始化表
+            db.CodeFirst.InitTables<UserInfo002>();
 
             //Insert
             //插入
@@ -100,6 +105,31 @@ namespace OrmTest
             /// </summary>
             [SugarColumn(IsNullable = true)]
             public DateTime? RegistrationDate { get; set; }
+        }
+
+
+        /// <summary>
+        /// User information entity class
+        /// 用户信息实体类
+        /// </summary> 
+        [SugarTable("UserInfoA")]
+        public class UserInfo002
+        {
+            /// <summary>
+            /// User ID (Primary Key)
+            /// 用户ID（主键）
+            /// </summary>
+            [SugarColumn(IsIdentity = true,ColumnName ="Id", IsPrimaryKey = true)]
+            public int UserId { get; set; }
+
+            /// <summary>
+            /// User name
+            /// 用户名
+            /// </summary>
+            [SugarColumn(Length = 50,ColumnName ="Name", IsNullable = false)]
+            public string UserName { get; set; }
+
+           
         }
     }
 }
