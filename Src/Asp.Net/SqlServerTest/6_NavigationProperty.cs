@@ -15,7 +15,7 @@ namespace OrmTest
         /// </summary>
         public static void Init()
         {
-            var db = NewUnitTest.Db;
+            var db = DbHelper.GetNewDb();
 
             // Initialize database table structures.
             // 初始化数据库表结构。
