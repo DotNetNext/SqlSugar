@@ -21,6 +21,8 @@ namespace SqlSugar
         private bool IsDefaultValue { get; set; }
         private Func<string, bool> WhereColumnsfunc;
         private Func<string, string> FormatFileNameFunc { get; set; }
+        private Func<string, string> FormatClassNameFunc { get; set; }
+        private Func<string, string> FormatPropertyNameFunc { get; set; }
         private bool IsStringNullable {get;set; }
         private Func<DbColumnInfo,string,string,string> PropertyTextTemplateFunc { get; set; }
         private Func<string, string> ReplaceClassStringFunc { get; set; }
@@ -167,6 +169,16 @@ namespace SqlSugar
             this.FormatFileNameFunc = formatFileNameFunc;
             return this;
         }
+        public IDbFirst FormatClassName(Func<string, string> formatClassNameFunc) 
+        {
+            this.FormatClassNameFunc = formatClassNameFunc;
+            return this;
+        }
+        public IDbFirst FormatPropertyName(Func<string, string> formatPropertyNameFunc) 
+        {
+            this.FormatPropertyNameFunc = formatPropertyNameFunc;
+            return this;
+        }
         public IDbFirst CreatedReplaceClassString(Func<string, string> replaceClassStringFunc) 
         {
             this.ReplaceClassStringFunc = replaceClassStringFunc;
@@ -223,11 +235,16 @@ namespace SqlSugar
                     {
                         string classText = null;
                         string className = tableInfo.Name;
+                        var oldClasName = className;
                         classText = GetClassString(tableInfo, ref className);
                         result.Remove(className);
                         if (this.ReplaceClassStringFunc != null) 
                         {
                             classText=this.ReplaceClassStringFunc(classText);
+                        }
+                        if (FormatClassNameFunc != null&&FormatFileNameFunc != null) 
+                        {
+                            className = oldClasName;
                         }
                         result.Add(className, classText);
                     }
@@ -265,6 +282,10 @@ namespace SqlSugar
                     classText = classText.Replace(DbFirstTemplate.KeyClassName, mappingInfo.EntityName);
                 }
             }
+            if (FormatClassNameFunc != null) 
+            {
+                className=FormatClassNameFunc(className);
+            }
             classText = classText.Replace(DbFirstTemplate.KeyClassName, className);
             classText = classText.Replace(DbFirstTemplate.KeyNamespace, this.Namespace);
             classText = classText.Replace(DbFirstTemplate.KeyUsing, IsAttribute ? (this.UsingTemplate + "using " + UtilConstants.AssemblyName + ";\r\n") : this.UsingTemplate);
@@ -278,7 +299,12 @@ namespace SqlSugar
                     var index = columns.IndexOf(item);
                     string PropertyText = this.PropertyTemplate;
                     string PropertyDescriptionText = this.PropertyDescriptionTemplate;
-                    string propertyName = GetPropertyName(item);
+                    string propertyName = GetPropertyName(item); 
+                    var oldPropertyName = propertyName;
+                    if (FormatPropertyNameFunc != null) 
+                    {
+                      item.DbColumnName=propertyName = FormatPropertyNameFunc(propertyName);
+                    }
                     string propertyTypeName = GetPropertyTypeName(item);
                     PropertyText =this.PropertyTextTemplateFunc == null? GetPropertyText(item, PropertyText):this.PropertyTextTemplateFunc(item,this.PropertyTemplate, propertyTypeName);
                     PropertyDescriptionText = GetPropertyDescriptionText(item, PropertyDescriptionText);
@@ -286,9 +312,20 @@ namespace SqlSugar
                     {
                         PropertyDescriptionText += "\r\n           [SugarColumn(IsArray=true)]";
                     }
-                    else if (item?.DataType?.StartsWith("json")==true) 
+                    else if (item?.DataType?.StartsWith("json") == true)
                     {
                         PropertyDescriptionText += "\r\n           [SugarColumn(IsJson=true)]";
+                    }
+                    else if (FormatPropertyNameFunc != null) 
+                    {
+                        if (PropertyText.Contains("SugarColumn"))
+                        { 
+                            PropertyText  = PropertyText.Replace(")]", ",ColumnName=\"" + oldPropertyName + "\")]");
+                        }
+                        else
+                        {
+                            PropertyDescriptionText += "\r\n           [SugarColumn(ColumnName=\"" + oldPropertyName + "\")]";
+                        }
                     }
                     PropertyText = PropertyDescriptionText + PropertyText;
                     classText = classText.Replace(DbFirstTemplate.KeyPropertyName, PropertyText + (isLast ? "" : ("\r\n" + DbFirstTemplate.KeyPropertyName)));
