@@ -1,4 +1,5 @@
-﻿using SqlSugar;
+﻿using SqliteTest.UnitTest;
+using SqlSugar;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace OrmTest
 {
-    public  class Demo8_Saveable
+    public class Demo4_Deleteable
     {
         public static void Init()
         {
             Console.WriteLine("");
-            Console.WriteLine("#### Saveable Start ####");
+            Console.WriteLine("#### Deleteable Start ####");
 
             SqlSugarClient db = new SqlSugarClient(new ConnectionConfig()
             {
@@ -29,20 +30,20 @@ namespace OrmTest
                     }
                 }
             });
+            //by entity
+            db.Deleteable<Order>().Where(new Order() { Id = 1111 }).ExecuteCommand();
 
+            //by primary key
+            db.Deleteable<Order>().In(1111).ExecuteCommand();
 
-            //insert or update
-            db.Saveable<Order>(new Order() { Id=1, Name="jack" }).ExecuteReturnEntity();
+            //by primary key array
+            db.Deleteable<Order>().In(new int[] { 1111, 2222 }).ExecuteCommand();
 
+            //by expression
+            db.Deleteable<Order>().Where(it => it.Id == 11111).ExecuteCommand();
 
-            //insert or update
-            db.Saveable<Order>(new Order() { Id = 1000, Name = "jack", CreateTime=DateTime.Now })
-                  .InsertColumns(it => new { it.Name,it.CreateTime, it.Price})//if insert  into name,CreateTime,Price
-                  .UpdateColumns(it => new { it.Name, it.CreateTime })//if update set name CreateTime
-                  .ExecuteReturnEntity();
+            Console.WriteLine("#### Deleteable End ####");
 
-            Console.WriteLine("");
-            Console.WriteLine("#### Saveable End ####");
         }
     }
 }

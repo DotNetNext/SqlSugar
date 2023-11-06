@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OrmTest
+namespace SqliteTest.UnitTest
 {
     /// <summary>
     /// Setting up the database name does not require you to create the database
@@ -20,7 +20,7 @@ namespace OrmTest
                 return Environment.CurrentDirectory.Replace(@"\bin\Debug", "");
             }
         }
-        public static string ConnectionString = @"DataSource="+ GetCurrentProjectPath + @"\DataBase\SqlSugar4xTest.sqlite";
+        public static string ConnectionString = @"DataSource=" + GetCurrentProjectPath + @"\DataBase\SqlSugar4xTest.sqlite";
         public static string ConnectionString2 = @"DataSource=" + GetCurrentProjectPath + @"\DataBase\SqlSugar4xTest2.sqlite";
         public static string ConnectionString3 = @"DataSource=" + GetCurrentProjectPath + @"\DataBase\SqlSugar4xTest3.sqlite";
     }

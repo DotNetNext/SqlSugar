@@ -1,4 +1,5 @@
-﻿using SqlSugar;
+﻿using SqliteTest.UnitTest;
+using SqlSugar;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace OrmTest
 {
-    public class Demo9_EntityMain
+    public  class Demo8_Saveable
     {
         public static void Init()
         {
             Console.WriteLine("");
-            Console.WriteLine("#### EntityMain Start ####");
+            Console.WriteLine("#### Saveable Start ####");
 
             SqlSugarClient db = new SqlSugarClient(new ConnectionConfig()
             {
@@ -29,18 +30,20 @@ namespace OrmTest
                     }
                 }
             });
-            var entityInfo = db.EntityMaintenance.GetEntityInfo<Order>();
-            foreach (var column in entityInfo.Columns)
-            {
-                Console.WriteLine(column.DbColumnName);
-            }
 
-            var dbColumnsName = db.EntityMaintenance.GetDbColumnName<EntityMapper>("Name");
 
-            var dbTableName = db.EntityMaintenance.GetTableName<EntityMapper>();
+            //insert or update
+            db.Saveable<Order>(new Order() { Id=1, Name="jack" }).ExecuteReturnEntity();
 
-            //more https://github.com/sunkaixuan/SqlSugar/wiki/9.EntityMain
-            Console.WriteLine("#### EntityMain End ####");
+
+            //insert or update
+            db.Saveable<Order>(new Order() { Id = 1000, Name = "jack", CreateTime=DateTime.Now })
+                  .InsertColumns(it => new { it.Name,it.CreateTime, it.Price})//if insert  into name,CreateTime,Price
+                  .UpdateColumns(it => new { it.Name, it.CreateTime })//if update set name CreateTime
+                  .ExecuteReturnEntity();
+
+            Console.WriteLine("");
+            Console.WriteLine("#### Saveable End ####");
         }
     }
 }

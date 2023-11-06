@@ -1,4 +1,5 @@
-﻿using SqlSugar;
+﻿using SqliteTest.UnitTest;
+using SqlSugar;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace OrmTest
 {
-    public class DemoF_Utilities
+    public class DemoA_DbMain
     {
         public static void Init()
         {
             Console.WriteLine("");
-            Console.WriteLine("#### Utilities Start ####");
+            Console.WriteLine("#### DbMain Start ####");
 
             SqlSugarClient db = new SqlSugarClient(new ConnectionConfig()
             {
@@ -30,17 +31,13 @@ namespace OrmTest
                 }
             });
 
-
-            List<int> ids = Enumerable.Range(1, 100).ToList();
-            db.Utilities.PageEach(ids, 10, list =>
+            var tables = db.DbMaintenance.GetTableInfoList();
+            foreach (var table in tables)
             {
-                Console.WriteLine(string.Join("," ,list));   
-            });
-
-            var list2= db.Utilities.DataTableToList<Order>(db.Ado.GetDataTable("select * from `order`"));
-
-            //more https://github.com/sunkaixuan/SqlSugar/wiki/f.Utilities
-            Console.WriteLine("#### Utilities End ####");
+                Console.WriteLine(table.Description);
+            }
+            //more https://github.com/sunkaixuan/SqlSugar/wiki/a.DbMain
+            Console.WriteLine("#### DbMain End ####");
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
+using OrmTest;
 
-namespace OrmTest
+namespace SqliteTest.UnitTest
 {
     class Program
     {
@@ -35,6 +36,6 @@ namespace OrmTest
             Console.ReadKey();
         }
 
- 
+
     }
 }

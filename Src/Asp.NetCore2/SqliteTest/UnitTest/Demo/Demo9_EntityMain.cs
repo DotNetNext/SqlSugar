@@ -1,4 +1,5 @@
-﻿using SqlSugar;
+﻿using SqliteTest.UnitTest;
+using SqlSugar;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace OrmTest
 {
-    public class Demo4_Deleteable
+    public class Demo9_EntityMain
     {
         public static void Init()
         {
             Console.WriteLine("");
-            Console.WriteLine("#### Deleteable Start ####");
+            Console.WriteLine("#### EntityMain Start ####");
 
             SqlSugarClient db = new SqlSugarClient(new ConnectionConfig()
             {
@@ -29,20 +30,18 @@ namespace OrmTest
                     }
                 }
             });
-            //by entity
-            db.Deleteable<Order>().Where(new Order() { Id = 1111 }).ExecuteCommand();
+            var entityInfo = db.EntityMaintenance.GetEntityInfo<Order>();
+            foreach (var column in entityInfo.Columns)
+            {
+                Console.WriteLine(column.DbColumnName);
+            }
 
-            //by primary key
-            db.Deleteable<Order>().In(1111).ExecuteCommand();
+            var dbColumnsName = db.EntityMaintenance.GetDbColumnName<EntityMapper>("Name");
 
-            //by primary key array
-            db.Deleteable<Order>().In(new int[] { 1111, 2222 }).ExecuteCommand();
+            var dbTableName = db.EntityMaintenance.GetTableName<EntityMapper>();
 
-            //by expression
-            db.Deleteable<Order>().Where(it => it.Id == 11111).ExecuteCommand();
-
-            Console.WriteLine("#### Deleteable End ####");
-
+            //more https://github.com/sunkaixuan/SqlSugar/wiki/9.EntityMain
+            Console.WriteLine("#### EntityMain End ####");
         }
     }
 }
