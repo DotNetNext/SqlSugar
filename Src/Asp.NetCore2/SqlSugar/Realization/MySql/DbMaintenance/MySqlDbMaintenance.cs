@@ -348,7 +348,7 @@ WHERE EVENT_OBJECT_TABLE = '" + tableName + "'");
                 if (column.Contains(columnName)) 
                 {
                     Regex regex = new Regex(" COMMENT .+$");
-                    var newcolumn = regex.Replace(column,"");
+                    var newcolumn = regex.Replace(column.TrimEnd(','), "");
                     newcolumn += $" COMMENT '{description.ToSqlFilter()}'  ";
                     var updateSql = $"ALTER TABLE {tableName} MODIFY COLUMN " + newcolumn.TrimEnd(',');
                     this.Context.Ado.ExecuteCommand(updateSql);
