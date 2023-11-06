@@ -32,6 +32,7 @@ namespace OrmTest
             // Use Case 5: 批量插入实体（非参数化插入）（Batch insert entities (non-parameterized)）
             var list = db.Queryable<StudentWithIdentity>().Take(2).ToList();
             db.Insertable(list).ExecuteCommand();
+            db.Insertable(list).PageSize(1000).ExecuteCommand();
 
             // Use Case 6: 参数化内部分页插入（Parameterized internal pagination insert）
             db.Insertable(list).UseParameter().ExecuteCommand();
