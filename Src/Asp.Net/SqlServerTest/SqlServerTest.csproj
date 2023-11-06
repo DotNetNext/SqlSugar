@@ -64,12 +64,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="a_Delete.cs" />
+    <Compile Include="a1_Delete.cs" />
     <Compile Include="1_CodeFirst.cs" />
     <Compile Include="2_DbFirst.cs" />
     <Compile Include="4_JoinQuery.cs" />
     <Compile Include="5_PageQuery.cs" />
     <Compile Include="9_Update.cs" />
+    <Compile Include="a2_Sql.cs" />
     <Compile Include="UnitTest\Description.cs" />
     <Compile Include="3_EasyQuery.cs" />
     <Compile Include="7_GroupQuery.cs" />
@@ -254,7 +255,7 @@
     <Compile Include="UserTestCases\Cases\UJson.cs" />
     <Compile Include="UserTestCases\Cases\Main.cs" />
     <Compile Include="UserTestCases\Cases\UThread.cs" />
-    <Compile Include="6_NavigationProperty.cs" />
+    <Compile Include="6_NavigationPropertyQuery.cs" />
     <Compile Include="UserTestCases\UserTestMain.cs" />
   </ItemGroup>
   <ItemGroup>
