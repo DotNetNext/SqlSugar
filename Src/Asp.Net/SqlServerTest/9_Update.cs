@@ -8,5 +8,9 @@ namespace OrmTest
 {
     internal class _9_Update
     {
+        internal static void Init()
+        {
+            
+        }
     }
 }

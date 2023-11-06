@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace OrmTest
 {
-    internal class _10_Delete
+    internal class _a1_Delete
     {
+        internal static void Init()
+        {
+             
+        }
     }
 }

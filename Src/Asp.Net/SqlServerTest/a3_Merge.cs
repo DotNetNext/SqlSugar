@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace OrmTest
 {
-    internal class _a2_Sql
+    internal class _a3_Merge
     {
         internal static void Init()
         {
-           
+            
         }
     }
 }

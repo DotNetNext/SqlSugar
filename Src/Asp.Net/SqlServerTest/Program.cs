@@ -15,6 +15,11 @@ namespace OrmTest
             _5_PageQuery.Init();
             _6_NavQuery.Init();
             _7_GroupQuery.Init();
+            _8_Insert.Init();
+            _9_Update.Init();
+            _a1_Delete.Init();
+            _a2_Sql.Init();
+            _a3_Merge.Init();
         }
     }
 
