@@ -18,7 +18,12 @@ namespace OrmTest
 
             db.DbFirst.StringNullable().IsCreateAttribute().CreateClassFile("c:\\Demo\\3", "Models");
 
-            db.DbFirst.FormatFileName(it => "Sys_"+it).CreateClassFile("c:\\Demo\\4", "Models"); 
+            db.DbFirst
+                .IsCreateAttribute()
+                .FormatFileName(it => "File_"+it)
+                .FormatClassName(it=> "Class_"+it)
+                .FormatPropertyName(it=> "Property_" + it )
+                .CreateClassFile("c:\\Demo\\4", "Models"); 
         }
     }
 }
