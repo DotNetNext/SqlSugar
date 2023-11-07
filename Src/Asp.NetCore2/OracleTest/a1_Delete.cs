@@ -164,19 +164,19 @@ namespace OrmTest
         [SugarTable("Students_a1")]
         public class Student
         {
-            [SugarColumn(IsPrimaryKey = true, IsIdentity = true)] // 主键
-            public int Id { get; set; }
+            [SugarColumn(IsPrimaryKey = true)] // 主键
+            public long Id { get; set; }
 
             public string Name { get; set; }
 
-            public int SchoolId { get; set; }
+            public long SchoolId { get; set; }
         }
 
         [SugarTable("Orders_a2")]
         public class Order
         {
-            [SugarColumn(IsPrimaryKey = true, IsIdentity = true)] // 主键
-            public int Id { get; set; }
+            [SugarColumn(IsPrimaryKey = true)] // 主键
+            public long Id { get; set; }
 
             public string OrderNumber { get; set; }
 

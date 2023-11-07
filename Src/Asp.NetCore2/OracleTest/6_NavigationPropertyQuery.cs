@@ -95,7 +95,7 @@ namespace OrmTest
             // One-to-one navigation query with condition, query table Student and include its associated School with specific SchoolId.
             // 带条件的一对一导航查询，查询Student表，并包含其关联的School表，条件为特定的SchoolId。
             var list = db.Queryable<Student>()
-                .Where(it => it.School.SchoolId == 1)
+                .Where(it => it.School.SchoolId > 1)
                 .ToList();
 
             // Inner join navigation query, query table Student and include its associated School.
@@ -176,11 +176,11 @@ namespace OrmTest
         [SugarTable("Student06")]
         public class Student
         {
-            [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
-            public int StudentId { get; set; }
+            [SugarColumn(IsPrimaryKey = true)]
+            public long StudentId { get; set; }
             public string Name { get; set; }
             public string SexCode { get; set; }
-            public int SchoolId { get; set; }
+            public long SchoolId { get; set; }
 
             // One-to-One navigation property to School entity.
             // 与School实体的一对一导航属性。
@@ -200,8 +200,8 @@ namespace OrmTest
         [SugarTable("School06")]
         public class School
         {
-            [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
-            public int SchoolId { get; set; }
+            [SugarColumn(IsPrimaryKey = true)]
+            public long SchoolId { get; set; }
             public string SchoolName { get; set; }
         }
 
@@ -212,10 +212,10 @@ namespace OrmTest
         [SugarTable("Book06")]
         public class Book
         {
-            [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
-            public int BookId { get; set; }
+            [SugarColumn(IsPrimaryKey = true)]
+            public long BookId { get; set; }
             public string Name { get; set; }
-            public int StudentId { get; set; }
+            public long StudentId { get; set; }
         }
 
         /// <summary>
@@ -225,8 +225,8 @@ namespace OrmTest
         [SugarTable("A06")]
         public class A
         {
-            [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
-            public int AId { get; set; }
+            [SugarColumn(IsPrimaryKey = true)]
+            public long AId { get; set; }
             public string Name { get; set; }
 
             // Many-to-Many navigation property to B entities using ABMapping table.
@@ -242,8 +242,8 @@ namespace OrmTest
         [SugarTable("B06")]
         public class B
         {
-            [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
-            public int BId { get; set; }
+            [SugarColumn(IsPrimaryKey = true) ]
+            public long BId { get; set; }
             public string Name { get; set; }
 
             // Many-to-Many navigation property to A entities using ABMapping table.
@@ -260,9 +260,9 @@ namespace OrmTest
         public class ABMapping
         {
             [SugarColumn(IsPrimaryKey = true)]
-            public int AId { get; set; }
+            public long AId { get; set; }
             [SugarColumn(IsPrimaryKey = true)]
-            public int BId { get; set; }
+            public long BId { get; set; }
         }
     }
 }

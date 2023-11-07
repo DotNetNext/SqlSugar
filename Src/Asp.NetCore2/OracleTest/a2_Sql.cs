@@ -19,7 +19,7 @@ namespace OrmTest
             // CodeFirst 初始化 ClassA 表
             // CodeFirst initializes the ClassA table
             db.CodeFirst.InitTables<ClassA>();
-            db.Insertable(new ClassA() { Name = Guid.NewGuid().ToString("N") }).ExecuteCommand();
+            db.Insertable(new ClassA() { Name = Guid.NewGuid().ToString("N") }).ExecuteReturnSnowflakeId();
 
             // 1. 无参数查询 DataTable
             // 1. Query DataTable without parameters
@@ -55,7 +55,7 @@ namespace OrmTest
 
             // 执行 SQL 命令（插入、更新、删除操作）
             // Execute SQL commands (insert, update, delete operations)
-            db.Ado.ExecuteCommand("INSERT INTO Table_a2 (name) VALUES ( 'New Record')"); 
+            db.Ado.ExecuteCommand("INSERT INTO Table_a2 (id,name) VALUES ("+SnowFlakeSingle.Instance.NextId()+", 'New Record')"); 
         }
 
         /// <summary>
@@ -65,8 +65,8 @@ namespace OrmTest
         [SugarTable("Table_a2")]
         public class ClassA
         {
-            [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
-            public int Id { get; set; }
+            [SugarColumn(IsPrimaryKey = true)]
+            public long Id { get; set; }
 
             public string Name { get; set; }
         }

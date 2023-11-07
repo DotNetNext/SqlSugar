@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SqlSugar;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,7 +17,7 @@ namespace OrmTest
             //建表
             //Create table 
             db.CodeFirst.InitTables<Order>();
-            var list = new List<Order>() { new Order() { Name = "jack" } };
+            var list = new List<Order>() { new Order() { Id=SnowFlakeSingle.Instance.NextId(), Name = "jack" } };
 
             // 中文备注：执行插入或更新操作
             // English Comment: Perform insert or update operation
@@ -42,8 +43,8 @@ namespace OrmTest
         [SqlSugar.SugarTable("Order_a3")]
         public class Order
         {
-            [SqlSugar.SugarColumn(IsPrimaryKey =true,IsIdentity =true)]
-            public int Id { get; set; }
+            [SqlSugar.SugarColumn(IsPrimaryKey =true)]
+            public long Id { get; set; }
             public string Name { get; set; }
             // 其他属性
         }

@@ -42,7 +42,7 @@ namespace OrmTest
                 UserName="admin",
                 RegistrationDate=DateTime.Now,
 
-            }).ExecuteReturnIdentity();
+            }).ExecuteReturnSnowflakeId();
 
             //Query
             //查询
@@ -67,8 +67,8 @@ namespace OrmTest
             /// User ID (Primary Key)
             /// 用户ID（主键）
             /// </summary>
-            [SugarColumn(IsIdentity = true, IsPrimaryKey = true)]
-            public int UserId { get; set; }
+            [SugarColumn(IsPrimaryKey = true)]
+            public long UserId { get; set; }
 
             /// <summary>
             /// User name
@@ -118,8 +118,8 @@ namespace OrmTest
             /// User ID (Primary Key)
             /// 用户ID（主键）
             /// </summary>
-            [SugarColumn(IsIdentity = true,ColumnName ="Id", IsPrimaryKey = true)]
-            public int UserId { get; set; }
+            [SugarColumn(ColumnName ="Id", IsPrimaryKey = true)]
+            public long UserId { get; set; }
 
             /// <summary>
             /// User name

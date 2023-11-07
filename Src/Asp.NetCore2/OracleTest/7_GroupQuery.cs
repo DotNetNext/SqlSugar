@@ -65,8 +65,8 @@ namespace OrmTest
         [SqlSugar.SugarTable("Student07")]
         public class Student
         {
-            [SqlSugar.SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
-            public int Id { get; set; } // 学生ID (Student ID)
+            [SqlSugar.SugarColumn(IsPrimaryKey = true)]
+            public long Id { get; set; } // 学生ID (Student ID)
             public string Name { get; set; } // 学生姓名 (Student Name)
             public int Age { get; set; } // 学生年龄 (Student Age)
         }

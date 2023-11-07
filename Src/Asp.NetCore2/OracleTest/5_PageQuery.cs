@@ -37,18 +37,18 @@ public class _5_PageQuery
 
         // 添加学校数据
         // Add school data
-        var school1 = new School { Name = "School A" };
-        var school2 = new School { Name = "School B" };
-        db.Insertable(school1).ExecuteCommand();
-        db.Insertable(school2).ExecuteCommand();
+        var school1 = new School { Id=1, Name = "School A" };
+        var school2 = new School {Id=2, Name = "School B" };
+        var id1=db.Insertable(school1).ExecuteReturnSnowflakeId();
+        var id2=db.Insertable(school2).ExecuteReturnSnowflakeId();
 
         // 添加学生数据
         // Add student data
-        var student1 = new Student { SchoolId = school1.Id, Name = "John", CreateTime = DateTime.Now };
-        var student2 = new Student { SchoolId = school1.Id, Name = "Alice", CreateTime = DateTime.Now }; 
+        var student1 = new Student { SchoolId =id1, Name = "John", CreateTime = DateTime.Now };
+        var student2 = new Student { SchoolId =id2, Name = "Alice", CreateTime = DateTime.Now }; 
 
-        db.Insertable(student1).ExecuteCommand();
-        db.Insertable(student2).ExecuteCommand();
+        db.Insertable(student1).ExecuteReturnSnowflakeId();
+        db.Insertable(student2).ExecuteReturnSnowflakeId();
 
         Console.WriteLine("Test data added successfully.");
     }
@@ -96,17 +96,17 @@ public class _5_PageQuery
     [SugarTable("Student05")]
     public class Student
     {
-        [SugarColumn(IsIdentity =true,IsPrimaryKey =true)]
-        public int Id { get; set; }
-        public int SchoolId { get; set; }
+        [SugarColumn(IsPrimaryKey =true)]
+        public long Id { get; set; }
+        public long SchoolId { get; set; }
         public string Name { get; set; }
         public DateTime CreateTime { get; set; }
     }
     [SugarTable("School05")]
     public class School
     {
-        [SugarColumn(IsIdentity = true, IsPrimaryKey = true)]
-        public int Id { get; set; }
+        [SugarColumn( IsPrimaryKey = true)]
+        public long Id { get; set; }
         public string Name { get; set; }
     } 
 }

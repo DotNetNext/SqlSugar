@@ -11,7 +11,7 @@ namespace OrmTest
             //Each example will automatically create a table and can run independently.
             //每个例子都会自动建表 并且可以独立运行   
             _1_CodeFirst.Init();
-            _2_DbFirst.Init();
+            //_2_DbFirst.Init();
             _3_EasyQuery.Init();
             _4_JoinQuery.Init();
             _5_PageQuery.Init();
@@ -35,7 +35,7 @@ namespace OrmTest
         /// Database connection string
         /// 数据库连接字符串
         /// </summary>
-        public readonly static string Connection = "Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=150.158.37.115)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=ORCL)));User Id=HBaa1dfa;Password=Qdies123test;Pooling='true';Max Pool Size=150";
+        public readonly static string Connection = "Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=150.158.37.115)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=ORCL)));User Id=HB ;Password=Qdies123test;Pooling='true';Max Pool Size=150";
 
         /// <summary>
         /// Get a new SqlSugarClient instance with specific configurations
@@ -49,7 +49,12 @@ namespace OrmTest
                 IsAutoCloseConnection = true,
                 DbType = DbType.Oracle,
                 ConnectionString = Connection,
-                LanguageType=LanguageType.Default//Set language
+                LanguageType=LanguageType.Default,//Set language
+                MoreSettings=new ConnMoreSettings() 
+                {
+                     //Oracle 12+ support identity
+                     //EnableOracleIdentity=true
+                }
 
             },
             it => {

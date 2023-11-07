@@ -121,8 +121,8 @@ namespace OrmTest
         [SqlSugar.SugarTable("Order04")]
         public class Order
         {
-            [SqlSugar.SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
-            public int Id { get; set; }
+            [SqlSugar.SugarColumn( IsIdentity = true)]
+            public long Id { get; set; }
             public string Name { get; set; }
             public int CustomId { get; set; }
             // 其他订单相关属性...
@@ -135,9 +135,9 @@ namespace OrmTest
         [SqlSugar.SugarTable("OrderDetail04")]
         public class OrderDetail
         {
-            [SqlSugar.SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
-            public int Id { get; set; }
-            public int OrderId { get; set; }
+            [SqlSugar.SugarColumn(IsPrimaryKey = true)]
+            public long Id { get; set; }
+            public long OrderId { get; set; }
             // 其他订单详情相关属性...
         }
 
@@ -148,8 +148,8 @@ namespace OrmTest
         [SqlSugar.SugarTable("Custom04")]
         public class Custom
         {
-            [SqlSugar.SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
-            public int Id { get; set; }
+            [SqlSugar.SugarColumn(IsPrimaryKey = true )]
+            public long Id { get; set; }
             public string Name { get; set; }
             // 其他客户相关属性...
         }
@@ -162,7 +162,7 @@ namespace OrmTest
         /// </summary>
         public class ViewOrder2
         {
-            public int Id { get; set; }
+            public long Id { get; set; }
             public string Name { get; set; }
             public string CustomName { get; set; }
             // 其他类1相关属性...

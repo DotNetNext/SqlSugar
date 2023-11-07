@@ -61,7 +61,7 @@ namespace OrmTest
             SqlSugarClient db = DbHelper.GetNewDb();
             db.CodeFirst.InitTables<Student03>();
             db.Insertable(new Student03() { Name = "name" + SnowFlakeSingle.Instance.NextId() })
-                .ExecuteCommand();
+                .ExecuteReturnSnowflakeId();
         }
 
         /// <summary>
@@ -183,8 +183,8 @@ namespace OrmTest
 
         public class Student03
         {
-            [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
-            public int Id { get; set; }
+            [SugarColumn(IsPrimaryKey = true)]
+            public long Id { get; set; }
             public string Name { get; set; }
         }
     }
