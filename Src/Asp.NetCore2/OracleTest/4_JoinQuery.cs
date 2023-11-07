@@ -121,7 +121,7 @@ namespace OrmTest
         [SqlSugar.SugarTable("Order04")]
         public class Order
         {
-            [SqlSugar.SugarColumn( IsIdentity = true)]
+            [SqlSugar.SugarColumn( IsPrimaryKey = true)]
             public long Id { get; set; }
             public string Name { get; set; }
             public int CustomId { get; set; }
