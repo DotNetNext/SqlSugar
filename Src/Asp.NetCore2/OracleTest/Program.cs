@@ -35,7 +35,7 @@ namespace OrmTest
         /// Database connection string
         /// 数据库连接字符串
         /// </summary>
-        public readonly static string Connection = "Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=150.158.37.115)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=ORCL)));User Id=HB ;Password=Qdies123test;Pooling='true';Max Pool Size=150";
+        public readonly static string Connection = "Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=150.158.37.115)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=ORCL)));User Id=HBafa;Password=Qdies123test;Pooling='true';Max Pool Size=150";
 
         /// <summary>
         /// Get a new SqlSugarClient instance with specific configurations
