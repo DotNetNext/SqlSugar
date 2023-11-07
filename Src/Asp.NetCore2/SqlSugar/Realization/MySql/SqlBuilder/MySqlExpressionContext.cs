@@ -17,6 +17,12 @@ namespace SqlSugar
     }
     public class MySqlMethod : DefaultDbMethod, IDbMethods
     {
+        public override string JsonArrayLength(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            return $" JSON_LENGTH({parameter.MemberName}) ";
+        }
+
         public override string JsonIndex(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
