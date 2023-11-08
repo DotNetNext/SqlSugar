@@ -167,14 +167,17 @@ namespace SqlSugar.TDengine
                 case "int64":
                     return "BIGINT";
                 case "uint":
+                case "uint32":
                     return "INT UNSIGNED";
                 case "long":
                     return "BIGINT";
                 case "ulong":
+                case "uint64":
                     return "BIGINT UNSIGNED";
                 case "short":
                     return "SMALLINT";
                 case "ushort":
+                case "uint16":
                     return "SMALLINT UNSIGNED";
                 case "string":
                     return "VARCHAR";
