@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UnitSubqueryN.Init();
             Unitadfasfa.Init();
             UnitOneToMany1231123.Init();
             OneToManyInString.Init();
