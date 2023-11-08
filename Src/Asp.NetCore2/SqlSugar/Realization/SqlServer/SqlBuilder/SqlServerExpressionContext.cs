@@ -20,6 +20,12 @@ namespace SqlSugar
     }
     public partial class SqlServerMethod : DefaultDbMethod, IDbMethods
     {
+        public override string JsonArrayLength(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            return $" (SELECT COUNT(*) FROM OPENJSON({parameter.MemberName})) ";
+        }
+
         public override string JsonIndex(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
