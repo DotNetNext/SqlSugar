@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -157,6 +157,7 @@ namespace SqlSugar.TDengine
                 case "double":
                     return "DOUBLE";
                 case "float":
+                case "single":
                     return "FLOAT";
                 case "int":
                     return "INT";
