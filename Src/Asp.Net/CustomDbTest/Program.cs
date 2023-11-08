@@ -1,5 +1,6 @@
 ﻿using SqlSugar;
 using System;
+using System.Reflection;
 
 namespace OrmTest
 {
@@ -15,6 +16,8 @@ namespace OrmTest
             //Set Custom  Db
             InstanceFactory.CustomDbName = "Access";
             InstanceFactory.CustomDllName = "SqlSugar.Access";
+            InstanceFactory.CustomAssemblies = 
+                new Assembly[] { typeof(SqlSugar.Access.AccessProvider).Assembly };
             InstanceFactory.CustomNamespace = "SqlSugar.Access";
 
             Demo0_SqlSugarClient.Init();
