@@ -16,6 +16,10 @@ namespace OrmTest
             {
                 db.CodeFirst.InitTables<UserTest>();
             }
+            else 
+            {
+                db.DbMaintenance.TruncateTable<UserTest, ShopDataTest, AddressTest>();
+            }
             //建表 
             if (!db.DbMaintenance.IsAnyTable("ShopDataTest", false))
             {
@@ -50,7 +54,7 @@ namespace OrmTest
                 userData.ShopId = 0;
                 userData.ShopDataTest = new ShopDataTest();
                 userData.ShopDataTest.Name = "店铺名3";
-                userData.ShopDataTest.GuId = 4;
+                userData.ShopDataTest.GuId = 0;
                 userData.ShopDataTest.AddressTest = new AddressTest()
                 {
                     Name = "地址名称",
