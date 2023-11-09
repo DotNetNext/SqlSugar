@@ -531,7 +531,7 @@ namespace SqlSugar
             var lamResult = DeleteBuilder.GetExpressionValue(inField, ResolveExpressType.FieldSingle);
             var fieldName = lamResult.GetResultString();
             var sql= childQueryExpression.ToSql();
-            Where($" {fieldName} IN ( SELECT * FROM ( {sql.Key} ) SUBDEL) ",sql.Value);
+            Where($" {fieldName} IN ( SELECT {fieldName} FROM ( {sql.Key} ) SUBDEL) ",sql.Value);
             return this;
         }
         public IDeleteable<T> In<PkType>(string inField, List<PkType> primaryKeyValues)
