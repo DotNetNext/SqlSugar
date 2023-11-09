@@ -11,6 +11,28 @@ namespace OrmTest
         public static void Init()
         {
             var db = NewUnitTest.Db;
+
+            db.Deleteable<Order>()
+
+                    .AS("Order")
+
+                    .In(
+
+                        it => it.Id,
+
+                        db.Queryable<Order>()
+
+                       .AS("Order")
+
+                            .Skip(11)
+
+                            .OrderByDescending(it => it.Id)
+
+                            .Select(it => it.Id)
+
+                        )
+
+                    .ExecuteCommand();
             var list = new string[] { "中文名称2", "中文名称4" };
             //如何存在删掉重新建新表
             if (db.DbMaintenance.IsAnyTable("Product", false))
