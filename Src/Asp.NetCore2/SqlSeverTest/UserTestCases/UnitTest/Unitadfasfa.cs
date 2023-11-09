@@ -45,6 +45,7 @@ INSERT INTO [dbo].[DefineManufacturerAuthentication] ([Id], [CnAuthentication]) 
             Test1(db, list);
             Test2(db, list);
             Test3(db, list);
+            Test4(db, list);
         }
 
         private static void Test1(SqlSugarClient db, string[] list)
@@ -92,6 +93,23 @@ INSERT INTO [dbo].[DefineManufacturerAuthentication] ([Id], [CnAuthentication]) 
 
             var list4 = list3.Where(it => it.Manufacturer.Authentications.Any(s => list.Contains(s.Authentication.CnAuthentication)))
               .ToList();
+        }
+        private static void Test4(SqlSugarClient db, string[] list)
+        {
+            var list2 = db.Queryable<Product>()
+                 .Where(it => it.Manufacturer.Authentications.Any(s =>  s.Authentication.CnAuthentication!=""))
+                 .ToList();
+
+            var list3 = db.Queryable<Product>().Includes(x => x.Manufacturer, it => it.Authentications, it => it.Authentication)
+                .ToList();
+
+            var list4 = list3.Where(it => it.Manufacturer.Authentications.Any(s => s.Authentication.CnAuthentication != ""))
+              .ToList();
+
+            if (list2.Count != list4.Count) 
+            {
+                throw new Exception("unit error");
+            }
         }
 
         /// <summary>
