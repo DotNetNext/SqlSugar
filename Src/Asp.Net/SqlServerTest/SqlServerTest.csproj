@@ -72,6 +72,7 @@
     <Compile Include="9_Update.cs" />
     <Compile Include="a2_Sql.cs" />
     <Compile Include="a3_Merge.cs" />
+    <Compile Include="a4_SplitTable.cs" />
     <Compile Include="UnitTest\Description.cs" />
     <Compile Include="3_EasyQuery.cs" />
     <Compile Include="7_GroupQuery.cs" />
