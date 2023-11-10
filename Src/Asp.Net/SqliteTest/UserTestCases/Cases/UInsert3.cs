@@ -13,7 +13,7 @@ namespace OrmTest
     {
         public static void Init() 
         {
-            var db = NewUnitTest.Db;
+            var db = NewUnitTest.Db; 
             db.CodeFirst.InitTables<Order1>();
             db.Insertable(new Order1() { Name = "a" }).ExecuteCommand();
 
@@ -64,6 +64,9 @@ namespace OrmTest
                 Price = 1,
                 Name = "a"
             }, true).Where(it => it.Id == 1).ExecuteCommand();
+
+            db.CodeFirst.InitTables<Unitadasfa>();
+            db.Deleteable(new Unitadasfa() { Id = "a", Id2 = "a2" }).ExecuteCommand();
         }
 
         public class Order1
@@ -79,6 +82,13 @@ namespace OrmTest
             public DateTime CreateTime { get; set; }
             [SugarColumn(IsNullable = true)]
             public int CustomId { get; set; } 
+        }
+        public class Unitadasfa 
+        {
+            [SugarColumn(IsPrimaryKey = true )]
+            public string Id { get; set; }
+            [SugarColumn(IsPrimaryKey = true)]
+            public string Id2 { get; set; }
         }
 
         public class ORDER1
