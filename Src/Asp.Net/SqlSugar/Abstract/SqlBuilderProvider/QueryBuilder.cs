@@ -838,6 +838,10 @@ namespace SqlSugar
             else
             {
                 result= GetExpressionValue(expression, this.SelectType).GetResultString();
+                if (result == null && ExpressionTool.GetMethodName(ExpressionTool.GetLambdaExpressionBody(expression)) == "End") 
+                {
+                    result = GetExpressionValue(expression, ResolveExpressType.FieldSingle).GetResultString();
+                }
             }
             if (result == null&& this.AppendNavInfo?.AppendProperties==null)
             {
