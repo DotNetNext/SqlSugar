@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SqlSugar;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -89,7 +90,18 @@ namespace OrmTest
             IDemo2();
             IDemo3();
             IDemo4();
+            db.CodeFirst.InitTables<Unitadasfa>();
+            db.Deleteable(new Unitadasfa() { Id = "a", Id2 = "c" }).ExecuteCommand();
         }
+
+        public class Unitadasfa
+        {
+            [SugarColumn(IsPrimaryKey = true)]
+            public string Id { get; set; }
+            [SugarColumn(IsPrimaryKey = true)]
+            public string Id2 { get; set; }
+        }
+
         private static void IDemo4()
         {
             var db = Db;
