@@ -1,5 +1,6 @@
 ﻿using OrmTest;
 using SqlSugar;
+using SqlSugar.TDengine;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -20,6 +21,9 @@ namespace TDengineTest
             CodeFirst2(db);
 
             CodeFirst4(db);
+
+            //多标签建表
+            CodeFirst5(db);
 
             db.CodeFirst.InitTables<TDHistoryValue>();
 
@@ -47,6 +51,20 @@ namespace TDengineTest
             }).ExecuteCommand();
             var dt = db.Ado.GetDataTable("select * from  CodeFirst03 ");
             var list3 = db.Queryable<CodeFirst03>().ToList();
+        }
+
+        private static void CodeFirst5(SqlSugarClient db)
+        {
+             
+                STable.Tags = new List<ColumnTagInfo>()
+                {
+                     new ColumnTagInfo(){ Name="t1", Value="1" },
+                     new ColumnTagInfo(){  Name="t2",Value="2"}
+                };
+
+                db.CodeFirst.InitTables<CodeFirstTags1>();
+                STable.Tags = null;
+            
         }
 
         private static void CodeFirst1(SqlSugarClient db)
