@@ -85,6 +85,9 @@ namespace OrmTest
             {
                 Console.Write(item.StorageMessage+" ");
             }
+            db.Queryable<UinitBlukTable>()
+                .Select(it => SqlFunc.IF(it.Create > it.Create).Return(it.Create).End(it.Create))
+                .ToList();
             db.DbMaintenance.TruncateTable<UinitBlukTable>();
             IDemo1();
             IDemo2();
