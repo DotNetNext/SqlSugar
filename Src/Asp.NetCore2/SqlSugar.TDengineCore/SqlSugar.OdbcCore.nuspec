@@ -9,7 +9,7 @@
     <projectUrl>https://github.com/sunkaixuan/SqlSugar</projectUrl>
     <iconUrl>https://secure.gravatar.com/avatar/a82c03402497b2e58fd65038a3699b30</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description> SqlSugar TDengine 核心库 </description>
+    <description> SqlSugar TDengine 核心库 ,DEMO用例： https://github.com/DotNetNext/SqlSugar </description>
     <copyright>Copyright 2016</copyright>
     <tags>TDengine Tdengine tdengine</tags>
     <dependencies>

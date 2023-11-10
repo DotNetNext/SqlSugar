@@ -414,8 +414,18 @@ namespace SqlSugar.TDengine
             string tableString = string.Format(this.CreateTableSql, this.SqlBuilder.GetTranslationTableName("STable_"+tableName.ToLower(isAutoToLowerCodeFirst)), string.Join(",\r\n", columnArray));
             var childTableName = this.SqlBuilder.GetTranslationTableName(tableName.ToLower(isAutoToLowerCodeFirst));
             var stableName =  this.SqlBuilder.GetTranslationTableName("STable_"+tableName.ToLower(isAutoToLowerCodeFirst));
+            if (STable.Tags?.Any() == true) 
+            {
+                var colums = STable.Tags.Select(it => this.SqlBuilder.GetTranslationTableName(it.Name)+ "  VARCHAR(20) ");
+                tableString=tableString.Replace(SqlBuilder.GetTranslationColumnName("TagsTypeId"), string.Join(",", colums)); ;
+            }
             this.Context.Ado.ExecuteCommand(tableString);
             var createChildSql = $"CREATE TABLE IF NOT EXISTS     {childTableName} USING {stableName} TAGS('default')";
+            if (STable.Tags?.Any() == true)
+            {
+                var colums = STable.Tags.Select(it => it.Value.ToSqlValue());
+                createChildSql = tableString.Replace("TAGS('default')", $"TAGS({string.Join(",", colums)})"); ;
+            }
             this.Context.Ado.ExecuteCommand(createChildSql);
             return tableString;
         }
