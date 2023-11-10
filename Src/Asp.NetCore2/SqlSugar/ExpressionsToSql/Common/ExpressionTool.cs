@@ -393,6 +393,10 @@ namespace SqlSugar
                 var mi = memberInfos.Pop();
                 if (mi.MemberType == MemberTypes.Property)
                 {
+                    if (objReference == null) 
+                    {
+                        Check.ExceptionEasy($"Expression error {rootExpression?.ToString()} expression, An empty reference appears in the expression to check if the parameter is null ", $"表达式错误 {rootExpression?.ToString()} 表达式中出现了空引用 检查参数是否为null ");
+                    }
                     var objProp = objReference.GetType().GetProperties().Where(it=>it.Name== mi.Name).FirstOrDefault();
                     if (objProp == null)
                     {
