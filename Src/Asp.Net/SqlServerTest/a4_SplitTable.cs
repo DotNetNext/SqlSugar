@@ -30,6 +30,7 @@ namespace OrmTest
             // Query records from the split table within a specified date range
             // 在指定日期范围内从分表查询记录
             var list = db.Queryable<SplitTableDemo>()
+                .Where(it=>it.Name!=null)
                 .SplitTable(DateTime.Now.Date.AddYears(-1), DateTime.Now)
                 .ToList();
 
@@ -37,6 +38,10 @@ namespace OrmTest
             // 从分表更新记录
             var updateList = list.Take(2).ToList();
             db.Updateable(updateList).SplitTable().ExecuteCommand();
+
+            // Delete records from the split table
+            // 从分表删除记录
+            db.Deleteable(updateList).SplitTable().ExecuteCommand();
         }
 
         // Entity class representing the split table
