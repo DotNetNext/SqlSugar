@@ -31,5 +31,9 @@ namespace SqlSugar
 
             return sql;
         }
+        public override string RemoveN(string sql)
+        {
+            return sql?.Replace("N", "");
+        }
     }
 }

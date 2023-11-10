@@ -164,6 +164,10 @@ namespace SqlSugar
         public virtual void FormatSaveQueueSql(StringBuilder sqlBuilder)
         {
         }
+        public virtual string RemoveN(string sql) 
+        {
+            return sql;
+        }
         #endregion
 
         #region Common SqlTemplate

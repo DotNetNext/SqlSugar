@@ -222,6 +222,10 @@ namespace SqlSugar
                             {
                                 tempequals = tempequals.Replace("=N'", "='");
                             }
+                            else 
+                            {
+                                tempequals = SqlBuilder.RemoveN(tempequals);
+                            }
                             entityValue = UtilMethods.GetConvertValue(entityValue);
                             andString.AppendFormat(tempequals, primaryField, entityValue);
                         }
