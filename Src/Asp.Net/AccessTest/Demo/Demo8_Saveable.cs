@@ -40,8 +40,14 @@ namespace OrmTest
             var updateRow2 = x2.AsUpdateable.ExecuteCommand();
             x2.AsInsertable.ExecuteCommand();
 
+            var orders = new List<Order>()
+            {
+                new Order() { Id = 0, Name = "jack" },
+                new Order() { Id = 0, Name = "jack" }
+            };
+            var x3 = db.Storageable(orders).ExecuteCommand();
 
-           // db.Saveable(new Order() { Id = 159, Name = "jack" }).ExecuteCommand();
+            // db.Saveable(new Order() { Id = 159, Name = "jack" }).ExecuteCommand();
             Console.WriteLine("");
             Console.WriteLine("#### Saveable End ####");
         }
