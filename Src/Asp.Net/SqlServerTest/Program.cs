@@ -25,6 +25,7 @@ namespace OrmTest
             _a4_SplitTable.Init();
             _a5_GridSave.Init();
             _a6_SqlPage.Init();
+            _a7_JsonType.Init();
         }
     }
 
