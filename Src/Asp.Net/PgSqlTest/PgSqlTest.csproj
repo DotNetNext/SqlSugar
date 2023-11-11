@@ -77,6 +77,11 @@
     <Compile Include="a1_Delete.cs" />
     <Compile Include="a2_Sql.cs" />
     <Compile Include="a3_Merge.cs" />
+    <Compile Include="a4_SplitTable.cs" />
+    <Compile Include="a5_GridSave.cs" />
+    <Compile Include="a6_SqlPage.cs" />
+    <Compile Include="a7_JsonType.cs" />
+    <Compile Include="a8_SelectReturnType.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="UserTestCases\Bugs\BugTest.cs" />
     <Compile Include="UserTestCases\Bugs\BugTest4.cs" />
