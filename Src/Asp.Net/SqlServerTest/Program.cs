@@ -24,6 +24,7 @@ namespace OrmTest
             _a3_Merge.Init();
             _a4_SplitTable.Init();
             _a5_GridSave.Init();
+            _a6_SqlPage.Init();
         }
     }
 

@@ -74,6 +74,7 @@
     <Compile Include="a3_Merge.cs" />
     <Compile Include="a4_SplitTable.cs" />
     <Compile Include="a5_GridSave.cs" />
+    <Compile Include="a6_SqlPage.cs" />
     <Compile Include="UnitTest\Description.cs" />
     <Compile Include="3_EasyQuery.cs" />
     <Compile Include="7_GroupQuery.cs" />
