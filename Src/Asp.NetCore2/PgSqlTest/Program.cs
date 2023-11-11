@@ -22,7 +22,12 @@ namespace OrmTest
             _9_Update.Init();
             _a1_Delete.Init();
             _a2_Sql.Init();
-            _a3_Merge.Init();
+            _a3_Merge.Init(); 
+            _a4_SplitTable.Init();
+            _a5_GridSave.Init();
+            _a6_SqlPage.Init();
+            _a7_JsonType.Init();
+            _a8_SelectReturnType.Init();
         }
     }
 
