@@ -4,7 +4,7 @@ namespace OrmTest
 {
     public class Cases
     {
-        static void Init()
+        public static void Init()
         {
             //Demo
             Demo0_SqlSugarClient.Init();
