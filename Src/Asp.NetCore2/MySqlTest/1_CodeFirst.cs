@@ -24,6 +24,10 @@ namespace OrmTest
             // 如果数据库不存在，则创建数据库
             db.DbMaintenance.CreateDatabase();
 
+            //Support bulkcopy
+            //支持大数据操作
+            db.Ado.ExecuteCommand("SET GLOBAL local_infile=1");
+
             // Initialize tables based on UserInfo001 entity class
             // 根据 UserInfo001 实体类初始化表
             db.CodeFirst.InitTables<UserInfo001>();
