@@ -76,6 +76,7 @@
     <Compile Include="a5_GridSave.cs" />
     <Compile Include="a6_SqlPage.cs" />
     <Compile Include="a7_JsonType.cs" />
+    <Compile Include="a8_SelectReturnType.cs" />
     <Compile Include="UnitTest\Description.cs" />
     <Compile Include="3_EasyQuery.cs" />
     <Compile Include="7_GroupQuery.cs" />
