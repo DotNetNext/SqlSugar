@@ -5,7 +5,7 @@ namespace SqliteTest.UnitTest
 {
     public class cases
     {
-        static void Init()
+        public static void Init()
         {
             //Demo
             Demo0_SqlSugarClient.Init();
