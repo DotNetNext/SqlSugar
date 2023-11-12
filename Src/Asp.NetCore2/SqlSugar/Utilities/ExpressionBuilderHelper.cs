@@ -92,6 +92,19 @@ namespace SqlSugar
             LambdaExpression lambda = Expression.Lambda(funcType, property, parameter);
             return lambda;
         }
+        public static Expression CreateExpressionSelectFieldObject(Type classType, string propertyName)
+        {
+            ParameterExpression parameter = Expression.Parameter(classType, "it");
+
+          
+            PropertyInfo propertyInfo = classType.GetProperty(propertyName);
+            MemberExpression property = Expression.Property(parameter, propertyInfo);
+             
+            UnaryExpression convert = Expression.Convert(property, typeof(object));
+            var funcType = typeof(Func<,>).MakeGenericType(classType, typeof(object));
+            LambdaExpression lambda = Expression.Lambda(funcType, convert, parameter);
+            return lambda;
+        }
     }
     internal static class LinqRuntimeTypeBuilder
     {

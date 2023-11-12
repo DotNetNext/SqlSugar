@@ -580,6 +580,15 @@ ParameterT parameter)
                 return result;
             }
         }
+        public async Task<List<T>> ToTreeAsync(string childPropertyName, string parentIdPropertyName, object rootValue, string primaryKeyPropertyName)
+        {
+            var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            var pk = primaryKeyPropertyName;
+            var list =await this.ToListAsync();
+            Expression<Func<T, IEnumerable<object>>> childListExpression = (Expression<Func<T, IEnumerable<object>>>)ExpressionBuilderHelper.CreateExpressionSelectField(typeof(T), childPropertyName, typeof(IEnumerable<object>));
+            Expression<Func<T, object>> parentIdExpression = (Expression<Func<T, object>>)ExpressionBuilderHelper.CreateExpressionSelectFieldObject(typeof(T), parentIdPropertyName);
+            return  GetTreeRoot(childListExpression, parentIdExpression, pk, list, rootValue) ?? new List<T>();
+        }
         public async Task<List<T>> ToTreeAsync(Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, object rootValue, object[] childIds)
         {
             var list = await this.ToListAsync();

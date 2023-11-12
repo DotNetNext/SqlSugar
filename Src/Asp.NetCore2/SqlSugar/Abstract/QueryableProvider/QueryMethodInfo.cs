@@ -283,6 +283,14 @@ namespace SqlSugar
             var reslt = method.Invoke(QueryableObj, new object[] { });
             return Convert.ToBoolean(reslt);
         }
+
+        public object ToTree(string childPropertyName, string parentIdPropertyName, object rootValue, string primaryKeyPropertyName)
+        {
+            var method = QueryableObj.GetType().GetMyMethod("ToTree", 4,typeof(string),typeof(string),typeof(object),typeof(string));
+            var reslt = method.Invoke(QueryableObj, new object[] {childPropertyName,parentIdPropertyName,rootValue,primaryKeyPropertyName });
+            return  reslt;
+        }
+
         #endregion
 
         #region Result Async
@@ -321,6 +329,13 @@ namespace SqlSugar
         {
             var method = QueryableObj.GetType().GetMyMethod("InSingleAsync", 1);
             var task = (Task)method.Invoke(QueryableObj, new object[] { pkValue });
+            return await GetTask(task).ConfigureAwait(false);
+        }
+
+        public async Task<object> ToTreeAsync(string childPropertyName, string parentIdPropertyName, object rootValue, string primaryKeyPropertyName)
+        {
+            var method = QueryableObj.GetType().GetMyMethod("ToTreeAsync", 4, typeof(string), typeof(string), typeof(object), typeof(string));
+            var task =(Task)method.Invoke(QueryableObj, new object[] { childPropertyName, parentIdPropertyName, rootValue, primaryKeyPropertyName });
             return await GetTask(task).ConfigureAwait(false);
         }
         #endregion
