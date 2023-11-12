@@ -340,6 +340,16 @@ namespace SqlSugar
             }
             return result;
         }
+
+        public List<T> ToTree(string childPropertyName, string parentIdPropertyName, object rootValue, string primaryKeyPropertyName)
+        {
+            var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            var pk = primaryKeyPropertyName;
+            var list = this.ToList();
+            Expression<Func<T,IEnumerable<object> >> childListExpression = (Expression<Func<T, IEnumerable<object>>>)ExpressionBuilderHelper.CreateExpressionSelectField(typeof(T),childPropertyName,typeof(IEnumerable<object>));
+            Expression<Func<T, object>> parentIdExpression = (Expression<Func<T, object>>)ExpressionBuilderHelper.CreateExpressionSelectFieldObject(typeof(T), parentIdPropertyName); 
+            return GetTreeRoot(childListExpression, parentIdExpression, pk, list, rootValue) ?? new List<T>();
+        }
         public List<T> ToTree(Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, object rootValue, Expression<Func<T, object>> primaryKeyExpression)
         {
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
