@@ -453,6 +453,9 @@ namespace OrmTest
             var list111 = db.Queryable<Tree>().ToTree("Child", "ParentId", 0, "Id");
             var list222 = db.Queryable<Tree>().ToTreeAsync("Child", "ParentId", 0, "Id").GetAwaiter().GetResult();
 
+            var list1111 = db.QueryableByObject(typeof(Tree)).ToTree("Child", "ParentId", 0, "Id");
+            var list2222 = db.QueryableByObject(typeof(Tree)).ToTreeAsync("Child", "ParentId", 0, "Id").GetAwaiter().GetResult();
+
             //one to one
             var list2 = db.Queryable<OrderItemInfo>().Mapper(it => it.Order, it => it.OrderId).ToList();
 
