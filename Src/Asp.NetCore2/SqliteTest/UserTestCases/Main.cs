@@ -32,6 +32,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            Unitafadsa.Init();
             UnitSplitTask.Init();
             UnitBulkMerge.Init();
             UnitBizDelete.Init();
