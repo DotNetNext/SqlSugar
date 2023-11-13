@@ -389,6 +389,11 @@ namespace SqlSugar
         #endregion
 
         #region OrderBy
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8, T9, T10,T11> OrderBy(List<OrderByModel> models)
+        {
+            this.OrderBy(models);
+            return this;
+        }
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> OrderBy(string orderFileds)
         {
             base.OrderBy(orderFileds);
@@ -1003,6 +1008,11 @@ namespace SqlSugar
         #endregion
 
         #region OrderBy
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8, T9, T10, T11,T12> OrderBy(List<OrderByModel> models)
+        {
+            this.OrderBy(models);
+            return this;
+        }
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> OrderBy(string orderFileds)
         {
             base.OrderBy(orderFileds);
