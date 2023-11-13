@@ -303,6 +303,11 @@ namespace SqlSugar
         #endregion
 
         #region Order
+        public new ISugarQueryable<T,T2> OrderBy(List<OrderByModel> models) 
+        {
+            this.OrderBy(models);
+            return this;
+        }
         public new ISugarQueryable<T, T2> OrderBy(string orderFileds)
         {
             base.OrderBy(orderFileds);
@@ -976,6 +981,11 @@ namespace SqlSugar
         #endregion
 
         #region Order
+        public new ISugarQueryable<T, T2, T3> OrderBy(List<OrderByModel> models)
+        {
+            this.OrderBy(models);
+            return this;
+        }
         public new virtual ISugarQueryable<T, T2, T3> OrderByDescending(Expression<Func<T, object>> expression)
         {
             this._OrderBy(expression, OrderByType.Desc);
@@ -1744,6 +1754,11 @@ namespace SqlSugar
         #endregion
 
         #region OrderBy
+        public new ISugarQueryable<T, T2,T3,T4> OrderBy(List<OrderByModel> models)
+        {
+            this.OrderBy(models);
+            return this;
+        }
         public new virtual ISugarQueryable<T, T2, T3, T4> OrderByDescending(Expression<Func<T, object>> expression)
         {
             this._OrderBy(expression, OrderByType.Desc);
@@ -2550,6 +2565,11 @@ namespace SqlSugar
         #endregion
 
         #region OrderBy
+        public new ISugarQueryable<T, T2, T3,T4,T5> OrderBy(List<OrderByModel> models)
+        {
+            this.OrderBy(models);
+            return this;
+        }
         public new virtual ISugarQueryable<T, T2, T3, T4, T5> OrderByDescending(Expression<Func<T, object>> expression)
         {
             this._OrderBy(expression, OrderByType.Desc);
