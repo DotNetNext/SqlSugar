@@ -234,7 +234,11 @@ namespace SqlSugar
             base.Where(conditionalModels);
             return this;
         }
-
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> Where(List<IConditionalModel> conditionalModels, bool isWrap)
+        {
+            base.Where(conditionalModels, isWrap);
+            return this;
+        }
         public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> WhereIF(bool isWhere, Expression<Func<T, T2, bool>> expression)
         {
             if (isWhere)
@@ -835,7 +839,11 @@ namespace SqlSugar
             base.Where(conditionalModels);
             return this;
         }
-
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> Where(List<IConditionalModel> conditionalModels, bool isWrap)
+        {
+            base.Where(conditionalModels, isWrap);
+            return this;
+        }
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> WhereIF(bool isWhere, Expression<Func<T, bool>> expression)
         {
             if (isWhere)
