@@ -66,6 +66,7 @@ namespace SqlSugar
 
         private void AppendQueryableAll(JsonQueryParameter jsonQueryParameter, JToken item)
         {
+            SetQueryableParameterIndex(); 
             var name = item.Path.ToLower();
             if (IsForm(name))
             {
@@ -79,7 +80,7 @@ namespace SqlSugar
             {
                 AppendOrderBy(item);
             }
-            else if (IsJoinLastAfter(name)) 
+            else if (IsJoinLastAfter(name))
             {
                 ApendJoinLastAfter(item);
             }
@@ -107,6 +108,11 @@ namespace SqlSugar
             {
                 jsonQueryParameter.IsSelect = AppendJoin(item);
             }
+        }
+
+        private void SetQueryableParameterIndex()
+        {
+            ((SqlBuilderProvider)sugarQueryable.SqlBuilder).GetParameterNameIndex = jsonCommonProvider.ParameterIndex;
         }
     }
 }

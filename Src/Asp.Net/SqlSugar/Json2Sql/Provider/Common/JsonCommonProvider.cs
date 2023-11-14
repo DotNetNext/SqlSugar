@@ -30,6 +30,7 @@ namespace SqlSugar
         }
         //public ISqlSugarClient context { get; set; }
         public ISqlBuilder sqlBuilder { get; set; }
+        public int ParameterIndex { get { return ((SqlBuilderProvider)sqlBuilder)?.GetParameterNameIndex??0; } }
         public JsonTableNameInfo GetTableName(JToken item)
         {
             JsonTableNameInfo jsonTableNameInfo = new JsonTableNameInfo();
