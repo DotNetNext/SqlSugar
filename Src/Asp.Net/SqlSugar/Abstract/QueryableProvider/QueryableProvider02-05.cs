@@ -198,6 +198,11 @@ namespace SqlSugar
             return result;
         }
         #region Where
+        public new ISugarQueryable<T, T2> Where(List<IConditionalModel> conditionalModels, bool isWrap) 
+        {
+            base.Where(conditionalModels, isWrap);
+            return this;
+        }
         public new ISugarQueryable<T, T2> Where(string expShortName, FormattableString expressionString) 
         {
             var exp = DynamicCoreHelper.GetWhere<T>(expShortName, expressionString);
@@ -1120,6 +1125,11 @@ namespace SqlSugar
             base.Where(conditionalModels);
             return this;
         }
+        public new ISugarQueryable<T, T2,T3> Where(List<IConditionalModel> conditionalModels, bool isWrap)
+        {
+            base.Where(conditionalModels, isWrap);
+            return this;
+        }
         public new ISugarQueryable<T, T2, T3> Where(IFuncModel funcModel)
         {
             var obj = this.SqlBuilder.FuncModelToSql(funcModel);
@@ -1632,6 +1642,11 @@ namespace SqlSugar
         public new ISugarQueryable<T, T2, T3, T4> Where(List<IConditionalModel> conditionalModels)
         {
             base.Where(conditionalModels);
+            return this;
+        }
+        public new ISugarQueryable<T, T2,T3,T4> Where(List<IConditionalModel> conditionalModels, bool isWrap)
+        {
+            base.Where(conditionalModels, isWrap);
             return this;
         }
         public new ISugarQueryable<T, T2, T3, T4> Where(IFuncModel funcModel)
@@ -2425,6 +2440,11 @@ namespace SqlSugar
         public new ISugarQueryable<T, T2, T3, T4, T5> Where(List<IConditionalModel> conditionalModels)
         {
             base.Where(conditionalModels);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5> Where(List<IConditionalModel> conditionalModels, bool isWrap)
+        {
+            base.Where(conditionalModels, isWrap);
             return this;
         }
         public new ISugarQueryable<T, T2, T3, T4, T5> Where(IFuncModel funcModel)
