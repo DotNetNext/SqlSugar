@@ -113,7 +113,7 @@ namespace SqlSugar
             var parname = GetParameterName(pars, parvalue);
             return parname;
         }
-        private int GetParameterNameIndex = 100;
+        internal int GetParameterNameIndex = 100;
 
         private   string GetParameterName(List<SugarParameter> pars, object parvalue)
         {
