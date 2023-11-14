@@ -925,6 +925,10 @@ namespace SqlSugar
                 db.Context.Ado.BeginTran();
             }
             db.Context.Root = this;
+            if (db.Context.MappingTables == null) 
+            {
+                db.Context.MappingTables = new MappingTableList();
+            }
             return db.Context;
         }
 
