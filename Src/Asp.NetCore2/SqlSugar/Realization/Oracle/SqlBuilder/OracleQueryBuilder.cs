@@ -90,6 +90,7 @@ namespace SqlSugar
             if (this.GetGroupByString==null&&this.Take == 1 && this.Skip == 0&&oldOrderBy== "ORDER BY sysdate ") 
             {
                 result = $" {sql.ToString()} {(this.WhereInfos.Any()?"AND":"WHERE")}   ROWNUM = 1 ";
+                result = result.Replace(rowNumberString, " ");
             }
             if (ExternalPageIndex > 0)
             {
