@@ -90,6 +90,11 @@ namespace SqlSugar
                 return SqlTranslationLeft + name.ToUpper(IsUpper).TrimEnd('"').TrimStart('"') + SqlTranslationRight;
             }
         }
+        public override string GetUnionFomatSql(string sql)
+        {
+            return " ( " + sql + " )  ";
+        }
+
 
         /// <summary>
         /// 
