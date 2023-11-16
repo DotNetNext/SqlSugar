@@ -245,6 +245,12 @@ namespace SqlSugar
             var reslt = method.Invoke(QueryableObj, new object[] { });
             return reslt;
         }
+        public string ToSqlString()
+        {
+            var method = QueryableObj.GetType().GetMyMethod("ToSqlString", 0);
+            var reslt = method.Invoke(QueryableObj, new object[] { });
+            return (string)reslt;
+        }
         public object InSingle(object pkValue)
         {
             var method = QueryableObj.GetType().GetMyMethod("InSingle", 1);
