@@ -1862,7 +1862,7 @@ namespace SqlSugar
             {
                 result = this.Context.Utilities.DataReaderToSelectArrayList<TResult>(dataReader);
             }
-            else if (entityType.IsAnonymousType() || isComplexModel)
+            else if (entityType.IsAnonymousType() || isComplexModel|| StaticConfig.EnableAot)
             {
                 result = this.Context.Utilities.DataReaderToList<TResult>(dataReader);
             }
