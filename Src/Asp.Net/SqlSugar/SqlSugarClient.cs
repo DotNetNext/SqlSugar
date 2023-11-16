@@ -903,13 +903,13 @@ namespace SqlSugar
             var configId = attr.configId;
             return this.GetConnectionScope(configId);
         }
-        public SqlSugarProvider GetConnection(dynamic configId)
+        public SqlSugarProvider GetConnection(object configId)
         {
             InitTenant();
             var db = this._AllClients.FirstOrDefault(it =>Convert.ToString(it.ConnectionConfig.ConfigId) ==Convert.ToString(configId));
             if (db == null)
             {
-                Check.Exception(true, "ConfigId was not found {0}", configId);
+                Check.Exception(true, "ConfigId was not found {0}", configId+"");
             }
             if (db.Context == null)
             {
@@ -932,24 +932,24 @@ namespace SqlSugar
             return db.Context;
         }
 
-        public SqlSugarScopeProvider GetConnectionScope(dynamic configId)
+        public SqlSugarScopeProvider GetConnectionScope(object configId)
         {
             var conn = GetConnection(configId);
             return new SqlSugarScopeProvider(conn);
         }
-        public bool IsAnyConnection(dynamic configId)
+        public bool IsAnyConnection(object configId)
         {
             InitTenant();
             var db = this._AllClients.FirstOrDefault(it => Convert.ToString(it.ConnectionConfig.ConfigId) == Convert.ToString(configId));
             return db != null;
              
         }
-        public void ChangeDatabase(dynamic configId)
+        public void ChangeDatabase(object configId)
         {
             configId =Convert.ToString(configId);
             var isLog = _Context.Ado.IsEnableLogEvent;
-            Check.Exception(!_AllClients.Any(it =>Convert.ToString( it.ConnectionConfig.ConfigId) == configId), "ConfigId was not found {0}", configId);
-            InitTenant(_AllClients.First(it => Convert.ToString(it.ConnectionConfig.ConfigId )== configId));
+            Check.Exception(!_AllClients.Any(it =>Convert.ToString( it.ConnectionConfig.ConfigId) ==Convert.ToString( configId)), "ConfigId was not found {0}", configId+"");
+            InitTenant(_AllClients.First(it => Convert.ToString(it.ConnectionConfig.ConfigId )==Convert.ToString( configId)));
             if (this._IsAllTran)
                 this.Ado.BeginTran();
             if (this._IsOpen)

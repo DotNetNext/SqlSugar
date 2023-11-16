@@ -17,7 +17,7 @@ namespace SqlSugar
         Task BeginTranAsync(IsolationLevel iso);
         Task CommitTranAsync();
         Task RollbackTranAsync();
-        void ChangeDatabase(dynamic configId);
+        void ChangeDatabase(object configId);
         void ChangeDatabase(Func<ConnectionConfig, bool> changeExpression);
         SqlSugarTransaction UseTran();
         DbResult<bool> UseTran(Action action, Action<Exception> errorCallBack = null);
@@ -26,9 +26,9 @@ namespace SqlSugar
 
         Task<DbResult<T>> UseTranAsync<T>(Func<Task<T>> action, Action<Exception> errorCallBack = null);
         void AddConnection(ConnectionConfig connection);
-        SqlSugarProvider GetConnection(dynamic configId);
-        void RemoveConnection(dynamic configId);
-        SqlSugarScopeProvider GetConnectionScope(dynamic configId);
+        SqlSugarProvider GetConnection(object configId);
+        void RemoveConnection(object configId);
+        SqlSugarScopeProvider GetConnectionScope(object configId);
         SqlSugarProvider GetConnectionWithAttr<T>();
         SqlSugarScopeProvider GetConnectionScopeWithAttr<T>();
         ISugarQueryable<T> QueryableWithAttr<T>();
@@ -41,7 +41,7 @@ namespace SqlSugar
         IDeleteable<T> DeleteableWithAttr<T>(List<T> deleteObjs) where T : class, new();
         IDeleteable<T> DeleteableWithAttr<T>() where T : class, new();
 
-       bool IsAnyConnection(dynamic configId);
+       bool IsAnyConnection(object configId);
 
         void Close();
         void Open();
