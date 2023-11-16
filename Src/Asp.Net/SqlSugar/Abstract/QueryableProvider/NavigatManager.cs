@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -358,26 +359,26 @@ namespace SqlSugar
             if (list.Any()&&navObjectNamePropety.GetValue(list.First()) == null)
             {
                 var sqlObj = GetWhereSql(navObjectNameColumnInfo.Navigat.Name);
-                if (sqlObj.SelectString == null) 
+                if (sqlObj.SelectString == null)
                 {
-                    var columns=navEntityInfo.Columns.Where(it => !it.IsIgnore)
-                        .Select(it=>QueryBuilder.Builder.GetTranslationColumnName(it.DbColumnName)+" AS "+ QueryBuilder.Builder.GetTranslationColumnName(it.PropertyName)).ToList();
-                    sqlObj.SelectString= String.Join(",", columns);
+                    var columns = navEntityInfo.Columns.Where(it => !it.IsIgnore)
+                        .Select(it => QueryBuilder.Builder.GetTranslationColumnName(it.DbColumnName) + " AS " + QueryBuilder.Builder.GetTranslationColumnName(it.PropertyName)).ToList();
+                    sqlObj.SelectString = String.Join(",", columns);
                 }
-                var navList = selector(db.Queryable<object>().ClearFilter(QueryBuilder.RemoveFilters).Filter(navPkColumn.IsPrimarykey?null:this.QueryBuilder?.IsDisabledGobalFilter == true ? null : navEntityInfo.Type).AS(navEntityInfo.DbTableName)
+                var navList = selector(db.Queryable<object>().ClearFilter(QueryBuilder.RemoveFilters).Filter(navPkColumn.IsPrimarykey ? null : this.QueryBuilder?.IsDisabledGobalFilter == true ? null : navEntityInfo.Type).AS(GetDbTableName(navEntityInfo))
                     .WhereIF(navObjectNameColumnInfo.Navigat.WhereSql.HasValue(), navObjectNameColumnInfo.Navigat.WhereSql)
-                    .WhereIF(sqlObj.WhereString.HasValue(),sqlObj.WhereString)
+                    .WhereIF(sqlObj.WhereString.HasValue(), sqlObj.WhereString)
                     .AddParameters(sqlObj.Parameters).Where(conditionalModels)
                     .Select(sqlObj.SelectString));
                 var groupQuery = (from l in list
-                                 join n in navList
-                                      on navColumn.PropertyInfo.GetValue(l).ObjToString() 
-                                      equals navPkColumn.PropertyInfo.GetValue(n).ObjToString()  
-                                 select new
-                                 {
-                                     l,
-                                     n
-                                 }).ToList();
+                                  join n in navList
+                                       on navColumn.PropertyInfo.GetValue(l).ObjToString()
+                                       equals navPkColumn.PropertyInfo.GetValue(n).ObjToString()
+                                  select new
+                                  {
+                                      l,
+                                      n
+                                  }).ToList();
                 foreach (var item in groupQuery)
                 {
 
@@ -395,7 +396,7 @@ namespace SqlSugar
                 }
             }
         }
-
+         
         private void OneToMany(List<object> list, Func<ISugarQueryable<object>, List<object>> selector, EntityInfo listItemEntity, System.Reflection.PropertyInfo navObjectNamePropety, EntityColumnInfo navObjectNameColumnInfo)
         {
             var navEntity = navObjectNameColumnInfo.PropertyInfo.PropertyType.GetGenericArguments()[0];
@@ -440,7 +441,7 @@ namespace SqlSugar
                         .Select(it => QueryBuilder.Builder.GetTranslationColumnName(it.DbColumnName) + " AS " + QueryBuilder.Builder.GetTranslationColumnName(it.PropertyName)).ToList();
                     sqlObj.SelectString = String.Join(",", columns);
                 }
-                var navList = selector(childDb.Queryable<object>(sqlObj.TableShortName).AS(navEntityInfo.DbTableName).ClearFilter(QueryBuilder.RemoveFilters).Filter(this.QueryBuilder?.IsDisabledGobalFilter == true ? null : navEntityInfo.Type).AddParameters(sqlObj.Parameters).Where(conditionalModels).WhereIF(sqlObj.WhereString.HasValue(), sqlObj.WhereString).WhereIF(navObjectNameColumnInfo?.Navigat?.WhereSql!=null, navObjectNameColumnInfo?.Navigat?.WhereSql).Select(sqlObj.SelectString).OrderByIF(sqlObj.OrderByString.HasValue(), sqlObj.OrderByString));
+                var navList = selector(childDb.Queryable<object>(sqlObj.TableShortName).AS(GetDbTableName(navEntityInfo)).ClearFilter(QueryBuilder.RemoveFilters).Filter(this.QueryBuilder?.IsDisabledGobalFilter == true ? null : navEntityInfo.Type).AddParameters(sqlObj.Parameters).Where(conditionalModels).WhereIF(sqlObj.WhereString.HasValue(), sqlObj.WhereString).WhereIF(navObjectNameColumnInfo?.Navigat?.WhereSql!=null, navObjectNameColumnInfo?.Navigat?.WhereSql).Select(sqlObj.SelectString).OrderByIF(sqlObj.OrderByString.HasValue(), sqlObj.OrderByString));
                 if (navList.HasValue())
                 {
                     //var setValue = navList
@@ -540,7 +541,7 @@ namespace SqlSugar
                 helper.NavEntity = navEntityInfo;
                 helper.RootEntity = childDb.EntityMaintenance.GetEntityInfo<T>();
                 var whereSql = helper.GetMppingSql(list, sqlObj.MappingExpressions);
-                var navList = selector(childDb.Queryable<object>().AS(navEntityInfo.DbTableName).AddParameters(sqlObj.Parameters).Where(whereSql,true).WhereIF(sqlObj.WhereString.HasValue(), sqlObj.WhereString).Select(sqlObj.SelectString).OrderByIF(sqlObj.OrderByString.HasValue(), sqlObj.OrderByString));
+                var navList = selector(childDb.Queryable<object>().AS(GetDbTableName(navEntityInfo)).AddParameters(sqlObj.Parameters).Where(whereSql,true).WhereIF(sqlObj.WhereString.HasValue(), sqlObj.WhereString).Select(sqlObj.SelectString).OrderByIF(sqlObj.OrderByString.HasValue(), sqlObj.OrderByString));
                 if (navList.HasValue())
                 {
                     foreach (var item in list)
@@ -574,7 +575,7 @@ namespace SqlSugar
                 helper.NavEntity = navEntityInfo;
                 helper.RootEntity = this.Context.EntityMaintenance.GetEntityInfo<T>();
                 var whereSql = helper.GetMppingSql(list, sqlObj.MappingExpressions);
-                var navList = selector(this.Context.Queryable<object>().AS(navEntityInfo.DbTableName).AddParameters(sqlObj.Parameters).Where(whereSql, true).WhereIF(sqlObj.WhereString.HasValue(), sqlObj.WhereString).Select(sqlObj.SelectString).OrderByIF(sqlObj.OrderByString.HasValue(), sqlObj.OrderByString));
+                var navList = selector(this.Context.Queryable<object>().AS(GetDbTableName(navEntityInfo)).AddParameters(sqlObj.Parameters).Where(whereSql, true).WhereIF(sqlObj.WhereString.HasValue(), sqlObj.WhereString).Select(sqlObj.SelectString).OrderByIF(sqlObj.OrderByString.HasValue(), sqlObj.OrderByString));
                 if (navList.HasValue())
                 {
                     foreach (var item in list)
@@ -857,6 +858,19 @@ namespace SqlSugar
                 }
             }
             return shortName;
+        }
+
+
+        private  string GetDbTableName(EntityInfo navEntityInfo)
+        {
+            if (navEntityInfo.Type.GetCustomAttribute<SplitTableAttribute>() != null)
+            {
+                return "("+this.Context.QueryableByObject(navEntityInfo.Type).SplitTable().ToSqlString()+") split_table";
+            }
+            else
+            {
+                return navEntityInfo.DbTableName;
+            }
         }
 
         private void InitMappingtType(Expression exp)
