@@ -252,7 +252,7 @@ namespace SqlSugar
                 var isMapping = IsMappingColumns;
                 var columnInfo = new DbColumnInfo()
                 {
-                    Value = PropertyCallAdapterProvider<T>.GetInstance(column.PropertyName).InvokeGet(item),
+                    Value = GetValue(item,column),
                     DbColumnName = column.DbColumnName,
                     PropertyName = column.PropertyName,
                     PropertyType = UtilMethods.GetUnderType(column.PropertyInfo),
@@ -314,6 +314,17 @@ namespace SqlSugar
                     var value = disItem.Split(':').Last();
                     insertItem.Add(new DbColumnInfo() { DbColumnName = name, PropertyName = name, PropertyType = typeof(string), Value = value });
                 }
+            }
+        }
+        private static object GetValue(T item, EntityColumnInfo column)
+        {
+            if (StaticConfig.EnableAot)
+            {
+                return column.PropertyInfo.GetValue(item, null);
+            }
+            else
+            {
+                return PropertyCallAdapterProvider<T>.GetInstance(column.PropertyName).InvokeGet(item);
             }
         }
 

@@ -8,6 +8,7 @@ namespace SqlSugar
 {
     public class StaticConfig
     {
+        public static bool EnableAot { get; set; }
         public static Func<string,string> Encode { get; set; }
         public static Func<string,string> Decode{ get; set; }
         public static bool AppContext_ConvertInfinityDateTime { get;  set; }

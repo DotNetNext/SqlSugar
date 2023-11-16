@@ -103,7 +103,7 @@ namespace SqlSugar
                     {
                         name = column.PropertyName;
                     }
-                    var value = ValueConverter(column, PropertyCallAdapterProvider<T>.GetInstance(column.PropertyName).InvokeGet(item));
+                    var value = ValueConverter(column, GetValue(item,column));
                     if (column.SqlParameterDbType != null&& column.SqlParameterDbType is Type && UtilMethods.HasInterface((Type)column.SqlParameterDbType, typeof(ISugarDataConverter))) 
                     {
                         var columnInfo = column;
@@ -155,6 +155,18 @@ namespace SqlSugar
 
             return dt;
         }
+        private static object GetValue(T item, EntityColumnInfo column)
+        {
+            if (StaticConfig.EnableAot)
+            {
+                return column.PropertyInfo.GetValue(item);
+            }
+            else
+            {
+                return PropertyCallAdapterProvider<T>.GetInstance(column.PropertyName).InvokeGet(item);
+            }
+        }
+
         private string GetTableName()
         {
             if (this.AsName.HasValue())
