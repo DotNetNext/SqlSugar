@@ -15,6 +15,7 @@ namespace OrmTest
             _2_DbFirst.Init();
             _3_EasyQuery.Init();
             _4_JoinQuery.Init();
+            _4_Subquery.Init();
             _5_PageQuery.Init();
             _6_NavQuery.Init();
             _7_GroupQuery.Init();

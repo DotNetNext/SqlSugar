@@ -69,6 +69,7 @@
     <Compile Include="2_DbFirst.cs" />
     <Compile Include="3_EasyQuery.cs" />
     <Compile Include="4_JoinQuery.cs" />
+    <Compile Include="4_Subquery.cs" />
     <Compile Include="5_PageQuery.cs" />
     <Compile Include="6_NavigationPropertyQuery.cs" />
     <Compile Include="7_GroupQuery.cs" />
