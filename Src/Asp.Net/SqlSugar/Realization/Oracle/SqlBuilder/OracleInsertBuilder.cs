@@ -55,7 +55,7 @@ namespace SqlSugar
             else
             {
                 var bigSize = 500;
-                if (groupList.Count < bigSize)
+                if (groupList.Count < bigSize||this.Context?.CurrentConnectionConfig?.MoreSettings?.EnableOracleIdentity==true)
                 {
                     string result = Small(identities, groupList, columnsString);
                     return result;
