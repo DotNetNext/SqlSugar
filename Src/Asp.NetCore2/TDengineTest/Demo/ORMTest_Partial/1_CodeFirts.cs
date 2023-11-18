@@ -55,16 +55,25 @@ namespace TDengineTest
 
         private static void CodeFirst5(SqlSugarClient db)
         {
-             
-                STable.Tags = new List<ColumnTagInfo>()
-                {
-                     new ColumnTagInfo(){ Name="t1", Value="1" },
-                     new ColumnTagInfo(){  Name="t2",Value="2"}
-                };
+              
+               db.CodeFirst.InitTables<CodeFirstTags33>();
 
-                db.CodeFirst.InitTables<CodeFirstTags1>();
-                STable.Tags = null;
-            
+                db.Insertable(new CodeFirstTags33()
+                {
+                    Boolean = true,
+                    Ts = DateTime.Now
+                }).ExecuteCommand();
+
+                  
+                   db.CodeFirst.InitTables<CodeFirstTags44>();
+
+                db.Insertable(new CodeFirstTags44()
+                {
+                    Boolean = true,
+                    Ts = DateTime.Now
+                }).ExecuteCommand();
+
+
         }
 
         private static void CodeFirst1(SqlSugarClient db)

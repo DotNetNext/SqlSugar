@@ -44,14 +44,24 @@ namespace TDengineTest
         public DateTime Ts { get; set; }
         public bool Boolean { get; set; }
     }
-
-    public class CodeFirstTags1:STable 
+    [STableAttribute( STablelName = "CodeFirstStable", Tags="[{ Name:\"Tag1\",Value:\"1\"}]")]
+    public class CodeFirstTags44 
     {
         [SqlSugar.SugarColumn(IsPrimaryKey = true)]
         public DateTime Ts { get; set; }
         public bool Boolean { get; set; }
+        [SqlSugar.SugarColumn(IsIgnore =true)]
+        public string Tag1 { get; set; }
     }
-
+    [STableAttribute(STablelName = "CodeFirstStable", Tags = "[{ Name:\"Tag1\",Value:\"2\"}]")]
+    public class CodeFirstTags33
+    {
+        [SqlSugar.SugarColumn(IsPrimaryKey = true)]
+        public DateTime Ts { get; set; }
+        public bool Boolean { get; set; }
+        [SqlSugar.SugarColumn(IsIgnore = true)]
+        public string Tag1 { get; set; }
+    }
     public class CodeFirst04  
     {
         [SqlSugar.SugarColumn(IsPrimaryKey = true)]
