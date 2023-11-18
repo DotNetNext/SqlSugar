@@ -7,6 +7,6 @@ namespace SqlSugar.TDengine
     public class STableAttribute:Attribute
     {
         public string Tags { get; set; }
-        public string STablelName { get; set; }
+        public string STableName { get; set; }
     }
 }

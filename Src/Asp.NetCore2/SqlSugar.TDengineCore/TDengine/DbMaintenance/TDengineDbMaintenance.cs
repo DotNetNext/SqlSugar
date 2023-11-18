@@ -418,7 +418,7 @@ namespace SqlSugar.TDengine
             if (isAttr) 
             {
                 var attr = this.Context.Utilities.DeserializeObject<STableAttribute>(tableName.Split("{stable}").Last());
-                stableName= this.SqlBuilder.GetTranslationTableName(attr.STablelName.ToLower(isAutoToLowerCodeFirst));
+                stableName= this.SqlBuilder.GetTranslationTableName(attr.STableName.ToLower(isAutoToLowerCodeFirst));
                 tableString = string.Format(this.CreateTableSql, stableName, string.Join(",\r\n", columnArray));
                 tableName=childTableName = this.SqlBuilder.GetTranslationTableName(tableName.Split("{stable}").First().ToLower(isAutoToLowerCodeFirst));
                 STable.Tags =this.Context.Utilities.DeserializeObject<List<ColumnTagInfo>>( attr.Tags);
