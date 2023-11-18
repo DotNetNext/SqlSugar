@@ -12,6 +12,8 @@ An ORM framework from the future
 
 Using SqlSugar is very simple , And it's powerful.
 
+Aot <a href="https://www.donet5.com/Home/Doc?typeId=2574">document</a>
+
 ## Support database 
 
 MySql、SqlServer、Sqlite、Oracle 、 postgresql、达梦、
