@@ -328,7 +328,7 @@ namespace SqlSugar.TDengine
                     db.DbMaintenance.AddColumnRemark(item.DbColumnName, item.DbTableName, item.ColumnDescription);
 
                 }
-            }
+            } 
             //table remak
             if (entity.TableDescription != null)
             {
@@ -414,6 +414,15 @@ namespace SqlSugar.TDengine
             string tableString = string.Format(this.CreateTableSql, this.SqlBuilder.GetTranslationTableName("STable_"+tableName.ToLower(isAutoToLowerCodeFirst)), string.Join(",\r\n", columnArray));
             var childTableName = this.SqlBuilder.GetTranslationTableName(tableName.ToLower(isAutoToLowerCodeFirst));
             var stableName =  this.SqlBuilder.GetTranslationTableName("STable_"+tableName.ToLower(isAutoToLowerCodeFirst));
+            var isAttr = tableName.Contains("{stable}");
+            if (isAttr) 
+            {
+                var attr = this.Context.Utilities.DeserializeObject<STableAttribute>(tableName.Split("{stable}").Last());
+                stableName= this.SqlBuilder.GetTranslationTableName(attr.STablelName.ToLower(isAutoToLowerCodeFirst));
+                tableString = string.Format(this.CreateTableSql, stableName, string.Join(",\r\n", columnArray));
+                tableName=childTableName = this.SqlBuilder.GetTranslationTableName(tableName.Split("{stable}").First().ToLower(isAutoToLowerCodeFirst));
+                STable.Tags =this.Context.Utilities.DeserializeObject<List<ColumnTagInfo>>( attr.Tags);
+            }
             if (STable.Tags?.Any() == true) 
             {
                 var colums = STable.Tags.Select(it => this.SqlBuilder.GetTranslationTableName(it.Name)+ "  VARCHAR(20) ");
