@@ -29,7 +29,39 @@ namespace OrmTest
             if (x[1].Length != 18 && x[1].Scale != 2) throw new Exception("unit test error");
             if (x[2].Length != 0 && x[2].Scale != 0) throw new Exception("unit test error");
             Db.CodeFirst.InitTables<UnitIndextest>();
+            Db.CodeFirst.InitTables<UnitDropColumnTest>();
+            Db.CodeFirst.InitTables<UNITDROPCOLUMNTEST>();
+            var column= Db.DbMaintenance.GetColumnInfosByTableName("UNITDROPCOLUMNTEST", false);
+            if (column.Count != 3) 
+            {
+                throw new Exception("unit error");
+            }
+          
+            var db = Db;
+            db.CurrentConnectionConfig.MoreSettings = new ConnMoreSettings()
+            {
+                 SqliteCodeFirstEnableDropColumn=true
+            };
+            db.CodeFirst.InitTables<UNITDROPCOLUMNTEST>();
+            var column2 = db.DbMaintenance.GetColumnInfosByTableName("UNITDROPCOLUMNTEST", false);
+            if (column2.Count != 2)
+            {
+                throw new Exception("unit error");
+            }
         }
+
+        public class UnitDropColumnTest
+        {
+            public int Id { get; set; }
+            public string Name { get; set; }
+            public string Name2 { get; set; }
+        }
+        public class UNITDROPCOLUMNTEST
+        {
+            public int Id { get; set; }
+            public string Name { get; set; } 
+        }
+
         [SqlSugar.SugarIndex("UnitIndextestIndex", nameof(UnitIndextest.Table), SqlSugar.OrderByType.Asc)]
         public class UnitIndextest
         {
