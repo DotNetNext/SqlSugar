@@ -28,6 +28,7 @@ namespace SqlSugar
         public bool EnableModelFuncMappingColumn { get; set; }
         public bool EnableOracleIdentity { get; set; }
         public bool EnableCodeFirstUpdatePrecision { get;  set; }
+        public bool SqliteCodeFirstEnableDropColumn { get; set; }
         public bool IsCorrectErrorSqlParameterName { get; set; }
     }
 }

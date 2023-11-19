@@ -49,8 +49,12 @@ namespace SqlSugar
                 }
                 foreach (var item in dropColumns)
                 {
-                    //this.Context.DbMaintenance.DropColumn(tableName, item.DbColumnName);
-                    //isChange = true;
+                    //only support .net core
+                    if (this.Context.CurrentConnectionConfig?.MoreSettings?.SqliteCodeFirstEnableDropColumn == true)
+                    {
+                        this.Context.DbMaintenance.DropColumn(tableName, item.DbColumnName);
+                        isChange = true;
+                    }
                 }
                 //foreach (var item in alterColumns)
                 //{
