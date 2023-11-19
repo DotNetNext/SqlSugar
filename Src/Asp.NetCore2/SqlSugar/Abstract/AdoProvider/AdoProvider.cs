@@ -1672,7 +1672,7 @@ namespace SqlSugar
             {
                 result = this.Context.Utilities.DataReaderToExpandoObjectListNoUsing(dataReader).Select(it => ((TResult)(object)it)).ToList();
             }
-            else if (entityType.IsAnonymousType())
+            else if (entityType.IsAnonymousType()||StaticConfig.EnableAot)
             {
                 result = this.Context.Utilities.DataReaderToListNoUsing<TResult>(dataReader);
             }
@@ -1694,7 +1694,7 @@ namespace SqlSugar
                 var list = await this.Context.Utilities.DataReaderToExpandoObjectListAsyncNoUsing(dataReader);
                 result = list.Select(it => ((TResult)(object)it)).ToList();
             }
-            else if (entityType.IsAnonymousType())
+            else if (entityType.IsAnonymousType() || StaticConfig.EnableAot)
             {
                 result =await this.Context.Utilities.DataReaderToListAsyncNoUsing<TResult>(dataReader);
             }
