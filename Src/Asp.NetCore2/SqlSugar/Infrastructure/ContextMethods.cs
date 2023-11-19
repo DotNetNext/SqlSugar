@@ -464,6 +464,10 @@ namespace SqlSugar
                     {
                         result.Add(name, (byte[])readerValues[item.Name.ToLower()]);
                     }
+                    else if (StaticConfig.EnableAot&& tType == typeof(DbColumnInfo) && item.PropertyType == typeof(object)) 
+                    {
+                         //No add
+                    }
                     else if (item.PropertyType == typeof(object))
                     {
                         result.Add(name, readerValues[item.Name.ToLower()]);
@@ -472,7 +476,7 @@ namespace SqlSugar
                     {
                         result.Add(name, DeserializeObject<string[]>(readerValues.First(y => y.Key.EqualCase(item.Name)).Value + ""));
                     }
-                    else if (StaticConfig.EnableAot && item.PropertyType == typeof(Type)) 
+                    else if (StaticConfig.EnableAot && item.PropertyType == typeof(Type))
                     {
                         //No Add
                     }
