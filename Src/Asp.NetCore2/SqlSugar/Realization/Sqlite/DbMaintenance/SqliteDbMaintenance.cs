@@ -119,7 +119,7 @@ namespace SqlSugar
         {
             get
             {
-                throw new NotSupportedException();
+                return "ALTER TABLE {0} DROP {1}";
             }
         }
         protected override string DropConstraintSql
