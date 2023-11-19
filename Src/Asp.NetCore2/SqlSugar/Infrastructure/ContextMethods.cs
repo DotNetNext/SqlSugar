@@ -472,6 +472,10 @@ namespace SqlSugar
                     {
                         result.Add(name, DeserializeObject<string[]>(readerValues.First(y => y.Key.EqualCase(item.Name)).Value + ""));
                     }
+                    else if (StaticConfig.EnableAot && item.PropertyType == typeof(Type)) 
+                    {
+                        //No Add
+                    }
                     else
                     {
                         result.Add(name, DataReaderToDynamicList_Part(readerValues, item, reval, mappingKeys));
