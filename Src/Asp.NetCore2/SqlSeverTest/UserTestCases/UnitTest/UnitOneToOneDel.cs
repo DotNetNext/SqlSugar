@@ -28,6 +28,14 @@ namespace OrmTest
                  Name= "b",
                   SchoolId=1,
             }).ExecuteCommand();
+            NewUnitTest.Db.Queryable<School>()
+                .IncludeLeftJoin(x => x.Grades)
+                .GroupBy(x => x.Grades.Id)
+                .Select(x => new
+                {
+                    name = x.Grades.Id
+                })
+                .ToList();
             Db.DeleteNav<School>(s => s.Id.Equals(1))
                 .Include(s => s.Grades).ExecuteCommandAsync().GetAwaiter().GetResult();
             //Console.ReadLine();
