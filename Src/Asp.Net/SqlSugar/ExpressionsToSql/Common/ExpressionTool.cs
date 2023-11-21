@@ -10,6 +10,25 @@ namespace SqlSugar
 {
     public class ExpressionTool
     {
+
+        internal static bool IsNavMember(ExpressionContext context, Expression member)
+        {
+            var isNav = false;
+            if (member is MemberExpression && (member as MemberExpression)?.Type?.IsClass()==true)
+            {
+                var memberExp = (member as MemberExpression);
+                var name = memberExp?.Member?.Name;
+                var type = memberExp?.Type;
+                if (name!=null&&type!=null&&memberExp.Expression is ParameterExpression)
+                {
+                    var rootExp = (memberExp.Expression as ParameterExpression);
+                    var entityInfo = context?.SugarContext?.Context?.EntityMaintenance?.GetEntityInfo(rootExp.Type);
+                    var navColumn = entityInfo.Columns.FirstOrDefault(it => it.PropertyName == name);
+                    isNav = navColumn?.Navigat != null;
+                }
+            }
+            return isNav;
+        }
         public static List<string> ExtractMemberNames(Expression expression)
         {
             var memberNames = new List<string>();
@@ -639,6 +658,10 @@ namespace SqlSugar
                     additem.ShortName = member + "";
                     additem.RightName = (memberAssignment.Expression as MemberExpression).Member.Name;
                     additem.RightDbName = context.GetDbColumnName(member.Type.Name, additem.RightName);
+                    if(ExpressionTool.IsNavMember(context, member)) 
+                    {
+                        additem.RightDbName=additem.RightName = baseResolve.GetNewExpressionValue(memberAssignment.Expression);
+                    }
                     result.Add(additem);
                 }
                 else if (memberAssignment.Expression is ConstantExpression)
