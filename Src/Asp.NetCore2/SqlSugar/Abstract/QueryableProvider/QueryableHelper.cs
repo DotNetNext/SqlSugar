@@ -1698,8 +1698,9 @@ namespace SqlSugar
             }
             else
             {
+                expression=ExpressionTool.RemoveConvert(expression);
                 lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
-                result = lamResult.GetResultString();
+                result = lamResult.GetResultString(); 
             }
             GroupBy(result);
             return this;
