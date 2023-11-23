@@ -211,6 +211,12 @@ namespace SqlSugar
             {
                 return columnName;
             }
+            if (this.SugarContext?.Context?.CurrentConnectionConfig?.MoreSettings?.IsCorrectErrorSqlParameterName == true) 
+            {
+                if (IsTranslationText(columnName.Replace(" ", ""))) return columnName;
+                else
+                    return GetTranslationText(columnName);
+            }
             if (IsTranslationText(columnName)) return columnName;
             if (columnName.Contains(UtilConstants.Dot))
             {
