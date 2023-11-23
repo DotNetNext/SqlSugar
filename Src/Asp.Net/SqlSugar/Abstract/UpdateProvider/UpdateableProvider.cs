@@ -190,6 +190,7 @@ namespace SqlSugar
             result.DataList = this.UpdateObjs;
             result.TableName = this.UpdateBuilder.TableName;
             result.IsEnableDiffLogEvent = this.IsEnableDiffLogEvent;
+            result.WhereColumnList = this.WhereColumnList?.ToArray();
             result.DiffModel = this.diffModel; 
             if (this.UpdateBuilder.DbColumnInfoList.Any())
                 result.UpdateColumns = this.UpdateBuilder.DbColumnInfoList.GroupBy(it => it.TableId).First().Select(it => it.DbColumnName).ToList();
@@ -530,6 +531,8 @@ namespace SqlSugar
 
         public IUpdateable<T> WhereColumns(string[] columnNames)
         {
+            if (columnNames == null) return this;
+
             ThrowUpdateByExpression();
             if (this.WhereColumnList == null) this.WhereColumnList = new List<string>();
             foreach (var columnName in columnNames)
