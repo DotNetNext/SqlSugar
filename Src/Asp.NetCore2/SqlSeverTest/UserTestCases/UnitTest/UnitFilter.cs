@@ -21,6 +21,11 @@ namespace OrmTest
                     IsAutoDeleteQueryFilter = true, // 启用删除查询过滤器
                 }
             });
+            db.Aop.OnLogExecuting = (sql, pars) =>
+            {
+                Console.WriteLine(UtilMethods.GetNativeSql(sql,pars));
+                Console.WriteLine();
+            };
 
             //添加过滤器
             db.QueryFilter.AddTableFilter<IDeletedFilter>(u => u.IsDelete == false);
@@ -38,6 +43,18 @@ namespace OrmTest
                          DeviceBrandId = a.DeviceBrandId,
                          BrandName = a.DeviceBrand.Name,
                      }).ToList();
+
+            var devices2 = db.Queryable<DeviceEntity>("a")
+                   
+                   .AddJoinInfo(typeof(DeviceBrandEntity),"o", "o.id==a.DeviceBrandId")
+                   //.ClearFilter()
+                   .Select(a => new
+                   {
+                       Id = a.Id,
+                       Name = a.Name,
+                       DeviceBrandId = a.DeviceBrandId,
+                       BrandName = a.DeviceBrand.Name,
+                   }).ToList();
 
         }
         /// <summary>
