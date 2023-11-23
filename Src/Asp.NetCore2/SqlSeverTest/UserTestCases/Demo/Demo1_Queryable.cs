@@ -107,6 +107,8 @@ namespace OrmTest
                   n = it.Name,
                   name = SqlFunc.OnlyInSelectConvertToString(it.Name, methodInfo)
               }).ToList();
+
+            var list9 = db.Queryable<Order>().Where("id=1", null).ToList();
             Console.WriteLine("#### Examples End ####");
         }
 
