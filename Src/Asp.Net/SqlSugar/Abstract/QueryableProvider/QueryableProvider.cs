@@ -952,6 +952,11 @@ namespace SqlSugar
         }
         public virtual ISugarQueryable<T> Where(string expShortName, FormattableString expressionString) 
         {
+            if (expressionString == null&& !Regex.IsMatch(expShortName,@"^\w$")) 
+            {
+                return this.Where(expShortName, new { });
+            }
+
             var exp = DynamicCoreHelper.GetWhere<T>(expShortName, expressionString);
             _Where(exp);
             return this;
