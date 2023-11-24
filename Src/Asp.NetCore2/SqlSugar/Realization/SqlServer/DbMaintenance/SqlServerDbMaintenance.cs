@@ -321,21 +321,27 @@ namespace SqlSugar
         #endregion
 
         #region Methods
-        public override bool DropColumn(string tableName, string columnName)
+        public override List<DbTableInfo> GetSchemaTables(EntityInfo entityInfo)
         {
-            if (Regex.IsMatch(tableName,@"^\w+$") && Regex.IsMatch(columnName,@"^\w+$"))
-            { 
-                var sql = $"SELECT distinct dc.name AS ConstraintName \r\nFROM sys.default_constraints dc\r\nJOIN sys.columns c ON dc.parent_column_id = c.column_id\r\nWHERE dc.parent_object_id = OBJECT_ID('{tableName}')\r\nAND c.name = '{columnName}';";
-                var checks=this.Context.Ado.SqlQuery<string>(sql);
-                foreach (var checkName in checks)
+            if (entityInfo.DbTableName.Contains(".") && this.Context.CurrentConnectionConfig.DbType == DbType.SqlServer)
+            {
+                var schema = entityInfo.DbTableName.Split('.').First();
+                var isAny = GetSchemas().Any(it => it.EqualCase(schema))||schema.EqualCase("dbo");
+                if (isAny)
                 {
-                    if (checkName?.ToUpper()?.StartsWith("DF__")==true)
-                    {
-                        this.Context.Ado.ExecuteCommand($"ALTER TABLE {SqlBuilder.GetTranslationColumnName(tableName)} DROP CONSTRAINT {checkName}");
-                    }
+                    var tableInfos = this.Context.Ado.SqlQuery<DbTableInfo>(@"SELECT schem.name+'.'+tb.name Name,tb.Description from 
+                                ( SELECT obj.name,Convert(nvarchar(max),prop.value)as Description,obj.schema_id FROM sys.objects  obj
+                                    LEFT JOIN sys.extended_properties  prop 
+                                    ON obj.object_id=prop.major_id
+                                        and prop.minor_id=0
+                                        AND (prop.Name='MS_Description' OR prop.Name is null)
+                                        WHERE obj.type IN('U')) tb
+                                            inner join	sys.schemas as schem
+                                            on tb.schema_id=schem.schema_id ");
+                    return tableInfos;
                 }
             }
-            return base.DropColumn(tableName, columnName);
+            return null;
         }
         public override List<string> GetDbTypes() 
         {

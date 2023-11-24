@@ -58,14 +58,18 @@ namespace SqlSugar
         }
         public List<SplitTableInfo> GetTables()
         {
-            if (StaticConfig.SplitTableGetTablesFunc != null) 
+            if (StaticConfig.SplitTableGetTablesFunc != null)
             {
                 return StaticConfig.SplitTableGetTablesFunc();
             }
             var oldIsEnableLogEvent = this.Context.Ado.IsEnableLogEvent;
             this.Context.Ado.IsEnableLogEvent = false;
-            var tableInfos = this.Context.DbMaintenance.GetTableInfoList(false);
-            List<SplitTableInfo> result = Service.GetAllTables(this.Context,EntityInfo,tableInfos);
+            List<DbTableInfo> tableInfos =((DbMaintenanceProvider)this.Context.DbMaintenance).GetSchemaTables(EntityInfo);
+            if (tableInfos == null)
+            {
+                tableInfos = this.Context.DbMaintenance.GetTableInfoList(false);
+            }
+            List<SplitTableInfo> result = Service.GetAllTables(this.Context, EntityInfo, tableInfos);
             this.Context.Ado.IsEnableLogEvent = oldIsEnableLogEvent;
             return result;
         }
