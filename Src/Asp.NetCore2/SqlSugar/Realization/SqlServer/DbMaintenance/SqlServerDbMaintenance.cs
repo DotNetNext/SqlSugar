@@ -343,6 +343,23 @@ namespace SqlSugar
             }
             return null;
         }
+
+        public override bool DropColumn(string tableName, string columnName)
+        {
+            if (Regex.IsMatch(tableName, @"^\w+$") && Regex.IsMatch(columnName, @"^\w+$"))
+            {
+                var sql = $"SELECT distinct dc.name AS ConstraintName \r\nFROM sys.default_constraints dc\r\nJOIN sys.columns c ON dc.parent_column_id = c.column_id\r\nWHERE dc.parent_object_id = OBJECT_ID('{tableName}')\r\nAND c.name = '{columnName}';";
+                var checks = this.Context.Ado.SqlQuery<string>(sql);
+                foreach (var checkName in checks)
+                {
+                    if (checkName?.ToUpper()?.StartsWith("DF__") == true)
+                    {
+                        this.Context.Ado.ExecuteCommand($"ALTER TABLE {SqlBuilder.GetTranslationColumnName(tableName)} DROP CONSTRAINT {checkName}");
+                    }
+                }
+            }
+            return base.DropColumn(tableName, columnName);
+        }
         public override List<string> GetDbTypes() 
         {
             return this.Context.Ado.SqlQuery<string>(@"SELECT name
