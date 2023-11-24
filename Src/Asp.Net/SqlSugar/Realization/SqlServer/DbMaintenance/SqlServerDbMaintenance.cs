@@ -321,6 +321,28 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override List<DbTableInfo> GetSchemaTables(EntityInfo entityInfo)
+        {
+            if (entityInfo.DbTableName.Contains(".") && this.Context.CurrentConnectionConfig.DbType == DbType.SqlServer)
+            {
+                var schema = entityInfo.DbTableName.Split('.').First();
+                var isAny = GetSchemas().Any(it => it.EqualCase(schema))||schema.EqualCase("dbo");
+                if (isAny)
+                {
+                    var tableInfos = this.Context.Ado.SqlQuery<DbTableInfo>(@"SELECT schem.name+'.'+tb.name Name,tb.Description from 
+                                ( SELECT obj.name,Convert(nvarchar(max),prop.value)as Description,obj.schema_id FROM sys.objects  obj
+                                    LEFT JOIN sys.extended_properties  prop 
+                                    ON obj.object_id=prop.major_id
+                                        and prop.minor_id=0
+                                        AND (prop.Name='MS_Description' OR prop.Name is null)
+                                        WHERE obj.type IN('U')) tb
+                                            inner join	sys.schemas as schem
+                                            on tb.schema_id=schem.schema_id ");
+                    return tableInfos;
+                }
+            }
+            return null;
+        }
         public override List<string> GetDbTypes() 
         {
             return this.Context.Ado.SqlQuery<string>(@"SELECT name

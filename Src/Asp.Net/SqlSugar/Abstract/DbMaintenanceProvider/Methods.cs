@@ -665,6 +665,10 @@ namespace SqlSugar
         #endregion
 
         #region Private
+        public virtual List<DbTableInfo> GetSchemaTables(EntityInfo entityInfo) 
+        {
+            return null;
+        }
         protected List<T> GetListOrCache<T>(string cacheKey, string sql)
         {
             return this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey,
