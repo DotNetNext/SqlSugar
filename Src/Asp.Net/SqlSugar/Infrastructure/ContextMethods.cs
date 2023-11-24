@@ -474,7 +474,15 @@ namespace SqlSugar
                     }
                     else if (IsArrayItem(readerValues, item))
                     {
-                        result.Add(name, DeserializeObject<string[]>(readerValues.First(y => y.Key.EqualCase(item.Name)).Value + ""));
+                        var json = readerValues.First(y => y.Key.EqualCase(item.Name)).Value + "";
+                        if (json.StartsWith("[{"))
+                        {
+                            result.Add(name, DeserializeObject<JArray>(json));
+                        }
+                        else
+                        {
+                            result.Add(name, DeserializeObject<string[]>(json));
+                        }
                     }
                     else if (StaticConfig.EnableAot && item.PropertyType == typeof(Type))
                     {
