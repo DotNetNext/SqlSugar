@@ -54,6 +54,7 @@ namespace SqlSugar
         public bool OneToManyInsertOrUpdate { get; set; }
         public Expression RootFunc { get; set; }
         public Expression CurrentFunc { get; set; }
+        public string[] IgnoreColumns { get; set; }
     }
 
     public class InsertNavOptions 
