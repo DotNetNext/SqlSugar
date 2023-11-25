@@ -61,6 +61,13 @@ namespace OrmTest
                 throw new Exception("unit error");
             }
 
+            db.UpdateNav(list3)
+                        .Include(x => x.Persons, new SqlSugar.UpdateNavOptions()
+                        {
+                            OneToManyInsertOrUpdate = true,//启用：子表插入或更新模式
+                            IgnoreColumns =new string[] { "AddressId" }
+                        }).ExecuteCommand();
+
         }
         [SqlSugar.SugarTable("UnitPerson0112s22a2")]
         public class UnitPerson011
