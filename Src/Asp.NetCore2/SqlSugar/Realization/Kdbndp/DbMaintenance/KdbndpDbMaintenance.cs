@@ -478,6 +478,15 @@ WHERE tgrelid = '" + tableName + "'::regclass");
             string tableString = string.Format(this.CreateTableSql, this.SqlBuilder.GetTranslationTableName(tableName.ToUpper(IsUpper)), string.Join(",\r\n", columnArray));
             return tableString;
         }
+        protected override bool IsAnyDefaultValue(string tableName, string columnName, List<DbColumnInfo> columns)
+        {
+            var defaultValue = columns.Where(it => it.DbColumnName.Equals(columnName, StringComparison.CurrentCultureIgnoreCase)).First().DefaultValue;
+            if (defaultValue?.StartsWith("NULL::") == true)
+            {
+                return false;
+            }
+            return defaultValue.HasValue();
+        }
         public override bool IsAnyConstraint(string constraintName)
         {
             throw new NotSupportedException("PgSql IsAnyConstraint NotSupportedException");
