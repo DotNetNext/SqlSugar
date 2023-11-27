@@ -430,6 +430,15 @@ WHERE tgrelid = '"+tableName+"'::regclass");
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
+        protected override bool IsAnyDefaultValue(string tableName, string columnName, List<DbColumnInfo> columns)
+        {
+            var defaultValue = columns.Where(it => it.DbColumnName.Equals(columnName, StringComparison.CurrentCultureIgnoreCase)).First().DefaultValue;
+            if (defaultValue?.StartsWith("NULL::") == true) 
+            {
+                return false;
+            }
+            return defaultValue.HasValue();
+        }
         protected override string GetCreateTableSql(string tableName, List<DbColumnInfo> columns)
         {
             List<string> columnArray = new List<string>();
