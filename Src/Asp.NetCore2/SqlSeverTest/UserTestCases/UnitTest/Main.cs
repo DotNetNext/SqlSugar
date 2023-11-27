@@ -32,6 +32,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            Unitdfafa11.Init();
             UnitSelectN.Init();
             UnitSubqueryN.Init();
             Unitadfasfa.Init();
