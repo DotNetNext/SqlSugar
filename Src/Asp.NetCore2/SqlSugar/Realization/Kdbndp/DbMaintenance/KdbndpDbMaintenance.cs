@@ -270,29 +270,27 @@ WHERE tgrelid = '" + tableName + "'::regclass");
         }
         public override bool AddDefaultValue(string tableName, string columnName, string defaultValue)
         {
-            if (defaultValue == "''")
+            if (defaultValue?.StartsWith("'") == true && defaultValue?.EndsWith("'") == true && defaultValue?.Contains("(") == false
+                && !defaultValue.EqualCase("'current_timestamp'") && !defaultValue.EqualCase("'current_date'"))
             {
-                defaultValue = "";
+                string sql = string.Format(AddDefaultValueSql, this.SqlBuilder.GetTranslationColumnName(tableName), this.SqlBuilder.GetTranslationColumnName(columnName), defaultValue);
+                return this.Context.Ado.ExecuteCommand(sql) > 0;
             }
-            if (defaultValue.IsDate() && !AddDefaultValueSql.Contains("'{2}'"))
+            else if (defaultValue.EqualCase("current_timestamp") || defaultValue.EqualCase("current_date"))
             {
-                defaultValue = "'" + defaultValue + "'";
+                string sql = string.Format(AddDefaultValueSql, this.SqlBuilder.GetTranslationColumnName(tableName), this.SqlBuilder.GetTranslationColumnName(columnName), defaultValue);
+                return this.Context.Ado.ExecuteCommand(sql) > 0;
             }
-            if (defaultValue != null && defaultValue.EqualCase("'current_timestamp'"))
+            else if (defaultValue?.Contains("(") == false
+         && !defaultValue.EqualCase("'current_timestamp'") && !defaultValue.EqualCase("'current_date'"))
             {
-                defaultValue = defaultValue.TrimEnd('\'').TrimStart('\'');
+                string sql = string.Format(AddDefaultValueSql, this.SqlBuilder.GetTranslationColumnName(tableName), this.SqlBuilder.GetTranslationColumnName(columnName), "'" + defaultValue + "'");
+                return this.Context.Ado.ExecuteCommand(sql) > 0;
             }
-            if (defaultValue != null && defaultValue.EqualCase("'current_date'"))
+            else
             {
-                defaultValue = defaultValue.TrimEnd('\'').TrimStart('\'');
+                return base.AddDefaultValue(this.SqlBuilder.GetTranslationTableName(tableName), this.SqlBuilder.GetTranslationTableName(columnName), defaultValue);
             }
-            if (defaultValue == " ")
-            {
-                defaultValue = "' '";
-            }
-            string sql = string.Format(AddDefaultValueSql,SqlBuilder.GetTranslationColumnName(tableName), SqlBuilder.GetTranslationColumnName(columnName), defaultValue);
-            this.Context.Ado.ExecuteCommand(sql);
-            return true;
         }
         public override List<string> GetIndexList(string tableName)
         {
