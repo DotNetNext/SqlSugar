@@ -24,7 +24,16 @@ namespace SqlSugar
 
             foreach (PropertyMetadata property in properties)
             {
-                EmitTool.CreateProperty(typeBuilder, property.Name, property.Type, property.CustomAttributes);
+                var type = property.Type;
+                if (type == typeof(DynamicOneselfType)) 
+                {
+                    type = typeBuilder;
+                }
+                else if (type == typeof(DynamicOneselfTypeList))
+                {
+                    type = typeof(List<>).MakeGenericType(typeBuilder);
+                } 
+                EmitTool.CreateProperty(typeBuilder, property.Name, type, property.CustomAttributes);
             }
 
             Type dynamicType = typeBuilder.CreateTypeInfo().AsType();
