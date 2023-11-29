@@ -91,6 +91,7 @@
     <Compile Include="Abstract\DeleteProvider\SplitTableDeleteProvider.cs" />
     <Compile Include="Abstract\DeleteProvider\DeleteablePage.cs" />
     <Compile Include="Abstract\DynamicBuilder\CommonMethodInfo.cs" />
+    <Compile Include="Abstract\DynamicBuilder\DynamicOneselfType.cs" />
     <Compile Include="Abstract\DynamicBuilder\DynamicProperyBuilder.cs" />
     <Compile Include="Abstract\DynamicBuilder\Helper.cs" />
     <Compile Include="Abstract\DynamicBuilder\EmitTool.cs" />
