@@ -18,7 +18,16 @@ namespace SqlSugar
 {
     public class UtilMethods
     {
-
+        internal static bool? _IsErrorDecimalString { get; set; }
+        internal static bool? IsErrorDecimalString() 
+        {
+            if (_IsErrorDecimalString == null)
+            {
+                decimal dec = Convert.ToDecimal(1.1);
+                _IsErrorDecimalString = dec.ToString().Contains(",");
+            }
+            return _IsErrorDecimalString;
+        }
         internal static bool IsParameterConverter(EntityColumnInfo columnInfo)
         {
             return columnInfo != null && columnInfo.SqlParameterDbType != null && columnInfo.SqlParameterDbType is Type
