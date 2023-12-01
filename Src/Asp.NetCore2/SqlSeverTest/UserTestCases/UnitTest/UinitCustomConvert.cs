@@ -53,6 +53,17 @@ namespace OrmTest
             Demo1(db);
             Demo2(db);
             Demo3(db);
+            var afterMsgContent = "1";
+            var msgContent="2";
+            var updateable =db.Updateable<TestContent>()
+
+             .SetColumns(it => it.CONTENT == afterMsgContent)
+                 .Where(it => it.CONTENT==msgContent) 
+             .ToSql();
+            if (updateable.Value.First().ParameterName == updateable.Value.Last().ParameterName) 
+            {
+                throw  new Exception("unit error");
+            }
         }
 
         private static void Demo1(SqlSugarClient db)
@@ -85,6 +96,26 @@ namespace OrmTest
                 throw new Exception("unit error");
             }
         }
+    }
+    [SugarTable("TEST_CONTENT")]
+    public class TestContent
+    {
+        /// <summary>
+        ///  ID
+        ///</summary>
+        [SugarColumn(ColumnName = "ID", ColumnDescription = "Id", OracleSequenceName = "TEST_CONTENT_ID_SEQ", IsIdentity = true, IsPrimaryKey = true)]
+        public long Id { get; set; }
+
+        /// <summary>
+        ///  内容
+        ///</summary>
+        [SugarColumn(ColumnName = "CONTENT", ColumnDescription = "CONTENT", ColumnDataType = "nvarchar2", SqlParameterDbType = typeof(Nvarchar2PropertyConvert))]
+        public string CONTENT { get; set; } = string.Empty;
+
+
+        [SugarColumn(ColumnName = "EditId", ColumnDescription = "EditId")]
+        public long EditId { get; set; } = 218;
+
     }
     public class Uinitadfa22122X
     {
