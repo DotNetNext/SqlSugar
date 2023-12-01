@@ -29,6 +29,31 @@ namespace SqlSugar
             }
             return isNav;
         }
+        internal static bool IsSqlParameterDbType(ExpressionContext context, Expression member)
+        {
+            var isNav = false;
+            if (context?.SugarContext!=null&&member is MemberExpression && (member as MemberExpression)?.Expression is ParameterExpression expression)
+            {
+                var typeEntity= context?.SugarContext.Context.EntityMaintenance.GetEntityInfo(expression.Type);
+                var columnInfo = typeEntity.Columns.FirstOrDefault(it => it.PropertyName == ExpressionTool.GetMemberName(member));
+                if (columnInfo.SqlParameterDbType is Type) 
+                {
+                    return true;
+                }
+            }
+            return isNav;
+        }
+        internal static SugarParameter GetParameterBySqlParameterDbType(int index,object value,ExpressionContext context, Expression member)
+        {
+            var expression=(member as MemberExpression)?.Expression;
+            var typeEntity = context?.SugarContext.Context.EntityMaintenance.GetEntityInfo(expression.Type);
+            var columnInfo = typeEntity.Columns.FirstOrDefault(it => it.PropertyName == ExpressionTool.GetMemberName(member));
+            var columnDbType = columnInfo.SqlParameterDbType as Type;
+            var ParameterConverter = columnDbType.GetMethod("ParameterConverter").MakeGenericMethod(columnInfo.PropertyInfo.PropertyType);
+            var obj = Activator.CreateInstance(columnDbType); 
+            var p = ParameterConverter.Invoke(obj, new object[] { value, index }) as SugarParameter;
+            return p;
+        }
         public static List<string> ExtractMemberNames(Expression expression)
         {
             var memberNames = new List<string>();
