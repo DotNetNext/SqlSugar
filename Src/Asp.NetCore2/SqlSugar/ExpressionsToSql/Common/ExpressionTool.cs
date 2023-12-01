@@ -71,7 +71,7 @@ namespace SqlSugar
                 };
                 if (columnInfo.SqlParameterSize!=null&& columnInfo.SqlParameterSize.ObjToInt()>0) 
                 {
-                    paramter.Size= (int)columnInfo.SqlParameterSize;
+                    paramter.Size= columnInfo.SqlParameterSize.ObjToInt();
                 }
                 return paramter;
             }
