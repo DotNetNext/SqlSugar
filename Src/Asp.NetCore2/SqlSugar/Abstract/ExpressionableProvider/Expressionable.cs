@@ -573,5 +573,17 @@ namespace SqlSugar
         {
             return new Expressionable<T, T2, T3, T4, T5, T6, T7, T8, T9>();
         }
+        public static Expressionable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10> Create<T, T2, T3, T4, T5, T6, T7, T8, T9,T10>() where T : class, new() where T2 : class, new() where T3 : class, new() where T4 : class, new() where T5 : class, new() where T6 : class, new() where T7 : class, new() where T8 : class, new() where T9 : class, new() where T10 : class, new()
+        {
+            return new Expressionable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10>();
+        }
+        public static Expressionable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> Create<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11>() where T : class, new() where T2 : class, new() where T3 : class, new() where T4 : class, new() where T5 : class, new() where T6 : class, new() where T7 : class, new() where T8 : class, new() where T9 : class, new() where T10 : class, new() where T11 : class, new()
+        {
+            return new Expressionable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11>();
+        }
+        public static Expressionable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> Create<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12>() where T : class, new() where T2 : class, new() where T3 : class, new() where T4 : class, new() where T5 : class, new() where T6 : class, new() where T7 : class, new() where T8 : class, new() where T9 : class, new() where T10 : class, new() where T11 : class, new() where T12 : class, new()
+        {
+            return new Expressionable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12>();
+        }
     }
 }
