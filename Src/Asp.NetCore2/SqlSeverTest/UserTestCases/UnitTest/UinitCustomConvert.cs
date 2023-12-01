@@ -26,7 +26,7 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
-           
+
             db.Updateable(new Uinitadfa22122()
             {
                 Id = 1,
@@ -40,7 +40,7 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
-          
+
             var dt = db.Queryable<Uinitadfa22122>().ToDataTable();
             if (dt.Columns["EnumValue"].DataType != typeof(string))
             {
@@ -50,10 +50,37 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
-            var datas=db.Queryable<Uinitadfa22122X>() 
+            Demo1(db);
+            Demo2(db);
+            Demo3(db);
+        }
+
+        private static void Demo1(SqlSugarClient db)
+        {
+            var datas = db.Queryable<Uinitadfa22122X>()
                 .Where(it => it.EnumValue.Contains("a"))
                 .ToSql();
-            if (datas.Value.FirstOrDefault().DbType != System.Data.DbType.AnsiString) 
+            if (datas.Value.FirstOrDefault().DbType != System.Data.DbType.AnsiString)
+            {
+                throw new Exception("unit error");
+            }
+        }
+        private static void Demo2(SqlSugarClient db)
+        {
+            var datas = db.Queryable<Uinitadfa22122X>()
+                .Where(it => it.EnumValue2.Contains("a"))
+                .ToSql();
+            if (datas.Value.FirstOrDefault().IsNvarchar2 !=true)
+            {
+                throw new Exception("unit error");
+            }
+        }
+        private static void Demo3(SqlSugarClient db)
+        {
+            var datas = db.Queryable<Uinitadfa22122X>()
+                .Where(it => it.EnumValue3.Contains("a"))
+                .ToSql();
+            if (datas.Value.FirstOrDefault().DbType != System.Data.DbType.String)
             {
                 throw new Exception("unit error");
             }
@@ -65,6 +92,11 @@ namespace OrmTest
         
         [SqlSugar.SugarColumn(ColumnDataType = "varchar(20)", SqlParameterDbType = System.Data.DbType.AnsiString, IsNullable = true)]
         public string EnumValue { get; set; }
+
+        [SqlSugar.SugarColumn(ColumnDataType = "varchar(20)", SqlParameterDbType =typeof(Uinitadfa22122XConvert), IsNullable = true)]
+        public string EnumValue2 { get; set; }
+
+        public string EnumValue3 { get; set; }
     }
     public class Uinitadfa22122XConvert : ISugarDataConverter
     {
@@ -78,7 +110,7 @@ namespace OrmTest
             }
             else
             { 
-                return new SugarParameter(name, columnValue) {  DbType=System.Data.DbType.AnsiString };
+                return new SugarParameter(name, columnValue) {  DbType=System.Data.DbType.AnsiString,IsNvarchar2=true };
             }
         }
 
