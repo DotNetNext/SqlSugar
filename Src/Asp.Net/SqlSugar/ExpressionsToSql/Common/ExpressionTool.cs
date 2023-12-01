@@ -42,6 +42,10 @@ namespace SqlSugar
                     {
                         return true;
                     }
+                    if (columnInfo?.SqlParameterDbType is System.Data.DbType)
+                    {
+                        return true;
+                    }
                 }
             }
             return isNav;
@@ -52,10 +56,25 @@ namespace SqlSugar
             var typeEntity = context?.SugarContext.Context.EntityMaintenance.GetEntityInfo(expression.Type);
             var columnInfo = typeEntity.Columns.FirstOrDefault(it => it.PropertyName == ExpressionTool.GetMemberName(member));
             var columnDbType = columnInfo.SqlParameterDbType as Type;
-            var ParameterConverter = columnDbType.GetMethod("ParameterConverter").MakeGenericMethod(columnInfo.PropertyInfo.PropertyType);
-            var obj = Activator.CreateInstance(columnDbType); 
-            var p = ParameterConverter.Invoke(obj, new object[] { value, index }) as SugarParameter;
-            return p;
+            if (columnDbType != null)
+            {
+                var ParameterConverter = columnDbType.GetMethod("ParameterConverter").MakeGenericMethod(columnInfo.PropertyInfo.PropertyType);
+                var obj = Activator.CreateInstance(columnDbType);
+                var p = ParameterConverter.Invoke(obj, new object[] { value, index }) as SugarParameter;
+                return p;
+            }
+            else 
+            {
+                var paramter = new SugarParameter("@Common" + index, value)
+                {
+                    DbType = (System.Data.DbType)columnInfo.SqlParameterDbType 
+                };
+                if (columnInfo.SqlParameterSize!=null&& columnInfo.SqlParameterSize.ObjToInt()>0) 
+                {
+                    paramter.Size= (int)columnInfo.SqlParameterSize;
+                }
+                return paramter;
+            }
         }
         public static List<string> ExtractMemberNames(Expression expression)
         {
