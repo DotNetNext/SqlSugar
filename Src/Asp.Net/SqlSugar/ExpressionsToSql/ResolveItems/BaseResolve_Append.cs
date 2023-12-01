@@ -147,7 +147,7 @@ namespace SqlSugar
                 }
                 else if (UtilMethods.IsParameterConverter(columnInfo))
                 {
-                    SugarParameter p = UtilMethods.GetParameterConverter(this.Context.SugarContext.Context, value, oppoSiteExpression, columnInfo);
+                    SugarParameter p = UtilMethods.GetParameterConverter(this.Context.ParameterIndex,this.Context.SugarContext.Context, value, oppoSiteExpression, columnInfo);
                     appendValue = p.ParameterName;
                     this.Context.Parameters.Add(p);
                 }
