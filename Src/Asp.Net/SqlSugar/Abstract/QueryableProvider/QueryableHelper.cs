@@ -1971,6 +1971,7 @@ namespace SqlSugar
                     TempDate = it.TempDate,
                     TypeName = it.TypeName,
                     UdtTypeName = it.UdtTypeName,
+                    IsNvarchar2=it.IsNvarchar2,
                     _Size = it._Size
                 }).ToList();
             }
