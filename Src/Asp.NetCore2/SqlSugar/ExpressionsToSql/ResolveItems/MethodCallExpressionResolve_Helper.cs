@@ -465,6 +465,17 @@ namespace SqlSugar
                     }
                     value = result;
                 }
+                else if (name.IsIn("Contains", "StartsWith", "EndsWith") &&item==args.Last()&& ExpressionTool.IsSqlParameterDbType(this.Context, args.First()))
+                {
+                    var myvalue = ExpressionTool.DynamicInvoke(args.Last());
+                    var parametre = ExpressionTool.GetParameterBySqlParameterDbType(this.Context.ParameterIndex,myvalue, this.Context, args.First());
+                    this.Context.Parameters.Add(parametre);
+                    methodCallExpressionArgs.MemberName = parametre.ParameterName;
+                    methodCallExpressionArgs.MemberValue = parametre.Value;
+                    methodCallExpressionArgs.IsMember = true;
+                    isRemoveParamter = true;
+                    this.Context.ParameterIndex++;
+                }
                 methodCallExpressionArgs.MemberValue = value;
                 if (isRemoveParamter != true)
                 {
