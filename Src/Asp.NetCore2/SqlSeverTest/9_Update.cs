@@ -42,7 +42,7 @@ namespace OrmTest
             var result3 = db.Updateable(updateObj).IgnoreColumns(it => new { it.Remark }).ExecuteCommand();
 
             // 更新实体对象的指定列（Update specific columns of the entity object）
-            var result4 = db.Updateable(updateObj).UpdateColumns(it => new { it.Name, Date = DateTime.Now }).ExecuteCommand();
+            var result4 = db.Updateable(updateObj).UpdateColumns(it => new { it.Name, it.Date  }).ExecuteCommand();
 
             // 如果没有主键，按照指定列更新实体对象（If there is no primary key, update entity object based on specified columns）
             var result5 = db.Updateable(updateObj).WhereColumns(it => new { it.Id }).ExecuteCommand();
