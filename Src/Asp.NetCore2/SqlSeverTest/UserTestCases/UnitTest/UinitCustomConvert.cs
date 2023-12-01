@@ -63,7 +63,7 @@ namespace OrmTest
     {
 
         
-        [SqlSugar.SugarColumn(ColumnDataType = "varchar(20)", SqlParameterDbType = typeof(Uinitadfa22122XConvert), IsNullable = true)]
+        [SqlSugar.SugarColumn(ColumnDataType = "varchar(20)", SqlParameterDbType = System.Data.DbType.AnsiString, IsNullable = true)]
         public string EnumValue { get; set; }
     }
     public class Uinitadfa22122XConvert : ISugarDataConverter
