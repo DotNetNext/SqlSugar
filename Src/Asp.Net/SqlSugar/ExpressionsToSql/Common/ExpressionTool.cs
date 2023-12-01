@@ -34,11 +34,14 @@ namespace SqlSugar
             var isNav = false;
             if (context?.SugarContext!=null&&member is MemberExpression && (member as MemberExpression)?.Expression is ParameterExpression expression)
             {
-                var typeEntity= context?.SugarContext.Context.EntityMaintenance.GetEntityInfo(expression.Type);
-                var columnInfo = typeEntity.Columns.FirstOrDefault(it => it.PropertyName == ExpressionTool.GetMemberName(member));
-                if (columnInfo.SqlParameterDbType is Type) 
+                if (expression != null)
                 {
-                    return true;
+                    var typeEntity = context?.SugarContext.Context.EntityMaintenance.GetEntityInfo(expression.Type);
+                    var columnInfo = typeEntity.Columns.FirstOrDefault(it => it.PropertyName == ExpressionTool.GetMemberName(member));
+                    if (columnInfo?.SqlParameterDbType is Type)
+                    {
+                        return true;
+                    }
                 }
             }
             return isNav;
