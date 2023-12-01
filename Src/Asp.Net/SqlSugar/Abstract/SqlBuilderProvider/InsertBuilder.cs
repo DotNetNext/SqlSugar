@@ -284,6 +284,14 @@ namespace SqlSugar
             {
                 return LambdaExpressions.DbMehtods.GetDate();
             }
+            else if (UtilMethods.IsErrorDecimalString() == true)
+            {
+                var pname = Builder.SqlParameterKeyWord + "Decimal" + GetDbColumnIndex;
+                var p = new SugarParameter(pname, columnInfo.Value);
+                this.Parameters.Add(p);
+                GetDbColumnIndex++;
+                return pname;
+            }
             else if (columnInfo.InsertSql.HasValue())
             {
                 return columnInfo.InsertSql;

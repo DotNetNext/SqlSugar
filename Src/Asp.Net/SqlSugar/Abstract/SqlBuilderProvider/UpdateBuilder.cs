@@ -426,11 +426,19 @@ namespace SqlSugar
             {
                 return LambdaExpressions.DbMehtods.GetDate();
             }
-            else if (IsListSetExp(columnInfo)|| IsSingleSetExp(columnInfo))
+            else if (UtilMethods.IsErrorDecimalString()==true) 
+            {
+                var pname = Builder.SqlParameterKeyWord + "Decimal" + GetDbColumnIndex;
+                var p = new SugarParameter(pname, columnInfo.Value);
+                this.Parameters.Add(p);
+                GetDbColumnIndex++;
+                return pname;
+            }
+            else if (IsListSetExp(columnInfo) || IsSingleSetExp(columnInfo))
             {
                 if (this.ReSetValueBySqlExpList[columnInfo.PropertyName].Type == ReSetValueBySqlExpListModelType.List)
                 {
-                    return Builder.GetTranslationColumnName(columnInfo.DbColumnName)+this.ReSetValueBySqlExpList[columnInfo.PropertyName].Sql+name;
+                    return Builder.GetTranslationColumnName(columnInfo.DbColumnName) + this.ReSetValueBySqlExpList[columnInfo.PropertyName].Sql + name;
                 }
                 else
                 {
