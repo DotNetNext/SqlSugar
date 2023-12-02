@@ -60,6 +60,13 @@ namespace OrmTest
                               new JoinQueryInfos(JoinType.Left,x.Id==y.Id))
                 .ToList();
 
+            var list2 = db.Queryable<DeviceEntity2, DeviceBrandEntity2>((x, y) =>
+                            x.Id == y.Id )
+            .Select(x=>new DeviceEntity2
+            { 
+              Id=x.Id
+            })
+            .ToList();
         }
         /// <summary>
         /// 仪器
