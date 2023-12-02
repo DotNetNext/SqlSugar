@@ -82,6 +82,19 @@ namespace OrmTest
 
 
             var list22 = query2.ToList();
+
+            var xx = "";
+            var query3 = db.Queryable<Demo_Comment>()
+                .LeftJoin<Order>((u, p) => true)
+                .Where(u => u.ArticleId == 100)
+                 .Select(u => new SysCommentOutput
+                 { 
+                     SysUsers = SqlFunc.Subqueryable<Demo_User>()
+                     .Where(user => user.Id == u.UserId)
+                     .ToList(it=>new SysUserOutput() { 
+                      NickName=SqlFunc.IIF(xx=="",it.NickName,it.NickName)
+                     })
+                 }, true).ToList();
         }
 
         //评论表
