@@ -446,6 +446,8 @@ namespace SqlSugar
                     var shortName = this.Builder.GetTranslationColumnName(parameter.Name) + ".";
                     var mysql = GetSql(exp, isSingle);
                     sql += mysql.Replace(itName, shortName);
+                    var filterType =parameter.Type;
+                    sql = ReplaceFilterColumnName(sql, filterType);
                 }
             }
             else if (isMain)
