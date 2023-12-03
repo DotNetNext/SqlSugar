@@ -32,6 +32,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UnitGridSave2.Init();
             Unitdfafa11.Init();
             UnitSelectN.Init();
             UnitSubqueryN.Init();
