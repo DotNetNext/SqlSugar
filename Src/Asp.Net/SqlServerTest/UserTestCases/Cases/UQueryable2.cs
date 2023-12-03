@@ -358,6 +358,9 @@ namespace OrmTest
 
             db.Queryable<Order>()
            .Where(dir => SqlFunc.IF(dir.Name == "").Return(dir.Name =="").End(true)).ToArray();
+
+            db.Queryable<Order>()
+         .Where(dir => SqlFunc.IF(dir.Name == "").Return(dir.Name.Contains("a")).End(true)).ToArray();
         }
         public class UnitPeople
         {
