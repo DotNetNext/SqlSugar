@@ -357,7 +357,7 @@ namespace OrmTest
                 .Where(dir => dir.Name.Length > 0 ? dir.Name.Length > 0 : true).ToArray();
 
             db.Queryable<Order>()
-           .Where(dir => dir.Name.Length > 0 ? dir.Name.Contains("a") : true).ToArray();
+           .Where(dir => SqlFunc.IF(dir.Name == "").Return(dir.Name =="").End(true)).ToArray();
         }
         public class UnitPeople
         {
