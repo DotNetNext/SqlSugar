@@ -352,6 +352,12 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+
+            db.Queryable<Order>()
+                .Where(dir => dir.Name.Length > 0 ? dir.Name.Length > 0 : true).ToArray();
+
+            db.Queryable<Order>()
+           .Where(dir => dir.Name.Length > 0 ? dir.Name.Contains("a") : true).ToArray();
         }
         public class UnitPeople
         {
