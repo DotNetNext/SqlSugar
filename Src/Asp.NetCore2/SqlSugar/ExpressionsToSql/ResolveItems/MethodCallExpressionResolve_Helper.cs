@@ -345,11 +345,17 @@ namespace SqlSugar
             {
                 model.Args.Add(base.GetMethodCallArgs(parameter, item));
             }
+            else if (methodExpression.Method.Name.IsIn("Contains", "EndsWith", "StartsWith"))
+            {
+                Expression conditionalExpression =ExpressionTool.GetConditionalExpression(item); 
+                model.Args.Add(base.GetMethodCallArgs(parameter, conditionalExpression));
+            }
             else
             {
                 Check.Exception(true, "The SqlFunc.IIF(arg1,arg2,arg3) , {0} argument  do not support ", item.ToString());
             }
         }
+
         private void AppendModel(ExpressionParameter parameter, MethodCallExpressionModel model, Expression item,string name, IEnumerable<Expression> args)
         {
             parameter.CommonTempData = CommonTempDataType.Result;
