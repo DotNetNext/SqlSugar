@@ -55,12 +55,14 @@ namespace SqlSugar
          
         public List<T> GetDeleteList()
         {
+            //下面代码ToDictionary会有重复错请修改
             string[] primaryKeys = this.Context.EntityMaintenance.GetEntityInfo<T>().Columns.Where(it => it.IsPrimarykey).Select(it => it.PropertyName).ToArray();
-            var saveListDictionary = this.SaveList.ToDictionary(item => CreateCompositeKey(primaryKeys, item));
+            var saveListDictionary = this.SaveList.Select(item =>
+            new { Key = CreateCompositeKey(primaryKeys, item), Value = item });
             var deleteList = this.OldList.Where(oldItem =>
             {
                 var compositeKey = CreateCompositeKey(primaryKeys, oldItem);
-                return !saveListDictionary.ContainsKey(compositeKey);
+                return !saveListDictionary.Any(it=>it.Key==compositeKey);
             }).ToList();
             return deleteList;
         }
