@@ -11,6 +11,21 @@ namespace SqlSugar
     public class ExpressionTool
     {
 
+        internal static Expression GetConditionalExpression(Expression item)
+        {
+            ConstantExpression trueConstant = Expression.Constant(true, typeof(bool));
+            ConstantExpression falseConstant = Expression.Constant(false, typeof(bool));
+
+            // 创建条件表达式：item ? true : false
+            Expression conditionalExpression = Expression.Condition(
+                test: item,
+                ifTrue: trueConstant,
+                ifFalse: falseConstant
+            );
+            return conditionalExpression;
+        }
+
+
         internal static bool IsNavMember(ExpressionContext context, Expression member)
         {
             var isNav = false;
