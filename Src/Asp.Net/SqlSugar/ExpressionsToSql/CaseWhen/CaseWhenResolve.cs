@@ -61,6 +61,10 @@ namespace SqlSugar
                         isIsNegate = true;
                         exp = (exp as UnaryExpression).Operand;
                     }
+                    if (methodExp.Method.Name.IsIn("Return", "End")&& exp .Type==UtilConstants.BoolType&& ExpressionTool.IsEqualOrLtOrGt(exp)) 
+                    {
+                        exp=ExpressionTool.GetConditionalExpression(exp);
+                    }
                     var sql = SubTools.GetMethodValue(this.context, exp, this.context.IsSingle ? ResolveExpressType.WhereSingle : ResolveExpressType.WhereMultiple);
                     if (methodExp.Method.Name == "IF")
                     {
