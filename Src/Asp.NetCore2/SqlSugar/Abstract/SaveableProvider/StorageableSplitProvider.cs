@@ -66,7 +66,7 @@ namespace SqlSugar
             if (List.Count > pageSize)
             {
                 var result = 0;
-                this.Context.Utilities.PageEach(List, pageSize, async pageItem =>
+                await this.Context.Utilities.PageEachAsync(List, pageSize, async pageItem =>
                 {
                     result +=await _ExecuteCommandAsync(pageItem);
                     if (ActionCallBack != null) 
@@ -87,7 +87,7 @@ namespace SqlSugar
             if (List.Count > pageSize)
             {
                 var result = 0;
-                this.Context.Utilities.PageEach(List, pageSize, async pageItem =>
+                await this.Context.Utilities.PageEachAsync(List, pageSize, async pageItem =>
                 {
                     result += await _ExecuteSqlBulkCopyAsync(pageItem);
                     if (ActionCallBack != null)
