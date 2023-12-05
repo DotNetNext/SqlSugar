@@ -66,8 +66,32 @@ namespace OrmTest
             // Query all students again
             // 再次查询所有学生
             var list = db.Queryable<Student>().ToList();
+
+            db.CodeFirst.InitTables<MarkerEntity>();
+            db.Context
+                .Deleteable<MarkerEntity>(a => a.MarkTime.AddDays(a.KeepDays) < DateTime.Now)
+                .ExecuteCommandAsync().GetAwaiter().GetResult();
         }
 
+        [SugarTable("Marker")]
+
+        public class MarkerEntity
+
+        {
+
+            [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+
+            public int Id { get; set; }
+
+            public DateTime MarkTime { get; set; }
+
+            public string Tag { get; set; }
+
+            public string Value { get; set; }
+
+            public int KeepDays { get; set; } = 7;
+
+        }
         // Define the entity class 定义实体类
         [SugarTable("UnitSaveTablea5")]
         public class Student
