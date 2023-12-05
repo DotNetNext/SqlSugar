@@ -73,5 +73,20 @@ namespace SqlSugar
                 Context = result 
             };
         }
+
+        public long ExecuteReturnSnowflakeId()
+        {
+            if (Context == null) return 0;
+            var inertable = MethodInfo.Invoke(Context, new object[] { objectValue });
+            var result = inertable.GetType().GetMethod("ExecuteReturnSnowflakeId").Invoke(inertable, new object[] { });
+            return (long)result;
+        }
+        public async Task<long> ExecuteReturnSnowflakeIdAsync()
+        {
+            if (Context == null) return 0;
+            var inertable = MethodInfo.Invoke(Context, new object[] { objectValue });
+            var result = inertable.GetType().GetMyMethod("ExecuteReturnSnowflakeIdAsync", 0).Invoke(inertable, new object[] { });
+            return await (Task<long>)result;
+        }
     }
 }
