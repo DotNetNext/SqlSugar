@@ -9,11 +9,13 @@ namespace SqlSugar
     public class StaticConfig
     {
         public static bool EnableAot { get; set; }
-        public static Func<string,string> Encode { get; set; }
-        public static Func<string,string> Decode{ get; set; }
-        public static bool AppContext_ConvertInfinityDateTime { get;  set; }
+        public static Func<string, string> Encode { get; set; }
+        public static Func<string, string> Decode { get; set; }
+        public static bool AppContext_ConvertInfinityDateTime { get; set; }
 
         public const string CodeFirst_BigString = "varcharmax,longtext,text,clob";
+        public static string CodeFirst_MySqlCollate{get;set;}
+
         public static Func<long> CustomSnowFlakeFunc;
         public static Func<long> CustomSnowFlakeTimeErrorFunc;
         public static Func<Guid> CustomGuidFunc;
