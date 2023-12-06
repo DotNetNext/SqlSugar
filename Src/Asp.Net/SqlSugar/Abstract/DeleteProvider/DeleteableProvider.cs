@@ -405,6 +405,18 @@ namespace SqlSugar
             }
             return this;
         }
+        public IDeleteable<T> EnableQueryFilter(Type type)
+        {
+            var queryable = this.Context.Queryable<T>().Filter(type);
+            queryable.QueryBuilder.LambdaExpressions.ParameterIndex = 1000;
+            var sqlable = queryable.ToSql();
+            var whereInfos = Regex.Split(sqlable.Key, " Where ", RegexOptions.IgnoreCase);
+            if (whereInfos.Length > 1)
+            {
+                this.Where(whereInfos.Last(), sqlable.Value);
+            }
+            return this;
+        }
         public SplitTableDeleteProvider<T> SplitTable(Func<List<SplitTableInfo>, IEnumerable<SplitTableInfo>> getTableNamesFunc) 
         {
             UtilMethods.StartCustomSplitTable(this.Context, typeof(T));

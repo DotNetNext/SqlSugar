@@ -48,6 +48,7 @@ namespace SqlSugar
         KeyValuePair<string, List<SugarParameter>> ToSql();
         string ToSqlString();
         IDeleteable<T> EnableQueryFilter();
+        IDeleteable<T> EnableQueryFilter(Type type);
         SplitTableDeleteProvider<T> SplitTable(Func<List<SplitTableInfo>, IEnumerable<SplitTableInfo>> getTableNamesFunc);
         SplitTableDeleteByObjectProvider<T> SplitTable();
         LogicDeleteProvider<T> IsLogic();
