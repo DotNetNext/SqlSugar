@@ -415,6 +415,10 @@ WHERE EVENT_OBJECT_TABLE = '" + tableName + "'");
                 {
                     createSql = createSql.Replace("utf8 COLLATE utf8_general_ci", "utf8mb4");
                 }
+                if (!string.IsNullOrEmpty(StaticConfig.CodeFirst_MySqlCollate))
+                {
+                    createSql += $" COLLATE  {StaticConfig.CodeFirst_MySqlCollate} ";
+                }
                 newDb.Ado.ExecuteCommand(string.Format(createSql, databaseName, databaseDirectory));
             }
             return true;
