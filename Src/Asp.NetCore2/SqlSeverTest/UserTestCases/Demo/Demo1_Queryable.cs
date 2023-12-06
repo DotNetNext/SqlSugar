@@ -117,6 +117,16 @@ namespace OrmTest
                           );
             var list10 = db.Queryable<Order>().OrderBy(x)
                 .OrderBy(x2).ToList();
+
+            var x3 = GroupByModel.Create(
+                       new GroupByModel() { FieldName = "Id"  }
+                       );
+            db.Queryable<Order>().GroupBy(x3).Select("id").ToList();
+
+            var x4 = GroupByModel.Create(
+                       new GroupByModel() { FieldName = ObjectFuncModel.Create("ToInt64", "Id") }
+                       );
+            db.Queryable<Order>().GroupBy(x4).Select("max(id)").ToList();
             Console.WriteLine("#### Examples End ####");
         }
 
