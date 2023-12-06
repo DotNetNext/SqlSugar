@@ -588,6 +588,7 @@ namespace SqlSugar
         }
         private object GetMethodValue(string name, MethodCallExpressionModel model)
         {
+            model.Parameters = this.Context.Parameters;
             if (IsExtMethod(name))
             {
                 model.Expression = this.Expression;
