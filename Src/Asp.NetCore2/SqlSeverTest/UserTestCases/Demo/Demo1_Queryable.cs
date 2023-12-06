@@ -109,6 +109,14 @@ namespace OrmTest
               }).ToList();
 
             var list9 = db.Queryable<Order>().Where("id=1", null).ToList();
+            var x = OrderByModel.Create(
+                          new OrderByModel() { FieldName = ObjectFuncModel.Create("ToInt64", "Id"), OrderByType = OrderByType.Desc }
+                          );
+            var x2 = OrderByModel.Create(
+                          new OrderByModel() { FieldName = "Id", OrderByType = OrderByType.Desc }
+                          );
+            var list10 = db.Queryable<Order>().OrderBy(x)
+                .OrderBy(x2).ToList();
             Console.WriteLine("#### Examples End ####");
         }
 
