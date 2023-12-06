@@ -417,7 +417,14 @@ WHERE EVENT_OBJECT_TABLE = '" + tableName + "'");
                 }
                 if (!string.IsNullOrEmpty(StaticConfig.CodeFirst_MySqlCollate))
                 {
-                    createSql += $" COLLATE  {StaticConfig.CodeFirst_MySqlCollate} ";
+                    if (createSql.Contains(" COLLATE "))
+                    {
+                        createSql = $" {Regex.Split(createSql, " COLLATE ").First()} COLLATE  {StaticConfig.CodeFirst_MySqlCollate} ";
+                    }
+                    else
+                    {
+                        createSql += $" COLLATE  {StaticConfig.CodeFirst_MySqlCollate} ";
+                    }
                 }
                 newDb.Ado.ExecuteCommand(string.Format(createSql, databaseName, databaseDirectory));
             }
