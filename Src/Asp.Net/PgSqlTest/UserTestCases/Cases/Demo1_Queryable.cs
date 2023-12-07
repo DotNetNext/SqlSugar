@@ -66,7 +66,25 @@ namespace OrmTest
             })
              .ToList();
             var test09 =  db.Queryable<Order>().Where(it => string.IsNullOrEmpty(it.Name) == true)
-             .ToList(); 
+             .ToList();
+            var test081 = db.Queryable<Order>().Select(it => new
+            {
+                names = $"as{it.Id}fd{it.Id}a"
+            })
+            .ToList();
+            var test49 = db.Queryable<Order>().Select(it => new
+            {
+                index = SqlFunc.RowNumber($"{it.Name} asc,{it.Id} desc", $"{it.Id},{it.Name}")
+            })
+          .ToList();
+
+            var test491 = db.Queryable<Order>().Select(it => new
+            {
+                index = SqlFunc.RowNumber($"{it.Name} asc,{it.Id} desc", $"{it.Id},{it.Name},{it.CustomId},{it.Price}")
+            })
+           .ToList();
+            var yy = "aa";
+            db.Queryable<Order>().Where(it => it.Name == $"a{yy}a").ToList();
             Console.WriteLine("#### Examples End ####");
             Console.WriteLine("#### Examples End ####");
         }
