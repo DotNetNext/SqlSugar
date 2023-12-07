@@ -608,7 +608,7 @@ namespace SqlSugar
 
             var str = "concat('" + model.Args[0].MemberValue.ObjToString() + "')";
             str = Regex.Replace(str, @"(\{\d+?\})", "',$1,'");
-            var array = model.Args.Skip(1).Select(it => it.IsMember ? it.MemberName : it.MemberValue)
+            var array = model.Args.Skip(1).Select(it => it.IsMember ? it.MemberName : (it.MemberValue == null ? "''" : it.MemberValue.ToSqlValue()))
                 .Select(it => ToString(new MethodCallExpressionModel()
                 {
                     Args = new List<MethodCallExpressionArgs>() {
