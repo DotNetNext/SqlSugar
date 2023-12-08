@@ -31,7 +31,10 @@ namespace OrmTest
             db.QueryFilter.AddTableFilter<IAddressId>(x => x.AddressId ==1);
 
             var list = db.Queryable<UnitAddress011>().Includes(x => x.Persons).ToList();
-
+            db.CurrentConnectionConfig.MoreSettings = new SqlSugar.ConnMoreSettings
+            {
+                 IsAutoDeleteQueryFilter=true
+            };
              db.UpdateNav(list).Include(x=>x.Persons).ExecuteCommand(); 
         }
         [SqlSugar.SugarTable("UnitPerson011xxx11")]
