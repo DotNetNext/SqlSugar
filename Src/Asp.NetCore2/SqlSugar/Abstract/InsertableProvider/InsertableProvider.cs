@@ -522,6 +522,16 @@ namespace SqlSugar
             return this;
         }
 
+        public IInsertable<T> IgnoreColumnsNull(bool isIgnoreNull = true) 
+        {
+            if (isIgnoreNull) 
+            {
+                Check.Exception(this.InsertObjs.Count() > 1 , ErrorMessage.GetThrowMessage("ignoreNullColumn NoSupport batch insert, use .PageSize(1).IgnoreColumnsNull().ExecuteCommand()", "ignoreNullColumn 不支持批量操作,你可以用PageSzie(1).IgnoreColumnsNull().ExecuteCommand()"));
+                this.InsertBuilder.IsNoInsertNull = true;
+            }
+            return this;
+        }
+
         public IInsertable<T> MySqlIgnore() 
         {
             this.InsertBuilder.MySqlIgnore = true; 
@@ -567,7 +577,7 @@ namespace SqlSugar
             return this;
         }
         public IInsertable<T> IgnoreColumns(bool ignoreNullColumn, bool isOffIdentity = false) {
-            Check.Exception(this.InsertObjs.Count() > 1&& ignoreNullColumn, ErrorMessage.GetThrowMessage("ignoreNullColumn NoSupport batch insert", "ignoreNullColumn 不支持批量操作"));
+            Check.Exception(this.InsertObjs.Count() > 1&& ignoreNullColumn, ErrorMessage.GetThrowMessage("ignoreNullColumn NoSupport batch insert, use .PageSize(1).IgnoreColumnsNull().ExecuteCommand()", "ignoreNullColumn 不支持批量操作, 你可以使用 .PageSize(1).IgnoreColumnsNull().ExecuteCommand()"));
             this.IsOffIdentity = isOffIdentity;
             this.InsertBuilder.IsOffIdentity = isOffIdentity;
             if (this.InsertBuilder.LambdaExpressions == null)

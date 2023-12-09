@@ -43,6 +43,7 @@ namespace SqlSugar
         IInsertable<T> IgnoreColumns(Expression<Func<T, object>> columns);
         IInsertable<T> IgnoreColumns(params string[]columns);
         IInsertable<T> IgnoreColumns(bool ignoreNullColumn, bool isOffIdentity = false);
+        IInsertable<T> IgnoreColumnsNull(bool isIgnoreNull = true);
 
         ISubInsertable<T> AddSubList(Expression<Func<T, object>> subForeignKey);
         ISubInsertable<T> AddSubList(Expression<Func<T, SubInsertTree>> tree);
