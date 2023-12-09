@@ -16,6 +16,7 @@ namespace SqlSugar
         public bool IsEnableDiffLogEvent { get; internal set; }
         public DiffLogModel DiffModel { get; internal set; }
         public bool IsOffIdentity { get; internal set; }
+        public bool IsInsertColumnsNull { get; internal set; }
 
         public int ExecuteCommand() 
         {
@@ -34,7 +35,7 @@ namespace SqlSugar
                 }
                 this.Context.Utilities.PageEach(DataList, PageSize, pageItem =>
                 {
-                    result += this.Context.Insertable(pageItem).AS(TableName).OffIdentity(IsOffIdentity).EnableDiffLogEventIF(IsEnableDiffLogEvent, DiffModel).InsertColumns(InsertColumns.ToArray()).ExecuteCommand();
+                    result += this.Context.Insertable(pageItem).AS(TableName).IgnoreColumnsNull(this.IsInsertColumnsNull).OffIdentity(IsOffIdentity).EnableDiffLogEventIF(IsEnableDiffLogEvent, DiffModel).InsertColumns(InsertColumns.ToArray()).ExecuteCommand();
                 });
                 if (isNoTran)
                 {
@@ -68,7 +69,7 @@ namespace SqlSugar
                 }
                 await this.Context.Utilities.PageEachAsync(DataList, PageSize, async pageItem  =>
                 {
-                    result +=await this.Context.Insertable(pageItem).AS(TableName).OffIdentity(IsOffIdentity).EnableDiffLogEventIF(IsEnableDiffLogEvent, DiffModel).InsertColumns(InsertColumns.ToArray()).ExecuteCommandAsync();
+                    result +=await this.Context.Insertable(pageItem).AS(TableName).IgnoreColumnsNull(this.IsInsertColumnsNull).OffIdentity(IsOffIdentity).EnableDiffLogEventIF(IsEnableDiffLogEvent, DiffModel).InsertColumns(InsertColumns.ToArray()).ExecuteCommandAsync();
                 });
                 if (isNoTran)
                 {
@@ -153,6 +154,13 @@ namespace SqlSugar
                 throw;
             }
             return result;
+        }
+
+        public InsertablePage<T> IgnoreColumnsNull(bool isIgnoreNull = true)
+        {
+            this.PageSize = 1;
+            this.IsInsertColumnsNull = isIgnoreNull;
+            return this;
         }
     }
 }
