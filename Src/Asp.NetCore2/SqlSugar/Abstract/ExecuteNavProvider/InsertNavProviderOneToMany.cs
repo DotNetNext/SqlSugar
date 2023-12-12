@@ -41,16 +41,22 @@ namespace SqlSugar
                     children.AddRange(childs);
                 }
             }
+            var isTreeChild = GetIsTreeChild(parentNavigateProperty, thisEntity);
             Check.ExceptionEasy(thisPkColumn == null, $"{thisEntity.EntityName}need primary key", $"实体{thisEntity.EntityName}需要主键");
-            if (NotAny(name))
+            if (NotAny(name) || isTreeChild)
             {
                 InsertDatas(children, thisPkColumn);
             }
-            else 
+            else
             {
                 this._ParentList = children.Cast<object>().ToList();
             }
             SetNewParent<TChild>(thisEntity, thisPkColumn);
+        }
+
+        private bool GetIsTreeChild(EntityColumnInfo parentNavigateProperty, EntityInfo thisEntity)
+        {
+            return this.NavContext?.Items?.Any() == true && parentNavigateProperty.PropertyInfo.PropertyType?.GenericTypeArguments?.FirstOrDefault() == thisEntity.Type;
         }
 
         private static bool ParentIsPk(EntityColumnInfo parentNavigateProperty)
