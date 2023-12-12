@@ -104,27 +104,31 @@ namespace SqlSugar
             var tableWithString = inserable.InsertBuilder.TableWithString;
             var removeCacheFunc = inserable.RemoveCacheFunc;
             var objects = inserable.InsertObjs;
-            if (objects == null || objects.Count() == 0 || (objects.Count() == 1 && objects.First() == null)) 
+            if (objects == null || objects.Count() == 0 || (objects.Count() == 1 && objects.First() == null))
             {
                 return result;
             }
             var identityList = inserable.EntityInfo.Columns.Where(it => it.IsIdentity).Select(it => it.PropertyName).ToArray();
-            if (inserable.IsOffIdentity) 
+            if (inserable.IsOffIdentity)
             {
                 identityList = new string[] { };
             }
-            this.Context.Utilities.PageEach(objects, 100, pagelist =>
+            var pageSize = 100;
+            var count = inserable.EntityInfo.Columns.Count();
+            pageSize = GetPageSize(pageSize, count);
+            this.Context.Utilities.PageEach(objects, pageSize, pagelist =>
             {
- 
-                    StringBuilder batchInsetrSql;
-                    List<SugarParameter> allParamter=new List<SugarParameter>();
-                    GetInsertValues(identityList,columns, tableWithString, removeCacheFunc, pagelist, out batchInsetrSql, allParamter);
-                    result += this.Context.Ado.ExecuteCommand(batchInsetrSql.ToString(), allParamter);
+
+                StringBuilder batchInsetrSql;
+                List<SugarParameter> allParamter=new List<SugarParameter>();
+                GetInsertValues(identityList,columns, tableWithString, removeCacheFunc, pagelist, out batchInsetrSql, allParamter);
+                result += this.Context.Ado.ExecuteCommand(batchInsetrSql.ToString(), allParamter);
 
             });
             return result;
 
         }
+
         public  async Task<int> ValuesExecuteCommandAsync()
         {
             int result = 0;
@@ -150,6 +154,24 @@ namespace SqlSugar
             return result;
         }
         #region Values Helper
+
+        private static int GetPageSize(int pageSize, int count)
+        {
+            if (pageSize * count > 2100)
+            {
+                pageSize = 50;
+            }
+            if (pageSize * count > 2100)
+            {
+                pageSize = 20;
+            }
+            if (pageSize * count > 2100)
+            {
+                pageSize = 10;
+            }
+
+            return pageSize;
+        }
         private void GetInsertValues(string[] identitys, List<string> columns, string tableWithString, Action removeCacheFunc, List<T> items, out StringBuilder batchInsetrSql, List<SugarParameter> allParamter)
         {
             var itemable = this.Context.Insertable(items);
