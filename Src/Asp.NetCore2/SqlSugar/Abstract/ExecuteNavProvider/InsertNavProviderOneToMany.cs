@@ -41,7 +41,7 @@ namespace SqlSugar
                     children.AddRange(childs);
                 }
             }
-            var isTreeChild = GetIsTreeChild(parentNavigateProperty, thisEntity);
+            var isTreeChild = GetIsTreeChild(parentEntity, thisEntity);
             Check.ExceptionEasy(thisPkColumn == null, $"{thisEntity.EntityName}need primary key", $"实体{thisEntity.EntityName}需要主键");
             if (NotAny(name) || isTreeChild)
             {
@@ -54,9 +54,9 @@ namespace SqlSugar
             SetNewParent<TChild>(thisEntity, thisPkColumn);
         }
 
-        private bool GetIsTreeChild(EntityColumnInfo parentNavigateProperty, EntityInfo thisEntity)
+        private bool GetIsTreeChild(EntityInfo parentEntity , EntityInfo thisEntity)
         {
-            return this.NavContext?.Items?.Any() == true && parentNavigateProperty.PropertyInfo.PropertyType?.GenericTypeArguments?.FirstOrDefault() == thisEntity.Type;
+            return this.NavContext?.Items?.Any() == true && parentEntity.Type == thisEntity.Type;
         }
 
         private static bool ParentIsPk(EntityColumnInfo parentNavigateProperty)
