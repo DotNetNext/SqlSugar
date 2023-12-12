@@ -1048,6 +1048,16 @@ namespace SqlSugar
         {
             ReflectionInoCore<T>.GetInstance().Remove(key);
         }
+        public void RemoveCacheByLikeKey<T>(string key)
+        {
+            foreach (var item in ReflectionInoCore<T>.GetInstance().GetAllKey())
+            {
+                if (item!=null&&key!=null&&item.Contains(key)) 
+                {
+                    ReflectionInoCore<T>.GetInstance().Remove(item);
+                }
+            }
+        }
         #endregion
 
         #region Page Each
