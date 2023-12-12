@@ -325,6 +325,7 @@ namespace SqlSugar
             foreach (var column in EntityInfo.Columns)
             {
                 if (column.IsIgnore) continue;
+                Check.ExceptionEasy(item == null, "db.Updateable(data) data is required ", "db.Updateable(data) data不能是null");
                 var columnInfo = new DbColumnInfo()
                 {
                     Value = column.PropertyInfo.GetValue(item, null),
