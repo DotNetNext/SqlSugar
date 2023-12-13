@@ -173,7 +173,7 @@ namespace SqlSugar
                                        && columnInfo?.PropertyName != null
                                        && !columnInfo.PropertyName.IsRegexWNoContainsChinese()) 
                 {
-                    appendValue = Context.SqlParameterKeyWord + appendValue.GetHashCode();
+                    appendValue = "p"+Context.SqlParameterKeyWord + appendValue.GetHashCode() +"no"+ Context.ParameterIndex;
                     this.Context.Parameters.Add(new SugarParameter(appendValue, value));
                 } 
                 else
