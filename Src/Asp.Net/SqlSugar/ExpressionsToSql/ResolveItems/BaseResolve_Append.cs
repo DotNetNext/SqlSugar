@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 namespace SqlSugar
 {
     /// <summary>
@@ -159,10 +160,22 @@ namespace SqlSugar
                 {
                     this.Context.Parameters.Add(new SugarParameter(appendValue, value) { IsArray = true });
                 }
-                else if (value!=null&&(value is Enum) &&this.Context?.SugarContext?.Context?.CurrentConnectionConfig?.MoreSettings?.TableEnumIsString == true) 
+                else if (value != null && (value is Enum) && this.Context?.SugarContext?.Context?.CurrentConnectionConfig?.MoreSettings?.TableEnumIsString == true)
                 {
-                    this.Context.Parameters.Add(new SugarParameter(appendValue,Convert.ToString(value)));
+                    this.Context.Parameters.Add(new SugarParameter(appendValue, Convert.ToString(value)));
                 }
+                else if (this.Context
+                                       ?.SugarContext
+                                       ?.Context
+                                       ?.CurrentConnectionConfig
+                                       ?.MoreSettings
+                                       ?.IsCorrectErrorSqlParameterName == true
+                                       && columnInfo?.PropertyName != null
+                                       && !columnInfo.PropertyName.IsRegexWNoContainsChinese()) 
+                {
+                    appendValue = Context.SqlParameterKeyWord + appendValue.GetHashCode();
+                    this.Context.Parameters.Add(new SugarParameter(appendValue, value));
+                } 
                 else
                 {
                     this.Context.Parameters.Add(new SugarParameter(appendValue, value));
