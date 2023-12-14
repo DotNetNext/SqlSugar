@@ -815,6 +815,15 @@ namespace SqlSugar
             Check.Exception(!binaryExp.NodeType.IsIn(ExpressionType.Equal), "No support {0}", columns.ToString());
             Check.Exception(!(binaryExp.Left is MemberExpression) && !(binaryExp.Left is UnaryExpression), "No support {0}", columns.ToString());
             Check.Exception(ExpressionTool.IsConstExpression(binaryExp.Left as MemberExpression), "No support {0}", columns.ToString());
+            if (UpdateBuilder.LambdaExpressions.ParameterIndex <= 1&&
+                                        this.EntityInfo.Columns
+                                       .Select(it=>it.PropertyName.TrimEnd('2'))
+                                       .GroupBy(it=>it)
+                                       .Any(it=>it.Count()>1) 
+                                   ) 
+            {
+                UpdateBuilder.LambdaExpressions.ParameterIndex = 100;
+            }
             var expResult = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.WhereSingle).GetResultString().Replace(")", " )").Replace("(", "( ").Trim().TrimStart('(').TrimEnd(')').Replace("= =","=");
             if (expResult.EndsWith(" IS NULL  ")) 
             {
