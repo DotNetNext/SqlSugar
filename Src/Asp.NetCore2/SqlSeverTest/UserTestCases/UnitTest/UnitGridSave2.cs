@@ -1,4 +1,5 @@
-﻿using SqlSugar; 
+﻿using SqlSeverTest.UserTestCases.UnitTest.Unitasf1;
+using SqlSugar; 
 using System; 
 using System.Collections.Generic; 
 using System.Linq; 
@@ -71,6 +72,16 @@ namespace OrmTest
             db.Context
                 .Deleteable<MarkerEntity>(a => a.MarkTime.AddDays(a.KeepDays) < DateTime.Now)
                 .ExecuteCommandAsync().GetAwaiter().GetResult();
+
+            db.CodeFirst.InitTables<R04_PreBills, R01_ReceivableBills>();
+            //更新 预应收账单
+            var result = db.Updateable<R04_PreBills>()
+                   .SetColumns(R04 => R04.R04_PaidAmount == SqlFunc.Subqueryable<R01_ReceivableBills>().Where(R01 => R01.R04_PreBillId == R04.R04_PreBillId).Select(R01 => R01.R01_PaidAmount))
+                   .SetColumns(R04 => R04.R04_DiscountAmount == SqlFunc.Subqueryable<R01_ReceivableBills>().Where(R01 => R01.R04_PreBillId == R04.R04_PreBillId).Select(R01 => R01.R01_DiscountAmount))
+                   .SetColumns(R04 => R04.R04_Status == SqlFunc.Subqueryable<R01_ReceivableBills>().Where(R01 => R01.R04_PreBillId == R04.R04_PreBillId).Select(R01 => (byte)R01.R01_Status))
+
+                   .Where(R04 => R04.R04_PreBillId == 1)
+                   .ExecuteCommandAsync().GetAwaiter().GetResult();
         }
 
         [SugarTable("Marker")]
