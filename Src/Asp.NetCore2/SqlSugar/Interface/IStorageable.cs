@@ -29,6 +29,8 @@ namespace SqlSugar
         Task<StorageableResult<T>> ToStorageAsync();
         IStorageable<T> As(string tableName);
         int ExecuteCommand();
+        T ExecuteReturnEntity();
+        Task<T> ExecuteReturnEntityAsync();
         Task<int> ExecuteCommandAsync();
         Task<int> ExecuteCommandAsync(CancellationToken cancellationToken);
         int ExecuteSqlBulkCopy();

@@ -151,6 +151,38 @@ namespace SqlSugar
             result += updateRow;
             return result;
         }
+        public T ExecuteReturnEntity() 
+        { 
+            var x = this.ToStorage();
+            if (x.InsertList?.Any()==true)
+            {
+                var data = x.AsInsertable.ExecuteReturnEntity();
+                x.AsUpdateable.ExecuteCommand();
+                return data;
+            }
+            else
+            {
+                x.AsInsertable.ExecuteCommand();
+                x.AsUpdateable.ExecuteCommand();
+                return x.UpdateList.FirstOrDefault()?.Item;
+            }
+        }
+        public async Task<T> ExecuteReturnEntityAsync() 
+        {
+            var x = this.ToStorage();
+            if (x.InsertList.Any())
+            {
+                var data = await  x.AsInsertable.ExecuteReturnEntityAsync();
+                await x.AsUpdateable.ExecuteCommandAsync();
+                return data;
+            }
+            else
+            {
+                await x.AsInsertable.ExecuteCommandAsync();
+                await x.AsUpdateable.ExecuteCommandAsync();
+                return x.UpdateList.FirstOrDefault()?.Item;
+            }
+        }
         public Task<int> ExecuteCommandAsync(CancellationToken cancellationToken) 
         {
             this.Context.Ado.CancellationToken=cancellationToken;
