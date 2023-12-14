@@ -45,7 +45,7 @@ namespace SqlSugar
         public override string ToSqlString()
         {
             var result= base.ToSqlString();
-            if (!this.EntityInfo.Columns.Any(it => it.IsIdentity)) 
+            if (!this.EntityInfo.Columns.Any(it => it.IsIdentity)&& this.IsReturnIdentity==false) 
             {
                 result = result.Replace(";select @@identity", "");
             }
