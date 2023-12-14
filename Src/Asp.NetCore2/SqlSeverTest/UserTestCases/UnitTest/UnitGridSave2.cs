@@ -12,10 +12,13 @@ namespace OrmTest
     {
         public static void Init()
         {
+
+    
+
             // Get a new database connection
             // 获取一个新的数据库连接
             SqlSugarClient db = NewUnitTest.Db;
-
+            UpdateSetColumns(db);
             // Initialize tables using CodeFirst
             // 使用 CodeFirst 初始化表
             db.CodeFirst.InitTables<Student>();
@@ -36,10 +39,10 @@ namespace OrmTest
             List<Student> getAll = db.Queryable<Student>().ToList();
 
 
-             
+
             // Enable entity tracking for the list 'getAll'
             // 启用对列表 'getAll' 的实体跟踪
-            db.Tracking(getAll); 
+            db.Tracking(getAll);
 
 
 
@@ -59,7 +62,7 @@ namespace OrmTest
             // 添加新记录
             getAll.Add(new Student { Name = "NewRecord" });
 
-             
+
             // Execute GridSave operation
             // 执行 GridSave 操作
             db.GridSave(getAll).ExecuteCommand();
@@ -82,6 +85,106 @@ namespace OrmTest
 
                    .Where(R04 => R04.R04_PreBillId == 1)
                    .ExecuteCommandAsync().GetAwaiter().GetResult();
+
+        }
+
+        private static void UpdateSetColumns(SqlSugarClient db)
+        {
+            db.CodeFirst.InitTables<ProductSku2Entity>();
+            var item = new ProductSku2Entity()
+            {
+                SalePrice2 = 11,
+                SalePrice3 = 33,
+                PurchasePrice = 4
+            };
+            db.Updateable<ProductSku2Entity>()
+           .Where(p => p.SkuId == "a")
+             .SetColumns(p => p.BarCode == item.BarCode)
+             .SetColumns(p => p.SalePrice == item.SalePrice)
+             .SetColumns(p => p.SalePrice2 == item.SalePrice2)
+             .SetColumns(p => p.SalePrice3 == item.SalePrice3) 
+             .ExecuteCommand();
+        }
+
+        /////////实体代码
+
+        [SugarTable("ProductSku", TableDescription = "商品存货信息")]
+        public partial class ProductSku2Entity  
+
+        {
+
+            /// <summary>
+
+            /// 
+
+            /// </summary>
+
+            [SugarColumn(IsPrimaryKey = true, IsNullable = false, ColumnDescription = "", Length = 200)]
+
+            public string SkuId { get; set; }
+
+
+
+
+
+            /// <summary>
+
+            /// 基本单位条码
+
+            /// </summary>
+
+            [SugarColumn(IsNullable = true, ColumnDescription = "条码", Length = 50)]
+
+            public string  BarCode { get; set; }
+
+
+
+            /// <summary>
+
+            /// 基本销售价
+
+            /// </summary>
+
+            [SugarColumn(IsNullable = true, ColumnDescription = "基本价", Length = 18, DecimalDigits = 6)]
+
+            public decimal  SalePrice { get; set; }
+
+
+
+            /// <summary>
+
+            /// 基本销售价2
+
+            /// </summary>
+
+            [SugarColumn(IsNullable = true, ColumnDescription = "售价2", Length = 18, DecimalDigits = 6)]
+
+            public decimal? SalePrice2 { get; set; }
+
+
+
+            /// <summary>
+
+            /// 基本销售价3
+
+            /// </summary>
+
+            [SugarColumn(IsNullable = true, ColumnDescription = "售价3", Length = 18, DecimalDigits = 6)]
+
+            public decimal? SalePrice3 { get; set; }
+
+
+
+            /// <summary>
+
+            ///  采购价
+
+            /// </summary>
+
+            [SugarColumn(IsNullable = true, ColumnDescription = "采购价", Length = 18, DecimalDigits = 6)]
+
+            public decimal? PurchasePrice { get; set; }
+
         }
 
         [SugarTable("Marker")]
