@@ -159,6 +159,13 @@ namespace SqlSugar
                                 builder.AppendFormat(" {0} ", con.Key.ToString().ToUpper());
                             }
                             builder.Append(childSqlInfo.Key);
+                            if (conModels?.FirstOrDefault() is ConditionalModel conModel)
+                            {
+                                if (conModel.CustomConditionalFunc != null)
+                                {
+                                    builder.Replace(" AND (  AND", " AND (  ");
+                                }
+                            }
                             parameters.AddRange(childSqlInfo.Value);
                             if (isLast)
                             {
