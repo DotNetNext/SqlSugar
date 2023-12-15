@@ -429,6 +429,21 @@ namespace SqlSugar
             IndexFields.Add(fieldName10, sortType10);
             this.IsUnique = isUnique;
         }
+
+        public SugarIndexAttribute(string indexName, string[] fieldNames, OrderByType[] sortTypes, bool isUnique = false)
+        {
+            if (fieldNames.Length != sortTypes.Length) 
+            {
+               Check.ExceptionEasy($"SugarIndexAttribute {indexName} fieldNames.Length!=sortTypes.Length 检查索引特性", $"SugarIndexAttribute {indexName} fieldNames.Length!=sortTypes.Length");
+            }
+            this.IndexName = indexName;
+            IndexFields = new Dictionary<string, OrderByType>();
+            for (int i = 0; i < fieldNames.Length; i++)
+            {
+                IndexFields.Add(fieldNames[i], sortTypes[i]);
+            }
+            this.IsUnique = isUnique;
+        }
     }
 
 }
