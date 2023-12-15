@@ -1384,6 +1384,10 @@ namespace SqlSugar
                     {
                         result = result.Replace(item.ParameterName, item.Value.ObjToString());
                     }
+                    else if (item.Value is DateTime&&connectionConfig.DbType==DbType.SqlServer)
+                    {
+                        result = result.Replace(item.ParameterName, "CAST('" + item.Value.ObjToDate().ToString("yyyy-MM-dd HH:mm:ss.fff") + "' AS DATETIME)");
+                    }
                     else if (item.Value is DateTime)
                     {
                         result = result.Replace(item.ParameterName, "'"+item.Value.ObjToDate().ToString("yyyy-MM-dd HH:mm:ss.fff")+"'");

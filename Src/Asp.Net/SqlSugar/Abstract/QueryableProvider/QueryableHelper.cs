@@ -2210,8 +2210,9 @@ namespace SqlSugar
                         };
                     var value = UtilMethods.GetSqlString(config.DbType, "@p", p, true);
                     sql = sql.Replace(re.Name, value);
-                    sql = SqlBuilder.RemoveParentheses(sql);
+               
                 }
+                sql = SqlBuilder.RemoveParentheses(sql);
                 sql = sql.Replace("@sugarIndex", index + "");
                 sqls.Add(sql);
 
