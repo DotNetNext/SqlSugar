@@ -32,6 +32,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UnitaadfafxSubToList.Init();
             UnitGridSave2.Init();
             Unitdfafa11.Init();
             UnitSelectN.Init();
