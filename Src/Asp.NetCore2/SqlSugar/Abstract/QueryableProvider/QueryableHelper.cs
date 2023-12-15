@@ -2396,6 +2396,13 @@ namespace SqlSugar
 
         private bool MasterHasWhereFirstJoin()
         {
+            if (this.QueryBuilder.IsSingle() == false && this.QueryBuilder.SelectValue is LambdaExpression exp &&this.QueryBuilder.AsTables?.Any()==false) 
+            {
+                if (exp.Parameters.Count == this.QueryBuilder.JoinQueryInfos.Count+1)
+                {
+                    return true;
+                }
+            }
             return this.QueryBuilder.JoinIndex == 0 &&
                              this.QueryBuilder.IsSqlQuery == false &&
                                !this.QueryBuilder.AsTables.Any() &&
