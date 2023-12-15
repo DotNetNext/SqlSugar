@@ -384,6 +384,51 @@ namespace SqlSugar
             IndexFields.Add(fieldName7, sortType7);
             this.IsUnique = isUnique;
         }
+        public SugarIndexAttribute(string indexName, string fieldName1, OrderByType sortType1, string fieldName2, OrderByType sortType2, string fieldName3, OrderByType sortType3, string fieldName4, OrderByType sortType4, string fieldName5, OrderByType sortType5, string fieldName6, OrderByType sortType6, string fieldName7, OrderByType sortType7, string fieldName8, OrderByType sortType8, bool isUnique = false)
+        {
+            this.IndexName = indexName;
+            IndexFields = new Dictionary<string, OrderByType>();
+            IndexFields.Add(fieldName1, sortType1);
+            IndexFields.Add(fieldName2, sortType2);
+            IndexFields.Add(fieldName3, sortType3);
+            IndexFields.Add(fieldName4, sortType4);
+            IndexFields.Add(fieldName5, sortType5);
+            IndexFields.Add(fieldName6, sortType6);
+            IndexFields.Add(fieldName7, sortType7);
+            IndexFields.Add(fieldName8, sortType8);
+            this.IsUnique = isUnique;
+        }
+        public SugarIndexAttribute(string indexName, string fieldName1, OrderByType sortType1, string fieldName2, OrderByType sortType2, string fieldName3, OrderByType sortType3, string fieldName4, OrderByType sortType4, string fieldName5, OrderByType sortType5, string fieldName6, OrderByType sortType6, string fieldName7, OrderByType sortType7, string fieldName8, OrderByType sortType8, string fieldName9, OrderByType sortType9, bool isUnique = false)
+        {
+            this.IndexName = indexName;
+            IndexFields = new Dictionary<string, OrderByType>();
+            IndexFields.Add(fieldName1, sortType1);
+            IndexFields.Add(fieldName2, sortType2);
+            IndexFields.Add(fieldName3, sortType3);
+            IndexFields.Add(fieldName4, sortType4);
+            IndexFields.Add(fieldName5, sortType5);
+            IndexFields.Add(fieldName6, sortType6);
+            IndexFields.Add(fieldName7, sortType7);
+            IndexFields.Add(fieldName8, sortType8);
+            IndexFields.Add(fieldName9, sortType9);
+            this.IsUnique = isUnique;
+        }
+        public SugarIndexAttribute(string indexName, string fieldName1, OrderByType sortType1, string fieldName2, OrderByType sortType2, string fieldName3, OrderByType sortType3, string fieldName4, OrderByType sortType4, string fieldName5, OrderByType sortType5, string fieldName6, OrderByType sortType6, string fieldName7, OrderByType sortType7, string fieldName8, OrderByType sortType8, string fieldName9, OrderByType sortType9, string fieldName10, OrderByType sortType10, bool isUnique = false)
+        {
+            this.IndexName = indexName;
+            IndexFields = new Dictionary<string, OrderByType>();
+            IndexFields.Add(fieldName1, sortType1);
+            IndexFields.Add(fieldName2, sortType2);
+            IndexFields.Add(fieldName3, sortType3);
+            IndexFields.Add(fieldName4, sortType4);
+            IndexFields.Add(fieldName5, sortType5);
+            IndexFields.Add(fieldName6, sortType6);
+            IndexFields.Add(fieldName7, sortType7);
+            IndexFields.Add(fieldName8, sortType8);
+            IndexFields.Add(fieldName9, sortType9);
+            IndexFields.Add(fieldName10, sortType10);
+            this.IsUnique = isUnique;
+        }
     }
 
 }
