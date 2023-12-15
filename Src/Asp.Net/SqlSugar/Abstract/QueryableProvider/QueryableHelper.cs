@@ -2398,7 +2398,7 @@ namespace SqlSugar
         {
             if (this.QueryBuilder.IsSingle() == false && this.QueryBuilder.SelectValue is LambdaExpression exp &&this.QueryBuilder.AsTables?.Any()==false) 
             {
-                if (exp.Parameters.Count == this.QueryBuilder.JoinQueryInfos.Count)
+                if (exp.Parameters.Count == this.QueryBuilder.JoinQueryInfos.Count+1)
                 {
                     return true;
                 }
