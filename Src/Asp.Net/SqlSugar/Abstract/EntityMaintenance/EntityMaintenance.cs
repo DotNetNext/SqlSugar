@@ -361,6 +361,7 @@ namespace SqlSugar
                         column.InsertSql = sugarColumn.InsertSql;
                         column.UpdateServerTime= sugarColumn.UpdateServerTime;
                         column.UpdateSql= sugarColumn.UpdateSql;
+                        column.IsDisabledAlterColumn = sugarColumn.IsDisabledAlterColumn;
                         if (sugarColumn.IsJson && String.IsNullOrEmpty(sugarColumn.ColumnDataType))
                         {
                             if (this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL)

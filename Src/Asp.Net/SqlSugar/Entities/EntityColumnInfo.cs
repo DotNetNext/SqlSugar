@@ -46,5 +46,6 @@ namespace SqlSugar
         public bool UpdateServerTime { get; set; }
         public string UpdateSql { get; set; }
         public object ExtendedAttribute { get;  set; }
+        public bool IsDisabledAlterColumn { get;  set; }
     }
 }
