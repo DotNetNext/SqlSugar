@@ -1546,11 +1546,15 @@ namespace SqlSugar
         }
         public IInsertable<T> InsertableWithAttr<T>(T insertObj) where T : class, new()
         {
-            return this.GetConnectionWithAttr<T>().Insertable(insertObj);
+            var result= this.GetConnectionWithAttr<T>().Insertable(insertObj);
+            result.InsertBuilder.IsWithAttr = true;
+            return result;
         }
         public IInsertable<T> InsertableWithAttr<T>(List<T> insertObjs) where T : class, new()
         {
-            return this.GetConnectionWithAttr<T>().Insertable(insertObjs);
+            var result= this.GetConnectionWithAttr<T>().Insertable(insertObjs);
+            result.InsertBuilder.IsWithAttr = true;
+            return result;
         }
         public IUpdateable<T> UpdateableWithAttr<T>(T updateObj) where T : class, new()
         {
