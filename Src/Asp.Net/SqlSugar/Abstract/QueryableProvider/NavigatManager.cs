@@ -438,7 +438,7 @@ namespace SqlSugar
                 if (sqlObj.SelectString == null)
                 {
                     var columns = navEntityInfo.Columns.Where(it => !it.IsIgnore)
-                        .Select(it => GetOneToOneSelectByColumnInfo(it)).ToList();
+                        .Select(it => GetOneToManySelectByColumnInfo(it)).ToList();
                     sqlObj.SelectString = String.Join(",", columns);
                 }
                 var navList = selector(childDb.Queryable<object>(sqlObj.TableShortName).AS(GetDbTableName(navEntityInfo)).ClearFilter(QueryBuilder.RemoveFilters).Filter(this.QueryBuilder?.IsDisabledGobalFilter == true ? null : navEntityInfo.Type).AddParameters(sqlObj.Parameters).Where(conditionalModels).WhereIF(sqlObj.WhereString.HasValue(), sqlObj.WhereString).WhereIF(navObjectNameColumnInfo?.Navigat?.WhereSql!=null, navObjectNameColumnInfo?.Navigat?.WhereSql).Select(sqlObj.SelectString).OrderByIF(sqlObj.OrderByString.HasValue(), sqlObj.OrderByString));
@@ -923,7 +923,7 @@ namespace SqlSugar
             }
         }
 
-        private string GetOneToOneSelectByColumnInfo(EntityColumnInfo it)
+        private string GetOneToManySelectByColumnInfo(EntityColumnInfo it)
         {
             if (it.QuerySql.HasValue())
             {
