@@ -907,7 +907,7 @@ namespace SqlSugar
                 {
                     columns = columns.Where(c => !this.IgnoreColumns.Any(i => c.PropertyName.Equals(i, StringComparison.CurrentCultureIgnoreCase) || c.DbColumnName.Equals(i, StringComparison.CurrentCultureIgnoreCase))).ToList();
                 }
-                result = string.Join(",", columns.Select(it => pre + Builder.GetTranslationColumnName(it.EntityName, it.PropertyName)));
+                result = string.Join(",", columns.Select(it => GetSelectStringByColumnInfo(it, pre)));
             }
             else
             {
@@ -920,6 +920,16 @@ namespace SqlSugar
             }
             return result;
         }
+
+        private string GetSelectStringByColumnInfo(EntityColumnInfo it, string pre)
+        {
+            if (it.QuerySql.HasValue()) 
+            {
+                return it.QuerySql+ " AS "+ Builder.GetTranslationColumnName(it.EntityName, it.PropertyName);
+            }
+            return pre + Builder.GetTranslationColumnName(it.EntityName, it.PropertyName);
+        }
+
         public virtual string GetWhereValueString
         {
             get

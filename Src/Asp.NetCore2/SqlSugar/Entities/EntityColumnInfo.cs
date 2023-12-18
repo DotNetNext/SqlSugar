@@ -47,5 +47,6 @@ namespace SqlSugar
         public string UpdateSql { get; set; }
         public object ExtendedAttribute { get;  set; }
         public bool IsDisabledAlterColumn { get;  set; }
+        public string QuerySql { get;  set; }
     }
 }
