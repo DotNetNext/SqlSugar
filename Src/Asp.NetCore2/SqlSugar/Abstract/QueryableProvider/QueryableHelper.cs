@@ -679,6 +679,21 @@ namespace SqlSugar
                         if (!navInfo.AppendProperties.ContainsKey(name2Column.PropertyName))
                             navInfo.AppendProperties.Add(name2Column.PropertyName, name2Column.DbColumnName);
                     }
+                    if (navColumn.Navigat.NavigatType == NavigateType.Dynamic && name1.HasValue()) 
+                    {
+                        var jarray= JArray.Parse(name1);
+                        foreach (var jitem in jarray)
+                        {
+                            var columnInfo = entityColumns.FirstOrDefault(it => 
+                             it.PropertyName.EqualCase(jitem["m"].ToString())||
+                             it.DbColumnName.EqualCase(jitem["m"].ToString()));
+                            if (columnInfo != null)
+                            {
+                                if(!navInfo.AppendProperties.ContainsKey(columnInfo.PropertyName))
+                                   navInfo.AppendProperties.Add(columnInfo.PropertyName, columnInfo.DbColumnName);
+                            }
+                        }  
+                    }
                 }
             }
         }
