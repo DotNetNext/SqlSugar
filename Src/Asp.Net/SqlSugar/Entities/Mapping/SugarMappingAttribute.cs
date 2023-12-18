@@ -210,6 +210,7 @@ namespace SqlSugar
         public int CreateTableFieldSort { get; set; }
         public bool InsertServerTime { get; set; }
         public string InsertSql { get; set; }
+        public string QuerySql { get; set; }
         public bool UpdateServerTime { get; set; }
         public string UpdateSql { get; set; }
         public object ExtendedAttribute{ get; set; }
