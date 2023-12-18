@@ -362,7 +362,7 @@ namespace SqlSugar
                 if (sqlObj.SelectString == null)
                 {
                     var columns = navEntityInfo.Columns.Where(it => !it.IsIgnore)
-                        .Select(it => QueryBuilder.Builder.GetTranslationColumnName(it.DbColumnName) + " AS " + QueryBuilder.Builder.GetTranslationColumnName(it.PropertyName)).ToList();
+                        .Select(it => GetOneToOneSelectByColumnInfo(it)).ToList();
                     sqlObj.SelectString = String.Join(",", columns);
                 }
                 var navList = selector(db.Queryable<object>().ClearFilter(QueryBuilder.RemoveFilters).Filter(navPkColumn.IsPrimarykey ? null : this.QueryBuilder?.IsDisabledGobalFilter == true ? null : navEntityInfo.Type).AS(GetDbTableName(navEntityInfo))
@@ -396,7 +396,7 @@ namespace SqlSugar
                 }
             }
         }
-         
+
         private void OneToMany(List<object> list, Func<ISugarQueryable<object>, List<object>> selector, EntityInfo listItemEntity, System.Reflection.PropertyInfo navObjectNamePropety, EntityColumnInfo navObjectNameColumnInfo)
         {
             var navEntity = navObjectNameColumnInfo.PropertyInfo.PropertyType.GetGenericArguments()[0];
@@ -924,6 +924,14 @@ namespace SqlSugar
         }
 
         private string GetOneToManySelectByColumnInfo(EntityColumnInfo it)
+        {
+            if (it.QuerySql.HasValue())
+            {
+                return it.QuerySql + " AS " + QueryBuilder.Builder.GetTranslationColumnName(it.PropertyName);
+            }
+            return QueryBuilder.Builder.GetTranslationColumnName(it.DbColumnName) + " AS " + QueryBuilder.Builder.GetTranslationColumnName(it.PropertyName);
+        }
+        private string GetOneToOneSelectByColumnInfo(EntityColumnInfo it)
         {
             if (it.QuerySql.HasValue())
             {
