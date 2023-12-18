@@ -132,6 +132,7 @@ namespace SqlSugar
         }
 
         public bool MySqlIgnore { get; internal set; }
+        public bool IsWithAttr { get; internal set; }
 
         public virtual ExpressionResult GetExpressionValue(Expression expression, ResolveExpressType resolveType)
         {
