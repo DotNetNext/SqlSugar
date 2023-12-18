@@ -245,6 +245,12 @@ namespace SqlSugar
                 CSharpTypeName = bColumn.PropertyInfo.PropertyType.Name
             }));
             var sql = GetWhereSql();
+            if (sql.SelectString == null) 
+            {
+                var columns = bEntityInfo.Columns.Where(it => !it.IsIgnore)
+                     .Select(it => GetOneToManySelectByColumnInfo(it)).ToList();
+                sql.SelectString = String.Join(",", columns);
+            }
             var bList = selector(bDb.Queryable<object>().AS(bEntityInfo.DbTableName).ClearFilter(QueryBuilder.RemoveFilters).Filter(this.QueryBuilder?.IsDisabledGobalFilter == true ? null : bEntityInfo.Type).AddParameters(sql.Parameters).Where(conditionalModels2).WhereIF(sql.WhereString.HasValue(),sql.WhereString).Select(sql.SelectString).OrderByIF(sql.OrderByString.HasValue(),sql.OrderByString));  
             if (bList.HasValue())
             {
