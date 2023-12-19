@@ -164,9 +164,7 @@ namespace SqlSugar
                                 if (conModel.CustomConditionalFunc != null)
                                 {
                                     builder.Replace(" AND (  AND", " AND (  ");
-                                    builder.Replace(" OR (  AND", " OR (  ");
-                                    builder.Replace("( (  AND", "( (  ");
-                                    builder.Replace("( (  OR", "( (  ");
+                                    builder.Replace(" OR (  AND", " OR (  "); 
                                 }
                             }
                             parameters.AddRange(childSqlInfo.Value);
