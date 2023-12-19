@@ -13,7 +13,7 @@ namespace SqlSeverTest.UserTestCases
         /// <param name="args"></param>
          public static void Init()
         {
-
+            UCustomConditionalFunc.Init();
             //Demo
             Demo0_SqlSugarClient.Init();
             Demo1_Queryable.Init();
