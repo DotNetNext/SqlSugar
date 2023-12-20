@@ -489,6 +489,9 @@ WHERE EVENT_OBJECT_TABLE = '" + tableName + "'");
             Check.Exception(columns.IsNullOrEmpty(), "No columns found ");
             foreach (var item in columns)
             {
+
+                ConvertCreateColumnInfo(item);
+
                 string columnName = item.DbColumnName;
                 string dataSize = "";
                 dataSize = GetSize(item);
@@ -688,6 +691,23 @@ WHERE EVENT_OBJECT_TABLE = '" + tableName + "'");
             else 
             {
                 return false;
+            }
+        }
+        private static void ConvertCreateColumnInfo(DbColumnInfo x)
+        {
+            string[] array = new string[] { "longtext","date" };
+
+            if (("nvarchar".EqualCase(x.DataType) || "varchar".EqualCase(x.DataType)))
+            {
+                if (x.Length < 1)
+                {
+                    x.DataType = $"{x.DataType}(255)"; // 设置默认长度为 255，你可以根据需要修改
+                }
+            }
+            else if (array.Contains(x.DataType?.ToLower()))
+            {
+                x.Length = 0;
+                x.DecimalDigits = 0;
             }
         }
         #endregion
