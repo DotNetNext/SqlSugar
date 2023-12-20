@@ -421,6 +421,10 @@ WHERE tgrelid = '" + tableName + "'::regclass");
             }
             return true;
         }
+        public override bool RenameTable(string oldTableName, string newTableName)
+        {
+            return base.RenameTable(this.SqlBuilder.GetTranslationTableName(oldTableName), this.SqlBuilder.GetTranslationTableName(newTableName));
+        }
         public override bool CreateTable(string tableName, List<DbColumnInfo> columns, bool isCreatePrimaryKey = true)
         {
             if (columns.HasValue())
