@@ -11,21 +11,54 @@ namespace SqlSeverTest.UserTestCases.UnitTest
 {
     internal class UnitOneToManyNsdfafa
     {
-        public static void Init() 
+        public static void Init()
         {
             var db = NewUnitTest.Db;
             db.CodeFirst.InitTables<BaseProcess, ProcessPlanPackage, ProcessPlanPackageEntry, ProcessPlanPackageEntry, ProcessPlan
                  >();
             db.CodeFirst.InitTables<ProcessPlanEntry>();
-            var PlanPackage =   db.Queryable<ProcessPlanPackage> ()
-                .Where(p => p.processPlanPackageEntries.Any(z =>
-                z.processPlan.Entries.Any(c => 
-                            
-                               c.Process.Type == ProcessEnum.混色 &&
-                               c.OrgId == 11 &&
-                               c.Pass == 0)))
-                .SingleAsync(p => p.Code == "a");
+        
+
+            Demo1(db);
+            Demo2(db);
         }
+
+        private static void Demo2(SqlSugarClient db )
+        {
+           
+            var PlanPackage2 = db.Queryable<ProcessPlanPackage>()
+           .Where(p => p.processPlanPackageEntries.Any(z =>
+           z.processPlan.Entries.Any(c =>
+
+                          c.Process.Type == ProcessEnum.混色 &&
+                          c.OrgId == 11 &&
+                          c.Pass == 0)))
+           .SingleAsync(p => p.Code == "a");
+        }
+        private static void Demo1(SqlSugarClient db)
+        {
+            var sql = db.Queryable<ProcessPlanPackage>()
+            .Where(p => p.processPlanPackageEntries.Any(z =>
+            z.processPlan.Entries.Any(c =>
+
+                           c.Process.Type == ProcessEnum.混色 &&
+                           c.OrgId == 11 &&
+                           c.Pass == 0)))
+            .ToSqlString();
+            if (!sql.Contains("SELECT [Type] FROM [BaseProcess]  WHERE  ProcessPlanEntry1.[ProcessId]=[Id]"))
+            {
+                throw new Exception("unit error");
+            }
+            var PlanPackage2 = db.Queryable<ProcessPlanPackage>()
+           .Where(p => p.processPlanPackageEntries.Any(z =>
+           z.processPlan.Entries.Any(c =>
+
+                          c.Process.Type == ProcessEnum.混色 &&
+                          c.OrgId == 11 &&
+                          c.Pass == 0)))
+           .SingleAsync(p => p.Code == "a").GetAwaiter().GetResult();
+        }
+
         /// <summary>
         /// 作业表
         /// </summary>

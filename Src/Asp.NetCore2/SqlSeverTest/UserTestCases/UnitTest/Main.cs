@@ -1,5 +1,6 @@
 ﻿using Demo;
 using SqlSeverTest.UserTestCases;
+using SqlSeverTest.UserTestCases.UnitTest;
 using SqlSugar;
 using System;
 using System.Collections.Generic;
@@ -32,6 +33,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UnitOneToManyNsdfafa.Init();
             UnitTreaaafasa.Init();
             UnitaadfafxSubToList.Init();
             UnitGridSave2.Init();
