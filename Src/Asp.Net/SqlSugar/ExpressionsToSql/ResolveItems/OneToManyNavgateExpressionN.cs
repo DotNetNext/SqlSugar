@@ -281,7 +281,11 @@ namespace SqlSugar
                         {
 
                         }
-                        else 
+                        else if (oldWhere != newWhere && oldWhere.TrimStart().StartsWith("((( (SELECT ")) 
+                        {
+
+                        }
+                        else
                         {
                             this.whereSql = newWhere;
                         }
