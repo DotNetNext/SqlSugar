@@ -72,6 +72,7 @@ namespace SqlSugar
             else if (ExpressionTool.GetMethodName(item) == "IsNull"
                               && this.Context.SingleTableNameSubqueryShortName == null
                               && this.BaseParameter?.CurrentExpression is NewExpression
+                              && (item as MethodCallExpression)?.Arguments?.FirstOrDefault() is MethodCallExpression
                               && item?.ToString()?.Contains("Join") == true
                               && ExpressionTool.GetParameters(this.BaseParameter?.CurrentExpression).Count() > 1)
             {
