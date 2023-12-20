@@ -312,6 +312,12 @@ WHERE tgrelid = '"+tableName+"'::regclass");
                 return base.AddDefaultValue(this.SqlBuilder.GetTranslationTableName(tableName), this.SqlBuilder.GetTranslationTableName(columnName), defaultValue);
             }
         }
+
+        public override bool RenameTable(string oldTableName, string newTableName)
+        {
+            return base.RenameTable(this.SqlBuilder.GetTranslationTableName(oldTableName), this.SqlBuilder.GetTranslationTableName(newTableName));
+        }
+
         public override bool AddColumnRemark(string columnName, string tableName, string description)
         {
             tableName = this.SqlBuilder.GetTranslationTableName(tableName);
