@@ -281,7 +281,7 @@ namespace SqlSugar
                         {
 
                         }
-                        else if (oldWhere != newWhere && oldWhere.TrimStart().StartsWith("((( (SELECT ")) 
+                        else if (oldWhere != newWhere && oldWhere.TrimStart().StartsWith("((( (SELECT ")&& !oldWhere.Contains($" {sqlBuilder.GetTranslationColumnName(it.DbColumnName)}"))
                         {
 
                         }
