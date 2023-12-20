@@ -695,7 +695,8 @@ AND syscomments.text LIKE '%"+tableName+"%'");
         {
             tableName = this.SqlBuilder.GetTranslationTableName(tableName);
             foreach (var item in columns)
-            {
+            { 
+                ConvertCreateColumnInfo(item); 
                 if (item.DataType == "decimal" && item.DecimalDigits == 0 && item.Length == 0)
                 {
                     item.DecimalDigits = 4;
@@ -729,6 +730,24 @@ AND syscomments.text LIKE '%"+tableName+"%'");
             }
             return true;
         }
+
+        private static void ConvertCreateColumnInfo(DbColumnInfo x)
+        {
+            string[] array = new string[] { "int", "text", "image", "smallint", "bigint", "date", "bit", "ntext", "datetime" };
+            if (x.DataType.EqualCase( "nvarchar") || x.DataType .EqualCase( "varchar"))
+            {
+                if (x.Length < 1)
+                {
+                    x.DataType = $"{x.DataType}(max)";
+                }
+            }
+            else if (array.Contains(x.DataType?.ToLower()))
+            {
+                x.Length = 0;
+                x.DecimalDigits = 0;
+            }
+        }
+
         public override List<DbColumnInfo> GetColumnInfosByTableName(string tableName, bool isCache = true)
         {
             tableName = SqlBuilder.GetNoTranslationColumnName(tableName);
