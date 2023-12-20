@@ -15,6 +15,7 @@ namespace OrmTest
             var pageIndex = 1;
             var pageSize = 10;
             RefAsync<int> total = 0;
+            db.CodeFirst.InitTables<TableA, TableB, TableC, TableD>();
             var list =   db.Queryable<TableA>()
                 .Where(t => t.Id == 1)
                 .Select(t => new  
@@ -34,14 +35,17 @@ namespace OrmTest
             [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
             public int Id { get; set; }
         }
+        [SugarTable("unitTableAdfa")]
         public class TableA : BaseEntity
         {
             public string AName { get; set; }
         }
+        [SugarTable("unitTableAasdfafadfa")]
         public class TableC : BaseEntity
         {
             public string CName { get; set; }
         }
+        [SugarTable("unitTableAadfaasdfafadfa")]
         public class TableB : BaseEntity
         {
             public string BName { get; set; }
@@ -50,7 +54,7 @@ namespace OrmTest
             public decimal Quantity { get; set; }
             public decimal Price { get; set; }
         }
-
+        [SugarTable("unitTableAdddfadfa")]
         public class TableD : BaseEntity
         {
             public string DName { get; set; }
