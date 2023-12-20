@@ -1,6 +1,7 @@
 ﻿
 using System;
 using OrmTest;
+using SqlSeverTest.UserTestCases.UnitTest;
 
 namespace SqlSeverTest.UserTestCases
 {
@@ -13,6 +14,7 @@ namespace SqlSeverTest.UserTestCases
         /// <param name="args"></param>
          public static void Init()
         {
+            UnitOneToManyNsdfafa.Init();
             UCustomConditionalFunc.Init();
             //Demo
             Demo0_SqlSugarClient.Init();
