@@ -29,11 +29,11 @@ namespace SqlSeverTest.UserTestCases.UnitTest
             var PlanPackage2 = db.Queryable<ProcessPlanPackage>()
            .Where(p => p.processPlanPackageEntries.Any(z =>
            z.processPlan.Entries.Any(c =>
-
+              c.OrgId == 11 &&
                           c.Process.Type == ProcessEnum.混色 &&
-                          c.OrgId == 11 &&
+                       
                           c.Pass == 0)))
-           .SingleAsync(p => p.Code == "a");
+           .SingleAsync(p => p.Code == "a").GetAwaiter().GetResult();
         }
         private static void Demo1(SqlSugarClient db)
         {
