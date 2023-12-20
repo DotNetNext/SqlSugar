@@ -431,6 +431,8 @@ WHERE tgrelid = '" + tableName + "'::regclass");
             {
                 foreach (var item in columns)
                 {
+
+                    ConvertCreateColumnInfo(item);
                     if (item.DbColumnName.Equals("GUID", StringComparison.CurrentCultureIgnoreCase) && item.Length == 0)
                     {
                         item.Length = 10;
@@ -560,6 +562,16 @@ WHERE tgrelid = '" + tableName + "'::regclass");
                 {
                     return this.Context.CurrentConnectionConfig.MoreSettings.IsAutoToUpper == true;
                 }
+            }
+        }
+        private static void ConvertCreateColumnInfo(DbColumnInfo x)
+        {
+            string[] array = new string[] { "int4", "text", "int2", "int8", "date", "bit", "text", "timestamp" };
+
+            if (array.Contains(x.DataType?.ToLower()))
+            {
+                x.Length = 0;
+                x.DecimalDigits = 0;
             }
         }
         #endregion
