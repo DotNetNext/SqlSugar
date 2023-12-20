@@ -69,6 +69,20 @@ namespace SqlSugar
                 parameter.Context.Result.Append(this.Context.GetAsString2(asName, GetNewExpressionValue(childExpression)));
                 return;
             }
+            else if (ExpressionTool.GetMethodName(item) == "IsNull"
+                              && this.Context.SingleTableNameSubqueryShortName == null
+                              && this.BaseParameter?.CurrentExpression is NewExpression
+                              && (item as MethodCallExpression)?.Arguments?.FirstOrDefault() is MethodCallExpression
+                              && item?.ToString()?.Contains("Join") == true
+                              && ExpressionTool.GetParameters(this.BaseParameter?.CurrentExpression).Count() > 1)
+            {
+                var ps = ExpressionTool.GetParameters(this.BaseParameter?.CurrentExpression);
+                this.Expression = item;
+                this.Start();
+                parameter.Context.Result.Append(this.Context.GetAsString2(asName, parameter.CommonTempData.ObjToString()));
+                this.Context.SingleTableNameSubqueryShortName = ps.FirstOrDefault().Name;
+                return;
+            }
             this.Expression = item;
             this.Start();
             if (ExpressionTool.GetMethodName(item) == "MappingColumn")
