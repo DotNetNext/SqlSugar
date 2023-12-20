@@ -277,11 +277,7 @@ namespace SqlSugar
                         var oldWhere = this.whereSql;
                         var newWhere = this.whereSql.Replace(sqlBuilder.GetTranslationColumnName(it.DbColumnName),
                             lastShortName + "." + sqlBuilder.GetTranslationColumnName(it.DbColumnName));
-                        if (oldWhere != newWhere && oldWhere.TrimStart().StartsWith("( (SELECT "))
-                        {
-
-                        }
-                        else if (oldWhere != newWhere && oldWhere.TrimStart().StartsWith("((( (SELECT ")&& !oldWhere.Contains($" {sqlBuilder.GetTranslationColumnName(it.DbColumnName)}"))
+                        if (oldWhere != newWhere  && !oldWhere.Contains($" {sqlBuilder.GetTranslationColumnName(it.DbColumnName)}"))
                         {
 
                         }
