@@ -65,7 +65,14 @@ namespace SqlSugar
                 o = Activator.CreateInstance(type);
             }
             var result = (RepositoryType)o;
-            result.Context = this.Context.CopyNew();
+            if (result.Context != null)
+            {
+                result.Context = result.Context.CopyNew();
+            }
+            else
+            {
+                result.Context = this.Context.CopyNew();
+            }
             return result;
         }
         public RepositoryType ChangeRepository<RepositoryType>() where RepositoryType : ISugarRepository
