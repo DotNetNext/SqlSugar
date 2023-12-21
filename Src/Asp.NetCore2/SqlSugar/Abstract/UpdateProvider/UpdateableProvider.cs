@@ -191,9 +191,11 @@ namespace SqlSugar
             result.TableName = this.UpdateBuilder.TableName;
             result.IsEnableDiffLogEvent = this.IsEnableDiffLogEvent;
             result.WhereColumnList = this.WhereColumnList?.ToArray();
-            result.DiffModel = this.diffModel; 
+            result.DiffModel = this.diffModel;
             if (this.UpdateBuilder.DbColumnInfoList.Any())
                 result.UpdateColumns = this.UpdateBuilder.DbColumnInfoList.GroupBy(it => it.TableId).First().Select(it => it.DbColumnName).ToList();
+            if(this.UpdateBuilder?.UpdateColumns?.Any()==true)
+                result.UpdateColumns = this.UpdateBuilder.UpdateColumns;
             return result;
         }
         public IUpdateable<T, T2> InnerJoin<T2>(Expression<Func<T, T2, bool>> joinExpress) 
