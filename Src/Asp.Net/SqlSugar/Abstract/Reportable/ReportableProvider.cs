@@ -72,6 +72,13 @@ namespace SqlSugar
             return ToQueryable().Select<SingleColumnEntity<Y>>();
         }
 
+        private bool _isOnlySelectEntity = false;
+        public ISugarQueryable<SingleColumnEntity<Y>> ToQueryable<Y>(bool isOnlySelectEntity)
+        {
+            _isOnlySelectEntity = isOnlySelectEntity;
+            return ToQueryable<Y>();
+        }
+
         private void Each<Y>(StringBuilder sb, List<Y> list)
         {
             int i = 0;
@@ -96,7 +103,10 @@ namespace SqlSugar
             var columns = new StringBuilder();
             var entity=this.Context.EntityMaintenance.GetEntityInfo<T>();
             columns.Append(string.Join(",",entity.Columns.Where(it=>it.IsIgnore==false).Select(it=>GetSelect(it,data))));
-            columns.Append(",null as NoCacheColumn");
+            if (_isOnlySelectEntity==false)
+            {
+                columns.Append(",null as NoCacheColumn");
+            }
             sb.AppendLine(" SELECT " + columns.ToString());
             sb.Append(GetNextSql);
             if (!isLast)
