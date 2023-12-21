@@ -14,7 +14,7 @@ namespace SqlSugar
         public string TableName { get; internal set; }
         public bool IsEnableDiffLogEvent { get; internal set; }
         public DiffLogModel DiffModel { get; internal set; }
-        public List<string> UpdateColumns { get; internal set; }
+        public List<string> UpdateColumns { get; internal set; } 
         public string[] WhereColumnList { get; internal set; }
 
         public UpdateableFilter<T> EnableQueryFilter() 
