@@ -613,7 +613,10 @@ namespace SqlSugar
         {
             return ScopedContext.Storageable(dataList);
         }
-
+        public IStorageable<T> Storageable<T>(IList<T> dataList) where T : class, new()
+        {
+            return ScopedContext.Storageable(dataList?.ToList());
+        }
         public IStorageable<T> Storageable<T>(T data) where T : class, new()
         {
             return ScopedContext.Storageable(data);

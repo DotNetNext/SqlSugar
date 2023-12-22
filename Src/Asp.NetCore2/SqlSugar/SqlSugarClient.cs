@@ -568,6 +568,10 @@ namespace SqlSugar
         {
             return this.Context.Storageable(dataList);
         }
+        public IStorageable<T> Storageable<T>(IList<T> dataList) where T : class, new()
+        {
+            return this.Context.Storageable(dataList.ToList());
+        }
         public IStorageable<T> Storageable<T>(T[] dataList) where T : class, new()
         {
             return this.Context.Storageable(dataList?.ToList());
