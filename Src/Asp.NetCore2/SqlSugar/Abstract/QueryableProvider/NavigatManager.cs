@@ -336,6 +336,7 @@ namespace SqlSugar
             var navEntityInfo = db.EntityMaintenance.GetEntityInfo(navType);
             db.InitMappingInfo(navEntityInfo.Type);
             var navPkColumn = navEntityInfo.Columns.Where(it => it.IsPrimarykey).FirstOrDefault();
+            var navPkCount = navEntityInfo.Columns.Where(it => it.IsPrimarykey).Count();
             Check.ExceptionEasy(navPkColumn==null&& navObjectNameColumnInfo.Navigat.Name2==null, navEntityInfo.EntityName+ "need primarykey", navEntityInfo.EntityName + " 需要主键");
             if (navObjectNameColumnInfo.Navigat.Name2.HasValue()) 
             {
@@ -371,7 +372,7 @@ namespace SqlSugar
                         .Select(it => GetOneToOneSelectByColumnInfo(it)).ToList();
                     sqlObj.SelectString = String.Join(",", columns);
                 }
-                var navList = selector(db.Queryable<object>().ClearFilter(QueryBuilder.RemoveFilters).Filter(navPkColumn.IsPrimarykey ? null : this.QueryBuilder?.IsDisabledGobalFilter == true ? null : navEntityInfo.Type).AS(GetDbTableName(navEntityInfo))
+                var navList = selector(db.Queryable<object>().ClearFilter(QueryBuilder.RemoveFilters).Filter((navPkColumn.IsPrimarykey&& navPkCount==1) ? null : this.QueryBuilder?.IsDisabledGobalFilter == true ? null : navEntityInfo.Type).AS(GetDbTableName(navEntityInfo))
                     .WhereIF(navObjectNameColumnInfo.Navigat.WhereSql.HasValue(), navObjectNameColumnInfo.Navigat.WhereSql)
                     .WhereIF(sqlObj.WhereString.HasValue(), sqlObj.WhereString)
                     .AddParameters(sqlObj.Parameters).Where(conditionalModels)
