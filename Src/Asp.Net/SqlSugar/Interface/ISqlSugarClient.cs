@@ -150,6 +150,7 @@ namespace SqlSugar
         GridSaveProvider<T> GridSave<T>(List<T> saveList) where T : class, new();
         GridSaveProvider<T> GridSave<T>(List<T> oldList,List<T> saveList) where T : class, new();
         IStorageable<T> Storageable<T>(T[] dataList) where T : class, new();
+        IStorageable<T> Storageable<T>(IList<T> dataList) where T : class, new();
          StorageableDataTable Storageable(List<Dictionary<string, object>> dictionaryList, string tableName);
          StorageableDataTable Storageable(Dictionary<string, object> dictionary, string tableName);
         IStorageable<T> Storageable<T>(List<T> dataList) where T : class, new();

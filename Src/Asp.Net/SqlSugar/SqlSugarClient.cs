@@ -174,6 +174,10 @@ namespace SqlSugar
 
         public IInsertable<T> Insertable<T>(dynamic insertDynamicObject) where T : class, new()
         {
+            if (insertDynamicObject is IList<T>) 
+            {
+                return this.Context.Insertable<T>((insertDynamicObject as IList<T>).ToList());
+            }
             return this.Context.Insertable<T>(insertDynamicObject);
         }
 
@@ -564,6 +568,10 @@ namespace SqlSugar
         {
             return this.Context.Storageable(dataList);
         }
+        public IStorageable<T> Storageable<T>(IList<T> dataList) where T : class, new()
+        {
+            return this.Context.Storageable(dataList.ToList());
+        }
         public IStorageable<T> Storageable<T>(T[] dataList) where T : class, new()
         {
             return this.Context.Storageable(dataList?.ToList());
@@ -723,6 +731,10 @@ namespace SqlSugar
 
         public IUpdateable<T> Updateable<T>(dynamic updateDynamicObject) where T : class, new()
         {
+            if (updateDynamicObject is IList<T>) 
+            {
+                return this.Context.Updateable<T>((updateDynamicObject as IList<T>).ToList());
+            }
             return this.Context.Updateable<T>(updateDynamicObject);
         }
 
