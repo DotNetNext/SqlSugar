@@ -320,7 +320,14 @@ namespace SqlSugar
                 {
                     if (entityInfo.Type.GetCustomAttribute<SplitTableAttribute>() != null) 
                     {
-                        item.IndexName = item.IndexName + entityInfo.DbTableName;
+                        if (item.IndexName?.Contains("{split_table}") == true)
+                        {
+                            item.IndexName = item.IndexName.Replace("{split_table}", entityInfo.DbTableName);
+                        }
+                        else
+                        {
+                            item.IndexName = item.IndexName + entityInfo.DbTableName;
+                        }
                     }
                     if (this.Context.CurrentConnectionConfig.IndexSuffix.HasValue()) 
                     {

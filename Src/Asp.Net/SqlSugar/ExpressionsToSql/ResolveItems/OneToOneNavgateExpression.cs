@@ -17,9 +17,11 @@ namespace SqlSugar
         private Navigate Navigat;
         public string ShorName;
         internal string MemberName;
-        public OneToOneNavgateExpression(SqlSugarProvider context)
+        private MemberExpressionResolve _memberExpressionResolve;
+        public OneToOneNavgateExpression(SqlSugarProvider context, MemberExpressionResolve memberExpressionResolve)
         {
             this.context = context;
+            _memberExpressionResolve= memberExpressionResolve;
         }
 
         internal bool IsNavgate(Expression expression)
@@ -110,8 +112,24 @@ namespace SqlSugar
                         (queryable.QueryBuilder.Builder.GetTranslationColumnName(dbName), queryable.QueryBuilder.Builder.GetTranslationColumnName(tableName));
                 }
             }
+            Type[] clearTypes = null;
+            var isClearFilter = false;
+            if (this._memberExpressionResolve?.Context?.SugarContext?.QueryBuilder != null)
+            {
+                queryable.QueryBuilder.LambdaExpressions.ParameterIndex = 500 + this._memberExpressionResolve.Context.SugarContext.QueryBuilder.LambdaExpressions.ParameterIndex;
+                this._memberExpressionResolve.Context.SugarContext.QueryBuilder.LambdaExpressions.ParameterIndex++;
+                isClearFilter = this._memberExpressionResolve.Context.SugarContext.QueryBuilder.IsDisabledGobalFilter;
+                clearTypes = this._memberExpressionResolve.Context.SugarContext.QueryBuilder.RemoveFilters;
+            }
+            var type = this.ProPertyEntity.Columns.Count(it => it.IsPrimarykey) > 1 ? this.ProPertyEntity.Type : null;
+            if (isClearFilter) 
+            {
+                type = null;
+            }
             mapper.Sql = queryable
                 .AS(tableName)
+                .ClearFilter(clearTypes)
+                .Filter(type)
                 .WhereIF(Navigat.WhereSql.HasValue(),Navigat.WhereSql)
                 .Where($" {queryable.SqlBuilder.GetTranslationColumnName(ShorName)}.{name}={pk} ").Select(selectName).ToSql().Key;
             mapper.Sql = $" ({mapper.Sql}) ";
