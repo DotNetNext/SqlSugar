@@ -126,13 +126,26 @@ namespace SqlSugar
             {
                 type = null;
             }
-            mapper.Sql = queryable
+            var sqlObj = queryable
                 .AS(tableName)
                 .ClearFilter(clearTypes)
                 .Filter(type)
-                .WhereIF(Navigat.WhereSql.HasValue(),Navigat.WhereSql)
-                .Where($" {queryable.SqlBuilder.GetTranslationColumnName(ShorName)}.{name}={pk} ").Select(selectName).ToSql().Key;
+                .WhereIF(Navigat.WhereSql.HasValue(), Navigat.WhereSql)
+                .Where($" {queryable.SqlBuilder.GetTranslationColumnName(ShorName)}.{name}={pk} ").Select(selectName).ToSql();
+            mapper.Sql = sqlObj.Key;
             mapper.Sql = $" ({mapper.Sql}) ";
+
+            if (type!=null&sqlObj.Value?.Any() == true)
+            {
+                foreach (var item in sqlObj.Value)
+                {
+                    if (!this._memberExpressionResolve.Context.Parameters.Any(it => it.ParameterName == item.ParameterName))
+                    {
+                        this._memberExpressionResolve.Context.Parameters.Add(item);
+                    }
+                }
+            }
+
             return mapper;
         }
     }
