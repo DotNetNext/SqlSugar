@@ -112,6 +112,7 @@ namespace SqlSugar
             }
             mapper.Sql = queryable
                 .AS(tableName)
+                .Filter(this.ProPertyEntity.Columns.Count(it=>it.IsPrimarykey)>1?this.ProPertyEntity.Type:null)
                 .WhereIF(Navigat.WhereSql.HasValue(),Navigat.WhereSql)
                 .Where($" {queryable.SqlBuilder.GetTranslationColumnName(ShorName)}.{name}={pk} ").Select(selectName).ToSql().Key;
             mapper.Sql = $" ({mapper.Sql}) ";
