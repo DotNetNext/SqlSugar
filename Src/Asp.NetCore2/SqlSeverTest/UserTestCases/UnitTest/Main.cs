@@ -33,6 +33,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UnitOneToOneFilter.Init();
             UnitOneToManyNsdfafa.Init();
             UnitTreaaafasa.Init();
             UnitaadfafxSubToList.Init();

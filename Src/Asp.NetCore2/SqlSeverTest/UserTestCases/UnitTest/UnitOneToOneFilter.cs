@@ -28,7 +28,7 @@ namespace OrmTest
             };
             int personId = db.Insertable(person).ExecuteReturnIdentity();
 
-            db.QueryFilter.AddTableFilter<DelId>(x => x.IsDel);
+            db.QueryFilter.AddTableFilter<DelId>(x => x.IsDel==true);
             var list = db.Queryable<UnitPerson011dd1231dd3>().Includes(x => x.Address)
                 .OrderBy(it=>it.Address.Id).ToList();
 
