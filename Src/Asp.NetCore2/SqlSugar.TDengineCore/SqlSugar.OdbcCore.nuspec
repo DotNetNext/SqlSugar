@@ -14,7 +14,7 @@
     <tags>TDengine Tdengine tdengine</tags>
     <dependencies>
       <group targetFramework=".NETStandard2.1">
-        <dependency id="TDengine.Ado.Data" version="1.6.16" />
+        <dependency id="TDengine.Ado.Data" version="3.1.0" />
       </group>
     </dependencies>
   </metadata>
