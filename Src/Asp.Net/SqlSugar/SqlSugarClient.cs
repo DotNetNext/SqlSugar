@@ -530,6 +530,10 @@ namespace SqlSugar
             result.QueryBuilder.LambdaExpressions.ParameterIndex = (QueryBuilder.LambdaExpressions.ParameterIndex+ appendIndex);
             return result;
         }
+        public ISugarQueryable<T> Queryable<T>(ISugarQueryable<T> queryable,string shortName)
+        { 
+            return this.Context.Queryable(queryable,shortName);
+        }
 
         public ISugarQueryable<T> Queryable<T>(string shortName)
         {
