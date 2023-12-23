@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using SqlSugar.DbConvert;
 namespace TDengineTest
 {
     public partial class ORMTest
@@ -21,7 +22,17 @@ namespace TDengineTest
             {
                 DbType = SqlSugar.DbType.TDengine,
                 IsAutoCloseConnection = true,
-                ConnectionString = "Host=localhost;Port=6030;Username=root;Password=taosdata;Database=nstest;TsType=config_ns"
+                ConnectionString = "Host=localhost;Port=6030;Username=root;Password=taosdata;Database=nstest;TsType=config_ns",
+                ConfigureExternalServices = new ConfigureExternalServices()
+                {
+                    EntityService = (property, column) =>
+                    {
+                        if (column.SqlParameterDbType == null)
+                        {
+                            column.SqlParameterDbType = typeof(CommonPropertyConvert);
+                        }
+                    }
+                }
             });
 
             //删除库-库上限比太少只能删了测试
@@ -97,7 +108,17 @@ VALUES ('2023-09-23', ""10.2"", ""A219"",""2309050001"",""B03123"",""OK"",""681-
             {
                 DbType = SqlSugar.DbType.TDengine,
                 IsAutoCloseConnection = true,
-                ConnectionString = "Host=localhost;Port=6030;Username=root;Password=taosdata;Database=nstest;TsType=config_us"
+                ConnectionString = "Host=localhost;Port=6030;Username=root;Password=taosdata;Database=nstest;TsType=config_us",
+                ConfigureExternalServices = new ConfigureExternalServices()
+                {
+                    EntityService = (property, column) =>
+                    {
+                        if (column.SqlParameterDbType == null)
+                        {
+                            column.SqlParameterDbType = typeof(CommonPropertyConvert);
+                        }
+                    }
+                }
             });
             //删除库-库上限比太少只能删了测试
             db.Ado.ExecuteCommand("drop   database nstest");
