@@ -2,6 +2,9 @@
 using System;
 using System.Data.Common;
 using System.Data;
+using SqlSugar.TDengine;
+using System.Collections;
+using System.Text;
 
 namespace SqlSugar.TDengineCore
 {
@@ -122,11 +125,16 @@ namespace SqlSugar.TDengineCore
                     for (int i = 0; i < dr.FieldCount; i++)
                     {
                         string name = dr.GetName(i).Trim();
+                        var type = dr.GetFieldType(i);
+                        if (type == UtilConstants.ByteArrayType) 
+                        {
+                            type = UtilConstants.StringType;
+                        }
                         if (!columns.Contains(name))
-                            columns.Add(new DataColumn(name, dr.GetFieldType(i)));
+                            columns.Add(new DataColumn(name, type));
                         else
                         {
-                            columns.Add(new DataColumn(name + i, dr.GetFieldType(i)));
+                            columns.Add(new DataColumn(name + i, type));
                         }
 
                     }
@@ -136,7 +144,15 @@ namespace SqlSugar.TDengineCore
                         DataRow daRow = dt.NewRow();
                         for (int i = 0; i < columns.Count; i++)
                         {
-                            daRow[columns[i].ColumnName] = dr.GetValue(i);
+                            var value = dr.GetValue(i);
+                            if (value is byte[])
+                            {
+                                daRow[columns[i].ColumnName] = Encoding.UTF8.GetString((byte[])value);
+                            }
+                            else
+                            {
+                                daRow[columns[i].ColumnName] = dr.GetValue(i);
+                            }
                         }
                         dt.Rows.Add(daRow);
                     }

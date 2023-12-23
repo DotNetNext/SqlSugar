@@ -254,7 +254,7 @@ namespace SqlSugar.TDengine
         public override string ToDateShort(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
-            return string.Format("  SUBSTR(TO_ISO8601({0}),1,10) ", parameter.MemberName);
+            return string.Format("  CAST( SUBSTR(TO_ISO8601({0}),1,10) AS timestamp)", parameter.MemberName);
         }
         public override string DateAddByType(MethodCallExpressionModel model)
         {
