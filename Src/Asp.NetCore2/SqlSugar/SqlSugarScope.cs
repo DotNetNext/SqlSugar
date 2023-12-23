@@ -472,6 +472,10 @@ namespace SqlSugar
         {
             return ScopedContext.Queryable(queryable);
         }
+        public ISugarQueryable<T> Queryable<T>(ISugarQueryable<T> queryable, string shortName)
+        {
+            return ScopedContext.Queryable(queryable, shortName);
+        }
 
         public ISugarQueryable<T> Queryable<T>(string shortName)
         {

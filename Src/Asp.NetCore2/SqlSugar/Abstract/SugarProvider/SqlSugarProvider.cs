@@ -5,7 +5,7 @@ using System.Data;
 using System.Dynamic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
+using System.Reflection; 
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -439,6 +439,16 @@ namespace SqlSugar
             result.QueryBuilder.Includes = queryable.QueryBuilder.Includes?.ToList();
             return result;
         }
+        public virtual ISugarQueryable<T> Queryable<T>(ISugarQueryable<T> queryable,string shortName)
+        {
+            var result = Queryable(queryable);
+            var key = result.QueryBuilder.AsTables.First().Key;
+            var value = result.QueryBuilder.AsTables.First().Value;
+            result.QueryBuilder.AsTables.Remove(key);
+            result.QueryBuilder.AsTables.Add(key, value.TrimEnd(' ').TrimEnd('t') + shortName);
+            return result;
+        }
+
         public virtual ISugarQueryable<T, T2> Queryable<T, T2>(
      ISugarQueryable<T> joinQueryable1, ISugarQueryable<T2> joinQueryable2, Expression<Func<T, T2, bool>> joinExpression) where T : class, new() where T2 : class, new()
         {
