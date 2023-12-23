@@ -750,6 +750,10 @@ namespace SqlSugar
         }
         public static object ChangeType2(object value, Type type)
         {
+            if (value is byte[]&&type==UtilConstants.StringType) 
+            {
+                return Encoding.UTF8.GetString(value as byte[]);
+            }
             if (value == null && type.IsGenericType) return Activator.CreateInstance(type);
             if (value == null) return null;
             if (type == value.GetType()) return value;
