@@ -6,7 +6,7 @@ namespace SqlSugar.TDengine
 {
     public class STable
     {
-        [SugarColumn(IsOnlyIgnoreInsert = true, IsOnlyIgnoreUpdate = true)]
+        [SugarColumn(IsIgnore =true)]
         public string TagsTypeId { get; set; }
         public static List<ColumnTagInfo> Tags = null;
     }
