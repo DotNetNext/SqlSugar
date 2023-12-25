@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>SqlSugar.TDengineCore</id>
-    <version>4.1.02</version>
+    <version>4.1.03</version>
     <authors>sunkaixuan</authors>
     <owners>Landa</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
@@ -14,7 +14,7 @@
     <tags>TDengine Tdengine tdengine</tags>
     <dependencies>
       <group targetFramework=".NETStandard2.1">
-        <dependency id="TDengine.Ado.Data" version="3.1.4" />
+        <dependency id="TDengine.Ado.Data" version="3.1.5" />
       </group>
     </dependencies>
   </metadata>
