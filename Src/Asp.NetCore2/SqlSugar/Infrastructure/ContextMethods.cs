@@ -696,6 +696,11 @@ namespace SqlSugar
                     {
                         key = mappingKeys[item.Name] + "." + typeName + "." + name;
                         info = readerValues.Select(it => it.Key).FirstOrDefault(it => it.ToLower() == key.ToLower());
+                        if (info == null) 
+                        {
+                           var key2 = item.Name + "." + name;
+                           info = readerValues.Select(it => it.Key).FirstOrDefault(it => it.ToLower() == key2.ToLower());
+                        }
                     }
                     else if (mappingKeys != null && mappingKeys.ContainsKey("Single_" + name))
                     {
