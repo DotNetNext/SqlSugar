@@ -74,6 +74,10 @@ namespace SqlSugar
                 {
                     return db.GetDate();
                 }
+                else if (value is DateTimeOffset)
+                {
+                    return ((DateTimeOffset)value).DateTime;
+                }
                 else if (UtilMethods.GetUnderType(value.GetType()) != UtilConstants.DateType)
                 {
                     throw new Exception($"DateSplitTableService Split column {splitColumn.PropertyName} not DateTime " + splitType.ToString());
