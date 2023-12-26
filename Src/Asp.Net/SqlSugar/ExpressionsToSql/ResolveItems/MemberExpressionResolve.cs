@@ -784,7 +784,7 @@ namespace SqlSugar
             isValueBool = isValue && isBool && isRoot;
             isLength = memberName == "Length" && childIsMember && childExpression.Type == UtilConstants.StringType;
             isDateValue = memberName.IsIn(Enum.GetNames(typeof(DateType))) && (childIsMember && childExpression.Type == UtilConstants.DateType);
-            if (isDateValue == false && childExpression?.Type?.FullName == "System.DateOnly"&& memberName.IsIn(Enum.GetNames(typeof(DateType)))) 
+            if (isDateValue == false && childIsMember && childExpression?.Type?.FullName == "System.DateOnly"&& memberName.IsIn(Enum.GetNames(typeof(DateType)))) 
             {
                 isDateValue = true;
             }
