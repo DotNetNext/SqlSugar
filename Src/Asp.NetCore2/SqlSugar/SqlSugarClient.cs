@@ -723,6 +723,10 @@ namespace SqlSugar
         {
             return this.Context.UpdateableByObject(singleEntityObjectOrListObject);
         }
+        public UpdateExpressionMethodInfo UpdateableByObject(Type entityType)
+        {
+            return this.Context.UpdateableByObject(entityType);
+        }
         public IUpdateable<T> Updateable<T>() where T : class, new()
         {
             return this.Context.Updateable<T>();

@@ -15,7 +15,7 @@ namespace SqlSugar
         }
         public static LambdaExpression GetWhere(Type entityType, string shortName, FormattableString whereSql)
         {
-            var parameter = Expression.Parameter(entityType, "it");
+            var parameter = Expression.Parameter(entityType, shortName);
 
             // 提取 FormattableString 中的参数值
             var arguments = whereSql.GetArguments();
@@ -27,6 +27,26 @@ namespace SqlSugar
             var lambda = SqlSugarDynamicExpressionParser.ParseLambda(
                 new[] { parameter },
                 typeof(bool),
+               sql,
+               whereSql.GetArguments()
+            );
+
+            return lambda;
+        }
+        public static LambdaExpression GetObject(Type entityType, string shortName, FormattableString whereSql)
+        {
+            var parameter = Expression.Parameter(entityType, shortName);
+
+            // 提取 FormattableString 中的参数值
+            var arguments = whereSql.GetArguments();
+
+
+            var sql = ReplaceFormatParameters(whereSql.Format);
+
+            // 构建动态表达式，使用常量表达式和 whereSql 中的参数值
+            var lambda = SqlSugarDynamicExpressionParser.ParseLambda(
+                new[] { parameter },
+                typeof(object),
                sql,
                whereSql.GetArguments()
             );

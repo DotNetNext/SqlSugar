@@ -939,6 +939,21 @@ namespace SqlSugar
                 return result;
             }
         }
+        public UpdateExpressionMethodInfo UpdateableByObject(Type entityType)
+        {
+            UpdateExpressionMethodInfo reslut = new UpdateExpressionMethodInfo();
+            var methods = this.Context.GetType().GetMethods()
+             .Where(it => it.Name == "Updateable")
+             .Where(it => it.GetGenericArguments().Any())
+             .Where(it => !it.GetParameters().Any())
+             .Where(it => it.Name == "Updateable").ToList();
+            var method = methods.Single().MakeGenericMethod(entityType);
+            reslut.Context = this.Context;
+            reslut.MethodInfo = method;
+            reslut.Type = entityType;
+            reslut.objectValue = method.Invoke(Context, new object[] { });
+            return reslut;
+        }
         public virtual IUpdateable<T> Updateable<T>(T[] UpdateObjs) where T : class, new()
         {
             InitMappingInfo<T>();
