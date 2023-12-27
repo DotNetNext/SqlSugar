@@ -477,6 +477,7 @@ AND syscomments.text LIKE '%"+tableName+"%'");
         }
         public override bool UpdateColumn(string tableName, DbColumnInfo column)
         {
+            ConvertCreateColumnInfo(column);
             if (column.DataType != null && this.Context.CurrentConnectionConfig?.MoreSettings?.SqlServerCodeFirstNvarchar == true)
             {
                 if (!column.DataType.ToLower().Contains("nvarchar"))

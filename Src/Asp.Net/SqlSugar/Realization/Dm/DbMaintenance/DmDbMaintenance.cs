@@ -269,6 +269,7 @@ namespace SqlSugar
         #region Methods
         public override bool UpdateColumn(string tableName, DbColumnInfo column)
         {
+            ConvertCreateColumnInfo(column);
             var oldColumn = this.Context.DbMaintenance.GetColumnInfosByTableName(tableName, false)
                 .FirstOrDefault(it => it.DbColumnName.EqualCase(column.DbColumnName));
             if (oldColumn != null)
