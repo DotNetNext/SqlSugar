@@ -12,6 +12,17 @@ namespace OrmTest
         public static void Init() 
         {
             var db = NewUnitTest.Db;
+
+            var getAll1 = db.Queryable<Order>().Distinct().ToList();
+            if (!db.Queryable<Order>().Distinct().ToSqlString().Contains("distinct")) 
+            {
+                throw new Exception("unit error");
+            }
+            var getAll11 = db.Queryable<Order>().Distinct().Select(it => new Order()
+            {
+
+            }, true).ToList();
+
             db.CodeFirst.InitTables<event_handle_task>();
             event_handle_task model = new event_handle_task();
             db.CodeFirst.InitTables<event_handle_task>();
