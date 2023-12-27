@@ -504,6 +504,7 @@ namespace SqlSugar
                             addValue =UtilMethods.GetFormatValue(addValue,valueFomatInfo);
                            
                         }
+                        var type = UtilMethods.GetUnderType(item.PropertyType);
                         if (addValue == DBNull.Value || addValue == null)
                         {
                             if (item.PropertyType.IsIn(UtilConstants.IntType, UtilConstants.DecType, UtilConstants.DobType, UtilConstants.ByteType))
@@ -527,17 +528,21 @@ namespace SqlSugar
                                 addValue = null;
                             }
                         }
-                        else if (UtilMethods.GetUnderType(item.PropertyType) == UtilConstants.IntType)
+                        else if (type == UtilConstants.IntType)
                         {
                             addValue = Convert.ToInt32(addValue);
                         }
-                        else if (UtilMethods.GetUnderType(item.PropertyType) == UtilConstants.LongType)
+                        else if (type == UtilConstants.LongType)
                         {
                             addValue = Convert.ToInt64(addValue);
                         }
-                        else if (UtilMethods.GetUnderType(item.PropertyType).IsEnum() && addValue is decimal)
+                        else if (type.IsEnum() && addValue is decimal)
                         {
                             addValue = Convert.ToInt64(addValue);
+                        }
+                        else if (type.FullName == "System.DateOnly") 
+                        {
+                            addValue = Convert.ToDateTime(addValue).ToString("yyyy-MM-dd");
                         }
                         result.Add(name, addValue);
                     }
