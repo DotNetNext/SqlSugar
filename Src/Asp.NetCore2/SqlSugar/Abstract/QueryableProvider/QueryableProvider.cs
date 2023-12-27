@@ -1416,7 +1416,8 @@ namespace SqlSugar
             var sql = ps.GetSelectValue;
             if (string.IsNullOrEmpty(sql) || sql.Trim() == "*")
             {
-                return this.Select<TResult>(expression);
+                this.QueryBuilder.SelectValue = null;
+                return this.Select<TResult>();
             }
            if (sql.StartsWith("*,")) 
            {
