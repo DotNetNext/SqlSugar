@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Dynamic;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Text;
 
 namespace OrmTest
@@ -127,6 +128,13 @@ namespace OrmTest
                        new GroupByModel() { FieldName = ObjectFuncModel.Create("ToInt64", "Id") }
                        );
             db.Queryable<Order>().GroupBy(x4).Select("max(id)").ToList();
+
+            StaticConfig.DynamicExpressionParserType = typeof(DynamicExpressionParser);
+             
+            db.UpdateableByObject(typeof(Order))
+            .SetColumns("it", $"it.Price== Price+{1} ")
+            .Where("it", $"it.Id>1 ")
+            .ExecuteCommand();
             Console.WriteLine("#### Examples End ####");
         }
 
