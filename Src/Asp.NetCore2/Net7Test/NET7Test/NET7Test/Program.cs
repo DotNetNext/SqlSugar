@@ -91,7 +91,11 @@ static void ServerTest()
 
 
     var list = sqlugar.Queryable<UnitDate01231>().OrderByDescending(it => it.dateOnly).ToList();
-
+    var list222 = sqlugar.Queryable<UnitDate01231>()
+        .Select(it=>new { 
+          x=it.dateOnly,
+          y=it.dateOnly.Month
+        }).ToList();
     var d1 = new UnitDate01231().dateOnly;
     var d2 = new UnitDate01231().timeOnly;
 
