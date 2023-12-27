@@ -657,6 +657,10 @@ namespace SqlSugar
         {
             return ScopedContext.UpdateableByObject(singleEntityObjectOrListObject);
         }
+        public UpdateExpressionMethodInfo UpdateableByObject(Type entityType)
+        {
+            return ScopedContext.UpdateableByObject(entityType);
+        }
         public IUpdateable<Dictionary<string, object>> UpdateableByDynamic(object updateDynamicObject)
         {
             return ScopedContext.UpdateableByDynamic(updateDynamicObject);

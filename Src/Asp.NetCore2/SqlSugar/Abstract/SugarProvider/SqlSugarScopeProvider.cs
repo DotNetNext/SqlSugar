@@ -659,6 +659,10 @@ namespace SqlSugar
         {
             return ScopedContext.UnionAll(queryables);
         }
+        public UpdateExpressionMethodInfo UpdateableByObject(Type entityType)
+        {
+            return ScopedContext.UpdateableByObject(entityType);
+        }
         public UpdateMethodInfo UpdateableByObject(object singleEntityObjectOrListObject)
         {
             return ScopedContext.UpdateableByObject(singleEntityObjectOrListObject);

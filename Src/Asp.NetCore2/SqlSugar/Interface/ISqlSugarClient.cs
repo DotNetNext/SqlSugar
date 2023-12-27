@@ -198,6 +198,7 @@ namespace SqlSugar
 
         #region Updateable
         UpdateMethodInfo UpdateableByObject(object singleEntityObjectOrListObject);
+        UpdateExpressionMethodInfo UpdateableByObject(Type entityType);
         IUpdateable<T> Updateable<T>() where T : class, new();
         IUpdateable<T> Updateable<T>(Dictionary<string, object> columnDictionary) where T : class, new();
         IUpdateable<T> Updateable<T>(dynamic updateDynamicObject) where T : class, new();
