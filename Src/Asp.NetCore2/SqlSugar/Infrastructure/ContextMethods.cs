@@ -539,6 +539,10 @@ namespace SqlSugar
                         {
                             addValue = Convert.ToInt64(addValue);
                         }
+                        else if (item.PropertyType.FullName == "System.DateOnly") 
+                        {
+                            addValue = Convert.ToDateTime(addValue).ToString("yyyy-MM-dd");
+                        }
                         result.Add(name, addValue);
                     }
                 }
