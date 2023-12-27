@@ -45,8 +45,8 @@ namespace SqlSugar
             var newMethod = objectValue.GetType().GetMethods()
                 .Where(it=>
                 {
-                    var result= it.Name == "SetColumns" && it.GetParameters().Count() == 1;
-                    if (result) 
+                    var isTrue= it.Name == "SetColumns" && it.GetParameters().Count() == 1;
+                    if (isTrue) 
                     {
                         return it.GetParameters().First().ToString().Contains(",System.Boolean");
                     }
