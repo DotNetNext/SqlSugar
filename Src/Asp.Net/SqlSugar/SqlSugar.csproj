@@ -159,6 +159,7 @@
     <Compile Include="Abstract\UpdateProvider\UpdateableProviderT2.cs" />
     <Compile Include="Abstract\UpdateProvider\UpdateableProviderT3.cs" />
     <Compile Include="Abstract\UpdateProvider\UpdateableProviderT4.cs" />
+    <Compile Include="Abstract\UpdateProvider\UpdateExpressionMethodInfo.cs" />
     <Compile Include="Abstract\UpdateProvider\UpdateMethodInfo.cs" />
     <Compile Include="Abstract\UpdateProvider\UpdateableHelper.cs" />
     <Compile Include="Abstract\UpdateProvider\SplitTableUpdateByObjectProvider.cs" />
