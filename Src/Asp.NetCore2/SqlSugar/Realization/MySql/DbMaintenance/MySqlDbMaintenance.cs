@@ -551,6 +551,11 @@ WHERE EVENT_OBJECT_TABLE = '" + tableName + "'");
             }
             return true;
         }
+        public override bool UpdateColumn(string tableName, DbColumnInfo column)
+        {
+            ConvertCreateColumnInfo(column);
+            return base.UpdateColumn(tableName, column);
+        }
 
         protected override string GetSize(DbColumnInfo item)
         {

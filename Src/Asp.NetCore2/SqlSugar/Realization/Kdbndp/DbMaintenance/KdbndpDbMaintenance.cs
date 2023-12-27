@@ -327,6 +327,7 @@ WHERE tgrelid = '" + tableName + "'::regclass");
         public override bool UpdateColumn(string tableName, DbColumnInfo columnInfo)
         {
 
+            ConvertCreateColumnInfo(columnInfo);
             tableName = this.SqlBuilder.GetTranslationTableName(tableName);
             var columnName = this.SqlBuilder.GetTranslationColumnName(columnInfo.DbColumnName);
             string type = GetType(tableName, columnInfo);
