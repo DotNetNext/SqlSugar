@@ -480,7 +480,7 @@ namespace SqlSugar
             var sqlObj1 = joinQueryable1.ToSql();
             string sql1 = sqlObj1.Key;
             UtilMethods.RepairReplicationParameters(ref sql1, sqlObj1.Value.ToArray(), 0, "Join");
-            queryable.QueryBuilder.EntityName = sqlBuilder.GetPackTable(sql1, shortName1); ;
+            queryable.QueryBuilder.EntityName = sqlBuilder.GetPackTable(sql1, sqlBuilder.GetTranslationColumnName(shortName1)); ;
             queryable.QueryBuilder.Parameters.AddRange(sqlObj1.Value);
 
             //join table 1
