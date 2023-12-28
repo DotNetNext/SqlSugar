@@ -480,7 +480,7 @@ namespace SqlSugar
             var sqlObj1 = joinQueryable1.ToSql();
             string sql1 = sqlObj1.Key;
             UtilMethods.RepairReplicationParameters(ref sql1, sqlObj1.Value.ToArray(), 0, "Join");
-            queryable.QueryBuilder.EntityName = sqlBuilder.GetPackTable(sql1, shortName1); ;
+            queryable.QueryBuilder.EntityName = sqlBuilder.GetPackTable(sql1, sqlBuilder.GetTranslationColumnName(shortName1)); ;
             queryable.QueryBuilder.Parameters.AddRange(sqlObj1.Value);
 
             //join table 1
@@ -490,7 +490,7 @@ namespace SqlSugar
             UtilMethods.RepairReplicationParameters(ref sql2, sqlObj2.Value.ToArray(), 1, "Join");
             queryable.QueryBuilder.Parameters.AddRange(sqlObj2.Value);
             var exp = queryable.QueryBuilder.GetExpressionValue(joinExpression, ResolveExpressType.WhereMultiple);
-            queryable.QueryBuilder.JoinQueryInfos.Add(new JoinQueryInfo() { JoinIndex = 0, JoinType = joinType, JoinWhere = exp.GetResultString(), TableName = sqlBuilder.GetPackTable(sql2, shortName2) });
+            queryable.QueryBuilder.JoinQueryInfos.Add(new JoinQueryInfo() { JoinIndex = 0, JoinType = joinType, JoinWhere = exp.GetResultString(), TableName = sqlBuilder.GetPackTable(sql2,sqlBuilder.GetTranslationColumnName(shortName2)) });
 
             return queryable;
         }
