@@ -124,7 +124,7 @@ namespace SqlSugar
         private void NoClassMethod<Y>(Y data, StringBuilder sb,bool isLast)
         {
             sb.AppendLine(" SELECT "+  FormatValue(data));
-            sb.Append(" AS ColumnName ");
+            sb.Append(" AS "+this.queryBuilder.Builder.GetTranslationColumnName("ColumnName") +" ");
             sb.Append(GetNextSql);
             if (!isLast)
             {
