@@ -1392,6 +1392,19 @@ namespace SqlSugar
                     {
                         result = result.Replace(item.ParameterName, "CAST('" + item.Value.ObjToDate().ToString("yyyy-MM-dd HH:mm:ss.fff") + "' AS DATETIME)");
                     }
+                    else if (item.Value is DateTime&& connectionConfig.DbType.IsIn(DbType.Dm,DbType.Oracle))
+                    {
+                        if (item.DbType == System.Data.DbType.Date|| connectionConfig?.MoreSettings?.DisableMillisecond == true)
+                        {
+                            var value = "to_date('" + item.Value.ObjToDate().ToString("yyyy-MM-dd HH:mm:ss") + "', 'YYYY-MM-DD HH24:MI:SS')  ";;
+                            result = result.Replace(item.ParameterName, value);
+                        } 
+                        else 
+                        {
+                            var value = "to_timestamp('" + item.Value.ObjToDate().ToString("yyyy-MM-dd HH:mm:ss.ffffff") + "', 'YYYY-MM-DD HH24:MI:SS.FF') ";
+                            result = result.Replace(item.ParameterName, value);
+                        }
+                    }
                     else if (item.Value is DateTime)
                     {
                         result = result.Replace(item.ParameterName, "'"+item.Value.ObjToDate().ToString("yyyy-MM-dd HH:mm:ss.fff")+"'");
