@@ -535,7 +535,8 @@ namespace SqlSugar
                     SqliteCodeFirstEnableDefaultValue=it.MoreSettings.SqliteCodeFirstEnableDefaultValue,
                     SqliteCodeFirstEnableDescription=it.MoreSettings.SqliteCodeFirstEnableDescription,
                     IsCorrectErrorSqlParameterName = it.MoreSettings.IsCorrectErrorSqlParameterName,
-                    SqliteCodeFirstEnableDropColumn=it.MoreSettings.SqliteCodeFirstEnableDropColumn
+                    SqliteCodeFirstEnableDropColumn=it.MoreSettings.SqliteCodeFirstEnableDropColumn,
+                    MaxParameterNameLength=it.MoreSettings.MaxParameterNameLength
 
                 },
                 SqlMiddle = it.SqlMiddle == null ? null : new SqlMiddle
