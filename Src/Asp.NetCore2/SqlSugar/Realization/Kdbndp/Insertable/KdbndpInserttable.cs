@@ -13,17 +13,21 @@ namespace SqlSugar
         {
             InsertBuilder.IsReturnIdentity = true;
             PreToSql();
-            string sql = InsertBuilder.ToSqlString().Replace("$PrimaryKey", this.SqlBuilder.GetTranslationColumnName(GetIdentityKeys().FirstOrDefault()??""));
+            string sql = InsertBuilder.ToSqlString().Replace("$PrimaryKey", this.SqlBuilder.GetTranslationColumnName(GetIdentityKeys().FirstOrDefault() ?? ""));
             RestoreMapping();
+            sql = GetSql(sql);
             var result = Ado.GetScalar(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray()).ObjToInt();
             return result;
         }
+
+
         public override async Task<int> ExecuteReturnIdentityAsync()
         {
             InsertBuilder.IsReturnIdentity = true;
             PreToSql();
             string sql = InsertBuilder.ToSqlString().Replace("$PrimaryKey", this.SqlBuilder.GetTranslationColumnName(GetIdentityKeys().FirstOrDefault()??""));
             RestoreMapping();
+            sql = GetSql(sql);
             var obj = await Ado.GetScalarAsync(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
             var result = obj.ObjToInt();
             return result;
@@ -40,6 +44,7 @@ namespace SqlSugar
             PreToSql();
             string sql = InsertBuilder.ToSqlString().Replace("$PrimaryKey", this.SqlBuilder.GetTranslationColumnName(GetIdentityKeys().FirstOrDefault()??""));
             RestoreMapping();
+            sql = GetSql(sql);
             var result = Convert.ToInt64(Ado.GetScalar(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray()) ?? "0");
             return result;
         }
@@ -49,6 +54,7 @@ namespace SqlSugar
             PreToSql();
             string sql = InsertBuilder.ToSqlString().Replace("$PrimaryKey", this.SqlBuilder.GetTranslationColumnName(GetIdentityKeys().FirstOrDefault() ?? ""));
             RestoreMapping();
+            sql = GetSql(sql);
             var result = Convert.ToInt64(await Ado.GetScalarAsync(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray()) ?? "0");
             return result;
         }
@@ -69,6 +75,16 @@ namespace SqlSugar
             var propertyName = this.Context.EntityMaintenance.GetPropertyName<T>(identityKey);
             typeof(T).GetProperties().First(t => t.Name.ToUpper() == propertyName.ToUpper()).SetValue(result, setValue, null);
             return idValue > 0;
+        }
+
+        private string GetSql(string sql)
+        {
+            if (GetIdentityKeys().FirstOrDefault() == null)
+            {
+                sql = sql.Replace("returning \"\"", "");
+            }
+
+            return sql;
         }
     }
 }
