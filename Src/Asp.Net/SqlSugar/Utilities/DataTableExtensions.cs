@@ -62,7 +62,9 @@ namespace SqlSugar
                 foreach (DataRow row in table.Rows)
                 {
                     var json =row[firstName];
-                    var list = json.ToString().TrimStart('{').TrimEnd('}').Split(',').Select(it=>it.Split('=')).ToList();
+                    var list = json.ToString().TrimStart('{', ' ').TrimEnd('}', ' ')
+                        .Split(new[] { ", " }, StringSplitOptions.None)
+                        .Select(it => it.Split(new[] { " = " }, StringSplitOptions.None)).ToList();
                     foreach (var item in Regex.Split(firstName, UtilConstants.ReplaceKey))
                     {
                         var x = list.First(it => it.First().Trim() == item.Trim());
