@@ -46,6 +46,10 @@ namespace SqlSugar
                     }
                     string temp = " {0} {1} {2} {3}  ";
                     string parameterName = string.Format("{0}Condit{1}{2}", sqlBuilder.SqlParameterKeyWord, item.FieldName, index);
+                    if (this.Context?.CurrentConnectionConfig?.MoreSettings?.MaxParameterNameLength > 0&& parameterName.Length> this.Context?.CurrentConnectionConfig?.MoreSettings?.MaxParameterNameLength) 
+                    {
+                        parameterName = string.Format("{0}Condit{1}{2}", sqlBuilder.SqlParameterKeyWord,item.FieldName.GetHashCode().ToString().Replace("-", ""), index);
+                    }
                     if (parameterName.Contains("."))
                     {
                         parameterName = parameterName.Replace(".", "_");

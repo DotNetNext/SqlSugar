@@ -30,5 +30,6 @@ namespace SqlSugar
         public bool EnableCodeFirstUpdatePrecision { get;  set; }
         public bool SqliteCodeFirstEnableDropColumn { get; set; }
         public bool IsCorrectErrorSqlParameterName { get; set; }
+        public int MaxParameterNameLength { get; set; }
     }
 }
