@@ -80,8 +80,13 @@ namespace SqlSugar
         private string GetSql(string sql)
         {
             if (GetIdentityKeys().FirstOrDefault() == null)
-            {
+            { 
                 sql = sql.Replace("returning \"\"", "");
+                var id = this.Context.DbMaintenance.GetIsIdentities(this.Context.EntityMaintenance.GetTableName(this.InsertBuilder.GetTableNameString)).FirstOrDefault();
+                if (id != null)
+                {
+                    sql = sql.TrimEnd().TrimEnd(';')+ " returning " + this.SqlBuilder.GetTranslationColumnName(id) ;
+                }
             }
 
             return sql;
