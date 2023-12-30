@@ -255,6 +255,50 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override bool UpdateColumn(string tableName, DbColumnInfo column)
+        {
+            try
+            {
+                // Start a transaction
+                this.Context.Ado.BeginTran();
+
+                tableName = tableName ?? column.TableName;
+                var oldColumn = column.DbColumnName;
+                var tempColumn = "Column" + SnowFlakeSingle.Instance.NextId();
+
+                // Step 1: Add a new column
+                column.DbColumnName = tempColumn;
+                this.AddColumn(tableName, column);
+
+                // Step 2: Update values from old column to new column
+                this.Context.Ado.ExecuteCommand($"UPDATE { SqlBuilder.GetTranslationColumnName(tableName)} SET {SqlBuilder.GetTranslationColumnName(column.DbColumnName)}={SqlBuilder.GetTranslationColumnName(oldColumn)}");
+
+                // Step 3: Drop the old column
+                this.DropColumn(tableName, oldColumn);
+
+                // Step 4: Rename the new column to the old column name
+                column.DbColumnName = oldColumn;
+                this.AddColumn(tableName, column);
+
+                // Step 5: Update values from temporary column to the new column
+                this.Context.Ado.ExecuteCommand($"UPDATE {SqlBuilder.GetTranslationColumnName(tableName)} SET {SqlBuilder.GetTranslationColumnName(column.DbColumnName)}={SqlBuilder.GetTranslationColumnName(tempColumn)}");
+
+                //Step 6: Drop the temporary column
+                this.DropColumn(tableName, tempColumn);
+
+                // Commit the transaction
+                this.Context.Ado.CommitTran();
+
+                return true;
+            }
+            catch (Exception)
+            {
+                // Handle exceptions, log, or rollback the transaction if necessary
+                this.Context.Ado.RollbackTran();
+                // Log the exception or throw it again based on your requirements
+                throw;
+            }
+        }
         public override List<string> GetDbTypes()
         {
             return this.Context.Ado.SqlQuery<string>(@"SELECT 'TEXT' AS Data_Type
