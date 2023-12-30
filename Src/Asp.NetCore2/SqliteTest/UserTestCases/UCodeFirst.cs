@@ -48,6 +48,44 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+            db.CodeFirst.InitTables<UnitUpdateColumns>();
+            db.DbMaintenance.TruncateTable<UnitUpdateColumns>();
+            db.Insertable(new UnitUpdateColumns()
+            {
+                id = 1,
+                Name = "abc",
+                Time = DateTime.Now.Date
+            }).ExecuteCommand();
+            db.Insertable(new UnitUpdateColumns()
+            {
+                id = 2,
+                Name = "123",
+                Time = DateTime.Now.Date.AddDays(1)
+            }).ExecuteCommand();
+            db.DbMaintenance
+                .UpdateColumn("UnitUpdateColumns",new DbColumnInfo() {
+                 DbColumnName="Name",
+                  DataType="text", 
+                }); 
+            var data=db.Queryable<UnitUpdateColumns>().ToList();
+            if (data[0].Name != "abc" || data[1].Name != "123") 
+            {
+                throw new Exception("unit error");
+            }
+            var columns=db.DbMaintenance.GetColumnInfosByTableName("UnitUpdateColumns", false);
+            if (columns[2].DataType.ToLower() != "text") 
+            {
+                throw new Exception("unit error");
+            }
+            db.DbMaintenance.DropTable("UnitUpdateColumns");
+        }
+        public class UnitUpdateColumns 
+        {
+            [SugarColumn(IsPrimaryKey =true)]
+            public int id { get; set; }
+
+            public string Name { get; set; }
+            public DateTime Time { get; set; }
         }
 
         public class UnitDropColumnTest
