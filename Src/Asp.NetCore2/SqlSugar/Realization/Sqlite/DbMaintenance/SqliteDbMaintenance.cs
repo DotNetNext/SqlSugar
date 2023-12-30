@@ -258,7 +258,12 @@ namespace SqlSugar
         public override bool UpdateColumn(string tableName, DbColumnInfo column)
         {
             try
-            {
+            { 
+                if (column.IsPrimarykey) 
+                {
+                   Check.ExceptionEasy("Sqlite no support alter column primary key","Sqlite不支持修改主键");
+                }
+
                 // Start a transaction
                 this.Context.Ado.BeginTran();
 
