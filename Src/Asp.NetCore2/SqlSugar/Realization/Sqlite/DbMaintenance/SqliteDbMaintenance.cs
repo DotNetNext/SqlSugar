@@ -430,7 +430,7 @@ AND sql LIKE '%" + tableName + "%'");
         private List<DbColumnInfo> GetColumnInfosByTableName(string tableName)
         {
             //var columns = GetColumnsByTableName2(tableName);
-            string sql = "PRAGMA table_info(" +SqlBuilder.GetTranslationTableName(tableName) + ")";
+            string sql = "PRAGMA table_info(" +SqlBuilder.GetTranslationColumnName(tableName) + ")";
             var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
             this.Context.Ado.IsEnableLogEvent = false;
             var tableSript=this.Context.Ado.GetString($"SELECT sql FROM sqlite_master WHERE name='{tableName}' AND type='table'");
