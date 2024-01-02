@@ -145,6 +145,22 @@ namespace SqlSugar.TDengine
         {
             return "false";
         }
+
+        public override string Substring(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter2 = model.Args[1];
+            var parameter3 = model.Args[2];
+            if (parameter2.MemberValue is int&& parameter3.MemberValue is int)
+            {
+                model.Parameters.RemoveAll(it => it.ParameterName.Equals(parameter2.MemberName) || it.ParameterName.Equals(parameter3.MemberName));
+                return string.Format("SUBSTR({0},{1},{2})", parameter.MemberName, Convert.ToInt32(parameter2.MemberValue) + 1, parameter3.MemberValue);
+            }
+            else
+            {
+                return string.Format("SUBSTR({0},{1},{2})", parameter.MemberName, parameter2.MemberName, parameter3.MemberName);
+            }
+        }
         public override string DateDiff(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
