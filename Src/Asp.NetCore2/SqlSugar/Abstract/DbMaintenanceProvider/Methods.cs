@@ -230,6 +230,10 @@ namespace SqlSugar
             tableName = this.SqlBuilder.GetTranslationTableName(tableName);
             columnName = this.SqlBuilder.GetTranslationTableName(columnName);
             string sql = string.Format(this.AddPrimaryKeySql, tableName, string.Format("PK_{0}_{1}", this.SqlBuilder.GetNoTranslationColumnName(tableName), this.SqlBuilder.GetNoTranslationColumnName(columnName)), columnName);
+            if ((tableName+columnName).Length>25 &&this.Context?.CurrentConnectionConfig?.MoreSettings?.MaxParameterNameLength > 0) 
+            {
+                sql = string.Format(this.AddPrimaryKeySql, tableName, string.Format("PK_{0}_{1}", this.SqlBuilder.GetNoTranslationColumnName(tableName).Substring(0,20), "Id"), columnName);
+            }
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
