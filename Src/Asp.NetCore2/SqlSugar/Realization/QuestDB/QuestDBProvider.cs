@@ -56,7 +56,7 @@ namespace SqlSugar
         }
         public override DbCommand GetCommand(string sql, SugarParameter[] parameters)
         {
-            if (sql == "\r\n") 
+            if (sql == Environment.NewLine) 
             {
                 sql = "SELECT 0";
             }
