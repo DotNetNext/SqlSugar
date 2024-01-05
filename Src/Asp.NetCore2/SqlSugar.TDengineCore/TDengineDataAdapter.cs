@@ -151,7 +151,11 @@ namespace SqlSugar.TDengineCore
                             }
                             else
                             {
-                                daRow[columns[i].ColumnName] = dr.GetValue(i);
+                                if (value == null) 
+                                {
+                                    value = DBNull.Value;
+                                }
+                                daRow[columns[i].ColumnName] = value;
                             }
                         }
                         dt.Rows.Add(daRow);
