@@ -125,7 +125,7 @@ namespace SqlSugar
             CheckConnection();
             return sqlCommand;
         }
-        private static string[] KeyWord = new string[] { ":index","@index","@order", ":order", "@user", "@level", ":user", ":level", ":type", "@type",":year","@year" };
+        private static string[] KeyWord = new string[] { ":index","@index","@order", ":order", "@user", "@level", ":user", ":level", ":type", "@type",":year","@year","@date",":date" };
         private static string ReplaceKeyWordParameterName(string sql, SugarParameter[] parameters)
         {
             sql = ReplaceKeyWordWithAd(sql, parameters);
@@ -297,7 +297,11 @@ namespace SqlSugar
                 if (isVarchar && sqlParameter.DbType == System.Data.DbType.String)
                 {
                     sqlParameter.DbType = System.Data.DbType.AnsiString;
-                } 
+                }
+                if (parameter.CustomDbType != null && parameter.CustomDbType is OracleDbType)
+                {
+                    sqlParameter.OracleDbType = ((OracleDbType)parameter.CustomDbType);
+                }
                 ++index;
             }
             return result;
