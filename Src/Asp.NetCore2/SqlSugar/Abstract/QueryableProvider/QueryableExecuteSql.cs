@@ -228,7 +228,7 @@ namespace SqlSugar
         {
             return this.ToList().ToPivotTable(columnSelector, rowSelector, dataSelector);
         }
-        public virtual List<dynamic> ToPivotList<TColumn, TRow, TData>(Func<T, TColumn> columnSelector, Expression<Func<T, TRow>> rowSelector, Func<IEnumerable<T>, TData> dataSelector)
+        public virtual IEnumerable<dynamic> ToPivotList<TColumn, TRow, TData>(Func<T, TColumn> columnSelector, Expression<Func<T, TRow>> rowSelector, Func<IEnumerable<T>, TData> dataSelector)
         {
             return this.ToList().ToPivotList(columnSelector, rowSelector, dataSelector);
         }
