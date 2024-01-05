@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Dynamic;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace SqlSugar 
+namespace SqlSugar
 {
     internal static class DataTableExtensions
     {
@@ -19,12 +21,13 @@ namespace SqlSugar
     Func<IEnumerable<T>, TData> dataSelector)
         {
             DataTable table = new DataTable();
-            var rowName = "";
+            var rowName = new List<string>();
             if (rowSelector.Body is MemberExpression)
-                rowName = ((MemberExpression)rowSelector.Body).Member.Name;
+                rowName.Add(((MemberExpression)rowSelector.Body).Member.Name);
             else
-                rowName =string.Join(UtilConstants.ReplaceKey, ((NewExpression)rowSelector.Body).Arguments.Select(it=>it as MemberExpression).Select(it=>it.Member.Name));
-            table.Columns.Add(new DataColumn(rowName));
+                rowName.AddRange(((NewExpression)rowSelector.Body).Arguments.Select(it => it as MemberExpression).Select(it => it.Member.Name));
+
+            table.Columns.AddRange(rowName.Select(x => new DataColumn(x)).ToArray());
             var columns = source.Select(columnSelector).Distinct();
 
             foreach (var column in columns)
@@ -45,36 +48,23 @@ namespace SqlSugar
             {
                 var dataRow = table.NewRow();
                 var items = row.Values.Cast<object>().ToList();
-                items.Insert(0, row.Key);
+                // 获取匿名对象的动态类型  
+                var anonymousType = row.Key.GetType();
+
+                // 获取匿名对象的所有属性  
+                var properties = anonymousType.GetProperties();
+
+                for (var i = 0; i < rowName.Count; i++)
+                {
+                    items.Insert(i, properties[i].GetValue(row.Key, null));
+                }
                 dataRow.ItemArray = items.ToArray();
                 table.Rows.Add(dataRow);
             }
-            var firstName = table.Columns[0]?.ColumnName;
-            if (firstName.ObjToString().Contains(UtilConstants.ReplaceKey)) 
-            {
-                int i = 0;
-                foreach (var item in Regex.Split(firstName,UtilConstants.ReplaceKey))
-                {
-                    i++;
-                    table.Columns.Add(item);
-                    table.Columns[item].SetOrdinal(i);
-                }
-                foreach (DataRow row in table.Rows)
-                {
-                    var json =row[firstName];
-                    var list = json.ToString().TrimStart('{', ' ').TrimEnd('}', ' ')
-                        .Split(new[] { ", " }, StringSplitOptions.None)
-                        .Select(it => it.Split(new[] { " = " }, StringSplitOptions.None)).ToList();
-                    foreach (var item in Regex.Split(firstName, UtilConstants.ReplaceKey))
-                    {
-                        var x = list.First(it => it.First().Trim() == item.Trim());
-                        row[item] =x[1] ;
-                    }
-                }
-                table.Columns.Remove(firstName);
-            }
+
             return table;
         }
+
         public static List<dynamic> ToPivotList<T, TColumn, TRow, TData>(
                                                                         this IEnumerable<T> source,
                                                                         Func<T, TColumn> columnSelector,
@@ -82,17 +72,17 @@ namespace SqlSugar
                                                                         Func<IEnumerable<T>, TData> dataSelector)
         {
 
-            var arr = new List<object>();
+            var arr = new List<dynamic>();
             var cols = new List<string>();
-            var rowName = "";
+            var rowName = new List<string>();
             if (rowSelector.Body is MemberExpression)
-                rowName = ((MemberExpression)rowSelector.Body).Member.Name;
+                rowName.Add(((MemberExpression)rowSelector.Body).Member.Name);
             else
-                rowName = "Group_"+string.Join("_", ((NewExpression)rowSelector.Body).Arguments.Select(it => it as MemberExpression).Select(it => it.Member.Name));
+                rowName.AddRange(((NewExpression)rowSelector.Body).Arguments.Select(it => it as MemberExpression).Select(it => it.Member.Name));
+
             var columns = source.Select(columnSelector).Distinct();
 
-            cols = (new[] { rowName }).Concat(columns.Select(x => x?.ToString())).ToList();
-
+            cols = rowName.Concat(columns.Select(x => x?.ToString())).ToList();
 
             var rows = source.GroupBy(rowSelector.Compile())
                              .Select(rowGroup => new
@@ -103,17 +93,26 @@ namespace SqlSugar
                                      c => c,
                                      r => columnSelector(r),
                                      (c, columnGroup) => dataSelector(columnGroup))
-                             }).ToList();
-
+                             });
 
             foreach (var row in rows)
             {
                 var items = row.Values.Cast<object>().ToList();
-                items.Insert(0, row.Key);
+
+                // 获取匿名对象的动态类型  
+                var anonymousType = row.Key.GetType();
+
+                // 获取匿名对象的所有属性  
+                var properties = anonymousType.GetProperties();
+
+                for (var i = 0; i < rowName.Count; i++)
+                {
+                    items.Insert(i, properties[i].GetValue(row.Key, null));
+                }
                 var obj = GetAnonymousObject(cols, items);
                 arr.Add(obj);
             }
-            return arr.ToList();
+            return arr;
         }
         private static dynamic GetAnonymousObject(IEnumerable<string> columns, IEnumerable<object> values)
         {
