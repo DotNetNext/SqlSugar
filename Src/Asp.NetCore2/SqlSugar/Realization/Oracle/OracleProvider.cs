@@ -297,7 +297,11 @@ namespace SqlSugar
                 if (isVarchar && sqlParameter.DbType == System.Data.DbType.String)
                 {
                     sqlParameter.DbType = System.Data.DbType.AnsiString;
-                } 
+                }
+                if (parameter.CustomDbType != null && parameter.CustomDbType is OracleDbType)
+                {
+                    sqlParameter.OracleDbType = ((OracleDbType)parameter.CustomDbType);
+                }
                 ++index;
             }
             return result;
