@@ -13,10 +13,10 @@ namespace SqlSugar
     internal static class DataTableExtensions
     {
         public static DataTable ToPivotTable<T, TColumn, TRow, TData>(
-    this IEnumerable<T> source,
-    Func<T, TColumn> columnSelector,
-    Expression<Func<T, TRow>> rowSelector,
-    Func<IEnumerable<T>, TData> dataSelector)
+            this IEnumerable<T> source,
+            Func<T, TColumn> columnSelector,
+            Expression<Func<T, TRow>> rowSelector,
+            Func<IEnumerable<T>, TData> dataSelector)
         {
             DataTable table = new DataTable();
 
