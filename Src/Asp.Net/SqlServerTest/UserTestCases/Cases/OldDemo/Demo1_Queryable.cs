@@ -56,9 +56,15 @@ namespace OrmTest
             var test03 = db.Queryable<Order>().Take(1).ToList();
             var dp = DateTime.Now;
             var test05 = db.Queryable<Order>().Where(it => it.CreateTime.Month == dp.Month).ToList();
-            var test06 = db.Queryable<Order>()
+            var test061 = db.Queryable<Order>()
+            .ToPivotTable(it => it.Id, it => new { it.Name }, it => it.Sum(x => x.Price));
+            var test062 = db.Queryable<Order>()
                    .ToPivotTable(it => it.Id, it => it.Name, it => it.Sum(x => x.Price));
-
+            var test063 = db.Queryable<Order>()
+                   .ToPivotList(it => it.Id, it => new { it.Name }, it => it.Sum(x => x.Price));
+            var test064= db.Queryable<Order>()
+                  .ToPivotList(it => it.Id, it => it.Name  , it => it.Sum(x => x.Price));
+            var dt = db.Utilities.ListToDataTable(test063);
             var test07 = db.Queryable<Order>()
             .ToPivotList(it => it.Id, it => it.Name, it => it.Sum(x => x.Price));
 
