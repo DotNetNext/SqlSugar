@@ -40,7 +40,7 @@ namespace SqlSugar
             var shortName = $"pnv_{navObjectName}";
             var mainShortName = memberExpression.Expression.ToString();
             this.QueryBuilder.TableShortName = mainShortName;
-            var onWhere = $"{shortName}.{navPkColumn.DbColumnName}={mainShortName}.{navColumn.DbColumnName}";
+            var onWhere = $"{SqlBuilder.GetTranslationColumnName(shortName)}.{SqlBuilder.GetTranslationColumnName(navPkColumn.DbColumnName)}={SqlBuilder.GetTranslationColumnName(mainShortName)}.{SqlBuilder.GetTranslationColumnName(navColumn.DbColumnName)}";
             UtilMethods.IsNullReturnNew(this.Context.TempItems);
             this.AddJoinInfo(GetTableName(navEntityInfo, navEntityInfo.DbTableName), shortName, onWhere, JoinType.Left);
             this.QueryBuilder.JoinQueryInfos.Last().EntityType = navEntityInfo.Type;
@@ -56,7 +56,7 @@ namespace SqlSugar
             var shortName = $"pnv_{navObjectName}";
             var mainShortName = memberExpression.Expression.ToString();
             this.QueryBuilder.TableShortName = mainShortName;
-            var onWhere = $"{shortName}.{navPkColumn.DbColumnName}={mainShortName}.{navColumn.DbColumnName}";
+            var onWhere = $"{SqlBuilder.GetTranslationColumnName(shortName)}.{SqlBuilder.GetTranslationColumnName(navPkColumn.DbColumnName)}={SqlBuilder.GetTranslationColumnName(mainShortName)}.{SqlBuilder.GetTranslationColumnName(navColumn.DbColumnName)}";
             UtilMethods.IsNullReturnNew(this.Context.TempItems);
             this.AddJoinInfo(GetTableName(navEntityInfo, navEntityInfo.DbTableName), shortName, onWhere, JoinType.Inner);
             this.QueryBuilder.JoinQueryInfos.Last().EntityType = navEntityInfo.Type;
@@ -72,7 +72,7 @@ namespace SqlSugar
             var shortName = $"pnv_{navObjectName}";
             var mainShortName = memberExpression.Expression.ToString();
             this.QueryBuilder.TableShortName = mainShortName;
-            var onWhere = $"{shortName}.{navPkColumn.DbColumnName}={mainShortName}.{navColumn.DbColumnName}";
+            var onWhere = $"{SqlBuilder.GetTranslationColumnName(shortName)}.{SqlBuilder.GetTranslationColumnName(navPkColumn.DbColumnName)}={SqlBuilder.GetTranslationColumnName(mainShortName)}.{SqlBuilder.GetTranslationColumnName(navColumn.DbColumnName)}";
             UtilMethods.IsNullReturnNew(this.Context.TempItems);
             this.AddJoinInfo(GetTableName(navEntityInfo, navEntityInfo.DbTableName), shortName, onWhere, JoinType.Full);
             this.QueryBuilder.JoinQueryInfos.Last().EntityType = navEntityInfo.Type;
@@ -88,7 +88,7 @@ namespace SqlSugar
             var shortName = $"pnv_{navObjectName}";
             var mainShortName = memberExpression.Expression.ToString();
             this.QueryBuilder.TableShortName = mainShortName;
-            var onWhere = $"{shortName}.{navPkColumn.DbColumnName}={mainShortName}.{navColumn.DbColumnName}";
+            var onWhere = $"{SqlBuilder.GetTranslationColumnName(shortName)}.{SqlBuilder.GetTranslationColumnName(navPkColumn.DbColumnName)}={SqlBuilder.GetTranslationColumnName(mainShortName)}.{SqlBuilder.GetTranslationColumnName(navColumn.DbColumnName)}";
             UtilMethods.IsNullReturnNew(this.Context.TempItems);
             this.AddJoinInfo(GetTableName(navEntityInfo, navEntityInfo.DbTableName), shortName, onWhere, JoinType.Right);
             this.QueryBuilder.JoinQueryInfos.Last().EntityType = navEntityInfo.Type;
