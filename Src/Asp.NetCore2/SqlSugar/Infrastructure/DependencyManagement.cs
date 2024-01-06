@@ -125,7 +125,7 @@ namespace SqlSugar
                     var conn = db.GetAdapter();
                     IsTryKd = true;
                 }
-                catch (Exception ex)
+                catch  
                 {
                     var message = "需要引用Kdbndp.dll,Github搜索sqlsugar源码里面有";
                     throw new Exception(message);
@@ -143,7 +143,7 @@ namespace SqlSugar
                     var conn = db.GetAdapter();
                     IsTryDm = true;
                 }
-                catch (Exception ex)
+                catch  
                 {
                     var message = "需要引用DmProvider.dll,Github搜索sqlsugar源码里面有";
                     throw new Exception(message);
@@ -161,7 +161,7 @@ namespace SqlSugar
                     var conn = db.GetAdapter();
                     IsTryOscar = true;
                 }
-                catch (Exception ex)
+                catch  
                 {
                     var message = "需要引用Oscar.Data.SqlClient.dll,Github搜索sqlsugar源码里面有";
                     throw new Exception(message);
