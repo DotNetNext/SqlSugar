@@ -99,7 +99,7 @@ namespace SqlSugar
                          .Select(x => row[x.Key] = x.Value)
                          .SelectMany(x => properties, (x, y) => row[y.Name] = y.GetValue(rowGroup.Key, null))
                          .ToList();
-                    return row;
+                    return row.OrderBy(it=> rowName.Contains(it.Key)?0:1);
                 });
             return rows;
         }
