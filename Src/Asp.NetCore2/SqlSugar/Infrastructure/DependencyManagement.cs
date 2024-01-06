@@ -157,8 +157,9 @@ namespace SqlSugar
             {
                 try
                 {
-                    OscarProvider db = new OscarProvider();
-                    var conn = db.GetAdapter();
+                    var type = Type.GetType("SqlSugar.OscarProvider");
+                    var obj = Activator.CreateInstance(type);
+                    type.GetMyMethod("GetAdapter", 0).Invoke(obj, null); 
                     IsTryOscar = true;
                 }
                 catch  
