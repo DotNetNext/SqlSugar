@@ -18,6 +18,11 @@ namespace SqlSugar
             Expression<Func<T, TRow>> rowSelector,
             Func<IEnumerable<T>, TData> dataSelector)
         {
+
+            if (rowSelector.Body is MemberExpression)
+                return PivotHelper.ToPivotTable(source, columnSelector, rowSelector, dataSelector);
+
+
             DataTable table = new DataTable();
 
             var rowName = new List<string>();
@@ -63,6 +68,10 @@ namespace SqlSugar
             Expression<Func<T, TRow>> rowSelector,
             Func<IEnumerable<T>, TData> dataSelector)
         {
+
+            if (rowSelector.Body is MemberExpression)
+                return PivotHelper.ToPivotList(source, columnSelector, rowSelector, dataSelector);
+
 
             var rowName = new List<string>();
             if (rowSelector.Body is MemberExpression)
