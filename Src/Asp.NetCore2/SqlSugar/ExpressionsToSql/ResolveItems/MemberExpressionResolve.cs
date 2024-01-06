@@ -284,7 +284,7 @@ namespace SqlSugar
                     if (joinInfo != null)
                     {
                         var columnInfo = nav.ProPertyEntity.Columns.FirstOrDefault(it => it.PropertyName == nav.MemberName);
-                        var value = new MapperSql() { Sql = joinInfo.ShortName + "." + columnInfo.DbColumnName };
+                        var value = new MapperSql() { Sql = querybuilder.Builder.GetTranslationColumnName(joinInfo.ShortName) + "." + querybuilder.Builder.GetTranslationColumnName(columnInfo.DbColumnName) };
 
                         if (isSetTempData)
                         {
