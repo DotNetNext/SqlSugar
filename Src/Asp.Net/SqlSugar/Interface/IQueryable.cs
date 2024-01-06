@@ -368,7 +368,7 @@ namespace SqlSugar
         ISugarQueryable<T, T2> GroupBy(Expression<Func<T, T2, object>> expression);
         new ISugarQueryable<T, T2> GroupByIF(bool isGroupBy, Expression<Func<T, object>> expression);
         ISugarQueryable<T, T2> GroupByIF(bool isGroupBy, Expression<Func<T,T2, object>> expression);
-        ISugarQueryable<T, T2> GroupByIF(bool isGroupBy, string groupFields);
+        new ISugarQueryable<T, T2> GroupByIF(bool isGroupBy, string groupFields);
         new ISugarQueryable<T, T2> Having(Expression<Func<T, bool>> expression);
         ISugarQueryable<T, T2> Having(Expression<Func<T, T2, bool>> expression);
         new ISugarQueryable<T, T2> Having(string whereString, object whereObj = null);
