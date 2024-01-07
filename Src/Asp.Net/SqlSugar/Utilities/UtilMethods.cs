@@ -809,6 +809,25 @@ namespace SqlSugar
                 }
             }
         }
+        internal static void RepairReplicationParameters(ISqlSugarClient db,ref string appendSql, SugarParameter[] parameters, int addIndex, string append = null)
+        {
+            if (appendSql.HasValue() && parameters.HasValue())
+            {
+                foreach (var parameter in parameters.OrderByDescending(it => it.ParameterName.Length))
+                {
+                    //Compatible with.NET CORE parameters case
+                    var name = parameter.ParameterName;
+                    string newName = name + append + addIndex;
+                    var maxLength = db.CurrentConnectionConfig.MoreSettings.MaxParameterNameLength;
+                    if (newName.Length > maxLength) 
+                    { 
+                          newName = name.SafeSubstring(0,20) + "_" + addIndex;
+                    }
+                    appendSql = ReplaceSqlParameter(appendSql, parameter, newName);
+                    parameter.ParameterName = newName;
+                }
+            }
+        }
 
         internal static string GetPackTable(string sql, string shortName)
         {
