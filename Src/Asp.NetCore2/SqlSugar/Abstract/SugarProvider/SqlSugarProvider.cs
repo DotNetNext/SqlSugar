@@ -631,7 +631,14 @@ namespace SqlSugar
             {
                 var sqlObj = item.ToSql();
                 string sql = sqlObj.Key;
-                UtilMethods.RepairReplicationParameters(ref sql, sqlObj.Value.ToArray(), i, "UnionAll");
+                if (this.CurrentConnectionConfig?.MoreSettings?.MaxParameterNameLength > 0)
+                {
+                    UtilMethods.RepairReplicationParameters(this.Context,ref sql, sqlObj.Value.ToArray(), i, "UnionAll");
+                }
+                else
+                {
+                    UtilMethods.RepairReplicationParameters(ref sql, sqlObj.Value.ToArray(), i, "UnionAll");
+                }
                 if (sqlObj.Value.HasValue())
                     allItems.Add(new KeyValuePair<string, List<SugarParameter>>(sqlBuilder.GetUnionFomatSql(sql), sqlObj.Value));
                 else
@@ -668,7 +675,14 @@ namespace SqlSugar
                 item.QueryBuilder.DisableTop = true;
                 var sqlObj = item.ToSql();
                 string sql = sqlObj.Key;
-                UtilMethods.RepairReplicationParameters(ref sql, sqlObj.Value.ToArray(), i, "Union");
+                if (this.CurrentConnectionConfig?.MoreSettings?.MaxParameterNameLength > 0)
+                {
+                    UtilMethods.RepairReplicationParameters(this.Context, ref sql, sqlObj.Value.ToArray(), i, "Union");
+                }
+                else
+                {
+                    UtilMethods.RepairReplicationParameters(ref sql, sqlObj.Value.ToArray(), i, "Union");
+                }
                 if (sqlObj.Value.HasValue())
                     allItems.Add(new KeyValuePair<string, List<SugarParameter>>(sqlBuilder.GetUnionFomatSql(sql), sqlObj.Value));
                 else

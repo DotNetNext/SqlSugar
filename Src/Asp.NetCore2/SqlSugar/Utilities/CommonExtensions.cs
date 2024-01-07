@@ -11,6 +11,31 @@ namespace SqlSugar
 {
     public static class CommonExtensions
     {
+        public static string SafeSubstring(this string str, int startIndex, int length)
+        {
+            if (str == null)
+            {
+                throw new ArgumentNullException(nameof(str));
+            }
+
+            if (startIndex < 0)
+            {
+                startIndex = 0;
+            }
+
+            if (startIndex >= str.Length)
+            {
+                return string.Empty; // 返回空字符串，因为起始索引超过字符串长度
+            }
+
+            if (length < 0)
+            {
+                length = 0;
+            }
+
+            // 截取字符串时，确保不超过字符串的长度
+            return str.Substring(startIndex, Math.Min(length, str.Length - startIndex));
+        }
         public static Dictionary<string, object> ToDictionary<T>(this List<T> list, string keyPropertyName, string valuePropertyName)
         {
             var keyProperty = typeof(T).GetProperty(keyPropertyName);
