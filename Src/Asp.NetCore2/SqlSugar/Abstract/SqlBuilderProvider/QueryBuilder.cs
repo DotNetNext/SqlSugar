@@ -683,7 +683,9 @@ namespace SqlSugar
             }
             if (joinInfo.JoinType == JoinType.Cross) 
             {
-                result = result.Replace(" ON ", " WHERE ");
+             
+                var onIndex=result.IndexOf(" ON ");
+                result = result.Substring(0,onIndex);
             }
             return result;
         }
