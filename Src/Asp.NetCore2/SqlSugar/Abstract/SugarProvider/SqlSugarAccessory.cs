@@ -585,7 +585,7 @@ namespace SqlSugar
             {
                 ++i;
                 var isLast = joinArray.Length == i;
-                var isJoinType = item.IsIn(JoinType.Full.ToString(),JoinType.Inner.ToString(), JoinType.Left.ToString(), JoinType.Right.ToString());
+                var isJoinType = item.IsIn(JoinType.Full.ToString(),JoinType.Inner.ToString(), JoinType.Left.ToString(), JoinType.Right.ToString(),JoinType.Cross.ToString());
                 if (isJoinType)
                 {
                     if (joinValue != null)

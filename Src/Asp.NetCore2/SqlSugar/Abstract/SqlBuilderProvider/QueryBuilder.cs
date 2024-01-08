@@ -681,6 +681,10 @@ namespace SqlSugar
                 var entityInfo = this.Context.EntityMaintenance.GetEntityInfoWithAttr(joinInfo.EntityType);
                 result = $" {result} AND {shortName}.{UtilMethods.GetDiscrimator(entityInfo,this.Builder)}";
             }
+            if (joinInfo.JoinType == JoinType.Cross) 
+            {
+                result = result.Replace(" ON ", " WHERE ");
+            }
             return result;
         }
         public virtual void Clear()
