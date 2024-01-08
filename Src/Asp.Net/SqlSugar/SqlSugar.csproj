@@ -460,7 +460,6 @@
     <Compile Include="Utilities\CallContext.cs" />
     <Compile Include="Utilities\CallContextAsync.cs" />
     <Compile Include="Abstract\DynamicBuilder\DynamicBuilderHelper.cs" />
-    <Compile Include="Utilities\PivotHelper.cs" />
     <Compile Include="Utilities\FastCopy.cs" />
     <Compile Include="Utilities\ExpressionBuilderHelper.cs" />
     <Compile Include="Utilities\CommonExtensions.cs" />
