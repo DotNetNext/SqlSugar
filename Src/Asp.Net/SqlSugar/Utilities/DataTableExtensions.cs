@@ -36,55 +36,42 @@ namespace SqlSugar
             var columns = source.Select(columnSelector).Distinct();
             table.Columns.AddRange(columns.Select(x => new DataColumn(x?.ToString())).ToArray());
 
+            Action<DataRow, IGrouping<TRow, T>> action;
             if (string.IsNullOrEmpty(memberName))
             {
-                var rows = source.GroupBy(rowSelector.Compile())
-                 .Select(rowGroup =>
-                 {
-                     var anonymousType = rowGroup.Key.GetType();
-                     var properties = anonymousType.GetProperties();
-                     var row = table.NewRow();
-                     columns.GroupJoin(rowGroup, c => c, r => columnSelector(r),
-                                              (c, columnGroup) =>
-                                              {
-
-                                                  var dic = new Dictionary<string, object>();
-                                                  if (c != null)
-                                                      dic[c.ToString()] = dataSelector(columnGroup);
-                                                  return dic;
-                                              })
-                           .SelectMany(x => x)
-                           .Select(x => row[x.Key] = x.Value)
-                           .SelectMany(x => properties, (x, y) => row[y.Name] = y.GetValue(rowGroup.Key, null))
-                           .ToArray();
-                     table.Rows.Add(row);
-                     return row;
-                 })
-                 .ToList();
+                action = (row, rowGroup) =>
+                {
+                    var properties = rowGroup.Key.GetType().GetProperties();
+                    foreach (var item in properties)
+                        row[item.Name] = item.GetValue(rowGroup.Key, null);
+                };
             }
             else
             {
-                var rows = source.GroupBy(rowSelector.Compile())
-                    .Select(rowGroup =>
-                    {
-                        var row = table.NewRow();
-                        row[memberName] = rowGroup.Key;
-                        columns.GroupJoin(rowGroup, c => c, r => columnSelector(r),
-                                                 (c, columnGroup) =>
-                                                 {
-
-                                                     var dic = new Dictionary<string, object>();
-                                                     if (c != null)
-                                                         dic[c.ToString()] = dataSelector(columnGroup);
-                                                     return dic;
-                                                 })
-                              .SelectMany(x => x)
-                              .Select(x => row[x.Key] = x.Value)
-                              .ToArray();
-                        table.Rows.Add(row);
-                        return row;
-                    }).ToList();
+                action = (row, rowGroup) => row[memberName] = rowGroup.Key;
             }
+
+            var rows = source.GroupBy(rowSelector.Compile())
+             .Select(rowGroup =>
+             {
+                 var row = table.NewRow();
+                 action(row, rowGroup);
+                 columns.GroupJoin(rowGroup, c => c, r => columnSelector(r),
+                                          (c, columnGroup) =>
+                                          {
+
+                                              var dic = new Dictionary<string, object>();
+                                              if (c != null)
+                                                  dic[c.ToString()] = dataSelector(columnGroup);
+                                              return dic;
+                                          })
+                       .SelectMany(x => x)
+                       .Select(x => row[x.Key] = x.Value)
+                       .ToArray();
+                 table.Rows.Add(row);
+                 return row;
+             })
+             .ToList();
 
             return table;
         }
@@ -96,59 +83,48 @@ namespace SqlSugar
             Func<IEnumerable<T>, TData> dataSelector)
         {
 
-            var rowName = new List<string>();
             var memberName = string.Empty;
 
             if (rowSelector.Body is MemberExpression)
                 memberName = ((MemberExpression)rowSelector.Body).Member.Name;
 
             var columns = source.Select(columnSelector).Distinct();
+
+            Action<IDictionary<string, object>, IGrouping<TRow, T>> action;
             if (string.IsNullOrEmpty(memberName))
             {
-                var rows = source.GroupBy(rowSelector.Compile())
-                .Select(rowGroup =>
+                action = (row, rowGroup) =>
                 {
-                    var anonymousType = rowGroup.Key.GetType();
-                    var properties = anonymousType.GetProperties();
-                    IDictionary<string, object> row = new ExpandoObject();
-                    columns.GroupJoin(rowGroup, c => c, r => columnSelector(r),
-                                            (c, columnGroup) =>
-                                            {
-                                                IDictionary<string, object> dic = new ExpandoObject();
-                                                if (c != null)
-                                                    dic[c.ToString()] = dataSelector(columnGroup);
-                                                return dic;
-                                            })
-                         .SelectMany(x => x)
-                         .Select(x => row[x.Key] = x.Value)
-                         .SelectMany(x => properties, (x, y) => row[y.Name] = y.GetValue(rowGroup.Key, null))
-                         .ToList();
-                    return row;
-                });
-                return rows;
+                    var properties = rowGroup.Key.GetType().GetProperties();
+                    foreach (var item in properties)
+                        row[item.Name] = item.GetValue(rowGroup.Key, null);
+                };
             }
             else
             {
-                var rows = source.GroupBy(rowSelector.Compile())
-                   .Select(rowGroup =>
-                   {
-                       IDictionary<string, object> row = new ExpandoObject();
-                       row[memberName] = rowGroup.Key;
-                       columns.GroupJoin(rowGroup, c => c, r => columnSelector(r),
-                                               (c, columnGroup) =>
-                                               {
-                                                   IDictionary<string, object> dic = new ExpandoObject();
-                                                   if (c != null)
-                                                       dic[c.ToString()] = dataSelector(columnGroup);
-                                                   return dic;
-                                               })
-                            .SelectMany(x => x)
-                            .Select(x => row[x.Key] = x.Value)
-                            .ToList();
-                       return row;
-                   });
-                return rows;
+                action = (row, rowGroup) => row[memberName] = rowGroup.Key;
             }
+
+            var rows = source.GroupBy(rowSelector.Compile())
+            .Select(rowGroup =>
+            {
+                IDictionary<string, object> row = new ExpandoObject();
+                action(row, rowGroup);
+                columns.GroupJoin(rowGroup, c => c, r => columnSelector(r),
+                                        (c, columnGroup) =>
+                                        {
+                                            var dic = new Dictionary<string, object>();
+                                            if (c != null)
+                                                dic[c.ToString()] = dataSelector(columnGroup);
+                                            return dic;
+                                        })
+                     .SelectMany(x => x)
+                     .Select(x => row[x.Key] = x.Value)
+                     .ToList();
+                return row;
+            });
+            return rows;
+
         }
     }
 }
