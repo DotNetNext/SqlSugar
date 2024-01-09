@@ -209,57 +209,73 @@ namespace SqlSugar
 
         private async Task<int> _BulkMerge(List<T> datas, string[] updateColumns, string[] whereColumns)
         {
-            Begin(datas, false,true);
-            Check.Exception(whereColumns == null || whereColumns.Count() == 0, "where columns count=0 or need primary key");
-            Check.Exception(whereColumns == null || whereColumns.Count() == 0, "where columns count=0 or need primary key");
-            var isAuto = this.context.CurrentConnectionConfig.IsAutoCloseConnection;
-            this.context.CurrentConnectionConfig.IsAutoCloseConnection = false;
-            DataTable dt = ToDdateTable(datas);
-            IFastBuilder buider = GetBuider();
-            buider.Context = context;
-            if (buider?.DbFastestProperties?.IsMerge == true)
+            try
             {
-                await buider.CreateTempAsync<T>(dt);
-                await buider.ExecuteBulkCopyAsync(dt);
+                Begin(datas, false, true);
+                Check.Exception(whereColumns == null || whereColumns.Count() == 0, "where columns count=0 or need primary key");
+                Check.Exception(whereColumns == null || whereColumns.Count() == 0, "where columns count=0 or need primary key");
+                var isAuto = this.context.CurrentConnectionConfig.IsAutoCloseConnection;
+                this.context.CurrentConnectionConfig.IsAutoCloseConnection = false;
+                DataTable dt = ToDdateTable(datas);
+                IFastBuilder buider = GetBuider();
+                buider.Context = context;
+                if (buider?.DbFastestProperties?.IsMerge == true)
+                {
+                    await buider.CreateTempAsync<T>(dt);
+                    await buider.ExecuteBulkCopyAsync(dt);
+                }
+                var result = await buider.Merge(GetTableName(), dt, this.entityInfo, whereColumns, updateColumns, datas);
+                //var queryTemp = this.context.Queryable<T>().AS(dt.TableName).ToList();//test
+                //var result = await buider.UpdateByTempAsync(GetTableName(), dt.TableName, updateColumns, whereColumns);
+                if (buider?.DbFastestProperties?.IsMerge == true && this.context.CurrentConnectionConfig.DbType != DbType.Sqlite)
+                {
+                    this.context.DbMaintenance.DropTable(dt.TableName);
+                }
+                this.context.CurrentConnectionConfig.IsAutoCloseConnection = isAuto;
+                buider.CloseDb();
+                End(datas, false, true);
+                return result;
             }
-            var result = await buider.Merge(GetTableName(),dt, this.entityInfo,whereColumns,updateColumns, datas);
-            //var queryTemp = this.context.Queryable<T>().AS(dt.TableName).ToList();//test
-            //var result = await buider.UpdateByTempAsync(GetTableName(), dt.TableName, updateColumns, whereColumns);
-            if (buider?.DbFastestProperties?.IsMerge == true&&this.context.CurrentConnectionConfig.DbType != DbType.Sqlite)
+            catch (Exception)
             {
-                this.context.DbMaintenance.DropTable(dt.TableName);
+                this.context.Close();
+                throw;
             }
-            this.context.CurrentConnectionConfig.IsAutoCloseConnection = isAuto;
-            buider.CloseDb();
-            End(datas, false,true);
-            return result;
         }
         #endregion
 
         #region Core
         private async Task<int> _BulkUpdate(List<T> datas, string[] whereColumns, string[] updateColumns)
         {
-            Begin(datas,false);
-            Check.Exception(whereColumns == null || whereColumns.Count() == 0, "where columns count=0 or need primary key");
-            Check.Exception(updateColumns == null || updateColumns.Count() == 0, "set columns count=0");
-            var isAuto = this.context.CurrentConnectionConfig.IsAutoCloseConnection;
-            this.context.CurrentConnectionConfig.IsAutoCloseConnection = false;
-            DataTable dt = ToDdateTable(datas);
-            IFastBuilder buider = GetBuider();
-            ActionIgnoreColums(whereColumns, updateColumns, dt, buider.IsActionUpdateColumns);
-            buider.Context = context;
-            await buider.CreateTempAsync<T>(dt);
-            await buider.ExecuteBulkCopyAsync(dt);
-            //var queryTemp = this.context.Queryable<T>().AS(dt.TableName).ToList();//test
-            var result = await buider.UpdateByTempAsync(GetTableName(), dt.TableName, updateColumns, whereColumns);
-            if (this.context.CurrentConnectionConfig.DbType != DbType.Sqlite)
+            try
             {
-                this.context.DbMaintenance.DropTable(dt.TableName);
+                Begin(datas, false);
+                Check.Exception(whereColumns == null || whereColumns.Count() == 0, "where columns count=0 or need primary key");
+                Check.Exception(updateColumns == null || updateColumns.Count() == 0, "set columns count=0");
+                var isAuto = this.context.CurrentConnectionConfig.IsAutoCloseConnection;
+                this.context.CurrentConnectionConfig.IsAutoCloseConnection = false;
+                DataTable dt = ToDdateTable(datas);
+                IFastBuilder buider = GetBuider();
+                ActionIgnoreColums(whereColumns, updateColumns, dt, buider.IsActionUpdateColumns);
+                buider.Context = context;
+                await buider.CreateTempAsync<T>(dt);
+                await buider.ExecuteBulkCopyAsync(dt);
+                //var queryTemp = this.context.Queryable<T>().AS(dt.TableName).ToList();//test
+                var result = await buider.UpdateByTempAsync(GetTableName(), dt.TableName, updateColumns, whereColumns);
+                if (this.context.CurrentConnectionConfig.DbType != DbType.Sqlite)
+                {
+                    this.context.DbMaintenance.DropTable(dt.TableName);
+                }
+                this.context.CurrentConnectionConfig.IsAutoCloseConnection = isAuto;
+                buider.CloseDb();
+                End(datas, false);
+                return result;
             }
-            this.context.CurrentConnectionConfig.IsAutoCloseConnection = isAuto;
-            buider.CloseDb();
-            End(datas, false);
-            return result;
+            catch (Exception)
+            {
+                this.context.Close();
+                throw;
+            }
         }
 
         private  void ActionIgnoreColums(string[] whereColumns, string[] updateColumns, DataTable dt,bool IsActionUpdateColumns)
