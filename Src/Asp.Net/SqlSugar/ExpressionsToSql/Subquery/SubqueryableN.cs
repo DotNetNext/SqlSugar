@@ -446,11 +446,35 @@ namespace SqlSugar
         {
             return this;
         }
+        public Subqueryable<T1, T2, T3> OrderBy(Func<T1, T2, object> expression)
+        {
+            return this;
+        }
+        public new Subqueryable<T1, T2, T3> OrderBy(Func<T1,  object> expression)
+        {
+            return this;
+        }
         public Subqueryable<T1, T2,T3> OrderByDesc(Func<T1, T2,T3, object> expression)
         {
             return this;
         }
+        public Subqueryable<T1, T2, T3> OrderByDesc(Func<T1, T2, object> expression)
+        {
+            return this;
+        }
+        public new Subqueryable<T1, T2, T3> OrderByDesc(Func<T1,object> expression)
+        {
+            return this;
+        }
         public Subqueryable<T1, T2,T3> GroupBy(Func<T1, T2,T3, object> expression)
+        {
+            return this;
+        }
+        public Subqueryable<T1, T2, T3> GroupBy(Func<T1, T2, object> expression)
+        {
+            return this;
+        }
+        public new Subqueryable<T1, T2, T3> GroupBy(Func<T1,object> expression)
         {
             return this;
         }
@@ -550,11 +574,23 @@ namespace SqlSugar
         {
             return this;
         }
+        public new Subqueryable<T1, T2> OrderBy(Func<T1,object> expression)
+        {
+            return this;
+        }
         public Subqueryable<T1,T2> OrderByDesc(Func<T1,T2, object> expression)
         {
             return this;
         }
+        public new Subqueryable<T1, T2> OrderByDesc(Func<T1,object> expression)
+        {
+            return this;
+        }
         public Subqueryable<T1,T2> GroupBy(Func<T1,T2, object> expression)
+        {
+            return this;
+        }
+        public new  Subqueryable<T1, T2> GroupBy(Func<T1, object> expression)
         {
             return this;
         }

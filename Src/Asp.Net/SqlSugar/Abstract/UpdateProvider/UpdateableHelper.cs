@@ -726,14 +726,21 @@ namespace SqlSugar
                     item.Columns = new List<DiffLogColumnInfo>();
                     foreach (DataColumn col in dt.Columns)
                     {
-                        var sugarColumn = this.EntityInfo.Columns.Where(it => it.DbColumnName != null).First(it =>
-                            it.DbColumnName.Equals(col.ColumnName, StringComparison.CurrentCultureIgnoreCase));
-                        DiffLogColumnInfo addItem = new DiffLogColumnInfo();
-                        addItem.Value = row[col.ColumnName];
-                        addItem.ColumnName = col.ColumnName;
-                        addItem.IsPrimaryKey = sugarColumn.IsPrimarykey;
-                        addItem.ColumnDescription = sugarColumn.ColumnDescription;
-                        item.Columns.Add(addItem);
+                        try
+                        {
+                            var sugarColumn = this.EntityInfo.Columns.Where(it => it.DbColumnName != null).First(it =>
+                                              it.DbColumnName.Equals(col.ColumnName, StringComparison.CurrentCultureIgnoreCase));
+                            DiffLogColumnInfo addItem = new DiffLogColumnInfo();
+                            addItem.Value = row[col.ColumnName];
+                            addItem.ColumnName = col.ColumnName;
+                            addItem.IsPrimaryKey = sugarColumn.IsPrimarykey;
+                            addItem.ColumnDescription = sugarColumn.ColumnDescription;
+                            item.Columns.Add(addItem);
+                        }
+                        catch (Exception ex)
+                        {
+                            Check.ExceptionEasy(col.ColumnName + " No corresponding entity attribute found in difference log ."+ex.Message, col.ColumnName + "在差异日志中可能没有找到相应的实体属性,详细:"+ex.Message);
+                        }
                     }
                     result.Add(item);
                 }

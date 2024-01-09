@@ -1030,7 +1030,7 @@ namespace SqlSugar
                         var newValue = "null";
                         if (value != null)
                         {
-                            if (UtilMethods.IsNumber(columnInfo.UnderType.Name))
+                            if (columnInfo.DbTableName!= "String" && UtilMethods.IsNumber(columnInfo.UnderType.Name))
                             {
                                 newValue = value.ToString();
                             }
