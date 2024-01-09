@@ -224,13 +224,17 @@ namespace SqlSugar
         {
             return this.Context.Utilities.SerializeObject(this.ToPageList(pageIndex, pageSize, ref totalNumber), typeof(T));
         }
+
+        #region 内存行转列
+
+        #region 同步
         public virtual DataTable ToPivotTable<TColumn, TRow, TData>(Func<T, TColumn> columnSelector, Expression<Func<T, TRow>> rowSelector, Func<IEnumerable<T>, TData> dataSelector)
         {
             return this.ToList().ToPivotTable(columnSelector, rowSelector, dataSelector);
         }
         public virtual List<dynamic> ToPivotList<TColumn, TRow, TData>(Func<T, TColumn> columnSelector, Expression<Func<T, TRow>> rowSelector, Func<IEnumerable<T>, TData> dataSelector)
         {
-            return ToPivotEnumerable(columnSelector,rowSelector,dataSelector).ToList();
+            return ToPivotEnumerable(columnSelector, rowSelector, dataSelector).ToList();
         }
         public virtual IEnumerable<dynamic> ToPivotEnumerable<TColumn, TRow, TData>(Func<T, TColumn> columnSelector, Expression<Func<T, TRow>> rowSelector, Func<IEnumerable<T>, TData> dataSelector)
         {
@@ -238,9 +242,33 @@ namespace SqlSugar
         }
         public virtual string ToPivotJson<TColumn, TRow, TData>(Func<T, TColumn> columnSelector, Expression<Func<T, TRow>> rowSelector, Func<IEnumerable<T>, TData> dataSelector)
         {
-            var list = this.ToPivotList(columnSelector, rowSelector, dataSelector);
+            var list = ToPivotEnumerable(columnSelector, rowSelector, dataSelector).ToList();
             return this.Context.Utilities.SerializeObject(list);
         }
+        #endregion
+
+        #region 异步
+        public virtual async Task<DataTable> ToPivotTableAsync<TColumn, TRow, TData>(Func<T, TColumn> columnSelector, Expression<Func<T, TRow>> rowSelector, Func<IEnumerable<T>, TData> dataSelector)
+        {
+            return (await this.ToListAsync()).ToPivotTable(columnSelector, rowSelector, dataSelector);
+        }
+        public virtual async Task<List<dynamic>> ToPivotListAsync<TColumn, TRow, TData>(Func<T, TColumn> columnSelector, Expression<Func<T, TRow>> rowSelector, Func<IEnumerable<T>, TData> dataSelector)
+        {
+            return (await ToPivotEnumerableAsync(columnSelector, rowSelector, dataSelector)).ToList();
+        }
+        public virtual async Task<IEnumerable<dynamic>> ToPivotEnumerableAsync<TColumn, TRow, TData>(Func<T, TColumn> columnSelector, Expression<Func<T, TRow>> rowSelector, Func<IEnumerable<T>, TData> dataSelector)
+        {
+            return (await this.ToListAsync()).ToPivotList(columnSelector, rowSelector, dataSelector);
+        }
+        public virtual async Task<string> ToPivotJsonAsync<TColumn, TRow, TData>(Func<T, TColumn> columnSelector, Expression<Func<T, TRow>> rowSelector, Func<IEnumerable<T>, TData> dataSelector)
+        {
+            var list = (await ToPivotEnumerableAsync(columnSelector, rowSelector, dataSelector)).ToList();
+            return this.Context.Utilities.SerializeObject(list);
+        }
+        #endregion
+
+        #endregion
+
         public List<T> ToChildList(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue, bool isContainOneself = true)
         {
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
