@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SqlSugar;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,8 +25,69 @@ namespace OrmTest
             Db.CodeFirst.InitTables<UnitIndextest>();
             Db.CodeFirst.InitTables<UnitXXXYYYZZZ>();
             Db.CodeFirst.InitTables<unitxxxyyyzzz>();
+            Db.CodeFirst.As<Bom>("Bom-11").InitTables<Bom>();
         }
+        ///<summary>
+        ///
+        ///</summary>
+        [SugarTable("Bom")]
+        public partial class Bom
+        {
+            public Bom()
+            {
 
+
+            }
+            /// <summary>
+            /// Desc:
+            /// Default:
+            /// Nullable:False
+            /// </summary>           
+            [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+            public int id { get; set; }
+
+            /// <summary>
+            /// Desc:
+            /// Default:
+            /// Nullable:True
+            /// </summary>           
+            public string wlbm { get; set; }
+
+            /// <summary>
+            /// Desc:
+            /// Default:
+            /// Nullable:False
+            /// </summary>           
+            public string wlname { get; set; }
+
+            /// <summary>
+            /// Desc:
+            /// Default:
+            /// Nullable:True
+            /// </summary>           
+            public string wllx { get; set; }
+
+            /// <summary>
+            /// Desc:
+            /// Default:
+            /// Nullable:True
+            /// </summary>           
+            public string wlsl { get; set; }
+
+            /// <summary>
+            /// Desc:
+            /// Default:
+            /// Nullable:True
+            /// </summary>           
+            public string wlshl { get; set; }
+
+            /// <summary>
+            /// Desc:
+            /// Default:
+            /// Nullable:True
+            /// </summary>           
+            public string wlbz { get; set; }
+        }
         public class UnitXXXYYYZZZ
         {
             public string Id { get; set; }
