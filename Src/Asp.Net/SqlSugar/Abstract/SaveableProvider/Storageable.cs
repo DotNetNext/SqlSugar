@@ -193,7 +193,10 @@ namespace SqlSugar
             var result = 0;
             var x = await this.ToStorageAsync();
             result +=await x.AsInsertable.ExecuteCommandAsync();
-            result +=await x.AsUpdateable.ExecuteCommandAsync();
+            var updateCount=await x.AsUpdateable.ExecuteCommandAsync();
+            if (updateCount < 0) 
+                updateCount = 0;
+            result += updateCount;
             return result;
         }
         public int ExecuteSqlBulkCopy()
