@@ -821,7 +821,7 @@ namespace SqlSugar
                     var maxLength = db.CurrentConnectionConfig.MoreSettings.MaxParameterNameLength;
                     if (newName.Length > maxLength) 
                     { 
-                          newName = name.SafeSubstring(0,20) + "_" + addIndex;
+                          newName = name.GetNonNegativeHashCodeString() + "_" + addIndex;
                     }
                     appendSql = ReplaceSqlParameter(appendSql, parameter, newName);
                     parameter.ParameterName = newName;
