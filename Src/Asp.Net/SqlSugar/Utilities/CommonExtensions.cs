@@ -11,6 +11,13 @@ namespace SqlSugar
 {
     public static class CommonExtensions
     {
+
+        public static string GetNonNegativeHashCodeString(this string input)
+        {
+            // 获取哈希码，然后取绝对值，转换为字符串
+            string hashCode = "hs"+Math.Abs(input.GetHashCode()); 
+            return hashCode;
+        }
         public static string SafeSubstring(this string str, int startIndex, int length)
         {
             if (str == null)
