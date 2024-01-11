@@ -178,6 +178,11 @@ namespace SqlSugar
             var select = copyContext.Result.GetString();
             if (dic.Count > 0 && appendColumns.Count == 0)
             {
+                if (copyContext.Parameters?.Any()==true) 
+                {
+                    this.Context.Parameters.AddRange(copyContext.Parameters); 
+                    select = select.Replace("),  AS", ")  AS");
+                }
                 return select + ",@sugarIndex as sugarIndex"; ;
             }
             else if (dic.Count > 0 && appendColumns.Count > 0) 
