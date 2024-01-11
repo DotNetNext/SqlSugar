@@ -3,7 +3,7 @@ using System;
 using OrmTest;
 using SqlSeverTest.UserTestCases.UnitTest;
 
-namespace SqlSeverTest.UserTestCases
+namespace OrmTest
 {
     public class Cases
     {
@@ -13,7 +13,8 @@ namespace SqlSeverTest.UserTestCases
         /// </summary>
         /// <param name="args"></param>
          public static void Init()
-        {
+        { 
+            Unitatadffaa1.Init();
             UnitOneToManyNsdfafa.Init();
             UCustomConditionalFunc.Init();
             //Demo
