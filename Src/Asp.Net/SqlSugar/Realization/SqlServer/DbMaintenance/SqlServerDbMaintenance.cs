@@ -514,7 +514,7 @@ AND syscomments.text LIKE '%"+tableName+"%'");
                 {
                     tableName = SqlBuilder.GetNoTranslationColumnName(tableName);
                 }
-                var sql = @"IF EXISTS (SELECT * FROM sys.objects
+                var sql = @"IF EXISTS (SELECT * FROM sys.objects with(nolock)
                         WHERE type='u' AND name=N'"+tableName.ToSqlFilter()+@"')  
                         SELECT 1 AS res ELSE SELECT 0 AS res;";
                 return this.Context.Ado.GetInt(sql) > 0;
