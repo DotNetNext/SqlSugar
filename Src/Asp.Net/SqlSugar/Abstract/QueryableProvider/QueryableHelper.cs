@@ -1880,7 +1880,14 @@ namespace SqlSugar
             }
             else if (entityType.IsAnonymousType() || isComplexModel|| StaticConfig.EnableAot)
             {
-                result = this.Context.Utilities.DataReaderToList<TResult>(dataReader);
+                if (entityType.IsClass() == false && StaticConfig.EnableAot)
+                {
+                    result = this.Bind.DataReaderToList<TResult>(entityType, dataReader);
+                }
+                else
+                {
+                    result = this.Context.Utilities.DataReaderToList<TResult>(dataReader);
+                }
             }
             else
             {
