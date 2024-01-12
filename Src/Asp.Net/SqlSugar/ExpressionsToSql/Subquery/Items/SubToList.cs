@@ -178,15 +178,12 @@ namespace SqlSugar
             var select = copyContext.Result.GetString();
             if (dic.Count > 0 && appendColumns.Count == 0)
             {
-                if (copyContext.Parameters?.Any()==true) 
-                {
-                    this.Context.Parameters.AddRange(copyContext.Parameters); 
-                    select = select.Replace("),  AS", ")  AS");
-                }
+                select = AppendParameter(copyContext, select);
                 return select + ",@sugarIndex as sugarIndex"; ;
             }
             else if (dic.Count > 0 && appendColumns.Count > 0) 
             {
+                select = AppendParameter(copyContext, select);
                 return select+","+string.Join(",",appendColumns) + ",@sugarIndex as sugarIndex"; ;
             }
             else 
@@ -194,6 +191,17 @@ namespace SqlSugar
                 return string.Join(",", appendColumns) + ",@sugarIndex as sugarIndex";
             }
         }
+
+        private string AppendParameter(ExpressionContext copyContext, string select)
+        {
+            if (copyContext.Parameters?.Any() == true)
+            {
+                this.Context.Parameters.AddRange(copyContext.Parameters);
+                select = select.Replace("),  AS", ")  AS");
+            } 
+            return select;
+        }
+
         private static bool IsAutoSelect(MethodCallExpression exp)
         {
             return exp.Arguments.Count == 2 && exp.Arguments.Last().Type == UtilConstants.BoolType;
