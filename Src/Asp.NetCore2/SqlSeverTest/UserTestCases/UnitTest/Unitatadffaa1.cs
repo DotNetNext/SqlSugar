@@ -63,11 +63,9 @@ namespace OrmTest
                  }).ToList(); 
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-
-                Console.WriteLine("异常" + ex.InnerException?.Message);
-                //异常必须声明标量变量 "@constant1"。  报错
+                throw;
             }
         }
 
