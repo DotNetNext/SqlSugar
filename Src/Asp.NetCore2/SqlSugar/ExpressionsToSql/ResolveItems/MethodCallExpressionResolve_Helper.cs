@@ -156,6 +156,17 @@ namespace SqlSugar
                 };
                 model.Args.Add(methodCallExpressionArgs);
             }
+            else if (isFirst && isIIF && isIFFBoolMember&& (item as MemberExpression)?.Member?.Name=="HasValue")
+            {
+                var value = base.GetNewExpressionValue(item);
+                var methodCallExpressionArgs = new MethodCallExpressionArgs()
+                {
+                    IsMember = true,
+                    MemberName = value,
+                    MemberValue = value
+                };
+                model.Args.Add(methodCallExpressionArgs);
+            }
             else if (name!=null && name != "MappingColumn" && !name.StartsWith("Row") &&ExpressionTool.GetMethodName(item)== "Format" && ExpressionTool.GetParameters(item).Count==0) 
             {
                 var value =  ExpressionTool.DynamicInvoke(item);
