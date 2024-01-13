@@ -112,7 +112,11 @@ namespace SqlSugar
             {
                 return 0;
             }
-            var result = this.Ado.ExecuteCommand(sql, UpdateBuilder.Parameters == null ? null : UpdateBuilder.Parameters.ToArray());
+            var result = 0;
+            if (sql != Environment.NewLine)
+            {
+                result = this.Ado.ExecuteCommand(sql, UpdateBuilder.Parameters == null ? null : UpdateBuilder.Parameters.ToArray());
+            }
             After(sql);
             return result;
         }
