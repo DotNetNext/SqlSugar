@@ -96,6 +96,27 @@ namespace OrmTest
 
 
             var qu4 = Db.Queryable<Order>().OrderBy(it=>it.Id+it.Id).ToList();
+
+            var qu5 = Db.Queryable<ORDER>().GroupBy(x=>x.CustomId).Select(it => new 
+            { 
+               x=SqlFunc.AggregateSum(SqlFunc.IIF(it.CustomId.HasValue,1,2))
+
+            }).ToList();
+        }
+
+        public class ORDER
+        {
+            [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+            public int Id { get; set; }
+
+            public string Name { get; set; }
+            public decimal Price { get; set; }
+            [SugarColumn(IsNullable = true)]
+            public DateTime CreateTime { get; set; }
+            [SugarColumn(IsNullable = true)]
+            public int? CustomId { get; set; }
+            [SugarColumn(IsIgnore = true)]
+            public List<OrderItem> Items { get; set; }
         }
     }
 }
