@@ -406,6 +406,8 @@ namespace SqlSugar
 
         private void OneToMany(List<object> list, Func<ISugarQueryable<object>, List<object>> selector, EntityInfo listItemEntity, System.Reflection.PropertyInfo navObjectNamePropety, EntityColumnInfo navObjectNameColumnInfo)
         {
+            Check.ExceptionEasy(!navObjectNameColumnInfo.PropertyInfo.PropertyType.GetGenericArguments().Any(), navObjectNamePropety? .Name+ "Navigation configuration error one to many should be List<T>", navObjectNamePropety?.Name+ "导航配置错误一对多应该是List<T>");
+ 
             var navEntity = navObjectNameColumnInfo.PropertyInfo.PropertyType.GetGenericArguments()[0];
             var navEntityInfo = this.Context.EntityMaintenance.GetEntityInfo(navEntity);
             var childDb = this.Context;
