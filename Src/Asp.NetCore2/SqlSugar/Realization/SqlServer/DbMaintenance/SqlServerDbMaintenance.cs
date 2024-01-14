@@ -668,7 +668,7 @@ AND syscomments.text LIKE '%"+tableName+"%'");
                                             filename = N'{1}\{0}.ndf',
                                             size = 10mb,
                                             maxsize = 100mb,
-                                             filegrowth = 10 %
+                                             filegrowth = 10mb
                                         )
                                         log on  
                                         (
