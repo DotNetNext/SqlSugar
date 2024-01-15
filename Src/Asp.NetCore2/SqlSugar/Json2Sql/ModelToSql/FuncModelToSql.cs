@@ -91,9 +91,22 @@ namespace SqlSugar
         {
             string resSql;
             var args = new List<MethodCallExpressionArgs>();
+            int i = 0;
             foreach (var item in parameters)
-            {             
-                var value = GetSqlPart(item, resPars);
+            {
+                i++;
+                string value = null;
+                if (methodName.IsIn("ContainsArray", "ContainsArrayUseSqlParameters") &&i==1)
+                {
+                    var first = Regex.Split(item+"", ":").First();
+                    var last = Regex.Split(item + "", ":").Last();
+                    object[] array = this.Context.Utilities.DeserializeObject<object[]>(last);
+                    value = GetParameterName(resPars, array);
+                }
+                else
+                {
+                    value = GetSqlPart(item, resPars);
+                }
                 args.Add(new MethodCallExpressionArgs
                 {
                     MemberName = value,
