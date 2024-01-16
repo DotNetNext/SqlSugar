@@ -83,7 +83,7 @@ namespace SqlSugar
             }
             else
             {
-                return this.GetTranslationColumnName(value.ObjToString());
+                return this.GetTranslationColumnName(value.ObjToString().ToCheckField());
             }
         }
         #endregion
