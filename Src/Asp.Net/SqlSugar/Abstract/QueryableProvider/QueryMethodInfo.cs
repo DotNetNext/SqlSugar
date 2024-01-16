@@ -209,6 +209,12 @@ namespace SqlSugar
             this.QueryableObj = method.Invoke(QueryableObj, new object[] { navProperyName });
             return this;
         }
+        public QueryMethodInfo IgnoreColumns(params string [] ignoreColumns)
+        {
+            var method = QueryableObj.GetType().GetMyMethod("IgnoreColumns", 1, typeof(string[]));
+            this.QueryableObj = method.Invoke(QueryableObj, new object[] { ignoreColumns });
+            return this;
+        }
         public QueryMethodInfo Includes(string navProperyName,string thenNavProperyName2)
         {
             var method = QueryableObj.GetType().GetMyMethod("IncludesByNameString", 2, typeof(string),typeof(string));
