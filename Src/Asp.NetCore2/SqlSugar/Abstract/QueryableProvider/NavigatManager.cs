@@ -735,6 +735,11 @@ namespace SqlSugar
             var exp = method.Arguments[1];
             var newExp = (exp as LambdaExpression).Body;
             var types = exp.Type.GetGenericArguments();
+            var ps=ExpressionTool.GetParameters(exp).Select(it=>it.Name).Distinct().ToList();
+            if (ps.Count > 1 && result.TableShortName.IsNullOrEmpty()) 
+            {
+                result.TableShortName = ps[0];
+            }
             if (types != null && types.Length > 0)
             {
                 var type = types[0];
