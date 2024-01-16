@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SqlSugar;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
@@ -36,6 +37,13 @@ namespace OrmTest
 
 
             var list = db.Queryable<UnitAddress011>().Includes(x => x.Persons).Includes(x => x.City).ToList();
+
+            var list2 = db.Queryable<UnitAddress011>().Includes(x => x.Persons
+            .Select(it=>new UnitPerson011() { 
+             AddressId=it.AddressId,
+              Id=it.Id,
+               Name=SqlFunc.Subqueryable<UnitPerson011>().Where(x=>x.Id==it.Id).Select(x=>x.Name)
+            }).ToList()).ToList();
 
 
             db.DeleteNav(address).IncludeByNameString("Persons")
