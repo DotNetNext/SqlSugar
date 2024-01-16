@@ -62,6 +62,16 @@ namespace SqlSugar
                 Context = result
             };
         }
+        public CommonMethodInfo IgnoreColumns(bool ignoreNullColumn)
+        { 
+            var inertable = MethodInfo.Invoke(Context, new object[] { objectValue });
+            var newMethod = inertable.GetType().GetMyMethod("IgnoreColumns", 2, typeof(bool),typeof(bool));
+            var result = newMethod.Invoke(inertable, new object[] { ignoreNullColumn, true });
+            return new CommonMethodInfo()
+            {
+                Context = result
+            };
+        }
 
         public SplitMethodInfo SplitTable()
         {
