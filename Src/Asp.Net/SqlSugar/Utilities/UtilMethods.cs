@@ -18,6 +18,40 @@ namespace SqlSugar
 {
     public class UtilMethods
     {
+
+        public static IEnumerable<T> BuildTree<T>(ISqlSugarClient db,IEnumerable<T> list, string idName, string pIdName, string childName, object rootValue)
+        {
+            var entityInfo = db.EntityMaintenance.GetEntityInfo<T>(); ;
+            var mainIdProp = entityInfo.Type.GetProperty(idName);
+            var pIdProp = entityInfo.Type.GetProperty(pIdName);
+            var childProp = entityInfo.Type.GetProperty(childName);
+
+            Dictionary<string, T> kvList;
+            IEnumerable<IGrouping<string, T>> group;
+            BuildTreeGroup(list, mainIdProp, pIdProp, out kvList, out group);
+
+            var root = rootValue != null ? group.FirstOrDefault(x => x.Key == rootValue.ObjToString()) : group.FirstOrDefault(x => x.Key == null || x.Key == "" || x.Key == "0" || x.Key == Guid.Empty.ToString());
+
+            if (root != null)
+            {
+                foreach (var item in group)
+                {
+                    if (kvList.TryGetValue(item.Key, out var parent))
+                    {
+                        childProp.SetValue(parent, item.ToList());
+                    }
+                }
+            }
+
+            return root;
+        }
+
+        private static void BuildTreeGroup<T>(IEnumerable<T> list, PropertyInfo mainIdProp, PropertyInfo pIdProp, out Dictionary<string, T> kvList, out IEnumerable<IGrouping<string, T>> group)
+        {
+            kvList = list.ToDictionary(x => mainIdProp.GetValue(x).ObjToString());
+            group = list.GroupBy(x => pIdProp.GetValue(x).ObjToString());
+        }
+
         internal static bool? _IsErrorDecimalString { get; set; }
         internal static bool? IsErrorDecimalString() 
         {

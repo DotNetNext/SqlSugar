@@ -352,7 +352,7 @@ namespace SqlSugar
         {
             var childName = ((childListExpression as LambdaExpression).Body as MemberExpression).Member.Name;
             string parentIdName = GetParentName(parentIdExpression);
-            return BuildTree(list, pk, parentIdName, childName, rootValue)?.ToList() ?? default;
+            return UtilMethods.BuildTree(this.Context,list, pk, parentIdName, childName, rootValue)?.ToList() ?? default;
         }
 
         private static string GetParentName(Expression<Func<T, object>> parentIdExpression)
@@ -364,32 +364,6 @@ namespace SqlSugar
             }
             var parentIdName = (exp as MemberExpression).Member.Name;
             return parentIdName;
-        }
-
-        private static IEnumerable<T> BuildTree(IEnumerable<T> list, string idName, string pIdName, string childName, object rootValue)
-        {
-            var type = typeof(T);
-            var mainIdProp = type.GetProperty(idName);
-            var pIdProp = type.GetProperty(pIdName);
-            var childProp = type.GetProperty(childName);
-
-            var kvList = list.ToDictionary(x => mainIdProp.GetValue(x).ObjToString());
-            var group = list.GroupBy(x => pIdProp.GetValue(x).ObjToString());
-
-            var root = rootValue != null ? group.FirstOrDefault(x => x.Key == rootValue.ObjToString()) : group.FirstOrDefault(x => x.Key == null || x.Key == "" || x.Key == "0" || x.Key == Guid.Empty.ToString());
-
-            if (root != null)
-            {
-                foreach (var item in group)
-                {
-                    if (kvList.TryGetValue(item.Key, out var parent))
-                    {
-                        childProp.SetValue(parent, item.ToList());
-                    }
-                }
-            }
-
-            return root;
         }
 
         public List<T> GetTreeChildList(List<T> alllist, object pkValue, string pkName, string childName, string parentIdName)
