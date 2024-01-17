@@ -26,8 +26,9 @@ namespace SqlSugar
             var pIdProp = entityInfo.Type.GetProperty(pIdName);
             var childProp = entityInfo.Type.GetProperty(childName);
 
-            var kvList = list.ToDictionary(x => mainIdProp.GetValue(x).ObjToString());
-            var group = list.GroupBy(x => pIdProp.GetValue(x).ObjToString());
+            Dictionary<string, T> kvList;
+            IEnumerable<IGrouping<string, T>> group;
+            BuildTreeGroup(list, mainIdProp, pIdProp, out kvList, out group);
 
             var root = rootValue != null ? group.FirstOrDefault(x => x.Key == rootValue.ObjToString()) : group.FirstOrDefault(x => x.Key == null || x.Key == "" || x.Key == "0" || x.Key == Guid.Empty.ToString());
 
@@ -43,6 +44,12 @@ namespace SqlSugar
             }
 
             return root;
+        }
+
+        private static void BuildTreeGroup<T>(IEnumerable<T> list, PropertyInfo mainIdProp, PropertyInfo pIdProp, out Dictionary<string, T> kvList, out IEnumerable<IGrouping<string, T>> group)
+        {
+            kvList = list.ToDictionary(x => mainIdProp.GetValue(x).ObjToString());
+            group = list.GroupBy(x => pIdProp.GetValue(x).ObjToString());
         }
 
         internal static bool? _IsErrorDecimalString { get; set; }
