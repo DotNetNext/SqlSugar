@@ -352,7 +352,7 @@ namespace SqlSugar
         {
             var childName = ((childListExpression as LambdaExpression).Body as MemberExpression).Member.Name;
             string parentIdName = GetParentName(parentIdExpression);
-            return UtilMethods.BuildTree(list, pk, parentIdName, childName, rootValue)?.ToList() ?? default;
+            return UtilMethods.BuildTree(this.Context,list, pk, parentIdName, childName, rootValue)?.ToList() ?? default;
         }
 
         private static string GetParentName(Expression<Func<T, object>> parentIdExpression)

@@ -19,12 +19,12 @@ namespace SqlSugar
     public class UtilMethods
     {
 
-        public static IEnumerable<T> BuildTree<T>(IEnumerable<T> list, string idName, string pIdName, string childName, object rootValue)
+        public static IEnumerable<T> BuildTree<T>(ISqlSugarClient db,IEnumerable<T> list, string idName, string pIdName, string childName, object rootValue)
         {
-            var type = typeof(T);
-            var mainIdProp = type.GetProperty(idName);
-            var pIdProp = type.GetProperty(pIdName);
-            var childProp = type.GetProperty(childName);
+            var entityInfo = db.EntityMaintenance.GetEntityInfo<T>(); ;
+            var mainIdProp = entityInfo.Type.GetProperty(idName);
+            var pIdProp = entityInfo.Type.GetProperty(pIdName);
+            var childProp = entityInfo.Type.GetProperty(childName);
 
             var kvList = list.ToDictionary(x => mainIdProp.GetValue(x).ObjToString());
             var group = list.GroupBy(x => pIdProp.GetValue(x).ObjToString());
