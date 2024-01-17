@@ -18,6 +18,33 @@ namespace SqlSugar
 {
     public class UtilMethods
     {
+
+        public static IEnumerable<T> BuildTree<T>(IEnumerable<T> list, string idName, string pIdName, string childName, object rootValue)
+        {
+            var type = typeof(T);
+            var mainIdProp = type.GetProperty(idName);
+            var pIdProp = type.GetProperty(pIdName);
+            var childProp = type.GetProperty(childName);
+
+            var kvList = list.ToDictionary(x => mainIdProp.GetValue(x).ObjToString());
+            var group = list.GroupBy(x => pIdProp.GetValue(x).ObjToString());
+
+            var root = rootValue != null ? group.FirstOrDefault(x => x.Key == rootValue.ObjToString()) : group.FirstOrDefault(x => x.Key == null || x.Key == "" || x.Key == "0" || x.Key == Guid.Empty.ToString());
+
+            if (root != null)
+            {
+                foreach (var item in group)
+                {
+                    if (kvList.TryGetValue(item.Key, out var parent))
+                    {
+                        childProp.SetValue(parent, item.ToList());
+                    }
+                }
+            }
+
+            return root;
+        }
+
         internal static bool? _IsErrorDecimalString { get; set; }
         internal static bool? IsErrorDecimalString() 
         {
