@@ -11,19 +11,27 @@ namespace SqlSugar
     {
         internal SqlSugarProvider Context { get; set; }
         internal MethodInfo MethodInfo { get; set; }
-        internal object objectValue { get; set; } 
-
+        internal object objectValue { get; set; }
+        internal int pageSize { get; set; }
         public int ExecuteCommand()
         {
             if (Context == null) return 0;
-            var inertable=MethodInfo.Invoke(Context, new object[] { objectValue });
-            var result= inertable.GetType().GetMethod("ExecuteCommand").Invoke(inertable,new object[] { });
+            var inertable = MethodInfo.Invoke(Context, new object[] { objectValue });
+            inertable = GetPageInsertable(inertable);
+            var result = inertable.GetType().GetMethod("ExecuteCommand").Invoke(inertable, new object[] { });
             return (int)result;
+        }
+
+        public InsertMethodInfo PageSize(int pageSize) 
+        {
+            this.pageSize= pageSize;
+            return this;
         }
         public async Task<int> ExecuteCommandAsync()
         {
             if (Context == null) return 0;
             var inertable = MethodInfo.Invoke(Context, new object[] { objectValue });
+            inertable = GetPageInsertable(inertable);
             var result = inertable.GetType().GetMyMethod("ExecuteCommandAsync",0).Invoke(inertable, new object[] { });
             return  await (Task<int>)result;
         }
@@ -98,5 +106,15 @@ namespace SqlSugar
             var result = inertable.GetType().GetMyMethod("ExecuteReturnSnowflakeIdAsync", 0).Invoke(inertable, new object[] { });
             return await (Task<long>)result;
         }
+
+        private object GetPageInsertable(object inertable)
+        {
+            if (pageSize > 0)
+            {
+                inertable = inertable.GetType().GetMethod("PageSize").Invoke(inertable, new object[] { pageSize });
+            }
+            return inertable;
+        }
+
     }
 }
