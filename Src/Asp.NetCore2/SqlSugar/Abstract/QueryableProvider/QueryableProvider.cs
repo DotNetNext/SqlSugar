@@ -838,6 +838,10 @@ namespace SqlSugar
                             FieldValue = value.ObjToStringNew(),
                             CSharpTypeName = column.PropertyInfo.PropertyType.Name
                         });
+                        if (this.Context.CurrentConnectionConfig?.MoreSettings?.DisableQueryWhereColumnRemoveTrim==true) 
+                        {
+                            data.Value.FieldValue = value.ObjToString();
+                        }
                         if (value is Enum && this.Context.CurrentConnectionConfig?.MoreSettings?.TableEnumIsString != true)
                         {
                             data.Value.FieldValue = Convert.ToInt64(value).ObjToString();
