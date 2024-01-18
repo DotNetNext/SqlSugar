@@ -840,7 +840,7 @@ namespace SqlSugar
                         });
                         if (this.Context.CurrentConnectionConfig?.MoreSettings?.DisableQueryWhereColumnRemoveTrim==true) 
                         {
-                            data.Value.FieldValue = value.ObjToString();
+                            data.Value.FieldValue = value+"";
                         }
                         if (value is Enum && this.Context.CurrentConnectionConfig?.MoreSettings?.TableEnumIsString != true)
                         {
