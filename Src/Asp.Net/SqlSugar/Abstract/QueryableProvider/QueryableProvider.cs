@@ -831,13 +831,14 @@ namespace SqlSugar
                                 WhereType = WhereType.Or;
                             }
                         }
+                        var disableQueryWhereColumnRemoveTrim = this.Context.CurrentConnectionConfig?.MoreSettings?.DisableQueryWhereColumnRemoveTrim == true;
                         var data = new KeyValuePair<WhereType, ConditionalModel>(WhereType, new ConditionalModel()
                         {
                             ConditionalType = ConditionalType.Equal,
                             FieldName = this.QueryBuilder.Builder.GetTranslationColumnName(column.DbColumnName),
-                            FieldValue = value.ObjToStringNew(),
+                            FieldValue = disableQueryWhereColumnRemoveTrim?value.ObjToStringNoTrim() : value.ObjToStringNew(),
                             CSharpTypeName = column.PropertyInfo.PropertyType.Name
-                        });
+                        }); 
                         if (value is Enum && this.Context.CurrentConnectionConfig?.MoreSettings?.TableEnumIsString != true)
                         {
                             data.Value.FieldValue = Convert.ToInt64(value).ObjToString();

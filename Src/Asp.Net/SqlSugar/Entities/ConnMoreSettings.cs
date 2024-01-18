@@ -31,5 +31,6 @@ namespace SqlSugar
         public bool SqliteCodeFirstEnableDropColumn { get; set; }
         public bool IsCorrectErrorSqlParameterName { get; set; }
         public int MaxParameterNameLength { get; set; }
+        public bool DisableQueryWhereColumnRemoveTrim { get; set; }
     }
 }
