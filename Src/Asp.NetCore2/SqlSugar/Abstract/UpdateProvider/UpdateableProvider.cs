@@ -870,6 +870,14 @@ namespace SqlSugar
                 SetColumns(columns);
             return this;
         }
+        public IUpdateable<T> In<PkType>(Expression<Func<T, object>> inField, ISugarQueryable<PkType> childQueryExpression)
+        {
+            var lamResult = UpdateBuilder.GetExpressionValue(inField, ResolveExpressType.FieldSingle);
+            var fieldName = lamResult.GetResultString();
+            var sql = childQueryExpression.ToSql();
+            Where($" {fieldName} IN ( SELECT {fieldName} FROM ( {sql.Key} ) SUBDEL) ", sql.Value);
+            return this;
+        }
         public IUpdateable<T> WhereIF(bool isWhere, Expression<Func<T, bool>> expression) 
         {
             Check.ExceptionEasy(!StaticConfig.EnableAllWhereIF, "Need to program startup configuration StaticConfig. EnableAllWhereIF = true; Tip: This operation is very risky if there are no conditions it is easy to update the entire table", " 需要程序启动时配置StaticConfig.EnableAllWhereIF=true; 提示：该操作存在很大的风险如果没有条件很容易将整个表全部更新");
