@@ -29,7 +29,7 @@ namespace SqlSugar
         IUpdateable<T> AS(string tableName);
         IUpdateable<T> AsType(Type tableNameType);
         IUpdateable<T> With(string lockString);
-
+        IUpdateable<T> In<PkType>(Expression<Func<T, object>> inField, ISugarQueryable<PkType> childQueryExpression);
 
         IUpdateable<T> Where(Expression<Func<T, bool>> expression);
         IUpdateable<T> WhereIF(bool isWhere,Expression<Func<T, bool>> expression);
