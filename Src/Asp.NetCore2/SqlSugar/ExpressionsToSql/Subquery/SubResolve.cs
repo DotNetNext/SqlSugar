@@ -108,6 +108,14 @@ namespace SqlSugar
                         }
                     }
                 }
+                else if (context.Expression is MemberInitExpression memberInitExpression)
+                { 
+                    var getParameters = ExpressionTool.GetParameters(context.Expression).Select(it=>it.Name).Distinct().ToList();
+                    if (getParameters?.Count()>1)
+                    {
+                        context.SingleTableNameSubqueryShortName = getParameters.First();
+                    }
+                }
                 else
                 {
                     Check.ExceptionEasy( "I'm sorry I can't parse the current expression","不支持当前表达式");
