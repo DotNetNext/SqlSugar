@@ -1444,8 +1444,17 @@ namespace SqlSugar
                     if (!sql.Contains($"{SqlBuilder.GetTranslationColumnName(item.DbColumnName)} AS {SqlBuilder.GetTranslationColumnName(item.PropertyName)}")&&
                         !sql.Contains($"{SqlBuilder.GetTranslationColumnName(item.DbColumnName)} AS  {SqlBuilder.GetTranslationColumnName(item.PropertyName)}"))
                     {
-                        sql = $" {sql},{SqlBuilder.GetTranslationColumnName(item.DbColumnName)} AS {SqlBuilder.GetTranslationColumnName(item.PropertyName)} ";
-                        this.QueryBuilder.AutoAppendedColumns.Add(item.PropertyName);
+
+                        if (parameterIndex1==0&&this.QueryBuilder.JoinQueryInfos.Any())
+                        {
+                            sql = $" {sql},{SqlBuilder.GetTranslationColumnName(this.QueryBuilder.TableShortName)}.{SqlBuilder.GetTranslationColumnName(item.DbColumnName)} AS {SqlBuilder.GetTranslationColumnName(item.PropertyName)} ";
+                            this.QueryBuilder.AutoAppendedColumns.Add(item.PropertyName);
+                        }
+                        else
+                        {
+                            sql = $" {sql},{SqlBuilder.GetTranslationColumnName(item.DbColumnName)} AS {SqlBuilder.GetTranslationColumnName(item.PropertyName)} ";
+                            this.QueryBuilder.AutoAppendedColumns.Add(item.PropertyName);
+                        }
                     }
                 }
             }
