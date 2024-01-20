@@ -875,7 +875,7 @@ namespace SqlSugar
             var lamResult = UpdateBuilder.GetExpressionValue(inField, ResolveExpressType.FieldSingle);
             this.UpdateBuilder.LambdaExpressions.ParameterIndex = childQueryExpression.QueryBuilder.LambdaExpressions.ParameterIndex+1;
             var fieldName = lamResult.GetResultString();
-            if (this.UpdateBuilder.SetValues.Any())
+            if (!this.UpdateBuilder.SetValues.Any())
             {
                 var sql = childQueryExpression.ToSql();
                 Where($" {fieldName} IN ( SELECT {fieldName} FROM ( {sql.Key} ) SUBDEL) ", sql.Value);
