@@ -243,6 +243,10 @@ namespace SqlSugar
             tableName = this.SqlBuilder.GetTranslationTableName(tableName);
             var columnName = string.Join(",", columnNames);
             var pkName = string.Format("PK_{0}_{1}", this.SqlBuilder.GetNoTranslationColumnName(tableName), columnName.Replace(",","_"));
+            if (pkName.Length > 25 && this.Context?.CurrentConnectionConfig?.MoreSettings?.MaxParameterNameLength > 0)
+            {
+                pkName = "PK_" + pkName.GetNonNegativeHashCodeString();
+            }
             string sql = string.Format(this.AddPrimaryKeySql, tableName,pkName, columnName);
             this.Context.Ado.ExecuteCommand(sql);
             return true;
