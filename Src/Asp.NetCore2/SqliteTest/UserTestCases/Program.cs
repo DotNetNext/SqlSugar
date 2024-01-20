@@ -7,6 +7,7 @@ namespace SqliteTest.UnitTest
     {
         public static void Init()
         {
+            Unitadfadsyyy.Init();
             //Demo
             Demo0_SqlSugarClient.Init();
             Demo1_Queryable.Init();
