@@ -54,7 +54,7 @@ namespace SqlSugar
                 &&this.Context.SugarContext.QueryBuilder.IsSelectNoAll)
             {
                 var entity = type.GenericTypeArguments[0];
-                var columnNames=this.Context.SugarContext.Context.EntityMaintenance.GetEntityInfo(entity).Columns;
+                var columnNames=this.Context.SugarContext.Context.EntityMaintenance.GetEntityInfo(entity).Columns.Where((it=>it.IsIgnore==false));
                 var columnsString = string.Join(",", columnNames
                     .Where(it => it.IsIgnore == false)
                     .Where(it => it.DbColumnName.HasValue())
@@ -161,7 +161,7 @@ namespace SqlSugar
 
                 foreach (var parameter in parameters)
                 {
-                    var parameterColumns = db.EntityMaintenance.GetEntityInfo(parameter.Type).Columns;
+                    var parameterColumns = db.EntityMaintenance.GetEntityInfo(parameter.Type).Columns.Where(it=>it.IsIgnore==false);
                     if (!completeColumnColumns.Any(it=>it.EqualCase(item.PropertyName))&& parameterColumns.Any(it=>it.PropertyName.EqualCase(item.PropertyName))) 
                     {
                         var completeColumn = parameterColumns.First(it => it.PropertyName == item.PropertyName);
