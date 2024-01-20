@@ -54,7 +54,7 @@ namespace SqlSugar
                 &&this.Context.SugarContext.QueryBuilder.IsSelectNoAll)
             {
                 var entity = type.GenericTypeArguments[0];
-                var columnNames=this.Context.SugarContext.Context.EntityMaintenance.GetEntityInfo(entity).Columns.Where((it=>it.IsIgnore==false));
+                var columnNames=this.Context.SugarContext.Context.EntityMaintenance.GetEntityInfo(entity).Columns.Where(it=>it.IsIgnore==false);
                 var columnsString = string.Join(",", columnNames
                     .Where(it => it.IsIgnore == false)
                     .Where(it => it.DbColumnName.HasValue())
