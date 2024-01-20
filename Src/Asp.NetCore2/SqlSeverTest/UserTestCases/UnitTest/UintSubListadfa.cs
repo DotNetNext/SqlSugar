@@ -40,6 +40,7 @@ namespace OrmTest
                 .ToList();
         }
 
+        [SugarTable("Teacherdsfafafa")]
         public class Teacher
         {
             [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
@@ -56,13 +57,16 @@ namespace OrmTest
 
             public List<ClassRoomView> ClassRoom { get; set; }
         }
-
+        [SugarTable("ClassRoomfafafa")]
         public class ClassRoom
         {
             [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
             public int Id { get; set; }
 
             public string Name { get; set; }
+            [Navigate(NavigateType.OneToMany,nameof(Student.ClassId),nameof(StudentClass.ClassId))]
+
+            public List<Student> Students { get; set; }
         }
 
         public class ClassRoomView
@@ -71,8 +75,10 @@ namespace OrmTest
 
             public string Name { get; set; }
             public bool HasStudent { get; set; }
-        }
 
+            public List<Student> Students { get; set; }
+        }
+        [SugarTable("TeacherClassfafafa")]
         public class TeacherClass
         {
             [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
@@ -82,7 +88,7 @@ namespace OrmTest
 
             public int ClassRoomId { get; set; }
         }
-
+        [SugarTable("StarClassfafafa")]
         public class StarClass
         {
             [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
@@ -90,7 +96,7 @@ namespace OrmTest
 
             public int ClassId { get; set; }
         }
-
+        [SugarTable("Studentfafafa")]
         public class Student
         {
             [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
@@ -98,7 +104,7 @@ namespace OrmTest
 
             public int ClassId { get; set; }
         }
-
+        [SugarTable("StudentClassfafafa")]
         public class StudentClass
         {
             [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
