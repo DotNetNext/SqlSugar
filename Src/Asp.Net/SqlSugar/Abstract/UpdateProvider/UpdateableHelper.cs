@@ -379,7 +379,7 @@ namespace SqlSugar
                 || columns.Contains(it.PropertyName, StringComparer.OrdinalIgnoreCase)
                 || columns.Contains(it.DbColumnName, StringComparer.OrdinalIgnoreCase)).ToList();
             }
-
+            UpdateBuilder.EntityInfo = this.EntityInfo;
             UpdateBuilder.PrimaryKeys = GetPrimaryKeys();
             if (this.IsWhereColumns)
             {
