@@ -873,6 +873,7 @@ namespace SqlSugar
         public IUpdateable<T> In<PkType>(Expression<Func<T, object>> inField, ISugarQueryable<PkType> childQueryExpression)
         {
             var lamResult = UpdateBuilder.GetExpressionValue(inField, ResolveExpressType.FieldSingle);
+            this.UpdateBuilder.LambdaExpressions.ParameterIndex = childQueryExpression.QueryBuilder.LambdaExpressions.ParameterIndex+1;
             var fieldName = lamResult.GetResultString();
             var sql = childQueryExpression.ToSql();
             Where($" {fieldName} IN ( SELECT {fieldName} FROM ( {sql.Key} ) SUBDEL) ", sql.Value);
