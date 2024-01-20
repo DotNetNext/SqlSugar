@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SqlSugar.DbConvert;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,7 +14,14 @@ namespace OrmTest
         public static void Init() 
         {
             var db = NewUnitTest.Db;
-
+            db.CodeFirst.InitTables<Unitadadfafa>();
+            db.Updateable(new Unitadadfafa() {Id=11, Name = "a" }).ExecuteCommand();
+            var sqlobj=db.Updateable(new Unitadadfafa() { Id = 211, Name = "a" }).ToSqlString();
+            if (sqlobj != @"UPDATE [Unitadadfafa]  SET
+           [Name]=N'a'  WHERE [Id]=211") 
+            {
+                throw new Exception("UnitSelectNASFDADSFA error");
+            }
             db.CodeFirst.InitTables<ProductProcessUnit, ProcessUnit>();
             db.DbMaintenance.TruncateTable<ProductProcessUnit, ProcessUnit>();
             db.Insertable(
@@ -71,6 +79,13 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+        }
+
+        public class Unitadadfafa 
+        {
+            [SqlSugar.SugarColumn(IsPrimaryKey =true,SqlParameterDbType =typeof(CommonPropertyConvert))]
+            public int Id { get; set; }
+            public string Name { get; set; }
         }
     }
 }
