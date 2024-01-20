@@ -875,8 +875,15 @@ namespace SqlSugar
             var lamResult = UpdateBuilder.GetExpressionValue(inField, ResolveExpressType.FieldSingle);
             this.UpdateBuilder.LambdaExpressions.ParameterIndex = childQueryExpression.QueryBuilder.LambdaExpressions.ParameterIndex+1;
             var fieldName = lamResult.GetResultString();
-            var sql = childQueryExpression.ToSql();
-            Where($" {fieldName} IN ( SELECT {fieldName} FROM ( {sql.Key} ) SUBDEL) ", sql.Value);
+            if (this.UpdateBuilder.SetValues.Any())
+            {
+                var sql = childQueryExpression.ToSql();
+                Where($" {fieldName} IN ( SELECT {fieldName} FROM ( {sql.Key} ) SUBDEL) ", sql.Value);
+            }
+            else
+            {
+                Where($" {fieldName} IN ( SELECT {fieldName} FROM ( {childQueryExpression.ToSqlString()} ) SUBDEL) ");
+            }
             return this;
         }
         public IUpdateable<T> WhereIF(bool isWhere, Expression<Func<T, bool>> expression) 
