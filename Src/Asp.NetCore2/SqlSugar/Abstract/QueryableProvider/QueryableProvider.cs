@@ -1277,15 +1277,15 @@ namespace SqlSugar
             }
             return this;
         }
-        public virtual ISugarQueryable<T> OrderBy(string orderFileds)
+        public virtual ISugarQueryable<T> OrderBy(string orderByFields)
         {
-            orderFileds = orderFileds.ToCheckField();
+            orderByFields = orderByFields.ToCheckField();
             var orderByValue = QueryBuilder.OrderByValue;
             if (QueryBuilder.OrderByValue.IsNullOrEmpty())
             {
                 QueryBuilder.OrderByValue = QueryBuilder.OrderByTemplate;
             }
-            QueryBuilder.OrderByValue += string.IsNullOrEmpty(orderByValue) ? orderFileds : ("," + orderFileds);
+            QueryBuilder.OrderByValue += string.IsNullOrEmpty(orderByValue) ? orderByFields : ("," + orderByFields);
             return this;
         }
         public virtual ISugarQueryable<T> OrderBy(Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc)
@@ -1323,10 +1323,10 @@ namespace SqlSugar
         }
 
 
-        public virtual ISugarQueryable<T> OrderByIF(bool isOrderBy, string orderFileds)
+        public virtual ISugarQueryable<T> OrderByIF(bool isOrderBy, string orderByFields)
         {
             if (isOrderBy)
-                return this.OrderBy(orderFileds);
+                return this.OrderBy(orderByFields);
             else
                 return this;
         }
