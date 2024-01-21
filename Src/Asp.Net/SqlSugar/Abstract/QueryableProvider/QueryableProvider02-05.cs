@@ -322,9 +322,9 @@ namespace SqlSugar
             base.OrderBy(models);
             return this;
         }
-        public new ISugarQueryable<T, T2> OrderBy(string orderFileds)
+        public new ISugarQueryable<T, T2> OrderBy(string orderByFields)
         {
-            base.OrderBy(orderFileds);
+            base.OrderBy(orderByFields);
             return this;
         }
         public ISugarQueryable<T, T2> OrderBy(Expression<Func<T, T2, object>> expression, OrderByType type = OrderByType.Asc)
@@ -347,10 +347,10 @@ namespace SqlSugar
             _OrderBy(expression, type);
             return this;
         }
-        public new ISugarQueryable<T, T2> OrderByIF(bool isOrderBy, string orderFileds)
+        public new ISugarQueryable<T, T2> OrderByIF(bool isOrderBy, string orderByFields)
         {
             if (isOrderBy)
-                base.OrderBy(orderFileds);
+                base.OrderBy(orderByFields);
             return this;
         }
         public new ISugarQueryable<T, T2> OrderByIF(bool isOrderBy, Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc)
@@ -1024,9 +1024,9 @@ namespace SqlSugar
             this._OrderBy(expression, OrderByType.Desc);
             return this;
         }
-        public new ISugarQueryable<T, T2, T3> OrderBy(string orderFileds)
+        public new ISugarQueryable<T, T2, T3> OrderBy(string orderByFields)
         {
-            base.OrderBy(orderFileds);
+            base.OrderBy(orderByFields);
             return this;
         }
         public ISugarQueryable<T, T2, T3> OrderBy(Expression<Func<T, T2, T3, object>> expression, OrderByType type = OrderByType.Asc)
@@ -1045,10 +1045,10 @@ namespace SqlSugar
             _OrderBy(expression, type);
             return this;
         }
-        public new ISugarQueryable<T, T2, T3> OrderByIF(bool isOrderBy, string orderFileds)
+        public new ISugarQueryable<T, T2, T3> OrderByIF(bool isOrderBy, string orderByFields)
         {
             if (isOrderBy)
-                base.OrderBy(orderFileds);
+                base.OrderBy(orderByFields);
             return this;
         }
         public new ISugarQueryable<T, T2, T3> OrderByIF(bool isOrderBy, Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc)
@@ -1821,9 +1821,9 @@ namespace SqlSugar
             this._OrderBy(expression, OrderByType.Desc);
             return this;
         }
-        public new ISugarQueryable<T, T2, T3, T4> OrderBy(string orderFileds)
+        public new ISugarQueryable<T, T2, T3, T4> OrderBy(string orderByFields)
         {
-            base.OrderBy(orderFileds);
+            base.OrderBy(orderByFields);
             return this;
         }
         public new ISugarQueryable<T, T2, T3, T4> OrderBy(Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc)
@@ -1846,10 +1846,10 @@ namespace SqlSugar
             _OrderBy(expression, type);
             return this;
         }
-        public new ISugarQueryable<T, T2, T3, T4> OrderByIF(bool isOrderBy, string orderFileds)
+        public new ISugarQueryable<T, T2, T3, T4> OrderByIF(bool isOrderBy, string orderByFields)
         {
             if (isOrderBy)
-                base.OrderBy(orderFileds);
+                base.OrderBy(orderByFields);
             return this;
         }
         public new ISugarQueryable<T, T2, T3, T4> OrderByIF(bool isOrderBy, Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc)
@@ -2650,9 +2650,9 @@ namespace SqlSugar
             this._OrderBy(expression, OrderByType.Desc);
             return this;
         }
-        public new ISugarQueryable<T, T2, T3, T4, T5> OrderBy(string orderFileds)
+        public new ISugarQueryable<T, T2, T3, T4, T5> OrderBy(string orderByFields)
         {
-            base.OrderBy(orderFileds);
+            base.OrderBy(orderByFields);
             return this;
         }
         public new ISugarQueryable<T, T2, T3, T4, T5> OrderBy(Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc)
@@ -2680,10 +2680,10 @@ namespace SqlSugar
             _OrderBy(expression, type);
             return this;
         }
-        public new ISugarQueryable<T, T2, T3, T4, T5> OrderByIF(bool isOrderBy, string orderFileds)
+        public new ISugarQueryable<T, T2, T3, T4, T5> OrderByIF(bool isOrderBy, string orderByFields)
         {
             if (isOrderBy)
-                base.OrderBy(orderFileds);
+                base.OrderBy(orderByFields);
             return this;
         }
         public new ISugarQueryable<T, T2, T3, T4, T5> OrderByIF(bool isOrderBy, Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc)
