@@ -152,7 +152,7 @@
     <Compile Include="UserTestCases\UnitTest\UnitTestReturnPkList.cs" />
     <Compile Include="UserTestCases\UnitTest\UOneManyMany7.cs" />
     <Compile Include="UserTestCases\UnitTest\USave.cs" />
-    <Compile Include="UserTestCases\Program.cs" />
+    <Compile Include="UserTestCases\Cases.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserTestCases\UnitTest\Main.cs" />
     <Compile Include="UserTestCases\UnitTest\UAdo.cs" />
