@@ -26,7 +26,7 @@ namespace OrmTest
             DemoG_SimpleClient.Init();
 
             //Unit test
-            //NewUnitTest.Init();
+            NewUnitTest.Init();
 
             //Rest Data
             NewUnitTest.RestData();
