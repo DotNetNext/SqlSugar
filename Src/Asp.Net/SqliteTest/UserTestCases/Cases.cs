@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OrmTest
 {
-    internal class CasesMain
+    internal class Cases 
     {
         public static void Init() 
         {
