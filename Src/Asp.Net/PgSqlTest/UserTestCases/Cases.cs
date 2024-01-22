@@ -6,6 +6,7 @@ namespace OrmTest
     {
         public static void Init()
         {
+            Unitdfaf2yyyyasda.Init();
             //Demo
             Demo0_SqlSugarClient.Init();
             DemoO_Fastest.Init();
