@@ -58,7 +58,9 @@ namespace SqlSugar
             object o = null;
             if (isAnyParamter)
             {
-                o = Activator.CreateInstance(type, new string[] { null });
+                object[] pars= type.GetConstructors().First().GetParameters()
+                    .Select(it=>(object)null).ToArray();
+                o = Activator.CreateInstance(type, pars);
             }
             else
             {
