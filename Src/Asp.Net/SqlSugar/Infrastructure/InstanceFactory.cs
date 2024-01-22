@@ -154,6 +154,27 @@ namespace SqlSugar
 
         #endregion
 
+        public static QueryBuilder GetQueryBuilderWithContext(ISqlSugarClient db)
+        {
+            if (db is SqlSugarClient)
+            {
+                db = (db as SqlSugarClient).Context;
+            }
+            else if (db is SqlSugarScope)
+            {
+                db = (db as SqlSugarScope).ScopedContext.Context;
+            }
+            if (!(db is SqlSugarProvider)) 
+            {
+                db = new SqlSugarClient(db.CurrentConnectionConfig).Context;
+            }
+            var QueryBuilder = InstanceFactory.GetQueryBuilder(db.CurrentConnectionConfig);
+            QueryBuilder.Context = (SqlSugarProvider)db;
+            QueryBuilder.Builder = InstanceFactory.GetSqlbuilder(db.CurrentConnectionConfig);
+            QueryBuilder.Builder.Context = (SqlSugarProvider)db;
+            return QueryBuilder;
+        }
+
         public static QueryBuilder GetQueryBuilder(ConnectionConfig currentConnectionConfig)
         {
             if (currentConnectionConfig.DbType == DbType.SqlServer)

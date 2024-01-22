@@ -248,7 +248,7 @@ namespace SqlSugar
             if (sql.SelectString == null) 
             {
                 var columns = bEntityInfo.Columns.Where(it => !it.IsIgnore)
-                     .Select(it => GetOneToManySelectByColumnInfo(it)).ToList();
+                     .Select(it => GetOneToManySelectByColumnInfo(it,abDb)).ToList();
                 sql.SelectString = String.Join(",", columns);
             }
             var bList = selector(bDb.Queryable<object>().AS(bEntityInfo.DbTableName).ClearFilter(QueryBuilder.RemoveFilters).Filter(this.QueryBuilder?.IsDisabledGobalFilter == true ? null : bEntityInfo.Type).AddParameters(sql.Parameters).Where(conditionalModels2).WhereIF(sql.WhereString.HasValue(),sql.WhereString).Select(sql.SelectString).OrderByIF(sql.OrderByString.HasValue(),sql.OrderByString));  
@@ -369,7 +369,7 @@ namespace SqlSugar
                 if (sqlObj.SelectString == null)
                 {
                     var columns = navEntityInfo.Columns.Where(it => !it.IsIgnore)
-                        .Select(it => GetOneToOneSelectByColumnInfo(it)).ToList();
+                        .Select(it => GetOneToOneSelectByColumnInfo(it,db)).ToList();
                     sqlObj.SelectString = String.Join(",", columns);
                 }
                 var navList = selector(db.Queryable<object>().ClearFilter(QueryBuilder.RemoveFilters).Filter((navPkColumn.IsPrimarykey&& navPkCount==1) ? null : this.QueryBuilder?.IsDisabledGobalFilter == true ? null : navEntityInfo.Type).AS(GetDbTableName(navEntityInfo))
@@ -447,7 +447,7 @@ namespace SqlSugar
                 if (sqlObj.SelectString == null)
                 {
                     var columns = navEntityInfo.Columns.Where(it => !it.IsIgnore)
-                        .Select(it => GetOneToManySelectByColumnInfo(it)).ToList();
+                        .Select(it => GetOneToManySelectByColumnInfo(it,childDb)).ToList();
                     sqlObj.SelectString = String.Join(",", columns);
                 }
                 var navList = selector(childDb.Queryable<object>(sqlObj.TableShortName).AS(GetDbTableName(navEntityInfo)).ClearFilter(QueryBuilder.RemoveFilters).Filter(this.QueryBuilder?.IsDisabledGobalFilter == true ? null : navEntityInfo.Type).AddParameters(sqlObj.Parameters).Where(conditionalModels).WhereIF(sqlObj.WhereString.HasValue(), sqlObj.WhereString).WhereIF(navObjectNameColumnInfo?.Navigat?.WhereSql!=null, navObjectNameColumnInfo?.Navigat?.WhereSql).Select(sqlObj.SelectString).OrderByIF(sqlObj.OrderByString.HasValue(), sqlObj.OrderByString));
@@ -937,21 +937,24 @@ namespace SqlSugar
             }
         }
 
-        private string GetOneToManySelectByColumnInfo(EntityColumnInfo it)
+        private string GetOneToManySelectByColumnInfo(EntityColumnInfo it,ISqlSugarClient db)
         {
+            QueryBuilder QueryBuilder =InstanceFactory.GetQueryBuilderWithContext(db);
             if (it.QuerySql.HasValue())
             {
                 return it.QuerySql + " AS " + QueryBuilder.Builder.GetTranslationColumnName(it.PropertyName);
             }
             return QueryBuilder.Builder.GetTranslationColumnName(it.DbColumnName) + " AS " + QueryBuilder.Builder.GetTranslationColumnName(it.PropertyName);
         }
-        private string GetOneToOneSelectByColumnInfo(EntityColumnInfo it)
+        private string GetOneToOneSelectByColumnInfo(EntityColumnInfo it,ISqlSugarClient db)
         {
+            QueryBuilder QueryBuilder = InstanceFactory.GetQueryBuilderWithContext(db);
             if (it.QuerySql.HasValue())
             {
                 return it.QuerySql + " AS " + QueryBuilder.Builder.GetTranslationColumnName(it.PropertyName);
             }
             return QueryBuilder.Builder.GetTranslationColumnName(it.DbColumnName) + " AS " + QueryBuilder.Builder.GetTranslationColumnName(it.PropertyName);
         }
+
     }
 }
