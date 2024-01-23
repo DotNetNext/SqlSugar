@@ -641,6 +641,10 @@ WHERE table_name = '"+tableName+"'");
                 x.Length = 0;
                 x.DecimalDigits = 0;
             }
+            if (x.OracleDataType.HasValue()) 
+            {
+                x.DataType = x.OracleDataType;
+            }
         }
         #endregion
     }
