@@ -167,14 +167,19 @@ namespace Test
                 new SelectModel()
                 {
                     AsName = "id1",
-                    FiledName = "id"
+                    FieldName = "id"
                 },
                   new SelectModel()
                   {
 
-                    FiledName = "id"
+                    FieldName = ObjectFuncModel.Create("MergeString", new string[] { 
+                    "Name",
+                     "Name"
+                    } 
+                    ) ,
+                    AsName="Name"
                    }
-                 };
+                 }; 
             jsonToSqlClient.Context
                 .Queryable<object>()
                 .AS("order").Select(list).ToList();

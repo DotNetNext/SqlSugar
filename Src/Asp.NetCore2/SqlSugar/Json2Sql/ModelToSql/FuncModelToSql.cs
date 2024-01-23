@@ -54,6 +54,10 @@ namespace SqlSugar
             {
                 resSql = GetSqlFuncSql(parameters, dbMethods, methodName, methodInfo, resPars);
             }
+            else if (IsMergeStringMethod(methodName))
+            {
+                resSql = GetSqlFuncSql(parameters, dbMethods, methodName, methodInfo, resPars);
+            }
             else
             {
                 resSql = GetNoSupportMethodSql(methodInfo);
@@ -61,6 +65,8 @@ namespace SqlSugar
 
             return resSql;
         }
+
+
         private static System.Reflection.MethodInfo GetMethod(IDbMethods dbMethods, string methodName)
         {
             return dbMethods.GetType().GetMethods()
@@ -114,6 +120,10 @@ namespace SqlSugar
                     IsMember = true
                 });
             }
+            if (IsMergeStringMethod(methodName)) 
+            {
+                return methodInfo.Invoke(dbMethods, new object[] { args.Select(it=>it.MemberName.ObjToString()).ToArray() }).ObjToString();
+            }
             resSql = methodInfo.Invoke(dbMethods, new object[] { new MethodCallExpressionModel() {
                   Name=methodName,
                   Args=args
@@ -135,10 +145,15 @@ namespace SqlSugar
         private static string GetNoParameterMehtodSql(IDbMethods dbMethods, System.Reflection.MethodInfo methodInfo)
         {
             return methodInfo.Invoke(dbMethods, new object[] { }).ObjToString();
-        } 
+        }
         #endregion
 
         #region Helper
+        private static bool IsMergeStringMethod(string methodName)
+        {
+            return methodName == "MergeString";
+        }
+
         private static bool IsSqlFuncMethod(System.Reflection.ParameterInfo[] pars)
         {
             return pars.First().ParameterType == typeof(MethodCallExpressionModel);
