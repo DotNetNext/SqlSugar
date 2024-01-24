@@ -707,17 +707,13 @@ namespace SqlSugar
                 return SetColumns(filedNameExpression,(object)null);
             }
             var name = UpdateBuilder.GetExpressionValue(filedNameExpression, ResolveExpressType.FieldSingle).GetString();
-            name = UpdateBuilder.Builder.GetNoTranslationColumnName(name);
-            var value = UpdateBuilder.GetExpressionValue(valueExpression, ResolveExpressType.FieldSingle).GetString();
-            this.UpdateBuilder.DbColumnInfoList.Add(new DbColumnInfo()
-            {
-                DbColumnName = name,
-                Value = value,
-                PropertyName = name ,
-                SqlParameterDbType=typeof(SqlSugar.DbConvert.NoParameterCommonPropertyConvert)
-            });
-            this.UpdateBuilder.SetValues.Add(new KeyValuePair<string, string>(name,value));
-            return this;
+            //name = UpdateBuilder.Builder.GetNoTranslationColumnName(name);
+            var value = UpdateBuilder.GetExpressionValue(ExpressionTool.RemoveConvert(valueExpression), ResolveExpressType.WhereSingle).GetString();
+            value = $" {name}={value} ";
+            this.UpdateBuilder.SetValues.Add(new KeyValuePair<string, string>(name,value)); 
+            this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => (UpdateParameterIsNull == false && IsPrimaryKey(it)) || UpdateBuilder.SetValues.Any(v => SqlBuilder.GetNoTranslationColumnName(v.Key).Equals(it.DbColumnName, StringComparison.CurrentCultureIgnoreCase) || SqlBuilder.GetNoTranslationColumnName(v.Key).Equals(it.PropertyName, StringComparison.CurrentCultureIgnoreCase)) || it.IsPrimarykey == true).ToList();
+            AppendSets();
+            return this; 
         }
         public IUpdateable<T> SetColumns(Expression<Func<T, object>> filedNameExpression, object fieldValue) 
         {
