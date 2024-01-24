@@ -77,6 +77,78 @@ namespace SqlSugar
             }
             return result;
         }
+        public RepositoryType CopyNew<RepositoryType>(IServiceProvider serviceProvider) where RepositoryType : ISugarRepository
+        {
+            var instance = handleDependencies(typeof(RepositoryType), serviceProvider);
+            return (RepositoryType)instance;
+        }
+
+        private object handleDependencies(Type type, IServiceProvider serviceProvider)
+        {
+            ConstructorInfo constructorInfo = null;
+            var newInstanceType = type;
+            if (type.IsInterface && IsAssignableToBaseRepository(type))
+            {
+                var dependencyInstanceType = serviceProvider.GetService(type)?.GetType();
+                newInstanceType = dependencyInstanceType;
+                constructorInfo = dependencyInstanceType.GetConstructors().FirstOrDefault();
+            }
+            else
+            {
+                constructorInfo = type.GetConstructors().FirstOrDefault();
+            }
+            var parameters = constructorInfo?.GetParameters();
+            if (parameters == null || parameters.Length == 0)
+            {
+                object dependencyInstance = serviceProvider.GetService(type);
+                if (dependencyInstance is ISugarRepository sugarRepository)
+                {
+                    sugarRepository.Context = sugarRepository.Context.CopyNew();
+                    return sugarRepository;
+                }
+                else
+                {
+                    return dependencyInstance;
+                }
+            }
+
+            var conParas = new List<object>();
+            foreach (var parameter in parameters)
+            {
+                Type dependencyType = parameter.ParameterType;
+                conParas.Add(handleDependencies(dependencyType, serviceProvider));
+            }
+
+            object instance = null;
+            if (conParas != null && conParas.Count > 0)
+            {
+                instance = Activator.CreateInstance(newInstanceType, conParas.ToArray());
+            }
+            else
+            {
+                instance = Activator.CreateInstance(newInstanceType);
+            }
+            return instance;
+        }
+
+        private bool IsAssignableToBaseRepository(Type type)
+        {
+            var baseInterfaces = type.GetInterfaces();
+            foreach (Type interfaceType in baseInterfaces)
+            {
+                if (interfaceType.IsGenericType && interfaceType.GetGenericTypeDefinition() == typeof(ISimpleClient<>))
+                {
+                    Type genericArgument = interfaceType.GetGenericArguments()[0];
+                    Type baseRepositoryGenericType = typeof(ISimpleClient<>).MakeGenericType(genericArgument);
+
+                    if (baseRepositoryGenericType.IsAssignableFrom(type))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
         public RepositoryType ChangeRepository<RepositoryType>() where RepositoryType : ISugarRepository
         {
             Type type = typeof(RepositoryType);
