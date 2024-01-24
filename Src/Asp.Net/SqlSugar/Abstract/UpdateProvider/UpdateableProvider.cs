@@ -708,7 +708,8 @@ namespace SqlSugar
             }
             var name = UpdateBuilder.GetExpressionValue(filedNameExpression, ResolveExpressType.FieldSingle).GetString();
             name = UpdateBuilder.Builder.GetTranslationColumnName(name);
-            var value = UpdateBuilder.GetExpressionValue(ExpressionTool.RemoveConvert(valueExpression), ResolveExpressType.WhereSingle).GetString();
+            var exp = ExpressionTool.RemoveConvert((valueExpression as LambdaExpression).Body);
+            var value = UpdateBuilder.GetExpressionValue(exp, ResolveExpressType.WhereSingle).GetString();
             value = $" {name}={value} ";
             this.UpdateBuilder.SetValues.Add(new KeyValuePair<string, string>(name,value)); 
             this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => (UpdateParameterIsNull == false && IsPrimaryKey(it)) || UpdateBuilder.SetValues.Any(v => SqlBuilder.GetNoTranslationColumnName(v.Key).Equals(it.DbColumnName, StringComparison.CurrentCultureIgnoreCase) || SqlBuilder.GetNoTranslationColumnName(v.Key).Equals(it.PropertyName, StringComparison.CurrentCultureIgnoreCase)) || it.IsPrimarykey == true).ToList();
