@@ -660,15 +660,15 @@ AND syscomments.text LIKE '%"+tableName+"%'");
                                             name = N'{0}',
                                             filename = N'{1}\{0}.mdf',
                                             size = 10mb,
-                                            maxsize = 100mb,
+                                            maxsize = 5000mb,
                                             filegrowth = 1mb
                                         ),
                                         (
                                             name = N'{0}_ndf',   
                                             filename = N'{1}\{0}.ndf',
                                             size = 10mb,
-                                            maxsize = 100mb,
-                                             filegrowth = 10 %
+                                            maxsize = 5000mb,
+                                             filegrowth =10mb
                                         )
                                         log on  
                                         (
