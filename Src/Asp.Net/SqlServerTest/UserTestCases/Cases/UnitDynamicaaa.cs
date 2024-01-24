@@ -15,6 +15,12 @@ namespace OrmTest
             db.CodeFirst.InitTables<UnitPerson011, UnitAddress011>();
             db.DbMaintenance.TruncateTable<UnitPerson011, UnitAddress011>();
 
+            db.Updateable<UnitPerson011>()
+                .SetColumns(it => it.Name, it => it.Name + "")
+                 .SetColumns(it => it.AddressId, it => 1)
+                .Where(it=>it.Id==1)
+                .ExecuteCommand();
+
             for (int i = 0; i < 200; i++)
             {
                 AddData(db, "a"+i,"name"+i); 
