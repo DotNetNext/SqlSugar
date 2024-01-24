@@ -277,6 +277,21 @@ namespace SqlSugar
                     sqlParameter.DbType = System.Data.DbType.AnsiString;
                     sqlParameter.Value = parameter.Value;
                 }
+                else if (parameter.DbType == System.Data.DbType.UInt32) 
+                { 
+                    sqlParameter.DbType = System.Data.DbType.Int32;
+                    sqlParameter.Value = parameter.Value;
+                }
+                else if (parameter.DbType == System.Data.DbType.UInt16)
+                {
+                    sqlParameter.DbType = System.Data.DbType.Int16;
+                    sqlParameter.Value = parameter.Value;
+                }
+                else if (parameter.DbType == System.Data.DbType.UInt64)
+                {
+                    sqlParameter.DbType = System.Data.DbType.Int64;
+                    sqlParameter.Value = parameter.Value;
+                }
                 else
                 {
                     if (parameter.Value != null && parameter.Value.GetType() == UtilConstants.GuidType)
