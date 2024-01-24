@@ -376,7 +376,7 @@ AND syscomments.text LIKE '%"+tableName+"%'");
         }
         public override List<string> GetFuncList()
         {
-            return this.Context.Ado.SqlQuery<string>("SELECT name\r\nFROM sys.objects\r\nWHERE type_desc = 'SQL_SCALAR_FUNCTION' ");
+            return this.Context.Ado.SqlQuery<string>("SELECT name\r\nFROM sys.objects\r\nWHERE type_desc  IN( 'SQL_SCALAR_FUNCTION','SQL_TABLE_VALUED_FUNCTION') ");
         }
         private bool IsAnySchemaTable(string tableName)
         {
