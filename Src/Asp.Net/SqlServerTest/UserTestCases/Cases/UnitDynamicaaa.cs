@@ -20,6 +20,12 @@ namespace OrmTest
                  .SetColumns(it => it.AddressId, it => 1)
                 .Where(it=>it.Id==1)
                 .ExecuteCommand();
+            var p = 1;
+            db.Updateable<UnitPerson011>()
+             .SetColumns(it => it.Name, it => it.Name + "")
+              .SetColumns(it => it.AddressId, it => p)
+             .Where(it => it.Id == 1)
+             .ExecuteCommand();
 
             for (int i = 0; i < 200; i++)
             {
