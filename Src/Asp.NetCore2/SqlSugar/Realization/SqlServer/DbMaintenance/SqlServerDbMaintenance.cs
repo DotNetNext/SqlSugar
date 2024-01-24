@@ -376,7 +376,7 @@ AND syscomments.text LIKE '%"+tableName+"%'");
         }
         public override List<string> GetFuncList()
         {
-            return this.Context.Ado.SqlQuery<string>("SELECT name\r\nFROM sys.objects\r\nWHERE type_desc = 'SQL_SCALAR_FUNCTION' ");
+            return this.Context.Ado.SqlQuery<string>("SELECT name\r\nFROM sys.objects\r\nWHERE type_desc  IN( 'SQL_SCALAR_FUNCTION','SQL_TABLE_VALUED_FUNCTION') ");
         }
         private bool IsAnySchemaTable(string tableName)
         {
@@ -660,15 +660,15 @@ AND syscomments.text LIKE '%"+tableName+"%'");
                                             name = N'{0}',
                                             filename = N'{1}\{0}.mdf',
                                             size = 10mb,
-                                            maxsize = 5000mb,
+                                            maxsize = 100mb,
                                             filegrowth = 1mb
                                         ),
                                         (
                                             name = N'{0}_ndf',   
                                             filename = N'{1}\{0}.ndf',
                                             size = 10mb,
-                                            maxsize = 5000mb,
-                                             filegrowth = 10mb
+                                            maxsize = 100mb,
+                                             filegrowth = 10 %
                                         )
                                         log on  
                                         (
