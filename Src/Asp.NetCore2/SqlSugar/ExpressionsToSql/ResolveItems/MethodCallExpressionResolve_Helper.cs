@@ -482,7 +482,7 @@ namespace SqlSugar
                     }
                     value = result;
                 }
-                else if (name.IsIn("Contains", "StartsWith", "EndsWith") &&item==args.Last()&& ExpressionTool.IsSqlParameterDbType(this.Context, args.First()))
+                else if (!(item is ParameterExpression)&& name.IsIn("Contains", "StartsWith", "EndsWith") &&item==args.Last()&& ExpressionTool.IsSqlParameterDbType(this.Context, args.First()))
                 {
                     var myvalue = ExpressionTool.DynamicInvoke(args.Last());
                     var parametre = ExpressionTool.GetParameterBySqlParameterDbType(this.Context.ParameterIndex,myvalue, this.Context, args.First());
