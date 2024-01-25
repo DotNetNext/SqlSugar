@@ -79,11 +79,11 @@ namespace SqlSugar
         }
         public RepositoryType CopyNew<RepositoryType>(IServiceProvider serviceProvider) where RepositoryType : ISugarRepository
         {
-            var instance = handleDependencies(typeof(RepositoryType), serviceProvider);
+            var instance = handleDependencies(typeof(RepositoryType), serviceProvider,true);
             return (RepositoryType)instance;
         }
 
-        private object handleDependencies(Type type, IServiceProvider serviceProvider)
+        private object handleDependencies(Type type, IServiceProvider serviceProvider,bool needNewCopy = false)
         {
             ConstructorInfo constructorInfo = null;
             var newInstanceType = type;
@@ -103,8 +103,7 @@ namespace SqlSugar
                 object dependencyInstance = serviceProvider.GetService(type);
                 if (dependencyInstance is ISugarRepository sugarRepository)
                 {
-                    sugarRepository.Context = sugarRepository.Context.CopyNew();
-                    return sugarRepository;
+                    return setContext(sugarRepository, needNewCopy);
                 }
                 else
                 {
@@ -130,7 +129,28 @@ namespace SqlSugar
             }
             return instance;
         }
-
+        private ISugarRepository setContext(ISugarRepository sugarRepository,bool needNewCopy)
+        {
+            if (sugarRepository.Context != null)
+            {
+                if (needNewCopy)
+                {
+                    sugarRepository.Context = sugarRepository.Context.CopyNew();
+                }
+            }
+            else
+            {
+                if (needNewCopy)
+                {
+                    sugarRepository.Context = this.Context.CopyNew();
+                }
+                else
+                {
+                    sugarRepository.Context = this.Context;
+                }
+            }
+            return sugarRepository;
+        }
         private bool IsAssignableToBaseRepository(Type type)
         {
             var baseInterfaces = type.GetInterfaces();
@@ -168,6 +188,11 @@ namespace SqlSugar
                 result.Context = this.Context;
             }
             return result;
+        }
+        public RepositoryType ChangeRepository<RepositoryType>(IServiceProvider serviceProvider) where RepositoryType : ISugarRepository
+        {
+            var instance = handleDependencies(typeof(RepositoryType), serviceProvider, false);
+            return (RepositoryType)instance;
         }
         public ISugarQueryable<T> AsQueryable()
         {
