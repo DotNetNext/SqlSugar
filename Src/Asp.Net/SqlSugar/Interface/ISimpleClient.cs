@@ -13,6 +13,7 @@ namespace SqlSugar
         RepositoryType CopyNew<RepositoryType>() where RepositoryType : ISugarRepository;
         SimpleClient<ChangeType> Change<ChangeType>() where ChangeType : class, new();
         RepositoryType ChangeRepository<RepositoryType>() where RepositoryType : ISugarRepository ;
+        RepositoryType ChangeRepository<RepositoryType>(IServiceProvider serviceProvider) where RepositoryType : ISugarRepository;
         IDeleteable<T> AsDeleteable();
         IInsertable<T> AsInsertable(List<T> insertObjs);
         IInsertable<T> AsInsertable(T insertObj);

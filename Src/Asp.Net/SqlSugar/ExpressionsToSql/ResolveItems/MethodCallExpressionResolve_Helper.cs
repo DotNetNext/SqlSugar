@@ -156,7 +156,7 @@ namespace SqlSugar
                 };
                 model.Args.Add(methodCallExpressionArgs);
             }
-            else if (isFirst && isIIF && isIFFBoolMember&& (item as MemberExpression)?.Member?.Name=="HasValue")
+            else if (isFirst && isIIF && isIFFBoolMember && (item as MemberExpression)?.Member?.Name == "HasValue")
             {
                 var value = base.GetNewExpressionValue(item);
                 var methodCallExpressionArgs = new MethodCallExpressionArgs()
@@ -167,9 +167,9 @@ namespace SqlSugar
                 };
                 model.Args.Add(methodCallExpressionArgs);
             }
-            else if (name!=null && name != "MappingColumn" && !name.StartsWith("Row") &&ExpressionTool.GetMethodName(item)== "Format" && ExpressionTool.GetParameters(item).Count==0) 
+            else if (name != null && name != "MappingColumn" && !name.StartsWith("Row") && ExpressionTool.GetMethodName(item) == "Format" && ExpressionTool.GetParameters(item).Count == 0)
             {
-                var value =  ExpressionTool.DynamicInvoke(item);
+                var value = ExpressionTool.DynamicInvoke(item);
                 var p = AppendParameter(value);
                 var methodCallExpressionArgs = new MethodCallExpressionArgs()
                 {
@@ -265,6 +265,31 @@ namespace SqlSugar
             {
                 model.Args.Add(GetMethodCallArgs(parameter, (item as MemberExpression).Expression));
             }
+            else if (isBoolValue && isIIF && item is MemberExpression&&ExpressionTool.GetParameters(item).Count()==0) 
+            { 
+                var expValue = GetNewExpressionValue(item);
+                expValue = this.Context.DbMehtods.Equals(new MethodCallExpressionModel()
+                {
+                    Name = "Equals",
+                    Args = new List<MethodCallExpressionArgs>()
+                        {
+                             new MethodCallExpressionArgs(){
+                               IsMember=true,
+                               MemberName=expValue
+                             },
+                             new MethodCallExpressionArgs(){
+                               IsMember=true,
+                               MemberName= Context.DbMehtods.TrueValue()
+                             } 
+                        }
+                });
+                model.Args.Add(new MethodCallExpressionArgs()
+                {
+                    IsMember = false,
+                    MemberName = expValue,
+                    MemberValue = expValue
+                });
+            }
             else if (isBoolValue && isIIF && item is MemberExpression)
             {
                 var argItem = GetMethodCallArgs(parameter, (item as MemberExpression).Expression);
@@ -277,7 +302,7 @@ namespace SqlSugar
                 }
                 model.Args.Add(argItem);
             }
-            else if (name.IsIn("ListAny","ListAll") && item is LambdaExpression)
+            else if (name.IsIn("ListAny", "ListAll") && item is LambdaExpression)
             {
                 var sql = GetNewExpressionValue(item, ResolveExpressType.WhereMultiple);
                 var lamExp = (item as LambdaExpression);
@@ -482,7 +507,7 @@ namespace SqlSugar
                     }
                     value = result;
                 }
-                else if (name.IsIn("Contains", "StartsWith", "EndsWith") &&item==args.Last()&& ExpressionTool.IsSqlParameterDbType(this.Context, args.First()))
+                else if (!(item is ParameterExpression)&& name.IsIn("Contains", "StartsWith", "EndsWith") &&item==args.Last()&& ExpressionTool.IsSqlParameterDbType(this.Context, args.First()))
                 {
                     var myvalue = ExpressionTool.DynamicInvoke(args.Last());
                     var parametre = ExpressionTool.GetParameterBySqlParameterDbType(this.Context.ParameterIndex,myvalue, this.Context, args.First());
