@@ -22,8 +22,8 @@ namespace OrmTest
             Db.CodeFirst.InitTables<LIS6_REQ_INFO>();
             List<string> allIds = new List<string> { "1", "2", "3", "4" };
          
-            List<LIS6_REQ_INFO> multipleRegistDatas = Db.Queryable<LIS6_REQ_INFO>().AS("XH_DATA.LIS6_REQ_INFO")
-               .Where(o => allIds.Any(a => o.REQUISITION_ID.StartsWith(a)))
+            List<LIS6_REQ_INFO> multipleRegistDatas = Db.Queryable<LIS6_REQ_INFO>().AS("LIS6_REQ_INFO")
+               .Where(o => allIds.Any(a => o.REQUISITION_ID.Contains(a)))
                .ToList();
         }
         [Table("LIS6_REQ_INFO")]
@@ -31,7 +31,7 @@ namespace OrmTest
         {
             [Key]
             [StringLength(20)]
-            [SugarColumn(IsPrimaryKey = true, SqlParameterDbType = System.Data.DbType.AnsiString)]
+            [SugarColumn(IsPrimaryKey = true, SqlParameterDbType =System.Data.DbType.AnsiString)]
             public string REQUISITION_ID { get; set; } = null!;
             [Column(TypeName = "DATE")]
             public DateTime GENERATE_DATE { get; set; }
