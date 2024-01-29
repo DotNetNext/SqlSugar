@@ -244,7 +244,7 @@ namespace SqlSugar
                 FieldValue = String.Join(",", abids.Select(it => it.Bid).ToArray()),
                 CSharpTypeName = bColumn.PropertyInfo.PropertyType.Name
             }));
-            var sql = GetWhereSql();
+            var sql = GetWhereSql(abDb);
             if (sql.SelectString == null) 
             {
                 var columns = bEntityInfo.Columns.Where(it => !it.IsIgnore)
@@ -365,7 +365,7 @@ namespace SqlSugar
             }));
             if (list.Any()&&navObjectNamePropety.GetValue(list.First()) == null)
             {
-                var sqlObj = GetWhereSql(navObjectNameColumnInfo.Navigat.Name);
+                var sqlObj = GetWhereSql(db,navObjectNameColumnInfo.Navigat.Name);
                 if (sqlObj.SelectString == null)
                 {
                     var columns = navEntityInfo.Columns.Where(it => !it.IsIgnore)
@@ -440,7 +440,7 @@ namespace SqlSugar
                 FieldValue = String.Join(",", ids),
                 CSharpTypeName = listItemPkColumn?.UnderType?.Name
             }));
-            var sqlObj = GetWhereSql(navObjectNameColumnInfo.Navigat.Name);
+            var sqlObj = GetWhereSql(childDb,navObjectNameColumnInfo.Navigat.Name);
       
             if (list.Any() && navObjectNamePropety.GetValue(list.First()) == null)
             {
@@ -533,7 +533,7 @@ namespace SqlSugar
 
             childDb.InitMappingInfo(navEntity);
             var navEntityInfo = childDb.EntityMaintenance.GetEntityInfo(navEntity);
-            var sqlObj = GetWhereSql(navObjectNameColumnInfo.Navigat.Name);
+            var sqlObj = GetWhereSql(childDb,navObjectNameColumnInfo.Navigat.Name);
             if (IsJsonMapping(navObjectNameColumnInfo, sqlObj))
             {
                 CreateDynamicMappingExpression(sqlObj, navObjectNameColumnInfo.Navigat.Name, navEntityInfo, listItemEntity);
@@ -566,8 +566,10 @@ namespace SqlSugar
         {
             var navEntity = navObjectNameColumnInfo.PropertyInfo.PropertyType;
             var navEntityInfo = this.Context.EntityMaintenance.GetEntityInfo(navEntity);
+            var childDb = this.Context;
+            childDb = GetCrossDatabase(childDb, navEntity);
             this.Context.InitMappingInfo(navEntity);
-            var sqlObj = GetWhereSql(navObjectNameColumnInfo.Navigat.Name);
+            var sqlObj = GetWhereSql(childDb,navObjectNameColumnInfo.Navigat.Name);
             if (IsJsonMapping(navObjectNameColumnInfo, sqlObj))
             {
                 CreateDynamicMappingExpression(sqlObj, navObjectNameColumnInfo.Navigat.Name, navEntityInfo, listItemEntity);
@@ -584,7 +586,7 @@ namespace SqlSugar
                 helper.NavEntity = navEntityInfo;
                 helper.RootEntity = this.Context.EntityMaintenance.GetEntityInfo<T>();
                 var whereSql = helper.GetMppingSql(list, sqlObj.MappingExpressions);
-                var navList = selector(this.Context.Queryable<object>().AS(GetDbTableName(navEntityInfo)).AddParameters(sqlObj.Parameters).Where(whereSql, true).WhereIF(sqlObj.WhereString.HasValue(), sqlObj.WhereString).Select(sqlObj.SelectString).OrderByIF(sqlObj.OrderByString.HasValue(), sqlObj.OrderByString));
+                var navList = selector(childDb.Queryable<object>().AS(GetDbTableName(navEntityInfo)).AddParameters(sqlObj.Parameters).Where(whereSql, true).WhereIF(sqlObj.WhereString.HasValue(), sqlObj.WhereString).Select(sqlObj.SelectString).OrderByIF(sqlObj.OrderByString.HasValue(), sqlObj.OrderByString));
                 if (navList.HasValue())
                 {
                     foreach (var item in list)
@@ -595,7 +597,7 @@ namespace SqlSugar
             }
         }
 
-        private SqlInfo GetWhereSql(string properyName=null)
+        private SqlInfo GetWhereSql(ISqlSugarClient db,string properyName=null)
         {
             if (_ListCallFunc == null|| _ListCallFunc.Count==0) return new SqlInfo();
             List<string> where = new List<string>();
@@ -608,7 +610,7 @@ namespace SqlSugar
             foreach (var item in _ListCallFunc)
             {
                 var method = item as MethodCallExpression;
-                var queryable = this.Context.Queryable<object>();
+                var queryable = db.Queryable<object>();
                 if (method.Method.Name == "Where")
                 {
                     if (method.Arguments[1].Type == typeof(List<IConditionalModel>))
