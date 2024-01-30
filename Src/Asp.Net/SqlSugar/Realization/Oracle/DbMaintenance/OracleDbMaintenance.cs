@@ -272,6 +272,24 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override bool IsAnyTable(string tableName, bool isCache = true)
+        {
+            if (isCache)
+            {
+                return base.IsAnyTable(tableName, isCache);
+            }
+            else 
+            {
+                if (tableName.Contains("\"")) 
+                {
+                    tableName = SqlBuilder.GetNoTranslationColumnName(tableName);
+                }
+                return this.Context.Ado.GetInt(@"
+                    SELECT COUNT(table_name)
+                    FROM user_tables
+                    WHERE UPPER(table_name) = UPPER(@p)",new { p=tableName}) > 0;
+            }
+        }
         public override bool UpdateColumn(string tableName, DbColumnInfo column)
         {
             ConvertCreateColumnInfo(column);
