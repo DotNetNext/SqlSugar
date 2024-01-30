@@ -456,7 +456,7 @@ WHERE table_name = '"+tableName+"'");
         {
             List<DbColumnInfo> columns = GetOracleDbType(tableName);
             string sql = "select *  /* " + Guid.NewGuid() + " */ from " +SqlBuilder.GetTranslationTableName(tableName) + " WHERE 1=2 ";
-            if (!this.GetTableInfoList(false).Any(it => it.Name == SqlBuilder.GetTranslationTableName(tableName).TrimStart('\"').TrimEnd('\"'))) 
+            if (!IsAnyTable(tableName,false)) 
             {
                 sql = "select *  /* " + Guid.NewGuid() + " */ from \"" + tableName + "\" WHERE 1=2 ";
             }
