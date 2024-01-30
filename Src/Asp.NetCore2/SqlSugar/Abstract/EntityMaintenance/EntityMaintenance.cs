@@ -323,7 +323,7 @@ namespace SqlSugar
                 column.PropertyName = property.Name;
                 column.PropertyInfo = property;
                 column.UnderType = UtilMethods.GetUnderType(column.PropertyInfo.PropertyType);
-                if (sugarColumn.IsOwnsOne)
+                if (column.IsOwnsOne)
                 {
                     SetValueObjectColumns(result, property, column);
                 }
