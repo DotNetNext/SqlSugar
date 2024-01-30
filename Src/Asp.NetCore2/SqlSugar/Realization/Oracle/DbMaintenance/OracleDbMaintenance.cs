@@ -456,10 +456,10 @@ WHERE table_name = '"+tableName+"'");
         {
             List<DbColumnInfo> columns = GetOracleDbType(tableName);
             string sql = "select *  /* " + Guid.NewGuid() + " */ from " +SqlBuilder.GetTranslationTableName(SqlBuilder.GetNoTranslationColumnName(tableName)) + " WHERE 1=2 ";
-            //if (!IsAnyTable(tableName,false)) 
-            //{
-            //    sql = "select *  /* " + Guid.NewGuid() + " */ from \"" + tableName + "\" WHERE 1=2 ";
-            //}
+            if (!IsAnyTable(tableName, false))
+            {
+                return new List<DbColumnInfo>();
+            }
             this.Context.Utilities.RemoveCache<List<DbColumnInfo>>("DbMaintenanceProvider.GetFieldComment."+tableName);
             this.Context.Utilities.RemoveCache<List<string>>("DbMaintenanceProvider.GetPrimaryKeyByTableNames." + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower());
             var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
