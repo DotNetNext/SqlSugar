@@ -386,6 +386,10 @@ namespace SqlSugar
                                 column.Length = 200;
                             }
                         }
+                        if (column.IsPrimarykey && column.IsOnlyIgnoreUpdate) 
+                        {
+                            column.IsOnlyIgnoreUpdate = false;
+                        }
                     }
                     else
                     {
