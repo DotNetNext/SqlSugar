@@ -466,6 +466,7 @@ namespace SqlSugar
                 {
                     Check.ExceptionEasy($" {result.EntityName} "+ item.PropertyName+ " 存在重复定义 (IsOwnsOne) ", $" {result.EntityName} " + item.PropertyName + " Duplicate definition exists (IsOwnsOne)");
                 }
+                item.ForOwnsOnePropertyInfo = column.PropertyInfo;
                 result.Columns.Add(item);
             }
         }

@@ -49,5 +49,6 @@ namespace SqlSugar
         public bool IsDisabledAlterColumn { get;  set; }
         public string QuerySql { get;  set; }
         public bool IsOwnsOne { get;  set; }
+        public PropertyInfo  ForOwnsOnePropertyInfo {   get;   set; }
     }
 }
