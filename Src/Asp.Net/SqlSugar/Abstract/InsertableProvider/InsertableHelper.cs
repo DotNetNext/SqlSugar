@@ -318,6 +318,11 @@ namespace SqlSugar
         }
         private static object GetValue(T item, EntityColumnInfo column)
         {
+            if (column.ForOwnsOnePropertyInfo != null) 
+            {
+                var owsPropertyValue= column.ForOwnsOnePropertyInfo.GetValue(item, null);
+                return column.PropertyInfo.GetValue(owsPropertyValue, null);
+            }
             if (StaticConfig.EnableAot)
             {
                 return column.PropertyInfo.GetValue(item, null);

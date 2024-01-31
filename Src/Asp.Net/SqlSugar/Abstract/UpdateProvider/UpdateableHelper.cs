@@ -328,14 +328,14 @@ namespace SqlSugar
                 Check.ExceptionEasy(item == null, "db.Updateable(data) data is required ", "db.Updateable(data) data不能是null");
                 var columnInfo = new DbColumnInfo()
                 {
-                    Value = column.PropertyInfo.GetValue(item, null),
+                    Value = GetValue(item, column),
                     DbColumnName = GetDbColumnName(column.PropertyName),
                     PropertyName = column.PropertyName,
                     PropertyType = UtilMethods.GetUnderType(column.PropertyInfo),
                     SqlParameterDbType = column.SqlParameterDbType,
                     TableId = i,
-                    UpdateSql=column.UpdateSql,
-                    UpdateServerTime= column.UpdateServerTime
+                    UpdateSql = column.UpdateSql,
+                    UpdateServerTime = column.UpdateServerTime
                 };
                 if (columnInfo.PropertyType.IsEnum() && columnInfo.Value != null)
                 {
@@ -367,6 +367,19 @@ namespace SqlSugar
                 updateItem.Add(columnInfo);
             }
             this.UpdateBuilder.DbColumnInfoList.AddRange(updateItem);
+        }
+
+        private static object GetValue(T item, EntityColumnInfo column)
+        {
+            if (column.ForOwnsOnePropertyInfo != null)
+            {
+                var owsPropertyValue = column.ForOwnsOnePropertyInfo.GetValue(item, null);
+                return column.PropertyInfo.GetValue(owsPropertyValue, null);
+            }
+            else
+            {
+                return column.PropertyInfo.GetValue(item, null);
+            }
         }
 
         private void PreToSql()
