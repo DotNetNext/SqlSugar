@@ -267,7 +267,7 @@ namespace SqlSugar
             }
             else if (isBoolValue && isIIF && item is MemberExpression&&ExpressionTool.GetParameters(item).Count()==0) 
             { 
-                var expValue = GetNewExpressionValue(item);
+                var expValue = AppendParameter(ExpressionTool.DynamicInvoke(item));
                 expValue = this.Context.DbMehtods.Equals(new MethodCallExpressionModel()
                 {
                     Name = "Equals",
