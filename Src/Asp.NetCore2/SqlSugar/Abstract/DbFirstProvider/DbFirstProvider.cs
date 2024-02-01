@@ -561,6 +561,10 @@ namespace SqlSugar
             }
             if (item.DataType == "bit")
                 return (convertString == "1" || convertString.Equals("true", StringComparison.CurrentCultureIgnoreCase)).ToString().ToLower();
+            if (convertString.EqualCase("NULL")) 
+            {
+                return "null";
+            }
             string result = this.Context.Ado.DbBind.GetConvertString(item.DataType) + "(\"" + convertString + "\")";
             return result;
         }
