@@ -135,7 +135,8 @@ namespace SqlSugar
         {
             get
             {
-                if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle)
+                var isDual=queryBuilder.Builder.FullSqlDateNow?.ToLower()?.Contains(" dual")==true;
+                if (isDual)
                 {
                     return " from dual ";
                 }
