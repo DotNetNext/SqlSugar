@@ -12,5 +12,6 @@ namespace SqlSugar
         public string[] WhereColumns { get; set; }
         public bool IsOffIdentity { get;  set; }
         public bool IsMerge { get; set; }
+        public bool IsNoCopyDataTable { get; set; }
     }
 }

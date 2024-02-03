@@ -16,7 +16,7 @@ namespace SqlSugar
         public string CharacterSet { get; set; }
         private DataTable UpdateDataTable { get; set; }
         public bool IsActionUpdateColumns { get; set; }
-        public DbFastestProperties DbFastestProperties { get; set; } = new DbFastestProperties();
+        public DbFastestProperties DbFastestProperties { get; set; } = new DbFastestProperties() { IsNoCopyDataTable=true };
         public SqliteFastBuilder(EntityInfo entityInfo)
         {
             this.entityInfo = entityInfo;
@@ -77,12 +77,21 @@ namespace SqlSugar
             using (var cmd = cn.CreateCommand())
             {
                 cmd.CommandText = this.Context.Insertable(dictionary.First()).AS(dt.TableName).ToSql().Key.Replace(";SELECT LAST_INSERT_ROWID();","");
-
+                var isCorrectErrorSqlParameterName=this.Context?.CurrentConnectionConfig?.MoreSettings?.IsCorrectErrorSqlParameterName==true;
                 foreach (DataRow dataRow in dt.Rows)
                 {
+                    int correctParameterIndex = 0;
                     foreach (DataColumn item in dt.Columns)
                     {
-                        cmd.Parameters.AddWithValue("@" + item.ColumnName, dataRow[item.ColumnName]);
+                        if (isCorrectErrorSqlParameterName)
+                        {
+                            cmd.Parameters.AddWithValue($"@CrorrPara{correctParameterIndex}", dataRow[item.ColumnName]);
+                            correctParameterIndex++;
+                        }
+                        else
+                        {
+                            cmd.Parameters.AddWithValue("@" + item.ColumnName, dataRow[item.ColumnName]);
+                        }
                     }
                     i += await cmd.ExecuteNonQueryAsync();
                     cmd.Parameters.Clear();

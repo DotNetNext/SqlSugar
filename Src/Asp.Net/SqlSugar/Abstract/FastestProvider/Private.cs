@@ -210,6 +210,11 @@ namespace SqlSugar
         }
         private DataTable GetCopyWriteDataTable(DataTable dt)
         {
+            var builder = GetBuider();
+            if (builder.DbFastestProperties?.IsNoCopyDataTable == true) 
+            {
+                return dt;
+            }
             DataTable tempDataTable = null;
             if (AsName == null)
             {
