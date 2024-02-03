@@ -85,8 +85,15 @@ namespace SqlSugar
                     {
                         if (isCorrectErrorSqlParameterName)
                         {
-                            cmd.Parameters.AddWithValue($"@CrorrPara{correctParameterIndex}", dataRow[item.ColumnName]);
-                            correctParameterIndex++;
+                            if (!cmd.CommandText.Contains("@" + item.ColumnName))
+                            {
+                                cmd.Parameters.AddWithValue($"@CrorrPara{correctParameterIndex}", dataRow[item.ColumnName]);
+                                correctParameterIndex++;
+                            }
+                            else 
+                            {
+                                cmd.Parameters.AddWithValue("@" + item.ColumnName, dataRow[item.ColumnName]);
+                            } 
                         }
                         else
                         {
