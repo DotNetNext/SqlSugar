@@ -30,6 +30,7 @@ namespace SqlSugar
         {
             var result = new SplitCodeFirstProvider();
             result.Context = this.Context;
+            result.DefaultLength = this.DefultLength;
             return result;
         }
 
