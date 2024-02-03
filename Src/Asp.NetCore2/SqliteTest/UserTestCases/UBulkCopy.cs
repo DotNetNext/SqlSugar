@@ -171,15 +171,36 @@ namespace OrmTest
                 new UnitDateOffsetTimex() { offsetTime = DateTimeOffset.Now },
                 new UnitDateOffsetTimex() { offsetTime = DateTimeOffset.Now }}).ExecuteCommand();
             var dt = Db.Ado.GetDataTable("select * from UnitDateOffsetTimex");
+            db.CodeFirst.InitTables<Unitadfasyyafda>();
+            db.DbMaintenance.TruncateTable<Unitadfasyyafda>();
+            db.Insertable(new Unitadfasyyafda() { Id = 1, Name = "a" }).ExecuteCommand();
+            db.Insertable(new Unitadfasyyafda() { Id = 2, Name = "a2" }).ExecuteCommand();
+            var list10=db.Queryable<Unitadfasyyafda>().ToDataTable();
+            db.DbMaintenance.TruncateTable<Unitadfasyyafda>(); 
+            db.Fastest<System.Data.DataTable>().AS("Unitadfasyyafda").BulkCopy(list10);
+            var list11=db.Queryable<Unitadfasyyafda>().ToList();
+            if (list11.First().Id != 1 || list11.Last().Name != "a2") 
+            {
+                throw new Exception("unit error");
+            }
+            if (list11.First().Name != "a" || list11.Last().Id != 2)
+            {
+                throw new Exception("unit error");
+            }
         }
     }
 
-        public class UnitDateOffsetTimex
-        {
-            public DateTimeOffset offsetTime { get; set; }
-        }
+    public class Unitadfasyyafda
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+    }
+    public class UnitDateOffsetTimex
+    {
+        public DateTimeOffset offsetTime { get; set; }
+    }
 
-        public class UnitBool01
+    public class UnitBool01
     {
         public bool Bool { get; set; }
     }
@@ -189,11 +210,11 @@ namespace OrmTest
         [SqlSugar.SugarColumn(IsNullable = true)]
         public DateTimeOffset? DateTimeOffset { get; set; }
     }
-    public class UnitBulk23131 
+    public class UnitBulk23131
     {
         [SqlSugar.SugarColumn(IsPrimaryKey = true)]
         public int Id { get; set; }
-        [SqlSugar.SugarColumn(ColumnDataType ="tinyint",Length =1,IsNullable =true)]
+        [SqlSugar.SugarColumn(ColumnDataType = "tinyint", Length = 1, IsNullable = true)]
         public bool? table { get; set; }
     }
     public class UnitTable001
@@ -214,9 +235,9 @@ namespace OrmTest
         public int Id { get; set; }
         public string Name { get; set; }
     }
-    public class UnitIdentity1 
+    public class UnitIdentity1
     {
-        [SqlSugar.SugarColumn(IsPrimaryKey =true,IsIdentity =true)]
+        [SqlSugar.SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
         public int Id { get; set; }
         public string Name { get; set; }
     }
