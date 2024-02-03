@@ -65,6 +65,7 @@
     <Compile Include="a8_SelectReturnType.cs" />
     <Compile Include="UnitTest\Description.cs" />
     <Compile Include="UserTestCases\Bugs\BugTest.cs" />
+    <Compile Include="UserTestCases\Cases\Unitasdfas2yy.cs" />
     <Compile Include="UserTestCases\Cases\Unitasdfasdfa1.cs" />
     <Compile Include="UserTestCases\Config.cs" />
     <Compile Include="UserTestCases\Cases.cs" />
