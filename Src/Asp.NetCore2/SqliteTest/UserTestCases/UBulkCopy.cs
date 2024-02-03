@@ -175,11 +175,33 @@ namespace OrmTest
             db.DbMaintenance.TruncateTable<Unitadfasyyafda>();
             db.Insertable(new Unitadfasyyafda() { Id = 1, Name = "a" }).ExecuteCommand();
             db.Insertable(new Unitadfasyyafda() { Id = 2, Name = "a2" }).ExecuteCommand();
-            var list10=db.Queryable<Unitadfasyyafda>().ToDataTable();
-            db.DbMaintenance.TruncateTable<Unitadfasyyafda>(); 
+            var list10 = db.Queryable<Unitadfasyyafda>().ToDataTable();
+            db.DbMaintenance.TruncateTable<Unitadfasyyafda>();
             db.Fastest<System.Data.DataTable>().AS("Unitadfasyyafda").BulkCopy(list10);
-            var list11=db.Queryable<Unitadfasyyafda>().ToList();
-            if (list11.First().Id != 1 || list11.Last().Name != "a2") 
+            var list11 = db.Queryable<Unitadfasyyafda>().ToList();
+            if (list11.First().Id != 1 || list11.Last().Name != "a2")
+            {
+                throw new Exception("unit error");
+            }
+            if (list11.First().Name != "a" || list11.Last().Id != 2)
+            {
+                throw new Exception("unit error");
+            }
+            TestIdentity();
+        }
+
+        private static void TestIdentity()
+        {
+            var db = NewUnitTest.Db;
+            db.CodeFirst.InitTables<UnitadfasyyafdaIdentity>();
+            db.DbMaintenance.TruncateTable<UnitadfasyyafdaIdentity>();
+            db.Insertable(new UnitadfasyyafdaIdentity() { Id = 1, Name = "a", Name2 = "a11" }).ExecuteCommand();
+            db.Insertable(new UnitadfasyyafdaIdentity() { Id = 2, Name = "a2", Name2 = "a22" }).ExecuteCommand();
+            var list10 = db.Queryable<UnitadfasyyafdaIdentity>().ToDataTable();
+            db.DbMaintenance.TruncateTable<UnitadfasyyafdaIdentity>();
+            db.Fastest<System.Data.DataTable>().AS("UnitadfasyyafdaIdentity").BulkCopy(list10);
+            var list11 = db.Queryable<UnitadfasyyafdaIdentity>().ToList();
+            if (list11.First().Id != 1 || list11.Last().Name != "a2")
             {
                 throw new Exception("unit error");
             }
@@ -189,8 +211,14 @@ namespace OrmTest
             }
         }
     }
-
-    public class Unitadfasyyafda
+        public class UnitadfasyyafdaIdentity
+        {
+            [SqlSugar.SugarColumn(IsIdentity =true,IsPrimaryKey =true)]
+            public int Id { get; set; }
+            public string Name { get; set; }
+            public string Name2 { get; set; }
+        }
+        public class Unitadfasyyafda
     {
         public int Id { get; set; }
         public string Name { get; set; }
