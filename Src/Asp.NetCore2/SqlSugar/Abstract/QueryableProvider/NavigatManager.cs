@@ -244,7 +244,7 @@ namespace SqlSugar
                 FieldValue = String.Join(",", abids.Select(it => it.Bid).ToArray()),
                 CSharpTypeName = bColumn.PropertyInfo.PropertyType.Name
             }));
-            var sql = GetWhereSql(abDb);
+            var sql = GetWhereSql(GetCrossDatabase(abDb, bEntity));
             if (sql.SelectString == null) 
             {
                 var columns = bEntityInfo.Columns.Where(it => !it.IsIgnore)
