@@ -29,6 +29,7 @@ namespace SqlSugar
         OceanBase,
         Tidb,
         Vastbase,
+        PolarDB,
         Custom =900
     }
 }
