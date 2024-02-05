@@ -10,11 +10,13 @@ namespace SqlSugar
 {
     public partial class DbBindAccessory
     {
-        public QueryBuilder QueryBuilder { get; set; }
+        public QueryBuilder QueryBuilder { get; set; } 
 
         protected List<T> GetEntityList<T>(SqlSugarProvider context, IDataReader dataReader)
         {
             Type type = typeof(T);
+            var entityInfo = context.EntityMaintenance.GetEntityInfo(type);
+            var isOwnsOne = entityInfo.Columns.Any(it => it.ForOwnsOnePropertyInfo != null);
             string types = null;
             var fieldNames = GetDataReaderNames(dataReader,ref types);
             string cacheKey = GetCacheKey(type,fieldNames) + types;
@@ -44,6 +46,7 @@ namespace SqlSugar
                     //    Check.Exception(true, ErrorMessage.EntityMappingError, ex.Message);
                     //}
                     SetAppendColumns(dataReader);
+                    SetOwnsOne(addItem,isOwnsOne,entityInfo,dataReader);
                 }
                 ExecuteDataAfterFun(context, dataAfterFunc, result);
             }
@@ -64,6 +67,8 @@ namespace SqlSugar
         protected async Task<List<T>> GetEntityListAsync<T>(SqlSugarProvider context, IDataReader dataReader)
         {
             Type type = typeof(T);
+            var entityInfo = context.EntityMaintenance.GetEntityInfo(type);
+            var isOwnsOne = entityInfo.Columns.Any(it => it.ForOwnsOnePropertyInfo != null);
             string types = null;
             var fieldNames = GetDataReaderNames(dataReader,ref types);
             string cacheKey = GetCacheKey(type, fieldNames)+types;
@@ -93,6 +98,7 @@ namespace SqlSugar
                     //    Check.Exception(true, ErrorMessage.EntityMappingError, ex.Message);
                     //}
                     SetAppendColumns(dataReader);
+                    SetOwnsOne(addItem, isOwnsOne, entityInfo, dataReader);
                 }
                 ExecuteDataAfterFun(context, dataAfterFunc, result);
             }
@@ -108,6 +114,29 @@ namespace SqlSugar
                 }
             }
             return result;
+        }
+
+        private void SetOwnsOne(object addItem, bool isOwnsOne, EntityInfo entityInfo, IDataReader dataReader)
+        {
+            if (isOwnsOne) 
+            {
+                var ownsOneColumnsKv = entityInfo.Columns.Where(it => it.ForOwnsOnePropertyInfo != null)
+                    .GroupBy(it=>it.ForOwnsOnePropertyInfo).ToList();
+                foreach (var kv in ownsOneColumnsKv)
+                {
+                    var parentObj=kv.Key.GetValue(addItem);
+                    if (parentObj == null) 
+                    {
+                        parentObj = kv.Key.PropertyType.Assembly.CreateInstance(kv.Key.PropertyType.FullName);
+                        kv.Key.SetValue(addItem, parentObj);
+                    }
+                    foreach (var item in kv.ToList())
+                    {
+                         var itemIndex=dataReader.GetOrdinal(item.DbColumnName);
+                        item.PropertyInfo.SetValue(parentObj, dataReader.GetValue(itemIndex));
+                    }
+                }
+            }
         }
 
         private void FormatT<T>(T addItem)
