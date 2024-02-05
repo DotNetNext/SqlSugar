@@ -24,7 +24,44 @@ namespace SqlSugar
             );
             return conditionalExpression;
         }
-
+        internal static bool IsOwsOne(ExpressionContext context, Expression member)
+        {
+            var isOwsOne = false;
+            if (member is MemberExpression memberExp)
+            {
+                var name = memberExp?.Member?.Name;
+                if (memberExp.Expression is MemberExpression parentMemberExp)
+                {
+                    if (name != null  && parentMemberExp.Expression is ParameterExpression)
+                    {
+                        var rootExp = (parentMemberExp.Expression as ParameterExpression);
+                        var entityInfo = context?.SugarContext?.Context?.EntityMaintenance?.GetEntityInfo(rootExp.Type);
+                        var navColumn = entityInfo.Columns.FirstOrDefault(it => it.PropertyName == name);
+                        isOwsOne = navColumn?.ForOwnsOnePropertyInfo != null;
+                    }
+                }
+            }
+            return isOwsOne;
+        }
+        internal static EntityColumnInfo GetOwsOneColumnInfo(ExpressionContext context, Expression member)
+        { 
+            EntityColumnInfo entityColumnInfo = new EntityColumnInfo();
+            if (member is MemberExpression memberExp)
+            {
+                var name = memberExp?.Member?.Name;
+                if (memberExp.Expression is MemberExpression parentMemberExp)
+                {
+                    if (name != null && parentMemberExp.Expression is ParameterExpression)
+                    {
+                        var rootExp = (parentMemberExp.Expression as ParameterExpression);
+                        var entityInfo = context?.SugarContext?.Context?.EntityMaintenance?.GetEntityInfo(rootExp.Type);
+                        var navColumn = entityInfo.Columns.FirstOrDefault(it => it.PropertyName == name);
+                        entityColumnInfo= navColumn;
+                    }
+                }
+            }
+            return entityColumnInfo;
+        }
 
         internal static bool IsNavMember(ExpressionContext context, Expression member)
         {

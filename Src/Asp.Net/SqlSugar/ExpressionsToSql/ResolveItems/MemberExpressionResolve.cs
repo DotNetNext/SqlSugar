@@ -457,6 +457,26 @@ namespace SqlSugar
 
         private void ResolveMemberValue(ExpressionParameter parameter, ExpressionParameter baseParameter, bool? isLeft, bool isSetTempData, MemberExpression expression)
         {
+            if (ExpressionTool.IsOwsOne(this.Context, expression)) 
+            {
+                var column = ExpressionTool.GetOwsOneColumnInfo(this.Context, expression);
+                var columnName = column.DbColumnName;
+                if (this.Context.IsJoin) 
+                {
+                    var expParameterInfo = ExpressionTool.GetParameters(expression).First();
+                    columnName = $"{expParameterInfo.Name}.{columnName}"; 
+                }
+                columnName=this.Context.GetTranslationColumnName(columnName);
+                if (isSetTempData)
+                {
+                    baseParameter.CommonTempData = columnName;
+                }
+                else
+                {
+                    AppendMember(parameter, isLeft, columnName);
+                }
+                return;
+            }
             var value = ExpressionTool.GetMemberValue(expression.Member, expression);
             if (isSetTempData)
             {
