@@ -457,9 +457,9 @@ namespace SqlSugar
 
         private void ResolveMemberValue(ExpressionParameter parameter, ExpressionParameter baseParameter, bool? isLeft, bool isSetTempData, MemberExpression expression)
         {
-            if (ExpressionTool.IsOwsOne(this.Context, expression)) 
+            if (ExpressionTool.IsOwnsOne(this.Context, expression)) 
             {
-                var column = ExpressionTool.GetOwsOneColumnInfo(this.Context, expression);
+                var column = ExpressionTool.GetOwnsOneColumnInfo(this.Context, expression);
                 var columnName = column.DbColumnName;
                 if (this.Context.IsJoin) 
                 {

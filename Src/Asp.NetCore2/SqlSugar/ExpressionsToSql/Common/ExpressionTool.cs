@@ -24,26 +24,29 @@ namespace SqlSugar
             );
             return conditionalExpression;
         }
-        internal static bool IsOwsOne(ExpressionContext context, Expression member)
+        internal static bool IsOwnsOne(ExpressionContext context, Expression member)
         {
-            var isOwsOne = false;
+            var isOwnsOne = false;
+            if (context?.SugarContext?.Context == null) 
+            {
+                return false;
+            }
             if (member is MemberExpression memberExp)
             {
                 var name = memberExp?.Member?.Name;
-                if (memberExp.Expression is MemberExpression parentMemberExp)
+                if (memberExp?.Expression is MemberExpression parentMemberExp)
                 {
-                    if (name != null  && parentMemberExp.Expression is ParameterExpression)
-                    {
-                        var rootExp = (parentMemberExp.Expression as ParameterExpression);
+                    if (name != null  && parentMemberExp?.Expression is ParameterExpression rootExp)
+                    { 
                         var entityInfo = context?.SugarContext?.Context?.EntityMaintenance?.GetEntityInfo(rootExp.Type);
-                        var navColumn = entityInfo.Columns.FirstOrDefault(it => it.PropertyName == name);
-                        isOwsOne = navColumn?.ForOwnsOnePropertyInfo != null;
+                        var navColumn = entityInfo?.Columns?.FirstOrDefault(it => it.PropertyName == name);
+                        isOwnsOne = navColumn?.ForOwnsOnePropertyInfo != null;
                     }
                 }
             }
-            return isOwsOne;
+            return isOwnsOne;
         }
-        internal static EntityColumnInfo GetOwsOneColumnInfo(ExpressionContext context, Expression member)
+        internal static EntityColumnInfo GetOwnsOneColumnInfo(ExpressionContext context, Expression member)
         { 
             EntityColumnInfo entityColumnInfo = new EntityColumnInfo();
             if (member is MemberExpression memberExp)
