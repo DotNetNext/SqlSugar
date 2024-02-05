@@ -460,13 +460,20 @@ namespace SqlSugar
             if (ExpressionTool.IsOwsOne(this.Context, expression)) 
             {
                 var column = ExpressionTool.GetOwsOneColumnInfo(this.Context, expression);
+                var columnName = column.DbColumnName;
+                if (this.Context.IsJoin) 
+                {
+                    var expParameterInfo = ExpressionTool.GetParameters(expression).First();
+                    columnName = $"{expParameterInfo.Name}.{columnName}"; 
+                }
+                columnName=this.Context.GetTranslationColumnName(columnName);
                 if (isSetTempData)
                 {
-                    baseParameter.CommonTempData = column.DbColumnName;
+                    baseParameter.CommonTempData = columnName;
                 }
                 else
                 {
-                    AppendMember(parameter, isLeft, column.DbColumnName);
+                    AppendMember(parameter, isLeft, columnName);
                 }
                 return;
             }
