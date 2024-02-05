@@ -79,8 +79,17 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
-        }
 
+            var list2 = db.Reportable(new List<Unitguidsda>() {
+               new Unitguidsda()
+               }).ToQueryable().ToList();
+        }
+ 
+
+        public class Unitguidsda
+        {
+            public Guid Id { get; set; } = Guid.NewGuid();
+        }
         public class Unitadadfafa 
         {
             [SqlSugar.SugarColumn(IsPrimaryKey =true,SqlParameterDbType =typeof(CommonPropertyConvert))]

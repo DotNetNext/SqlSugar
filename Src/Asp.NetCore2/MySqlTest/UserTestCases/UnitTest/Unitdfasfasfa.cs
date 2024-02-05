@@ -45,6 +45,15 @@ namespace OrmTest
             Db.CodeFirst.InitTables(type);
             Db1.CodeFirst.InitTables(type);
             Console.WriteLine("Hello, World!");
+            var list2 = NewUnitTest.Db.Reportable(new List<Unitguidsda>() {
+               new Unitguidsda()
+               }).ToQueryable().ToList();
+        }
+
+
+        public class Unitguidsda
+        {
+            public Guid Id { get; set; } = Guid.NewGuid();
         }
         [SugarTable("Test_Table_{year}{month}{day}")]
         [SplitTable(SplitType.Month)]

@@ -15,9 +15,17 @@ namespace OrmTest
             db.CodeFirst.InitTables<School>();
             db.CodeFirst.InitTables<School2>();
             db.Queryable<School2>().ToList();
+            var list2 = db.Reportable(new List<Unitguidsda>() {
+               new Unitguidsda()
+               }).ToQueryable().ToList();
         }
-       
-         
+
+
+        public class Unitguidsda
+        {
+            public Guid Id { get; set; } = Guid.NewGuid();
+        }
+
         /// <summary>
         /// 多主键表
         /// </summary>
