@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using SqlSugar;
+using System.Web;
 namespace OrmTest
 { 
     public class UnitTestOneToOne
@@ -49,10 +50,19 @@ namespace OrmTest
             var total = db.Queryable<UnitSale>()
                 .IncludeLeftJoin(x => x.BackSale)
                 .Where(x => x.BackSale.IsOn == true)
-                .Sum(x => x.BackSale.Money); 
+                .Sum(x => x.BackSale.Money);
+
+            var list=db.Reportable(new List<Unitguidsda>() { 
+            new Unitguidsda()
+            }).ToQueryable().ToList();
         }
 
 
+    }
+
+    public class Unitguidsda 
+    {
+        public Guid Id { get; set; } = Guid.NewGuid();
     }
     public static class SqlSugarExtension
     {
