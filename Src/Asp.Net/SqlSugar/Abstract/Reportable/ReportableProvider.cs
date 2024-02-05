@@ -235,6 +235,20 @@ namespace SqlSugar
                 });
                 return result;
             }
+            else if (type.IsIn(typeof(Guid)))
+            {
+                Expression<Func<SingleColumnEntity<object>, object>> exp = it => Convert.ToDecimal(it.ColumnName);
+                var result = queryBuilder.LambdaExpressions.DbMehtods.ToGuid(new MethodCallExpressionModel()
+                {
+                    Args = new List<MethodCallExpressionArgs>() {
+                  new MethodCallExpressionArgs(){
+                   IsMember=true,
+                   MemberName= formatBuilder.FormatValue(value)
+                  }
+                 }
+                });
+                return result;
+            }
             else if (type.IsIn(typeof(DateTime))||type.Name== "DateOnly") 
             {
                 if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle) 
