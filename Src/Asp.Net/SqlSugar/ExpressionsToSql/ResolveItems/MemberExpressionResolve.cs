@@ -580,6 +580,10 @@ namespace SqlSugar
                 {
                     parameter.CommonTempData= base.AppendParameter(parameter.CommonTempData);
                 }
+                else if (parameter.CommonTempData != null && parameter.CommonTempData?.GetType()?.FullName=="System.DateOnly")
+                {
+                    parameter.CommonTempData = base.AppendParameter(parameter.CommonTempData);
+                }
                 var result = this.Context.DbMehtods.DateValue(new MethodCallExpressionModel()
                 {
                     Args = new List<MethodCallExpressionArgs>() {
