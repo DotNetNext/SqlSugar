@@ -39,6 +39,14 @@ namespace OrmTest
 
             }).ExecuteCommand();
             var list=db.Queryable<UnitCustomeradfafas>().ToList();
+
+            var list2 = db.Queryable<UnitCustomeradfafas>()
+                .Where(it=>it.Address.City== "city2")
+                .Select(it=>new {
+                    Street = it.Address.Street
+                }).ToList();
+
+           
         }
     }
     public class UnitAddressadfafa
