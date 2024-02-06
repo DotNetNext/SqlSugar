@@ -76,26 +76,34 @@ namespace SqlSugar
         {
             using (var cmd = cn.CreateCommand())
             {
-                cmd.CommandText = this.Context.Insertable(dictionary.First()).AS(dt.TableName).ToSql().Key.Replace(";SELECT LAST_INSERT_ROWID();", "");
-                foreach (DataRow dataRow in dt.Rows)
-                { 
-                    foreach (DataColumn item in dt.Columns)
-                    {
-                        if (IsBoolTrue(dataRow, item))
-                        {
-                            cmd.Parameters.AddWithValue("@" + item.ColumnName, true);
-                        }
-                        else if (IsBoolFalse(dataRow, item))
-                        {
-                            cmd.Parameters.AddWithValue("@" + item.ColumnName, false);
-                        }
-                        else
-                        {
-                            cmd.Parameters.AddWithValue("@" + item.ColumnName, dataRow[item.ColumnName]);
-                        }
-                    }
+                if (this.Context?.CurrentConnectionConfig?.MoreSettings?.IsCorrectErrorSqlParameterName == true)
+                {
+                    cmd.CommandText = this.Context.Insertable(dictionary.First()).AS(dt.TableName).ToSqlString().Replace(";SELECT LAST_INSERT_ROWID();", "");
                     i += await cmd.ExecuteNonQueryAsync();
-                    cmd.Parameters.Clear();
+                }
+                else
+                {
+                    cmd.CommandText = this.Context.Insertable(dictionary.First()).AS(dt.TableName).ToSql().Key.Replace(";SELECT LAST_INSERT_ROWID();", "");
+                    foreach (DataRow dataRow in dt.Rows)
+                    {
+                        foreach (DataColumn item in dt.Columns)
+                        {
+                            if (IsBoolTrue(dataRow, item))
+                            {
+                                cmd.Parameters.AddWithValue("@" + item.ColumnName, true);
+                            }
+                            else if (IsBoolFalse(dataRow, item))
+                            {
+                                cmd.Parameters.AddWithValue("@" + item.ColumnName, false);
+                            }
+                            else
+                            {
+                                cmd.Parameters.AddWithValue("@" + item.ColumnName, dataRow[item.ColumnName]);
+                            }
+                        }
+                        i += await cmd.ExecuteNonQueryAsync();
+                        cmd.Parameters.Clear();
+                    }
                 }
             }
             return i;
@@ -104,30 +112,41 @@ namespace SqlSugar
         {
             using (var cmd = cn.CreateCommand())
             {
-                cmd.CommandText = this.Context.Updateable(dictionary.First())
-                    .WhereColumns(whereColums)
-                    .UpdateColumns(updateColums)
-                    .AS(dt.TableName).ToSql().Key;
-
-                foreach (DataRow dataRow in dt.Rows)
+                if (this.Context?.CurrentConnectionConfig?.MoreSettings?.IsCorrectErrorSqlParameterName == true)
                 {
-                    foreach (DataColumn item in dt.Columns)
-                    {
-                        if (IsBoolTrue(dataRow, item))
-                        {
-                            cmd.Parameters.AddWithValue("@" + item.ColumnName, true);
-                        }
-                        else if (IsBoolFalse(dataRow, item))
-                        {
-                            cmd.Parameters.AddWithValue("@" + item.ColumnName, false);
-                        }
-                        else
-                        {
-                            cmd.Parameters.AddWithValue("@" + item.ColumnName, dataRow[item.ColumnName]);
-                        }
-                    }
+                    cmd.CommandText = this.Context.Updateable(dictionary.First())
+                       .WhereColumns(whereColums)
+                       .UpdateColumns(updateColums)
+                       .AS(dt.TableName).ToSqlString();
                     i += await cmd.ExecuteNonQueryAsync();
-                    cmd.Parameters.Clear();
+                }
+                else
+                {
+                    cmd.CommandText = this.Context.Updateable(dictionary.First())
+                        .WhereColumns(whereColums)
+                        .UpdateColumns(updateColums)
+                        .AS(dt.TableName).ToSql().Key;
+
+                    foreach (DataRow dataRow in dt.Rows)
+                    {
+                        foreach (DataColumn item in dt.Columns)
+                        {
+                            if (IsBoolTrue(dataRow, item))
+                            {
+                                cmd.Parameters.AddWithValue("@" + item.ColumnName, true);
+                            }
+                            else if (IsBoolFalse(dataRow, item))
+                            {
+                                cmd.Parameters.AddWithValue("@" + item.ColumnName, false);
+                            }
+                            else
+                            {
+                                cmd.Parameters.AddWithValue("@" + item.ColumnName, dataRow[item.ColumnName]);
+                            }
+                        }
+                        i += await cmd.ExecuteNonQueryAsync();
+                        cmd.Parameters.Clear();
+                    }
                 }
             }
             return i;
