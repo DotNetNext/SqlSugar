@@ -76,53 +76,77 @@ namespace SqlSugar
         {
             using (var cmd = cn.CreateCommand())
             {
-                cmd.CommandText = this.Context.Insertable(dictionary.First()).AS(dt.TableName).ToSql().Key.Replace(";SELECT LAST_INSERT_ROWID();","");
-                var isCorrectErrorSqlParameterName=this.Context?.CurrentConnectionConfig?.MoreSettings?.IsCorrectErrorSqlParameterName==true;
-                foreach (DataRow dataRow in dt.Rows)
+                if (this.Context?.CurrentConnectionConfig?.MoreSettings?.IsCorrectErrorSqlParameterName == true)
                 {
-                    int correctParameterIndex = 0;
-                    foreach (DataColumn item in dt.Columns)
+                    cmd.CommandText = this.Context.Insertable(dictionary.First()).AS(dt.TableName).ToSqlString().Replace(";SELECT LAST_INSERT_ROWID();", "");
+                    i += await cmd.ExecuteNonQueryAsync();
+                }
+                else
+                {
+                    cmd.CommandText = this.Context.Insertable(dictionary.First()).AS(dt.TableName).ToSql().Key.Replace(";SELECT LAST_INSERT_ROWID();", "");
+                    foreach (DataRow dataRow in dt.Rows)
                     {
-                        if (isCorrectErrorSqlParameterName)
+                        foreach (DataColumn item in dt.Columns)
                         {
-                            if (!cmd.CommandText.Contains("@" + item.ColumnName))
+                            if (IsBoolTrue(dataRow, item))
                             {
-                                cmd.Parameters.AddWithValue($"@CrorrPara{correctParameterIndex}", dataRow[item.ColumnName]);
-                                correctParameterIndex++;
+                                cmd.Parameters.AddWithValue("@" + item.ColumnName, true);
                             }
-                            else 
+                            else if (IsBoolFalse(dataRow, item))
+                            {
+                                cmd.Parameters.AddWithValue("@" + item.ColumnName, false);
+                            }
+                            else
                             {
                                 cmd.Parameters.AddWithValue("@" + item.ColumnName, dataRow[item.ColumnName]);
-                            } 
+                            }
                         }
-                        else
-                        {
-                            cmd.Parameters.AddWithValue("@" + item.ColumnName, dataRow[item.ColumnName]);
-                        }
+                        i += await cmd.ExecuteNonQueryAsync();
+                        cmd.Parameters.Clear();
                     }
-                    i += await cmd.ExecuteNonQueryAsync();
-                    cmd.Parameters.Clear();
                 }
             }
             return i;
         }
-        private async Task<int> _BulkUpdate(DataTable dt, List<Dictionary<string, object>> dictionary, int i,string [] whereColums,string [] updateColums, SQLiteConnection cn)
+        private async Task<int> _BulkUpdate(DataTable dt, List<Dictionary<string, object>> dictionary, int i, string[] whereColums, string[] updateColums, SQLiteConnection cn)
         {
             using (var cmd = cn.CreateCommand())
             {
-                cmd.CommandText = this.Context.Updateable(dictionary.First())
-                    .WhereColumns(whereColums)
-                    .UpdateColumns(updateColums)
-                    .AS(dt.TableName).ToSql().Key;
-
-                foreach (DataRow dataRow in dt.Rows)
+                if (this.Context?.CurrentConnectionConfig?.MoreSettings?.IsCorrectErrorSqlParameterName == true)
                 {
-                    foreach (DataColumn item in dt.Columns)
-                    {
-                        cmd.Parameters.AddWithValue("@" + item.ColumnName, dataRow[item.ColumnName]);
-                    }
+                    cmd.CommandText = this.Context.Updateable(dictionary.First())
+                       .WhereColumns(whereColums)
+                       .UpdateColumns(updateColums)
+                       .AS(dt.TableName).ToSqlString();
                     i += await cmd.ExecuteNonQueryAsync();
-                    cmd.Parameters.Clear();
+                }
+                else
+                {
+                    cmd.CommandText = this.Context.Updateable(dictionary.First())
+                        .WhereColumns(whereColums)
+                        .UpdateColumns(updateColums)
+                        .AS(dt.TableName).ToSql().Key;
+
+                    foreach (DataRow dataRow in dt.Rows)
+                    {
+                        foreach (DataColumn item in dt.Columns)
+                        {
+                            if (IsBoolTrue(dataRow, item))
+                            {
+                                cmd.Parameters.AddWithValue("@" + item.ColumnName, true);
+                            }
+                            else if (IsBoolFalse(dataRow, item))
+                            {
+                                cmd.Parameters.AddWithValue("@" + item.ColumnName, false);
+                            }
+                            else
+                            {
+                                cmd.Parameters.AddWithValue("@" + item.ColumnName, dataRow[item.ColumnName]);
+                            }
+                        }
+                        i += await cmd.ExecuteNonQueryAsync();
+                        cmd.Parameters.Clear();
+                    }
                 }
             }
             return i;
@@ -170,5 +194,15 @@ namespace SqlSugar
             });
             return result;
         }
+        private static bool IsBoolFalse(DataRow dataRow, DataColumn item)
+        {
+            return dataRow[item.ColumnName] != null && dataRow[item.ColumnName] is string && dataRow[item.ColumnName].ToString() == ("isSqliteCore_False");
+        }
+
+        private static bool IsBoolTrue(DataRow dataRow, DataColumn item)
+        {
+            return dataRow[item.ColumnName] != null && dataRow[item.ColumnName] is string && dataRow[item.ColumnName].ToString() == ("isSqliteCore_True");
+        }
+
     }
 }
