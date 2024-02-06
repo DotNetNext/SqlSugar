@@ -33,6 +33,10 @@ namespace OrmTest
         }
         public static void Init()
         {
+            Unitadfaasdfaaa.Init();
+            Unitatadffaa1.Init();
+            UnitOneToManyNsdfafa.Init();
+            UCustomConditionalFunc.Init();
             UnitSelectNASFDADSFA.Init();
             UnitOneToOneFilter.Init();
             UnitOneToManyNsdfafa.Init();

@@ -14,10 +14,7 @@ namespace OrmTest
         /// <param name="args"></param>
          public static void Init()
         {
-            Unitadfaasdfaaa.Init();
-            Unitatadffaa1.Init();
-            UnitOneToManyNsdfafa.Init();
-            UCustomConditionalFunc.Init();
+       
             //Demo
             Demo0_SqlSugarClient.Init();
             Demo1_Queryable.Init();
