@@ -290,6 +290,7 @@ namespace SqlSugar
             SplitTableUpdateByObjectProvider<T> result = new SplitTableUpdateByObjectProvider<T>();
             result.Context = this.Context;
             result.UpdateObjects = this.UpdateObjs;
+            result.WhereColumns = this.WhereColumnList;
             SplitTableContext helper = new SplitTableContext(Context)
             {
                 EntityInfo = this.EntityInfo

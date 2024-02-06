@@ -15,6 +15,8 @@ namespace SqlSugar
         public T[] UpdateObjects { get; set; }
 
         public IEnumerable<SplitTableInfo> Tables { get; set; }
+        internal List<string> WhereColumns {   get;   set; }
+
         public int ExecuteCommandWithOptLock(bool isThrowError = false) 
         {
             List<GroupModel> groupModels;
@@ -24,6 +26,7 @@ namespace SqlSugar
             {
                 var addList = item.Select(it => it.Item).ToList();
                 result += this.Context.Updateable(addList)
+                    .WhereColumns(this.WhereColumns?.ToArray())
                     .UpdateColumns(updateobj.UpdateBuilder.UpdateColumns?.ToArray())
                     .IgnoreColumns(this.updateobj.UpdateBuilder.IsNoUpdateNull, this.updateobj.UpdateBuilder.IsOffIdentity, this.updateobj.UpdateBuilder.IsNoUpdateDefaultValue)
                     .IgnoreColumns(GetIgnoreColumns()).AS(item.Key).ExecuteCommandWithOptLock(isThrowError);
@@ -39,6 +42,7 @@ namespace SqlSugar
             {
                 var addList = item.Select(it => it.Item).ToList();
                 result += this.Context.Updateable(addList)
+                    .WhereColumns(this.WhereColumns?.ToArray())
                     .UpdateColumns(updateobj.UpdateBuilder.UpdateColumns?.ToArray())
                     .IgnoreColumns(this.updateobj.UpdateBuilder.IsNoUpdateNull, this.updateobj.UpdateBuilder.IsOffIdentity,this.updateobj.UpdateBuilder.IsNoUpdateDefaultValue)
                     .IgnoreColumns(GetIgnoreColumns()).AS(item.Key).ExecuteCommand();
