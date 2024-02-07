@@ -26,6 +26,9 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+            var list3 = db.Queryable<UnitPerson011>()
+            .Includes(x => x.adds)
+            .Where(x=>x.adds.Id==1).ToList();
         }
         [SqlSugar.SugarTable("UnitPerson0x1x1")]
         public class UnitPerson011
