@@ -270,22 +270,22 @@ namespace SqlSugar
         {
             return WhereSql;
         }
-        public Navigate(NavigateType navigatType,string IfSingleMasterTableColumn_IfListChildTableColumn)
+        public Navigate(NavigateType navigatType,string ifSingleMasterTableColumn_IfListChildTableColumn)
         {
-            this.Name = IfSingleMasterTableColumn_IfListChildTableColumn;
+            this.Name = ifSingleMasterTableColumn_IfListChildTableColumn;
             this.NavigatType = navigatType;
         }
-        public Navigate(NavigateType navigatType, string IfSingleMasterTableColumn_IfListChildTableColumn, string IfSingleChildTableColumn_IfListMasterTableColumn)
+        public Navigate(NavigateType navigatType, string ifSingleMasterTableColumn_IfListChildTableColumn, string ifSingleChildTableColumn_IfListMasterTableColumn)
         {
-            this.Name = IfSingleMasterTableColumn_IfListChildTableColumn;
-            this.Name2 = IfSingleChildTableColumn_IfListMasterTableColumn;
+            this.Name = ifSingleMasterTableColumn_IfListChildTableColumn;
+            this.Name2 = ifSingleChildTableColumn_IfListMasterTableColumn;
             this.NavigatType = navigatType;
         }
 
-        public Navigate(NavigateType navigatType, string IfSingleMasterTableColumn_IfListChildTableColumn, string IfSingleChildTableColumn_IfListMasterTableColumn, string whereSql)
+        public Navigate(NavigateType navigatType, string ifSingleMasterTableColumn_IfListChildTableColumn, string ifSingleChildTableColumn_IfListMasterTableColumn, string whereSql)
         {
-            this.Name = IfSingleMasterTableColumn_IfListChildTableColumn;
-            this.Name2 = IfSingleChildTableColumn_IfListMasterTableColumn;
+            this.Name = ifSingleMasterTableColumn_IfListChildTableColumn;
+            this.Name2 = ifSingleChildTableColumn_IfListMasterTableColumn;
             this.NavigatType = navigatType;
             this.WhereSql = whereSql;
             //Check.ExceptionEasy(navigatType != NavigateType.OneToOne, "Currently, only one-to-one navigation configuration Sql conditions are supported", "目前导航配置Sql条件只支持一对一");
