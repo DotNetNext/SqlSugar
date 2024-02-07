@@ -178,6 +178,7 @@ namespace SqlSugar
             }
             queryable
                 .AS(tableName)
+                .Take(1)
                 .ClearFilter(clearTypes)
                 .Filter(type)
                 .WhereIF(Navigat.WhereSql.HasValue(), Navigat.WhereSql) 
