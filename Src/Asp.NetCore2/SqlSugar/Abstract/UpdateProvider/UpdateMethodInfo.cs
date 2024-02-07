@@ -50,6 +50,17 @@ namespace SqlSugar
             };
         }
 
+        public UpdateCommonMethodInfo WhereColumns(params string[] whereColumns)
+        {
+            var inertable = MethodInfo.Invoke(Context, new object[] { objectValue });
+            var newMethod = inertable.GetType().GetMyMethod("WhereColumns", 1, typeof(string[]));
+            var result = newMethod.Invoke(inertable, new object[] { whereColumns });
+            return new UpdateCommonMethodInfo()
+            {
+                Context = result, 
+            };
+        }
+
         public UpdateCommonMethodInfo AS(string tableName)
         {
             var inertable = MethodInfo.Invoke(Context, new object[] { objectValue });
