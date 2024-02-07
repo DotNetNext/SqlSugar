@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace SqlSugar 
 {
@@ -76,10 +77,7 @@ namespace SqlSugar
             }
             else if (Navigat.NavigatType == NavigateType.Dynamic)
             {
-                Check.ExceptionEasy(
-                    true,
-                    " NavigateType.Dynamic no support expression .  "+ this.ProPertyEntity.Type.Name,
-                    " NavigateType.Dynamic 自定义导航对象不支持在Where(x=>x.自定义.Id==1)等方法中使用"+ this.ProPertyEntity.Type.Name);
+                return NavigatDynamicSql();
             }
             var pk = this.ProPertyEntity.Columns.FirstOrDefault(it => it.IsPrimarykey == true)?.DbColumnName;
             if (Navigat.Name2.HasValue())
@@ -146,6 +144,56 @@ namespace SqlSugar
                 }
             }
 
+            return mapper;
+        }
+
+        private MapperSql NavigatDynamicSql()
+        {
+            if (Navigat.Name == null) 
+            {
+                Check.ExceptionEasy(
+                   true,
+                   " NavigateType.Dynamic User-defined navigation objects need to be configured with json to be used in expressions .  " + this.ProPertyEntity.Type.Name,
+                   " NavigateType.Dynamic 自定义导航对象需要配置json才能在表达式中使用。 " + this.ProPertyEntity.Type.Name);
+            }
+            MapperSql mapperSql = new MapperSql();
+            //var name = this.EntityInfo.Columns.First(it => it.PropertyName == Navigat.Name).DbColumnName;
+            var selectName = this.ProPertyEntity.Columns.First(it => it.PropertyName == MemberName).DbColumnName;
+            MapperSql mapper = new MapperSql();
+            var queryable = this.context.Queryable<object>();
+            var tableName = this.ProPertyEntity.DbTableName;
+            Type[] clearTypes = null;
+            var isClearFilter = false;
+            if (this._memberExpressionResolve?.Context?.SugarContext?.QueryBuilder != null)
+            {
+                queryable.QueryBuilder.LambdaExpressions.ParameterIndex = 500 + this._memberExpressionResolve.Context.SugarContext.QueryBuilder.LambdaExpressions.ParameterIndex;
+                this._memberExpressionResolve.Context.SugarContext.QueryBuilder.LambdaExpressions.ParameterIndex++;
+                isClearFilter = this._memberExpressionResolve.Context.SugarContext.QueryBuilder.IsDisabledGobalFilter;
+                clearTypes = this._memberExpressionResolve.Context.SugarContext.QueryBuilder.RemoveFilters;
+            }
+            var type = this.ProPertyEntity.Columns.Count(it => it.IsPrimarykey) > 1 ? this.ProPertyEntity.Type : null;
+            if (isClearFilter)
+            {
+                type = null;
+            }
+            queryable
+                .AS(tableName)
+                .ClearFilter(clearTypes)
+                .Filter(type)
+                .WhereIF(Navigat.WhereSql.HasValue(), Navigat.WhereSql) 
+                .Select(selectName);
+            var json = Newtonsoft.Json.Linq.JArray.Parse(Navigat.Name);
+            foreach (var item in json)
+            {
+                string m = item["m"] + "";
+                string c = item["c"] + "";
+                var leftName= this.EntityInfo.Columns.First(it => it.PropertyName == m).DbColumnName;
+                var rightName= this.ProPertyEntity.Columns.First(it => it.PropertyName == c).DbColumnName;
+                queryable.Where($" {queryable.SqlBuilder.GetTranslationColumnName(ShorName)}.{queryable.SqlBuilder.GetTranslationColumnName(leftName)}={queryable.SqlBuilder.GetTranslationColumnName(rightName)} ");
+            }
+            var sqlObj= queryable.ToSql();
+            mapper.Sql = sqlObj.Key;
+            mapper.Sql = $" ({mapper.Sql}) ";
             return mapper;
         }
     }
