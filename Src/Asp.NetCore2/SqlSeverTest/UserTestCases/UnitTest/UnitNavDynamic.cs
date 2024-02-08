@@ -29,6 +29,12 @@ namespace OrmTest
             var list3 = db.Queryable<UnitPerson011>()
             .Includes(x => x.adds)
             .Where(x=>x.adds.Id==1).ToList();
+
+            if (db.Queryable<UnitPerson011>()
+                .Where(x => x.adds.Id == 1).ToSqlString() != "SELECT [Id],[Name],[AddressId],[AddressId2] FROM [UnitPerson0x1x1] [x]  WHERE ( (SELECT  TOP 1 Id FROM [UnitAddress0x1x1]  WHERE  [x].[AddressId]=[Id]    AND  [x].[AddressId]=[Id]  ) = 1 )") 
+            {
+                throw new Exception("unit error");
+            }
         }
         [SqlSugar.SugarTable("UnitPerson0x1x1")]
         public class UnitPerson011
