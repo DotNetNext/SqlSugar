@@ -36,8 +36,13 @@ namespace OrmTest
             var list3 = db.Queryable<UnitAddress011>()
              .Includes(it=>it.Persons)
              .Where(it => it.Persons.Any())
-             .ToList(); 
- 
+             .ToList();
+            var sql = db.Queryable<UnitAddress011>().Where(it => it.Persons.Any()).ToSqlString();
+             if (sql.Trim() != "SELECT [Id],[Street] FROM [Unitadfadfssaaress0x1x1] [it]  WHERE  ( EXISTS  (SELECT * FROM [Unitsdd0x1ddx1]  WHERE  [it].[Id]=[AddressId]    AND  [it].[Id]=[AddressId]  )  )") 
+            {
+                throw new Exception("unit error"); 
+            }
+
         }
         [SqlSugar.SugarTable("Unitsdd0x1ddx1")]
         public class UnitPerson011
