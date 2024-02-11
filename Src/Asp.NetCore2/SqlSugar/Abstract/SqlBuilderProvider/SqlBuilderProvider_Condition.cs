@@ -33,7 +33,7 @@ namespace SqlSugar
                         mainIndex++;
                         continue;
                     }
-                    else if (item.FieldName == UtilMethods.FiledNameSql())
+                    else if (item.FieldName == UtilMethods.FieldNameSql())
                     {
                         builder.Append(item.FieldValue);
                         continue;
