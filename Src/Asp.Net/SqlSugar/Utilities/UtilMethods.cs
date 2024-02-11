@@ -1519,7 +1519,12 @@ namespace SqlSugar
             }
         }
 
+        [Obsolete("请使用新名字：FieldNameSql")]
         public static string FiledNameSql()
+        {
+            return $"[value=sql{UtilConstants.ReplaceKey}]";
+        }
+        public static string FieldNameSql()
         {
             return $"[value=sql{UtilConstants.ReplaceKey}]";
         }
