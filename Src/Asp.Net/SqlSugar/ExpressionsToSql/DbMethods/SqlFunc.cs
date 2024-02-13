@@ -78,6 +78,14 @@ namespace SqlSugar
         public static int Rank(object orderByField)
         {
             throw new NotSupportedException("Can only be used in expressions");
+        } 
+        public static int DenseRank(object orderByField, object partitionBy)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+        public static int DenseRank(object orderByField)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
         }
 
         public static int RowCount(object countFiledName,object orderByField, object partitionBy)
