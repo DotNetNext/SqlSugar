@@ -911,6 +911,8 @@ namespace SqlSugar
                         return this.Context.DbMehtods.RowNumber(model);
                     case "Rank":
                         return this.Context.DbMehtods.RowNumber(model).Replace("row_number() over(", " rank() over(");
+                    case "DenseRank":
+                        return this.Context.DbMehtods.RowNumber(model).Replace("row_number() over(", " dense_rank() over(");
                     case "RowCount":
                         return this.Context.DbMehtods.RowCount(model);
                     case "RowSum":
