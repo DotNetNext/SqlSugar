@@ -354,7 +354,7 @@ AND sql LIKE '%" + tableName + "%'");
         }
         public override List<string> GetFuncList()
         {
-            return this.Context.Ado.SqlQuery<string>(" SELECT name\r\nFROM sqlite_master\r\nWHERE type = 'table' AND name NOT LIKE 'sqlite_%' ");
+            return new List<string>();
         }
         public override List<string> GetIndexList(string tableName)
         {
