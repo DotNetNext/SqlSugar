@@ -78,8 +78,11 @@ namespace SqlSugar
             {
                 if (this.Context?.CurrentConnectionConfig?.MoreSettings?.IsCorrectErrorSqlParameterName == true)
                 {
-                    cmd.CommandText = this.Context.Insertable(dictionary.First()).AS(dt.TableName).ToSqlString().Replace(";SELECT LAST_INSERT_ROWID();", "");
-                    i += await cmd.ExecuteNonQueryAsync();
+                    foreach (var item in dictionary)
+                    {
+                        cmd.CommandText = this.Context.Insertable(item).AS(dt.TableName).ToSqlString().Replace(";SELECT LAST_INSERT_ROWID();", "");
+                        i += await cmd.ExecuteNonQueryAsync();
+                    }
                 }
                 else
                 {
@@ -114,11 +117,14 @@ namespace SqlSugar
             {
                 if (this.Context?.CurrentConnectionConfig?.MoreSettings?.IsCorrectErrorSqlParameterName == true)
                 {
-                    cmd.CommandText = this.Context.Updateable(dictionary.First())
-                       .WhereColumns(whereColums)
-                       .UpdateColumns(updateColums)
-                       .AS(dt.TableName).ToSqlString();
-                    i += await cmd.ExecuteNonQueryAsync();
+                    foreach (var item in dictionary)
+                    {
+                        cmd.CommandText = this.Context.Updateable(item)
+                         .WhereColumns(whereColums)
+                         .UpdateColumns(updateColums)
+                         .AS(dt.TableName).ToSqlString();
+                        i += await cmd.ExecuteNonQueryAsync();
+                    }
                 }
                 else
                 {
