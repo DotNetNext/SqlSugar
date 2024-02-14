@@ -18,7 +18,18 @@ namespace SqlSugar
 {
     public class UtilMethods
     {
+        public static Dictionary<string, object> DataRowToDictionary(DataRow row)
+        {
+            Dictionary<string, object> dictionary = new Dictionary<string, object>();
 
+            // 遍历所有列并将其添加到字典中
+            foreach (DataColumn column in row.Table.Columns)
+            {
+                dictionary.Add(column.ColumnName, row[column]);
+            }
+
+            return dictionary;
+        }
         public static IEnumerable<T> BuildTree<T>(ISqlSugarClient db,IEnumerable<T> list, string idName, string pIdName, string childName, object rootValue)
         {
             var entityInfo = db.EntityMaintenance.GetEntityInfo<T>(); ;
