@@ -1538,7 +1538,7 @@ namespace SqlSugar
                     else
                     {
                         var tableName = this.QueryBuilder.AsTables.First().Value;
-                        if (tableName != null && Regex.IsMatch(tableName, @"^\w+$"))
+                        if (tableName != null && Regex.IsMatch(tableName.Replace(".", "").Replace("-",""), @"^\w+$"))
                         {
                             tableName = SqlBuilder.GetTranslationTableName(tableName);
                         }
