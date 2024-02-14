@@ -138,12 +138,14 @@ namespace SqlSugar
         public int BulkUpdate(DataTable dataTable, string[] whereColumns)
         {
             string[] updateColumns = dataTable.Columns.Cast<DataColumn>().Select(it => it.ColumnName).Where(it => !whereColumns.Any(z => z.EqualCase(it))).ToArray();
+            whereColumns = dataTable.Columns.Cast<DataColumn>().Select(it => it.ColumnName).Where(it => whereColumns.Any(z => z.EqualCase(it))).ToArray();
             Check.ExceptionEasy(this.AsName.IsNullOrEmpty(), "need .AS(tablaeName) ", "需要 .AS(tablaeName) 设置表名");
             return BulkUpdateAsync(this.AsName, dataTable, whereColumns, updateColumns).ConfigureAwait(true).GetAwaiter().GetResult();
         }
         public Task<int> BulkUpdateAsync(DataTable dataTable, string[] whereColumns)
         {
             string[] updateColumns = dataTable.Columns.Cast<DataColumn>().Select(it => it.ColumnName).Where(it => !whereColumns.Any(z => z.EqualCase(it))).ToArray();
+            whereColumns = dataTable.Columns.Cast<DataColumn>().Select(it => it.ColumnName).Where(it => whereColumns.Any(z => z.EqualCase(it))).ToArray();
             Check.ExceptionEasy(this.AsName.IsNullOrEmpty(), "need .AS(tablaeName) ", "需要 .AS(tablaeName) 设置表名");
             return BulkUpdateAsync(this.AsName, dataTable, whereColumns, updateColumns);
         }
