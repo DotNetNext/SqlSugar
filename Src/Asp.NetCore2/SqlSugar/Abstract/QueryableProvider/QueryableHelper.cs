@@ -1870,11 +1870,13 @@ namespace SqlSugar
                 else
                 {
                     result = this.Context.Utilities.DataReaderToList<TResult>(dataReader);
+                    if (StaticConfig.EnableAot)
+                        ResetNavigationPropertiesForAot(result);
                 }
             }
             else
             {
-                result = this.Bind.DataReaderToList<TResult>(entityType, dataReader);
+                result = this.Bind.DataReaderToList<TResult>(entityType, dataReader);              
             }
             SetContextModel(result, entityType);
             return result;
@@ -1914,14 +1916,34 @@ namespace SqlSugar
                 else
                 {
                     result = await this.Context.Utilities.DataReaderToListAsync<TResult>(dataReader);
+                    if (StaticConfig.EnableAot)
+                        ResetNavigationPropertiesForAot(result);
                 }
             }
             else
             {
-                result = await this.Bind.DataReaderToListAsync<TResult>(entityType, dataReader);
+                result = await this.Bind.DataReaderToListAsync<TResult>(entityType, dataReader); 
             }
             SetContextModel(result, entityType);
             return result;
+        }
+        private void ResetNavigationPropertiesForAot<TResult>(List<TResult> result)
+        {
+            if (StaticConfig.EnableAot)
+            {
+                var entityInfo = this.Context.EntityMaintenance.GetEntityInfo<TResult>();
+                var navColumnList = entityInfo.Columns.Where(it => it.Navigat != null);
+                if (navColumnList.Any())
+                {
+                    foreach (var item in result)
+                    {
+                        foreach (var columnInfo in navColumnList)
+                        {
+                            columnInfo.PropertyInfo.SetValue(item, null);
+                        }
+                    }
+                }
+            }
         }
         protected void _InQueryable(Expression expression, KeyValuePair<string, List<SugarParameter>> sqlObj)
         {
