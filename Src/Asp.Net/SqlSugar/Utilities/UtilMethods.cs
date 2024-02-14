@@ -25,7 +25,10 @@ namespace SqlSugar
             // 遍历所有列并将其添加到字典中
             foreach (DataColumn column in row.Table.Columns)
             {
-                dictionary.Add(column.ColumnName, row[column]);
+                if (column.ColumnName != "Items" && column.DataType.Name.IsCollectionsList() == false)
+                {
+                    dictionary.Add(column.ColumnName, row[column]);
+                }
             }
 
             return dictionary;
