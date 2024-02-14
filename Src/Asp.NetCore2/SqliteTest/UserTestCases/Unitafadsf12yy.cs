@@ -1,6 +1,7 @@
 ﻿using SqlSugar;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,8 +24,27 @@ namespace OrmTest
             var us = new UserService();
            us.Add(new Db1Abpusers() { Id = 101, Name = "jack" }).GetAwaiter().GetResult();//插入
 
-        
-
+            var db = NewUnitTest.Db;
+            db.DbMaintenance.CreateDatabase();
+            db.CodeFirst.InitTables<Order>(); 
+            db.DbMaintenance.TruncateTable<Order>();
+            var updateObjs = new List<Order> {
+                 new Order() { Id = 11, Name = "order11", Price=0 },
+                 new Order() { Id = 12, Name = "order12" , Price=0}
+            };
+            var dt = db.Utilities.ListToDataTable(updateObjs);
+            db.CurrentConnectionConfig.MoreSettings=new ConnMoreSettings() { 
+              IsCorrectErrorSqlParameterName = true };
+            var x = db.Fastest<DataTable>().AS("order").BulkCopy(dt);
+            if (x != 2) 
+            {
+                throw new Exception("unit error");
+            }
+            var x2 = db.Fastest<DataTable>().AS("order").BulkUpdate(db.Queryable<Order>().Take(2).ToDataTable(),new string[] { "Id"});
+            if (x2 != 2)
+            {
+                throw new Exception("unit error");
+            }
         }
 
 
