@@ -1,4 +1,5 @@
 ﻿using SqlSugar;
+using SqlSugar.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,6 +41,36 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+
+             db.Queryable<UnitPerson011>()
+              .Where(it => it.Id == 1)
+              .LeftJoin<UnitPerson011>((x, y) => true)
+              .ToList();
+
+            var sql = db.Queryable<UnitPerson011>()
+              .Where(it => it.Id == 1)
+              .LeftJoin<UnitPerson011>((x, y) => true)
+              .ToSqlString();
+            if( sql.Trim() != "SELECT * FROM  (SELECT * FROM  (SELECT [Id],[Name],[AddressId] FROM [UnitPerson011xxx]  WHERE ( [Id] = 1 )) MergeTable )[x] Left JOIN [UnitPerson011xxx] [y]  ON ( 1 = 1 )") 
+            {
+                throw new Exception("unit error");
+            }
+
+            db.Queryable<UnitPerson011>()
+                .Where(it => it.Id == 1)
+                .LeftJoin<UnitPerson011>(  db.Queryable<UnitPerson011>().Where(it=>it.Id==1),(x,y)=>true)
+                .ToList();
+
+            var sql2=db.Queryable<UnitPerson011>()
+             .Where(it => it.Id == 1)
+             .LeftJoin<UnitPerson011>(db.Queryable<UnitPerson011>().Where(it => it.Id == 1), (x, y) => true)
+             .ToSqlString();
+
+            if (sql2.Trim() != "SELECT * FROM  (SELECT * FROM  (SELECT [Id],[Name],[AddressId] FROM [UnitPerson011xxx]  WHERE ( [Id] = 1 )) MergeTable )[x] Left JOIN (SELECT [Id],[Name],[AddressId] FROM [UnitPerson011xxx]  WHERE ( [Id] = 1 )) [y]  ON ( 1 = 1 )")
+            {
+                throw new Exception("unit error");
+            }
+
         }
 
         private static void AddData(SqlSugarClient db,string street,string name)
