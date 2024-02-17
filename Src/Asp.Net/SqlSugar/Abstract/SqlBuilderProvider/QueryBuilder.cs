@@ -958,6 +958,7 @@ namespace SqlSugar
                 }
             }
         }
+        public virtual string MasterDbTableName { get; set; }
         public virtual string GetTableNameString
         {
             get
@@ -981,6 +982,10 @@ namespace SqlSugar
                 }
                 var result = Builder.GetTranslationTableName(name);
                 result += UtilConstants.Space;
+                if (MasterDbTableName.HasValue()) 
+                {
+                    result = MasterDbTableName;
+                }
                 if (IsSingle() && result.Contains("MergeTable") && result.Trim().EndsWith(" MergeTable") && TableShortName != null)
                 {
                     result = result.Replace(") MergeTable  ", ") " + TableShortName+UtilConstants.Space);
