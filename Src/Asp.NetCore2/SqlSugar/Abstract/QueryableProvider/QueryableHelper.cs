@@ -1519,6 +1519,15 @@ namespace SqlSugar
             {
                 result.ShortName = this.SqlBuilder.GetTranslationColumnName(result.ShortName);
             }
+            if (this.EntityInfo.Type == result.EntityType&&this.QueryBuilder?.AsTables?.Count()==1) 
+            {
+                var tableName = this.QueryBuilder.AsTables.First().Value;
+                if (tableName.EndsWith(" MergeTable ")&&tableName?.Trim()==this.QueryBuilder.GetTableNameString?.Trim()) 
+                {
+                    this.QueryBuilder.MasterDbTableName = " (SELECT * FROM " + tableName + ")";
+                    this.QueryBuilder.AsTables?.Clear();
+                } 
+            }
             if (result.JoinIndex == 0)
             {
                 var firstPareamter = (express as LambdaExpression).Parameters.First();
