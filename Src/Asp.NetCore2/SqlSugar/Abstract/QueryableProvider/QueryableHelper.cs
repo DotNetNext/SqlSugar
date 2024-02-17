@@ -2058,6 +2058,7 @@ namespace SqlSugar
             asyncQueryableBuilder.AppendValues = this.Context.Utilities.TranslateCopy(this.QueryBuilder.AppendValues);
             asyncQueryableBuilder.RemoveFilters = this.QueryBuilder.RemoveFilters?.ToArray();
             asyncQueryableBuilder.Hints = this.QueryBuilder.Hints;
+            asyncQueryableBuilder.MasterDbTableName = this.QueryBuilder.MasterDbTableName;
             if (this.QueryBuilder.AppendNavInfo != null)
             {
                 asyncQueryableBuilder.AppendNavInfo = new AppendNavInfo() 
