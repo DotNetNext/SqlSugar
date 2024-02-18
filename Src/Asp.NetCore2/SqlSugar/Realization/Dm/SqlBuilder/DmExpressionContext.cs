@@ -102,7 +102,7 @@ namespace SqlSugar
                 case DateType.Millisecond:
                     return string.Format("(CAST(TO_CHAR({0},'ff3') AS NUMBER))", parameter.MemberName);
                 case DateType.Weekday:
-                    return $" to_char({parameter.MemberName},'day') ";
+                    return $" (TO_NUMBER(TO_CHAR({parameter.MemberName}, 'D'))-1) ";
                 case DateType.Day:
                 default:
                     return string.Format("(CAST(TO_CHAR({0},'dd') AS NUMBER))", parameter.MemberName);
