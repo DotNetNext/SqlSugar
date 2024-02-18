@@ -51,11 +51,25 @@ namespace SqlSugar
             var parameter2 = model.Args[1];
             if (parameter.MemberName != null && parameter.MemberName is DateTime)
             {
-                return string.Format(" {0}('{1}') ", parameter2.MemberValue, parameter.MemberName);
+                if (parameter2.MemberValue?.ToString() == DateType.Weekday.ToString())
+                {
+                    return string.Format(" case when {0}('{1}')=6 then 0 else  ({0}('{1}')+1) end ", parameter2.MemberValue, parameter.MemberName);
+                }
+                else
+                {
+                    return string.Format(" {0}('{1}') ", parameter2.MemberValue, parameter.MemberName);
+                }
             }
             else
             {
-                return string.Format(" {0}({1}) ", parameter2.MemberValue, parameter.MemberName);
+                if (parameter2.MemberValue?.ToString() == DateType.Weekday.ToString())
+                {
+                    return string.Format(" case when {0}({1})=6 then 0 else  ({0}({1})+1) end ", parameter2.MemberValue, parameter.MemberName);
+                }
+                else
+                {
+                    return string.Format(" {0}({1}) ", parameter2.MemberValue, parameter.MemberName);
+                }
             }
         }
 
