@@ -33,6 +33,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UnitWeek.Init();
             Unitadfaasdfaaa.Init();
             Unitatadffaa1.Init();
             UnitOneToManyNsdfafa.Init();
