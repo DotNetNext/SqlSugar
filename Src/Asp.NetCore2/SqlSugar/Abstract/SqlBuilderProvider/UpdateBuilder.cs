@@ -268,7 +268,7 @@ namespace SqlSugar
                     else if (JoinInfos!=null&&JoinInfos.Any()) 
                     {
                         setValue = SetValues.Where(sv => it.IsPrimarykey == false && (it.IsIdentity == false || (IsOffIdentity && it.IsIdentity))).Where(sv => sv.Key == Builder.GetNoTranslationColumnName(it.DbColumnName) || sv.Key == Builder.GetNoTranslationColumnName(it.PropertyName));
-                        return Builder.GetTranslationColumnName(this.ShortName)+"."+ setValue.First().Key+"="+ setValue.First().Value ;
+                        return Builder.GetTranslationColumnName(this.ShortName)+"."+ Builder.GetTranslationColumnName(setValue.First().Key)+"="+ setValue.First().Value ;
                     }
                 }
                 var result = Builder.GetTranslationColumnName(it.DbColumnName) + "=" + GetDbColumn(it,this.Context.Ado.SqlParameterKeyWord + it.DbColumnName);
