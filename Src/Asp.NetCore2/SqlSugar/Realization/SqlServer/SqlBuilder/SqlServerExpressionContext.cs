@@ -63,7 +63,14 @@ namespace SqlSugar
             }
             else
             {
-                return string.Format(" datepart({0},{1}) ", parameter2.MemberValue, parameter.MemberName);
+                if (parameter2.MemberValue?.ToString()==DateType.Weekday.ToString())
+                {
+                    return string.Format(" (datepart({0},{1})-1) ", parameter2.MemberValue, parameter.MemberName);
+                }
+                else
+                {
+                    return string.Format(" datepart({0},{1}) ", parameter2.MemberValue, parameter.MemberName);
+                }
             }
         }
         public override string HasValue(MethodCallExpressionModel model)
