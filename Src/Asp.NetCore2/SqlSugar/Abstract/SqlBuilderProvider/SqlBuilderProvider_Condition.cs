@@ -251,9 +251,13 @@ namespace SqlSugar
             {
                 inValue2 = inValue2.Replace("'null'", "null");
             }
-            else if (inValue2.Contains("[null]"))
+            if (inValue2.Contains("[null]"))
             {
                 inValue2 = inValue2.Replace("[null]", "null");
+            }
+            if (inValue2.Contains("[comma]"))
+            {
+                inValue2 = inValue2.Replace("[comma]", ",");
             }
             builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "NOT IN", inValue2);
             parameters.Add(new SugarParameter(parameterName, item.FieldValue));
@@ -279,11 +283,11 @@ namespace SqlSugar
             {
                 inValue1 = inValue1.Replace("'null'", "null");
             }
-            else if (inValue1.Contains("[comma]")) 
+            if (inValue1.Contains("[comma]")) 
             {
                 inValue1 = inValue1.Replace("[comma]", ",");
             }
-            else if (inValue1.Contains("[null]"))
+            if (inValue1.Contains("[null]"))
             {
                 inValue1 = inValue1.Replace("[null]", "null");
             }
