@@ -419,6 +419,15 @@ WHERE tgrelid = '" + tableName + "'::regclass");
                 IsAutoCloseConnection = true,
                 ConnectionString = connection
             });
+            if (newDb.Ado.IsValidConnection() == false)
+            {
+                newDb = new SqlSugarClient(new ConnectionConfig()
+                {
+                    DbType = this.Context.CurrentConnectionConfig.DbType,
+                    IsAutoCloseConnection = true,
+                    ConnectionString = this.Context.CurrentConnectionConfig.ConnectionString.Replace(oldDatabaseName, "TEST")
+                });
+            }
             if (!GetDataBaseList(newDb).Any(it => it.Equals(databaseName, StringComparison.CurrentCultureIgnoreCase)))
             {
                 newDb.Ado.ExecuteCommand(string.Format(CreateDataBaseSql, this.SqlBuilder.SqlTranslationLeft+databaseName+this.SqlBuilder.SqlTranslationRight, databaseDirectory));
