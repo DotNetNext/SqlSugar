@@ -593,7 +593,8 @@ namespace SqlSugar
                     IsCorrectErrorSqlParameterName = it.MoreSettings.IsCorrectErrorSqlParameterName,
                     SqliteCodeFirstEnableDropColumn=it.MoreSettings.SqliteCodeFirstEnableDropColumn,
                     MaxParameterNameLength=it.MoreSettings.MaxParameterNameLength,
-                    DisableQueryWhereColumnRemoveTrim=it.MoreSettings.DisableQueryWhereColumnRemoveTrim
+                    DisableQueryWhereColumnRemoveTrim=it.MoreSettings.DisableQueryWhereColumnRemoveTrim,
+                    DataBaseModel=it.MoreSettings.DataBaseModel
 
                 },
                 SqlMiddle = it.SqlMiddle == null ? null : new SqlMiddle
