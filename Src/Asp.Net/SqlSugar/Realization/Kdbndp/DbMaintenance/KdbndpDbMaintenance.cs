@@ -12,6 +12,10 @@ namespace SqlSugar
         {
             get
             {
+                if (IsPgModel()) 
+                {
+                    return "SELECT datname FROM pg_database";
+                }
                 return "SELECT datname FROM sys_database";
             }
         }
@@ -44,6 +48,12 @@ namespace SqlSugar
 	                                where sys_constraint.contype='p'
                                 ) pkey on pcolumn.table_name = pkey.relname
                                 order by ptables.tablename";
+
+
+                if (IsPgModel())
+                {
+                    sql = sql.Replace("sys_", "pg_");
+                }
                 return sql;
             }
         }
@@ -51,6 +61,12 @@ namespace SqlSugar
         {
             get
             {
+                if (IsPgModel())
+                {
+                    return @"select cast(relname as varchar) as Name,
+                        cast(obj_description(relfilenode,'pg_class') as varchar) as Description from pg_class c 
+                        where  relkind = 'r' and  c.oid > 16384 and c.relnamespace != 99 and c.relname not like '%pl_profiler_saved%' order by relname";
+                }
                 return @"select cast(relname as varchar) as Name,
                         cast(obj_description(relfilenode,'sys_class') as varchar) as Description from sys_class c 
                         where  relkind = 'r' and  c.oid > 16384 and c.relnamespace != 99 and c.relname not like '%pl_profiler_saved%' order by relname";
@@ -60,6 +76,13 @@ namespace SqlSugar
         {
             get
             {
+                if (IsPgModel())
+                {
+                    return @"select cast(relname as varchar) as Name,cast(Description as varchar) from pg_description
+                         join pg_class on pg_description.objoid = pg_class.oid
+                         where objsubid = 0 and relname in (SELECT viewname from pg_views  
+                         WHERE schemaname ='public')";
+                }
                 return @"select cast(relname as varchar) as Name,cast(Description as varchar) from sys_description
                          join sys_class on sys_description.objoid = sys_class.oid
                          where objsubid = 0 and relname in (SELECT viewname from sys_views  
@@ -396,6 +419,15 @@ WHERE tgrelid = '" + tableName + "'::regclass");
                 IsAutoCloseConnection = true,
                 ConnectionString = connection
             });
+            if (newDb.Ado.IsValidConnection() == false)
+            {
+                newDb = new SqlSugarClient(new ConnectionConfig()
+                {
+                    DbType = this.Context.CurrentConnectionConfig.DbType,
+                    IsAutoCloseConnection = true,
+                    ConnectionString = this.Context.CurrentConnectionConfig.ConnectionString.Replace(oldDatabaseName, "TEST")
+                });
+            }
             if (!GetDataBaseList(newDb).Any(it => it.Equals(databaseName, StringComparison.CurrentCultureIgnoreCase)))
             {
                 newDb.Ado.ExecuteCommand(string.Format(CreateDataBaseSql, this.SqlBuilder.SqlTranslationLeft+databaseName+this.SqlBuilder.SqlTranslationRight, databaseDirectory));
@@ -574,6 +606,10 @@ WHERE tgrelid = '" + tableName + "'::regclass");
                 x.Length = 0;
                 x.DecimalDigits = 0;
             }
+        }
+        private bool IsPgModel()
+        {
+            return this.Context.CurrentConnectionConfig?.MoreSettings?.DataBaseModel == DbType.PostgreSQL;
         }
         #endregion
     }
