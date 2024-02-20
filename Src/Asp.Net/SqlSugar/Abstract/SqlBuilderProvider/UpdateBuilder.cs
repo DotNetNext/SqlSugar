@@ -452,7 +452,16 @@ namespace SqlSugar
             {
                 return LambdaExpressions.DbMehtods.GetDate();
             }
-            else if (UtilMethods.IsErrorDecimalString()==true) 
+            else if (columnInfo.PropertyType.FullName == "NetTopologySuite.Geometries.Geometry") 
+            {
+                var pname = Builder.SqlParameterKeyWord + "Geometry" + GetDbColumnIndex;
+                var p = new SugarParameter(pname, columnInfo.Value);
+                p.DbType= System.Data.DbType.Object;
+                this.Parameters.Add(p);
+                GetDbColumnIndex++;
+                return pname;
+            }
+            else if (UtilMethods.IsErrorDecimalString() == true)
             {
                 var pname = Builder.SqlParameterKeyWord + "Decimal" + GetDbColumnIndex;
                 var p = new SugarParameter(pname, columnInfo.Value);
