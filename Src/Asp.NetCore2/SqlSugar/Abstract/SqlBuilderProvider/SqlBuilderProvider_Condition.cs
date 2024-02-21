@@ -253,7 +253,7 @@ namespace SqlSugar
             }
             if (inValue2.Contains("[null]"))
             {
-                inValue2 = inValue2.Replace("[null]", "null");
+                inValue2 = inValue2.Replace("[null]", "'null'");
             }
             if (inValue2.Contains("[comma]"))
             {
@@ -289,7 +289,7 @@ namespace SqlSugar
             }
             if (inValue1.Contains("[null]"))
             {
-                inValue1 = inValue1.Replace("[null]", "null");
+                inValue1 = inValue1.Replace("[null]", "'null'");
             }
             if (item.CSharpTypeName.EqualCase("guid") && inValue1 == "('')")
             {
