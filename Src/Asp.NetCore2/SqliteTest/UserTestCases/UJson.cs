@@ -66,10 +66,17 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+            Db.CodeFirst.InitTables<UnutBoolTestaaa>();
+            var list4 = 
+            Db.Queryable<UnutBoolTestaaa>()
+            .Where(Db.Utilities.JsonToConditionalModels(json)).ToList();
         }
     }
 
-
+    public class UnutBoolTestaaa
+    {
+        public bool nullableBool { get; set; }
+    }
     public class UnitJsonTest
     {
         [SqlSugar.SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
