@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -331,12 +332,23 @@ namespace SqlSugar
             builder.AppendFormat(temp, type, "", " ", inValue1);
         }
 
-        private static string In_GetInValue(ConditionalModel item,string[] inArray)
+        private  string In_GetInValue(ConditionalModel item,string[] inArray)
         {
             string inValue1;
             if (item.CSharpTypeName.EqualCase("string") || item.CSharpTypeName == null)
             {
                 inValue1 = ("(" + inArray.Distinct().ToArray().ToJoinSqlInVals() + ")");
+            }
+            if (item.CSharpTypeName.EqualCase("bool") || item.CSharpTypeName.EqualCase("Boolean"))
+            { 
+                var lam=InstanceFactory.GetLambdaExpressions(this.Context.CurrentConnectionConfig);
+                lam.Context = this.Context;
+                var value= lam.DbMehtods.TrueValue();
+                inValue1 = ("(" +string.Join(",", inArray.Distinct().ToArray() )+ ")");
+                if (value.EqualCase( "true"))
+                {
+                    inValue1.Replace("1", "true").Replace("0", "false");
+                }
             }
             else
             {
