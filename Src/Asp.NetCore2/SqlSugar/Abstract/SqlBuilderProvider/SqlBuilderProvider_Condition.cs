@@ -299,8 +299,8 @@ namespace SqlSugar
             {
                 inValue1 = $"(NULL)";
             }
-            if (inArray.Length == 1)
-            {
+            if (inArray.Length == 1&& inValue1 != "(null)")
+            { 
                 builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "=", inValue1.TrimStart('(').TrimEnd(')'));
             }
             else
