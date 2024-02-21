@@ -20,6 +20,52 @@ namespace OrmTest
             list= Db.Queryable<UnitJsonTest>().ToList();
             UValidate.Check("order2", list.First().Order.Name, "Json");
             var list2 = Db.Queryable<UnitJsonTest>().ToList();
+
+            string json = @"[
+
+    {
+
+        ""ConditionalList"": [
+
+            {
+
+                ""Key"": -1,
+
+                ""Value"": {
+
+                    ""FieldName"": ""nullableBool"",
+
+                    ""FieldValue"": ""null"",
+
+                    ""ConditionalType"": 6,
+                    ""CSharpTypeName"":""bool""
+
+                }
+
+            }
+
+        ]
+
+    }
+
+]";
+            var list3 = 
+                Db.Queryable<UnitJsonTest>()
+                .Where(Db.Utilities.JsonToConditionalModels(json))
+                .ToSql().Key;
+            if (list3.Trim() != "SELECT `Id`,`Order` FROM `UnitJsonTest`  WHERE  (   `nullableBool` IN (null)   )") 
+            {
+                throw new Exception("unit error");
+            }
+            json= json.Replace("\"null\"", "\"0,null,1\"");
+            list3 =
+            Db.Queryable<UnitJsonTest>()
+            .Where(Db.Utilities.JsonToConditionalModels(json))
+            .ToSql().Key;
+            if (list3.Trim() != "SELECT `Id`,`Order` FROM `UnitJsonTest`  WHERE  (   `nullableBool` IN (0,null,1)   )")
+            {
+                throw new Exception("unit error");
+            }
         }
     }
 
