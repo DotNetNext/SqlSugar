@@ -133,7 +133,7 @@ namespace SqlSugar
                 var addList = item.Select(it => it.Item).ToList();
                 resultValue += this.Context.Storageable(addList).As(item.Key).WhereColumns(whereExpression).ExecuteCommand();
             }
-            return result;
+            return resultValue;
         }
 
         private async Task<int> _ExecuteSqlBulkCopyAsync(List<T> list)
@@ -151,7 +151,7 @@ namespace SqlSugar
                     ActionCallBack(resultValue);
                 }
             }
-            return result;
+            return resultValue;
         }
         private int _ExecuteSqlBulkCopy(List<T> list)
         {
