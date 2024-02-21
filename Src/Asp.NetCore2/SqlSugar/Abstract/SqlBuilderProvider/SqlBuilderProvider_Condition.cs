@@ -347,7 +347,7 @@ namespace SqlSugar
                 inValue1 = ("(" +string.Join(",", inArray.Distinct().ToArray() )+ ")");
                 if (value.EqualCase( "true"))
                 {
-                    inValue1.Replace("1", "true").Replace("0", "false");
+                    inValue1=inValue1.Replace("1", "true").Replace("0", "false");
                 }
             }
             else
