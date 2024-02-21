@@ -120,7 +120,7 @@ namespace SqlSugar
                     ActionCallBack(resultValue);
                 }
             }
-            return result;
+            return resultValue;
         }
         private int _ExecuteCommand(List<T> list)
         {
@@ -164,7 +164,7 @@ namespace SqlSugar
                 var addList = item.Select(it => it.Item).ToList();
                 resultValue += this.Context.Storageable(addList).As(item.Key).WhereColumns(whereExpression).ExecuteSqlBulkCopy();
             }
-            return result;
+            return resultValue;
         }
 
         private void GroupDataList(List<T> datas, out List<GroupModel> groupModels, out int result)
