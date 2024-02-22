@@ -32,6 +32,6 @@ namespace SqlSugar
         public bool IsCorrectErrorSqlParameterName { get; set; }
         public int MaxParameterNameLength { get; set; }
         public bool DisableQueryWhereColumnRemoveTrim { get; set; }
-        public DbType? DataBaseModel { get;set; }
+        public DbType? DatabaseModel { get;set; }
     }
 }

@@ -609,7 +609,7 @@ WHERE tgrelid = '" + tableName + "'::regclass");
         }
         private bool IsPgModel()
         {
-            return this.Context.CurrentConnectionConfig?.MoreSettings?.DataBaseModel == DbType.PostgreSQL;
+            return this.Context.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.PostgreSQL;
         }
         #endregion
     }
