@@ -328,6 +328,11 @@ namespace SqlSugar
             if (this.Context.Result.IsLockCurrentParameter == false)
             {
                 var expression = ((UnaryExpression)item).Operand as MemberExpression;
+                var negateString = string.Empty;
+                if (item.NodeType == ExpressionType.Negate)
+                {
+                    negateString = " -1*"; 
+                }
                 var isDateTimeNow = ((UnaryExpression)item).Operand.ToString() == "DateTime.Now";
                 if (expression.Expression == null && !isDateTimeNow)
                 {
@@ -337,14 +342,14 @@ namespace SqlSugar
                     this.Expression = item;
                     this.Start();
                     parameter.IsAppendResult();
-                    this.Context.Result.Append(this.Context.GetAsString(asName, parameter.CommonTempData.ObjToString()));
+                    this.Context.Result.Append(negateString + this.Context.GetAsString(asName, parameter.CommonTempData.ObjToString()));
                     this.Context.Result.CurrentParameter = null;
                 }
                 else if (expression.Expression is ConstantExpression || isDateTimeNow)
                 {
                     string parameterName = this.Context.SqlParameterKeyWord + "constant" + this.Context.ParameterIndex;
                     this.Context.ParameterIndex++;
-                    parameter.Context.Result.Append(this.Context.GetAsString(asName, parameterName));
+                    parameter.Context.Result.Append(negateString + this.Context.GetAsString(asName, parameterName));
                     this.Context.Parameters.Add(new SugarParameter(parameterName, ExpressionTool.GetMemberValue(expression.Member, expression)));
                 }
                 else
@@ -355,7 +360,7 @@ namespace SqlSugar
                     this.Expression = expression;
                     this.Start();
                     parameter.IsAppendResult();
-                    this.Context.Result.Append(this.Context.GetAsString(asName, parameter.CommonTempData.ObjToString()));
+                    this.Context.Result.Append(negateString + this.Context.GetAsString(asName, parameter.CommonTempData.ObjToString()));
                     this.Context.Result.CurrentParameter = null;
                 }
             }
