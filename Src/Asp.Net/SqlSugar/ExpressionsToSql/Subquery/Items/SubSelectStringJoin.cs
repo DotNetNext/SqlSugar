@@ -57,6 +57,14 @@ namespace SqlSugar
 
             SetShortName(exp, result);
 
+            if (result == null&& ExpressionTool.GetLambdaExpressionBody(exp.Arguments[0]) is ConstantExpression  ) 
+            {
+                var constant = ExpressionTool.GetLambdaExpressionBody(exp.Arguments[0]) as ConstantExpression;
+                if (constant.Value?.ToString()?.Contains(",")==true) 
+                {
+                    result =  string.Join(",",(constant.Value+"").Split(",").Select(it=>this.Context.GetTranslationTableName(it)));
+                }
+            }
             result = this.Context.DbMehtods.GetStringJoinSelector(result, ExpressionTool.GetExpressionValue(exp.Arguments[1]) + "");
 
             return result;
