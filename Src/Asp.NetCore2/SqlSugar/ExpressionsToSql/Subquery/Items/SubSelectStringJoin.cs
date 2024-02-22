@@ -62,7 +62,7 @@ namespace SqlSugar
                 var constant = ExpressionTool.GetLambdaExpressionBody(exp.Arguments[0]) as ConstantExpression;
                 if (constant.Value?.ToString()?.Contains(",")==true) 
                 {
-                    result =  string.Join(",",(constant.Value+"").Split(",").Select(it=>this.Context.GetTranslationTableName(it)));
+                    result =  string.Join(",",(constant.Value+"").Split(',').Select(it=>this.Context.GetTranslationTableName(it)));
                 }
             }
             result = this.Context.DbMehtods.GetStringJoinSelector(result, ExpressionTool.GetExpressionValue(exp.Arguments[1]) + "");
