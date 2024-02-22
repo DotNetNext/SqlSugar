@@ -107,7 +107,7 @@ namespace SqlSugar
         {
             if (result.Contains(","))
             {
-                return $"listagg(to_char({result.Split(',').First()}),'{separator}') within group(order by {result.Split(',').First()}) ";
+                return $"listagg(to_char({result.Split(',').First()}),'{separator}') within group(order by {result.Split(',').Last()}) ";
             }
             else
             {
