@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SqlSugar;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -31,7 +32,20 @@ namespace OrmTest
                 if (data1 != date.DayOfWeek)
                 {
                     throw new Exception("DayOfWeek error");
-                }  
+                }
+                var result = db.Queryable<Order>()
+                    .In(id)
+                .Select(st => new
+                {
+                    SchoolName0 = -st.Id,
+                    SchoolName1 = 0 - SqlFunc.Subqueryable<Order>().Where(s => s.Id == st.Id).Select(s => SqlFunc.AggregateSum(s.Id)),
+                    SchoolName2 = -SqlFunc.Subqueryable<Order>().Where(s => s.Id == st.Id).Select(s => s.Id),
+                })
+                .ToList();
+                if (result.First().SchoolName0 != -id || result.First().SchoolName1 != -id || result.First().SchoolName2 != -id)
+                {
+                    throw new Exception("unit error");
+                }
             }
         }
     }
