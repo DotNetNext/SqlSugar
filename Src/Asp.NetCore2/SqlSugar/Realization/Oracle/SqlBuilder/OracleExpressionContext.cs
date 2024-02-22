@@ -105,7 +105,14 @@ namespace SqlSugar
         }
         public override string GetStringJoinSelector(string result, string separator)
         {
-            return $"listagg(to_char({result}),'{separator}') within group(order by {result}) ";
+            if (result.Contains(","))
+            {
+                return $"listagg(to_char({result.Split(',').First()}),'{separator}') within group(order by {result.Split(',').First()}) ";
+            }
+            else
+            {
+                return $"listagg(to_char({result}),'{separator}') within group(order by {result}) ";
+            }
         }
         public override string HasValue(MethodCallExpressionModel model)
         {
