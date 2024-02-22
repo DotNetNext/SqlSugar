@@ -84,19 +84,33 @@ namespace SqlSugar
                 return;
             }
             this.Expression = item;
+            var negateString = string.Empty;
+            if (item.NodeType == ExpressionType.Negate)
+            {
+                negateString = " -1*";
+                this.Expression = (this.Expression as UnaryExpression).Operand;
+            }
             this.Start();
             if (ExpressionTool.GetMethodName(item) == "MappingColumn")
             {
-                parameter.Context.Result.Append(this.Context.GetAsString2(asName, parameter.CommonTempData.ObjToString()));
+                parameter.Context.Result.Append(negateString+this.Context.GetAsString2(asName, parameter.CommonTempData.ObjToString()));
             }
             else if (parameter.CommonTempData?.Equals(CommonTempDataType.Append) == true) 
             {
+                if (item.NodeType == ExpressionType.Negate)
+                {
+                    negateString = "*-1 ";
+                }
+                else 
+                {
+                    negateString = null;
+                }
                 parameter.Context.Result.TrimEnd();
-                parameter.Context.Result.Append(" AS " + this.Context.GetTranslationColumnName(asName));
+                parameter.Context.Result.Append(negateString+" AS " + this.Context.GetTranslationColumnName(asName));
             }
             else
             {
-                parameter.Context.Result.Append(this.Context.GetAsString2(asName, parameter.CommonTempData.ObjToString()));
+                parameter.Context.Result.Append(negateString+this.Context.GetAsString2(asName, parameter.CommonTempData.ObjToString()));
             }
         }
 
