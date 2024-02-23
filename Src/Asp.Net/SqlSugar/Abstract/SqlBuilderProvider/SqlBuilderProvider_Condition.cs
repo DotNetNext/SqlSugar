@@ -216,7 +216,7 @@ namespace SqlSugar
 
         private static void EqualNull(StringBuilder builder, List<SugarParameter> parameters, ConditionalModel item, string type, string temp, string parameterName)
         {
-            if (GetFieldValue(item) == null||(item.FieldValue==null&&item.CSharpTypeName.EqualCase("bool")))
+            if (GetFieldValue(item) == null||(item.FieldValue==null))
             {
                 builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "  IS ", " NULL ");
             }
