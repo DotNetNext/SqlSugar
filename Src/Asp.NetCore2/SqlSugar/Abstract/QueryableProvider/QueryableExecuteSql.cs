@@ -93,7 +93,7 @@ namespace SqlSugar
         }
         public virtual bool Any()
         {
-            return this.Select("1").ToList().Count() > 0;
+            return this.Take(1).Select("1").ToList().Count() > 0;
         }
 
         public virtual List<TResult> ToList<TResult>(Expression<Func<T, TResult>> expression)
