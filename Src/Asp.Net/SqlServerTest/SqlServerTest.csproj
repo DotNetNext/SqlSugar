@@ -103,6 +103,7 @@
     <Compile Include="UserTestCases\Cases\OldDemo\DemoL_Snowflake.cs" />
     <Compile Include="UserTestCases\Cases\OldDemo\DemoM_UnitOfWork.cs" />
     <Compile Include="UserTestCases\Cases\OldDemo\DemoN_SplitTable.cs" />
+    <Compile Include="UserTestCases\Cases\UnitAny.cs" />
     <Compile Include="UserTestCases\Models\DataDictionary.cs" />
     <Compile Include="UserTestCases\Models\Custom.cs" />
     <Compile Include="UserTestCases\Models\DiffLong.cs" />
