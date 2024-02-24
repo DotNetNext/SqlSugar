@@ -174,6 +174,16 @@ namespace SqlSugar
         #endregion
 
         #region DDL
+        public virtual bool  SetAutoIncrementInitialValue(string tableName,int initialValue) 
+        {
+            Console.WriteLine("no support");
+            return true;
+        }
+        public virtual bool SetAutoIncrementInitialValue(Type entityType, int initialValue)
+        {
+            Console.WriteLine("no support");
+            return true;
+        }
         public  virtual bool DropIndex(string indexName)
         {
             indexName = this.SqlBuilder.GetNoTranslationColumnName(indexName);

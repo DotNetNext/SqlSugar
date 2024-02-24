@@ -93,6 +93,18 @@ namespace SqlSugar
         /// <param name="databaseDirectory"></param>
         /// <returns></returns>
         bool CreateDatabase(string databaseName,string databaseDirectory = null);
+        /// <summary>
+        /// setAuto incrementInitial value
+        /// </summary>
+        /// <param name="initialValue"></param>
+        /// <returns></returns>
+        bool SetAutoIncrementInitialValue(Type type,int initialValue);
+        /// <summary>
+        /// setAuto incrementInitial value
+        /// </summary>
+        /// <param name="initialValue"></param>
+        /// <returns></returns>
+        bool SetAutoIncrementInitialValue(string tableName, int initialValue);
         #endregion
     }
 }
