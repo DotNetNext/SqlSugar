@@ -239,10 +239,15 @@ namespace SqlSugar
         {
             tableName = this.SqlBuilder.GetTranslationTableName(tableName);
             columnName = this.SqlBuilder.GetTranslationTableName(columnName);
-            string sql = string.Format(this.AddPrimaryKeySql, tableName, string.Format("PK_{0}_{1}", this.SqlBuilder.GetNoTranslationColumnName(tableName).Replace("-","_"), this.SqlBuilder.GetNoTranslationColumnName(columnName)), columnName);
+            var temp = "PK_{0}_{1}";
+            if (tableName.IsContainsIn(" ", "-")) 
+            {
+                temp = SqlBuilder.GetTranslationColumnName(temp);
+            }
+            string sql = string.Format(this.AddPrimaryKeySql, tableName, string.Format(temp, this.SqlBuilder.GetNoTranslationColumnName(tableName).Replace("-","_"), this.SqlBuilder.GetNoTranslationColumnName(columnName)), columnName);
             if ((tableName+columnName).Length>25 &&this.Context?.CurrentConnectionConfig?.MoreSettings?.MaxParameterNameLength > 0) 
             {
-                sql = string.Format(this.AddPrimaryKeySql, tableName, string.Format("PK_{0}_{1}", this.SqlBuilder.GetNoTranslationColumnName(tableName).GetNonNegativeHashCodeString(), "Id"), columnName);
+                sql = string.Format(this.AddPrimaryKeySql, tableName, string.Format(temp, this.SqlBuilder.GetNoTranslationColumnName(tableName).GetNonNegativeHashCodeString(), "Id"), columnName);
             }
             this.Context.Ado.ExecuteCommand(sql);
             return true;
