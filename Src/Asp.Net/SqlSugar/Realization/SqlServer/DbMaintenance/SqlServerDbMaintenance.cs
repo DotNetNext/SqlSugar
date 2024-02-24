@@ -321,6 +321,15 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override bool SetAutoIncrementInitialValue(string tableName,int initialValue)
+        {
+            this.Context.Ado.ExecuteCommand($"DBCC CHECKIDENT ('"+ tableName + $"', RESEED, {initialValue})");
+            return true;
+        }
+        public override bool SetAutoIncrementInitialValue(Type entityType, int initialValue)
+        {
+            return this.SetAutoIncrementInitialValue(this.Context.EntityMaintenance.GetEntityInfo(entityType).DbTableName, initialValue);
+        }
         public override List<DbTableInfo> GetSchemaTables(EntityInfo entityInfo)
         {
             if (entityInfo.DbTableName.Contains(".") && this.Context.CurrentConnectionConfig.DbType == DbType.SqlServer)

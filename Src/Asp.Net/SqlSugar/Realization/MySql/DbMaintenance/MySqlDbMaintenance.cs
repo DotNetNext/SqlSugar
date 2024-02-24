@@ -283,6 +283,16 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override bool SetAutoIncrementInitialValue(string tableName, int initialValue)
+        {
+            initialValue++;
+            this.Context.Ado.ExecuteCommand($"ALTER TABLE " + this.SqlBuilder.GetTranslationColumnName(tableName) + " AUTO_INCREMENT = " + initialValue);
+            return true;
+        }
+        public override bool SetAutoIncrementInitialValue(Type entityType, int initialValue)
+        {
+            return this.SetAutoIncrementInitialValue(this.Context.EntityMaintenance.GetEntityInfo(entityType).DbTableName, initialValue);
+        }
         public override List<string> GetDbTypes()
         {
             return this.Context.Ado.SqlQuery<string>(@"SELECT DISTINCT DATA_TYPE
