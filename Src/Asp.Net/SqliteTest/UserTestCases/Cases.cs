@@ -10,6 +10,7 @@ namespace OrmTest
     {
         public static void Init() 
         {
+            UnitAny.Init();
             Unitdfaafas.Init();
             Unitasdfasdfa1.Init();
             //Demo
