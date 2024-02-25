@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using OrmTest;
+using SqlSugar;
 
 namespace OrmTest 
 {
@@ -21,7 +22,8 @@ namespace OrmTest
                     CreateTime = date,
                     CustomId = 1,
                     Name = "a",
-                    Price = 1
+                    Price = 1,
+                     
                 })
                .ExecuteReturnIdentity();
 
@@ -33,7 +35,45 @@ namespace OrmTest
                 {
                     throw new Exception("DayOfWeek error");
                 }
+            } 
+            db.CodeFirst.SetStringDefaultLength(255).InitTables<UserInfo>();
+            db.DbMaintenance.TruncateTable<UserInfo>();
+            db.Insertable<UserInfo>(new UserInfo()
+            {
+                 UserName = "a",
+                  UserType= EnumUserType.UserType
+            }).ExecuteCommand();
+
+            var userTypes = db.QueryableWithAttr<UserInfo>().Where(e => e.UserType != null).Select(e => e.UserType).ToList();
+            if (userTypes.First() != EnumUserType.UserType) 
+            {
+                throw new Exception("unit error");
             }
         }
+    }
+    [SugarTable("unitaser13231")] 
+    public class UserInfo
+    {
+        /// <summary>
+        /// 主键
+        /// </summary>
+        [SugarColumn(IsPrimaryKey = true, ColumnDescription = "主键", ColumnName = "id", IsNullable = false)]
+        public long Id { get; set; }
+
+        /// <summary>
+        /// 用户名
+        /// </summary>
+        [SugarColumn(ColumnDescription = "用户名", ColumnName = "user", IsNullable = false)]
+        public string? UserName { get; set; }
+
+        /// <summary>
+        /// 用户类型 (可为空)
+        /// </summary>
+        [SugarColumn(ColumnDescription = "用户类型", ColumnName = "user_type", IsNullable = true)]
+        public EnumUserType? UserType { get; set; }
+    }
+    public enum EnumUserType 
+    {
+        UserType=1
     }
 }
