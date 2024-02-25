@@ -382,6 +382,10 @@ namespace SqlSugar
             {
                 result.Add((T)Enum.Parse(type, value.ObjToString()));
             }
+            else if (value!=null&&UtilMethods.GetUnderType(type).IsEnum)
+            {
+                result.Add((T)Enum.Parse(UtilMethods.GetUnderType(type), value.ObjToString()));
+            }
             else
             {
                 result.Add((T)UtilMethods.ChangeType2(value, type));
