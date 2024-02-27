@@ -743,7 +743,7 @@ AND syscomments.text LIKE '%"+tableName+"%'");
 
         private static void ConvertCreateColumnInfo(DbColumnInfo x)
         {
-            string[] array = new string[] { "int", "text", "image", "smallint", "bigint", "date", "bit", "ntext", "datetime" };
+            string[] array = new string[] { "int", "text", "image", "smallint", "bigint", "date", "bit", "ntext", "datetime","datetime2", "uniqueidentifier", "tinyint", "rowversion", "timestamp" };
             if (x.DataType.EqualCase( "nvarchar") || x.DataType .EqualCase( "varchar"))
             {
                 if (x.Length < 1)
