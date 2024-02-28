@@ -57,7 +57,7 @@ namespace SqlSugar
                 copyContext.IsSingle = false;
             }
             var result = "WHERE " + SubTools.GetMethodValue(copyContext, argExp, ResolveExpressType.WhereMultiple);
-            if (argExp.Type == typeof(List<IConditionalModel>)) 
+            if (argExp.Type == typeof(List<IConditionalModel>)&& this.Context.Parameters.Any()) 
             {
                var p= this.Context.Parameters.Last();
                this.Context.Parameters.Remove(p);
@@ -67,6 +67,15 @@ namespace SqlSugar
                result = "WHERE " + sqlObj.Key;
                this.Context.Parameters.AddRange(sqlObj.Value);
                return result;
+            }
+            else if (argExp.Type == typeof(List<IConditionalModel>) && !this.Context.Parameters.Any())
+            { 
+                var cols = ExpressionTool.DynamicInvoke(((expression as MethodCallExpression).Arguments[0])) as List<IConditionalModel>;
+                var sqlObj = this.Context.SugarContext.QueryBuilder.Builder.ConditionalModelToSql(cols, this.Context.ParameterIndex * 100);
+                this.Context.ParameterIndex = this.Context.ParameterIndex + this.Context.ParameterIndex * 100;
+                result = "WHERE " + sqlObj.Key;
+                this.Context.Parameters.AddRange(sqlObj.Value);
+                return result;
             }
             if (this.Context.JoinIndex > 0 ||pars.Count() > 1) 
             {
