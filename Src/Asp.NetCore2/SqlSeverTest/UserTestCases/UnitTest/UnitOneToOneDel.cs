@@ -39,7 +39,20 @@ namespace OrmTest
             Db.DeleteNav<School>(s => s.Id.Equals(1))
                 .Include(s => s.Grades).ExecuteCommandAsync().GetAwaiter().GetResult();
             //Console.ReadLine();
-
+            NewUnitTest.Db.Queryable<School>()
+            .Includes(x => x.Grades) 
+            .Select(x => new
+            {
+                name = x.Grades.a==null?1: x.Grades.a.Value
+            })
+            .ToList();
+            NewUnitTest.Db.Queryable<School>()
+             .IncludeLeftJoin(x => x.Grades)
+             .Select(x => new
+             {
+                 name = x.Grades.a == null ? 1 : x.Grades.a.Value
+             })
+         .ToList();
         }
     }
 
@@ -60,5 +73,8 @@ namespace OrmTest
         public int Id { get; set; }
         public string? Name { get; set; }
         public int SchoolId { get; set; }
+
+        [SugarColumn(IsNullable = true)]
+        public decimal? a { get; set; }
     }
 }
