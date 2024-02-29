@@ -275,6 +275,7 @@ namespace SqlSugar
 
                 // Step 1: Add a new column
                 column.DbColumnName = tempColumn;
+                column.DefaultValue = null;
                 this.AddColumn(tableName, column);
 
                 // Step 2: Update values from old column to new column
