@@ -19,6 +19,7 @@ namespace SqlSugar
             bool isSetTempData, isValue, isValueBool, isLength, isDateValue, isHasValue, isDateDate, isMemberValue, isSingle, fieldIsBool, isSelectField, isField;
             SettingParameters(parameter, out baseParameter, out expression, out isLeft, out isSetTempData, out isValue, out isValueBool, out isLength, out isDateValue, out isHasValue, out isDateDate, out isMemberValue, out isSingle, out fieldIsBool, out isSelectField, out isField);
             baseParameter.ChildExpression = expression;
+            ProcessNavigationMemberAndUpdateExpression(ref expression, ref isValue);
             if (isLength)
             {
                 ResolveLength(parameter, isLeft, expression);
@@ -47,7 +48,7 @@ namespace SqlSugar
             {
                 ResolveCallValue(parameter, baseParameter, expression, isLeft, isSetTempData, isSingle);
             }
-            else if (isValue & IsNavValue(expression)) 
+            else if (isValue & IsNavValue(expression))
             {
                 expression = expression.Expression as MemberExpression;
                 ResolveMemberValue(parameter, baseParameter, expression, isLeft, isSetTempData);
@@ -79,6 +80,21 @@ namespace SqlSugar
             else
             {
                 ResolveDefault(parameter, baseParameter, expression, isLeft, isSetTempData, isSingle);
+            }
+        }
+
+        private void ProcessNavigationMemberAndUpdateExpression(ref MemberExpression expression, ref bool isValue)
+        {
+            if (isValue && expression.Expression is MemberExpression childMemExp)
+            {
+                if (childMemExp.Expression is MemberExpression navMemExp)
+                {
+                    if (ExpressionTool.IsNavMember(this.Context, navMemExp))
+                    {
+                        expression = childMemExp;
+                        isValue = false;
+                    }
+                }
             }
         }
 
