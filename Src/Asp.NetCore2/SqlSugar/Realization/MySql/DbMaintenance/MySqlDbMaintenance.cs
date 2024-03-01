@@ -169,7 +169,7 @@ namespace SqlSugar
         {
             get
             {
-                return "select 1 from Information_schema.columns limit 0,1";
+                return "select 1 from Information_schema.columns where TABLE_SCHEMA=(select database()) limit 0,1";
             }
         }
         #endregion
