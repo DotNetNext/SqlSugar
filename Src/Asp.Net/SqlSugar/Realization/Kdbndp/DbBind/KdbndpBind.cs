@@ -105,6 +105,7 @@ namespace SqlSugar
                     new KeyValuePair<string, CSharpDataType>("uuid",CSharpDataType.Guid),
                     new KeyValuePair<string, CSharpDataType>("xml",CSharpDataType.@string),
                     new KeyValuePair<string, CSharpDataType>("json",CSharpDataType.@string),
+                    new KeyValuePair<string, CSharpDataType>("rowid",CSharpDataType.@string),
 
                     new KeyValuePair<string, CSharpDataType>("interval",CSharpDataType.@decimal),
                     new KeyValuePair<string, CSharpDataType>("lseg",CSharpDataType.@decimal),
