@@ -15,6 +15,7 @@ namespace SqlSugar
         List<DbTableInfo> GetTableInfoList(bool isCache=true);
         List<DbTableInfo> GetTableInfoList(Func<DbType, string, string> getChangeSqlFunc);
         List<DbColumnInfo> GetColumnInfosByTableName(string tableName,bool isCache=true);
+        List<DbColumnInfo> GetColumnInfosByTableName(string tableName, Func<DbType, string, string> getChangeSqlFunc);
         List<string> GetIsIdentities(string tableName);
         List<string> GetPrimaries(string tableName);
         List<string> GetProcList(string dbName);

@@ -63,6 +63,17 @@ namespace SqlSugar
             }
             return result;
         }
+        public List<DbColumnInfo> GetColumnInfosByTableName(string tableName, Func<DbType, string, string> getChangeSqlFunc) 
+        {
+            var db = this.Context.CopyNew();
+            db.Aop.OnExecutingChangeSql = (sql, pars) =>
+            {
+                sql = getChangeSqlFunc(this.Context.CurrentConnectionConfig.DbType, sql);
+                return new KeyValuePair<string, SugarParameter[]>(sql, pars);
+            };
+            var result = db.DbMaintenance.GetColumnInfosByTableName(tableName,false);
+            return result;
+        }
         public virtual List<DbColumnInfo> GetColumnInfosByTableName(string tableName, bool isCache = true)
         {
             if (string.IsNullOrEmpty(tableName)) return new List<DbColumnInfo>();
