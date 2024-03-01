@@ -37,6 +37,17 @@ namespace SqlSugar
             }
             return result;
         }
+        public List<DbTableInfo> GetTableInfoList(Func<DbType,string, string> getChangeSqlFunc)
+        { 
+            var db=this.Context.CopyNew();
+            db.Aop.OnExecutingChangeSql = (sql, pars) =>
+            {
+                sql= getChangeSqlFunc(this.Context.CurrentConnectionConfig.DbType, sql);
+                return new KeyValuePair<string, SugarParameter[]>(sql,pars);
+            };
+            var result= db.DbMaintenance.GetTableInfoList(false);
+            return result;
+        }
         public virtual List<DbTableInfo> GetTableInfoList(bool isCache = true)
         {
             string cacheKey = "DbMaintenanceProvider.GetTableInfoList"+this.Context.CurrentConnectionConfig.ConfigId;
