@@ -117,13 +117,14 @@ namespace SqlSugar
             else
             {
                 var ignoreColumns = _Options?.IgnoreColumns;
+                var isIgnoreNull = _Options?.IgnoreNullColumns == true;
                 if (IsDeleted)
                 {
-                    x.AsUpdateable.IgnoreColumns(ignoreColumns?.ToArray()).PageSize(1).EnableQueryFilter().ExecuteCommand();
+                    x.AsUpdateable.IgnoreNullColumns(isIgnoreNull).IgnoreColumns(ignoreColumns?.ToArray()).PageSize(1).EnableQueryFilter().ExecuteCommand();
                 }
                 else
                 {
-                    x.AsUpdateable.IgnoreColumns(ignoreColumns?.ToArray()).ExecuteCommand();
+                    x.AsUpdateable.IgnoreNullColumns(isIgnoreNull).IgnoreColumns(ignoreColumns?.ToArray()).ExecuteCommand();
                 }
             }
             InitData(pkColumn, insertData);
