@@ -55,6 +55,7 @@ namespace SqlSugar
         public Expression RootFunc { get; set; }
         public Expression CurrentFunc { get; set; }
         public string[] IgnoreColumns { get; set; }
+        public bool IgnoreNullColumns { get; set; }
     }
 
     public class InsertNavOptions 
