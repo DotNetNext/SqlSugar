@@ -81,6 +81,10 @@ namespace SqlSugar
         {
             try
             {
+                if (this.IsAnyTran()) 
+                {
+                    return true;
+                }
                 using (OpenAlways()) 
                 {
                     return true;
