@@ -11,7 +11,11 @@ namespace OrmTest
         public static void Init()
         {
             var _db = NewUnitTest.Db;
-
+            _db.CurrentConnectionConfig.MoreSettings = new ConnMoreSettings()
+            {
+                IsAutoUpdateQueryFilter = true,
+                IsAutoDeleteQueryFilter = true,
+            };
             _db.QueryFilter.AddTableFilter<IDeleted>(it => it.IsDelete == false);
 
             _db.CodeFirst.InitTables(typeof(PostInfoEntity));//创建表
