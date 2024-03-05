@@ -54,6 +54,10 @@ namespace SqlSugar
                 {
                     sql = sql.Replace("sys_", "pg_");
                 }
+                else if (IsSqlServerModel()) 
+                {
+                    sql = sql.Replace("sys_constraint.conkey[1]", "sys_constraint.conkey{1}");
+                }
                 return sql;
             }
         }
@@ -610,6 +614,10 @@ WHERE tgrelid = '" + tableName + "'::regclass");
         private bool IsPgModel()
         {
             return this.Context.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.PostgreSQL;
+        }
+        private bool IsSqlServerModel()
+        {
+            return this.Context.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.SqlServer;
         }
         #endregion
     }
