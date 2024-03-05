@@ -32,6 +32,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UnitSplitadfa.Init();
             UnitWeek.Init();
             Unitafadsa.Init();
             UnitSplitTask.Init();
