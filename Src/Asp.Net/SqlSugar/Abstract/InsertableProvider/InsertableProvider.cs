@@ -750,7 +750,7 @@ namespace SqlSugar
             UtilMethods.StartCustomSplitTable(this.Context, typeof(T));
             var splitTableAttribute = typeof(T).GetCustomAttribute<SplitTableAttribute>();
             if (splitTableAttribute != null)
-            {
+            { 
                 return SplitTable((splitTableAttribute as SplitTableAttribute).SplitType);
             }
             else 

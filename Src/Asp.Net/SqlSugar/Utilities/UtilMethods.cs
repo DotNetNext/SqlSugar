@@ -335,6 +335,15 @@ namespace SqlSugar
                 context.CurrentConnectionConfig.ConfigureExternalServices.SplitTableService
                     = (ISplitTableService)Activator.CreateInstance(splitTableAttribute.CustomSplitTableService);
             }
+            if (
+                context?.CurrentConnectionConfig?.ConfigureExternalServices?.SplitTableService !=null
+                && splitTableAttribute.CustomSplitTableService == null
+                && context.EntityMaintenance.GetEntityInfo(entityType).DbTableName?.EndsWith("_{year}{month}{day}") ==true 
+                )
+            {
+                context.CurrentConnectionConfig.ConfigureExternalServices.SplitTableService
+                      = null;
+            }
         }
         public static void ConvertParameter(SugarParameter p, ISqlBuilder builder)
         {
