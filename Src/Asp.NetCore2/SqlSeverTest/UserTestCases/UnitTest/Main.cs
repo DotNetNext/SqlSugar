@@ -33,6 +33,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UnitFilteradfa.Init();
             UnitWeek.Init();
             Unitadfaasdfaaa.Init();
             Unitatadffaa1.Init();
