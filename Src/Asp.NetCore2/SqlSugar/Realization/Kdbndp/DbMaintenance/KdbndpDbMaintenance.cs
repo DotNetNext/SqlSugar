@@ -56,7 +56,7 @@ namespace SqlSugar
                 }
                 else if (IsSqlServerModel()) 
                 {
-                    sql = sql.Replace("sys_constraint.conkey[1]", "sys_constraint.conkey{1}");
+                    sql = sql.Replace("sys_constraint.conkey[1]", "sys_constraint.conkey{{1}}");
                 }
                 return sql;
             }
