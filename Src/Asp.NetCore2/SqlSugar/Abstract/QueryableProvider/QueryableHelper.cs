@@ -818,6 +818,10 @@ namespace SqlSugar
                     {
                         propertyInfo.SetValue(addItem, new Guid(kv.Value.ToString()));
                     }
+                    else if (UtilMethods.GetUnderType(propertyInfo.PropertyType) == typeof(int) && kv.Value is long)
+                    {
+                        propertyInfo.SetValue(addItem, Convert.ToInt32(kv.Value));
+                    }
                     else
                     {
                         propertyInfo.SetValue(addItem, kv.Value);
