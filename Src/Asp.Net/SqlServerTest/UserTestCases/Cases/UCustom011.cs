@@ -21,7 +21,7 @@ namespace OrmTest
             var x5 = db.Queryable<Order>().Select(it => new { x = DateTime.Now.DayOfWeek.ToString()  }).ToList();
             if (x1.Any()) 
             {
-                Check.Exception(x1.First()!=366|| x1.First() != 365, "unit error . UCustom011");
+                Check.Exception(x1.First()!=366&& x1.First() != 365, "unit error . UCustom011");
                 Check.Exception(x2.First() != 24, "unit error . UCustom011");
                 Check.Exception(x3.First() != 60, "unit error . UCustom011");
                 Check.Exception(x4.First() != 60, "unit error . UCustom011");

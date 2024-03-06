@@ -88,10 +88,10 @@ namespace OrmTest
 
             //只查A表
             var tableName2 = db.SplitHelper(new WordTestTable() {  Name="A" }).GetTableNames();
-            db.Updateable(data).SplitTable(tas => tas.InTableNames("WordTestTable_FirstZ")).ExecuteCommand();
+           
             var listall1 = db.Queryable<WordTestTable>().Where(it => it.Name == "all").SplitTable(tas => tas.InTableNames(tableName2)).ToList();
             var listall = db.Queryable<WordTestTable>().Where(it => it.Name == "all").SplitTable(tas => tas.ContainsTableNames("_FirstA")).ToList();
-         
+            db.Updateable(data).SplitTable(tas => tas.InTableNames("WordTestTable_FirstZ")).ExecuteCommand();
 
         }
 
