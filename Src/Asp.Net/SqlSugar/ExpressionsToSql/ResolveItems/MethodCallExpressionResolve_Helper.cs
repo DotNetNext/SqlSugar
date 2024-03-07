@@ -181,22 +181,8 @@ namespace SqlSugar
             }
             else if (isLength)
             {
-                var sql = GetNewExpressionValue(item);
-                var value = this.Context.DbMehtods.Length(new MethodCallExpressionModel()
-                {
-                    Name = "Length",
-                    Args = new List<MethodCallExpressionArgs>() {
-                     new MethodCallExpressionArgs(){
-                       IsMember=true,
-                       MemberName=sql,
-                       MemberValue=sql
-                     }
-                   }
-                });
-                if (ExpressionTool.GetParameters(item)?.Any()==true) 
-                {
-                    value = sql;
-                }
+                var value = GetNewExpressionValue(item);
+              
                 var methodCallExpressionArgs = new MethodCallExpressionArgs()
                 {
                     IsMember = true,
