@@ -44,13 +44,61 @@ namespace OrmTest
                 Roles = new List<Role>() {
                    new Role() { id = 2 },
                     new Role() { id = 1 } }
-            }).Include(it=>it.Roles).ExecuteCommand();
+            }).Include(it => it.Roles).ExecuteCommand();
 
             var list1 = db.Queryable<OperatorInfo>()
                 .Includes(it => it.Roles)
-                .ToList();  
+                .ToList();
+
+            TestLength2(db);
+            TestLength3(db);
+            TestLength1(db);
         }
 
+        private static void TestLength1(SqlSugarClient db)
+        {
+            var par = "aa";
+            db.Queryable<Role>()
+                .Where(it => it.name.ToString().Substring(1, par.Length) == "")
+                .ToList();
+            var sql1 = db.Queryable<Role>()
+               .Where(it => it.name.ToString().Substring(1, par.Length) == "")
+               .ToSqlString();
+
+            if (sql1.Contains("LEN(LEN"))
+            {
+                throw new Exception("error;");
+            }
+        }
+        private static void TestLength2(SqlSugarClient db)
+        {
+            var par = "aa";
+            db.Queryable<Role>()
+                .Where(it => it.name.ToString().Substring(1, "aa".Length) == "")
+                .ToList();
+            var sql1 = db.Queryable<Role>()
+               .Where(it => it.name.ToString().Substring(1, "aa".Length) == "")
+               .ToSqlString();
+
+            if (sql1.Contains("LEN(LEN"))
+            {
+                throw new Exception("error;");
+            }
+        }
+        private static void TestLength3(SqlSugarClient db)
+        { 
+            db.Queryable<Role>()
+                .Where(it => it.name.ToString().Substring(1, it.name.Length) == "")
+                .ToList();
+            var sql1 = db.Queryable<Role>()
+               .Where(it => it.name.ToString().Substring(1, it.name.Length) == "")
+               .ToSqlString();
+
+            if (sql1.Contains("LEN(LEN"))
+            {
+                throw new Exception("error;");
+            }
+        }
         /// <summary>
         /// 描述：
         /// 作者：synjones
