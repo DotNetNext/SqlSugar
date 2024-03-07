@@ -193,6 +193,10 @@ namespace SqlSugar
                      }
                    }
                 });
+                if (ExpressionTool.GetParameters(item)?.Any()==true) 
+                {
+                    value = sql;
+                }
                 var methodCallExpressionArgs = new MethodCallExpressionArgs()
                 {
                     IsMember = true,
