@@ -338,7 +338,8 @@ namespace SqlSugar
             if (
                 context?.CurrentConnectionConfig?.ConfigureExternalServices?.SplitTableService !=null
                 && splitTableAttribute.CustomSplitTableService == null
-                && context.EntityMaintenance.GetEntityInfo(entityType).DbTableName?.EndsWith("_{year}{month}{day}") ==true 
+                && context.EntityMaintenance.GetEntityInfo(entityType).DbTableName?.EndsWith("_{year}{month}{day}") ==true
+                && !context.EntityMaintenance.GetEntityInfo(entityType).DbTableName?.Replace("_{year}{month}{day}","")?.Contains("{") == true
                 )
             {
                 context.CurrentConnectionConfig.ConfigureExternalServices.SplitTableService
