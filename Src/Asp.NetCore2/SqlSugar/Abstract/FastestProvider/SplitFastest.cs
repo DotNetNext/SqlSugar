@@ -12,6 +12,9 @@ namespace SqlSugar
         public FastestProvider<T> FastestProvider { get;  set; }
         public SqlSugarProvider Context { get { return this.FastestProvider.context; } }
         public EntityInfo EntityInfo { get { return this.Context.EntityMaintenance.GetEntityInfo<T>(); } }
+
+        public int PageSize {  get; internal set; }
+
         public int BulkCopy(List<T> datas)
         {
             List<GroupModel> groupModels;
@@ -21,7 +24,7 @@ namespace SqlSugar
             {
                 CreateTable(item.Key);
                 var addList = item.Select(it => it.Item).ToList();
-                result += FastestProvider.AS(item.Key).BulkCopy(addList);
+                result += FastestProvider.AS(item.Key).PageSize(this.PageSize).BulkCopy(addList);
                 this.Context.MappingTables.Add(EntityInfo.EntityName, EntityInfo.DbTableName);
             }
             return result;
@@ -51,7 +54,7 @@ namespace SqlSugar
             {
                 CreateTable(item.Key);
                 var addList = item.Select(it => it.Item).ToList();
-                result += FastestProvider.AS(item.Key).BulkUpdate(addList);
+                result += FastestProvider.AS(item.Key).PageSize(this.PageSize).BulkUpdate(addList);
                 this.Context.MappingTables.Add(EntityInfo.EntityName, EntityInfo.DbTableName);
             }
             return result;
