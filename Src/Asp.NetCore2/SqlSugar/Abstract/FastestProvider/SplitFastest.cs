@@ -68,7 +68,7 @@ namespace SqlSugar
             {
                 CreateTable(item.Key);
                 var addList = item.Select(it => it.Item).ToList();
-                result += await FastestProvider.AS(item.Key).BulkUpdateAsync(addList);
+                result += await FastestProvider.AS(item.Key).PageSize(this.PageSize).BulkUpdateAsync(addList);
                 this.Context.MappingTables.Add(EntityInfo.EntityName, EntityInfo.DbTableName);
             }
             return result;
@@ -95,7 +95,7 @@ namespace SqlSugar
             foreach (var item in groupModels.GroupBy(it => it.GroupName))
             {
                 var addList = item.Select(it => it.Item).ToList();
-                result += await FastestProvider.AS(item.Key).BulkUpdateAsync(addList, wherColumns, updateColumns); ;
+                result += await FastestProvider.AS(item.Key).PageSize(this.PageSize).BulkUpdateAsync(addList, wherColumns, updateColumns); ;
             }
             return result;
         }
