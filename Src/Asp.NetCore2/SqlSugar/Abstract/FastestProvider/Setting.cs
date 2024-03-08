@@ -54,7 +54,6 @@ namespace SqlSugar
         {
             SplitFastest<T> result = new SplitFastest<T>();
             result.FastestProvider = this;
-            result.PageSize = this.Size;
             return result;
         }
     }
