@@ -131,6 +131,9 @@ namespace SqlSugar
                         case ConditionalType.InLike:
                             InLike(builder, parameters, item, index, type, parameterName);
                             break;
+                        case ConditionalType.Range:
+                            Range(builder, parameters, item, index, type, parameterName);
+                            break;
                         default:
                             break;
                     }
@@ -199,6 +202,22 @@ namespace SqlSugar
         #endregion
 
         #region  Case Method
+        private static void Range(StringBuilder builder, List<SugarParameter> parameters, ConditionalModel item, int index, string type, string parameterName)
+        {
+            var value = item.FieldValue;
+            var valueArray=(value+"").Split(',');
+            if (valueArray.Length != 2) 
+            {
+                Check.ExceptionEasy($"The {item.FieldName} value is not a valid format, but is properly separated by a comma (1,2)", $"{item.FieldName} 值不是有效格式，正确是 1,2 这种中间逗号隔开");
+            } 
+            var firstValue =GetFieldValue(new ConditionalModel() { CSharpTypeName = item.CSharpTypeName, FieldValue = valueArray.FirstOrDefault() });
+            var lastValue= GetFieldValue(new ConditionalModel() { CSharpTypeName = item.CSharpTypeName, FieldValue = valueArray.LastOrDefault() });
+            var parameterNameFirst =parameterName+"_01";
+            var parameterNameLast = parameterName+"_02";
+            builder.AppendFormat("( {0}>={1} AND {0}<={2} )", item.FieldName.ToSqlFilter(), parameterNameFirst, parameterNameLast);
+            parameters.Add(new SugarParameter(parameterNameFirst, firstValue));
+            parameters.Add(new SugarParameter(parameterNameLast, lastValue));
+        }
         private static void InLike(StringBuilder builder, List<SugarParameter> parameters, ConditionalModel item, int index, string type, string parameterName)
         {
             var array = (item.FieldValue + "").Split(',').ToList();
