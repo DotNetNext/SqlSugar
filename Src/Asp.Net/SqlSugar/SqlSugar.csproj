@@ -299,6 +299,7 @@
     <Compile Include="Realization\QuestDB\SqlBuilder\QuestDBInsertBuilder.cs" />
     <Compile Include="Realization\QuestDB\SqlBuilder\QuestDBQueryBuilder.cs" />
     <Compile Include="Realization\QuestDB\SqlBuilder\QuestDBUpdateBuilder.cs" />
+    <Compile Include="SpliteTable\SplitTableExtensions.cs" />
     <Compile Include="SugarUnitOfWork.cs" />
     <Compile Include="Entities\SugarAbMapping.cs" />
     <Compile Include="Entities\JoinMapper.cs" />
