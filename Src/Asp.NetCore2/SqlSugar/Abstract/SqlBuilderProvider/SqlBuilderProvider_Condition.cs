@@ -199,8 +199,6 @@ namespace SqlSugar
             return new KeyValuePair<string, SugarParameter[]>(builder.ToString(), parameters.ToArray());
         }
 
-
-
         #endregion
 
         #region  Case Method
