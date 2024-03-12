@@ -72,7 +72,7 @@ namespace SqlSugar
                         where  relkind = 'r' and  c.oid > 16384 and c.relnamespace != 99 and c.relname not like '%pl_profiler_saved%' order by relname";
                 }
                 return @"select cast(relname as varchar) as Name,
-                        cast(obj_description(relfilenode,'sys_class') as varchar) as Description from sys_class c 
+                        cast(obj_description(relfilenode,'pg_class') as varchar) as Description from sys_class c 
                         where  relkind = 'r' and  c.oid > 16384 and c.relnamespace != 99 and c.relname not like '%pl_profiler_saved%' order by relname";
             }
         }
