@@ -410,6 +410,15 @@ WHERE table_name = '" + tableName + "'");
             }
             return true;
         }
+
+        public override bool AddTableRemark(string tableName, string description)
+        {
+            return base.AddTableRemark(SqlBuilder.GetTranslationColumnName(tableName), description);
+        }
+        public override bool AddColumnRemark(string columnName, string tableName, string description)
+        {
+            return base.AddColumnRemark(SqlBuilder.GetTranslationColumnName(columnName), SqlBuilder.GetTranslationColumnName(tableName), description);
+        }
         public override List<DbColumnInfo> GetColumnInfosByTableName(string tableName, bool isCache = true)
         {
             string cacheKey = "DbMaintenanceProvider.GetColumnInfosByTableName." + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower();
