@@ -225,20 +225,35 @@ Split query
 
 ### Feature10： Big data insert or update 
 ```cs
-//Insert A million only takes a few seconds
-db.Fastest<RealmAuctionDatum>().BulkCopy(GetList());
+1.1 BulkCopy
+db.Fastest<Order>().BulkCopy(lstData);//insert
+db.Fastest<Order>().PageSize(100000).BulkCopy(insertObjs);
+db.Fastest<System.Data.DataTable>().AS("order").BulkCopy(dataTable);
  
+1.2 BulkUpdate
+db.Fastest<Order>().BulkUpdate(GetList())//update 
+db.Fastest<Order>().PageSize(100000).BulkUpdate(GetList()) 
+db.Fastest<Order>().BulkUpdate(GetList(),new string[] { "Id"});//no primary key
+db.Fastest<Order>().BulkUpdate(GetList(), new string[]{"id"},
+                     new string[]{"name","time"})//Set the updated column
+//DataTable                           
+db.Fastest<System.Data.DataTable>().AS("Order").BulkUpdate(dataTable,"Id");//Id is primary key
+db.Fastest<System.Data.DataTable>().AS("Order").BulkUpdate(dataTable,"Id",Set the updated column);
+                          
+
+1.3 BulkMerge （5.1.4.109）
+db.Fastest<Order>().BulkMerge(List);
+db.Fastest<Order>().PageSize(100000).BulkMerge(List);
  
-//update A million only takes a few seconds
-db.Fastest<RealmAuctionDatum>().BulkUpdate(GetList());//A million only takes a few seconds完
-db.Fastest<RealmAuctionDatum>().BulkUpdate(GetList(),new string[]{"id"},new string[]{"name","time"})//no primary key
- 
-//if exists update, else  insert
- var x= db.Storageable<Order>(data).ToStorage();
-     x.BulkCopy();
-     x.BulkUpdate(); 
-     
-//set table name
+
+1.4 BulkQuery
+db.Queryable<Order>().ToList();//Slightly faster than Dapper
+//Suitable for big data export
+List<Order> order = new List<Order>(); 
+db.Queryable<Order>().ForEach(it=> { order.Add(it); } ,2000);
+
+1.5 BulkDelete
+db.Deleteable<Order>(list).PageSize(1000).ExecuteCommand();
 db.Fastest<RealmAuctionDatum>().AS("tableName").BulkCopy(GetList())
  
 //set page 
