@@ -190,7 +190,7 @@ Db.Storageable(list2).PageSize(1000).ExecuteCommand();
 Db.Storageable(list2).PageSize(1000,exrows=> {   }).ExecuteCommand();
 ```
  
-### Feature9 ：Auto split table
+### Feature9 : Auto split table
 Split entity 
 ```cs
 [SplitTable(SplitType.Year)]//Table by year (the table supports year, quarter, month, week and day)
@@ -216,7 +216,7 @@ Split query
 .ToPageList(1,2);　
 ``` 
 
-### Feature10： Big data insert or update 
+#### Feature10 : Big data insert or update 
 ```cs
 10.1 BulkCopy
 db.Fastest<Order>().BulkCopy(lstData);//insert
