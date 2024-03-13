@@ -219,7 +219,12 @@ namespace SqlSugar
         {
             get
             {
-                return "SELECT count(1) WHERE upper('{0}') IN ( SELECT upper(indexname) FROM sys_indexes ) ";
+                var sql= "SELECT count(1) WHERE upper('{0}') IN ( SELECT upper(indexname) FROM sys_indexes ) ";
+                if (IsPgModel())
+                {
+                    sql = sql.Replace("sys_", "pg_");
+                }
+                return sql;
             }
         }
         protected override string IsAnyProcedureSql => throw new NotImplementedException();
@@ -322,11 +327,19 @@ WHERE tgrelid = '" + tableName + "'::regclass");
         public override List<string> GetIndexList(string tableName)
         {
             var sql = $"SELECT indexname FROM sys_indexes WHERE UPPER(tablename) = UPPER('{tableName}') AND UPPER(schemaname) = UPPER('" + GetSchema() + "') ";
+            if (IsPgModel())
+            {
+                sql = sql.Replace("sys_", "pg_");
+            }
             return this.Context.Ado.SqlQuery<string>(sql);
         }
         public override List<string> GetProcList(string dbName)
         {
             var sql = $"SELECT proname FROM sys_proc p JOIN pg_namespace n ON p.pronamespace = n.oid WHERE UPPER(n.nspname) = UPPER('{dbName}')";
+            if (IsPgModel())
+            {
+                sql = sql.Replace("sys_", "pg_");
+            }
             return this.Context.Ado.SqlQuery<string>(sql);
         }
         private string GetSchema()
