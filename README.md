@@ -188,14 +188,9 @@ db.Queryable<OrderItem, Order>((i, o) => i.OrderId == o.Id)
 ### Feature8 : Insert or update 
 insert or update 
 ```cs
-    var x = Db.Storageable(list2).ToStorage();  
-    x.AsInsertable.ExecuteCommand();  
-    x.AsUpdateable.ExecuteCommand();  
-```
-insert into not exists  
-```cs
-var x = Db.Storageable(list).SplitInsert(it => !it.Any()).ToStorage()
-x.AsInsertable.ExecuteCommand(); 
+Db.Storageable(list2).ExecuteCommand();
+Db.Storageable(list2).PageSize(1000).ExecuteCommand();
+Db.Storageable(list2).PageSize(1000,exrows=> {   }).ExecuteCommand();
 ```
  
 ### Feature9 ：Auto split table
