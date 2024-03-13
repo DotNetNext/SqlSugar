@@ -225,12 +225,12 @@ Split query
 
 ### Feature10： Big data insert or update 
 ```cs
-1.1 BulkCopy
+10.1 BulkCopy
 db.Fastest<Order>().BulkCopy(lstData);//insert
 db.Fastest<Order>().PageSize(100000).BulkCopy(insertObjs);
 db.Fastest<System.Data.DataTable>().AS("order").BulkCopy(dataTable);
  
-1.2 BulkUpdate
+10.2 BulkUpdate
 db.Fastest<Order>().BulkUpdate(GetList())//update 
 db.Fastest<Order>().PageSize(100000).BulkUpdate(GetList()) 
 db.Fastest<Order>().BulkUpdate(GetList(),new string[] { "Id"});//no primary key
@@ -241,18 +241,18 @@ db.Fastest<System.Data.DataTable>().AS("Order").BulkUpdate(dataTable,"Id");//Id 
 db.Fastest<System.Data.DataTable>().AS("Order").BulkUpdate(dataTable,"Id",Set the updated column);
                           
 
-1.3 BulkMerge （5.1.4.109）
+10.3 BulkMerge （5.1.4.109）
 db.Fastest<Order>().BulkMerge(List);
 db.Fastest<Order>().PageSize(100000).BulkMerge(List);
  
 
-1.4 BulkQuery
+10.4 BulkQuery
 db.Queryable<Order>().ToList();//Slightly faster than Dapper
 //Suitable for big data export
 List<Order> order = new List<Order>(); 
 db.Queryable<Order>().ForEach(it=> { order.Add(it); } ,2000);
 
-1.5 BulkDelete
+10.5 BulkDelete
 db.Deleteable<Order>(list).PageSize(1000).ExecuteCommand();
 db.Fastest<RealmAuctionDatum>().AS("tableName").BulkCopy(GetList())
  
