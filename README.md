@@ -15,31 +15,19 @@ Using SqlSugar is very simple , And it's powerful.
 If you want to use aot： <a href="https://www.donet5.com/Home/Doc?typeId=2574">aot document</a>
 
 ## Support database 
-
 MySql、SqlServer、Sqlite、Oracle 、 postgresql、达梦、
-
 人大金仓(国产推荐)、神通数据库、瀚高、Access 、OceanBase
-
 TDengine  QuestDb Clickhouse  MySqlConnector、华为 GaussDB 
-
 南大通用 GBase、MariaDB、Tidb、Odbc、Percona Server,
-
 Amazon Aurora、Azure Database for MySQL、
-
  Google Cloud SQL for MySQL、custom database
 
 ## Description
-- Support Cross database query
-- Support SqlServer、MySql、PgSql and Oracle  insert bulkcopy  
-- Split table big data self-processing 
-- Support Multi-tenant, multi-library transactions
-- Support CodeFirst data migration.
-- Support Join query 、  Union all 、 Subquery 
-- Support Configure the query  
-- Support DbFirst import entity class from database, or use Generation Tool.
-- Support one-to-many and many-to-many navigation properties
-- Support MySql、SqlServer、Sqlite、Oracle 、 postgresql 、QuestDb、ClickHouse、达梦、人大金仓 、神通数据库、瀚高、MsAccess、华为GaussDB、GBase 8s、Odbc、Custom
-- Support  AOP 、 Diff Log 、 Query Filter 
+1. Truly achieve zero SQL ORM table building, index and CRUD all support
+2. Support.NET millions of big data write, update, subtable and has billions of query statistics mature solutions
+3. Support SAAS complete application: cross-database query, audit, tenant sub-database, tenant sub-table and tenant data isolation
+4. Support low code + workflow (dynamic class building, dynamic table building, non-entity multi-library compatible with CRUD, JSON TO SQL, custom XML, etc.)
+5. Support ValueObject, discriminator, repository, UnitOfWork, DbContext, AOP
 
 ##  Documentation
 |Other |Select  | Insert    | Update  | Delete| 
