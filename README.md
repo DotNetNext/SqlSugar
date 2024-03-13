@@ -6,7 +6,9 @@
  
 ## SqlSugar ORM
 SqlSugar is an old.NET open source ORM framework, maintained and updated by Fructose Big Data Technology team, the most easy-to-use ORM out of the box
+
 Advantages: [Rich ecology] [High performance] [Super simple] [Comprehensive features] [ Multi-database compatible] [Suitable products]
+
 Support:.net framework.net core3.1.ne5.net6.net7.net8
 
 ## Support database 
