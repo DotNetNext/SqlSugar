@@ -68,23 +68,18 @@ var list=db.Queryable<Test>()
            .Includes(x => x.ClassInfo) 
            .ToList();
            
-//insert by nav
- db.InsertNav(list) //Finer operation than EFCore's SaveChange
-            .Include(z1 => z1.SchoolA).ThenInclude(z1 => z1.RoomList)//multi-level
-            .Include(z1 => z1.Books) 
-            .ExecuteCommand(); 
-            
-//delete by nav               
- db.DeleteNav<Student>(it=>it.Id==1) 
-            .Include(z1 => z1.SchoolA) .ThenInclude(z1 => z1.RoomList)//multi-level
-            .Include(z1 => z1.Books) 
-            .ExecuteCommand();  
-            
-//update by nav     
- db.UpdateNav(list)
-            .Include(z1 => z1.SchoolA) .ThenInclude(z1 => z1.RoomList)//multi-level
-            .Include(z1 => z1.Books) 
-            .ExecuteCommand();           
+var list5= db.Queryable<Student_004>()
+           .Includes(x => x.school_001, x => x.rooms)
+           .Includes(x => x.books)
+           .LeftJoin<Order>((x, y) => x.Id==y.sid)
+           .Select((x,y) => new Student_004DTO
+           {
+               SchoolId = x.SchoolId,
+               books = x.books,
+               school_001 = x.school_001,
+               Name=y.Name
+           })
+           .ToList();          
 ```
 
 ###   Feature3 : Page query
