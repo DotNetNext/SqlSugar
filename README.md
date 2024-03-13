@@ -67,7 +67,7 @@ var list=db.Queryable<Test>()
            .Includes(x => x.Provinces,x=>x.Citys ,x=>x.Street) //multi-level
            .Includes(x => x.ClassInfo) 
            .ToList();
-           
+//Includes+left join        
 var list5= db.Queryable<Student_004>()
            .Includes(x => x.school_001, x => x.rooms)
            .Includes(x => x.books)
