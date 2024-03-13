@@ -247,9 +247,5 @@ db.Queryable<Order>().ForEach(it=> { order.Add(it); } ,2000);
 
 10.5 BulkDelete
 db.Deleteable<Order>(list).PageSize(1000).ExecuteCommand();
-db.Fastest<RealmAuctionDatum>().AS("tableName").BulkCopy(GetList())
- 
-//set page 
-db.Fastest<Order>().PageSize(300000).BulkCopy(insertObjs);
 
 ```
