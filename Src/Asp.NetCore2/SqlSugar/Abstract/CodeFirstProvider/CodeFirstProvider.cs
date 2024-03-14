@@ -425,6 +425,18 @@ namespace SqlSugar
                                                                     ec.IsNullable != dc.IsNullable ||
                                                                     IsNoSamePrecision(ec, dc) ||
                                                                     IsNoSamgeType(ec, dc)))).ToList();
+                 
+                alterColumns.RemoveAll(entityColumnInfo =>
+                {
+                    var bigStringArray = StaticConfig.CodeFirst_BigString.Replace("varcharmax", "nvarchar(max)").Split(',');
+                    var dbColumnInfo = dbColumns.FirstOrDefault(dc => dc.DbColumnName.EqualCase(entityColumnInfo.DbColumnName));
+                    var isMaxString = (dbColumnInfo?.Length == -1 && dbColumnInfo?.DataType?.EqualCase("nvarchar")==true);
+                    var isRemove =
+                           dbColumnInfo != null
+                           && bigStringArray.Contains(entityColumnInfo.DataType)
+                           && isMaxString;
+                    return isRemove;
+                });
                 var renameColumns = entityColumns
                     .Where(it => !string.IsNullOrEmpty(it.OldDbColumnName))
                     .Where(entityColumn => dbColumns.Any(dbColumn => entityColumn.OldDbColumnName.Equals(dbColumn.DbColumnName, StringComparison.CurrentCultureIgnoreCase)))
