@@ -23,7 +23,37 @@ namespace OrmTest
             })
              .Where(c => c.id == 454206551670915072)
              .ExecuteCommand();
+            db.CodeFirst.InitTables<UnitArrayTestEntity>();
+            List<UnitArrayTestEntity> tests = new()
+            {
+                new UnitArrayTestEntity {    no = "1", name = "11", arrays =new string[]{ "111","22"} },
+                new UnitArrayTestEntity {    no = "2", name = "22", arrays =new string[]{ "444","333"} }
+            };
+
+            db.Insertable(tests).ExecuteCommand();
+            List<UnitArrayTestEntity> list = db.Queryable<UnitArrayTestEntity>().ToList();
+
+            var temp = db.Queryable<UnitArrayTestEntity>()
+                .Select(i => new
+                {
+                    testNo = i.no,
+                    testArr = i.arrays,
+                    testArr2 = i.arrays
+                }).ToList();
+            if (temp.FirstOrDefault().testArr == null || temp.FirstOrDefault().testArr2 == null) 
+            {
+                throw new Exception("unit error");
+            }
         }
+        public class UnitArrayTestEntity
+        {
+            public string no { get; set; }
+            public string name { get; set; }
+
+            [SugarColumn(IsArray = true, ColumnDataType = "character varying [20]")]
+            public string[] arrays { get; set; }
+
+        };
         /// <summary>
         ///event_handle_task
         /// </summary>		
