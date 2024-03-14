@@ -388,11 +388,11 @@ namespace SqlSugar
                 value = value.Replace("= \"SYSDATE\"", "= SYSDATE");
             }
             var shortName=(columns as LambdaExpression).Parameters.First().Name;
-            var replaceKey=this.SqlBuilder.GetTranslationColumnName(shortName)+".";
-            var newKey = this.SqlBuilder.GetTranslationColumnName(this.EntityInfo.DbTableName) + ".";
+            var replaceKey= "," + this.SqlBuilder.GetTranslationColumnName(shortName)+".";
+            var newKey = "," + this.SqlBuilder.GetTranslationColumnName(this.EntityInfo.DbTableName) + ".";
             if (replaceKey != newKey)
             {
-                value = value.Replace(replaceKey,"");
+                value = value.Replace(replaceKey,",");
             }
             return value;
         }
