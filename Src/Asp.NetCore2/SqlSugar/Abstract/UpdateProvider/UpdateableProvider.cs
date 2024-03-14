@@ -749,10 +749,7 @@ namespace SqlSugar
                     string key = key = keys[i].Key;
                     i++;
                     var value = item;
-                    if (value.Contains("= \"SYSDATE\""))
-                    {
-                        value = value.Replace("= \"SYSDATE\"", "= SYSDATE");
-                    }
+                    value = GetSetSql(value, columns);
                     UpdateBuilder.SetValues.Add(new KeyValuePair<string, string>(SqlBuilder.GetTranslationColumnName(key), value));
                 }
             }

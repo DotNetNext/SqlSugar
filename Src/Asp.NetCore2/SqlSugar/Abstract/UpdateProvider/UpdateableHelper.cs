@@ -381,6 +381,21 @@ namespace SqlSugar
                 return column.PropertyInfo.GetValue(item, null);
             }
         }
+        private  string GetSetSql(string value, Expression<Func<T, T>> columns)
+        {
+            if (value.Contains("= \"SYSDATE\""))
+            {
+                value = value.Replace("= \"SYSDATE\"", "= SYSDATE");
+            }
+            var shortName=(columns as LambdaExpression).Parameters.First().Name;
+            var replaceKey=this.SqlBuilder.GetTranslationColumnName(shortName)+".";
+            var newKey = this.SqlBuilder.GetTranslationColumnName(this.EntityInfo.DbTableName) + ".";
+            if (replaceKey != newKey)
+            {
+                value = value.Replace(replaceKey,"");
+            }
+            return value;
+        }
 
         private void PreToSql()
         {
