@@ -13,14 +13,24 @@ namespace SqlSugar
     public class SqlSugarScopeProvider:ISqlSugarClient
     {
         internal  SqlSugarProvider conn;
+        internal string initThreadMainId;
+        internal string initkey = null;
         StackFrame[] frames;
 
         public SqlSugarScopeProvider(SqlSugarProvider conn)
         {
             this.conn = conn;
+            this.initThreadMainId = GetCurrentThreadId();
             var key = GetKey();
+            this.initkey = key;
             this.GetContext(true);
         }
+
+        private static string GetCurrentThreadId()
+        {
+            return System.Threading.Thread.CurrentThread.ManagedThreadId + "";
+        }
+
         public SqlSugarProvider ScopedContext { get { return GetContext(); } }
         private SqlSugarProvider GetAsyncContext(bool isInit=false)
         {
@@ -89,6 +99,10 @@ namespace SqlSugar
         }
         private  dynamic GetKey()
         {
+            if (!string.IsNullOrEmpty(this.initkey) &&this.initThreadMainId == GetCurrentThreadId()) 
+            {
+                return this.initkey;
+            }
             var key= "SqlSugarProviderScope_" + conn.CurrentConnectionConfig.ConfigId;
             if (frames == null)
             {
