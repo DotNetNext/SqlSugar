@@ -484,6 +484,10 @@ namespace SqlSugar
                             result.Add(name, DeserializeObject<string[]>(json));
                         }
                     }
+                    else if (item.PropertyType?.IsArray==true&& readerValues?.Any(y => y.Key.EqualCase(item.Name))==true&& readerValues?.FirstOrDefault(y => y.Key.EqualCase(item.Name)).Value is Array value) 
+                    { 
+                        result.Add(name, value);
+                    }
                     else if (StaticConfig.EnableAot && item.PropertyType == typeof(Type))
                     {
                         //No Add
