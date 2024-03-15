@@ -82,7 +82,7 @@ namespace SqlSugar
             try
             {
                 if (dataReader == null) return result;
-                while (await((DbDataReader)dataReader).ReadAsync())
+                while (await GetReadAsync(dataReader,context))
                 {
                     //try
                     //{
@@ -114,6 +114,18 @@ namespace SqlSugar
                 }
             }
             return result;
+        }
+
+        private  Task<bool> GetReadAsync(IDataReader dataReader, SqlSugarProvider context)
+        {
+            if (this.QueryBuilder?.Builder?.SupportReadToken==true&&context.Ado.CancellationToken!=null)
+            { 
+                return this.QueryBuilder.Builder.GetReaderByToken(dataReader, context.Ado.CancellationToken.Value);
+            }
+            else
+            {
+                return ((DbDataReader)dataReader).ReadAsync();
+            }
         }
 
         private void SetOwnsOne(object addItem, bool isOwnsOne, EntityInfo entityInfo, IDataReader dataReader)
