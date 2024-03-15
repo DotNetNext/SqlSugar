@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Kdbndp;
 using KdbndpTypes;
+using Oracle.ManagedDataAccess.Client;
 
 namespace SqlSugar
 {
@@ -140,6 +141,11 @@ namespace SqlSugar
                     if (this.OutputParameters == null) this.OutputParameters = new List<IDataParameter>();
                     this.OutputParameters.RemoveAll(it => it.ParameterName == sqlParameter.ParameterName);
                     this.OutputParameters.Add(sqlParameter);
+                }
+                if (parameter.IsRefCursor)
+                {
+                    sqlParameter.KdbndpDbType = KdbndpDbType.Refcursor;
+                    sqlParameter.Direction = ParameterDirection.Output;
                 }
                 ++index;
             }
