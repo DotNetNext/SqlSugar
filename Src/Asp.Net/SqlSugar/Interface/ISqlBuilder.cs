@@ -5,6 +5,7 @@ using System.Dynamic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 namespace SqlSugar
 {
@@ -47,5 +48,9 @@ namespace SqlSugar
         string RemoveParentheses(string sql);
         string RemoveN(string sql);
         void FormatSaveQueueSql(StringBuilder sqlBuilder); 
+
+        bool SupportReadToken { get; set; }
+        Task<bool> GetReaderByToken(IDataReader dataReader, CancellationToken cancellationToken);
+
     }
 }
