@@ -7,7 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Kdbndp;
 using KdbndpTypes;
-using Oracle.ManagedDataAccess.Client;
 
 namespace SqlSugar
 {
