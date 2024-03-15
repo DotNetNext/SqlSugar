@@ -33,6 +33,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UnitAsyncToken.Init();
             UnitManyToMany121231.Init();
             UnitFilteradfa.Init();
             UnitWeek.Init();
