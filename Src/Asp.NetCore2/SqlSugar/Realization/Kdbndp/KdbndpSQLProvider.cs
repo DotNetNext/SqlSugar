@@ -133,6 +133,11 @@ namespace SqlSugar
                 if (sqlParameter.Direction == 0)
                 {
                     sqlParameter.Direction = ParameterDirection.Input;
+                } 
+                if (parameter.IsRefCursor)
+                {
+                    sqlParameter.KdbndpDbType = KdbndpDbType.Refcursor;
+                    sqlParameter.Direction = ParameterDirection.Output;
                 }
                 result[index] = sqlParameter;
                 if (sqlParameter.Direction.IsIn(ParameterDirection.Output, ParameterDirection.InputOutput, ParameterDirection.ReturnValue))
@@ -140,11 +145,6 @@ namespace SqlSugar
                     if (this.OutputParameters == null) this.OutputParameters = new List<IDataParameter>();
                     this.OutputParameters.RemoveAll(it => it.ParameterName == sqlParameter.ParameterName);
                     this.OutputParameters.Add(sqlParameter);
-                }
-                if (parameter.IsRefCursor)
-                {
-                    sqlParameter.KdbndpDbType = KdbndpDbType.Refcursor;
-                    sqlParameter.Direction = ParameterDirection.Output;
                 }
                 ++index;
             }
