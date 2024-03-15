@@ -138,7 +138,18 @@ namespace SqlSugar
                     }
                     primaryKeyValues.Add(value);
                 }
-                if (primaryKeyValues.Count < 10000)
+                if (this.Context.CurrentConnectionConfig.DbType==DbType.Oracle &&primaryKeyValues.Count >= 1000) 
+                {
+                    List<string> inItems = new List<string>();
+                    this.Context.Utilities.PageEach(primaryKeyValues, 999, pageItems =>
+                    {
+                        var inValueString = pageItems.ToArray().ToJoinSqlInVals();
+                        var whereItem= string.Format(DeleteBuilder.WhereInTemplate, SqlBuilder.GetTranslationColumnName(primaryFields.Single()), inValueString);
+                        inItems.Add(whereItem);
+                    });
+                    Where($"({string.Join(" OR ", inItems)})");
+                }
+                else if (primaryKeyValues.Count < 10000)
                 {
                     var inValueString = primaryKeyValues.ToArray().ToJoinSqlInVals();
                     Where(string.Format(DeleteBuilder.WhereInTemplate, SqlBuilder.GetTranslationColumnName(primaryFields.Single()), inValueString));
