@@ -1,6 +1,8 @@
-﻿using System;
+﻿using SqlSugar;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -33,6 +35,31 @@ namespace OrmTest
             {
                 throw new Exception("UnitAsyncToken");
             }
+
+            db.CodeFirst.InitTables<StudentWithIdentityLong>();
+            db.DbMaintenance.TruncateTable<StudentWithIdentityLong>();
+            var big1=db.Insertable(new StudentWithIdentityLong()
+            {
+                Name = "a"
+            }).ExecuteReturnBigIdentity();
+
+            var big2 = db.Insertable(new StudentWithIdentityLong()
+            {
+                Name = "a"
+            }).ExecuteReturnBigIdentityAsync().GetAwaiter().GetResult();
+
+            if (big1 != 1 || big2 != 2) 
+            {
+                throw new Exception("unit error"); 
+            }
+        }
+
+        [SugarTable("StudentWithIdentity08Long")]
+        public class StudentWithIdentityLong
+        {
+            [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+            public int Id { get; set; }
+            public string Name { get; set; }
         }
     }
 }
