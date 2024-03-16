@@ -162,7 +162,7 @@ namespace SqlSugar
             }
             else
             {
-                result = Convert.ToInt64(Ado.GetScalar(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray()));
+                result = (Ado.GetScalar(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray())).ObjToLong();
             }
             After(sql, result);
             return result;
