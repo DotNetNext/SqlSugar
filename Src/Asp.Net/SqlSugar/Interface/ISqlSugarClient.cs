@@ -190,10 +190,10 @@ namespace SqlSugar
         #endregion
 
         #region Union 
-        ISugarQueryable<T> Union<T>(List<ISugarQueryable<T>> queryables) where T : class, new();
-        ISugarQueryable<T> Union<T>(params ISugarQueryable<T>[] queryables) where T : class, new();
-        ISugarQueryable<T> UnionAll<T>(List<ISugarQueryable<T>> queryables) where T : class, new();
-        ISugarQueryable<T> UnionAll<T>(params ISugarQueryable<T>[] queryables) where T : class, new();
+        ISugarQueryable<T> Union<T>(List<ISugarQueryable<T>> queryables) where T : class;
+        ISugarQueryable<T> Union<T>(params ISugarQueryable<T>[] queryables) where T : class;
+        ISugarQueryable<T> UnionAll<T>(List<ISugarQueryable<T>> queryables) where T : class;
+        ISugarQueryable<T> UnionAll<T>(params ISugarQueryable<T>[] queryables) where T : class;
         #endregion
 
         #region Updateable
