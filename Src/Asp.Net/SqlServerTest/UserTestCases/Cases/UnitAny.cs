@@ -31,6 +31,9 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+            var q=db.Queryable<Order>().Select(it => new { id = it.Id });
+            var q2 = db.Queryable<Order>().Select(it => new { id = 1 });
+            var list=db.UnionAll(q, q2).ToList();
         }
         public class UintAnyModel
         {
