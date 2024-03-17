@@ -267,22 +267,22 @@ namespace SqlSugar
         #endregion
 
         #region Union
-        public ISugarQueryable<T> Union<T>(List<ISugarQueryable<T>> queryables) where T : class, new()
+        public ISugarQueryable<T> Union<T>(List<ISugarQueryable<T>> queryables) where T : class 
         {
             return this.Context.Union(queryables);
         }
 
-        public ISugarQueryable<T> Union<T>(params ISugarQueryable<T>[] queryables) where T : class, new()
+        public ISugarQueryable<T> Union<T>(params ISugarQueryable<T>[] queryables) where T : class 
         {
             return this.Context.Union(queryables);
         }
 
-        public ISugarQueryable<T> UnionAll<T>(List<ISugarQueryable<T>> queryables) where T : class, new()
+        public ISugarQueryable<T> UnionAll<T>(List<ISugarQueryable<T>> queryables) where T : class 
         {
             return this.Context.UnionAll(queryables);
         }
 
-        public ISugarQueryable<T> UnionAll<T>(params ISugarQueryable<T>[] queryables) where T : class, new()
+        public ISugarQueryable<T> UnionAll<T>(params ISugarQueryable<T>[] queryables) where T : class 
         {
             return this.Context.UnionAll(queryables);
         }

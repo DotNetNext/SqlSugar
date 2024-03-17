@@ -616,7 +616,7 @@ namespace SqlSugar
         }
         #endregion
 
-        public virtual ISugarQueryable<T> UnionAll<T>(params ISugarQueryable<T>[] queryables) where T : class, new()
+        public virtual ISugarQueryable<T> UnionAll<T>(params ISugarQueryable<T>[] queryables) where T : class 
         {
             return _UnionAll(queryables);
         }
@@ -659,12 +659,12 @@ namespace SqlSugar
             }
         }
 
-        public virtual ISugarQueryable<T> UnionAll<T>(List<ISugarQueryable<T>> queryables) where T : class, new()
+        public virtual ISugarQueryable<T> UnionAll<T>(List<ISugarQueryable<T>> queryables) where T : class 
         {
             Check.Exception(queryables.IsNullOrEmpty(), "UnionAll.queryables is null ");
             return UnionAll(queryables.ToArray());
         }
-        public virtual ISugarQueryable<T> Union<T>(params ISugarQueryable<T>[] queryables) where T : class, new()
+        public virtual ISugarQueryable<T> Union<T>(params ISugarQueryable<T>[] queryables) where T : class 
         {
             var sqlBuilder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
             Check.Exception(queryables.IsNullOrEmpty(), "UnionAll.queryables is null ");
@@ -702,7 +702,7 @@ namespace SqlSugar
                 return resulut.Select<T>(sqlBuilder.SqlSelectAll);
             }
         }
-        public virtual ISugarQueryable<T> Union<T>(List<ISugarQueryable<T>> queryables) where T : class, new()
+        public virtual ISugarQueryable<T> Union<T>(List<ISugarQueryable<T>> queryables) where T : class 
         {
             Check.Exception(queryables.IsNullOrEmpty(), "Union.queryables is null ");
             return Union(queryables.ToArray());
