@@ -493,11 +493,9 @@ namespace SqlSugar
                     break;
                 case DbType.Vastbase:
                     config.DbType = DbType.PostgreSQL;
-                    if (this.TempItems == null) 
-                    {
-                        this.TempItems = new Dictionary<string, object>();
-                    }
-                    this.TempItems.Add("DbType.Vastbase", "DbType.Vastbase");
+                    if (this.CurrentConnectionConfig.MoreSettings==null) 
+                        this.CurrentConnectionConfig.MoreSettings = new ConnMoreSettings();
+                    this.CurrentConnectionConfig.MoreSettings.DatabaseModel = DbType.Vastbase;
                     break;
                 case DbType.OceanBase:
                     config.DbType = DbType.MySql; 
