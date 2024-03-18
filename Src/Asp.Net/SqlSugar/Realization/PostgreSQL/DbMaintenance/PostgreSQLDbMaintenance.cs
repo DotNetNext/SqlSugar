@@ -381,7 +381,7 @@ WHERE tgrelid = '"+tableName+"'::regclass");
             });
             if (!GetDataBaseList(newDb).Any(it => it.Equals(databaseName, StringComparison.CurrentCultureIgnoreCase)))
             {
-                var isVast = this.Context?.TempItems?.ContainsKey("DbType.Vastbase")==true;
+                var isVast = this.Context?.CurrentConnectionConfig?.MoreSettings?.DatabaseModel==DbType.Vastbase;
                 var dbcompatibility = "";
                 if (isVast) 
                 {
