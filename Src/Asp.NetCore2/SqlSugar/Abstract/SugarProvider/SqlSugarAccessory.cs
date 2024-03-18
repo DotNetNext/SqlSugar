@@ -508,6 +508,9 @@ namespace SqlSugar
                 case DbType.PolarDB:
                     config.DbType = DbType.MySql;
                     break;
+                case DbType.Doris:
+                    config.DbType = DbType.MySql;
+                    break;
                 case DbType.TDengine:
                     Check.Exception(SugarCompatible.IsFramework, "TDengine only support .net core");
                     InstanceFactory.CustomDllName = SugarCompatible.IsFramework ? "SqlSugar.TDengine" : "SqlSugar.TDengineCore";

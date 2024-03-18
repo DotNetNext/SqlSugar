@@ -30,6 +30,7 @@ namespace SqlSugar
         Tidb,
         Vastbase,
         PolarDB,
+        Doris,
         Custom =900
     }
 }
