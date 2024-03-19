@@ -36,6 +36,8 @@ namespace SqlSugar
         SplitFastest<T> SplitTable();
         Task<int> BulkMergeAsync(List<T> datas);
         int BulkMerge(List<T> datas);
+        int BulkMerge(DataTable dataTable, string[] whereColumns,bool isIdentity);
+        Task<int> BulkMergeAsync(DataTable dataTable, string[] whereColumns, bool isIdentity);
         Task<int> BulkMergeAsync(List<T> datas, string[] whereColumns);
         int BulkMerge(List<T> datas, string[] whereColumns);
         Task<int> BulkMergeAsync(List<T> datas, string[] whereColumns, string[] updateColumns);

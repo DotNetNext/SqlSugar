@@ -18,6 +18,18 @@ namespace SqlSugar
 {
     public class UtilMethods
     {
+        public static object ConvertToObjectList(Type targetType, List<object> sourceList)
+        {
+            // 创建 List<Type> 类型的实例
+            object resultList = Activator.CreateInstance(typeof(List<>).MakeGenericType(targetType));
+            // 获取 Add 方法
+            var addMethod = resultList.GetType().GetMethod("Add");
+            foreach (var obj in sourceList)
+            {
+                addMethod.Invoke(resultList, new object[] { obj });
+            } 
+            return resultList;
+        }
         public static Dictionary<string, object> DataRowToDictionary(DataRow row)
         {
             Dictionary<string, object> dictionary = new Dictionary<string, object>();

@@ -4,6 +4,9 @@ using System.Data;
 using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Threading;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 namespace SqlSugar 
 {
     public partial class FastestProvider<T>:IFastest<T> where T:class,new()
@@ -179,6 +182,22 @@ namespace SqlSugar
         {
             return BulkMergeAsync(datas).GetAwaiter().GetResult();
         }
+        public int BulkMerge(DataTable dataTable, string[] whereColumns,bool isIdentity)
+        {
+            object newValue, fastestMethod;
+            MethodInfo bulkCopyMethod;
+            _BulkMerge(dataTable, whereColumns, out newValue, out fastestMethod, out bulkCopyMethod,false,isIdentity);
+            var result = (int)bulkCopyMethod.Invoke(fastestMethod, new object[] { newValue });
+            return result;
+        }
+        public Task<int> BulkMergeAsync(DataTable dataTable, string[] whereColumns, bool isIdentity)
+        {
+            object newValue, fastestMethod;
+            MethodInfo bulkCopyMethod;
+            _BulkMerge(dataTable, whereColumns, out newValue, out fastestMethod, out bulkCopyMethod,true,isIdentity);
+            var result = (Task<int>)bulkCopyMethod.Invoke(fastestMethod, new object[] { newValue });
+            return result;
+        }
         public Task<int> BulkMergeAsync(List<T> datas, string[] whereColumns)
         {
             var updateColumns = entityInfo.Columns.Where(it => !it.IsPrimarykey && !it.IsIdentity && !it.IsOnlyIgnoreUpdate && !it.IsIgnore).Select(it => it.DbColumnName ?? it.PropertyName).ToArray();
@@ -247,6 +266,35 @@ namespace SqlSugar
         #endregion
 
         #region Core
+        private void _BulkMerge(DataTable dataTable, string[] whereColumns, out object newValue, out object fastestMethod, out MethodInfo bulkCopyMethod,bool isAsync, bool isIdentity)
+        {
+            Check.ExceptionEasy(this.AsName.IsNullOrEmpty(), "need .AS(tablaeName) ", "需要 .AS(tablaeName) 设置表名");
+            var className = "BulkMerge_" +isIdentity+ this.AsName.GetNonNegativeHashCodeString();
+            var builder = this.context.DynamicBuilder().CreateClass(className, new SugarTable()
+            {
+                TableName = this.AsName
+            });
+            foreach (DataColumn item in dataTable.Columns)
+            {
+                var isPrimaryKey = whereColumns.Any(it => it.EqualCase(item.ColumnName));
+                builder.CreateProperty(item.ColumnName, item.DataType, new SugarColumn()
+                {
+                    IsPrimaryKey = isPrimaryKey,
+                    IsIdentity=isIdentity&& isPrimaryKey
+
+                });
+            }
+            var dicList = this.context.Utilities.DataTableToDictionaryList(dataTable);
+            var type = builder.WithCache().BuilderType();
+            var value = this.context.DynamicBuilder().CreateObjectByType(type, dicList);
+            newValue = UtilMethods.ConvertToObjectList(type, value);
+            fastestMethod = this.context.GetType()
+                                  .GetMethod("Fastest")
+                                  .MakeGenericMethod(type)
+                                  .Invoke(this.context, null);
+            bulkCopyMethod = fastestMethod.GetType().GetMyMethod(isAsync? "BulkMergeAsync" : "BulkMerge", 1);
+        }
+
         private async Task<int> _BulkUpdate(List<T> datas, string[] whereColumns, string[] updateColumns)
         {
             try
