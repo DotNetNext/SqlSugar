@@ -217,7 +217,7 @@ namespace SqlSugar
             }
             if (aPk == null)
             {
-                aPk = this.ProPertyEntity.Columns.FirstOrDefault(it => it.PropertyName == Navigat.AClassId)?.DbColumnName;
+                aPk = this.EntityInfo.Columns.FirstOrDefault(it => it.PropertyName == Navigat.AClassId)?.DbColumnName;
             }
             Check.ExceptionEasy(aPk.IsNullOrEmpty(), $"{this.EntityInfo.EntityName}need primary key", $"{this.EntityInfo.EntityName}需要主键");
             Check.ExceptionEasy(bPk.IsNullOrEmpty(), $"{this.ProPertyEntity.EntityName}need primary key", $"{this.ProPertyEntity.EntityName}需要主键");
