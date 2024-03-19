@@ -26,7 +26,8 @@ namespace SqlSugar
         }
         public ISugarQueryable<T> AS(string tableName, string shortName) 
         {
-            return this.AS($"{this.SqlBuilder.GetTranslationTableName(tableName)} {shortName}");
+            this.QueryBuilder.TableShortName = shortName;
+            return this.AS(tableName);
         }
         public ISugarQueryable<T> OrderBy(List<OrderByModel> models) 
         {
