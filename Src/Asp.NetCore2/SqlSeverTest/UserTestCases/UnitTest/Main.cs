@@ -33,6 +33,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UnitDynamicCoread12321.Init();
             UnitManyToManyadfafa.Init();
             UnitAsyncToken.Init();
             UnitManyToMany121231.Init();
