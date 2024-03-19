@@ -76,6 +76,7 @@ namespace OrmTest
 
             StaticConfig.DynamicExpressionParserType = typeof(DynamicExpressionParser);
             var db = NewUnitTest.Db;
+             
 
             var shortNames = DynamicParameters.Create("x", typeof(AT), "u", typeof(BT));
             var sql = db.QueryableByObject(typeof(AT), "x")
@@ -89,6 +90,20 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+            
+         
+
+            var shortNames2 = DynamicParameters.Create("x", typeof(OrderItem), "u", typeof(OrderItem),"u2", typeof(OrderItem));
+            var sql2 = db.QueryableByObject(typeof(OrderItem), "x")
+                 .AddJoinInfo(typeof(OrderItem), DynamicParameters.Create("x", typeof(OrderItem), "u", typeof(OrderItem)), $"x.OrderId==u.OrderId", JoinType.Left)
+                  .AddJoinInfo(typeof(OrderItem), DynamicParameters.Create("x", typeof(OrderItem), "u", typeof(OrderItem), "u2", typeof(OrderItem)), $"x.OrderId==u2.OrderId", JoinType.Left)
+                 // .Select(shortNames, $"new (x.Name as Name,u.Name as BName)", typeof(AT))
+                .ToSql().Key;
+            if (sql2.Trim()!=("SELECT [x].[ItemId],[x].[OrderId],[x].[Price],[x].[CreateTime] FROM [OrderDetail] [x] Left JOIN [OrderDetail] [u] ON ( [x].[OrderId] = [u].[OrderId] )  Left JOIN [OrderDetail] [u2] ON ( [x].[OrderId] = [u2].[OrderId] )"))
+            {
+                throw new Exception("unit error");
+            }
+
 
             Console.WriteLine(sql);
 
