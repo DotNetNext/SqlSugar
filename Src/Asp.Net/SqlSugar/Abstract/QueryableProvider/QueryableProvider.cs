@@ -597,6 +597,7 @@ namespace SqlSugar
         {
             var whereExp = DynamicCoreHelper.GetWhere(keyIsShortName_ValueIsType_Dictionary,onExpString);
             var name=whereExp.Parameters.Last(it => it.Type == JoinType).Name;
+            this.Context.InitMappingInfo(JoinType);
             var sql = this.QueryBuilder.GetExpressionValue(whereExp, ResolveExpressType.WhereMultiple).GetResultString();
             return AddJoinInfo(JoinType, name, sql,type);
         }
