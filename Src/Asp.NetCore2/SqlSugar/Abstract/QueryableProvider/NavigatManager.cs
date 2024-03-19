@@ -213,11 +213,19 @@ namespace SqlSugar
             var bEntity = navObjectNameColumnInfo.PropertyInfo.PropertyType.GetGenericArguments()[0];
             var bEntityInfo = this.Context.EntityMaintenance.GetEntityInfo(bEntity);
             var bPkColumn = bEntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey);
+            if (bPkColumn == null && navObjectNameColumnInfo.Navigat.AClassId.HasValue()) 
+            {
+                bPkColumn= bEntityInfo.Columns.FirstOrDefault(it => it.PropertyName == navObjectNameColumnInfo.Navigat.AClassId);
+            }
             Check.ExceptionEasy(bPkColumn==null, $"{bEntityInfo.EntityName} need primary key", $"{bEntityInfo.EntityName} 实体需要配置主键");
             var bDb = this.Context;
             bDb = GetCrossDatabase(bDb,bEntity);
             bDb.InitMappingInfo(bEntity);
             var listItemPkColumn = listItemEntity.Columns.Where(it => it.IsPrimarykey).FirstOrDefault();
+            if (listItemPkColumn == null && navObjectNameColumnInfo.Navigat.BClassId.HasValue()) 
+            {
+                listItemPkColumn = listItemEntity.Columns.FirstOrDefault(it => it.PropertyName == navObjectNameColumnInfo.Navigat.BClassId);
+            }
             Check.ExceptionEasy(listItemPkColumn == null, $"{listItemEntity.EntityName} need primary key", $"{listItemEntity.EntityName} 实体需要配置主键");
             var ids = list.Select(it => it.GetType().GetProperty(listItemPkColumn.PropertyName).GetValue(it)).Select(it => it == null ? "null" : it).Distinct().ToList();
             var mappingEntity = this.Context.EntityMaintenance.GetEntityInfo(navObjectNameColumnInfo.Navigat.MappingType);

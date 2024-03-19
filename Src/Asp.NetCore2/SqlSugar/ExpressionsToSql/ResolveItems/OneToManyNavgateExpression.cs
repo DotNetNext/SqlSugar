@@ -211,6 +211,14 @@ namespace SqlSugar
          
             var bPk = this.ProPertyEntity.Columns.FirstOrDefault(it => it.IsPrimarykey == true)?.DbColumnName;
             var aPk = this.EntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey == true)?.DbColumnName;
+            if (bPk == null) 
+            {
+                bPk= this.ProPertyEntity.Columns.FirstOrDefault(it => it.PropertyName == Navigat.BClassId)?.DbColumnName;
+            }
+            if (aPk == null)
+            {
+                aPk = this.ProPertyEntity.Columns.FirstOrDefault(it => it.PropertyName == Navigat.AClassId)?.DbColumnName;
+            }
             Check.ExceptionEasy(aPk.IsNullOrEmpty(), $"{this.EntityInfo.EntityName}need primary key", $"{this.EntityInfo.EntityName}需要主键");
             Check.ExceptionEasy(bPk.IsNullOrEmpty(), $"{this.ProPertyEntity.EntityName}need primary key", $"{this.ProPertyEntity.EntityName}需要主键");
             MapperSql mapper = new MapperSql();
