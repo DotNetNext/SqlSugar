@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SqlSugarCore.Kdbndp" Version="8.3.712" />
+    <PackageReference Include="SqlSugarCore.Kdbndp" Version="8.3.715" />
   </ItemGroup>
 
   <ItemGroup>
