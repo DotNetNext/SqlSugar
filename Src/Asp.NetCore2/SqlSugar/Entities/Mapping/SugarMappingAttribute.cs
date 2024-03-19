@@ -239,8 +239,10 @@ namespace SqlSugar
         internal string MappingBId { get; set; }
         internal NavigateType NavigatType { get; set; }
         internal string WhereSql { get; set; }
+        internal string AClassId { get; set; }
 
-        
+        internal string BClassId { get; set; }
+
         public string GetName()
         {
             return Name;
@@ -291,11 +293,20 @@ namespace SqlSugar
             //Check.ExceptionEasy(navigatType != NavigateType.OneToOne, "Currently, only one-to-one navigation configuration Sql conditions are supported", "目前导航配置Sql条件只支持一对一");
         }
 
-        public Navigate(Type MappingTableType,string typeAiD,string typeBId)
+        public Navigate(Type MappingTableType,string typeAId,string typeBId)
         {
             this.MappingType = MappingTableType;
-            this.MappingAId = typeAiD;
+            this.MappingAId = typeAId;
             this.MappingBId = typeBId;
+            this.NavigatType = NavigateType.ManyToMany;
+        }
+        public Navigate(Type MappingTableType, string mappingAId, string mappingBId,string aClassId,string bClassId)
+        {
+            this.MappingType = MappingTableType;
+            this.MappingAId = mappingAId;
+            this.MappingBId = mappingBId;
+            this.AClassId = aClassId;
+            this.BClassId = bClassId;
             this.NavigatType = NavigateType.ManyToMany;
         }
         public Navigate(Type MappingTableType, string typeAiD, string typeBId,string mappingSql)
