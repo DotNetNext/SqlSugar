@@ -1119,6 +1119,12 @@ namespace SqlSugar
         #endregion
 
         #region Conditional
+        public KeyValuePair<string, SugarParameter[]> ConditionalModelsToSql(List<IConditionalModel> conditionalModels,int beginIndex=0) 
+        {
+            var sqlBuilder=InstanceFactory.GetSqlBuilderWithContext(this.Context);
+            var result=sqlBuilder.ConditionalModelToSql(conditionalModels,beginIndex);
+            return result;
+        }
         public List<IConditionalModel> JsonToConditionalModels(string json)
         {
             List<IConditionalModel> conditionalModels = new List<IConditionalModel>();
@@ -1212,5 +1218,6 @@ namespace SqlSugar
             return (this.Context.Queryable<T>() as QueryableProvider<T>).GetTreeRoot(childListExpression, parentIdExpression, pk, list, rootValue);
         }
         #endregion
+
     }
 }
