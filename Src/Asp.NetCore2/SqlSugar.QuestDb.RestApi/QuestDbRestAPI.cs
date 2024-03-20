@@ -14,14 +14,14 @@ using System.Web;
 using System.Xml.Linq;
 
 namespace SqlSugar 
-{ 
+{
     /// <summary>
     /// QuestDb RestAPI
     /// </summary>
     public class QuestDbRestAPI
     {
-        internal  string url = string.Empty;
-        internal  string authorization = string.Empty;
+        internal string url = string.Empty;
+        internal string authorization = string.Empty;
         internal static Random random = new Random();
         ISqlSugarClient db;
         public QuestDbRestAPI(ISqlSugarClient db)
@@ -41,7 +41,7 @@ namespace SqlSugar
         /// </summary>
         /// <param name="sql"></param>
         /// <returns></returns>
-        public  async Task<string> ExecuteCommandAsync(string sql)
+        public async Task<string> ExecuteCommandAsync(string sql)
         {
             //HTTP GET 执行SQL
             var result = string.Empty;
@@ -58,10 +58,26 @@ namespace SqlSugar
         /// </summary>
         /// <param name="sql"></param>
         /// <returns></returns>
-        public  string ExecuteCommand(string sql)
+        public string ExecuteCommand(string sql)
         {
             return ExecuteCommandAsync(sql).GetAwaiter().GetResult();
         }
+
+        public async Task<string> InsertAsync<T>(T insertData) where T:class,new()
+        {
+            if (db.CurrentConnectionConfig.MoreSettings == null)
+                db.CurrentConnectionConfig.MoreSettings = new ConnMoreSettings();
+            db.CurrentConnectionConfig.MoreSettings.DisableNvarchar = true;
+            var  sql= db.Insertable(insertData).ToSqlString();
+            return await ExecuteCommandAsync(sql);
+        }
+
+        public  string  Insert<T>(T insertData) where T : class, new()
+        {
+            return InsertAsync(insertData).GetAwaiter().GetResult();
+        }
+
+
         /// <summary>
         /// 批量快速插入异步
         /// </summary>
@@ -69,7 +85,7 @@ namespace SqlSugar
         /// <param name="that"></param>
         /// <param name="dateFormat">导入时，时间格式 默认:yyyy/M/d H:mm:ss</param>
         /// <returns></returns>
-        public  async Task<int>  BulkCopyAsync<T>(List<T> insertList,  string dateFormat = "yyyy/M/d H:mm:ss") where T : class
+        public async Task<int>  BulkCopyAsync<T>(List<T> insertList,  string dateFormat = "yyyy/M/d H:mm:ss") where T : class
         {
             
             if (string.IsNullOrWhiteSpace(url))
