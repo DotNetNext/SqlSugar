@@ -63,18 +63,18 @@ namespace SqlSugar
             return ExecuteCommandAsync(sql).GetAwaiter().GetResult();
         }
 
-        public async Task<string> InsertAsync<T>(T insertData) where T:class,new()
+        public async Task<int> BulkCopyAsync<T>(T insertData) where T:class,new()
         {
             if (db.CurrentConnectionConfig.MoreSettings == null)
                 db.CurrentConnectionConfig.MoreSettings = new ConnMoreSettings();
             db.CurrentConnectionConfig.MoreSettings.DisableNvarchar = true;
             var  sql= db.Insertable(insertData).ToSqlString();
-            return await ExecuteCommandAsync(sql);
+            return (await ExecuteCommandAsync(sql)).Contains("OK")?1:0;
         }
 
-        public  string  Insert<T>(T insertData) where T : class, new()
+        public  int BulkCopy<T>(T insertData) where T : class, new()
         {
-            return InsertAsync(insertData).GetAwaiter().GetResult();
+            return BulkCopyAsync(insertData).GetAwaiter().GetResult();
         }
 
 
