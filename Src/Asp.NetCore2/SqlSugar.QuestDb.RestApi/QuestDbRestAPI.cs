@@ -69,7 +69,7 @@ namespace SqlSugar
                 db.CurrentConnectionConfig.MoreSettings = new ConnMoreSettings();
             db.CurrentConnectionConfig.MoreSettings.DisableNvarchar = true;
             var  sql= db.Insertable(insertData).ToSqlString();
-            return (await ExecuteCommandAsync(sql)).Contains("OK")?1:0;
+            return (await ExecuteCommandAsync(sql)).ToUpper().Contains("OK")?1:0;
         }
 
         public  int BulkCopy<T>(T insertData) where T : class, new()
