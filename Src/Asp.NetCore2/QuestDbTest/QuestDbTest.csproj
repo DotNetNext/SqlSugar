@@ -6,10 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SqlSugar.QuestDb.RestAPI" Version="4.1.7" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <ProjectReference Include="..\SqlSugar.QuestDb.RestApi\SqlSugar.QuestDb.RestAPI.csproj" />
     <ProjectReference Include="..\SqlSugar\SqlSugar.csproj" />
   </ItemGroup>
 
