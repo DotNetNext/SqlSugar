@@ -213,7 +213,7 @@ namespace SqlSugar
             var bEntity = navObjectNameColumnInfo.PropertyInfo.PropertyType.GetGenericArguments()[0];
             var bEntityInfo = this.Context.EntityMaintenance.GetEntityInfo(bEntity);
             var bPkColumn = bEntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey);
-            if (bPkColumn == null && navObjectNameColumnInfo.Navigat.BClassId.HasValue()) 
+            if (navObjectNameColumnInfo.Navigat.BClassId.HasValue()) 
             {
                 bPkColumn= bEntityInfo.Columns.FirstOrDefault(it => it.PropertyName == navObjectNameColumnInfo.Navigat.BClassId);
             }
@@ -222,7 +222,7 @@ namespace SqlSugar
             bDb = GetCrossDatabase(bDb,bEntity);
             bDb.InitMappingInfo(bEntity);
             var listItemPkColumn = listItemEntity.Columns.Where(it => it.IsPrimarykey).FirstOrDefault();
-            if (listItemPkColumn == null && navObjectNameColumnInfo.Navigat.AClassId.HasValue()) 
+            if (navObjectNameColumnInfo.Navigat.AClassId.HasValue()) 
             {
                 listItemPkColumn = listItemEntity.Columns.FirstOrDefault(it => it.PropertyName == navObjectNameColumnInfo.Navigat.AClassId);
             }
