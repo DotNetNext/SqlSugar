@@ -85,8 +85,8 @@ namespace SqlSugar
                 var boundary = "---------------" + DateTime.Now.Ticks.ToString("x");
                 var list = new List<Hashtable>();
                 var name = db.EntityMaintenance.GetEntityInfo<T>().DbTableName;
-               
-                var key ="QuestDbBulkCopy"+ typeof(T).FullName + typeof(T).GetHashCode();
+
+                var key = "QuestDbBulkCopy" + typeof(T).FullName + typeof(T).GetHashCode();
                 var columns = new ReflectionInoCacheService().GetOrCreate(key, () =>
                  db.CopyNew().DbMaintenance.GetColumnInfosByTableName(name));
                 columns.ForEach(d =>
@@ -127,7 +127,7 @@ namespace SqlSugar
                 httpContent.Headers.TryAddWithoutValidation("Content-Type",
                     "multipart/form-data; boundary=" + boundary);
                 var httpResponseMessage =
-                    await client.PostAsync($"{this.url}/imp?name={name}", httpContent);
+                    await Post(client, name, httpContent);
                 var readAsStringAsync = await httpResponseMessage.Content.ReadAsStringAsync();
                 var splitByLine = QuestDbRestAPHelper.SplitByLine(readAsStringAsync);
                 foreach (var s in splitByLine)
@@ -158,6 +158,18 @@ namespace SqlSugar
                 }
             }
             return result;
+        }
+
+        private Task<HttpResponseMessage> Post(HttpClient client, string name, MultipartFormDataContent httpContent)
+        {
+            try
+            {
+                return client.PostAsync($"{this.url}/imp?name={name}", httpContent);
+            }
+            catch (Exception)
+            { 
+                throw;
+            }
         }
 
         /// <summary>
