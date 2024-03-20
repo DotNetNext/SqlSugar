@@ -63,7 +63,7 @@ namespace SqlSugar
             return ExecuteCommandAsync(sql).GetAwaiter().GetResult();
         }
 
-        public async Task<int> BulkCopyAsync<T>(T insertData) where T:class,new()
+        public async Task<int> BulkCopyAsync<T>(T insertData, string dateFormat = "yyyy/M/d H:mm:ss") where T:class,new()
         {
             if (db.CurrentConnectionConfig.MoreSettings == null)
                 db.CurrentConnectionConfig.MoreSettings = new ConnMoreSettings();
@@ -73,7 +73,7 @@ namespace SqlSugar
             return result.ToUpper().Contains("OK")?1:0;
         }
 
-        public  int BulkCopy<T>(T insertData) where T : class, new()
+        public  int BulkCopy<T>(T insertData, string dateFormat = "yyyy/M/d H:mm:ss") where T : class, new()
         {
             return BulkCopyAsync(insertData).GetAwaiter().GetResult();
         }
@@ -86,7 +86,7 @@ namespace SqlSugar
         /// <param name="that"></param>
         /// <param name="dateFormat">导入时，时间格式 默认:yyyy/M/d H:mm:ss</param>
         /// <returns></returns>
-        public async Task<int>  BulkCopyAsync<T>(List<T> insertList,  string dateFormat = "yyyy/M/d H:mm:ss") where T : class
+        public async Task<int>  BulkCopyAsync<T>(List<T> insertList,  string dateFormat = "yyyy/M/d H:mm:ss") where T : class,new()
         {
             
             if (string.IsNullOrWhiteSpace(url))
@@ -196,7 +196,7 @@ namespace SqlSugar
         /// <param name="that"></param>
         /// <param name="dateFormat">导入时，时间格式 默认:yyyy/M/d H:mm:ss</param>
         /// <returns></returns>
-        public  int BulkCopy<T>(List<T> insertList, string dateFormat = "yyyy/M/d H:mm:ss") where T : class
+        public  int BulkCopy<T>(List<T> insertList, string dateFormat = "yyyy/M/d H:mm:ss") where T : class,new()
         {
              return BulkCopyAsync(insertList, dateFormat).GetAwaiter().GetResult();
         } 
