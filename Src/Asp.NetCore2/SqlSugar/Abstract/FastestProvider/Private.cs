@@ -44,6 +44,8 @@ namespace SqlSugar
                     break;
                 case DbType.Oscar:
                     break;
+                case DbType.QuestDB:
+                    return new QuestDBFastBuilder(this.entityInfo); 
                 default:
                     break;
             }
