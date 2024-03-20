@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SqlSugar.QuestDb.RestApi\SqlSugar.QuestDb.RestAPI.csproj" />
     <ProjectReference Include="..\SqlSugar\SqlSugar.csproj" />
   </ItemGroup>
 

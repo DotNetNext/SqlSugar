@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SqlSugar 
 {
-    public static class ISqlSugarClientExtensions
+    public static class QuestDbSqlSugarClientExtensions
     { 
         public static QuestDbRestAPI RestApi(this ISqlSugarClient db) 
         {

@@ -3,16 +3,20 @@ using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Globalization;
 using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using System.Xml.Linq;
 
 namespace SqlSugar 
-{
-
+{ 
+    /// <summary>
+    /// QuestDb RestAPI
+    /// </summary>
     public class QuestDbRestAPI
     {
         internal  string url = string.Empty;
@@ -20,26 +24,21 @@ namespace SqlSugar
         ISqlSugarClient db;
         public QuestDbRestAPI(ISqlSugarClient db)
         {
+
+            var builder = new DbConnectionStringBuilder();
+            builder.ConnectionString = db.CurrentConnectionConfig.ConnectionString;
             this.db = db;
-            string host = "";
-            string username = "";
-            string password = "";
-
-            url = host;
-            if (url.EndsWith("/"))
-                url = url.Remove(url.Length - 1);
-
-            if (!url.ToLower().StartsWith("http"))
-                url = $"http://{url}";
-            //生成TOKEN
-            if (!string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(password))
-            {
-                var base64 = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{username}:{password}"));
-                authorization = $"Basic {base64}";
-            }
+            string host = String.Empty;
+            string username = String.Empty;
+            string password = String.Empty;
+            QuestDbRestAPHelper.SetRestApiInfo(builder, ref host, ref username, ref password);
+            BindHost(host, username, password);
         }
-
-
+        /// <summary>
+        /// 执行SQL异步
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <returns></returns>
         public  async Task<string> ExecuteCommandAsync(string sql)
         {
             //HTTP GET 执行SQL
@@ -52,13 +51,17 @@ namespace SqlSugar
             result = await httpResponseMessage.Content.ReadAsStringAsync();
             return result;
         }
-
+        /// <summary>
+        /// 执行SQL
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <returns></returns>
         public  string ExecuteCommand(string sql)
         {
             return ExecuteCommandAsync(sql).GetAwaiter().GetResult();
         }
         /// <summary>
-        /// 批量快速插入
+        /// 批量快速插入异步
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="that"></param>
@@ -161,6 +164,21 @@ namespace SqlSugar
         public  int BulkCopy<T>(List<T> insertList, string dateFormat = "yyyy/M/d H:mm:ss") where T : class
         {
              return BulkCopyAsync(insertList, dateFormat).GetAwaiter().GetResult();
+        } 
+        private void BindHost(string host, string username, string password)
+        {
+            url = host + ":9000";
+            if (url.EndsWith("/"))
+                url = url.Remove(url.Length - 1);
+
+            if (!url.ToLower().StartsWith("http"))
+                url = $"http://{url}";
+            //生成TOKEN
+            if (!string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(password))
+            {
+                var base64 = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{username}:{password}"));
+                authorization = $"Basic {base64}";
+            }
         }
     }
 }

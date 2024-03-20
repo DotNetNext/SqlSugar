@@ -9,11 +9,35 @@ using System.Threading.Tasks;
 using System.Web;
 using Newtonsoft.Json;
 using CsvHelper;
+using System.Data.Common;
 
 namespace SqlSugar 
 {
     internal class QuestDbRestAPHelper
-    { 
+    {
+
+        /// <summary>
+        /// 绑定RestAPI需要的信息
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="host"></param>
+        /// <param name="username"></param>
+        /// <param name="password"></param>
+        public static void SetRestApiInfo(DbConnectionStringBuilder builder, ref string host, ref string username, ref string password)
+        {
+            if (builder.TryGetValue("Host", out object hostValue))
+            {
+                host = Convert.ToString(hostValue);
+            }
+            if (builder.TryGetValue("Username", out object usernameValue))
+            {
+                username = Convert.ToString(usernameValue);
+            }
+            if (builder.TryGetValue("Password", out object passwordValue))
+            {
+                password = Convert.ToString(passwordValue);
+            }
+        }
 
         /// <summary>
         /// 逐行读取，包含空行
@@ -35,11 +59,8 @@ namespace SqlSugar
                         line = sr.ReadLine();
                     }
                 }
-            }
-
+            } 
             return lines;
-        }
-
-
+        } 
     }
 }
