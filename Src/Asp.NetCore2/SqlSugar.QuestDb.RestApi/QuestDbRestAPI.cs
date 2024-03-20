@@ -8,6 +8,7 @@ using System.Globalization;
 using System.IO;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.Xml.Linq;
@@ -21,6 +22,7 @@ namespace SqlSugar
     {
         internal  string url = string.Empty;
         internal  string authorization = string.Empty;
+        internal static Random random = new Random();
         ISqlSugarClient db;
         public QuestDbRestAPI(ISqlSugarClient db)
         {
@@ -69,7 +71,7 @@ namespace SqlSugar
         /// <returns></returns>
         public  async Task<int>  BulkCopyAsync<T>(List<T> insertList,  string dateFormat = "yyyy/M/d H:mm:ss") where T : class
         {
-
+            
             if (string.IsNullOrWhiteSpace(url))
             {
                 throw new Exception("BulkCopy功能需要启用RestAPI，程序启动时执行：RestAPIExtension.UseQuestDbRestAPI(\"localhost:9000\", \"username\", \"password\")");
@@ -82,8 +84,12 @@ namespace SqlSugar
                 var client = new HttpClient();
                 var boundary = "---------------" + DateTime.Now.Ticks.ToString("x");
                 var list = new List<Hashtable>();
-                var name = db.EntityMaintenance.GetEntityInfo<T>().DbTableName;  //获取表名
-                db.DbMaintenance.GetColumnInfosByTableName(name).ForEach(d =>
+                var name = db.EntityMaintenance.GetEntityInfo<T>().DbTableName;
+               
+                var key ="QuestDbBulkCopy"+ typeof(T).FullName + typeof(T).GetHashCode();
+                var columns = new ReflectionInoCacheService().GetOrCreate(key, () =>
+                 db.CopyNew().DbMaintenance.GetColumnInfosByTableName(name));
+                columns.ForEach(d =>
                 {
                     if (d.DataType == "TIMESTAMP")
                     {
