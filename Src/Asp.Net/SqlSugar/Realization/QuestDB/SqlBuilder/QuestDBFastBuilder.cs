@@ -33,31 +33,7 @@ namespace SqlSugar
         //}
         public async Task<int> ExecuteBulkCopyAsync(DataTable dt)
         {
-            List<string> lsColNames = new List<string>();
-            for (int i = 0; i < dt.Columns.Count; i++)
-            {
-                lsColNames.Add($"\"{dt.Columns[i].ColumnName}\"");
-            }
-            string copyString = $"COPY  {dt.TableName} ( {string.Join(",", lsColNames) } ) FROM STDIN (FORMAT BINARY)";
-            NpgsqlConnection conn = (NpgsqlConnection)this.Context.Ado.Connection;
-            var columns = this.Context.DbMaintenance.GetColumnInfosByTableName(this.entityInfo.DbTableName);
-            try
-            {
-                var identityColumnInfo = this.entityInfo.Columns.FirstOrDefault(it => it.IsIdentity);
-                if (identityColumnInfo != null)
-                {
-                    throw new Exception("PgSql bulkcopy no support identity");
-                }
-                BulkCopy(dt, copyString, conn, columns);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally 
-            {
-                base.CloseDb();
-            }
+            Check.ExceptionEasy("In the.net framework, use db.Insertable(list).UseParameter().ExecuteCommand() for best insert performance", ".net framework中请使用 db.Insertable(list).UseParameter().ExecuteCommand()方式插入性能最好");
             return await Task.FromResult(dt.Rows.Count);
         }
 
