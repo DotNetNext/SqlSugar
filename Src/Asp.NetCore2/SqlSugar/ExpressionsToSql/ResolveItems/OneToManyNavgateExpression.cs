@@ -211,11 +211,11 @@ namespace SqlSugar
          
             var bPk = this.ProPertyEntity.Columns.FirstOrDefault(it => it.IsPrimarykey == true)?.DbColumnName;
             var aPk = this.EntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey == true)?.DbColumnName;
-            if (bPk == null) 
+            if (Navigat.BClassId.HasValue()) 
             {
                 bPk= this.ProPertyEntity.Columns.FirstOrDefault(it => it.PropertyName == Navigat.BClassId)?.DbColumnName;
             }
-            if (aPk == null)
+            if (Navigat.AClassId.HasValue())
             {
                 aPk = this.EntityInfo.Columns.FirstOrDefault(it => it.PropertyName == Navigat.AClassId)?.DbColumnName;
             }
