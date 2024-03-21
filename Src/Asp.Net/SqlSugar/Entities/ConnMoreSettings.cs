@@ -18,7 +18,7 @@ namespace SqlSugar
         public bool IsAutoToUpper { get; set; } = true;
         public int DefaultCacheDurationInSeconds { get; set; }
         public bool? TableEnumIsString { get; set; }
-        public DateTime? DbMinDate { get; set; } = Convert.ToDateTime("1900-01-01");
+        public DateTime? DbMinDate { get; set; } = DateTime.MinValue.Date.AddYears(1900 - 1);
         public bool IsNoReadXmlDescription { get;  set; }
         public bool SqlServerCodeFirstNvarchar { get;  set; }
         public bool SqliteCodeFirstEnableDefaultValue { get; set; }
