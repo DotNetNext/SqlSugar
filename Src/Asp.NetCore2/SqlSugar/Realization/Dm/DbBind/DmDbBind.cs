@@ -149,6 +149,7 @@ namespace SqlSugar
                   new KeyValuePair<string, CSharpDataType>("time",CSharpDataType.TimeSpan),
 
                   new KeyValuePair<string, CSharpDataType>("float",CSharpDataType.@decimal),
+                  new KeyValuePair<string, CSharpDataType>("real",CSharpDataType.@float),
 
                   new KeyValuePair<string, CSharpDataType>("blob",CSharpDataType.byteArray),
                   new KeyValuePair<string, CSharpDataType>("image",CSharpDataType.byteArray),
