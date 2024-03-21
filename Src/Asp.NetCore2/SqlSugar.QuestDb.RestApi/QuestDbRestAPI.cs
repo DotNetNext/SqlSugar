@@ -75,7 +75,7 @@ namespace SqlSugar
 
         public  int BulkCopy<T>(T insertData, string dateFormat = "yyyy/M/d H:mm:ss") where T : class, new()
         {
-            return BulkCopyAsync(insertData).GetAwaiter().GetResult();
+            return BulkCopyAsync(insertData, dateFormat).GetAwaiter().GetResult();
         }
 
 
