@@ -223,7 +223,11 @@ namespace SqlSugar
                 return result;
             }
         }
-
+        public static ISqlBuilder GetSqlBuilderWithContext(ISqlSugarClient db) 
+        {
+           var result= GetQueryBuilderWithContext(db).Builder;
+            return result;
+        }
         public static ISqlBuilder GetSqlbuilder(ConnectionConfig currentConnectionConfig)
         {
             if (currentConnectionConfig.DbType == DbType.SqlServer)
