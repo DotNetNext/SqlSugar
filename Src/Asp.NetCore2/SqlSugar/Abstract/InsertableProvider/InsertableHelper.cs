@@ -207,7 +207,10 @@ namespace SqlSugar
                     if (columnInfo.ForOwnsOnePropertyInfo != null)
                     {
                         var data = columnInfo.ForOwnsOnePropertyInfo.GetValue(item, null);
-                        dataEvent(columnInfo.PropertyInfo.GetValue(data, null), new DataFilterModel() { OperationType = DataFilterType.InsertByObject, EntityValue = item, EntityColumnInfo = columnInfo });
+                        if (data != null)
+                        {
+                            dataEvent(columnInfo.PropertyInfo.GetValue(data, null), new DataFilterModel() { OperationType = DataFilterType.InsertByObject, EntityValue = item, EntityColumnInfo = columnInfo });
+                        }
                     }
                     else
                     {
