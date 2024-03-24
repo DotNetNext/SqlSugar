@@ -1,4 +1,6 @@
-﻿using System;
+﻿using SqlSugar.DbConvert;
+using SqlSugar;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -12,76 +14,83 @@ namespace OrmTest
         public static void Init()
         {
             var db = NewUnitTest.Db;
-            db.CodeFirst.InitTables<UnitCustomeradfafas>();
-            db.DbMaintenance.TruncateTable<UnitCustomeradfafas>();
-            db.Insertable(new UnitCustomeradfafas()
+            db.Aop.DataExecuting = (s, y) =>
+            {
+            };
+            db.CodeFirst.InitTables<UnitCustomeradfafas1>();
+            db.DbMaintenance.TruncateTable<UnitCustomeradfafas1>();
+            db.Insertable(new UnitCustomeradfafas1()
             {
                 CustomerId = 1,
                 Name = "name",
-                Address = new UnitAddressadfafa()
+                Address = new UnitAddressadfafa2221()
                 {
                     City = "city",
                     Street = "street",
-                    ZipCode = "zipCode"
+                    ZipCode = "zipCode",
+                    DbType = DbType.MySql
                 }
 
             }).ExecuteCommand();
-            var data = db.Queryable<UnitCustomeradfafas>().First();
+            var data = db.Queryable<UnitCustomeradfafas1>().First();
             if (data.Name != "name" || data.Address.City != "city")
             {
                 throw new Exception("unit error");
             }
-            db.Updateable(new UnitCustomeradfafas()
+            db.Updateable(new UnitCustomeradfafas1()
             {
                 CustomerId = 1,
                 Name = "name2",
-                Address = new UnitAddressadfafa()
+                Address = new UnitAddressadfafa2221()
                 {
                     City = "city2",
                     Street = "street2",
-                    ZipCode = "zipCode2"
+                    ZipCode = "zipCode2",
+                     DbType=DbType.MySql
                 }
 
             }).ExecuteCommand();
 
-            data = db.Queryable<UnitCustomeradfafas>().First();
+            data = db.Queryable<UnitCustomeradfafas1>().First();
             if (data.Name != "name2" || data.Address.City != "city2")
             {
                 throw new Exception("unit error");
             }
 
-            var list = db.Queryable<UnitCustomeradfafas>().ToList();
+            var list = db.Queryable<UnitCustomeradfafas1>().ToList();
 
     
 
-            db.Insertable(new List<UnitCustomeradfafas>(){
-                new UnitCustomeradfafas()
+            db.Insertable(new List<UnitCustomeradfafas1>(){
+                new UnitCustomeradfafas1()
                 {
                     CustomerId = 3,
                     Name = "name3",
-                    Address = new UnitAddressadfafa()
+                    Address = new UnitAddressadfafa2221()
                     {
                         City = "city3",
                         Street = "street3",
-                        ZipCode = "zipCode3"
+                        ZipCode = "zipCode3",
+                            DbType=DbType.MySql
                     }
 
                  },
-                new UnitCustomeradfafas()
+                new UnitCustomeradfafas1()
                 {
                     CustomerId = 4,
                     Name = "name4",
-                    Address = new UnitAddressadfafa()
+                    Address = new UnitAddressadfafa2221()
                     {
                         City = "city4",
                         Street = "street4",
-                        ZipCode = "zipCode4"
+                        ZipCode = "zipCode4",
+                            DbType=DbType.MySql
                     }
 
                  }
             }).ExecuteCommand();
 
-            var list2 = db.Queryable<UnitCustomeradfafas>()
+            var list2 = db.Queryable<UnitCustomeradfafas1>()
                 .Where(it => it.Address.City == "city2")
                 .Select(it => new
                 {
@@ -93,11 +102,11 @@ namespace OrmTest
                 throw new Exception("unit error");
             }
 
-            if (db.Queryable<UnitCustomeradfafas>().Count() != 3) 
+            if (db.Queryable<UnitCustomeradfafas1>().Count() != 3) 
             {
                 throw new Exception("unit error");
             }
-            var list3=db.Queryable<UnitCustomeradfafas>().ToList();
+            var list3=db.Queryable<UnitCustomeradfafas1>().ToList();
             data = list3.Last();
             if (data.Name != "name4" || data.Address.City != "city4")
             {
@@ -105,19 +114,23 @@ namespace OrmTest
             }
         }
     }
-    public class UnitAddressadfafa
+    public class UnitAddressadfafa2221
     {
         public string Street { get; set; }
         public string City { get; set; }
+     
         public string ZipCode { get; set; }
+        [SugarColumn(ColumnDataType ="VARCHAR(20)",SqlParameterDbType = typeof(EnumToStringConvert))]//CommonPropertyConvertORM自带的 
+        public DbType DbType { get; set; }
 
     }
-    public class UnitCustomeradfafas
+    public class UnitCustomeradfafas1
     {
         [SqlSugar.SugarColumn(IsPrimaryKey = true)]
         public int CustomerId { get; set; }
         public string Name { get; set; }
         [SqlSugar.SugarColumn(IsOwnsOne = true)]
-        public UnitAddressadfafa Address { get; set; }
+        public UnitAddressadfafa2221 Address { get; set; }
+  
     }
 }
