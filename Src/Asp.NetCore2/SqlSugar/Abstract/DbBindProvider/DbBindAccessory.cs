@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -145,7 +147,14 @@ namespace SqlSugar
                     foreach (var item in kv.ToList())
                     {
                          var itemIndex=dataReader.GetOrdinal(item.DbColumnName);
-                        item.PropertyInfo.SetValue(parentObj, dataReader.GetValue(itemIndex));
+                        if (item.SqlParameterDbType is Type&&item.UnderType.IsEnum && dataReader.GetValue(itemIndex) is string value)
+                        {
+                            item.PropertyInfo.SetValue(parentObj,UtilMethods.ChangeType2(value, item.PropertyInfo.PropertyType));
+                        }
+                        else
+                        {
+                            item.PropertyInfo.SetValue(parentObj, dataReader.GetValue(itemIndex));
+                        }
                     }
                 }
             }
