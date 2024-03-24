@@ -272,7 +272,18 @@ namespace SqlSugar
             {
                 foreach (var columnInfo in this.EntityInfo.Columns)
                 {
-                    dataEvent(columnInfo.PropertyInfo.GetValue(item, null), new DataFilterModel() { OperationType = DataFilterType.UpdateByObject, EntityValue = item, EntityColumnInfo = columnInfo });
+                    if (columnInfo.ForOwnsOnePropertyInfo != null)
+                    {
+                        var data = columnInfo.ForOwnsOnePropertyInfo.GetValue(item, null);
+                        if (data != null)
+                        {
+                            dataEvent(columnInfo.PropertyInfo.GetValue(data, null), new DataFilterModel() { OperationType = DataFilterType.UpdateByObject, EntityValue = item, EntityColumnInfo = columnInfo });
+                        }
+                    }
+                    else
+                    {
+                        dataEvent(columnInfo.PropertyInfo.GetValue(item, null), new DataFilterModel() { OperationType = DataFilterType.UpdateByObject, EntityValue = item, EntityColumnInfo = columnInfo });
+                    }
                 }
             }
         }
