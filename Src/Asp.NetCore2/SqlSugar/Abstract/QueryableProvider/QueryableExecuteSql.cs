@@ -714,6 +714,12 @@ namespace SqlSugar
                 return this.ToList();
             }
         }
+        public virtual List<T> ToOffsetPage(int pageIndex, int pageSize, ref int totalNumber, ref int totalPage)
+        {
+            var result = ToOffsetPage(pageIndex, pageSize, ref totalNumber);
+            totalPage = (totalNumber + pageSize - 1) / pageSize;
+            return result;
+        }
         public List<T> ToOffsetPage(int pageIndex, int pageSize, ref int totalNumber)
         {
             if (this.Context.CurrentConnectionConfig.DbType != DbType.SqlServer)
