@@ -269,6 +269,8 @@ namespace SqlSugar
         Task<List<T>> ToOffsetPageAsync(int pageNumber, int pageSize);
         Task<List<T>> ToOffsetPageAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber);
         Task<List<T>> ToOffsetPageAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber, RefAsync<int> totalPage);
+        Task<List<T>> ToOffsetPageAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber, CancellationToken token);
+        Task<List<T>> ToOffsetPageAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber, RefAsync<int> totalPage, CancellationToken token);
         List<T> ToPageList(int pageNumber, int pageSize);
         Task<List<T>> ToPageListAsync(int pageNumber, int pageSize);
         Task<List<T>> ToPageListAsync(int pageNumber, int pageSize,CancellationToken token);

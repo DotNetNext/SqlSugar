@@ -390,6 +390,16 @@ namespace SqlSugar
             var list =await this.ToPageListAsync(pageNumber, pageSize, totalNumber);
             return this.Context.Utilities.ListToDataTable(list);
         }
+        public Task<List<T>> ToOffsetPageAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber, CancellationToken token)
+        {
+            this.Context.Ado.CancellationToken = token;
+            return ToOffsetPageAsync(pageNumber, pageSize, totalNumber);
+        }
+        public Task<List<T>> ToOffsetPageAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber, RefAsync<int> totalPage, CancellationToken token) 
+        {
+            this.Context.Ado.CancellationToken = token;
+            return ToOffsetPageAsync(pageNumber, pageSize, totalNumber, totalPage);
+        }
         public async Task<List<T>> ToOffsetPageAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber, RefAsync<int> totalPage)
         {
             var result = await ToOffsetPageAsync(pageNumber, pageSize, totalNumber);
