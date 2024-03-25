@@ -277,7 +277,7 @@ WHERE tgrelid = '"+tableName+"'::regclass");
         }
         public override List<string> GetIndexList(string tableName)
         {
-            var sql = $"SELECT indexname, indexdef FROM pg_indexes WHERE upper(tablename) = upper('{tableName}')";
+            var sql = $"SELECT indexname, indexdef FROM pg_indexes WHERE upper(tablename) = upper('{tableName}') AND upper(schemaname) = upper('{GetSchema()}')";
             return this.Context.Ado.SqlQuery<string>(sql);
         }
         public override List<string> GetProcList(string dbName)
