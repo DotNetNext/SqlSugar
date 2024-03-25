@@ -1,4 +1,5 @@
 ﻿using CsvHelper;
+using CsvHelper.TypeConversion;
 using Newtonsoft.Json;
 using System;
 using System.Collections;
@@ -131,6 +132,8 @@ namespace SqlSugar
                 using (var writer = new StreamWriter(filePath))
                 using (var csv = new CsvWriter(writer, CultureInfo.CurrentCulture))
                 {
+                    var options = new TypeConverterOptions { Formats = new[] { GetDefaultFormat() } };
+                    csv.Context.TypeConverterOptionsCache.AddOptions<DateTime>(options);
                     await csv.WriteRecordsAsync(insertList);
                 }
 
@@ -175,6 +178,11 @@ namespace SqlSugar
                 }
             }
             return result;
+        }
+
+        private static string GetDefaultFormat()
+        {
+            return "yyyy-MM-ddTHH:mm:ss.fffffff";
         }
 
         private Task<HttpResponseMessage> Post(HttpClient client, string name, MultipartFormDataContent httpContent)
