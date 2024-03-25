@@ -482,6 +482,10 @@ namespace SqlSugar
             }
             else if (columnInfo.UpdateSql.HasValue())
             {
+                if (columnInfo.InsertSql.Contains("{0}"))
+                {
+                    return string.Format(columnInfo.InsertSql, columnInfo.Value?.ObjToString().ToSqlFilter());
+                }
                 return columnInfo.UpdateSql;
             }
             else if (columnInfo.SqlParameterDbType is Type && (Type)columnInfo.SqlParameterDbType == UtilConstants.SqlConvertType)
