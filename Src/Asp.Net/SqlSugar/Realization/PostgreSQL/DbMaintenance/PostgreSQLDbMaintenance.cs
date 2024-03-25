@@ -579,7 +579,7 @@ WHERE tgrelid = '"+tableName+"'::regclass");
         }
         private static void ConvertCreateColumnInfo(DbColumnInfo x)
         {
-            string[] array = new string[] { "int4", "text", "int2", "int8", "date", "bit", "text", "timestamp" };
+            string[] array = new string[] { "uuid","int4", "text", "int2", "int8", "date", "bit", "text", "timestamp" };
 
             if (array.Contains(x.DataType?.ToLower()))
             {
