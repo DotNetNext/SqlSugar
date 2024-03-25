@@ -24,6 +24,8 @@ namespace SqlSugar
         internal string url = string.Empty;
         internal string authorization = string.Empty;
         internal static Random random = new Random();
+        //can be modified
+        public static int HttpPort = 9000;
         ISqlSugarClient db;
         public QuestDbRestAPI(ISqlSugarClient db)
         {
@@ -210,7 +212,7 @@ namespace SqlSugar
         } 
         private void BindHost(string host, string username, string password)
         {
-            url = host + ":9000";
+            url = host + ":"+ HttpPort;
             if (url.EndsWith("/"))
                 url = url.Remove(url.Length - 1);
 
