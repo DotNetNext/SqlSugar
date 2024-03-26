@@ -136,6 +136,7 @@
     <Compile Include="UserTestCases\UnitTest\Unitadfafafasd.cs" />
     <Compile Include="UserTestCases\UnitTest\UnitAny.cs" />
     <Compile Include="UserTestCases\UnitTest\UnitByteArray.cs" />
+    <Compile Include="UserTestCases\UnitTest\UnitDataTable.cs" />
     <Compile Include="UserTestCases\UnitTest\Unitdfadfa.cs" />
     <Compile Include="UserTestCases\UnitTest\UnitPgSplit.cs" />
     <Compile Include="UserTestCases\UnitTest\UJsonFunc.cs" />
