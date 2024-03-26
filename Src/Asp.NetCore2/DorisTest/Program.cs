@@ -7,18 +7,16 @@ namespace OrmTest
     public class Program
     {
         static void Main(string[] args)
-        {
+        { 
+            var db = DbHelper.GetNewDb(); 
 
-            var db = DbHelper.GetNewDb();
-            db.BeginTran();
-
-             var XX=  db.Ado.SqlQuery<DbTableInfo>("Select TABLE_NAME as Name,TABLE_COMMENT as Description from information_schema.tables\r\n                         where  TABLE_SCHEMA=(select database())  AND TABLE_TYPE='BASE TABLE'");
-             db.CommitTran();
-             db.BeginTran();
-
-            var XX2 = db.Ado.SqlQuery<DbTableInfo>("Select TABLE_NAME as Name,TABLE_COMMENT as Description from information_schema.tables\r\n                         where  TABLE_SCHEMA=(select database())  AND TABLE_TYPE='BASE TABLE'");
-            db.CommitTran();
             db.CodeFirst.InitTables<Student11>();
+
+            db.Insertable(new Student11() { Id = 1, Age = 1, Name = "a" })
+                .ExecuteCommand();
+            var list=db.Queryable<Student11>().ToList();
+            //var rows = db.Updateable(list.First()).ExecuteCommand();
+            db.Deleteable(list).ExecuteCommand();
         }
     } 
     public class Student11
