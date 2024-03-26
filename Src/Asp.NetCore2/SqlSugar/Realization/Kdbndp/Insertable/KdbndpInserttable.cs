@@ -16,6 +16,7 @@ namespace SqlSugar
             string sql = InsertBuilder.ToSqlString().Replace("$PrimaryKey", this.SqlBuilder.GetTranslationColumnName(GetIdentityKeys().FirstOrDefault() ?? ""));
             RestoreMapping();
             sql = GetSql(sql);
+            AutoRemoveDataCache();
             var result = Ado.GetScalar(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray()).ObjToInt();
             return result;
         }
@@ -28,6 +29,7 @@ namespace SqlSugar
             string sql = InsertBuilder.ToSqlString().Replace("$PrimaryKey", this.SqlBuilder.GetTranslationColumnName(GetIdentityKeys().FirstOrDefault()??""));
             RestoreMapping();
             sql = GetSql(sql);
+            AutoRemoveDataCache();
             var obj = await Ado.GetScalarAsync(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray());
             var result = obj.ObjToInt();
             return result;
@@ -45,6 +47,7 @@ namespace SqlSugar
             string sql = InsertBuilder.ToSqlString().Replace("$PrimaryKey", this.SqlBuilder.GetTranslationColumnName(GetIdentityKeys().FirstOrDefault()??""));
             RestoreMapping();
             sql = GetSql(sql);
+            AutoRemoveDataCache();
             var result = Convert.ToInt64(Ado.GetScalar(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray()) ?? "0");
             return result;
         }
@@ -55,6 +58,7 @@ namespace SqlSugar
             string sql = InsertBuilder.ToSqlString().Replace("$PrimaryKey", this.SqlBuilder.GetTranslationColumnName(GetIdentityKeys().FirstOrDefault() ?? ""));
             RestoreMapping();
             sql = GetSql(sql);
+            AutoRemoveDataCache();
             var result = Convert.ToInt64(await Ado.GetScalarAsync(sql, InsertBuilder.Parameters == null ? null : InsertBuilder.Parameters.ToArray()) ?? "0");
             return result;
         }
