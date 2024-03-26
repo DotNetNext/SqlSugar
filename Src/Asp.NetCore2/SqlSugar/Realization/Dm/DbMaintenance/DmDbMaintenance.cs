@@ -468,6 +468,16 @@ WHERE table_name = '" + tableName + "'");
                         Length = row["ColumnSize"].ObjToInt(),
                         Scale = row["numericscale"].ObjToInt()
                     };
+                    if (column.DataType.EqualCase("number")|| column.DataType.EqualCase("decimal"))
+                    {
+                        column.Length = row["numericprecision"].ObjToInt();
+                        column.Scale = row["numericscale"].ObjToInt();
+                        column.DecimalDigits = row["numericscale"].ObjToInt();
+                        if (column.Length == 38 && column.Scale == 0)
+                        {
+                            column.Length = 22;
+                        }
+                    }
                     result.Add(column);
                 }
                 return result;
