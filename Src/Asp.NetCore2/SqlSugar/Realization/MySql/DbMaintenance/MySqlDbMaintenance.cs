@@ -442,6 +442,10 @@ WHERE EVENT_OBJECT_TABLE = '" + tableName + "'");
         }
         public override bool AddTableRemark(string tableName, string description)
         {
+            if (DorisHelper.IsDoris(this.Context))
+            {
+                return false;
+            }
             string sql = string.Format(this.AddTableRemarkSql, this.SqlBuilder.GetTranslationTableName(tableName), description);
             this.Context.Ado.ExecuteCommand(sql);
             return true;
@@ -463,6 +467,10 @@ WHERE EVENT_OBJECT_TABLE = '" + tableName + "'");
             if (columns.Any(it => it.IsPrimarykey)&&isCreatePrimaryKey) {
                 primaryKeyInfo =string.Format( ", Primary key({0})",string.Join(",",columns.Where(it=>it.IsPrimarykey).Select(it=>this.SqlBuilder.GetTranslationColumnName(it.DbColumnName))));
 
+            }
+            if (DorisHelper.IsDoris(this.Context))
+            {
+                sql = DorisHelper.UpdateDorisSql(this.SqlBuilder, columns, sql);
             }
             sql = sql.Replace("$PrimaryKey", primaryKeyInfo);
             this.Context.Ado.ExecuteCommand(sql);
@@ -520,7 +528,14 @@ WHERE EVENT_OBJECT_TABLE = '" + tableName + "'");
             return tableString;
         }
 
-
+        public override bool AddPrimaryKey(string tableName, string columnName)
+        {
+            if (DorisHelper.IsDoris(this.Context))
+            {
+                return false;
+            }
+            return base.AddPrimaryKey(tableName, columnName);
+        }
         public override bool AddColumn(string tableName, DbColumnInfo columnInfo)
         {
             tableName = this.SqlBuilder.GetTranslationTableName(tableName);
