@@ -15,7 +15,10 @@ namespace OrmTest
             var list=new List<Unitadfadsfa>() { new Unitadfadsfa() { Id=Guid.NewGuid(), Name="a" },
             new Unitadfadsfa() { Id=Guid.NewGuid(),Name="a" }};
             var dt = db.Utilities.ListToDataTable(list);
-            db.Storageable(list).WhereColumns(it => it.Id).ExecuteCommand();
+            dt.TableName = "Unitadfadsfa";
+            var x=db.Storageable(dt).WhereColumns("id").ToStorage();
+            x.AsUpdateable.ExecuteCommand();
+            x.AsInsertable.ExecuteCommand();
         }
     }
     public class Unitadfadsfa 
