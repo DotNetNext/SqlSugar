@@ -65,7 +65,7 @@ namespace SqlSugar
             Before(sql);
             return sql;
         }
-        private void AutoRemoveDataCache()
+        protected void AutoRemoveDataCache()
         {
             var moreSetts = this.Context.CurrentConnectionConfig.MoreSettings;
             var extService = this.Context.CurrentConnectionConfig.ConfigureExternalServices;
