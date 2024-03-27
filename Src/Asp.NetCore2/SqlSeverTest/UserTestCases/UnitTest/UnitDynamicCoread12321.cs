@@ -69,7 +69,13 @@ namespace OrmTest
             public string Desc { get; set; } = string.Empty;
 
         }
-
+        public class UnitInsetSql
+        {
+            [SugarColumn(IsPrimaryKey =true,IsIdentity =true)]
+            public int Id { get; set; }
+            [SugarColumn(InsertSql ="cast('{0}' as varchar(100))", UpdateSql = "cast('{0}' as varchar(200))")] 
+            public string Name { get; set; } 
+        }
 
         public static  void Init()
         {
@@ -104,7 +110,9 @@ namespace OrmTest
                 throw new Exception("unit error");
             }
 
-
+            db.CodeFirst.InitTables<UnitInsetSql>();
+            db.Insertable(new UnitInsetSql()).ExecuteCommand();
+            db.Updateable(new UnitInsetSql() { Id=1}).ExecuteCommand();
             Console.WriteLine(sql);
 
             /// SELECT  `x`.`name` AS `Name` , `u`.`name` AS `BName`  FROM `a` x Left JOIN `b` `u` ON ( `x`.`id` = `u`.`Aid` )
