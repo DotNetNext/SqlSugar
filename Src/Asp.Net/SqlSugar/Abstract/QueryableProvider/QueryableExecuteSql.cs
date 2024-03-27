@@ -641,7 +641,62 @@ namespace SqlSugar
             var newResult = fieldsHelper.GetSetList(obj, listObj, mappings).Select(it => (T)it).ToList();
             return newResult;
         }
+        public void ForEachDataReader(Action<T> action) 
+        {
+            var queryable = this.Clone();
+            var sql = queryable.ToSql(); 
+            var dr = this.Context.Ado.GetDataReader(sql.Key,sql.Value);
+            var entityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            var columns = entityInfo.Columns.Where(it => it.IsIgnore == false).ToList();
+            var cacheKey = "ForEachDataReader"+typeof(T).GetHashCode()+string.Join(",", columns.Select(it => it.PropertyName));
+            IDataReaderEntityBuilder<T> entytyList = this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate("cacheKey", () =>
+            {
+                var cacheResult = new IDataReaderEntityBuilder<T>(this.Context, dr,
+                    columns.Select(it=>it.DbColumnName).ToList()).CreateBuilder(typeof(T));
+                return cacheResult;
+            });
+            using (dr)
+            {
+                while (dr.Read())
+                {
 
+                    var order = entytyList.Build(dr);
+                    action(order);
+                }
+            }
+            if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection) 
+            {
+                this.Context.Ado.Close();
+            }
+        }
+        public async Task ForEachDataReaderAsync(Action<T> action) 
+        {
+            var queryable = this.Clone();
+            var sql = queryable.ToSql();
+            var dr =await this.Context.Ado.GetDataReaderAsync(sql.Key, sql.Value);
+            var entityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            var columns = entityInfo.Columns.Where(it => it.IsIgnore == false).ToList();
+            var cacheKey = "ForEachDataReader" + typeof(T).GetHashCode() + string.Join(",", columns.Select(it => it.PropertyName));
+            IDataReaderEntityBuilder<T> entytyList = this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate("cacheKey", () =>
+            {
+                var cacheResult = new IDataReaderEntityBuilder<T>(this.Context, dr,
+                    columns.Select(it => it.DbColumnName).ToList()).CreateBuilder(typeof(T));
+                return cacheResult;
+            });
+            using (dr)
+            {
+                while (dr.Read())
+                {
+
+                    var order = entytyList.Build(dr);
+                    action(order);
+                }
+            }
+            if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection)
+            {
+                this.Context.Ado.Close();
+            }
+        }
         public virtual void ForEach(Action<T> action, int singleMaxReads = 300, System.Threading.CancellationTokenSource cancellationTokenSource = null)
         {
             Check.Exception(this.QueryBuilder.Skip > 0 || this.QueryBuilder.Take > 0, ErrorMessage.GetThrowMessage("no support Skip take, use PageForEach", "不支持Skip Take,请使用 Queryale.PageForEach"));

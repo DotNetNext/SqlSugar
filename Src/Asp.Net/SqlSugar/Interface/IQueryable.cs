@@ -165,6 +165,8 @@ namespace SqlSugar
         ISugarQueryable<T> Select(string select);
         ISugarQueryable<TResult> SelectMergeTable<TResult>(Expression<Func<T, TResult>> expression);
         ISugarQueryable<T> MergeTable();
+        void ForEachDataReader(Action<T> action);
+        Task ForEachDataReaderAsync(Action<T> action);
         void ForEach(Action<T> action, int singleMaxReads = 300, System.Threading.CancellationTokenSource cancellationTokenSource = null);
         Task ForEachAsync(Action<T> action, int singleMaxReads = 300, System.Threading.CancellationTokenSource cancellationTokenSource = null);
         void ForEachByPage(Action<T> action, int pageIndex, int pageSize, ref int totalNumber, int singleMaxReads = 300, System.Threading.CancellationTokenSource cancellationTokenSource = null);
