@@ -486,7 +486,7 @@ namespace SqlSugar
                 {
                     if (columnInfo.Value == null)
                     {
-                        return string.Format(columnInfo.UpdateSql, "null");
+                        return string.Format(columnInfo.UpdateSql, "null").Replace("'null'", "null");
                     }
                     else
                     {

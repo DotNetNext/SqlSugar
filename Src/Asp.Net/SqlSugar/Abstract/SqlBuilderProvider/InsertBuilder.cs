@@ -299,7 +299,7 @@ namespace SqlSugar
                 {
                     if (columnInfo.Value == null)
                     {
-                        return string.Format(columnInfo.InsertSql, "null");
+                        return string.Format(columnInfo.InsertSql, "null").Replace("'null'","null");
                     }
                     else
                     {
