@@ -297,7 +297,14 @@ namespace SqlSugar
             {
                 if (columnInfo.InsertSql.Contains("{0}")) 
                 {
-                    return string.Format(columnInfo.InsertSql, columnInfo.Value?.ObjToString().ToSqlFilter());
+                    if (columnInfo.Value == null)
+                    {
+                        return string.Format(columnInfo.InsertSql, "null");
+                    }
+                    else
+                    {
+                        return string.Format(columnInfo.InsertSql, columnInfo.Value?.ObjToString().ToSqlFilter());
+                    }
                 }
                 return columnInfo.InsertSql;
             }
