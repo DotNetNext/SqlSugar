@@ -73,7 +73,7 @@ namespace OrmTest
         {
             [SugarColumn(IsPrimaryKey =true,IsIdentity =true)]
             public int Id { get; set; }
-            [SugarColumn(InsertSql ="cast('{0}' as varchar(100))", UpdateSql = "cast('{0}' as varchar(200))")] 
+            [SugarColumn(IsNullable =true,InsertSql ="cast('{0}' as varchar(100))", UpdateSql = "cast('{0}' as varchar(200))")] 
             public string Name { get; set; } 
         }
 
@@ -113,6 +113,8 @@ namespace OrmTest
             db.CodeFirst.InitTables<UnitInsetSql>();
             db.Insertable(new UnitInsetSql()).ExecuteCommand();
             db.Updateable(new UnitInsetSql() { Id=1}).ExecuteCommand();
+            db.Insertable(new UnitInsetSql() { Name="a" }).ExecuteCommand();
+            db.Updateable(new UnitInsetSql() { Id = 1, Name = "b" }).ExecuteCommand();
             Console.WriteLine(sql);
 
             /// SELECT  `x`.`name` AS `Name` , `u`.`name` AS `BName`  FROM `a` x Left JOIN `b` `u` ON ( `x`.`id` = `u`.`Aid` )
