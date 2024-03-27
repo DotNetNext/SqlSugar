@@ -440,7 +440,10 @@ namespace SqlSugar
                     DependencyManagement.TryPostgreSQL();
                     break;
                 case DbType.OpenGauss:
-                    config.DbType = DbType.PostgreSQL; 
+                    config.DbType = DbType.PostgreSQL;
+                    if (this.CurrentConnectionConfig.MoreSettings == null)
+                        this.CurrentConnectionConfig.MoreSettings = new ConnMoreSettings();
+                    this.CurrentConnectionConfig.MoreSettings.DatabaseModel = DbType.OpenGauss;
                     break;
                 case DbType.HG:
                     InstanceFactory.CustomDllName = SugarCompatible.IsFramework ? throw new Exception("Only.NET CORE is supported") : "SqlSugar.HGCore";
@@ -489,7 +492,10 @@ namespace SqlSugar
                     InstanceFactory.CustomDllName = SugarCompatible.IsFramework ? "SqlSugar.OceanBaseForOracle" : "SqlSugar.OceanBaseForOracleCore";
                     break;
                 case DbType.GaussDB:
-                    config.DbType = DbType.PostgreSQL; 
+                    config.DbType = DbType.PostgreSQL;
+                    if (this.CurrentConnectionConfig.MoreSettings == null)
+                        this.CurrentConnectionConfig.MoreSettings = new ConnMoreSettings();
+                    this.CurrentConnectionConfig.MoreSettings.DatabaseModel = DbType.GaussDB;
                     break;
                 case DbType.Vastbase:
                     config.DbType = DbType.PostgreSQL;

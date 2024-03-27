@@ -14,6 +14,7 @@ namespace SqlSugar
         public Expression Expression { get; set; }
         public Expression BaseExpression { get; set; }
         public List<SugarParameter> Parameters { get;  set; }
+        public ExpressionContext Conext { get;  set; }
     }
 
     public class MethodCallExpressionArgs

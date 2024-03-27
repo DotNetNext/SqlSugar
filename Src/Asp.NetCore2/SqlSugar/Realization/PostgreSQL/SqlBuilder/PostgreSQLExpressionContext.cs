@@ -373,6 +373,20 @@ namespace SqlSugar
             var parameter = model.Args[0];
             return string.Format(" LENGTH({0})", parameter.MemberName);
         }
+        public override string IsNullOrEmpty(MethodCallExpressionModel model)
+        {
+            if (model.Conext?.SugarContext?.Context?.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.OpenGauss ||
+                model.Conext?.SugarContext?.Context?.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.Vastbase||
+                model.Conext?.SugarContext?.Context?.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.GaussDB)
+            {
+                var parameter = model.Args[0];
+                return string.Format("( {0} IS NULL )", parameter.MemberName);
+            }
+            else
+            {
+                return base.IsNullOrEmpty(model);
+            }
+        }
         public override string MergeString(params string[] strings)
         {
             var key = Guid.NewGuid() + "";
