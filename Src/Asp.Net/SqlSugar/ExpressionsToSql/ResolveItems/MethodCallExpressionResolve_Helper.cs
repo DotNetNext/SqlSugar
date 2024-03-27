@@ -662,7 +662,8 @@ namespace SqlSugar
                         return this.Context.DbMehtods.HasNumber(model);
                     case "HasValue":
                         return this.Context.DbMehtods.HasValue(model);
-                    case "IsNullOrEmpty":
+                    case "IsNullOrEmpty": 
+                        model.Conext = this.Context;
                         return this.Context.DbMehtods.IsNullOrEmpty(model);
                     case "ToLower":
                         return this.Context.DbMehtods.ToLower(model);
