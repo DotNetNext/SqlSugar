@@ -49,7 +49,19 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+
+            db.CodeFirst.InitTables<UnitBooladfa>();
+            List<bool?> bools = new List<bool?>() { true,false };
+            db.Queryable<UnitBooladfa>().Where(it => bools.Contains(it.Bool)).ToList();
+            if(!db.Queryable<UnitBooladfa>().Where(it => bools.Contains(it.Bool)).ToSqlString().Contains("1,0"))
+            {
+                throw new Exception("unit error");
+            }
         }
+    }
+    public class UnitBooladfa 
+    {
+        public bool? Bool { get; set; }
     }
     [SugarTable("unitaser13231")] 
     public class UserInfo
