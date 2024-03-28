@@ -33,6 +33,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            CrossDatabase02.Init();
             UnitDynamicCoread12321.Init();
             UnitManyToManyadfafa.Init();
             UnitAsyncToken.Init();
