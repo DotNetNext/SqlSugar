@@ -149,7 +149,7 @@ namespace SqlSugar
                 {
                     inValueString = inValues.ToArray().ToJoinSqlInValsN();
                 }
-                else if (inValues.Any()&&inValues.All(it => it is bool)) 
+                else if (inValues.Any()&&inValues.FirstOrDefault() is bool &&inValues.All(it => it is bool)) 
                 {
                     inValueString = string.Join(",", inValues.Select(it => Convert.ToBoolean(it) ? 1 : 0));
                 }
