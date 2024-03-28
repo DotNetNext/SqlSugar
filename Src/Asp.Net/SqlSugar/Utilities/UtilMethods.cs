@@ -18,6 +18,27 @@ namespace SqlSugar
 {
     public class UtilMethods
     {
+        internal static string GetTableByDbLink(SqlSugarProvider context,string tableName, string oldTableName, TenantAttribute attr)
+        {
+            QueryBuilder queryBuilder=InstanceFactory.GetQueryBuilderWithContext(context);
+            var dbLinkName = context.Root.GetConnection(attr.configId).CurrentConnectionConfig.DbLinkName;
+            if (dbLinkName != null)
+            {
+                if (dbLinkName.First() == '@')
+                {
+                    tableName = queryBuilder.Builder.GetTranslationColumnName(oldTableName) + dbLinkName;
+                }
+                else if (dbLinkName.Last() == '_')
+                {
+                    tableName = dbLinkName + oldTableName;
+                }
+                else
+                {
+                    tableName = dbLinkName + "." + queryBuilder.Builder.GetTranslationColumnName(oldTableName);
+                }
+            } 
+            return tableName;
+        }
         public static List<Tuple<string, Type>> GetColumnInfo(IDataReader reader)
         {
             var columnInfo = new List<Tuple<string, Type>>();

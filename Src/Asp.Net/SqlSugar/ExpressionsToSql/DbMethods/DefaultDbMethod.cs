@@ -115,7 +115,7 @@ namespace SqlSugar
         public virtual string ContainsArray(MethodCallExpressionModel model)
         {
             var inValueIEnumerable = (IEnumerable)model.Args[0].MemberValue;
-            List<object> inValues = new List<object>();
+            List<object> inValues = new List<object>(); 
             if (inValueIEnumerable != null)
             {
                 foreach (var item in inValueIEnumerable)
@@ -145,9 +145,13 @@ namespace SqlSugar
             var isNvarchar = model.Args.Count == 3;
             if (inValues != null && inValues.Count > 0)
             {
-                if (isNvarchar&& model.Args[2].MemberValue.Equals(true))
+                if (isNvarchar && model.Args[2].MemberValue.Equals(true))
                 {
                     inValueString = inValues.ToArray().ToJoinSqlInValsN();
+                }
+                else if (inValues.Any()&&inValues.FirstOrDefault() is bool &&inValues.All(it => it is bool)) 
+                {
+                    inValueString = string.Join(",", inValues.Select(it => Convert.ToBoolean(it) ? 1 : 0));
                 }
                 else
                 {

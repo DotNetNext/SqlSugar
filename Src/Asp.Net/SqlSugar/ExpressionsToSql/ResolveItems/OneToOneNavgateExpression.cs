@@ -103,11 +103,19 @@ namespace SqlSugar
             {
                 var attr= this.ProPertyEntity.Type.GetCustomAttribute<TenantAttribute>();
                 var configId = ((object)this.context.CurrentConnectionConfig.ConfigId).ObjToString();
-                if (attr != null&& configId != attr.configId.ObjToString()) 
+                if (attr != null && configId != attr.configId.ObjToString())
                 {
-                    var dbName = this.context.Root.GetConnection(attr.configId).Ado.Connection.Database;
-                    tableName = queryable.QueryBuilder.LambdaExpressions.DbMehtods.GetTableWithDataBase
-                        (queryable.QueryBuilder.Builder.GetTranslationColumnName(dbName), queryable.QueryBuilder.Builder.GetTranslationColumnName(tableName));
+                    var context = this.context.Root.GetConnection(attr.configId);
+                    var dbName = context.Ado.Connection.Database;
+                    if (context.CurrentConnectionConfig.DbLinkName.HasValue())
+                    {
+                        tableName = UtilMethods.GetTableByDbLink(context, tableName, tableName, attr);
+                    }
+                    else
+                    {
+                        tableName = queryable.QueryBuilder.LambdaExpressions.DbMehtods.GetTableWithDataBase
+                            (queryable.QueryBuilder.Builder.GetTranslationColumnName(dbName), queryable.QueryBuilder.Builder.GetTranslationColumnName(tableName));
+                    }
                 }
             }
             Type[] clearTypes = null;
