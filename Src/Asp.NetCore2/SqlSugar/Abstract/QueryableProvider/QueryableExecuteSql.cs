@@ -647,12 +647,12 @@ namespace SqlSugar
             var sql = queryable.ToSql(); 
             var dr = this.Context.Ado.GetDataReader(sql.Key,sql.Value);
             var entityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>();
-            var columns = entityInfo.Columns.Where(it => it.IsIgnore == false).ToList();
-            var cacheKey = "ForEachDataReader"+typeof(T).GetHashCode()+string.Join(",", columns.Select(it => it.PropertyName));
+            var columns = UtilMethods.GetColumnInfo(dr); 
+            var cacheKey = "ForEachDataReader"+typeof(T).GetHashCode()+string.Join(",", columns.Select(it => it.Item1+it.Item2.Name+"_"));
             IDataReaderEntityBuilder<T> entytyList = this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate("cacheKey", () =>
             {
                 var cacheResult = new IDataReaderEntityBuilder<T>(this.Context, dr,
-                    columns.Select(it=>it.DbColumnName).ToList()).CreateBuilder(typeof(T));
+                    columns.Select(it=>it.Item1).ToList()).CreateBuilder(typeof(T));
                 return cacheResult;
             });
             using (dr)
@@ -675,12 +675,12 @@ namespace SqlSugar
             var sql = queryable.ToSql();
             var dr =await this.Context.Ado.GetDataReaderAsync(sql.Key, sql.Value);
             var entityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>();
-            var columns = entityInfo.Columns.Where(it => it.IsIgnore == false).ToList();
-            var cacheKey = "ForEachDataReader" + typeof(T).GetHashCode() + string.Join(",", columns.Select(it => it.PropertyName));
+            var columns = UtilMethods.GetColumnInfo(dr);
+            var cacheKey = "ForEachDataReader" + typeof(T).GetHashCode() + string.Join(",", columns.Select(it => it.Item1 + it.Item2.Name + "_"));
             IDataReaderEntityBuilder<T> entytyList = this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate("cacheKey", () =>
             {
                 var cacheResult = new IDataReaderEntityBuilder<T>(this.Context, dr,
-                    columns.Select(it => it.DbColumnName).ToList()).CreateBuilder(typeof(T));
+                    columns.Select(it => it.Item1).ToList()).CreateBuilder(typeof(T));
                 return cacheResult;
             });
             using (dr)
