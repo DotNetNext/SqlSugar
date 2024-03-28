@@ -18,6 +18,28 @@ namespace SqlSugar
 {
     public class UtilMethods
     {
+        public static List<Tuple<string, Type>> GetColumnInfo(IDataReader reader)
+        {
+            var columnInfo = new List<Tuple<string, Type>>();
+
+            // 获取列的数量  
+            int columnCount = reader.FieldCount;
+
+            // 遍历每一列  
+            for (int i = 0; i < columnCount; i++)
+            {
+                // 获取列名  
+                string columnName = reader.GetName(i);
+
+                // 获取列的数据类型  
+                Type columnType = reader.GetFieldType(i);
+
+                // 将列名和类型添加到列表中  
+                columnInfo.Add(Tuple.Create(columnName, columnType));
+            }
+
+            return columnInfo;
+        }
         public static object ConvertToObjectList(Type targetType, List<object> sourceList)
         {
             // 创建 List<Type> 类型的实例
