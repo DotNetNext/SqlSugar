@@ -32,8 +32,27 @@ namespace OrmTest
                 .Includes(it=>it.Order)
                 .Where(it=>it.Order.Id==1)
                 .ToList();
-    
+
+            db.CodeFirst.InitTables<UnitPkadfa1>(); 
+            db.CodeFirst.InitTables<UnitPkadfa2>();
+            db.CodeFirst.InitTables<UnitPkadfa2>();
+            db.DbMaintenance.DropTable<UnitPkadfa2>();
         }
+        [SugarTable("UnitPkadfa")]
+        public class UnitPkadfa1
+        {
+            public string Id { get; set; }
+            public string Name { get; set; }
+        }
+        [SugarTable("UnitPkadfa")]
+        public class UnitPkadfa2
+        {
+            [SugarColumn(IsPrimaryKey =true)]
+            public string Id { get; set; }
+            [SugarColumn(IsPrimaryKey = true)]
+            public string Name { get; set; }
+        }
+
         [SqlSugar.Tenant("OrderDb")]
         [SqlSugar.SugarTable("Order811")]
         public class Order
