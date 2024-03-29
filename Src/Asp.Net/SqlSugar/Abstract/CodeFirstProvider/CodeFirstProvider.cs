@@ -514,7 +514,19 @@ namespace SqlSugar
                 {
                     var oldPkNames = dbColumns.Where(it => it.IsPrimarykey).Select(it => it.DbColumnName.ToLower()).OrderBy(it => it).ToList();
                     var newPkNames = entityColumns.Where(it => it.IsPrimarykey).Select(it => it.DbColumnName.ToLower()).OrderBy(it => it).ToList();
-                    if (!Enumerable.SequenceEqual(oldPkNames, newPkNames))
+                    if (oldPkNames.Count == 0&& newPkNames.Count>1) 
+                    {
+                        try
+                        {
+                            this.Context.DbMaintenance.AddPrimaryKeys(tableName, newPkNames.ToArray());
+                        }
+                        catch (Exception ex)
+                        {
+                            Check.Exception(true, ErrorMessage.GetThrowMessage("The current database does not support changing multiple primary keys. " + ex.Message, "当前数据库不支持修改多主键,"+ex.Message));
+                            throw ex;
+                        }
+                    }
+                    else if (!Enumerable.SequenceEqual(oldPkNames, newPkNames))
                     {
                         Check.Exception(true, ErrorMessage.GetThrowMessage("Modification of multiple primary key tables is not supported. Delete tables while creating", "不支持修改多主键表，请删除表在创建"));
                     }
