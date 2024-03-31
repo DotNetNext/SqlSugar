@@ -1,4 +1,5 @@
 ﻿using CsvHelper;
+using CsvHelper.Configuration;
 using CsvHelper.TypeConversion;
 using Newtonsoft.Json;
 using System;
@@ -13,7 +14,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.Xml.Linq;
-
+using System.Linq;
 namespace SqlSugar 
 {
     /// <summary>
@@ -136,6 +137,7 @@ namespace SqlSugar
                 {
                     var options = new TypeConverterOptions { Formats = new[] { GetDefaultFormat() } };
                     csv.Context.TypeConverterOptionsCache.AddOptions<DateTime>(options);
+                    CsvCreating<T>(csv);
                     await csv.WriteRecordsAsync(insertList);
                 }
 
@@ -180,6 +182,20 @@ namespace SqlSugar
                 }
             }
             return result;
+        }
+
+        private void CsvCreating<T>(CsvWriter csv) where T : class, new()
+        {
+            var entityColumns = db.EntityMaintenance.GetEntityInfo<T>().Columns;
+            if (entityColumns.Any(it => it.IsIgnore))
+            {
+                var customMap = new DefaultClassMap<T>();
+                foreach (var item in entityColumns.Where(it => !it.IsIgnore))
+                {
+                    customMap.Map(typeof(T), item.PropertyInfo).Name(item.PropertyName);
+                }
+                csv.Context.RegisterClassMap(customMap);
+            }
         }
 
         private static string GetDefaultFormat()
