@@ -419,7 +419,8 @@ namespace SqlSugar
                 }
                 if (this.Context.CurrentConnectionConfig.ConfigureExternalServices != null && this.Context.CurrentConnectionConfig.ConfigureExternalServices.EntityService != null)
                 {
-                    if (!column.EntityName.ObjToString().StartsWith("<>f__AnonymousType"))
+                    if (!column.EntityName.ObjToString().StartsWith("<>f__AnonymousType")
+                        &&column.PropertyInfo?.ReflectedType!=typeof(DbTableInfo))
                     {
                         this.Context.CurrentConnectionConfig.ConfigureExternalServices.EntityService(property, column);
                     }
