@@ -64,6 +64,7 @@
     <Compile Include="GBase\SqlBuilder\GBaseInsertBuilder.cs" />
     <Compile Include="GBase\SqlBuilder\GBaseQueryBuilder.cs" />
     <Compile Include="GBase\SqlBuilder\GBaseUpdateBuilder.cs" />
+    <Compile Include="OdbcConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tools\ErrorMessage.cs" />
     <Compile Include="Tools\FileHelper.cs" />
