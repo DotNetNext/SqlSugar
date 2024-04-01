@@ -45,7 +45,7 @@ namespace SqlSugar.Odbc
                 .MappingTables
                 .FirstOrDefault(it => it.EntityName.Equals(name, StringComparison.CurrentCultureIgnoreCase));
             name = (mappingInfo == null ? name : mappingInfo.DbTableName);
-            if (name.IsContainsIn("(", ")", SqlTranslationLeft))
+            if (string.IsNullOrEmpty(SqlTranslationLeft)&&name.IsContainsIn("(", ")", SqlTranslationLeft))
             {
                 return name;
             }

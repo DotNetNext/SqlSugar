@@ -3,6 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <Nullable>enable</Nullable>
+    <Copyright>5.1.4.150</Copyright>
+    <Version>5.1.4.150</Version>
   </PropertyGroup>
 
   <ItemGroup>
