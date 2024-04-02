@@ -85,7 +85,9 @@ namespace SqlSugar
                      z.Length != y.Length ||
                      z.ColumnDescription != y.ColumnDescription ||
                      z.DataType != y.DataType ||
-                     z.DecimalDigits != y.DecimalDigits
+                     z.DecimalDigits != y.DecimalDigits||
+                     z.IsPrimarykey != y.IsPrimarykey  ||
+                     z.IsIdentity!=y.IsIdentity
                   ))).Select(it => new DiffColumsInfo()
                   {
                      Message= GetUpdateColumnString(it, tableInfo.OldColumnInfos.FirstOrDefault(y => y.DbColumnName.EqualCase(it.DbColumnName)))
