@@ -16,6 +16,8 @@ namespace SqlSugar
 
         public IEnumerable<SplitTableInfo> Tables { get; set; }
         internal List<string> WhereColumns {   get;   set; }
+        internal bool IsEnableDiffLogEvent { get;  set; }
+        internal object BusinessData { get;   set; }
 
         public int ExecuteCommandWithOptLock(bool isThrowError = false) 
         {
@@ -27,6 +29,7 @@ namespace SqlSugar
                 var addList = item.Select(it => it.Item).ToList();
                 result += this.Context.Updateable(addList)
                     .WhereColumns(this.WhereColumns?.ToArray())
+                    .EnableDiffLogEventIF(this.IsEnableDiffLogEvent,this.BusinessData)
                     .UpdateColumns(updateobj.UpdateBuilder.UpdateColumns?.ToArray())
                     .IgnoreColumns(this.updateobj.UpdateBuilder.IsNoUpdateNull, this.updateobj.UpdateBuilder.IsOffIdentity, this.updateobj.UpdateBuilder.IsNoUpdateDefaultValue)
                     .IgnoreColumns(GetIgnoreColumns()).AS(item.Key).ExecuteCommandWithOptLock(isThrowError);
@@ -42,6 +45,7 @@ namespace SqlSugar
             {
                 var addList = item.Select(it => it.Item).ToList();
                 result += this.Context.Updateable(addList)
+                    .EnableDiffLogEventIF(this.IsEnableDiffLogEvent, this.BusinessData)
                     .WhereColumns(this.WhereColumns?.ToArray())
                     .UpdateColumns(updateobj.UpdateBuilder.UpdateColumns?.ToArray())
                     .IgnoreColumns(this.updateobj.UpdateBuilder.IsNoUpdateNull, this.updateobj.UpdateBuilder.IsOffIdentity,this.updateobj.UpdateBuilder.IsNoUpdateDefaultValue)
@@ -61,6 +65,7 @@ namespace SqlSugar
                 var addList = item.Select(it => it.Item).ToList();
                 result += await this.Context.Updateable(addList)
                     .WhereColumns(this.WhereColumns?.ToArray())
+                    .EnableDiffLogEventIF(this.IsEnableDiffLogEvent, this.BusinessData)
                     .UpdateColumns(updateobj.UpdateBuilder.UpdateColumns?.ToArray())
                     .IgnoreColumns(this.updateobj.UpdateBuilder.IsNoUpdateNull, this.updateobj.UpdateBuilder.IsOffIdentity, this.updateobj.UpdateBuilder.IsNoUpdateDefaultValue)
                     .IgnoreColumns(GetIgnoreColumns()).AS(item.Key).ExecuteCommandAsync();
@@ -77,6 +82,7 @@ namespace SqlSugar
                 var addList = item.Select(it => it.Item).ToList();
                 result += await this.Context.Updateable(addList)
                     .WhereColumns(this.WhereColumns?.ToArray())
+                    .EnableDiffLogEventIF(this.IsEnableDiffLogEvent, this.BusinessData)
                     .UpdateColumns(updateobj.UpdateBuilder.UpdateColumns?.ToArray())
                     .IgnoreColumns(this.updateobj.UpdateBuilder.IsNoUpdateNull, this.updateobj.UpdateBuilder.IsOffIdentity, this.updateobj.UpdateBuilder.IsNoUpdateDefaultValue)
                     .IgnoreColumns(GetIgnoreColumns()).AS(item.Key).ExecuteCommandWithOptLockAsync(isThrowError);
