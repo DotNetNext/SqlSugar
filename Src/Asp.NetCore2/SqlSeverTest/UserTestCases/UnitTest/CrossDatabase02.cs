@@ -36,6 +36,14 @@ namespace OrmTest
             db.CodeFirst.InitTables<UnitPkadfa1>(); 
             db.CodeFirst.InitTables<UnitPkadfa2>();
             db.CodeFirst.InitTables<UnitPkadfa2>();
+
+            var userInfo = db.Queryable<UnitPkadfa2>().ToDataTable();
+
+            var x = db.Fastest<System.Data.DataTable>().PageSize(10)
+                .AS("UnitPkadfa2")
+                .BulkUpdate(userInfo, new string[] { "Id" });
+
+
             db.DbMaintenance.DropTable<UnitPkadfa2>();
         }
         [SugarTable("UnitPkadfa")]
