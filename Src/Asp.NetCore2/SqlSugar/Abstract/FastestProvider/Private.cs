@@ -267,11 +267,11 @@ namespace SqlSugar
             DataTable tempDataTable = null;
             if (AsName == null)
             {
-                tempDataTable = queryable.Where(it => false).Select(string.Join(",", dts)).ToDataTable();
+                tempDataTable = queryable.Clone().Where(it => false).Select(string.Join(",", dts)).ToDataTable();
             }
             else
             {
-                tempDataTable = queryable.AS(AsName).Where(it => false).Select(string.Join(",", dts)).ToDataTable();
+                tempDataTable = queryable.Clone().AS(AsName).Where(it => false).Select(string.Join(",", dts)).ToDataTable();
             };
             List<string> uInt64TypeName = new List<string>();
             foreach (DataColumn item in tempDataTable.Columns)
