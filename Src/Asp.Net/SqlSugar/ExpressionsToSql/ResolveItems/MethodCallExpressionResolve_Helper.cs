@@ -1012,6 +1012,10 @@ namespace SqlSugar
             {
                 return true;
             }
+            if (expression.Method.Name == "IndexOf") 
+            {
+                return true;
+            }
             if (expression.Method.Name == "CompareTo") 
             {
                 return true;
