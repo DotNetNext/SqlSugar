@@ -291,7 +291,7 @@ namespace SqlSugar
             result.Context = this.Context;
             result.UpdateObjects = this.UpdateObjs;
             result.IsEnableDiffLogEvent = this.IsEnableDiffLogEvent;
-            result.BusinessData = this.diffModel.BusinessData;
+            result.BusinessData = this.diffModel?.BusinessData;
             if(this.IsWhereColumns)
               result.WhereColumns = this.WhereColumnList;
             SplitTableContext helper = new SplitTableContext(Context)
