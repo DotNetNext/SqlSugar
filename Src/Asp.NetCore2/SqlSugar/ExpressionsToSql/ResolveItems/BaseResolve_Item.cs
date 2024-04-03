@@ -192,7 +192,7 @@ namespace SqlSugar
                               this.Context.SqlTranslationLeft + asName + "." + newExpressionInfo.LeftNameName + this.Context.SqlTranslationRight
 
                           );
-                    } 
+                    }
                     else
                     {
                         parameter.Context.Result.Append(this.Context.GetAsString(
@@ -221,7 +221,7 @@ namespace SqlSugar
                     mappingKeys.Add("Single_" + newExpressionInfo.LeftNameName, asName + "." + newExpressionInfo.LeftNameName);
                     if (newExpressionInfo.Type == nameof(ConstantExpression))
                     {
-                        this.Context.SugarContext.QueryBuilder.MappingKeys = mappingKeys; 
+                        this.Context.SugarContext.QueryBuilder.MappingKeys = mappingKeys;
                         parameter.Context.Result.Append($" {newExpressionInfo.RightDbName} AS {this.Context.SqlTranslationLeft}{asName}.{newExpressionInfo.LeftNameName}{this.Context.SqlTranslationRight}  ");
                     }
                     else
@@ -249,6 +249,11 @@ namespace SqlSugar
                     this.Context.SugarContext.QueryBuilder.SubToListParameters.Add(asName, value);
                 }
                 //throw new Exception("子查询ToList开发中..");
+            }
+            else if (ExpressionTool.GetMethodName(item) == nameof(SqlFunc.MappingColumn)) 
+            {
+                var value = GetNewExpressionValue(item);
+                parameter.Context.Result.Append($" {value} AS {asName} ");
             }
             else
             {
