@@ -62,11 +62,11 @@ namespace SqlSugar
             {
                 if (ex is SqlSugarException)
                 {
-                    Check.Exception(true, string.Format(ex.Message, express.Method.Name));
+                    Check.Exception(true, ex, string.Format(ex.Message, express.Method.Name));
                 }
                 else
                 {
-                    Check.Exception(true, string.Format(ErrorMessage.MethodError, express.Method.Name));
+                    Check.Exception(true, ex, string.Format(ErrorMessage.MethodError, express.Method.Name));
                 }
             }
         }

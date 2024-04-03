@@ -25,12 +25,12 @@ namespace SqlSugar
                     new SerializeService().SerializeObject(new { });
                     IsTryJsonNet = true;
                 }
-                catch
+                catch(Exception ex)
                 {
                     var message = ErrorMessage.GetThrowMessage(
                         " SqlSugar Some functions are used in newtonsoft ,Nuget references Newtonsoft.Json 9.0.0.1 + .",
                         " SqlSugar 部分功能用到Newtonsoft.Json.dll，需要在Nuget上安装 Newtonsoft.Json 9.0.0.1及以上版本，如果有版本兼容问题请先删除原有引用");
-                    throw new Exception(message);
+                    throw new Exception(message,ex);
                 }
             }
         }
@@ -45,12 +45,12 @@ namespace SqlSugar
                     var conn = db.GetAdapter();
                     IsTryMySqlData = true;
                 }
-                catch
+                catch(Exception ex)
                 {
                     var message = ErrorMessage.GetThrowMessage(
                      "You need to refer to MySql.Data.dll",
                      "需要引用MySql.Data.dll，请在Nuget安装最新稳定版本,如果有版本兼容问题请先删除原有引用");
-                    throw new Exception(message);
+                    throw new Exception(message,ex);
                 }
             }
         }
@@ -65,12 +65,12 @@ namespace SqlSugar
                     var conn = db.GetAdapter();
                     IsTryPgSql = true;
                 }
-                catch
+                catch(Exception ex)
                 {
                     var message = ErrorMessage.GetThrowMessage(
                      "You need to refer to Npgsql 3.2.7",
                      "你需要引用 Npgsql 3.2.7及以上版本");
-                    throw new Exception(message);
+                    throw new Exception(message,ex);
                 }
             }
         }
@@ -85,12 +85,12 @@ namespace SqlSugar
                     var conn = db.GetAdapter();
                     IsTryOracle = true;
                 }
-                catch
+                catch(Exception ex)
                 {
                     var message = ErrorMessage.GetThrowMessage(
                      "You need to refer to Oracle.ManagedDataAccess.Core",
                      "你需要引用 Oracle.ManagedDataAccess.Core");
-                    throw new Exception(message);
+                    throw new Exception(message,ex);
                 }
             }
         }
@@ -110,7 +110,7 @@ namespace SqlSugar
                     var message = ErrorMessage.GetThrowMessage(
                      "You need to refer to Microsoft.Data.Sqlite." + ex.Message,
                     "你需要引用Microsoft.Data.Sqlite,如果有版本兼容问题请先删除原有引用");
-                    throw new Exception(message);
+                    throw new Exception(message,ex);
                 }
             }
         }
@@ -125,10 +125,10 @@ namespace SqlSugar
                     var conn = db.GetAdapter();
                     IsTryKd = true;
                 }
-                catch  
+                catch(Exception ex) 
                 {
                     var message = "需要引用Kdbndp.dll,Github搜索sqlsugar源码里面有";
-                    throw new Exception(message);
+                    throw new Exception(message,ex);
                 }
             }
         }
@@ -143,10 +143,10 @@ namespace SqlSugar
                     var conn = db.GetAdapter();
                     IsTryDm = true;
                 }
-                catch  
+                catch(Exception ex) 
                 {
                     var message = "需要引用DmProvider.dll,Github搜索sqlsugar源码里面有";
-                    throw new Exception(message);
+                    throw new Exception(message,ex);
                 }
             }
         }
@@ -161,10 +161,10 @@ namespace SqlSugar
                     db.GetAdapter();
                     IsTryOscar = true;
                 }
-                catch  
+                catch(Exception ex)
                 {
                     var message = "需要引用Oscar.Data.SqlClient.dll,Github搜索sqlsugar源码里面有";
-                    throw new Exception(message);
+                    throw new Exception(message,ex);
                 }
             }
         }

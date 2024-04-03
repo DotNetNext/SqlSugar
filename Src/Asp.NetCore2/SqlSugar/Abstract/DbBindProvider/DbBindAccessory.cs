@@ -55,7 +55,7 @@ namespace SqlSugar
             {
                 if (ex.Message == "Common Language Runtime detected an invalid program.")
                 {
-                    Check.Exception(true, ErrorMessage.EntityMappingError, ex.Message);
+                    Check.Exception(true,ex, ErrorMessage.EntityMappingError, ex.Message);
                 }
                 else
                 {
@@ -107,7 +107,7 @@ namespace SqlSugar
             {
                 if (ex.Message == "Common Language Runtime detected an invalid program.")
                 {
-                    Check.Exception(true, ErrorMessage.EntityMappingError, ex.Message);
+                    Check.Exception(true,ex, ErrorMessage.EntityMappingError, ex.Message);
                 }
                 else
                 {

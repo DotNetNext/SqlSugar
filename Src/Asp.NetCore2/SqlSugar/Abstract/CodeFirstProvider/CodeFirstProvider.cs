@@ -140,7 +140,7 @@ namespace SqlSugar
                     catch (Exception ex)
                     {
 
-                        throw new Exception(item.Name +" 创建失败,请认真检查 1、属性需要get set 2、特殊类型需要加Ignore 具体错误内容： "+ex.Message);
+                        throw new Exception(item.Name +" 创建失败,请认真检查 1、属性需要get set 2、特殊类型需要加Ignore 具体错误内容： "+ex.Message,ex);
                     }
                 }
             }
@@ -522,7 +522,7 @@ namespace SqlSugar
                         }
                         catch (Exception ex)
                         {
-                            Check.Exception(true, ErrorMessage.GetThrowMessage("The current database does not support changing multiple primary keys. " + ex.Message, "当前数据库不支持修改多主键,"+ex.Message));
+                            Check.Exception(true,ex, ErrorMessage.GetThrowMessage("The current database does not support changing multiple primary keys. " + ex.Message, "当前数据库不支持修改多主键,"+ex.Message));
                             throw ex;
                         }
                     }

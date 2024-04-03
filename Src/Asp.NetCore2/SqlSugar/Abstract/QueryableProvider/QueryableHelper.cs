@@ -768,7 +768,7 @@ namespace SqlSugar
                         catch(Exception ex)
                         {
                             var errorExp = item.Value.ExpressionList.Last().ToString();
-                            Check.ExceptionEasy($"{errorExp} no support，{ex.Message}", $"{errorExp}语法不支持，请查SqlSugar文档询导航DTO用法，{ex.Message}");
+                            Check.ExceptionEasy($"{errorExp} no support，{ex.Message}", $"{errorExp}语法不支持，请查SqlSugar文档询导航DTO用法，{ex.Message}", ex);
                         }
                         // // 重新构造Lambda表达式，将参数替换为新的参数，方法调用替换为新的方法调用
                         // var newExpression = Expression.Lambda<Func<X, List<int>>>(newMethodCallExpr, paramExpr);

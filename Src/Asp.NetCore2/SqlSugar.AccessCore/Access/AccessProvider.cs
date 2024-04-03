@@ -27,7 +27,7 @@ namespace SqlSugar.Access
                     }
                     catch (Exception ex)
                     {
-                        Check.Exception(true,ex.Message);
+                        Check.Exception(true,ex,ex.Message);
                     }
                 }
                 return base._DbConnection;

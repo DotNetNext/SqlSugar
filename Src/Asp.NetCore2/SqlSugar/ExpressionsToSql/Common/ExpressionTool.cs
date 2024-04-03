@@ -714,7 +714,7 @@ namespace SqlSugar
             }
             catch (Exception ex)
             {
-                throw new Exception("No support "+expression.ToString()+" "+ex.Message);
+                throw new Exception("No support "+expression.ToString()+" "+ex.Message, ex);
             }
         }
 

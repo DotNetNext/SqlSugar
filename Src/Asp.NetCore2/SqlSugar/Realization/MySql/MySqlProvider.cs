@@ -40,7 +40,7 @@ namespace SqlSugar
                         }
                         else
                         {
-                            Check.Exception(true, ErrorMessage.ConnnectionOpen, ex.Message);
+                            Check.Exception(true, ex, ErrorMessage.ConnnectionOpen, ex.Message);
                         }
                     }
                 }
@@ -185,7 +185,7 @@ namespace SqlSugar
                 }
                 catch (Exception ex)
                 {
-                    Check.Exception(true, ex.Message);
+                    Check.Exception(true, ex, ex.Message);
                 }
             }
             return sqlCommand;

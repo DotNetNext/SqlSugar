@@ -35,7 +35,7 @@ namespace SqlSugar
             }
             catch (Exception ex)
             {
-                Check.ExceptionEasy($" SetValue error in DataExecuting {EntityName} . {ex.Message}", $" DataExecuting 中 SetValue出错 {EntityName} 。 {ex.Message}");
+                Check.ExceptionEasy($" SetValue error in DataExecuting {EntityName} . {ex.Message}", $" DataExecuting 中 SetValue出错 {EntityName} 。 {ex.Message}",ex);
             }
         }
         public bool IsAnyAttribute<T>() where T : Attribute

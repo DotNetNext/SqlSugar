@@ -26,7 +26,7 @@ namespace SqlSugar
                     }
                     catch (Exception ex)
                     {
-                        Check.Exception(true, ErrorMessage.ConnnectionOpen, ex.Message);
+                        Check.Exception(true, ex, ErrorMessage.ConnnectionOpen, ex.Message);
                     }
                 }
                 return base._DbConnection;
@@ -47,6 +47,10 @@ namespace SqlSugar
                 if (ex.Message.Contains("Version string portion was too short or too long"))
                 {
                     Check.Exception(true, "人大金仓R6请安装 Nuget:SqlSugarCore.Kdbndp到最新版本");
+                }
+                else
+                {
+                    Check.Exception(true,ex, ex.Message);
                 }
                 throw;
             }

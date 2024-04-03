@@ -62,9 +62,9 @@ namespace SqlSugar
                             AppendValue(parameter, isLeft, value);
                         }
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
-                        Check.ThrowNotSupportedException("NewArrayExpression");
+                        Check.ThrowNotSupportedException("NewArrayExpression",ex);
                     } 
                     #endregion
                     break;

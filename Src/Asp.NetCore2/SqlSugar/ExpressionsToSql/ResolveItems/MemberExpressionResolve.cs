@@ -440,9 +440,9 @@ namespace SqlSugar
                     base.AppendValue(parameter, isLeft, value);
                 }
             }
-            catch
+            catch(Exception ex)
             {
-                Check.Exception(true, "Not Support {0}", expression.ToString());
+                Check.Exception(true, ex, "Not Support {0}", expression.ToString());
             }
         }
 

@@ -250,7 +250,7 @@ namespace SqlSugar
                     }
                     catch (Exception ex)
                     {
-                        Check.Exception(true, "Table '{0}' error,You can filter it with Db.DbFirst.Where(name=>name!=\"{0}\" ) \r\n Error message:{1}", tableInfo.Name, ex.Message);
+                        Check.Exception(true,ex, "Table '{0}' error,You can filter it with Db.DbFirst.Where(name=>name!=\"{0}\" ) \r\n Error message:{1}", tableInfo.Name, ex.Message);
                     }
                 }
             }

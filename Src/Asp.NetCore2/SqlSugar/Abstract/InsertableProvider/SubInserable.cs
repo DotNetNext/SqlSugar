@@ -41,9 +41,9 @@ namespace SqlSugar
                     });
                 }
             }
-            catch  
+            catch(Exception ex)
             {
-                Check.Exception(true, tree.ToString() + " format error ");
+                Check.Exception(true, ex, tree.ToString() + " format error ");
             }
             return this;
         }

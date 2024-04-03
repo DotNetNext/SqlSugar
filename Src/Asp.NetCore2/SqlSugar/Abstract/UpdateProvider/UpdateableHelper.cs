@@ -782,7 +782,7 @@ namespace SqlSugar
                         }
                         catch (Exception ex)
                         {
-                            Check.ExceptionEasy(col.ColumnName + " No corresponding entity attribute found in difference log ."+ex.Message, col.ColumnName + "在差异日志中可能没有找到相应的实体属性,详细:"+ex.Message);
+                            Check.ExceptionEasy(col.ColumnName + " No corresponding entity attribute found in difference log ."+ex.Message, col.ColumnName + "在差异日志中可能没有找到相应的实体属性,详细:"+ex.Message,ex);
                         }
                     }
                     result.Add(item);

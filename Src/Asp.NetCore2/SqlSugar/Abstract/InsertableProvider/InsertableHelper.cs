@@ -671,9 +671,9 @@ namespace SqlSugar
             {
                 return list.Cast<Type>().ToList();
             }
-            catch
+            catch(Exception ex)
             {
-                Check.ExceptionEasy($"long to ExecuteReturnPkList<{typeof(Type).Name}> error ", $" long 转换成ExecuteReturnPkList<{typeof(Type).Name}>失败");
+                Check.ExceptionEasy($"long to ExecuteReturnPkList<{typeof(Type).Name}> error ", $" long 转换成ExecuteReturnPkList<{typeof(Type).Name}>失败",ex);
                 return null;
             }
         }

@@ -123,9 +123,9 @@ namespace SqlSugar
                     {
                         parameter.Context.Result.Append(base.Context.GetEqString(memberName, AppendParameter(ExpressionTool.DynamicInvoke(item).ObjToBool())));
                     }
-                    catch
+                    catch(Exception ex)
                     {
-                        throw new NotSupportedException(item.ToString());
+                        throw new NotSupportedException(item.ToString(), ex);
                     }
                 }
                 else if (IsMethod(item))
@@ -204,7 +204,7 @@ namespace SqlSugar
                     }
                     catch (Exception ex)
                     {
-                        throw new NotSupportedException("Not Supported " + item.ToString() + " " + ex.Message);
+                        throw new NotSupportedException("Not Supported " + item.ToString() + " " + ex.Message,ex);
                     }
                 }
                 else if (item is NewExpression)
@@ -217,7 +217,7 @@ namespace SqlSugar
                     }
                     catch (Exception ex)
                     {
-                        throw new NotSupportedException("Not Supported " + item.ToString() + " " + ex.Message);
+                        throw new NotSupportedException("Not Supported " + item.ToString() + " " + ex.Message,ex);
                     }
                 }
                 else if (item is ConditionalExpression)

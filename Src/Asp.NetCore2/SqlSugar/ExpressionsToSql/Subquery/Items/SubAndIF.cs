@@ -44,9 +44,9 @@ namespace SqlSugar
             {
                 value = ExpressionTool.DynamicInvoke(exp.Arguments[0]);
             }
-            catch 
+            catch (Exception ex)
             {
-                Check.Exception(true, ErrorMessage.WhereIFCheck,exp.Arguments[0].ToString());
+                Check.Exception(true, ex, ErrorMessage.WhereIFCheck,exp.Arguments[0].ToString());
             }
             var isWhere= Convert.ToBoolean(value);
             if (!Convert.ToBoolean(isWhere)) {

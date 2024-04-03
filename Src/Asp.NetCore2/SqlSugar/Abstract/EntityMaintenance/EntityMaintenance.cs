@@ -248,9 +248,9 @@ namespace SqlSugar
                 }
 
             }
-            catch
+            catch(Exception ex)
             {
-                Check.ExceptionEasy("ORM error reading entity class XML, check entity XML or disable reading XML: MoreSettings IsNoReadXmlDescription set to true (same place to set DbType)", "ORM读取实体类的XML出现错误,检查实体XML或者禁用读取XML: MoreSettings里面的IsNoReadXmlDescription设为true （设置DbType的同一个地方）");
+                Check.ExceptionEasy("ORM error reading entity class XML, check entity XML or disable reading XML: MoreSettings IsNoReadXmlDescription set to true (same place to set DbType)", "ORM读取实体类的XML出现错误,检查实体XML或者禁用读取XML: MoreSettings里面的IsNoReadXmlDescription设为true （设置DbType的同一个地方）",ex);
                 throw;
             }
         }

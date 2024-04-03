@@ -686,10 +686,10 @@ namespace SqlSugar
                         return Assembly.LoadFrom(customDllName + ".dll");
                     }
                 }
-                catch
+                catch(Exception ex)
                 {
                     var message = "Not Found " + customDllName + ".dll";
-                    Check.Exception(true, message);
+                    Check.Exception(true, ex, message);
                     return null;
                 }
             });
@@ -745,10 +745,10 @@ namespace SqlSugar
                         return Assembly.LoadFrom(customDllName + ".dll");
                     }
                 }
-                catch
+                catch(Exception ex)
                 {
                     var message = "Not Found " + customDllName + ".dll";
-                    Check.Exception(true, message);
+                    Check.Exception(true, ex, message);
                     return null;
                 }
             });

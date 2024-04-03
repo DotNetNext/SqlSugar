@@ -641,9 +641,9 @@ namespace SqlSugar
             {
                 ThrowUpdateByObject();
             }
-            catch 
+            catch(Exception ex) 
             {
-                Check.ExceptionEasy("Updateable<T>(obj) no support, use Updateable<T>().SetColumn ", "更新过滤器只能用在表达式方式更新 ,更新分为实体更新和表达式更新 。正确用法 Updateable<T>().SetColum(..).Where(..)");
+                Check.ExceptionEasy("Updateable<T>(obj) no support, use Updateable<T>().SetColumn ", "更新过滤器只能用在表达式方式更新 ,更新分为实体更新和表达式更新 。正确用法 Updateable<T>().SetColum(..).Where(..)",ex);
             }
             var queryable = this.Context.Queryable<T>();
             queryable.QueryBuilder.LambdaExpressions.ParameterIndex = 1000;

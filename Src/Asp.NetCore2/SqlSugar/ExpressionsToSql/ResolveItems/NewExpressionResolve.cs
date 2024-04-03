@@ -134,7 +134,7 @@ namespace SqlSugar
             }
             catch (Exception ex)
             {
-                Check.Exception(expression.Type == UtilConstants.DateType, "ThrowNotSupportedException {0} ", ex.ToString());
+                Check.Exception(expression.Type == UtilConstants.DateType, ex, "ThrowNotSupportedException {0} ", ex.ToString());
             }
         }
 
