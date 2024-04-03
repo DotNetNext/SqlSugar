@@ -47,6 +47,11 @@ namespace OrmTest
 
             }).ExecuteCommand();
             var list5=db.Queryable<CodeFirstArray>().ToList();
+            var listd=db.Queryable<CodeFirstArray>().Select(it => new CodeFirstArray()
+            {
+                floats = SqlFunc.MappingColumn<float[]>("floats")
+
+            }).ToList();
             db.CodeFirst.InitTables<CodeFirstArraryBigInt>();
             db.Updateable<CodeFirstArraryBigInt>()
                 .SetColumns(it => it.longs == new long[] { 1, 2 })
