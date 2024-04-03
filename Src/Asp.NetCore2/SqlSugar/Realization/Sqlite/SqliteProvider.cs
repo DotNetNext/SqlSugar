@@ -29,7 +29,14 @@ namespace SqlSugar
                     }
                     catch (Exception ex)
                     {
-                        Check.Exception(true, ErrorMessage.ConnnectionOpen, ex.Message);
+                        if (ex.InnerException != null)
+                        {
+                            Check.Exception(true, ErrorMessage.ConnnectionOpen, ex.Message+"\r\n"+ex.InnerException.Message);
+                        }
+                        else
+                        {
+                            Check.Exception(true, ErrorMessage.ConnnectionOpen, ex.Message);
+                        }
                     }
                 }
                 return base._DbConnection;
