@@ -746,9 +746,13 @@ namespace SqlSugar
                 {
                     dt = new DataTable();
                 }
-                else if (this.WhereColumnList?.Any() == true) 
-                { 
+                else if (this.WhereColumnList?.Any() == true)
+                {
                     dt = this.Context.Queryable<T>().Filter(null, true).WhereClassByWhereColumns(this.UpdateObjs.ToList(), this.WhereColumnList.ToArray()).ToDataTable();
+                }
+                else if (this.UpdateBuilder.TableName.HasValue()) 
+                {
+                    dt = this.Context.Queryable<T>().AS(this.UpdateBuilder.TableName).Filter(null, true).WhereClassByPrimaryKey(this.UpdateObjs.ToList()).ToDataTable();
                 }
                 else
                 {
