@@ -67,9 +67,13 @@ namespace OrmTest
             var x3 = db.Insertable(new OrderSpliteTest() { Name="A" ,Time=DateTime.Now }).SplitTable().ExecuteCommand();
 
             Console.WriteLine();
+            db.CurrentConnectionConfig.IsAutoCloseConnection = false;
             ////强制分表类型
-            var x4 = db.Insertable(new OrderSpliteTest() { Name = "A" ,Time=DateTime.Now.AddDays(-1) }).SplitTable().ExecuteCommand();
-
+            for (int i = 0; i < 200; i++)
+            {
+                var x4 = db.Insertable(new OrderSpliteTest() { Name = "A", Time = DateTime.Now.AddDays(-1) }).SplitTable().ExecuteCommand(); 
+            }
+            db.CurrentConnectionConfig.IsAutoCloseConnection = true;
             Console.WriteLine();
             //InsertByObject
             var o = new OrderSpliteTest() { Name = "A", Time = DateTime.Now };
