@@ -40,6 +40,7 @@ namespace SqlSugar
         public List<DbTableInfo> GetTableInfoList(Func<DbType,string, string> getChangeSqlFunc)
         { 
             var db=this.Context.CopyNew();
+            db.CurrentConnectionConfig.IsAutoCloseConnection = true;
             db.Aop.OnExecutingChangeSql = (sql, pars) =>
             {
                 sql= getChangeSqlFunc(this.Context.CurrentConnectionConfig.DbType, sql);
@@ -66,6 +67,7 @@ namespace SqlSugar
         public List<DbColumnInfo> GetColumnInfosByTableName(string tableName, Func<DbType, string, string> getChangeSqlFunc) 
         {
             var db = this.Context.CopyNew();
+            db.CurrentConnectionConfig.IsAutoCloseConnection = true;
             db.Aop.OnExecutingChangeSql = (sql, pars) =>
             {
                 sql = getChangeSqlFunc(this.Context.CurrentConnectionConfig.DbType, sql);
