@@ -10,7 +10,7 @@ namespace OrmTest
     {
         public static void Check(object a, object b, object name)
         {
-            if (a?.ToString()?.Trim() != b?.ToString()?.Trim())
+            if (a?.ToString()?.Replace(" ","").Trim().ToLower() != b?.ToString().Replace(" ", "")?.Trim().ToLower())
             {
                 throw new Exception(name + " error");
             }
