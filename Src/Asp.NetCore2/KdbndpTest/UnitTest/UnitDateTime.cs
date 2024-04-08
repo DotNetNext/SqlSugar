@@ -56,14 +56,14 @@ namespace OrmTest
             && it.CreateTime <= endTime)
                 .ToList();
 
-            var list2 = db.Queryable<UnitOrderDateTest>().Where(it => it.CreateTime >= beginTime
+            var sql = db.Queryable<UnitOrderDateTest>().Where(it => it.CreateTime >= beginTime
             && it.CreateTime <= endTime)
                 .ToSqlString();
 
-            var list3=db.Ado.SqlQuery<UnitOrderDateTest>(list2);
+            var list2=db.Ado.SqlQuery<UnitOrderDateTest>(sql);
 
 
-            if (list2.Count() != 5 || list3.Count() != 5) 
+            if (list.Count() != 5 || list2.Count() != 5) 
             {
                 throw new Exception("UnitDateTime Error");
             }
