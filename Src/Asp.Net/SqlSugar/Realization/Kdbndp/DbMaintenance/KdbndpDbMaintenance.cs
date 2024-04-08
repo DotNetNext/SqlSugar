@@ -485,7 +485,10 @@ WHERE tgrelid = '" + tableName + "'::regclass");
                     ConvertCreateColumnInfo(item);
                     if (item.DbColumnName.Equals("GUID", StringComparison.CurrentCultureIgnoreCase) && item.Length == 0)
                     {
-                        item.Length = 10;
+                        if (item.DataType?.ToLower() != "uuid")
+                        {
+                            item.Length = 10;
+                        }
                     }
                 }
             }
