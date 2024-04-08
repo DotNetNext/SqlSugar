@@ -79,6 +79,8 @@ namespace SqlSugar
 
             var sql = ReplaceFormatParameters(whereSql.Format);
 
+            sql= CompatibleDynamicLinqCoreBug(sql);
+
             // 构建动态表达式，使用常量表达式和 whereSql 中的参数值
             var lambda = SqlSugarDynamicExpressionParser.ParseLambda(
                 parameters,
