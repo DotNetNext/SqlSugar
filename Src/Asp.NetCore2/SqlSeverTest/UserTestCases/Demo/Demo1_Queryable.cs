@@ -7,6 +7,7 @@ using System.Dynamic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Text;
+using static OrmTest.UnitStringToExp;
 
 namespace OrmTest
 {
@@ -135,6 +136,15 @@ namespace OrmTest
             .SetColumns("it", $"it.Price== Price+{1} ")
             .Where("it", $"it.Id>1 ")
             .ExecuteCommand();
+            StaticConfig.DynamicExpressionParserType = typeof(DynamicExpressionParser);
+            StaticConfig.DynamicExpressionParsingConfig = new ParsingConfig()
+            {
+                CustomTypeProvider = new SqlSugarTypeProvider()
+            }; 
+            var list12 = db.Queryable<Order>()
+                .Where("t1", $" SqlFunc.LessThan(t1.Name, {"aa"})").ToList();
+            var list13 = db.Queryable<Order>()
+            .Where("t1", $" SqlFunc.GreaterThan(t1.Name, {"aa"})").ToList();
             Console.WriteLine("#### Examples End ####");
         }
 
