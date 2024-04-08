@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.Generic; 
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -22,6 +22,8 @@ namespace SqlSugar
 
 
             var sql = ReplaceFormatParameters(whereSql.Format);
+ 
+            sql = CompatibleDynamicLinqCoreBug(sql);
 
             // 构建动态表达式，使用常量表达式和 whereSql 中的参数值
             var lambda = SqlSugarDynamicExpressionParser.ParseLambda(
@@ -33,6 +35,20 @@ namespace SqlSugar
 
             return lambda;
         }
+         
+        private static string CompatibleDynamicLinqCoreBug(string sql)
+        {
+            //Compatible DynamicCore.Linq bug
+            if (sql?.Contains("SqlFunc.") == true)
+            {
+                sql = sql.Replace("SqlFunc.LessThan(", "SqlFunc.LessThan_LinqDynamicCore(");
+                sql = sql.Replace("SqlFunc.LessThan (", "SqlFunc.LessThan_LinqDynamicCore (");
+                sql = sql.Replace("SqlFunc.GreaterThan(", "SqlFunc.GreaterThan_LinqDynamicCore(");
+                sql = sql.Replace("SqlFunc.GreaterThan (", "SqlFunc.GreaterThan_LinqDynamicCore (");
+            }
+            return sql;
+        }
+
         public static LambdaExpression GetObject(Type entityType, string shortName, FormattableString whereSql)
         {
             var parameter = Expression.Parameter(entityType, shortName);

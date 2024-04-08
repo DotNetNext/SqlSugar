@@ -199,7 +199,16 @@ namespace SqlSugar
         {
             throw new NotSupportedException("Can only be used in expressions");
         }
+        public static bool GreaterThan_LinqDynamicCore(object thisValue, object ltValue)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
         public static bool LessThan(object thisValue, object ltValue)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        public static bool LessThan_LinqDynamicCore(object thisValue, object ltValue)
         {
             throw new NotSupportedException("Can only be used in expressions");
         }

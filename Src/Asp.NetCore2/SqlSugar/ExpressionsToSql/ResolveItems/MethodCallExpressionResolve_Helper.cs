@@ -970,6 +970,10 @@ namespace SqlSugar
                         return this.Context.DbMehtods.Like(model);
                     case "ToSingle":
                         return this.Context.DbMehtods.ToSingle(model);
+                    case "GreaterThan_LinqDynamicCore":
+                        return this.Context.DbMehtods.GreaterThan(model);
+                    case "LessThan_LinqDynamicCore":
+                        return this.Context.DbMehtods.LessThan(model);
                     default:
                         if (typeof(IDbMethods).GetMethods().Any(it => it.Name == name))
                         {
