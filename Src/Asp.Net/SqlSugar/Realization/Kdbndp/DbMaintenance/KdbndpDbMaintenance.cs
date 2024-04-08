@@ -530,6 +530,14 @@ WHERE tgrelid = '" + tableName + "'::regclass");
                 string addItem = string.Format(this.CreateTableColumn, this.SqlBuilder.GetTranslationColumnName(columnName.ToUpper(IsUpper)), dataType, dataSize, nullType, primaryKey, "");
                 if (item.IsIdentity)
                 {
+                    if (dataType?.ToLower() == "int")
+                    {
+                        dataSize = "int4";
+                    }
+                    else if (dataType?.ToLower() == "long")
+                    {
+                        dataSize = "int8";
+                    }
                     string length = dataType.Substring(dataType.Length - 1);
                     string identityDataType = "serial" + length;
                     addItem = addItem.Replace(dataType, identityDataType);
