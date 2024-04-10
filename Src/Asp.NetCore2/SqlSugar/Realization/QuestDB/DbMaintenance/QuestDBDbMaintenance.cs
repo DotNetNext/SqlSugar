@@ -215,6 +215,10 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override bool IsAnySystemTablePermissions()
+        {
+            return true;
+        }
         public override void AddIndex(EntityInfo entityInfo)
         {
             if (entityInfo.Indexs != null)
