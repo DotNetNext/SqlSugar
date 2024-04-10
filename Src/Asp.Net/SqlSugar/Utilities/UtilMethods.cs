@@ -641,6 +641,7 @@ namespace SqlSugar
                     PgSqlIsAutoToLowerCodeFirst= it.MoreSettings.PgSqlIsAutoToLowerCodeFirst,
                     IsAutoRemoveDataCache = it.MoreSettings.IsAutoRemoveDataCache,
                     IsWithNoLockQuery = it.MoreSettings.IsWithNoLockQuery,
+                    DisableWithNoLockWithTran=it.MoreSettings.DisableWithNoLockWithTran,
                     TableEnumIsString = it.MoreSettings.TableEnumIsString,
                     DisableMillisecond = it.MoreSettings.DisableMillisecond,
                     DbMinDate=it.MoreSettings.DbMinDate,

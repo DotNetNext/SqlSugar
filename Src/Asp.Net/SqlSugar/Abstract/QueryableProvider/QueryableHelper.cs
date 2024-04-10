@@ -1820,7 +1820,14 @@ namespace SqlSugar
             var moreSetts = this.Context.CurrentConnectionConfig.MoreSettings;
             if (moreSetts != null && moreSetts.IsWithNoLockQuery && string.IsNullOrEmpty(QueryBuilder.TableWithString))
             {
-                this.With(SqlWith.NoLock);
+                if (moreSetts.DisableWithNoLockWithTran&&this.Context.Ado.IsAnyTran())
+                {
+                    //No With(nolock)
+                }
+                else
+                {
+                    this.With(SqlWith.NoLock);
+                }
             }
         }
         protected List<TResult> GetData<TResult>(KeyValuePair<string, List<SugarParameter>> sqlObj)
