@@ -146,6 +146,11 @@ namespace SqlSugar
                     this.OutputParameters.RemoveAll(it => it.ParameterName == sqlParameter.ParameterName);
                     this.OutputParameters.Add(sqlParameter);
                 }
+                //人大金仓MYSQL模式下json字段类型处理
+                if (sqlParameter.KdbndpDbType == KdbndpDbType.Json&&this.Context?.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.MySql)
+                {
+                     sqlParameter.KdbndpDbType = KdbndpDbType.Varchar;
+                }
                 ++index;
             }
             return result;
