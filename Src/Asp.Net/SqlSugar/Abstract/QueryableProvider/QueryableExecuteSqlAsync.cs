@@ -654,7 +654,7 @@ ParameterT parameter)
                     tableName = this.QueryBuilder.JoinQueryInfos.First().TableName;
                 }
             }
-            var current = await this.Context.Queryable<T>().AS(tableName).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).InSingleAsync(primaryKeyValue);
+            var current = await this.Context.Queryable<T>().AS(tableName).WithCacheIF(this.IsCache, this.CacheTime).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).InSingleAsync(primaryKeyValue);
             if (current != null)
             {
                 result.Add(current);
@@ -663,7 +663,7 @@ ParameterT parameter)
                 while (parentId != null && await this.Context.Queryable<T>().AS(tableName).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).In(parentId).AnyAsync())
                 {
                     Check.Exception(i > 100, ErrorMessage.GetThrowMessage("Dead cycle", "出现死循环或超出循环上限（100），检查最顶层的ParentId是否是null或者0"));
-                    var parent = await this.Context.Queryable<T>().AS(tableName).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).InSingleAsync(parentId);
+                    var parent = await this.Context.Queryable<T>().AS(tableName).WithCacheIF(this.IsCache, this.CacheTime).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).InSingleAsync(parentId);
                     result.Add(parent);
                     parentId = ParentInfo.PropertyInfo.GetValue(parent, null);
                     ++i;
