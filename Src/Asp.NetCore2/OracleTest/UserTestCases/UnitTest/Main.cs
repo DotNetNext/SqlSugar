@@ -34,6 +34,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UnitBulkUpdate.Init();
             UnitWeek.Init();
             UnitSplitTask.Init();
             UnitBulkMerge.Init();
