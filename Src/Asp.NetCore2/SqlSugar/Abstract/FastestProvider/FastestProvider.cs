@@ -344,6 +344,10 @@ namespace SqlSugar
                             if (col.DataType == UtilConstants.StringType)
                             {
                                 item[col.ColumnName] = string.Empty;
+                                if (this.queryable?.SqlBuilder?.SqlParameterKeyWord == ":") 
+                                {
+                                    item[col.ColumnName] = " ";
+                                };
                             }
                             else if (col.DataType == UtilConstants.DateType)
                             {

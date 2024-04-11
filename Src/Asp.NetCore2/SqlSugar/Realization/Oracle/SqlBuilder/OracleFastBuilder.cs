@@ -9,6 +9,7 @@ namespace SqlSugar
 {
     public class OracleFastBuilder : FastBuilder, IFastBuilder
     {
+        public override bool IsActionUpdateColumns { get; set; } = true;
         public override DbFastestProperties DbFastestProperties { get; set; } = new DbFastestProperties()
         { 
             IsMerge = true
