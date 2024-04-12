@@ -82,7 +82,12 @@ namespace SqlSugar
                             object value = null;
                             if (it.Value is DateTime)
                             {
-                                value = ((DateTime)it.Value).ToString("O");
+                                var date = ((DateTime)it.Value);
+                                value = date.ToString("O");
+                                if (date==DateTime.MaxValue) 
+                                {
+                                    value = "9999-12-31T23:59:59.999999";
+                                }
                             }
                             else if (it.Value  is DateTimeOffset)
                             {
