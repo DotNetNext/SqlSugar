@@ -26,7 +26,9 @@ namespace SqlSugar
         internal string authorization = string.Empty;
         internal static Random random = new Random();
         //can be modified
-        public static int HttpPort = 9000;
+        public static int HttpPort { get; set; }= 9000;
+        public static string UserName { get; set; } = null;
+        public static string Password { get; set; } = null;
         ISqlSugarClient db;
         public QuestDbRestAPI(ISqlSugarClient db)
         {
@@ -38,6 +40,14 @@ namespace SqlSugar
             string username = String.Empty;
             string password = String.Empty;
             QuestDbRestAPHelper.SetRestApiInfo(builder, ref host, ref username, ref password);
+            if (!string.IsNullOrEmpty(QuestDbRestAPI.UserName)) 
+            {
+                username = QuestDbRestAPI.UserName;
+            }
+            if (!string.IsNullOrEmpty(QuestDbRestAPI.Password))
+            {
+                password = QuestDbRestAPI.Password;
+            }
             BindHost(host, username, password);
         }
         /// <summary>
