@@ -134,7 +134,10 @@ namespace SqlSugar
         private string _ExecuteCommand(string LogicFieldName, out ISqlSugarClient db, out string where, out List<SugarParameter> pars)
         {
             var entityInfo = Deleteable.EntityInfo;
-            db = Deleteable.Context; 
+            db = Deleteable.Context;
+            
+            Check.ExceptionEasy(DeleteBuilder.GetWhereString == null,"Logical Delete requires a Where condition", "逻辑删除需要加Where条件");
+            
             where = DeleteBuilder.GetWhereString.Substring(5);
             pars = DeleteBuilder.Parameters;
             if (LogicFieldName.IsNullOrEmpty())
