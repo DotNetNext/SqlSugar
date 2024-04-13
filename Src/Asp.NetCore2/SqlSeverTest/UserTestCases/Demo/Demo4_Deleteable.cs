@@ -44,13 +44,30 @@ namespace OrmTest
 
             //logic delete
             db.CodeFirst.InitTables<LogicDeleteTezt>();
-            db.Deleteable<LogicDeleteTezt>().Where(it=>it.Name=="a").IsLogic().ExecuteCommand();
+            db.Deleteable<LogicDeleteTezt>().Where(it => it.Name == "a").IsLogic().ExecuteCommand();
+
+            db.Deleteable<LogicDeleteTezt>().Where(it => it.Name == "a").IsLogic().ExecuteCommand();
 
             db.Deleteable<Order>().WhereColumns(db.Queryable<Order>().Take(2).ToList(), it => new { it.Id, it.Name }).ExecuteCommand();
+
+            db.CodeFirst.InitTables<RdBaseTerm>();
+            db.Deleteable<RdBaseTerm>()
+                .Where(it=>it.F_ID>1).IsLogic()
+                .ExecuteCommandAsync("F_DELETE_MARK", 1, "F_DELETE_TIME", "F_DELETE_USER_ID", "1")
+                .GetAwaiter().GetResult();
             Console.WriteLine("#### Deleteable End ####");
 
         }
+        public class RdBaseTerm
+        {
+            [SqlSugar.SugarColumn(IsPrimaryKey =true ,IsIdentity =true)]
+            public long F_ID { get; set; } // 假设F_ID是一个长整型字段，根据实际情况可以调整类型  
+            public int  F_DELETE_MARK { get; set; } // 假设F_DELETE_MARK是字符串类型，根据实际情况可以调整类型  
+            public DateTime? F_DELETE_TIME { get; set; } // 使用可空的DateTime类型，因为F_DELETE_TIME可能为空  
+            public string F_DELETE_USER_ID { get; set; } // 假设用户ID是字符串类型，根据实际情况可以调整类型  
 
+            // 可以根据需要添加其他表字段  
+        }
         public class LogicDeleteTezt 
         {
             public string Name { get; set; }
