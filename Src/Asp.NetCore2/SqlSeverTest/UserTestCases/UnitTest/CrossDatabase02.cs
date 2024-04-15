@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using SqlSugar;
 using System.Linq;
+using System.Net.Http.Headers;
 namespace OrmTest
 {
     public class CrossDatabase02
@@ -45,7 +46,28 @@ namespace OrmTest
 
 
             db.DbMaintenance.DropTable<UnitPkadfa2>();
+            db.CodeFirst.InitTables<UnitIndexaa>();
+            db.Aop.DataExecuting = (x, y) =>
+            {
+
+            };
+            db.Insertable(new UnitIndexaa() { id = 1 }).ExecuteCommand();
+            db.Updateable(new UnitIndexaa() { id = 1 }).ExecuteCommand();
         }
+
+        public class UnitIndexaa 
+        {
+             string[] ids = new string[] { };
+            [SugarColumn(IsIgnore =true)]
+            public object this[int i] 
+            {
+                get {
+                 return ids[i];
+                } 
+            }
+            public int id { get; set; }
+        }
+
         [SugarTable("UnitPkadfa")]
         public class UnitPkadfa1
         {
