@@ -671,7 +671,7 @@ namespace SqlSugar
                         }
                         else
                         {
-                            Json(readerValues, result, name, typeName);
+                            Json(readerValues, result, name, typeName,item);
                         }
                     }
                     else if (columns.Any(it => it.IsJson))
@@ -770,6 +770,24 @@ namespace SqlSugar
             else
             {
                 key = (shortName + "." + typeName + "." + name).ToLower();
+                if (readerValues.Any(it => it.Key.EqualCase(key)))
+                {
+                    var jsonString = readerValues.First(it => it.Key.EqualCase(key)).Value;
+                    AddJson(result, name, jsonString);
+                }
+            }
+        }
+        private void Json(Dictionary<string, object> readerValues, Dictionary<string, object> result, string name, string typeName, PropertyInfo item)
+        {
+            var key = (typeName + "." + name).ToLower();
+            if (readerValues.Any(it => it.Key.EqualCase(key)))
+            {
+                var jsonString = readerValues.First(it => it.Key.EqualCase(key)).Value;
+                AddJson(result, name, jsonString);
+            }
+            else
+            {
+                key = (item.Name + "."  + name).ToLower();
                 if (readerValues.Any(it => it.Key.EqualCase(key)))
                 {
                     var jsonString = readerValues.First(it => it.Key.EqualCase(key)).Value;
