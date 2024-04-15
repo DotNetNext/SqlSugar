@@ -1,6 +1,7 @@
 ﻿using SqlSugar;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace OrmTest
 {
@@ -40,6 +41,21 @@ namespace OrmTest
                     jsonname=SqlFunc.JsonField(it.Order,"Name")
                 })
                 .ToList();
+
+            var list3=db.Queryable<UnitJsonTest>().Select(it => new
+            {
+               
+                Order1 = new UnitJsonTest()
+                {
+                    Id=it.Id,
+                    Order = it.Order
+                }
+            }).ToList();
+
+            if (list3.First().Order1.Order == null|| list3.First().Order1.Order.Id==0) 
+            {
+                throw new Exception("unit error");
+            }
         }
 
         /// <summary>
