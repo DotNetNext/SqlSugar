@@ -77,6 +77,10 @@ namespace SqlSugar.TDengine
                         {
                             if (it.InsertServerTime || it.InsertSql.HasValue()||it.SqlParameterDbType is Type|| it?.PropertyType?.Name=="DateOnly" || it?.PropertyType?.Name == "TimeOnly")
                             {
+                                if (it.InsertServerTime) 
+                                {
+                                    return DateTime.Now.AddMilliseconds(i).ToString("yyyy-MM-dd HH:mm:ss.ffffff").ToSqlValue();
+                                }
                                 return GetDbColumn(it, null);
                             }
                             object value = null;
