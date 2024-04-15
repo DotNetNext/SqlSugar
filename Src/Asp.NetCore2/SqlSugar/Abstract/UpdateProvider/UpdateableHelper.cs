@@ -280,6 +280,10 @@ namespace SqlSugar
                             dataEvent(columnInfo.PropertyInfo.GetValue(data, null), new DataFilterModel() { OperationType = DataFilterType.UpdateByObject, EntityValue = item, EntityColumnInfo = columnInfo });
                         }
                     }
+                    else if (columnInfo.PropertyInfo.Name == "Item" && columnInfo.IsIgnore)
+                    {
+                        //class index
+                    }
                     else
                     {
                         dataEvent(columnInfo.PropertyInfo.GetValue(item, null), new DataFilterModel() { OperationType = DataFilterType.UpdateByObject, EntityValue = item, EntityColumnInfo = columnInfo });
