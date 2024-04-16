@@ -76,6 +76,19 @@ namespace SqlSugar
             result.Method = method;
             return result;
         }
+
+        public StorageableSplitTableMethodInfo AS(string tableName)
+        {
+            object objectValue = null;
+            MethodInfo method = GetSaveMethod(ref objectValue);
+            if (method == null) return new StorageableSplitTableMethodInfo(null);
+            method = objectValue.GetType().GetMyMethod("As",1);
+            objectValue = method.Invoke(objectValue, new object[] { tableName });
+            StorageableSplitTableMethodInfo result = new StorageableSplitTableMethodInfo(null);
+            result.ObjectValue = objectValue;
+            result.Method = method;
+            return result;
+        }
     }
 
     public class StorageableAsMethodInfo
