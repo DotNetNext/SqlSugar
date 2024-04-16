@@ -46,16 +46,16 @@ namespace OrmTest
 
 
             db.DbMaintenance.DropTable<UnitPkadfa2>();
-            db.CodeFirst.InitTables<UnitIndexaa>();
+            db.CodeFirst.InitTables<UnitIndexaa1>();
             db.Aop.DataExecuting = (x, y) =>
             {
 
             };
-            db.Insertable(new UnitIndexaa() { id = 1 }).ExecuteCommand();
-            db.Updateable(new UnitIndexaa() { id = 1 }).ExecuteCommand();
+            db.Insertable(new UnitIndexaa1() { id = 1 }).ExecuteCommand();
+            db.Updateable(new UnitIndexaa1() { id = 1 }).ExecuteCommand();
         }
 
-        public class UnitIndexaa 
+        public class UnitIndexaa1 
         {
              string[] ids = new string[] { };
             [SugarColumn(IsIgnore =true)]
@@ -65,7 +65,11 @@ namespace OrmTest
                  return ids[i];
                 } 
             }
+            [SugarColumn(IsPrimaryKey =true)]
             public int id { get; set; }
+            [SugarColumn(IsNullable =true)]
+
+            public string Name { get; set; }
         }
 
         [SugarTable("UnitPkadfa")]
