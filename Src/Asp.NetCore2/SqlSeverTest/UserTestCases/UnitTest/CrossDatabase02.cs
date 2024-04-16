@@ -51,6 +51,7 @@ namespace OrmTest
             {
 
             };
+            db.DbMaintenance.TruncateTable<UnitIndexaa1>();
             db.Insertable(new UnitIndexaa1() { id = 1 }).ExecuteCommand();
             db.Updateable(new UnitIndexaa1() { id = 1 }).ExecuteCommand();
         }
