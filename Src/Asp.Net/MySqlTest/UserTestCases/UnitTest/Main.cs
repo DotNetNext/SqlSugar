@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UnitDtoJsonafda.Init();
             UnitSubToList002.Init();
             UnitSubToList002.Init();
             UnitDateTimeOffset.Init();

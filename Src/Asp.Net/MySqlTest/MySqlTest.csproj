@@ -159,6 +159,7 @@
     <Compile Include="UserTestCases\UnitTest\UInsert.cs" />
     <Compile Include="UserTestCases\UnitTest\UInsert3.cs" />
     <Compile Include="UserTestCases\UnitTest\UnitCustom01.cs" />
+    <Compile Include="UserTestCases\UnitTest\Unitdfafa.cs" />
     <Compile Include="UserTestCases\UnitTest\UnitSameKeyBug.cs" />
     <Compile Include="UserTestCases\UnitTest\UnitSqlFunc.cs" />
     <Compile Include="UserTestCases\UnitTest\UnitSubToList.cs" />
