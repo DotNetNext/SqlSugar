@@ -667,7 +667,7 @@ namespace SqlSugar
                         if (mappingKeys != null && mappingKeys.ContainsKey(item.Name))
                         {
                             var key = mappingKeys[item.Name];
-                            Json(readerValues, result, name, typeName, key);
+                            Json(readerValues, result, name, typeName, key,item);
                         }
                         else
                         {
@@ -759,7 +759,7 @@ namespace SqlSugar
             return result;
         }
 
-        private void Json(Dictionary<string, object> readerValues, Dictionary<string, object> result, string name, string typeName, string shortName = null)
+        private void Json(Dictionary<string, object> readerValues, Dictionary<string, object> result, string name, string typeName, string shortName = null,PropertyInfo item=null)
         {
             var key = (typeName + "." + name).ToLower();
             if (readerValues.Any(it => it.Key.EqualCase(key)))
@@ -774,6 +774,15 @@ namespace SqlSugar
                 {
                     var jsonString = readerValues.First(it => it.Key.EqualCase(key)).Value;
                     AddJson(result, name, jsonString);
+                }
+                else if (item != null) 
+                {
+                    if (readerValues.Any(it => it.Key.EqualCase(item.Name + "." + name)))
+                    {
+                        var jsonString = readerValues.First(it => it.Key.EqualCase(item.Name + "." + name)).Value;
+                        AddJson(result, name, jsonString);
+                    
+                    }
                 }
             }
         }
