@@ -350,7 +350,8 @@ namespace SqlSugar
                     SqlParameterDbType = column.SqlParameterDbType,
                     TableId = i,
                     UpdateSql = column.UpdateSql,
-                    UpdateServerTime = column.UpdateServerTime
+                    UpdateServerTime = column.UpdateServerTime,
+                    IsPrimarykey=column.IsPrimarykey
                 };
                 if (columnInfo.PropertyType.IsEnum() && columnInfo.Value != null)
                 {

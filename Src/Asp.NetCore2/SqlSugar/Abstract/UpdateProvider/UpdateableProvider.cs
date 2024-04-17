@@ -29,7 +29,7 @@ namespace SqlSugar
         public bool IsSingle { get { return this.UpdateObjs.Length == 1; } }
         public List<MappingColumn> MappingColumnList { get; set; }
         private List<string> IgnoreColumnNameList { get; set; }
-        private List<string> WhereColumnList { get; set; }
+        internal List<string> WhereColumnList { get; set; }
         private bool IsWhereColumns { get; set; }
         private bool IsOffIdentity { get; set; }
         private bool IsVersionValidation { get; set; }
@@ -380,6 +380,7 @@ namespace SqlSugar
             var ignoreColumns = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.ArraySingle).GetResultArray().Select(it => this.SqlBuilder.GetNoTranslationColumnName(it).ToLower()).ToList();
             this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => !ignoreColumns.Contains(it.PropertyName.ToLower())).ToList();
             this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => !ignoreColumns.Contains(it.DbColumnName.ToLower())).ToList();
+            this.UpdateBuilder.IgnoreColumns = ignoreColumns;
             return this;
         }
         public IUpdateable<T> IgnoreColumnsIF(bool IsIgnore, Expression<Func<T, object>> columns)
@@ -403,6 +404,7 @@ namespace SqlSugar
             if (columns.HasValue())
             {
                 var ignoreColumns = columns.Select(it => it.ToLower()).ToList();
+                this.UpdateBuilder.IgnoreColumns = ignoreColumns;
                 this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => !ignoreColumns.Contains(it.PropertyName.ToLower())).ToList();
                 this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => !ignoreColumns.Contains(it.DbColumnName.ToLower())).ToList();
             }
@@ -965,7 +967,14 @@ namespace SqlSugar
             result.Where(sql.Key, sql.Value);
             return result;
         }
-
+        public ParameterUpdateable<T> UseParameter() 
+        {
+            ThrowUpdateByExpressionByMesage(ErrorMessage.GetThrowMessage("UseParameter can only be updated through entity objects", "UseParameter只能通过实体对象更新，不能是表达式方式更新"));
+            ParameterUpdateable<T> parameter = new ParameterUpdateable<T>();
+            parameter.Context = this.Context;
+            parameter.Updateable =(UpdateableProvider<T>)this;
+            return parameter;
+        }
         public IUpdateable<T> In(object[] ids) 
         {
             ThrowUpdateByObjectByMesage(" In(object[] ids) ");
