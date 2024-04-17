@@ -36,6 +36,7 @@ namespace SqlSugar
         public bool IsWhereColumns { get; set; }
         public  bool? IsListUpdate { get; set; }
         public List<string> UpdateColumns { get; set; }
+        public List<string> IgnoreColumns { get; set; }
         public List<JoinQueryInfo> JoinInfos { get; set; }
         public  string ShortName { get; set; }
         public Dictionary<string, ReSetValueBySqlExpListModel> ReSetValueBySqlExpList { get;  set; }

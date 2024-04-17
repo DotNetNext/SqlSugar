@@ -154,6 +154,7 @@
     <Compile Include="Abstract\SqlBuilderProvider\SqlBuilderProvider_Condition.cs" />
     <Compile Include="Abstract\SugarProvider\SqlSugarCoreProvider.cs" />
     <Compile Include="Abstract\DeleteProvider\DeleteMethodInfo.cs" />
+    <Compile Include="Abstract\UpdateProvider\ParameterUpdateable.cs" />
     <Compile Include="Abstract\UpdateProvider\UpdateableFilter.cs" />
     <Compile Include="Abstract\UpdateProvider\UpdateablePage.cs" />
     <Compile Include="Abstract\UpdateProvider\UpdateableProviderT2.cs" />
