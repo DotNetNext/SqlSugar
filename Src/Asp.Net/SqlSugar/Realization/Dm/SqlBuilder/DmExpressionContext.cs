@@ -110,38 +110,38 @@ namespace SqlSugar
                     return string.Format("(CAST(TO_CHAR({0},'dd') AS NUMBER))", parameter.MemberName);
             }
         }
-        public override string DateAddByType(MethodCallExpressionModel model)
-        {
-            var parameter = model.Args[0];
-            var parameter2 = model.Args[1];
-            var parameter3 = model.Args[2];
-            var type = (DateType)Enum.Parse(typeof(DateType), parameter3.MemberValue.ObjToString(), false);
-            double time = 1;
-            switch (type)
-            {
-                case DateType.Year:
-                    time = 1 * 365;
-                    break;
-                case DateType.Month:
-                    time = 1 * 30;
-                    break;
-                case DateType.Day:
-                    break;
-                case DateType.Hour:
-                    time = 1 / 24.0;
-                    break;
-                case DateType.Second:
-                    time = 1 / 24.0 / 60.0 / 60.0;
-                    break;
-                case DateType.Minute:
-                    time = 1 / 24.0 / 60.0;
-                    break;
-                case DateType.Millisecond:
-                    time = 1 / 24.0 / 60.0 / 60.0 / 1000;
-                    break;
-            }
-            return string.Format("({0}+({1}*{2})) ", parameter.MemberName, time, parameter2.MemberName);
-        }
+        //public override string DateAddByType(MethodCallExpressionModel model)
+        //{
+        //    var parameter = model.Args[0];
+        //    var parameter2 = model.Args[1];
+        //    var parameter3 = model.Args[2];
+        //    var type = (DateType)Enum.Parse(typeof(DateType), parameter3.MemberValue.ObjToString(), false);
+        //    double time = 1;
+        //    switch (type)
+        //    {
+        //        case DateType.Year:
+        //            time = 1 * 365;
+        //            break;
+        //        case DateType.Month:
+        //            time = 1 * 30;
+        //            break;
+        //        case DateType.Day:
+        //            break;
+        //        case DateType.Hour:
+        //            time = 1 / 24.0;
+        //            break;
+        //        case DateType.Second:
+        //            time = 1 / 24.0 / 60.0 / 60.0;
+        //            break;
+        //        case DateType.Minute:
+        //            time = 1 / 24.0 / 60.0;
+        //            break;
+        //        case DateType.Millisecond:
+        //            time = 1 / 24.0 / 60.0 / 60.0 / 1000;
+        //            break;
+        //    }
+        //    return string.Format("({0}+({1}*{2})) ", parameter.MemberName, time, parameter2.MemberName);
+        //}
 
         public override string DateAddDay(MethodCallExpressionModel model)
         {
