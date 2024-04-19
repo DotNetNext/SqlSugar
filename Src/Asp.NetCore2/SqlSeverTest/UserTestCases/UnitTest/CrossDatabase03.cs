@@ -5,16 +5,17 @@ using SqlSugar;
 using System.Linq;
 namespace OrmTest
 {
-    public class CrossDatabase01
+    public class CrossDatabase03
     {
         public static void Init()
         {
             var db = new SqlSugarClient(new List<ConnectionConfig>()
             {
-                new ConnectionConfig(){ConfigId="OrderDb",DbType=DbType.SqlServer,ConnectionString="server=.;uid=sa;pwd=sasa;database=SQLSUGAR4XTEST",IsAutoCloseConnection=true},
-                new ConnectionConfig(){ConfigId="OrderItemDb",DbType=DbType.SqlServer,ConnectionString="server=.;uid=sa;pwd=sasa;database=SQLSUGAR4XTEST2",IsAutoCloseConnection=true  }
+                new ConnectionConfig(){ConfigId="OrderDb",DbType=DbType.SqlServer,ConnectionString="server=.;uid=sa;pwd=sasa;database=SQLSUGAR4XTEST.a",IsAutoCloseConnection=true},
+                new ConnectionConfig(){ConfigId="OrderItemDb",DbType=DbType.SqlServer,ConnectionString="server=.;uid=sa;pwd=sasa;database=SQLSUGAR4XTEST2.a",IsAutoCloseConnection=true  }
             });
-
+            db.GetConnection("OrderDb").DbMaintenance.CreateDatabase();
+            db.GetConnection("OrderItemDb").DbMaintenance.CreateDatabase();
             db.Aop.OnLogExecuting = (sql, p) =>Console.WriteLine( UtilMethods.GetNativeSql(sql, p));
 
             db.GetConnection("OrderDb").CodeFirst.InitTables<Order>();
@@ -25,15 +26,10 @@ namespace OrmTest
 
             db.GetConnection("OrderDb").Insertable(new Order() { Id = 1, CreateTime = DateTime.Now, Name = "a", Price = 10, CustomId = 1 }).ExecuteCommand();
             db.GetConnection("OrderItemDb").Insertable(new OrderItem() { OrderId = 1, CreateTime = DateTime.Now, Price = 10 }).ExecuteCommand();
-           
-            db.Queryable<Order>().AsWithAttr()
-           .LeftJoin<OrderItem>((x, y) => x.Id == y.OrderId)
-           .ToList();
 
-            db.Queryable<Order>()
-                .Select(it => new { 
-                 x= SqlFunc.Subqueryable<OrderItem>().AsWithAttr().Select(s => s.OrderId)
-                })
+
+            db.Queryable<Order>().AsWithAttr()
+                .LeftJoin<OrderItem>((x,y)=>x.Id==y.OrderId)
                 .ToList();
     
         }
