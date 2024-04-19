@@ -1351,10 +1351,13 @@ namespace SqlSugar
             if (attr != null && configId != attr.configId.ObjToString())
             {
                 var dbName = this.Context.Root.GetConnection(attr.configId).Ado.Connection.Database;
+                var guidPoint = Guid.NewGuid().ObjToString();
+                dbName=dbName.Replace(".", guidPoint);
                 tableName = this.Context.Root.GetConnection(attr.configId).EntityMaintenance.GetEntityInfo(entity.Type).DbTableName;
                 oldTableName = tableName;
                 tableName = this.QueryBuilder.LambdaExpressions.DbMehtods.GetTableWithDataBase
                 (this.QueryBuilder.Builder.GetTranslationColumnName(dbName), this.QueryBuilder.Builder.GetTranslationColumnName(tableName));
+                tableName = tableName.Replace(guidPoint, ".");
             }
 
             if (attr != null && configId != attr.configId.ObjToString())
