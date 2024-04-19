@@ -97,6 +97,10 @@ namespace SqlSugar
                             {
                                 return FormatValue(it.Value,it.PropertyName,i,it);
                             }
+                            else if (it.Value is byte[])
+                            {
+                                return FormatValue(it.Value, it.PropertyName, i, it);
+                            }
                             else
                             {
                                 value = it.Value;
@@ -125,7 +129,7 @@ namespace SqlSugar
             else
             {
                 var type = value.GetType();
-                if (type == UtilConstants.DateType || columnInfo.IsArray || columnInfo.IsJson)
+                if (type == UtilConstants.ByteArrayType||type == UtilConstants.DateType || columnInfo.IsArray || columnInfo.IsJson)
                 {
                     var parameterName = this.Builder.SqlParameterKeyWord + name + i;
                     var paramter = new SugarParameter(parameterName, value);
