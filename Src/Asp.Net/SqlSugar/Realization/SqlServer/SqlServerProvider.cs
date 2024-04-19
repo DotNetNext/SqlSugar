@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NpgsqlTypes;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -178,7 +179,10 @@ namespace SqlSugar
                 {
                     sqlParameter.DbType = System.Data.DbType.AnsiString;
                 }
-
+                if (parameter.CustomDbType != null && parameter.CustomDbType is SqlDbType)
+                {
+                    sqlParameter.SqlDbType = ((SqlDbType)parameter.CustomDbType);
+                }
                 ++index;
             }
             return result;
