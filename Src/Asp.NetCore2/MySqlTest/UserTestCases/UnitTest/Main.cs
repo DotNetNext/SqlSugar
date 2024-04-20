@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            Unitadfad1.Init();
             UnitWeek.Init();
             UnitTest.Init();
             Unitdfasfasfa.Init();
