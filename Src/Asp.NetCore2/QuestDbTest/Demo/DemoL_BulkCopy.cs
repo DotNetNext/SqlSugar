@@ -54,6 +54,19 @@ namespace OrmTest
             bulkCopyTests.Add(new BulkCopyTest2() { Id = SnowFlakeSingle.Instance.NextId(), DateTime = DateTime.Now });
             var rows = db.RestApi().BulkCopy(bulkCopyTests);
             var list2 = db.Queryable<BulkCopyTest2>().Take(2).ToList();
+            db.CodeFirst.InitTables<Bulkafda1>();
+            db.DbMaintenance.TruncateTable<Bulkafda1>();
+            db.RestApi().BulkCopy(new List<Bulkafda1>() { 
+             new Bulkafda1(){ Id=1, DbType=DbType.GaussDB},
+                    new Bulkafda1(){ Id=2, DbType=DbType.Sqlite}
+            });
+            var list3=db.Queryable<Bulkafda1>().ToList();
+        }
+        public class Bulkafda1 
+        {
+            [SugarColumn(IsPrimaryKey =true)]
+            public long Id { get; set; }
+            public DbType DbType { get; set; }
         }
         public class BulkCopyTest 
         {
