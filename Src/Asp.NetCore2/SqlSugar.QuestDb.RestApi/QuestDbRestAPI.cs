@@ -197,12 +197,18 @@ namespace SqlSugar
         private void CsvCreating<T>(CsvWriter csv) where T : class, new()
         {
             var entityColumns = db.EntityMaintenance.GetEntityInfo<T>().Columns;
-            if (entityColumns.Any(it => it.IsIgnore))
+            if (entityColumns.Any(it => it.IsIgnore||it.UnderType?.IsEnum==true))
             {
                 var customMap = new DefaultClassMap<T>();
                 foreach (var item in entityColumns.Where(it => !it.IsIgnore))
                 {
-                    customMap.Map(typeof(T), item.PropertyInfo).Name(item.PropertyName);
+                    var memberMap = customMap.Map(typeof(T), item.PropertyInfo).Name(item.PropertyName);
+                    if (item.UnderType?.IsEnum==true
+                        &&item.SqlParameterDbType==null
+                        &&db.CurrentConnectionConfig?.MoreSettings?.TableEnumIsString!=true) 
+                    {
+                        memberMap.TypeConverter<CsvHelperEnumToIntConverter>();
+                    }
                 }
                 csv.Context.RegisterClassMap(customMap);
             }
