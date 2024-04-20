@@ -170,6 +170,10 @@ namespace SqlSugar
                 {
                     return GetString(value);
                 }
+                else if (type == UtilConstants.FloatType) 
+                {
+                    return  "cast('"+GetString(value)+"' as float)";
+                }
                 else if (type == UtilConstants.BoolType)
                 {
                     return value.ObjToBool() ? "1" : "0";
@@ -177,13 +181,13 @@ namespace SqlSugar
                 else if (type == UtilConstants.StringType || type == UtilConstants.ObjType)
                 {
                     ++i;
-                    var parameterName = this.Builder.SqlParameterKeyWord + name +"_"+ i;
+                    var parameterName = this.Builder.SqlParameterKeyWord + name + "_" + i;
                     this.Parameters.Add(new SugarParameter(parameterName, value));
                     return parameterName;
                 }
                 else
                 {
-                    return n+"'" + GetString(value) + "'";
+                    return n + "'" + GetString(value) + "'";
                 }
             }
         }
