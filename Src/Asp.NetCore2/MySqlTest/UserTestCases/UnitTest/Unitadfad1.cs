@@ -11,7 +11,7 @@ namespace OrmTest
     {
         public static void Init()
         {
-            var db =NewUnitTest.Db;
+            var db =NewUnitTest.Db; 
             db.CodeFirst.InitTables(typeof(TestA));
             db.DbMaintenance.TruncateTable<TestA>();
             db.Insertable(new List<TestA>() { new TestA() { Id = 1, Count = 1.212f }, new TestA() { Id = 1, Count = 1.212f } }).ExecuteReturnSnowflakeId    ();
@@ -40,7 +40,7 @@ namespace OrmTest
         /// <summary>
         /// 容量或数量
         /// </summary>
-        [SugarColumn(ColumnDescription = "容量或数量")]
+        [SugarColumn(ColumnDescription = "容量或数量",Length =10,DecimalDigits =6)]
         public float Count { get; set; } = 0;
     }
 }
