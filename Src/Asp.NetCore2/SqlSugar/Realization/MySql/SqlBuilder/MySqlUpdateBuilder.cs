@@ -169,11 +169,7 @@ namespace SqlSugar
                 else if (type == UtilConstants.IntType)
                 {
                     return GetString(value);
-                }
-                else if (type == UtilConstants.FloatType) 
-                {
-                    return  "cast('"+GetString(value)+"' as float)";
-                }
+                } 
                 else if (type == UtilConstants.BoolType)
                 {
                     return value.ObjToBool() ? "1" : "0";
