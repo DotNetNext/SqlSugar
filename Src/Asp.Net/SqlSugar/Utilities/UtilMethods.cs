@@ -1552,10 +1552,18 @@ namespace SqlSugar
                     else if (item.Value is DateTime)
                     {
                         result = result.Replace(item.ParameterName, "'"+item.Value.ObjToDate().ToString("yyyy-MM-dd HH:mm:ss.fff")+"'");
+                    } 
+                    else if (item.IsArray)
+                    {
+                        result = result.Replace(item.ParameterName, "'{" + new SerializeService().SerializeObject(item.Value).TrimStart('[').TrimEnd(']') + "}'");
+                    }
+                    else if (item.Value is byte[]&&connectionConfig.DbType==DbType.PostgreSQL)
+                    {
+                        result = result.Replace(item.ParameterName, "E'0x" + BitConverter.ToString((byte[])item.Value).Replace("-", "")+"'" );
                     }
                     else if (item.Value is byte[])
                     {
-                        result = result.Replace(item.ParameterName, "0x" + BitConverter.ToString((byte[])item.Value));
+                        result = result.Replace(item.ParameterName, "0x" + BitConverter.ToString((byte[])item.Value).Replace("-",""));
                     }
                     else if (item.Value is bool)
                     {
@@ -1577,10 +1585,6 @@ namespace SqlSugar
                     else if (connectionConfig.MoreSettings?.DisableNvarchar == true || item.DbType == System.Data.DbType.AnsiString || connectionConfig.DbType == DbType.Sqlite)
                     {
                         result = result.Replace(item.ParameterName, $"'{item.Value.ObjToString().ToSqlFilter()}'");
-                    }
-                    else if (item.IsArray)
-                    {
-                        result = result.Replace(item.ParameterName, "'{" + new SerializeService().SerializeObject(item.Value).TrimStart('[').TrimEnd(']') + "}'");
                     }
                     else
                     {
