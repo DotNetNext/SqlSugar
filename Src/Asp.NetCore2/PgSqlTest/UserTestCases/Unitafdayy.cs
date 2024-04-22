@@ -40,6 +40,10 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+
+            var  sql =   db.Insertable(list).ToSqlString();
+            db.Ado.ExecuteCommand(sql);
+            var xx=db.Queryable<TestRemoveCache>().ToList();
         }
 
         /// <summary>
