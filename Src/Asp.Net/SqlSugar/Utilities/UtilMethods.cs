@@ -1578,6 +1578,10 @@ namespace SqlSugar
                     {
                         result = result.Replace(item.ParameterName, $"'{item.Value.ObjToString().ToSqlFilter()}'");
                     }
+                    else if (item.IsArray)
+                    {
+                        result = result.Replace(item.ParameterName, "'{" + new SerializeService().SerializeObject(item.Value).TrimStart('[').TrimEnd(']') + "}'");
+                    }
                     else
                     {
                         result = result.Replace(item.ParameterName, $"N'{item.Value.ObjToString().ToSqlFilter()}'");
