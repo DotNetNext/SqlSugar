@@ -66,6 +66,10 @@ namespace SqlSugar
         public virtual KeyValuePair<string, List<SugarParameter>> ToSql()
         {
             InsertBuilder.IsReturnIdentity = true;
+            if (this.SqlBuilder.SqlParameterKeyWord == ":" && !this.EntityInfo.Columns.Any(it => it.IsIdentity))
+            {
+                InsertBuilder.IsReturnIdentity = false;
+            }
             PreToSql();
             AutoRemoveDataCache();
             string sql = InsertBuilder.ToSqlString();
