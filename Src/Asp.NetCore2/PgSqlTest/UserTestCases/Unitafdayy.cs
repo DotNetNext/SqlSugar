@@ -24,7 +24,7 @@ namespace OrmTest
                 {
                     arr_col = new int[] { i + 1, i + 2, i + 3 },
                     json_col = new List<int> { i + 1, i + 2, i + 3 },
-                    byte_col = new byte[] { 1, 2, 3 },
+                    byte_col = new byte[] { 1,2,3},
                     int_col = 1
                 });
             }
@@ -40,7 +40,7 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
-
+            list[0].byte_col = new byte[] { 10, 19, 16, 144, 78, 26, 5, 49, 45, 49, 45, 51, 40, 1, 66, 0, 72, 1, 80, 232, 7 };
             var  sql =   db.Insertable(list).ToSqlString();
             db.Ado.ExecuteCommand(sql);
             var xx=db.Queryable<TestRemoveCache>().ToList();
