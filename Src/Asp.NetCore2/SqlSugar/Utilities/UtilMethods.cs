@@ -1595,15 +1595,24 @@ namespace SqlSugar
 
             return result;
         }
-        public static string ByteArrayToPostgreByteaLiteral(byte[] bytes)
+        public static string ByteArrayToPostgreByteaLiteral(byte[] data)
         {
-            StringBuilder sb = new StringBuilder("E'");
-            foreach (byte b in bytes)
+            var sb = new StringBuilder("E'");
+
+            foreach (var b in data)
             {
-                sb.Append("\\");
-                sb.Append(b.ToString("D3")); // 转换为3位八进制数，并添加双反斜杠  
+                if (b >= 32 && b < 127 && !char.IsControl((char)b)) // 可打印的ASCII字符  
+                {
+                    sb.Append((char)b);
+                }
+                else // 非打印字符或控制字符  
+                {
+                    sb.Append("\\\\");
+                    sb.Append(Convert.ToString(b, 8).PadLeft(3, '0'));
+                }
             }
-            sb.Append("'"); // 结尾添加单引号  
+
+            sb.Append("'::bytea");
             return sb.ToString();
         }
         public static void CheckArray<T>(T[] insertObjs) where T : class, new()
