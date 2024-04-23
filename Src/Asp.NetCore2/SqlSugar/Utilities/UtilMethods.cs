@@ -1559,7 +1559,7 @@ namespace SqlSugar
                     }
                     else if (item.Value is byte[]&&connectionConfig.DbType==DbType.PostgreSQL)
                     {
-                        result = result.Replace(item.ParameterName, "E'0x" + BitConverter.ToString((byte[])item.Value).Replace("-", "")+"'" );
+                        result = result.Replace(item.ParameterName, ByteArrayToPostgreByteaLiteral(item.Value as byte[]));
                     }
                     else if (item.Value is byte[])
                     {
@@ -1595,7 +1595,17 @@ namespace SqlSugar
 
             return result;
         }
-
+        public static string ByteArrayToPostgreByteaLiteral(byte[] bytes)
+        {
+            StringBuilder sb = new StringBuilder("E'");
+            foreach (byte b in bytes)
+            {
+                sb.Append("\\");
+                sb.Append(b.ToString("D3")); // 转换为3位八进制数，并添加双反斜杠  
+            }
+            sb.Append("'"); // 结尾添加单引号  
+            return sb.ToString();
+        }
         public static void CheckArray<T>(T[] insertObjs) where T : class, new()
         {
 
