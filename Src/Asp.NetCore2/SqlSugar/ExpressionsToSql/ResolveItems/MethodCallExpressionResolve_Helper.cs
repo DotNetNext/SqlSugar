@@ -450,10 +450,13 @@ namespace SqlSugar
             {
                 IsMember = parameter.ChildExpression is MemberExpression && !ExpressionTool.IsConstExpression(parameter.ChildExpression as MemberExpression),
                 MemberName = parameter.CommonTempData
-            };
-            if (methodCallExpressionArgs.MemberName is string)
+            }; 
+            if (this.Context?.SugarContext?.Context?.CurrentConnectionConfig?.MoreSettings?.IsCorrectErrorSqlParameterName == true)
             {
-                methodCallExpressionArgs.MemberName = ExpressionTool.ResolveMemberValue(this.Context, item, methodCallExpressionArgs.MemberName?.ToString());
+                if (methodCallExpressionArgs.MemberName is string)
+                {
+                    methodCallExpressionArgs.MemberName = ExpressionTool.ResolveMemberValue(this.Context, item, methodCallExpressionArgs.MemberName?.ToString());
+                }
             }
             if (methodCallExpressionArgs.MemberName is MapperSql)
             {

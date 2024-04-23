@@ -386,7 +386,10 @@ namespace SqlSugar
                 this.Start();
                 parameter.IsAppendResult();
                 var value = parameter.CommonTempData.ObjToString();
-                value =ExpressionTool.ResolveMemberValue(this.Context,item, value);
+                if (this.Context?.SugarContext?.Context?.CurrentConnectionConfig?.MoreSettings?.IsCorrectErrorSqlParameterName == true)
+                {
+                    value = ExpressionTool.ResolveMemberValue(this.Context, item, value);
+                }
                 this.Context.Result.Append(this.Context.GetAsString2(asName, value));
                 this.Context.Result.CurrentParameter = null;
             }
