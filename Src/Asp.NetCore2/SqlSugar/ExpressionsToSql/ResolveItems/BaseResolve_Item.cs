@@ -385,9 +385,30 @@ namespace SqlSugar
                 }
                 this.Start();
                 parameter.IsAppendResult();
-                this.Context.Result.Append(this.Context.GetAsString2(asName, parameter.CommonTempData.ObjToString()));
+                var value = parameter.CommonTempData.ObjToString();
+                value = ResolveMemberValue(item, value);
+                this.Context.Result.Append(this.Context.GetAsString2(asName, value));
                 this.Context.Result.CurrentParameter = null;
             }
+        }
+
+        protected string ResolveMemberValue(Expression item, string value)
+        {
+            if (item is MemberExpression member)
+            {
+                if (member.Expression is ParameterExpression parameterExpression)
+                {
+                    if (value != null && value.Contains("(") && !value.Contains(" "))
+                    {
+                        var guid = Guid.NewGuid() + "";
+                        var guid2 = Guid.NewGuid() + "";
+                        value = value.Replace("(", guid).Replace(")", guid2);
+                        value = this.Context.GetTranslationColumnName(value);
+                        value = value.Replace(guid, "(").Replace(guid2, ")");
+                    }
+                }
+            } 
+            return value;
         }
 
         private void ResolveMemberConst(ExpressionParameter parameter, Expression item, string asName)
