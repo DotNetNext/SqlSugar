@@ -10,7 +10,24 @@ namespace SqlSugar
 {
     public class ExpressionTool
     {
-
+        internal static string ResolveMemberValue(ExpressionContext context, Expression item, string value)
+        {
+            if (item is MemberExpression member)
+            {
+                if (member.Expression is ParameterExpression parameterExpression)
+                {
+                    if (value != null && value.Contains("(") && !value.Contains(" "))
+                    {
+                        var guid = Guid.NewGuid() + "";
+                        var guid2 = Guid.NewGuid() + "";
+                        value = value.Replace("(", guid).Replace(")", guid2);
+                        value = context.GetTranslationColumnName(value);
+                        value = value.Replace(guid, "(").Replace(guid2, ")");
+                    }
+                }
+            }
+            return value;
+        }
         internal static Expression GetConditionalExpression(Expression item)
         {
             ConstantExpression trueConstant = Expression.Constant(true, typeof(bool));
