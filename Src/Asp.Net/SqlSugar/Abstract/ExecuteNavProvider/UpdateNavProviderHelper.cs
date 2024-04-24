@@ -73,7 +73,8 @@ namespace SqlSugar
         private void InsertDatas<TChild>(List<TChild> children, EntityColumnInfo pkColumn, EntityColumnInfo NavColumn = null) where TChild : class, new()
         {
             children = children.Distinct().ToList();
-            var x = this._Context.Storageable(children).WhereColumns(new string[] { pkColumn.PropertyName }).ToStorage();
+            Check.ExceptionEasy(pkColumn == null, typeof(TChild).Name + " has no primary key", typeof(TChild).Name + "没有主键");
+;           var x = this._Context.Storageable(children).WhereColumns(new string[] { pkColumn.PropertyName }).ToStorage();
             var insertData  = x.InsertList.Select(it => it.Item).ToList();
             var updateData  = x.UpdateList.Select(it => it.Item).ToList();
             Check.ExceptionEasy(pkColumn == null && NavColumn == null, $"The entity is invalid", $"实体错误无法使用导航");
