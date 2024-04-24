@@ -322,7 +322,7 @@ namespace SqlSugar
                 while (parentId != null && this.Context.Queryable<T>().AS(tableName).WithCacheIF(this.IsCache, this.CacheTime).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).ClearFilter(this.QueryBuilder.RemoveFilters).In(parentId).Any())
                 {
                     Check.Exception(i > 200, ErrorMessage.GetThrowMessage("Dead cycle", "出现死循环或超出循环上限（200），检查最顶层的ParentId是否是null或者0"));
-                    var parent = this.Context.Queryable<T>().AS(tableName).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).InSingle(parentId);
+                    var parent = this.Context.Queryable<T>().AS(tableName).WithCacheIF(this.IsCache, this.CacheTime).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).InSingle(parentId);
                     result.Add(parent);
                     parentId = ParentInfo.PropertyInfo.GetValue(parent, null);
                     ++i;
