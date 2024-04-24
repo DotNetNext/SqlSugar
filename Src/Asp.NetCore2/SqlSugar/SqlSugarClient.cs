@@ -25,7 +25,7 @@ namespace SqlSugar
         private MappingColumnList _MappingColumns;
         private IgnoreColumnList _IgnoreColumns;
         private IgnoreColumnList _IgnoreInsertColumns;
-
+        private Action<SqlSugarClient> _configAction;
 
         internal Guid? AsyncId { get; set; }
         internal bool? IsSingleInstance { get; set; }
@@ -50,6 +50,7 @@ namespace SqlSugar
         }
         public SqlSugarClient(ConnectionConfig config ,Action<SqlSugarClient> configAction)
         {
+            _configAction=configAction;
             Check.Exception(config == null, "ConnectionConfig config is null");
             InitContext(config);
             configAction(this);
@@ -57,6 +58,7 @@ namespace SqlSugar
 
         public SqlSugarClient(List<ConnectionConfig> configs, Action<SqlSugarClient> configAction)
         {
+            _configAction = configAction;
             Check.Exception(configs.IsNullOrEmpty(), "List<ConnectionConfig> configs is null or count=0");
             InitConfigs(configs);
             var config = configs.First();
@@ -1240,7 +1242,7 @@ namespace SqlSugar
         }
         public SqlSugarClient CopyNew()
         {
-            var result= new SqlSugarClient(UtilMethods.CopyConfig(this.Ado.Context.CurrentConnectionConfig));
+            var result= new SqlSugarClient(UtilMethods.CopyConfig(this.Ado.Context.CurrentConnectionConfig),_configAction);
             result.QueryFilter = this.QueryFilter;
             if (_AllClients != null) 
             {
