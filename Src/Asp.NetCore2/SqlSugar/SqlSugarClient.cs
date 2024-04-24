@@ -1242,7 +1242,11 @@ namespace SqlSugar
         }
         public SqlSugarClient CopyNew()
         {
-            var result= new SqlSugarClient(UtilMethods.CopyConfig(this.Ado.Context.CurrentConnectionConfig),_configAction);
+            SqlSugarClient result;
+            if(_configAction!=null)
+                result=new SqlSugarClient(UtilMethods.CopyConfig(this.Ado.Context.CurrentConnectionConfig),_configAction);
+            else
+                result = new SqlSugarClient(UtilMethods.CopyConfig(this.Ado.Context.CurrentConnectionConfig));
             result.QueryFilter = this.QueryFilter;
             if (_AllClients != null) 
             {
