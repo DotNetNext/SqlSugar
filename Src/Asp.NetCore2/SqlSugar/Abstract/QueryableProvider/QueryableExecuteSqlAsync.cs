@@ -573,7 +573,10 @@ ParameterT parameter)
             result = result.Where(it => it.GetType().GetProperty(name).GetValue(it).ObjToString() == pkValue.ObjToString()).ToList();
             return result;
         }
-       
+        public async Task<Dictionary<string, ValueType>> ToDictionaryAsync<ValueType>(Expression<Func<T, object>> key, Expression<Func<T, object>> value)
+        {
+            return  (await  this.ToDictionaryAsync(key, value)).ToDictionary(it => it.Key, it => (ValueType)UtilMethods.ChangeType2(it.Value, typeof(ValueType)));
+        }
         public async Task<Dictionary<string, object>> ToDictionaryAsync(Expression<Func<T, object>> key, Expression<Func<T, object>> value)
         {
             if (this.QueryBuilder.IsSingle() == false && (this.QueryBuilder.AsTables == null || this.QueryBuilder.AsTables.Count == 0))

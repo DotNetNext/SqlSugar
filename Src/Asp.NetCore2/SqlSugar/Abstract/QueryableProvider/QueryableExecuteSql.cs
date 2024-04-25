@@ -468,7 +468,10 @@ namespace SqlSugar
             totalPage = (totalNumber + pageSize - 1) / pageSize;
             return result;
         }
-
+        public Dictionary<string, ValueType> ToDictionary<ValueType>(Expression<Func<T, object>> key, Expression<Func<T, object>> value)
+        {
+            return this.ToDictionary(key, value).ToDictionary(it => it.Key, it => (ValueType)UtilMethods.ChangeType2(it.Value, typeof(ValueType)));
+        }
         public Dictionary<string, object> ToDictionary(Expression<Func<T, object>> key, Expression<Func<T, object>> value)
         {
             if (this.QueryBuilder.IsSingle() == false && (this.QueryBuilder.AsTables == null||this.QueryBuilder.AsTables.Count==0)) 
