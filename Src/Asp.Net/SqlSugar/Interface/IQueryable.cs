@@ -216,8 +216,10 @@ namespace SqlSugar
         List<T> SetContext<ParameterT>(Expression<Func<T, object>> thisFiled1, Expression<Func<object>> mappingFiled1, Expression<Func<T, object>> thisFiled2, Expression<Func<object>> mappingFiled2, ParameterT parameter);
         Task <List<T>> SetContextAsync<ParameterT>(Expression<Func<T, object>> thisFiled, Expression<Func<object>> mappingFiled, ParameterT parameter);
         Task<List<T>> SetContextAsync<ParameterT>(Expression<Func<T, object>> thisFiled1, Expression<Func<object>> mappingFiled1, Expression<Func<T, object>> thisFiled2, Expression<Func<object>> mappingFiled2, ParameterT parameter);
+        Dictionary<string, ValueType> ToDictionary<ValueType>(Expression<Func<T, object>> key, Expression<Func<T, object>> value);
         Dictionary<string, object> ToDictionary(Expression<Func<T, object>> key, Expression<Func<T, object>> value);
         Task<Dictionary<string, object>> ToDictionaryAsync(Expression<Func<T, object>> key, Expression<Func<T, object>> value);
+        Task<Dictionary<string, ValueType>> ToDictionaryAsync<ValueType>(Expression<Func<T, object>> key, Expression<Func<T, object>> value);
         List<Dictionary<string, object>> ToDictionaryList();
         Task<List<Dictionary<string, object>>> ToDictionaryListAsync();
 
