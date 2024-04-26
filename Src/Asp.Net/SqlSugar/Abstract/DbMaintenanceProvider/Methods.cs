@@ -338,9 +338,34 @@ namespace SqlSugar
                 }
                 var dt = new Dictionary<string, object>();
                 dt.Add(columnInfo.DbColumnName, value);
-                this.Context.Updateable(dt)
-                             .AS(tableName)
-                             .Where($"{this.SqlBuilder.GetTranslationColumnName(columnInfo.DbColumnName)} is null ").ExecuteCommand();
+                if (columnInfo.DataType.EqualCase("json") && columnInfo.DefaultValue?.Contains("}") == true)
+                {
+                    {
+                        dt[columnInfo.DbColumnName] = "{}";
+                        var sqlobj = this.Context.Updateable(dt)
+                        .AS(tableName)
+                        .Where($"{this.SqlBuilder.GetTranslationColumnName(columnInfo.DbColumnName)} is null ").ToSql();
+                        sqlobj.Value[0].IsJson = true;
+                        this.Context.Ado.ExecuteCommand(sqlobj.Key, sqlobj.Value);
+                    }
+                }
+                else if (columnInfo.DataType.EqualCase("json") && columnInfo.DefaultValue?.Contains("}") == true)
+                {
+                    {
+                        dt[columnInfo.DbColumnName] = "[]";
+                        var sqlobj = this.Context.Updateable(dt)
+                        .AS(tableName)
+                        .Where($"{this.SqlBuilder.GetTranslationColumnName(columnInfo.DbColumnName)} is null ").ToSql();
+                        sqlobj.Value[0].IsJson = true;
+                        this.Context.Ado.ExecuteCommand(sqlobj.Key, sqlobj.Value);
+                    }
+                }
+                else
+                {
+                    this.Context.Updateable(dt)
+                                 .AS(tableName)
+                                 .Where($"{this.SqlBuilder.GetTranslationColumnName(columnInfo.DbColumnName)} is null ").ExecuteCommand();
+                }
                 columnInfo.IsNullable = false;
                 UpdateColumn(tableName, columnInfo);
             }
