@@ -10,8 +10,7 @@ namespace OrmTest
         /// Demonstrates JSON operations with SqlSugar.
         /// 展示了在 SqlSugar 中进行 JSON 操作的示例。
         /// </summary>
-        internal static void Init()
-        {
+        internal static void Init() {
             // Get a new database connection object
             // 获取一个新的数据库连接对象
             var db = DbHelper.GetNewDb();
@@ -22,8 +21,7 @@ namespace OrmTest
 
             // Insert a record with a JSON property
             // 插入一条包含 JSON 属性的记录
-            db.Insertable(new UnitJsonTest()
-            {
+            db.Insertable(new UnitJsonTest() {
                 Name = "json1",
                 Order = new Order { Id = 1, Name = "order1" }
             }).ExecuteCommand();
@@ -33,13 +31,16 @@ namespace OrmTest
             var list = db.Queryable<UnitJsonTest>().ToList();
 
             //Sqlfunc.JsonXXX
-            var list2=db.Queryable<UnitJsonTest>()
-                .Select(it => new
-                {
-                    id=it.Id,
-                    jsonname=SqlFunc.JsonField(it.Order,"Name")
+            var list2 = db.Queryable<UnitJsonTest>()
+                .Select(it => new {
+                    id = it.Id,
+                    jsonname = SqlFunc.JsonField(it.Order, "Name")
                 })
                 .ToList();
+
+            // Alter table Add Column
+            // 新增字段
+            db.CodeFirst.InitTables<UnitJsonTestAlter>();
         }
 
         /// <summary>
@@ -56,6 +57,13 @@ namespace OrmTest
             public Order Order { get; set; }
 
             public string Name { get; set; }
+        }
+
+        [SugarTable("UnitJsonTest_a7")]
+        public class UnitJsonTestAlter : UnitJsonTest
+        {
+            [SugarColumn(IsJson = true)]
+            public Order Order1 { get; set; }
         }
 
         /// <summary>
