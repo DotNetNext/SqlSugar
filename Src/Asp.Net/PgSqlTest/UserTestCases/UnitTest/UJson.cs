@@ -81,8 +81,8 @@ namespace OrmTest
             }
             db.CodeFirst.InitTables<UnitJsonTestAlter>();
             db.Insertable(new UnitJsonTestAlter() { Order1 = new Order() { } }).ExecuteCommand();
-            db.CodeFirst.InitTables<UnitJsonTestAlter>();
-            db.DbMaintenance.DropTable<UnitJsonTestAlter>();
+            db.CodeFirst.InitTables<UnitJsonTestAlteraaa>();
+            db.DbMaintenance.DropTable<UnitJsonTestAlteraaa>();
         }
     }
     [SugarTable("UnitJsonTest_a7aaasss")]
