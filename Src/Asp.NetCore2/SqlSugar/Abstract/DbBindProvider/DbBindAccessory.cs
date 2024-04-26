@@ -145,6 +145,10 @@ namespace SqlSugar
                     }
                     foreach (var item in kv.ToList())
                     {
+                        if (this.QueryBuilder?.SelectValue?.Equals("1")==true) 
+                        {
+                            continue;
+                        }
                          var itemIndex=dataReader.GetOrdinal(item.DbColumnName);
                         if (item.SqlParameterDbType is Type&&item.UnderType.IsEnum && dataReader.GetValue(itemIndex) is string value)
                         {
