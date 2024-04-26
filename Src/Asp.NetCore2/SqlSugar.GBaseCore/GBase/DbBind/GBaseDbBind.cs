@@ -34,6 +34,7 @@ namespace SqlSugar.GBase
         }
         public static List<KeyValuePair<string, CSharpDataType>> MappingTypesConst = new List<KeyValuePair<string, CSharpDataType>>()
                 {
+                  new KeyValuePair<string, CSharpDataType>("numeric",CSharpDataType.@long),
                   new KeyValuePair<string, CSharpDataType>("bigint",CSharpDataType.@long),
                   new KeyValuePair<string, CSharpDataType>("blob",CSharpDataType.byteArray),
                   new KeyValuePair<string, CSharpDataType>("boolean",CSharpDataType.@bool),
