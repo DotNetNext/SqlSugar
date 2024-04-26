@@ -83,8 +83,23 @@ namespace SqlSugar
                 }
                 else if (key?.First() == '_')
                 {
-                    var type = PgSqlType[key.Substring(1)];
-                    result.Type = NpgsqlDbType.Array | type;
+                    if (key == "_int4")
+                    { 
+                        result.Type = NpgsqlDbType.Array | NpgsqlDbType.Integer;
+                    }
+                    else if (key == "_int2")
+                    {
+                        result.Type = NpgsqlDbType.Array | NpgsqlDbType.Smallint;
+                    }
+                    else if (key == "_int8")
+                    {
+                        result.Type = NpgsqlDbType.Array | NpgsqlDbType.Bigint;
+                    }
+                    else
+                    {
+                        var type = PgSqlType[key.Substring(1)];
+                        result.Type = NpgsqlDbType.Array | type;
+                    }
                 }
                 else
                 {
