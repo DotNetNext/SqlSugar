@@ -79,7 +79,29 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+            db.CodeFirst.InitTables<UnitJsonTestAlter>();
+            db.Insertable(new UnitJsonTestAlter() { Order1 = new Order() { } }).ExecuteCommand();
+            db.CodeFirst.InitTables<UnitJsonTestAlter>();
+            db.DbMaintenance.DropTable<UnitJsonTestAlter>();
         }
+    }
+    [SugarTable("UnitJsonTest_a7aaasss")]
+    public class UnitJsonTestAlter  
+    {
+        [SqlSugar.SugarColumn(IsPrimaryKey =true,IsIdentity =true)]
+        public int id { get; set; }
+        [SugarColumn(IsJson = true,DefaultValue ="cast('{}' as json )")]
+        public Order Order1 { get; set; }
+    }
+    [SugarTable("UnitJsonTest_a7aaasss")]
+    public class UnitJsonTestAlteraaa
+    {
+        [SqlSugar.SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+        public int id { get; set; }
+        [SugarColumn(IsJson = true, DefaultValue = "cast('{}' as json )")]
+        public Order Order1 { get; set; }
+        [SugarColumn(IsJson = true, DefaultValue = "cast('{}' as json )")]
+        public Order Order2 { get; set; }
     }
     public class Unitaaar2
     {
