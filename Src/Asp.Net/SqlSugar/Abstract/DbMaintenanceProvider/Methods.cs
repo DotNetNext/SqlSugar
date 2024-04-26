@@ -349,7 +349,7 @@ namespace SqlSugar
                         this.Context.Ado.ExecuteCommand(sqlobj.Key, sqlobj.Value);
                     }
                 }
-                else if (columnInfo.DataType.EqualCase("json") && columnInfo.DefaultValue?.Contains("}") == true)
+                else if (columnInfo.DataType.EqualCase("json") && columnInfo.DefaultValue?.Contains("]") == true)
                 {
                     {
                         dt[columnInfo.DbColumnName] = "[]";
