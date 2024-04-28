@@ -31,6 +31,13 @@ namespace OrmTest
             db.Queryable<Order>().AsWithAttr()
                 .LeftJoin<OrderItem>((x,y)=>x.Id==y.OrderId)
                 .ToList();
+
+            var sql1=db.Queryable<OrderItem>().Where(it=>!it.CreateTime.HasValue).ToSqlString();
+            if (!sql1.Contains("NOT( [CreateTime]<>'' AND [CreateTime] IS NOT NULL )")) 
+            {
+                throw new Exception("error");
+            }
+            db.GetConnection("OrderItemDb").Ado.ExecuteCommand(sql1);
     
         }
         [SqlSugar.Tenant("OrderDb")]
