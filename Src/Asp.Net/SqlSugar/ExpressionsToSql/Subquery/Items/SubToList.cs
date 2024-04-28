@@ -73,6 +73,7 @@ namespace SqlSugar
             }
             var argLambda = argExp as LambdaExpression;
             var copyContext = this.Context.GetCopyContextWithMapping();
+            copyContext.IsSingle = false;
             copyContext.Resolve(argLambda, ResolveExpressType.SelectMultiple);
             var select= copyContext.Result.GetString();
             this.Context.Parameters.AddRange(copyContext.Parameters);
@@ -174,6 +175,7 @@ namespace SqlSugar
                 }
             }
             var copyContext = this.Context.GetCopyContextWithMapping();
+            copyContext.IsSingle = false;
             copyContext.Resolve(bodyExp, ResolveExpressType.SelectMultiple);
             var select = copyContext.Result.GetString();
             if (dic.Count > 0 && appendColumns.Count == 0)
