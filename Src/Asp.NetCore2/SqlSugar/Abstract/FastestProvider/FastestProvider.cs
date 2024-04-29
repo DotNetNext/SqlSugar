@@ -237,6 +237,8 @@ namespace SqlSugar
                 Check.Exception(whereColumns == null || whereColumns.Count() == 0, "where columns count=0 or need primary key");
                 var isAuto = this.context.CurrentConnectionConfig.IsAutoCloseConnection;
                 this.context.CurrentConnectionConfig.IsAutoCloseConnection = false;
+                var old = this.context.Ado.IsDisableMasterSlaveSeparation;
+                this.context.Ado.IsDisableMasterSlaveSeparation = true;
                 DataTable dt = ToDdateTable(datas);
                 IFastBuilder buider = GetBuider();
                 buider.Context = context;
@@ -255,6 +257,7 @@ namespace SqlSugar
                 this.context.CurrentConnectionConfig.IsAutoCloseConnection = isAuto;
                 buider.CloseDb();
                 End(datas, false, true);
+                this.context.Ado.IsDisableMasterSlaveSeparation = old;
                 return result;
             }
             catch (Exception)
