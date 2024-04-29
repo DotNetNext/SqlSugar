@@ -382,7 +382,7 @@ WHERE EVENT_OBJECT_TABLE = '"+tableName+"'");
         public override bool CreateDatabase(string databaseName, string databaseDirectory = null)
         {
 
-            if (this.Context.Ado.IsValidConnection())
+            if (this.Context.Ado.IsValidConnection()&&this.Context.Ado.Connection.Database?.ToLower()==databaseName?.ToLower())
             {
                 return true;
             }
