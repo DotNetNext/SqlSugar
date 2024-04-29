@@ -46,7 +46,10 @@ namespace OrmTest
             //string sql = db.Insertable(list).ToSqlString();
 
             //var rst1 = await db.Insertable(list).ExecuteCommandAsync();
-
+            db.CurrentConnectionConfig.SlaveConnectionConfigs = new List<SlaveConnectionConfig>()
+            {
+                new SlaveConnectionConfig(){ ConnectionString=Config.ConnectionString2 }
+            };
             var rst1 = await db.Fastest<TestSqlsugarTable>().BulkMergeAsync(list);
 
             Console.WriteLine(rst1);
