@@ -142,11 +142,11 @@ namespace SqlSugar
                             value = UtilMethods.ConvertFromDateTimeOffset((DateTimeOffset)value);
                         }
                     }
-                    else if (value != null && column.UnderType?.FullName == "System.TimeOnly")
+                    else if (value != DBNull.Value&&value != null && column.UnderType?.FullName == "System.TimeOnly")
                     {
                         value = UtilMethods.TimeOnlyToTimeSpan(value);
                     }
-                    else if (value != null && column.UnderType?.FullName == "System.DateOnly")
+                    else if (value != DBNull.Value && value != null && column.UnderType?.FullName == "System.DateOnly")
                     {
                         value = UtilMethods.DateOnlyToDateTime(value);
                     }
