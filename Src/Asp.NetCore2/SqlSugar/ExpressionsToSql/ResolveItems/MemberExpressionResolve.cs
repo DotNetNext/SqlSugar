@@ -571,6 +571,10 @@ namespace SqlSugar
                              new MethodCallExpressionArgs() {   MemberName=DateType.Year, MemberValue=DateType.Year}
                          }
                 };
+                if (parameter.CommonTempData is MapperSql) 
+                {
+                    parameter.CommonTempData = ((MapperSql)parameter.CommonTempData).Sql;
+                }
                 AppendMember(parameter, isLeft, GetToDateShort(parameter.CommonTempData.ObjToString()));
             }
             parameter.CommonTempData = oldCommonTempDate;
