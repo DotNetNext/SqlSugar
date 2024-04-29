@@ -12,6 +12,11 @@ namespace OrmTest
         public static void Init() 
         {
             var db = NewUnitTest.Db;
+            db.CodeFirst.InitTables<UnitOrderfafaadfa>();
+            db.CodeFirst.InitTables<UnitOrderItemafdaa>();
+            db.Queryable<UnitOrderItemafdaa>()
+              .Where(it => it.Order.CreateTime.Value.Date>DateTime.Now&& it.Order.CreateTime.Value.Date > DateTime.Now)
+              .ToList();
         }
        
         public class UnitOrderfafaadfa
