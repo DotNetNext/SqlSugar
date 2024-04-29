@@ -279,6 +279,7 @@ namespace SqlSugar
         }
         public Navigate(NavigateType navigatType, string ifSingleMasterTableColumn_IfListChildTableColumn, string ifSingleChildTableColumn_IfListMasterTableColumn)
         {
+            Check.ExceptionEasy(navigatType == NavigateType.ManyToMany, "Correct usage [Navigate(typeof(ABMapping), nameof(abmapping.aid), nameof(abmapp.bid))], incorrect usage: [Navigate(Navigate.ManyToMany, nameof(ABMapping.Aid), nameof(ABMapping.BId))]", "多对多第一个参数是Type不是NavigateType，正确用法[Navigate(typeof(ABMapping), nameof(ABMapping.Aid), nameof(ABMapping.BId))],错误用法：[Navigate(Navigate.ManyToMany, nameof(ABMapping.Aid), nameof(ABMapping.BId))]");
             this.Name = ifSingleMasterTableColumn_IfListChildTableColumn;
             this.Name2 = ifSingleChildTableColumn_IfListMasterTableColumn;
             this.NavigatType = navigatType;
