@@ -322,8 +322,8 @@ namespace SqlSugar
                     this.context.DbMaintenance.DropTable(dt.TableName);
                 }
                 this.context.CurrentConnectionConfig.IsAutoCloseConnection = isAuto;
+                buider.CloseDb(); 
                 this.context.Ado.IsDisableMasterSlaveSeparation = old;
-                buider.CloseDb();
                 End(datas, false);
                 return result;
             }
@@ -377,6 +377,8 @@ namespace SqlSugar
             Check.Exception(updateColumns == null || updateColumns.Count() == 0, "set columns count=0");
             var isAuto = this.context.CurrentConnectionConfig.IsAutoCloseConnection;
             this.context.CurrentConnectionConfig.IsAutoCloseConnection = false;
+            var old = this.context.Ado.IsDisableMasterSlaveSeparation;
+            this.context.Ado.IsDisableMasterSlaveSeparation = true;
             dataTable.TableName = this.queryable.SqlBuilder.GetTranslationTableName(tableName);
             DataTable dt = GetCopyWriteDataTableUpdate(dataTable);
             IFastBuilder buider = GetBuider();
@@ -400,7 +402,8 @@ namespace SqlSugar
             }
             this.context.CurrentConnectionConfig.IsAutoCloseConnection = isAuto;
             buider.CloseDb();
-            End(datas, false);
+            this.context.Ado.IsDisableMasterSlaveSeparation = old;
+         End(datas, false);
             return result;
         }
         private async Task<int> _BulkCopy(List<T> datas)
