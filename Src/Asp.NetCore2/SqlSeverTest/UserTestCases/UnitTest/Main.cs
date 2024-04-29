@@ -33,6 +33,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            Unitadf1yaadfa.Init();
             CrossDatabase03.Init();
             CrossDatabase02.Init();
             UnitDynamicCoread12321.Init();
