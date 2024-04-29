@@ -309,6 +309,11 @@ WHERE tgrelid = '"+tableName+"'::regclass");
                 string sql = string.Format(AddDefaultValueSql, this.SqlBuilder.GetTranslationColumnName(tableName), this.SqlBuilder.GetTranslationColumnName(columnName), defaultValue.Replace("''","'").TrimEnd('\'').TrimStart('\''));
                 return this.Context.Ado.ExecuteCommand(sql) > 0;
             }
+            else if (defaultValue?.ToLower()?.Contains("now()") == true)
+            {
+                string sql = string.Format(AddDefaultValueSql, this.SqlBuilder.GetTranslationColumnName(tableName), this.SqlBuilder.GetTranslationColumnName(columnName), defaultValue.TrimEnd('\'').TrimStart('\''));
+                return this.Context.Ado.ExecuteCommand(sql) > 0;
+            }
             else
             {
                 return base.AddDefaultValue(this.SqlBuilder.GetTranslationTableName(tableName), this.SqlBuilder.GetTranslationTableName(columnName), defaultValue);
