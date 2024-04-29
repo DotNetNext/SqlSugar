@@ -270,7 +270,14 @@ namespace SqlSugar
 
         private string GetJson(object memberName1, object memberName2, bool isLast)
         {
-            return $"{memberName1}->\"$.{memberName2}\"";
+            if (memberName1?.ToString()?.Contains("->") == true)
+            {
+                return $"{memberName1.ToString().TrimEnd('"')}.{memberName2}\"";
+            }
+            else
+            {
+                return $"{memberName1}->\"$.{memberName2}\"";
+            }
         }
 
         public override string JsonArrayAny(MethodCallExpressionModel model)
