@@ -307,6 +307,8 @@ namespace SqlSugar
                 Check.Exception(updateColumns == null || updateColumns.Count() == 0, "set columns count=0");
                 var isAuto = this.context.CurrentConnectionConfig.IsAutoCloseConnection;
                 this.context.CurrentConnectionConfig.IsAutoCloseConnection = false;
+                var old = this.context.Ado.IsDisableMasterSlaveSeparation;
+                this.context.Ado.IsDisableMasterSlaveSeparation = true;
                 DataTable dt = ToDdateTable(datas);
                 IFastBuilder buider = GetBuider();
                 ActionIgnoreColums(whereColumns, updateColumns, dt, buider.IsActionUpdateColumns);
@@ -320,6 +322,7 @@ namespace SqlSugar
                     this.context.DbMaintenance.DropTable(dt.TableName);
                 }
                 this.context.CurrentConnectionConfig.IsAutoCloseConnection = isAuto;
+                this.context.Ado.IsDisableMasterSlaveSeparation = old;
                 buider.CloseDb();
                 End(datas, false);
                 return result;
