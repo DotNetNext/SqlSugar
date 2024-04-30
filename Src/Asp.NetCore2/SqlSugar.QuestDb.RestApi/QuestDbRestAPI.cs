@@ -92,6 +92,11 @@ namespace SqlSugar
             return BulkCopyAsync(insertData, dateFormat).GetAwaiter().GetResult();
         }
 
+        public QuestDbPageSizeBulkCopy PageSize(int pageSize) 
+        {
+            QuestDbPageSizeBulkCopy result = new QuestDbPageSizeBulkCopy(this,pageSize,db);
+            return result;
+        }
 
         /// <summary>
         /// 批量快速插入异步
