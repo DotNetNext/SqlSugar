@@ -19,6 +19,13 @@ namespace SqlSugar
         #endregion
 
         #region Sql API
+         
+        public QueryMethodInfo MergeTable()
+        {
+            var method = QueryableObj.GetType().GetMethod("MergeTable");
+            this.QueryableObj = method.Invoke(QueryableObj, new object[] {   });
+            return this;
+        }
         public QueryMethodInfo AS(string tableName)
         {
             string shortName = $"{tableName}_1";
