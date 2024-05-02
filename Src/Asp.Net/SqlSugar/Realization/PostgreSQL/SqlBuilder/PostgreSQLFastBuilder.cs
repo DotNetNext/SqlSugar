@@ -39,6 +39,10 @@ namespace SqlSugar
                 lsColNames.Add($"\"{dt.Columns[i].ColumnName}\"");
             }
             string copyString = $"COPY  {dt.TableName} ( {string.Join(",", lsColNames) } ) FROM STDIN (FORMAT BINARY)";
+            if (this.Context?.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.OpenGauss)
+            {
+                copyString = copyString.Replace("(FORMAT BINARY)", "(FORMAT 'BINARY')");
+            }
             NpgsqlConnection conn = (NpgsqlConnection)this.Context.Ado.Connection;
             var columns = this.Context.DbMaintenance.GetColumnInfosByTableName(this.entityInfo.DbTableName);
             try
