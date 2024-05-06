@@ -871,13 +871,17 @@ namespace SqlSugar
                                 {
                                     newValue = value.ToString();
                                 }
-                                else if(columnInfo.UnderType==SqlSugar.UtilConstants.GuidType)
+                                else if (value is Enum) 
+                                {
+                                    newValue = Convert.ToInt64(value)+"";
+                                }
+                                else if (columnInfo.UnderType == SqlSugar.UtilConstants.GuidType)
                                 {
                                     newValue = ToGuid(new MethodCallExpressionModel()
                                     {
-                                       Args=new List<MethodCallExpressionArgs>() 
+                                        Args = new List<MethodCallExpressionArgs>()
                                        {
-                                            new MethodCallExpressionArgs(){ 
+                                            new MethodCallExpressionArgs(){
                                               MemberValue=value.ToSqlValue(),
                                               MemberName=value.ToSqlValue()
                                             }
@@ -897,7 +901,7 @@ namespace SqlSugar
                                        }
                                     });
                                 }
-                                else  
+                                else
                                 {
                                     newValue = value.ToSqlValue();
                                 }
