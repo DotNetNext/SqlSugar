@@ -11,7 +11,7 @@ namespace SqlSugar
         internal object MethodInfos { get; set; }
         internal SqlSugarProvider Context { get; set; }
 
-        public InsertNavMethodInfo IncludeByNameString(string navMemberName, InsertNavRootOptions updateNavOptions = null)
+        public InsertNavMethodInfo IncludeByNameString(string navMemberName, InsertNavOptions insertNavOptions = null)
         {
             var type = MethodInfos.GetType().GetGenericArguments()[0];
             var entityInfo = this.Context.EntityMaintenance.GetEntityInfo(type);
@@ -20,11 +20,11 @@ namespace SqlSugar
             Expression exp = UtilMethods.GetIncludeExpression(navMemberName, entityInfo, out properyItemType, out isList);
             var method = this.MethodInfos.GetType().GetMyMethod("Include", 2, isList)
                             .MakeGenericMethod(properyItemType);
-            var obj = method.Invoke(this.MethodInfos, new object[] { exp, updateNavOptions });
+            var obj = method.Invoke(this.MethodInfos, new object[] { exp, insertNavOptions });
             this.MethodInfos = obj;
             return this;
         }
-        public InsertNavMethodInfo ThenIncludeByNameString(string navMemberName, InsertNavRootOptions updateNavOptions = null)
+        public InsertNavMethodInfo ThenIncludeByNameString(string navMemberName, InsertNavOptions insertNavOptions = null)
         {
             var type = MethodInfos.GetType().GetGenericArguments()[1];
             var entityInfo = this.Context.EntityMaintenance.GetEntityInfo(type);
@@ -33,7 +33,7 @@ namespace SqlSugar
             Expression exp = UtilMethods.GetIncludeExpression(navMemberName, entityInfo, out properyItemType, out isList);
             var method = this.MethodInfos.GetType().GetMyMethod("ThenInclude", 2, isList)
                             .MakeGenericMethod(properyItemType);
-            var obj = method.Invoke(this.MethodInfos, new object[] { exp, updateNavOptions });
+            var obj = method.Invoke(this.MethodInfos, new object[] { exp, insertNavOptions });
             this.MethodInfos = obj;
             return this;
         }
