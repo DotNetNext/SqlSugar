@@ -10,6 +10,10 @@ namespace SqlSugar
     public abstract partial class DbMaintenanceProvider : IDbMaintenance
     {
         #region DML
+        public List<string> GetProcList() 
+        {
+            return GetProcList(this.Context.Ado.Connection.Database);
+        }
         public virtual List<string> GetProcList(string dbName) 
         {
             return new List<string>();
