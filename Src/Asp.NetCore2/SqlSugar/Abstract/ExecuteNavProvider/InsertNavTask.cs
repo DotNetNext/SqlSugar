@@ -43,6 +43,22 @@ namespace SqlSugar
             }
             return methodInfo;
         }
+        public InsertNavMethodInfo IncludesAllFirstLayer(InsertNavOptions insertNavOptions,params string[] ignoreColumns)
+        {
+            if (ignoreColumns == null)
+            {
+                ignoreColumns = new string[] { };
+            }
+            this.Context = insertNavProvider._Context;
+            var navColumns = this.Context.EntityMaintenance.GetEntityInfo<Root>().Columns.Where(it => !ignoreColumns.Contains(it.PropertyName) || !ignoreColumns.Any(z => z.EqualCase(it.DbColumnName))).Where(it => it.Navigat != null).ToList();
+            var updateNavs = this;
+            InsertNavMethodInfo methodInfo = updateNavs.IncludeByNameString(navColumns[0].PropertyName);
+            foreach (var item in navColumns.Skip(1))
+            {
+                methodInfo = methodInfo.IncludeByNameString(item.PropertyName, insertNavOptions);
+            }
+            return methodInfo;
+        }
         public InsertNavTask<Root, TChild>  Include<TChild>(Expression<Func<Root, TChild>> expression) where TChild : class, new()
         {
             Check.ExceptionEasy(typeof(TChild).FullName.Contains("System.Collections.Generic.List`"), "  need  where T: class, new() ", "需要Class,new()约束，并且类属性中不能有required修饰符");
