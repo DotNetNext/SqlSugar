@@ -1884,7 +1884,7 @@ namespace SqlSugar
             {
                 result = this.Context.Utilities.DataReaderToSelectArrayList<TResult>(dataReader);
             }
-            else if (entityType.IsAnonymousType() || isComplexModel|| StaticConfig.EnableAot)
+            else if (QueryBuilder.IsParameterizedConstructor || entityType.IsAnonymousType() || isComplexModel|| StaticConfig.EnableAot)
             {
                 if (entityType.IsClass() == false && StaticConfig.EnableAot)
                 {
@@ -2073,6 +2073,7 @@ namespace SqlSugar
             asyncQueryableBuilder.RemoveFilters = this.QueryBuilder.RemoveFilters?.ToArray();
             asyncQueryableBuilder.Hints = this.QueryBuilder.Hints;
             asyncQueryableBuilder.MasterDbTableName = this.QueryBuilder.MasterDbTableName;
+            asyncQueryableBuilder.IsParameterizedConstructor = this.QueryBuilder.IsParameterizedConstructor;
             if (this.QueryBuilder.AppendNavInfo != null)
             {
                 asyncQueryableBuilder.AppendNavInfo = new AppendNavInfo() 
