@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            Unitadfafad.Init();
             UnitAny.Init();
             UnitDynamicaaa.Init();
             UnitBizDel.Init();

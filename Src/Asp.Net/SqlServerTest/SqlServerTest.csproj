@@ -265,6 +265,7 @@
     <Compile Include="UserTestCases\Cases\UThread.cs" />
     <Compile Include="6_NavigationPropertyQuery.cs" />
     <Compile Include="UserTestCases\Cases.cs" />
+    <Compile Include="UserTestCases\Cases\Unitadfafad.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SqlSugar\SqlSugar.csproj">
