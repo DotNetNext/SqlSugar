@@ -557,7 +557,11 @@ namespace SqlSugar
             }
             return this;
         }
-
+        public IInsertable<T> PostgreSQLConflictNothing(string[] columns) 
+        { 
+            this.InsertBuilder.ConflictNothing = columns;
+            return this;
+        }
         public IInsertable<T> MySqlIgnore() 
         {
             this.InsertBuilder.MySqlIgnore = true; 

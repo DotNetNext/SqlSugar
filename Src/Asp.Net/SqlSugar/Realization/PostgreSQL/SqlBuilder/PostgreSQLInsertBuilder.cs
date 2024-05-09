@@ -49,7 +49,7 @@ namespace SqlSugar
             {
                 string columnParametersString = string.Join(",", this.DbColumnInfoList.Select(it =>base.GetDbColumn(it, Builder.SqlParameterKeyWord + it.DbColumnName)));
                 ActionMinDate();
-                return string.Format(SqlTemplate, GetTableNameString, columnsString, columnParametersString);
+                return GetIgnoreSql(string.Format(SqlTemplate, GetTableNameString, columnsString, columnParametersString));
             }
             else
             {
@@ -116,7 +116,7 @@ namespace SqlSugar
                     pageIndex++;
                     batchInsetrSql.Remove(batchInsetrSql.Length - 1,1).Append("\r\n;\r\n");
                 }
-                return batchInsetrSql.ToString();
+                return GetIgnoreSql(batchInsetrSql.ToString());
             }
         }
 
@@ -182,6 +182,15 @@ namespace SqlSugar
         {
             return "'" + ((DateTimeOffset)value).ToString("o") + "'";
         }
+         
+        private string GetIgnoreSql(string sql)
+        {
+            if (this.ConflictNothing?.Any() == true)
+            {
+                sql = sql.Replace(";", $"  ON CONFLICT ({string.Join(",", this.ConflictNothing)}) DO NOTHING;");
+            }
 
+            return sql;
+        }
     }
 }
