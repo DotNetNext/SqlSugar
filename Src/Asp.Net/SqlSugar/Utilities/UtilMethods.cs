@@ -647,6 +647,7 @@ namespace SqlSugar
                     DbMinDate=it.MoreSettings.DbMinDate,
                     IsNoReadXmlDescription=it.MoreSettings.IsNoReadXmlDescription,
                     SqlServerCodeFirstNvarchar=it.MoreSettings.SqlServerCodeFirstNvarchar,
+                    OracleCodeFirstNvarchar2=it.MoreSettings.OracleCodeFirstNvarchar2,
                     IsAutoToUpper=it.MoreSettings.IsAutoToUpper,
                     IsAutoDeleteQueryFilter=it.MoreSettings.IsAutoDeleteQueryFilter,
                     IsAutoUpdateQueryFilter = it.MoreSettings.IsAutoUpdateQueryFilter,

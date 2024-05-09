@@ -617,6 +617,13 @@ WHERE table_name = '"+tableName+"'");
                     {
                         item.DataType = "NUMBER GENERATED ALWAYS AS IDENTITY";
                     }
+                    if (item.DataType != null && this.Context.CurrentConnectionConfig?.MoreSettings?.OracleCodeFirstNvarchar2 == true)
+                    {
+                        if (!item.DataType.ToLower().Contains("nvarchar2"))
+                        {
+                            item.DataType = item.DataType.ToLower().Replace("varchar", "nvarchar2");
+                        }
+                    }
                 }
             }
             string sql = GetCreateTableSql(tableName, columns);

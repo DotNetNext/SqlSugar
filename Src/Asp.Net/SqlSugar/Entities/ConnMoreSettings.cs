@@ -22,6 +22,7 @@ namespace SqlSugar
         public DateTime? DbMinDate { get; set; } = DateTime.MinValue.Date.AddYears(1900 - 1);
         public bool IsNoReadXmlDescription { get;  set; }
         public bool SqlServerCodeFirstNvarchar { get;  set; }
+        public bool OracleCodeFirstNvarchar2 { get; set; }
         public bool SqliteCodeFirstEnableDefaultValue { get; set; }
         public bool SqliteCodeFirstEnableDescription { get; set; }
         public bool IsAutoUpdateQueryFilter { get; set; }
