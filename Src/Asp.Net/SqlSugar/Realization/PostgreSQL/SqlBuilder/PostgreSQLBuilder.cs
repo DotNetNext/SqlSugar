@@ -24,14 +24,14 @@ namespace SqlSugar
         {
             get
             {
-                return "current_date";
+                return "CURRENT_TIMESTAMP";
             }
         }
         public override string FullSqlDateNow
         {
             get
             {
-                return "select current_date";
+                return "select CURRENT_TIMESTAMP";
             }
         }
 

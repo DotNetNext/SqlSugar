@@ -1,0 +1,2 @@
+The Asp.NetCore2 folder is the.net core version (new users look at this)
+The Asp.Net folder is the.net framework version

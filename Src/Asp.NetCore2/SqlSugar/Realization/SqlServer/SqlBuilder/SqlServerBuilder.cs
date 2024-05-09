@@ -11,6 +11,7 @@ namespace SqlSugar
     {
         public override string SqlTranslationLeft { get { return "["; } }
         public override string SqlTranslationRight { get { return "]"; } }
+        public override bool SupportReadToken { get; set; } = true;
 
         public override string RemoveParentheses(string sql)
         {
@@ -30,6 +31,10 @@ namespace SqlSugar
             {
                 paramter.DbType = System.Data.DbType.String;
             }
+        }
+        public override Task<bool> GetReaderByToken(System.Data.IDataReader dataReader, System.Threading.CancellationToken cancellationToken)
+        {
+            return((Microsoft.Data.SqlClient.SqlDataReader)dataReader).ReadAsync(this.Context.Ado.CancellationToken.Value);
         }
     }
 }

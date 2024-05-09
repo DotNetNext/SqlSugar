@@ -13,6 +13,7 @@ namespace SqlSugar
             {
                 if (entityInfo.Columns.Where(it => it.IsPrimarykey).Count() > 1)
                 {
+                    AddColumn(entityInfo);
                     return;
                 }
 
@@ -48,8 +49,12 @@ namespace SqlSugar
                 }
                 foreach (var item in dropColumns)
                 {
-                    //this.Context.DbMaintenance.DropColumn(tableName, item.DbColumnName);
-                    //isChange = true;
+                    //only support .net core
+                    if (this.Context.CurrentConnectionConfig?.MoreSettings?.SqliteCodeFirstEnableDropColumn == true)
+                    {
+                        this.Context.DbMaintenance.DropColumn(tableName, item.DbColumnName);
+                        isChange = true;
+                    }
                 }
                 //foreach (var item in alterColumns)
                 //{
@@ -90,6 +95,26 @@ namespace SqlSugar
                 }
             }
         }
+
+        private void AddColumn(EntityInfo entityInfo)
+        {
+            var tableName2 = GetTableName(entityInfo);
+            var dbColumns2 = this.Context.DbMaintenance.GetColumnInfosByTableName(tableName2, false);
+            var entityColumns2 = entityInfo.Columns.Where(it => it.IsIgnore == false).ToList();
+            ConvertColumns(dbColumns2);
+            var addColumns2 = entityColumns2
+                                .Where(ec => ec.OldDbColumnName.IsNullOrEmpty() || !dbColumns2.Any(dc => dc.DbColumnName.Equals(ec.OldDbColumnName, StringComparison.CurrentCultureIgnoreCase)))
+                                .Where(ec => !dbColumns2.Any(dc => ec.DbColumnName.Equals(dc.DbColumnName, StringComparison.CurrentCultureIgnoreCase))).ToList();
+            foreach (var item in addColumns2)
+            {
+                if (item.IsPrimarykey || item.IsIdentity)
+                {
+                    Check.ExceptionEasy("Multiple primary keys cannot be modified", "多主键不能修改");
+                }
+                this.Context.DbMaintenance.AddColumn(tableName2, EntityColumnToDbColumn(entityInfo, tableName2, item));
+            }
+        }
+
         public override void NoExistLogic(EntityInfo entityInfo)
         {
             var tableName = GetTableName(entityInfo);
@@ -106,6 +131,7 @@ namespace SqlSugar
                 if (entityInfo.IsCreateTableFiledSort)
                 {
                     columns = columns.OrderBy(c => c.CreateTableFieldSort).ToList();
+                    columns = columns.OrderBy(it => it.IsPrimarykey ? 0 : 1).ToList();
                 }
             }
             this.Context.DbMaintenance.CreateTable(tableName, columns,true);

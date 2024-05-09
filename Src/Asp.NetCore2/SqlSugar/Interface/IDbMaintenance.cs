@@ -13,11 +13,17 @@ namespace SqlSugar
         List<string> GetDataBaseList();
         List<DbTableInfo> GetViewInfoList(bool isCache=true);
         List<DbTableInfo> GetTableInfoList(bool isCache=true);
+        List<DbTableInfo> GetTableInfoList(Func<DbType, string, string> getChangeSqlFunc);
         List<DbColumnInfo> GetColumnInfosByTableName(string tableName,bool isCache=true);
+        List<DbColumnInfo> GetColumnInfosByTableName(string tableName, Func<DbType, string, string> getChangeSqlFunc);
         List<string> GetIsIdentities(string tableName);
         List<string> GetPrimaries(string tableName);
         List<string> GetProcList(string dbName);
+        List<string> GetProcList();
         List<string> GetIndexList(string tableName);
+        List<string> GetFuncList();
+        List<string> GetTriggerNames(string tableName);
+        List<string> GetDbTypes();
         #endregion
 
         #region Check
@@ -36,6 +42,11 @@ namespace SqlSugar
         bool CreateIndex(string tableName, string [] columnNames, bool isUnique=false);
         bool CreateIndex(string tableName, string[] columnNames, string IndexName, bool isUnique = false);
         bool DropTable(string tableName);
+        bool DropView(string viewName);
+        bool DropIndex(string indexName);
+        bool DropIndex(string indexName, string tableName);
+        bool DropFunction(string funcName);
+        bool DropProc(string procName);
         bool DropTable(params string[] tableName);
         bool DropTable(params Type[] tableEntityTypes);
         bool DropTable<T>();
@@ -86,6 +97,18 @@ namespace SqlSugar
         /// <param name="databaseDirectory"></param>
         /// <returns></returns>
         bool CreateDatabase(string databaseName,string databaseDirectory = null);
+        /// <summary>
+        /// setAuto incrementInitial value
+        /// </summary>
+        /// <param name="initialValue"></param>
+        /// <returns></returns>
+        bool SetAutoIncrementInitialValue(Type type,int initialValue);
+        /// <summary>
+        /// setAuto incrementInitial value
+        /// </summary>
+        /// <param name="initialValue"></param>
+        /// <returns></returns>
+        bool SetAutoIncrementInitialValue(string tableName, int initialValue);
         #endregion
     }
 }

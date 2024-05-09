@@ -212,7 +212,7 @@ namespace SqlSugar
                     Check.ThrowNotSupportedException(typeName);
                     break;
             }
-            return string.Format(" CAST(STRFTIME('{1}', DATETIME(DATETIME({0}), 'LOCALTIME')) AS INTEGER)", parameter.MemberName, parameter2);
+            return string.Format(" CAST(STRFTIME('{1}',  DATETIME({0}) ) AS INTEGER)", parameter.MemberName, parameter2);
         }
 
         public override string DateIsSameDay(MethodCallExpressionModel model)

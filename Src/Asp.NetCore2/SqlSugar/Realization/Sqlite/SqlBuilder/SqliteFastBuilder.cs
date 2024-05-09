@@ -16,7 +16,7 @@ namespace SqlSugar
         public string CharacterSet { get; set; }
         private DataTable UpdateDataTable { get; set; }
         public bool IsActionUpdateColumns { get; set; }
-        public DbFastestProperties DbFastestProperties { get; set; } = new DbFastestProperties();
+        public DbFastestProperties DbFastestProperties { get; set; } = new DbFastestProperties() { IsNoCopyDataTable=true};
         public SqliteFastBuilder(EntityInfo entityInfo)
         {
             this.entityInfo = entityInfo;
@@ -26,7 +26,7 @@ namespace SqlSugar
 
         public void CloseDb()
         {
-            if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection)
+            if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection&&this.Context.Ado.Transaction==null)
             {
                 this.Context.Close();
             }
@@ -76,27 +76,37 @@ namespace SqlSugar
         {
             using (var cmd = cn.CreateCommand())
             {
-                cmd.CommandText = this.Context.Insertable(dictionary.First()).AS(dt.TableName).ToSql().Key.Replace(";SELECT LAST_INSERT_ROWID();","");
-
-                foreach (DataRow dataRow in dt.Rows)
+                if (this.Context?.CurrentConnectionConfig?.MoreSettings?.IsCorrectErrorSqlParameterName == true)
                 {
-                    foreach (DataColumn item in dt.Columns)
+                    foreach (DataRow item in dt.Rows)
                     {
-                        if (IsBoolTrue(dataRow, item))
-                        {
-                            cmd.Parameters.AddWithValue("@" + item.ColumnName, true);
-                        }
-                        else if (IsBoolFalse(dataRow, item))
-                        {
-                            cmd.Parameters.AddWithValue("@" + item.ColumnName, false);
-                        }
-                        else
-                        {
-                            cmd.Parameters.AddWithValue("@" + item.ColumnName, dataRow[item.ColumnName]);
-                        }
+                        cmd.CommandText = this.Context.Insertable(UtilMethods.DataRowToDictionary(item)).AS(dt.TableName).ToSqlString().Replace(";SELECT LAST_INSERT_ROWID();", "");
+                        i += await cmd.ExecuteNonQueryAsync();
                     }
-                    i += await cmd.ExecuteNonQueryAsync();
-                    cmd.Parameters.Clear();
+                }
+                else
+                {
+                    cmd.CommandText = this.Context.Insertable(dictionary.First()).AS(dt.TableName).ToSql().Key.Replace(";SELECT LAST_INSERT_ROWID();", "");
+                    foreach (DataRow dataRow in dt.Rows)
+                    {
+                        foreach (DataColumn item in dt.Columns)
+                        {
+                            if (IsBoolTrue(dataRow, item))
+                            {
+                                cmd.Parameters.AddWithValue("@" + item.ColumnName, true);
+                            }
+                            else if (IsBoolFalse(dataRow, item))
+                            {
+                                cmd.Parameters.AddWithValue("@" + item.ColumnName, false);
+                            }
+                            else
+                            {
+                                cmd.Parameters.AddWithValue("@" + item.ColumnName, dataRow[item.ColumnName]);
+                            }
+                        }
+                        i += await cmd.ExecuteNonQueryAsync();
+                        cmd.Parameters.Clear();
+                    }
                 }
             }
             return i;
@@ -105,30 +115,44 @@ namespace SqlSugar
         {
             using (var cmd = cn.CreateCommand())
             {
-                cmd.CommandText = this.Context.Updateable(dictionary.First())
-                    .WhereColumns(whereColums)
-                    .UpdateColumns(updateColums)
-                    .AS(dt.TableName).ToSql().Key;
-
-                foreach (DataRow dataRow in dt.Rows)
+                if (this.Context?.CurrentConnectionConfig?.MoreSettings?.IsCorrectErrorSqlParameterName == true)
                 {
-                    foreach (DataColumn item in dt.Columns)
+                    foreach (DataRow item in dt.Rows)
                     {
-                        if (IsBoolTrue(dataRow, item))
-                        {
-                            cmd.Parameters.AddWithValue("@" + item.ColumnName, true);
-                        }
-                        else if (IsBoolFalse(dataRow, item))
-                        {
-                            cmd.Parameters.AddWithValue("@" + item.ColumnName, false);
-                        }
-                        else
-                        {
-                            cmd.Parameters.AddWithValue("@" + item.ColumnName, dataRow[item.ColumnName]);
-                        }
+                        cmd.CommandText = this.Context.Updateable(UtilMethods.DataRowToDictionary(item))
+                         .WhereColumns(whereColums)
+                         .UpdateColumns(updateColums)
+                         .AS(dt.TableName).ToSqlString();
+                        i += await cmd.ExecuteNonQueryAsync();
                     }
-                    i += await cmd.ExecuteNonQueryAsync();
-                    cmd.Parameters.Clear();
+                }
+                else
+                {
+                    cmd.CommandText = this.Context.Updateable(dictionary.First())
+                        .WhereColumns(whereColums)
+                        .UpdateColumns(updateColums)
+                        .AS(dt.TableName).ToSql().Key;
+
+                    foreach (DataRow dataRow in dt.Rows)
+                    {
+                        foreach (DataColumn item in dt.Columns)
+                        {
+                            if (IsBoolTrue(dataRow, item))
+                            {
+                                cmd.Parameters.AddWithValue("@" + item.ColumnName, true);
+                            }
+                            else if (IsBoolFalse(dataRow, item))
+                            {
+                                cmd.Parameters.AddWithValue("@" + item.ColumnName, false);
+                            }
+                            else
+                            {
+                                cmd.Parameters.AddWithValue("@" + item.ColumnName, dataRow[item.ColumnName]);
+                            }
+                        }
+                        i += await cmd.ExecuteNonQueryAsync();
+                        cmd.Parameters.Clear();
+                    }
                 }
             }
             return i;
@@ -173,6 +197,19 @@ namespace SqlSugar
             {
                 result = await _BulkUpdate(dt, dictionary, result, whereColumns, updateColumns, cn);
             }
+            return result;
+        }
+
+        public async  Task<int> Merge<T>(string tableName,DataTable dt, EntityInfo entityInfo, string[] whereColumns, string[] updateColumns, List<T> datas) where T : class, new()
+        {
+            var result = 0;
+            await this.Context.Utilities.PageEachAsync(datas, 2000, async pageItems =>
+            {
+                var x = await this.Context.Storageable(pageItems).As(tableName).WhereColumns(whereColumns).ToStorageAsync();
+                result += await x.BulkCopyAsync();
+                result += await x.BulkUpdateAsync(updateColumns);
+                return result;
+            });
             return result;
         }
     }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,11 +11,13 @@ namespace SqlSugar
 {
     public partial class DbBindAccessory
     {
-        public QueryBuilder QueryBuilder { get; set; }
+        public QueryBuilder QueryBuilder { get; set; } 
 
         protected List<T> GetEntityList<T>(SqlSugarProvider context, IDataReader dataReader)
         {
             Type type = typeof(T);
+            var entityInfo = context.EntityMaintenance.GetEntityInfo(type);
+            var isOwnsOne = entityInfo.Columns.Any(it => it.ForOwnsOnePropertyInfo != null);
             string types = null;
             var fieldNames = GetDataReaderNames(dataReader,ref types);
             string cacheKey = GetCacheKey(type,fieldNames) + types;
@@ -44,6 +47,7 @@ namespace SqlSugar
                     //    Check.Exception(true, ErrorMessage.EntityMappingError, ex.Message);
                     //}
                     SetAppendColumns(dataReader);
+                    SetOwnsOne(addItem,isOwnsOne,entityInfo,dataReader);
                 }
                 ExecuteDataAfterFun(context, dataAfterFunc, result);
             }
@@ -64,6 +68,8 @@ namespace SqlSugar
         protected async Task<List<T>> GetEntityListAsync<T>(SqlSugarProvider context, IDataReader dataReader)
         {
             Type type = typeof(T);
+            var entityInfo = context.EntityMaintenance.GetEntityInfo(type);
+            var isOwnsOne = entityInfo.Columns.Any(it => it.ForOwnsOnePropertyInfo != null);
             string types = null;
             var fieldNames = GetDataReaderNames(dataReader,ref types);
             string cacheKey = GetCacheKey(type, fieldNames)+types;
@@ -77,7 +83,7 @@ namespace SqlSugar
             try
             {
                 if (dataReader == null) return result;
-                while (await((DbDataReader)dataReader).ReadAsync())
+                while (await GetReadAsync(dataReader,context))
                 {
                     //try
                     //{
@@ -93,6 +99,7 @@ namespace SqlSugar
                     //    Check.Exception(true, ErrorMessage.EntityMappingError, ex.Message);
                     //}
                     SetAppendColumns(dataReader);
+                    SetOwnsOne(addItem, isOwnsOne, entityInfo, dataReader);
                 }
                 ExecuteDataAfterFun(context, dataAfterFunc, result);
             }
@@ -108,6 +115,52 @@ namespace SqlSugar
                 }
             }
             return result;
+        }
+
+        private  Task<bool> GetReadAsync(IDataReader dataReader, SqlSugarProvider context)
+        {
+            if (this.QueryBuilder?.Builder?.SupportReadToken==true&&context.Ado.CancellationToken!=null)
+            { 
+                return this.QueryBuilder.Builder.GetReaderByToken(dataReader, context.Ado.CancellationToken.Value);
+            }
+            else
+            {
+                return ((DbDataReader)dataReader).ReadAsync();
+            }
+        }
+
+        private void SetOwnsOne(object addItem, bool isOwnsOne, EntityInfo entityInfo, IDataReader dataReader)
+        {
+            if (isOwnsOne) 
+            {
+                var ownsOneColumnsKv = entityInfo.Columns.Where(it => it.ForOwnsOnePropertyInfo != null)
+                    .GroupBy(it=>it.ForOwnsOnePropertyInfo).ToList();
+                foreach (var kv in ownsOneColumnsKv)
+                {
+                    var parentObj=kv.Key.GetValue(addItem);
+                    if (parentObj == null) 
+                    {
+                        parentObj = kv.Key.PropertyType.Assembly.CreateInstance(kv.Key.PropertyType.FullName);
+                        kv.Key.SetValue(addItem, parentObj);
+                    }
+                    foreach (var item in kv.ToList())
+                    {
+                        if (this.QueryBuilder?.SelectValue?.Equals("1")==true) 
+                        {
+                            continue;
+                        }
+                         var itemIndex=dataReader.GetOrdinal(item.DbColumnName);
+                        if (item.SqlParameterDbType is Type&&item.UnderType.IsEnum && dataReader.GetValue(itemIndex) is string value)
+                        {
+                            item.PropertyInfo.SetValue(parentObj,UtilMethods.ChangeType2(value, item.PropertyInfo.PropertyType));
+                        }
+                        else
+                        {
+                            item.PropertyInfo.SetValue(parentObj, dataReader.GetValue(itemIndex));
+                        }
+                    }
+                }
+            }
         }
 
         private void FormatT<T>(T addItem)
@@ -352,6 +405,10 @@ namespace SqlSugar
             else if (type.IsEnum)
             {
                 result.Add((T)Enum.Parse(type, value.ObjToString()));
+            }
+            else if (value!=null&&UtilMethods.GetUnderType(type).IsEnum)
+            {
+                result.Add((T)Enum.Parse(UtilMethods.GetUnderType(type), value.ObjToString()));
             }
             else
             {

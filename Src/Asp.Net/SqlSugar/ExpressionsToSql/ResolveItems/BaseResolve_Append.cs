@@ -1,9 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.Generic; 
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 namespace SqlSugar
 {
     /// <summary>
@@ -45,6 +46,10 @@ namespace SqlSugar
                 else if (oppoSiteExpression is MemberExpression)
                 {
                     AppendMember(parameter, isLeft, value, oppoSiteExpression);
+                }
+                else if (ExpressionTool.RemoveConvert(oppoSiteExpression) is MemberExpression)
+                {
+                    AppendMember(parameter, isLeft, value, ExpressionTool.RemoveConvert(oppoSiteExpression));
                 }
                 else if ((oppoSiteExpression is UnaryExpression && (oppoSiteExpression as UnaryExpression).Operand is MemberExpression))
                 {
@@ -141,14 +146,37 @@ namespace SqlSugar
                     }
                     this.Context.Parameters.Add(p);
                 }
-                else if (parameter?.BaseParameter?.CommonTempData.ObjToString() == "IsJson=true") 
+                else if (UtilMethods.IsParameterConverter(columnInfo))
                 {
-                    this.Context.Parameters.Add(new SugarParameter(appendValue, new SerializeService().SerializeObject(value)) {  IsJson=true});
+                    SugarParameter p = UtilMethods.GetParameterConverter(this.Context.ParameterIndex,this.Context.SugarContext.Context, value, oppoSiteExpression, columnInfo);
+                    appendValue = p.ParameterName;
+                    this.Context.Parameters.Add(p);
+                }
+                else if (parameter?.BaseParameter?.CommonTempData.ObjToString() == "IsJson=true")
+                {
+                    this.Context.Parameters.Add(new SugarParameter(appendValue, new SerializeService().SerializeObject(value)) { IsJson = true });
                 }
                 else if (parameter?.BaseParameter?.CommonTempData.ObjToString() == "IsArray=true")
                 {
                     this.Context.Parameters.Add(new SugarParameter(appendValue, value) { IsArray = true });
                 }
+                else if (value != null && (value is Enum) && this.Context?.SugarContext?.Context?.CurrentConnectionConfig?.MoreSettings?.TableEnumIsString == true)
+                {
+                    this.Context.Parameters.Add(new SugarParameter(appendValue, Convert.ToString(value)));
+                }
+                else if (this.Context
+                                       ?.SugarContext
+                                       ?.Context
+                                       ?.CurrentConnectionConfig
+                                       ?.MoreSettings
+                                       ?.IsCorrectErrorSqlParameterName == true
+                                       && columnInfo?.PropertyName != null
+                                       && !columnInfo.PropertyName.IsRegexWNoContainsChinese()) 
+                {
+                    appendValue =  (Context.SqlParameterKeyWord + "p" + appendValue.GetHashCode() +"no"+ Context.ParameterIndex)
+                                   .Replace("-","");
+                    this.Context.Parameters.Add(new SugarParameter(appendValue, value));
+                } 
                 else
                 {
                     this.Context.Parameters.Add(new SugarParameter(appendValue, value));
@@ -248,6 +276,21 @@ namespace SqlSugar
             {
                 this.Context.Result.Replace(ExpressionConst.FormatSymbol, "-");
             }
+        }
+        private void AppendOnlyInSelectConvertToString(ExpressionParameter parameter, Expression item, string asName)
+        {
+            var name =GetNewExpressionValue((item as MethodCallExpression)?.Arguments[0]);
+            var methodInfo = ExpressionTool.DynamicInvoke(((item as MethodCallExpression)?.Arguments[1]));
+            if (this.Context.SugarContext.QueryBuilder.QueryableFormats == null)
+                this.Context.SugarContext.QueryBuilder.QueryableFormats = new List<QueryableFormat>();
+            this.Context.SugarContext.QueryBuilder.QueryableFormats.Add(new QueryableFormat()
+            {
+                Format = "",
+                PropertyName = asName,  
+                MethodName = "OnlyInSelectConvertToString",
+                MethodInfo= (MethodInfo)methodInfo
+            });
+            parameter.Context.Result.Append(this.Context.GetAsString2(asName, name));
         }
     }
 }

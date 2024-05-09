@@ -8,6 +8,7 @@ namespace SqlSugar
 {
     public class SplitInsertable<T>  where T:class ,new()
     {
+        private static readonly object SplitLockObj = new object();
         public SqlSugarProvider Context;
         internal SplitTableContext Helper;
         public EntityInfo EntityInfo;
@@ -213,12 +214,22 @@ namespace SqlSugar
             this.Context.Ado.IsEnableLogEvent = false;
             foreach (var item in TableNames.GroupBy(it=>it.Key).Select(it=>it).ToDictionary(it=>it.Key,it=>it.First().Value))
             {
-                if (!this.Context.DbMaintenance.IsAnyTable(item.Key, false)) 
+                var newDb = this.Context.CopyNew();
+                newDb.CurrentConnectionConfig.IsAutoCloseConnection = true;
+                if (!newDb.DbMaintenance.IsAnyTable(item.Key, false)) 
                 {
-                    if (item.Value != null)
+                    lock (SplitLockObj)
                     {
-                        this.Context.MappingTables.Add(EntityInfo.EntityName, item.Key);
-                        this.Context.CodeFirst.InitTables<T>();
+                        var newDb2 = this.Context.CopyNew();
+                        newDb2.CurrentConnectionConfig.IsAutoCloseConnection = true;
+                        if (!newDb2.DbMaintenance.IsAnyTable(item.Key, false))
+                        {
+                            if (item.Value != null)
+                            {
+                                this.Context.MappingTables.Add(EntityInfo.EntityName, item.Key);
+                                this.Context.CodeFirst.InitTables<T>();
+                            }
+                        }
                     }
                 }
             }

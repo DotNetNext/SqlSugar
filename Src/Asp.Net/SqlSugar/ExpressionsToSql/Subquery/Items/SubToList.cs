@@ -54,7 +54,7 @@ namespace SqlSugar
                 &&this.Context.SugarContext.QueryBuilder.IsSelectNoAll)
             {
                 var entity = type.GenericTypeArguments[0];
-                var columnNames=this.Context.SugarContext.Context.EntityMaintenance.GetEntityInfo(entity).Columns;
+                var columnNames=this.Context.SugarContext.Context.EntityMaintenance.GetEntityInfo(entity).Columns.Where(it=>it.IsIgnore==false);
                 var columnsString = string.Join(",", columnNames
                     .Where(it => it.IsIgnore == false)
                     .Where(it => it.DbColumnName.HasValue())
@@ -73,6 +73,7 @@ namespace SqlSugar
             }
             var argLambda = argExp as LambdaExpression;
             var copyContext = this.Context.GetCopyContextWithMapping();
+            copyContext.IsSingle = false;
             copyContext.Resolve(argLambda, ResolveExpressType.SelectMultiple);
             var select= copyContext.Result.GetString();
             this.Context.Parameters.AddRange(copyContext.Parameters);
@@ -161,7 +162,7 @@ namespace SqlSugar
 
                 foreach (var parameter in parameters)
                 {
-                    var parameterColumns = db.EntityMaintenance.GetEntityInfo(parameter.Type).Columns;
+                    var parameterColumns = db.EntityMaintenance.GetEntityInfo(parameter.Type).Columns.Where(it=>it.IsIgnore==false);
                     if (!completeColumnColumns.Any(it=>it.EqualCase(item.PropertyName))&& parameterColumns.Any(it=>it.PropertyName.EqualCase(item.PropertyName))) 
                     {
                         var completeColumn = parameterColumns.First(it => it.PropertyName == item.PropertyName);
@@ -174,14 +175,17 @@ namespace SqlSugar
                 }
             }
             var copyContext = this.Context.GetCopyContextWithMapping();
+            copyContext.IsSingle = false;
             copyContext.Resolve(bodyExp, ResolveExpressType.SelectMultiple);
             var select = copyContext.Result.GetString();
             if (dic.Count > 0 && appendColumns.Count == 0)
             {
+                select = AppendParameter(copyContext, select);
                 return select + ",@sugarIndex as sugarIndex"; ;
             }
             else if (dic.Count > 0 && appendColumns.Count > 0) 
             {
+                select = AppendParameter(copyContext, select);
                 return select+","+string.Join(",",appendColumns) + ",@sugarIndex as sugarIndex"; ;
             }
             else 
@@ -189,6 +193,17 @@ namespace SqlSugar
                 return string.Join(",", appendColumns) + ",@sugarIndex as sugarIndex";
             }
         }
+
+        private string AppendParameter(ExpressionContext copyContext, string select)
+        {
+            if (copyContext.Parameters?.Any() == true)
+            {
+                this.Context.Parameters.AddRange(copyContext.Parameters);
+                select = select.Replace("),  AS", ")  AS");
+            } 
+            return select;
+        }
+
         private static bool IsAutoSelect(MethodCallExpression exp)
         {
             return exp.Arguments.Count == 2 && exp.Arguments.Last().Type == UtilConstants.BoolType;

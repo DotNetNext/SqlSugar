@@ -42,6 +42,7 @@ namespace SqlSugar
         ICacheService GetReflectionInoCacheInstance();
         void RemoveCacheAll();
         void RemoveCacheAll<T>();
+        void RemoveCacheByLikeKey<T>(string key);
         void RemoveCache<T>(string key);
         void PageEach<T>(IEnumerable<T> pageItems, int pageSize, Action<List<T>> action);
         Task PageEachAsync<T>(IEnumerable<T> pageItems, int pageSize, Func<List<T>, Task> action);
@@ -49,5 +50,6 @@ namespace SqlSugar
         List<IConditionalModel> JsonToConditionalModels(string json);
         DataTable DictionaryListToDataTable(List<Dictionary<string, object>> dictionaryList);
         List<T> ToTree<T>(List<T> list, Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, Expression<Func<T, object>> pkExpression,  object rootValue);
+        KeyValuePair<string, SugarParameter[]> ConditionalModelsToSql(List<IConditionalModel> conditionalModels, int beginIndex = 0);
     }
 }

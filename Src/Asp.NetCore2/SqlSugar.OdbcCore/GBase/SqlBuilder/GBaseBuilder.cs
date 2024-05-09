@@ -9,8 +9,8 @@ namespace SqlSugar.Odbc
 {
     public class OdbcBuilder : SqlBuilderProvider
     {
-        public override string SqlTranslationLeft { get { return ""; } }
-        public override string SqlTranslationRight { get { return ""; } }
+        public override string SqlTranslationLeft { get { return OdbcConfig.SqlTranslationLeft; } }
+        public override string SqlTranslationRight { get { return OdbcConfig.SqlTranslationRight; } }
         public override string GetNoTranslationColumnName(string name)
         {
             return name;
@@ -45,7 +45,7 @@ namespace SqlSugar.Odbc
                 .MappingTables
                 .FirstOrDefault(it => it.EntityName.Equals(name, StringComparison.CurrentCultureIgnoreCase));
             name = (mappingInfo == null ? name : mappingInfo.DbTableName);
-            if (name.IsContainsIn("(", ")", SqlTranslationLeft))
+            if (string.IsNullOrEmpty(SqlTranslationLeft)&&name.IsContainsIn("(", ")", SqlTranslationLeft))
             {
                 return name;
             }

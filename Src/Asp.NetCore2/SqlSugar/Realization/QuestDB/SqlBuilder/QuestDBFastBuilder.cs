@@ -33,32 +33,10 @@ namespace SqlSugar
         //}
         public async Task<int> ExecuteBulkCopyAsync(DataTable dt)
         {
-            List<string> lsColNames = new List<string>();
-            for (int i = 0; i < dt.Columns.Count; i++)
-            {
-                lsColNames.Add($"\"{dt.Columns[i].ColumnName}\"");
-            }
-            string copyString = $"COPY  {dt.TableName} ( {string.Join(",", lsColNames) } ) FROM STDIN (FORMAT BINARY)";
-            NpgsqlConnection conn = (NpgsqlConnection)this.Context.Ado.Connection;
-            var columns = this.Context.DbMaintenance.GetColumnInfosByTableName(this.entityInfo.DbTableName);
-            try
-            {
-                var identityColumnInfo = this.entityInfo.Columns.FirstOrDefault(it => it.IsIdentity);
-                if (identityColumnInfo != null)
-                {
-                    throw new Exception("PgSql bulkcopy no support identity");
-                }
-                BulkCopy(dt, copyString, conn, columns);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally 
-            {
-                base.CloseDb();
-            }
-            return await Task.FromResult(dt.Rows.Count);
+            Check.ExceptionEasy( 
+                "Nuget install: SqlSugar.QuestDb.RestAPI, use: await db.RestApi().BulkCopyAsync(list)", 
+                "Nuget安装：SqlSugar.QuestDb.RestAPI ，QuestDb中请使用：await db.RestApi().BulkCopyAsync(list) 注意是db.RestApi()不是db.Fastest");
+            return await Task.FromResult(0);
         }
 
         private  void BulkCopy(DataTable dt, string copyString, NpgsqlConnection conn, List<DbColumnInfo> columns)

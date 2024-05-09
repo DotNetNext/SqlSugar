@@ -139,11 +139,7 @@ namespace SqlSugar
             }
             else if (Navigat.NavigatType == NavigateType.Dynamic) 
             {
-                Check.ExceptionEasy(
-                   true,
-                   " NavigateType.Dynamic no support expression .  " + this.ProPertyEntity.Type.Name,
-                   " NavigateType.Dynamic 自定义导航对象不支持在Where(x=>x.自定义.Id==1)等方法中使用" + this.ProPertyEntity.Type.Name);
-                return null;
+                return GetDynamicSql();
             }
             else
             {
@@ -151,11 +147,78 @@ namespace SqlSugar
             }
      
         }
+
+        private MapperSql GetDynamicSql()
+        {
+            if (Navigat.Name == null)
+            {
+                Check.ExceptionEasy(
+                   true,
+                   " NavigateType.Dynamic User-defined navigation objects need to be configured with json to be used in expressions .  " + this.ProPertyEntity.Type.Name,
+                   " NavigateType.Dynamic 自定义导航对象需要配置json才能在表达式中使用。 " + this.ProPertyEntity.Type.Name);
+            }  
+            MapperSql mapper = new MapperSql();
+            var queryable = this.context.Queryable<object>(); 
+            //selectName = queryable.QueryBuilder.Builder.GetTranslationColumnName(selectName);
+            if (PropertyShortName.HasValue())
+            {
+                queryable.QueryBuilder.TableShortName = PropertyShortName;
+            }
+            queryable.QueryBuilder.LambdaExpressions.ParameterIndex = 500;
+            var isClearFilter = false;
+            Type[] clearTypes = null;
+            if (this.methodCallExpressionResolve?.Context?.SugarContext?.QueryBuilder != null)
+            {
+                queryable.QueryBuilder.LambdaExpressions.ParameterIndex = 500 + this.methodCallExpressionResolve.Context.SugarContext.QueryBuilder.LambdaExpressions.ParameterIndex;
+                this.methodCallExpressionResolve.Context.SugarContext.QueryBuilder.LambdaExpressions.ParameterIndex++;
+                isClearFilter = this.methodCallExpressionResolve.Context.SugarContext.QueryBuilder.IsDisabledGobalFilter;
+                clearTypes = this.methodCallExpressionResolve.Context.SugarContext.QueryBuilder.RemoveFilters;
+            }
+            queryable
+                .AS(this.ProPertyEntity.DbTableName)
+                .ClearFilter(clearTypes)
+                .Filter(isClearFilter ? null : this.ProPertyEntity.Type)
+                .WhereIF(!string.IsNullOrEmpty(whereSql), whereSql);
+            var json = Newtonsoft.Json.Linq.JArray.Parse(Navigat.Name);
+            foreach (var item in json)
+            {
+                string m = item["m"] + "";
+                string c = item["c"] + "";
+                var leftName = this.EntityInfo.Columns.First(it => it.PropertyName == m).DbColumnName;
+                var rightName = this.ProPertyEntity.Columns.First(it => it.PropertyName == c).DbColumnName;
+                queryable.Where($" {queryable.SqlBuilder.GetTranslationColumnName(ShorName)}.{queryable.SqlBuilder.GetTranslationColumnName(leftName)}={queryable.SqlBuilder.GetTranslationColumnName(rightName)} ");
+            }
+            var sqlObj = queryable.ToSql();
+               // .Where($" {name}={queryable.QueryBuilder.Builder.GetTranslationColumnName(ShorName)}.{pk} ").Select(MethodName == "Any" ? "1" : " COUNT(1) ").ToSql();
+            if (sqlObj.Value?.Any() == true)
+            {
+                foreach (var item in sqlObj.Value)
+                {
+                    if (!this.methodCallExpressionResolve.Context.Parameters.Any(it => it.ParameterName == item.ParameterName))
+                    {
+                        this.methodCallExpressionResolve.Context.Parameters.Add(item);
+                    }
+                }
+            }
+            mapper.Sql = sqlObj.Key;
+            mapper.Sql = $" ({mapper.Sql}) ";
+            mapper.Sql = GetMethodSql(mapper.Sql);
+            return mapper;
+        }
+
         private MapperSql GetManyToManySql()
         {
          
             var bPk = this.ProPertyEntity.Columns.FirstOrDefault(it => it.IsPrimarykey == true)?.DbColumnName;
             var aPk = this.EntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey == true)?.DbColumnName;
+            if (Navigat.BClassId.HasValue()) 
+            {
+                bPk= this.ProPertyEntity.Columns.FirstOrDefault(it => it.PropertyName == Navigat.BClassId)?.DbColumnName;
+            }
+            if (Navigat.AClassId.HasValue())
+            {
+                aPk = this.EntityInfo.Columns.FirstOrDefault(it => it.PropertyName == Navigat.AClassId)?.DbColumnName;
+            }
             Check.ExceptionEasy(aPk.IsNullOrEmpty(), $"{this.EntityInfo.EntityName}need primary key", $"{this.EntityInfo.EntityName}需要主键");
             Check.ExceptionEasy(bPk.IsNullOrEmpty(), $"{this.ProPertyEntity.EntityName}need primary key", $"{this.ProPertyEntity.EntityName}需要主键");
             MapperSql mapper = new MapperSql();
@@ -236,15 +299,18 @@ namespace SqlSugar
             }
             queryable.QueryBuilder.LambdaExpressions.ParameterIndex = 500;
             var isClearFilter = false;
+            Type[] clearTypes = null;
             if (this.methodCallExpressionResolve?.Context?.SugarContext?.QueryBuilder != null) 
             {
                 queryable.QueryBuilder.LambdaExpressions.ParameterIndex=500+ this.methodCallExpressionResolve.Context.SugarContext.QueryBuilder.LambdaExpressions.ParameterIndex;
                 this.methodCallExpressionResolve.Context.SugarContext.QueryBuilder.LambdaExpressions.ParameterIndex++;
                 isClearFilter=this.methodCallExpressionResolve.Context.SugarContext.QueryBuilder.IsDisabledGobalFilter;
+                clearTypes = this.methodCallExpressionResolve.Context.SugarContext.QueryBuilder.RemoveFilters;
             }
             var sqlObj = queryable
                 .AS(this.ProPertyEntity.DbTableName)
-                .Filter(isClearFilter?null:this.ProPertyEntity.Type)
+                .ClearFilter(clearTypes)
+                .Filter(isClearFilter?null:this.ProPertyEntity.Type) 
                 .WhereIF(!string.IsNullOrEmpty(whereSql), whereSql)
                 .Where($" {name}={queryable.QueryBuilder.Builder.GetTranslationColumnName( ShorName)}.{pk} ").Select(MethodName == "Any" ? "1" : " COUNT(1) ").ToSql();
             if (sqlObj.Value?.Any() == true)

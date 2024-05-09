@@ -31,6 +31,11 @@ namespace SqlSugar
             }
             return result;
         }
+        public override string JsonField(MethodCallExpressionModel model)
+        {
+            model.Parameters.RemoveAll(item=>item.ParameterName== model.Args[1].MemberName+"");
+            return " json_extract("+ model.Args[0].MemberName + ",'$." + model.Args[1].MemberValue + "') ";
+        }
         public override string GetStringJoinSelector(string result, string separator)
         {
             return $"group_concat({result},'{separator}') ";
@@ -212,7 +217,7 @@ namespace SqlSugar
                     Check.ThrowNotSupportedException(typeName);
                     break;
             }
-            return string.Format(" CAST(STRFTIME('{1}', DATETIME(DATETIME({0}), 'LOCALTIME')) AS INTEGER)", parameter.MemberName, parameter2);
+            return string.Format(" CAST(STRFTIME('{1}',  DATETIME({0}) ) AS INTEGER)", parameter.MemberName, parameter2);
         }
 
         public override string DateIsSameDay(MethodCallExpressionModel model)

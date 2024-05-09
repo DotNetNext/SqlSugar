@@ -2,17 +2,15 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="UnitTest\models\**" />
-    <EmbeddedResource Remove="UnitTest\models\**" />
-    <None Remove="UnitTest\models\**" />
+    <None Include="..\.editorconfig" Link=".editorconfig" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\.editorconfig" Link=".editorconfig" />
+    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.3.4" />
   </ItemGroup>
 
   <ItemGroup>

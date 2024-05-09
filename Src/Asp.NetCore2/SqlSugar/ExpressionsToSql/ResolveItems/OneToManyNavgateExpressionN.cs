@@ -274,8 +274,17 @@ namespace SqlSugar
                     }
                     else
                     {
-                        this.whereSql = this.whereSql.Replace(sqlBuilder.GetTranslationColumnName(it.DbColumnName),
+                        var oldWhere = this.whereSql;
+                        var newWhere = this.whereSql.Replace(sqlBuilder.GetTranslationColumnName(it.DbColumnName),
                             lastShortName + "." + sqlBuilder.GetTranslationColumnName(it.DbColumnName));
+                        if (oldWhere != newWhere  && !oldWhere.Contains($" {sqlBuilder.GetTranslationColumnName(it.DbColumnName)}"))
+                        {
+
+                        }
+                        else
+                        {
+                            this.whereSql = newWhere;
+                        }
                     }
                 }
             });

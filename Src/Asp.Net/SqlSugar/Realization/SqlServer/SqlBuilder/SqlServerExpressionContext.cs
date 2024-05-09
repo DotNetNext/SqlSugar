@@ -20,6 +20,22 @@ namespace SqlSugar
     }
     public partial class SqlServerMethod : DefaultDbMethod, IDbMethods
     {
+        public override string JsonArrayLength(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            return $" (SELECT COUNT(*) FROM OPENJSON({parameter.MemberName})) ";
+        }
+
+        public override string JsonIndex(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter1 = model.Args[1];
+            return $"JSON_VALUE({parameter.MemberName}, '$[{parameter1.MemberValue}]')";
+        }
+        public override string CharIndexNew(MethodCallExpressionModel model)
+        {
+            return string.Format("CHARINDEX ({1},{0})", model.Args[0].MemberName, model.Args[1].MemberName);
+        }
         public override string WeekOfYear(MethodCallExpressionModel mode)
         {
             var parameterNameA = mode.Args[0].MemberName;
@@ -43,11 +59,25 @@ namespace SqlSugar
             var parameter2 = model.Args[1];
             if (parameter.MemberName != null && parameter.MemberName is DateTime)
             {
-                return string.Format(" datepart({0},'{1}') ", parameter2.MemberValue, parameter.MemberName);
+                if (parameter2.MemberValue?.ToString() == DateType.Weekday.ToString())
+                {
+                    return string.Format(" (datepart({0},'{1}')-1) ", parameter2.MemberValue, parameter.MemberName);
+                }
+                else 
+                {
+                    return string.Format(" datepart({0},'{1}') ", parameter2.MemberValue, parameter.MemberName);
+                }
             }
             else
             {
-                return string.Format(" datepart({0},{1}) ", parameter2.MemberValue, parameter.MemberName);
+                if (parameter2.MemberValue?.ToString() == DateType.Weekday.ToString())
+                {
+                    return string.Format(" (datepart({0},{1})-1) ", parameter2.MemberValue, parameter.MemberName);
+                }
+                else
+                {
+                    return string.Format(" datepart({0},{1}) ", parameter2.MemberValue, parameter.MemberName);
+                }
             }
         }
         public override string HasValue(MethodCallExpressionModel model)
@@ -139,6 +169,10 @@ namespace SqlSugar
         public override string FullTextContains(MethodCallExpressionModel mode)
         {
             var columns = mode.Args[0].MemberName;
+            if (mode.Args[0].MemberValue is List<string>) 
+            {
+                columns = "("+string.Join(",", mode.Args[0].MemberValue as List<string>)+")";
+            }
             var searchWord = mode.Args[1].MemberName;
             return $" CONTAINS({columns},{searchWord}) ";
         }

@@ -87,6 +87,11 @@ namespace SqlSugar
             sql.Replace(UtilConstants.ReplaceKey, isRowNumber ? (isIgnoreOrderBy ? null : rowNumberString) : null);
             if (isIgnoreOrderBy) { this.OrderByValue = oldOrderBy; return sql.ToString(); }
             var result = ToPageSql(sql.ToString(), this.Take, this.Skip);
+            if (this.GetGroupByString==null&&this.Take == 1 && this.Skip == 0&&oldOrderBy== "ORDER BY sysdate ") 
+            {
+                result = $" {sql.ToString()} {(this.WhereInfos.Any()?"AND":"WHERE")}   ROWNUM = 1 ";
+                result = result.Replace(rowNumberString, " ");
+            }
             if (ExternalPageIndex > 0)
             {
                 if (externalOrderBy.IsNullOrEmpty())

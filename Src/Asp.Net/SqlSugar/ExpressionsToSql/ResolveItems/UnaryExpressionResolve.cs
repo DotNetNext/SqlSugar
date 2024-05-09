@@ -99,7 +99,14 @@ namespace SqlSugar
                       methodParamter
                   }
                     });
-                    this.Context.Result.Append(result);
+                    if (nodeType == ExpressionType.Not&& memberExpression.Member.Name=="HasValue")
+                    {
+                        this.Context.Result.Append("NOT" + result  );
+                    }
+                    else
+                    {
+                        this.Context.Result.Append(result);
+                    }
                     parameter.CommonTempData = null;
                 }
             }

@@ -119,7 +119,7 @@ namespace SqlSugar
         {
             get
             {
-                throw new NotSupportedException();
+                return "ALTER TABLE {0} DROP {1}";
             }
         }
         protected override string DropConstraintSql
@@ -255,6 +255,108 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override bool UpdateColumn(string tableName, DbColumnInfo column)
+        {
+            var isTran = this.Context.Ado.IsNoTran();
+            try
+            { 
+                if (column.IsPrimarykey) 
+                {
+                   Check.ExceptionEasy("Sqlite no support alter column primary key","Sqlite不支持修改主键");
+                }
+
+                if (isTran)
+                    // Start a transaction
+                    this.Context.Ado.BeginTran();
+
+                tableName = tableName ?? column.TableName;
+                var oldColumn = column.DbColumnName;
+                var tempColumn = "Column" + SnowFlakeSingle.Instance.NextId();
+
+                // Step 1: Add a new column
+                column.DbColumnName = tempColumn;
+                column.DefaultValue = null;
+                this.AddColumn(tableName, column);
+
+                // Step 2: Update values from old column to new column
+                this.Context.Ado.ExecuteCommand($"UPDATE { SqlBuilder.GetTranslationColumnName(tableName)} SET {SqlBuilder.GetTranslationColumnName(column.DbColumnName)}={SqlBuilder.GetTranslationColumnName(oldColumn)}");
+
+                // Step 3: Drop the old column
+                this.DropColumn(tableName, oldColumn);
+
+                // Step 4: Rename the new column to the old column name
+                column.DbColumnName = oldColumn;
+                this.AddColumn(tableName, column);
+
+                // Step 5: Update values from temporary column to the new column
+                this.Context.Ado.ExecuteCommand($"UPDATE {SqlBuilder.GetTranslationColumnName(tableName)} SET {SqlBuilder.GetTranslationColumnName(column.DbColumnName)}={SqlBuilder.GetTranslationColumnName(tempColumn)}");
+
+                //Step 6: Drop the temporary column
+                this.DropColumn(tableName, tempColumn);
+
+                if (isTran)
+                    // Commit the transaction
+                    this.Context.Ado.CommitTran();
+
+                return true;
+            }
+            catch (Exception)
+            {
+                if (isTran)
+                    // Handle exceptions, log, or rollback the transaction if necessary
+                    this.Context.Ado.RollbackTran();
+                // Log the exception or throw it again based on your requirements
+                throw;
+            }
+        }
+        public override List<string> GetDbTypes()
+        {
+            return this.Context.Ado.SqlQuery<string>(@"SELECT 'TEXT' AS Data_Type
+UNION
+SELECT 'INTEGER'
+UNION
+SELECT 'REAL'
+UNION
+SELECT 'BLOB'
+UNION SELECT 'bigint' 
+ UNION SELECT 'binary' 
+ UNION SELECT 'bit' 
+ UNION SELECT 'char' 
+ UNION SELECT 'date' 
+ UNION SELECT 'datetime' 
+ UNION SELECT 'datetime2' 
+ UNION SELECT 'datetimeoffset' 
+ UNION SELECT 'decimal' 
+ UNION SELECT 'float'  
+ UNION SELECT 'image' 
+ UNION SELECT 'int' 
+ UNION SELECT 'money' 
+ UNION SELECT 'nchar' 
+ UNION SELECT 'ntext' 
+ UNION SELECT 'numeric' 
+ UNION SELECT 'nvarchar' 
+ UNION SELECT 'smalldatetime' 
+ UNION SELECT 'smallint' 
+ UNION SELECT 'text' 
+ UNION SELECT 'time' 
+ UNION SELECT 'timestamp' 
+ UNION SELECT 'tinyint' 
+ UNION SELECT 'uniqueidentifier' 
+ UNION SELECT 'varbinary' 
+ UNION SELECT 'varchar' 
+ UNION SELECT 'xml' ");
+        }
+        public override List<string> GetTriggerNames(string tableName)
+        {
+            return this.Context.Ado.SqlQuery<string>(@"SELECT name
+FROM sqlite_master
+WHERE type = 'trigger'
+AND sql LIKE '%" + tableName + "%'");
+        }
+        public override List<string> GetFuncList()
+        {
+            return new List<string>();
+        }
         public override List<string> GetIndexList(string tableName)
         {
             var sql = $"PRAGMA index_list('{tableName}');";
@@ -329,7 +431,7 @@ namespace SqlSugar
         private List<DbColumnInfo> GetColumnInfosByTableName(string tableName)
         {
             //var columns = GetColumnsByTableName2(tableName);
-            string sql = "PRAGMA table_info(" +SqlBuilder.GetTranslationTableName(tableName) + ")";
+            string sql = "PRAGMA table_info(" +SqlBuilder.GetTranslationColumnName(tableName) + ")";
             var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
             this.Context.Ado.IsEnableLogEvent = false;
             var tableSript=this.Context.Ado.GetString($"SELECT sql FROM sqlite_master WHERE name='{tableName}' AND type='table'");
@@ -466,6 +568,19 @@ namespace SqlSugar
                 string primaryKey = item.IsPrimarykey ? this.CreateTablePirmaryKey : null;
                 string identity = item.IsIdentity ? this.CreateTableIdentity : null;
                 string addItem = string.Format(this.CreateTableColumn, this.SqlBuilder.GetTranslationColumnName(columnName), dataType, dataSize, nullType, primaryKey, identity);
+                if (item.DefaultValue.HasValue()&&this.Context.CurrentConnectionConfig?.MoreSettings?.SqliteCodeFirstEnableDefaultValue == true) 
+                {
+                    var value = item.DefaultValue;
+                    if (!value.Contains("(")&&!value.EqualCase( "CURRENT_TIMESTAMP")&&!value.StartsWith("'")) 
+                    {
+                        value = value.ToSqlValue();
+                    }
+                    addItem = $"{addItem} DEFAULT {value}";
+                }
+                if (item.ColumnDescription.HasValue() && this.Context.CurrentConnectionConfig?.MoreSettings?.SqliteCodeFirstEnableDescription == true) 
+                {
+                    addItem = $"{addItem} /*{item.ColumnDescription.Replace("\r","").Replace("\n", "")}*/ ";
+                }
                 columnArray.Add(addItem);
             }
             string tableString = string.Format(this.CreateTableSql, this.SqlBuilder.GetTranslationTableName(tableName), string.Join(",\r\n", columnArray));

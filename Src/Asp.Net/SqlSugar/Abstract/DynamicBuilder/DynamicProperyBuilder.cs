@@ -18,7 +18,7 @@ namespace SqlSugar
             return new DynamicProperyBuilder();
         }
         public DynamicBuilder baseBuilder;
-        public DynamicProperyBuilder CreateProperty(string propertyName, Type properyType, SugarColumn column=null,bool isSplitField=false)
+        public DynamicProperyBuilder CreateProperty(string propertyName, Type properyType, SugarColumn column=null,bool isSplitField=false, Navigate navigate=null)
         {
             if (column == null) 
             {
@@ -31,6 +31,10 @@ namespace SqlSugar
             addItem.Name = propertyName;
             addItem.Type = properyType;
             addItem.CustomAttributes = new List<CustomAttributeBuilder>() { baseBuilder.GetProperty(column) };
+            if (navigate != null) 
+            {
+                addItem.CustomAttributes.Add(BuildNavigateAttribute(navigate));
+            }
             baseBuilder.propertyAttr.Add(addItem);
             if (isSplitField) 
             {
@@ -60,7 +64,41 @@ namespace SqlSugar
                 return result;
             }
         }
+        public  CustomAttributeBuilder BuildNavigateAttribute(Navigate navigate)
+        {
+            NavigateType navigatType = navigate.NavigatType;
+            string name = navigate.Name;
+            string name2 = navigate.Name2;
+            string whereSql = navigate.WhereSql;
+            Type mappingTableType = navigate.MappingType;
+            string typeAiD = navigate.MappingAId;
+            string typeBId = navigate.MappingBId; 
+            ConstructorInfo constructor;
+            object[] constructorArgs;
 
-       
+            if (mappingTableType != null && typeAiD != null && typeBId != null)
+            {
+                constructor = typeof(Navigate).GetConstructor(new Type[] { typeof(Type), typeof(string), typeof(string), typeof(string) });
+                constructorArgs = new object[] { mappingTableType, typeAiD, typeBId, whereSql };
+            }
+            else if (!string.IsNullOrEmpty(whereSql))
+            {
+                constructor = typeof(Navigate).GetConstructor(new Type[] { typeof(NavigateType), typeof(string), typeof(string), typeof(string) });
+                constructorArgs = new object[] { navigatType, name, name2, whereSql };
+            }
+            else if (!string.IsNullOrEmpty(name2))
+            {
+                constructor = typeof(Navigate).GetConstructor(new Type[] { typeof(NavigateType), typeof(string), typeof(string) });
+                constructorArgs = new object[] { navigatType, name, name2 };
+            }
+            else
+            {
+                constructor = typeof(Navigate).GetConstructor(new Type[] { typeof(NavigateType), typeof(string) });
+                constructorArgs = new object[] { navigatType, name };
+            }
+
+            return new CustomAttributeBuilder(constructor, constructorArgs);
+        }
+
     }
 }

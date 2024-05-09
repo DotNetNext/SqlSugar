@@ -2,28 +2,29 @@
 <package >
   <metadata>
     <id>SqlSugarCore</id>
-    <version>5.1.4.105</version>
+    <version>5.1.4.155-preview10</version>
     <authors>sunkaixuan</authors>
     <owners>果糖大数据科技</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
     <projectUrl>https://github.com/sunkaixuan/SqlSugar</projectUrl>
     <iconUrl>https://secure.gravatar.com/avatar/a82c03402497b2e58fd65038a3699b30</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>好用的ORM框架 .Net Core .Net5 .Net6 .Net7 安装此版本，支持国外主流和国产人大金仓达梦 QuestDb ClickHouse Oracle MySql SqlServer Sqlite，  版本说明: 5.0.3.5-Max 最低要求.Net Core 3.0+   ，5.0.0-5.0.3.4 最低要求 .Net Core 2.0+  SqlSugar ORM ,High-performance, lightweight </description>
+    <description>.Net Core3.1  .Net5 .Net6 .Net7 .Net8 安装此版本，好用的ORM框架 ，支持国外主流和国产人大金仓达梦 OceanBase GaussDB   QuestDb ClickHouse Oracle MySql Gbase8s SqlServer Sqlite，  版本说明: 5.0.3.5-Max 最低要求.Net Core 3.0+   ，5.0.0-5.0.3.4 最低要求 .Net Core 2.0+  SqlSugar ORM ,High-performance, lightweight </description>
     <copyright>Copyright 2016</copyright>
-    <tags>SqlSugar Sql Sugar core Asp.net core orm 达梦 金仓 人大金仓 QuestDb ClickHouse Oracle MySql SqlServer Sqlite</tags>
+    <tags>SqlSugar Sql Sugar core Asp.net core orm 达梦 金仓 人大金仓 QuestDb ClickHouse Oracle MySql OceanBase GaussDB   SqlServer Sqlite Tidb Vastbase 神舟通用 神通数据库 ShenTong Oscar PolarDB Doris Gbase 华为</tags>
     <dependencies>
       <group targetFramework=".NETStandard2.1">
         <dependency id="System.Data.Common" version="4.3.0" />
-        <dependency id="Microsoft.Data.SqlClient" version="2.1.4" />
+        <dependency id="Microsoft.Data.SqlClient" version="2.1.7" />
         <dependency id="Newtonsoft.Json" version="13.0.2" />
-        <dependency id="Microsoft.Data.Sqlite" version="7.0.5" />
+        <dependency id="Microsoft.Data.Sqlite" version="8.0.1" />
         <dependency id="System.Reflection.Emit.Lightweight" version="4.3.0" />
         <dependency id="MySqlConnector" version="2.2.5" />
         <dependency id="Oracle.ManagedDataAccess.Core" version="3.21.100" />
         <dependency id="Npgsql" version="5.0.7" />
-	    <dependency id="SqlSugarCore.Dm" version="1.2" />
-	    <dependency id="SqlSugarCore.Kdbndp" version="7.4.0" />
+	    <dependency id="SqlSugarCore.Dm" version="1.3" />
+	    <dependency id="SqlSugarCore.Kdbndp" version="9.3.6.411" />
+		<dependency id="Oscar.Data.SqlClient" version="4.0.4" />
       </group>
     </dependencies>
   </metadata>

@@ -195,7 +195,18 @@ namespace SqlSugar
             }
             else
             {
-                this._Context.Insertable(insertData).ExecuteCommand();
+                var isIdentity = this._Context.EntityMaintenance.GetEntityInfo(typeof(TChild)).Columns.Any(it => it.IsIdentity);
+                if (isIdentity)
+                {
+                    foreach (var item in insertData)
+                    {
+                        this._Context.Insertable(insertData).ExecuteCommandIdentityIntoEntity();
+                    }
+                }
+                else
+                {
+                    this._Context.Insertable(insertData).ExecuteCommand();
+                }
             }
         }
     }

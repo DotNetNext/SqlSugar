@@ -32,7 +32,7 @@ namespace OrmTest
 
 
             ////insert or update
-            //db.Saveable<Order>(new Order() { Id=1, Name="jack" }).ExecuteReturnEntity();
+             db.Storageable<Order>(new Order() { Id=new Random().Next(1,8888), Name="jack" }).ExecuteReturnEntity();
 
 
             ////insert or update

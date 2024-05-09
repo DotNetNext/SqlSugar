@@ -54,10 +54,17 @@ namespace Test
                               ]
                 }
                 ";
-            var x2 = jsonToSqlClient.Queryable(json2).ToSqlList(); 
+            var x2 = jsonToSqlClient.Queryable(json2).ToSqlList();
 
+            var json3 = @"{
+                      ""Table"":""order"",
+                      ""Where"":[  ""name"",""="", ""{string}:U""  ],
+                      ""Select"":[ ""{string}:abc"",""name"" ]
+                    }";
+            var x3=jsonToSqlClient.Queryable(json3).ToSqlList();
             var list1 = jsonToSqlClient.Context.Ado.SqlQuery<dynamic>(x1[0].Sql, x1[0].Parameters);
             var list2 = jsonToSqlClient.Context.Ado.SqlQuery<dynamic>(x2[0].Sql, x2[0].Parameters);
+            var list3 = jsonToSqlClient.Context.Ado.SqlQuery<dynamic>(x3[0].Sql, x3[0].Parameters);
         }
         private static void JoinTest(JsonClient jsonToSqlClient)
         {

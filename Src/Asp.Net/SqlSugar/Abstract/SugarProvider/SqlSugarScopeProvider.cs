@@ -13,14 +13,24 @@ namespace SqlSugar
     public class SqlSugarScopeProvider:ISqlSugarClient
     {
         internal  SqlSugarProvider conn;
+        internal string initThreadMainId;
+        internal string initkey = null;
         StackFrame[] frames;
 
         public SqlSugarScopeProvider(SqlSugarProvider conn)
         {
             this.conn = conn;
+            this.initThreadMainId = GetCurrentThreadId();
             var key = GetKey();
+            this.initkey = key;
             this.GetContext(true);
         }
+
+        private static string GetCurrentThreadId()
+        {
+            return System.Threading.Thread.CurrentThread.ManagedThreadId + "";
+        }
+
         public SqlSugarProvider ScopedContext { get { return GetContext(); } }
         private SqlSugarProvider GetAsyncContext(bool isInit=false)
         {
@@ -89,6 +99,10 @@ namespace SqlSugar
         }
         private  dynamic GetKey()
         {
+            if (!string.IsNullOrEmpty(this.initkey) &&this.initThreadMainId == GetCurrentThreadId()) 
+            {
+                return this.initkey;
+            }
             var key= "SqlSugarProviderScope_" + conn.CurrentConnectionConfig.ConfigId;
             if (frames == null)
             {
@@ -96,7 +110,7 @@ namespace SqlSugar
             }
             if (frames.Length >= 0)
             {
-                foreach (var method in frames.Take(15))
+                foreach (var method in frames.Take(35))
                 {
                     var refType = method.GetMethod()?.ReflectedType;
                     if (refType != null)
@@ -498,6 +512,10 @@ namespace SqlSugar
             return ScopedContext.Queryable(queryable);
         }
 
+        public ISugarQueryable<T> Queryable<T>(ISugarQueryable<T> queryable, string shortName)
+        {
+            return ScopedContext.Queryable(queryable, shortName);
+        }
         public ISugarQueryable<T> Queryable<T>(string shortName)
         {
             return ScopedContext.Queryable<T>(shortName);
@@ -602,6 +620,10 @@ namespace SqlSugar
         {
             return ScopedContext.SqlQueryable<T>(sql);
         }
+        public IStorageable<T> Storageable<T>(T[] dataList) where T : class, new()
+        {
+            return ScopedContext.Storageable(dataList);
+        }
         public StorageableDataTable Storageable(List<Dictionary<string, object>> dictionaryList, string tableName)
         {
             return ScopedContext.Storageable(dictionaryList, tableName);
@@ -615,7 +637,10 @@ namespace SqlSugar
         {
             return ScopedContext.Storageable(dataList);
         }
-
+        public IStorageable<T> Storageable<T>(IList<T> dataList) where T : class, new()
+        {
+            return ScopedContext.Storageable(dataList?.ToList());
+        }
         public IStorageable<T> Storageable<T>(T data) where T : class, new()
         {
             return ScopedContext.Storageable(data);
@@ -629,24 +654,28 @@ namespace SqlSugar
             return ScopedContext.StorageableByObject(singleEntityObjectOrListObject);
         }
 
-        public ISugarQueryable<T> Union<T>(List<ISugarQueryable<T>> queryables) where T : class, new()
+        public ISugarQueryable<T> Union<T>(List<ISugarQueryable<T>> queryables) where T : class 
         {
             return ScopedContext.Union(queryables);
         }
 
-        public ISugarQueryable<T> Union<T>(params ISugarQueryable<T>[] queryables) where T : class, new()
+        public ISugarQueryable<T> Union<T>(params ISugarQueryable<T>[] queryables) where T : class 
         {
             return ScopedContext.Union(queryables);
         }
 
-        public ISugarQueryable<T> UnionAll<T>(List<ISugarQueryable<T>> queryables) where T : class, new()
+        public ISugarQueryable<T> UnionAll<T>(List<ISugarQueryable<T>> queryables) where T : class 
         {
             return ScopedContext.UnionAll(queryables);
         }
 
-        public ISugarQueryable<T> UnionAll<T>(params ISugarQueryable<T>[] queryables) where T : class, new()
+        public ISugarQueryable<T> UnionAll<T>(params ISugarQueryable<T>[] queryables) where T : class 
         {
             return ScopedContext.UnionAll(queryables);
+        }
+        public UpdateExpressionMethodInfo UpdateableByObject(Type entityType)
+        {
+            return ScopedContext.UpdateableByObject(entityType);
         }
         public UpdateMethodInfo UpdateableByObject(object singleEntityObjectOrListObject)
         {
@@ -822,6 +851,18 @@ namespace SqlSugar
         public QueryMethodInfo QueryableByObject(Type entityType, string shortName)
         {
             return ScopedContext.QueryableByObject(entityType, shortName);
+        }
+        public GridSaveProvider<T> GridSave<T>(List<T> oldList, List<T> saveList) where T : class, new()
+        {
+            return ScopedContext.GridSave(oldList, saveList);
+        }
+        public GridSaveProvider<T> GridSave<T>(List<T> saveList) where T : class, new()
+        {
+            return ScopedContext.GridSave(saveList);
+        }
+        public void ClearTracking()
+        {
+            ScopedContext.ClearTracking();
         }
         #endregion
     }

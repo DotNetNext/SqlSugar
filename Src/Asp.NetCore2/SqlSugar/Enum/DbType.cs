@@ -28,6 +28,9 @@ namespace SqlSugar
         GaussDB,
         OceanBase,
         Tidb,
+        Vastbase,
+        PolarDB,
+        Doris,
         Custom =900
     }
 }

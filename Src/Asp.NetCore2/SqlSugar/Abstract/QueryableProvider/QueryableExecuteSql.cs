@@ -93,7 +93,7 @@ namespace SqlSugar
         }
         public virtual bool Any()
         {
-            return this.Select("1").ToList().Count() > 0;
+            return this.Take(1).Select("1").ToList().Count() > 0;
         }
 
         public virtual List<TResult> ToList<TResult>(Expression<Func<T, TResult>> expression)
@@ -224,19 +224,51 @@ namespace SqlSugar
         {
             return this.Context.Utilities.SerializeObject(this.ToPageList(pageIndex, pageSize, ref totalNumber), typeof(T));
         }
+
+        #region 内存行转列
+
+        #region 同步
         public virtual DataTable ToPivotTable<TColumn, TRow, TData>(Func<T, TColumn> columnSelector, Expression<Func<T, TRow>> rowSelector, Func<IEnumerable<T>, TData> dataSelector)
         {
             return this.ToList().ToPivotTable(columnSelector, rowSelector, dataSelector);
         }
         public virtual List<dynamic> ToPivotList<TColumn, TRow, TData>(Func<T, TColumn> columnSelector, Expression<Func<T, TRow>> rowSelector, Func<IEnumerable<T>, TData> dataSelector)
         {
+            return ToPivotEnumerable(columnSelector, rowSelector, dataSelector).ToList();
+        }
+        public virtual IEnumerable<dynamic> ToPivotEnumerable<TColumn, TRow, TData>(Func<T, TColumn> columnSelector, Expression<Func<T, TRow>> rowSelector, Func<IEnumerable<T>, TData> dataSelector)
+        {
             return this.ToList().ToPivotList(columnSelector, rowSelector, dataSelector);
         }
         public virtual string ToPivotJson<TColumn, TRow, TData>(Func<T, TColumn> columnSelector, Expression<Func<T, TRow>> rowSelector, Func<IEnumerable<T>, TData> dataSelector)
         {
-            var list = this.ToPivotList(columnSelector, rowSelector, dataSelector);
+            var list = ToPivotEnumerable(columnSelector, rowSelector, dataSelector).ToList();
             return this.Context.Utilities.SerializeObject(list);
         }
+        #endregion
+
+        #region 异步
+        public virtual async Task<DataTable> ToPivotTableAsync<TColumn, TRow, TData>(Func<T, TColumn> columnSelector, Expression<Func<T, TRow>> rowSelector, Func<IEnumerable<T>, TData> dataSelector)
+        {
+            return (await this.ToListAsync()).ToPivotTable(columnSelector, rowSelector, dataSelector);
+        }
+        public virtual async Task<List<dynamic>> ToPivotListAsync<TColumn, TRow, TData>(Func<T, TColumn> columnSelector, Expression<Func<T, TRow>> rowSelector, Func<IEnumerable<T>, TData> dataSelector)
+        {
+            return (await ToPivotEnumerableAsync(columnSelector, rowSelector, dataSelector)).ToList();
+        }
+        public virtual async Task<IEnumerable<dynamic>> ToPivotEnumerableAsync<TColumn, TRow, TData>(Func<T, TColumn> columnSelector, Expression<Func<T, TRow>> rowSelector, Func<IEnumerable<T>, TData> dataSelector)
+        {
+            return (await this.ToListAsync()).ToPivotList(columnSelector, rowSelector, dataSelector);
+        }
+        public virtual async Task<string> ToPivotJsonAsync<TColumn, TRow, TData>(Func<T, TColumn> columnSelector, Expression<Func<T, TRow>> rowSelector, Func<IEnumerable<T>, TData> dataSelector)
+        {
+            var list = (await ToPivotEnumerableAsync(columnSelector, rowSelector, dataSelector)).ToList();
+            return this.Context.Utilities.SerializeObject(list);
+        }
+        #endregion
+
+        #endregion
+
         public List<T> ToChildList(Expression<Func<T, object>> parentIdExpression, object primaryKeyValue, bool isContainOneself = true)
         {
             var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
@@ -281,16 +313,16 @@ namespace SqlSugar
                     tableName = this.QueryBuilder.JoinQueryInfos.First().TableName;
                 }
             }
-            var current = this.Context.Queryable<T>().AS(tableName).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).InSingle(primaryKeyValue);
+            var current = this.Context.Queryable<T>().AS(tableName).WithCacheIF(this.IsCache,this.CacheTime).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).ClearFilter(this.QueryBuilder.RemoveFilters).InSingle(primaryKeyValue);
             if (current != null)
             {
                 result.Add(current);
                 object parentId = ParentInfo.PropertyInfo.GetValue(current, null);
                 int i = 0;
-                while (parentId != null && this.Context.Queryable<T>().AS(tableName).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).In(parentId).Any())
+                while (parentId != null && this.Context.Queryable<T>().AS(tableName).WithCacheIF(this.IsCache, this.CacheTime).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).ClearFilter(this.QueryBuilder.RemoveFilters).In(parentId).Any())
                 {
-                    Check.Exception(i > 100, ErrorMessage.GetThrowMessage("Dead cycle", "出现死循环或超出循环上限（100），检查最顶层的ParentId是否是null或者0"));
-                    var parent = this.Context.Queryable<T>().AS(tableName).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).InSingle(parentId);
+                    Check.Exception(i > 200, ErrorMessage.GetThrowMessage("Dead cycle", "出现死循环或超出循环上限（200），检查最顶层的ParentId是否是null或者0"));
+                    var parent = this.Context.Queryable<T>().AS(tableName).WithCacheIF(this.IsCache, this.CacheTime).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).InSingle(parentId);
                     result.Add(parent);
                     parentId = ParentInfo.PropertyInfo.GetValue(parent, null);
                     ++i;
@@ -331,7 +363,7 @@ namespace SqlSugar
                 int i = 0;
                 while (parentId != null && this.Context.Queryable<T>().AS(tableName).WhereIF(parentWhereExpression!=default, parentWhereExpression).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).In(parentId).Any())
                 {
-                    Check.Exception(i > 100, ErrorMessage.GetThrowMessage("Dead cycle", "出现死循环或超出循环上限（100），检查最顶层的ParentId是否是null或者0"));
+                    Check.Exception(i > 200, ErrorMessage.GetThrowMessage("Dead cycle", "出现死循环或超出循环上限（200），检查最顶层的ParentId是否是null或者0"));
                     var parent = this.Context.Queryable<T>().AS(tableName).WhereIF(parentWhereExpression!=default, parentWhereExpression).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).InSingle(parentId);
                     result.Add(parent);
                     parentId = ParentInfo.PropertyInfo.GetValue(parent, null);
@@ -339,6 +371,16 @@ namespace SqlSugar
                 }
             }
             return result;
+        }
+
+        public List<T> ToTree(string childPropertyName, string parentIdPropertyName, object rootValue, string primaryKeyPropertyName)
+        {
+            var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            var pk = primaryKeyPropertyName;
+            var list = this.ToList();
+            Expression<Func<T,IEnumerable<object> >> childListExpression = (Expression<Func<T, IEnumerable<object>>>)ExpressionBuilderHelper.CreateExpressionSelectField(typeof(T),childPropertyName,typeof(IEnumerable<object>));
+            Expression<Func<T, object>> parentIdExpression = (Expression<Func<T, object>>)ExpressionBuilderHelper.CreateExpressionSelectFieldObject(typeof(T), parentIdPropertyName); 
+            return GetTreeRoot(childListExpression, parentIdExpression, pk, list, rootValue) ?? new List<T>();
         }
         public List<T> ToTree(Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, object rootValue, Expression<Func<T, object>> primaryKeyExpression)
         {
@@ -426,7 +468,10 @@ namespace SqlSugar
             totalPage = (totalNumber + pageSize - 1) / pageSize;
             return result;
         }
-
+        public Dictionary<string, ValueType> ToDictionary<ValueType>(Expression<Func<T, object>> key, Expression<Func<T, object>> value)
+        {
+            return this.ToDictionary(key, value).ToDictionary(it => it.Key, it => (ValueType)UtilMethods.ChangeType2(it.Value, typeof(ValueType)));
+        }
         public Dictionary<string, object> ToDictionary(Expression<Func<T, object>> key, Expression<Func<T, object>> value)
         {
             if (this.QueryBuilder.IsSingle() == false && (this.QueryBuilder.AsTables == null||this.QueryBuilder.AsTables.Count==0)) 
@@ -446,6 +491,14 @@ namespace SqlSugar
             {
                 var result = this.Select<T>(keyName + "," + valueName).ToList().ToDictionary(ExpressionTool.GetMemberName(key), ExpressionTool.GetMemberName(value));
                 return result;
+            }
+            else if (valueName == null) 
+            {
+                // 编译key和value的表达式树为委托
+                var keySelector = key.Compile();
+                var valueSelector = value.Compile();
+                Dictionary<object,object> objDic= this.ToList().ToDictionary(keySelector, valueSelector); 
+                return objDic.ToDictionary(it=>it.Key?.ToString(),it=>it.Value);
             }
             else
             {
@@ -591,7 +644,62 @@ namespace SqlSugar
             var newResult = fieldsHelper.GetSetList(obj, listObj, mappings).Select(it => (T)it).ToList();
             return newResult;
         }
+        public void ForEachDataReader(Action<T> action) 
+        {
+            var queryable = this.Clone();
+            var sql = queryable.ToSql(); 
+            var dr = this.Context.Ado.GetDataReader(sql.Key,sql.Value);
+            var entityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            var columns = UtilMethods.GetColumnInfo(dr); 
+            var cacheKey = "ForEachDataReader"+typeof(T).GetHashCode()+string.Join(",", columns.Select(it => it.Item1+it.Item2.Name+"_"));
+            IDataReaderEntityBuilder<T> entytyList = this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate("cacheKey", () =>
+            {
+                var cacheResult = new IDataReaderEntityBuilder<T>(this.Context, dr,
+                    columns.Select(it=>it.Item1).ToList()).CreateBuilder(typeof(T));
+                return cacheResult;
+            });
+            using (dr)
+            {
+                while (dr.Read())
+                {
 
+                    var order = entytyList.Build(dr);
+                    action(order);
+                }
+            }
+            if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection) 
+            {
+                this.Context.Ado.Close();
+            }
+        }
+        public async Task ForEachDataReaderAsync(Action<T> action) 
+        {
+            var queryable = this.Clone();
+            var sql = queryable.ToSql();
+            var dr =await this.Context.Ado.GetDataReaderAsync(sql.Key, sql.Value);
+            var entityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            var columns = UtilMethods.GetColumnInfo(dr);
+            var cacheKey = "ForEachDataReader" + typeof(T).GetHashCode() + string.Join(",", columns.Select(it => it.Item1 + it.Item2.Name + "_"));
+            IDataReaderEntityBuilder<T> entytyList = this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate("cacheKey", () =>
+            {
+                var cacheResult = new IDataReaderEntityBuilder<T>(this.Context, dr,
+                    columns.Select(it => it.Item1).ToList()).CreateBuilder(typeof(T));
+                return cacheResult;
+            });
+            using (dr)
+            {
+                while (dr.Read())
+                {
+
+                    var order = entytyList.Build(dr);
+                    action(order);
+                }
+            }
+            if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection)
+            {
+                this.Context.Ado.Close();
+            }
+        }
         public virtual void ForEach(Action<T> action, int singleMaxReads = 300, System.Threading.CancellationTokenSource cancellationTokenSource = null)
         {
             Check.Exception(this.QueryBuilder.Skip > 0 || this.QueryBuilder.Take > 0, ErrorMessage.GetThrowMessage("no support Skip take, use PageForEach", "不支持Skip Take,请使用 Queryale.PageForEach"));
@@ -663,6 +771,12 @@ namespace SqlSugar
                 _ToOffsetPage(pageIndex, pageSize);
                 return this.ToList();
             }
+        }
+        public virtual List<T> ToOffsetPage(int pageIndex, int pageSize, ref int totalNumber, ref int totalPage)
+        {
+            var result = ToOffsetPage(pageIndex, pageSize, ref totalNumber);
+            totalPage = (totalNumber + pageSize - 1) / pageSize;
+            return result;
         }
         public List<T> ToOffsetPage(int pageIndex, int pageSize, ref int totalNumber)
         {

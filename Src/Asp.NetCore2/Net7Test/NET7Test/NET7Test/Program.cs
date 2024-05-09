@@ -91,7 +91,11 @@ static void ServerTest()
 
 
     var list = sqlugar.Queryable<UnitDate01231>().OrderByDescending(it => it.dateOnly).ToList();
-
+    var list222 = sqlugar.Queryable<UnitDate01231>()
+        .Select(it=>new { 
+          x=it.dateOnly,
+          y=it.dateOnly.Month
+        }).ToList();
     var d1 = new UnitDate01231().dateOnly;
     var d2 = new UnitDate01231().timeOnly;
 
@@ -119,7 +123,19 @@ static void ServerTest()
     sqlugar.Insertable(new Unitadfafa() { Id =1 }).ExecuteCommand();
     var list2=sqlugar.Queryable<Unitadfafa>().ToList();
 
+    sqlugar.CodeFirst.InitTables<UnitDatezaaaa>();
+    
+    var xx = sqlugar.Fastest<UnitDatezaaaa>().BulkCopy(new List<UnitDatezaaaa>() { (new UnitDatezaaaa()
+    {
+       
+    } )});
+    var xx2 = sqlugar.Fastest<UnitDatezaaaa>().BulkCopy(new List<UnitDatezaaaa>() { (new UnitDatezaaaa()
+    { 
+        timeOnly=TimeOnly.FromDateTime(DateTime.Now),
+        dateOnly=DateOnly.FromDateTime(DateTime.Now)
+    } )});
 }
+
 
 
 static void SqliteTest()
@@ -182,6 +198,13 @@ public class UnitDatez211afa
 {
     public TimeOnly timeOnly { get; set; }
     public DateOnly dateOnly { get; set; }
+}
+public class UnitDatezaaaa
+{
+    [SugarColumn(IsNullable =true)]
+    public TimeOnly? timeOnly { get; set; }
+    [SugarColumn(IsNullable = true)]
+    public DateOnly? dateOnly { get; set; }
 }
 public class UnitDatez211afa2222
 {

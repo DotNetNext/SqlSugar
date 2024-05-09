@@ -33,6 +33,11 @@ namespace OrmTest
             TestGuid(db);
             var list2=db.Queryable<SplitTableEntity>()
                 .PartitionBy(it => new { it.Ts,  it.Id }).ToList();
+            db.CodeFirst.InitTables<GuidTest22>();
+            db.DbFirst.CreateClassFile("c:\\demo\\11");
+            db.CodeFirst.InitTables<FloatTestdfa>();
+            db.Insertable(new FloatTestdfa() { A = 1 }).ExecuteCommand();
+            var list3=db.Queryable<FloatTestdfa>().ToList();
             Console.WriteLine("#### CodeFirst end ####");
         }
         private static void TestGuid(SqlSugarClient db)
@@ -57,10 +62,22 @@ namespace OrmTest
             Console.Write(db.Queryable<BoolTest5>().First(it => it.Id == Id).A);
         }
     }
+    [SugarTable("FloatTestdfa1")]
+    public class FloatTestdfa 
+    {
+        public float A { get; set; }
+    }
     public class GuidTest
     {
         [SugarColumn(IsPrimaryKey = true)]
         public long Id { get; set; }
+        public Guid A { get; set; }
+    }
+    public class GuidTest22
+    {
+        [SugarColumn(IsPrimaryKey = true)]
+        public long Id { get; set; }
+        [SugarColumn(ColumnDataType ="uuid")]
         public Guid A { get; set; }
     }
     public class BoolTest5

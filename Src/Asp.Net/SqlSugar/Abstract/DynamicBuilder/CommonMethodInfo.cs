@@ -68,6 +68,15 @@ namespace SqlSugar
             var result = Context.GetType().GetMyMethod("ExecuteCommandAsync", 0).Invoke(Context, new object[] { });
             return await (Task<int>)result;
         }
+        public UpdateCommonMethodInfo SplitTable()
+        { 
+            var newMethod = this.Context.GetType().GetMyMethod("SplitTable", 0);
+            var result = newMethod.Invoke(Context, new object[] { });
+            return new UpdateCommonMethodInfo()
+            {
+                Context = result
+            };
+        }
     }
 
 }

@@ -54,7 +54,7 @@ namespace SqlSugar.TDengine
             else
             {
                 StringBuilder batchInsetrSql = new StringBuilder();
-                int pageSize = 200;
+                int pageSize = 10000000;
                 int pageIndex = 1;
                 if (IsNoPage&&IsReturnPkList) 
                 {
@@ -77,6 +77,10 @@ namespace SqlSugar.TDengine
                         {
                             if (it.InsertServerTime || it.InsertSql.HasValue()||it.SqlParameterDbType is Type|| it?.PropertyType?.Name=="DateOnly" || it?.PropertyType?.Name == "TimeOnly")
                             {
+                                if (it.InsertServerTime) 
+                                {
+                                    return DateTime.Now.AddMilliseconds(i).ToString("yyyy-MM-dd HH:mm:ss.ffffff").ToSqlValue();
+                                }
                                 return GetDbColumn(it, null);
                             }
                             object value = null;

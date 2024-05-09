@@ -48,6 +48,7 @@ namespace SqlSugar
         #region Other methods
         Task<SugarAsyncLock> AsyncLock(int timeOutSeconds = 30);
         DynamicBuilder DynamicBuilder();
+        void ClearTracking();
         void Tracking<T>(T  data) where T : class, new();
         void Tracking<T>(List<T> data) where T : class, new();
         SqlSugarClient CopyNew();
@@ -141,11 +142,16 @@ namespace SqlSugar
              where T3 : class, new()
              where T4 : class, new();
         ISugarQueryable<T> Queryable<T>();
-        ISugarQueryable<T> Queryable<T>(ISugarQueryable<T> queryable);  
+        ISugarQueryable<T> Queryable<T>(ISugarQueryable<T> queryable);
+        ISugarQueryable<T> Queryable<T>(ISugarQueryable<T> queryable,string shortName);
         ISugarQueryable<T> Queryable<T>(string shortName);
         #endregion
 
         #region Saveable
+        GridSaveProvider<T> GridSave<T>(List<T> saveList) where T : class, new();
+        GridSaveProvider<T> GridSave<T>(List<T> oldList,List<T> saveList) where T : class, new();
+        IStorageable<T> Storageable<T>(T[] dataList) where T : class, new();
+        IStorageable<T> Storageable<T>(IList<T> dataList) where T : class, new();
          StorageableDataTable Storageable(List<Dictionary<string, object>> dictionaryList, string tableName);
          StorageableDataTable Storageable(Dictionary<string, object> dictionary, string tableName);
         IStorageable<T> Storageable<T>(List<T> dataList) where T : class, new();
@@ -184,14 +190,15 @@ namespace SqlSugar
         #endregion
 
         #region Union 
-        ISugarQueryable<T> Union<T>(List<ISugarQueryable<T>> queryables) where T : class, new();
-        ISugarQueryable<T> Union<T>(params ISugarQueryable<T>[] queryables) where T : class, new();
-        ISugarQueryable<T> UnionAll<T>(List<ISugarQueryable<T>> queryables) where T : class, new();
-        ISugarQueryable<T> UnionAll<T>(params ISugarQueryable<T>[] queryables) where T : class, new();
+        ISugarQueryable<T> Union<T>(List<ISugarQueryable<T>> queryables) where T : class;
+        ISugarQueryable<T> Union<T>(params ISugarQueryable<T>[] queryables) where T : class;
+        ISugarQueryable<T> UnionAll<T>(List<ISugarQueryable<T>> queryables) where T : class;
+        ISugarQueryable<T> UnionAll<T>(params ISugarQueryable<T>[] queryables) where T : class;
         #endregion
 
         #region Updateable
         UpdateMethodInfo UpdateableByObject(object singleEntityObjectOrListObject);
+        UpdateExpressionMethodInfo UpdateableByObject(Type entityType);
         IUpdateable<T> Updateable<T>() where T : class, new();
         IUpdateable<T> Updateable<T>(Dictionary<string, object> columnDictionary) where T : class, new();
         IUpdateable<T> Updateable<T>(dynamic updateDynamicObject) where T : class, new();

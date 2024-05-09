@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OrmTest
+namespace TDengineTest
 {
     /// <summary>
     /// Setting up the database name does not require you to create the database

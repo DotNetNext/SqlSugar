@@ -14,7 +14,7 @@ namespace SqlSugar
         public virtual List<SplitTableInfo> GetAllTables(ISqlSugarClient db, EntityInfo EntityInfo, List<DbTableInfo> tableInfos)
         {
             CheckTableName(EntityInfo.DbTableName);
-            var regex = EntityInfo.DbTableName.Replace("{year}", "([0-9]{2,4})").Replace("{day}", "([0-9]{1,2})").Replace("{month}", "([0-9]{1,2})");
+            var regex = "^"+EntityInfo.DbTableName.Replace("{year}", "([0-9]{2,4})").Replace("{day}", "([0-9]{1,2})").Replace("{month}", "([0-9]{1,2})");
             var currentTables = tableInfos.Where(it => Regex.IsMatch(it.Name, regex, RegexOptions.IgnoreCase)).Select(it => it.Name).Reverse().ToList();
             List<SplitTableInfo> result = new List<SplitTableInfo>();
             foreach (var item in currentTables)
@@ -73,6 +73,10 @@ namespace SqlSugar
                 if (value == null)
                 {
                     return db.GetDate();
+                }
+                else if (value is DateTimeOffset)
+                {
+                    return ((DateTimeOffset)value).DateTime;
                 }
                 else if (UtilMethods.GetUnderType(value.GetType()) != UtilConstants.DateType)
                 {

@@ -16,8 +16,8 @@ namespace SqlSugar.Odbc
         {
             base.DbMehtods = new OdbcMethod();
         }
-        public override string SqlTranslationLeft { get { return ""; } }
-        public override string SqlTranslationRight { get { return ""; } }
+        public override string SqlTranslationLeft { get { return OdbcConfig.SqlTranslationLeft; } }
+        public override string SqlTranslationRight { get { return OdbcConfig.SqlTranslationRight; } }
         public override bool IsTranslationText(string name)
         {
             var result = name.IsContainsIn( UtilConstants.Space,"(",")");

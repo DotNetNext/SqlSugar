@@ -29,9 +29,10 @@ namespace SqlSugar
         IUpdateable<T> AS(string tableName);
         IUpdateable<T> AsType(Type tableNameType);
         IUpdateable<T> With(string lockString);
-
+        IUpdateable<T> In<PkType>(Expression<Func<T, object>> inField, ISugarQueryable<PkType> childQueryExpression);
 
         IUpdateable<T> Where(Expression<Func<T, bool>> expression);
+        IUpdateable<T> WhereIF(bool isWhere,Expression<Func<T, bool>> expression);
         IUpdateable<T> Where(string whereSql,object parameters=null);
         /// <summary>
         ///  
@@ -60,7 +61,9 @@ namespace SqlSugar
         /// <param name="columns"></param>
         /// <returns></returns>
         IUpdateable<T> UpdateColumns(Expression<Func<T, object>> columns);
+        IUpdateable<T> UpdateColumns(Expression<Func<T, object>> columns, bool appendColumnsByDataFilter);
         IUpdateable<T> UpdateColumns(params string[] columns);
+        IUpdateable<T> UpdateColumns(string[] columns,bool appendColumnsByDataFilter);
 
 
         /// <summary>
@@ -95,7 +98,7 @@ namespace SqlSugar
         IUpdateable<T> IgnoreColumnsIF(bool isIgnore, Expression<Func<T, object>> columns);
 
         IUpdateable<T> IgnoreColumns(params string[] columns);
-
+        IUpdateable<T> IgnoreNullColumns(bool isIgnoreNull=true);
 
 
         IUpdateable<T> IsEnableUpdateVersionValidation();
@@ -115,7 +118,10 @@ namespace SqlSugar
         IUpdateable<T> EnableQueryFilter();
         IUpdateable<T> Clone();
         IUpdateable<T,T2> InnerJoin<T2>(Expression<Func<T,T2,bool>> joinExpress);
+        IUpdateable<T, T2> InnerJoin<T2>(Expression<Func<T, T2, bool>> joinExpress,string tableName);
         UpdateablePage<T> PageSize(int pageSize);
+        IUpdateable<T> In(object[] ids);
+        ParameterUpdateable<T> UseParameter();
     }
     public interface IUpdateable<T, T2> 
     {

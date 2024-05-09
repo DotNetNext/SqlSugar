@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SqlSugar
@@ -84,6 +85,18 @@ namespace SqlSugar
             this.lockType = dbLockType;
             return this;
         }
+        public IStorageable<T> TranLock(DbLockType? LockType)
+        {
+            if (LockType!=null)
+            {
+                this.lockType = LockType;
+                return this;
+            }
+            else
+            {
+                return this;
+            }
+        }
         public IStorageable<T> SplitOther(Func<StorageableInfo<T>, bool> conditions, string message = null)
         {
             whereFuncs.Add(new KeyValuePair<StorageType, Func<StorageableInfo<T>, bool>, string>(StorageType.Other, conditions, message));
@@ -102,6 +115,7 @@ namespace SqlSugar
             page.ActionCallBack = ActionCallBack;
             page.TableName = this.asname;
             page.whereExpression = this.whereExpression;
+            page.lockType = this.lockType;
             return page;
         }
         public StorageableSplitProvider<T> SplitTable() 
@@ -137,12 +151,52 @@ namespace SqlSugar
             result += updateRow;
             return result;
         }
+        public T ExecuteReturnEntity() 
+        { 
+            var x = this.ToStorage();
+            if (x.InsertList?.Any()==true)
+            {
+                var data = x.AsInsertable.ExecuteReturnEntity();
+                x.AsUpdateable.ExecuteCommand();
+                return data;
+            }
+            else
+            {
+                x.AsInsertable.ExecuteCommand();
+                x.AsUpdateable.ExecuteCommand();
+                return x.UpdateList.FirstOrDefault()?.Item;
+            }
+        }
+        public async Task<T> ExecuteReturnEntityAsync() 
+        {
+            var x = this.ToStorage();
+            if (x.InsertList.Any())
+            {
+                var data = await  x.AsInsertable.ExecuteReturnEntityAsync();
+                await x.AsUpdateable.ExecuteCommandAsync();
+                return data;
+            }
+            else
+            {
+                await x.AsInsertable.ExecuteCommandAsync();
+                await x.AsUpdateable.ExecuteCommandAsync();
+                return x.UpdateList.FirstOrDefault()?.Item;
+            }
+        }
+        public Task<int> ExecuteCommandAsync(CancellationToken cancellationToken) 
+        {
+            this.Context.Ado.CancellationToken=cancellationToken;
+            return ExecuteCommandAsync();
+        }
         public async Task<int> ExecuteCommandAsync()
         {
             var result = 0;
             var x = await this.ToStorageAsync();
             result +=await x.AsInsertable.ExecuteCommandAsync();
-            result +=await x.AsUpdateable.ExecuteCommandAsync();
+            var updateCount=await x.AsUpdateable.ExecuteCommandAsync();
+            if (updateCount < 0) 
+                updateCount = 0;
+            result += updateCount;
             return result;
         }
         public int ExecuteSqlBulkCopy()
@@ -506,6 +560,15 @@ namespace SqlSugar
                         {
                             value = Convert.ToInt64(value);
                         }
+                    }
+                    if (item.SqlParameterDbType != null && item.SqlParameterDbType is Type && UtilMethods.HasInterface((Type)item.SqlParameterDbType, typeof(ISugarDataConverter)))
+                    {
+                        var columnInfo = item;
+                        var type = columnInfo.SqlParameterDbType as Type;
+                        var ParameterConverter = type.GetMethod("ParameterConverter").MakeGenericMethod(columnInfo.PropertyInfo.PropertyType);
+                        var obj = Activator.CreateInstance(type);
+                        var p = ParameterConverter.Invoke(obj, new object[] { value, 100 }) as SugarParameter;
+                        value = p.Value;
                     }
                     condition.ConditionalList.Add(new KeyValuePair<WhereType, ConditionalModel>(i==0?WhereType.Or :WhereType.And, new ConditionalModel()
                     {

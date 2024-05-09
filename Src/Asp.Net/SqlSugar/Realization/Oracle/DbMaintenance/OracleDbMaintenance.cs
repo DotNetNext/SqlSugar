@@ -245,8 +245,8 @@ namespace SqlSugar
         {
             get
             {
-                return "";
-            }
+                return " NULL ";
+            } 
         }
         protected override string CreateTableNotNull
         {
@@ -272,9 +272,78 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override bool IsAnyTable(string tableName, bool isCache = true)
+        {
+            if (isCache)
+            {
+                return base.IsAnyTable(tableName, isCache);
+            }
+            else 
+            {
+                if (tableName.Contains("\"")) 
+                {
+                    tableName = SqlBuilder.GetNoTranslationColumnName(tableName);
+                }
+                return this.Context.Ado.GetInt(@"
+                    SELECT COUNT(table_name)
+                    FROM user_tables
+                    WHERE UPPER(table_name) = UPPER(@p)",new { p=tableName}) > 0;
+            }
+        }
+        public override bool UpdateColumn(string tableName, DbColumnInfo column)
+        {
+            ConvertCreateColumnInfo(column);
+            var oldColumn = this.Context.DbMaintenance.GetColumnInfosByTableName(tableName, false)
+                .FirstOrDefault(it=>it.DbColumnName.EqualCase(column.DbColumnName));
+            if (oldColumn != null) 
+            {
+                if (oldColumn.IsNullable == column.IsNullable) 
+                {
+                    var sql=GetUpdateColumnSqlOnlyType(tableName, column);
+                    this.Context.Ado.ExecuteCommand(sql);
+                    return true;
+                }
+            }
+            return base.UpdateColumn(tableName, column);
+        }
+        protected virtual string GetUpdateColumnSqlOnlyType(string tableName, DbColumnInfo columnInfo)
+        {
+            string columnName = this.SqlBuilder.GetTranslationColumnName(columnInfo.DbColumnName);
+            tableName = this.SqlBuilder.GetTranslationTableName(tableName);
+            string dataSize = GetSize(columnInfo);
+            string dataType = columnInfo.DataType;
+            string nullType ="";
+            string primaryKey = null;
+            string identity = null;
+            string result = string.Format(this.AlterColumnToTableSql, tableName, columnName, dataType, dataSize, nullType, primaryKey, identity);
+            return result;
+        }
+        public override bool RenameTable(string oldTableName, string newTableName)
+        {
+            return base.RenameTable(SqlBuilder.GetTranslationColumnName(oldTableName), SqlBuilder.GetTranslationColumnName(newTableName));
+        }
+        public override List<string> GetDbTypes()
+        {
+            var result= this.Context.Ado.SqlQuery<string>(@"SELECT DISTINCT DATA_TYPE
+FROM DBA_TAB_COLUMNS
+WHERE OWNER = user ");
+            result.Add("TIMESTAMP");
+            result.Add("NCLOB");
+            return result.Distinct().ToList();
+        }
+        public override List<string> GetTriggerNames(string tableName)
+        {
+            return this.Context.Ado.SqlQuery<string>(@"SELECT trigger_name
+FROM all_triggers
+WHERE table_name = '"+tableName+"'");
+        }
+        public override List<string> GetFuncList()
+        {
+            return this.Context.Ado.SqlQuery<string>(" SELECT object_name\r\nFROM all_objects\r\nWHERE object_type = 'FUNCTION' AND owner = USER ");
+        }
         public override List<string> GetIndexList(string tableName)
         {
-            var sql = $"SELECT index_name FROM user_ind_columns\r\nWHERE table_name = '{tableName}'";
+            var sql = $"SELECT index_name FROM user_ind_columns\r\nWHERE upper(table_name) = upper('{tableName}')";
             return this.Context.Ado.SqlQuery<string>(sql);
         }
         public override List<string> GetProcList(string dbName)
@@ -299,6 +368,9 @@ namespace SqlSugar
         }
         public override bool AddDefaultValue(string tableName, string columnName, string defaultValue)
         {
+            columnName = SqlBuilder.GetTranslationColumnName(columnName);
+            tableName = SqlBuilder.GetTranslationColumnName(tableName);
+
             if (defaultValue == "''")
             {
                 defaultValue = "";
@@ -326,7 +398,12 @@ namespace SqlSugar
         }
         public override bool CreateDatabase(string databaseName, string databaseDirectory = null)
         {
-            throw new NotSupportedException();
+            if (this.Context.Ado.IsValidConnection())
+            {
+                return true;
+            }
+            Check.ExceptionEasy("Oracle no support create database ", "Oracle不支持建库方法，请写有效连接字符串可以正常运行该方法。");
+            return true;
         }
         public override bool AddRemark(EntityInfo entity)
         {
@@ -340,12 +417,12 @@ namespace SqlSugar
                     //column remak
                     if (db.DbMaintenance.IsAnyColumnRemark(item.DbColumnName.ToUpper(IsUppper), item.DbTableName.ToUpper(IsUppper)))
                     {
-                        db.DbMaintenance.DeleteColumnRemark(this.SqlBuilder.GetTranslationColumnName(item.DbColumnName) , item.DbTableName.ToUpper(IsUppper));
-                        db.DbMaintenance.AddColumnRemark(this.SqlBuilder.GetTranslationColumnName(item.DbColumnName), item.DbTableName.ToUpper(IsUppper), item.ColumnDescription);
+                        db.DbMaintenance.DeleteColumnRemark(this.SqlBuilder.GetTranslationColumnName(item.DbColumnName), this.SqlBuilder.GetTranslationColumnName(item.DbTableName));
+                        db.DbMaintenance.AddColumnRemark(this.SqlBuilder.GetTranslationColumnName(item.DbColumnName), this.SqlBuilder.GetTranslationColumnName(item.DbTableName), item.ColumnDescription);
                     }
                     else
                     {
-                        db.DbMaintenance.AddColumnRemark(item.DbColumnName.ToUpper(IsUppper), item.DbTableName.ToUpper(IsUppper), item.ColumnDescription);
+                        db.DbMaintenance.AddColumnRemark(this.SqlBuilder.GetTranslationColumnName(item.DbColumnName), this.SqlBuilder.GetTranslationColumnName(item.DbTableName), item.ColumnDescription);
                     }
                 }
             }
@@ -355,12 +432,12 @@ namespace SqlSugar
             {
                 if (db.DbMaintenance.IsAnyTableRemark(entity.DbTableName))
                 {
-                    db.DbMaintenance.DeleteTableRemark(entity.DbTableName);
-                    db.DbMaintenance.AddTableRemark(entity.DbTableName, entity.TableDescription);
+                    db.DbMaintenance.DeleteTableRemark(SqlBuilder.GetTranslationColumnName( entity.DbTableName));
+                    db.DbMaintenance.AddTableRemark(SqlBuilder.GetTranslationColumnName(entity.DbTableName), entity.TableDescription);
                 }
                 else
                 {
-                    db.DbMaintenance.AddTableRemark(entity.DbTableName, entity.TableDescription);
+                    db.DbMaintenance.AddTableRemark(SqlBuilder.GetTranslationColumnName(entity.DbTableName), entity.TableDescription);
                 }
             }
             return true;
@@ -383,10 +460,10 @@ namespace SqlSugar
         private List<DbColumnInfo> GetColumnInfosByTableName(string tableName)
         {
             List<DbColumnInfo> columns = GetOracleDbType(tableName);
-            string sql = "select *  /* " + Guid.NewGuid() + " */ from " +SqlBuilder.GetTranslationTableName(tableName) + " WHERE 1=2 ";
-            if (!this.GetTableInfoList(false).Any(it => it.Name == SqlBuilder.GetTranslationTableName(tableName).TrimStart('\"').TrimEnd('\"'))) 
+            string sql = "select *  /* " + Guid.NewGuid() + " */ from " +SqlBuilder.GetTranslationTableName(SqlBuilder.GetNoTranslationColumnName(tableName)) + " WHERE 1=2 ";
+            if (!IsAnyTable(tableName, false))
             {
-                sql = "select *  /* " + Guid.NewGuid() + " */ from \"" + tableName + "\" WHERE 1=2 ";
+                return new List<DbColumnInfo>();
             }
             this.Context.Utilities.RemoveCache<List<DbColumnInfo>>("DbMaintenanceProvider.GetFieldComment."+tableName);
             this.Context.Utilities.RemoveCache<List<string>>("DbMaintenanceProvider.GetPrimaryKeyByTableNames." + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower());
@@ -527,6 +604,7 @@ namespace SqlSugar
             {
                 foreach (var item in columns)
                 {
+                    ConvertCreateColumnInfo(item);
                     if (item.DbColumnName.Equals("GUID", StringComparison.CurrentCultureIgnoreCase) && item.Length == 0)
                     {
                         item.Length = 50;
@@ -538,6 +616,13 @@ namespace SqlSugar
                     if (item.IsIdentity && this.Context.CurrentConnectionConfig?.MoreSettings?.EnableOracleIdentity == true) 
                     {
                         item.DataType = "NUMBER GENERATED ALWAYS AS IDENTITY";
+                    }
+                    if (item.DataType != null && this.Context.CurrentConnectionConfig?.MoreSettings?.OracleCodeFirstNvarchar2 == true)
+                    {
+                        if (!item.DataType.ToLower().Contains("nvarchar2"))
+                        {
+                            item.DataType = item.DataType.ToLower().Replace("varchar", "nvarchar2");
+                        }
                     }
                 }
             }
@@ -555,7 +640,8 @@ namespace SqlSugar
                 }
                 else 
                 {
-                    this.Context.DbMaintenance.AddPrimaryKey(tableName, string.Join(",", pkColumns.Select(it=> this.SqlBuilder.GetTranslationColumnName(it.DbColumnName)).ToArray()));
+                    var addItems = pkColumns.Select(it => it.DbColumnName).ToArray();
+                    this.Context.DbMaintenance.AddPrimaryKeys(tableName, addItems);
                 }
             }
             return true;
@@ -575,6 +661,19 @@ namespace SqlSugar
                 {
                     return this.Context.CurrentConnectionConfig.MoreSettings.IsAutoToUpper == true;
                 }
+            }
+        }
+        private static void ConvertCreateColumnInfo(DbColumnInfo x)
+        {
+            string[] array = new string[] { "int"};
+            if (array.Contains(x.DataType?.ToLower()))
+            {
+                x.Length = 0;
+                x.DecimalDigits = 0;
+            }
+            if (x.OracleDataType.HasValue()) 
+            {
+                x.DataType = x.OracleDataType;
             }
         }
         #endregion

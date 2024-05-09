@@ -2,11 +2,11 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SqlSugarCore.Kdbndp" Version="7.4.0" />
+    <PackageReference Include="SqlSugarCore.Kdbndp" Version="9.3.6.411" />
   </ItemGroup>
 
   <ItemGroup>

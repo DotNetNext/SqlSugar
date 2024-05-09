@@ -10,6 +10,10 @@ namespace SqlSugar
     public abstract partial class DbMaintenanceProvider : IDbMaintenance
     {
         #region DML
+        public List<string> GetProcList() 
+        {
+            return GetProcList(this.Context.Ado.Connection.Database);
+        }
         public virtual List<string> GetProcList(string dbName) 
         {
             return new List<string>();
@@ -37,6 +41,18 @@ namespace SqlSugar
             }
             return result;
         }
+        public List<DbTableInfo> GetTableInfoList(Func<DbType,string, string> getChangeSqlFunc)
+        { 
+            var db=this.Context.CopyNew();
+            db.CurrentConnectionConfig.IsAutoCloseConnection = true;
+            db.Aop.OnExecutingChangeSql = (sql, pars) =>
+            {
+                sql= getChangeSqlFunc(this.Context.CurrentConnectionConfig.DbType, sql);
+                return new KeyValuePair<string, SugarParameter[]>(sql,pars);
+            };
+            var result= db.DbMaintenance.GetTableInfoList(false);
+            return result;
+        }
         public virtual List<DbTableInfo> GetTableInfoList(bool isCache = true)
         {
             string cacheKey = "DbMaintenanceProvider.GetTableInfoList"+this.Context.CurrentConnectionConfig.ConfigId;
@@ -50,6 +66,18 @@ namespace SqlSugar
             {
                 item.DbObjectType = DbObjectType.Table;
             }
+            return result;
+        }
+        public List<DbColumnInfo> GetColumnInfosByTableName(string tableName, Func<DbType, string, string> getChangeSqlFunc) 
+        {
+            var db = this.Context.CopyNew();
+            db.CurrentConnectionConfig.IsAutoCloseConnection = true;
+            db.Aop.OnExecutingChangeSql = (sql, pars) =>
+            {
+                sql = getChangeSqlFunc(this.Context.CurrentConnectionConfig.DbType, sql);
+                return new KeyValuePair<string, SugarParameter[]>(sql, pars);
+            };
+            var result = db.DbMaintenance.GetColumnInfosByTableName(tableName,false);
             return result;
         }
         public virtual List<DbColumnInfo> GetColumnInfosByTableName(string tableName, bool isCache = true)
@@ -85,6 +113,18 @@ namespace SqlSugar
              });
         }
         public virtual List<string> GetIndexList(string tableName) 
+        {
+            return new List<string>();
+        }
+        public virtual List<string> GetFuncList() 
+        {
+            return new List<string>();
+        }
+        public virtual List<string> GetTriggerNames(string tableName) 
+        {
+            return new List<string>();
+        }
+        public virtual List<string> GetDbTypes() 
         {
             return new List<string>();
         }
@@ -162,6 +202,47 @@ namespace SqlSugar
         #endregion
 
         #region DDL
+        public virtual bool  SetAutoIncrementInitialValue(string tableName,int initialValue) 
+        {
+            Console.WriteLine("no support");
+            return true;
+        }
+        public virtual bool SetAutoIncrementInitialValue(Type entityType, int initialValue)
+        {
+            Console.WriteLine("no support");
+            return true;
+        }
+        public  virtual bool DropIndex(string indexName)
+        {
+            indexName = this.SqlBuilder.GetNoTranslationColumnName(indexName);
+            this.Context.Ado.ExecuteCommand($" DROP INDEX  {indexName} ");
+            return true;
+        }
+        public virtual bool DropIndex(string indexName,string tableName)
+        {
+            indexName = this.SqlBuilder.GetNoTranslationColumnName(indexName);
+            tableName= this.SqlBuilder.GetNoTranslationColumnName(tableName);
+            this.Context.Ado.ExecuteCommand($" DROP INDEX  {indexName}  ON {tableName}");
+            return true;
+        }
+        public virtual bool DropView(string viewName) 
+        {
+            viewName = this.SqlBuilder.GetNoTranslationColumnName(viewName);
+            this.Context.Ado.ExecuteCommand($" DROP VIEW {viewName} ");
+            return true;
+        }
+        public virtual bool DropFunction(string funcName) 
+        {
+            funcName = this.SqlBuilder.GetNoTranslationColumnName(funcName);
+            this.Context.Ado.ExecuteCommand($" DROP FUNCTION  {funcName} ");
+            return true;
+        }
+        public virtual bool DropProc(string procName) 
+        {
+            procName = this.SqlBuilder.GetNoTranslationColumnName(procName);
+            this.Context.Ado.ExecuteCommand($" DROP PROCEDURE  {procName} ");
+            return true;
+        }
         /// <summary>
         ///by current connection string
         /// </summary>
@@ -193,7 +274,16 @@ namespace SqlSugar
         {
             tableName = this.SqlBuilder.GetTranslationTableName(tableName);
             columnName = this.SqlBuilder.GetTranslationTableName(columnName);
-            string sql = string.Format(this.AddPrimaryKeySql, tableName, string.Format("PK_{0}_{1}", this.SqlBuilder.GetNoTranslationColumnName(tableName), this.SqlBuilder.GetNoTranslationColumnName(columnName)), columnName);
+            var temp = "PK_{0}_{1}";
+            if (tableName.IsContainsIn(" ", "-")) 
+            {
+                temp = SqlBuilder.GetTranslationColumnName(temp);
+            }
+            string sql = string.Format(this.AddPrimaryKeySql, tableName, string.Format(temp, this.SqlBuilder.GetNoTranslationColumnName(tableName).Replace("-","_"), this.SqlBuilder.GetNoTranslationColumnName(columnName)), columnName);
+            if ((tableName+columnName).Length>25 &&this.Context?.CurrentConnectionConfig?.MoreSettings?.MaxParameterNameLength > 0) 
+            {
+                sql = string.Format(this.AddPrimaryKeySql, tableName, string.Format(temp, this.SqlBuilder.GetNoTranslationColumnName(tableName).GetNonNegativeHashCodeString(), "Id"), columnName);
+            }
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
@@ -203,6 +293,10 @@ namespace SqlSugar
             tableName = this.SqlBuilder.GetTranslationTableName(tableName);
             var columnName = string.Join(",", columnNames);
             var pkName = string.Format("PK_{0}_{1}", this.SqlBuilder.GetNoTranslationColumnName(tableName), columnName.Replace(",","_"));
+            if (pkName.Length > 25 && this.Context?.CurrentConnectionConfig?.MoreSettings?.MaxParameterNameLength > 0)
+            {
+                pkName = "PK_" + pkName.GetNonNegativeHashCodeString();
+            }
             string sql = string.Format(this.AddPrimaryKeySql, tableName,pkName, columnName);
             this.Context.Ado.ExecuteCommand(sql);
             return true;
@@ -229,6 +323,10 @@ namespace SqlSugar
             this.Context.Ado.ExecuteCommand(sql);
             if (isAddNotNUll) 
             {
+                if (columnInfo.TableName == null) 
+                {
+                    columnInfo.TableName= tableName;
+                }
                 var dtColums = this.Context.Queryable<object>().AS(columnInfo.TableName).Where("1=2")
                     .Select(this.SqlBuilder.GetTranslationColumnName(columnInfo.DbColumnName)).ToDataTable().Columns.Cast<System.Data.DataColumn>();
                 var dtColumInfo = dtColums.First(it => it.ColumnName.EqualCase(columnInfo.DbColumnName));
@@ -244,9 +342,34 @@ namespace SqlSugar
                 }
                 var dt = new Dictionary<string, object>();
                 dt.Add(columnInfo.DbColumnName, value);
-                this.Context.Updateable(dt)
-                             .AS(tableName)
-                             .Where($"{this.SqlBuilder.GetTranslationColumnName(columnInfo.DbColumnName)} is null ").ExecuteCommand();
+                if (columnInfo.DataType.EqualCase("json") && columnInfo.DefaultValue?.Contains("}") == true)
+                {
+                    {
+                        dt[columnInfo.DbColumnName] = "{}";
+                        var sqlobj = this.Context.Updateable(dt)
+                        .AS(tableName)
+                        .Where($"{this.SqlBuilder.GetTranslationColumnName(columnInfo.DbColumnName)} is null ").ToSql();
+                        sqlobj.Value[0].IsJson = true;
+                        this.Context.Ado.ExecuteCommand(sqlobj.Key, sqlobj.Value);
+                    }
+                }
+                else if (columnInfo.DataType.EqualCase("json") && columnInfo.DefaultValue?.Contains("]") == true)
+                {
+                    {
+                        dt[columnInfo.DbColumnName] = "[]";
+                        var sqlobj = this.Context.Updateable(dt)
+                        .AS(tableName)
+                        .Where($"{this.SqlBuilder.GetTranslationColumnName(columnInfo.DbColumnName)} is null ").ToSql();
+                        sqlobj.Value[0].IsJson = true;
+                        this.Context.Ado.ExecuteCommand(sqlobj.Key, sqlobj.Value);
+                    }
+                }
+                else
+                {
+                    this.Context.Updateable(dt)
+                                 .AS(tableName)
+                                 .Where($"{this.SqlBuilder.GetTranslationColumnName(columnInfo.DbColumnName)} is null ").ExecuteCommand();
+                }
                 columnInfo.IsNullable = false;
                 UpdateColumn(tableName, columnInfo);
             }
@@ -625,6 +748,10 @@ namespace SqlSugar
         #endregion
 
         #region Private
+        public virtual List<DbTableInfo> GetSchemaTables(EntityInfo entityInfo) 
+        {
+            return null;
+        }
         protected List<T> GetListOrCache<T>(string cacheKey, string sql)
         {
             return this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey,

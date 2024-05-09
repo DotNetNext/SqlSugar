@@ -68,6 +68,8 @@ namespace SqlSugar
         private static readonly MethodInfo getJson = typeof(IDataRecordExtensions).GetMethod("GetJson");
         private static readonly MethodInfo getArray = typeof(IDataRecordExtensions).GetMethod("GetArray");
         private static readonly MethodInfo getEntity = typeof(IDataRecordExtensions).GetMethod("GetEntity", new Type[] { typeof(SqlSugarProvider) });
+        private static readonly MethodInfo getMyIntNull = typeof(IDataRecordExtensions).GetMethod("GetMyIntNull");
+        private static readonly MethodInfo getMyInt= typeof(IDataRecordExtensions).GetMethod("GetMyInt");
 
         private delegate T Load(IDataRecord dataRecord);
         private Load handler;
@@ -109,6 +111,10 @@ namespace SqlSugar
             {
                 string fileName = columnInfo.DbColumnName ?? columnInfo.PropertyName;
                 if (columnInfo.IsIgnore && !this.ReaderKeys.Any(it => it.Equals(fileName, StringComparison.CurrentCultureIgnoreCase)))
+                {
+                    continue;
+                }
+                else if (columnInfo.ForOwnsOnePropertyInfo!=null) 
                 {
                     continue;
                 }
@@ -355,6 +361,8 @@ namespace SqlSugar
                         method = isNullableType ? getConvertInt16 : getInt16;
                     if (bindProperyTypeName == "uint32"&&this.Context.CurrentConnectionConfig.DbType.IsIn(DbType.MySql,DbType.MySqlConnector))
                         method = null;
+                    if (bindPropertyType ==UtilConstants.IntType&& this.Context.CurrentConnectionConfig.DbType == DbType.OceanBaseForOracle) 
+                        method = isNullableType ? getMyIntNull : getMyInt;
                     break;
                 case CSharpDataType.@bool:
                     if (bindProperyTypeName == "bool" || bindProperyTypeName == "boolean")

@@ -17,5 +17,6 @@ namespace SqlSugar
         public List<SugarParameter> Parameters { get; set; }
         public List<MappingFieldsExpression> MappingExpressions { get; set; }
         public string TableShortName { get; set; }
+        public Func<List<SplitTableInfo>, IEnumerable<SplitTableInfo>> SplitTable { get; set; }
     }
 }

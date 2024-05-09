@@ -44,7 +44,14 @@ namespace SqlSugar
                     var isPk = pks.Any(y => y.Equals(item.DbColumnName, StringComparison.CurrentCultureIgnoreCase)) || item.IsPrimarykey;
                     if (isPk && item.PropertyType == UtilConstants.GuidType && item.Value.ObjToString() == Guid.Empty.ToString())
                     {
-                        item.Value = Guid.NewGuid();
+                        if (StaticConfig.CustomGuidFunc != null)
+                        {
+                            item.Value = StaticConfig.CustomGuidFunc();
+                        }
+                        else
+                        {
+                            item.Value = Guid.NewGuid();
+                        }
                         if (InsertObjs.First().GetType().GetProperties().Any(it => it.Name == item.PropertyName))
                             InsertObjs.First().GetType().GetProperties().First(it => it.Name == item.PropertyName).SetValue(InsertObjs.First(), item.Value, null);
                     }
@@ -58,7 +65,7 @@ namespace SqlSugar
             Before(sql);
             return sql;
         }
-        private void AutoRemoveDataCache()
+        protected void AutoRemoveDataCache()
         {
             var moreSetts = this.Context.CurrentConnectionConfig.MoreSettings;
             var extService = this.Context.CurrentConnectionConfig.ConfigureExternalServices;
@@ -172,6 +179,10 @@ namespace SqlSugar
             foreach (var item in InsertObjs)
             {
                 List<DbColumnInfo> insertItem = new List<DbColumnInfo>();
+                if (item is Dictionary<string, string>)
+                {
+                    Check.ExceptionEasy("To use Insertable dictionary, use string or object", "Insertable字典请使用string,object类型");
+                }
                 if (item is Dictionary<string, object>)
                 {
                     SetInsertItemByDic(i, item, insertItem);
@@ -193,7 +204,22 @@ namespace SqlSugar
             {
                 foreach (var columnInfo in this.EntityInfo.Columns)
                 {
-                    dataEvent(columnInfo.PropertyInfo.GetValue(item, null), new DataFilterModel() { OperationType = DataFilterType.InsertByObject, EntityValue = item, EntityColumnInfo = columnInfo });
+                    if (columnInfo.ForOwnsOnePropertyInfo != null)
+                    {
+                        var data = columnInfo.ForOwnsOnePropertyInfo.GetValue(item, null);
+                        if (data != null)
+                        {
+                            dataEvent(columnInfo.PropertyInfo.GetValue(data, null), new DataFilterModel() { OperationType = DataFilterType.InsertByObject, EntityValue = item, EntityColumnInfo = columnInfo });
+                        }
+                    }
+                    else if (columnInfo.PropertyInfo.Name == "Item" && columnInfo.IsIgnore) 
+                    {
+                        //class index
+                    }
+                    else
+                    {
+                        dataEvent(columnInfo.PropertyInfo.GetValue(item, null), new DataFilterModel() { OperationType = DataFilterType.InsertByObject, EntityValue = item, EntityColumnInfo = columnInfo });
+                    }
                 }
             }
         }
@@ -241,7 +267,7 @@ namespace SqlSugar
                 var isMapping = IsMappingColumns;
                 var columnInfo = new DbColumnInfo()
                 {
-                    Value = PropertyCallAdapterProvider<T>.GetInstance(column.PropertyName).InvokeGet(item),
+                    Value = GetValue(item,column),
                     DbColumnName = column.DbColumnName,
                     PropertyName = column.PropertyName,
                     PropertyType = UtilMethods.GetUnderType(column.PropertyInfo),
@@ -303,6 +329,22 @@ namespace SqlSugar
                     var value = disItem.Split(':').Last();
                     insertItem.Add(new DbColumnInfo() { DbColumnName = name, PropertyName = name, PropertyType = typeof(string), Value = value });
                 }
+            }
+        }
+        private static object GetValue(T item, EntityColumnInfo column)
+        {
+            if (column.ForOwnsOnePropertyInfo != null) 
+            {
+                var owsPropertyValue= column.ForOwnsOnePropertyInfo.GetValue(item, null);
+                return column.PropertyInfo.GetValue(owsPropertyValue, null);
+            }
+            if (StaticConfig.EnableAot)
+            {
+                return column.PropertyInfo.GetValue(item, null);
+            }
+            else
+            {
+                return PropertyCallAdapterProvider<T>.GetInstance(column.PropertyName).InvokeGet(item);
             }
         }
 

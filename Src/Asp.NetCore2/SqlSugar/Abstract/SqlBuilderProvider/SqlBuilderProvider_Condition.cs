@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -33,7 +34,7 @@ namespace SqlSugar
                         mainIndex++;
                         continue;
                     }
-                    else if (item.FieldName == UtilMethods.FiledNameSql())
+                    else if (item.FieldName == UtilMethods.FieldNameSql())
                     {
                         builder.Append(item.FieldValue);
                         continue;
@@ -46,6 +47,10 @@ namespace SqlSugar
                     }
                     string temp = " {0} {1} {2} {3}  ";
                     string parameterName = string.Format("{0}Condit{1}{2}", sqlBuilder.SqlParameterKeyWord, item.FieldName, index);
+                    if (this.Context?.CurrentConnectionConfig?.MoreSettings?.MaxParameterNameLength > 0&& parameterName.Length> this.Context?.CurrentConnectionConfig?.MoreSettings?.MaxParameterNameLength) 
+                    {
+                        parameterName = string.Format("{0}Condit{1}{2}", sqlBuilder.SqlParameterKeyWord,item.FieldName.GetHashCode().ToString().Replace("-", ""), index);
+                    }
                     if (parameterName.Contains("."))
                     {
                         parameterName = parameterName.Replace(".", "_");
@@ -126,6 +131,9 @@ namespace SqlSugar
                         case ConditionalType.InLike:
                             InLike(builder, parameters, item, index, type, parameterName);
                             break;
+                        case ConditionalType.Range:
+                            Range(builder, parameters, item, index, type, parameterName);
+                            break;
                         default:
                             break;
                     }
@@ -159,6 +167,16 @@ namespace SqlSugar
                                 builder.AppendFormat(" {0} ", con.Key.ToString().ToUpper());
                             }
                             builder.Append(childSqlInfo.Key);
+                            if (conModels?.FirstOrDefault() is ConditionalModel conModel)
+                            {
+                                if (conModel.CustomConditionalFunc != null)
+                                {
+                                    builder.Replace(" AND (  AND", " AND (  ");
+                                    builder.Replace(" OR (  AND", " OR (  ");
+                                    builder.Replace(" (  AND ", " ( ");
+                                    builder.Replace(" (  OR ", " ( ");
+                                }
+                            }
                             parameters.AddRange(childSqlInfo.Value);
                             if (isLast)
                             {
@@ -184,6 +202,22 @@ namespace SqlSugar
         #endregion
 
         #region  Case Method
+        private static void Range(StringBuilder builder, List<SugarParameter> parameters, ConditionalModel item, int index, string type, string parameterName)
+        {
+            var value = item.FieldValue;
+            var valueArray=(value+"").Split(',');
+            if (valueArray.Length != 2) 
+            {
+                Check.ExceptionEasy($"The {item.FieldName} value is not a valid format, but is properly separated by a comma (1,2)", $"{item.FieldName} 值不是有效格式，正确是 1,2 这种中间逗号隔开");
+            } 
+            var firstValue =GetFieldValue(new ConditionalModel() { CSharpTypeName = item.CSharpTypeName, FieldValue = valueArray.FirstOrDefault() });
+            var lastValue= GetFieldValue(new ConditionalModel() { CSharpTypeName = item.CSharpTypeName, FieldValue = valueArray.LastOrDefault() });
+            var parameterNameFirst =parameterName+"_01";
+            var parameterNameLast = parameterName+"_02";
+            builder.AppendFormat("( {0}>={1} AND {0}<={2} )", item.FieldName.ToSqlFilter(), parameterNameFirst, parameterNameLast);
+            parameters.Add(new SugarParameter(parameterNameFirst, firstValue));
+            parameters.Add(new SugarParameter(parameterNameLast, lastValue));
+        }
         private static void InLike(StringBuilder builder, List<SugarParameter> parameters, ConditionalModel item, int index, string type, string parameterName)
         {
             var array = (item.FieldValue + "").Split(',').ToList();
@@ -201,7 +235,7 @@ namespace SqlSugar
 
         private static void EqualNull(StringBuilder builder, List<SugarParameter> parameters, ConditionalModel item, string type, string temp, string parameterName)
         {
-            if (GetFieldValue(item) == null)
+            if (GetFieldValue(item) == null||(item.FieldValue==null))
             {
                 builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "  IS ", " NULL ");
             }
@@ -237,9 +271,13 @@ namespace SqlSugar
             {
                 inValue2 = inValue2.Replace("'null'", "null");
             }
-            else if (inValue2.Contains("[null]"))
+            if (inValue2.Contains("[null]"))
             {
-                inValue2 = inValue2.Replace("[null]", "null");
+                inValue2 = inValue2.Replace("[null]", "'null'");
+            }
+            if (inValue2.Contains("[comma]"))
+            {
+                inValue2 = inValue2.Replace("[comma]", ",");
             }
             builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "NOT IN", inValue2);
             parameters.Add(new SugarParameter(parameterName, item.FieldValue));
@@ -265,9 +303,13 @@ namespace SqlSugar
             {
                 inValue1 = inValue1.Replace("'null'", "null");
             }
-            else if (inValue1.Contains("[null]"))
+            if (inValue1.Contains("[comma]")) 
             {
-                inValue1 = inValue1.Replace("[null]", "null");
+                inValue1 = inValue1.Replace("[comma]", ",");
+            }
+            if (inValue1.Contains("[null]"))
+            {
+                inValue1 = inValue1.Replace("[null]", "'null'");
             }
             if (item.CSharpTypeName.EqualCase("guid") && inValue1 == "('')")
             {
@@ -277,8 +319,8 @@ namespace SqlSugar
             {
                 inValue1 = $"(NULL)";
             }
-            if (inArray.Length == 1)
-            {
+            if (inArray.Length == 1&& inValue1 != "(null)")
+            { 
                 builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "=", inValue1.TrimStart('(').TrimEnd(')'));
             }
             else
@@ -309,12 +351,23 @@ namespace SqlSugar
             builder.AppendFormat(temp, type, "", " ", inValue1);
         }
 
-        private static string In_GetInValue(ConditionalModel item,string[] inArray)
+        private  string In_GetInValue(ConditionalModel item,string[] inArray)
         {
             string inValue1;
             if (item.CSharpTypeName.EqualCase("string") || item.CSharpTypeName == null)
             {
                 inValue1 = ("(" + inArray.Distinct().ToArray().ToJoinSqlInVals() + ")");
+            }
+            if (item.CSharpTypeName.EqualCase("bool") || item.CSharpTypeName.EqualCase("Boolean"))
+            { 
+                var lam=InstanceFactory.GetLambdaExpressions(this.Context.CurrentConnectionConfig);
+                lam.Context = this.Context;
+                var value= lam.DbMehtods.TrueValue();
+                inValue1 = ("(" +string.Join(",", inArray.Distinct().ToArray() )+ ")");
+                if (value.EqualCase( "true"))
+                {
+                    inValue1=inValue1.Replace("1", "true").Replace("0", "false");
+                }
             }
             else
             {
@@ -334,7 +387,7 @@ namespace SqlSugar
             {
                 if (item.FieldValue == "[null]")
                 {
-                    item.FieldValue = "null";
+                    item.FieldValue = "'null'";
                 }
                 builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "=", parameterName);
                 parameters.Add(new SugarParameter(parameterName, GetFieldValue(item)));

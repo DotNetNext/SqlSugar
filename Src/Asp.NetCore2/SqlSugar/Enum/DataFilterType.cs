@@ -24,12 +24,19 @@ namespace SqlSugar
 
         public void SetValue(object value)
         {
-            var type = EntityColumnInfo.PropertyInfo.PropertyType;
-            if (value != null && value.GetType() != type) 
+            try
             {
-                value = UtilMethods.ChangeType2(value, type);
+                var type = EntityColumnInfo.PropertyInfo.PropertyType;
+                if (value != null && value.GetType() != type)
+                {
+                    value = UtilMethods.ChangeType2(value, type);
+                }
+                this.EntityColumnInfo.PropertyInfo.SetValue(EntityValue, value);
             }
-            this.EntityColumnInfo.PropertyInfo.SetValue(EntityValue, value);
+            catch (Exception ex)
+            {
+                Check.ExceptionEasy($" SetValue error in DataExecuting {EntityName} . {ex.Message}", $" DataExecuting 中 SetValue出错 {EntityName} 。 {ex.Message}");
+            }
         }
         public bool IsAnyAttribute<T>() where T : Attribute
         {

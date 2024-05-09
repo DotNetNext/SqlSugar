@@ -145,7 +145,13 @@ namespace SqlSugar
                 int i = 0;
                 foreach (var item in expression.Arguments)
                 {
-                    string memberName = expression.Members[i].Name;
+
+                    string memberName = expression.Members?[i]?.Name;
+                    if (memberName == null&& expression.Members ==null && item is MemberExpression member) 
+                    {
+                        memberName = member.Member.Name;
+                        this.Context.SugarContext.QueryBuilder.IsParameterizedConstructor = true;
+                    }
                     if (this.Context?.SugarContext?.QueryBuilder?.AppendNavInfo?.MappingNavProperties?.ContainsKey(memberName) == true)
                     {
                         ++i;

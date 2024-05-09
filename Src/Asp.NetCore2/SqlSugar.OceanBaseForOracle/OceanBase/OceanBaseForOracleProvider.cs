@@ -222,6 +222,11 @@ namespace SqlSugar.OceanBaseForOracle
                         orderParameters.Add(mP);
                     }
                 }
+                if (orderParameters.Select(it => it.ParameterName).GroupBy(it => it).Where(it => it.Count() > 1).Any())
+                {
+                    orderParameters= parameters.Where(it=>sql.Contains(it.ParameterName))
+                                               .OrderBy(it => sql.IndexOf(it.ParameterName)).ToList();
+                }
                 foreach (var param in parameters.OrderByDescending(it => it.ParameterName.Length))
                 {
                     sql = sql.Replace(param.ParameterName, "?");

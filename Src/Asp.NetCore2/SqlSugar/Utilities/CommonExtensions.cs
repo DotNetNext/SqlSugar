@@ -11,6 +11,38 @@ namespace SqlSugar
 {
     public static class CommonExtensions
     {
+
+        public static string GetNonNegativeHashCodeString(this string input)
+        {
+            // 获取哈希码，然后取绝对值，转换为字符串
+            string hashCode = "hs"+Math.Abs(input.GetHashCode()); 
+            return hashCode;
+        }
+        public static string SafeSubstring(this string str, int startIndex, int length)
+        {
+            if (str == null)
+            {
+                throw new ArgumentNullException(nameof(str));
+            }
+
+            if (startIndex < 0)
+            {
+                startIndex = 0;
+            }
+
+            if (startIndex >= str.Length)
+            {
+                return string.Empty; // 返回空字符串，因为起始索引超过字符串长度
+            }
+
+            if (length < 0)
+            {
+                length = 0;
+            }
+
+            // 截取字符串时，确保不超过字符串的长度
+            return str.Substring(startIndex, Math.Min(length, str.Length - startIndex));
+        }
         public static Dictionary<string, object> ToDictionary<T>(this List<T> list, string keyPropertyName, string valuePropertyName)
         {
             var keyProperty = typeof(T).GetProperty(keyPropertyName);
@@ -32,6 +64,14 @@ namespace SqlSugar
             it.GetParameters().Length == argCount&&
             it.GetParameters().First().ParameterType==parameterType);
         }
+        public static MethodInfo GetMyMethod(this Type type, string name, int argCount, bool isList)
+        {
+            var methods= type.GetMethods().Where(it => it.Name == name).Where(it =>
+            it.GetParameters().Length == argCount&&
+            it.GetParameters()[0].ToString().Contains("List`") == isList).ToList(); 
+            return methods.First();
+        }
+
         public static MethodInfo GetMyMethod(this Type type, string name, int argCount, Type parameterType,Type parameterType2)
         {
             return type.GetMethods().Where(it=>it.Name == name).FirstOrDefault(it =>
@@ -63,6 +103,16 @@ namespace SqlSugar
             it.GetParameters()[1].ParameterType == parameterType2 &&
             it.GetParameters()[2].ParameterType == parameterType3&&
             it.GetParameters()[3].ParameterType == parameterType4);
+        }
+        public static MethodInfo GetMyMethod(this Type type, string name, int argCount, Type parameterType, Type parameterType2, Type parameterType3, Type parameterType4, Type parameterType5)
+        {
+            return type.GetMethods().Where(it => it.Name == name).FirstOrDefault(it =>
+            it.GetParameters().Length == argCount &&
+            it.GetParameters().First().ParameterType == parameterType &&
+            it.GetParameters()[1].ParameterType == parameterType2 &&
+            it.GetParameters()[2].ParameterType == parameterType3 &&
+            it.GetParameters()[3].ParameterType == parameterType4&&
+            it.GetParameters()[4].ParameterType == parameterType5);
         }
         public static List<T> ToList<T>(this  T thisValue,Func<T,T> action) where T:class,new()
         {

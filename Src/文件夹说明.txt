@@ -1,0 +1,2 @@
+Asp.NetCore2 文件夹是 .net core版本 （新用户看这个）
+Asp.Net 文件夹是 .net framework版本

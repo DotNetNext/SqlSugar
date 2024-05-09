@@ -13,7 +13,52 @@ namespace SqlSugar
         internal SqlSugarProvider Context { get; set; }
         internal InsertNavProvider<Root, Root> insertNavProvider { get; set; }
         internal NavContext NavContext { get;  set; }
-
+        public InsertNavMethodInfo IncludeByNameString(string navMemberName, UpdateNavOptions updateNavOptions = null)
+        {
+            InsertNavMethodInfo result = new InsertNavMethodInfo();
+            result.Context = insertNavProvider._Context;
+            var entityInfo = result.Context.EntityMaintenance.GetEntityInfo<T>();
+            Type properyItemType;
+            bool isList;
+            Expression exp = UtilMethods.GetIncludeExpression(navMemberName, entityInfo, out properyItemType, out isList);
+            var method = this.GetType().GetMyMethod("Include", 2, isList)
+                            .MakeGenericMethod(properyItemType);
+            var obj = method.Invoke(this, new object[] { exp, updateNavOptions });
+            result.MethodInfos = obj;
+            return result;
+        }
+        public InsertNavMethodInfo IncludesAllFirstLayer(params string[] ignoreColumns)
+        {
+            if (ignoreColumns == null)
+            {
+                ignoreColumns = new string[] { };
+            }
+            this.Context = insertNavProvider._Context;
+            var navColumns = this.Context.EntityMaintenance.GetEntityInfo<Root>().Columns.Where(it => !ignoreColumns.Contains(it.PropertyName) || !ignoreColumns.Any(z => z.EqualCase(it.DbColumnName))).Where(it => it.Navigat != null).ToList();
+            var updateNavs = this;
+            InsertNavMethodInfo methodInfo = updateNavs.IncludeByNameString(navColumns[0].PropertyName);
+            foreach (var item in navColumns.Skip(1))
+            {
+                methodInfo = methodInfo.IncludeByNameString(item.PropertyName);
+            }
+            return methodInfo;
+        }
+        public InsertNavMethodInfo IncludesAllFirstLayer(InsertNavOptions insertNavOptions,params string[] ignoreColumns)
+        {
+            if (ignoreColumns == null)
+            {
+                ignoreColumns = new string[] { };
+            }
+            this.Context = insertNavProvider._Context;
+            var navColumns = this.Context.EntityMaintenance.GetEntityInfo<Root>().Columns.Where(it => !ignoreColumns.Contains(it.PropertyName) || !ignoreColumns.Any(z => z.EqualCase(it.DbColumnName))).Where(it => it.Navigat != null).ToList();
+            var updateNavs = this;
+            InsertNavMethodInfo methodInfo = updateNavs.IncludeByNameString(navColumns[0].PropertyName);
+            foreach (var item in navColumns.Skip(1))
+            {
+                methodInfo = methodInfo.IncludeByNameString(item.PropertyName, insertNavOptions);
+            }
+            return methodInfo;
+        }
         public InsertNavTask<Root, TChild>  Include<TChild>(Expression<Func<Root, TChild>> expression) where TChild : class, new()
         {
             Check.ExceptionEasy(typeof(TChild).FullName.Contains("System.Collections.Generic.List`"), "  need  where T: class, new() ", "需要Class,new()约束，并且类属性中不能有required修饰符");

@@ -210,9 +210,12 @@ namespace SqlSugar
         public int CreateTableFieldSort { get; set; }
         public bool InsertServerTime { get; set; }
         public string InsertSql { get; set; }
+        public string QuerySql { get; set; }
         public bool UpdateServerTime { get; set; }
         public string UpdateSql { get; set; }
         public object ExtendedAttribute{ get; set; }
+        public bool IsDisabledAlterColumn { get; set; }
+        public bool IsOwnsOne { get; set; }
     }
 
 
@@ -229,39 +232,82 @@ namespace SqlSugar
     [AttributeUsage(AttributeTargets.Property, Inherited = true)]
     public class Navigate: Attribute
     {
-        public string Name { get; set; }
-        public string Name2 { get; set; }
-        public Type MappingType { get; set; }
-        public string MappingAId { get; set; }
-        public string MappingBId { get; set; }
-        public NavigateType NavigatType { get; set; }
-        public string WhereSql { get; set; }
-        public Navigate(NavigateType navigatType,string name)
+        internal string Name { get; set; }
+        internal string Name2 { get; set; }
+        internal Type MappingType { get; set; }
+        internal string MappingAId { get; set; }
+        internal string MappingBId { get; set; }
+        internal NavigateType NavigatType { get; set; }
+        internal string WhereSql { get; set; }
+        internal string AClassId { get; set; }
+
+        internal string BClassId { get; set; }
+
+        public string GetName()
         {
-            this.Name = name;
+            return Name;
+        }
+        public string GetName2()
+        {
+            return Name2;
+        }
+        public Type GetMappingType()
+        {
+            return MappingType;
+        }
+        public string GetMappingAId()
+        {
+            return MappingAId;
+        }
+        public string GetMappingBId()
+        {
+            return MappingBId;
+        }
+        public NavigateType GetNavigateType()
+        {
+            return NavigatType;
+        }
+
+        public string GetWhereSql()
+        {
+            return WhereSql;
+        }
+        public Navigate(NavigateType navigatType,string ifSingleMasterTableColumn_IfListChildTableColumn)
+        {
+            this.Name = ifSingleMasterTableColumn_IfListChildTableColumn;
             this.NavigatType = navigatType;
         }
-        public Navigate(NavigateType navigatType, string firstName,string lastName)
+        public Navigate(NavigateType navigatType, string ifSingleMasterTableColumn_IfListChildTableColumn, string ifSingleChildTableColumn_IfListMasterTableColumn)
         {
-            this.Name = firstName;
-            this.Name2 = lastName;
+            Check.ExceptionEasy(navigatType == NavigateType.ManyToMany, "Correct usage [Navigate(typeof(ABMapping), nameof(abmapping.aid), nameof(abmapp.bid))], incorrect usage: [Navigate(Navigate.ManyToMany, nameof(ABMapping.Aid), nameof(ABMapping.BId))]", "多对多第一个参数是Type不是NavigateType，正确用法[Navigate(typeof(ABMapping), nameof(ABMapping.Aid), nameof(ABMapping.BId))],错误用法：[Navigate(Navigate.ManyToMany, nameof(ABMapping.Aid), nameof(ABMapping.BId))]");
+            this.Name = ifSingleMasterTableColumn_IfListChildTableColumn;
+            this.Name2 = ifSingleChildTableColumn_IfListMasterTableColumn;
             this.NavigatType = navigatType;
         }
 
-        public Navigate(NavigateType navigatType, string firstName, string lastName,string whereSql)
+        public Navigate(NavigateType navigatType, string ifSingleMasterTableColumn_IfListChildTableColumn, string ifSingleChildTableColumn_IfListMasterTableColumn, string whereSql)
         {
-            this.Name = firstName;
-            this.Name2 = lastName;
+            this.Name = ifSingleMasterTableColumn_IfListChildTableColumn;
+            this.Name2 = ifSingleChildTableColumn_IfListMasterTableColumn;
             this.NavigatType = navigatType;
             this.WhereSql = whereSql;
             //Check.ExceptionEasy(navigatType != NavigateType.OneToOne, "Currently, only one-to-one navigation configuration Sql conditions are supported", "目前导航配置Sql条件只支持一对一");
         }
 
-        public Navigate(Type MappingTableType,string typeAiD,string typeBId)
+        public Navigate(Type MappingTableType,string typeAId,string typeBId)
         {
             this.MappingType = MappingTableType;
-            this.MappingAId = typeAiD;
+            this.MappingAId = typeAId;
             this.MappingBId = typeBId;
+            this.NavigatType = NavigateType.ManyToMany;
+        }
+        public Navigate(Type MappingTableType, string mappingAId, string mappingBId,string aClassId,string bClassId)
+        {
+            this.MappingType = MappingTableType;
+            this.MappingAId = mappingAId;
+            this.MappingBId = mappingBId;
+            this.AClassId = aClassId;
+            this.BClassId = bClassId;
             this.NavigatType = NavigateType.ManyToMany;
         }
         public Navigate(Type MappingTableType, string typeAiD, string typeBId,string mappingSql)
@@ -351,6 +397,66 @@ namespace SqlSugar
             IndexFields.Add(fieldName5, sortType5);
             IndexFields.Add(fieldName6, sortType6);
             IndexFields.Add(fieldName7, sortType7);
+            this.IsUnique = isUnique;
+        }
+        public SugarIndexAttribute(string indexName, string fieldName1, OrderByType sortType1, string fieldName2, OrderByType sortType2, string fieldName3, OrderByType sortType3, string fieldName4, OrderByType sortType4, string fieldName5, OrderByType sortType5, string fieldName6, OrderByType sortType6, string fieldName7, OrderByType sortType7, string fieldName8, OrderByType sortType8, bool isUnique = false)
+        {
+            this.IndexName = indexName;
+            IndexFields = new Dictionary<string, OrderByType>();
+            IndexFields.Add(fieldName1, sortType1);
+            IndexFields.Add(fieldName2, sortType2);
+            IndexFields.Add(fieldName3, sortType3);
+            IndexFields.Add(fieldName4, sortType4);
+            IndexFields.Add(fieldName5, sortType5);
+            IndexFields.Add(fieldName6, sortType6);
+            IndexFields.Add(fieldName7, sortType7);
+            IndexFields.Add(fieldName8, sortType8);
+            this.IsUnique = isUnique;
+        }
+        public SugarIndexAttribute(string indexName, string fieldName1, OrderByType sortType1, string fieldName2, OrderByType sortType2, string fieldName3, OrderByType sortType3, string fieldName4, OrderByType sortType4, string fieldName5, OrderByType sortType5, string fieldName6, OrderByType sortType6, string fieldName7, OrderByType sortType7, string fieldName8, OrderByType sortType8, string fieldName9, OrderByType sortType9, bool isUnique = false)
+        {
+            this.IndexName = indexName;
+            IndexFields = new Dictionary<string, OrderByType>();
+            IndexFields.Add(fieldName1, sortType1);
+            IndexFields.Add(fieldName2, sortType2);
+            IndexFields.Add(fieldName3, sortType3);
+            IndexFields.Add(fieldName4, sortType4);
+            IndexFields.Add(fieldName5, sortType5);
+            IndexFields.Add(fieldName6, sortType6);
+            IndexFields.Add(fieldName7, sortType7);
+            IndexFields.Add(fieldName8, sortType8);
+            IndexFields.Add(fieldName9, sortType9);
+            this.IsUnique = isUnique;
+        }
+        public SugarIndexAttribute(string indexName, string fieldName1, OrderByType sortType1, string fieldName2, OrderByType sortType2, string fieldName3, OrderByType sortType3, string fieldName4, OrderByType sortType4, string fieldName5, OrderByType sortType5, string fieldName6, OrderByType sortType6, string fieldName7, OrderByType sortType7, string fieldName8, OrderByType sortType8, string fieldName9, OrderByType sortType9, string fieldName10, OrderByType sortType10, bool isUnique = false)
+        {
+            this.IndexName = indexName;
+            IndexFields = new Dictionary<string, OrderByType>();
+            IndexFields.Add(fieldName1, sortType1);
+            IndexFields.Add(fieldName2, sortType2);
+            IndexFields.Add(fieldName3, sortType3);
+            IndexFields.Add(fieldName4, sortType4);
+            IndexFields.Add(fieldName5, sortType5);
+            IndexFields.Add(fieldName6, sortType6);
+            IndexFields.Add(fieldName7, sortType7);
+            IndexFields.Add(fieldName8, sortType8);
+            IndexFields.Add(fieldName9, sortType9);
+            IndexFields.Add(fieldName10, sortType10);
+            this.IsUnique = isUnique;
+        }
+
+        public SugarIndexAttribute(string indexName, string[] fieldNames, OrderByType[] sortTypes, bool isUnique = false)
+        {
+            if (fieldNames.Length != sortTypes.Length) 
+            {
+               Check.ExceptionEasy($"SugarIndexAttribute {indexName} fieldNames.Length!=sortTypes.Length 检查索引特性", $"SugarIndexAttribute {indexName} fieldNames.Length!=sortTypes.Length");
+            }
+            this.IndexName = indexName;
+            IndexFields = new Dictionary<string, OrderByType>();
+            for (int i = 0; i < fieldNames.Length; i++)
+            {
+                IndexFields.Add(fieldNames[i], sortTypes[i]);
+            }
             this.IsUnique = isUnique;
         }
     }

@@ -13,7 +13,7 @@ namespace SqlSugar
         /// <summary>
         ///Connection unique code
         /// </summary>
-        public dynamic ConfigId { get; set; }
+        public object ConfigId { get; set; }
         /// <summary>
         ///DbType.SqlServer Or Other
         /// </summary>

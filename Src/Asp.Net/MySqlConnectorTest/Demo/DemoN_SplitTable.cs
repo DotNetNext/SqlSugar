@@ -29,9 +29,9 @@ namespace OrmTest
             db.CodeFirst.SplitTables().InitTables<OrderSpliteTest>();
 
             Console.WriteLine();
-
+            var id = Guid.NewGuid();
             //根据最近3个表进行查询
-            var list=db.Queryable<OrderSpliteTest>().Where(it=>it.Pk==Guid.NewGuid())
+            var list=db.Queryable<OrderSpliteTest>().Where(it=>it.Pk== id)
                 .SplitTable(tabs => tabs.Take(3))
                 .Where(it=>it.Time==DateTime.Now).ToOffsetPage(1,2);
 
@@ -43,7 +43,7 @@ namespace OrmTest
             Console.WriteLine();
 
             //删除数据只在最近3张表执行操作
-            var x = db.Deleteable<OrderSpliteTest>().Where(it=>it.Pk==Guid.NewGuid()).SplitTable(tabs => tabs.Take(3)).ExecuteCommand();
+            var x = db.Deleteable<OrderSpliteTest>().Where(it=>it.Pk== id).SplitTable(tabs => tabs.Take(3)).ExecuteCommand();
            
             Console.WriteLine();
 

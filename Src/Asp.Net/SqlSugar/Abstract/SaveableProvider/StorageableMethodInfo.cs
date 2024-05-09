@@ -56,12 +56,38 @@ namespace SqlSugar
             if (objectValue == null)
                 return null;
             callValue = MethodInfo.Invoke(Context, new object[] { objectValue });
-            return callValue.GetType().GetMethod("ExecuteCommand");
+            return callValue.GetType().GetMyMethod("ExecuteCommand",0);
         }
 
         public StorageableMethodInfo ToStorage()
         {
             return this;
+        }
+
+        public StorageableSplitTableMethodInfo SplitTable()
+        {
+            object objectValue = null;
+            MethodInfo method = GetSaveMethod(ref objectValue);
+            if (method == null) return new StorageableSplitTableMethodInfo(null);
+            method = objectValue.GetType().GetMethod("SplitTable");
+            objectValue = method.Invoke(objectValue, new object[] { });
+            StorageableSplitTableMethodInfo result = new StorageableSplitTableMethodInfo(null);
+            result.ObjectValue = objectValue;
+            result.Method = method;
+            return result;
+        }
+
+        public StorageableSplitTableMethodInfo AS(string tableName)
+        {
+            object objectValue = null;
+            MethodInfo method = GetSaveMethod(ref objectValue);
+            if (method == null) return new StorageableSplitTableMethodInfo(null);
+            method = objectValue.GetType().GetMyMethod("As",1);
+            objectValue = method.Invoke(objectValue, new object[] { tableName });
+            StorageableSplitTableMethodInfo result = new StorageableSplitTableMethodInfo(null);
+            result.ObjectValue = objectValue;
+            result.Method = method;
+            return result;
         }
     }
 
@@ -84,5 +110,21 @@ namespace SqlSugar
             return (int)newObj;
         }
     }
-      
+
+    public class StorageableSplitTableMethodInfo
+    {
+        private StorageableSplitTableMethodInfo() { }
+        private string type;
+        public StorageableSplitTableMethodInfo(string type)
+        {
+            this.type = type;
+        }
+        internal object ObjectValue { get; set; }
+        internal MethodInfo Method { get; set; }
+        public int ExecuteCommand()
+        { 
+            var newObj = ObjectValue.GetType().GetMethod("ExecuteCommand").Invoke(ObjectValue, new object[] { });
+            return (int)newObj;
+        }
+    }
 }

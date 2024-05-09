@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>SqlSugar.OdbcCore</id>
-    <version>5.1.4.2</version>
+    <version>5.1.4.151</version>
     <authors>sunkaixuan</authors>
     <owners>Landa</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
@@ -11,7 +11,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description> SqlSugar 通过ODBC连接数据库 </description>
     <copyright>Copyright 2016</copyright>
-    <tags>Asp.net core orm</tags>
+    <tags>Asp.net core orm odbc</tags>
     <dependencies>
       <group targetFramework=".NETStandard2.1">
         <dependency id="System.Data.Odbc" version="4.6" />

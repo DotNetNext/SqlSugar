@@ -17,7 +17,7 @@ namespace SqlSugar
                 {
                     var orderByModel = item as SelectModel;
                     orderByModel.AsName=GetAsName(orderByModel);
-                    orderByModel.FiledName = GetSqlPart(orderByModel.FiledName, pars).ObjToString();
+                    orderByModel.FieldName = GetSqlPart(orderByModel.FieldName, pars).ObjToString();
                     AppendFiledName(sql, orderByModel);
                 }
                 else
@@ -32,7 +32,7 @@ namespace SqlSugar
         {
             if (orderByModel.AsName.IsNullOrEmpty())
             {
-                orderByModel.AsName = orderByModel.FiledName.ObjToString();
+                orderByModel.AsName = orderByModel.FieldName.ObjToString();
             }
             if (orderByModel.AsName.StartsWith(UtilConstants.ReplaceKey)) 
             {
@@ -43,12 +43,16 @@ namespace SqlSugar
                 orderByModel.AsName = orderByModel.AsName.Trim('[').Trim(']');
                 return this.SqlTranslationLeft + orderByModel.AsName + this.SqlTranslationRight;
             }
-          return this.GetTranslationColumnName(orderByModel.AsName);
+            if (this.SqlTranslationLeft != null && orderByModel.AsName?.Contains(this.SqlTranslationLeft) == true) 
+            {
+                return orderByModel.AsName;
+            }
+            return this.SqlTranslationLeft + orderByModel.AsName + this.SqlTranslationRight;
         }
 
         private  void AppendFiledName(StringBuilder sql, SelectModel orderByModel)
         {
-            sql.Append($" {orderByModel.FiledName} AS {orderByModel.AsName} ,");
+            sql.Append($" {orderByModel.FieldName} AS {orderByModel.AsName} ,");
         }
     }
 }

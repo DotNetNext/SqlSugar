@@ -216,8 +216,26 @@ namespace SqlSugar
             }
             return this;
         }
-        public ISugarQueryable<T> Includes<TReturn1>(Expression<Func<T, List<TReturn1>>> include1) { _Includes<T, TReturn1>(this.Context, include1); return this; }
-        public ISugarQueryable<T> Includes<TReturn1>(Expression<Func<T, TReturn1>> include1) { _Includes<T, TReturn1>(this.Context, include1); return this; }
+        public ISugarQueryable<T> Includes<TReturn1>(Expression<Func<T, List<TReturn1>>> include1)
+        {
+            var result = GetManyQueryable(include1);
+            if (result != null)
+            {
+                return result;
+            }
+            _Includes<T, TReturn1>(this.Context, include1); 
+            return this;
+        }
+        public ISugarQueryable<T> Includes<TReturn1>(Expression<Func<T, TReturn1>> include1)
+        {
+            var result=GetManyQueryable(include1);
+            if (result != null) 
+            {
+                return result;
+            }
+            _Includes<T, TReturn1>(this.Context, include1);
+            return this;
+        } 
         public ISugarQueryable<T> Includes<TReturn1, TReturn2>(Expression<Func<T, TReturn1>> include1, Expression<Func<TReturn1, List<TReturn2>>> include2) { _Includes<T, TReturn1, TReturn2>(this.Context, include1, include2); return this; }
         public ISugarQueryable<T> Includes<TReturn1, TReturn2>(Expression<Func<T, TReturn1>> include1, Expression<Func<TReturn1, TReturn2>> include2) { _Includes<T, TReturn1, TReturn2>(this.Context, include1, include2); return this; }
         public ISugarQueryable<T> Includes<TReturn1, TReturn2>(Expression<Func<T, List<TReturn1>>> include1, Expression<Func<TReturn1, List<TReturn2>>> include2) { _Includes<T, TReturn1, TReturn2>(this.Context, include1, include2); return this; }

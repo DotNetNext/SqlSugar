@@ -26,7 +26,9 @@ namespace SqlSugar
         Task<int> ExecuteReturnIdentityAsync();
         Task<int> ExecuteReturnIdentityAsync(CancellationToken token);
         T ExecuteReturnEntity();
+        T ExecuteReturnEntity(bool isIncludesAllFirstLayer);
         Task<T> ExecuteReturnEntityAsync();
+        Task<T> ExecuteReturnEntityAsync(bool isIncludesAllFirstLayer);
         bool ExecuteCommandIdentityIntoEntity();
         Task<bool> ExecuteCommandIdentityIntoEntityAsync();
         long ExecuteReturnBigIdentity();
@@ -41,6 +43,7 @@ namespace SqlSugar
         IInsertable<T> IgnoreColumns(Expression<Func<T, object>> columns);
         IInsertable<T> IgnoreColumns(params string[]columns);
         IInsertable<T> IgnoreColumns(bool ignoreNullColumn, bool isOffIdentity = false);
+        IInsertable<T> IgnoreColumnsNull(bool isIgnoreNull = true);
 
         ISubInsertable<T> AddSubList(Expression<Func<T, object>> subForeignKey);
         ISubInsertable<T> AddSubList(Expression<Func<T, SubInsertTree>> tree);
@@ -62,6 +65,7 @@ namespace SqlSugar
         void AddQueue();
         IInsertable<T> MySqlIgnore();
         IInsertable<T> OffIdentity();
+        IInsertable<T> OffIdentity(bool isSetOn);
         InsertablePage<T> PageSize(int pageSize);
     }
 }

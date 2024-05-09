@@ -69,6 +69,7 @@ namespace SqlSugar
         string GetDate();
         string GetRandom();
         string CharIndex(MethodCallExpressionModel model);
+        string CharIndexNew(MethodCallExpressionModel model);
         string BitwiseAnd(MethodCallExpressionModel model);
         string BitwiseInclusiveOR(MethodCallExpressionModel model);
 
@@ -97,6 +98,7 @@ namespace SqlSugar
         string Exists(MethodCallExpressionModel model);
         string GetDateString(string dateValue,string format);
         string GetForXmlPath();
+        string JsonIndex(MethodCallExpressionModel model);
         string JsonField(MethodCallExpressionModel model);
         string JsonContainsFieldName(MethodCallExpressionModel model);
         string JsonArrayLength(MethodCallExpressionModel model);
@@ -104,11 +106,13 @@ namespace SqlSugar
         string JsonLike(MethodCallExpressionModel model);
         string Collate(MethodCallExpressionModel model);
         string AggregateSumNoNull(MethodCallExpressionModel model);
+        string AggregateAvgNoNull(MethodCallExpressionModel model);
         string JsonListObjectAny(MethodCallExpressionModel model);
         string JsonArrayAny(MethodCallExpressionModel model);
         string CompareTo(MethodCallExpressionModel model);
         string SplitIn(MethodCallExpressionModel model);
         string ListAny(MethodCallExpressionModel model);
+        string ListAll(MethodCallExpressionModel model);
         string GetTableWithDataBase(string databaseName,string tableName);
         string Modulo(MethodCallExpressionModel mode);
         string Like(MethodCallExpressionModel mode);

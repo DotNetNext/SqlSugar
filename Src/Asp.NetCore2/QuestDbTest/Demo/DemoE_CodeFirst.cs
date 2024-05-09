@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using static OrmTest.DemoE_CodeFirst;
 
 namespace OrmTest
 {
@@ -23,6 +24,7 @@ namespace OrmTest
             {
                 Console.WriteLine(s);
             };
+            db.CodeFirst.InitTables<QuestdbTestData3>();
             db.DbMaintenance.CreateDatabase();
             db.CodeFirst.InitTables(typeof(CodeFirstTable1));//Create CodeFirstTable1 
             db.Insertable(new CodeFirstTable1() { Name = "a", Text = "a" }).ExecuteCommand();
@@ -32,6 +34,32 @@ namespace OrmTest
             TestBool(db);
             TestGuid(db);
             Console.WriteLine("#### CodeFirst end ####");
+        }
+        [SugarTable("QuestdbTestData3")]
+
+        public class QuestdbTestData3
+
+        {
+
+            //不支持自增和主键 （标识主键是用来更新用的）
+
+            [SugarColumn(IsPrimaryKey = true)]
+
+            public string Id { get; set; }
+            [SugarColumn(IsJson = true)]
+
+            public List<QuestdbTestData> Data { get; set; }
+
+
+
+            [TimeDbSplitField(DateType.Year)]
+
+            public DateTime Time1 { get; set; }
+
+        }
+        public class QuestdbTestData
+        {
+            public int xx { get; set; }
         }
         private static void TestGuid(SqlSugarClient db)
         {

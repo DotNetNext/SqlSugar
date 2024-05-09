@@ -8,7 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Reflection;
 using System.Dynamic;
-using System.Threading.Tasks;
+using System.Threading.Tasks; 
 
 namespace SqlSugar
 {
@@ -40,9 +40,10 @@ namespace SqlSugar
             var shortName = $"pnv_{navObjectName}";
             var mainShortName = memberExpression.Expression.ToString();
             this.QueryBuilder.TableShortName = mainShortName;
-            var onWhere = $"{shortName}.{navPkColumn.DbColumnName}={mainShortName}.{navColumn.DbColumnName}";
+            var onWhere = $"{SqlBuilder.GetTranslationColumnName(shortName)}.{SqlBuilder.GetTranslationColumnName(navPkColumn.DbColumnName)}={SqlBuilder.GetTranslationColumnName(mainShortName)}.{SqlBuilder.GetTranslationColumnName(navColumn.DbColumnName)}";
             UtilMethods.IsNullReturnNew(this.Context.TempItems);
             this.AddJoinInfo(GetTableName(navEntityInfo, navEntityInfo.DbTableName), shortName, onWhere, JoinType.Left);
+            this.QueryBuilder.JoinQueryInfos.Last().EntityType = navEntityInfo.Type;
             return this;
         }
         public ISugarQueryable<T> IncludeInnerJoin(Expression<Func<T, object>> innerObjectExt)
@@ -55,9 +56,10 @@ namespace SqlSugar
             var shortName = $"pnv_{navObjectName}";
             var mainShortName = memberExpression.Expression.ToString();
             this.QueryBuilder.TableShortName = mainShortName;
-            var onWhere = $"{shortName}.{navPkColumn.DbColumnName}={mainShortName}.{navColumn.DbColumnName}";
+            var onWhere = $"{SqlBuilder.GetTranslationColumnName(shortName)}.{SqlBuilder.GetTranslationColumnName(navPkColumn.DbColumnName)}={SqlBuilder.GetTranslationColumnName(mainShortName)}.{SqlBuilder.GetTranslationColumnName(navColumn.DbColumnName)}";
             UtilMethods.IsNullReturnNew(this.Context.TempItems);
             this.AddJoinInfo(GetTableName(navEntityInfo, navEntityInfo.DbTableName), shortName, onWhere, JoinType.Inner);
+            this.QueryBuilder.JoinQueryInfos.Last().EntityType = navEntityInfo.Type;
             return this;
         }
         public ISugarQueryable<T> IncludeFullJoin(Expression<Func<T, object>> fullObjectExp)
@@ -70,9 +72,10 @@ namespace SqlSugar
             var shortName = $"pnv_{navObjectName}";
             var mainShortName = memberExpression.Expression.ToString();
             this.QueryBuilder.TableShortName = mainShortName;
-            var onWhere = $"{shortName}.{navPkColumn.DbColumnName}={mainShortName}.{navColumn.DbColumnName}";
+            var onWhere = $"{SqlBuilder.GetTranslationColumnName(shortName)}.{SqlBuilder.GetTranslationColumnName(navPkColumn.DbColumnName)}={SqlBuilder.GetTranslationColumnName(mainShortName)}.{SqlBuilder.GetTranslationColumnName(navColumn.DbColumnName)}";
             UtilMethods.IsNullReturnNew(this.Context.TempItems);
             this.AddJoinInfo(GetTableName(navEntityInfo, navEntityInfo.DbTableName), shortName, onWhere, JoinType.Full);
+            this.QueryBuilder.JoinQueryInfos.Last().EntityType = navEntityInfo.Type;
             return this;
         }
         public ISugarQueryable<T> IncludeRightJoin(Expression<Func<T, object>> rightObjectExp)
@@ -85,14 +88,24 @@ namespace SqlSugar
             var shortName = $"pnv_{navObjectName}";
             var mainShortName = memberExpression.Expression.ToString();
             this.QueryBuilder.TableShortName = mainShortName;
-            var onWhere = $"{shortName}.{navPkColumn.DbColumnName}={mainShortName}.{navColumn.DbColumnName}";
+            var onWhere = $"{SqlBuilder.GetTranslationColumnName(shortName)}.{SqlBuilder.GetTranslationColumnName(navPkColumn.DbColumnName)}={SqlBuilder.GetTranslationColumnName(mainShortName)}.{SqlBuilder.GetTranslationColumnName(navColumn.DbColumnName)}";
             UtilMethods.IsNullReturnNew(this.Context.TempItems);
             this.AddJoinInfo(GetTableName(navEntityInfo, navEntityInfo.DbTableName), shortName, onWhere, JoinType.Right);
+            this.QueryBuilder.JoinQueryInfos.Last().EntityType = navEntityInfo.Type;
             return this;
         }
         public ISugarQueryable<T, T2> LeftJoinIF<T2>(bool isJoin, ISugarQueryable<T2> joinQueryable, Expression<Func<T, T2, bool>> joinExpression) 
         {
             var result = LeftJoin(joinQueryable, joinExpression);
+            if (isJoin == false)
+            {
+                result.QueryBuilder.JoinQueryInfos.Remove(result.QueryBuilder.JoinQueryInfos.Last());
+            }
+            return result;
+        }
+        public ISugarQueryable<T, T2> InnerJoinIF<T2>(bool isJoin, ISugarQueryable<T2> joinQueryable, Expression<Func<T, T2, bool>> joinExpression)
+        {
+            var result = InnerJoin(joinQueryable, joinExpression);
             if (isJoin == false)
             {
                 result.QueryBuilder.JoinQueryInfos.Remove(result.QueryBuilder.JoinQueryInfos.Last());
@@ -324,6 +337,11 @@ namespace SqlSugar
             ((QueryableProvider<T>)queryable).Mappers = this.Mappers;
             return queryable;
         }
+        public ISugarQueryable<T> Hints(string hints) 
+        {
+            this.QueryBuilder.Hints = hints;
+            return this;
+        }
         public virtual ISugarQueryable<T> AS<T2>(string tableName)
         {
             var entityName = typeof(T2).Name;
@@ -367,6 +385,10 @@ namespace SqlSugar
         }
         public ISugarQueryable<T> ClearFilter(params Type[] types)
         {
+            if (types == null|| types.Length==0) 
+            {
+                return this;
+            }
             this.QueryBuilder.RemoveFilters = types;
             this.Filter(null, true);
             this.QueryBuilder.IsDisabledGobalFilter = false;
@@ -571,7 +593,31 @@ namespace SqlSugar
                 QueryBuilder.Parameters.Add(parameter);
             return this;
         }
-
+        public ISugarQueryable<T> AddJoinInfo(Type JoinType, Dictionary<string, Type> keyIsShortName_ValueIsType_Dictionary, FormattableString onExpString, JoinType type = JoinType.Left) 
+        {
+            var whereExp = DynamicCoreHelper.GetWhere(keyIsShortName_ValueIsType_Dictionary,onExpString);
+            var name=whereExp.Parameters.Last(it => it.Type == JoinType).Name;
+            this.Context.InitMappingInfo(JoinType);
+            var sql = this.QueryBuilder.GetExpressionValue(whereExp, ResolveExpressType.WhereMultiple).GetResultString();
+            return AddJoinInfo(JoinType, name, sql,type);
+        }
+        public ISugarQueryable<T> AddJoinInfo(Type JoinType, string shortName, string joinWhere, JoinType type = JoinType.Left) 
+        {
+            this.Context.InitMappingInfo(JoinType);
+            var tableName = this.Context.EntityMaintenance.GetEntityInfo(JoinType).DbTableName; 
+            QueryBuilder.JoinIndex = +1;
+            QueryBuilder.JoinQueryInfos
+                .Add(new JoinQueryInfo()
+                {
+                    JoinIndex = QueryBuilder.JoinIndex,
+                    TableName = tableName,
+                    ShortName = shortName,
+                    JoinType = type,
+                    JoinWhere = joinWhere,
+                    EntityType=JoinType
+                });
+            return this;
+        }
         public virtual ISugarQueryable<T> AddJoinInfo(string tableName, string shortName, string joinWhere, JoinType type = JoinType.Left)
         {
 
@@ -667,12 +713,19 @@ namespace SqlSugar
                 var clist = new List<KeyValuePair<WhereType, ConditionalModel>>();
                 foreach (var item in model.Keys)
                 {
+                    var value = model[item] == null ? "null" : model[item].ObjToString();
+                    var csType = model[item] == null ? null : model[item].GetType().Name;
+                    if (model[item] is Enum&&this.Context?.CurrentConnectionConfig?.MoreSettings?.TableEnumIsString!=true) 
+                    {
+                        value = Convert.ToInt64(model[item])+"";
+                        csType = "Int64";
+                    }
                     clist.Add(new KeyValuePair<WhereType, ConditionalModel>(i == 0 ? WhereType.Or : WhereType.And, new ConditionalModel()
                     {
                         FieldName = item,
                         ConditionalType = ConditionalType.Equal,
-                        FieldValue = model[item]==null?"null" : model[item].ObjToString(),
-                        CSharpTypeName = model[item] == null ? null : model[item].GetType().Name
+                        FieldValue = value,
+                        CSharpTypeName = csType
                     }));
                     i++;
                 }
@@ -722,12 +775,16 @@ namespace SqlSugar
                             ConditionalType = ConditionalType.Equal,
                             FieldName = this.QueryBuilder.Builder.GetTranslationColumnName(column.DbColumnName),
                             FieldValue = value.ObjToStringNew(),
-                            CSharpTypeName = column.PropertyInfo.PropertyType.Name
+                            CSharpTypeName = column.UnderType.Name
                         });
-                        if(value is Enum&&this.Context.CurrentConnectionConfig?.MoreSettings?.TableEnumIsString!=true)
+                        if (value is Enum && this.Context.CurrentConnectionConfig?.MoreSettings?.TableEnumIsString != true)
                         {
                             data.Value.FieldValue = Convert.ToInt64(value).ObjToString();
                             data.Value.CSharpTypeName = "int";
+                        }
+                        else if (value != null&&column.UnderType==UtilConstants.DateType) 
+                        {
+                            data.Value.FieldValue = Convert.ToDateTime(value).ToString("yyyy-MM-dd HH:mm:ss.fff");
                         }
                         //if (this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL) 
                         //{
@@ -784,13 +841,14 @@ namespace SqlSugar
                                 WhereType = WhereType.Or;
                             }
                         }
+                        var disableQueryWhereColumnRemoveTrim = this.Context.CurrentConnectionConfig?.MoreSettings?.DisableQueryWhereColumnRemoveTrim == true;
                         var data = new KeyValuePair<WhereType, ConditionalModel>(WhereType, new ConditionalModel()
                         {
                             ConditionalType = ConditionalType.Equal,
                             FieldName = this.QueryBuilder.Builder.GetTranslationColumnName(column.DbColumnName),
-                            FieldValue = value.ObjToStringNew(),
+                            FieldValue = disableQueryWhereColumnRemoveTrim?value.ObjToStringNoTrim() : value.ObjToStringNew(),
                             CSharpTypeName = column.PropertyInfo.PropertyType.Name
-                        });
+                        }); 
                         if (value is Enum && this.Context.CurrentConnectionConfig?.MoreSettings?.TableEnumIsString != true)
                         {
                             data.Value.FieldValue = Convert.ToInt64(value).ObjToString();
@@ -897,11 +955,33 @@ namespace SqlSugar
             }
             return this;
         }
+        public ISugarQueryable<T> Where(Dictionary<string, Type> keyIsShortName_ValueIsType_Dictionary, FormattableString expressionString) 
+        {
+            var exp = DynamicCoreHelper.GetWhere(keyIsShortName_ValueIsType_Dictionary, expressionString);
+            _Where(exp);
+            return this;
+        }
+        public virtual ISugarQueryable<T> Where(string expShortName, FormattableString expressionString) 
+        {
+            if (expressionString == null&& !Regex.IsMatch(expShortName,@"^\w$")) 
+            {
+                return this.Where(expShortName, new { });
+            }
+
+            var exp = DynamicCoreHelper.GetWhere<T>(expShortName, expressionString);
+            _Where(exp);
+            return this;
+        }
         public virtual ISugarQueryable<T> Where(Expression<Func<T, bool>> expression)
         {
+            if (IsSingleWithChildTableQuery())
+            {
+                expression = ReplaceMasterTableParameters(expression);
+            }
             this._Where(expression);
             return this;
         }
+
         public virtual ISugarQueryable<T> Where(string whereString, object whereObj = null)
         {
             if (whereString.HasValue())
@@ -973,6 +1053,10 @@ namespace SqlSugar
         public virtual ISugarQueryable<T> WhereIF(bool isWhere, Expression<Func<T, bool>> expression)
         {
             if (!isWhere) return this;
+            if (IsSingleWithChildTableQuery())
+            {
+                expression = ReplaceMasterTableParameters(expression);
+            }
             _Where(expression);
             return this;
         }
@@ -1194,15 +1278,15 @@ namespace SqlSugar
             }
             return this;
         }
-        public virtual ISugarQueryable<T> OrderBy(string orderFileds)
+        public virtual ISugarQueryable<T> OrderBy(string orderByFields)
         {
-            orderFileds = orderFileds.ToCheckField();
+            orderByFields = orderByFields.ToCheckField();
             var orderByValue = QueryBuilder.OrderByValue;
             if (QueryBuilder.OrderByValue.IsNullOrEmpty())
             {
                 QueryBuilder.OrderByValue = QueryBuilder.OrderByTemplate;
             }
-            QueryBuilder.OrderByValue += string.IsNullOrEmpty(orderByValue) ? orderFileds : ("," + orderFileds);
+            QueryBuilder.OrderByValue += string.IsNullOrEmpty(orderByValue) ? orderByFields : ("," + orderByFields);
             return this;
         }
         public virtual ISugarQueryable<T> OrderBy(Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc)
@@ -1240,10 +1324,10 @@ namespace SqlSugar
         }
 
 
-        public virtual ISugarQueryable<T> OrderByIF(bool isOrderBy, string orderFileds)
+        public virtual ISugarQueryable<T> OrderByIF(bool isOrderBy, string orderByFields)
         {
             if (isOrderBy)
-                return this.OrderBy(orderFileds);
+                return this.OrderBy(orderByFields);
             else
                 return this;
         }
@@ -1304,6 +1388,25 @@ namespace SqlSugar
             }
             return _Select<TResult>(expression);
         }
+        public ISugarQueryable<TResult> Select<TResult>(Dictionary<string, Type> keyIsShortName_ValueIsType_Dictionary, FormattableString expSelect, Type resultType) 
+        {
+            var exp = DynamicCoreHelper.GetMember(keyIsShortName_ValueIsType_Dictionary, resultType, expSelect);
+            return _Select<TResult>(exp);
+        }
+        public ISugarQueryable<TResult> Select<TResult>(string expShortName, FormattableString expSelect, Type resultType) 
+        {
+            var exp = DynamicCoreHelper.GetMember(typeof(TResult), resultType, expShortName, expSelect);
+            return _Select<TResult>(exp); 
+        }
+        public ISugarQueryable<TResult> Select<TResult>(string expShortName, FormattableString expSelect,Type EntityType, Type resultType)
+        {
+            var exp = DynamicCoreHelper.GetMember(EntityType, resultType, expShortName, expSelect);
+            return _Select<TResult>(exp);
+        }
+        public ISugarQueryable<T> Select(string expShortName, FormattableString expSelect,Type resultType) 
+        {
+            return Select<T>(expShortName, expSelect, resultType);
+        }
         public virtual ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, TResult>> expression)
         {
             if (IsAppendNavColumns())
@@ -1324,7 +1427,8 @@ namespace SqlSugar
             var sql = ps.GetSelectValue;
             if (string.IsNullOrEmpty(sql) || sql.Trim() == "*")
             {
-                return this.Select<TResult>(expression);
+                this.QueryBuilder.SelectValue = null;
+                return this.Select<TResult>();
             }
            if (sql.StartsWith("*,")) 
            {
@@ -1449,6 +1553,7 @@ namespace SqlSugar
             result.QueryBuilder.AppendNavInfo = this.QueryBuilder.AppendNavInfo;
             result.QueryBuilder.LambdaExpressions.ParameterIndex = QueryBuilder.LambdaExpressions.ParameterIndex++;
             result.QueryBuilder.LambdaExpressions.Index = QueryBuilder.LambdaExpressions.Index++;
+            result.QueryBuilder.IsCrossQueryWithAttr = QueryBuilder.IsCrossQueryWithAttr;
             if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle)
             {
                 result.Select("MergeTable.*");
@@ -1468,7 +1573,7 @@ namespace SqlSugar
             Check.ExceptionEasy(splitColumn==null,"[SplitFieldAttribute] need to be added to the table field", "需要在分表字段加上属性[SplitFieldAttribute]");
             var columnName = this.SqlBuilder.GetTranslationColumnName(splitColumn.DbColumnName);
             var sqlParameterKeyWord = this.SqlBuilder.SqlParameterKeyWord;
-            return this.Where($" {columnName}>={sqlParameterKeyWord}spBeginTime AND {columnName}<= {sqlParameterKeyWord}spEndTime",new { spBeginTime = beginTime , spEndTime = endTime}).SplitTable(tas => {
+            var resultQueryable= this.Where($" {columnName}>={sqlParameterKeyWord}spBeginTime AND {columnName}<= {sqlParameterKeyWord}spEndTime",new { spBeginTime = beginTime , spEndTime = endTime}).SplitTable(tas => {
                 var result = tas;
                 var  type= this.EntityInfo.Type.GetCustomAttribute<SplitTableAttribute>();
                 Check.ExceptionEasy(type == null, $"{this.EntityInfo.EntityName}need SplitTableAttribute", $"{this.EntityInfo.EntityName}需要特性 SplitTableAttribute");
@@ -1508,6 +1613,17 @@ namespace SqlSugar
                 }
                 return result;
                 });
+            if (splitColumn.SqlParameterDbType is System.Data.DbType)
+            {
+                foreach (var item in resultQueryable.QueryBuilder.Parameters)
+                {
+                    if (item.ParameterName.IsContainsIn("spBeginTime", "spEndTime")) 
+                    {
+                        item.DbType =(System.Data.DbType)splitColumn.SqlParameterDbType;
+                    }
+                }
+            }
+            return resultQueryable;
         }
         public ISugarQueryable<T> SplitTable(Func<List<SplitTableInfo>, IEnumerable<SplitTableInfo>> getTableNamesFunc) 
         {
@@ -1531,6 +1647,13 @@ namespace SqlSugar
             }
             else
             {
+                //if (this.Context.QueryFilter.Any())
+                //{
+                //    foreach (var item in tableQueryables)
+                //    {
+                //        item.QueryBuilder.AppendFilter();
+                //    }
+                //}
                 var unionall = this.Context._UnionAll(tableQueryables.ToArray());
                 unionall.QueryBuilder.Includes = this.QueryBuilder.Includes;
                 if (unionall.QueryBuilder.Includes?.Any()==true) 

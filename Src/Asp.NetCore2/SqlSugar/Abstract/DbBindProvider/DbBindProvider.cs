@@ -109,6 +109,9 @@ namespace SqlSugar
 
                 #region Double
                 case "float":
+                    result = "Convert.ToSingle"; 
+                    break;
+                case "double":
                     result = "Convert.ToDouble";
                     break;
                 #endregion

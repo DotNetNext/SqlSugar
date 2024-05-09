@@ -219,5 +219,10 @@ namespace SqlSugar
         {
             return default(TResult);
         }
+
+        public Subqueryable<T> AsWithAttr()
+        {
+            return this;
+        }
     }
 }

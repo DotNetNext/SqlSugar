@@ -131,7 +131,7 @@ namespace SqlSugar
 
         public async Task<bool> AnyAsync()
         {
-            return await this.CountAsync() > 0;
+            return  (await this.Take(1).Select("1").ToListAsync()).Count() > 0; ;
         }
 
         public Task<int> CountAsync(CancellationToken token) 
@@ -390,6 +390,22 @@ namespace SqlSugar
             var list =await this.ToPageListAsync(pageNumber, pageSize, totalNumber);
             return this.Context.Utilities.ListToDataTable(list);
         }
+        public Task<List<T>> ToOffsetPageAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber, CancellationToken token)
+        {
+            this.Context.Ado.CancellationToken = token;
+            return ToOffsetPageAsync(pageNumber, pageSize, totalNumber);
+        }
+        public Task<List<T>> ToOffsetPageAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber, RefAsync<int> totalPage, CancellationToken token) 
+        {
+            this.Context.Ado.CancellationToken = token;
+            return ToOffsetPageAsync(pageNumber, pageSize, totalNumber, totalPage);
+        }
+        public async Task<List<T>> ToOffsetPageAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber, RefAsync<int> totalPage)
+        {
+            var result = await ToOffsetPageAsync(pageNumber, pageSize, totalNumber);
+            totalPage.Value = (totalNumber.Value + pageSize - 1) / pageSize;
+            return result;
+        }
         public async Task<List<T>> ToOffsetPageAsync(int pageIndex, int pageSize, RefAsync<int> totalNumber)
         {
             if (this.Context.CurrentConnectionConfig.DbType != DbType.SqlServer)
@@ -557,7 +573,10 @@ ParameterT parameter)
             result = result.Where(it => it.GetType().GetProperty(name).GetValue(it).ObjToString() == pkValue.ObjToString()).ToList();
             return result;
         }
-       
+        public async Task<Dictionary<string, ValueType>> ToDictionaryAsync<ValueType>(Expression<Func<T, object>> key, Expression<Func<T, object>> value)
+        {
+            return  (await  this.ToDictionaryAsync(key, value)).ToDictionary(it => it.Key, it => (ValueType)UtilMethods.ChangeType2(it.Value, typeof(ValueType)));
+        }
         public async Task<Dictionary<string, object>> ToDictionaryAsync(Expression<Func<T, object>> key, Expression<Func<T, object>> value)
         {
             if (this.QueryBuilder.IsSingle() == false && (this.QueryBuilder.AsTables == null || this.QueryBuilder.AsTables.Count == 0))
@@ -579,6 +598,15 @@ ParameterT parameter)
                 var result = list.ToDictionary(it => it.Key.ObjToString(), it => it.Value);
                 return result;
             }
+        }
+        public async Task<List<T>> ToTreeAsync(string childPropertyName, string parentIdPropertyName, object rootValue, string primaryKeyPropertyName)
+        {
+            var entity = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            var pk = primaryKeyPropertyName;
+            var list =await this.ToListAsync();
+            Expression<Func<T, IEnumerable<object>>> childListExpression = (Expression<Func<T, IEnumerable<object>>>)ExpressionBuilderHelper.CreateExpressionSelectField(typeof(T), childPropertyName, typeof(IEnumerable<object>));
+            Expression<Func<T, object>> parentIdExpression = (Expression<Func<T, object>>)ExpressionBuilderHelper.CreateExpressionSelectFieldObject(typeof(T), parentIdPropertyName);
+            return  GetTreeRoot(childListExpression, parentIdExpression, pk, list, rootValue) ?? new List<T>();
         }
         public async Task<List<T>> ToTreeAsync(Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, object rootValue, object[] childIds)
         {
@@ -629,7 +657,7 @@ ParameterT parameter)
                     tableName = this.QueryBuilder.JoinQueryInfos.First().TableName;
                 }
             }
-            var current = await this.Context.Queryable<T>().AS(tableName).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).InSingleAsync(primaryKeyValue);
+            var current = await this.Context.Queryable<T>().AS(tableName).WithCacheIF(this.IsCache, this.CacheTime).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).InSingleAsync(primaryKeyValue);
             if (current != null)
             {
                 result.Add(current);
@@ -638,7 +666,7 @@ ParameterT parameter)
                 while (parentId != null && await this.Context.Queryable<T>().AS(tableName).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).In(parentId).AnyAsync())
                 {
                     Check.Exception(i > 100, ErrorMessage.GetThrowMessage("Dead cycle", "出现死循环或超出循环上限（100），检查最顶层的ParentId是否是null或者0"));
-                    var parent = await this.Context.Queryable<T>().AS(tableName).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).InSingleAsync(parentId);
+                    var parent = await this.Context.Queryable<T>().AS(tableName).WithCacheIF(this.IsCache, this.CacheTime).Filter(null, this.QueryBuilder.IsDisabledGobalFilter).InSingleAsync(parentId);
                     result.Add(parent);
                     parentId = ParentInfo.PropertyInfo.GetValue(parent, null);
                     ++i;

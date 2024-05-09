@@ -46,5 +46,9 @@ namespace SqlSugar
         public bool UpdateServerTime { get; set; }
         public string UpdateSql { get; set; }
         public object ExtendedAttribute { get;  set; }
+        public bool IsDisabledAlterColumn { get;  set; }
+        public string QuerySql { get;  set; }
+        public bool IsOwnsOne { get;  set; }
+        public PropertyInfo  ForOwnsOnePropertyInfo {   get;   set; }
     }
 }

@@ -18,5 +18,6 @@ namespace SqlSugar
         Task<int> ExecuteBulkCopyAsync(DataTable dt);
         Task CreateTempAsync<T>(DataTable dt) where T : class, new();
         void CloseDb();
+        Task<int> Merge<T>(string tableName,DataTable dt, EntityInfo entityInfo, string[] whereColumns, string[] updateColumns,List<T> datas) where T : class, new();
     }
 }

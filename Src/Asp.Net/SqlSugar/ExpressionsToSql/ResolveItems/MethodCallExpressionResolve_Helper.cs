@@ -75,11 +75,11 @@ namespace SqlSugar
             return methodValue != null && methodValue.ToString().Contains("THEN true  ELSE false END");
         }
         private object packIfElse(object methodValue)
-        {
+        { 
             methodValue = this.Context.DbMehtods.CaseWhen(new List<KeyValuePair<string, string>>() {
                     new KeyValuePair<string, string>("IF",methodValue.ObjToString()),
-                    new KeyValuePair<string, string>("Return","1"),
-                    new KeyValuePair<string, string>("End","0")
+                    new KeyValuePair<string, string>("Return", this.Context.DbMehtods.TrueValue()),
+                    new KeyValuePair<string, string>("End", this.Context.DbMehtods.FalseValue())
                  });
             return methodValue;
         }
@@ -156,9 +156,20 @@ namespace SqlSugar
                 };
                 model.Args.Add(methodCallExpressionArgs);
             }
-            else if (name!=null && name != "MappingColumn" && !name.StartsWith("Row") &&ExpressionTool.GetMethodName(item)== "Format" && ExpressionTool.GetParameters(item).Count==0) 
+            else if (isFirst && isIIF && isIFFBoolMember && (item as MemberExpression)?.Member?.Name == "HasValue")
             {
-                var value =  ExpressionTool.DynamicInvoke(item);
+                var value = base.GetNewExpressionValue(item);
+                var methodCallExpressionArgs = new MethodCallExpressionArgs()
+                {
+                    IsMember = true,
+                    MemberName = value,
+                    MemberValue = value
+                };
+                model.Args.Add(methodCallExpressionArgs);
+            }
+            else if (name != null && name != "MappingColumn" && !name.StartsWith("Row") && ExpressionTool.GetMethodName(item) == "Format" && ExpressionTool.GetParameters(item).Count == 0)
+            {
+                var value = ExpressionTool.DynamicInvoke(item);
                 var p = AppendParameter(value);
                 var methodCallExpressionArgs = new MethodCallExpressionArgs()
                 {
@@ -170,18 +181,8 @@ namespace SqlSugar
             }
             else if (isLength)
             {
-                var sql = GetNewExpressionValue(item);
-                var value = this.Context.DbMehtods.Length(new MethodCallExpressionModel()
-                {
-                    Name = "Length",
-                    Args = new List<MethodCallExpressionArgs>() {
-                     new MethodCallExpressionArgs(){
-                       IsMember=true,
-                       MemberName=sql,
-                       MemberValue=sql
-                     }
-                   }
-                });
+                var value = GetNewExpressionValue(item);
+              
                 var methodCallExpressionArgs = new MethodCallExpressionArgs()
                 {
                     IsMember = true,
@@ -254,6 +255,31 @@ namespace SqlSugar
             {
                 model.Args.Add(GetMethodCallArgs(parameter, (item as MemberExpression).Expression));
             }
+            else if (isBoolValue && isIIF && item is MemberExpression&&ExpressionTool.GetParameters(item).Count()==0) 
+            { 
+                var expValue = AppendParameter(ExpressionTool.DynamicInvoke(item));
+                expValue = this.Context.DbMehtods.Equals(new MethodCallExpressionModel()
+                {
+                    Name = "Equals",
+                    Args = new List<MethodCallExpressionArgs>()
+                        {
+                             new MethodCallExpressionArgs(){
+                               IsMember=true,
+                               MemberName=expValue
+                             },
+                             new MethodCallExpressionArgs(){
+                               IsMember=true,
+                               MemberName= Context.DbMehtods.TrueValue()
+                             } 
+                        }
+                });
+                model.Args.Add(new MethodCallExpressionArgs()
+                {
+                    IsMember = false,
+                    MemberName = expValue,
+                    MemberValue = expValue
+                });
+            }
             else if (isBoolValue && isIIF && item is MemberExpression)
             {
                 var argItem = GetMethodCallArgs(parameter, (item as MemberExpression).Expression);
@@ -266,7 +292,7 @@ namespace SqlSugar
                 }
                 model.Args.Add(argItem);
             }
-            else if (name == "ListAny" && item is LambdaExpression)
+            else if (name.IsIn("ListAny", "ListAll") && item is LambdaExpression)
             {
                 var sql = GetNewExpressionValue(item, ResolveExpressType.WhereMultiple);
                 var lamExp = (item as LambdaExpression);
@@ -345,15 +371,23 @@ namespace SqlSugar
             {
                 model.Args.Add(base.GetMethodCallArgs(parameter, item));
             }
+            else if (methodExpression.Method.Name.IsIn("Contains", "EndsWith", "StartsWith"))
+            {
+                Expression conditionalExpression =ExpressionTool.GetConditionalExpression(item); 
+                model.Args.Add(base.GetMethodCallArgs(parameter, conditionalExpression));
+            }
             else
             {
                 Check.Exception(true, "The SqlFunc.IIF(arg1,arg2,arg3) , {0} argument  do not support ", item.ToString());
             }
         }
+
         private void AppendModel(ExpressionParameter parameter, MethodCallExpressionModel model, Expression item,string name, IEnumerable<Expression> args)
         {
             parameter.CommonTempData = CommonTempDataType.Result;
             base.Expression = item;
+            var isRemoveParamter = false;
+            var isNegate = false;
             if (item.Type == UtilConstants.DateType && parameter.CommonTempData.ObjToString() == CommonTempDataType.Result.ToString() && item.ToString() == "DateTime.Now.Date")
             {
                 parameter.CommonTempData = DateTime.Now.Date;
@@ -391,9 +425,22 @@ namespace SqlSugar
                     return res;
                 }).ToArray();
             }
-            else if (name == "Format" && item is ConstantExpression) 
+            else if (name == "Format" && item is ConstantExpression)
             {
                 parameter.CommonTempData = ExpressionTool.GetExpressionValue(item);
+            }
+            else if (name == "FullTextContains" && item is NewArrayExpression) 
+            {
+                var array = ExpressionTool.GetNewArrayMembers(item as NewArrayExpression);
+                parameter.CommonTempData = array.Select(it=>this.Context.GetTranslationColumnName(it)).ToList();
+                isRemoveParamter = true;
+            }
+            else if (ExpressionTool.IsNegate(item) && (item as UnaryExpression)?.Operand is MemberExpression)
+            {
+                var exp = (item as UnaryExpression)?.Operand;
+                parameter.CommonTempData = GetNewExpressionValue(exp) + " * -1 ";
+                isRemoveParamter = true;
+                isNegate = true;
             }
             else
             {
@@ -403,7 +450,14 @@ namespace SqlSugar
             {
                 IsMember = parameter.ChildExpression is MemberExpression && !ExpressionTool.IsConstExpression(parameter.ChildExpression as MemberExpression),
                 MemberName = parameter.CommonTempData
-            };
+            }; 
+            if (this.Context?.SugarContext?.Context?.CurrentConnectionConfig?.MoreSettings?.IsCorrectErrorSqlParameterName == true)
+            {
+                if (methodCallExpressionArgs.MemberName is string)
+                {
+                    methodCallExpressionArgs.MemberName = ExpressionTool.ResolveMemberValue(this.Context, item, methodCallExpressionArgs.MemberName?.ToString());
+                }
+            }
             if (methodCallExpressionArgs.MemberName is MapperSql)
             {
                 methodCallExpressionArgs.MemberName = (methodCallExpressionArgs.MemberName as MapperSql).Sql;
@@ -432,7 +486,7 @@ namespace SqlSugar
                 methodCallExpressionArgs.MemberName = value;
                 methodCallExpressionArgs.MemberValue = null;
             }
-            else if (methodCallExpressionArgs.IsMember == false)
+            else if (methodCallExpressionArgs.IsMember == false&&isNegate==false)
             {
                 var parameterName = this.Context.SqlParameterKeyWord + ExpressionConst.MethodConst + this.Context.ParameterIndex;
                 this.Context.ParameterIndex++;
@@ -450,9 +504,30 @@ namespace SqlSugar
                     }
                     value = result;
                 }
+                else if (!(item is ParameterExpression)&& name.IsIn("Contains", "StartsWith", "EndsWith") &&item==args.Last()&& ExpressionTool.IsSqlParameterDbType(this.Context, args.First()))
+                {
+                    var myvalue = ExpressionTool.DynamicInvoke(args.Last());
+                    var parametre = ExpressionTool.GetParameterBySqlParameterDbType(this.Context.ParameterIndex,myvalue, this.Context, args.First());
+                    this.Context.Parameters.Add(parametre);
+                    methodCallExpressionArgs.MemberName = parametre.ParameterName;
+                    methodCallExpressionArgs.MemberValue = parametre.Value;
+                    methodCallExpressionArgs.IsMember = true;
+                    isRemoveParamter = true;
+                    this.Context.ParameterIndex++;
+                }
                 methodCallExpressionArgs.MemberValue = value;
-                this.Context.Parameters.Add(new SugarParameter(parameterName, value));
-            }
+                if (isRemoveParamter != true)
+                {
+                    if (value == null && item != null)
+                    {
+                        this.Context.Parameters.Add(new SugarParameter(parameterName, value, UtilMethods.GetUnderType(item.Type)));
+                    }
+                    else
+                    {
+                        this.Context.Parameters.Add(new SugarParameter(parameterName, value));
+                    }
+                }
+            } 
             model.Args.Add(methodCallExpressionArgs);
             parameter.ChildExpression = null;
         }
@@ -546,6 +621,7 @@ namespace SqlSugar
         }
         private object GetMethodValue(string name, MethodCallExpressionModel model)
         {
+            model.Parameters = this.Context.Parameters;
             if (IsExtMethod(name))
             {
                 model.Expression = this.Expression;
@@ -593,7 +669,8 @@ namespace SqlSugar
                         return this.Context.DbMehtods.HasNumber(model);
                     case "HasValue":
                         return this.Context.DbMehtods.HasValue(model);
-                    case "IsNullOrEmpty":
+                    case "IsNullOrEmpty": 
+                        model.Conext = this.Context;
                         return this.Context.DbMehtods.IsNullOrEmpty(model);
                     case "ToLower":
                         return this.Context.DbMehtods.ToLower(model);
@@ -721,6 +798,15 @@ namespace SqlSugar
                     case "ToBoolean":
                         return this.Context.DbMehtods.ToBool(model);
                     case "Substring":
+                        if (model.Args.Count == 2) 
+                        {
+                            model.Args.Add(new MethodCallExpressionArgs()
+                            {
+                                 MemberName="100000",
+                                 IsMember=true,
+                                  MemberValue= "100000",
+                            });
+                        }
                         return this.Context.DbMehtods.Substring(model);
                     case "Replace":
                         return this.Context.DbMehtods.Replace(model);
@@ -821,6 +907,10 @@ namespace SqlSugar
                         return this.Context.DbMehtods.Stuff(model);
                     case "RowNumber":
                         return this.Context.DbMehtods.RowNumber(model);
+                    case "Rank":
+                        return this.Context.DbMehtods.RowNumber(model).Replace("row_number() over(", " rank() over(");
+                    case "DenseRank":
+                        return this.Context.DbMehtods.RowNumber(model).Replace("row_number() over(", " dense_rank() over(");
                     case "RowCount":
                         return this.Context.DbMehtods.RowCount(model);
                     case "RowSum":
@@ -877,12 +967,20 @@ namespace SqlSugar
                         this.Context.Result.IsNavicate = true;
                         this.Context.Parameters.RemoveAll(it => model.Args[0].MemberName.ObjToString().Contains(it.ParameterName));
                         return this.Context.DbMehtods.ListAny(model);
+                    case "ListAll":
+                        this.Context.Result.IsNavicate = true;
+                        this.Context.Parameters.RemoveAll(it => model.Args[0].MemberName.ObjToString().Contains(it.ParameterName));
+                        return this.Context.DbMehtods.ListAll(model);
                     case "Modulo":
                         return this.Context.DbMehtods.Modulo(model);
                     case "Like":
                         return this.Context.DbMehtods.Like(model);
                     case "ToSingle":
                         return this.Context.DbMehtods.ToSingle(model);
+                    case "GreaterThan_LinqDynamicCore":
+                        return this.Context.DbMehtods.GreaterThan(model);
+                    case "LessThan_LinqDynamicCore":
+                        return this.Context.DbMehtods.LessThan(model);
                     default:
                         if (typeof(IDbMethods).GetMethods().Any(it => it.Name == name))
                         {
@@ -925,11 +1023,19 @@ namespace SqlSugar
             {
                 return true;
             }
+            if (expression.Method.Name == "IndexOf") 
+            {
+                return true;
+            }
             if (expression.Method.Name == "CompareTo") 
             {
                 return true;
             }
             if (expression.Method.Name == "Any"&& expression.Arguments.Count()>0&& ExpressionTool.IsVariable(expression.Arguments[0]) )
+            {
+                return true;
+            }
+            if (expression.Method.Name == "All" && expression.Arguments.Count() > 0 && ExpressionTool.IsVariable(expression.Arguments[0]))
             {
                 return true;
             }

@@ -5,39 +5,27 @@
 </p>
  
 ## SqlSugar ORM
-  
-SqlSugar ORM is a library providing Object/Relational Mapping (ORM) 
+SqlSugar is .NET open source ORM framework, maintained and updated by Fructose Big Data Technology team, the most easy-to-use ORM out of the box
 
-An ORM framework from the future
+Advantages: [Low code] [High performance] [Super simple] [Comprehensive features] [ Multi-database compatible] [Suitable products]
 
-Using SqlSugar is very simple , And it's powerful.
+## Support .NET
+.net framework.net core3.1.ne5.net6.net7.net8 .net9 .net10
 
 ## Support database 
-
 MySql、SqlServer、Sqlite、Oracle 、 postgresql、达梦、
-
 人大金仓(国产推荐)、神通数据库、瀚高、Access 、OceanBase
-
 TDengine  QuestDb Clickhouse  MySqlConnector、华为 GaussDB 
-
 南大通用 GBase、MariaDB、Tidb、Odbc、Percona Server,
-
 Amazon Aurora、Azure Database for MySQL、
-
  Google Cloud SQL for MySQL、custom database
 
 ## Description
-- Support Cross database query
-- Support SqlServer、MySql、PgSql and Oracle  insert bulkcopy  
-- Split table big data self-processing 
-- Support Multi-tenant, multi-library transactions
-- Support CodeFirst data migration.
-- Support Join query 、  Union all 、 Subquery 
-- Support Configure the query  
-- Support DbFirst import entity class from database, or use Generation Tool.
-- Support one-to-many and many-to-many navigation properties
-- Support MySql、SqlServer、Sqlite、Oracle 、 postgresql 、QuestDb、ClickHouse、达梦、人大金仓 、神通数据库、瀚高、MsAccess、华为GaussDB、GBase 8s、Odbc、Custom
-- Support  AOP 、 Diff Log 、 Query Filter 
+1. Truly achieve zero SQL ORM table building, index and CRUD all support
+2. Support.NET millions of big data write, update, subtable and has billions of query statistics mature solutions
+3. Support SAAS complete application: cross-database query, audit, tenant sub-database, tenant sub-table and tenant data isolation
+4. Support low code + workflow (dynamic class building, dynamic table building, non-entity multi-library compatible with CRUD, JSON TO SQL, custom XML, etc.)
+5. Support ValueObject, discriminator, repository, UnitOfWork, DbContext, AOP
 
 ##  Documentation
 |Other |Select  | Insert    | Update  | Delete| 
@@ -73,30 +61,27 @@ WHERE
   ([o].[Id] = @Id0)
 ``` 
 ###   Feature2 :Include Query、Insert、Delete and Update
-```cs 
-//query  by nav
+```cs
+
+//Includes
 var list=db.Queryable<Test>()
            .Includes(x => x.Provinces,x=>x.Citys ,x=>x.Street) //multi-level
            .Includes(x => x.ClassInfo) 
            .ToList();
-           
-//insert by nav
- db.InsertNav(list) //Finer operation than EFCore's SaveChange
-            .Include(z1 => z1.SchoolA).ThenInclude(z1 => z1.RoomList)//multi-level
-            .Include(z1 => z1.Books) 
-            .ExecuteCommand(); 
-            
-//delete by nav               
- db.DeleteNav<Student>(it=>it.Id==1) 
-            .Include(z1 => z1.SchoolA) .ThenInclude(z1 => z1.RoomList)//multi-level
-            .Include(z1 => z1.Books) 
-            .ExecuteCommand();  
-            
-//update by nav     
- db.UpdateNav(list)
-            .Include(z1 => z1.SchoolA) .ThenInclude(z1 => z1.RoomList)//multi-level
-            .Include(z1 => z1.Books) 
-            .ExecuteCommand();           
+
+//Includes+left join        
+var list5= db.Queryable<Student_004>()
+           .Includes(x => x.school_001, x => x.rooms)
+           .Includes(x => x.books)
+           .LeftJoin<Order>((x, y) => x.Id==y.sid)
+           .Select((x,y) => new Student_004DTO
+           {
+               SchoolId = x.SchoolId,
+               books = x.books,
+               school_001 = x.school_001,
+               Name=y.Name
+           })
+           .ToList();          
 ```
 
 ###   Feature3 : Page query
@@ -200,17 +185,12 @@ db.Queryable<OrderItem, Order>((i, o) => i.OrderId == o.Id)
 ### Feature8 : Insert or update 
 insert or update 
 ```cs
-    var x = Db.Storageable(list2).ToStorage();  
-    x.AsInsertable.ExecuteCommand();  
-    x.AsUpdateable.ExecuteCommand();  
-```
-insert into not exists  
-```cs
-var x = Db.Storageable(list).SplitInsert(it => !it.Any()).ToStorage()
-x.AsInsertable.ExecuteCommand(); 
+Db.Storageable(list2).ExecuteCommand();
+Db.Storageable(list2).PageSize(1000).ExecuteCommand();
+Db.Storageable(list2).PageSize(1000,exrows=> {   }).ExecuteCommand();
 ```
  
-### Feature9 ：Auto split table
+### Feature9 : Auto split table
 Split entity 
 ```cs
 [SplitTable(SplitType.Year)]//Table by year (the table supports year, quarter, month, week and day)
@@ -236,25 +216,36 @@ Split query
 .ToPageList(1,2);　
 ``` 
 
-### Feature10： Big data insert or update 
+### Feature10 : Big data insert or update 
 ```cs
-//Insert A million only takes a few seconds
-db.Fastest<RealmAuctionDatum>().BulkCopy(GetList());
+10.1 BulkCopy
+db.Fastest<Order>().BulkCopy(lstData);//insert
+db.Fastest<Order>().PageSize(100000).BulkCopy(insertObjs);
+db.Fastest<System.Data.DataTable>().AS("order").BulkCopy(dataTable);
  
+10.2 BulkUpdate
+db.Fastest<Order>().BulkUpdate(GetList())//update 
+db.Fastest<Order>().PageSize(100000).BulkUpdate(GetList()) 
+db.Fastest<Order>().BulkUpdate(GetList(),new string[] { "Id"});//no primary key
+db.Fastest<Order>().BulkUpdate(GetList(), new string[]{"id"},
+                     new string[]{"name","time"})//Set the updated column
+//DataTable                           
+db.Fastest<System.Data.DataTable>().AS("Order").BulkUpdate(dataTable,"Id");//Id is primary key
+db.Fastest<System.Data.DataTable>().AS("Order").BulkUpdate(dataTable,"Id",Set the updated column);
+                          
+
+10.3 BulkMerge （5.1.4.109）
+db.Fastest<Order>().BulkMerge(List);
+db.Fastest<Order>().PageSize(100000).BulkMerge(List);
  
-//update A million only takes a few seconds
-db.Fastest<RealmAuctionDatum>().BulkUpdate(GetList());//A million only takes a few seconds完
-db.Fastest<RealmAuctionDatum>().BulkUpdate(GetList(),new string[]{"id"},new string[]{"name","time"})//no primary key
- 
-//if exists update, else  insert
- var x= db.Storageable<Order>(data).ToStorage();
-     x.BulkCopy();
-     x.BulkUpdate(); 
-     
-//set table name
-db.Fastest<RealmAuctionDatum>().AS("tableName").BulkCopy(GetList())
- 
-//set page 
-db.Fastest<Order>().PageSize(300000).BulkCopy(insertObjs);
+
+10.4 BulkQuery
+db.Queryable<Order>().ToList();//Slightly faster than Dapper
+//Suitable for big data export
+List<Order> order = new List<Order>(); 
+db.Queryable<Order>().ForEach(it=> { order.Add(it); } ,2000);
+
+10.5 BulkDelete
+db.Deleteable<Order>(list).PageSize(1000).ExecuteCommand();
 
 ```

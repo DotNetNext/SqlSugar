@@ -28,33 +28,62 @@ namespace SqlSugar.TDengine
         }
         public override string GetPropertyTypeName(string dbTypeName)
         {
-            if (dbTypeName.ToLower() == "int32")
+            dbTypeName = dbTypeName.ToLower();
+            if (dbTypeName == "int32")
             {
                 dbTypeName = "int";
             }
-            else if (dbTypeName.ToLower() == "int16")
+            else if (dbTypeName == "int16")
             {
                 dbTypeName = "short";
             }
-            else if (dbTypeName.ToLower() == "int64")
+            else if (dbTypeName == "int64")
             {
                 dbTypeName = "long";
             }
-            else if (dbTypeName.ToLower() == "string")
+            else if (dbTypeName == "string")
             {
                 dbTypeName = "string";
             }
-            else if (dbTypeName.ToLower() == "boolean")
+            else if (dbTypeName == "boolean")
             {
                 dbTypeName = "bool";
             }
-            else if (dbTypeName.ToLower() == "sbyte") 
+            else if (dbTypeName == "bool")
+            {
+                dbTypeName = "bool";
+            }
+            else if (dbTypeName == "sbyte")
             {
                 dbTypeName = "sbyte";
             }
-            else if (dbTypeName.ToLower() == "double")
+            else if (dbTypeName == "double")
             {
                 dbTypeName = "double";
+            }
+            else if (dbTypeName == "binary")
+            {
+                dbTypeName = "string";
+            }
+            else if (dbTypeName == "timestamp")
+            {
+                dbTypeName = "DateTime";
+            }
+            else if (dbTypeName == "bigint")
+            {
+                dbTypeName = "long";
+            }
+            else if (dbTypeName == "char")
+            {
+                dbTypeName = "string";
+            }
+            else if (dbTypeName == "smallint") 
+            {
+                dbTypeName = "int";
+            }
+            else
+            {
+
             }
             return dbTypeName;
         }

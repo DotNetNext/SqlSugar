@@ -10,6 +10,9 @@ namespace SqlSugar
     public class SplitCodeFirstProvider
     {
         public SqlSugarProvider Context;
+
+        public int DefaultLength { get;  set; }
+
         public void InitTables<T>()
         {
             var type = typeof(T);
@@ -27,7 +30,7 @@ namespace SqlSugar
             }
             else 
             {
-                this.Context.CodeFirst.InitTables(type);
+                this.Context.CodeFirst.SetStringDefaultLength(this.DefaultLength).InitTables(type);
             }
       
         }
@@ -46,13 +49,13 @@ namespace SqlSugar
                 foreach (var item in tables)
                 {
                     this.Context.MappingTables.Add(helper.EntityInfo.EntityName, item.TableName);
-                    this.Context.CodeFirst.InitTables(type);
+                    this.Context.CodeFirst.SetStringDefaultLength(this.DefaultLength).InitTables(type);
                 }
             }
             else
             {
                 this.Context.MappingTables.Add(helper.EntityInfo.EntityName, helper.GetDefaultTableName());
-                this.Context.CodeFirst.InitTables(type);
+                this.Context.CodeFirst.SetStringDefaultLength(this.DefaultLength).InitTables(type);
             }
             this.Context.MappingTables.Add(helper.EntityInfo.EntityName, helper.EntityInfo.DbTableName);
         }

@@ -132,6 +132,7 @@ namespace SqlSugar
         }
 
         public bool MySqlIgnore { get; internal set; }
+        public bool IsWithAttr { get; internal set; }
 
         public virtual ExpressionResult GetExpressionValue(Expression expression, ResolveExpressType resolveType)
         {
@@ -284,8 +285,27 @@ namespace SqlSugar
             {
                 return LambdaExpressions.DbMehtods.GetDate();
             }
+            else if (UtilMethods.IsErrorDecimalString() == true)
+            {
+                var pname = Builder.SqlParameterKeyWord + "Decimal" + GetDbColumnIndex;
+                var p = new SugarParameter(pname, columnInfo.Value);
+                this.Parameters.Add(p);
+                GetDbColumnIndex++;
+                return pname;
+            }
             else if (columnInfo.InsertSql.HasValue())
             {
+                if (columnInfo.InsertSql.Contains("{0}")) 
+                {
+                    if (columnInfo.Value == null)
+                    {
+                        return string.Format(columnInfo.InsertSql, "null").Replace("'null'","null");
+                    }
+                    else
+                    {
+                        return string.Format(columnInfo.InsertSql, columnInfo.Value?.ObjToString().ToSqlFilter());
+                    }
+                }
                 return columnInfo.InsertSql;
             }
             else if (columnInfo.SqlParameterDbType is Type && (Type)columnInfo.SqlParameterDbType == UtilConstants.SqlConvertType)
@@ -339,6 +359,15 @@ namespace SqlSugar
                 }
                 GetDbColumnIndex++;
                 return pname;
+            }
+            else if (UtilMethods.IsErrorParameterName(this.Context.CurrentConnectionConfig, columnInfo))
+            {
+                var pname = Builder.SqlParameterKeyWord + "CrorrPara" + GetDbColumnIndex;
+                var p = new SugarParameter(pname, columnInfo.Value);
+                this.Parameters.Add(p);
+                GetDbColumnIndex++;
+                return pname;
+
             }
             else
             {

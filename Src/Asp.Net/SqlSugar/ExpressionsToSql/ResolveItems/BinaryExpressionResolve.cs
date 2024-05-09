@@ -85,10 +85,15 @@ namespace SqlSugar
 
                 var leftChild = ExpressionTool.RemoveConvert((left as BinaryExpression).Right);
                 var rightChild = ExpressionTool.RemoveConvert((right as BinaryExpression).Right);
-                if (ExpressionTool.GetMethodName(leftChild)=="Select"
-                    && ExpressionTool.GetMethodName(rightChild) == "Select"
-                    && ExpressionTool.ContainsMethodName(left as BinaryExpression, "Group")
-                    &&ExpressionTool.ContainsMethodName(right as BinaryExpression, "Group")) 
+                var isLeftSelect = ExpressionTool.GetMethodName(leftChild) == "Select"|| leftChild is BinaryExpression;
+                var isRightSelect = ExpressionTool.GetMethodName(rightChild) == "Select" || rightChild is BinaryExpression;
+                var isLeftGroup = ExpressionTool.ContainsMethodName(left as BinaryExpression, "Group");
+                var isRightGroup = ExpressionTool.ContainsMethodName(right as BinaryExpression, "Group");
+                if ( 
+                     (isLeftSelect && isLeftGroup)
+                     || 
+                     (isRightSelect && isRightGroup) 
+                 ) 
                 {
                     return true;
                 }
@@ -159,6 +164,21 @@ namespace SqlSugar
             base.ExactExpression = expression;
             var leftExpression = expression.Left;
             var rightExpression = expression.Right;
+            if (operatorValue.IsIn("AND","OR")&&leftExpression is BinaryExpression exp) 
+            {
+                if (exp?.Left is BinaryExpression expChild) 
+                {
+                    if (ExpressionTool.GetMethodName(expChild?.Right) == "Select"&& ExpressionTool.ContainsMethodName(expChild,"GroupBy"))
+                    {
+                        var childLeft = GetNewExpressionValue(expChild.Left);
+                        var childRight = GetNewExpressionValue(expChild.Right);
+                        var right = GetNewExpressionValue(exp.Right);
+                        var ov = ExpressionTool.GetOperator(exp.NodeType);
+                        base.Context.Result.Append($" (({childLeft+ " IN " +childRight}) {operatorValue} {GetNewExpressionValue(rightExpression)}) {ov} {right} ");
+                        return;
+                    }
+                }
+            }
             if (operatorValue == "="&& ExpressionTool.RemoveConvert(leftExpression) is ConstantExpression) 
             {
                  leftExpression = expression.Right;

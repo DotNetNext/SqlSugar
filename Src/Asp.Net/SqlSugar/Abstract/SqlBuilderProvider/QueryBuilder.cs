@@ -33,7 +33,9 @@ namespace SqlSugar
         public ISqlBuilder Builder { get; set; }
         #endregion
 
-        #region Splicing basic
+        #region Splicing basic 
+        public bool IsParameterizedConstructor { get; set; }
+        public string Hints { get; set; }
         internal AppendNavInfo AppendNavInfo { get; set; }
         public Type[] RemoveFilters { get; set; }
         public Dictionary<string, object> SubToListParameters { get; set; }
@@ -279,7 +281,7 @@ namespace SqlSugar
                 resolveExpress.SqlFuncServices = Context.CurrentConnectionConfig.ConfigureExternalServices == null ? null : Context.CurrentConnectionConfig.ConfigureExternalServices.SqlFuncServices;
             };
             resolveExpress.Resolve(expression, resolveType);
-            this.Parameters.AddRange(resolveExpress.Parameters.Select(it => new SugarParameter(it.ParameterName, it.Value, it.DbType) {  Size=it.Size}));
+            this.Parameters.AddRange(resolveExpress.Parameters.Select(it => new SugarParameter(it.ParameterName, it.Value, it.DbType) {  Size=it.Size,TypeName=it.TypeName, IsNvarchar2=it.IsNvarchar2}));
             var result = resolveExpress.Result;
             var isSingleTableHasSubquery = IsSingle() && resolveExpress.SingleTableNameSubqueryShortName.HasValue();
             if (isSingleTableHasSubquery)
@@ -434,6 +436,18 @@ namespace SqlSugar
                 if (ChildType.IsInterface)
                 {
                     var filterType = this.EntityType;
+                    sql = ReplaceFilterColumnName(sql, filterType);
+                }
+            }
+            else if (isEasyJoin && ChildType.IsInterface && this.JoinExpression != null && (this.JoinExpression as LambdaExpression)?.Parameters?.Any(it => it.Type.GetInterfaces().Any(z => z == ChildType)) == true)
+            {
+                var parameters = (this.JoinExpression as LambdaExpression).Parameters.Where(it => it.Type.GetInterfaces().Any(z => z == ChildType)).ToList();
+                foreach (var parameter in parameters)
+                {
+                    var shortName = this.Builder.GetTranslationColumnName(parameter.Name) + ".";
+                    var mysql = GetSql(exp, isSingle);
+                    sql += mysql.Replace(itName, shortName);
+                    var filterType =parameter.Type;
                     sql = ReplaceFilterColumnName(sql, filterType);
                 }
             }
@@ -668,6 +682,12 @@ namespace SqlSugar
                 var entityInfo = this.Context.EntityMaintenance.GetEntityInfoWithAttr(joinInfo.EntityType);
                 result = $" {result} AND {shortName}.{UtilMethods.GetDiscrimator(entityInfo,this.Builder)}";
             }
+            if (joinInfo.JoinType == JoinType.Cross) 
+            {
+             
+                var onIndex=result.IndexOf(" ON ");
+                result = result.Substring(0,onIndex);
+            }
             return result;
         }
         public virtual void Clear()
@@ -689,6 +709,10 @@ namespace SqlSugar
         }
         public string GetSqlQuerySql(string result)
         {
+            if (this.Hints.HasValue())
+            {
+                result = ReplaceHints(result);
+            }
             if (GetTableNameString == " (-- No table ) t  ")
             {
                 result = "-- No table ";
@@ -707,6 +731,16 @@ namespace SqlSugar
                 return result;
             }
         }
+
+        protected virtual string ReplaceHints(string result)
+        {
+            result = Regex.Replace(result, "^SELECT ", it =>
+            {
+                return $"{it} {Hints}  ";
+            });
+            return result;
+        }
+
         protected string SubToListMethod(string result)
         {
             string oldResult = result;
@@ -786,7 +820,7 @@ namespace SqlSugar
                 {
                     this.SelectCacheKey = this.SelectCacheKey + string.Join("-", this._JoinQueryInfos.Select(it => it.TableName));
                 }
-                if (IsDistinct)
+                if (IsDistinct&&result?.StartsWith("DISTINCT ")!=true)
                 {
                     result = " DISTINCT " + result;
                 }
@@ -813,6 +847,10 @@ namespace SqlSugar
             else
             {
                 result= GetExpressionValue(expression, this.SelectType).GetResultString();
+                if (result == null && ExpressionTool.GetMethodName(ExpressionTool.GetLambdaExpressionBody(expression)) == "End") 
+                {
+                    result = GetExpressionValue(expression, ResolveExpressType.FieldSingle).GetResultString();
+                }
             }
             if (result == null&& this.AppendNavInfo?.AppendProperties==null)
             {
@@ -876,7 +914,7 @@ namespace SqlSugar
                 {
                     columns = columns.Where(c => !this.IgnoreColumns.Any(i => c.PropertyName.Equals(i, StringComparison.CurrentCultureIgnoreCase) || c.DbColumnName.Equals(i, StringComparison.CurrentCultureIgnoreCase))).ToList();
                 }
-                result = string.Join(",", columns.Select(it => pre + Builder.GetTranslationColumnName(it.EntityName, it.PropertyName)));
+                result = string.Join(",", columns.Select(it => GetSelectStringByColumnInfo(it, pre)));
             }
             else
             {
@@ -889,6 +927,16 @@ namespace SqlSugar
             }
             return result;
         }
+
+        private string GetSelectStringByColumnInfo(EntityColumnInfo it, string pre)
+        {
+            if (it.QuerySql.HasValue()) 
+            {
+                return it.QuerySql+ " AS "+ Builder.GetTranslationColumnName(it.EntityName, it.PropertyName);
+            }
+            return pre + Builder.GetTranslationColumnName(it.EntityName, it.PropertyName);
+        }
+
         public virtual string GetWhereValueString
         {
             get
@@ -911,6 +959,7 @@ namespace SqlSugar
                 }
             }
         }
+        public virtual string MasterDbTableName { get; set; }
         public virtual string GetTableNameString
         {
             get
@@ -934,6 +983,10 @@ namespace SqlSugar
                 }
                 var result = Builder.GetTranslationTableName(name);
                 result += UtilConstants.Space;
+                if (MasterDbTableName.HasValue()) 
+                {
+                    result = MasterDbTableName;
+                }
                 if (IsSingle() && result.Contains("MergeTable") && result.Trim().EndsWith(" MergeTable") && TableShortName != null)
                 {
                     result = result.Replace(") MergeTable  ", ") " + TableShortName+UtilConstants.Space);

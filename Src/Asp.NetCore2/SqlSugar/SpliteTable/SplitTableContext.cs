@@ -58,16 +58,30 @@ namespace SqlSugar
         }
         public List<SplitTableInfo> GetTables()
         {
-            if (StaticConfig.SplitTableGetTablesFunc != null) 
+            if (StaticConfig.SplitTableGetTablesFunc != null)
             {
-                return StaticConfig.SplitTableGetTablesFunc();
+                return GetCustomGetTables();
             }
             var oldIsEnableLogEvent = this.Context.Ado.IsEnableLogEvent;
             this.Context.Ado.IsEnableLogEvent = false;
-            var tableInfos = this.Context.DbMaintenance.GetTableInfoList(false);
-            List<SplitTableInfo> result = Service.GetAllTables(this.Context,EntityInfo,tableInfos);
+            List<DbTableInfo> tableInfos =((DbMaintenanceProvider)this.Context.DbMaintenance).GetSchemaTables(EntityInfo);
+            if (tableInfos == null)
+            {
+                tableInfos = this.Context.DbMaintenance.GetTableInfoList(false);
+            }
+            List<SplitTableInfo> result = Service.GetAllTables(this.Context, EntityInfo, tableInfos);
             this.Context.Ado.IsEnableLogEvent = oldIsEnableLogEvent;
             return result;
+        }
+
+        private  List<SplitTableInfo> GetCustomGetTables()
+        {
+            var oldIsEnableLogEvent = this.Context.Ado.IsEnableLogEvent;
+            this.Context.Ado.IsEnableLogEvent = false;
+            var tables = StaticConfig.SplitTableGetTablesFunc();
+            List<SplitTableInfo> result = Service.GetAllTables(this.Context, EntityInfo, tables.Select(it=>new DbTableInfo() { Name=it.TableName }).ToList());
+            this.Context.Ado.IsEnableLogEvent = oldIsEnableLogEvent;
+            return result.ToList();
         }
 
         public string GetDefaultTableName()

@@ -7,7 +7,7 @@ namespace SqlSugar
 {
     public class OrderByModel 
     {
-        public string FieldName { get; set; }
+        public object FieldName { get; set; }
         public OrderByType OrderByType { get; set; }
         public static List<OrderByModel> Create(params OrderByModel[] orderByModel)
         {

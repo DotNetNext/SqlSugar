@@ -1,6 +1,7 @@
 ﻿using SqlSugar;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 
@@ -19,6 +20,8 @@ namespace OrmTest
                 InitKeyType = InitKeyType.Attribute,
                 IsAutoCloseConnection = true
             });
+            db.CodeFirst.InitTables<CodeFirstafda1>();
+            db.CodeFirst.InitTables<CODEFIRSTAFDA1>();
             db.CodeFirst.InitTables(typeof(CodeFirstTable1));//Create CodeFirstTable1 
             db.Insertable(new CodeFirstTable1() { Name = "a", Text="a" }).ExecuteCommand();
             var list = db.Queryable<CodeFirstTable1>().ToList();
@@ -77,6 +80,18 @@ namespace OrmTest
             Console.WriteLine("#### CodeFirst end ####");
         }
     }
+    public class CodeFirstafda1 
+    {
+        [SugarColumn(ColumnDataType="number")]
+        public int id { get; set; }
+        [SugarColumn(ColumnDataType = "number")]
+        public long id2 { get; set; }
+    }
+    public class CODEFIRSTAFDA1
+    {
+        public int id { get; set; }
+        public long id2 { get; set; }
+    }
     public class CodeFIrstadfa 
     {
         [SugarColumn(IsIdentity =true,IsPrimaryKey =true)]
@@ -103,7 +118,7 @@ namespace OrmTest
        x2=2
     }
 
-    [SugarTable("PictureData")]
+    [SugarTable("Picture1")]
     public class PictureData
     {
         [SugarColumn(IsPrimaryKey = true)]

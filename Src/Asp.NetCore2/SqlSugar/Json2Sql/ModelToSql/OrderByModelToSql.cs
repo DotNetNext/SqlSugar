@@ -10,13 +10,18 @@ namespace SqlSugar
         public KeyValuePair<string, SugarParameter[]> OrderByModelToSql(List<OrderByModel> models)
         {
             StringBuilder sql = new StringBuilder("");
-            SugarParameter[] pars = new SugarParameter[] { };
+            List<SugarParameter>  pars = new List<SugarParameter>(){ };
             foreach (var item in models)
             {
-                if (item is OrderByModel)
+                if (item is OrderByModel && item.FieldName is IFuncModel) 
                 {
                     var orderByModel = item as OrderByModel;
-                    sql.Append($" {this.GetTranslationColumnName(orderByModel.FieldName.ToSqlFilter())} {orderByModel.OrderByType.ToString().ToUpper()} ,");
+                    sql.Append($" {GetSqlPart(item.FieldName,pars)} {orderByModel.OrderByType.ToString().ToUpper()} ,");
+                }
+                else if (item is OrderByModel)
+                {
+                    var orderByModel = item as OrderByModel;
+                    sql.Append($" {this.GetTranslationColumnName(orderByModel.FieldName.ObjToString().ToSqlFilter())} {orderByModel.OrderByType.ToString().ToUpper()} ,");
                 }
                 else
                 {
@@ -24,7 +29,7 @@ namespace SqlSugar
                 }
 
             }
-            return new KeyValuePair<string, SugarParameter[]>(sql.ToString().TrimEnd(','), pars);
+            return new KeyValuePair<string, SugarParameter[]>(sql.ToString().TrimEnd(','), pars?.ToArray());
         }
     }
 }

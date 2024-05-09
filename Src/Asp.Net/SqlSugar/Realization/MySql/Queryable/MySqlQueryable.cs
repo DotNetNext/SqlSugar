@@ -4,6 +4,18 @@
     {
         public override ISugarQueryable<T> With(string withString)
         {
+            if (withString == null) 
+            {
+                return this;
+            }
+            if (UtilMethods.StringCheckFirstAndLast(withString.TrimStart(' ').TrimEnd(' '), "/*", "*/"))
+            {
+                QueryBuilder.TableWithString = withString;
+            }
+            else if (UtilMethods.StringCheckFirstAndLast(withString.TrimStart(' ').TrimEnd(' ').ToLower(), "force", ")")) 
+            {
+                QueryBuilder.TableWithString = withString;
+            }
             return this;
         }
 

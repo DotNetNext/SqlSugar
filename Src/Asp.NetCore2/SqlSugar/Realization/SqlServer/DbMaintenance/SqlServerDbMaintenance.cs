@@ -321,6 +321,72 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override bool SetAutoIncrementInitialValue(string tableName,int initialValue)
+        {
+            this.Context.Ado.ExecuteCommand($"DBCC CHECKIDENT ('"+ tableName + $"', RESEED, {initialValue})");
+            return true;
+        }
+        public override bool SetAutoIncrementInitialValue(Type entityType, int initialValue)
+        {
+            return this.SetAutoIncrementInitialValue(this.Context.EntityMaintenance.GetEntityInfo(entityType).DbTableName, initialValue);
+        }
+        public override List<DbTableInfo> GetSchemaTables(EntityInfo entityInfo)
+        {
+            if (entityInfo.DbTableName.Contains(".") && this.Context.CurrentConnectionConfig.DbType == DbType.SqlServer)
+            {
+                var schema = entityInfo.DbTableName.Split('.').First();
+                var isAny = GetSchemas().Any(it => it.EqualCase(schema))||schema.EqualCase("dbo");
+                if (isAny)
+                {
+                    var tableInfos = this.Context.Ado.SqlQuery<DbTableInfo>(@"SELECT schem.name+'.'+tb.name Name,tb.Description from 
+                                ( SELECT obj.name,Convert(nvarchar(max),prop.value)as Description,obj.schema_id FROM sys.objects  obj
+                                    LEFT JOIN sys.extended_properties  prop 
+                                    ON obj.object_id=prop.major_id
+                                        and prop.minor_id=0
+                                        AND (prop.Name='MS_Description' OR prop.Name is null)
+                                        WHERE obj.type IN('U')) tb
+                                            inner join	sys.schemas as schem
+                                            on tb.schema_id=schem.schema_id ");
+                    return tableInfos;
+                }
+            }
+            return null;
+        }
+
+        public override bool DropColumn(string tableName, string columnName)
+        {
+            if (Regex.IsMatch(tableName, @"^\w+$") && Regex.IsMatch(columnName, @"^\w+$"))
+            {
+                var sql = $"SELECT distinct dc.name AS ConstraintName \r\nFROM sys.default_constraints dc\r\nJOIN sys.columns c ON dc.parent_column_id = c.column_id\r\nWHERE dc.parent_object_id = OBJECT_ID('{tableName}')\r\nAND c.name = '{columnName}';";
+                var checks = this.Context.Ado.SqlQuery<string>(sql);
+                foreach (var checkName in checks)
+                {
+                    if (checkName?.ToUpper()?.StartsWith("DF__") == true)
+                    {
+                        this.Context.Ado.ExecuteCommand($"ALTER TABLE {SqlBuilder.GetTranslationColumnName(tableName)} DROP CONSTRAINT {checkName}");
+                    }
+                }
+            }
+            return base.DropColumn(tableName, columnName);
+        }
+        public override List<string> GetDbTypes() 
+        {
+            return this.Context.Ado.SqlQuery<string>(@"SELECT name
+FROM sys.types
+WHERE is_user_defined = 0;");
+        }
+        public override List<string> GetTriggerNames(string tableName)
+        {
+            return this.Context.Ado.SqlQuery<string>(@"SELECT DISTINCT sysobjects.name AS TriggerName
+FROM sysobjects
+JOIN syscomments ON sysobjects.id = syscomments.id
+WHERE sysobjects.xtype = 'TR'
+AND syscomments.text LIKE '%"+tableName+"%'");
+        }
+        public override List<string> GetFuncList()
+        {
+            return this.Context.Ado.SqlQuery<string>("SELECT name\r\nFROM sys.objects\r\nWHERE type_desc  IN( 'SQL_SCALAR_FUNCTION','SQL_INLINE_TABLE_VALUED_FUNCTION') ");
+        }
         private bool IsAnySchemaTable(string tableName)
         {
             if (tableName == null||!tableName.Contains(".") )
@@ -420,6 +486,7 @@ namespace SqlSugar
         }
         public override bool UpdateColumn(string tableName, DbColumnInfo column)
         {
+            ConvertCreateColumnInfo(column);
             if (column.DataType != null && this.Context.CurrentConnectionConfig?.MoreSettings?.SqlServerCodeFirstNvarchar == true)
             {
                 if (!column.DataType.ToLower().Contains("nvarchar"))
@@ -456,7 +523,7 @@ namespace SqlSugar
                 {
                     tableName = SqlBuilder.GetNoTranslationColumnName(tableName);
                 }
-                var sql = @"IF EXISTS (SELECT * FROM sys.objects
+                var sql = @"IF EXISTS (SELECT * FROM sys.objects with(nolock)
                         WHERE type='u' AND name=N'"+tableName.ToSqlFilter()+@"')  
                         SELECT 1 AS res ELSE SELECT 0 AS res;";
                 return this.Context.Ado.GetInt(sql) > 0;
@@ -602,15 +669,15 @@ namespace SqlSugar
                                             name = N'{0}',
                                             filename = N'{1}\{0}.mdf',
                                             size = 10mb,
-                                            maxsize = 100mb,
+                                            maxsize = 5000mb,
                                             filegrowth = 1mb
                                         ),
                                         (
                                             name = N'{0}_ndf',   
                                             filename = N'{1}\{0}.ndf',
                                             size = 10mb,
-                                            maxsize = 100mb,
-                                             filegrowth = 10 %
+                                            maxsize = 5000mb,
+                                             filegrowth =10mb
                                         )
                                         log on  
                                         (
@@ -638,7 +705,8 @@ namespace SqlSugar
         {
             tableName = this.SqlBuilder.GetTranslationTableName(tableName);
             foreach (var item in columns)
-            {
+            { 
+                ConvertCreateColumnInfo(item); 
                 if (item.DataType == "decimal" && item.DecimalDigits == 0 && item.Length == 0)
                 {
                     item.DecimalDigits = 4;
@@ -672,6 +740,24 @@ namespace SqlSugar
             }
             return true;
         }
+
+        private static void ConvertCreateColumnInfo(DbColumnInfo x)
+        {
+            string[] array = new string[] { "int", "text", "image", "smallint", "bigint", "date", "bit", "ntext", "datetime","datetime2", "uniqueidentifier", "tinyint", "rowversion", "timestamp", "money" };
+            if (x.DataType.EqualCase( "nvarchar") || x.DataType .EqualCase( "varchar"))
+            {
+                if (x.Length < 1)
+                {
+                    x.DataType = $"{x.DataType}(max)";
+                }
+            }
+            else if (array.Contains(x.DataType?.ToLower()))
+            {
+                x.Length = 0;
+                x.DecimalDigits = 0;
+            }
+        }
+
         public override List<DbColumnInfo> GetColumnInfosByTableName(string tableName, bool isCache = true)
         {
             tableName = SqlBuilder.GetNoTranslationColumnName(tableName);

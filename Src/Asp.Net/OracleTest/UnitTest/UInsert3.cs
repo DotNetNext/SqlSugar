@@ -63,8 +63,23 @@ namespace OrmTest
                 Price = 1,
                 Name = "a"
             }, true).Where(it => it.Id == 1).ExecuteCommand();
+
+            db.CodeFirst.InitTables<Unitdfafaadfaa>();
+            List<Unitdfafaadfaa> result = new List<Unitdfafaadfaa>();
+            for (int i = 0; i < 4000; i++) 
+            {
+                result.Add(new Unitdfafaadfaa() { Id=i, Name="a" });
+            }
+            db.Insertable(result).ExecuteCommand();
+            db.DbMaintenance.TruncateTable<Unitdfafaadfaa>();
         }
 
+        public class Unitdfafaadfaa
+        {
+            [SugarColumn(IsPrimaryKey =true)]
+            public long Id { get; set; }
+            public string Name { get; set; }
+        }
         public class Order
         {
             [SugarColumn(IsPrimaryKey = true,OracleSequenceName = "Seq_Id")]

@@ -15,6 +15,11 @@ namespace SqlSugar
     #region T11
     public partial class QueryableProvider<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> : QueryableProvider<T>, ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>
     {
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> Hints(string hints)
+        {
+            this.QueryBuilder.Hints = hints;
+            return this;
+        }
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10,T11> OrderByPropertyName(string orderPropertyName, OrderByType? orderByType = null)
         {
             base.OrderByPropertyName(orderPropertyName, orderByType);
@@ -157,6 +162,12 @@ namespace SqlSugar
         }
 
         #region Where
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> Where(string expShortName, FormattableString expressionString)
+        {
+            var exp = DynamicCoreHelper.GetWhere<T>(expShortName, expressionString);
+            _Where(exp);
+            return this;
+        }
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> Where(Expression<Func<T, bool>> expression)
         {
             _Where(expression);
@@ -223,7 +234,11 @@ namespace SqlSugar
             base.Where(conditionalModels);
             return this;
         }
-
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11> Where(List<IConditionalModel> conditionalModels, bool isWrap)
+        {
+            base.Where(conditionalModels, isWrap);
+            return this;
+        }
         public ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> WhereIF(bool isWhere, Expression<Func<T, T2, bool>> expression)
         {
             if (isWhere)
@@ -378,9 +393,14 @@ namespace SqlSugar
         #endregion
 
         #region OrderBy
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> OrderBy(string orderFileds)
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8, T9, T10,T11> OrderBy(List<OrderByModel> models)
         {
-            base.OrderBy(orderFileds);
+            base.OrderBy(models);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> OrderBy(string orderByFields)
+        {
+            base.OrderBy(orderByFields);
             return this;
         }
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> OrderBy(Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc)
@@ -439,10 +459,10 @@ namespace SqlSugar
             return this;
         }
 
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> OrderByIF(bool isOrderBy, string orderFileds)
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> OrderByIF(bool isOrderBy, string orderByFields)
         {
             if (isOrderBy)
-                base.OrderBy(orderFileds);
+                base.OrderBy(orderByFields);
             return this;
         }
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> OrderByIF(bool isOrderBy, Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc)
@@ -732,6 +752,11 @@ namespace SqlSugar
     #region T12
     public partial class QueryableProvider<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> : QueryableProvider<T>, ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>
     {
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> Hints(string hints)
+        {
+            this.QueryBuilder.Hints = hints;
+            return this;
+        }
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> OrderByPropertyName(string orderPropertyName, OrderByType? orderByType = null)
         {
             base.OrderByPropertyName(orderPropertyName, orderByType);
@@ -743,6 +768,12 @@ namespace SqlSugar
         }
 
         #region Where
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11,T12> Where(string expShortName, FormattableString expressionString)
+        {
+            var exp = DynamicCoreHelper.GetWhere<T>(expShortName, expressionString);
+            _Where(exp);
+            return this;
+        }
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> Where(Expression<Func<T, bool>> expression)
         {
             _Where(expression);
@@ -808,7 +839,11 @@ namespace SqlSugar
             base.Where(conditionalModels);
             return this;
         }
-
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> Where(List<IConditionalModel> conditionalModels, bool isWrap)
+        {
+            base.Where(conditionalModels, isWrap);
+            return this;
+        }
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> WhereIF(bool isWhere, Expression<Func<T, bool>> expression)
         {
             if (isWhere)
@@ -981,9 +1016,14 @@ namespace SqlSugar
         #endregion
 
         #region OrderBy
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> OrderBy(string orderFileds)
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7,T8, T9, T10, T11,T12> OrderBy(List<OrderByModel> models)
         {
-            base.OrderBy(orderFileds);
+            base.OrderBy(models);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> OrderBy(string orderByFields)
+        {
+            base.OrderBy(orderByFields);
             return this;
         }
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> OrderBy(Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc)
@@ -1046,10 +1086,10 @@ namespace SqlSugar
             _OrderBy(expression, type);
             return this;
         }
-        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> OrderByIF(bool isOrderBy, string orderFileds)
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> OrderByIF(bool isOrderBy, string orderByFields)
         {
             if (isOrderBy)
-                base.OrderBy(orderFileds);
+                base.OrderBy(orderByFields);
             return this;
         }
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> OrderByIF(bool isOrderBy, Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc)

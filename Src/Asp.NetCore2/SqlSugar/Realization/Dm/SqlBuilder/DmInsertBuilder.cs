@@ -44,8 +44,43 @@ namespace SqlSugar
         }
         public override string ToSqlString()
         {
-            return base.ToSqlString();
+            var result= base.ToSqlString();
+            if (!this.EntityInfo.Columns.Any(it => it.IsIdentity)&& this.IsReturnIdentity==false) 
+            {
+                result = result.Replace(";select @@identity", "");
+            }
+            if (this.IsOffIdentity)
+            {
+                var tableName = this.GetTableNameString;
+                result = $"SET IDENTITY_INSERT {tableName} ON;" + result.TrimEnd(';') + $";SET IDENTITY_INSERT {tableName} OFF"; ;
+            }
+            return result;
         }
+
+        public override object FormatValue(object value)
+        {
+            if (value != null && value is DateTime)
+            {
+                var date = value.ObjToDate();
+                if (date < UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig))
+                {
+                    date = UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig);
+                }
+                if (this.Context.CurrentConnectionConfig?.MoreSettings?.DisableMillisecond == true)
+                {
+                    return "to_date('" + date.ToString("yyyy-MM-dd HH:mm:ss") + "', 'YYYY-MM-DD HH24:MI:SS')  ";
+                }
+                else
+                {
+                    return "to_timestamp('" + date.ToString("yyyy-MM-dd HH:mm:ss.ffffff") + "', 'YYYY-MM-DD HH24:MI:SS.FF') ";
+                }
+            }
+            else
+            {
+                return base.FormatValue(value);
+            }
+        }
+
         //public override string ToSqlString()
         //{
         //    if (IsNoInsertNull)

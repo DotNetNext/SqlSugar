@@ -8,7 +8,7 @@ namespace SqlSugar.Extensions
     ///Common Extensions for external users
     /// </summary>
     public static class UtilExtensions
-    {
+    { 
         public static int ObjToInt(this object thisValue)
         {
             int reval = 0;

@@ -197,6 +197,10 @@ namespace SqlSugar
             {
                 List<DbColumnInfo> updateItem = new List<DbColumnInfo>();
                 var isDic = item is Dictionary<string, object>;
+                if (item is Dictionary<string, string>) 
+                {
+                    Check.ExceptionEasy("To use Updateable dictionary, use string or object", "Updateable字典请使用string,object类型");
+                }
                 if (isDic)
                 {
                     SetUpdateItemByDic(i, item, updateItem);
@@ -223,6 +227,10 @@ namespace SqlSugar
             if (IsTrakingData())
             {
                 var trackingData = this.Context.TempItems.FirstOrDefault(it => it.Key.StartsWith("Tracking_" + item.GetHashCode()));
+                if (trackingData.Key == null && trackingData.Value == null) 
+                {
+                    return;
+                }
                 var diffColumns = FastCopy.GetDiff(item, (T)trackingData.Value);
                 if (diffColumns.Count > 0)
                 {
@@ -264,7 +272,22 @@ namespace SqlSugar
             {
                 foreach (var columnInfo in this.EntityInfo.Columns)
                 {
-                    dataEvent(columnInfo.PropertyInfo.GetValue(item, null), new DataFilterModel() { OperationType = DataFilterType.UpdateByObject, EntityValue = item, EntityColumnInfo = columnInfo });
+                    if (columnInfo.ForOwnsOnePropertyInfo != null)
+                    {
+                        var data = columnInfo.ForOwnsOnePropertyInfo.GetValue(item, null);
+                        if (data != null)
+                        {
+                            dataEvent(columnInfo.PropertyInfo.GetValue(data, null), new DataFilterModel() { OperationType = DataFilterType.UpdateByObject, EntityValue = item, EntityColumnInfo = columnInfo });
+                        }
+                    }
+                    else if (columnInfo.PropertyInfo.Name == "Item" && columnInfo.IsIgnore)
+                    {
+                        //class index
+                    }
+                    else
+                    {
+                        dataEvent(columnInfo.PropertyInfo.GetValue(item, null), new DataFilterModel() { OperationType = DataFilterType.UpdateByObject, EntityValue = item, EntityColumnInfo = columnInfo });
+                    }
                 }
             }
         }
@@ -317,16 +340,18 @@ namespace SqlSugar
             foreach (var column in EntityInfo.Columns)
             {
                 if (column.IsIgnore) continue;
+                Check.ExceptionEasy(item == null, "db.Updateable(data) data is required ", "db.Updateable(data) data不能是null");
                 var columnInfo = new DbColumnInfo()
                 {
-                    Value = column.PropertyInfo.GetValue(item, null),
+                    Value = GetValue(item, column),
                     DbColumnName = GetDbColumnName(column.PropertyName),
                     PropertyName = column.PropertyName,
                     PropertyType = UtilMethods.GetUnderType(column.PropertyInfo),
                     SqlParameterDbType = column.SqlParameterDbType,
                     TableId = i,
-                    UpdateSql=column.UpdateSql,
-                    UpdateServerTime= column.UpdateServerTime
+                    UpdateSql = column.UpdateSql,
+                    UpdateServerTime = column.UpdateServerTime,
+                    IsPrimarykey=column.IsPrimarykey
                 };
                 if (columnInfo.PropertyType.IsEnum() && columnInfo.Value != null)
                 {
@@ -360,6 +385,34 @@ namespace SqlSugar
             this.UpdateBuilder.DbColumnInfoList.AddRange(updateItem);
         }
 
+        private static object GetValue(T item, EntityColumnInfo column)
+        {
+            if (column.ForOwnsOnePropertyInfo != null)
+            {
+                var owsPropertyValue = column.ForOwnsOnePropertyInfo.GetValue(item, null);
+                return column.PropertyInfo.GetValue(owsPropertyValue, null);
+            }
+            else
+            {
+                return column.PropertyInfo.GetValue(item, null);
+            }
+        }
+        private  string GetSetSql(string value, Expression<Func<T, T>> columns)
+        {
+            if (value.Contains("= \"SYSDATE\""))
+            {
+                value = value.Replace("= \"SYSDATE\"", "= SYSDATE");
+            }
+            var shortName=(columns as LambdaExpression).Parameters.First().Name;
+            var replaceKey= "," + this.SqlBuilder.GetTranslationColumnName(shortName)+".";
+            var newKey = "," + this.SqlBuilder.GetTranslationColumnName(this.EntityInfo.DbTableName) + ".";
+            if (replaceKey != newKey)
+            {
+                value = value.Replace(replaceKey,",");
+            }
+            return value;
+        }
+
         private void PreToSql()
         {
             if (this.UpdateBuilder.UpdateColumns.HasValue())
@@ -370,7 +423,7 @@ namespace SqlSugar
                 || columns.Contains(it.PropertyName, StringComparer.OrdinalIgnoreCase)
                 || columns.Contains(it.DbColumnName, StringComparer.OrdinalIgnoreCase)).ToList();
             }
-
+            UpdateBuilder.EntityInfo = this.EntityInfo;
             UpdateBuilder.PrimaryKeys = GetPrimaryKeys();
             if (this.IsWhereColumns)
             {
@@ -678,6 +731,16 @@ namespace SqlSugar
                 var whereSql = Regex.Replace(sql, ".* WHERE ", "", RegexOptions.Singleline);
                 if (IsExists(sql))
                 {
+                    if (this.UpdateBuilder.SetValues != null)
+                    {
+                        foreach (var item in this.UpdateBuilder.SetValues)
+                        {
+                            if (item.Value?.Contains("SELECT") == true)
+                            {
+                                sql = sql.Replace(item.Value, null);
+                            }
+                        }
+                    }
                     whereSql = UtilMethods.RemoveBeforeFirstWhere(sql);
                 } 
                 dt = this.Context.Queryable<T>().AS(this.UpdateBuilder.TableName).Filter(null, true).Where(whereSql).AddParameters(parameters).ToDataTable();
@@ -688,9 +751,13 @@ namespace SqlSugar
                 {
                     dt = new DataTable();
                 }
-                else if (this.WhereColumnList?.Any() == true) 
-                { 
+                else if (this.WhereColumnList?.Any() == true)
+                {
                     dt = this.Context.Queryable<T>().Filter(null, true).WhereClassByWhereColumns(this.UpdateObjs.ToList(), this.WhereColumnList.ToArray()).ToDataTable();
+                }
+                else if (this.UpdateBuilder.TableName.HasValue()) 
+                {
+                    dt = this.Context.Queryable<T>().AS(this.UpdateBuilder.TableName).Filter(null, true).WhereClassByPrimaryKey(this.UpdateObjs.ToList()).ToDataTable();
                 }
                 else
                 {
@@ -707,14 +774,21 @@ namespace SqlSugar
                     item.Columns = new List<DiffLogColumnInfo>();
                     foreach (DataColumn col in dt.Columns)
                     {
-                        var sugarColumn = this.EntityInfo.Columns.Where(it => it.DbColumnName != null).First(it =>
-                            it.DbColumnName.Equals(col.ColumnName, StringComparison.CurrentCultureIgnoreCase));
-                        DiffLogColumnInfo addItem = new DiffLogColumnInfo();
-                        addItem.Value = row[col.ColumnName];
-                        addItem.ColumnName = col.ColumnName;
-                        addItem.IsPrimaryKey = sugarColumn.IsPrimarykey;
-                        addItem.ColumnDescription = sugarColumn.ColumnDescription;
-                        item.Columns.Add(addItem);
+                        try
+                        {
+                            var sugarColumn = this.EntityInfo.Columns.Where(it => it.DbColumnName != null).First(it =>
+                                              it.DbColumnName.Equals(col.ColumnName, StringComparison.CurrentCultureIgnoreCase));
+                            DiffLogColumnInfo addItem = new DiffLogColumnInfo();
+                            addItem.Value = row[col.ColumnName];
+                            addItem.ColumnName = col.ColumnName;
+                            addItem.IsPrimaryKey = sugarColumn.IsPrimarykey;
+                            addItem.ColumnDescription = sugarColumn.ColumnDescription;
+                            item.Columns.Add(addItem);
+                        }
+                        catch (Exception ex)
+                        {
+                            Check.ExceptionEasy(col.ColumnName + " No corresponding entity attribute found in difference log ."+ex.Message, col.ColumnName + "在差异日志中可能没有找到相应的实体属性,详细:"+ex.Message);
+                        }
                     }
                     result.Add(item);
                 }
@@ -737,7 +811,11 @@ namespace SqlSugar
         }
         private void ThrowUpdateByExpressionByMesage(string message)
         {
-            Check.Exception(UpdateParameterIsNull == true, ErrorMessage.GetThrowMessage(" no support "+ message, "根据对像更新 db.Updateabe(对象) 禁止使用 SetColumns和Where ,你可以使用 "+ message + "。 更新分为2种方式 1.根据表达式更新 2.根据实体或者集合更新 ， 具体用法请查看文档 "));
+            Check.Exception(UpdateParameterIsNull == true, ErrorMessage.GetThrowMessage(" no support "+ message, "根据表达式更新 db.Updateable<T>()禁止使用 " + message+"。 更新分为2种方式 1.根据表达式更新 2.根据实体或者集合更新 ， 具体用法请查看文档 "));
+        }
+        private void ThrowUpdateByObjectByMesage(string message)
+        {
+            Check.Exception(UpdateParameterIsNull == false, ErrorMessage.GetThrowMessage(" no support " + message, "根据对象更新 db.Updateable(对象)禁止使用 " + message + "。 更新分为2种方式 1.根据表达式更新 2.根据实体或者集合更新 ， 具体用法请查看文档 "));
         }
     }
 }

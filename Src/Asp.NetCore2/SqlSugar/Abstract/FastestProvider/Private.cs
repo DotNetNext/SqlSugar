@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,7 +19,9 @@ namespace SqlSugar
                     result.CharacterSet = this.CharacterSet;
                     return result;
                 case DbType.SqlServer:
-                    return new SqlServerFastBuilder();
+                    var result2= new SqlServerFastBuilder();
+                    result2.DbFastestProperties.IsOffIdentity = this.IsOffIdentity;
+                    return result2;
                 case DbType.Sqlite:
                     return new SqliteFastBuilder(this.entityInfo);
                 case DbType.Oracle:
@@ -30,7 +33,9 @@ namespace SqlSugar
                     resultConnector.CharacterSet = this.CharacterSet;
                     return resultConnector;
                 case DbType.Dm:
-                    return new DmFastBuilder();
+                    var result3= new DmFastBuilder();
+                    result3.DbFastestProperties.IsOffIdentity = this.IsOffIdentity;
+                    return result3;
                 case DbType.ClickHouse:
                     var resultConnectorClickHouse = InstanceFactory.CreateInstance<IFastBuilder>("SqlSugar.ClickHouse.ClickHouseFastBuilder");
                     resultConnectorClickHouse.CharacterSet = this.CharacterSet;
@@ -39,6 +44,8 @@ namespace SqlSugar
                     break;
                 case DbType.Oscar:
                     break;
+                case DbType.QuestDB:
+                    return new QuestDBFastBuilder(this.entityInfo); 
                 default:
                     break;
             }
@@ -98,8 +105,17 @@ namespace SqlSugar
                     {
                         name = column.PropertyName;
                     }
-                    var value = ValueConverter(column, PropertyCallAdapterProvider<T>.GetInstance(column.PropertyName).InvokeGet(item));
-                    if (isMySql && column.UnderType == UtilConstants.BoolType)
+                    var value = ValueConverter(column, GetValue(item,column));
+                    if (column.SqlParameterDbType != null&& column.SqlParameterDbType is Type && UtilMethods.HasInterface((Type)column.SqlParameterDbType, typeof(ISugarDataConverter))) 
+                    {
+                        var columnInfo = column;
+                        var type = columnInfo.SqlParameterDbType as Type;
+                        var ParameterConverter = type.GetMethod("ParameterConverter").MakeGenericMethod(columnInfo.PropertyInfo.PropertyType);
+                        var obj = Activator.CreateInstance(type);
+                        var p = ParameterConverter.Invoke(obj, new object[] { value, 100 }) as SugarParameter;
+                        value = p.Value;
+                    }
+                    else if (isMySql && column.UnderType == UtilConstants.BoolType)
                     {
 
                         if (value.ObjToBool() == false&& uInt64TypeName.Any(z=>z.EqualCase(column.DbColumnName)))
@@ -126,6 +142,14 @@ namespace SqlSugar
                             value = UtilMethods.ConvertFromDateTimeOffset((DateTimeOffset)value);
                         }
                     }
+                    else if (value != DBNull.Value&&value != null && column.UnderType?.FullName == "System.TimeOnly")
+                    {
+                        value = UtilMethods.TimeOnlyToTimeSpan(value);
+                    }
+                    else if (value != DBNull.Value && value != null && column.UnderType?.FullName == "System.DateOnly")
+                    {
+                        value = UtilMethods.DateOnlyToDateTime(value);
+                    }
                     dr[name] = value;
                 }
                 dt.Rows.Add(dr);
@@ -133,6 +157,18 @@ namespace SqlSugar
 
             return dt;
         }
+        private static object GetValue(T item, EntityColumnInfo column)
+        {
+            if (StaticConfig.EnableAot)
+            {
+                return column.PropertyInfo.GetValue(item);
+            }
+            else
+            {
+                return PropertyCallAdapterProvider<T>.GetInstance(column.PropertyName).InvokeGet(item);
+            }
+        }
+
         private string GetTableName()
         {
             if (this.AsName.HasValue())
@@ -176,6 +212,11 @@ namespace SqlSugar
         }
         private DataTable GetCopyWriteDataTable(DataTable dt)
         {
+            var builder = GetBuider();
+            if (builder.DbFastestProperties?.IsNoCopyDataTable == true) 
+            {
+                return dt;
+            }
             DataTable tempDataTable = null;
             if (AsName == null)
             {
@@ -226,11 +267,11 @@ namespace SqlSugar
             DataTable tempDataTable = null;
             if (AsName == null)
             {
-                tempDataTable = queryable.Where(it => false).Select(string.Join(",", dts)).ToDataTable();
+                tempDataTable = queryable.Clone().Where(it => false).Select(string.Join(",", dts)).ToDataTable();
             }
             else
             {
-                tempDataTable = queryable.AS(AsName).Where(it => false).Select(string.Join(",", dts)).ToDataTable();
+                tempDataTable = queryable.Clone().AS(AsName).Where(it => false).Select(string.Join(",", dts)).ToDataTable();
             };
             List<string> uInt64TypeName = new List<string>();
             foreach (DataColumn item in tempDataTable.Columns)
@@ -280,6 +321,14 @@ namespace SqlSugar
                 if (!string.IsNullOrEmpty(CacheKeyLike))
                 {
                     CacheSchemeMain.RemoveCacheByLike(service, CacheKeyLike);
+                }
+            }
+            if (this.context.CurrentConnectionConfig?.MoreSettings?.IsAutoRemoveDataCache == true) 
+            {
+                var cacheService = this.context.CurrentConnectionConfig?.ConfigureExternalServices?.DataInfoCacheService;
+                if (cacheService != null)
+                {
+                    CacheSchemeMain.RemoveCache(cacheService, this.context.EntityMaintenance.GetTableName<T>());
                 }
             }
         }

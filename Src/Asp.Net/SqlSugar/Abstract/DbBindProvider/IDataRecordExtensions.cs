@@ -133,6 +133,28 @@ namespace SqlSugar
             var result = dr.GetInt16(i);
             return result;
         }
+        public static Int32? GetMyIntNull(this IDataRecord dr, int i)
+        {
+            if (dr.IsDBNull(i))
+            {
+                return null;
+            }
+            if (dr.GetDataTypeName(i) == "NUMBER") 
+            {
+               return Convert.ToInt32(dr.GetDouble(i));
+            }
+            var result = dr.GetInt32(i);
+            return result;
+        }
+        public static Int32 GetMyInt(this IDataRecord dr, int i)
+        { 
+            if (dr.GetDataTypeName(i) == "NUMBER")
+            {
+                return Convert.ToInt32(dr.GetDouble(i));
+            } 
+            var result = dr.GetInt32(i);
+            return result;
+        }
 
         public static Int32? GetConvertInt32(this IDataRecord dr, int i)
         {

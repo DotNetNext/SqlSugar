@@ -68,7 +68,7 @@ namespace SqlSugar.ClickHouse
                 }
                 else if (dbColumnInfo.IsArray&& value!=null) 
                 {
-                    return  n+"'"+this.Context.Utilities.SerializeObject(value)+"'";
+                    return   this.Context.Utilities.SerializeObject(value).Replace("\"","'") ;
                 }
                 else if (dbColumnInfo.IsJson && value != null)
                 {

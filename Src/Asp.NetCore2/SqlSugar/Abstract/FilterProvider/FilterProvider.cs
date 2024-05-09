@@ -13,7 +13,10 @@ namespace SqlSugar
         internal SqlSugarProvider Context { get; set; }
         private List<SqlFilterItem> _Filters { get; set; }
         private List<SqlFilterItem> _BackUpFilters { get; set; }
-
+        public bool Any()
+        {
+            return _Filters != null && _Filters.Any();
+        }
         public IFilter Add(SqlFilterItem filter)
         {
             if (_Filters == null)
@@ -119,6 +122,11 @@ namespace SqlSugar
                 AddTableFilter(expression, filterJoinType);
             }
             return this;
+        }
+        public QueryFilterProvider AddTableFilter(Type type,string shortName, FormattableString expString, FilterJoinPosition filterJoinType = FilterJoinPosition.On)
+        {
+            var exp = DynamicCoreHelper.GetWhere(type, shortName, expString);
+            return AddTableFilter(type, exp, filterJoinType);
         }
         public QueryFilterProvider AddTableFilter(Type type,Expression expression, FilterJoinPosition filterJoinType = FilterJoinPosition.On)
         {

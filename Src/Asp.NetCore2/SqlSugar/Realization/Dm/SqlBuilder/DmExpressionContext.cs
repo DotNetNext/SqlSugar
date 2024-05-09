@@ -101,43 +101,47 @@ namespace SqlSugar
                     return string.Format("(CAST(TO_CHAR({0},'mi') AS NUMBER))", parameter.MemberName);
                 case DateType.Millisecond:
                     return string.Format("(CAST(TO_CHAR({0},'ff3') AS NUMBER))", parameter.MemberName);
+                case DateType.Quarter:
+                    return string.Format("(CAST(TO_CHAR({0},'q') AS NUMBER))", parameter.MemberName);
+                case DateType.Weekday:
+                    return $" (TO_NUMBER(TO_CHAR({parameter.MemberName}, 'D'))-1) ";
                 case DateType.Day:
                 default:
                     return string.Format("(CAST(TO_CHAR({0},'dd') AS NUMBER))", parameter.MemberName);
             }
         }
-        public override string DateAddByType(MethodCallExpressionModel model)
-        {
-            var parameter = model.Args[0];
-            var parameter2 = model.Args[1];
-            var parameter3 = model.Args[2];
-            var type = (DateType)Enum.Parse(typeof(DateType), parameter3.MemberValue.ObjToString(), false);
-            double time = 1;
-            switch (type)
-            {
-                case DateType.Year:
-                    time = 1 * 365;
-                    break;
-                case DateType.Month:
-                    time = 1 * 30;
-                    break;
-                case DateType.Day:
-                    break;
-                case DateType.Hour:
-                    time = 1 / 24.0;
-                    break;
-                case DateType.Second:
-                    time = 1 / 24.0 / 60.0 / 60.0;
-                    break;
-                case DateType.Minute:
-                    time = 1 / 24.0 / 60.0;
-                    break;
-                case DateType.Millisecond:
-                    time = 1 / 24.0 / 60.0 / 60.0 / 1000;
-                    break;
-            }
-            return string.Format("({0}+({1}*{2})) ", parameter.MemberName, time, parameter2.MemberName);
-        }
+        //public override string DateAddByType(MethodCallExpressionModel model)
+        //{
+        //    var parameter = model.Args[0];
+        //    var parameter2 = model.Args[1];
+        //    var parameter3 = model.Args[2];
+        //    var type = (DateType)Enum.Parse(typeof(DateType), parameter3.MemberValue.ObjToString(), false);
+        //    double time = 1;
+        //    switch (type)
+        //    {
+        //        case DateType.Year:
+        //            time = 1 * 365;
+        //            break;
+        //        case DateType.Month:
+        //            time = 1 * 30;
+        //            break;
+        //        case DateType.Day:
+        //            break;
+        //        case DateType.Hour:
+        //            time = 1 / 24.0;
+        //            break;
+        //        case DateType.Second:
+        //            time = 1 / 24.0 / 60.0 / 60.0;
+        //            break;
+        //        case DateType.Minute:
+        //            time = 1 / 24.0 / 60.0;
+        //            break;
+        //        case DateType.Millisecond:
+        //            time = 1 / 24.0 / 60.0 / 60.0 / 1000;
+        //            break;
+        //    }
+        //    return string.Format("({0}+({1}*{2})) ", parameter.MemberName, time, parameter2.MemberName);
+        //}
 
         public override string DateAddDay(MethodCallExpressionModel model)
         {
@@ -182,7 +186,9 @@ namespace SqlSugar
         }
         public override string DateIsSameDay(MethodCallExpressionModel model)
         {
-            throw new NotSupportedException("Oracle NotSupportedException DateIsSameDay");
+            var parameter = model.Args[0];
+            var parameter2 = model.Args[1];
+            return string.Format(" ( cast({0} as date)= cast( {1} as date) ) ", parameter.MemberName, parameter2.MemberName); ;
         }
         public override string DateIsSameByType(MethodCallExpressionModel model)
         {
@@ -264,10 +270,19 @@ namespace SqlSugar
         {
             return "   SUBSTR(LOWER(RAWTOHEX(SYS_GUID())), 1, 8) ||\r\n  '-' ||\r\n  SUBSTR(LOWER(RAWTOHEX(SYS_GUID())), 9, 4) ||\r\n  '-' ||\r\n  SUBSTR(LOWER(RAWTOHEX(SYS_GUID())), 13, 4) ||\r\n  '-' ||\r\n  SUBSTR(LOWER(RAWTOHEX(SYS_GUID())), 17, 4) ||\r\n  '-' ||\r\n  SUBSTR(LOWER(RAWTOHEX(SYS_GUID())), 21)  ";
         }
-         
+        public override string JsonField(MethodCallExpressionModel model)
+        {
+            return $"JSON_VALUE({model.Args[0].MemberName}, '$.{model.Args[1].MemberValue.ToString().ToSqlFilter()}')";
+            //"JSON_VALUE(j.kingorder, '$.Id') = '1'";
+        }
+
         public override string FullTextContains(MethodCallExpressionModel mode)
         {
             var columns = mode.Args[0].MemberName;
+            if (mode.Args[0].MemberValue is List<string>)
+            {
+                columns = "(" + string.Join(",", mode.Args[0].MemberValue as List<string>) + ")";
+            }
             var searchWord = mode.Args[1].MemberName;
             return $" CONTAINS({columns}, {searchWord}, 1) ";
         }

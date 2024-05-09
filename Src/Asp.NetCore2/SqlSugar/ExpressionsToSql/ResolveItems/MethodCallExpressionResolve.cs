@@ -164,9 +164,17 @@ namespace SqlSugar
             {
                 var method = express.Method;
                 string name = method.Name;
-                if (name == "Any" &&ExpressionTool.IsVariable(express.Arguments[0])) 
+                if (name == "Any" &&ExpressionTool.IsVariable(express.Arguments[0]))
                 {
                     name = "ListAny";
+                }
+                else if (name == "All" && ExpressionTool.IsVariable(express.Arguments[0]))
+                {
+                    name = "ListAll";
+                }
+                else if (name == "IndexOf")
+                {
+                    name = "CharIndexNew"; 
                 }
                 var args = express.Arguments.Cast<Expression>().ToList();
                 MethodCallExpressionModel model = new MethodCallExpressionModel();
@@ -176,6 +184,10 @@ namespace SqlSugar
                     case ResolveExpressType.WhereSingle:
                     case ResolveExpressType.WhereMultiple:
                         Check.Exception(name == "GetSelfAndAutoFill", "SqlFunc.GetSelfAndAutoFill can only be used in Select.");
+                        if (name == "CharIndexNew" && args.Count == 1) 
+                        {
+                            args.Insert(0, express.Object);
+                        }
                         Where(parameter, isLeft, name, args, model);
                         break;
                     case ResolveExpressType.SelectSingle:

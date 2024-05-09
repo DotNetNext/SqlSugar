@@ -1,6 +1,7 @@
 ﻿using SqlSugar.TDengineAdo;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 
@@ -9,11 +10,13 @@ namespace SqlSugar.TDengine
     public class TDengineDbMaintenance : DbMaintenanceProvider
     {
         #region DML
+
+        protected override string GetViewInfoListSql => throw new NotImplementedException();
         protected override string GetDataBaseSql
         {
             get
             {
-                return "SELECT datname FROM pg_database";
+                return "show databases";
             }
         }
         protected override string GetColumnInfosByTableNameSql
@@ -28,26 +31,26 @@ namespace SqlSugar.TDengine
         {
             get
             {
-                var schema = GetSchema();
-                return @"select cast(relname as varchar) as Name,
-                        cast(obj_description(c.oid,'pg_class') as varchar) as Description from pg_class c 
-                         inner join 
-						 pg_namespace n on n.oid = c.relnamespace and nspname='" + schema + @"'
-                         inner join 
-                         pg_tables z on z.tablename=c.relname
-                        where  relkind in('p', 'r') and relname not like 'hg_%' and relname not like 'sql_%' and schemaname='" + schema + "' order by relname";
+                var dt = GetSTables();
+                List<string> sb = new List<string>();
+                foreach (DataRow item in dt.Rows)
+                {
+                    sb.Add($" SELECT '{item["stable_name"].ObjToString().ToSqlFilter()}' AS NAME ");
+                }
+                var dt2 = GetTables();
+                foreach (DataRow item in dt2.Rows)
+                {
+                    sb.Add($" SELECT '{item["table_name"].ObjToString().ToSqlFilter()}' AS NAME ");
+                }
+                var result= string.Join(" UNION ALL ", sb);
+                if (string.IsNullOrEmpty(result)) 
+                {
+                    result = " SELECT 'NoTables' AS Name ";
+                }
+                return result;
             }
         }
-        protected override string GetViewInfoListSql
-        {
-            get
-            {
-                return @"select cast(relname as varchar) as Name,cast(Description as varchar) from pg_description
-                         join pg_class on pg_description.objoid = pg_class.oid
-                         where objsubid = 0 and relname in (SELECT viewname from pg_views  
-                         WHERE schemaname ='"+GetSchema()+"')";
-            }
-        }
+
         #endregion
 
         #region DDL
@@ -76,7 +79,7 @@ namespace SqlSugar.TDengine
         {
             get
             {
-                return "alter table {0} ALTER COLUMN {1} {2}{3} {4} {5} {6}";
+                return "alter table {0} MODIFY COLUMN {1} {2}{3} {4} {5} {6}";
             }
         }
         protected override string BackupDataBaseSql
@@ -90,7 +93,7 @@ namespace SqlSugar.TDengine
         {
             get
             {
-                return "CREATE TABLE {0}(\r\n{1} $PrimaryKey)";
+                return "CREATE STABLE IF NOT EXISTS  {0}(\r\n{1} ) TAGS("+SqlBuilder.GetTranslationColumnName("TagsTypeId") +" VARCHAR(20))";
             }
         }
         protected override string CreateTableColumn
@@ -185,7 +188,7 @@ namespace SqlSugar.TDengine
         {
             get
             {
-                throw new NotSupportedException("TDengine 暂时不支持DbFirst等方法,还在开发");
+                return "SHOW DATABASES";
             }
         }
         #endregion
@@ -195,14 +198,14 @@ namespace SqlSugar.TDengine
         {
             get
             {
-                return "DEFAULT NULL";
+                return " ";
             }
         }
         protected override string CreateTableNotNull
         {
             get
             {
-                return "NOT NULL";
+                return " ";
             }
         }
         protected override string CreateTablePirmaryKey
@@ -221,12 +224,42 @@ namespace SqlSugar.TDengine
         }
         #endregion
 
-        #region Methods
+        #region Methods  
+        public override bool AddColumn(string tableName, DbColumnInfo columnInfo)
+        {
+            if (columnInfo.DbColumnName == "TagsTypeId") 
+            {
+                return true;
+            }
+            tableName = this.SqlBuilder.GetTranslationTableName(tableName);
+            var isAddNotNUll = columnInfo.IsNullable == false && columnInfo.DefaultValue.HasValue();
+            if (isAddNotNUll)
+            {
+                columnInfo = this.Context.Utilities.TranslateCopy(columnInfo);
+                columnInfo.IsNullable = true;
+            }
+            string sql = GetAddColumnSql(tableName, columnInfo);
+            this.Context.Ado.ExecuteCommand(sql); 
+            return true;
+        }
+        public override List<DbTableInfo> GetViewInfoList(bool isCache = true)
+        {
+            return new List<DbTableInfo>();
+        }
         public override bool CreateDatabase(string databaseName,string databaseDirectory = null)
         {
             var db=this.Context.CopyNew(); 
-            db.Ado.Connection.ChangeDatabase(""); 
-            db.Ado.ExecuteCommand(string.Format(CreateDataBaseSql,databaseName));
+            db.Ado.Connection.ChangeDatabase("");
+            var sql = CreateDataBaseSql;
+            if (this.Context.CurrentConnectionConfig.ConnectionString.ToLower().Contains("config_us")) 
+            {
+                sql += " PRECISION 'us'";
+            }
+            else if (this.Context.CurrentConnectionConfig.ConnectionString.ToLower().Contains("config_ns"))
+            {
+                sql += " PRECISION 'ns'";
+            }
+            db.Ado.ExecuteCommand(string.Format(sql, databaseName));
             return true;
         }
         public override List<string> GetIndexList(string tableName)
@@ -244,7 +277,7 @@ namespace SqlSugar.TDengine
             return base.AddDefaultValue(this.SqlBuilder.GetTranslationTableName(tableName), this.SqlBuilder.GetTranslationTableName(columnName), defaultValue);
         }
         public override bool AddColumnRemark(string columnName, string tableName, string description)
-        {
+        { 
             tableName = this.SqlBuilder.GetTranslationTableName(tableName);
             string sql = string.Format(this.AddColumnRemarkSql, this.SqlBuilder.GetTranslationColumnName(columnName.ToLower(isAutoToLowerCodeFirst)), tableName, description);
             this.Context.Ado.ExecuteCommand(sql);
@@ -272,10 +305,10 @@ namespace SqlSugar.TDengine
             tableName = this.SqlBuilder.GetTranslationTableName(tableName);
             string dataSize = GetSize(columnInfo);
             string dataType = columnInfo.DataType;
-            if (!string.IsNullOrEmpty(dataType))
-            {
-                dataType = " type " + dataType;
-            }
+            //if (!string.IsNullOrEmpty(dataType))
+            //{
+            //    dataType = " type " + dataType;
+            //}
             string nullType = "";
             string primaryKey = null;
             string identity = null;
@@ -295,7 +328,7 @@ namespace SqlSugar.TDengine
                     db.DbMaintenance.AddColumnRemark(item.DbColumnName, item.DbTableName, item.ColumnDescription);
 
                 }
-            }
+            } 
             //table remak
             if (entity.TableDescription != null)
             {
@@ -344,22 +377,66 @@ namespace SqlSugar.TDengine
                 //    dataType = "varchar";
                 //}
                 string dataSize = item.Length > 0 ? string.Format("({0})", item.Length) : null;
-                if (item.DecimalDigits > 0&&item.Length>0 && dataType == "numeric") 
+                //if (item.DecimalDigits > 0&&item.Length>0 && dataType?.ToLower()== "float") 
+                //{
+                //    item.Length = 0;
+                //    dataSize = $"({item.Length},{item.DecimalDigits})";
+                //}
+                //if (item.DecimalDigits > 0 && item.Length > 0 && dataType?.ToLower() ==  "double")
+                //{
+               
+                //    dataSize = $"({item.Length},{item.DecimalDigits})";
+                //}
+                //if (item.DecimalDigits > 0 && item.Length > 0 && dataType?.ToLower() == "decimal")
+                //{ 
+                //    dataSize = $"({item.Length},{item.DecimalDigits})";
+                //}
+                //if (item.DecimalDigits == 0 && item.Length == 0 && dataType?.ToLower() == "float") 
+                //{
+                //   dataType = $"FLOAT(18,4)";
+                //}
+                //if (item.DecimalDigits == 0 && item.Length == 0 && dataType?.ToLower() == "double")
+                //{
+                //    dataType = $"DOUBLE(18,4)";
+                //}
+                if (item.Length==0&&dataType?.ToLower()?.IsIn("nchar", "varchar") ==true)
                 {
-                    dataSize = $"({item.Length},{item.DecimalDigits})";
+                    dataType = "VARCHAR(200)";
                 }
-                string nullType = item.IsNullable ? this.CreateTableNull : CreateTableNotNull;
+                if (dataType?.ToLower()?.IsIn("float", "double") == true)
+                {
+                    dataSize = null;
+                }
                 string primaryKey = null;
-                string addItem = string.Format(this.CreateTableColumn, this.SqlBuilder.GetTranslationColumnName(columnName.ToLower(isAutoToLowerCodeFirst)), dataType, dataSize, nullType, primaryKey, "");
-                if (item.IsIdentity)
-                {
-                    string length = dataType.Substring(dataType.Length - 1);
-                    string identityDataType = "serial" + length;
-                    addItem = addItem.Replace(dataType, identityDataType);
-                }
+                string addItem = string.Format(this.CreateTableColumn, this.SqlBuilder.GetTranslationColumnName(columnName.ToLower(isAutoToLowerCodeFirst)), dataType, dataSize, null, primaryKey, "");
                 columnArray.Add(addItem);
             }
-            string tableString = string.Format(this.CreateTableSql, this.SqlBuilder.GetTranslationTableName(tableName.ToLower(isAutoToLowerCodeFirst)), string.Join(",\r\n", columnArray));
+            string tableString = string.Format(this.CreateTableSql, this.SqlBuilder.GetTranslationTableName("STable_"+tableName.ToLower(isAutoToLowerCodeFirst)), string.Join(",\r\n", columnArray));
+            var childTableName = this.SqlBuilder.GetTranslationTableName(tableName.ToLower(isAutoToLowerCodeFirst));
+            var stableName =  this.SqlBuilder.GetTranslationTableName("STable_"+tableName.ToLower(isAutoToLowerCodeFirst));
+            var isAttr = tableName.Contains("{stable}");
+            if (isAttr) 
+            {
+                var attr = this.Context.Utilities.DeserializeObject<STableAttribute>(tableName.Split("{stable}").Last());
+                stableName= this.SqlBuilder.GetTranslationTableName(attr.STableName.ToLower(isAutoToLowerCodeFirst));
+                tableString = string.Format(this.CreateTableSql, stableName, string.Join(",\r\n", columnArray));
+                tableName=childTableName = this.SqlBuilder.GetTranslationTableName(tableName.Split("{stable}").First().ToLower(isAutoToLowerCodeFirst));
+                STable.Tags =this.Context.Utilities.DeserializeObject<List<ColumnTagInfo>>( attr.Tags);
+            }
+            if (STable.Tags?.Any() == true) 
+            {
+                var colums = STable.Tags.Select(it => this.SqlBuilder.GetTranslationTableName(it.Name)+ "  VARCHAR(20) ");
+                tableString=tableString.Replace(SqlBuilder.GetTranslationColumnName("TagsTypeId"), string.Join(",", colums));
+                tableString = tableString.Replace(" VARCHAR(20)  VARCHAR(20)", " VARCHAR(20)");
+            }
+            this.Context.Ado.ExecuteCommand(tableString);
+            var createChildSql = $"CREATE TABLE IF NOT EXISTS     {childTableName} USING {stableName} TAGS('default')";
+            if (STable.Tags?.Any() == true)
+            {
+                var colums = STable.Tags.Select(it => it.Value.ToSqlValue());
+                createChildSql = createChildSql.Replace("TAGS('default')", $"TAGS({string.Join(",", colums)})"); 
+            }
+            this.Context.Ado.ExecuteCommand(createChildSql);
             return tableString;
         }
         public override bool IsAnyConstraint(string constraintName)
@@ -374,46 +451,31 @@ namespace SqlSugar.TDengine
 
         public override List<DbColumnInfo> GetColumnInfosByTableName(string tableName, bool isCache = true)
         {
-            var result= base.GetColumnInfosByTableName(tableName.TrimEnd('"').TrimStart('"').ToLower(), isCache);
-            if (result == null || result.Count() == 0)
-            {
-                result = base.GetColumnInfosByTableName(tableName, isCache);
-            }
+
+            var sql = $"select * from {this.SqlBuilder.GetTranslationColumnName( tableName)} where 1=2 ";
+            List<DbColumnInfo> result = new List<DbColumnInfo>();
+            DataTable dt = null;
             try
             {
-                string sql = $@"select  
-                               kcu.column_name as key_column
-                               from information_schema.table_constraints tco
-                               join information_schema.key_column_usage kcu 
-                               on kcu.constraint_name = tco.constraint_name
-                               and kcu.constraint_schema = tco.constraint_schema
-                               and kcu.constraint_name = tco.constraint_name
-                               where tco.constraint_type = 'PRIMARY KEY'
-                               and kcu.table_schema='{GetSchema()}' and 
-                               upper(kcu.table_name)=upper('{tableName.TrimEnd('"').TrimStart('"')}')";
-                List<string> pkList = new List<string>();
-                if (isCache)
-                {
-                    pkList=GetListOrCache<string>("GetColumnInfosByTableName_N_Pk"+tableName, sql);
-                }
-                else
-                {
-                    pkList = this.Context.Ado.SqlQuery<string>(sql);
-                }
-                if (pkList.Count >1) 
-                {
-                    foreach (var item in result)
-                    {
-                        if (pkList.Select(it=>it.ToUpper()).Contains(item.DbColumnName.ToUpper())) 
-                        {
-                            item.IsPrimarykey = true;
-                        }
-                    }
-                }
+                dt=this.Context.Ado.GetDataTable(sql);
             }
-            catch  
+            catch (Exception)
             {
-
+                sql = $"select * from `{tableName}` where 1=2 ";
+                dt = this.Context.Ado.GetDataTable(sql);
+            }
+            foreach (DataColumn item in dt.Columns)
+            {
+                var addItem = new DbColumnInfo()
+                {
+                     DbColumnName=item.ColumnName,
+                     DataType=item.DataType.Name
+                };
+                result.Add(addItem);
+            }
+            if (result.Count(it => it.DataType == "DateTime") == 1) 
+            {
+                result.First(it => it.DataType == "DateTime").IsPrimarykey = true;
             }
             return result;
         }
@@ -437,6 +499,7 @@ namespace SqlSugar.TDengine
                 }
             }
         }
+         
         private string GetSchema()
         {
             var schema = "public";
@@ -458,6 +521,16 @@ namespace SqlSugar.TDengine
             }
 
             return schema;
+        }
+
+        private DataTable GetTables()
+        {
+            return this.Context.Ado.GetDataTable("SHOW TABLES");
+        }
+
+        private DataTable GetSTables()
+        {
+            return this.Context.Ado.GetDataTable("SHOW STABLES");
         }
 
         #endregion

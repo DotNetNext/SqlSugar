@@ -24,6 +24,7 @@ namespace SqlSugar
                     columns = columns.OrderBy(c => c.CreateTableFieldSort).ToList();
                 }
             }
+            columns = columns.OrderBy(it => it.IsPrimarykey ? 0 : 1).ToList();
             this.Context.DbMaintenance.CreateTable(tableName, columns,true);
         }
         protected override DbColumnInfo EntityColumnToDbColumn(EntityInfo entityInfo, string tableName, EntityColumnInfo item)

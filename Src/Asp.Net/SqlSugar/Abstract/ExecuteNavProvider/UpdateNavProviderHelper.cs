@@ -73,7 +73,8 @@ namespace SqlSugar
         private void InsertDatas<TChild>(List<TChild> children, EntityColumnInfo pkColumn, EntityColumnInfo NavColumn = null) where TChild : class, new()
         {
             children = children.Distinct().ToList();
-            var x = this._Context.Storageable(children).WhereColumns(new string[] { pkColumn.PropertyName }).ToStorage();
+            Check.ExceptionEasy(pkColumn == null, typeof(TChild).Name + " has no primary key", typeof(TChild).Name + "没有主键");
+;           var x = this._Context.Storageable(children).WhereColumns(new string[] { pkColumn.PropertyName }).ToStorage();
             var insertData  = x.InsertList.Select(it => it.Item).ToList();
             var updateData  = x.UpdateList.Select(it => it.Item).ToList();
             Check.ExceptionEasy(pkColumn == null && NavColumn == null, $"The entity is invalid", $"实体错误无法使用导航");
@@ -84,11 +85,48 @@ namespace SqlSugar
                 Check.ExceptionEasy(exp == null, "UpdateOptions.CurrentFunc is error", "UpdateOptions.CurrentFunc参数设置错误");
                 var com = exp.Compile();
                 com(updateable);
-                updateable.ExecuteCommand();
+                if (IsDeleted)
+                {
+                    updateable.PageSize(1).EnableQueryFilter().ExecuteCommand();
+                }
+                else
+                {
+                    updateable.ExecuteCommand();
+                }
+            }
+            else if (pkColumn.IsPrimarykey == false) 
+            {
+               var pk= this._Context.EntityMaintenance.GetEntityInfo<TChild>().Columns.Where(it => it.IsPrimarykey);
+                List<string> ignoreColumns = new List<string>();
+                if (_Options?.IgnoreColumns != null) 
+                {
+                    ignoreColumns.AddRange(_Options.IgnoreColumns);
+                }
+                if (pk.Any()) 
+                {
+                    ignoreColumns.AddRange(pk.Select(it=>it.PropertyName));
+                }
+                if (IsDeleted)
+                {
+                    x.AsUpdateable.IgnoreColumns(ignoreColumns.ToArray()).PageSize(1).EnableQueryFilter().ExecuteCommand();
+                }
+                else
+                {
+                    x.AsUpdateable.IgnoreColumns(ignoreColumns.ToArray()).ExecuteCommand();
+                }
             }
             else
             {
-                x.AsUpdateable.ExecuteCommand();
+                var ignoreColumns = _Options?.IgnoreColumns;
+                var isIgnoreNull = _Options?.IgnoreNullColumns == true;
+                if (IsDeleted)
+                {
+                    x.AsUpdateable.IgnoreNullColumns(isIgnoreNull).IgnoreColumns(ignoreColumns?.ToArray()).PageSize(1).EnableQueryFilter().ExecuteCommand();
+                }
+                else
+                {
+                    x.AsUpdateable.IgnoreNullColumns(isIgnoreNull).IgnoreColumns(ignoreColumns?.ToArray()).ExecuteCommand();
+                }
             }
             InitData(pkColumn, insertData);
             if (_NavigateType == NavigateType.OneToMany)

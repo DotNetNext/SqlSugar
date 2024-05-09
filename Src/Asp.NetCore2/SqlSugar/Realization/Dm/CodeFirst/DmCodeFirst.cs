@@ -22,6 +22,7 @@ namespace SqlSugar
                 if (entityInfo.IsCreateTableFiledSort)
                 {
                     columns = columns.OrderBy(c => c.CreateTableFieldSort).ToList();
+                    columns = columns.OrderBy(it => it.IsPrimarykey ? 0 : 1).ToList();
                 }
             }
             columns = columns.OrderBy(it => it.IsPrimarykey ? 0 : 1).ToList();
@@ -57,6 +58,12 @@ namespace SqlSugar
             if (!string.IsNullOrEmpty(item.DataType))
             {
                 result.DataType = item.DataType;
+            }
+            else if (item.DataType == null && item.UnderType == UtilConstants.LongType)
+            {
+                result.Length = 0;
+                result.DecimalDigits = 0;
+                result.DataType = "NUMBER(19,0)";
             }
             else if (propertyType.IsEnum())
             {

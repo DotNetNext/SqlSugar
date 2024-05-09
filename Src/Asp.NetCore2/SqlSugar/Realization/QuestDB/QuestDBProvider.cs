@@ -56,6 +56,10 @@ namespace SqlSugar
         }
         public override DbCommand GetCommand(string sql, SugarParameter[] parameters)
         {
+            if (sql == Environment.NewLine) 
+            {
+                sql = "SELECT 0";
+            }
             NpgsqlCommand sqlCommand = new NpgsqlCommand(sql, (NpgsqlConnection)this.Connection);
             sqlCommand.CommandType = this.CommandType;
             sqlCommand.CommandTimeout = this.CommandTimeOut;

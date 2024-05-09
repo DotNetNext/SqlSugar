@@ -10,7 +10,198 @@ namespace SqlSugar
 {
     public class ExpressionTool
     {
+        internal static string ResolveMemberValue(ExpressionContext context, Expression item, string value)
+        {
+            if (item is MemberExpression member)
+            {
+                if (member.Expression is ParameterExpression parameterExpression)
+                {
+                    if (value != null && value.Contains("(") && !value.Contains(" "))
+                    {
+                        var guid = Guid.NewGuid() + "";
+                        var guid2 = Guid.NewGuid() + "";
+                        value = value.Replace("(", guid).Replace(")", guid2);
+                        value = context.GetTranslationColumnName(value);
+                        value = value.Replace(guid, "(").Replace(guid2, ")");
+                    }
+                }
+            }
+            return value;
+        }
+        internal static Expression GetConditionalExpression(Expression item)
+        {
+            ConstantExpression trueConstant = Expression.Constant(true, typeof(bool));
+            ConstantExpression falseConstant = Expression.Constant(false, typeof(bool));
 
+            // 创建条件表达式：item ? true : false
+            Expression conditionalExpression = Expression.Condition(
+                test: item,
+                ifTrue: trueConstant,
+                ifFalse: falseConstant
+            );
+            return conditionalExpression;
+        }
+        internal static bool IsOwnsOne(ExpressionContext context, Expression member)
+        {
+            var isOwnsOne = false;
+            if (context?.SugarContext?.Context == null) 
+            {
+                return false;
+            }
+            if (member is MemberExpression memberExp)
+            {
+                var name = memberExp?.Member?.Name;
+                if (memberExp?.Expression is MemberExpression parentMemberExp)
+                {
+                    if (name != null  && parentMemberExp?.Expression is ParameterExpression rootExp)
+                    { 
+                        var entityInfo = context?.SugarContext?.Context?.EntityMaintenance?.GetEntityInfo(rootExp.Type);
+                        var navColumn = entityInfo?.Columns?.FirstOrDefault(it => it.PropertyName == name);
+                        isOwnsOne = navColumn?.ForOwnsOnePropertyInfo != null;
+                    }
+                }
+            }
+            return isOwnsOne;
+        }
+        internal static EntityColumnInfo GetOwnsOneColumnInfo(ExpressionContext context, Expression member)
+        { 
+            EntityColumnInfo entityColumnInfo = new EntityColumnInfo();
+            if (member is MemberExpression memberExp)
+            {
+                var name = memberExp?.Member?.Name;
+                if (memberExp.Expression is MemberExpression parentMemberExp)
+                {
+                    if (name != null && parentMemberExp.Expression is ParameterExpression)
+                    {
+                        var rootExp = (parentMemberExp.Expression as ParameterExpression);
+                        var entityInfo = context?.SugarContext?.Context?.EntityMaintenance?.GetEntityInfo(rootExp.Type);
+                        var navColumn = entityInfo.Columns.FirstOrDefault(it => it.PropertyName == name);
+                        entityColumnInfo= navColumn;
+                    }
+                }
+            }
+            return entityColumnInfo;
+        }
+
+        internal static bool IsNavMember(ExpressionContext context, Expression member)
+        {
+            var isNav = false;
+            if (member is MemberExpression && (member as MemberExpression)?.Type?.IsClass()==true)
+            {
+                var memberExp = (member as MemberExpression);
+                var name = memberExp?.Member?.Name;
+                var type = memberExp?.Type;
+                if (name!=null&&type!=null&&memberExp.Expression is ParameterExpression)
+                {
+                    var rootExp = (memberExp.Expression as ParameterExpression);
+                    var entityInfo = context?.SugarContext?.Context?.EntityMaintenance?.GetEntityInfo(rootExp.Type);
+                    var navColumn = entityInfo.Columns.FirstOrDefault(it => it.PropertyName == name);
+                    isNav = navColumn?.Navigat != null;
+                }
+            }
+            return isNav;
+        }
+        internal static bool IsSqlParameterDbType(ExpressionContext context, Expression member)
+        {
+            var isNav = false;
+            if (context?.SugarContext!=null&&member is MemberExpression && (member as MemberExpression)?.Expression is ParameterExpression expression)
+            {
+                if (expression != null)
+                {
+                    var typeEntity = context?.SugarContext.Context.EntityMaintenance.GetEntityInfo(expression.Type);
+                    var columnInfo = typeEntity.Columns.FirstOrDefault(it => it.PropertyName == ExpressionTool.GetMemberName(member));
+                    if (columnInfo?.SqlParameterDbType is Type)
+                    {
+                        return true;
+                    }
+                    if (columnInfo?.SqlParameterDbType is System.Data.DbType)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return isNav;
+        }
+        internal static SugarParameter GetParameterBySqlParameterDbType(int index,object value,ExpressionContext context, Expression member)
+        {
+            var expression=(member as MemberExpression)?.Expression;
+            var typeEntity = context?.SugarContext.Context.EntityMaintenance.GetEntityInfo(expression.Type);
+            var columnInfo = typeEntity.Columns.FirstOrDefault(it => it.PropertyName == ExpressionTool.GetMemberName(member));
+            var columnDbType = columnInfo.SqlParameterDbType as Type;
+            if (columnDbType != null)
+            {
+                var ParameterConverter = columnDbType.GetMethod("ParameterConverter").MakeGenericMethod(columnInfo.PropertyInfo.PropertyType);
+                var obj = Activator.CreateInstance(columnDbType);
+                var p = ParameterConverter.Invoke(obj, new object[] { value, index }) as SugarParameter;
+                return p;
+            }
+            else 
+            {
+                var paramter = new SugarParameter("@Common" + index, value)
+                {
+                    DbType = (System.Data.DbType)columnInfo.SqlParameterDbType 
+                };
+                if (columnInfo.SqlParameterSize!=null&& columnInfo.SqlParameterSize.ObjToInt()>0) 
+                {
+                    paramter.Size= columnInfo.SqlParameterSize.ObjToInt();
+                }
+                return paramter;
+            }
+        }
+        public static List<string> ExtractMemberNames(Expression expression)
+        {
+            var memberNames = new List<string>();
+            var currentExpression = (expression as LambdaExpression).Body;
+
+            while (currentExpression != null && currentExpression.NodeType == ExpressionType.MemberAccess)
+            {
+                var memberExpression = (MemberExpression)currentExpression;
+                memberNames.Add(memberExpression.Member.Name);
+                currentExpression = memberExpression.Expression;
+            }
+
+            memberNames.Reverse(); // Reverse the list to get the correct order of member names
+            return memberNames;
+        } 
+        public static Expression<Func<T, bool>> ChangeLambdaExpression<T>(Expression<Func<T,bool>> exp,string replaceParameterName, string newParameterName)
+        {
+            var parameter = Expression.Parameter(typeof(T), newParameterName);
+
+            // 替换Lambda表达式中指定参数名
+            var visitor = new ParameterReplacer(replaceParameterName, parameter);
+            var newBody = visitor.Visit(exp);
+
+            return (Expression<Func<T, bool>>)newBody;
+        }
+        public static Expression ChangeLambdaExpression(Expression exp, Type targetType, string replaceParameterName, string newParameterName)
+        {
+            var parameter = Expression.Parameter(targetType, newParameterName);
+
+            // 替换Lambda表达式中指定参数名
+            var visitor = new ParameterReplacer(replaceParameterName, parameter);
+            var newBody = visitor.Visit(exp);
+
+            return newBody;
+        }
+
+        public static List<string> GetNewArrayMembers(NewArrayExpression newArrayExpression)
+        {
+            List<string> strings = new List<string>();
+            // 获取数组元素的 MemberExpression，并输出属性名
+            foreach (var expression in newArrayExpression.Expressions)
+            {
+                var memberExpression = expression as MemberExpression;
+                if (memberExpression != null)
+                {
+                    strings.Add(memberExpression.Member.Name);
+                }
+                else if (expression is ConstantExpression) 
+                {
+                    strings.Add((expression as ConstantExpression).Value+"");
+                }
+            }
+            return strings;
+        }
         public static List<string> GetTopLevelMethodCalls(Expression expression)
         {
             var methodCalls = new List<string>();
@@ -281,6 +472,15 @@ namespace SqlSugar
                                         expression.NodeType != ExpressionType.Or &&
                                         expression.NodeType != ExpressionType.OrElse;
         }
+        public static bool IsEqualOrLtOrGt(Expression expression)
+        {
+            return expression.NodeType== ExpressionType.Equal||
+                   expression.NodeType == ExpressionType.GreaterThan||
+                   expression.NodeType == ExpressionType.LessThan||
+                   expression.NodeType == ExpressionType.LessThanOrEqual ||
+                   expression.NodeType == ExpressionType.GreaterThanOrEqual 
+                   ;
+        }
         public static object GetMemberValue(MemberInfo member, Expression expression)
         {
             var rootExpression = expression as MemberExpression;
@@ -331,6 +531,10 @@ namespace SqlSugar
                 var mi = memberInfos.Pop();
                 if (mi.MemberType == MemberTypes.Property)
                 {
+                    if (objReference == null) 
+                    {
+                        Check.ExceptionEasy($"Expression error {rootExpression?.ToString()} expression, An empty reference appears in the expression to check if the parameter is null ", $"表达式错误 {rootExpression?.ToString()} 表达式中出现了空引用 检查参数是否为null ");
+                    }
                     var objProp = objReference.GetType().GetProperties().Where(it=>it.Name== mi.Name).FirstOrDefault();
                     if (objProp == null)
                     {
@@ -501,7 +705,7 @@ namespace SqlSugar
                 {
                     reval = fieInfo.GetValue(reval);
                 }
-                if (fieInfo == null && proInfo == null)
+                if (fieInfo == null && proInfo == null&& !reval.GetType().FullName.IsCollectionsList())
                 {
                     Check.Exception(true, string.Format(" Property \"{0}\" can't be private ", pro.Name));
                 }
@@ -573,6 +777,10 @@ namespace SqlSugar
                     additem.ShortName = member + "";
                     additem.RightName = (memberAssignment.Expression as MemberExpression).Member.Name;
                     additem.RightDbName = context.GetDbColumnName(member.Type.Name, additem.RightName);
+                    if(ExpressionTool.IsNavMember(context, member)) 
+                    {
+                        additem.RightDbName=additem.RightName = baseResolve.GetNewExpressionValue(memberAssignment.Expression);
+                    }
                     result.Add(additem);
                 }
                 else if (memberAssignment.Expression is ConstantExpression)

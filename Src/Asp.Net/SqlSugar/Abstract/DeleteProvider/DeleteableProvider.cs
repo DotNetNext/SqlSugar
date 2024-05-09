@@ -138,7 +138,18 @@ namespace SqlSugar
                     }
                     primaryKeyValues.Add(value);
                 }
-                if (primaryKeyValues.Count < 10000)
+                if (this.Context.CurrentConnectionConfig.DbType==DbType.Oracle &&primaryKeyValues.Count >= 1000) 
+                {
+                    List<string> inItems = new List<string>();
+                    this.Context.Utilities.PageEach(primaryKeyValues, 999, pageItems =>
+                    {
+                        var inValueString = pageItems.ToArray().ToJoinSqlInVals();
+                        var whereItem= string.Format(DeleteBuilder.WhereInTemplate, SqlBuilder.GetTranslationColumnName(primaryFields.Single()), inValueString);
+                        inItems.Add(whereItem);
+                    });
+                    Where($"({string.Join(" OR ", inItems)})");
+                }
+                else if (primaryKeyValues.Count < 10000)
                 {
                     var inValueString = primaryKeyValues.ToArray().ToJoinSqlInVals();
                     Where(string.Format(DeleteBuilder.WhereInTemplate, SqlBuilder.GetTranslationColumnName(primaryFields.Single()), inValueString));
@@ -222,6 +233,10 @@ namespace SqlSugar
                             {
                                 tempequals = tempequals.Replace("=N'", "='");
                             }
+                            else 
+                            {
+                                tempequals = SqlBuilder.RemoveN(tempequals);
+                            }
                             entityValue = UtilMethods.GetConvertValue(entityValue);
                             andString.AppendFormat(tempequals, primaryField, entityValue);
                         }
@@ -231,6 +246,15 @@ namespace SqlSugar
                     whereInSql.Append(orString);
                 }
                 Where(string.Format(DeleteBuilder.WhereInAreaTemplate, whereInSql.ToString()));
+            }
+            return this;
+        }
+        public IDeleteable<T> WhereIF(bool isWhere, Expression<Func<T, bool>> expression)
+        {
+            Check.ExceptionEasy(!StaticConfig.EnableAllWhereIF, "Need to program startup configuration StaticConfig. EnableAllWhereIF = true; Tip: This operation is very risky if there are no conditions it is easy to update the entire table", " 需要程序启动时配置StaticConfig.EnableAllWhereIF=true; 提示：该操作存在很大的风险如果没有条件很容易将整个表全部更新");
+            if (isWhere)
+            {
+                return Where(expression);
             }
             return this;
         }
@@ -317,6 +341,24 @@ namespace SqlSugar
             DeleteBuilder.Parameters.AddRange(parameters);
             return this;
         }
+        public IDeleteable<T> Where(List<IConditionalModel> conditionalModels, bool isWrap) 
+        {
+            if (conditionalModels.Count == 0)
+            {
+                return Where("1=2");
+            }
+            var sql = this.Context.Queryable<T>().SqlBuilder.ConditionalModelToSql(conditionalModels);
+            var result = this;
+            if (isWrap)
+            {
+                result.Where($"({sql.Key})", sql.Value);
+            }
+            else 
+            {
+                result.Where(sql.Key, sql.Value);
+            }
+            return result;
+        }
         public IDeleteable<T> Where(List<IConditionalModel> conditionalModels)
         {
             if (conditionalModels.Count == 0)
@@ -385,6 +427,18 @@ namespace SqlSugar
             var queryable = this.Context.Queryable<T>();
             queryable.QueryBuilder.LambdaExpressions.ParameterIndex= 1000;
             var sqlable= queryable.ToSql();
+            var whereInfos = Regex.Split(sqlable.Key, " Where ", RegexOptions.IgnoreCase);
+            if (whereInfos.Length > 1)
+            {
+                this.Where(whereInfos.Last(), sqlable.Value);
+            }
+            return this;
+        }
+        public IDeleteable<T> EnableQueryFilter(Type type)
+        {
+            var queryable = this.Context.Queryable<T>().Filter(type);
+            queryable.QueryBuilder.LambdaExpressions.ParameterIndex = 1000;
+            var sqlable = queryable.ToSql();
             var whereInfos = Regex.Split(sqlable.Key, " Where ", RegexOptions.IgnoreCase);
             if (whereInfos.Length > 1)
             {
@@ -514,6 +568,15 @@ namespace SqlSugar
             tempPrimaryKeys = new List<string>() { fieldName };
             var result = In(primaryKeyValues);
             tempPrimaryKeys = null;
+            return this;
+        }
+
+        public IDeleteable<T> In<PkType>(Expression<Func<T, object>> inField, ISugarQueryable<PkType> childQueryExpression) 
+        {
+            var lamResult = DeleteBuilder.GetExpressionValue(inField, ResolveExpressType.FieldSingle);
+            var fieldName = lamResult.GetResultString();
+            var sql= childQueryExpression.ToSql();
+            Where($" {fieldName} IN ( SELECT {fieldName} FROM ( {sql.Key} ) SUBDEL) ",sql.Value);
             return this;
         }
         public IDeleteable<T> In<PkType>(string inField, List<PkType> primaryKeyValues)

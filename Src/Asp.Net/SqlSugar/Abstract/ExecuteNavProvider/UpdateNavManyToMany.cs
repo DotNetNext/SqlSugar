@@ -111,6 +111,10 @@ namespace SqlSugar
                   .SetColumns(locgicColumn.DbColumnName, true)
                   .ExecuteCommand();
             }
+            else if (_Context?.CurrentConnectionConfig?.MoreSettings?.IsAutoDeleteQueryFilter == true) 
+            {
+                this._Context.Deleteable<object>().AS(mappingEntity.DbTableName).In(mappingA.DbColumnName, ids).EnableQueryFilter(mappingEntity.Type).ExecuteCommand();
+            }
             else
             {
                 this._Context.Deleteable<object>().AS(mappingEntity.DbTableName).In(mappingA.DbColumnName, ids).ExecuteCommand();

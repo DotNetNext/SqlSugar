@@ -26,7 +26,7 @@ namespace SqlSugar
             sb.AppendLine(string.Join("\r\n", groupList.Select(t =>
             {
                 var updateTable = string.Format("UPDATE {0} SET", base.GetTableNameStringNoWith);
-                var setValues = string.Join(",", t.Where(s => !s.IsPrimarykey).Select(m => GetOracleUpdateColums(i, m)).ToArray());
+                var setValues = string.Join(",", t.Where(s => !s.IsPrimarykey).Where(s => OldPrimaryKeys == null || !OldPrimaryKeys.Contains(s.DbColumnName)).Select(m => GetOracleUpdateColums(i, m)).ToArray());
                 var pkList = t.Where(s => s.IsPrimarykey).ToList();
                 List<string> whereList = new List<string>();
                 foreach (var item in pkList)
@@ -49,7 +49,7 @@ namespace SqlSugar
 
         private string GetOracleUpdateColums(int i, DbColumnInfo m)
         {
-            return string.Format("\"{0}\"={1}", m.DbColumnName.ToUpper(IsUppper), base.GetDbColumn(m,FormatValue(i, m.DbColumnName, m.Value)));
+            return string.Format("\"{0}\"={1} ", m.DbColumnName.ToUpper(IsUppper), base.GetDbColumn(m,FormatValue(i, m.DbColumnName, m.Value)));
         }
         public bool IsUppper
         {
@@ -86,7 +86,14 @@ namespace SqlSugar
                     {
                         date = UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig);
                     }
-                    return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
+                    if (this.Context.CurrentConnectionConfig?.MoreSettings?.DisableMillisecond == true)
+                    {
+                        return "to_date('" + date.ToString("yyyy-MM-dd HH:mm:ss") + "', 'YYYY-MM-DD HH24:MI:SS')  ";
+                    }
+                    else
+                    {
+                        return "to_timestamp('" + date.ToString("yyyy-MM-dd HH:mm:ss.ffffff") + "', 'YYYY-MM-DD HH24:MI:SS.FF') ";
+                    }
                 }
                 else if (type.IsEnum())
                 {

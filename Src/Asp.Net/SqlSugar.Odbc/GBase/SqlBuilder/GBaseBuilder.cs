@@ -9,8 +9,8 @@ namespace SqlSugar.Odbc
 {
     public class OdbcBuilder : SqlBuilderProvider
     {
-        public override string SqlTranslationLeft { get { return ""; } }
-        public override string SqlTranslationRight { get { return ""; } }
+        public override string SqlTranslationLeft { get { return OdbcConfig.SqlTranslationLeft; } }
+        public override string SqlTranslationRight { get { return OdbcConfig.SqlTranslationRight; } }
         public override string GetNoTranslationColumnName(string name)
         {
             return name;

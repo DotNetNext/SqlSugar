@@ -13,6 +13,8 @@ namespace SqlSugar
         public dynamic Data { get; set; }
         public Expression Expression { get; set; }
         public Expression BaseExpression { get; set; }
+        public List<SugarParameter> Parameters { get;  set; }
+        public ExpressionContext Conext { get;  set; }
     }
 
     public class MethodCallExpressionArgs

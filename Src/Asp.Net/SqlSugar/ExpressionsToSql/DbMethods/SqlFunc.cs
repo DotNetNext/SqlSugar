@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,7 +10,10 @@ namespace SqlSugar
 {
     public partial class SqlFunc
     {
-        
+        public static bool FullTextContains(string [] columnNames, string keyword)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
         public static bool FullTextContains(string columnName,string keyword)
         {
             throw new NotSupportedException("Can only be used in expressions");
@@ -66,6 +70,24 @@ namespace SqlSugar
         {
             throw new NotSupportedException("Can only be used in expressions");
         }
+
+        public static int Rank(object orderByField, object partitionBy)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+        public static int Rank(object orderByField)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        } 
+        public static int DenseRank(object orderByField, object partitionBy)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+        public static int DenseRank(object orderByField)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
         public static int RowCount(object countFiledName,object orderByField, object partitionBy)
         {
             throw new NotSupportedException("Can only be used in expressions");
@@ -110,7 +132,10 @@ namespace SqlSugar
         {
             throw new NotSupportedException("Can only be used in expressions");
         }
-
+        public static string JsonIndex(object json, int jsonIndex)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
         public static string JsonField(object json, string fieldName,string includeFieldName)
         {
             throw new NotSupportedException("Can only be used in expressions");
@@ -174,7 +199,16 @@ namespace SqlSugar
         {
             throw new NotSupportedException("Can only be used in expressions");
         }
+        public static bool GreaterThan_LinqDynamicCore(object thisValue, object ltValue)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
         public static bool LessThan(object thisValue, object ltValue)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        public static bool LessThan_LinqDynamicCore(object thisValue, object ltValue)
         {
             throw new NotSupportedException("Can only be used in expressions");
         }
@@ -277,8 +311,11 @@ namespace SqlSugar
         }
         public static bool DateIsSame(DateTime date1, DateTime date2, DateType dataType) { throw new NotSupportedException("Can only be used in expressions"); }
         public static DateTime DateAdd(DateTime date, int addValue, DateType dataType) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static DateTimeOffset DateAdd(DateTimeOffset date, int addValue, DateType dataType) { throw new NotSupportedException("Can only be used in expressions"); }
         public static DateTime DateAdd(DateTime date, int addValue) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static DateTimeOffset DateAdd(DateTimeOffset date, int addValue) { throw new NotSupportedException("Can only be used in expressions"); }
         public static int DateValue(DateTime date, DateType dataType) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static int DateValue(DateTimeOffset date, DateTimeOffset dataType) { throw new NotSupportedException("Can only be used in expressions"); }
         public static bool Between(object value, object start, object end) { throw new NotSupportedException("Can only be used in expressions"); }
         public static TResult IIF<TResult>(bool isTrue, TResult thenValue, TResult elseValue) { return isTrue ? thenValue : elseValue; }
         public static TResult IsNull<TResult>(TResult thisValue, TResult ifNullValue) { throw new NotSupportedException("Can only be used in expressions"); }
@@ -318,6 +355,7 @@ namespace SqlSugar
         public static TResult AggregateSumNoNull<TResult>(TResult thisValue) { throw new NotSupportedException("Can only be used in expressions"); }
         public static string Collate(string thisValue) { throw new NotSupportedException("Can only be used in expressions"); }
         public static TResult AggregateAvg<TResult>(TResult thisValue) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static TResult AggregateAvgNoNull<TResult>(TResult thisValue) { throw new NotSupportedException("Can only be used in expressions"); }
         public static TResult AggregateMin<TResult>(TResult thisValue) { throw new NotSupportedException("Can only be used in expressions"); }
         public static TResult AggregateMax<TResult>(TResult thisValue) { throw new NotSupportedException("Can only be used in expressions"); }
         public static int AggregateCount<TResult>(TResult thisValue) { throw new NotSupportedException("Can only be used in expressions"); }
@@ -345,7 +383,9 @@ namespace SqlSugar
         /// <returns></returns>
         public static Subqueryable<T> Subqueryable<T>() where T:class,new(){ throw new NotSupportedException("Can only be used in expressions");}
         public static CaseThen  IF(bool condition) { throw new NotSupportedException("Can only be used in expressions"); }
+        [Obsolete("多库下参数顺序不一至，为了保证多库下更好体验请使用 SqlFunc.CharIndexNew")]
         public static int CharIndex(string findChar,string searchValue) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static int CharIndexNew(string stringValue, string charValue) { throw new NotSupportedException("Can only be used in expressions"); }
         public static int BitwiseAnd(int left, int right) { throw new NotSupportedException("Can only be used in expressions"); }
         public static int BitwiseInclusiveOR(int left, int right) { throw new NotSupportedException("Can only be used in expressions"); }
         public static int BitwiseAnd(long left, long right) { throw new NotSupportedException("Can only be used in expressions"); }
@@ -376,6 +416,15 @@ namespace SqlSugar
         }
 
         public static bool ListAny<T>(List<T> listConstant, Expression<Func<T,bool>> expression)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+        public static bool ListAll<T>(List<T> listConstant, Expression<Func<T, bool>> expression)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+         
+        public static string OnlyInSelectConvertToString(string stringValue, MethodInfo methodInfo)
         {
             throw new NotSupportedException("Can only be used in expressions");
         }

@@ -19,6 +19,7 @@ namespace SqlSugar
             bool isSetTempData, isValue, isValueBool, isLength, isDateValue, isHasValue, isDateDate, isMemberValue, isSingle, fieldIsBool, isSelectField, isField;
             SettingParameters(parameter, out baseParameter, out expression, out isLeft, out isSetTempData, out isValue, out isValueBool, out isLength, out isDateValue, out isHasValue, out isDateDate, out isMemberValue, out isSingle, out fieldIsBool, out isSelectField, out isField);
             baseParameter.ChildExpression = expression;
+            ProcessNavigationMemberAndUpdateExpression(ref expression, ref isValue);
             if (isLength)
             {
                 ResolveLength(parameter, isLeft, expression);
@@ -47,7 +48,7 @@ namespace SqlSugar
             {
                 ResolveCallValue(parameter, baseParameter, expression, isLeft, isSetTempData, isSingle);
             }
-            else if (isValue & IsNavValue(expression)) 
+            else if (isValue & IsNavValue(expression))
             {
                 expression = expression.Expression as MemberExpression;
                 ResolveMemberValue(parameter, baseParameter, expression, isLeft, isSetTempData);
@@ -79,6 +80,21 @@ namespace SqlSugar
             else
             {
                 ResolveDefault(parameter, baseParameter, expression, isLeft, isSetTempData, isSingle);
+            }
+        }
+
+        private void ProcessNavigationMemberAndUpdateExpression(ref MemberExpression expression, ref bool isValue)
+        {
+            if (isValue && expression.Expression is MemberExpression childMemExp)
+            {
+                if (childMemExp.Expression is MemberExpression navMemExp)
+                {
+                    if (ExpressionTool.IsNavMember(this.Context, navMemExp))
+                    {
+                        expression = childMemExp;
+                        isValue = false;
+                    }
+                }
             }
         }
 
@@ -270,7 +286,7 @@ namespace SqlSugar
 
         private void ResolveMemberValue(ExpressionParameter parameter, ExpressionParameter baseParameter, MemberExpression expression, bool? isLeft, bool isSetTempData)
         {
-            var nav = new OneToOneNavgateExpression(this.Context?.SugarContext?.Context);
+            var nav = new OneToOneNavgateExpression(this.Context?.SugarContext?.Context,this);
             nav.ExpContext = this.Context;
             var navN = new OneToOneNavgateExpressionN(this.Context?.SugarContext?.Context);
             if (nav.IsNavgate(expression))
@@ -284,7 +300,7 @@ namespace SqlSugar
                     if (joinInfo != null)
                     {
                         var columnInfo = nav.ProPertyEntity.Columns.FirstOrDefault(it => it.PropertyName == nav.MemberName);
-                        var value = new MapperSql() { Sql = joinInfo.ShortName + "." + columnInfo.DbColumnName };
+                        var value = new MapperSql() { Sql = querybuilder.Builder.GetTranslationColumnName(joinInfo.ShortName) + "." + querybuilder.Builder.GetTranslationColumnName(columnInfo.DbColumnName) };
 
                         if (isSetTempData)
                         {
@@ -457,6 +473,26 @@ namespace SqlSugar
 
         private void ResolveMemberValue(ExpressionParameter parameter, ExpressionParameter baseParameter, bool? isLeft, bool isSetTempData, MemberExpression expression)
         {
+            if (ExpressionTool.IsOwnsOne(this.Context, expression)) 
+            {
+                var column = ExpressionTool.GetOwnsOneColumnInfo(this.Context, expression);
+                var columnName = column.DbColumnName;
+                if (this.Context.IsJoin) 
+                {
+                    var expParameterInfo = ExpressionTool.GetParameters(expression).First();
+                    columnName = $"{expParameterInfo.Name}.{columnName}"; 
+                }
+                columnName=this.Context.GetTranslationColumnName(columnName);
+                if (isSetTempData)
+                {
+                    baseParameter.CommonTempData = columnName;
+                }
+                else
+                {
+                    AppendMember(parameter, isLeft, columnName);
+                }
+                return;
+            }
             var value = ExpressionTool.GetMemberValue(expression.Member, expression);
             if (isSetTempData)
             {
@@ -535,6 +571,10 @@ namespace SqlSugar
                              new MethodCallExpressionArgs() {   MemberName=DateType.Year, MemberValue=DateType.Year}
                          }
                 };
+                if (parameter.CommonTempData is MapperSql) 
+                {
+                    parameter.CommonTempData = ((MapperSql)parameter.CommonTempData).Sql;
+                }
                 AppendMember(parameter, isLeft, GetToDateShort(parameter.CommonTempData.ObjToString()));
             }
             parameter.CommonTempData = oldCommonTempDate;
@@ -579,6 +619,10 @@ namespace SqlSugar
                 if(parameter.CommonTempData!=null&& parameter.CommonTempData is DateTime) 
                 {
                     parameter.CommonTempData= base.AppendParameter(parameter.CommonTempData);
+                }
+                else if (parameter.CommonTempData != null && parameter.CommonTempData?.GetType()?.FullName=="System.DateOnly")
+                {
+                    parameter.CommonTempData = base.AppendParameter(parameter.CommonTempData);
                 }
                 var result = this.Context.DbMehtods.DateValue(new MethodCallExpressionModel()
                 {
@@ -784,6 +828,10 @@ namespace SqlSugar
             isValueBool = isValue && isBool && isRoot;
             isLength = memberName == "Length" && childIsMember && childExpression.Type == UtilConstants.StringType;
             isDateValue = memberName.IsIn(Enum.GetNames(typeof(DateType))) && (childIsMember && childExpression.Type == UtilConstants.DateType);
+            if (isDateValue == false && childIsMember && childExpression?.Type?.FullName == "System.DateOnly"&& memberName.IsIn(Enum.GetNames(typeof(DateType)))) 
+            {
+                isDateValue = true;
+            }
             var isLogicOperator = ExpressionTool.IsLogicOperator(baseParameter.OperatorValue) || baseParameter.OperatorValue.IsNullOrEmpty();
             isHasValue = isLogicOperator && memberName == "HasValue" && expression.Expression != null && expression.NodeType == ExpressionType.MemberAccess;
             isDateDate = memberName == "Date" && expression.Expression.Type == UtilConstants.DateType;

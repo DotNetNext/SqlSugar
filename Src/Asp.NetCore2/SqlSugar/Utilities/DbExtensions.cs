@@ -121,7 +121,23 @@ namespace SqlSugar
                              || value.ToLower().Contains(left + "create" + right)
                              || value.ToLower().Contains(left + "insert" + right);
         }
-
+        public static bool ContainsChinese(string input)
+        {
+            // 正则表达式：匹配包含至少一个中文字符的字符串
+            string pattern = @"[\u4e00-\u9fa5]";
+            return Regex.IsMatch(input, pattern);
+        }
+        public static bool IsRegexWNoContainsChinese(this string value)
+        { 
+            if (!ContainsChinese(value)&&Regex.IsMatch(value, @"^\w+$"))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
         public static string ToCheckRegexW(this string value) 
         {
             if (Regex.IsMatch(value,@"^\w+$"))

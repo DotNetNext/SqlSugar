@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Linq;
+using System.Runtime.CompilerServices;
 namespace SqlSugar
 {
     public abstract partial class SqlBuilderProvider : SqlBuilderAccessory, ISqlBuilder
@@ -10,13 +11,18 @@ namespace SqlSugar
         public KeyValuePair<string, SugarParameter[]> GroupByModelToSql(List<GroupByModel> models)
         {
             StringBuilder sql = new StringBuilder("");
-            SugarParameter[] pars = new SugarParameter[] { };
+            var pars = new List<SugarParameter> { };
             foreach (var item in models)
             {
-                if (item is GroupByModel)
+                if (item is GroupByModel && item.FieldName is IFuncModel) 
                 {
                     var orderByModel = item as GroupByModel;
-                    sql.Append($" {this.GetTranslationColumnName(orderByModel.FieldName.ToSqlFilter())} ,");
+                    sql.Append($" {GetSqlPart(item.FieldName, pars)} ,");
+                }
+                else if (item is GroupByModel)
+                {
+                    var orderByModel = item as GroupByModel;
+                    sql.Append($" {this.GetTranslationColumnName(orderByModel.FieldName.ObjToString().ToSqlFilter())} ,");
                 }
                 else
                 {
@@ -24,7 +30,7 @@ namespace SqlSugar
                 }
 
             }
-            return new KeyValuePair<string, SugarParameter[]>(sql.ToString().TrimEnd(','), pars);
+            return new KeyValuePair<string, SugarParameter[]>(sql.ToString().TrimEnd(','), pars?.ToArray());
         }
     }
 }

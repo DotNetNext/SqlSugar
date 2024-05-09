@@ -20,7 +20,7 @@ namespace SqlSugar
             sb.AppendLine(string.Join("\r\n", groupList.Select(t =>
             {
                 var updateTable = string.Format("UPDATE {0} SET", base.GetTableNameStringNoWith);
-                var setValues = string.Join(",", t.Where(s => !s.IsPrimarykey).Select(m => GetOracleUpdateColums(m)).ToArray());
+                var setValues = string.Join(",", t.Where(s => !s.IsPrimarykey).Where(s => OldPrimaryKeys == null || !OldPrimaryKeys.Contains(s.DbColumnName)).Select(m => GetOracleUpdateColums(m)).ToArray());
                 var pkList = t.Where(s => s.IsPrimarykey).ToList();
                 List<string> whereList = new List<string>();
                 foreach (var item in pkList)
@@ -38,7 +38,7 @@ namespace SqlSugar
 
         private string GetOracleUpdateColums(DbColumnInfo m)
         {
-            return string.Format("\"{0}\"={1}", m.DbColumnName.ToUpper(IsUppper), base.GetDbColumn(m,FormatValue(m.Value,m.IsPrimarykey,m.PropertyName)));
+            return string.Format("\"{0}\"={1} ", m.DbColumnName.ToUpper(IsUppper), base.GetDbColumn(m,FormatValue(m.Value,m.IsPrimarykey,m.PropertyName)));
         }
         int i = 0;
         public  object FormatValue(object value,bool isPrimaryKey,string name)

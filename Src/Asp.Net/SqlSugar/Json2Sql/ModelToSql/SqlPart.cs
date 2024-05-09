@@ -8,7 +8,7 @@ namespace SqlSugar
     public abstract partial class SqlBuilderProvider : SqlBuilderAccessory, ISqlBuilder
     {
         #region  Variable
-        private string[] SqlSplicingOperator = new string[] { ">", ">=", "<", "<=", "(", ")", "=", "||", "&&","&","|","null","is","isnot","like","nolike","+","-","*","/","%" }; 
+        private string[] SqlSplicingOperator = new string[] { ">", ">=", "<", "<=", "(", ")", "!=", "<>", "not", "=", "||", "&&", "&", "|", "null", "is", "isnot", "like", "nolike", "+", "-", "*", "/", "%" };
         #endregion
 
         #region Root
@@ -19,7 +19,7 @@ namespace SqlSugar
             {
                 return GetSqlSplicingOperator(value);
             }
-            else  if (IsString(value))
+            else if (IsString(value))
             {
                 return GetSqlPartByString(value, pars);
             }
@@ -43,7 +43,7 @@ namespace SqlSugar
 
         private static string GetSqlSplicingOperator(object value)
         {
-            var result= value.ObjToString();
+            var result = value.ObjToString();
             if (result == "||") return "OR";
             else if (result == "&&") return "AND";
             else if (result.EqualCase("isnot")) return " IS NOT ";
@@ -83,7 +83,7 @@ namespace SqlSugar
             }
             else
             {
-                return this.GetTranslationColumnName(value.ObjToString());
+                return this.GetTranslationColumnName(value.ObjToString().ToCheckField());
             }
         }
         #endregion
@@ -104,7 +104,7 @@ namespace SqlSugar
             }
             return parvalue;
         }
-        private  string GetParameterName(List<SugarParameter> pars, string valueString)
+        private string GetParameterName(List<SugarParameter> pars, string valueString)
         {
             object parvalue = Json2SqlHelper.GetValue(valueString);
             SugarParameter parameter = new SugarParameter("@p" + pars.Count(), parvalue);
@@ -113,14 +113,16 @@ namespace SqlSugar
             var parname = GetParameterName(pars, parvalue);
             return parname;
         }
-        private int GetParameterNameIndex = 100;
+        internal int GetParameterNameIndex = 100;
 
-        private   string GetParameterName(List<SugarParameter> pars, object parvalue)
+        private string GetParameterName(List<SugarParameter> pars, object parvalue)
         {
-            var parname = "@p" + pars.Count()+"_"+(GetParameterNameIndex);
+            var parname = "@p" + pars.Count() + "_" + (GetParameterNameIndex) + $"{this.QueryBuilder?.LambdaExpressions?.ParameterIndex}";
             SugarParameter parameter = new SugarParameter(parname, parvalue);
             pars.Add(parameter);
             GetParameterNameIndex++;
+            if (this.QueryBuilder != null)
+                this.QueryBuilder.LambdaExpressions.ParameterIndex++;
             return parname;
         }
         #endregion

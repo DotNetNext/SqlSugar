@@ -2,14 +2,14 @@
 <package >
   <metadata>
     <id>SqlSugarCoreNoDrive</id>
-    <version>5.1.4.105</version>
+    <version>5.1.4.154</version>
     <authors>sunkaixuan</authors>
     <owners>Landa</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
     <projectUrl>https://github.com/sunkaixuan/SqlSugar</projectUrl>
     <iconUrl>https://secure.gravatar.com/avatar/a82c03402497b2e58fd65038a3699b30</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description> .Net Core/.net5 SqlSugar ORM ,High-performance, lightweight https://github.com/sunkaixuan/SqlSugar</description>
+    <description> .Net Core/.net5+ SqlSugar ORM ,High-performance, lightweight https://github.com/sunkaixuan/SqlSugar</description>
     <copyright>Copyright 2016</copyright>
     <tags>SqlSugar Sql Sugar Core Asp.net core orm</tags>
     <dependencies>

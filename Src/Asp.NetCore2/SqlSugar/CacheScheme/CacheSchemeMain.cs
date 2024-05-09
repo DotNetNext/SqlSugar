@@ -22,6 +22,11 @@ namespace SqlSugar
             {
                 return;
             }
+            if (StaticConfig.CacheRemoveByLikeStringFunc != null)
+            {
+                StaticConfig.CacheRemoveByLikeStringFunc(cacheService, UtilConstants.Dot + tableName.ToLower() + UtilConstants.Dot);
+                return;
+            }
             var keys = cacheService.GetAllKey<string>();
             if (keys.HasValue())
             {
@@ -38,6 +43,11 @@ namespace SqlSugar
         {
             if (cacheService == null)
             {
+                return;
+            }
+            if (StaticConfig.CacheRemoveByLikeStringFunc != null) 
+            {
+                StaticConfig.CacheRemoveByLikeStringFunc(cacheService, likeString);
                 return;
             }
             var keys = cacheService.GetAllKey<string>();

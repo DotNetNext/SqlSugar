@@ -39,10 +39,10 @@ namespace SqlSugar
             List<SelectModel> result = new List<SelectModel>();
             foreach (var item in obj) 
             {
-                if (item.FiledName is string)
+                if (item.FieldName is string)
                 {
-                    var tableName = GetTableName(item.FiledName + "");
-                    var columnName = GetColumnName(item.FiledName + "");
+                    var tableName = GetTableName(item.FieldName + "");
+                    var columnName = GetColumnName(item.FieldName + "");
                     if (IsMyColums(tableName, columnName)) 
                     {
                         result.Add(item);

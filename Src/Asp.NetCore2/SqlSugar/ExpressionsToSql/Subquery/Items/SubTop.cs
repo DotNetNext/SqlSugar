@@ -61,7 +61,7 @@ namespace SqlSugar
             {
                 return (HasWhere?"AND":"WHERE")+ " ROWNUM=1";
             }
-            else if (this.Context is PostgreSQLExpressionContext)
+            else if (this.Context is PostgreSQLExpressionContext||this.Context?.SugarContext?.Context?.CurrentConnectionConfig?.MoreSettings?.DatabaseModel==DbType.PostgreSQL)
             {
                 return "limit 1";
             }

@@ -278,7 +278,8 @@ namespace SqlSugar
         }
         private bool IsOracle()
         {
-            return this.Context is OracleExpressionContext;
+            return this.Context is OracleExpressionContext
+                   || this.Context is DmExpressionContext;
         }
     }
 }

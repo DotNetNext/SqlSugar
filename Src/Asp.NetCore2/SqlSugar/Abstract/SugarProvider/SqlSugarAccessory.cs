@@ -421,7 +421,7 @@ namespace SqlSugar
             }
             return false;
         }
-        private static void CheckDbDependency(ConnectionConfig config)
+        private  void CheckDbDependency(ConnectionConfig config)
         {
             switch (config.DbType)
             {
@@ -440,7 +440,10 @@ namespace SqlSugar
                     DependencyManagement.TryPostgreSQL();
                     break;
                 case DbType.OpenGauss:
-                    config.DbType = DbType.PostgreSQL; 
+                    config.DbType = DbType.PostgreSQL;
+                    if (this.CurrentConnectionConfig.MoreSettings == null)
+                        this.CurrentConnectionConfig.MoreSettings = new ConnMoreSettings();
+                    this.CurrentConnectionConfig.MoreSettings.DatabaseModel = DbType.OpenGauss;
                     break;
                 case DbType.HG:
                     InstanceFactory.CustomDllName = SugarCompatible.IsFramework ? throw new Exception("Only.NET CORE is supported") : "SqlSugar.HGCore";
@@ -489,7 +492,16 @@ namespace SqlSugar
                     InstanceFactory.CustomDllName = SugarCompatible.IsFramework ? "SqlSugar.OceanBaseForOracle" : "SqlSugar.OceanBaseForOracleCore";
                     break;
                 case DbType.GaussDB:
-                    config.DbType = DbType.PostgreSQL; 
+                    config.DbType = DbType.PostgreSQL;
+                    if (this.CurrentConnectionConfig.MoreSettings == null)
+                        this.CurrentConnectionConfig.MoreSettings = new ConnMoreSettings();
+                    this.CurrentConnectionConfig.MoreSettings.DatabaseModel = DbType.GaussDB;
+                    break;
+                case DbType.Vastbase:
+                    config.DbType = DbType.PostgreSQL;
+                    if (this.CurrentConnectionConfig.MoreSettings==null) 
+                        this.CurrentConnectionConfig.MoreSettings = new ConnMoreSettings();
+                    this.CurrentConnectionConfig.MoreSettings.DatabaseModel = DbType.Vastbase;
                     break;
                 case DbType.OceanBase:
                     config.DbType = DbType.MySql; 
@@ -497,8 +509,17 @@ namespace SqlSugar
                 case DbType.Tidb:
                     config.DbType = DbType.MySql;
                     break;
+                case DbType.PolarDB:
+                    config.DbType = DbType.MySql;
+                    break;
+                case DbType.Doris:
+                    config.DbType = DbType.MySql;
+                    if (this.CurrentConnectionConfig.MoreSettings == null)
+                        this.CurrentConnectionConfig.MoreSettings = new ConnMoreSettings();
+                    this.CurrentConnectionConfig.MoreSettings.DatabaseModel = DbType.Doris;
+                    break;
                 case DbType.TDengine:
-                    Check.Exception(SugarCompatible.IsFramework, "GBase only support .net core");
+                    Check.Exception(SugarCompatible.IsFramework, "TDengine only support .net core");
                     InstanceFactory.CustomDllName = SugarCompatible.IsFramework ? "SqlSugar.TDengine" : "SqlSugar.TDengineCore";
                     break;
                 default:
@@ -577,7 +598,7 @@ namespace SqlSugar
             {
                 ++i;
                 var isLast = joinArray.Length == i;
-                var isJoinType = item.IsIn(JoinType.Full.ToString(),JoinType.Inner.ToString(), JoinType.Left.ToString(), JoinType.Right.ToString());
+                var isJoinType = item.IsIn(JoinType.Full.ToString(),JoinType.Inner.ToString(), JoinType.Left.ToString(), JoinType.Right.ToString(),JoinType.Cross.ToString());
                 if (isJoinType)
                 {
                     if (joinValue != null)

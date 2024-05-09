@@ -115,7 +115,7 @@ namespace SqlSugar
         public virtual string ContainsArray(MethodCallExpressionModel model)
         {
             var inValueIEnumerable = (IEnumerable)model.Args[0].MemberValue;
-            List<object> inValues = new List<object>();
+            List<object> inValues = new List<object>(); 
             if (inValueIEnumerable != null)
             {
                 foreach (var item in inValueIEnumerable)
@@ -145,9 +145,13 @@ namespace SqlSugar
             var isNvarchar = model.Args.Count == 3;
             if (inValues != null && inValues.Count > 0)
             {
-                if (isNvarchar&& model.Args[2].MemberValue.Equals(true))
+                if (isNvarchar && model.Args[2].MemberValue.Equals(true))
                 {
                     inValueString = inValues.ToArray().ToJoinSqlInValsN();
+                }
+                else if (inValues.Any()&&inValues.FirstOrDefault() is bool &&inValues.All(it => it is bool)) 
+                {
+                    inValueString = string.Join(",", inValues.Select(it => Convert.ToBoolean(it) ? 1 : 0));
                 }
                 else
                 {
@@ -514,10 +518,14 @@ namespace SqlSugar
                 }
             }
             return reslut.ToString();
-        }
+        } 
         public virtual string CharIndex(MethodCallExpressionModel model)
         {
             return string.Format("CHARINDEX ({0},{1})", model.Args[0].MemberName, model.Args[1].MemberName);
+        }
+        public virtual string CharIndexNew(MethodCallExpressionModel model)
+        {
+            return CharIndex(model);
         }
 
         public virtual string ToVarchar(MethodCallExpressionModel model)
@@ -603,8 +611,16 @@ namespace SqlSugar
         {
 
             var str = "concat('" + model.Args[0].MemberValue.ObjToString() + "')";
+            if (model.Args.Count == 2 && model.Args[1].MemberValue is string[])
+            {
+                List<MethodCallExpressionArgs> args = GetStringFormatArgs(str, model.Args[1].MemberValue as string[]);
+                return Format(new MethodCallExpressionModel()
+                {
+                    Args = args
+                }); ;
+            }
             str = Regex.Replace(str, @"(\{\d+?\})", "',$1,'");
-            var array = model.Args.Skip(1).Select(it => it.IsMember ? it.MemberName : it.MemberValue)
+            var array = model.Args.Skip(1).Select(it => it.IsMember ? it.MemberName : (it.MemberValue == null ? "''" : it.MemberValue.ToSqlValue()))
                 .Select(it => ToString(new MethodCallExpressionModel()
                 {
                     Args = new List<MethodCallExpressionArgs>() {
@@ -712,6 +728,13 @@ namespace SqlSugar
         {
             return null;
         }
+        public virtual string JsonIndex(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter1 = model.Args[1];
+            return $"({parameter.MemberName}::json ->> {parameter1.MemberValue})";
+        }
+
 
         public virtual string JsonField(MethodCallExpressionModel model)
         {
@@ -748,6 +771,13 @@ namespace SqlSugar
             var name= IsNull(model);
             model.Args[0].MemberName = name;
             return AggregateSum(model);
+        }
+        public virtual string AggregateAvgNoNull(MethodCallExpressionModel model) 
+        {
+            model.Args.Add(new MethodCallExpressionArgs() { MemberValue = 0, MemberName = 0 });
+            var name = IsNull(model);
+            model.Args[0].MemberName = name;
+            return AggregateAvg(model);
         }
         public virtual string JsonListObjectAny(MethodCallExpressionModel model) 
         {
@@ -841,13 +871,17 @@ namespace SqlSugar
                                 {
                                     newValue = value.ToString();
                                 }
-                                else if(columnInfo.UnderType==SqlSugar.UtilConstants.GuidType)
+                                else if (value is Enum) 
+                                {
+                                    newValue = Convert.ToInt64(value)+"";
+                                }
+                                else if (columnInfo.UnderType == SqlSugar.UtilConstants.GuidType)
                                 {
                                     newValue = ToGuid(new MethodCallExpressionModel()
                                     {
-                                       Args=new List<MethodCallExpressionArgs>() 
+                                        Args = new List<MethodCallExpressionArgs>()
                                        {
-                                            new MethodCallExpressionArgs(){ 
+                                            new MethodCallExpressionArgs(){
                                               MemberValue=value.ToSqlValue(),
                                               MemberName=value.ToSqlValue()
                                             }
@@ -867,7 +901,7 @@ namespace SqlSugar
                                        }
                                     });
                                 }
-                                else  
+                                else
                                 {
                                     newValue = value.ToSqlValue();
                                 }
@@ -885,6 +919,85 @@ namespace SqlSugar
                 return " 1=2 ";
             }
             else 
+            {
+                return result;
+            }
+        }
+        public string ListAll(MethodCallExpressionModel model)
+        {
+            if (IsArrayAnyParameter(model))
+            {
+                return ListArrayAny(model);
+            }
+            StringBuilder sb = new StringBuilder();
+            if (model.Args[0].MemberValue != null && (model.Args[0].MemberValue as IList).Count > 0)
+            {
+                sb.Append(" ( ");
+                var listPar = model.Args[1].MemberValue as ListAnyParameter;
+                foreach (var item in (model.Args[0].MemberValue as IList))
+                {
+                    var sql = listPar.Sql;
+                    if (sb.Length > 3)
+                    {
+                        sb.Append("AND");
+                    }
+                    foreach (var columnInfo in listPar.Columns)
+                    {
+                        var replace = listPar.ConvetColumnFunc($"{listPar.Name}.{columnInfo.DbColumnName}");
+                        if (sql.Contains(replace))
+                        {
+                            var value = columnInfo.PropertyInfo.GetValue(item);
+                            var newValue = "null";
+                            if (value != null)
+                            {
+                                if (UtilMethods.IsNumber(columnInfo.UnderType.Name))
+                                {
+                                    newValue = value.ToString();
+                                }
+                                else if (columnInfo.UnderType == SqlSugar.UtilConstants.GuidType)
+                                {
+                                    newValue = ToGuid(new MethodCallExpressionModel()
+                                    {
+                                        Args = new List<MethodCallExpressionArgs>()
+                                       {
+                                            new MethodCallExpressionArgs(){
+                                              MemberValue=value.ToSqlValue(),
+                                              MemberName=value.ToSqlValue()
+                                            }
+                                       }
+                                    });
+                                }
+                                else if (columnInfo.UnderType == SqlSugar.UtilConstants.DateType)
+                                {
+                                    newValue = ToDate(new MethodCallExpressionModel()
+                                    {
+                                        Args = new List<MethodCallExpressionArgs>()
+                                       {
+                                            new MethodCallExpressionArgs(){
+                                              MemberValue=UtilMethods.GetConvertValue( value).ToSqlValue(),
+                                              MemberName=UtilMethods.GetConvertValue( value).ToSqlValue()
+                                            }
+                                       }
+                                    });
+                                }
+                                else
+                                {
+                                    newValue = value.ToSqlValue();
+                                }
+                            }
+                            sql = sql.Replace(replace, newValue);
+                        }
+                    }
+                    sb.Append(sql);
+                }
+                sb.Append(" ) ");
+            }
+            var result = sb.ToString();
+            if (result.IsNullOrEmpty())
+            {
+                return " 1=2 ";
+            }
+            else
             {
                 return result;
             }
@@ -925,7 +1038,7 @@ namespace SqlSugar
                         var newValue = "null";
                         if (value != null)
                         {
-                            if (UtilMethods.IsNumber(columnInfo.UnderType.Name))
+                            if (columnInfo.DbTableName!= "String" && UtilMethods.IsNumber(columnInfo.UnderType.Name))
                             {
                                 newValue = value.ToString();
                             }
@@ -1072,6 +1185,10 @@ namespace SqlSugar
         public virtual string FullTextContains(MethodCallExpressionModel mode) 
         {
             var columns = mode.Args[0].MemberName;
+            if (mode.Args[0].MemberValue is List<string>)
+            {
+                columns =   string.Join("|| ' ' ||", mode.Args[0].MemberValue as List<string>)  ;
+            }
             var searchWord = mode.Args[1].MemberName;
             return $"to_tsvector('chinese', {columns}) @@ to_tsquery('chinese', {searchWord})";
         }

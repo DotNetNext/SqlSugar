@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-
+ 
 namespace SqlSugar
 {
     public class PostgreSQLDbMaintenance : DbMaintenanceProvider
@@ -63,17 +63,14 @@ namespace SqlSugar
 						 pg_namespace n on n.oid = c.relnamespace and nspname='" + schema + @"'
                          inner join 
                          pg_tables z on z.tablename=c.relname
-                        where  relkind in('p', 'r') and relname not like 'pg_%' and relname not like 'sql_%' and schemaname='" + schema + "' order by relname";
+                        where  relkind in('p', 'r') and relname not like 'pg\_%' and relname not like 'sql\_%' and schemaname='" + schema + "' order by relname";
             }
         }
         protected override string GetViewInfoListSql
         {
             get
             {
-                return @"select cast(relname as varchar) as Name,cast(Description as varchar) from pg_description
-                         join pg_class on pg_description.objoid = pg_class.oid
-                         where objsubid = 0 and relname in (SELECT viewname from pg_views  
-                         WHERE schemaname ='"+GetSchema()+"')";
+                return @"select  table_name as name  from information_schema.views where table_schema  ='" + GetSchema()+"' ";
             }
         }
         #endregion
@@ -182,7 +179,7 @@ namespace SqlSugar
 
         protected override string IsAnyTableRemarkSql { get { throw new NotSupportedException(); } }
 
-        protected override string RenameTableSql => "alter table  {0} to {1}";
+        protected override string RenameTableSql => "alter table  {0} rename to {1}";
 
         protected override string CreateIndexSql
         {
@@ -250,9 +247,37 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override List<string> GetDbTypes()
+        {
+            var result = this.Context.Ado.SqlQuery<string>(@"SELECT DISTINCT data_type
+FROM information_schema.columns");
+            result.Add("varchar");
+            result.Add("timestamp");
+            result.Add("uuid");
+            result.Add("int2");
+            result.Add("int4");
+            result.Add("int8");
+            result.Add("time");
+            result.Add("date");
+            result.Add("float8");
+            result.Add("float4"); 
+            result.Add("json");
+            result.Add("jsonp");
+            return result.Distinct().ToList();
+        }
+        public override List<string> GetTriggerNames(string tableName)
+        {
+            return this.Context.Ado.SqlQuery<string>(@"SELECT tgname
+FROM pg_trigger
+WHERE tgrelid = '"+tableName+"'::regclass");
+        }
+        public override List<string> GetFuncList()
+        {
+            return this.Context.Ado.SqlQuery<string>(" SELECT routine_name\r\nFROM information_schema.routines\r\nWHERE lower( routine_schema ) = '" + GetSchema().ToLower() + "' AND routine_type = 'FUNCTION' ");
+        }
         public override List<string> GetIndexList(string tableName)
         {
-            var sql = $"SELECT indexname, indexdef FROM pg_indexes WHERE upper(tablename) = upper('{tableName}')";
+            var sql = $"SELECT indexname, indexdef FROM pg_indexes WHERE upper(tablename) = upper('{tableName}') AND upper(schemaname) = upper('{GetSchema()}')";
             return this.Context.Ado.SqlQuery<string>(sql);
         }
         public override List<string> GetProcList(string dbName)
@@ -279,11 +304,27 @@ namespace SqlSugar
                 string sql = string.Format(AddDefaultValueSql, this.SqlBuilder.GetTranslationColumnName(tableName), this.SqlBuilder.GetTranslationColumnName(columnName), "'"+defaultValue+"'");
                 return this.Context.Ado.ExecuteCommand(sql) > 0;
             }
+            else if (defaultValue?.ToLower()?.Contains("cast(") == true && defaultValue?.StartsWith("'") == true && defaultValue?.EndsWith("'") == true)
+            {
+                string sql = string.Format(AddDefaultValueSql, this.SqlBuilder.GetTranslationColumnName(tableName), this.SqlBuilder.GetTranslationColumnName(columnName), defaultValue.Replace("''","'").TrimEnd('\'').TrimStart('\''));
+                return this.Context.Ado.ExecuteCommand(sql) > 0;
+            }
+            else if (defaultValue?.ToLower()?.Contains("now()") == true)
+            {
+                string sql = string.Format(AddDefaultValueSql, this.SqlBuilder.GetTranslationColumnName(tableName), this.SqlBuilder.GetTranslationColumnName(columnName), defaultValue.TrimEnd('\'').TrimStart('\''));
+                return this.Context.Ado.ExecuteCommand(sql) > 0;
+            }
             else
             {
                 return base.AddDefaultValue(this.SqlBuilder.GetTranslationTableName(tableName), this.SqlBuilder.GetTranslationTableName(columnName), defaultValue);
             }
         }
+
+        public override bool RenameTable(string oldTableName, string newTableName)
+        {
+            return base.RenameTable(this.SqlBuilder.GetTranslationTableName(oldTableName), this.SqlBuilder.GetTranslationTableName(newTableName));
+        }
+
         public override bool AddColumnRemark(string columnName, string tableName, string description)
         {
             tableName = this.SqlBuilder.GetTranslationTableName(tableName);
@@ -298,6 +339,7 @@ namespace SqlSugar
         }
         public override bool UpdateColumn(string tableName, DbColumnInfo columnInfo)
         {
+            ConvertCreateColumnInfo(columnInfo);
             tableName = this.SqlBuilder.GetTranslationTableName(tableName);
             var columnName= this.SqlBuilder.GetTranslationColumnName(columnInfo.DbColumnName);
             string sql = GetUpdateColumnSql(tableName, columnInfo);
@@ -349,7 +391,13 @@ namespace SqlSugar
             });
             if (!GetDataBaseList(newDb).Any(it => it.Equals(databaseName, StringComparison.CurrentCultureIgnoreCase)))
             {
-                newDb.Ado.ExecuteCommand(string.Format(CreateDataBaseSql, this.SqlBuilder.SqlTranslationLeft+databaseName+this.SqlBuilder.SqlTranslationRight, databaseDirectory));
+                var isVast = this.Context?.CurrentConnectionConfig?.MoreSettings?.DatabaseModel==DbType.Vastbase;
+                var dbcompatibility = "";
+                if (isVast) 
+                {
+                    dbcompatibility=" dbcompatibility = 'PG'";
+                }
+                newDb.Ado.ExecuteCommand(string.Format(CreateDataBaseSql, this.SqlBuilder.SqlTranslationLeft+databaseName+this.SqlBuilder.SqlTranslationRight, databaseDirectory)+ dbcompatibility);
             }
             return true;
         }
@@ -379,9 +427,13 @@ namespace SqlSugar
             {
                 foreach (var item in columns)
                 {
+                    ConvertCreateColumnInfo(item);
                     if (item.DbColumnName.Equals("GUID", StringComparison.CurrentCultureIgnoreCase) && item.Length == 0)
                     {
-                        item.Length = 10;
+                        if (item.DataType?.ToLower() != "uuid")
+                        {
+                            item.Length = 10;
+                        }
                     }
                 }
             }
@@ -395,6 +447,15 @@ namespace SqlSugar
             sql = sql.Replace("$PrimaryKey", primaryKeyInfo);
             this.Context.Ado.ExecuteCommand(sql);
             return true;
+        }
+        protected override bool IsAnyDefaultValue(string tableName, string columnName, List<DbColumnInfo> columns)
+        {
+            var defaultValue = columns.Where(it => it.DbColumnName.Equals(columnName, StringComparison.CurrentCultureIgnoreCase)).First().DefaultValue;
+            if (defaultValue?.StartsWith("NULL::") == true) 
+            {
+                return false;
+            }
+            return defaultValue.HasValue();
         }
         protected override string GetCreateTableSql(string tableName, List<DbColumnInfo> columns)
         {
@@ -423,6 +484,14 @@ namespace SqlSugar
                 string addItem = string.Format(this.CreateTableColumn, this.SqlBuilder.GetTranslationColumnName(columnName.ToLower(isAutoToLowerCodeFirst)), dataType, dataSize, nullType, primaryKey, "");
                 if (item.IsIdentity)
                 {
+                    if (dataType?.ToLower() == "int") 
+                    {
+                        dataSize = "int4";
+                    }
+                    else if (dataType?.ToLower() == "long")
+                    {
+                        dataSize = "int8";
+                    }
                     string length = dataType.Substring(dataType.Length - 1);
                     string identityDataType = "serial" + length;
                     addItem = addItem.Replace(dataType, identityDataType);
@@ -529,7 +598,16 @@ namespace SqlSugar
 
             return schema;
         }
+        private static void ConvertCreateColumnInfo(DbColumnInfo x)
+        {
+            string[] array = new string[] { "uuid","int4", "text", "int2", "int8", "date", "bit", "text", "timestamp" };
 
+            if (array.Contains(x.DataType?.ToLower()))
+            {
+                x.Length = 0;
+                x.DecimalDigits = 0;
+            }
+        }
         #endregion
     }
 }

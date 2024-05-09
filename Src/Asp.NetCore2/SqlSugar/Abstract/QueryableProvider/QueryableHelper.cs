@@ -352,7 +352,7 @@ namespace SqlSugar
         {
             var childName = ((childListExpression as LambdaExpression).Body as MemberExpression).Member.Name;
             string parentIdName = GetParentName(parentIdExpression);
-            return BuildTree(list, pk, parentIdName, childName, rootValue)?.ToList() ?? default;
+            return UtilMethods.BuildTree(this.Context,list, pk, parentIdName, childName, rootValue)?.ToList() ?? default;
         }
 
         private static string GetParentName(Expression<Func<T, object>> parentIdExpression)
@@ -364,32 +364,6 @@ namespace SqlSugar
             }
             var parentIdName = (exp as MemberExpression).Member.Name;
             return parentIdName;
-        }
-
-        private static IEnumerable<T> BuildTree(IEnumerable<T> list, string idName, string pIdName, string childName, object rootValue)
-        {
-            var type = typeof(T);
-            var mainIdProp = type.GetProperty(idName);
-            var pIdProp = type.GetProperty(pIdName);
-            var childProp = type.GetProperty(childName);
-
-            var kvList = list.ToDictionary(x => mainIdProp.GetValue(x).ObjToString());
-            var group = list.GroupBy(x => pIdProp.GetValue(x).ObjToString());
-
-            var root = rootValue != null ? group.FirstOrDefault(x => x.Key == rootValue.ObjToString()) : group.FirstOrDefault(x => x.Key == null || x.Key == "" || x.Key == "0" || x.Key == Guid.Empty.ToString());
-
-            if (root != null)
-            {
-                foreach (var item in group)
-                {
-                    if (kvList.TryGetValue(item.Key, out var parent))
-                    {
-                        childProp.SetValue(parent, item.ToList());
-                    }
-                }
-            }
-
-            return root;
         }
 
         public List<T> GetTreeChildList(List<T> alllist, object pkValue, string pkName, string childName, string parentIdName)
@@ -679,6 +653,21 @@ namespace SqlSugar
                         if (!navInfo.AppendProperties.ContainsKey(name2Column.PropertyName))
                             navInfo.AppendProperties.Add(name2Column.PropertyName, name2Column.DbColumnName);
                     }
+                    if (navColumn.Navigat.NavigatType == NavigateType.Dynamic && name1.HasValue()) 
+                    {
+                        var jarray= JArray.Parse(name1);
+                        foreach (var jitem in jarray)
+                        {
+                            var columnInfo = entityColumns.FirstOrDefault(it => 
+                             it.PropertyName.EqualCase(jitem["m"].ToString())||
+                             it.DbColumnName.EqualCase(jitem["m"].ToString()));
+                            if (columnInfo != null)
+                            {
+                                if(!navInfo.AppendProperties.ContainsKey(columnInfo.PropertyName))
+                                   navInfo.AppendProperties.Add(columnInfo.PropertyName, columnInfo.DbColumnName);
+                            }
+                        }  
+                    }
                 }
             }
         }
@@ -815,7 +804,7 @@ namespace SqlSugar
                         var changeValue = UtilMethods.ChangeType2(kv.Value, propertyInfo.PropertyType);
                         propertyInfo.SetValue(addItem, changeValue);
                     }
-                    if (kv.Value == DBNull.Value && UtilMethods.GetUnderType(propertyInfo.PropertyType).IsIn(typeof(int), typeof(long)))
+                    else if (kv.Value == DBNull.Value && UtilMethods.GetUnderType(propertyInfo.PropertyType).IsIn(typeof(int), typeof(long)))
                     {
 
                         var changeValue = UtilMethods.ChangeType2(0, propertyInfo.PropertyType);
@@ -828,6 +817,10 @@ namespace SqlSugar
                     else if (UtilMethods.GetUnderType(propertyInfo.PropertyType) == typeof(Guid) && kv.Value is string)
                     {
                         propertyInfo.SetValue(addItem, new Guid(kv.Value.ToString()));
+                    }
+                    else if (UtilMethods.GetUnderType(propertyInfo.PropertyType) == typeof(int) && kv.Value is long)
+                    {
+                        propertyInfo.SetValue(addItem, Convert.ToInt32(kv.Value));
                     }
                     else
                     {
@@ -1265,6 +1258,21 @@ namespace SqlSugar
 
         #region  Other
 
+        private bool IsSingleWithChildTableQuery()
+        {
+            return this.QueryBuilder.IsSingle() && this.QueryBuilder.TableShortName.HasValue();
+        }
+
+        private Expression<Func<T, bool>> ReplaceMasterTableParameters(Expression<Func<T, bool>> expression)
+        {
+            var parameterName = (expression as LambdaExpression)?.Parameters?.FirstOrDefault()?.Name;
+            if (parameterName != null && parameterName != this.QueryBuilder.TableShortName)
+            {
+                expression = ExpressionTool.ChangeLambdaExpression(expression, parameterName, this.QueryBuilder.TableShortName);
+            }
+
+            return expression;
+        }
         private void orderPropertyNameByJoin(string orderPropertyName, OrderByType? orderByType)
         {
             var shortName = orderPropertyName.Split('.').FirstOrDefault();
@@ -1297,7 +1305,7 @@ namespace SqlSugar
             var name = this.SqlBuilder.GetTranslationTableName(TableName);
             var columns = "";
             sql = "";
-            var isSqlFunc = this.QueryBuilder.GetSelectValue?.Contains(")") == true && this.QueryBuilder.SelectValue is Expression;
+            var isSqlFunc = this.QueryBuilder.SelectValue is Expression;
             if (isSqlFunc)
             {
                 columns = "(";
@@ -1316,21 +1324,26 @@ namespace SqlSugar
             }
             else
             {
-                if (this.QueryBuilder.GetSelectValue != null && this.QueryBuilder.GetSelectValue.Contains(",")) ;
-                {
+               //if (this.QueryBuilder.GetSelectValue != null && this.QueryBuilder.GetSelectValue.Contains(",")) ;
+               //{
                     columns = "(";
                     foreach (var item in this.QueryBuilder.GetSelectValue.Split(','))
                     {
                         var column = Regex.Split(item, " AS ").Last().Trim();
+                        var columnInfo= columnList.FirstOrDefault(it => SqlBuilder.GetTranslationColumnName(it.PropertyName) == column);
+                        if (columnInfo != null) 
+                        {
+                            column = SqlBuilder.GetTranslationColumnName(columnInfo.DbColumnName);
+                        }
                         columns += $"{column},";
                     }
                     columns = columns.TrimEnd(',') + ")";
-                }
+                //}
                 sql = $" INSERT  INTO {name} {columns} " + sqlInfo.Key;
             }
         }
 
-        private string GetTableName(EntityInfo entity, string tableName)
+        internal string GetTableName(EntityInfo entity, string tableName)
         {
             var oldTableName = tableName;
             var attr = entity?.Type?.GetCustomAttribute<TenantAttribute>();
@@ -1338,10 +1351,13 @@ namespace SqlSugar
             if (attr != null && configId != attr.configId.ObjToString())
             {
                 var dbName = this.Context.Root.GetConnection(attr.configId).Ado.Connection.Database;
+                var guidPoint = Guid.NewGuid().ObjToString();
+                dbName=dbName.Replace(".", guidPoint);
                 tableName = this.Context.Root.GetConnection(attr.configId).EntityMaintenance.GetEntityInfo(entity.Type).DbTableName;
                 oldTableName = tableName;
                 tableName = this.QueryBuilder.LambdaExpressions.DbMehtods.GetTableWithDataBase
                 (this.QueryBuilder.Builder.GetTranslationColumnName(dbName), this.QueryBuilder.Builder.GetTranslationColumnName(tableName));
+                tableName = tableName.Replace(guidPoint, ".");
             }
 
             if (attr != null && configId != attr.configId.ObjToString())
@@ -1435,8 +1451,17 @@ namespace SqlSugar
                     if (!sql.Contains($"{SqlBuilder.GetTranslationColumnName(item.DbColumnName)} AS {SqlBuilder.GetTranslationColumnName(item.PropertyName)}")&&
                         !sql.Contains($"{SqlBuilder.GetTranslationColumnName(item.DbColumnName)} AS  {SqlBuilder.GetTranslationColumnName(item.PropertyName)}"))
                     {
-                        sql = $" {sql},{SqlBuilder.GetTranslationColumnName(item.DbColumnName)} AS {SqlBuilder.GetTranslationColumnName(item.PropertyName)} ";
-                        this.QueryBuilder.AutoAppendedColumns.Add(item.PropertyName);
+
+                        if (parameterIndex1==0&&this.QueryBuilder.JoinQueryInfos.Any())
+                        {
+                            sql = $" {sql},{SqlBuilder.GetTranslationColumnName(this.QueryBuilder.TableShortName)}.{SqlBuilder.GetTranslationColumnName(item.DbColumnName)} AS {SqlBuilder.GetTranslationColumnName(item.PropertyName)} ";
+                            this.QueryBuilder.AutoAppendedColumns.Add(item.PropertyName);
+                        }
+                        else
+                        {
+                            sql = $" {sql},{SqlBuilder.GetTranslationColumnName(item.DbColumnName)} AS {SqlBuilder.GetTranslationColumnName(item.PropertyName)} ";
+                            this.QueryBuilder.AutoAppendedColumns.Add(item.PropertyName);
+                        }
                     }
                 }
             }
@@ -1501,6 +1526,15 @@ namespace SqlSugar
             {
                 result.ShortName = this.SqlBuilder.GetTranslationColumnName(result.ShortName);
             }
+            if (this.EntityInfo.Type == result.EntityType&&this.QueryBuilder?.AsTables?.Count()==1) 
+            {
+                var tableName = this.QueryBuilder.AsTables.First().Value;
+                if (tableName.EndsWith(" MergeTable ")&&tableName?.Trim()==this.QueryBuilder.GetTableNameString?.Trim()) 
+                {
+                    this.QueryBuilder.MasterDbTableName = " (SELECT * FROM " + tableName + ")";
+                    this.QueryBuilder.AsTables?.Clear();
+                } 
+            }
             if (result.JoinIndex == 0)
             {
                 var firstPareamter = (express as LambdaExpression).Parameters.First();
@@ -1520,7 +1554,7 @@ namespace SqlSugar
                     else
                     {
                         var tableName = this.QueryBuilder.AsTables.First().Value;
-                        if (tableName != null && Regex.IsMatch(tableName, @"^\w+$"))
+                        if (tableName != null && Regex.IsMatch(tableName.Replace(".", "").Replace("-",""), @"^\w+$"))
                         {
                             tableName = SqlBuilder.GetTranslationTableName(tableName);
                         }
@@ -1564,7 +1598,8 @@ namespace SqlSugar
         {
             QueryBuilder.CheckExpression(expression, "OrderBy");
             var isSingle = QueryBuilder.IsSingle();
-            if (expression.ToString().IsContainsIn("Desc(", "Asc("))
+            var member=  ExpressionTool.RemoveConvert(ExpressionTool.GetLambdaExpressionBody(expression)) is MemberExpression;
+            if (member==false&&expression.ToString().IsContainsIn("Desc(", "Asc("))
             {
                 var orderValue = "";
                 var newExp = (expression as LambdaExpression).Body as NewExpression;
@@ -1677,8 +1712,9 @@ namespace SqlSugar
             }
             else
             {
+                expression=ExpressionTool.RemoveConvert(expression);
                 lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
-                result = lamResult.GetResultString();
+                result = lamResult.GetResultString(); 
             }
             GroupBy(result);
             return this;
@@ -1787,7 +1823,14 @@ namespace SqlSugar
             var moreSetts = this.Context.CurrentConnectionConfig.MoreSettings;
             if (moreSetts != null && moreSetts.IsWithNoLockQuery && string.IsNullOrEmpty(QueryBuilder.TableWithString))
             {
-                this.With(SqlWith.NoLock);
+                if (moreSetts.DisableWithNoLockWithTran&&this.Context.Ado.IsAnyTran())
+                {
+                    //No With(nolock)
+                }
+                else
+                {
+                    this.With(SqlWith.NoLock);
+                }
             }
         }
         protected List<TResult> GetData<TResult>(KeyValuePair<string, List<SugarParameter>> sqlObj)
@@ -1841,13 +1884,22 @@ namespace SqlSugar
             {
                 result = this.Context.Utilities.DataReaderToSelectArrayList<TResult>(dataReader);
             }
-            else if (entityType.IsAnonymousType() || isComplexModel)
+            else if (QueryBuilder.IsParameterizedConstructor || entityType.IsAnonymousType() || isComplexModel|| StaticConfig.EnableAot)
             {
-                result = this.Context.Utilities.DataReaderToList<TResult>(dataReader);
+                if (entityType.IsClass() == false && StaticConfig.EnableAot)
+                {
+                    result = this.Bind.DataReaderToList<TResult>(entityType, dataReader);
+                }
+                else
+                {
+                    result = this.Context.Utilities.DataReaderToList<TResult>(dataReader);
+                    if (StaticConfig.EnableAot)
+                        ResetNavigationPropertiesForAot(result);
+                }
             }
             else
             {
-                result = this.Bind.DataReaderToList<TResult>(entityType, dataReader);
+                result = this.Bind.DataReaderToList<TResult>(entityType, dataReader);              
             }
             SetContextModel(result, entityType);
             return result;
@@ -1878,16 +1930,43 @@ namespace SqlSugar
             {
                 result =await this.Context.Utilities.DataReaderToSelectArrayListAsync<TResult>(dataReader);
             }
-            else if (entityType.IsAnonymousType() || isComplexModel)
+            else if (entityType.IsAnonymousType() || isComplexModel||StaticConfig.EnableAot)
             {
-                result = await this.Context.Utilities.DataReaderToListAsync<TResult>(dataReader);
+                if (entityType.IsClass() == false && StaticConfig.EnableAot)
+                {
+                    result =await this.Bind.DataReaderToListAsync<TResult>(entityType, dataReader);
+                }
+                else
+                {
+                    result = await this.Context.Utilities.DataReaderToListAsync<TResult>(dataReader);
+                    if (StaticConfig.EnableAot)
+                        ResetNavigationPropertiesForAot(result);
+                }
             }
             else
             {
-                result = await this.Bind.DataReaderToListAsync<TResult>(entityType, dataReader);
+                result = await this.Bind.DataReaderToListAsync<TResult>(entityType, dataReader); 
             }
             SetContextModel(result, entityType);
             return result;
+        }
+        private void ResetNavigationPropertiesForAot<TResult>(List<TResult> result)
+        {
+            if (StaticConfig.EnableAot)
+            {
+                var entityInfo = this.Context.EntityMaintenance.GetEntityInfo<TResult>();
+                var navColumnList = entityInfo.Columns.Where(it => it.Navigat != null);
+                if (navColumnList.Any())
+                {
+                    foreach (var item in result)
+                    {
+                        foreach (var columnInfo in navColumnList)
+                        {
+                            columnInfo.PropertyInfo.SetValue(item, null);
+                        }
+                    }
+                }
+            }
         }
         protected void _InQueryable(Expression expression, KeyValuePair<string, List<SugarParameter>> sqlObj)
         {
@@ -1949,6 +2028,7 @@ namespace SqlSugar
                     TempDate = it.TempDate,
                     TypeName = it.TypeName,
                     UdtTypeName = it.UdtTypeName,
+                    IsNvarchar2=it.IsNvarchar2,
                     _Size = it._Size
                 }).ToList();
             }
@@ -1991,6 +2071,9 @@ namespace SqlSugar
             asyncQueryableBuilder.AppendColumns = this.Context.Utilities.TranslateCopy(this.QueryBuilder.AppendColumns);
             asyncQueryableBuilder.AppendValues = this.Context.Utilities.TranslateCopy(this.QueryBuilder.AppendValues);
             asyncQueryableBuilder.RemoveFilters = this.QueryBuilder.RemoveFilters?.ToArray();
+            asyncQueryableBuilder.Hints = this.QueryBuilder.Hints;
+            asyncQueryableBuilder.MasterDbTableName = this.QueryBuilder.MasterDbTableName;
+            asyncQueryableBuilder.IsParameterizedConstructor = this.QueryBuilder.IsParameterizedConstructor;
             if (this.QueryBuilder.AppendNavInfo != null)
             {
                 asyncQueryableBuilder.AppendNavInfo = new AppendNavInfo() 
@@ -2186,8 +2269,9 @@ namespace SqlSugar
                         };
                     var value = UtilMethods.GetSqlString(config.DbType, "@p", p, true);
                     sql = sql.Replace(re.Name, value);
-                    sql = SqlBuilder.RemoveParentheses(sql);
+               
                 }
+                sql = SqlBuilder.RemoveParentheses(sql);
                 sql = sql.Replace("@sugarIndex", index + "");
                 sqls.Add(sql);
 
@@ -2372,6 +2456,13 @@ namespace SqlSugar
 
         private bool MasterHasWhereFirstJoin()
         {
+            if (this.QueryBuilder.IsSingle() == false && this.QueryBuilder.SelectValue is LambdaExpression exp &&this.QueryBuilder.AsTables?.Any()==false) 
+            {
+                if (exp.Parameters.Count == this.QueryBuilder.JoinQueryInfos.Count+1)
+                {
+                    return true;
+                }
+            }
             return this.QueryBuilder.JoinIndex == 0 &&
                              this.QueryBuilder.IsSqlQuery == false &&
                                !this.QueryBuilder.AsTables.Any() &&

@@ -71,13 +71,29 @@ namespace SqlSugar
             Type sourceType = typeof(T);
             Dictionary<string, PropertyInfo> sourceProperties = entity.Columns.Where(it=> propertyNames.Contains(it.PropertyName)).ToDictionary(it=>it.PropertyName,it=>it.PropertyInfo);
 
-            Type dynamicType = LinqRuntimeTypeBuilder.GetDynamicType(sourceProperties.Values);
 
-            ParameterExpression sourceItem = Expression.Parameter(sourceType, "t");
-            IEnumerable<MemberBinding> bindings = dynamicType.GetRuntimeProperties().Select(p => Expression.Bind(p, Expression.Property(sourceItem, sourceProperties[p.Name]))).OfType<MemberBinding>();
+            if (StaticConfig.EnableAot)
+            {
+                Type dynamicType =typeof(T);
 
-            return Expression.Lambda<Func<T, object>>(Expression.MemberInit(
-                Expression.New(dynamicType.GetConstructor(Type.EmptyTypes)), bindings), sourceItem); 
+                ParameterExpression sourceItem = Expression.Parameter(sourceType, "t");
+                IEnumerable<MemberBinding> bindings = dynamicType.GetProperties().Where(it=> sourceProperties.Any(s=>s.Key==it.Name)).Select(p => Expression.Bind(p, Expression.Property(sourceItem, sourceProperties[p.Name]))).OfType<MemberBinding>();
+
+                return Expression.Lambda<Func<T, object>>(Expression.MemberInit(
+                    Expression.New(dynamicType.GetConstructor(Type.EmptyTypes)), bindings), sourceItem);
+            }
+            else
+            {
+
+
+                Type dynamicType = LinqRuntimeTypeBuilder.GetDynamicType(sourceProperties.Values);
+
+                ParameterExpression sourceItem = Expression.Parameter(sourceType, "t");
+                IEnumerable<MemberBinding> bindings = dynamicType.GetRuntimeProperties().Select(p => Expression.Bind(p, Expression.Property(sourceItem, sourceProperties[p.Name]))).OfType<MemberBinding>();
+
+                return Expression.Lambda<Func<T, object>>(Expression.MemberInit(
+                    Expression.New(dynamicType.GetConstructor(Type.EmptyTypes)), bindings), sourceItem);
+            }
         }
         public static Expression CreateExpressionSelectField(Type classType, string propertyName, Type propertyType)
         {
@@ -90,6 +106,19 @@ namespace SqlSugar
             // 创建Lambda表达式
             Type funcType = typeof(Func<,>).MakeGenericType(classType, propertyType);
             LambdaExpression lambda = Expression.Lambda(funcType, property, parameter);
+            return lambda;
+        }
+        public static Expression CreateExpressionSelectFieldObject(Type classType, string propertyName)
+        {
+            ParameterExpression parameter = Expression.Parameter(classType, "it");
+
+          
+            PropertyInfo propertyInfo = classType.GetProperty(propertyName);
+            MemberExpression property = Expression.Property(parameter, propertyInfo);
+             
+            UnaryExpression convert = Expression.Convert(property, typeof(object));
+            var funcType = typeof(Func<,>).MakeGenericType(classType, typeof(object));
+            LambdaExpression lambda = Expression.Lambda(funcType, convert, parameter);
             return lambda;
         }
     }

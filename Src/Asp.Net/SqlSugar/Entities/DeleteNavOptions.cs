@@ -33,6 +33,7 @@ namespace SqlSugar
     {
         public string[] IgnoreColumns { get; set; }
         public string[] UpdateColumns { get; set; }
+        public bool IsIgnoreAllNullColumns { get; set; }
         public bool IsInsertRoot { get; set; }
         public bool IsDisableUpdateRoot { get; set; }
         public bool IsDiffLogEvent { get; set; }
@@ -49,8 +50,12 @@ namespace SqlSugar
         public bool ManyToManyEnableLogicDelete { get; set; }
         public bool OneToManyDeleteAll { get;  set; }
         public bool OneToManyEnableLogicDelete { get; set; }
+        public bool OneToManyNoDeleteNull { get; set; }
+        public bool OneToManyInsertOrUpdate { get; set; }
         public Expression RootFunc { get; set; }
         public Expression CurrentFunc { get; set; }
+        public string[] IgnoreColumns { get; set; }
+        public bool IgnoreNullColumns { get; set; }
     }
 
     public class InsertNavOptions 

@@ -85,11 +85,13 @@
     <Compile Include="Abstract\DbMaintenanceProvider\Methods.cs" />
     <Compile Include="Abstract\DbMaintenanceProvider\Properties.cs" />
     <Compile Include="Abstract\AdoProvider\AdoProvider.cs" />
+    <Compile Include="Abstract\DeleteProvider\DeleteNavMethodInfo.cs" />
     <Compile Include="Abstract\DeleteProvider\LogicDeleteProvider.cs" />
     <Compile Include="Abstract\DeleteProvider\SplitTableDeleteByObjectProvider.cs" />
     <Compile Include="Abstract\DeleteProvider\SplitTableDeleteProvider.cs" />
     <Compile Include="Abstract\DeleteProvider\DeleteablePage.cs" />
     <Compile Include="Abstract\DynamicBuilder\CommonMethodInfo.cs" />
+    <Compile Include="Abstract\DynamicBuilder\DynamicOneselfType.cs" />
     <Compile Include="Abstract\DynamicBuilder\DynamicProperyBuilder.cs" />
     <Compile Include="Abstract\DynamicBuilder\Helper.cs" />
     <Compile Include="Abstract\DynamicBuilder\EmitTool.cs" />
@@ -121,9 +123,11 @@
     <Compile Include="Abstract\FastestProvider\Setting.cs" />
     <Compile Include="Abstract\FastestProvider\SplitFastest.cs" />
     <Compile Include="Abstract\FilterProvider\FilterProvider.cs" />
+    <Compile Include="Abstract\GridSave\GridSaveProvider.cs" />
     <Compile Include="Abstract\InsertableProvider\InsertablePage.cs" />
     <Compile Include="Abstract\InsertableProvider\InsertableHelper.cs" />
     <Compile Include="Abstract\InsertableProvider\InsertMethodInfo.cs" />
+    <Compile Include="Abstract\InsertableProvider\InsertNavMethodInfo.cs" />
     <Compile Include="Abstract\QueryableProvider\Entities\AppendNavInfoList.cs" />
     <Compile Include="Abstract\QueryableProvider\Entities\QueryableAppendColumn.cs" />
     <Compile Include="Abstract\QueryableProvider\Entities\QueryableFormat.cs" />
@@ -150,13 +154,17 @@
     <Compile Include="Abstract\SqlBuilderProvider\SqlBuilderProvider_Condition.cs" />
     <Compile Include="Abstract\SugarProvider\SqlSugarCoreProvider.cs" />
     <Compile Include="Abstract\DeleteProvider\DeleteMethodInfo.cs" />
+    <Compile Include="Abstract\UpdateProvider\ParameterUpdateable.cs" />
+    <Compile Include="Abstract\UpdateProvider\UpdateableFilter.cs" />
     <Compile Include="Abstract\UpdateProvider\UpdateablePage.cs" />
     <Compile Include="Abstract\UpdateProvider\UpdateableProviderT2.cs" />
     <Compile Include="Abstract\UpdateProvider\UpdateableProviderT3.cs" />
     <Compile Include="Abstract\UpdateProvider\UpdateableProviderT4.cs" />
+    <Compile Include="Abstract\UpdateProvider\UpdateExpressionMethodInfo.cs" />
     <Compile Include="Abstract\UpdateProvider\UpdateMethodInfo.cs" />
     <Compile Include="Abstract\UpdateProvider\UpdateableHelper.cs" />
     <Compile Include="Abstract\UpdateProvider\SplitTableUpdateByObjectProvider.cs" />
+    <Compile Include="Abstract\UpdateProvider\UpdateNavMethodInfo.cs" />
     <Compile Include="Entities\DiscriminatorObject .cs" />
     <Compile Include="Entities\PropertyMetadata.cs" />
     <Compile Include="Entities\DbFastestProperties.cs" />
@@ -169,6 +177,7 @@
     <Compile Include="ExpressionsToSql\Common\ListAnyParameter.cs" />
     <Compile Include="ExpressionsToSql\Common\MapperSql.cs" />
     <Compile Include="ExpressionsToSql\Common\NewExpressionInfo.cs" />
+    <Compile Include="ExpressionsToSql\Common\ParameterReplacer.cs" />
     <Compile Include="ExpressionsToSql\ResolveItems\BaseResolve_Append.cs" />
     <Compile Include="ExpressionsToSql\ResolveItems\BaseResolve_Helper.cs" />
     <Compile Include="ExpressionsToSql\ResolveItems\BaseResolve_Validate.cs" />
@@ -177,6 +186,7 @@
     <Compile Include="ExpressionsToSql\ResolveItems\BaseResolve_Item.cs" />
     <Compile Include="ExpressionsToSql\ResolveItems\MethodCallExpressionResolve_Helper.cs" />
     <Compile Include="ExpressionsToSql\ResolveItems\MethodCallExpressionResolve_BaseDateFomat.cs" />
+    <Compile Include="ExpressionsToSql\Subquery\Items\SubAsWithAttr.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubDistinctCount.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubFirst.cs" />
     <Compile Include="ExpressionsToSql\Subquery\Items\SubSelectStringJoin.cs" />
@@ -185,6 +195,9 @@
     <Compile Include="ExpressionsToSql\Subquery\Items\SubEnableTableFilter.cs" />
     <Compile Include="Interface\ICustomConditionalFunc.cs" />
     <Compile Include="Interface\ISugarDataConverter.cs" />
+    <Compile Include="Json2Sql\DynamicLinq\DynamicCoreHelper.cs" />
+    <Compile Include="Json2Sql\DynamicLinq\DynamicParameters.cs" />
+    <Compile Include="Json2Sql\DynamicLinq\SqlSugarDynamicExpressionParser.cs" />
     <Compile Include="Json2Sql\Entities\JsonDeleteResult.cs" />
     <Compile Include="Json2Sql\Entities\JsonInsertResult.cs" />
     <Compile Include="Json2Sql\Entities\JsonQueryResult.cs" />
@@ -287,6 +300,7 @@
     <Compile Include="Realization\QuestDB\SqlBuilder\QuestDBInsertBuilder.cs" />
     <Compile Include="Realization\QuestDB\SqlBuilder\QuestDBQueryBuilder.cs" />
     <Compile Include="Realization\QuestDB\SqlBuilder\QuestDBUpdateBuilder.cs" />
+    <Compile Include="SpliteTable\SplitTableExtensions.cs" />
     <Compile Include="SugarUnitOfWork.cs" />
     <Compile Include="Entities\SugarAbMapping.cs" />
     <Compile Include="Entities\JoinMapper.cs" />

@@ -94,7 +94,8 @@ namespace SqlSugar
                   new KeyValuePair<string, CSharpDataType>("smallint",CSharpDataType.@short),
                   new KeyValuePair<string, CSharpDataType>("integer",CSharpDataType.@int),
                   new KeyValuePair<string, CSharpDataType>("interval year to  month",CSharpDataType.@int),
-                  new KeyValuePair<string, CSharpDataType>("interval day to  second",CSharpDataType.@int),
+                  new KeyValuePair<string, CSharpDataType>("interval day to second",CSharpDataType.TimeSpan),
+                  new KeyValuePair<string, CSharpDataType>("intervalds",CSharpDataType.TimeSpan),
 
                   new KeyValuePair<string, CSharpDataType>("number",CSharpDataType.@int),
                   new KeyValuePair<string, CSharpDataType>("number",CSharpDataType.@float),
@@ -106,11 +107,11 @@ namespace SqlSugar
                   new KeyValuePair<string, CSharpDataType>("number",CSharpDataType.@long),
                   new KeyValuePair<string, CSharpDataType>("number",CSharpDataType.@bool),
                   new KeyValuePair<string, CSharpDataType>("boolean",CSharpDataType.@bool),
-                  new KeyValuePair<string, CSharpDataType>("bit",CSharpDataType.@bool),
+                  new KeyValuePair<string, CSharpDataType>("bit",CSharpDataType.@bool), 
+                  new KeyValuePair<string, CSharpDataType>("decimal",CSharpDataType.@decimal),
                   new KeyValuePair<string, CSharpDataType>("number",CSharpDataType.@decimal),
                   new KeyValuePair<string, CSharpDataType>("numeric",CSharpDataType.@decimal),
                   new KeyValuePair<string, CSharpDataType>("number",CSharpDataType.Single),
-                  new KeyValuePair<string, CSharpDataType>("decimal",CSharpDataType.@decimal),
                   new KeyValuePair<string, CSharpDataType>("decimal",CSharpDataType.Single),
                   new KeyValuePair<string, CSharpDataType>("dec",CSharpDataType.@decimal),
                   new KeyValuePair<string, SqlSugar.CSharpDataType>("double precision",CSharpDataType.@double),
@@ -148,6 +149,7 @@ namespace SqlSugar
                   new KeyValuePair<string, CSharpDataType>("time",CSharpDataType.TimeSpan),
 
                   new KeyValuePair<string, CSharpDataType>("float",CSharpDataType.@decimal),
+                  new KeyValuePair<string, CSharpDataType>("real",CSharpDataType.@float),
 
                   new KeyValuePair<string, CSharpDataType>("blob",CSharpDataType.byteArray),
                   new KeyValuePair<string, CSharpDataType>("image",CSharpDataType.byteArray),
