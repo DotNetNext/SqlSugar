@@ -1647,13 +1647,13 @@ namespace SqlSugar
             }
             else
             {
-                if (this.Context.QueryFilter.Any())
-                {
-                    foreach (var item in tableQueryables)
-                    {
-                        item.QueryBuilder.AppendFilter();
-                    }
-                }
+                //if (this.Context.QueryFilter.Any())
+                //{
+                //    foreach (var item in tableQueryables)
+                //    {
+                //        item.QueryBuilder.AppendFilter();
+                //    }
+                //}
                 var unionall = this.Context._UnionAll(tableQueryables.ToArray());
                 unionall.QueryBuilder.Includes = this.QueryBuilder.Includes;
                 if (unionall.QueryBuilder.Includes?.Any()==true) 
