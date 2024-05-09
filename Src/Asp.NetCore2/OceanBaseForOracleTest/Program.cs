@@ -1,5 +1,6 @@
 ﻿using OrmTest;
 using SqlSugar;
+using SqlSugar.OceanBaseForOracle;
 using static Npgsql.Replication.PgOutput.Messages.RelationMessage;
 
 namespace OceanBaseForOracle
@@ -10,6 +11,12 @@ namespace OceanBaseForOracle
         {
             Console.WriteLine("");
             Console.WriteLine("#### MasterSlave Start ####");
+
+            //程序启动时加上只要执行一次
+            InstanceFactory.CustomAssemblies =
+                     new System.Reflection.Assembly[] { typeof(OceanBaseForOracleProvider).Assembly };
+
+
             //OceanBase Oracle 模式用这个 DbType.OceanBaseForOracle
             //OceanBase MySql 模式用DbType.MySql不要用这个
             SqlSugarClient db = new SqlSugarClient(new ConnectionConfig()
