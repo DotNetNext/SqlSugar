@@ -224,20 +224,14 @@ namespace SqlSugar.OceanBaseForOracle
                 }
                 if (orderParameters.Select(it => it.ParameterName).GroupBy(it => it).Where(it => it.Count() > 1).Any())
                 {
-
-                    foreach (var param in parameters.OrderByDescending(it => it.ParameterName.Length))
-                    {
-                        sql = sql.Replace(param.ParameterName, helper.FormatValue(param.Value) + "");
-                    }
-                    orderParameters = new List<SugarParameter>();
+                    orderParameters = parameters.Where(it => sql.Contains(it.ParameterName))
+                                               .OrderBy(it => sql.IndexOf(it.ParameterName)).ToList();
                 }
-                else
+                foreach (var param in parameters.OrderByDescending(it => it.ParameterName.Length))
                 {
-                    foreach (var param in parameters.OrderByDescending(it => it.ParameterName.Length))
-                    {
                         sql = sql.Replace(param.ParameterName, "?");
-                    }
                 }
+               
             }
             OdbcCommand sqlCommand = new OdbcCommand(sql, (OdbcConnection)this.Connection);
             sqlCommand.CommandType = this.CommandType;
