@@ -1,6 +1,8 @@
 ﻿using OrmTest;
 using SqlSugar;
 using SqlSugar.OceanBaseForOracle;
+using System.Xml.Linq;
+using xTPLM.RFQ.Model.XRFQ_APP;
 using static Npgsql.Replication.PgOutput.Messages.RelationMessage;
 
 namespace OceanBaseForOracle
@@ -31,33 +33,44 @@ namespace OceanBaseForOracle
                 Console.WriteLine(db.Ado.Connection.ConnectionString);
             };
             Console.WriteLine("Master:");
-            db.Insertable(new Order() { Id=109,Name = "abc", CustomId = 1, CreateTime = DateTime.Now }).ExecuteCommand();
-            db.Deleteable<Order>().Where(m => m.Id == 109).ExecuteCommand();
-            db.Updateable<Order>().SetColumns(m => new Order
+            //db.Queryable<TRFQ_INSTRUCTIONS>().Where(m => m.REMARK==""&& m.PRICE_TYPE == 1 && m.PRICE >= 100 && m.PRICE_UPPER >= 100).ToList() ;
+            //db.Insertable<Dto>(new Dto { }).ExecuteCommand();
+            db.Insertable<TRFQ_INSTRUCTIONS>(new TRFQ_INSTRUCTIONS
             {
-                Name = "我是修改"
-            }).Where(m => m.Id == 2).ExecuteCommand();
-            Console.WriteLine("Slave:");
-            //var s = db.Queryable<Order>().First();
-            //var list = db.Queryable<Order>().Select(m => new Order
-            //{
-            //    Id = m.Id,
-            //    CreateTime = m.CreateTime,
-            //    CustomId = m.CustomId,
-            //    Idname = SqlFunc.Subqueryable<Order>().Where(s => s.Id == 2).Select(s => s.Name),
-            //    Name = m.Name,
-            //    Price = m.Price,
-            //}).ToList();
-            //var grouplist = db.Queryable<Order>().OrderByDescending(m=>m.Id).GroupBy(m=>new {m.Id,m.Name}).SelectMergeTable(m => new Order
-            //{
-            //    Id = m.Id,
-            //    Name = m.Name,
-            //    CreateTime= SqlFunc.AggregateMin(m.CreateTime),
-            //    Price= SqlFunc.AggregateSum(m.Price),
-            //}).OrderBy(m=>m.Id).Where(m=>m.Id==1).ToList();
-            //var orderlist = db.Queryable<Order>().OrderBy(m => new { m.Id, m.Name }).ToList();
-            var pageList = db.Queryable<Order>().OrderBy(m=>m.Id).ToOffsetPage(1, 3);
+                I_NAME = "测试新增",
+                END_TIME = DateTime.Now.Date,
+                REMARK = "我是备注",
+                CREATE_BY = 1,
+                UPDATE_TIME = DateTime.Now,
+                UPDATE_BY = 1,
+                STATUS = 0,
+                I_CODE = "090005",
+                A_TYPE = "SPT_BD",
+                M_TYPE = "X_CNBD",
+                ORDER_MONEY = 500,
+                I_TYPE = 1,
+                PRICE_TYPE = 3,
+                YTM = 0,
+                YTM_OE = 0,
+                PRICE = 100,
+                NETPRICE = 0,
+                TRADE_TYPE = "10",
+                PARTY_ID = 1000,
+                SECU_ACCID = "bss",
+                ORDER_DATE = DateTime.Now,
+                SET_DAYS = 0,
+                SOURCE_TYPE = "xRFQ"
+            }).ExecuteCommand();
             Console.WriteLine("#### MasterSlave End ####");
         }
+    }
+
+    public class Dto
+    {
+        public string PatID1 { get; set; }
+
+        public string PatID3 { get; set; }
+
+        public string PatID { get; set; }
     }
 }

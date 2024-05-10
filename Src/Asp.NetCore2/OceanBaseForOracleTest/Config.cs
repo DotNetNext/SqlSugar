@@ -16,7 +16,7 @@ namespace OrmTest
         /// Account have permission to create database
         /// 用有建库权限的数据库账号
         /// </summary>
-        public static string ConnectionString = "Driver={OceanBase ODBC 2.0 Driver};Server=172.19.9.9;Port=2883;Database=XIR_TRD;User=XIR_TRD@Xpia2C6G#obtest:1650773680;Password=aaAA11%%;Option=3;";
+        public static string ConnectionString = "Driver={OceanBase ODBC 2.0 Driver};Server=172.19.9.9;Port=2883;Database=XRFQ_APP;User=XRFQ_APP@xir#observer:1681125558;Password=xpar;Option=3;";
         /// <summary>
         /// Account have permission to create database
         /// 用有建库权限的数据库账号
