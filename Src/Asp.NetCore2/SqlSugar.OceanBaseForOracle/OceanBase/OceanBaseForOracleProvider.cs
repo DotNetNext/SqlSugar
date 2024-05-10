@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Data.Odbc;
 using System.Text.RegularExpressions;
+using System.Data.SqlTypes;
 namespace SqlSugar.OceanBaseForOracle
 {
     public class OceanBaseForOracleProvider : AdoProvider
@@ -222,7 +223,7 @@ namespace SqlSugar.OceanBaseForOracle
                                                   sql.IndexOf(it.ParameterName+"/"),
                                                   sql.IndexOf(it.ParameterName+"|"),
                                                   sql.IndexOf(it.ParameterName+"&"),
-                                                  sql.IndexOf(it.ParameterName)
+                                                  sql.EndsWith(it.ParameterName)?sql.IndexOf(it.ParameterName):0
                                            }.Where(it => it != 0).Max()).ToList();
                 foreach (var param in parameters.OrderByDescending(it => it.ParameterName.Length))
                 {
