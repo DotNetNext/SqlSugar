@@ -209,23 +209,8 @@ namespace SqlSugar.OceanBaseForOracle
                         p.ParameterName = this.SqlParameterKeyWord + p.ParameterName;
                     }
                 }
-                //由于Odbc参数都为?，用顺序进行匹配，则进行参数排序
-                string reg = string.Join('|', parameters.Select(m => m.ParameterName));
-                //通过正则匹配，为顺序输出，相同也会重复匹配
-                Regex parametersRegx = new Regex(reg);
-                MatchCollection matches = parametersRegx.Matches(sql);
-                foreach (Match pMatch in matches)
-                {
-                    SugarParameter mP = parameters.FirstOrDefault(m => m.ParameterName == pMatch.Value);
-                    if (mP != null)
-                    {
-                        orderParameters.Add(mP);
-                    }
-                }
-                if (orderParameters.Select(it => it.ParameterName).GroupBy(it => it).Where(it => it.Count() > 1).Any())
-                { 
-                    orderParameters = parameters.Where(it => sql.Contains(it.ParameterName))
-                                               .OrderBy(it => new List<int>() {
+                orderParameters = parameters.Where(it => sql.Contains(it.ParameterName))
+                                           .OrderBy(it => new List<int>() {
                                                   sql.IndexOf(it.ParameterName+")"),
                                                   sql.IndexOf(it.ParameterName+" "),
                                                   sql.IndexOf(it.ParameterName+"="),
@@ -235,13 +220,12 @@ namespace SqlSugar.OceanBaseForOracle
                                                   sql.IndexOf(it.ParameterName+","),
                                                   sql.IndexOf(it.ParameterName+"|"),
                                                   sql.IndexOf(it.ParameterName+"&"),
-                                               }.Where(it=>it!=0).Min()).ToList();
-                }
+                                           }.Where(it => it != 0).Min()).ToList();
                 foreach (var param in parameters.OrderByDescending(it => it.ParameterName.Length))
                 {
-                        sql = sql.Replace(param.ParameterName, "?");
+                    sql = sql.Replace(param.ParameterName, "?");
                 }
-               
+
             }
             OdbcCommand sqlCommand = new OdbcCommand(sql, (OdbcConnection)this.Connection);
             sqlCommand.CommandType = this.CommandType;
