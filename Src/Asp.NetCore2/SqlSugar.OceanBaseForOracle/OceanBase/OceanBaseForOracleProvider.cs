@@ -223,9 +223,19 @@ namespace SqlSugar.OceanBaseForOracle
                     }
                 }
                 if (orderParameters.Select(it => it.ParameterName).GroupBy(it => it).Where(it => it.Count() > 1).Any())
-                {
+                { 
                     orderParameters = parameters.Where(it => sql.Contains(it.ParameterName))
-                                               .OrderBy(it => sql.IndexOf(it.ParameterName)).ToList();
+                                               .OrderBy(it => new List<int>() {
+                                                  sql.IndexOf(it.ParameterName+")"),
+                                                  sql.IndexOf(it.ParameterName+" "),
+                                                  sql.IndexOf(it.ParameterName+"="),
+                                                  sql.IndexOf(it.ParameterName+"+"),
+                                                  sql.IndexOf(it.ParameterName+"-"),
+                                                  sql.IndexOf(it.ParameterName+";"),
+                                                  sql.IndexOf(it.ParameterName+","),
+                                                  sql.IndexOf(it.ParameterName+"|"),
+                                                  sql.IndexOf(it.ParameterName+"&"),
+                                               }.Where(it=>it!=0).Min()).ToList();
                 }
                 foreach (var param in parameters.OrderByDescending(it => it.ParameterName.Length))
                 {
