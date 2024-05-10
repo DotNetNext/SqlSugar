@@ -218,6 +218,8 @@ namespace SqlSugar.OceanBaseForOracle
                                                   sql.IndexOf(it.ParameterName+"-"),
                                                   sql.IndexOf(it.ParameterName+";"),
                                                   sql.IndexOf(it.ParameterName+","),
+                                                  sql.IndexOf(it.ParameterName+"*"),
+                                                  sql.IndexOf(it.ParameterName+"/"),
                                                   sql.IndexOf(it.ParameterName+"|"),
                                                   sql.IndexOf(it.ParameterName+"&"),
                                            }.Where(it => it != 0).Min()).ToList();
