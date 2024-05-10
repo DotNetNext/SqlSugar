@@ -211,20 +211,11 @@ namespace SqlSugar.OceanBaseForOracle
                     }
                 }
                 orderParameters = parameters.Where(it => sql.Contains(it.ParameterName))
-                                           .OrderBy(it => new List<int>() {
-                                                  sql.IndexOf(it.ParameterName+")"),
-                                                  sql.IndexOf(it.ParameterName+" "),
-                                                  sql.IndexOf(it.ParameterName+"="),
-                                                  sql.IndexOf(it.ParameterName+"+"),
-                                                  sql.IndexOf(it.ParameterName+"-"),
-                                                  sql.IndexOf(it.ParameterName+";"),
-                                                  sql.IndexOf(it.ParameterName+","),
-                                                  sql.IndexOf(it.ParameterName+"*"),
-                                                  sql.IndexOf(it.ParameterName+"/"),
-                                                  sql.IndexOf(it.ParameterName+"|"),
-                                                  sql.IndexOf(it.ParameterName+"&"),
-                                                  sql.EndsWith(it.ParameterName)?sql.IndexOf(it.ParameterName):0
-                                           }.Where(it => it != 0).Max()).ToList();
+                                           .Select(it =>new { p=it,sort= GetSortId(sql, it) })
+                                           .OrderBy(it=>it.sort)
+                                           .Where(it=>it.sort!=0)
+                                           .Select(it=>it.p)
+                                           .ToList();
                 foreach (var param in parameters.OrderByDescending(it => it.ParameterName.Length))
                 {
                     sql = sql.Replace(param.ParameterName, "?");
@@ -246,6 +237,26 @@ namespace SqlSugar.OceanBaseForOracle
             CheckConnection();
             return sqlCommand;
         }
+
+        private static int GetSortId(string sql, SugarParameter it)
+        {
+            return new List<int>() {                
+                                                  0,
+                                                  sql.IndexOf(it.ParameterName+")"),
+                                                  sql.IndexOf(it.ParameterName+" "),
+                                                  sql.IndexOf(it.ParameterName+"="),
+                                                  sql.IndexOf(it.ParameterName+"+"),
+                                                  sql.IndexOf(it.ParameterName+"-"),
+                                                  sql.IndexOf(it.ParameterName+";"),
+                                                  sql.IndexOf(it.ParameterName+","),
+                                                  sql.IndexOf(it.ParameterName+"*"),
+                                                  sql.IndexOf(it.ParameterName+"/"),
+                                                  sql.IndexOf(it.ParameterName+"|"),
+                                                  sql.IndexOf(it.ParameterName+"&"),
+                                                  sql.EndsWith(it.ParameterName)?sql.IndexOf(it.ParameterName):0
+                                           }.Max();
+        }
+
         public override void SetCommandToAdapter(IDataAdapter dataAdapter, DbCommand command)
         {
             ((OceanBaseForOracleDataAdapter)dataAdapter).SelectCommand = (OdbcCommand)command;
