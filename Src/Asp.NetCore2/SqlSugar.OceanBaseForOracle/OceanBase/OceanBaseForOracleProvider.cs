@@ -222,7 +222,8 @@ namespace SqlSugar.OceanBaseForOracle
                                                   sql.IndexOf(it.ParameterName+"/"),
                                                   sql.IndexOf(it.ParameterName+"|"),
                                                   sql.IndexOf(it.ParameterName+"&"),
-                                           }.Where(it => it != 0).Min()).ToList();
+                                                  sql.IndexOf(it.ParameterName)
+                                           }.Where(it => it != 0).Max()).ToList();
                 foreach (var param in parameters.OrderByDescending(it => it.ParameterName.Length))
                 {
                     sql = sql.Replace(param.ParameterName, "?");
