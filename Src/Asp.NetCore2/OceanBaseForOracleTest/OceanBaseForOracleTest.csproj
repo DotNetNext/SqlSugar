@@ -18,9 +18,4 @@
 		<ProjectReference Include="..\SqlSugar.OdbcCore\SqlSugar.OdbcCore.csproj" />
 		<ProjectReference Include="..\SqlSugar\SqlSugar.csproj" />
 	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="xTPLM.Base.Extend" Version="3.5.0" />
-	</ItemGroup>
 </Project>

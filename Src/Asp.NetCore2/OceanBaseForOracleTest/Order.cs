@@ -6,20 +6,17 @@ using System.Text;
 
 namespace OrmTest
 {
-    [SugarTable("ORDERTEST")]
+
     public class Order
     {
-        [SugarColumn(IsPrimaryKey = true)]
-        public decimal Id { get; set; }
+        [SugarColumn(IsPrimaryKey = true, OracleSequenceName ="Seq_Id")]
+        public int Id { get; set; }
 
         public string Name { get; set; }
         public decimal Price { get; set; }
         [SugarColumn(IsNullable = true)]
         public DateTime CreateTime { get; set; }
         [SugarColumn(IsNullable =true)]
-        public decimal CustomId { get; set; }
-
-        [SugarColumn(IsIgnore = true)]
-        public string Idname { get; set; }
+        public int CustomId { get; set; } 
     }
 }
