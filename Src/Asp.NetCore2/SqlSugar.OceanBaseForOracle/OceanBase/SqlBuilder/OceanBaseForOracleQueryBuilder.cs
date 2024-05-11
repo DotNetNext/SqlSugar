@@ -23,18 +23,17 @@ namespace SqlSugar.OceanBaseForOracle
         }
         public override string ToSqlString()
         {
-            //OB的Oracle模式，暂不支持Offsetpage
-            //if (this.Offset == "true")
-            //{
-            //    return OffsetPage();
-            //}
+            if (this.Offset == "true")
+            {
+                return OffsetPage();
+            }
             var oldTake = Take;
             var oldSkip = Skip;
             var isDistinctPage = IsDistinct && (Take > 1 || Skip > 1);
-            //if (isDistinctPage)
-            //{
-            //    return OffsetPage();
-            //}
+            if (isDistinctPage)
+            {
+                return OffsetPage();
+            }
             var result = _ToSqlString();
             //if (isDistinctPage)
             //{
@@ -58,12 +57,12 @@ namespace SqlSugar.OceanBaseForOracle
 
         private string OffsetPage()
         {
-            var skip = this.Skip;
+            var skip = this.Skip ?? 1;
             var take = this.Take;
             this.Skip = null;
             this.Take = null;
             this.Offset = null;
-            var pageSql = $"SELECT * FROM ( SELECT PAGETABLE1.*,ROWNUM PAGEINDEX FROM( {this.ToSqlString()}) PAGETABLE1 WHERE ROWNUM<={skip + take}) WHERE PAGEINDEX>={skip + 1}";
+            var pageSql = $"SELECT * FROM ( SELECT PAGETABLE1.*,ROWNUM PAGEINDEX FROM( {this.ToSqlString()}) PAGETABLE1 WHERE ROWNUM<={skip + take}) WHERE PAGEINDEX>={(skip == 0 ? skip : (skip + 1))}";
             return pageSql;
         }
 
@@ -88,6 +87,11 @@ namespace SqlSugar.OceanBaseForOracle
             sql.Replace(UtilConstants.ReplaceKey, isRowNumber ? (isIgnoreOrderBy ? null : rowNumberString) : null);
             if (isIgnoreOrderBy) { this.OrderByValue = oldOrderBy; return sql.ToString(); }
             var result = ToPageSql(sql.ToString(), this.Take, this.Skip);
+            if (this.GetGroupByString == null && this.Take == 1 && this.Skip == 0 && oldOrderBy == "ORDER BY sysdate ")
+            {
+                result = $" {sql.ToString()} {(this.WhereInfos.Any() ? "AND" : "WHERE")}   ROWNUM = 1 ";
+                result = result.Replace(rowNumberString, " ");
+            }
             if (ExternalPageIndex > 0)
             {
                 if (externalOrderBy.IsNullOrEmpty())
