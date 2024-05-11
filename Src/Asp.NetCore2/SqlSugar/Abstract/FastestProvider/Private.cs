@@ -5,7 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
-
+ 
 namespace SqlSugar 
 {
     public partial class FastestProvider<T> : IFastest<T> where T : class, new()
@@ -88,7 +88,12 @@ namespace SqlSugar
                 }
             }
             dt.TableName = GetTableName();
-            var columns = entityInfo.Columns;
+            var columns = entityInfo.Columns; 
+            if (columns.Where(it=>!it.IsIgnore).Count() > tempDataTable.Columns.Count)
+            {
+                var tempColumns = tempDataTable.Columns.Cast<DataColumn>().Select(it=>it.ColumnName);
+                columns = columns.Where(it => tempColumns.Any(s => s.EqualCase(it.DbColumnName))).ToList();
+            }
             var isMySql = this.context.CurrentConnectionConfig.DbType.IsIn(DbType.MySql, DbType.MySqlConnector);
             var isSqliteCore = SugarCompatible.IsFramework==false&& this.context.CurrentConnectionConfig.DbType.IsIn(DbType.Sqlite);
             foreach (var item in datas)
