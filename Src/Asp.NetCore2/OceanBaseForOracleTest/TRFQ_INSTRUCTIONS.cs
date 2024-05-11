@@ -1,8 +1,12 @@
 ﻿using SqlSugar;
+using System;
+using System.Collections.Generic;
+using xTPLM.Base.Extend;
+using xTPLM.RFQ.Common;
+using xTPLM.RFQ.Common.Enum;
 
 namespace xTPLM.RFQ.Model.XRFQ_APP
 {
-    ///<summary>
     ///指令表
     ///</summary>
     [SugarTable("TRFQ_INSTRUCTIONS")]
@@ -78,8 +82,8 @@ namespace xTPLM.RFQ.Model.XRFQ_APP
         /// Default:
         /// Nullable:True
         /// </summary>           
-        [SugarColumn(IsNullable = true)]
-        public int? STATUS { get; set; }
+        [SugarColumn(IsNullable = true, ColumnDataType = "INT")]
+        public InstructionsStatus? STATUS { get; set; }
 
         /// <summary>
         /// Desc:债券代码
@@ -118,16 +122,16 @@ namespace xTPLM.RFQ.Model.XRFQ_APP
         /// Default:
         /// Nullable:True
         /// </summary>           
-        [SugarColumn(IsNullable = true)]
-        public int? PRICE_TYPE { get; set; }
+        [SugarColumn(IsNullable = true, ColumnDataType = "INT")]
+        public PriceTypeEnum? PRICE_TYPE { get; set; }
 
         /// <summary>
         /// Desc:交易方向
         /// Default:
         /// Nullable:True
         /// </summary>           
-        [SugarColumn(IsNullable = true)]
-        public string TRADE_TYPE { get; set; }
+        [SugarColumn(IsNullable = true, ColumnDataType = "VARCHAR2(50 BYTE)")]
+        public TradeType? TRADE_TYPE { get; set; }
 
         /// <summary>
         /// Desc:交易对手
@@ -159,7 +163,7 @@ namespace xTPLM.RFQ.Model.XRFQ_APP
         /// Nullable:True
         /// </summary>           
         [SugarColumn(IsNullable = true)]
-        public int? IS_RATES { get; set; }
+        public RatesEnum? IS_RATES { get; set; }
 
         /// <summary>
         /// Desc:最小交易日期
@@ -238,16 +242,10 @@ namespace xTPLM.RFQ.Model.XRFQ_APP
         public string SUBMIT_MESSAGE { get; set; }
 
         /// <summary>
-        /// 到期收益率
-        /// </summary>
-        [SugarColumn(IsNullable = true)]
-        public decimal? YTM { get; set; }
-
-        /// <summary>
         /// 指令类型 1:精确指令 2:模糊指令
         /// </summary>
         [SugarColumn(IsNullable = false)]
-        public int I_TYPE { get; set; } = 1;
+        public InstructionsType I_TYPE { get; set; }
 
         /// <summary>
         /// 交易日期
@@ -260,8 +258,8 @@ namespace xTPLM.RFQ.Model.XRFQ_APP
         /// Default:
         /// Nullable:True
         /// </summary>           
-        [SugarColumn(IsNullable = true)]
-        public int SET_DAYS { get; set; }
+        [SugarColumn(IsNullable = true, ColumnDataType = "INT")]
+        public SetDays SET_DAYS { get; set; } = SetDays.T0;
 
         /// <summary>
         /// Desc:指令流水号 请勿使用
@@ -271,6 +269,12 @@ namespace xTPLM.RFQ.Model.XRFQ_APP
         [Obsolete]
         [SugarColumn(IsNullable = true)]
         public string I_NO { get; set; }
+
+        /// <summary>
+        /// 到期收益率
+        /// </summary>
+        [SugarColumn(IsNullable = true)]
+        public decimal? YTM { get; set; }
 
         /// <summary>
         /// 行权收益率
@@ -294,26 +298,93 @@ namespace xTPLM.RFQ.Model.XRFQ_APP
         /// 到期收益率上限 （模糊指令有效）
         /// </summary>
         [SugarColumn(IsNullable = true)]
-        public decimal? YTM_UPPER { get; set; }
+        public decimal? YTM_UPPER
+        {
+            get
+            {
+                if (this.I_TYPE != InstructionsType.Vague)
+                {
+                    return this.YTM;
+                }
+                else
+                {
+                    return this._ytm_upper;
+                }
+            }
+            set
+            {
+                this._ytm_upper = value;
+            }
+        }
 
         /// <summary>
         /// 行政收益率上限 （模式指令有效）
         /// </summary>
         [SugarColumn(IsNullable = true)]
-        public decimal? YTM_OE_UPPER { get; set; }
+        public decimal? YTM_OE_UPPER
+        {
+            get
+            {
+                if (this.I_TYPE != InstructionsType.Vague)
+                {
+                    return this.YTM_OE;
+                }
+                else
+                {
+                    return this._ytm_oe_upper;
+                }
+            }
+            set
+            {
+                this._ytm_oe_upper = value;
+            }
+        }
 
         /// <summary>
         /// 净价上限（模糊指令有效）
         /// </summary>
         [SugarColumn(IsNullable = true)]
-        public decimal? NETPRICE_UPPER { get; set; }
+        public decimal? NETPRICE_UPPER
+        {
+            get
+            {
+                if (this.I_TYPE != InstructionsType.Vague)
+                {
+                    return this.NETPRICE;
+                }
+                else
+                {
+                    return this._netprice_upper;
+                }
+            }
+            set
+            {
+                this._netprice_upper = value;
+            }
+        }
 
         /// <summary>
         /// 全价上限 （模糊指令有效）
         /// </summary>
         [SugarColumn(IsNullable = true)]
-        public decimal? PRICE_UPPER { get; set; }
-
+        public decimal? PRICE_UPPER
+        {
+            get
+            {
+                if (this.I_TYPE != InstructionsType.Vague)
+                {
+                    return this.PRICE;
+                }
+                else
+                {
+                    return this._price_upper;
+                }
+            }
+            set
+            {
+                this._price_upper = value;
+            }
+        }
 
         /// <summary>
         /// 提交审批时间
@@ -356,6 +427,366 @@ namespace xTPLM.RFQ.Model.XRFQ_APP
         /// </summary>
         [SugarColumn(IsNullable = true, Length = 128)]
         public string EXT_TRADE_ID { get; set; }
+
+        /// <summary>
+        /// 作废前状态
+        /// </summary>           
+        [SugarColumn(IsNullable = true)]
+        public InstructionsStatus? CANCEL_STATUS { get; set; }
+
+        #region 数据库忽略字段
+        /// <summary>
+        /// 已下发的面额
+        /// </summary>
+        [SugarColumn(IsIgnore = true)]
+        public decimal OrderMoneyRelease { get; set; }
+
+        /// <summary>
+        /// 剩余可用额度
+        /// </summary>
+        [SugarColumn(IsIgnore = true)]
+        public decimal REMAIN_LIMIT { get; set; }
+
+        /// <summary>
+        /// 进度
+        /// </summary>
+        [SugarColumn(IsIgnore = true)]
+        public decimal PROGRESS
+        {
+            get
+            {
+                if (this.ORDER_MONEY > 0)
+                {
+                    return Math.Round(this.OrderMoneyRelease / this.ORDER_MONEY.Value, 2) * 100;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 部门ID
+        /// </summary>
+        [SugarColumn(IsIgnore = true)]
+        public int? D_ID { get; set; }
+
+        /// <summary>
+        /// 部门名称
+        /// </summary>
+        [SugarColumn(IsIgnore = true)]
+        public string D_NAME { get; set; }
+
+        /// <summary>
+        /// 交易对手名称
+        /// </summary>
+        [SugarColumn(IsIgnore = true)]
+        public string PARTY_NAME { get; set; }
+
+        /// <summary>
+        /// 执行人（执行人有多个）
+        /// </summary>
+        [SugarColumn(IsIgnore = true)]
+        public List<int> UserId { get; set; }
+
+        /// <summary>
+        /// 执行人姓名
+        /// </summary>
+        [SugarColumn(IsIgnore = true)]
+        public string User_Desc { get; set; }
+
+        /// <summary>
+        /// 录入人名称
+        /// </summary>
+        [SugarColumn(IsIgnore = true)]
+        public string CREATE_BY_NAME { get; set; }
+
+        /// <summary>
+        /// 是否能够编辑或者提交审批
+        /// </summary>
+        [SugarColumn(IsIgnore = true)]
+        public bool IsEdit { get; set; }
+
+        /// <summary>
+        /// 价格类型描述
+        /// </summary>
+        [SugarColumn(IsIgnore = true)]
+        public string PRICE_TYPE_DESC
+        {
+            get
+            {
+                return this.PRICE_TYPE.GetValueOrDefault().GetDescription();
+            }
+        }
+
+        /// <summary>
+        /// 指令类型类型描述
+        /// </summary>
+        [SugarColumn(IsIgnore = true)]
+        public string I_TYPE_DESC => this.I_TYPE.GetDescription();
+
+        /// <summary>
+        /// 状态描述
+        /// </summary>
+        [SugarColumn(IsIgnore = true)]
+        public string STATUS_DESC
+        {
+            get
+            {
+                if (this.STATUS.HasValue)
+                {
+                    return this.STATUS.Value.GetDescription();
+                }
+                return string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// 交易方向描述
+        /// </summary>
+        [SugarColumn(IsIgnore = true)]
+        public string TRADE_TYPE_DESC
+        {
+            get
+            {
+                if (this.TRADE_TYPE.HasValue)
+                {
+                    return this.TRADE_TYPE.Value.GetDescription();
+                }
+                return string.Empty;
+            }
+
+        }
+
+        /// <summary>
+        /// 清算速度描述
+        /// </summary>
+        [SugarColumn(IsIgnore = true)]
+        public string SET_DAYS_DESC
+        {
+            get
+            {
+                return this.SET_DAYS.GetDescription();
+            }
+        }
+
+        /// <summary>
+        /// 价格范围
+        /// </summary>
+        [SugarColumn(IsIgnore = true)]
+        public string PRICE_MIN
+        {
+            get
+            {
+                string result = string.Empty;
+                if (this.PRICE_TYPE.HasValue)
+                {
+                    if (this.I_TYPE == InstructionsType.Vague)
+                    {
+                        switch (this.PRICE_TYPE.Value)
+                        {
+                            case PriceTypeEnum.YTM:
+                                result = $"{this.YTM}-{this.YTM_UPPER}";
+                                break;
+                            case PriceTypeEnum.YTM_OE:
+                                result = $"{this.YTM_OE}-{this.YTM_OE_UPPER}";
+                                break;
+                            case PriceTypeEnum.NETPRICE:
+                                result = $"{this.NETPRICE}-{this.NETPRICE_UPPER}";
+                                break;
+                            case PriceTypeEnum.PRICE:
+                                result = $"{this.PRICE}-{this.PRICE_UPPER}";
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        switch (this.PRICE_TYPE.Value)
+                        {
+                            case PriceTypeEnum.YTM:
+                                result = this.YTM.ToString();
+                                break;
+                            case PriceTypeEnum.YTM_OE:
+                                result = this.YTM_OE.ToString();
+                                break;
+                            case PriceTypeEnum.NETPRICE:
+                                result = this.NETPRICE.ToString();
+                                break;
+                            case PriceTypeEnum.PRICE:
+                                result = this.PRICE.ToString();
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// 内证账户名称
+        /// </summary>
+        [SugarColumn(IsIgnore = true)]
+        public string SECU_ACCNAME { get; set; }
+
+        /// <summary>
+        ///发行人
+        /// </summary>       
+        [SugarColumn(IsIgnore = true)]
+        public string ISSUER { get; set; }
+
+        /// <summary>
+        /// 债券名称
+        /// </summary>
+        [SugarColumn(IsIgnore = true)]
+        public string B_NAME { get; set; }
+
+        /// <summary>
+        /// 交易市场描述
+        /// </summary>
+        [SugarColumn(IsIgnore = true)]
+        public string M_TYPE_DESC
+        {
+            get
+            {
+                if (!string.IsNullOrWhiteSpace(this.M_TYPE))
+                {
+                    return MarketType.GetDescription(this.M_TYPE);
+                }
+                return string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// 关联有效询价列表（询价单状态已撤销或无记录或审批拒绝，视为无效）
+        /// </summary>
+        [SugarColumn(IsIgnore = true)]
+        public List<int> ValidQuotaIDList { get; set; }
+
+        #endregion
+
+        #region 资管字段
+        /// <summary>
+        /// 产品ID（内资代码）
+        /// </summary>
+        [SugarColumn(IsNullable = true, Length = 128)]
+        public string CASH_ACCID { get; set; }
+
+        /// <summary>
+        /// 待确认操作类型
+        /// </summary>
+        [SugarColumn(IsNullable = true, Length = 50)]
+        public ActionType? CONFIRM_ACTION_TYPE { get; set; }
+
+
+        #region 数据库忽略字段
+
+        /// <summary>
+        /// 产品名称
+        /// </summary>
+        [SugarColumn(IsIgnore = true)]
+        public string PRODUCT_NAME { get; set; }
+
+        #endregion
+
+        #endregion
+
+        /// <summary>
+        /// 价格处理
+        /// </summary>
+        public void PriceMath()
+        {
+            if (this.NETPRICE.HasValue)
+            {
+                this.NETPRICE = Math.Round(this.NETPRICE.Value, 4, MidpointRounding.AwayFromZero);
+            }
+            if (this.NETPRICE_UPPER.HasValue)
+            {
+                this.NETPRICE_UPPER = Math.Round(this.NETPRICE_UPPER.Value, 4, MidpointRounding.AwayFromZero);
+            }
+            if (this.YTM.HasValue)
+            {
+                this.YTM = Math.Round(this.YTM.Value, 4, MidpointRounding.AwayFromZero);
+            }
+            if (this.YTM_UPPER.HasValue)
+            {
+                this.YTM_UPPER = Math.Round(this.YTM_UPPER.Value, 4, MidpointRounding.AwayFromZero);
+            }
+            if (this.YTM_OE.HasValue)
+            {
+                this.YTM_OE = Math.Round(this.YTM_OE.Value, 4, MidpointRounding.AwayFromZero);
+            }
+            if (this.YTM_OE_UPPER.HasValue)
+            {
+                this.YTM_OE_UPPER = Math.Round(this.YTM_OE_UPPER.Value, 4, MidpointRounding.AwayFromZero);
+            }
+            if (this.PRICE.HasValue)
+            {
+                this.PRICE = Math.Round(this.PRICE.Value, 4, MidpointRounding.AwayFromZero);
+            }
+            if (this.PRICE_UPPER.HasValue)
+            {
+                this.PRICE_UPPER = Math.Round(this.PRICE_UPPER.Value, 4, MidpointRounding.AwayFromZero);
+            }
+        }
+
+    }
+
+
+    /// <summary>
+    /// 指令排序对象
+    /// </summary>
+    public class InsOrderList
+    {
+
+        /// <summary>
+        /// 债券代码
+        /// </summary>
+        public string I_CODE { get; set; }
+
+        /// <summary>
+        /// 资产类型
+        /// </summary>
+        public string A_TYPE { get; set; }
+
+        /// <summary>
+        /// 交易市场
+        /// </summary>
+        public string M_TYPE { get; set; }
+
+        /// <summary>
+        /// 债券名称
+        /// </summary>
+        public string B_NAME { get; set; }
+
+        /// <summary>
+        /// 交易市场描述
+        /// </summary>
+        public string M_TYPE_DESC
+        {
+            get
+            {
+                if (!string.IsNullOrWhiteSpace(this.M_TYPE))
+                {
+                    return MarketType.GetDescription(this.M_TYPE);
+                }
+                return string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// 最小ID
+        /// </summary>
+        public int MinId { get; set; }
+
+        /// <summary>
+        /// 子列表
+        /// </summary>
+        public List<TRFQ_INSTRUCTIONS> ChildList { get; set; }
     }
 
 }
