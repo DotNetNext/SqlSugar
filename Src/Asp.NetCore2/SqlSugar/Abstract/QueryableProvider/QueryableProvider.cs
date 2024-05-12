@@ -1235,8 +1235,16 @@ namespace SqlSugar
         public ISugarQueryable<T> SampleBy(int timeNumber, SampleByUnit timeType) 
         {
             SampleByUnit sampleBy = timeType;
-            string sql = "SAMPLE BY "+timeNumber + sampleBy.ToString().Substring(0, 1).ToLower();
-            this.QueryBuilder.SampleBy = sql;
+            if (timeType == SampleByUnit.Month)
+            {
+                string sql = "SAMPLE BY " + timeNumber + sampleBy.ToString().Substring(0, 1);
+                this.QueryBuilder.SampleBy = sql;
+            }
+            else
+            {
+                string sql = "SAMPLE BY "+timeNumber + sampleBy.ToString().Substring(0, 1).ToLower();
+                this.QueryBuilder.SampleBy = sql;
+            }
             return this;
         }
         public ISugarQueryable<T> SampleBy(int timeNumber, string timeType)
