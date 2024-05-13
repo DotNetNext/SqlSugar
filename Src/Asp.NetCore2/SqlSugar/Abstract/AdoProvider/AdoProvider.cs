@@ -1678,7 +1678,14 @@ namespace SqlSugar
             }
             else if (entityType.IsAnonymousType()||StaticConfig.EnableAot)
             {
-                result = this.Context.Utilities.DataReaderToListNoUsing<TResult>(dataReader);
+                if (StaticConfig.EnableAot&& entityType==UtilConstants.StringType)
+                {
+                    result = this.Context.Ado.DbBind.DataReaderToListNoUsing<TResult>(entityType, dataReader);
+                }
+                else
+                {
+                    result = this.Context.Utilities.DataReaderToListNoUsing<TResult>(dataReader);
+                }
             }
             else
             {
@@ -1700,7 +1707,14 @@ namespace SqlSugar
             }
             else if (entityType.IsAnonymousType() || StaticConfig.EnableAot)
             {
-                result =await this.Context.Utilities.DataReaderToListAsyncNoUsing<TResult>(dataReader);
+                if (StaticConfig.EnableAot && entityType == UtilConstants.StringType)
+                {
+                    result =  await this.Context.Ado.DbBind.DataReaderToListNoUsingAsync<TResult>(entityType, dataReader);
+                }
+                else
+                {
+                    result =await this.Context.Utilities.DataReaderToListAsyncNoUsing<TResult>(dataReader);
+                }
             }
             else
             {
