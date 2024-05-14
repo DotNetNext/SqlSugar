@@ -11,6 +11,8 @@ namespace SqlSugar
         Hour,
         Day,
         Month,
-        Year
+        Year,
+        Millisecond,
+        Microsecond,
     }
 }
