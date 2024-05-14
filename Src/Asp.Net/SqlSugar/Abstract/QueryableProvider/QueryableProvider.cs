@@ -1240,6 +1240,16 @@ namespace SqlSugar
                 string sql = "SAMPLE BY " + timeNumber + sampleBy.ToString().Substring(0, 1);
                 this.QueryBuilder.SampleBy = sql;
             }
+            else if (timeType == SampleByUnit.Millisecond)
+            {
+                string sql = "SAMPLE BY " + timeNumber + " T ";
+                this.QueryBuilder.SampleBy = sql;
+            }
+            else if (timeType == SampleByUnit.Microsecond)
+            {
+                string sql = "SAMPLE BY " + timeNumber + " U ";
+                this.QueryBuilder.SampleBy = sql;
+            }
             else
             {
                 string sql = "SAMPLE BY "+timeNumber + sampleBy.ToString().Substring(0, 1).ToLower();
