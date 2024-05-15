@@ -146,12 +146,7 @@ namespace OrmTest
                     throw new Exception("unit error");
                 }
             }
-
-
-
-            Console.WriteLine("用例跑完");
-
-            Console.ReadKey();
+             
 
         }
 
