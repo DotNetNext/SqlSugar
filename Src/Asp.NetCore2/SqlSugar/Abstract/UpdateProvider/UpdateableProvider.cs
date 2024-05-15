@@ -113,6 +113,10 @@ namespace SqlSugar
                 return 0;
             }
             var result = 0;
+            if (this.Context.CurrentConnectionConfig?.MoreSettings?.IsCorrectErrorSqlParameterName == true) 
+            {
+                UpdateBuilder.Parameters = UpdateBuilder.Parameters.Where(it => UtilMethods.NoErrorParameter(it.ParameterName)).ToList();
+            }
             if (sql != Environment.NewLine)
             {
                 result = this.Ado.ExecuteCommand(sql, UpdateBuilder.Parameters == null ? null : UpdateBuilder.Parameters.ToArray());
