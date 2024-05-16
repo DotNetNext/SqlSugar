@@ -470,6 +470,10 @@ namespace SqlSugar
             PropertyText = PropertyText.Replace(DbFirstTemplate.KeySugarColumn, SugarColumnText);
             PropertyText = PropertyText.Replace(DbFirstTemplate.KeyPropertyType, typeString);
             PropertyText = PropertyText.Replace(DbFirstTemplate.KeyPropertyName, propertyName);
+            if (typeString == "string"&&this.IsStringNullable&&item.IsNullable==false&&PropertyText.EndsWith("{get;set;}\r\n")) 
+            {
+                PropertyText=PropertyText.Replace("{get;set;}\r\n", "{get;set;} = string.Empty;\r\n");
+            }
             return PropertyText;
         }
         private string GetEnityName(DbColumnInfo item)
