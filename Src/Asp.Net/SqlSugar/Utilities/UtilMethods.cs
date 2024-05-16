@@ -1685,5 +1685,29 @@ namespace SqlSugar
             return string.Join(" AND ", wheres);
         }
 
+        internal static bool NoErrorParameter(string parameterName)
+        {
+            if (parameterName==null)
+            {
+                return false;
+            }
+            if (parameterName.Contains(" ")) 
+            {
+                return false;
+            }
+            if (parameterName.Contains("("))
+            {
+                return false;
+            }
+            if (parameterName.Contains("（"))
+            {
+                return false;
+            }
+            if (parameterName.Contains("."))
+            {
+                return false;
+            }
+            return true;
+        }
     }
 }

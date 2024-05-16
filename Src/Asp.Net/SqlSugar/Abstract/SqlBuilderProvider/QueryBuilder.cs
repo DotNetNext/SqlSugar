@@ -909,6 +909,10 @@ namespace SqlSugar
                 {
                     pre = Builder.GetTranslationColumnName(TableShortName) + ".";
                 }
+                else if (this.EasyJoinInfos?.Count>0 && this.EasyJoinInfos.Any(it => TableShortName.HasValue()))
+                {
+                    pre = Builder.GetTranslationColumnName(TableShortName) + ".";
+                }
                 var columns = this.Context.EntityMaintenance.GetEntityInfo(this.EntityType).Columns.Where(it => !it.IsIgnore);
                 if (this.IgnoreColumns.HasValue())
                 {
