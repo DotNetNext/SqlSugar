@@ -21,6 +21,14 @@ namespace SqlSugar
             this.QueryBuilder.Hints = hints;
             return this;
         }
+        public new ISugarQueryable<T,T2> OrderByPropertyNameIF(bool isOrderBy, string orderPropertyName, OrderByType? orderByType = null)
+        {
+            if (isOrderBy)
+            {
+                return this.OrderByPropertyName(orderPropertyName, orderByType);
+            }
+            return this;
+        }
         public new ISugarQueryable<T, T2> OrderByPropertyName(string orderPropertyName, OrderByType? orderByType = null)
         {
             base.OrderByPropertyName(orderPropertyName, orderByType);
@@ -690,6 +698,14 @@ namespace SqlSugar
         public new ISugarQueryable<T, T2,T3> Hints(string hints)
         {
             this.QueryBuilder.Hints = hints;
+            return this;
+        }
+        public new ISugarQueryable<T, T2,T3> OrderByPropertyNameIF(bool isOrderBy, string orderPropertyName, OrderByType? orderByType = null)
+        {
+            if (isOrderBy)
+            {
+                return this.OrderByPropertyName(orderPropertyName, orderByType);
+            }
             return this;
         }
         public new ISugarQueryable<T, T2, T3> OrderByPropertyName(string orderPropertyName, OrderByType? orderByType = null)
@@ -1467,6 +1483,14 @@ namespace SqlSugar
         public new ISugarQueryable<T, T2, T3,T4> Hints(string hints)
         {
             this.QueryBuilder.Hints = hints;
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3,T4> OrderByPropertyNameIF(bool isOrderBy, string orderPropertyName, OrderByType? orderByType = null)
+        {
+            if (isOrderBy)
+            {
+                return this.OrderByPropertyName(orderPropertyName, orderByType);
+            }
             return this;
         }
         public new ISugarQueryable<T, T2, T3, T4> OrderByPropertyName(string orderPropertyName, OrderByType? orderByType = null)
@@ -2270,6 +2294,14 @@ namespace SqlSugar
         public new ISugarQueryable<T, T2, T3, T4, T5> OrderByPropertyName(string orderPropertyName, OrderByType? orderByType = null)
         {
             base.OrderByPropertyName(orderPropertyName, orderByType);
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4,T5> OrderByPropertyNameIF(bool isOrderBy, string orderPropertyName, OrderByType? orderByType = null)
+        {
+            if (isOrderBy)
+            {
+                return this.OrderByPropertyName(orderPropertyName, orderByType);
+            }
             return this;
         }
         public new ISugarQueryable<T, T2,T3, T4,T5> SampleBy(int timeNumber, SampleByUnit timeType)
