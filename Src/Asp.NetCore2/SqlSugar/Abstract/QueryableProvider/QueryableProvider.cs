@@ -1263,6 +1263,14 @@ namespace SqlSugar
             this.QueryBuilder.SampleBy = sql;
             return this;
         }
+        public ISugarQueryable<T> OrderByPropertyNameIF(bool isOrderBy, string orderPropertyName, OrderByType? orderByType = null) 
+        {
+            if (isOrderBy) 
+            {
+                return this.OrderByPropertyName(orderPropertyName,orderByType);
+            }
+            return this;
+        }
         public ISugarQueryable<T> OrderByPropertyName(string orderPropertyName, OrderByType? orderByType = null) 
         {
             if (orderPropertyName.HasValue()) 

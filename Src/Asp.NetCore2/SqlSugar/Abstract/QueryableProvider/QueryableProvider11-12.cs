@@ -20,6 +20,14 @@ namespace SqlSugar
             this.QueryBuilder.Hints = hints;
             return this;
         }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10,T11> OrderByPropertyNameIF(bool isOrderBy, string orderPropertyName, OrderByType? orderByType = null)
+        {
+            if (isOrderBy)
+            {
+                return this.OrderByPropertyName(orderPropertyName, orderByType);
+            }
+            return this;
+        }
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9,T10,T11> OrderByPropertyName(string orderPropertyName, OrderByType? orderByType = null)
         {
             base.OrderByPropertyName(orderPropertyName, orderByType);
@@ -755,6 +763,14 @@ namespace SqlSugar
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> Hints(string hints)
         {
             this.QueryBuilder.Hints = hints;
+            return this;
+        }
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> OrderByPropertyNameIF(bool isOrderBy, string orderPropertyName, OrderByType? orderByType = null)
+        {
+            if (isOrderBy)
+            {
+                return this.OrderByPropertyName(orderPropertyName, orderByType);
+            }
             return this;
         }
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12> OrderByPropertyName(string orderPropertyName, OrderByType? orderByType = null)
