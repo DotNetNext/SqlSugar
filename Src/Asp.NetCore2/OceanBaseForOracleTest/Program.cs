@@ -28,36 +28,33 @@ namespace OceanBaseForOracle
             });
             db.Aop.OnLogExecuted = (s, p) =>
             {
-                Console.WriteLine(db.Ado.Connection.ConnectionString);
+                Console.WriteLine(s);
             };
-            Console.WriteLine("Master:");
-            db.Insertable(new Order() { Id = 109, Name = "abc", CustomId = 1, CreateTime = DateTime.Now }).ExecuteCommand();
-            db.Deleteable<Order>().Where(m => m.Id == 109).ExecuteCommand();
-            db.Updateable<Order>().SetColumns(m => new Order
+
+            Console.WriteLine(db.Ado.IsValidConnection());
+            if (db.DbMaintenance.IsAnyTable("OrderTest", false))
+            {
+                //创建表
+                db.DbMaintenance.DropTable<OrderTest>();
+                //测试修改表
+                db.CodeFirst.InitTables<OrderTest>();
+                db.CodeFirst.InitTables<OrderTest>();
+            }
+
+            db.Insertable(new OrderTest() { Id = 109, Name = "abc", CustomId = 1, CreateTime = DateTime.Now })
+            .ExecuteReturnSnowflakeId();
+
+            db.Deleteable<OrderTest>().Where(m => m.Id == 109).ExecuteCommand();
+
+            db.Updateable<OrderTest>().SetColumns(m => new OrderTest
             {
                 Name = "我是修改"
             }).Where(m => m.Id == 2).ExecuteCommand();
-            Console.WriteLine("Slave:");
-            //var s = db.Queryable<Order>().First();
-            //var list = db.Queryable<Order>().Select(m => new Order
-            //{
-            //    Id = m.Id,
-            //    CreateTime = m.CreateTime,
-            //    CustomId = m.CustomId,
-            //    Idname = SqlFunc.Subqueryable<Order>().Where(s => s.Id == 2).Select(s => s.Name),
-            //    Name = m.Name,
-            //    Price = m.Price,
-            //}).ToList();
-            //var grouplist = db.Queryable<Order>().OrderByDescending(m=>m.Id).GroupBy(m=>new {m.Id,m.Name}).SelectMergeTable(m => new Order
-            //{
-            //    Id = m.Id,
-            //    Name = m.Name,
-            //    CreateTime= SqlFunc.AggregateMin(m.CreateTime),
-            //    Price= SqlFunc.AggregateSum(m.Price),
-            //}).OrderBy(m=>m.Id).Where(m=>m.Id==1).ToList();
-            //var orderlist = db.Queryable<Order>().OrderBy(m => new { m.Id, m.Name }).ToList();
-            var pageList = db.Queryable<Order>().OrderBy(m => m.Id).ToOffsetPage(1, 3);
+
+            var pageList = db.Queryable<OrderTest>().OrderBy(m => m.Id).ToOffsetPage(1, 3);
             Console.WriteLine("#### MasterSlave End ####");
         }
+
+
     }
 }

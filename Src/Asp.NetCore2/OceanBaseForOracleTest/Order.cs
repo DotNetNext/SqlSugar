@@ -7,10 +7,10 @@ using System.Text;
 namespace OrmTest
 {
 
-    public class Order
+    public class OrderTest
     {
-        [SugarColumn(IsPrimaryKey = true, OracleSequenceName ="Seq_Id")]
-        public int Id { get; set; }
+        [SugarColumn(IsPrimaryKey = true)]
+        public long Id { get; set; }
 
         public string Name { get; set; }
         public decimal Price { get; set; }
