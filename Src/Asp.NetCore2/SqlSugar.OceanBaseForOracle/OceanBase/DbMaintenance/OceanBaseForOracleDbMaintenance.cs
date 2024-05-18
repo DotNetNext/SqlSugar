@@ -245,7 +245,7 @@ namespace SqlSugar.OceanBaseForOracle
         {
             get
             {
-                return "";
+                return " NULL ";
             }
         }
         protected override string CreateTableNotNull
@@ -272,6 +272,34 @@ namespace SqlSugar.OceanBaseForOracle
         #endregion
 
         #region Methods
+        public override bool UpdateColumn(string tableName, DbColumnInfo column)
+        {
+            ConvertCreateColumnInfo(column);
+            var oldColumn = this.Context.DbMaintenance.GetColumnInfosByTableName(tableName, false)
+                .FirstOrDefault(it => it.DbColumnName.EqualCase(column.DbColumnName));
+            if (oldColumn != null)
+            {
+                if (oldColumn.IsNullable == column.IsNullable)
+                {
+                    var sql = GetUpdateColumnSqlOnlyType(tableName, column);
+                    this.Context.Ado.ExecuteCommand(sql);
+                    return true;
+                }
+            }
+            return base.UpdateColumn(tableName, column);
+        }
+        protected virtual string GetUpdateColumnSqlOnlyType(string tableName, DbColumnInfo columnInfo)
+        {
+            string columnName = this.SqlBuilder.GetTranslationColumnName(columnInfo.DbColumnName);
+            tableName = this.SqlBuilder.GetTranslationTableName(tableName);
+            string dataSize = GetSize(columnInfo);
+            string dataType = columnInfo.DataType;
+            string nullType = "";
+            string primaryKey = null;
+            string identity = null;
+            string result = string.Format(this.AlterColumnToTableSql, tableName, columnName, dataType, dataSize, nullType, primaryKey, identity);
+            return result;
+        }
         public override List<string> GetIndexList(string tableName)
         {
             var sql = $"SELECT index_name FROM user_ind_columns\r\nWHERE table_name = '{tableName}'";
@@ -563,6 +591,19 @@ namespace SqlSugar.OceanBaseForOracle
         #endregion
 
         #region Helper
+        private static void ConvertCreateColumnInfo(DbColumnInfo x)
+        {
+            string[] array = new string[] { "int" };
+            if (array.Contains(x.DataType?.ToLower()))
+            {
+                x.Length = 0;
+                x.DecimalDigits = 0;
+            }
+            if (x.OracleDataType.HasValue())
+            {
+                x.DataType = x.OracleDataType;
+            }
+        }
         public bool IsUppper
         {
             get
