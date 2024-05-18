@@ -2,14 +2,14 @@
 <package >
   <metadata>
     <id>SqlSugar.OceanBaseForOracleCore</id>
-    <version>5.1.4.160</version>
+    <version>5.1.4.166</version>
     <authors>sunkaixuan</authors>
     <owners>Landa</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
     <projectUrl>https://github.com/sunkaixuan/SqlSugar</projectUrl>
     <iconUrl>https://secure.gravatar.com/avatar/a82c03402497b2e58fd65038a3699b30</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description> SqlSugar 通过ODBC连接数据库 </description>
+    <description> SqlSugar ORM框架 OceanBase的Oracle模式 操作类库。教程： https://www.donet5.com/Home/Doc?typeId=2564 </description>
     <copyright>Copyright 2016</copyright>
     <tags>Asp.net core orm</tags>
     <dependencies>
