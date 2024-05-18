@@ -25,7 +25,7 @@ namespace SqlSugar.ClickHouse
  column_type as  DataType ,
  is_nullable  as IsNullable,
  column_name DbColumnName,
- column_comment as  ColumnDescription  from information_schema.columns a  where lower(table_name) =lower('{0}')";
+ column_comment as  ColumnDescription  from information_schema.columns a  where lower(table_name) =lower('{0}') and lower(table_schema) = lower('"+schema+"')";
                 return sql;
             }
         }
