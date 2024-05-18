@@ -36,9 +36,9 @@ namespace SqlSugar.OceanBaseForOracle
                 }
                 else
                 {
-                    sql = sql + " RETURNING ID INTO :newId01 ";
+                  //  sql = sql + " RETURNING ID INTO :newId01 ";
                 }
-                InsertBuilder.Parameters.Add(new SugarParameter(":newId01", 0,true));
+                //InsertBuilder.Parameters.Add(new SugarParameter(":newId01", 0,true));
             }
             RestoreMapping();
             var isDisableMasterSlaveSeparation = this.Context.Ado.IsDisableMasterSlaveSeparation;
@@ -50,7 +50,8 @@ namespace SqlSugar.OceanBaseForOracle
             AutoEnd(oldIsAuto);
             if (isIdEntityEnable()) 
             {
-                return this.InsertBuilder.Parameters.FirstOrDefault(it => it.ParameterName == ":newId01")?.Value?.ObjToInt()??0;
+                var name = this.EntityInfo.Columns.First(it => it.IsIdentity).DbColumnName;
+                return this.Context.Ado.GetInt(" SELECT MAX("+this.InsertBuilder.Builder.GetTranslationColumnName(name) +") FROM  "+this.InsertBuilder.GetTableNameString);
             }
             return result;
         }
@@ -74,9 +75,9 @@ namespace SqlSugar.OceanBaseForOracle
                 }
                 else
                 {
-                    sql = sql + " RETURNING ID INTO :newId01 ";
+                    //sql = sql + " RETURNING ID INTO :newId01 ";
                 }
-                InsertBuilder.Parameters.Add(new SugarParameter(":newId01", Convert.ToInt64(0), true));
+                //InsertBuilder.Parameters.Add(new SugarParameter(":newId01", Convert.ToInt64(0), true));
             }
             RestoreMapping();
             var isDisableMasterSlaveSeparation = this.Context.Ado.IsDisableMasterSlaveSeparation;
@@ -88,7 +89,8 @@ namespace SqlSugar.OceanBaseForOracle
             AutoEnd(oldIsAuto);
             if (isIdEntityEnable())
             {
-                return this.InsertBuilder.Parameters.FirstOrDefault(it => it.ParameterName == ":newId01")?.Value?.ObjToLong() ?? 0;
+                var name = this.EntityInfo.Columns.First(it => it.IsIdentity).DbColumnName;
+                return this.Context.Ado.GetInt(" SELECT MAX(" + this.InsertBuilder.Builder.GetTranslationColumnName(name) + ") FROM  " + this.InsertBuilder.GetTableNameString);
             }
             return result;
         }
@@ -108,9 +110,9 @@ namespace SqlSugar.OceanBaseForOracle
                 }
                 else
                 {
-                    sql = sql + " RETURNING ID INTO :newId01 ";
+                    //sql = sql + " RETURNING ID INTO :newId01 ";
                 }
-                InsertBuilder.Parameters.Add(new SugarParameter(":newId01", 0, true));
+                //InsertBuilder.Parameters.Add(new SugarParameter(":newId01", 0, true));
             }
             RestoreMapping();
             var isDisableMasterSlaveSeparation = this.Context.Ado.IsDisableMasterSlaveSeparation;
@@ -122,7 +124,8 @@ namespace SqlSugar.OceanBaseForOracle
             AutoEnd(oldIsAuto);
             if (isIdEntityEnable())
             {
-                return this.InsertBuilder.Parameters.FirstOrDefault(it => it.ParameterName == ":newId01")?.Value?.ObjToInt() ?? 0;
+                var name = this.EntityInfo.Columns.First(it => it.IsIdentity).DbColumnName;
+                return await this.Context.Ado.GetIntAsync(" SELECT MAX(" + this.InsertBuilder.Builder.GetTranslationColumnName(name) + ") FROM  " + this.InsertBuilder.GetTableNameString);
             }
             return result;
         }
@@ -142,9 +145,9 @@ namespace SqlSugar.OceanBaseForOracle
                 }
                 else
                 {
-                    sql = sql + " RETURNING ID INTO :newId01 ";
+                    //sql = sql + " RETURNING ID INTO :newId01 ";
                 }
-                InsertBuilder.Parameters.Add(new SugarParameter(":newId01", Convert.ToInt64(0), true));
+                //InsertBuilder.Parameters.Add(new SugarParameter(":newId01", Convert.ToInt64(0), true));
             }
             RestoreMapping();
             var isDisableMasterSlaveSeparation = this.Context.Ado.IsDisableMasterSlaveSeparation;
@@ -156,7 +159,8 @@ namespace SqlSugar.OceanBaseForOracle
             AutoEnd(oldIsAuto);
             if (isIdEntityEnable())
             {
-                return this.InsertBuilder.Parameters.FirstOrDefault(it => it.ParameterName == ":newId01")?.Value?.ObjToLong() ?? 0;
+                var name = this.EntityInfo.Columns.First(it => it.IsIdentity).DbColumnName;
+                return this.Context.Ado.GetInt(" SELECT MAX(" + this.InsertBuilder.Builder.GetTranslationColumnName(name) + ") FROM  " + this.InsertBuilder.GetTableNameString);
             }
             return result;
         }
