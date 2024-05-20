@@ -772,6 +772,10 @@ namespace SqlSugar
                     var leftName = item.Key;
                     if (anyParent) 
                     {
+                        if (rightValue == null) 
+                        {
+                            rightValue = UtilMethods.GetDefaultValue(rightColumnInfo.PropertyInfo.PropertyType);
+                        }
                         rightValue = rightValue.GetType().GetProperty(item.Value.Name).GetValue(rightValue);
                     }
                     ////  var rightColumn=col
