@@ -101,6 +101,35 @@ namespace SqlSugar
             }
             return isNav;
         }
+        internal static bool IsNavMember(ISqlSugarClient context, Expression member)
+        {
+            var isNav = false;
+            if (member is MemberExpression && (member as MemberExpression)?.Type?.IsClass() == true)
+            {
+                var memberExp = (member as MemberExpression);
+                var name = memberExp?.Member?.Name;
+                var type = memberExp?.Type;
+                if (name != null && type != null && memberExp.Expression is ParameterExpression)
+                {
+                    var rootExp = (memberExp.Expression as ParameterExpression);
+                    var entityInfo = context?.EntityMaintenance?.GetEntityInfo(rootExp.Type);
+                    var navColumn = entityInfo.Columns.FirstOrDefault(it => it.PropertyName == name);
+                    isNav = navColumn?.Navigat != null;
+                }
+                else if (name != null && type != null && memberExp.Expression is MemberExpression)
+                {
+                    var rootExp = (memberExp.Expression as MemberExpression);
+                    if (rootExp.Type.IsClass()&&type.IsArray==false&&type.FullName.IsCollectionsList()==false)
+                    {
+                        var entityInfo = context?.EntityMaintenance?.GetEntityInfo(rootExp.Type);
+                        var navColumn = entityInfo.Columns.FirstOrDefault(it => it.PropertyName == name);
+                        isNav = navColumn?.Navigat != null;
+                    }
+                }
+            }
+            return isNav;
+        }
+
         internal static bool IsSqlParameterDbType(ExpressionContext context, Expression member)
         {
             var isNav = false;

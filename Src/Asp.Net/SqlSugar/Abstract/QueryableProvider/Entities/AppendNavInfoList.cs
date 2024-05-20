@@ -19,5 +19,6 @@ namespace SqlSugar
     {
         public List<Expression> ExpressionList { get;  set; }
         public string Name { get;  set; }
+        public string ParentName { get;  set; }
     }
 }
