@@ -23,16 +23,16 @@ namespace OrmTest
                 TopId = 1,
                 Test2 = new Test2()
                 {
-                    TopId = 2,
+                    TopId = 0,
                     GuId = 22,
                     Test3 = new Test3()
                     {
-                        TopId = 33,
-                        GuId = 34
+                        TopId = 2,
+                        GuId = 1
                     }
                 }
             }).Include(x=>x.Test2).ThenInclude(x=>x.Test3).ExecuteCommand();
-            var list=db.Queryable<Test1>().Includes(x => x.Test2.Test3).ToList();
+            var list=db.Queryable<Test1>().Includes(x => x.Test2,it=>it.Test3).ToList();
             var list2 = db.Queryable<Test1>().Includes(x => x.Test2.Test3)
                 .Select(it=>new Test1dto
                 {
