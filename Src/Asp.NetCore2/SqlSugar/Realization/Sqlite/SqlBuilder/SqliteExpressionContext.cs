@@ -4,8 +4,9 @@ namespace SqlSugar
 {
     public class SqliteExpressionContext : ExpressionContext, ILambdaExpressions
     {
-        public override ExpressionContextCase Case { get; set; } = new ExpressionContextCase() { 
-         IsDateString= true,
+        public override ExpressionContextCase Case { get; set; } = new ExpressionContextCase()
+        {
+            IsDateString = true,
         };
         public SqlSugarProvider Context { get; set; }
         public SqliteExpressionContext()
@@ -24,17 +25,27 @@ namespace SqlSugar
         }
         public override string Equals(MethodCallExpressionModel model)
         {
-            var  result= base.Equals(model);
-            if (model.Args.Count == 3&& result.Trim().Last()==')') 
+            var result = base.Equals(model);
+            if (model.Args.Count == 3 && result.Trim().Last() == ')')
             {
-                result = (" "+result.Trim().TrimEnd(')') + " COLLATE NOCASE )  ");
+                result = (" " + result.Trim().TrimEnd(')') + " COLLATE NOCASE )  ");
             }
             return result;
         }
+        public override string JsonIndex(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter1 = model.Args[1];
+            return $"json_extract({parameter.MemberName}, '$[{parameter1.MemberValue}]')";
+        }
         public override string JsonField(MethodCallExpressionModel model)
         {
-            model.Parameters.RemoveAll(item=>item.ParameterName== model.Args[1].MemberName+"");
-            return " json_extract("+ model.Args[0].MemberName + ",'$." + model.Args[1].MemberValue + "') ";
+            var hasPrefix = model.Args[1].MemberValue is string v ? v[0] == '$' : false;
+            model.Parameters.RemoveAll(item => item.ParameterName == model.Args[1].MemberName + "");
+            return string.Format("json_extract({0},'{1}{2}')", 
+                model.Args[0].MemberName, 
+                hasPrefix ? string.Empty : string.Intern("$."), 
+                model.Args[1].MemberValue);
         }
         public override string GetStringJoinSelector(string result, string separator)
         {
@@ -262,7 +273,7 @@ namespace SqlSugar
 
         public override string MergeString(params string[] strings)
         {
-            return  string.Join("||", strings).Replace("+","");
+            return string.Join("||", strings).Replace("+", "");
         }
 
         public override string IsNull(MethodCallExpressionModel model)
@@ -308,7 +319,7 @@ namespace SqlSugar
             var parameterNameA = mode.Args[0].MemberName;
             var parameterNameB = mode.Args[1].MemberName;
             var parameterNameC = mode.Args[2].MemberName;
-            var value = new string[mode.Args[1].MemberValue.ObjToInt()].Select(it=> parameterNameC); 
+            var value = new string[mode.Args[1].MemberValue.ObjToInt()].Select(it => parameterNameC);
             return $"substr({string.Join("||", value)} || {parameterNameA}, {parameterNameB}*-1)  ";
         }
 
