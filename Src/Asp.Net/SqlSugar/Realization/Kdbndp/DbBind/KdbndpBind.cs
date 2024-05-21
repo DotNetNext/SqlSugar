@@ -67,13 +67,16 @@ namespace SqlSugar
         public static List<KeyValuePair<string, CSharpDataType>> MappingTypesConst = new List<KeyValuePair<string, CSharpDataType>>(){
 
                     new KeyValuePair<string, CSharpDataType>("int2",CSharpDataType.@short),
+                    new KeyValuePair<string, CSharpDataType>("uint2",CSharpDataType.@short),
                     //new KeyValuePair<string, CSharpDataType>("int1",CSharpDataType.@byte),
                     new KeyValuePair<string, CSharpDataType>("smallint",CSharpDataType.@short),
                     new KeyValuePair<string, CSharpDataType>("smallint",CSharpDataType.@byte),
                     new KeyValuePair<string, CSharpDataType>("int4",CSharpDataType.@int),
+                    new KeyValuePair<string, CSharpDataType>("uint4",CSharpDataType.@int),
                     new KeyValuePair<string, CSharpDataType>("integer",CSharpDataType.@int),
                     new KeyValuePair<string, CSharpDataType>("tinyint",CSharpDataType.@int),
                     new KeyValuePair<string, CSharpDataType>("int8",CSharpDataType.@long),
+                    new KeyValuePair<string, CSharpDataType>("uint8",CSharpDataType.@long),
                     new KeyValuePair<string, CSharpDataType>("bigint",CSharpDataType.@long),
                     new KeyValuePair<string, CSharpDataType>("float4",CSharpDataType.@float),
                     new KeyValuePair<string, CSharpDataType>("float4",CSharpDataType.Single),
