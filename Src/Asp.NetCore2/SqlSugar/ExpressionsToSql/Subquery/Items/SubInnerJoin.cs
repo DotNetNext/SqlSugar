@@ -51,6 +51,13 @@ namespace SqlSugar
             }
             this.Context.RefreshMapping();
             var tableName= Context.GetTranslationTableName(parameter.Type.Name, true);
+            if (this.Context.IsAsAttr == true)
+            {
+                var db = this.Context.SugarContext.Context;
+                var entityInfo = db.EntityMaintenance.GetEntityInfo(parameter.Type);
+                var queryable = ((QueryableProvider<object>)(db.Queryable<object>()));
+                tableName = queryable.GetTableName(entityInfo, tableName);
+            }
             if (exp.Arguments.Count == 2 && exp.Arguments.Last().HasValue())
             {
                 tableName = Context.GetTranslationTableName(ExpressionTool.DynamicInvoke(exp.Arguments.Last()) + "");

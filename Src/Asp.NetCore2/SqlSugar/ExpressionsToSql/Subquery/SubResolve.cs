@@ -20,6 +20,7 @@ namespace SqlSugar
         private string subKey = "$SubAs:";
         private bool hasWhere;
         private bool isXmlPath = false;
+        private bool isAsAttr = false;
         public SubResolve(MethodCallExpression expression, ExpressionContext context, Expression oppsiteExpression)
         {
             this.context = context;
@@ -234,6 +235,10 @@ namespace SqlSugar
                 {
                     isXmlPath = true;
                 }
+                else if (item is SubAsWithAttr)
+                {
+                    isAsAttr = true;
+                }
 
                 item.Context = this.context;
                 item.Expression = exp;
@@ -269,12 +274,17 @@ namespace SqlSugar
             {
                 this.context.JoinIndex++;
             }
+            if (isAsAttr) 
+            {
+                this.context.IsAsAttr = true;
+            }
             List<string> result = isubList.Select(it =>
             {
                 it.HasWhere = isHasWhere;
                 return it.GetValue(it.Expression);
             }).ToList();
             this.context.JoinIndex = 0;
+            this.context.IsAsAttr = false;
             return result;
         }
 
