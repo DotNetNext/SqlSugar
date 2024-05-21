@@ -35,7 +35,14 @@ namespace OrmTest
                  x= SqlFunc.Subqueryable<OrderItem>().AsWithAttr().Select(s => s.OrderId)
                 })
                 .ToList();
-    
+
+            db.Queryable<Order>()
+                .Select(it => new {
+                    x = SqlFunc.Subqueryable<OrderItem>().AsWithAttr()
+                    .LeftJoin<OrderItem>((s,y)=>s.OrderId==y.OrderId).Select(s => s.OrderId)
+                })
+                .ToList();
+
         }
         [SqlSugar.Tenant("OrderDb")]
         [SqlSugar.SugarTable("Order8")]
