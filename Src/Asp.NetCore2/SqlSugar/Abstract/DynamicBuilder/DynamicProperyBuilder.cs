@@ -93,7 +93,7 @@ namespace SqlSugar
             TypeBuilder typeBuilderB = EmitTool.CreateTypeBuilder(dynamicBuilderB.baseBuilder.entityName, TypeAttributes.Public, dynamicBuilderB.baseBuilder.baseType, dynamicBuilderB.baseBuilder.interfaces);
             DynamicBuilderHelper.CreateDynamicClass(typeBuilderA, typeBuilderB, dynamicBuilderA.baseBuilder.propertyAttr, dynamicBuilderA.baseBuilder.entityAttr);
             DynamicBuilderHelper.CreateDynamicClass(typeBuilderB, typeBuilderA, dynamicBuilderB.baseBuilder.propertyAttr, dynamicBuilderB.baseBuilder.entityAttr);
-            return new Tuple<Type, Type>(typeBuilderA.CreateTypeInfo().AsType(), typeBuilderB.CreateTypeInfo().AsType());
+            return new Tuple<Type, Type>(typeBuilderB.CreateTypeInfo().AsType(), typeBuilderA.CreateTypeInfo().AsType());
         } 
         #endregion
 
