@@ -6,6 +6,8 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
+using System.Security.AccessControl;
+using System.Xml.Linq;
 
 namespace SqlSugar 
 {
@@ -64,6 +66,37 @@ namespace SqlSugar
                 return result;
             }
         }
+
+        #region BuilderTypes
+        public Tuple<Type, Type> BuilderTypes(DynamicProperyBuilder dynamicBuilderB)
+        {
+            if (IsCache)
+            {
+                var key1 = baseBuilder.entityName + string.Join("_", baseBuilder.propertyAttr.Select(it => it.Name + it.Type.Name));
+                var key2 = dynamicBuilderB.baseBuilder.entityName + string.Join("_", dynamicBuilderB.baseBuilder.propertyAttr.Select(it => it.Name + it.Type.Name));
+                return new ReflectionInoCacheService().GetOrCreate(key1 + key2, () =>
+                {
+                    Tuple<Type, Type> result = GetBuilderTypes(dynamicBuilderB);
+                    return result;
+                });
+            }
+            else
+            {
+                Tuple<Type, Type> result = GetBuilderTypes(dynamicBuilderB);
+                return result;
+            }
+        }
+        private Tuple<Type,Type> GetBuilderTypes(DynamicProperyBuilder dynamicBuilderB)
+        {
+            DynamicProperyBuilder dynamicBuilderA = this;
+            TypeBuilder typeBuilderA = EmitTool.CreateTypeBuilder(dynamicBuilderA.baseBuilder.entityName, TypeAttributes.Public, dynamicBuilderA.baseBuilder.baseType, dynamicBuilderA.baseBuilder.interfaces);
+            TypeBuilder typeBuilderB = EmitTool.CreateTypeBuilder(dynamicBuilderB.baseBuilder.entityName, TypeAttributes.Public, dynamicBuilderB.baseBuilder.baseType, dynamicBuilderB.baseBuilder.interfaces);
+            DynamicBuilderHelper.CreateDynamicClass(typeBuilderA, typeBuilderB, dynamicBuilderA.baseBuilder.propertyAttr, dynamicBuilderA.baseBuilder.entityAttr);
+            DynamicBuilderHelper.CreateDynamicClass(typeBuilderB, typeBuilderA, dynamicBuilderB.baseBuilder.propertyAttr, dynamicBuilderB.baseBuilder.entityAttr);
+            return new Tuple<Type, Type>(typeBuilderB.CreateTypeInfo().AsType(), typeBuilderA.CreateTypeInfo().AsType());
+        } 
+        #endregion
+
         public  CustomAttributeBuilder BuildNavigateAttribute(Navigate navigate)
         {
             NavigateType navigatType = navigate.NavigatType;

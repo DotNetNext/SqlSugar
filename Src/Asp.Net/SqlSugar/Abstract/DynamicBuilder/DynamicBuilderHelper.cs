@@ -40,5 +40,43 @@ namespace SqlSugar
 
             return dynamicType;
         }
+
+        public static Type CreateDynamicClass(TypeBuilder typeBuilder,TypeBuilder typeBuilderChild,List<PropertyMetadata> properties, List<CustomAttributeBuilder> classCustomAttributes = null)
+        { 
+
+            if (classCustomAttributes != null)
+            {
+                foreach (var attributeBuilder in classCustomAttributes)
+                {
+                    typeBuilder.SetCustomAttribute(attributeBuilder);
+                }
+            }
+
+            foreach (PropertyMetadata property in properties)
+            {
+                var type = property.Type;
+                if (type == typeof(DynamicOneselfType))
+                {
+                    type = typeBuilder;
+                }
+                else if (type == typeof(DynamicOneselfTypeList))
+                {
+                    type = typeof(List<>).MakeGenericType(typeBuilder);
+                }
+                else if (type == typeof(NestedObjectType))
+                {
+                    type = typeBuilderChild;
+                }
+                else if (type == typeof(NestedObjectTypeList))
+                {
+                    type = typeof(List<>).MakeGenericType(typeBuilderChild);
+                }
+                EmitTool.CreateProperty(typeBuilder, property.Name, type, property.CustomAttributes);
+            }
+
+            Type dynamicType = typeBuilder.CreateTypeInfo().AsType();
+
+            return dynamicType;
+        }
     }
 }
