@@ -19,6 +19,11 @@ namespace SqlSugar
         }
         public override string ToSqlString()
         {
+            //Support MySql Model
+            if (this.Context.CurrentConnectionConfig.MoreSettings?.DatabaseModel == DbType.MySql) 
+            {
+                return MySqlToSqlString();
+            }
             var isDistinctPage = IsDistinct && (Take > 1 || Skip > 1);
             if (isDistinctPage)
             {
@@ -60,6 +65,84 @@ namespace SqlSugar
                 return "select * from (select 1 as id) where id=0 -- No table";
             }
             return result;
+        }
+
+        public string MySqlToSqlString()
+        {
+            var PageTempalte = "SELECT {0} FROM {1} {2} {3} {4} LIMIT {5},{6}";
+            var SqlTemplate = MySqlTemplate;
+            base.AppendFilter();
+            string result = null;
+            string oldOrderBy = this.OrderByValue;
+            sql = new StringBuilder();
+            sql.AppendFormat(SqlTemplate, GetMySelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, (Skip != null || Take != null) ? null : GetOrderByString);
+            if (IsCount) { return sql.ToString(); }
+            if (Skip != null && Take == null)
+            {
+                if (this.OrderByValue == "ORDER BY ") this.OrderByValue += GetMySelectValue.Split(',')[0];
+                result = string.Format(PageTempalte, GetMySelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, (Skip != null || Take != null) ? null : GetOrderByString, Skip.ObjToInt(), long.MaxValue);
+            }
+            else if (Skip == null && Take != null)
+            {
+                if (this.OrderByValue == "ORDER BY ") this.OrderByValue += GetMySelectValue.Split(',')[0];
+                result = string.Format(PageTempalte, GetMySelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, GetOrderByString, 0, Take.ObjToInt());
+            }
+            else if (Skip != null && Take != null)
+            {
+                if (this.OrderByValue == "ORDER BY ") this.OrderByValue += GetMySelectValue.Split(',')[0];
+                result = string.Format(PageTempalte, GetMySelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, GetOrderByString, Skip.ObjToInt() > 0 ? Skip.ObjToInt() : 0, Take);
+            }
+            else
+            {
+                result = sql.ToString();
+            }
+            this.OrderByValue = oldOrderBy;
+            result = GetSqlQuerySql(result);
+            result = result.Replace(UtilConstants.ReplaceCommaKey, "");
+            if (result.IndexOf("-- No table") > 0)
+            {
+                return "-- No table";
+            }
+            return result;
+        }
+        public string GetMySelectValue
+        {
+            get
+            {
+                string reval = string.Empty;
+                if (this.SelectValue == null || this.SelectValue is string)
+                {
+                    reval = GetSelectValueByString();
+                }
+                else
+                {
+                    reval = GetSelectValueByExpression();
+                }
+                if (this.SelectType == ResolveExpressType.SelectMultiple)
+                {
+                    this.SelectCacheKey = this.SelectCacheKey + string.Join("-", this.JoinQueryInfos.Select(it => it.TableName));
+                }
+                if (IsDistinct)
+                {
+                    reval = " DISTINCT " + reval;
+                }
+                if (this.SubToListParameters != null && this.SubToListParameters.Any())
+                {
+                    reval = SubToListMethod(reval);
+                }
+                return reval;
+            }
+        }
+        public  string MySqlTemplate
+        {
+            get
+            {
+                if (this.SampleBy.HasValue())
+                {
+                    return "SELECT {0} FROM {1}{2} " + this.SampleBy + " {3}{4}";
+                }
+                return "SELECT {0} FROM {1}{2}{3}{4} ";
+            }
         }
         private string OffsetPage()
         {
