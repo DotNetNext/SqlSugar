@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SqlSugar;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,18 +20,21 @@ namespace OrmTest
             Db.Updateable(new UnitJsonTest() { Id = Db.Queryable<UnitJsonTest>().First().Id, Order = new Order { Id = 2, Name = "order2" } }).ExecuteCommand();
             list= Db.Queryable<UnitJsonTest>().ToList();
             UValidate.Check("order2", list.First().Order.Name, "Json");
-            var list2 = Db.Queryable<UnitJsonTest>().ToList();
-            Db.CodeFirst.InitTables<UnitArrayTest>();
-            Db.Updateable(new UnitArrayTest() { Name="a" }).IgnoreColumns(true).ExecuteCommand();
+           var list2 = Db.Queryable<UnitJsonTest>().ToList();
+            Db.CodeFirst.InitTables<UnitArrayTestaa>();
+            Db.Updateable(new UnitArrayTestaa() { Name="a", ids=new int[] { 1,2} }).IgnoreColumns(true).ExecuteCommand();
+            Db.Queryable<UnitArrayTestaa>()
+                .OrderBy(it=>it.Id)
+                .Where(it => SqlFunc.JsonArrayAny(it.ids, 1)).ToList();
         }
     }
 
-    public class UnitArrayTest
+    public class UnitArrayTestaa
     {
         [SqlSugar.SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
         public int Id { get; set; }
         public string Name { get; set;}
-        [SqlSugar.SugarColumn(IsArray =true)]
+        [SqlSugar.SugarColumn(IsJson =true)]
         public int[] ids { get; set; }
     }
 
