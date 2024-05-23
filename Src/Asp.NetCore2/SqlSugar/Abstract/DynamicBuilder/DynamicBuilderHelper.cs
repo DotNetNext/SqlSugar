@@ -57,9 +57,17 @@ namespace SqlSugar
                 var type = property.Type;
                 if (type == typeof(DynamicOneselfType))
                 {
-                    type = typeBuilderChild;
+                    type = typeBuilder;
                 }
                 else if (type == typeof(DynamicOneselfTypeList))
+                {
+                    type = typeof(List<>).MakeGenericType(typeBuilder);
+                }
+                else if (type == typeof(NestedObjectType))
+                {
+                    type = typeBuilderChild;
+                }
+                else if (type == typeof(NestedObjectTypeList))
                 {
                     type = typeof(List<>).MakeGenericType(typeBuilderChild);
                 }

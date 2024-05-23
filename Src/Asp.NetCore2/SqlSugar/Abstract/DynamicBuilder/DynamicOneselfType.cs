@@ -18,4 +18,15 @@ namespace SqlSugar
     {
 
     }
+
+     
+    public class NestedObjectType
+    {
+
+    }
+ 
+    public class NestedObjectTypeList
+    {
+
+    }
 }
