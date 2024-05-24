@@ -131,7 +131,7 @@ namespace SqlSugar
 
         public async Task<bool> AnyAsync()
         {
-            return  (await this.Take(1).Select("1").ToListAsync()).Count() > 0; ;
+            return  (await this.Clone().Take(1).Select("1").ToListAsync()).Count() > 0; ;
         }
 
         public Task<int> CountAsync(CancellationToken token) 
