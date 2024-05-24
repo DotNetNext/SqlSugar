@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -169,7 +170,7 @@ namespace SqlSugar
             var method = QueryableObj.GetType().GetMyMethod("Select", 1, typeof(List<SelectModel>));
             this.QueryableObj = method.Invoke(QueryableObj, new object[] { models });
             return this;
-        }
+        } 
         public QueryMethodInfo Select(string expShortName, FormattableString expSelect, Type resultType)
         {
             var method = QueryableObj.GetType().GetMyMethod("Select", 3, typeof(string),typeof(FormattableString),typeof(Type));
@@ -258,6 +259,20 @@ namespace SqlSugar
             var reslt = method.Invoke(QueryableObj, new object[] { });
             return reslt;
         }
+        public DataTable ToDataTablePage(int pageNumber, int pageSize,ref int count)
+        {
+            var method = QueryableObj.GetType().GetMyMethod("ToDataTablePage", 3, typeof(int), typeof(int), typeof(int).MakeByRefType());
+            var parameters = new object[] { pageNumber, pageSize, count };
+            var reslt = (DataTable)method.Invoke(QueryableObj, parameters);
+            count = parameters.Last().ObjToInt();
+            return reslt;
+        }
+        public DataTable ToDataTable()
+        {
+            var method = QueryableObj.GetType().GetMyMethod("ToDataTable", 0);
+            var reslt = (DataTable)method.Invoke(QueryableObj, new object[] { });
+            return reslt;
+        }
         public string ToSqlString()
         {
             var method = QueryableObj.GetType().GetMyMethod("ToSqlString", 0);
@@ -335,6 +350,20 @@ namespace SqlSugar
         public async Task<object> ToListAsync()
         {
             var method = QueryableObj.GetType().GetMyMethod("ToListAsync", 0);
+            var task = (Task)method.Invoke(QueryableObj, new object[] { });
+            return await GetTask(task).ConfigureAwait(false);
+        }
+        public async Task<object> ToDataTablePageAsync(int pageNumber, int pageSize, RefAsync<int> count)
+        {
+            var method = QueryableObj.GetType().GetMyMethod("ToDataTablePageAsync", 3, typeof(int), typeof(int), typeof(RefAsync<int>));
+            var parameters = new object[] { pageNumber, pageSize, count };
+            var task = (Task)method.Invoke(QueryableObj, parameters);
+            count = parameters.Last().ObjToInt();
+            return await GetTask(task).ConfigureAwait(false);
+        }
+        public async Task<object> ToDataTableAsync()
+        {
+            var method = QueryableObj.GetType().GetMyMethod("ToDataTableAsync", 0);
             var task = (Task)method.Invoke(QueryableObj, new object[] { });
             return await GetTask(task).ConfigureAwait(false);
         }
