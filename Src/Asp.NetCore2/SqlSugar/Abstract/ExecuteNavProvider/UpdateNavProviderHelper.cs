@@ -74,7 +74,16 @@ namespace SqlSugar
         {
             children = children.Distinct().ToList();
             Check.ExceptionEasy(pkColumn == null, typeof(TChild).Name + " has no primary key", typeof(TChild).Name + "没有主键");
-;           var x = this._Context.Storageable(children).WhereColumns(new string[] { pkColumn.PropertyName }).ToStorage();
+            var whereName = pkColumn.PropertyName;
+            if (_Options.OneToOneSaveByPrimaryKey&& pkColumn.IsPrimarykey==false) 
+            {
+                var newPkColumn=this._Context.EntityMaintenance.GetEntityInfo<TChild>().Columns.FirstOrDefault(it => it.IsPrimarykey);
+                if (newPkColumn != null) 
+                {
+                    whereName = newPkColumn.PropertyName;
+                }
+            }
+;           var x = this._Context.Storageable(children).WhereColumns(new string[] {whereName}).ToStorage();
             var insertData  = x.InsertList.Select(it => it.Item).ToList();
             var updateData  = x.UpdateList.Select(it => it.Item).ToList();
             Check.ExceptionEasy(pkColumn == null && NavColumn == null, $"The entity is invalid", $"实体错误无法使用导航");
