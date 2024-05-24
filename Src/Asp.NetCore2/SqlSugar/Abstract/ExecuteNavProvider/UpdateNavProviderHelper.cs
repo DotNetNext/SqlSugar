@@ -115,6 +115,10 @@ namespace SqlSugar
                 {
                     ignoreColumns.AddRange(pk.Select(it=>it.PropertyName));
                 }
+                if (_Options.OneToOneSaveByPrimaryKey) 
+                {
+                    ignoreColumns = ignoreColumns.Where(it => it != whereName).ToList();
+                }
                 if (IsDeleted)
                 {
                     x.AsUpdateable.IgnoreColumns(ignoreColumns.ToArray()).PageSize(1).EnableQueryFilter().ExecuteCommand();

@@ -75,7 +75,7 @@ namespace SqlSugar
             children = children.Distinct().ToList();
             Check.ExceptionEasy(pkColumn == null, typeof(TChild).Name + " has no primary key", typeof(TChild).Name + "没有主键");
             var whereName = pkColumn.PropertyName;
-            if (_Options.OneToOneSaveByPrimaryKey&& pkColumn.IsPrimarykey==false) 
+            if (_Options?.OneToOneSaveByPrimaryKey==true&& pkColumn.IsPrimarykey==false) 
             {
                 var newPkColumn=this._Context.EntityMaintenance.GetEntityInfo<TChild>().Columns.FirstOrDefault(it => it.IsPrimarykey);
                 if (newPkColumn != null) 
@@ -115,7 +115,7 @@ namespace SqlSugar
                 {
                     ignoreColumns.AddRange(pk.Select(it=>it.PropertyName));
                 }
-                if (_Options.OneToOneSaveByPrimaryKey) 
+                if (_Options?.OneToOneSaveByPrimaryKey==true) 
                 {
                     ignoreColumns = ignoreColumns.Where(it => it != whereName).ToList();
                 }
