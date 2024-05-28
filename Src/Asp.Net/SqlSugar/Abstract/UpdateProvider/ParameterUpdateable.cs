@@ -86,9 +86,9 @@ namespace SqlSugar
                 {
                     var pk = item.FirstOrDefault(it => it.DbColumnName.EqualCase(whereItem));
                     var paraterName = FormatValue(pk.PropertyType, pk.DbColumnName, pk.Value, parameters);
-                    whereString.Append($" {pk.DbColumnName} = {paraterName} ,");
+                    whereString.Append($" {pk.DbColumnName} = {paraterName} AND");
                 }
-                var builderItem = string.Format(sqlTemp, setString.ToString().TrimEnd(','), whereString.ToString().TrimEnd(','));
+                var builderItem = string.Format(sqlTemp, setString.ToString().TrimEnd(','), whereString.ToString().TrimEnd('D').TrimEnd('N').TrimEnd('A'));
                 sbAllSql.Append(builderItem);
             }
             builder.FormatSaveQueueSql(sbAllSql);
