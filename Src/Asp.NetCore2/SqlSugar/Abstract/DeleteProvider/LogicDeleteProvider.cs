@@ -135,9 +135,16 @@ namespace SqlSugar
         {
             var entityInfo = Deleteable.EntityInfo;
             db = Deleteable.Context;
-            
+            if (DeleteBuilder.BigDataInValues?.Any() == true)
+            {
+               var sql= db.Queryable<T>().Select("1").AS(nameof(T)).In(DeleteBuilder.BigDataInValues.ToArray()).ToSqlString();
+               var whereIndex = sql.IndexOf("  WHERE ");
+               var whereItem = sql.Substring(whereIndex+7);
+                this.DeleteBuilder.WhereInfos.Add(whereItem);
+            }
+             
             Check.ExceptionEasy(DeleteBuilder.GetWhereString == null,"Logical Delete requires a Where condition", "逻辑删除需要加Where条件");
-            
+         
             where = DeleteBuilder.GetWhereString.Substring(5);
             pars = DeleteBuilder.Parameters;
             if (LogicFieldName.IsNullOrEmpty())
