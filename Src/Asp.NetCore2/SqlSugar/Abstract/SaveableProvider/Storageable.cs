@@ -125,6 +125,7 @@ namespace SqlSugar
             result.SaveInfo = this;
             result.List = allDatas.Select(it=>it.Item).ToList();
             result.EntityInfo = this.Context.EntityMaintenance.GetEntityInfoWithAttr(typeof(T));
+            result.whereExpression = this.whereExpression;
             return result;
         }
         public IStorageable<T> DefaultAddElseUpdate() 
