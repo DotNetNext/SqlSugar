@@ -55,6 +55,13 @@ namespace OrmTest
                 .Where(it=>it.F_ID>1).IsLogic()
                 .ExecuteCommandAsync("F_DELETE_MARK", 1, "F_DELETE_TIME", "F_DELETE_USER_ID", "1")
                 .GetAwaiter().GetResult();
+
+
+            db.Deleteable<RdBaseTerm>()
+             .In(Enumerable.Range(1,10001).ToArray())
+             .IsLogic()
+             .ExecuteCommandAsync("F_DELETE_MARK", 1, "F_DELETE_TIME", "F_DELETE_USER_ID", "1")
+             .GetAwaiter().GetResult();
             Console.WriteLine("#### Deleteable End ####");
 
         }
