@@ -28,6 +28,18 @@ namespace SqlSugar.Access
             {
                 throw new Exception("sqlite no support partition by");
             }
+            var top = 0;
+            if (Skip == null && Take > 0 && this.OrderByValue == " ORDER BY now() ")
+            {
+                top = Take.Value;
+                this.OrderByValue = null;
+                Skip = null;
+                Take = null;
+            }
+            else if (Skip == null && Take > 0) 
+            {
+                Skip = 0;
+            }
             var isFirst = (Skip == 0 || Skip == null) && Take == 1 && DisableTop == false;
             var isRowNumber = (Skip != null || Take != null) && !isFirst;
             var isPage = isRowNumber;
@@ -40,7 +52,14 @@ namespace SqlSugar.Access
             string groupByValue = GetGroupByString + HavingInfos;
             string orderByValue = (!isRowNumber && this.OrderByValue.HasValue()) ? GetOrderByString : null;
             if (isIgnoreOrderBy) { orderByValue = null; }
-            sql.AppendFormat(SqlTemplate, isFirst ? (" TOP 1 " + GetSelectValue) : GetSelectValue, GetTableNameString, GetWhereValueString, groupByValue, orderByValue);
+            if (top > 0)
+            {
+                sql.AppendFormat(SqlTemplate, (" TOP "+top+" " + GetSelectValue) , GetTableNameString, GetWhereValueString, groupByValue, orderByValue);
+            }
+            else
+            {
+                sql.AppendFormat(SqlTemplate, isFirst ? (" TOP 1 " + GetSelectValue) : GetSelectValue, GetTableNameString, GetWhereValueString, groupByValue, orderByValue);
+            }
             sql.Replace(UtilConstants.ReplaceKey, isRowNumber ? (isIgnoreOrderBy ? null : rowNumberString) : null);
             if (isIgnoreOrderBy) { this.OrderByValue = oldOrderBy; return sql.ToString(); }
             var result = isFirst ? sql.ToString() : ToPageSql(sql.ToString(), this.Take, this.Skip);
