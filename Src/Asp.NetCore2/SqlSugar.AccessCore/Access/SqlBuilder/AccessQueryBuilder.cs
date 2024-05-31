@@ -28,13 +28,17 @@ namespace SqlSugar.Access
             {
                 throw new Exception("sqlite no support partition by");
             }
-            var top = 0; 
-            if (Skip == null && Take > 0&& this.OrderByValue== " ORDER BY now() ") 
-            { 
+            var top = 0;
+            if (Skip == null && Take > 0 && this.OrderByValue == " ORDER BY now() ")
+            {
                 top = Take.Value;
                 this.OrderByValue = null;
                 Skip = null;
-                Take=null;
+                Take = null;
+            }
+            else if (Skip == null && Take > 0) 
+            {
+                Skip = 0;
             }
             var isFirst = (Skip == 0 || Skip == null) && Take == 1 && DisableTop == false;
             var isRowNumber = (Skip != null || Take != null) && !isFirst;
