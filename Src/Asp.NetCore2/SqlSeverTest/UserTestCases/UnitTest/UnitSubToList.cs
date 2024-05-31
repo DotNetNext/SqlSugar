@@ -178,6 +178,27 @@ namespace OrmTest
                 disCount = SqlFunc.Subqueryable<Order>().Where(s => s.Id == it.Id).First(s => new Order() { Id = s.Id }, true)
             })
             .ToList();
+
+            var test5 = db.Queryable<Order>().Select(it => new  
+            {
+                COUNT=SqlFunc.Subqueryable<Order>().Where(s => s.Id == it.Id).Count(),
+                Id = it.Id,
+                disCount = SqlFunc.Subqueryable<Order>().Where(s => s.Id == it.Id).ToList(s => new   { Id = s.Id } )
+            })
+           .ToList();
+
+            var test6 = db.Queryable<Order>().Select(it => new
+            {
+                COUNT = SqlFunc.Subqueryable<Order>().Where(s => s.Id == it.Id).Count(),
+                Id = it.Id,
+                disCount = SqlFunc.Subqueryable<Order>().Where(s => s.Id == it.Id).ToList(s => new { Id = s.Id })
+            })
+           .ToListAsync().GetAwaiter().GetResult(); 
+
+            if (test6.Any(it => it.COUNT != it.disCount.Count())|| test5.Any(it => it.COUNT != it.disCount.Count())) 
+            {
+                throw new Exception("unit error");
+            }
         }
         private static void TestJoin4(SqlSugarClient db)
         {
