@@ -340,6 +340,7 @@ namespace SqlSugar
                     Dictionary<string, object> result = DataReaderToList(reader, tType, classProperties, reval);
                     var stringValue = SerializeObject(result);
                     reval.Add((T)DeserializeObject<T>(stringValue));
+                    SetAppendColumns(reader);
                 }
             }
             return reval;
@@ -430,7 +431,7 @@ namespace SqlSugar
                 {
                     Dictionary<string, object> result = DataReaderToList(reader, tType, classProperties, reval);
                     var stringValue = SerializeObject(result);
-                    reval.Add((T)DeserializeObject<T>(stringValue));
+                    reval.Add((T)DeserializeObject<T>(stringValue)); 
                 }
             }
             return reval;
