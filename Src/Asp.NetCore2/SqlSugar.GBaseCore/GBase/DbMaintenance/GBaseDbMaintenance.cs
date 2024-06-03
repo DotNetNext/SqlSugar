@@ -212,7 +212,7 @@ where a.tabtype in ('V')  and not (a.tabname like 'sys%') AND a.tabname <>'dual'
         {
             get
             {
-                return "COMMENT ON {0} IS '{1}';";
+                return "COMMENT ON TABLE {0} IS '{1}';";
             }
         }
 
@@ -220,7 +220,7 @@ where a.tabtype in ('V')  and not (a.tabname like 'sys%') AND a.tabname <>'dual'
         {
             get
             {
-                return "COMMENT ON {0} IS '';";
+                return "COMMENT ON TABLE {0} IS '';";
             }
 
         }
