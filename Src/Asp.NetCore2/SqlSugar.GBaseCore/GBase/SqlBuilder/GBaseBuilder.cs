@@ -13,6 +13,10 @@ namespace SqlSugar.GBase
         public override string SqlTranslationRight { get { return ""; } }
         public override string GetNoTranslationColumnName(string name)
         {
+            if (name.Contains("="))
+            {
+                name = name.Split('=').First().Trim();
+            }
             return name;
         }
         public override string SqlDateNow
