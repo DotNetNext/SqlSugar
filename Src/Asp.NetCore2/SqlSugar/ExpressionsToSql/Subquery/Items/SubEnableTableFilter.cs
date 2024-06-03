@@ -59,6 +59,7 @@ namespace SqlSugar
                             if (ChildType == type|| (ChildType.IsInterface&&type.GetInterfaces().Contains(ChildType)))
                             {
                                 var entityInfo = db.EntityMaintenance.GetEntityInfo(ChildType);
+                                this.Context.InitMappingInfo(ChildType);
                                 var exp = field.GetValue(item, null) as Expression;
                                 var whereStr = isWhere ? " AND " : " WHERE ";
                                 isWhere = true;
