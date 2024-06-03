@@ -186,7 +186,7 @@ where a.tabtype in ('V')  and not (a.tabname like 'sys%') AND a.tabname <>'dual'
         {
             get
             {
-                return "EXECUTE sp_addextendedproperty N'MS_Description', N'{2}', N'user', N'dbo', N'table', N'{1}', N'column', N'{0}'"; ;
+                return "COMMENT ON COLUMN {1}.{0} IS '{2}'";
             }
         }
 
@@ -194,7 +194,7 @@ where a.tabtype in ('V')  and not (a.tabname like 'sys%') AND a.tabname <>'dual'
         {
             get
             {
-                return "EXEC sp_dropextendedproperty 'MS_Description','user',dbo,'table','{1}','column','{0}'";
+                return "COMMENT ON COLUMN {1}.{0} IS ''";
             }
 
         }
@@ -203,15 +203,7 @@ where a.tabtype in ('V')  and not (a.tabname like 'sys%') AND a.tabname <>'dual'
         {
             get
             {
-                return @"SELECT" +
-                                " A.name AS table_name," +
-                                " B.name AS column_name," +
-                                " C.value AS column_description" +
-                                " FROM sys.tables A" +
-                                " LEFT JOIN sys.extended_properties C ON C.major_id = A.object_id" +
-                                " LEFT JOIN sys.columns B ON B.object_id = A.object_id AND C.minor_id = B.column_id" +
-                                " INNER JOIN sys.schemas SC ON SC.schema_id = A.schema_id AND SC.name = 'dbo'" +
-                                " WHERE A.name = '{1}' and B.name = '{0}'";
+                return string.Empty;
 
             }
         }
@@ -220,7 +212,7 @@ where a.tabtype in ('V')  and not (a.tabname like 'sys%') AND a.tabname <>'dual'
         {
             get
             {
-                return "EXECUTE sp_addextendedproperty N'MS_Description', '{1}', N'user', N'dbo', N'table', N'{0}', NULL, NULL";
+                return "COMMENT ON {0} test IS '{1}';";
             }
         }
 
@@ -228,7 +220,7 @@ where a.tabtype in ('V')  and not (a.tabname like 'sys%') AND a.tabname <>'dual'
         {
             get
             {
-                return "EXEC sp_dropextendedproperty 'MS_Description','user',dbo,'table','{0}' ";
+                return "COMMENT ON {0} test IS '';";
             }
 
         }
@@ -237,11 +229,7 @@ where a.tabtype in ('V')  and not (a.tabname like 'sys%') AND a.tabname <>'dual'
         {
             get
             {
-                return @"SELECT C.class_desc
-                                FROM sys.tables A 
-                                LEFT JOIN sys.extended_properties C ON C.major_id = A.object_id 
-								INNER JOIN sys.schemas SC ON  SC.schema_id=A.schema_id AND SC.name='dbo'
-                                WHERE A.name = '{0}'  AND minor_id=0";
+                return string.Empty;
             }
 
         }
@@ -320,6 +308,15 @@ where a.tabtype in ('V')  and not (a.tabname like 'sys%') AND a.tabname <>'dual'
         #endregion
 
         #region Methods
+       
+        public override bool IsAnyColumnRemark(string columnName, string tableName)
+        {
+            return false;
+        }
+        public override bool IsAnyTableRemark(string tableName)
+        {
+            return false;
+        }
         public override List<DbColumnInfo> GetColumnInfosByTableName(string tableName, bool isCache = true)
         {
             string cacheKey = "DbMaintenanceProvider.GetColumnInfosByTableName." + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower();
