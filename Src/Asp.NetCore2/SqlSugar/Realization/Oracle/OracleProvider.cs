@@ -88,6 +88,16 @@ namespace SqlSugar
         {
             ((OracleConnection)this.Connection).BeginTransaction();
         }
+
+        public override Func<string, SugarParameter[], KeyValuePair<string, SugarParameter[]>> ProcessingEventStartingSQL => (sql,parameter)=> {
+
+            if(sql== "-- No table ")
+            {
+                sql = " SELECT  'No table' FROM DUAL WHERE 1=2 ";
+            }
+            return new KeyValuePair<string, SugarParameter[]>(sql, parameter);
+        };
+
         /// <summary>
         /// Only SqlServer
         /// </summary>
