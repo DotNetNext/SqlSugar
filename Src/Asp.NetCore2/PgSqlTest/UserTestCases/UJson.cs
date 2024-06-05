@@ -26,6 +26,17 @@ namespace OrmTest
             Db.Queryable<UnitArrayTestaa>()
                 .OrderBy(it=>it.Id)
                 .Where(it => SqlFunc.JsonArrayAny(it.ids, 1)).ToList();
+
+            Db.CodeFirst.InitTables<UnitArrayLongtest1>();
+            Db.DbMaintenance.TruncateTable<UnitArrayLongtest1>();
+            Db.Insertable(new UnitArrayLongtest1()
+            { 
+                ids = new int[] { 1, 2 },
+                Name="a"
+            }).ExecuteCommand(); 
+            var x=Db.Queryable<UnitArrayLongtest1>()
+                .Where(it => SqlFunc.PgsqlArrayContains(it.ids , 1))
+                .ToList();
         }
     }
 
@@ -35,6 +46,14 @@ namespace OrmTest
         public int Id { get; set; }
         public string Name { get; set;}
         [SqlSugar.SugarColumn(IsJson =true)]
+        public int[] ids { get; set; }
+    }
+    public class UnitArrayLongtest1
+    {
+        [SqlSugar.SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+        public int Id { get; set; }
+        public string Name { get; set; }
+        [SqlSugar.SugarColumn(IsArray = true,ColumnDataType ="int4[]")]
         public int[] ids { get; set; }
     }
 
