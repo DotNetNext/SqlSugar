@@ -398,8 +398,11 @@ namespace SqlSugar
         public static bool JsonListObjectAny(object jsonListObject, string fieldName, object value)
         {
             throw new NotSupportedException("Can only be used in expressions");
+        } 
+        public static bool PgsqlArrayContains(object jsonArray, object arrayValue)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
         }
-
         public static bool JsonArrayAny(object jsonArray,object arrayValue) 
         {
             throw new NotSupportedException("Can only be used in expressions");

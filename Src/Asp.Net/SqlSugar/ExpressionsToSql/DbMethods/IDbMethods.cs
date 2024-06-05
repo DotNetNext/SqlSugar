@@ -127,5 +127,6 @@ namespace SqlSugar
         string Ceil(MethodCallExpressionModel mode); 
         string NewUid(MethodCallExpressionModel mode);
         string FullTextContains(MethodCallExpressionModel mode);
+        string PgsqlArrayContains(MethodCallExpressionModel model);
     }
 }
