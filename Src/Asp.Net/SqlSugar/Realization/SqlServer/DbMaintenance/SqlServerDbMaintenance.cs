@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -273,7 +273,7 @@ namespace SqlSugar
         {
             get
             {
-                return "select count(*) from sys.objects where [object_id] = OBJECT_ID(N'sp_GetSubLedgerJoinWithdrawalApplicationRecords') and [type] in (N'P')";
+                return "select count(*) from sys.objects where [object_id] = OBJECT_ID(N'{0}') and [type] in (N'P')";
             }
         }
         #endregion
