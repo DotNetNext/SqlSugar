@@ -364,6 +364,10 @@ namespace SqlSugar
             {
                 ids = ids.Select(it => it?.ToString()?.Replace(",", "[comma]")).Cast<object>().ToList();
             }
+            if (navPkColumn?.UnderType?.Name == UtilConstants.DateType.Name)
+            {
+                ids = ids.Select(it =>it==null?null:it.ObjToDate().ToString("yyyy-MM-dd HH:mm:ss.fff") ).Cast<object>().ToList();
+            }
             conditionalModels.Add((new ConditionalModel()
             {
                 ConditionalType = ConditionalType.In,
