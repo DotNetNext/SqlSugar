@@ -1243,7 +1243,7 @@ namespace SqlSugar
         public SqlSugarClient CopyNew()
         {
 
-            if(_AllClients.Count>1&& _configAction != null)
+            if(_AllClients!=null&&_AllClients.Count>1&& _configAction != null)
             {
                 List<ConnectionConfig> connections = new List<ConnectionConfig>();
                 foreach (var item in _AllClients)
