@@ -1242,6 +1242,19 @@ namespace SqlSugar
         }
         public SqlSugarClient CopyNew()
         {
+
+            if(_AllClients!=null&&_AllClients.Count>1&& _configAction != null)
+            {
+                List<ConnectionConfig> connections = new List<ConnectionConfig>();
+                foreach (var item in _AllClients)
+                {
+                    connections.Add(UtilMethods.CopyConfig(item.ConnectionConfig));
+                }
+                var newDb= new SqlSugarClient(connections, _configAction);
+                newDb.QueryFilter = this.QueryFilter;
+                return newDb;
+            }
+
             SqlSugarClient result;
             if(_configAction!=null)
                 result=new SqlSugarClient(UtilMethods.CopyConfig(this.Ado.Context.CurrentConnectionConfig),_configAction);
