@@ -134,6 +134,10 @@ static void ServerTest()
         timeOnly=TimeOnly.FromDateTime(DateTime.Now),
         dateOnly=DateOnly.FromDateTime(DateTime.Now)
     } )});
+    var dates=new List<DateOnly>() { DateOnly.FromDateTime(DateTime.Now) };
+    var list2111 = sqlugar.Queryable<UnitDatezaaaa>()
+    .Where(it => dates.Contains(it.dateOnly.Value))
+    .ToList();
 }
 
 
