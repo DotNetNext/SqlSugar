@@ -20,6 +20,11 @@ namespace SqlSugar
     }
     public partial class SqlServerMethod : DefaultDbMethod, IDbMethods
     {
+        public override string ToDecimal(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            return string.Format(" CAST({0} AS DECIMAL(18,6)) ", parameter.MemberName);
+        }
         public override string JsonArrayLength(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
