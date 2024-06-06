@@ -62,7 +62,7 @@ namespace SqlSugar
         {
             get
             {
-                return "ALTER TABLE {0} ADD COLUMN {1} {2}{3}";
+                return "ALTER TABLE {0} ADD COLUMN IF NOT EXISTS {1} {2}{3}";
             }
         }
         protected override string AlterColumnToTableSql
@@ -84,7 +84,7 @@ namespace SqlSugar
         {
             get
             {
-                return "CREATE TABLE {0}(\r\n{1} $PrimaryKey )";
+                return "CREATE TABLE IF NOT EXISTS {0}(\r\n{1} $PrimaryKey )";
             }
         }
         protected override string CreateTableColumn
