@@ -220,7 +220,14 @@ namespace SqlSugar
                     }
                     else
                     {
-                        result = result.Replace($"{dbColumnName}=T.{dbColumnName}", $"{dbColumnName}={item.Value.Sql.Replace(dbColumnName, $"{Builder.GetTranslationColumnName(this.TableName)}.{dbColumnName}")}");
+                        if (item.Value?.Sql?.StartsWith("( CASE  WHEN")==true)
+                        {
+                            result = result.Replace($"{dbColumnName}=T.{dbColumnName}", $"{dbColumnName}={item.Value.Sql.Replace(" \"", $" {Builder.GetTranslationColumnName(this.TableName)}.\"")}");
+                        }
+                        else
+                        {
+                            result = result.Replace($"{dbColumnName}=T.{dbColumnName}", $"{dbColumnName}={item.Value.Sql.Replace(dbColumnName, $"{Builder.GetTranslationColumnName(this.TableName)}.{dbColumnName}")}");
+                        }
                     }
                     batchUpdateSql = new StringBuilder(result);
                 }
