@@ -129,6 +129,11 @@ namespace SqlSugar
                         var inStr = Convert.ToDateTime(item).ToString("yyyy-MM-dd HH:mm:ss.fff");
                         inValues.Add(inStr);
                     }
+                    else if (item != null && item.GetType().FullName== "System.DateOnly")
+                    {
+                        var inStr = UtilMethods.DateOnlyToDateTime(item).ObjToDate().ToString("yyyy-MM-dd");
+                        inValues.Add(inStr);
+                    }
                     else if (item != null && item.GetType()==UtilConstants.ByteArrayType)
                     {
                         var inStr= BitConverter.ToString((byte[])item).Replace("-", "");
