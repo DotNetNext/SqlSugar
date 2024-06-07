@@ -680,7 +680,7 @@ namespace SqlSugar
                     case "Trim":
                         return this.Context.DbMehtods.Trim(model);
                     case "Contains":
-                        return this.Context.DbMehtods.Contains(model);
+                        return GetLike(this.Context.DbMehtods.Contains(model),iLike);
                     case "ContainsArray":
                         if (model.Args[0].MemberValue == null)
                         {
