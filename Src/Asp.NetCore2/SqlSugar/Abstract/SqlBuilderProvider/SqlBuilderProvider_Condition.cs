@@ -70,13 +70,14 @@ namespace SqlSugar
                     string oldName = item.FieldName;
                     item.FieldName = GetTranslationColumnName(item.FieldName);
                     item.FieldName = item.FieldName.ToCheckField();
+                    var isILike = this.Context.CurrentConnectionConfig?.MoreSettings?.EnableILike == true;
                     switch (item.ConditionalType)
                     {
                         case ConditionalType.Equal:
                             Equal(builder, parameters, item, type, temp, parameterName);
                             break;
                         case ConditionalType.Like:
-                            builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "LIKE", parameterName);
+                            builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), isILike ? "ILIKE" : "LIKE", parameterName);
                             parameters.Add(new SugarParameter(parameterName, "%" + item.FieldValue + "%"));
                             break;
                         case ConditionalType.GreaterThan:
@@ -103,15 +104,15 @@ namespace SqlSugar
                             NotIn(builder, parameters, item, type, temp, parameterName);
                             break;
                         case ConditionalType.LikeLeft:
-                            builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "LIKE", parameterName);
+                            builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), isILike? "ILIKE" : "LIKE", parameterName);
                             parameters.Add(new SugarParameter(parameterName, item.FieldValue + "%"));
                             break;
                         case ConditionalType.NoLike:
-                            builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), " NOT LIKE", parameterName);
+                            builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), isILike ? "NOT ILIKE" : " NOT LIKE", parameterName);
                             parameters.Add(new SugarParameter(parameterName, "%" + item.FieldValue + "%"));
                             break;
                         case ConditionalType.LikeRight:
-                            builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "LIKE", parameterName);
+                            builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), isILike ? "ILIKE" : "LIKE", parameterName);
                             parameters.Add(new SugarParameter(parameterName, "%" + item.FieldValue));
                             break;
                         case ConditionalType.NoEqual:

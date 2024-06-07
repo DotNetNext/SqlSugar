@@ -16,6 +16,7 @@ namespace SqlSugar
         public bool DisableMillisecond { get; set; }
         public bool PgSqlIsAutoToLower { get; set; } = true;
         public bool PgSqlIsAutoToLowerCodeFirst { get; set; } = true;
+        public bool EnableILike { get; set; }
         public bool IsAutoToUpper { get; set; } = true;
         public int DefaultCacheDurationInSeconds { get; set; }
         public bool? TableEnumIsString { get; set; }
