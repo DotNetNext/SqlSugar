@@ -584,6 +584,7 @@ namespace SqlSugar
             if (columnDescription == null) return columnDescription;
             columnDescription = columnDescription.Replace("\r", "\t");
             columnDescription = columnDescription.Replace("\n", "\t");
+            columnDescription = columnDescription.Replace(Environment.NewLine, "\t");
             columnDescription = Regex.Replace(columnDescription, "\t{2,}", "\t");
             return columnDescription;
         }
