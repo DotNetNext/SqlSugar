@@ -57,7 +57,9 @@ namespace SqlSugar
             var sqlTemp = ($" UPDATE {tableWithString} SET {{0}}  WHERE {{1}};\r\n");
             List<SugarParameter> parameters = new List<SugarParameter>();
             Check.ExceptionEasy(wheres?.Any() != true, "Updates cannot be without a primary key or condition", "更新不能没有主键或者条件");
-            foreach (var item in this.Context.Updateable(updateObjects).UpdateBuilder.DbColumnInfoList.GroupBy(it => it.TableId))
+            var sqlDb = this.Context.CopyNew();
+            sqlDb.Aop.DataExecuting = null;
+            foreach (var item in sqlDb.Updateable(updateObjects).UpdateBuilder.DbColumnInfoList.GroupBy(it => it.TableId))
             {
                 Check.ExceptionEasy(item?.ToList()?.Any() != true, "Set has no columns", "更新Set没有列");
                 StringBuilder setString = new StringBuilder();
