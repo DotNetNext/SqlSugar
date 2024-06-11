@@ -1320,6 +1320,11 @@ namespace SqlSugar
             }
             else if (item.CSharpTypeName.EqualCase(UtilConstants.DateTimeOffsetType.Name))
             {
+                DateTimeOffset dt;
+                if (DateTimeOffset.TryParse(item.FieldValue,out dt)) 
+                {
+                    return dt;
+                }
                 return UtilMethods.GetDateTimeOffsetByDateTime(Convert.ToDateTime(item.FieldValue));
             }
             else if (item.CSharpTypeName.EqualCase(UtilConstants.GuidType.Name))
