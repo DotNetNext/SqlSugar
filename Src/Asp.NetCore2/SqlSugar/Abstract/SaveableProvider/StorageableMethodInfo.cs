@@ -111,9 +111,9 @@ namespace SqlSugar
         }
         public StorageableCommonMethodInfo IgnoreColumns(params string[] ignoreColumns)
         {
-            PropertyInfo property = ObjectValue.GetType().GetProperty(type);
-            var value = property.GetValue(ObjectValue);
-            var newObj = value.GetType().GetMyMethod("IgnoreColumns", 1, typeof(string[])).Invoke(value, new object[] { ignoreColumns });
+            PropertyInfo property = ObjectValue?.GetType().GetProperty(type);
+            var value = property?.GetValue(ObjectValue);
+            var newObj = value?.GetType().GetMyMethod("IgnoreColumns", 1, typeof(string[])).Invoke(value, new object[] { ignoreColumns });
             StorageableCommonMethodInfo result = new StorageableCommonMethodInfo();
             result.Value = newObj;
             return result;
@@ -124,6 +124,7 @@ namespace SqlSugar
         public object Value { get;  set; }
         public int ExecuteCommand()
         { 
+            if(Value == null) return 0;
             var newObj = Value.GetType().GetMethod("ExecuteCommand").Invoke(Value, new object[] { });
             return (int)newObj;
         }
