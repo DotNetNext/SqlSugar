@@ -503,5 +503,101 @@ namespace SqlSugar.GBase
         //        return item.FieldValue;
         //    }
         //}
+        public static Boolean HasBigObjectParam(SugarParameter param)
+        {
+            return param.HasValue() && !string.IsNullOrEmpty(param.ParameterName) &&
+                    (param.DbType == System.Data.DbType.Binary ||
+                    (!string.IsNullOrEmpty(param.TypeName) &&
+                        (param.TypeName == "blob" ||
+                        param.TypeName == "clob" ||
+                        param.TypeName == "byte" ||
+                        param.TypeName == "text")));
+        }
+        public static Boolean HasBigObjectColumn(DbColumnInfo columnInfo)
+        {
+            return columnInfo.HasValue() &&
+                (columnInfo.PropertyType == UtilConstants.ByteArrayType ||
+                (!string.IsNullOrEmpty(columnInfo.DataType) &&
+                    (columnInfo.DataType.ToLower() == "text" ||
+                    columnInfo.DataType.ToLower() == "byte" ||
+                    columnInfo.DataType.ToLower() == "clob" ||
+                    columnInfo.DataType.ToLower() == "blob")));
+        }
+
+        public static bool IsNumber(string ctypename)
+        {
+            if (ctypename.IsNullOrEmpty())
+            {
+                return false;
+            }
+            var item = new ConditionalModel()
+            {
+                CSharpTypeName = ctypename,
+            };
+            if (item.CSharpTypeName.EqualCase(UtilConstants.DecType.Name))
+            {
+                return true;
+            }
+            else if (item.CSharpTypeName.EqualCase(UtilConstants.DobType.Name))
+            {
+                return true;
+            }
+            else if (item.CSharpTypeName.EqualCase(UtilConstants.IntType.Name))
+            {
+                return true;
+            }
+            else if (item.CSharpTypeName.EqualCase(UtilConstants.LongType.Name))
+            {
+                return true;
+            }
+            else if (item.CSharpTypeName.EqualCase(UtilConstants.ShortType.Name))
+            {
+                return true;
+            }
+            else if (item.CSharpTypeName.EqualCase("int"))
+            {
+                return true;
+            }
+            else if (item.CSharpTypeName.EqualCase("long"))
+            {
+                return true;
+            }
+            else if (item.CSharpTypeName.EqualCase("short"))
+            {
+                return true;
+            }
+            else if (item.CSharpTypeName.EqualCase("byte"))
+            {
+                return true;
+            }
+            else if (item.CSharpTypeName.EqualCase("uint"))
+            {
+                return true;
+            }
+            else if (item.CSharpTypeName.EqualCase("ulong"))
+            {
+                return true;
+            }
+            else if (item.CSharpTypeName.EqualCase("ushort"))
+            {
+                return true;
+            }
+            else if (item.CSharpTypeName.EqualCase("uint32"))
+            {
+                return true;
+            }
+            else if (item.CSharpTypeName.EqualCase("uint64"))
+            {
+                return true;
+            }
+            else if (item.CSharpTypeName.EqualCase("uint16"))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 }

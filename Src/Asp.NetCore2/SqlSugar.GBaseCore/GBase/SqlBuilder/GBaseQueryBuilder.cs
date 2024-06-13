@@ -17,7 +17,7 @@ namespace SqlSugar.GBase
                 /*
                  SELECT * FROM TABLE WHERE CONDITION ORDER BY ID DESC LIMIT 0,10
                  */
-                var template = "SELECT {0} FROM {1} {2} {3} {4} LIMIT {5},{6}";
+                var template = "SELECT SKIP {5} FIRST {6} {0} FROM {1} {2} {3} {4} ";
                 return template;
             }
         }
@@ -34,7 +34,7 @@ namespace SqlSugar.GBase
         #region Common Methods
         public override bool IsComplexModel(string sql)
         {
-            return Regex.IsMatch(sql, @"AS \`\w+\.\w+\`") || Regex.IsMatch(sql, @"AS \`\w+\.\w+\.\w+\`");
+            return Regex.IsMatch(sql, @"AS ""\w+\.\w+""") || Regex.IsMatch(sql, @"AS ""\w+\.\w+\.\w+""");
         }
         public override string ToSqlString()
         {

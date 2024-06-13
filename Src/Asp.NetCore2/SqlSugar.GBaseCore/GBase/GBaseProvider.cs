@@ -6,8 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using System.Data.Odbc;
 using System.Text.RegularExpressions;
+using GBS.Data.GBasedbt;
 
 namespace SqlSugar.GBase
 {
@@ -22,7 +22,7 @@ namespace SqlSugar.GBase
                 {
                     try
                     {
-                        base._DbConnection = new OdbcConnection(base.Context.CurrentConnectionConfig.ConnectionString);
+                        base._DbConnection = new GbsConnection(base.Context.CurrentConnectionConfig.ConnectionString);
                     }
                     catch (Exception ex)
                     {
@@ -67,14 +67,14 @@ namespace SqlSugar.GBase
         {
             if (this.Context.Ado.Transaction != null)
             {
-                return await GetScalarAsync(sql, parameters);
+                return await _GetScalarAsync(sql, parameters);
             }
             else
             {
                 try
                 {
                     this.Context.Ado.BeginTran();
-                    var result =await GetScalarAsync(sql, parameters);
+                    var result = await _GetScalarAsync(sql, parameters);
                     this.Context.Ado.CommitTran();
                     return result;
                 }
@@ -135,12 +135,20 @@ namespace SqlSugar.GBase
             {
                 var sqlParts = Regex.Split(sql, this.SplitCommandTag).Where(it => !string.IsNullOrEmpty(it)).ToList();
                 int result = 0;
+                int i = 0;
                 foreach (var item in sqlParts)
                 {
                     if (item.TrimStart('\r').TrimStart('\n') != "")
                     {
-                        result += base.ExecuteCommand(item, parameters);
+                        // parameter name which has prefix is add by AddBatchInsertParameters().
+                        // it should be passed to Command row by row. 
+                        // the parameter which has same prefix is in the same row.
+                        var namePrefix = i.ToString() + this.Context.Ado.SqlParameterKeyWord;
+                        var paramParts = parameters.Where(o => string.Compare(o.ParameterName, 0, namePrefix, 0, namePrefix.Length) == 0).ToArray();
+
+                        result += base.ExecuteCommand(item, paramParts.Length > 0 ? paramParts : parameters);
                     }
+                    ++i;
                 }
                 return result;
             }
@@ -156,12 +164,20 @@ namespace SqlSugar.GBase
             {
                 var sqlParts = Regex.Split(sql, this.SplitCommandTag).Where(it => !string.IsNullOrEmpty(it)).ToList();
                 int result = 0;
+                int i = 0;
                 foreach (var item in sqlParts)
                 {
                     if (item.TrimStart('\r').TrimStart('\n') != "")
                     {
-                        result +=await base.ExecuteCommandAsync(item, parameters);
+                        // parameter name which has prefix is add by AddBatchInsertParameters().
+                        // it should be passed to Command row by row. 
+                        // the parameter which has same prefix is in the same row.
+                        var namePrefix = i.ToString() + this.Context.Ado.SqlParameterKeyWord;
+                        var paramParts = parameters.Where(o => string.Compare(o.ParameterName, 0, namePrefix, 0, namePrefix.Length) == 0).ToArray();
+
+                        result += await base.ExecuteCommandAsync(item, paramParts.Length > 0 ? paramParts : parameters);
                     }
+                    ++i;
                 }
                 return result;
             }
@@ -178,7 +194,7 @@ namespace SqlSugar.GBase
         public override void BeginTran(string transactionName)
         {
             CheckConnection();
-            base.Transaction = ((OdbcConnection)this.Connection).BeginTransaction();
+            base.Transaction = ((GbsConnection)this.Connection).BeginTransaction();
         }
         /// <summary>
         /// Only GBase
@@ -188,7 +204,7 @@ namespace SqlSugar.GBase
         public override void BeginTran(IsolationLevel iso, string transactionName)
         {
             CheckConnection();
-            base.Transaction = ((OdbcConnection)this.Connection).BeginTransaction(iso);
+            base.Transaction = ((GbsConnection)this.Connection).BeginTransaction(iso);
         }
      
         public override IDataAdapter GetAdapter()
@@ -199,19 +215,67 @@ namespace SqlSugar.GBase
         {
             var helper = new GBaseInsertBuilder();
             helper.Context = this.Context;
+            GbsCommand sqlCommand = ((GbsConnection)this.Connection).CreateCommand();
             if (parameters != null)
             {
+                var bigObjectParams = parameters.Where(o => sql.Contains(o.ParameterName) &&UtilMethods.HasBigObjectParam(o)).ToList<SugarParameter>();
+
+                foreach (var param in bigObjectParams)
+                {
+                    // for big object data, in the insert or update statements
+                    // the charactor after the @ParameterName could only be , or ) or space.
+                    // here use these characters as postfix of the parameter name.
+                    // the Replace method would only replace one field each time.
+                    sql = sql.Replace(param.ParameterName + ",", " ?, ");
+                    sql = sql.Replace(param.ParameterName + ")", " ?) ");
+                    sql = sql.Replace(param.ParameterName + " ", " ?  ");
+
+                    var gbsParam = sqlCommand.CreateParameter();
+                    gbsParam.DbType = param.DbType;
+                    gbsParam.ParameterName = param.ParameterName;
+
+                    // assign GbsType.
+                    switch (param.TypeName)
+                    {
+                        case "blob":
+                            gbsParam.GbsType = GbsType.Blob;
+                            gbsParam.Value = (param.Value == null) ? string.Empty : param.Value;
+                            break;
+                        case "clob":
+                            gbsParam.GbsType = GbsType.Clob;
+                            gbsParam.Value = (param.Value == null) ? string.Empty : param.Value;
+                            break;
+                        case "text":
+                            gbsParam.GbsType = GbsType.Text;
+                            gbsParam.Value = (param.Value == null) ? DBNull.Value : param.Value;
+                            break;
+                        case "byte":
+                        default:
+                            gbsParam.GbsType = GbsType.Byte;
+                            gbsParam.Value = (param.Value == null) ? DBNull.Value : param.Value;
+                            break;
+                    }
+
+                    sqlCommand.Parameters.Add(gbsParam);
+                }
                 foreach (var param in parameters.OrderByDescending(it => it.ParameterName.Length))
                 {
-                    sql = sql.Replace(param.ParameterName, helper.FormatValue(param.Value) + "");
+                    if (sql.Contains(param.ParameterName) && UtilMethods.HasBigObjectParam(param))
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        sql = sql.Replace(param.ParameterName, helper.FormatValue(param.Value) + "");
+                    }
                 }
             }
-            OdbcCommand sqlCommand = new OdbcCommand(sql, (OdbcConnection)this.Connection);
+            sqlCommand.CommandText = sql;
             sqlCommand.CommandType = this.CommandType;
             sqlCommand.CommandTimeout = this.CommandTimeOut;
             if (this.Transaction != null)
             {
-                sqlCommand.Transaction = (OdbcTransaction)this.Transaction;
+                sqlCommand.Transaction = (GbsTransaction)this.Transaction;
             }
             //if (parameters.HasValue())
             //{
@@ -223,7 +287,7 @@ namespace SqlSugar.GBase
         }
         public override void SetCommandToAdapter(IDataAdapter dataAdapter, DbCommand command)
         {
-            ((GBaseDataAdapter)dataAdapter).SelectCommand = (OdbcCommand)command;
+            ((GBaseDataAdapter)dataAdapter).SelectCommand = (GbsCommand)command;
         }
         /// <summary>
         /// if mysql return MySqlParameter[] pars
@@ -233,13 +297,13 @@ namespace SqlSugar.GBase
         /// <returns></returns>
         public override IDataParameter[] ToIDbDataParameter(params SugarParameter[] parameters)
         {
-            if (parameters == null || parameters.Length == 0) return new OdbcParameter[] { };
-            OdbcParameter[] result = new OdbcParameter[parameters.Length];
+            if (parameters == null || parameters.Length == 0) return new GbsParameter[] { };
+            GbsParameter[] result = new GbsParameter[parameters.Length];
             int index = 0;
             foreach (var parameter in parameters)
             {
                 if (parameter.Value == null) parameter.Value = DBNull.Value;
-                var sqlParameter = new OdbcParameter();
+                var sqlParameter = new GbsParameter();
                 sqlParameter.ParameterName = parameter.ParameterName;
                 //sqlParameter.UdtTypeName = parameter.UdtTypeName;
                 sqlParameter.Size = parameter.Size;
@@ -263,15 +327,15 @@ namespace SqlSugar.GBase
         /// </summary>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        public OdbcParameter[] GetSqlParameter(params SugarParameter[] parameters)
+        public GbsParameter[] GetSqlParameter(params SugarParameter[] parameters)
         {
             if (parameters == null || parameters.Length == 0) return null;
-            OdbcParameter[] result = new OdbcParameter[parameters.Length];
+            GbsParameter[] result = new GbsParameter[parameters.Length];
             int index = 0;
             foreach (var parameter in parameters)
             {
                 if (parameter.Value == null) parameter.Value = DBNull.Value;
-                var sqlParameter = new OdbcParameter();
+                var sqlParameter = new GbsParameter();
                 sqlParameter.ParameterName = parameter.ParameterName;
                 //sqlParameter.UdtTypeName = parameter.UdtTypeName;
                 sqlParameter.Size = parameter.Size;

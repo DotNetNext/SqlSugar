@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Odbc;
 using System.Text;
+using GBS.Data.GBasedbt;
+
 namespace SqlSugar.GBase 
 {
     /// <summary>
@@ -10,15 +11,15 @@ namespace SqlSugar.GBase
     /// </summary>
     public class GBaseDataAdapter : IDataAdapter
     {
-        private OdbcCommand command;
+        private GbsCommand command;
         private string sql;
-        private OdbcConnection _sqlConnection;
+        private GbsConnection _sqlConnection;
 
         /// <summary>
         /// SqlDataAdapter
         /// </summary>
         /// <param name="command"></param>
-        public GBaseDataAdapter(OdbcCommand command)
+        public GBaseDataAdapter(GbsCommand command)
         {
             this.command = command;
         }
@@ -33,7 +34,7 @@ namespace SqlSugar.GBase
         /// </summary>
         /// <param name="sql"></param>
         /// <param name="_sqlConnection"></param>
-        public GBaseDataAdapter(string sql, OdbcConnection _sqlConnection)
+        public GBaseDataAdapter(string sql, GbsConnection _sqlConnection)
         {
             this.sql = sql;
             this._sqlConnection = _sqlConnection;
@@ -42,13 +43,13 @@ namespace SqlSugar.GBase
         /// <summary>
         /// SelectCommand
         /// </summary>
-        public OdbcCommand SelectCommand
+        public GbsCommand SelectCommand
         {
             get
             {
                 if (this.command == null)
                 {
-                    var conn = (OdbcConnection)this._sqlConnection;
+                    var conn = (GbsConnection)this._sqlConnection;
                     this.command = conn.CreateCommand();
                     this.command.CommandText = sql;
                 }

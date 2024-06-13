@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Data.Odbc" Version="4.6.0" />
+    <PackageReference Include="GBase.DataProvider" Version="1.1.0" />
   </ItemGroup>
 
   <ItemGroup>

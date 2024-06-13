@@ -15,9 +15,22 @@ namespace SqlSugar.GBase
         {
             if (name.Contains("="))
             {
-                name = name.Split('=').First().Trim();
+                name = name.Split('=').First();
             }
-            return name;
+            name = name.Trim(' ');
+
+            if (string.IsNullOrEmpty(SqlTranslationLeft) ||
+                !name.Contains(SqlTranslationLeft))
+            {
+                return name;
+            }
+
+            if (!name.Contains(".") && name.StartsWith(SqlTranslationLeft) && name.EndsWith(SqlTranslationRight))
+            {
+                return name.TrimStart(Convert.ToChar(SqlTranslationLeft)).TrimEnd(Convert.ToChar(SqlTranslationRight));
+            }
+
+            return name == null ? string.Empty : Regex.Match(name, @".*" + "\\" + SqlTranslationLeft + "(.*?)" + "\\" + SqlTranslationRight + "").Groups[1].Value;
         }
         public override string SqlDateNow
         {
@@ -64,5 +77,4 @@ namespace SqlSugar.GBase
         }
 
     }
-
 }
