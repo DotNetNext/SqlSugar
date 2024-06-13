@@ -22,7 +22,7 @@ namespace SqlSugar.GBase
                 {
                     try
                     {
-                        base._DbConnection = new GbsConnection(base.Context.CurrentConnectionConfig.ConnectionString);
+                        base._DbConnection = new GbsConnection(base.Context.CurrentConnectionConfig.ConnectionString?.Replace("Driver={GBase ODBC DRIVER (64-Bit)};",string.Empty));
                     }
                     catch (Exception ex)
                     {
