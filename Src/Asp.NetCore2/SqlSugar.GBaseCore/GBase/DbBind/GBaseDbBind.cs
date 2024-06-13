@@ -42,6 +42,7 @@ namespace SqlSugar.GBase
                   new KeyValuePair<string, CSharpDataType>("char",CSharpDataType.@string),
                   new KeyValuePair<string, CSharpDataType>("clob",CSharpDataType.@string),
                   new KeyValuePair<string, CSharpDataType>("DATETIME YEAR TO FRACTION(5)", CSharpDataType.DateTime),
+                  new KeyValuePair<string, CSharpDataType>("DATETIME YEAR TO FRACTION(3)", CSharpDataType.DateTime),
                   new KeyValuePair<string, CSharpDataType>("datetime", CSharpDataType.DateTime),
                   new KeyValuePair<string, CSharpDataType>("date", CSharpDataType.DateTime),
                   new KeyValuePair<string, CSharpDataType>("decimal", CSharpDataType.@decimal),
