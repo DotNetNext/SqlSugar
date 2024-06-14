@@ -201,7 +201,8 @@ namespace OrmTest
             {
                 count = SqlFunc.RowCount(),
                 index = SqlFunc.RowNumber(it.Name),
-                index2 = SqlFunc.RowNumber(it.Id,it.Name)
+                index2 = SqlFunc.RowNumber(it.Id,it.Name),
+                index3=GetValue()
             })
            .ToList();
             var test49 = db.Queryable<Order>().Select(it => new
@@ -266,6 +267,11 @@ namespace OrmTest
                 Name = Guid.NewGuid().ToString("n")
             }).ToList();
             Console.WriteLine("#### Examples End ####");
+        }
+
+        private static int GetValue()
+        {
+            return 3;
         }
 
         private static void ReturnType()
