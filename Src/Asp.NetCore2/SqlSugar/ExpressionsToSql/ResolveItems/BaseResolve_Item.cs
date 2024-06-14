@@ -23,34 +23,35 @@ namespace SqlSugar
                 AppendOnlyInSelectConvertToString(parameter, item, asName);
                 return;
             }
-            else if (ExpressionTool.GetMethodName(item) == "ToString"   
-                                      &&(item as MethodCallExpression)?.Arguments?.Count()==1
-                                      && (item as MethodCallExpression)?.Object?.Type!=UtilConstants.DateType
-                                      && this.Context?.SugarContext?.QueryBuilder!=null
-                                      && (item as MethodCallExpression)?.Method?.ReflectedType?.Name!="SqlFunc"
+            else if (ExpressionTool.GetMethodName(item) == "ToString"
+                                      && (item as MethodCallExpression)?.Arguments?.Count() == 1
+                                      && (item as MethodCallExpression)?.Object?.Type != UtilConstants.DateType
+                                      && this.Context?.SugarContext?.QueryBuilder != null
+                                      && (item as MethodCallExpression)?.Method?.ReflectedType?.Name != "SqlFunc"
                                       && (item as MethodCallExpression)?.Method?.ReflectedType?.Name != "Convert"
                                        )
             {
-                var format=ExpressionTool.GetExpressionValue((item as MethodCallExpression)?.Arguments[0]);
+                var format = ExpressionTool.GetExpressionValue((item as MethodCallExpression)?.Arguments[0]);
                 var childExpression = (item as MethodCallExpression)?.Object;
-                var type=childExpression.Type;
-                if (this.Context.SugarContext.QueryBuilder.QueryableFormats == null) 
+                var type = childExpression.Type;
+                if (this.Context.SugarContext.QueryBuilder.QueryableFormats == null)
                 {
                     this.Context.SugarContext.QueryBuilder.QueryableFormats = new List<QueryableFormat>();
                 }
-                this.Context.SugarContext.QueryBuilder.QueryableFormats.Add(new QueryableFormat() {
-                    Format=format+"",
-                    PropertyName=asName,
-                    Type=type,
-                    TypeString=type.FullName, 
-                    MethodName= "ToString"
+                this.Context.SugarContext.QueryBuilder.QueryableFormats.Add(new QueryableFormat()
+                {
+                    Format = format + "",
+                    PropertyName = asName,
+                    Type = type,
+                    TypeString = type.FullName,
+                    MethodName = "ToString"
                 });
                 parameter.Context.Result.Append(this.Context.GetAsString2(asName, GetNewExpressionValue(childExpression)));
                 return;
             }
             else if (ExpressionTool.GetMethodName(item) == "ToString"
                               && (item as MethodCallExpression)?.Arguments?.Count() == 0
-                              && (item as MethodCallExpression)?.Object?.Type?.IsEnum==true
+                              && (item as MethodCallExpression)?.Object?.Type?.IsEnum == true
                               && this.Context?.SugarContext?.QueryBuilder != null)
             {
                 var childExpression = (item as MethodCallExpression)?.Object;
@@ -60,7 +61,7 @@ namespace SqlSugar
                     this.Context.SugarContext.QueryBuilder.QueryableFormats = new List<QueryableFormat>();
                 }
                 this.Context.SugarContext.QueryBuilder.QueryableFormats.Add(new QueryableFormat()
-                { 
+                {
                     PropertyName = asName,
                     Type = type,
                     TypeString = "Enum",
@@ -81,6 +82,12 @@ namespace SqlSugar
                 this.Start();
                 parameter.Context.Result.Append(this.Context.GetAsString2(asName, parameter.CommonTempData.ObjToString()));
                 this.Context.SingleTableNameSubqueryShortName = ps.FirstOrDefault().Name;
+                return;
+            }
+            else if (item is MethodCallExpression&&ExpressionTool.IsVariable(item)) 
+            {
+                var p = GetNewExpressionValue(item);
+                parameter.Context.Result.Append(this.Context.GetAsString2(asName, p));
                 return;
             }
             this.Expression = item;
