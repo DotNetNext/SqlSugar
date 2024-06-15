@@ -18,6 +18,15 @@ namespace SqlSugar
 {
     public class UtilMethods
     {
+        public static bool IsTuple(Type tType, List<PropertyInfo> classProperties)
+        {
+            if (classProperties?.Any() != true) 
+            {
+                return false;
+            }
+            return tType.FullName?.StartsWith("System.Tuple`") == true && classProperties.FirstOrDefault()?.Name == "Item1";
+        }
+
         internal static string GetTableByDbLink(SqlSugarProvider context,string tableName, string oldTableName, TenantAttribute attr)
         {
             QueryBuilder queryBuilder=InstanceFactory.GetQueryBuilderWithContext(context);

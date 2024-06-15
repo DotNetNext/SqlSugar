@@ -442,6 +442,16 @@ namespace SqlSugar
             var readerValues = DataReaderToDictionary(reader, tType);
             var mappingKeys = this.QueryBuilder?.MappingKeys;
             var result = new Dictionary<string, object>();
+            if (UtilMethods.IsTuple(tType, classProperties))
+            {
+                var index = 0;
+                foreach (var item in classProperties)
+                {
+                    result.Add("Item" + (index + 1), reader.GetValue(index));
+                    index++;
+                }
+                return result;
+            }
             foreach (var item in classProperties)
             {
                 var name = item.Name;
