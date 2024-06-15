@@ -62,6 +62,20 @@ namespace SqlSugar
             var result = Context.GetType().GetMyMethod("ExecuteCommand", 0).Invoke(Context, new object[] { });
             return (int)result;
         }
+        public UpdateCommonMethodInfo WhereColumns(params string[] columns)
+        {
+            var result = Context.GetType().GetMyMethod("WhereColumns", 1, typeof(string[])).Invoke(Context, new object[] { columns });
+            UpdateCommonMethodInfo updateCommonMethod = new UpdateCommonMethodInfo();
+            updateCommonMethod.Context = result;
+            return updateCommonMethod;
+        }
+        public UpdateCommonMethodInfo UpdateColumns(params string[] columns)
+        {
+            var result = Context.GetType().GetMyMethod("UpdateColumns", 1, typeof(string[])).Invoke(Context, new object[] { columns });
+            UpdateCommonMethodInfo updateCommonMethod = new UpdateCommonMethodInfo();
+            updateCommonMethod.Context = result;
+            return updateCommonMethod;
+        }
         public async Task<int> ExecuteCommandAsync()
         {
             if (Context == null) return 0;
