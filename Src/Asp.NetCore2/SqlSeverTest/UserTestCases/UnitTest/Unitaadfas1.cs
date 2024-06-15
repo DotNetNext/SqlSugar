@@ -43,6 +43,17 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+
+            var userInfo = db.Queryable<Test1>()
+             .Select(it => 
+                   new System.Tuple<long, long>(
+                     it.GuId,
+                     it.TopId
+                 )).ToList();
+            if (userInfo.FirstOrDefault()?.Item1 != 1) 
+            {
+                throw new Exception("unit error");
+            }
         }
 
         [SugarTable("UnitTest1111")]
