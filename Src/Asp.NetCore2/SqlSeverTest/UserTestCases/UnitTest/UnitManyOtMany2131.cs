@@ -50,6 +50,21 @@ namespace OrmTest
                 .Includes(it => it.Roles)
                 .ToList();
 
+            var list2 = db.Queryable<OperatorInfo>()
+                       .Includes(it => it.Roles.Select(it => new Role() {
+                           name = it.name, 
+
+                       }).ToList())
+                       .Select(it => new {
+                           id=it.id,
+                           roles = it.Roles.Select(it => new   { name = it.name }).ToList()
+                       })
+                       .ToList();
+
+            if (list2.First().roles.Count == 0) 
+            {
+                throw new Exception("unit error");
+            } 
             TestLength2(db);
             TestLength3(db);
             TestLength1(db);
