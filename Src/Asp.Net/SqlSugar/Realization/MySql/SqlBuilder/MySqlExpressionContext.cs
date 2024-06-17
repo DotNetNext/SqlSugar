@@ -223,7 +223,7 @@ namespace SqlSugar
         }
         public override string GetDate()
         {
-            return "NOW()";
+            return "NOW(6)";
         }
 
         public override string GetRandom()
