@@ -28,4 +28,26 @@ namespace SqlSugar
             context.RollbackTran();
         }
     }
+    public class SqlSugarTransactionAdo : IDisposable
+    {
+        private readonly ISqlSugarClient context;
+
+        public SqlSugarTransactionAdo(ISqlSugarClient client)
+        {
+            context = client;
+            context.Ado.BeginTran();
+        }
+        public void CommitTran()
+        {
+            context.Ado.CommitTran();
+        }
+        public void RollbackTran()
+        {
+            context.Ado.RollbackTran();
+        }
+        public void Dispose()
+        {
+            context.Ado.RollbackTran();
+        }
+    }
 }

@@ -185,7 +185,7 @@ namespace SqlSugar
         Task RollbackTranAsync();
         void CommitTran();
         Task CommitTranAsync();
-
+        SqlSugarTransactionAdo UseTran();
         DbResult<bool> UseTran(Action action, Action<Exception> errorCallBack = null);
         DbResult<T> UseTran<T>(Func<T> action, Action<Exception> errorCallBack = null);
         Task<DbResult<bool>> UseTranAsync(Func<Task> action, Action<Exception> errorCallBack = null);
