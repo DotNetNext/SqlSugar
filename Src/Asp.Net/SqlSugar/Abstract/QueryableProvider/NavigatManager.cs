@@ -165,15 +165,24 @@ namespace SqlSugar
 
             if (navObjectNameColumnInfo.Navigat.NavigatType == NavigateType.OneToOne)
             {
-                OneToOne(list, selector, listItemEntity, navObjectNamePropety, navObjectNameColumnInfo);
+                this.Context.Utilities.PageEach(list, 5000, pageList =>
+                {
+                    OneToOne(pageList, selector, listItemEntity, navObjectNamePropety, navObjectNameColumnInfo);
+                });
             }
             else if (navObjectNameColumnInfo.Navigat.NavigatType == NavigateType.OneToMany)
             {
-                OneToMany(list, selector, listItemEntity, navObjectNamePropety, navObjectNameColumnInfo);
+                this.Context.Utilities.PageEach(list, 5000, pageList =>
+                {
+                    OneToMany(pageList, selector, listItemEntity, navObjectNamePropety, navObjectNameColumnInfo);
+                });
             }
             else if (navObjectNameColumnInfo.Navigat.NavigatType == NavigateType.ManyToOne)
             {
-                OneToOne(list, selector, listItemEntity, navObjectNamePropety, navObjectNameColumnInfo);
+                this.Context.Utilities.PageEach(list, 5000, pageList =>
+                {
+                    OneToOne(pageList, selector, listItemEntity, navObjectNamePropety, navObjectNameColumnInfo);
+                });
             }
             else if (navObjectNameColumnInfo.Navigat.NavigatType == NavigateType.Dynamic)
             {
