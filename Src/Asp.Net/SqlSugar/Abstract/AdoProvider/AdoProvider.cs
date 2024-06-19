@@ -287,6 +287,10 @@ namespace SqlSugar
         #endregion
 
         #region Use
+        public SqlSugarTransactionAdo UseTran()
+        {
+            return new SqlSugarTransactionAdo(this.Context);
+        }
         public DbResult<bool> UseTran(Action action, Action<Exception> errorCallBack = null)
         {
             var result = new DbResult<bool>();
