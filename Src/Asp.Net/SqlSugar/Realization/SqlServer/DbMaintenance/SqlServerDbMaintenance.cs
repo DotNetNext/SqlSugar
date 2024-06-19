@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -626,7 +627,10 @@ AND syscomments.text LIKE '%"+tableName+"%'");
                 {
                     if (!FileHelper.IsExistDirectory(databaseDirectory))
                     {
-                        FileHelper.CreateDirectory(databaseDirectory);
+                        if (FileHelper.IsExistDirectory(Path.GetPathRoot(databaseDirectory)))
+                        {
+                            FileHelper.CreateDirectory(databaseDirectory);
+                        }
                     }
                 }
                 catch  
