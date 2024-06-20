@@ -28,7 +28,36 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+            db.CodeFirst.InitTables<WmsInOutStockDetail>();
+            db.Aop.OnDiffLogEvent = it =>
+            {
+
+            };
+            db.Insertable(new WmsInOutStockDetail()
+            {
+                ActualQty = 1,
+                DetailNo = 1 + DateTime.Now.Millisecond,
+                OrderNo = "IBFa07240614001"
+            }).ExecuteCommand();
+            string OrderNo = "IBFa07240614001";
+            int DetailNo = 1;
+            var updateable = db.Updateable<WmsInOutStockDetail>()
+            .SetColumns(it => it.ActualQty == 0)
+            .Where(it => it.OrderNo == OrderNo && it.DetailNo == DetailNo)
+            .EnableDiffLogEvent()
+            .ExecuteCommand();
+
+
         }
+
+        public class WmsInOutStockDetail
+        {
+
+            public int DetailNo { get; set; }
+            public long ActualQty { get; set; }
+            public string OrderNo { get; set; }
+        }
+
         public static void UpdateTerminalAdjustInfo(string terminalCode="", decimal sendNum=0, decimal drugNum=0, decimal averageNum=0)
         {
             SqlSugarClient service = OrmTest.NewUnitTest.Db;
