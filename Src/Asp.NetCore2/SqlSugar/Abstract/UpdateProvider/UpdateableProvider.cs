@@ -117,15 +117,25 @@ namespace SqlSugar
             {
                 UpdateBuilder.Parameters = UpdateBuilder.Parameters.Where(it => UtilMethods.NoErrorParameter(it.ParameterName)).ToList();
             }
+            List<SugarParameter> oldParas = null;
+            if (IsEnableDiffLogEvent)
+            {
+                oldParas=UtilMethods.CopySugarParameters(UpdateBuilder.Parameters);
+            }
             if (sql != Environment.NewLine)
             {
                 result = this.Ado.ExecuteCommand(sql, UpdateBuilder.Parameters == null ? null : UpdateBuilder.Parameters.ToArray());
             }
+            if (oldParas != null&& UpdateBuilder.Parameters!=null) 
+            {
+                if (string.Join(",", oldParas.Select(it => it.ParameterName)) != string.Join(",", UpdateBuilder.Parameters.Select(it => it.ParameterName)))
+                {
+                    UpdateBuilder.Parameters = oldParas;
+                }
+            }
             After(sql);
             return result;
-        }
-
-
+        } 
         public bool ExecuteCommandHasChange()
         {
             return this.ExecuteCommand() > 0;
