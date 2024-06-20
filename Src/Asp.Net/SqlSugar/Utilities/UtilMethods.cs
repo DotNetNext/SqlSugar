@@ -18,6 +18,37 @@ namespace SqlSugar
 {
     public class UtilMethods
     {
+
+        public static List<SugarParameter> CopySugarParameters(List<SugarParameter> pars)
+        {
+            if(pars==null) return null;
+            var newParameters = pars.Select(it => new SugarParameter(it.ParameterName, it.Value)
+            {
+                TypeName = it.TypeName,
+                Value = it.Value,
+                IsRefCursor = it.IsRefCursor,
+                IsArray = it.IsArray,
+                IsJson = it.IsJson,
+                ParameterName = it.ParameterName,
+                IsNvarchar2 = it.IsNvarchar2,
+                IsNClob = it.IsClob,
+                IsClob = it.IsClob,
+                UdtTypeName = it.UdtTypeName,
+                CustomDbType = it.CustomDbType,
+                DbType = it.DbType,
+                Direction = it.Direction,
+                Precision = it.Precision,
+                Size = it.Size,
+                Scale = it.Scale,
+                IsNullable = it.IsNullable,
+                SourceColumn = it.SourceColumn,
+                SourceColumnNullMapping = it.SourceColumnNullMapping,
+                SourceVersion = it.SourceVersion,
+                TempDate = it.TempDate,
+                _Size = it._Size
+            });
+            return newParameters.ToList();
+        }
         public static bool IsTuple(Type tType, List<PropertyInfo> classProperties)
         {
             if (classProperties?.Any() != true) 
