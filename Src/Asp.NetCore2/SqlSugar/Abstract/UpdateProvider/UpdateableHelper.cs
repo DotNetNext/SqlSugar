@@ -703,6 +703,8 @@ namespace SqlSugar
             {
                 this.RemoveCacheFunc();
             }
+
+            DataChangesAop(this.UpdateObjs);
         }
         private string _ExecuteCommandWithOptLock(T updateData,ref object oldVerValue)
         {

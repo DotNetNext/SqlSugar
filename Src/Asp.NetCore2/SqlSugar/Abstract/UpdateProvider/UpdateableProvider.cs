@@ -134,7 +134,6 @@ namespace SqlSugar
                 }
             }
             After(sql);
-            DataChangesAop(this.UpdateObjs);
             return result;
         } 
         public bool ExecuteCommandHasChange()
@@ -184,8 +183,7 @@ namespace SqlSugar
                 return 0;
             }
             var result = await this.Ado.ExecuteCommandAsync(sql, UpdateBuilder.Parameters == null ? null : UpdateBuilder.Parameters.ToArray());
-            After(sql);
-            DataChangesAop(this.UpdateObjs);
+            After(sql); 
             return result;
         }
         public Task<bool> ExecuteCommandHasChangeAsync(CancellationToken token) 
