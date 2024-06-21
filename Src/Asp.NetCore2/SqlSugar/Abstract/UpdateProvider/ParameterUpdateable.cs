@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace SqlSugar
@@ -16,27 +18,99 @@ namespace SqlSugar
             var list = Updateable.UpdateObjs;
             var count = list.Length;
             var size = GetPageSize(20, count);
+            Before(list.ToList());
             Context.Utilities.PageEach(list.ToList(), size, item =>
-            { 
+            {
                 List<SugarParameter> allParamter = new List<SugarParameter>();
-                var sql=GetSql(item);
-                result+=Context.Ado.ExecuteCommand(sql.Key, sql.Value);
+                var sql = GetSql(item);
+                result += Context.Ado.ExecuteCommand(sql.Key, sql.Value);
             });
-            return result<0?count:result;
+            After(list.ToList());
+            return result < 0 ? count : result;
         }
+
         public async Task<int> ExecuteCommandAsync()
         {
             var result = 0;
             var list = Updateable.UpdateObjs;
             var count = list.Length;
             var size = GetPageSize(20, count);
-            await Context.Utilities.PageEachAsync(list.ToList(), size,async item =>
+            Before(list.ToList());
+            await Context.Utilities.PageEachAsync(list.ToList(), size, async item =>
             {
                 List<SugarParameter> allParamter = new List<SugarParameter>();
                 var sql = GetSql(item);
-                result +=await Context.Ado.ExecuteCommandAsync(sql.Key, sql.Value);
+                result += await Context.Ado.ExecuteCommandAsync(sql.Key, sql.Value);
             });
+            After(list.ToList());
             return result < 0 ? count : result;
+        }
+
+
+        private void Before(List<T> updateObjects)
+        {
+            if (this.Updateable.IsEnableDiffLogEvent && updateObjects.Count > 0)
+            {
+                var isDisableMasterSlaveSeparation = this.Updateable.Ado.IsDisableMasterSlaveSeparation;
+                this.Updateable.Ado.IsDisableMasterSlaveSeparation = true;
+                var parameters = Updateable.UpdateBuilder.Parameters;
+                if (parameters == null)
+                    parameters = new List<SugarParameter>();
+                Updateable.diffModel.BeforeData = GetDiffTable(updateObjects);
+                Updateable.diffModel.Sql = this.Updateable.UpdateBuilder.ToSqlString();
+                Updateable.diffModel.Parameters = parameters.ToArray();
+                this.Updateable.Ado.IsDisableMasterSlaveSeparation = isDisableMasterSlaveSeparation;
+            }
+        }
+
+        protected void After(List<T> updateObjects)
+        {
+            if (this.Updateable.IsEnableDiffLogEvent && updateObjects.Count > 0)
+            {
+                var isDisableMasterSlaveSeparation = this.Updateable.Ado.IsDisableMasterSlaveSeparation;
+                this.Updateable.Ado.IsDisableMasterSlaveSeparation = true;
+                Updateable.diffModel.AfterData = GetDiffTable(updateObjects);
+                Updateable.diffModel.Time = this.Context.Ado.SqlExecutionTime;
+                if (this.Context.CurrentConnectionConfig.AopEvents.OnDiffLogEvent != null)
+                    this.Context.CurrentConnectionConfig.AopEvents.OnDiffLogEvent(Updateable.diffModel);
+                this.Updateable.Ado.IsDisableMasterSlaveSeparation = isDisableMasterSlaveSeparation;
+            }
+            if (this.Updateable.RemoveCacheFunc != null)
+            {
+                this.Updateable.RemoveCacheFunc();
+            }
+        }
+        private List<DiffLogTableInfo> GetDiffTable(List<T> updateObjects)
+        {
+            var builder = Updateable.UpdateBuilder.Builder;
+            var tableWithString = builder.GetTranslationColumnName(Updateable.UpdateBuilder.TableName);
+            var wheres = Updateable.WhereColumnList ?? Updateable.UpdateBuilder.PrimaryKeys;
+            if (wheres == null)
+            {
+                wheres = Updateable.UpdateBuilder.DbColumnInfoList
+                    .Where(it => it.IsPrimarykey).Select(it => it.DbColumnName).Distinct().ToList();
+            }
+            var sqlDb = this.Context.CopyNew();
+            sqlDb.Aop.DataExecuting = null;
+            var dataColumns = sqlDb.Updateable(updateObjects).UpdateBuilder.DbColumnInfoList;
+            List<SugarParameter> parameters = new List<SugarParameter>();
+            StringBuilder allWhereString = new StringBuilder();
+            string columnStr = string.Join(',', dataColumns.Select(x => x.DbColumnName).Distinct().ToList());
+            foreach (var item in dataColumns.GroupBy(it => it.TableId))
+            {
+                StringBuilder whereString = new StringBuilder();
+                foreach (var whereItem in wheres)
+                {
+                    var pk = item.FirstOrDefault(it => it.DbColumnName.EqualCase(whereItem));
+                    var paraterName = FormatValue(pk.PropertyType, pk.DbColumnName, pk.Value, parameters);
+                    whereString.Append($" {pk.DbColumnName} = {paraterName} AND");
+                }
+                allWhereString.Append($" {Regex.Replace(whereString.ToString(), "AND$", "")} OR");
+            }
+            string key = $"SELECT {columnStr} FROM {tableWithString} WHERE {Regex.Replace(allWhereString.ToString(), "OR$", "")}";
+
+            var dt = sqlDb.Ado.GetDataTable(key, parameters);
+            return Updateable.GetTableDiff(dt);
         }
 
         #region Values Helper
@@ -97,7 +171,7 @@ namespace SqlSugar
             return new KeyValuePair<string, SugarParameter[]>(sbAllSql.ToString(), parameters.ToArray());
         }
 
-        private  int GetPageSize(int pageSize, int count)
+        private int GetPageSize(int pageSize, int count)
         {
             if (pageSize * count > 2100)
             {
@@ -116,7 +190,7 @@ namespace SqlSugar
         }
         private string FormatValue(Type type, string name, object value, List<SugarParameter> allParamter)
         {
-            var keyword=this.Updateable.UpdateBuilder.Builder.SqlParameterKeyWord;
+            var keyword = this.Updateable.UpdateBuilder.Builder.SqlParameterKeyWord;
             var result = keyword + name + allParamter.Count;
             var addParameter = new SugarParameter(result, value, type);
             allParamter.Add(addParameter);
