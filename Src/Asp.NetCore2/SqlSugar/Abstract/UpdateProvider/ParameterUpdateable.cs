@@ -94,7 +94,7 @@ namespace SqlSugar
             var dataColumns = sqlDb.Updateable(updateObjects).UpdateBuilder.DbColumnInfoList;
             List<SugarParameter> parameters = new List<SugarParameter>();
             StringBuilder allWhereString = new StringBuilder();
-            string columnStr = string.Join(',', dataColumns.Select(x => x.DbColumnName).Distinct().ToList());
+            string columnStr = string.Join(",", dataColumns.Select(x => x.DbColumnName).Distinct().ToList());
             foreach (var item in dataColumns.GroupBy(it => it.TableId))
             {
                 StringBuilder whereString = new StringBuilder();
