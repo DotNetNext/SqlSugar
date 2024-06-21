@@ -110,8 +110,49 @@ namespace SqlSugar
             string key = $"SELECT {columnStr} FROM {tableWithString} WHERE {Regex.Replace(allWhereString.ToString(), "OR$", "")}";
 
             var dt = sqlDb.Ado.GetDataTable(key, parameters);
-            return Updateable.GetTableDiff(dt);
+            return DtToTableDiff(dt);
         }
+
+        /// <summary>
+        /// DataTable转TableDiff
+        /// </summary>
+        /// <param name="dt"></param>
+        /// <returns></returns>
+        internal List<DiffLogTableInfo> DtToTableDiff(DataTable dt)
+        {
+            List<DiffLogTableInfo> result = new List<DiffLogTableInfo>();
+            if (dt.Rows != null && dt.Rows.Count > 0)
+            {
+                foreach (DataRow row in dt.Rows)
+                {
+                    DiffLogTableInfo item = new DiffLogTableInfo();
+                    item.TableDescription = Updateable.EntityInfo.TableDescription;
+                    item.TableName = Updateable.EntityInfo.DbTableName;
+                    item.Columns = new List<DiffLogColumnInfo>();
+                    foreach (DataColumn col in dt.Columns)
+                    {
+                        try
+                        {
+                            var sugarColumn = Updateable.EntityInfo.Columns.Where(it => it.DbColumnName != null).First(it =>
+                                              it.DbColumnName.Equals(col.ColumnName, StringComparison.CurrentCultureIgnoreCase));
+                            DiffLogColumnInfo addItem = new DiffLogColumnInfo();
+                            addItem.Value = row[col.ColumnName];
+                            addItem.ColumnName = col.ColumnName;
+                            addItem.IsPrimaryKey = sugarColumn.IsPrimarykey;
+                            addItem.ColumnDescription = sugarColumn.ColumnDescription;
+                            item.Columns.Add(addItem);
+                        }
+                        catch (Exception ex)
+                        {
+                            Check.ExceptionEasy(col.ColumnName + " No corresponding entity attribute found in difference log ." + ex.Message, col.ColumnName + "在差异日志中可能没有找到相应的实体属性,详细:" + ex.Message);
+                        }
+                    }
+                    result.Add(item);
+                }
+            }
+            return result;
+        }
+
 
         #region Values Helper
 
