@@ -224,6 +224,40 @@ namespace SqlSugar
             }
         }
 
+        private void DataChangeAop(T [] items)
+        {
+
+            var dataEvent = this.Context.CurrentConnectionConfig.AopEvents?.DataChangesExecuted;
+            if (dataEvent != null)
+            {
+                foreach (var item in items)
+                {
+                    if (item != null&& !(item is Dictionary<string,object>))
+                    {
+                        foreach (var columnInfo in this.EntityInfo.Columns)
+                        {
+                            if (columnInfo.ForOwnsOnePropertyInfo != null)
+                            {
+                                var data = columnInfo.ForOwnsOnePropertyInfo.GetValue(item, null);
+                                if (data != null)
+                                {
+                                    dataEvent(columnInfo.PropertyInfo.GetValue(data, null), new DataFilterModel() { OperationType = DataFilterType.InsertByObject, EntityValue = item, EntityColumnInfo = columnInfo });
+                                }
+                            }
+                            else if (columnInfo.PropertyInfo.Name == "Item" && columnInfo.IsIgnore)
+                            {
+                                //class index
+                            }
+                            else
+                            {
+                                dataEvent(columnInfo.PropertyInfo.GetValue(item, null), new DataFilterModel() { OperationType = DataFilterType.InsertByObject, EntityValue = item, EntityColumnInfo = columnInfo });
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         private void SetInsertItemByDic(int i, T item, List<DbColumnInfo> insertItem)
         {
             foreach (var column in (item as Dictionary<string, object>).OrderBy(it=>it.Key))
@@ -455,6 +489,7 @@ namespace SqlSugar
             {
                 this.RemoveCacheFunc();
             }
+            DataChangeAop(this.InsertObjs);
         }
         protected void Before(string sql)
         {
