@@ -708,6 +708,7 @@ namespace SqlSugar
             if (this.RemoveCacheFunc != null) {
                 this.RemoveCacheFunc();
             }
+            DataChangesAop(this.DeleteObjects);
         }
 
         private void Before(string sql)
@@ -767,6 +768,26 @@ namespace SqlSugar
                     EntityColumnInfo=this.EntityInfo.Columns.FirstOrDefault() 
                 };
                 dataEvent(deleteObj,model);
+            }
+        }
+        private void DataChangesAop(List<T> deleteObjs)
+        {
+            var dataEvent = this.Context.CurrentConnectionConfig.AopEvents?.DataChangesExecuted;
+            if(dataEvent != null&&deleteObjs != null)
+            {
+                foreach (var deleteObj in deleteObjs)
+                {
+                    if (deleteObj != null)
+                    {
+                        var model = new DataFilterModel()
+                        {
+                            OperationType = DataFilterType.DeleteByObject,
+                            EntityValue = deleteObj,
+                            EntityColumnInfo = this.EntityInfo.Columns.FirstOrDefault()
+                        };
+                        dataEvent(deleteObj, model);
+                    }
+                }
             }
         }
     }

@@ -183,7 +183,7 @@ namespace SqlSugar
                 return 0;
             }
             var result = await this.Ado.ExecuteCommandAsync(sql, UpdateBuilder.Parameters == null ? null : UpdateBuilder.Parameters.ToArray());
-            After(sql);
+            After(sql); 
             return result;
         }
         public Task<bool> ExecuteCommandHasChangeAsync(CancellationToken token) 

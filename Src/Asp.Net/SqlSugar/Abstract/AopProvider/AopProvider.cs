@@ -20,6 +20,7 @@ namespace SqlSugar
         public Action<string, SugarParameter[]> OnLogExecuted { set { this.Context.CurrentConnectionConfig.AopEvents.OnLogExecuted = value; } }
         public Func<string, SugarParameter[], KeyValuePair<string, SugarParameter[]>> OnExecutingChangeSql { set { this.Context.CurrentConnectionConfig.AopEvents.OnExecutingChangeSql = value; } }
         public virtual Action<object, DataFilterModel> DataExecuting { set { this.Context.CurrentConnectionConfig.AopEvents.DataExecuting = value; } }
+        public Action<object, DataFilterModel> DataChangesExecuted { set { this.Context.CurrentConnectionConfig.AopEvents.DataChangesExecuted = value; } }
         public virtual Action<object, DataAfterModel> DataExecuted { set { this.Context.CurrentConnectionConfig.AopEvents.DataExecuted = value; } }
     }
 }

@@ -292,6 +292,39 @@ namespace SqlSugar
             }
         }
 
+        private void DataChangesAop(T [] items)
+        {
+            var dataEvent = this.Context.CurrentConnectionConfig.AopEvents?.DataChangesExecuted;
+            if (dataEvent != null)
+            {
+                foreach (var item in items)
+                {
+                    if (item != null)
+                    {
+                        foreach (var columnInfo in this.EntityInfo.Columns)
+                        {
+                            if (columnInfo.ForOwnsOnePropertyInfo != null)
+                            {
+                                var data = columnInfo.ForOwnsOnePropertyInfo.GetValue(item, null);
+                                if (data != null)
+                                {
+                                    dataEvent(columnInfo.PropertyInfo.GetValue(data, null), new DataFilterModel() { OperationType = DataFilterType.UpdateByObject, EntityValue = item, EntityColumnInfo = columnInfo });
+                                }
+                            }
+                            else if (columnInfo.PropertyInfo.Name == "Item" && columnInfo.IsIgnore)
+                            {
+                                //class index
+                            }
+                            else
+                            {
+                                dataEvent(columnInfo.PropertyInfo.GetValue(item, null), new DataFilterModel() { OperationType = DataFilterType.UpdateByObject, EntityValue = item, EntityColumnInfo = columnInfo });
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         private void CheckTranscodeing(bool checkIsJson = true)
         {
             if (this.EntityInfo.Columns.Any(it => it.IsTranscoding))
@@ -670,6 +703,8 @@ namespace SqlSugar
             {
                 this.RemoveCacheFunc();
             }
+
+            DataChangesAop(this.UpdateObjs);
         }
         private string _ExecuteCommandWithOptLock(T updateData,ref object oldVerValue)
         {
