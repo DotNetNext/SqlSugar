@@ -340,6 +340,7 @@ namespace SqlSugar
                         value = "empty";
                     }
                 }
+                value = GetDefaultValue(columnInfo, value);
                 var dt = new Dictionary<string, object>();
                 dt.Add(columnInfo.DbColumnName, value);
                 if (columnInfo.DataType.EqualCase("json") && columnInfo.DefaultValue?.Contains("}") == true)
@@ -374,6 +375,14 @@ namespace SqlSugar
                 UpdateColumn(tableName, columnInfo);
             }
             return true;
+        }
+        public virtual object GetDefaultValue(DbColumnInfo columnInfo, object value)
+        {
+            if (columnInfo.DataType.ObjToString().ToLower().IsIn("varchar", "nvarchar", "varchar2", "nvarchar2") && !string.IsNullOrEmpty(columnInfo.DefaultValue) && Regex.IsMatch(columnInfo.DefaultValue, @"^\w+$"))
+            {
+                value = columnInfo.DefaultValue;
+            }
+            return value;
         }
         public virtual bool UpdateColumn(string tableName, DbColumnInfo column)
         {
