@@ -43,7 +43,7 @@ namespace SqlSugar
             else
             {
                 var type =UtilMethods.GetUnderType(value.GetType());
-                if (type == UtilConstants.DateType||columnInfo.IsArray||columnInfo.IsJson)
+                if (type == UtilConstants.ByteArrayType||type == UtilConstants.DateType||columnInfo.IsArray||columnInfo.IsJson)
                 {
                     var parameterName = this.Builder.SqlParameterKeyWord + name + i;
                     var paramter = new SugarParameter(parameterName, value);
