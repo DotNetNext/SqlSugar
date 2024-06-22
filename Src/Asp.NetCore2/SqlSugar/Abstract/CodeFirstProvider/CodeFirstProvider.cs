@@ -82,7 +82,7 @@ namespace SqlSugar
             {
                 MappingTableList oldTableList = CopyMappingTalbe();
                 //this.Context.Utilities.RemoveCacheAll();
-                this.Context.InitMappingInfoNoCache(entityType);
+                var entityInfo=this.Context.GetEntityNoCacheInitMappingInfo(entityType);
                 if (!this.Context.DbMaintenance.IsAnySystemTablePermissions())
                 {
                     Check.Exception(true, "Dbfirst and  Codefirst requires system table permissions");
@@ -93,13 +93,13 @@ namespace SqlSugar
                 {
                     var executeResult = Context.Ado.UseTran(() =>
                     {
-                        Execute(entityType);
+                        Execute(entityType,entityInfo);
                     });
                     Check.Exception(!executeResult.IsSuccess, executeResult.ErrorMessage);
                 }
                 else
                 {
-                    Execute(entityType);
+                    Execute(entityType, entityInfo);
                 }
 
                 RestMappingTables(oldTableList);
@@ -240,9 +240,9 @@ namespace SqlSugar
                 db.DbMaintenance.DropTable(tempTableName);
             }
         }
-        protected virtual void Execute(Type entityType)
+        protected virtual void Execute(Type entityType,EntityInfo entityInfo)
         {
-            var entityInfo = this.Context.EntityMaintenance.GetEntityInfoNoCache(entityType);
+            //var entityInfo = this.Context.EntityMaintenance.GetEntityInfoNoCache(entityType);
             if (entityInfo.Discrimator.HasValue())
             {
                 Check.ExceptionEasy(!Regex.IsMatch(entityInfo.Discrimator, @"^(?:\w+:\w+)(?:,\w+:\w+)*$"), "The format should be type:cat for this type, and if there are multiple, it can be FieldName:cat,FieldName2:dog ", "格式错误应该是type:cat这种格式，如果是多个可以FieldName:cat,FieldName2:dog，不要有空格");

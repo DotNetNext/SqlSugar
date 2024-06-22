@@ -168,6 +168,12 @@ namespace SqlSugar
             var entityInfo = this.Context.EntityMaintenance.GetEntityInfoNoCache(type);
             InitMappingInfo(entityInfo);
         }
+        public EntityInfo GetEntityNoCacheInitMappingInfo(Type type)
+        {
+            var entityInfo = this.Context.EntityMaintenance.GetEntityInfoNoCache(type);
+            InitMappingInfo(entityInfo);
+            return entityInfo;
+        }
         //private EntityInfo CopyEntityInfo(EntityInfo entityInfo)
         //{
         //    EntityInfo result = new EntityInfo()
