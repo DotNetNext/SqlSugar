@@ -34,6 +34,27 @@ namespace OrmTest
            X1.Id == Y1.Id)
              .Where(X1 => X1.Id == 1)
              .Select<VUpperOrder>().ToList();
+            db = NewUnitTest.Db;
+            db.CodeFirst.InitTables<Unitadfafay1>();
+            db.DbMaintenance.TruncateTable<Unitadfafay1>();
+            db.Insertable(new Unitadfafay1() { a = "a" }).ExecuteCommand();
+            db.CodeFirst.InitTables<UNITADFAFAY1>();
+            var bvalue=db.Queryable<UNITADFAFAY1>().First().b;
+            if (bvalue != "b") 
+            {
+                throw new Exception("unit error");
+            }
+        }
+
+        public class Unitadfafay1 
+        {
+            public string a { get; set; }
+        }
+        public class UNITADFAFAY1
+        {
+            public string a { get; set; }
+            [SugarColumn(DefaultValue ="b")]
+            public string b { get; set; }
         }
 
         public class VUpperOrder
