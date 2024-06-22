@@ -32,6 +32,7 @@
 	<PackageReference Include="Microsoft.Data.SqlClient" Version="2.1.7" />
 	<PackageReference Include="System.Data.OleDb" Version="6.0.0" />
     <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
+    <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
   </ItemGroup>
 
 </Project>

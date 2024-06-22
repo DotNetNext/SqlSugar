@@ -18,6 +18,7 @@
         <dependency id="Microsoft.Data.SqlClient" version="2.1.7" />
         <dependency id="Newtonsoft.Json" version="13.0.2" />
         <dependency id="System.Reflection.Emit.Lightweight" version="4.3.0" />
+	    <dependency id="System.Text.RegularExpressions" version="4.3.1" />
       </group>
     </dependencies>
   </metadata>
