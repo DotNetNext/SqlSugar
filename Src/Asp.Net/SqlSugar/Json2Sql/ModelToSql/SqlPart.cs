@@ -8,7 +8,7 @@ namespace SqlSugar
     public abstract partial class SqlBuilderProvider : SqlBuilderAccessory, ISqlBuilder
     {
         #region  Variable
-        private string[] SqlSplicingOperator = new string[] { ">", ">=", "<", "<=", "(", ")", "!=", "<>", "not", "=", "||", "&&", "&", "|", "null", "is", "isnot", "like", "nolike", "+", "-", "*", "/", "%" };
+        private string[] SqlSplicingOperator = new string[] { ">", ">=", "<", "<=", "(", ")", "!=", "<>", "not", "=", "||", "&&", "&", "|", "null", "is", "isnot", "like", "nolike", "+", "-", "*", "/", "%" , "$casewhen", "$then", "$when", "$else", "$end" };
         #endregion
 
         #region Root
@@ -47,6 +47,11 @@ namespace SqlSugar
             if (result == "||") return "OR";
             else if (result == "&&") return "AND";
             else if (result.EqualCase("isnot")) return " IS NOT ";
+            else if (result.EqualCase("$casewhen")) return " CASE WHEN ";
+            else if (result.EqualCase("$then")) return " THEN ";
+            else if (result.EqualCase("$when")) return " WHEN ";
+            else if (result.EqualCase("$else")) return " ELSE ";
+            else if (result.EqualCase("$end")) return " END ";
             return result;
         }
         private static string GetSqlPartError(object value)
