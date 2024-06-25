@@ -124,12 +124,27 @@ namespace SqlSugar
             {
                 return methodInfo.Invoke(dbMethods, new object[] { args.Select(it=>it.MemberName.ObjToString()).ToArray() }).ObjToString();
             }
+            if (IsToStringFormat(methodName, args))
+            {
+                var fieldName = args.First().MemberName.ObjToString();
+                var format = args.Last().MemberValue.ObjToString();
+                var queryable=this.Context.Queryable<object>()
+                    .Select(it => SqlFunc.MappingColumn<DateTime>(fieldName).ToString(format));
+                var select=queryable.QueryBuilder.GetSelectValue;
+                return select;
+            }
             resSql = methodInfo.Invoke(dbMethods, new object[] { new MethodCallExpressionModel() {
                   Name=methodName,
                   Args=args
                 } }).ObjToString();
             return resSql;
         }
+
+        private static bool IsToStringFormat(string methodName, List<MethodCallExpressionArgs> args)
+        {
+            return methodName == nameof(ToString) && args?.Count == 2;
+        }
+
         private string GetFormatMethodSql(List<object> parameters, List<SugarParameter> resPars)
         {
             string resSql;
