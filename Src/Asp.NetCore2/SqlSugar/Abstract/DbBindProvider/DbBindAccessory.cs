@@ -154,6 +154,10 @@ namespace SqlSugar
                         {
                             item.PropertyInfo.SetValue(parentObj,UtilMethods.ChangeType2(value, item.PropertyInfo.PropertyType));
                         }
+                        else if (item.IsJson) 
+                        { 
+                            item.PropertyInfo.SetValue(parentObj, Newtonsoft.Json.JsonConvert.DeserializeObject(dataReader.GetValue(itemIndex)?.ToString(), item.PropertyInfo.PropertyType));
+                        }
                         else
                         {
                             item.PropertyInfo.SetValue(parentObj, dataReader.GetValue(itemIndex));
