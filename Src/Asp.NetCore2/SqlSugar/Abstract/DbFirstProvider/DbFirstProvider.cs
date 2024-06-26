@@ -329,7 +329,7 @@ namespace SqlSugar
                     }
                     PropertyText = PropertyDescriptionText + PropertyText;
                     classText = classText.Replace(DbFirstTemplate.KeyPropertyName, PropertyText + (isLast ? "" : ("\r\n" + DbFirstTemplate.KeyPropertyName)));
-                    if (ConstructorText.HasValue() && item.DefaultValue != null)
+                    if (ConstructorText.HasValue() && item.DefaultValue != null&&item.IsIdentity!=true)
                     {
                         var hasDefaultValue = columns.Skip(index + 1).Any(it => it.DefaultValue.HasValue());
                         if (item.DefaultValue.EqualCase("CURRENT_TIMESTAMP"))
