@@ -345,7 +345,7 @@ namespace SqlSugar
                     }
                 }
             }
-            if (!columns.Any(it => it.DefaultValue != null))
+            if (!columns.Any(it => it.DefaultValue != null&&it.IsIdentity==false))
             {
                 ConstructorText = null;
             }
