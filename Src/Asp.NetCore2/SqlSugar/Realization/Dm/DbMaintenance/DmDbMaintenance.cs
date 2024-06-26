@@ -482,7 +482,8 @@ WHERE table_name = '" + tableName + "'");
                     var current = columns.FirstOrDefault(it => it.DbColumnName.EqualCase(column.DbColumnName));
                     if (current != null)
                     {
-                        column.OracleDataType = current.DataType; 
+                        column.OracleDataType = current.DataType;
+                        column.DefaultValue = current.DefaultValue?.TrimStart('\'')?.TrimEnd('\'');
                     }
                     result.Add(column);
                 }
@@ -503,7 +504,8 @@ WHERE table_name = '" + tableName + "'");
                                  t1.char_length,   
                                  t1.data_precision,  
                                  t1.data_scale,     
-                                 t1.nullable,       
+                                 t1.nullable, 
+                                 t1.data_default as DefaultValue,
                                  t4.index_name,     
                                  t4.column_position,  
                                  t4.descend          

@@ -570,6 +570,10 @@ namespace SqlSugar
                 return "null";
             }
             string result = this.Context.Ado.DbBind.GetConvertString(item.DataType) + "(\"" + convertString + "\")";
+            if (this.SqlBuilder.SqlParameterKeyWord == ":"&&!string.IsNullOrEmpty(item.OracleDataType)) 
+            {
+                result = this.Context.Ado.DbBind.GetConvertString(item.OracleDataType) + "(\"" + convertString + "\")";
+            }
             return result;
         }
         private string GetPropertyDescriptionText(DbColumnInfo item, string propertyDescriptionText)
