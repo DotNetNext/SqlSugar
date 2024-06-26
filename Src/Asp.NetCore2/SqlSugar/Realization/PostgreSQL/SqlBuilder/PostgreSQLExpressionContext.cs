@@ -375,7 +375,7 @@ namespace SqlSugar
         }
         public override string IsNullOrEmpty(MethodCallExpressionModel model)
         {
-            if (model.Conext?.SugarContext?.Context?.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.OpenGauss ||
+            if ( 
                 model.Conext?.SugarContext?.Context?.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.Vastbase||
                 model.Conext?.SugarContext?.Context?.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.GaussDB)
             {
