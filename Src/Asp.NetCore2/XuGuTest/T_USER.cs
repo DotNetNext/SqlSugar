@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Linq;
+using System.Security.Principal;
 using System.Text;
 using SqlSugar;
 using SqlSugar.Xugu;
@@ -11,10 +12,10 @@ namespace Data.Model
     ///<summary>
     ///
     ///</summary>
-    [SugarTable("T_USER",TableDescription ="测试表")]
-    public partial class T_USER
+    [SugarTable("MY_USER1",TableDescription ="测试表")]
+    public partial class MY_USER
     {
-        public T_USER()
+        public MY_USER()
         {
 
 
@@ -24,15 +25,10 @@ namespace Data.Model
         /// Default:
         /// Nullable:False
         /// </summary>           
-        [SugarColumn(IsPrimaryKey = true,ColumnDescription ="主键")]
+        [SugarColumn(IsPrimaryKey = true, IsIdentity=true, ColumnDescription ="主键")]
         public int ID { get; set; }
 
-        /// <summary>
-        /// Desc:数字类型
-        /// Default:
-        /// Nullable:False
-        /// </summary>           
-        [SugarColumn(IsIdentity = true)]
+ 
         public long C_BIGINT { get; set; }
 
         /// <summary>
@@ -47,7 +43,7 @@ namespace Data.Model
         /// Default:
         /// Nullable:True
         /// </summary>           
-        public object C_BLOB { get; set; }
+        public byte[] C_BLOB { get; set; }
 
         /// <summary>
         /// Desc:
@@ -279,12 +275,7 @@ namespace Data.Model
         [SugarColumn(ColumnDataType = "ROWID")]
         public string C_ROWID { get; set; }
 
-        /// <summary>
-        /// Desc:
-        /// Default:
-        /// Nullable:True
-        /// </summary>       
-        public Version C_ROWVERSION { get; set; }
+        
 
         /// <summary>
         /// Desc:
