@@ -25,7 +25,7 @@ namespace XuguTest
 
             SqlSugarClient db = new SqlSugarClient(new ConnectionConfig()
             {
-                ConnectionString = "IP=118.123.17.3;DB=HOUSE;User=SYSDBA;PWD=SYSDBA;Port=5138;AUTO_COMMIT=on;CHAR_SET=UTF8",//CHAR_SET=GBK
+                ConnectionString = "IP=218.123.127.33;DB=HOUSE;User=SYSDBA;PWD=SYSDBA;Port=5138;AUTO_COMMIT=on;CHAR_SET=UTF8",//CHAR_SET=GBK
                 DbType = SqlSugar.DbType.Xugu,
                 IsAutoCloseConnection = true,
                 //ConfigureExternalServices = new ConfigureExternalServices() { SqlFuncServices = SqlFuncCustom.Methods }
