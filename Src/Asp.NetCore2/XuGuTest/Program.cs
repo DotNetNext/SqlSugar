@@ -15,6 +15,9 @@ using XuguClient;
 
 namespace XuguTest
 {
+    /// <summary>
+    /// Fork to ：https://github.com/dreamsfly900/Weave.XuguCore/tree/master/Xugu.Sqlsugar
+    /// </summary>
     internal class Program
     {
         static void Main(string[] args)
