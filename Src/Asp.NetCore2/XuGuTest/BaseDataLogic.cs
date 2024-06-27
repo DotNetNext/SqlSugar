@@ -50,7 +50,7 @@ namespace Data_logic
         protected static SqlSugarScope db = new SqlSugarScope(new ConnectionConfig()
         {
             ConnectionString = "IP=10.1.1.1;DB=SYSTEM;User=SYSDBA;PWD=SYSDBA;Port=5138;AUTO_COMMIT=on;CHAR_SET=UTF8",//CHAR_SET=GBK
-            DbType = DbType.Custom.UseXugu(),
+            DbType = DbType.Xugu,
             IsAutoCloseConnection = true,
             //ConfigureExternalServices = new ConfigureExternalServices() { SqlFuncServices = SqlFuncCustom.Methods }
         });

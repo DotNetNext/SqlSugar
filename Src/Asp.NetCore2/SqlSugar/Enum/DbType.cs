@@ -31,6 +31,7 @@ namespace SqlSugar
         Vastbase,
         PolarDB,
         Doris,
+        Xugu,
         Custom =900
     }
 }
