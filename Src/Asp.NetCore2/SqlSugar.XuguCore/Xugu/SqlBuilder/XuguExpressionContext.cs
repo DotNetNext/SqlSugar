@@ -7,8 +7,8 @@ namespace SqlSugar.Xugu
         public override string SqlParameterKeyWord => ":";
         public SqlSugarProvider Context { get; set; }
         public XuguExpressionContext() => base.DbMehtods = new XuguMethod();
-        public override string SqlTranslationLeft { get; } = string.Empty;
-        public override string SqlTranslationRight { get; } = string.Empty;
+        public override string SqlTranslationLeft { get; } = "\"";
+        public override string SqlTranslationRight { get; } = "\"";
         public override bool IsTranslationText(string name)=> name.IsContainsIn(UtilConstants.Space, "(", ")");
         public override string GetLimit() => "";
     }
