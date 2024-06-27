@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Title>SqlSugar操作 Xugu 虚谷数据库</Title>
+    <Description>SqlSugar操作 Xugu 虚谷数据库</Description>
+	<Authors>dreamsfly900</Authors>
+	<Version>1.0.3</Version>
+    <Copyright>北京知天智为气象科技有限公司</Copyright>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="XuguClient" Version="3.3.3-bionic.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SqlSugar\SqlSugar.csproj" />
+  </ItemGroup>
+
+	<!--生成Release完成后，发布Nuget包（其中NugetApiKey_xxx需要设置环境变量）-->
+	<Target Name="PublishNuget" AfterTargets="AfterRebuild" Condition="'$(Configuration)' == 'Release'">
+		<Exec Command="dotnet nuget push $(PackageOutputAbsolutePath)$(PackageId).$(PackageVersion).nupkg -k $(NugetApiKey_dreamsfly900) -s https://api.nuget.org/v3/index.json" ContinueOnError="ErrorAndContinue" />
+	</Target>
+</Project>
