@@ -61,7 +61,19 @@ namespace SqlSugar.Odbc
                     this.OrderByValue = null;
                 }
                 if (this.OrderByValue == "ORDER BY ") this.OrderByValue += GetSelectValue.Split(',')[0];
-                result = string.Format(PageTempalte, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, GetOrderByString, Skip.ObjToInt() > 0 ? Skip.ObjToInt() : 0, Take);
+                if (this.Context.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.SqlServer)
+                {
+                    var orderby = GetOrderByString;
+                    if (string.IsNullOrEmpty(orderby)) 
+                    {
+                        orderby = "ORDER BY GETDATE()";
+                    }
+                    result = string.Format("SELECT {0} FROM {1} {2} {3} {4}  OFFSET {5} ROWS FETCH NEXT {6} ROWS ONLY", GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, orderby, Skip.ObjToInt() > 0 ? Skip.ObjToInt() : 0, Take);
+                }
+                else
+                {
+                    result = string.Format(PageTempalte, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, GetOrderByString, Skip.ObjToInt() > 0 ? Skip.ObjToInt() : 0, Take);
+                }
             }
             else
             {
