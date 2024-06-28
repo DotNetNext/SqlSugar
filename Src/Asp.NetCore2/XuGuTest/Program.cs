@@ -2,6 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using SqlSugar;
 using SqlSugar.DbConvert;
+using SqlSugar.Xugu;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -22,22 +23,29 @@ namespace XuguTest
         static void Main(string[] args)
         {
 
+            //注册DLL写在程序启动时
+            InstanceFactory.CustomAssemblies = new System.Reflection.Assembly[] {
+                 typeof(XuguProvider).Assembly
+            };
+
+
 
             SqlSugarClient db = new SqlSugarClient(new ConnectionConfig()
             {
-                ConnectionString = "IP=218.123.127.33;DB=HOUSE;User=SYSDBA;PWD=SYSDBA;Port=5138;AUTO_COMMIT=on;CHAR_SET=UTF8",//CHAR_SET=GBK
+                ConnectionString = "IP=118.123.17.3;DB=HOUSE;User=SYSDBA;PWD=SYSDBA;Port=5138;AUTO_COMMIT=on;CHAR_SET=UTF8",//CHAR_SET=GBK
                 DbType = SqlSugar.DbType.Xugu,
                 IsAutoCloseConnection = true,
                 //ConfigureExternalServices = new ConfigureExternalServices() { SqlFuncServices = SqlFuncCustom.Methods }
             },
             db => {
-              db.Aop.OnLogExecuting = (sql, pars) =>
-              {
-                   
-                  Console.WriteLine(UtilMethods.GetNativeSql(sql,pars));
-              };
+                db.Aop.OnLogExecuting = (sql, pars) =>
+                {
+
+                    Console.WriteLine(SqlSugar.UtilMethods.GetNativeSql(sql, pars));
+                };
             });
 
+           
             db.CodeFirst.InitTables<MY_USER>();
 
             db.DbMaintenance.TruncateTable<MY_USER>();
