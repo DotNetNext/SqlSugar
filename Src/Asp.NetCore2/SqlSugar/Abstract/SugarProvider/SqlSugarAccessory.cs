@@ -534,6 +534,9 @@ namespace SqlSugar
                     InstanceFactory.CustomDllName = "SqlSugar.XuguCore"; 
                     InstanceFactory.CustomNamespace = "SqlSugar.Xugu"; 
                     break;
+                case DbType.GoldenDB:
+                    config.DbType = DbType.MySql;
+                    break;
                 default:
                     throw new Exception("ConnectionConfig.DbType is null");
             }

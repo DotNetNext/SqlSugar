@@ -32,6 +32,7 @@ namespace SqlSugar
         PolarDB,
         Doris,
         Xugu,
+        GoldenDB,
         Custom =900
     }
 }
