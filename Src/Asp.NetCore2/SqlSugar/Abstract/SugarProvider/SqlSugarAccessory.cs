@@ -530,9 +530,9 @@ namespace SqlSugar
                     break;
                 case DbType.Xugu:
                     Check.Exception(SugarCompatible.IsFramework, "Xugu only support .net core");
-                    InstanceFactory.CustomDbName = "Xugu"; 
+                    //InstanceFactory.CustomDbName = "Xugu"; 
                     InstanceFactory.CustomDllName = "SqlSugar.XuguCore"; 
-                    InstanceFactory.CustomNamespace = "SqlSugar.Xugu"; 
+                    //InstanceFactory.CustomNamespace = "SqlSugar.Xugu"; 
                     break;
                 case DbType.GoldenDB:
                     config.DbType = DbType.MySql;
