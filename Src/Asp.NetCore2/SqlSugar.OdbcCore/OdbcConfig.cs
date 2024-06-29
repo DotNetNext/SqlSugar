@@ -8,5 +8,6 @@ namespace SqlSugar.Odbc
     {
         public static string SqlTranslationLeft ="";
         public static string SqlTranslationRight="";
+        public static bool IsCompatibleWithOldDatabaseVersion = false;
     }
 }
