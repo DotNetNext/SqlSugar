@@ -7,6 +7,22 @@ namespace SqlSugar
     internal class DorisHelper
     {
 
+        public static List<DbColumnInfo> GetColumns(List<DbColumnInfo> colums)
+        {
+            foreach (var item in colums)
+            {
+                if (item.DataType?.Contains("(") == true)
+                {
+                    item.DataType = item.DataType.Substring(0, item.DataType.IndexOf("("));
+                }
+                if (item.DataType == "tinyint" && item.Length == 4)
+                {
+                    item.Length = 1;
+                }
+            }
+            return colums;
+        }
+
         public static  bool IsDoris(ISqlSugarClient context)
         {
             return context.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.Doris;
