@@ -9,25 +9,7 @@ namespace OrmTest
     {
         static void Main(string[] args)
         { 
-            var db = DbHelper.GetNewDb();
-          var xx=  db.Ado.GetDataTable(@"SELECT
-                                    0 as TableId,
-                                    TABLE_NAME as TableName, 
-                                    column_name AS DbColumnName,
-                                    CASE WHEN  COLUMN_TYPE NOT LIKE '(' THEN COLUMN_TYPE ELSE  left(COLUMN_TYPE,LOCATE('(',COLUMN_TYPE)-1) END   AS DataType,
-                                    CAST(SUBSTRING(COLUMN_TYPE,LOCATE('(',COLUMN_TYPE)+1,LOCATE(')',COLUMN_TYPE)-LOCATE('(',COLUMN_TYPE)-1) AS  decimal(18,0) ) AS Length,
-                                    column_default  AS  `DefaultValue`,
-                                    column_comment  AS  `ColumnDescription`,
-                                    CASE WHEN COLUMN_KEY = 'PRI'
-                                    THEN true ELSE false END AS `IsPrimaryKey`,
-                                    CASE WHEN EXTRA='auto_increment' THEN true ELSE false END as IsIdentity,
-                                    CASE WHEN is_nullable = 'YES'
-                                    THEN true ELSE false END AS `IsNullable`,
-                                    numeric_scale as Scale,
-                                    numeric_scale as DecimalDigits,
-                                    LOCATE(  'unsigned',COLUMN_type   ) >0  as IsUnsigned
-                                    FROM
-                                    Information_schema.columns where TABLE_NAME='LogEntity1' and  TABLE_SCHEMA=(select database()) ORDER BY ordinal_position");
+            var db = DbHelper.GetNewDb(); 
             db.CodeFirst.InitTables<LogEntity>();
             db.CodeFirst.InitTables<Student11>();
 
