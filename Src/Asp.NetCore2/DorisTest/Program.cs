@@ -1,4 +1,5 @@
-﻿using SqlSugar;
+﻿using DorisTest;
+using SqlSugar;
 using System;
 
 namespace OrmTest
@@ -8,8 +9,26 @@ namespace OrmTest
     {
         static void Main(string[] args)
         { 
-            var db = DbHelper.GetNewDb(); 
-
+            var db = DbHelper.GetNewDb();
+          var xx=  db.Ado.GetDataTable(@"SELECT
+                                    0 as TableId,
+                                    TABLE_NAME as TableName, 
+                                    column_name AS DbColumnName,
+                                    CASE WHEN  COLUMN_TYPE NOT LIKE '(' THEN COLUMN_TYPE ELSE  left(COLUMN_TYPE,LOCATE('(',COLUMN_TYPE)-1) END   AS DataType,
+                                    CAST(SUBSTRING(COLUMN_TYPE,LOCATE('(',COLUMN_TYPE)+1,LOCATE(')',COLUMN_TYPE)-LOCATE('(',COLUMN_TYPE)-1) AS  decimal(18,0) ) AS Length,
+                                    column_default  AS  `DefaultValue`,
+                                    column_comment  AS  `ColumnDescription`,
+                                    CASE WHEN COLUMN_KEY = 'PRI'
+                                    THEN true ELSE false END AS `IsPrimaryKey`,
+                                    CASE WHEN EXTRA='auto_increment' THEN true ELSE false END as IsIdentity,
+                                    CASE WHEN is_nullable = 'YES'
+                                    THEN true ELSE false END AS `IsNullable`,
+                                    numeric_scale as Scale,
+                                    numeric_scale as DecimalDigits,
+                                    LOCATE(  'unsigned',COLUMN_type   ) >0  as IsUnsigned
+                                    FROM
+                                    Information_schema.columns where TABLE_NAME='LogEntity1' and  TABLE_SCHEMA=(select database()) ORDER BY ordinal_position");
+            db.CodeFirst.InitTables<LogEntity>();
             db.CodeFirst.InitTables<Student11>();
 
             db.Insertable(new Student11() { Id = 1, Age = 1, Name = "a" })
@@ -37,7 +56,7 @@ namespace OrmTest
         /// Database connection string
         /// 数据库连接字符串
         /// </summary>
-        public readonly static string Connection = "data source=139.170.74.9;port=9030;database=test;user id=root;password=1q!1q!;pooling=true;charset=utf8;Pooling=false";
+        public readonly static string Connection = "server=39.170.74.9;port=9030;Database=test;Uid=root;Pwd=1q!1q!;Pooling=false;";
 
         /// <summary>
         /// Get a new SqlSugarClient instance with specific configurations
@@ -60,6 +79,9 @@ namespace OrmTest
                 it.Aop.OnLogExecuting = (sql, para) =>
                 {
                     Console.WriteLine(UtilMethods.GetNativeSql(sql, para));
+                };
+                it.Aop.OnError = ex =>
+                {
                 };
             });
             return db;
