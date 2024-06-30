@@ -56,7 +56,7 @@ namespace OrmTest
         /// Database connection string
         /// 数据库连接字符串
         /// </summary>
-        public readonly static string Connection = "server=39.170.74.9;port=9030;Database=test;Uid=root;Pwd=1q!1q!;Pooling=false;";
+        public readonly static string Connection = "server=39.170.74.19;port=9030 ;Database=test; Uid=root;Pwd=lq!1q!;Pooling=false;";
 
         /// <summary>
         /// Get a new SqlSugarClient instance with specific configurations
