@@ -148,10 +148,16 @@ namespace SqlSugar
                 {
                     sqlParameter.Value = sqlParameter.Value.ToString();
                 }
+                if (DorisHelper.IsDoris(this.Context))
+                {
+                   DorisHelper.UpdateDateParameter(sqlParameter);
+                }
                 ++index;
             }
             return result;
         }
+
+
         protected override void SugarCatch(Exception ex, string sql, SugarParameter[] parameters)
         {
             base.SugarCatch(ex, sql, parameters);
