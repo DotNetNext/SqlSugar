@@ -577,14 +577,15 @@ WHERE EVENT_OBJECT_TABLE = '" + tableName + "'");
                 var dtColumInfo = dtColums.First(it => it.ColumnName.EqualCase(columnInfo.DbColumnName));
                 var type = UtilMethods.GetUnderType(dtColumInfo.DataType);
                 var value = type == UtilConstants.StringType ? (object)"" : Activator.CreateInstance(type);
-                if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle)
-                {
-                    value = columnInfo.DefaultValue;
-                    if (value.Equals(""))
-                    {
-                        value = "empty";
-                    }
-                }
+                //if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle)
+                //{
+                //    value = columnInfo.DefaultValue;
+                //    if (value.Equals(""))
+                //    {
+                //        value = "empty";
+                //    }
+                //}
+                value = GetDefaultValue(columnInfo, value);
                 var dt = new Dictionary<string, object>();
                 dt.Add(columnInfo.DbColumnName, value);
                 this.Context.Updateable(dt)
