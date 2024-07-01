@@ -565,6 +565,10 @@ WHERE EVENT_OBJECT_TABLE = '" + tableName + "'");
             {
                 sql = $"{sql}{" COMMENT '"+ columnInfo.ColumnDescription.ToSqlFilter()+ "'  "}";
             }
+            if (DorisHelper.IsDoris(this.Context)) 
+            {
+                sql = sql.Replace(" ADD ", " ADD COLUMN ");
+            }
             this.Context.Ado.ExecuteCommand(sql);
             if (isAddNotNUll)
             {
