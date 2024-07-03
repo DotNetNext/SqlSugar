@@ -239,7 +239,7 @@ namespace SqlSugar
         {
             if (this.JoinInfos?.Count > 1) 
             {
-                return this.GetJoinUpdateMany(columnsString);
+                return this.GetJoinUpdateMany(columnsString,whereString);
             }
             var formString = $"  {Builder.GetTranslationColumnName(this.TableName)}  AS {Builder.GetTranslationColumnName(this.ShortName)} ";
             var joinString = "";
@@ -252,7 +252,7 @@ namespace SqlSugar
             columnsString = columnsString.Replace(Builder.GetTranslationColumnName(this.ShortName)+".","")+joinString; 
             return string.Format(SqlTemplate, tableName, columnsString, whereString);
         }
-        private string GetJoinUpdateMany(string columnsString)
+        private string GetJoinUpdateMany(string columnsString,string where)
         {
             var formString = $"  {Builder.GetTranslationColumnName(this.TableName)}  AS {Builder.GetTranslationColumnName(this.ShortName)} ";
             var joinString = "";
@@ -266,7 +266,7 @@ namespace SqlSugar
             }
             var tableName = Builder.GetTranslationColumnName(this.TableName) + "\r\n ";
             columnsString = columnsString.Replace(Builder.GetTranslationColumnName(this.ShortName) + ".", "") + $" FROM {Builder.GetTranslationColumnName(this.TableName)} {Builder.GetTranslationColumnName(this.ShortName)}\r\n " + joinString;
-            return string.Format(SqlTemplate, tableName, columnsString, null);
+            return string.Format(SqlTemplate, tableName, columnsString, where);
         }
         public override string FormatDateTimeOffset(object value)
         {
