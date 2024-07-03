@@ -72,6 +72,12 @@ namespace OrmTest
            .Where((x, y) => x.Id == 1)
            .ExecuteCommand();
 
+            var result62 = db.Updateable<Order>()
+            .InnerJoin<Custom>((x, y) => x.CustomId == y.Id)
+            .InnerJoin<Custom>((x, y, z) => x.CustomId == z.Id)
+            .SetColumns((x, y, z) => new Order() { Name = SqlFunc.CharIndexNew(y.Name, "/") > 0 ? SqlFunc.Substring(y.Name, 0, SqlFunc.CharIndexNew(y.Name, "/") - 1) : y.Name, Price = y.Id })
+            .Where((x, y, z) => x.Id == 1)
+            .ExecuteCommand();
              
             /*** 3.by Dictionary ***/
             var dt = new Dictionary<string, object>();
