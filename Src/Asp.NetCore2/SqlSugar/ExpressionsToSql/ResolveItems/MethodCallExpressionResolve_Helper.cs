@@ -809,6 +809,7 @@ namespace SqlSugar
                                   MemberValue= "100000",
                             });
                         }
+                        model.Conext = this.Context;
                         return this.Context.DbMehtods.Substring(model);
                     case "Replace":
                         return this.Context.DbMehtods.Replace(model);
