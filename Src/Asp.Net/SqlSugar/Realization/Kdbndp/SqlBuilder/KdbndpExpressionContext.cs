@@ -167,6 +167,14 @@ namespace SqlSugar
             }
             return string.Format("( CASE  WHEN {0} THEN {1}  ELSE {2} END )", parameter.MemberName, parameter2.MemberName, parameter3.MemberName);
         }
+        public override string Substring(MethodCallExpressionModel model)
+        {
+            if (model?.Conext?.SugarContext?.Context?.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.MySql)
+            {
+               return base.Substring(model).Replace(" + ", " operator(pg_catalog.+) ");
+            }
+            return base.Substring(model);
+        }
         public override string DateValue(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
@@ -295,6 +303,10 @@ namespace SqlSugar
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
             var parameter3 = model.Args[2];
+            if (model?.Conext?.SugarContext?.Context?.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.MySql) 
+            {
+                return string.Format(" ({1} +  ({2} operator(pg_catalog.||) '{0}')::INTERVAL) ", parameter3.MemberValue, parameter.MemberName, parameter2.MemberName);
+            }
             return string.Format(" ({1} +  ({2}||'{0}')::INTERVAL) ", parameter3.MemberValue, parameter.MemberName, parameter2.MemberName);
         }
 

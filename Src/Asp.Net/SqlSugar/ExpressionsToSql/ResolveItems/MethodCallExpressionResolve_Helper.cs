@@ -749,6 +749,7 @@ namespace SqlSugar
                             return dsResult;
                         }
                     case "DateAdd":
+                        model.Conext = this.Context;
                         if (model.Args.Count == 2)
                             return this.Context.DbMehtods.DateAddDay(model);
                         else
@@ -808,6 +809,7 @@ namespace SqlSugar
                                   MemberValue= "100000",
                             });
                         }
+                        model.Conext = this.Context;
                         return this.Context.DbMehtods.Substring(model);
                     case "Replace":
                         return this.Context.DbMehtods.Replace(model);

@@ -28,6 +28,7 @@ namespace SqlSugar
             var SqlBuilder = UpdateBuilder.Builder;
             foreach (var item in items)
             {
+                updateableObj.UpdateBuilder.LambdaExpressions.IsSingle = false;
                 var dbColumnName = updateableObj.UpdateBuilder.Context.EntityMaintenance.GetDbColumnName<T>(item.Key);
                 var value = updateableObj.UpdateBuilder.GetExpressionValue(ExpressionTool.RemoveConvert(item.Value), ResolveExpressType.WhereMultiple).GetString();
                 this.updateableObj.UpdateBuilder.SetValues.Add(new KeyValuePair<string, string>(dbColumnName, value));
