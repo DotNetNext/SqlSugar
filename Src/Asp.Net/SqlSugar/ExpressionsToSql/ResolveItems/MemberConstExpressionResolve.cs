@@ -39,6 +39,11 @@ namespace SqlSugar
             {
                 var exp = ExpressionTool.RemoveConvert(parameter.OppsiteExpression);
                 value = GetMemberValue(value, exp);
+                var valueFullName = value?.GetType()?.FullName;
+                if (valueFullName == "Microsoft.Extensions.Primitives.StringValues")
+                {
+                    value = value.ToString();
+                }
             }
             if (isSetTempData)
             {
