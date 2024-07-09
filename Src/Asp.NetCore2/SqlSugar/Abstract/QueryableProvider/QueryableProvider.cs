@@ -848,7 +848,12 @@ namespace SqlSugar
                             FieldName = this.QueryBuilder.Builder.GetTranslationColumnName(column.DbColumnName),
                             FieldValue = disableQueryWhereColumnRemoveTrim?value.ObjToStringNoTrim() : value.ObjToStringNew(),
                             CSharpTypeName = column.PropertyInfo.PropertyType.Name
-                        }); 
+                        });
+                        if (value == null) 
+                        {
+                            data.Value.FieldValue = null;
+                            data.Value.ConditionalType = ConditionalType.EqualNull; 
+                        }
                         if (value is Enum && this.Context.CurrentConnectionConfig?.MoreSettings?.TableEnumIsString != true)
                         {
                             data.Value.FieldValue = Convert.ToInt64(value).ObjToString();
