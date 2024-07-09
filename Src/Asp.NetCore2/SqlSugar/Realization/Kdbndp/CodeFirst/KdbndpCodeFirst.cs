@@ -50,6 +50,10 @@ namespace SqlSugar
             {
                 result.Length = 1;
             }
+            if (result.DataType.EqualCase("timestamp")&&this.Context.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.SqlServer) 
+            {
+                result.DataType = "datetime";
+            }
             return result;
         }
 
