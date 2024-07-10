@@ -57,6 +57,13 @@ namespace SqlSugar
                 else if (IsSqlServerModel()) 
                 {
                     sql = sql.Replace("sys_constraint.conkey[1]", "sys_constraint.conkey{{1}}");
+                    sql = sql.Replace("UPPER(", "pg_catalog.upper(");
+                    sql = sql.Replace("lower(", "pg_catalog.lower(");
+                    sql = sql.Replace("NEXTVAL%", "%nextval%");
+                    sql = sql.Replace("pcolumn.udt_name", "pcolumn.data_type");
+                    sql = sql.Replace("case when pkey.colname = pcolumn.column_name", "case when pkey.colname::text = pcolumn.column_name::text");
+                    sql = sql.Replace("pcolumn on pcolumn.table_name = ptables.tablename", "pcolumn on pcolumn.table_name::text = ptables.tablename::text ");
+                    sql = sql.Replace("pkey on pcolumn.table_name = pkey.relname", "pkey on pcolumn.table_name::text = pkey.relname::text ");
                 }
                 return sql;
             }
@@ -345,6 +352,10 @@ WHERE tgrelid = '" + tableName + "'::regclass");
         private string GetSchema()
         {
             var schema = "public";
+            if (IsSqlServerModel()) 
+            {
+                schema = "dbo";
+            }
             if (System.Text.RegularExpressions.Regex.IsMatch(this.Context.CurrentConnectionConfig.ConnectionString.ToLower(), "searchpath="))
             {
                 var regValue = System.Text.RegularExpressions.Regex.Match(this.Context.CurrentConnectionConfig.ConnectionString.ToLower(), @"searchpath\=(\w+)").Groups[1].Value;
@@ -406,6 +417,10 @@ WHERE tgrelid = '" + tableName + "'::regclass");
         public override bool IsAnyTable(string tableName, bool isCache = true)
         {
             var sql = $"select count(*) from information_schema.tables where UPPER(table_schema)=UPPER('{GetSchema()}') and UPPER(table_type)=UPPER('BASE TABLE') and UPPER(table_name)=UPPER('{tableName.ToUpper(IsUpper)}')";
+            if (IsSqlServerModel()) 
+            {
+                sql = $"select count(*) from information_schema.tables where  pg_catalog.UPPER(table_name)=pg_catalog.UPPER('{tableName.ToUpper(IsUpper)}')";
+            }
             return this.Context.Ado.GetInt(sql)>0;
         }
 
@@ -429,7 +444,14 @@ WHERE tgrelid = '" + tableName + "'::regclass");
             }
             var oldDatabaseName = this.Context.Ado.Connection.Database;
             var connection = this.Context.CurrentConnectionConfig.ConnectionString;
-            connection = connection.Replace(oldDatabaseName, "test");
+            if (this.Context.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.SqlServer)
+            {
+                connection = connection.Replace(oldDatabaseName, "master");
+            }
+            else
+            {
+                connection = connection.Replace(oldDatabaseName, "test");
+            }
             var newDb = new SqlSugarClient(new ConnectionConfig()
             {
                 DbType = this.Context.CurrentConnectionConfig.DbType,

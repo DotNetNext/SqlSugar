@@ -105,7 +105,7 @@ namespace SqlSugar
             {
                 sql = " SELECT  'No table' FROM DUAL WHERE 1=2 ";
             }
-            return new KeyValuePair<string, SugarParameter[]>(sql, parameter);
+            return base.ProcessingEventStartingSQL(sql,parameter);
         };
 
 
