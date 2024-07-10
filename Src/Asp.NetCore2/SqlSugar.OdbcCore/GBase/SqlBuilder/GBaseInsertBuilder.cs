@@ -82,7 +82,14 @@ namespace SqlSugar.Odbc
                         {
                             batchInsetrSql.Append(SqlTemplateBatchUnion);
                         }
-                        batchInsetrSql.Append("\r\n SELECT " + string.Join(",", columns.Select(it => string.Format(SqlTemplateBatchSelect, base.GetDbColumn(it,FormatValue(it.Value)), Builder.GetTranslationColumnName(it.DbColumnName))))+" from dual");
+                        if (this.Context.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.SqlServer)
+                        {
+                            batchInsetrSql.Append("\r\n SELECT " + string.Join(",", columns.Select(it => string.Format(SqlTemplateBatchSelect, base.GetDbColumn(it, FormatValue(it.Value)), Builder.GetTranslationColumnName(it.DbColumnName)))));
+                        }
+                        else
+                        {
+                            batchInsetrSql.Append("\r\n SELECT " + string.Join(",", columns.Select(it => string.Format(SqlTemplateBatchSelect, base.GetDbColumn(it, FormatValue(it.Value)), Builder.GetTranslationColumnName(it.DbColumnName)))) + " from dual");
+                        }
                         ++i;
                     }
                     pageIndex++;
