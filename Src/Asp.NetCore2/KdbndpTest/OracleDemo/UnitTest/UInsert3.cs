@@ -1,4 +1,5 @@
-﻿using SqlSugar;
+﻿using OrmTest;
+using SqlSugar;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
@@ -7,7 +8,7 @@ using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OrmTest 
+namespace KdbndpTest.OracleDemo.UnitTest
 {
     internal class UInsert3
     {
@@ -71,10 +72,10 @@ namespace OrmTest
             /// </summary>
             public string Name { get; set; }
             public decimal Price { get; set; }
-            [SugarColumn(InsertServerTime =true,UpdateServerTime =true)]
+            [SugarColumn(InsertServerTime = true, UpdateServerTime = true)]
             public DateTime CreateTime { get; set; }
             [SugarColumn(IsNullable = true)]
-            public int CustomId { get; set; } 
+            public int CustomId { get; set; }
         }
 
         public class ORDER
@@ -86,7 +87,7 @@ namespace OrmTest
             /// </summary>
             public string Name { get; set; }
             public decimal Price { get; set; }
-            [SugarColumn(InsertSql = "'2020-1-1'",UpdateSql = "'2022-1-1'")]
+            [SugarColumn(InsertSql = "'2020-1-1'", UpdateSql = "'2022-1-1'")]
             public DateTime CreateTime { get; set; }
             [SugarColumn(IsNullable = true)]
             public int CustomId { get; set; }

@@ -1,4 +1,6 @@
-﻿using SqlSugar;
+﻿using Kdbndp;
+using KdbndpTypes;
+using SqlSugar;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -29,7 +31,7 @@ namespace OrmTest
             Console.WriteLine("");
             Console.WriteLine("#### Examples Start ####");
             var db = GetInstance();
-            var dbTime = db.GetDate();
+            var dbTime = db.GetDate(); 
             var getAll = db.Queryable<Order>().ToList();
             var getOrderBy = db.Queryable<Order>().OrderBy(it => it.Name,OrderByType.Desc).ToList();
             var getOrderBy2 = db.Queryable<Order>().OrderBy(it => it.Id).OrderBy(it => it.Name, OrderByType.Desc).ToList();

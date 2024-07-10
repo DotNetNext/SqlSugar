@@ -1,15 +1,16 @@
-﻿using SqlSugar;
+﻿using OrmTest;
+using SqlSugar;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OrmTest
+namespace KdbndpTest.OracleDemo.UnitTest
 {
     internal class UnitDateTime
     {
-        public static void Init() 
+        public static void Init()
         {
             Console.WriteLine("");
             Console.WriteLine("#### DateTime Start ####");
@@ -20,8 +21,9 @@ namespace OrmTest
                 ConnectionString = Config.ConnectionString.Replace("59321", "59322"),
                 InitKeyType = InitKeyType.Attribute,
                 IsAutoCloseConnection = true,
-                MoreSettings=new ConnMoreSettings() { 
-                 DatabaseModel=DbType.MySql
+                MoreSettings = new ConnMoreSettings()
+                {
+                    DatabaseModel = DbType.MySql
                 },
                 AopEvents = new AopEvents
                 {
@@ -33,10 +35,10 @@ namespace OrmTest
                 }
             });
 
-            var dt=db.Ado.GetDataTable("show database_mode;");
+            var dt = db.Ado.GetDataTable("show database_mode;");
 
             var now = DateTime.Now;
-            var insertObj = new UnitOrderDateTest() { Id = 1, Name = "0",CreateTime= now };
+            var insertObj = new UnitOrderDateTest() { Id = 1, Name = "0", CreateTime = now };
             var insertObj2 = new List<UnitOrderDateTest>
             {
                  new UnitOrderDateTest() { Id = 11, Name = "1ms",CreateTime=now.AddMilliseconds(1) },
@@ -52,7 +54,7 @@ namespace OrmTest
 
             var beginTime = now.AddMinutes(-2);
             var endTime = now.AddHours(1).AddMinutes(2);
-            var list=db.Queryable<UnitOrderDateTest>().Where(it => it.CreateTime >= beginTime
+            var list = db.Queryable<UnitOrderDateTest>().Where(it => it.CreateTime >= beginTime
             && it.CreateTime <= endTime)
                 .ToList();
 
@@ -60,24 +62,24 @@ namespace OrmTest
             && it.CreateTime <= endTime)
                 .ToSqlString();
 
-            var list2=db.Ado.SqlQuery<UnitOrderDateTest>(sql);
+            var list2 = db.Ado.SqlQuery<UnitOrderDateTest>(sql);
 
 
-            if (list.Count() != 5 || list2.Count() != 5) 
+            if (list.Count() != 5 || list2.Count() != 5)
             {
                 throw new Exception("UnitDateTime Error");
             }
 
-            Console.WriteLine("#### DateTime End ####");        
+            Console.WriteLine("#### DateTime End ####");
         }
         public class UnitOrderDateTest
         {
             [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
             public int Id { get; set; }
 
-            public string Name { get; set; } 
+            public string Name { get; set; }
             [SugarColumn(IsNullable = true)]
-            public DateTime CreateTime { get; set; } 
+            public DateTime CreateTime { get; set; }
         }
     }
 }
