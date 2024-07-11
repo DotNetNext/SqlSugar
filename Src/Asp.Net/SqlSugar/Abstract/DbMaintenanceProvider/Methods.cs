@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -417,8 +418,20 @@ namespace SqlSugar
         }
         public virtual bool DropTable<T>() 
         {
-           var tableName= this.Context.EntityMaintenance.GetTableName<T>();
-            return DropTable(tableName);
+            if (typeof(T).GetCustomAttribute<SplitTableAttribute>() != null)
+            {
+                var tables = this.Context.SplitHelper(typeof(T)).GetTables();
+                foreach (var item in tables)
+                {
+                    this.Context.DbMaintenance.DropTable(SqlBuilder.GetTranslationColumnName(item.TableName));
+                }
+                return true;
+            }
+            else
+            {
+                var tableName = this.Context.EntityMaintenance.GetTableName<T>();
+                return DropTable(tableName);
+            }
         }
         public virtual bool DropTable<T,T2>()
         {
@@ -443,8 +456,20 @@ namespace SqlSugar
         }
         public virtual bool TruncateTable<T>()
         {
-            this.Context.InitMappingInfo<T>();
-            return this.TruncateTable(this.Context.EntityMaintenance.GetEntityInfo<T>().DbTableName);
+            if (typeof(T).GetCustomAttribute<SplitTableAttribute>() != null)
+            {
+                var tables = this.Context.SplitHelper(typeof(T)).GetTables();
+                foreach (var item in tables)
+                {
+                    this.Context.DbMaintenance.TruncateTable(SqlBuilder.GetTranslationColumnName(item.TableName));
+                }
+                return true;
+            }
+            else
+            {
+                this.Context.InitMappingInfo<T>();
+                return this.TruncateTable(this.Context.EntityMaintenance.GetEntityInfo<T>().DbTableName);
+            }
         }
         public virtual bool TruncateTable<T,T2>()
         {
