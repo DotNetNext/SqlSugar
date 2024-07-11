@@ -13,4 +13,9 @@
     <ProjectReference Include="..\SqlSugar\SqlSugar.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="PgSqlDemo\" />
+    <Folder Include="MySqlDemo\" />
+  </ItemGroup>
+
 </Project>
