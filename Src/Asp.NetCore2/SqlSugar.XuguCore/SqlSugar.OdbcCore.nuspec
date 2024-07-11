@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0"?>
 <package >
   <metadata>
-    <id>SqlSugar.XuguCore</id>
-    <version>5.1.4.161</version>
+    <id>SqlSugar.XuguCoreNew</id>
+    <version>5.1.4.162</version>
     <authors>sunkaixuan</authors>
-    <owners>Landa</owners>
+    <owners>果糖大数据</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
     <projectUrl>https://github.com/sunkaixuan/SqlSugar</projectUrl>
     <iconUrl>https://secure.gravatar.com/avatar/a82c03402497b2e58fd65038a3699b30</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description> SqlSugar TDengine 核心库 ,DEMO用例： https://github.com/DotNetNext/SqlSugar </description>
+    <description> SqlSugar操作 虚谷数据库,DEMO用例： https://github.com/DotNetNext/SqlSugar </description>
     <copyright>Copyright 2016</copyright>
-    <tags>TDengine Tdengine tdengine</tags>
+    <tags>虚谷数据库 xugu</tags>
     <dependencies>
       <group targetFramework=".NETStandard2.1">
         <dependency id="SqlSugar.XuguClient" version="2.0.0" />
