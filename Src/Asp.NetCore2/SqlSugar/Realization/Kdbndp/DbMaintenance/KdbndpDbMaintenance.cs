@@ -444,7 +444,7 @@ WHERE tgrelid = '" + tableName + "'::regclass");
             }
             var oldDatabaseName = this.Context.Ado.Connection.Database;
             var connection = this.Context.CurrentConnectionConfig.ConnectionString;
-            if (this.Context.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.SqlServer)
+            if (IsSqlServerModel())
             {
                 connection = connection.Replace(oldDatabaseName, "master");
             }
