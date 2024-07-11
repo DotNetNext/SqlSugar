@@ -56,7 +56,9 @@ namespace SqlSugar
                 }
                 else if (IsSqlServerModel()) 
                 {
-                    sql = sql.Replace("sys_constraint.conkey[1]", "sys_constraint.conkey{{1}}");
+
+                    sql = sql.Replace("sys_", "pg_");
+                    sql = sql.Replace("pg_constraint.conkey[1]", "pg_constraint.conkey{{1}}");
                     sql = sql.Replace("UPPER(", "pg_catalog.upper(");
                     sql = sql.Replace("lower(", "pg_catalog.lower(");
                     sql = sql.Replace("NEXTVAL%", "%nextval%");
