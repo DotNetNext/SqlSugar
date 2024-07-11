@@ -8,12 +8,20 @@ namespace OrmTest
     {
         static void Main(string[] args)
         {
+            //可以查看安装的模式
+            //show database_mode;
 
-            //Oracle模式DEMO
+            //Oracle模式DEMO 【默认模式：语法同时支持PGSQL】
             OracleDemo.Init();
 
             //SqlServer模式DEMO
-            SqlServer.Init();
+            SqlServerDemo.Init();
+
+            //MySql模式DEMO
+            MySqlDemo.Init();
+
+            //PostgreSQL模式DEMO
+            PgSqlDemo.Init();
 
             //Unit test
             //NewUnitTest.Init();

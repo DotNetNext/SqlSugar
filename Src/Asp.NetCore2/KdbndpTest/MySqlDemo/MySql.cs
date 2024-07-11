@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace KdbndpTest.SqlServerDemo
 {
-    internal class SqlServerDemo
+    internal class MySqlDemo
     {
         public static void Init() 
         {
@@ -19,7 +19,7 @@ namespace KdbndpTest.SqlServerDemo
                InitKeyType = InitKeyType.Attribute,
                IsAutoCloseConnection = true,
                MoreSettings=new ConnMoreSettings() { 
-                 DatabaseModel=DbType.SqlServer
+                 DatabaseModel=DbType.MySql
                }
            }, db => {
                db.Aop.OnLogExecuting = (sql, p) =>
