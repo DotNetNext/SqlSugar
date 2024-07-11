@@ -15,13 +15,13 @@ namespace OrmTest
             OracleDemo.Init();
 
             //SqlServer模式DEMO
-            SqlServerDemo.Init();
+            //SqlServerDemo.Init();
 
             //MySql模式DEMO
-            MySqlDemo.Init();
+            //MySqlDemo.Init();
 
             //PostgreSQL模式DEMO
-            PgSqlDemo.Init();
+            //PgSqlDemo.Init();
 
             //Unit test
             //NewUnitTest.Init();
