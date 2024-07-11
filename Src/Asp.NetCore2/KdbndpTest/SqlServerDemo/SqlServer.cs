@@ -36,7 +36,7 @@ namespace KdbndpTest.SqlServerDemo
             }
 
             var yyy = Db.Queryable<Order>().ToList();
-            var xxx=Db.Ado.GetDataTable("select * from information_schema.columns where  pg_catalog.UPPER(table_name)=pg_catalog.UPPER('ORDER')\r\n");
+            var xxx=Db.Ado.GetDataTable("  select  sys_class.relname,sys_attribute.attname as colname from \r\n\t                                sys_constraint  inner join sys_class \r\n\t                                on sys_constraint.conrelid = sys_class.oid \r\n\t                                inner join sys_attribute on sys_attribute.attrelid = sys_class.oid \r\n\t                                and  sys_attribute.attnum = sys_constraint.conkey{1}\r\n\t                                inner join sys_type on sys_type.oid = sys_attribute.atttypid\r\n\t                                where sys_constraint.contype='p'");
 
             Db.CodeFirst.InitTables<Order>();
             Db.Insertable(new Order()
@@ -45,6 +45,20 @@ namespace KdbndpTest.SqlServerDemo
                  CustomId=1,
                  Name="a",
                  Price=1
+            }).ExecuteCommand();
+            Db.Updateable(new Order()
+            {
+                CreateTime = DateTime.Now,
+                CustomId = 1,
+                Name = "a",
+                Price = 1
+            }).ExecuteCommand();
+            Db.Deleteable(new Order()
+            {
+                CreateTime = DateTime.Now,
+                CustomId = 1,
+                Name = "a",
+                Price = 1
             }).ExecuteCommand();
         }
     }
