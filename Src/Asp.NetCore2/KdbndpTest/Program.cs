@@ -26,8 +26,6 @@ namespace OrmTest
             //Unit test
             //NewUnitTest.Init();
 
-            //Rest Data
-            NewUnitTest.RestData();
 
             Console.WriteLine("all successfully.");
             Console.ReadKey();

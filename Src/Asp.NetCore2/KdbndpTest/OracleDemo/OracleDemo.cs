@@ -28,6 +28,9 @@ namespace KdbndpTest.OracleDemo
             DemoE_CodeFirst.Init();
             DemoF_Utilities.Init();
             DemoG_SimpleClient.Init();
+
+            //Rest Data
+            NewUnitTest.RestData();
         }
     }
 }
