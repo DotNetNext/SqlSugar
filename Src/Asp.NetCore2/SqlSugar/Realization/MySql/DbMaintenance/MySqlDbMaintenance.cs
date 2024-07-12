@@ -488,6 +488,10 @@ WHERE EVENT_OBJECT_TABLE = '" + tableName + "'");
                 sql = DorisHelper.UpdateDorisSql(this.SqlBuilder, columns, sql);
             }
             sql = sql.Replace("$PrimaryKey", primaryKeyInfo);
+            if (!string.IsNullOrEmpty(StaticConfig.CodeFirst_MySqlTableEngine)) 
+            {
+               sql+= " ENGINE = " + StaticConfig.CodeFirst_MySqlTableEngine;
+            }
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }

@@ -15,6 +15,7 @@ namespace SqlSugar
 
         public const string CodeFirst_BigString = "varcharmax,longtext,text,clob";
         public static string CodeFirst_MySqlCollate{get;set;}
+        public static string CodeFirst_MySqlTableEngine { get; set; }
 
         public static Func<long> CustomSnowFlakeFunc;
         public static Func<long> CustomSnowFlakeTimeErrorFunc;
