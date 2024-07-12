@@ -1,0 +1,29 @@
+﻿<?xml version="1.0"?>
+<package >
+	<metadata>
+		<id>SystemCommon</id>
+		<version>8.2</version>
+		<authors>sunkaixuan</authors>
+		<owners>果糖大数据</owners>
+		<licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
+		<projectUrl>https://github.com/sunkaixuan/SqlSugar</projectUrl>
+		<iconUrl>https://secure.gravatar.com/avatar/a82c03402497b2e58fd65038a3699b30</iconUrl>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<description>SystemCommon</description>
+		<copyright>Copyright 2016</copyright>
+		<tags>SystemCommon</tags>
+		<dependencies>
+			<group targetFramework=".NETStandard2.1">
+				<dependency id="Microsoft.Data.SqlClient" version="2.1.7" />
+				<dependency id="System.Data.Common" version="4.3.0" />
+				<dependency id="System.Reflection.Emit.Lightweight" version="4.3.0" />
+				<dependency id="System.Text.RegularExpressions" version="4.3.1" />
+				<dependency id="System.Data.OleDb" version="6.0.0" />
+				<dependency id="System.IdentityModel.Tokens.Jwt" version="7.6.3" />
+			</group>
+		</dependencies>
+	</metadata>
+	<files>
+		<file src="G:\Git\SqlSugar\Src\Asp.NetCore2\SqlSugar\bin\Debug\netstandard2.1\SqlSugar.dll" target="lib\netstandard2.1"></file>
+	</files>
+</package>
