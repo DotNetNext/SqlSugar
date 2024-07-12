@@ -94,12 +94,12 @@ namespace SqlSugar
                     return @"select cast(relname as varchar) as Name,cast(Description as varchar) from pg_description
                          join pg_class on pg_description.objoid = pg_class.oid
                          where objsubid = 0 and relname in (SELECT viewname from pg_views  
-                         WHERE schemaname ='public')";
+                         WHERE schemaname ='"+GetSchema()+"')";
                 }
                 return @"select cast(relname as varchar) as Name,cast(Description as varchar) from sys_description
                          join sys_class on sys_description.objoid = sys_class.oid
                          where objsubid = 0 and relname in (SELECT viewname from sys_views  
-                         WHERE schemaname ='public')";
+                         WHERE schemaname ='"+GetSchema()+"')";
             }
         }
         #endregion
