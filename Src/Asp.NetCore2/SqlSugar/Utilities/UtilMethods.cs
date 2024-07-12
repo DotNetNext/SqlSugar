@@ -1681,8 +1681,12 @@ namespace SqlSugar
         }
         public static string FieldNameSql()
         {
+            if (StaticConfig.TableQuerySqlKey!=null&& StaticConfig.TableQuerySqlKey!=Guid.Empty) 
+            {
+               return  $"[value=sql{StaticConfig.TableQuerySqlKey}]";
+            }
             return $"[value=sql{UtilConstants.ReplaceKey}]";
-        }
+        } 
 
         internal static object TimeOnlyToTimeSpan(object value)
         {

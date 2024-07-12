@@ -34,5 +34,6 @@ namespace SqlSugar
         public static Type DynamicExpressionParserType;
         public static object DynamicExpressionParsingConfig;
         public static Action<ICacheService, string> CacheRemoveByLikeStringFunc { get; set; }
+        public static Guid TableQuerySqlKey { get; set; }
     }
 }
