@@ -45,6 +45,10 @@ namespace SqlSugar
         }
         public UpdateCommonMethodInfo IgnoreColumns(params string[] ignoreColumns)
         {
+            if (Context == null) 
+            {
+                return new UpdateCommonMethodInfo();
+            }
             var inertable = MethodInfo.Invoke(Context, new object[] { objectValue });
             var newMethod = inertable.GetType().GetMyMethod("IgnoreColumns", 1,typeof(string[]));
             var result = newMethod.Invoke(inertable, new object[] { ignoreColumns });

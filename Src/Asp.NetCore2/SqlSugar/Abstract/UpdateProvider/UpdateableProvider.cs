@@ -225,6 +225,11 @@ namespace SqlSugar
             result.updateableObj.UpdateBuilder.ShortName = joinExpress.Parameters.FirstOrDefault()?.Name;
             return result;
         }
+        public IUpdateable<T, T2> InnerJoin<T2>(ISugarQueryable<T> queryable, Expression<Func<T, T2, bool>> joinExpress) 
+        {
+            var tableName=$" ({queryable.Clone().ToSqlString()}) ";;
+            return this.InnerJoin(joinExpress, tableName);
+        }
         public IUpdateable<T, T2> InnerJoin<T2>(Expression<Func<T, T2, bool>> joinExpress,string TableName)
         {
             UpdateableProvider<T, T2> result = new UpdateableProvider<T, T2>();
