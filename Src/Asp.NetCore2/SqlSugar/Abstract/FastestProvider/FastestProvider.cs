@@ -281,7 +281,7 @@ namespace SqlSugar
             {
                 var isPrimaryKey = whereColumns.Any(it => it.EqualCase(item.ColumnName));
                 var propertyType = item.DataType;
-                if (!propertyType.IsClass())
+                if (!propertyType.IsClass()&& propertyType!=typeof(string) && propertyType != typeof(byte[]))
                 {
                     propertyType=typeof(Nullable<>).MakeGenericType(UtilMethods.GetUnderType(item.DataType));
                 }
