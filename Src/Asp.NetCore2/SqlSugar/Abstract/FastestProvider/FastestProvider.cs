@@ -280,7 +280,12 @@ namespace SqlSugar
             foreach (DataColumn item in dataTable.Columns)
             {
                 var isPrimaryKey = whereColumns.Any(it => it.EqualCase(item.ColumnName));
-                builder.CreateProperty(item.ColumnName,typeof(Nullable<>).MakeGenericType(UtilMethods.GetUnderType(item.DataType)), new SugarColumn()
+                var propertyType = item.DataType;
+                if (!propertyType.IsClass())
+                {
+                    propertyType=typeof(Nullable<>).MakeGenericType(UtilMethods.GetUnderType(item.DataType));
+                }
+                builder.CreateProperty(item.ColumnName, propertyType, new SugarColumn()
                 {
                     IsPrimaryKey = isPrimaryKey,
                     IsIdentity=isIdentity&& isPrimaryKey,
