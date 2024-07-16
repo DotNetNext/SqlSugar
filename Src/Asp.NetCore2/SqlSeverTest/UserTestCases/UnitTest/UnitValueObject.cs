@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace OrmTest
 {
@@ -112,7 +113,47 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+            db.CodeFirst.InitTables<UnitafasMyEntity>();
+            db.Insertable(new UnitafasMyEntity()
+            {
+                 Id=Guid.NewGuid(),
+                  P0="",
+                   P1=1,
+                    MyVO=new MyVO() { 
+                     GuidP1=Guid.NewGuid(),
+                      GuidP2=Guid.NewGuid(),
+                       VoId=Guid.NewGuid()
+                    }
+            }).ExecuteCommand();
+            var list5 = db.Queryable<UnitafasMyEntity>()
+                .Select(e => new
+                {
+                    e.Id,
+                    e.MyVO.GuidP1,
+                    e.MyVO.GuidP2
+                })
+                .ToListAsync().GetAwaiter().GetResult();
         }
+    }
+    public class UnitafasMyEntity
+    {
+        public Guid Id { get; set; }
+
+        public string P0 { get; set; }
+
+        public int P1 { get; set; }
+
+        [SugarColumn(IsOwnsOne = true)]
+        public MyVO MyVO { get; set; }
+    }
+
+    public class MyVO
+    {
+        public Guid VoId { get; set; }
+
+        public Guid GuidP1 { get; set; }
+
+        public Guid GuidP2 { get; set; }
     }
     public class UnitAddressadfafa2221
     {
