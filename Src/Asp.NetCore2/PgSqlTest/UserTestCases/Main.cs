@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UnitBulkMergeaa.Init();
             Unitadsfayasdfaaay.Init();
             Unitafdafas.Init();
             Unitadfaf2s.Init();
