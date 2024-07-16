@@ -15,7 +15,7 @@
     <dependencies>
       <group targetFramework=".NETStandard2.1"> 
         <dependency id="Newtonsoft.Json" version="13.0.2" /> 
-	    <dependency id="SystemCommon " version="8.2.0" />
+	    <dependency id="SystemCommon " version="8.3.0" />
       </group>
     </dependencies>
   </metadata>
