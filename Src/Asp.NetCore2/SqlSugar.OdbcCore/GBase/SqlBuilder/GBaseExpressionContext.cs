@@ -20,7 +20,7 @@ namespace SqlSugar.Odbc
         public override string SqlTranslationRight { get { return OdbcConfig.SqlTranslationRight; } }
         public override bool IsTranslationText(string name)
         {
-            var result = name.IsContainsIn( UtilConstants.Space,"(",")");
+            var result = name.Contains(" ")&&name.IsContainsIn( UtilConstants.Space,"(",")");
             return result;
         }
         public override string GetLimit() { return ""; }
