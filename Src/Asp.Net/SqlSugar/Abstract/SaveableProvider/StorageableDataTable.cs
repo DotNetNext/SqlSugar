@@ -17,10 +17,21 @@ namespace SqlSugar
         internal string SugarColumns = "SugarColumns";
         internal string SugarErrorMessage = "SugarErrorMessage";
         internal List<DataRow> dbDataList = new List<DataRow>();
+        internal Func<DateTime, string> formatTime;
         List<KeyValuePair<StorageType, Func<DataRow, bool>,string>> whereFuncs = new List<KeyValuePair<StorageType, Func<DataRow, bool>,string>>();
         public StorageableDataTable WhereColumns(string name)
         {
             return WhereColumns(new string[] { name});
+        }
+        public StorageableDataTable WhereColumns(string name, Func<DateTime, string> formatTime)
+        {
+            this.formatTime = formatTime;
+            return WhereColumns(new string[] { name });
+        }
+        public StorageableDataTable WhereColumns(string [] names, Func<DateTime, string> formatTime)
+        {
+            this.formatTime = formatTime;
+            return WhereColumns(names);
         }
         public StorageableDataTable WhereColumns(string[] names)
         {
@@ -180,7 +191,7 @@ namespace SqlSugar
                     {
                         FieldName = name,
                         ConditionalType = ConditionalType.Equal,
-                        FieldValue = value + "",
+                        FieldValue = value.ObjToString(this.formatTime),
                         CSharpTypeName=value?.GetType()?.Name
                     }));
                     ++i;
