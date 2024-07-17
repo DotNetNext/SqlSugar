@@ -36,6 +36,9 @@ namespace OrmTest
                     e.MyVO.GuidP2
                 })
                 .ToListAsync().GetAwaiter().GetResult();
+
+            var list6 = db.Queryable<UnitafasMyEntity>() 
+              .ToListAsync().GetAwaiter().GetResult();
         }
     }
     public class UnitafasMyEntity
