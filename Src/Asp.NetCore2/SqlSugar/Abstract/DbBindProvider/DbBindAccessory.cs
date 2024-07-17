@@ -165,6 +165,13 @@ namespace SqlSugar
                             {
                                 setValue = null;
                             }
+                            if (item.UnderType == UtilConstants.GuidType&& setValue is string) 
+                            {
+                                if (setValue != null) 
+                                {
+                                    setValue = Guid.Parse(setValue+"");
+                                }
+                            }
                             item.PropertyInfo.SetValue(parentObj, setValue);
                         }
                     }
