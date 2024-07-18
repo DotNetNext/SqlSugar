@@ -76,7 +76,12 @@ namespace SqlSugar
                   attributeType.GetProperty(nameof(SugarColumn.SqlParameterDbType)),
                   attributeType.GetProperty(nameof(SugarColumn.SqlParameterSize)),
                   attributeType.GetProperty(nameof(SugarColumn.IsArray)),
-                  attributeType.GetProperty(nameof(SugarColumn.ColumnName))
+                  attributeType.GetProperty(nameof(SugarColumn.ColumnName)),
+                  attributeType.GetProperty(nameof(SugarColumn.InsertSql)),
+                  attributeType.GetProperty(nameof(SugarColumn.UpdateSql)),
+                  attributeType.GetProperty(nameof(SugarColumn.ExtendedAttribute)),
+                  attributeType.GetProperty(nameof(SugarColumn.IsDisabledAlterColumn)),
+                  attributeType.GetProperty(nameof(SugarColumn.IsOwnsOne))
             }
             , new object[] {
                     sugarTable.IsPrimaryKey,
@@ -96,7 +101,12 @@ namespace SqlSugar
                     sugarTable.SqlParameterDbType,
                     sugarTable.SqlParameterSize,
                     sugarTable.IsArray,
-                    sugarTable.ColumnName
+                    sugarTable.ColumnName,
+                    sugarTable.InsertSql,
+                    sugarTable.UpdateSql,
+                    sugarTable.ExtendedAttribute,
+                    sugarTable.IsDisabledAlterColumn,
+                    sugarTable.IsOwnsOne
              });
             return attributeBuilder;
         }
