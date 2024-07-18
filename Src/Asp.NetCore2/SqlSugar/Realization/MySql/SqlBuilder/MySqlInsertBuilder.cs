@@ -154,8 +154,14 @@ namespace SqlSugar
                         batchInsetrSql.Append("),  ");
                     }
                 }
-
-                batchInsetrSql.AppendLine(";select @@IDENTITY");
+                if (DorisHelper.IsDoris(this.Context))
+                {
+                    //doris insert ignore
+                }
+                else
+                {
+                    batchInsetrSql.AppendLine(";select @@IDENTITY");
+                }
                 var result = batchInsetrSql.ToString();
                 result = GetMySqlIgnore(result);
                 return result;
