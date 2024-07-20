@@ -523,6 +523,7 @@ namespace SqlSugar
                     if (this.CurrentConnectionConfig.MoreSettings == null)
                         this.CurrentConnectionConfig.MoreSettings = new ConnMoreSettings();
                     this.CurrentConnectionConfig.MoreSettings.DatabaseModel = DbType.Doris;
+                    this.CurrentConnectionConfig.MoreSettings.DisableNvarchar = true;
                     break;
                 case DbType.TDengine:
                     Check.Exception(SugarCompatible.IsFramework, "TDengine only support .net core");
