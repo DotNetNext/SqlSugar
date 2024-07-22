@@ -6,8 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Kdbndp;
-using KdbndpTypes;
-using NpgsqlTypes;
+using KdbndpTypes; 
 
 namespace SqlSugar
 {
