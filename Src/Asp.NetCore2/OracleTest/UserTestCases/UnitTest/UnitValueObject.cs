@@ -39,7 +39,43 @@ namespace OrmTest
 
             var list6 = db.Queryable<UnitafasMyEntity>() 
               .ToListAsync().GetAwaiter().GetResult();
+
+            db.CodeFirst.InitTables<MyEntity>();
+
+            db.Insertable(new MyEntity
+            {
+                Id = Guid.NewGuid(),
+                ValueObject = new MyValueObject
+                {
+                    VoId = Guid.NewGuid(),
+                    MyEnum = MyEnum.Value1
+                }
+            }).ExecuteCommand();
+
+            var entity = db.Queryable<MyEntity>().First();  // 值对象中有可空的枚举属性导致查询报错
         }
+    }
+    [SugarTable("unitadfa")]
+    public class MyEntity
+    {
+        public Guid Id { get; set; }
+
+        [SugarColumn(IsOwnsOne = true)]
+        public MyValueObject ValueObject { get; set; }
+    }
+
+    public enum MyEnum
+    {
+        Value1,
+        Value2
+    }
+
+    public class MyValueObject
+    {
+        public Guid VoId { get; set; }
+
+        [SugarColumn(IsNullable = true, ColumnDataType = "NUMBER(1, 0)")]
+        public MyEnum? MyEnum { get; set; }  // 值对象中有可空的枚举属性
     }
     public class UnitafasMyEntity
     {
