@@ -172,6 +172,10 @@ namespace SqlSugar
                                     setValue = Guid.Parse(setValue+"");
                                 }
                             }
+                            else if (item.UnderType?.IsEnum==true&& setValue!=null)
+                            {
+                                setValue = UtilMethods.ChangeType2(setValue, item.UnderType);
+                            }
                             item.PropertyInfo.SetValue(parentObj, setValue);
                         }
                     }
