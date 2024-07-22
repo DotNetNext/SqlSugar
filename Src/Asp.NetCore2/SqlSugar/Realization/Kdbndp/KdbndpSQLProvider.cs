@@ -152,7 +152,7 @@ namespace SqlSugar
                 {
                      sqlParameter.KdbndpDbType = KdbndpDbType.Varchar;
                 }
-                if (parameter.CustomDbType != null && parameter.CustomDbType is NpgsqlDbType)
+                if (parameter.CustomDbType != null && parameter.CustomDbType is KdbndpDbType)
                 {
                     sqlParameter.KdbndpDbType = ((KdbndpDbType)parameter.CustomDbType);
                 }
