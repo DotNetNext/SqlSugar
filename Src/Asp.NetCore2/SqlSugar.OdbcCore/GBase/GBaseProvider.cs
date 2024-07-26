@@ -66,14 +66,14 @@ namespace SqlSugar.Odbc
         {
             if (this.Context.Ado.Transaction != null)
             {
-                return await GetScalarAsync(sql, parameters);
+                return await base.GetScalarAsync(sql, parameters);
             }
             else
             {
                 try
                 {
                     this.Context.Ado.BeginTran();
-                    var result =await GetScalarAsync(sql, parameters);
+                    var result =await base.GetScalarAsync(sql, parameters);
                     this.Context.Ado.CommitTran();
                     return result;
                 }
