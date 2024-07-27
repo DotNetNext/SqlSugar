@@ -662,6 +662,10 @@ namespace SqlSugar
                 {
                     name = "IsNullOrEmpty";
                 }
+                if (model.Conext == null) 
+                {
+                    model.Conext = this.Context;
+                }
                 switch (name)
                 {
                     case "IIF":
