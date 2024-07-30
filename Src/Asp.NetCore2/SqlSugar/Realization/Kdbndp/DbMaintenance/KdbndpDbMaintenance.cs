@@ -89,7 +89,7 @@ namespace SqlSugar
         {
             get
             {
-                return @"select  table_name as name  from information_schema.views where table_schema  ='" + GetSchema() + "' ";
+                return @"select  table_name as name  from information_schema.views where lower(table_schema)  ='" + GetSchema() + "' ";
             }
         }
         #endregion
