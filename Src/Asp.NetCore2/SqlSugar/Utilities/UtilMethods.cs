@@ -950,6 +950,10 @@ namespace SqlSugar
             if (value is string && type == typeof(Guid)) return new Guid(value as string);
             if (value is string && type == typeof(Version)) return new Version(value as string);
             if (!(value is IConvertible)) return value;
+            if(value is DateTime&&type.FullName== "System.DateOnly") 
+            {
+                value=UtilMethods.DateTimeToDateOnly(value);
+            }
             return Convert.ChangeType(value, type);
         }
 
@@ -1709,6 +1713,41 @@ namespace SqlSugar
             if (value == null) return null;
             var method = value.GetType().GetMethods().First(it => it.GetParameters().Length == 0 && it.Name == "ToShortDateString");
             return method.Invoke(value, new object[] { });
+        }
+        internal static object DateTimeToDateOnly(object value)
+        {
+            if (value == null) return null;
+
+            // 获取DateOnly类型
+            Type dateOnlyType = Type.GetType("System.DateOnly, System.Runtime", throwOnError: false);
+            if (dateOnlyType == null)
+            {
+                throw new InvalidOperationException("DateOnly type not found.");
+            }
+
+            // 获取DateOnly的构造函数
+            var constructor = dateOnlyType.GetConstructor(new[] { typeof(int), typeof(int), typeof(int) });
+            if (constructor == null)
+            {
+                throw new InvalidOperationException("DateOnly constructor not found.");
+            }
+
+            // 使用反射调用DateTime的属性
+            var yearProperty = value.GetType().GetProperty("Year");
+            var monthProperty = value.GetType().GetProperty("Month");
+            var dayProperty = value.GetType().GetProperty("Day");
+
+            if (yearProperty == null || monthProperty == null || dayProperty == null)
+            {
+                throw new InvalidOperationException("DateTime properties not found.");
+            }
+
+            int year = (int)yearProperty.GetValue(value);
+            int month = (int)monthProperty.GetValue(value);
+            int day = (int)dayProperty.GetValue(value);
+
+            // 使用反射创建DateOnly实例
+            return constructor.Invoke(new object[] { year, month, day });
         }
 
 
