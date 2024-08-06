@@ -695,10 +695,22 @@ namespace SqlSugar
         public virtual Task<DataSet> GetDataSetAllAsync(string sql, params SugarParameter[] parameters)
         {
             Async();
+
             //False asynchrony . No Support DataSet
-            return Task.Run(() => {
-               return  GetDataSetAll(sql, parameters);
-            });
+            if (CancellationToken == null)
+            {
+                return Task.Run(() =>
+                {
+                    return GetDataSetAll(sql, parameters);
+                });
+            }
+            else 
+            {
+                return Task.Run(() =>
+                {
+                    return GetDataSetAll(sql, parameters);
+                },this.CancellationToken.Value);
+            }
         }
         #endregion
 

@@ -736,6 +736,7 @@ namespace SqlSugar
                         var addItem = readerValues[info];
                         if (addItem == DBNull.Value)
                             addItem = null;
+                        var underType = UtilMethods.GetUnderType(prop.PropertyType);
                         if (prop.PropertyType == UtilConstants.IntType)
                         {
                             addItem = addItem.ObjToInt();
@@ -751,6 +752,10 @@ namespace SqlSugar
                         else if (UtilMethods.GetUnderType(prop.PropertyType) == UtilConstants.IntType && addItem != null)
                         {
                             addItem = addItem.ObjToInt();
+                        }
+                        else if (addItem!=null&&underType?.FullName == "System.DateOnly") 
+                        {
+                            addItem = Convert.ToDateTime(addItem).ToString("yyyy-MM-dd");
                         }
                         else if (UtilMethods.GetUnderType(prop.PropertyType).IsEnum() && addItem is decimal)
                         {
