@@ -56,7 +56,7 @@ namespace SqlSugar
                     string bytesString = "0x" + BitConverter.ToString((byte[])value).Replace("-", "");
                     if (bytesString == "0x") 
                     {
-                        bytesString = "0x00";
+                        bytesString = "''";
                     }
                     return bytesString;
                 }
