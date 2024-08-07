@@ -272,6 +272,17 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override bool IsAnyConstraint(string constraintName)
+        {
+            string query = @"
+        SELECT COUNT(*) 
+        FROM ALL_INDEXES 
+        WHERE INDEX_NAME = @constraintName
+          AND OWNER = USER";
+
+            var parameters = new { constraintName = constraintName };
+            return this.Context.Ado.GetInt(query, parameters) > 0;
+        }
         public override bool IsAnyTable(string tableName, bool isCache = true)
         {
             if (isCache)
