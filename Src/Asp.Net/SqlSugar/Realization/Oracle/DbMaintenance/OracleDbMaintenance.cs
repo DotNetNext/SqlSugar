@@ -272,6 +272,17 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override bool IsAnyConstraint(string constraintName)
+        {
+            string query = @"
+        SELECT COUNT(*) 
+        FROM ALL_INDEXES 
+        WHERE INDEX_NAME = @constraintName
+          AND OWNER = USER";
+
+            var parameters = new { constraintName = constraintName };
+            return this.Context.Ado.GetInt(query, parameters) > 0;
+        }
         public override bool IsAnyTable(string tableName, bool isCache = true)
         {
             if (isCache)
@@ -344,7 +355,7 @@ WHERE table_name = '"+tableName+"'");
         public override List<string> GetIndexList(string tableName)
         {
             var sql = $"SELECT index_name FROM user_ind_columns\r\nWHERE upper(table_name) = upper('{tableName}')";
-            return this.Context.Ado.SqlQuery<string>(sql);
+            return this.Context.Ado.SqlQuery<string>(sql).Distinct().ToList();
         }
         public override List<string> GetProcList(string dbName)
         {
@@ -461,7 +472,7 @@ WHERE table_name = '"+tableName+"'");
         {
             List<DbColumnInfo> columns = GetOracleDbType(tableName);
             string sql = "select *  /* " + Guid.NewGuid() + " */ from " +SqlBuilder.GetTranslationTableName(SqlBuilder.GetNoTranslationColumnName(tableName)) + " WHERE 1=2 ";
-            if (!IsAnyTable(tableName, false))
+            if (!IsAnyTable(tableName, false)&&!GetViewInfoList(false).Any(it=>it.Name.EqualCase(tableName)))
             {
                 return new List<DbColumnInfo>();
             }
