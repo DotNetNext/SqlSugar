@@ -82,6 +82,8 @@ namespace SqlSugar
                   attributeType.GetProperty(nameof(SugarColumn.ExtendedAttribute)),
                   attributeType.GetProperty(nameof(SugarColumn.IsDisabledAlterColumn)),
                   attributeType.GetProperty(nameof(SugarColumn.IsOwnsOne)),
+                  attributeType.GetProperty(nameof(SugarColumn.InsertServerTime)),
+                  attributeType.GetProperty(nameof(SugarColumn.UpdateServerTime)),
                   attributeType.GetProperty(nameof(SugarColumn.QuerySql))
             }
             , new object[] {
@@ -108,6 +110,8 @@ namespace SqlSugar
                     sugarTable.ExtendedAttribute,
                     sugarTable.IsDisabledAlterColumn,
                     sugarTable.IsOwnsOne,
+                     sugarTable.InsertServerTime,
+                      sugarTable.UpdateServerTime,
                     sugarTable.QuerySql
              });
             return attributeBuilder;
