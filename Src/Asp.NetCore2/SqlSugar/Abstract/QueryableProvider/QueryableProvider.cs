@@ -1500,7 +1500,7 @@ namespace SqlSugar
                 }
                 else
                 {
-                    if (this.EntityInfo?.Type?.GetCustomAttribute<SplitTableAttribute>() != null&& this.QueryBuilder?.SelectValue?.ToString()=="*")
+                    if (this.QueryBuilder.IsSingle()&&this.EntityInfo?.Type?.GetCustomAttribute<SplitTableAttribute>() != null&& this.QueryBuilder?.SelectValue?.ToString()=="*")
                     {
                         var columnAarray = this.Context.EntityMaintenance.GetEntityInfo<T>().Columns;
                         var sql = string.Empty;
