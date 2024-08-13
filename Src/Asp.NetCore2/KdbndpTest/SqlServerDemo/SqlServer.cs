@@ -35,13 +35,31 @@ namespace KdbndpTest.SqlServerDemo
 
             InsertDemo(Db);
 
-            UpdateDemo(Db);
+            UpdateDemo(Db); 
+
+            QueryDemo(Db); 
 
             DeleteDemo(Db); 
 
             GetTableInfos(Db);
         }
 
+        private static void QueryDemo(SqlSugarClient Db)
+        {
+            var list1 = Db.Queryable<Order>().Where(it => it.CreateTime.AddDays(1)>DateTime.Now).ToList();
+           
+            try
+            {
+                var list2 = Db.Queryable<Order>().Select(it => new
+                {
+                    date = it.CreateTime.ToString("yyyy-MM-dd")
+                }).ToList();
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("需要金仓那边支持format");
+            }
+        }
         private static void DeleteDemo(SqlSugarClient Db)
         {
             Db.Deleteable(new Order()
