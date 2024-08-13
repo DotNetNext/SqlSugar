@@ -53,6 +53,26 @@ static void MyTest()
     sqlugar.Updateable(new UnitDatez211afa2222()).WhereColumns(it=>it.timeOnly).ExecuteCommand();
     sqlugar.Insertable(new UnitDatez211afa2222() { dateOnly=DateOnly.FromDateTime(DateTime.Now) }).ExecuteCommand();
     var list2=sqlugar.Queryable<UnitDatez211afa2222>().ToList();
+
+    var db = sqlugar;
+    // 建表
+    var typeBilder = db.DynamicBuilder().CreateClass("stats_values", new());
+    typeBilder.CreateProperty("date", typeof(DateOnly), new() { IsPrimaryKey = true });
+    typeBilder.CreateProperty("d1", typeof(uint), new() { ColumnDataType = "INT UNSIGNED" });
+    typeBilder.CreateProperty("d2", typeof(uint), new() { ColumnDataType = "INT UNSIGNED" });
+    var type = typeBilder.BuilderType();
+    db.CodeFirst.InitTables(type);
+
+    // 保存数据
+    var currentDate = DateOnly.FromDateTime(DateTime.Now);
+    var stats = new Dictionary<string, object>
+    {
+        ["date"] = currentDate,
+        ["d1"] = 1,
+        ["d2"] = 2
+    };
+    var statsValue = db.DynamicBuilder().CreateObjectByType(type, stats);
+    db.StorageableByObject(statsValue).ExecuteCommand();
 }
 static void ServerTest()
 {
