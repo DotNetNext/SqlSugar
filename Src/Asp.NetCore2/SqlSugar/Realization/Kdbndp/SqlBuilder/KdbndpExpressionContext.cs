@@ -300,6 +300,10 @@ namespace SqlSugar
         }
         public override string DateAddByType(MethodCallExpressionModel model)
         {
+            if (IsSqlServerModel(model))
+            {
+                return base.DateAddByType(model);
+            }
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
             var parameter3 = model.Args[2];
@@ -312,6 +316,10 @@ namespace SqlSugar
 
         public override string DateAddDay(MethodCallExpressionModel model)
         {
+            if (IsSqlServerModel(model)) 
+            {
+                return base.DateAddDay(model);
+            }
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
             return string.Format(" ({0} + ({1}||'day')::INTERVAL) ", parameter.MemberName, parameter2.MemberName);
@@ -494,5 +502,11 @@ namespace SqlSugar
             }
             return $" to_char({dateValue},'{formatString}') ";
         }
+
+        private static bool IsSqlServerModel(MethodCallExpressionModel model)
+        {
+            return model?.Conext?.SugarContext?.Context?.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.SqlServer;
+        }
+
     }
 }
