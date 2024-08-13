@@ -222,6 +222,10 @@ namespace SqlSugar
 
         public override string Contains(MethodCallExpressionModel model)
         {
+            if (IsSqlServerModel(model)) 
+            {
+                return base.Contains(model);
+            }
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
             return string.Format(" ({0} like pg_catalog.concat('%',{1},'%')) ", parameter.MemberName, parameter2.MemberName);
@@ -229,6 +233,10 @@ namespace SqlSugar
 
         public override string StartsWith(MethodCallExpressionModel model)
         {
+            if (IsSqlServerModel(model))
+            {
+                return base.StartsWith(model);
+            }
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
             return string.Format(" ({0} like pg_catalog.concat({1},'%')) ", parameter.MemberName, parameter2.MemberName);
@@ -236,6 +244,10 @@ namespace SqlSugar
 
         public override string EndsWith(MethodCallExpressionModel model)
         {
+            if (IsSqlServerModel(model))
+            {
+                return base.EndsWith(model);
+            }
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
             return string.Format(" ({0} like pg_catalog.concat('%',{1}))", parameter.MemberName, parameter2.MemberName);
