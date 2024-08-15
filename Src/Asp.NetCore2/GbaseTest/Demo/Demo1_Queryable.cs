@@ -42,6 +42,15 @@ namespace OrmTest
             var getByWhere2 = db.Queryable<Order>().Where(it => it.Id == DateTime.Now.Year).ToList();
             var getByFuns = db.Queryable<Order>().Where(it => SqlFunc.IsNullOrEmpty(it.Name)).ToList();
             var getByFuns2 = db.Queryable<Order>().GroupBy(it => it.Name).Select(it => SqlFunc.AggregateDistinctCount(it.Price)).ToList();
+            var test01 = db.Queryable<Order>() 
+                .Select(it=>new {
+                    it.CreateTime.Hour,
+                    time=it.CreateTime
+                }).ToList();
+            var test02 = db.Queryable<Order>()
+              .Select(it => new {
+                  time=SqlFunc.IsNull(it.CreateTime,DateTime.Now)
+              }).ToList();
             Console.WriteLine("#### Examples End ####");
         }
 
