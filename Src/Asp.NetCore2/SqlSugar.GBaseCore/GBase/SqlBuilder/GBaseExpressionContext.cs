@@ -54,9 +54,10 @@ namespace SqlSugar.GBase
 
             if (parameter1 != null && parameter1.MemberValue != null)
             {
+                str = str.TrimEnd(')');
                 if (parameter1.MemberValue.GetType() == UtilConstants.DateType)
                 {
-                    str += string.Format("::{0}", _dateTimeType);
+                    str += string.Format("::{0})", _dateTimeType);
                 }
             }
             return str;
