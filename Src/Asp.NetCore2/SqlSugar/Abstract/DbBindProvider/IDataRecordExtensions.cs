@@ -298,13 +298,13 @@ namespace SqlSugar
             }
         }
 
-        public static T GetJson<T>(this IDataReader dr, int i)
+        public static T GetJson<T>(this IDataReader dr, int i, ISerializeService service)
         {
             var obj = dr.GetValue(i);
             if (obj == null)
                 return default(T);
             var value = obj.ObjToString();
-            return new SerializeService().DeserializeObject<T>(value);
+            return service.DeserializeObject<T>(value);
         }
         public static T GetArray<T>(this IDataReader dr, int i)
         {

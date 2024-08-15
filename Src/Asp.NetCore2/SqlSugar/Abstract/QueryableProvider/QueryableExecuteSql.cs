@@ -663,7 +663,7 @@ namespace SqlSugar
                 while (dr.Read())
                 {
 
-                    var order = entytyList.Build(dr);
+                    var order = entytyList.Build(dr,Context.CurrentConnectionConfig.ConfigureExternalServices.SerializeService);
                     action(order);
                 }
             }
@@ -691,7 +691,7 @@ namespace SqlSugar
                 while (dr.Read())
                 {
 
-                    var order = entytyList.Build(dr);
+                    var order = entytyList.Build(dr,Context.CurrentConnectionConfig.ConfigureExternalServices.SerializeService);
                     action(order);
                 }
             }

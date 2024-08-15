@@ -35,7 +35,7 @@ namespace SqlSugar
                 {
                     //try
                     //{
-                        var addItem = entytyList.Build(dataReader);
+                        var addItem = entytyList.Build(dataReader, context.CurrentConnectionConfig.ConfigureExternalServices.SerializeService);
                         if (this.QueryBuilder?.QueryableFormats?.Any() == true) 
                         {
                           FormatT(addItem);
@@ -87,7 +87,7 @@ namespace SqlSugar
                 {
                     //try
                     //{
-                    var addItem = entytyList.Build(dataReader);
+                    var addItem = entytyList.Build(dataReader, context.CurrentConnectionConfig.ConfigureExternalServices.SerializeService);
                     if (this.QueryBuilder?.QueryableFormats?.Any() == true)
                     {
                         FormatT(addItem);
