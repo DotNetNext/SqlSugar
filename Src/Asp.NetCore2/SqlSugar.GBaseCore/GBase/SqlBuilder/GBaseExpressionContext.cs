@@ -99,13 +99,13 @@ namespace SqlSugar.GBase
                         str = string.Format(" day('{0}'::{1}) ", parameter.MemberName, _dateTimeType);
                         break;
                     case "hour":
-                        str = string.Format(" extend('{0}'::{1}, hour to hour) ", parameter.MemberName, _dateTimeType);
+                        str = string.Format(" to_char('{0}'::{1},'hh24') ", parameter.MemberName, _dateTimeType);
                         break;
                     case "minute":
-                        str = string.Format(" extend('{0}'::{1}, minute to minute) ", parameter.MemberName, _dateTimeType);
+                        str = string.Format(" to_char('{0}'::{1},'mi') ", parameter.MemberName, _dateTimeType);
                         break;
                     case "second":
-                        str = string.Format(" extend('{0}'::{1}, second to second) ", parameter.MemberName, _dateTimeType);
+                        str = string.Format(" to_char('{0}'::{1}, 'ss') ", parameter.MemberName, _dateTimeType);
                         break;
                 }
             }
@@ -123,13 +123,13 @@ namespace SqlSugar.GBase
                         str = string.Format(" day({0}::{1}) ", parameter.MemberName, _dateTimeType);
                         break;
                     case "hour":
-                        str = string.Format(" extend({0}::{1}, hour to hour)::varchar(2) ", parameter.MemberName, _dateTimeType);
+                        str = string.Format(" to_char({0}::{1},'hh24')  ", parameter.MemberName, _dateTimeType);
                         break;
                     case "minute":
-                        str = string.Format(" extend({0}::{1}, minute to minute)::varchar(2) ", parameter.MemberName, _dateTimeType);
+                        str = string.Format(" to_char({0}::{1},'mi')  ", parameter.MemberName, _dateTimeType);
                         break;
                     case "second":
-                        str = string.Format(" extend({0}::{1}, second to second)::varchar(2) ", parameter.MemberName, _dateTimeType);
+                        str = string.Format(" to_char({0}::{1}, 'ss') ", parameter.MemberName, _dateTimeType);
                         break;
                 }
             }
