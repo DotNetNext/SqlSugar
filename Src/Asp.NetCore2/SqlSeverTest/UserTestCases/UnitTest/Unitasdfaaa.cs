@@ -24,6 +24,7 @@ namespace OrmTest
             };
 
              db.Insertable(entity).ExecuteCommand();
+             db.Updateable(entity).Where(it=>it.Id==Guid.NewGuid()).ExecuteCommand();
         }
 
         public class UnitMyEntity3
