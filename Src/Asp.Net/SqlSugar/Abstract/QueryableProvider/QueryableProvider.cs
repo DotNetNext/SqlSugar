@@ -1500,7 +1500,21 @@ namespace SqlSugar
                 }
                 else
                 {
-                    return this.Select<TResult>(this.SqlBuilder.SqlSelectAll);
+                    if (this.QueryBuilder.IsSingle()&&this.EntityInfo?.Type?.GetCustomAttribute<SplitTableAttribute>() != null&& this.QueryBuilder?.SelectValue?.ToString()=="*")
+                    {
+                        var columnAarray = this.Context.EntityMaintenance.GetEntityInfo<T>().Columns;
+                        var sql = string.Empty;
+                        var columns= columnAarray.Where(it => typeof(TResult).GetProperties().Any(s => s.Name.EqualCase(it.PropertyName))).Where(it => it.IsIgnore == false).ToList();
+                        if (columns.Any())
+                        {
+                            sql = string.Join(",", columns.Select(it => $"{SqlBuilder.GetTranslationColumnName(it.DbColumnName)} AS  {SqlBuilder.GetTranslationColumnName(it.PropertyName)} "));
+                        }
+                        return this.Select<TResult>(sql);
+                    }
+                    else
+                    {
+                        return this.Select<TResult>(this.SqlBuilder.SqlSelectAll);
+                    }
                 }
             }
             else
@@ -1687,6 +1701,7 @@ namespace SqlSugar
                 //}
                 var unionall = this.Context._UnionAll(tableQueryables.ToArray());
                 unionall.QueryBuilder.Includes = this.QueryBuilder.Includes;
+                unionall.QueryBuilder.EntityType = typeof(T);
                 if (unionall.QueryBuilder.Includes?.Any()==true) 
                 {
                     unionall.QueryBuilder.NoCheckInclude = true;

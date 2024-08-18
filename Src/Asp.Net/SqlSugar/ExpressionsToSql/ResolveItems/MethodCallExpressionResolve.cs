@@ -134,6 +134,10 @@ namespace SqlSugar
                         }
                         var value = GetNewExpressionValue(express.Object);
                         var dateString2 = this.Context.DbMehtods.GetDateString(value, format);
+                        if (IsSqlServerModel()) 
+                        {
+                            dateString2= string.Format("FORMAT({0},'{1}','en-US')", value, format);
+                        }
                         if (dateString2 == null)
                         {
                             var dateString = GeDateFormat(format, value);

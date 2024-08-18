@@ -60,6 +60,16 @@ namespace SqlSugar
                 Context = result
             };
         }
+        public CommonMethodInfo EnableDiffLogEvent(object businessData = null)
+        {
+            var inertable = MethodInfo.Invoke(Context, new object[] { objectValue });
+            var newMethod = inertable.GetType().GetMyMethod("EnableDiffLogEvent", 1, typeof(object));
+            var result = newMethod.Invoke(inertable, new object[] { businessData });
+            return new CommonMethodInfo()
+            {
+                Context = result
+            };
+        }
         public CommonMethodInfo IgnoreColumns(params string [] ignoreColumns)
         {
             var inertable = MethodInfo.Invoke(Context, new object[] { objectValue });

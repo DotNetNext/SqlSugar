@@ -386,6 +386,10 @@ namespace SqlSugar
                     UpdateServerTime = column.UpdateServerTime,
                     IsPrimarykey=column.IsPrimarykey
                 };
+                if (column.ForOwnsOnePropertyInfo != null)
+                {
+                    columnInfo.DbColumnName = column.DbColumnName;
+                }
                 if (columnInfo.PropertyType.IsEnum() && columnInfo.Value != null)
                 {
                     if (this.Context.CurrentConnectionConfig.MoreSettings?.TableEnumIsString == true)

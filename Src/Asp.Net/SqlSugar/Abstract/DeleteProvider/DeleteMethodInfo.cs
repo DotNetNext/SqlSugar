@@ -38,7 +38,20 @@ namespace SqlSugar
                 Context = result
             };
         }
-
+        public CommonMethodInfo EnableDiffLogEvent(object businessData = null)
+        {
+            if (Context == null)
+            {
+                return new CommonMethodInfo();
+            }
+            var inertable = MethodInfo.Invoke(Context, new object[] { objectValue });
+            var newMethod = inertable.GetType().GetMyMethod("EnableDiffLogEvent", 1, typeof(object));
+            var result = newMethod.Invoke(inertable, new object[] { businessData });
+            return new CommonMethodInfo()
+            {
+                Context = result
+            };
+        }
         public CommonMethodInfo SplitTable()
         {
             var inertable = MethodInfo.Invoke(Context, new object[] { objectValue });

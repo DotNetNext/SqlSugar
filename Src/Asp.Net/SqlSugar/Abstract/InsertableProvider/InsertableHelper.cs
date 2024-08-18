@@ -317,7 +317,7 @@ namespace SqlSugar
                 {
                     column.DbColumnName = column.PropertyName;
                 }
-                if (isMapping)
+                if (isMapping&&column.ForOwnsOnePropertyInfo==null)
                 {
                     columnInfo.DbColumnName = GetDbColumnName(column.PropertyName);
                 }

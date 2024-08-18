@@ -653,8 +653,12 @@ namespace SqlSugar
             {
                 return resulut.Select<T>("unionTable.*");
             }
-            else
+            else if (this.Context.CurrentConnectionConfig?.MoreSettings?.IsWithNoLockQuery==true)
             {
+                return resulut.Select<T>(sqlBuilder.SqlSelectAll).With(SqlWith.Null);
+            }
+            else
+            { 
                 return resulut.Select<T>(sqlBuilder.SqlSelectAll);
             }
         }
