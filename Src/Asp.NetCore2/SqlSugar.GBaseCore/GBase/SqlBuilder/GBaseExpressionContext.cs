@@ -50,16 +50,15 @@ namespace SqlSugar.GBase
         {
             var parameter = model.Args[0];
             var parameter1 = model.Args[1];
-            string str = string.Format("NVL({0}::"+ _dateTimeType + ",{1}::" + _dateTimeType + ")", parameter.MemberName, parameter1.MemberName);
+            string str = string.Format("NVL({0},{1})", parameter.MemberName, parameter1.MemberName);
 
-            //if (parameter1 != null && parameter1.MemberValue != null)
-            //{
-            //    str = str.TrimEnd(')');
-            //    if (parameter1.MemberValue.GetType() == UtilConstants.DateType)
-            //    {
-            //        str += string.Format("::{0})", _dateTimeType);
-            //    }
-            //}
+            if (parameter1 != null && parameter1.MemberValue != null)
+            {
+                if (parameter1.MemberValue.GetType() == UtilConstants.DateType)
+                {
+                     str = string.Format("NVL({0} {2},{1} {2})", parameter.MemberName, parameter1.MemberName, "::"+_dateTimeType);
+                }
+            }
             return str;
         }
 
