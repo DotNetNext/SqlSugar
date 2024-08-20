@@ -51,7 +51,8 @@ namespace OrmTest
                 }).ToList();
             var test02 = db.Queryable<Order>()
               .Select(it => new {
-                  time=SqlFunc.IsNull(it.CreateTime,DateTime.Now)
+                  time=SqlFunc.IsNull(it.CreateTime,DateTime.Now),
+                  id=SqlFunc.IsNull(it.Id,0)
               }).ToList();
             Console.WriteLine("#### Examples End ####");
         }
