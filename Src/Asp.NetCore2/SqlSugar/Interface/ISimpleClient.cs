@@ -12,7 +12,7 @@ namespace SqlSugar
         RepositoryType CopyNew<RepositoryType>(IServiceProvider serviceProvider) where RepositoryType : ISugarRepository;
         RepositoryType CopyNew<RepositoryType>() where RepositoryType : ISugarRepository;
         SimpleClient<ChangeType> Change<ChangeType>() where ChangeType : class, new();
-        RepositoryType ChangeRepository<RepositoryType>() where RepositoryType : ISugarRepository ;
+        RepositoryType ChangeRepository<RepositoryType>() where RepositoryType : ISugarRepository;
         RepositoryType ChangeRepository<RepositoryType>(IServiceProvider serviceProvider) where RepositoryType : ISugarRepository;
         IDeleteable<T> AsDeleteable();
         IInsertable<T> AsInsertable(List<T> insertObjs);
@@ -26,7 +26,9 @@ namespace SqlSugar
         IUpdateable<T> AsUpdateable();
         IUpdateable<T> AsUpdateable(T[] updateObjs);
         int Count(Expression<Func<T, bool>> whereExpression);
+        int Count(List<IConditionalModel> conditionalModels);
         bool Delete(Expression<Func<T, bool>> whereExpression);
+        bool Delete(List<IConditionalModel> conditionalModels);
         bool Delete(T deleteObj);
         bool Delete(List<T> deleteObjs);
         bool DeleteById(dynamic id);
@@ -34,12 +36,20 @@ namespace SqlSugar
         T GetById(dynamic id);
         List<T> GetList();
         List<T> GetList(Expression<Func<T, bool>> whereExpression);
+        List<T> GetList(List<IConditionalModel> conditionalList);
+        List<T> GetList(Expression<Func<T, bool>> whereExpression, List<OrderByModel> orderByModels);
+        List<T> GetList(List<IConditionalModel> conditionalList, List<OrderByModel> orderByModels);
         List<T> GetPageList(Expression<Func<T, bool>> whereExpression, PageModel page);
+        List<T> GetPageList(Expression<Func<T, bool>> whereExpression, PageModel page, List<OrderByModel> orderByModels);
         List<T> GetPageList(Expression<Func<T, bool>> whereExpression, PageModel page, Expression<Func<T, object>> orderByExpression = null, OrderByType orderByType = OrderByType.Asc);
         List<T> GetPageList(List<IConditionalModel> conditionalList, PageModel page);
+        List<T> GetPageList(List<IConditionalModel> conditionalList, PageModel page, List<OrderByModel> orderByModels);
         List<T> GetPageList(List<IConditionalModel> conditionalList, PageModel page, Expression<Func<T, object>> orderByExpression = null, OrderByType orderByType = OrderByType.Asc);
         T GetSingle(Expression<Func<T, bool>> whereExpression);
+        T GetSingle(List<IConditionalModel> conditionalModels);
         T GetFirst(Expression<Func<T, bool>> whereExpression);
+        T GetFirst(List<IConditionalModel> conditionalModels);
+        T GetFirst(List<IConditionalModel> conditionalModels, List<OrderByModel> orderByModels);
         bool Insert(T insertObj);
         bool InsertOrUpdate(T data);
         bool InsertOrUpdate(List<T> datas);
@@ -53,6 +63,7 @@ namespace SqlSugar
 
 
         bool IsAny(Expression<Func<T, bool>> whereExpression);
+        bool IsAny(List<IConditionalModel> conditionalModels);
         bool Update(Expression<Func<T, T>> columns, Expression<Func<T, bool>> whereExpression);
         bool UpdateSetColumnsTrue(Expression<Func<T, T>> columns, Expression<Func<T, bool>> whereExpression);
         bool Update(T updateObj);
@@ -105,12 +116,12 @@ namespace SqlSugar
         Task<bool> DeleteByIdAsync(dynamic id, CancellationToken cancellationToken);
         Task<bool> DeleteByIdsAsync(dynamic[] ids, CancellationToken cancellationToken);
         Task<T> GetByIdAsync(dynamic id, CancellationToken cancellationToken);
-        Task<List<T>> GetListAsync( CancellationToken cancellationToken);
+        Task<List<T>> GetListAsync(CancellationToken cancellationToken);
         Task<List<T>> GetListAsync(Expression<Func<T, bool>> whereExpression, CancellationToken cancellationToken);
         Task<List<T>> GetPageListAsync(Expression<Func<T, bool>> whereExpression, PageModel page, CancellationToken cancellationToken);
-        Task<List<T>> GetPageListAsync(Expression<Func<T, bool>> whereExpression, PageModel page, Expression<Func<T, object>> orderByExpression = null, OrderByType orderByType = OrderByType.Asc, CancellationToken cancellationToken=default);
+        Task<List<T>> GetPageListAsync(Expression<Func<T, bool>> whereExpression, PageModel page, Expression<Func<T, object>> orderByExpression = null, OrderByType orderByType = OrderByType.Asc, CancellationToken cancellationToken = default);
         Task<List<T>> GetPageListAsync(List<IConditionalModel> conditionalList, PageModel page, CancellationToken cancellationToken);
-        Task<List<T>> GetPageListAsync(List<IConditionalModel> conditionalList, PageModel page, Expression<Func<T, object>> orderByExpression = null, OrderByType orderByType = OrderByType.Asc, CancellationToken cancellationToken=default);
+        Task<List<T>> GetPageListAsync(List<IConditionalModel> conditionalList, PageModel page, Expression<Func<T, object>> orderByExpression = null, OrderByType orderByType = OrderByType.Asc, CancellationToken cancellationToken = default);
         Task<T> GetSingleAsync(Expression<Func<T, bool>> whereExpression, CancellationToken cancellationToken);
         Task<T> GetFirstAsync(Expression<Func<T, bool>> whereExpression, CancellationToken cancellationToken);
         Task<bool> InsertAsync(T insertObj, CancellationToken cancellationToken);
