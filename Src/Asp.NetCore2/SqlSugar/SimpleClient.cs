@@ -707,17 +707,22 @@ namespace SqlSugar
             return Context.Queryable<T>().Where(whereExpression).OrderBy(orderByModels).ToList();
         }
 
+        public List<T> GetList(List<IConditionalModel> conditionalList)
+        {
+            return Context.Queryable<T>().Where(conditionalList).ToList();
+        }
+
+        public List<T> GetList(List<IConditionalModel> conditionalList, List<OrderByModel> orderByModels)
+        {
+            return Context.Queryable<T>().Where(conditionalList).OrderBy(orderByModels).ToList();
+        }
+
         public List<T> GetPageList(Expression<Func<T, bool>> whereExpression, PageModel page, List<OrderByModel> orderByModels)
         {
             var total = 0;
             var list = Context.Queryable<T>().Where(whereExpression).OrderBy(orderByModels).ToPageList(page.PageIndex, page.PageSize, ref total);
             page.TotalCount = total;
             return list;
-        }
-
-        public List<T> GetPageList(List<IConditionalModel> conditionalList, List<OrderByModel> orderByModels)
-        {
-            return Context.Queryable<T>().Where(conditionalList).OrderBy(orderByModels).ToList();
         }
 
         public List<T> GetPageList(List<IConditionalModel> conditionalList, PageModel page, List<OrderByModel> orderByModels)
@@ -752,6 +757,7 @@ namespace SqlSugar
         {
             return Context.Queryable<T>().Where(conditionalModels).OrderBy(orderByModels).First();
         }
+
         #endregion
 
     }
