@@ -479,6 +479,10 @@ namespace SqlSugar
                 return $"{model.Args[0].MemberName}::jsonb @> '[\"{model.Args[1].MemberValue}\"]'::jsonb ";
             }
         }
+        public override string Format(MethodCallExpressionModel model)
+        {
+            return base.Format(model).Replace("concat(", "pg_catalog.concat(");
+        }
         public override string JsonListObjectAny(MethodCallExpressionModel model)
         {
             if (UtilMethods.IsNumber(model.Args[2].MemberValue.GetType().Name))
