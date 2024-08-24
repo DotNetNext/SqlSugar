@@ -9,16 +9,16 @@ using System.Threading.Tasks;
 
 namespace SqlSugar
 {
-    
-    public partial class SimpleClient<T> : ISugarRepository,ISimpleClient<T> where T : class, new()
+
+    public partial class SimpleClient<T> : ISugarRepository, ISimpleClient<T> where T : class, new()
     {
         #region Interface
-        public ISqlSugarClient Context { get; set; }
+        public virtual ISqlSugarClient Context { get; set; }
 
-        public ITenant AsTenant()
+        public virtual ITenant AsTenant()
         {
-            var result= this.Context as ITenant;
-            if (result == null&& this.Context is SqlSugarProvider) 
+            var result = this.Context as ITenant;
+            if (result == null && this.Context is SqlSugarProvider)
             {
                 result = (this.Context as SqlSugarProvider).Root as ITenant;
             }
@@ -28,7 +28,7 @@ namespace SqlSugar
             }
             return result;
         }
-        public ISqlSugarClient AsSugarClient()
+        public virtual ISqlSugarClient AsSugarClient()
         {
             return this.Context;
         }
@@ -45,21 +45,21 @@ namespace SqlSugar
         {
             return this.Context.GetSimpleClient<ChangeType>();
         }
-        public SimpleClient<T> CopyNew() 
+        public SimpleClient<T> CopyNew()
         {
             SimpleClient<T> sm = new SimpleClient<T>();
             sm.Context = this.Context.CopyNew();
             return sm;
         }
-        public RepositoryType CopyNew<RepositoryType>() where RepositoryType : ISugarRepository 
+        public virtual RepositoryType CopyNew<RepositoryType>() where RepositoryType : ISugarRepository
         {
             Type type = typeof(RepositoryType);
             var isAnyParamter = type.GetConstructors().Any(z => z.GetParameters().Any());
             object o = null;
             if (isAnyParamter)
             {
-                object[] pars= type.GetConstructors().First().GetParameters()
-                    .Select(it=>(object)null).ToArray();
+                object[] pars = type.GetConstructors().First().GetParameters()
+                    .Select(it => (object)null).ToArray();
                 o = Activator.CreateInstance(type, pars);
             }
             else
@@ -77,13 +77,13 @@ namespace SqlSugar
             }
             return result;
         }
-        public RepositoryType CopyNew<RepositoryType>(IServiceProvider serviceProvider) where RepositoryType : ISugarRepository
+        public virtual RepositoryType CopyNew<RepositoryType>(IServiceProvider serviceProvider) where RepositoryType : ISugarRepository
         {
-            var instance = handleDependencies(typeof(RepositoryType), serviceProvider,true);
+            var instance = handleDependencies(typeof(RepositoryType), serviceProvider, true);
             return (RepositoryType)instance;
         }
 
-        private object handleDependencies(Type type, IServiceProvider serviceProvider,bool needNewCopy = false)
+        private object handleDependencies(Type type, IServiceProvider serviceProvider, bool needNewCopy = false)
         {
             ConstructorInfo constructorInfo = null;
             var newInstanceType = type;
@@ -129,7 +129,7 @@ namespace SqlSugar
             }
             return instance;
         }
-        private ISugarRepository setContext(ISugarRepository sugarRepository,bool needNewCopy)
+        private ISugarRepository setContext(ISugarRepository sugarRepository, bool needNewCopy)
         {
             if (sugarRepository.Context != null)
             {
@@ -169,67 +169,67 @@ namespace SqlSugar
             }
             return false;
         }
-        public RepositoryType ChangeRepository<RepositoryType>() where RepositoryType : ISugarRepository
+        public virtual RepositoryType ChangeRepository<RepositoryType>() where RepositoryType : ISugarRepository
         {
             Type type = typeof(RepositoryType);
             var isAnyParamter = type.GetConstructors().Any(z => z.GetParameters().Any());
             object o = null;
             if (isAnyParamter)
             {
-                o=Activator.CreateInstance(type, new string[] { null });
+                o = Activator.CreateInstance(type, new string[] { null });
             }
-            else 
+            else
             {
                 o = Activator.CreateInstance(type);
             }
-            var result= (RepositoryType)o;
+            var result = (RepositoryType)o;
             if (result.Context == null)
             {
                 result.Context = this.Context;
             }
             return result;
         }
-        public RepositoryType ChangeRepository<RepositoryType>(IServiceProvider serviceProvider) where RepositoryType : ISugarRepository
+        public virtual RepositoryType ChangeRepository<RepositoryType>(IServiceProvider serviceProvider) where RepositoryType : ISugarRepository
         {
             var instance = handleDependencies(typeof(RepositoryType), serviceProvider, false);
             return (RepositoryType)instance;
         }
-        public ISugarQueryable<T> AsQueryable()
+        public virtual ISugarQueryable<T> AsQueryable()
         {
             return Context.Queryable<T>();
         }
-        public IInsertable<T> AsInsertable(T insertObj)
+        public virtual IInsertable<T> AsInsertable(T insertObj)
         {
             return Context.Insertable<T>(insertObj);
         }
-        public IInsertable<T> AsInsertable(T[] insertObjs)
+        public virtual IInsertable<T> AsInsertable(T[] insertObjs)
         {
             return Context.Insertable<T>(insertObjs);
         }
-        public IInsertable<T> AsInsertable(List<T> insertObjs)
+        public virtual IInsertable<T> AsInsertable(List<T> insertObjs)
         {
             return Context.Insertable<T>(insertObjs);
         }
-        public IUpdateable<T> AsUpdateable(T updateObj)
+        public virtual IUpdateable<T> AsUpdateable(T updateObj)
         {
             return Context.Updateable<T>(updateObj);
         }
-        public IUpdateable<T> AsUpdateable(T[] updateObjs)
+        public virtual IUpdateable<T> AsUpdateable(T[] updateObjs)
         {
             return Context.Updateable<T>(updateObjs);
         }
-        public IUpdateable<T> AsUpdateable(List<T> updateObjs)
+        public virtual IUpdateable<T> AsUpdateable(List<T> updateObjs)
         {
             return Context.Updateable<T>(updateObjs);
         }
-        public IUpdateable<T> AsUpdateable() 
+        public virtual IUpdateable<T> AsUpdateable()
         {
             return Context.Updateable<T>();
         }
-        public IDeleteable<T> AsDeleteable()
+        public virtual IDeleteable<T> AsDeleteable()
         {
             return Context.Deleteable<T>();
-        } 
+        }
         #endregion
 
         #region Method
@@ -250,7 +250,7 @@ namespace SqlSugar
         {
             return Context.Queryable<T>().Single(whereExpression);
         }
-        public virtual T GetFirst(Expression<Func<T, bool>> whereExpression) 
+        public virtual T GetFirst(Expression<Func<T, bool>> whereExpression)
         {
             return Context.Queryable<T>().First(whereExpression);
         }
@@ -297,7 +297,7 @@ namespace SqlSugar
             return this.Context.Insertable(insertObj).ExecuteCommand() > 0;
         }
 
-        public virtual bool InsertOrUpdate(T data) 
+        public virtual bool InsertOrUpdate(T data)
         {
             return this.Context.Storageable(data).ExecuteCommand() > 0;
         }
@@ -324,11 +324,11 @@ namespace SqlSugar
         }
         public virtual Task<long> InsertReturnSnowflakeIdAsync(T insertObj)
         {
-            return   this.Context.Insertable(insertObj).ExecuteReturnSnowflakeIdAsync();
+            return this.Context.Insertable(insertObj).ExecuteReturnSnowflakeIdAsync();
         }
         public virtual Task<List<long>> InsertReturnSnowflakeIdAsync(List<T> insertObjs)
         {
-            return   this.Context.Insertable(insertObjs).ExecuteReturnSnowflakeIdListAsync();
+            return this.Context.Insertable(insertObjs).ExecuteReturnSnowflakeIdListAsync();
         }
 
         public virtual T InsertReturnEntity(T insertObj)
@@ -362,7 +362,7 @@ namespace SqlSugar
         }
         public virtual bool UpdateSetColumnsTrue(Expression<Func<T, T>> columns, Expression<Func<T, bool>> whereExpression)
         {
-            return this.Context.Updateable<T>().SetColumns(columns,true).Where(whereExpression).ExecuteCommand() > 0;
+            return this.Context.Updateable<T>().SetColumns(columns, true).Where(whereExpression).ExecuteCommand() > 0;
         }
         public virtual bool Delete(T deleteObj)
         {
@@ -411,28 +411,28 @@ namespace SqlSugar
         public virtual async Task<List<T>> GetPageListAsync(Expression<Func<T, bool>> whereExpression, PageModel page)
         {
             RefAsync<int> count = 0;
-            var result =await Context.Queryable<T>().Where(whereExpression).ToPageListAsync(page.PageIndex, page.PageSize, count);
+            var result = await Context.Queryable<T>().Where(whereExpression).ToPageListAsync(page.PageIndex, page.PageSize, count);
             page.TotalCount = count;
             return result;
         }
         public virtual async Task<List<T>> GetPageListAsync(Expression<Func<T, bool>> whereExpression, PageModel page, Expression<Func<T, object>> orderByExpression = null, OrderByType orderByType = OrderByType.Asc)
         {
             RefAsync<int> count = 0;
-            var result =await Context.Queryable<T>().OrderByIF(orderByExpression != null, orderByExpression, orderByType).Where(whereExpression).ToPageListAsync(page.PageIndex, page.PageSize,  count);
+            var result = await Context.Queryable<T>().OrderByIF(orderByExpression != null, orderByExpression, orderByType).Where(whereExpression).ToPageListAsync(page.PageIndex, page.PageSize, count);
             page.TotalCount = count;
             return result;
         }
         public virtual async Task<List<T>> GetPageListAsync(List<IConditionalModel> conditionalList, PageModel page)
         {
             RefAsync<int> count = 0;
-            var result =await Context.Queryable<T>().Where(conditionalList).ToPageListAsync(page.PageIndex, page.PageSize,  count);
+            var result = await Context.Queryable<T>().Where(conditionalList).ToPageListAsync(page.PageIndex, page.PageSize, count);
             page.TotalCount = count;
             return result;
         }
         public virtual async Task<List<T>> GetPageListAsync(List<IConditionalModel> conditionalList, PageModel page, Expression<Func<T, object>> orderByExpression = null, OrderByType orderByType = OrderByType.Asc)
         {
             RefAsync<int> count = 0;
-            var result =await Context.Queryable<T>().OrderByIF(orderByExpression != null, orderByExpression, orderByType).Where(conditionalList).ToPageListAsync(page.PageIndex, page.PageSize,  count);
+            var result = await Context.Queryable<T>().OrderByIF(orderByExpression != null, orderByExpression, orderByType).Where(conditionalList).ToPageListAsync(page.PageIndex, page.PageSize, count);
             page.TotalCount = count;
             return result;
         }
@@ -456,7 +456,7 @@ namespace SqlSugar
         }
         public virtual async Task<bool> InsertAsync(T insertObj)
         {
-            return  await this.Context.Insertable(insertObj).ExecuteCommandAsync() > 0;
+            return await this.Context.Insertable(insertObj).ExecuteCommandAsync() > 0;
         }
         public virtual Task<int> InsertReturnIdentityAsync(T insertObj)
         {
@@ -496,7 +496,7 @@ namespace SqlSugar
         }
         public virtual async Task<bool> UpdateSetColumnsTrueAsync(Expression<Func<T, T>> columns, Expression<Func<T, bool>> whereExpression)
         {
-            return await this.Context.Updateable<T>().SetColumns(columns,true).Where(whereExpression).ExecuteCommandAsync() > 0;
+            return await this.Context.Updateable<T>().SetColumns(columns, true).Where(whereExpression).ExecuteCommandAsync() > 0;
         }
         public virtual async Task<bool> DeleteAsync(T deleteObj)
         {
@@ -532,9 +532,9 @@ namespace SqlSugar
             return this.Context.Insertable(insertObjs).ExecuteReturnSnowflakeIdListAsync();
         }
 
-        public virtual Task<T> GetByIdAsync(dynamic id,CancellationToken cancellationToken)
+        public virtual Task<T> GetByIdAsync(dynamic id, CancellationToken cancellationToken)
         {
-            this.Context.Ado.CancellationToken= cancellationToken;
+            this.Context.Ado.CancellationToken = cancellationToken;
             return Context.Queryable<T>().InSingleAsync(id);
         }
         public virtual Task<List<T>> GetListAsync(CancellationToken cancellationToken)
@@ -582,7 +582,7 @@ namespace SqlSugar
             page.TotalCount = count;
             return result;
         }
-        public virtual async Task<List<T>> GetPageListAsync(List<IConditionalModel> conditionalList, PageModel page, Expression<Func<T, object>> orderByExpression = null, OrderByType orderByType = OrderByType.Asc, CancellationToken cancellationToken=default)
+        public virtual async Task<List<T>> GetPageListAsync(List<IConditionalModel> conditionalList, PageModel page, Expression<Func<T, object>> orderByExpression = null, OrderByType orderByType = OrderByType.Asc, CancellationToken cancellationToken = default)
         {
             this.Context.Ado.CancellationToken = cancellationToken;
             RefAsync<int> count = 0;
@@ -691,6 +691,73 @@ namespace SqlSugar
             this.Context.Ado.CancellationToken = cancellationToken;
             return await this.Context.Deleteable<T>().In(ids).ExecuteCommandAsync() > 0;
         }
+
+        public int Count(List<IConditionalModel> conditionalModels)
+        {
+            return Context.Queryable<T>().Where(conditionalModels).Count();
+        }
+
+        public bool Delete(List<IConditionalModel> conditionalModels)
+        {
+            return Context.Deleteable<T>().Where(conditionalModels).ExecuteCommandHasChange();
+        }
+
+        public List<T> GetList(Expression<Func<T, bool>> whereExpression, List<OrderByModel> orderByModels)
+        {
+            return Context.Queryable<T>().Where(whereExpression).OrderBy(orderByModels).ToList();
+        }
+
+        public List<T> GetList(List<IConditionalModel> conditionalList)
+        {
+            return Context.Queryable<T>().Where(conditionalList).ToList();
+        }
+
+        public List<T> GetList(List<IConditionalModel> conditionalList, List<OrderByModel> orderByModels)
+        {
+            return Context.Queryable<T>().Where(conditionalList).OrderBy(orderByModels).ToList();
+        }
+
+        public List<T> GetPageList(Expression<Func<T, bool>> whereExpression, PageModel page, List<OrderByModel> orderByModels)
+        {
+            var total = 0;
+            var list = Context.Queryable<T>().Where(whereExpression).OrderBy(orderByModels).ToPageList(page.PageIndex, page.PageSize, ref total);
+            page.TotalCount = total;
+            return list;
+        }
+
+        public List<T> GetPageList(List<IConditionalModel> conditionalList, PageModel page, List<OrderByModel> orderByModels)
+        {
+            var total = 0;
+            var list = Context.Queryable<T>().Where(conditionalList).OrderBy(orderByModels).ToPageList(page.PageIndex, page.PageSize, ref total);
+            page.TotalCount = total;
+            return list;
+        }
+
+        public T GetSingle(List<IConditionalModel> conditionalModels)
+        {
+            return Context.Queryable<T>().Where(conditionalModels).Single();
+        }
+
+        public T GetFirst(List<IConditionalModel> conditionalModels)
+        {
+            return Context.Queryable<T>().Where(conditionalModels).First();
+        }
+
+        public bool IsAny(List<IConditionalModel> conditionalModels)
+        {
+            return Context.Queryable<T>().Where(conditionalModels).Any();
+        }
+
+        public T GetFirst(Expression<Func<T, bool>> whereExpression, List<OrderByModel> orderByModels)
+        {
+            return Context.Queryable<T>().Where(whereExpression).OrderBy(orderByModels).First();
+        }
+
+        public T GetFirst(List<IConditionalModel> conditionalModels, List<OrderByModel> orderByModels)
+        {
+            return Context.Queryable<T>().Where(conditionalModels).OrderBy(orderByModels).First();
+        }
+
         #endregion
 
     }
