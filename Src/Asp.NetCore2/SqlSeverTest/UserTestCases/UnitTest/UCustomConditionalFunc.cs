@@ -18,6 +18,17 @@ namespace OrmTest
             Demo1(conditionEmail, conditionUserType, db);
             Demo2(conditionEmail, conditionUserType, db);
             Demo3(conditionEmail, conditionUserType, db);
+            var cons = new List<IConditionalModel>();
+            var cdns = new ConditionalCollections
+            {
+                ConditionalList = new List<KeyValuePair<WhereType, ConditionalModel>>
+            {
+                new KeyValuePair<WhereType, ConditionalModel>(WhereType.Or,conditionEmail),
+                new KeyValuePair<WhereType, ConditionalModel>(WhereType.Or,conditionUserType),
+            }
+            };
+            cons.Add(cdns);
+            var list=db.Queryable<AppUser>().Where(cons).ToList();
         }
 
         private static void Demo1(ConditionalModel conditionEmail, ConditionalModel conditionUserType, SqlSugarClient db)
