@@ -47,10 +47,10 @@ namespace KdbndpTest.SqlServerDemo
         private static void QueryDemo(SqlSugarClient Db)
         {
             var list1 = Db.Queryable<Order>().Where(it => it.CreateTime.AddDays(1)>DateTime.Now).ToList();
-           
+            var list2 = Db.Queryable<Order>().PartitionBy(it => it.Id).ToList();
             try
             {
-                var list2 = Db.Queryable<Order>().Select(it => new
+                var list5 = Db.Queryable<Order>().Select(it => new
                 {
                     date = it.CreateTime.ToString("yyyy-MM-dd")
                 }).ToList();
