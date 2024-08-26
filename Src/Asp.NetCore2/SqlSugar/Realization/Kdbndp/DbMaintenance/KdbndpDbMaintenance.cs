@@ -36,7 +36,7 @@ namespace SqlSugar
                                 then true else false end as IsNullable
                                  from (select * from sys_tables where  UPPER(tablename) = UPPER('{{0}}') and  lower(schemaname)='{GetSchema()}') ptables inner join sys_class pclass
                                 on ptables.tablename = pclass.relname inner join (SELECT *
-                                FROM information_schema.columns
+                                FROM information_schema.columns where UPPER(table_schema)=UPPER('{GetSchema()}')
                                 ) pcolumn on pcolumn.table_name = ptables.tablename
                                 left join (
 	                                select  sys_class.relname,sys_attribute.attname as colname from 
