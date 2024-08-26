@@ -16,7 +16,7 @@ namespace KdbndpTest.SqlServerDemo
             SqlSugarClient Db = new SqlSugarClient(new ConnectionConfig()
             {
                 DbType = DbType.Kdbndp,
-                ConnectionString = "Server=47.100.233.98;Port=54325;UID=system;PWD=12345678ab;database=test",
+                ConnectionString = "Server=47.100.233.98;Port=54325;UID=system;PWD=12345678;database=test",
                 InitKeyType = InitKeyType.Attribute,
                 IsAutoCloseConnection = true,
                 MoreSettings = new ConnMoreSettings()
