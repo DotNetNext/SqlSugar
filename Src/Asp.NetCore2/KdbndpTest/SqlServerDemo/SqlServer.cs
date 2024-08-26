@@ -113,7 +113,10 @@ namespace KdbndpTest.SqlServerDemo
         private static void InitDatas(SqlSugarClient Db)
         {
             Db.DbMaintenance.CreateDatabase();
-            Db.CodeFirst.InitTables<Order>();
+            if (!Db.DbMaintenance.IsAnyTable(Db.EntityMaintenance.GetTableName<Order>(),false))
+            {
+                Db.CodeFirst.InitTables<Order>();
+            }
         }
 
         private static void InsertDemo(SqlSugarClient Db)
