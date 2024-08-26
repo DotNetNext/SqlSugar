@@ -2,6 +2,7 @@
 using SqlSugar;
 using System;
 using System.Collections.Generic;
+ 
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,7 +16,7 @@ namespace KdbndpTest.SqlServerDemo
             SqlSugarClient Db = new SqlSugarClient(new ConnectionConfig()
             {
                 DbType = DbType.Kdbndp,
-                ConnectionString = "Server=47.100.233.98;Port=54325;UID=system;PWD=12345678;database=test",
+                ConnectionString = "Server=47.100.233.98;Port=54325;UID=system;PWD=12345678ab;database=test",
                 InitKeyType = InitKeyType.Attribute,
                 IsAutoCloseConnection = true,
                 MoreSettings = new ConnMoreSettings()
@@ -73,6 +74,7 @@ namespace KdbndpTest.SqlServerDemo
 
         private static void UpdateDemo(SqlSugarClient Db)
         {
+
             Db.Updateable(new Order()
             {
                 CreateTime = DateTime.Now,
@@ -80,6 +82,21 @@ namespace KdbndpTest.SqlServerDemo
                 Name = "a",
                 Price = 1
             }).ExecuteCommand();
+
+            Db.Updateable<Order>()
+                .SetColumns(it => new Order()
+                {
+
+                     CreateTime=DateTime.Now
+                })
+                .Where(it=>it.Id==1).ExecuteCommand();
+
+            Db.Updateable(Db.Queryable<Order>().Take(2).ToList())
+               .ExecuteCommand();
+            Db.Updateable(Db.Queryable<Order>().Take(2).ToList())
+                .Where(it=>it.Name!=null).ExecuteCommand();
+
+          
         }
 
         private static void GetTableInfos(SqlSugarClient Db)
