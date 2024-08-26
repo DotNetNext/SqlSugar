@@ -98,6 +98,10 @@ namespace SqlSugar
         }
         private bool UpdateObjectNotWhere()
         {
+            if (this.Context?.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.SqlServer) 
+            {
+                return false;
+            }
             return this.Context.CurrentConnectionConfig.DbType != DbType.MySql
                 && this.Context.CurrentConnectionConfig.DbType != DbType.MySqlConnector
                 && this.Context.CurrentConnectionConfig.DbType != DbType.SqlServer;

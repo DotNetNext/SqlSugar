@@ -166,10 +166,10 @@ namespace SqlSugar
                     {
                         var isFirst = whereString == null;
                         whereString += (isFirst ? null : " AND ");
-                        whereString += item;
+                        whereString += item.Replace(" \""," T.\"");
                     }
                 }
-                else if (PrimaryKeys.HasValue())
+                if (PrimaryKeys.HasValue())
                 {
                     foreach (var item in PrimaryKeys)
                     {
