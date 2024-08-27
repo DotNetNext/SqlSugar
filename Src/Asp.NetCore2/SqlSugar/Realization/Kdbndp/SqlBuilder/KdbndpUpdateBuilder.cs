@@ -166,7 +166,7 @@ namespace SqlSugar
                     {
                         var isFirst = whereString == null;
                         whereString += (isFirst ? null : " AND ");
-                        whereString += item.Replace(" \""," T.\"");
+                        whereString += item.Replace(" \"",$" {Builder.GetTranslationColumnName(this.EntityInfo.DbTableName)}.\"");
                     }
                 }
                 if (PrimaryKeys.HasValue())
