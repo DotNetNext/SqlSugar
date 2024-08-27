@@ -7,7 +7,7 @@ using System.Text;
 namespace OrmTest
 {
 
-    [SugarTable("OrderTest01")]
+    [SugarTable("OrderTest011")]
     public class Order
     {
         [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
