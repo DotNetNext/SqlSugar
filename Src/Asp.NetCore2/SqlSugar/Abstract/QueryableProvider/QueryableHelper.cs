@@ -1578,7 +1578,18 @@ namespace SqlSugar
                     var tableinfo = this.QueryBuilder.AsTables.First();
                     if (this.QueryBuilder.TableWithString != SqlWith.Null && this.Context.CurrentConnectionConfig?.MoreSettings?.IsWithNoLockQuery == true && this.QueryBuilder.AsTables.First().Value.ObjToString().Contains(SqlWith.NoLock) == false)
                     {
-                        this.QueryBuilder.AsTables[tableinfo.Key] = " (SELECT * FROM " + this.QueryBuilder.AsTables.First().Value + $" {SqlWith.NoLock} )";
+                        if (this.QueryBuilder.AsTables.First().Value.EndsWith(") unionTable "))
+                        {
+                            this.QueryBuilder.AsTables[tableinfo.Key] = " (SELECT * FROM " + this.QueryBuilder.AsTables.First().Value + ")";
+                        }
+                        else if (this.QueryBuilder.AsTables.First().Value.EndsWith(") MergeTable "))
+                        {
+                            this.QueryBuilder.AsTables[tableinfo.Key] = " (SELECT * FROM " + this.QueryBuilder.AsTables.First().Value + ")";
+                        }
+                        else
+                        {
+                            this.QueryBuilder.AsTables[tableinfo.Key] = " (SELECT * FROM " + this.QueryBuilder.AsTables.First().Value + $" {SqlWith.NoLock} )";
+                        }
                     }
                     else if (this.QueryBuilder.IsSqlQuery && this.QueryBuilder.AsTables.First().Value.ObjToString().StartsWith("("))
                     {
