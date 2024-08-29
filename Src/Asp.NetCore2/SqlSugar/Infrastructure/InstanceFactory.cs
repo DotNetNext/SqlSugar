@@ -251,6 +251,22 @@ namespace SqlSugar
             {
                 return new OracleUpdateable<T>();
             }
+            else if (IsCustomDb(currentConnectionConfig))
+            {
+                var name =
+                    "SqlSugar." + currentConnectionConfig.DbType +
+                    "." + currentConnectionConfig.DbType
+                    + "Updateable`1";
+                var type = GetCustomTypeByClass<T>(name);
+                if (type == null)
+                {
+                    return new UpdateableProvider<T>();
+                }
+                else
+                {
+                    return (UpdateableProvider<T>)Activator.CreateInstance(type, true);
+                }
+            }
             else
             {
                 return new UpdateableProvider<T>();
@@ -262,6 +278,22 @@ namespace SqlSugar
             if (currentConnectionConfig.DbType == DbType.Oracle)
             {
                 return new OracleDeleteable<T>();
+            }
+            else if (IsCustomDb(currentConnectionConfig))
+            {
+                var name =
+                    "SqlSugar." + currentConnectionConfig.DbType +
+                    "." + currentConnectionConfig.DbType
+                    + "Deleteable`1";
+                var type = GetCustomTypeByClass<T>(name);
+                if (type == null)
+                {
+                    return new DeleteableProvider<T>();
+                }
+                else
+                {
+                    return (DeleteableProvider<T>)Activator.CreateInstance(type, true);
+                }
             }
             else
             {
