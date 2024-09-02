@@ -40,6 +40,27 @@ namespace OrmTest
                     jsonname=SqlFunc.JsonField(it.Order,"Name")
                 })
                 .ToList();
+
+            db.CodeFirst.InitTables<Unitasdfafaass>();
+            db.DbMaintenance.TruncateTable<Unitasdfafaass>();
+            db.Insertable(new Unitasdfafaass()
+            {
+                 aaa=new string[] { "a","c"},
+                 name="a"
+            }).ExecuteCommand();
+            var isOk= db.Queryable<Unitasdfafaass>().Any(it => SqlFunc.JsonArrayAny(it.aaa, "a"));
+            var isOk2 = db.Queryable<Unitasdfafaass>().Any(it => SqlFunc.JsonArrayAny(it.aaa, it.name));
+            if (isOk2 != isOk|| isOk== false)
+            {
+                throw new Exception("unit error");
+            }
+        }
+        [SugarTable("unitdfasx44")]
+        public class Unitasdfafaass 
+        {
+            [SugarColumn(IsJson =true)]
+            public string[] aaa { get; set; }
+            public string name { get; set; }
         }
 
         /// <summary>
