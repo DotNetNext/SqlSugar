@@ -298,6 +298,10 @@ namespace SqlSugar
 
         private void DataChangesAop(T [] items)
         {
+            if (typeof(T).FullName.StartsWith("System.Collections.Generic.Dictionary`"))
+            {
+                return;
+            }
             var dataEvent = this.Context.CurrentConnectionConfig.AopEvents?.DataChangesExecuted;
             if (dataEvent != null)
             {
