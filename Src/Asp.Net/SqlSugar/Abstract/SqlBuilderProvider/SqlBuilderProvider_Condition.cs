@@ -176,6 +176,7 @@ namespace SqlSugar
                                     builder.Replace(" OR (  AND", " OR (  ");
                                     builder.Replace(" (  AND ", " ( ");
                                     builder.Replace(" (  OR ", " ( ");
+                                    builder.Replace("   OR  AND ", "   OR ");
                                 }
                             }
                             parameters.AddRange(childSqlInfo.Value);

@@ -13,7 +13,7 @@ namespace SqlSugar
     {
         private static bool IsJoin(string name)
         {
-            return name.StartsWith("LeftJoin".ToLower()) || name.StartsWith("RightJoin".ToLower()) || name.StartsWith("InnertJoin".ToLower());
+            return name.StartsWith("LeftJoin".ToLower()) || name.StartsWith("RightJoin".ToLower()) || name.StartsWith("InnerJoin".ToLower());
         }
         private static bool IsJoinLastAfter(string name)
         {
