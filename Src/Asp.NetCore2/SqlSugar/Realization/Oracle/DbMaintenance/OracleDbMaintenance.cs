@@ -348,7 +348,7 @@ WHERE table_name = '"+tableName+"'");
         }
         public override List<string> GetProcList(string dbName)
         {
-            var sql = $"SELECT OBJECT_NAME FROM ALL_OBJECTS WHERE OBJECT_TYPE = 'PROCEDURE' AND OWNER = '{dbName.ToUpper()}'";
+            var sql = $"SELECT OBJECT_NAME FROM ALL_OBJECTS WHERE OBJECT_TYPE = 'PROCEDURE' AND upper(OWNER) = '{dbName.ToUpper()}'";
             return this.Context.Ado.SqlQuery<string>(sql);
         }
         public override bool AddColumn(string tableName, DbColumnInfo columnInfo)
