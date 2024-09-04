@@ -166,10 +166,10 @@ namespace SqlSugar
                     {
                         var isFirst = whereString == null;
                         whereString += (isFirst ? null : " AND ");
-                        whereString += item;
+                        whereString += item.Replace(" \"",$" {Builder.GetTranslationColumnName(this.EntityInfo.DbTableName)}.\"");
                     }
                 }
-                else if (PrimaryKeys.HasValue())
+                if (PrimaryKeys.HasValue())
                 {
                     foreach (var item in PrimaryKeys)
                     {
