@@ -680,7 +680,7 @@ WHERE table_name = '"+tableName+"'");
         }
         private static void ConvertCreateColumnInfo(DbColumnInfo x)
         {
-            string[] array = new string[] { "int"};
+            string[] array = new string[] { "int","date"};
             if (array.Contains(x.DataType?.ToLower()))
             {
                 x.Length = 0;
@@ -689,6 +689,10 @@ WHERE table_name = '"+tableName+"'");
             if (x.OracleDataType.HasValue()) 
             {
                 x.DataType = x.OracleDataType;
+            }
+            if(x.DecimalDigits>0&& x.DataType?.ToLower().IsIn("varchar", "clob", "varchar2", "nvarchar2", "nvarchar")==true)
+            {
+                x.DecimalDigits = 0;
             }
         }
         #endregion
