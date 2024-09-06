@@ -167,6 +167,18 @@ namespace SqlSugar
                             {
                                 dbType = "varchar(max)";
                             }
+                            else if (dbType == "nvarchar")
+                            {
+                                dbType = "nvarchar(max)";
+                            }
+                            else if (dbType == "char")
+                            {
+                                dbType = "char(100)";
+                            }
+                            else if (dbType == "nchar")
+                            {
+                                dbType = "nchar(100)";
+                            }
                         }
                         return string.Format("CAST({0} AS {1})", base.GetDbColumn(it, FormatValue(it.Value)), dbType);
 
