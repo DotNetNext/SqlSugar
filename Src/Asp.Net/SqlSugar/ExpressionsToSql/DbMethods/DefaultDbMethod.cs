@@ -1102,6 +1102,7 @@ namespace SqlSugar
                 sb.Append(" ) ");
             }
             var result = sb.ToString();
+            result = result.Replace(" = null)", " is null)");
             if (result.IsNullOrEmpty())
             {
                 return " 1=2 ";
