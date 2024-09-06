@@ -173,11 +173,11 @@ namespace SqlSugar
                             }
                             else if (dbType == "char")
                             {
-                                dbType = "char(100)";
+                                dbType = "char(8000)";
                             }
                             else if (dbType == "nchar")
                             {
-                                dbType = "nchar(100)";
+                                dbType = "nchar(4000)";
                             }
                         }
                         return string.Format("CAST({0} AS {1})", base.GetDbColumn(it, FormatValue(it.Value)), dbType);
