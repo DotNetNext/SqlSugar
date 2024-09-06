@@ -132,7 +132,8 @@ namespace SqlSugar
                     {
                         var columnInfo = tableColumnList.FirstOrDefault(x => x.DbColumnName.Equals(it.DbColumnName, StringComparison.OrdinalIgnoreCase));
                         var dbType = columnInfo?.DataType;
-                        if (dbType == null) {
+                        if (dbType == null)
+                        {
                             var typeName = it.PropertyType.Name.ToLower();
                             if (typeName == "int32")
                                 typeName = "int";
@@ -140,7 +141,7 @@ namespace SqlSugar
                                 typeName = "long";
                             if (typeName == "int16")
                                 typeName = "short";
-                            if (typeName == "boolean")  
+                            if (typeName == "boolean")
                                 typeName = "bool";
 
                             var isAnyType = PostgreSQLDbBind.MappingTypesConst.Where(x => x.Value.ToString().ToLower() == typeName).Any();
@@ -148,11 +149,26 @@ namespace SqlSugar
                             {
                                 dbType = PostgreSQLDbBind.MappingTypesConst.Where(x => x.Value.ToString().ToLower() == typeName).FirstOrDefault().Key;
                             }
-                            else {
+                            else
+                            {
                                 dbType = "varchar";
                             }
                         }
-                        return string.Format("CAST({0} AS {1})", base.GetDbColumn(it,FormatValue(it.Value)), dbType);
+                        if (IsMySqlModel())
+                        {
+                            if (dbType == "numeric")
+                            {
+                                dbType = "numeric(18,6)";
+                            }
+                        }
+                        if (IsSqlServerModel())
+                        {
+                            if (dbType == "varchar")
+                            {
+                                dbType = "varchar(max)";
+                            }
+                        }
+                        return string.Format("CAST({0} AS {1})", base.GetDbColumn(it, FormatValue(it.Value)), dbType);
 
                     })) + ")");
                     ++i;
@@ -184,6 +200,16 @@ namespace SqlSugar
             }
             batchUpdateSql = GetBatchUpdateSql(batchUpdateSql);
             return batchUpdateSql.ToString();
+        }
+
+        private bool IsSqlServerModel()
+        {
+            return this.Context?.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.SqlServer;
+        }
+
+        private bool IsMySqlModel()
+        {
+            return this.Context?.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.MySql;
         }
 
         private StringBuilder GetBatchUpdateSql(StringBuilder batchUpdateSql)
