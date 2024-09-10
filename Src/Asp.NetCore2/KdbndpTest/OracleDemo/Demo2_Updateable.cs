@@ -78,8 +78,8 @@ namespace OrmTest
             var dtList = new List<Dictionary<string, object>>();
             dtList.Add(dt);
 
-            var t66 = db.Updateable(dt).AS("order").WhereColumns("id").ExecuteCommand();
-            var t666 = db.Updateable(dtList).AS("order").WhereColumns("id").ExecuteCommand();
+            var t66 = db.Updateable(dt).AS("ORDERTEST011").WhereColumns("id").ExecuteCommand();
+            var t666 = db.Updateable(dtList).AS("ORDERTEST011").WhereColumns("id").ExecuteCommand();
 
 
 
