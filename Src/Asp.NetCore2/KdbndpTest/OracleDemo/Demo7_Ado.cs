@@ -13,7 +13,7 @@ namespace OrmTest
         {
             Console.WriteLine("");
             Console.WriteLine("#### Ado Start ####");
-
+            
             SqlSugarClient db = new SqlSugarClient(new ConnectionConfig()
             {
                 DbType = DbType.Kdbndp,
@@ -29,14 +29,15 @@ namespace OrmTest
                     }
                 }
             });
+
             //sql
-            var dt = db.Ado.GetDataTable("select * from \"ORDER\" where  @id>0 or name=@name", new List<SugarParameter>(){
+            var dt = db.Ado.GetDataTable("select * from \"ORDERTEST011\" where  @id>0 or name=@name", new List<SugarParameter>(){
               new SugarParameter("@id",1),
               new SugarParameter("@name","2")
             });
 
             //sql  
-            var dt2 = db.Ado.GetDataTable("select * from \"ORDER\" where @id>0  or name=@name", new { id = 1, name = "2" });
+            var dt2 = db.Ado.GetDataTable("select * from \"ORDERTEST011\" where @id>0  or name=@name", new { id = 1, name = "2" });
 
             //Stored Procedure
             //var dt3 = db.Ado.UseStoredProcedure().GetDataTable("sp_school", new { name = "张三", age = 0 }); 
@@ -47,11 +48,11 @@ namespace OrmTest
 
 
             //There are many methods to under db.ado
-            var list= db.Ado.SqlQuery<Order>("select * from \"ORDER\" ");
+            var list= db.Ado.SqlQuery<Order>("select * from \"ORDERTEST011\" ");
             var intValue=db.Ado.SqlQuerySingle<int>("select 1");
             db.Ado.ExecuteCommand("delete  from \"ORDER\" where id>1000");
             //db.Ado.xxx
             Console.WriteLine("#### Ado End ####");
-        }
+        } 
     }
 }
