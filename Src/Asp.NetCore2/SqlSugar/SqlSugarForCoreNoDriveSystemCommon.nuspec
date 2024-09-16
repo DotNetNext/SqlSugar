@@ -14,7 +14,7 @@
 		<tags>SystemCommon</tags>
 		<dependencies>
 			<group targetFramework=".NETStandard2.1">
-				<dependency id="Microsoft.Data.SqlClient" version="5.2.1" />
+				<dependency id="Microsoft.Data.SqlClient" version="5.2.2" />
 				<dependency id="System.Data.Common" version="4.3.0" />
 				<dependency id="System.Reflection.Emit.Lightweight" version="4.3.0" />
 				<dependency id="System.Text.RegularExpressions" version="4.3.1" /> 
