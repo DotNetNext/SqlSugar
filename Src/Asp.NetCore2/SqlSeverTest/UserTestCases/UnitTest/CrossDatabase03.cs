@@ -11,8 +11,8 @@ namespace OrmTest
         {
             var db = new SqlSugarClient(new List<ConnectionConfig>()
             {
-                new ConnectionConfig(){ConfigId="OrderDb",DbType=DbType.SqlServer,ConnectionString="server=.;uid=sa;pwd=sasa;database=SQLSUGAR4XTEST.a",IsAutoCloseConnection=true},
-                new ConnectionConfig(){ConfigId="OrderItemDb",DbType=DbType.SqlServer,ConnectionString="server=.;uid=sa;pwd=sasa;database=SQLSUGAR4XTEST2.a",IsAutoCloseConnection=true  }
+                new ConnectionConfig(){ConfigId="OrderDb",DbType=DbType.SqlServer,ConnectionString="server=.;uid=sa;pwd=sasa;database=SQLSUGAR4XTEST.a;Encrypt=True;TrustServerCertificate=True",IsAutoCloseConnection=true},
+                new ConnectionConfig(){ConfigId="OrderItemDb",DbType=DbType.SqlServer,ConnectionString="server=.;uid=sa;pwd=sasa;database=SQLSUGAR4XTEST2.a;Encrypt=True;TrustServerCertificate=True",IsAutoCloseConnection=true  }
             });
             db.GetConnection("OrderDb").DbMaintenance.CreateDatabase();
             db.GetConnection("OrderItemDb").DbMaintenance.CreateDatabase();

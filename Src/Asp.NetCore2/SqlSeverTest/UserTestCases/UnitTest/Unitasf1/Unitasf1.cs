@@ -13,7 +13,7 @@ namespace OrmTest
 
             var db = new SqlSugarScope(new SqlSugar.ConnectionConfig()
             {
-                ConnectionString = "server=.;uid=sa;pwd=sasa;database=sqlsugartestxxxx",
+                ConnectionString = "server=.;uid=sa;pwd=sasa;database=sqlsugartestxxxx;;Encrypt=True;TrustServerCertificate=True",
                 DbType = DbType.SqlServer,
                 IsAutoCloseConnection = true
             }, db =>
