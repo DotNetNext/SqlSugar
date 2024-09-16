@@ -2,7 +2,7 @@
 <package >
 	<metadata>
 		<id>SystemCommon</id>
-		<version>8.2</version>
+		<version>8.3</version>
 		<authors>sunkaixuan</authors>
 		<owners>果糖大数据</owners>
 		<licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
@@ -14,11 +14,10 @@
 		<tags>SystemCommon</tags>
 		<dependencies>
 			<group targetFramework=".NETStandard2.1">
-				<dependency id="Microsoft.Data.SqlClient" version="2.1.7" />
+				<dependency id="Microsoft.Data.SqlClient" version="5.2.1" />
 				<dependency id="System.Data.Common" version="4.3.0" />
 				<dependency id="System.Reflection.Emit.Lightweight" version="4.3.0" />
-				<dependency id="System.Text.RegularExpressions" version="4.3.1" />
-				<dependency id="System.Data.OleDb" version="6.0.0" />
+				<dependency id="System.Text.RegularExpressions" version="4.3.1" /> 
 				<dependency id="System.IdentityModel.Tokens.Jwt" version="7.6.3" />
 			</group>
 		</dependencies>
