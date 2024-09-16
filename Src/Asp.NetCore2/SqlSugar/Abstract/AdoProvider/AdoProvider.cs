@@ -183,6 +183,10 @@ namespace SqlSugar
                 }
                 catch (Exception ex)
                 {
+                    if (this.Context.CurrentConnectionConfig?.DbType==DbType.SqlServer&&ex.Message?.Contains("provider: SSL")==true) 
+                    {
+                        Check.ExceptionEasy(true,ex.Message, "SSL出错，因为升级了驱动,字符串增加Encrypt=True;TrustServerCertificate=True;即可。详细错误：" + ex.Message);
+                    }
                     Check.Exception(true, ErrorMessage.ConnnectionOpen, ex.Message+$"DbType=\"{this.Context.CurrentConnectionConfig.DbType}\";ConfigId=\"{this.Context.CurrentConnectionConfig.ConfigId}\"");
                 }
             }
