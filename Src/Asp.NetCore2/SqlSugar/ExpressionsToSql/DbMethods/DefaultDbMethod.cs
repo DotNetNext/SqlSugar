@@ -1228,5 +1228,9 @@ namespace SqlSugar
 
             return queryCondition;
         }
+        public virtual string SelectFields(MethodCallExpressionModel model)
+        {
+            return string.Join(",", model.Args.Select(it => it.MemberName));
+        }
     }
 }

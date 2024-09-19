@@ -431,5 +431,25 @@ namespace SqlSugar
         {
             throw new NotSupportedException("Can only be used in expressions");
         }
+        public static void SelectFields(string fieldName1)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+        public static void SelectFields(string fieldName1,string fieldName2)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+        public static void SelectFields(string fieldName1, string fieldName2, string fieldName3)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+        public static void SelectFields(string fieldName1, string fieldName2, string fieldName3, string fieldName4)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+        public static void SelectFields(string fieldName1, string fieldName2, string fieldName3, string fieldName4, string fieldName5)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
     }
 }
