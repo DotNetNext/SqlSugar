@@ -51,7 +51,7 @@ namespace SqlSugar.ClickHouse
                 var tableName = GetTableNameString;
                 var shortName = $" {this.Builder.GetTranslationColumnName(this.TableShortName)} ";
                 tableName = tableName.Replace(shortName, shortName+finalGlobal);
-                tableName = tableName.Replace("\" ON ( \"", "\" "+final+" ON ( \"");
+                tableName = tableName.Replace("\" ON ( \"", "\" "+ finalGlobal + " ON ( \"");
                 sql.AppendFormat(SqlTemplate, GetSelectValue, tableName, GetWhereValueString, GetGroupByString + HavingInfos, (Skip != null || Take != null) ? null : GetOrderByString);
             }
             else
