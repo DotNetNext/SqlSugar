@@ -711,7 +711,8 @@ namespace SqlSugar
                     MaxParameterNameLength=it.MoreSettings.MaxParameterNameLength,
                     DisableQueryWhereColumnRemoveTrim=it.MoreSettings.DisableQueryWhereColumnRemoveTrim,
                     DatabaseModel=it.MoreSettings.DatabaseModel,
-                    EnableILike=it.MoreSettings.EnableILike
+                    EnableILike=it.MoreSettings.EnableILike,
+                    ClickHouseEnableFinal=it.MoreSettings.ClickHouseEnableFinal
 
                 },
                 SqlMiddle = it.SqlMiddle == null ? null : new SqlMiddle

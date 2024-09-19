@@ -39,7 +39,25 @@ namespace SqlSugar.ClickHouse
             string oldOrderValue = this.OrderByValue;
             string result = "";
             sql = new StringBuilder();
-            sql.AppendFormat(SqlTemplate, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, (Skip != null || Take != null) ? null : GetOrderByString);
+            var isFinal = this.Context.CurrentConnectionConfig?.MoreSettings?.ClickHouseEnableFinal==true;
+            var final = " Final ";
+            var finalGlobal = " FINAL  GLOBAL  ";
+            if (isFinal&&this.IsSingle())
+            {
+                sql.AppendFormat(SqlTemplate, GetSelectValue, GetTableNameString+" "+ final, GetWhereValueString, GetGroupByString + HavingInfos, (Skip != null || Take != null) ? null : GetOrderByString);
+            }
+            else if (isFinal && !this.IsSingle())
+            {
+                var tableName = GetTableNameString;
+                var shortName = $" {this.Builder.GetTranslationColumnName(this.TableShortName)} ";
+                tableName = tableName.Replace(shortName, shortName+finalGlobal);
+                tableName = tableName.Replace("\" ON ( \"", "\" "+final+" ON ( \"");
+                sql.AppendFormat(SqlTemplate, GetSelectValue, tableName, GetWhereValueString, GetGroupByString + HavingInfos, (Skip != null || Take != null) ? null : GetOrderByString);
+            }
+            else
+            {
+                sql.AppendFormat(SqlTemplate, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, (Skip != null || Take != null) ? null : GetOrderByString);
+            }
             if (IsCount) { return sql.ToString(); }
             if (Skip != null && Take == null)
             {
