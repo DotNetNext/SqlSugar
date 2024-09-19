@@ -387,7 +387,7 @@ namespace SqlSugar
         public override string MergeString(params string[] strings)
         {
             var key = Guid.NewGuid() + "";
-            return " concat(" + string.Join(",", strings.Select(it => it?.Replace("+", key))).Replace("+", "").Replace(key, "+") + ") ";
+            return " pg_catalog.concat(" + string.Join(",", strings.Select(it => it?.Replace("+", key))).Replace("+", "").Replace(key, "+") + ") ";
         }
         public override string IsNull(MethodCallExpressionModel model)
         {
