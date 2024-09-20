@@ -522,6 +522,9 @@ namespace SqlSugar
                 case DbType.PolarDB:
                     config.DbType = DbType.MySql;
                     break;
+                case DbType.TDSQL:
+                    config.DbType = DbType.MySql;
+                    break;
                 case DbType.Doris:
                     config.DbType = DbType.MySql;
                     if (this.CurrentConnectionConfig.MoreSettings == null)

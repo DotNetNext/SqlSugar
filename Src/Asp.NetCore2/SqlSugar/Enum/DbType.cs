@@ -33,7 +33,8 @@ namespace SqlSugar
         Doris,
         Xugu,
         GoldenDB,
-        TDSQLForPGODBC,
+        TDSQLForPGODBC, 
+        TDSQL,
         Custom =900
     }
 }
