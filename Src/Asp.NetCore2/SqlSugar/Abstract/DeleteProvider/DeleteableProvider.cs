@@ -644,10 +644,10 @@ namespace SqlSugar
         {
             DeleteBuilder.EntityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>();
             sql = DeleteBuilder.ToSqlString();
+            paramters = DeleteBuilder.Parameters == null ? null : DeleteBuilder.Parameters.ToArray();
             RestoreMapping();
             AutoRemoveDataCache();
             Before(sql);
-            paramters = DeleteBuilder.Parameters == null ? null : DeleteBuilder.Parameters.ToArray();
         }
 
         protected virtual List<string> GetIdentityKeys()
