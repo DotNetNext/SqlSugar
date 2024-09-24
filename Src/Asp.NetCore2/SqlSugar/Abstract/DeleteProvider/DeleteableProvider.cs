@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
@@ -23,7 +23,7 @@ namespace SqlSugar
         public DiffLogModel diffModel { get; set; }
         public List<string> tempPrimaryKeys { get; set; }
         internal Action RemoveCacheFunc { get; set; }
-        internal List<T> DeleteObjects { get; set; }
+        public List<T> DeleteObjects { get; set; }
         public EntityInfo EntityInfo
         {
             get
@@ -644,10 +644,10 @@ namespace SqlSugar
         {
             DeleteBuilder.EntityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>();
             sql = DeleteBuilder.ToSqlString();
-            paramters = DeleteBuilder.Parameters == null ? null : DeleteBuilder.Parameters.ToArray();
             RestoreMapping();
             AutoRemoveDataCache();
             Before(sql);
+            paramters = DeleteBuilder.Parameters == null ? null : DeleteBuilder.Parameters.ToArray();
         }
 
         protected virtual List<string> GetIdentityKeys()
@@ -690,7 +690,7 @@ namespace SqlSugar
         }
 
 
-        private void After(string sql)
+        protected virtual void After(string sql)
         {
             if (this.IsEnableDiffLogEvent)
             {
@@ -711,7 +711,7 @@ namespace SqlSugar
             DataChangesAop(this.DeleteObjects);
         }
 
-        private void Before(string sql)
+        protected virtual void Before(string sql)
         {
             if (this.IsEnableDiffLogEvent)
             {
@@ -727,7 +727,7 @@ namespace SqlSugar
             }
         }
 
-        private List<DiffLogTableInfo> GetDiffTable(string sql, List<SugarParameter> parameters)
+        protected virtual List<DiffLogTableInfo> GetDiffTable(string sql, List<SugarParameter> parameters)
         {
             List<DiffLogTableInfo> result = new List<DiffLogTableInfo>();
             var whereSql = Regex.Replace(sql, ".* WHERE ", "", RegexOptions.Singleline);
@@ -756,7 +756,7 @@ namespace SqlSugar
             }
             return result;
         }
-        private void DataAop(object deleteObj)
+        protected virtual void DataAop(object deleteObj)
         {
             var dataEvent = this.Context.CurrentConnectionConfig.AopEvents?.DataExecuting;
             if (deleteObj != null&& dataEvent!=null)
@@ -770,7 +770,7 @@ namespace SqlSugar
                 dataEvent(deleteObj,model);
             }
         }
-        private void DataChangesAop(List<T> deleteObjs)
+        protected virtual void DataChangesAop(List<T> deleteObjs)
         {
             var dataEvent = this.Context.CurrentConnectionConfig.AopEvents?.DataChangesExecuted;
             if(dataEvent != null&&deleteObjs != null)
