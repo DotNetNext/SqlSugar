@@ -713,9 +713,16 @@ WHERE EVENT_OBJECT_TABLE = '" + tableName + "'");
 
                 try
                 {
-                    Assembly currentAssembly = Assembly.GetExecutingAssembly();
-                    string exePath = currentAssembly.Location.Replace("SqlSugar.dll", "MySqlBackupNet.MySqlConnector.dll");
-                    assembly = Assembly.LoadFrom(exePath);
+                    if (StaticConfig.Backup_MySqlBackupType != null)
+                    {
+                        assembly = StaticConfig.Backup_MySqlBackupType.Assembly;
+                    }
+                    else
+                    {
+                        Assembly currentAssembly = Assembly.GetExecutingAssembly();
+                        string exePath = currentAssembly.Location.Replace("SqlSugar.dll", "MySqlBackupNet.MySqlConnector.dll");
+                        assembly = Assembly.LoadFrom(exePath);
+                    }
                 }
                 catch (Exception)
                 {
