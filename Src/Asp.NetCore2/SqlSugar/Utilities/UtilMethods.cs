@@ -1393,6 +1393,14 @@ namespace SqlSugar
             {
                 return Convert.ToInt64(item.FieldValue);
             }
+            else if (item.CSharpTypeName.EqualCase("float"))
+            {
+                return Convert.ToSingle(item.FieldValue);
+            }
+            else if (item.CSharpTypeName.EqualCase("single"))
+            {
+                return Convert.ToSingle(item.FieldValue);
+            }
             else if (item.CSharpTypeName.EqualCase("short"))
             {
                 return Convert.ToInt16(item.FieldValue);
