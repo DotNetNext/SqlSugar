@@ -389,7 +389,7 @@ namespace SqlSugar
             {
                 if (item.FieldValue == "[null]")
                 {
-                    item.FieldValue = "'null'";
+                    item.FieldValue = "null";
                 }
                 builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "=", parameterName);
                 parameters.Add(new SugarParameter(parameterName, GetFieldValue(item)));
