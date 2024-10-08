@@ -104,6 +104,11 @@ namespace SqlSugar
         #endregion
 
         #region Get SQL Partial
+        public override string GetExternalOrderBy(string externalOrderBy)
+        {
+            return Regex.Replace(externalOrderBy, @"""\w+""\.", "");
+        }
+
         public override string GetSelectValue
         {
             get
