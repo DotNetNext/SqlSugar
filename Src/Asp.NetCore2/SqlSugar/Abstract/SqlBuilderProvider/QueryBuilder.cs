@@ -993,7 +993,7 @@ namespace SqlSugar
                 }
                 if (IsSingle() && result.Contains("MergeTable") && result.Trim().EndsWith(" MergeTable") && TableShortName != null)
                 {
-                    result = result.Replace(") MergeTable  ", ") " + TableShortName+UtilConstants.Space);
+                    result = result.Replace(") MergeTable  ", ") " +this.Builder.GetTranslationColumnName(TableShortName)+UtilConstants.Space);
                     TableShortName = null;
                 }
                 if (IsSingle() && result.Contains("unionTable") && result.Trim().EndsWith(" unionTable")&& TableShortName!=null) 
