@@ -165,7 +165,7 @@ namespace SqlSugar
                     var parameterColumns = db.EntityMaintenance.GetEntityInfo(parameter.Type).Columns.Where(it=>it.IsIgnore==false);
                     if (!completeColumnColumns.Any(it=>it.EqualCase(item.PropertyName))&& parameterColumns.Any(it=>it.PropertyName.EqualCase(item.PropertyName))) 
                     {
-                        var completeColumn = parameterColumns.First(it => it.PropertyName == item.PropertyName);
+                        var completeColumn = parameterColumns.First(it => it.PropertyName.EqualCase(item.PropertyName));
                         var shortName = builder.GetTranslationColumnName(parameter.Name);
                         var columnName = builder.GetTranslationColumnName(completeColumn.DbColumnName);
                         var asName = builder.SqlTranslationLeft + item.PropertyName + builder.SqlTranslationRight; 
