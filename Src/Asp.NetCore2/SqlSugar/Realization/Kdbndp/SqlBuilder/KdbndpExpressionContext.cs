@@ -308,6 +308,10 @@ namespace SqlSugar
         public override string ToDate(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
+            if (IsSqlServerModel(model))
+            {
+                return string.Format(" CAST({0} AS dateTime)", parameter.MemberName);
+            }
             return string.Format(" CAST({0} AS timestamp)", parameter.MemberName);
         }
         public override string DateAddByType(MethodCallExpressionModel model)
