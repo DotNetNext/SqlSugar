@@ -1,4 +1,5 @@
-﻿using SqlSugar;
+﻿using PgSqlTest.UserTestCases;
+using SqlSugar;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,6 +32,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            Unit1sdgsaaysdfa.Init();
             UnitBulkMergeaa.Init();
             Unitadsfayasdfaaay.Init();
             Unitafdafas.Init();
