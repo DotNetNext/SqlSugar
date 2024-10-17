@@ -528,6 +528,13 @@ namespace SqlSugar
             }
             if (item.IsJoinQuery == false||isMain||isSingle|| isEasyJoin)
             {
+                if (item.IsJoinQuery == false&& ChildType.IsInterface)
+                {
+                    foreach (var joinInfo in this.JoinQueryInfos)
+                    {
+                        sql = ReplaceFilterColumnName(sql, joinInfo.EntityType, Builder.GetTranslationColumnName(joinInfo.ShortName));
+                    }
+                }
                 WhereInfos.Add(sql);
             }
             else 
