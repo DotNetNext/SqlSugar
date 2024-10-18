@@ -373,7 +373,14 @@ namespace SqlSugar
             }
             else
             {
-                inValue1 = ("(" + inArray.Select(it => it == "" ? "null" : it).Distinct().ToArray().ToJoinSqlInVals() + ")");
+                if (item.CSharpTypeName.EqualCase("nstring"))
+                {
+                    inValue1 = ("(" + inArray.Select(it => it == "" ? "null" : it).Distinct().ToArray().ToJoinSqlInValsByVarchar() + ")");
+                }
+                else
+                {
+                    inValue1 = ("(" + inArray.Select(it => it == "" ? "null" : it).Distinct().ToArray().ToJoinSqlInVals() + ")");
+                }
             }
 
             return inValue1;
