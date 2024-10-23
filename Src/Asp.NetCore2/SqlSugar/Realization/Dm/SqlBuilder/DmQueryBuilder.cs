@@ -144,6 +144,11 @@ namespace SqlSugar
                 return "SELECT {0} FROM {1}{2}{3}{4} ";
             }
         }
+        public override string GetExternalOrderBy(string externalOrderBy)
+        {
+            return Regex.Replace(externalOrderBy, @"""\w+""\.", "");
+        }
+
         private string OffsetPage()
         {
             var skip = this.Skip ?? 1;
