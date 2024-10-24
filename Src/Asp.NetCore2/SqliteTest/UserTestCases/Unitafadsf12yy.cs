@@ -16,6 +16,7 @@ namespace OrmTest
         {
             //创建库1
             var db1 = NewUnitTest.Db;
+            db1.DbMaintenance.CreateDatabase();
             db1.CodeFirst.InitTables<Db1Abpusers>();//给测试库1添加表
 
 
