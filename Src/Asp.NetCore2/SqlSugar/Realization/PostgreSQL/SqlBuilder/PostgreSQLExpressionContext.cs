@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using static Dm.parser.SQLProcessor;
 namespace SqlSugar
 {
     public class PostgreSQLExpressionContext : ExpressionContext, ILambdaExpressions
@@ -244,6 +245,12 @@ namespace SqlSugar
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
+            var parameter2Info = model.Parameters.FirstOrDefault(it => it.ParameterName.EqualCase(parameter2.MemberName + ""));
+            if (parameter2Info!=null&&parameter2.MemberName?.ToString()?.StartsWith("@MethodConst")==true) 
+            {
+                parameter2Info.Value = parameter2.MemberValue+"%";
+                return string.Format(" ({0} like {1} ) ", parameter.MemberName, parameter2.MemberName);
+            }
             return string.Format(" ({0} like concat({1},'%')) ", parameter.MemberName, parameter2.MemberName);
         }
 
