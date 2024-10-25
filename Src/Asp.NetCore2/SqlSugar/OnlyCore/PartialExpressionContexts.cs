@@ -15,6 +15,12 @@ namespace SqlSugar
     }
     public partial class MySqlBlukCopy<T> 
     {
+        public MySqlBlukCopy(SqlSugarProvider context, ISqlBuilder builder, T[] entitys)
+        {
+            this.Context = context;
+            this.Builder = builder;
+            this.Entitys = entitys;
+        }
     }
     public partial class OracleBlukCopy
     {

@@ -19,12 +19,7 @@ namespace SqlSugar
         {
 
         }
-        public MySqlBlukCopy(SqlSugarProvider context, ISqlBuilder builder, T []entitys)
-        {
-            this.Context = context;
-            this.Builder = builder;
-            this.Entitys = entitys;
-        }
+  
         public bool ExecuteBulkCopy(string characterSet) 
         {
             this.Chara = characterSet;
