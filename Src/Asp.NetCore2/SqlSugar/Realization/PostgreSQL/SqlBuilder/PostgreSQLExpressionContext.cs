@@ -2,7 +2,7 @@
 using System.Linq; 
 namespace SqlSugar
 {
-    public class PostgreSQLExpressionContext : ExpressionContext, ILambdaExpressions
+    public partial class PostgreSQLExpressionContext : ExpressionContext, ILambdaExpressions
     {
         public SqlSugarProvider Context { get; set; }
         public PostgreSQLExpressionContext()
