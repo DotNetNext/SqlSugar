@@ -43,7 +43,7 @@ namespace OrmTest
 
             db.Queryable<Order>().AddQueue();
             db.Queryable<Order>().AddQueue();
-            db.AddQueue("select * from `order` where id=@id", new { id = 10000 });
+            db.AddQueue("select * from `Order` where id=@id", new { id = 10000 });
             var result2 = db.SaveQueues<Order, Order, Order>();
 
             Console.WriteLine("#### Queue End ####");

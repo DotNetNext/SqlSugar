@@ -6,8 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SqlSugar.MySqlConnectorCore" Version="5.9.5" />
-    <PackageReference Include="sqlSugarCore" Version="5.1.3.2-preview01" />
+    <PackageReference Include="sqlSugarCore" Version="5.1.4.170" />
   </ItemGroup>
 
 </Project>
