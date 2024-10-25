@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 namespace SqlSugar
 {
-    public class MySqlBlukCopy<T> 
+    public partial class MySqlBlukCopy<T> 
     {
         internal SqlSugarProvider Context { get; set; }
         internal ISqlBuilder Builder { get; set; }

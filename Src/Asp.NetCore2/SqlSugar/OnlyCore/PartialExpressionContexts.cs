@@ -13,4 +13,10 @@ namespace SqlSugar
     public partial class OracleExpressionContext
     {
     }
+    public partial class MySqlBlukCopy<T> 
+    {
+    }
+    public partial class OracleBlukCopy
+    {
+    }
 }

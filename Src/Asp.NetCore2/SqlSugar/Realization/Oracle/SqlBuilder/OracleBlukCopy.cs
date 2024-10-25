@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 namespace SqlSugar
 {
 
-    public class OracleBlukCopy
+    public partial class OracleBlukCopy
 
     {
 
