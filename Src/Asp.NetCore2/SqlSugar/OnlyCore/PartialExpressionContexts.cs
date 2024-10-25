@@ -13,6 +13,9 @@ namespace SqlSugar
     public partial class OracleExpressionContext
     {
     }
+    public partial class SqlServerBlukCopy
+    {
+    }
     public partial class MySqlBlukCopy<T> 
     {
         internal SqlSugarProvider Context { get; set; }

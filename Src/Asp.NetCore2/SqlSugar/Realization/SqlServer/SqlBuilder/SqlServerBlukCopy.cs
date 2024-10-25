@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SqlSugar 
 {
-    public class SqlServerBlukCopy
+    public partial class SqlServerBlukCopy
     {
         internal List<IGrouping<int, DbColumnInfo>> DbColumnInfoList { get;   set; }
         internal SqlSugarProvider Context { get;   set; }
