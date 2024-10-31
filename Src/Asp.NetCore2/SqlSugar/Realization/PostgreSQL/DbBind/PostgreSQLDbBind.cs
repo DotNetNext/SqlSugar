@@ -8,6 +8,10 @@ namespace SqlSugar
     {
         public override string GetDbTypeName(string csharpTypeName)
         {
+            if (csharpTypeName?.StartsWith("ora")==true&& this.Context.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.Vastbase) 
+            {
+                return csharpTypeName.Replace("ora", "");
+            }
             if (csharpTypeName == UtilConstants.ByteArrayType.Name)
                 return "bytea";
             if (csharpTypeName.ToLower() == "int32")
