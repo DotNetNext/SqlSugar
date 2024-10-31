@@ -10,7 +10,7 @@ namespace SqlSugar
         {
             if (csharpTypeName?.StartsWith("ora")==true&& this.Context.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.Vastbase) 
             {
-                return csharpTypeName.Replace("ora", "");
+                csharpTypeName= csharpTypeName.Replace("ora", "");
             }
             if (csharpTypeName == UtilConstants.ByteArrayType.Name)
                 return "bytea";
