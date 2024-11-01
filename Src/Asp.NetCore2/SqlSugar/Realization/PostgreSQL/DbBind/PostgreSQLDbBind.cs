@@ -12,6 +12,10 @@ namespace SqlSugar
             {
                 csharpTypeName= csharpTypeName.Replace("ora", "");
             }
+            else if (csharpTypeName?.StartsWith("mssql_") == true && this.Context.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.Vastbase)
+            {
+                csharpTypeName = csharpTypeName.Replace("mssql_", "");
+            }
             if (csharpTypeName == UtilConstants.ByteArrayType.Name)
                 return "bytea";
             if (csharpTypeName.ToLower() == "int32")
