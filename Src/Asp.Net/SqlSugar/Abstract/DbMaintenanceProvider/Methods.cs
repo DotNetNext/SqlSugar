@@ -298,6 +298,7 @@ namespace SqlSugar
             {
                 pkName = "PK_" + pkName.GetNonNegativeHashCodeString();
             }
+            columnName = string.Join(",", columnNames.Select(it=>SqlBuilder.GetTranslationColumnName(it)));
             string sql = string.Format(this.AddPrimaryKeySql, tableName,pkName, columnName);
             this.Context.Ado.ExecuteCommand(sql);
             return true;

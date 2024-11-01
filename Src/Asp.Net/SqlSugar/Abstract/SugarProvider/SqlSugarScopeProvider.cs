@@ -97,7 +97,7 @@ namespace SqlSugar
             }
             return result;
         }
-        private  dynamic GetKey()
+        private  string GetKey()
         {
             if (!string.IsNullOrEmpty(this.initkey) &&this.initThreadMainId == GetCurrentThreadId()) 
             {

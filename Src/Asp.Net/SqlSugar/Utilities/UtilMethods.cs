@@ -711,7 +711,8 @@ namespace SqlSugar
                     MaxParameterNameLength=it.MoreSettings.MaxParameterNameLength,
                     DisableQueryWhereColumnRemoveTrim=it.MoreSettings.DisableQueryWhereColumnRemoveTrim,
                     DatabaseModel=it.MoreSettings.DatabaseModel,
-                    EnableILike=it.MoreSettings.EnableILike
+                    EnableILike=it.MoreSettings.EnableILike,
+                    ClickHouseEnableFinal=it.MoreSettings.ClickHouseEnableFinal
 
                 },
                 SqlMiddle = it.SqlMiddle == null ? null : new SqlMiddle
@@ -1391,6 +1392,14 @@ namespace SqlSugar
             else if (item.CSharpTypeName.EqualCase("long"))
             {
                 return Convert.ToInt64(item.FieldValue);
+            }
+            else if (item.CSharpTypeName.EqualCase("float"))
+            {
+                return Convert.ToSingle(item.FieldValue);
+            }
+            else if (item.CSharpTypeName.EqualCase("single"))
+            {
+                return Convert.ToSingle(item.FieldValue);
             }
             else if (item.CSharpTypeName.EqualCase("short"))
             {

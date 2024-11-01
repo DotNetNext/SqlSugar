@@ -497,6 +497,10 @@ namespace SqlSugar
                     Check.Exception(SugarCompatible.IsFramework, "OceanBaseForOracle only support .net core");
                     InstanceFactory.CustomDllName = SugarCompatible.IsFramework ? "SqlSugar.OceanBaseForOracle" : "SqlSugar.OceanBaseForOracleCore";
                     break;
+                case DbType.TDSQLForPGODBC:
+                    Check.Exception(SugarCompatible.IsFramework, "TDSQLForPGODBC only support .net core");
+                    InstanceFactory.CustomDllName = SugarCompatible.IsFramework ? "SqlSugar.TDSQLForPGODBC" : "SqlSugar.TDSQLForPGODBC";
+                    break;
                 case DbType.GaussDB:
                     config.DbType = DbType.PostgreSQL;
                     if (this.CurrentConnectionConfig.MoreSettings == null)
@@ -516,6 +520,9 @@ namespace SqlSugar
                     config.DbType = DbType.MySql;
                     break;
                 case DbType.PolarDB:
+                    config.DbType = DbType.MySql;
+                    break;
+                case DbType.TDSQL:
                     config.DbType = DbType.MySql;
                     break;
                 case DbType.Doris:

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -614,7 +614,7 @@ namespace SqlSugar
                 return mappInfo == null ? propertyName : mappInfo.DbColumnName;
             }
         }
-        private List<string> GetPrimaryKeys()
+        protected List<string> GetPrimaryKeys()
         {
             if (this.WhereColumnList.HasValue())
             {
