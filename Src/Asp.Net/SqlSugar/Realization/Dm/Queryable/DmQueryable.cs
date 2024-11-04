@@ -13,11 +13,11 @@ namespace SqlSugar
             return this;
         }
 
-        public override ISugarQueryable<T> PartitionBy(string groupFileds)
-        {
-            this.GroupBy(groupFileds);
-            return this;
-        }
+        //public override ISugarQueryable<T> PartitionBy(string groupFileds)
+        //{
+        //    this.GroupBy(groupFileds);
+        //    return this;
+        //}
     }
     public class DmQueryable<T, T2> : QueryableProvider<T, T2>
     {

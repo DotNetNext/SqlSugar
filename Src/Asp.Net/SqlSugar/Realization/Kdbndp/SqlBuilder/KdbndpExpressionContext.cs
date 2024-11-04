@@ -308,6 +308,10 @@ namespace SqlSugar
         public override string ToDate(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
+            if (IsSqlServerModel(model))
+            {
+                return string.Format(" CAST({0} AS dateTime)", parameter.MemberName);
+            }
             return string.Format(" CAST({0} AS timestamp)", parameter.MemberName);
         }
         public override string DateAddByType(MethodCallExpressionModel model)
@@ -387,7 +391,7 @@ namespace SqlSugar
         public override string MergeString(params string[] strings)
         {
             var key = Guid.NewGuid() + "";
-            return " concat(" + string.Join(",", strings.Select(it => it?.Replace("+", key))).Replace("+", "").Replace(key, "+") + ") ";
+            return " pg_catalog.concat(" + string.Join(",", strings.Select(it => it?.Replace("+", key))).Replace("+", "").Replace(key, "+") + ") ";
         }
         public override string IsNull(MethodCallExpressionModel model)
         {

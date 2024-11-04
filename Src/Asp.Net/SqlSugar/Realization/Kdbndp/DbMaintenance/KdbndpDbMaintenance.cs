@@ -497,13 +497,13 @@ WHERE tgrelid = '" + tableName + "'::regclass");
                 {
 
                     ConvertCreateColumnInfo(item);
-                    if (item.DbColumnName.Equals("GUID", StringComparison.CurrentCultureIgnoreCase) && item.Length == 0)
-                    {
-                        if (item.DataType?.ToLower() != "uuid")
-                        {
-                            item.Length = 10;
-                        }
-                    }
+                    //if (item.DbColumnName.Equals("GUID", StringComparison.CurrentCultureIgnoreCase) && item.Length == 0)
+                    //{
+                    //    if (item.DataType?.ToLower() != "uuid")
+                    //    {
+                    //        item.Length = 10;
+                    //    }
+                    //}
                 }
             }
             string sql = GetCreateTableSql(tableName, columns);
