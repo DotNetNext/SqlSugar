@@ -30,8 +30,11 @@ namespace SqlSugar
                                 col_description(pclass.oid, pcolumn.ordinal_position) as ColumnDescription,
                                 case when pkey.colname = pcolumn.column_name
                                 then true else false end as IsPrimaryKey,
-                                case when pcolumn.column_default like 'nextval%'
-                                then true else false end as IsIdentity,
+                                CASE 
+									WHEN (current_setting('server_version_num')::INT >= 100000 AND pcolumn.is_identity = 'YES') THEN true
+									WHEN pcolumn.column_default LIKE 'nextval%' THEN true
+									ELSE false 
+								END AS IsIdentity,
                                 case when pcolumn.is_nullable = 'YES'
                                 then true else false end as IsNullable
                                  from (select * from pg_tables where upper(tablename) = upper('{0}') and schemaname='" + schema + @"') ptables inner join pg_class pclass
