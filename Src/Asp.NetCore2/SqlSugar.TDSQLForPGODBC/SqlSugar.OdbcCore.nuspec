@@ -1,0 +1,24 @@
+﻿<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>SqlSugar.TDSQLForPGODBC</id>
+    <version>1.0</version>
+    <authors>sunkaixuan</authors>
+    <owners>Landa</owners>
+    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
+    <projectUrl>https://github.com/sunkaixuan/SqlSugar</projectUrl>
+    <iconUrl>https://secure.gravatar.com/avatar/a82c03402497b2e58fd65038a3699b30</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>SqlSugarORM中使用使用RestAPI 访问 QuestDb数据库 使用 BulkCopy 和执行SQL等操作  </description>
+    <copyright>Copyright 2016</copyright>
+    <tags>QuestDb bulkCopy</tags>
+    <dependencies>
+      <group targetFramework=".NETStandard2.1">
+        
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="G:\Git\SqlSugar\Src\Asp.NetCore2\SqlSugar.TDSQLForPGODBC\bin\Debug\netstandard2.1\SqlSugar.TDSQLForPGODBC.dll" target="lib\netstandard2.1"></file>
+  </files>
+</package>

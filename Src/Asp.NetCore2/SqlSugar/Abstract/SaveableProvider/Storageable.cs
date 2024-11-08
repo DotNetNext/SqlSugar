@@ -551,6 +551,10 @@ namespace SqlSugar
                 foreach (var item in whereColumns)
                 {
                     var value = item.PropertyInfo.GetValue(dataItem.Item, null);
+                    if (value is string str&&str=="null") 
+                    {
+                        value = $"[null]";
+                    }
                     if (value != null&&value.GetType().IsEnum()) 
                     {
                         if (this.Context.CurrentConnectionConfig.MoreSettings?.TableEnumIsString == true)

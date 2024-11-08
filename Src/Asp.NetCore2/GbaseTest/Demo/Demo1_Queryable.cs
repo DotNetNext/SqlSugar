@@ -1,4 +1,5 @@
-﻿using SqlSugar;
+﻿using Dm;
+using SqlSugar;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -42,6 +43,17 @@ namespace OrmTest
             var getByWhere2 = db.Queryable<Order>().Where(it => it.Id == DateTime.Now.Year).ToList();
             var getByFuns = db.Queryable<Order>().Where(it => SqlFunc.IsNullOrEmpty(it.Name)).ToList();
             var getByFuns2 = db.Queryable<Order>().GroupBy(it => it.Name).Select(it => SqlFunc.AggregateDistinctCount(it.Price)).ToList();
+            var test01 = db.Queryable<Order>() 
+                .Select(it=>new {
+                    h=SqlFunc.ToDate("2022-01-01 15:01:02").Hour,
+                    mi= SqlFunc.ToDate("2022-01-01 15:01:02").Minute,
+                    ss= SqlFunc.ToDate("2022-01-01 15:01:02").Second
+                }).ToList();
+            var test02 = db.Queryable<Order>()
+              .Select(it => new {
+                  time=SqlFunc.IsNull(it.CreateTime,DateTime.Now),
+                  id=SqlFunc.IsNull(it.Id,0)
+              }).ToList();
             Console.WriteLine("#### Examples End ####");
         }
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -171,7 +172,7 @@ namespace SqlSugar
             {
                 day = group3;
             }
-            return Convert.ToDateTime($"{year}-{month}-{day}");
+            return Convert.ToDateTime($"{year}-{month}-{day}",CultureInfo.InvariantCulture);
         }
 
         private string PadLeft2(string str)

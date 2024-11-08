@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Kdbndp;
-using KdbndpTypes;
+using KdbndpTypes; 
 
 namespace SqlSugar
 {
@@ -150,6 +150,10 @@ namespace SqlSugar
                 if (sqlParameter.KdbndpDbType == KdbndpDbType.Json&&this.Context?.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.MySql)
                 {
                      sqlParameter.KdbndpDbType = KdbndpDbType.Varchar;
+                }
+                if (parameter.CustomDbType != null && parameter.CustomDbType is KdbndpDbType)
+                {
+                    sqlParameter.KdbndpDbType = ((KdbndpDbType)parameter.CustomDbType);
                 }
                 ++index;
             }

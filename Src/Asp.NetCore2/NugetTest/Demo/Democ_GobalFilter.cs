@@ -16,21 +16,21 @@ namespace OrmTest
 
 
             var sql = db.Queryable<Order>().ToSql();
-            //SELECT [Id],[Name],[Price],[CreateTime] FROM `order`  WHERE  isDelete=0 
+            //SELECT [Id],[Name],[Price],[CreateTime] FROM `Order`  WHERE  isDelete=0 
             Console.WriteLine(sql);
 
 
             var sql2 = db.Queryable<Order,OrderItem>((main,ot)=> main.Id==ot.OrderId).ToSql();
-            //SELECT [Id],[Name],[Price],[CreateTime] FROM `order` main  ,[OrderDetail]  ot  WHERE ( [main].[Id] = [ot].[OrderId] )  AND  main.isDelete=0 
+            //SELECT [Id],[Name],[Price],[CreateTime] FROM `Order` main  ,[OrderDetail]  ot  WHERE ( [main].[Id] = [ot].[OrderId] )  AND  main.isDelete=0 
             Console.WriteLine(sql2);
 
 
             var sql3 = db.Queryable<Order>().Filter("Myfilter").ToSql();// Myfilter+Gobal 
-            //SELECT [Id],[Name],[Price],[CreateTime] FROM `order`  WHERE Name='jack'    AND  isDelete=0 
+            //SELECT [Id],[Name],[Price],[CreateTime] FROM `Order`  WHERE Name='jack'    AND  isDelete=0 
             Console.WriteLine(sql3);
 
             var sql4 = db.Queryable<Order>().Filter("Myfilter",isDisabledGobalFilter:true).ToSql();//only Myfilter
-            //SELECT [Id],[Name],[Price],[CreateTime] FROM `order`  WHERE Name='jack'  
+            //SELECT [Id],[Name],[Price],[CreateTime] FROM `Order`  WHERE Name='jack'  
             Console.WriteLine(sql4);
             Console.WriteLine("#### Filter End ####");
         }

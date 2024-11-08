@@ -181,12 +181,24 @@ namespace SqlSugar
                 }
                 else
                 {
-                    this._Context.Updateable(_Roots)
-                        .EnableDiffLogEventIF(_RootOptions.IsDiffLogEvent,_RootOptions.DiffLogBizData)
-                        .UpdateColumns(_RootOptions.UpdateColumns)
-                        .IgnoreColumns(_RootOptions.IgnoreColumns)
-                        .IgnoreNullColumns(_RootOptions.IsIgnoreAllNullColumns)
-                        .ExecuteCommandWithOptLockIF(_RootOptions?.IsOptLock, _RootOptions?.IsOptLock);
+                    if (_Roots.Count() == 1 && _RootOptions?.IsOptLock==true)
+                    {
+                        this._Context.Updateable(_Roots.First())
+                          .EnableDiffLogEventIF(_RootOptions.IsDiffLogEvent, _RootOptions.DiffLogBizData)
+                          .UpdateColumns(_RootOptions.UpdateColumns)
+                          .IgnoreColumns(_RootOptions.IgnoreColumns)
+                          .IgnoreNullColumns(_RootOptions.IsIgnoreAllNullColumns)
+                          .ExecuteCommandWithOptLockIF(_RootOptions?.IsOptLock, _RootOptions?.IsOptLock);
+                    }
+                    else
+                    {
+                        this._Context.Updateable(_Roots)
+                            .EnableDiffLogEventIF(_RootOptions.IsDiffLogEvent, _RootOptions.DiffLogBizData)
+                            .UpdateColumns(_RootOptions.UpdateColumns)
+                            .IgnoreColumns(_RootOptions.IgnoreColumns)
+                            .IgnoreNullColumns(_RootOptions.IsIgnoreAllNullColumns)
+                            .ExecuteCommandWithOptLockIF(_RootOptions?.IsOptLock, _RootOptions?.IsOptLock);
+                    }
                 }
             }
             else if (_RootOptions != null && _RootOptions?.IsDiffLogEvent == true) 

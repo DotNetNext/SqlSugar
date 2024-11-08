@@ -3,7 +3,7 @@ using OrmTest;
 
 namespace SqliteTest.UnitTest
 {
-    public class cases
+    public class Cases
     {
         public static void Init()
         {

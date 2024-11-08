@@ -9,6 +9,10 @@ namespace SqlSugar.ClickHouse
         public override string GetPropertyTypeName(string dbTypeName)
         {
             dbTypeName = dbTypeName.ToLower();
+            if (dbTypeName.Contains("decimal"))
+            {
+                return CSharpDataType.@decimal.ToString();
+            }
             var propertyTypes = MappingTypes.Where(it => it.Value.ToString().ToLower() == dbTypeName || it.Key.ToLower() == dbTypeName);
             if (propertyTypes == null)
             {

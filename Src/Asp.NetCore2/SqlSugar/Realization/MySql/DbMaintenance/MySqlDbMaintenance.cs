@@ -488,6 +488,10 @@ WHERE EVENT_OBJECT_TABLE = '" + tableName + "'");
                 sql = DorisHelper.UpdateDorisSql(this.SqlBuilder, columns, sql);
             }
             sql = sql.Replace("$PrimaryKey", primaryKeyInfo);
+            if (!string.IsNullOrEmpty(StaticConfig.CodeFirst_MySqlTableEngine)) 
+            {
+               sql+= " ENGINE = " + StaticConfig.CodeFirst_MySqlTableEngine;
+            }
             this.Context.Ado.ExecuteCommand(sql);
             return true;
         }
@@ -709,9 +713,16 @@ WHERE EVENT_OBJECT_TABLE = '" + tableName + "'");
 
                 try
                 {
-                    Assembly currentAssembly = Assembly.GetExecutingAssembly();
-                    string exePath = currentAssembly.Location.Replace("SqlSugar.dll", "MySqlBackupNet.MySqlConnector.dll");
-                    assembly = Assembly.LoadFrom(exePath);
+                    if (StaticConfig.Backup_MySqlBackupType != null)
+                    {
+                        assembly = StaticConfig.Backup_MySqlBackupType.Assembly;
+                    }
+                    else
+                    {
+                        Assembly currentAssembly = Assembly.GetExecutingAssembly();
+                        string exePath = currentAssembly.Location.Replace("SqlSugar.dll", "MySqlBackupNet.MySqlConnector.dll");
+                        assembly = Assembly.LoadFrom(exePath);
+                    }
                 }
                 catch (Exception)
                 {

@@ -176,6 +176,7 @@ namespace SqlSugar
                                     builder.Replace(" OR (  AND", " OR (  ");
                                     builder.Replace(" (  AND ", " ( ");
                                     builder.Replace(" (  OR ", " ( ");
+                                    builder.Replace("   OR  AND ", "   OR ");
                                 }
                             }
                             parameters.AddRange(childSqlInfo.Value);
@@ -372,7 +373,14 @@ namespace SqlSugar
             }
             else
             {
-                inValue1 = ("(" + inArray.Select(it => it == "" ? "null" : it).Distinct().ToArray().ToJoinSqlInVals() + ")");
+                if (item.CSharpTypeName.EqualCase("nstring"))
+                {
+                    inValue1 = ("(" + inArray.Select(it => it == "" ? "null" : it).Distinct().ToArray().ToJoinSqlInValsByVarchar() + ")");
+                }
+                else
+                {
+                    inValue1 = ("(" + inArray.Select(it => it == "" ? "null" : it).Distinct().ToArray().ToJoinSqlInVals() + ")");
+                }
             }
 
             return inValue1;
@@ -388,7 +396,7 @@ namespace SqlSugar
             {
                 if (item.FieldValue == "[null]")
                 {
-                    item.FieldValue = "'null'";
+                    item.FieldValue = "null";
                 }
                 builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "=", parameterName);
                 parameters.Add(new SugarParameter(parameterName, GetFieldValue(item)));

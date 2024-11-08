@@ -282,7 +282,11 @@ namespace SqlSugar
 
         public override string JsonArrayAny(MethodCallExpressionModel model)
         {
-            if (UtilMethods.IsNumber(model.Args[1].MemberValue.GetType().Name))
+            if (model.Args[1].MemberValue==null)
+            {
+                return $" JSON_CONTAINS({model.Args[0].MemberName},  JSON_QUOTE({model.Args[1].MemberName}) )";
+            }
+            else if (UtilMethods.IsNumber(model.Args[1].MemberValue.GetType().Name))
             {
                 return $" JSON_CONTAINS({model.Args[0].MemberName}, '{model.Args[1].MemberValue}')";
             }

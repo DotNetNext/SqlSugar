@@ -20,7 +20,7 @@ namespace SqlSugar.Odbc
         public override string SqlTranslationRight { get { return OdbcConfig.SqlTranslationRight; } }
         public override bool IsTranslationText(string name)
         {
-            var result = name.IsContainsIn( UtilConstants.Space,"(",")");
+            var result = name.Contains(" ")&&name.IsContainsIn( UtilConstants.Space,"(",")");
             return result;
         }
         public override string GetLimit() { return ""; }
@@ -94,10 +94,20 @@ namespace SqlSugar.Odbc
         }
         public override string Contains(MethodCallExpressionModel model)
         {
+            if (IsSqlServerModel(model))
+            {
+                return base.Contains(model);
+            }
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
             return string.Format(" ({0} like '%'||{1}||'%') ", parameter.MemberName, parameter2.MemberName);
         }
+
+        private static bool IsSqlServerModel(MethodCallExpressionModel model)
+        {
+            return model.Conext?.SugarContext?.Context?.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.SqlServer;
+        }
+
         public override string StartsWith(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];

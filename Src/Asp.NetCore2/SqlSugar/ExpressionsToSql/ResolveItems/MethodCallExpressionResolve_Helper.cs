@@ -1,4 +1,4 @@
-﻿using System;
+﻿ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -662,6 +662,10 @@ namespace SqlSugar
                 {
                     name = "IsNullOrEmpty";
                 }
+                if (model.Conext == null) 
+                {
+                    model.Conext = this.Context;
+                }
                 switch (name)
                 {
                     case "IIF":
@@ -782,6 +786,10 @@ namespace SqlSugar
                         if (model.Args.Count > 1)
                         {
                             var dateString2 = this.Context.DbMehtods.GetDateString(model.Args.First().MemberName.ObjToString(), model.Args.Last().MemberValue.ObjToString());
+                            if (IsSqlServerModel())
+                            {
+                                 return string.Format("FORMAT({0},'{1}','en-US')", model.Args.First().MemberName.ObjToString(), model.Args.Last().MemberValue.ObjToString());
+                            }
                             if (dateString2 != null) return dateString2;
                             return GeDateFormat(model.Args.Last().MemberValue.ObjToString(), model.Args.First().MemberName.ObjToString());
                         }
@@ -809,6 +817,7 @@ namespace SqlSugar
                                   MemberValue= "100000",
                             });
                         }
+                        model.Conext = this.Context;
                         return this.Context.DbMehtods.Substring(model);
                     case "Replace":
                         return this.Context.DbMehtods.Replace(model);
@@ -992,6 +1001,11 @@ namespace SqlSugar
                 }
             }
             return null;
+        }
+
+        private bool IsSqlServerModel()
+        {
+            return this.Context?.SugarContext?.Context?.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.SqlServer;
         }
 
         private string GetLike(string result, bool iLike)

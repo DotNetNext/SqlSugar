@@ -52,7 +52,8 @@ namespace SqlSugar
             if (this.IsOffIdentity)
             {
                 var tableName = this.GetTableNameString;
-                result = $"SET IDENTITY_INSERT {tableName} ON;" + result.TrimEnd(';') + $";SET IDENTITY_INSERT {tableName} OFF"; ;
+                result = $"SET IDENTITY_INSERT {tableName} ON;" + result.TrimEnd(';') + $";SET IDENTITY_INSERT {tableName} OFF";
+                result = result.Replace(";\r\n;", ";");
             }
             return result;
         }

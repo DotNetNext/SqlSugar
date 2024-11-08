@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -98,6 +98,10 @@ namespace SqlSugar
         }
         private bool UpdateObjectNotWhere()
         {
+            if (this.Context?.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.SqlServer) 
+            {
+                return false;
+            }
             return this.Context.CurrentConnectionConfig.DbType != DbType.MySql
                 && this.Context.CurrentConnectionConfig.DbType != DbType.MySqlConnector
                 && this.Context.CurrentConnectionConfig.DbType != DbType.SqlServer;
@@ -294,6 +298,10 @@ namespace SqlSugar
 
         private void DataChangesAop(T [] items)
         {
+            if (typeof(T).FullName.StartsWith("System.Collections.Generic.Dictionary`"))
+            {
+                return;
+            }
             var dataEvent = this.Context.CurrentConnectionConfig.AopEvents?.DataChangesExecuted;
             if (dataEvent != null)
             {
@@ -386,6 +394,10 @@ namespace SqlSugar
                     UpdateServerTime = column.UpdateServerTime,
                     IsPrimarykey=column.IsPrimarykey
                 };
+                if (column.ForOwnsOnePropertyInfo != null)
+                {
+                    columnInfo.DbColumnName = column.DbColumnName;
+                }
                 if (columnInfo.PropertyType.IsEnum() && columnInfo.Value != null)
                 {
                     if (this.Context.CurrentConnectionConfig.MoreSettings?.TableEnumIsString == true)
@@ -602,7 +614,7 @@ namespace SqlSugar
                 return mappInfo == null ? propertyName : mappInfo.DbColumnName;
             }
         }
-        private List<string> GetPrimaryKeys()
+        protected List<string> GetPrimaryKeys()
         {
             if (this.WhereColumnList.HasValue())
             {

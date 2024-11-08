@@ -31,6 +31,10 @@ namespace SqlSugar
         Vastbase,
         PolarDB,
         Doris,
+        Xugu,
+        GoldenDB,
+        TDSQLForPGODBC, 
+        TDSQL,
         Custom =900
     }
 }

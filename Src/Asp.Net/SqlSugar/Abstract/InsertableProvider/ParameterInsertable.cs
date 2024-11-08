@@ -101,7 +101,7 @@ namespace SqlSugar
             int result = 0;
             var inserable = Inserable as InsertableProvider<T>;
             var columns = inserable.InsertBuilder.DbColumnInfoList.GroupBy(it => it.DbColumnName).Select(it => it.Key).Distinct().ToList();
-            var tableWithString = inserable.InsertBuilder.TableWithString;
+            var tableWithString = inserable.InsertBuilder.AsName;
             var removeCacheFunc = inserable.RemoveCacheFunc;
             var objects = inserable.InsertObjs;
             if (objects == null || objects.Count() == 0 || (objects.Count() == 1 && objects.First() == null))
@@ -134,7 +134,7 @@ namespace SqlSugar
             int result = 0;
             var inserable = Inserable as InsertableProvider<T>;
             var columns = inserable.InsertBuilder.DbColumnInfoList.GroupBy(it => it.DbColumnName).Select(it => it.Key).Distinct().ToList();
-            var tableWithString = inserable.InsertBuilder.TableWithString;
+            var tableWithString = inserable.InsertBuilder.AsName;
             var removeCacheFunc = inserable.RemoveCacheFunc;
             var objects = inserable.InsertObjs;
             var identityList = inserable.EntityInfo.Columns.Where(it => it.IsIdentity).Select(it => it.PropertyName).ToArray();

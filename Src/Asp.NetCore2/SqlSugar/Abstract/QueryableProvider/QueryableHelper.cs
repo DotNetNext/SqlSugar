@@ -828,9 +828,9 @@ namespace SqlSugar
                 {
                     var propertyName = kv.Key.Replace("SugarNav_", "");
                     var propertyInfo = columns.First(i => i.PropertyName == propertyName).PropertyInfo;
-                    if (kv.Value is decimal &&UtilMethods.GetUnderType(propertyInfo.PropertyType).IsIn(typeof(int), typeof(long)))
+                    if (kv.Value is decimal && UtilMethods.GetUnderType(propertyInfo.PropertyType).IsIn(typeof(int), typeof(long)))
                     {
-                   
+
                         var changeValue = UtilMethods.ChangeType2(kv.Value, propertyInfo.PropertyType);
                         propertyInfo.SetValue(addItem, changeValue);
                     }
@@ -842,7 +842,7 @@ namespace SqlSugar
                     }
                     else if (kv.Value == DBNull.Value)
                     {
-                        propertyInfo.SetValue(addItem,null);
+                        propertyInfo.SetValue(addItem, null);
                     }
                     else if (UtilMethods.GetUnderType(propertyInfo.PropertyType) == typeof(Guid) && kv.Value is string)
                     {
@@ -851,6 +851,10 @@ namespace SqlSugar
                     else if (UtilMethods.GetUnderType(propertyInfo.PropertyType) == typeof(int) && kv.Value is long)
                     {
                         propertyInfo.SetValue(addItem, Convert.ToInt32(kv.Value));
+                    }
+                    else if (propertyInfo.PropertyType.FullName == "System.Ulid") 
+                    {
+                        propertyInfo.SetValue(addItem,UtilMethods.To( kv.Value, propertyInfo.PropertyType));
                     }
                     else
                     {
@@ -1574,7 +1578,18 @@ namespace SqlSugar
                     var tableinfo = this.QueryBuilder.AsTables.First();
                     if (this.QueryBuilder.TableWithString != SqlWith.Null && this.Context.CurrentConnectionConfig?.MoreSettings?.IsWithNoLockQuery == true && this.QueryBuilder.AsTables.First().Value.ObjToString().Contains(SqlWith.NoLock) == false)
                     {
-                        this.QueryBuilder.AsTables[tableinfo.Key] = " (SELECT * FROM " + this.QueryBuilder.AsTables.First().Value + $" {SqlWith.NoLock} )";
+                        if (this.QueryBuilder.AsTables.First().Value.EndsWith(") unionTable "))
+                        {
+                            this.QueryBuilder.AsTables[tableinfo.Key] = " (SELECT * FROM " + this.QueryBuilder.AsTables.First().Value + ")";
+                        }
+                        else if (this.QueryBuilder.AsTables.First().Value.EndsWith(") MergeTable "))
+                        {
+                            this.QueryBuilder.AsTables[tableinfo.Key] = " (SELECT * FROM " + this.QueryBuilder.AsTables.First().Value + ")";
+                        }
+                        else
+                        {
+                            this.QueryBuilder.AsTables[tableinfo.Key] = " (SELECT * FROM " + this.QueryBuilder.AsTables.First().Value + $" {SqlWith.NoLock} )";
+                        }
                     }
                     else if (this.QueryBuilder.IsSqlQuery && this.QueryBuilder.AsTables.First().Value.ObjToString().StartsWith("("))
                     {

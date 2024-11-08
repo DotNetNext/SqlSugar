@@ -7,6 +7,17 @@ namespace SqlSugar
     public partial class KdbndpQueryBuilder : QueryBuilder
     {
         #region Sql Template
+        public override string SqlTemplate 
+        {
+            get
+            {
+                if (this.PartitionByValue.HasValue())
+                {
+                   return  "SELECT {0}{" + UtilConstants.ReplaceKey + "} FROM {1}{2}{3}{4}";
+                }
+                return base.SqlTemplate;
+            }
+        }
         public override string PageTempalte
         {
             get
@@ -14,6 +25,10 @@ namespace SqlSugar
                 /*
                  SELECT * FROM TABLE WHERE CONDITION ORDER BY ID DESC LIMIT 10 offset 0
                  */
+                if (this.PartitionByValue.HasValue()) 
+                {
+                    return base.PageTempalte;
+                }
                 var template = "SELECT {0} FROM {1} {2} {3} {4} LIMIT {6} offset {5}";
                 return template;
             }
@@ -35,6 +50,10 @@ namespace SqlSugar
         }
         public override string ToSqlString()
         {
+            if (PartitionByValue.HasValue()) 
+            {
+                return base.ToSqlString();
+            }
             base.AppendFilter();
             string oldOrderValue = this.OrderByValue;
             var isNullOrderValue = Skip == 0 && Take == 1 && oldOrderValue == "ORDER BY NOW() ";
@@ -85,6 +104,11 @@ namespace SqlSugar
         #endregion
 
         #region Get SQL Partial
+        public override string GetExternalOrderBy(string externalOrderBy)
+        {
+            return Regex.Replace(externalOrderBy, @"""\w+""\.", "");
+        }
+
         public override string GetSelectValue
         {
             get

@@ -13,12 +13,17 @@ namespace SqlSugar
         public override string SqlTemplate
         {
             get
-            {
+            {  
                 return "SELECT {0}{" + UtilConstants.ReplaceKey + "} FROM {1}{2}{3}{4}";
             }
         }
         public override string ToSqlString()
         {
+
+            if (PartitionByValue.HasValue())
+            {
+                return base.ToSqlString();
+            }
             //Support MySql Model
             if (this.Context.CurrentConnectionConfig.MoreSettings?.DatabaseModel == DbType.MySql) 
             {
@@ -144,6 +149,11 @@ namespace SqlSugar
                 return "SELECT {0} FROM {1}{2}{3}{4} ";
             }
         }
+        public override string GetExternalOrderBy(string externalOrderBy)
+        {
+            return Regex.Replace(externalOrderBy, @"""\w+""\.", "");
+        }
+
         private string OffsetPage()
         {
             var skip = this.Skip ?? 1;

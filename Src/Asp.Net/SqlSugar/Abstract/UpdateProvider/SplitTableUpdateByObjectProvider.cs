@@ -27,12 +27,25 @@ namespace SqlSugar
             foreach (var item in groupModels.GroupBy(it => it.GroupName))
             {
                 var addList = item.Select(it => it.Item).ToList();
-                result += this.Context.Updateable(addList)
+                if (IsVersion())
+                {
+                    Check.ExceptionEasy(addList.Count > 1, "The version number can only be used for single record updates", "版本号只能用于单条记录更新");
+                    result += this.Context.Updateable(addList.First())
                     .WhereColumns(this.WhereColumns?.ToArray())
-                    .EnableDiffLogEventIF(this.IsEnableDiffLogEvent,this.BusinessData)
+                    .EnableDiffLogEventIF(this.IsEnableDiffLogEvent, this.BusinessData)
                     .UpdateColumns(updateobj.UpdateBuilder.UpdateColumns?.ToArray())
                     .IgnoreColumns(this.updateobj.UpdateBuilder.IsNoUpdateNull, this.updateobj.UpdateBuilder.IsOffIdentity, this.updateobj.UpdateBuilder.IsNoUpdateDefaultValue)
                     .IgnoreColumns(GetIgnoreColumns()).AS(item.Key).ExecuteCommandWithOptLock(isThrowError);
+                }
+                else
+                {
+                    result += this.Context.Updateable(addList)
+                        .WhereColumns(this.WhereColumns?.ToArray())
+                        .EnableDiffLogEventIF(this.IsEnableDiffLogEvent, this.BusinessData)
+                        .UpdateColumns(updateobj.UpdateBuilder.UpdateColumns?.ToArray())
+                        .IgnoreColumns(this.updateobj.UpdateBuilder.IsNoUpdateNull, this.updateobj.UpdateBuilder.IsOffIdentity, this.updateobj.UpdateBuilder.IsNoUpdateDefaultValue)
+                        .IgnoreColumns(GetIgnoreColumns()).AS(item.Key).ExecuteCommandWithOptLock(isThrowError);
+                }
             }
             return result;
         }
@@ -80,12 +93,26 @@ namespace SqlSugar
             foreach (var item in groupModels.GroupBy(it => it.GroupName))
             {
                 var addList = item.Select(it => it.Item).ToList();
-                result += await this.Context.Updateable(addList)
-                    .WhereColumns(this.WhereColumns?.ToArray())
-                    .EnableDiffLogEventIF(this.IsEnableDiffLogEvent, this.BusinessData)
-                    .UpdateColumns(updateobj.UpdateBuilder.UpdateColumns?.ToArray())
-                    .IgnoreColumns(this.updateobj.UpdateBuilder.IsNoUpdateNull, this.updateobj.UpdateBuilder.IsOffIdentity, this.updateobj.UpdateBuilder.IsNoUpdateDefaultValue)
-                    .IgnoreColumns(GetIgnoreColumns()).AS(item.Key).ExecuteCommandWithOptLockAsync(isThrowError);
+                if (IsVersion())
+                {
+                    Check.ExceptionEasy(addList.Count > 1, "The version number can only be used for single record updates", "版本号只能用于单条记录更新");
+                    result += await this.Context.Updateable(addList.First())
+                      .WhereColumns(this.WhereColumns?.ToArray())
+                      .EnableDiffLogEventIF(this.IsEnableDiffLogEvent, this.BusinessData)
+                      .UpdateColumns(updateobj.UpdateBuilder.UpdateColumns?.ToArray())
+                      .IgnoreColumns(this.updateobj.UpdateBuilder.IsNoUpdateNull, this.updateobj.UpdateBuilder.IsOffIdentity, this.updateobj.UpdateBuilder.IsNoUpdateDefaultValue)
+                      .IgnoreColumns(GetIgnoreColumns()).AS(item.Key).ExecuteCommandWithOptLockAsync(isThrowError);
+
+                }
+                else
+                {
+                    result += await this.Context.Updateable(addList)
+                        .WhereColumns(this.WhereColumns?.ToArray())
+                        .EnableDiffLogEventIF(this.IsEnableDiffLogEvent, this.BusinessData)
+                        .UpdateColumns(updateobj.UpdateBuilder.UpdateColumns?.ToArray())
+                        .IgnoreColumns(this.updateobj.UpdateBuilder.IsNoUpdateNull, this.updateobj.UpdateBuilder.IsOffIdentity, this.updateobj.UpdateBuilder.IsNoUpdateDefaultValue)
+                        .IgnoreColumns(GetIgnoreColumns()).AS(item.Key).ExecuteCommandWithOptLockAsync(isThrowError);
+                }
             }
             return result;
         }
@@ -117,6 +144,11 @@ namespace SqlSugar
             }
             result = 0;
         }
+        private bool IsVersion()
+        {
+            return this.Context.EntityMaintenance.GetEntityInfo<T>().Columns.Any(it => it.IsEnableUpdateVersionValidation);
+        }
+
         internal class GroupModel
         {
             public string GroupName { get; set; }

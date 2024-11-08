@@ -46,10 +46,7 @@ namespace SqlSugar
         {
             get
             {
-                return @"select view_name name  from user_views 
-                                                WHERE VIEW_name NOT LIKE '%$%'
-                                                AND VIEW_NAME !='PRODUCT_PRIVS'
-                        AND VIEW_NAME NOT LIKE 'MVIEW_%' ";
+                return @"select VIEW_NAME name from all_views WHERE OWNER=SF_GET_SCHEMA_NAME_BY_ID(CURRENT_SCHID) order by VIEW_NAME";
             }
         }
         #endregion

@@ -73,7 +73,14 @@ namespace SqlSugar
                             object value = null;
                             if (it.Value is DateTime)
                             {
-                                value = ((DateTime)it.Value).ToString("O");
+                                if (IsSqlServerModel())
+                                {
+                                    value = ((DateTime)it.Value).ToString("yyyy-MM-dd HH:mm:ss.fff");
+                                }
+                                else
+                                {
+                                    value = ((DateTime)it.Value).ToString("O");
+                                }
                             }
                             else if (it.Value is DateTimeOffset)
                             {
@@ -98,6 +105,10 @@ namespace SqlSugar
             }
         }
 
+        private bool IsSqlServerModel()
+        {
+            return this.Context?.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.SqlServer;
+        }
 
         public override string FormatDateTimeOffset(object value)
         {

@@ -848,7 +848,12 @@ namespace SqlSugar
                             FieldName = this.QueryBuilder.Builder.GetTranslationColumnName(column.DbColumnName),
                             FieldValue = disableQueryWhereColumnRemoveTrim?value.ObjToStringNoTrim() : value.ObjToStringNew(),
                             CSharpTypeName = column.PropertyInfo.PropertyType.Name
-                        }); 
+                        });
+                        if (value == null) 
+                        {
+                            data.Value.FieldValue = null;
+                            data.Value.ConditionalType = ConditionalType.EqualNull; 
+                        }
                         if (value is Enum && this.Context.CurrentConnectionConfig?.MoreSettings?.TableEnumIsString != true)
                         {
                             data.Value.FieldValue = Convert.ToInt64(value).ObjToString();
@@ -1448,6 +1453,7 @@ namespace SqlSugar
                 return Select(expression);
             }
             var clone = this.Select(expression).Clone();
+            clone.QueryBuilder.IsDistinct = false;
             //clone.QueryBuilder.LambdaExpressions.Index = QueryBuilder.LambdaExpressions.Index+1;
             var ps = clone.QueryBuilder;
             var sql = ps.GetSelectValue;
@@ -1495,7 +1501,21 @@ namespace SqlSugar
                 }
                 else
                 {
-                    return this.Select<TResult>(this.SqlBuilder.SqlSelectAll);
+                    if (this.QueryBuilder.IsSingle()&&this.EntityInfo?.Type?.GetCustomAttribute<SplitTableAttribute>() != null&& this.QueryBuilder?.SelectValue?.ToString()=="*")
+                    {
+                        var columnAarray = this.Context.EntityMaintenance.GetEntityInfo<T>().Columns;
+                        var sql = string.Empty;
+                        var columns= columnAarray.Where(it => typeof(TResult).GetProperties().Any(s => s.Name.EqualCase(it.PropertyName))).Where(it => it.IsIgnore == false).ToList();
+                        if (columns.Any())
+                        {
+                            sql = string.Join(",", columns.Select(it => $"{SqlBuilder.GetTranslationColumnName(it.DbColumnName)} AS  {SqlBuilder.GetTranslationColumnName(it.PropertyName)} "));
+                        }
+                        return this.Select<TResult>(sql);
+                    }
+                    else
+                    {
+                        return this.Select<TResult>(this.SqlBuilder.SqlSelectAll);
+                    }
                 }
             }
             else
@@ -1682,6 +1702,8 @@ namespace SqlSugar
                 //}
                 var unionall = this.Context._UnionAll(tableQueryables.ToArray());
                 unionall.QueryBuilder.Includes = this.QueryBuilder.Includes;
+                unionall.QueryBuilder.EntityType = typeof(T);
+                unionall.QueryBuilder.IsDisabledGobalFilter = this.QueryBuilder.IsDisabledGobalFilter;
                 if (unionall.QueryBuilder.Includes?.Any()==true) 
                 {
                     unionall.QueryBuilder.NoCheckInclude = true;

@@ -149,6 +149,10 @@ namespace SqlSugar
                 else if (type == UtilConstants.ByteArrayType)
                 {
                     string bytesString = "0x" + BitConverter.ToString((byte[])value).Replace("-", "");
+                    if (bytesString == "0x")
+                    {
+                        bytesString = "''";
+                    }
                     return bytesString;
                 }
                 else if (type.IsEnum())

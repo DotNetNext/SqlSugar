@@ -172,6 +172,10 @@ namespace SqlSugar
                                 dbType = "varchar";
                             }
                         }
+                        if(it?.PropertyType?.FullName == "NetTopologySuite.Geometries.Geometry")
+                        {
+                            return string.Format(" {0} ", base.GetDbColumn(it, FormatValue(it.Value, it.DbColumnName, i + (pageIndex - 1) * 100000, it)), dbType);
+                        }
                         return string.Format("CAST({0} AS {1})", base.GetDbColumn(it,FormatValue(it.Value,it.DbColumnName,i+(pageIndex-1)*100000,it)), dbType);
 
                     })) + ")");
@@ -237,6 +241,10 @@ namespace SqlSugar
         }
         protected override string GetJoinUpdate(string columnsString, ref string whereString)
         {
+            if (this.JoinInfos?.Count > 1) 
+            {
+                return this.GetJoinUpdateMany(columnsString,whereString);
+            }
             var formString = $"  {Builder.GetTranslationColumnName(this.TableName)}  AS {Builder.GetTranslationColumnName(this.ShortName)} ";
             var joinString = "";
             foreach (var item in this.JoinInfos)
@@ -247,6 +255,22 @@ namespace SqlSugar
             var tableName = formString + "\r\n ";
             columnsString = columnsString.Replace(Builder.GetTranslationColumnName(this.ShortName)+".","")+joinString; 
             return string.Format(SqlTemplate, tableName, columnsString, whereString);
+        }
+        private string GetJoinUpdateMany(string columnsString,string where)
+        {
+            var formString = $"  {Builder.GetTranslationColumnName(this.TableName)}  AS {Builder.GetTranslationColumnName(this.ShortName)} ";
+            var joinString = "";
+            var i = 0;
+            foreach (var item in this.JoinInfos)
+            {
+                var whereString = " ON " + item.JoinWhere;
+                joinString += $"\r\n JOIN {Builder.GetTranslationColumnName(item.TableName)}  {Builder.GetTranslationColumnName(item.ShortName)} ";
+                joinString = joinString + whereString;
+                i++;
+            }
+            var tableName = Builder.GetTranslationColumnName(this.TableName) + "\r\n ";
+            columnsString = columnsString.Replace(Builder.GetTranslationColumnName(this.ShortName) + ".", "") + $" FROM {Builder.GetTranslationColumnName(this.TableName)} {Builder.GetTranslationColumnName(this.ShortName)}\r\n " + joinString;
+            return string.Format(SqlTemplate, tableName, columnsString, where);
         }
         public override string FormatDateTimeOffset(object value)
         {

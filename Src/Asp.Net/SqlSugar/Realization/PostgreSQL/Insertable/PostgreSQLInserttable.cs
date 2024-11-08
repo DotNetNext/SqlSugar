@@ -42,6 +42,10 @@ namespace SqlSugar
             {
                 primaryKey = this.SqlBuilder.GetTranslationColumnName(primaryKey);
             }
+            else if(result.Key?.EndsWith(" returning $PrimaryKey") ==true)
+            {
+                result=new KeyValuePair<string, List<SugarParameter>>( result.Key.Replace(" returning $PrimaryKey", null),result.Value);
+            }
             return new KeyValuePair<string, List<SugarParameter>>(result.Key.Replace("$PrimaryKey", primaryKey), result.Value);
         }
 

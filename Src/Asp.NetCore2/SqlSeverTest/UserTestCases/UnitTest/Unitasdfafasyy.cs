@@ -71,7 +71,7 @@ namespace OrmTest
             //#endregion
 
 
-
+            db.DbMaintenance.DropTable<TestSplit001>();
             //用例代码
 
             var testSplit001 = new TestSplit001()

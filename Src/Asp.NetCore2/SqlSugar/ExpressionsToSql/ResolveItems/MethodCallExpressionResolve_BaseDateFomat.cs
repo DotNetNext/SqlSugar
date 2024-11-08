@@ -20,6 +20,10 @@ namespace SqlSugar
             }
             else if (IsOracle() || IsPg())
             {
+                if (this.Context?.SugarContext?.Context?.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.SqlServer) 
+                {
+                    return string.Format("FORMAT({0},'{1}','en-US')", value, formatString);
+                }
                 if (!(formatString?.Contains("24") == true))
                 {
                     formatString = formatString.Replace("HH", "hh24");

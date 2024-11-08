@@ -183,6 +183,10 @@ namespace SqlSugar
                 }
                 catch (Exception ex)
                 {
+                    if (this.Context.CurrentConnectionConfig?.DbType==DbType.SqlServer&&ex.Message?.Contains("provider: SSL")==true) 
+                    {
+                        Check.ExceptionEasy(true,ex.Message, "SSL出错，因为升级了驱动,字符串增加Encrypt=True;TrustServerCertificate=True;即可。详细错误：" + ex.Message);
+                    }
                     Check.Exception(true, ErrorMessage.ConnnectionOpen, ex.Message+$"DbType=\"{this.Context.CurrentConnectionConfig.DbType}\";ConfigId=\"{this.Context.CurrentConnectionConfig.ConfigId}\"");
                 }
             }
@@ -695,10 +699,22 @@ namespace SqlSugar
         public virtual Task<DataSet> GetDataSetAllAsync(string sql, params SugarParameter[] parameters)
         {
             Async();
+
             //False asynchrony . No Support DataSet
-            return Task.Run(() => {
-               return  GetDataSetAll(sql, parameters);
-            });
+            if (CancellationToken == null)
+            {
+                return Task.Run(() =>
+                {
+                    return GetDataSetAll(sql, parameters);
+                });
+            }
+            else 
+            {
+                return Task.Run(() =>
+                {
+                    return GetDataSetAll(sql, parameters);
+                },this.CancellationToken.Value);
+            }
         }
         #endregion
 

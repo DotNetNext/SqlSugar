@@ -123,10 +123,10 @@ namespace SqlSugar
                         {
                             value = DBNull.Value;
                         }
-                        else if (value is double&&this.Context?.CurrentConnectionConfig?.MoreSettings?.DatabaseModel==null) 
-                        {
-                            column.Type = NpgsqlDbType.Double;
-                        }
+                        //else if (value is double&&this.Context?.CurrentConnectionConfig?.MoreSettings?.DatabaseModel==null) 
+                        //{
+                        //    column.Type = NpgsqlDbType.Double;
+                        //}
                         if (column.Type == null)
                         {
                             writer.Write(value);

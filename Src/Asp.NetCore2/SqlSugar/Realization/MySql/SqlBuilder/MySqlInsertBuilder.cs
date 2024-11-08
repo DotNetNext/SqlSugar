@@ -54,6 +54,10 @@ namespace SqlSugar
                 else if (type == UtilConstants.ByteArrayType)
                 {
                     string bytesString = "0x" + BitConverter.ToString((byte[])value).Replace("-", "");
+                    if (bytesString == "0x") 
+                    {
+                        bytesString = "''";
+                    }
                     return bytesString;
                 }
                 else if (type.IsEnum())
@@ -154,8 +158,14 @@ namespace SqlSugar
                         batchInsetrSql.Append("),  ");
                     }
                 }
-
-                batchInsetrSql.AppendLine(";select @@IDENTITY");
+                if (DorisHelper.IsDoris(this.Context))
+                {
+                    //doris insert ignore
+                }
+                else
+                {
+                    batchInsetrSql.AppendLine(";select @@IDENTITY");
+                }
                 var result = batchInsetrSql.ToString();
                 result = GetMySqlIgnore(result);
                 return result;

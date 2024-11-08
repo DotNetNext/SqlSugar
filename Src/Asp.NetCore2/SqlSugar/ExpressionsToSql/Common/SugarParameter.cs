@@ -208,6 +208,11 @@ namespace SqlSugar
             get; set;
         }
 
+        public override byte Scale
+        {
+            get;set;
+        }
+
         public int _Size;
 
         public override int Size

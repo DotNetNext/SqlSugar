@@ -21,6 +21,10 @@ namespace SqlSugar
                 return await MySqlConnectorBulkCopy(dt);
             } 
             var dllPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "bulkcopyfiles");
+            if (StaticConfig.BulkCopy_MySqlCsvPath.HasValue()) 
+            {
+                dllPath = StaticConfig.BulkCopy_MySqlCsvPath;
+            }
             DirectoryInfo dir = new DirectoryInfo(dllPath);
             if (!dir.Exists)
             {

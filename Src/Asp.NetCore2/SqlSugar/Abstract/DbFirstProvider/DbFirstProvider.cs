@@ -435,6 +435,10 @@ namespace SqlSugar
             {
                 result = "DateTime.Now";
             }
+            if (result.Equals("getdate()", StringComparison.CurrentCultureIgnoreCase))
+            {
+                result = "DateTime.Now";
+            }
             result = result.Replace("\r", "\t").Replace("\n", "\t");
             result = result.IsIn("''", "\"\"") ? string.Empty : result;
             return result;

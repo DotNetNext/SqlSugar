@@ -8,7 +8,7 @@ namespace SqlSugar.Xugu
         public override string SqlParameterKeyWord => ":";
         public override string SqlTranslationLeft { get; }="\"";
         public override string SqlTranslationRight { get; }="\"";
-        public override string GetNoTranslationColumnName(string name) => name;
+        //public override string GetNoTranslationColumnName(string name) => name?.TrimEnd('\"')?.TrimStart('\"');
         public override string SqlDateNow { get; } = "SYSDATE";
         public override string FullSqlDateNow { get; } = "SELECT SYSDATE FROM DUAL";
         public override string GetTranslationTableName(string name)

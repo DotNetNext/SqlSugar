@@ -182,6 +182,10 @@ namespace SqlSugar
                 {
                     sqlParameter.SqlDbType = ((SqlDbType)parameter.CustomDbType);
                 }
+                if (sqlParameter.Direction == ParameterDirection.Output && parameter.Scale > 0)
+                {
+                    sqlParameter.Scale = parameter.Scale;
+                }
                 ++index;
             }
             return result;

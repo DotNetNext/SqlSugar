@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Schema;
 
 namespace SqlSugar
 {
@@ -842,6 +843,10 @@ namespace SqlSugar
         #endregion
 
         #region More api
+        public string[] GetCurrentConfigIds()
+        {
+           return _AllClients.Select(it=>it.ConnectionConfig.ConfigId+string.Empty).ToArray();
+        }
         public IContextMethods Utilities { get { return this.Context.Utilities; } set { this.Context.Utilities = value; } }
         public AopProvider Aop => this.Context.Aop;
         public ICodeFirst CodeFirst => this.Context.CodeFirst;

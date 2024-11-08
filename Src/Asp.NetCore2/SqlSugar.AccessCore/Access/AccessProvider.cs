@@ -58,7 +58,7 @@ namespace SqlSugar.Access
         }
         public override IDataAdapter GetAdapter()
         {
-            return new OleDbDataAdapter();
+            return new OleDbDataAdapterNew();
         }
         public override DbCommand GetCommand(string sql, SugarParameter[] parameters)
         {
@@ -84,7 +84,7 @@ namespace SqlSugar.Access
         }
         public override void SetCommandToAdapter(IDataAdapter dataAdapter, DbCommand command)
         {
-            ((OleDbDataAdapter)dataAdapter).SelectCommand = (OleDbCommand)command;
+            ((OleDbDataAdapterNew)dataAdapter).SelectCommand = (OleDbCommand)command;
         }
         /// <summary>
         /// if mysql return MySqlParameter[] pars

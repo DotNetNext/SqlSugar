@@ -9,6 +9,7 @@ namespace SqlSugar
 {
     public interface ITenant
     {
+        string[] GetCurrentConfigIds();
         void BeginTran();
         void BeginTran(IsolationLevel iso);
         void CommitTran();

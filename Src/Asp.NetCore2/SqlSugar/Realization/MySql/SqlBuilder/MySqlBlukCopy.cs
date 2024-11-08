@@ -9,22 +9,14 @@ using System.Text;
 using System.Threading.Tasks;
 namespace SqlSugar
 {
-    public class MySqlBlukCopy<T> 
+    public partial class MySqlBlukCopy<T> 
     {
-        internal SqlSugarProvider Context { get; set; }
-        internal ISqlBuilder Builder { get; set; }
-        internal T[] Entitys { get; set; }
-        internal string Chara { get; set; }
+     
         private MySqlBlukCopy()
         {
 
         }
-        public MySqlBlukCopy(SqlSugarProvider context, ISqlBuilder builder, T []entitys)
-        {
-            this.Context = context;
-            this.Builder = builder;
-            this.Entitys = entitys;
-        }
+  
         public bool ExecuteBulkCopy(string characterSet) 
         {
             this.Chara = characterSet;

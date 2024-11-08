@@ -42,6 +42,10 @@ namespace SqlSugar.GBase
             get
             {
                 var result = Builder.GetTranslationTableName(EntityInfo.EntityName);
+                if (this.AsName.HasValue())
+                {
+                    result = Builder.GetTranslationTableName(this.AsName);
+                }
                 result += UtilConstants.Space;
                 if (this.TableWithString.HasValue())
                 {

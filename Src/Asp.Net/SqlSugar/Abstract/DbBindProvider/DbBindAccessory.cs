@@ -160,7 +160,23 @@ namespace SqlSugar
                         }
                         else
                         {
-                            item.PropertyInfo.SetValue(parentObj, dataReader.GetValue(itemIndex));
+                            var setValue = dataReader.GetValue(itemIndex);
+                            if (setValue == DBNull.Value) 
+                            {
+                                setValue = null;
+                            }
+                            if (item.UnderType == UtilConstants.GuidType&& setValue is string) 
+                            {
+                                if (setValue != null) 
+                                {
+                                    setValue = Guid.Parse(setValue+"");
+                                }
+                            }
+                            else if (item.UnderType?.IsEnum==true&& setValue!=null)
+                            {
+                                setValue = UtilMethods.ChangeType2(setValue, item.UnderType);
+                            }
+                            item.PropertyInfo.SetValue(parentObj, setValue);
                         }
                     }
                 }

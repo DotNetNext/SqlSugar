@@ -210,7 +210,7 @@ namespace SqlSugar
                                 if (this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL)
                                 {
                                     var sqlobj = this.Context.Insertable(insert).AS(tableName).ToSql();
-                                    id = this.Context.Ado.GetInt(sqlobj.Key+ "  "+ this.InsertBuilder.Builder.GetTranslationColumnName(entityInfo.Columns.First(it=>isIdentity).DbColumnName), sqlobj.Value);
+                                    id = this.Context.Ado.GetInt(sqlobj.Key+ " returning " + this.InsertBuilder.Builder.GetTranslationColumnName(entityInfo.Columns.First(it=>isIdentity).DbColumnName), sqlobj.Value);
                                 }
                                 else
                                 {

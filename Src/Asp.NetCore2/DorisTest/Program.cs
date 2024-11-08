@@ -14,14 +14,19 @@ namespace OrmTest
 
             db.CodeFirst.InitTables<LogEntity>();
 
-            db.DbMaintenance.TruncateTable<Student112>();//truncate data
+       
             db.CodeFirst.InitTables<Student112>();//drop colum
             db.CodeFirst.InitTables<Student11>();//add column
+            db.DbMaintenance.TruncateTable<Student112>();//truncate data
 
             db.Insertable(new Student11() { Id = 1, Age = 1, Name = "a",DateTime=DateTime.Now })
                 .ExecuteCommand();
+
+            db.Insertable(new Student11() { Id = 2, Age = 1, Name = "a", DateTime = DateTime.Now })
+                .ExecuteCommand();
             var list=db.Queryable<Student11>().ToList();
-            //var rows = db.Updateable(list.First()).ExecuteCommand();
+            var rows1 = db.Updateable(list.FirstOrDefault()).ExecuteCommand();
+            //var rows2 = db.Updateable(list).ExecuteCommand();
             db.Deleteable(list).ExecuteCommand();
         }
     }

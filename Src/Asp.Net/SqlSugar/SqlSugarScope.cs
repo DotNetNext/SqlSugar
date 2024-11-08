@@ -917,5 +917,9 @@ namespace SqlSugar
         {
             ScopedContext.ClearTracking();
         }
+        public string[] GetCurrentConfigIds()
+        {
+            return ScopedContext.GetCurrentConfigIds();
+        }
     }
 }

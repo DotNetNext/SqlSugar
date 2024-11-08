@@ -528,6 +528,13 @@ namespace SqlSugar
             }
             if (item.IsJoinQuery == false||isMain||isSingle|| isEasyJoin)
             {
+                if (item.IsJoinQuery == false&& ChildType.IsInterface)
+                {
+                    foreach (var joinInfo in this.JoinQueryInfos)
+                    {
+                        sql = ReplaceFilterColumnName(sql, joinInfo.EntityType, Builder.GetTranslationColumnName(joinInfo.ShortName));
+                    }
+                }
                 WhereInfos.Add(sql);
             }
             else 
@@ -993,7 +1000,7 @@ namespace SqlSugar
                 }
                 if (IsSingle() && result.Contains("MergeTable") && result.Trim().EndsWith(" MergeTable") && TableShortName != null)
                 {
-                    result = result.Replace(") MergeTable  ", ") " + TableShortName+UtilConstants.Space);
+                    result = result.Replace(") MergeTable  ", ") " +this.Builder.GetTranslationColumnName(TableShortName)+UtilConstants.Space);
                     TableShortName = null;
                 }
                 if (IsSingle() && result.Contains("unionTable") && result.Trim().EndsWith(" unionTable")&& TableShortName!=null) 

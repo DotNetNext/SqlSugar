@@ -21,7 +21,9 @@ namespace SqlSugar.ClickHouse
             bulkCopy = new ClickHouseBulkCopy(conn);
             await conn.OpenAsync();
             bulkCopy.BatchSize = 100000;
-            bulkCopy.DestinationTableName = dt.TableName;
+            var proDestinationTableName = bulkCopy.GetType().GetProperty("DestinationTableName");
+            proDestinationTableName.SetValue(bulkCopy,dt.TableName);
+            await bulkCopy.InitAsync();
             try
             {
                 await bulkCopy.WriteToServerAsync(dt, new CancellationToken());

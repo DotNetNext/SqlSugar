@@ -1102,6 +1102,7 @@ namespace SqlSugar
                 sb.Append(" ) ");
             }
             var result = sb.ToString();
+            result = result.Replace(" = null)", " is null)");
             if (result.IsNullOrEmpty())
             {
                 return " 1=2 ";
@@ -1226,6 +1227,10 @@ namespace SqlSugar
             // 如果需要处理NULL值或其他复杂情况，请在这里添加逻辑  
 
             return queryCondition;
+        }
+        public virtual string SelectFields(MethodCallExpressionModel model)
+        {
+            return string.Join(",", model.Args.Select(it => it.MemberName));
         }
     }
 }

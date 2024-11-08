@@ -36,7 +36,7 @@ namespace SqlSugar
                                 then true else false end as IsNullable
                                  from (select * from sys_tables where  UPPER(tablename) = UPPER('{{0}}') and  lower(schemaname)='{GetSchema()}') ptables inner join sys_class pclass
                                 on ptables.tablename = pclass.relname inner join (SELECT *
-                                FROM information_schema.columns
+                                FROM information_schema.columns where UPPER(table_schema)=UPPER('{GetSchema()}')
                                 ) pcolumn on pcolumn.table_name = ptables.tablename
                                 left join (
 	                                select  sys_class.relname,sys_attribute.attname as colname from 
@@ -56,7 +56,16 @@ namespace SqlSugar
                 }
                 else if (IsSqlServerModel()) 
                 {
-                    sql = sql.Replace("sys_constraint.conkey[1]", "sys_constraint.conkey{{1}}");
+
+                    sql = sql.Replace("sys_", "pg_");
+                    sql = sql.Replace("pg_constraint.conkey[1]", "pg_constraint.conkey{{1}}");
+                    sql = sql.Replace("UPPER(", "pg_catalog.upper(");
+                    sql = sql.Replace("lower(", "pg_catalog.lower(");
+                    sql = sql.Replace("NEXTVAL%", "%nextval%");
+                    sql = sql.Replace("pcolumn.udt_name", "pcolumn.data_type");
+                    sql = sql.Replace("case when pkey.colname = pcolumn.column_name", "case when pkey.colname::text = pcolumn.column_name::text");
+                    sql = sql.Replace("pcolumn on pcolumn.table_name = ptables.tablename", "pcolumn on pcolumn.table_name::text = ptables.tablename::text ");
+                    sql = sql.Replace("pkey on pcolumn.table_name = pkey.relname", "pkey on pcolumn.table_name::text = pkey.relname::text ");
                 }
                 return sql;
             }
@@ -69,28 +78,18 @@ namespace SqlSugar
                 {
                     return @"select cast(relname as varchar) as Name,
                         cast(obj_description(relfilenode,'pg_class') as varchar) as Description from pg_class c 
-                        where  relkind = 'r' and  c.oid > 16384 and c.relnamespace != 99 and c.relname not like '%pl_profiler_saved%' order by relname";
+                        where  relkind = 'r' and  c.oid >= 16384 and c.relnamespace != 99 and c.relname not like '%pl_profiler_saved%' order by relname";
                 }
                 return @"select cast(relname as varchar) as Name,
                         cast(obj_description(relfilenode,'pg_class') as varchar) as Description from sys_class c 
-                        where  relkind = 'r' and  c.oid > 16384 and c.relnamespace != 99 and c.relname not like '%pl_profiler_saved%' order by relname";
+                        where  relkind = 'r' and  c.oid >= 16384 and c.relnamespace != 99 and c.relname not like '%pl_profiler_saved%' order by relname";
             }
         }
         protected override string GetViewInfoListSql
         {
             get
             {
-                if (IsPgModel())
-                {
-                    return @"select cast(relname as varchar) as Name,cast(Description as varchar) from pg_description
-                         join pg_class on pg_description.objoid = pg_class.oid
-                         where objsubid = 0 and relname in (SELECT viewname from pg_views  
-                         WHERE schemaname ='public')";
-                }
-                return @"select cast(relname as varchar) as Name,cast(Description as varchar) from sys_description
-                         join sys_class on sys_description.objoid = sys_class.oid
-                         where objsubid = 0 and relname in (SELECT viewname from sys_views  
-                         WHERE schemaname ='public')";
+                return @"select  table_name as name  from information_schema.views where lower(table_schema)  ='" + GetSchema() + "' ";
             }
         }
         #endregion
@@ -345,6 +344,10 @@ WHERE tgrelid = '" + tableName + "'::regclass");
         private string GetSchema()
         {
             var schema = "public";
+            if (IsSqlServerModel()) 
+            {
+                schema = "dbo";
+            }
             if (System.Text.RegularExpressions.Regex.IsMatch(this.Context.CurrentConnectionConfig.ConnectionString.ToLower(), "searchpath="))
             {
                 var regValue = System.Text.RegularExpressions.Regex.Match(this.Context.CurrentConnectionConfig.ConnectionString.ToLower(), @"searchpath\=(\w+)").Groups[1].Value;
@@ -406,6 +409,10 @@ WHERE tgrelid = '" + tableName + "'::regclass");
         public override bool IsAnyTable(string tableName, bool isCache = true)
         {
             var sql = $"select count(*) from information_schema.tables where UPPER(table_schema)=UPPER('{GetSchema()}') and UPPER(table_type)=UPPER('BASE TABLE') and UPPER(table_name)=UPPER('{tableName.ToUpper(IsUpper)}')";
+            if (IsSqlServerModel()) 
+            {
+                sql = $"select count(*) from information_schema.tables where  pg_catalog.UPPER(table_name)=pg_catalog.UPPER('{tableName.ToUpper(IsUpper)}')";
+            }
             return this.Context.Ado.GetInt(sql)>0;
         }
 
@@ -429,7 +436,14 @@ WHERE tgrelid = '" + tableName + "'::regclass");
             }
             var oldDatabaseName = this.Context.Ado.Connection.Database;
             var connection = this.Context.CurrentConnectionConfig.ConnectionString;
-            connection = connection.Replace(oldDatabaseName, "test");
+            if (IsSqlServerModel())
+            {
+                connection = connection.Replace(oldDatabaseName, "master");
+            }
+            else
+            {
+                connection = connection.Replace(oldDatabaseName, "test");
+            }
             var newDb = new SqlSugarClient(new ConnectionConfig()
             {
                 DbType = this.Context.CurrentConnectionConfig.DbType,
@@ -483,13 +497,13 @@ WHERE tgrelid = '" + tableName + "'::regclass");
                 {
 
                     ConvertCreateColumnInfo(item);
-                    if (item.DbColumnName.Equals("GUID", StringComparison.CurrentCultureIgnoreCase) && item.Length == 0)
-                    {
-                        if (item.DataType?.ToLower() != "uuid")
-                        {
-                            item.Length = 10;
-                        }
-                    }
+                    //if (item.DbColumnName.Equals("GUID", StringComparison.CurrentCultureIgnoreCase) && item.Length == 0)
+                    //{
+                    //    if (item.DataType?.ToLower() != "uuid")
+                    //    {
+                    //        item.Length = 10;
+                    //    }
+                    //}
                 }
             }
             string sql = GetCreateTableSql(tableName, columns);
