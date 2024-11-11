@@ -96,6 +96,7 @@ namespace SqlSugar
                     new KeyValuePair<string, CSharpDataType>("geometry",CSharpDataType.@string),
                     new KeyValuePair<string, CSharpDataType>("name",CSharpDataType.@string),
                     new KeyValuePair<string, CSharpDataType>("text",CSharpDataType.@string),
+                    new KeyValuePair<string, CSharpDataType>("clob",CSharpDataType.@string),
                     new KeyValuePair<string, CSharpDataType>("char",CSharpDataType.@string),
                     new KeyValuePair<string, CSharpDataType>("character",CSharpDataType.@string),
                     new KeyValuePair<string, CSharpDataType>("cidr",CSharpDataType.@string),
