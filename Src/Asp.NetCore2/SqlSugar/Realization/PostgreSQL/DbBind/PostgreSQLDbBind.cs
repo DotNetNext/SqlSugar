@@ -153,7 +153,16 @@ namespace SqlSugar
                     new KeyValuePair<string, CSharpDataType>("varbit",CSharpDataType.@byte),
                     new KeyValuePair<string, CSharpDataType>("time",CSharpDataType.TimeSpan),
                     new KeyValuePair<string, CSharpDataType>("public.geometry",CSharpDataType.@object),
-                    new KeyValuePair<string, CSharpDataType>("inet",CSharpDataType.@object)
+                    new KeyValuePair<string, CSharpDataType>("inet",CSharpDataType.@object),
+
+                    new KeyValuePair<string, CSharpDataType>("number",CSharpDataType.@int),
+                    new KeyValuePair<string, CSharpDataType>("number",CSharpDataType.@float),
+                    new KeyValuePair<string, CSharpDataType>("number",CSharpDataType.@short),
+                    new KeyValuePair<string, CSharpDataType>("number",CSharpDataType.@byte),
+                    new KeyValuePair<string, CSharpDataType>("number",CSharpDataType.@double),
+                    new KeyValuePair<string, CSharpDataType>("number",CSharpDataType.@long),
+                    new KeyValuePair<string, CSharpDataType>("number",CSharpDataType.@bool),
+                    new KeyValuePair<string, CSharpDataType>("number",CSharpDataType.@decimal),
                 };
         public override List<string> StringThrow
         {
