@@ -8,14 +8,7 @@ namespace SqlSugar
     {
         public override string GetDbTypeName(string csharpTypeName)
         {
-            if (csharpTypeName?.StartsWith("ora")==true&& this.Context.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.Vastbase) 
-            {
-                csharpTypeName= csharpTypeName.Replace("ora", "");
-            }
-            else if (csharpTypeName?.StartsWith("mssql_") == true && this.Context.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.Vastbase)
-            {
-                csharpTypeName = csharpTypeName.Replace("mssql_", "");
-            }
+            csharpTypeName = GetValidCsharpTypeName(csharpTypeName);
             if (csharpTypeName == UtilConstants.ByteArrayType.Name)
                 return "bytea";
             if (csharpTypeName.ToLower() == "int32")
@@ -34,9 +27,25 @@ namespace SqlSugar
             else
                 return "varchar";
         }
+
+        private string GetValidCsharpTypeName(string csharpTypeName)
+        {
+            if (csharpTypeName?.StartsWith("ora") == true && this.Context.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.Vastbase)
+            {
+                csharpTypeName = csharpTypeName.Replace("ora", "");
+            }
+            else if (csharpTypeName?.StartsWith("mssql_") == true && this.Context.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.Vastbase)
+            {
+                csharpTypeName = csharpTypeName.Replace("mssql_", "");
+            }
+
+            return csharpTypeName;
+        }
+
         public override string GetPropertyTypeName(string dbTypeName)
         {
             dbTypeName = dbTypeName.ToLower();
+            dbTypeName = GetValidCsharpTypeName(dbTypeName);
             var propertyTypes = MappingTypes.Where(it => it.Value.ToString().ToLower() == dbTypeName || it.Key.ToLower() == dbTypeName);
             if (propertyTypes == null)
             {
