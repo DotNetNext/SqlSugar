@@ -122,6 +122,8 @@ namespace SqlSugar
                     new KeyValuePair<string, CSharpDataType>("macaddr",CSharpDataType.@decimal),
                     new KeyValuePair<string, CSharpDataType>("money",CSharpDataType.@decimal),
                     new KeyValuePair<string, CSharpDataType>("timestamp",CSharpDataType.DateTime),
+                    new KeyValuePair<string, CSharpDataType>("datetime2",CSharpDataType.DateTime),
+                    new KeyValuePair<string, CSharpDataType>("datetime",CSharpDataType.DateTime),
                     new KeyValuePair<string, CSharpDataType>("timestamp with time zone",CSharpDataType.DateTime),
                     new KeyValuePair<string, CSharpDataType>("timestamptz",CSharpDataType.DateTime),
                     new KeyValuePair<string, CSharpDataType>("timestamp without time zone",CSharpDataType.DateTime),
