@@ -141,7 +141,15 @@ namespace SqlSugar
                     }
                     else
                     {
-                        inValues.Add(item);
+                        if (item is string &&item.HasValue() && model?.Conext?.SugarContext?.Context?.CurrentConnectionConfig?.DbType == DbType.MySql)
+                        {
+                            var newValue= item.ToString().Replace("\\", "\\\\");
+                            inValues.Add(newValue);
+                        }
+                        else
+                        {
+                            inValues.Add(item);
+                        }
                     }
                 }
             }
