@@ -430,6 +430,7 @@ AND syscomments.text LIKE '%"+tableName+"%'");
                 if (!schema.EqualCase("dbo"))
                 {
                     temp = temp.Replace("N'user'", $"N'schema'");
+                    temp = temp.Replace("'user'", $"N'schema'");
                 }
                 string sql = string.Format(temp, columnName, tableName);
                 this.Context.Ado.ExecuteCommand(sql);
