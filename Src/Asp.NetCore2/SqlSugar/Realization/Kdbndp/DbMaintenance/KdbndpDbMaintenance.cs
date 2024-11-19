@@ -411,7 +411,7 @@ WHERE tgrelid = '" + tableName + "'::regclass");
             var sql = $"select count(*) from information_schema.tables where UPPER(table_schema)=UPPER('{GetSchema()}') and UPPER(table_type)=UPPER('BASE TABLE') and UPPER(table_name)=UPPER('{tableName.ToUpper(IsUpper)}')";
             if (IsSqlServerModel()) 
             {
-                sql = $"select count(*) from information_schema.tables where  pg_catalog.UPPER(table_name)=pg_catalog.UPPER('{tableName.ToUpper(IsUpper)}')";
+                sql = $"select count(*) from information_schema.tables where  UPPER(table_schema)=UPPER('{GetSchema()}') and  pg_catalog.UPPER(table_name)=pg_catalog.UPPER('{tableName.ToUpper(IsUpper)}')";
             }
             return this.Context.Ado.GetInt(sql)>0;
         }
