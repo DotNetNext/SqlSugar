@@ -35,23 +35,23 @@ namespace SqlSugar
             }
         }
 
-        public bool isAutoToLower
+        public bool isAutoToUpper
         {
             get
             {
-                if (this.Context.CurrentConnectionConfig.MoreSettings == null) return true;
-                return this.Context.CurrentConnectionConfig.MoreSettings.PgSqlIsAutoToLower;
+                if (this.Context?.CurrentConnectionConfig?.MoreSettings == null) return true;
+                return this.Context.CurrentConnectionConfig.MoreSettings.IsAutoToUpper;
             }
         }
         public override string GetTranslationColumnName(string propertyName)
         {
             if (propertyName.Contains(".") && !propertyName.Contains(SqlTranslationLeft))
             {
-                return string.Join(".", propertyName.Split('.').Select(it => $"{SqlTranslationLeft}{it.ToUpper()}{SqlTranslationRight}"));
+                return string.Join(".", propertyName.Split('.').Select(it => $"{SqlTranslationLeft}{it.ToUpper(isAutoToUpper)}{SqlTranslationRight}"));
             }
             if (propertyName.Contains(SqlTranslationLeft)) return propertyName;
             else
-                return SqlTranslationLeft + propertyName.ToUpper() + SqlTranslationRight;
+                return SqlTranslationLeft + propertyName.ToUpper(isAutoToUpper) + SqlTranslationRight;
         }
 
         //public override string GetNoTranslationColumnName(string name)
@@ -68,7 +68,7 @@ namespace SqlSugar
                  .FirstOrDefault(it =>
                  it.EntityName.Equals(entityName, StringComparison.CurrentCultureIgnoreCase) &&
                  it.PropertyName.Equals(propertyName, StringComparison.CurrentCultureIgnoreCase));
-            return (mappingInfo == null ? SqlTranslationLeft + propertyName.ToUpper() + SqlTranslationRight : SqlTranslationLeft + mappingInfo.DbColumnName.ToUpper() + SqlTranslationRight);
+            return (mappingInfo == null ? SqlTranslationLeft + propertyName.ToUpper(isAutoToUpper) + SqlTranslationRight : SqlTranslationLeft + mappingInfo.DbColumnName.ToUpper(isAutoToUpper) + SqlTranslationRight);
         }
 
         public override string GetTranslationTableName(string name)
@@ -82,7 +82,7 @@ namespace SqlSugar
             name = (mappingInfo == null ? name : mappingInfo.DbTableName);
             if (name.Contains(".")&& !name.Contains("("))
             {
-                return string.Join(".", name.ToUpper().Split('.').Select(it => SqlTranslationLeft + it + SqlTranslationRight));
+                return string.Join(".", name.ToUpper(isAutoToUpper).Split('.').Select(it => SqlTranslationLeft + it + SqlTranslationRight));
             }
             else if (name.Contains("("))
             {
@@ -94,7 +94,7 @@ namespace SqlSugar
             }
             else
             {
-                return SqlTranslationLeft + name.ToUpper().TrimEnd('"').TrimStart('"') + SqlTranslationRight;
+                return SqlTranslationLeft + name.ToUpper(isAutoToUpper).TrimEnd('"').TrimStart('"') + SqlTranslationRight;
             }
         }
     }

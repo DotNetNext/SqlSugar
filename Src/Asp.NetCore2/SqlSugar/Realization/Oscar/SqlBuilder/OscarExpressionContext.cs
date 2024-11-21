@@ -5,6 +5,14 @@ namespace SqlSugar
     public class OscarExpressionContext : ExpressionContext, ILambdaExpressions
     {
         public SqlSugarProvider Context { get; set; }
+        public bool isAutoToUpper
+        {
+            get
+            {
+                if (this?.SugarContext?.Context?.CurrentConnectionConfig?.MoreSettings == null) return true;
+                return this.SugarContext.Context.CurrentConnectionConfig.MoreSettings.IsAutoToUpper;
+            }
+        }
         public OscarExpressionContext()
         {
             base.DbMehtods = new OscarLMethod();
@@ -25,7 +33,7 @@ namespace SqlSugar
         }
         public override string GetTranslationText(string name)
         {
-            return SqlTranslationLeft + name.ToUpper() + SqlTranslationRight;
+            return SqlTranslationLeft + name.ToUpper(isAutoToUpper) + SqlTranslationRight;
         }
 
         public override string GetTranslationTableName(string entityName, bool isMapping = true)
@@ -55,7 +63,7 @@ namespace SqlSugar
                     return tableName;
                 }
 
-                return SqlTranslationLeft + (mappingInfo == null ? entityName : mappingInfo.DbTableName).ToUpper() + SqlTranslationRight;
+                return SqlTranslationLeft + (mappingInfo == null ? entityName : mappingInfo.DbTableName).ToUpper(isAutoToUpper) + SqlTranslationRight;
             }
             else if (isComplex)
             {
@@ -88,11 +96,11 @@ namespace SqlSugar
             if (this.MappingColumns.HasValue())
             {
                 var mappingInfo = this.MappingColumns.SingleOrDefault(it => it.EntityName == entityName && it.PropertyName == propertyName);
-                return (mappingInfo == null ? propertyName : mappingInfo.DbColumnName).ToUpper();
+                return (mappingInfo == null ? propertyName : mappingInfo.DbColumnName).ToUpper(isAutoToUpper);
             }
             else
             {
-                return propertyName.ToUpper();
+                return propertyName.ToUpper(isAutoToUpper);
             }
         }
     }
