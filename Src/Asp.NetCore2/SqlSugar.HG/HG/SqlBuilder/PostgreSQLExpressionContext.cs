@@ -133,6 +133,20 @@ namespace SqlSugar.HG
     }
     public class HGMethod : DefaultDbMethod, IDbMethods
     {
+
+        public override string GetDateString(string dateValue, string formatString)
+        {
+            if (!(formatString?.Contains("24") == true))
+            {
+                formatString = formatString.Replace("HH", "hh24");
+                if (!(formatString?.Contains("24") == true))
+                {
+                    formatString = formatString.Replace("hh", "hh24");
+                }
+            }
+            formatString = formatString.Replace("mm", "mi"); 
+            return $"to_char({dateValue},'{formatString}') ";
+        }
         public override string CharIndex(MethodCallExpressionModel model)
         {
             return string.Format(" (strpos ({1},{0})-1)", model.Args[0].MemberName, model.Args[1].MemberName);
