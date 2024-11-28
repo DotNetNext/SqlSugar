@@ -218,51 +218,60 @@ namespace SqlSugar.GBase
             GbsCommand sqlCommand = ((GbsConnection)this.Connection).CreateCommand();
             if (parameters != null)
             {
-                var bigObjectParams = parameters.Where(o => sql.Contains(o.ParameterName) &&UtilMethods.HasBigObjectParam(o)).ToList<SugarParameter>();
-
-                foreach (var param in bigObjectParams)
-                {
-                    // for big object data, in the insert or update statements
-                    // the charactor after the @ParameterName could only be , or ) or space.
-                    // here use these characters as postfix of the parameter name.
-                    // the Replace method would only replace one field each time.
-                    sql = sql.Replace(param.ParameterName + ",", " ?, ");
-                    sql = sql.Replace(param.ParameterName + ")", " ?) ");
-                    sql = sql.Replace(param.ParameterName + " ", " ?  ");
-
-                    var gbsParam = sqlCommand.CreateParameter();
-                    gbsParam.DbType = param.DbType;
-                    gbsParam.ParameterName = param.ParameterName;
-
-                    // assign GbsType.
-                    switch (param.TypeName)
-                    {
-                        case "blob":
-                            gbsParam.GbsType = GbsType.Blob;
-                            gbsParam.Value = (param.Value == null) ? string.Empty : param.Value;
-                            break;
-                        case "clob":
-                            gbsParam.GbsType = GbsType.Clob;
-                            gbsParam.Value = (param.Value == null) ? string.Empty : param.Value;
-                            break;
-                        case "text":
-                            gbsParam.GbsType = GbsType.Text;
-                            gbsParam.Value = (param.Value == null) ? DBNull.Value : param.Value;
-                            break;
-                        case "byte":
-                        default:
-                            gbsParam.GbsType = GbsType.Byte;
-                            gbsParam.Value = (param.Value == null) ? DBNull.Value : param.Value;
-                            break;
-                    }
-
-                    sqlCommand.Parameters.Add(gbsParam);
-                }
                 foreach (var param in parameters.OrderByDescending(it => it.ParameterName.Length))
                 {
-                    if (sql.Contains(param.ParameterName) && UtilMethods.HasBigObjectParam(param))
+                    if ((sql.Contains(param.ParameterName) && UtilMethods.HasBigObjectParam(param)) ||
+                        this.CommandType == CommandType.StoredProcedure)
                     {
-                        continue;
+                        // for big object data, in the insert or update statements
+                        // the charactor after the @ParameterName could only be , or ) or space.
+                        // here use these characters as postfix of the parameter name.
+                        // the Replace method would only replace one field each time.
+                        sql = sql.Replace(param.ParameterName + ",", " ?, ");
+                        sql = sql.Replace(param.ParameterName + ")", " ?) ");
+                        sql = sql.Replace(param.ParameterName + " ", " ?  ");
+
+                        var gbsParam = sqlCommand.CreateParameter();
+                        gbsParam.DbType = param.DbType;
+                        gbsParam.ParameterName = param.ParameterName;
+                        gbsParam.Direction = param.Direction;
+
+                        if (UtilMethods.HasBigObjectParam(param))
+                        {
+                            // assign GbsType.
+                            switch (param.TypeName)
+                            {
+                                case "blob":
+                                    gbsParam.GbsType = GbsType.Blob;
+                                    gbsParam.Value = (param.Value == null) ? string.Empty : param.Value;
+                                    break;
+                                case "clob":
+                                    gbsParam.GbsType = GbsType.Clob;
+                                    gbsParam.Value = (param.Value == null) ? string.Empty : param.Value;
+                                    break;
+                                case "text":
+                                    gbsParam.GbsType = GbsType.Text;
+                                    gbsParam.Value = (param.Value == null) ? DBNull.Value : param.Value;
+                                    break;
+                                case "byte":
+                                default:
+                                    gbsParam.GbsType = GbsType.Byte;
+                                    gbsParam.Value = (param.Value == null) ? DBNull.Value : param.Value;
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            gbsParam.Value = (param.Value == null) ? DBNull.Value : param.Value;
+                        }
+
+                        sqlCommand.Parameters.Add(gbsParam);
+                        if (gbsParam.Direction.IsIn(ParameterDirection.Output, ParameterDirection.InputOutput, ParameterDirection.ReturnValue))
+                        {
+                            if (this.OutputParameters == null) this.OutputParameters = new List<IDataParameter>();
+                            this.OutputParameters.RemoveAll(it => it.ParameterName == gbsParam.ParameterName);
+                            this.OutputParameters.Add(gbsParam);
+                        }
                     }
                     else
                     {
