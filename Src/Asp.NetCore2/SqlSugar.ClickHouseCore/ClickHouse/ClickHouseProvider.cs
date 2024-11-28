@@ -133,6 +133,14 @@ namespace SqlSugar.ClickHouse
                         sql = sql.Replace(param.ParameterName, "null");
                     }
                 }
+                if (dbtype.ObjToString() == System.Data.DbType.Int64.ToString())
+                {
+                    dbtype = ClickHouseDbBind.MappingTypesConst.First(it => it.Value == CSharpDataType.@long).Key;
+                    if (param.Value == DBNull.Value)
+                    {
+                        sql = sql.Replace(param.ParameterName, "null");
+                    }
+                }
                 if (dbtype.ObjToString() == System.Data.DbType.SByte.ToString())
                 {
                     dbtype = ClickHouseDbBind.MappingTypesConst.First(it => it.Value == CSharpDataType.@sbyte).Key;
