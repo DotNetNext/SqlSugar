@@ -368,6 +368,10 @@ namespace SqlSugar.GBase
                     parameter.Direction = ParameterDirection.Input;
                 }
                 sqlParameter.Direction = parameter.Direction;
+                if (sqlParameter.Direction == 0)
+                {
+                    sqlParameter.Direction = ParameterDirection.Input;
+                }
                 result[index] = sqlParameter;
                 if (sqlParameter.Direction.IsIn(ParameterDirection.Output, ParameterDirection.InputOutput, ParameterDirection.ReturnValue))
                 {
