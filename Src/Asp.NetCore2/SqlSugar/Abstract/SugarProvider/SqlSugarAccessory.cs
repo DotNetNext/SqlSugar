@@ -536,6 +536,10 @@ namespace SqlSugar
                     Check.Exception(SugarCompatible.IsFramework, "TDengine only support .net core");
                     InstanceFactory.CustomDllName = SugarCompatible.IsFramework ? "SqlSugar.TDengine" : "SqlSugar.TDengineCore";
                     break;
+                case DbType.HANA:
+                    Check.Exception(SugarCompatible.IsFramework, "NANA only support .net core");
+                    InstanceFactory.CustomDllName = "SqlSugar.HanaConnector";
+                    break;
                 case DbType.Xugu:
                     Check.Exception(SugarCompatible.IsFramework, "Xugu only support .net core");
                     //InstanceFactory.CustomDbName = "Xugu"; 
