@@ -111,6 +111,8 @@ namespace SqlSugar
                     new KeyValuePair<string, CSharpDataType>("varcharbyte varying",CSharpDataType.@string),
                     new KeyValuePair<string, CSharpDataType>("bpcharbyte",CSharpDataType.@string),
                     new KeyValuePair<string, CSharpDataType>("nvarchar",CSharpDataType.@string),
+                    new KeyValuePair<string, CSharpDataType>("characterbyte",CSharpDataType.@string),
+                    new KeyValuePair<string, CSharpDataType>("information_schema.character_data",CSharpDataType.@string),
                     new KeyValuePair<string, CSharpDataType>("uuid",CSharpDataType.Guid),
                     new KeyValuePair<string, CSharpDataType>("uniqueidentifier",CSharpDataType.Guid),
                     new KeyValuePair<string, CSharpDataType>("xml",CSharpDataType.@string),
