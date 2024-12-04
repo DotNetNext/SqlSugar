@@ -130,6 +130,11 @@ namespace SqlSugar
         }
         public override string DateDiff(MethodCallExpressionModel model)
         {
+            if (IsSqlServerModel(model))
+            {
+                return base.DateDiff(model);
+            }
+
             var parameter = (DateType)(Enum.Parse(typeof(DateType), model.Args[0].MemberValue.ObjToString()));
             var begin = model.Args[1].MemberName;
             var end = model.Args[2].MemberName;

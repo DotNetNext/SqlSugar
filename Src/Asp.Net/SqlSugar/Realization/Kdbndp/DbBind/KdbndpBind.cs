@@ -111,7 +111,10 @@ namespace SqlSugar
                     new KeyValuePair<string, CSharpDataType>("varcharbyte varying",CSharpDataType.@string),
                     new KeyValuePair<string, CSharpDataType>("bpcharbyte",CSharpDataType.@string),
                     new KeyValuePair<string, CSharpDataType>("nvarchar",CSharpDataType.@string),
+                    new KeyValuePair<string, CSharpDataType>("characterbyte",CSharpDataType.@string),
+                    new KeyValuePair<string, CSharpDataType>("information_schema.character_data",CSharpDataType.@string),
                     new KeyValuePair<string, CSharpDataType>("uuid",CSharpDataType.Guid),
+                    new KeyValuePair<string, CSharpDataType>("uniqueidentifier",CSharpDataType.Guid),
                     new KeyValuePair<string, CSharpDataType>("xml",CSharpDataType.@string),
                     new KeyValuePair<string, CSharpDataType>("json",CSharpDataType.@string),
                     new KeyValuePair<string, CSharpDataType>("rowid",CSharpDataType.@string),
@@ -122,6 +125,8 @@ namespace SqlSugar
                     new KeyValuePair<string, CSharpDataType>("macaddr",CSharpDataType.@decimal),
                     new KeyValuePair<string, CSharpDataType>("money",CSharpDataType.@decimal),
                     new KeyValuePair<string, CSharpDataType>("timestamp",CSharpDataType.DateTime),
+                    new KeyValuePair<string, CSharpDataType>("datetime2",CSharpDataType.DateTime),
+                    new KeyValuePair<string, CSharpDataType>("datetime",CSharpDataType.DateTime),
                     new KeyValuePair<string, CSharpDataType>("timestamp with time zone",CSharpDataType.DateTime),
                     new KeyValuePair<string, CSharpDataType>("timestamptz",CSharpDataType.DateTime),
                     new KeyValuePair<string, CSharpDataType>("timestamp without time zone",CSharpDataType.DateTime),
@@ -135,6 +140,7 @@ namespace SqlSugar
                     new KeyValuePair<string, CSharpDataType>("blob",CSharpDataType.byteArray),
                     new KeyValuePair<string, CSharpDataType>("bit varying",CSharpDataType.byteArray),
                     new KeyValuePair<string, CSharpDataType>("varbit",CSharpDataType.@byte),
+                    new KeyValuePair<string, CSharpDataType>("rowversion",CSharpDataType.byteArray),
                     new KeyValuePair<string, CSharpDataType>("regclass",CSharpDataType.@object)
                     
                 };
