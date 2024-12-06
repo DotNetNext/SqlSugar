@@ -239,25 +239,28 @@ namespace SqlSugar
 
         #region Result
 
-        public object ToPageList(int pageNumber, int pageSize)
+        public List<object> ToPageList(int pageNumber, int pageSize)
         {
             var method = QueryableObj.GetType().GetMyMethod("ToPageList", 2, typeof(int), typeof(int));
             var reslt = method.Invoke(QueryableObj, new object[] { pageNumber, pageSize });
-            return reslt;
+            List<object> items = (reslt as IEnumerable<object>).ToList();
+            return items;
         }
-        public object ToPageList(int pageNumber, int pageSize, ref int count)
+        public List<object> ToPageList(int pageNumber, int pageSize, ref int count)
         {
             var method = QueryableObj.GetType().GetMyMethod("ToPageList", 3, typeof(int), typeof(int), typeof(int).MakeByRefType());
             var parameters = new object[] { pageNumber, pageSize, count };
             var reslt = method.Invoke(QueryableObj, parameters);
+            List<object> items = (reslt as IEnumerable<object>).ToList();
             count = parameters.Last().ObjToInt();
-            return reslt;
+            return items;
         }
-        public object ToList()
+        public List<object> ToList()
         {
             var method = QueryableObj.GetType().GetMyMethod("ToList", 0);
             var reslt = method.Invoke(QueryableObj, new object[] { });
-            return reslt;
+            List<object> items = (reslt as IEnumerable<object>).ToList();
+            return items;
         }
         public DataTable ToDataTablePage(int pageNumber, int pageSize,ref int count)
         {
