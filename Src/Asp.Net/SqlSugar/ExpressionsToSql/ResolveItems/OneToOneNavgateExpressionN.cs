@@ -47,6 +47,7 @@ namespace SqlSugar
             var memberInfo = this.items.Where(it => it.Type == 1).First();
             var subInfos = this.items.Where(it => it.Type == 2).Reverse().ToList();
             var formInfo = subInfos.First();
+            var rootWhereSql = formInfo?.Nav?.WhereSql;
             var joinInfos = subInfos.Skip(1).ToList();
             var i = 0;
             var masterShortName = formInfo.ThisEntityInfo.DbTableName + i;
@@ -80,6 +81,10 @@ namespace SqlSugar
             }
             var selectProperyInfo = ExpressionTool.GetMemberName(memberInfo.Expression);
             var selectColumnInfo = memberInfo.ParentEntityInfo.Columns.First(it => it.PropertyName == selectProperyInfo);
+            if (rootWhereSql?.HasValue() == true) 
+            {
+                queryable.Where(rootWhereSql);
+            }
             queryable.Select($" {ToShortName(lastShortName)}.{queryable.SqlBuilder.GetTranslationColumnName(selectColumnInfo.DbColumnName)}");
             var last = subInfos.First();
             var FirstPkColumn = last.ThisEntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey);

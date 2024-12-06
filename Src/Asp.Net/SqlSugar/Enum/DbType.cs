@@ -35,6 +35,7 @@ namespace SqlSugar
         GoldenDB,
         TDSQLForPGODBC, 
         TDSQL,
+        HANA,
         Custom =900
     }
 }
