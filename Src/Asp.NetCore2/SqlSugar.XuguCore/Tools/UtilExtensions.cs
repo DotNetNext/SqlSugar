@@ -9,6 +9,11 @@ namespace SqlSugar.Xugu
     /// </summary>
     public static class UtilExtensions
     {
+        public static bool IsContainsStartWithIn(this string thisValue, params string[] inValues)
+        {
+            return inValues.Any(it => thisValue.StartsWith(it));
+        }
+
         public static bool EqualCase(this string thisValue, string equalValue)
         {
             if (thisValue != null && equalValue != null)return thisValue.ToLower() == equalValue.ToLower();
