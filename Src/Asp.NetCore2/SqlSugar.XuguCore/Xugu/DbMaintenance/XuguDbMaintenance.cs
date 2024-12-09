@@ -111,7 +111,7 @@ WHERE T.TABLE_NAME='{0}' AND T.DB_ID=CURRENT_DB_ID
 
         protected override string CreateIndexSql=> "CREATE {3} INDEX IX_{0}_{2} ON {0}({1})";//NONCLUSTERED
         protected override string AddDefaultValueSql=> "ALTER TABLE {0} ALTER COLUMN {1} SET DEFAULT '{2}'";
-        protected override string IsAnyIndexSql => "SELECT COUNT(*) FROM USER_INDEXES WHERE INDEX_NAME='{0}'";
+        protected override string IsAnyIndexSql => "SELECT COUNT(*) FROM USER_INDEXES WHERE INDEX_NAME=UPPER('{0}')";
         #endregion
 
         #region Check
