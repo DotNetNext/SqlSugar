@@ -76,7 +76,7 @@ namespace SqlSugar.Xugu
             {
                 if (column.DefaultValue != null)
                 {
-                    this.Context.DbMaintenance.AddDefaultValue(column.DbTableName, column.DbColumnName, column.DefaultValue.ToSqlValue());
+                    this.Context.DbMaintenance.AddDefaultValue(column.DbTableName, column.DbColumnName, column.DefaultValue.ToSqlValue().TrimStart('\'').TrimEnd('\''));
                 }
             }
         }
