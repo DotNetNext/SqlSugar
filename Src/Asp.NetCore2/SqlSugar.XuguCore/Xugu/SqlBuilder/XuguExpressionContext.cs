@@ -9,7 +9,7 @@ namespace SqlSugar.Xugu
         public XuguExpressionContext() => base.DbMehtods = new XuguMethod();
         public override string SqlTranslationLeft { get; } = "\"";
         public override string SqlTranslationRight { get; } = "\"";
-        public override bool IsTranslationText(string name)=> name.IsContainsIn(UtilConstants.Space, "(", ")");
+        public override bool IsTranslationText(string name)=> name.IsContainsIn("\"",UtilConstants.Space, "(", ")");
         public override string GetLimit() => "";
     }
     public partial class XuguMethod : DefaultDbMethod, IDbMethods
