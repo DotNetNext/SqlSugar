@@ -47,6 +47,7 @@ namespace XuguTest
 
            
             db.CodeFirst.InitTables<MY_USER>();
+            db.CodeFirst.InitTables<T_User2>();
 
             db.DbMaintenance.TruncateTable<MY_USER>();
 
