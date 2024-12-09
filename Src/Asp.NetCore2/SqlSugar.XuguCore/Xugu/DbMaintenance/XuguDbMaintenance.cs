@@ -211,7 +211,14 @@ WHERE T.TABLE_NAME='{0}' AND T.DB_ID=CURRENT_DB_ID
             return tableString;
         }
 
-
+        public override bool DeleteColumnRemark(string columnName, string tableName)
+        {
+            return base.DeleteColumnRemark(this.SqlBuilder.GetTranslationColumnName(columnName), this.SqlBuilder.GetTranslationColumnName(tableName));
+        }
+        public override bool AddColumnRemark(string columnName, string tableName, string description)
+        {
+            return base.AddColumnRemark(this.SqlBuilder.GetTranslationColumnName(columnName), this.SqlBuilder.GetTranslationColumnName(tableName), description);
+        }
         public override bool AddDefaultValue(string tableName, string columnName, string defaultValue)
         {
             if (defaultValue == "''")

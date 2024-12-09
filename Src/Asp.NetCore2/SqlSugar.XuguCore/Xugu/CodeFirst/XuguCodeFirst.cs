@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.Generic; 
 using System.Linq;
 using System.Text;
 namespace SqlSugar.Xugu
@@ -72,11 +72,12 @@ namespace SqlSugar.Xugu
 
         protected override void ExistLogicEnd(List<EntityColumnInfo> dbColumns)
         {
+            var dbMain = new XuguDbMaintenance() { Context = this.Context };
             foreach (EntityColumnInfo column in dbColumns)
             {
                 if (column.DefaultValue != null)
                 {
-                    this.Context.DbMaintenance.AddDefaultValue(column.DbTableName, column.DbColumnName, column.DefaultValue.ToSqlValue().TrimStart('\'').TrimEnd('\''));
+                    this.Context.DbMaintenance.AddDefaultValue(dbMain.SqlBuilder.GetTranslationTableName(column.DbTableName), dbMain.SqlBuilder.GetTranslationTableName(column.DbColumnName), column.DefaultValue.ToSqlValue().TrimStart('\'').TrimEnd('\''));
                 }
             }
         }

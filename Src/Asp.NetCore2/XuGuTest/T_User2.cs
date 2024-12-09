@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace Data.Model
 {
+    [SqlSugar.SugarTable("T_User222")]
     public class T_User2
     {
-        [SqlSugar.SugarColumn(DefaultValue ="0",ColumnDescription ="aaa")]
-        public int num { get; set; }
+        [SqlSugar.SugarColumn(DefaultValue = "0", ColumnDescription = "aaa")]
+        public int number { get; set; }
     }
 }
