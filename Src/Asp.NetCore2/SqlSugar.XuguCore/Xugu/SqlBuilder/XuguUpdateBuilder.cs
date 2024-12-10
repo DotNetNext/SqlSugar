@@ -33,7 +33,7 @@ namespace SqlSugar.Xugu
             return sb.ToString();
         }
         private object GetValue(DbColumnInfo it)=> FormatValue(it.Value);
-        private string GetOracleUpdateColums(int i, DbColumnInfo m, bool iswhere)=> string.Format("{0}={1}", m.DbColumnName, base.GetDbColumn(m, FormatValue(i, m.DbColumnName, m.Value, iswhere)));
+        private string GetOracleUpdateColums(int i, DbColumnInfo m, bool iswhere)=> string.Format("{0}={1}",this.Builder.GetTranslationColumnName( m.DbColumnName), base.GetDbColumn(m, FormatValue(i, m.DbColumnName, m.Value, iswhere)));
         public object FormatValue(int i, string name, object value, bool iswhere)
         {
             if (value == null) return "NULL";
