@@ -21,6 +21,13 @@ namespace SqlSugar.Xugu
             return string.Format(" LENGTH({0}) ", parameter.MemberName);
         }
 
+        public override string DateIsSameDay(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter2 = model.Args[1];
+            return string.Format(" ( cast({0} as date)= cast( {1} as date) ) ", parameter.MemberName, parameter2.MemberName); ;
+        }
+
         public override string IsNull(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
