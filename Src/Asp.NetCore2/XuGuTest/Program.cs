@@ -94,7 +94,7 @@ namespace XuguTest
 
             }).ExecuteCommand();
 
-            db.Insertable(new T_User2() { number = 1 }).ExecuteCommand();
+            db.Insertable(new T_User2() { number = 1, table="a" }).ExecuteCommand();
 
          //   var list0=db.Ado.GetDataTable("select * from MY_USER");
 
