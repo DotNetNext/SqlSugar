@@ -281,7 +281,7 @@ namespace SqlSugar.Xugu
             else return parameter.DbType;
         }
 
-        private static string[] KeyWord = new string[] { ":number","@number","@month", ":month", ":day", "@day", "@group", ":group", ":index", "@index", "@order", ":order", "@user", "@level", ":user", ":level", ":type", "@type", ":year", "@year", "@date", ":date" };
+        private static string[] KeyWord = new string[] { "@table",":table",":number","@number","@month", ":month", ":day", "@day", "@group", ":group", ":index", "@index", "@order", ":order", "@user", "@level", ":user", ":level", ":type", "@type", ":year", "@year", "@date", ":date" };
         private static string ReplaceKeyWordParameterName(string sql, SugarParameter[] parameters)
         {
             sql = ReplaceKeyWordWithAd(sql, parameters);
