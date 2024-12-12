@@ -494,6 +494,15 @@ namespace SqlSugar
                 return $" {model.Args[0].MemberName}::jsonb @> '[\"{model.Args[1].MemberValue}\"]'::jsonb ";
             }
         }
+        public override string GetStringJoinSelector(string result, string separator)
+        {
+            if (result?.ToLower()?.Contains("distinct") == true) 
+            {
+                return $"string_agg({result},'{separator}') ";
+            }
+            return $"string_agg(({result})::text,'{separator}') ";
+        }
+
         public override string JsonListObjectAny(MethodCallExpressionModel model)
         {
             if (UtilMethods.IsNumber(model.Args[2].MemberValue.GetType().Name))
