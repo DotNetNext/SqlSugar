@@ -35,7 +35,7 @@ namespace SqlSugar
             }
         }
 
-        
+
 
         /// <summary>
         /// 如果存在大小写不一致的列名，则无法设置新值， 因为此对象主要用于Get操作
@@ -104,27 +104,27 @@ namespace SqlSugar
 
         public int Count => _dic.Count;
 
-        
 
-        public object? this[string key] 
-        { 
+
+        public object? this[string key]
+        {
             get
             {
-                if(TryGetKey(key, out var pkey))
+                if (TryGetKey(key, out var pkey))
                 {
                     return _dic[pkey];
                 }
                 return _dic[key];
-            } 
+            }
             set
             {
-                if(TryGetKey(key, out var pkey))
+                if (TryGetKey(key, out var pkey))
                 {
                     _dic[pkey] = value;
                     return;
                 }
                 _dic[key] = value;
-            } 
+            }
         }
 
 
@@ -141,7 +141,7 @@ namespace SqlSugar
 
         public bool Remove(string key)
         {
-            if(TryGetKey(key, out var pkey))
+            if (TryGetKey(key, out var pkey))
             {
                 _dic.Remove(pkey);
                 return true;
@@ -156,7 +156,7 @@ namespace SqlSugar
 
         public bool TryGetValue(string key, out object? value)
         {
-            if(TryGetKey(key, out var pkey))
+            if (TryGetKey(key, out var pkey))
             {
                 return _dic.TryGetValue(pkey, out value);
             }
@@ -168,16 +168,21 @@ namespace SqlSugar
             return _dic.TryGetValue(key, out value);
         }
 
+        public void SetValueCaseSensitive(string key, object? value)
+        {
+            _dic[key] = value;
+        }
+
         #endregion
 
 
         #region 操作符重载
 
-        public static explicit  operator ExpandoObject(SugarRow row)
+        public static explicit operator ExpandoObject(SugarRow row)
         {
             var obj = new ExpandoObject();
             var dic = (IDictionary<string, object?>)obj;
-            foreach(var key in row.Keys)
+            foreach (var key in row.Keys)
             {
                 dic[key] = row[key];
             }
