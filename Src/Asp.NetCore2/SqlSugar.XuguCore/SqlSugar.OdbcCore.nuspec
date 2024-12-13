@@ -11,7 +11,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description> SqlSugar操作 虚谷数据库,DEMO用例： https://github.com/DotNetNext/SqlSugar </description>
     <copyright>Copyright 2016</copyright>
-    <tags>虚谷数据库 xugu</tags>
+    <tags>虚谷数据库 xugu 虚谷</tags>
     <dependencies>
       <group targetFramework=".NETStandard2.1">
         <dependency id="SqlSugar.XuguClient" version="3.3.4.8" />
