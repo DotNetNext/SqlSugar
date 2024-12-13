@@ -12,7 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SqlSugar.XuguClient" Version="3.3.4.6" />
+    <PackageReference Include="SqlSugar.XuguClient" Version="3.3.4.8" />
   </ItemGroup>
 
   <ItemGroup>
