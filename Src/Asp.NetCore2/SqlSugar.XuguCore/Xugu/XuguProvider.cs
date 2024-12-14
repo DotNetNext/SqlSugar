@@ -118,11 +118,41 @@ namespace SqlSugar.Xugu
                 int result = 0;
                 foreach (var item in sqlParts)
                 {
-                    if (item.TrimStart('\r').TrimStart('\n') != "") result += base.ExecuteCommand(item, parameters);
+                    if (item.TrimStart('\r').TrimStart('\n') != "") result += base.ExecuteCommand(item,CopySugarParameters(parameters.ToList()));
                 }
                 return result;
             }
             else return base.ExecuteCommand(sql, parameters);
+        }
+        public List<SugarParameter> CopySugarParameters(List<SugarParameter> pars)
+        {
+            if (pars == null) return null;
+            var newParameters = pars.Select(it => new SugarParameter(it.ParameterName, it.Value)
+            {
+                TypeName = it.TypeName,
+                Value = it.Value,
+                IsRefCursor = it.IsRefCursor,
+                IsArray = it.IsArray,
+                IsJson = it.IsJson,
+                ParameterName = it.ParameterName,
+                IsNvarchar2 = it.IsNvarchar2,
+                IsNClob = it.IsClob,
+                IsClob = it.IsClob,
+                UdtTypeName = it.UdtTypeName,
+                CustomDbType = it.CustomDbType,
+                DbType = it.DbType,
+                Direction = it.Direction,
+                Precision = it.Precision,
+                Size = it.Size,
+                Scale = it.Scale,
+                IsNullable = it.IsNullable,
+                SourceColumn = it.SourceColumn,
+                SourceColumnNullMapping = it.SourceColumnNullMapping,
+                SourceVersion = it.SourceVersion,
+                TempDate = it.TempDate,
+                _Size = it._Size
+            });
+            return newParameters.ToList();
         }
         public override async Task<int> ExecuteCommandAsync(string sql, SugarParameter[] parameters)
         {
