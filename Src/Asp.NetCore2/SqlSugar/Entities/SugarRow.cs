@@ -72,10 +72,6 @@ namespace SqlSugar
             return _dic.Keys;
         }
 
-        public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
-        {
-            return base.TryInvokeMember(binder, args, out result);
-        }
 
         #endregion
 
@@ -235,7 +231,7 @@ namespace SqlSugar
 
         #region 操作符重载
 
-        public static explicit operator ExpandoObject(SugarRow row)
+        public static implicit operator ExpandoObject(SugarRow row)
         {
             var obj = new ExpandoObject();
             var dic = (IDictionary<string, object?>)obj;
