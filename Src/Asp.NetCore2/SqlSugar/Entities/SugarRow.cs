@@ -5,6 +5,7 @@ using System.Dynamic;
 using System.Data;
 using System.Collections;
 using System.ComponentModel;
+using System.Text.RegularExpressions;
 
 namespace SqlSugar
 {
@@ -12,7 +13,7 @@ namespace SqlSugar
     /// <summary>
     /// SqlSugar 的动态行对象，支持大小写匹配的字段名和不匹配的属性名
     /// </summary>
-    public class SugarRow : DynamicObject
+    public class SugarRow : DynamicObject, IDictionary<string,object?>
     {
 
         private readonly Dictionary<string, object?> _dic = new Dictionary<string, object?>();
@@ -35,6 +36,7 @@ namespace SqlSugar
             }
         }
 
+        #region 动态字典
 
 
         /// <summary>
@@ -54,6 +56,7 @@ namespace SqlSugar
             return true;
         }
 
+        /// <inheritdoc/>
         public override bool TryGetMember(GetMemberBinder binder, out object? result)
         {
             if (TryGetKey(binder.Name, out var key))
@@ -63,10 +66,18 @@ namespace SqlSugar
             return _dic.TryGetValue(binder.Name, out result);
         }
 
+        /// <inheritdoc/>
         public override IEnumerable<string> GetDynamicMemberNames()
         {
             return _dic.Keys;
         }
+
+        public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
+        {
+            return base.TryInvokeMember(binder, args, out result);
+        }
+
+        #endregion
 
         /// <summary>
         /// 获取存在的键
@@ -104,7 +115,7 @@ namespace SqlSugar
 
         public int Count => _dic.Count;
 
-
+        public bool IsReadOnly => false;
 
         public object? this[string key]
         {
@@ -173,6 +184,52 @@ namespace SqlSugar
             _dic[key] = value;
         }
 
+
+
+
+
+
+
+        void IDictionary<string, object?>.Add(string key, object? value)
+        {
+            _dic.Add(key, value);
+        }
+
+        void ICollection<KeyValuePair<string, object?>>.Add(KeyValuePair<string, object?> item)
+        {
+            ((ICollection<KeyValuePair<string, object?>>)_dic).Add(item);
+        }
+
+        void ICollection<KeyValuePair<string, object?>>.Clear()
+        {
+            _dic.Clear();
+        }
+
+        bool ICollection<KeyValuePair<string, object?>>.Contains(KeyValuePair<string, object?> item)
+        {
+            return ((ICollection<KeyValuePair<string, object?>>)_dic).Contains(item);
+        }
+
+        void ICollection<KeyValuePair<string, object?>>.CopyTo(KeyValuePair<string, object?>[] array, int arrayIndex)
+        {
+            ((ICollection<KeyValuePair<string, object?>>)_dic).CopyTo(array, arrayIndex);
+        }
+
+        bool ICollection<KeyValuePair<string, object?>>.Remove(KeyValuePair<string, object?> item)
+        {
+            return ((ICollection<KeyValuePair<string, object?>>)_dic).Remove(item);
+        }
+
+        IEnumerator<KeyValuePair<string, object?>> IEnumerable<KeyValuePair<string, object?>>.GetEnumerator()
+        {
+            return _dic.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return _dic.GetEnumerator();
+        }
+
         #endregion
 
 
@@ -188,6 +245,81 @@ namespace SqlSugar
             }
             return obj;
         }
+
+        #endregion
+
+        #region 命名
+
+        /// <summary>
+        /// 将内部下划线Key转换为驼峰Key，返回新的SugarRow对象
+        /// </summary>
+        /// <returns></returns>
+        public SugarRow ToCamelCase()
+        {
+            var dic = new Dictionary<string, object?>();
+            foreach (var item in _dic)
+            {
+                var key = KeyToCamelCase(item.Key, false);
+                dic[key] = item.Value;
+            }
+
+            return new SugarRow(dic);
+        }
+
+        public SugarRow ToPascalCase()
+        {
+            var dic = new Dictionary<string, object?>();
+            foreach (var item in _dic)
+            {
+                var key = KeyToCamelCase(item.Key, true);
+                dic[key] = item.Value;
+            }
+
+            return new SugarRow(dic);
+        }
+
+        /// <summary>
+        /// 将内部驼峰Key转换为下划线Key，返回新的SugarRow对象
+        /// </summary>
+        /// <returns></returns>
+        public SugarRow ToSnakeCase()
+        {
+            var dic = new Dictionary<string, object?>();
+            foreach (var item in _dic)
+            {
+                var key = KeyToSnakeCase(item.Key);
+                dic[key] = item.Value;
+            }
+
+            return new SugarRow(dic);
+        }
+
+
+        private static string KeyToCamelCase(string key, bool upperCaseFirst)
+        {
+            var strArr = key.Split('_', StringSplitOptions.RemoveEmptyEntries);
+
+            for (var i = 0; i < strArr.Length; i++)
+            {
+                strArr[i] = strArr[i].ToLower();
+
+                if(i > 0 || upperCaseFirst)
+                {
+                    strArr[i] = char.ToUpperInvariant(strArr[i][0]) + strArr[i].Substring(1);
+                }
+                
+            }
+
+            return string.Join("", strArr);
+        }
+
+
+        private static string KeyToSnakeCase(string key)
+        {
+            string result = Regex.Replace(key, @"([a-z0-9])([A-Z])", "$1_$2");
+            return result.ToLowerInvariant();
+        }
+
 
         #endregion
     }
