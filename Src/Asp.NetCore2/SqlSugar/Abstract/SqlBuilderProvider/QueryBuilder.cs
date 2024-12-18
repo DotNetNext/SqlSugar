@@ -466,17 +466,24 @@ namespace SqlSugar
                         {
                             var addSql = mysql.Replace(itName, this.Builder.GetTranslationColumnName(joinInfoItem.ShortName) + ".");
                             addSql = ReplaceFilterColumnName(addSql, joinInfoItem.EntityType,joinInfoItem.ShortName);
-                            joinInfoItem.JoinWhere += (" AND " + Regex.Replace(addSql, "^ (WHERE|AND) ", ""));
+                            joinInfoItem.JoinWhere += ( " AND " + Regex.Replace(addSql, "^ (WHERE|AND) ", ""));
                         }
                     }
                     else if (ChildType.IsInterface && item.IsJoinQuery == false)
                     {
+                        {
+                            var addSql = mysql.Replace(itName, this.Builder.GetTranslationColumnName(TableShortName) + ".");
+                            addSql = ReplaceFilterColumnName(addSql, EntityType, TableShortName);
+                            var andOrWhere = this.WhereInfos.Any() ? " AND " : "WHERE";
+                            this.WhereInfos.Add(andOrWhere + Regex.Replace(addSql, "^ (WHERE|AND) ", ""));
+                        }
                         foreach (var joinInfoItem in this.JoinQueryInfos.Where(it => it.EntityType.GetInterfaces().Any(z => z == ChildType)))
                         {
                             var addSql = mysql.Replace(itName, this.Builder.GetTranslationColumnName(joinInfoItem.ShortName) + ".");
                             addSql = ReplaceFilterColumnName(addSql, joinInfoItem.EntityType, joinInfoItem.ShortName);
                             this.WhereInfos.Add (" AND " + Regex.Replace(addSql, "^ (WHERE|AND) ", ""));
-                        }
+                        } 
+                        return;
                     }
                     else
                     {
