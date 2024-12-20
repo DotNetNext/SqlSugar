@@ -244,7 +244,7 @@ namespace SqlSugar
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
-            var parameter2Info = model.Parameters.FirstOrDefault(it => it.ParameterName.EqualCase(parameter2.MemberName + ""));
+            var parameter2Info = model.Parameters?.FirstOrDefault(it => it.ParameterName.EqualCase(parameter2.MemberName + ""));
             if (parameter2Info!=null&&parameter2.MemberName?.ToString()?.StartsWith("@MethodConst")==true) 
             {
                 parameter2Info.Value = parameter2.MemberValue+"%";
@@ -257,7 +257,7 @@ namespace SqlSugar
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
-            var parameter2Info = model.Parameters.FirstOrDefault(it => it.ParameterName.EqualCase(parameter2.MemberName + ""));
+            var parameter2Info = model.Parameters?.FirstOrDefault(it => it.ParameterName.EqualCase(parameter2.MemberName + ""));
             if (parameter2Info != null && parameter2.MemberName?.ToString()?.StartsWith("@MethodConst") == true)
             {
                 parameter2Info.Value = "%"+parameter2.MemberValue ;
