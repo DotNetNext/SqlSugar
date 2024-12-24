@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SqlSugar.Nhgdb" Version="5.1.4.2" />
+    <PackageReference Include="SqlSugar.Nhgdb" Version="5.1.4.3" />
   </ItemGroup>
 
   <ItemGroup>
