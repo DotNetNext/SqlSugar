@@ -38,9 +38,7 @@ namespace OrmTest
 
             var x = newdb.Storageable(communityEntities).ToStorage();
             x.AsInsertable.ExecuteCommand();
-            x.AsUpdateable.ExecuteCommand(); 
-
-           System.Drawing.Point
+            x.AsUpdateable.ExecuteCommand();  
         }
         public class Unitsdfafayas
         {
