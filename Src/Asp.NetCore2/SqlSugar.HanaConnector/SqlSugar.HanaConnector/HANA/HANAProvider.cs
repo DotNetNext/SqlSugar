@@ -21,12 +21,12 @@ namespace SqlSugar.HANAConnector
                 {
                     try
                     {
-                        var mySqlConnectionString = base.Context.CurrentConnectionConfig.ConnectionString;
-                        if (!mySqlConnectionString.ToLower().Contains("charset") && !mySqlConnectionString.ToLower().Contains("character"))
-                        {
-                            mySqlConnectionString = mySqlConnectionString.Trim().TrimEnd(';') + ";charset=utf8;";
-                        }
-                        base._DbConnection = new HanaConnection(mySqlConnectionString);
+                        var hanaConnectionString = base.Context.CurrentConnectionConfig.ConnectionString;
+                        //if (!hanaConnectionString.ToLower().Contains("charset") && !hanaConnectionString.ToLower().Contains("character"))
+                        //{
+                        //    hanaConnectionString = hanaConnectionString.Trim().TrimEnd(';') + ";charset=utf8;";
+                        //}
+                        base._DbConnection = new HanaConnection(hanaConnectionString);
                     }
                     catch (Exception ex)
                     {
@@ -80,7 +80,7 @@ namespace SqlSugar.HANAConnector
             ((MyHanaDataAdapter)dataAdapter).SelectCommand = (HanaCommand)command;
         }
         /// <summary>
-        /// if mysql return HANAParameter[] pars
+        /// if hana return HANAParameter[] pars
         /// if sqlerver return SqlParameter[] pars ...
         /// </summary>
         /// <param name="parameters"></param>
