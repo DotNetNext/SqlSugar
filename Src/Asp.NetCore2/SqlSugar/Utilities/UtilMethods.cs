@@ -1579,7 +1579,7 @@ namespace SqlSugar
             var result = sqlObj.Key;
             if (sqlObj.Value != null)
             {
-                foreach (var item in sqlObj.Value.OrderByDescending(it => it.ParameterName.Length))
+                foreach (var item in UtilMethods.CopySugarParameters(sqlObj.Value).OrderByDescending(it => it.ParameterName.Length))
                 {
                     if (item.ParameterName.StartsWith(":")&&!result.Contains(item.ParameterName)) 
                     {
