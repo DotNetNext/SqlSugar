@@ -94,6 +94,8 @@ namespace SqlSugar
         public  Action<object, DataFilterModel> DataExecuting { get; set; }
         public Action<object, DataFilterModel> DataChangesExecuted { get; set; }
         public Action<object, DataAfterModel> DataExecuted { get;  set; }
+        public Action<IDbConnection> CheckConnectionExecuting { get; set; }
+        public Action<IDbConnection,TimeSpan> CheckConnectionExecuted { get; set; }
     }
     public class ConfigureExternalServices
     {

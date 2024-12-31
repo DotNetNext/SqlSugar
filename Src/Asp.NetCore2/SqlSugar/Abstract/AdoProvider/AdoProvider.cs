@@ -39,6 +39,7 @@ namespace SqlSugar
         internal bool OldClearParameters { get; set; }
         public IDataParameterCollection DataReaderParameters { get; set; }
         public TimeSpan SqlExecutionTime { get { return AfterTime - BeforeTime; } }
+        public TimeSpan ConnectionExecutionTime { get { return CheckConnectionAfterTime - CheckConnectionBeforeTime; } }
         /// <summary>
         /// Add, delete and modify: the number of affected items;
         /// </summary>
@@ -47,6 +48,8 @@ namespace SqlSugar
         public bool IsDisableMasterSlaveSeparation { get; set; }
         internal DateTime BeforeTime = DateTime.MinValue;
         internal DateTime AfterTime = DateTime.MinValue;
+        internal DateTime CheckConnectionBeforeTime = DateTime.MinValue;
+        internal DateTime CheckConnectionAfterTime = DateTime.MinValue;
         public virtual IDbBind DbBind
         {
             get
@@ -66,6 +69,8 @@ namespace SqlSugar
         public virtual bool IsClearParameters { get; set; }
         public virtual Action<string, SugarParameter[]> LogEventStarting => this.Context.CurrentConnectionConfig.AopEvents?.OnLogExecuting;
         public virtual Action<string, SugarParameter[]> LogEventCompleted => this.Context.CurrentConnectionConfig.AopEvents?.OnLogExecuted;
+        public virtual Action<IDbConnection> CheckConnectionExecuting => this.Context.CurrentConnectionConfig.AopEvents?.CheckConnectionExecuting;
+        public virtual Action<IDbConnection, TimeSpan> CheckConnectionExecuted => this.Context.CurrentConnectionConfig.AopEvents?.CheckConnectionExecuted;
         public virtual Func<string, SugarParameter[], KeyValuePair<string, SugarParameter[]>> ProcessingEventStartingSQL => this.Context.CurrentConnectionConfig.AopEvents?.OnExecutingChangeSql;
         protected virtual Func<string, string> FormatSql { get; set; }
         public virtual Action<SqlSugarException> ErrorEvent => this.Context.CurrentConnectionConfig.AopEvents?.OnError;
@@ -175,6 +180,7 @@ namespace SqlSugar
         }
         public virtual void CheckConnection()
         {
+            this.CheckConnectionBefore(this.Connection);
             if (this.Connection.State != ConnectionState.Open)
             {
                 try
@@ -190,10 +196,12 @@ namespace SqlSugar
                     Check.Exception(true, ErrorMessage.ConnnectionOpen, ex.Message+$"DbType=\"{this.Context.CurrentConnectionConfig.DbType}\";ConfigId=\"{this.Context.CurrentConnectionConfig.ConfigId}\"");
                 }
             }
+            this.CheckConnectionAfter(this.Connection);
         }
 
         public virtual async Task CheckConnectionAsync()
         {
+            this.CheckConnectionBefore(this.Connection);
             if (this.Connection.State != ConnectionState.Open)
             {
                 try
@@ -203,6 +211,31 @@ namespace SqlSugar
                 catch (Exception ex)
                 {
                     Check.Exception(true, ErrorMessage.ConnnectionOpen, ex.Message + $"DbType=\"{this.Context.CurrentConnectionConfig.DbType}\";ConfigId=\"{this.Context.CurrentConnectionConfig.ConfigId}\"");
+                }
+            }
+            this.CheckConnectionAfter(this.Connection);
+        }
+        public virtual void CheckConnectionBefore(IDbConnection Connection)
+        {
+            this.CheckConnectionBeforeTime = DateTime.Now;
+            if (this.IsEnableLogEvent)
+            {
+                Action<IDbConnection> action = CheckConnectionExecuting;
+                if (action != null)
+                {
+                    action(Connection);
+                }
+            }
+        }
+        public virtual void CheckConnectionAfter(IDbConnection Connection)
+        {
+            this.CheckConnectionAfterTime = DateTime.Now;
+            if (this.IsEnableLogEvent)
+            {
+                Action<IDbConnection, TimeSpan> action = CheckConnectionExecuted;
+                if (action != null)
+                {
+                    action(Connection,this.ConnectionExecutionTime);
                 }
             }
         }

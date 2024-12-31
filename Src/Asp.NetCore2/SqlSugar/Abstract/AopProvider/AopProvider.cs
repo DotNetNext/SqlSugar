@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 
@@ -22,5 +23,7 @@ namespace SqlSugar
         public virtual Action<object, DataFilterModel> DataExecuting { set { this.Context.CurrentConnectionConfig.AopEvents.DataExecuting = value; } }
         public Action<object, DataFilterModel> DataChangesExecuted { set { this.Context.CurrentConnectionConfig.AopEvents.DataChangesExecuted = value; } }
         public virtual Action<object, DataAfterModel> DataExecuted { set { this.Context.CurrentConnectionConfig.AopEvents.DataExecuted = value; } }
+        public Action<IDbConnection> CheckConnectionExecuting { set { this.Context.CurrentConnectionConfig.AopEvents.CheckConnectionExecuting = value; } }
+        public Action<IDbConnection, TimeSpan> CheckConnectionExecuted { set { this.Context.CurrentConnectionConfig.AopEvents.CheckConnectionExecuted = value; } }
     }
 }
