@@ -22,6 +22,8 @@ namespace SqlSugar
         void CheckConnectionBefore(IDbConnection Connection);
         void ExecuteBefore(string sql, SugarParameter[] pars);
         void ExecuteAfter(string sql, SugarParameter[] pars);
+        void GetDataBefore(string sql, SugarParameter[] parameters);
+        void GetDataAfter(string sql, SugarParameter[] parameters);
         bool IsAnyTran();
         bool IsNoTran();
         bool IsEnableLogEvent { get; set; }

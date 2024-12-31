@@ -1885,8 +1885,12 @@ namespace SqlSugar
             var entityType = typeof(TResult);
             bool isChangeQueryableSlave = GetIsSlaveQuery();
             bool isChangeQueryableMasterSlave = GetIsMasterQuery();
-            var dataReader = this.Db.GetDataReader(sqlObj.Key, sqlObj.Value.ToArray());
+            string sqlString = sqlObj.Key;
+            SugarParameter[] parameters = sqlObj.Value.ToArray();
+            var dataReader = this.Db.GetDataReader(sqlString, parameters);
+            this.Db.GetDataBefore(sqlString, parameters);
             result = GetData<TResult>(isComplexModel, entityType, dataReader);
+            this.Db.GetDataAfter(sqlString, parameters);
             RestChangeMasterQuery(isChangeQueryableMasterSlave);
             RestChangeSlaveQuery(isChangeQueryableSlave);
             return result;
@@ -1898,8 +1902,12 @@ namespace SqlSugar
             var entityType = typeof(TResult);
             bool isChangeQueryableSlave = GetIsSlaveQuery();
             bool isChangeQueryableMasterSlave = GetIsMasterQuery();
-            var dataReader = await this.Db.GetDataReaderAsync(sqlObj.Key, sqlObj.Value.ToArray());
+            string sqlString = sqlObj.Key;
+            SugarParameter[] parameters = sqlObj.Value.ToArray();
+            var dataReader = await this.Db.GetDataReaderAsync(sqlString, parameters);
+            this.Db.GetDataBefore(sqlString, parameters);
             result = await GetDataAsync<TResult>(isComplexModel, entityType, dataReader);
+            this.Db.GetDataAfter(sqlString, parameters);
             RestChangeMasterQuery(isChangeQueryableMasterSlave);
             RestChangeSlaveQuery(isChangeQueryableSlave);
             return result;

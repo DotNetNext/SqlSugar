@@ -40,6 +40,7 @@ namespace SqlSugar
         public IDataParameterCollection DataReaderParameters { get; set; }
         public TimeSpan SqlExecutionTime { get { return AfterTime - BeforeTime; } }
         public TimeSpan ConnectionExecutionTime { get { return CheckConnectionAfterTime - CheckConnectionBeforeTime; } }
+        public TimeSpan GetDataExecutionTime { get { return GetDataAfterTime - GetDataBeforeTime; } }
         /// <summary>
         /// Add, delete and modify: the number of affected items;
         /// </summary>
@@ -48,6 +49,8 @@ namespace SqlSugar
         public bool IsDisableMasterSlaveSeparation { get; set; }
         internal DateTime BeforeTime = DateTime.MinValue;
         internal DateTime AfterTime = DateTime.MinValue;
+        internal DateTime GetDataBeforeTime = DateTime.MinValue;
+        internal DateTime GetDataAfterTime = DateTime.MinValue;
         internal DateTime CheckConnectionBeforeTime = DateTime.MinValue;
         internal DateTime CheckConnectionAfterTime = DateTime.MinValue;
         public virtual IDbBind DbBind
@@ -71,6 +74,8 @@ namespace SqlSugar
         public virtual Action<string, SugarParameter[]> LogEventCompleted => this.Context.CurrentConnectionConfig.AopEvents?.OnLogExecuted;
         public virtual Action<IDbConnection> CheckConnectionExecuting => this.Context.CurrentConnectionConfig.AopEvents?.CheckConnectionExecuting;
         public virtual Action<IDbConnection, TimeSpan> CheckConnectionExecuted => this.Context.CurrentConnectionConfig.AopEvents?.CheckConnectionExecuted;
+        public virtual Action<string, SugarParameter[]> OnGetDataReadering => this.Context.CurrentConnectionConfig.AopEvents?.OnGetDataReadering;
+        public virtual Action<string, SugarParameter[], TimeSpan> OnGetDataReadered => this.Context.CurrentConnectionConfig.AopEvents?.OnGetDataReadered;
         public virtual Func<string, SugarParameter[], KeyValuePair<string, SugarParameter[]>> ProcessingEventStartingSQL => this.Context.CurrentConnectionConfig.AopEvents?.OnExecutingChangeSql;
         protected virtual Func<string, string> FormatSql { get; set; }
         public virtual Action<SqlSugarException> ErrorEvent => this.Context.CurrentConnectionConfig.AopEvents?.OnError;
@@ -1048,7 +1053,10 @@ namespace SqlSugar
             builder.SqlQueryBuilder.sql.Append(sql);
             if (parsmeterArray != null && parsmeterArray.Any())
                 builder.SqlQueryBuilder.Parameters.AddRange(parsmeterArray);
-            using (var dataReader = this.GetDataReader(builder.SqlQueryBuilder.ToSqlString(), builder.SqlQueryBuilder.Parameters.ToArray()))
+            string sqlString = builder.SqlQueryBuilder.ToString();
+            SugarParameter[] Parameters = builder.SqlQueryBuilder.Parameters.ToArray();
+            this.GetDataBefore(sqlString, Parameters);
+            using (var dataReader = this.GetDataReader(sqlString, Parameters))
             {
                 DbDataReader DbReader = (DbDataReader)dataReader;
                 List<T> result = new List<T>();
@@ -1109,6 +1117,7 @@ namespace SqlSugar
                     }
                     this.Context.Ado.DataReaderParameters = null;
                 }
+                this.GetDataAfter(sqlString, Parameters);
                 return Tuple.Create<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>, List<T7>>(result, result2, result3, result4, result5, result6, result7);
             }
         }
@@ -1173,7 +1182,10 @@ namespace SqlSugar
             builder.SqlQueryBuilder.sql.Append(sql);
             if (parsmeterArray != null && parsmeterArray.Any())
                 builder.SqlQueryBuilder.Parameters.AddRange(parsmeterArray);
-            using (var dataReader = await this.GetDataReaderAsync(builder.SqlQueryBuilder.ToSqlString(), builder.SqlQueryBuilder.Parameters.ToArray()))
+            string sqlString = builder.SqlQueryBuilder.ToSqlString();
+            SugarParameter[] Parameters = builder.SqlQueryBuilder.Parameters.ToArray();
+            this.GetDataBefore(sqlString, Parameters);
+            using (var dataReader = await this.GetDataReaderAsync(sqlString, Parameters))
             {
                 DbDataReader DbReader = (DbDataReader)dataReader;
                 List<T> result = new List<T>();
@@ -1230,6 +1242,7 @@ namespace SqlSugar
                     }
                     this.Context.Ado.DataReaderParameters = null;
                 }
+                this.GetDataAfter(sqlString, Parameters);
                 return Tuple.Create<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>, List<T7>>(result, result2, result3, result4, result5, result6, result7);
             }
         }
@@ -1582,6 +1595,44 @@ namespace SqlSugar
                 this.IsClearParameters = this.OldClearParameters;
                 this.OldCommandType = 0;
                 this.OldClearParameters = false;
+            }
+        }
+        public virtual void GetDataBefore(string sql, SugarParameter[] parameters)
+        {
+            this.GetDataBeforeTime = DateTime.Now;
+            if (this.IsEnableLogEvent)
+            {
+                Action<string, SugarParameter[]> action = OnGetDataReadering;
+                if (action != null)
+                {
+                    if (parameters == null || parameters.Length == 0)
+                    {
+                        action(sql, new SugarParameter[] { });
+                    }
+                    else
+                    {
+                        action(sql, parameters);
+                    }
+                }
+            }
+        }
+        public virtual void GetDataAfter(string sql, SugarParameter[] parameters)
+        {
+            this.GetDataAfterTime = DateTime.Now;
+            if (this.IsEnableLogEvent)
+            {
+                Action<string, SugarParameter[], TimeSpan> action = OnGetDataReadered;
+                if (action != null)
+                {
+                    if (parameters == null || parameters.Length == 0)
+                    {
+                        action(sql, new SugarParameter[] { }, GetDataExecutionTime);
+                    }
+                    else
+                    {
+                        action(sql, parameters, GetDataExecutionTime);
+                    }
+                }
             }
         }
         public virtual SugarParameter[] GetParameters(object parameters, PropertyInfo[] propertyInfo = null)

@@ -601,6 +601,8 @@ namespace SqlSugar.TDSQLForPGODBC
                     DataExecuted = it.AopEvents?.DataExecuted,
                     CheckConnectionExecuted = it.AopEvents?.CheckConnectionExecuted,
                     CheckConnectionExecuting = it.AopEvents?.CheckConnectionExecuting,
+                    OnGetDataReadered = it.AopEvents?.OnGetDataReadered,
+                    OnGetDataReadering = it.AopEvents?.OnGetDataReadering,
                 },
                 ConfigId = it.ConfigId,
                 ConfigureExternalServices = it.ConfigureExternalServices == null ? null : new ConfigureExternalServices()
