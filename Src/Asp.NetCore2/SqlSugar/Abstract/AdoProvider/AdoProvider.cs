@@ -1053,7 +1053,7 @@ namespace SqlSugar
             builder.SqlQueryBuilder.sql.Append(sql);
             if (parsmeterArray != null && parsmeterArray.Any())
                 builder.SqlQueryBuilder.Parameters.AddRange(parsmeterArray);
-            string sqlString = builder.SqlQueryBuilder.ToString();
+            string sqlString = builder.SqlQueryBuilder.ToSqlString();
             SugarParameter[] Parameters = builder.SqlQueryBuilder.Parameters.ToArray();
             this.GetDataBefore(sqlString, Parameters);
             using (var dataReader = this.GetDataReader(sqlString, Parameters))
