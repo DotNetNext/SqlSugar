@@ -204,6 +204,7 @@ namespace SqlSugar
         {
             if (dataAfterFunc != null)
             {
+                ((AdoProvider)context.Ado).AfterTime = DateTime.Now;
                 var entity = context.EntityMaintenance.GetEntityInfo<T>();
                 foreach (var item in result)
                 {
