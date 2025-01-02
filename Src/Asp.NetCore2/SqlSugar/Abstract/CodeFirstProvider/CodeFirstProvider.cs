@@ -28,10 +28,6 @@ namespace SqlSugar
         #region Public methods
         public SplitCodeFirstProvider SplitTables()
         {
-            if (StaticConfig.SplitTableCreateTableFunc != null) 
-            {
-                StaticConfig.SplitTableCreateTableFunc();
-            }
             var result = new SplitCodeFirstProvider();
             result.Context = this.Context;
             result.DefaultLength = this.DefultLength;
