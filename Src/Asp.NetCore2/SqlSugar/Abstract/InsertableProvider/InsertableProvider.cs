@@ -763,6 +763,10 @@ namespace SqlSugar
 
         public SplitInsertable<T> SplitTable()
         {
+            if (StaticConfig.SplitTableCreateTableFunc != null)
+            {
+                StaticConfig.SplitTableCreateTableFunc(typeof(T),this.InsertObjs);
+            }
             UtilMethods.StartCustomSplitTable(this.Context, typeof(T));
             var splitTableAttribute = typeof(T).GetCustomAttribute<SplitTableAttribute>();
             if (splitTableAttribute != null)
