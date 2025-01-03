@@ -510,6 +510,7 @@ namespace SqlSugar
             result.TableName = this.InsertBuilder.AsName;
             result.IsEnableDiffLogEvent = this.IsEnableDiffLogEvent;
             result.DiffModel = this.diffModel;
+            result.IsMySqlIgnore = this.InsertBuilder.MySqlIgnore;
             result.IsOffIdentity = this.InsertBuilder.IsOffIdentity;
             if(this.InsertBuilder.DbColumnInfoList.Any())
               result.InsertColumns = this.InsertBuilder.DbColumnInfoList.GroupBy(it => it.TableId).First().Select(it=>it.DbColumnName).ToList();
@@ -567,7 +568,16 @@ namespace SqlSugar
             this.InsertBuilder.MySqlIgnore = true; 
             return this;
         }
-
+        public IInsertable<T> MySqlIgnore(bool isIgnore) {
+            if (isIgnore)
+            {
+                return MySqlIgnore();
+            }
+            else 
+            {
+                return this;
+            }
+        }
         public IInsertable<T> InsertColumns(Expression<Func<T, object>> columns)
         {
             if (columns == null) return this;
