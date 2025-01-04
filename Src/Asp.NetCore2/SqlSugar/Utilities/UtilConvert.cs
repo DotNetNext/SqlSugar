@@ -109,6 +109,10 @@ namespace SqlSugar
             {
                 return string.Join("|",thisValue as byte[]);
             }
+            if (thisValue!=null&&thisValue?.GetType()?.Name == "DateOnly") 
+            {
+                return Convert.ToDateTime(thisValue.ToString()).ToString("yyyy-MM-dd");
+            }
             if (thisValue != null) return thisValue.ToString().Trim();
             return "";
         }
