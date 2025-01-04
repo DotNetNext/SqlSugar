@@ -42,7 +42,7 @@ namespace SqlSugar.TDengine
                 {
                     sb.Add($" SELECT '{item["table_name"].ObjToString().ToSqlFilter()}' AS NAME ");
                 }
-                var result= string.Join(" UNION ALL ", sb);
+                var result= string.Join(" UNION  ", sb);
                 if (string.IsNullOrEmpty(result)) 
                 {
                     result = " SELECT 'NoTables' AS Name ";
