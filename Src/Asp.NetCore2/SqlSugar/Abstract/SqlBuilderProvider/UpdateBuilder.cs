@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -425,6 +426,10 @@ namespace SqlSugar
                 }
                 else if (UtilMethods.IsNumber(type.Name)) 
                 {
+                    if (value is decimal v) 
+                    { 
+                        return v.ToString(UtilConstants.EnCultureInfo);
+                    }
                     if (value.ObjToString().Contains(","))
                     {
                         return $"'{value}'";
