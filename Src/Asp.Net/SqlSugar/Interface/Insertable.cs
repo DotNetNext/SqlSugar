@@ -64,6 +64,7 @@ namespace SqlSugar
         SplitInsertable<T> SplitTable(SplitType splitType);
         void AddQueue();
         IInsertable<T> MySqlIgnore();
+        IInsertable<T> MySqlIgnore(bool isIgnore);
         IInsertable<T> PostgreSQLConflictNothing(string[] columns);
         IInsertable<T> OffIdentity();
         IInsertable<T> OffIdentity(bool isSetOn);

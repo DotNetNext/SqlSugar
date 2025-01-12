@@ -662,6 +662,10 @@ namespace SqlSugar
                    OnLogExecuted=it.AopEvents?.OnLogExecuted,
                    OnLogExecuting= it.AopEvents?.OnLogExecuting,
                    DataExecuted = it.AopEvents?.DataExecuted,
+                    CheckConnectionExecuted = it.AopEvents?.CheckConnectionExecuted,
+                    CheckConnectionExecuting = it.AopEvents?.CheckConnectionExecuting,
+                    OnGetDataReadered= it.AopEvents?.OnGetDataReadered,
+                    OnGetDataReadering = it.AopEvents?.OnGetDataReadering,
                 },
                 ConfigId = it.ConfigId,
                 ConfigureExternalServices =it.ConfigureExternalServices==null?null:new ConfigureExternalServices() { 
@@ -1579,7 +1583,7 @@ namespace SqlSugar
             var result = sqlObj.Key;
             if (sqlObj.Value != null)
             {
-                foreach (var item in sqlObj.Value.OrderByDescending(it => it.ParameterName.Length))
+                foreach (var item in UtilMethods.CopySugarParameters(sqlObj.Value).OrderByDescending(it => it.ParameterName.Length))
                 {
                     if (item.ParameterName.StartsWith(":")&&!result.Contains(item.ParameterName)) 
                     {

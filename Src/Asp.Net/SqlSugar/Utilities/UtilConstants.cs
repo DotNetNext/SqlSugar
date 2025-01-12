@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Dynamic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 namespace SqlSugar
@@ -62,7 +63,7 @@ namespace SqlSugar
             typeof(short),
             typeof(ushort),
         };
-
+        internal static CultureInfo EnCultureInfo = new CultureInfo("en");
 
         internal static string[] DateTypeStringList = new string[]
         {

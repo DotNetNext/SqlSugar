@@ -17,7 +17,7 @@ namespace SqlSugar
         public DiffLogModel DiffModel { get; internal set; }
         public bool IsOffIdentity { get; internal set; }
         public bool IsInsertColumnsNull { get; internal set; }
-
+        public bool IsMySqlIgnore { get; internal set; }
         public int ExecuteCommand() 
         {
             if (DataList.Count() == 1 && DataList.First() == null) 
@@ -35,7 +35,7 @@ namespace SqlSugar
                 }
                 this.Context.Utilities.PageEach(DataList, PageSize, pageItem =>
                 {
-                    result += this.Context.Insertable(pageItem).AS(TableName).IgnoreColumnsNull(this.IsInsertColumnsNull).OffIdentity(IsOffIdentity).EnableDiffLogEventIF(IsEnableDiffLogEvent, DiffModel).InsertColumns(InsertColumns.ToArray()).ExecuteCommand();
+                    result += this.Context.Insertable(pageItem).AS(TableName).MySqlIgnore(IsMySqlIgnore).IgnoreColumnsNull(this.IsInsertColumnsNull).OffIdentity(IsOffIdentity).EnableDiffLogEventIF(IsEnableDiffLogEvent, DiffModel).InsertColumns(InsertColumns.ToArray()).ExecuteCommand();
                 });
                 if (isNoTran)
                 {

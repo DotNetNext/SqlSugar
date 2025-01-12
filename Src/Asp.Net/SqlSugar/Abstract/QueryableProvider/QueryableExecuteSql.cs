@@ -121,7 +121,11 @@ namespace SqlSugar
                 this.QueryBuilder.Includes == null &&
                 this.QueryBuilder.IsDistinct == false)
             {
-
+                if (StaticConfig.EnableAot) 
+                {
+                    var sqlobj = this.Clone().Select<int>(" COUNT(1) ").ToSql();
+                    return this.Context.Ado.GetInt(sqlobj.Key,sqlobj.Value);
+                }
                 return this.Clone().Select<int>(" COUNT(1) ").ToList().FirstOrDefault();
             }
             MappingTableList expMapping;

@@ -14,6 +14,10 @@ namespace SqlSugar
         public EntityInfo EntityInfo { get { return this.Context.EntityMaintenance.GetEntityInfo<T>(); } }
         public int BulkCopy(List<T> datas)
         {
+            if (StaticConfig.SplitTableCreateTableFunc != null)
+            {
+                StaticConfig.SplitTableCreateTableFunc(typeof(T), datas?.Cast<object>()?.ToArray());
+            }
             List<GroupModel> groupModels;
             int result;
             GroupDataList(datas, out groupModels, out result);
@@ -28,6 +32,10 @@ namespace SqlSugar
         }
         public async Task<int> BulkCopyAsync(List<T> datas)
         {
+            if (StaticConfig.SplitTableCreateTableFunc != null)
+            {
+                StaticConfig.SplitTableCreateTableFunc(typeof(T), datas?.Cast<object>()?.ToArray());
+            }
             List<GroupModel> groupModels;
             int result;
             GroupDataList(datas, out groupModels, out result);
