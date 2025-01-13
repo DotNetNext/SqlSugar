@@ -51,7 +51,20 @@ namespace SqlSugar
         public async virtual Task<int> Merge<T>(string tableName,DataTable dt, EntityInfo entityInfo, string[] whereColumns, string[] updateColumns, List<T> datas) where T : class, new()
         {
             var result = 0;
-            await this.Context.Utilities.PageEachAsync(datas,2000,async pageItems =>
+            var pageSize = 2000;
+            if (dt.Columns.Count > 100) 
+            {
+                pageSize = 100;
+            }
+            else if (dt.Columns.Count > 50)
+            {
+                pageSize = 300;
+            }
+            else if (dt.Columns.Count > 30)
+            {
+                pageSize = 500;
+            }
+            await this.Context.Utilities.PageEachAsync(datas, pageSize, async pageItems =>
             {
                 var x = await this.Context.Storageable(pageItems).As(tableName).WhereColumns(whereColumns).ToStorageAsync();
                 result += await x.BulkCopyAsync();

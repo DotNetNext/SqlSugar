@@ -80,8 +80,8 @@ namespace SqlSugar
         }
         public QueryMethodInfo AddJoinInfo(Type joinEntityType, string shortName, string onWhere, JoinType type = JoinType.Left)
         {
-            var method = QueryableObj.GetType().GetMyMethod("AddJoinInfo", 4, typeof(string), typeof(string), typeof(string), typeof(JoinType));
-            this.QueryableObj = method.Invoke(QueryableObj, new object[] { this.Context.EntityMaintenance.GetTableName(joinEntityType), shortName, onWhere, type });
+            var method = QueryableObj.GetType().GetMyMethod("AddJoinInfo", 4, typeof(Type), typeof(string), typeof(string), typeof(JoinType));
+            this.QueryableObj = method.Invoke(QueryableObj, new object[] { joinEntityType, shortName, onWhere, type });
             return this;
         }
         public QueryMethodInfo GroupBy(List<GroupByModel> models) 
