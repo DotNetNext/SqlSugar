@@ -35,7 +35,7 @@ namespace SqlSugar
 
         public virtual Task<bool> GetReaderByToken(IDataReader dataReader, CancellationToken cancellationToken)
         {
-            return ((DbDataReader)dataReader).ReadAsync();
+            return ((DbDataReader)dataReader).ReadAsync(cancellationToken);
         }
         public virtual void ChangeJsonType(SugarParameter paramter) 
         {
