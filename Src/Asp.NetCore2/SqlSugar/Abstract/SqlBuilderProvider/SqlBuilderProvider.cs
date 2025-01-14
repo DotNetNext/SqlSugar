@@ -31,7 +31,7 @@ namespace SqlSugar
 
         #region abstract Methods
 
-        public virtual bool SupportReadToken { get; set; }
+        public virtual bool SupportReadToken { get; set; } = true;
 
         public virtual Task<bool> GetReaderByToken(IDataReader dataReader, CancellationToken cancellationToken)
         {
