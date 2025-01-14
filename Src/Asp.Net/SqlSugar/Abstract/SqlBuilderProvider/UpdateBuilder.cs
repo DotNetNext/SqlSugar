@@ -428,7 +428,7 @@ namespace SqlSugar
                 {
                     if (value is decimal v) 
                     { 
-                        return v.ToString(UtilConstants.EnCultureInfo);
+                        return v.ToString(CultureInfo.InvariantCulture);
                     }
                     if (value.ObjToString().Contains(","))
                     {
