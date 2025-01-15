@@ -63,7 +63,7 @@ namespace SqlSugar
             typeof(short),
             typeof(ushort),
         };
-        internal static CultureInfo EnCultureInfo = new CultureInfo("en");
+        //internal static CultureInfo EnCultureInfo = new CultureInfo("en");
 
         internal static string[] DateTypeStringList = new string[]
         {
