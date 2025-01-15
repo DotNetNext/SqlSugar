@@ -7,8 +7,7 @@ namespace OrmTest
     public class Program
     {
         static void Main(string[] args)
-        {
-            Cases.Init();
+        { 
             //Each example will automatically create a table and can run independently.
             //每个例子都会自动建表 并且可以独立运行   
             _1_CodeFirst.Init();
