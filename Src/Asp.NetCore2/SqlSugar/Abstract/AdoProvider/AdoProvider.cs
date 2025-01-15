@@ -31,6 +31,7 @@ namespace SqlSugar
         #endregion
 
         #region Properties
+        internal bool IsOpenAsync { get; set; }
         protected List<IDataParameter> OutputParameters { get; set; }
         public virtual string SqlParameterKeyWord { get { return "@"; } }
         public IDbTransaction Transaction { get; set; }
@@ -626,7 +627,7 @@ namespace SqlSugar
                 if (this.ProcessingEventStartingSQL != null)
                     ExecuteProcessingSQL(ref sql,ref parameters);
                 ExecuteBefore(sql, parameters);
-                var sqlCommand = GetCommand(sql, parameters);
+                var sqlCommand =IsOpenAsync? await GetCommandAsync(sql, parameters) : GetCommand(sql, parameters);
                 int count;
                 if (this.CancellationToken == null)
                     count=await sqlCommand.ExecuteNonQueryAsync();
@@ -668,7 +669,7 @@ namespace SqlSugar
                 if (this.ProcessingEventStartingSQL != null)
                     ExecuteProcessingSQL(ref sql,ref parameters);
                 ExecuteBefore(sql, parameters);
-                var sqlCommand = GetCommand(sql, parameters);
+                var sqlCommand = IsOpenAsync ? await GetCommandAsync(sql, parameters) : GetCommand(sql, parameters);
                 DbDataReader sqlDataReader;
                 if(this.CancellationToken==null)
                     sqlDataReader=await sqlCommand.ExecuteReaderAsync(this.IsAutoClose() ? CommandBehavior.CloseConnection : CommandBehavior.Default);
@@ -707,7 +708,7 @@ namespace SqlSugar
                 if (this.ProcessingEventStartingSQL != null)
                     ExecuteProcessingSQL(ref sql,ref parameters);
                 ExecuteBefore(sql, parameters);
-                var sqlCommand = GetCommand(sql, parameters);
+                var sqlCommand = IsOpenAsync ? await GetCommandAsync(sql, parameters) : GetCommand(sql, parameters);
                 object scalar;
                 if(CancellationToken==null)
                     scalar=await sqlCommand.ExecuteScalarAsync();
@@ -1461,6 +1462,11 @@ namespace SqlSugar
         #endregion
 
         #region  Helper
+        public  virtual async Task<DbCommand> GetCommandAsync(string sql, SugarParameter[] parameters)
+        {
+            await Task.FromResult(0);
+            throw new NotImplementedException();
+        }
         public async Task CloseAsync()
         {
             if (this.Transaction != null)

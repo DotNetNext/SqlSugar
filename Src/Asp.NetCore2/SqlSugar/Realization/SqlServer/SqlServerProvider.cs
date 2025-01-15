@@ -7,12 +7,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using System.Threading;
 
 namespace SqlSugar
 {
     public class SqlServerProvider : AdoProvider
     {
-        public SqlServerProvider() { }
+
+        public SqlServerProvider() {
+          this.IsOpenAsync = true;
+        }
         public override IDbConnection Connection
         {
             get
@@ -75,6 +79,23 @@ namespace SqlSugar
             CheckConnection();
             return sqlCommand;
         }
+        public override async  Task<DbCommand> GetCommandAsync(string sql, SugarParameter[] parameters)
+        {
+            SqlCommand sqlCommand = new SqlCommand(sql, (SqlConnection)this.Connection);
+            sqlCommand.CommandType = this.CommandType;
+            sqlCommand.CommandTimeout = this.CommandTimeOut;
+            if (this.Transaction != null)
+            {
+                sqlCommand.Transaction = (SqlTransaction)this.Transaction;
+            }
+            if (parameters.HasValue())
+            {
+                SqlParameter[] ipars = GetSqlParameter(parameters);
+                sqlCommand.Parameters.AddRange(ipars);
+            }
+            await CheckConnectionAsync();
+            return sqlCommand;
+        } 
         public override void SetCommandToAdapter(IDataAdapter dataAdapter, DbCommand command)
         {
             ((SqlDataAdapter)dataAdapter).SelectCommand = (SqlCommand)command;
