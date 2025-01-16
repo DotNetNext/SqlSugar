@@ -426,6 +426,11 @@ namespace SqlSugar
             var parameter = model.Args[0];
             return string.Format("COUNT(DISTINCT {0} )", parameter.MemberName);
         }
+        public virtual string AggregateDistinctSum(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            return string.Format("SUM(DISTINCT {0} )", parameter.MemberName);
+        }
 
         public virtual string MappingColumn(MethodCallExpressionModel model)
         {
