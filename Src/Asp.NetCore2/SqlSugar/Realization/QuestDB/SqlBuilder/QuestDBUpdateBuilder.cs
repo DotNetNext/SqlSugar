@@ -85,7 +85,7 @@ namespace SqlSugar
                     this.Parameters.Add(new SugarParameter(parameterName, value));
                     return parameterName;
                 }
-                else if (value is  double||value is int || value is long || value is short || value is short || value is byte)
+                else if (value is decimal||value is  double||value is int || value is long || value is short || value is short || value is byte)
                 {
                     return value;
                 }
