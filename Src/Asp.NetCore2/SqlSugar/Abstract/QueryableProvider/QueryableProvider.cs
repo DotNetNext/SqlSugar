@@ -1496,6 +1496,11 @@ namespace SqlSugar
             }
             else if (this.QueryBuilder.EntityType == UtilConstants.ObjType || (this.QueryBuilder.AsTables != null && this.QueryBuilder.AsTables.Count == 1)||this.QueryBuilder.EntityName!=this.QueryBuilder.EntityType.Name) 
             {
+                if (typeof(TResult).IsInterface&&this.QueryBuilder.AsType==null) 
+                {
+                    Check.ExceptionEasy("Select< interface > requires a full example of AsType(type) db.Queryable<object>().AsType(type).Select<Interface>().ToList()"
+                        , "Select<接口>需要AsType(type)完整示例db.Queryable<object>().AsType(type).Select<Interface>().ToList()");
+                }
                 if (this.QueryBuilder.SelectValue.HasValue()&& this.QueryBuilder.SelectValue.ObjToString().Contains("AS"))
                 {
                     return this.Select<TResult>(this.QueryBuilder.SelectValue+"");
