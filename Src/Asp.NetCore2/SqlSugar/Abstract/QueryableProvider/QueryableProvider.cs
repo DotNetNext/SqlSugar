@@ -361,6 +361,7 @@ namespace SqlSugar
         }
         public ISugarQueryable<T> AsType(Type tableNameType)
         {
+            this.QueryBuilder.AsType = tableNameType;
             return AS(this.Context.EntityMaintenance.GetEntityInfo(tableNameType).DbTableName);
         }
         public virtual ISugarQueryable<T> With(string withString)
