@@ -33,6 +33,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            Unitsdfaafa.Init();
             Unitadfayyadfa.Init();
             Unitsdfa1231.Init();
             Unitasxdfaaa.Init();
