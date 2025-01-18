@@ -10,7 +10,7 @@ using System.Reflection;
 using System.Dynamic;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Serialization;
-
+ 
 namespace SqlSugar
 {
 
@@ -853,6 +853,11 @@ namespace SqlSugar
         }
         public virtual string ToSqlString()
         {
+            if (this.EntityInfo?.Type?.IsInterface==true)
+            {
+               this.QueryBuilder.SelectValue = " * ";
+               this.AsType(this.EntityInfo.Type);
+            }
             var sqlObj = this.Clone().ToSql();
             var result = sqlObj.Key;
             if (result == null) return null;

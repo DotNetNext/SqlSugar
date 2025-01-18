@@ -329,7 +329,7 @@ namespace SqlSugar
         }
         public ISugarQueryable<T> Clone()
         {
-            var queryable = this.Context.Queryable<object>().Select<T>().WithCacheIF(IsCache, CacheTime);
+            var queryable = this.Context.Queryable<object>().AsType(this.QueryBuilder.AsType).Select<T>().WithCacheIF(IsCache, CacheTime);
             CopyQueryBuilder(queryable.QueryBuilder);
             ((QueryableProvider<T>)queryable).CacheKey = this.CacheKey;
             ((QueryableProvider<T>)queryable).MapperAction = this.MapperAction;
@@ -361,6 +361,10 @@ namespace SqlSugar
         }
         public ISugarQueryable<T> AsType(Type tableNameType)
         {
+            if (tableNameType == null)
+            {
+                return this;
+            }
             this.QueryBuilder.AsType = tableNameType;
             return AS(this.Context.EntityMaintenance.GetEntityInfo(tableNameType).DbTableName);
         }
@@ -1526,6 +1530,13 @@ namespace SqlSugar
             }
             else
             {
+                if (typeof(TResult).IsInterface&& typeof(TResult).IsAssignableFrom(this.EntityInfo.Type))
+                {
+                    if (!this.QueryBuilder.AsTables.Any())
+                    {
+                        this.AsType(this.EntityInfo.Type);
+                    }
+                }
                 var selects = this.QueryBuilder.GetSelectValueByString();
                 if (selects.ObjToString().ToLower().IsContainsIn(".","("," as ")) 
                 {
