@@ -50,8 +50,13 @@ namespace OrmTest
                .AsType(typeof(UserInfo001))
                .Select<IUserInfo001>().ToListAsync().GetAwaiter().GetResult();
 
-            //Update 
 
+            var userInfo3 = db.Queryable<UserInfo001>() 
+              .Select<IUserInfo001>().ToList();
+
+            var userInfo4 = db.Queryable<UserInfo001>()
+            .Select<IUserInfo001>().ToSqlString();
+              
         }
         public interface IUserInfo001
         {
