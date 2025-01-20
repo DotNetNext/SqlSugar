@@ -361,7 +361,7 @@ namespace SqlSugar
         }
         public ISugarQueryable<Type> OfType<Type>() 
         { 
-            return this.Select<Type>().Select("*");
+            return this.Select<Type>().Select(this.Clone().QueryBuilder.GetSelectValue);
         }
         public ISugarQueryable<T> AsType(Type tableNameType)
         {
