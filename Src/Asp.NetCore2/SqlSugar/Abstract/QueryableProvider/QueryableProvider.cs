@@ -359,6 +359,10 @@ namespace SqlSugar
             this.QueryBuilder.IsCrossQueryWithAttr = true;
             return this.AS(asName);
         }
+        public ISugarQueryable<Type> OfType<Type>() 
+        { 
+            return this.Select<Type>().Select("*");
+        }
         public ISugarQueryable<T> AsType(Type tableNameType)
         {
             if (tableNameType == null)
