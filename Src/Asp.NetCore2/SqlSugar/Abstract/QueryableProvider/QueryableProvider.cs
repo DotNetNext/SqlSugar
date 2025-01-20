@@ -360,8 +360,9 @@ namespace SqlSugar
             return this.AS(asName);
         }
         public ISugarQueryable<Type> OfType<Type>() 
-        { 
-            return this.Select<Type>().Select(this.Clone().QueryBuilder.GetSelectValue);
+        {
+            var selectValue = this.Clone().QueryBuilder.GetSelectValue;
+            return this.Select<Type>().Select(selectValue);
         }
         public ISugarQueryable<T> AsType(Type tableNameType)
         {
