@@ -359,7 +359,7 @@ namespace SqlSugar
             this.QueryBuilder.IsCrossQueryWithAttr = true;
             return this.AS(asName);
         }
-        public ISugarQueryable<Type> OfType<Type>() 
+        public ISugarQueryable<Type> Cast<Type>() 
         {
             var selectValue = this.Clone().QueryBuilder.GetSelectValue;
             return this.Select<Type>().Select(selectValue);

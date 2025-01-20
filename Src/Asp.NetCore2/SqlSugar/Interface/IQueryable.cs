@@ -22,7 +22,7 @@ namespace SqlSugar
         ISugarQueryable<T> AS(string tableName);
         ISugarQueryable<T> AsWithAttr();
         ISugarQueryable<T> AsType(Type tableNameType);
-        ISugarQueryable<Type> OfType<Type>();
+        ISugarQueryable<Type> Cast<Type>();
         ISugarQueryable<T> With(string withString);
         //ISugarQueryable<T> CrossQueryWithAttr();
         ISugarQueryable<T> CrossQuery<Type>(string configId);
