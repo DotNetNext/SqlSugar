@@ -58,7 +58,7 @@ namespace OrmTest
             .Select<IUserInfo001>().ToSqlString();
 
             var userInfo5 = db.Queryable<UserInfo001>()
-            .OfType<IUserInfo001>().ToList();
+            .Cast<IUserInfo001>().ToList();
 
         }
         public interface IUserInfo001
