@@ -881,6 +881,10 @@ namespace SqlSugar
         {
             return UtilMethods.CountSubstringOccurrences(sql,"WHERE")>1;
         }
+        private bool IsCorrectErrorSqlParameterName()
+        {
+            return this.Context?.CurrentConnectionConfig?.MoreSettings?.IsCorrectErrorSqlParameterName == true;
+        }
 
         private void ThrowUpdateByExpression()
         {
