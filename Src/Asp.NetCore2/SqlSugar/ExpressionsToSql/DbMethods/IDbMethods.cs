@@ -130,5 +130,6 @@ namespace SqlSugar
         string FullTextContains(MethodCallExpressionModel mode);
         string PgsqlArrayContains(MethodCallExpressionModel model);
         string SelectFields(MethodCallExpressionModel model);
+        string Coalesce(MethodCallExpressionModel model);
     }
 }
