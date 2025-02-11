@@ -13,7 +13,7 @@ namespace Test
             {
                 DbType = DbType.SqlServer,
                 IsAutoCloseConnection = true,
-                ConnectionString = "server=.;uid=sa;pwd=sasa;database=SQLSUGAR4XTEST"
+                ConnectionString = "server=.;uid=sa;pwd=sasa;database=SQLSUGAR4XTEST;Encrypt=True;TrustServerCertificate=True"
             });
             //jsonToSqlClient.Context = new SqlSugarClient(new ConnectionConfig()
             //{
