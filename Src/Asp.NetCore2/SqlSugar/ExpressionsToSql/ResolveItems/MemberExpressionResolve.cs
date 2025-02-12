@@ -795,6 +795,10 @@ namespace SqlSugar
                 fieldName = fieldName.Replace(UtilConstants.Space, guid);
             }
             fieldName = Context.GetTranslationColumnName(fieldName);
+            if (this.Context?.SugarContext?.Context?.CurrentConnectionConfig?.MoreSettings?.IsCorrectErrorSqlParameterName == true&& fieldName?.Contains(ExpressionConst.LeftParenthesis)==true)
+            {
+                fieldName = Context.GetTranslationText(fieldName);
+            }
             if (isSpace)
             {
                 fieldName = fieldName.Replace(guid, UtilConstants.Space);
