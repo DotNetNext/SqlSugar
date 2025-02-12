@@ -594,7 +594,7 @@ WHERE table_name = '"+tableName+"'");
                                this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
                                return pks;
                            });
-            return comments.HasValue() ? comments.First(it => it.DbColumnName.Equals(filedName, StringComparison.CurrentCultureIgnoreCase)).ColumnDescription : "";
+            return comments.HasValue() ? comments.FirstOrDefault(it => it.DbColumnName.EqualCase(filedName))?.ColumnDescription : "";
 
         }
 
