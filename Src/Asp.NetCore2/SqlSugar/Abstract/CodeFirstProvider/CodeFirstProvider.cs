@@ -200,7 +200,7 @@ namespace SqlSugar
             var tempTableName = "TempDiff" + DateTime.Now.ToString("yyMMssHHmmssfff");
             var oldTableName = this.Context.EntityMaintenance.GetEntityInfo(type).DbTableName;
             var db = new SqlSugarProvider(UtilMethods.CopyConfig(this.Context.CurrentConnectionConfig));
-            UtilMethods.IsNullReturnNew(db.CurrentConnectionConfig.ConfigureExternalServices);
+            db.CurrentConnectionConfig.ConfigureExternalServices=UtilMethods.IsNullReturnNew(db.CurrentConnectionConfig.ConfigureExternalServices);
             db.CurrentConnectionConfig.ConfigureExternalServices.EntityNameService += (x, p) =>
             {
                 p.IsDisabledUpdateAll = true;//Disabled update
