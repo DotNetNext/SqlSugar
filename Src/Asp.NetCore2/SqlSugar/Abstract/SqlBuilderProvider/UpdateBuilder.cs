@@ -458,11 +458,11 @@ namespace SqlSugar
             {
                 return LambdaExpressions.DbMehtods.GetDate();
             }
-            else if (columnInfo.PropertyType.FullName == "NetTopologySuite.Geometries.Geometry") 
+            else if (columnInfo.PropertyType.FullName == "NetTopologySuite.Geometries.Geometry")
             {
                 var pname = Builder.SqlParameterKeyWord + "Geometry" + GetDbColumnIndex;
                 var p = new SugarParameter(pname, columnInfo.Value);
-                p.DbType= System.Data.DbType.Object;
+                p.DbType = System.Data.DbType.Object;
                 this.Parameters.Add(p);
                 GetDbColumnIndex++;
                 return pname;
@@ -501,7 +501,7 @@ namespace SqlSugar
                 }
                 return columnInfo.UpdateSql;
             }
-            else if (columnInfo.SqlParameterDbType is Type && (Type)columnInfo.SqlParameterDbType == UtilConstants.SqlConvertType)
+            else if (columnInfo.SqlParameterDbType is Type && IsNoParameterConvert(columnInfo))
             {
                 var type = columnInfo.SqlParameterDbType as Type;
                 var ParameterConverter = type.GetMethod("ParameterConverter").MakeGenericMethod(typeof(string));
@@ -564,6 +564,20 @@ namespace SqlSugar
                 return name + "";
             }
         }
+
+        private static bool IsNoParameterConvert(DbColumnInfo columnInfo)
+        {
+            if (columnInfo.SqlParameterDbType is Type t)
+            {
+                var isAssignableFrom = typeof(DbConvert.NoParameterCommonPropertyConvert).IsAssignableFrom(t);
+                if (isAssignableFrom)
+                {
+                    return isAssignableFrom;
+                }
+            }
+            return (Type)columnInfo.SqlParameterDbType == UtilConstants.SqlConvertType;
+        }
+
         private bool IsSingleSetExp(DbColumnInfo columnInfo) 
         {
             return this.ReSetValueBySqlExpList != null && 

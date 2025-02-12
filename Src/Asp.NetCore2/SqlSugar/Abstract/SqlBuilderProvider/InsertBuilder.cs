@@ -280,7 +280,7 @@ namespace SqlSugar
         }
 
         private int GetDbColumnIndex = 0;
-        public virtual string GetDbColumn(DbColumnInfo columnInfo ,object name) 
+        public virtual string GetDbColumn(DbColumnInfo columnInfo ,object name)
         {
             if (columnInfo.InsertServerTime)
             {
@@ -296,11 +296,11 @@ namespace SqlSugar
             }
             else if (columnInfo.InsertSql.HasValue())
             {
-                if (columnInfo.InsertSql.Contains("{0}")) 
+                if (columnInfo.InsertSql.Contains("{0}"))
                 {
                     if (columnInfo.Value == null)
                     {
-                        return string.Format(columnInfo.InsertSql, "null").Replace("'null'","null");
+                        return string.Format(columnInfo.InsertSql, "null").Replace("'null'", "null");
                     }
                     else
                     {
@@ -309,7 +309,7 @@ namespace SqlSugar
                 }
                 return columnInfo.InsertSql;
             }
-            else if (columnInfo.SqlParameterDbType is Type && (Type)columnInfo.SqlParameterDbType == UtilConstants.SqlConvertType)
+            else if (columnInfo.SqlParameterDbType is Type && IsNoParameterConvert(columnInfo))
             {
                 var type = columnInfo.SqlParameterDbType as Type;
                 var ParameterConverter = type.GetMethod("ParameterConverter").MakeGenericMethod(typeof(string));
@@ -319,17 +319,17 @@ namespace SqlSugar
             }
             else if (columnInfo.SqlParameterDbType is Type)
             {
-                var type=columnInfo.SqlParameterDbType as Type;
-                var ParameterConverter=type.GetMethod("ParameterConverter").MakeGenericMethod(columnInfo.PropertyType);
-                var obj=Activator.CreateInstance(type);
-                var p = ParameterConverter.Invoke(obj,new object[] {columnInfo.Value, GetDbColumnIndex }) as SugarParameter;
+                var type = columnInfo.SqlParameterDbType as Type;
+                var ParameterConverter = type.GetMethod("ParameterConverter").MakeGenericMethod(columnInfo.PropertyType);
+                var obj = Activator.CreateInstance(type);
+                var p = ParameterConverter.Invoke(obj, new object[] { columnInfo.Value, GetDbColumnIndex }) as SugarParameter;
                 GetDbColumnIndex++;
                 //this.Parameters.RemoveAll(it => it.ParameterName == it.ParameterName);
-                UtilMethods.ConvertParameter(p,this.Builder);
+                UtilMethods.ConvertParameter(p, this.Builder);
                 this.Parameters.Add(p);
                 return p.ParameterName;
             }
-            else if (columnInfo.DataType?.Equals("nvarchar2")==true) 
+            else if (columnInfo.DataType?.Equals("nvarchar2") == true)
             {
                 var pname = Builder.SqlParameterKeyWord + columnInfo.DbColumnName + "_ts" + GetDbColumnIndex;
                 var p = new SugarParameter(pname, columnInfo.Value);
@@ -338,7 +338,7 @@ namespace SqlSugar
                 GetDbColumnIndex++;
                 return pname;
             }
-            else if (columnInfo.PropertyType!=null&&columnInfo.PropertyType.Name == "TimeOnly" )
+            else if (columnInfo.PropertyType != null && columnInfo.PropertyType.Name == "TimeOnly")
             {
                 var timeSpan = UtilMethods.TimeOnlyToTimeSpan(columnInfo.Value);
                 var pname = Builder.SqlParameterKeyWord + columnInfo.DbColumnName + "_ts" + GetDbColumnIndex;
@@ -352,7 +352,7 @@ namespace SqlSugar
                 var pname = Builder.SqlParameterKeyWord + columnInfo.DbColumnName + "_ts" + GetDbColumnIndex;
                 if (timeSpan == null)
                 {
-                    this.Parameters.Add(new SugarParameter(pname, null) { DbType=System.Data.DbType.Date });
+                    this.Parameters.Add(new SugarParameter(pname, null) { DbType = System.Data.DbType.Date });
                 }
                 else
                 {
@@ -374,6 +374,19 @@ namespace SqlSugar
             {
                 return name + "";
             }
+        }
+
+        private static bool IsNoParameterConvert(DbColumnInfo columnInfo)
+        {
+            if (columnInfo.SqlParameterDbType is Type t) 
+            {
+               var isAssignableFrom = typeof(DbConvert.NoParameterCommonPropertyConvert).IsAssignableFrom(t);
+                if (isAssignableFrom)
+                {
+                    return isAssignableFrom;
+                }
+            }
+            return (Type)columnInfo.SqlParameterDbType == UtilConstants.SqlConvertType;
         }
 
         #endregion
