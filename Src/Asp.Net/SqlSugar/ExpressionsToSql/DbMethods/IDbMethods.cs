@@ -54,6 +54,7 @@ namespace SqlSugar
         string AggregateMax(MethodCallExpressionModel model);
         string AggregateCount(MethodCallExpressionModel model);
         string AggregateDistinctCount(MethodCallExpressionModel model);
+        string AggregateDistinctSum(MethodCallExpressionModel model);
         string MappingColumn(MethodCallExpressionModel model);
         string IsNull(MethodCallExpressionModel model);
         string GetSelfAndAutoFill(string shortName,bool isSingle);
@@ -129,5 +130,6 @@ namespace SqlSugar
         string FullTextContains(MethodCallExpressionModel mode);
         string PgsqlArrayContains(MethodCallExpressionModel model);
         string SelectFields(MethodCallExpressionModel model);
+        string Coalesce(MethodCallExpressionModel model);
     }
 }

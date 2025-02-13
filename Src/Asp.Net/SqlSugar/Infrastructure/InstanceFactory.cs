@@ -45,6 +45,10 @@ namespace SqlSugar
             {
                 return new MySqlQueryable<T>();
             }
+            else if (currentConnectionConfig.DbType == DbType.Sqlite)
+            {
+                return new SqliteQueryable<T>();
+            }
             else if (currentConnectionConfig.DbType == DbType.PostgreSQL)
             {
                 return new PostgreSQLQueryable<T>();

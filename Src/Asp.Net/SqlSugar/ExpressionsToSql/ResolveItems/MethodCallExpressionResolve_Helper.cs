@@ -870,6 +870,10 @@ namespace SqlSugar
                         }
                         return result1;
                     case "GetDate":
+                        if (this.Context?.SugarContext?.Context?.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.SqlServer) 
+                        {
+                            return "GetDate()";
+                        }
                         return this.Context.DbMehtods.GetDate();
                     case "GetRandom":
                         return this.Context.DbMehtods.GetRandom();

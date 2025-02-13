@@ -422,7 +422,13 @@ namespace SqlSugar
                     if (!column.EntityName.ObjToString().StartsWith("<>f__AnonymousType")
                         &&column.PropertyInfo?.ReflectedType!=typeof(DbTableInfo))
                     {
+                        var isOldOwnsOne = column.IsOwnsOne;
                         this.Context.CurrentConnectionConfig.ConfigureExternalServices.EntityService(property, column);
+                        if (column.IsOwnsOne == true && isOldOwnsOne == false) 
+                        {
+                            SetValueObjectColumns(result, property, column);
+                            continue;
+                        }
                     }
                 }
                 if (column.PropertyInfo.DeclaringType != null

@@ -33,7 +33,8 @@ namespace SqlSugar
         public ISqlBuilder Builder { get; set; }
         #endregion
 
-        #region Splicing basic 
+        #region Splicing basic  
+        public Type AsType { get; set; }
         public bool IsParameterizedConstructor { get; set; }
         public string Hints { get; set; }
         internal AppendNavInfo AppendNavInfo { get; set; }

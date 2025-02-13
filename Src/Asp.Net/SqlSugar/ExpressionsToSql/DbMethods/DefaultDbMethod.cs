@@ -426,6 +426,11 @@ namespace SqlSugar
             var parameter = model.Args[0];
             return string.Format("COUNT(DISTINCT {0} )", parameter.MemberName);
         }
+        public virtual string AggregateDistinctSum(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            return string.Format("SUM(DISTINCT {0} )", parameter.MemberName);
+        }
 
         public virtual string MappingColumn(MethodCallExpressionModel model)
         {
@@ -1195,7 +1200,12 @@ namespace SqlSugar
         {
             return $" uuid_generate_v4() ";
         }
-
+        public virtual string Coalesce(MethodCallExpressionModel mode)
+        {
+            var parameterNameA = mode.Args[0].MemberName;
+            var parameterNameB = mode.Args[1].MemberName;
+            return $" COALESCE({parameterNameA},{parameterNameB}) ";
+        }
         public virtual string FullTextContains(MethodCallExpressionModel mode) 
         {
             var columns = mode.Args[0].MemberName;

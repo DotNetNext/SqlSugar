@@ -10,6 +10,11 @@ namespace SqlSugar
 {
     public partial class SqlFunc
     {
+        
+        public static T Coalesce<T>(T value1, T value2)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
         public static bool FullTextContains(string [] columnNames, string keyword)
         {
             throw new NotSupportedException("Can only be used in expressions");
@@ -360,6 +365,7 @@ namespace SqlSugar
         public static TResult AggregateMax<TResult>(TResult thisValue) { throw new NotSupportedException("Can only be used in expressions"); }
         public static int AggregateCount<TResult>(TResult thisValue) { throw new NotSupportedException("Can only be used in expressions"); }
         public static int AggregateDistinctCount<TResult>(TResult thisValue) { throw new NotSupportedException("Can only be used in expressions"); }
+        public static int AggregateDistinctSum<TResult>(TResult thisValue) { throw new NotSupportedException("Can only be used in expressions"); }
         public static TResult MappingColumn<TResult>(TResult type,string newColumnName) { throw new NotSupportedException("Can only be used in expressions"); }
         public static TResult MappingColumn<TResult>(string newColumnName) { throw new NotSupportedException("Can only be used in expressions"); }
         /// <summary>

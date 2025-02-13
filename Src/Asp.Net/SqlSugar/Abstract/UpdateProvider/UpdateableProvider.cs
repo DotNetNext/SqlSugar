@@ -860,6 +860,10 @@ namespace SqlSugar
                 UpdateBuilder.LambdaExpressions.ParameterIndex = 100;
             }
             var expResult = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.WhereSingle).GetResultString().Replace(")", " )").Replace("(", "( ").Trim().TrimStart('(').TrimEnd(')').Replace("= =","=");
+            if (IsCorrectErrorSqlParameterName())
+            {
+                expResult = UpdateBuilder.GetExpressionValue(binaryExp.Right, ResolveExpressType.WhereSingle).GetResultString().Trim();
+            }
             if (expResult.EndsWith(" IS NULL  ")) 
             {
                 expResult = Regex.Split(expResult, " IS NULL  ")[0]+" = NULL ";
@@ -869,7 +873,11 @@ namespace SqlSugar
                 expResult = Regex.Split(expResult, "IS  NULL  ")[0] + " = NULL ";
             }
             string key = SqlBuilder.GetNoTranslationColumnName(expResult);
-
+            if (IsCorrectErrorSqlParameterName()&& binaryExp.Left is MemberExpression member)
+            {
+                key =this.EntityInfo.Columns.First(it=>it.PropertyName== member.Member.Name).DbColumnName;
+                expResult = $" {this.SqlBuilder.GetTranslationColumnName(key)}={expResult} ";
+            }
             if (EntityInfo.Columns.Where(it=>it.IsJson||it.IsTranscoding).Any(it => it.DbColumnName.EqualCase(key) || it.PropertyName.EqualCase(key)))
             {
                 CheckTranscodeing();

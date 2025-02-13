@@ -741,6 +741,7 @@ namespace SqlSugar
             foreach (var item in this.InsertObjs)
             {
                 var insertable = this.Context.Insertable(item)
+                    .AS(this.InsertBuilder.AsName)
                     .InsertColumns(this.InsertBuilder.DbColumnInfoList.Select(it => it.DbColumnName).Distinct().ToArray());
                 if (pkInfo.UnderType == UtilConstants.IntType)
                 {

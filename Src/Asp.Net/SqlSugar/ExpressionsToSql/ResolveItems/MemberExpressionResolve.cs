@@ -626,6 +626,7 @@ namespace SqlSugar
                 }
                 var result = this.Context.DbMehtods.DateValue(new MethodCallExpressionModel()
                 {
+                    Conext=this.Context,
                     Args = new List<MethodCallExpressionArgs>() {
                      new MethodCallExpressionArgs() { IsMember = !isConst, MemberName = parameter.CommonTempData, MemberValue = null },
                      new MethodCallExpressionArgs() { IsMember = true, MemberName = name, MemberValue = name }
@@ -795,6 +796,10 @@ namespace SqlSugar
                 fieldName = fieldName.Replace(UtilConstants.Space, guid);
             }
             fieldName = Context.GetTranslationColumnName(fieldName);
+            if (this.Context?.SugarContext?.Context?.CurrentConnectionConfig?.MoreSettings?.IsCorrectErrorSqlParameterName == true&& fieldName?.Contains(ExpressionConst.LeftParenthesis)==true)
+            {
+                fieldName = Context.GetTranslationText(fieldName);
+            }
             if (isSpace)
             {
                 fieldName = fieldName.Replace(guid, UtilConstants.Space);
