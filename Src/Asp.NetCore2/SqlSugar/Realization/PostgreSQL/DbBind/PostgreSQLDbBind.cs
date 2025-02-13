@@ -38,7 +38,7 @@ namespace SqlSugar
             {
                 csharpTypeName = csharpTypeName.Replace("mssql_", "");
             }
-            else if (csharpTypeName?.StartsWith("sys.") == true && this.Context.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.Vastbase)
+            else if (csharpTypeName?.StartsWith("sys.") == true)
             {
                 csharpTypeName = csharpTypeName.Replace("sys.", "");
             }
