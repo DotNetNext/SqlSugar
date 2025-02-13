@@ -182,9 +182,9 @@ namespace SqlSugar
         }
         public override string DateValue(MethodCallExpressionModel model)
         {
-            if (IsSqlServerModel(model)) 
+            if (IsSqlServerModel(model))
             {
-                return base.DateValue(model);
+                return new SqlServerMethod().DateValue(model);
             }
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
