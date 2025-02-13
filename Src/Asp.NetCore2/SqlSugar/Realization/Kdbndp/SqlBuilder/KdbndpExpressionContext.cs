@@ -361,6 +361,10 @@ namespace SqlSugar
         public override string ToString(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
+            if (IsSqlServerModel(model)) 
+            {
+                return base.ToString(model);
+            }
             return string.Format(" CAST({0} AS VARCHAR)", parameter.MemberName);
         }
 
