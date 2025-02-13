@@ -182,6 +182,10 @@ namespace SqlSugar
         }
         public override string DateValue(MethodCallExpressionModel model)
         {
+            if (IsSqlServerModel(model)) 
+            {
+                return base.DateValue(model);
+            }
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
             var format = "dd";
@@ -361,6 +365,10 @@ namespace SqlSugar
         public override string ToString(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
+            if (IsSqlServerModel(model)) 
+            {
+                return base.ToString(model);
+            }
             return string.Format(" CAST({0} AS VARCHAR)", parameter.MemberName);
         }
 

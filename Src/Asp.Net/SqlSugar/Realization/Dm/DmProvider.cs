@@ -183,10 +183,20 @@ namespace SqlSugar
                 {
                     sqlParameter.DmSqlType = DmDbType.Cursor;
                 }
+                if (IsSpOutPutParameter(sqlParameter))
+                {
+                    sqlParameter.ParameterName = sqlParameter.ParameterName.Replace("@", ":");
+                }
                 ++index;
             }
             return result;
         }
+
+        private bool IsSpOutPutParameter(DmParameter sqlParameter)
+        {
+            return sqlParameter.Direction == ParameterDirection.Output && this.CommandType == CommandType.StoredProcedure;
+        }
+
         private static string[] KeyWord =new string []{ "@month", ":month", ":day","@day","@group", ":group",":index", "@index", "@order", ":order", "@user", "@level", ":user", ":level",":type","@type", ":year", "@year" };
         private static string ReplaceKeyWordParameterName(string sql, SugarParameter[] parameters)
         {

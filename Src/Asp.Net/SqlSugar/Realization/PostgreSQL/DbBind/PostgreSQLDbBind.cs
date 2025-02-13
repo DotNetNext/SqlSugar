@@ -38,7 +38,10 @@ namespace SqlSugar
             {
                 csharpTypeName = csharpTypeName.Replace("mssql_", "");
             }
-
+            else if (csharpTypeName?.StartsWith("sys.") == true)
+            {
+                csharpTypeName = csharpTypeName.Replace("sys.", "");
+            }
             return csharpTypeName;
         }
 
