@@ -113,13 +113,17 @@ namespace SqlSugar
         {
             get
             {
+                if (IsSqlServerModel()) 
+                {
+                    return "ALTER TABLE {0} ADD  {1} {2}{3} {4} {5} {6}";
+                }
                 return "ALTER TABLE {0} ADD COLUMN {1} {2}{3} {4} {5} {6}";
             }
         }
         protected override string AlterColumnToTableSql
         {
             get
-            {
+            { 
                 return "alter table {0} ALTER COLUMN {1} {2}{3} {4} {5} {6}";
             }
         }
