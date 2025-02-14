@@ -182,9 +182,9 @@ namespace SqlSugar
         }
         public override string DateValue(MethodCallExpressionModel model)
         {
-            if (IsSqlServerModel(model)) 
+            if (IsSqlServerModel(model))
             {
-                return base.DateValue(model);
+                return new SqlServerMethod().DateValue(model);
             }
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
@@ -404,6 +404,10 @@ namespace SqlSugar
         public override string MergeString(params string[] strings)
         {
             var key = Guid.NewGuid() + "";
+            if (strings.Length == 1) 
+            {
+                return " pg_catalog.concat(" + string.Join(",", strings.Select(it => it?.Replace("+", key))).Replace("+", "").Replace(key, "+") + ",null) ";
+            }
             return " pg_catalog.concat(" + string.Join(",", strings.Select(it => it?.Replace("+", key))).Replace("+", "").Replace(key, "+") + ") ";
         }
         public override string IsNull(MethodCallExpressionModel model)

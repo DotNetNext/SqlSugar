@@ -113,13 +113,17 @@ namespace SqlSugar
         {
             get
             {
+                if (IsSqlServerModel()) 
+                {
+                    return "ALTER TABLE {0} ADD  {1} {2}{3} {4} {5} {6}";
+                }
                 return "ALTER TABLE {0} ADD COLUMN {1} {2}{3} {4} {5} {6}";
             }
         }
         protected override string AlterColumnToTableSql
         {
             get
-            {
+            { 
                 return "alter table {0} ALTER COLUMN {1} {2}{3} {4} {5} {6}";
             }
         }
@@ -369,6 +373,15 @@ WHERE tgrelid = '" + tableName + "'::regclass");
         }
         public override bool UpdateColumn(string tableName, DbColumnInfo columnInfo)
         {
+            if (IsSqlServerModel())
+            {
+                if (columnInfo.DataType.EqualCase("uuid"))
+                {
+                    columnInfo.DataType = "uniqueidentifier";
+                    columnInfo.Length = 0;
+                    columnInfo.Scale = 0;
+                }
+            }
 
             ConvertCreateColumnInfo(columnInfo);
             tableName = this.SqlBuilder.GetTranslationTableName(tableName);
@@ -484,6 +497,19 @@ WHERE tgrelid = '" + tableName + "'::regclass");
                 db.DbMaintenance.AddTableRemark(SqlBuilder.GetTranslationColumnName(entity.DbTableName), entity.TableDescription);
             }
             return true;
+        }
+        public override bool AddColumn(string tableName, DbColumnInfo columnInfo)
+        {
+            if (IsSqlServerModel()) 
+            {
+                if (columnInfo.DataType.EqualCase("uuid")) 
+                {
+                    columnInfo.DataType = "uniqueidentifier";
+                    columnInfo.Length = 0;
+                    columnInfo.Scale = 0;
+                }
+            }
+            return base.AddColumn(tableName, columnInfo);
         }
         public override bool RenameTable(string oldTableName, string newTableName)
         {
