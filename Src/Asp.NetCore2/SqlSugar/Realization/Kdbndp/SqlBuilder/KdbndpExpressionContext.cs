@@ -264,6 +264,10 @@ namespace SqlSugar
 
         public override string DateIsSameDay(MethodCallExpressionModel model)
         {
+            if (IsSqlServerModel(model)) 
+            {
+                return new SqlServerMethod().DateIsSameDay(model);
+            }
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
             return string.Format(" ( to_char({0},'yyyy-MM-dd')=to_char({1},'yyyy-MM-dd') ) ", parameter.MemberName, parameter2.MemberName); ;
@@ -277,6 +281,10 @@ namespace SqlSugar
 
         public override string DateIsSameByType(MethodCallExpressionModel model)
         {
+            if (IsSqlServerModel(model))
+            {
+                return new SqlServerMethod().DateIsSameByType(model);
+            }
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
             var parameter3 = model.Args[2];
