@@ -282,6 +282,10 @@ namespace SqlSugar
                 {
                     expItem = (item as UnaryExpression).Operand;
                 }
+                else if (item is MethodCallExpression callExpression&& callExpression.Method.Name== "op_Implicit") 
+                {
+                    expItem = callExpression.Arguments[0];
+                }
                 AppendItem(parameter, name, args, model, expItem);
             }
             if (appendArgs != null)
