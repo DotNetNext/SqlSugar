@@ -811,6 +811,7 @@ namespace SqlSugar
         {
             var pars = new MethodCallExpressionModel()
             {
+                Conext=this.Context,
                 Args = new List<MethodCallExpressionArgs>() {
                              new MethodCallExpressionArgs() {  IsMember=true, MemberName=value, MemberValue=value },
                              new MethodCallExpressionArgs() {   MemberName=type, MemberValue=type}
