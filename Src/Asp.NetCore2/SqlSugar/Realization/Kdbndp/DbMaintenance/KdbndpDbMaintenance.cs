@@ -681,7 +681,7 @@ WHERE tgrelid = '" + tableName + "'::regclass");
 
             if (IsSqlServerModel())
             {
-                if (x.DataType=="int8")
+                if (x.DataType.EqualCase("int8"))
                 {
                     x.DataType = "bigint";
                     x.Length = 0;
