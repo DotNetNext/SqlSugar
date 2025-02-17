@@ -122,6 +122,10 @@ namespace SqlSugar
         {
             CheckConnection();
         }
+        public virtual async Task OpenAsync() 
+        {
+            await CheckConnectionAsync();
+        }
         public SugarConnection  OpenAlways() 
         {
             SugarConnection result = new SugarConnection();
@@ -131,6 +135,27 @@ namespace SqlSugar
             this.Context.CurrentConnectionConfig.IsAutoCloseConnection = false;
             this.Open();
             return result;
+        }
+        public async Task CloseAsync()
+        {
+            if (this.Transaction != null)
+            {
+                this.Transaction = null;
+            }
+            if (this.Connection != null && this.Connection.State == ConnectionState.Open)
+            {
+                await ((DbConnection)this.Connection).CloseAsync();
+            }
+            if (this.IsMasterSlaveSeparation && this.SlaveConnections.HasValue())
+            {
+                foreach (var slaveConnection in this.SlaveConnections)
+                {
+                    if (slaveConnection != null && slaveConnection.State == ConnectionState.Open)
+                    {
+                       await ((DbConnection)slaveConnection).CloseAsync();
+                    }
+                }
+            }
         }
         public virtual void Close()
         {

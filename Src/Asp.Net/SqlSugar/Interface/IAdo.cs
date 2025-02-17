@@ -174,7 +174,9 @@ namespace SqlSugar
 
         void Dispose();
         void Close();
+        Task CloseAsync();
         void Open();
+        Task OpenAsync();
         SugarConnection OpenAlways();
         bool IsValidConnection();
         bool IsValidConnectionNoClose();
