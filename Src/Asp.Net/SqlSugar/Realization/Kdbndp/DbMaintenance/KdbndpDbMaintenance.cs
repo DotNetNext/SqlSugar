@@ -215,6 +215,10 @@ namespace SqlSugar
         {
             get
             {
+                if (IsSqlServerModel()) 
+                {
+                    return "ALTER TABLE {0} ALTER {1} SET DEFAULT {2}";
+                }
                 return "ALTER TABLE {0} ALTER COLUMN {1} SET DEFAULT {2}";
             }
         }
