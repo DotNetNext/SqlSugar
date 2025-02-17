@@ -215,6 +215,10 @@ namespace SqlSugar
         {
             get
             {
+                if (IsSqlServerModel()) 
+                {
+                    return "ALTER TABLE {0} ALTER {1} SET DEFAULT {2}";
+                }
                 return "ALTER TABLE {0} ALTER COLUMN {1} SET DEFAULT {2}";
             }
         }
@@ -665,7 +669,7 @@ WHERE tgrelid = '" + tableName + "'::regclass");
                 }
             }
         }
-        private static void ConvertCreateColumnInfo(DbColumnInfo x)
+        private  void ConvertCreateColumnInfo(DbColumnInfo x)
         {
             string[] array = new string[] { "int4", "text", "int2", "int8", "date", "bit", "text", "timestamp" };
 
@@ -673,6 +677,16 @@ WHERE tgrelid = '" + tableName + "'::regclass");
             {
                 x.Length = 0;
                 x.DecimalDigits = 0;
+            }
+
+            if (IsSqlServerModel())
+            {
+                if (x.DataType=="int8")
+                {
+                    x.DataType = "bigint";
+                    x.Length = 0;
+                    x.Scale = 0;
+                }
             }
         }
         private bool IsPgModel()
