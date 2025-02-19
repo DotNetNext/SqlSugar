@@ -43,9 +43,9 @@ namespace SqlSugar
         }
     }
 
-    public class NavigationInitializer<T> where T : new()
+    public class OneToOneInitializer<T> where T : new()
     {
-        public static implicit operator T(NavigationInitializer<T> initializer)
+        public static implicit operator T(OneToOneInitializer<T> initializer)
         {
             Type type = typeof(T);
 
