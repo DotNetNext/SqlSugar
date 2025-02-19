@@ -392,6 +392,17 @@ namespace SqlSugar
                 FieldValue = String.Join(",", ids),
                 CSharpTypeName = navPkColumn?.UnderType?.Name
             }));
+            if (NavigationGlobalInstanceRegistry.IsAny()) 
+            {
+                foreach (var item in list)
+                {
+                    var firstObj = navObjectNamePropety.GetValue(item);
+                    if (NavigationGlobalInstanceRegistry.IsNavigationInitializerCreated(firstObj))
+                    {
+                        navObjectNamePropety.SetValue(item,null);
+                    }
+                }
+            }
             if (list.Any()&&navObjectNamePropety.GetValue(list.First()) == null)
             {
                 var sqlObj = GetWhereSql(db,navObjectNameColumnInfo.Navigat.Name);
