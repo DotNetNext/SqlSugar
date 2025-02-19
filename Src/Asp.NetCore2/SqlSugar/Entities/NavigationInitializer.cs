@@ -7,7 +7,7 @@ using System.Text;
 
 namespace SqlSugar
 {
-    internal static class NavigationGlobalInstanceRegistry
+    internal static class OneToOneGlobalInstanceRegistry
     {
         private static readonly Dictionary<Type, object> _instances = new Dictionary<Type, object>();
         private static readonly object _lock = new object();
@@ -49,13 +49,13 @@ namespace SqlSugar
         {
             Type type = typeof(T);
 
-            if (!NavigationGlobalInstanceRegistry.Instances.ContainsKey(type))
+            if (!OneToOneGlobalInstanceRegistry.Instances.ContainsKey(type))
             {
                 T instance = new T();
-                NavigationGlobalInstanceRegistry.RegisterInstance(type, instance);
+                OneToOneGlobalInstanceRegistry.RegisterInstance(type, instance);
             }
 
-            return (T)NavigationGlobalInstanceRegistry.Instances[type];
+            return (T)OneToOneGlobalInstanceRegistry.Instances[type];
         }
     }
 }

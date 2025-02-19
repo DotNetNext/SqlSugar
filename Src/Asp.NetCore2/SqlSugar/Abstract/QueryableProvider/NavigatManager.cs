@@ -392,12 +392,12 @@ namespace SqlSugar
                 FieldValue = String.Join(",", ids),
                 CSharpTypeName = navPkColumn?.UnderType?.Name
             }));
-            if (NavigationGlobalInstanceRegistry.IsAny()) 
+            if (OneToOneGlobalInstanceRegistry.IsAny()) 
             {
                 foreach (var item in list)
                 {
                     var firstObj = navObjectNamePropety.GetValue(item);
-                    if (NavigationGlobalInstanceRegistry.IsNavigationInitializerCreated(firstObj))
+                    if (OneToOneGlobalInstanceRegistry.IsNavigationInitializerCreated(firstObj))
                     {
                         navObjectNamePropety.SetValue(item,null);
                     }
