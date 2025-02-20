@@ -360,12 +360,20 @@ namespace SqlSugar
 
         public override string ToInt32(MethodCallExpressionModel model)
         {
+            if (IsSqlServerModel(model))
+            {
+                return  new SqlServerMethod().ToInt32(model);
+            }
             var parameter = model.Args[0];
             return string.Format(" CAST({0} AS INT4)", parameter.MemberName);
         }
 
         public override string ToInt64(MethodCallExpressionModel model)
         {
+            if (IsSqlServerModel(model))
+            {
+                return new SqlServerMethod().ToInt64(model);
+            }
             var parameter = model.Args[0];
             return string.Format(" CAST({0} AS INT8)", parameter.MemberName);
         }
