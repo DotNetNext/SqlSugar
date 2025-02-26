@@ -94,7 +94,7 @@ namespace SqlSugar.TDengine
         {
             get
             {
-                return "CREATE STABLE IF NOT EXISTS  {0}(\r\n{1} ) TAGS("+SqlBuilder.GetTranslationColumnName("TagsTypeId") +" VARCHAR(20))";
+                return "CREATE STABLE IF NOT EXISTS  {0}(\r\n{1} ) TAGS("+SqlBuilder.GetTranslationColumnName("TagsTypeId") +" VARCHAR(100))";
             }
         }
         protected override string CreateTableColumn
@@ -440,9 +440,9 @@ namespace SqlSugar.TDengine
             }
             if (STable.Tags?.Any() == true) 
             {
-                var colums = STable.Tags.Select(it => this.SqlBuilder.GetTranslationTableName(it.Name)+ "  VARCHAR(20) ");
+                var colums = STable.Tags.Select(it => this.SqlBuilder.GetTranslationTableName(it.Name)+ "  VARCHAR(100) ");
                 tableString=tableString.Replace(SqlBuilder.GetTranslationColumnName("TagsTypeId"), string.Join(",", colums));
-                tableString = tableString.Replace(" VARCHAR(20)  VARCHAR(20)", " VARCHAR(20)");
+                tableString = tableString.Replace(" VARCHAR(100)  VARCHAR(100)", " VARCHAR(100)");
             }
             this.Context.Ado.ExecuteCommand(tableString);
             var createChildSql = $"CREATE TABLE IF NOT EXISTS     {childTableName} USING {stableName} TAGS('default')";
