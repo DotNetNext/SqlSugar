@@ -39,12 +39,13 @@ namespace TDengineTest
                      }
                 }
             });
-             
-        
-            //插入并且自动建子表
+
+            //固定建表
+            CodeFirst(db);
+
+            //自动建表
             InsertUsingTag(db);
-
-
+             
             //生成实体
             DbFirst(db);
 
