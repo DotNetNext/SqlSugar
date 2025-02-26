@@ -19,7 +19,12 @@ namespace SqlSugar.TDengine
     {
         public static STableAttribute GetCommonSTableAttribute(ISqlSugarClient db,STableAttribute sTableAttribute)
         {
-            return sTableAttribute;
+            var key = "GetCommonSTableAttribute_" + sTableAttribute?.STableName;
+            if (db.TempItems?.ContainsKey(key) == true) 
+            {
+                sTableAttribute.STableName = db.TempItems[key] +"";
+            }
+            return sTableAttribute!;
         }
         public static long ToUnixTimestamp(DateTime dateTime)
         {
