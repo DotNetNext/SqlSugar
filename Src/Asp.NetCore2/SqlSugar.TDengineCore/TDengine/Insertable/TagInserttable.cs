@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace SqlSugar 
 {
@@ -34,6 +35,31 @@ namespace SqlSugar
                     tags.Add(tagString);
                     this.Context.Ado.ExecuteCommand($"CREATE TABLE IF NOT EXISTS {childTableName} USING {sTableName} TAGS ({tagString})");
                     this.Context.Insertable(pageItems).AS(childTableName).ExecuteCommand();
+                });
+            }
+            return inserObjects.Count();
+        }
+
+        public async Task<int> ExecuteCommandAsync()
+        {
+            var provider = (InsertableProvider<T>)thisValue;
+            var inserObjects = provider.InsertObjs;
+            var attr = typeof(T).GetCustomAttribute<STableAttribute>();
+            Check.ExceptionEasy(attr == null || attr?.Tag1 == null, $"", $"{nameof(T)}缺少特性STableAttribute和Tag1");
+            // 根据所有非空的 Tag 进行分组
+            var groups = GetGroupInfos(inserObjects, attr);
+            foreach (var item in groups)
+            {
+                var childTableName = getChildTableNamefunc(attr.STableName, item.First());
+                await this.Context.Utilities.PageEachAsync(item, 500, async pageItems =>
+                {
+                    var sTableName = provider.SqlBuilder.GetTranslationColumnName(attr.STableName);
+                    var tags = new List<string>();
+                    List<string> tagValues = GetTagValues(pageItems, attr);
+                    var tagString = string.Join(",", tagValues.Where(v => !string.IsNullOrEmpty(v)).Select(v => $"'{v.ToSqlFilter()}'"));
+                    tags.Add(tagString);
+                    await  this.Context.Ado.ExecuteCommandAsync($"CREATE TABLE IF NOT EXISTS {childTableName} USING {sTableName} TAGS ({tagString})");
+                    await  this.Context.Insertable(pageItems).AS(childTableName).ExecuteCommandAsync();
                 });
             }
             return inserObjects.Count();
