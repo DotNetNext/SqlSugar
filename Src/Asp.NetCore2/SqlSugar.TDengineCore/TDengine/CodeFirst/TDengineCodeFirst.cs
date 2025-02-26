@@ -148,6 +148,15 @@ namespace SqlSugar.TDengine
             {
                 entityInfo.DbTableName += ("{stable}"+this.Context.Utilities.SerializeObject(attr));
             }
+            if (attr != null && attr.Tag1 != null)
+            {
+                dbColumns = dbColumns.Where(it =>
+                 it.DbColumnName?.ToLower() != attr.Tag1?.ToLower()
+                   && it.DbColumnName?.ToLower() != attr.Tag2?.ToLower()
+                   && it.DbColumnName?.ToLower() != attr.Tag3?.ToLower()
+                   && it.DbColumnName?.ToLower() != attr.Tag4?.ToLower()
+                ).ToList();
+            }
             this.Context.DbMaintenance.CreateTable(entityInfo.DbTableName, dbColumns);
             entityInfo.DbTableName = oldTableName;
         }
