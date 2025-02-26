@@ -16,7 +16,7 @@ namespace TDengineTest
            db.CodeFirst.InitTables<SUsingTagModel>();
  
             //插入并根据Tag的值创建子表
-            db.CopyNew().Insertable(new List<SUsingTagModel>(){
+            db.Insertable(new List<SUsingTagModel>(){
                 new SUsingTagModel()
                 {
                         Boolean = true,
