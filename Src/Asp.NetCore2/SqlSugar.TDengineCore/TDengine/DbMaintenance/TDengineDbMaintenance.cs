@@ -415,13 +415,27 @@ namespace SqlSugar.TDengine
             var childTableName = this.SqlBuilder.GetTranslationTableName(tableName.ToLower(isAutoToLowerCodeFirst));
             var stableName =  this.SqlBuilder.GetTranslationTableName("STable_"+tableName.ToLower(isAutoToLowerCodeFirst));
             var isAttr = tableName.Contains("{stable}");
+            var isTag1 = false;
             if (isAttr) 
             {
                 var attr = this.Context.Utilities.DeserializeObject<STableAttribute>(tableName.Split("{stable}").Last());
                 stableName= this.SqlBuilder.GetTranslationTableName(attr.STableName.ToLower(isAutoToLowerCodeFirst));
                 tableString = string.Format(this.CreateTableSql, stableName, string.Join(",\r\n", columnArray));
                 tableName=childTableName = this.SqlBuilder.GetTranslationTableName(tableName.Split("{stable}").First().ToLower(isAutoToLowerCodeFirst));
-                STable.Tags =this.Context.Utilities.DeserializeObject<List<ColumnTagInfo>>( attr.Tags);
+                if (attr.Tags == null && attr.Tag1 != null)
+                {
+                    isTag1 = true;
+                    STable.Tags = new List<ColumnTagInfo>() {
+                      new ColumnTagInfo(){ Name=attr.Tag1 },
+                      new ColumnTagInfo(){ Name=attr.Tag2 },
+                      new ColumnTagInfo(){ Name=attr.Tag3 },
+                      new ColumnTagInfo(){ Name=attr.Tag4 }
+                    }.Where(it=>it.Name.HasValue()).ToList();
+                }
+                else
+                {
+                    STable.Tags = this.Context.Utilities.DeserializeObject<List<ColumnTagInfo>>(attr.Tags);
+                }
             }
             if (STable.Tags?.Any() == true) 
             {
@@ -436,7 +450,14 @@ namespace SqlSugar.TDengine
                 var colums = STable.Tags.Select(it => it.Value.ToSqlValue());
                 createChildSql = createChildSql.Replace("TAGS('default')", $"TAGS({string.Join(",", colums)})"); 
             }
-            this.Context.Ado.ExecuteCommand(createChildSql);
+            if (isTag1)
+            {
+                //No create child table
+            }
+            else
+            {
+                this.Context.Ado.ExecuteCommand(createChildSql);
+            }
             return tableString;
         }
         public override bool IsAnyConstraint(string constraintName)
