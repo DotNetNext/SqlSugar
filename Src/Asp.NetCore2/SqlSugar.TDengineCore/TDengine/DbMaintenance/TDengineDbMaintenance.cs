@@ -1,8 +1,10 @@
-﻿using SqlSugar.TDengineAdo;
+﻿using Kdbndp.NameTranslation;
+using SqlSugar.TDengineAdo;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace SqlSugar.TDengine
@@ -468,6 +470,28 @@ namespace SqlSugar.TDengine
         {
             Check.ThrowNotSupportedException("PgSql BackupDataBase NotSupported");
             return false;
+        }
+        public override void AddDefaultValue(EntityInfo entityInfo)
+        {
+            var talbeName = entityInfo.DbTableName;
+            var attr = entityInfo.Type.GetCustomAttribute<STableAttribute>();
+            if (attr?.Tag1 != null) 
+            {
+                talbeName = attr.STableName;
+            }
+            var dbColumns = this.GetColumnInfosByTableName(talbeName, false);
+            var db = this.Context;
+            var columns = entityInfo.Columns.Where(it => it.IsIgnore == false).ToList();
+            foreach (var item in columns)
+            {
+                if (item.DefaultValue.HasValue())
+                {
+                    if (!IsAnyDefaultValue(entityInfo.DbTableName, item.DbColumnName, dbColumns))
+                    {
+                        this.AddDefaultValue(entityInfo.DbTableName, item.DbColumnName, item.DefaultValue);
+                    }
+                }
+            }
         }
 
         public override List<DbColumnInfo> GetColumnInfosByTableName(string tableName, bool isCache = true)
