@@ -124,5 +124,10 @@ namespace SqlSugar
             });
             return groups;
         }
+        private STableAttribute GetCommonSTableAttribute(STableAttribute sTableAttribute)
+        {
+            return sTableAttribute;
+        }
+
     }
 }

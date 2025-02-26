@@ -12,7 +12,7 @@ namespace SqlSugar.TDengine
     {
         protected override void Execute(Type entityType, EntityInfo entityInfo)
         {
-            var attr = entityInfo.Type.GetCustomAttribute<STableAttribute>();
+            var attr =GetCommonSTableAttribute( entityInfo.Type.GetCustomAttribute<STableAttribute>());
             if (attr?.STableName!=null&&attr?.Tag1!=null) 
             {
                 entityInfo.DbTableName = attr.STableName;
@@ -98,7 +98,7 @@ namespace SqlSugar.TDengine
                 var tableName = GetTableName(entityInfo);
                 var dbColumns = this.Context.DbMaintenance.GetColumnInfosByTableName(tableName, false);
                 ConvertColumns(dbColumns);
-                var attr = entityInfo.Type.GetCustomAttribute<STableAttribute>();
+                var attr =GetCommonSTableAttribute( entityInfo.Type.GetCustomAttribute<STableAttribute>());
                 var entityColumns = entityInfo.Columns.Where(it => it.IsIgnore == false).ToList();
                 if (attr != null && attr.Tag1 != null)
                 {
@@ -222,7 +222,7 @@ namespace SqlSugar.TDengine
                 var addItem = EntityColumnToDbColumn(entityInfo, entityInfo.DbTableName, item);
                 dbColumns.Add(addItem);
             }
-            var attr = entityInfo.Type.GetCustomAttribute<STableAttribute>();
+            var attr =GetCommonSTableAttribute( entityInfo.Type.GetCustomAttribute<STableAttribute>());
             var oldTableName = entityInfo.DbTableName;
             if (attr != null) 
             {
@@ -249,7 +249,11 @@ namespace SqlSugar.TDengine
             }
             return result;
         }
-      
+
+        private STableAttribute GetCommonSTableAttribute(STableAttribute sTableAttribute)
+        {
+            return sTableAttribute;
+        }
         public string GetDatabaseTypeName(string typeName)
         {
             switch (typeName.ToLower())

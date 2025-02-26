@@ -473,7 +473,7 @@ namespace SqlSugar.TDengine
         public override void AddDefaultValue(EntityInfo entityInfo)
         {
             var talbeName = entityInfo.DbTableName;
-            var attr = entityInfo.Type.GetCustomAttribute<STableAttribute>();
+            var attr = GetCommonSTableAttribute(entityInfo.Type.GetCustomAttribute<STableAttribute>());
             if (attr?.Tag1 != null) 
             {
                 talbeName = attr.STableName;
@@ -491,6 +491,11 @@ namespace SqlSugar.TDengine
                     }
                 }
             }
+        }
+
+        private STableAttribute GetCommonSTableAttribute(STableAttribute sTableAttribute)
+        {
+            return sTableAttribute;
         }
 
         public override List<DbColumnInfo> GetColumnInfosByTableName(string tableName, bool isCache = true)
