@@ -4,11 +4,91 @@ using System.Data;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace SqlSugar.TDengine
 {
     public class TDengineCodeFirst : CodeFirstProvider
     {
+        protected override void Execute(Type entityType, EntityInfo entityInfo)
+        {
+            var attr = entityInfo.Type.GetCustomAttribute<STableAttribute>();
+            if (attr?.STableName!=null&&attr?.Tag1!=null) 
+            {
+                entityInfo.DbTableName = attr.STableName;
+                Context.MappingTables.Add(entityInfo.EntityName, entityInfo.DbTableName);
+            }
+            //var entityInfo = this.Context.EntityMaintenance.GetEntityInfoNoCache(entityType);
+            if (entityInfo.Discrimator.HasValue())
+            {
+                Check.ExceptionEasy(!Regex.IsMatch(entityInfo.Discrimator, @"^(?:\w+:\w+)(?:,\w+:\w+)*$"), "The format should be type:cat for this type, and if there are multiple, it can be FieldName:cat,FieldName2:dog ", "格式错误应该是type:cat这种格式，如果是多个可以FieldName:cat,FieldName2:dog，不要有空格");
+                var array = entityInfo.Discrimator.Split(',');
+                foreach (var disItem in array)
+                {
+                    var name = disItem.Split(':').First();
+                    var value = disItem.Split(':').Last();
+                    entityInfo.Columns.Add(new EntityColumnInfo() { PropertyInfo = typeof(DiscriminatorObject).GetProperty(nameof(DiscriminatorObject.FieldName)), IsOnlyIgnoreUpdate = true, DbColumnName = name, UnderType = typeof(string), PropertyName = name, Length = 50 });
+                }
+            }
+            if (this.MappingTables.ContainsKey(entityType))
+            {
+                entityInfo.DbTableName = this.MappingTables[entityType];
+                this.Context.MappingTables.Add(entityInfo.EntityName, entityInfo.DbTableName);
+            }
+            if (this.DefultLength > 0)
+            {
+                foreach (var item in entityInfo.Columns)
+                {
+                    if (item.PropertyInfo.PropertyType == UtilConstants.StringType && item.DataType.IsNullOrEmpty() && item.Length == 0)
+                    {
+                        item.Length = DefultLength;
+                    }
+                    if (item.DataType != null && item.DataType.Contains(",") && !Regex.IsMatch(item.DataType, @"\d\,\d"))
+                    {
+                        var types = item.DataType.Split(',').Select(it => it.ToLower()).ToList();
+                        var mapingTypes = this.Context.Ado.DbBind.MappingTypes.Select(it => it.Key.ToLower()).ToList();
+                        var mappingType = types.FirstOrDefault(it => mapingTypes.Contains(it));
+                        if (mappingType != null)
+                        {
+                            item.DataType = mappingType;
+                        }
+                        if (item.DataType == "varcharmax")
+                        {
+                            item.DataType = "nvarchar(max)";
+                        }
+                    }
+                }
+            }
+            var tableName = GetTableName(entityInfo);
+            this.Context.MappingTables.Add(entityInfo.EntityName, tableName);
+            entityInfo.DbTableName = tableName;
+            entityInfo.Columns.ForEach(it => {
+                it.DbTableName = tableName;
+                if (it.UnderType?.Name == "DateOnly" && it.DataType == null)
+                {
+                    it.DataType = "Date";
+                }
+                if (it.UnderType?.Name == "TimeOnly" && it.DataType == null)
+                {
+                    it.DataType = "Time";
+                }
+            });
+            var isAny = this.Context.DbMaintenance.IsAnyTable(tableName, false);
+            if (isAny && entityInfo.IsDisabledUpdateAll)
+            {
+                return;
+            }
+            if (isAny)
+                ExistLogic(entityInfo);
+            else
+                NoExistLogic(entityInfo);
+
+            this.Context.DbMaintenance.AddRemark(entityInfo);
+            //this.Context.DbMaintenance.AddIndex(entityInfo);
+            //base.CreateIndex(entityInfo);
+            this.Context.DbMaintenance.AddDefaultValue(entityInfo);
+        }
+
         public override void ExistLogic(EntityInfo entityInfo)
         {
             if (entityInfo.Columns.HasValue() && entityInfo.IsDisabledUpdateAll == false)
