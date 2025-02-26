@@ -34,7 +34,7 @@ namespace SqlSugar
                     var tagString = string.Join(",", tagValues.Where(v => !string.IsNullOrEmpty(v)).Select(v => $"'{v.ToSqlFilter()}'"));
                     tags.Add(tagString);
                     this.Context.Ado.ExecuteCommand($"CREATE TABLE IF NOT EXISTS {childTableName} USING {sTableName} TAGS ({tagString})");
-                    this.Context.Insertable(pageItems).AS(childTableName).ExecuteCommand();
+                    this.Context.Insertable(pageItems).IgnoreColumns(GetTagNames(pageItems.First(), attr).ToArray()).AS(childTableName).ExecuteCommand();
                 });
             }
             return inserObjects.Count();
@@ -59,7 +59,7 @@ namespace SqlSugar
                     var tagString = string.Join(",", tagValues.Where(v => !string.IsNullOrEmpty(v)).Select(v => $"'{v.ToSqlFilter()}'"));
                     tags.Add(tagString);
                     await  this.Context.Ado.ExecuteCommandAsync($"CREATE TABLE IF NOT EXISTS {childTableName} USING {sTableName} TAGS ({tagString})");
-                    await  this.Context.Insertable(pageItems).AS(childTableName).ExecuteCommandAsync();
+                    await  this.Context.Insertable(pageItems).IgnoreColumns(GetTagNames(pageItems.First(), attr).ToArray()).AS(childTableName).ExecuteCommandAsync();
                 });
             }
             return inserObjects.Count();
@@ -80,6 +80,23 @@ namespace SqlSugar
 
             if (attr.Tag4 != null)
                 tagValues.Add(obj.GetType().GetProperty(attr.Tag4)?.GetValue(obj)?.ToString());
+            return tagValues;
+        }
+
+        private static List<string> GetTagNames(T obj, STableAttribute attr)
+        {
+            var tagValues = new List<string>(); 
+            if (attr.Tag1 != null)
+                tagValues.Add(attr.Tag1);
+
+            if (attr.Tag2 != null)
+                tagValues.Add(attr.Tag2);
+
+            if (attr.Tag3 != null)
+                tagValues.Add(attr.Tag3);
+
+            if (attr.Tag4 != null)
+                tagValues.Add(attr.Tag4);
             return tagValues;
         }
 
