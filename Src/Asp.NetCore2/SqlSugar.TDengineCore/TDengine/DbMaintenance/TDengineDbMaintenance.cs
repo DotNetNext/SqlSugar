@@ -1,5 +1,4 @@
-﻿using Kdbndp.NameTranslation;
-using SqlSugar.TDengineAdo;
+﻿ using SqlSugar.TDengineAdo;
 using System;
 using System.Collections.Generic;
 using System.Data;
