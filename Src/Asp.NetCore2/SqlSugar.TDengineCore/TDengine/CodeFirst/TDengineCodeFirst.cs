@@ -252,7 +252,7 @@ namespace SqlSugar.TDengine
 
         private STableAttribute GetCommonSTableAttribute(STableAttribute sTableAttribute)
         {
-            return sTableAttribute;
+            return SqlSugar.TDengine.UtilMethods.GetCommonSTableAttribute(this.Context, sTableAttribute);
         }
         public string GetDatabaseTypeName(string typeName)
         {

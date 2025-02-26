@@ -495,7 +495,7 @@ namespace SqlSugar.TDengine
 
         private STableAttribute GetCommonSTableAttribute(STableAttribute sTableAttribute)
         {
-            return sTableAttribute;
+            return SqlSugar.TDengine.UtilMethods.GetCommonSTableAttribute(this.Context, sTableAttribute);
         }
 
         public override List<DbColumnInfo> GetColumnInfosByTableName(string tableName, bool isCache = true)

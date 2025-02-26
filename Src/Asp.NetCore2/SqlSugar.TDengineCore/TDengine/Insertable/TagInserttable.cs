@@ -126,7 +126,7 @@ namespace SqlSugar
         }
         private STableAttribute GetCommonSTableAttribute(STableAttribute sTableAttribute)
         {
-            return sTableAttribute;
+            return SqlSugar.TDengine.UtilMethods.GetCommonSTableAttribute(this.Context,sTableAttribute);
         }
 
     }
