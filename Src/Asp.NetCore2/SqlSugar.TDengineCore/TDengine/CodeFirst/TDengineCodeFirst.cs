@@ -18,7 +18,24 @@ namespace SqlSugar.TDengine
                 var tableName = GetTableName(entityInfo);
                 var dbColumns = this.Context.DbMaintenance.GetColumnInfosByTableName(tableName, false);
                 ConvertColumns(dbColumns);
+                var attr = entityInfo.Type.GetCustomAttribute<STableAttribute>();
                 var entityColumns = entityInfo.Columns.Where(it => it.IsIgnore == false).ToList();
+                if (attr != null && attr.Tag1 != null)
+                {
+                    entityColumns = entityInfo.Columns.Where(it => it.IsIgnore == false
+                    || it.DbColumnName?.ToLower() == attr.Tag1?.ToLower()
+                     || it.DbColumnName?.ToLower() == attr.Tag2?.ToLower()
+                      || it.DbColumnName?.ToLower() == attr.Tag3?.ToLower()
+                       || it.DbColumnName?.ToLower() == attr.Tag4?.ToLower()
+                  ).ToList();
+                    foreach (var item in entityColumns)
+                    {
+                        if (item.DbColumnName == null) 
+                        {
+                            item.DbColumnName = item.PropertyName;
+                        }
+                    }
+                }
                 var dropColumns = dbColumns
                                           .Where(dc => !entityColumns.Any(ec => dc.DbColumnName.Equals(ec.OldDbColumnName, StringComparison.CurrentCultureIgnoreCase)))
                                           .Where(dc => !entityColumns.Any(ec => dc.DbColumnName.Equals(ec.DbColumnName, StringComparison.CurrentCultureIgnoreCase)))

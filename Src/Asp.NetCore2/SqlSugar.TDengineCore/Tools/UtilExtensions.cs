@@ -9,6 +9,13 @@ namespace SqlSugar.TDengine
     /// </summary>
     public static class UtilExtensions
     {
+        public static TagInserttable<T> SetTDengineChildTableName<T>(this IInsertable<T> thisValue,Func<string,T,string> getChildTableNamefunc) where T:class,new()
+        {
+            TagInserttable<T> result = new TagInserttable<T>();
+            result.thisValue = thisValue;
+            result.getChildTableNamefunc = getChildTableNamefunc;
+            return result;
+        }
         public static string ObjToStringNoTrim(this object thisValue)
         {
             if (thisValue != null) return thisValue.ToString();
