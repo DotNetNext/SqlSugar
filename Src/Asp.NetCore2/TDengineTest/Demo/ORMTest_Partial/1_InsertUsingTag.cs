@@ -12,6 +12,30 @@ namespace TDengineTest
         public static void InsertUsingTag(SqlSugarClient db) 
         { 
             db.CodeFirst.InitTables<SUsingTagModel>();
+
+            db.Insertable(new List<SUsingTagModel>(){
+                new SUsingTagModel()
+                {
+                        Boolean = true,
+                        Tag1 = "a",
+                        Ts = DateTime.Now
+
+                 },
+                 new SUsingTagModel()
+                {
+                        Boolean = false,
+                        Tag1 = "a",
+                        Ts = DateTime.Now
+
+                 },
+                 new SUsingTagModel()
+                 {
+                        Boolean = true,
+                        Tag1 = "b",
+                        Ts = DateTime.Now
+                }})
+           .SetTDengineChildTableName((stableName, it) => $"{stableName}_{it.Tag1}" /*设置子表名字*/ )
+           .ExecuteCommand(); 
         }
         [STableAttribute(STableName = "SUsingTagModel", Tag1 = nameof(Tag1))]
         public class SUsingTagModel

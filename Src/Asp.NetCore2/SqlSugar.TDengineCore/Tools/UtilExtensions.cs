@@ -13,6 +13,7 @@ namespace SqlSugar.TDengine
         {
             TagInserttable<T> result = new TagInserttable<T>();
             result.thisValue = thisValue;
+            result.Context = ((InsertableProvider<T>)thisValue).Context;
             result.getChildTableNamefunc = getChildTableNamefunc;
             return result;
         }
