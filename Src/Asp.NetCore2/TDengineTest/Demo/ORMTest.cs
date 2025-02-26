@@ -40,6 +40,10 @@ namespace TDengineTest
                 }
             });
 
+
+            //插入并且自动建子表
+            InsertUsingTag(db);
+
             //建表
             CodeFirst(db);
 
