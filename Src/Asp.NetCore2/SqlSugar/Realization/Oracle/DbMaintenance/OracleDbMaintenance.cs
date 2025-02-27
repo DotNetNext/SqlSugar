@@ -680,15 +680,15 @@ WHERE table_name = '"+tableName+"'");
         }
         private static void ConvertCreateColumnInfo(DbColumnInfo x)
         {
-            string[] array = new string[] { "int","date"};
+            string[] array = new string[] { "int","date"}; 
+            if (x.OracleDataType.HasValue())
+            {
+                x.DataType = x.OracleDataType;
+            }
             if (array.Contains(x.DataType?.ToLower()))
             {
                 x.Length = 0;
                 x.DecimalDigits = 0;
-            }
-            if (x.OracleDataType.HasValue()) 
-            {
-                x.DataType = x.OracleDataType;
             }
             if(x.DecimalDigits>0&& x.DataType?.ToLower().IsIn("varchar", "clob", "varchar2", "nvarchar2", "nvarchar")==true)
             {
