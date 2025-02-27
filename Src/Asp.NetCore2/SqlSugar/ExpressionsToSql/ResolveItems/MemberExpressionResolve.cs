@@ -606,6 +606,7 @@ namespace SqlSugar
                 parameter.CommonTempData = base.GetNewExpressionValue(this.Expression);
                 var result = this.Context.DbMehtods.DateValue(new MethodCallExpressionModel()
                 {
+                    Conext=this.Context,
                     Args = new List<MethodCallExpressionArgs>() {
                      new MethodCallExpressionArgs() { IsMember = !isConst, MemberName = parameter.CommonTempData, MemberValue = null },
                      new MethodCallExpressionArgs() { IsMember = true, MemberName = name, MemberValue = name }
