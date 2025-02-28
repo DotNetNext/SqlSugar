@@ -98,7 +98,7 @@ namespace SqlSugar
             var isVarchar = this.Context.IsVarchar();
             foreach (var parameter in parameters)
             {
-                if (parameter.DbType==System.Data.DbType.Int64&&parameter.Value .Equals( "Result%")) 
+                if (parameter.DbType==System.Data.DbType.Int64&&parameter.Value?.Equals("Result%")==true) 
                 {
                     parameter.DbType = System.Data.DbType.AnsiString;
                 }
