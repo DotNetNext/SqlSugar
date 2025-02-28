@@ -1580,6 +1580,7 @@ namespace SqlSugar
         }
         public static string GetSqlString(ConnectionConfig connectionConfig,KeyValuePair<string, List<SugarParameter>> sqlObj)
         {
+            var guid = Guid.NewGuid()+"";
             var result = sqlObj.Key;
             if (sqlObj.Value != null)
             {
@@ -1657,15 +1658,15 @@ namespace SqlSugar
                     }
                     else if (connectionConfig.MoreSettings?.DisableNvarchar == true || item.DbType == System.Data.DbType.AnsiString || connectionConfig.DbType == DbType.Sqlite)
                     {
-                        result = result.Replace(item.ParameterName, $"'{item.Value.ObjToString().ToSqlFilter()}'");
+                        result = result.Replace(item.ParameterName, $"'{item.Value.ObjToString().Replace("@",guid).ToSqlFilter()}'");
                     }
                     else
                     {
-                        result = result.Replace(item.ParameterName, $"N'{item.Value.ObjToString().ToSqlFilter()}'");
+                        result = result.Replace(item.ParameterName, $"N'{item.Value.ObjToString().Replace("@", guid).ToSqlFilter()}'");
                     }
                 }
             }
-
+            result = result.Replace(guid, "@");
             return result;
         }
         public static string ByteArrayToPostgreByteaLiteral(byte[] data)

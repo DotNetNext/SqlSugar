@@ -1676,6 +1676,10 @@ namespace SqlSugar
                             .TrimEnd('\r')
                             .TrimEnd('\n')
                             .TrimEnd(';') + ";";
+                        if (itemSql?.StartsWith("INSERT INTO ")==true&&itemSql?.EndsWith(" returning ;") == true) 
+                        {
+                            itemSql = itemSql.Replace(" returning ;", " ;");
+                        }
                         if (itemSql == "begin;"   ) 
                         {
                             itemSql = itemSql.TrimEnd(';')+"\n";

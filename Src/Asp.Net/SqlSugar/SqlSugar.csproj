@@ -166,6 +166,7 @@
     <Compile Include="Abstract\UpdateProvider\SplitTableUpdateByObjectProvider.cs" />
     <Compile Include="Abstract\UpdateProvider\UpdateNavMethodInfo.cs" />
     <Compile Include="Entities\DiscriminatorObject .cs" />
+    <Compile Include="Entities\NavigationInitializer.cs" />
     <Compile Include="Entities\PropertyMetadata.cs" />
     <Compile Include="Entities\DbFastestProperties.cs" />
     <Compile Include="Entities\DefaultCustom.cs" />
