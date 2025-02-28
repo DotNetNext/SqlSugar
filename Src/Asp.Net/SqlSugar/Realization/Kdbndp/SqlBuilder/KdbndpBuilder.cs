@@ -75,6 +75,10 @@ namespace SqlSugar
             name = (mappingInfo == null ? name : mappingInfo.DbTableName);
             if (name.Contains(".")&& !name.Contains("("))
             {
+                if (SqlTranslationLeft.HasValue()&&SqlTranslationLeft==SqlTranslationRight) 
+                {
+                    return string.Join(".", name.ToUpper(IsUpper).Split('.').Select(it => SqlTranslationLeft + it.Replace(SqlTranslationLeft,"") + SqlTranslationRight));
+                }
                 return string.Join(".", name.ToUpper(IsUpper).Split('.').Select(it => SqlTranslationLeft + it + SqlTranslationRight));
             }
             else if (name.Contains("("))
