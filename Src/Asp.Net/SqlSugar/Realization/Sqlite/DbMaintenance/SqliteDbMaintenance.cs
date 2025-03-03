@@ -457,8 +457,8 @@ AND sql LIKE '%"+tableName+"%'");
         }
         public override bool BackupDataBase(string databaseName, string fullFileName)
         {
-            Check.ThrowNotSupportedException("MySql BackupDataBase NotSupported");
-            return false;
+            this.Context.Ado.ExecuteCommand($"VACUUM INTO '{fullFileName}'");
+            return true;
         }
         private List<T> GetListOrCache<T>(string cacheKey, string sql)
         {
