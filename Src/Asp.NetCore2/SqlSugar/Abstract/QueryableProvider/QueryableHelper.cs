@@ -2336,6 +2336,12 @@ namespace SqlSugar
                             new SugarParameter("@p",re.Value)
                         };
                     var value = UtilMethods.GetSqlString(config.DbType, "@p", p, true);
+                    if (this.Context.CurrentConnectionConfig?.DbType == DbType.SqlServer&&
+                        this.Context.CurrentConnectionConfig?.MoreSettings?.DisableNvarchar!=true&&
+                        p?.FirstOrDefault()?.DbType == System.Data.DbType.String) 
+                    {
+                        value = "N" + value;
+                    }
                     sql = sql.Replace(re.Name, value);
                
                 }
