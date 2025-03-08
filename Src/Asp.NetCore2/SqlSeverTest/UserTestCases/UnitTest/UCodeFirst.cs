@@ -26,6 +26,7 @@ namespace OrmTest
             Db.CodeFirst.InitTables<UnitXXXYYYZZZ>();
             Db.CodeFirst.InitTables<unitxxxyyyzzz>();
             Db.CodeFirst.As<Bom>("Bom-11").InitTables<Bom>();
+            Db.CodeFirst.InitTables<UNITCODEFIRST131int, UNITCOdEFIRST131int>();
         }
         ///<summary>
         ///
@@ -136,6 +137,16 @@ namespace OrmTest
             public int Id { get; set; }
             [SqlSugar.SugarColumn(DefaultValue="getdate()", IndexGroupNameList =new string[] {"group1" } )]
             public DateTime? CreateDate { get; set; }
+        }
+        public class UNITCODEFIRST131int
+        {
+            public int Id { get; set; } 
+        }
+        public class UNITCOdEFIRST131int
+        {
+            public int Id { get; set; }
+            [SqlSugar.SugarColumn(DefaultValue = "1")]
+            public int Name { get; set; } 
         }
     }
 }
