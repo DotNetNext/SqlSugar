@@ -384,6 +384,10 @@ namespace SqlSugar
             {
                 value = columnInfo.DefaultValue;
             }
+            else if (columnInfo.DataType.ObjToString().ToLower().IsIn("int","int4","bigint","int8")&& columnInfo.DefaultValue.IsInt()) 
+            {
+                value = columnInfo.DefaultValue;
+            }
             return value;
         }
         public virtual bool UpdateColumn(string tableName, DbColumnInfo column)
