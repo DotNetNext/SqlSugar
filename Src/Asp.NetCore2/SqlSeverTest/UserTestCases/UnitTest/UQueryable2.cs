@@ -102,6 +102,32 @@ namespace OrmTest
                x=SqlFunc.AggregateSum(SqlFunc.IIF(it.CustomId.HasValue,1,2))
 
             }).ToList();
+
+            Db.Queryable<Order>()
+                .GroupBy(it => SqlFunc.IsNull(it.Id, 0))
+                .Select(it => SqlFunc.IsNull(it.Id, 0))
+                .ToList();
+
+            Db.Queryable<Order>()
+                  .GroupBy(it => SqlFunc.IsNull(it.Id, 1))
+                  .Select(it =>
+                     new { x = SqlFunc.IsNull(it.Id, 1) })
+                 .ToList();
+
+            Db.Queryable<Order>() 
+             .Select(it => SqlFunc.IsNull(it.Id, 0))
+             .ToList();
+
+            Db.Queryable<Order>()
+             .Select(it => 
+               new { x = SqlFunc.IsNull(it.Id, 0) })
+              .ToList();
+
+            Db.Queryable<Order>()
+            .GroupBy(it => SqlFunc.IsNull(it.Name, "'"))
+            .Select(it =>
+             new { x = SqlFunc.IsNull(it.Name, "'") })
+            .ToList();
         }
 
         public class ORDER
