@@ -14,7 +14,7 @@ namespace SqlSugar.HANAConnector
                 /*
                  SELECT * FROM TABLE WHERE CONDITION ORDER BY ID DESC LIMIT 0,10
                  */
-                var template = "SELECT {0} FROM {1} {2} {3} {4} LIMIT {5},{6}";
+                var template = "SELECT {0} FROM {1} {2} {3} {4} LIMIT {6} OFFSET {5}";
                 return template;
             }
         }
