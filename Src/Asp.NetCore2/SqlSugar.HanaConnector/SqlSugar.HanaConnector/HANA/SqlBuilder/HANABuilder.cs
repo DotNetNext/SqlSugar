@@ -6,8 +6,8 @@ namespace SqlSugar.HANAConnector
 {
     public class HANABuilder : SqlBuilderProvider
     {
-        public override string SqlTranslationLeft { get { return "`"; } }
-        public override string SqlTranslationRight { get { return "`"; } }
+        public override string SqlTranslationLeft { get { return "\""; } }
+        public override string SqlTranslationRight { get { return "\""; } }
         public override string SqlDateNow
         {
             get

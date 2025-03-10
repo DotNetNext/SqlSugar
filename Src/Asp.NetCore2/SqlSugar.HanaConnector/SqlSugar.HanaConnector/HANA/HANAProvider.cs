@@ -60,6 +60,7 @@ namespace SqlSugar.HANAConnector
         }
         public override DbCommand GetCommand(string sql, SugarParameter[] parameters)
         {
+            sql = ReplaceKeyWordParameterName(sql, parameters);
             HanaCommand sqlCommand = new HanaCommand(sql, (HanaConnection)this.Connection);
             sqlCommand.CommandType = this.CommandType;
             sqlCommand.CommandTimeout = this.CommandTimeOut;
@@ -139,6 +140,42 @@ namespace SqlSugar.HANAConnector
             return false;
         }
 
+        private static string[] KeyWord = new string[] {  };
+        private static string ReplaceKeyWordParameterName(string sql, SugarParameter[] parameters)
+        {
+            sql = ReplaceKeyWordWithAd(sql, parameters);
+            if (parameters.HasValue() && parameters.Count(it => it.ParameterName.ToLower().IsIn(KeyWord)) > 0)
+            {
+                int i = 0;
+                foreach (var Parameter in parameters.OrderByDescending(it => it.ParameterName.Length))
+                {
+                    if (Parameter.ParameterName != null && Parameter.ParameterName.ToLower().IsContainsIn(KeyWord))
+                    {
+                        var newName = ":p" + i + 100;
+                        sql =System.Text.RegularExpressions.Regex.Replace(sql, Parameter.ParameterName, newName, System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+                        Parameter.ParameterName = newName;
+                        i++;
+                    }
+                }
+            }
+            return sql;
+        }
+        private static string ReplaceKeyWordWithAd(string sql, SugarParameter[] parameters)
+        {
+            if (parameters != null && sql != null && sql.Contains("@"))
+            {
+                foreach (var item in parameters.OrderByDescending(it => it.ParameterName.Length))
+                {
+                    if (item.ParameterName.StartsWith("@"))
+                    {
+                        item.ParameterName = ":" + item.ParameterName.TrimStart('@');
+                    }
+                    sql = System.Text.RegularExpressions.Regex.Replace(sql, "@" + item.ParameterName.TrimStart(':'), item.ParameterName, System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+                }
+            }
+
+            return sql;
+        }
 
         #region async
         public async Task CloseAsync()

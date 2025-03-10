@@ -12,8 +12,8 @@ namespace SqlSugar.HANAConnector
         {
             base.DbMehtods = new HANAMethod();
         }
-        public override string SqlTranslationLeft { get { return "`"; } }
-        public override string SqlTranslationRight { get { return "`"; } }
+        public override string SqlTranslationLeft { get { return "\""; } }
+        public override string SqlTranslationRight { get { return "\""; } }
     }
     public class HANAMethod : DefaultDbMethod, IDbMethods
     {
