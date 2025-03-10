@@ -69,10 +69,6 @@ namespace SqlSugar
             if (isFirst && oldOrderByValue == "ORDER BY GETDATE() ") { this.OrderByValue = null; }
             var rowNumberString = string.Format(",ROW_NUMBER() OVER({0}) AS RowIndex ", GetOrderByString);
             string groupByValue = GetGroupByString + HavingInfos;
-            if (this.GroupParameters?.Any()==true) 
-            {
-                groupByValue = groupByValue.Replace(this.GroupBySqlOld,this.GroupBySql);
-            }
             string orderByValue = (!isRowNumber && this.OrderByValue.HasValue()) ? GetOrderByString : null;
             if (isIgnoreOrderBy) { orderByValue = null; }
             sql.AppendFormat(SqlTemplate, GetSelect(isFirst,isTop), base.GetTableNameString, base.GetWhereValueString, groupByValue, orderByValue);
@@ -111,6 +107,10 @@ namespace SqlSugar
             if (isFirst && IsDistinct) 
             {
                 result = result.Replace("TOP 1  DISTINCT", "TOP 1 ");
+            }
+            if (this.GroupParameters?.Any() == true&&this.GroupByIsReplace)
+            {
+                result = result.Replace(this.GroupBySqlOld, this.GroupBySql);
             }
             return result;
         }

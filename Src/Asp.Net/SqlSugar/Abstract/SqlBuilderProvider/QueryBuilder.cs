@@ -928,6 +928,7 @@ namespace SqlSugar
                     if (selectSql.Contains(this.GroupBySql)) 
                     {
                         result = selectSql;
+                        this.GroupByIsReplace = true;
                     }
                 }
                 this.SelectCacheKey = result; 
@@ -1096,6 +1097,7 @@ namespace SqlSugar
 
         #region NoCopy
 
+        internal bool GroupByIsReplace { get; set; }
         internal List<QueryableFormat> QueryableFormats { get; set; }
         internal bool IsClone { get; set; }
         public bool NoCheckInclude { get;  set; }
