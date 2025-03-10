@@ -1731,6 +1731,8 @@ namespace SqlSugar
         }
         protected ISugarQueryable<T> _GroupBy(Expression expression)
         {
+            var oldParameterNames = this.QueryBuilder.Parameters?.Select(it => it.ParameterName)
+                ?.ToList();
             QueryBuilder.CheckExpression(expression, "GroupBy");
             LambdaExpression lambda = expression as LambdaExpression;
             expression = lambda.Body;
@@ -1761,7 +1763,19 @@ namespace SqlSugar
                 lamResult = QueryBuilder.GetExpressionValue(expression, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple);
                 result = lamResult.GetResultString(); 
             }
-            GroupBy(result);
+            if (oldParameterNames != null && this.Context.CurrentConnectionConfig.DbType == DbType.SqlServer)
+            {
+                var newParas = this.QueryBuilder.Parameters.Where(it => !oldParameterNames.Contains(it.ParameterName)).ToList();
+                this.QueryBuilder.GroupParameters = newParas;
+                var groupBySql = UtilMethods.GetSqlString(DbType.SqlServer, result, newParas.ToArray());
+                this.QueryBuilder.GroupBySql = groupBySql;
+                this.QueryBuilder.GroupBySqlOld = result;
+                GroupBy(result);
+            }
+            else
+            {
+                GroupBy(result);
+            }
             return this;
         }
         protected ISugarQueryable<T> _As(string tableName, string entityName)
@@ -2142,6 +2156,9 @@ namespace SqlSugar
             asyncQueryableBuilder.Hints = this.QueryBuilder.Hints;
             asyncQueryableBuilder.MasterDbTableName = this.QueryBuilder.MasterDbTableName;
             asyncQueryableBuilder.IsParameterizedConstructor = this.QueryBuilder.IsParameterizedConstructor;
+            asyncQueryableBuilder.GroupParameters = this.QueryBuilder.GroupParameters;
+            asyncQueryableBuilder.GroupBySql = this.QueryBuilder.GroupBySql;
+            asyncQueryableBuilder.GroupBySqlOld = this.QueryBuilder.GroupBySqlOld;
             if (this.QueryBuilder.AppendNavInfo != null)
             {
                 asyncQueryableBuilder.AppendNavInfo = new AppendNavInfo() 
