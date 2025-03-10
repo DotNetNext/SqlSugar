@@ -34,6 +34,9 @@ namespace SqlSugar
         #endregion
 
         #region Splicing basic  
+        public List<SugarParameter> GroupParameters { get; set; }
+        public string GroupBySql { get; set; }
+        public string GroupBySqlOld { get; set; }
         public Type AsType { get; set; }
         public bool IsParameterizedConstructor { get; set; }
         public string Hints { get; set; }
@@ -283,7 +286,7 @@ namespace SqlSugar
             };
             resolveExpress.Resolve(expression, resolveType);
             this.Parameters.AddRange(resolveExpress.Parameters.Select(it => new SugarParameter(it.ParameterName, it.Value, it.DbType) {  Size=it.Size,TypeName=it.TypeName, IsNvarchar2=it.IsNvarchar2}));
-            var result = resolveExpress.Result;
+            var result = resolveExpress.Result; 
             var isSingleTableHasSubquery = IsSingle() && resolveExpress.SingleTableNameSubqueryShortName.HasValue();
             if (isSingleTableHasSubquery)
             {
@@ -919,7 +922,16 @@ namespace SqlSugar
                 {
                     result = result + " AS columnName";
                 }
-                this.SelectCacheKey = result;
+                if (this.GroupParameters?.Any()==true && this.GroupBySql.HasValue()) 
+                {
+                    var selectSql = UtilMethods.GetSqlString(DbType.SqlServer, result, UtilMethods.CopySugarParameters(this.Parameters).ToArray());
+                    if (selectSql.Contains(this.GroupBySql)) 
+                    {
+                        result = selectSql;
+                        this.GroupByIsReplace = true;
+                    }
+                }
+                this.SelectCacheKey = result; 
                 return result;
             }
         }
@@ -1085,12 +1097,13 @@ namespace SqlSugar
 
         #region NoCopy
 
+        internal bool GroupByIsReplace { get; set; }
         internal List<QueryableFormat> QueryableFormats { get; set; }
         internal bool IsClone { get; set; }
         public bool NoCheckInclude { get;  set; }
         public virtual bool IsSelectNoAll { get; set; } = false;
         public List<string> AutoAppendedColumns { get;  set; }
-        public Dictionary<string, string> MappingKeys { get;  set; } 
+        public Dictionary<string, string> MappingKeys { get;  set; }
         #endregion
 
         private string GetTableName(string entityName)

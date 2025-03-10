@@ -108,6 +108,10 @@ namespace SqlSugar
             {
                 result = result.Replace("TOP 1  DISTINCT", "TOP 1 ");
             }
+            if (this.GroupParameters?.Any() == true&&this.GroupByIsReplace)
+            {
+                result = result.Replace(this.GroupBySqlOld, this.GroupBySql);
+            }
             return result;
         }
 
