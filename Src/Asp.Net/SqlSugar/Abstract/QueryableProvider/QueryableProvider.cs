@@ -1341,7 +1341,7 @@ namespace SqlSugar
             return this;
         }
         public virtual ISugarQueryable<T> GroupBy(Expression<Func<T, object>> expression)
-        { 
+        {
             _GroupBy(expression);
             return this;
         }

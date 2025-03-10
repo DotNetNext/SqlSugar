@@ -3034,6 +3034,11 @@ namespace SqlSugar
         #endregion
 
         #region Other
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> Distinct()
+        {
+            QueryBuilder.IsDistinct = true;
+            return this;
+        }
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9> Take(int num)
         {
             QueryBuilder.Take = num;
@@ -3832,6 +3837,11 @@ namespace SqlSugar
         #endregion
 
         #region Other
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> Distinct()
+        {
+            QueryBuilder.IsDistinct = true;
+            return this;
+        }
         public new ISugarQueryable<T, T2, T3, T4, T5, T6, T7, T8, T9, T10> Take(int num)
         {
             QueryBuilder.Take = num;
