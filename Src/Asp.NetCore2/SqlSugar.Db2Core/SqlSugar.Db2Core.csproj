@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="DB2\Insertable\**" />
+    <EmbeddedResource Remove="DB2\Insertable\**" />
+    <None Remove="DB2\Insertable\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="DB2\SqlBuilder\DB2FastBuilder.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Net.IBM.Data.Db2" Version="8.0.0.300" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SqlSugar\SqlSugar.csproj" />
+  </ItemGroup>
+
+</Project>
