@@ -82,7 +82,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlSugar.TDSQLForPGODBC", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "3TDSQLForPGOBDCTest", "TDSQLForPGOBDCTest\3TDSQLForPGOBDCTest.csproj", "{307E0D47-28A5-4E1A-8350-5CDC6C790B32}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlSugar.HanaConnector", "SqlSugar.HanaConnector\SqlSugar.HanaConnector\SqlSugar.HanaConnector.csproj", "{B3C4B993-C33E-48AF-955F-EB801774FBE8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlSugar.HANAConnector", "SqlSugar.HanaConnector\SqlSugar.HanaConnector\SqlSugar.HANAConnector.csproj", "{B3C4B993-C33E-48AF-955F-EB801774FBE8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

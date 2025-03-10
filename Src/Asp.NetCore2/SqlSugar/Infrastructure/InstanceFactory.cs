@@ -436,6 +436,10 @@ namespace SqlSugar
             {
                 return CustomNamespace + "."+CustomDbName + name;
             }
+            else if (type == "HANA")
+            {
+                return InstanceFactory.CustomDllName + "." + type + name;
+            }
             else
             {
                 //if (!string.IsNullOrEmpty(CustomDllName)) 

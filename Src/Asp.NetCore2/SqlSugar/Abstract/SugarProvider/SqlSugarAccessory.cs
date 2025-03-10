@@ -538,7 +538,7 @@ namespace SqlSugar
                     break;
                 case DbType.HANA:
                     Check.Exception(SugarCompatible.IsFramework, "NANA only support .net core");
-                    InstanceFactory.CustomDllName = "SqlSugar.HanaConnector";
+                    InstanceFactory.CustomDllName = "SqlSugar.HANAConnector";
                     break;
                 case DbType.Xugu:
                     Check.Exception(SugarCompatible.IsFramework, "Xugu only support .net core");
