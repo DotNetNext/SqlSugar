@@ -11,8 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="Sap.Data.Hana.Core.v2.1">
-      <HintPath>Sap.Data.Hana.Core.v2.1.dll</HintPath>
+    <Reference Include="Sap.Data.Hana.Net.v6.0">
+      <HintPath>Sap.Data.Hana.Net.v6.0.dll</HintPath>
     </Reference>
   </ItemGroup>
 
