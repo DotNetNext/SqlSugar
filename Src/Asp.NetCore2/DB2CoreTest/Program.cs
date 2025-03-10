@@ -5,13 +5,14 @@ public class Program
 {
     static void Main(string[] args)
     {
-        CodeFirst.Init();
+        //CodeFirst.Init();
         CodeFirst.Insertable();
         CodeFirst.Queryable();
         CodeFirst.JoinQuery();
         CodeFirst.PageQuery();
         CodeFirst.OrderBy();
         CodeFirst.GroupBy();
+        CodeFirst.Updateable();
         CodeFirst.Deleteable();
     }
 }

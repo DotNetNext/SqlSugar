@@ -124,6 +124,15 @@ namespace DB2CoreTest.CURD
             }).OrderBy(ui => ui.UserName).ToList();
         }
 
+        public static void Updateable()
+        {
+            // 获取新的数据库实例
+            var db = DbHelper.GetNewDb();
+
+            //更新用户
+            var ret = db.Updateable<UserInfo>(p => p.UserName == "test").Where(p => p.UserName == "admin").ExecuteCommand();
+        }
+
         public static void Deleteable()
         {
             // 获取新的数据库实例
