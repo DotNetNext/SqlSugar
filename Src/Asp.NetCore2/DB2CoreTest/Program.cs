@@ -35,15 +35,18 @@ public class DbHelper
     /// </summary>
     /// <returns>SqlSugarClient instance</returns>
     public static SqlSugarClient GetNewDb()
-    {
-        InstanceFactory.CustomDbName = "DB2";//文件名前缀
-        InstanceFactory.CustomDllName = "SqlSugar.DB2Core";//你扩展的dll名字
-        InstanceFactory.CustomNamespace = "SqlSugar.DB2";//你扩展dll的命名空间
+    { 
 
+        //这行代码扔程序启动时
+        InstanceFactory.CustomAssemblies = new System.Reflection.Assembly[] {
+            typeof(SqlSugar.DB2.DB2Provider).Assembly };
+
+
+        //创建数据库
         var db = new SqlSugarClient(new ConnectionConfig()
         {
-            IsAutoCloseConnection = true,
-            DbType = DbType.Custom,
+            IsAutoCloseConnection = true, 
+            DbType=DbType.DB2, 
             ConnectionString = Connection,
             InitKeyType = InitKeyType.Attribute,
             LanguageType = LanguageType.Default//Set language
