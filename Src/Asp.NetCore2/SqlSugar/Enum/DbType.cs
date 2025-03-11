@@ -36,6 +36,7 @@ namespace SqlSugar
         TDSQLForPGODBC, 
         TDSQL,
         HANA,
+        DB2,
         Custom =900
     }
 }

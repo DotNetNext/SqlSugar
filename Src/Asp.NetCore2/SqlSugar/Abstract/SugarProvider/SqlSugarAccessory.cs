@@ -549,6 +549,10 @@ namespace SqlSugar
                 case DbType.GoldenDB:
                     config.DbType = DbType.MySql;
                     break;
+                case DbType.DB2:
+                    Check.Exception(SugarCompatible.IsFramework, "Db2 only support .net core");
+                    InstanceFactory.CustomDllName = "SqlSugar.Db2Core";
+                    break;
                 default:
                     throw new Exception("ConnectionConfig.DbType is null");
             }
