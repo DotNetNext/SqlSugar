@@ -262,6 +262,16 @@ namespace SqlSugar
                 var value = GetNewExpressionValue(item);
                 parameter.Context.Result.Append($" {value} AS {asName} ");
             }
+            else if (item is ConditionalExpression)
+            {
+                var value = GetNewExpressionValue(item);
+                parameter.Context.Result.Append($" {value} AS {asName} ");
+            }
+            else if (ExpressionTool.GetMethodName(item)==nameof(SqlFunc.IIF))
+            {
+                var value = GetNewExpressionValue(item);
+                parameter.Context.Result.Append($" {value} AS {asName} ");
+            }
             else
             {
                 asName = GetAsNameResolveAnObject(parameter, item, asName, isSameType);
