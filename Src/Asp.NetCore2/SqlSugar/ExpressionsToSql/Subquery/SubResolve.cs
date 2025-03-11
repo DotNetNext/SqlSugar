@@ -186,6 +186,10 @@ namespace SqlSugar
                 {
                     var asName = this.context.GetTranslationTableName(asItems.First().Replace(subKey, ""), false);
                     var repKey = $"\\{this.context.SqlTranslationLeft}.+\\{this.context.SqlTranslationRight}";
+                    if (this.context.CurrentShortName.HasValue())
+                    {
+                        asName = asName + " " + this.context.CurrentShortName;
+                    }
                     sqlItems[i] = Regex.Replace(sqlItems[i], repKey, asName);
                 }
             }
