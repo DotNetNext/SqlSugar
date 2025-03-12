@@ -45,7 +45,11 @@ namespace SqlSugar.GBase
             var parameter = model.Args[0];
             return string.Format(" LENGTH({0}) ", parameter.MemberName);
         }
-
+        public override string ToBool(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            return string.Format(" CAST({0} AS BOOLEAN)", parameter.MemberName);
+        } 
         public override string IsNull(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
