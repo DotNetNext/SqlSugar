@@ -144,6 +144,10 @@ namespace SqlSugar
             var leftString = GetNewExpressionValue(expression.Left);
             var RightString = GetNewExpressionValue(expression.Right);
             var joinString = this.Context.DbMehtods.MergeString(leftString, RightString);
+            if (this.Context is KdbndpExpressionContext&&this.Context?.SugarContext?.Context?.CurrentConnectionConfig?.MoreSettings?.DatabaseModel==DbType.SqlServer) 
+            {
+                joinString = new SqlServerMethod().MergeString(leftString, RightString);
+            }
             if (this.Context.Result.Contains(ExpressionConst.FormatSymbol))
             {
                 base.Context.Result.Replace("{0}", $" {joinString} ");
