@@ -54,7 +54,7 @@ namespace SqlSugar
                 {
                     sql = sql.Replace("sys_", "pg_");
                 }
-                else if (IsSqlServerModel()) 
+                else if (IsSqlServerModel())
                 {
 
                     sql = sql.Replace("sys_", "pg_");
@@ -66,6 +66,10 @@ namespace SqlSugar
                     sql = sql.Replace("case when pkey.colname = pcolumn.column_name", "case when pkey.colname::text = pcolumn.column_name::text");
                     sql = sql.Replace("pcolumn on pcolumn.table_name = ptables.tablename", "pcolumn on pcolumn.table_name::text = ptables.tablename::text ");
                     sql = sql.Replace("pkey on pcolumn.table_name = pkey.relname", "pkey on pcolumn.table_name::text = pkey.relname::text ");
+                }
+                else if (IsMySql()) 
+                { 
+                    sql = sql.Replace("pcolumn.udt_name", "pcolumn.data_type");
                 }
                 return sql;
             }
@@ -696,6 +700,10 @@ WHERE tgrelid = '" + tableName + "'::regclass");
         private bool IsSqlServerModel()
         {
             return this.Context.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.SqlServer;
+        }
+        private bool IsMySql()
+        {
+            return this.Context.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.MySql;
         }
         #endregion
     }
