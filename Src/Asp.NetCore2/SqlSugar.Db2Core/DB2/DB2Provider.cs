@@ -215,9 +215,11 @@ namespace SqlSugar.DB2
             { typeof(char[]),DB2Type.Clob},
             { typeof(byte[]),DB2Type.Byte},
             { typeof(bool[]),DB2Type.Boolean},
-            {typeof(DateTime[]),DB2Type.Date},
-            {typeof(float[]),DB2Type.Real},
-            {typeof(Guid[]),DB2Type.VarChar},
+            { typeof(DateTime[]),DB2Type.Timestamp},
+            { typeof(DateTime[]),DB2Type.Date},
+            { typeof(float[]),DB2Type.Real},
+            { typeof(string[]),DB2Type.VarChar},
+            { typeof(Guid[]),DB2Type.VarChar},
 
 
             { typeof(int?[]),DB2Type.Integer},
@@ -227,12 +229,13 @@ namespace SqlSugar.DB2
             { typeof(char?[]),DB2Type.Text},
             { typeof(byte?[]),DB2Type.Byte},
             { typeof(bool?[]),DB2Type.Boolean},
-            {typeof(DateTime?[]),DB2Type.Date},
-            {typeof(Guid?[]),DB2Type.VarChar},
+            { typeof(DateTime?[]),DB2Type.Timestamp},
+            { typeof(DateTime?[]),DB2Type.Date},
+            { typeof(Guid?[]),DB2Type.VarChar},
 
 
-             { typeof(string[]), DB2Type.Text},
-             {typeof(float?[]),DB2Type.Real},
+            { typeof(string[]), DB2Type.VarChar},
+            { typeof(float?[]),DB2Type.Real},
         };
     }
 }
