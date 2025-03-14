@@ -272,11 +272,11 @@ namespace SqlSugar
         {
             if (memberName1?.ToString()?.Contains("->") == true)
             {
-                return $"{memberName1.ToString().TrimEnd('"')}.{memberName2}\"";
+                return $"{memberName1.ToString().TrimEnd('\'')}.{memberName2}'";
             }
             else
             {
-                return $"{memberName1}->\"$.{memberName2}\"";
+                return $"{memberName1}->'$.{memberName2}'";
             }
         }
 
