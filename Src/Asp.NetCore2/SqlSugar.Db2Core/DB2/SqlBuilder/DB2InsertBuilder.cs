@@ -90,7 +90,11 @@ namespace SqlSugar.DB2
                             object value = null;
                             if (it.Value is DateTime)
                             {
-                                value = ((DateTime)it.Value).ToString("O");
+                                value = ((DateTime)it.Value).ToString("yyyy-MM-dd HH:mm:ss.fff");
+                            }
+                            else if (it.Value is Boolean)
+                            {
+                                value = ((Boolean)it.Value) ? 1 : 0;
                             }
                             else if (it.Value is DateTimeOffset)
                             {
@@ -179,7 +183,7 @@ namespace SqlSugar.DB2
         }
         public override string FormatDateTimeOffset(object value)
         {
-            return "'" + ((DateTimeOffset)value).ToString("o") + "'";
+            return "'" + ((DateTimeOffset)value).ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
         }
 
     }
