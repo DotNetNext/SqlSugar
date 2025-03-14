@@ -1821,5 +1821,10 @@ namespace SqlSugar
             }
             return true;
         }
+
+        internal static ConnMoreSettings GetMoreSetting(ExpressionContext context)
+        {
+            return context?.SugarContext?.Context?.CurrentConnectionConfig?.MoreSettings ?? new ConnMoreSettings();
+        }
     }
 }

@@ -780,7 +780,14 @@ namespace SqlSugar
             string shortName = expression.Expression.ToString();
             string fieldName = expression.Member.Name;
             fieldName = this.Context.GetDbColumnName(expression.Expression.Type.Name, fieldName);
-            fieldName = Context.GetTranslationColumnName(shortName + UtilConstants.Dot + fieldName);
+            if (UtilMethods.GetMoreSetting(this.Context).IsCorrectErrorSqlParameterName)
+            {
+                fieldName = Context.GetTranslationColumnName(shortName) + UtilConstants.Dot + Context.GetTranslationColumnName(fieldName);
+            }
+            else
+            {
+                fieldName = Context.GetTranslationColumnName(shortName + UtilConstants.Dot + fieldName);
+            }
             return fieldName;
         }
 
