@@ -90,9 +90,9 @@ namespace SqlSugar.DB2
                     new KeyValuePair<string, CSharpDataType>("char",CSharpDataType.@string),
                     new KeyValuePair<string, CSharpDataType>("clob",CSharpDataType.@string),
 
+                    new KeyValuePair<string, CSharpDataType>("timestamp",CSharpDataType.@DateTime),
                     new KeyValuePair<string, CSharpDataType>("date",CSharpDataType.@DateTime),
                     new KeyValuePair<string, CSharpDataType>("time",CSharpDataType.@DateTime),
-                    new KeyValuePair<string, CSharpDataType>("timestamp",CSharpDataType.@DateTime),
 
                     new KeyValuePair<string, CSharpDataType>("integer",CSharpDataType.@int),
                     new KeyValuePair<string, CSharpDataType>("smallint",CSharpDataType.@short),
