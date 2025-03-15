@@ -52,7 +52,14 @@ namespace SqlSugar
         {
             if (PartitionByValue.HasValue()) 
             {
-                return base.ToSqlString();
+                if (this.Context?.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.SqlServer)
+                {
+                    return base.ToSqlString();
+                }
+                else 
+                {
+                    return base.ToSqlString().Replace(" GetDate() ", " NOW() ");
+                }
             }
             base.AppendFilter();
             string oldOrderValue = this.OrderByValue;
