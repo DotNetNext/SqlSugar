@@ -53,7 +53,7 @@ namespace SqlSugar
         }
     }
     public partial class DmMethod : DefaultDbMethod, IDbMethods
-    {
+    { 
         public override string WeekOfYear(MethodCallExpressionModel mode)
         {
             var parameterNameA = mode.Args[0].MemberName;

@@ -86,6 +86,10 @@ namespace SqlSugar
                             {
                                 return FormatDateTimeOffset(it.Value);
                             }
+                            else if (it.Value is bool&& (IsMySqlModel()|| IsSqlServerModel()))
+                            {
+                                return Convert.ToBoolean(it.Value)?"1":"0";
+                            } 
                             else
                             {
                                 value = it.Value;
@@ -109,7 +113,10 @@ namespace SqlSugar
         {
             return this.Context?.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.SqlServer;
         }
-
+        private bool IsMySqlModel()
+        {
+            return this.Context?.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.MySql;
+        }
         public override string FormatDateTimeOffset(object value)
         {
             var date = UtilMethods.ConvertFromDateTimeOffset((DateTimeOffset)value);
