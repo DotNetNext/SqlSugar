@@ -538,7 +538,7 @@ namespace SqlSugar
                     break;
                 case DbType.HANA:
                     Check.Exception(SugarCompatible.IsFramework, "NANA only support .net core");
-                    InstanceFactory.CustomDllName = "SqlSugar.HanaConnector";
+                    InstanceFactory.CustomDllName = "SqlSugar.HANAConnector";
                     break;
                 case DbType.Xugu:
                     Check.Exception(SugarCompatible.IsFramework, "Xugu only support .net core");
@@ -548,6 +548,10 @@ namespace SqlSugar
                     break;
                 case DbType.GoldenDB:
                     config.DbType = DbType.MySql;
+                    break;
+                case DbType.DB2:
+                    Check.Exception(SugarCompatible.IsFramework, "Db2 only support .net core");
+                    InstanceFactory.CustomDllName = "SqlSugar.Db2Core";
                     break;
                 default:
                     throw new Exception("ConnectionConfig.DbType is null");

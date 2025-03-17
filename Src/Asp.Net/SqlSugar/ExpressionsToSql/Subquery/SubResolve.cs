@@ -186,6 +186,10 @@ namespace SqlSugar
                 {
                     var asName = this.context.GetTranslationTableName(asItems.First().Replace(subKey, ""), false);
                     var repKey = $"\\{this.context.SqlTranslationLeft}.+\\{this.context.SqlTranslationRight}";
+                    if (this.context.IsSingle&&this.context.JoinIndex==0&&this.context.CurrentShortName.HasValue()&& isAsAttr&& !asName.Contains(this.context.CurrentShortName))
+                    {
+                        asName = asName + " " + this.context.CurrentShortName+" ";
+                    }
                     sqlItems[i] = Regex.Replace(sqlItems[i], repKey, asName);
                 }
             }
@@ -196,7 +200,13 @@ namespace SqlSugar
             {
                 if (sqlItems[i].StartsWith("FROM " + this.context.SqlTranslationLeft))
                 {
-                    sqlItems[i] = sqlItems[i]+" "+this.context.CurrentShortName +" ";
+                    if (isAsAttr&&sqlItems[i].EndsWith(this.context.CurrentShortName + " "))
+                    {
+                    }
+                    else
+                    {
+                        sqlItems[i] = sqlItems[i] + " " + this.context.CurrentShortName + " ";
+                    }
                 }
             }
         }

@@ -211,19 +211,23 @@ namespace SqlSugar
         }
         public ISugarQueryable<T, T2> LeftJoinIF<T2>(bool isLeftJoin, Expression<Func<T, T2, bool>> joinExpression) 
         {
+            var oldAsName = this.QueryBuilder.AsTables?.ToDictionary(it=>it.Key,it=>it.Value); 
             var result = LeftJoin(joinExpression);
             if (isLeftJoin == false)
             {
                 result.QueryBuilder.JoinQueryInfos.Remove(result.QueryBuilder.JoinQueryInfos.Last());
+                result.QueryBuilder.AsTables = oldAsName;
             }
             return result;
         }
         public ISugarQueryable<T, T2> InnerJoinIF<T2>(bool isJoin, Expression<Func<T, T2, bool>> joinExpression)
         {
+            var oldAsName = this.QueryBuilder.AsTables?.ToDictionary(it => it.Key, it => it.Value);
             var result = InnerJoin(joinExpression);
             if (isJoin == false)
             {
                 result.QueryBuilder.JoinQueryInfos.Remove(result.QueryBuilder.JoinQueryInfos.Last());
+                result.QueryBuilder.AsTables = oldAsName;
             }
             return result;
         }
