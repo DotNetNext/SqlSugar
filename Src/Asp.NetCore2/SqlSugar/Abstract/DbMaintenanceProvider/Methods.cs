@@ -384,7 +384,7 @@ namespace SqlSugar
             {
                 value = columnInfo.DefaultValue;
             }
-            else if (columnInfo.DataType.ObjToString().ToLower().IsIn("double","decimal","int","int4","bigint","int8","int2")&& columnInfo.DefaultValue.IsInt()) 
+            else if (columnInfo.DataType.ObjToString().ToLower().IsIn("float","double","decimal","int","int4","bigint","int8","int2")&& columnInfo.DefaultValue.IsInt()) 
             {
                 value = columnInfo.DefaultValue;
             }
