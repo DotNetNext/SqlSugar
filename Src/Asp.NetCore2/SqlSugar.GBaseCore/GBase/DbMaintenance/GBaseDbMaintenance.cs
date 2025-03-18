@@ -260,7 +260,7 @@ where a.tabtype in ('V')  and not (a.tabname like 'sys%') AND a.tabname <>'dual'
         {
             get
             {
-                return "select count(*) from sys.indexes where name='{0}'";
+                return "select count(*) from sysindexes where idxname ='{0}'";
             }
         }
         #endregion
