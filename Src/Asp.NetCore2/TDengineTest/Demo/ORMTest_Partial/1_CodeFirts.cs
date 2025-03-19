@@ -28,8 +28,8 @@ namespace TDengineTest
             db.CodeFirst.InitTables<TDHistoryValue>();
 
             //更多建表用例
-            db.CodeFirst.InitTables<CodeFirst03>();
-            db.Insertable(new CodeFirst03()
+            db.CodeFirst.InitTables<CodeFirst0311>();
+            db.Insertable(new CodeFirst0311()
             {
                 Ts = DateTime.Now,
                 Boolean = true,
@@ -49,8 +49,8 @@ namespace TDengineTest
                   UInt32=332,
                    UInt64=664
             }).ExecuteCommand();
-            var dt = db.Ado.GetDataTable("select * from  CodeFirst03 ");
-            var list3 = db.Queryable<CodeFirst03>().ToList();
+            var dt = db.Ado.GetDataTable("select * from  CodeFirst0311 ");
+            var list3 = db.Queryable<CodeFirst0311>().ToList();
         }
 
         private static void CodeFirst5(SqlSugarClient db)
