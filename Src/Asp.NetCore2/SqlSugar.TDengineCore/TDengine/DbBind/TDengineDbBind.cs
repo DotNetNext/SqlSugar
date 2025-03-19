@@ -77,9 +77,25 @@ namespace SqlSugar.TDengine
             {
                 dbTypeName = "string";
             }
-            else if (dbTypeName == "smallint") 
+            else if (dbTypeName == "smallint")
             {
                 dbTypeName = "int";
+            }
+            else if (dbTypeName == "int unsigned")
+            {
+                dbTypeName = "int";
+            }
+            else if (dbTypeName == "bigint unsigned")
+            {
+                dbTypeName = "long";
+            }
+            else if (dbTypeName == "tinyint unsigned")
+            {
+                dbTypeName = "byte";
+            }
+            else if (TDengineDbBind.MappingTypesConst.FirstOrDefault(it=>it.Key?.ToLower()==dbTypeName.ToLower()) is { } data)
+            {
+                dbTypeName = data.Value.ToString();
             }
             else
             {
@@ -106,10 +122,12 @@ namespace SqlSugar.TDengine
 
                     new KeyValuePair<string, CSharpDataType>("BOOL",CSharpDataType.@bool),
                     new KeyValuePair<string, CSharpDataType>("TINYINT",CSharpDataType.@byte),
+                     new KeyValuePair<string, CSharpDataType>("TINYINT",CSharpDataType.@int),
                     new KeyValuePair<string, CSharpDataType>("SMALLINT",CSharpDataType.@short),
                     new KeyValuePair<string, CSharpDataType>("INT",CSharpDataType.@int),
                     new KeyValuePair<string, CSharpDataType>("BIGINT",CSharpDataType.@long),
                     new KeyValuePair<string, CSharpDataType>("TINYINT UNSIGNED",CSharpDataType.@byte),
+                    new KeyValuePair<string, CSharpDataType>("TINYINT UNSIGNED",CSharpDataType.@int),
                     new KeyValuePair<string, CSharpDataType>("SMALLINT UNSIGNED",CSharpDataType.@short),
                     new KeyValuePair<string, CSharpDataType>("INT UNSIGNED",CSharpDataType.@int),
                     new KeyValuePair<string, CSharpDataType>("BIGINT UNSIGNED",CSharpDataType.@long),
