@@ -363,6 +363,8 @@ namespace SqlSugar
                         method = null;
                     if (bindPropertyType ==UtilConstants.IntType&& this.Context.CurrentConnectionConfig.DbType == DbType.OceanBaseForOracle) 
                         method = isNullableType ? getMyIntNull : getMyInt;
+                    if (bindProperyTypeName == "int16")
+                        method = null;
                     break;
                 case CSharpDataType.@bool:
                     if (bindProperyTypeName == "bool" || bindProperyTypeName == "boolean")
