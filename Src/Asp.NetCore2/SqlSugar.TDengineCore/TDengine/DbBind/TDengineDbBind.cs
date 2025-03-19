@@ -79,7 +79,7 @@ namespace SqlSugar.TDengine
             }
             else if (dbTypeName == "smallint")
             {
-                dbTypeName = "int";
+                dbTypeName = "short";
             }
             else if (dbTypeName == "int unsigned")
             {
