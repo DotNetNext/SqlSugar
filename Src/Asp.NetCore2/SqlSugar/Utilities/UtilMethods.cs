@@ -606,9 +606,9 @@ namespace SqlSugar
                         return result;
                     }
                 }
-                else if (value is byte[] && destinationType == typeof(char)) 
+                else if (value is byte[] bytes&&bytes.Length==1&& destinationType == typeof(char)) 
                 {
-                    return (char)((byte[])value)[0];
+                    return (char)(bytes)[0];
                 }
                 var destinationConverter = TypeDescriptor.GetConverter(destinationType);
                 if (destinationConverter != null && destinationConverter.CanConvertFrom(value.GetType()))
