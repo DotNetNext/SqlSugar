@@ -27,17 +27,7 @@ namespace TDengineTest
                     {
                         Console.WriteLine(UtilMethods.GetNativeSql(sql, p));
                     }
-                },
-                ConfigureExternalServices = new ConfigureExternalServices()
-                {
-                     EntityService= (property, column) =>
-                     {
-                         if (column.SqlParameterDbType == null) 
-                         {
-                             column.SqlParameterDbType = typeof(CommonPropertyConvert);
-                         }
-                     }
-                }
+                } 
             });
 
             //固定建表
