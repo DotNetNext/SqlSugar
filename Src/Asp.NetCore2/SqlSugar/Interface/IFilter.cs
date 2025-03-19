@@ -9,6 +9,6 @@ namespace SqlSugar
     {
         IFilter Add(SqlFilterItem filter);
         void Remove(string filterName);
-        List<SqlFilterItem> GeFilterList { get; }
+        List<SqlFilterItem> GetFilterList { get; }
     }
 }
