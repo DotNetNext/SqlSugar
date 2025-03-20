@@ -54,6 +54,10 @@ namespace SqlSugar
         }
         public override DbCommand GetCommand(string sql, SugarParameter[] parameters)
         {
+            if (sql == "-- No table ") 
+            {
+                sql = "select * from (select 1 as id) t where 1=2 ";
+            }
             SQLiteCommand sqlCommand = new SQLiteCommand(sql, (SQLiteConnection)this.Connection);
             sqlCommand.CommandType = this.CommandType;
             sqlCommand.CommandTimeout = this.CommandTimeOut;
