@@ -11,9 +11,13 @@ namespace OrmTest
     {
         public static void Init()
         {
-            var db = NewUnitTest.Db;
+            var db = NewUnitTest.Db; 
             //建表 
             db.CodeFirst.InitTables<Test001>();
+
+            db.Context.Queryable(db.Context.Queryable<Test001>().Where(it => it.id == 1))
+            .Where(it => it.id == 2).ToList();
+
             //清空表
             //db.DbMaintenance.TruncateTable<Test001>();
 
