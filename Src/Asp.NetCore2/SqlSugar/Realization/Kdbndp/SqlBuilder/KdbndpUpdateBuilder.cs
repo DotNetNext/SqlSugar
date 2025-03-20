@@ -163,7 +163,11 @@ namespace SqlSugar
                         }
                         if (IsSqlServerModel())
                         {
-                            if (dbType == "varchar")
+                            if (dbType == "numeric")
+                            {
+                                dbType = "numeric(18,6)";
+                            }
+                            else if (dbType == "varchar")
                             {
                                 dbType = "varchar(max)";
                             }
