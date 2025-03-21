@@ -690,7 +690,7 @@ WHERE table_name = '"+tableName+"'");
                 x.Length = 0;
                 x.DecimalDigits = 0;
             }
-            if(x.DecimalDigits>0&& x.DataType?.ToLower().IsIn("varchar", "clob", "varchar2", "nvarchar2", "nvarchar")==true)
+            if(x.DecimalDigits>0&& x.DataType?.ToLower()?.IsIn("varchar", "clob", "varchar2", "nvarchar2", "nvarchar")==true)
             {
                 x.DecimalDigits = 0;
             }
