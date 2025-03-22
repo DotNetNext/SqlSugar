@@ -31,6 +31,25 @@ namespace OrmTest
             int personId = db.Insertable(person).ExecuteReturnIdentity();
 
             var list = db.Queryable<UnitAddress011>().Includes(x => x.Persons).Includes(x=>x.City).ToList();
+
+
+            var list2 = db.Queryable<UnitAddress011>()
+                .Includes(x => x.Persons)
+                .IncludeLeftJoin(x => x.City) 
+                .Select(it=>new { 
+                    City=new {it.City.Name,it.City.Id },
+                    Persons = it.Persons
+                }).ToList();
+
+            var list3 = db.Queryable<UnitAddress011>()
+                .Includes(x => x.Persons)
+                .Includes(x => x.City)
+                .Select(it => new {
+                    City = new { it.City.Name, it.City.Id },
+                    Persons = it.Persons
+                }).ToList();
+
+
             db.UpdateNav(list)
                 .IncludeByNameString("Persons")
                 .IncludeByNameString("City").ExecuteCommand();
