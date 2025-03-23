@@ -738,6 +738,10 @@ namespace SqlSugar
             {
                 return false;
             }
+            else if (ec.UnderType == UtilConstants.LongType && dc.Length == 19 && dc.DecimalDigits == 0 && dc.OracleDataType?.EqualCase("number") == true)
+            {
+                return false;
+            }
             else
             {
                 return properyTypeName.ToLower() != dataType.ToLower();
