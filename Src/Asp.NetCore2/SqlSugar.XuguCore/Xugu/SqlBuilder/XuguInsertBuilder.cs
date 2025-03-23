@@ -18,7 +18,7 @@ namespace SqlSugar.Xugu
                     return @"INSERT INTO {0} 
            ({1})
      VALUES
-           ({2}) RETURNING $PrimaryKey未实现返回主键 " + UtilConstants.ReplaceCommaKey.Replace("{", "").Replace("}", "");
+           ({2});SELECT LAST_INSERT_ID(); " + UtilConstants.ReplaceCommaKey.Replace("{", "").Replace("}", "");
                 }
                 else
                 {
