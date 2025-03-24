@@ -32,6 +32,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            Unitasdfays.Init();
             Unitadfafafa.Init();
             UnitSubGroupadfa.Init();
             UnitAsyncToken.Init();
