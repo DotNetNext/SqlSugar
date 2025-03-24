@@ -62,7 +62,7 @@ namespace SqlSugar.Xugu
             {
                 string name = dr.GetName(i).Trim();
                 //重名时的处理
-                if (!columns.Contains(name)) name += i;
+                if (columns.Contains(name)) name += i;
                 columns.Add(new DataColumn(name, dr.GetFieldType(i)));
             }
             //填充行
