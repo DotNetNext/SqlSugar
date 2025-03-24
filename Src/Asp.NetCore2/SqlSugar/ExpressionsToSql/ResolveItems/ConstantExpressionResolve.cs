@@ -69,6 +69,7 @@ namespace SqlSugar
         {
             var isLeft = parameter.IsLeft;
             object value = ExpressionTool.GetValue(expression.Value, this.Context);
+            var isNullStr = value != null && value.ObjToString() == "NULL";
             value = ConvetValue(parameter, expression, value);
             if (IsEnumString(value))
                 value = ConvertEnum(value);
@@ -115,6 +116,11 @@ namespace SqlSugar
                         {
                             parameter.BaseParameter.ValueIsNull = true;
                             value = this.Context.DbMehtods.Null();
+                        }
+                        if (isNullStr)
+                        {
+                            this.Context.Result.Append(AppendParameter(value));
+                            break;
                         }
                         AppendValue(parameter, isLeft, value);
                     }
