@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using static OrmTest._1_CodeFirst;
 
 namespace OrmTest
 {
@@ -26,9 +27,29 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+            db.CodeFirst.InitTables<UserInfo001>();
+            db.DbMaintenance.TruncateTable<UserInfo001>();
+            var id = db.Insertable(new UserInfo001()
+            {
+                Context = "Context",
+                Email = "dfafa@qq.com",
+                Price = Convert.ToDecimal(1.1),
+                UserName = "NULL",
+                RegistrationDate = DateTime.Now,
 
+            }).ExecuteReturnIdentity();
+
+            //Query
+            //查询
+            var userInfo = db.Queryable<UserInfo001>().First(it => it.UserName == "NULL");
+            var userInfo2 = db.Queryable<UserInfo001>().First(it => it.UserName == null);
+            if (userInfo == null || userInfo2 != null) 
+            {
+                throw new Exception("unit error");
+            }
         }
     }
+
     [SqlSugar.SugarTable("SQLSUGARTEST")]
     [SqlSugar.SplitTable(SplitType._Custom01, typeof(SplitTableService))]
     public class SqlSugarTestEntity
