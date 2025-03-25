@@ -9,17 +9,17 @@ namespace SqlSugar.DB2
         public override string GetDbTypeName(string csharpTypeName)
         {
             if (csharpTypeName == UtilConstants.ByteArrayType.Name)
-                return "bytea";
-            if (csharpTypeName.ToLower() == "int32")
+                return "varbinary";
+            if (csharpTypeName.ToLower().IsIn("int","int32"))
                 csharpTypeName = "int";
-            if (csharpTypeName.ToLower() == "int16")
+            else if (csharpTypeName.ToLower() == "int16")
                 csharpTypeName = "short";
-            if (csharpTypeName.ToLower() == "int64")
+            else if (csharpTypeName.ToLower() == "int64")
                 csharpTypeName = "long";
-            if (csharpTypeName.ToLower().IsIn("boolean", "bool"))
+            else if (csharpTypeName.ToLower().IsIn("boolean", "bool"))
                 csharpTypeName = "bool";
-            if (csharpTypeName == "DateTimeOffset")
-                csharpTypeName = "DateTime";
+            else if (csharpTypeName.ToLower().IsIn("dateTime","datetimeoffset"))
+                csharpTypeName = "dateTime";
             var mappings = this.MappingTypes.Where(it => it.Value.ToString().Equals(csharpTypeName, StringComparison.CurrentCultureIgnoreCase)).ToList();
             if (mappings != null && mappings.Count > 0)
                 return mappings.First().Key;
@@ -30,21 +30,25 @@ namespace SqlSugar.DB2
         {
             dbTypeName = dbTypeName.ToLower();
             var propertyTypes = MappingTypes.Where(it => it.Value.ToString().ToLower() == dbTypeName || it.Key.ToLower() == dbTypeName);
-            if (propertyTypes == null)
+            if (propertyTypes == null || !propertyTypes.Any())
             {
-                return "other";
+                return "string";
             }
             else if (dbTypeName == "xml" || dbTypeName == "string" || dbTypeName == "jsonb" || dbTypeName == "json")
             {
                 return "string";
             }
-            else if (dbTypeName == "bpchar")//数据库char datatype 查询出来的时候是 bpchar
+            else if (dbTypeName == "character")
             {
                 return "char";
             }
-            if (dbTypeName == "byte[]")
+            else if (dbTypeName == "byte[]")
             {
                 return "byte[]";
+            }
+            else if (dbTypeName == "boolean")
+            {
+                return "char";
             }
             else if (propertyTypes == null || propertyTypes.Count() == 0)
             {
@@ -82,6 +86,8 @@ namespace SqlSugar.DB2
         }
         public static List<KeyValuePair<string, CSharpDataType>> MappingTypesConst = new List<KeyValuePair<string, CSharpDataType>>(){
 
+
+                    new KeyValuePair<string, CSharpDataType>("boolean",CSharpDataType.@bool),
                     new KeyValuePair<string, CSharpDataType>("varbinary",CSharpDataType.@byteArray),
                     new KeyValuePair<string, CSharpDataType>("binary",CSharpDataType.@byteArray),
                     new KeyValuePair<string, CSharpDataType>("blob",CSharpDataType.@byteArray),
@@ -89,6 +95,7 @@ namespace SqlSugar.DB2
                     new KeyValuePair<string, CSharpDataType>("varchar",CSharpDataType.@string),
                     new KeyValuePair<string, CSharpDataType>("char",CSharpDataType.@string),
                     new KeyValuePair<string, CSharpDataType>("clob",CSharpDataType.@string),
+                    new KeyValuePair<string, CSharpDataType>("vargraphic",CSharpDataType.@string),
 
                     new KeyValuePair<string, CSharpDataType>("timestamp",CSharpDataType.@DateTime),
                     new KeyValuePair<string, CSharpDataType>("date",CSharpDataType.@DateTime),
@@ -113,5 +120,28 @@ namespace SqlSugar.DB2
                 return new List<string>() { "int32", "datetime", "decimal", "double", "byte" };
             }
         }
+
+        public static List<KeyValuePair<string, System.Data.DbType>> MappingDbTypesConst = new List<KeyValuePair<string, System.Data.DbType>>(){
+
+
+            new KeyValuePair<string, System.Data.DbType>("boolean",System.Data.DbType.Boolean),
+            new KeyValuePair<string, System.Data.DbType>("varbinary",System.Data.DbType.Byte),
+            new KeyValuePair<string, System.Data.DbType>("varchar",System.Data.DbType.String),
+
+            new KeyValuePair<string, System.Data.DbType>("date",System.Data.DbType.Date),
+            new KeyValuePair<string, System.Data.DbType>("time",System.Data.DbType.Time),
+                        new KeyValuePair<string, System.Data.DbType>("timestamp",System.Data.DbType.DateTime),
+            new KeyValuePair<string, System.Data.DbType>("timestamp",System.Data.DbType.DateTime2),
+             new KeyValuePair<string, System.Data.DbType>("timestamp",System.Data.DbType.DateTimeOffset),
+
+            new KeyValuePair<string, System.Data.DbType>("integer",System.Data.DbType.Int32),
+            new KeyValuePair<string, System.Data.DbType>("smallint",System.Data.DbType.Int16),
+            new KeyValuePair<string, System.Data.DbType>("bigint",System.Data.DbType.Int64),
+
+            new KeyValuePair<string, System.Data.DbType>("float",System.Data.DbType.Single),
+            new KeyValuePair<string, System.Data.DbType>("double",System.Data.DbType.Double),
+            new KeyValuePair<string, System.Data.DbType>("numeric",System.Data.DbType.VarNumeric),
+
+                };
     }
 }

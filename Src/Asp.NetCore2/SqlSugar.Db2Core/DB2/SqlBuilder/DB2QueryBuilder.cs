@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Drawing;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -6,6 +7,11 @@ namespace SqlSugar.DB2
 {
     public partial class DB2QueryBuilder : QueryBuilder
     {
+        /// <summary>
+        /// 静态常量标志
+        /// </summary>
+        private string[] constanFlag = new string[] { "@const", "@constan" };
+
         #region Sql Template
         public override string PageTempalte
         {
@@ -133,9 +139,39 @@ namespace SqlSugar.DB2
                 {
                     result = SubToListMethod(result);
                 }
+                result = ConstanParameterized(result);
                 return result;
                 //return result.Replace("\"", "").ToUpper();
             }
+        }
+
+        /// <summary>
+        /// 常量参数化
+        /// </summary>
+        /// <returns></returns>
+        private string ConstanParameterized(string selectSql)
+        {
+            var selectParams = selectSql.Split(",").Select(p =>
+            {
+                if (!constanFlag.Any(t => p.ToLower().Contains(t))) return p;
+                var parameter = this.Parameters.FirstOrDefault(t => p.Contains(t.ParameterName));
+                if (parameter == null) return p;
+
+                var dbType = DB2DbBind.MappingDbTypesConst.FirstOrDefault(t => parameter.DbType == t.Value);
+                if (default(KeyValuePair<string, System.Data.DbType>).Equals(dbType)) return p;
+                var parameterized = string.Empty;
+                if (dbType.Value == System.Data.DbType.String)
+                {
+                    var size = string.IsNullOrEmpty(parameter.Value?.ToString()) ? 1 : System.Text.Encoding.Default.GetBytes(parameter.Value?.ToString()).Length;;
+                    parameterized = $"{dbType.Key.ToUpper()}({size})";
+                }
+                else
+                {
+                    parameterized = $"{dbType.Key.ToUpper()}";
+                }
+                return p.Replace(parameter.ParameterName, $" CAST({parameter.ParameterName} AS {parameterized}) ");
+            });
+            return string.Join(",", selectParams);
         }
 
         #endregion
