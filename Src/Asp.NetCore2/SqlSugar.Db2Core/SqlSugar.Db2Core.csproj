@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Net.IBM.Data.Db2" Version="8.0.0.300" />
+    <PackageReference Include="Net.IBM.Data.Db2" Version="8.0.0.310" />
   </ItemGroup>
 
   <ItemGroup>
