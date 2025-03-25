@@ -8,12 +8,15 @@ public class Program
         //CodeFirst.Init();
         CodeFirst.Insertable();
         CodeFirst.Queryable();
+        CodeFirst.QueryableSelect();
         CodeFirst.JoinQuery();
         CodeFirst.PageQuery();
         CodeFirst.OrderBy();
         CodeFirst.GroupBy();
         CodeFirst.Updateable();
         CodeFirst.Deleteable();
+
+        Console.ReadLine();
     }
 }
 
