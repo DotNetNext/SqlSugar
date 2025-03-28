@@ -12,6 +12,7 @@ namespace SqlSugar
     {
         private IFastBuilder GetBuider()
         {
+            var className = string.Empty;
             switch (this.context.CurrentConnectionConfig.DbType)
             {
                 case DbType.MySql:
@@ -45,11 +46,15 @@ namespace SqlSugar
                 case DbType.Oscar:
                     break;
                 case DbType.QuestDB:
-                    return new QuestDBFastBuilder(this.entityInfo); 
+                    return new QuestDBFastBuilder(this.entityInfo);
+                case DbType.Custom:
+                    className = InstanceFactory.CustomNamespace + "." + InstanceFactory.CustomDbName + "FastBuilder";
+                    break;
                 default:
+                    className = $"SqlSugar.{this.context.CurrentConnectionConfig.DbType}FastBuilder";
                     break;
             }
-            var reslut = InstanceFactory.CreateInstance<IFastBuilder>($"SqlSugar.{this.context.CurrentConnectionConfig.DbType}FastBuilder");
+            var reslut = InstanceFactory.CreateInstance<IFastBuilder>(className);
             reslut.CharacterSet = this.CharacterSet;
             reslut.FastEntityInfo = this.entityInfo;
             return reslut;
