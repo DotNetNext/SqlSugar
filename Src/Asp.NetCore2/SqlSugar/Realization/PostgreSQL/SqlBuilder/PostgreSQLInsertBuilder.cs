@@ -178,6 +178,63 @@ namespace SqlSugar
                 }
             }
         }
+        public override object FormatValue(object value)
+        {
+            var N = string.Empty; 
+            if (value == null)
+            {
+                return "NULL";
+            }
+            else
+            {
+                var type = UtilMethods.GetUnderType(value.GetType());
+                if (type == UtilConstants.DateType)
+                {
+                    var date = value.ObjToDate();
+                    if (date < UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig))
+                    {
+                        date = UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig);
+                    }
+                    return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
+                }
+                else if (type == UtilConstants.ByteArrayType)
+                {
+                    string bytesString = "0x" + BitConverter.ToString((byte[])value).Replace("-", "");
+                    return bytesString;
+                }
+                else if (type.IsEnum())
+                {
+                    if (this.Context.CurrentConnectionConfig.MoreSettings?.TableEnumIsString == true)
+                    {
+                        return value.ToSqlValue();
+                    }
+                    else
+                    {
+                        return Convert.ToInt64(value);
+                    }
+                }
+                else if (type == UtilConstants.BoolType)
+                {
+                    return value.ObjToBool() ? "1" : "0";
+                }
+                else if (type == UtilConstants.StringType || type == UtilConstants.ObjType)
+                {
+                    return N + "'" + value.ToString().ToSqlFilter() + "'";
+                }
+                else if (type == UtilConstants.DateTimeOffsetType)
+                {
+                    return FormatDateTimeOffset(value);
+                }
+                else if (type == UtilConstants.FloatType)
+                {
+                    return N + "'" + Convert.ToDouble(value).ToString() + "'";
+                }
+                else
+                {
+                    return N + "'" + value.ToString() + "'";
+                }
+            }
+        }
         public override string FormatDateTimeOffset(object value)
         {
             return "'" + ((DateTimeOffset)value).ToString("o") + "'";
