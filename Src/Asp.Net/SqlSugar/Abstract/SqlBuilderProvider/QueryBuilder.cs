@@ -312,9 +312,9 @@ namespace SqlSugar
                 var db = Context;
                 BindingFlags flag = BindingFlags.Instance | BindingFlags.NonPublic| BindingFlags.Public;
                 var index = 0;
-                if (db.QueryFilter.GeFilterList != null)
+                if (db.QueryFilter.GetFilterList != null)
                 {
-                    foreach (var item in db.QueryFilter.GeFilterList)
+                    foreach (var item in db.QueryFilter.GetFilterList)
                     {
                         if (this.RemoveFilters != null && this.RemoveFilters.Length > 0) 
                         {
@@ -384,9 +384,9 @@ namespace SqlSugar
 
         public virtual void AppendFilter()
         {
-            if (!IsDisabledGobalFilter && this.Context.QueryFilter.GeFilterList.HasValue())
+            if (!IsDisabledGobalFilter && this.Context.QueryFilter.GetFilterList.HasValue())
             {
-                var gobalFilterList = this.Context.QueryFilter.GeFilterList.Where(it => it.FilterName.IsNullOrEmpty()).ToList();
+                var gobalFilterList = this.Context.QueryFilter.GetFilterList.Where(it => it.FilterName.IsNullOrEmpty()).ToList();
                 if (this.RemoveFilters != null && this.RemoveFilters.Length > 0) 
                 {
                     gobalFilterList = gobalFilterList.Where(it => !this.RemoveFilters.Contains(it.type)).ToList();

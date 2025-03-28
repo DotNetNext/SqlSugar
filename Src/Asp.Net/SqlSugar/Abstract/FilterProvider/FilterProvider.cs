@@ -40,7 +40,7 @@ namespace SqlSugar
             _Filters.RemoveAll(it => it.FilterName == filterName);
         }
 
-        public List<SqlFilterItem> GeFilterList
+        public List<SqlFilterItem> GetFilterList
         {
             get
             {

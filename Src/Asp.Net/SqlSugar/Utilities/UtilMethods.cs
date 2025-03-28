@@ -601,10 +601,14 @@ namespace SqlSugar
                 {
                     var method = destinationType.GetMyMethod("Parse", 1);
                     if (method != null)
-                    { 
+                    {
                         var result = method.Invoke(null, new object[] { value });
-                        return result; 
+                        return result;
                     }
+                }
+                else if (value is byte[] bytes&&bytes.Length==1&& destinationType == typeof(char)) 
+                {
+                    return (char)(bytes)[0];
                 }
                 var destinationConverter = TypeDescriptor.GetConverter(destinationType);
                 if (destinationConverter != null && destinationConverter.CanConvertFrom(value.GetType()))

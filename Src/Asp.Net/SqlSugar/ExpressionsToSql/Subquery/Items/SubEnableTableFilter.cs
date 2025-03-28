@@ -49,8 +49,8 @@ namespace SqlSugar
                 BindingFlags flag = BindingFlags.Instance | BindingFlags.NonPublic;
                 Type type = this.Context.SubTableType;
                 var isWhere = HasWhere;
-                if (db.QueryFilter.GeFilterList != null) {
-                    foreach (var item in db.QueryFilter.GeFilterList)
+                if (db.QueryFilter.GetFilterList != null) {
+                    foreach (var item in db.QueryFilter.GetFilterList)
                     {
                         PropertyInfo field = item.GetType().GetProperty("exp", flag);
                         if (field != null)

@@ -5,7 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
+ using System.Text;
 namespace SqlSugar
 {
     public class ExpressionTool
@@ -878,7 +878,24 @@ namespace SqlSugar
                     additem.ShortName = member.Expression + "";
                     additem.RightName = member.Member.Name;
                     additem.RightDbName = context.GetDbColumnName(entityName, additem.RightName);
+                    var isNavMember = member.Expression != null
+                        && ExpressionTool.IsNavMember(context, member.Expression);
                     additem.LeftNameName = member.Member.Name;
+                    if (isNavMember && (context?.SugarContext?.QueryBuilder?.JoinQueryInfos?.Count()??0)==0) 
+                    { 
+                        var exp = context.GetCopyContextWithMapping();
+                        exp.Resolve(member, ResolveExpressType.FieldSingle);
+                        var sql = exp.Result.GetResultString();
+                        if (context.IsSingle&& context.CurrentShortName.IsNullOrEmpty()) 
+                        {
+                            context.SingleTableNameSubqueryShortName=ExpressionTool.GetParameters(member)?.FirstOrDefault()?.Name;
+                        }
+                        additem.RightDbName = sql;
+                    }
+                    else if (isNavMember &&  context?.SugarContext?.QueryBuilder?.JoinQueryInfos?.Any(it=>it.ShortName?.StartsWith("pnv_" + ExpressionTool.GetMemberName(member.Expression)) ==true)==true)
+                    {
+                        additem.ShortName = "pnv_"+ExpressionTool.GetMemberName(member.Expression);
+                    }
                     //additem.Value = "";
                     result.Add(additem);
                 }

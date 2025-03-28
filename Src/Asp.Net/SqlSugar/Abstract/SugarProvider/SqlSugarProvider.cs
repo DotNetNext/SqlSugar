@@ -432,10 +432,14 @@ namespace SqlSugar
         public virtual ISugarQueryable<T> Queryable<T>(ISugarQueryable<T> queryable)  
         {
             var sqlobj = queryable.ToSql();
+            var QueryBuilder = queryable.QueryBuilder;
             var newQueryable = this.SqlQueryable<object>(sqlobj.Key).AddParameters(sqlobj.Value);
             var result = newQueryable.Select<T>(newQueryable.QueryBuilder.SelectValue+"");
             result.QueryBuilder.IsSqlQuery = false;
             result.QueryBuilder.NoCheckInclude = true;
+            result.QueryBuilder.WhereIndex = (QueryBuilder.WhereIndex + 1);
+            var appendIndex = result.QueryBuilder.Parameters == null ? 1 : result.QueryBuilder.Parameters.Count + 1;
+            result.QueryBuilder.LambdaExpressions.ParameterIndex = (QueryBuilder.LambdaExpressions.ParameterIndex + appendIndex);
             result.QueryBuilder.Includes = queryable.QueryBuilder.Includes?.ToList();
             return result;
         }
