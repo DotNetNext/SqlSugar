@@ -47,6 +47,15 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+
+
+            var groupModel = new List<GroupByModel> { new GroupByModel { FieldName = ObjectFuncModel.Create("IsNull", "name", "{string}:") } };
+            var selectModel = new List<SelectModel> { new SelectModel { FieldName = ObjectFuncModel.Create("IsNull", "name", "{string}:"), AsName = "name" }
+                                                       , new SelectModel { FieldName = ObjectFuncModel.Create("AggregateSum",ObjectFuncModel.Create("IsNull","id","{int}:0")), AsName = "SL" } };
+            var dtdjbh =db.Queryable<dynamic>().AS("Order")
+                   .GroupBy(groupModel)
+                   .Select(selectModel)
+                   .ToDataTable();
         }
     }
 
