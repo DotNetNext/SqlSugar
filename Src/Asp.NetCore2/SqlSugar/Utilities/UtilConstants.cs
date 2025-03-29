@@ -15,6 +15,7 @@ namespace SqlSugar
         internal const string AssemblyName = "SqlSugar";
         internal static string ReplaceKey = "{"+Guid.NewGuid()+"}";
         internal const string ReplaceCommaKey = "{112A689B-17A1-4A06-9D27-A39EAB8BC3D5}";
+        internal const string GroupReplaceKey = "{GroupReplaceKey_l33asdysaas1231s}";
 
         internal static Type UShortType = typeof(ushort);
         internal static Type ULongType = typeof(ulong);
