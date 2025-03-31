@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Globalization;
 namespace SqlSugar
 {
     public partial class InsertBuilder : IDMLBuilder
@@ -265,6 +266,10 @@ namespace SqlSugar
                 else if (type == UtilConstants.FloatType) 
                 {
                     return N+"'" +Convert.ToDouble(value).ToString() + "'";
+                }
+                else if (value is decimal v)
+                {
+                    return v.ToString(CultureInfo.InvariantCulture);
                 }
                 else
                 {
