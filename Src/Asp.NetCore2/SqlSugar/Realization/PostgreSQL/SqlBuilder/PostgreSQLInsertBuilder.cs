@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -228,6 +229,10 @@ namespace SqlSugar
                 else if (type == UtilConstants.FloatType)
                 {
                     return N + "'" + Convert.ToDouble(value).ToString() + "'";
+                }
+                else if (value is decimal v)
+                {
+                    return v.ToString(CultureInfo.InvariantCulture);
                 }
                 else
                 {
