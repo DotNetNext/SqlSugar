@@ -173,6 +173,10 @@ namespace SqlSugar
                 {
                     return "'" + value.ToString().ToSqlFilter() + "'";
                 }
+                else if (value is decimal v)
+                {
+                    return v.ToString(CultureInfo.InvariantCulture);
+                }
                 else
                 {
                     return "'" + value.ToString() + "'";
