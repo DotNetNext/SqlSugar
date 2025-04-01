@@ -56,7 +56,7 @@ namespace SqlSugar.OceanBaseForOracle
             else
             {
                 var bigSize = 500;
-                if (groupList.Count < bigSize)
+                if (groupList.Count < bigSize || this.Context?.CurrentConnectionConfig?.MoreSettings?.EnableOracleIdentity == true)
                 {
                     string result = Small(identities, groupList, columnsString);
                     return result;
@@ -76,7 +76,7 @@ namespace SqlSugar.OceanBaseForOracle
                 var sql = Small(identities, groupListPasge, columnsString);
                 this.Context.Ado.ExecuteCommand(sql, this.Parameters);
             });
-            if (identities != null & identities.Count > 0 && this.OracleSeqInfoList != null && this.OracleSeqInfoList.Any())
+            if (identities != null && identities.Count > 0 && this.OracleSeqInfoList != null && this.OracleSeqInfoList.Any())
             {
                 return $"SELECT {this.OracleSeqInfoList.First().Value - 1} FROM DUAL";
             }

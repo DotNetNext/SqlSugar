@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -34,7 +35,7 @@ namespace SqlSugar.TDSQLForPGODBC
 
         public override Func<string, string, string> ConvertInsertReturnIdFunc { get; set; } = (name, sql) =>
         {
-            return sql.Trim().TrimEnd(';')+ $"returning {name} ";
+            return sql.Trim().TrimEnd(';') + $"returning {name} ";
         };
         public override string ToSqlString()
         {
@@ -47,7 +48,7 @@ namespace SqlSugar.TDSQLForPGODBC
             string columnsString = string.Join(",", groupList.First().Select(it => Builder.GetTranslationColumnName(it.DbColumnName)));
             if (isSingle)
             {
-                string columnParametersString = string.Join(",", this.DbColumnInfoList.Select(it =>base.GetDbColumn(it, Builder.SqlParameterKeyWord + it.DbColumnName)));
+                string columnParametersString = string.Join(",", this.DbColumnInfoList.Select(it => base.GetDbColumn(it, Builder.SqlParameterKeyWord + it.DbColumnName)));
                 ActionMinDate();
                 return GetIgnoreSql(string.Format(SqlTemplate, GetTableNameString, columnsString, columnParametersString));
             }
@@ -56,7 +57,7 @@ namespace SqlSugar.TDSQLForPGODBC
                 StringBuilder batchInsetrSql = new StringBuilder();
                 int pageSize = 200;
                 int pageIndex = 1;
-                if (IsNoPage&&IsReturnPkList) 
+                if (IsNoPage && IsReturnPkList)
                 {
                     pageSize = groupList.Count;
                 }
@@ -75,7 +76,7 @@ namespace SqlSugar.TDSQLForPGODBC
                         }
                         batchInsetrSql.Append("\r\n ( " + string.Join(",", columns.Select(it =>
                         {
-                            if (it.InsertServerTime || it.InsertSql.HasValue()||it.SqlParameterDbType is Type|| it?.PropertyType?.Name=="DateOnly" || it?.PropertyType?.Name == "TimeOnly")
+                            if (it.InsertServerTime || it.InsertSql.HasValue() || it.SqlParameterDbType is Type || it?.PropertyType?.Name == "DateOnly" || it?.PropertyType?.Name == "TimeOnly")
                             {
                                 return GetDbColumn(it, null);
                             }
@@ -84,18 +85,22 @@ namespace SqlSugar.TDSQLForPGODBC
                             {
                                 var date = ((DateTime)it.Value);
                                 value = date.ToString("O");
-                                if (date==DateTime.MaxValue) 
+                                if (date == DateTime.MaxValue)
                                 {
                                     value = "9999-12-31T23:59:59.999999";
                                 }
                             }
-                            else if (it.Value  is DateTimeOffset)
+                            else if (it.Value is DateTimeOffset)
                             {
                                 return FormatDateTimeOffset(it.Value);
                             }
-                            else if (it.IsArray&&it.Value!=null) 
+                            else if (it.Value is decimal v)
                             {
-                                return FormatValue(it.Value,it.PropertyName,i,it);
+                                return v.ToString(CultureInfo.InvariantCulture);
+                            }
+                            else if (it.IsArray && it.Value != null)
+                            {
+                                return FormatValue(it.Value, it.PropertyName, i, it);
                             }
                             else if (it.Value is byte[])
                             {
@@ -105,7 +110,7 @@ namespace SqlSugar.TDSQLForPGODBC
                             {
                                 value = it.Value;
                             }
-                            if (value == null||value==DBNull.Value)
+                            if (value == null || value == DBNull.Value)
                             {
                                 return string.Format(SqlTemplateBatchSelect, "NULL");
                             }
@@ -114,7 +119,7 @@ namespace SqlSugar.TDSQLForPGODBC
                         ++i;
                     }
                     pageIndex++;
-                    batchInsetrSql.Remove(batchInsetrSql.Length - 1,1).Append("\r\n;\r\n");
+                    batchInsetrSql.Remove(batchInsetrSql.Length - 1, 1).Append("\r\n;\r\n");
                 }
                 return GetIgnoreSql(batchInsetrSql.ToString());
             }
@@ -129,9 +134,9 @@ namespace SqlSugar.TDSQLForPGODBC
             else
             {
                 var type = value.GetType();
-                if (type == UtilConstants.ByteArrayType||type == UtilConstants.DateType || columnInfo.IsArray || columnInfo.IsJson)
+                if (type == UtilConstants.ByteArrayType || type == UtilConstants.DateType || columnInfo.IsArray || columnInfo.IsJson)
                 {
-                    var parameterName = this.Builder.SqlParameterKeyWord + name + i;
+                    var parameterName = this.Builder.SqlParameterKeyWord + name + "_" + i;
                     var paramter = new SugarParameter(parameterName, value);
                     if (columnInfo.IsJson)
                     {
@@ -172,9 +177,74 @@ namespace SqlSugar.TDSQLForPGODBC
                 {
                     return "'" + value.ToString().ToSqlFilter() + "'";
                 }
+                else if (value is decimal v)
+                {
+                    return v.ToString(CultureInfo.InvariantCulture);
+                }
                 else
                 {
                     return "'" + value.ToString() + "'";
+                }
+            }
+        }
+        public override object FormatValue(object value)
+        {
+            var N = string.Empty;
+            if (value == null)
+            {
+                return "NULL";
+            }
+            else
+            {
+                var type = UtilMethods.GetUnderType(value.GetType());
+                if (type == UtilConstants.DateType)
+                {
+                    var date = value.ObjToDate();
+                    if (date < UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig))
+                    {
+                        date = UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig);
+                    }
+                    return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
+                }
+                else if (type == UtilConstants.ByteArrayType)
+                {
+                    string bytesString = "0x" + BitConverter.ToString((byte[])value).Replace("-", "");
+                    return bytesString;
+                }
+                else if (type.IsEnum())
+                {
+                    if (this.Context.CurrentConnectionConfig.MoreSettings?.TableEnumIsString == true)
+                    {
+                        return value.ToSqlValue();
+                    }
+                    else
+                    {
+                        return Convert.ToInt64(value);
+                    }
+                }
+                else if (type == UtilConstants.BoolType)
+                {
+                    return value.ObjToBool() ? "1" : "0";
+                }
+                else if (type == UtilConstants.StringType || type == UtilConstants.ObjType)
+                {
+                    return N + "'" + value.ToString().ToSqlFilter() + "'";
+                }
+                else if (type == UtilConstants.DateTimeOffsetType)
+                {
+                    return FormatDateTimeOffset(value);
+                }
+                else if (type == UtilConstants.FloatType)
+                {
+                    return N + "'" + Convert.ToDouble(value).ToString() + "'";
+                }
+                else if (value is decimal v)
+                {
+                    return v.ToString(CultureInfo.InvariantCulture);
+                }
+                else
+                {
+                    return N + "'" + value.ToString() + "'";
                 }
             }
         }
@@ -182,7 +252,7 @@ namespace SqlSugar.TDSQLForPGODBC
         {
             return "'" + ((DateTimeOffset)value).ToString("o") + "'";
         }
-         
+
         private string GetIgnoreSql(string sql)
         {
             if (this.ConflictNothing?.Any() == true)
