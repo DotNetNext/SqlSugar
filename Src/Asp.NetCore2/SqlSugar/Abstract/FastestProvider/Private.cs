@@ -51,7 +51,7 @@ namespace SqlSugar
                     className = InstanceFactory.CustomNamespace + "." + InstanceFactory.CustomDbName + "FastBuilder";
                     break;
                 default:
-                    className = $"SqlSugar.{this.context.CurrentConnectionConfig.DbType}FastBuilder";
+                    className = $"SqlSugar.{this.context.CurrentConnectionConfig.DbType.ToString().Replace("Native","")}FastBuilder";
                     break;
             }
             var reslut = InstanceFactory.CreateInstance<IFastBuilder>(className);
