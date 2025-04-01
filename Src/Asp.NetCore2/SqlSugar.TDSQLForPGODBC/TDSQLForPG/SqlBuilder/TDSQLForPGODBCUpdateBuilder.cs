@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -34,7 +35,7 @@ namespace SqlSugar.TDSQLForPGODBC
             }
         }
 
-        public  object FormatValue(object value,string name,int i,DbColumnInfo columnInfo)
+        public object FormatValue(object value, string name, int i, DbColumnInfo columnInfo)
         {
             if (value == null)
             {
@@ -42,16 +43,16 @@ namespace SqlSugar.TDSQLForPGODBC
             }
             else
             {
-                var type =UtilMethods.GetUnderType(value.GetType());
-                if (type == UtilConstants.ByteArrayType||type == UtilConstants.DateType||columnInfo.IsArray||columnInfo.IsJson)
+                var type = UtilMethods.GetUnderType(value.GetType());
+                if (type == UtilConstants.ByteArrayType || type == UtilConstants.DateType || columnInfo.IsArray || columnInfo.IsJson)
                 {
-                    var parameterName = this.Builder.SqlParameterKeyWord + name + i;
+                    var parameterName = this.Builder.SqlParameterKeyWord + name + "_" + i;
                     var paramter = new SugarParameter(parameterName, value);
-                    if (columnInfo.IsJson) 
+                    if (columnInfo.IsJson)
                     {
                         paramter.IsJson = true;
                     }
-                    if (columnInfo.IsArray) 
+                    if (columnInfo.IsArray)
                     {
                         paramter.IsArray = true;
                     }
@@ -85,6 +86,10 @@ namespace SqlSugar.TDSQLForPGODBC
                 else if (type == UtilConstants.StringType || type == UtilConstants.ObjType)
                 {
                     return "'" + value.ToString().ToSqlFilter() + "'";
+                }
+                else if (value is decimal v)
+                {
+                    return v.ToString(CultureInfo.InvariantCulture);
                 }
                 else
                 {
@@ -133,7 +138,7 @@ namespace SqlSugar.TDSQLForPGODBC
                 batchUpdateSql.AppendFormat(SqlTemplateBatch.ToString(), setValues, GetTableNameStringNoWith, TableWithString);
                 int i = 0;
                 var tableColumnList = this.Context.DbMaintenance.GetColumnInfosByTableName(GetTableNameStringNoWith);
-                
+
                 foreach (var columns in groupList.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList())
                 {
                     var isFirst = i == 0;
@@ -145,11 +150,12 @@ namespace SqlSugar.TDSQLForPGODBC
                     {
                         var columnInfo = tableColumnList.FirstOrDefault(x => x.DbColumnName.Equals(it.DbColumnName, StringComparison.OrdinalIgnoreCase));
                         var dbType = columnInfo?.DataType;
-                        if (dbType == null) {
+                        if (dbType == null)
+                        {
                             var typeName = it.PropertyType.Name.ToLower();
-                            if (columnInfo==null&&it.PropertyType.IsEnum) 
+                            if (columnInfo == null && it.PropertyType.IsEnum)
                             {
-                                if (this.Context.CurrentConnectionConfig?.MoreSettings?.TableEnumIsString!=true)
+                                if (this.Context.CurrentConnectionConfig?.MoreSettings?.TableEnumIsString != true)
                                 {
                                     typeName = "int";
                                 }
@@ -163,20 +169,21 @@ namespace SqlSugar.TDSQLForPGODBC
                             if (typeName == "boolean")
                                 typeName = "bool";
 
-                            var isAnyType = TDSQLForPGODBCDbBind.MappingTypesConst.Where(x => x.Value.ToString().ToLower() == typeName).Any();
+                            var isAnyType = PostgreSQLDbBind.MappingTypesConst.Where(x => x.Value.ToString().ToLower() == typeName).Any();
                             if (isAnyType)
                             {
-                                dbType = TDSQLForPGODBCDbBind.MappingTypesConst.Where(x => x.Value.ToString().ToLower() == typeName).FirstOrDefault().Key;
+                                dbType = PostgreSQLDbBind.MappingTypesConst.Where(x => x.Value.ToString().ToLower() == typeName).FirstOrDefault().Key;
                             }
-                            else {
+                            else
+                            {
                                 dbType = "varchar";
                             }
                         }
-                        if(it?.PropertyType?.FullName == "NetTopologySuite.Geometries.Geometry")
+                        if (it?.PropertyType?.FullName == "NetTopologySuite.Geometries.Geometry")
                         {
                             return string.Format(" {0} ", base.GetDbColumn(it, FormatValue(it.Value, it.DbColumnName, i + (pageIndex - 1) * 100000, it)), dbType);
                         }
-                        return string.Format("CAST({0} AS {1})", base.GetDbColumn(it,FormatValue(it.Value,it.DbColumnName,i+(pageIndex-1)*100000,it)), dbType);
+                        return string.Format("CAST({0} AS {1})", base.GetDbColumn(it, FormatValue(it.Value, it.DbColumnName, i + (pageIndex - 1) * 100000, it)), dbType);
 
                     })) + ")");
                     ++i;
@@ -224,7 +231,7 @@ namespace SqlSugar.TDSQLForPGODBC
                     }
                     else
                     {
-                        if (item.Value?.Sql?.StartsWith("( CASE  WHEN")==true)
+                        if (item.Value?.Sql?.StartsWith("( CASE  WHEN") == true)
                         {
                             result = result.Replace($"{dbColumnName}=T.{dbColumnName}", $"{dbColumnName}={item.Value.Sql.Replace(" \"", $" {Builder.GetTranslationColumnName(this.TableName)}.\"")}");
                         }
@@ -241,22 +248,22 @@ namespace SqlSugar.TDSQLForPGODBC
         }
         protected override string GetJoinUpdate(string columnsString, ref string whereString)
         {
-            if (this.JoinInfos?.Count > 1) 
+            if (this.JoinInfos?.Count > 1)
             {
-                return this.GetJoinUpdateMany(columnsString,whereString);
+                return this.GetJoinUpdateMany(columnsString, whereString);
             }
             var formString = $"  {Builder.GetTranslationColumnName(this.TableName)}  AS {Builder.GetTranslationColumnName(this.ShortName)} ";
             var joinString = "";
             foreach (var item in this.JoinInfos)
             {
-                whereString += " AND "+item.JoinWhere;
+                whereString += " AND " + item.JoinWhere;
                 joinString += $"\r\n FROM {Builder.GetTranslationColumnName(item.TableName)}  {Builder.GetTranslationColumnName(item.ShortName)} ";
             }
             var tableName = formString + "\r\n ";
-            columnsString = columnsString.Replace(Builder.GetTranslationColumnName(this.ShortName)+".","")+joinString; 
+            columnsString = columnsString.Replace(Builder.GetTranslationColumnName(this.ShortName) + ".", "") + joinString;
             return string.Format(SqlTemplate, tableName, columnsString, whereString);
         }
-        private string GetJoinUpdateMany(string columnsString,string where)
+        private string GetJoinUpdateMany(string columnsString, string where)
         {
             var formString = $"  {Builder.GetTranslationColumnName(this.TableName)}  AS {Builder.GetTranslationColumnName(this.ShortName)} ";
             var joinString = "";

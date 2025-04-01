@@ -253,7 +253,71 @@ namespace SqlSugar.TDSQLForPGODBC
             value = value.TrimEnd(' ').TrimEnd('1').TrimEnd('=');
             return value;
         }
+        /// <summary>
+        /// Available only in Select,Handles logic that cannot be completed by an expression
+        /// </summary>
+        /// <param name="addValue"></param>
+        /// <param name="valueFomatInfo"></param>
+        /// <returns></returns>
+        internal static object GetFormatValue(object addValue, QueryableFormat valueFomatInfo)
+        {
+            if (valueFomatInfo.MethodName == "ToString")
+            {
+                if (valueFomatInfo.Type == UtilConstants.GuidType)
+                {
+                    addValue = Guid.Parse(addValue + "").ToString(valueFomatInfo.Format);
+                }
+                else if (valueFomatInfo.Type == UtilConstants.ByteType)
+                {
+                    addValue = Convert.ToByte(addValue + "").ToString(valueFomatInfo.Format);
+                }
+                else if (valueFomatInfo.Type == UtilConstants.IntType)
+                {
+                    addValue = Convert.ToInt32(addValue + "").ToString(valueFomatInfo.Format);
+                }
+                else if (valueFomatInfo.Type == UtilConstants.LongType)
+                {
+                    addValue = Convert.ToInt64(addValue + "").ToString(valueFomatInfo.Format);
+                }
+                else if (valueFomatInfo.Type == UtilConstants.UIntType)
+                {
+                    addValue = Convert.ToUInt32(addValue + "").ToString(valueFomatInfo.Format);
+                }
+                else if (valueFomatInfo.Type == UtilConstants.ULongType)
+                {
+                    addValue = Convert.ToUInt64(addValue + "").ToString(valueFomatInfo.Format);
+                }
+                else if (valueFomatInfo.Type == UtilConstants.DecType)
+                {
+                    addValue = Convert.ToDecimal(addValue + "").ToString(valueFomatInfo.Format);
+                }
+                else if (valueFomatInfo.Type == UtilConstants.DobType)
+                {
+                    addValue = Convert.ToDouble(addValue + "").ToString(valueFomatInfo.Format);
+                }
+                else if (valueFomatInfo.TypeString == "Enum")
+                {
+                    addValue = ChangeType2(addValue, valueFomatInfo.Type)?.ToString();
+                }
+            }
+            else if (valueFomatInfo.MethodName == "OnlyInSelectConvertToString")
+            {
 
+                var methodInfo = valueFomatInfo.MethodInfo;
+                if (methodInfo != null)
+                {
+                    // 如果方法是静态的，传递null作为第一个参数，否则传递类的实例
+                    object instance = methodInfo.IsStatic ? null : Activator.CreateInstance(methodInfo.ReflectedType);
+
+                    // 创建一个包含参数值的object数组
+                    object[] parameters = new object[] { addValue };
+
+                    // 调用方法
+                    addValue = methodInfo.Invoke(instance, parameters);
+                }
+            }
+            return addValue;
+        }
         public static int CountSubstringOccurrences(string mainString, string searchString)
         {
             string[] substrings = mainString.Split(new string[] { searchString }, StringSplitOptions.None);
@@ -541,6 +605,10 @@ namespace SqlSugar.TDSQLForPGODBC
                         var result = method.Invoke(null, new object[] { value });
                         return result;
                     }
+                }
+                else if (value is byte[] bytes && bytes.Length == 1 && destinationType == typeof(char))
+                {
+                    return (char)(bytes)[0];
                 }
                 var destinationConverter = TypeDescriptor.GetConverter(destinationType);
                 if (destinationConverter != null && destinationConverter.CanConvertFrom(value.GetType()))
@@ -1336,6 +1404,14 @@ namespace SqlSugar.TDSQLForPGODBC
             {
                 return Convert.ToInt64(item.FieldValue);
             }
+            else if (item.CSharpTypeName.EqualCase("float"))
+            {
+                return Convert.ToSingle(item.FieldValue);
+            }
+            else if (item.CSharpTypeName.EqualCase("single"))
+            {
+                return Convert.ToSingle(item.FieldValue);
+            }
             else if (item.CSharpTypeName.EqualCase("short"))
             {
                 return Convert.ToInt16(item.FieldValue);
@@ -1511,10 +1587,11 @@ namespace SqlSugar.TDSQLForPGODBC
         }
         public static string GetSqlString(ConnectionConfig connectionConfig, KeyValuePair<string, List<SugarParameter>> sqlObj)
         {
+            var guid = Guid.NewGuid() + "";
             var result = sqlObj.Key;
             if (sqlObj.Value != null)
             {
-                foreach (var item in sqlObj.Value.OrderByDescending(it => it.ParameterName.Length))
+                foreach (var item in UtilMethods.CopySugarParameters(sqlObj.Value).OrderByDescending(it => it.ParameterName.Length))
                 {
                     if (item.ParameterName.StartsWith(":") && !result.Contains(item.ParameterName))
                     {
@@ -1580,23 +1657,23 @@ namespace SqlSugar.TDSQLForPGODBC
                             result = result.Replace(item.ParameterName, (Convert.ToBoolean(item.Value) ? 1 : 0) + "");
                         }
                     }
-                    else if (item.Value.GetType() != UtilConstants.StringType && connectionConfig.DbType == DbType.PostgreSQL && TDSQLForPGODBCDbBind.MappingTypesConst.Any(x => x.Value.ToString().EqualCase(item.Value.GetType().Name)))
+                    else if (item.Value.GetType() != UtilConstants.StringType && connectionConfig.DbType == DbType.PostgreSQL && PostgreSQLDbBind.MappingTypesConst.Any(x => x.Value.ToString().EqualCase(item.Value.GetType().Name)))
                     {
-                        var type = TDSQLForPGODBCDbBind.MappingTypesConst.First(x => x.Value.ToString().EqualCase(item.Value.GetType().Name)).Key;
+                        var type = PostgreSQLDbBind.MappingTypesConst.First(x => x.Value.ToString().EqualCase(item.Value.GetType().Name)).Key;
                         var replaceValue = string.Format("CAST('{0}' AS {1})", item.Value, type);
                         result = result.Replace(item.ParameterName, replaceValue);
                     }
                     else if (connectionConfig.MoreSettings?.DisableNvarchar == true || item.DbType == System.Data.DbType.AnsiString || connectionConfig.DbType == DbType.Sqlite)
                     {
-                        result = result.Replace(item.ParameterName, $"'{item.Value.ObjToString().ToSqlFilter()}'");
+                        result = result.Replace(item.ParameterName, $"'{item.Value.ObjToString().Replace("@", guid).ToSqlFilter()}'");
                     }
                     else
                     {
-                        result = result.Replace(item.ParameterName, $"N'{item.Value.ObjToString().ToSqlFilter()}'");
+                        result = result.Replace(item.ParameterName, $"N'{item.Value.ObjToString().Replace("@", guid).ToSqlFilter()}'");
                     }
                 }
             }
-
+            result = result.Replace(guid, "@");
             return result;
         }
         public static string ByteArrayToPostgreByteaLiteral(byte[] data)
@@ -1750,6 +1827,11 @@ namespace SqlSugar.TDSQLForPGODBC
                 return false;
             }
             return true;
+        }
+
+        internal static ConnMoreSettings GetMoreSetting(ExpressionContext context)
+        {
+            return context?.SugarContext?.Context?.CurrentConnectionConfig?.MoreSettings ?? new ConnMoreSettings();
         }
     }
 }
