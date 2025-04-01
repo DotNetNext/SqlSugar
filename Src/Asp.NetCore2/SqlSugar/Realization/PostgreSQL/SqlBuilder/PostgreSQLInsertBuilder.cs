@@ -94,6 +94,10 @@ namespace SqlSugar
                             {
                                 return FormatDateTimeOffset(it.Value);
                             }
+                            else if (it.Value is decimal v)
+                            {
+                                return v.ToString(CultureInfo.InvariantCulture);
+                            }
                             else if (it.IsArray&&it.Value!=null) 
                             {
                                 return FormatValue(it.Value,it.PropertyName,i,it);
