@@ -93,21 +93,9 @@ namespace SqlSugar
         private InsertNavProvider<Root, TChild> _ThenInclude<TChild>(Expression<Func<T, List<TChild>>> expression) where TChild : class, new()
         {
             var name = ExpressionTool.GetMemberName(expression);
-            if (expression is LambdaExpression lambda) 
+            if (name == null)
             {
-                if (lambda.Body is MethodCallExpression method) 
-                {
-                    if (method.Method.Name == "ToList") 
-                    {
-                        if (method.Arguments.FirstOrDefault() is { } arg)
-                        {
-                            if (arg is MemberExpression member) 
-                            {
-                                name = member.Member.Name;
-                            }
-                        }
-                    }
-                }
+                name =ExpressionTool.GetMemberNameByMethod(expression, name);
             }
             var isRoot = false;
             if (this._ParentEntity == null)
@@ -137,7 +125,7 @@ namespace SqlSugar
                 InitParentList();
                 InsertManyToMany<TChild>(name, nav);
             }
-            AddContextInfo(name,isRoot);
+            AddContextInfo(name, isRoot);
             return GetResult<TChild>();
         }
 
