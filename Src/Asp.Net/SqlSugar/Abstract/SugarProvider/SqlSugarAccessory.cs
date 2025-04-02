@@ -553,6 +553,10 @@ namespace SqlSugar
                     Check.Exception(SugarCompatible.IsFramework, "Db2 only support .net core");
                     InstanceFactory.CustomDllName = "SqlSugar.Db2Core";
                     break;
+                case DbType.GaussDBNative:
+                    Check.Exception(SugarCompatible.IsFramework, "GaussDBNative only support .net core");
+                    InstanceFactory.CustomDllName = "SqlSugar.GaussDBCore";
+                    break;
                 default:
                     throw new Exception("ConnectionConfig.DbType is null");
             }

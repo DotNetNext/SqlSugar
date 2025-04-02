@@ -10,6 +10,29 @@ namespace SqlSugar
 {
     public class ExpressionTool
     {
+
+        public static string GetMemberNameByMethod(Expression expression, string name)  
+        {
+            if (expression is LambdaExpression lambda)
+            {
+                if (lambda.Body is MethodCallExpression method)
+                {
+                    if (method.Method.Name == "ToList")
+                    {
+                        if (method.Arguments.FirstOrDefault() is { } arg)
+                        {
+                            if (arg is MemberExpression member)
+                            {
+                                name = member.Member.Name;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return name;
+        }
+
         internal static string ResolveMemberValue(ExpressionContext context, Expression item, string value)
         {
             if (item is MemberExpression member)

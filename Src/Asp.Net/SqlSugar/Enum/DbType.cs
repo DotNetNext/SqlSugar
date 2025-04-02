@@ -37,6 +37,7 @@ namespace SqlSugar
         TDSQL,
         HANA,
         DB2,
+        GaussDBNative,
         Custom =900
     }
 }

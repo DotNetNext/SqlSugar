@@ -444,6 +444,10 @@ namespace SqlSugar
             {
                 return "SqlSugar.DB2."+ type+ name;
             }
+            else if (type == "GaussDBNative") 
+            {
+                return "SqlSugar.GaussDB.GaussDB"  + name;
+            }
             else
             {
                 //if (!string.IsNullOrEmpty(CustomDllName)) 

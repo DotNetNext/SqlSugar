@@ -965,6 +965,11 @@ namespace SqlSugar
             {
                 result = "*";
             }
+            if (result.StartsWith(UtilConstants.GroupReplaceKey)) 
+            {
+                this.GroupByIsReplace = true;
+                result = result.Replace(UtilConstants.GroupReplaceKey, string.Empty);
+            }
             return result;
         }
 
