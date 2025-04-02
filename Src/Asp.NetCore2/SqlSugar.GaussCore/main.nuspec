@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>SqlSugar.GaussDBNativeCore</id>
-    <version>5.1.4.188</version>
+    <version>5.1.4.189</version>
     <authors>sunkaixuan</authors>
     <owners>果糖大数据</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
