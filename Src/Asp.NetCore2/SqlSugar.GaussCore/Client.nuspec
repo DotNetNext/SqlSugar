@@ -14,7 +14,6 @@
     <tags>GaussDb OpenGauss.NET</tags>
     <dependencies>
       <group targetFramework=".NETStandard2.1">
-		  <dependency id="OpenGauss_NET" version="6.0.30" />
       </group>
     </dependencies>
   </metadata>

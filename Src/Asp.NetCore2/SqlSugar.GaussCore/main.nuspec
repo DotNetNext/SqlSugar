@@ -13,8 +13,8 @@
     <copyright>Copyright 2016</copyright>
     <tags>GaussDB  OpenGauss 华为 数据库</tags>
     <dependencies>
-      <group targetFramework=".net6.0">
-        
+      <group targetFramework=".net6.0"> 
+		  <dependency id="OpenGauss_NET" version="6.0.30" />
       </group>
     </dependencies>
   </metadata>
