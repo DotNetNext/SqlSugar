@@ -385,7 +385,16 @@ WHERE tgrelid = '"+tableName+"'::regclass");
             }
             var oldDatabaseName = this.Context.Ado.Connection.Database;
             var connection = this.Context.CurrentConnectionConfig.ConnectionString;
-            connection = connection.Replace(oldDatabaseName, "postgres");
+            if (Regex.Matches(connection, oldDatabaseName).Count > 1)
+            {
+                var builder = new Npgsql.NpgsqlConnectionStringBuilder(connection);
+                builder.Database = "postgres";
+                connection = builder.ConnectionString;
+            }
+            else
+            {
+                connection = connection.Replace(oldDatabaseName, "postgres");
+            }
             var newDb = new SqlSugarClient(new ConnectionConfig()
             {
                 DbType = this.Context.CurrentConnectionConfig.DbType,
