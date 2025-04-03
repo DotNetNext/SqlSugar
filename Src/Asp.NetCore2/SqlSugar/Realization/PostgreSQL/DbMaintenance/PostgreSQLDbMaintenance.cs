@@ -254,14 +254,8 @@ namespace SqlSugar
         {
             if (isCache == false)
             {
-                var sql = @"select  1  from pg_class c 
-                         inner join 
-		  pg_namespace n on n.oid = c.relnamespace and nspname='"+GetSchema()+@"'
-                         inner join 
-                                 pg_tables z on z.tablename=c.relname and Lower(z.tablename)='" + tableName.ToLower()+@"'
-                                 where  relkind in('p', 'r') and relname not like 'pg\_%' and relname not like 'sql\_%' and schemaname='public' order by relname";
-               var isAny=this.Context.Ado.GetDataTable(sql).Rows.Count>0;
-                return isAny;
+                var sql = $" SELECT 1 FROM pg_catalog.pg_tables \r\n    WHERE schemaname = '"+GetSchema()+ "' \r\n    AND Lower(tablename) = '" + tableName.ToLower()+"' ";
+                return this.Context.Ado.GetInt(sql) > 0;
             }
             else
             {
