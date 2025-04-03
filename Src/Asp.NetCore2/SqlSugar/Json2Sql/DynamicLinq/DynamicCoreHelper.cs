@@ -28,6 +28,7 @@ namespace SqlSugar
             var lambda = SqlSugarDynamicExpressionParser.ParseLambda(new[] { parameter }, null, newAnonymousTypeStr, args);
             result.ResultNewType = lambda.Body.Type;
             result.ShortName = shortName;
+            result.Exp = lambda;
             return result;
         }
 
@@ -36,6 +37,7 @@ namespace SqlSugar
             public FormattableString formattableString { get; set; }
             public string ShortName { get; set; }
             public Type ResultNewType { get; set; }
+            public LambdaExpression Exp { get; internal set; }
         }
         public static Expression<Func<T, bool>> GetWhere<T>(string shortName, FormattableString whereSql) 
         {

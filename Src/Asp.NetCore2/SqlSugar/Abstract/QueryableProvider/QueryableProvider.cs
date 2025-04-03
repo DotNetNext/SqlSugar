@@ -1459,7 +1459,10 @@ namespace SqlSugar
               expShortName, typeof(T),
               columns,
                args);
-
+            if (IsAppendNavColumns())
+            {
+                SetAppendNavColumns(selectObj.Exp);
+            }
             var exp = DynamicCoreHelper.GetMember(typeof(T), selectObj.ResultNewType, expShortName, selectObj.formattableString);
             var method = GetType().GetMethod("_Select", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
              .MakeGenericMethod(selectObj.ResultNewType);
