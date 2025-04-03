@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Dynamic.Core;
 using System.Linq.Dynamic.Core.CustomTypeProviders;
+using System.Net;
 using System.Text;
 using static OrmTest.UnitOneToManyFiltersadfa;
 
@@ -146,7 +147,25 @@ namespace OrmTest
                             "it.Address as Address"
                           }
                        )
-                     .ToList();  
+                     .ToList();
+            var list66666 = db.Queryable<UnitPerson011>()
+                   .Includes(it => it.Address)
+                   .Select(it=>new
+                   {
+                       addid= it.Address.Id,
+                       Address=it.Address 
+                   })
+                   .ToList();
+            var list6666 = db.Queryable<UnitPerson011>()
+                       .Includes(it => it.Address)
+                       .Select("it",
+                        new List<string>()
+                        {
+                               " new(it.Address.Id) as addid" ,
+                                "it.Address as Address"
+                            }
+                         )
+                       .ToList();
             var xxx = DynamicCoreHelper.GetMember(typeof(UnitPerson011), typeof(int), "it", $"it.Address.Id ");
             var list7= db.Queryable<UnitPerson011>().Select<int>("it", $"it.Address.Id ",typeof(UnitPerson011), typeof(int)).ToList();
             var list8 = db.Queryable<Order>().Select("it", $"new(it.Id as Id, it.Name)", typeof(Order)).ToList();
