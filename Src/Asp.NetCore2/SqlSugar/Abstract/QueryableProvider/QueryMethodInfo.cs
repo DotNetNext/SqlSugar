@@ -164,7 +164,12 @@ namespace SqlSugar
             this.QueryableObj = method.Invoke(QueryableObj, new object[] { });
             return this;
         }
-
+        public QueryMethodInfo Select(string expShortName, List<string> columns, params object[] args)
+        {
+            var method = QueryableObj.GetType().GetMyMethod("Select", 3, typeof(string), typeof(List<string>), typeof(object[]));
+            this.QueryableObj = method.Invoke(QueryableObj, new object[] { expShortName,columns,args });
+            return this;
+        }
         public QueryMethodInfo Select(List<SelectModel> models) 
         {
             var method = QueryableObj.GetType().GetMyMethod("Select", 1, typeof(List<SelectModel>));
