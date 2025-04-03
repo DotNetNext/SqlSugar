@@ -45,6 +45,15 @@ namespace OrmTest
                                    " it.Name as Name" }
                    , 10)
                    .ToPageList(1, 2, ref c);
+
+            var userInfo4 = db.Queryable<Order>()
+             .Select("it",
+              new List<string>()
+              { "it.Id as userId",
+                                    " {0} as id",
+                                   " it.Name as Name" }
+             , 10)
+             .ToListAsync().GetAwaiter().GetResult();
         }
 
         private static void Test03()
