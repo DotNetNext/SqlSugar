@@ -14,6 +14,37 @@ namespace OrmTest
             Test01();
             Test02();
             Test03();
+            Test04();
+        }
+
+        private static void Test04()
+        {
+            var db = NewUnitTest.Db;
+            var userInfo = db.Queryable<Order>()
+            .Select("it",
+             new List<string>()
+             { "it.Id as userId",
+                    " {0} as id",
+                   " it.Name as Name" }
+            , 10)
+            .ToList();
+            var userInfo2 = db.Queryable<Order>()
+             .Select("it",
+              new List<string>()
+              { "it.Id as userId",
+                    " {0} as id",
+                   " it.Name as Name" }
+             , 10)
+             .ToPageList(1, 2);
+            int c = 0;
+            var userInfo3 = db.Queryable<Order>()
+                   .Select("it",
+                    new List<string>()
+                    { "it.Id as userId",
+                                    " {0} as id",
+                                   " it.Name as Name" }
+                   , 10)
+                   .ToPageList(1, 2, ref c);
         }
 
         private static void Test03()
