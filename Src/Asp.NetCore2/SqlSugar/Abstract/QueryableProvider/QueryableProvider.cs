@@ -1463,7 +1463,7 @@ namespace SqlSugar
             {
                 SetAppendNavColumns(selectObj.Exp);
             }
-            var exp = DynamicCoreHelper.GetMember(typeof(T), selectObj.ResultNewType, expShortName, selectObj.formattableString);
+            var exp = selectObj.Exp;
             var method = GetType().GetMethod("_Select", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
              .MakeGenericMethod(selectObj.ResultNewType);
              dynamicCoreSelectModel.Value= method.Invoke(this, new object[] { exp });
