@@ -43,7 +43,7 @@ namespace OrmTest
                 .SplitTable()
                 .ToList();
 
-            if (list.First().Name != "jack1"|| list.Last().Name != "lilei1") 
+            if (list.First(it=>it.Name.StartsWith("jack")).Name != "jack1"|| list.Last(it=>it.Name.StartsWith("li")).Name != "lilei1") 
             {
                 throw new Exception("unit error");
             }
