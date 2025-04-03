@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Net.Http.Headers;
 using System.Text;
 
@@ -34,6 +35,16 @@ namespace OrmTest
             db.InsertNav(address)
                 .IncludeByNameString("Persons")
                 .IncludeByNameString("City").ExecuteCommand();
+
+
+            StaticConfig.DynamicExpressionParserType = typeof(DynamicExpressionParser);
+            var dynamicList=db.Queryable<UnitAddress011>()
+                .IncludesAllFirstLayer()
+                .Select("it", new List<string>
+                {
+                    " new (it.City.Name,it.City.AddressId) as City ",
+                    " it.Persons.Select(y=>y.Name) as  Persons "
+                }).ToList();
 
 
             var list = db.Queryable<UnitAddress011>().Includes(x => x.Persons).Includes(x => x.City).ToList();
