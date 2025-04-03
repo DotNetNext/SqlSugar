@@ -1452,6 +1452,20 @@ namespace SqlSugar
         {
             return Select<T>(expShortName, expSelect, resultType);
         }
+        public DynamicCoreSelectModel Select(string expShortName, List<string> columns,params object[] args)
+        {
+            DynamicCoreSelectModel dynamicCoreSelectModel = new DynamicCoreSelectModel();
+            var selectObj = DynamicCoreHelper.BuildPropertySelector(
+              expShortName, typeof(T),
+              columns,
+               args);
+
+            var exp = DynamicCoreHelper.GetMember(typeof(T), selectObj.ResultNewType, expShortName, selectObj.formattableString);
+            var method = GetType().GetMethod("_Select", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+             .MakeGenericMethod(selectObj.ResultNewType);
+             dynamicCoreSelectModel.Value= method.Invoke(this, new object[] { exp });
+            return dynamicCoreSelectModel;
+        }
         public virtual ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, TResult>> expression)
         {
             if (IsAppendNavColumns())
