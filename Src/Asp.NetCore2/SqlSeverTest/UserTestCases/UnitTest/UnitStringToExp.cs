@@ -64,7 +64,37 @@ namespace OrmTest
                                             " {0} as id",
                                            " it.Name as Name" }
                , 10)
-               .InSingleAsync(1).GetAwaiter().GetResult();
+               .First();
+
+            var userInfo6 = db.Queryable<Order>()
+               .In(1)
+               .Select("it",
+                new List<string>()
+                { "it.Id as userId",
+                                                    " {0} as id",
+                                                   " it.Name as Name" }
+               , 10)
+               .Single();
+
+
+            var userInfo7 = db.Queryable<Order>()
+               .Select("it",
+                new List<string>()
+                { "it.Id as userId",
+                                            " {0} as id",
+                                           " it.Name as Name" }
+               , 10)
+               .FirstAsync().GetAwaiter().GetResult();
+
+            var userInfo8 = db.Queryable<Order>()
+               .In(1)
+               .Select("it",
+                new List<string>()
+                { "it.Id as userId",
+                                                    " {0} as id",
+                                                   " it.Name as Name" }
+               , 10)
+               .SingleAsync().GetAwaiter().GetResult();
         }
 
         private static void Test03()
