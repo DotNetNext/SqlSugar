@@ -10,39 +10,6 @@ namespace SqlSugar
     public class DynamicCoreSelectModel
     {
         public object Value { get; set; }
-        public object InSingle(object value)
-        {
-            if (Value is null)
-            {
-                throw new InvalidOperationException("Value cannot be null.");
-            }
-
-            var method = Value.GetType().GetMyMethod("InSingle", 1);
-            if (method == null)
-            {
-                throw new InvalidOperationException("The Value object does not have an InSingle method with one parameter.");
-            }
-
-            return method.Invoke(Value, new object[] { value });
-        }
-
-        public async Task<object> InSingleAsync(object value)
-        {
-            if (Value is null)
-            {
-                throw new InvalidOperationException("Value cannot be null.");
-            }
-
-            var method = Value.GetType().GetMyMethod("InSingleAsync", 1);
-            if (method == null)
-            {
-                throw new InvalidOperationException("The Value object does not have an InSingleAsync method with one parameter.");
-            }
-
-            var task = (Task)method.Invoke(Value, new object[] { value });
-            return await GetTask(task).ConfigureAwait(false);
-        }
-
 
         public object ToList()
         {
@@ -148,12 +115,76 @@ namespace SqlSugar
             totalNumber = (int)parameters[2];
             return result;
         }
+        public object Single()
+        {
+            if (Value is null)
+            {
+                throw new InvalidOperationException("Value cannot be null.");
+            }
 
+            var method = Value.GetType().GetMyMethod("Single", 0);
+            if (method == null)
+            {
+                throw new InvalidOperationException("The Value object does not have a Single method with no parameters.");
+            }
+
+            return method.Invoke(Value, null);
+        }
+        public object First()
+        {
+            if (Value is null)
+            {
+                throw new InvalidOperationException("Value cannot be null.");
+            }
+
+            var method = Value.GetType().GetMyMethod("First", 0);
+            if (method == null)
+            {
+                throw new InvalidOperationException("The Value object does not have a First method with no parameters.");
+            }
+
+            return method.Invoke(Value, null);
+        }
+
+        public async Task<object> SingleAsync()
+        {
+            if (Value is null)
+            {
+                throw new InvalidOperationException("Value cannot be null.");
+            }
+
+            var method = Value.GetType().GetMyMethod("SingleAsync", 0);
+            if (method == null)
+            {
+                throw new InvalidOperationException("The Value object does not have a SingleAsync method with no parameters.");
+            }
+
+            var task = (Task)method.Invoke(Value, null);
+            return await GetTask(task).ConfigureAwait(false);
+        }
+
+        public async Task<object> FirstAsync()
+        {
+            if (Value is null)
+            {
+                throw new InvalidOperationException("Value cannot be null.");
+            }
+
+            var method = Value.GetType().GetMyMethod("FirstAsync", 0);
+            if (method == null)
+            {
+                throw new InvalidOperationException("The Value object does not have a FirstAsync method with no parameters.");
+            }
+
+            var task = (Task)method.Invoke(Value, null);
+            return await GetTask(task).ConfigureAwait(false);
+        }
+         
         private static async Task<object> GetTask(Task task)
         {
             await task.ConfigureAwait(false); // 等待任务完成
             var resultProperty = task.GetType().GetProperty("Result");
-            var value = resultProperty.GetValue(task); 
+            var value = resultProperty.GetValue(task);
             return value;
         }
     }
