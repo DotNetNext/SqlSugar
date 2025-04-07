@@ -503,6 +503,10 @@ WHERE table_name = '"+tableName+"'");
                                 column.Length = 22;
                             }
                         }
+                        if (current.DefaultValue != null)
+                        {
+                            column.DefaultValue = current.DefaultValue.TrimEnd('\'').TrimStart('\''); 
+                        }
                     }
                     result.Add(column);
                 }
@@ -523,7 +527,8 @@ WHERE table_name = '"+tableName+"'");
                                  t1.char_length,   
                                  t1.data_precision,  
                                  t1.data_scale,     
-                                 t1.nullable,       
+                                 t1.nullable,  
+                                 t1.data_default as DefaultValue,
                                  t4.index_name,     
                                  t4.column_position,  
                                  t4.descend          
