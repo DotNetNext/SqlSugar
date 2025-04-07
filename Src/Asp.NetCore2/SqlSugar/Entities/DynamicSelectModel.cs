@@ -10,6 +10,39 @@ namespace SqlSugar
     public class DynamicCoreSelectModel
     {
         public object Value { get; set; }
+        public object InSingle(object value)
+        {
+            if (Value is null)
+            {
+                throw new InvalidOperationException("Value cannot be null.");
+            }
+
+            var method = Value.GetType().GetMyMethod("InSingle", 1);
+            if (method == null)
+            {
+                throw new InvalidOperationException("The Value object does not have an InSingle method with one parameter.");
+            }
+
+            return method.Invoke(Value, new object[] { value });
+        }
+
+        public async Task<object> InSingleAsync(object value)
+        {
+            if (Value is null)
+            {
+                throw new InvalidOperationException("Value cannot be null.");
+            }
+
+            var method = Value.GetType().GetMyMethod("InSingleAsync", 1);
+            if (method == null)
+            {
+                throw new InvalidOperationException("The Value object does not have an InSingleAsync method with one parameter.");
+            }
+
+            var task = (Task)method.Invoke(Value, new object[] { value });
+            return await GetTask(task).ConfigureAwait(false);
+        }
+
 
         public object ToList()
         {
