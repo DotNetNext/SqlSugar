@@ -96,14 +96,14 @@ namespace SqlSugar
             return result;
         }
 
-        public async Task<object> ToPageListAsync(int pageNumber, int pageSize, int totalNumber)
+        public async Task<object> ToPageListAsync(int pageNumber, int pageSize,RefAsync<int> totalNumber)
         {
             if (Value is null)
             {
                 throw new InvalidOperationException("Value cannot be null.");
             }
 
-            var method = Value.GetType().GetMyMethod("ToPageListAsync", 3);
+            var method = Value.GetType().GetMyMethod("ToPageListAsync", 3,typeof(int),typeof(int),typeof(RefAsync<int>));
             if (method == null)
             {
                 throw new InvalidOperationException("The Value object does not have a ToPageListAsync method with three parameters.");
@@ -111,8 +111,7 @@ namespace SqlSugar
 
             var parameters = new object[] { pageNumber, pageSize, totalNumber };
             var task = (Task)method.Invoke(Value, parameters);
-            var result = await GetTask(task).ConfigureAwait(false);
-            totalNumber = (int)parameters[2];
+            var result = await GetTask(task).ConfigureAwait(false); 
             return result;
         }
         public object Single()
