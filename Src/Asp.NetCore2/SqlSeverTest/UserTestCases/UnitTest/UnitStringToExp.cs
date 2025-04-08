@@ -95,6 +95,17 @@ namespace OrmTest
                                                    " it.Name as Name" }
                , 10)
                .SingleAsync().GetAwaiter().GetResult();
+
+
+            RefAsync<int> c2 = 0;
+            var userInfo9 = db.Queryable<Order>()
+                   .Select("it",
+                    new List<string>()
+                    { "it.Id as userId",
+                                    " {0} as id",
+                                   " it.Name as Name" }
+                   , 10)
+                   .ToPageListAsync(1, 2,   c2).GetAwaiter().GetResult();
         }
 
         private static void Test03()
