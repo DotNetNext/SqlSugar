@@ -175,6 +175,10 @@ namespace OrmTest
             //动态类+动态条件
             var list5=db.QueryableByObject(typeof(UnitPerson011)).Where("it", $"it.Address.Id=={1}").ToList();
 
+            //动态排序
+            var list55 = db.Queryable<UnitPerson011>().Where("it", $"it.Name={"a"}")
+                .OrderBy("it", $"it=>it.Address.Street").ToList();
+
             var list6 = db.Queryable<UnitPerson011>() 
                 .LeftJoin<Order>((it, y) => it.Id == y.Id)
                 .Where("it", $"SqlFunc.Exists(it.Address.Id)")
