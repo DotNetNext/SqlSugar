@@ -118,6 +118,7 @@ namespace SqlSugar
         ISugarQueryable<T> OrderByPropertyName(string orderPropertyName,OrderByType? orderByType=null);
         ISugarQueryable<T> OrderByPropertyNameIF(bool isOrderBy,string orderPropertyName, OrderByType? orderByType = null);
         ISugarQueryable<T> OrderBy(Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc);
+        ISugarQueryable<T> OrderBy(string expShortName, FormattableString expOrderBy, OrderByType type = OrderByType.Asc);
         ISugarQueryable<T> OrderByDescending(Expression<Func<T, object>> expression);
         ISugarQueryable<T> OrderByIF(bool isOrderBy, string orderByFields);
         ISugarQueryable<T> OrderByIF(bool isOrderBy, Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc);

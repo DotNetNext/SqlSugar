@@ -1339,6 +1339,12 @@ namespace SqlSugar
             this._OrderBy(expression, type);
             return this;
         }
+        public virtual ISugarQueryable<T> OrderBy(string expShortName, FormattableString expOrderBy, OrderByType type = OrderByType.Asc) 
+        {
+            var exp = DynamicCoreHelper.GetMember(typeof(T), typeof(object), expShortName, expOrderBy);
+            this._OrderBy(exp, type);
+            return this;
+        }
         public virtual ISugarQueryable<T> OrderByDescending(Expression<Func<T, object>> expression)
         {
             this._OrderBy(expression, OrderByType.Desc);
