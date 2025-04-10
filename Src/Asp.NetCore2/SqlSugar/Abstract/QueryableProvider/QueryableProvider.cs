@@ -1461,6 +1461,22 @@ namespace SqlSugar
         public DynamicCoreSelectModel Select(string expShortName, List<string> columns,params object[] args)
         {
             DynamicCoreSelectModel dynamicCoreSelectModel = new DynamicCoreSelectModel();
+            if (!string.IsNullOrEmpty(this.QueryBuilder.TableShortName)&&expShortName!= this.QueryBuilder.TableShortName) 
+            {
+                if (columns.Any(it => it .Contains( expShortName + " ")))
+                {
+                    var pattern = $@"\b{Regex.Escape(expShortName)}\s*\."; // 匹配 expShortName 后面跟任意空格和点
+                    var replacement = this.QueryBuilder.TableShortName + ".";
+
+                    columns = columns.Select(it => Regex.Replace(it, pattern, replacement)).ToList();
+                    expShortName = this.QueryBuilder.TableShortName;
+                }
+                else
+                {
+                    columns = columns.Select(it => it.Replace(expShortName + ".", this.QueryBuilder.TableShortName + ".")).ToList();
+                    expShortName = this.QueryBuilder.TableShortName;
+                }
+            }
             var selectObj = DynamicCoreHelper.BuildPropertySelector(
               expShortName, typeof(T),
               columns,
