@@ -143,7 +143,7 @@ namespace SqlSugar
         }
         public static LambdaExpression GetMember(Type entityType,Type propertyType, string shortName, FormattableString memberSql)
         {
-            var parameter = Expression.Parameter(entityType, "it");
+            var parameter = Expression.Parameter(entityType, shortName);
 
             // 提取 FormattableString 中的参数值
             var arguments = memberSql.GetArguments();
