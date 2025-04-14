@@ -270,6 +270,16 @@ namespace SqlSugar
         Task<DataTable> ToDataTablePageAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber);
         Task<DataTable> ToDataTableByEntityPageAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber);
 
+
+        DataTable ToOffsetDataTablePage(int pageNumber, int pageSize);
+        Task<DataTable> ToOffsetDataTablePageAsync(int pageNumber, int pageSize);
+        DataTable ToOffsetDataTablePage(int pageNumber, int pageSize, ref int totalNumber);
+        DataTable ToOffsetDataTableByEntityPage(int pageNumber, int pageSize, ref int totalNumber);
+        DataTable ToOffsetDataTablePage(int pageNumber, int pageSize, ref int totalNumber, ref int totalPage);
+        Task<DataTable> ToOffsetDataTablePageAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber);
+        Task<DataTable> ToOffsetDataTableByEntityPageAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber);
+
+
         List<T> ToOffsetPage(int pageNumber, int pageSize);
         List<T> ToOffsetPage(int pageNumber, int pageSize,ref int totalNumber);
         List<T> ToOffsetPage(int pageNumber, int pageSize, ref int totalNumber,ref int totalPage);
