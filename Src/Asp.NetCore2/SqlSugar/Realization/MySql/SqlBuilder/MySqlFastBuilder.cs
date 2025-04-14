@@ -94,7 +94,16 @@ namespace SqlSugar
             var queryable = this.Context.Queryable<T>();
             var tableName = queryable.SqlBuilder.GetTranslationTableName(dt.TableName);
             dt.TableName = "temp"+SnowFlakeSingle.instance.getID();
-            var sql = queryable.AS(tableName).Where(it => false).ToSql().Key;
+            var sql = string.Empty;
+            if (dt.Columns.Cast<DataColumn>().Any(it => it.DataType == UtilConstants.ByteArrayType))
+            {
+                sql = queryable.AS(tableName).Where(it => false)
+                    .Select(string.Join(",", dt.Columns.Cast<DataColumn>().Select(it => queryable.SqlBuilder.GetTranslationTableName(it.ColumnName)))).ToSql().Key;
+            }
+            else 
+            {
+                sql=queryable.AS(tableName).Where(it => false).ToSql().Key;
+            }
             await this.Context.Ado.ExecuteCommandAsync($"Create TEMPORARY  table {dt.TableName}({sql}) ");
         }
     }
