@@ -24,6 +24,8 @@ namespace SqlSugar
             List<GroupModel> groupModels;
             int result;
             GroupDataList(UpdateObjects, out groupModels, out result);
+            var dataEvent = this.Context.CurrentConnectionConfig.AopEvents?.DataExecuting;
+            this.Context.Aop.DataExecuting = null;
             foreach (var item in groupModels.GroupBy(it => it.GroupName))
             {
                 var addList = item.Select(it => it.Item).ToList();
@@ -46,7 +48,8 @@ namespace SqlSugar
                         .IgnoreColumns(this.updateobj.UpdateBuilder.IsNoUpdateNull, this.updateobj.UpdateBuilder.IsOffIdentity, this.updateobj.UpdateBuilder.IsNoUpdateDefaultValue)
                         .IgnoreColumns(GetIgnoreColumns()).AS(item.Key).ExecuteCommandWithOptLock(isThrowError);
                 }
-            }
+            } 
+            this.Context.Aop.DataExecuting = dataEvent;
             return result;
         }
         public int ExecuteCommand()
@@ -57,12 +60,15 @@ namespace SqlSugar
             foreach (var item in groupModels.GroupBy(it => it.GroupName))
             {
                 var addList = item.Select(it => it.Item).ToList();
+                var dataEvent = this.Context.CurrentConnectionConfig.AopEvents?.DataExecuting;
+                this.Context.Aop.DataExecuting = null;
                 result += this.Context.Updateable(addList)
                     .EnableDiffLogEventIF(this.IsEnableDiffLogEvent, this.BusinessData)
                     .WhereColumns(this.WhereColumns?.ToArray())
                     .UpdateColumns(updateobj.UpdateBuilder.UpdateColumns?.ToArray())
                     .IgnoreColumns(this.updateobj.UpdateBuilder.IsNoUpdateNull, this.updateobj.UpdateBuilder.IsOffIdentity,this.updateobj.UpdateBuilder.IsNoUpdateDefaultValue)
-                    .IgnoreColumns(GetIgnoreColumns()).AS(item.Key).ExecuteCommand();
+                    .IgnoreColumns(GetIgnoreColumns()).AS(item.Key).ExecuteCommand(); 
+                this.Context.Aop.DataExecuting = dataEvent;
             }
             return result;
         }
@@ -76,12 +82,15 @@ namespace SqlSugar
             foreach (var item in groupModels.GroupBy(it => it.GroupName))
             {
                 var addList = item.Select(it => it.Item).ToList();
+                var dataEvent = this.Context.CurrentConnectionConfig.AopEvents?.DataExecuting;
+                this.Context.Aop.DataExecuting = null;
                 result += await this.Context.Updateable(addList)
                     .WhereColumns(this.WhereColumns?.ToArray())
                     .EnableDiffLogEventIF(this.IsEnableDiffLogEvent, this.BusinessData)
                     .UpdateColumns(updateobj.UpdateBuilder.UpdateColumns?.ToArray())
                     .IgnoreColumns(this.updateobj.UpdateBuilder.IsNoUpdateNull, this.updateobj.UpdateBuilder.IsOffIdentity, this.updateobj.UpdateBuilder.IsNoUpdateDefaultValue)
                     .IgnoreColumns(GetIgnoreColumns()).AS(item.Key).ExecuteCommandAsync();
+                this.Context.Aop.DataExecuting = dataEvent;
             }
             return result;
         }
@@ -90,6 +99,8 @@ namespace SqlSugar
             List<GroupModel> groupModels;
             int result;
             GroupDataList(UpdateObjects, out groupModels, out result);
+            var dataEvent = this.Context.CurrentConnectionConfig.AopEvents?.DataExecuting;
+            this.Context.Aop.DataExecuting = null;
             foreach (var item in groupModels.GroupBy(it => it.GroupName))
             {
                 var addList = item.Select(it => it.Item).ToList();
@@ -113,7 +124,8 @@ namespace SqlSugar
                         .IgnoreColumns(this.updateobj.UpdateBuilder.IsNoUpdateNull, this.updateobj.UpdateBuilder.IsOffIdentity, this.updateobj.UpdateBuilder.IsNoUpdateDefaultValue)
                         .IgnoreColumns(GetIgnoreColumns()).AS(item.Key).ExecuteCommandWithOptLockAsync(isThrowError);
                 }
-            }
+            } 
+            this.Context.Aop.DataExecuting = dataEvent;
             return result;
         }
         private string [] GetIgnoreColumns()
