@@ -610,6 +610,10 @@ namespace SqlSugar
                 {
                     return (char)(bytes)[0];
                 }
+                else if (value is DateTime &&   destinationType == typeof(TimeSpan))
+                {
+                    value = Convert.ToDateTime(value).TimeOfDay;
+                }
                 var destinationConverter = TypeDescriptor.GetConverter(destinationType);
                 if (destinationConverter != null && destinationConverter.CanConvertFrom(value.GetType()))
                     return destinationConverter.ConvertFrom(null, culture, value);
