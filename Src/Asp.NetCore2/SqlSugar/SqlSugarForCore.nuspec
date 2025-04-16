@@ -22,7 +22,7 @@
         <dependency id="MySqlConnector" version="2.2.5" />
         <dependency id="Oracle.ManagedDataAccess.Core" version="3.21.100" />
         <dependency id="Npgsql" version="5.0.18" />
-	    <dependency id="SqlSugarCore.Dm" version="8.6.0" />
+	    <dependency id="SqlSugarCore.Dm" version="8.7.0" />
 	    <dependency id="SqlSugarCore.Kdbndp" version="9.3.7.320" />
 		<dependency id="Oscar.Data.SqlClient" version="4.0.4" />
 		<dependency id="System.Text.RegularExpressions" version="4.3.1" />
