@@ -614,6 +614,10 @@ namespace SqlSugar
                 {
                     value = Convert.ToDateTime(value).TimeOfDay;
                 }
+                else if (value is DateTime && destinationType.FullName == "System.TimeOnly")
+                {
+                    value = Convert.ToDateTime(value).TimeOfDay;
+                }
                 var destinationConverter = TypeDescriptor.GetConverter(destinationType);
                 if (destinationConverter != null && destinationConverter.CanConvertFrom(value.GetType()))
                     return destinationConverter.ConvertFrom(null, culture, value);
