@@ -140,6 +140,7 @@ namespace SqlSugar.HG
                     new KeyValuePair<string, CSharpDataType>("varbit",CSharpDataType.@byte),
                     new KeyValuePair<string, CSharpDataType>("time",CSharpDataType.TimeSpan),
                     new KeyValuePair<string, CSharpDataType>("public.geometry",CSharpDataType.@object),
+                    new KeyValuePair<string, CSharpDataType>("public.geography",CSharpDataType.@object),
                     new KeyValuePair<string, CSharpDataType>("inet",CSharpDataType.@object)
                 };
         public override List<string> StringThrow

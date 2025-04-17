@@ -148,6 +148,8 @@ namespace SqlSugar
 
                     new KeyValuePair<string, CSharpDataType>("geometry",CSharpDataType.@object),
                     new KeyValuePair<string, CSharpDataType>("public.geometry",CSharpDataType.@object),
+                    new KeyValuePair<string, CSharpDataType>("geography",CSharpDataType.@object),
+                    new KeyValuePair<string, CSharpDataType>("public.geography",CSharpDataType.@object),
                 };
         public override List<string> StringThrow
         {
