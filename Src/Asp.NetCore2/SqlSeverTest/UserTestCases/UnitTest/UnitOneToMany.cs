@@ -33,14 +33,18 @@ namespace OrmTest
             var list = db.Queryable<UnitAddress011>().Includes(x => x.Persons).Includes(x=>x.City).ToList();
 
 
-            var list2 = db.Queryable<UnitAddress011>()
-                .Includes(x => x.Persons)
-                .IncludeLeftJoin(x => x.City) 
-                .Select(it=>new { 
-                    City=new {it.City.Name,it.City.Id },
-                    Persons = it.Persons
-                }).ToList();
+            var list2 = db.Queryable<UnitAddress011>() 
+                .IF(false, it => {
 
+                    it.Includes(x => x.Persons);
+                })
+                .ToList();
+            var list22 = db.Queryable<UnitAddress011>()
+            .IF(true, it => {
+
+                it.Includes(x => x.Persons);
+            })
+            .ToList();
             var list3 = db.Queryable<UnitAddress011>()
                 .Includes(x => x.Persons)
                 .Includes(x => x.City)
