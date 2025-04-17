@@ -2300,7 +2300,7 @@ namespace SqlSugar
     {
         public new ISugarQueryable<T, T2,T3,T4,T5> IF(bool condition, Action<ISugarQueryable<T>> action)
         {
-            throw new Exception("Only Queryable<T>().IF is supported, and Queryable<T,T2,>().IF is not supported");ss
+            throw new Exception("Only Queryable<T>().IF is supported, and Queryable<T,T2,>().IF is not supported");
         }
         public new ISugarQueryable<T, T2, T3, T4,T5> Hints(string hints)
         {
