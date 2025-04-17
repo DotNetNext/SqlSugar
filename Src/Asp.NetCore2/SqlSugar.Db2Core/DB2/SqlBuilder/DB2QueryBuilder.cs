@@ -8,9 +8,9 @@ namespace SqlSugar.DB2
     public partial class DB2QueryBuilder : QueryBuilder
     {
         /// <summary>
-        /// 静态常量标志
+        /// 静态常量正则表达式
         /// </summary>
-        private string[] constanFlag = new string[] { "@const", "@constan" };
+        private const string constRegex = "@.*const.*";
 
         #region Sql Template
         public override string PageTempalte
@@ -153,23 +153,28 @@ namespace SqlSugar.DB2
         {
             var selectParams = selectSql.Split(",").Select(p =>
             {
-                if (!constanFlag.Any(t => p.ToLower().Contains(t))) return p;
-                var parameter = this.Parameters.FirstOrDefault(t => p.Contains(t.ParameterName));
-                if (parameter == null) return p;
+                if (!Regex.IsMatch(p, constRegex)) return p;
+                var parameterItems = this.Parameters.Where(t => p.Contains(t.ParameterName)).ToList();
+                if (!parameterItems.Any()) return p;
 
-                var dbType = DB2DbBind.MappingDbTypesConst.FirstOrDefault(t => parameter.DbType == t.Value);
-                if (default(KeyValuePair<string, System.Data.DbType>).Equals(dbType)) return p;
-                var parameterized = string.Empty;
-                if (dbType.Value == System.Data.DbType.String)
+                var paramSql = p;
+                parameterItems.ForEach(parameter =>
                 {
-                    var size = string.IsNullOrEmpty(parameter.Value?.ToString()) ? 1 : System.Text.Encoding.Default.GetBytes(parameter.Value?.ToString()).Length;;
-                    parameterized = $"{dbType.Key.ToUpper()}({size})";
-                }
-                else
-                {
-                    parameterized = $"{dbType.Key.ToUpper()}";
-                }
-                return p.Replace(parameter.ParameterName, $" CAST({parameter.ParameterName} AS {parameterized}) ");
+                    var dbType = DB2DbBind.MappingDbTypesConst.FirstOrDefault(t => parameter.DbType == t.Value);
+                    if (default(KeyValuePair<string, System.Data.DbType>).Equals(dbType)) return;
+                    var parameterized = string.Empty;
+                    if (dbType.Value == System.Data.DbType.String)
+                    {
+                        var size = string.IsNullOrEmpty(parameter.Value?.ToString()) ? 1 : System.Text.Encoding.Default.GetBytes(parameter.Value?.ToString()).Length;
+                        parameterized = $"{dbType.Key.ToUpper()}({size})";
+                    }
+                    else
+                    {
+                        parameterized = $"{dbType.Key.ToUpper()}";
+                    }
+                    paramSql = paramSql.Replace(parameter.ParameterName, $" CAST({parameter.ParameterName} AS {parameterized}) ");
+                });
+                return paramSql;
             });
             return string.Join(",", selectParams);
         }
