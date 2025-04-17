@@ -20,6 +20,7 @@ namespace SqlSugar
         ISugarQueryable<T> Hints(string hints);
         ISugarQueryable<T> AS<T2>(string tableName);
         ISugarQueryable<T> AS(string tableName);
+        ISugarQueryable<T> IF(bool condition, Action<ISugarQueryable<T>> action);
         ISugarQueryable<T> AsWithAttr();
         ISugarQueryable<T> AsType(Type tableNameType);
         ISugarQueryable<Type> Cast<Type>();
@@ -332,6 +333,7 @@ namespace SqlSugar
     }
     public partial interface ISugarQueryable<T, T2> : ISugarQueryable<T>
     {
+        new ISugarQueryable<T,T2> IF(bool condition, Action<ISugarQueryable<T>> action);
         new ISugarQueryable<T,T2> Hints(string hints);
         new ISugarQueryable<T,T2> SampleBy(int timeNumber, SampleByUnit timeType);
         new ISugarQueryable<T,T2> SampleBy(int timeNumber, string timeType);
@@ -462,6 +464,7 @@ namespace SqlSugar
     }
     public partial interface ISugarQueryable<T, T2, T3> : ISugarQueryable<T>
     {
+        new ISugarQueryable<T, T2,T3> IF(bool condition, Action<ISugarQueryable<T>> action);
         new ISugarQueryable<T, T2,T3> Hints(string hints);
         new ISugarQueryable<T, T2,T3> SampleBy(int timeNumber, SampleByUnit timeType);
         new ISugarQueryable<T, T2,T3> SampleBy(int timeNumber, string timeType);
@@ -607,6 +610,7 @@ namespace SqlSugar
     }
     public partial interface ISugarQueryable<T, T2, T3, T4> : ISugarQueryable<T>
     {
+        new ISugarQueryable<T, T2,T3,T4> IF(bool condition, Action<ISugarQueryable<T>> action);
         new ISugarQueryable<T, T2, T3,T4> Hints(string hints);
         new ISugarQueryable<T, T2, T3,T4> SampleBy(int timeNumber, SampleByUnit timeType);
         new ISugarQueryable<T, T2, T3,T4> SampleBy(int timeNumber, string timeType);
@@ -758,6 +762,7 @@ namespace SqlSugar
     }
     public partial interface ISugarQueryable<T, T2, T3, T4, T5> : ISugarQueryable<T>
     {
+        new ISugarQueryable<T, T2,T3,T4,T5> IF(bool condition, Action<ISugarQueryable<T>> action);
         new ISugarQueryable<T, T2, T3, T4,T5> Hints(string hints);
         new ISugarQueryable<T, T2, T3, T4,T5> SampleBy(int timeNumber, SampleByUnit timeType);
         new ISugarQueryable<T, T2, T3, T4,T5> SampleBy(int timeNumber, string timeType);
@@ -904,6 +909,7 @@ namespace SqlSugar
     }
     public partial interface ISugarQueryable<T, T2, T3, T4, T5, T6> : ISugarQueryable<T>
     {
+        new ISugarQueryable<T, T2, T3, T4, T5, T6> IF(bool condition, Action<ISugarQueryable<T>> action);
         new ISugarQueryable<T, T2, T3, T4, T5,T6> Hints(string hints);
         ISugarQueryable<TResult> SelectMergeTable<TResult>(Expression<Func<T, T2, T3, T4, T5,T6, TResult>> expression);
         ISugarQueryable<T, T2, T3, T4, T5, T6,T7> LeftJoinIF<T7>(bool isLeftJoin, Expression<Func<T, T2, T3, T4, T5, T6,T7, bool>> joinExpression);

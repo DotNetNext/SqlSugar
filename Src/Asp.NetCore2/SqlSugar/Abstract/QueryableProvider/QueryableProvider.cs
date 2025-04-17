@@ -357,6 +357,13 @@ namespace SqlSugar
             var entityName = typeof(T).Name;
             return _As(tableName, entityName);
         }
+
+        public ISugarQueryable<T> IF(bool condition, Action<ISugarQueryable<T>> action) 
+        {
+            if(condition)
+              action(this);
+            return this;
+         }
         public ISugarQueryable<T> AsWithAttr() 
         {
             var asName=GetTableName(this.EntityInfo, this.EntityInfo.DbTableName);
