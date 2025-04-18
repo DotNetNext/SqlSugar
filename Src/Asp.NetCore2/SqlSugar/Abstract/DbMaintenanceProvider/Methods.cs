@@ -676,7 +676,7 @@ namespace SqlSugar
         {
             var db = this.Context;
             var columns = entity.Columns.Where(it => it.IsIgnore == false).ToList();
-
+            var dbColumn = db.DbMaintenance.GetColumnInfosByTableName(entity.DbTableName,false);
             foreach (var item in columns)
             {
                 if (item.ColumnDescription != null)
@@ -684,8 +684,11 @@ namespace SqlSugar
                     //column remak
                     if (db.DbMaintenance.IsAnyColumnRemark(item.DbColumnName, item.DbTableName))
                     {
-                        db.DbMaintenance.DeleteColumnRemark(item.DbColumnName, item.DbTableName);
-                        db.DbMaintenance.AddColumnRemark(item.DbColumnName, item.DbTableName, item.ColumnDescription);
+                        if (!dbColumn.Any(it => it.DbColumnName == item.DbColumnName && it.ColumnDescription == item.ColumnDescription))
+                        {
+                            db.DbMaintenance.DeleteColumnRemark(item.DbColumnName, item.DbTableName);
+                            db.DbMaintenance.AddColumnRemark(item.DbColumnName, item.DbTableName, item.ColumnDescription);
+                        }
                     }
                     else
                     {
