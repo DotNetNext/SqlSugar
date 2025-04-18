@@ -53,6 +53,29 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+            db.CodeFirst.InitTables<UnitDAFREA>();
+            var r=db.DbMaintenance.GetColumnInfosByTableName("UnitDAFREA", false).First().ColumnDescription;
+            if (r != "a") 
+            { 
+                throw new Exception("unit error");
+            }
+            db.CodeFirst.InitTables<UNITDAFREA>();
+            r = db.DbMaintenance.GetColumnInfosByTableName("UnitDAFREA", false).First().ColumnDescription;
+            if (r != "b")
+            {
+                throw new Exception("unit error");
+            }
+        }
+
+        public class UnitDAFREA 
+        {
+            [SugarColumn(ColumnDescription ="a")]
+           public string a { get; set; }
+        }
+        public class UNITDAFREA
+        {
+            [SugarColumn(ColumnDescription = "b")]
+            public string a { get; set; }
         }
 
         public class Unitsdfay 
