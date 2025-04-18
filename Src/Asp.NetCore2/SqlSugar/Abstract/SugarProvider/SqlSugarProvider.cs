@@ -1589,6 +1589,10 @@ namespace SqlSugar
                             parameter.DbType = itemParameter.DbType;
                             if (repeatCount>500||(isParameterNameRepeat&& repeatList.Any(it=>it.Key.EqualCase(itemParameter.ParameterName))))
                             {
+                                if (newName.StartsWith(":") && itemSql.ToLower().Contains(itemParameter.ParameterName.ToLower().Replace(":", "@")))
+                                {
+                                    itemParameter.ParameterName = itemParameter.ParameterName.Replace(":", "@");
+                                }
                                 itemSql = UtilMethods.ReplaceSqlParameter(itemSql, itemParameter, newName);
                                 addParameters.Add(parameter);
                             }
