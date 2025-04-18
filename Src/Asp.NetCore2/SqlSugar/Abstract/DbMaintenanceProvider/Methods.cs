@@ -676,7 +676,11 @@ namespace SqlSugar
         {
             var db = this.Context;
             var columns = entity.Columns.Where(it => it.IsIgnore == false).ToList();
-            var dbColumn = db.DbMaintenance.GetColumnInfosByTableName(entity.DbTableName,false);
+            List<DbColumnInfo> dbColumn = new List<DbColumnInfo>();
+            if (entity.Columns.Any(it => it.ColumnDescription.HasValue()))
+            {
+                db.DbMaintenance.GetColumnInfosByTableName(entity.DbTableName, false);
+            }
             foreach (var item in columns)
             {
                 if (item.ColumnDescription != null)
