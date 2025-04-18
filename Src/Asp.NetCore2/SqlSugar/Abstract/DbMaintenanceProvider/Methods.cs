@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -679,7 +680,7 @@ namespace SqlSugar
             List<DbColumnInfo> dbColumn = new List<DbColumnInfo>();
             if (entity.Columns.Any(it => it.ColumnDescription.HasValue()))
             {
-                db.DbMaintenance.GetColumnInfosByTableName(entity.DbTableName, false);
+                dbColumn=db.DbMaintenance.GetColumnInfosByTableName(entity.DbTableName, false);
             }
             foreach (var item in columns)
             {
