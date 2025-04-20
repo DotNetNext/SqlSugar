@@ -9,6 +9,10 @@ namespace SqlSugar.DuckDB
         {
             base.DbMehtods = new DuckDBMethod();
         }
+        public override string GetLimit()
+        {
+            return " LIMIT 1 OFFSET 0 ";
+        }
         public override string SqlTranslationLeft
         {
             get
