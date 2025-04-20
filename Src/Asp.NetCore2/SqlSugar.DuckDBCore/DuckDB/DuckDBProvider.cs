@@ -5,6 +5,7 @@ using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 using DuckDB;
 using DuckDB.NET.Data;
 using DuckDB.NET.Native;
@@ -51,21 +52,37 @@ namespace SqlSugar.DuckDB
         {
             base.BeginTran();
         }
-        /// <summary>
-        /// Only SqlServer
-        /// </summary>
-        /// <param name="iso"></param>
-        /// <param name="transactionName"></param>
-        public override void BeginTran(IsolationLevel iso, string transactionName)
-        {
-            base.BeginTran(iso);
-        }
+       
         public override IDataAdapter GetAdapter()
         {
             return new DuckDBDataAdapter();
         }
         public override DbCommand GetCommand(string sql, SugarParameter[] parameters)
         {
+            var helper = new DuckDBInsertBuilder();
+            helper.Context = this.Context;
+            List<SugarParameter> orderParameters = new List<SugarParameter>();
+            if (parameters.HasValue())
+            {
+                foreach (var p in parameters)
+                {
+                    if (!p.ParameterName.StartsWith(this.SqlParameterKeyWord))
+                    {
+                        p.ParameterName = this.SqlParameterKeyWord + p.ParameterName;
+                    }
+                }
+                orderParameters = parameters.Where(it => sql.Contains(it.ParameterName))
+                                           .Select(it => new { p = it, sort = GetSortId(sql, it) })
+                                           .OrderBy(it => it.sort)
+                                           .Where(it => it.sort != 0)
+                                           .Select(it => it.p)
+                                           .ToList();
+                foreach (var param in parameters.OrderByDescending(it => it.ParameterName.Length))
+                {
+                    sql = sql.Replace(param.ParameterName, "?");
+                }
+
+            }
             DuckDBCommand sqlCommand = new DuckDBCommand(sql, (DuckDBConnection)this.Connection);
             sqlCommand.CommandType = this.CommandType;
             sqlCommand.CommandTimeout = this.CommandTimeOut;
@@ -73,13 +90,32 @@ namespace SqlSugar.DuckDB
             {
                 sqlCommand.Transaction = (DuckDBTransaction)this.Transaction;
             }
-            if (parameters.HasValue())
+            if (orderParameters.HasValue())
             {
-                IDataParameter[] ipars = ToIDbDataParameter(parameters);
-                sqlCommand.Parameters.AddRange((DuckDBParameter[])ipars);
+                DuckDBParameter[] ipars = (DuckDBParameter[])ToIDbDataParameter(orderParameters.ToArray());
+                sqlCommand.Parameters.AddRange(ipars);
             }
             CheckConnection();
             return sqlCommand;
+        }
+   
+        private static int GetSortId(string sql, SugarParameter it)
+        {
+            return new List<int>() {
+                                                  0,
+                                                  sql.IndexOf(it.ParameterName+")"),
+                                                  sql.IndexOf(it.ParameterName+" "),
+                                                  sql.IndexOf(it.ParameterName+"="),
+                                                  sql.IndexOf(it.ParameterName+"+"),
+                                                  sql.IndexOf(it.ParameterName+"-"),
+                                                  sql.IndexOf(it.ParameterName+";"),
+                                                  sql.IndexOf(it.ParameterName+","),
+                                                  sql.IndexOf(it.ParameterName+"*"),
+                                                  sql.IndexOf(it.ParameterName+"/"),
+                                                  sql.IndexOf(it.ParameterName+"|"),
+                                                  sql.IndexOf(it.ParameterName+"&"),
+                                                  sql.EndsWith(it.ParameterName)?sql.IndexOf(it.ParameterName):0
+                                           }.Max();
         }
         public override void SetCommandToAdapter(IDataAdapter dataAdapter, DbCommand command)
         {
@@ -140,7 +176,8 @@ namespace SqlSugar.DuckDB
                 //{
                 //    sqlParameter.DbType = ((DuckDBType)parameter.CustomDbType);
                 //}
-            }
+                sqlParameter.ParameterName = null;
+            } 
             return result;
         }
  
@@ -162,6 +199,10 @@ namespace SqlSugar.DuckDB
                 parameter.Value = Convert.ToInt64(parameter.Value);
             }
         }
- 
+
+        public override void BeginTran(System.Data.IsolationLevel iso, string transactionName)
+        {
+            base.BeginTran();
+        }
     }
 }
