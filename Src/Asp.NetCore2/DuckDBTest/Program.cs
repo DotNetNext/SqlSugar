@@ -5,5 +5,6 @@ _2_DbFirst.Init();
 _3_EasyQuery.Init();
 _4_JoinQuery.Init();
 _5_PageQuery.Init();
+_a7_JsonType.Init();
 Console.WriteLine("DEMO执行完成");
 Console.Read();
