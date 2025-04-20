@@ -38,6 +38,7 @@ namespace SqlSugar
         HANA,
         DB2,
         GaussDBNative,
+        DuckDB,
         Custom =900
     }
 }
