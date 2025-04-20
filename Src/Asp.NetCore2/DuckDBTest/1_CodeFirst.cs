@@ -24,6 +24,12 @@ namespace OrmTest
             // 如果数据库不存在，则创建数据库
             db.DbMaintenance.CreateDatabase();
 
+            var xx=db.DbMaintenance.IsAnyTable("UserInfo001", false);
+            var yy = db.DbMaintenance.GetColumnInfosByTableName("UserInfo001", false);
+            foreach (var item in yy)
+            {
+                Console.WriteLine($"{item.DbColumnName} {item.DataType} IsIdentity:{item.IsIdentity} IsPrimarykey:{item.IsPrimarykey} IsNullable:{item.IsNullable} ");
+            }
             // Initialize tables based on UserInfo001 entity class
             // 根据 UserInfo001 实体类初始化表
             db.CodeFirst.InitTables<UserInfo001>();
@@ -31,6 +37,8 @@ namespace OrmTest
             //Table structure and class are different
             //表结构和类存在差异 初始化表
             db.CodeFirst.InitTables<UserInfo002>();
+
+            var dt=db.Ado.GetDataTable("select @id as id", new { id = 1 });
 
             //Insert
             //插入
