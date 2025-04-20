@@ -54,10 +54,7 @@ namespace OrmTest
             var result7 = db.Updateable(updateObj)
                           .IgnoreColumns(ignoreAllNullColumns: true, ignoreAllDefaultValue:true)
                           .ExecuteCommand();
-
-            // 使用最快的方式批量更新实体对象列表（Bulk update a list of entity objects using the fastest method）
-            var result8 = db.Fastest<StudentWithSnowflake>().BulkUpdate(updateObjs);
-
+             
             /***************************表达式更新 (Expression Update)***************************/
 
             // 使用表达式更新实体对象的指定列（Update specific columns of the entity object using expressions）

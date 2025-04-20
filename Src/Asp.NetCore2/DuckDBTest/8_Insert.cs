@@ -41,8 +41,7 @@ namespace OrmTest
             var listLong = new List<StudentWithSnowflake>() {
             new StudentWithSnowflake() { Name = "name",Id=SnowFlakeSingle.Instance.NextId() },
             new StudentWithSnowflake() { Name = "name",Id=SnowFlakeSingle.Instance.NextId()}
-            };
-            db.Fastest<StudentWithSnowflake>().BulkCopy(listLong);
+            }; 
         }
 
         // 实体类：带自增主键（Entity class: With auto-increment primary key）

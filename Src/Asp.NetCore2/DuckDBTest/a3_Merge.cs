@@ -28,15 +28,7 @@ namespace OrmTest
 
             // 中文备注：带异常处理的分页插入或更新操作，每页1000条记录
             // English Comment: Perform insert or update operation with exception handling and paging, 1000 records per page
-            db.Storageable(list).PageSize(1000, exrows => { }).ExecuteCommand();
-
-            // 中文备注：使用Fastest方式批量合并数据（用于大数据处理）
-            // English Comment: Merge data using Fastest method (for big data processing)
-            db.Fastest<Order>().BulkMerge(list);
-
-            // 中文备注：分页使用Fastest方式批量合并数据，每页100000条记录（用于大数据处理）
-            // English Comment: Merge data using Fastest method with paging, 100000 records per page (for big data processing)
-            db.Fastest<Order>().PageSize(100000).BulkMerge(list);
+            db.Storageable(list).PageSize(1000, exrows => { }).ExecuteCommand(); 
         }
 
         [SqlSugar.SugarTable("Order_a3")]

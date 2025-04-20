@@ -40,7 +40,7 @@ namespace OrmTest
             var listDtoAutoMap = db.Queryable<Student>()
                 .Select(it => new StudentDto
                 {
-                    AppendColumn = 100 // 手动指定一列在自动映射 (Manually specify a column in automatic mapping)
+                    AppendColumn =Convert.ToInt32( 100) // 手动指定一列在自动映射 (Manually specify a column in automatic mapping)
                 },
                 true) // true 表示开启自动映射 (true indicates enabling automatic mapping)
                 .ToList();
