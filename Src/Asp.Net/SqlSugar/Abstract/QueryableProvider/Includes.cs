@@ -175,7 +175,12 @@ namespace SqlSugar
                     {
                         properyItemType = properyType.GetGenericArguments()[0];
                     }
-                    var exp = ExpressionBuilderHelper.CreateExpressionSelectField(typeof(T), item.PropertyName, properyType);
+                    var shortName = "it";
+                    if (this.QueryBuilder.TableShortName.HasValue()) 
+                    {
+                        shortName = this.QueryBuilder.TableShortName;
+                    }
+                    var exp = ExpressionBuilderHelper.CreateExpressionSelectField(typeof(T), item.PropertyName, properyType,shortName);
                     var method = this.GetType().GetMethods().Where(it => it.Name == "IncludesByExpression")
                         .First()
                         .MakeGenericMethod(properyItemType);

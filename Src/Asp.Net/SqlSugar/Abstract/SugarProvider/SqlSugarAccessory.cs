@@ -557,6 +557,9 @@ namespace SqlSugar
                     Check.Exception(SugarCompatible.IsFramework, "GaussDBNative only support .net core");
                     InstanceFactory.CustomDllName = "SqlSugar.GaussDBCore";
                     break;
+                case DbType.DuckDB:
+                    InstanceFactory.CustomDllName = SugarCompatible.IsFramework ? throw new Exception("Only.NET CORE is supported") : "SqlSugar.DuckDBCore";
+                    break;
                 default:
                     throw new Exception("ConnectionConfig.DbType is null");
             }

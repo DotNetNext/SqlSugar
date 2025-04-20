@@ -95,9 +95,9 @@ namespace SqlSugar
                     Expression.New(dynamicType.GetConstructor(Type.EmptyTypes)), bindings), sourceItem);
             }
         }
-        public static Expression CreateExpressionSelectField(Type classType, string propertyName, Type propertyType)
+        public static Expression CreateExpressionSelectField(Type classType, string propertyName, Type propertyType,string shortName="it")
         {
-            ParameterExpression parameter = Expression.Parameter(classType, "it");
+            ParameterExpression parameter = Expression.Parameter(classType, shortName);
 
             // 创建属性表达式
             PropertyInfo propertyInfo = classType.GetProperty(propertyName);

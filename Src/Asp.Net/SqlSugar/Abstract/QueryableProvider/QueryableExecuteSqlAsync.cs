@@ -355,6 +355,39 @@ namespace SqlSugar
             var list =await this.ToListAsync();
             return this.Context.Utilities.ListToDataTable(list);
         }
+
+        public Task<DataTable> ToOffsetDataTablePageAsync(int pageNumber, int pageSize) 
+        {
+            if (this.Context.CurrentConnectionConfig.DbType != DbType.SqlServer)
+            {
+                this.QueryBuilder.Offset = "true";
+                return this.ToDataTablePageAsync(pageNumber, pageSize);
+            }
+            else
+            {
+                _ToOffsetPage(pageNumber, pageSize);
+                return this.ToDataTableAsync();
+            }
+        }
+        public async Task<DataTable> ToOffsetDataTablePageAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber) 
+        {
+            if (this.Context.CurrentConnectionConfig.DbType != DbType.SqlServer)
+            {
+                this.QueryBuilder.Offset = "true";
+                return await this.ToDataTablePageAsync(pageNumber, pageSize, totalNumber);
+            }
+            else
+            {
+                totalNumber.Value = await this.Clone().CountAsync();
+                _ToOffsetPage(pageNumber, pageSize);
+                return await this.Clone().ToDataTableAsync();
+            }
+        }
+        public async Task<DataTable> ToOffsetDataTableByEntityPageAsync(int pageNumber, int pageSize, RefAsync<int> totalNumber) 
+        {
+            return this.Context.Utilities.ListToDataTable(await ToOffsetPageAsync(pageNumber,pageSize,totalNumber));
+        }
+
         public async Task<DataTable> ToDataTableAsync()
         {
             QueryBuilder.ResultType = typeof(SugarCacheDataTable);

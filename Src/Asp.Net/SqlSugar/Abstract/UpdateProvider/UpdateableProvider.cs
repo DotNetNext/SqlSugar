@@ -210,6 +210,7 @@ namespace SqlSugar
             result.IsEnableDiffLogEvent = this.IsEnableDiffLogEvent;
             result.WhereColumnList = this.WhereColumnList?.ToArray();
             result.DiffModel = this.diffModel;
+            result.ReSetValueBySqlExpList = this.UpdateBuilder.ReSetValueBySqlExpList;
             if (this.UpdateBuilder.DbColumnInfoList.Any())
                 result.UpdateColumns = this.UpdateBuilder.DbColumnInfoList.GroupBy(it => it.TableId).First().Select(it => it.DbColumnName).ToList();
             if(this.UpdateBuilder?.UpdateColumns?.Any()==true)

@@ -15,6 +15,10 @@ namespace SqlSugar
     #region T6
     public partial class QueryableProvider<T, T2, T3, T4, T5, T6> : QueryableProvider<T>, ISugarQueryable<T, T2, T3, T4, T5, T6>
     {
+        public new ISugarQueryable<T, T2, T3, T4, T5, T6> IF(bool condition, Action<ISugarQueryable<T>> action)
+        {
+            throw new Exception("Only Queryable<T>().IF is supported, and Queryable<T,T2,>().IF is not supported");
+        }
         public new ISugarQueryable<T, T2, T3, T4, T5,T6> Hints(string hints)
         {
             this.QueryBuilder.Hints = hints;

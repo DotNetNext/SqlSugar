@@ -262,7 +262,8 @@ namespace SqlSugar
             using (reader)
             {
                 var tType = typeof(T);
-                var classProperties = tType.GetProperties().ToList();
+                var classProperties = tType.GetProperties()
+                    .Where(p => p.GetIndexParameters().Length == 0).ToList();  
                 var reval = new List<T>();
                 if (reader != null && !reader.IsClosed)
                 {
@@ -331,7 +332,8 @@ namespace SqlSugar
         public List<T> DataReaderToListNoUsing<T>(IDataReader reader)
         {
             var tType = typeof(T);
-            var classProperties = tType.GetProperties().ToList();
+            var classProperties = tType.GetProperties()
+                 .Where(p => p.GetIndexParameters().Length == 0).ToList();
             var reval = new List<T>();
             if (reader != null && !reader.IsClosed)
             {
@@ -356,7 +358,7 @@ namespace SqlSugar
             using (reader)
             {
                 var tType = typeof(T);
-                var classProperties = tType.GetProperties().ToList();
+                var classProperties = tType.GetProperties().Where(p => p.GetIndexParameters().Length == 0).ToList();
                 var reval = new List<T>();
                 if (reader != null && !reader.IsClosed)
                 {
@@ -423,7 +425,7 @@ namespace SqlSugar
         public async Task<List<T>> DataReaderToListAsyncNoUsing<T>(IDataReader reader)
         {
             var tType = typeof(T);
-            var classProperties = tType.GetProperties().ToList();
+            var classProperties = tType.GetProperties().Where(p => p.GetIndexParameters().Length == 0).ToList();
             var reval = new List<T>();
             if (reader != null && !reader.IsClosed)
             {

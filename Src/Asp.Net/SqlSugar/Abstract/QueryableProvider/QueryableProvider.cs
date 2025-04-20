@@ -357,6 +357,13 @@ namespace SqlSugar
             var entityName = typeof(T).Name;
             return _As(tableName, entityName);
         }
+
+        public ISugarQueryable<T> IF(bool condition, Action<ISugarQueryable<T>> action) 
+        {
+            if(condition)
+              action(this);
+            return this;
+         }
         public ISugarQueryable<T> AsWithAttr() 
         {
             var asName=GetTableName(this.EntityInfo, this.EntityInfo.DbTableName);
@@ -1339,6 +1346,12 @@ namespace SqlSugar
             this._OrderBy(expression, type);
             return this;
         }
+        public virtual ISugarQueryable<T> OrderBy(string expShortName, FormattableString expOrderBy, OrderByType type = OrderByType.Asc) 
+        {
+            var exp = DynamicCoreHelper.GetMember(typeof(T), typeof(object), expShortName, expOrderBy);
+            this._OrderBy(exp, type);
+            return this;
+        }
         public virtual ISugarQueryable<T> OrderByDescending(Expression<Func<T, object>> expression)
         {
             this._OrderBy(expression, OrderByType.Desc);
@@ -1451,6 +1464,39 @@ namespace SqlSugar
         public ISugarQueryable<T> Select(string expShortName, FormattableString expSelect,Type resultType) 
         {
             return Select<T>(expShortName, expSelect, resultType);
+        }
+        public DynamicCoreSelectModel Select(string expShortName, List<string> columns,params object[] args)
+        {
+            DynamicCoreSelectModel dynamicCoreSelectModel = new DynamicCoreSelectModel();
+            if (!string.IsNullOrEmpty(this.QueryBuilder.TableShortName)&&expShortName!= this.QueryBuilder.TableShortName) 
+            {
+                if (columns.Any(it => it .Contains( expShortName + " ")))
+                {
+                    var pattern = $@"\b{Regex.Escape(expShortName)}\s*\."; // 匹配 expShortName 后面跟任意空格和点
+                    var replacement = this.QueryBuilder.TableShortName + ".";
+
+                    columns = columns.Select(it => Regex.Replace(it, pattern, replacement)).ToList();
+                    expShortName = this.QueryBuilder.TableShortName;
+                }
+                else
+                {
+                    columns = columns.Select(it => it.Replace(expShortName + ".", this.QueryBuilder.TableShortName + ".")).ToList();
+                    expShortName = this.QueryBuilder.TableShortName;
+                }
+            }
+            var selectObj = DynamicCoreHelper.BuildPropertySelector(
+              expShortName, typeof(T),
+              columns,
+               args);
+            if (IsAppendNavColumns())
+            {
+                SetAppendNavColumns(selectObj.Exp);
+            }
+            var exp = selectObj.Exp;
+            var method = GetType().GetMethod("_Select", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+             .MakeGenericMethod(selectObj.ResultNewType);
+             dynamicCoreSelectModel.Value= method.Invoke(this, new object[] { exp });
+            return dynamicCoreSelectModel;
         }
         public virtual ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, TResult>> expression)
         {
