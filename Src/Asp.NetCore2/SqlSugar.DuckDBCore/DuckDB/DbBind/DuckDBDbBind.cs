@@ -81,67 +81,63 @@ namespace SqlSugar.DuckDB
         }
         public static List<KeyValuePair<string, CSharpDataType>> MappingTypesConst = new List<KeyValuePair<string, CSharpDataType>>(){
 
-                    new KeyValuePair<string, CSharpDataType>("int2",CSharpDataType.@short),
-                    new KeyValuePair<string, CSharpDataType>("int1",CSharpDataType.@byte),
-                    new KeyValuePair<string, CSharpDataType>("smallint",CSharpDataType.@short),
-                    new KeyValuePair<string, CSharpDataType>("int4",CSharpDataType.@int),
-                    new KeyValuePair<string, CSharpDataType>("serial",CSharpDataType.@int),
-                    new KeyValuePair<string, CSharpDataType>("integer",CSharpDataType.@int),
-                    new KeyValuePair<string, CSharpDataType>("int8",CSharpDataType.@long),
-                    new KeyValuePair<string, CSharpDataType>("bigint",CSharpDataType.@long),
-                    new KeyValuePair<string, CSharpDataType>("float4",CSharpDataType.@float),
-                    new KeyValuePair<string, CSharpDataType>("float4",CSharpDataType.Single),
-                    new KeyValuePair<string, CSharpDataType>("real",CSharpDataType.@float),
-                    new KeyValuePair<string, CSharpDataType>("float8",CSharpDataType.@double),
-                    new KeyValuePair<string, CSharpDataType>("double precision",CSharpDataType.@int),
-                    new KeyValuePair<string, CSharpDataType>("numeric",CSharpDataType.@decimal),
-                    new KeyValuePair<string, CSharpDataType>("decimal",CSharpDataType.@decimal),
-                    new KeyValuePair<string, CSharpDataType>("path",CSharpDataType.@decimal),
-                    new KeyValuePair<string, CSharpDataType>("point",CSharpDataType.@decimal),
-                    new KeyValuePair<string, CSharpDataType>("polygon",CSharpDataType.@decimal),
+                    // 整数类型
+                new KeyValuePair<string, CSharpDataType>("TINYINT", CSharpDataType.@byte),       // 1字节
+                new KeyValuePair<string, CSharpDataType>("SMALLINT", CSharpDataType.@short),    // 2字节
+                new KeyValuePair<string, CSharpDataType>("INTEGER", CSharpDataType.@int),       // 4字节
+                new KeyValuePair<string, CSharpDataType>("BIGINT", CSharpDataType.@long),       // 8字节
+                new KeyValuePair<string, CSharpDataType>("UTINYINT", CSharpDataType.@byte),     // 无符号
+                new KeyValuePair<string, CSharpDataType>("USMALLINT", CSharpDataType.@short),  // 无符号
+                new KeyValuePair<string, CSharpDataType>("UINTEGER", CSharpDataType.@int),     // 无符号
+                new KeyValuePair<string, CSharpDataType>("UBIGINT", CSharpDataType.@long),     // 无符号
 
-                    new KeyValuePair<string, CSharpDataType>("boolean",CSharpDataType.@bool),
-                    new KeyValuePair<string, CSharpDataType>("bool",CSharpDataType.@bool),
-                    new KeyValuePair<string, CSharpDataType>("box",CSharpDataType.@bool),
-                    new KeyValuePair<string, CSharpDataType>("bytea",CSharpDataType.byteArray),
+                // 浮点数类型
+                new KeyValuePair<string, CSharpDataType>("FLOAT", CSharpDataType.@float),       // 4字节
+                new KeyValuePair<string, CSharpDataType>("DOUBLE", CSharpDataType.@double),     // 8字节
+                new KeyValuePair<string, CSharpDataType>("REAL", CSharpDataType.@float),        // 别名 FLOAT
+                new KeyValuePair<string, CSharpDataType>("DECIMAL", CSharpDataType.@decimal),   // 精确小数
+                new KeyValuePair<string, CSharpDataType>("NUMERIC", CSharpDataType.@decimal),   // 别名 DECIMAL
 
-                    new KeyValuePair<string, CSharpDataType>("varchar",CSharpDataType.@string),
-                    new KeyValuePair<string, CSharpDataType>("character varying",CSharpDataType.@string),
-                    new KeyValuePair<string, CSharpDataType>("geometry",CSharpDataType.@string),
-                    new KeyValuePair<string, CSharpDataType>("name",CSharpDataType.@string),
-                    new KeyValuePair<string, CSharpDataType>("text",CSharpDataType.@string),
-                    new KeyValuePair<string, CSharpDataType>("char",CSharpDataType.@string),
-                    new KeyValuePair<string, CSharpDataType>("character",CSharpDataType.@string),
-                    new KeyValuePair<string, CSharpDataType>("cidr",CSharpDataType.@string),
-                    new KeyValuePair<string, CSharpDataType>("circle",CSharpDataType.@string),
-                    new KeyValuePair<string, CSharpDataType>("tsquery",CSharpDataType.@string),
-                    new KeyValuePair<string, CSharpDataType>("tsvector",CSharpDataType.@string),
-                    new KeyValuePair<string, CSharpDataType>("txid_snapshot",CSharpDataType.@string),
-                    new KeyValuePair<string, CSharpDataType>("uuid",CSharpDataType.Guid),
-                    new KeyValuePair<string, CSharpDataType>("xml",CSharpDataType.@string),
-                    new KeyValuePair<string, CSharpDataType>("json",CSharpDataType.@string),
+                // 布尔类型
+                new KeyValuePair<string, CSharpDataType>("BOOLEAN", CSharpDataType.@bool),
+                new KeyValuePair<string, CSharpDataType>("BOOL", CSharpDataType.@bool),         // 别名
 
-                    new KeyValuePair<string, CSharpDataType>("interval",CSharpDataType.@decimal),
-                    new KeyValuePair<string, CSharpDataType>("lseg",CSharpDataType.@decimal),
-                    new KeyValuePair<string, CSharpDataType>("macaddr",CSharpDataType.@decimal),
-                    new KeyValuePair<string, CSharpDataType>("money",CSharpDataType.@decimal),
-                    new KeyValuePair<string, CSharpDataType>("timestamp",CSharpDataType.DateTime),
-                    new KeyValuePair<string, CSharpDataType>("timestamp with time zone",CSharpDataType.DateTime),
-                    new KeyValuePair<string, CSharpDataType>("timestamptz",CSharpDataType.DateTime),
-                    new KeyValuePair<string, CSharpDataType>("timestamp without time zone",CSharpDataType.DateTime),
-                    new KeyValuePair<string, CSharpDataType>("date",CSharpDataType.DateTime),
-                    new KeyValuePair<string, CSharpDataType>("time",CSharpDataType.DateTime),
-                    new KeyValuePair<string, CSharpDataType>("time with time zone",CSharpDataType.DateTime),
-                    new KeyValuePair<string, CSharpDataType>("timetz",CSharpDataType.DateTime),
-                    new KeyValuePair<string, CSharpDataType>("time without time zone",CSharpDataType.DateTime),
+                // 字符串类型
+                new KeyValuePair<string, CSharpDataType>("VARCHAR", CSharpDataType.@string),
+                new KeyValuePair<string, CSharpDataType>("CHAR", CSharpDataType.@string),
+                new KeyValuePair<string, CSharpDataType>("TEXT", CSharpDataType.@string),       // 不限长度
+                new KeyValuePair<string, CSharpDataType>("STRING", CSharpDataType.@string),      // 别名
 
-                    new KeyValuePair<string, CSharpDataType>("bit",CSharpDataType.byteArray),
-                    new KeyValuePair<string, CSharpDataType>("bit varying",CSharpDataType.byteArray),
-                    new KeyValuePair<string, CSharpDataType>("varbit",CSharpDataType.@byte),
-                    new KeyValuePair<string, CSharpDataType>("time",CSharpDataType.TimeSpan),
-                    new KeyValuePair<string, CSharpDataType>("public.geometry",CSharpDataType.@object),
-                    new KeyValuePair<string, CSharpDataType>("public.geography",CSharpDataType.@object),
-                    new KeyValuePair<string, CSharpDataType>("inet",CSharpDataType.@object)
+                // 二进制类型
+                new KeyValuePair<string, CSharpDataType>("BLOB", CSharpDataType.byteArray),
+                new KeyValuePair<string, CSharpDataType>("BYTEA", CSharpDataType.byteArray),    // PostgreSQL风格
+
+                // 日期时间类型 
+                new KeyValuePair<string, CSharpDataType>("TIMESTAMP", CSharpDataType.DateTime), // 无时区
+                new KeyValuePair<string, CSharpDataType>("DATE", CSharpDataType.DateTime),
+                new KeyValuePair<string, CSharpDataType>("TIME", CSharpDataType.TimeSpan),
+                new KeyValuePair<string, CSharpDataType>("TIMESTAMP_S", CSharpDataType.DateTime), // 秒级精度
+                new KeyValuePair<string, CSharpDataType>("TIMESTAMP_MS", CSharpDataType.DateTime), // 毫秒级
+                new KeyValuePair<string, CSharpDataType>("TIMESTAMP_NS", CSharpDataType.DateTime), // 纳秒级
+
+                // 特殊类型
+                new KeyValuePair<string, CSharpDataType>("UUID", CSharpDataType.Guid),
+                new KeyValuePair<string, CSharpDataType>("JSON", CSharpDataType.@string),       // 存储为字符串
+                new KeyValuePair<string, CSharpDataType>("ENUM", CSharpDataType.@string),        // 枚举实际存储为字符串
+
+                // 几何类型（DuckDB支持简单几何类型）
+                new KeyValuePair<string, CSharpDataType>("POINT", CSharpDataType.@object),       // 需自定义解析
+                new KeyValuePair<string, CSharpDataType>("LINESTRING", CSharpDataType.@object),
+                new KeyValuePair<string, CSharpDataType>("POLYGON", CSharpDataType.@object),
+
+                // 数组类型（需特殊处理）
+                new KeyValuePair<string, CSharpDataType>("INTEGER[]", CSharpDataType.@object),   // 实际为int[]
+                new KeyValuePair<string, CSharpDataType>("VARCHAR[]", CSharpDataType.@object),   // 实际为string[]
+                new KeyValuePair<string, CSharpDataType>("DOUBLE[]", CSharpDataType.@object),    // 实际为double[]
+
+                // 结构体/Map类型（DuckDB 1.0+支持）
+                new KeyValuePair<string, CSharpDataType>("STRUCT", CSharpDataType.@object),      // 需动态解析
+                new KeyValuePair<string, CSharpDataType>("MAP", CSharpDataType.@object)          // 键值对
                 };
         public override List<string> StringThrow
         {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Text;
 
@@ -310,48 +311,9 @@ namespace SqlSugar.DuckDB
         /// <returns></returns>
         public override bool CreateDatabase(string databaseName, string databaseDirectory = null)
         {
-            if (databaseDirectory != null)
-            {
-                if (!FileHelper.IsExistDirectory(databaseDirectory))
-                {
-                    FileHelper.CreateDirectory(databaseDirectory);
-                }
-            }
-            // var oldDatabaseName = this.Context.Ado.Connection.Database;
-            //var connection = this.Context.CurrentConnectionConfig.ConnectionString;
-            //connection = connection.Replace(oldDatabaseName, "");
-            if (this.Context.Ado.IsValidConnection()) 
-            {
-                return true;
-            }
-            var newDb = this.Context.CopyNew();
-            newDb.Ado.Connection.ChangeDatabase("highgo");
-            newDb.Open();
-            if (!GetDataBaseList(newDb).Any(it => it.Equals(databaseName, StringComparison.CurrentCultureIgnoreCase)))
-            {
-                newDb.Ado.ExecuteCommand(string.Format(CreateDataBaseSql, this.SqlBuilder.SqlTranslationLeft+databaseName+this.SqlBuilder.SqlTranslationRight, databaseDirectory));
-            }
-            newDb.Close();
-            return true;
-        }
-        public override bool AddRemark(EntityInfo entity)
-        {
-            var db = this.Context;
-            var columns = entity.Columns.Where(it => it.IsIgnore == false).ToList();
-
-            foreach (var item in columns)
-            {
-                if (item.ColumnDescription != null)
-                {
-                    db.DbMaintenance.AddColumnRemark(item.DbColumnName, item.DbTableName, item.ColumnDescription);
-
-                }
-            }
-            //table remak
-            if (entity.TableDescription != null)
-            {
-                db.DbMaintenance.AddTableRemark(entity.DbTableName, entity.TableDescription);
-            }
+            var newdb = this.Context.CopyNew();
+            newdb.Open();
+            newdb.Close();
             return true;
         }
         public override bool CreateTable(string tableName, List<DbColumnInfo> columns, bool isCreatePrimaryKey = true)
@@ -404,9 +366,11 @@ namespace SqlSugar.DuckDB
                 string addItem = string.Format(this.CreateTableColumn, this.SqlBuilder.GetTranslationColumnName(columnName.ToLower(isAutoToLowerCodeFirst)), dataType, dataSize, nullType, primaryKey, "");
                 if (item.IsIdentity)
                 {
-                    string length = dataType.Substring(dataType.Length - 1);
-                    string identityDataType = "serial" + length;
-                    addItem = addItem.Replace(dataType, identityDataType);
+                    var seqName =GetSchema()+tableName + "_" + item.DbColumnName+ "_sequence";
+                    var seqSql=$@"  
+                    CREATE SEQUENCE IF NOT  EXISTS ""{seqName}""";
+                    this.Context.Ado.ExecuteCommand(seqSql);
+                    addItem += $" DEFAULT NEXTVAL('{seqName}') ";
                 }
                 columnArray.Add(addItem);
             }
@@ -490,7 +454,7 @@ namespace SqlSugar.DuckDB
         }
         private string GetSchema()
         {
-            var schema = "public";
+            var schema = "main";
             if (System.Text.RegularExpressions.Regex.IsMatch(this.Context.CurrentConnectionConfig.ConnectionString.ToLower(), "searchpath="))
             {
                 var regValue = System.Text.RegularExpressions.Regex.Match(this.Context.CurrentConnectionConfig.ConnectionString.ToLower(), @"searchpath\=(\w+)").Groups[1].Value;
