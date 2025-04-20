@@ -22,7 +22,7 @@ namespace SqlSugar.DuckDB
             {
                 string schema = GetSchema();
                 string sql = @"select cast (pclass.oid as int4) as TableId,cast(ptables.tablename as varchar) as TableName,
-                                pcolumn.column_name as DbColumnName,pcolumn.udt_name as DataType,
+                                pcolumn.column_name as DbColumnName,pcolumn.data_type as DataType,
                                 CASE WHEN pcolumn.numeric_scale >0 THEN pcolumn.numeric_precision ELSE pcolumn.character_maximum_length END   as Length,
                                 pcolumn.column_default as DefaultValue,
                                 pcolumn.numeric_scale as DecimalDigits,
@@ -396,16 +396,10 @@ namespace SqlSugar.DuckDB
             }
             try
             {
-                string sql = $@"select  
-                               kcu.column_name as key_column
-                               from information_schema.table_constraints tco
-                               join information_schema.key_column_usage kcu 
-                               on kcu.constraint_name = tco.constraint_name
-                               and kcu.constraint_schema = tco.constraint_schema
-                               and kcu.constraint_name = tco.constraint_name
-                               where tco.constraint_type = 'PRIMARY KEY'
-                               and kcu.table_schema='{GetSchema()}' and 
-                               upper(kcu.table_name)=upper('{tableName.TrimEnd('"').TrimStart('"')}')";
+                string sql = $@"
+                    SELECT name AS key_column
+                    FROM pragma_table_info('{GetSchema()}.{tableName.Trim('"')}')
+                    WHERE pk > 0";
                 List<string> pkList = new List<string>();
                 if (isCache)
                 {
@@ -415,14 +409,11 @@ namespace SqlSugar.DuckDB
                 {
                     pkList = this.Context.Ado.SqlQuery<string>(sql);
                 }
-                if (pkList.Count >1) 
+                foreach (var item in result)
                 {
-                    foreach (var item in result)
+                    if (pkList.Select(it => it.ToUpper()).Contains(item.DbColumnName.ToUpper()))
                     {
-                        if (pkList.Select(it=>it.ToUpper()).Contains(item.DbColumnName.ToUpper())) 
-                        {
-                            item.IsPrimarykey = true;
-                        }
+                        item.IsPrimarykey = true;
                     }
                 }
             }
