@@ -50,10 +50,14 @@ namespace SqlSugar.DuckDB
                 if (dbTypeName.StartsWith("_"))
                 {
                     var dbTypeName2 = dbTypeName.TrimStart('_');
-                    return MappingTypes.Where(it => it.Value.ToString().ToLower() == dbTypeName2  || it.Key.ToLower() == dbTypeName2).Select(it => it.Value + "[]").First();
+                    return MappingTypes.Where(it => it.Value.ToString().ToLower() == dbTypeName2 || it.Key.ToLower() == dbTypeName2).Select(it => it.Value + "[]").First();
+                }
+                else if (dbTypeName?.ToLower()?.StartsWith("decimal")==true) 
+                {
+                    return "decimal";
                 }
                 Check.ThrowNotSupportedException(string.Format(" \"{0}\" Type NotSupported, DbBindProvider.GetPropertyTypeName error.", dbTypeName));
-                return null;
+                return null!;
             }
             else if (propertyTypes.First().Value == CSharpDataType.byteArray)
             {
