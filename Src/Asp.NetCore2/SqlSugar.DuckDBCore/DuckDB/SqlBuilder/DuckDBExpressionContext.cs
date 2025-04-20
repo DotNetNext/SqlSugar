@@ -395,7 +395,7 @@ namespace SqlSugar.DuckDB
         }
         public override string GetDate()
         {
-            return "NOW()";
+            return " current_timestamp ";
         }
         public override string GetRandom()
         {

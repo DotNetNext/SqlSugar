@@ -24,14 +24,14 @@ namespace SqlSugar.DuckDB
         {
             get
             {
-                return "current_date";
+                return "current_timestamp";
             }
         }
         public override string FullSqlDateNow
         {
             get
             {
-                return "select current_date";
+                return "select current_timestamp";
             }
         }
 
