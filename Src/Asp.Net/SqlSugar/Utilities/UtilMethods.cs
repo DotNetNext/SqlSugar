@@ -728,7 +728,8 @@ namespace SqlSugar
                     DisableQueryWhereColumnRemoveTrim=it.MoreSettings.DisableQueryWhereColumnRemoveTrim,
                     DatabaseModel=it.MoreSettings.DatabaseModel,
                     EnableILike=it.MoreSettings.EnableILike,
-                    ClickHouseEnableFinal=it.MoreSettings.ClickHouseEnableFinal
+                    ClickHouseEnableFinal=it.MoreSettings.ClickHouseEnableFinal,
+                    PgSqlIsAutoToLowerSchema=it.MoreSettings.PgSqlIsAutoToLowerSchema
 
                 },
                 SqlMiddle = it.SqlMiddle == null ? null : new SqlMiddle
