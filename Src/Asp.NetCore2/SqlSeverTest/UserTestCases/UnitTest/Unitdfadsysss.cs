@@ -65,6 +65,10 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+            var names = new List<string> { "a", "b" };
+            var sql=db.Queryable<Order>().Where(it=>names.All(s=>s.Contains(it.Name))).ToSql();
+            if(!sql.Key.Contains("AND"))
+                throw new Exception("unit error");
         }
 
         public class UnitDAFREA 
