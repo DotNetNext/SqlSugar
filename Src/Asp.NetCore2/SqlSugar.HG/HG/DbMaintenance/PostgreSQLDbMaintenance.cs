@@ -248,27 +248,7 @@ namespace SqlSugar.HG
         }
         #endregion
 
-        #region Methods
-        public override bool AddRemark(EntityInfo entity)
-        {
-            var db = this.Context;
-            var columns = entity.Columns.Where(it => it.IsIgnore == false).ToList();
-
-            foreach (var item in columns)
-            {
-                if (item.ColumnDescription != null)
-                {
-                    db.DbMaintenance.AddColumnRemark(item.DbColumnName, item.DbTableName, item.ColumnDescription);
-
-                }
-            }
-            //table remak
-            if (entity.TableDescription != null)
-            {
-                db.DbMaintenance.AddTableRemark(entity.DbTableName, entity.TableDescription);
-            }
-            return true;
-        }
+        #region Methods 
         public override List<string> GetIndexList(string tableName)
         {
             var sql = $"SELECT indexname, indexdef FROM pg_indexes WHERE upper(tablename) = upper('{tableName}')";
