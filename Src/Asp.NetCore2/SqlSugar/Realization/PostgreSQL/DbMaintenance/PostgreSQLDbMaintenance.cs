@@ -603,23 +603,45 @@ WHERE tgrelid = '"+tableName+"'::regclass");
         private string GetSchema()
         {
             var schema = "public";
-            if (System.Text.RegularExpressions.Regex.IsMatch(this.Context.CurrentConnectionConfig.ConnectionString.ToLower(), "searchpath="))
+            var pgSqlIsAutoToLowerSchema = this.Context?.CurrentConnectionConfig?.MoreSettings?.PgSqlIsAutoToLowerSchema == false;
+            if (pgSqlIsAutoToLowerSchema)
             {
-                var regValue = System.Text.RegularExpressions.Regex.Match(this.Context.CurrentConnectionConfig.ConnectionString.ToLower(), @"searchpath\=(\w+)").Groups[1].Value;
-                if (regValue.HasValue())
+                if (System.Text.RegularExpressions.Regex.IsMatch(this.Context.CurrentConnectionConfig.ConnectionString, "searchpath=", RegexOptions.IgnoreCase))
                 {
-                    schema = regValue;
+                    var regValue = System.Text.RegularExpressions.Regex.Match(this.Context.CurrentConnectionConfig.ConnectionString, @"searchpath\=(\w+)").Groups[1].Value;
+                    if (regValue.HasValue())
+                    {
+                        schema = regValue;
+                    }
+                }
+                else if (System.Text.RegularExpressions.Regex.IsMatch(this.Context.CurrentConnectionConfig.ConnectionString, "search path=", RegexOptions.IgnoreCase))
+                {
+                    var regValue = System.Text.RegularExpressions.Regex.Match(this.Context.CurrentConnectionConfig.ConnectionString.ToLower(), @"search path\=(\w+)").Groups[1].Value;
+                    if (regValue.HasValue())
+                    {
+                        schema = regValue;
+                    }
                 }
             }
-            else if (System.Text.RegularExpressions.Regex.IsMatch(this.Context.CurrentConnectionConfig.ConnectionString.ToLower(), "search path="))
+            else
             {
-                var regValue = System.Text.RegularExpressions.Regex.Match(this.Context.CurrentConnectionConfig.ConnectionString.ToLower(), @"search path\=(\w+)").Groups[1].Value;
-                if (regValue.HasValue())
+                if (System.Text.RegularExpressions.Regex.IsMatch(this.Context.CurrentConnectionConfig.ConnectionString.ToLower(), "searchpath="))
                 {
-                    schema = regValue;
+                    var regValue = System.Text.RegularExpressions.Regex.Match(this.Context.CurrentConnectionConfig.ConnectionString.ToLower(), @"searchpath\=(\w+)").Groups[1].Value;
+                    if (regValue.HasValue())
+                    {
+                        schema = regValue;
+                    }
+                }
+                else if (System.Text.RegularExpressions.Regex.IsMatch(this.Context.CurrentConnectionConfig.ConnectionString.ToLower(), "search path="))
+                {
+                    var regValue = System.Text.RegularExpressions.Regex.Match(this.Context.CurrentConnectionConfig.ConnectionString.ToLower(), @"search path\=(\w+)").Groups[1].Value;
+                    if (regValue.HasValue())
+                    {
+                        schema = regValue;
+                    }
                 }
             }
-
             return schema;
         }
         private static void ConvertCreateColumnInfo(DbColumnInfo x)
