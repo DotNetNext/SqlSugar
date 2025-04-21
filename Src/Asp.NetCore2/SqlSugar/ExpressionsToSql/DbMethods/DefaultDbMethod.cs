@@ -945,7 +945,7 @@ namespace SqlSugar
         {
             if (IsArrayAnyParameter(model))
             {
-                return ListArrayAny(model);
+                return ListArrayAll(model);
             }
             StringBuilder sb = new StringBuilder();
             if (model.Args[0].MemberValue != null && (model.Args[0].MemberValue as IList).Count > 0)
@@ -1125,6 +1125,97 @@ namespace SqlSugar
                 return result;
             }
         }
+
+        private string ListArrayAll(MethodCallExpressionModel model)
+        {
+            StringBuilder sb = new StringBuilder();
+            if (model.Args[0].MemberValue != null && (model.Args[0].MemberValue as IList).Count > 0)
+            {
+                sb.Append(" ( ");
+                var listPar = model.Args[1].MemberValue as ListAnyParameter;
+                foreach (var item in (model.Args[0].MemberValue as IList))
+                {
+                    var sql = listPar.Sql;
+                    if (sb.Length > 3)
+                    {
+                        sb.Append("AND");
+                    }
+                    foreach (var columnInfo in listPar.Columns)
+                    {
+                        var value = item;
+                        var newValue = "null";
+                        if (value != null)
+                        {
+                            if (columnInfo.DbTableName != "String" && UtilMethods.IsNumber(columnInfo.UnderType.Name))
+                            {
+                                newValue = value.ToString();
+                            }
+                            else if (columnInfo.UnderType == SqlSugar.UtilConstants.GuidType)
+                            {
+                                newValue = ToGuid(new MethodCallExpressionModel()
+                                {
+                                    Args = new List<MethodCallExpressionArgs>()
+                                       {
+                                            new MethodCallExpressionArgs(){
+                                              MemberValue=value.ToSqlValue(),
+                                              MemberName=value.ToSqlValue()
+                                            }
+                                       }
+                                });
+                            }
+                            else if (columnInfo.UnderType == SqlSugar.UtilConstants.DateType)
+                            {
+                                newValue = ToDate(new MethodCallExpressionModel()
+                                {
+                                    Args = new List<MethodCallExpressionArgs>()
+                                       {
+                                            new MethodCallExpressionArgs(){
+                                              MemberValue=UtilMethods.GetConvertValue( value).ToSqlValue(),
+                                              MemberName=UtilMethods.GetConvertValue( value).ToSqlValue()
+                                            }
+                                       }
+                                });
+                            }
+                            else
+                            {
+                                newValue = value.ToSqlValue();
+                            }
+                        }
+                        //Regex regex = new Regex("\@");
+                        if (!sql.Contains(ParameterKeyWord))
+                        {
+                            sql = sql.Replace(" =)", $" = {newValue})");
+                            if (!sql.Contains(newValue))
+                            {
+                                sql = sql.Replace(" )", $" = {newValue})");
+                            }
+                        }
+                        else
+                        {
+                            Regex reg = new Regex(ParameterKeyWord + @"MethodConst\d+");
+                            sql = reg.Replace(sql, it =>
+                            {
+                                return " " + newValue + " ";
+                            });
+                        }
+
+                    }
+                    sb.Append(sql);
+                }
+                sb.Append(" ) ");
+            }
+            var result = sb.ToString();
+            result = result.Replace(" = null)", " is null)");
+            if (result.IsNullOrEmpty())
+            {
+                return " 1=2 ";
+            }
+            else
+            {
+                return result;
+            }
+        }
+
 
         private static List<MethodCallExpressionArgs> GetStringFormatArgs(string str, object array)
         {
