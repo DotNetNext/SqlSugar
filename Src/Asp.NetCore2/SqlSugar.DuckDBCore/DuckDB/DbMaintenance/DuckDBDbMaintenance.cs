@@ -286,6 +286,26 @@ namespace SqlSugar.DuckDB
             this.Context.Ado.ExecuteCommand(string.Format("alter table {0} alter {1} {2}",tableName,columnName, isnull));
             return true;
         }
+        public override bool AddRemark(EntityInfo entity)
+        {
+            var db = this.Context;
+            var columns = entity.Columns.Where(it => it.IsIgnore == false).ToList();
+
+            foreach (var item in columns)
+            {
+                if (item.ColumnDescription != null)
+                {
+                    db.DbMaintenance.AddColumnRemark(item.DbColumnName, item.DbTableName, item.ColumnDescription);
+
+                }
+            }
+            //table remak
+            if (entity.TableDescription != null)
+            {
+                db.DbMaintenance.AddTableRemark(entity.DbTableName, entity.TableDescription);
+            }
+            return true;
+        }
 
         protected override string GetUpdateColumnSql(string tableName, DbColumnInfo columnInfo)
         {
