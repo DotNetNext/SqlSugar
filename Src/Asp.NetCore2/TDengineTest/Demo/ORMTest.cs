@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Dm;
 using SqlSugar;
 using SqlSugar.DbConvert;
 
@@ -35,6 +36,9 @@ namespace TDengineTest
 
             //自动建表
             InsertUsingTag(db);
+
+            //BulkCopy(自动建表
+            BulkCopy(db);
              
             //生成实体
             DbFirst(db);
@@ -47,8 +51,7 @@ namespace TDengineTest
 
             Console.WriteLine("执行完成");
             Console.ReadKey();
-        }
-
+        } 
     }
 
 }
