@@ -38,15 +38,6 @@ namespace SqlSugar.TDengine
             return dt.Rows.Count;
         }
 
-        public static void SetTags(ISqlSugarClient db, Func<string, string> action, params string [] tagNames) 
-        {
-            if (db.TempItems == null) 
-            {
-                db.TempItems = new Dictionary<string, object>();
-            }
-            db.TempItems.Add(TagKey, tagNames);
-            db.TempItems.Add(TagKey+"action", action);
-        }
         public async Task BulkInsertToTDengine(TDengineConnection conn, string tableName, DataTable table, bool isTran, string[] tagColumns)
         {
              
@@ -119,7 +110,7 @@ namespace SqlSugar.TDengine
             }
         }
 
-        private StringBuilder InsertChildTable(string tableName, DataTable table, string[] tagColumns,StringBuilder sb, StringBuilder sbtables)
+        private StringBuilder InsertChildTable(string tableName, DataTable table, string[] tagColumns, StringBuilder sb, StringBuilder sbtables)
         {
             var builder = InstanceFactory.GetSqlBuilderWithContext(this.Context);
             var columnMap = table.Columns.Cast<DataColumn>()
@@ -138,22 +129,39 @@ namespace SqlSugar.TDengine
             var columnNames = string.Join(", ", table.Columns.Cast<DataColumn>()
                 .Select(c => builder.GetTranslationColumnName(c.ColumnName)));
 
-            var action = this.Context.TempItems[TagKey + "action"] as Func<string, string>;
-            var subTableName = builder.GetTranslationColumnName(action(tagsValues));
+            var action = this.Context.TempItems[TagKey + "action"] as Func<string, string,string>;
+            var subTableName = builder.GetTranslationColumnName(action(tagsValues, tableName.Replace("`","")));
 
-            //sbtables.AppendLine($"CREATE TABLE {subTableName} USING {tableName} TAGS({tags});");
+            // sbtables.AppendLine($"CREATE TABLE {subTableName} USING {tableName} TAGS({tags});");
 
-            var sqlBuilder =sb;
+            var sqlBuilder = sb;
+            var valuesList = new List<string>();
 
             foreach (DataRow row in table.Rows)
             {
                 var values = row.ItemArray.Select(item => FormatValue(item)).ToList();
-                var valuePart = string.Join(", ", values);
-                string insertSql = $"INSERT INTO {subTableName} USING {tableName} TAGS({tags}) ({columnNames}) VALUES ({valuePart});";
+                var valuePart = $"({string.Join(", ", values)})";
+                valuesList.Add(valuePart);
+            }
+
+            if (valuesList.Count > 0)
+            {
+                string insertSql = $"INSERT INTO {subTableName} USING {tableName} TAGS({tags}) ({columnNames}) VALUES {string.Join(", ", valuesList)};";
                 sqlBuilder.AppendLine(insertSql);
             }
 
             return sqlBuilder;
+        }
+
+
+        public static void SetTags(ISqlSugarClient db, Func<string, string, string> action, params string[] tagNames)
+        {
+            if (db.TempItems == null)
+            {
+                db.TempItems = new Dictionary<string, object>();
+            }
+            db.TempItems.Add(TagKey, tagNames);
+            db.TempItems.Add(TagKey + "action", action);
         }
 
         public object FormatValue(object value)
@@ -167,7 +175,7 @@ namespace SqlSugar.TDengine
                 var type = value.GetType();
                 if (type == UtilConstants.DateType)
                 {
-                    return Convert.ToDateTime(value).ToString("yyyy-MM-dd HH:mm:ss.ms").ToSqlValue();
+                    return Convert.ToDateTime(value).ToString("yyyy-MM-dd HH:mm:ss.fff").ToSqlValue();
                 }
                 else if (type == UtilConstants.ByteArrayType)
                 {
