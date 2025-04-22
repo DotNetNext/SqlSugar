@@ -107,6 +107,7 @@ namespace SqlSugar.TDengine
             }
             finally
             {
+                this.Context.TempItems.Remove(TagKey);
             }
         }
 
