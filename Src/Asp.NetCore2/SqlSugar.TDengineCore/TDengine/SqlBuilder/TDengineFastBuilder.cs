@@ -48,38 +48,42 @@ namespace SqlSugar.TDengine
         }
         public async Task BulkInsertToTDengine(TDengineConnection conn, string tableName, DataTable table, bool isTran, string[] tagColumns)
         {
+             
+            string insertSql=string.Empty;
             try
             {
-                // Build the column names and value placeholders
-                var valuePlaceholdersList = table.Rows.Cast<DataRow>().Select(row =>
-                {
-                    var values = row.ItemArray.Select(item => FormatValue(item)).ToList();
-
-                    // If there are tags, move them to the beginning of the values list and adjust insert syntax
-                    if (tagColumns != null && tagColumns.Length > 0)
-                    {
-                        foreach (var tag in tagColumns)
-                        {
-                            int index = table.Columns.IndexOf(tag);
-                            values.Insert(0, FormatValue(row[index]));
-                        }
-                    }
-
-                    return $"({string.Join(", ", values)})";
-                }).ToList();
-
-                var valuePlaceholders = string.Join(", ", valuePlaceholdersList);
-
-                // Check if tagColumns is provided and adjust the SQL statement accordingly
-                string insertSql;
+                
                 if (tagColumns != null && tagColumns.Length > 0)
                 {
-                    // Construct SQL with tags included
-                    var columnNames = string.Join(", ", tagColumns.Concat(table.Columns.Cast<DataColumn>().Where(c => !tagColumns.Contains(c.ColumnName)).Select(c => c.ColumnName)));
-                    insertSql = $"INSERT INTO {tableName} ({columnNames}) VALUES {valuePlaceholders}";
+                     
+                    string tags = string.Join(", ", tagColumns.Select(tag => FormatValue(tag)));
+                    foreach (var item in tagColumns)
+                    {
+                        table.Columns.Remove(item); 
+                    }
+                    // Build the column names and value placeholders
+                    var valuePlaceholdersList = table.Rows.Cast<DataRow>().Select(row =>
+                    {
+                        var values = row.ItemArray.Select(item => FormatValue(item)).ToList();
+                        return $"({string.Join(", ", values)})";
+                    });
+                    var valuePlaceholders = string.Join(", ", valuePlaceholdersList);
+                    // 排除标签列，确保数据列不包含标签列
+                    var columnNames = string.Join(", ", table.Columns.Cast<DataColumn>() 
+                        .Select(c => c.ColumnName));
+                    // 生成插入语句，USING 部分包含标签列，VALUES 部分只包含数据列
+                    insertSql = $"INSERT INTO {tableName} USING {tableName} TAGS({tags})  ({columnNames}) VALUES {valuePlaceholders}";
                 }
                 else
                 {
+                    // Build the column names and value placeholders
+                    var valuePlaceholdersList = table.Rows.Cast<DataRow>().Select(row =>
+                    {
+                        var values = row.ItemArray.Select(item => FormatValue(item)).ToList();
+                        return $"({string.Join(", ", values)})";
+                    }).ToList();
+
+                    var valuePlaceholders = string.Join(", ", valuePlaceholdersList);
                     // Construct SQL without tags
                     var columnNames = string.Join(", ", table.Columns.Cast<DataColumn>().Select(c => c.ColumnName));
                     insertSql = $"INSERT INTO {tableName} ({columnNames}) VALUES {valuePlaceholders}";
@@ -88,9 +92,9 @@ namespace SqlSugar.TDengine
                 // Execute the command asynchronously
                 await this.Context.Ado.ExecuteCommandAsync(insertSql);
             }
-            catch
+            catch(Exception ex)
             {
-                throw;
+                throw new Exception(ex.Message +"\r\n"+ insertSql);
             }
             finally
             {
