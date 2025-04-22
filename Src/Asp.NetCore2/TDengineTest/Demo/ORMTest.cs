@@ -40,7 +40,7 @@ namespace TDengineTest
             BulkCopy(db);
              
             //生成实体
-            DbFirst(db);
+            //DbFirst(db);
 
             //简单用例
             Demo1(db);
