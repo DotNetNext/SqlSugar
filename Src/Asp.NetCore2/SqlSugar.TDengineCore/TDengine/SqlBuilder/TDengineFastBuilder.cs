@@ -86,10 +86,11 @@ namespace SqlSugar.TDengine
 
                         // 调用 InsertChildTable
                         InsertChildTable(tableName, childTable, tagColumns,sb, sbTables);
-                    }
 
-                    await this.Context.Ado.ExecuteCommandAsync(sbTables.ToString()); 
-                    await this.Context.Ado.ExecuteCommandAsync(sb.ToString());
+                        var sql = sb.ToString();
+                        var result = await this.Context.Ado.ExecuteCommandAsync(sql);
+                        sb.Clear();
+                    } 
                 }
                 else
                 {
@@ -140,7 +141,7 @@ namespace SqlSugar.TDengine
             var action = this.Context.TempItems[TagKey + "action"] as Func<string, string>;
             var subTableName = builder.GetTranslationColumnName(action(tagsValues));
 
-            sbtables.AppendLine($"CREATE TABLE {subTableName} USING {tableName} TAGS({tags});");
+            //sbtables.AppendLine($"CREATE TABLE {subTableName} USING {tableName} TAGS({tags});");
 
             var sqlBuilder =sb;
 
