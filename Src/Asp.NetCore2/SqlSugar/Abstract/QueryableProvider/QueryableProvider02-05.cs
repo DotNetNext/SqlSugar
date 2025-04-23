@@ -209,6 +209,49 @@ namespace SqlSugar
             result.QueryBuilder.JoinQueryInfos.Last().TableName = tableName;
             return result;
         }
+
+
+        public ISugarQueryable<T, T2, T3> LeftJoinIF<T3>(bool isJoin,Expression<Func<T, T2, T3, bool>> joinExpression, string tableName)
+        {
+            var result = LeftJoin<T3>(joinExpression);
+            result.QueryBuilder.JoinQueryInfos.Last().TableName = tableName;
+            if (isJoin == false)
+            {
+                result.QueryBuilder.JoinQueryInfos.Remove(result.QueryBuilder.JoinQueryInfos.Last());
+            }
+            return result;
+        }
+        public ISugarQueryable<T, T2, T3> FullJoinIF<T3>(bool isJoin,Expression<Func<T, T2, T3, bool>> joinExpression, string tableName)
+        {
+            var result = FullJoin<T3>(joinExpression);
+            result.QueryBuilder.JoinQueryInfos.Last().TableName = tableName;
+            if (isJoin == false)
+            {
+                result.QueryBuilder.JoinQueryInfos.Remove(result.QueryBuilder.JoinQueryInfos.Last());
+            }
+            return result;
+        }
+        public ISugarQueryable<T, T2, T3> InnerJoinIF<T3>(bool isJoin,Expression<Func<T, T2, T3, bool>> joinExpression, string tableName)
+        {
+            var result = InnerJoin<T3>(joinExpression);
+            result.QueryBuilder.JoinQueryInfos.Last().TableName = tableName;
+            if (isJoin == false)
+            {
+                result.QueryBuilder.JoinQueryInfos.Remove(result.QueryBuilder.JoinQueryInfos.Last());
+            }
+            return result;
+        }
+        public ISugarQueryable<T, T2, T3> RightJoinIF<T3>(bool isJoin,Expression<Func<T, T2, T3, bool>> joinExpression, string tableName)
+        {
+            var result = RightJoin<T3>(joinExpression);
+            result.QueryBuilder.JoinQueryInfos.Last().TableName = tableName;
+            if (isJoin == false)
+            {
+                result.QueryBuilder.JoinQueryInfos.Remove(result.QueryBuilder.JoinQueryInfos.Last());
+            }
+            return result;
+        }
+
         public ISugarQueryable<T, T2, T3> InnerJoin<T3>(Expression<Func<T, T2, T3, bool>> joinExpression)
         {
             this.Context.InitMappingInfo<T3>();
@@ -902,6 +945,47 @@ namespace SqlSugar
             result.QueryBuilder.JoinQueryInfos.Last().TableName = tableName;
             return result;
 
+        }
+
+        public ISugarQueryable<T, T2, T3,T4> LeftJoinIF<T4>(bool isJoin, Expression<Func<T, T2, T3,T4, bool>> joinExpression, string tableName)
+        {
+            var result = LeftJoin<T4>(joinExpression);
+            result.QueryBuilder.JoinQueryInfos.Last().TableName = tableName;
+            if (isJoin == false)
+            {
+                result.QueryBuilder.JoinQueryInfos.Remove(result.QueryBuilder.JoinQueryInfos.Last());
+            }
+            return result;
+        }
+        public ISugarQueryable<T, T2, T3,T4> FullJoinIF<T4>(bool isJoin, Expression<Func<T, T2, T3, T4, bool>> joinExpression, string tableName)
+        {
+            var result = FullJoin<T4>(joinExpression);
+            result.QueryBuilder.JoinQueryInfos.Last().TableName = tableName;
+            if (isJoin == false)
+            {
+                result.QueryBuilder.JoinQueryInfos.Remove(result.QueryBuilder.JoinQueryInfos.Last());
+            }
+            return result;
+        }
+        public ISugarQueryable<T, T2, T3, T4> InnerJoinIF<T4>(bool isJoin, Expression<Func<T, T2, T3, T4, bool>> joinExpression, string tableName)
+        {
+            var result = InnerJoin<T4>(joinExpression);
+            result.QueryBuilder.JoinQueryInfos.Last().TableName = tableName;
+            if (isJoin == false)
+            {
+                result.QueryBuilder.JoinQueryInfos.Remove(result.QueryBuilder.JoinQueryInfos.Last());
+            }
+            return result;
+        }
+        public ISugarQueryable<T, T2, T3, T4> RightJoinIF<T4>(bool isJoin, Expression<Func<T, T2, T3, T4, bool>> joinExpression, string tableName)
+        {
+            var result = RightJoin<T4>(joinExpression);
+            result.QueryBuilder.JoinQueryInfos.Last().TableName = tableName;
+            if (isJoin == false)
+            {
+                result.QueryBuilder.JoinQueryInfos.Remove(result.QueryBuilder.JoinQueryInfos.Last());
+            }
+            return result;
         }
 
 
@@ -1674,6 +1758,46 @@ namespace SqlSugar
             return result;
         }
 
+        public ISugarQueryable<T, T2, T3, T4, T5> LeftJoinIF<T5>(bool isJoin, Expression<Func<T, T2, T3, T4, T5, bool>> joinExpression, string tableName)
+        {
+            var result = LeftJoin<T5>(joinExpression);
+            result.QueryBuilder.JoinQueryInfos.Last().TableName = tableName;
+            if (isJoin == false)
+            {
+                result.QueryBuilder.JoinQueryInfos.Remove(result.QueryBuilder.JoinQueryInfos.Last());
+            }
+            return result;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5> FullJoinIF<T5>(bool isJoin, Expression<Func<T, T2, T3, T4, T5, bool>> joinExpression, string tableName)
+        {
+            var result = FullJoin<T5>(joinExpression);
+            result.QueryBuilder.JoinQueryInfos.Last().TableName = tableName;
+            if (isJoin == false)
+            {
+                result.QueryBuilder.JoinQueryInfos.Remove(result.QueryBuilder.JoinQueryInfos.Last());
+            }
+            return result;
+        }
+        public ISugarQueryable<T, T2, T3, T4, T5> InnerJoinIF<T5>(bool isJoin, Expression<Func<T, T2, T3, T4, T5, bool>> joinExpression, string tableName)
+        {
+            var result = InnerJoin<T5>(joinExpression);
+            result.QueryBuilder.JoinQueryInfos.Last().TableName = tableName;
+            if (isJoin == false)
+            {
+                result.QueryBuilder.JoinQueryInfos.Remove(result.QueryBuilder.JoinQueryInfos.Last());
+            }
+            return result;
+        }
+        public ISugarQueryable<T, T2, T3, T4,T5> RightJoinIF<T5>(bool isJoin, Expression<Func<T, T2, T3, T4, T5, bool>> joinExpression, string tableName)
+        {
+            var result = RightJoin<T5>(joinExpression);
+            result.QueryBuilder.JoinQueryInfos.Last().TableName = tableName;
+            if (isJoin == false)
+            {
+                result.QueryBuilder.JoinQueryInfos.Remove(result.QueryBuilder.JoinQueryInfos.Last());
+            }
+            return result;
+        }
 
         #region Where
         public new ISugarQueryable<T, T2, T3,T4> Where(string expShortName, FormattableString expressionString)
