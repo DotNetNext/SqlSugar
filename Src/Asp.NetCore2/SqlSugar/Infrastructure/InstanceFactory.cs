@@ -264,6 +264,14 @@ namespace SqlSugar
                 var type = GetCustomTypeByClass<T>(name);
                 if (type == null)
                 {
+                    name =
+                    InstanceFactory.CustomNamespace +
+                    "." + InstanceFactory.CustomDbName
+                    + "Updateable`1";
+                    type = GetCustomTypeByClass<T>(name);
+                }
+                if (type == null)
+                {
                     return new UpdateableProvider<T>();
                 }
                 else
@@ -290,6 +298,14 @@ namespace SqlSugar
                     "." + currentConnectionConfig.DbType
                     + "Deleteable`1";
                 var type = GetCustomTypeByClass<T>(name);
+                if (type == null)
+                {
+                    name =
+                    InstanceFactory.CustomNamespace +
+                    "." + InstanceFactory.CustomDbName
+                    + "Deleteable`1";
+                    type = GetCustomTypeByClass<T>(name);
+                }
                 if (type == null)
                 {
                     return new DeleteableProvider<T>();
@@ -330,6 +346,14 @@ namespace SqlSugar
                     "." + currentConnectionConfig.DbType
                     + "Insertable`1";
                 var type = GetCustomTypeByClass<T>(name);
+                if (type == null) 
+                {
+                    name =
+                    InstanceFactory.CustomNamespace +
+                    "." + InstanceFactory.CustomDbName
+                    + "Insertable`1";
+                    type = GetCustomTypeByClass<T>(name);
+                }
                 if (type == null)
                 {
                     return new InsertableProvider<T>();
@@ -347,19 +371,7 @@ namespace SqlSugar
 
         private static bool IsCustomDb(ConnectionConfig currentConnectionConfig)
         {
-            return
-                            currentConnectionConfig.DbType != DbType.SqlServer &&
-                            currentConnectionConfig.DbType != DbType.Dm &&
-                            currentConnectionConfig.DbType != DbType.Oscar &&
-                            currentConnectionConfig.DbType != DbType.Access &&
-                            currentConnectionConfig.DbType != DbType.QuestDB &&
-                            currentConnectionConfig.DbType != DbType.MySql &&
-                            currentConnectionConfig.DbType != DbType.Oracle &&
-                            currentConnectionConfig.DbType != DbType.PostgreSQL &&
-                            currentConnectionConfig.DbType != DbType.ClickHouse &&
-                            currentConnectionConfig.DbType != DbType.GBase &&
-                            currentConnectionConfig.DbType != DbType.Sqlite &&
-                            GetCustomTypeByClass("SqlSugar." + currentConnectionConfig.DbType + "." + currentConnectionConfig.DbType + "Provider") != null;
+            return currentConnectionConfig.DbType==DbType.Custom;
         }
 
         public static IDbBind GetDbBind(ConnectionConfig currentConnectionConfig)
