@@ -8,13 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SqlSugar.DuckDBCore\SqlSugar.DuckDBCore.csproj" />
     <ProjectReference Include="..\SqlSugar\SqlSugar.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Test.accdb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 </Project>

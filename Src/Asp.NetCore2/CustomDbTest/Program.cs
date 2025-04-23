@@ -12,17 +12,15 @@ namespace OrmTest
         /// <param name="args"></param>
         static void Main(string[] args)
         {
-            //Set Custom  Db
-            InstanceFactory.CustomDbName = "MySql";
-            InstanceFactory.CustomDllName = "SqlSugar.MySqlConnectorCore";
-            InstanceFactory.CustomNamespace = "SqlSugar.MySqlConnector";
+            //注册自定义信息扔在程序启动时
+            InstanceFactory.CustomDbName = "DuckDB";
+            InstanceFactory.CustomDllName = "SqlSugar.DuckDBCore";
+            InstanceFactory.CustomNamespace = "SqlSugar.DuckDB";
+            InstanceFactory.CustomAssemblies = new System.Reflection.Assembly[] {
+            typeof(SqlSugar.DuckDB.DuckDBProvider).Assembly };
 
-            Demo0_SqlSugarClient.Init();
-            Demo1_Queryable.Init();
-            Demo2_Updateable.Init();
-            Demo3_Insertable.Init();
-            Demo4_Deleteable.Init();
-            DemoD_DbFirst.Init();
+            //执行Demo
+            Demo.Init(); 
             Console.WriteLine("all successfully.");
             Console.ReadKey();
         }
