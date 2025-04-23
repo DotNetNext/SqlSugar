@@ -66,7 +66,7 @@ namespace OrmTest
                 UserName="admin",
                 RegistrationDate=DateTime.Now,
 
-            }).ExecuteCommand();
+            }).ExecuteReturnIdentity();
 
             //Query
             //查询
