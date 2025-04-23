@@ -24,6 +24,8 @@ namespace OrmTest
 
             //执行Demo
             Demo.Init(); 
+
+
             Console.WriteLine("all successfully.");
             Console.ReadKey();
         }
