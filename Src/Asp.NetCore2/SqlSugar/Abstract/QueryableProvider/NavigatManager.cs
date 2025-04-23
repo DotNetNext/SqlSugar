@@ -995,6 +995,10 @@ namespace SqlSugar
             {
                 return it.QuerySql + " AS " + QueryBuilder.Builder.GetTranslationColumnName(it.PropertyName);
             }
+            if (it.ForOwnsOnePropertyInfo != null) 
+            {
+                return QueryBuilder.Builder.GetTranslationColumnName(it.DbColumnName);
+            }
             return QueryBuilder.Builder.GetTranslationColumnName(it.DbColumnName) + " AS " + QueryBuilder.Builder.GetTranslationColumnName(it.PropertyName);
         }
         private string GetOneToOneSelectByColumnInfo(EntityColumnInfo it,ISqlSugarClient db)
@@ -1003,6 +1007,11 @@ namespace SqlSugar
             if (it.QuerySql.HasValue())
             {
                 return it.QuerySql + " AS " + QueryBuilder.Builder.GetTranslationColumnName(it.PropertyName);
+            }
+            if (it.ForOwnsOnePropertyInfo != null)
+            {
+
+                return QueryBuilder.Builder.GetTranslationColumnName(it.DbColumnName);
             }
             return QueryBuilder.Builder.GetTranslationColumnName(it.DbColumnName) + " AS " + QueryBuilder.Builder.GetTranslationColumnName(it.PropertyName);
         }
