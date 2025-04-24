@@ -69,6 +69,14 @@ namespace OrmTest
             var sql=db.Queryable<Order>().Where(it=>names.All(s=>s.Contains(it.Name))).ToSql();
             if(!sql.Key.Contains("AND"))
                 throw new Exception("unit error");
+
+            var list3=db.Queryable<Order>()
+                .Select(it => new
+                {
+                    names=SqlFunc.Subqueryable<Order>
+                    ().SelectStringJoin(s => SqlFunc.MappingColumn<string>($" distinct {s.Name}"), ",")
+
+                }).ToList();
         }
 
         public class UnitDAFREA 
