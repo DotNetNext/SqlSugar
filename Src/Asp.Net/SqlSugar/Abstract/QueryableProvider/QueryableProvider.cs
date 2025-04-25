@@ -1506,6 +1506,12 @@ namespace SqlSugar
             }
             return _Select<TResult>(expression);
         }
+        public virtual ISugarQueryable<TResult> SelectIF<TResult>(bool condition, Expression<Func<T, TResult>> trueSelectExpression, Expression<Func<T, TResult>> falseSelectExpression) {
+            if (condition)
+                return Select(trueSelectExpression);
+            else
+                return Select(falseSelectExpression);
+        }
         public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, TResult>> expression, bool isAutoFill)
         {
             if (typeof(TResult).IsAnonymousType()) 

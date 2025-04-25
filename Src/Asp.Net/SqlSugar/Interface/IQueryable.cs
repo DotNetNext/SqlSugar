@@ -163,6 +163,7 @@ namespace SqlSugar
         ISugarQueryable<T> Select(string expShortName, FormattableString expSelect, Type resultType);
         ISugarQueryable<TResult> Select<TResult>(Expression expression);
         ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, TResult>> expression);
+        ISugarQueryable<TResult> SelectIF<TResult>(bool condition, Expression<Func<T, TResult>> trueSelectExpression, Expression<Func<T, TResult>> falseSelectExpression);
         ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, TResult>> expression,bool isAutoFill);
         ISugarQueryable<TResult> Select<TResult>();
         ISugarQueryable<TResult> Select<TResult>(string select);
