@@ -77,8 +77,25 @@ namespace OrmTest
                     ().SelectStringJoin(s => SqlFunc.MappingColumn<string>($" distinct {s.Name}"), ",")
 
                 }).ToList();
+           var updateable= db.Updateable<Unitafaasdfys>(new Unitafaasdfys() { Id="a",Name="a" }).ToSql();
+            if (updateable.Value.First().DbType != System.Data.DbType.AnsiString) 
+            {
+                throw new Exception("unit error");
+            }
+            if (updateable.Value.Last().DbType != System.Data.DbType.String)
+            {
+                throw new Exception("unit error");
+            }
+            db.CodeFirst.InitTables<Unitafaasdfys>();
+            db.Updateable<Unitafaasdfys>(new Unitafaasdfys() { Id = "a", Name = "a" }).ExecuteCommand();
         }
 
+        public class Unitafaasdfys 
+        {
+            [SugarColumn(IsPrimaryKey =true,SqlParameterDbType =System.Data.DbType.AnsiString)]
+            public string Id { get; set; }
+            public string Name { get; set; }
+        }
         public class UnitDAFREA 
         {
             [SugarColumn(ColumnDescription ="a")]
