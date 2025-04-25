@@ -339,7 +339,7 @@ namespace SqlSugar
 
         private EntityColumnInfo GetColumnInfo(string item)
         {
-            var columnInfo= this.EntityInfo?.Columns?.FirstOrDefault(it => it.DbColumnName.Equals(item) || it.PropertyName.Equals(item));
+            var columnInfo= this.EntityInfo?.Columns?.FirstOrDefault(it => it.DbColumnName.EqualCase(item) || it.PropertyName.EqualCase(item));
             return columnInfo;
         }
 
