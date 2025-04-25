@@ -308,6 +308,15 @@ namespace SqlSugar
                         else
                         {
                             whereString += Builder.GetTranslationColumnName(item) + "=" + this.Context.Ado.SqlParameterKeyWord + item;
+                            var columnInfo = GetColumnInfo(item);
+                            if (columnInfo != null&&columnInfo.SqlParameterDbType is System.Data.DbType valueDbType) 
+                            {
+                                var p=this.Parameters?.FirstOrDefault(it => it.ParameterName == this.Context.Ado.SqlParameterKeyWord + item);
+                                if (p != null) 
+                                {
+                                    p.DbType = valueDbType;
+                                }
+                            }
                         }
                     }
                 }
