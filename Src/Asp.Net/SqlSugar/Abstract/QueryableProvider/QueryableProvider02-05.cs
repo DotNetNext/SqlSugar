@@ -1125,6 +1125,13 @@ namespace SqlSugar
             }
             return this.Select<TResult>(sql);
         }
+        public virtual ISugarQueryable<TResult> SelectIF<TResult>(bool condition, Expression<Func<T, T2,T3, TResult>> trueSelectExpression, Expression<Func<T, T2,T3, TResult>> falseSelectExpression)
+        {
+            if (condition)
+                return Select(trueSelectExpression);
+            else
+                return Select(falseSelectExpression);
+        }
 
         public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, TResult>> expression)
         {
