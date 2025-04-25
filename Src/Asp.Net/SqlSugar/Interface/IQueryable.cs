@@ -969,6 +969,7 @@ namespace SqlSugar
         #endregion
 
         #region Select
+        ISugarQueryable<TResult> SelectIF<TResult>(bool condition, Expression<Func<T, T2, T3, T4, T5,T6, TResult>> trueSelectExpression, Expression<Func<T, T2, T3, T4, T5,T6, TResult>> falseSelectExpression);
         ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, TResult>> expression);
         ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, TResult>> expression);
         ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, TResult>> expression);
@@ -1124,6 +1125,7 @@ namespace SqlSugar
         #endregion
 
         #region Select
+        ISugarQueryable<TResult> SelectIF<TResult>(bool condition, Expression<Func<T, T2, T3, T4, T5, T6,T7, TResult>> trueSelectExpression, Expression<Func<T, T2, T3, T4, T5, T6,T7, TResult>> falseSelectExpression);
         ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, TResult>> expression);
         ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, TResult>> expression);
         ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, TResult>> expression);
@@ -1274,6 +1276,7 @@ namespace SqlSugar
         #endregion                              
 
         #region Select
+        ISugarQueryable<TResult> SelectIF<TResult>(bool condition, Expression<Func<T, T2, T3, T4, T5, T6, T7,T8, TResult>> trueSelectExpression, Expression<Func<T, T2, T3, T4, T5, T6, T7,T8, TResult>> falseSelectExpression);
         ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, TResult>> expression);
         ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, TResult>> expression);
         ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, TResult>> expression);

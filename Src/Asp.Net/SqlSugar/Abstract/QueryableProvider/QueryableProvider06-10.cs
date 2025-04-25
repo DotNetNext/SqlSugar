@@ -303,6 +303,13 @@ namespace SqlSugar
         #endregion
 
         #region Select
+        public virtual ISugarQueryable<TResult> SelectIF<TResult>(bool condition, Expression<Func<T, T2, T3, T4, T5, T6, TResult>> trueSelectExpression, Expression<Func<T, T2, T3, T4, T5, T6, TResult>> falseSelectExpression)
+        {
+            if (condition)
+                return Select(trueSelectExpression);
+            else
+                return Select(falseSelectExpression);
+        }
         public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, TResult>> expression)
         {
             if (IsAppendNavColumns())
@@ -1116,6 +1123,13 @@ namespace SqlSugar
         #endregion
 
         #region Select
+        public virtual ISugarQueryable<TResult> SelectIF<TResult>(bool condition, Expression<Func<T, T2, T3, T4, T5, T6,T7, TResult>> trueSelectExpression, Expression<Func<T, T2, T3, T4, T5, T6,T7, TResult>> falseSelectExpression)
+        {
+            if (condition)
+                return Select(trueSelectExpression);
+            else
+                return Select(falseSelectExpression);
+        }
         public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, TResult>> expression)
         {
             if (IsAppendNavColumns())
@@ -1944,6 +1958,13 @@ namespace SqlSugar
         #endregion
 
         #region Select
+        public virtual ISugarQueryable<TResult> SelectIF<TResult>(bool condition, Expression<Func<T, T2, T3, T4, T5, T6,T7,T8, TResult>> trueSelectExpression, Expression<Func<T, T2, T3, T4, T5, T6,T7,T8, TResult>> falseSelectExpression)
+        {
+            if (condition)
+                return Select(trueSelectExpression);
+            else
+                return Select(falseSelectExpression);
+        }
         public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, TResult>> expression)
         {
             if (IsAppendNavColumns())
