@@ -386,6 +386,8 @@ namespace SqlSugar
         #region Select
         ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, TResult>> expression);
         ISugarQueryable<TResult> Select<TResult>(Expression<Func<T,T2, TResult>> expression, bool isAutoFill);
+        ISugarQueryable<TResult> SelectIF<TResult>(bool condition, Expression<Func<T, T2, TResult>> trueSelectExpression, Expression<Func<T,T2, TResult>> falseSelectExpression);
+
         #endregion
 
         #region OrderBy
