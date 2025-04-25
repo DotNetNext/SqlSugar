@@ -328,6 +328,13 @@ namespace SqlSugar
         #endregion
 
         #region Select
+        public virtual ISugarQueryable<TResult> SelectIF<TResult>(bool condition, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult>> trueSelectExpression, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult>> falseSelectExpression)
+        {
+            if (condition)
+                return Select(trueSelectExpression);
+            else
+                return Select(falseSelectExpression);
+        } 
         public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10,T11, TResult>> expression, bool isAutoFill)
         {
             var clone = this.Select(expression).Clone();
@@ -1025,7 +1032,7 @@ namespace SqlSugar
         public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult>> expression)
         {
             return _Select<TResult>(expression);
-        }
+        } 
         public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult>> expression)
         {
             return _Select<TResult>(expression);
@@ -1033,6 +1040,13 @@ namespace SqlSugar
         public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult>> expression)
         {
             return _Select<TResult>(expression);
+        } 
+        public virtual ISugarQueryable<TResult> SelectIF<TResult>(bool condition, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12, TResult>> trueSelectExpression, Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,T12, TResult>> falseSelectExpression)
+        {
+            if (condition)
+                return Select(trueSelectExpression);
+            else
+                return Select(falseSelectExpression);
         }
         #endregion
 
