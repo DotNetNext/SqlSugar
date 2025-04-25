@@ -348,6 +348,13 @@ namespace SqlSugar
             }
             return _Select<TResult>(expression);
         }
+        public virtual ISugarQueryable<TResult> SelectIF<TResult>(bool condition, Expression<Func<T,T2, TResult>> trueSelectExpression, Expression<Func<T,T2, TResult>> falseSelectExpression)
+        {
+            if (condition)
+                return Select(trueSelectExpression);
+            else
+                return Select(falseSelectExpression);
+        }
         public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T,T2, TResult>> expression, bool isAutoFill)
         {
             var clone = this.Select(expression).Clone();
@@ -1202,6 +1209,13 @@ namespace SqlSugar
             }
             return this.Select<TResult>(sql);
         }
+        public virtual ISugarQueryable<TResult> SelectIF<TResult>(bool condition, Expression<Func<T, T2,T3, TResult>> trueSelectExpression, Expression<Func<T, T2,T3, TResult>> falseSelectExpression)
+        {
+            if (condition)
+                return Select(trueSelectExpression);
+            else
+                return Select(falseSelectExpression);
+        }
 
         public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, TResult>> expression)
         {
@@ -1757,7 +1771,6 @@ namespace SqlSugar
             result.QueryBuilder.JoinQueryInfos.Last().TableName = tableName;
             return result;
         }
-
         public ISugarQueryable<T, T2, T3, T4, T5> LeftJoinIF<T5>(bool isJoin, Expression<Func<T, T2, T3, T4, T5, bool>> joinExpression, string tableName)
         {
             var result = LeftJoin<T5>(joinExpression);
@@ -1944,6 +1957,14 @@ namespace SqlSugar
                 SetAppendNavColumns(expression);
             }
             return _Select<TResult>(expression);
+        }
+
+        public virtual ISugarQueryable<TResult> SelectIF<TResult>(bool condition, Expression<Func<T, T2, T3,T4, TResult>> trueSelectExpression, Expression<Func<T, T2, T3,T4, TResult>> falseSelectExpression)
+        {
+            if (condition)
+                return Select(trueSelectExpression);
+            else
+                return Select(falseSelectExpression);
         }
         public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, T3, T4, TResult>> expression)
         {
@@ -2757,6 +2778,13 @@ namespace SqlSugar
             return this.Select<TResult>(sql);
         }
 
+        public virtual ISugarQueryable<TResult> SelectIF<TResult>(bool condition, Expression<Func<T, T2, T3, T4,T5, TResult>> trueSelectExpression, Expression<Func<T, T2, T3, T4,T5, TResult>> falseSelectExpression)
+        {
+            if (condition)
+                return Select(trueSelectExpression);
+            else
+                return Select(falseSelectExpression);
+        }
         public ISugarQueryable<TResult> Select<TResult>(Expression<Func<T, T2, TResult>> expression)
         {
             if (IsAppendNavColumns())
