@@ -13,7 +13,7 @@ namespace MongoDb.Ado.data
         private static readonly Dictionary<string, MongoClient> _clientCache = new Dictionary<string, MongoClient>(StringComparer.OrdinalIgnoreCase);
         private static readonly object _lock = new object();
 
-        private readonly string _originalConnectionString;
+        private  string _originalConnectionString;
         private IMongoDatabase _database;
         private string _databaseName;
         private ConnectionState _state = ConnectionState.Closed;
@@ -23,7 +23,7 @@ namespace MongoDb.Ado.data
         public override string ServerVersion => "MongoDB_" + (_client?.Cluster?.Description?.ClusterId.ToString() ?? "Unknown");
         public override ConnectionState State => _state;
 
-        public override string ConnectionString { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public override string ConnectionString { get => _originalConnectionString; set => _originalConnectionString=value; }
 
         private MongoClient _client;
 
