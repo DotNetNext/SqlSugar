@@ -133,6 +133,28 @@ namespace SqlSugar
         #endregion
 
         #region Check
+        public virtual bool IsAnyTable<T>() 
+        {
+            if (typeof(T).GetCustomAttribute<SplitTableAttribute>() != null)
+            {
+                var tables = this.Context.SplitHelper(typeof(T)).GetTables();
+                var isAny = false;
+                foreach (var item in tables)
+                {
+                    if (this.Context.DbMaintenance.IsAnyTable(item.TableName, false)) 
+                    {
+                        isAny = true;
+                        break;
+                    }
+                }
+                return isAny;
+            }
+            else
+            {
+                this.Context.InitMappingInfo<T>();
+                return this.IsAnyTable(this.Context.EntityMaintenance.GetEntityInfo<T>().DbTableName,false);
+            }
+        }
         public virtual bool IsAnyTable(string tableName, bool isCache = true)
         {
             Check.Exception(string.IsNullOrEmpty(tableName), "IsAnyTable tableName is not null");
