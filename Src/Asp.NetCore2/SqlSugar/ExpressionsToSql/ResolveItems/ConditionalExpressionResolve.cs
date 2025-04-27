@@ -17,6 +17,27 @@ namespace SqlSugar
                 express.IfTrue,
                 express.IfFalse
             };
+            if (express.Test is  MemberExpression memberExpression) 
+            {
+               var ps= ExpressionTool.GetParameters(express.Test);
+                if (ps?.Count == 0) 
+                {
+                    var value= ExpressionTool.DynamicInvoke(express.Test);
+                    if (value is bool boolValue) 
+                    {
+                        if (boolValue)
+                        {
+                            args[2] = express.IfTrue;
+                            args[1] = express.IfTrue;   
+                        }
+                        else 
+                        {
+                            args[1] = express.IfFalse;
+                            args[2] = express.IfFalse;
+                        }
+                    }
+                }
+            }
             if (IsBoolMember(express))
             {
                 Expression trueValue = Expression.Constant(true);
