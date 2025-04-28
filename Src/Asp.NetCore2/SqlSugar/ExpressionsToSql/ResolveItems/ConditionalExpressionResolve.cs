@@ -27,6 +27,7 @@ namespace SqlSugar
                         var value = ExpressionTool.DynamicInvoke(express.Test);
                         if (value is bool boolValue)
                         {
+                            args[0] = boolValue ? UtilConstants.ExpTrue :UtilConstants.ExpFalse;
                             // 根据结果选择分支
                             var next = boolValue ? express.IfTrue : express.IfFalse;
                             args[1] = next;

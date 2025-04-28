@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Globalization;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 namespace SqlSugar
 {
@@ -77,5 +78,8 @@ namespace SqlSugar
                 "Millisecond",
                 "Date"
         };
+
+        public static ConstantExpression ExpTrue = Expression.Constant(true);
+        public static ConstantExpression ExpFalse = Expression.Constant(false);
     }
 }
