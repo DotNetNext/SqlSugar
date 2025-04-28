@@ -33,10 +33,10 @@ namespace TDengineTest
             //固定建表
             CodeFirst(db);
 
-            //自动建表
+            //自动建表(普通插入)
             InsertUsingTag(db);
 
-            //BulkCopy(自动建表
+            //自动建表(BulkCopy)
             BulkCopy(db);
              
             //生成实体
