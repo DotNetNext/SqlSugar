@@ -40,16 +40,61 @@ namespace OrmTest
                 })
                 .ToList();
 
-              var list2 = db.Queryable<Test001faf1aaa>()
-                .Select(it => new Test001faf1aaa
-                {
-                    Id = it.Id,
-                    Code = it.Code,
-                    Name = it.Name,
-                    cProjectTrackingDefine7 =SqlFunc.IIF( display , it.cProjectTrackingDefine7 , null)
-                })
-                .ToList();
+            var list2 = db.Queryable<Test001faf1aaa>()
+              .Select(it => new Test001faf1aaa
+              {
+                  Id = it.Id,
+                  Code = it.Code,
+                  Name = it.Name,
+                  cProjectTrackingDefine7 = SqlFunc.IIF(display, it.cProjectTrackingDefine7, null)
+              })
+              .ToList();
+            Test01(db);
+            Test02(db);
+            Test03(db);
+        }
 
+        private static void Test01(SqlSugarClient db)
+        { 
+            var num = 3;
+            var value = db.Queryable<Test001faf1aaa>()
+              .Select(it => new Test001faf1aaa
+              {
+                  Id = num == 1 ? it.Id : num == 2 ? 2 : 3
+              })
+              .First().Id;
+            if (value != 3)
+            {
+                throw new Exception("unit error");
+            }
+        }
+        private static void Test02(SqlSugarClient db)
+        {
+            var num = 2;
+            var value = db.Queryable<Test001faf1aaa>()
+              .Select(it => new Test001faf1aaa
+              {
+                  Id = num == 1 ? it.Id : num == 2 ? 2 : 3
+              })
+              .First().Id;
+            if (value != 2)
+            {
+                throw new Exception("unit error");
+            }
+        }
+        private static void Test03(SqlSugarClient db)
+        {
+            var num = 1;
+            var value = db.Queryable<Test001faf1aaa>()
+              .Select(it => new Test001faf1aaa
+              {
+                  Id = num == 1 ? it.Id : num == 2 ? 2 : 3
+              })
+              .First().Id;
+            if (value != 1000000000001)
+            {
+                throw new Exception("unit error");
+            }
         }
 
         [SqlSugar.SugarTable("unitdafaf1311")]
