@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dm.util;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -66,6 +67,28 @@ namespace SqlSugar
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
             var parameter3 = model.Args[2];
+            var ifTrue = parameter2.MemberName.ObjToString();
+            var ifFalse = parameter3.MemberName.ObjToString();
+            if (ifTrue==ifFalse)
+            {
+                return $" {parameter2.MemberName} ";
+            }
+            if (model.Parameters != null
+                && model.Conext!=null
+                && ifTrue.startsWith(model.Conext?.SqlParameterKeyWord)
+                && ifTrue.startsWith(model.Conext?.SqlParameterKeyWord)) 
+            {
+               var p2= model.Parameters.Where(it=>it.ParameterName!=null).FirstOrDefault(it => it.ParameterName.Equals( parameter2.MemberName));
+               var p3 = model.Parameters.Where(it => it.ParameterName != null).FirstOrDefault(it => it.ParameterName.Equals( parameter3.MemberName));
+                if (p2 != null && p3 != null) 
+                {
+                    if (p2.Value?.equals(p3.Value) == true) 
+                    {
+                        model.Parameters.Remove(p3);
+                        return $" {parameter2.MemberName} ";
+                    }
+                }
+            }
             return string.Format("( CASE  WHEN {0} THEN {1}  ELSE {2} END )", parameter.MemberName, parameter2.MemberName, parameter3.MemberName);
         }
 
