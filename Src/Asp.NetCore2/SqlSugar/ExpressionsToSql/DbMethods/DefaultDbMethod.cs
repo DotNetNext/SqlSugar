@@ -76,10 +76,10 @@ namespace SqlSugar
             if (model.Parameters != null
                 && model.Conext!=null
                 && ifTrue.startsWith(model.Conext?.SqlParameterKeyWord)
-                && ifTrue.startsWith(model.Conext?.SqlParameterKeyWord)) 
+                && ifFalse.startsWith(model.Conext?.SqlParameterKeyWord)) 
             {
-               var p2= model.Parameters.Where(it=>it.ParameterName!=null).FirstOrDefault(it => it.ParameterName.Equals( parameter2.MemberName));
-               var p3 = model.Parameters.Where(it => it.ParameterName != null).FirstOrDefault(it => it.ParameterName.Equals( parameter3.MemberName));
+               var p2= model.Parameters.Where(it=>it.ParameterName!=null).FirstOrDefault(it => it.ParameterName.Equals(ifTrue));
+               var p3 = model.Parameters.Where(it => it.ParameterName != null).FirstOrDefault(it => it.ParameterName.Equals(ifFalse));
                 if (p2 != null && p3 != null) 
                 {
                     if (p2.Value?.equals(p3.Value) == true) 
