@@ -52,6 +52,7 @@ namespace OrmTest
             Test01(db);
             Test02(db);
             Test03(db);
+            Test04(db);
         }
 
         private static void Test01(SqlSugarClient db)
@@ -92,6 +93,20 @@ namespace OrmTest
               })
               .First().Id;
             if (value != 1000000000001)
+            {
+                throw new Exception("unit error");
+            }
+        }
+        private static void Test04(SqlSugarClient db)
+        {
+            var num = 10;
+            var value = db.Queryable<Test001faf1aaa>()
+              .Select(it => new Test001faf1aaa
+              {
+                  Id = num == 1 ? 1 : num == 2 ? 2 : num== it.Id?4:5
+              })
+              .First().Id;
+            if (value != 5)
             {
                 throw new Exception("unit error");
             }
