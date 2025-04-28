@@ -35,8 +35,12 @@ namespace SqlSugar
                             // 如果选择的分支还是一个条件表达式，就继续展开
                             if (ExpressionTool.RemoveConvert(next) is ConditionalExpression childConditional)
                             {
-                                args[0] = express.Test;
-                                express = childConditional;
+                                express = childConditional; 
+                                args = new List<Expression>() {
+                                        express.Test,
+                                        express.IfTrue,
+                                        express.IfFalse
+                                    };
                                 continue;
                             }
                             else
