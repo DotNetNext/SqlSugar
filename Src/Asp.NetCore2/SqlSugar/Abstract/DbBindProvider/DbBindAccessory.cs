@@ -176,6 +176,10 @@ namespace SqlSugar
                             {
                                 setValue = UtilMethods.ChangeType2(setValue, item.UnderType);
                             }
+                            else if (UtilMethods.IsParameterConverter(item)) 
+                            {
+                                setValue = UtilMethods.QueryConverter(itemIndex,null, dataReader, entityInfo, item);
+                            }
                             item.PropertyInfo.SetValue(parentObj, setValue);
                         }
                     }

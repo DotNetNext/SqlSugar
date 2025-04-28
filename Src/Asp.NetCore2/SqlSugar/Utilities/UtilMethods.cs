@@ -193,6 +193,14 @@ namespace SqlSugar
             var p = ParameterConverter.Invoke(obj, new object[] { value, 100 + index }) as SugarParameter;
             return p;
         }
+        internal static object QueryConverter(int index, ISqlSugarClient db, IDataReader dataReader , EntityInfo entity, EntityColumnInfo columnInfo)
+        {
+            var type = columnInfo.SqlParameterDbType as Type;
+            var ParameterConverter = type.GetMethod("QueryConverter").MakeGenericMethod(columnInfo.PropertyInfo.PropertyType);
+            var obj = Activator.CreateInstance(type);
+            var p = ParameterConverter.Invoke(obj, new object[] { dataReader , index });
+            return p;
+        }
         internal static bool IsErrorParameterName(ConnectionConfig connectionConfig,DbColumnInfo columnInfo)
         {
             return connectionConfig.MoreSettings?.IsCorrectErrorSqlParameterName == true &&
