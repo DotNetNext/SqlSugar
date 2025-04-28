@@ -74,14 +74,14 @@ namespace SqlSugar
             }
             if (model.Parameters != null
                 && model.Conext!=null
-                && ifTrue.startsWith(model.Conext?.SqlParameterKeyWord)
-                && ifFalse.startsWith(model.Conext?.SqlParameterKeyWord)) 
+                && ifTrue.StartsWith(model.Conext?.SqlParameterKeyWord)
+                && ifFalse.StartsWith(model.Conext?.SqlParameterKeyWord)) 
             {
                var p2= model.Parameters.Where(it=>it.ParameterName!=null).FirstOrDefault(it => it.ParameterName.Equals(ifTrue));
                var p3 = model.Parameters.Where(it => it.ParameterName != null).FirstOrDefault(it => it.ParameterName.Equals(ifFalse));
                 if (p2 != null && p3 != null) 
                 {
-                    if (p2.Value?.equals(p3.Value) == true) 
+                    if (p2.Value?.Equals(p3.Value) == true) 
                     {
                         model.Parameters.Remove(p3);
                         return $" {parameter2.MemberName} ";
