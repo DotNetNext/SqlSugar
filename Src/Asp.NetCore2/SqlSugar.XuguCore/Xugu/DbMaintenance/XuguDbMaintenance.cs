@@ -144,6 +144,10 @@ WHERE T.TABLE_NAME='{0}' AND T.DB_ID=CURRENT_DB_ID
         //                });
         //}
 
+        public override bool AddTableRemark(string tableName, string description)
+        {
+            return base.AddTableRemark(SqlBuilder.GetTranslationColumnName(tableName), description);
+        }
         private List<DbColumnInfo> GetColumnInfosByTableName(string tableName)
         {
             string sql = "select *  /* " + Guid.NewGuid() + " */ from " + SqlBuilder.GetTranslationTableName(tableName) + " WHERE 1=2 ";
