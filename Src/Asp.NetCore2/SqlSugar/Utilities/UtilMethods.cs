@@ -18,6 +18,90 @@ namespace SqlSugar
 {
     public class UtilMethods
     {
+        public static string EscapeLikeValue(DbType dbType, string value, char wildcard='%')
+        {
+            if (string.IsNullOrEmpty(value))
+                return value;
+             
+            string wildcardStr = wildcard.ToString();
+
+            switch (dbType)
+            {
+                // 支持标准 SQL LIKE 转义，通常使用中括号 [] 或反斜杠 \ 进行转义
+                case DbType.SqlServer:
+                case DbType.Access:
+                case DbType.Odbc:
+                case DbType.TDSQLForPGODBC:
+                    // SQL Server 使用中括号转义 %, _ 等
+                    value = value.Replace("[", "[[]")
+                                 .Replace("]", "[]]")
+                                 .Replace(wildcardStr, $"[{wildcard}]");
+                    break;
+
+                // PostgreSQL 风格数据库，使用反斜杠进行 LIKE 转义
+                case DbType.PostgreSQL:
+                case DbType.OpenGauss:
+                case DbType.TDSQL:
+                case DbType.GaussDB:
+                case DbType.GaussDBNative:
+                    value = value.Replace("\\", "\\\\")
+                                 .Replace(wildcardStr, "\\" + wildcard);
+                    break;
+
+                // MySQL 和兼容库，使用反斜杠进行转义
+                case DbType.MySql:
+                case DbType.MySqlConnector:
+                case DbType.Tidb:
+                case DbType.PolarDB:
+                case DbType.OceanBase:
+                    value = value.Replace("\\", "\\\\")
+                                 .Replace(wildcardStr, "\\" + wildcard);
+                    break;
+
+                // Oracle 风格使用 ESCAPE 字符
+                case DbType.Oracle:
+                case DbType.OceanBaseForOracle:
+                case DbType.HG:
+                case DbType.Dm:
+                case DbType.GBase:
+                case DbType.DB2:
+                case DbType.HANA:
+                case DbType.GoldenDB:
+                    value = value.Replace("\\", "\\\\")
+                                 .Replace(wildcardStr, "\\" + wildcard);
+                    break;
+
+                // Sqlite 通常使用反斜杠作为转义符
+                case DbType.Sqlite:
+                    value = value.Replace("\\", "\\\\")
+                                 .Replace(wildcardStr, "\\" + wildcard);
+                    break;
+
+                // DuckDB 和 QuestDB 类似 PostgreSQL
+                case DbType.DuckDB:
+                case DbType.QuestDB:
+                    value = value.Replace("\\", "\\\\")
+                                 .Replace(wildcardStr, "\\" + wildcard);
+                    break;
+
+                // Doris、Xugu、Vastbase 等默认使用反斜杠
+                case DbType.Doris:
+                case DbType.Xugu:
+                case DbType.Vastbase:
+                    value = value.Replace("\\", "\\\\")
+                                 .Replace(wildcardStr, "\\" + wildcard);
+                    break;
+
+                // ClickHouse 和 Kdbndp、Oscar、Custom 处理同上
+                default:
+                    value = value.Replace("\\", "\\\\")
+                                 .Replace(wildcardStr, "\\" + wildcard);
+                    break;
+            }
+
+            return value;
+        }
+
 
         public static List<SugarParameter> CopySugarParameters(List<SugarParameter> pars)
         {
