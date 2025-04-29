@@ -429,13 +429,20 @@ namespace SqlSugar.TDengine
                 var colums = STable.Tags.Select(it => this.SqlBuilder.GetTranslationTableName(it.Name)+ "  VARCHAR(100) ");
                 tableString=tableString.Replace(SqlBuilder.GetTranslationColumnName("TagsTypeId"), string.Join(",", colums));
                 tableString = tableString.Replace(" VARCHAR(100)  VARCHAR(100)", " VARCHAR(100)");
-                foreach (var item in STable.Tags)
+                if (this.EntityInfo != null)
                 {
-                    var tagColumn = this.EntityInfo.Columns.FirstOrDefault(it => it.DbColumnName == item.Name || it.PropertyName == item.Name);
-                    if (tagColumn != null&&tagColumn.UnderType!=UtilConstants.StringType) 
+                    foreach (var item in STable.Tags)
                     {
-                       var tagType= new TDengineDbBind() { Context=this.Context }.GetDbTypeName(tagColumn.UnderType.Name);
-                       tableString = tableString.Replace($"{SqlBuilder.GetTranslationColumnName(tagColumn.DbColumnName)}  VARCHAR(100)", $"{SqlBuilder.GetTranslationColumnName(tagColumn.DbColumnName)} {tagType} ");
+                        var tagColumn = this.EntityInfo.Columns.FirstOrDefault(it => it.DbColumnName == item.Name || it.PropertyName == item.Name);
+                        if (tagColumn != null && tagColumn.UnderType != UtilConstants.StringType)
+                        {
+                            var tagType = new TDengineDbBind() { Context = this.Context }.GetDbTypeName(tagColumn.UnderType.Name);
+                            tableString = tableString.Replace($"{SqlBuilder.GetTranslationColumnName(tagColumn.DbColumnName)}  VARCHAR(100)", $"{SqlBuilder.GetTranslationColumnName(tagColumn.DbColumnName)} {tagType} ");
+                        }
+                        else if (tagColumn != null && tagColumn.UnderType == UtilConstants.StringType && tagColumn.Length < 100 && tagColumn.Length > 0)
+                        {
+                            tableString = tableString.Replace($"{SqlBuilder.GetTranslationColumnName(tagColumn.DbColumnName)}  VARCHAR(100)", $"{SqlBuilder.GetTranslationColumnName(tagColumn.DbColumnName)}  VARCHAR({tagColumn.Length}) ");
+                        }
                     }
                 }
             }
