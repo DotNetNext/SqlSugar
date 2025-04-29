@@ -237,7 +237,9 @@ namespace SqlSugar.TDengine
                    && it.DbColumnName?.ToLower() != attr.Tag4?.ToLower()
                 ).ToList();
             }
-            this.Context.DbMaintenance.CreateTable(entityInfo.DbTableName, dbColumns);
+            var dbMain = (TDengineDbMaintenance)this.Context.DbMaintenance;
+            dbMain.EntityInfo = entityInfo;
+            dbMain.CreateTable(entityInfo.DbTableName, dbColumns);
             entityInfo.DbTableName = oldTableName;
         }
         protected override DbColumnInfo EntityColumnToDbColumn(EntityInfo entityInfo, string tableName, EntityColumnInfo item)

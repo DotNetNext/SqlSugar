@@ -10,6 +10,8 @@ namespace SqlSugar.TDengine
 {
     public class TDengineDbMaintenance : DbMaintenanceProvider
     {
+        public EntityInfo EntityInfo { get; set; }
+
         #region DML
 
         protected override string GetViewInfoListSql => throw new NotImplementedException();
@@ -427,6 +429,15 @@ namespace SqlSugar.TDengine
                 var colums = STable.Tags.Select(it => this.SqlBuilder.GetTranslationTableName(it.Name)+ "  VARCHAR(100) ");
                 tableString=tableString.Replace(SqlBuilder.GetTranslationColumnName("TagsTypeId"), string.Join(",", colums));
                 tableString = tableString.Replace(" VARCHAR(100)  VARCHAR(100)", " VARCHAR(100)");
+                foreach (var item in STable.Tags)
+                {
+                    var tagColumn = this.EntityInfo.Columns.FirstOrDefault(it => it.DbColumnName == item.Name || it.PropertyName == item.Name);
+                    if (tagColumn != null&&tagColumn.UnderType!=UtilConstants.StringType) 
+                    {
+                       var tagType= new TDengineDbBind() { Context=this.Context }.GetDbTypeName(tagColumn.UnderType.Name);
+                       tableString = tableString.Replace($"{SqlBuilder.GetTranslationColumnName(tagColumn.DbColumnName)}  VARCHAR(100)", $"{SqlBuilder.GetTranslationColumnName(tagColumn.DbColumnName)} {tagType} ");
+                    }
+                }
             }
             this.Context.Ado.ExecuteCommand(tableString);
             var createChildSql = $"CREATE TABLE IF NOT EXISTS     {childTableName} USING {stableName} TAGS('default')";
