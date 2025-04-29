@@ -226,6 +226,10 @@ namespace SqlSugar.TDengine
         #endregion
 
         #region Methods  
+        public override bool AddRemark(EntityInfo entity)
+        {
+            return true;
+        }
         public override bool AddColumn(string tableName, DbColumnInfo columnInfo)
         {
             if (columnInfo.DbColumnName == "TagsTypeId") 
