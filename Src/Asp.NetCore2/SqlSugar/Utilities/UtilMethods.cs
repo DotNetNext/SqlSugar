@@ -18,8 +18,13 @@ namespace SqlSugar
 {
     public class UtilMethods
     {
-        public static string EscapeLikeValue(DbType dbType, string value, char wildcard='%')
+        public static string EscapeLikeValue(ISqlSugarClient db, string value, char wildcard='%')
         {
+            var dbType = db.CurrentConnectionConfig.DbType;
+            if (db.CurrentConnectionConfig?.MoreSettings?.DatabaseModel != null) 
+            {
+                dbType = db.CurrentConnectionConfig.MoreSettings.DatabaseModel.Value;
+            }
             if (string.IsNullOrEmpty(value))
                 return value;
              
