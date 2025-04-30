@@ -49,21 +49,12 @@ namespace SqlSugar
                 case DbType.TDSQL:
                 case DbType.GaussDB:
                 case DbType.GaussDBNative:
-                    value = value.Replace("\\", "\\\\")
-                                 .Replace(wildcardStr, "\\" + wildcard);
-                    break;
-
                 // MySQL 和兼容库，使用反斜杠进行转义
                 case DbType.MySql:
                 case DbType.MySqlConnector:
                 case DbType.Tidb:
                 case DbType.PolarDB:
                 case DbType.OceanBase:
-                    value = value.Replace("\\", "\\\\")
-                                 .Replace(wildcardStr, "\\" + wildcard);
-                    break;
-
-                // Oracle 风格使用 ESCAPE 字符
                 case DbType.Oracle:
                 case DbType.OceanBaseForOracle:
                 case DbType.HG:
@@ -72,35 +63,15 @@ namespace SqlSugar
                 case DbType.DB2:
                 case DbType.HANA:
                 case DbType.GoldenDB:
-                    value = value.Replace("\\", "\\\\")
-                                 .Replace(wildcardStr, "\\" + wildcard);
-                    break;
-
-                // Sqlite 通常使用反斜杠作为转义符
                 case DbType.Sqlite:
-                    value = value.Replace("\\", "\\\\")
-                                 .Replace(wildcardStr, "\\" + wildcard);
-                    break;
-
-                // DuckDB 和 QuestDB 类似 PostgreSQL
                 case DbType.DuckDB:
                 case DbType.QuestDB:
-                    value = value.Replace("\\", "\\\\")
-                                 .Replace(wildcardStr, "\\" + wildcard);
-                    break;
-
-                // Doris、Xugu、Vastbase 等默认使用反斜杠
                 case DbType.Doris:
                 case DbType.Xugu:
                 case DbType.Vastbase:
-                    value = value.Replace("\\", "\\\\")
-                                 .Replace(wildcardStr, "\\" + wildcard);
-                    break;
-
-                // ClickHouse 和 Kdbndp、Oscar、Custom 处理同上
                 default:
-                    value = value.Replace("\\", "\\\\")
-                                 .Replace(wildcardStr, "\\" + wildcard);
+                    value = value 
+                                 .Replace(wildcardStr, "\\\\" + wildcard);
                     break;
             }
 
