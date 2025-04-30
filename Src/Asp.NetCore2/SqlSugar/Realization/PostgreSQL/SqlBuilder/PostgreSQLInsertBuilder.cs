@@ -242,6 +242,10 @@ namespace SqlSugar
                 {
                     return v.ToString(CultureInfo.InvariantCulture);
                 }
+                else if (value is double dou)
+                {
+                    return dou.ToString(CultureInfo.InvariantCulture);
+                }
                 else
                 {
                     return N + "'" + value.ToString() + "'";
