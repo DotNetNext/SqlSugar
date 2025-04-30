@@ -1264,5 +1264,11 @@ namespace SqlSugar
         }
         #endregion
 
+        #region Other
+        public string EscapeLikeValue(string value, char wildcard = '%') 
+        {
+            return UtilMethods.EscapeLikeValue(this.Context, value, wildcard);
+        }
+        #endregion
     }
 }
