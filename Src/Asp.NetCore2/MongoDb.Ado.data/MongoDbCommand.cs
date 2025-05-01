@@ -95,7 +95,7 @@ namespace MongoDb.Ado.data
                     var update = updateCommand["update"].AsBsonDocument;
                     var options = updateCommand.Contains("options") ? updateCommand["options"].AsBsonDocument : null;
 
-                    var updateResult = collection.UpdateOne(filter, update); // 单个更新
+                    var updateResult = collection.UpdateMany(filter, update); // 单个更新
                     totals+=(int)updateResult.ModifiedCount;  // 返回修改的文档数
                 }
                 return documents.Count;  // 返回插入成功的文档数
@@ -113,12 +113,16 @@ namespace MongoDb.Ado.data
 
             if (operation == "deletemany")
             {
-                // 处理删除多个文档操作
-                var deleteCommand = BsonDocument.Parse(json);
-                var filter = deleteCommand["filter"].AsBsonDocument;
-
-                var deleteResult = collection.DeleteMany(filter); // 多个删除
-                return (int)deleteResult.DeletedCount;  // 返回删除的文档数
+                var totals = 0;
+                // 处理插入多条记录操作
+                var documents = BsonSerializer.Deserialize<List<BsonDocument>>(json); // 假设 json 
+                foreach (var updateCommand in documents)
+                {
+                    var filter = updateCommand["filter"].AsBsonDocument;  
+                    var updateResult = collection.DeleteMany(filter); // 单个更新
+                    totals += (int)updateResult.DeletedCount;  // 返回修改的文档数
+                }
+                return documents.Count;  // 返回插入成功的文档数
             }
 
             if (operation == "find")
