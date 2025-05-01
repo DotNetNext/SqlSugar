@@ -86,14 +86,19 @@ namespace MongoDb.Ado.data
 
             if (operation == "updatemany")
             {
-                // 处理更新多个文档操作
-                var updateCommand = BsonDocument.Parse(json);
-                var filter = updateCommand["filter"].AsBsonDocument;
-                var update = updateCommand["update"].AsBsonDocument;
-                var options = updateCommand.Contains("options") ? updateCommand["options"].AsBsonDocument : null;
+                var totals = 0;
+                // 处理插入多条记录操作
+                var documents = BsonSerializer.Deserialize<List<BsonDocument>>(json); // 假设 json 是包含多个文档的数组
+                foreach (var updateCommand in documents)
+                {
+                    var filter = updateCommand["filter"].AsBsonDocument;
+                    var update = updateCommand["update"].AsBsonDocument;
+                    var options = updateCommand.Contains("options") ? updateCommand["options"].AsBsonDocument : null;
 
-                var updateResult = collection.UpdateMany(filter, update); // 多个更新
-                return (int)updateResult.ModifiedCount;  // 返回修改的文档数
+                    var updateResult = collection.UpdateOne(filter, update); // 单个更新
+                    totals+=(int)updateResult.ModifiedCount;  // 返回修改的文档数
+                }
+                return documents.Count;  // 返回插入成功的文档数
             }
 
             if (operation == "delete")

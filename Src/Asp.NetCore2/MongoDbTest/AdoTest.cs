@@ -44,11 +44,77 @@ namespace MongoDbTest
                 var value=mongoDbCommand.ExecuteScalar();
                 connection.Close();
             }
-            //ExecuteNonQuery
+            //ExecuteNonQuery insert
+            {
+                var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
+                connection.Open();
+                MongoDbCommand mongoDbCommand = new MongoDbCommand(
+                    "insert b { name: \"John\", age: 31 }",
+                    connection);
+                var value = mongoDbCommand.ExecuteNonQuery();
+                connection.Close();
+            }
+            //ExecuteNonQuery insertMany
             {
                 var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
                 connection.Open();
                 MongoDbCommand mongoDbCommand = new MongoDbCommand(" insertMany b  [{ name: \"John\", age: 31 }, { name: \"Alice\", age: 25 }, { name: \"Bob\", age: 30 }  ]  ", connection);
+                var value = mongoDbCommand.ExecuteNonQuery();
+                connection.Close();
+            }
+            //ExecuteNonQuery update
+            {
+                var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
+                connection.Open();
+                MongoDbCommand mongoDbCommand = new MongoDbCommand(
+                   @"update b {
+                              ""filter"": { ""name"": ""John"" },
+                              ""update"": { ""$set"": { ""age"": 32 } }
+                            }",
+                    connection);
+                var value = mongoDbCommand.ExecuteNonQuery();
+                connection.Close();
+            }
+            //ExecuteNonQuery updateMany
+            {
+                var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
+                connection.Open();
+                MongoDbCommand mongoDbCommand = new MongoDbCommand(
+                       @"updateMany b [{
+                              ""filter"": { ""name"": ""John"" },
+                              ""update"": { ""$set"": { ""age"": 32 } }
+                            }]",
+                    connection);
+                var value = mongoDbCommand.ExecuteNonQuery();
+                connection.Close();
+            }
+            //ExecuteNonQuery delete
+            {
+                var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
+                connection.Open();
+                MongoDbCommand mongoDbCommand = new MongoDbCommand(
+                    "delete  b { name: \"John\" }",
+                    connection);
+                var value = mongoDbCommand.ExecuteNonQuery();
+                connection.Close();
+            }
+            //ExecuteNonQuery delete
+            {
+                var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
+                connection.Open();
+                MongoDbCommand mongoDbCommand = new MongoDbCommand(
+                    "delete  b { name: \"John\" }",
+                    connection);
+                var value = mongoDbCommand.ExecuteNonQuery();
+                connection.Close();
+            }
+            //ExecuteNonQuery deleteMany
+            {
+                var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
+                connection.Open();
+                MongoDbCommand mongoDbCommand = new MongoDbCommand(
+                    "deleteMany b { age: { $lt: 30 } }",
+                    connection);
                 var value = mongoDbCommand.ExecuteNonQuery();
                 connection.Close();
             }
