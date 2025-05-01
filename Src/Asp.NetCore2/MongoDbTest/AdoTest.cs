@@ -21,18 +21,29 @@ namespace MongoDbTest
 
         private static void MongoDbCommandTest()
         {
-            var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
-            connection.Open();
-            MongoDbCommand mongoDbCommand = new MongoDbCommand(" find b { age: { $gt: 31 } }", connection);
-            using (var reader = mongoDbCommand.ExecuteReader()) 
-            {
-                while (reader.Read()) 
+            //ExecuteReader
+            { 
+                var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
+                connection.Open();
+                MongoDbCommand mongoDbCommand = new MongoDbCommand(" find b { age: { $gt: 31 } }", connection);
+                using (var reader = mongoDbCommand.ExecuteReader())
                 {
-                    var name=reader.GetString("name");
-                    var age = reader.GetInt32("age");
+                    while (reader.Read())
+                    {
+                        var name = reader.GetString("name");
+                        var age = reader.GetInt32("age");
+                    }
                 }
+                connection.Close();
             }
-             connection.Close();
+            //ExecuteScalar
+            {
+                var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
+                connection.Open();
+                MongoDbCommand mongoDbCommand = new MongoDbCommand(" find b { age: { $gt: 31 } }", connection);
+                var value=mongoDbCommand.ExecuteScalar();
+                connection.Close();
+            }
         }
 
         private static void MongoDbConnectionTest()
