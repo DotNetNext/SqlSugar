@@ -93,17 +93,7 @@ namespace MongoDbTest
                 var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
                 connection.Open();
                 MongoDbCommand mongoDbCommand = new MongoDbCommand(
-                    "delete  b { name: \"John\" }",
-                    connection);
-                var value = mongoDbCommand.ExecuteNonQuery();
-                connection.Close();
-            }
-            //ExecuteNonQuery delete
-            {
-                var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
-                connection.Open();
-                MongoDbCommand mongoDbCommand = new MongoDbCommand(
-                    "delete  b { name: \"John\" }",
+                      "delete  b {\"filter\":{ name: \"John\" }}",
                     connection);
                 var value = mongoDbCommand.ExecuteNonQuery();
                 connection.Close();
@@ -113,7 +103,17 @@ namespace MongoDbTest
                 var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
                 connection.Open();
                 MongoDbCommand mongoDbCommand = new MongoDbCommand(
-                    "deleteMany b { age: { $lt: 30 } }",
+                    "deleteMany  b [{\"filter\":{ name: \"John\" }}]",
+                    connection);
+                var value = mongoDbCommand.ExecuteNonQuery();
+                connection.Close();
+            }
+            //ExecuteNonQuery delete
+            {
+                var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
+                connection.Open();
+                MongoDbCommand mongoDbCommand = new MongoDbCommand(
+                    "delete   b {\"filter\":{ name: \"John\" }}",
                     connection);
                 var value = mongoDbCommand.ExecuteNonQuery();
                 connection.Close();
