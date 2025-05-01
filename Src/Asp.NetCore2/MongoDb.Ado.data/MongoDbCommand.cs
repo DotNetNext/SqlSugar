@@ -1,21 +1,18 @@
 ﻿using System;
 using System.Data.Common;
-using System.Threading.Tasks;
-using MongoDB.Driver;
+using System.Data;
 using MongoDB.Bson;
-using System.Data; 
+using MongoDB.Driver;
+
 namespace MongoDb.Ado.data
 {
-
     public class MongoDbCommand : DbCommand
     {
         private string _commandText;
         private MongoDbConnection _connection;
         private int _commandTimeout;
 
-        public MongoDbCommand()
-        {
-        }
+        public MongoDbCommand() { }
 
         public MongoDbCommand(string commandText, MongoDbConnection connection)
         {
@@ -43,7 +40,7 @@ namespace MongoDb.Ado.data
             set => _connection = (MongoDbConnection)value;
         }
 
-        protected override DbParameterCollection DbParameterCollection => throw new NotSupportedException("MongoDbCommand does not support parameters yet.");
+        protected override DbParameterCollection DbParameterCollection => throw new NotSupportedException("暂不支持参数。");
 
         protected override DbTransaction DbTransaction { get; set; }
 
@@ -51,50 +48,88 @@ namespace MongoDb.Ado.data
 
         public override UpdateRowSource UpdatedRowSource { get; set; }
 
-        public override void Cancel()
-        {
-            // MongoDB driver does not support canceling a command.
-        }
+        public override void Cancel() { }
 
         public override int ExecuteNonQuery()
         {
-            throw new NotSupportedException("MongoDbCommand does not support ExecuteNonQuery directly.");
+            var (operation, collectionName, json) = ParseCommand(_commandText);
+            var collection = GetCollection(collectionName);
+
+            if (operation == "insert")
+            {
+                var doc = BsonDocument.Parse(json);
+                collection.InsertOne(doc);
+                return 1;
+            }
+
+            throw new NotSupportedException("只支持 insert 操作。");
         }
 
         public override object ExecuteScalar()
         {
-            var collection = GetCollection();
-            var document = collection.Find(FilterDefinition<BsonDocument>.Empty).FirstOrDefault();
-            return document;
+            var (operation, collectionName, json) = ParseCommand(_commandText);
+            var collection = GetCollection(collectionName);
+
+            if (operation == "find")
+            {
+                var filter = string.IsNullOrWhiteSpace(json) ? FilterDefinition<BsonDocument>.Empty : BsonDocument.Parse(json);
+                var document = collection.Find(filter).FirstOrDefault();
+                return document;
+            }
+
+            throw new NotSupportedException("只支持 find 操作。");
         }
 
         protected override DbDataReader ExecuteDbDataReader(CommandBehavior behavior)
         {
-            var collection = GetCollection();
-            var cursor = collection.Find(FilterDefinition<BsonDocument>.Empty).ToCursor();
-            return new MongoDbDataReader(cursor);
+            var (operation, collectionName, json) = ParseCommand(_commandText);
+            var collection = GetCollection(collectionName);
+
+            if (operation == "find")
+            {
+                var filter = string.IsNullOrWhiteSpace(json) ? FilterDefinition<BsonDocument>.Empty : BsonDocument.Parse(json);
+                //var filter = new BsonDocument { { "age", new BsonDocument { { "$gt", 25 } } } };
+                var cursor = collection.Find(filter).ToCursor();
+                return new MongoDbDataReader(cursor);
+            }
+
+            throw new NotSupportedException("只支持 find 操作。");
         }
 
-        public override void Prepare()
-        {
-            // No preparation needed for MongoDB commands
-        }
-
-        private IMongoCollection<BsonDocument> GetCollection()
-        {
-            if (_connection == null || _connection.State != ConnectionState.Open)
-                throw new InvalidOperationException("Connection must be open.");
-
-            if (string.IsNullOrWhiteSpace(_commandText))
-                throw new InvalidOperationException("CommandText must be set to the collection name.");
-
-            return _connection.GetDatabase().GetCollection<BsonDocument>(_commandText);
-        }
+        public override void Prepare() { }
 
         protected override DbParameter CreateDbParameter()
         {
             throw new NotImplementedException();
         }
-    }
 
+        private IMongoCollection<BsonDocument> GetCollection(string name)
+        {
+            if (_connection == null || _connection.State != ConnectionState.Open)
+                throw new InvalidOperationException("连接尚未打开。");
+
+            return _connection.GetDatabase().GetCollection<BsonDocument>(name);
+        }
+
+        // 示例：find users {age:{$gt:20}} 或 insert users {"name":"Tom"}
+        private (string op, string collection, string json) ParseCommand(string cmd)
+        {
+            if (string.IsNullOrWhiteSpace(cmd))
+                throw new InvalidOperationException("CommandText 不能为空。");
+
+            var parts = cmd.Trim().Split(new[] { ' ' }, 3, StringSplitOptions.RemoveEmptyEntries);
+            if (parts.Length < 2)
+                throw new InvalidOperationException("命令格式错误，应为：操作 集合名 JSON过滤");
+
+            string op = parts[0].ToLowerInvariant();
+            string collection = parts[1];
+            string json = parts.Length >= 3 ? parts[2] : "";
+
+            return (op, collection, json);
+        }
+    }
 }
+
+
+
+
