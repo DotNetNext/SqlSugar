@@ -3,6 +3,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,6 +16,23 @@ namespace MongoDbTest
         {
             MongoClientTest();
             MongoDbConnectionTest();
+            MongoDbCommandTest();
+        }
+
+        private static void MongoDbCommandTest()
+        {
+            var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
+            connection.Open();
+            MongoDbCommand mongoDbCommand = new MongoDbCommand(" find b { age: { $gt: 31 } }", connection);
+            using (var reader = mongoDbCommand.ExecuteReader()) 
+            {
+                while (reader.Read()) 
+                {
+                    var name=reader.GetString("name");
+                    var age = reader.GetInt32("age");
+                }
+            }
+             connection.Close();
         }
 
         private static void MongoDbConnectionTest()
@@ -24,7 +42,7 @@ namespace MongoDbTest
            var database= db.GetDatabase();
             var collections = database.GetCollection<BsonDocument>("b");
             // 插入一个文档，MongoDB 会创建数据库和集合
-            var document = new BsonDocument { { "name", "bbbbbb" }, { "age", 30 } };
+            var document = new BsonDocument { { "name", "bbbbbb" }, { "age", 40 } };
             collections.InsertOne(document);
             var list = collections.AsQueryable<BsonDocument>().ToList();
         }
