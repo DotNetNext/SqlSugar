@@ -58,82 +58,12 @@ namespace MongoDb.Ado.data
             var (operation, collectionName, json) = ParseCommand(_commandText);
             var collection = GetCollection(collectionName);
 
-            if (operation == "insert")
-            {
-                // 处理插入操作
-                var doc = BsonDocument.Parse(json);
-                collection.InsertOne(doc);
-                return 1;  // 返回插入成功的文档数
-            }
-            if (operation == "insertmany")
-            {
-                // 处理插入多条记录操作
-                var documents = BsonSerializer.Deserialize<List<BsonDocument>>(json); // 假设 json 是包含多个文档的数组
-                collection.InsertMany(documents);
-                return documents.Count;  // 返回插入成功的文档数
-            }
-            if (operation == "update")
-            {
-                // 处理更新操作
-                var updateCommand = BsonDocument.Parse(json);
-                var filter = updateCommand["filter"].AsBsonDocument;
-                var update = updateCommand["update"].AsBsonDocument;
-                var options = updateCommand.Contains("options") ? updateCommand["options"].AsBsonDocument : null;
+            var handlers = ExecuteHandlerFactory.Items;
 
-                var updateResult = collection.UpdateOne(filter, update); // 单个更新
-                return (int)updateResult.ModifiedCount;  // 返回修改的文档数
-            }
+            if (!handlers.TryGetValue(operation, out var handler))
+                throw new NotSupportedException($"不支持的操作类型: {operation}");
 
-            if (operation == "updatemany")
-            {
-                var totals = 0;
-                // 处理插入多条记录操作
-                var documents = BsonSerializer.Deserialize<List<BsonDocument>>(json); // 假设 json 是包含多个文档的数组
-                foreach (var updateCommand in documents)
-                {
-                    var filter = updateCommand["filter"].AsBsonDocument;
-                    var update = updateCommand["update"].AsBsonDocument;
-                    var options = updateCommand.Contains("options") ? updateCommand["options"].AsBsonDocument : null;
-
-                    var updateResult = collection.UpdateMany(filter, update); // 单个更新
-                    totals+=(int)updateResult.ModifiedCount;  // 返回修改的文档数
-                }
-                return documents.Count;  // 返回插入成功的文档数
-            }
-
-            if (operation == "delete")
-            {
-                // 处理删除单个文档操作
-                var deleteCommand = BsonDocument.Parse(json);
-                var filter = deleteCommand["filter"].AsBsonDocument;
-
-                var deleteResult = collection.DeleteOne(filter); // 单个删除
-                return (int)deleteResult.DeletedCount;  // 返回删除的文档数
-            }
-
-            if (operation == "deletemany")
-            {
-                var totals = 0;
-                // 处理插入多条记录操作
-                var documents = BsonSerializer.Deserialize<List<BsonDocument>>(json); // 假设 json 
-                foreach (var updateCommand in documents)
-                {
-                    var filter = updateCommand["filter"].AsBsonDocument;  
-                    var updateResult = collection.DeleteMany(filter); // 单个更新
-                    totals += (int)updateResult.DeletedCount;  // 返回修改的文档数
-                }
-                return documents.Count;  // 返回插入成功的文档数
-            }
-
-            if (operation == "find")
-            {
-                // 处理查询操作，查询并返回 0
-                var filter = string.IsNullOrWhiteSpace(json) ? FilterDefinition<BsonDocument>.Empty : BsonDocument.Parse(json);
-                var document = collection.Find(filter).FirstOrDefault(); // 查询操作
-                return 0;  // 返回 0，表示查询操作已执行，且没有对数据库做更改
-            }
-
-            throw new NotSupportedException("不支持此操作类型。");
+            return handler.Handle(collection, json);
         }
 
         public override object ExecuteScalar()
