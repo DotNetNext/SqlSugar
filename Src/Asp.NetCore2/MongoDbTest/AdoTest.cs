@@ -44,6 +44,14 @@ namespace MongoDbTest
                 var value=mongoDbCommand.ExecuteScalar();
                 connection.Close();
             }
+            //ExecuteNonQuery
+            {
+                var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
+                connection.Open();
+                MongoDbCommand mongoDbCommand = new MongoDbCommand(" insertMany b  [{ name: \"John\", age: 31 }, { name: \"Alice\", age: 25 }, { name: \"Bob\", age: 30 }  ]  ", connection);
+                var value = mongoDbCommand.ExecuteNonQuery();
+                connection.Close();
+            }
         }
 
         private static void MongoDbConnectionTest()
