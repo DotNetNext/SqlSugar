@@ -18,17 +18,17 @@ namespace MongoDbTest
             MongoClientTest();
             MongoDbConnectionTest();
             MongoDbCommandTest();
+            MongoDbCommandTestAsync().GetAwaiter().GetResult();
         }
 
+        #region MongoDbCommandTest
         private static void MongoDbCommandTest()
         {
-            DataReaderTest(); 
+            DataReaderTest();
             DataTableTest();
             ExecuteScalarTest();
             ExecuteNonQueryTest();
         }
-
-
         private static void ExecuteNonQueryTest()
         {
             //ExecuteNonQuery insert
@@ -116,7 +116,6 @@ namespace MongoDbTest
                 connection.Close();
             }
         }
-
         private static void DataTableTest()
         {
             //datatable
@@ -153,8 +152,7 @@ namespace MongoDbTest
             MongoDbCommand mongoDbCommand = new MongoDbCommand(" find b { age: { $gt: 31 } }", connection);
             var value = mongoDbCommand.ExecuteScalar();
             connection.Close();
-        }
-
+        } 
         private static void DataReaderTest()
         {
             //ExecuteReader single query 1
@@ -251,6 +249,94 @@ namespace MongoDbTest
                 connection.Close();
             }
         }
+        #endregion
+
+        #region MongoDbCommandTestAsync
+        private static async Task MongoDbCommandTestAsync()
+        {
+            await DataReaderTestAsync();
+            await DataTableTestAsync();
+            await ExecuteScalarTestAsync();
+            await ExecuteNonQueryTestAsync();
+        }
+
+        private static async Task ExecuteNonQueryTestAsync()
+        {
+            // ExecuteNonQueryAsync insert
+            {
+                var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
+                await connection.OpenAsync();
+                MongoDbCommand mongoDbCommand = new MongoDbCommand(
+                    "insert b { name: \"John\", age: 31 }",
+                    connection);
+                var value = await mongoDbCommand.ExecuteNonQueryAsync();
+                connection.Close();
+            }
+            // ExecuteNonQueryAsync insertMany
+            {
+                var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
+                await connection.OpenAsync();
+                MongoDbCommand mongoDbCommand = new MongoDbCommand(
+                    "insertMany b [{ name: \"John\", age: 31 }, { name: \"Alice\", age: 25 }, { name: \"Bob\", age: 30 }]",
+                    connection);
+                var value = await mongoDbCommand.ExecuteNonQueryAsync();
+                connection.Close();
+            }
+            // ExecuteNonQueryAsync update
+            {
+                var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
+                await connection.OpenAsync();
+                MongoDbCommand mongoDbCommand = new MongoDbCommand(
+                    @"update b {
+                ""filter"": { ""name"": ""John"" },
+                ""update"": { ""$set"": { ""age"": 32 } }
+            }",
+                    connection);
+                var value = await mongoDbCommand.ExecuteNonQueryAsync();
+                connection.Close();
+            }
+            // 其他类似的异步测试方法...
+        }
+
+        private static async Task ExecuteScalarTestAsync()
+        {
+            var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
+            await connection.OpenAsync();
+            MongoDbCommand mongoDbCommand = new MongoDbCommand("find b { age: { $gt: 31 } }", connection);
+            var value = await mongoDbCommand.ExecuteScalarAsync();
+            connection.Close();
+        }
+
+        private static async Task DataReaderTestAsync()
+        {
+            var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
+            await connection.OpenAsync();
+            MongoDbCommand mongoDbCommand = new MongoDbCommand("find b { age: { $gt: 32 } }", connection);
+            using (var reader = await mongoDbCommand.ExecuteReaderAsync())
+            {
+                while (await reader.ReadAsync())
+                {
+                    var name = reader.GetString("name");
+                    var age = reader.GetInt32("age");
+                }
+            }
+            connection.Close();
+        }
+
+        private static async Task DataTableTestAsync()
+        {
+            var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
+            await connection.OpenAsync();
+            MongoDbCommand mongoDbCommand = new MongoDbCommand(
+                "aggregate b [ { \"$sort\": { \"age\": -1 } }, { \"$skip\": 1 }, { \"$limit\": 2 } ]",
+                connection);
+            MongoDbDataAdapter mongoDbDataAdapter = new MongoDbDataAdapter();
+            mongoDbDataAdapter.SelectCommand = mongoDbCommand;
+            DataTable dt = new DataTable();
+            await Task.Run(() => mongoDbDataAdapter.Fill(dt)); // 模拟异步操作
+            connection.Close();
+        }
+        #endregion
 
         private static void MongoDbConnectionTest()
         {
