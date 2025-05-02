@@ -7,6 +7,7 @@ using System.Linq;
 using MongoDB.Bson.Serialization;
 using System.Collections.Generic;
 using System.Xml.Linq;
+using System.Threading.Tasks;
 
 namespace MongoDb.Ado.data
 {
@@ -72,6 +73,26 @@ namespace MongoDb.Ado.data
             var collection = GetCollection(collectionName);
             return new DbDataReaderFactory().Handle(operation, collection, json);
         }
+
+        public new Task<int> ExecuteNonQueryAsync()
+        {
+            var (operation, collectionName, json) = ParseCommand(_commandText);
+            var collection = GetCollection(collectionName);
+            return ExecuteHandlerFactoryAsync.HandlerAsync(operation, json, collection);
+        }
+        public new Task<object> ExecuteScalarAsync()
+        {
+            var (operation, collectionName, json) = ParseCommand(_commandText);
+            var collection = GetCollection(collectionName);
+            return new ExecuteScalarHandlerAsync().HandleAsync(operation, collection, json);
+        }
+        protected  Task<DbDataReader> ExecuteDbDataReaderAsync(CommandBehavior behavior)
+        {
+            var (operation, collectionName, json) = ParseCommand(_commandText);
+            var collection = GetCollection(collectionName);
+            return new DbDataReaderFactoryAsync().HandleAsync(operation, collection, json);
+        }
+
 
         public override void Prepare() { }
 
