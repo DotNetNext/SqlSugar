@@ -12,24 +12,21 @@ namespace MongoDb.Ado.data
 {
     public class DbDataReaderFactory
     {
+        public readonly static Dictionary<string, IQueryHandler> Items = new Dictionary<string, IQueryHandler>(StringComparer.OrdinalIgnoreCase)
+            {
+                { "find", new QueryFindHandler() },
+                { "aggregate", new QueryFindHandler() },
+            };
         public DbDataReader Handle(string operation, IMongoCollection<BsonDocument> collection, string json)
         {
             var doc = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonValue>(json);
-            IQueryHandler queryHandler = null;
-            if (operation == "find")
+            DbDataReaderFactory.Items.TryGetValue(operation, out var handler);
+            if (handler==null)
             {
-                queryHandler = new QueryFindHandler();
-            }
-            else if (operation == "aggregate")
-            {
-                queryHandler = new QueryAggregateHandler();
-            }
-            else 
-            {
-                ExecuteHandlerFactory.Handler(operation,json, collection);
+                ExecuteHandlerFactory.Handler(operation, json, collection);
                 return new DataTable().CreateDataReader();
             }
-            return queryHandler.Handler(collection, doc);
+            return handler.Handler(collection, doc);
         }
 
     }

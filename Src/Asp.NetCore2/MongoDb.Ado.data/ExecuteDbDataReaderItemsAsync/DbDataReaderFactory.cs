@@ -13,24 +13,21 @@ namespace MongoDb.Ado.data
 {
     public class DbDataReaderFactoryAsync
     {
-        public async Task<DbDataReader> HandleAsync(string operation, IMongoCollection<BsonDocument> collection, string json)
+        public readonly static Dictionary<string, IQueryHandlerAsync> Items = new Dictionary<string, IQueryHandlerAsync>(StringComparer.OrdinalIgnoreCase)
+            {
+                { "find", new QueryFindHandlerAsync() },
+                { "aggregate", new QueryFindHandlerAsync() },
+            };
+        public async Task<DbDataReader> Handle(string operation, IMongoCollection<BsonDocument> collection, string json)
         {
             var doc = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonValue>(json);
-            IQueryHandlerAsync queryHandler = null;
-            if (operation == "find")
+            DbDataReaderFactoryAsync.Items.TryGetValue(operation, out var handler);
+            if (handler == null)
             {
-                queryHandler = new QueryFindHandlerAsync();
-            }
-            else if (operation == "aggregate")
-            {
-                queryHandler = new QueryAggregateHandlerAsync();
-            }
-            else 
-            {
-                await ExecuteHandlerFactoryAsync.HandlerAsync(operation,json, collection);
+                await  ExecuteHandlerFactoryAsync.HandlerAsync(operation, json, collection);
                 return new DataTable().CreateDataReader();
             }
-            return await queryHandler.HandlerAsync(collection, doc);
+            return await handler.HandlerAsync(collection, doc);
         }
 
     }

@@ -9,6 +9,7 @@ namespace MongoDb.Ado.data
 {
     public class UpdateHandlerAsync : IMongoOperationHandlerAsync
     {
+        public string operation { get; set; }
         public async Task<int> HandleAsync(IMongoCollection<BsonDocument> collection, string json)
         {
             var doc = BsonDocument.Parse(json);

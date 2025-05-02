@@ -28,7 +28,7 @@ namespace MongoDb.Ado.data
 
             if (!handlers.TryGetValue(operation, out var handler))
                 throw new NotSupportedException($"不支持的操作类型: {operation}");
-
+            handler.operation = operation;
             return handler.HandleAsync(collection, json);
         }
 

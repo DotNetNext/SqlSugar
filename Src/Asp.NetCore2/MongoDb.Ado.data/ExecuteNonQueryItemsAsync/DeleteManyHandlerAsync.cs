@@ -10,6 +10,7 @@ namespace MongoDb.Ado.data
 {
     public class DeleteManyHandlerAsync : IMongoOperationHandlerAsync
     {
+        public string operation { get; set; }
         public async Task<int> HandleAsync(IMongoCollection<BsonDocument> collection, string json)
         {
             var documents = ParseJsonArray(json);

@@ -8,7 +8,8 @@ using System.Threading.Tasks;
 namespace MongoDb.Ado.data 
 {
     public interface IMongoOperationHandlerAsync
-    {
+    { 
+        string operation { get; set; }
         Task<int> HandleAsync(IMongoCollection<BsonDocument> collection, string json);
     }
 }

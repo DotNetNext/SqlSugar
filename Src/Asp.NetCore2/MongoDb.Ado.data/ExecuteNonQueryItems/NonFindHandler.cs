@@ -8,10 +8,16 @@ namespace MongoDb.Ado.data
 {
     public class NonFindHandler : IMongoOperationHandler
     {
+        public string operation { get; set; }
         public int Handle(IMongoCollection<BsonDocument> collection, string json)
         {
-            var filter = string.IsNullOrWhiteSpace(json) ? FilterDefinition<BsonDocument>.Empty : BsonDocument.Parse(json);
-            var result = collection.Find(filter).FirstOrDefault();
+            using (var dr =   new DbDataReaderFactory().Handle(operation, collection, json))
+            {
+                if (dr.Read())
+                {
+
+                }
+            }
             return 0; // 查询不改变数据库
         }
     }
