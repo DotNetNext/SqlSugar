@@ -13,36 +13,9 @@ namespace MongoDb.Ado.data
     {
         private readonly IEnumerator<BsonDocument> _enumerator;
         private BsonDocument _current;
-        private List<string> _fieldNames;
-        private List<Type> _fieldTypes;
         public MongoDbBsonDocumentDataReader(IEnumerable<BsonDocument> documents)
         {
-            var docList = documents.Take(1).ToList();
-            _enumerator = docList.GetEnumerator();
-            if (docList.Any()==true)
-            {
-                _fieldNames = docList.SelectMany(d => d.Names).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
-                _fieldTypes = new List<Type>(); 
-                foreach (var fieldName in _fieldNames)
-                {
-                    Type fieldType = typeof(object); // 默认类型
-
-                    foreach (var doc in docList)
-                    {
-                        if (doc.TryGetValue(fieldName, out var value) && value != BsonNull.Value)
-                        {
-                            fieldType = BsonTypeMapper.MapToDotNetValue(value)?.GetType() ?? typeof(object);
-                        }
-                        break;
-                    }
-                    _fieldTypes.Add(fieldType);
-                }
-            }
-            else
-            {
-                _fieldNames = new List<string>();
-                _fieldTypes = new List<Type>();
-            } 
+            _enumerator = documents.GetEnumerator();
         }
 
         public override bool Read()
@@ -55,7 +28,7 @@ namespace MongoDb.Ado.data
             return false;
         }
 
-        public override int FieldCount => _fieldNames.Count;
+        public override int FieldCount => _current?.Count()??0;
 
         public override int Depth => throw new NotImplementedException();
 
@@ -77,7 +50,12 @@ namespace MongoDb.Ado.data
         public override DateTime GetDateTime(int ordinal) => (DateTime)GetValue(ordinal);
         public override decimal GetDecimal(int ordinal) => (decimal)GetValue(ordinal);
         public override double GetDouble(int ordinal) => (double)GetValue(ordinal);
-        public override Type GetFieldType(int ordinal) => _fieldTypes[ordinal] ?? typeof(object);
+        public override Type GetFieldType(int ordinal)
+        {
+            var obj = GetValue(ordinal);
+            if (obj == null) return typeof(object);
+            return obj.GetType();
+        }
         public override float GetFloat(int ordinal) => (float)GetValue(ordinal);
         public override Guid GetGuid(int ordinal) => (Guid)GetValue(ordinal);
         public override short GetInt16(int ordinal) => (short)GetValue(ordinal);
@@ -102,9 +80,18 @@ namespace MongoDb.Ado.data
 
         public override string GetName(int ordinal)
         {
-            if (ordinal < 0 || ordinal >= _fieldNames.Count)
+            if (_current == null)
+                throw new InvalidOperationException("No current document.");
+
+            // 获取当前文档的字段元素列表（Elements）
+            var elements = _current.Elements.ToList();
+
+            // 确保 ordinal 是有效的索引
+            if (ordinal < 0 || ordinal >= elements.Count)
                 throw new IndexOutOfRangeException($"Invalid ordinal: {ordinal}");
-            return _fieldNames[ordinal];
+
+            // 返回对应索引的字段名
+            return elements[ordinal].Name;
         }
 
         public override int GetOrdinal(string name)

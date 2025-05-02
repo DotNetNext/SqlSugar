@@ -78,28 +78,36 @@ namespace MongoDb.Ado.data
             var rows = dt.Rows;
             using (DbDataReader dr = command.ExecuteReader())
             {
-                for (int i = 0; i < dr.FieldCount; i++)
+                if (dr.Read())
                 {
-                    string name = dr.GetName(i).Trim();
-                    if (!columns.Contains(name))
-                        columns.Add(new DataColumn(name, dr.GetFieldType(i)));
-                    else
+                    for (int i = 0; i < dr.FieldCount; i++)
                     {
-                        columns.Add(new DataColumn(name + i, dr.GetFieldType(i)));
+                        string name = dr.GetName(i).Trim();
+                        if (!columns.Contains(name))
+                            columns.Add(new DataColumn(name, dr.GetFieldType(i)));
+                        else
+                        {
+                            columns.Add(new DataColumn(name + i, dr.GetFieldType(i)));
+                        }
                     }
-                }
-
-                while (dr.Read())
-                {
-                    DataRow daRow = dt.NewRow();
-                    for (int i = 0; i < columns.Count; i++)
+                    AddRow(dt, columns, dr);
+                    while (dr.Read())
                     {
-                        daRow[columns[i].ColumnName] = dr.GetValue(i);
+                        AddRow(dt, columns, dr);
                     }
-                    dt.Rows.Add(daRow);
                 }
             }
             dt.AcceptChanges();
+        }
+
+        private static void AddRow(DataTable dt, DataColumnCollection columns, DbDataReader dr)
+        {
+            DataRow daRow = dt.NewRow();
+            for (int i = 0; i < columns.Count; i++)
+            {
+                daRow[columns[i].ColumnName] = dr.GetValue(i);
+            }
+            dt.Rows.Add(daRow);
         }
 
         /// <summary>
@@ -112,13 +120,13 @@ namespace MongoDb.Ado.data
             {
                 ds = new DataSet();
             }
+            var dt = new DataTable();
             using (DbDataReader dr = command.ExecuteReader())
             {
-                do
+                var columns = dt.Columns;
+                var rows = dt.Rows;
+                if (dr.Read())
                 {
-                    var dt = new DataTable();
-                    var columns = dt.Columns;
-                    var rows = dt.Rows;
                     for (int i = 0; i < dr.FieldCount; i++)
                     {
                         string name = dr.GetName(i).Trim();
@@ -129,19 +137,13 @@ namespace MongoDb.Ado.data
                             columns.Add(new DataColumn(name + i, dr.GetFieldType(i)));
                         }
                     }
-
+                    AddRow(dt, columns, dr);
                     while (dr.Read())
                     {
-                        DataRow daRow = dt.NewRow();
-                        for (int i = 0; i < columns.Count; i++)
-                        {
-                            daRow[columns[i].ColumnName] = dr.GetValue(i);
-                        }
-                        dt.Rows.Add(daRow);
+                        AddRow(dt, columns, dr);
                     }
-                    dt.AcceptChanges();
-                    ds.Tables.Add(dt);
-                } while (dr.NextResult());
+                }
+                ds.Tables.Add(dt);
             }
         }
 

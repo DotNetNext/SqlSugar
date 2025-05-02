@@ -119,6 +119,7 @@ namespace MongoDbTest
 
         private static void DataTableTest()
         {
+            //datatable
             {
                 var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
                 connection.Open();
@@ -128,6 +129,18 @@ namespace MongoDbTest
                 mongoDbDataAdapter.SelectCommand = mongoDbCommand;
                 DataTable dt = new DataTable();
                 mongoDbDataAdapter.Fill(dt);
+                connection.Close();
+            }
+            //dataset
+            {
+                var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
+                connection.Open();
+                ////SELECT *  FROM b ORDER BY age DESC OFFSET 1 ROWS FETCH NEXT 2 ROWS ONLY; 
+                MongoDbCommand mongoDbCommand = new MongoDbCommand(" aggregate b [\r\n  { \"$sort\": { \"age\": -1 } },\r\n  { \"$skip\": 1 },\r\n  { \"$limit\": 2 }\r\n] ]", connection);
+                MongoDbDataAdapter mongoDbDataAdapter = new MongoDbDataAdapter();
+                mongoDbDataAdapter.SelectCommand = mongoDbCommand;
+                DataSet ds = new DataSet();
+                mongoDbDataAdapter.Fill(ds);
                 connection.Close();
             }
         }
