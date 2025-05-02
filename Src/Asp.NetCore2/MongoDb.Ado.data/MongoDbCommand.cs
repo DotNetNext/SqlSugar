@@ -59,14 +59,13 @@ namespace MongoDb.Ado.data
             var (operation, collectionName, json) = ParseCommand(_commandText);
             var collection = GetCollection(collectionName); 
             return ExecuteHandlerFactory.Handler(operation, json, collection);
-        }
-
+        } 
         public override object ExecuteScalar()
         { 
             var (operation, collectionName, json) = ParseCommand(_commandText); 
             var collection = GetCollection(collectionName);
             return new ExecuteScalarHandler().Handle(operation,collection, json); 
-        }
+        } 
         protected override DbDataReader ExecuteDbDataReader(CommandBehavior behavior)
         {
             var (operation, collectionName, json) = ParseCommand(_commandText);
