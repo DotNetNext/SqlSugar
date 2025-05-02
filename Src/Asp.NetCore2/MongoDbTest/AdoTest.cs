@@ -7,6 +7,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace MongoDbTest
 {
@@ -20,6 +21,128 @@ namespace MongoDbTest
         }
 
         private static void MongoDbCommandTest()
+        {
+            DataReaderTest(); 
+            DataTableTest();
+            ExecuteScalarTest();
+            ExecuteNonQueryTest();
+        }
+
+
+        private static void ExecuteNonQueryTest()
+        {
+            //ExecuteNonQuery insert
+            {
+                var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
+                connection.Open();
+                MongoDbCommand mongoDbCommand = new MongoDbCommand(
+                    "insert b { name: \"John\", age: 31 }",
+                    connection);
+                var value = mongoDbCommand.ExecuteNonQuery();
+                connection.Close();
+            }
+            //ExecuteNonQuery insertMany
+            {
+                var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
+                connection.Open();
+                MongoDbCommand mongoDbCommand = new MongoDbCommand(" insertMany b  [{ name: \"John\", age: 31 }, { name: \"Alice\", age: 25 }, { name: \"Bob\", age: 30 }  ]  ", connection);
+                var value = mongoDbCommand.ExecuteNonQuery();
+                connection.Close();
+            }
+            //ExecuteNonQuery update
+            {
+                var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
+                connection.Open();
+                MongoDbCommand mongoDbCommand = new MongoDbCommand(
+                   @"update b {
+                              ""filter"": { ""name"": ""John"" },
+                              ""update"": { ""$set"": { ""age"": 32 } }
+                            }",
+                    connection);
+                var value = mongoDbCommand.ExecuteNonQuery();
+                connection.Close();
+            }
+            //ExecuteNonQuery updateMany
+            {
+                var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
+                connection.Open();
+                MongoDbCommand mongoDbCommand = new MongoDbCommand(
+                       @"updateMany b [{
+                              ""filter"": { ""name"": ""John"" },
+                              ""update"": { ""$set"": { ""age"": 32 } }
+                            }]",
+                    connection);
+                var value = mongoDbCommand.ExecuteNonQuery();
+                connection.Close();
+            }
+            //ExecuteNonQuery delete
+            {
+                var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
+                connection.Open();
+                MongoDbCommand mongoDbCommand = new MongoDbCommand(
+                      "delete  b {\"filter\":{ name: \"John\" }}",
+                    connection);
+                var value = mongoDbCommand.ExecuteNonQuery();
+                connection.Close();
+            }
+            //ExecuteNonQuery delete
+            {
+                var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
+                connection.Open();
+                MongoDbCommand mongoDbCommand = new MongoDbCommand(
+                    "delete   b {\"filter\":{ name: \"John\" }}",
+                    connection);
+                var value = mongoDbCommand.ExecuteNonQuery();
+                connection.Close();
+            }
+            //ExecuteNonQuery deleteMany
+            {
+                var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
+                connection.Open();
+                MongoDbCommand mongoDbCommand = new MongoDbCommand(
+                    "deleteMany  b [{\"filter\":{ name: \"John\" }}]",
+                    connection);
+                var value = mongoDbCommand.ExecuteNonQuery();
+                connection.Close();
+            }
+            //ExecuteNonQuery Find
+            {
+                var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
+                connection.Open();
+                MongoDbCommand mongoDbCommand = new MongoDbCommand(
+                    " find b { age: { $gt: 31 } }",
+                    connection);
+                var value = mongoDbCommand.ExecuteNonQuery();
+                connection.Close();
+            }
+        }
+
+        private static void DataTableTest()
+        {
+            {
+                var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
+                connection.Open();
+                ////SELECT *  FROM b ORDER BY age DESC OFFSET 1 ROWS FETCH NEXT 2 ROWS ONLY; 
+                MongoDbCommand mongoDbCommand = new MongoDbCommand(" aggregate b [\r\n  { \"$sort\": { \"age\": -1 } },\r\n  { \"$skip\": 1 },\r\n  { \"$limit\": 2 }\r\n] ]", connection);
+                MongoDbDataAdapter mongoDbDataAdapter = new MongoDbDataAdapter();
+                mongoDbDataAdapter.SelectCommand = mongoDbCommand;
+                DataTable dt = new DataTable();
+                mongoDbDataAdapter.Fill(dt);
+                connection.Close();
+            }
+        }
+        private static void ExecuteScalarTest()
+        {
+            //ExecuteScalar
+
+            var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
+            connection.Open();
+            MongoDbCommand mongoDbCommand = new MongoDbCommand(" find b { age: { $gt: 31 } }", connection);
+            var value = mongoDbCommand.ExecuteScalar();
+            connection.Close();
+        }
+
+        private static void DataReaderTest()
         {
             //ExecuteReader single query 1
             {
@@ -38,7 +161,7 @@ namespace MongoDbTest
                 connection.Close();
             }
             //ExecuteReader single query 2
-            { 
+            {
                 var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
                 connection.Open();
                 //对应的SQL: SELECT name, age, _id FROM b  WHERE age > 18;
@@ -57,7 +180,7 @@ namespace MongoDbTest
             {
                 var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
                 connection.Open();
-                //SELECT * FROM b  WHERE age > 18  ORDER BY age DESC LIMIT 2 OFFSET 1;
+                //SELECT *  FROM b ORDER BY age DESC OFFSET 1 ROWS FETCH NEXT 2 ROWS ONLY; 
                 MongoDbCommand mongoDbCommand = new MongoDbCommand(" aggregate b [\r\n  { \"$sort\": { \"age\": -1 } },\r\n  { \"$skip\": 1 },\r\n  { \"$limit\": 2 }\r\n] ]", connection);
                 using (var reader = mongoDbCommand.ExecuteReader())
                 {
@@ -112,98 +235,6 @@ namespace MongoDbTest
                         var age = reader.GetInt32("age");
                     }
                 }
-                connection.Close();
-            }
-            //ExecuteScalar
-            {
-                var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
-                connection.Open();
-                MongoDbCommand mongoDbCommand = new MongoDbCommand(" find b { age: { $gt: 31 } }", connection);
-                var value=mongoDbCommand.ExecuteScalar();
-                connection.Close();
-            }
-            //ExecuteNonQuery insert
-            {
-                var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
-                connection.Open();
-                MongoDbCommand mongoDbCommand = new MongoDbCommand(
-                    "insert b { name: \"John\", age: 31 }",
-                    connection);
-                var value = mongoDbCommand.ExecuteNonQuery();
-                connection.Close();
-            }
-            //ExecuteNonQuery insertMany
-            {
-                var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
-                connection.Open();
-                MongoDbCommand mongoDbCommand = new MongoDbCommand(" insertMany b  [{ name: \"John\", age: 31 }, { name: \"Alice\", age: 25 }, { name: \"Bob\", age: 30 }  ]  ", connection);
-                var value = mongoDbCommand.ExecuteNonQuery();
-                connection.Close();
-            }
-            //ExecuteNonQuery update
-            {
-                var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
-                connection.Open();
-                MongoDbCommand mongoDbCommand = new MongoDbCommand(
-                   @"update b {
-                              ""filter"": { ""name"": ""John"" },
-                              ""update"": { ""$set"": { ""age"": 32 } }
-                            }",
-                    connection);
-                var value = mongoDbCommand.ExecuteNonQuery();
-                connection.Close();
-            }
-            //ExecuteNonQuery updateMany
-            {
-                var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
-                connection.Open();
-                MongoDbCommand mongoDbCommand = new MongoDbCommand(
-                       @"updateMany b [{
-                              ""filter"": { ""name"": ""John"" },
-                              ""update"": { ""$set"": { ""age"": 32 } }
-                            }]",
-                    connection);
-                var value = mongoDbCommand.ExecuteNonQuery();
-                connection.Close();
-            }
-            //ExecuteNonQuery delete
-            {
-                var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
-                connection.Open();
-                MongoDbCommand mongoDbCommand = new MongoDbCommand(
-                      "delete  b {\"filter\":{ name: \"John\" }}",
-                    connection);
-                var value = mongoDbCommand.ExecuteNonQuery();
-                connection.Close();
-            } 
-            //ExecuteNonQuery delete
-            {
-                var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
-                connection.Open();
-                MongoDbCommand mongoDbCommand = new MongoDbCommand(
-                    "delete   b {\"filter\":{ name: \"John\" }}",
-                    connection);
-                var value = mongoDbCommand.ExecuteNonQuery();
-                connection.Close();
-            }
-            //ExecuteNonQuery deleteMany
-            {
-                var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
-                connection.Open();
-                MongoDbCommand mongoDbCommand = new MongoDbCommand(
-                    "deleteMany  b [{\"filter\":{ name: \"John\" }}]",
-                    connection);
-                var value = mongoDbCommand.ExecuteNonQuery();
-                connection.Close();
-            }
-            //ExecuteNonQuery Find
-            {
-                var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
-                connection.Open();
-                MongoDbCommand mongoDbCommand = new MongoDbCommand(
-                    " find b { age: { $gt: 31 } }",
-                    connection);
-                var value = mongoDbCommand.ExecuteNonQuery();
                 connection.Close();
             }
         }

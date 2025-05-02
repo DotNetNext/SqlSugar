@@ -1,6 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Text;
@@ -35,9 +36,8 @@ namespace MongoDb.Ado.data
             if (projection != null)
                 findFluent = findFluent.Project<BsonDocument>(projection);
 
-            var cursor = findFluent.ToCursor(); // 已包含 filter + projection 的结果
-
-            return new MongoDbIAsyncCursorDataReader(cursor); // 你要确保这个类支持逐行读取 BsonDocument
+            var cursor = findFluent.ToEnumerable();    
+            return new MongoDbBsonDocumentDataReader(cursor); // 你要确保这个类支持逐行读取 BsonDocument
         }
     }
 }

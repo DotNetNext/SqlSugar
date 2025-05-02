@@ -20,7 +20,7 @@ namespace MongoDb.Ado.data
             var aggregateFluent = collection.Aggregate<BsonDocument>(pipeline.Select(stage => new BsonDocument(stage.AsBsonDocument)).ToArray());
 
             // 执行聚合查询并返回 DbDataReader
-            var cursor = aggregateFluent.ToList();
+            var cursor = aggregateFluent.ToEnumerable();
             return new MongoDbBsonDocumentDataReader(cursor);
         }
     }
