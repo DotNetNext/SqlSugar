@@ -20,6 +20,7 @@ namespace MongoDb.Ado.data
             };
         public async Task<DbDataReader> HandleAsync(string operation, IMongoCollection<BsonDocument> collection, string json)
         {
+            MongoDbMethodUtils.ValidateOperation(operation);
             var doc = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonValue>(json);
             DbDataReaderFactoryAsync.Items.TryGetValue(operation, out var handler);
             if (handler == null)

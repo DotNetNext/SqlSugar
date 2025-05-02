@@ -24,6 +24,7 @@ namespace MongoDb.Ado.data
 
         public static Task<int> HandlerAsync(string operation, string json, IMongoCollection<BsonDocument> collection)
         {
+            MongoDbMethodUtils.ValidateOperation(operation);
             var handlers = ExecuteHandlerFactoryAsync.Items;
 
             if (!handlers.TryGetValue(operation, out var handler))

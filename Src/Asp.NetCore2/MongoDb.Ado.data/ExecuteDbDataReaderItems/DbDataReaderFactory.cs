@@ -19,6 +19,7 @@ namespace MongoDb.Ado.data
             };
         public DbDataReader Handle(string operation, IMongoCollection<BsonDocument> collection, string json)
         {
+            MongoDbMethodUtils.ValidateOperation(operation);
             var doc = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonValue>(json);
             DbDataReaderFactory.Items.TryGetValue(operation, out var handler);
             if (handler==null)

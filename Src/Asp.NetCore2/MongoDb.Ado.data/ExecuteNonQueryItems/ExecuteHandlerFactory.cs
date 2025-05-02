@@ -23,6 +23,7 @@ namespace MongoDb.Ado.data
 
         public static int Handler(string operation, string json, IMongoCollection<BsonDocument> collection)
         {
+            MongoDbMethodUtils.ValidateOperation(operation);
             var handlers = ExecuteHandlerFactory.Items;
 
             if (!handlers.TryGetValue(operation, out var handler))

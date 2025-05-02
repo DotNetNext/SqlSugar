@@ -7,7 +7,7 @@ namespace MongoDb.Ado.data
 {
     public class MongoDbMethodUtils
     { 
-        public void ValidateOperation(string operation)
+        public static void ValidateOperation(string operation)
         {
             if (ExecuteHandlerFactory.Items.TryGetValue(operation, out var handler))
             {
