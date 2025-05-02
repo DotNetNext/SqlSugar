@@ -21,8 +21,56 @@ namespace MongoDbTest
 
         private static void MongoDbCommandTest()
         {
-            //ExecuteReader
+            //ExecuteReader single query 1
+            {
+                var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
+                connection.Open();
+                //对应的SQL: SELECT * FROM b  WHERE age > 18;
+                MongoDbCommand mongoDbCommand = new MongoDbCommand(" find  b { age: { $gt: 32 } } ", connection);
+                using (var reader = mongoDbCommand.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var name = reader.GetString("name");
+                        var age = reader.GetInt32("age");
+                    }
+                }
+                connection.Close();
+            }
+            //ExecuteReader single query 2
             { 
+                var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
+                connection.Open();
+                //对应的SQL: SELECT name, age, _id FROM b  WHERE age > 18;
+                MongoDbCommand mongoDbCommand = new MongoDbCommand(" find b [{ age: { $gt: 18 } }, {  name: 1, age: 1 }]", connection);
+                using (var reader = mongoDbCommand.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var name = reader.GetString("name");
+                        var age = reader.GetInt32("age");
+                    }
+                }
+                connection.Close();
+            }
+            //ExecuteReader single query 3
+            {
+                var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
+                connection.Open();
+                //对应的SQL: SELECT * FROM B  LIMIT 2;
+                MongoDbCommand mongoDbCommand = new MongoDbCommand(" aggregate b [ { $limit:2 } ]", connection);
+                using (var reader = mongoDbCommand.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var name = reader.GetString("name");
+                        var age = reader.GetInt32("age");
+                    }
+                }
+                connection.Close();
+            }
+            //ExecuteReader join query
+            {
                 var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
                 connection.Open();
                 MongoDbCommand mongoDbCommand = new MongoDbCommand(" find b { age: { $gt: 31 } }", connection);
@@ -114,6 +162,16 @@ namespace MongoDbTest
                 connection.Open();
                 MongoDbCommand mongoDbCommand = new MongoDbCommand(
                     "deleteMany  b [{\"filter\":{ name: \"John\" }}]",
+                    connection);
+                var value = mongoDbCommand.ExecuteNonQuery();
+                connection.Close();
+            }
+            //ExecuteNonQuery Find
+            {
+                var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
+                connection.Open();
+                MongoDbCommand mongoDbCommand = new MongoDbCommand(
+                    " find b { age: { $gt: 31 } }",
                     connection);
                 var value = mongoDbCommand.ExecuteNonQuery();
                 connection.Close();

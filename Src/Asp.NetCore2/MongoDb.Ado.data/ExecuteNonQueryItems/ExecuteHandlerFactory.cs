@@ -15,7 +15,7 @@ namespace MongoDb.Ado.data
                 { "updatemany", new UpdateManyHandler() },
                 { "delete", new DeleteHandler() },
                 { "deletemany", new DeleteManyHandler() },
-                { "find", new FindHandler() }
+                { "find", new NonFindHandler() }
             };
     }
 }

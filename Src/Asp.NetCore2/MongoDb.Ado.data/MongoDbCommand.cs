@@ -6,6 +6,7 @@ using MongoDB.Driver;
 using System.Linq;
 using MongoDB.Bson.Serialization;
 using System.Collections.Generic;
+using System.Xml.Linq;
 
 namespace MongoDb.Ado.data
 {
@@ -98,16 +99,7 @@ namespace MongoDb.Ado.data
         {
             var (operation, collectionName, json) = ParseCommand(_commandText);
             var collection = GetCollection(collectionName);
-
-            if (operation == "find")
-            {
-                var filter = string.IsNullOrWhiteSpace(json) ? FilterDefinition<BsonDocument>.Empty : BsonDocument.Parse(json);
-                //var filter = new BsonDocument { { "age", new BsonDocument { { "$gt", 25 } } } };
-                var cursor = collection.Find(filter).ToCursor();
-                return new MongoDbDataReader(cursor);
-            }
-
-            throw new NotSupportedException("只支持 find 操作。");
+            return new DbDataReaderFactory().Handle(operation, collection, json);
         }
 
         public override void Prepare() { }

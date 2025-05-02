@@ -6,7 +6,7 @@ using System.Text;
 
 namespace MongoDb.Ado.data 
 {
-    public class FindHandler : IMongoOperationHandler
+    public class NonFindHandler : IMongoOperationHandler
     {
         public int Handle(IMongoCollection<BsonDocument> collection, string json)
         {
