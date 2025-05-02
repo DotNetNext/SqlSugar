@@ -86,11 +86,15 @@ namespace MongoDb.Ado.data
             var collection = GetCollection(collectionName);
             return new ExecuteScalarHandlerAsync().HandleAsync(operation, collection, json);
         }
-        protected  Task<DbDataReader> ExecuteDbDataReaderAsync(CommandBehavior behavior)
+        public new Task<DbDataReader> ExecuteReaderAsync()
         {
             var (operation, collectionName, json) = ParseCommand(_commandText);
             var collection = GetCollection(collectionName);
             return new DbDataReaderFactoryAsync().HandleAsync(operation, collection, json);
+        }
+        protected  Task<DbDataReader> ExecuteDbDataReaderAsync(CommandBehavior behavior)
+        {
+            return ExecuteReaderAsync();
         }
 
 
