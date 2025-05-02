@@ -71,9 +71,39 @@ namespace MongoDbTest
             }
             //ExecuteReader join query
             {
+                //SELECT b1._id, b1.a_id, b2.some_field AS joined_field
+                // FROM b AS b1
+                //LEFT JOIN b AS b2 ON b1.a_id = b2._id
+                //WHERE b2.some_field > 100
+                //ORDER BY b2.some_field DESC
+                // LIMIT 20 OFFSET 10;
                 var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
                 connection.Open();
-                MongoDbCommand mongoDbCommand = new MongoDbCommand(" find b { age: { $gt: 31 } }", connection);
+                MongoDbCommand mongoDbCommand = new MongoDbCommand(@" aggregate b [
+                  {
+                    ""$lookup"": {
+                      ""from"": ""b"",
+                      ""localField"": ""a_id"",
+                      ""foreignField"": ""_id"",
+                      ""as"": ""joined_docs""
+                    }
+                  },
+                  {
+                    ""$unwind"": ""$joined_docs""
+                  },
+                  {
+                    ""$match"": {
+                      ""joined_docs.some_field"": { ""$gt"": 100 }
+                    }
+                  },
+                  {
+                    ""$project"": {
+                      ""_id"": 1,
+                      ""a_id"": 1,
+                      ""joined_field"": ""$joined_docs.some_field""
+                    }
+                  }
+                 ])", connection);
                 using (var reader = mongoDbCommand.ExecuteReader())
                 {
                     while (reader.Read())
