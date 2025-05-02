@@ -10,7 +10,7 @@ namespace MongoDb.Ado.data
 {
     public class QueryFindHandler : IQueryHandler
     {
-        public DbDataReader Find(IMongoCollection<BsonDocument> collection, BsonValue doc)
+        public DbDataReader Handler(IMongoCollection<BsonDocument> collection, BsonValue doc)
         {
             BsonDocument filter;
             BsonDocument projection = null;

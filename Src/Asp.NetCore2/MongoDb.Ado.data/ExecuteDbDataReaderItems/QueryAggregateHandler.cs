@@ -11,7 +11,7 @@ namespace MongoDb.Ado.data
 {
     public class QueryAggregateHandler : IQueryHandler
     {
-        public DbDataReader Find(IMongoCollection<BsonDocument> collection, BsonValue doc)
+        public DbDataReader Handler(IMongoCollection<BsonDocument> collection, BsonValue doc)
         {
             // 解析 JSON 字符串为 BsonArray
             var pipeline =  doc.AsBsonArray; ;

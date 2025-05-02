@@ -29,7 +29,7 @@ namespace MongoDb.Ado.data
                 ExecuteHandlerFactory.Handler(operation,json, collection);
                 return new DataTable().CreateDataReader();
             }
-            return queryHandler.Find(collection, doc);
+            return queryHandler.Handler(collection, doc);
         }
 
     }
