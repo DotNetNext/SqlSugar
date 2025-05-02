@@ -71,7 +71,7 @@ namespace MongoDb.Ado.data
         { 
             var (operation, collectionName, json) = ParseCommand(_commandText); 
             var collection = GetCollection(collectionName);
-            return new ExecuteScalarHandler().Handle(collection, json); 
+            return new ExecuteScalarHandler().Handle(operation,collection, json); 
         }
         protected override DbDataReader ExecuteDbDataReader(CommandBehavior behavior)
         {
