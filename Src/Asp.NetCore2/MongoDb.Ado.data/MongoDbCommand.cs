@@ -68,33 +68,11 @@ namespace MongoDb.Ado.data
         }
 
         public override object ExecuteScalar()
-        {
-            var (operation, collectionName, json) = ParseCommand(_commandText);
+        { 
+            var (operation, collectionName, json) = ParseCommand(_commandText); 
             var collection = GetCollection(collectionName);
-
-            if (operation == "find")
-            {
-                var filter = string.IsNullOrWhiteSpace(json) ? FilterDefinition<BsonDocument>.Empty : BsonDocument.Parse(json);
-
-                // 设置投影排除 "_id" 字段，确保返回的结果不包含 _id 字段
-                var projection = Builders<BsonDocument>.Projection.Exclude("_id");
-
-                // 执行查询并限制返回一条记录
-                var document = collection.Find(filter).Project(projection).FirstOrDefault();
-
-                // 如果查询到结果且文档非空，则获取第一个字段的值
-                if (document != null && document.Elements.Any())
-                {
-                    var firstElement = document.Elements.First();  // 获取第一个字段（列）
-                    return firstElement.Value;  // 返回该字段的值
-                }
-
-                return null; // 如果没有结果或没有字段，返回 null
-            }
-
-           return null;
+            return new ExecuteScalarHandler().Handle(collection, json); 
         }
-
         protected override DbDataReader ExecuteDbDataReader(CommandBehavior behavior)
         {
             var (operation, collectionName, json) = ParseCommand(_commandText);
