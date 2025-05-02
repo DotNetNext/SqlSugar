@@ -17,11 +17,11 @@ namespace MongoDb.Ado.data
         private List<Type> _fieldTypes;
         public MongoDbBsonDocumentDataReader(IEnumerable<BsonDocument> documents)
         {
-            var docList = documents.ToList();
+            var docList = documents.Take(1).ToList();
             _enumerator = docList.GetEnumerator();
             if (docList.Any()==true)
             {
-                _fieldNames = docList.Take(1).SelectMany(d => d.Names).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+                _fieldNames = docList.SelectMany(d => d.Names).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
                 _fieldTypes = new List<Type>(); 
                 foreach (var fieldName in _fieldNames)
                 {
