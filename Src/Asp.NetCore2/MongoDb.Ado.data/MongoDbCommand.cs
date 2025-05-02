@@ -57,14 +57,8 @@ namespace MongoDb.Ado.data
         public override int ExecuteNonQuery()
         {
             var (operation, collectionName, json) = ParseCommand(_commandText);
-            var collection = GetCollection(collectionName);
-
-            var handlers = ExecuteHandlerFactory.Items;
-
-            if (!handlers.TryGetValue(operation, out var handler))
-                throw new NotSupportedException($"不支持的操作类型: {operation}");
-
-            return handler.Handle(collection, json);
+            var collection = GetCollection(collectionName); 
+            return ExecuteHandlerFactory.Handler(operation, json, collection);
         }
 
         public override object ExecuteScalar()
