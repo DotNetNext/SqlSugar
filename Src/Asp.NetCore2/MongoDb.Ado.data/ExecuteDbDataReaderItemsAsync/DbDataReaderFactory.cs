@@ -18,7 +18,7 @@ namespace MongoDb.Ado.data
                 { "find", new QueryFindHandlerAsync() },
                 { "aggregate", new QueryFindHandlerAsync() },
             };
-        public async Task<DbDataReader> Handle(string operation, IMongoCollection<BsonDocument> collection, string json)
+        public async Task<DbDataReader> HandleAsync(string operation, IMongoCollection<BsonDocument> collection, string json)
         {
             var doc = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonValue>(json);
             DbDataReaderFactoryAsync.Items.TryGetValue(operation, out var handler);
