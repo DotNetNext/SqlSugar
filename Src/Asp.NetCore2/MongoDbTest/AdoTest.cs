@@ -57,8 +57,8 @@ namespace MongoDbTest
             {
                 var connection = new MongoDbConnection(DbHelper.SqlSugarConnectionString);
                 connection.Open();
-                //对应的SQL: SELECT * FROM B  LIMIT 2;
-                MongoDbCommand mongoDbCommand = new MongoDbCommand(" aggregate b [ { $limit:2 } ]", connection);
+                //SELECT * FROM b  WHERE age > 18  ORDER BY age DESC LIMIT 2 OFFSET 1;
+                MongoDbCommand mongoDbCommand = new MongoDbCommand(" aggregate b [\r\n  { \"$sort\": { \"age\": -1 } },\r\n  { \"$skip\": 1 },\r\n  { \"$limit\": 2 }\r\n] ]", connection);
                 using (var reader = mongoDbCommand.ExecuteReader())
                 {
                     while (reader.Read())
