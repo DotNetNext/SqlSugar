@@ -16,7 +16,7 @@ namespace MongoDb.Ado.data
         public readonly static Dictionary<string, IQueryHandlerAsync> Items = new Dictionary<string, IQueryHandlerAsync>(StringComparer.OrdinalIgnoreCase)
             {
                 { "find", new QueryFindHandlerAsync() },
-                { "aggregate", new QueryFindHandlerAsync() },
+                { "aggregate", new QueryAggregateHandlerAsync() },
             };
         public async Task<DbDataReader> HandleAsync(string operation, IMongoCollection<BsonDocument> collection, string json)
         {
