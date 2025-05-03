@@ -143,7 +143,7 @@ namespace SqlSugar
         {
             var leftString = GetNewExpressionValue(expression.Left);
             var RightString = GetNewExpressionValue(expression.Right);
-            if (leftString == null && expression.Left is ParameterExpression parameterExpression) 
+            if (leftString == null&& base.BaseParameter?.BaseExpression==null && expression.Left is ParameterExpression parameterExpression) 
             {
                 leftString = this.Context.SqlParameterKeyWord+"MethodConst1";
             }
