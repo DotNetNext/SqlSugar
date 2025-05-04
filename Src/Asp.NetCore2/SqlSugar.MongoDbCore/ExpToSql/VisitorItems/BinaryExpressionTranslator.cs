@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using MongoDB.Driver;
+using Newtonsoft.Json.Linq;
+using SqlSugar.MongoDbCore.ExpToSql.Context;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -10,7 +12,7 @@ namespace SqlSugar.MongoDbCore.ExpToSql.VisitorItems
     {
         MongoNestedTranslatorContext _context;
 
-        public BinaryExpressionTranslator(MongoNestedTranslatorContext context)
+        public BinaryExpressionTranslator(MongoNestedTranslatorContext context, ExpressionVisitorContext visitorContext)
         {
             _context = context;
         }
@@ -53,9 +55,20 @@ namespace SqlSugar.MongoDbCore.ExpToSql.VisitorItems
 
         private  JToken FieldComparisonExpression(BinaryExpression expr)
         {
-            string field = new FieldPathExtractor(_context).Extract(expr.Left);
-            JToken value = new ExpressionVisitor(_context).Visit(expr.Right);
-
+            var left = new ExpressionVisitor(_context, new ExpressionVisitorContext());
+            var right = new ExpressionVisitor(_context, new ExpressionVisitorContext());
+            JToken field = left.Visit(expr.Left);
+            JToken value = right.Visit(expr.Right);
+            var leftIsMember = false;
+            var rightIsMember = false;
+            if (left?.visitorContext?.ExpType == typeof(MemberExpression)) 
+            {
+                leftIsMember = true;
+            }
+            if (right?.visitorContext?.ExpType == typeof(MemberExpression))
+            {
+                rightIsMember = true;
+            }
             string op = expr.NodeType switch
             {
                 ExpressionType.Equal => value.Type == JTokenType.Null ? "$eq" : null,
@@ -67,12 +80,14 @@ namespace SqlSugar.MongoDbCore.ExpToSql.VisitorItems
                 _ => throw new NotSupportedException($"Unsupported binary op: {expr.NodeType}")
             };
 
-            if (op == null)
-                return new JObject { [field] = value };
+            if (op == null&&leftIsMember&&rightIsMember==false)
+                return new JObject { [field.ToString()] = value };
+            else if (op == null && rightIsMember && leftIsMember == false)
+                return new JObject { [value.ToString()] = field };
 
             return new JObject
             {
-                [field] = new JObject { [op] = value }
+                [field.ToString()] = new JObject { [op] = value }
             };
         }
     }

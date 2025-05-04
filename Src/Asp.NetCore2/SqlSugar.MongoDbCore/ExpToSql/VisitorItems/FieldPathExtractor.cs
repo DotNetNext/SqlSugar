@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
+using SqlSugar.MongoDbCore.ExpToSql.Context;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -9,10 +10,11 @@ namespace SqlSugar.MongoDbCore.ExpToSql.VisitorItems
     public  class FieldPathExtractor
     {
         MongoNestedTranslatorContext _context;
-
-        public FieldPathExtractor(MongoNestedTranslatorContext context)
+        ExpressionVisitorContext _visitorContext;
+        public FieldPathExtractor(MongoNestedTranslatorContext context, ExpressionVisitorContext visitorContext)
         {
             _context = context;
+            _visitorContext = visitorContext;
         }
 
         public  string Extract(Expression expr)
@@ -29,6 +31,10 @@ namespace SqlSugar.MongoDbCore.ExpToSql.VisitorItems
             {
                 var value = ExpressionTool.GetMemberValue(oldMember.Member, oldExp);
                 return MongoDbExpTools.CustomToString(value);
+            }
+            if (_visitorContext != null) 
+            {
+                _visitorContext.ExpType = typeof(MemberExpression);
             }
             return string.Join(".", parts);
         }

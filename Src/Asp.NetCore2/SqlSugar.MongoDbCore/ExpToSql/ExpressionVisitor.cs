@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
+using SqlSugar.MongoDbCore.ExpToSql.Context;
 using SqlSugar.MongoDbCore.ExpToSql.VisitorItems;
 using System;
 using System.Collections.Generic;
@@ -7,26 +8,31 @@ using System.Text;
 
 namespace SqlSugar.MongoDbCore 
 {
-    public  class ExpressionVisitor
+    public class ExpressionVisitor
     {
         private MongoNestedTranslatorContext context;
-
+        public ExpressionVisitorContext  visitorContext;
+        public ExpressionVisitor(MongoNestedTranslatorContext context, ExpressionVisitorContext expressionVisitorContext)
+        {
+            this.context = context;
+            this.visitorContext = expressionVisitorContext;
+        }
         public ExpressionVisitor(MongoNestedTranslatorContext context)
         {
             this.context = context;
         }
 
-        public  JToken Visit(Expression expr)
+        public JToken Visit(Expression expr)
         {
             expr = MongoDbExpTools.RemoveConvert(expr);
             switch (expr)
             {
                 case BinaryExpression binary:
-                    return new BinaryExpressionTranslator(context).Extract(binary);
+                    return new BinaryExpressionTranslator(context, visitorContext).Extract(binary);
                 case MemberExpression member:
-                    return new FieldPathExtractor(context).Extract(member);
+                    return new FieldPathExtractor(context, visitorContext).Extract(member);
                 case ConstantExpression constant:
-                    return new ValueExtractor(context).Extract(constant);
+                    return new ValueExtractor(context, visitorContext).Extract(constant);
                 case UnaryExpression unary:
                     return this.Visit(unary);
                 case LambdaExpression lambda:

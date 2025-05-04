@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
+using SqlSugar.MongoDbCore.ExpToSql.Context;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -9,7 +10,7 @@ namespace SqlSugar.MongoDbCore.ExpToSql.VisitorItems
     public  class ValueExtractor
     {
         MongoNestedTranslatorContext _context;
-        public ValueExtractor(MongoNestedTranslatorContext context)
+        public ValueExtractor(MongoNestedTranslatorContext context, ExpressionVisitorContext visitorContext)
         {
             _context = context;
         }

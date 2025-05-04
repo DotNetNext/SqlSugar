@@ -56,6 +56,23 @@ namespace SqlSugar.MongoDbCore
             // 默认的ToString
             return value.ToString();
         }
+
+        public static bool IsField(Expression expr)
+        {
+            // 如果是字段或属性访问（例如 x.Name）
+            if (expr is MemberExpression)
+                return true;
+
+            // 如果是类型转换（例如 (object)x.Name），递归判断内部表达式
+            if (expr is UnaryExpression unaryExpr &&
+                (unaryExpr.NodeType == ExpressionType.Convert || unaryExpr.NodeType == ExpressionType.ConvertChecked))
+            {
+                return IsField(unaryExpr.Operand);
+            }
+
+            return false;
+        }
+
         internal static Expression RemoveConvert(Expression item)
         {
             for (int i = 0; i < 10; i++)

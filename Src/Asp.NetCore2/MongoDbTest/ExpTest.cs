@@ -14,22 +14,20 @@ namespace MongoDbTest
     {
         public static void Init() 
         {
-            Expression<Func<Order, bool>> exp = it=>it.Id==1||it.Name=="a";
-            var json=MongoNestedTranslator.Translate(exp,null);
-
+            Expression<Func<Order, bool>> exp = it => it.Id == 1 || it.Name == "a";
+            var json = MongoNestedTranslator.Translate(exp, null).ToString(); 
             var Order = new Order() { Id = 1 };
             Expression<Func<Order, bool>> exp2 = it => it.Id == Order.Id || it.Name == "a";
-            var json2 = MongoNestedTranslator.Translate(exp2, null);
-
+            var json2 = MongoNestedTranslator.Translate(exp2, null).ToString();
              
-            Expression<Func<Order, bool>> exp3 = it=> it.IsValidate==true;
-            var json23 = MongoNestedTranslator.Translate(exp3, null);
+            Expression<Func<Order, bool>> exp3 = it => it.IsValidate == true;
+            var json3 = MongoNestedTranslator.Translate(exp3, null).ToString();
 
             Expression<Func<Order, bool>> exp4 = it => it.IsValidate != true;
-            var json24 = MongoNestedTranslator.Translate(exp4, null);
+            var json24 = MongoNestedTranslator.Translate(exp4, null).ToString();
 
             Expression<Func<Order, bool>> exp5 = it =>1==it.Id;
-            var json5 = MongoNestedTranslator.Translate(exp5, null);
+            var json5 = MongoNestedTranslator.Translate(exp5, null).ToString();
         }
     }
     public class Order 
