@@ -1,12 +1,11 @@
 ﻿using MongoDB.Driver;
-using Newtonsoft.Json.Linq;
-using SqlSugar.MongoDbCore.ExpToSql.Context;
+using Newtonsoft.Json.Linq; 
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
 
-namespace SqlSugar.MongoDbCore.ExpToSql.VisitorItems 
+namespace SqlSugar.MongoDbCore
 {
     public  class BinaryExpressionTranslator
     {
