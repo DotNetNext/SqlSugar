@@ -8,6 +8,7 @@ using MongoDB.Bson.Serialization;
 using System.Collections.Generic;
 using System.Xml.Linq;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace MongoDb.Ado.data
 {
@@ -78,25 +79,25 @@ namespace MongoDb.Ado.data
             return new DbDataReaderFactory().Handle(operation, collection, json);
         }
 
-        public new Task<int> ExecuteNonQueryAsync()
+        public override Task<int> ExecuteNonQueryAsync(CancellationToken cancellationToken)
         {
             var (operation, collectionName, json) = ParseCommand(_commandText);
             var collection = GetCollection(collectionName);
             return ExecuteHandlerFactoryAsync.HandlerAsync(operation, json, collection);
         }
-        public new Task<object> ExecuteScalarAsync()
+        public override Task<object> ExecuteScalarAsync(CancellationToken cancellationToken)
         {
             var (operation, collectionName, json) = ParseCommand(_commandText);
             var collection = GetCollection(collectionName);
             return new ExecuteScalarHandlerAsync().HandleAsync(operation, collection, json);
         }
-        public new Task<DbDataReader> ExecuteReaderAsync()
+        public override Task<DbDataReader> ExecuteReaderAsync(CancellationToken cancellationToken)
         {
             var (operation, collectionName, json) = ParseCommand(_commandText);
             var collection = GetCollection(collectionName);
             return new DbDataReaderFactoryAsync().HandleAsync(operation, collection, json);
         }
-        protected  Task<DbDataReader> ExecuteDbDataReaderAsync(CommandBehavior behavior)
+        protected override  Task<DbDataReader> ExecuteDbDataReaderAsync(CommandBehavior behavior,CancellationToken cancellationToken)
         {
             return ExecuteReaderAsync();
         }
