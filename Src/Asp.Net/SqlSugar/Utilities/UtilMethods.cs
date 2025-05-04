@@ -18,6 +18,66 @@ namespace SqlSugar
 {
     public class UtilMethods
     {
+        public static string EscapeLikeValue(ISqlSugarClient db, string value, char wildcard='%')
+        {
+            var dbType = db.CurrentConnectionConfig.DbType;
+            if (db.CurrentConnectionConfig?.MoreSettings?.DatabaseModel != null) 
+            {
+                dbType = db.CurrentConnectionConfig.MoreSettings.DatabaseModel.Value;
+            }
+            if (string.IsNullOrEmpty(value))
+                return value;
+             
+            string wildcardStr = wildcard.ToString();
+
+            switch (dbType)
+            {
+                // 支持标准 SQL LIKE 转义，通常使用中括号 [] 或反斜杠 \ 进行转义
+                case DbType.SqlServer:
+                case DbType.Access:
+                case DbType.Odbc:
+                case DbType.TDSQLForPGODBC:
+                    // SQL Server 使用中括号转义 %, _ 等
+                    value = value.Replace("[", "[[]")
+                                 .Replace("]", "[]]")
+                                 .Replace(wildcardStr, $"[{wildcard}]");
+                    break;
+
+                // PostgreSQL 风格数据库，使用反斜杠进行 LIKE 转义
+                case DbType.PostgreSQL:
+                case DbType.OpenGauss:
+                case DbType.TDSQL:
+                case DbType.GaussDB:
+                case DbType.GaussDBNative:
+                // MySQL 和兼容库，使用反斜杠进行转义
+                case DbType.MySql:
+                case DbType.MySqlConnector:
+                case DbType.Tidb:
+                case DbType.PolarDB:
+                case DbType.OceanBase:
+                case DbType.Oracle:
+                case DbType.OceanBaseForOracle:
+                case DbType.HG:
+                case DbType.Dm:
+                case DbType.GBase:
+                case DbType.DB2:
+                case DbType.HANA:
+                case DbType.GoldenDB:
+                case DbType.Sqlite:
+                case DbType.DuckDB:
+                case DbType.QuestDB:
+                case DbType.Doris:
+                case DbType.Xugu:
+                case DbType.Vastbase:
+                default:
+                    value = value 
+                                 .Replace(wildcardStr, "\\\\" + wildcard);
+                    break;
+            }
+
+            return value;
+        }
+
 
         public static List<SugarParameter> CopySugarParameters(List<SugarParameter> pars)
         {
@@ -191,6 +251,14 @@ namespace SqlSugar
             var ParameterConverter = type.GetMethod("ParameterConverter").MakeGenericMethod(columnInfo.PropertyInfo.PropertyType);
             var obj = Activator.CreateInstance(type);
             var p = ParameterConverter.Invoke(obj, new object[] { value, 100 + index }) as SugarParameter;
+            return p;
+        }
+        internal static object QueryConverter(int index, ISqlSugarClient db, IDataReader dataReader , EntityInfo entity, EntityColumnInfo columnInfo)
+        {
+            var type = columnInfo.SqlParameterDbType as Type;
+            var ParameterConverter = type.GetMethod("QueryConverter").MakeGenericMethod(columnInfo.PropertyInfo.PropertyType);
+            var obj = Activator.CreateInstance(type);
+            var p = ParameterConverter.Invoke(obj, new object[] { dataReader , index });
             return p;
         }
         internal static bool IsErrorParameterName(ConnectionConfig connectionConfig,DbColumnInfo columnInfo)

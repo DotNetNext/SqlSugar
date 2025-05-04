@@ -51,5 +51,6 @@ namespace SqlSugar
         DataTable DictionaryListToDataTable(List<Dictionary<string, object>> dictionaryList);
         List<T> ToTree<T>(List<T> list, Expression<Func<T, IEnumerable<object>>> childListExpression, Expression<Func<T, object>> parentIdExpression, Expression<Func<T, object>> pkExpression,  object rootValue);
         KeyValuePair<string, SugarParameter[]> ConditionalModelsToSql(List<IConditionalModel> conditionalModels, int beginIndex = 0);
+        string EscapeLikeValue(string value, char wildcard = '%');
     }
 }

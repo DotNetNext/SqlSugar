@@ -514,7 +514,10 @@ namespace SqlSugar
                     this.CurrentConnectionConfig.MoreSettings.DatabaseModel = DbType.Vastbase;
                     break;
                 case DbType.OceanBase:
-                    config.DbType = DbType.MySql; 
+                    config.DbType = DbType.MySql;
+                    if (this.CurrentConnectionConfig.MoreSettings == null)
+                        this.CurrentConnectionConfig.MoreSettings = new ConnMoreSettings();
+                    this.CurrentConnectionConfig.MoreSettings.DatabaseModel = DbType.OceanBase;
                     break;
                 case DbType.Tidb:
                     config.DbType = DbType.MySql;
@@ -559,6 +562,9 @@ namespace SqlSugar
                     break;
                 case DbType.DuckDB:
                     InstanceFactory.CustomDllName = SugarCompatible.IsFramework ? throw new Exception("Only.NET CORE is supported") : "SqlSugar.DuckDBCore";
+                    break;
+                case DbType.MongoDb:
+                    InstanceFactory.CustomDllName = SugarCompatible.IsFramework ? throw new Exception("Only.NET CORE is supported") : "SqlSugar.MongoDbCore";
                     break;
                 default:
                     throw new Exception("ConnectionConfig.DbType is null");
