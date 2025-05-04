@@ -7,23 +7,30 @@ using System.Text;
 
 namespace SqlSugar.MongoDbCore 
 {
-    public static class ExpressionVisitor
+    public  class ExpressionVisitor
     {
-        public static JToken Visit(Expression expr)
+        private MongoNestedTranslatorContext context;
+
+        public ExpressionVisitor(MongoNestedTranslatorContext context)
+        {
+            this.context = context;
+        }
+
+        public  JToken Visit(Expression expr)
         {
             expr = MongoDbExpTools.RemoveConvert(expr);
             switch (expr)
             {
                 case BinaryExpression binary:
-                    return BinaryExpressionTranslator.Translate(binary);
+                    return new BinaryExpressionTranslator(context).Extract(binary);
                 case MemberExpression member:
-                    return FieldPathExtractor.GetFieldPath(member);
+                    return new FieldPathExtractor(context).Extract(member);
                 case ConstantExpression constant:
-                    return ValueExtractor.GetValue(constant);
+                    return new ValueExtractor(context).Extract(constant);
                 case UnaryExpression unary:
-                    return Visit(unary);
+                    return this.Visit(unary);
                 case LambdaExpression lambda:
-                    return Visit((lambda as LambdaExpression).Body);
+                    return this.Visit((lambda as LambdaExpression).Body);
                 default:
                     throw new NotSupportedException($"Unsupported expression: {expr.NodeType}");
             }

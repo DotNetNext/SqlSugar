@@ -6,9 +6,16 @@ using System.Text;
 
 namespace SqlSugar.MongoDbCore.ExpToSql.VisitorItems 
 {
-    public static class BinaryExpressionTranslator
+    public  class BinaryExpressionTranslator
     {
-        public static JToken Translate(BinaryExpression expr)
+        MongoNestedTranslatorContext _context;
+
+        public BinaryExpressionTranslator(MongoNestedTranslatorContext context)
+        {
+            _context = context;
+        }
+
+        public  JToken Extract(BinaryExpression expr)
         {
             if (expr.NodeType == ExpressionType.AndAlso || expr.NodeType == ExpressionType.OrElse)
             {
@@ -18,12 +25,12 @@ namespace SqlSugar.MongoDbCore.ExpToSql.VisitorItems
             return FieldComparisonExpression(expr);
         }
 
-        private static JToken LogicalBinaryExpression(BinaryExpression expr)
+        private  JToken LogicalBinaryExpression(BinaryExpression expr)
         {
             string logicOp = expr.NodeType == ExpressionType.AndAlso ? "$and" : "$or";
 
-            var left = ExpressionVisitor.Visit(expr.Left);
-            var right = ExpressionVisitor.Visit(expr.Right);
+            var left = new ExpressionVisitor(_context).Visit(expr.Left);
+            var right =new ExpressionVisitor(_context).Visit(expr.Right);
 
             var arr = new JArray();
             AddNestedLogic(arr, left, logicOp);
@@ -32,7 +39,7 @@ namespace SqlSugar.MongoDbCore.ExpToSql.VisitorItems
             return new JObject { [logicOp] = arr };
         }
 
-        private static void AddNestedLogic(JArray arr, JToken token, string logicOp)
+        private  void AddNestedLogic(JArray arr, JToken token, string logicOp)
         {
             if (token is JObject obj && obj.TryGetValue(logicOp, out var nested) && nested is JArray nestedArr)
             {
@@ -44,10 +51,10 @@ namespace SqlSugar.MongoDbCore.ExpToSql.VisitorItems
             }
         }
 
-        private static JToken FieldComparisonExpression(BinaryExpression expr)
+        private  JToken FieldComparisonExpression(BinaryExpression expr)
         {
-            string field = FieldPathExtractor.GetFieldPath(expr.Left);
-            JToken value = ExpressionVisitor.Visit(expr.Right);
+            string field = new FieldPathExtractor(_context).Extract(expr.Left);
+            JToken value = new ExpressionVisitor(_context).Visit(expr.Right);
 
             string op = expr.NodeType switch
             {

@@ -6,10 +6,15 @@ using System.Text;
 
 namespace SqlSugar.MongoDbCore.ExpToSql.VisitorItems 
 {
-    public static class ValueExtractor
+    public  class ValueExtractor
     {
-        public static JToken GetValue(ConstantExpression expr)
+        MongoNestedTranslatorContext _context;
+        public ValueExtractor(MongoNestedTranslatorContext context)
         {
+            _context = context;
+        }
+        public  JToken Extract(ConstantExpression expr)
+        { 
             return JToken.FromObject(expr.Value);
         }
 

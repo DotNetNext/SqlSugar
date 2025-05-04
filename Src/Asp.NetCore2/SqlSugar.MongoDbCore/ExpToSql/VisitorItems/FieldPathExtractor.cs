@@ -6,10 +6,17 @@ using System.Text;
 
 namespace SqlSugar.MongoDbCore.ExpToSql.VisitorItems 
 {
-    public static class FieldPathExtractor
+    public  class FieldPathExtractor
     {
-        public static string GetFieldPath(Expression expr)
+        MongoNestedTranslatorContext _context;
+
+        public FieldPathExtractor(MongoNestedTranslatorContext context)
         {
+            _context = context;
+        }
+
+        public  string Extract(Expression expr)
+        { 
             var oldExp = expr;
             var oldMember = expr as MemberExpression;
             var parts = new Stack<string>(); 

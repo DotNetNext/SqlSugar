@@ -9,9 +9,9 @@ namespace SqlSugar.MongoDbCore
 
     public static class MongoNestedTranslator
     {
-        public static JObject Translate(Expression expr)
+        public static JObject Translate(Expression expr, MongoNestedTranslatorContext context)
         {
-            return (JObject)ExpressionVisitor.Visit(expr);
+            return (JObject)new ExpressionVisitor(context).Visit(expr);
         } 
     } 
 }
