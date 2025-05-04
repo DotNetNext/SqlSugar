@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 
@@ -44,7 +45,7 @@ namespace SqlSugar.MongoDb
             return sql;
         }
 
-        public static string BuildInsertMany(List<DbColumnInfo> columns, string tableName)
+        public string BuildInsertMany(List<DbColumnInfo> columns, string tableName)
         {
             // 分组
             var grouped = columns.GroupBy(c => c.TableId);
@@ -69,7 +70,7 @@ namespace SqlSugar.MongoDb
             }
 
             var sb = new StringBuilder();
-            sb.Append($"insertMany {tableName} ");
+            sb.Append($"insertMany { this.GetTableNameString } ");
             sb.Append("[");
             sb.Append(string.Join(", ", jsonObjects));
             sb.Append("]");
