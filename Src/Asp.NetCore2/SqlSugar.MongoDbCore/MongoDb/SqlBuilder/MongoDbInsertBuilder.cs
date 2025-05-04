@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MongoDB.Bson;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -54,16 +55,17 @@ namespace SqlSugar.MongoDb
 
             foreach (var group in grouped)
             {
-                var dict = new Dictionary<string, object>();
-
+                BsonDocument doc = new BsonDocument();
                 foreach (var col in group)
                 {
-                    dict[col.DbColumnName] = col.Value;
+                    // 自动推断类型，如 string、int、bool、DateTime、ObjectId 等
+                    doc[col.DbColumnName] = BsonValue.Create(col.Value);
                 }
 
-                string json = JsonSerializer.Serialize(dict, new JsonSerializerOptions
+                // 转为 JSON 字符串（标准 MongoDB shell 格式）
+                string json = doc.ToJson(new MongoDB.Bson.IO.JsonWriterSettings
                 {
-                    WriteIndented = false
+                    OutputMode = MongoDB.Bson.IO.JsonOutputMode.Shell // 可改成 Strict
                 });
 
                 jsonObjects.Add(json);
