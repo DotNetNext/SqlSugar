@@ -20,7 +20,7 @@ namespace MongoDbTest
                 new OrderInfo() { CreateTime = DateTime.Now, Name = "a2", Price = 3 }})
            .ExecuteReturnPkList<string>();
 
-            db.Deleteable(new OrderInfo() {  Id="a" })
+            var delrow=db.Deleteable(new OrderInfo() {  Id= ids.Last() })
               .ExecuteCommand();
         }
     }

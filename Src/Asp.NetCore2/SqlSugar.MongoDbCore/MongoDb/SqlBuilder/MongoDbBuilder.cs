@@ -39,8 +39,7 @@ namespace SqlSugar.MongoDb
         {
             get
             {
-                if (this.Context.CurrentConnectionConfig.MoreSettings == null) return true;
-                return this.Context.CurrentConnectionConfig.MoreSettings.PgSqlIsAutoToLower;
+                return false;
             }
         }
         public override string GetTranslationColumnName(string propertyName)
@@ -99,7 +98,7 @@ namespace SqlSugar.MongoDb
             }
             else
             {
-                return SqlTranslationLeft + name.ToLower(isAutoToLower).TrimEnd('"').TrimStart('"') + SqlTranslationRight;
+                return name;
             }
         }
         public override string GetUnionFomatSql(string sql)

@@ -12,7 +12,13 @@ namespace SqlSugar.MongoDb
     {
         public override List<Type> ExecuteReturnPkList<Type>()
         {
+            base.ExecuteCommand();
             return ((MongoDbConnection)this.Ado.Connection).ObjectIds.Select(it=>(Type)(object)it).ToList();
+        }
+        public new async Task<List<Type>> ExecuteReturnPkListAsync<Type>()
+        {
+            await base.ExecuteCommandAsync();
+            return ((MongoDbConnection)this.Ado.Connection).ObjectIds.Select(it => (Type)(object)it).ToList();
         }
         public override int ExecuteReturnIdentity()
         {

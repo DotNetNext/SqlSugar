@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using MongoDB.Bson;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
@@ -9,7 +10,7 @@ namespace SqlSugar.MongoDb
     {
         public override string ToSqlString()
         {
-            var sb = new StringBuilder("deleteMany b ");
+            var sb = new StringBuilder($"deleteMany {this.GetTableNameString} ");
             var jsonObjects = new List<string>();
             foreach (var item in this.WhereInfos)
             {
@@ -22,11 +23,24 @@ namespace SqlSugar.MongoDb
                     sql = sql.Replace(startWithValue, "").Replace("'", "");
                     var dict = new Dictionary<string, object>();
                     var array = sql.Split(",");
-                    dict["_id"] = new Dictionary<string, object> { { "$in", array } }; // Fixed syntax for dictionary initialization
-                    string json = JsonSerializer.Serialize(dict, new JsonSerializerOptions
+                    var idStrings = sql.Split(",");
+
+                    // 将字符串数组转为 ObjectId 列表（如果不是 ObjectId 可保留为字符串）
+                    var bsonArray = new BsonArray();
+                    foreach (var idStr in idStrings)
                     {
-                        WriteIndented = false
-                    });
+                        bsonArray.Add(ObjectId.Parse(idStr)); // fallback 为普通字符串
+                    }
+
+                    var filter = new BsonDocument
+                    {
+                        { "_id", new BsonDocument { { "$in", bsonArray } } }
+                    };
+
+                    string json = filter.ToJson(new MongoDB.Bson.IO.JsonWriterSettings
+                    {
+                        OutputMode = MongoDB.Bson.IO.JsonOutputMode.Shell
+                    }); // 使用 MongoDB 驱动的序列化
                     jsonObjects.Add(json);
                 }
             }
