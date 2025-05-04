@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;  
+﻿using MongoDB.Bson;
+using Newtonsoft.Json.Linq;  
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -9,20 +10,23 @@ namespace SqlSugar.MongoDbCore
     public class ExpressionVisitor
     {
         private MongoNestedTranslatorContext context;
-        public ExpressionVisitorContext  visitorContext;
+        public ExpressionVisitorContext visitorContext;
+
         public ExpressionVisitor(MongoNestedTranslatorContext context, ExpressionVisitorContext expressionVisitorContext)
         {
             this.context = context;
             this.visitorContext = expressionVisitorContext;
         }
+
         public ExpressionVisitor(MongoNestedTranslatorContext context)
         {
             this.context = context;
         }
 
-        public JToken Visit(Expression expr)
+        public BsonValue Visit(Expression expr)
         {
             expr = MongoDbExpTools.RemoveConvert(expr);
+
             switch (expr)
             {
                 case BinaryExpression binary:
@@ -34,7 +38,7 @@ namespace SqlSugar.MongoDbCore
                 case UnaryExpression unary:
                     return this.Visit(unary);
                 case LambdaExpression lambda:
-                    return this.Visit((lambda as LambdaExpression).Body);
+                    return this.Visit(lambda.Body);
                 default:
                     throw new NotSupportedException($"Unsupported expression: {expr.NodeType}");
             }
