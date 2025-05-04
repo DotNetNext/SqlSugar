@@ -8,6 +8,7 @@ namespace MongoDb.Ado.data
 {
     public class NonFindHandler : IMongoOperationHandler
     {
+        public HandlerContext context { get; set; }
         public string operation { get; set; }
         public int Handle(IMongoCollection<BsonDocument> collection, string json)
         {

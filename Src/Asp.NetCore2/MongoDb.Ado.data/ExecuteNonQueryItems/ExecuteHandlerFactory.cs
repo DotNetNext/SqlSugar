@@ -21,7 +21,7 @@ namespace MongoDb.Ado.data
             };
 
 
-        public static int Handler(string operation, string json, IMongoCollection<BsonDocument> collection)
+        public static int Handler(string operation, string json, IMongoCollection<BsonDocument> collection, HandlerContext handlerContext)
         {
             MongoDbMethodUtils.ValidateOperation(operation);
             var handlers = ExecuteHandlerFactory.Items;
@@ -29,6 +29,7 @@ namespace MongoDb.Ado.data
             if (!handlers.TryGetValue(operation, out var handler))
                 throw new NotSupportedException($"不支持的操作类型: {operation}");
             handler.operation = operation;
+            handler.context = handlerContext;
             return handler.Handle(collection, json);
         }
 

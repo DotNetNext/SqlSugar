@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MongoDb.Ado.data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -9,6 +10,10 @@ namespace SqlSugar.MongoDb
 {
     public class MongoDbInsertable<T> : InsertableProvider<T> where T : class, new()
     {
+        public override List<Type> ExecuteReturnPkList<Type>()
+        {
+            return ((MongoDbConnection)this.Ado.Connection).ObjectIds.Select(it=>(Type)(object)it).ToList();
+        }
         public override int ExecuteReturnIdentity()
         {
             InsertBuilder.IsReturnIdentity = true;

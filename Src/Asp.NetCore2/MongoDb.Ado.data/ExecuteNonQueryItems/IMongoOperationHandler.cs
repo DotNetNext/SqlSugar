@@ -9,6 +9,8 @@ namespace MongoDb.Ado.data
     public interface IMongoOperationHandler
     {
         string operation { get; set; }
+        HandlerContext context { get; set; }
+
         int Handle(IMongoCollection<BsonDocument> collection, string json);
     }
 }

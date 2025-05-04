@@ -24,7 +24,7 @@ namespace MongoDb.Ado.data
             DbDataReaderFactory.Items.TryGetValue(operation, out var handler);
             if (handler==null)
             {
-                ExecuteHandlerFactory.Handler(operation, json, collection);
+                ExecuteHandlerFactory.Handler(operation, json, collection,new HandlerContext());
                 return new DataTable().CreateDataReader();
             }
             return handler.Handler(collection, doc);

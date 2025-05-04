@@ -24,6 +24,7 @@ namespace MongoDb.Ado.data
         public override ConnectionState State => _state;
 
         public override string ConnectionString { get => _originalConnectionString; set => _originalConnectionString = value; }
+        public string[] ObjectIds { get; internal set; }
 
         private MongoClient _client;
 

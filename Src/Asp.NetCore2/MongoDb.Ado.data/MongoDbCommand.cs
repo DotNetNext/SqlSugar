@@ -59,8 +59,11 @@ namespace MongoDb.Ado.data
         public override int ExecuteNonQuery()
         {
             var (operation, collectionName, json) = ParseCommand(_commandText);
-            var collection = GetCollection(collectionName); 
-            return ExecuteHandlerFactory.Handler(operation, json, collection);
+            var collection = GetCollection(collectionName);
+            var context = new HandlerContext();
+            var result= ExecuteHandlerFactory.Handler(operation, json, collection, context);
+            ((MongoDbConnection)this.Connection).ObjectIds = context.ids;
+            return result;
         } 
         public override object ExecuteScalar()
         { 

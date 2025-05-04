@@ -9,8 +9,8 @@ namespace MongoDbTest
 
     public class OrderInfo
     {
-        [SugarColumn(IsPrimaryKey = true, IsIdentity = true,ColumnName ="_Id")]
-        public int Id { get; set; }
+        [SugarColumn(IsPrimaryKey = true, IsOnlyIgnoreInsert =true)]
+        public string Id { get; set; }
 
         public string Name { get; set; }
         public decimal Price { get; set; }
