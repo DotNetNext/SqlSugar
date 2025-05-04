@@ -1,4 +1,5 @@
-﻿using MongoDb.Ado.data;
+﻿using Microsoft.Data.SqlClient;
+using MongoDb.Ado.data;
 using SqlSugar.MongoDbCore;
 using System;
 using System.Collections.Generic;
@@ -99,7 +100,9 @@ namespace SqlSugar.MongoDb
 
         public override DbCommand GetCommand(string sql, SugarParameter[] pars)
         {
-            throw new NotImplementedException();
+            MongoDbCommand mongoDbCommand = new MongoDbCommand(sql,(MongoDbConnection)this.Connection);
+            CheckConnection();
+            return mongoDbCommand;
         }
     }
 }

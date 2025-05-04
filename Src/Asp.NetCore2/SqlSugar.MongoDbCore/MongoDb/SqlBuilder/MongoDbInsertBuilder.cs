@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 
 namespace SqlSugar.MongoDb
 {
@@ -38,77 +40,41 @@ namespace SqlSugar.MongoDb
         };
         public override string ToSqlString()
         {
-            if (IsNoInsertNull)
+            var sql= BuildInsertMany(this.DbColumnInfoList, this.EntityInfo.DbTableName);
+            return sql;
+        }
+
+        public static string BuildInsertMany(List<DbColumnInfo> columns, string tableName)
+        {
+            // 分组
+            var grouped = columns.GroupBy(c => c.TableId);
+
+            var jsonObjects = new List<string>();
+
+            foreach (var group in grouped)
             {
-                DbColumnInfoList = DbColumnInfoList.Where(it => it.Value != null).ToList();
-            }
-            var groupList = DbColumnInfoList.GroupBy(it => it.TableId).ToList();
-            var isSingle = groupList.Count() == 1;
-            string columnsString = string.Join(",", groupList.First().Select(it => Builder.GetTranslationColumnName(it.DbColumnName)));
-            if (isSingle)
-            {
-                string columnParametersString = string.Join(",", this.DbColumnInfoList.Select(it =>base.GetDbColumn(it, Builder.SqlParameterKeyWord + it.DbColumnName)));
-                ActionMinDate();
-                return string.Format(SqlTemplate, GetTableNameString, columnsString, columnParametersString);
-            }
-            else
-            {
-                StringBuilder batchInsetrSql = new StringBuilder();
-                int pageSize = 200;
-                int pageIndex = 1;
-                if (IsNoPage&&IsReturnPkList) 
+                var dict = new Dictionary<string, object>();
+
+                foreach (var col in group)
                 {
-                    pageSize = groupList.Count;
+                    dict[col.DbColumnName] = col.Value;
                 }
-                int totalRecord = groupList.Count;
-                int pageCount = (totalRecord + pageSize - 1) / pageSize;
-                while (pageCount >= pageIndex)
+
+                string json = JsonSerializer.Serialize(dict, new JsonSerializerOptions
                 {
-                    batchInsetrSql.AppendFormat(SqlTemplateBatch, GetTableNameString, columnsString);
-                    int i = 0;
-                    foreach (var columns in groupList.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList())
-                    {
-                        var isFirst = i == 0;
-                        if (isFirst)
-                        {
-                            batchInsetrSql.Append(SqlTemplateBatchUnion);
-                        }
-                        batchInsetrSql.Append("\r\n ( " + string.Join(",", columns.Select(it =>
-                        {
-                            if (it.InsertServerTime || it.InsertSql.HasValue()||it.SqlParameterDbType is Type|| it?.PropertyType?.Name=="DateOnly" || it?.PropertyType?.Name == "TimeOnly")
-                            {
-                                return GetDbColumn(it, null);
-                            }
-                            object value = null;
-                            if (it.Value is DateTime)
-                            {
-                                value = ((DateTime)it.Value).ToString("O");
-                            }
-                            else if (it.Value  is DateTimeOffset)
-                            {
-                                return FormatDateTimeOffset(it.Value);
-                            }
-                            else if (it.IsArray&&it.Value!=null) 
-                            {
-                                return FormatValue(it.Value,it.PropertyName,i,it);
-                            }
-                            else
-                            {
-                                value = it.Value;
-                            }
-                            if (value == null||value==DBNull.Value)
-                            {
-                                return string.Format(SqlTemplateBatchSelect, "NULL");
-                            }
-                            return string.Format(SqlTemplateBatchSelect, "'" + value.ObjToStringNoTrim().ToSqlFilter() + "'");
-                        })) + "),");
-                        ++i;
-                    }
-                    pageIndex++;
-                    batchInsetrSql.Remove(batchInsetrSql.Length - 1,1).Append("\r\n;\r\n");
-                }
-                return batchInsetrSql.ToString();
+                    WriteIndented = false
+                });
+
+                jsonObjects.Add(json);
             }
+
+            var sb = new StringBuilder();
+            sb.Append($"insertMany {tableName} ");
+            sb.Append("[");
+            sb.Append(string.Join(", ", jsonObjects));
+            sb.Append("]");
+
+            return sb.ToString();
         }
 
         public object FormatValue(object value, string name, int i, DbColumnInfo columnInfo)

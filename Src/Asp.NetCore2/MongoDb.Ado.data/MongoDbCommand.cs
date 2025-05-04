@@ -45,7 +45,8 @@ namespace MongoDb.Ado.data
             set => _connection = (MongoDbConnection)value;
         }
 
-        protected override DbParameterCollection DbParameterCollection => throw new NotSupportedException("暂不支持参数。");
+        protected override DbParameterCollection DbParameterCollection   
+            { get { return new EmptyDbParameterCollection(); } } 
 
         protected override DbTransaction DbTransaction { get; set; }
 

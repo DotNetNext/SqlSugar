@@ -1,6 +1,7 @@
 ﻿using MongoDb.Ado.data;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using MongoDbTest.DBHelper;
 using System;
 using System.Collections.Generic;
 using System.Data;
