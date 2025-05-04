@@ -20,6 +20,13 @@ namespace MongoDbTest
             var Order = new Order() { Id = 1 };
             Expression<Func<Order, bool>> exp2 = it => it.Id == Order.Id || it.Name == "a";
             var json2 = MongoNestedTranslator.Translate(exp2);
+
+             
+            Expression<Func<Order, bool>> exp3 = it=> it.IsValidate==true;
+            var json23 = MongoNestedTranslator.Translate(exp3);
+
+            Expression<Func<Order, bool>> exp4 = it => it.IsValidate != true;
+            var json24 = MongoNestedTranslator.Translate(exp4);
         }
     }
     public class Order 
