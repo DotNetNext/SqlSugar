@@ -91,15 +91,11 @@ namespace MongoDb.Ado.data
             var collection = GetCollection(collectionName);
             return new ExecuteScalarHandlerAsync().HandleAsync(operation, collection, json);
         }
-        public override Task<DbDataReader> ExecuteReaderAsync(CancellationToken cancellationToken)
+        protected override  Task<DbDataReader> ExecuteDbDataReaderAsync(CommandBehavior behavior,CancellationToken cancellationToken)
         {
             var (operation, collectionName, json) = ParseCommand(_commandText);
             var collection = GetCollection(collectionName);
             return new DbDataReaderFactoryAsync().HandleAsync(operation, collection, json);
-        }
-        protected override  Task<DbDataReader> ExecuteDbDataReaderAsync(CommandBehavior behavior,CancellationToken cancellationToken)
-        {
-            return ExecuteReaderAsync();
         }
 
 
