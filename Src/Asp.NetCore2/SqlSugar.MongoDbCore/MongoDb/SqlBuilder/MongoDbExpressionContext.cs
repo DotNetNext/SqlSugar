@@ -1,9 +1,15 @@
 ﻿using System;
 using System.Linq;
+using System.Linq.Expressions;
 namespace SqlSugar.MongoDb
 {
     public class MongoDbExpressionContext : ExpressionContext, ILambdaExpressions
     {
+        public new void Resolve(Expression expression, ResolveExpressType resolveType) 
+        {
+        
+        }
+
         public SqlSugarProvider Context { get; set; }
         public MongoDbExpressionContext()
         {
