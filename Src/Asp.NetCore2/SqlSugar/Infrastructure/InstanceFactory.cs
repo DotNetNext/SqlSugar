@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 namespace SqlSugar
@@ -364,14 +365,30 @@ namespace SqlSugar
                 }
             }
             else
-            {
+            { 
                 return new InsertableProvider<T>();
             }
         }
 
         private static bool IsCustomDb(ConnectionConfig currentConnectionConfig)
         {
-            return currentConnectionConfig.DbType==DbType.Custom;
+            if (currentConnectionConfig.DbType == DbType.Custom) 
+            {
+                return true;
+            }
+            return currentConnectionConfig.DbType != DbType.SqlServer &&
+                            currentConnectionConfig.DbType != DbType.Dm &&
+                            currentConnectionConfig.DbType != DbType.Oscar &&
+                            currentConnectionConfig.DbType != DbType.Access &&
+                            currentConnectionConfig.DbType != DbType.QuestDB &&
+                            currentConnectionConfig.DbType != DbType.MySql &&
+                            currentConnectionConfig.DbType != DbType.Oracle &&
+                            currentConnectionConfig.DbType != DbType.PostgreSQL &&
+                            currentConnectionConfig.DbType != DbType.ClickHouse &&
+                            currentConnectionConfig.DbType != DbType.GBase &&
+                            currentConnectionConfig.DbType != DbType.Sqlite &&
+                            GetCustomTypeByClass("SqlSugar." + currentConnectionConfig.DbType + "." + currentConnectionConfig.DbType + "Provider") != null;
+      
         }
 
         public static IDbBind GetDbBind(ConnectionConfig currentConnectionConfig)
