@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SqlSugar.MongoDbCore;
+using System;
 using System.Linq;
 using System.Linq.Expressions;
 namespace SqlSugar.MongoDb
@@ -7,7 +8,11 @@ namespace SqlSugar.MongoDb
     {
         public new void Resolve(Expression expression, ResolveExpressType resolveType) 
         {
-        
+            var context = new MongoNestedTranslatorContext();
+            context.resolveType = resolveType;
+            context.context = this.Context;
+            var sql=MongoNestedTranslator.Translate(expression, context);
+            this.Result.Append(sql);
         }
 
         public SqlSugarProvider Context { get; set; }

@@ -6,5 +6,7 @@ namespace SqlSugar.MongoDbCore
 {
     public class MongoNestedTranslatorContext
     {
+        public ResolveExpressType resolveType { get; internal set; }
+        public SqlSugarProvider context { get; internal set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Nodes;
@@ -50,6 +51,19 @@ namespace SqlSugar.MongoDb
         {
             List<string> operations = new List<string>();
             var sb = new StringBuilder();
+
+            foreach (var item in this.WhereInfos)
+            {
+                // 去除开头的 WHERE 或 AND（忽略大小写和空格）
+                string trimmed = item.TrimStart();
+                if (trimmed.StartsWith("WHERE", StringComparison.OrdinalIgnoreCase))
+                    trimmed = trimmed.Substring(5).TrimStart();
+                else if (trimmed.StartsWith("AND", StringComparison.OrdinalIgnoreCase))
+                    trimmed = trimmed.Substring(3).TrimStart();
+                // item 是 JSON 格式字符串，直接包进 $match
+                operations.Add($"{{ \"$match\": {trimmed} }}");
+            }
+
             sb.Append($"aggregate {this.GetTableNameString} ");
             sb.Append("[");
             sb.Append(string.Join(", ", operations));
