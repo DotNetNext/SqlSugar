@@ -86,7 +86,11 @@ namespace MongoDb.Ado.data
 
         public override bool IsDBNull(int ordinal)
         {
-            throw new NotImplementedException();
+            if (ordinal < 0 || ordinal >= _current.ElementCount)
+                throw new IndexOutOfRangeException($"Invalid ordinal: {ordinal}");
+
+            var value = _current.GetElement(ordinal).Value;
+            return value == null || value.IsBsonNull;
         }
 
         public override string GetName(int ordinal)
