@@ -31,9 +31,11 @@ namespace MongoDbTest
             var delrow = db.Deleteable(new OrderInfo() { Id = ids.Last() })
               .ExecuteCommand();
 
+             
 
-            var list = db.Queryable<OrderInfo>().ToList();
+            var list2 = db.Queryable<OrderInfo>().ToList();
 
+            var list = db.Queryable<OrderInfo>().ToDataTable();
             //测试生成SQL性能
             TestSqlBuilder(db);
         }
