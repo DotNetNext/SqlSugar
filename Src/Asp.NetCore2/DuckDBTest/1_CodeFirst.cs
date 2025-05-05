@@ -63,6 +63,20 @@ namespace OrmTest
             //Delete
             //删除
             db.Deleteable(userInfo).ExecuteCommand();
+
+            //Test the performance of creating SQL
+            for (int i = 0; i < 10000; i++)
+            {
+                db.Insertable(new UserInfo001()
+                {
+                    Context = "Context",
+                    Email = "dfafa@qq.com",
+                    Price = Convert.ToDecimal(1.1),
+                    UserName = "admin",
+                    RegistrationDate = DateTime.Now,
+
+                }).ToSql();
+            }
         }
 
         /// <summary>
