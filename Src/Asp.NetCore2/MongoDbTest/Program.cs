@@ -1,5 +1,5 @@
 ﻿using MongoDbTest;
-//开发中
+//MongoDb还在开发中预计5月30号前可以使用
 OrmTest.Init();
 AdoTest.Init();
 ExpTest.Init();
