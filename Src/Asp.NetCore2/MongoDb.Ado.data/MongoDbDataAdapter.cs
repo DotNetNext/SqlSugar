@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MongoDB.Bson;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -105,7 +106,12 @@ namespace MongoDb.Ado.data
             DataRow daRow = dt.NewRow();
             for (int i = 0; i < columns.Count; i++)
             {
-                daRow[columns[i].ColumnName] = dr.GetValue(i);
+                var value = dr.GetValue(i);
+                if(value is  ObjectId) 
+                {
+                    value = value?.ToString();
+                }
+                daRow[columns[i].ColumnName] = value;
             }
             dt.Rows.Add(daRow);
         }

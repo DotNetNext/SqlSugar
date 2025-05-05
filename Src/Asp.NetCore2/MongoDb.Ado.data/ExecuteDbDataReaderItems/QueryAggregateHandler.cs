@@ -1,6 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
@@ -20,8 +21,9 @@ namespace MongoDb.Ado.data
             var aggregateFluent = collection.Aggregate<BsonDocument>(pipeline.Select(stage => new BsonDocument(stage.AsBsonDocument)).ToArray());
 
             // 执行聚合查询并返回 DbDataReader
-            var cursor = aggregateFluent.ToEnumerable();
-            return new MongoDbBsonDocumentDataReader(cursor);
+            var cursor = aggregateFluent.ToList(); 
+            var result= new MongoDbBsonDocumentDataReader(cursor);
+            return result;
         }
     }
 }

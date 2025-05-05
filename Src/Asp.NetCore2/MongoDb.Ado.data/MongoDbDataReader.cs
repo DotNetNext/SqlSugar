@@ -6,6 +6,7 @@ using MongoDB.Bson;
 using System.Data;
 using System.Collections;
 using System.Linq;
+using MongoDB.Bson.Serialization;
 
 namespace MongoDb.Ado.data
 {
@@ -13,9 +14,13 @@ namespace MongoDb.Ado.data
     {
         private readonly IEnumerator<BsonDocument> _enumerator;
         private BsonDocument _current;
+        private IEnumerable<BsonDocument> _documents;
+        private BsonDocument _firstObj;
         public MongoDbBsonDocumentDataReader(IEnumerable<BsonDocument> documents)
         {
             _enumerator = documents.GetEnumerator();
+            _documents = documents;
+            _firstObj=_documents.FirstOrDefault();
         }
 
         public override bool Read()
@@ -28,7 +33,7 @@ namespace MongoDb.Ado.data
             return false;
         }
 
-        public override int FieldCount => _current?.Count()??0;
+        public override int FieldCount => _documents?.FirstOrDefault()?.Count()??0;
 
         public override int Depth => throw new NotImplementedException();
 
@@ -52,9 +57,15 @@ namespace MongoDb.Ado.data
         public override double GetDouble(int ordinal) => (double)GetValue(ordinal);
         public override Type GetFieldType(int ordinal)
         {
-            var obj = GetValue(ordinal);
+            var firstObj = _firstObj;
+            if(firstObj==null) return typeof(object);
+            var obj = firstObj.GetValue(ordinal);
+            if (obj is BsonObjectId) 
+            {
+                return typeof(string);
+            }
             if (obj == null) return typeof(object);
-            return obj.GetType();
+            return BsonTypeMapper.MapToDotNetValue(obj).GetType();
         }
         public override float GetFloat(int ordinal) => (float)GetValue(ordinal);
         public override Guid GetGuid(int ordinal) => (Guid)GetValue(ordinal);
@@ -80,11 +91,12 @@ namespace MongoDb.Ado.data
 
         public override string GetName(int ordinal)
         {
-            if (_current == null)
-                throw new InvalidOperationException("No current document.");
+            var firstObj=_firstObj;
+            if (firstObj == null)
+                return "";
 
             // 获取当前文档的字段元素列表（Elements）
-            var elements = _current.Elements.ToList();
+            var elements = firstObj.Elements.ToList();
 
             // 确保 ordinal 是有效的索引
             if (ordinal < 0 || ordinal >= elements.Count)
@@ -96,8 +108,9 @@ namespace MongoDb.Ado.data
 
         public override int GetOrdinal(string name)
         {
+            var firstObj = _firstObj;
             int i = 0;
-            foreach (var elem in _current.Elements)
+            foreach (var elem in firstObj.Elements)
             {
                 if (elem.Name.Equals(name, StringComparison.OrdinalIgnoreCase))
                     return i;

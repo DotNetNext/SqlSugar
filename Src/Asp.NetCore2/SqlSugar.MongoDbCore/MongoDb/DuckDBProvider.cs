@@ -95,7 +95,7 @@ namespace SqlSugar.MongoDb
 
         public override void SetCommandToAdapter(IDataAdapter adapter, DbCommand command)
         {
-            throw new NotImplementedException();
+            ((MongoDbDataAdapter)adapter).SelectCommand =(MongoDbCommand)command;
         }
 
         public override DbCommand GetCommand(string sql, SugarParameter[] pars)

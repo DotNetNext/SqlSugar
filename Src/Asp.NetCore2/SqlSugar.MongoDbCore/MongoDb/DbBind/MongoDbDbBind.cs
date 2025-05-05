@@ -141,7 +141,30 @@ namespace SqlSugar.MongoDb
 
                 // 结构体/Map类型（MongoDb 1.0+支持）
                 new KeyValuePair<string, CSharpDataType>("STRUCT", CSharpDataType.@object),      // 需动态解析
-                new KeyValuePair<string, CSharpDataType>("MAP", CSharpDataType.@object)          // 键值对
+                new KeyValuePair<string, CSharpDataType>("MAP", CSharpDataType.@object),          // 键值对
+
+                new KeyValuePair<string, CSharpDataType>("INT16",  CSharpDataType.@short),         // CLR short
+                new KeyValuePair<string, CSharpDataType>("UINT16", CSharpDataType.@short),        // CLR ushort
+                new KeyValuePair<string, CSharpDataType>("INT32",  CSharpDataType.@int),           // CLR int
+                new KeyValuePair<string, CSharpDataType>("UINT32", CSharpDataType.@int),          // CLR uint
+                new KeyValuePair<string, CSharpDataType>("INT64",  CSharpDataType.@long),          // CLR long
+                new KeyValuePair<string, CSharpDataType>("UINT64", CSharpDataType.@long),         // CLR ulong
+                new KeyValuePair<string, CSharpDataType>("BYTE",   CSharpDataType.@byte),          // CLR byte
+                new KeyValuePair<string, CSharpDataType>("SBYTE",  CSharpDataType.@sbyte),         // CLR sbyte
+                new KeyValuePair<string, CSharpDataType>("SINGLE", CSharpDataType.@float),         // CLR float (Single)
+                new KeyValuePair<string, CSharpDataType>("DECIMAL", CSharpDataType.@decimal),      // CLR decimal
+                new KeyValuePair<string, CSharpDataType>("DATETIMEOFFSET", CSharpDataType.@DateTimeOffset), // CLR DateTimeOffset
+                new KeyValuePair<string, CSharpDataType>("DATETIME", CSharpDataType.@DateTime),    // CLR DateTime
+                new KeyValuePair<string, CSharpDataType>("BOOLEAN", CSharpDataType.@bool),         // CLR bool
+                new KeyValuePair<string, CSharpDataType>("STRING",  CSharpDataType.@string),       // CLR string
+                new KeyValuePair<string, CSharpDataType>("GUID",    CSharpDataType.@Guid),         // CLR Guid
+                new KeyValuePair<string, CSharpDataType>("ENUM",    CSharpDataType.@enum),         // CLR enum
+                new KeyValuePair<string, CSharpDataType>("OBJECT",  CSharpDataType.@object),       // CLR object
+                new KeyValuePair<string, CSharpDataType>("OTHER",   CSharpDataType.@other),        // custom/unknown
+                new KeyValuePair<string, CSharpDataType>("BYTE[]",  CSharpDataType.@byteArray),    // CLR byte[]
+                new KeyValuePair<string, CSharpDataType>("TIME",    CSharpDataType.@time),         // possibly TimeOnly
+                new KeyValuePair<string, CSharpDataType>("TIMESPAN", CSharpDataType.@TimeSpan),    // CLR TimeSpan
+                new KeyValuePair<string, CSharpDataType>("CHAR",    CSharpDataType.@char),         // CLR char
                 };
         public override List<string> StringThrow
         {
