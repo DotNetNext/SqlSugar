@@ -1,4 +1,5 @@
 ﻿using SqlSugar;
+using SqlSugar.MongoDbCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,11 +8,8 @@ using System.Text;
 namespace MongoDbTest
 {
 
-    public class OrderInfo
-    {
-        [SugarColumn(IsPrimaryKey = true, IsOnlyIgnoreInsert =true)]
-        public string Id { get; set; }
-
+    public class OrderInfo:MongoDbBase
+    { 
         public string Name { get; set; }
         public decimal Price { get; set; }
         [SugarColumn(IsNullable = true)]
