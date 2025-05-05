@@ -668,6 +668,10 @@ namespace SqlSugar
                             type = assembly.GetType(className);
                         }
                     }
+                    if (type == null)
+                    {
+                        type = GetCustomDbType(className, type);
+                    }
                     Check.ArgumentNullException(type, string.Format(ErrorMessage.ObjNotExist, className));
                     if (!typeCache.ContainsKey(className))
                     {
