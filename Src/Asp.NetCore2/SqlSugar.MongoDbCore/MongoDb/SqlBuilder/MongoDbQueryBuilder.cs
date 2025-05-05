@@ -52,6 +52,7 @@ namespace SqlSugar.MongoDb
             List<string> operations = new List<string>();
             var sb = new StringBuilder();
 
+            #region Where
             foreach (var item in this.WhereInfos)
             {
                 // 去除开头的 WHERE 或 AND（忽略大小写和空格）
@@ -63,6 +64,21 @@ namespace SqlSugar.MongoDb
                 // item 是 JSON 格式字符串，直接包进 $match
                 operations.Add($"{{ \"$match\": {trimmed} }}");
             }
+            #endregion
+
+            #region Page
+            var skip = this.Skip;
+            var take = this.Take;
+            // 处理 skip 和 take
+            if (this.Skip.HasValue)
+            {
+                operations.Add($"{{ \"$skip\": {this.Skip.Value} }}");
+            }
+            if (this.Take.HasValue)
+            {
+                operations.Add($"{{ \"$limit\": {this.Take.Value} }}");
+            } 
+            #endregion
 
             sb.Append($"aggregate {this.GetTableNameString} ");
             sb.Append("[");
