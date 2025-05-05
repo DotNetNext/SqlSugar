@@ -1,4 +1,6 @@
-﻿using SqlSugar.MongoDbCore;
+﻿using MongoDB.Bson.IO;
+using MongoDB.Bson;
+using SqlSugar.MongoDbCore;
 using System;
 using System.Linq;
 using System.Linq.Expressions;
@@ -12,7 +14,11 @@ namespace SqlSugar.MongoDb
             context.resolveType = resolveType;
             context.context = this.Context;
             var sql=MongoNestedTranslator.Translate(expression, context);
-            this.Result.Append(sql);
+            var shellString = sql.ToJson(new JsonWriterSettings
+            {
+                OutputMode = JsonOutputMode.Shell
+            }); 
+            this.Result.Append(shellString);
         }
 
         public SqlSugarProvider Context { get; set; }
