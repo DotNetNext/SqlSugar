@@ -112,7 +112,8 @@ namespace MongoDb.Ado.data
                 throw new InvalidOperationException("No current document.");
 
             var element = GetElementByOrdinal(ordinal);
-            return BsonTypeMapper.MapToDotNetValue(element.Value);
+            var result= BsonTypeMapper.MapToDotNetValue(element.Value);
+            return result;
         }
         private BsonElement GetElementByOrdinal(int ordinal)
         {

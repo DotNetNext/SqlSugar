@@ -32,6 +32,8 @@ namespace MongoDbTest
               .ExecuteCommand();
 
 
+            var list = db.Queryable<OrderInfo>().ToList();
+
             //测试生成SQL性能
             TestSqlBuilder(db);
         }

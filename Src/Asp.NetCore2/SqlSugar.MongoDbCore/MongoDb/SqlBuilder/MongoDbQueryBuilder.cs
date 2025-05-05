@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 
 namespace SqlSugar.MongoDb
@@ -46,42 +48,14 @@ namespace SqlSugar.MongoDb
         }
         public override string ToSqlString()
         {
-            base.AppendFilter();
-            string oldOrderValue = this.OrderByValue;
-            string result = null;
-            sql = new StringBuilder();
-            sql.AppendFormat(SqlTemplate, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, (Skip != null || Take != null) ? null : GetOrderByString);
-            if (IsCount) { return sql.ToString(); }
-            if (Skip != null && Take == null)
-            {
-                if (this.OrderByValue == "ORDER BY ") this.OrderByValue += GetSelectValue.Split(',')[0];
-                result = string.Format(PageTempalte, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, (Skip != null || Take != null) ? null : GetOrderByString, Skip.ObjToInt(), long.MaxValue);
-            }
-            else if (Skip == null && Take != null)
-            {
-                if (this.OrderByValue == "ORDER BY ") this.OrderByValue += GetSelectValue.Split(',')[0];
-                result = string.Format(PageTempalte, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, GetOrderByString, 0, Take.ObjToInt());
-            }
-            else if (Skip != null && Take != null)
-            {
-                if (this.OrderByValue == "ORDER BY ") this.OrderByValue += GetSelectValue.Split(',')[0];
-                result = string.Format(PageTempalte, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, GetOrderByString, Skip.ObjToInt() > 0 ? Skip.ObjToInt() : 0, Take);
-            }
-            else
-            {
-                result = sql.ToString();
-            }
-            this.OrderByValue = oldOrderValue;
-            result = GetSqlQuerySql(result);
-            if (result.IndexOf("-- No table") > 0)
-            {
-                return "-- No table";
-            }
-            if (TranLock != null)
-            {
-                result = result + TranLock;
-            }
-            return result;
+            List<string> operations = new List<string>();
+            var sb = new StringBuilder();
+            sb.Append($"aggregate {this.GetTableNameString} ");
+            sb.Append("[");
+            sb.Append(string.Join(", ", operations));
+            sb.Append("]");
+
+            return sb.ToString();
         }
 
         #endregion
