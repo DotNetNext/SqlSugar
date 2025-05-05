@@ -23,6 +23,7 @@ namespace SqlSugar.MongoDb
             }
          
         }
+        public override bool IsNoSql { get; set; } = true;
         public override IDbConnection Connection
         {
             get
