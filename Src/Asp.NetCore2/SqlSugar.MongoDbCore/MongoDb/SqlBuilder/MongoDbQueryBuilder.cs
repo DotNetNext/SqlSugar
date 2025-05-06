@@ -93,8 +93,12 @@ namespace SqlSugar.MongoDb
                 { 
                     int lastSpace = str.LastIndexOf(' ');
                     string jsonPart = str.Substring(0, lastSpace).Trim();
-                    string directionPart = str.Substring(lastSpace + 1).Trim().ToUpper(); 
-
+                    string directionPart = str.Substring(lastSpace + 1).Trim().ToUpper();
+                    if (str.EndsWith("}")) 
+                    {
+                        jsonPart = str;
+                        directionPart = "ASC";
+                    }
                     var bson = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonDocument>(jsonPart);
                     if (bson.Contains("fieldName"))
                     {
