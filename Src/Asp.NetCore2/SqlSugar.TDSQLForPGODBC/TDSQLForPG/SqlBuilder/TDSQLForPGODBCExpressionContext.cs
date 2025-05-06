@@ -54,7 +54,7 @@ namespace SqlSugar.TDSQLForPGODBC
             {
                 var mappingInfo = this.MappingTables.FirstOrDefault(it => it.EntityName.Equals(entityName, StringComparison.CurrentCultureIgnoreCase));
 
-                var tableName = mappingInfo?.DbTableName+"";
+                var tableName = mappingInfo?.DbTableName + "";
                 if (tableName.Contains("."))
                 {
                     tableName = string.Join(UtilConstants.Dot, tableName.Split(UtilConstants.DotChar).Select(it => GetTranslationText(it)));
@@ -102,7 +102,7 @@ namespace SqlSugar.TDSQLForPGODBC
             }
         }
 
-        public  string GetValue(object entityValue)
+        public string GetValue(object entityValue)
         {
             if (entityValue == null)
                 return null;
@@ -120,7 +120,7 @@ namespace SqlSugar.TDSQLForPGODBC
                 }
                 });
             }
-            else 
+            else
             {
                 return this.DbMehtods.ToString(new MethodCallExpressionModel()
                 {
@@ -180,7 +180,7 @@ namespace SqlSugar.TDSQLForPGODBC
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
             var parameter3 = model.Args[2];
-            if (parameter.Type == UtilConstants.BoolType) 
+            if (parameter.Type == UtilConstants.BoolType)
             {
                 parameter.MemberName = parameter.MemberName.ToString().Replace("=1", "=true");
                 parameter2.MemberName = false;
@@ -229,7 +229,7 @@ namespace SqlSugar.TDSQLForPGODBC
             {
                 return $"  extract(DOW FROM cast({parameter.MemberName} as TIMESTAMP)) ";
             }
- 
+
             return string.Format(" cast( to_char({1},'{0}')as integer ) ", format, parameter.MemberName);
         }
 
@@ -237,13 +237,19 @@ namespace SqlSugar.TDSQLForPGODBC
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
-            return string.Format(" ({0} like concat('%',{1},'%')) ", parameter.MemberName, parameter2.MemberName  );
+            return string.Format(" ({0} like concat('%',{1},'%')) ", parameter.MemberName, parameter2.MemberName);
         }
 
         public override string StartsWith(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
+            var parameter2Info = model.Parameters?.FirstOrDefault(it => it.ParameterName.EqualCase(parameter2.MemberName + ""));
+            if (parameter2Info != null && parameter2.MemberName?.ToString()?.StartsWith("@MethodConst") == true)
+            {
+                parameter2Info.Value = parameter2.MemberValue + "%";
+                return string.Format(" ({0} like {1} ) ", parameter.MemberName, parameter2.MemberName);
+            }
             return string.Format(" ({0} like concat({1},'%')) ", parameter.MemberName, parameter2.MemberName);
         }
 
@@ -251,7 +257,13 @@ namespace SqlSugar.TDSQLForPGODBC
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
-            return string.Format(" ({0} like concat('%',{1}))", parameter.MemberName,parameter2.MemberName);
+            var parameter2Info = model.Parameters?.FirstOrDefault(it => it.ParameterName.EqualCase(parameter2.MemberName + ""));
+            if (parameter2Info != null && parameter2.MemberName?.ToString()?.StartsWith("@MethodConst") == true)
+            {
+                parameter2Info.Value = "%" + parameter2.MemberValue;
+                return string.Format(" ({0} like {1} ) ", parameter.MemberName, parameter2.MemberName);
+            }
+            return string.Format(" ({0} like concat('%',{1}))", parameter.MemberName, parameter2.MemberName);
         }
 
         public override string DateIsSameDay(MethodCallExpressionModel model)
@@ -272,11 +284,11 @@ namespace SqlSugar.TDSQLForPGODBC
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
             var parameter3 = model.Args[2];
-            DateType dateType =(DateType)parameter3.MemberValue;
+            DateType dateType = (DateType)parameter3.MemberValue;
             var format = "yyyy-MM-dd";
             if (dateType == DateType.Quarter)
             {
-                return string.Format(" (date_trunc('quarter',{0})=date_trunc('quarter',{1}) ) ", parameter.MemberName, parameter2.MemberName,format);
+                return string.Format(" (date_trunc('quarter',{0})=date_trunc('quarter',{1}) ) ", parameter.MemberName, parameter2.MemberName, format);
             }
             switch (dateType)
             {
@@ -375,8 +387,8 @@ namespace SqlSugar.TDSQLForPGODBC
         }
         public override string IsNullOrEmpty(MethodCallExpressionModel model)
         {
-            if ( 
-                model.Conext?.SugarContext?.Context?.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.Vastbase||
+            if (
+                model.Conext?.SugarContext?.Context?.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.Vastbase ||
                 model.Conext?.SugarContext?.Context?.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.GaussDB)
             {
                 var parameter = model.Args[0];
@@ -390,7 +402,7 @@ namespace SqlSugar.TDSQLForPGODBC
         public override string MergeString(params string[] strings)
         {
             var key = Guid.NewGuid() + "";
-            return " concat("+string.Join(",", strings.Select(it=>it?.Replace("+", key))).Replace("+", "").Replace(key, "+") + ") ";
+            return " concat(" + string.Join(",", strings.Select(it => it?.Replace("+", key))).Replace("+", "").Replace(key, "+") + ") ";
         }
         public override string IsNull(MethodCallExpressionModel model)
         {
@@ -418,10 +430,10 @@ namespace SqlSugar.TDSQLForPGODBC
             var parameter1 = model.Args[1];
             //var parameter2 = model.Args[2];
             //var parameter3= model.Args[3];
-            var result= GetJson(parameter.MemberName, parameter1.MemberName, model.Args.Count()==2);
-            if (model.Args.Count > 2) 
+            var result = GetJson(parameter.MemberName, parameter1.MemberName, model.Args.Count() == 2);
+            if (model.Args.Count > 2)
             {
-               result = GetJson(result, model.Args[2].MemberName, model.Args.Count() == 3);
+                result = GetJson(result, model.Args[2].MemberName, model.Args.Count() == 3);
             }
             if (model.Args.Count > 3)
             {
@@ -445,13 +457,13 @@ namespace SqlSugar.TDSQLForPGODBC
             return $"({parameter.MemberName}::jsonb ?{parameter1.MemberName})";
         }
 
-        private string GetJson(object memberName1, object memberName2,bool isLast)
+        private string GetJson(object memberName1, object memberName2, bool isLast)
         {
             if (isLast)
             {
                 return $"({memberName1}::json->>{memberName2})";
             }
-            else 
+            else
             {
                 return $"({memberName1}->{memberName2})";
             }
@@ -477,11 +489,20 @@ namespace SqlSugar.TDSQLForPGODBC
             {
                 return $" {model.Args[0].MemberName}::jsonb @> '[{model.Args[1].MemberValue.ObjToStringNoTrim().ToSqlFilter()}]'::jsonb ";
             }
-            else 
+            else
             {
                 return $" {model.Args[0].MemberName}::jsonb @> '[\"{model.Args[1].MemberValue}\"]'::jsonb ";
             }
         }
+        public override string GetStringJoinSelector(string result, string separator)
+        {
+            if (result?.ToLower()?.Contains("distinct") == true)
+            {
+                return $"string_agg({result},'{separator}') ";
+            }
+            return $"string_agg(({result})::text,'{separator}') ";
+        }
+
         public override string JsonListObjectAny(MethodCallExpressionModel model)
         {
             if (UtilMethods.IsNumber(model.Args[2].MemberValue.GetType().Name))
