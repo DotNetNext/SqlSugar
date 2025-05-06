@@ -1,4 +1,5 @@
 ﻿using MongoDbTest.DBHelper;
+using SqlSugar;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -38,6 +39,10 @@ namespace MongoDbTest
             var list3= db.Queryable<OrderInfo>().Skip(1).Take(1).ToList();
 
             var list4 = db.Queryable<OrderInfo>().OrderByDescending(it=>it.Price).ToList();
+
+            var list5 = db.Queryable<OrderInfo>().OrderByDescending(it => it.Price).ToList();
+
+            var list6 = db.Queryable<OrderInfo>().OrderByDescending(it => new { it.Id,Name=it.Name }).ToList();
 
             //测试生成SQL性能
             TestSqlBuilder(db);

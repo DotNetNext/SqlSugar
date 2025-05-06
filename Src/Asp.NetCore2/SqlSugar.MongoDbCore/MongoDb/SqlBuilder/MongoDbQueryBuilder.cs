@@ -88,20 +88,27 @@ namespace SqlSugar.MongoDb
             {
                 order = order.Substring("ORDER BY ".Length).Trim();
 
-                int lastSpace = order.LastIndexOf(' ');
-                string jsonPart = order.Substring(0, lastSpace).Trim();
-                string directionPart = order.Substring(lastSpace + 1).Trim().ToUpper();
+                var sortDoc = new BsonDocument();
+                foreach (var str in order.Split(","))
+                { 
+                    int lastSpace = str.LastIndexOf(' ');
+                    string jsonPart = str.Substring(0, lastSpace).Trim();
+                    string directionPart = str.Substring(lastSpace + 1).Trim().ToUpper(); 
 
-                var bson = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonDocument>(jsonPart);
-                if (bson.Contains("fieldName"))
+                    var bson = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonDocument>(jsonPart);
+                    if (bson.Contains("fieldName"))
+                    {
+                        var field = bson["fieldName"].AsString;
+                        var direction = directionPart == "DESC" ? -1 : 1;
+                        sortDoc[field] = direction;
+                    }
+                }
+                if (sortDoc.ElementCount > 0)
                 {
-                    var field = bson["fieldName"].AsString;
-                    var direction = directionPart == "ASC" ? 1 : -1;
-                    operations.Add($"{{ \"$sort\": {{ \"{field}\": {direction} }} }}");
+                    operations.Add($"{{ \"$sort\": {sortDoc.ToJson()} }}");
                 }
             }
-            #endregion
-
+            #endregion 
             sb.Append($"aggregate {this.GetTableNameString} ");
             sb.Append("[");
             sb.Append(string.Join(", ", operations));
