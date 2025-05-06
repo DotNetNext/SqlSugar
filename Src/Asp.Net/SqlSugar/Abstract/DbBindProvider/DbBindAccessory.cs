@@ -281,7 +281,14 @@ namespace SqlSugar
                     sbTypes.Append(type.Name.Substring(0, 2));
                 }
             }
-            types = sbTypes.ToString();
+            types = sbTypes.ToString(); 
+            if (this.QueryBuilder?.Context?.Ado is AdoProvider adoProvider)
+            {
+                if (adoProvider.IsNoSql) 
+                {
+                    types = "NoSql";
+                }
+            }
             return keys;
         }
 

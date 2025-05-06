@@ -156,6 +156,14 @@ namespace SqlSugar
                     string parameterName = this.Context.SqlParameterKeyWord + ExpressionConst.Const + this.Context.ParameterIndex;
                     parameter.Context.Result.Append(base.Context.GetEqString(memberName, parameterName));
                     var addItem = new SugarParameter(parameterName, parameter.CommonTempData);
+                    if (addItem.Value == null&&item.Type?.Name== "Nullable`1") 
+                    {
+                        var genericType = item.Type?.GenericTypeArguments?.FirstOrDefault();
+                        if (genericType != null) 
+                        {
+                            addItem.DbType = new SugarParameter(parameterName, UtilMethods.GetDefaultValue(genericType)).DbType;
+                        }
+                    }
                     ConvertParameterTypeByType(item, addItem);
 
                     this.Context.Parameters.Add(addItem);
