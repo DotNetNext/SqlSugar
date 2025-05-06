@@ -91,6 +91,10 @@ namespace SqlSugar.TDSQLForPGODBC
                 {
                     return v.ToString(CultureInfo.InvariantCulture);
                 }
+                else if (value is double dou)
+                {
+                    return dou.ToString(CultureInfo.InvariantCulture);
+                }
                 else
                 {
                     return "'" + value.ToString() + "'";
@@ -285,3 +289,4 @@ namespace SqlSugar.TDSQLForPGODBC
         }
     }
 }
+
