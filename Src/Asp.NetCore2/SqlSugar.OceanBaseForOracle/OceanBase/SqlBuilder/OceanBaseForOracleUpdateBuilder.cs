@@ -37,7 +37,7 @@ namespace SqlSugar.OceanBaseForOracle
                 {
                     var isFirst = pkList.First() == item;
                     var whereString = isFirst ? " " : " AND ";
-                    whereString += GetOracleUpdateColums(item);
+                    whereString += GetOracleUpdateColums(item, true);
                     whereList.Add(whereString);
                 }
                 return string.Format("{0} {1} WHERE {2};", updateTable, setValues, string.Join("", whereList));
@@ -46,9 +46,15 @@ namespace SqlSugar.OceanBaseForOracle
             return sb.ToString();
         }
 
-        private string GetOracleUpdateColums(DbColumnInfo m)
+        private string GetOracleUpdateColums(DbColumnInfo m, bool isWhere = false)
         {
-            return string.Format("\"{0}\"={1} ", m.DbColumnName.ToUpper(IsUppper), base.GetDbColumn(m, FormatValue(m.Value, m.IsPrimarykey, m.PropertyName)));
+
+            var result = string.Format("\"{0}\"={1} ", m.DbColumnName.ToUpper(IsUppper), base.GetDbColumn(m, FormatValue(m.Value, m.IsPrimarykey, m.PropertyName)));
+            if (isWhere && m.Value == null)
+            {
+                result = result.Replace("=NULL ", " is NULL ");
+            }
+            return result;
         }
         int i = 0;
         public object FormatValue(object value, bool isPrimaryKey, string name)
