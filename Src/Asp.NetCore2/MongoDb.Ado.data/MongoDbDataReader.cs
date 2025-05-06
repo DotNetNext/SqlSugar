@@ -65,6 +65,7 @@ namespace MongoDb.Ado.data
                 return typeof(string);
             }
             if (obj == null) return typeof(object);
+            if (obj is BsonNull) return typeof(object);
             return BsonTypeMapper.MapToDotNetValue(obj).GetType();
         }
         public override float GetFloat(int ordinal) => (float)GetValue(ordinal);

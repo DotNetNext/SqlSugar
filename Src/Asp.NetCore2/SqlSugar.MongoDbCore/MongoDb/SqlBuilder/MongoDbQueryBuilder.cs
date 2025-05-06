@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MongoDB.Bson;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -77,7 +78,28 @@ namespace SqlSugar.MongoDb
             if (this.Take.HasValue)
             {
                 operations.Add($"{{ \"$limit\": {this.Take.Value} }}");
-            } 
+            }
+            #endregion
+
+            #region OrderBy
+            var order = this.GetOrderByString;
+            var orderByString = this.GetOrderByString?.Trim();
+            if (!string.IsNullOrEmpty(orderByString) && orderByString.StartsWith("ORDER BY ", StringComparison.OrdinalIgnoreCase))
+            {
+                order = order.Substring("ORDER BY ".Length).Trim();
+
+                int lastSpace = order.LastIndexOf(' ');
+                string jsonPart = order.Substring(0, lastSpace).Trim();
+                string directionPart = order.Substring(lastSpace + 1).Trim().ToUpper();
+
+                var bson = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonDocument>(jsonPart);
+                if (bson.Contains("fieldName"))
+                {
+                    var field = bson["fieldName"].AsString;
+                    var direction = directionPart == "ASC" ? 1 : -1;
+                    operations.Add($"{{ \"$sort\": {{ \"{field}\": {direction} }} }}");
+                }
+            }
             #endregion
 
             sb.Append($"aggregate {this.GetTableNameString} ");

@@ -11,7 +11,12 @@ namespace SqlSugar.MongoDbCore
     {
         public static BsonDocument Translate(Expression expr, MongoNestedTranslatorContext context)
         {
-            return (BsonDocument)new ExpressionVisitor(context).Visit(expr);
+            var result = new ExpressionVisitor(context).Visit(expr);
+            if (result is BsonString bs) 
+            {
+                result = new BsonDocument("fieldName", bs);
+            }
+            return (BsonDocument)result;
         }
     }
 }

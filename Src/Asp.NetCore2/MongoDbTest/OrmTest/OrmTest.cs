@@ -37,6 +37,8 @@ namespace MongoDbTest
 
             var list3= db.Queryable<OrderInfo>().Skip(1).Take(1).ToList();
 
+            var list4 = db.Queryable<OrderInfo>().OrderByDescending(it=>it.Price).ToList();
+
             //测试生成SQL性能
             TestSqlBuilder(db);
         }
