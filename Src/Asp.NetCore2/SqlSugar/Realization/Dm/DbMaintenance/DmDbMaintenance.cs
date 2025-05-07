@@ -328,6 +328,7 @@ WHERE table_name = '" + tableName + "'");
                 columnInfo.DataType = "varchar2";
                 columnInfo.Length = 50;
             }
+            ConvertCreateColumnInfo(columnInfo);
             return base.AddColumn(tableName, columnInfo);
         }
         public override bool CreateIndex(string tableName, string[] columnNames, bool isUnique = false)
