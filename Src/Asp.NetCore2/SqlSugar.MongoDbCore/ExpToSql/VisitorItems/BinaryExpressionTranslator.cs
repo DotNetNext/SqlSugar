@@ -108,7 +108,7 @@ namespace SqlSugar.MongoDbCore
                 {
                     if (expression.Expression is ParameterExpression parameter) 
                     {
-                        if (_context.context != null)
+                        if (_context?.context != null)
                         {
                             var entityInfo = _context.context.EntityMaintenance.GetEntityInfo(parameter.Type);
                             var columnInfo = entityInfo.Columns.FirstOrDefault(s => s.PropertyName == leftValue);
