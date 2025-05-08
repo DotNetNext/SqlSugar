@@ -1,8 +1,9 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
-using Newtonsoft.Json.Linq; 
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 
@@ -84,15 +85,63 @@ namespace SqlSugar.MongoDbCore
                 _ => throw new NotSupportedException($"Unsupported binary op: {expr.NodeType}")
             };
 
-            if (op == null && leftIsMember && !rightIsMember)
-                return new BsonDocument { { field.ToString(), value } };
-            else if (op == null && rightIsMember && !leftIsMember)
-                return new BsonDocument { { value.ToString(), field } };
 
-            return new BsonDocument
+
+            string leftValue = "";
+            BsonValue rightValue = "";
+            if (IsLeftValue(leftIsMember, rightIsMember, op)|| IsRightValue(leftIsMember, rightIsMember, op))
+            {
+                MemberExpression expression;
+                if (IsLeftValue(leftIsMember, rightIsMember, op))
+                {
+                    leftValue = field.ToString();
+                    rightValue = value;
+                    expression = expr.Left as MemberExpression;
+                }
+                else
+                {
+                    leftValue = value.ToString();
+                    rightValue = field;
+                    expression = expr.Right as MemberExpression;
+                }
+                if (expression != null) 
+                {
+                    if (expression.Expression is ParameterExpression parameter) 
+                    {
+                        if (_context.context != null)
+                        {
+                            var entityInfo = _context.context.EntityMaintenance.GetEntityInfo(parameter.Type);
+                            var columnInfo = entityInfo.Columns.FirstOrDefault(s => s.PropertyName == leftValue);
+                            if (columnInfo != null)
+                            {
+                                leftValue = columnInfo.DbColumnName;
+                                if (columnInfo.IsPrimarykey)
+                                {
+                                    rightValue = BsonValue.Create(ObjectId.Parse(value + ""));
+                                }
+                            }
+                        }
+                    }
+                }
+                return new BsonDocument { { leftValue, rightValue } };
+            }
+            else
+            {
+                return new BsonDocument
+                {
+                    { field.ToString(), new BsonDocument { { op, value } } }
+                };
+            }
+        }
+
+        private static bool IsRightValue(bool leftIsMember, bool rightIsMember, string op)
         {
-            { field.ToString(), new BsonDocument { { op, value } } }
-        };
+            return op == null && rightIsMember && !leftIsMember;
+        }
+
+        private static bool IsLeftValue(bool leftIsMember, bool rightIsMember, string op)
+        {
+            return op == null && leftIsMember && !rightIsMember;
         }
     }
 

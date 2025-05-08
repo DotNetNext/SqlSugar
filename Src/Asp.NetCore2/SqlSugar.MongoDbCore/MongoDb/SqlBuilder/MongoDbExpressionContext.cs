@@ -12,7 +12,7 @@ namespace SqlSugar.MongoDb
         {
             var context = new MongoNestedTranslatorContext();
             context.resolveType = resolveType;
-            context.context = this.Context;
+            context.context = this.SugarContext.Context;
             var sql=MongoNestedTranslator.Translate(expression, context);
             var shellString = sql.ToJson(new JsonWriterSettings
             {
