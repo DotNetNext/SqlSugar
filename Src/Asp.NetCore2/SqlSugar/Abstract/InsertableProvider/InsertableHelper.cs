@@ -48,6 +48,10 @@ namespace SqlSugar
                         {
                             item.Value = StaticConfig.CustomGuidFunc();
                         }
+                        else if (StaticConfig.CustomGuidByValueFunc != null&& item.Value is Guid guidValue) 
+                        {
+                            item.Value = StaticConfig.CustomGuidByValueFunc(guidValue);
+                        }
                         else
                         {
                             item.Value = Guid.NewGuid();
