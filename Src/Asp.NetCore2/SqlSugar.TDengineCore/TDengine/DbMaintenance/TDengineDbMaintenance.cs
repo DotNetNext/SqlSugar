@@ -34,23 +34,7 @@ namespace SqlSugar.TDengine
         {
             get
             {
-                var dt = GetSTables();
-                List<string> sb = new List<string>();
-                foreach (DataRow item in dt.Rows)
-                {
-                    sb.Add($" SELECT '{item["stable_name"].ObjToString().ToSqlFilter()}' AS NAME ");
-                }
-                var dt2 = GetTables();
-                foreach (DataRow item in dt2.Rows)
-                {
-                    sb.Add($" SELECT '{item["table_name"].ObjToString().ToSqlFilter()}' AS NAME ");
-                }
-                var result= string.Join(" UNION  ", sb);
-                if (string.IsNullOrEmpty(result)) 
-                {
-                    result = " SELECT 'NoTables' AS Name ";
-                }
-                return result;
+                return "";
             }
         }
 
@@ -230,21 +214,22 @@ namespace SqlSugar.TDengine
         #region Methods  
         public override List<DbTableInfo> GetTableInfoList(bool isCache = true)
         {
-            var sql = string.Empty;
-            string cacheKey = "DbMaintenanceProvider.GetTableInfoList" + this.Context.CurrentConnectionConfig.ConfigId;
-            cacheKey = GetCacheKey(cacheKey);
-            var result = new List<DbTableInfo>();
-            var list = this.GetTableInfoListSql.Split("  UNION ");
-            this.Context.Utilities.PageEach(list, 100, pageItem =>
+            var sb = new List<string>();
+
+            // 第一个循环：获取超级表名称
+            var dt = GetSTables();
+            foreach (DataRow item in dt.Rows)
             {
-                var addSql = string.Join(" union ", pageItem);
-                var addItem  = this.Context.Ado.SqlQuery<DbTableInfo>(addSql);
-                result.AddRange(addItem);
-            });
-            foreach (var item in result)
-            {
-                item.DbObjectType = DbObjectType.Table;
+                sb.Add(item["stable_name"].ObjToString().ToSqlFilter()); 
             }
+
+            // 第二个循环：获取子表名称
+            var dt2 = GetTables();
+            foreach (DataRow item in dt2.Rows)
+            {
+                sb.Add(item["table_name"].ObjToString().ToSqlFilter());
+            } 
+            var result= sb.Select(it=>new DbTableInfo() { Name=it, DbObjectType=DbObjectType.Table }).ToList();
             return result;
         }
         public override bool AddColumn(string tableName, DbColumnInfo columnInfo)
