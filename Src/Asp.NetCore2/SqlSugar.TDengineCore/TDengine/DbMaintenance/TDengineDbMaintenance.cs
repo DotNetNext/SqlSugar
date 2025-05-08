@@ -228,6 +228,25 @@ namespace SqlSugar.TDengine
         #endregion
 
         #region Methods  
+        public override List<DbTableInfo> GetTableInfoList(bool isCache = true)
+        {
+            var sql = string.Empty;
+            string cacheKey = "DbMaintenanceProvider.GetTableInfoList" + this.Context.CurrentConnectionConfig.ConfigId;
+            cacheKey = GetCacheKey(cacheKey);
+            var result = new List<DbTableInfo>();
+            var list = this.GetTableInfoListSql.Split("  UNION ");
+            this.Context.Utilities.PageEach(list, 100, pageItem =>
+            {
+                var addSql = string.Join(" union ", pageItem);
+                var addItem  = this.Context.Ado.SqlQuery<DbTableInfo>(addSql);
+                result.AddRange(addItem);
+            });
+            foreach (var item in result)
+            {
+                item.DbObjectType = DbObjectType.Table;
+            }
+            return result;
+        }
         public override bool AddColumn(string tableName, DbColumnInfo columnInfo)
         {
             if (columnInfo.DbColumnName == "TagsTypeId") 
