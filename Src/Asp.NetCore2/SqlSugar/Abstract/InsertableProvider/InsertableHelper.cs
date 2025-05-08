@@ -42,7 +42,7 @@ namespace SqlSugar
                 foreach (var item in InsertBuilder.DbColumnInfoList)
                 {
                     var isPk = pks.Any(y => y.Equals(item.DbColumnName, StringComparison.CurrentCultureIgnoreCase)) || item.IsPrimarykey;
-                    if (isPk && item.PropertyType == UtilConstants.GuidType && item.Value.ObjToString() == Guid.Empty.ToString())
+                    if (isPk && item.Value is Guid guid && guid == Guid.Empty)
                     {
                         if (StaticConfig.CustomGuidFunc != null)
                         {
