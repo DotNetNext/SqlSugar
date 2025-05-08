@@ -10,12 +10,19 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.RegularExpressions;
+using System.Text.RegularExpressions; 
 
 namespace SqlSugar.MongoDb
 {
     public class UtilMethods
     {
+        internal static MongoDB.Bson.IO.JsonWriterSettings GetJsonWriterSettings() 
+        {
+            return new MongoDB.Bson.IO.JsonWriterSettings
+            {
+                OutputMode = MongoDB.Bson.IO.JsonOutputMode.Shell // JSON标准格式，带双引号
+            };
+        }
         internal static DateTime GetMinDate(ConnectionConfig currentConnectionConfig)
         {
             if (currentConnectionConfig.MoreSettings == null)

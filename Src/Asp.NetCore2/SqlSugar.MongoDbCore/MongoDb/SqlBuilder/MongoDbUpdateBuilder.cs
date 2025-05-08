@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,7 +50,40 @@ namespace SqlSugar.MongoDb
         {
             var operations = new List<string>();
             List<string> pks = this.PrimaryKeys;
+            if (this.SetValues.Any())
+            {
+                var setOperation = new BsonDocument();
+                foreach (var item in this.SetValues)
+                {
+                    var bson = BsonSerializer.Deserialize<BsonDocument>(item.Value);
+                    foreach (var element in bson)
+                    {
+                        setOperation[element.Name] = element.Value;
+                    }
+                }
+                var filterArray = new BsonArray();
+                foreach (var item in this.WhereValues)
+                {
+                    var bson = BsonDocument.Parse(item); // 直接解析 JSON 为 BsonDocument
+                    filterArray.Add(bson); // 将每个条件添加到数组
+                }
+                var filter = new BsonDocument("$and", filterArray);
+                operations.Add($"{{ filter: {filter.ToJson(UtilMethods.GetJsonWriterSettings())} , update: {{ $set: {setOperation.ToJson(UtilMethods.GetJsonWriterSettings())} }} }}");
+            }
+            else
+            {
+                UpdateByObject(groupList, operations, pks);
+            }
+            var sb = new StringBuilder();
+            sb.Append($"updateMany {tableName} [ ");
+            sb.Append(string.Join(", ", operations));
+            sb.Append(" ]");
 
+            return sb.ToString();
+        }
+
+        private static void UpdateByObject(List<IGrouping<int, DbColumnInfo>> groupList, List<string> operations, List<string> pks)
+        {
             foreach (var group in groupList)
             {
                 var filter = new BsonDocument();
@@ -57,7 +91,7 @@ namespace SqlSugar.MongoDb
 
                 foreach (var col in group)
                 {
-                  
+
                     if (col.IsPrimarykey || pks.Contains(col.DbColumnName))
                     {
                         filter[col.DbColumnName] = BsonValue.Create(ObjectId.Parse(col.Value?.ToString())); ;
@@ -87,15 +121,6 @@ namespace SqlSugar.MongoDb
 
                 operations.Add(json);
             }
-
-            var sb = new StringBuilder();
-            sb.Append($"updateMany {tableName} [ ");
-            sb.Append(string.Join(", ", operations));
-            sb.Append(" ]");
-
-            return sb.ToString();
         }
-
-
     }
 }

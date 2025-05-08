@@ -9,6 +9,10 @@ namespace SqlSugar.MongoDb
     /// </summary>
     public static class UtilExtensions
     {
+        public static bool IsInValues<T>(this T thisValue, params T[] values)
+        {
+            return values.Contains(thisValue);
+        }
         public static string ObjToStringNoTrim(this object thisValue)
         {
             if (thisValue != null) return thisValue.ToString();

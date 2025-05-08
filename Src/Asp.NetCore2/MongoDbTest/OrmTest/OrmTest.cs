@@ -22,12 +22,27 @@ namespace MongoDbTest
            .ExecuteReturnPkList<string>();
 
 
-            var updateRow = db.Updateable(new List<OrderInfo>() 
+            var updateRow1 = db.Updateable(new OrderInfo
             {
-                new OrderInfo() { Id = ids.First(),Name="a3",Price=11},
-                new OrderInfo() { Id = ids.Last(),Name="a4"}
+                Id = ids.First(),
+                Name = "a3",
+                Price = 11
+            }
+            )
+            .ExecuteCommand();
+
+            var updateRow2 = db.Updateable(new List<OrderInfo>() 
+            {
+                new OrderInfo() { Id = ids.First(),Name="a31",Price=11},
+                new OrderInfo() { Id = ids.Last(),Name="a41"}
             })
            .ExecuteCommand();
+
+
+            var updateRow3= db.Updateable<OrderInfo>()
+             .SetColumns(it=>it.Name=="aa")
+             .Where(it=>it.Id==ids.Last())
+            .ExecuteCommand();
 
             var delrow = db.Deleteable(new OrderInfo() { Id = ids.Last() })
               .ExecuteCommand(); 

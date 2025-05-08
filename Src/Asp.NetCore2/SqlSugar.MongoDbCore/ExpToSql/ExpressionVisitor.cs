@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;  
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq.Expressions;
 using System.Text;
 
@@ -39,6 +40,8 @@ namespace SqlSugar.MongoDbCore
                     return this.Visit(unary);
                 case LambdaExpression lambda:
                     return this.Visit(lambda.Body);
+                case MethodCallExpression call:
+                    return new MethodCallExpressionTractor(context, visitorContext).Extract(call);
                 default:
                     throw new NotSupportedException($"Unsupported expression: {expr.NodeType}");
             }
