@@ -784,7 +784,7 @@ namespace SqlSugar
         }
 
 
-        public IUpdateable<T> SetColumns(Expression<Func<T, T>> columns, bool appendColumnsByDataFilter) 
+        public virtual IUpdateable<T> SetColumns(Expression<Func<T, T>> columns, bool appendColumnsByDataFilter) 
         {
             ThrowUpdateByObject();
             var expResult = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.Update);
@@ -843,7 +843,7 @@ namespace SqlSugar
             AppendSets();
             return this;
         }
-        public IUpdateable<T> SetColumns(Expression<Func<T, bool>> columns)
+        public virtual IUpdateable<T> SetColumns(Expression<Func<T, bool>> columns)
         {
             ThrowUpdateByObject();
 

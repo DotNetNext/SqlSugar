@@ -794,7 +794,7 @@ namespace SqlSugar
             var columns = entityInfo.Columns.Where(it => it.IsIgnore == false).ToList();
             foreach (var item in columns)
             {
-                if (item.DefaultValue.HasValue())
+                if (item.DefaultValue!=null)
                 {
                     if (!IsAnyDefaultValue(entityInfo.DbTableName,item.DbColumnName,dbColumns))
                     {
