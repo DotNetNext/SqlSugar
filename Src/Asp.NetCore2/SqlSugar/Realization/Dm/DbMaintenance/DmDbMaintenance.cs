@@ -652,7 +652,7 @@ WHERE upper(t.TABLE_NAME) = upper('{tableName}')
         }
         private static void ConvertCreateColumnInfo(DbColumnInfo x)
         {
-            string[] array = new string[] { "int" };
+            string[] array = new string[] { "int", "date", "clob", "nclob" };
             if (x.OracleDataType.HasValue())
             {
                 x.DataType = x.OracleDataType;

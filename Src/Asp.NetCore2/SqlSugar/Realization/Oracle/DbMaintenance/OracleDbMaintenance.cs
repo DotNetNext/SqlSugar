@@ -686,7 +686,7 @@ WHERE table_name = '"+tableName+"'");
         }
         private static void ConvertCreateColumnInfo(DbColumnInfo x)
         {
-            string[] array = new string[] { "int","date"}; 
+            string[] array = new string[] { "int","date","clob","nclob"}; 
             if (x.OracleDataType.HasValue())
             {
                 x.DataType = x.OracleDataType;
