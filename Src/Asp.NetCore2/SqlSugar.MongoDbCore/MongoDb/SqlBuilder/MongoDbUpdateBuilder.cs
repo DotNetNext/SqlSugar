@@ -50,7 +50,13 @@ namespace SqlSugar.MongoDb
         {
             var operations = new List<string>();
             List<string> pks = this.PrimaryKeys;
-            if (this.SetValues.Any())
+            if (this.SetValues.Any() && this.SetValues.Any(it => it.Key == "$set"))
+            {
+                BsonArray filterArray = GetFilterArray();
+                var filter = new BsonDocument("$and", filterArray);
+                operations.Add($"{{ filter: {filter.ToJson(UtilMethods.GetJsonWriterSettings())} , update: {SetValues.FirstOrDefault().Value }}}");
+            }
+            else if (this.SetValues.Any())
             {
                 var setOperation = new BsonDocument();
                 foreach (var item in this.SetValues)
@@ -61,12 +67,7 @@ namespace SqlSugar.MongoDb
                         setOperation[element.Name] = element.Value;
                     }
                 }
-                var filterArray = new BsonArray();
-                foreach (var item in this.WhereValues)
-                {
-                    var bson = BsonDocument.Parse(item); // 直接解析 JSON 为 BsonDocument
-                    filterArray.Add(bson); // 将每个条件添加到数组
-                }
+                var filterArray = GetFilterArray();
                 var filter = new BsonDocument("$and", filterArray);
                 operations.Add($"{{ filter: {filter.ToJson(UtilMethods.GetJsonWriterSettings())} , update: {{ $set: {setOperation.ToJson(UtilMethods.GetJsonWriterSettings())} }} }}");
             }
@@ -80,6 +81,18 @@ namespace SqlSugar.MongoDb
             sb.Append(" ]");
 
             return sb.ToString();
+        }
+
+        private BsonArray GetFilterArray()
+        {
+            var filterArray = new BsonArray();
+            foreach (var item in this.WhereValues)
+            {
+                var bson = BsonDocument.Parse(item); // 直接解析 JSON 为 BsonDocument
+                filterArray.Add(bson); // 将每个条件添加到数组
+            }
+
+            return filterArray;
         }
 
         private static void UpdateByObject(List<IGrouping<int, DbColumnInfo>> groupList, List<string> operations, List<string> pks)

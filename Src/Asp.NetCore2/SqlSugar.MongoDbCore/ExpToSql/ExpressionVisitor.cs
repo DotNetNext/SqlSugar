@@ -42,9 +42,16 @@ namespace SqlSugar.MongoDbCore
                     return this.Visit(lambda.Body);
                 case MethodCallExpression call:
                     return new MethodCallExpressionTractor(context, visitorContext).Extract(call);
+                case MemberInitExpression newMemberExp:
+                    return new MemberInitExpressionTractor(context, visitorContext).Extract(newMemberExp);
                 default:
                     throw new NotSupportedException($"Unsupported expression: {expr.NodeType}");
             }
+        }
+
+        private object MemberInitExpressionTractor(MongoNestedTranslatorContext context, ExpressionVisitorContext visitorContext)
+        {
+            throw new NotImplementedException();
         }
     }
 

@@ -28,5 +28,14 @@ namespace SqlSugar.MongoDb
             } 
             return this;
         }
+
+        public override IUpdateable<T> SetColumns(Expression<Func<T, T>> columns)
+        {
+            ThrowUpdateByObject();
+            var expResult = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.Update)
+                .GetResultString();
+            this.UpdateBuilder.SetValues.Add(new KeyValuePair<string, string>("$set", expResult));
+            return this;
+        }
     }
 }
