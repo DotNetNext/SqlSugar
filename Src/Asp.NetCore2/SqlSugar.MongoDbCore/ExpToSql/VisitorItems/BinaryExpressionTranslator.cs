@@ -136,12 +136,12 @@ namespace SqlSugar.MongoDbCore
 
         private static bool IsRightValue(bool leftIsMember, bool rightIsMember, string op)
         {
-            return op == null && rightIsMember && !leftIsMember;
+            return  rightIsMember && !leftIsMember;
         }
 
         private static bool IsLeftValue(bool leftIsMember, bool rightIsMember, string op)
         {
-            return op == null && leftIsMember && !rightIsMember;
+            return  leftIsMember && !rightIsMember;
         }
     }
 

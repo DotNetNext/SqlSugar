@@ -22,18 +22,17 @@ namespace SqlSugar.MongoDbCore
         {
             var oldExp = expr;
             var oldMember = expr as MemberExpression;
+            if (ExpressionTool.GetParameters(expr).Count == 0) 
+            { 
+                var value = ExpressionTool.GetMemberValue(oldMember.Member, oldExp);
+                return BsonValue.Create(value);
+            } 
             var parts = new Stack<string>();
 
             while (expr is MemberExpression member)
             {
                 parts.Push(member.Member.Name);
                 expr = member.Expression!;
-            }
-
-            if (expr is ConstantExpression constantExpression)
-            {
-                var value = ExpressionTool.GetMemberValue(oldMember.Member, oldExp);
-                return BsonValue.Create(value);
             }
 
             if (_visitorContext != null)
