@@ -44,6 +44,12 @@ namespace MongoDbTest
              .Where(it=> it.Id == ids.Last())
             .ExecuteCommand();
 
+            var updateRow4 = db.Updateable<OrderInfo>()
+             .SetColumns(it => it.CreateTime == DateTime.Now) 
+             .SetColumns(it => it.Name == "xx")
+              .Where(it => it.Id == ids.Last())
+             .ExecuteCommand();
+
             var delrow = db.Deleteable(new OrderInfo() { Id = ids.Last() })
               .ExecuteCommand(); 
 

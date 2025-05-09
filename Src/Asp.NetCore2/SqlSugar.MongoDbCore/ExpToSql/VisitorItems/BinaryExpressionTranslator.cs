@@ -76,8 +76,8 @@ namespace SqlSugar.MongoDbCore
 
             string op = expr.NodeType switch
             {
-                ExpressionType.Equal => value.IsBsonNull ? "$eq" : null,
-                ExpressionType.NotEqual => value.IsBsonNull ? "$ne" : "$ne",
+                ExpressionType.Equal =>    "$eq",
+                ExpressionType.NotEqual =>   "$ne",
                 ExpressionType.GreaterThan => "$gt",
                 ExpressionType.GreaterThanOrEqual => "$gte",
                 ExpressionType.LessThan => "$lt",
