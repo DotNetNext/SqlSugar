@@ -57,13 +57,28 @@ namespace SqlSugar.MongoDbCore
 
         private BsonDocument FieldComparisonExpression(BinaryExpression expr)
         {
+            BsonValue field, value;
+            bool leftIsMember, rightIsMember;
+            string op;
+            OutParameters(expr, out field, out value, out leftIsMember, out rightIsMember, out op);
+            if (op == null)
+            {
+                return GetCalculationOperation(field, expr.NodeType, value);
+            }
+            else
+            {
+                return GetComparisonOperation(expr, field, value, leftIsMember, rightIsMember, op);
+            }
+        }
+
+        private void OutParameters(BinaryExpression expr, out BsonValue field, out BsonValue value, out bool leftIsMember, out bool rightIsMember, out string op)
+        {
             var left = new ExpressionVisitor(_context, new ExpressionVisitorContext());
             var right = new ExpressionVisitor(_context, new ExpressionVisitorContext());
-            BsonValue field = left.Visit(expr.Left);
-            BsonValue value = right.Visit(expr.Right);
-            bool leftIsMember = false;
-            bool rightIsMember = false;
-
+            field = left.Visit(expr.Left);
+            value = right.Visit(expr.Right);
+            leftIsMember = false;
+            rightIsMember = false;
             if (left?.visitorContext?.ExpType == typeof(MemberExpression))
             {
                 leftIsMember = true;
@@ -74,22 +89,23 @@ namespace SqlSugar.MongoDbCore
                 rightIsMember = true;
             }
 
-            string op = expr.NodeType switch
+            op = expr.NodeType switch
             {
-                ExpressionType.Equal =>    "$eq",
-                ExpressionType.NotEqual =>   "$ne",
+                ExpressionType.Equal => "$eq",
+                ExpressionType.NotEqual => "$ne",
                 ExpressionType.GreaterThan => "$gt",
                 ExpressionType.GreaterThanOrEqual => "$gte",
                 ExpressionType.LessThan => "$lt",
                 ExpressionType.LessThanOrEqual => "$lte",
-                _ => throw new NotSupportedException($"Unsupported binary op: {expr.NodeType}")
+                _ => null
             };
+        }
 
-
-
+        private BsonDocument GetComparisonOperation(BinaryExpression expr, BsonValue field, BsonValue value, bool leftIsMember, bool rightIsMember, string op)
+        {
             string leftValue = "";
             BsonValue rightValue = "";
-            if (IsLeftValue(leftIsMember, rightIsMember, op)|| IsRightValue(leftIsMember, rightIsMember, op))
+            if (IsLeftValue(leftIsMember, rightIsMember, op) || IsRightValue(leftIsMember, rightIsMember, op))
             {
                 MemberExpression expression;
                 if (IsLeftValue(leftIsMember, rightIsMember, op))
@@ -104,9 +120,9 @@ namespace SqlSugar.MongoDbCore
                     rightValue = field;
                     expression = expr.Right as MemberExpression;
                 }
-                if (expression != null) 
+                if (expression != null)
                 {
-                    if (expression.Expression is ParameterExpression parameter) 
+                    if (expression.Expression is ParameterExpression parameter)
                     {
                         if (_context?.context != null)
                         {
@@ -128,10 +144,28 @@ namespace SqlSugar.MongoDbCore
             else
             {
                 return new BsonDocument
-                {
-                    { field.ToString(), new BsonDocument { { op, value } } }
-                };
+                    {
+                        { field.ToString(), new BsonDocument { { op, value } } }
+                    };
             }
+        }
+
+        private BsonDocument GetCalculationOperation(BsonValue field, ExpressionType nodeType, BsonValue value)
+        {
+            string operation = nodeType switch
+            {
+                ExpressionType.Add => "$add",
+                ExpressionType.Subtract => "$subtract",
+                ExpressionType.Multiply => "$multiply",
+                ExpressionType.Divide => "$divide",
+                ExpressionType.Modulo => "$mod",
+                _ => throw new NotSupportedException($"Unsupported calculation operation: {nodeType}")
+            };
+
+            return new BsonDocument
+    {
+        { field.ToString(), new BsonDocument { { operation, value } } }
+    };
         }
 
         private static bool IsRightValue(bool leftIsMember, bool rightIsMember, string op)

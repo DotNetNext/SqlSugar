@@ -26,7 +26,7 @@ namespace SqlSugar.MongoDbCore
             throw new Exception("");
         }
 
-        private static BsonValue Update(Expression expr)
+        private  BsonValue Update(Expression expr)
         {
             var exp = expr as MemberInitExpression;
             var setDocument = new BsonDocument();
@@ -34,9 +34,16 @@ namespace SqlSugar.MongoDbCore
             {
                 if (binding is MemberAssignment assignment)
                 {
-                    var fieldName = assignment.Member.Name;
-                    var fieldValue = Expression.Lambda(assignment.Expression).Compile().DynamicInvoke();
-                    setDocument[fieldName] = BsonValue.Create(fieldValue);
+                    var fieldName = assignment.Member.Name; 
+                    var fieldValue =new ExpressionVisitor(_context,_visitorContext).Visit(Expression.Lambda(assignment.Expression));
+                    if (assignment.Expression is MemberExpression && ExpressionTool.GetParameters(assignment.Expression).Count > 0)
+                    {
+                        setDocument[fieldName] = new BsonDocument("$getField", fieldValue); 
+                    }
+                    else
+                    {
+                        setDocument[fieldName] = BsonValue.Create(fieldValue);
+                    }
                 }
             }
             return new BsonDocument("$set", setDocument);
