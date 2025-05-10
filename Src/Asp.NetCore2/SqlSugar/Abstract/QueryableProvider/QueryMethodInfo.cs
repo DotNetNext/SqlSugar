@@ -249,6 +249,11 @@ namespace SqlSugar
 
         #region Result
 
+        public void IntoTable(Type type, string tableName)
+        {
+            var method = QueryableObj.GetType().GetMyMethod("IntoTable", 2, typeof(Type), typeof(string));
+            var reslt = method.Invoke(QueryableObj, new object[] { type, tableName }); 
+        }
         public object ToPageList(int pageNumber, int pageSize)
         {
             var method = QueryableObj.GetType().GetMyMethod("ToPageList", 2, typeof(int), typeof(int));
