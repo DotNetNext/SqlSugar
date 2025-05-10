@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace SqlSugar.MongoDb
 {
@@ -14,6 +15,11 @@ namespace SqlSugar.MongoDb
             var jsonObjects = new List<string>();
             foreach (var item in this.WhereInfos)
             {
+                if (item.StartsWith("{") && item.EndsWith("}")) 
+                {
+                    jsonObjects.Add(item);
+                    continue;
+                }
                 var key = this.EntityInfo.Columns.FirstOrDefault(it => it.IsPrimarykey);
                 var startWithValue = $"{Builder.GetTranslationColumnName(key.DbColumnName)} IN (";
                 if (item.StartsWith(startWithValue))

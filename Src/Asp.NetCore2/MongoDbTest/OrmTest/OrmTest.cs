@@ -69,7 +69,15 @@ namespace MongoDbTest
 
 
             var delrow = db.Deleteable(new OrderInfo() { Id = ids.Last() })
-              .ExecuteCommand(); 
+              .ExecuteCommand();
+
+            var delrow2 = db.Deleteable<OrderInfo>()
+            .In(new string[] { ids.Last(),ids.First() })
+            .ExecuteCommand();
+
+            var delrow3 = db.Deleteable<OrderInfo>()
+           .Where(it=>it.Id==ids.Last()||it.Name=="A1")
+           .ExecuteCommand();
 
             var list = db.Queryable<OrderInfo>().ToDataTable();
              
