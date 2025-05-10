@@ -23,7 +23,33 @@ namespace SqlSugar.MongoDbCore
             {
                 return Update(expr);
             }
-            throw new Exception("");
+            else if(this._context.resolveType == ResolveExpressType.SelectSingle)
+            {
+                return Select(expr);
+            }
+            throw new NotSupportedException(this._context.resolveType+"");
+        }
+
+        private BsonValue Select(Expression expr)
+        {
+            var exp = expr as MemberInitExpression;
+            var projectionDocument = new BsonDocument();
+
+            // Iterate over the bindings in the MemberInitExpression
+            foreach (var binding in exp.Bindings)
+            {
+                if (binding is MemberAssignment assignment)
+                {
+                    var fieldName = assignment.Member.Name; // 原字段名
+
+                    // 将原字段名动态转换为 新字段名（例如：name -> name1）
+                    var newFieldName = fieldName ;
+
+                    // 将字段投影为 "新字段名" : "$原字段名"
+                    projectionDocument[newFieldName] = $"${fieldName}";
+                }
+            } 
+            return projectionDocument;
         }
 
         private  BsonValue Update(Expression expr)

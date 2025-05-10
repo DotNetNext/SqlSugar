@@ -1,7 +1,9 @@
 ﻿using MongoDB.Bson;
+using SqlSugar.MongoDbCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
@@ -112,7 +114,20 @@ namespace SqlSugar.MongoDb
                     operations.Add($"{{ \"$sort\": {sortDoc.ToJson()} }}");
                 }
             }
-            #endregion 
+            #endregion
+
+            #region Select
+            if (this.SelectValue is Expression expression) 
+            {
+                var dos=MongoNestedTranslator.Translate(expression, new MongoNestedTranslatorContext() { 
+                    context = this.Context,
+                    resolveType=ResolveExpressType.SelectSingle
+                });
+                var json = dos.ToJson(UtilMethods.GetJsonWriterSettings());
+                operations.Add($"{{\"$project\": {json} }}"); 
+            }
+            #endregion
+
             sb.Append($"aggregate {this.GetTableNameString} ");
             sb.Append("[");
             sb.Append(string.Join(", ", operations));

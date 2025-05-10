@@ -97,6 +97,12 @@ namespace MongoDbTest
 
             var list9 = db.Queryable<OrderInfo>().OrderBy(it=>it.Name).OrderByDescending(it => it.Price).ToList();
 
+            var list10 = db.Queryable<OrderInfo>()
+                .Select(it=>new OrderInfo() { 
+                   Id=it.Id,
+                   Name=it.Name
+                }).ToDataTable();
+
             //测试生成SQL性能
             TestSqlBuilder(db);
         }
