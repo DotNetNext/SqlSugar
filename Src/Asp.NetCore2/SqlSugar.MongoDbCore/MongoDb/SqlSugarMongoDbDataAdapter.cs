@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SqlSugar.MongoDbCore 
+namespace SqlSugar.MongoDb 
 {
     public class SqlSugarMongoDbDataAdapter : MongoDbDataAdapter, SqlSugar.IDataAdapter 
     {

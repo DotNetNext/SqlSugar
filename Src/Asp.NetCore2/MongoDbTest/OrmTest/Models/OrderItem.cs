@@ -1,4 +1,4 @@
-﻿using SqlSugar.MongoDbCore;
+﻿using SqlSugar.MongoDb;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using Newtonsoft.Json.Linq;
 using MongoDB.Bson;
 
-namespace SqlSugar.MongoDbCore 
+namespace SqlSugar.MongoDb 
 { 
     public static class MongoNestedTranslator
     {

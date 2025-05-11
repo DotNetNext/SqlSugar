@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-namespace SqlSugar.MongoDbCore
+namespace SqlSugar.MongoDb 
 {
     public class NewExpressionTractor
     {
@@ -44,11 +44,23 @@ namespace SqlSugar.MongoDbCore
                 // 使用 ExpressionVisitor 访问表达式
                 var json = new ExpressionVisitor(_context, _visitorContext).Visit(exp.Arguments[exp.Members.IndexOf(member)]);
 
-                // 构建 MongoDB 的投影文档
-                projectionDocument[fieldName] = "$" + json.ToString();
+                SetProjectionValue(json, fieldName, projectionDocument);
             }
             projectionDocument["_id"] = 0;
             return projectionDocument;
+        }
+
+        private static void SetProjectionValue(BsonValue json, string fieldName, BsonDocument projectionDocument)
+        {
+            var jsonString = json.ToJson(UtilMethods.GetJsonWriterSettings());
+            if (jsonString.StartsWith("{") && jsonString.EndsWith("}"))
+            {
+                projectionDocument[fieldName] = json;
+            }
+            else
+            {
+                projectionDocument[fieldName] = "$"+jsonString.TrimStart('\"').TrimEnd('\"');
+            }
         }
 
         private BsonValue Update(Expression expr)

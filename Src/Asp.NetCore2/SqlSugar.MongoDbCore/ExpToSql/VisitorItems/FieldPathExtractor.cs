@@ -6,7 +6,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 
-namespace SqlSugar.MongoDbCore
+namespace SqlSugar.MongoDb
 {
     public class FieldPathExtractor
     {

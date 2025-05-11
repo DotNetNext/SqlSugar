@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MongoDB.Bson;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -470,6 +471,13 @@ namespace SqlSugar.MongoDb
                     dic.Add(key, (T)item);
             }
             return dic;
+        }
+
+        internal static BsonValue GetBsonValue(bool isMember, BsonValue field)
+        {
+            if (isMember) return "$" + field;
+            else
+                return field;
         }
         //public static object ConvertDataByTypeName(string ctypename,string value)
         //{

@@ -1,6 +1,6 @@
 ﻿using MongoDB.Bson.IO;
 using MongoDB.Bson;
-using SqlSugar.MongoDbCore;
+using SqlSugar.MongoDb;
 using System;
 using System.Linq;
 using System.Linq.Expressions;

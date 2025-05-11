@@ -76,7 +76,7 @@ namespace MongoDbTest
             .ExecuteCommand();
 
             var delrow3 = db.Deleteable<OrderInfo>()
-           .Where(it=>it.Id==ids.Last()||it.Name=="A1")
+           .Where(it=>it.Id==ids.Last() )
            .ExecuteCommand();
 
             var list = db.Queryable<OrderInfo>().ToDataTable();
@@ -103,13 +103,20 @@ namespace MongoDbTest
                    Name=it.Name
                 }).ToDataTable();
 
-            var list11 = db.Queryable<OrderInfo>()
-                .Select(it => new
-                {
-                    Id = it.Id,
-                    Name = it.Name
-                }).ToDataTable();
+            var list11 = db.Queryable<OrderInfo>() 
+                            .Select(it => new
+                            {
+                                Id = it.Id,
+                                Name = it.Name
+                            }).ToList();
 
+            var list12 = db.Queryable<OrderInfo>()
+                       .Select(it => new
+                       {
+                           Id = it.Id,
+                           Name = it.Name+"b",
+                           Name2 =   "b"+it.Name
+                       }).ToDataTable(); 
             //测试生成SQL性能
             TestSqlBuilder(db);
         }

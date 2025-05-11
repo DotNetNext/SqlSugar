@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using Dm.parser;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using Newtonsoft.Json.Linq;
 using System;
@@ -7,7 +8,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 
-namespace SqlSugar.MongoDbCore
+namespace SqlSugar.MongoDb
 {
     public class BinaryExpressionTranslator
     {
@@ -63,7 +64,7 @@ namespace SqlSugar.MongoDbCore
             OutParameters(expr, out field, out value, out leftIsMember, out rightIsMember, out op);
             if (op == null)
             {
-                return GetCalculationOperation(field, expr.NodeType, value);
+                return GetCalculationOperation(field, expr.NodeType, value,leftIsMember, rightIsMember);
             }
             else
             {
@@ -127,7 +128,7 @@ namespace SqlSugar.MongoDbCore
                         if (_context?.context != null)
                         {
                             var entityInfo = _context.context.EntityMaintenance.GetEntityInfo(parameter.Type);
-                            var columnInfo = entityInfo.Columns.FirstOrDefault(s => s.PropertyName == leftValue);
+                            var columnInfo = entityInfo.Columns.FirstOrDefault(s => s.PropertyName == leftValue||s.DbColumnName==leftValue);
                             if (columnInfo != null)
                             {
                                 leftValue = columnInfo.DbColumnName;
@@ -139,7 +140,17 @@ namespace SqlSugar.MongoDbCore
                         }
                     }
                 }
-                return new BsonDocument { { leftValue, rightValue } };
+                if (op == "$eq")
+                {
+                    return new BsonDocument { { leftValue, rightValue } };
+                }
+                else 
+                {
+                    return new BsonDocument
+                    {
+                        { leftValue, new BsonDocument { { op, rightValue } } }
+                    };
+                }
             }
             else
             {
@@ -150,7 +161,7 @@ namespace SqlSugar.MongoDbCore
             }
         }
 
-        private BsonDocument GetCalculationOperation(BsonValue field, ExpressionType nodeType, BsonValue value)
+        private BsonDocument GetCalculationOperation(BsonValue field, ExpressionType nodeType, BsonValue value, bool leftIsMember, bool rightIsMember)
         {
             string operation = nodeType switch
             {
@@ -161,11 +172,19 @@ namespace SqlSugar.MongoDbCore
                 ExpressionType.Modulo => "$mod",
                 _ => throw new NotSupportedException($"Unsupported calculation operation: {nodeType}")
             };
-
+            if (operation == "$add"&& value.BsonType==BsonType.String) 
+            {
+                operation = "$concat"; 
+                return new BsonDocument
+                {
+                    { operation, new BsonArray { UtilMethods.GetBsonValue(leftIsMember, field), UtilMethods.GetBsonValue(rightIsMember, value) } }
+                };
+                ;
+            }
             return new BsonDocument
-    {
-        { field.ToString(), new BsonDocument { { operation, value } } }
-    };
+            {
+                { field.ToString(), new BsonDocument { { operation, value } } }
+            };
         }
 
         private static bool IsRightValue(bool leftIsMember, bool rightIsMember, string op)

@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Linq.Expressions;
 using System.Text;
 
-namespace SqlSugar.MongoDbCore 
+namespace SqlSugar.MongoDb 
 {
     public class MongoDbExpTools
     { 

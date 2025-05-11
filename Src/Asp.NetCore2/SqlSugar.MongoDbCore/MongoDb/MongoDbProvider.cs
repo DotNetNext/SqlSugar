@@ -1,6 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using MongoDb.Ado.data;
-using SqlSugar.MongoDbCore;
+using SqlSugar.MongoDb;
 using System;
 using System.Collections.Generic;
 using System.Data;
