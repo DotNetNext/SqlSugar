@@ -33,7 +33,7 @@ namespace SqlSugar.MongoDb
         private BsonDocument ComparisonKeyValue(BinaryExpression expr, BsonValue field, BsonValue value, string op, bool isLeftValue)
         {
             string leftValue = isLeftValue ? field.ToString() : value.ToString();
-            BsonValue rightValue = isLeftValue ? field : value;
+            BsonValue rightValue = isLeftValue ?   value: field;
             var expression = isLeftValue ? expr.Left as MemberExpression : expr.Right as MemberExpression;
             EntityColumnInfo CurrentColumnInfo = null;
             leftValue = GetLeftValue(leftValue, expression, ref CurrentColumnInfo);
