@@ -472,7 +472,16 @@ namespace SqlSugar.MongoDb
             }
             return dic;
         }
-
+        internal static BsonValue GetBsonValue(bool isMember, BsonValue field,bool isId)
+        {
+            if (!isMember && isId) 
+            {
+                return ObjectId.Parse(field?.ToString());
+            }
+            if (isMember) return  field.ToString();
+            else
+                return field;
+        }
         internal static BsonValue GetBsonValue(bool isMember, BsonValue field)
         {
             if (isMember) return "$" + field;
