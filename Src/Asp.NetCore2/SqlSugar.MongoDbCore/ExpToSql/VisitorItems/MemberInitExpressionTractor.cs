@@ -1,6 +1,7 @@
 ﻿using MongoDB.Bson;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 
@@ -32,23 +33,28 @@ namespace SqlSugar.MongoDbCore
 
         private BsonValue Select(Expression expr)
         {
-            var exp = expr as MemberInitExpression;
+            var exp = expr as MemberInitExpression ?? throw new InvalidOperationException("Expression must be NewExpression");
             var projectionDocument = new BsonDocument();
 
-            // Iterate over the bindings in the MemberInitExpression
-            foreach (var binding in exp.Bindings)
+            // Iterate over the bindings of the NewExpression
+            foreach (MemberBinding binding in exp.Bindings)
             {
-                if (binding is MemberAssignment assignment)
+                if (binding.BindingType != MemberBindingType.Assignment)
                 {
-                    var fieldName = assignment.Member.Name; // 原字段名
-
-                    // 将原字段名动态转换为 新字段名（例如：name -> name1）
-                    var newFieldName = fieldName ;
-
-                    // 将字段投影为 "新字段名" : "$原字段名"
-                    projectionDocument[newFieldName] = $"${fieldName}";
+                    throw new NotSupportedException("Only MemberAssignments are supported.");
                 }
-            } 
+
+                // Cast to MemberAssignment to access the value of the field
+                MemberAssignment memberAssignment = (MemberAssignment)binding;
+
+                // Extract the field name (the name of the property or field)
+                var fieldName = binding.Member.Name;
+
+                // Build the projection document with the field name and its reference in MongoDB
+                var json=new ExpressionVisitor(_context, _visitorContext).Visit(memberAssignment.Expression);
+                projectionDocument[fieldName] = "$" + json.ToString();
+            }
+            projectionDocument["_id"] = 0;
             return projectionDocument;
         }
 

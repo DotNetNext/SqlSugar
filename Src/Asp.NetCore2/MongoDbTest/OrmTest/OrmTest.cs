@@ -103,6 +103,13 @@ namespace MongoDbTest
                    Name=it.Name
                 }).ToDataTable();
 
+            var list11 = db.Queryable<OrderInfo>()
+                .Select(it => new
+                {
+                    Id = it.Id,
+                    Name = it.Name
+                }).ToDataTable();
+
             //测试生成SQL性能
             TestSqlBuilder(db);
         }
