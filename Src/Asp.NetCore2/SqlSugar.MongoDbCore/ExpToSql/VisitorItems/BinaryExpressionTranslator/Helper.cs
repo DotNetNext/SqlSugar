@@ -29,6 +29,19 @@ namespace SqlSugar.MongoDb
                 ExpressionType.LessThanOrEqual => "$lte",
                 _ => null
             };
-        } 
+        }
+         
+        private static string GetCalculationType(ExpressionType nodeType)
+        {
+            return nodeType switch
+            {
+                ExpressionType.Add => "$add",
+                ExpressionType.Subtract => "$subtract",
+                ExpressionType.Multiply => "$multiply",
+                ExpressionType.Divide => "$divide",
+                ExpressionType.Modulo => "$mod",
+                _ => throw new NotSupportedException($"Unsupported calculation operation: {nodeType}")
+            };
+        }
     }
 }

@@ -8,15 +8,7 @@ using System.Text;
 namespace SqlSugar.MongoDb
 {
     public partial class BinaryExpressionTranslator
-    {
-        private BsonDocument FieldComparisonOrCalculationExpression(BinaryExpression expr)
-        {
-            OutParameters(expr, out var field, out var value, out var leftIsMember, out var rightIsMember, out var op);
-            return op == null
-                ? GetCalculationOperation(field, expr.NodeType, value, leftIsMember, rightIsMember)
-                : GetComparisonOperation(expr, field, value, leftIsMember, rightIsMember, op);
-        }
-
+    { 
         private BsonDocument GetComparisonOperation(BinaryExpression expr, BsonValue field, BsonValue value, bool leftIsMember, bool rightIsMember, string op)
         {
             string leftValue = "";
@@ -74,32 +66,6 @@ namespace SqlSugar.MongoDb
                         { field.ToString(), new BsonDocument { { op, value } } }
                     };
             }
-        }
-
-        private BsonDocument GetCalculationOperation(BsonValue field, ExpressionType nodeType, BsonValue value, bool leftIsMember, bool rightIsMember)
-        {
-            string operation = nodeType switch
-            {
-                ExpressionType.Add => "$add",
-                ExpressionType.Subtract => "$subtract",
-                ExpressionType.Multiply => "$multiply",
-                ExpressionType.Divide => "$divide",
-                ExpressionType.Modulo => "$mod",
-                _ => throw new NotSupportedException($"Unsupported calculation operation: {nodeType}")
-            };
-            if (operation == "$add" && value.BsonType == BsonType.String)
-            {
-                operation = "$concat";
-                return new BsonDocument
-                {
-                    { operation, new BsonArray { UtilMethods.GetBsonValue(leftIsMember, field), UtilMethods.GetBsonValue(rightIsMember, value) } }
-                };
-                ;
-            }
-            return new BsonDocument
-            {
-                { field.ToString(), new BsonDocument { { operation, value } } }
-            };
         }
 
     }
