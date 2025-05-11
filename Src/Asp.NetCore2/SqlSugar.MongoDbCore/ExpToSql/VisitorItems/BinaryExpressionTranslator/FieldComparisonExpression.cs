@@ -11,18 +11,10 @@ namespace SqlSugar.MongoDb
     {
         private BsonDocument FieldComparisonOrCalculationExpression(BinaryExpression expr)
         {
-            BsonValue field, value;
-            bool leftIsMember, rightIsMember;
-            string op;
-            OutParameters(expr, out field, out value, out leftIsMember, out rightIsMember, out op);
-            if (op == null)
-            {
-                return GetCalculationOperation(field, expr.NodeType, value, leftIsMember, rightIsMember);
-            }
-            else
-            {
-                return GetComparisonOperation(expr, field, value, leftIsMember, rightIsMember, op);
-            }
+            OutParameters(expr, out var field, out var value, out var leftIsMember, out var rightIsMember, out var op);
+            return op == null
+                ? GetCalculationOperation(field, expr.NodeType, value, leftIsMember, rightIsMember)
+                : GetComparisonOperation(expr, field, value, leftIsMember, rightIsMember, op);
         }
 
         private BsonDocument GetComparisonOperation(BinaryExpression expr, BsonValue field, BsonValue value, bool leftIsMember, bool rightIsMember, string op)
