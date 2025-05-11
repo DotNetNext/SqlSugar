@@ -8,6 +8,10 @@ namespace SqlSugar.MongoDb
 {
     public partial class BinaryExpressionTranslator
     { 
+        private static bool IsEq(string op)
+        {
+            return op == "$eq";
+        } 
         private void OutParameters(BinaryExpression expr, out BsonValue field, out BsonValue value, out bool leftIsMember, out bool rightIsMember, out string op)
         {
             var leftVisitor = new ExpressionVisitor(_context, new ExpressionVisitorContext());
@@ -29,8 +33,7 @@ namespace SqlSugar.MongoDb
                 ExpressionType.LessThanOrEqual => "$lte",
                 _ => null
             };
-        }
-         
+        } 
         private static string GetCalculationType(ExpressionType nodeType)
         {
             return nodeType switch

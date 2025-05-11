@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using Dm;
+using MongoDB.Bson;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,21 +32,33 @@ namespace SqlSugar.MongoDb
 
         private BsonDocument ComparisonKeyValue(BinaryExpression expr, BsonValue field, BsonValue value, string op, bool isLeftValue)
         {
-            string leftValue = string.Empty;
-            BsonValue rightValue = null;
-            MemberExpression expression;
-            if (isLeftValue)
-            {
-                leftValue = field.ToString();
-                rightValue = value;
-                expression = expr.Left as MemberExpression;
-            }
-            else
-            {
-                leftValue = value.ToString();
-                rightValue = field;
-                expression = expr.Right as MemberExpression;
-            }
+            string leftValue = isLeftValue ? field.ToString() : value.ToString();
+            BsonValue rightValue = isLeftValue ? field : value;
+            var expression = isLeftValue ? expr.Left as MemberExpression : expr.Right as MemberExpression;
+            EntityColumnInfo CurrentColumnInfo = null;
+            leftValue = GetLeftValue(leftValue, expression, ref CurrentColumnInfo);
+            rightValue = GetRightValue(CurrentColumnInfo, rightValue);
+            if (IsEq(op)) 
+                return GetEqResult(leftValue, rightValue); 
+            else 
+                return GetOtherResult(op, leftValue, rightValue); 
+        }
+
+        private static BsonDocument GetOtherResult(string op, string leftValue, BsonValue rightValue)
+        {
+            return new BsonDocument
+                    {
+                        { leftValue, new BsonDocument { { op, rightValue } } }
+                    };
+        }
+
+        private static BsonDocument GetEqResult(string leftValue, BsonValue rightValue)
+        {
+            return new BsonDocument { { leftValue, rightValue } };
+        }
+
+        private string GetLeftValue(string leftValue, MemberExpression expression, ref EntityColumnInfo CurrentColumnInfo)
+        {
             if (expression != null)
             {
                 if (expression.Expression is ParameterExpression parameter)
@@ -57,25 +70,21 @@ namespace SqlSugar.MongoDb
                         if (columnInfo != null)
                         {
                             leftValue = columnInfo.DbColumnName;
-                            if (columnInfo.IsPrimarykey)
-                            {
-                                rightValue = BsonValue.Create(ObjectId.Parse(value + ""));
-                            }
+                            CurrentColumnInfo = columnInfo;
                         }
                     }
                 }
             }
-            if (op == "$eq")
+            return leftValue;
+        }
+
+        private BsonValue GetRightValue(EntityColumnInfo  entityColumnInfo, BsonValue rightValue)
+        {
+            if (entityColumnInfo?.IsPrimarykey==true) 
             {
-                return new BsonDocument { { leftValue, rightValue } };
+                rightValue=ObjectId.Parse(rightValue?.ToString());
             }
-            else
-            {
-                return new BsonDocument
-                    {
-                        { leftValue, new BsonDocument { { op, rightValue } } }
-                    };
-            }
+            return rightValue;
         }
     }
 }
