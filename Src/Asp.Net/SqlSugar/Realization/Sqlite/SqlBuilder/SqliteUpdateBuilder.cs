@@ -17,6 +17,14 @@ namespace SqlSugar
                 var updateTable = string.Format("UPDATE {0} SET", base.GetTableNameStringNoWith);
                 var setValues = string.Join(",", t.Where(s => !s.IsPrimarykey).Where(s=> OldPrimaryKeys==null||!OldPrimaryKeys.Contains(s.DbColumnName)).Select(m => GetOracleUpdateColums(i,m,false)).ToArray());
                 var pkList = t.Where(s => s.IsPrimarykey).ToList();
+                if (this.IsWhereColumns&& this.PrimaryKeys?.Any()==true) 
+                {
+                    var whereColumns = pkList.Where(it => this.PrimaryKeys?.Any(p => p.EqualCase(it.PropertyName) || p.EqualCase(it.DbColumnName))==true).ToList();
+                    if (whereColumns.Any()) 
+                    {
+                        pkList = whereColumns;
+                    }
+                }
                 List<string> whereList = new List<string>();
                 foreach (var item in pkList)
                 {
@@ -33,7 +41,12 @@ namespace SqlSugar
 
         private string GetOracleUpdateColums(int i,DbColumnInfo m,bool iswhere)
         {
-            return string.Format("\"{0}\"={1}", m.DbColumnName.ToUpper(),base.GetDbColumn(m, FormatValue(i,m.DbColumnName,m.Value,iswhere)));
+            var result= string.Format("\"{0}\"={1}", m.DbColumnName.ToUpper(),base.GetDbColumn(m, FormatValue(i,m.DbColumnName,m.Value,iswhere)));
+            if (iswhere && m.Value == null)
+            {
+                result = result.Replace("=NULL", " is NULL ");
+            }
+            return result;
         }
 
         public  object FormatValue(int i,string name,object value,bool iswhere)
