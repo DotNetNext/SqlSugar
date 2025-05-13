@@ -677,7 +677,7 @@ namespace SqlSugar
             }
             return this;
         }
-        public IUpdateable<T> SetColumns(string fieldName, object fieldValue) 
+        public virtual IUpdateable<T> SetColumns(string fieldName, object fieldValue) 
         {
             ThrowUpdateByObject();
             var columnInfo = this.EntityInfo.Columns.FirstOrDefault(it => it.PropertyName.EqualCase(fieldName));
@@ -726,7 +726,7 @@ namespace SqlSugar
                 return this;
             }
         }
-        public IUpdateable<T> SetColumns(Expression<Func<T, object>> filedNameExpression, Expression<Func<T, object>> valueExpression) 
+        public virtual IUpdateable<T> SetColumns(Expression<Func<T, object>> filedNameExpression, Expression<Func<T, object>> valueExpression) 
         {
             if (valueExpression == null) 
             {
@@ -752,13 +752,13 @@ namespace SqlSugar
             }
             return this; 
         }
-        public IUpdateable<T> SetColumns(Expression<Func<T, object>> filedNameExpression, object fieldValue) 
+        public virtual IUpdateable<T> SetColumns(Expression<Func<T, object>> filedNameExpression, object fieldValue) 
         {
             var name= UpdateBuilder.GetExpressionValue(filedNameExpression,ResolveExpressType.FieldSingle).GetString();
             name = UpdateBuilder.Builder.GetNoTranslationColumnName(name);
             return SetColumns(name, fieldValue);
         }
-        public IUpdateable<T> SetColumns(Expression<Func<T, T>> columns)
+        public virtual IUpdateable<T> SetColumns(Expression<Func<T, T>> columns)
         {
             ThrowUpdateByObject();
             var expResult = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.Update);

@@ -15,6 +15,7 @@ namespace SqlSugar
         public SplitType SplitType;
         internal IInsertable<T> Inserable { get;  set; }
         internal List<KeyValuePair<string,object>> TableNames { get;  set; }
+        internal bool MySqlIgnore { get; set; }
 
         public int ExecuteCommand()
         {
@@ -139,6 +140,7 @@ namespace SqlSugar
                 groupInserable.IsEnableDiffLogEvent = parent.IsEnableDiffLogEvent;
                 groupInserable.InsertBuilder.IsNoInsertNull = parent.InsertBuilder.IsNoInsertNull;
                 groupInserable.IsOffIdentity = parent.IsOffIdentity;
+                groupInserable.InsertBuilder.MySqlIgnore = this.MySqlIgnore;
                 result += groupInserable.AS(item.Key).InsertColumns(names.ToArray()).ExecuteCommand();
             }
             return result;
@@ -162,7 +164,8 @@ namespace SqlSugar
                 groupInserable.diffModel = parent.diffModel;
                 groupInserable.IsEnableDiffLogEvent = parent.IsEnableDiffLogEvent;
                 groupInserable.InsertBuilder.IsNoInsertNull = parent.InsertBuilder.IsNoInsertNull;
-                groupInserable.IsOffIdentity = parent.IsOffIdentity;
+                groupInserable.IsOffIdentity = parent.IsOffIdentity; 
+                groupInserable.InsertBuilder.MySqlIgnore = this.MySqlIgnore;
                 result +=await groupInserable.AS(item.Key).InsertColumns(names.ToArray()).ExecuteCommandAsync();
             }
             return result;
