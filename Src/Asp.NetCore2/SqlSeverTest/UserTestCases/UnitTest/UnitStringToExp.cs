@@ -3,7 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Dynamic.Core;
 using System.Linq.Dynamic.Core.CustomTypeProviders;
+using System.Net;
 using System.Text;
+using static OrmTest.UnitOneToManyFiltersadfa;
 
 namespace OrmTest
 {
@@ -14,6 +16,96 @@ namespace OrmTest
             Test01();
             Test02();
             Test03();
+            Test04();
+        }
+
+        private static void Test04()
+        {
+            var db = NewUnitTest.Db;
+            var userInfo = db.Queryable<Order>()
+            .Select("it",
+             new List<string>()
+             { "it.Id as userId",
+                    " {0} as id",
+                   " it.Name as Name" }
+            , 10)
+            .ToList();
+            var userInfo2 = db.Queryable<Order>()
+             .Select("it",
+              new List<string>()
+              { "it.Id as userId",
+                    " {0} as id",
+                   " it.Name as Name" }
+             , 10)
+             .ToPageList(1, 2);
+            int c = 0;
+            var userInfo3 = db.Queryable<Order>()
+                   .Select("it",
+                    new List<string>()
+                    { "it.Id as userId",
+                                    " {0} as id",
+                                   " it.Name as Name" }
+                   , 10)
+                   .ToPageList(1, 2, ref c);
+
+            var userInfo4 = db.Queryable<Order>()
+             .Select("it",
+              new List<string>()
+              { "it.Id as userId",
+                                    " {0} as id",
+                                   " it.Name as Name" }
+             , 10)
+             .ToListAsync().GetAwaiter().GetResult();
+
+            var userInfo5 = db.Queryable<Order>()
+               .Select("it",
+                new List<string>()
+                { "it.Id as userId",
+                                            " {0} as id",
+                                           " it.Name as Name" }
+               , 10)
+               .First();
+
+            var userInfo6 = db.Queryable<Order>()
+               .In(1)
+               .Select("it",
+                new List<string>()
+                { "it.Id as userId",
+                                                    " {0} as id",
+                                                   " it.Name as Name" }
+               , 10)
+               .Single();
+
+
+            var userInfo7 = db.Queryable<Order>()
+               .Select("it",
+                new List<string>()
+                { "it.Id as userId",
+                                            " {0} as id",
+                                           " it.Name as Name" }
+               , 10)
+               .FirstAsync().GetAwaiter().GetResult();
+
+            var userInfo8 = db.Queryable<Order>()
+               .In(1)
+               .Select("it",
+                new List<string>()
+                { "it.Id as userId",
+                                                    " {0} as id",
+                                                   " it.Name as Name" }
+               , 10)
+               .SingleAsync().GetAwaiter().GetResult();
+
+
+            RefAsync<int> c2 = 0;
+            var userInfo9 = db.Queryable<Order>()
+                   .Select("it",
+                    new List<string>()
+                    { "it.Id as userId",
+                                    " {0} as id",
+                                   " it.Name as Name" }
+                   , 10)
+                   .ToPageListAsync(1, 2,   c2).GetAwaiter().GetResult();
         }
 
         private static void Test03()
@@ -83,13 +175,51 @@ namespace OrmTest
             //动态类+动态条件
             var list5=db.QueryableByObject(typeof(UnitPerson011)).Where("it", $"it.Address.Id=={1}").ToList();
 
+            //动态排序
+            var list55 = db.Queryable<UnitPerson011>().Where("it", $"it.Name={"a"}")
+                .OrderBy("it", $"it=>it.Address.Street").ToList();
+
             var list6 = db.Queryable<UnitPerson011>() 
                 .LeftJoin<Order>((it, y) => it.Id == y.Id)
                 .Where("it", $"SqlFunc.Exists(it.Address.Id)")
                 .OrderBy((it, y) => it.Id)
                 .ToList();
-
-             
+            //Select实现返回导航属性
+            var list66 = db.Queryable<UnitPerson011>()
+                 .Includes(it => it.Address)
+            .Select(it => new
+                 {
+                     addid=it.Address.Id,
+                     Address =it.Address
+                 }).ToList();
+            var list666 = db.Queryable<UnitPerson011>()
+                     .Includes(it=>it.Address)
+                     .Select("it",
+                      new List<string>()
+                      {  
+                            " it.Address.Id as addid" ,
+                            "it.Address as Address"
+                          }
+                       )
+                     .ToList();
+            var list66666 = db.Queryable<UnitPerson011>()
+                   .Includes(it => it.Address)
+                   .Select(it=>new
+                   {
+                       addid= it.Address.Id,
+                       Address=it.Address 
+                   })
+                   .ToList();
+            var list6666 = db.Queryable<UnitPerson011>()
+                       .Includes(it => it.Address)
+                       .Select("it",
+                        new List<string>()
+                        {
+                               " new(it.Address.Id) as addid" ,
+                                "it.Address as Address"
+                            }
+                         )
+                       .ToList();
             var xxx = DynamicCoreHelper.GetMember(typeof(UnitPerson011), typeof(int), "it", $"it.Address.Id ");
             var list7= db.Queryable<UnitPerson011>().Select<int>("it", $"it.Address.Id ",typeof(UnitPerson011), typeof(int)).ToList();
             var list8 = db.Queryable<Order>().Select("it", $"new(it.Id as Id, it.Name)", typeof(Order)).ToList();

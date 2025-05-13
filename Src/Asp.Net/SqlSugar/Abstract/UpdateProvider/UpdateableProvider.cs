@@ -210,6 +210,7 @@ namespace SqlSugar
             result.IsEnableDiffLogEvent = this.IsEnableDiffLogEvent;
             result.WhereColumnList = this.WhereColumnList?.ToArray();
             result.DiffModel = this.diffModel;
+            result.ReSetValueBySqlExpList = this.UpdateBuilder.ReSetValueBySqlExpList;
             if (this.UpdateBuilder.DbColumnInfoList.Any())
                 result.UpdateColumns = this.UpdateBuilder.DbColumnInfoList.GroupBy(it => it.TableId).First().Select(it => it.DbColumnName).ToList();
             if(this.UpdateBuilder?.UpdateColumns?.Any()==true)
@@ -783,7 +784,7 @@ namespace SqlSugar
         }
 
 
-        public IUpdateable<T> SetColumns(Expression<Func<T, T>> columns, bool appendColumnsByDataFilter) 
+        public virtual IUpdateable<T> SetColumns(Expression<Func<T, T>> columns, bool appendColumnsByDataFilter) 
         {
             ThrowUpdateByObject();
             var expResult = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.Update);
@@ -842,7 +843,7 @@ namespace SqlSugar
             AppendSets();
             return this;
         }
-        public IUpdateable<T> SetColumns(Expression<Func<T, bool>> columns)
+        public virtual IUpdateable<T> SetColumns(Expression<Func<T, bool>> columns)
         {
             ThrowUpdateByObject();
 

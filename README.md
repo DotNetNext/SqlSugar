@@ -14,7 +14,7 @@ Advantages: [Low code] [High performance] [Super simple] [Comprehensive features
 
 ## Support database 
 MySql、SqlServer、Sqlite、Oracle 、 postgresql、达梦、
-人大金仓(国产推荐)、神通数据库、瀚高、Access 、OceanBase
+人大金仓(国产推荐)、神通数据库、瀚高、Access DB2、DuckDb、Hana、OceanBase
 TDengine  QuestDb Clickhouse  MySqlConnector、华为 GaussDB 
 南大通用 GBase、MariaDB、Tidb、Odbc、Percona Server,
 Amazon Aurora、Azure Database for MySQL、

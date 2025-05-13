@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace SqlSugar
@@ -47,13 +48,33 @@ namespace SqlSugar
                 return this;
             }
             var orderObj = this.SqlBuilder.GroupByModelToSql(models);
-            this.GroupBy(orderObj.Key);
-            this.QueryBuilder.Parameters.AddRange(orderObj.Value);
+            if (orderObj.Value?.Length > 0 && this.Context.CurrentConnectionConfig?.DbType == DbType.SqlServer)
+            {
+                var groupBySql = UtilMethods.GetSqlString(DbType.SqlServer, orderObj.Key, orderObj.Value);
+                this.QueryBuilder.GroupBySql = groupBySql;
+                this.QueryBuilder.GroupBySqlOld = orderObj.Key;
+                this.QueryBuilder.GroupParameters = orderObj.Value.ToList();
+                this.GroupBy(orderObj.Key);
+            }
+            else
+            {
+                this.GroupBy(orderObj.Key);
+                this.QueryBuilder.Parameters.AddRange(orderObj.Value);
+            }
             return this;
         }
         public ISugarQueryable<T> Select(List<SelectModel> models)
         {
             var orderObj = this.SqlBuilder.SelectModelToSql(models);
+            if (this.QueryBuilder.GroupParameters?.Any() == true && this.QueryBuilder.GroupBySql.HasValue())
+            {
+                var selectSql = UtilMethods.GetSqlString(DbType.SqlServer, orderObj.Key, UtilMethods.CopySugarParameters(orderObj.Value.ToList()).ToArray());
+                if (selectSql.Contains(this.QueryBuilder.GroupBySql))
+                {  
+                    this.Select(UtilConstants.GroupReplaceKey+selectSql); 
+                    return this;
+                }
+            }
             this.Select(orderObj.Key);
             this.QueryBuilder.Parameters.AddRange(orderObj.Value);
             return this;

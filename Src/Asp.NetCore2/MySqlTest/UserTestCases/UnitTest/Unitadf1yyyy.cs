@@ -23,8 +23,19 @@ namespace OrmTest
 
             //插入测试数据
             var indexList = db.Insertable(longList).AS(tableName).ExecuteReturnPkList<long>();
-             
+            db.DbMaintenance.DropTable<UnitDefaultValueadsfa>();
+            db.CodeFirst.InitTables<UnitDefaultValueadsfa>();
+            db.Insertable(new UnitDefaultValueadsfa() { name = "a" }).ExecuteCommand();
         }
+    }
+
+    public class UnitDefaultValueadsfa
+    {
+        [SugarColumn(IsPrimaryKey =true,IsIdentity =true)]
+        public int Id { get; set; }
+        public string name { get; set; } 
+        [SugarColumn(DefaultValue ="",IsOnlyIgnoreInsert =true)]
+        public string a2 { get; set; }
     }
 
     //建类

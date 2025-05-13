@@ -139,10 +139,17 @@ namespace SqlSugar
                     new KeyValuePair<string, CSharpDataType>("bit",CSharpDataType.byteArray),
                     new KeyValuePair<string, CSharpDataType>("blob",CSharpDataType.byteArray),
                     new KeyValuePair<string, CSharpDataType>("bit varying",CSharpDataType.byteArray),
+                    new KeyValuePair<string, CSharpDataType>("binary",CSharpDataType.byteArray),
+                    new KeyValuePair<string, CSharpDataType>("varbinary",CSharpDataType.byteArray),
+                    new KeyValuePair<string, CSharpDataType>("image",CSharpDataType.byteArray),
                     new KeyValuePair<string, CSharpDataType>("varbit",CSharpDataType.@byte),
                     new KeyValuePair<string, CSharpDataType>("rowversion",CSharpDataType.byteArray),
-                    new KeyValuePair<string, CSharpDataType>("regclass",CSharpDataType.@object)
-                    
+                    new KeyValuePair<string, CSharpDataType>("regclass",CSharpDataType.@object),
+
+                    new KeyValuePair<string, CSharpDataType>("geometry",CSharpDataType.@object),
+                    new KeyValuePair<string, CSharpDataType>("public.geometry",CSharpDataType.@object),
+                    new KeyValuePair<string, CSharpDataType>("geography",CSharpDataType.@object),
+                    new KeyValuePair<string, CSharpDataType>("public.geography",CSharpDataType.@object),
                 };
         public override List<string> StringThrow
         {

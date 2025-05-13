@@ -453,6 +453,43 @@ namespace SqlSugar
             }
             return ToDataTable();
         }
+
+        public DataTable ToOffsetDataTablePage(int pageNumber, int pageSize) 
+        {
+            if (this.Context.CurrentConnectionConfig.DbType != DbType.SqlServer)
+            {
+                this.QueryBuilder.Offset = "true";
+                return this.ToDataTablePage(pageNumber, pageSize);
+            }
+            else
+            {
+                _ToOffsetPage(pageNumber, pageSize);
+                return this.ToDataTable();
+            }
+        }
+        public DataTable ToOffsetDataTablePage(int pageNumber, int pageSize, ref int totalNumber) 
+        {
+            if (this.Context.CurrentConnectionConfig.DbType != DbType.SqlServer)
+            {
+                this.QueryBuilder.Offset = "true";
+                return this.ToDataTablePage(pageNumber, pageSize, ref totalNumber);
+            }
+            else
+            {
+                totalNumber = this.Clone().Count();
+                _ToOffsetPage(pageNumber, pageSize);
+                return this.Clone().ToDataTable();
+            }
+        }
+        public DataTable ToOffsetDataTableByEntityPage(int pageNumber, int pageSize, ref int totalNumber) 
+        {
+            return this.Context.Utilities.ListToDataTable(this.ToOffsetPage(pageNumber, pageSize,ref totalNumber));
+        }
+        public DataTable ToOffsetDataTablePage(int pageNumber, int pageSize, ref int totalNumber, ref int totalPage) 
+        {
+            return this.Context.Utilities.ListToDataTable(this.ToOffsetPage(pageNumber, pageSize, ref totalNumber,ref totalPage));
+        }
+
         public DataTable ToDataTableByEntityPage(int pageNumber, int pageSize, ref int totalNumber) 
         {
             var  list=this.ToPageList(pageNumber, pageSize,ref totalNumber);

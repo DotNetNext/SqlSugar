@@ -250,6 +250,18 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override bool IsAnyTable(string tableName, bool isCache = true)
+        {
+            if (isCache == false)
+            {
+                var sql = $" SELECT 1 FROM pg_catalog.pg_tables \r\n    WHERE schemaname = '"+GetSchema()+ "' \r\n    AND Lower(tablename) = '" + tableName.ToLower()+"' ";
+                return this.Context.Ado.GetInt(sql) > 0;
+            }
+            else
+            {
+                return base.IsAnyTable(tableName, isCache);
+            }
+        }
         public override List<string> GetDbTypes()
         {
             var result = this.Context.Ado.SqlQuery<string>(@"SELECT DISTINCT data_type
@@ -385,7 +397,16 @@ WHERE tgrelid = '"+tableName+"'::regclass");
             }
             var oldDatabaseName = this.Context.Ado.Connection.Database;
             var connection = this.Context.CurrentConnectionConfig.ConnectionString;
-            connection = connection.Replace(oldDatabaseName, "postgres");
+            if (Regex.Matches(connection, oldDatabaseName).Count > 1)
+            {
+                var builder = new Npgsql.NpgsqlConnectionStringBuilder(connection);
+                builder.Database = "postgres";
+                connection = builder.ConnectionString;
+            }
+            else
+            {
+                connection = connection.Replace(oldDatabaseName, "postgres");
+            }
             var newDb = new SqlSugarClient(new ConnectionConfig()
             {
                 DbType = this.Context.CurrentConnectionConfig.DbType,
@@ -582,23 +603,45 @@ WHERE tgrelid = '"+tableName+"'::regclass");
         private string GetSchema()
         {
             var schema = "public";
-            if (System.Text.RegularExpressions.Regex.IsMatch(this.Context.CurrentConnectionConfig.ConnectionString.ToLower(), "searchpath="))
+            var pgSqlIsAutoToLowerSchema = this.Context?.CurrentConnectionConfig?.MoreSettings?.PgSqlIsAutoToLowerSchema == false;
+            if (pgSqlIsAutoToLowerSchema)
             {
-                var regValue = System.Text.RegularExpressions.Regex.Match(this.Context.CurrentConnectionConfig.ConnectionString.ToLower(), @"searchpath\=(\w+)").Groups[1].Value;
-                if (regValue.HasValue())
+                if (System.Text.RegularExpressions.Regex.IsMatch(this.Context.CurrentConnectionConfig.ConnectionString, "searchpath=", RegexOptions.IgnoreCase))
                 {
-                    schema = regValue;
+                    var regValue = System.Text.RegularExpressions.Regex.Match(this.Context.CurrentConnectionConfig.ConnectionString, @"searchpath\=(\w+)").Groups[1].Value;
+                    if (regValue.HasValue())
+                    {
+                        schema = regValue;
+                    }
+                }
+                else if (System.Text.RegularExpressions.Regex.IsMatch(this.Context.CurrentConnectionConfig.ConnectionString, "search path=", RegexOptions.IgnoreCase))
+                {
+                    var regValue = System.Text.RegularExpressions.Regex.Match(this.Context.CurrentConnectionConfig.ConnectionString.ToLower(), @"search path\=(\w+)").Groups[1].Value;
+                    if (regValue.HasValue())
+                    {
+                        schema = regValue;
+                    }
                 }
             }
-            else if (System.Text.RegularExpressions.Regex.IsMatch(this.Context.CurrentConnectionConfig.ConnectionString.ToLower(), "search path="))
+            else
             {
-                var regValue = System.Text.RegularExpressions.Regex.Match(this.Context.CurrentConnectionConfig.ConnectionString.ToLower(), @"search path\=(\w+)").Groups[1].Value;
-                if (regValue.HasValue())
+                if (System.Text.RegularExpressions.Regex.IsMatch(this.Context.CurrentConnectionConfig.ConnectionString.ToLower(), "searchpath="))
                 {
-                    schema = regValue;
+                    var regValue = System.Text.RegularExpressions.Regex.Match(this.Context.CurrentConnectionConfig.ConnectionString.ToLower(), @"searchpath\=(\w+)").Groups[1].Value;
+                    if (regValue.HasValue())
+                    {
+                        schema = regValue;
+                    }
+                }
+                else if (System.Text.RegularExpressions.Regex.IsMatch(this.Context.CurrentConnectionConfig.ConnectionString.ToLower(), "search path="))
+                {
+                    var regValue = System.Text.RegularExpressions.Regex.Match(this.Context.CurrentConnectionConfig.ConnectionString.ToLower(), @"search path\=(\w+)").Groups[1].Value;
+                    if (regValue.HasValue())
+                    {
+                        schema = regValue;
+                    }
                 }
             }
-
             return schema;
         }
         private static void ConvertCreateColumnInfo(DbColumnInfo x)

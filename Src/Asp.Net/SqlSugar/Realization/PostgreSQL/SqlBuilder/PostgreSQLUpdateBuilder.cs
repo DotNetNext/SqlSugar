@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -43,15 +44,15 @@ namespace SqlSugar
             else
             {
                 var type =UtilMethods.GetUnderType(value.GetType());
-                if (type == UtilConstants.ByteArrayType||type == UtilConstants.DateType||columnInfo.IsArray||columnInfo.IsJson)
+                if (type == UtilConstants.ByteArrayType || type == UtilConstants.DateType || columnInfo.IsArray || columnInfo.IsJson)
                 {
-                    var parameterName = this.Builder.SqlParameterKeyWord + name +"_"+ i;
+                    var parameterName = this.Builder.SqlParameterKeyWord + name + "_" + i;
                     var paramter = new SugarParameter(parameterName, value);
-                    if (columnInfo.IsJson) 
+                    if (columnInfo.IsJson)
                     {
                         paramter.IsJson = true;
                     }
-                    if (columnInfo.IsArray) 
+                    if (columnInfo.IsArray)
                     {
                         paramter.IsArray = true;
                     }
@@ -85,6 +86,10 @@ namespace SqlSugar
                 else if (type == UtilConstants.StringType || type == UtilConstants.ObjType)
                 {
                     return "'" + value.ToString().ToSqlFilter() + "'";
+                }
+                else if (value is decimal v)
+                {
+                    return v.ToString(CultureInfo.InvariantCulture);
                 }
                 else
                 {

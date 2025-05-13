@@ -10,6 +10,8 @@ namespace SqlSugar.TDengine
 {
     public class TDengineDbMaintenance : DbMaintenanceProvider
     {
+        public EntityInfo EntityInfo { get; set; }
+
         #region DML
 
         protected override string GetViewInfoListSql => throw new NotImplementedException();
@@ -32,23 +34,7 @@ namespace SqlSugar.TDengine
         {
             get
             {
-                var dt = GetSTables();
-                List<string> sb = new List<string>();
-                foreach (DataRow item in dt.Rows)
-                {
-                    sb.Add($" SELECT '{item["stable_name"].ObjToString().ToSqlFilter()}' AS NAME ");
-                }
-                var dt2 = GetTables();
-                foreach (DataRow item in dt2.Rows)
-                {
-                    sb.Add($" SELECT '{item["table_name"].ObjToString().ToSqlFilter()}' AS NAME ");
-                }
-                var result= string.Join(" UNION  ", sb);
-                if (string.IsNullOrEmpty(result)) 
-                {
-                    result = " SELECT 'NoTables' AS Name ";
-                }
-                return result;
+                return "";
             }
         }
 
@@ -226,6 +212,26 @@ namespace SqlSugar.TDengine
         #endregion
 
         #region Methods  
+        public override List<DbTableInfo> GetTableInfoList(bool isCache = true)
+        {
+            var sb = new List<string>();
+
+            // 第一个循环：获取超级表名称
+            var dt = GetSTables();
+            foreach (DataRow item in dt.Rows)
+            {
+                sb.Add(item["stable_name"].ObjToString().ToSqlFilter()); 
+            }
+
+            // 第二个循环：获取子表名称
+            var dt2 = GetTables();
+            foreach (DataRow item in dt2.Rows)
+            {
+                sb.Add(item["table_name"].ObjToString().ToSqlFilter());
+            } 
+            var result= sb.Select(it=>new DbTableInfo() { Name=it, DbObjectType=DbObjectType.Table }).ToList();
+            return result;
+        }
         public override bool AddColumn(string tableName, DbColumnInfo columnInfo)
         {
             if (columnInfo.DbColumnName == "TagsTypeId") 
@@ -316,25 +322,9 @@ namespace SqlSugar.TDengine
             string result = string.Format(this.AlterColumnToTableSql, tableName, columnName, dataType, dataSize, nullType, primaryKey, identity);
             return result;
         }
-
+         
         public override bool AddRemark(EntityInfo entity)
         {
-            var db = this.Context;
-            var columns = entity.Columns.Where(it => it.IsIgnore == false).ToList();
-
-            foreach (var item in columns)
-            {
-                if (item.ColumnDescription != null)
-                {
-                    db.DbMaintenance.AddColumnRemark(item.DbColumnName, item.DbTableName, item.ColumnDescription);
-
-                }
-            } 
-            //table remak
-            if (entity.TableDescription != null)
-            {
-                db.DbMaintenance.AddTableRemark(entity.DbTableName, entity.TableDescription);
-            }
             return true;
         }
         public override bool CreateTable(string tableName, List<DbColumnInfo> columns, bool isCreatePrimaryKey = true)
@@ -443,6 +433,22 @@ namespace SqlSugar.TDengine
                 var colums = STable.Tags.Select(it => this.SqlBuilder.GetTranslationTableName(it.Name)+ "  VARCHAR(100) ");
                 tableString=tableString.Replace(SqlBuilder.GetTranslationColumnName("TagsTypeId"), string.Join(",", colums));
                 tableString = tableString.Replace(" VARCHAR(100)  VARCHAR(100)", " VARCHAR(100)");
+                if (this.EntityInfo != null)
+                {
+                    foreach (var item in STable.Tags)
+                    {
+                        var tagColumn = this.EntityInfo.Columns.FirstOrDefault(it => it.DbColumnName == item.Name || it.PropertyName == item.Name);
+                        if (tagColumn != null && tagColumn.UnderType != UtilConstants.StringType)
+                        {
+                            var tagType = new TDengineDbBind() { Context = this.Context }.GetDbTypeName(tagColumn.UnderType.Name);
+                            tableString = tableString.Replace($"{SqlBuilder.GetTranslationColumnName(tagColumn.DbColumnName)}  VARCHAR(100)", $"{SqlBuilder.GetTranslationColumnName(tagColumn.DbColumnName)} {tagType} ");
+                        }
+                        else if (tagColumn != null && tagColumn.UnderType == UtilConstants.StringType && tagColumn.Length < 100 && tagColumn.Length > 0)
+                        {
+                            tableString = tableString.Replace($"{SqlBuilder.GetTranslationColumnName(tagColumn.DbColumnName)}  VARCHAR(100)", $"{SqlBuilder.GetTranslationColumnName(tagColumn.DbColumnName)}  VARCHAR({tagColumn.Length}) ");
+                        }
+                    }
+                }
             }
             this.Context.Ado.ExecuteCommand(tableString);
             var createChildSql = $"CREATE TABLE IF NOT EXISTS     {childTableName} USING {stableName} TAGS('default')";

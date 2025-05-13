@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using System.Linq;
+using System.Linq; 
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -87,7 +87,7 @@ namespace SqlSugar
         public override void BeginTran(string transactionName)
         {
             ((OracleConnection)this.Connection).BeginTransaction();
-        }
+        }   
         /// <summary>
         /// Only SqlServer
         /// </summary>
@@ -107,7 +107,7 @@ namespace SqlSugar
             {
                 return base.ProcessingEventStartingSQL(sql, parameter);
             }
-            else
+            else 
             {
                 return new KeyValuePair<string, SugarParameter[]>(sql, parameter);
             }
@@ -142,10 +142,10 @@ namespace SqlSugar
             return sqlCommand;
         }
         private static string[] KeyWord = new string[] { "@month",":month",":day", "@day","@group",":group",":index","@index","@order", ":order", "@user", "@level", ":user", ":level", ":type", "@type",":year","@year","@date",":date" };
-        private static string ReplaceKeyWordParameterName(string sql, SugarParameter[] parameters)
+        private  string ReplaceKeyWordParameterName(string sql, SugarParameter[] parameters)
         {
             sql = ReplaceKeyWordWithAd(sql, parameters);
-            if (parameters.HasValue())
+            if (parameters.HasValue()&&this.CommandType!=CommandType.StoredProcedure)
             {
                 foreach (var Parameter in parameters.OrderByDescending(x=>x.ParameterName?.Length))
                 {

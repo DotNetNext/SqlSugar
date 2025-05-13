@@ -881,20 +881,20 @@ namespace SqlSugar
         {
             return UtilMethods.CountSubstringOccurrences(sql,"WHERE")>1;
         }
-        private bool IsCorrectErrorSqlParameterName()
+        protected bool IsCorrectErrorSqlParameterName()
         {
             return this.Context?.CurrentConnectionConfig?.MoreSettings?.IsCorrectErrorSqlParameterName == true;
         }
 
-        private void ThrowUpdateByExpression()
+        protected void ThrowUpdateByExpression()
         {
             Check.Exception(UpdateParameterIsNull == true, ErrorMessage.GetThrowMessage(" no support UpdateColumns and WhereColumns", "根据表达式更新 db.Updateable<T>() 禁止使用 UpdateColumns和WhereColumns,你可以使用 SetColumns Where 等。更新分为2种方式 1.根据表达式更新 2.根据实体或者集合更新， 具体用法请查看文档 "));
         }
-        private void ThrowUpdateByObject()
+        protected void ThrowUpdateByObject()
         {
             Check.Exception(UpdateParameterIsNull == false, ErrorMessage.GetThrowMessage(" no support SetColumns and Where", "根据对像更新 db.Updateabe(对象) 禁止使用 SetColumns和Where ,你可以使用WhereColumns 和  UpdateColumns。 更新分为2种方式 1.根据表达式更新 2.根据实体或者集合更新 ， 具体用法请查看文档 "));
         }
-        private void ThrowUpdateByExpressionByMesage(string message)
+        protected void ThrowUpdateByExpressionByMesage(string message)
         {
             Check.Exception(UpdateParameterIsNull == true, ErrorMessage.GetThrowMessage(" no support "+ message, "根据表达式更新 db.Updateable<T>()禁止使用 " + message+"。 更新分为2种方式 1.根据表达式更新 2.根据实体或者集合更新 ， 具体用法请查看文档 "));
         }

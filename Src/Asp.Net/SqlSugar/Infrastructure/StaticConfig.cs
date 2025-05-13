@@ -21,6 +21,7 @@ namespace SqlSugar
         public static Func<long> CustomSnowFlakeFunc;
         public static Func<long> CustomSnowFlakeTimeErrorFunc;
         public static Func<Guid> CustomGuidFunc;
+        public static Func<Guid,Guid> CustomGuidByValueFunc;
 
         public static Action<object> CompleteQueryableFunc;
         public static Action<object> CompleteInsertableFunc;

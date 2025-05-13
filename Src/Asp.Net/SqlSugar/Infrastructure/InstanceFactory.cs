@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 namespace SqlSugar
@@ -264,6 +265,14 @@ namespace SqlSugar
                 var type = GetCustomTypeByClass<T>(name);
                 if (type == null)
                 {
+                    name =
+                    InstanceFactory.CustomNamespace +
+                    "." + InstanceFactory.CustomDbName
+                    + "Updateable`1";
+                    type = GetCustomTypeByClass<T>(name);
+                }
+                if (type == null)
+                {
                     return new UpdateableProvider<T>();
                 }
                 else
@@ -290,6 +299,14 @@ namespace SqlSugar
                     "." + currentConnectionConfig.DbType
                     + "Deleteable`1";
                 var type = GetCustomTypeByClass<T>(name);
+                if (type == null)
+                {
+                    name =
+                    InstanceFactory.CustomNamespace +
+                    "." + InstanceFactory.CustomDbName
+                    + "Deleteable`1";
+                    type = GetCustomTypeByClass<T>(name);
+                }
                 if (type == null)
                 {
                     return new DeleteableProvider<T>();
@@ -330,6 +347,14 @@ namespace SqlSugar
                     "." + currentConnectionConfig.DbType
                     + "Insertable`1";
                 var type = GetCustomTypeByClass<T>(name);
+                if (type == null) 
+                {
+                    name =
+                    InstanceFactory.CustomNamespace +
+                    "." + InstanceFactory.CustomDbName
+                    + "Insertable`1";
+                    type = GetCustomTypeByClass<T>(name);
+                }
                 if (type == null)
                 {
                     return new InsertableProvider<T>();
@@ -340,15 +365,18 @@ namespace SqlSugar
                 }
             }
             else
-            {
+            { 
                 return new InsertableProvider<T>();
             }
         }
 
         private static bool IsCustomDb(ConnectionConfig currentConnectionConfig)
         {
-            return
-                            currentConnectionConfig.DbType != DbType.SqlServer &&
+            if (currentConnectionConfig.DbType == DbType.Custom) 
+            {
+                return true;
+            }
+            return currentConnectionConfig.DbType != DbType.SqlServer &&
                             currentConnectionConfig.DbType != DbType.Dm &&
                             currentConnectionConfig.DbType != DbType.Oscar &&
                             currentConnectionConfig.DbType != DbType.Access &&
@@ -360,6 +388,7 @@ namespace SqlSugar
                             currentConnectionConfig.DbType != DbType.GBase &&
                             currentConnectionConfig.DbType != DbType.Sqlite &&
                             GetCustomTypeByClass("SqlSugar." + currentConnectionConfig.DbType + "." + currentConnectionConfig.DbType + "Provider") != null;
+      
         }
 
         public static IDbBind GetDbBind(ConnectionConfig currentConnectionConfig)
@@ -443,6 +472,10 @@ namespace SqlSugar
             else if (type == "DB2")
             {
                 return "SqlSugar.DB2."+ type+ name;
+            }
+            else if (type == "GaussDBNative") 
+            {
+                return "SqlSugar.GaussDB.GaussDB"  + name;
             }
             else
             {
@@ -634,6 +667,10 @@ namespace SqlSugar
                         {
                             type = assembly.GetType(className);
                         }
+                    }
+                    if (type == null)
+                    {
+                        type = GetCustomDbType(className, type);
                     }
                     Check.ArgumentNullException(type, string.Format(ErrorMessage.ObjNotExist, className));
                     if (!typeCache.ContainsKey(className))

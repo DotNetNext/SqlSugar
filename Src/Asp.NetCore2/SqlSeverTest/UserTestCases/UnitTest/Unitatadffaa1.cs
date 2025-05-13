@@ -23,9 +23,7 @@ namespace OrmTest
 
             var result2 = db.Insertable(new Test002() { id = 1, name = "ceshi2", age = 22, sex = "33322" }).ExecuteCommand();//用例代码
             try
-            {
-          
-
+            { 
 
                 var data = db.Queryable<Test001>().Where(x => x.id == 1)
                     .Select(x => new

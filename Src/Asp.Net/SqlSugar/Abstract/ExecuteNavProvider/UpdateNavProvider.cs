@@ -97,6 +97,10 @@ namespace SqlSugar
             IsFirst = isRoot && this._ParentList == null;
             InitParentList();
             var name = ExpressionTool.GetMemberName(expression);
+            if (name == null)
+            {
+                name = ExpressionTool.GetMemberNameByMethod(expression, name);
+            }
             var nav = this._ParentEntity.Columns.FirstOrDefault(x => x.PropertyName == name);
             if (nav.Navigat == null)
             {

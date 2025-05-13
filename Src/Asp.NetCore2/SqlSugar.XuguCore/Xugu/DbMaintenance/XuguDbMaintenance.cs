@@ -34,7 +34,7 @@ namespace SqlSugar.Xugu
 	CASE WHEN I.IS_PRIMARY THEN TRUE ELSE FALSE END `ISPRIMARYKEY`
 FROM USER_COLUMNS C
 LEFT JOIN USER_TABLES T ON T.TABLE_ID=C.TABLE_ID
-LEFT JOIN USER_INDEXES I ON T.TABLE_ID=I.TABLE_ID AND I.KEYS LIKE concat('%',C.COL_NAME,'%')
+LEFT JOIN USER_INDEXES I ON T.TABLE_ID=I.TABLE_ID AND I.KEYS LIKE  '%'|| C.COL_NAME || '%' 
 WHERE T.TABLE_NAME='{0}' AND T.DB_ID=CURRENT_DB_ID
 	AND T.USER_ID=CURRENT_USERID AND T.SCHEMA_ID=CURRENT_SCHEMAID
 ORDER BY C.COL_NO";//FIND_IN_SET('""'+C.COL_NAME+'""',I.KEYS)>0
@@ -144,6 +144,10 @@ WHERE T.TABLE_NAME='{0}' AND T.DB_ID=CURRENT_DB_ID
         //                });
         //}
 
+        public override bool AddTableRemark(string tableName, string description)
+        {
+            return base.AddTableRemark(SqlBuilder.GetTranslationColumnName(tableName), description);
+        }
         private List<DbColumnInfo> GetColumnInfosByTableName(string tableName)
         {
             string sql = "select *  /* " + Guid.NewGuid() + " */ from " + SqlBuilder.GetTranslationTableName(tableName) + " WHERE 1=2 ";

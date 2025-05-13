@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading.Tasks; 
 using SqlSugar;
 using SqlSugar.DbConvert;
 
@@ -33,11 +33,14 @@ namespace TDengineTest
             //固定建表
             CodeFirst(db);
 
-            //自动建表
+            //自动建表(普通插入)
             InsertUsingTag(db);
+
+            //自动建表(BulkCopy)
+            BulkCopy(db);
              
             //生成实体
-            DbFirst(db);
+            //DbFirst(db);
 
             //简单用例
             Demo1(db);
@@ -47,8 +50,7 @@ namespace TDengineTest
 
             Console.WriteLine("执行完成");
             Console.ReadKey();
-        }
-
+        } 
     }
 
 }

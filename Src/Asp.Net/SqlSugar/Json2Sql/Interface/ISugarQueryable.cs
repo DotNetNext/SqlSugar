@@ -9,6 +9,7 @@ namespace SqlSugar
         ISugarQueryable<T> Having(IFuncModel model);
         ISugarQueryable<T> OrderBy(List<OrderByModel> models);
         ISugarQueryable<T> GroupBy(List<GroupByModel> models);
+        DynamicCoreSelectModel Select(string expShortName, List<string> columns, params object[] args);
         ISugarQueryable<T> Select(List<SelectModel> models);
         ISugarQueryable<TResult> Select<TResult>(List<SelectModel> models);
         ISugarQueryable<T> Select(List<SelectModel> models,AsNameFormatType type);

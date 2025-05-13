@@ -322,7 +322,47 @@ namespace SqlSugar
         }
         public override string DateIsSameByType(MethodCallExpressionModel model)
         {
-            throw new NotSupportedException("Oracle NotSupportedException DateIsSameDay");
+            var parameter = model.Args[0];
+            var parameter2 = model.Args[1];
+            var parameter3 = model.Args[2];
+
+            var dateType = parameter3.MemberValue.ObjToString().ToLower();
+            var date1 = parameter.MemberName;
+            var date2 = parameter2.MemberName;
+
+            if (dateType == "year")
+            {
+                return string.Format("(EXTRACT(YEAR FROM {0}) = EXTRACT(YEAR FROM {1}))", date1, date2);
+            }
+            else if (dateType == "month")
+            {
+                return string.Format("(EXTRACT(YEAR FROM {0}) = EXTRACT(YEAR FROM {1}) AND EXTRACT(MONTH FROM {0}) = EXTRACT(MONTH FROM {1}))", date1, date2);
+            }
+            else if (dateType == "day")
+            {
+                return string.Format("(TRUNC({0}) = TRUNC({1}))", date1, date2);
+            }
+            else if (dateType == "hour")
+            {
+                return string.Format("(TRUNC({0}, 'HH24') = TRUNC({1}, 'HH24'))", date1, date2);
+            }
+            else if (dateType == "minute")
+            {
+                return string.Format("(TRUNC({0}, 'MI') = TRUNC({1}, 'MI'))", date1, date2);
+            }
+            else if (dateType == "second")
+            {
+                return string.Format("(TRUNC({0}, 'SS') = TRUNC({1}, 'SS'))", date1, date2);
+            }
+            else if (dateType == "week" || dateType == "weekday")
+            {
+                return string.Format("(TRUNC({0}, 'IW') = TRUNC({1}, 'IW'))", date1, date2);
+            }
+            else
+            {
+                // 默认按天比较
+                return string.Format("(TRUNC({0}) = TRUNC({1}))", date1, date2);
+            }
         }
         public override string Length(MethodCallExpressionModel model)
         {

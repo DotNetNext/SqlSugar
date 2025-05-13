@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 namespace SqlSugar.TDSQLForPGODBC
 {
@@ -11,9 +12,10 @@ namespace SqlSugar.TDSQLForPGODBC
         public const char DotChar = '.';
         internal const string Space = " ";
         internal const char SpaceChar = ' ';
-        internal const string AssemblyName = "SqlSugar";
+        internal const string AssemblyName = "SqlSugar.TDSQLForPGODBC";
         internal static string ReplaceKey = "{" + Guid.NewGuid() + "}";
         internal const string ReplaceCommaKey = "{112A689B-17A1-4A06-9D27-A39EAB8BC3D5}";
+        internal const string GroupReplaceKey = "{GroupReplaceKey_l33asdysaas1231s}";
 
         internal static Type UShortType = typeof(ushort);
         internal static Type ULongType = typeof(ulong);
@@ -62,7 +64,7 @@ namespace SqlSugar.TDSQLForPGODBC
             typeof(short),
             typeof(ushort),
         };
-
+        //internal static CultureInfo EnCultureInfo = new CultureInfo("en");
 
         internal static string[] DateTypeStringList = new string[]
         {
@@ -75,5 +77,8 @@ namespace SqlSugar.TDSQLForPGODBC
                 "Millisecond",
                 "Date"
         };
+
+        public static ConstantExpression ExpTrue = Expression.Constant(true);
+        public static ConstantExpression ExpFalse = Expression.Constant(false);
     }
 }

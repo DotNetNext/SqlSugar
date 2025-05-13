@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -173,7 +174,15 @@ namespace SqlSugar
                 else if (type == UtilConstants.IntType)
                 {
                     return GetString(value);
-                } 
+                }
+                else if (value is decimal decValue)
+                {
+                    return decValue.ToString(CultureInfo.InvariantCulture);
+                }
+                else if (value is double douValue)
+                {
+                    return douValue.ToString(CultureInfo.InvariantCulture);
+                }
                 else if (type == UtilConstants.BoolType)
                 {
                     return value.ObjToBool() ? "1" : "0";

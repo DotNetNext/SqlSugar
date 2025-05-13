@@ -16,6 +16,7 @@ namespace SqlSugar
         public DiffLogModel DiffModel { get; internal set; }
         public List<string> UpdateColumns { get; internal set; } 
         public string[] WhereColumnList { get; internal set; }
+        public Dictionary<string, ReSetValueBySqlExpListModel> ReSetValueBySqlExpList { get; internal set; }
 
         public UpdateableFilter<T> EnableQueryFilter() 
         {
@@ -47,7 +48,9 @@ namespace SqlSugar
                 }
                 this.Context.Utilities.PageEach(DataList, PageSize, pageItem =>
                 {
-                    result += this.Context.Updateable(pageItem).AS(TableName).WhereColumns(WhereColumnList).EnableDiffLogEventIF(IsEnableDiffLogEvent, DiffModel).UpdateColumns(UpdateColumns.ToArray()).ExecuteCommand();
+                    var updateable = this.Context.Updateable(pageItem).AS(TableName);
+                    updateable.UpdateBuilder.ReSetValueBySqlExpList = this.ReSetValueBySqlExpList;
+                    result +=updateable.WhereColumns(WhereColumnList).EnableDiffLogEventIF(IsEnableDiffLogEvent, DiffModel).UpdateColumns(UpdateColumns.ToArray()).ExecuteCommand();
                 });
                 if (isNoTran)
                 {
@@ -81,7 +84,9 @@ namespace SqlSugar
                 }
                 await this.Context.Utilities.PageEachAsync(DataList, PageSize, async pageItem =>
                 {
-                    result += await this.Context.Updateable(pageItem).AS(TableName).WhereColumns(WhereColumnList).EnableDiffLogEventIF(IsEnableDiffLogEvent, DiffModel).UpdateColumns(UpdateColumns.ToArray()).ExecuteCommandAsync();
+                    var updateable = this.Context.Updateable(pageItem);
+                    updateable.UpdateBuilder.ReSetValueBySqlExpList = this.ReSetValueBySqlExpList;
+                    result += await updateable.AS(TableName).WhereColumns(WhereColumnList).EnableDiffLogEventIF(IsEnableDiffLogEvent, DiffModel).UpdateColumns(UpdateColumns.ToArray()).ExecuteCommandAsync();
                 });
                 if (isNoTran)
                 {

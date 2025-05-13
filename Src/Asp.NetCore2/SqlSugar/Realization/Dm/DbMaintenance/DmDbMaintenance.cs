@@ -29,17 +29,16 @@ namespace SqlSugar
         {
             get
             {
-                return @"SELECT  
-                        table_name name,
-                        (select TOP 1 COMMENTS from user_tab_comments where t.table_name=table_name )  as Description
-                        from user_tables t where
-                        table_name!='HELP' 
-                        AND table_name NOT LIKE '%$%'
-                        AND table_name NOT LIKE 'LOGMNRC_%'
-                        AND table_name!='LOGMNRP_CTAS_PART_MAP'
-                        AND table_name!='LOGMNR_LOGMNR_BUILDLOG'
-                        AND table_name!='SQLPLUS_PRODUCT_PROFILE'  
-                         ";
+                return @"SELECT a.TABLE_NAME AS Name,b.COMMENTS AS Description
+FROM USER_TABLES a
+LEFT JOIN (SELECT DISTINCT TABLE_NAME,COMMENTS FROM USER_TAB_COMMENTS WHERE COMMENTS IS NOT NULL) b ON a.TABLE_NAME=b.TABLE_NAME
+WHERE 
+a.table_name!='HELP'
+AND a.table_name NOT LIKE '%$%'
+AND a.table_name NOT LIKE 'LOGMNRC_%'
+AND a.table_name!='LOGMNRP_CTAS_PART_MAP'
+AND a.table_name!='LOGMNR_LOGMNR_BUILDLOG'
+AND a.table_name!='SQLPLUS_PRODUCT_PROFILE'";
             }
         }
         protected override string GetViewInfoListSql
@@ -329,6 +328,7 @@ WHERE table_name = '" + tableName + "'");
                 columnInfo.DataType = "varchar2";
                 columnInfo.Length = 50;
             }
+            ConvertCreateColumnInfo(columnInfo);
             return base.AddColumn(tableName, columnInfo);
         }
         public override bool CreateIndex(string tableName, string[] columnNames, bool isUnique = false)
@@ -652,7 +652,7 @@ WHERE upper(t.TABLE_NAME) = upper('{tableName}')
         }
         private static void ConvertCreateColumnInfo(DbColumnInfo x)
         {
-            string[] array = new string[] { "int" };
+            string[] array = new string[] { "int", "date", "clob", "nclob" };
             if (x.OracleDataType.HasValue())
             {
                 x.DataType = x.OracleDataType;

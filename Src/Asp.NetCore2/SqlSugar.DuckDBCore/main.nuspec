@@ -1,0 +1,24 @@
+﻿<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>SqlSugar.DuckDBCore</id>
+    <version>5.1.4.191</version>
+    <authors>sunkaixuan</authors>
+    <owners>果糖大数据</owners>
+    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
+    <projectUrl>https://github.com/sunkaixuan/SqlSugar</projectUrl>
+    <iconUrl>https://secure.gravatar.com/avatar/a82c03402497b2e58fd65038a3699b30</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description> SqlSugar操作DuckDB 用例： https://github.com/DotNetNext/SqlSugar </description>
+    <copyright>Copyright 2016</copyright>
+    <tags>DuckDB Duck db</tags>
+    <dependencies>
+      <group targetFramework=".net6.0"> 
+		  <dependency id="DuckDB.NET.Data.Full" version="1.2.1" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="G:\Git\SqlSugar\Src\Asp.NetCore2\SqlSugar.DuckDBCore\bin\Debug\netstandard2.1\SqlSugar.DuckDBCore.dll" target="lib\net6.0"></file>
+  </files>
+</package>

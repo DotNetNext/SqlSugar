@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>SqlSugar.TDengineCore</id>
-    <version>4.1.04</version>
+    <version>4.18.11</version>
     <authors>sunkaixuan</authors>
     <owners>Landa</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>

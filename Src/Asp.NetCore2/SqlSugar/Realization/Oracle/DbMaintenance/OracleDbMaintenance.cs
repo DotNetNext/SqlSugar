@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Linq;
-using System.Text;
+using System.Text; 
 
 namespace SqlSugar
 {
@@ -358,6 +358,7 @@ WHERE table_name = '"+tableName+"'");
                 columnInfo.DataType = "varchar2";
                 columnInfo.Length = 50;
             }
+            ConvertCreateColumnInfo(columnInfo);
             return base.AddColumn(tableName,columnInfo);
         }
         public override bool CreateIndex(string tableName, string[] columnNames, bool isUnique=false)
@@ -503,6 +504,10 @@ WHERE table_name = '"+tableName+"'");
                                 column.Length = 22;
                             }
                         }
+                        if (current.DefaultValue != null)
+                        {
+                            column.DefaultValue = current.DefaultValue.TrimEnd('\'').TrimStart('\''); 
+                        }
                     }
                     result.Add(column);
                 }
@@ -523,7 +528,8 @@ WHERE table_name = '"+tableName+"'");
                                  t1.char_length,   
                                  t1.data_precision,  
                                  t1.data_scale,     
-                                 t1.nullable,       
+                                 t1.nullable,  
+                                 t1.data_default as DefaultValue,
                                  t4.index_name,     
                                  t4.column_position,  
                                  t4.descend          
@@ -680,7 +686,7 @@ WHERE table_name = '"+tableName+"'");
         }
         private static void ConvertCreateColumnInfo(DbColumnInfo x)
         {
-            string[] array = new string[] { "int","date"}; 
+            string[] array = new string[] { "int","date","clob","nclob"}; 
             if (x.OracleDataType.HasValue())
             {
                 x.DataType = x.OracleDataType;

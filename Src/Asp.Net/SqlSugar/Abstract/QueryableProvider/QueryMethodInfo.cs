@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 
@@ -30,6 +31,10 @@ namespace SqlSugar
         public QueryMethodInfo AS(string tableName)
         {
             string shortName = $"{tableName}_1";
+            if (!Regex.IsMatch(shortName, @"^\w+$")) 
+            {
+                shortName = "maintable";
+            }
             var method = QueryableObj.GetType().GetMyMethod("AS", 2, typeof(string), typeof(string));
             this.QueryableObj = method.Invoke(QueryableObj, new object[] { tableName, shortName });
             return this;
@@ -164,7 +169,12 @@ namespace SqlSugar
             this.QueryableObj = method.Invoke(QueryableObj, new object[] { });
             return this;
         }
-
+        public QueryMethodInfo Select(string expShortName, List<string> columns, params object[] args)
+        {
+            var method = QueryableObj.GetType().GetMyMethod("Select", 3, typeof(string), typeof(List<string>), typeof(object[]));
+            this.QueryableObj = method.Invoke(QueryableObj, new object[] { expShortName,columns,args });
+            return this;
+        }
         public QueryMethodInfo Select(List<SelectModel> models) 
         {
             var method = QueryableObj.GetType().GetMyMethod("Select", 1, typeof(List<SelectModel>));

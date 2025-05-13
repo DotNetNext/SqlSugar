@@ -63,8 +63,7 @@ namespace OrmTest
                 //.AS<Department>("test1.dbo.Department")
                 .Select(o => new User2() { Id = o.Id, Name = o.Name })
                 .ToPageListAsync(1, 10, recordCount);
-
-            Console.ReadLine();
+             
         }
         public static void DataBaseInitialize()
         {

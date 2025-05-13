@@ -180,6 +180,23 @@ CACHEMODEL 'both'");//不支持   UPDATE 1  选项
             }).AS("fc_data01").ExecuteCommand();
 
             var list2 = db.Queryable<fc_data>().AS("fc_data01").ToList();
+
+            //Test the performance of creating SQL
+            for (int i = 0; i < 10000; i++)
+            {
+                db.Insertable(new fc_data()
+                {
+                    data_id = 1,
+                    gateway_mac = "mac",
+                    rssi = 11,
+                    ruminate = 1,
+                    speed_hex = "x",
+                    temperature = 1,
+                    upload_time = DateTime.Now,
+                    voltage = 1
+
+                }).ToSql();
+            }
         }
     }
 }

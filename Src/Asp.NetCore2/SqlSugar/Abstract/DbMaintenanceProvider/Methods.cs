@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -132,6 +133,28 @@ namespace SqlSugar
         #endregion
 
         #region Check
+        public virtual bool IsAnyTable<T>() 
+        {
+            if (typeof(T).GetCustomAttribute<SplitTableAttribute>() != null)
+            {
+                var tables = this.Context.SplitHelper(typeof(T)).GetTables();
+                var isAny = false;
+                foreach (var item in tables)
+                {
+                    if (this.Context.DbMaintenance.IsAnyTable(item.TableName, false)) 
+                    {
+                        isAny = true;
+                        break;
+                    }
+                }
+                return isAny;
+            }
+            else
+            {
+                this.Context.InitMappingInfo<T>();
+                return this.IsAnyTable(this.Context.EntityMaintenance.GetEntityInfo<T>().DbTableName,false);
+            }
+        }
         public virtual bool IsAnyTable(string tableName, bool isCache = true)
         {
             Check.Exception(string.IsNullOrEmpty(tableName), "IsAnyTable tableName is not null");
@@ -676,7 +699,11 @@ namespace SqlSugar
         {
             var db = this.Context;
             var columns = entity.Columns.Where(it => it.IsIgnore == false).ToList();
-
+            List<DbColumnInfo> dbColumn = new List<DbColumnInfo>();
+            if (entity.Columns.Any(it => it.ColumnDescription.HasValue()))
+            {
+                dbColumn=db.DbMaintenance.GetColumnInfosByTableName(entity.DbTableName, false);
+            }
             foreach (var item in columns)
             {
                 if (item.ColumnDescription != null)
@@ -684,8 +711,11 @@ namespace SqlSugar
                     //column remak
                     if (db.DbMaintenance.IsAnyColumnRemark(item.DbColumnName, item.DbTableName))
                     {
-                        db.DbMaintenance.DeleteColumnRemark(item.DbColumnName, item.DbTableName);
-                        db.DbMaintenance.AddColumnRemark(item.DbColumnName, item.DbTableName, item.ColumnDescription);
+                        if (!dbColumn.Any(it => it.DbColumnName == item.DbColumnName && it.ColumnDescription == item.ColumnDescription))
+                        {
+                            db.DbMaintenance.DeleteColumnRemark(item.DbColumnName, item.DbTableName);
+                            db.DbMaintenance.AddColumnRemark(item.DbColumnName, item.DbTableName, item.ColumnDescription);
+                        }
                     }
                     else
                     {
@@ -764,7 +794,7 @@ namespace SqlSugar
             var columns = entityInfo.Columns.Where(it => it.IsIgnore == false).ToList();
             foreach (var item in columns)
             {
-                if (item.DefaultValue.HasValue())
+                if (item.DefaultValue!=null)
                 {
                     if (!IsAnyDefaultValue(entityInfo.DbTableName,item.DbColumnName,dbColumns))
                     {

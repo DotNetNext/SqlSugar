@@ -66,6 +66,28 @@ namespace SqlSugar
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
             var parameter3 = model.Args[2];
+            var ifTrue = parameter2.MemberName.ObjToString();
+            var ifFalse = parameter3.MemberName.ObjToString();
+            if (ifTrue==ifFalse)
+            {
+                return $" {parameter2.MemberName} ";
+            }
+            if (model.Parameters != null
+                && model.Conext!=null
+                && ifTrue.StartsWith(model.Conext?.SqlParameterKeyWord)
+                && ifFalse.StartsWith(model.Conext?.SqlParameterKeyWord)) 
+            {
+               var p2= model.Parameters.Where(it=>it.ParameterName!=null).FirstOrDefault(it => it.ParameterName.Equals(ifTrue));
+               var p3 = model.Parameters.Where(it => it.ParameterName != null).FirstOrDefault(it => it.ParameterName.Equals(ifFalse));
+                if (p2 != null && p3 != null) 
+                {
+                    if (p2.Value?.Equals(p3.Value) == true) 
+                    {
+                        model.Parameters.Remove(p3);
+                        return $" {parameter2.MemberName} ";
+                    }
+                }
+            }
             return string.Format("( CASE  WHEN {0} THEN {1}  ELSE {2} END )", parameter.MemberName, parameter2.MemberName, parameter3.MemberName);
         }
 
@@ -945,7 +967,7 @@ namespace SqlSugar
         {
             if (IsArrayAnyParameter(model))
             {
-                return ListArrayAny(model);
+                return ListArrayAll(model);
             }
             StringBuilder sb = new StringBuilder();
             if (model.Args[0].MemberValue != null && (model.Args[0].MemberValue as IList).Count > 0)
@@ -1125,6 +1147,97 @@ namespace SqlSugar
                 return result;
             }
         }
+
+        private string ListArrayAll(MethodCallExpressionModel model)
+        {
+            StringBuilder sb = new StringBuilder();
+            if (model.Args[0].MemberValue != null && (model.Args[0].MemberValue as IList).Count > 0)
+            {
+                sb.Append(" ( ");
+                var listPar = model.Args[1].MemberValue as ListAnyParameter;
+                foreach (var item in (model.Args[0].MemberValue as IList))
+                {
+                    var sql = listPar.Sql;
+                    if (sb.Length > 3)
+                    {
+                        sb.Append("AND");
+                    }
+                    foreach (var columnInfo in listPar.Columns)
+                    {
+                        var value = item;
+                        var newValue = "null";
+                        if (value != null)
+                        {
+                            if (columnInfo.DbTableName != "String" && UtilMethods.IsNumber(columnInfo.UnderType.Name))
+                            {
+                                newValue = value.ToString();
+                            }
+                            else if (columnInfo.UnderType == SqlSugar.UtilConstants.GuidType)
+                            {
+                                newValue = ToGuid(new MethodCallExpressionModel()
+                                {
+                                    Args = new List<MethodCallExpressionArgs>()
+                                       {
+                                            new MethodCallExpressionArgs(){
+                                              MemberValue=value.ToSqlValue(),
+                                              MemberName=value.ToSqlValue()
+                                            }
+                                       }
+                                });
+                            }
+                            else if (columnInfo.UnderType == SqlSugar.UtilConstants.DateType)
+                            {
+                                newValue = ToDate(new MethodCallExpressionModel()
+                                {
+                                    Args = new List<MethodCallExpressionArgs>()
+                                       {
+                                            new MethodCallExpressionArgs(){
+                                              MemberValue=UtilMethods.GetConvertValue( value).ToSqlValue(),
+                                              MemberName=UtilMethods.GetConvertValue( value).ToSqlValue()
+                                            }
+                                       }
+                                });
+                            }
+                            else
+                            {
+                                newValue = value.ToSqlValue();
+                            }
+                        }
+                        //Regex regex = new Regex("\@");
+                        if (!sql.Contains(ParameterKeyWord))
+                        {
+                            sql = sql.Replace(" =)", $" = {newValue})");
+                            if (!sql.Contains(newValue))
+                            {
+                                sql = sql.Replace(" )", $" = {newValue})");
+                            }
+                        }
+                        else
+                        {
+                            Regex reg = new Regex(ParameterKeyWord + @"MethodConst\d+");
+                            sql = reg.Replace(sql, it =>
+                            {
+                                return " " + newValue + " ";
+                            });
+                        }
+
+                    }
+                    sb.Append(sql);
+                }
+                sb.Append(" ) ");
+            }
+            var result = sb.ToString();
+            result = result.Replace(" = null)", " is null)");
+            if (result.IsNullOrEmpty())
+            {
+                return " 1=2 ";
+            }
+            else
+            {
+                return result;
+            }
+        }
+
 
         private static List<MethodCallExpressionArgs> GetStringFormatArgs(string str, object array)
         {

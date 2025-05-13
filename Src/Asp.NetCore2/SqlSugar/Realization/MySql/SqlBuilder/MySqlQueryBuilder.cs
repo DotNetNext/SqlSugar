@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -44,7 +45,12 @@ namespace SqlSugar
             if (Skip != null && Take == null)
             {
                 if (this.OrderByValue == "ORDER BY ") this.OrderByValue += GetSelectValue.Split(',')[0];
-                result = string.Format(PageTempalte, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, GetOrderByString, Skip.ObjToInt(), long.MaxValue);
+                var maxLongValue = long.MaxValue;
+                if (this.Context.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.OceanBase) 
+                {
+                    maxLongValue =Convert.ToInt64( maxLongValue / 2.0);
+                }
+                result = string.Format(PageTempalte, GetSelectValue, GetTableNameString, GetWhereValueString, GetGroupByString + HavingInfos, GetOrderByString, Skip.ObjToInt(), maxLongValue);
             }
             else if (Skip == null && Take != null)
             {

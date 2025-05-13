@@ -63,6 +63,12 @@ namespace OrmTest
 
             result = db.Insertable(insertdata3).ExecuteCommand();//用例代码
 
+            var types = new string[] { "VIP" };
+            var list=db.Queryable<dc_test_book>().Where(IT => types.Any(S => IT.UserType.StartsWith(S + "贵"))).ToList();
+            if (list.Count != 1) 
+            {
+                throw new Exception("unit error");
+            }
             var data = db.Queryable<dc_test_order>().InnerJoin<dc_test_rbo>((a, b) => a.Rbo == b.Rbo).Select((a, b) => new
 
             {

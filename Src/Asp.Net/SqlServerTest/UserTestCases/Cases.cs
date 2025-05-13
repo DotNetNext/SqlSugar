@@ -39,8 +39,7 @@ namespace OrmTest
             //Rest Data
             NewUnitTest.RestData();
 
-            Console.WriteLine("all successfully.");
-            Console.ReadKey();
+            Console.WriteLine("all successfully."); 
         }
     }
 }

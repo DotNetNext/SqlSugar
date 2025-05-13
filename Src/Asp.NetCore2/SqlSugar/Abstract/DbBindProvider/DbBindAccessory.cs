@@ -176,6 +176,10 @@ namespace SqlSugar
                             {
                                 setValue = UtilMethods.ChangeType2(setValue, item.UnderType);
                             }
+                            else if (UtilMethods.IsParameterConverter(item)) 
+                            {
+                                setValue = UtilMethods.QueryConverter(itemIndex,null, dataReader, entityInfo, item);
+                            }
                             item.PropertyInfo.SetValue(parentObj, setValue);
                         }
                     }
@@ -277,7 +281,14 @@ namespace SqlSugar
                     sbTypes.Append(type.Name.Substring(0, 2));
                 }
             }
-            types = sbTypes.ToString();
+            types = sbTypes.ToString(); 
+            if (this.QueryBuilder?.Context?.Ado is AdoProvider adoProvider)
+            {
+                if (adoProvider.IsNoSql) 
+                {
+                    types = "NoSql";
+                }
+            }
             return keys;
         }
 

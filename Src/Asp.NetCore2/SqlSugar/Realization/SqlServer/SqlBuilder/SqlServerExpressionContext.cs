@@ -56,7 +56,16 @@ namespace SqlSugar
         }
         public override string GetStringJoinSelector(string result, string separator)
         {
-            return $"stuff((SELECT cast(N'{separator}' as nvarchar(max)) + cast({result} as nvarchar(max))";
+            if (result.ObjToString().Trim().StartsWith("DISTINCT ", StringComparison.OrdinalIgnoreCase))
+            {
+                int index = result.IndexOf(result, StringComparison.Ordinal); // 找到去掉前缀空格后的位置
+                result= result.Substring(index + 9); // 9 是 "DISTINCT " 的长度
+                return $"stuff((SELECT DISTINCT cast(N'{separator}' as nvarchar(max)) + cast({result} as nvarchar(max))";
+            }
+            else
+            {
+                return $"stuff((SELECT cast(N'{separator}' as nvarchar(max)) + cast({result} as nvarchar(max))";
+            }
         }
         public override string DateValue(MethodCallExpressionModel model)
         {

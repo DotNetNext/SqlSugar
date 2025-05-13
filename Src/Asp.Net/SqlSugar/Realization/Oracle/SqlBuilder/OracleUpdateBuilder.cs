@@ -22,12 +22,20 @@ namespace SqlSugar
                 var updateTable = string.Format("UPDATE {0} SET", base.GetTableNameStringNoWith);
                 var setValues = string.Join(",", t.Where(s => !s.IsPrimarykey).Where(s => OldPrimaryKeys == null || !OldPrimaryKeys.Contains(s.DbColumnName)).Select(m => GetOracleUpdateColums(m)).ToArray());
                 var pkList = t.Where(s => s.IsPrimarykey).ToList();
+                if (this.IsWhereColumns && this.PrimaryKeys?.Any() == true)
+                {
+                    var whereColumns = pkList.Where(it => this.PrimaryKeys?.Any(p => p.EqualCase(it.PropertyName) || p.EqualCase(it.DbColumnName)) == true).ToList();
+                    if (whereColumns.Any())
+                    {
+                        pkList = whereColumns;
+                    }
+                }
                 List<string> whereList = new List<string>();
                 foreach (var item in pkList)
                 {
                     var isFirst = pkList.First() == item;
                     var whereString = isFirst ? " " : " AND ";
-                    whereString += GetOracleUpdateColums(item);
+                    whereString += GetOracleUpdateColums(item,true);
                     whereList.Add(whereString);
                 }
                 return string.Format("{0} {1} WHERE {2};", updateTable, setValues, string.Join("",whereList));
@@ -36,9 +44,15 @@ namespace SqlSugar
             return sb.ToString();
         }
 
-        private string GetOracleUpdateColums(DbColumnInfo m)
+        private string GetOracleUpdateColums(DbColumnInfo m,bool isWhere=false)
         {
-            return string.Format("\"{0}\"={1} ", m.DbColumnName.ToUpper(IsUppper), base.GetDbColumn(m,FormatValue(m.Value,m.IsPrimarykey,m.PropertyName)));
+
+            var result= string.Format("\"{0}\"={1} ", m.DbColumnName.ToUpper(IsUppper), base.GetDbColumn(m,FormatValue(m.Value,m.IsPrimarykey,m.PropertyName)));
+            if (isWhere&&m.Value == null) 
+            {
+                result = result.Replace("=NULL ", " is NULL ");
+            }
+            return result;
         }
         int i = 0;
         public  object FormatValue(object value,bool isPrimaryKey,string name)

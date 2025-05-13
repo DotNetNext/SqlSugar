@@ -248,7 +248,7 @@ namespace SqlSugar.HG
         }
         #endregion
 
-        #region Methods
+        #region Methods 
         public override List<string> GetIndexList(string tableName)
         {
             var sql = $"SELECT indexname, indexdef FROM pg_indexes WHERE upper(tablename) = upper('{tableName}')";

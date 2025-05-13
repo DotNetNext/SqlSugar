@@ -210,6 +210,7 @@ namespace SqlSugar
             result.IsEnableDiffLogEvent = this.IsEnableDiffLogEvent;
             result.WhereColumnList = this.WhereColumnList?.ToArray();
             result.DiffModel = this.diffModel;
+            result.ReSetValueBySqlExpList = this.UpdateBuilder.ReSetValueBySqlExpList;
             if (this.UpdateBuilder.DbColumnInfoList.Any())
                 result.UpdateColumns = this.UpdateBuilder.DbColumnInfoList.GroupBy(it => it.TableId).First().Select(it => it.DbColumnName).ToList();
             if(this.UpdateBuilder?.UpdateColumns?.Any()==true)
@@ -676,7 +677,7 @@ namespace SqlSugar
             }
             return this;
         }
-        public IUpdateable<T> SetColumns(string fieldName, object fieldValue) 
+        public virtual IUpdateable<T> SetColumns(string fieldName, object fieldValue) 
         {
             ThrowUpdateByObject();
             var columnInfo = this.EntityInfo.Columns.FirstOrDefault(it => it.PropertyName.EqualCase(fieldName));
@@ -725,7 +726,7 @@ namespace SqlSugar
                 return this;
             }
         }
-        public IUpdateable<T> SetColumns(Expression<Func<T, object>> filedNameExpression, Expression<Func<T, object>> valueExpression) 
+        public virtual IUpdateable<T> SetColumns(Expression<Func<T, object>> filedNameExpression, Expression<Func<T, object>> valueExpression) 
         {
             if (valueExpression == null) 
             {
@@ -751,13 +752,13 @@ namespace SqlSugar
             }
             return this; 
         }
-        public IUpdateable<T> SetColumns(Expression<Func<T, object>> filedNameExpression, object fieldValue) 
+        public virtual IUpdateable<T> SetColumns(Expression<Func<T, object>> filedNameExpression, object fieldValue) 
         {
             var name= UpdateBuilder.GetExpressionValue(filedNameExpression,ResolveExpressType.FieldSingle).GetString();
             name = UpdateBuilder.Builder.GetNoTranslationColumnName(name);
             return SetColumns(name, fieldValue);
         }
-        public IUpdateable<T> SetColumns(Expression<Func<T, T>> columns)
+        public virtual IUpdateable<T> SetColumns(Expression<Func<T, T>> columns)
         {
             ThrowUpdateByObject();
             var expResult = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.Update);
@@ -783,7 +784,7 @@ namespace SqlSugar
         }
 
 
-        public IUpdateable<T> SetColumns(Expression<Func<T, T>> columns, bool appendColumnsByDataFilter) 
+        public virtual IUpdateable<T> SetColumns(Expression<Func<T, T>> columns, bool appendColumnsByDataFilter) 
         {
             ThrowUpdateByObject();
             var expResult = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.Update);
@@ -842,7 +843,7 @@ namespace SqlSugar
             AppendSets();
             return this;
         }
-        public IUpdateable<T> SetColumns(Expression<Func<T, bool>> columns)
+        public virtual IUpdateable<T> SetColumns(Expression<Func<T, bool>> columns)
         {
             ThrowUpdateByObject();
 

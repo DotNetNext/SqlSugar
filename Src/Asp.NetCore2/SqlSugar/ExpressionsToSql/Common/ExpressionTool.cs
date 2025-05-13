@@ -19,7 +19,8 @@ namespace SqlSugar
                 {
                     if (method.Method.Name == "ToList")
                     {
-                        if (method.Arguments.FirstOrDefault() is { } arg)
+                        var arg = method.Arguments.FirstOrDefault();
+                        if (arg!=null)
                         {
                             if (arg is MemberExpression member)
                             {

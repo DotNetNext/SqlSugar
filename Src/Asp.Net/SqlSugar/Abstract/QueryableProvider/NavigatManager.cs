@@ -354,24 +354,38 @@ namespace SqlSugar
         private void OneToOne(List<object> list, Func<ISugarQueryable<object>, List<object>> selector, EntityInfo listItemEntity, System.Reflection.PropertyInfo navObjectNamePropety, EntityColumnInfo navObjectNameColumnInfo)
         {
             var navColumn = listItemEntity.Columns.FirstOrDefault(it => it.PropertyName == navObjectNameColumnInfo.Navigat.Name);
-            Check.ExceptionEasy(navColumn == null, "OneToOne navigation configuration error", $"OneToOne导航配置错误： 实体{ listItemEntity.EntityName } 不存在{navObjectNameColumnInfo.Navigat.Name}");
+            Check.ExceptionEasy(navColumn == null, "OneToOne navigation configuration error", $"OneToOne导航配置错误： 实体{listItemEntity.EntityName} 不存在{navObjectNameColumnInfo.Navigat.Name}");
             var navType = navObjectNamePropety.PropertyType;
             var db = this.Context;
-            db = GetCrossDatabase(db,navType);
+            db = GetCrossDatabase(db, navType);
             var navEntityInfo = db.EntityMaintenance.GetEntityInfo(navType);
             db.InitMappingInfo(navEntityInfo.Type);
             var navPkColumn = navEntityInfo.Columns.Where(it => it.IsPrimarykey).FirstOrDefault();
             var navPkCount = navEntityInfo.Columns.Where(it => it.IsPrimarykey).Count();
-            Check.ExceptionEasy(navPkColumn==null&& navObjectNameColumnInfo.Navigat.Name2==null, navEntityInfo.EntityName+ "need primarykey", navEntityInfo.EntityName + " 需要主键");
-            if (navObjectNameColumnInfo.Navigat.Name2.HasValue()) 
+            Check.ExceptionEasy(navPkColumn == null && navObjectNameColumnInfo.Navigat.Name2 == null, navEntityInfo.EntityName + "need primarykey", navEntityInfo.EntityName + " 需要主键");
+            if (navObjectNameColumnInfo.Navigat.Name2.HasValue())
             {
-                navPkColumn = navEntityInfo.Columns.Where(it => it.PropertyName== navObjectNameColumnInfo.Navigat.Name2).FirstOrDefault();
+                navPkColumn = navEntityInfo.Columns.Where(it => it.PropertyName == navObjectNameColumnInfo.Navigat.Name2).FirstOrDefault();
             }
-            if (navPkColumn == null && navType.FullName.IsCollectionsList()) 
+            if (navPkColumn == null && navType.FullName.IsCollectionsList())
             {
                 Check.ExceptionEasy($"{navObjectNamePropety.Name} type error ", $"一对一不能是List对象 {navObjectNamePropety.Name} ");
             }
-            var ids = list.Select(it => it.GetType().GetProperty(navObjectNameColumnInfo.Navigat.Name).GetValue(it)).Select(it => it == null ? "null" : it).Distinct().ToList();
+            List<object> ids = null;
+            var isOwnsOneProperty = IsOwnsOneProperty(listItemEntity, navObjectNameColumnInfo);
+            if (isOwnsOneProperty)
+            {
+                var data = listItemEntity.Columns.FirstOrDefault(it => it.PropertyName == navObjectNameColumnInfo.Navigat.Name);
+                ids = list.Select(it =>
+                {
+                    var ownsObj = data.ForOwnsOnePropertyInfo.GetValue(it);
+                    return ownsObj.GetType().GetProperty(navObjectNameColumnInfo.Navigat.Name).GetValue(ownsObj);
+                }).Select(it => it == null ? "null" : it).Distinct().ToList();
+            }
+            else
+            {
+                ids = list.Select(it => it.GetType().GetProperty(navObjectNameColumnInfo.Navigat.Name).GetValue(it)).Select(it => it == null ? "null" : it).Distinct().ToList();
+            }
             List<IConditionalModel> conditionalModels = new List<IConditionalModel>();
             if (IsEnumNumber(navColumn))
             {
@@ -383,7 +397,7 @@ namespace SqlSugar
             }
             if (navPkColumn?.UnderType?.Name == UtilConstants.DateType.Name)
             {
-                ids = ids.Select(it =>it==null?null:it.ObjToDate().ToString("yyyy-MM-dd HH:mm:ss.fff") ).Cast<object>().ToList();
+                ids = ids.Select(it => it == null ? null : it.ObjToDate().ToString("yyyy-MM-dd HH:mm:ss.fff")).Cast<object>().ToList();
             }
             conditionalModels.Add((new ConditionalModel()
             {
@@ -392,54 +406,95 @@ namespace SqlSugar
                 FieldValue = String.Join(",", ids),
                 CSharpTypeName = navPkColumn?.UnderType?.Name
             }));
-            if (OneToOneGlobalInstanceRegistry.IsAny()) 
+            if (OneToOneGlobalInstanceRegistry.IsAny())
             {
                 foreach (var item in list)
                 {
                     var firstObj = navObjectNamePropety.GetValue(item);
                     if (OneToOneGlobalInstanceRegistry.IsNavigationInitializerCreated(firstObj))
                     {
-                        navObjectNamePropety.SetValue(item,null);
+                        navObjectNamePropety.SetValue(item, null);
                     }
                 }
             }
-            if (list.Any()&&navObjectNamePropety.GetValue(list.First()) == null)
+            if (list.Any() && navObjectNamePropety.GetValue(list.First()) == null)
             {
-                var sqlObj = GetWhereSql(db,navObjectNameColumnInfo.Navigat.Name);
+                var sqlObj = GetWhereSql(db, navObjectNameColumnInfo.Navigat.Name);
                 if (sqlObj.SelectString == null)
                 {
                     var columns = navEntityInfo.Columns.Where(it => !it.IsIgnore)
-                        .Select(it => GetOneToOneSelectByColumnInfo(it,db)).ToList();
+                        .Select(it => GetOneToOneSelectByColumnInfo(it, db)).ToList();
                     sqlObj.SelectString = String.Join(",", columns);
                 }
-                var navList = selector(db.Queryable<object>().ClearFilter(QueryBuilder.RemoveFilters).Filter((navPkColumn.IsPrimarykey&& navPkCount==1) ? null : this.QueryBuilder?.IsDisabledGobalFilter == true ? null : navEntityInfo.Type).AS(GetDbTableName(navEntityInfo,sqlObj))
+                var navList = selector(db.Queryable<object>().ClearFilter(QueryBuilder.RemoveFilters).Filter((navPkColumn.IsPrimarykey && navPkCount == 1) ? null : this.QueryBuilder?.IsDisabledGobalFilter == true ? null : navEntityInfo.Type).AS(GetDbTableName(navEntityInfo, sqlObj))
                     .WhereIF(navObjectNameColumnInfo.Navigat.WhereSql.HasValue(), navObjectNameColumnInfo.Navigat.WhereSql)
                     .WhereIF(sqlObj.WhereString.HasValue(), sqlObj.WhereString)
                     .AddParameters(sqlObj.Parameters).Where(conditionalModels)
                     .Select(sqlObj.SelectString));
-                var groupQuery = (from l in list
-                                  join n in navList
-                                       on navColumn.PropertyInfo.GetValue(l).ObjToString()
-                                       equals navPkColumn.PropertyInfo.GetValue(n).ObjToString()
-                                  select new
-                                  {
-                                      l,
-                                      n
-                                  }).ToList();
-                foreach (var item in groupQuery)
+
+                if (isOwnsOneProperty)
                 {
-
-                    // var setValue = navList.FirstOrDefault(x => navPkColumn.PropertyInfo.GetValue(x).ObjToString() == navColumn.PropertyInfo.GetValue(item).ObjToString());
-
-                    if (navObjectNamePropety.GetValue(item.l) == null)
                     {
-                        navObjectNamePropety.SetValue(item.l, item.n);
-                    }
-                    else
-                    {
-                        //The reserved
-                    }
+                        // 有 OwnsOne 的情况
+                        var data = listItemEntity.Columns.FirstOrDefault(it => it.PropertyName == navObjectNameColumnInfo.Navigat.Name);
 
+                        var groupQuery = (from l in list
+                                      let ownsObj = data.ForOwnsOnePropertyInfo.GetValue(l)
+                                      join n in navList
+                                           on ownsObj.GetType()
+                                                     .GetProperty(navObjectNameColumnInfo.Navigat.Name)
+                                                     .GetValue(ownsObj)
+                                                     .ObjToString()
+                                           equals navPkColumn.PropertyInfo.GetValue(n).ObjToString()
+                                      select new
+                                      {
+                                          l,
+                                          n
+                                      }).ToList();
+
+                        foreach (var item in groupQuery)
+                        {
+
+                            // var setValue = navList.FirstOrDefault(x => navPkColumn.PropertyInfo.GetValue(x).ObjToString() == navColumn.PropertyInfo.GetValue(item).ObjToString());
+
+                            if (navObjectNamePropety.GetValue(item.l) == null)
+                            {
+                                navObjectNamePropety.SetValue(item.l, item.n);
+                            }
+                            else
+                            {
+                                //The reserved
+                            }
+
+                        }
+                    }
+                }
+                else
+                {
+                    var groupQuery = (from l in list
+                                      join n in navList
+                                           on navColumn.PropertyInfo.GetValue(l).ObjToString()
+                                           equals navPkColumn.PropertyInfo.GetValue(n).ObjToString()
+                                      select new
+                                      {
+                                          l,
+                                          n
+                                      }).ToList();
+                    foreach (var item in groupQuery)
+                    {
+
+                        // var setValue = navList.FirstOrDefault(x => navPkColumn.PropertyInfo.GetValue(x).ObjToString() == navColumn.PropertyInfo.GetValue(item).ObjToString());
+
+                        if (navObjectNamePropety.GetValue(item.l) == null)
+                        {
+                            navObjectNamePropety.SetValue(item.l, item.n);
+                        }
+                        else
+                        {
+                            //The reserved
+                        }
+
+                    }
                 }
             }
         }
@@ -960,6 +1015,10 @@ namespace SqlSugar
                 navPkColumn?.UnderType?.IsEnum()==true &&
                 navPkColumn?.SqlParameterDbType == null &&
                 this.Context?.CurrentConnectionConfig?.MoreSettings?.TableEnumIsString != true;
+        } 
+        private static bool IsOwnsOneProperty(EntityInfo listItemEntity, EntityColumnInfo navObjectNameColumnInfo)
+        {
+            return listItemEntity.Columns.Any(it => it.IsOwnsOne) && !listItemEntity.Type.GetProperties().Any(it => it.PropertyType.Name == navObjectNameColumnInfo.Navigat.Name);
         }
 
         private static bool IsJsonMapping(EntityColumnInfo navObjectNameColumnInfo, SqlInfo sqlObj)
@@ -995,6 +1054,10 @@ namespace SqlSugar
             {
                 return it.QuerySql + " AS " + QueryBuilder.Builder.GetTranslationColumnName(it.PropertyName);
             }
+            if (it.ForOwnsOnePropertyInfo != null) 
+            {
+                return QueryBuilder.Builder.GetTranslationColumnName(it.DbColumnName);
+            }
             return QueryBuilder.Builder.GetTranslationColumnName(it.DbColumnName) + " AS " + QueryBuilder.Builder.GetTranslationColumnName(it.PropertyName);
         }
         private string GetOneToOneSelectByColumnInfo(EntityColumnInfo it,ISqlSugarClient db)
@@ -1003,6 +1066,11 @@ namespace SqlSugar
             if (it.QuerySql.HasValue())
             {
                 return it.QuerySql + " AS " + QueryBuilder.Builder.GetTranslationColumnName(it.PropertyName);
+            }
+            if (it.ForOwnsOnePropertyInfo != null)
+            {
+
+                return QueryBuilder.Builder.GetTranslationColumnName(it.DbColumnName);
             }
             return QueryBuilder.Builder.GetTranslationColumnName(it.DbColumnName) + " AS " + QueryBuilder.Builder.GetTranslationColumnName(it.PropertyName);
         }

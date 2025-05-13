@@ -143,6 +143,10 @@ namespace SqlSugar
         {
             var leftString = GetNewExpressionValue(expression.Left);
             var RightString = GetNewExpressionValue(expression.Right);
+            if (leftString == null&& base.BaseParameter?.BaseExpression==null && expression.Left is ParameterExpression parameterExpression) 
+            {
+                leftString = this.Context.SqlParameterKeyWord+"MethodConst1";
+            }
             var joinString = this.Context.DbMehtods.MergeString(leftString, RightString);
             if (this.Context is KdbndpExpressionContext&&this.Context?.SugarContext?.Context?.CurrentConnectionConfig?.MoreSettings?.DatabaseModel==DbType.SqlServer) 
             {

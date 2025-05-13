@@ -179,7 +179,12 @@ namespace SqlSugar
                 } 
                 else
                 {
-                    this.Context.Parameters.Add(new SugarParameter(appendValue, value));
+                    var p = new SugarParameter(appendValue, value);
+                    if (p.DbType == System.Data.DbType.String && this.Context?.SugarContext?.Context?.CurrentConnectionConfig?.MoreSettings?.DisableNvarchar == true) 
+                    {
+                        p.DbType = System.Data.DbType.AnsiString;
+                    }
+                    this.Context.Parameters.Add(p);
                 }
             }
             else

@@ -212,6 +212,10 @@ namespace SqlSugar
                 {
                     return null;
                 }
+                if (entityType.Assembly.FullName.StartsWith("System.Linq.Dynamic.Core.DynamicClasses")) 
+                {
+                    return null;
+                }
                 var path = entityType.Assembly.Location;
                 if (string.IsNullOrEmpty(path))
                 {

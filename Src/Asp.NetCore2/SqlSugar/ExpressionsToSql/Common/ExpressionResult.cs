@@ -147,6 +147,13 @@ namespace SqlSugar
                 default:
                     break;
             }
+            if (this.Result.Length > 0 && this.Result[this.Result.Length - 1] == ',')
+            {
+                if (parameter?.ToString()?.StartsWith("  AS ") ==true && parameter?.ToString()?.EndsWith(" ,")==true) 
+                {
+                    this.Result.Length--; // 直接删掉最后一个字符
+                }
+            }
             this.Result.Append(parameter);
         }
 

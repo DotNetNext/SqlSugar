@@ -2,6 +2,7 @@
 using System.Collections.Generic; 
 using System.Linq;
 using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -9,6 +10,35 @@ namespace SqlSugar
 {
     public class DynamicCoreHelper
     {
+        public static BuildPropertySelectorResult BuildPropertySelector(string shortName, Type type, List<string> propertyNames, params object[] args)
+        {
+            BuildPropertySelectorResult result = new BuildPropertySelectorResult();
+            if (type == null)
+                throw new ArgumentNullException(nameof(type));
+
+            if (propertyNames == null || propertyNames.Count == 0)
+                throw new ArgumentNullException(nameof(propertyNames));
+
+            var parameter = Expression.Parameter(type, shortName);
+
+            // 解析多个属性，生成匿名类型
+            var newAnonymousTypeStr = $"new {{ {string.Join(", ", propertyNames)} }}";
+            newAnonymousTypeStr = ReplaceFormatParameters(newAnonymousTypeStr);
+            result.formattableString = FormattableStringFactory.Create(newAnonymousTypeStr, args); 
+            var lambda = SqlSugarDynamicExpressionParser.ParseLambda(new[] { parameter }, null, newAnonymousTypeStr, args);
+            result.ResultNewType = lambda.Body.Type;
+            result.ShortName = shortName;
+            result.Exp = lambda;
+            return result;
+        }
+
+        public class BuildPropertySelectorResult
+        {
+            public FormattableString formattableString { get; set; }
+            public string ShortName { get; set; }
+            public Type ResultNewType { get; set; }
+            public LambdaExpression Exp { get; internal set; }
+        }
         public static Expression<Func<T, bool>> GetWhere<T>(string shortName, FormattableString whereSql) 
         {
             return (Expression<Func<T, bool>>)GetWhere(typeof(T), shortName, whereSql);
@@ -113,7 +143,7 @@ namespace SqlSugar
         }
         public static LambdaExpression GetMember(Type entityType,Type propertyType, string shortName, FormattableString memberSql)
         {
-            var parameter = Expression.Parameter(entityType, "it");
+            var parameter = Expression.Parameter(entityType, shortName);
 
             // 提取 FormattableString 中的参数值
             var arguments = memberSql.GetArguments();

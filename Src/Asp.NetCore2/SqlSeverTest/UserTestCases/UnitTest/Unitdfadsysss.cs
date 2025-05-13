@@ -43,7 +43,7 @@ namespace OrmTest
                 .SplitTable()
                 .ToList();
 
-            if (list.First().Name != "jack1"|| list.Last().Name != "lilei1") 
+            if (list.First(it=>it.Name.StartsWith("jack")).Name != "jack1"|| list.Last(it=>it.Name.StartsWith("li")).Name != "lilei1") 
             {
                 throw new Exception("unit error");
             }
@@ -53,6 +53,58 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+            db.CodeFirst.InitTables<UnitDAFREA>();
+            var r=db.DbMaintenance.GetColumnInfosByTableName("UnitDAFREA", false).First().ColumnDescription;
+            if (r != "a") 
+            { 
+                throw new Exception("unit error");
+            }
+            db.CodeFirst.InitTables<UNITDAFREA>();
+            r = db.DbMaintenance.GetColumnInfosByTableName("UnitDAFREA", false).First().ColumnDescription;
+            if (r != "b")
+            {
+                throw new Exception("unit error");
+            }
+            var names = new List<string> { "a", "b" };
+            var sql=db.Queryable<Order>().Where(it=>names.All(s=>s.Contains(it.Name))).ToSql();
+            if(!sql.Key.Contains("AND"))
+                throw new Exception("unit error");
+
+            var list3=db.Queryable<Order>()
+                .Select(it => new
+                {
+                    names=SqlFunc.Subqueryable<Order>
+                    ().SelectStringJoin(s => SqlFunc.MappingColumn<string>($" distinct {s.Name}"), ",")
+
+                }).ToList();
+           var updateable= db.Updateable<Unitafaasdfys>(new Unitafaasdfys() { Id="a",Name="a" }).ToSql();
+            if (updateable.Value.First().DbType != System.Data.DbType.AnsiString) 
+            {
+                throw new Exception("unit error");
+            }
+            if (updateable.Value.Last().DbType != System.Data.DbType.String)
+            {
+                throw new Exception("unit error");
+            }
+            db.CodeFirst.InitTables<Unitafaasdfys>();
+            db.Updateable<Unitafaasdfys>(new Unitafaasdfys() { Id = "a", Name = "a" }).ExecuteCommand();
+        }
+
+        public class Unitafaasdfys 
+        {
+            [SugarColumn(IsPrimaryKey =true,SqlParameterDbType =System.Data.DbType.AnsiString)]
+            public string Id { get; set; }
+            public string Name { get; set; }
+        }
+        public class UnitDAFREA 
+        {
+            [SugarColumn(ColumnDescription ="a")]
+           public string a { get; set; }
+        }
+        public class UNITDAFREA
+        {
+            [SugarColumn(ColumnDescription = "b")]
+            public string a { get; set; }
         }
 
         public class Unitsdfay 

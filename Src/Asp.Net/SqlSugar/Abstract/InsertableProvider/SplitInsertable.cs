@@ -129,7 +129,10 @@ namespace SqlSugar
             foreach (var item in groups)
             {
                 var list = item.Select(it => it.Value as T).ToList();
+                var dataEvent = this.Context.CurrentConnectionConfig.AopEvents?.DataExecuting;
+                this.Context.Aop.DataExecuting = null;
                 var groupInserable = (InsertableProvider<T>)this.Context.Insertable<T>(list);
+                this.Context.Aop.DataExecuting = dataEvent;
                 groupInserable.InsertBuilder.TableWithString = parent.InsertBuilder.TableWithString;
                 groupInserable.RemoveCacheFunc = parent.RemoveCacheFunc;
                 groupInserable.diffModel = parent.diffModel;
@@ -150,7 +153,10 @@ namespace SqlSugar
             foreach (var item in groups)
             {
                 var list = item.Select(it => it.Value as T).ToList();
+                var dataEvent = this.Context.CurrentConnectionConfig.AopEvents?.DataExecuting;
+                this.Context.Aop.DataExecuting = null;
                 var groupInserable = (InsertableProvider<T>)this.Context.Insertable<T>(list);
+                this.Context.Aop.DataExecuting = dataEvent;
                 groupInserable.InsertBuilder.TableWithString = parent.InsertBuilder.TableWithString;
                 groupInserable.RemoveCacheFunc = parent.RemoveCacheFunc;
                 groupInserable.diffModel = parent.diffModel;

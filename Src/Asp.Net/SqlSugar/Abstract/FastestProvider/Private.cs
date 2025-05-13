@@ -41,17 +41,20 @@ namespace SqlSugar
                     var resultConnectorClickHouse = InstanceFactory.CreateInstance<IFastBuilder>("SqlSugar.ClickHouse.ClickHouseFastBuilder");
                     resultConnectorClickHouse.CharacterSet = this.CharacterSet;
                     return resultConnectorClickHouse;
-                case DbType.Kdbndp:
-                    break;
-                case DbType.Oscar:
-                    break;
+                //case DbType.Kdbndp:
+                //    break;
+                //case DbType.Oscar:
+                //    break;
                 case DbType.QuestDB:
                     return new QuestDBFastBuilder(this.entityInfo);
                 case DbType.Custom:
                     className = InstanceFactory.CustomNamespace + "." + InstanceFactory.CustomDbName + "FastBuilder";
                     break;
+                case DbType.GaussDBNative:
+                    className = "SqlSugar.GaussDB.GaussDBFastBuilder";
+                    break;
                 default:
-                    className = $"SqlSugar.{this.context.CurrentConnectionConfig.DbType}FastBuilder";
+                    className = $"SqlSugar.{this.context.CurrentConnectionConfig.DbType.ToString().Replace("Native","")}FastBuilder";
                     break;
             }
             var reslut = InstanceFactory.CreateInstance<IFastBuilder>(className);

@@ -13,7 +13,7 @@ namespace SqlSugar
         internal SqlSugarProvider Context { get; set; }
         internal InsertNavProvider<Root, Root> insertNavProvider { get; set; }
         internal NavContext NavContext { get;  set; }
-        public InsertNavMethodInfo IncludeByNameString(string navMemberName, UpdateNavOptions updateNavOptions = null)
+        public InsertNavMethodInfo IncludeByNameString(string navMemberName, InsertNavOptions insertNavOptions = null)
         {
             InsertNavMethodInfo result = new InsertNavMethodInfo();
             result.Context = insertNavProvider._Context;
@@ -23,7 +23,7 @@ namespace SqlSugar
             Expression exp = UtilMethods.GetIncludeExpression(navMemberName, entityInfo, out properyItemType, out isList);
             var method = this.GetType().GetMyMethod("Include", 2, isList)
                             .MakeGenericMethod(properyItemType);
-            var obj = method.Invoke(this, new object[] { exp, updateNavOptions });
+            var obj = method.Invoke(this, new object[] { exp, insertNavOptions });
             result.MethodInfos = obj;
             return result;
         }

@@ -37,7 +37,7 @@ namespace SqlSugar
             result.Context = this.Context;
             return result;
         }
-        public DeleteNavMethodInfo IncludeByNameString(string navMemberName, UpdateNavOptions updateNavOptions = null)
+        public DeleteNavMethodInfo IncludeByNameString(string navMemberName, DeleteNavOptions deleteNavOptions = null)
         {
             DeleteNavMethodInfo result = new DeleteNavMethodInfo();
             result.Context = deleteNavProvider._Context;
@@ -47,7 +47,7 @@ namespace SqlSugar
             Expression exp = UtilMethods.GetIncludeExpression(navMemberName, entityInfo, out properyItemType, out isList);
             var method = this.GetType().GetMyMethod("Include", 2, isList)
                             .MakeGenericMethod(properyItemType);
-            var obj = method.Invoke(this, new object[] { exp, updateNavOptions });
+            var obj = method.Invoke(this, new object[] { exp, deleteNavOptions });
             result.MethodInfos = obj;
             return result;
         }
