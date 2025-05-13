@@ -188,6 +188,7 @@ namespace SqlSugar
                 groupInserable.IsEnableDiffLogEvent = parent.IsEnableDiffLogEvent;
                 groupInserable.InsertBuilder.IsNoInsertNull = parent.InsertBuilder.IsNoInsertNull;
                 groupInserable.IsOffIdentity = parent.IsOffIdentity;
+                groupInserable.InsertBuilder.MySqlIgnore = this.MySqlIgnore;
                 var idList= groupInserable.AS(item.Key).InsertColumns(names.ToArray()).ExecuteReturnSnowflakeIdList();
                 result.AddRange(idList);
             }
@@ -210,6 +211,7 @@ namespace SqlSugar
                 groupInserable.IsEnableDiffLogEvent = parent.IsEnableDiffLogEvent;
                 groupInserable.InsertBuilder.IsNoInsertNull = parent.InsertBuilder.IsNoInsertNull;
                 groupInserable.IsOffIdentity = parent.IsOffIdentity;
+                groupInserable.InsertBuilder.MySqlIgnore = this.MySqlIgnore;
                 var idList =await groupInserable.AS(item.Key).InsertColumns(names.ToArray()).ExecuteReturnSnowflakeIdListAsync();
                 result.AddRange(idList);
             }
