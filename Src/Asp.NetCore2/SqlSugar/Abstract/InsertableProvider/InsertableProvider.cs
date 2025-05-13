@@ -761,6 +761,7 @@ namespace SqlSugar
             result.Helper = helper;
             result.SplitType = splitType;
             result.TableNames = new List<KeyValuePair<string, object>>();
+            result.MySqlIgnore = this.InsertBuilder.MySqlIgnore;
             foreach (var item in this.InsertObjs)
             {
                 var splitFieldValue = helper.GetValue(splitType, item);
