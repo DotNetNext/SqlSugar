@@ -62,7 +62,16 @@ namespace SqlSugar
         public override string ParameterKeyWord { get; set; } = ":";
         public override string GetStringJoinSelector(string result, string separator)
         {
-            return $"listagg(to_char({result}),'{separator}') within group(order by {result}) ";
+            if (result.ObjToString().Trim().StartsWith("DISTINCT ", StringComparison.OrdinalIgnoreCase))
+            {
+                int index = result.IndexOf(result, StringComparison.Ordinal); // 找到去掉前缀空格后的位置
+                result = result.Substring(index + 9); // 9 是 "DISTINCT " 的长度
+                return $"listagg(to_char(max({result})),'{separator}') within group(order by max({result})) group by  max({result}) ";
+            }
+            else
+            {
+                return $"listagg(to_char({result}),'{separator}') within group(order by {result}) ";
+            }
         }
         public override string ToInt64(MethodCallExpressionModel model)
         {
