@@ -66,7 +66,7 @@ namespace SqlSugar
             {
                 int index = result.IndexOf(result, StringComparison.Ordinal); // 找到去掉前缀空格后的位置
                 result = result.Substring(index + 9); // 9 是 "DISTINCT " 的长度
-                return $"listagg(to_char(max({result})),'{separator}') within group(order by max({result})) group by  max({result}) ";
+                return $"listagg(to_char(max({result})),'{separator}') within group(order by max({result})) ";
             }
             else
             {
