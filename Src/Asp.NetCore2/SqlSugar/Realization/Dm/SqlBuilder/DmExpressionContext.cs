@@ -64,6 +64,7 @@ namespace SqlSugar
         public string ForXmlPathLast;
         public override string GetForXmlPath()
         {
+            if (string.IsNullOrEmpty(ForXmlPathLast)) return null;
             return "  GROUP BY  "+ ForXmlPathLast;
         }
         public override string GetStringJoinSelector(string result, string separator)
