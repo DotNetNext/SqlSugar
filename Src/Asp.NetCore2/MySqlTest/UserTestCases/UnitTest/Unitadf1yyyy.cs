@@ -23,7 +23,8 @@ namespace OrmTest
 
             //插入测试数据
             var indexList = db.Insertable(longList).AS(tableName).ExecuteReturnPkList<long>();
-            db.DbMaintenance.DropTable<UnitDefaultValueadsfa>();
+            if(db.DbMaintenance.IsAnyTable("UnitDefaultValueadsfa", false))
+              db.DbMaintenance.DropTable<UnitDefaultValueadsfa>();
             db.CodeFirst.InitTables<UnitDefaultValueadsfa>();
             db.Insertable(new UnitDefaultValueadsfa() { name = "a" }).ExecuteCommand();
         }
