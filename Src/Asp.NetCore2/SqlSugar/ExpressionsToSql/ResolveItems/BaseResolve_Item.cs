@@ -183,11 +183,35 @@ namespace SqlSugar
                 if (item is MemberInitExpression)
                 {
                     newExpressionInfos = ExpressionTool.GetNewexpressionInfos(item, this.Context, this);
+                    var ignorePropertyNames = item.Type.GetProperties().Where(it => it.PropertyType.IsClass()&&!it.PropertyType.Name.StartsWith("System."))
+                        .Select(it=>it.PropertyType.Name).ToList();
+                    if (ignorePropertyNames.Count > 0)
+                    {
+                        var names = new List<string>() { };
+                        foreach (MemberBinding binding in ((MemberInitExpression)item).Bindings)
+                        {
+                            names.Add(binding.Member.Name);
+                        }
+                        ignorePropertyNames = ignorePropertyNames.Where(it => !names.Contains(it)).ToList();
+                        var q=this.Context?.SugarContext?.QueryBuilder;
+                        if (q != null) 
+                        {
+                            foreach (var ignorePropertyName in ignorePropertyNames)
+                            {
+                                if (q.SelectNewIgnoreColumns == null) 
+                                {
+                                    q.SelectNewIgnoreColumns = new List<KeyValuePair<string, string>>();
+                                }
+                                var addItem = new KeyValuePair<string,string>(ignorePropertyName,item.Type.Name);
+                                q.SelectNewIgnoreColumns.Add(addItem);
+                            }
+                        }
+                    }
                 }
                 else
                 {
                     newExpressionInfos = ExpressionTool.GetNewDynamicexpressionInfos(item, this.Context, this);
-                }
+                } 
                 foreach (NewExpressionInfo newExpressionInfo in newExpressionInfos)
                 {
                     //var property=item.Type.GetProperties().Where(it => it.Name == newExpressionInfo.l).First();
