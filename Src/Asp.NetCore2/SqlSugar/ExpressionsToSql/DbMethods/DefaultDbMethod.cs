@@ -946,6 +946,20 @@ namespace SqlSugar
                                     newValue = value.ToSqlValue();
                                 }
                             }
+                            if (columnInfo.UnderType == UtilConstants.StringType&& model.Conext?.SugarContext?.Context?.CurrentConnectionConfig?.DbType==DbType.SqlServer) 
+                            {
+                                if (model.Conext?.SugarContext?.Context?.CurrentConnectionConfig?.MoreSettings?.DisableNvarchar != true)
+                                {
+                                    if (columnInfo.SqlParameterDbType is System.Data.DbType type && type == System.Data.DbType.AnsiString)
+                                    {
+
+                                    }
+                                    else 
+                                    {
+                                        newValue = "N" + newValue;
+                                    }
+                                }
+                            }
                             sql = sql.Replace(replace, newValue);
                         }
                     }
