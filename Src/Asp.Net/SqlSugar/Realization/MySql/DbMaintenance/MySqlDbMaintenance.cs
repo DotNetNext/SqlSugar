@@ -283,6 +283,13 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override bool DropIndex(string indexName, string tableName)
+        {
+            indexName = this.SqlBuilder.GetNoTranslationColumnName(indexName);
+            tableName = this.SqlBuilder.GetNoTranslationColumnName(tableName);
+            this.Context.Ado.ExecuteCommand($" DROP INDEX  {indexName}  ON {tableName}");
+            return true;
+        }
         public override bool SetAutoIncrementInitialValue(string tableName, int initialValue)
         {
             initialValue++;
