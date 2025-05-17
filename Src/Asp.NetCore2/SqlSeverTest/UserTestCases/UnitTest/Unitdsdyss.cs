@@ -84,10 +84,7 @@ namespace OrmTest
 
 
             Console.WriteLine("用例跑完");
-
-            Console.ReadKey();
-
-
+             
 
         }
 
