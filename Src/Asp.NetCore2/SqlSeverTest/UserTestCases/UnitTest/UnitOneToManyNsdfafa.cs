@@ -45,7 +45,7 @@ namespace OrmTest
                            c.OrgId == 11 &&
                            c.Pass == 0)))
             .ToSqlString();
-            if (!sql.Contains("SELECT [Type] FROM [BaseProcess]  WHERE  ProcessPlanEntry1.[ProcessId]=[Id]"))
+            if (!sql.Contains("SELECT [Type] FROM [BaseProcess]  WHERE  [ProcessPlanEntry1].[ProcessId]=[Id]"))
             {
                 throw new Exception("unit error");
             }
