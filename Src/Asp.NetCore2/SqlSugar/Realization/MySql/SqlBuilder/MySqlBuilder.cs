@@ -29,9 +29,9 @@ namespace SqlSugar
 
         public override string RemoveParentheses(string sql)
         {
-            if (sql.Contains(" Order By ")) 
+            if (sql.Contains(" ORDER BY")&&sql.StartsWith("(")&&sql.EndsWith(")") &&!sql.ToLower().Contains("limit")) 
             {
-                sql = $" SELECT * FROM {sql} MYSQL_UNIONALL_ITEM ";
+                sql = $" {sql.TrimEnd(')')} limit 0,{int.MaxValue}) ";
             }
             return sql;
         }
