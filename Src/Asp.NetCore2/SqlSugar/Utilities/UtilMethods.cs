@@ -1743,7 +1743,7 @@ namespace SqlSugar
                     }
                     else
                     {
-                        result = result.Replace(item.ParameterName, $"N'{item.Value.ObjToString().Replace("@", guid).ToSqlFilter()}'");
+                        result = result.Replace(item.ParameterName, $"N'{item.Value.ObjToStringNoTrim().Replace("@", guid).ToSqlFilter()}'");
                     }
                 }
             }
