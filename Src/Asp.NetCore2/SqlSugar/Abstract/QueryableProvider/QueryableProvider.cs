@@ -1781,6 +1781,7 @@ namespace SqlSugar
                 var unionall = this.Context._UnionAll(tableQueryables.ToArray());
                 unionall.QueryBuilder.Includes = this.QueryBuilder.Includes;
                 unionall.QueryBuilder.EntityType = typeof(T);
+                unionall.QueryBuilder.IsDisableMasterSlaveSeparation = this.QueryBuilder.IsDisableMasterSlaveSeparation;
                 unionall.QueryBuilder.IsDisabledGobalFilter = this.QueryBuilder.IsDisabledGobalFilter;
                 if (unionall.QueryBuilder.Includes?.Any()==true) 
                 {
