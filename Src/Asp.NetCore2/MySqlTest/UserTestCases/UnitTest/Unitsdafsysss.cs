@@ -77,8 +77,7 @@ namespace OrmTest
 
 
 
-            var result = db.Queryable<Test>()
-                .Take(1) 
+            var result = db.Queryable<Test>() 
                 .Select(x => new OutputResult()
 
                 {
