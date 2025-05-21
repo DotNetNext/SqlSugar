@@ -26,5 +26,14 @@ namespace SqlSugar
         {
             return " ( " + sql + " )  ";
         }
+
+        public override string RemoveParentheses(string sql)
+        {
+            if (sql.Contains(" Order By ")) 
+            {
+                sql = $" SELECT * FROM {sql} MYSQL_UNIONALL_ITEM ";
+            }
+            return sql;
+        }
     }
 }
