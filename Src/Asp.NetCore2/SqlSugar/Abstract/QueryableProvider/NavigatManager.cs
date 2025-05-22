@@ -856,6 +856,18 @@ namespace SqlSugar
                 {
                     var pkInfo = entityInfo.Columns.FirstOrDefault(x => x.IsPrimarykey);
                     result.SelectString = (" " + queryable.QueryBuilder.GetExpressionValue(exp, ResolveExpressType.SelectSingle).GetString());
+                    if (ExpressionTool.ContainsTwoLevelAccess(exp))
+                    {
+                        var shortName = ExpressionTool.GetParameters(exp).FirstOrDefault()?.Name;
+                        if (shortName.HasValue())
+                        {
+                            if (result.TableShortName == null) 
+                            {
+                                result.TableShortName = shortName;
+                                result.IsSelectNav = true;
+                            }
+                        }
+                    }
                     if (pkInfo != null)
                     {
                         var pkName = pkInfo.DbColumnName;
@@ -941,6 +953,13 @@ namespace SqlSugar
         private static void AppColumns(SqlInfo result, ISugarQueryable<object> queryable, string columnName)
         {
             var selectPkName = queryable.SqlBuilder.GetTranslationColumnName(columnName);
+            if (result.IsSelectNav) 
+            {
+                if (result.SelectString != null && !result.SelectString.ToLower().Contains($" {selectPkName.ToLower()} AS {selectPkName.ToLower()}"))
+                {
+                    result.SelectString = result.SelectString + "," + (selectPkName + " AS " + selectPkName);
+                }
+            }
             if (result.SelectString!=null && !result.SelectString.ToLower().Contains(selectPkName.ToLower()))
             {
                 result.SelectString = result.SelectString + "," + (selectPkName +" AS "+ selectPkName);
