@@ -218,6 +218,7 @@ namespace SqlSugar
                     count = await sqlCommand.ExecuteNonQueryAsync(this.CancellationToken.Value);
                 if (this.IsClearParameters)
                     sqlCommand.Parameters.Clear();
+                SqlExecuteCount = count;
                 ExecuteAfter(sql, parameters);
                 sqlCommand.Dispose();
                 return count;

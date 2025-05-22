@@ -46,7 +46,7 @@ namespace SqlSugar
         /// <summary>
         /// Add, delete and modify: the number of affected items;
         /// </summary>
-        public int SqlExecuteCount { get; private set; } = 0;
+        public int SqlExecuteCount { get; protected set; } = 0;
         public StackTraceInfo SqlStackTrace { get { return UtilMethods.GetStackTrace(); } }
         public bool IsDisableMasterSlaveSeparation { get; set; }
         internal DateTime BeforeTime = DateTime.MinValue;
