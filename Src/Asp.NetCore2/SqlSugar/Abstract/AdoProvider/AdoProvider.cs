@@ -1726,6 +1726,9 @@ namespace SqlSugar
         }
         protected void InitParameters(ref string sql, SugarParameter[] parameters)
         {
+            this.SqlExecuteCount = 0;
+            this.BeforeTime = DateTime.MinValue;
+            this.AfterTime = DateTime.MinValue;
             if (parameters.HasValue())
             {
                 foreach (var item in parameters)
