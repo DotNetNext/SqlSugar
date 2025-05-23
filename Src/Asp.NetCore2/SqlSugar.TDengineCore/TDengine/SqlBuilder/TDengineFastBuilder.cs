@@ -176,7 +176,7 @@ namespace SqlSugar.TDengine
                 var type = value.GetType();
                 if (type == UtilConstants.DateType)
                 {
-                    return Convert.ToDateTime(value).ToString("yyyy-MM-dd HH:mm:ss.fff").ToSqlValue();
+                    return Convert.ToDateTime(value).ToString("yyyy-MM-dd HH:mm:ss.ffffff").ToSqlValue();
                 }
                 else if (type == UtilConstants.ByteArrayType)
                 {
