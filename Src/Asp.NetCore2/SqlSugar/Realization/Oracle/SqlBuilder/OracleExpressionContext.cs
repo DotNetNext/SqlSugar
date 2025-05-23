@@ -238,11 +238,10 @@ namespace SqlSugar
             switch (type)
             {
                 case DateType.Year:
-                    time = 1 * 365;
-                    break;
+                    // 每年 = 12 个月
+                    return $"ADD_MONTHS({parameter.MemberName}, ({parameter2.MemberName}) * 12)";
                 case DateType.Month:
-                    time = 1 *30;
-                    break;
+                    return $"ADD_MONTHS({parameter.MemberName}, {parameter2.MemberName})";
                 case DateType.Day:
                     break;
                 case DateType.Hour:
