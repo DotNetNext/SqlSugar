@@ -84,7 +84,13 @@ namespace SqlSugar
                 this.Context.SingleTableNameSubqueryShortName = ps.FirstOrDefault().Name;
                 return;
             }
-            else if (item is MethodCallExpression&&ExpressionTool.IsVariable(item)) 
+            else if (item is MethodCallExpression && ExpressionTool.IsVariable(item))
+            {
+                var p = GetNewExpressionValue(item);
+                parameter.Context.Result.Append(this.Context.GetAsString2(asName, p));
+                return;
+            }
+            else if (item is ConditionalExpression&& ExpressionTool.GetParameters(item).Count > 0) 
             {
                 var p = GetNewExpressionValue(item);
                 parameter.Context.Result.Append(this.Context.GetAsString2(asName, p));
