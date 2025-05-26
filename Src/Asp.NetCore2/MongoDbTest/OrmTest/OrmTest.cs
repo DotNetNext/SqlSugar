@@ -116,7 +116,15 @@ namespace MongoDbTest
                            Id = it.Id,
                            Name = it.Name+"b",
                            Name2 =   "b"+it.Name
-                       }).ToDataTable(); 
+                       }).ToDataTable();
+
+            //var list13 = db.Queryable<OrderInfo>()
+            //       .GroupBy(it=>it.Name)
+            //       .Select(it => new
+            //       {
+            //           Id = it.Name,
+            //           Name =SqlFunc.AggregateMax(it.Id)
+            //       }).ToList();
             //测试生成SQL性能
             TestSqlBuilder(db);
         }

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
-
+using System.Linq;
 namespace SqlSugar.MongoDb 
 {
     public class MethodCallExpressionTractor
@@ -21,7 +21,25 @@ namespace SqlSugar.MongoDb
             {
                 return BsonValue.Create(ExpressionTool.DynamicInvoke(expr));
             }
-            return null;
+            else
+            {
+                var methodCallExpression = expr as MethodCallExpression;
+                var name = methodCallExpression.Method.Name;
+                BsonValue result = null;
+                if (typeof(IDbMethods).GetMethods().Any(it => it.Name == name))
+                {
+                    var context = new MongoDbMethod();
+                    MethodCallExpressionModel model = new MethodCallExpressionModel();
+                    var args= methodCallExpression.Arguments;
+                    foreach (var item in args)
+                    {
+                        //开发中
+                    }
+                    var funcString= context.GetType().GetMethod(name).Invoke(context, new object[] { model });
+                    result = BsonValue.Create(funcString);
+                }
+                return result;
+            }
         }
     }
 }
