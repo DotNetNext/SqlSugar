@@ -298,13 +298,18 @@ namespace SqlSugar
                 var lamExp = (item as LambdaExpression);
                 var pExp = lamExp.Parameters[0];
                 var pname = pExp.Name;
+                var columns = this.Context.SugarContext.Context.EntityMaintenance.GetEntityInfo(pExp.Type).Columns;
+                if (columns.Count==0&&pExp.Type.IsValueType && pExp.Type != typeof(string)) 
+                {
+                    columns = new List<EntityColumnInfo>() { new EntityColumnInfo() { UnderType=UtilMethods.GetUnderType( pExp.Type) ,PropertyName=pExp.Type.Name,DbTableName= pExp.Type.Name } };
+                }
                 model.Args.Add(new MethodCallExpressionArgs()
                 {
                     MemberValue = new ListAnyParameter()
                     {
                         Sql = sql,
                         Name = pname,
-                        Columns = this.Context.SugarContext.Context.EntityMaintenance.GetEntityInfo(pExp.Type).Columns,
+                        Columns = columns,
                         ConvetColumnFunc = this.Context.GetTranslationColumnName
                     }
                 });
