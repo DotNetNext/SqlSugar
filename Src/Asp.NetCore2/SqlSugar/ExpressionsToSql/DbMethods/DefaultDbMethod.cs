@@ -1125,6 +1125,20 @@ namespace SqlSugar
                             else
                             {
                                 newValue = value.ToSqlValue();
+                                if (columnInfo.EntityName == "String" && model.Conext?.SugarContext?.Context?.CurrentConnectionConfig?.DbType == DbType.SqlServer)
+                                {
+                                    if (model.Conext?.SugarContext?.Context?.CurrentConnectionConfig?.MoreSettings?.DisableNvarchar != true)
+                                    {
+                                        if (columnInfo.SqlParameterDbType is System.Data.DbType type && type == System.Data.DbType.AnsiString)
+                                        {
+
+                                        }
+                                        else
+                                        {
+                                            newValue = "N" + newValue;
+                                        }
+                                    }
+                                }
                             }
                         }
                         //Regex regex = new Regex("\@");
