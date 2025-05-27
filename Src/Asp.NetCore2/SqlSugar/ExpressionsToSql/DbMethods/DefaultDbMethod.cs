@@ -1129,7 +1129,7 @@ namespace SqlSugar
                                 {
                                     if (model.Conext?.SugarContext?.Context?.CurrentConnectionConfig?.MoreSettings?.DisableNvarchar != true)
                                     {
-                                        if (columnInfo.SqlParameterDbType is System.Data.DbType type && type == System.Data.DbType.AnsiString)
+                                        if (model.DataObject is DbColumnInfo dc&& dc.SqlParameterDbType is System.Data.DbType type && type == System.Data.DbType.AnsiString)
                                         {
 
                                         }

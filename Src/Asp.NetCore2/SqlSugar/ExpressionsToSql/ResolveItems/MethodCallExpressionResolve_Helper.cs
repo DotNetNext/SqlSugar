@@ -308,6 +308,17 @@ namespace SqlSugar
                         ConvetColumnFunc = this.Context.GetTranslationColumnName
                     }
                 });
+                if (lamExp.Body is MethodCallExpression callExpression)
+                {
+                    var callObject = callExpression.Object;
+
+                    if (callObject is MemberExpression memberExpression && memberExpression?.Expression is ParameterExpression parameterExpression)
+                    {
+                        var entity = this.Context.SugarContext.Context.EntityMaintenance.GetEntityInfo(parameterExpression.Type);
+                        var columnInfo = entity.Columns.FirstOrDefault(it => it.PropertyName == memberExpression.Member.Name);
+                        model.DataObject = columnInfo;
+                    }
+                }
                 if (this.Context.IsSingle && this.Context.SingleTableNameSubqueryShortName == null)
                 {
                     ParameterExpressionVisitor visitor = new ParameterExpressionVisitor();
