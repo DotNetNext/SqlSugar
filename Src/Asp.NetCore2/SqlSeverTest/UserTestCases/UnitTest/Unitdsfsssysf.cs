@@ -39,6 +39,19 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+            var names = new string[] { "aa", "bb" };
+            var list=db.Queryable<Order>().Where(it => names.Any(s => it.Name.Contains(s)))
+                .ToList();
+            var sql = db.Queryable<Order>().Where(it => names.Any(s => it.Name.Contains(s))).ToSqlString();
+            if (sql.Trim() != "SELECT [Id],[Name],[Price],[CreateTime],[CustomId] FROM [Order] [it]  WHERE  (  ([it].[Name] like '%'+ N'aa' +'%') OR ([it].[Name] like '%'+ N'bb' +'%')  ) ".Trim()) 
+            {
+                throw new Exception("unit error");
+            }
+            var sql2 = db.Queryable<OrderVarchar>().Where(it => names.Any(s => it.Name.Contains(s))).ToSqlString();
+            if (sql2.Trim() != "SELECT [Id],[Name],[Price],[CreateTime],[CustomId] FROM [Order] [it]  WHERE  (  ([it].[Name] like '%'+ 'aa' +'%') OR ([it].[Name] like '%'+ 'bb' +'%')  ) ".Trim())
+            {
+                throw new Exception("unit error");
+            }
         }
         [SugarTable("Unitpsroducsfdsatsfd")]
         public class Products
@@ -65,6 +78,21 @@ namespace OrmTest
             /// </summary>
             [Navigate(NavigateType.OneToOne, nameof(BusinessSliceID), nameof(Id))]
             public Products? SliceProduct { get; set; }
+        }
+        [SugarTable("Order")]
+        public class OrderVarchar
+        {
+            [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+            public int Id { get; set; }
+            [SugarColumn(SqlParameterDbType =System.Data.DbType.AnsiString)]
+            public string Name { get; set; }
+            public decimal Price { get; set; }
+            [SugarColumn(IsNullable = true)]
+            public DateTime CreateTime { get; set; }
+            [SugarColumn(IsNullable = true)]
+            public int CustomId { get; set; }
+            [SugarColumn(IsIgnore = true)]
+            public List<OrderItem> Items { get; set; }
         }
     }
 }
