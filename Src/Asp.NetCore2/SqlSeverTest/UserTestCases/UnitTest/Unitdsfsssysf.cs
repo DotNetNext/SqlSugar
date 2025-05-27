@@ -52,6 +52,9 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+            var ids = new List<int>() { 1, 2 };
+            var list3 = db.Queryable<Order>().Where(it => ids.Any(s => it.Id==s))
+            .ToList();
         }
         [SugarTable("Unitpsroducsfdsatsfd")]
         public class Products
