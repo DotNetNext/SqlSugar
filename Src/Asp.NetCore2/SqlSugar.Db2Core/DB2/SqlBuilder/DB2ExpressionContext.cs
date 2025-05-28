@@ -342,7 +342,8 @@ namespace SqlSugar.DB2
         public override string ToString(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
-            return string.Format(" CAST({0} AS VARCHAR)", parameter.MemberName);
+            var valueLength = parameter.MemberValue.IsNullOrEmpty() ? 1 : parameter.MemberValue?.ToString().Length;
+            return string.Format($" CAST({{0}} AS VARCHAR({valueLength}))", parameter.MemberName);
         }
 
         public override string ToGuid(MethodCallExpressionModel model)
