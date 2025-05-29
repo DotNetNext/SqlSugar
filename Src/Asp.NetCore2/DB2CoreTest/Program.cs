@@ -30,7 +30,7 @@ public class DbHelper
     /// Database connection string
     /// 数据库连接字符串
     /// </summary>
-    public readonly static string Connection = "server=127.0.0.1:50000;database=Test;uid=db2inst1;pwd=123456;currentSchema=db2inst1;";
+   public readonly static string Connection = "server=127.0.0.1:50000;database=Test;uid=db2inst1;pwd=123456;currentSchema=db2inst1;";
 
     /// <summary>
     /// Get a new SqlSugarClient instance with specific configurations

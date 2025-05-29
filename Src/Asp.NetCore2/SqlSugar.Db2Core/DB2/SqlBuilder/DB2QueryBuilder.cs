@@ -47,25 +47,6 @@ namespace SqlSugar.DB2
             }
         }
 
-        //public override string GetWhereValueString
-        //{
-        //    get
-        //    {
-        //        return base.GetWhereValueString.Replace("\"", "".ToUpper()); ;
-        //    }
-        //}
-
-        //public override string GetJoinValueString
-        //{
-        //    get
-        //    {
-        //        if (this.JoinQueryInfos.IsNullOrEmpty()) return null;
-        //        else
-        //        {
-        //            return string.Join(UtilConstants.Space, this.JoinQueryInfos.Select(it => this.ToJoinString(it).Replace("\"", "").ToUpper()));
-        //        }
-        //    }
-        //}
 
         public override bool IsComplexModel(string sql)
         {
@@ -153,7 +134,7 @@ namespace SqlSugar.DB2
         {
             var selectParams = selectSql.Split(",").Select(p =>
             {
-                if (!Regex.IsMatch(p, constRegex)) return p;
+                if (!Regex.IsMatch(p.ToLower(), constRegex)) return p;
                 var parameterItems = this.Parameters.Where(t => p.Contains(t.ParameterName)).ToList();
                 if (!parameterItems.Any()) return p;
 
