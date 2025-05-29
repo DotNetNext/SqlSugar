@@ -18,6 +18,48 @@ namespace SqlSugar
 {
     public class UtilMethods
     {
+        public static DataTable ConvertDateTimeOffsetToDateTime(DataTable table)
+        {
+            if (!table.Columns.Cast<DataColumn>().Any(it => it.DataType == typeof(DateTimeOffset))) 
+            {
+                return table;
+            }
+            DataTable newTable = table.Clone();
+
+            // 替换所有 DateTimeOffset 列为 DateTime
+            foreach (DataColumn column in newTable.Columns)
+            {
+                if (column.DataType == typeof(DateTimeOffset))
+                {
+                    column.DataType = typeof(DateTime); // 会报错，不能直接改
+                }
+            }
+
+            // 需要重新构建新表结构
+            DataTable finalTable = new DataTable();
+            foreach (DataColumn column in table.Columns)
+            {
+                Type newType = column.DataType == typeof(DateTimeOffset) ? typeof(DateTime) : column.DataType;
+                finalTable.Columns.Add(column.ColumnName, newType);
+            }
+
+            // 拷贝并转换数据
+            foreach (DataRow row in table.Rows)
+            {
+                DataRow newRow = finalTable.NewRow();
+                foreach (DataColumn column in table.Columns)
+                {
+                    var value = row[column];
+                    if (value is DateTimeOffset dto)
+                        newRow[column.ColumnName] = dto.DateTime;
+                    else
+                        newRow[column.ColumnName] = value;
+                }
+                finalTable.Rows.Add(newRow);
+            }
+
+            return finalTable;
+        }
         public static string EscapeLikeValue(ISqlSugarClient db, string value, char wildcard='%')
         {
             var dbType = db.CurrentConnectionConfig.DbType;

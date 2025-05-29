@@ -17,6 +17,7 @@ namespace SqlSugar
         };
         public async Task<int> ExecuteBulkCopyAsync(DataTable dt)
         {
+            dt = UtilMethods.ConvertDateTimeOffsetToDateTime(dt);
             if (DbFastestProperties?.IsOffIdentity == true)
             {
                 var isNoTran = this.Context.Ado.IsNoTran()&&this.Context.CurrentConnectionConfig.IsAutoCloseConnection;
