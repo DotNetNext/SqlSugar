@@ -131,5 +131,6 @@ namespace SqlSugar
         string PgsqlArrayContains(MethodCallExpressionModel model);
         string SelectFields(MethodCallExpressionModel model);
         string Coalesce(MethodCallExpressionModel model);
+        string UNIX_TIMESTAMP(MethodCallExpressionModel model);
     }
 }

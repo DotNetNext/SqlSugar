@@ -76,6 +76,11 @@ namespace SqlSugar
     }
     public partial class OracleMethod : DefaultDbMethod, IDbMethods
     {
+        public override string UNIX_TIMESTAMP(MethodCallExpressionModel model)
+        {
+            var parameterNameA = model.Args[0].MemberName;
+            return $" (CAST({parameterNameA} AS DATE) - DATE '1970-01-01') * 86400 ";
+        }
         public override string IsNullOrEmpty(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];

@@ -18,6 +18,11 @@ namespace SqlSugar
     }
     public class SqliteMethod : DefaultDbMethod, IDbMethods
     {
+        public override string UNIX_TIMESTAMP(MethodCallExpressionModel model)
+        {
+            var parameterNameA = model.Args[0].MemberName;
+            return $" CAST(STRFTIME('%s', {parameterNameA}) AS INTEGER) ";
+        }
         public override string WeekOfYear(MethodCallExpressionModel mode)
         {
             var parameterNameA = mode.Args[0].MemberName;

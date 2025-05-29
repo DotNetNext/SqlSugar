@@ -20,6 +20,11 @@ namespace SqlSugar
     }
     public partial class SqlServerMethod : DefaultDbMethod, IDbMethods
     {
+        public override string UNIX_TIMESTAMP(MethodCallExpressionModel model)
+        {
+            var parameterNameA = model.Args[0].MemberName;
+            return $" DATEDIFF(SECOND, '1970-01-01', {parameterNameA}) ";
+        }
         public override string ToDecimal(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];

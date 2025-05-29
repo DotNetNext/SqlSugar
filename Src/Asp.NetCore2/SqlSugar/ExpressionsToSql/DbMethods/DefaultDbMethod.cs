@@ -1391,5 +1391,10 @@ namespace SqlSugar
         {
             return string.Join(",", model.Args.Select(it => it.MemberName));
         }
+        public virtual string UNIX_TIMESTAMP(MethodCallExpressionModel model) 
+        {
+            var parameterNameA = model.Args[0].MemberName; 
+            return $" UNIX_TIMESTAMP({parameterNameA}) ";
+        }
     }
 }

@@ -10,7 +10,10 @@ namespace SqlSugar
 {
     public partial class SqlFunc
     {
-        
+        public static long UNIX_TIMESTAMP(DateTime dateTime) 
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
         public static T Coalesce<T>(T value1, T value2)
         {
             throw new NotSupportedException("Can only be used in expressions");
