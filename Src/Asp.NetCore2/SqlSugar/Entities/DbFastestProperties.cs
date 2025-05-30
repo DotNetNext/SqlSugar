@@ -13,5 +13,6 @@ namespace SqlSugar
         public bool IsOffIdentity { get;  set; }
         public bool IsMerge { get; set; }
         public bool IsNoCopyDataTable { get; set; }
+        public bool IsConvertDateTimeOffsetToDateTime { get; set; }
     }
 }
