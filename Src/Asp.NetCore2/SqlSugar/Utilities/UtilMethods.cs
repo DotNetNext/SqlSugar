@@ -37,6 +37,7 @@ namespace SqlSugar
 
             // 需要重新构建新表结构
             DataTable finalTable = new DataTable();
+            finalTable.TableName = table.TableName;
             foreach (DataColumn column in table.Columns)
             {
                 Type newType = column.DataType == typeof(DateTimeOffset) ? typeof(DateTime) : column.DataType;
