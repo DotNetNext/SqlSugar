@@ -25,7 +25,7 @@ namespace SqlSugar
                 return table;
             }
             DataTable newTable = table.Clone();
-
+            newTable.TableName = table.TableName;
             // 替换所有 DateTimeOffset 列为 DateTime
             foreach (DataColumn column in newTable.Columns)
             {
