@@ -54,15 +54,32 @@ namespace SqlSugar
     }
     public partial class DmMethod : DefaultDbMethod, IDbMethods
     { 
+
         public override string WeekOfYear(MethodCallExpressionModel mode)
         {
             var parameterNameA = mode.Args[0].MemberName;
             return $"TO_NUMBER(TO_CHAR({parameterNameA}, 'WW')) ";
         }
         public override string ParameterKeyWord { get; set; } = ":";
+        public string ForXmlPathLast;
+        public override string GetForXmlPath()
+        {
+            if (string.IsNullOrEmpty(ForXmlPathLast)) return null;
+            return "  GROUP BY  "+ ForXmlPathLast;
+        }
         public override string GetStringJoinSelector(string result, string separator)
         {
-            return $"listagg(to_char({result}),'{separator}') within group(order by {result}) ";
+            if (result.ObjToString().Trim().StartsWith("DISTINCT ", StringComparison.OrdinalIgnoreCase))
+            {
+                int index = result.IndexOf(result, StringComparison.Ordinal); // 找到去掉前缀空格后的位置
+                result = result.Substring(index + 9); // 9 是 "DISTINCT " 的长度
+                ForXmlPathLast = result;
+                return $"listagg(to_char(max({result})),'{separator}') within group(order by max({result})) ";
+            }
+            else
+            {
+                return $"listagg(to_char({result}),'{separator}') within group(order by {result}) ";
+            }
         }
         public override string ToInt64(MethodCallExpressionModel model)
         {

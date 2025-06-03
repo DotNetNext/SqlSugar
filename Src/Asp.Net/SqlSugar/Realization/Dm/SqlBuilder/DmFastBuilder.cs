@@ -13,10 +13,12 @@ namespace SqlSugar
     {
         public override bool IsActionUpdateColumns { get; set; } = true;
         public override DbFastestProperties DbFastestProperties { get; set; } = new DbFastestProperties() {
-          HasOffsetTime=true
+          HasOffsetTime=true,
+          IsConvertDateTimeOffsetToDateTime=true
         };
         public async Task<int> ExecuteBulkCopyAsync(DataTable dt)
         {
+            dt = UtilMethods.ConvertDateTimeOffsetToDateTime(dt);
             if (DbFastestProperties?.IsOffIdentity == true)
             {
                 var isNoTran = this.Context.Ado.IsNoTran()&&this.Context.CurrentConnectionConfig.IsAutoCloseConnection;

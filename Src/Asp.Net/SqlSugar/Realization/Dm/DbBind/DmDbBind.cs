@@ -16,6 +16,12 @@ namespace SqlSugar
                 csharpTypeName = "short";
             if (csharpTypeName.ToLower() == "int64")
                 csharpTypeName = "long";
+            if (csharpTypeName.ToLower() == "uint32")
+                csharpTypeName = "int";
+            if (csharpTypeName.ToLower() == "uint16")
+                csharpTypeName = "short";
+            if (csharpTypeName.ToLower() == "uint64")
+                csharpTypeName = "long";
             if (csharpTypeName.ToLower().IsIn("boolean", "bool"))
                 csharpTypeName = "bool";
             if (csharpTypeName == "Guid")
