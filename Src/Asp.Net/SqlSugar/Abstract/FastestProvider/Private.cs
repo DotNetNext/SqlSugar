@@ -226,6 +226,10 @@ namespace SqlSugar
         private DataTable GetCopyWriteDataTable(DataTable dt)
         {
             var builder = GetBuider();
+            if (builder.DbFastestProperties?.IsConvertDateTimeOffsetToDateTime == true)
+            {
+                dt = UtilMethods.ConvertDateTimeOffsetToDateTime(dt);
+            }
             if (builder.DbFastestProperties?.IsNoCopyDataTable == true) 
             {
                 return dt;

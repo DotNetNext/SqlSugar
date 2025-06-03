@@ -46,7 +46,8 @@ namespace SqlSugar
         /// <summary>
         /// Add, delete and modify: the number of affected items;
         /// </summary>
-        public int SqlExecuteCount { get; private set; } = 0;
+        public int SqlExecuteCount { get; protected set; } = 0;
+        public SugarActionType SqlExecuteType { get=> this.Context.SugarActionType;} 
         public StackTraceInfo SqlStackTrace { get { return UtilMethods.GetStackTrace(); } }
         public bool IsDisableMasterSlaveSeparation { get; set; }
         internal DateTime BeforeTime = DateTime.MinValue;
@@ -1726,6 +1727,9 @@ namespace SqlSugar
         }
         protected void InitParameters(ref string sql, SugarParameter[] parameters)
         {
+            this.SqlExecuteCount = 0;
+            this.BeforeTime = DateTime.MinValue;
+            this.AfterTime = DateTime.MinValue;
             if (parameters.HasValue())
             {
                 foreach (var item in parameters)

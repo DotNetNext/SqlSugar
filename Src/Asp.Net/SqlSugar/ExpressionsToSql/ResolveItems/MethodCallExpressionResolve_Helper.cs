@@ -298,16 +298,32 @@ namespace SqlSugar
                 var lamExp = (item as LambdaExpression);
                 var pExp = lamExp.Parameters[0];
                 var pname = pExp.Name;
+                var columns = this.Context.SugarContext.Context.EntityMaintenance.GetEntityInfo(pExp.Type).Columns;
+                if (columns.Count==0&&pExp.Type.IsValueType && pExp.Type != typeof(string)) 
+                {
+                    columns = new List<EntityColumnInfo>() { new EntityColumnInfo() { UnderType=UtilMethods.GetUnderType( pExp.Type) ,PropertyName=pExp.Type.Name,DbTableName= pExp.Type.Name } };
+                }
                 model.Args.Add(new MethodCallExpressionArgs()
                 {
                     MemberValue = new ListAnyParameter()
                     {
                         Sql = sql,
                         Name = pname,
-                        Columns = this.Context.SugarContext.Context.EntityMaintenance.GetEntityInfo(pExp.Type).Columns,
+                        Columns = columns,
                         ConvetColumnFunc = this.Context.GetTranslationColumnName
                     }
                 });
+                if (lamExp.Body is MethodCallExpression callExpression)
+                {
+                    var callObject = callExpression.Object;
+
+                    if (callObject is MemberExpression memberExpression && memberExpression?.Expression is ParameterExpression parameterExpression)
+                    {
+                        var entity = this.Context.SugarContext.Context.EntityMaintenance.GetEntityInfo(parameterExpression.Type);
+                        var columnInfo = entity.Columns.FirstOrDefault(it => it.PropertyName == memberExpression.Member.Name);
+                        model.DataObject = columnInfo;
+                    }
+                }
                 if (this.Context.IsSingle && this.Context.SingleTableNameSubqueryShortName == null)
                 {
                     ParameterExpressionVisitor visitor = new ParameterExpressionVisitor();

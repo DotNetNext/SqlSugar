@@ -507,7 +507,16 @@ namespace SqlSugar
                     }
                     else
                     {
-                        result.Add(name, DataReaderToDynamicList_Part(readerValues, item, reval, mappingKeys));
+                        List<string> ignorePropertyNames = null;
+                        if (this.QueryBuilder?.SelectNewIgnoreColumns?.Any() == true)
+                        {
+                           var ignoreColumns= this.QueryBuilder.SelectNewIgnoreColumns.Where(it => it.Value == item.PropertyType.Name).ToList();
+                           if (ignoreColumns.Any()) 
+                           {
+                                ignorePropertyNames = ignoreColumns.Select(it => it.Key).ToList();
+                           }
+                        }
+                        result.Add(name, DataReaderToDynamicList_Part(readerValues, item, reval, mappingKeys, ignorePropertyNames));
                     }
                 }
                 else
@@ -645,7 +654,7 @@ namespace SqlSugar
                                         Regex.IsMatch(readerValues.First(y => y.Key.EqualCase(item.Name)).Value.ToString(), @"^\[{.+\}]$");
         }
 
-        private Dictionary<string, object> DataReaderToDynamicList_Part<T>(Dictionary<string, object> readerValues, PropertyInfo item, List<T> reval, Dictionary<string, string> mappingKeys = null)
+        private Dictionary<string, object> DataReaderToDynamicList_Part<T>(Dictionary<string, object> readerValues, PropertyInfo item, List<T> reval, Dictionary<string, string> mappingKeys = null,List<string> ignoreColumns=null)
         {
             Dictionary<string, object> result = new Dictionary<string, object>();
             var type = item.PropertyType;
@@ -673,6 +682,10 @@ namespace SqlSugar
                 var typeName = type.Name;
                 if (prop.PropertyType.IsClass())
                 {
+                    if (ignoreColumns?.Contains(name) == true) 
+                    {
+                        continue;
+                    }
                     var suagrColumn = prop.GetCustomAttribute<SugarColumn>();
                     if (suagrColumn != null && suagrColumn.IsJson)
                     {

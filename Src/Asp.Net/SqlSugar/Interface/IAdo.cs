@@ -37,6 +37,7 @@ namespace SqlSugar
         TimeSpan SqlExecutionTime { get; }
         TimeSpan ConnectionExecutionTime { get; }
         int SqlExecuteCount { get; }
+        SugarActionType SqlExecuteType { get;}
         IDbBind DbBind { get; }
         void SetCommandToAdapter(IDataAdapter adapter, DbCommand command);
         IDataAdapter GetAdapter();

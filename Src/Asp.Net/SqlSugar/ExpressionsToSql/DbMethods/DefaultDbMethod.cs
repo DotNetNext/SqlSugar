@@ -946,6 +946,20 @@ namespace SqlSugar
                                     newValue = value.ToSqlValue();
                                 }
                             }
+                            if (columnInfo.UnderType == UtilConstants.StringType&& model.Conext?.SugarContext?.Context?.CurrentConnectionConfig?.DbType==DbType.SqlServer) 
+                            {
+                                if (model.Conext?.SugarContext?.Context?.CurrentConnectionConfig?.MoreSettings?.DisableNvarchar != true)
+                                {
+                                    if (columnInfo.SqlParameterDbType is System.Data.DbType type && type == System.Data.DbType.AnsiString)
+                                    {
+
+                                    }
+                                    else 
+                                    {
+                                        newValue = "N" + newValue;
+                                    }
+                                }
+                            }
                             sql = sql.Replace(replace, newValue);
                         }
                     }
@@ -1111,6 +1125,20 @@ namespace SqlSugar
                             else
                             {
                                 newValue = value.ToSqlValue();
+                                if (columnInfo.EntityName == "String" && model.Conext?.SugarContext?.Context?.CurrentConnectionConfig?.DbType == DbType.SqlServer)
+                                {
+                                    if (model.Conext?.SugarContext?.Context?.CurrentConnectionConfig?.MoreSettings?.DisableNvarchar != true)
+                                    {
+                                        if (model.DataObject is EntityColumnInfo dc&& dc.SqlParameterDbType is System.Data.DbType type && type == System.Data.DbType.AnsiString)
+                                        {
+
+                                        }
+                                        else
+                                        {
+                                            newValue = "N" + newValue;
+                                        }
+                                    }
+                                }
                             }
                         }
                         //Regex regex = new Regex("\@");
@@ -1362,6 +1390,11 @@ namespace SqlSugar
         public virtual string SelectFields(MethodCallExpressionModel model)
         {
             return string.Join(",", model.Args.Select(it => it.MemberName));
+        }
+        public virtual string UNIX_TIMESTAMP(MethodCallExpressionModel model) 
+        {
+            var parameterNameA = model.Args[0].MemberName; 
+            return $" UNIX_TIMESTAMP({parameterNameA}) ";
         }
     }
 }

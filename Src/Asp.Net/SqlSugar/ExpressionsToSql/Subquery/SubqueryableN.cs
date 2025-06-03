@@ -68,6 +68,10 @@ namespace SqlSugar
         public List<TResult> ToList<TResult>(Func<T1, T2, T3, T4, T5, T6,T7,T8,T9, TResult> selector) 
         {
             return null;
+        } 
+        public new Subqueryable<T1, T2, T3, T4, T5, T6, T7, T8,T9> Take(int takeNum)
+        {
+            return this;
         }
     }
     public class Subqueryable<T1, T2, T3, T4, T5, T6, T7, T8> : Subqueryable<T1> where T1 : class, new()
@@ -127,6 +131,10 @@ namespace SqlSugar
         public List<TResult> ToList<TResult>(Func<T1, T2, T3, T4, T5, T6,T7,T8, TResult> selector) 
         {
             return null;
+        } 
+        public new Subqueryable<T1, T2, T3, T4, T5, T6, T7,T8> Take(int takeNum)
+        {
+            return this;
         }
     }
     public class Subqueryable<T1, T2, T3, T4, T5, T6, T7> : Subqueryable<T1> where T1 : class, new()
@@ -182,6 +190,10 @@ namespace SqlSugar
         public List<TResult> ToList<TResult>(Func<T1, T2, T3, T4, T5, T6,T7, TResult> selector) 
         {
             return null;
+        } 
+        public new Subqueryable<T1, T2, T3, T4, T5, T6,T7> Take(int takeNum)
+        {
+            return this;
         }
     }
     public class Subqueryable<T1, T2, T3, T4, T5, T6> : Subqueryable<T1> where T1 : class, new()
@@ -242,6 +254,10 @@ namespace SqlSugar
         public List<TResult> ToList<TResult>(Func<T1, T2, T3, T4, T5,T6, TResult> selector)  
         {
             return null;
+        } 
+        public new Subqueryable<T1, T2, T3, T4, T5,T6> Take(int takeNum)
+        {
+            return this;
         }
     }
     public class Subqueryable<T1, T2, T3, T4, T5> : Subqueryable<T1> where T1 : class, new()
@@ -298,6 +314,10 @@ namespace SqlSugar
         public List<TResult> ToList<TResult>(Func<T1, T2, T3, T4,T5, TResult> selector)  
         {
             return null;
+        } 
+        public new Subqueryable<T1, T2, T3, T4,T5> Take(int takeNum)
+        {
+            return this;
         }
     }
     public class Subqueryable<T1, T2, T3, T4> : Subqueryable<T1> where T1 : class, new()
@@ -414,6 +434,11 @@ namespace SqlSugar
         public TResult Sum<TResult>(Func<T1, T2,T3,T4, TResult> expression)
         {
             return default(TResult);
+        }
+
+        public new Subqueryable<T1, T2, T3,T4> Take(int takeNum)
+        {
+            return this;
         }
     }
     public class Subqueryable<T1, T2, T3> : Subqueryable<T1> where T1 : class, new()
@@ -543,6 +568,10 @@ namespace SqlSugar
         {
             return default(TResult);
         }
+        public new Subqueryable<T1, T2,T3> Take(int takeNum)
+        {
+            return this;
+        }
     }
     public class Subqueryable<T1, T2> : Subqueryable<T1> where T1 : class, new()
     {
@@ -662,6 +691,10 @@ namespace SqlSugar
         public TResult Sum<TResult>(Func<T1, T2, TResult> expression)
         {
             return default(TResult);
+        }
+        public new Subqueryable<T1,T2> Take(int takeNum)
+        {
+            return this;
         }
     }
 }

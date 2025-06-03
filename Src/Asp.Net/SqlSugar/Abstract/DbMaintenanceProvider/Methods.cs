@@ -246,7 +246,7 @@ namespace SqlSugar
         {
             indexName = this.SqlBuilder.GetNoTranslationColumnName(indexName);
             tableName= this.SqlBuilder.GetNoTranslationColumnName(tableName);
-            this.Context.Ado.ExecuteCommand($" DROP INDEX  {indexName}  ON {tableName}");
+            this.Context.Ado.ExecuteCommand($" DROP INDEX  {indexName} ");
             return true;
         }
         public virtual bool DropView(string viewName) 

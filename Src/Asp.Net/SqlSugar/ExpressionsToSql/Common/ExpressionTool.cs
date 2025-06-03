@@ -10,6 +10,32 @@ namespace SqlSugar
 {
     public class ExpressionTool
     {
+        public static bool ContainsTwoLevelAccess(Expression exp)
+        {
+            var result = false;
+
+            if (exp is LambdaExpression lambda &&
+                lambda.Body is MemberInitExpression initExpr)
+            {
+                var param = lambda.Parameters[0];
+
+                foreach (var binding in initExpr.Bindings)
+                {
+                    if (binding is MemberAssignment assign)
+                    {
+                        if (assign.Expression is MemberExpression outer &&
+                            outer.Expression is MemberExpression inner &&
+                            inner.Expression == param)
+                        {
+                            result = true;
+                            break; // 已经找到了，就退出循环
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
 
         public static string GetMemberNameByMethod(Expression expression, string name)  
         {

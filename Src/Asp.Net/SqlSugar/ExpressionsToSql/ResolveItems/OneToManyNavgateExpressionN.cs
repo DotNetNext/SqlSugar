@@ -131,7 +131,7 @@ namespace SqlSugar
             Check.ExceptionEasy(FirstPkColumn == null, $"{ last.ThisEntityInfo.EntityName} need PrimayKey", $"使用导航属性{ last.ThisEntityInfo.EntityName} 缺少主键");
             var PkColumn = last.ParentEntityInfo.Columns.FirstOrDefault(it => it.PropertyName == last.Nav.Name);
             Check.ExceptionEasy(PkColumn == null, $"{ last.ParentEntityInfo.EntityName} no found {last.Nav.Name}", $"{ last.ParentEntityInfo.EntityName} 不存在 {last.Nav.Name}");
-            queryable.Where($" {this.shorName}.{ queryable.SqlBuilder.GetTranslationColumnName(PkColumn.DbColumnName)} = {masterShortName}.{queryable.SqlBuilder.GetTranslationColumnName(FirstPkColumn.DbColumnName)} ");
+            queryable.Where($" {queryable.SqlBuilder.GetTranslationColumnName(this.shorName)}.{ queryable.SqlBuilder.GetTranslationColumnName(PkColumn.DbColumnName)} = {queryable.SqlBuilder.GetTranslationColumnName(masterShortName)}.{queryable.SqlBuilder.GetTranslationColumnName(FirstPkColumn.DbColumnName)} ");
             queryable.WhereIF(this.whereSql.HasValue(), GetWhereSql1(this.whereSql,lastShortName, joinInfos, queryable.SqlBuilder));
             MapperSql.Sql = $"( {queryable.ToSql().Key} ) ";
             if (isAny)
@@ -176,7 +176,7 @@ namespace SqlSugar
             //    navColum = item.ParentEntityInfo.Columns.FirstOrDefault(it => it.PropertyName == item.Nav.Name);
             //}
             Check.ExceptionEasy(pkColumn == null, $"{item.ThisEntityInfo.EntityName} need PrimayKey", $"使用导航属性{item.ThisEntityInfo.EntityName} 缺少主键");
-            var on = $" {shortName}.{queryable.SqlBuilder.GetTranslationColumnName(pkColumn.DbColumnName)}={formInfo.ThisEntityInfo.DbTableName + (i - 1)}.{queryable.SqlBuilder.GetTranslationColumnName(navColum.DbColumnName)}";
+            var on = $" {queryable.SqlBuilder.GetTranslationColumnName(shortName)}.{queryable.SqlBuilder.GetTranslationColumnName(pkColumn.DbColumnName)}={queryable.SqlBuilder.GetTranslationColumnName(formInfo.ThisEntityInfo.DbTableName + (i - 1))}.{queryable.SqlBuilder.GetTranslationColumnName(navColum.DbColumnName)}";
             queryable.AddJoinInfo(item.ThisEntityInfo.DbTableName, shortName, on, JoinType.Inner);
             ++i;
             index++;
@@ -270,13 +270,13 @@ namespace SqlSugar
                         }
 
                         this.whereSql =Regex.Replace(this.whereSql, regex,
-                             lastShortName + "." + sqlBuilder.GetTranslationColumnName(it.DbColumnName));
+                             sqlBuilder.GetTranslationColumnName(lastShortName) + "." + sqlBuilder.GetTranslationColumnName(it.DbColumnName));
                     }
                     else
                     {
                         var oldWhere = this.whereSql;
                         var newWhere = this.whereSql.Replace(sqlBuilder.GetTranslationColumnName(it.DbColumnName),
-                            lastShortName + "." + sqlBuilder.GetTranslationColumnName(it.DbColumnName));
+                            sqlBuilder.GetTranslationColumnName(lastShortName) + "." + sqlBuilder.GetTranslationColumnName(it.DbColumnName));
                         if (oldWhere != newWhere  && !oldWhere.Contains($" {sqlBuilder.GetTranslationColumnName(it.DbColumnName)}"))
                         {
 
