@@ -12,7 +12,7 @@ namespace OrmTest
         public string Name { get; set; }
         public string Type { get; set; }
     }
-
+    [SqlSugar.SugarTable("Person001")]
     public class Person 
     {
         //数据库字段
