@@ -26,7 +26,16 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
-
+            db.CodeFirst.InitTables<Order>();
+            db.Insertable(new Order() { Name = "a", Price = 1, CreateTime = DateTime.Now }).ExecuteCommand();
+            db.Insertable(new Order() { Name = "a", Price = 1, CreateTime = DateTime.Now }).ExecuteCommand();
+            var lastids = db.Queryable<Order>()
+                .GroupBy(x => x.Id)
+                .Select(x => new
+                {
+                    x.Id,
+                    a = SqlFunc.Subqueryable<Order>().Where(s => s.Id == x.Id).First()
+                }).ToList();//没溢出，但结果，Aa 都是初值即是空？？ 
         }
     }
     [SqlSugar.SugarTable("SQLSUGARTEST")]
