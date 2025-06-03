@@ -438,9 +438,9 @@ namespace SqlSugar.DB2
         private string GetSchema()
         {
             var schema = "db2inst1";
-            if (System.Text.RegularExpressions.Regex.IsMatch(this.Context.CurrentConnectionConfig.ConnectionString.ToLower(), "database="))
+            if (System.Text.RegularExpressions.Regex.IsMatch(this.Context.CurrentConnectionConfig.ConnectionString, "currentschema=", System.Text.RegularExpressions.RegexOptions.IgnoreCase))
             {
-                var regValue = System.Text.RegularExpressions.Regex.Match(this.Context.CurrentConnectionConfig.ConnectionString.ToLower(), @"database\=(\w+)").Groups[1].Value;
+                var regValue = System.Text.RegularExpressions.Regex.Match(this.Context.CurrentConnectionConfig.ConnectionString, @"currentschema\=(\w+)", System.Text.RegularExpressions.RegexOptions.IgnoreCase).Groups[1].Value;
                 if (regValue.HasValue())
                 {
                     schema = regValue;
