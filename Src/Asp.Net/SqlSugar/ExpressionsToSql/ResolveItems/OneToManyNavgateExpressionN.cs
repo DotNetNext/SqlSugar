@@ -234,7 +234,7 @@ namespace SqlSugar
             Check.ExceptionEasy(AidColumn == null, $" {BidColumn.EntityName} need primary key ", $"{BidColumn.EntityName}需要主键");
 
             var abShort = abEntity.EntityName + "_1";
-            var abOn = $" {abShort}.{queryable.SqlBuilder.GetTranslationColumnName(Ab_Aid.DbColumnName)}={formInfo.ThisEntityInfo.DbTableName + (i - 1)}.{queryable.SqlBuilder.GetTranslationColumnName(AidColumn.DbColumnName)}";
+            var abOn = $" {queryable.SqlBuilder.GetTranslationColumnName(abShort)}.{queryable.SqlBuilder.GetTranslationColumnName(Ab_Aid.DbColumnName)}={formInfo.ThisEntityInfo.DbTableName + (i - 1)}.{queryable.SqlBuilder.GetTranslationColumnName(AidColumn.DbColumnName)}";
             queryable.AddJoinInfo(abEntity.DbTableName, abShort, abOn, JoinType.Inner);
             var On = $" {bshortName}.{queryable.SqlBuilder.GetTranslationColumnName(BidColumn.DbColumnName)}={abShort}.{queryable.SqlBuilder.GetTranslationColumnName(Ab_Bid.DbColumnName)}";
             queryable.AddJoinInfo(BidColumn.DbTableName, bshortName, On, JoinType.Inner);
