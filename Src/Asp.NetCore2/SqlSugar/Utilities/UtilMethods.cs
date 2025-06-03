@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dm.util;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -81,8 +82,16 @@ namespace SqlSugar
                 case DbType.Odbc:
                 case DbType.TDSQLForPGODBC:
                     // SQL Server 使用中括号转义 %, _ 等
-                    value = value.Replace("[", "[[]")
-                                 .Replace("]", "[]]")
+                    var keyLeft = "[[]";
+                    var keyRight = "[]]";
+                    var leftGuid = Guid.NewGuid().toString();
+                    var rightGuid = Guid.NewGuid().toString();
+                    value = value.Replace("[", leftGuid)
+                                 .Replace("]", rightGuid);
+
+                    value = value.Replace(leftGuid, keyLeft)
+                              .Replace(rightGuid, keyRight);
+                    value =value
                                  .Replace(wildcardStr, $"[{wildcard}]");
                     break;
 
