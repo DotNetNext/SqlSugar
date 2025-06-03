@@ -15,7 +15,10 @@ namespace SqlSugar.TDengine
     public class TDengineFastBuilder : FastBuilder, IFastBuilder
     {
         public const string TagKey = "TDengineFastBuilderTagNames";
-
+        public override DbFastestProperties DbFastestProperties { get; set; } = new DbFastestProperties()
+        {
+            NoPage=false
+        };
 
         public async Task<int> ExecuteBulkCopyAsync(DataTable dt)
         {
