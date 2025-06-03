@@ -278,7 +278,11 @@ namespace SqlSugar
             foreach (var item in args)
             {
                 var expItem = item;
-                if (item is UnaryExpression)
+                if (name=="IIF" && item is UnaryExpression)
+                {
+                    expItem = ExpressionTool.RemoveConvert(expItem);
+                }
+                else if (item is UnaryExpression)
                 {
                     expItem = (item as UnaryExpression).Operand;
                 }
