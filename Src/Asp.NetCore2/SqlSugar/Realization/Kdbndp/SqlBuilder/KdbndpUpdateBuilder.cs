@@ -69,6 +69,14 @@ namespace SqlSugar
                 {
                     return value.ObjToBool() ? "1" : "0";
                 }
+                else if (value is DateTimeOffset)
+                {
+                    return FormatDateTimeOffset(value);
+                }
+                else if (IsSqlOracleModel() && value is TimeSpan timeSpan)
+                {
+                    return $"'{timeSpan.Days} {timeSpan.Hours:00}:{timeSpan.Minutes:00}:{timeSpan.Seconds:00}.{timeSpan.Milliseconds:000}{timeSpan.Ticks % 10000:0000}'";
+                }
                 else if (type == UtilConstants.StringType || type == UtilConstants.ObjType)
                 {
                     return "'" + value.ToString().ToSqlFilter() + "'";
@@ -267,6 +275,10 @@ namespace SqlSugar
         {
             var date = UtilMethods.ConvertFromDateTimeOffset((DateTimeOffset)value);
             return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff zzz") + "'";
+        }
+        private bool IsSqlOracleModel()
+        {
+            return this.Context?.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.Oracle;
         }
     }
 }

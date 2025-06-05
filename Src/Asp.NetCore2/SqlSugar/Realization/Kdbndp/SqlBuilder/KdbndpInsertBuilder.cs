@@ -88,7 +88,7 @@ namespace SqlSugar
                             }
                             else if (IsSqlOracleModel()&& it.Value is TimeSpan timeSpan)
                             {
-                                return $"{timeSpan.Days} {timeSpan.Hours:00}:{timeSpan.Minutes:00}:{timeSpan.Seconds:00}.{timeSpan.Milliseconds:000}{timeSpan.Ticks % 10000:0000}";
+                                return $"'{timeSpan.Days} {timeSpan.Hours:00}:{timeSpan.Minutes:00}:{timeSpan.Seconds:00}.{timeSpan.Milliseconds:000}{timeSpan.Ticks % 10000:0000}'";
                             }
                             else if (it.Value is bool&& (IsMySqlModel()|| IsSqlServerModel()))
                             {
