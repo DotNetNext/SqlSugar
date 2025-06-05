@@ -86,6 +86,10 @@ namespace SqlSugar
                             {
                                 return FormatDateTimeOffset(it.Value);
                             }
+                            else if (IsSqlOracleModel()&& it.Value is TimeSpan timeSpan)
+                            {
+                                return $"{timeSpan.Days} {timeSpan.Hours:00}:{timeSpan.Minutes:00}:{timeSpan.Seconds:00}.{timeSpan.Milliseconds:000}{timeSpan.Ticks % 10000:0000}";
+                            }
                             else if (it.Value is bool&& (IsMySqlModel()|| IsSqlServerModel()))
                             {
                                 return Convert.ToBoolean(it.Value)?"1":"0";
@@ -108,7 +112,10 @@ namespace SqlSugar
                 return batchInsetrSql.ToString();
             }
         }
-
+        private bool IsSqlOracleModel()
+        {
+            return this.Context?.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.Oracle;
+        }
         private bool IsSqlServerModel()
         {
             return this.Context?.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.SqlServer;
