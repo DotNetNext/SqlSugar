@@ -123,7 +123,7 @@ namespace SqlSugar
                 case DbType.Vastbase:
                 default:
                     value = value 
-                                 .Replace(wildcardStr, "\\\\" + wildcard);
+                                 .Replace(wildcardStr, "\\" + wildcard);
                     break;
             }
 
