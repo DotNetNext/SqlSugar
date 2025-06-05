@@ -63,7 +63,7 @@ namespace SqlSugar
             {
                 if (this.GetBuider()?.DbFastestProperties?.NoPage == true) 
                 {
-                    Size = int.MaxValue;
+                    Size = int.MaxValue/2;
                 }
                 int resul=0;
                  await this.context.Utilities.PageEachAsync(datas, Size, async item =>
