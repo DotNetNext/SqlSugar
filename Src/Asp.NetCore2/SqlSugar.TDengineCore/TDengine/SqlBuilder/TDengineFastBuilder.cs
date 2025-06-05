@@ -164,6 +164,9 @@ namespace SqlSugar.TDengine
             {
                 db.TempItems = new Dictionary<string, object>();
             }
+            // 删除旧的值（如果存在）
+            db.TempItems.Remove(TagKey);
+            db.TempItems.Remove(TagKey + "action");
             db.TempItems.Add(TagKey, tagNames);
             db.TempItems.Add(TagKey + "action", action);
         }
