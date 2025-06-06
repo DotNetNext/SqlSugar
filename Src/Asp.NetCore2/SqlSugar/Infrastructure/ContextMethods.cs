@@ -533,7 +533,7 @@ namespace SqlSugar
                         var type = UtilMethods.GetUnderType(item.PropertyType);
                         if (addValue == DBNull.Value || addValue == null)
                         {
-                            if (item.PropertyType.IsIn(UtilConstants.IntType, UtilConstants.DecType, UtilConstants.DobType, UtilConstants.ByteType))
+                            if (item.PropertyType.IsIn(UtilConstants.IntType,UtilConstants.LongType, UtilConstants.DecType, UtilConstants.DobType, UtilConstants.ByteType))
                             {
                                 addValue = 0;
                             }
