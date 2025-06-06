@@ -55,7 +55,7 @@ AND a.table_name!='SQLPLUS_PRODUCT_PROFILE'";
         {
             get
             {
-                return "select count(1) from user_ind_columns where upper(index_name)=upper('{0}')";
+                return "select count(1) from USER_INDEXES where  upper(index_name)=upper('{0}') and  table_owner=SF_GET_SCHEMA_NAME_BY_ID(CURRENT_SCHID)";
             }
         }
         protected override string CreateIndexSql
