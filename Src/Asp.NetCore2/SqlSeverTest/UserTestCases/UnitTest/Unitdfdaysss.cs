@@ -12,10 +12,61 @@ namespace OrmTest
     public class Unitdfdaysss
     {
 
-        public static void Init() 
+        public static void Init()
         {
             var db = NewUnitTest.Db;
 
+            Demo1(db);
+
+            Demo2(db);
+
+            Demo3(db);
+
+            Demo4(db);
+
+            Demo5(db);
+        }
+
+        private static void Demo2(SqlSugarClient db)
+        {
+            var sql2 =
+                    db.Queryable<OrderJoinItemTemp>()
+                    .Select(p => new StoreBrandOther
+                    {
+                        BrandName = string.IsNullOrEmpty(
+                            SqlFunc.Subqueryable<Brand>().Where(n => n.Id == p.BrandId).Select(n => n.Name)
+                        )
+                            ? "aa"
+                        : SqlFunc
+                                .Subqueryable<Brand>()
+                                .Where(n => n.Id == p.BrandId)
+                                .Select(n => n.Name),
+                        CategoryName = string.IsNullOrEmpty(
+                            SqlFunc
+                                .Subqueryable<Category>()
+                                .Where(n => n.Id == p.ThreeLevelCategory)
+                                .Select(n => n.Name)
+                        )
+                            ? "为空三级分类"
+                            : SqlFunc
+                                .Subqueryable<Category>()
+                                .Where(n => n.Id == p.ThreeLevelCategory)
+                                .Select(n => n.Name),
+                        StoreId = p.StoreId,
+                        OrderItemId = SqlFunc.ToInt64(p.FoodId),
+                        Total = SqlFunc.ToDecimal(p.ItemPrice * p.ItemCount),
+                        CityId = p.CityId,
+                    })
+                    .ToSqlString();
+
+            if (!sql2.Contains(" [OrderJoinItemTemp] [p]"))
+            {
+                throw new Exception("unit test");
+            }
+        }
+
+        private static void Demo1(SqlSugarClient db)
+        {
             var sql1 =
                         db.Queryable<OrderJoinItemTemp>()
                         .Select(p => new StoreBrandOther
@@ -25,42 +76,57 @@ namespace OrmTest
                           ) ? "n" : "a"
                         }).ToSqlString();
 
-            if (!sql1.Contains(" [OrderJoinItemTemp] [p]")) 
+            if (!sql1.Contains(" [OrderJoinItemTemp] [p]"))
             {
                 throw new Exception("unit test");
             }
+        }
+        private static void Demo3(SqlSugarClient db)
+        {
+            var sql1 =
+                        db.Queryable<OrderJoinItemTemp>()
+                        .Select(p => new StoreBrandOther
+                        {
+                            BrandName = string.IsNullOrEmpty(
+                             p.FoodName
+                          ) ? "n" : SqlFunc.Subqueryable<Brand>().Where(n => n.Id == p.BrandId).Select(n => n.Name)
+                        }).ToSqlString();
 
-                 var sql2 =  
-                         db.Queryable<OrderJoinItemTemp>()
-                         .Select(p => new StoreBrandOther
-                         {
-                             BrandName = string.IsNullOrEmpty(
-                                 SqlFunc.Subqueryable<Brand>().Where(n => n.Id == p.BrandId).Select(n => n.Name)
-                             )
-                                 ? "aa"
-                             : SqlFunc
-                                     .Subqueryable<Brand>()
-                                     .Where(n => n.Id == p.BrandId)
-                                     .Select(n => n.Name),
-                             CategoryName = string.IsNullOrEmpty(
-                                 SqlFunc
-                                     .Subqueryable<Category>()
-                                     .Where(n => n.Id == p.ThreeLevelCategory)
-                                     .Select(n => n.Name)
-                             )
-                                 ? "为空三级分类"
-                                 : SqlFunc
-                                     .Subqueryable<Category>()
-                                     .Where(n => n.Id == p.ThreeLevelCategory)
-                                     .Select(n => n.Name),
-                             StoreId = p.StoreId,
-                             OrderItemId = SqlFunc.ToInt64(p.FoodId),
-                             Total = SqlFunc.ToDecimal(p.ItemPrice * p.ItemCount),
-                             CityId = p.CityId,
-                         })
-                         .ToSqlString();
+            if (!sql1.Contains(" [OrderJoinItemTemp] [p]"))
+            {
+                throw new Exception("unit test");
+            }
+        }
 
-            if (!sql2.Contains(" [OrderJoinItemTemp] [p]"))
+        private static void Demo4(SqlSugarClient db)
+        {
+            var sql1 =
+                        db.Queryable<OrderJoinItemTemp>()
+                        .Select(p => new StoreBrandOther
+                        {
+                            BrandName = string.IsNullOrEmpty(
+                             p.FoodName
+                          ) ?  SqlFunc.Subqueryable<Brand>().Where(n => n.Id == p.BrandId).Select(n => n.Name):"a"
+                        }).ToSqlString();
+
+            if (!sql1.Contains(" [OrderJoinItemTemp] [p]"))
+            {
+                throw new Exception("unit test");
+            }
+        }
+
+        private static void Demo5(SqlSugarClient db)
+        {
+            var sql1 =
+                        db.Queryable<OrderJoinItemTemp>()
+                        .Select(p => new StoreBrandOther
+                        {
+                            BrandName = string.IsNullOrEmpty(
+                             p.FoodName
+                          ) ?  SqlFunc.ToString("a"):SqlFunc.ToString("b")
+                        }).ToSqlString();
+
+            if (sql1.Contains(" [OrderJoinItemTemp] [p]"))
             {
                 throw new Exception("unit test");
             }
