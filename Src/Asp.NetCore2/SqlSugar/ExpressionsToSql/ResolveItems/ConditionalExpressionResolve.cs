@@ -17,6 +17,7 @@ namespace SqlSugar
                 express.IfTrue,
                 express.IfFalse
             };
+            SetSingleTableNameSubqueryShortName(express);
             if (ExpressionTool.GetParameters(express.Test).Count == 0)
             {
                 while (express != null)
@@ -36,7 +37,7 @@ namespace SqlSugar
                             // 如果选择的分支还是一个条件表达式，就继续展开
                             if (ExpressionTool.RemoveConvert(next) is ConditionalExpression childConditional)
                             {
-                                express = childConditional; 
+                                express = childConditional;
                                 args = new List<Expression>() {
                                         express.Test,
                                         express.IfTrue,
@@ -86,6 +87,42 @@ namespace SqlSugar
                     break;
                 default:
                     break;
+            }
+        }
+
+        private void SetSingleTableNameSubqueryShortName(ConditionalExpression express)
+        {
+            if (this.Context.IsSingle && express.Test is MethodCallExpression callExpression)
+            {
+                var list = callExpression.Arguments.ToList();
+                if (express.IfTrue is MethodCallExpression callExpressionLeft) 
+                {
+                    list.AddRange(callExpressionLeft.Arguments);
+                }
+                if (express.IfFalse is MethodCallExpression callExpressionRight)
+                {
+                    list.AddRange(callExpressionRight.Arguments);
+                }
+                foreach (var item in list)
+                {
+                    if (item is MethodCallExpression itemObj)
+                    {
+                        if (itemObj?.Object?.Type?.Name?.StartsWith("Subqueryable`") == true)
+                        {
+                            if (this.Context.SingleTableNameSubqueryShortName == null)
+                            {
+                                if (this.Context.SugarContext?.QueryBuilder?.SelectValue is LambdaExpression lambda)
+                                {
+                                    if (lambda?.Parameters?.Count == 1)
+                                    {
+                                        this.Context.SingleTableNameSubqueryShortName = lambda.Parameters.FirstOrDefault()?.Name;
+                                        continue;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
 
