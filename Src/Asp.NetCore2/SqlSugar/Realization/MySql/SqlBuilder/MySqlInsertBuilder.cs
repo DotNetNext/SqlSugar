@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -50,6 +51,14 @@ namespace SqlSugar
                 else if (value is DateTimeOffset)
                 {
                     return GetDateTimeOffsetString(value);
+                }
+                else if (value is decimal decValue)
+                {
+                    return decValue.ToString(CultureInfo.InvariantCulture);
+                }
+                else if (value is double douValue)
+                {
+                    return douValue.ToString(CultureInfo.InvariantCulture);
                 }
                 else if (type == UtilConstants.ByteArrayType)
                 {
