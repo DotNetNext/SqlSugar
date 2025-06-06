@@ -95,19 +95,22 @@ namespace SqlSugar
             if (this.Context.IsSingle && express.Test is MethodCallExpression callExpression)
             {
                 var list = callExpression.Arguments.ToList();
+                list.Add(callExpression);
                 if (express.IfTrue is MethodCallExpression callExpressionLeft) 
                 {
+                    list.Add(callExpressionLeft);
                     list.AddRange(callExpressionLeft.Arguments);
                 }
                 if (express.IfFalse is MethodCallExpression callExpressionRight)
                 {
+                    list.Add(callExpressionRight);
                     list.AddRange(callExpressionRight.Arguments);
                 }
                 foreach (var item in list)
                 {
                     if (item is MethodCallExpression itemObj)
                     {
-                        if (itemObj?.Object?.Type?.Name?.StartsWith("Subqueryable`") == true)
+                        if (ExpressionTool.IsSubQuery(itemObj))
                         {
                             if (this.Context.SingleTableNameSubqueryShortName == null)
                             {
@@ -125,6 +128,7 @@ namespace SqlSugar
                 }
             }
         }
+
 
         private static bool IsBoolMember(ConditionalExpression express)
         {
