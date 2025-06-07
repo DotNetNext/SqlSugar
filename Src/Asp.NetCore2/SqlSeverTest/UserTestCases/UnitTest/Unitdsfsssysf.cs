@@ -39,6 +39,12 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+            var cargolaneDbs3 = db.Queryable<Products>()
+           .Select(it => new DTOProducts
+           { 
+               it=it,
+           })
+           .ToList();
             var names = new string[] { "aa", "bb" };
             var list=db.Queryable<Order>().Where(it => names.Any(s => it.Name.Contains(s)))
                 .ToList();
@@ -97,5 +103,11 @@ namespace OrmTest
             [SugarColumn(IsIgnore = true)]
             public List<OrderItem> Items { get; set; }
         }
+    }
+
+    public class DTOProducts
+    {
+        public string name { get; set; }
+        public Unitdsfsssysf.Products it { get;   set; }
     }
 }
