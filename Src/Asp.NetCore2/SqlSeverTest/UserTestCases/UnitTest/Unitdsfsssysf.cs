@@ -61,6 +61,36 @@ namespace OrmTest
             var ids = new List<int>() { 1, 2 };
             var list3 = db.Queryable<Order>().Where(it => ids.Any(s => it.Id==s))
             .ToList();
+
+            db.CodeFirst.InitTables<CargoLanes>();
+            db.Insertable(new CargoLanes() { ProductId = 1 }).ExecuteCommand();
+            var cargolaneDbs4 = db.Queryable<CargoLanes>()
+                .Select(it => new  
+                {
+                    it = it,
+                })
+                .ToList();
+        }
+
+        [SugarTable("prdev_cargolanes")]
+        public class CargoLanes
+        {
+            /// <summary>
+            /// 货道 Id
+            /// </summary>
+            [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
+            public int Id { get; set; }
+
+            /// <summary>
+            /// 产品 Id
+            /// </summary>
+            public int ProductId { get; set; }
+
+            /// <summary>
+            /// 产品信息
+            /// </summary>
+            [Navigate(NavigateType.OneToOne, nameof(ProductId), nameof(Products.Id))]
+            public Products? ProductInfo { get; set; }
         }
         [SugarTable("Unitpsroducsfdsatsfd")]
         public class Products
