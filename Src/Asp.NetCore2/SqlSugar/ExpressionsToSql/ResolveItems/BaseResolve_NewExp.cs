@@ -67,6 +67,22 @@ namespace SqlSugar
                     }
                     this.Context.SugarContext.QueryBuilder.SelectNewIgnoreColumns.Add(new KeyValuePair<string, string>(ignoreProperty.Name, itemType.Name));
                 }
+                if (this.Context?.SugarContext?.Context != null) 
+                {
+                    var entityInfoColumns = this.Context?.SugarContext?.Context.EntityMaintenance.GetEntityInfo(item.Type)
+                        .Columns
+                        .Where(it=>it.PropertyInfo!=ignoreProperty)
+                        .Where(it=>it.IsIgnore==true)
+                        .Where(it => it.PropertyInfo.PropertyType.IsClass()).ToList();
+                    foreach (var itemColumnInfo in entityInfoColumns)
+                    {
+                        if (this.Context.SugarContext.QueryBuilder.SelectNewIgnoreColumns == null)
+                        {
+                            this.Context.SugarContext.QueryBuilder.SelectNewIgnoreColumns = new List<KeyValuePair<string, string>>();
+                        }
+                        this.Context.SugarContext.QueryBuilder.SelectNewIgnoreColumns.Add(new KeyValuePair<string, string>(itemColumnInfo.PropertyInfo.Name, itemType.Name));
+                    }
+                }
             }
             if (item is ConstantExpression)
             {
