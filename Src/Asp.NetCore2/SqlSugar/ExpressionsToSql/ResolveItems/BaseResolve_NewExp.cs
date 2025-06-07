@@ -55,6 +55,19 @@ namespace SqlSugar
 
         protected void ResolveNewExpressions(ExpressionParameter parameter, Expression item, string asName)
         {
+            if (item is ParameterExpression)
+            {
+                var itemType = item.Type;
+                var ignoreProperty = itemType.GetProperties().FirstOrDefault(it => it.PropertyType == itemType);
+                if (ignoreProperty != null && ignoreProperty.Name != asName)
+                {
+                    if (this.Context.SugarContext.QueryBuilder.SelectNewIgnoreColumns == null)
+                    {
+                        this.Context.SugarContext.QueryBuilder.SelectNewIgnoreColumns = new List<KeyValuePair<string, string>>();
+                    }
+                    this.Context.SugarContext.QueryBuilder.SelectNewIgnoreColumns.Add(new KeyValuePair<string, string>(ignoreProperty.Name, itemType.Name));
+                }
+            }
             if (item is ConstantExpression)
             {
                 ResolveConst(parameter, item, asName);
