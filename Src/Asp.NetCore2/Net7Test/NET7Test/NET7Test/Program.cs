@@ -83,7 +83,8 @@ static void ServerTest()
     },
     it =>
     {
-        it.Aop.OnLogExecuting = (s, p) => Console.WriteLine(s, p);
+        it.Aop.OnLogExecuting = (s, p) =>
+        Console.WriteLine(s, p);
     });
 
     var payload = JsonSerializer.SerializeToNode(new { id = 1 });
