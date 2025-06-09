@@ -55,7 +55,7 @@ namespace SqlSugar
             {
                 foreach (var item in keys)
                 {
-                    if (item.ToLower().Contains(likeString.ToLower()))
+                    if (item!=null&&item.ToLower().Contains(likeString.ToLower()))
                     {
                         cacheService.Remove<string>(item);
                     }

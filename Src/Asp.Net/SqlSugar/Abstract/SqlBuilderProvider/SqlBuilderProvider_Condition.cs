@@ -400,7 +400,12 @@ namespace SqlSugar
                     item.FieldValue = "null";
                 }
                 builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "=", parameterName);
-                parameters.Add(new SugarParameter(parameterName, GetFieldValue(item)));
+                var p = new SugarParameter(parameterName, GetFieldValue(item));
+                if (item.CSharpTypeName == "DateOnly") 
+                {
+                    p.DbType = System.Data.DbType.Date;
+                }
+                parameters.Add(p);
             }
         } 
         #endregion

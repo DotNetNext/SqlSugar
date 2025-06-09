@@ -264,6 +264,28 @@ namespace SqlSugar
                 var tType = typeof(T);
                 var classProperties = tType.GetProperties()
                     .Where(p => p.GetIndexParameters().Length == 0).ToList();  
+                if(this.QueryBuilder is QueryBuilder q) 
+                {
+                    if (q.IsAnyParameterExpression) 
+                    {
+                        if (q.SelectValue is LambdaExpression lambda) 
+                        {
+                            if (lambda.Body is MemberInitExpression memberInit) 
+                            {
+                                // 获取memberInit中定义的属性名称
+                                var memberNames = memberInit.Bindings
+                                    .OfType<MemberAssignment>()
+                                    .Select(b => b.Member.Name)
+                                    .ToList();
+
+                                // 过滤掉不在memberInit中的属性
+                                classProperties = classProperties
+                                    .Where(p => memberNames.Contains(p.Name))
+                                    .ToList();
+                            }
+                        }
+                    }
+                }
                 var reval = new List<T>();
                 if (reader != null && !reader.IsClosed)
                 {
@@ -533,7 +555,7 @@ namespace SqlSugar
                         var type = UtilMethods.GetUnderType(item.PropertyType);
                         if (addValue == DBNull.Value || addValue == null)
                         {
-                            if (item.PropertyType.IsIn(UtilConstants.IntType, UtilConstants.DecType, UtilConstants.DobType, UtilConstants.ByteType))
+                            if (item.PropertyType.IsIn(UtilConstants.IntType,UtilConstants.LongType, UtilConstants.DecType, UtilConstants.DobType, UtilConstants.ByteType))
                             {
                                 addValue = 0;
                             }

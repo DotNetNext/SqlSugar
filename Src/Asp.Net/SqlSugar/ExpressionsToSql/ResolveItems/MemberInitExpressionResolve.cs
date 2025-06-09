@@ -322,6 +322,7 @@ namespace SqlSugar
 
         private void Select(MemberInitExpression expression, ExpressionParameter parameter, bool isSingle)
         {
+            var isAnyParameterExpression = false;
             foreach (MemberBinding binding in expression.Bindings)
             {
                 if (binding.BindingType != MemberBindingType.Assignment)
@@ -356,7 +357,15 @@ namespace SqlSugar
                         item = (item as UnaryExpression).Operand;
                     }
                 }
+                if(item is ParameterExpression) 
+                {
+                    isAnyParameterExpression = true;
+                }
                 ResolveNewExpressions(parameter, item, memberName);
+            }
+            if (isAnyParameterExpression && this.Context?.SugarContext?.QueryBuilder is QueryBuilder builder) 
+            {
+                builder.IsAnyParameterExpression = true;
             }
         }
 

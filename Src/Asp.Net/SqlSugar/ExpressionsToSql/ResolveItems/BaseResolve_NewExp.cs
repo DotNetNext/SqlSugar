@@ -55,6 +55,35 @@ namespace SqlSugar
 
         protected void ResolveNewExpressions(ExpressionParameter parameter, Expression item, string asName)
         {
+            if (item is ParameterExpression)
+            {
+                var itemType = item.Type;
+                var ignoreProperty = itemType.GetProperties().FirstOrDefault(it => it.PropertyType == itemType);
+                if (ignoreProperty != null && ignoreProperty.Name != asName)
+                {
+                    if (this.Context.SugarContext.QueryBuilder.SelectNewIgnoreColumns == null)
+                    {
+                        this.Context.SugarContext.QueryBuilder.SelectNewIgnoreColumns = new List<KeyValuePair<string, string>>();
+                    }
+                    this.Context.SugarContext.QueryBuilder.SelectNewIgnoreColumns.Add(new KeyValuePair<string, string>(ignoreProperty.Name, itemType.Name));
+                }
+                if (this.Context?.SugarContext?.Context != null) 
+                {
+                    var entityInfoColumns = this.Context?.SugarContext?.Context.EntityMaintenance.GetEntityInfo(item.Type)
+                        .Columns
+                        .Where(it=>it.PropertyInfo!=ignoreProperty)
+                        .Where(it=>it.IsIgnore==true)
+                        .Where(it => it.PropertyInfo.PropertyType.IsClass()).ToList();
+                    foreach (var itemColumnInfo in entityInfoColumns)
+                    {
+                        if (this.Context.SugarContext.QueryBuilder.SelectNewIgnoreColumns == null)
+                        {
+                            this.Context.SugarContext.QueryBuilder.SelectNewIgnoreColumns = new List<KeyValuePair<string, string>>();
+                        }
+                        this.Context.SugarContext.QueryBuilder.SelectNewIgnoreColumns.Add(new KeyValuePair<string, string>(itemColumnInfo.PropertyInfo.Name, itemType.Name));
+                    }
+                }
+            }
             if (item is ConstantExpression)
             {
                 ResolveConst(parameter, item, asName);
