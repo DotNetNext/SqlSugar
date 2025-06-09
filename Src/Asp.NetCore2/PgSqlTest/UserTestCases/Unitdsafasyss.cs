@@ -20,6 +20,7 @@ namespace OrmTest
 
             db.CodeFirst.InitTables<Unitdfsas>();
             db.Insertable(new Unitdfsas() { GridX = new double[] { 1 } }).ExecuteCommand();
+            db.Fastest<Unitdfsas>().BulkCopy(new List<Unitdfsas>(){ new Unitdfsas() { GridX = new double[] { 1 } } });
             var list=db.Queryable<Unitdfsas>().ToList();
         }
         public class Unitdfsas 
