@@ -1,5 +1,4 @@
-﻿using Dm.util;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -84,8 +83,8 @@ namespace SqlSugar
                     // SQL Server 使用中括号转义 %, _ 等
                     var keyLeft = "[[]";
                     var keyRight = "[]]";
-                    var leftGuid = Guid.NewGuid().toString();
-                    var rightGuid = Guid.NewGuid().toString();
+                    var leftGuid = Guid.NewGuid().ToString();
+                    var rightGuid = Guid.NewGuid().ToString();
                     value = value.Replace("[", leftGuid)
                                  .Replace("]", rightGuid);
 
