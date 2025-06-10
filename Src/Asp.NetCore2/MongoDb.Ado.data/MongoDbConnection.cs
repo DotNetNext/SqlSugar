@@ -84,6 +84,10 @@ namespace MongoDb.Ado.data
                         {
                             queryParams += "&";
                         }
+                        else 
+                        {
+                            queryParams += "?";
+                        }
                         queryParams += $"authSource={dict["AuthSource"]}";
                     }
                 }
