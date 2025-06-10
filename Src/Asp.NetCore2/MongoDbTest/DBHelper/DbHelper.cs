@@ -13,8 +13,8 @@ namespace MongoDbTest.DBHelper
     /// </summary>
     public class DbHelper
     {
-        public static string ConnectionString = "mongodb://mongouser:Huangxin%40123@localhost:27018/SqlSugarDb?replicaSet=cmgo-7d07e4w1_0&authSource=admin";
-        public static string SqlSugarConnectionString = "host=localhost;Port=27018;Database=SqlSugarDb;Username=mongouser;Password=Huangxin@123;replicaSet=cmgo-7d07e4w1_0&authSource=admin";
+        public static string ConnectionString = "mongodb://root:123456@117.72.212.3:27017/testDB?authSource=admin";
+        public static string SqlSugarConnectionString = "host=117.72.212.3;Port=27017;Database=testDB;Username= root;Password=123456;authSource=admin;replicaSet=";
 
         /// <summary>
         /// Get a new SqlSugarClient instance with specific configurations
