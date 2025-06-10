@@ -14,6 +14,7 @@ namespace MongoDb.Ado.data
 {
     public class DbDataReaderFactoryAsync
     {
+        public  CancellationToken token { get; set; }
         public readonly static Dictionary<string, IQueryHandlerAsync> Items = new Dictionary<string, IQueryHandlerAsync>(StringComparer.OrdinalIgnoreCase)
             {
                 { "find", new QueryFindHandlerAsync() },
@@ -28,7 +29,8 @@ namespace MongoDb.Ado.data
             {
                 await  ExecuteHandlerFactoryAsync.HandlerAsync(operation, json, collection, cancellationToken);
                 return new DataTable().CreateDataReader();
-            } 
+            }
+            handler.token = cancellationToken;
             return await handler.HandlerAsync(collection, doc);
         }
 

@@ -5,12 +5,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MongoDb.Ado.data 
 {
     public class QueryFindHandlerAsync : IQueryHandlerAsync
     {
+        public CancellationToken token { get; set; }
         public async Task<DbDataReader> HandlerAsync(IMongoCollection<BsonDocument> collection, BsonValue doc)
         {
             BsonDocument filter;
@@ -37,7 +39,7 @@ namespace MongoDb.Ado.data
             if (projection != null)
                 findFluent = findFluent.Project<BsonDocument>(projection);
 
-            var cursor =await findFluent.ToListAsync();    
+            var cursor =await findFluent.ToListAsync(token);    
             return new MongoDbBsonDocumentDataReader(cursor); // 你要确保这个类支持逐行读取 BsonDocument
         }
     }
