@@ -108,6 +108,16 @@ namespace SqlSugar.OceanBaseForOracle
                 {
                     return value.ObjToBool() ? "1" : "0";
                 }
+                else if (value is TimeSpan ts)
+                {
+                    return string.Format(
+                   "INTERVAL '{0} {1:D2}:{2:D2}:{3:D2}.{4:D3}' DAY TO SECOND(3)",
+                   ts.Days,
+                   ts.Hours,
+                   ts.Minutes,
+                   ts.Seconds,
+                   ts.Milliseconds);
+                }
                 else if (type == UtilConstants.DateTimeOffsetType)
                 {
                     var date = UtilMethods.ConvertFromDateTimeOffset((DateTimeOffset)value);
