@@ -75,6 +75,11 @@ namespace SqlSugar.OceanBaseForOracle
     }
     public partial class OceanBaseForOracleMethod : DefaultDbMethod, IDbMethods
     {
+        public override string UNIX_TIMESTAMP(MethodCallExpressionModel model)
+        {
+            var parameterNameA = model.Args[0].MemberName;
+            return $" (CAST({parameterNameA} AS DATE) - DATE '1970-01-01') * 86400 ";
+        }
         public override string IsNullOrEmpty(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
@@ -237,11 +242,10 @@ namespace SqlSugar.OceanBaseForOracle
             switch (type)
             {
                 case DateType.Year:
-                    time = 1 * 365;
-                    break;
+                    // 每年 = 12 个月
+                    return $"ADD_MONTHS({parameter.MemberName}, ({parameter2.MemberName}) * 12)";
                 case DateType.Month:
-                    time = 1 * 30;
-                    break;
+                    return $"ADD_MONTHS({parameter.MemberName}, {parameter2.MemberName})";
                 case DateType.Day:
                     break;
                 case DateType.Hour:
