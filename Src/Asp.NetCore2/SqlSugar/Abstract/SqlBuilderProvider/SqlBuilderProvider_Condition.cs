@@ -401,9 +401,13 @@ namespace SqlSugar
                 }
                 builder.AppendFormat(temp, type, item.FieldName.ToSqlFilter(), "=", parameterName);
                 var p = new SugarParameter(parameterName, GetFieldValue(item));
-                if (item.CSharpTypeName == "DateOnly") 
+                if (item.CSharpTypeName .EqualCase("DateOnly")) 
                 {
                     p.DbType = System.Data.DbType.Date;
+                }
+                if (item.CSharpTypeName.EqualCase("Char"))
+                {
+                    p.DbType = System.Data.DbType.AnsiString;
                 }
                 parameters.Add(p);
             }
