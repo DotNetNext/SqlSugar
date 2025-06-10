@@ -133,6 +133,11 @@ namespace SqlSugar.TDSQLForPGODBC
     }
     public class TDSQLForPGODBCMethod : DefaultDbMethod, IDbMethods
     {
+        public override string UNIX_TIMESTAMP(MethodCallExpressionModel model)
+        {
+            var parameterNameA = model.Args[0].MemberName;
+            return $" EXTRACT(EPOCH FROM {parameterNameA})::BIGINT ";
+        }
         public override string CharIndex(MethodCallExpressionModel model)
         {
             return string.Format(" (strpos ({1},{0})-1)", model.Args[0].MemberName, model.Args[1].MemberName);
