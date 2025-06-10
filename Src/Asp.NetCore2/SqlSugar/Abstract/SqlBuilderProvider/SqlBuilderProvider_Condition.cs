@@ -407,7 +407,7 @@ namespace SqlSugar
                 }
                 if (item.CSharpTypeName.EqualCase("Char"))
                 {
-                    p.DbType = System.Data.DbType.AnsiString;
+                    p.DbType = System.Data.DbType.StringFixedLength;
                 }
                 parameters.Add(p);
             }
