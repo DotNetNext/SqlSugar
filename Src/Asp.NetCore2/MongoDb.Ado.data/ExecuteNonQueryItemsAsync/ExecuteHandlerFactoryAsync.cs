@@ -4,6 +4,7 @@ using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MongoDb.Ado.data
@@ -22,7 +23,7 @@ namespace MongoDb.Ado.data
             };
 
 
-        public static Task<int> HandlerAsync(string operation, string json, IMongoCollection<BsonDocument> collection)
+        public static Task<int> HandlerAsync(string operation, string json, IMongoCollection<BsonDocument> collection,CancellationToken cancellationToken)
         {
             MongoDbMethodUtils.ValidateOperation(operation);
             var handlers = ExecuteHandlerFactoryAsync.Items;
@@ -30,6 +31,7 @@ namespace MongoDb.Ado.data
             if (!handlers.TryGetValue(operation, out var handler))
                 throw new NotSupportedException($"不支持的操作类型: {operation}");
             handler.operation = operation;
+            handler.token = cancellationToken;
             return handler.HandleAsync(collection, json);
         }
 

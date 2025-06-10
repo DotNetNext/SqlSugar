@@ -5,11 +5,13 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace MongoDb.Ado.data 
 {
     public class UpdateManyHandlerAsync : IMongoOperationHandlerAsync
     {
+        public CancellationToken token { get; set; }
         public string operation { get; set; }
         public async  Task<int> HandleAsync(IMongoCollection<BsonDocument> collection, string json)
         {

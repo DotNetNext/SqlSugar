@@ -7,6 +7,7 @@ using System.Data;
 using System.Data.Common;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MongoDb.Ado.data
@@ -18,16 +19,16 @@ namespace MongoDb.Ado.data
                 { "find", new QueryFindHandlerAsync() },
                 { "aggregate", new QueryAggregateHandlerAsync() },
             };
-        public async Task<DbDataReader> HandleAsync(string operation, IMongoCollection<BsonDocument> collection, string json)
+        public async Task<DbDataReader> HandleAsync(string operation, IMongoCollection<BsonDocument> collection, string json, CancellationToken cancellationToken)
         {
             MongoDbMethodUtils.ValidateOperation(operation);
             var doc = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonValue>(json);
             DbDataReaderFactoryAsync.Items.TryGetValue(operation, out var handler);
             if (handler == null)
             {
-                await  ExecuteHandlerFactoryAsync.HandlerAsync(operation, json, collection);
+                await  ExecuteHandlerFactoryAsync.HandlerAsync(operation, json, collection, cancellationToken);
                 return new DataTable().CreateDataReader();
-            }
+            } 
             return await handler.HandlerAsync(collection, doc);
         }
 

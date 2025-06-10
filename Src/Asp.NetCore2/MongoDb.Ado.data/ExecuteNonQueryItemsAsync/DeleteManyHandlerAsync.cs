@@ -5,11 +5,13 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace MongoDb.Ado.data 
 {
     public class DeleteManyHandlerAsync : IMongoOperationHandlerAsync
     {
+        public CancellationToken token { get; set; }
         public string operation { get; set; }
         public async Task<int> HandleAsync(IMongoCollection<BsonDocument> collection, string json)
         {
@@ -18,7 +20,7 @@ namespace MongoDb.Ado.data
             foreach (var doc in documents)
             {
                 var filter = doc["filter"].AsBsonDocument;
-                var result =await collection.DeleteManyAsync(filter);
+                var result =await collection.DeleteManyAsync(filter,token);
                 total += (int)result.DeletedCount;
             }
             return total;

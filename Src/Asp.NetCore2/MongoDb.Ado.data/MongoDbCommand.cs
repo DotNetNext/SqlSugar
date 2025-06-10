@@ -83,19 +83,19 @@ namespace MongoDb.Ado.data
         {
             var (operation, collectionName, json) = ParseCommand(_commandText);
             var collection = GetCollection(collectionName);
-            return ExecuteHandlerFactoryAsync.HandlerAsync(operation, json, collection);
+            return ExecuteHandlerFactoryAsync.HandlerAsync(operation, json, collection, cancellationToken);
         }
         public override Task<object> ExecuteScalarAsync(CancellationToken cancellationToken)
         {
             var (operation, collectionName, json) = ParseCommand(_commandText);
             var collection = GetCollection(collectionName);
-            return new ExecuteScalarHandlerAsync().HandleAsync(operation, collection, json);
+            return new ExecuteScalarHandlerAsync().HandleAsync(operation, collection, json, cancellationToken);
         }
         protected override  Task<DbDataReader> ExecuteDbDataReaderAsync(CommandBehavior behavior,CancellationToken cancellationToken)
         {
             var (operation, collectionName, json) = ParseCommand(_commandText);
             var collection = GetCollection(collectionName);
-            return new DbDataReaderFactoryAsync().HandleAsync(operation, collection, json);
+            return new DbDataReaderFactoryAsync().HandleAsync(operation, collection, json, cancellationToken);
         }
 
 
