@@ -16,7 +16,7 @@ namespace MongoDb.Ado.data
         public async Task<int> HandleAsync(IMongoCollection<BsonDocument> collection, string json)
         {
             var documents = ParseJsonArray(json);
-            await collection.InsertManyAsync(documents);
+            await collection.InsertManyAsync(documents,null,token);
             return documents.Count;
         }
 

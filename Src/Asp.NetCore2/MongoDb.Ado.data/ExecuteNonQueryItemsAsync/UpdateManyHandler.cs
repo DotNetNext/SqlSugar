@@ -21,7 +21,7 @@ namespace MongoDb.Ado.data
             {
                 var filter = doc["filter"].AsBsonDocument;
                 var update = doc["update"].AsBsonDocument;
-                var result =await  collection.UpdateManyAsync(filter, update);
+                var result =await  collection.UpdateManyAsync(filter, update,null,token);
                 total += (int)result.ModifiedCount;
             }
             return total;

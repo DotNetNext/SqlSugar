@@ -15,7 +15,7 @@ namespace MongoDb.Ado.data
         public async Task<int> HandleAsync(IMongoCollection<BsonDocument> collection, string json)
         {
             var doc = BsonDocument.Parse(json);
-            await collection.InsertOneAsync(doc);
+            await collection.InsertOneAsync(doc,null,token);
             return 1;
         }
     }
