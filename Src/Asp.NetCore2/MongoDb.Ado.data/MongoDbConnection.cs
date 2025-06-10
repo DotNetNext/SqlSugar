@@ -73,7 +73,7 @@ namespace MongoDb.Ado.data
                         : $"mongodb://{Uri.EscapeDataString(username)}:{Uri.EscapeDataString(password)}@{host}:{port}/{_databaseName}";
 
                     // 提取查询参数（如果有）
-                    if (dict.ContainsKey("ReplicaSet"))
+                    if (dict.ContainsKey("ReplicaSet")&&!string.IsNullOrEmpty( dict["ReplicaSet"]))
                     {
                         queryParams += $"?replicaSet={dict["ReplicaSet"]}";
                     }
