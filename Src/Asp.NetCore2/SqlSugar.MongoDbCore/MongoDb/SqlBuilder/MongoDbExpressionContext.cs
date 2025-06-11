@@ -166,14 +166,7 @@ namespace SqlSugar.MongoDb
             {
                 arg = "$" + str.AsString;
             }
-            var countExpression = new BsonDocument(name, new BsonDocument("$sum",
-                new BsonDocument("$cond", new BsonArray
-                {
-                    new BsonDocument("$ifNull", new BsonArray { arg, false }),
-                    1,
-                    0
-                })
-            ));
+            var countExpression = new BsonDocument(name, new BsonDocument("$sum",1));
             var result= countExpression.ToJson(SqlSugar.MongoDb.UtilMethods.GetJsonWriterSettings());
             context.queryBuilder.GroupByValue += $"({UtilConstants.ReplaceCommaKey}({result}){UtilConstants.ReplaceCommaKey})";
             context.queryBuilder.LambdaExpressions.Index++;

@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using Dm.util;
+using MongoDB.Bson;
 using SqlSugar.MongoDb;
 using System;
 using System.Collections.Generic;
@@ -115,6 +116,7 @@ namespace SqlSugar.MongoDb
                 }
             }
             #endregion
+              
 
             #region Select
             if (this.SelectValue is Expression expression) 
@@ -126,6 +128,57 @@ namespace SqlSugar.MongoDb
                 });
                 var json = dos.ToJson(UtilMethods.GetJsonWriterSettings());
                 operations.Add($"{{\"$project\": {json} }}"); 
+            }
+            #endregion
+
+
+            #region GroupBy
+            if (this.GroupByValue.HasValue())
+            {
+                var regex = new Regex($@"\(\{UtilConstants.ReplaceCommaKey}\((.*?)\)\{UtilConstants.ReplaceCommaKey}\)",
+                      RegexOptions.Compiled);
+
+                var matches = regex.Matches(this.GroupByValue);
+                var selectItems = new List<string>();
+                foreach (Match match in matches)
+                {
+                    var selectItem = match.Groups[1].Value;
+                    selectItems.Add(selectItem);
+                }
+                var jsonPart = Regex.Split(this.GroupByValue, UtilConstants.ReplaceCommaKey)
+                    .First()
+                    .TrimEnd('(')
+                    .replace("GROUP BY ", "");
+                var fieldNames = new List<string>();
+                var bson = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonDocument>(jsonPart);
+                if (bson.Contains("fieldName"))
+                {
+                    var field = bson["fieldName"].AsString;
+                    fieldNames.add(field);
+                }
+                // 构造 _id 部分：支持多字段形式
+                var groupId = new BsonDocument();
+                foreach (var field in fieldNames)
+                {
+                    groupId.Add(field, $"${field}");
+                }
+
+                var groupDoc = new BsonDocument("$group", new BsonDocument
+                {
+                    { "_id", groupId }
+                });
+
+                // 解析 selectJsonItems（每个是 BsonDocument 字符串）
+                var groupFields = groupDoc["$group"].AsBsonDocument;
+                foreach (var json in selectItems)
+                {
+                    var doc = BsonDocument.Parse(json);
+                    foreach (var element in doc)
+                    {
+                        groupFields.Add(element.Name, element.Value);
+                    }
+                }
+                operations.Insert(operations.Count-1, groupDoc.ToJson(UtilMethods.GetJsonWriterSettings()));
             }
             #endregion
 

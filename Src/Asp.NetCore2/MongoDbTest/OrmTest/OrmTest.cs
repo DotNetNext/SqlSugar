@@ -122,8 +122,8 @@ namespace MongoDbTest
                    .GroupBy(it => it.Name)
                    .Select(it => new
                    {
-                       Id = it.Name,
-                       MyCount = SqlFunc.AggregateCount(it.Id)
+                       Name = it.Name,
+                       x = SqlFunc.AggregateCount(it.Id)
                    }).ToList();
             //测试生成SQL性能
             TestSqlBuilder(db);
