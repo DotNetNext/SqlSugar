@@ -121,7 +121,8 @@ namespace SqlSugar.MongoDb
             {
                 var dos=MongoNestedTranslator.Translate(expression, new MongoNestedTranslatorContext() { 
                     context = this.Context,
-                    resolveType=ResolveExpressType.SelectSingle
+                    resolveType=ResolveExpressType.SelectSingle,
+                    queryBuilder=this
                 });
                 var json = dos.ToJson(UtilMethods.GetJsonWriterSettings());
                 operations.Add($"{{\"$project\": {json} }}"); 

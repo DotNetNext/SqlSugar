@@ -28,13 +28,14 @@ namespace SqlSugar.MongoDb
                 BsonValue result = null;
                 if (typeof(IDbMethods).GetMethods().Any(it => it.Name == name))
                 {
-                    var context = new MongoDbMethod();
+                    var context = new MongoDbMethod() {  context=this._context};
                     MethodCallExpressionModel model = new MethodCallExpressionModel();
-                    var args= methodCallExpression.Arguments;
+                    var args= methodCallExpression.Arguments; 
+                    model.Args = new List<MethodCallExpressionArgs>();
                     foreach (var item in args)
                     {
-                        //开发中
-                    }
+                        model.Args.Add(new MethodCallExpressionArgs() { MemberValue = item });
+                    } 
                     var funcString= context.GetType().GetMethod(name).Invoke(context, new object[] { model });
                     result = BsonValue.Create(funcString);
                 }
