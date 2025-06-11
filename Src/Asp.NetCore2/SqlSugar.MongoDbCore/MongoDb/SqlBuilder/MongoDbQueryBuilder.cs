@@ -147,13 +147,13 @@ namespace SqlSugar.MongoDb
                 var jsonPart = Regex.Split(this.GroupByValue, UtilConstants.ReplaceCommaKey)
                     .First()
                     .TrimEnd('(')
-                    .replace("GROUP BY ", "");
+                    .Replace("GROUP BY ", "");
                 var fieldNames = new List<string>();
                 var bson = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonDocument>(jsonPart);
                 if (bson.Contains("fieldName"))
                 {
                     var field = bson["fieldName"].AsString;
-                    fieldNames.add(field);
+                    fieldNames.Add(field);
                 }
                 // 构造 _id 部分：支持多字段形式
                 var groupId = new BsonDocument();
