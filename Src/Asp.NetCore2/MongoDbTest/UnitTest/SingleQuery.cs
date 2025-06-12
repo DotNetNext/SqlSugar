@@ -15,6 +15,8 @@ namespace MongoDbTest
         {
             var db = DBHelper.DbHelper.GetNewDb();
 
+            db.CodeFirst.InitTables<Student>();
+            db.CodeFirst.InitTables<School>();
             db.DbMaintenance.TruncateTable<Student>();
             db.DbMaintenance.TruncateTable<School>(); 
 
