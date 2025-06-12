@@ -29,11 +29,15 @@ namespace MongoDbTest
             var tableCount = db.Queryable<School>().ToList().Count;
             if(tableCount!=3) Cases.ThrowUnitError();
 
-            db.Insertable(new School() { Name = "zz大学" }).ExecuteCommand();
+            db.Insertable(new School() { Name = "ss大学" }).ExecuteCommand();
             db.Insertable(new School() { Name = "yy大学" }).ExecuteCommand();
             var count = 0;
             var list = db.Queryable<School>().OrderBy(it=>it.Name).ToPageList(1,2,ref count);
-            if(count != 5||list.Count!=2) Cases.ThrowUnitError(); 
+            if(count != 5||list.Count!=2) Cases.ThrowUnitError();
+
+            var list3 = db.Queryable<School>().Where(it=>it.Name== "zz大学"||it.Name== "ss大学").ToPageList(1, 2, ref count);
+            if(count!=2||list3.Count!=2) Cases.ThrowUnitError();
+            if (list3.First().Name!= "zz大学"|| list3.Last().Name != "ss大学") Cases.ThrowUnitError();
         }
     }
     [SqlSugar.SugarTable("UnitStudent123131")]
