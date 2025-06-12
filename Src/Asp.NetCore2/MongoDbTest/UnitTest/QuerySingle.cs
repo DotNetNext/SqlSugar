@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MongoDbTest 
 {
-    public class SingleQuery
+    public class QuerySingle
     {
         public static void Init() 
         {

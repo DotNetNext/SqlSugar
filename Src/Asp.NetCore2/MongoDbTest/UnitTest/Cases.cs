@@ -11,7 +11,8 @@ namespace MongoDbTest
     {
         public static void Init() 
         {
-            SingleQuery.Init();
+            QuerySingle.Init();
+            QueryWhere.Init();
         } 
         public static void ThrowUnitError()
         {
