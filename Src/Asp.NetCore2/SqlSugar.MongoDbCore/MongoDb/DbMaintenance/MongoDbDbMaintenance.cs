@@ -1,4 +1,8 @@
-﻿using System;
+﻿using MongoDb.Ado.data;
+using MongoDB.Bson;
+using MongoDB.Driver;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.Metrics;
 using System.Linq;
@@ -250,6 +254,13 @@ namespace SqlSugar.MongoDb
         #endregion
 
         #region Methods
+        public override bool TruncateTable(string tableName)
+        {
+            var db =((MongoDbConnection)this.Context.Ado.Connection).GetDatabase();
+             db.GetCollection<BsonDocument>(tableName)
+            .DeleteMany(FilterDefinition<BsonDocument>.Empty);
+            return true;
+        }
         public override List<string> GetIndexList(string tableName)
         {
             var sql = $"SELECT indexname, indexdef FROM pg_indexes WHERE upper(tablename) = upper('{tableName}')";

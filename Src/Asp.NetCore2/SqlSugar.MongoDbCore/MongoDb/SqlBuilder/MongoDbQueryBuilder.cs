@@ -86,6 +86,8 @@ namespace SqlSugar.MongoDb
             #region OrderBy
             var order = this.GetOrderByString;
             var orderByString = this.GetOrderByString?.Trim();
+            if (orderByString == "ORDER BY NOW()")
+                orderByString = null;
             if (!string.IsNullOrEmpty(orderByString) && orderByString.StartsWith("ORDER BY ", StringComparison.OrdinalIgnoreCase))
             {
                 order = order.Substring("ORDER BY ".Length).Trim();
