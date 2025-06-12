@@ -127,6 +127,17 @@ namespace MongoDbTest
                        max=SqlFunc.AggregateMax(it.Id),
                        min=SqlFunc.AggregateMin(it.Id)
                    }).ToList();
+
+            var list14 = db.Queryable<OrderInfo>()
+               .GroupBy(it => new { it.Name ,it.Price })
+               .Select(it => new
+               {
+                   key = it.Name,
+                   Prie=it.Price,
+                   groupCount = SqlFunc.AggregateCount(it.Id),
+                   max = SqlFunc.AggregateMax(it.Id),
+                   min = SqlFunc.AggregateMin(it.Id)
+               }).ToList();
             //测试生成SQL性能
             TestSqlBuilder(db);
         }

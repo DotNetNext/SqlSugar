@@ -115,8 +115,7 @@ namespace SqlSugar.MongoDb
                 }
             }
             #endregion
-              
-
+               
             #region Select
             if (this.SelectValue is Expression expression) 
             {
@@ -129,8 +128,7 @@ namespace SqlSugar.MongoDb
                 operations.Add($"{{\"$project\": {json} }}"); 
             }
             #endregion
-
-
+             
             #region GroupBy 
             if (this.GroupByValue.HasValue())
             {
@@ -144,17 +142,20 @@ namespace SqlSugar.MongoDb
                     var selectItem = match.Groups[1].Value;
                     selectItems.Add(selectItem);
                 }
-                var jsonPart = Regex.Split(this.GroupByValue, UtilConstants.ReplaceCommaKey)
+                var jsonPart = "["+Regex.Split(this.GroupByValue, UtilConstants.ReplaceCommaKey)
                     .First()
                     .TrimEnd('(')
-                    .Replace("GROUP BY ", "");
+                    .Replace("GROUP BY ", "")+"]";
                 var fieldNames = new List<string>();
-                var bson = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonDocument>(jsonPart);
-                if (bson.Contains("fieldName"))
-                {
-                    var field = bson["fieldName"].AsString;
-                    operations[operations.Count - 1] = operations[operations.Count - 1].Replace($"\"${field}\"", $"\"$_id.{field}\"");
-                   fieldNames.Add(field);
+                var bsonArray = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonArray>(jsonPart);
+                foreach (BsonDocument bson in bsonArray)
+                { 
+                    if (bson.Contains("fieldName"))
+                    {
+                       var field = bson["fieldName"].AsString;
+                       operations[operations.Count - 1] = operations[operations.Count - 1].Replace($"\"${field}\"", $"\"$_id.{field}\"");
+                       fieldNames.Add(field);
+                    }
                 }
                 // 构造 _id 部分：支持多字段形式
                 var groupId = new BsonDocument();
