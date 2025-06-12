@@ -64,8 +64,17 @@ namespace SqlSugar.MongoDb
                     trimmed = trimmed.Substring(5).TrimStart();
                 else if (trimmed.StartsWith("AND", StringComparison.OrdinalIgnoreCase))
                     trimmed = trimmed.Substring(3).TrimStart();
-                // item 是 JSON 格式字符串，直接包进 $match
-                operations.Add($"{{ \"$match\": {trimmed} }}");
+                if (IsFieldNameJson(trimmed))
+                {
+                    var outerDoc = BsonDocument.Parse(trimmed);
+                    trimmed = outerDoc["fieldName"].AsString;
+                    operations.Add(trimmed);
+                }
+                else
+                {
+                    // item 是 JSON 格式字符串，直接包进 $match
+                    operations.Add($"{{ \"$match\": {trimmed} }}");
+                }
             }
             #endregion
 
@@ -192,6 +201,12 @@ namespace SqlSugar.MongoDb
 
             return sb.ToString();
         }
+
+        private bool IsFieldNameJson(string trimmed)
+        {
+            return trimmed.StartsWith("{ \"fieldName\" : ");
+        }
+
         public override string ToCountSql(string sql)
         {
             sql=sql.TrimEnd(']');

@@ -32,6 +32,7 @@ namespace SqlSugar.MongoDb
                     MethodCallExpressionModel model = new MethodCallExpressionModel();
                     var args= methodCallExpression.Arguments; 
                     model.Args = new List<MethodCallExpressionArgs>();
+                    model.DataObject = methodCallExpression.Object;
                     foreach (var item in args)
                     {
                         model.Args.Add(new MethodCallExpressionArgs() { MemberValue = item });

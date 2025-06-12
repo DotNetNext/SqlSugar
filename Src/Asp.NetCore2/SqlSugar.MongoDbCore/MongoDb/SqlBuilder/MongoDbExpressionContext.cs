@@ -239,6 +239,23 @@ namespace SqlSugar.MongoDb
             context.queryBuilder.GroupByValue += $"({UtilConstants.ReplaceCommaKey}({result}){UtilConstants.ReplaceCommaKey})";
             context.queryBuilder.LambdaExpressions.Index++;
             return name;
+        } 
+        public override string Contains(MethodCallExpressionModel model)
+        {
+            var item = model.Args.First().MemberValue;
+            BsonValue right = new ExpressionVisitor(context).Visit(item as Expression);
+            BsonValue left = new ExpressionVisitor(context).Visit(model.DataObject as Expression);
+            // 构造 $regex 匹配
+            var regexDoc = new BsonDocument
+            {
+                { "$regex", right },        // right 是普通字符串值，例如 "a"
+                { "$options", "i" }         // 忽略大小写
+            }; 
+            var match = new BsonDocument("$match", new BsonDocument
+                {
+                    { left.ToString(), regexDoc }
+                });
+            return match.ToJson(UtilMethods.GetJsonWriterSettings());
         }
     }
 }
