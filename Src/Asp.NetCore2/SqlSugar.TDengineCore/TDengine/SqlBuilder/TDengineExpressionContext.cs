@@ -1,5 +1,4 @@
-﻿using Dm.util;
-using System;
+﻿using System;
 using System.Linq;
 namespace SqlSugar.TDengine
 {
@@ -279,7 +278,7 @@ namespace SqlSugar.TDengine
             var parameter2 = model.Args[1];
             var parameter3 = model.Args[2];
             var result= string.Format(" {1}+{2}{0} ", parameter3.MemberValue.ObjToString().ToLower().First(), parameter.MemberName, parameter2.MemberValue);
-            return result.replace("+-","-");
+            return result.Replace("+-","-");
         }
 
 
