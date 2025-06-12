@@ -131,7 +131,7 @@ namespace SqlSugar.MongoDb
             #endregion
 
 
-            #region GroupBy
+            #region GroupBy 
             if (this.GroupByValue.HasValue())
             {
                 var regex = new Regex($@"\(\{UtilConstants.ReplaceCommaKey}\((.*?)\)\{UtilConstants.ReplaceCommaKey}\)",
@@ -153,7 +153,8 @@ namespace SqlSugar.MongoDb
                 if (bson.Contains("fieldName"))
                 {
                     var field = bson["fieldName"].AsString;
-                    fieldNames.Add(field);
+                    operations[operations.Count - 1] = operations[operations.Count - 1].Replace($"\"${field}\"", $"\"$_id.{field}\"");
+                   fieldNames.Add(field);
                 }
                 // 构造 _id 部分：支持多字段形式
                 var groupId = new BsonDocument();
