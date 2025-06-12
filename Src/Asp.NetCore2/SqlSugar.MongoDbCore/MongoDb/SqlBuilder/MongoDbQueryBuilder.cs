@@ -192,7 +192,12 @@ namespace SqlSugar.MongoDb
 
             return sb.ToString();
         }
-
+        public override string ToCountSql(string sql)
+        {
+            sql=sql.TrimEnd(']');
+            sql += "{ \"$count\": \"TotalCount\" }]";
+            return sql;
+        }
         #endregion
 
         #region Get SQL Partial

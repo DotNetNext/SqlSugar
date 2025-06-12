@@ -8,6 +8,10 @@ namespace SqlSugar.MongoDb
 {
     public class MongoDbQueryable<T> : QueryableProvider<T>
     {
+        public override int Count()
+        {
+            return base.Count();
+        }
         public override ISugarQueryable<T> With(string withString)
         {
             return this;
