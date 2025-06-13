@@ -170,7 +170,7 @@ namespace SqlSugar
         }
 
         #region async
-        public async new Task<DbCommand> GetCommandAsync(string sql, SugarParameter[] parameters)
+        public async override Task<DbCommand> GetCommandAsync(string sql, SugarParameter[] parameters)
         {
             MySqlCommand sqlCommand = new MySqlCommand(sql, (MySqlConnection)this.Connection);
             sqlCommand.CommandType = this.CommandType;
