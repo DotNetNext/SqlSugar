@@ -74,7 +74,7 @@ namespace SqlSugar.MongoDb
                     }
                     else
                     {
-                        setDocument[fieldName] = BsonValue.Create(fieldValue);
+                        setDocument[fieldName] =  UtilMethods.MyCreate(fieldValue);
                     }
                 }
             }

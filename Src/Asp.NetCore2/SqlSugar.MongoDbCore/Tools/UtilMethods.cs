@@ -16,7 +16,16 @@ using System.Text.RegularExpressions;
 namespace SqlSugar.MongoDb
 {
     public class UtilMethods
-    {
+    { 
+        public static BsonValue MyCreate(object value)
+        {
+            if (value is DateTime dt)
+            {
+                var utcNow = DateTime.SpecifyKind(dt, DateTimeKind.Utc);
+                return new BsonDateTime(utcNow);
+            }
+            return BsonValue.Create(value);
+        }
         internal static MongoDB.Bson.IO.JsonWriterSettings GetJsonWriterSettings() 
         {
             return new MongoDB.Bson.IO.JsonWriterSettings

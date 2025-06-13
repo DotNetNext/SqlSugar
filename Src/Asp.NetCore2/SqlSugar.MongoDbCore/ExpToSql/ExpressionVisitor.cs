@@ -49,12 +49,6 @@ namespace SqlSugar.MongoDb
                 default:
                     throw new NotSupportedException($"Unsupported expression: {expr.NodeType}");
             }
-        }
-
-        private object MemberInitExpressionTractor(MongoNestedTranslatorContext context, ExpressionVisitorContext visitorContext)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
+        } 
+    } 
 }

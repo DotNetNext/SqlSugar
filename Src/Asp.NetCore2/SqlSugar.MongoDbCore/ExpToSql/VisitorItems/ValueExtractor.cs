@@ -18,7 +18,7 @@ namespace SqlSugar.MongoDb
 
         public BsonValue Extract(ConstantExpression expr)
         {
-            return BsonValue.Create(expr.Value);
+            return  UtilMethods.MyCreate(expr.Value);
         } 
     }
 }

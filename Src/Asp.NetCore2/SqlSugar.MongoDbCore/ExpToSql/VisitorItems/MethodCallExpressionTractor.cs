@@ -19,7 +19,7 @@ namespace SqlSugar.MongoDb
         {
             if (ExpressionTool.GetParameters(expr).Count == 0)
             {
-                return BsonValue.Create(ExpressionTool.DynamicInvoke(expr));
+                return  UtilMethods.MyCreate(ExpressionTool.DynamicInvoke(expr));
             }
             else
             {
@@ -38,7 +38,7 @@ namespace SqlSugar.MongoDb
                         model.Args.Add(new MethodCallExpressionArgs() { MemberValue = item });
                     } 
                     var funcString= context.GetType().GetMethod(name).Invoke(context, new object[] { model });
-                    result = BsonValue.Create(funcString);
+                    result =  UtilMethods.MyCreate(funcString);
                 }
                 return result;
             }

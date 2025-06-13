@@ -26,7 +26,7 @@ namespace SqlSugar.MongoDb
             if (ExpressionTool.GetParameters(expr).Count == 0)
             {
                 var value = ExpressionTool.GetMemberValue(oldMember.Member, oldExp);
-                return BsonValue.Create(value);
+                return  UtilMethods.MyCreate(value);
             }
             else if (!string.IsNullOrEmpty(BinaryExpressionTranslator.GetSystemDateMemberName(expr)))
             {
@@ -36,7 +36,7 @@ namespace SqlSugar.MongoDb
                 if (memberExp.Member.Name == "Date") 
                 {
                     model.Args.Add(new MethodCallExpressionArgs() { MemberValue = memberExp.Expression });
-                    return method.ToDateShort(model);
+                    return BsonDocument.Parse(method.ToDateShort(model));
                 }
 
             }
@@ -65,11 +65,11 @@ namespace SqlSugar.MongoDb
                     var columnInfo = entityInfo.Columns.FirstOrDefault(s => s.PropertyName == parts.First());
                     if (columnInfo != null)
                     {
-                        return BsonValue.Create(columnInfo.DbColumnName);
+                        return  UtilMethods.MyCreate(columnInfo.DbColumnName);
                     }
                 }
             }
-            return BsonValue.Create(string.Join(".", parts));
+            return  UtilMethods.MyCreate(string.Join(".", parts));
         }
     }
 

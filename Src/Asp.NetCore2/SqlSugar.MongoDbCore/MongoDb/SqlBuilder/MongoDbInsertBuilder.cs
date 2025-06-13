@@ -59,7 +59,7 @@ namespace SqlSugar.MongoDb
                 foreach (var col in group)
                 {
                     // 自动推断类型，如 string、int、bool、DateTime、ObjectId 等
-                    doc[col.DbColumnName] = BsonValue.Create(col.Value);
+                    doc[col.DbColumnName] =  UtilMethods.MyCreate(col.Value);
                 }
 
                 // 转为 JSON 字符串（标准 MongoDB shell 格式）

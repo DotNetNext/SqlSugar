@@ -107,11 +107,11 @@ namespace SqlSugar.MongoDb
 
                     if (col.IsPrimarykey || pks.Contains(col.DbColumnName))
                     {
-                        filter[col.DbColumnName] = BsonValue.Create(ObjectId.Parse(col.Value?.ToString())); ;
+                        filter[col.DbColumnName] =  UtilMethods.MyCreate(ObjectId.Parse(col.Value?.ToString())); ;
                     }
                     else
                     {
-                        var bsonValue = BsonValue.Create(col.Value);
+                        var bsonValue =  UtilMethods.MyCreate(col.Value);
                         setDoc[col.DbColumnName] = bsonValue;
                     }
                 }
