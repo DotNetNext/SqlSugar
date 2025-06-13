@@ -257,5 +257,41 @@ namespace SqlSugar.MongoDb
                 });
             return match.ToJson(UtilMethods.GetJsonWriterSettings());
         }
+        public override string StartsWith(MethodCallExpressionModel model)
+        {
+            var item = model.Args.First().MemberValue;
+            BsonValue right = new ExpressionVisitor(context).Visit(item as Expression);
+            BsonValue left = new ExpressionVisitor(context).Visit(model.DataObject as Expression);
+            // 构造 $regex 匹配，^ 表示以...开头
+            var regexPattern = "^" + right.ToString();
+            var regexDoc = new BsonDocument
+            {
+                { "$regex", regexPattern },
+                { "$options", "i" }
+            };
+            var match = new BsonDocument("$match", new BsonDocument
+                {
+                    { left.ToString(), regexDoc }
+                });
+            return match.ToJson(UtilMethods.GetJsonWriterSettings());
+        }
+        public override string EndsWith(MethodCallExpressionModel model)
+        {
+            var item = model.Args.First().MemberValue;
+            BsonValue right = new ExpressionVisitor(context).Visit(item as Expression);
+            BsonValue left = new ExpressionVisitor(context).Visit(model.DataObject as Expression);
+            // 构造 $regex 匹配，$ 表示以...结尾
+            var regexPattern = right.ToString() + "$";
+            var regexDoc = new BsonDocument
+            {
+                { "$regex", regexPattern },
+                { "$options", "i" }
+            };
+            var match = new BsonDocument("$match", new BsonDocument
+                {
+                    { left.ToString(), regexDoc }
+                });
+            return match.ToJson(UtilMethods.GetJsonWriterSettings());
+        }
     }
 }

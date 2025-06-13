@@ -40,6 +40,15 @@ namespace MongoDbTest
         {
             var list = db.Queryable<Student>().Where(it => it.Name.Contains("ck")).ToList();
             if (!list.First().Name.Contains("ck")) Cases.ThrowUnitError();
+
+            var list2 = db.Queryable<Student>().Where(it => it.Name.StartsWith("ck")).ToList();
+            if (list2.Any()) Cases.ThrowUnitError();
+
+            var list3 = db.Queryable<Student>().Where(it => it.Name.StartsWith("ja")).ToList();
+            if (!list3.Any()) Cases.ThrowUnitError();
+
+            var list4 = db.Queryable<Student>().Where(it => it.Name.EndsWith("ck")).ToList();
+            if (!list4.Any()) Cases.ThrowUnitError();
         }
 
         private static void ValidateStudentData(SqlSugar.SqlSugarClient db)
