@@ -1,4 +1,5 @@
-﻿using SqlSugar.MongoDb;
+﻿using SqlSugar;
+using SqlSugar.MongoDb;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,6 +50,9 @@ namespace MongoDbTest
 
             var list4 = db.Queryable<Student>().Where(it => it.Name.EndsWith("ck")).ToList();
             if (!list4.Any()) Cases.ThrowUnitError();
+
+            var list5 = db.Queryable<Student>().Where(it =>it.CreateDateTime==DateTime.Now.Date).ToList();
+            var list6 = db.Queryable<Student>().Where(it => it.CreateDateTime == DateTime.Now.AddDays(1)).ToList();
         }
 
         private static void ValidateStudentData(SqlSugar.SqlSugarClient db)
@@ -62,8 +66,8 @@ namespace MongoDbTest
         {
             db.CodeFirst.InitTables<Student>();
             db.DbMaintenance.TruncateTable<Student>();
-            db.Insertable(new Student() { Name = "jack", Bool = true, SchoolId = 2 }).ExecuteCommand();
-            db.Insertable(new Student() { Name = "tom_null", Bool = false, BoolNull = true, SchoolId = 3, SchoolIdNull = 4 }).ExecuteCommand();
+            db.Insertable(new Student() { Name = "jack",CreateDateTime=DateTime.Now.AddDays(-10), Bool = true, SchoolId = 2 }).ExecuteCommand();
+            db.Insertable(new Student() { Name = "tom_null", CreateDateTime = DateTime.Now.AddDays(-110), Bool = false, BoolNull = true, SchoolId = 3, SchoolIdNull = 4 }).ExecuteCommand();
         }
 
         [SqlSugar.SugarTable("UnitStudent1ssss23s131")]
@@ -76,6 +80,8 @@ namespace MongoDbTest
 
             public int SchoolId { get; set; }
             public int? SchoolIdNull { get; set; }
+
+            public DateTime CreateDateTime { get; set; }
         }
     }
 }
