@@ -246,14 +246,15 @@ namespace SqlSugar
 
         private async Task<int> _BulkMerge(List<T> datas, string[] updateColumns, string[] whereColumns)
         {
+            var isAuto = this.context.CurrentConnectionConfig.IsAutoCloseConnection;
+            var old = this.context.Ado.IsDisableMasterSlaveSeparation;
             try
             {
                 Begin(datas, false, true);
                 Check.Exception(whereColumns == null || whereColumns.Count() == 0, "where columns count=0 or need primary key");
                 Check.Exception(whereColumns == null || whereColumns.Count() == 0, "where columns count=0 or need primary key");
-                var isAuto = this.context.CurrentConnectionConfig.IsAutoCloseConnection;
+                
                 this.context.CurrentConnectionConfig.IsAutoCloseConnection = false;
-                var old = this.context.Ado.IsDisableMasterSlaveSeparation;
                 this.context.Ado.IsDisableMasterSlaveSeparation = true;
                 DataTable dt = ToDdateTable(datas);
                 IFastBuilder buider = GetBuider();
@@ -270,16 +271,20 @@ namespace SqlSugar
                 {
                     this.context.DbMaintenance.DropTable(dt.TableName);
                 }
-                this.context.CurrentConnectionConfig.IsAutoCloseConnection = isAuto;
                 buider.CloseDb();
                 End(datas, false, true);
-                this.context.Ado.IsDisableMasterSlaveSeparation = old;
+                
                 return result;
             }
             catch (Exception)
             {
                 this.context.Close();
                 throw;
+            }
+            finally
+            {
+                this.context.CurrentConnectionConfig.IsAutoCloseConnection = isAuto;
+                this.context.Ado.IsDisableMasterSlaveSeparation = old;
             }
         }
         #endregion
