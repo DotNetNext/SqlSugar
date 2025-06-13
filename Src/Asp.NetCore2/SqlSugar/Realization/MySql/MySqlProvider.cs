@@ -6,6 +6,7 @@ using System.Data;
 using System.Data.Common;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 namespace SqlSugar
 {
@@ -169,7 +170,7 @@ namespace SqlSugar
         }
 
         #region async
-        public async Task<DbCommand> GetCommandAsync(string sql, SugarParameter[] parameters)
+        public async new Task<DbCommand> GetCommandAsync(string sql, SugarParameter[] parameters)
         {
             MySqlCommand sqlCommand = new MySqlCommand(sql, (MySqlConnection)this.Connection);
             sqlCommand.CommandType = this.CommandType;
