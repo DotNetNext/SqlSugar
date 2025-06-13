@@ -23,10 +23,9 @@ namespace SqlSugar.MongoDb
         public BsonDocument Extract(BinaryExpression expr)
         {
             if (expr.NodeType == ExpressionType.AndAlso || expr.NodeType == ExpressionType.OrElse)
-            {
                 return LogicalBinaryExpression(expr);
-            } 
-            return FieldComparisonOrCalculationExpression(expr);
+            else
+               return FieldComparisonOrCalculationExpression(expr);
         }
          
     
