@@ -4,6 +4,7 @@ using SqlSugar.MongoDb;
 using System;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Text.RegularExpressions;
 namespace SqlSugar.MongoDb
 {
     public class MongoDbExpressionContext : ExpressionContext, ILambdaExpressions
@@ -292,6 +293,17 @@ namespace SqlSugar.MongoDb
                     { left.ToString(), regexDoc }
                 });
             return match.ToJson(UtilMethods.GetJsonWriterSettings());
+        } 
+        public override string ToDateShort(MethodCallExpressionModel model)
+        {
+            var item = model.Args.First().MemberValue;
+            BsonValue itemValue = new ExpressionVisitor(context).Visit(item as Expression);
+            var dateTruncDoc = new BsonDocument("$dateTrunc", new BsonDocument
+            {
+                { "date", $"${itemValue}" },
+                { "unit", "day" }
+            });
+            return dateTruncDoc.ToJson(UtilMethods.GetJsonWriterSettings());
         }
     }
 }

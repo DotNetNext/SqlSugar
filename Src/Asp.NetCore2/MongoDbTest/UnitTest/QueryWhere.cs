@@ -53,7 +53,9 @@ namespace MongoDbTest
 
             var list5 = db.Queryable<Student>().Where(it =>it.CreateDateTime==DateTime.Now.Date).ToList();
             var list6 = db.Queryable<Student>().Where(it => it.CreateDateTime == DateTime.Now.AddDays(1)).ToList();
-            var list7 = db.Queryable<Student>().Where(it => it.CreateDateTime.Date == DateTime.Now.AddDays(1)).ToList();
+
+            var dt = DateTime.Now.AddDays(-10).Date;
+            var list7 = db.Queryable<Student>().Where(it => it.CreateDateTime.Date == dt).ToList();
         }
 
         private static void ValidateStudentData(SqlSugar.SqlSugarClient db)

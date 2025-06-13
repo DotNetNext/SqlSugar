@@ -23,11 +23,28 @@ namespace SqlSugar.MongoDb
         {
             var oldExp = expr;
             var oldMember = expr as MemberExpression;
-            if (ExpressionTool.GetParameters(expr).Count == 0) 
-            { 
+            if (ExpressionTool.GetParameters(expr).Count == 0)
+            {
                 var value = ExpressionTool.GetMemberValue(oldMember.Member, oldExp);
                 return BsonValue.Create(value);
-            } 
+            }
+            else if (!string.IsNullOrEmpty(BinaryExpressionTranslator.GetSystemDateMemberName(expr)))
+            {
+               var memberExp= (expr as MemberExpression);
+                var method = new MongoDbMethod() { context = _context };
+                var model = new MethodCallExpressionModel() { Args = new List<MethodCallExpressionArgs>() };
+                if (memberExp.Member.Name == "Date") 
+                {
+                    model.Args.Add(new MethodCallExpressionArgs() { MemberValue = memberExp.Expression });
+                    return method.ToDateShort(model);
+                }
+
+            }
+            return ExtractFieldPath(expr);
+        }
+
+        private BsonValue ExtractFieldPath(Expression expr)
+        {
             var parts = new Stack<string>();
 
             while (expr is MemberExpression member)
@@ -40,7 +57,7 @@ namespace SqlSugar.MongoDb
             {
                 _visitorContext.ExpType = typeof(MemberExpression);
             }
-            if (parts.Count == 1&& expr is ParameterExpression parameter) 
+            if (parts.Count == 1 && expr is ParameterExpression parameter)
             {
                 if (_context?.context != null)
                 {
