@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MongoDb.Ado.data\MongoDb.Ado.data.csproj" />
+    <ProjectReference Include="..\MongoDb.Ado.data\MongoDb.Ado.Data.csproj" />
     <ProjectReference Include="..\SqlSugar\SqlSugar.csproj" />
   </ItemGroup>
 

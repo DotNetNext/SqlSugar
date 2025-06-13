@@ -1,0 +1,24 @@
+﻿<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>TDengine.Ado.Data</id>
+    <version>3.1.07</version>
+    <authors>sunkaixuan</authors>
+    <owners>Landa</owners>
+    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
+    <projectUrl>https://github.com/sunkaixuan/SqlSugar</projectUrl>
+    <iconUrl>https://secure.gravatar.com/avatar/a82c03402497b2e58fd65038a3699b30</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description> TDengine ADO.NET驱动,使用用例看：https://github.com/DotNetNext/SqlSugar/blob/master/Src/Asp.NetCore2/TDengineTest/Program.cs </description>
+    <copyright>Copyright 2016</copyright>
+    <tags>TDengine orm</tags>
+    <dependencies>
+      <group targetFramework=".NETStandard2.1">
+        <dependency id="TDengine.Connector" version="3.1" /> 
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="G:\Git\TDengine.Ado.Data\TDengineTest\SqlSugar.TDengine\bin\Debug\netstandard2.1\SqlSugar.TDengine.dll" target="lib\netstandard2.1"></file>
+  </files>
+</package>
