@@ -12,7 +12,16 @@ namespace SqlSugar.MongoDb
     {
         MongoNestedTranslatorContext _context;
         ExpressionVisitorContext _visitorContext;
-
+        Dictionary<string, DateType> dateTypeNames = new Dictionary<string, DateType>
+          {
+              { "Year", DateType.Year },
+              { "Month", DateType.Month },
+              { "Day", DateType.Day },
+              { "Hour", DateType.Hour },
+              { "Minute", DateType.Minute },
+              { "Second", DateType.Second },
+              { "Millisecond", DateType.Millisecond }
+          };
         public FieldPathExtractor(MongoNestedTranslatorContext context, ExpressionVisitorContext visitorContext)
         {
             _context = context;
@@ -38,7 +47,12 @@ namespace SqlSugar.MongoDb
                     model.Args.Add(new MethodCallExpressionArgs() { MemberValue = memberExp.Expression });
                     return BsonDocument.Parse(method.ToDateShort(model));
                 }
-
+                else if (dateTypeNames.TryGetValue(memberExp.Member.Name, out var dateType))
+                {
+                    model.Args.Add(new MethodCallExpressionArgs() { MemberValue = memberExp.Expression });
+                    model.Args.Add(new MethodCallExpressionArgs() { MemberValue = dateType });
+                    return BsonDocument.Parse(method.DateValue(model));
+                }
             }
             return ExtractFieldPath(expr);
         }

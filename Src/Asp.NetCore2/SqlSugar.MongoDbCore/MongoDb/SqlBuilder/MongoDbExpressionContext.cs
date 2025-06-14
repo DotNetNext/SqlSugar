@@ -305,5 +305,48 @@ namespace SqlSugar.MongoDb
             });
             return dateTruncDoc.ToJson(UtilMethods.GetJsonWriterSettings());
         }
+        public override string DateValue(MethodCallExpressionModel model)
+        {
+            var item = model.Args.First().MemberValue;
+            BsonValue itemValue = new ExpressionVisitor(context).Visit(item as Expression);
+            var dateType = (DateType)model.Args.Last().MemberValue;
+            switch (dateType)
+            {
+                case DateType.Year:
+                    // MongoDB $year 操作符
+                    return new BsonDocument("$year", $"${itemValue}").ToJson(UtilMethods.GetJsonWriterSettings());
+                case DateType.Month:
+                    return new BsonDocument("$month", $"${itemValue}").ToJson(UtilMethods.GetJsonWriterSettings());
+                case DateType.Day:
+                    return new BsonDocument("$dayOfMonth", $"${itemValue}").ToJson(UtilMethods.GetJsonWriterSettings());
+                case DateType.Hour:
+                    return new BsonDocument("$hour", $"${itemValue}").ToJson(UtilMethods.GetJsonWriterSettings());
+                case DateType.Minute:
+                    return new BsonDocument("$minute", $"${itemValue}").ToJson(UtilMethods.GetJsonWriterSettings());
+                case DateType.Second:
+                    return new BsonDocument("$second", $"${itemValue}").ToJson(UtilMethods.GetJsonWriterSettings());
+                case DateType.Millisecond:
+                    return new BsonDocument("$millisecond", $"${itemValue}").ToJson(UtilMethods.GetJsonWriterSettings());
+                case DateType.Weekday:
+                    return new BsonDocument("$week", $"${itemValue}").ToJson(UtilMethods.GetJsonWriterSettings());
+                case DateType.Quarter:
+                    // MongoDB 没有直接的quarter操作符，需自定义表达式
+                    var expr = new BsonDocument("$add", new BsonArray
+                    {
+                        new BsonDocument("$divide", new BsonArray
+                        {
+                            new BsonDocument("$subtract", new BsonArray
+                            {
+                                new BsonDocument("$month", $"${itemValue}"),
+                                1
+                            }),
+                            3
+                        }),
+                        1
+                    });
+             return expr.ToJson(UtilMethods.GetJsonWriterSettings()); 
+            }
+            return null;
+        }
     }
 }
