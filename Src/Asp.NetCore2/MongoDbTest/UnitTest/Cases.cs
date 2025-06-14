@@ -13,6 +13,7 @@ namespace MongoDbTest
         {
             QuerySingle.Init();
             QueryWhere.Init();
+            QuerySelect.Init();
         } 
         public static void ThrowUnitError()
         {
