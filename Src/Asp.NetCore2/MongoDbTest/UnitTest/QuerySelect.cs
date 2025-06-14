@@ -37,6 +37,11 @@ namespace MongoDbTest
             if (list.First().hour != dt.Hour) Cases.ThrowUnitError();
             if (list.First().Minute != dt.Minute) Cases.ThrowUnitError();
             if (list.First().Second != dt.Second) Cases.ThrowUnitError();
+            var list2 = db.Queryable<Student>().Select(it => new
+            {
+                date = it.CreateDateTime.ToString("yyyy-MM-dd")
+            }).ToList();
+            if(list2.First().date!=dt.ToString("yyyy-MM-dd")) Cases.ThrowUnitError();
         }
         [SqlSugar.SugarTable("UnitStudent1231sds3z1")]
         public class Student : MongoDbBase

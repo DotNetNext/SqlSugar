@@ -36,9 +36,17 @@ namespace SqlSugar.MongoDb
                     foreach (var item in args)
                     {
                         model.Args.Add(new MethodCallExpressionArgs() { MemberValue = item });
-                    } 
-                    var funcString= context.GetType().GetMethod(name).Invoke(context, new object[] { model });
-                    result =  UtilMethods.MyCreate(funcString);
+                    }
+                    if (name == nameof(ToString))
+                    {
+                        var funcString = context.ToString(model);
+                        result = BsonDocument.Parse(funcString);
+                    }
+                    else
+                    {
+                        var funcString = context.GetType().GetMethod(name).Invoke(context, new object[] { model });
+                        result = UtilMethods.MyCreate(funcString);
+                    }
                 }
                 return result;
             }

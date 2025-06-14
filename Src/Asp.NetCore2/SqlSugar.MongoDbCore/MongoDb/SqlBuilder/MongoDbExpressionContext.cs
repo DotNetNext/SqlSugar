@@ -5,6 +5,7 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
+using Microsoft.IdentityModel.Tokens;
 namespace SqlSugar.MongoDb
 {
     public class MongoDbExpressionContext : ExpressionContext, ILambdaExpressions
@@ -347,6 +348,80 @@ namespace SqlSugar.MongoDb
              return expr.ToJson(UtilMethods.GetJsonWriterSettings()); 
             }
             return null;
+        } 
+        public override string ToString(MethodCallExpressionModel model)
+        {
+            var item = model.DataObject as Expression;
+            BsonValue memberName = new ExpressionVisitor(context).Visit(item as Expression);
+
+            if (model.Args == null || model.Args.Count == 0)
+            {
+                // 只有 ToString()，直接转字符串
+                var toStringDoc = new BsonDocument("$toString", $"${memberName}");
+                return toStringDoc.ToJson(UtilMethods.GetJsonWriterSettings());
+            }
+            else if (model.Args.Count == 1)
+            {
+                var format = (model.Args.First().MemberValue).ObjToString().TrimStart('"').TrimEnd('"');
+                // 先判断类型
+                var type = (item as MemberExpression)?.Type ?? (item as UnaryExpression)?.Type;
+                if (type == typeof(DateTime) || type == typeof(DateTime?))
+                {
+                    // C#格式转MongoDB格式
+                    string mongoFormat = ConvertCSharpDateFormatToMongo(format);
+                    var dateToStringDoc = new BsonDocument("$dateToString", new BsonDocument
+                    {
+                        { "format", mongoFormat },
+                        { "date", $"${memberName}" }
+                    });
+                    return dateToStringDoc.ToJson(UtilMethods.GetJsonWriterSettings());
+                }
+                else if (UtilConstants.NumericalTypes.Contains(type))
+                {
+                    // 数字格式化，MongoDB不支持C#的数字格式，需要先转字符串再在C#端格式化
+                    // 这里只能简单转字符串
+                    var toStringDoc = new BsonDocument("$toString", $"${memberName}");
+                    return toStringDoc.ToJson(UtilMethods.GetJsonWriterSettings());
+                }
+                else
+                {
+                    // 其他类型直接转字符串
+                    var toStringDoc = new BsonDocument("$toString", $"${memberName}");
+                    return toStringDoc.ToJson(UtilMethods.GetJsonWriterSettings());
+                }
+            }
+            else
+            {
+                throw new NotSupportedException("ToString 只支持0或1个参数");
+            }
         }
+
+        #region
+
+        // Existing methods...
+
+        /// <summary>
+        /// Converts a C# date format string to a MongoDB-compatible date format string.
+        /// </summary>
+        /// <param name="csharpFormat">The C# date format string.</param>
+        /// <returns>The MongoDB-compatible date format string.</returns>
+        public string ConvertCSharpDateFormatToMongo(string csharpFormat)
+        {
+            if (string.IsNullOrEmpty(csharpFormat))
+            {
+                throw new ArgumentNullException(nameof(csharpFormat), "Date format cannot be null or empty.");
+            }
+
+            // Replace C# date format specifiers with MongoDB equivalents
+            return csharpFormat
+                .Replace("yyyy", "%Y")
+                .Replace("MM", "%m")
+                .Replace("dd", "%d")
+                .Replace("HH", "%H")
+                .Replace("mm", "%M")
+                .Replace("ss", "%S")
+                .Replace("fff", "%L"); // Milliseconds
+        }
+        #endregion
     }
 }
