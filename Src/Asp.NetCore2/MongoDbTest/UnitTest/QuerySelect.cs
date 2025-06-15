@@ -39,6 +39,7 @@ namespace MongoDbTest
             if (list.First().hour != dt.Hour) Cases.ThrowUnitError();
             if (list.First().Minute != dt.Minute) Cases.ThrowUnitError();
             if (list.First().Second != dt.Second) Cases.ThrowUnitError();
+            if (list.First().Week != dt.DayOfWeek) Cases.ThrowUnitError();
             var list2 = db.Queryable<Student>().Select(it => new
             {
                 date = it.CreateDateTime.ToString("yyyy-MM-dd")
