@@ -158,6 +158,63 @@ namespace SqlSugar.MongoDb
     public class MongoDbMethod : DefaultDbMethod, IDbMethods
     {
         public MongoNestedTranslatorContext  context { get; set; }
+        public override string ToInt32(MethodCallExpressionModel model)
+        {
+            var item = model.DataObject as Expression;
+            BsonValue memberName = new ExpressionVisitor(context).Visit(item as Expression);
+            var toIntDoc = new BsonDocument("$toInt", $"${memberName}");
+            return toIntDoc.ToJson(UtilMethods.GetJsonWriterSettings());
+        }
+
+        public override string ToInt64(MethodCallExpressionModel model)
+        {
+            var item = model.DataObject as Expression;
+            BsonValue memberName = new ExpressionVisitor(context).Visit(item as Expression);
+            var toLongDoc = new BsonDocument("$toLong", $"${memberName}");
+            return toLongDoc.ToJson(UtilMethods.GetJsonWriterSettings());
+        }
+
+        public override string ToGuid(MethodCallExpressionModel model)
+        {
+            var item = model.DataObject as Expression;
+            BsonValue memberName = new ExpressionVisitor(context).Visit(item as Expression);
+            // MongoDB 没有直接的 Guid 类型，通常以字符串存储
+            var toStringDoc = new BsonDocument("$toString", $"${memberName}");
+            return toStringDoc.ToJson(UtilMethods.GetJsonWriterSettings());
+        }
+
+        public override string ToDouble(MethodCallExpressionModel model)
+        {
+            var item = model.DataObject as Expression;
+            BsonValue memberName = new ExpressionVisitor(context).Visit(item as Expression);
+            var toDoubleDoc = new BsonDocument("$toDouble", $"${memberName}");
+            return toDoubleDoc.ToJson(UtilMethods.GetJsonWriterSettings());
+        }
+
+        public override string ToBool(MethodCallExpressionModel model)
+        {
+            var item = model.DataObject as Expression;
+            BsonValue memberName = new ExpressionVisitor(context).Visit(item as Expression);
+            var toBoolDoc = new BsonDocument("$toBool", $"${memberName}");
+            return toBoolDoc.ToJson(UtilMethods.GetJsonWriterSettings());
+        }
+
+        public override string ToDate(MethodCallExpressionModel model)
+        {
+            var item = model.DataObject as Expression;
+            BsonValue memberName = new ExpressionVisitor(context).Visit(item as Expression);
+            var toDateDoc = new BsonDocument("$toDate", $"${memberName}");
+            return toDateDoc.ToJson(UtilMethods.GetJsonWriterSettings());
+        }
+
+        public override string ToTime(MethodCallExpressionModel model)
+        {
+            var item = model.DataObject as Expression;
+            BsonValue memberName = new ExpressionVisitor(context).Visit(item as Expression);
+            // MongoDB 没有单独的 Time 类型，通常用字符串或日期处理
+            var toStringDoc = new BsonDocument("$toString", $"${memberName}");
+            return toStringDoc.ToJson(UtilMethods.GetJsonWriterSettings());
+        }
         public override string AggregateCount(MethodCallExpressionModel model)
         {
             var index = context.queryBuilder.LambdaExpressions.Index;

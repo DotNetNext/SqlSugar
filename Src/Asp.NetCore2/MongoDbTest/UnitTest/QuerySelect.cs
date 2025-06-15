@@ -18,7 +18,7 @@ namespace MongoDbTest
             db.CodeFirst.InitTables<Student>();
             db.DbMaintenance.TruncateTable<Student>();
             var dt = DateTime.Now;
-            var studentId = db.Insertable(new Student() { CreateDateTime=dt, Name="a", SchoolId="aa" })
+            var studentId = db.Insertable(new Student() { CreateDateTime=dt,Age=11, Name="a", SchoolId="aa" })
                .ExecuteCommand(); 
             var list=db.Queryable<Student>().Select(it => new
             {
@@ -42,6 +42,10 @@ namespace MongoDbTest
                 date = it.CreateDateTime.ToString("yyyy-MM-dd")
             }).ToList();
             if(list2.First().date!=dt.ToString("yyyy-MM-dd")) Cases.ThrowUnitError();
+            var list3 = db.Queryable<Student>().Select(it => new
+            {
+                date = it.Age.ToString()
+            }).ToList();
         }
         [SqlSugar.SugarTable("UnitStudent1231sds3z1")]
         public class Student : MongoDbBase
@@ -49,6 +53,8 @@ namespace MongoDbTest
             public string Name { get; set; }
 
             public string SchoolId { get; set; }
+
+            public int Age { get; set; }
 
             public DateTime CreateDateTime { get; set; }
         } 
