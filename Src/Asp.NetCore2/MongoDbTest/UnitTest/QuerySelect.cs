@@ -44,8 +44,10 @@ namespace MongoDbTest
             if(list2.First().date!=dt.ToString("yyyy-MM-dd")) Cases.ThrowUnitError();
             var list3 = db.Queryable<Student>().Select(it => new
             {
-                date = it.Age.ToString()
-            }).ToList();
+                date = it.Age.ToString(),
+                int32 = Convert.ToInt32(it.Age),
+                dateTime = Convert.ToDateTime(it.CreateDateTime),
+            }).ToList(); ;
         }
         [SqlSugar.SugarTable("UnitStudent1231sds3z1")]
         public class Student : MongoDbBase

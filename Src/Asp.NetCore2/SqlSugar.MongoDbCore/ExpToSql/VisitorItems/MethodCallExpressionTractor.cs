@@ -25,6 +25,8 @@ namespace SqlSugar.MongoDb
             {
                 var methodCallExpression = expr as MethodCallExpression;
                 var name = methodCallExpression.Method.Name;
+                if (name == "ToDateTime")
+                    name = "ToDate";
                 BsonValue result = null;
                 if (typeof(IDbMethods).GetMethods().Any(it => it.Name == name))
                 {
@@ -41,6 +43,11 @@ namespace SqlSugar.MongoDb
                     {
                         var funcString = context.ToString(model);
                         result = BsonDocument.Parse(funcString);
+                    }
+                    else if (name.StartsWith("To")) 
+                    {
+                        var value = context.GetType().GetMethod(name).Invoke(context, new object[] { model });
+                        result = BsonDocument.Parse(value?.ToString());
                     }
                     else
                     {
