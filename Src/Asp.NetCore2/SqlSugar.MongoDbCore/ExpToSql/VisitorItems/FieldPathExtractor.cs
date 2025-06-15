@@ -20,7 +20,8 @@ namespace SqlSugar.MongoDb
               { "Hour", DateType.Hour },
               { "Minute", DateType.Minute },
               { "Second", DateType.Second },
-              { "Millisecond", DateType.Millisecond }
+              { "Millisecond", DateType.Millisecond },
+              { "DayOfWeek", DateType.Weekday }
           };
         public FieldPathExtractor(MongoNestedTranslatorContext context, ExpressionVisitorContext visitorContext)
         {

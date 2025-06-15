@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 using MongoDbTest.DBHelper;
 using SqlSugar.MongoDb;
 using System;
@@ -28,7 +29,8 @@ namespace MongoDbTest
                 hour=it.CreateDateTime.Hour,
                 Minute = it.CreateDateTime.Minute,
                 month=it.CreateDateTime.Month,
-                Second=it.CreateDateTime.Second
+                Second=it.CreateDateTime.Second,
+                Week = it.CreateDateTime.DayOfWeek
             }).ToList();
             if (list.First().date != dt.Date) Cases.ThrowUnitError();
             if (list.First().year != dt.Date.Year) Cases.ThrowUnitError();
