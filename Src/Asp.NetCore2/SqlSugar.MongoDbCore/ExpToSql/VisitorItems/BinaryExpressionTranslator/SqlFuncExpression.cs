@@ -64,7 +64,7 @@ namespace SqlSugar.MongoDb
         }
         public static readonly List<string> AllowedDateParts = new List<string>()
         {
-            "Date", "Year", "Month", "Day", "Hour", "Minute", "Second", "Millisecond"
+            "Date","DayOfWeek", "Year", "Month", "Day", "Hour", "Minute", "Second", "Millisecond"
         };
     }
 }

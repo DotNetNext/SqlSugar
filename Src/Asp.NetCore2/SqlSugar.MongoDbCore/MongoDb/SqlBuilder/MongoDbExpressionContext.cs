@@ -386,7 +386,11 @@ namespace SqlSugar.MongoDb
                 case DateType.Millisecond:
                     return new BsonDocument("$millisecond", $"${itemValue}").ToJson(UtilMethods.GetJsonWriterSettings());
                 case DateType.Weekday:
-                    return new BsonDocument("$week", $"${itemValue}").ToJson(UtilMethods.GetJsonWriterSettings());
+                    return new BsonDocument("$subtract", new BsonArray
+                    {
+                        new BsonDocument("$dayOfWeek", $"${itemValue}"),
+                        1
+                    }).ToJson(UtilMethods.GetJsonWriterSettings());
                 case DateType.Quarter:
                     // MongoDB 没有直接的quarter操作符，需自定义表达式
                     var expr = new BsonDocument("$add", new BsonArray
