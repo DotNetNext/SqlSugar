@@ -43,7 +43,26 @@ namespace SqlSugar
         public string GetValue(Expression expression = null)
         {
             var exp = expression as MethodCallExpression;
-            return "AVG(" + SubTools.GetMethodValue(this.Context, exp.Arguments[0], ResolveExpressType.FieldSingle) + ")";
+            var argExp = exp.Arguments[0];
+            var parametres = (argExp as LambdaExpression).Parameters;
+            if ((argExp as LambdaExpression).Body is UnaryExpression)
+            {
+                argExp = ((argExp as LambdaExpression).Body as UnaryExpression).Operand;
+            }
+            var argLambda = argExp as LambdaExpression;
+            if (this.Context.InitMappingInfo != null && argLambda != null && argLambda.Parameters.Count > 0)
+            {
+                foreach (var item in argLambda.Parameters)
+                {
+                    this.Context.InitMappingInfo(item.Type);
+                }
+                this.Context.RefreshMapping();
+            }
+            var result = "AVG(" + SubTools.GetMethodValue(Context, argExp, ResolveExpressType.WhereMultiple) + ")";
+            var selfParameterName = Context.GetTranslationColumnName(parametres.First().Name) + UtilConstants.Dot;
+            if (this.Context.JoinIndex == 0)
+                result = result.Replace(selfParameterName, SubTools.GetSubReplace(this.Context));
+            return result;
         }
     }
 }
