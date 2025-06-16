@@ -363,6 +363,36 @@ namespace SqlSugar.MongoDb
             });
             return dateTruncDoc.ToJson(UtilMethods.GetJsonWriterSettings());
         }
+        public override string DateAddByType(MethodCallExpressionModel model)
+        {  
+            var dateExpr = model.DataObject;
+            var numberExpr = model.Args[0].MemberValue;
+            var typeExpr = model.Args[1].MemberValue; 
+            BsonValue dateValue = new ExpressionVisitor(context).Visit(dateExpr as Expression);
+            BsonValue numberValue = new ExpressionVisitor(context).Visit(numberExpr as Expression);
+            var dateType = (DateType)typeExpr;
+
+            string unit = dateType switch
+            {
+                DateType.Year => "year",
+                DateType.Month => "month",
+                DateType.Day => "day",
+                DateType.Hour => "hour",
+                DateType.Minute => "minute",
+                DateType.Second => "second",
+                DateType.Millisecond => "millisecond",
+                _ => throw new NotSupportedException($"不支持的DateType: {dateType}")
+            };
+
+            var dateAddDoc = new BsonDocument("$dateAdd", new BsonDocument
+            {
+                { "startDate", $"${dateValue}" },
+                { "unit", unit },
+                { "amount", numberValue }
+            });
+
+            return dateAddDoc.ToJson(UtilMethods.GetJsonWriterSettings());
+        }
         public override string DateValue(MethodCallExpressionModel model)
         {
             var item = model.Args.First().MemberValue;
