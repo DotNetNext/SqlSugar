@@ -99,6 +99,10 @@ namespace SqlSugar
         {
             get
             {
+                if (IsSqlServerModel()) 
+                {
+                    return "select table_name as name from information_schema.tables where table_type='VIEW'  and lower(table_schema)  ='" + GetSchema() + "' ";
+                }
                 return @"select  table_name as name  from information_schema.views where lower(table_schema)  ='" + GetSchema() + "' ";
             }
         }
