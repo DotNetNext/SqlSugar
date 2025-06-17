@@ -3,8 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using static OrmTest.Unitaadfas1;
+using System.Threading.Tasks; 
 
 namespace OrmTest
 {
@@ -43,6 +42,21 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+            var exp1 = Expressionable.Create<UnitSchool123>().And(s => s.Id == 1).ToExpression();
+            db.CodeFirst.InitTables<UnitStudentasdfa, UnitSchool123>();
+            var resulta2 = db.Queryable<UnitStudentasdfa>()
+
+                    .Where(a => SqlFunc.Subqueryable<UnitSchool123>().Where(exp1).Where(s => s.Id == a.SchoolId).Any())
+
+                    .Select(a => a).ToList();
+        }
+        public class UnitSchool123 
+        {
+            public int Id { get; set; }
+        }
+        public class UnitStudentasdfa 
+        {
+            public int SchoolId { get; set; }
         }
         [SugarTable("Test002asdfasss")]
         public class Test001
