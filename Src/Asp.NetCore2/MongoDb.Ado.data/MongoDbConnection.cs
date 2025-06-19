@@ -40,6 +40,17 @@ namespace MongoDb.Ado.data
             if (connStr.TrimStart().StartsWith("mongodb://", StringComparison.OrdinalIgnoreCase))
             {
                 mongoConnStr = connStr;
+                var mongoUrl = new MongoUrl(connStr);
+                if (!string.IsNullOrEmpty(mongoUrl.DatabaseName))
+                {
+                    _databaseName = mongoUrl.DatabaseName;
+                }
+                else 
+                {
+                    _databaseName = "SqlSugarDefaultDB";
+                }
+                _client = GetOrCreateClient(mongoConnStr);
+                _database = _client.GetDatabase(_databaseName);
             }
             else
             {
