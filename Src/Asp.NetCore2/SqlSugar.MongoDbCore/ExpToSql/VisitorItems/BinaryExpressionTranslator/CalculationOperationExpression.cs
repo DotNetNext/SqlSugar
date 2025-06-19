@@ -12,19 +12,30 @@ namespace SqlSugar.MongoDb
         private BsonDocument GetCalculationOperation(BsonValue field, ExpressionType nodeType, BsonValue value, bool leftIsMember, bool rightIsMember)
         {
             string operation = GetCalculationType(nodeType);
-            if (IsStringAdd(value, operation))
+            if (!leftIsMember && rightIsMember&& IsStringAdd(field, operation)) 
+                return StringAddCalculation(value, field, leftIsMember, rightIsMember, out operation);
+            else if (!rightIsMember&&leftIsMember&&IsStringAdd(value, operation))
                 return StringAddCalculation(field, value, leftIsMember, rightIsMember, out operation);
             else
-                return GetCommonCalculation(field, value, operation);
+                return GetCommonCalculation(field, value, operation,leftIsMember,rightIsMember);
         } 
-        private  BsonDocument GetCommonCalculation(BsonValue field, BsonValue value, string operation)
+        private  BsonDocument GetCommonCalculation(BsonValue field, BsonValue value, string operation, bool leftIsMember, bool rightIsMember)
         {
             if (_visitorContext?.IsText == true)
             {
-                // 三元条件格式: { "$gt": ["$Age", 0] }
+                var leftValue = field;
+                var rightValue = value;
+                if (leftIsMember) 
+                {
+                    leftValue = $"${leftValue}";
+                }
+                if (rightIsMember)
+                {
+                    rightValue = $"${rightValue}";
+                }
                 return new BsonDocument
                 {
-                    { operation, new BsonArray { "$" + field, value } }
+                    { operation, new BsonArray { leftValue, rightValue } }
                 };
             }
             else

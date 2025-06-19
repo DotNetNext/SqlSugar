@@ -109,9 +109,11 @@ namespace MongoDbTest
 
             var list11 = db.Queryable<Student>().Select(it => new
             {
-                Age = it.Age > 0 ? it.Age +1: 1, 
+                Age = it.Age > 0 ? it.Age +1: 1,
+                Age2 = it.Age > 0 ? 2+it.Age  : 1,
             }).ToList();
             if (list11.First().Age != 12) Cases.ThrowUnitError();
+            if (list11.First().Age2 != 13) Cases.ThrowUnitError();
         }
         [SqlSugar.SugarTable("UnitStudent1231sds3z1")]
         public class Student : MongoDbBase
