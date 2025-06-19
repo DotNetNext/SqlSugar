@@ -54,7 +54,11 @@ namespace SqlSugar.MongoDb
                 var json=new ExpressionVisitor(_context, _visitorContext).Visit(memberAssignment.Expression);
                 if (ExpressionTool.GetParameters(memberAssignment.Expression).Count == 0)
                 {
-                    projectionDocument[fieldName] =  json.ToString();
+                    projectionDocument[fieldName] = json.ToString();
+                }
+                else if (memberAssignment.Expression is ConditionalExpression) 
+                {
+                    projectionDocument[fieldName] = json;
                 }
                 else
                 {

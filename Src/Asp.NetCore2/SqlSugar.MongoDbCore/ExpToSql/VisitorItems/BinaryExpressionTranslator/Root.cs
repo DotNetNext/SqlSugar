@@ -14,10 +14,11 @@ namespace SqlSugar.MongoDb
     public partial class BinaryExpressionTranslator
     {
         MongoNestedTranslatorContext _context;
-
+        ExpressionVisitorContext _visitorContext;
         public BinaryExpressionTranslator(MongoNestedTranslatorContext context, ExpressionVisitorContext visitorContext)
         {
             _context = context;
+            _visitorContext = visitorContext;
         }
 
         public BsonDocument Extract(BinaryExpression expr)

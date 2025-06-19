@@ -18,7 +18,7 @@ namespace MongoDbTest
             //初始化数据
             InitializeStudentData(db);
 
-            //null类型测试
+            //类型测试
             ValidateStudentData(db);
 
             //函数
@@ -65,6 +65,9 @@ namespace MongoDbTest
             var list = db.Queryable<Student>().ToList();
             if (list.First() is { } first && (first.BoolNull != null || first.SchoolIdNull != null)) Cases.ThrowUnitError();
             if (list.Last() is { } last && (last.BoolNull != true || last.SchoolIdNull != 4)) Cases.ThrowUnitError();
+
+            var list3 = db.Queryable<Student>().Where(it=>it.SchoolId>2).ToList();
+            if(list3.Any(s=>s.SchoolId<=2)) Cases.ThrowUnitError(); 
         }
 
         private static void InitializeStudentData(SqlSugar.SqlSugarClient db)

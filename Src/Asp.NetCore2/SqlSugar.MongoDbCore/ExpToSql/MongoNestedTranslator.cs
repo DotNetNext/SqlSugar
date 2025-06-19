@@ -9,6 +9,10 @@ namespace SqlSugar.MongoDb
 { 
     public static class MongoNestedTranslator
     {
+        public static BsonValue TranslateNoFieldName(Expression expr, MongoNestedTranslatorContext context,ExpressionVisitorContext visContext=null)
+        {
+            return new ExpressionVisitor(context) {  visitorContext= visContext }.Visit(expr);
+        }
         public static BsonDocument Translate(Expression expr, MongoNestedTranslatorContext context)
         {
             var result = new ExpressionVisitor(context).Visit(expr);

@@ -7,5 +7,6 @@ namespace SqlSugar.MongoDb
     public class ExpressionVisitorContext
     {
         public Type ExpType { get;  set; }
+        public bool IsText { get; internal set; }
     }
 }

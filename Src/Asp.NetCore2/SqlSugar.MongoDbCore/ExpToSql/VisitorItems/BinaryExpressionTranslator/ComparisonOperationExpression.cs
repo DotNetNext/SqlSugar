@@ -44,12 +44,23 @@ namespace SqlSugar.MongoDb
                 return GetOtherResult(op, leftValue, rightValue); 
         }
 
-        private static BsonDocument GetOtherResult(string op, string leftValue, BsonValue rightValue)
+        private BsonDocument GetOtherResult(string op, string leftValue, BsonValue rightValue)
         {
-            return new BsonDocument
+            if (_visitorContext?.IsText == true)
+            {
+                // 三元条件格式: { "$gt": ["$Age", 0] }
+                return new BsonDocument
+                {
+                    { op, new BsonArray { "$" + leftValue, rightValue } }
+                };
+            }
+            else
+            {
+                return new BsonDocument
                     {
                         { leftValue, new BsonDocument { { op, rightValue } } }
                     };
+            }
         }
 
         private static BsonDocument GetEqResult(string leftValue, BsonValue rightValue)
