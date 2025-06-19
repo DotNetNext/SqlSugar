@@ -60,6 +60,18 @@ namespace MongoDbTest
             if (list4.First().Day.Date != dt.Date.AddDays(1)) Cases.ThrowUnitError();
             if (list4.First().Year.Date != dt.Date.AddYears(1)) Cases.ThrowUnitError();
             if (list4.First().AddMonth.Date != dt.Date.AddMonths(1)) Cases.ThrowUnitError();
+
+            var list5 = db.Queryable<Student>().Select(it => new
+            {
+                Day =2
+            }).ToList();
+            if (list5.First().Day!=2) Cases.ThrowUnitError();
+
+            var list6 = db.Queryable<Student>().Select(it => new Student()
+            {
+                  Age = 2
+            }).ToList();
+            if (list6.First().Age != 2) Cases.ThrowUnitError();
         }
         [SqlSugar.SugarTable("UnitStudent1231sds3z1")]
         public class Student : MongoDbBase

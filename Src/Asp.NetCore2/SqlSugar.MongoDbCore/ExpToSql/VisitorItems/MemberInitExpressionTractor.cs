@@ -52,7 +52,14 @@ namespace SqlSugar.MongoDb
 
                 // Build the projection document with the field name and its reference in MongoDB
                 var json=new ExpressionVisitor(_context, _visitorContext).Visit(memberAssignment.Expression);
-                projectionDocument[fieldName] = "$" + json.ToString();
+                if (ExpressionTool.GetParameters(memberAssignment.Expression).Count == 0)
+                {
+                    projectionDocument[fieldName] =  json.ToString();
+                }
+                else
+                {
+                    projectionDocument[fieldName] = "$" + json.ToString();
+                }
             }
             projectionDocument["_id"] = 0;
             return projectionDocument;
