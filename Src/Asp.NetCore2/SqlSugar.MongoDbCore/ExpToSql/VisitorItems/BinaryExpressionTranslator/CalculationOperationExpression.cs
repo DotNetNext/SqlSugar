@@ -17,12 +17,23 @@ namespace SqlSugar.MongoDb
             else
                 return GetCommonCalculation(field, value, operation);
         } 
-        private static BsonDocument GetCommonCalculation(BsonValue field, BsonValue value, string operation)
+        private  BsonDocument GetCommonCalculation(BsonValue field, BsonValue value, string operation)
         {
-            return new BsonDocument
+            if (_visitorContext?.IsText == true)
+            {
+                // 三元条件格式: { "$gt": ["$Age", 0] }
+                return new BsonDocument
+                {
+                    { operation, new BsonArray { "$" + field, value } }
+                };
+            }
+            else
+            {
+                return new BsonDocument
             {
                 { field.ToString(), new BsonDocument { { operation, value } } }
             };
+            }
         }
 
         private static BsonDocument StringAddCalculation(BsonValue field, BsonValue value, bool leftIsMember, bool rightIsMember, out string operation)
