@@ -2,6 +2,7 @@
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using MongoDbTest.DBHelper;
+using SqlSugar;
 using SqlSugar.MongoDb;
 using System;
 using System.Collections.Generic;
@@ -114,6 +115,12 @@ namespace MongoDbTest
             }).ToList();
             if (list11.First().Age != 12) Cases.ThrowUnitError();
             if (list11.First().Age2 != 13) Cases.ThrowUnitError();
+
+            var list12= db.Queryable<Student>().Select(it => new
+            {
+                Age = -it.Age  
+            }).ToList();
+            if(list12.First().Age!=-11) Cases.ThrowUnitError();
         }
         [SqlSugar.SugarTable("UnitStudent1231sds3z1")]
         public class Student : MongoDbBase

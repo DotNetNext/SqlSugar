@@ -73,6 +73,11 @@ namespace SqlSugar.MongoDb
             return false;
         }
 
+
+        public static bool GetIsMemember(Expression expr)
+        {
+            return expr is MemberExpression member && member.Expression is ParameterExpression;
+        }
         internal static Expression RemoveConvert(Expression item)
         {
             for (int i = 0; i < 10; i++)

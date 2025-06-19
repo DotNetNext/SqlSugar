@@ -27,7 +27,15 @@ namespace SqlSugar.MongoDb
         public BsonValue Visit(Expression expr)
         {
             expr = MongoDbExpTools.RemoveConvert(expr);
-
+            if (expr.NodeType == ExpressionType.Negate) 
+            {
+                expr=(expr as UnaryExpression).Operand; 
+                var value=new ExpressionVisitor(context,visitorContext).Visit(expr);
+                var isMemember = MongoDbExpTools.GetIsMemember(expr);
+                if (isMemember)
+                    value = $"${value}";
+                return new BsonDocument("$multiply", new BsonArray { -1, value });
+            }
             switch (expr)
             {
                 case BinaryExpression binary:
@@ -51,6 +59,6 @@ namespace SqlSugar.MongoDb
                 default:
                     throw new NotSupportedException($"Unsupported expression: {expr.NodeType}");
             }
-        } 
+        }
     } 
 }

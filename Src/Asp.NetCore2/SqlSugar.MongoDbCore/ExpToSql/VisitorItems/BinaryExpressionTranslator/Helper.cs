@@ -7,7 +7,8 @@ using System.Text;
 namespace SqlSugar.MongoDb
 {
     public partial class BinaryExpressionTranslator
-    { 
+    {
+
         private static bool IsEq(string op)
         {
             return op == "$eq";
