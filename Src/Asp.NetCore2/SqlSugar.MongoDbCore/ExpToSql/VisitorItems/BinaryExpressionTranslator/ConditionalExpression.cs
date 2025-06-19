@@ -34,8 +34,8 @@ namespace SqlSugar.MongoDb
             else
             {
                 var testValue = MongoNestedTranslator.TranslateNoFieldName(exp.Test, context, new ExpressionVisitorContext() { IsText=true });
-                var ifTrueValue = MongoNestedTranslator.TranslateNoFieldName(exp.IfTrue, context);
-                var ifFalseValue = MongoNestedTranslator.TranslateNoFieldName(exp.IfFalse, context);
+                var ifTrueValue = MongoNestedTranslator.TranslateNoFieldName(exp.IfTrue, context, new ExpressionVisitorContext() { IsText = true });
+                var ifFalseValue = MongoNestedTranslator.TranslateNoFieldName(exp.IfFalse, context, new ExpressionVisitorContext() { IsText = true });
                 if (exp.IfTrue is MemberExpression member && member.Expression is ParameterExpression) 
                 {
                     ifTrueValue = $"${ifTrueValue}";
