@@ -37,7 +37,7 @@ namespace SqlSugar
             if (list == null) return default(T);
             else return list.SingleOrDefault();
         }
-        public async Task<T> SingleAsync()
+        public virtual async Task<T> SingleAsync()
         {
             if (QueryBuilder.OrderByValue.IsNullOrEmpty())
             {
@@ -67,19 +67,19 @@ namespace SqlSugar
                 return result.SingleOrDefault();
             }
         }
-        public async Task<T> SingleAsync(Expression<Func<T, bool>> expression)
+        public virtual async Task<T> SingleAsync(Expression<Func<T, bool>> expression)
         {
             _Where(expression);
             var result = await SingleAsync();
             this.QueryBuilder.WhereInfos.Remove(this.QueryBuilder.WhereInfos.Last());
             return result;
         }
-        public Task<T> FirstAsync(CancellationToken token) 
+        public virtual Task<T> FirstAsync(CancellationToken token) 
         {
             this.Context.Ado.CancellationToken = token;
             return FirstAsync();
         }
-        public async Task<T> FirstAsync()
+        public virtual async Task<T> FirstAsync()
         {
             if (QueryBuilder.OrderByValue.IsNullOrEmpty())
             {
@@ -102,12 +102,12 @@ namespace SqlSugar
                     return default(T);
             }
         }
-        public Task<T> FirstAsync(Expression<Func<T, bool>> expression, CancellationToken token) 
+        public virtual Task<T> FirstAsync(Expression<Func<T, bool>> expression, CancellationToken token) 
         {
             this.Context.Ado.CancellationToken = token;
             return FirstAsync(expression);
         }
-        public async Task<T> FirstAsync(Expression<Func<T, bool>> expression)
+        public virtual async Task<T> FirstAsync(Expression<Func<T, bool>> expression)
         {
             _Where(expression);
             var result = await FirstAsync();
@@ -115,7 +115,7 @@ namespace SqlSugar
             return result;
         }
 
-        public async Task<bool> AnyAsync(Expression<Func<T, bool>> expression)
+        public virtual async Task<bool> AnyAsync(Expression<Func<T, bool>> expression)
         {
             _Where(expression);
             var result = await AnyAsync();
@@ -123,23 +123,23 @@ namespace SqlSugar
             return result;
         }
 
-        public Task<bool> AnyAsync(Expression<Func<T, bool>> expression, CancellationToken token) 
+        public virtual Task<bool> AnyAsync(Expression<Func<T, bool>> expression, CancellationToken token) 
         {
             this.Context.Ado.CancellationToken = token;
             return AnyAsync(expression);
         }
 
-        public async Task<bool> AnyAsync()
+        public virtual async Task<bool> AnyAsync()
         {
             return  (await this.Clone().Take(1).Select("1").ToListAsync()).Count() > 0; ;
         }
 
-        public Task<int> CountAsync(CancellationToken token) 
+        public virtual Task<int> CountAsync(CancellationToken token) 
         {
             this.Context.Ado.CancellationToken = token;
             return CountAsync();
         }
-        public async Task<int> CountAsync()
+        public virtual async Task<int> CountAsync()
         {
             if (this.QueryBuilder.Skip == null &&
              this.QueryBuilder.Take == null &&
@@ -181,7 +181,7 @@ namespace SqlSugar
             return CountAsync(expression);
         }
 
-        public async Task<TResult> MaxAsync<TResult>(string maxField)
+        public virtual async Task<TResult> MaxAsync<TResult>(string maxField)
         {
             this.Select(string.Format(QueryBuilder.MaxTemplate, maxField));
             var list = await this._ToListAsync<TResult>();
@@ -189,55 +189,55 @@ namespace SqlSugar
             return result;
         }
 
-        public Task<TResult> MaxAsync<TResult>(string maxField, CancellationToken token) 
+        public virtual Task<TResult> MaxAsync<TResult>(string maxField, CancellationToken token) 
         {
             this.Context.Ado.CancellationToken= token;
             return MaxAsync<TResult>(maxField);
         }
 
-        public Task<TResult> MaxAsync<TResult>(Expression<Func<T, TResult>> expression)
+        public virtual Task<TResult> MaxAsync<TResult>(Expression<Func<T, TResult>> expression)
         {
             return _MaxAsync<TResult>(expression);
         }
 
-        public Task<TResult> MaxAsync<TResult>(Expression<Func<T, TResult>> expression, CancellationToken token) 
+        public virtual Task<TResult> MaxAsync<TResult>(Expression<Func<T, TResult>> expression, CancellationToken token) 
         {
             this.Context.Ado.CancellationToken = token;
             return MaxAsync(expression);
         }
 
-        public async Task<TResult> MinAsync<TResult>(string minField)
+        public virtual async Task<TResult> MinAsync<TResult>(string minField)
         {
             this.Select(string.Format(QueryBuilder.MinTemplate, minField));
             var list = await this._ToListAsync<TResult>();
             var result = list.SingleOrDefault();
             return result;
         }
-        public Task<TResult> MinAsync<TResult>(Expression<Func<T, TResult>> expression)
+        public virtual Task<TResult> MinAsync<TResult>(Expression<Func<T, TResult>> expression)
         {
             return _MinAsync<TResult>(expression);
         }
 
-        public async Task<TResult> SumAsync<TResult>(string sumField)
+        public virtual async Task<TResult> SumAsync<TResult>(string sumField)
         {
             this.Select(string.Format(QueryBuilder.SumTemplate, sumField));
             var list = await this._ToListAsync<TResult>();
             var result = list.SingleOrDefault();
             return result;
         }
-        public Task<TResult> SumAsync<TResult>(Expression<Func<T, TResult>> expression)
+        public virtual Task<TResult> SumAsync<TResult>(Expression<Func<T, TResult>> expression)
         {
             return _SumAsync<TResult>(expression);
         }
 
-        public async Task<TResult> AvgAsync<TResult>(string avgField)
+        public virtual async Task<TResult> AvgAsync<TResult>(string avgField)
         {
             this.Select(string.Format(QueryBuilder.AvgTemplate, avgField));
             var list = await this._ToListAsync<TResult>();
             var result = list.SingleOrDefault();
             return result;
         }
-        public Task<TResult> AvgAsync<TResult>(Expression<Func<T, TResult>> expression)
+        public virtual Task<TResult> AvgAsync<TResult>(Expression<Func<T, TResult>> expression)
         {
             return _AvgAsync<TResult>(expression);
         }
