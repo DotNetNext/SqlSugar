@@ -22,7 +22,14 @@ namespace SqlSugar.MongoDb
         }
 
         private static BsonDocument ComparisonNotKeyValue(BsonValue field, BsonValue value, string op)
-        {
+        {   // 如果 field 是一个表达式对象（如 BsonDocument），则使用 $expr
+            if (field is BsonDocument bd)
+            {
+                return new BsonDocument
+                {
+                    { "$expr", new BsonDocument(op, new BsonArray { field, value }) }
+                };
+            }
             var leftKey = field.ToString();
             return new BsonDocument
                    {

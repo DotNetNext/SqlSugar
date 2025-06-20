@@ -33,8 +33,11 @@ namespace MongoDbTest
             new Student() { Age = 2, Name = "aa", SchoolId = "222", CreateDateTime = DateTime.Now.AddDays(-1) },
             new Student() { Age = 3, Name = "33", SchoolId = "333", CreateDateTime = DateTime.Now.AddDays(1) }
             }).ExecuteCommandAsync().GetAwaiter().GetResult();
-            var id2 =db.Queryable<Student>().First(it => it.Name.ToLower() == "a")?.Id??null;
-            db.Deleteable<Student>().In(id).ExecuteCommandAsync().GetAwaiter().GetResult();
+            var id2 =db.Queryable<Student>().First(it => it.Name.ToLower() == "aa")?.Id??null;
+            var count5=db.Queryable<Student>().Count();
+            db.Deleteable<Student>().In(id2).ExecuteCommandAsync().GetAwaiter().GetResult();
+            var count6 = db.Queryable<Student>().Count();
+            if (count6 != (count5 - 1)) Cases.ThrowUnitError();
         }
         [SqlSugar.SugarTable("UnitStudent1ssdds3z1")]
         public class Student : MongoDbBase
