@@ -486,6 +486,20 @@ namespace SqlSugar.MongoDb
                 throw new NotSupportedException("ToString 只支持0或1个参数");
             }
         }
+        public override string ToUpper(MethodCallExpressionModel model)
+        {
+            var item = model.DataObject as Expression;
+            BsonValue memberName = new ExpressionVisitor(context).Visit(item as Expression);
+            var toUpperDoc = new BsonDocument("$toUpper", $"${memberName}");
+            return toUpperDoc.ToJson(UtilMethods.GetJsonWriterSettings());
+        }
+        public override string ToLower(MethodCallExpressionModel model)
+        {
+            var item = model.DataObject as Expression;
+            BsonValue memberName = new ExpressionVisitor(context).Visit(item as Expression);
+            var toLowerDoc = new BsonDocument("$toLower", $"${memberName}");
+            return toLowerDoc.ToJson(UtilMethods.GetJsonWriterSettings());
+        }
 
         #region
 
