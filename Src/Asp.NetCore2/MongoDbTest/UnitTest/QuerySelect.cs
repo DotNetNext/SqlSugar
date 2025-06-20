@@ -121,6 +121,26 @@ namespace MongoDbTest
                 Age = -it.Age  
             }).ToList();
             if(list12.First().Age!=-11) Cases.ThrowUnitError();
+
+            db.Insertable(new Student() { CreateDateTime = dt, Age = 12, Name = "a2", SchoolId = "aa22" })
+            .ExecuteCommand();
+            db.Insertable(new Student() { CreateDateTime = dt, Age = 13, Name = "b", SchoolId = "bss" })
+           .ExecuteCommand();
+            var count=db.Queryable<Student>().Count();
+            var count2 = db.Queryable<Student>().ToList().Count();
+            if (count2 != count) Cases.ThrowUnitError();
+
+            var count3 = db.Queryable<Student>().Where(it=>it.Age==11).Count();
+            var count4 = db.Queryable<Student>().Where(it => it.Age == 11).ToList().Count();
+            if (count3 != count4) Cases.ThrowUnitError();
+
+            var isAny=db.Queryable<Student>().Where(it => it.Age == 11).Any();
+            var isAny2 = db.Queryable<Student>().Where(it => it.Age == 11111).Any();
+            if (!isAny || isAny2) Cases.ThrowUnitError();
+
+            int countp = 0;
+            var list13=db.Queryable<Student>().Where(it => it.Age >0).ToPageList(1, 2, ref countp);
+            if (count != countp|| list13.Count!=2) Cases.ThrowUnitError();
         }
         [SqlSugar.SugarTable("UnitStudent1231sds3z1")]
         public class Student : MongoDbBase
