@@ -12,6 +12,10 @@ namespace SqlSugar.MongoDb
         { 
             return  GetCount(); ;
         }
+        public override Task<int> CountAsync()
+        {
+            return GetCountAsync();
+        }
         public override ISugarQueryable<T> With(string withString)
         {
             return this;
