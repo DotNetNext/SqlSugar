@@ -33,6 +33,11 @@ namespace MongoDbTest
                 if (item.Name == "xx") continue;
                 if (!item.Name.EndsWith("haha")) Cases.ThrowUnitError();
             }
+            db.Updateable<Student>()
+                .SetColumns(it => new Student() { Name = "yy" }).Where(it => it.Name == "xx").ExecuteCommand();
+
+           var datas= db.Queryable<Student>().Where(it => it.Id == list2.Last().Id).ToList();
+           if(datas.Count!=1|| datas.First().Name!="yy") Cases.ThrowUnitError();  
         }
         [SqlSugar.SugarTable("UnitStudentdghhuesd3z1")]
         public class Student : MongoDbBase
