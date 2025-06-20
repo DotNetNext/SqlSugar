@@ -13,7 +13,7 @@ Advantages: [Low code] [High performance] [Super simple] [Comprehensive features
 .net framework.net core3.1.ne5.net6.net7.net8 .net9 .net10
 
 ## Support database 
-MySql、SqlServer、Sqlite、Oracle 、 postgresql、达梦、
+MySql、SqlServer、Sqlite、Oracle 、 postgresql、达梦、Mongodb
 人大金仓(国产推荐)、神通数据库、瀚高、Access DB2、DuckDb、Hana、OceanBase
 TDengine  QuestDb Clickhouse  MySqlConnector、华为 GaussDB 
 南大通用 GBase、MariaDB、Tidb、Odbc、Percona Server,
