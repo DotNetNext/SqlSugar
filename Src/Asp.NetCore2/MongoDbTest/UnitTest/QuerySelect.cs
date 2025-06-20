@@ -148,6 +148,13 @@ namespace MongoDbTest
             var list14=db.Queryable<Student>().OrderBy(it => it.Age).ToList();
             var list15 = db.Queryable<Student>().OrderBy(it => it.Age).ToListAsync().GetAwaiter().GetResult();
             if (list14.Count != list15.Count) Cases.ThrowUnitError();
+
+            var list16=db.Queryable<Student>().GroupBy(it => it.Age)
+                .Select(it => new
+                {
+                     name=SqlFunc.AggregateMin(it.Name),
+                     age=it.Age
+                }).ToList();
         }
         [SqlSugar.SugarTable("UnitStudent1231sds3z1")]
         public class Student : MongoDbBase
