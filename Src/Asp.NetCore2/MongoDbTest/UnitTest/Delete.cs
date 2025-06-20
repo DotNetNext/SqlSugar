@@ -15,7 +15,7 @@ namespace MongoDbTest
             db.CodeFirst.InitTables<Student>();
             db.DbMaintenance.TruncateTable<Student>();
             var id=db.Insertable(new Student() { Age = 1, Name = "11", SchoolId = "111", CreateDateTime = DateTime.Now.AddDays(1) }).ExecuteReturnPkList<string>();
-            db.Insertable(new List<Student>() {
+            var ids=db.Insertable(new List<Student>() {
             new Student() { Age = 2, Name = "22", SchoolId = "222", CreateDateTime = DateTime.Now.AddDays(-1) },
             new Student() { Age = 3, Name = "33", SchoolId = "333", CreateDateTime = DateTime.Now.AddDays(1) }
             }).ExecuteCommandAsync().GetAwaiter().GetResult();
@@ -26,6 +26,9 @@ namespace MongoDbTest
             var rows2 = db.Deleteable<Student>().In(id).ExecuteCommand();
             var count3 = db.Queryable<Student>().Count();
             if (count3 != 1) Cases.ThrowUnitError();
+            var rows3 = db.Deleteable<Student>().In(db.Queryable<Student>().First().Id).ExecuteCommandAsync().GetAwaiter().GetResult();
+            var count4 = db.Queryable<Student>().Count();
+            if (count4 !=0) Cases.ThrowUnitError(); 
         }
         [SqlSugar.SugarTable("UnitStudent1ssdds3z1")]
         public class Student : MongoDbBase
