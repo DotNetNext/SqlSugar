@@ -140,11 +140,14 @@ namespace MongoDbTest
             if (!isAny || isAny2) Cases.ThrowUnitError();
 
             int countp = 0;
+            RefAsync<int> countp2 = 0;
             var list13=db.Queryable<Student>().Where(it => it.Age >0).ToPageList(1, 2, ref countp);
-            if (count != countp|| list13.Count!=2) Cases.ThrowUnitError();
+            var list131 = db.Queryable<Student>().Where(it => it.Age > 0).ToPageListAsync(1, 2,  countp2).GetAwaiter().GetResult();
+            if (count != countp|| list13.Count!=2||countp!= countp2.Value) Cases.ThrowUnitError();
 
             var list14=db.Queryable<Student>().OrderBy(it => it.Age).ToList();
-            var minage=db.Queryable<Student>().Max(it => it.Age);
+            var list15 = db.Queryable<Student>().OrderBy(it => it.Age).ToListAsync().GetAwaiter().GetResult();
+            if (list14.Count != list15.Count) Cases.ThrowUnitError();
         }
         [SqlSugar.SugarTable("UnitStudent1231sds3z1")]
         public class Student : MongoDbBase
