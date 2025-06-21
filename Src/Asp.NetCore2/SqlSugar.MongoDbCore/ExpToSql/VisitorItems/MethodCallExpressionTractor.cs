@@ -58,14 +58,7 @@ namespace SqlSugar.MongoDb
                     {
                         var methodInfo = context.GetType().GetMethod(name);
                         var funcString = methodInfo.Invoke(context, new object[] { model });
-                        if (new string[] { "Contains", "StartsWith", "EndsWith" }.Contains(name))
-                        {
-                            result = UtilMethods.MyCreate(funcString?.ToString());
-                        }
-                        else 
-                        {
-                            result = BsonDocument.Parse(funcString?.ToString());
-                        }
+                        result = BsonDocument.Parse(funcString?.ToString());
                     }
                 }
                 else if (name.StartsWith("Add"))

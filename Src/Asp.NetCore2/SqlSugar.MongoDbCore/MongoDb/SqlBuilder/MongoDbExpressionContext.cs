@@ -310,10 +310,10 @@ namespace SqlSugar.MongoDb
                 { "$regex", right },        // right 是普通字符串值，例如 "a"
                 { "$options", "i" }         // 忽略大小写
             }; 
-            var match = new BsonDocument("$match", new BsonDocument
+            var match=new BsonDocument
                 {
                     { left.ToString(), regexDoc }
-                });
+                };
             return match.ToJson(UtilMethods.GetJsonWriterSettings());
         }
         public override string StartsWith(MethodCallExpressionModel model)
@@ -328,10 +328,10 @@ namespace SqlSugar.MongoDb
                 { "$regex", regexPattern },
                 { "$options", "i" }
             };
-            var match = new BsonDocument("$match", new BsonDocument
+            var match =new BsonDocument
                 {
                     { left.ToString(), regexDoc }
-                });
+                };
             return match.ToJson(UtilMethods.GetJsonWriterSettings());
         }
         public override string EndsWith(MethodCallExpressionModel model)
@@ -346,10 +346,10 @@ namespace SqlSugar.MongoDb
                 { "$regex", regexPattern },
                 { "$options", "i" }
             };
-            var match = new BsonDocument("$match", new BsonDocument
+            var match = new BsonDocument
                 {
                     { left.ToString(), regexDoc }
-                });
+                };
             return match.ToJson(UtilMethods.GetJsonWriterSettings());
         } 
         public override string ToDateShort(MethodCallExpressionModel model)
