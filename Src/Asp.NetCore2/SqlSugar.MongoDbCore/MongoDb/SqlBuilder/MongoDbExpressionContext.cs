@@ -500,8 +500,98 @@ namespace SqlSugar.MongoDb
             var toLowerDoc = new BsonDocument("$toLower", $"${memberName}");
             return toLowerDoc.ToJson(UtilMethods.GetJsonWriterSettings());
         }
+        public override string Abs(MethodCallExpressionModel model)
+        {
+            // 取绝对值，MongoDB $abs 操作符
+            var item = model.Args[0].MemberValue;
+            BsonValue memberName = new ExpressionVisitor(context).Visit(item as Expression);
+            var absDoc = new BsonDocument("$abs", $"${memberName}");
+            return absDoc.ToJson(UtilMethods.GetJsonWriterSettings());
+        }
 
-        #region
+        public override string Round(MethodCallExpressionModel model)
+        {
+            // 四舍五入，MongoDB $round 操作符
+            var item = model.Args[0].MemberValue;
+            BsonValue memberName = new ExpressionVisitor(context).Visit(item as Expression);
+            var roundDoc = new BsonDocument("$round", new BsonArray { $"${memberName}" });
+            return roundDoc.ToJson(UtilMethods.GetJsonWriterSettings());
+        }
+
+      public override string Floor(MethodCallExpressionModel model)
+        {
+            // 向下取整，MongoDB $floor 操作符
+            var item = model.Args[0].MemberValue;
+            BsonValue memberName = new ExpressionVisitor(context).Visit(item as Expression);
+            var floorDoc = new BsonDocument("$floor", $"${memberName}");
+            return floorDoc.ToJson(UtilMethods.GetJsonWriterSettings());
+        }
+
+        public override string Substring(MethodCallExpressionModel model)
+        {
+            // 截取字符串，MongoDB $substr 操作符（推荐 $substrBytes）
+            var item = model.DataObject as Expression;
+            var start = model.Args[0].MemberValue;
+            var length = model.Args[1].MemberValue;
+            BsonValue memberName = new ExpressionVisitor(context).Visit(item);
+            BsonValue startValue = new ExpressionVisitor(context).Visit(start as Expression);
+            BsonValue lengthValue = new ExpressionVisitor(context).Visit(length as Expression);
+            var substrDoc = new BsonDocument("$substrBytes", new BsonArray { $"${memberName}", startValue, lengthValue });
+            return substrDoc.ToJson(UtilMethods.GetJsonWriterSettings());
+        }
+
+        public override string Replace(MethodCallExpressionModel model)
+        {
+            // 替换字符串，MongoDB $replaceAll 操作符
+            var item = model.DataObject as Expression;
+            var find = model.Args[0].MemberValue;
+            var replacement = model.Args[1].MemberValue;
+            BsonValue memberName = new ExpressionVisitor(context).Visit(item);
+            BsonValue findValue = new ExpressionVisitor(context).Visit(find as Expression);
+            BsonValue replacementValue = new ExpressionVisitor(context).Visit(replacement as Expression);
+            var replaceDoc = new BsonDocument("$replaceAll", new BsonDocument
+            {
+                { "input", $"${memberName}" },
+                { "find", findValue },
+                { "replacement", replacementValue }
+            });
+            return replaceDoc.ToJson(UtilMethods.GetJsonWriterSettings());
+        }
+
+        public override string Length(MethodCallExpressionModel model)
+        {
+            // 字符串长度，MongoDB $strLenBytes 操作符
+            var item = model.Args[0].MemberValue ?? model.DataObject;
+            BsonValue memberName = new ExpressionVisitor(context).Visit(item as Expression);
+            var lengthDoc = new BsonDocument("$strLenBytes", $"${memberName}");
+            return lengthDoc.ToJson(UtilMethods.GetJsonWriterSettings());
+        }
+         
+
+     public override string IsNullOrEmpty(MethodCallExpressionModel model)
+        {
+            // 判断字符串是否为 null 或空字符串
+            var item = model.Args[0].MemberValue ?? model.DataObject;
+            BsonValue memberName = new ExpressionVisitor(context).Visit(item as Expression);
+            // $or: [ { $eq: [ "$field", null ] }, { $eq: [ "$field", "" ] } ]
+            var orDoc = new BsonDocument("$or", new BsonArray
+            {
+                new BsonDocument("$eq", new BsonArray { $"${memberName}", BsonNull.Value }),
+                new BsonDocument("$eq", new BsonArray { $"${memberName}", "" })
+            });
+            return orDoc.ToJson(UtilMethods.GetJsonWriterSettings());
+        }
+         
+        public override string Trim(MethodCallExpressionModel model)
+        {
+            // 去除首尾空格，MongoDB $trim 操作符
+            var item = model.Args[0].MemberValue ?? model.DataObject;
+            BsonValue memberName = new ExpressionVisitor(context).Visit(item as Expression);
+            var trimDoc = new BsonDocument("$trim", new BsonDocument { { "input", $"${memberName}" } });
+            return trimDoc.ToJson(UtilMethods.GetJsonWriterSettings());
+        }
+
+        #region  Helper
 
         // Existing methods...
 
