@@ -139,6 +139,14 @@ namespace SqlSugar.MongoDb
                 {
                     dos["fieldName"] = "$"+ dos["fieldName"];
                     dos.Add(new BsonElement("_id", "0"));
+                }
+                else if (dos.ElementCount > 0 && dos.GetElement(0).Name.StartsWith("$"))
+                {
+                    // 如果第一个key带有$，说明是个函数，外面套一层fieldName
+                    var funcDoc = new BsonDocument(dos); // 复制一份
+                    dos.Clear();
+                    dos.Add("fieldName", funcDoc);
+                    dos.Add(new BsonElement("_id", "0"));
                 } 
                 var json = dos.ToJson(UtilMethods.GetJsonWriterSettings());
                 operations.Add($"{{\"$project\": {json} }}"); 
