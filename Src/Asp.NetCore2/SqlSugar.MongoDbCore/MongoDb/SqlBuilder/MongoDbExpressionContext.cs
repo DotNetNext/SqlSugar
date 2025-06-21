@@ -162,7 +162,7 @@ namespace SqlSugar.MongoDb
         {
             var item =model.Args[0].MemberValue;
             BsonValue memberName = new ExpressionVisitor(context).Visit(item as Expression);
-            var toIntDoc = new BsonDocument("$toInt", $"${memberName}");
+            var toIntDoc = new BsonDocument("$toInt", GetMemberName(memberName));
             return toIntDoc.ToJson(UtilMethods.GetJsonWriterSettings());
         }
 
@@ -170,7 +170,7 @@ namespace SqlSugar.MongoDb
         {
             var item = model.Args[0].MemberValue;
             BsonValue memberName = new ExpressionVisitor(context).Visit(item as Expression);
-            var toLongDoc = new BsonDocument("$toLong", $"${memberName}");
+            var toLongDoc = new BsonDocument("$toLong", GetMemberName(memberName));
             return toLongDoc.ToJson(UtilMethods.GetJsonWriterSettings());
         }
 
@@ -179,7 +179,7 @@ namespace SqlSugar.MongoDb
             var item = model.Args[0].MemberValue;
             BsonValue memberName = new ExpressionVisitor(context).Visit(item as Expression);
             // MongoDB 没有直接的 Guid 类型，通常以字符串存储
-            var toStringDoc = new BsonDocument("$toString", $"${memberName}");
+            var toStringDoc = new BsonDocument("$toString", GetMemberName(memberName));
             return toStringDoc.ToJson(UtilMethods.GetJsonWriterSettings());
         }
 
@@ -187,7 +187,7 @@ namespace SqlSugar.MongoDb
         {
             var item = model.Args[0].MemberValue;
             BsonValue memberName = new ExpressionVisitor(context).Visit(item as Expression);
-            var toDoubleDoc = new BsonDocument("$toDouble", $"${memberName}");
+            var toDoubleDoc = new BsonDocument("$toDouble", GetMemberName(memberName));
             return toDoubleDoc.ToJson(UtilMethods.GetJsonWriterSettings());
         }
 
@@ -195,7 +195,7 @@ namespace SqlSugar.MongoDb
         {
             var item = model.Args[0].MemberValue;
             BsonValue memberName = new ExpressionVisitor(context).Visit(item as Expression);
-            var toBoolDoc = new BsonDocument("$toBool", $"${memberName}");
+            var toBoolDoc = new BsonDocument("$toBool", GetMemberName(memberName));
             return toBoolDoc.ToJson(UtilMethods.GetJsonWriterSettings());
         }
 
@@ -203,7 +203,7 @@ namespace SqlSugar.MongoDb
         {
             var item = model.Args[0].MemberValue;
             BsonValue memberName = new ExpressionVisitor(context).Visit(item as Expression);
-            var toDateDoc = new BsonDocument("$toDate", $"${memberName}");
+            var toDateDoc = new BsonDocument("$toDate", GetMemberName(memberName));
             return toDateDoc.ToJson(UtilMethods.GetJsonWriterSettings());
         }
 
@@ -212,7 +212,7 @@ namespace SqlSugar.MongoDb
             var item = model.Args[0].MemberValue;
             BsonValue memberName = new ExpressionVisitor(context).Visit(item as Expression);
             // MongoDB 没有单独的 Time 类型，通常用字符串或日期处理
-            var toStringDoc = new BsonDocument("$toString", $"${memberName}");
+            var toStringDoc = new BsonDocument("$toString", GetMemberName(memberName));
             return toStringDoc.ToJson(UtilMethods.GetJsonWriterSettings());
         }
         public override string AggregateCount(MethodCallExpressionModel model)
@@ -463,7 +463,7 @@ namespace SqlSugar.MongoDb
                     var dateToStringDoc = new BsonDocument("$dateToString", new BsonDocument
                     {
                         { "format", mongoFormat },
-                        { "date", $"${memberName}" }
+                        { "date", GetMemberName(memberName) }
                     });
                     return dateToStringDoc.ToJson(UtilMethods.GetJsonWriterSettings());
                 }
@@ -471,13 +471,13 @@ namespace SqlSugar.MongoDb
                 {
                     // 数字格式化，MongoDB不支持C#的数字格式，需要先转字符串再在C#端格式化
                     // 这里只能简单转字符串
-                    var toStringDoc = new BsonDocument("$toString", $"${memberName}");
+                    var toStringDoc = new BsonDocument("$toString", GetMemberName(memberName));
                     return toStringDoc.ToJson(UtilMethods.GetJsonWriterSettings());
                 }
                 else
                 {
                     // 其他类型直接转字符串
-                    var toStringDoc = new BsonDocument("$toString", $"${memberName}");
+                    var toStringDoc = new BsonDocument("$toString", GetMemberName(memberName));
                     return toStringDoc.ToJson(UtilMethods.GetJsonWriterSettings());
                 }
             }
@@ -490,14 +490,14 @@ namespace SqlSugar.MongoDb
         {
             var item = model.DataObject as Expression;
             BsonValue memberName = new ExpressionVisitor(context).Visit(item as Expression);
-            var toUpperDoc = new BsonDocument("$toUpper", $"${memberName}");
+            var toUpperDoc = new BsonDocument("$toUpper", GetMemberName(memberName));
             return toUpperDoc.ToJson(UtilMethods.GetJsonWriterSettings());
         }
         public override string ToLower(MethodCallExpressionModel model)
         {
             var item = model.DataObject as Expression;
             BsonValue memberName = new ExpressionVisitor(context).Visit(item as Expression);
-            var toLowerDoc = new BsonDocument("$toLower", $"${memberName}");
+            var toLowerDoc = new BsonDocument("$toLower", GetMemberName(memberName));
             return toLowerDoc.ToJson(UtilMethods.GetJsonWriterSettings());
         }
         public override string Abs(MethodCallExpressionModel model)
@@ -505,7 +505,7 @@ namespace SqlSugar.MongoDb
             // 取绝对值，MongoDB $abs 操作符
             var item = model.Args[0].MemberValue;
             BsonValue memberName = new ExpressionVisitor(context).Visit(item as Expression);
-            var absDoc = new BsonDocument("$abs", $"${memberName}");
+            var absDoc = new BsonDocument("$abs", GetMemberName(memberName));
             return absDoc.ToJson(UtilMethods.GetJsonWriterSettings());
         }
 
@@ -514,7 +514,7 @@ namespace SqlSugar.MongoDb
             // 四舍五入，MongoDB $round 操作符
             var item = model.Args[0].MemberValue;
             BsonValue memberName = new ExpressionVisitor(context).Visit(item as Expression);
-            var roundDoc = new BsonDocument("$round", new BsonArray { $"${memberName}" });
+            var roundDoc = new BsonDocument("$round", new BsonArray { GetMemberName(memberName) });
             return roundDoc.ToJson(UtilMethods.GetJsonWriterSettings());
         }
 
@@ -523,7 +523,7 @@ namespace SqlSugar.MongoDb
             // 向下取整，MongoDB $floor 操作符
             var item = model.Args[0].MemberValue;
             BsonValue memberName = new ExpressionVisitor(context).Visit(item as Expression);
-            var floorDoc = new BsonDocument("$floor", $"${memberName}");
+            var floorDoc = new BsonDocument("$floor", GetMemberName(memberName));
             return floorDoc.ToJson(UtilMethods.GetJsonWriterSettings());
         }
 
@@ -536,7 +536,7 @@ namespace SqlSugar.MongoDb
             BsonValue memberName = new ExpressionVisitor(context).Visit(item);
             BsonValue startValue = new ExpressionVisitor(context).Visit(start as Expression);
             BsonValue lengthValue = new ExpressionVisitor(context).Visit(length as Expression);
-            var substrDoc = new BsonDocument("$substrBytes", new BsonArray { $"${memberName}", startValue, lengthValue });
+            var substrDoc = new BsonDocument("$substrBytes", new BsonArray { GetMemberName(memberName), startValue, lengthValue });
             return substrDoc.ToJson(UtilMethods.GetJsonWriterSettings());
         }
 
@@ -551,7 +551,7 @@ namespace SqlSugar.MongoDb
             BsonValue replacementValue = new ExpressionVisitor(context).Visit(replacement as Expression);
             var replaceDoc = new BsonDocument("$replaceAll", new BsonDocument
             {
-                { "input", $"${memberName}" },
+                { "input", GetMemberName(memberName) },
                 { "find", findValue },
                 { "replacement", replacementValue }
             });
@@ -563,7 +563,7 @@ namespace SqlSugar.MongoDb
             // 字符串长度，MongoDB $strLenBytes 操作符
             var item = model.Args[0].MemberValue ?? model.DataObject;
             BsonValue memberName = new ExpressionVisitor(context).Visit(item as Expression);
-            var lengthDoc = new BsonDocument("$strLenBytes", $"${memberName}");
+            var lengthDoc = new BsonDocument("$strLenBytes", GetMemberName(memberName));
             return lengthDoc.ToJson(UtilMethods.GetJsonWriterSettings());
         }
          
@@ -592,7 +592,7 @@ namespace SqlSugar.MongoDb
             // 去除首尾空格，MongoDB $trim 操作符
             var item = model.Args[0].MemberValue ?? model.DataObject;
             BsonValue memberName = new ExpressionVisitor(context).Visit(item as Expression);
-            var trimDoc = new BsonDocument("$trim", new BsonDocument { { "input", $"${memberName}" } });
+            var trimDoc = new BsonDocument("$trim", new BsonDocument { { "input", GetMemberName(memberName) } });
             return trimDoc.ToJson(UtilMethods.GetJsonWriterSettings());
         }
 
@@ -600,6 +600,8 @@ namespace SqlSugar.MongoDb
         private static BsonValue GetMemberName(BsonValue memberName)
         {
             if (memberName is BsonDocument)
+                return memberName;
+            if (memberName is BsonArray)
                 return memberName;
             else
                 return $"${memberName}";
