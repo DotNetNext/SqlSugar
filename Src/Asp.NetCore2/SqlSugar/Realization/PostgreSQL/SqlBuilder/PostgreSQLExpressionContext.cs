@@ -479,14 +479,14 @@ namespace SqlSugar
         {
             var parameter = model.Args[0];
             //var parameter1 = model.Args[1];
-            return $" json_array_length({parameter.MemberName}::json) ";
+            return ConvertToJsonbIfEnabled(model, $" json_array_length({parameter.MemberName}::json) ");
         }
 
         public override string JsonParse(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             //var parameter1 = model.Args[1];
-            return $" ({parameter.MemberName}::json) ";
+            return ConvertToJsonbIfEnabled(model,$" ({parameter.MemberName}::json) ");
         }
 
         public override string JsonArrayAny(MethodCallExpressionModel model)
