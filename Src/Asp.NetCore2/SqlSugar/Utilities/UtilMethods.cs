@@ -848,7 +848,8 @@ namespace SqlSugar
                     DatabaseModel=it.MoreSettings.DatabaseModel,
                     EnableILike=it.MoreSettings.EnableILike,
                     ClickHouseEnableFinal=it.MoreSettings.ClickHouseEnableFinal,
-                    PgSqlIsAutoToLowerSchema=it.MoreSettings.PgSqlIsAutoToLowerSchema
+                    PgSqlIsAutoToLowerSchema=it.MoreSettings.PgSqlIsAutoToLowerSchema,
+                    EnableJsonb=it.MoreSettings.EnableJsonb
 
                 },
                 SqlMiddle = it.SqlMiddle == null ? null : new SqlMiddle

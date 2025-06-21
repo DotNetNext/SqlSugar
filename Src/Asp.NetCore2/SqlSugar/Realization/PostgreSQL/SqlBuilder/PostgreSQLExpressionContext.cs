@@ -436,9 +436,9 @@ namespace SqlSugar
             //var parameter2 = model.Args[2];
             //var parameter3= model.Args[3];
             var result= GetJson(parameter.MemberName, parameter1.MemberName, model.Args.Count()==2);
-            if (model.Args.Count > 2) 
+            if (model.Args.Count > 2)
             {
-               result = GetJson(result, model.Args[2].MemberName, model.Args.Count() == 3);
+                result = GetJson(result, model.Args[2].MemberName, model.Args.Count() == 3);
             }
             if (model.Args.Count > 3)
             {
@@ -452,6 +452,7 @@ namespace SqlSugar
             {
                 result = GetJson(result, model.Args[5].MemberName, model.Args.Count() == 6);
             }
+            result = ConvertToJsonbIfEnabled(model, result);
             return result;
         }
 
@@ -519,5 +520,19 @@ namespace SqlSugar
                 return $" {model.Args[0].MemberName}::jsonb @> '[{{\"{model.Args[1].MemberValue}\":\"{model.Args[2].MemberValue.ObjToStringNoTrim().ToSqlFilter()}\"}}]'::jsonb ";
             }
         }
+         
+        private static string ConvertToJsonbIfEnabled(MethodCallExpressionModel model, string result)
+        {
+            if (model?.Conext?.SugarContext?.Context is ISqlSugarClient db)
+            {
+                if (db.CurrentConnectionConfig?.MoreSettings?.EnableJsonb == true)
+                {
+                    result = result.Replace("::json", "::jsonb");
+                }
+            }
+
+            return result;
+        }
+
     }
 }

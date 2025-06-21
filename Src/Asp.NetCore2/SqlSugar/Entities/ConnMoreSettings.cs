@@ -38,5 +38,6 @@ namespace SqlSugar
         public bool DisableQueryWhereColumnRemoveTrim { get; set; }
         public DbType? DatabaseModel { get;set; }
         public bool ClickHouseEnableFinal { get; set; }
+        public bool EnableJsonb { get;  set; }
     }
 }
