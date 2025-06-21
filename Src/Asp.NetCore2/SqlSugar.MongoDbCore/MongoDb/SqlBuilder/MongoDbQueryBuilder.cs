@@ -64,7 +64,7 @@ namespace SqlSugar.MongoDb
                     trimmed = trimmed.Substring(5).TrimStart();
                 else if (trimmed.StartsWith("AND", StringComparison.OrdinalIgnoreCase))
                     trimmed = trimmed.Substring(3).TrimStart();
-                if (IsFieldNameJson(trimmed))
+                if (MongoDbExpTools.IsFieldNameJson(trimmed))
                 {
                     var outerDoc = BsonDocument.Parse(trimmed);
                     trimmed = outerDoc["fieldName"].AsString;
@@ -135,6 +135,11 @@ namespace SqlSugar.MongoDb
                     resolveType=ResolveExpressType.SelectSingle,
                     queryBuilder=this
                 });
+                if (MongoDbExpTools.IsFieldNameJson(dos))
+                {
+                    dos["fieldName"] = "$"+ dos["fieldName"];
+                    dos.Add(new BsonElement("_id", "0"));
+                } 
                 var json = dos.ToJson(UtilMethods.GetJsonWriterSettings());
                 operations.Add($"{{\"$project\": {json} }}"); 
             }
@@ -200,13 +205,7 @@ namespace SqlSugar.MongoDb
             sb.Append("]");
 
             return sb.ToString();
-        }
-
-        private bool IsFieldNameJson(string trimmed)
-        {
-            return trimmed.StartsWith("{ \"fieldName\" : ");
-        }
-
+        } 
         public override string ToCountSql(string sql)
         {
             sql=sql.TrimEnd(']');

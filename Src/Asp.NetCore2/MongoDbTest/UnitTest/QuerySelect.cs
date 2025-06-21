@@ -170,7 +170,25 @@ namespace MongoDbTest
              { 
                  name = it.Name.Length,
              }).ToList();
-            if(list18.Max(it=>it.name)!=2) Cases.ThrowUnitError(); 
+            if(list18.Max(it=>it.name)!=2) Cases.ThrowUnitError();
+
+            var list19= db.Queryable<Student>()
+           .Select(it => new
+           {
+               name =string.IsNullOrEmpty(it.Name),
+           }).ToList();
+            if (list19.Max(it => it.name) != true) Cases.ThrowUnitError();
+
+            //var list20 = db.Queryable<Student>()
+            //  .Select(it => new
+            //  {
+            //      name = string.IsNullOrEmpty(it.Name).ToString(),
+            //  }).ToList();
+            //if (list20.Max(it => it.name) != "true") Cases.ThrowUnitError();
+             
+            var list22= db.Queryable<Student>()
+            .Select(it=>it.Name).ToList();
+            if (list22.First() != "a") Cases.ThrowUnitError();
         }
         [SqlSugar.SugarTable("UnitStudent1231sds3z1")]
         public class Student : MongoDbBase

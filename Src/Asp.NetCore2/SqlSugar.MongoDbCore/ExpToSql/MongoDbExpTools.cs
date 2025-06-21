@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MongoDB.Bson;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq.Expressions;
@@ -7,7 +8,18 @@ using System.Text;
 namespace SqlSugar.MongoDb 
 {
     public class MongoDbExpTools
-    { 
+    {
+
+        public static bool IsFieldNameJson(string trimmed)
+        {
+            return trimmed.StartsWith("{ \"fieldName\" : ");
+        }
+        public static bool IsFieldNameJson(BsonDocument doc)
+        {
+            if (doc.Contains("fieldName"))
+                return true;
+            return false;
+        }
         public static string CustomToString(object value)
         {
             if (value == null||value==DBNull.Value)
