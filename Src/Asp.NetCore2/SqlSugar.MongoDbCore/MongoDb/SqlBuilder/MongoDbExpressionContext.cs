@@ -448,7 +448,7 @@ namespace SqlSugar.MongoDb
             if (model.Args == null || model.Args.Count == 0)
             {
                 // 只有 ToString()，直接转字符串
-                var toStringDoc = new BsonDocument("$toString", $"${memberName}");
+                var toStringDoc = new BsonDocument("$toString", GetMemberName(memberName));
                 return toStringDoc.ToJson(UtilMethods.GetJsonWriterSettings());
             }
             else if (model.Args.Count == 1)
@@ -596,9 +596,14 @@ namespace SqlSugar.MongoDb
             return trimDoc.ToJson(UtilMethods.GetJsonWriterSettings());
         }
 
-        #region  Helper
-
-        // Existing methods...
+        #region  Helper 
+        private static BsonValue GetMemberName(BsonValue memberName)
+        {
+            if (memberName is BsonDocument)
+                return memberName;
+            else
+                return $"${memberName}";
+        }
 
         /// <summary>
         /// Converts a C# date format string to a MongoDB-compatible date format string.

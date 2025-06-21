@@ -179,13 +179,13 @@ namespace MongoDbTest
            }).ToList();
             if (list19.Max(it => it.name) != true) Cases.ThrowUnitError();
 
-            //var list20 = db.Queryable<Student>()
-            //  .Select(it => new
-            //  {
-            //      name = string.IsNullOrEmpty(it.Name).ToString(),
-            //  }).ToList();
-            //if (list20.Max(it => it.name) != "true") Cases.ThrowUnitError();
-             
+            var list20 = db.Queryable<Student>()
+              .Select(it => new
+              {
+                  name = string.IsNullOrEmpty(it.Name).ToString(),
+              }).ToList();
+            if (list20.Max(it => it.name) != "true") Cases.ThrowUnitError();
+
             var list22= db.Queryable<Student>()
             .Select(it=>it.Name).ToList();
             if (list22.First() != "a") Cases.ThrowUnitError();
