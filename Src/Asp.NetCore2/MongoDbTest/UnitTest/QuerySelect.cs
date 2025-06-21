@@ -155,6 +155,13 @@ namespace MongoDbTest
                      name=SqlFunc.AggregateMin(it.Name),
                      age=it.Age
                 }).ToList();
+
+            var list17 = db.Queryable<Student>()  
+               .Select(it => new
+               {
+                   name2=it.Name,
+                   name = it.Name.Substring(0,1), 
+               }).ToList();
         }
         [SqlSugar.SugarTable("UnitStudent1231sds3z1")]
         public class Student : MongoDbBase

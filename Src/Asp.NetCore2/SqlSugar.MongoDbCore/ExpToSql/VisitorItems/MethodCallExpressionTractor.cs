@@ -49,10 +49,23 @@ namespace SqlSugar.MongoDb
                         var value = context.GetType().GetMethod(name).Invoke(context, new object[] { model });
                         result = BsonDocument.Parse(value?.ToString());
                     }
+                    else if (name.StartsWith("Aggregate"))
+                    {
+                        var value = context.GetType().GetMethod(name).Invoke(context, new object[] { model });
+                        result = UtilMethods.MyCreate(value?.ToString());
+                    }
                     else
                     {
-                        var funcString = context.GetType().GetMethod(name).Invoke(context, new object[] { model });
-                        result = UtilMethods.MyCreate(funcString);
+                        var methodInfo = context.GetType().GetMethod(name);
+                        var funcString = methodInfo.Invoke(context, new object[] { model });
+                        if (new string[] { "Contains", "StartsWith", "EndsWith" }.Contains(name))
+                        {
+                            result = UtilMethods.MyCreate(funcString?.ToString());
+                        }
+                        else 
+                        {
+                            result = BsonDocument.Parse(funcString?.ToString());
+                        }
                     }
                 }
                 else if (name.StartsWith("Add"))
