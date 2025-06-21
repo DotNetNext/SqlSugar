@@ -159,11 +159,18 @@ namespace MongoDbTest
             var list17 = db.Queryable<Student>()  
                 .Where(it=>SqlFunc.Length(it.Name)>1)
                .Select(it => new
-               {
+               { 
                    name2=it.Name,
-                   name = it.Name.Substring(0,1), 
+                   name = it.Name.Substring(0,1),  
                }).ToList();
             if(list17.First().name2!="a2"||list17.First().name.Substring(0,1)!= list17.First().name) Cases.ThrowUnitError();
+
+            var list18 = db.Queryable<Student>() 
+             .Select(it => new
+             { 
+                 name = it.Name.Length,
+             }).ToList();
+            if(list18.Max(it=>it.name)!=2) Cases.ThrowUnitError(); 
         }
         [SqlSugar.SugarTable("UnitStudent1231sds3z1")]
         public class Student : MongoDbBase

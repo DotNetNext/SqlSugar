@@ -36,14 +36,22 @@ namespace SqlSugar.MongoDb
             if (ExpressionTool.GetParameters(expr).Count == 0)
             {
                 var value = ExpressionTool.GetMemberValue(oldMember.Member, oldExp);
-                return  UtilMethods.MyCreate(value);
+                return UtilMethods.MyCreate(value);
             }
-            else if (!string.IsNullOrEmpty(BinaryExpressionTranslator.GetSystemDateMemberName(expr)))
+            else if (IsLength(oldMember))
             {
-               var memberExp= (expr as MemberExpression);
+                var memberExp = (expr as MemberExpression);
                 var method = new MongoDbMethod() { context = _context };
                 var model = new MethodCallExpressionModel() { Args = new List<MethodCallExpressionArgs>() };
-                if (memberExp.Member.Name == "Date") 
+                model.Args.Add(new MethodCallExpressionArgs() { MemberValue = memberExp.Expression });
+                return BsonDocument.Parse(method.Length(model));
+            }
+            else if (IsDateProperty(expr))
+            {
+                var memberExp = (expr as MemberExpression);
+                var method = new MongoDbMethod() { context = _context };
+                var model = new MethodCallExpressionModel() { Args = new List<MethodCallExpressionArgs>() };
+                if (memberExp.Member.Name == "Date")
                 {
                     model.Args.Add(new MethodCallExpressionArgs() { MemberValue = memberExp.Expression });
                     return BsonDocument.Parse(method.ToDateShort(model));
@@ -56,6 +64,26 @@ namespace SqlSugar.MongoDb
                 }
             }
             return ExtractFieldPath(expr);
+        }
+
+        private static bool IsDateProperty(Expression expr)
+        {
+            return !string.IsNullOrEmpty(BinaryExpressionTranslator.GetSystemDateMemberName(expr));
+        }
+
+        private static bool IsLength(MemberExpression oldMember)
+        {
+            if (oldMember.Member.Name != "Length")
+                return false;
+
+            var expressionType = oldMember.Expression?.Type;
+            if (expressionType == null)
+                return false;
+
+            return expressionType.IsArray
+                || expressionType == typeof(string)
+                || expressionType.FullName == "System.Span`1"
+                || expressionType.FullName == "System.ReadOnlySpan`1";
         }
 
         private BsonValue ExtractFieldPath(Expression expr)
