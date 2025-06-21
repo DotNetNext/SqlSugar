@@ -26,6 +26,16 @@ namespace MongoDbTest
 
             //根据bool过滤
             FilterStudentsByBool(db);
+
+            //更多
+            InsertAndValidateStudent(db);
+        }
+
+        private static void InsertAndValidateStudent(SqlSugarClient db)
+        {
+            db.Insertable(new Student() { Name = "", Bool = true, CreateDateTime = DateTime.Now }).ExecuteCommand();
+            var list = db.Queryable<Student>().Where(it => string.IsNullOrEmpty(it.Name)).ToList();
+            if (!string.IsNullOrEmpty(list.First().Name)) Cases.ThrowUnitError();
         }
 
         private static void FilterStudentsByBool(SqlSugar.SqlSugarClient db)

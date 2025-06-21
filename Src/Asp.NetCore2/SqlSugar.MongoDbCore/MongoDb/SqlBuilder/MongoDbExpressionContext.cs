@@ -570,16 +570,21 @@ namespace SqlSugar.MongoDb
 
      public override string IsNullOrEmpty(MethodCallExpressionModel model)
         {
-            // 判断字符串是否为 null 或空字符串
+            // 获取字段名表达式
             var item = model.Args[0].MemberValue ?? model.DataObject;
-            BsonValue memberName = new ExpressionVisitor(context).Visit(item as Expression);
-            // $or: [ { $eq: [ "$field", null ] }, { $eq: [ "$field", "" ] } ]
-            var orDoc = new BsonDocument("$or", new BsonArray
-            {
-                new BsonDocument("$eq", new BsonArray { $"${memberName}", BsonNull.Value }),
-                new BsonDocument("$eq", new BsonArray { $"${memberName}", "" })
-            });
-            return orDoc.ToJson(UtilMethods.GetJsonWriterSettings());
+            var fieldExpr = new ExpressionVisitor(context).Visit(item as Expression);
+
+            string fieldName = fieldExpr.ToString();
+
+            // 生成：{ "$match": { "$or": [ { "Name": null }, { "Name": "" } ] } }
+            var or=new BsonDocument(
+                "$or", new BsonArray
+                {
+            new BsonDocument(fieldName, BsonNull.Value),
+            new BsonDocument(fieldName, "")
+                });
+
+            return or.ToJson(UtilMethods.GetJsonWriterSettings());
         }
          
         public override string Trim(MethodCallExpressionModel model)
