@@ -7,7 +7,7 @@ namespace SqlSugar.MongoDb
 {
     internal static class UtilConstants
     {
-        public const string  FieldName= "fieldName";
+        public const string  FieldName= "SqlSugarFieldName";
         public const string Dot = ".";
         public const char DotChar = '.';
         internal const string Space = " ";
