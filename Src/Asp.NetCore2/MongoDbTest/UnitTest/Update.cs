@@ -55,6 +55,14 @@ namespace MongoDbTest
             if (list3.First().Name != "ss"|| list3.Count!=1) Cases.ThrowUnitError();
             var list4 = db.Queryable<Student>().Where(it => it.Age == 22222).ToList();
             if (list4.First().Name != "yy" || list4.Count != 1) Cases.ThrowUnitError();
+            db.Updateable(new List<Student>()
+            {
+               new Student() { Name = "yy", Age = 22222, SchoolId = "3", CreateDateTime = DateTime.Now },
+               new Student() { Name = "ss", Age = 33333, SchoolId = "4", CreateDateTime = DateTime.Now }
+            }
+            ).WhereColumns(it =>new { it.Name,it.Age }).ExecuteCommand();
+            var list5 = db.Queryable<Student>().Where(it => it.SchoolId == "3").ToList();
+            if(list5.Count!=1|| list5.First().Name!="yy") Cases.ThrowUnitError(); ;
         }
         [SqlSugar.SugarTable("UnitStudentdghhuesd3z1")]
         public class Student : MongoDbBase

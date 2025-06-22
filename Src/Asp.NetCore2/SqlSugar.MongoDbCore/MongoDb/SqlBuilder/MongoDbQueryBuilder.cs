@@ -67,7 +67,7 @@ namespace SqlSugar.MongoDb
                 if (MongoDbExpTools.IsFieldNameJson(trimmed))
                 {
                     var outerDoc = BsonDocument.Parse(trimmed);
-                    trimmed = outerDoc["fieldName"].AsString;
+                    trimmed = outerDoc[UtilConstants.FieldName].AsString;
                     operations.Add(trimmed);
                 }
                 else
@@ -113,9 +113,9 @@ namespace SqlSugar.MongoDb
                         directionPart = "ASC";
                     }
                     var bson = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonDocument>(jsonPart);
-                    if (bson.Contains("fieldName"))
+                    if (bson.Contains(UtilConstants.FieldName))
                     {
-                        var field = bson["fieldName"].AsString;
+                        var field = bson[UtilConstants.FieldName].AsString;
                         var direction = directionPart == "DESC" ? -1 : 1;
                         sortDoc[field] = direction;
                     }
@@ -137,7 +137,7 @@ namespace SqlSugar.MongoDb
                 });
                 if (MongoDbExpTools.IsFieldNameJson(dos))
                 {
-                    dos["fieldName"] = "$"+ dos["fieldName"];
+                    dos[UtilConstants.FieldName] = "$"+ dos[UtilConstants.FieldName];
                     dos.Add(new BsonElement("_id", "0"));
                 }
                 else if (dos.ElementCount > 0 && dos.GetElement(0).Name.StartsWith("$"))
@@ -145,7 +145,7 @@ namespace SqlSugar.MongoDb
                     // 如果第一个key带有$，说明是个函数，外面套一层fieldName
                     var funcDoc = new BsonDocument(dos); // 复制一份
                     dos.Clear();
-                    dos.Add("fieldName", funcDoc);
+                    dos.Add(UtilConstants.FieldName, funcDoc);
                     dos.Add(new BsonElement("_id", "0"));
                 } 
                 var json = dos.ToJson(UtilMethods.GetJsonWriterSettings());
@@ -174,9 +174,9 @@ namespace SqlSugar.MongoDb
                 var bsonArray = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonArray>(jsonPart);
                 foreach (BsonDocument bson in bsonArray)
                 { 
-                    if (bson.Contains("fieldName"))
+                    if (bson.Contains(UtilConstants.FieldName))
                     {
-                       var field = bson["fieldName"].AsString;
+                       var field = bson[UtilConstants.FieldName].AsString;
                        operations[operations.Count - 1] = operations[operations.Count - 1].Replace($"\"${field}\"", $"\"$_id.{field}\"");
                        fieldNames.Add(field);
                     }

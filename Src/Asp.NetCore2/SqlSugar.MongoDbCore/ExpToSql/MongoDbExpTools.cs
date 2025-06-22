@@ -16,7 +16,7 @@ namespace SqlSugar.MongoDb
         }
         public static bool IsFieldNameJson(BsonDocument doc)
         {
-            if (doc.Contains("fieldName"))
+            if (doc.Contains(UtilConstants.FieldName))
                 return true;
             return false;
         }
