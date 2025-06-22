@@ -12,7 +12,7 @@ namespace SqlSugar.MongoDb
 
         public static bool IsFieldNameJson(string trimmed)
         {
-            return trimmed.StartsWith("{ \"fieldName\" : ");
+            return trimmed.StartsWith("{ \""+UtilConstants.FieldName+"\" : ");
         }
         public static bool IsFieldNameJson(BsonDocument doc)
         {
