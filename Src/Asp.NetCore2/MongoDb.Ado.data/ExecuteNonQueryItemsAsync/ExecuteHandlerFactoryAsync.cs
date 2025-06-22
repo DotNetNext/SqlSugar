@@ -17,6 +17,7 @@ namespace MongoDb.Ado.data
                 { "insertmany", new InsertManyHandlerAsync() },
                 { "update", new UpdateHandlerAsync() },
                 { "updatemany", new UpdateManyHandlerAsync() },
+                { "BulkWrite", new BulkWriteHandlerAsync() },
                 { "delete", new DeleteHandlerAsync() },
                 { "deletemany", new DeleteManyHandlerAsync() },
                 { "find", new NonFindHandlerAsync() }

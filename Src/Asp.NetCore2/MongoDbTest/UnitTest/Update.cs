@@ -62,7 +62,7 @@ namespace MongoDbTest
             }
             ).WhereColumns(it =>new { it.Name,it.Age }).ExecuteCommand();
             var list5 = db.Queryable<Student>().Where(it => it.SchoolId == "3").ToList();
-            if(list5.Count!=1|| list5.First().Name!="yy") Cases.ThrowUnitError(); ;
+            if(list5.Count!=1|| list5.First().Name!="yy") Cases.ThrowUnitError(); 
         }
         [SqlSugar.SugarTable("UnitStudentdghhuesd3z1")]
         public class Student : MongoDbBase

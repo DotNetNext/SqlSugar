@@ -76,7 +76,7 @@ namespace SqlSugar.MongoDb
                 UpdateByObject(groupList, operations, pks);
             }
             var sb = new StringBuilder();
-            sb.Append($"updateMany {tableName} [ ");
+            sb.Append($"BulkWrite {tableName} [ ");
             sb.Append(string.Join(", ", operations));
             sb.Append(" ]");
 
