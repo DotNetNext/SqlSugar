@@ -27,7 +27,7 @@ namespace MongoDbTest
             if (list.First().Name!="11"|| list.Last().Name != "33") Cases.ThrowUnitError();
             db.Insertable(new Student() { Age = 1, Name = null, SchoolId = "111", CreateDateTime = DateTime.Now }).ExecuteCommand();
             var list2=db.Queryable<Student>().Where(it => it.Name == null).ToList();
-            if(list2.Count!=1||list.First().Name!=null) Cases.ThrowUnitError();
+            if(list2.Count!=1|| list2.First().Name!=null) Cases.ThrowUnitError();
         }
         [SqlSugar.SugarTable("UnitStudent1ddsfhssds3z1")]
         public class Student : MongoDbBase
