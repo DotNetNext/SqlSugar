@@ -36,6 +36,10 @@ namespace SqlSugar.ClickHouse
                     var dbTypeName2 = dbTypeName.TrimStart('_');
                     return MappingTypes.Where(it => it.Value.ToString().ToLower() == dbTypeName2  || it.Key.ToLower() == dbTypeName2).Select(it => it.Value + "[]").First();
                 }
+                if (dbTypeName == "array") 
+                {
+                    return "object";
+                }
                 Check.ThrowNotSupportedException(string.Format(" \"{0}\" Type NotSupported, DbBindProvider.GetPropertyTypeName error.", dbTypeName));
                 return String.Empty;
             }

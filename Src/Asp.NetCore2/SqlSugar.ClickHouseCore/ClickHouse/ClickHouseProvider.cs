@@ -166,7 +166,18 @@ namespace SqlSugar.ClickHouse
                     }
                     else
                     {
+                        var isByteArray = false;
+                        if (param.Value is byte[] bs) 
+                        {
+                            isByteArray = true;
+                            param.Value = bs.Select(it=>Convert.ToInt32(it)); 
+                        }
                         sql = sql.Replace(param.ParameterName,   this.Context.Utilities.SerializeObject(param.Value).Replace("\"","'"));
+                        if (isByteArray)
+                        {
+                            param.Value = DBNull.Value;
+                            param.DbType = System.Data.DbType.String;
+                        }
                     }
                 }
                 else if (dbTypeString == "DateTime" && param.Value == DBNull.Value)
