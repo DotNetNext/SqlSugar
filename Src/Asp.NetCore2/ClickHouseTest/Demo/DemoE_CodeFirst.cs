@@ -49,7 +49,15 @@ namespace OrmTest
             db.Insertable(new List<TestNull>() { new TestNull() { Id = 2}, new TestNull() { Id = 3 } }).ExecuteCommand();
             var list4=db.Queryable<TestNull>().ToList();
             db.Deleteable(list4).ExecuteCommand();
+            db.CodeFirst.InitTables<Unitadfasfs>();
+            db.Insertable(new Unitadfasfs() { shorts = new byte[] { 1  } }).ExecuteCommand();
+            var list5=db.Queryable<Unitadfasfs>().ToList();
             Console.WriteLine("#### CodeFirst end ####");
+        }
+        public class Unitadfasfs 
+        {
+            [SugarColumn(ColumnDataType = "Array(UInt8)", IsArray=true)]
+            public byte[] shorts { get; set; }
         }
         public class TestNull 
         {
