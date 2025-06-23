@@ -9,6 +9,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace SqlSugar.MongoDb
 {
@@ -22,10 +23,18 @@ namespace SqlSugar.MongoDb
 
                 if (value is IEnumerable enumerable)
                 {
-                    var realType = value.GetType();
-                    var bson = value.ToBson(realType);
-                    var json = bson.ToJson(UtilMethods.GetJsonWriterSettings());
-                    return json;
+                    var list = new List<BsonDocument>();
+
+                    foreach (var e in enumerable)
+                    {  
+                        var realType = e.GetType();
+                        var bson = e.ToBson(realType); // 序列化为 byte[]
+                        var doc = BsonSerializer.Deserialize<BsonDocument>(bson); // 反序列化为 BsonDocument
+                        list.Add(doc);
+                    }
+
+                    var array = new BsonArray(list);
+                    return array.ToJson(UtilMethods.GetJsonWriterSettings());
                 }
                 else
                 {
@@ -51,9 +60,30 @@ namespace SqlSugar.MongoDb
                     // 再用 BsonSerializer 反序列化为 T
                     return BsonSerializer.Deserialize(bsonDoc, type);
                 }
-                else 
+                else if (json is List<object> list)
                 {
-                    return null;
+                    string jsonStr = System.Text.Encoding.UTF8.GetString(list.Select(it=>Convert.ToByte(it)).ToArray());
+                    // 2. 解析为 BsonArray
+                    var bsonArray = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonArray>(jsonStr);
+
+                    // 3. 获取元素类型，例如 List<MyClass> => MyClass
+                    Type elementType = type.GetGenericArguments()[0];
+
+                    // 4. 构造泛型列表对象
+                    var resultList = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(elementType));
+
+                    // 5. 反序列化每一项
+                    foreach (var item in bsonArray)
+                    {
+                        var doc = item.AsBsonDocument;
+                        var obj = BsonSerializer.Deserialize(doc, elementType);
+                        resultList.Add(obj);
+                    } 
+                    return resultList; 
+                }
+                else
+                {
+                    return json;
                 }
             };
         } 
@@ -108,7 +138,7 @@ namespace SqlSugar.MongoDb
                     // 自动推断类型，如 string、int、bool、DateTime、ObjectId 等
                     if (col.IsJson == true)
                     {
-                        doc[col.DbColumnName] = BsonDocument.Parse(col.Value?.ToString());
+                        doc[col.DbColumnName] =UtilMethods.ParseJsonObject(col.Value);
                     }
                     else 
                     {

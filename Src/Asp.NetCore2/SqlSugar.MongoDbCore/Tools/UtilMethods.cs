@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,7 +17,20 @@ using System.Text.RegularExpressions;
 namespace SqlSugar.MongoDb
 {
     public class UtilMethods
-    { 
+    {
+        public static BsonValue ParseJsonObject(object json)
+        {
+            if (json is string str && str.TrimStart().StartsWith("{"))
+            { 
+                var arrayObj = BsonDocument.Parse(str);
+                return arrayObj;  
+            }
+            else
+            {
+                var arrayObj = BsonArray.Create(json);
+                return arrayObj;
+            }
+        }
         public static BsonValue MyCreate(object value)
         {
             if (value is DateTime dt)
