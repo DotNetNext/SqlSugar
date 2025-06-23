@@ -742,6 +742,10 @@ namespace SqlSugar
             {
                 return false;
             }
+            else if (dataType.EqualCase("timestamp") && properyTypeName.EqualCase("timestamptz"))
+            {
+                return false;
+            }
             else
             {
                 return properyTypeName.ToLower() != dataType.ToLower();
