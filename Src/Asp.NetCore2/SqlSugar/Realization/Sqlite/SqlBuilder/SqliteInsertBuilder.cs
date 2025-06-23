@@ -76,6 +76,11 @@ namespace SqlSugar
                 }
 
                 batchInsetrSql.AppendLine(";SELECT LAST_INSERT_ROWID();");
+                if (MySqlIgnore) 
+                { 
+                    batchInsetrSql.Remove(0, "INSERT INTO `".Length);
+                    batchInsetrSql.Insert(0, "REPLACE  INTO `");
+                }
                 var result = batchInsetrSql.ToString();
                 return result;
             }
