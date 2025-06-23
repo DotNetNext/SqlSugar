@@ -255,6 +255,21 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        protected override string GetAddColumnSql(string tableName, DbColumnInfo columnInfo)
+        {
+            var sql= base.GetAddColumnSql(tableName, columnInfo);
+            if (columnInfo.DefaultValue.HasValue()&&this.Context?.CurrentConnectionConfig?.MoreSettings?.SqliteCodeFirstEnableDefaultValue == true)
+            {
+                var value = columnInfo.DefaultValue;
+                if (!value.Contains("(") && !value.EqualCase("CURRENT_TIMESTAMP") && !value.StartsWith("'"))
+                {
+                    value = value.ToSqlValue();
+                }
+                value = $" DEFAULT {value}";
+                sql += value;
+            }
+            return sql;
+        } 
         public override bool UpdateColumn(string tableName, DbColumnInfo column)
         {
             var isTran = this.Context.Ado.IsNoTran();
