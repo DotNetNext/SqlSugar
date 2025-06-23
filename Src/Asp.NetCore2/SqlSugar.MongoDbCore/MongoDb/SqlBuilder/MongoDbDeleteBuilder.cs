@@ -43,10 +43,7 @@ namespace SqlSugar.MongoDb
                         { "_id", new BsonDocument { { "$in", bsonArray } } }
                     };
 
-                    string json = filter.ToJson(new MongoDB.Bson.IO.JsonWriterSettings
-                    {
-                        OutputMode = MongoDB.Bson.IO.JsonOutputMode.Shell
-                    }); // 使用 MongoDB 驱动的序列化
+                    string json = filter.ToJson(UtilMethods.GetJsonWriterSettings()); // 使用 MongoDB 驱动的序列化
                     jsonObjects.Add(json);
                 }
             }

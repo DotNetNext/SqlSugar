@@ -137,10 +137,7 @@ namespace SqlSugar.MongoDb
             { "update", update }
         };
 
-                string json = entry.ToJson(new MongoDB.Bson.IO.JsonWriterSettings
-                {
-                    OutputMode = MongoDB.Bson.IO.JsonOutputMode.Shell // JSON标准格式，带双引号
-                });
+                string json = entry.ToJson(UtilMethods.GetJsonWriterSettings());
 
                 operations.Add(json);
             }

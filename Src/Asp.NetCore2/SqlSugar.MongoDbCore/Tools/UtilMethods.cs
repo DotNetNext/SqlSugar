@@ -28,10 +28,7 @@ namespace SqlSugar.MongoDb
         }
         internal static MongoDB.Bson.IO.JsonWriterSettings GetJsonWriterSettings() 
         {
-            return new MongoDB.Bson.IO.JsonWriterSettings
-            {
-                OutputMode = MongoDB.Bson.IO.JsonOutputMode.Shell // JSON标准格式，带双引号
-            };
+            return new MongoDB.Bson.IO.JsonWriterSettings {   };
         }
         internal static DateTime GetMinDate(ConnectionConfig currentConnectionConfig)
         {

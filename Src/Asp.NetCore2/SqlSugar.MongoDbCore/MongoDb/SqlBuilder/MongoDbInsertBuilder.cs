@@ -1,5 +1,9 @@
 ﻿using MongoDB.Bson;
+using MongoDB.Bson.IO;
+using MongoDB.Bson.Serialization;
+using NetTaste;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -10,6 +14,49 @@ namespace SqlSugar.MongoDb
 {
     public class MongoDbInsertBuilder : InsertBuilder
     {
+        public MongoDbInsertBuilder() 
+        {
+            this.SerializeObjectFunc = it =>
+            {
+                object value =it;  
+
+                if (value is IEnumerable enumerable)
+                {
+                    var realType = value.GetType();
+                    var bson = value.ToBson(realType);
+                    var json = bson.ToJson(UtilMethods.GetJsonWriterSettings());
+                    return json;
+                }
+                else
+                {
+                    var realType = it.GetType();
+                    var bson = it.ToBson(realType); // → byte[]
+                    var doc = BsonSerializer.Deserialize<BsonDocument>(bson); // → BsonDocument
+                    var json = doc.ToJson(UtilMethods.GetJsonWriterSettings());
+                    return json;
+                }
+            };
+            this.DeserializeObjectFunc = (json, type) =>
+            {
+                if (json is Dictionary<string, object> keyValues)
+                {
+                    // 先用 Dictionary 构建 BsonDocument
+                    var bsonDoc = new BsonDocument();
+
+                    foreach (var kvp in keyValues)
+                    {
+                        bsonDoc.Add(kvp.Key, BsonValue.Create(kvp.Value));
+                    }
+
+                    // 再用 BsonSerializer 反序列化为 T
+                    return BsonSerializer.Deserialize(bsonDoc, type);
+                }
+                else 
+                {
+                    return null;
+                }
+            };
+        } 
         public override string SqlTemplate
         {
             get
@@ -39,7 +86,7 @@ namespace SqlSugar.MongoDb
         public override Func<string, string, string> ConvertInsertReturnIdFunc { get; set; } = (name, sql) =>
         {
             return sql.Trim().TrimEnd(';')+ $"returning {name} ";
-        };
+        }; 
         public override string ToSqlString()
         {
             var sql= BuildInsertMany(this.DbColumnInfoList, this.EntityInfo.DbTableName);
@@ -59,14 +106,18 @@ namespace SqlSugar.MongoDb
                 foreach (var col in group)
                 {
                     // 自动推断类型，如 string、int、bool、DateTime、ObjectId 等
-                    doc[col.DbColumnName] =  UtilMethods.MyCreate(col.Value);
+                    if (col.IsJson == true)
+                    {
+                        doc[col.DbColumnName] = BsonDocument.Parse(col.Value?.ToString());
+                    }
+                    else 
+                    {
+                        doc[col.DbColumnName] = UtilMethods.MyCreate(col.Value);
+                    }
                 }
 
                 // 转为 JSON 字符串（标准 MongoDB shell 格式）
-                string json = doc.ToJson(new MongoDB.Bson.IO.JsonWriterSettings
-                {
-                    OutputMode = MongoDB.Bson.IO.JsonOutputMode.Shell // 可改成 Strict
-                });
+                string json = doc.ToJson(UtilMethods.GetJsonWriterSettings());
 
                 jsonObjects.Add(json);
             }

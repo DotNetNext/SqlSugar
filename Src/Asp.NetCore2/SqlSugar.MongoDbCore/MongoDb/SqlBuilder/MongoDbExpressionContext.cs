@@ -17,10 +17,7 @@ namespace SqlSugar.MongoDb
             context.context = this.SugarContext.Context;
             context.queryBuilder = this.SugarContext.QueryBuilder;
             var sql=MongoNestedTranslator.Translate(expression, context);
-            var shellString = sql.ToJson(new JsonWriterSettings
-            {
-                OutputMode = JsonOutputMode.Shell
-            }); 
+            var shellString = sql.ToJson(UtilMethods.GetJsonWriterSettings()); 
             this.Result.Append(shellString);
         }
 
