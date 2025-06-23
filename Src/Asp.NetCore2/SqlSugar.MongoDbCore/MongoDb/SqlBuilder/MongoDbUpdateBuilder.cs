@@ -121,8 +121,16 @@ namespace SqlSugar.MongoDb
                     }
                     else
                     {
-                        var bsonValue =  UtilMethods.MyCreate(col.Value);
-                        setDoc[col.DbColumnName] = bsonValue;
+                        if (col.IsJson)
+                        { 
+                            var bsonValue = BsonDocument.Parse(col.Value?.ToString());
+                            setDoc[col.DbColumnName] = bsonValue;
+                        }
+                        else
+                        {
+                            var bsonValue = UtilMethods.MyCreate(col.Value);
+                            setDoc[col.DbColumnName] = bsonValue;
+                        }
                     }
                 }
 
