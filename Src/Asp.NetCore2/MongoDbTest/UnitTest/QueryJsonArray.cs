@@ -18,6 +18,10 @@ namespace MongoDbTest
             var data1=db.Queryable<Student>().ToList();
             if (data1.First().Book.Count != 1)  Cases.ThrowUnitError();
             if (data1.First().Book.First().Price != 21) Cases.ThrowUnitError();
+            data1.First().Book.First().Price = 100;
+            db.Updateable(data1).ExecuteCommand();
+            var data2 = db.Queryable<Student>().ToList(); 
+            if (data2.First().Book.First().Price != 100) Cases.ThrowUnitError();
         }
 
         [SqlSugar.SugarTable("UnitStudentdfsds3zzz1")]

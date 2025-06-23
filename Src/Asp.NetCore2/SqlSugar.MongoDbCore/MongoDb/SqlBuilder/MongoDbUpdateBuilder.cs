@@ -123,7 +123,7 @@ namespace SqlSugar.MongoDb
                     {
                         if (col.IsJson)
                         { 
-                            var bsonValue = BsonDocument.Parse(col.Value?.ToString());
+                            var bsonValue = UtilMethods.ParseJsonObject(col.Value?.ToString());
                             setDoc[col.DbColumnName] = bsonValue;
                         }
                         else
