@@ -88,6 +88,8 @@ namespace SqlSugar
 
         #region Methods
 
+        public virtual Func<object, string> SerializeObjectFunc { get; set; }
+        public virtual Func<object, Type, object> DeserializeObjectFunc { get; set; }
         public virtual void ActionMinDate()
         {
             if (this.Parameters != null)
@@ -393,7 +395,7 @@ namespace SqlSugar
             }
             return (Type)columnInfo.SqlParameterDbType == UtilConstants.SqlConvertType;
         }
-
+          
         #endregion
     }
 }

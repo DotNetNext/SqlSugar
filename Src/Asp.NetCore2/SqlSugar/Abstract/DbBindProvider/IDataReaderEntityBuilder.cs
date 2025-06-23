@@ -214,6 +214,15 @@ namespace SqlSugar
                 generator.Emit(OpCodes.Ldloc, result);
                 generator.Emit(OpCodes.Ldarg_0);
                 generator.Emit(OpCodes.Ldc_I4, i);
+                var insertBuilder = InstanceFactory.GetInsertBuilder(this.Context?.CurrentConnectionConfig);
+                if (insertBuilder?.DeserializeObjectFunc != null)
+                {
+                    if (IDataRecordExtensions.DeserializeObjectFunc == null)
+                    {
+                        IDataRecordExtensions.DeserializeObjectFunc = insertBuilder.DeserializeObjectFunc;
+                    }
+                    jsonMethod =typeof(IDataRecordExtensions).GetMethod("GetDeserializeObject").MakeGenericMethod(columnInfo.PropertyInfo.PropertyType);
+                }
                 generator.Emit(OpCodes.Call, jsonMethod);
                 generator.Emit(OpCodes.Callvirt, columnInfo.PropertyInfo.GetSetMethod(true));
                 generator.MarkLabel(endIfLabel);
@@ -511,5 +520,5 @@ namespace SqlSugar
             }
         }
         #endregion
-    }
+    } 
 }
