@@ -20,7 +20,7 @@ namespace SqlSugar.TDSQLForPGODBC
             if (csharpTypeName.ToLower().IsIn("boolean", "bool"))
                 csharpTypeName = "bool";
             if (csharpTypeName == "DateTimeOffset")
-                csharpTypeName = "DateTime";
+                return "timestamptz";
             var mappings = this.MappingTypes.Where(it => it.Value.ToString().Equals(csharpTypeName, StringComparison.CurrentCultureIgnoreCase)).ToList();
             if (mappings != null && mappings.Count > 0)
                 return mappings.First().Key;
