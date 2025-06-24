@@ -19,6 +19,7 @@ namespace MongoDbTest
             Insert.Init();
             Update.Init();
             Delete.Init();
+            InsertOrUpdate.Init();
         } 
         public static void ThrowUnitError()
         {
