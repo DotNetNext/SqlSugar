@@ -6,6 +6,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 using Microsoft.IdentityModel.Tokens;
+using System.Collections;
 namespace SqlSugar.MongoDb
 {
     public class MongoDbExpressionContext : ExpressionContext, ILambdaExpressions
@@ -591,6 +592,44 @@ namespace SqlSugar.MongoDb
             BsonValue memberName = new ExpressionVisitor(context).Visit(item as Expression);
             var trimDoc = new BsonDocument("$trim", new BsonDocument { { "input", GetMemberName(memberName) } });
             return trimDoc.ToJson(UtilMethods.GetJsonWriterSettings());
+        }
+
+        public override string ContainsArray(MethodCallExpressionModel model)
+        {
+            // 解析数组表达式和待判断的元素表达式
+            var arrayExp = model.DataObject as Expression;
+            var itemExp = model.Args[0].MemberValue as Expression;
+
+            // 获取字段名
+            BsonValue fieldName = new ExpressionVisitor(context).Visit(itemExp);
+
+            // 获取数组值
+            var arrayObj = ExpressionTool.DynamicInvoke(arrayExp) as IEnumerable;
+            if (arrayObj == null)
+                return null;
+           var name=fieldName.ToString();
+            // 构建BsonArray
+            var bsonArray = new BsonArray();
+            foreach (var val in arrayObj)
+            {
+                if (val == null)
+                    bsonArray.Add(BsonNull.Value);
+                else if (name == "_id") 
+                {
+                    bsonArray.Add(BsonValue.Create(ObjectId.Parse(val?.ToString())));
+                }
+                else
+                    bsonArray.Add(BsonValue.Create(val));
+            }
+
+            // 构建MongoDB的 $in 查询表达式
+            var inDoc = new BsonDocument(name, new BsonDocument("$in", bsonArray));
+            return inDoc.ToJson(UtilMethods.GetJsonWriterSettings());
+        }
+
+        public override string ContainsArrayUseSqlParameters(MethodCallExpressionModel model)
+        {
+            return this.ContainsArray(model);
         }
 
         #region  Helper 

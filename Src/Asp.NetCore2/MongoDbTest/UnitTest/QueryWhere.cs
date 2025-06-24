@@ -66,8 +66,17 @@ namespace MongoDbTest
 
             var dt = DateTime.Now.AddDays(-10).Date;
             var list70=db.Queryable<Student>().ToList().Where(it => it.CreateDateTime.Date == dt).ToList();
-            var list71 = db.Queryable<Student>().Where(it => it.CreateDateTime.Date == dt).ToList();
+            var list71 = db.Queryable<Student>().Where(it => it.CreateDateTime.Date == dt).ToList(); 
+   
             if (list71.Count != list70.Count) Cases.ThrowUnitError();
+
+            var ids=list71.Select(it => it.Id).ToList();
+            var list72 = db.Queryable<Student>().Where(it => ids.Contains(it.Id)).ToList();
+            if(list72.Count!=ids.Count) Cases.ThrowUnitError();
+
+            var ids2 = db.Queryable<Student>().Select(it => it.Id).ToList();
+            var list73 = db.Queryable<Student>().Where(it => ids2.Contains(it.Id)).ToList();
+            if (list73.Count != ids2.Count) Cases.ThrowUnitError();
         }
 
         private static void ValidateStudentData(SqlSugar.SqlSugarClient db)

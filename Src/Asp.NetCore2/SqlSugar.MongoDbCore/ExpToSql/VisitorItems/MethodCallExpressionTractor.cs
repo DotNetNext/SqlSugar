@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
 using System.Linq;
+using static Dm.net.buffer.ByteArrayBuffer;
+using System.Collections;
 namespace SqlSugar.MongoDb 
 {
     public class MethodCallExpressionTractor
@@ -25,8 +27,7 @@ namespace SqlSugar.MongoDb
             {
                 var methodCallExpression = expr as MethodCallExpression;
                 var name = methodCallExpression.Method.Name;
-                if (name == "ToDateTime")
-                    name = "ToDate";
+                name = TransformMethodName(methodCallExpression, name);
                 BsonValue result = null;
                 var context = new MongoDbMethod() { context = this._context };
                 MethodCallExpressionModel model = new MethodCallExpressionModel();
@@ -86,6 +87,20 @@ namespace SqlSugar.MongoDb
                 }
                 return result;
             }
+        }
+
+        private static string TransformMethodName(MethodCallExpression methodCallExpression, string name)
+        {
+            if (name == "ToDateTime")
+                name = "ToDate";
+            if (name == "Contains" && methodCallExpression.Arguments.Count == 1
+                && methodCallExpression?.Object?.Type != null
+                && ExpressionTool.GetParameters(methodCallExpression.Object).Count == 0
+                && typeof(IEnumerable).IsAssignableFrom(methodCallExpression.Object.Type))
+            {
+                name = "ContainsArray";
+            }
+            return name;
         }
     }
 }
