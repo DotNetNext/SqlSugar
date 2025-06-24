@@ -26,7 +26,7 @@ namespace MongoDb.Ado.data
                 var op = new UpdateManyModel<BsonDocument>(filter, update);
                 bulkOps.Add(op);
             }
-
+            if (bulkOps.Count == 0) return 0;
             var result =await collection.BulkWriteAsync(bulkOps);
             return (int)result.ModifiedCount;
         }
