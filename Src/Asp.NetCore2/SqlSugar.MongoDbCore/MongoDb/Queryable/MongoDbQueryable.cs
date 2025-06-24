@@ -43,6 +43,10 @@ namespace SqlSugar.MongoDb
                         }
                         else
                         {
+                            if (column.IsPrimarykey&& value!=null) 
+                            {
+                                value = ObjectId.Parse(value?.ToString());
+                            }
                             bsonValue = BsonValue.Create(value);
                         }
 
