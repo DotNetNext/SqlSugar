@@ -46,6 +46,38 @@ namespace  OrmTest
             {
                 throw new Exception("error");
             }
+            db.CurrentConnectionConfig.MoreSettings = new ConnMoreSettings
+            {
+                  SqlServerCodeFirstNvarchar=true
+            };
+            if (db.DbMaintenance.IsAnyTable<Unitdafdsfs>()) 
+            {
+                db.DbMaintenance.DropTable<Unitdafdsfs>();
+            }
+            db.CodeFirst.InitTables<Unitdafdsfs>();
+            var x=db.DbMaintenance.GetColumnInfosByTableName("Unitdafdsfs", false);
+            if (x.First().DataType != "varchar") 
+            {
+                throw new Exception("unit error");
+            }
+            db.DbMaintenance.DropTable<Unitdafdsfs>(); 
+            db.CodeFirst.InitTables<UNITDAFDSFS>();
+            var x2 = db.DbMaintenance.GetColumnInfosByTableName("Unitdafdsfs", false);
+            if (x2.First().DataType != "nvarchar")
+            {
+                throw new Exception("unit error");
+            }
+            db.DbMaintenance.DropTable<Unitdafdsfs>();
+        }
+        public class UNITDAFDSFS
+        {
+            [SugarColumn(Length =11)]
+            public string Name { get; set; }
+        }
+        public class Unitdafdsfs 
+        {
+            [SugarColumn(ColumnDataType ="varchar(11)")]
+            public string Name { get; set; }
         }
 
         /// <summary>
