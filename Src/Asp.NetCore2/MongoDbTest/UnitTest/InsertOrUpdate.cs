@@ -13,7 +13,7 @@ namespace MongoDbTest
     {
         internal static void Init()
         {
-            var db = DBHelper.DbHelper.GetNewDb();
+            var db = DbHelper.GetNewDb();
             db.CodeFirst.InitTables<Student>();
             db.DbMaintenance.TruncateTable<Student>();
             db.Storageable(new Student() { Name = "a", SchoolId = "1", CreateDateTime = DateTime.Now })

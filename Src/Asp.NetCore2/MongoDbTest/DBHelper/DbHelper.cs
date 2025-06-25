@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MongoDbTest.DBHelper
+namespace MongoDbTest 
 {
     /// <summary>
     /// Helper class for database operations

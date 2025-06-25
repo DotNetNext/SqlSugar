@@ -13,7 +13,7 @@ namespace MongoDbTest
         public static void Init()
         {
             //创建DB
-            var db = DBHelper.DbHelper.GetNewDb();
+            var db = DbHelper.GetNewDb();
 
             //初始化数据
             InitializeStudentData(db);

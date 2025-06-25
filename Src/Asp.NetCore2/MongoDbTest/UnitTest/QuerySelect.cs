@@ -1,7 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
-using MongoDB.Driver.Linq;
-using MongoDbTest.DBHelper;
+using MongoDB.Driver.Linq; 
 using SqlSugar;
 using SqlSugar.MongoDb;
 using System;
@@ -16,7 +15,7 @@ namespace MongoDbTest
     {
         internal static void Init()
         { 
-            var db = DBHelper.DbHelper.GetNewDb();
+            var db =DbHelper.GetNewDb();
             db.CodeFirst.InitTables<Student>();
             db.DbMaintenance.TruncateTable<Student>();
             var dt = DateTime.Now;
