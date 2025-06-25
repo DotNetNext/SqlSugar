@@ -378,6 +378,10 @@ namespace SqlSugar
                 var data = listItemEntity.Columns.FirstOrDefault(it => it.PropertyName == navObjectNameColumnInfo.Navigat.Name);
                 ids = list.Select(it =>
                 {
+                    if (data.ForOwnsOnePropertyInfo == null) 
+                    {
+                        return it.GetType().GetProperty(navObjectNameColumnInfo.Navigat.Name).GetValue(it);
+                    }
                     var ownsObj = data.ForOwnsOnePropertyInfo.GetValue(it);
                     return ownsObj.GetType().GetProperty(navObjectNameColumnInfo.Navigat.Name).GetValue(ownsObj);
                 }).Select(it => it == null ? "null" : it).Distinct().ToList();
@@ -437,35 +441,64 @@ namespace SqlSugar
                     {
                         // 有 OwnsOne 的情况
                         var data = listItemEntity.Columns.FirstOrDefault(it => it.PropertyName == navObjectNameColumnInfo.Navigat.Name);
-
-                        var groupQuery = (from l in list
-                                      let ownsObj = data.ForOwnsOnePropertyInfo.GetValue(l)
-                                      join n in navList
-                                           on ownsObj.GetType()
-                                                     .GetProperty(navObjectNameColumnInfo.Navigat.Name)
-                                                     .GetValue(ownsObj)
-                                                     .ObjToString()
-                                           equals navPkColumn.PropertyInfo.GetValue(n).ObjToString()
-                                      select new
-                                      {
-                                          l,
-                                          n
-                                      }).ToList();
-
-                        foreach (var item in groupQuery)
+                        if (data.ForOwnsOnePropertyInfo == null)
                         {
-
-                            // var setValue = navList.FirstOrDefault(x => navPkColumn.PropertyInfo.GetValue(x).ObjToString() == navColumn.PropertyInfo.GetValue(item).ObjToString());
-
-                            if (navObjectNamePropety.GetValue(item.l) == null)
+                            var groupQuery = (from l in list
+                                              join n in navList
+                                                   on navColumn.PropertyInfo.GetValue(l).ObjToString()
+                                                   equals navPkColumn.PropertyInfo.GetValue(n).ObjToString()
+                                              select new
+                                              {
+                                                  l,
+                                                  n
+                                              }).ToList();
+                            foreach (var item in groupQuery)
                             {
-                                navObjectNamePropety.SetValue(item.l, item.n);
-                            }
-                            else
-                            {
-                                //The reserved
-                            }
 
+                                // var setValue = navList.FirstOrDefault(x => navPkColumn.PropertyInfo.GetValue(x).ObjToString() == navColumn.PropertyInfo.GetValue(item).ObjToString());
+
+                                if (navObjectNamePropety.GetValue(item.l) == null)
+                                {
+                                    navObjectNamePropety.SetValue(item.l, item.n);
+                                }
+                                else
+                                {
+                                    //The reserved
+                                }
+
+                            }
+                        }
+                        else
+                        {
+                            var groupQuery = (from l in list
+                                              let ownsObj = data.ForOwnsOnePropertyInfo.GetValue(l)
+                                              join n in navList
+                                                   on ownsObj.GetType()
+                                                             .GetProperty(navObjectNameColumnInfo.Navigat.Name)
+                                                             .GetValue(ownsObj)
+                                                             .ObjToString()
+                                                   equals navPkColumn.PropertyInfo.GetValue(n).ObjToString()
+                                              select new
+                                              {
+                                                  l,
+                                                  n
+                                              }).ToList();
+
+                            foreach (var item in groupQuery)
+                            {
+
+                                // var setValue = navList.FirstOrDefault(x => navPkColumn.PropertyInfo.GetValue(x).ObjToString() == navColumn.PropertyInfo.GetValue(item).ObjToString());
+
+                                if (navObjectNamePropety.GetValue(item.l) == null)
+                                {
+                                    navObjectNamePropety.SetValue(item.l, item.n);
+                                }
+                                else
+                                {
+                                    //The reserved
+                                }
+
+                            }
                         }
                     }
                 }
