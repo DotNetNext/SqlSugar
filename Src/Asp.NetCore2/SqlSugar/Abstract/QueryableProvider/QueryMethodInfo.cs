@@ -282,6 +282,13 @@ namespace SqlSugar
             count = parameters.Last().ObjToInt();
             return reslt;
         }
+        public DataTable ToDataTablePage(int pageNumber, int pageSize)
+        {
+            var method = QueryableObj.GetType().GetMyMethod("ToDataTablePage",2, typeof(int), typeof(int));
+            var parameters = new object[] { pageNumber, pageSize };
+            var reslt = (DataTable)method.Invoke(QueryableObj, parameters); 
+            return reslt;
+        }
         public DataTable ToDataTable()
         {
             var method = QueryableObj.GetType().GetMyMethod("ToDataTable", 0);
@@ -379,6 +386,13 @@ namespace SqlSugar
             var parameters = new object[] { pageNumber, pageSize, count };
             var task = (Task)method.Invoke(QueryableObj, parameters);
             count = parameters.Last().ObjToInt();
+            return await GetTask(task).ConfigureAwait(false);
+        }
+        public async Task<object> ToDataTablePageAsync(int pageNumber, int pageSize)
+        {
+            var method = QueryableObj.GetType().GetMyMethod("ToDataTablePageAsync", 2, typeof(int), typeof(int));
+            var parameters = new object[] { pageNumber, pageSize };
+            var task = (Task)method.Invoke(QueryableObj, parameters); 
             return await GetTask(task).ConfigureAwait(false);
         }
         public async Task<object> ToDataTableAsync()
