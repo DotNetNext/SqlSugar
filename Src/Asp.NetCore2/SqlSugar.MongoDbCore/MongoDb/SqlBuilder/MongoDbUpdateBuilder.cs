@@ -107,12 +107,17 @@ namespace SqlSugar.MongoDb
 
                     if (col.IsPrimarykey || pks.Contains(col.DbColumnName))
                     {
-                        if (col.DbColumnName.EqualCase("_id"))
+                        if (col.Value == null) 
                         {
-                            if (col.Value != null)
-                            {
-                                filter[col.DbColumnName] = UtilMethods.MyCreate(ObjectId.Parse(col.Value?.ToString()));
-                            }
+                            filter[col.DbColumnName] = UtilMethods.MyCreate(col.Value);
+                        }
+                        else if(col.DbColumnName.EqualCase("_id"))
+                        { 
+                           filter[col.DbColumnName] = UtilMethods.MyCreate(ObjectId.Parse(col.Value?.ToString()));
+                        }
+                        else if (col.DataType == nameof(ObjectId))
+                        {
+                            filter[col.DbColumnName] = UtilMethods.MyCreate(ObjectId.Parse(col.Value?.ToString()));
                         }
                         else 
                         {
