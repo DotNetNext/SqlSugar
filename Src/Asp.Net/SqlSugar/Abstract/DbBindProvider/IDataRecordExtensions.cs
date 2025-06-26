@@ -10,7 +10,17 @@ namespace SqlSugar
     public static partial class IDataRecordExtensions
     {
 
-        #region Common Extensions
+        #region Common Extensions 
+        public static Func<object, Type, object> DeserializeObjectFunc { get; internal set; }
+
+        public static T GetDeserializeObject<T>(this IDataReader dr, int i)
+        {
+            var obj = dr.GetValue(i);
+            if (obj == null)
+                return default(T);
+            var value = obj;
+            return (T)DeserializeObjectFunc(value, typeof(T));
+        }
         public static XElement GetXelement(this IDataRecord dr, int i) 
         {
             var result = XElement.Parse(dr.GetString(i).ToString());

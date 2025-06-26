@@ -18,6 +18,10 @@ namespace SqlSugar
 {
     public class UtilMethods
     {
+        public static bool IsKeyValuePairType(Type type)
+        {
+            return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(KeyValuePair<,>);
+        }
         public static DataTable ConvertDateTimeOffsetToDateTime(DataTable table)
         {
             if (!table.Columns.Cast<DataColumn>().Any(it => it.DataType == typeof(DateTimeOffset))) 

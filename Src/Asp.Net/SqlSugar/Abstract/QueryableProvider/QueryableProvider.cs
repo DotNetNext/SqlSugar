@@ -660,17 +660,17 @@ namespace SqlSugar
         /// </summary>
         /// <param name="whereClass"></param>
         /// <returns></returns>
-        public ISugarQueryable<T> WhereClass<ClassType>(ClassType whereClass, bool ignoreDefaultValue = false) where ClassType : class, new()
+        public virtual ISugarQueryable<T> WhereClass<ClassType>(ClassType whereClass, bool ignoreDefaultValue = false) where ClassType : class, new()
         {
             return WhereClass(new List<ClassType>() { whereClass }, ignoreDefaultValue);
         }
-        public ISugarQueryable<T> WhereClassByPrimaryKey(List<T> list)
+        public virtual ISugarQueryable<T> WhereClassByPrimaryKey(List<T> list)
         {
             _WhereClassByPrimaryKey(list);
             return this;
         }
 
-        public ISugarQueryable<T> WhereClassByWhereColumns(List<T> list, string[] whereColumns) 
+        public virtual ISugarQueryable<T> WhereClassByWhereColumns(List<T> list, string[] whereColumns) 
         {
             _WhereClassByWhereColumns(list,whereColumns);
             return this;
