@@ -98,7 +98,7 @@ namespace SqlSugar.MongoDb
 
         private BsonValue GetRightValue(EntityColumnInfo  entityColumnInfo, BsonValue rightValue)
         {
-            if (entityColumnInfo?.IsPrimarykey==true) 
+            if (entityColumnInfo?.IsPrimarykey==true||entityColumnInfo?.DataType==nameof(ObjectId)) 
             {
                 rightValue=ObjectId.Parse(rightValue?.ToString());
             }
