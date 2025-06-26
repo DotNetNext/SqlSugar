@@ -120,6 +120,7 @@ namespace SqlSugar.MongoDb
         public override string ToSqlString()
         {
             var sql= BuildInsertMany(this.DbColumnInfoList, this.EntityInfo.DbTableName);
+            this.Parameters = new List<SugarParameter>();
             return sql;
         }
 
@@ -140,7 +141,11 @@ namespace SqlSugar.MongoDb
                     {
                         doc[col.DbColumnName] =UtilMethods.ParseJsonObject(col.Value);
                     }
-                    else 
+                    else if (col.Value!=null&&col.DataType == nameof(ObjectId)) 
+                    {
+                        doc[col.DbColumnName] = UtilMethods.MyCreate(ObjectId.Parse(col.Value?.ToString()));
+                    }
+                    else
                     {
                         doc[col.DbColumnName] = UtilMethods.MyCreate(col.Value);
                     }
