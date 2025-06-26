@@ -392,7 +392,8 @@ namespace SqlSugar
                     TableId = i,
                     UpdateSql = column.UpdateSql,
                     UpdateServerTime = column.UpdateServerTime,
-                    IsPrimarykey=column.IsPrimarykey
+                    IsPrimarykey=column.IsPrimarykey,
+                    DataType=column.DataType
                 };
                 if (column.ForOwnsOnePropertyInfo != null)
                 {
