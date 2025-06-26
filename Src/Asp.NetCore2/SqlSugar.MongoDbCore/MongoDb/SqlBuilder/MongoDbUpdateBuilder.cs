@@ -38,12 +38,12 @@ namespace SqlSugar.MongoDb
         }
         protected override string ToSingleSqlString(List<IGrouping<int, DbColumnInfo>> groupList)
         {
-            var result = BuildUpdateMany(groupList,  this.TableName);
+            var result = BuildUpdateMany(groupList, this.TableName);
             return result;
         }
         protected override string TomultipleSqlString(List<IGrouping<int, DbColumnInfo>> groupList)
         {
-            var result = BuildUpdateMany(groupList,this.TableName);
+            var result = BuildUpdateMany(groupList, this.TableName);
             return result;
         }
         public string BuildUpdateMany(List<IGrouping<int, DbColumnInfo>> groupList, string tableName)
@@ -54,7 +54,7 @@ namespace SqlSugar.MongoDb
             {
                 BsonArray filterArray = GetFilterArray();
                 var filter = new BsonDocument("$and", filterArray);
-                operations.Add($"{{ filter: {filter.ToJson(UtilMethods.GetJsonWriterSettings())} , update: {SetValues.FirstOrDefault().Value }}}");
+                operations.Add($"{{ filter: {filter.ToJson(UtilMethods.GetJsonWriterSettings())} , update: {SetValues.FirstOrDefault().Value}}}");
             }
             else if (this.SetValues.Any())
             {
@@ -105,37 +105,26 @@ namespace SqlSugar.MongoDb
                 foreach (var col in group)
                 {
 
-                    if (col.IsPrimarykey || pks.Contains(col.DbColumnName))
+                    if (col.DbColumnName.EqualCase("_id") || col.DataType == nameof(ObjectId))
                     {
-                        if (col.Value == null) 
+                        if (col.Value == null)
                         {
                             filter[col.DbColumnName] = UtilMethods.MyCreate(col.Value);
-                        }
-                        else if(col.DbColumnName.EqualCase("_id"))
-                        { 
-                           filter[col.DbColumnName] = UtilMethods.MyCreate(ObjectId.Parse(col.Value?.ToString()));
-                        }
-                        else if (col.DataType == nameof(ObjectId))
-                        {
-                            filter[col.DbColumnName] = UtilMethods.MyCreate(ObjectId.Parse(col.Value?.ToString()));
-                        }
-                        else 
-                        {
-                            filter[col.DbColumnName] = UtilMethods.MyCreate(col.Value);
-                        }
-                    }
-                    else
-                    {
-                        if (col.IsJson)
-                        { 
-                            var bsonValue = UtilMethods.ParseJsonObject(col.Value?.ToString());
-                            setDoc[col.DbColumnName] = bsonValue;
                         }
                         else
                         {
-                            var bsonValue = UtilMethods.MyCreate(col.Value);
-                            setDoc[col.DbColumnName] = bsonValue;
+                            filter[col.DbColumnName] = UtilMethods.MyCreate(ObjectId.Parse(col.Value?.ToString()));
                         }
+                    }
+                    else if (col.IsJson)
+                    {
+                        var bsonValue = UtilMethods.ParseJsonObject(col.Value?.ToString());
+                        setDoc[col.DbColumnName] = bsonValue;
+                    }
+                    else
+                    {
+                        var bsonValue = UtilMethods.MyCreate(col.Value);
+                        setDoc[col.DbColumnName] = bsonValue;
                     }
                 }
 

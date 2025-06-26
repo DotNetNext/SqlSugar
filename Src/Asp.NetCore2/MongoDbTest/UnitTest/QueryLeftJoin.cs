@@ -21,10 +21,15 @@ namespace MongoDbTest
             var student = new Student { Name = "TestStudent", SchoolId = ids.Last() }; 
             db.Insertable(student).ExecuteCommand();
             // 添加学生数据，SchoolId 关联学校并且没有学校
-            var student2 = new Student { Name = "TestStudent", SchoolId =
+            var student2 = new Student { Name = "TestStudentNoSchool", SchoolId =
                ObjectId.GenerateNewId().ToString()
             }; 
             db.Insertable(student2).ExecuteCommand();
+
+
+            if (db.Queryable<Student>().First(it => it.SchoolId == ids.Last()).Name != "TestStudent") Cases.ThrowUnitError();
+            db.Updateable(db.Queryable<Student>().First(it => it.SchoolId == ids.Last())).ExecuteCommand();
+            if (db.Queryable<Student>().First(it => it.SchoolId == ids.Last()).Name != "TestStudent") Cases.ThrowUnitError();
 
             //var list=db.Queryable<Student>()
             //    .LeftJoin<School>((x, y) => x.SchoolId == y.Id)
@@ -38,7 +43,7 @@ namespace MongoDbTest
         public class Student : MongoDbBase
         {
             public string Name { get; set; }
-
+            [SqlSugar.SugarColumn(ColumnDataType =nameof(ObjectId))]
             public string SchoolId { get; set; }
         }
         [SqlSugar.SugarTable("UnitSchool123131")]
