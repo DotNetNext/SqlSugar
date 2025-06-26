@@ -203,7 +203,7 @@ namespace SqlSugar
         {
             using (dataReader)
             {
-                if (type.Name.StartsWith("KeyValuePair"))
+                if (UtilMethods.IsKeyValuePairType(type))
                 {
                     return GetKeyValueList<T>(type, dataReader);
                 }
@@ -231,7 +231,7 @@ namespace SqlSugar
         {
             using (dataReader)
             {
-                if (type.Name.StartsWith("KeyValuePair"))
+                if (UtilMethods.IsKeyValuePairType(type))
                 {
                     return await GetKeyValueListAsync<T>(type, dataReader);
                 }
@@ -256,7 +256,7 @@ namespace SqlSugar
         }
         public virtual List<T> DataReaderToListNoUsing<T>(Type type, IDataReader dataReader)
         {
-            if (type.Name.StartsWith("KeyValuePair"))
+            if (UtilMethods.IsKeyValuePairType(type))
             {
                 return GetKeyValueList<T>(type, dataReader);
             }
@@ -275,7 +275,7 @@ namespace SqlSugar
         }
         public virtual Task<List<T>> DataReaderToListNoUsingAsync<T>(Type type, IDataReader dataReader)
         {
-            if (type.Name.StartsWith("KeyValuePair"))
+            if (UtilMethods.IsKeyValuePairType(type))
             {
                 return GetKeyValueListAsync<T>(type, dataReader);
             }
