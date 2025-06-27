@@ -103,27 +103,19 @@ namespace SqlSugar.MongoDb
                 var setDoc = new BsonDocument();
 
                 foreach (var col in group)
-                {
-
-                    if (col.DbColumnName.EqualCase("_id") || col.DataType == nameof(ObjectId))
+                { 
+                    if (pks.Any(s=>s.EqualCase(col.DbColumnName)))
                     {
-                        if (col.Value == null)
-                        {
-                            filter[col.DbColumnName] = UtilMethods.MyCreate(col.Value);
-                        }
-                        else
-                        {
-                            filter[col.DbColumnName] = UtilMethods.MyCreate(ObjectId.Parse(col.Value?.ToString()));
-                        }
+                        filter[col.DbColumnName] = UtilMethods.MyCreate(col.Value,col); 
                     }
                     else if (col.IsJson)
                     {
                         var bsonValue = UtilMethods.ParseJsonObject(col.Value?.ToString());
                         setDoc[col.DbColumnName] = bsonValue;
                     }
-                    else
+                    else if(col.IsPrimarykey==false)
                     {
-                        var bsonValue = UtilMethods.MyCreate(col.Value);
+                        var bsonValue = UtilMethods.MyCreate(col.Value, col);
                         setDoc[col.DbColumnName] = bsonValue;
                     }
                 }

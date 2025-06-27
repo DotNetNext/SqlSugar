@@ -508,6 +508,20 @@ namespace SqlSugar.MongoDb
             else
                 return field;
         }
+
+        internal static BsonValue MyCreate(object value, DbColumnInfo col)
+        {
+            if (value != null&&IsObjectColumn(col))
+            {
+                return MyCreate(ObjectId.Parse(value?.ToString()));
+            }
+            return MyCreate(value);
+        }
+
+        private static bool IsObjectColumn(DbColumnInfo col)
+        {
+            return col.DbColumnName == "_id" || col.DataType == nameof(ObjectId);
+        }
         //public static object ConvertDataByTypeName(string ctypename,string value)
         //{
         //    var item = new ConditionalModel() {
