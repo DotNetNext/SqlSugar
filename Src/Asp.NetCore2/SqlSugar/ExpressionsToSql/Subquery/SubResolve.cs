@@ -292,6 +292,10 @@ namespace SqlSugar
             {
                 isubList.RemoveAll(it => it is SubTake);
             }
+            if (isJoin == false && isSubSubQuery&&this.context.CurrentShortName==null) 
+            {
+                this.context.CurrentShortName=ExpressionTool.GetParameters(allMethods.FirstOrDefault()).FirstOrDefault().Name;
+            }
             List<string> result = isubList.Select(it =>
             {
                 it.HasWhere = isHasWhere;
