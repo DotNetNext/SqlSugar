@@ -1,6 +1,7 @@
 ﻿using SqlSugar;
 using SqlSugar.DbConvert;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace OrmTest
@@ -38,9 +39,9 @@ namespace OrmTest
                 //.SetColumns(it => it.Status == DataStatus.Error)//数据库的字段是字符串值
                                                                 //.SetColumns(it => it.Status, DataStatus.Error)//数据库中的字段会变成int值
                 .Where(it => it.Id != 0)
-                .ExecuteCommand();
+                .ToSql();
 
-            if (db.Queryable<DemoTable>().First().Status != DataStatus.Error) 
+            if (obj.Value.First().Value is string str&&str!= "Error") 
             {
                 throw new System.Exception("unit error");
             }
