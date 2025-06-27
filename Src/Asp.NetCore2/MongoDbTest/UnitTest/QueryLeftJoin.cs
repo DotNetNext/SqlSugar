@@ -31,12 +31,38 @@ namespace MongoDbTest
             db.Updateable(db.Queryable<Student>().First(it => it.SchoolId == ids.Last())).ExecuteCommand();
             if (db.Queryable<Student>().First(it => it.SchoolId == ids.Last()).Name != "TestStudent") Cases.ThrowUnitError();
 
-            //var list=db.Queryable<Student>()
-            //    .LeftJoin<School>((x, y) => x.SchoolId == y.Id)
-            //    .Where((x,y)=>x.Name =="a"||y.Name=="a")
-            //    .Select(x => new
+           var adoTest= db.Ado.GetDataTable(@"aggregate UnitStudent123131 [
+              {
+                $lookup: {
+                  from: ""UnitSchool123131"",
+                  localField: ""SchoolId"",
+                  foreignField: ""_id"",
+                  as: ""y""
+                }
+              },
+              {
+                $unwind: {
+                  path: ""$y"",
+                  preserveNullAndEmptyArrays: true
+                }
+              },
+              {
+                $project: {
+                  _id: 0,
+                  StudentName: ""$Name"",
+                      SchoolName: {
+                  $ifNull: [""$y.Name"", null]  
+                }
+                }
+              }
+            ]");
+
+            //var list = db.Queryable<Student>()
+            //    .LeftJoin<School>((x, y) => x.SchoolId == y.Id) 
+            //    .Select((x,y) => new
             //    {
-            //        id=x.Name
+            //        StudentName= x.Name,
+            //        SchoolName= y.Name
             //    }).ToList();
         }
         [SqlSugar.SugarTable("UnitStudent123131")]
