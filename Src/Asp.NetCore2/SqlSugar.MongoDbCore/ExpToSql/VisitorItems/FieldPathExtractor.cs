@@ -122,7 +122,7 @@ namespace SqlSugar.MongoDb
             }
             var isJoin = this._context.queryBuilder?.IsSingle()==false;
             var shortName = ((ParameterExpression)expr)?.Name;
-            var joinInfo = this._context.queryBuilder.JoinQueryInfos.FirstOrDefault(it => it.ShortName.EqualCase(shortName));
+            var joinInfo = this._context.queryBuilder?.JoinQueryInfos?.FirstOrDefault(it => it.ShortName.EqualCase(shortName));
             var isObj = false;
             if (joinInfo != null)
             { 
