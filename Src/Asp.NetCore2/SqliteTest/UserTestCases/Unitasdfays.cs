@@ -11,7 +11,8 @@ namespace OrmTest
     public class Unitasdfays
     {
         public static void Init() 
-        {
+        { 
+            _4_Subquery1_Unit.Init();
             var db = NewUnitTest.Db;
             db.CodeFirst.InitTables<Unitdfadfsdy>();
             db.CurrentConnectionConfig.MoreSettings = new ConnMoreSettings()
