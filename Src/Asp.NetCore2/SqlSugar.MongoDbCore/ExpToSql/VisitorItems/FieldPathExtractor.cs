@@ -1,9 +1,11 @@
-﻿using MongoDB.Bson;
+﻿using Dm;
+using MongoDB.Bson;
 using Newtonsoft.Json.Linq; 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
 namespace SqlSugar.MongoDb
@@ -100,19 +102,43 @@ namespace SqlSugar.MongoDb
             {
                 _visitorContext.ExpType = typeof(MemberExpression);
             }
-            if (parts.Count == 1 && expr is ParameterExpression parameter)
+            string resultString = null;
+            if (parts.Count == 1 && expr is ParameterExpression parameter&& _context?.context != null)
             {
-                if (_context?.context != null)
+                var entityInfo = _context.context.EntityMaintenance.GetEntityInfo(parameter.Type);
+                var columnInfo = entityInfo.Columns.FirstOrDefault(s => s.PropertyName == parts.First());
+                if (columnInfo != null)
                 {
-                    var entityInfo = _context.context.EntityMaintenance.GetEntityInfo(parameter.Type);
-                    var columnInfo = entityInfo.Columns.FirstOrDefault(s => s.PropertyName == parts.First());
-                    if (columnInfo != null)
-                    {
-                        return  UtilMethods.MyCreate(columnInfo.DbColumnName);
-                    }
+                    resultString = columnInfo.DbColumnName;
+                }
+                else 
+                {
+                    resultString = string.Join(".", parts);
                 }
             }
-            return  UtilMethods.MyCreate(string.Join(".", parts));
+            else
+            {
+                resultString = string.Join(".", parts);
+            }
+            var isJoin = this._context.queryBuilder.IsSingle()==false;
+            var shortName = ((ParameterExpression)expr)?.Name;
+            var joinInfo = this._context.queryBuilder.JoinQueryInfos.FirstOrDefault(it => it.ShortName.EqualCase(shortName));
+            var isObj = false;
+            if (joinInfo != null)
+            { 
+                shortName = $"{joinInfo.ShortName}.";
+                if (this._context.resolveType.IsIn(ResolveExpressType.SelectSingle,ResolveExpressType.SelectMultiple))
+                {
+                    // 构造 $ifNull 表达式
+                    var columnString = $"{{ \"$ifNull\": [\"${joinInfo.ShortName}.{resultString}\", null] }}";
+                    resultString = columnString;
+                    isObj = true;
+                }
+            }
+            if (isObj)
+                return BsonDocument.Parse(resultString);
+            else
+                return UtilMethods.MyCreate(resultString);
         }
     }
 
