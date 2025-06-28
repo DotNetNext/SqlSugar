@@ -162,6 +162,18 @@ namespace MongoDbTest
                 SchoolName = y.Name
             }).ToPageList(1, 2, ref count2);
             if (count2 != 3 || list9.Count != 2 || list9.First().StudentName != "A") Cases.ThrowUnitError();
+
+            var list10 = db.Queryable<Student>()
+             .LeftJoin<School>((x, y) => x.SchoolId == y.Id)
+             .LeftJoin<School>((x, y, z) => x.SchoolId == z.Id)
+             .Where((x, y) =>y.Name == "TestSchool")
+             .Select((x, y,z) => new
+             {
+                 StudentName = x.Name,
+                 SchoolName = y.Name,
+                 SchoolName2=z.Name
+             }).ToList();
+            if(list10.First().SchoolName!=list10.First().SchoolName2) Cases.ThrowUnitError();
         }
         [SqlSugar.SugarTable("UnitStudent123131")]
         public class Student : MongoDbBase
