@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using Dm.util;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,39 @@ using System.Text.RegularExpressions;
 namespace SqlSugar.MongoDb
 {
     public class UtilMethods
-    {
+    { 
+        internal static JoinQueryInfo BuilderJoinInfo(Expression joinExpression, JoinType joinType, QueryBuilder queryBuilder, SqlSugarProvider context)
+        {
+            queryBuilder.CheckExpressionNew(joinExpression, "Join");
+            queryBuilder.JoinExpression = joinExpression;
+            var express = LambdaExpression.Lambda(joinExpression).Body;
+            var lastPareamter = (express as LambdaExpression).Parameters.Last();
+            context.InitMappingInfo(lastPareamter.Type);
+            var newJoins = queryBuilder.JoinQueryInfos.ToList();
+            var oldJoins = queryBuilder.JoinQueryInfos;
+            var result = new JoinQueryInfo()
+            {
+                JoinIndex = queryBuilder.JoinQueryInfos.Count,
+                JoinType = joinType,
+                JoinWhere = "1=1",
+                ShortName = lastPareamter.Name,
+                EntityType = lastPareamter.Type,
+                TableName = null
+            };
+            newJoins.add(result);
+            queryBuilder.JoinQueryInfos = newJoins;
+            var expResult = queryBuilder.GetExpressionValue(joinExpression, ResolveExpressType.WhereMultiple);
+            queryBuilder.JoinQueryInfos = oldJoins;
+            result.JoinWhere = expResult.GetResultString();
+            result.TableName = context.EntityMaintenance.GetTableName(lastPareamter.Type);
+
+            if (context.CurrentConnectionConfig?.MoreSettings?.PgSqlIsAutoToLower == false)
+            {
+                result.ShortName = queryBuilder.Builder.GetTranslationColumnName(result.ShortName);
+            }
+            return result;
+        }
+
         public static BsonValue ParseJsonObject(object json)
         {
             if (json is string str && str.TrimStart().StartsWith("{"))

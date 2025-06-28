@@ -1,4 +1,6 @@
-﻿using MongoDB.Bson;
+﻿using Dm.util;
+using MongoDB.Bson;
+using MongoDB.Driver;
 using SqlSugar.MongoDb;
 using System;
 using System.Collections.Generic;
@@ -202,17 +204,34 @@ namespace SqlSugar.MongoDb
                 // from: 目标集合名（假设 JoinQueryInfo 有 TableName/ShortName 字段，需根据实际情况调整）
                 // as: 关联后的别名（假设 JoinQueryInfo 有 ShortName 字段）
                 string from = item.TableName ?? item.ShortName ?? "Unknown";
-                string asName = item.ShortName ?? "y";
-
-                // $lookup
-                var lookupDoc = new BsonDocument("$lookup", new BsonDocument
+                string asName = item.ShortName;
+                var asNamePrefix = $"{asName}.";
+                var isValueKey = foreignField.StartsWith(asNamePrefix) && !localField.StartsWith(asNamePrefix);
+                var isKeyValue = !foreignField.StartsWith(asNamePrefix) && localField.StartsWith(asNamePrefix);
+                var isEasyJoin = isKeyValue || isValueKey;
+                if (isKeyValue)
+                { 
+                    localField = localField.TrimStart(asNamePrefix.toCharArray()); 
+                    var oldLocalField = localField;
+                    localField = foreignField;
+                    foreignField = oldLocalField;
+                }
+                else if(isValueKey)
                 {
-                    { "from", from },
-                    { "localField", localField },
-                    { "foreignField", foreignField },
-                    { "as", asName }
-                });
-                operations.Add(lookupDoc.ToJson(UtilMethods.GetJsonWriterSettings()));
+                    foreignField = foreignField.TrimStart(asNamePrefix.toCharArray());
+                }
+                if (isEasyJoin)
+                { 
+                    // $lookup
+                    var lookupDoc = new BsonDocument("$lookup", new BsonDocument
+                    {
+                        { "from", from },
+                        { "localField", localField },
+                        { "foreignField", foreignField },
+                        { "as", asName }
+                    });
+                    operations.Add(lookupDoc.ToJson(UtilMethods.GetJsonWriterSettings()));
+                }
 
                 // $unwind
                 BsonValue unwindDoc = null;
