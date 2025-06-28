@@ -264,11 +264,11 @@ namespace SqlSugar.MongoDb
 
             ProcessJoinInfoConditions(operations);
 
-            ProcessWhereConditions(operations);
+            ProcessWhereConditions(operations); 
+
+            ProcessOrderByConditions(operations); 
 
             ProcessPagination(operations);
-
-            ProcessOrderByConditions(operations);
 
             ProcessSelectConditions(operations);
 

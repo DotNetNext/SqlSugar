@@ -119,14 +119,49 @@ namespace MongoDbTest
             var list6 = db.Queryable<Student>()
            .LeftJoin<School>((x, y) => x.SchoolId == y.Id)
            .OrderBy((x, y) => x.Name)
-           .Select((x, y) => new
-          {
-              StudentName = x.Name,
-              SchoolName = y.Name
-          }).ToList();
+               .Select((x, y) => new
+              {
+                  StudentName = x.Name,
+                  SchoolName = y.Name
+              }).ToList();
             if (list6.Count != 4) Cases.ThrowUnitError();
             if (list6.Last().StudentName != "jack") Cases.ThrowUnitError();
             if (list6.First().StudentName != "A") Cases.ThrowUnitError();
+
+
+            var list7 = db.Queryable<Student>()
+            .LeftJoin<School>((x, y) => x.SchoolId == y.Id)
+            .OrderBy((x, y) => x.Name)
+            .Select((x, y) => new
+            {
+                StudentName = x.Name,
+                SchoolName = y.Name
+            }).ToPageList(1,2);
+            if (list7.Count != 2) Cases.ThrowUnitError();
+            if (list7.First().StudentName != "A") Cases.ThrowUnitError();
+
+            var count = 0;
+            var list8 = db.Queryable<Student>()
+            .LeftJoin<School>((x, y) => x.SchoolId == y.Id)
+            .OrderBy((x, y) => x.Name)
+            .Select((x, y) => new
+            {
+                StudentName = x.Name,
+                SchoolName = y.Name
+            }).ToPageList(1, 2,ref count);
+            if(count!=4||list8.Count!=2||list8.First().StudentName!="A") Cases.ThrowUnitError();
+
+            var count2 = 0;
+            var list9 = db.Queryable<Student>()
+            .LeftJoin<School>((x, y) => x.SchoolId == y.Id)
+            .Where(x=>x.Name!="jack")
+            .OrderBy((x, y) => x.Name)
+            .Select((x, y) => new
+            {
+                StudentName = x.Name,
+                SchoolName = y.Name
+            }).ToPageList(1, 2, ref count2);
+            if (count2 != 3 || list9.Count != 2 || list9.First().StudentName != "A") Cases.ThrowUnitError();
         }
         [SqlSugar.SugarTable("UnitStudent123131")]
         public class Student : MongoDbBase
