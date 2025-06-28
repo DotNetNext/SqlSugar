@@ -36,7 +36,6 @@ namespace SqlSugar.MongoDb
         #region ToSqlString Items 
         private void ProcessSelectConditions(List<string> operations)
         {
-            #region Select
             if (this.SelectValue is Expression expression)
             {
                 var dos = MongoNestedTranslator.Translate(expression, new MongoNestedTranslatorContext()
@@ -61,11 +60,9 @@ namespace SqlSugar.MongoDb
                 var json = dos.ToJson(UtilMethods.GetJsonWriterSettings());
                 operations.Add($"{{\"$project\": {json} }}");
             }
-            #endregion
         } 
         private void ProcessGroupByConditions(List<string> operations)
         {
-            #region GroupBy 
             if (this.GroupByValue.HasValue())
             {
                 var regex = new Regex($@"\(\{UtilConstants.ReplaceCommaKey}\((.*?)\)\{UtilConstants.ReplaceCommaKey}\)",
@@ -117,11 +114,10 @@ namespace SqlSugar.MongoDb
                 }
                 operations.Insert(operations.Count - 1, groupDoc.ToJson(UtilMethods.GetJsonWriterSettings()));
             }
-            #endregion
         } 
         private void ProcessOrderByConditions(List<string> operations)
         {
-            #region OrderBy
+
             var order = this.GetOrderByString;
             var orderByString = this.GetOrderByString?.Trim();
             if (orderByString == "ORDER BY NOW()")
@@ -154,11 +150,9 @@ namespace SqlSugar.MongoDb
                     operations.Add($"{{ \"$sort\": {sortDoc.ToJson()} }}");
                 }
             }
-            #endregion
         }
         private void ProcessPagination(List<string> operations)
         {
-            #region Page
             var skip = this.Skip;
             var take = this.Take;
             // 处理 skip 和 take
@@ -170,11 +164,9 @@ namespace SqlSugar.MongoDb
             {
                 operations.Add($"{{ \"$limit\": {this.Take.Value} }}");
             }
-            #endregion
         }
         private void ProcessWhereConditions(List<string> operations)
         {
-            #region Where
             foreach (var item in this.WhereInfos)
             {
                 // 去除开头的 WHERE 或 AND（忽略大小写和空格）
@@ -195,8 +187,11 @@ namespace SqlSugar.MongoDb
                     operations.Add($"{{ \"$match\": {trimmed} }}");
                 }
             }
-            #endregion
+        } 
+        private void ProcessJoinInfoConditions(List<string> operations)
+        {
         }
+
         #endregion
 
         #region Get SQL Partial
@@ -220,9 +215,8 @@ namespace SqlSugar.MongoDb
         {
             List<string> operations = new List<string>();
             var sb = new StringBuilder();
-
-            #region Joins
-            #endregion
+             
+            ProcessJoinInfoConditions(operations); 
 
             ProcessWhereConditions(operations);
 
@@ -241,6 +235,7 @@ namespace SqlSugar.MongoDb
 
             return sb.ToString();
         }
+
         public override string ToCountSql(string sql)
         {
             sql = sql.TrimEnd(']');
