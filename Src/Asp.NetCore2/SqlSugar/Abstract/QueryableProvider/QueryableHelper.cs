@@ -1531,7 +1531,7 @@ namespace SqlSugar
             //return sql;
         }
 
-        internal JoinQueryInfo GetJoinInfo(Expression joinExpression, JoinType joinType)
+        public virtual JoinQueryInfo GetJoinInfo(Expression joinExpression, JoinType joinType)
         {
             QueryBuilder.CheckExpressionNew(joinExpression, "Join");
             QueryBuilder.JoinExpression = joinExpression;
