@@ -190,21 +190,51 @@ namespace SqlSugar.MongoDb
         } 
         private void ProcessJoinInfoConditions(List<string> operations)
         {
+            foreach (var item in this.JoinQueryInfos)
+            {
+                // 解析 JoinWhere JSON，假设格式为 { "SchoolId" : { "$eq" : "_id" } }
+                var joinWhereDoc = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonDocument>(item.JoinWhere);
+                // 只支持单字段等值连接
+                var localField = joinWhereDoc.GetElement(0).Name;
+                var eqObj = joinWhereDoc[localField].AsBsonDocument;
+                var foreignField = eqObj.GetElement(0).Value.AsString;
+
+                // from: 目标集合名（假设 JoinQueryInfo 有 TableName/ShortName 字段，需根据实际情况调整）
+                // as: 关联后的别名（假设 JoinQueryInfo 有 ShortName 字段）
+                string from = item.TableName ?? item.ShortName ?? "Unknown";
+                string asName = item.ShortName ?? "y";
+
+                // $lookup
+                var lookupDoc = new BsonDocument("$lookup", new BsonDocument
+                {
+                    { "from", from },
+                    { "localField", localField },
+                    { "foreignField", foreignField },
+                    { "as", asName }
+                });
+                operations.Add(lookupDoc.ToJson(UtilMethods.GetJsonWriterSettings()));
+
+                // $unwind
+                var unwindDoc = new BsonDocument("$unwind", new BsonDocument
+                {
+                    { "path", $"${asName}" },
+                    { "preserveNullAndEmptyArrays", true }
+                });
+                operations.Add(unwindDoc.ToJson(UtilMethods.GetJsonWriterSettings()));
+            }
         }
 
         #endregion
 
-        #region Get SQL Partial
-
+        #region Get SQL Partial 
         public override string GetTableNameString
         {
             get
             {
-                if (this.TableShortName != null && this.Context.CurrentConnectionConfig?.MoreSettings?.PgSqlIsAutoToLower == false)
-                {
-                    this.TableShortName = Builder.GetTranslationColumnName(this.TableShortName);
-                }
-                return base.GetTableNameString;
+                if (this.AsTables.Any())
+                    return this.AsTables.FirstOrDefault().Value;
+                else
+                    return this.Context.EntityMaintenance.GetEntityInfo(this.EntityType).DbTableName;
             }
         }
         public override bool IsComplexModel(string sql)

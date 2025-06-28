@@ -57,13 +57,13 @@ namespace MongoDbTest
               }
             ]");
 
-            //var list = db.Queryable<Student>()
-            //    .LeftJoin<School>((x, y) => x.SchoolId == y.Id)
-            //    .Select((x, y) => new
-            //    {
-            //        StudentName = x.Name,
-            //        SchoolName = y.Name
-            //    }).ToList();
+            var list = db.Queryable<Student>()
+                .LeftJoin<School>((x, y) => x.SchoolId == y.Id)
+                .Select((x, y) => new
+                {
+                    StudentName = x.Name,
+                    SchoolName = y.Name
+                }).ToList();
         }
         [SqlSugar.SugarTable("UnitStudent123131")]
         public class Student : MongoDbBase
