@@ -30,52 +30,10 @@ namespace SqlSugar.MongoDb
             {
                 return "ORDER BY NOW() ";
             }
-        }
-
+        } 
         #endregion
-
-        #region Common Methods
-        public override string GetTableNameString
-        {
-            get
-            {
-                if (this.TableShortName != null&&this.Context.CurrentConnectionConfig?.MoreSettings?.PgSqlIsAutoToLower==false) 
-                {
-                    this.TableShortName = Builder.GetTranslationColumnName(this.TableShortName);
-                }
-                return base.GetTableNameString;
-            }
-        }
-        public override bool IsComplexModel(string sql)
-        {
-            return Regex.IsMatch(sql, @"AS ""\w+\.\w+""")|| Regex.IsMatch(sql, @"AS ""\w+\.\w+\.\w+""");
-        }
-        public override string ToSqlString()
-        {
-            List<string> operations = new List<string>();
-            var sb = new StringBuilder();
-
-            #region Joins
-            #endregion
-
-            ProcessWhereConditions(operations);
-
-            ProcessPagination(operations);
-
-            ProcessOrderByConditions(operations);
-
-            ProcessSelectConditions(operations);
-
-            ProcessGroupByConditions(operations);
-
-            sb.Append($"aggregate {this.GetTableNameString} ");
-            sb.Append("[");
-            sb.Append(string.Join(", ", operations));
-            sb.Append("]");
-
-            return sb.ToString();
-        }
-
+         
+        #region ToSqlString Items 
         private void ProcessSelectConditions(List<string> operations)
         {
             #region Select
@@ -104,8 +62,7 @@ namespace SqlSugar.MongoDb
                 operations.Add($"{{\"$project\": {json} }}");
             }
             #endregion
-        }
-
+        } 
         private void ProcessGroupByConditions(List<string> operations)
         {
             #region GroupBy 
@@ -161,8 +118,7 @@ namespace SqlSugar.MongoDb
                 operations.Insert(operations.Count - 1, groupDoc.ToJson(UtilMethods.GetJsonWriterSettings()));
             }
             #endregion
-        }
-
+        } 
         private void ProcessOrderByConditions(List<string> operations)
         {
             #region OrderBy
@@ -200,7 +156,6 @@ namespace SqlSugar.MongoDb
             }
             #endregion
         }
-
         private void ProcessPagination(List<string> operations)
         {
             #region Page
@@ -217,7 +172,6 @@ namespace SqlSugar.MongoDb
             }
             #endregion
         }
-
         private void ProcessWhereConditions(List<string> operations)
         {
             #region Where
@@ -243,16 +197,56 @@ namespace SqlSugar.MongoDb
             }
             #endregion
         }
-
-        public override string ToCountSql(string sql)
-        {
-            sql=sql.TrimEnd(']');
-            sql += "{ \"$count\": \"TotalCount\" }]";
-            return sql;
-        }
         #endregion
 
         #region Get SQL Partial
+
+        public override string GetTableNameString
+        {
+            get
+            {
+                if (this.TableShortName != null && this.Context.CurrentConnectionConfig?.MoreSettings?.PgSqlIsAutoToLower == false)
+                {
+                    this.TableShortName = Builder.GetTranslationColumnName(this.TableShortName);
+                }
+                return base.GetTableNameString;
+            }
+        }
+        public override bool IsComplexModel(string sql)
+        {
+            return Regex.IsMatch(sql, @"AS ""\w+\.\w+""") || Regex.IsMatch(sql, @"AS ""\w+\.\w+\.\w+""");
+        }
+        public override string ToSqlString()
+        {
+            List<string> operations = new List<string>();
+            var sb = new StringBuilder();
+
+            #region Joins
+            #endregion
+
+            ProcessWhereConditions(operations);
+
+            ProcessPagination(operations);
+
+            ProcessOrderByConditions(operations);
+
+            ProcessSelectConditions(operations);
+
+            ProcessGroupByConditions(operations);
+
+            sb.Append($"aggregate {this.GetTableNameString} ");
+            sb.Append("[");
+            sb.Append(string.Join(", ", operations));
+            sb.Append("]");
+
+            return sb.ToString();
+        }
+        public override string ToCountSql(string sql)
+        {
+            sql = sql.TrimEnd(']');
+            sql += "{ \"$count\": \"TotalCount\" }]";
+            return sql;
+        }
         public override string GetSelectValue
         {
             get
