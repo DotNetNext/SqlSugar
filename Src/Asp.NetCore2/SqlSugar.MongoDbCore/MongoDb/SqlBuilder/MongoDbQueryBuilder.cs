@@ -55,89 +55,41 @@ namespace SqlSugar.MongoDb
             List<string> operations = new List<string>();
             var sb = new StringBuilder();
 
-            #region Where
-            foreach (var item in this.WhereInfos)
-            {
-                // 去除开头的 WHERE 或 AND（忽略大小写和空格）
-                string trimmed = item.TrimStart();
-                if (trimmed.StartsWith("WHERE", StringComparison.OrdinalIgnoreCase))
-                    trimmed = trimmed.Substring(5).TrimStart();
-                else if (trimmed.StartsWith("AND", StringComparison.OrdinalIgnoreCase))
-                    trimmed = trimmed.Substring(3).TrimStart();
-                if (MongoDbExpTools.IsFieldNameJson(trimmed))
-                {
-                    var outerDoc = BsonDocument.Parse(trimmed);
-                    trimmed = outerDoc[UtilConstants.FieldName].AsString;
-                    operations.Add(trimmed);
-                }
-                else
-                {
-                    // item 是 JSON 格式字符串，直接包进 $match
-                    operations.Add($"{{ \"$match\": {trimmed} }}");
-                }
-            }
+            #region Joins
             #endregion
 
-            #region Page
-            var skip = this.Skip;
-            var take = this.Take;
-            // 处理 skip 和 take
-            if (this.Skip.HasValue)
-            {
-                operations.Add($"{{ \"$skip\": {this.Skip.Value} }}");
-            }
-            if (this.Take.HasValue)
-            {
-                operations.Add($"{{ \"$limit\": {this.Take.Value} }}");
-            }
-            #endregion
+            ProcessWhereConditions(operations);
 
-            #region OrderBy
-            var order = this.GetOrderByString;
-            var orderByString = this.GetOrderByString?.Trim();
-            if (orderByString == "ORDER BY NOW()")
-                orderByString = null;
-            if (!string.IsNullOrEmpty(orderByString) && orderByString.StartsWith("ORDER BY ", StringComparison.OrdinalIgnoreCase))
-            {
-                order = order.Substring("ORDER BY ".Length).Trim();
+            ProcessPagination(operations);
 
-                var sortDoc = new BsonDocument();
-                foreach (var str in order.Split(","))
-                { 
-                    int lastSpace = str.LastIndexOf(' ');
-                    string jsonPart = str.Substring(0, lastSpace).Trim();
-                    string directionPart = str.Substring(lastSpace + 1).Trim().ToUpper();
-                    if (str.EndsWith("}")) 
-                    {
-                        jsonPart = str;
-                        directionPart = "ASC";
-                    }
-                    var bson = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonDocument>(jsonPart);
-                    if (bson.Contains(UtilConstants.FieldName))
-                    {
-                        var field = bson[UtilConstants.FieldName].AsString;
-                        var direction = directionPart == "DESC" ? -1 : 1;
-                        sortDoc[field] = direction;
-                    }
-                }
-                if (sortDoc.ElementCount > 0)
-                {
-                    operations.Add($"{{ \"$sort\": {sortDoc.ToJson()} }}");
-                }
-            }
-            #endregion
-               
+            ProcessOrderByConditions(operations);
+
+            ProcessSelectConditions(operations);
+
+            ProcessGroupByConditions(operations);
+
+            sb.Append($"aggregate {this.GetTableNameString} ");
+            sb.Append("[");
+            sb.Append(string.Join(", ", operations));
+            sb.Append("]");
+
+            return sb.ToString();
+        }
+
+        private void ProcessSelectConditions(List<string> operations)
+        {
             #region Select
-            if (this.SelectValue is Expression expression) 
+            if (this.SelectValue is Expression expression)
             {
-                var dos=MongoNestedTranslator.Translate(expression, new MongoNestedTranslatorContext() { 
+                var dos = MongoNestedTranslator.Translate(expression, new MongoNestedTranslatorContext()
+                {
                     context = this.Context,
-                    resolveType=ResolveExpressType.SelectSingle,
-                    queryBuilder=this
+                    resolveType = ResolveExpressType.SelectSingle,
+                    queryBuilder = this
                 });
                 if (MongoDbExpTools.IsFieldNameJson(dos))
                 {
-                    dos[UtilConstants.FieldName] = "$"+ dos[UtilConstants.FieldName];
+                    dos[UtilConstants.FieldName] = "$" + dos[UtilConstants.FieldName];
                     dos.Add(new BsonElement("_id", "0"));
                 }
                 else if (dos.ElementCount > 0 && dos.GetElement(0).Name.StartsWith("$"))
@@ -147,12 +99,15 @@ namespace SqlSugar.MongoDb
                     dos.Clear();
                     dos.Add(UtilConstants.FieldName, funcDoc);
                     dos.Add(new BsonElement("_id", "0"));
-                } 
+                }
                 var json = dos.ToJson(UtilMethods.GetJsonWriterSettings());
-                operations.Add($"{{\"$project\": {json} }}"); 
+                operations.Add($"{{\"$project\": {json} }}");
             }
             #endregion
-             
+        }
+
+        private void ProcessGroupByConditions(List<string> operations)
+        {
             #region GroupBy 
             if (this.GroupByValue.HasValue())
             {
@@ -166,19 +121,19 @@ namespace SqlSugar.MongoDb
                     var selectItem = match.Groups[1].Value;
                     selectItems.Add(selectItem);
                 }
-                var jsonPart = "["+Regex.Split(this.GroupByValue, UtilConstants.ReplaceCommaKey)
+                var jsonPart = "[" + Regex.Split(this.GroupByValue, UtilConstants.ReplaceCommaKey)
                     .First()
                     .TrimEnd('(')
-                    .Replace("GROUP BY ", "")+"]";
+                    .Replace("GROUP BY ", "") + "]";
                 var fieldNames = new List<string>();
                 var bsonArray = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonArray>(jsonPart);
                 foreach (BsonDocument bson in bsonArray)
-                { 
+                {
                     if (bson.Contains(UtilConstants.FieldName))
                     {
-                       var field = bson[UtilConstants.FieldName].AsString;
-                       operations[operations.Count - 1] = operations[operations.Count - 1].Replace($"\"${field}\"", $"\"$_id.{field}\"");
-                       fieldNames.Add(field);
+                        var field = bson[UtilConstants.FieldName].AsString;
+                        operations[operations.Count - 1] = operations[operations.Count - 1].Replace($"\"${field}\"", $"\"$_id.{field}\"");
+                        fieldNames.Add(field);
                     }
                 }
                 // 构造 _id 部分：支持多字段形式
@@ -203,17 +158,92 @@ namespace SqlSugar.MongoDb
                         groupFields.Add(element.Name, element.Value);
                     }
                 }
-                operations.Insert(operations.Count-1, groupDoc.ToJson(UtilMethods.GetJsonWriterSettings()));
+                operations.Insert(operations.Count - 1, groupDoc.ToJson(UtilMethods.GetJsonWriterSettings()));
             }
             #endregion
+        }
 
-            sb.Append($"aggregate {this.GetTableNameString} ");
-            sb.Append("[");
-            sb.Append(string.Join(", ", operations));
-            sb.Append("]");
+        private void ProcessOrderByConditions(List<string> operations)
+        {
+            #region OrderBy
+            var order = this.GetOrderByString;
+            var orderByString = this.GetOrderByString?.Trim();
+            if (orderByString == "ORDER BY NOW()")
+                orderByString = null;
+            if (!string.IsNullOrEmpty(orderByString) && orderByString.StartsWith("ORDER BY ", StringComparison.OrdinalIgnoreCase))
+            {
+                order = order.Substring("ORDER BY ".Length).Trim();
 
-            return sb.ToString();
-        } 
+                var sortDoc = new BsonDocument();
+                foreach (var str in order.Split(","))
+                {
+                    int lastSpace = str.LastIndexOf(' ');
+                    string jsonPart = str.Substring(0, lastSpace).Trim();
+                    string directionPart = str.Substring(lastSpace + 1).Trim().ToUpper();
+                    if (str.EndsWith("}"))
+                    {
+                        jsonPart = str;
+                        directionPart = "ASC";
+                    }
+                    var bson = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonDocument>(jsonPart);
+                    if (bson.Contains(UtilConstants.FieldName))
+                    {
+                        var field = bson[UtilConstants.FieldName].AsString;
+                        var direction = directionPart == "DESC" ? -1 : 1;
+                        sortDoc[field] = direction;
+                    }
+                }
+                if (sortDoc.ElementCount > 0)
+                {
+                    operations.Add($"{{ \"$sort\": {sortDoc.ToJson()} }}");
+                }
+            }
+            #endregion
+        }
+
+        private void ProcessPagination(List<string> operations)
+        {
+            #region Page
+            var skip = this.Skip;
+            var take = this.Take;
+            // 处理 skip 和 take
+            if (this.Skip.HasValue)
+            {
+                operations.Add($"{{ \"$skip\": {this.Skip.Value} }}");
+            }
+            if (this.Take.HasValue)
+            {
+                operations.Add($"{{ \"$limit\": {this.Take.Value} }}");
+            }
+            #endregion
+        }
+
+        private void ProcessWhereConditions(List<string> operations)
+        {
+            #region Where
+            foreach (var item in this.WhereInfos)
+            {
+                // 去除开头的 WHERE 或 AND（忽略大小写和空格）
+                string trimmed = item.TrimStart();
+                if (trimmed.StartsWith("WHERE", StringComparison.OrdinalIgnoreCase))
+                    trimmed = trimmed.Substring(5).TrimStart();
+                else if (trimmed.StartsWith("AND", StringComparison.OrdinalIgnoreCase))
+                    trimmed = trimmed.Substring(3).TrimStart();
+                if (MongoDbExpTools.IsFieldNameJson(trimmed))
+                {
+                    var outerDoc = BsonDocument.Parse(trimmed);
+                    trimmed = outerDoc[UtilConstants.FieldName].AsString;
+                    operations.Add(trimmed);
+                }
+                else
+                {
+                    // item 是 JSON 格式字符串，直接包进 $match
+                    operations.Add($"{{ \"$match\": {trimmed} }}");
+                }
+            }
+            #endregion
+        }
+
         public override string ToCountSql(string sql)
         {
             sql=sql.TrimEnd(']');
