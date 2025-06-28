@@ -100,6 +100,33 @@ namespace MongoDbTest
             if(list4.Count!=2) Cases.ThrowUnitError();
             if (list4.Any(s=>s.SchoolName== "TestSchool") ==false) Cases.ThrowUnitError();
             if (list4.Any(s => s.SchoolName == null||s.StudentName== "jack") == false) Cases.ThrowUnitError();
+
+             
+            db.Insertable(new Student { Name = "A", SchoolId = ids.Last() }).ExecuteCommand();
+            var list5 = db.Queryable<Student>()
+            .LeftJoin<School>((x, y) => x.SchoolId == y.Id) 
+            .OrderByDescending((x,y)=>x.Name)
+            .Select((x, y) => new
+            {
+                StudentName = x.Name,
+                SchoolName = y.Name
+            }).ToList();
+            if (list5.Count != 4) Cases.ThrowUnitError();
+            if (list5.Last().StudentName!= "A") Cases.ThrowUnitError();
+            if (list5.First().StudentName != "jack") Cases.ThrowUnitError();
+
+
+            var list6 = db.Queryable<Student>()
+           .LeftJoin<School>((x, y) => x.SchoolId == y.Id)
+           .OrderBy((x, y) => x.Name)
+           .Select((x, y) => new
+          {
+              StudentName = x.Name,
+              SchoolName = y.Name
+          }).ToList();
+            if (list6.Count != 4) Cases.ThrowUnitError();
+            if (list6.Last().StudentName != "jack") Cases.ThrowUnitError();
+            if (list6.First().StudentName != "A") Cases.ThrowUnitError();
         }
         [SqlSugar.SugarTable("UnitStudent123131")]
         public class Student : MongoDbBase
