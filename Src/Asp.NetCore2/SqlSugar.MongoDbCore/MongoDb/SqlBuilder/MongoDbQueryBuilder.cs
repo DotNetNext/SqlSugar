@@ -30,9 +30,9 @@ namespace SqlSugar.MongoDb
             {
                 return "ORDER BY NOW() ";
             }
-        } 
+        }
         #endregion
-         
+
         #region ToSqlString Items 
         private void ProcessSelectConditions(List<string> operations)
         {
@@ -60,7 +60,7 @@ namespace SqlSugar.MongoDb
                 var json = dos.ToJson(UtilMethods.GetJsonWriterSettings());
                 operations.Add($"{{\"$project\": {json} }}");
             }
-        } 
+        }
         private void ProcessGroupByConditions(List<string> operations)
         {
             if (this.GroupByValue.HasValue())
@@ -114,7 +114,7 @@ namespace SqlSugar.MongoDb
                 }
                 operations.Insert(operations.Count - 1, groupDoc.ToJson(UtilMethods.GetJsonWriterSettings()));
             }
-        } 
+        }
         private void ProcessOrderByConditions(List<string> operations)
         {
 
@@ -187,7 +187,7 @@ namespace SqlSugar.MongoDb
                     operations.Add($"{{ \"$match\": {trimmed} }}");
                 }
             }
-        } 
+        }
         private void ProcessJoinInfoConditions(List<string> operations)
         {
             foreach (var item in this.JoinQueryInfos)
@@ -215,11 +215,27 @@ namespace SqlSugar.MongoDb
                 operations.Add(lookupDoc.ToJson(UtilMethods.GetJsonWriterSettings()));
 
                 // $unwind
-                var unwindDoc = new BsonDocument("$unwind", new BsonDocument
+                BsonValue unwindDoc = null;
+                if (item.JoinType == JoinType.Left)
                 {
-                    { "path", $"${asName}" },
-                    { "preserveNullAndEmptyArrays", true }
-                });
+                    unwindDoc=new BsonDocument("$unwind", new BsonDocument
+                    {
+                     { "path", $"${asName}" },
+                       { "preserveNullAndEmptyArrays", true }
+                    });
+                }
+                else if(item.JoinType==JoinType.Inner)
+                {
+                    // InnerJoin: 不保留空数组和null
+                    unwindDoc = new BsonDocument("$unwind", new BsonDocument
+                    {
+                        { "path", $"${asName}" }
+                    });
+                }
+                else 
+                {
+                    throw new Exception(" No Support "+item.JoinType);
+                }
                 operations.Add(unwindDoc.ToJson(UtilMethods.GetJsonWriterSettings()));
             }
         }
@@ -245,8 +261,8 @@ namespace SqlSugar.MongoDb
         {
             List<string> operations = new List<string>();
             var sb = new StringBuilder();
-             
-            ProcessJoinInfoConditions(operations); 
+
+            ProcessJoinInfoConditions(operations);
 
             ProcessWhereConditions(operations);
 
@@ -289,9 +305,9 @@ namespace SqlSugar.MongoDb
                 {
                     this.SelectCacheKey = this.SelectCacheKey + string.Join("-", this.JoinQueryInfos.Select(it => it.TableName));
                 }
-                if (IsDistinct) 
+                if (IsDistinct)
                 {
-                    result = "distinct "+result;
+                    result = "distinct " + result;
                 }
                 if (this.SubToListParameters != null && this.SubToListParameters.Any())
                 {
