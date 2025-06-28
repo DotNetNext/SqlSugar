@@ -56,6 +56,8 @@ namespace SqlSugar.MongoDb
                     return new NewExpressionTractor(context, visitorContext).Extract(newNewExpression);
                 case ConditionalExpression conditionalExpression:
                     return new ConditionalExpressionTractor(context, visitorContext).Extract(conditionalExpression);
+                case ParameterExpression parameterExpression:
+                    return new ParameterExpressionTractor(context, visitorContext).Extract(parameterExpression);
                 default:
                     throw new NotSupportedException($"Unsupported expression: {expr.NodeType}");
             }

@@ -48,6 +48,10 @@ namespace MongoDbTest
                     cityName=city.Name
                 }).ToList();
             if (dt.First().schoolName != "清华大学" || dt.First().studentName != "张三" || dt.First().cityName != "北京") Cases.ThrowUnitError();
+
+           var dt2 = db.Queryable<Student>()
+            .LeftJoin<School>((s, sc) => s.SchoolId == sc.Id)
+            .Select((s, sc) => sc).ToList();
         }
         [SqlSugar.SugarTable("UnitStudentdu2s31")]
         public class Student : MongoDbBase
