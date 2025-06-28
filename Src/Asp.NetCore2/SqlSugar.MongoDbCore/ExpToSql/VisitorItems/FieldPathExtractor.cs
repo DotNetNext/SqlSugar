@@ -134,6 +134,10 @@ namespace SqlSugar.MongoDb
                     resultString = columnString;
                     isObj = true;
                 }
+                else
+                {
+                     resultString = $"{joinInfo.ShortName}.{resultString}"; 
+                }
             }
             if (isObj)
                 return BsonDocument.Parse(resultString);
