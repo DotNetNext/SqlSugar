@@ -74,24 +74,42 @@ namespace SqlSugar.MongoDb
             After(sql, result);
             return result;
         }
-
+        public override async Task<bool> ExecuteCommandIdentityIntoEntityAsync() 
+        {
+            await base.ExecuteCommandAsync();
+            var ids = ((MongoDbConnection)this.Ado.Connection).ObjectIds;
+            var insertObjects = this.InsertObjs;
+            if (ids != null && insertObjects != null && ids.Count() == insertObjects.Length)
+            {
+                var idProp = typeof(T).GetProperties().FirstOrDefault(p => p.Name.Equals("Id", StringComparison.OrdinalIgnoreCase));
+                if (idProp != null)
+                {
+                    for (int i = 0; i < insertObjects.Length; i++)
+                    {
+                        idProp.SetValue(insertObjects[i], ids[i]);
+                    }
+                }
+            }
+            return true;
+        }
         public override bool ExecuteCommandIdentityIntoEntity()
         {
-            var result = InsertObjs.First();
-            var identityKeys = GetIdentityKeys();
-            if (identityKeys.Count == 0) { return this.ExecuteCommand() > 0; }
-            var idValue = ExecuteReturnBigIdentity();
-            Check.Exception(identityKeys.Count > 1, "ExecuteCommandIdentityIntoEntity does not support multiple identity keys");
-            var identityKey = identityKeys.First();
-            object setValue = 0;
-            if (idValue > int.MaxValue)
-                setValue = idValue;
-            else
-                setValue = Convert.ToInt32(idValue);
-            var propertyName = this.Context.EntityMaintenance.GetPropertyName<T>(identityKey);
-            typeof(T).GetProperties().First(t => t.Name.ToUpper() == propertyName.ToUpper()).SetValue(result, setValue, null);
-            return idValue > 0;
-        }
+            base.ExecuteCommand();
+            var ids = ((MongoDbConnection)this.Ado.Connection).ObjectIds;
+            var insertObjects = this.InsertObjs;
+            if (ids != null && insertObjects != null && ids.Count() == insertObjects.Length)
+            {
+                var idProp = typeof(T).GetProperties().FirstOrDefault(p => p.Name.Equals("Id", StringComparison.OrdinalIgnoreCase));
+                if (idProp != null)
+                {
+                    for (int i = 0; i < insertObjects.Length; i++)
+                    {
+                        idProp.SetValue(insertObjects[i], ids[i]);
+                    }
+                }
+            }
+            return true;
+        } 
 
         private string GetIdentityColumn()
         {

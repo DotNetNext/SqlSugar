@@ -30,6 +30,11 @@ namespace MongoDbTest
             if(list2.Count!=1|| list2.First().Name!=null) Cases.ThrowUnitError();
             var list3= db.Queryable<Student>().Where(it => null==it.Name).ToList();
             if (list3.Count != 1 || list3.First().Name != null) Cases.ThrowUnitError();
+
+            //Get primary key
+            var data = new Student() { Age = 1, Name = "11", SchoolId = "111", CreateDateTime = DateTime.Now };
+            db.Insertable(data).ExecuteCommandIdentityIntoEntity();
+            Console.WriteLine(data.Id);//Get _id by ExecuteCommandIdentityIntoEntity
         }
         [SqlSugar.SugarTable("UnitStudent1ddsfhssds3z1")]
         public class Student : MongoDbBase
