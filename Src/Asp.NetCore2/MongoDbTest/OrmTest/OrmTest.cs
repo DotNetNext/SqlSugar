@@ -13,6 +13,7 @@ namespace MongoDbTest
         public static void Init()
         {
             var db = DbHelper.GetNewDb();
+            db.DbMaintenance.TruncateTable<OrderInfo>();
             db.Insertable(new OrderInfo() { CreateTime = DateTime.Now, Name = "a", Price = 1 })
             .ExecuteCommand();
             var ids = db.Insertable(new List<OrderInfo>(){

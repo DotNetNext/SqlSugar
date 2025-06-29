@@ -68,26 +68,7 @@ namespace SqlSugar.MongoDb
             }
             return ExtractFieldPath(expr);
         }
-
-        private static bool IsDateProperty(Expression expr)
-        {
-            return !string.IsNullOrEmpty(BinaryExpressionTranslator.GetSystemDateMemberName(expr));
-        }
-
-        private static bool IsLength(MemberExpression oldMember)
-        {
-            if (oldMember.Member.Name != "Length")
-                return false;
-
-            var expressionType = oldMember.Expression?.Type;
-            if (expressionType == null)
-                return false;
-
-            return expressionType.IsArray
-                || expressionType == typeof(string)
-                || expressionType.FullName == "System.Span`1"
-                || expressionType.FullName == "System.ReadOnlySpan`1";
-        }
+        
 
         private BsonValue ExtractFieldPath(Expression expr)
         {
@@ -103,32 +84,24 @@ namespace SqlSugar.MongoDb
             {
                 _visitorContext.ExpType = typeof(MemberExpression);
             }
-            string resultString = null;
-            if (parts.Count == 1 && expr is ParameterExpression parameter&& _context?.context != null)
-            {
-                var entityInfo = _context.context.EntityMaintenance.GetEntityInfo(parameter.Type);
-                var columnInfo = entityInfo.Columns.FirstOrDefault(s => s.PropertyName == parts.First());
-                if (columnInfo != null)
-                {
-                    resultString = columnInfo.DbColumnName;
-                }
-                else 
-                {
-                    resultString = string.Join(".", parts);
-                }
-            }
-            else
-            {
-                resultString = string.Join(".", parts);
-            }
-            var isJoin = this._context?.queryBuilder?.IsSingle()==false;
+            string resultString = GenerateFieldPath(expr, parts);
+            var isJoin = this._context?.queryBuilder?.IsSingle() == false;
             var shortName = ((ParameterExpression)expr)?.Name;
             var joinInfo = this._context?.queryBuilder?.JoinQueryInfos?.FirstOrDefault(it => it.ShortName.EqualCase(shortName));
+            bool isObj = ProcessJoinFieldPath(ref resultString, ref shortName, joinInfo);
+            if (isObj)
+                return BsonDocument.Parse(resultString);
+            else
+                return UtilMethods.MyCreate(resultString);
+        }
+
+        private bool ProcessJoinFieldPath(ref string resultString, ref string shortName, JoinQueryInfo joinInfo)
+        {
             var isObj = false;
             if (joinInfo != null)
-            { 
+            {
                 shortName = $"{joinInfo.ShortName}.";
-                if (this._context.resolveType.IsIn(ResolveExpressType.SelectSingle,ResolveExpressType.SelectMultiple))
+                if (this._context.resolveType.IsIn(ResolveExpressType.SelectSingle, ResolveExpressType.SelectMultiple))
                 {
                     // 构造 $ifNull 表达式
                     var columnString = $"{{ \"$ifNull\": [\"${joinInfo.ShortName}.{resultString}\", null] }}";
@@ -137,18 +110,66 @@ namespace SqlSugar.MongoDb
                 }
                 else
                 {
-                     resultString = $"{joinInfo.ShortName}.{resultString}"; 
+                    resultString = $"{joinInfo.ShortName}.{resultString}";
                 }
             }
-            if (this._context!=null&&this._context.resolveType.IsIn(ResolveExpressType.WhereMultiple, ResolveExpressType.WhereSingle) &&this._context?.queryBuilder is MongoDbQueryBuilder mb&&mb.EasyJoin==false) 
+            resultString = TransformFieldPath(resultString, shortName);
+            return isObj;
+        }
+
+        private string GenerateFieldPath(Expression expr, Stack<string> parts)
+        {
+            string resultString = null;
+            if (parts.Count == 1 && expr is ParameterExpression parameter && _context?.context != null)
+            {
+                var entityInfo = _context.context.EntityMaintenance.GetEntityInfo(parameter.Type);
+                var columnInfo = entityInfo.Columns.FirstOrDefault(s => s.PropertyName == parts.First());
+                if (columnInfo != null)
+                {
+                    resultString = columnInfo.DbColumnName;
+                }
+                else
+                {
+                    resultString = string.Join(".", parts);
+                }
+            }
+            else
+            {
+                resultString = string.Join(".", parts);
+            }
+
+            return resultString;
+        }
+
+        private static bool IsDateProperty(Expression expr)
+        {
+            return !string.IsNullOrEmpty(BinaryExpressionTranslator.GetSystemDateMemberName(expr));
+        } 
+        private static bool IsLength(MemberExpression oldMember)
+        {
+            if (oldMember.Member.Name != "Length")
+                return false;
+
+            var expressionType = oldMember.Expression?.Type;
+            if (expressionType == null)
+                return false;
+
+            return expressionType.IsArray
+                || expressionType == typeof(string)
+                || expressionType.FullName == "System.Span`1"
+                || expressionType.FullName == "System.ReadOnlySpan`1";
+        }
+        private string TransformFieldPath(string resultString, string shortName)
+        {
+            if (this._context?.queryBuilder is MongoDbQueryBuilder mb && mb.EasyJoin == false)
             {
                 if (mb.FirstParameter == shortName.TrimEnd('.'))
                 {
-                    if (!mb.lets.ContainsKey(resultString)) 
+                    if (!mb.lets.ContainsKey(resultString))
                     {
                         mb.lets.Add(resultString, $"${resultString}");
                     }
-                    resultString = $"${resultString}"; 
+                    resultString = $"${resultString}";
                 }
                 else if (mb.LastParameter == shortName.TrimEnd('.'))
                 {
@@ -156,10 +177,8 @@ namespace SqlSugar.MongoDb
                     resultString = $"${resultString.TrimStart(replaceName.toCharArray())}";
                 }
             }
-            if (isObj)
-                return BsonDocument.Parse(resultString);
-            else
-                return UtilMethods.MyCreate(resultString);
+
+            return resultString;
         }
     }
 

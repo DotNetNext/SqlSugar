@@ -39,9 +39,10 @@ namespace SqlSugar.MongoDb
             };
             newJoins.add(result);
             queryBuilder.JoinQueryInfos = newJoins;
-
+            MongoDbQueryBuilder mb2 = null;
             if (queryBuilder is MongoDbQueryBuilder mb) 
             {
+                mb2 = mb;
                 var exp = joinExpression as LambdaExpression;
                 mb.EasyJoin = exp.Body is BinaryExpression b && b.Left is MemberExpression l && b.Right is MemberExpression r && l.Expression is ParameterExpression && r.Expression is ParameterExpression;
                 if (mb.EasyJoin==false)
@@ -61,15 +62,19 @@ namespace SqlSugar.MongoDb
             {
                 result.ShortName = queryBuilder.Builder.GetTranslationColumnName(result.ShortName);
             }
-            if (queryBuilder is MongoDbQueryBuilder mb2&&mb2.EasyJoin==false) 
+            if (mb2!=null) 
             {
                 var lets=mb2.lets;
                 if (mb2.JoinQueryInfoLets == null)
                 {
                     mb2.JoinQueryInfoLets = new Dictionary<string, Dictionary<string, string>>();
                 }
-                mb2.JoinQueryInfoLets.Add(result.ShortName, mb2.lets);
-            }
+                if (mb2.EasyJoin==false)
+                {
+                    mb2.JoinQueryInfoLets.Add(result.ShortName, mb2.lets);
+                }
+                mb2.EasyJoin = null;
+            } 
             return result;
         }
 
