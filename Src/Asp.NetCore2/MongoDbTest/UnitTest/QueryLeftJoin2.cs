@@ -60,11 +60,12 @@ namespace MongoDbTest
             if (dt3.First().Name != "张三") Cases.ThrowUnitError();
 
             var dt5 = db.Queryable<Student>()
-        .LeftJoin<School>((s, sc) => s.SchoolId == sc.Id )
-        .Select((s, sc) => new {
-            studentName = s.Name,
-            schoolName = sc.Name
-        }).ToList();
+            .LeftJoin<School>((s, sc) => s.SchoolId == sc.Id )
+            .Select((s, sc) => new {
+                studentName = s.Name,
+                schoolName = sc.Name
+            }).ToList();
+            if (dt5.First().studentName != "张三"&& dt5.First().schoolName!= "清华大学") Cases.ThrowUnitError();
             //var dt4 = db.Queryable<Student>()
             //.LeftJoin<School>((s, sc) => s.SchoolId.ToLower() == sc.Id)
             //.Select((s,sc)=>new { 
