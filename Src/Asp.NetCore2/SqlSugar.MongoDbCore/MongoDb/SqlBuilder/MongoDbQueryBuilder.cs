@@ -194,35 +194,34 @@ namespace SqlSugar.MongoDb
         {
             foreach (var item in this.JoinQueryInfos)
             {
-                // 解析 JoinWhere JSON，假设格式为 { "SchoolId" : { "$eq" : "_id" } }
                 var joinWhereDoc = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonDocument>(item.JoinWhere);
-                // 只支持单字段等值连接
-                var localField = joinWhereDoc.GetElement(0).Name;
-                var eqObj = joinWhereDoc[localField].AsBsonDocument;
-                var foreignField = eqObj.GetElement(0).Value.AsString;
+                var isExp = joinWhereDoc.Contains("$expr");
+                var localField = isExp ? string.Empty : joinWhereDoc.GetElement(0).Name;
+                var eqObj = isExp ? null : joinWhereDoc[localField].AsBsonDocument;
+                var foreignField = isExp ? string.Empty : eqObj.GetElement(0).Value.AsString;
 
-                // from: 目标集合名（假设 JoinQueryInfo 有 TableName/ShortName 字段，需根据实际情况调整）
-                // as: 关联后的别名（假设 JoinQueryInfo 有 ShortName 字段）
                 string from = item.TableName ?? item.ShortName ?? "Unknown";
                 string asName = item.ShortName;
                 var asNamePrefix = $"{asName}.";
-                var isValueKey = foreignField.StartsWith(asNamePrefix) && !localField.StartsWith(asNamePrefix);
-                var isKeyValue = !foreignField.StartsWith(asNamePrefix) && localField.StartsWith(asNamePrefix);
+                var isValueKey = !isExp && foreignField.StartsWith(asNamePrefix) && !localField.StartsWith(asNamePrefix);
+                var isKeyValue = !isExp && !foreignField.StartsWith(asNamePrefix) && localField.StartsWith(asNamePrefix);
                 var isEasyJoin = isKeyValue || isValueKey;
+
                 if (isKeyValue)
-                { 
-                    localField = localField.TrimStart(asNamePrefix.toCharArray()); 
+                {
+                    localField = localField.TrimStart(asNamePrefix.ToCharArray());
                     var oldLocalField = localField;
                     localField = foreignField;
                     foreignField = oldLocalField;
                 }
-                else if(isValueKey)
+                else if (isValueKey)
                 {
-                    foreignField = foreignField.TrimStart(asNamePrefix.toCharArray());
+                    foreignField = foreignField.TrimStart(asNamePrefix.ToCharArray());
                 }
+
                 if (isEasyJoin)
-                { 
-                    // $lookup
+                {
+                    // $lookup 简单等值连接
                     var lookupDoc = new BsonDocument("$lookup", new BsonDocument
                     {
                         { "from", from },
@@ -232,28 +231,50 @@ namespace SqlSugar.MongoDb
                     });
                     operations.Add(lookupDoc.ToJson(UtilMethods.GetJsonWriterSettings()));
                 }
+                else
+                { 
+                    // 解析$expr表达式
+                    var exprDoc = joinWhereDoc.Contains("$expr") ? joinWhereDoc["$expr"] : joinWhereDoc;
+
+                    // 构造let变量（可扩展，当前假设无变量）
+                    var letDoc = new BsonDocument();
+
+                    // 构造pipeline
+                    var pipelineArray = new BsonArray
+                    {
+                        new BsonDocument("$match", new BsonDocument("$expr", exprDoc))
+                    };
+
+                    var lookupDoc = new BsonDocument("$lookup", new BsonDocument
+                    {
+                        { "from", from },
+                        { "let", letDoc },
+                        { "pipeline", pipelineArray },
+                        { "as", asName }
+                    });
+                    operations.Add(lookupDoc.ToJson(UtilMethods.GetJsonWriterSettings()));
+                }
 
                 // $unwind
                 BsonValue unwindDoc = null;
                 if (item.JoinType == JoinType.Left)
                 {
-                    unwindDoc=new BsonDocument("$unwind", new BsonDocument
+                    unwindDoc = new BsonDocument("$unwind", new BsonDocument
                     {
-                     { "path", $"${asName}" },
-                       { "preserveNullAndEmptyArrays", true }
+                        { "path", $"${asName}" },
+                        { "preserveNullAndEmptyArrays", true }
                     });
                 }
-                else if(item.JoinType==JoinType.Inner)
+                else if (item.JoinType == JoinType.Inner)
                 {
-                    // InnerJoin: 不保留空数组和null
                     unwindDoc = new BsonDocument("$unwind", new BsonDocument
                     {
                         { "path", $"${asName}" }
                     });
                 }
-                else 
+                else
                 {
-                    throw new Exception(" No Support "+item.JoinType);
+                    throw new Exception(" No Support " + item.JoinType);
                 }
                 operations.Add(unwindDoc.ToJson(UtilMethods.GetJsonWriterSettings()));
             }

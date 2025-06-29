@@ -58,6 +58,20 @@ namespace MongoDbTest
             .LeftJoin<School>((s, sc) => s.SchoolId == sc.Id)
             .Select((s, sc) => s).ToList();
             if (dt3.First().Name != "张三") Cases.ThrowUnitError();
+
+            var dt5 = db.Queryable<Student>()
+        .LeftJoin<School>((s, sc) => s.SchoolId == sc.Id )
+        .Select((s, sc) => new {
+            studentName = s.Name,
+            schoolName = sc.Name
+        }).ToList();
+            var dt4 = db.Queryable<Student>()
+            .LeftJoin<School>((s, sc) => s.SchoolId.ToLower() == sc.Id.ToString())
+            .Select((s,sc)=>new { 
+                studentName=s.Name,
+                schoolName=sc.Name
+            }).ToList();
+            if (dt3.First().Name != "张三") Cases.ThrowUnitError();
         }
         [SqlSugar.SugarTable("UnitStudentdu2s31")]
         public class Student : MongoDbBase
