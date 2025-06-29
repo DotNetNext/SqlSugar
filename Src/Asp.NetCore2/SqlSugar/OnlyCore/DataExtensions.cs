@@ -11,8 +11,7 @@ using System.Data;
 using Microsoft.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Data.OscarClient;
-using System.Data.OleDb;
+using System.Data.OscarClient; 
 
 namespace SqlSugar
 {
