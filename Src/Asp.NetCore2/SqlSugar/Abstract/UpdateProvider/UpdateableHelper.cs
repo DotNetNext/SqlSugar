@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -441,6 +442,8 @@ namespace SqlSugar
             if (column.ForOwnsOnePropertyInfo != null)
             {
                 var owsPropertyValue = column.ForOwnsOnePropertyInfo.GetValue(item, null);
+                if (owsPropertyValue == null)
+                    return null;
                 return column.PropertyInfo.GetValue(owsPropertyValue, null);
             }
             else
