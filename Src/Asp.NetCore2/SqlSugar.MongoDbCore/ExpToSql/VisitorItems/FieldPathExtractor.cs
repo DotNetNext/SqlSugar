@@ -1,4 +1,5 @@
 ﻿using Dm;
+using Dm.util;
 using MongoDB.Bson;
 using Newtonsoft.Json.Linq; 
 using System;
@@ -137,6 +138,22 @@ namespace SqlSugar.MongoDb
                 else
                 {
                      resultString = $"{joinInfo.ShortName}.{resultString}"; 
+                }
+            }
+            if (this._context!=null&&this._context.resolveType.IsIn(ResolveExpressType.WhereMultiple, ResolveExpressType.WhereSingle) &&this._context?.queryBuilder is MongoDbQueryBuilder mb&&mb.EasyJoin==false) 
+            {
+                if (mb.FirstParameter == shortName.TrimEnd('.'))
+                {
+                    if (!mb.lets.ContainsKey(resultString)) 
+                    {
+                        mb.lets.Add(resultString, $"${resultString}");
+                    }
+                    resultString = $"${resultString}"; 
+                }
+                else if (mb.LastParameter == shortName.TrimEnd('.'))
+                {
+                    var replaceName = shortName.TrimEnd('.') + ".";
+                    resultString = $"${resultString.TrimStart(replaceName.toCharArray())}";
                 }
             }
             if (isObj)

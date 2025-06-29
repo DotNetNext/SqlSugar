@@ -19,9 +19,9 @@ namespace SqlSugar.MongoDb
 
         public JoinQueryInfo BuildJoinQueryInfo(Expression joinExpression, JoinType joinType)
         {
-            var queryBuilder = this.QueryBuilder;
-            var context = this.Context;
-            return UtilMethods.BuilderJoinInfo(joinExpression, joinType, queryBuilder, context);
+            var exp = (joinExpression as LambdaExpression);
+            var queryBuilder = (MongoDbQueryBuilder)this.QueryBuilder;
+            return UtilMethods.BuilderJoinInfo(joinExpression, joinType, queryBuilder, this.Context);
         }
         public override ISugarQueryable<T> WhereClassByPrimaryKey(List<T> list)
         {

@@ -205,7 +205,7 @@ namespace SqlSugar.MongoDb
                 var asNamePrefix = $"{asName}.";
                 var isValueKey = !isExp && foreignField.StartsWith(asNamePrefix) && !localField.StartsWith(asNamePrefix);
                 var isKeyValue = !isExp && !foreignField.StartsWith(asNamePrefix) && localField.StartsWith(asNamePrefix);
-                var isEasyJoin = isKeyValue || isValueKey;
+                var isEasyJoin = !(this.JoinQueryInfoLets?.Any(s=>s.Key.EqualCase(item.ShortName))==true);
 
                 if (isKeyValue)
                 {
@@ -235,10 +235,16 @@ namespace SqlSugar.MongoDb
                 { 
                     // 解析$expr表达式
                     var exprDoc = joinWhereDoc.Contains("$expr") ? joinWhereDoc["$expr"] : joinWhereDoc;
-
+                     
                     // 构造let变量（可扩展，当前假设无变量）
                     var letDoc = new BsonDocument();
-
+                    if (this.JoinQueryInfoLets != null && this.JoinQueryInfoLets.TryGetValue(asName, out var letFields) && letFields != null)
+                    {
+                        foreach (var kv in letFields)
+                        {
+                            letDoc.Add(kv.Key, $"{kv.Value}");
+                        }
+                    } 
                     // 构造pipeline
                     var pipelineArray = new BsonArray
                     {
@@ -357,6 +363,14 @@ namespace SqlSugar.MongoDb
             }
         }
 
+        #endregion
+         
+        #region Exp to sql
+        public bool? EasyJoin { get; internal set; }
+        public string FirstParameter { get; internal set; }
+        public string LastParameter { get; internal set; }
+        public Dictionary<string,string> lets { get; internal set; } 
+        public Dictionary<string, Dictionary<string, string>> JoinQueryInfoLets { get; set; }
         #endregion
     }
 }
