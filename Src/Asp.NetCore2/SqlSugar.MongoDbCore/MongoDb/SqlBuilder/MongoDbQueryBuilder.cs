@@ -195,7 +195,8 @@ namespace SqlSugar.MongoDb
             foreach (var item in this.JoinQueryInfos)
             {
                 var joinWhereDoc = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonDocument>(item.JoinWhere);
-                var isExp = joinWhereDoc.Contains("$expr");
+                var isEasyJoin = !(this.JoinQueryInfoLets?.Any(s => s.Key.EqualCase(item.ShortName)) == true);
+                var isExp = !isEasyJoin;
                 var localField = isExp ? string.Empty : joinWhereDoc.GetElement(0).Name;
                 var eqObj = isExp ? null : joinWhereDoc[localField].AsBsonDocument;
                 var foreignField = isExp ? string.Empty : eqObj.GetElement(0).Value.AsString;
@@ -205,7 +206,7 @@ namespace SqlSugar.MongoDb
                 var asNamePrefix = $"{asName}.";
                 var isValueKey = !isExp && foreignField.StartsWith(asNamePrefix) && !localField.StartsWith(asNamePrefix);
                 var isKeyValue = !isExp && !foreignField.StartsWith(asNamePrefix) && localField.StartsWith(asNamePrefix);
-                var isEasyJoin = !(this.JoinQueryInfoLets?.Any(s=>s.Key.EqualCase(item.ShortName))==true);
+              
 
                 if (isKeyValue)
                 {

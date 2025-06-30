@@ -15,9 +15,18 @@ namespace SqlSugar.MongoDb
             var sqlFuncInfo = GetSqlFuncBinaryExpressionInfo(leftIsMember, rightIsMember, expr);
             if (sqlFuncInfo.IsSqlFunc)
                 return GetCalculationOperationBySqlFunc(sqlFuncInfo, field, expr.NodeType, value, leftIsMember, rightIsMember);
-            return op == null
-                ? GetCalculationOperation(field, expr.NodeType, value, leftIsMember, rightIsMember)
-                : GetComparisonOperation(expr, field, value, leftIsMember, rightIsMember, op);
+            if (op == null)
+            {
+                return GetCalculationOperation(field, expr.NodeType, value, leftIsMember, rightIsMember);
+            }
+            else if (leftIsMember && rightIsMember)
+            {
+                return GetCalculationOperationBySqlFunc(sqlFuncInfo, field, expr.NodeType, value, leftIsMember, rightIsMember);
+            }
+            else
+            {
+               return GetComparisonOperation(expr, field, value, leftIsMember, rightIsMember, op);
+            }
         } 
     }
 }
