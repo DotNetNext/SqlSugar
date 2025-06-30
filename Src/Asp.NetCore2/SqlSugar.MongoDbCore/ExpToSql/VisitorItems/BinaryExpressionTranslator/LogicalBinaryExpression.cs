@@ -6,7 +6,7 @@ using System.Text;
 
 namespace SqlSugar.MongoDb 
 {
-    public partial class BinaryExpressionTranslator
+    public partial class BinaryExpressionTranslator: BaseCommonExpression
     { 
         private BsonDocument LogicalBinaryExpression(BinaryExpression expr)
         {
@@ -14,7 +14,18 @@ namespace SqlSugar.MongoDb
 
             var left = new ExpressionVisitor(_context).Visit(expr.Left);
             var right = new ExpressionVisitor(_context).Visit(expr.Right);
-
+            var isJoinByExp=base.IsJoinByExp(_context);
+            if (isJoinByExp) 
+            {
+                if (left is BsonDocument leftDoc && leftDoc.Contains("$expr"))
+                {
+                    left = leftDoc["$expr"];
+                }
+                if (right is BsonDocument rightDoc && rightDoc.Contains("$expr"))
+                {
+                    right = rightDoc["$expr"];
+                }
+            }
             var arr = new BsonArray();
             AddNestedLogic(arr, left, logicOp);
             AddNestedLogic(arr, right, logicOp);

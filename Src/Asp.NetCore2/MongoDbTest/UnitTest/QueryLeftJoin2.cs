@@ -7,14 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MongoDbTest 
+namespace MongoDbTest
 {
     public class QueryLeftJoin2
     {
         public static void Init()
         {
             var db = DbHelper.GetNewDb();
-            db.DbMaintenance.TruncateTable<City,School,Student>();
+            db.DbMaintenance.TruncateTable<City, School, Student>();
 
             // 添加 City 测试数据
             var city1 = new City { Name = "北京" };
@@ -38,20 +38,20 @@ namespace MongoDbTest
             var schools = db.Queryable<School>().ToDataTable();
             var cities = db.Queryable<City>().ToDataTable();
 
-            var dt=db.Queryable<Student>()
+            var dt = db.Queryable<Student>()
                 .LeftJoin<School>((s, sc) => s.SchoolId == sc.Id)
                 .LeftJoin<City>((s, sc, city) => sc.CityId == city.Id)
                 .Select((s, sc, city) => new
                 {
-                    studentName=s.Name,
-                    schoolName=sc.Name,
-                    cityName=city.Name
+                    studentName = s.Name,
+                    schoolName = sc.Name,
+                    cityName = city.Name
                 }).ToList();
             if (dt.First().schoolName != "清华大学" || dt.First().studentName != "张三" || dt.First().cityName != "北京") Cases.ThrowUnitError();
 
-           var dt2 = db.Queryable<Student>()
-            .LeftJoin<School>((s, sc) => s.SchoolId == sc.Id)
-            .Select((s, sc) => sc).ToList();
+            var dt2 = db.Queryable<Student>()
+             .LeftJoin<School>((s, sc) => s.SchoolId == sc.Id)
+             .Select((s, sc) => sc).ToList();
             if (dt2.First().Name != "清华大学") Cases.ThrowUnitError();
 
             var dt3 = db.Queryable<Student>()
@@ -60,14 +60,15 @@ namespace MongoDbTest
             if (dt3.First().Name != "张三") Cases.ThrowUnitError();
 
             var dt5 = db.Queryable<Student>()
-            .LeftJoin<School>((s, sc) => s.SchoolId == sc.Id )
-            .Select((s, sc) => new {
+            .LeftJoin<School>((s, sc) => s.SchoolId == sc.Id)
+            .Select((s, sc) => new
+            {
                 studentName = s.Name,
                 schoolName = sc.Name
             }).ToList();
-            if (dt5.First().studentName != "张三"&& dt5.First().schoolName!= "清华大学") Cases.ThrowUnitError();
-            var allList = db.Queryable<Student>().Where(s => s.Name == s.Name.ToString()) .ToList();
-            if(allList.Count!=2) Cases.ThrowUnitError();
+            if (dt5.First().studentName != "张三" && dt5.First().schoolName != "清华大学") Cases.ThrowUnitError();
+            var allList = db.Queryable<Student>().Where(s => s.Name == s.Name.ToString()).ToList();
+            if (allList.Count != 2) Cases.ThrowUnitError();
             var allList2 = db.Queryable<Student>().Where(s => s.Name.ToString() == s.Name).ToList();
             if (allList2.Count != 2) Cases.ThrowUnitError();
             var allList3 = db.Queryable<Student>().Where(s => s.Name.ToString() == s.Name.ToString()).ToList();
@@ -79,16 +80,17 @@ namespace MongoDbTest
                 studentName = s.Name,
                 schoolName = sc.Name
             }).ToList();
-            if (dt4.Count==2&&dt4.Last().studentName != "李四"|| dt4.Last().schoolName != "复旦大学") Cases.ThrowUnitError();
+            if (dt4.Count == 2 && dt4.Last().studentName != "李四" || dt4.Last().schoolName != "复旦大学") Cases.ThrowUnitError();
 
-           // var dt6 = db.Queryable<Student>()
-           //.LeftJoin<School>((s, sc) => s.SchoolId == sc.Id && sc.Name == "复旦大学")
-           //.Select((s, sc) => new
-           //{
-           //    studentName = s.Name,
-           //    schoolName = sc.Name
-           //}).ToList();
-           // if (dt6.Count == 1 && dt6.Last().studentName != "李四" || dt6.Last().schoolName != "复旦大学") Cases.ThrowUnitError();
+            var dt6 = db.Queryable<Student>()
+           .InnerJoin<School>((s, sc) => s.SchoolId == sc.Id && sc.Name == "复旦大学")
+           .Select((s, sc) => new
+           {
+               studentName = s.Name,
+               schoolName = sc.Name
+           }).ToList();
+            if (dt6.Count != 1 || dt6.Last().studentName != "李四" || dt6.Last().schoolName != "复旦大学") Cases.ThrowUnitError();
+
         }
         [SqlSugar.SugarTable("UnitStudentdu2s31")]
         public class Student : MongoDbBase

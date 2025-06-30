@@ -7,7 +7,7 @@ using System.Text;
 
 namespace SqlSugar.MongoDb
 {
-    public partial class BinaryExpressionTranslator
+    public partial class BinaryExpressionTranslator: BaseCommonExpression
     {
         private BsonDocument FieldComparisonOrCalculationExpression(BinaryExpression expr)
         {
@@ -19,14 +19,14 @@ namespace SqlSugar.MongoDb
             {
                 return GetCalculationOperation(field, expr.NodeType, value, leftIsMember, rightIsMember);
             }
-            else if (leftIsMember && rightIsMember)
+            else if (leftIsMember && rightIsMember || IsJoinByExp(this._context))
             {
                 return GetCalculationOperationBySqlFunc(sqlFuncInfo, field, expr.NodeType, value, leftIsMember, rightIsMember);
             }
             else
             {
-               return GetComparisonOperation(expr, field, value, leftIsMember, rightIsMember, op);
+                return GetComparisonOperation(expr, field, value, leftIsMember, rightIsMember, op);
             }
-        } 
+        }
     }
 }
