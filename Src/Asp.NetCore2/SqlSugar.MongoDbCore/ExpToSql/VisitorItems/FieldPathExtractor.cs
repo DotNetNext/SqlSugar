@@ -165,11 +165,12 @@ namespace SqlSugar.MongoDb
             {
                 if (mb.FirstParameter == shortName.TrimEnd('.'))
                 {
-                    if (!mb.lets.ContainsKey(resultString))
+                    var letKey = GetLetKey(resultString);
+                    if (!mb.lets.ContainsKey(letKey))
                     {
-                        mb.lets.Add(resultString, $"${resultString}");
+                        mb.lets.Add(letKey, $"${resultString}");
                     }
-                    resultString = $"${resultString}";
+                    resultString = $"$${letKey}";
                 }
                 else if (mb.LastParameter == shortName.TrimEnd('.'))
                 {
@@ -179,6 +180,11 @@ namespace SqlSugar.MongoDb
             }
 
             return resultString;
+        }
+
+        private static string GetLetKey(string resultString)
+        {
+            return $"let_{resultString}";
         }
     }
 
