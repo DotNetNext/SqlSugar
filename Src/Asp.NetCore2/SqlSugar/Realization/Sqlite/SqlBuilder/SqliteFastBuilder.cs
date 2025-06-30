@@ -81,12 +81,14 @@ namespace SqlSugar
                     foreach (DataRow item in dt.Rows)
                     {
                         cmd.CommandText = this.Context.Insertable(UtilMethods.DataRowToDictionary(item)).AS(dt.TableName).ToSqlString().Replace(";SELECT LAST_INSERT_ROWID();", "");
+                        TransformInsertCommand(cmd);
                         i += await cmd.ExecuteNonQueryAsync();
                     }
                 }
                 else
                 {
                     cmd.CommandText = this.Context.Insertable(dictionary.First()).AS(dt.TableName).ToSql().Key.Replace(";SELECT LAST_INSERT_ROWID();", "");
+                    TransformInsertCommand(cmd);
                     foreach (DataRow dataRow in dt.Rows)
                     {
                         foreach (DataColumn item in dt.Columns)
@@ -111,6 +113,19 @@ namespace SqlSugar
             }
             return i;
         }
+
+        private void TransformInsertCommand(SqliteCommand cmd)
+        {
+            if (this.DbFastestProperties?.IsIgnoreInsertError == true)
+            {
+                const string insertPrefix = "INSERT INTO ";
+                if (cmd.CommandText.StartsWith(insertPrefix))
+                {
+                    cmd.CommandText = "REPLACE INTO " + cmd.CommandText.Substring(insertPrefix.Length);
+                }
+            }
+        }
+
         private async Task<int> _BulkUpdate(DataTable dt, List<Dictionary<string, object>> dictionary, int i,string [] whereColums,string [] updateColums, SqliteConnection cn)
         {
             using (var cmd = cn.CreateCommand())
