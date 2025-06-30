@@ -192,6 +192,9 @@ namespace MongoDbTest
             var list23 = db.Queryable<Student>()
              .Select(it => it.Name.ToUpper()).ToList();
             if (list23.First() != "A") Cases.ThrowUnitError();
+
+            var list24 = db.Queryable<Student>().Where(it => it.Name.ToString() == "a" && it.Name == "a").ToList();
+            if (list24.First().Name != "a") Cases.ThrowUnitError();
         }
         [SqlSugar.SugarTable("UnitStudent1231sds3z1")]
         public class Student : MongoDbBase
