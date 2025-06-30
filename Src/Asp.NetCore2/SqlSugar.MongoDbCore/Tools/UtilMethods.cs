@@ -45,7 +45,7 @@ namespace SqlSugar.MongoDb
             {
                 mb2 = mb;
                 var exp = joinExpression as LambdaExpression;
-                mb.EasyJoin = exp.Body is BinaryExpression b && b.Left is MemberExpression l && b.Right is MemberExpression r && l.Expression is ParameterExpression && r.Expression is ParameterExpression;
+                mb.EasyJoin =exp.Body.NodeType==ExpressionType.Equal&&exp.Body is BinaryExpression b && b.Left is MemberExpression l && b.Right is MemberExpression r && l.Expression is ParameterExpression && r.Expression is ParameterExpression;
                 if (mb.EasyJoin==false)
                 {
                     mb.LastParameter = exp.Parameters.Last().Name;
