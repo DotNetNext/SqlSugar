@@ -5,7 +5,7 @@ using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-
+ 
 namespace SqlSugar
 {
     public class DmDbMaintenance : DbMaintenanceProvider
@@ -263,6 +263,20 @@ AND a.table_name!='SQLPLUS_PRODUCT_PROFILE'";
         #endregion
 
         #region Methods
+        public override bool IsAnyColumn(string tableName, string columnName, bool isCache = true)
+        {
+            if (isCache)
+            {
+                return base.IsAnyColumn(tableName, columnName, isCache);
+            }
+            else 
+            {
+                var sql = $@"  SELECT COUNT(1) 
+    FROM ALL_TAB_COLUMNS
+    WHERE Lower(TABLE_NAME) = @table AND Lower(COLUMN_NAME) =@column  AND  OWNER=SF_GET_SCHEMA_NAME_BY_ID(CURRENT_SCHID) ";
+                return this.Context.Ado.GetInt(sql, new { column =columnName.ToLower(), table =tableName.ToLower()}) > 0;
+            }
+        }
         public override bool UpdateColumn(string tableName, DbColumnInfo column)
         {
             ConvertCreateColumnInfo(column);
