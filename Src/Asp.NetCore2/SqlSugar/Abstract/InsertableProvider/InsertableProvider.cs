@@ -568,6 +568,11 @@ namespace SqlSugar
             this.InsertBuilder.MySqlIgnore = true; 
             return this;
         }
+        public IInsertable<T> IgnoreInsertError() 
+        {
+            this.InsertBuilder.MySqlIgnore = true;
+            return this;
+        }
         public IInsertable<T> MySqlIgnore(bool isIgnore) {
             if (isIgnore)
             {
