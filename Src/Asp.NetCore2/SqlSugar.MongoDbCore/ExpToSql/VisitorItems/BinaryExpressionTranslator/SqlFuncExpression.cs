@@ -13,6 +13,10 @@ namespace SqlSugar.MongoDb
             var mongoDbType = BinaryExpressionTranslator.GetComparisonType(expressionInfo.NodeType);
             var left = new ExpressionVisitor(_context).Visit(expressionInfo.LeftExp);
             var right = new ExpressionVisitor(_context).Visit(expressionInfo.RightExp);
+            if (leftIsMember && !UtilMethods.IsMongoVariable(left))
+                left = UtilMethods.GetMemberName(left);
+            if (rightIsMember && !UtilMethods.IsMongoVariable(right))
+                right = UtilMethods.GetMemberName(right);
             var filter = new BsonDocument("$expr", new BsonDocument(mongoDbType, new BsonArray
             {
                 left,
@@ -23,18 +27,14 @@ namespace SqlSugar.MongoDb
         private SqlFuncBinaryExpressionInfo GetSqlFuncBinaryExpressionInfo(bool leftIsMember, bool rightIsMember, BinaryExpression expr)
         {
             SqlFuncBinaryExpressionInfo sqlFuncBinaryExpressionInfo = new SqlFuncBinaryExpressionInfo();
-            sqlFuncBinaryExpressionInfo.LeftMethodName= GetSystemDateMemberName(MongoDbExpTools.RemoveConvert(expr.Left));
-            if (!string.IsNullOrEmpty(sqlFuncBinaryExpressionInfo.LeftMethodName))
-            {
-                sqlFuncBinaryExpressionInfo.LeftIsFunc = true;
-            }
-            sqlFuncBinaryExpressionInfo.RightMethodName = GetSystemDateMemberName(MongoDbExpTools.RemoveConvert(expr.Right));
-            if (!string.IsNullOrEmpty(sqlFuncBinaryExpressionInfo.RightMethodName))
-            {
-                sqlFuncBinaryExpressionInfo.RightIsFunc = true;
-            }
-            sqlFuncBinaryExpressionInfo.LeftExp = MongoDbExpTools.RemoveConvert(expr.Left);
-            sqlFuncBinaryExpressionInfo.RightExp = MongoDbExpTools.RemoveConvert(expr.Right);
+            var left = MongoDbExpTools.RemoveConvert(expr.Left);
+            var right = MongoDbExpTools.RemoveConvert(expr.Right);
+            sqlFuncBinaryExpressionInfo.LeftMethodName= GetSystemDateMemberName(left);
+            sqlFuncBinaryExpressionInfo.LeftIsFunc =!leftIsMember&& left is MethodCallExpression &&ExpressionTool.GetParameters(left).Count>0;
+            sqlFuncBinaryExpressionInfo.RightMethodName = GetSystemDateMemberName(right);
+            sqlFuncBinaryExpressionInfo.RightIsFunc = !rightIsMember && right is MethodCallExpression && ExpressionTool.GetParameters(right).Count > 0; 
+            sqlFuncBinaryExpressionInfo.LeftExp = MongoDbExpTools.RemoveConvert(left);
+            sqlFuncBinaryExpressionInfo.RightExp = MongoDbExpTools.RemoveConvert(right);
             sqlFuncBinaryExpressionInfo.NodeType= expr.NodeType;
             return sqlFuncBinaryExpressionInfo;
         }

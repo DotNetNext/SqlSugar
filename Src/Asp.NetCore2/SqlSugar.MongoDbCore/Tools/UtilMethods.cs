@@ -1,4 +1,5 @@
 ﻿using Dm.util;
+using Microsoft.IdentityModel.Tokens;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using System;
@@ -581,6 +582,22 @@ namespace SqlSugar.MongoDb
         private static bool IsObjectColumn(DbColumnInfo col)
         {
             return col.DbColumnName == "_id" || col.DataType == nameof(ObjectId);
+        }
+
+        internal static bool IsMongoVariable(BsonValue memberName)
+        {
+            return memberName is BsonString s && s.Value?.StartsWith("$")==true;
+        }
+        internal static BsonValue GetMemberName(BsonValue memberName)
+        {
+            if (memberName is BsonDocument)
+                return memberName;
+            if (memberName is BsonArray)
+                return memberName;
+            else if (UtilMethods.IsMongoVariable(memberName))
+                return memberName;
+            else
+                return $"${memberName}";
         }
         //public static object ConvertDataByTypeName(string ctypename,string value)
         //{

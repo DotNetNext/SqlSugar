@@ -635,12 +635,7 @@ namespace SqlSugar.MongoDb
         #region  Helper 
         private static BsonValue GetMemberName(BsonValue memberName)
         {
-            if (memberName is BsonDocument)
-                return memberName;
-            if (memberName is BsonArray)
-                return memberName;
-            else
-                return $"${memberName}";
+            return UtilMethods.GetMemberName(memberName);
         }
 
         /// <summary>

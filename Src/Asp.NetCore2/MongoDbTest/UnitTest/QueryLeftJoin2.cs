@@ -66,11 +66,18 @@ namespace MongoDbTest
                 schoolName = sc.Name
             }).ToList();
             if (dt5.First().studentName != "张三"&& dt5.First().schoolName!= "清华大学") Cases.ThrowUnitError();
+            var allList = db.Queryable<Student>().Where(s => s.Name == s.Name.ToString()) .ToList();
+            if(allList.Count!=2) Cases.ThrowUnitError();
+            var allList2 = db.Queryable<Student>().Where(s => s.Name.ToString() == s.Name).ToList();
+            if (allList2.Count != 2) Cases.ThrowUnitError();
+            var allList3 = db.Queryable<Student>().Where(s => s.Name.ToString() == s.Name.ToString()).ToList();
+            if (allList3.Count != 2) Cases.ThrowUnitError();
             //var dt4 = db.Queryable<Student>()
-            //.LeftJoin<School>((s, sc) => s.SchoolId.ToLower() == sc.Id)
-            //.Select((s,sc)=>new { 
-            //    studentName=s.Name,
-            //    schoolName=sc.Name
+            //.LeftJoin<School>((s, sc) => s.SchoolId.ToString() == sc.Id.ToString())
+            //.Select((s, sc) => new
+            //{
+            //    studentName = s.Name,
+            //    schoolName = sc.Name
             //}).ToList();
             //if (dt3.First().Name != "张三") Cases.ThrowUnitError();
         }
