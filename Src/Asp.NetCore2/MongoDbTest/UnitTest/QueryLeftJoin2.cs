@@ -91,6 +91,15 @@ namespace MongoDbTest
            }).ToList();
             if (dt6.Count != 1 || dt6.Last().studentName != "李四" || dt6.Last().schoolName != "复旦大学") Cases.ThrowUnitError();
 
+
+            var dt7 = db.Queryable<Student>()
+           .LeftJoin<School>((s, sc) => s.SchoolId == sc.Id && sc.Name == "复旦大学")
+           .Select((s, sc) => new
+           {
+               studentName = s.Name,
+               schoolName = sc.Name
+           }).ToList();
+           if (dt7.Count != 1 || dt7.Last().studentName != "李四" || dt7.Last().schoolName != "复旦大学") Cases.ThrowUnitError();
         }
         [SqlSugar.SugarTable("UnitStudentdu2s31")]
         public class Student : MongoDbBase

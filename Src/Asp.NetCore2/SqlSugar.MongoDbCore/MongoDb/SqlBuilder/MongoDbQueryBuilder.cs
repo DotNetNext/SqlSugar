@@ -263,7 +263,7 @@ namespace SqlSugar.MongoDb
 
                 // $unwind
                 BsonValue unwindDoc = null;
-                if (item.JoinType == JoinType.Left)
+                if (item.JoinType == JoinType.Left&&isEasyJoin)
                 {
                     unwindDoc = new BsonDocument("$unwind", new BsonDocument
                     {
@@ -271,7 +271,14 @@ namespace SqlSugar.MongoDb
                         { "preserveNullAndEmptyArrays", true }
                     });
                 }
-                else if (item.JoinType == JoinType.Inner)
+                else if (item.JoinType == JoinType.Inner && isEasyJoin)
+                {
+                    unwindDoc = new BsonDocument("$unwind", new BsonDocument
+                    {
+                        { "path", $"${asName}" }
+                    });
+                }
+                else if (isExp)
                 {
                     unwindDoc = new BsonDocument("$unwind", new BsonDocument
                     {
