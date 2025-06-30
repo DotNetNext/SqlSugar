@@ -23,13 +23,17 @@ namespace SqlSugar.MongoDb
 
         public BsonDocument Extract(BinaryExpression expr)
         {
-            if (expr.NodeType == ExpressionType.AndAlso || expr.NodeType == ExpressionType.OrElse)
+            if (IsLogicalExpression(expr))
                 return LogicalBinaryExpression(expr);
             else
-               return FieldComparisonOrCalculationExpression(expr);
+                return FieldComparisonOrCalculationExpression(expr);
         }
-         
-    
+
+        private static bool IsLogicalExpression(BinaryExpression expr)
+        {
+            return expr.NodeType == ExpressionType.AndAlso || expr.NodeType == ExpressionType.OrElse;
+        }
+
         private static bool IsRightValue(bool leftIsMember, bool rightIsMember, string op)
         {
             return  rightIsMember && !leftIsMember;
