@@ -65,6 +65,7 @@ namespace SqlSugar
         void AddQueue();
         IInsertable<T> MySqlIgnore();
         IInsertable<T> MySqlIgnore(bool isIgnore);
+        IInsertable<T> IgnoreInsertError();
         IInsertable<T> PostgreSQLConflictNothing(string[] columns);
         IInsertable<T> OffIdentity();
         IInsertable<T> OffIdentity(bool isSetOn);

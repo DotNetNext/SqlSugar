@@ -8,6 +8,7 @@ namespace SqlSugar
 {
     public interface IFastest<T> where T:class,new()
     {
+        IFastest<T> IgnoreInsertError();
         IFastest<T> RemoveDataCache();
         IFastest<T> RemoveDataCache(string cacheKey);
         IFastest<T> AS(string tableName);

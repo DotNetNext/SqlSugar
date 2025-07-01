@@ -267,6 +267,14 @@ namespace SqlSugar
         public static bool ContainsArray<T>(List<T> thisValue, object InField)
         {
             return thisValue.Contains((T)InField);
+        } 
+        public static bool ContainsArray<T>(T[] thisValue, object InField, bool isNvarchar)
+        {
+            return thisValue.Contains((T)InField, true);
+        }
+        public static bool ContainsArray<T>(List<T> thisValue, object InField, bool isNvarchar)
+        {
+            return thisValue.Contains((T)InField, true);
         }
         public static bool ContainsArrayUseSqlParameters<T>(List<T> thisValue, object InField)
         {
