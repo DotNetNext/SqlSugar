@@ -104,7 +104,14 @@ namespace SqlSugar
         public DateTime GetDate()
         {
             var sqlBuilder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
-            return this.Ado.GetDateTime(sqlBuilder.FullSqlDateNow);
+            var obj= this.Ado.GetScalar(sqlBuilder.FullSqlDateNow);
+            if (obj is DateTime s)
+                return s;
+            else if(obj is DateTimeOffset off)
+            {
+                return UtilMethods.ConvertFromDateTimeOffset(off);
+            }
+            return Convert.ToDateTime(obj);
         }
         public ISugarQueryable<T> MasterQueryable<T>()
         {

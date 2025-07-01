@@ -81,12 +81,14 @@ namespace SqlSugar
                     foreach (DataRow item in dt.Rows)
                     {
                         cmd.CommandText = this.Context.Insertable(UtilMethods.DataRowToDictionary(item)).AS(dt.TableName).ToSqlString().Replace(";SELECT LAST_INSERT_ROWID();", "");
+                        TransformInsertCommand(cmd);
                         i += await cmd.ExecuteNonQueryAsync();
                     }
                 }
                 else
                 {
                     cmd.CommandText = this.Context.Insertable(dictionary.First()).AS(dt.TableName).ToSql().Key.Replace(";SELECT LAST_INSERT_ROWID();", "");
+                    TransformInsertCommand(cmd);
                     foreach (DataRow dataRow in dt.Rows)
                     {
                         foreach (DataColumn item in dt.Columns)
@@ -200,6 +202,17 @@ namespace SqlSugar
                 return result;
             });
             return result;
+        }
+        private void TransformInsertCommand(SQLiteCommand cmd)
+        {
+            if (this.DbFastestProperties?.IsIgnoreInsertError == true)
+            {
+                const string insertPrefix = "INSERT INTO ";
+                if (cmd.CommandText.StartsWith(insertPrefix))
+                {
+                    cmd.CommandText = "REPLACE INTO " + cmd.CommandText.Substring(insertPrefix.Length);
+                }
+            }
         }
         private static bool IsBoolFalse(DataRow dataRow, DataColumn item)
         {
