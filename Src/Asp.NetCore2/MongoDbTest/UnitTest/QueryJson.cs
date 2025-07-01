@@ -16,8 +16,8 @@ namespace MongoDbTest
             db.DbMaintenance.TruncateTable<Student>();
             db.Insertable(new Book() { Price = 1, CreateTime = DateTime.Now }).ExecuteCommand();
             var data1=db.Queryable<Book>().Where(it => it.Price == 1).ToList();
-            db.Insertable(new Student() { Age = 1, Name = "tom", SchoolId = "a", Book = new Book() { CreateTime = DateTime.Now, Price = 1 } }).ExecuteCommand();
-            db.Insertable(new Student() { Age = 1, Name = "tom2", SchoolId = "a2", Book = new Book() { CreateTime = DateTime.Now, Price = 2 } }).ExecuteCommand();
+            db.Insertable(new Student() { Age = 1, Name = "tom", SchoolId = "a", Book = new Book() { name="java" ,CreateTime = DateTime.Now, Price = 1 } }).ExecuteCommand();
+            db.Insertable(new Student() { Age = 1, Name = "tom2", SchoolId = "a2", Book = new Book() { name="c#", CreateTime = DateTime.Now, Price = 2 } }).ExecuteCommand();
             var data2 = db.Queryable<Student>().Where(it => it.Book.Price == 1).ToList();
             if (data2.Count != 1) Cases.ThrowUnitError();
             if (data2.First().Book.Price != 1) Cases.ThrowUnitError();
@@ -26,6 +26,8 @@ namespace MongoDbTest
             var data3 = db.Queryable<Student>().Where(it => it.Book.Price == 100).ToList();
             if (data3.Count != 1) Cases.ThrowUnitError();
             if (data2.First().Book.Price != 100) Cases.ThrowUnitError();
+            var data4 = db.Queryable<Student>().Where(it => it.Book.name.Contains("a")).ToList();
+            if (data2.First().Book.name != "java") Cases.ThrowUnitError();
         }
 
         [SqlSugar.SugarTable("UnitStudentdfsds3zzz1")]
@@ -46,6 +48,7 @@ namespace MongoDbTest
         public class Book
         {
             public decimal Price { get; set; }
+            public string name { get; set; }
             public DateTime CreateTime { get; set; }
         }
     }
