@@ -1,0 +1,24 @@
+﻿<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>SqlSugar.MongoDbCore</id>
+    <version>5.1.4.197</version>
+    <authors>sunkaixuan</authors>
+    <owners>果糖大数据</owners>
+    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
+    <projectUrl>https://github.com/sunkaixuan/SqlSugar</projectUrl>
+    <iconUrl>https://secure.gravatar.com/avatar/a82c03402497b2e58fd65038a3699b30</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description> SqlSugar操作.MongoDb 用例： https://github.com/DotNetNext/SqlSugar </description>
+    <copyright>Copyright 2016</copyright>
+    <tags>MongoDb MongoDb MongoDb</tags>
+    <dependencies>
+      <group targetFramework=".net6.0">  
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="G:\Git\SqlSugar\Src\Asp.NetCore2\SqlSugar.MongoDbCore\bin\Debug\netstandard2.1\SqlSugar.MongoDbCore.dll" target="lib\net6.0"></file>
+	<file src="G:\Git\SqlSugar\Src\Asp.NetCore2\SqlSugar.MongoDbCore\bin\Debug\netstandard2.1\MongoDb.Ado.Data.dll" target="lib\net6.0"></file>
+  </files>
+</package>
