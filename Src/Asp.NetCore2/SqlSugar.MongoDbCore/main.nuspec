@@ -13,9 +13,10 @@
     <copyright>Copyright 2016</copyright>
     <tags>MongoDb MongoDb MongoDb</tags>
     <dependencies>
-      <group targetFramework=".net6.0">  
-      </group>
-    </dependencies>
+		  <group targetFramework=".NETStandard2.1">
+			  <dependency id="MongoDB.Driver" version="3.3.0" />
+		  </group>
+	  </dependencies>
   </metadata>
   <files>
     <file src="G:\Git\SqlSugar\Src\Asp.NetCore2\SqlSugar.MongoDbCore\bin\Debug\netstandard2.1\SqlSugar.MongoDbCore.dll" target="lib\net6.0"></file>
