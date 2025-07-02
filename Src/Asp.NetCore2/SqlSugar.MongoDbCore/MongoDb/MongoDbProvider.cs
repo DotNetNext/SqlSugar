@@ -1,5 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using MongoDb.Ado.data;
+using MongoDB.Driver;
 using SqlSugar.MongoDb;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,7 @@ namespace SqlSugar.MongoDb
 {
     public partial class MongoDbProvider : AdoProvider
     {
+        IClientSessionHandle iClientSessionHandle;
         public MongoDbProvider() 
         {
             if (StaticConfig.AppContext_ConvertInfinityDateTime == false)
@@ -24,6 +26,21 @@ namespace SqlSugar.MongoDb
          
         }
         public override bool IsNoSql { get; set; } = true;
+        public override void BeginTran()
+        {
+            iClientSessionHandle = ((MongoDbConnection)this.Connection).GetClient().StartSession();
+            iClientSessionHandle.StartTransaction();
+        }
+        public override void CommitTran()
+        {
+            iClientSessionHandle.CommitTransaction();
+            iClientSessionHandle.Dispose();
+        }
+        public override void RollbackTran()
+        {
+            iClientSessionHandle.AbortTransaction();
+            iClientSessionHandle.Dispose();
+        }
         public override IDbConnection Connection
         {
             get
