@@ -1,4 +1,5 @@
-﻿using SqlSugar.MongoDb;
+﻿using SqlSugar;
+using SqlSugar.MongoDb;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +23,8 @@ namespace MongoDbTest
             db.Updateable(data1).ExecuteCommand();
             var data2 = db.Queryable<Student>().ToList(); 
             if (data2.First().Book.First().Price != 100) Cases.ThrowUnitError();
+            var exp=Expressionable.Create<Student>().ToExpression();
+            var data3 = db.Queryable<Student>().Where(exp).ToList();
         }
 
         [SqlSugar.SugarTable("UnitStudentdfsds3zzz1")]
