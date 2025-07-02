@@ -41,6 +41,21 @@ namespace SqlSugar.MongoDb
             iClientSessionHandle.AbortTransaction();
             iClientSessionHandle.Dispose();
         }
+        public override async Task BeginTranAsync()
+        {
+            iClientSessionHandle = await ((MongoDbConnection)this.Connection).GetClient().StartSessionAsync();
+            iClientSessionHandle.StartTransaction();//StartTransaction has no asynchronous methods
+        }
+        public override async Task CommitTranAsync()
+        {
+            await iClientSessionHandle.CommitTransactionAsync();
+            iClientSessionHandle.Dispose();
+        }
+        public override async Task RollbackTranAsync()
+        {
+            await iClientSessionHandle.AbortTransactionAsync();
+            iClientSessionHandle.Dispose();
+        }
         public override IDbConnection Connection
         {
             get
