@@ -35,6 +35,16 @@ namespace MongoDbTest
             var data = new Student() { Age = 1, Name = "11", SchoolId = "111", CreateDateTime = DateTime.Now };
             db.Insertable(data).ExecuteCommandIdentityIntoEntity();
             Console.WriteLine(data.Id);//Get _id by ExecuteCommandIdentityIntoEntity
+
+            db.Ado.ExecuteCommand(@"db.UnitStudent1ddsfhssds3z1.insertMany([
+              {
+                Name: ""adfas"",
+                SchoolId: ""s"",
+                Age: 11,
+                CreateDateTime: ISODate(""2025-07-02T10:07:23.799Z"")
+              }])");
+            var list4=db.Queryable<Student>().Where(it => it.Name == "adfas").ToList();
+            if(list4.Count!=1) Cases.ThrowUnitError();
         }
         [SqlSugar.SugarTable("UnitStudent1ddsfhssds3z1")]
         public class Student : MongoDbBase

@@ -120,6 +120,12 @@ namespace MongoDb.Ado.data
             if (string.IsNullOrWhiteSpace(cmd))
                 throw new InvalidOperationException("CommandText 不能为空。");
 
+            if (cmd.Trim().StartsWith("db.", StringComparison.OrdinalIgnoreCase)) 
+            {
+               var cmdInfo= MongoDbMethodUtils.ParseMongoCommand(cmd);
+                return (cmdInfo.Operation,cmdInfo.CollectionName,cmdInfo.Json);
+            }
+
             var parts = cmd.Trim().Split(new[] { ' ' }, 3, StringSplitOptions.RemoveEmptyEntries);
             if (parts.Length < 2)
                 throw new InvalidOperationException("命令格式错误，应为：操作 集合名 JSON过滤");
