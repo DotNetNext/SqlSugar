@@ -356,7 +356,7 @@ namespace MongoDbTest
             var client = new MongoClient(DbHelper.ConnectionString);
             var database = client.GetDatabase("SqlSugarDb");
             // 获取当前数据库中的所有集合
-            var collections = database.GetCollection<BsonDocument>("a");
+            var collections = database.GetCollection<BsonDocument>("testa");
             // 插入一个文档，MongoDB 会创建数据库和集合
             var document = new BsonDocument { { "name", "aaaa" }, { "age", 30 } };
             collections.InsertOne(document);
