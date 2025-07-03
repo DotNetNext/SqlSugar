@@ -100,6 +100,13 @@ namespace SqlSugar.MongoDb
             {
                 name = "ContainsArray";
             }
+            else if (name == "Contains" && methodCallExpression.Arguments.Count ==2
+               && methodCallExpression.Arguments.FirstOrDefault().Type.IsArray
+               && ExpressionTool.GetParameters(methodCallExpression.Arguments.FirstOrDefault()).Count == 0
+               )
+            {
+                name = "ContainsArray";
+            }
             return name;
         }
     }

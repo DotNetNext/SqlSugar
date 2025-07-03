@@ -597,8 +597,13 @@ namespace SqlSugar.MongoDb
         public override string ContainsArray(MethodCallExpressionModel model)
         {
             // 解析数组表达式和待判断的元素表达式
-            var arrayExp = model.DataObject as Expression;
+            var arrayExp = model.DataObject as Expression; 
             var itemExp = model.Args[0].MemberValue as Expression;
+            if (arrayExp == null)
+            {
+                arrayExp = model.Args[0].MemberValue as Expression;
+                itemExp = model.Args[1].MemberValue as Expression;
+            }
 
             // 获取字段名
             BsonValue fieldName = new ExpressionVisitor(context).Visit(itemExp);
