@@ -10,142 +10,77 @@ using MongoDB.Bson.Serialization;
 
 namespace MongoDb.Ado.data
 {
-    public class MongoDbBsonDocumentDataReader : DbDataReader
+    public static class MongoDbDataReaderHelper
     {
-        private readonly IEnumerator<BsonDocument> _enumerator;
-        private BsonDocument _current;
-        private IEnumerable<BsonDocument> _documents;
-        private BsonDocument _firstObj;
-        public MongoDbBsonDocumentDataReader(IEnumerable<BsonDocument> documents)
+        public static DbDataReader ToDataReader(IEnumerable<BsonDocument> documents)
         {
-            _enumerator = documents.GetEnumerator();
-            _documents = documents;
-            _firstObj=_documents.FirstOrDefault();
-        }
+            var table = new DataTable();
+            var allFields = new HashSet<string>();
 
-        public override bool Read()
-        {
-            if (_enumerator.MoveNext())
+            // 收集所有字段名
+            foreach (var doc in documents)
             {
-                _current = _enumerator.Current;
-                return true;
+                foreach (var elem in doc.Elements)
+                {
+                    allFields.Add(elem.Name);
+                }
             }
-            return false;
-        }
 
-        public override int FieldCount => _documents?.FirstOrDefault()?.Count()??0;
-
-        public override int Depth => throw new NotImplementedException();
-
-        public override bool HasRows => true;
-        public override bool IsClosed => false;
-        public override int RecordsAffected => -1;
-        public override bool NextResult() => false;
-
-        public override object this[int ordinal] => GetValue(ordinal);
-        public override object this[string name] => GetValue(GetOrdinal(name));
-
-        // 下面这些可以根据需要进一步实现或抛异常
-        public override bool GetBoolean(int ordinal) => (bool)GetValue(ordinal);
-        public override byte GetByte(int ordinal) => (byte)GetValue(ordinal);
-        public override long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length) => throw new NotSupportedException();
-        public override char GetChar(int ordinal) => (char)GetValue(ordinal);
-        public override long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length) => throw new NotSupportedException();
-        public override string GetDataTypeName(int ordinal) => GetFieldType(ordinal).Name;
-        public override DateTime GetDateTime(int ordinal) => (DateTime)GetValue(ordinal);
-        public override decimal GetDecimal(int ordinal) => (decimal)GetValue(ordinal);
-        public override double GetDouble(int ordinal) => (double)GetValue(ordinal);
-        public override Type GetFieldType(int ordinal)
-        {
-            var firstObj = _firstObj;
-            if(firstObj==null) return typeof(object);
-            var obj = firstObj.GetValue(ordinal);
-            if (obj is BsonObjectId) 
+            // 建立DataTable列，类型object支持多类型和DBNull
+            foreach (var field in allFields)
             {
-                return typeof(string);
+                table.Columns.Add(field, typeof(object));
             }
-            if (obj == null) return typeof(object);
-            if (obj is BsonNull) return typeof(object);
-            return BsonTypeMapper.MapToDotNetValue(obj).GetType();
-        }
-        public override float GetFloat(int ordinal) => (float)GetValue(ordinal);
-        public override Guid GetGuid(int ordinal) => (Guid)GetValue(ordinal);
-        public override short GetInt16(int ordinal) => (short)GetValue(ordinal);
-        public override int GetInt32(int ordinal) => (int)GetValue(ordinal);
-        public override long GetInt64(int ordinal) => (long)GetValue(ordinal);
-        public override string GetString(int ordinal) => (string)GetValue(ordinal);
 
-        public override IEnumerator GetEnumerator()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override int GetValues(object[] values)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override bool IsDBNull(int ordinal)
-        {
-            if (ordinal < 0 || ordinal >= _current.ElementCount)
-                throw new IndexOutOfRangeException($"Invalid ordinal: {ordinal}");
-
-            var value = _current.GetElement(ordinal).Value;
-            return value == null || value.IsBsonNull;
-        }
-
-        public override string GetName(int ordinal)
-        {
-            var firstObj=_firstObj;
-            if (firstObj == null)
-                return "";
-
-            // 获取当前文档的字段元素列表（Elements）
-            var elements = firstObj.Elements.ToList();
-
-            // 确保 ordinal 是有效的索引
-            if (ordinal < 0 || ordinal >= elements.Count)
-                throw new IndexOutOfRangeException($"Invalid ordinal: {ordinal}");
-
-            // 返回对应索引的字段名
-            return elements[ordinal].Name;
-        }
-
-        public override int GetOrdinal(string name)
-        {
-            var firstObj = _firstObj;
-            int i = 0;
-            foreach (var elem in firstObj.Elements)
+            // 填充DataTable行
+            foreach (var doc in documents)
             {
-                if (elem.Name.Equals(name, StringComparison.OrdinalIgnoreCase))
-                    return i;
-                i++;
+                var row = table.NewRow();
+                foreach (var field in allFields)
+                {
+                    if (doc.Contains(field))
+                    {
+                        var val = doc[field];
+                        row[field] = val.IsBsonNull ? DBNull.Value : ConvertBsonValue(val);
+                    }
+                    else
+                    {
+                        row[field] = DBNull.Value;
+                    }
+                }
+                table.Rows.Add(row);
             }
-            throw new IndexOutOfRangeException($"Field '{name}' not found.");
+
+            // 返回IDataReader
+            return table.CreateDataReader();
         }
-
-        public override object GetValue(int ordinal)
+        private static object ConvertBsonValue(BsonValue val)
         {
-            if (_current == null)
-                throw new InvalidOperationException("No current document.");
+            if (val == null || val.IsBsonNull)
+                return DBNull.Value;
 
-            var element = GetElementByOrdinal(ordinal);
-            var result= BsonTypeMapper.MapToDotNetValue(element.Value);
-            return result;
-        }
-        private BsonElement GetElementByOrdinal(int ordinal)
-        {
-            if (_current == null)
-                throw new InvalidOperationException("No current document.");
-
-            int i = 0;
-            foreach (var elem in _current.Elements)
+            switch (val.BsonType)
             {
-                if (i == ordinal)
-                    return elem;
-                i++;
+                case BsonType.Int32:
+                    return val.AsInt32;
+                case BsonType.Int64:
+                    return val.AsInt64;
+                case BsonType.Double:
+                    return val.AsDouble;
+                case BsonType.String:
+                    return val.AsString;
+                case BsonType.Boolean:
+                    return val.AsBoolean;
+                case BsonType.DateTime:
+                    return val.ToUniversalTime();
+                case BsonType.Decimal128:
+                    return val.AsDecimal;
+                case BsonType.ObjectId:
+                    return val.AsObjectId.ToString(); 
+                // 其他类型可以扩展
+                default:
+                    return val;
             }
-            throw new IndexOutOfRangeException();
         }
     }
 

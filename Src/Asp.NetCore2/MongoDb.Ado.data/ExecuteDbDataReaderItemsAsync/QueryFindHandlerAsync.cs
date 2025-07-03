@@ -39,8 +39,9 @@ namespace MongoDb.Ado.data
             if (projection != null)
                 findFluent = findFluent.Project<BsonDocument>(projection);
 
-            var cursor =await findFluent.ToListAsync(token);    
-            return new MongoDbBsonDocumentDataReader(cursor); // 你要确保这个类支持逐行读取 BsonDocument
+            var cursor =await findFluent.ToListAsync(token);
+            var result = MongoDbDataReaderHelper.ToDataReader(cursor);
+            return result;
         }
     }
 }

@@ -60,12 +60,16 @@ namespace SqlSugar.MongoDb
                     // 再用 BsonSerializer 反序列化为 T
                     return BsonSerializer.Deserialize(bsonDoc, type);
                 }
-                else if (json is List<object> list0&&list0.Any()&& list0.FirstOrDefault() is Dictionary<string,object>) 
+                else if (json is BsonDocument bsons)
                 {
-                    Type elementType = type.GetGenericArguments()[0]; 
+                    return BsonSerializer.Deserialize(bsons, type);
+                }
+                else if (json is List<object> list0 && list0.Any() && list0.FirstOrDefault() is Dictionary<string, object>)
+                {
+                    Type elementType = type.GetGenericArguments()[0];
                     var resultList = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(elementType));
                     BsonArray bsonArray = new BsonArray();
-                    foreach (Dictionary<string,object> item in list0)
+                    foreach (Dictionary<string, object> item in list0)
                     {
                         var bsonDoc = new BsonDocument();
                         foreach (var kvp in item)
@@ -81,6 +85,25 @@ namespace SqlSugar.MongoDb
                     string jsonStr = System.Text.Encoding.UTF8.GetString(list.Select(it => Convert.ToByte(it)).ToArray());
                     // 2. 解析为 BsonArray
                     var bsonArray = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonArray>(jsonStr);
+
+                    // 3. 获取元素类型，例如 List<MyClass> => MyClass
+                    Type elementType = type.GetGenericArguments()[0];
+
+                    // 4. 构造泛型列表对象
+                    var resultList = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(elementType));
+
+                    // 5. 反序列化每一项
+                    foreach (var item in bsonArray)
+                    {
+                        var doc = item.AsBsonDocument;
+                        var obj = BsonSerializer.Deserialize(doc, elementType);
+                        resultList.Add(obj);
+                    }
+                    return resultList;
+                }
+                else if (json is BsonArray array) 
+                {
+                    var bsonArray = array;
 
                     // 3. 获取元素类型，例如 List<MyClass> => MyClass
                     Type elementType = type.GetGenericArguments()[0];

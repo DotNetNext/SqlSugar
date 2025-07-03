@@ -24,7 +24,8 @@ namespace MongoDb.Ado.data
 
             // 执行聚合查询并返回 DbDataReader
             var cursor =await aggregateFluent.ToListAsync(token);
-            return new MongoDbBsonDocumentDataReader(cursor);
+            var result = MongoDbDataReaderHelper.ToDataReader(cursor);
+            return result;
         }
     }
 }
