@@ -45,7 +45,7 @@ namespace SqlSugar.MongoDb
                         var funcString = context.ToString(model);
                         result = BsonDocument.Parse(funcString);
                     }
-                    else if (name.StartsWith("To"))
+                    else if (name.StartsWith("To")||name==nameof(SqlFunc.IIF))
                     {
                         var value = context.GetType().GetMethod(name).Invoke(context, new object[] { model });
                         result = BsonDocument.Parse(value?.ToString());

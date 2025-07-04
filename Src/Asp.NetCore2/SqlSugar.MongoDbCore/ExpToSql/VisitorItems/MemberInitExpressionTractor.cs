@@ -60,6 +60,10 @@ namespace SqlSugar.MongoDb
                 {
                     projectionDocument[fieldName] = json;
                 }
+                else if (memberAssignment.Expression is MethodCallExpression callExpression&&callExpression.Method.Name==nameof(SqlFunc.IIF))
+                {
+                    projectionDocument[fieldName] = json;
+                }
                 else
                 {
                     projectionDocument[fieldName] = "$" + json.ToString();

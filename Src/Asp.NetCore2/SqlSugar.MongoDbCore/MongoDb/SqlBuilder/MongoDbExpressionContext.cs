@@ -662,6 +662,20 @@ namespace SqlSugar.MongoDb
             return inDoc.ToJson(UtilMethods.GetJsonWriterSettings());
         }
 
+        public override string IIF(MethodCallExpressionModel model)
+        { 
+
+            var test = model.Args[0].MemberValue as Expression;
+            var ifTrue = model.Args[1].MemberValue as Expression;
+            var ifFalse = model.Args[2].MemberValue as Expression;
+
+            // 构造 ConditionalExpression
+            var conditionalExpr = Expression.Condition(test, ifTrue, ifFalse);
+
+            BsonValue testValue = new ConditionalExpressionTractor(context, null).Extract(conditionalExpr);
+            return testValue.ToJson(UtilMethods.GetJsonWriterSettings());
+        }
+
         #region  Helper 
         private static BsonValue GetMemberName(BsonValue memberName)
         {
