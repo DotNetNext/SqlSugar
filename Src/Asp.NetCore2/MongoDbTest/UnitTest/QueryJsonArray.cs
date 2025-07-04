@@ -27,9 +27,14 @@ namespace MongoDbTest
             if (data2.First().Book.First().Price != 100) Cases.ThrowUnitError();
             var exp=Expressionable.Create<Student>().ToExpression();
             var data3 = db.Queryable<Student>().Where(exp).ToList();
+
             db.CodeFirst.InitTables<IdsModel>();
+            db.DbMaintenance.TruncateTable<IdsModel>();
             var ids = new List<string> { ObjectId.GenerateNewId() + "" };
-            db.Insertable(new IdsModel() {name="a", Ids =ids}).ExecuteCommand();
+            var sid =ObjectId.GenerateNewId() + "";
+            db.Insertable(new IdsModel() {name="a", Ids =ids,Students=new List<Student>() {
+              new Student(){ Id =sid}
+            } }).ExecuteCommand(); 
         }
 
         [SqlSugar.SugarTable("UnitStudentdfsds3zzz1")]
@@ -51,6 +56,8 @@ namespace MongoDbTest
             public string name { get; set; }
             [SugarColumn(IsJson =true)] 
             public List<string> Ids { get; set; }
+            [SugarColumn(IsJson = true)]
+            public List<Student> Students { get; set; }
         }
         public class Book
         {
