@@ -693,7 +693,7 @@ namespace SqlSugar
             var entityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>();
             var columns = UtilMethods.GetColumnInfo(dr); 
             var cacheKey = "ForEachDataReader"+typeof(T).GetHashCode()+string.Join(",", columns.Select(it => it.Item1+it.Item2.Name+"_"));
-            IDataReaderEntityBuilder<T> entytyList = this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate("cacheKey", () =>
+            IDataReaderEntityBuilder<T> entytyList = this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey, () =>
             {
                 var cacheResult = new IDataReaderEntityBuilder<T>(this.Context, dr,
                     columns.Select(it=>it.Item1).ToList()).CreateBuilder(typeof(T));
@@ -721,7 +721,7 @@ namespace SqlSugar
             var entityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>();
             var columns = UtilMethods.GetColumnInfo(dr);
             var cacheKey = "ForEachDataReader" + typeof(T).GetHashCode() + string.Join(",", columns.Select(it => it.Item1 + it.Item2.Name + "_"));
-            IDataReaderEntityBuilder<T> entytyList = this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate("cacheKey", () =>
+            IDataReaderEntityBuilder<T> entytyList = this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey, () =>
             {
                 var cacheResult = new IDataReaderEntityBuilder<T>(this.Context, dr,
                     columns.Select(it => it.Item1).ToList()).CreateBuilder(typeof(T));
@@ -736,6 +736,69 @@ namespace SqlSugar
                     action(order);
                 }
             }
+            if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection)
+            {
+                this.Context.Ado.Close();
+            }
+        }
+        public async IAsyncEnumerable<T> GetAsyncEnumerable()
+        {
+            var queryable = this.Clone();
+            var sql = queryable.ToSql();
+            var dr = await Context.Ado.GetDataReaderAsync(sql.Key, sql.Value).ConfigureAwait(false);
+            var entityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            var columns = UtilMethods.GetColumnInfo(dr);
+            var cacheKey = "GetAsyncEnumerable" + typeof(T).GetHashCode() + string.Join(",", columns.Select(it => it.Item1 + it.Item2.Name + "_"));
+            IDataReaderEntityBuilder<T> entytyList = this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey, () =>
+            {
+                var cacheResult = new IDataReaderEntityBuilder<T>(this.Context, dr,
+                    columns.Select(it => it.Item1).ToList()).CreateBuilder(typeof(T));
+                return cacheResult;
+            });
+
+
+            using (dr)
+            {
+                while (dr.Read())
+                {
+
+                    var order = entytyList.Build(dr);
+                    yield return order;
+                }
+            }
+            if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection)
+            {
+                this.Context.Ado.Close();
+            }
+
+        } 
+        public IEnumerable<T> GetEnumerable()
+        {
+            var queryable = this.Clone();
+            var sql = queryable.ToSql();
+            var dr = this.Context.Ado.GetDataReader(sql.Key, sql.Value);
+            var entityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>();
+            var columns = UtilMethods.GetColumnInfo(dr);
+            var cacheKey = "GetEnumerable" + typeof(T).GetHashCode() + string.Join(",", columns.Select(it => it.Item1 + it.Item2.Name + "_"));
+            IDataReaderEntityBuilder<T> entytyList = this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey, () =>
+            {
+                var cacheResult = new IDataReaderEntityBuilder<T>(this.Context, dr,
+                    columns.Select(it => it.Item1).ToList()).CreateBuilder(typeof(T));
+                return cacheResult;
+            });
+
+
+            using (dr)
+            {
+                while (dr.Read())
+                {
+
+                    var order = entytyList.Build(dr);
+                    yield return order;
+                }
+            }
+
+
             if (this.Context.CurrentConnectionConfig.IsAutoCloseConnection)
             {
                 this.Context.Ado.Close();
