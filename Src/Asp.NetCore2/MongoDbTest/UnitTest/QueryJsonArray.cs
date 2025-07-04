@@ -34,7 +34,19 @@ namespace MongoDbTest
             var sid =ObjectId.GenerateNewId() + "";
             db.Insertable(new IdsModel() {name="a", Ids =ids,Students=new List<Student>() {
               new Student(){ Id =sid}
-            } }).ExecuteCommand(); 
+            } }).ExecuteCommand();
+            db.Insertable(new IdsModel()
+            {
+                name = "b",
+                Ids = new List<string> { ObjectId.GenerateNewId()+"" },
+                Students = new List<Student>() {
+              new Student(){ Id =ObjectId.GenerateNewId()+""}
+            }
+            }).ExecuteCommand();
+            var x = ids.Last();
+            var list2=db.Queryable<IdsModel>().Where(it => it.Ids.Contains(x)).ToList();
+            if (list2.Count != 1) Cases.ThrowUnitError();
+            if (!list2.First().Ids.Contains(x)) Cases.ThrowUnitError();
         }
 
         [SqlSugar.SugarTable("UnitStudentdfsds3zzz1")]

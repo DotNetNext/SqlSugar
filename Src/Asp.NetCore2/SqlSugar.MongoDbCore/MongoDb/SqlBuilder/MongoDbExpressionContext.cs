@@ -566,7 +566,7 @@ namespace SqlSugar.MongoDb
         }
          
 
-     public override string IsNullOrEmpty(MethodCallExpressionModel model)
+        public override string IsNullOrEmpty(MethodCallExpressionModel model)
         {
             // 获取字段名表达式
             var item = model.Args[0].MemberValue ?? model.DataObject;
@@ -635,6 +635,31 @@ namespace SqlSugar.MongoDb
         public override string ContainsArrayUseSqlParameters(MethodCallExpressionModel model)
         {
             return this.ContainsArray(model);
+        }
+
+        public override string JsonArrayAny(MethodCallExpressionModel model)
+        {
+            // 伪代码步骤：
+            // 1. 获取数组字段表达式 arrayField
+            // 2. 获取要判断的元素表达式 pars
+            // 3. 解析字段名和元素值
+            // 4. 构造 MongoDB $in 查询表达式：{ arrayField: { $in: [element] } }
+            // 5. 返回 JSON 字符串
+
+            var arrayFieldExpr = model.DataObject as Expression;
+            var elementExpr = model.Args[0].MemberValue as Expression;
+
+            // 获取字段名
+            BsonValue fieldName = new ExpressionVisitor(context).Visit(arrayFieldExpr);
+            // 获取元素值
+            var elementValue = ExpressionTool.DynamicInvoke(elementExpr);
+            if (elementValue is string s&&UtilMethods.IsValidObjectId(s)) 
+            {
+                elementValue = ObjectId.Parse(s);
+            }
+            // 构造 $in 查询表达式
+            var inDoc = new BsonDocument(fieldName.ToString(), new BsonDocument("$in", new BsonArray { BsonValue.Create(elementValue) }));
+            return inDoc.ToJson(UtilMethods.GetJsonWriterSettings());
         }
 
         #region  Helper 

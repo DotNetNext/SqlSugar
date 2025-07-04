@@ -4,6 +4,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using MongoDB.Bson.Serialization;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -21,6 +22,22 @@ namespace SqlSugar.MongoDb
 {
     public class UtilMethods
     {
+        public static bool IsCollectionOrArrayButNotByteArray(Type type)
+        {
+            if (type == null)
+                return false;
+
+            if (type == typeof(byte[]))
+                return false;
+
+            if (type.IsArray)
+                return true;
+
+            if (typeof(IEnumerable).IsAssignableFrom(type) && type != typeof(string))
+                return true;
+
+            return false;
+        }
         public static bool IsValidObjectId(string id)
         {
             return id != null && id.Length == 24 && ObjectId.TryParse(id, out _);
@@ -110,7 +127,7 @@ namespace SqlSugar.MongoDb
         internal static MongoDB.Bson.IO.JsonWriterSettings GetJsonWriterSettings() 
         {
             return new MongoDB.Bson.IO.JsonWriterSettings {   };
-        }
+        } 
         internal static DateTime GetMinDate(ConnectionConfig currentConnectionConfig)
         {
             if (currentConnectionConfig.MoreSettings == null)

@@ -54,7 +54,7 @@ namespace MongoDb.Ado.data
             // 返回IDataReader
             return table.CreateDataReader();
         }
-        private static object ConvertBsonValue(BsonValue val)
+        public static object ConvertBsonValue(BsonValue val)
         {
             if (val == null || val.IsBsonNull)
                 return DBNull.Value;

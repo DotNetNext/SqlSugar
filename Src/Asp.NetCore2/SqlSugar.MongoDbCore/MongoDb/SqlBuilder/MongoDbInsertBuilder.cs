@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using MongoDb.Ado.data;
+using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using MongoDB.Bson.Serialization;
 using NetTaste;
@@ -128,9 +129,17 @@ namespace SqlSugar.MongoDb
                     // 5. 反序列化每一项
                     foreach (var item in bsonArray)
                     {
-                        var doc = item.AsBsonDocument;
-                        var obj = BsonSerializer.Deserialize(doc, elementType);
-                        resultList.Add(obj);
+                        if (item is BsonDocument)
+                        {
+                            var doc = item.AsBsonDocument;
+                            var obj = BsonSerializer.Deserialize(doc, elementType);
+                            resultList.Add(obj);
+                        }
+                        else 
+                        {
+                            var obj = MongoDbDataReaderHelper.ConvertBsonValue(item); 
+                            resultList.Add(obj);
+                        }
                     }
                     return resultList;
                 }

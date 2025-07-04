@@ -107,6 +107,14 @@ namespace SqlSugar.MongoDb
             {
                 name = "ContainsArray";
             }
+            else if (name == "Contains" && methodCallExpression.Arguments.Count == 1
+              && methodCallExpression?.Object!=null
+              &&UtilMethods.IsCollectionOrArrayButNotByteArray(methodCallExpression.Object.Type)
+              && ExpressionTool.GetParameters(methodCallExpression?.Object).Count() >0
+              && ExpressionTool.GetParameters(methodCallExpression.Arguments.FirstOrDefault()).Count == 0) 
+            { 
+                name = "JsonArrayAny";
+            }
             return name;
         }
     }
