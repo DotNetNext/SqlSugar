@@ -23,14 +23,28 @@ namespace SqlSugar.MongoDb
 
                 if (value is IEnumerable enumerable)
                 {
-                    var list = new List<BsonDocument>();
+                    var list = new List<BsonValue>();
 
                     foreach (var e in enumerable)
                     {  
                         var realType = e.GetType();
-                        var bson = e.ToBson(realType); // 序列化为 byte[]
-                        var doc = BsonSerializer.Deserialize<BsonDocument>(bson); // 反序列化为 BsonDocument
-                        list.Add(doc);
+                        if (realType.IsClass())
+                        {
+                            var bson = e.ToBson(realType); // 序列化为 byte[]
+                            var doc = BsonSerializer.Deserialize<BsonDocument>(bson); // 反序列化为 BsonDocument
+                            list.Add(doc);
+                        }
+                        else 
+                        {
+                            if (e is string s && UtilMethods.IsValidObjectId(s))
+                            { 
+                                list.Add(UtilMethods.MyCreate(ObjectId.Parse(s)));
+                            }
+                            else
+                            {
+                                list.Add(UtilMethods.MyCreate(e));
+                            }
+                        }
                     }
 
                     var array = new BsonArray(list);

@@ -20,7 +20,11 @@ using System.Text.RegularExpressions;
 namespace SqlSugar.MongoDb
 {
     public class UtilMethods
-    { 
+    {
+        public static bool IsValidObjectId(string id)
+        {
+            return id != null && id.Length == 24 && ObjectId.TryParse(id, out _);
+        }
         internal static JoinQueryInfo BuilderJoinInfo(Expression joinExpression, JoinType joinType, QueryBuilder queryBuilder, SqlSugarProvider context)
         {
             queryBuilder.CheckExpressionNew(joinExpression, "Join");

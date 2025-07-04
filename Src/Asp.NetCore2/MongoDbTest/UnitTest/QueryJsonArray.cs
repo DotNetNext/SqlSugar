@@ -1,4 +1,6 @@
-﻿using SqlSugar;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using SqlSugar;
 using SqlSugar.MongoDb;
 using System;
 using System.Collections.Generic;
@@ -25,6 +27,9 @@ namespace MongoDbTest
             if (data2.First().Book.First().Price != 100) Cases.ThrowUnitError();
             var exp=Expressionable.Create<Student>().ToExpression();
             var data3 = db.Queryable<Student>().Where(exp).ToList();
+            db.CodeFirst.InitTables<IdsModel>();
+            var ids = new List<string> { ObjectId.GenerateNewId() + "" };
+            db.Insertable(new IdsModel() {name="a", Ids =ids}).ExecuteCommand();
         }
 
         [SqlSugar.SugarTable("UnitStudentdfsds3zzz1")]
@@ -41,7 +46,12 @@ namespace MongoDbTest
             [SqlSugar.SugarColumn(IsJson = true)]
             public List<Book> Book { get; set; }
         }
-
+        public class IdsModel 
+        {
+            public string name { get; set; }
+            [SugarColumn(IsJson =true)] 
+            public List<string> Ids { get; set; }
+        }
         public class Book
         {
             public decimal Price { get; set; }
