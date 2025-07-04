@@ -36,6 +36,10 @@ namespace MongoDbTest
             db.Insertable(new Student() { Name = "", Bool = true, CreateDateTime = DateTime.Now }).ExecuteCommand();
             var list = db.Queryable<Student>().Where(it => string.IsNullOrEmpty(it.Name)).ToList();
             if (!string.IsNullOrEmpty(list.First().Name)) Cases.ThrowUnitError();
+            var pks=db.Insertable(new Student() { Name = "jack", Bool = true, CreateDateTime = DateTime.Now }).ExecuteReturnPkList<string>();
+            var data=db.Queryable<Student>().Where(it => it.Id == pks.Last()).Select(it => it.Name).Single();
+            var data2 = db.Queryable<Student>().Where(it => it.Id == pks.Last()).Select(it => it.Name).First();
+            if (data!="jack"||data2!="jack") Cases.ThrowUnitError();
         }
 
         private static void FilterStudentsByBool(SqlSugar.SqlSugarClient db)
