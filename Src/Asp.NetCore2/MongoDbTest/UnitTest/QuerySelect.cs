@@ -226,6 +226,21 @@ namespace MongoDbTest
             if (list27.Any(it => it.age == 10 && it.age2 != 11)) Cases.ThrowUnitError();
             if (list27.Any(it => it.age == 20 && it.age2 != 20)) Cases.ThrowUnitError();
             if (list27.Any(it => it.age == 30 && it.age2 != 30)) Cases.ThrowUnitError();
+            var list28 = db.Queryable<Student>().Select(it => new
+            {
+                age = it.Age,
+                age2 = SqlFunc.IF(it.Age >= 30).Return(it.Age).ElseIF(it.Age >= 10).Return(11).End(10),
+            }).ToList();
+            if (list28.Any(it => it.age <10 && it.age2 != 10)) Cases.ThrowUnitError();
+            if (list28.Any(it => it.age>=10 &&it.age<30&& it.age2 != 11)) Cases.ThrowUnitError();
+            if (list28.Any(it => it.age >=30 && it.age2 != 30)) Cases.ThrowUnitError();
+            var list29 = db.Queryable<Student>().Select(it => new
+            {
+                age = it.Age,
+                age2 = SqlFunc.IF(it.Age >= 15).Return(1).End(2),
+            }).ToList();
+            if (list29.Any(it => it.age >15 && it.age2 != 1)) Cases.ThrowUnitError();
+            if (list29.Any(it => it.age < 15 && it.age2 != 2)) Cases.ThrowUnitError();
         }
         [SqlSugar.SugarTable("UnitStudent1231sds3z1")]
         public class Student : MongoDbBase
