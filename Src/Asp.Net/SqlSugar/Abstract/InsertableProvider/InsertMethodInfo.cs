@@ -42,12 +42,26 @@ namespace SqlSugar
             var result = inertable.GetType().GetMethod("ExecuteReturnIdentity").Invoke(inertable, new object[] { });
             return (int)result;
         }
+        public long ExecuteReturnBigIdentity()
+        {
+            if (Context == null) return 0;
+            var inertable = MethodInfo.Invoke(Context, new object[] { objectValue });
+            var result = inertable.GetType().GetMethod("ExecuteReturnBigIdentity").Invoke(inertable, new object[] { });
+            return (long)result;
+        }
         public async Task<int> ExecuteReturnIdentityAsync()
         {
             if (Context == null) return 0;
             var inertable = MethodInfo.Invoke(Context, new object[] { objectValue });
             var result = inertable.GetType().GetMyMethod("ExecuteReturnIdentityAsync",0).Invoke(inertable, new object[] { });
             return await (Task<int>)result;
+        }
+        public async Task<long> ExecuteReturnBigIdentityAsync()
+        {
+            if (Context == null) return 0;
+            var inertable = MethodInfo.Invoke(Context, new object[] { objectValue });
+            var result = inertable.GetType().GetMyMethod("ExecuteReturnBigIdentityAsync", 0).Invoke(inertable, new object[] { });
+            return await (Task<long>)result;
         }
 
         public CommonMethodInfo AS(string tableName)

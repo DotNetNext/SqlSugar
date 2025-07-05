@@ -136,6 +136,27 @@ namespace SqlSugar
             After(sql);
             return result;
         } 
+
+        public virtual T ExecuteReturnEntity()
+        {
+            var rows = this.ExecuteCommand();
+            if (rows > 0&& !this.UpdateParameterIsNull) 
+            {
+                return this.UpdateObjs.FirstOrDefault();
+            }
+            else if (rows > 0 && this.UpdateParameterIsNull)
+            {
+                var wheres=this.UpdateBuilder.WhereValues;
+                var q = this.Context.Queryable<T>();
+                foreach (var item in wheres)
+                {
+                    q.Where(item);
+                }
+                q.AddParameters(UtilMethods.CopySugarParameters(this.UpdateBuilder.Parameters));
+                return q.First();
+            }
+            return null;
+        }
         public bool ExecuteCommandHasChange()
         {
             return this.ExecuteCommand() > 0;
@@ -160,6 +181,26 @@ namespace SqlSugar
         {
             this.Context.Ado.CancellationToken= token;
             return ExecuteCommandAsync();
+        }
+        public virtual async Task<T> ExecuteReturnEntityAsync()
+        {
+            var rows =await this.ExecuteCommandAsync();
+            if (rows > 0 && !this.UpdateParameterIsNull)
+            {
+                return this.UpdateObjs.FirstOrDefault();
+            }
+            else if (rows > 0 && this.UpdateParameterIsNull)
+            {
+                var wheres = this.UpdateBuilder.WhereValues;
+                var q = this.Context.Queryable<T>();
+                foreach (var item in wheres)
+                {
+                    q.Where(item);
+                }
+                q.AddParameters(UtilMethods.CopySugarParameters(this.UpdateBuilder.Parameters));
+                return q.First();
+            }
+            return null;
         }
         public virtual async Task<int> ExecuteCommandAsync()
         {

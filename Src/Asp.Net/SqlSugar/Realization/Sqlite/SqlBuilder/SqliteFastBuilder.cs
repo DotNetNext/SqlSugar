@@ -210,7 +210,7 @@ namespace SqlSugar
                 const string insertPrefix = "INSERT INTO ";
                 if (cmd.CommandText.StartsWith(insertPrefix))
                 {
-                    cmd.CommandText = "REPLACE INTO " + cmd.CommandText.Substring(insertPrefix.Length);
+                    cmd.CommandText = "INSERT OR IGNORE " + cmd.CommandText.Substring(insertPrefix.Length);
                 }
             }
         }

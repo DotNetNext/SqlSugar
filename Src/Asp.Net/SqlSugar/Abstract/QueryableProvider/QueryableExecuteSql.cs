@@ -693,7 +693,7 @@ namespace SqlSugar
             var entityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>();
             var columns = UtilMethods.GetColumnInfo(dr); 
             var cacheKey = "ForEachDataReader"+typeof(T).GetHashCode()+string.Join(",", columns.Select(it => it.Item1+it.Item2.Name+"_"));
-            IDataReaderEntityBuilder<T> entytyList = this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate("cacheKey", () =>
+            IDataReaderEntityBuilder<T> entytyList = this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey, () =>
             {
                 var cacheResult = new IDataReaderEntityBuilder<T>(this.Context, dr,
                     columns.Select(it=>it.Item1).ToList()).CreateBuilder(typeof(T));
@@ -721,7 +721,7 @@ namespace SqlSugar
             var entityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>();
             var columns = UtilMethods.GetColumnInfo(dr);
             var cacheKey = "ForEachDataReader" + typeof(T).GetHashCode() + string.Join(",", columns.Select(it => it.Item1 + it.Item2.Name + "_"));
-            IDataReaderEntityBuilder<T> entytyList = this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate("cacheKey", () =>
+            IDataReaderEntityBuilder<T> entytyList = this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey, () =>
             {
                 var cacheResult = new IDataReaderEntityBuilder<T>(this.Context, dr,
                     columns.Select(it => it.Item1).ToList()).CreateBuilder(typeof(T));
