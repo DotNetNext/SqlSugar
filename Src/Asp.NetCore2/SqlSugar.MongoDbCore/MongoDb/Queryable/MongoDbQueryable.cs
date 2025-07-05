@@ -12,6 +12,16 @@ namespace SqlSugar.MongoDb
 {
     public class MongoDbQueryable<T> : QueryableProvider<T>
     {
+        public override T InSingle(object pkValue)
+        {
+            this.Where("{ \"_id\" : { \"$oid\" : \""+pkValue+"\" } }");
+            return this.Single();
+        }
+        public override Task<T> InSingleAsync(object pkValue)
+        {
+            this.Where("{ \"_id\" : { \"$oid\" : \"" + pkValue + "\" } }");
+            return this.SingleAsync();
+        }
         public override JoinQueryInfo GetJoinInfo(Expression joinExpression, JoinType joinType)
         {
             return BuildJoinQueryInfo(joinExpression, joinType);

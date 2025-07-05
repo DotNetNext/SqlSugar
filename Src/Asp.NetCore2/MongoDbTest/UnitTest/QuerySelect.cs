@@ -205,6 +205,12 @@ namespace MongoDbTest
                 Age2 =SqlFunc.IIF( it.Age > 0 , it.Age ,1),
             }).ToList();
             if (list26.First().Age1 != list26.First().Age2) Cases.ThrowUnitError();
+
+            var id = db.Queryable<Student>().First().Id;
+            var data1 = db.Queryable<Student>().Where(it=>it.Id==id).Single();
+            var data2=db.Queryable<Student>().InSingle(id);
+            var data3 = db.Queryable<Student>().InSingleAsync(id).GetAwaiter().GetResult();
+            if (data1.Id != data2.Id || data2.Id != data3.Id) Cases.ThrowUnitError();
         }
         [SqlSugar.SugarTable("UnitStudent1231sds3z1")]
         public class Student : MongoDbBase
