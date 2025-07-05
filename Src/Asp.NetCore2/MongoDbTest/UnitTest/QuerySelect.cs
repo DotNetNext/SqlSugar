@@ -211,6 +211,21 @@ namespace MongoDbTest
             var data2=db.Queryable<Student>().InSingle(id);
             var data3 = db.Queryable<Student>().InSingleAsync(id).GetAwaiter().GetResult();
             if (data1.Id != data2.Id || data2.Id != data3.Id) Cases.ThrowUnitError();
+          
+            db.DbMaintenance.TruncateTable<Student>();
+            db.Insertable(new Student() { Age = 1 }).ExecuteCommand();
+            db.Insertable(new Student() { Age = 10 }).ExecuteCommand();
+            db.Insertable(new Student() { Age = 20 }).ExecuteCommand();
+            db.Insertable(new Student() { Age = 30 }).ExecuteCommand();
+            var list27 = db.Queryable<Student>().Select(it => new
+            { 
+                age=it.Age,
+                age2 = SqlFunc.IF(it.Age >=30).Return(it.Age).ElseIF(it.Age>=20).Return(it.Age).ElseIF(it.Age>=10).Return(11).End(10),
+            }).ToList();
+            if (list27.Any(it=>it.age==1&&it.age2!=10)) Cases.ThrowUnitError();
+            if (list27.Any(it => it.age == 10 && it.age2 != 11)) Cases.ThrowUnitError();
+            if (list27.Any(it => it.age == 20 && it.age2 != 20)) Cases.ThrowUnitError();
+            if (list27.Any(it => it.age == 30 && it.age2 != 30)) Cases.ThrowUnitError();
         }
         [SqlSugar.SugarTable("UnitStudent1231sds3z1")]
         public class Student : MongoDbBase
