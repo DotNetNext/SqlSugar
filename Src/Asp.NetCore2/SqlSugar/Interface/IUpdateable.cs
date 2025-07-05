@@ -19,8 +19,10 @@ namespace SqlSugar
         int ExecuteCommandWithOptLockIF(bool? IsVersionValidation, bool? IsOptLock = null);
         Task<int> ExecuteCommandWithOptLockAsync(bool isThrowError = false);
         int ExecuteCommand();
+        T ExecuteReturnEntity();
         bool ExecuteCommandHasChange();
-        Task<int> ExecuteCommandAsync();
+        Task<int> ExecuteCommandAsync(); 
+        Task<T> ExecuteReturnEntityAsync();
         Task<int> ExecuteCommandAsync(CancellationToken token);
         Task<bool> ExecuteCommandHasChangeAsync();
         Task<bool> ExecuteCommandHasChangeAsync(CancellationToken token);
