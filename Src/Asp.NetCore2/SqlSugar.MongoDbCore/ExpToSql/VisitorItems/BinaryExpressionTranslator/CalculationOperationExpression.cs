@@ -27,11 +27,11 @@ namespace SqlSugar.MongoDb
                 var rightValue = value;
                 if (leftIsMember) 
                 {
-                    leftValue = $"${leftValue}";
+                    leftValue = UtilMethods.GetMemberName(leftValue);
                 }
                 if (rightIsMember)
                 {
-                    rightValue = $"${rightValue}";
+                    rightValue = UtilMethods.GetMemberName(rightValue); 
                 }
                 return new BsonDocument
                 {
