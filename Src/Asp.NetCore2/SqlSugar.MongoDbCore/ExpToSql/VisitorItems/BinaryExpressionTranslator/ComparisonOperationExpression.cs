@@ -58,7 +58,7 @@ namespace SqlSugar.MongoDb
                 // 三元条件格式: { "$gt": ["$Age", 0] }
                 return new BsonDocument
                 {
-                    { op, new BsonArray { "$" + leftValue, rightValue } }
+                    { op, new BsonArray {UtilMethods.GetMemberName(leftValue), rightValue } }
                 };
             }
             else
