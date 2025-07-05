@@ -84,10 +84,89 @@ namespace SqlSugar.MongoDb
                     model.Args.Add(new MethodCallExpressionArgs() { MemberValue = dateType });
                     var value = context.DateAddByType(model);
                     result = BsonDocument.Parse(value?.ToString());
+                } 
+                else if (name == "End")
+                {
+                    var ifConditions = MongoDbExpTools.ExtractIfElseEnd(methodCallExpression);
+                    return BuildMongoSwitch(ifConditions);
                 }
                 return result;
             }
         }
+        public BsonValue BuildMongoSwitch(List<KeyValuePair<string, Expression>> ifConditions)
+        {
+            if (ifConditions == null || ifConditions.Count < 3)
+                throw new ArgumentException("Insufficient conditions");
+
+            var branches = new BsonArray();
+            var context = _context;
+
+            int i = 0;
+            while (i < ifConditions.Count - 1)
+            {
+                var key = ifConditions[i].Key;
+
+                if (key == "IF" || key == "ELSEIF")
+                {
+                    // 取当前条件
+                    var caseExpr = MongoNestedTranslator.TranslateNoFieldName(
+                        ifConditions[i].Value,
+                        context,
+                        new ExpressionVisitorContext { IsText = true }
+                    );
+
+                    // 取下一个RETURN
+                    if (i + 1 >= ifConditions.Count)
+                        throw new InvalidOperationException("Lacking RETURN");
+
+                    var returnPair = ifConditions[i + 1];
+                    if (returnPair.Key != "RETURN")
+                        throw new InvalidOperationException("IF/ELSEIF Must follow RETURN");
+
+                    var thenExpr = MongoNestedTranslator.TranslateNoFieldName(
+                        returnPair.Value,
+                        context,
+                        new ExpressionVisitorContext { IsText = true }
+                    );
+                    if (MongoDbExpTools.GetIsMemember(returnPair.Value))
+                    {
+                        thenExpr = UtilMethods.GetMemberName(thenExpr);
+                    } 
+                    branches.Add(new BsonDocument
+                    {
+                        { "case", caseExpr },
+                        { "then", thenExpr }
+                    }); 
+                    i += 2;  // 跳过 RETURN
+                }
+                else if (key == "END")
+                {
+                    break;
+                }
+                else
+                {
+                    throw new InvalidOperationException($"Not supported Key: {key}");
+                }
+            }
+
+            // END 的值作为 default
+            var defaultValue = MongoNestedTranslator.TranslateNoFieldName(
+                ifConditions.Last().Value,
+                context,
+                new ExpressionVisitorContext { IsText = true }
+            ); 
+            var switchDoc = new BsonDocument
+            {
+                { "$switch", new BsonDocument
+                    {
+                        { "branches", branches },
+                        { "default", defaultValue }
+                    }
+                }
+            }; 
+            return switchDoc;
+        }
+
 
         private static string TransformMethodName(MethodCallExpression methodCallExpression, string name)
         {

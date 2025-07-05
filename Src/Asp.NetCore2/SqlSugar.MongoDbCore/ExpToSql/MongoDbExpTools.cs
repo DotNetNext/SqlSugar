@@ -9,7 +9,48 @@ namespace SqlSugar.MongoDb
 {
     public class MongoDbExpTools
     {
+        public static List<KeyValuePair<string, Expression>> ExtractIfElseEnd(MethodCallExpression expression)
+        {
+            var result = new List<KeyValuePair<string, Expression>>();
+            Visit(expression, result);
+            result.Reverse();
+            return result;
+        }
 
+        private static void Visit(Expression exp, List<KeyValuePair<string, Expression>> result)
+        {
+            if (exp == null) return;
+
+            if (exp is MethodCallExpression methodCall)
+            {
+                var methodName = methodCall.Method.Name.ToUpperInvariant();
+
+                if (methodName == "IF" || methodName == "ELSEIF")
+                {
+                    // IF/ELSEIF 的表达式一般在第一个参数
+                    result.Add(new KeyValuePair<string, Expression>(methodName, methodCall.Arguments[0]));
+                }
+                else if (methodName == "RETURN")
+                {
+                    // END 的默认值一般在第一个参数
+                    result.Add(new KeyValuePair<string, Expression>("RETURN", methodCall.Arguments[0]));
+                }
+                else if (methodName == "END")
+                {
+                    // END 的默认值一般在第一个参数
+                    result.Add(new KeyValuePair<string, Expression>("END", methodCall.Arguments[0]));
+                }
+
+                // 递归：链式调用的对象部分
+                Visit(methodCall.Object, result);
+
+                // 递归：每个参数（有时候Return里嵌套也可能有IF）
+                foreach (var arg in methodCall.Arguments)
+                {
+                    Visit(arg, result);
+                }
+            }
+        }
         public static bool IsFieldNameJson(string trimmed)
         {
             return trimmed.StartsWith("{ \""+UtilConstants.FieldName+"\" : ");
@@ -84,8 +125,7 @@ namespace SqlSugar.MongoDb
 
             return false;
         }
-
-
+         
         public static bool GetIsMemember(Expression expr)
         {
             return expr is MemberExpression member && member.Expression is ParameterExpression;
