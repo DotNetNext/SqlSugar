@@ -27,6 +27,9 @@ namespace MongoDbTest
             if (data2.First().Book.First().Price != 100) Cases.ThrowUnitError();
             var exp=Expressionable.Create<Student>().ToExpression();
             var data3 = db.Queryable<Student>().Where(exp).ToList();
+            db.Insertable(new Student() { Age = 1, Name = "haha", SchoolId = "1", Book = new List<Book>() { new Book() { CreateTime = DateTime.Now, Price = 21 } } }).ExecuteCommand();
+            var data4=db.Queryable<Student>().Where(it => it.Book.Any(s => s.Price == 21)).ToList(); 
+            if(data4.Count!=1||data4.First().Book.First().Price!=21) Cases.ThrowUnitError();
 
             db.CodeFirst.InitTables<IdsModel>();
             db.DbMaintenance.TruncateTable<IdsModel>();
