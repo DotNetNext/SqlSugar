@@ -30,6 +30,15 @@ namespace MongoDbTest
             db.Insertable(new Student() { Age = 1, Name = "haha", SchoolId = "1", Book = new List<Book>() { new Book() { CreateTime = DateTime.Now, Price = 21 } } }).ExecuteCommand();
             var data4=db.Queryable<Student>().Where(it => it.Book.Any(s => s.Price == 21)).ToList(); 
             if(data4.Count!=1||data4.First().Book.First().Price!=21) Cases.ThrowUnitError();
+            var data5 = db.Queryable<Student>().Where(it => it.Book.Any(s => s.Price == 21||s.Price==100)).ToList();
+            db.DbMaintenance.TruncateTable<Student>();
+            var id = ObjectId.GenerateNewId()+"";
+            db.Insertable(new Student() { Age = 1, Name = "a", SchoolId = "1", Book = new List<Book>() { new Book() { SId=id, CreateTime = DateTime.Now, Price = 21 } } }).ExecuteCommand();
+            db.Insertable(new Student() { Age = 1, Name = "b", SchoolId = "1", Book = new List<Book>() { new Book() { SId = id, CreateTime = DateTime.Now, Price = 100 } } }).ExecuteCommand();
+            db.Insertable(new Student() { Age = 1, Name = "c", SchoolId = "1", Book = new List<Book>() { new Book() { SId = ObjectId.GenerateNewId() + "", CreateTime = DateTime.Now, Price = 21 } } }).ExecuteCommand();
+            var data6= db.Queryable<Student>().Where(it => it.Book.Any(s => s.Price == 21 &&s.SId==id)).ToList();
+            if(data6.Count!=1||data6.First().Name!="a") Cases.ThrowUnitError();
+
 
             db.CodeFirst.InitTables<IdsModel>();
             db.DbMaintenance.TruncateTable<IdsModel>();
@@ -78,6 +87,10 @@ namespace MongoDbTest
         {
             public decimal Price { get; set; }
             public DateTime CreateTime { get; set; }
+
+            [BsonRepresentation(BsonType.ObjectId)]
+            [SqlSugar.SugarColumn(ColumnDataType = nameof(ObjectId))]
+            public string SId { get; set; }
         }
     }
 
