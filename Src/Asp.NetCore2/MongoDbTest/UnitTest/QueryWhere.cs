@@ -105,7 +105,12 @@ namespace MongoDbTest
             var dt = DateTime.Now.AddDays(-10);
             db.Insertable(new Student() { Name = "jack",CreateDateTime= dt, Bool = true, SchoolId = 2 }).ExecuteCommand();
             db.Insertable(new Student() { Name = "tom_null", CreateDateTime = DateTime.Now.AddDays(-110), Bool = false, BoolNull = true, SchoolId = 3, SchoolIdNull = 4 }).ExecuteCommand();
-            var x=db.Queryable<Student>().ToList();
+            var x1=db.Queryable<Student>().ToList();
+            var x2 = db.Queryable<Student>().Where(it=>it.Bool==true).ToList();
+            var x3=db.Queryable<Student>().Where(it => it.Bool).ToList();
+            if (x3.Count != x2.Count) Cases.ThrowUnitError();
+            if (x3.First().Id != x2.First().Id) Cases.ThrowUnitError();
+            if (x3.First().Bool!=true) Cases.ThrowUnitError();
         }
 
         [SqlSugar.SugarTable("UnitStudent1ssss23s131")]

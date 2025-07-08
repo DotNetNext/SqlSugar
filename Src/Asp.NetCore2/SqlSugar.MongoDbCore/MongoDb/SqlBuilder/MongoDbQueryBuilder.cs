@@ -180,8 +180,10 @@ namespace SqlSugar.MongoDb
                 if (MongoDbExpTools.IsFieldNameJson(trimmed))
                 {
                     var outerDoc = BsonDocument.Parse(trimmed);
-                    trimmed = outerDoc[UtilConstants.FieldName].AsString;
-                    operations.Add(trimmed);
+                    var fieldName = outerDoc[UtilConstants.FieldName].AsString;
+                    // 这里假定该字段为bool类型，生成 { fieldName: true }
+                    var boolDoc = new BsonDocument(fieldName, true);
+                    operations.Add($"{{ \"$match\": {boolDoc.ToJson(UtilMethods.GetJsonWriterSettings())} }}");
                 }
                 else
                 {
