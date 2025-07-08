@@ -111,6 +111,7 @@ namespace MongoDbTest
             if (x3.Count != x2.Count) Cases.ThrowUnitError();
             if (x3.First().Id != x2.First().Id) Cases.ThrowUnitError();
             if (x3.First().Bool!=true) Cases.ThrowUnitError();
+            var x4 = db.Queryable<Student>().Where(it => it.Bool&&it.Bool).ToList();
         }
 
         [SqlSugar.SugarTable("UnitStudent1ssss23s131")]
