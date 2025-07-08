@@ -33,7 +33,7 @@ namespace SqlSugar.MongoDb
                 var value=new ExpressionVisitor(context,visitorContext).Visit(expr);
                 var isMemember = MongoDbExpTools.GetIsMemember(expr);
                 if (isMemember)
-                    value = $"${value}";
+                    value = UtilMethods.GetMemberName(value);
                 return new BsonDocument("$multiply", new BsonArray { -1, value });
             }
             switch (expr)
