@@ -59,6 +59,7 @@ namespace MongoDbTest
             var list2=db.Queryable<IdsModel>().Where(it => it.Ids.Contains(x)).ToList();
             if (list2.Count != 1) Cases.ThrowUnitError();
             if (!list2.First().Ids.Contains(x)) Cases.ThrowUnitError();
+            //var list3 = db.Queryable<IdsModel>().Where(it => !it.Ids.Contains(x)).ToList();
         }
 
         [SqlSugar.SugarTable("UnitStudentdfsds3zzz1")]

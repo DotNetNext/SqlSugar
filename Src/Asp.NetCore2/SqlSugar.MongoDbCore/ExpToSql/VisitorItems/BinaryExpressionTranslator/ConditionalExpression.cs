@@ -36,13 +36,13 @@ namespace SqlSugar.MongoDb
                 var testValue = MongoNestedTranslator.TranslateNoFieldName(exp.Test, context, new ExpressionVisitorContext() { IsText=true });
                 var ifTrueValue = MongoNestedTranslator.TranslateNoFieldName(exp.IfTrue, context, new ExpressionVisitorContext() { IsText = true });
                 var ifFalseValue = MongoNestedTranslator.TranslateNoFieldName(exp.IfFalse, context, new ExpressionVisitorContext() { IsText = true });
-                if (exp.IfTrue is MemberExpression member && member.Expression is ParameterExpression) 
+                if (MongoDbExpTools.GetIsMemember(exp.IfTrue)) 
                 {
-                    ifTrueValue = $"${ifTrueValue}";
+                    ifTrueValue = UtilMethods.GetMemberName(ifTrueValue);
                 }
-                if (exp.IfFalse is MemberExpression member2 && member2.Expression is ParameterExpression)
+                if (MongoDbExpTools.GetIsMemember(exp.IfFalse))
                 {
-                    ifFalseValue = $"${ifFalseValue}";
+                    ifFalseValue = UtilMethods.GetMemberName(ifFalseValue);
                 }
                 // MongoDB的$cond操作符
                 var condDoc = new BsonDocument
