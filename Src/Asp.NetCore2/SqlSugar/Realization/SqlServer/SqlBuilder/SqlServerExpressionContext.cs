@@ -106,6 +106,11 @@ namespace SqlSugar
                 var parameter = model.Args[0];
                 return string.Format("( {0} IS NOT NULL )", parameter.MemberName);
             }
+            else if (model.Args[0].Type.IsIn(UtilConstants.DobType,UtilConstants.DecType, UtilConstants.IntType, UtilConstants.LongType))
+            {
+                var parameter = model.Args[0];
+                return string.Format("( {0} IS NOT NULL )", parameter.MemberName);
+            }
             else
             {
                 var parameter = model.Args[0];
