@@ -45,6 +45,14 @@ namespace MongoDbTest
               }])");
             var list4=db.Queryable<Student>().Where(it => it.Name == "adfas").ToList();
             if(list4.Count!=1) Cases.ThrowUnitError();
+
+            var data2 = new Student() { Age = 1, Name = "11", SchoolId = "111", CreateDateTime = DateTime.Now };
+            db.Insertable(data2).ExecuteCommandIdentityIntoEntityAsync().GetAwaiter().GetResult();
+            if (string.IsNullOrEmpty(data2.Id)) Cases.ThrowUnitError();
+
+            var data3 = new Student() { Age = 1, Name = "11", SchoolId = "111", CreateDateTime = DateTime.Now };
+            db.Insertable(data3).ExecuteCommandIdentityIntoEntityAsync().GetAwaiter().GetResult();
+            if (data3.Id==data2.Id) Cases.ThrowUnitError();
         }
         [SqlSugar.SugarTable("UnitStudent1ddsfhssds3z1")]
         public class Student : MongoDbBase
