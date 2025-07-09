@@ -11,6 +11,7 @@ namespace MongoDb.Ado.data
 {
     public class UpdateManyHandlerAsync : IMongoOperationHandlerAsync
     {
+        public HandlerContext context { get; set; }
         public CancellationToken token { get; set; }
         public string operation { get; set; }
         public async  Task<int> HandleAsync(IMongoCollection<BsonDocument> collection, string json)

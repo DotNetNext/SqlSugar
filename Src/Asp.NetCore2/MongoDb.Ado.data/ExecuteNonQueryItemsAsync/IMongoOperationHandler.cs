@@ -12,6 +12,7 @@ namespace MongoDb.Ado.data
     { 
         string operation { get; set; }
         CancellationToken token { get; set; }
+        HandlerContext context { get; set; }
 
         Task<int> HandleAsync(IMongoCollection<BsonDocument> collection, string json);
     }

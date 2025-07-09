@@ -10,6 +10,7 @@ namespace MongoDb.Ado.data
 {
     public class NonFindHandlerAsync : IMongoOperationHandlerAsync
     {
+        public HandlerContext context { get; set; }
         public CancellationToken token { get; set; }
         public string operation { get; set; }
 

@@ -27,7 +27,7 @@ namespace MongoDb.Ado.data
             DbDataReaderFactoryAsync.Items.TryGetValue(operation, out var handler);
             if (handler == null)
             {
-                await  ExecuteHandlerFactoryAsync.HandlerAsync(operation, json, collection, cancellationToken);
+                await  ExecuteHandlerFactoryAsync.HandlerAsync(operation, json, collection, cancellationToken,new HandlerContext());
                 return new DataTable().CreateDataReader();
             }
             handler.token = cancellationToken;
