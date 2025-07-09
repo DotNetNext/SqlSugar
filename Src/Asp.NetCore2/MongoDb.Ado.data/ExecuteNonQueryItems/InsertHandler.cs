@@ -15,6 +15,7 @@ namespace MongoDb.Ado.data
             var doc = BsonDocument.Parse(json);
             collection.InsertOne(doc);
             var objectId = doc["_id"].AsObjectId.ToString();
+            context.ids = new string[] { objectId };
             return 1;
         }
     }
