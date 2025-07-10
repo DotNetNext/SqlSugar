@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -174,6 +175,68 @@ namespace SqlSugar.ClickHouse
                     Check.ExceptionEasy("SQL is too long 。Use db.Fastest<Order>().PageSize(300000).BulkCopy(insertObjs) or  Insertable(List).UseParamter().ExecuteCommand() ", "Sql太长你可以使用 db.Fastest<Order>().PageSize(300000).BulkCopy(insertObjs)或者 Insertable(List).UseParamter().ExecuteCommand()");
                 }
                 return result;
+            }
+        }
+
+        public override object FormatValue(object value)
+        {
+            var N = string.Empty;
+            if (value == null)
+            {
+                return "NULL";
+            }
+            else
+            {
+                var type = UtilMethods.GetUnderType(value.GetType());
+                if (type == UtilConstants.DateType)
+                {
+                    var date = value.ObjToDate();
+                    if (date < UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig))
+                    {
+                        date = UtilMethods.GetMinDate(this.Context.CurrentConnectionConfig);
+                    }
+                    return "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
+                }
+                else if (type == UtilConstants.ByteArrayType)
+                {
+                    string bytesString = "0x" + BitConverter.ToString((byte[])value).Replace("-", "");
+                    return bytesString;
+                }
+                else if (type.IsEnum())
+                {
+                    if (this.Context.CurrentConnectionConfig.MoreSettings?.TableEnumIsString == true)
+                    {
+                        return value.ToSqlValue();
+                    }
+                    else
+                    {
+                        return Convert.ToInt64(value);
+                    }
+                }
+                else if (type == UtilConstants.BoolType)
+                {
+                    return value.ObjToBool() ? "1" : "0";
+                }
+                else if (type == UtilConstants.StringType || type == UtilConstants.ObjType)
+                {
+                    return N + "'" + value.ToString().ToSqlFilter() + "'";
+                }
+                else if (type == UtilConstants.DateTimeOffsetType)
+                {
+                    return FormatDateTimeOffset(value);
+                }
+                else if (type == UtilConstants.FloatType)
+                {
+                    return N + "'" + Convert.ToDouble(value).ToString() + "'";
+                }
+                else if (value is decimal v)
+                {
+                    return v.ToString(CultureInfo.InvariantCulture);
+                }
+                else
+                {
+                    return N + "'" + value.ToString() + "'";
+                }
             }
         }
     }
