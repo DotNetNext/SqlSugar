@@ -183,8 +183,11 @@ namespace SqlSugar
         } 
         public QueryMethodInfo Select(string expShortName, FormattableString expSelect, Type resultType)
         {
-            var method = QueryableObj.GetType().GetMyMethod("Select", 3, typeof(string),typeof(FormattableString),typeof(Type));
-            method= method.MakeGenericMethod(resultType);
+            var method = QueryableObj.GetType().GetMyMethodIsGenericMethod("Select", 3, typeof(string),typeof(FormattableString),typeof(Type));
+            if (method.IsGenericMethodDefinition)
+            {
+                method = method.MakeGenericMethod(resultType);
+            }
             this.QueryableObj = method.Invoke(QueryableObj, new object[] { expShortName, expSelect, resultType });
             return this;
         }
