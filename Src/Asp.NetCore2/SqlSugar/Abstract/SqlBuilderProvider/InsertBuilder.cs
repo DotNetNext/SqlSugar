@@ -216,7 +216,11 @@ namespace SqlSugar
         }
         public virtual object FormatValue(object value)
         {
-            var N = string.Empty;
+            var N = "N";
+            if (this.Context.CurrentConnectionConfig.DbType == DbType.Sqlite)
+            {
+                N = "";
+            }
             if (value == null)
             {
                 return "NULL";
