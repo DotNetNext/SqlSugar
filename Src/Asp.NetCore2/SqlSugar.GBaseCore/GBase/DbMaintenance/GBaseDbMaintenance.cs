@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Data.Odbc;
+using System.Text.RegularExpressions; 
 namespace SqlSugar.GBase
 {
     public class GBaseDbMaintenance : DbMaintenanceProvider
