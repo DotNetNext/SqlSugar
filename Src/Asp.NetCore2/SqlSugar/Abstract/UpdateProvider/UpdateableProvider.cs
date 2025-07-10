@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
+using System.Data; 
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -727,8 +727,8 @@ namespace SqlSugar
             if (columnInfo != null) 
             {
                 fieldName = columnInfo.DbColumnName;
-                isJson = columnInfo.IsJson&&!(fieldValue is string);
-                isArray = columnInfo.IsArray&& !(fieldValue is string);
+                isJson = columnInfo.IsJson;
+                isArray = columnInfo.IsArray;
             }
             var parameterName =this.SqlBuilder.SqlParameterKeyWord+ "Const" + this.UpdateBuilder.LambdaExpressions.ParameterIndex;
             this.UpdateBuilder.LambdaExpressions.ParameterIndex = this.UpdateBuilder.LambdaExpressions.ParameterIndex+1;
@@ -736,7 +736,22 @@ namespace SqlSugar
             {
                 UpdateBuilder.Parameters = new List<SugarParameter>();
             }
-            UpdateBuilder.Parameters.Add(new SugarParameter(parameterName, fieldValue));
+            if (isJson&& fieldValue!=null&& !(fieldValue is string)) 
+            {
+                var insertBuilder = InstanceFactory.GetInsertBuilder(this.Context.CurrentConnectionConfig);
+                if (insertBuilder.SerializeObjectFunc != null)
+                {
+                    fieldValue = insertBuilder.SerializeObjectFunc(fieldValue);
+                }
+                else 
+                {
+                    fieldValue = this.Context.Utilities.SerializeObject(fieldValue);
+                }
+            }
+            var p = new SugarParameter(parameterName, fieldValue);
+            p.IsJson = isJson;
+            p.IsArray = isArray;
+            UpdateBuilder.Parameters.Add(p);
             if (columnInfo?.UpdateServerTime == true)
             {
                 var nowTime= this.Context.Queryable<object>().QueryBuilder.LambdaExpressions.DbMehtods.GetDate();
