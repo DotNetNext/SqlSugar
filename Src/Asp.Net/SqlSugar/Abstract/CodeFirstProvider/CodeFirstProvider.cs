@@ -368,7 +368,7 @@ namespace SqlSugar
                                 var dbColumn = entityInfo.Columns.FirstOrDefault(z => z.PropertyName == it.Key);
                                 if (dbColumn == null&&entityInfo.Discrimator==null)
                                 {
-                                    Check.ExceptionEasy($"{entityInfo.EntityName} no   SugarIndex[ {it.Key} ]  found", $"类{entityInfo.EntityName} 索引特性没找到属性名 ：{it.Key}");
+                                    Check.ExceptionEasy($"{entityInfo.EntityName} no   SugarIndex[ {it.Key} ]  found", $"类{entityInfo.EntityName} 索引特性没找到列 ：{it.Key}");
                                 }
                                 return new KeyValuePair<string, OrderByType>(dbColumn.DbColumnName, it.Value);
                             })

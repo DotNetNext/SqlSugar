@@ -119,6 +119,7 @@ namespace SqlSugar
             string tableName = this.Context.EntityMaintenance.GetTableName<T>();
             var primaryFields = this.GetPrimaryKeys();
             var isSinglePrimaryKey = primaryFields.Count == 1;
+            var isNvarchar = false;
             Check.Exception(primaryFields.IsNullOrEmpty(), string.Format("Table {0} with no primarykey", tableName));
             if (isSinglePrimaryKey)
             {
@@ -128,6 +129,7 @@ namespace SqlSugar
                 {
                     var entityPropertyName = this.Context.EntityMaintenance.GetPropertyName<T>(primaryField);
                     var columnInfo = EntityInfo.Columns.Single(it => it.PropertyName.Equals(entityPropertyName, StringComparison.CurrentCultureIgnoreCase));
+                    isNvarchar = columnInfo.SqlParameterDbType is System.Data.DbType dbtype && dbtype == System.Data.DbType.String;
                     var value = columnInfo.PropertyInfo.GetValue(deleteObj, null);
                     value = UtilMethods.GetConvertValue(value);
                     if (this.Context.CurrentConnectionConfig?.MoreSettings?.TableEnumIsString!=true&&
@@ -151,7 +153,15 @@ namespace SqlSugar
                 }
                 else if (primaryKeyValues.Count < 10000)
                 {
-                    var inValueString = primaryKeyValues.ToArray().ToJoinSqlInVals();
+                    var inValueString = string.Empty;
+                    if (isNvarchar)
+                    {
+                        inValueString = primaryKeyValues.ToArray().ToJoinSqlInValsByVarchar();
+                    }
+                    else
+                    {
+                        inValueString = primaryKeyValues.ToArray().ToJoinSqlInVals();
+                    }
                     Where(string.Format(DeleteBuilder.WhereInTemplate, SqlBuilder.GetTranslationColumnName(primaryFields.Single()), inValueString));
                 }
                 else
