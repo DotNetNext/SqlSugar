@@ -20,6 +20,12 @@ namespace OrmTest
             list= Db.Queryable<UnitJsonTest>().ToList();
             UValidate.Check("order2", list.First().Order.Name, "Json");
             var list2 = Db.Queryable<UnitJsonTest>().ToList();
+            Db.Updateable<UnitJsonTest>()
+                .SetColumns(it => it.Order, new Order() { Name = "abc" })
+                .Where(it => true)
+                .ExecuteCommand();
+            var name=Db.Queryable<UnitJsonTest>().First().Order.Name;
+            if (name != "abc") throw new Exception("unit error");
         }
     }
 
