@@ -721,10 +721,14 @@ namespace SqlSugar
         public virtual IUpdateable<T> SetColumns(string fieldName, object fieldValue) 
         {
             ThrowUpdateByObject();
+            var isJson = false;
+            var isArray = false;
             var columnInfo = this.EntityInfo.Columns.FirstOrDefault(it => it.PropertyName.EqualCase(fieldName));
             if (columnInfo != null) 
             {
                 fieldName = columnInfo.DbColumnName;
+                isJson = columnInfo.IsJson&&!(fieldValue is string);
+                isArray = columnInfo.IsArray&& !(fieldValue is string);
             }
             var parameterName =this.SqlBuilder.SqlParameterKeyWord+ "Const" + this.UpdateBuilder.LambdaExpressions.ParameterIndex;
             this.UpdateBuilder.LambdaExpressions.ParameterIndex = this.UpdateBuilder.LambdaExpressions.ParameterIndex+1;
@@ -747,10 +751,12 @@ namespace SqlSugar
             {
                 this.UpdateBuilder.DbColumnInfoList.Add(new DbColumnInfo()
                 {
-                     DbColumnName=fieldName,
+                      DbColumnName=fieldName,
                       Value=fieldValue,
                       PropertyName=fieldName,
-                      PropertyType=fieldValue?.GetType()
+                      IsJson= isJson,
+                      IsArray=isArray,
+                      PropertyType =fieldValue?.GetType()
                 });
             }
             AppendSets();
