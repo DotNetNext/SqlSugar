@@ -10,7 +10,7 @@ namespace SqlSugar
         public LambdaExpressionResolve(ExpressionParameter parameter) : base(parameter)
         {
             LambdaExpression lambda = base.Expression as LambdaExpression;
-            var expression = lambda.Body;
+            var expression =ExpressionTool.RemoveConvert(lambda.Body);
             base.Expression = expression; 
             if (parameter.Context.ResolveType.IsIn(ResolveExpressType.FieldMultiple, ResolveExpressType.FieldSingle))
             {
