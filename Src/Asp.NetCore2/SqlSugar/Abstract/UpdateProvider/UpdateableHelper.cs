@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using System.Threading.Tasks; 
 
 namespace SqlSugar
 {
@@ -514,12 +514,16 @@ namespace SqlSugar
                     if (item.SqlParameterDbType is Type)
                     {
                         continue;
-                    }
+                    } 
                     var parameter = new SugarParameter(this.SqlBuilder.SqlParameterKeyWord + item.DbColumnName, item.Value, item.PropertyType);
                     if (item.IsJson)
                     {
                         parameter.IsJson = true;
                         SqlBuilder.ChangeJsonType(parameter);
+                    }
+                    if (item.SqlParameterDbType is System.Data.DbType dbtype)
+                    {
+                        parameter.DbType = dbtype;
                     }
                     if (item.IsArray)
                     {

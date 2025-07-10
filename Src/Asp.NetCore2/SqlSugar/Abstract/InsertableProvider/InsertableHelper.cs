@@ -124,9 +124,13 @@ namespace SqlSugar
                     {
                         continue;
                     }
-                    if (item.SqlParameterDbType is Type) 
+                    if (item.SqlParameterDbType is Type)
                     {
                         continue;
+                    }
+                    else if (item.SqlParameterDbType is System.Data.DbType dbtype) 
+                    {
+                        paramters.DbType = dbtype;
                     }
                     if (item.IsJson)
                     {
