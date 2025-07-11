@@ -33,13 +33,33 @@ namespace SqlSugar.MongoDb
         }
         public override void CommitTran()
         {
-            iClientSessionHandle.CommitTransaction();
-            iClientSessionHandle.Dispose();
+            if (iClientSessionHandle != null)
+            {
+                try
+                {
+                    iClientSessionHandle.CommitTransaction();
+                }
+                finally
+                {
+                    iClientSessionHandle.Dispose();
+                    iClientSessionHandle = null;
+                }
+            }
         }
         public override void RollbackTran()
         {
-            iClientSessionHandle.AbortTransaction();
-            iClientSessionHandle.Dispose();
+            if (iClientSessionHandle != null)
+            {
+                try
+                {
+                    iClientSessionHandle.AbortTransaction();
+                }
+                finally
+                {
+                    iClientSessionHandle.Dispose();
+                    iClientSessionHandle = null;
+                }
+            }
         }
         public override async Task BeginTranAsync()
         {
@@ -48,13 +68,34 @@ namespace SqlSugar.MongoDb
         }
         public override async Task CommitTranAsync()
         {
-            await iClientSessionHandle.CommitTransactionAsync();
-            iClientSessionHandle.Dispose();
+            if (iClientSessionHandle != null)
+            {
+                try
+                {
+                    await iClientSessionHandle.CommitTransactionAsync();
+
+                }
+                finally 
+                {
+                    iClientSessionHandle.Dispose();
+                    iClientSessionHandle = null;
+                }
+            }
         }
         public override async Task RollbackTranAsync()
         {
-            await iClientSessionHandle.AbortTransactionAsync();
-            iClientSessionHandle.Dispose();
+            if (iClientSessionHandle != null)
+            {
+                try
+                {
+                    await iClientSessionHandle.AbortTransactionAsync();
+                } 
+                finally 
+                { 
+                    iClientSessionHandle.Dispose(); 
+                    iClientSessionHandle = null;
+                }
+            }
         }
         public override IDbConnection Connection
         {
