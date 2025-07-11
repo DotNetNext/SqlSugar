@@ -16,7 +16,7 @@ namespace MongoDb.Ado.data
 
         public async Task<int> HandleAsync(IMongoCollection<BsonDocument> collection, string json)
         {
-            using (var dr = await new DbDataReaderFactoryAsync().HandleAsync(operation, collection, json,token))
+            using (var dr = await new DbDataReaderFactoryAsync().HandleAsync(operation, collection, json,token,context))
             {
                 if (dr.Read())
                 {

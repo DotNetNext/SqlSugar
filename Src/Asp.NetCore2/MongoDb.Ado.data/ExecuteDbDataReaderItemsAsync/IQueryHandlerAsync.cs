@@ -9,6 +9,7 @@ namespace MongoDb.Ado.data
     public interface IQueryHandlerAsync
     {
         CancellationToken token { get; set; }
+        HandlerContext Context { get; set; }
 
         Task<DbDataReader> HandlerAsync(IMongoCollection<BsonDocument> collection, BsonValue doc);
     }

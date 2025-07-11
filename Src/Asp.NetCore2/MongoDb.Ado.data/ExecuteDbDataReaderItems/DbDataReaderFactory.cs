@@ -17,7 +17,7 @@ namespace MongoDb.Ado.data
                 { "find", new QueryFindHandler() },
                 { "aggregate", new QueryAggregateHandler() },
             };
-        public DbDataReader Handle(string operation, IMongoCollection<BsonDocument> collection, string json)
+        public DbDataReader Handle(string operation, IMongoCollection<BsonDocument> collection, string json, HandlerContext context)
         {
             MongoDbMethodUtils.ValidateOperation(operation);
             var doc = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonValue>(json);
@@ -27,6 +27,7 @@ namespace MongoDb.Ado.data
                 ExecuteHandlerFactory.Handler(operation, json, collection,new HandlerContext());
                 return new DataTable().CreateDataReader();
             }
+            handler.Context = context;
             return handler.Handler(collection, doc);
         }
 

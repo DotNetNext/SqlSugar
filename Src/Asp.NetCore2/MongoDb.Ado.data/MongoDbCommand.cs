@@ -70,13 +70,15 @@ namespace MongoDb.Ado.data
         { 
             var (operation, collectionName, json) = ParseCommand(_commandText); 
             var collection = GetCollection(collectionName);
-            return new ExecuteScalarHandler().Handle(operation,collection, json); 
+            var context = new HandlerContext() { Connection = this.Connection };
+            return new ExecuteScalarHandler().Handle(operation,collection, json,context); 
         } 
         protected override DbDataReader ExecuteDbDataReader(CommandBehavior behavior)
         {
             var (operation, collectionName, json) = ParseCommand(_commandText);
             var collection = GetCollection(collectionName);
-            return new DbDataReaderFactory().Handle(operation, collection, json);
+            var context = new HandlerContext() { Connection = this.Connection };
+            return new DbDataReaderFactory().Handle(operation, collection, json,context);
         }
 
         public async override  Task<int> ExecuteNonQueryAsync(CancellationToken cancellationToken)
@@ -92,13 +94,15 @@ namespace MongoDb.Ado.data
         {
             var (operation, collectionName, json) = ParseCommand(_commandText);
             var collection = GetCollection(collectionName);
-            return new ExecuteScalarHandlerAsync().HandleAsync(operation, collection, json, cancellationToken);
+            var context = new HandlerContext() { Connection = this.Connection };
+            return new ExecuteScalarHandlerAsync().HandleAsync(operation, collection, json, cancellationToken,context);
         }
         protected override  Task<DbDataReader> ExecuteDbDataReaderAsync(CommandBehavior behavior,CancellationToken cancellationToken)
         {
             var (operation, collectionName, json) = ParseCommand(_commandText);
             var collection = GetCollection(collectionName);
-            return new DbDataReaderFactoryAsync().HandleAsync(operation, collection, json, cancellationToken);
+            var context = new HandlerContext() { Connection = this.Connection };
+            return new DbDataReaderFactoryAsync().HandleAsync(operation, collection, json, cancellationToken,context);
         }
 
 

@@ -9,9 +9,9 @@ namespace MongoDb.Ado.data
 {
     public class ExecuteScalarHandler
     {
-        public object Handle(string operation, IMongoCollection<BsonDocument> collection, string json)
+        public object Handle(string operation, IMongoCollection<BsonDocument> collection, string json, HandlerContext context)
         {
-            using (var dbReader = new DbDataReaderFactory().Handle(operation, collection, json))
+            using (var dbReader = new DbDataReaderFactory().Handle(operation, collection, json,context))
             {
                 if (dbReader.Read())
                 {

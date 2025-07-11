@@ -10,6 +10,7 @@ namespace MongoDb.Ado.data
 {
     public class QueryFindHandler : IQueryHandler
     {
+        public HandlerContext Context { get; set; }
         public DbDataReader Handler(IMongoCollection<BsonDocument> collection, BsonValue doc)
         {
             BsonDocument filter;
@@ -31,7 +32,7 @@ namespace MongoDb.Ado.data
                 throw new ArgumentException("Invalid JSON format for MongoDB find operation.");
             }
 
-            var findFluent = collection.Find(filter);
+            var findFluent =Context?.IsAnyServerSession==true? collection.Find(Context.ServerSession,filter): collection.Find(filter);
 
             if (projection != null)
                 findFluent = findFluent.Project<BsonDocument>(projection);

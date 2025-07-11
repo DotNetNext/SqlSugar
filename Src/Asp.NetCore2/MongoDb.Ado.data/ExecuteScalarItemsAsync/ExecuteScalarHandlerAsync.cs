@@ -11,9 +11,9 @@ namespace MongoDb.Ado.data
 {
     public class ExecuteScalarHandlerAsync
     {
-        public async Task<object> HandleAsync(string operation, IMongoCollection<BsonDocument> collection, string json,CancellationToken cancellationToken)
+        public async Task<object> HandleAsync(string operation, IMongoCollection<BsonDocument> collection, string json,CancellationToken cancellationToken, HandlerContext context)
         {
-            using (var dbReader = await new DbDataReaderFactoryAsync().HandleAsync(operation, collection, json,cancellationToken))
+            using (var dbReader = await new DbDataReaderFactoryAsync().HandleAsync(operation, collection, json,cancellationToken,context))
             {
                 if (dbReader.Read())
                 {

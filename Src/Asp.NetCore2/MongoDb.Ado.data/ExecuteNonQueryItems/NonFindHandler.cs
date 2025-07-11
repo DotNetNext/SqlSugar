@@ -12,7 +12,7 @@ namespace MongoDb.Ado.data
         public string operation { get; set; }
         public int Handle(IMongoCollection<BsonDocument> collection, string json)
         {
-            using (var dr =   new DbDataReaderFactory().Handle(operation, collection, json))
+            using (var dr = new DbDataReaderFactory().Handle(operation, collection, json,null))
             {
                 if (dr.Read())
                 {

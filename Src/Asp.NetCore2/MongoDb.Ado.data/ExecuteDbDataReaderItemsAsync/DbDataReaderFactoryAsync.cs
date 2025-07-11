@@ -20,7 +20,7 @@ namespace MongoDb.Ado.data
                 { "find", new QueryFindHandlerAsync() },
                 { "aggregate", new QueryAggregateHandlerAsync() },
             };
-        public async Task<DbDataReader> HandleAsync(string operation, IMongoCollection<BsonDocument> collection, string json, CancellationToken cancellationToken)
+        public async Task<DbDataReader> HandleAsync(string operation, IMongoCollection<BsonDocument> collection, string json, CancellationToken cancellationToken, HandlerContext context)
         {
             MongoDbMethodUtils.ValidateOperation(operation);
             var doc = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonValue>(json);
@@ -31,6 +31,7 @@ namespace MongoDb.Ado.data
                 return new DataTable().CreateDataReader();
             }
             handler.token = cancellationToken;
+            handler.Context = context;
             return await handler.HandlerAsync(collection, doc);
         }
 

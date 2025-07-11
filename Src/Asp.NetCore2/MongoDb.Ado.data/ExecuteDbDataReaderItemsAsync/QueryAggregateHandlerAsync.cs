@@ -13,6 +13,7 @@ namespace MongoDb.Ado.data
 {
     public class QueryAggregateHandlerAsync : IQueryHandlerAsync
     {
+        public HandlerContext Context { get; set; }
         public CancellationToken token { get; set; }
         public async Task<DbDataReader> HandlerAsync(IMongoCollection<BsonDocument> collection, BsonValue doc)
         {
@@ -20,7 +21,9 @@ namespace MongoDb.Ado.data
             var pipeline =  doc.AsBsonArray; ;
 
             // 构建聚合管道
-            var aggregateFluent = collection.Aggregate<BsonDocument>(pipeline.Select(stage => new BsonDocument(stage.AsBsonDocument)).ToArray());
+            var aggregateFluent = Context?.IsAnyServerSession == true?
+                collection.Aggregate<BsonDocument>(Context.ServerSession,pipeline.Select(stage => new BsonDocument(stage.AsBsonDocument)).ToArray()):
+                collection.Aggregate<BsonDocument>(pipeline.Select(stage => new BsonDocument(stage.AsBsonDocument)).ToArray());
 
             // 执行聚合查询并返回 DbDataReader
             var cursor =await aggregateFluent.ToListAsync(token);
