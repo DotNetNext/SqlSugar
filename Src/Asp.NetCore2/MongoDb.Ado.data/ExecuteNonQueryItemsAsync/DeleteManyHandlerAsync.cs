@@ -21,8 +21,16 @@ namespace MongoDb.Ado.data
             foreach (var doc in documents)
             {
                 var filter = doc["filter"].AsBsonDocument;
-                var result =await collection.DeleteManyAsync(filter,token);
-                total += (int)result.DeletedCount;
+                if (context.IsAnyServerSession)
+                {
+                    var result = await collection.DeleteManyAsync(context.ServerSession,filter,null, token);
+                    total += (int)result.DeletedCount;
+                }
+                else
+                {
+                    var result = await collection.DeleteManyAsync(filter, token);
+                    total += (int)result.DeletedCount;
+                }
             }
             return total;
         }

@@ -15,7 +15,17 @@ namespace SqlSugar.MongoDb
 {
     public partial class MongoDbProvider : AdoProvider
     {
-        IClientSessionHandle iClientSessionHandle;
+        IClientSessionHandle iClientSessionHandle
+        { 
+            get 
+            {
+                return (this.Connection as MongoDbConnection).iClientSessionHandle;
+            }
+            set 
+            {
+                (this.Connection as MongoDbConnection).iClientSessionHandle = value;
+            }
+        }
         public MongoDbProvider() 
         {
             if (StaticConfig.AppContext_ConvertInfinityDateTime == false)

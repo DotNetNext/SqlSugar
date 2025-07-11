@@ -13,7 +13,14 @@ namespace MongoDb.Ado.data
         public int Handle(IMongoCollection<BsonDocument> collection, string json)
         {
             var doc = BsonDocument.Parse(json);
-            collection.InsertOne(doc);
+            if (context.IsAnyServerSession)
+            {
+                collection.InsertOne(context.ServerSession,doc);
+            }
+            else
+            {
+                collection.InsertOne(doc);
+            }
             var objectId = doc["_id"].AsObjectId.ToString();
             context.ids = new string[] { objectId };
             return 1;

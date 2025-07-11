@@ -12,7 +12,7 @@ namespace MongoDb.Ado.data
     {
         private static readonly Dictionary<string, MongoClient> _clientCache = new Dictionary<string, MongoClient>(StringComparer.OrdinalIgnoreCase);
         private static readonly object _lock = new object();
-
+        public IClientSessionHandle iClientSessionHandle;
         private string _originalConnectionString;
         private IMongoDatabase _database;
         private string _databaseName;

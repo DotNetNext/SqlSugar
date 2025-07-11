@@ -15,7 +15,14 @@ namespace MongoDb.Ado.data
         public int Handle(IMongoCollection<BsonDocument> collection, string json)
         {
             var documents = ParseJsonArray(json);
-            collection.InsertMany(documents); 
+            if (context.IsAnyServerSession)
+            {
+                collection.InsertMany(context.ServerSession,documents);
+            }
+            else
+            {
+                collection.InsertMany(documents);
+            }
             var objectIds = documents.Select(it=>it["_id"].AsObjectId.ToString()).ToArray();
             context.ids = objectIds;
             return documents.Count;

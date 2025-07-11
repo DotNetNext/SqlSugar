@@ -61,7 +61,7 @@ namespace MongoDb.Ado.data
         {
             var (operation, collectionName, json) = ParseCommand(_commandText);
             var collection = GetCollection(collectionName);
-            var context = new HandlerContext();
+            var context = new HandlerContext() { Connection = this.Connection };
             var result= ExecuteHandlerFactory.Handler(operation, json, collection, context);
             ((MongoDbConnection)this.Connection).ObjectIds = context.ids;
             return result;
@@ -83,7 +83,7 @@ namespace MongoDb.Ado.data
         {
             var (operation, collectionName, json) = ParseCommand(_commandText);
             var collection = GetCollection(collectionName);
-            var context = new HandlerContext();
+            var context = new HandlerContext() { Connection = this.Connection};
             var result= await ExecuteHandlerFactoryAsync.HandlerAsync(operation, json, collection, cancellationToken,context);
             ((MongoDbConnection)this.Connection).ObjectIds = context.ids;
             return result;

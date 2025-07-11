@@ -19,8 +19,16 @@ namespace MongoDb.Ado.data
             {
                 var filter = doc["filter"].AsBsonDocument;
                 var update = doc["update"].AsBsonDocument;
-                var result = collection.UpdateMany(filter, update);
-                total += (int)result.ModifiedCount;
+                if (context.IsAnyServerSession)
+                {
+                    var result = collection.UpdateMany(context.ServerSession,filter, update);
+                    total += (int)result.ModifiedCount;
+                }
+                else
+                {
+                    var result = collection.UpdateMany(filter, update);
+                    total += (int)result.ModifiedCount;
+                }
             }
             return total;
         }

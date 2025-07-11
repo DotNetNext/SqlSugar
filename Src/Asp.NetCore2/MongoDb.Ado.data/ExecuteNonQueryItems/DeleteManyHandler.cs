@@ -18,8 +18,16 @@ namespace MongoDb.Ado.data
             foreach (var doc in documents)
             {
                 var filter = doc["filter"].AsBsonDocument;
-                var result = collection.DeleteMany(filter);
-                total += (int)result.DeletedCount;
+                if (context.IsAnyServerSession)
+                {
+                    var result = collection.DeleteMany(context.ServerSession,filter);
+                    total += (int)result.DeletedCount;
+                }
+                else
+                {
+                    var result = collection.DeleteMany(filter);
+                    total += (int)result.DeletedCount;
+                }
             }
             return total;
         }

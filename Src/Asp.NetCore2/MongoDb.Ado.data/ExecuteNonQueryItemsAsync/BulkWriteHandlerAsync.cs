@@ -28,8 +28,16 @@ namespace MongoDb.Ado.data
                 bulkOps.Add(op);
             }
             if (bulkOps.Count == 0) return 0;
-            var result =await collection.BulkWriteAsync(bulkOps);
-            return (int)result.ModifiedCount;
+            if (context.IsAnyServerSession)
+            {
+                var result = await collection.BulkWriteAsync(context.ServerSession,bulkOps);
+                return (int)result.ModifiedCount;
+            }
+            else
+            {
+                var result = await collection.BulkWriteAsync(bulkOps);
+                return (int)result.ModifiedCount;
+            }
         }
 
         private List<BsonDocument> ParseJsonArray(string json)

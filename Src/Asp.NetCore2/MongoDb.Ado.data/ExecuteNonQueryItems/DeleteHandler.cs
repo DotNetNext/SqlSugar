@@ -15,8 +15,16 @@ namespace MongoDb.Ado.data
         {
             var doc = BsonDocument.Parse(json);
             var filter = doc["filter"].AsBsonDocument;
-            var result = collection.DeleteOne(filter);
-            return (int)result.DeletedCount;
+            if (context.IsAnyServerSession)
+            {
+                var result = collection.DeleteOne(context.ServerSession,filter); 
+                return (int)result.DeletedCount;
+            }
+            else
+            {
+                var result = collection.DeleteOne(filter); 
+                return (int)result.DeletedCount;
+            }
         }
     }
 }

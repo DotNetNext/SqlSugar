@@ -18,7 +18,14 @@ namespace MongoDb.Ado.data
         public async Task<int> HandleAsync(IMongoCollection<BsonDocument> collection, string json)
         {
             var documents = ParseJsonArray(json);
-            await collection.InsertManyAsync(documents,null,token);
+            if (context.IsAnyServerSession)
+            {
+                await collection.InsertManyAsync(context.ServerSession,documents, null, token);
+            }
+            else
+            {
+                await collection.InsertManyAsync(documents, null, token);
+            }
             var objectIds = documents.Select(it => it["_id"].AsObjectId.ToString()).ToArray();
             context.ids = objectIds;
             return documents.Count;

@@ -15,8 +15,17 @@ namespace MongoDb.Ado.data
             var doc = BsonDocument.Parse(json);
             var filter = doc["filter"].AsBsonDocument;
             var update = doc["update"].AsBsonDocument;
-            var result = collection.UpdateOne(filter, update);
-            return (int)result.ModifiedCount;
+            if (context.IsAnyServerSession) 
+            {
+                var result = collection.UpdateOne(context.ServerSession,filter, update);
+                return (int)result.ModifiedCount;
+            }
+            else
+            {
+                var result = collection.UpdateOne(filter, update);
+                return (int)result.ModifiedCount;
+            }
+          
         }
     }
 }
