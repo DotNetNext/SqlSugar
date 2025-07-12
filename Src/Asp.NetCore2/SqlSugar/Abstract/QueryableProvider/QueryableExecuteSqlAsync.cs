@@ -133,6 +133,11 @@ namespace SqlSugar
         {
             return  (await this.Clone().Take(1).Select("1").ToListAsync()).Count() > 0; ;
         }
+        public virtual async Task<bool> AnyAsync(CancellationToken token)
+        {
+            this.Context.Ado.CancellationToken = token;
+            return await this.AnyAsync();
+        }
 
         public virtual Task<int> CountAsync(CancellationToken token) 
         {
