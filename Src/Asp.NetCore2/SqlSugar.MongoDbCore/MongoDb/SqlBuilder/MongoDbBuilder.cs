@@ -144,41 +144,55 @@ namespace SqlSugar.MongoDb
                 if (model is ConditionalModel cond)
                 {
                     string field = cond.FieldName;
-                    string op = cond.ConditionalType + "";
+                    var op = cond.ConditionalType;
                     string fieldValue = cond.FieldValue;
-                    object value= SqlSugar.UtilMethods.ConvertDataByTypeName(cond.CSharpTypeName, fieldValue);
+                    object value = SqlSugar.UtilMethods.ConvertDataByTypeName(cond.CSharpTypeName, fieldValue);
                     switch (op)
                     {
-                        case "Equal":
+                        case ConditionalType.Equal:
                             filterParts.Add($"\"{field}\": {ToMongoValue(value)}");
                             break;
-                        case "NotEqual":
+                        case ConditionalType.NoEqual:
                             filterParts.Add($"\"{field}\": {{ \"$ne\": {ToMongoValue(value)} }}");
                             break;
-                        case "GreaterThan":
+                        case ConditionalType.GreaterThan:
                             filterParts.Add($"\"{field}\": {{ \"$gt\": {ToMongoValue(value)} }}");
                             break;
-                        case "GreaterThanOrEqual":
+                        case ConditionalType.GreaterThanOrEqual:
                             filterParts.Add($"\"{field}\": {{ \"$gte\": {ToMongoValue(value)} }}");
                             break;
-                        case "LessThan":
+                        case ConditionalType.LessThan:
                             filterParts.Add($"\"{field}\": {{ \"$lt\": {ToMongoValue(value)} }}");
                             break;
-                        case "LessThanOrEqual":
+                        case ConditionalType.LessThanOrEqual:
                             filterParts.Add($"\"{field}\": {{ \"$lte\": {ToMongoValue(value)} }}");
                             break;
-                        case "In":
+                        case ConditionalType.In:
                             filterParts.Add($"\"{field}\": {{ \"$in\": {ToMongoArray(value)} }}");
                             break;
-                        case "Like":
+                        case ConditionalType.Like:
                             // MongoDB的模糊查询用正则表达式
                             filterParts.Add($"\"{field}\": {{ \"$regex\": {ToMongoRegex(value)}, \"$options\": \"i\" }}");
                             break;
-                        case "IsNull":
-                            filterParts.Add($"\"{field}\": null");
+                        case ConditionalType.EqualNull:
+                            if (value == null)
+                            {
+                                filterParts.Add($"\"{field}\": null");
+                            }
+                            else 
+                            {
+                                filterParts.Add($"\"{field}\": {ToMongoValue(value)}");
+                            }
                             break;
-                        case "IsNotNull":
-                            filterParts.Add($"\"{field}\": {{ \"$ne\": null }}");
+                        case ConditionalType.IsNot:
+                            if (value == null)
+                            {
+                                filterParts.Add($"\"{field}\": {{ \"$ne\": null }}");
+                            }
+                            else 
+                            {
+                                filterParts.Add($"\"{field}\": {{ \"$ne\": {ToMongoValue(value)} }}");
+                            }
                             break;
                         default:
                             // 其他操作符可扩展
