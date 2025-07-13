@@ -601,6 +601,11 @@ namespace SqlSugar
             {
                 resolveExpress.PgSqlIsAutoToLower = true;
             }
+            resolveExpress.Context = this.Context;
+            resolveExpress.SugarContext = new ExpressionOutParameter()
+            {
+                 Context=this.Context
+            };
             resolveExpress.MappingColumns = Context.MappingColumns;
             resolveExpress.MappingTables = Context.MappingTables;
             resolveExpress.IgnoreComumnList = Context.IgnoreColumns;
