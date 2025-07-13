@@ -185,6 +185,11 @@ namespace SqlSugar.MongoDb
                     var boolDoc = new BsonDocument(fieldName, true);
                     operations.Add($"{{ \"$match\": {boolDoc.ToJson(UtilMethods.GetJsonWriterSettings())} }}");
                 }
+                else if (trimmed.TrimStart().StartsWith("(") && trimmed.TrimEnd().EndsWith(")")) 
+                {
+                    trimmed = trimmed.Trim().TrimStart('(').TrimEnd(')');
+                    operations.Add($"{{ \"$match\": {trimmed} }}");
+                }
                 else
                 {
                     // item 是 JSON 格式字符串，直接包进 $match

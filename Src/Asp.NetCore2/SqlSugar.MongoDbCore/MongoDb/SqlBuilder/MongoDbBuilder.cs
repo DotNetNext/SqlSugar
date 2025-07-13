@@ -236,7 +236,7 @@ namespace SqlSugar.MongoDb
             int paramIndex = 0;
 
             foreach (var group in collections.ConditionalList)
-            { 
+            {
                 var result = this.ConditionalModelToSql(new List<IConditionalModel>() { group.Value }, paramIndex);
                 string filter = result.Key;
                 SugarParameter[] parameters = result.Value;
@@ -249,16 +249,23 @@ namespace SqlSugar.MongoDb
                         innerFilter = innerFilter.Substring(1, innerFilter.Length - 2).Trim();
                     }
                     if (!string.IsNullOrEmpty(innerFilter))
-                    { 
+                    {
                         string groupOperator = group.Key == WhereType.Or ? "$or" : "$and";
-                        groupFilters.Add($"\"{groupOperator}\": [ {{ {innerFilter} }} ]");
+                        groupFilters.Add($"\"{groupOperator}\": [{{ {innerFilter} }} ]");
                         allParameters.AddRange(parameters);
                         paramIndex += parameters.Length;
                     }
                 }
-            } 
-            var finalFilter 
-                  = "[ " + string.Join(", ", groupFilters.Select(f => "{ " + f + " }")) + " ] "; 
+            }
+            string finalFilter;
+            if (groupFilters.Count == 1)
+            {
+                finalFilter = "{ " + groupFilters[0] + " }";
+            }
+            else
+            {
+                finalFilter = "[ " + string.Join(", ", groupFilters.Select(f => "{ " + f + " }")) + " ] ";
+            }
             return new KeyValuePair<string, SugarParameter[]>(finalFilter, allParameters.ToArray());
         }
     }
