@@ -79,7 +79,7 @@ namespace SqlSugar.MongoDb
             sb.Append($"BulkWrite {tableName} [ ");
             sb.Append(string.Join(", ", operations));
             sb.Append(" ]");
-
+            this.Parameters = new List<SugarParameter>();
             return sb.ToString();
         }
 
