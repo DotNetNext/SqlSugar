@@ -25,6 +25,12 @@ namespace MongoDbTest
             var datas2 = db.Queryable<Student>().ToList();
             if (datas2.Count != 1) Cases.ThrowUnitError();
             if (datas2.First().Name != "aaa") Cases.ThrowUnitError();
+            db.Storageable(datas).WhereColumns(it=>it.Name).ExecuteCommand();
+            var x = db.Storageable(datas).WhereColumns(it => it.Name).ToStorage();
+            if (x.UpdateList.Count == 0) Cases.ThrowUnitError();
+            datas.First().Name = "aefa";
+            var x2 = db.Storageable(datas).WhereColumns(it => it.Name).ToStorage();
+            if (x2.InsertList.Count==0) Cases.ThrowUnitError();
         }
         [SqlSugar.SugarTable("UnitStudent1zzsds3z1")]
         public class Student : MongoDbBase
