@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MongoDB.Bson.IO;
+using MongoDB.Bson;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -193,13 +195,8 @@ namespace SqlSugar.MongoDb
             static string ToMongoValue(object value)
             {
                 if (value == null) return "null";
-                if (value is string s) return $"\"{EscapeString(s)}\"";
-                if (value is bool b) return b ? "true" : "false";
-                if (value is DateTime dt) return $"{{ \"$date\": \"{dt:O}\" }}";
-                if (value is Enum) return Convert.ToInt32(value).ToString();
-                if (value is IEnumerable<object> arr) return ToMongoArray(arr);
-                if (value is IEnumerable<string> arrStr) return ToMongoArray(arrStr);
-                return value.ToString();
+                var bson = BsonValue.Create(value);
+                return bson.ToJson(UtilMethods.GetJsonWriterSettings());
             }
 
             static string ToMongoArray(object value)
