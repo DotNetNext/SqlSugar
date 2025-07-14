@@ -170,8 +170,8 @@ namespace SqlSugar
             var isEqual = expression.NodeType == ExpressionType.Equal;
             var isComparisonOperator = ExpressionTool.IsComparisonOperator(expression);
             base.ExactExpression = expression;
-            var leftExpression = expression.Left;
-            var rightExpression = expression.Right;
+            var leftExpression = ExpressionTool.RemoveConvert(expression.Left);
+            var rightExpression =ExpressionTool.RemoveConvert(expression.Right); 
             if (operatorValue.IsIn("AND","OR")&&leftExpression is BinaryExpression exp) 
             {
                 if (exp?.Left is BinaryExpression expChild) 
