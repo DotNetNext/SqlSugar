@@ -187,6 +187,14 @@ namespace SqlSugar
                 {
                     sqlParameter.ParameterName = sqlParameter.ParameterName.Replace("@", ":");
                 }
+                if (parameter.TypeName.HasValue()) 
+                {
+                    sqlParameter.DmSqlTypeName = parameter.TypeName;
+                }
+                if (parameter.CustomDbType is DmDbType dmDbType) 
+                {
+                    sqlParameter.DmSqlType = dmDbType;
+                }
                 ++index;
             }
             return result;
