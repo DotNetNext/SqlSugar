@@ -245,27 +245,64 @@ namespace SqlSugar.MongoDb
             var groupFilters = new List<string>();
             var allParameters = new List<SugarParameter>();
             int paramIndex = 0;
-
-            foreach (var group in collections.ConditionalList)
+            if (collections.ConditionalList.Count == 1)
             {
-                var result = this.ConditionalModelToSql(new List<IConditionalModel>() { group.Value }, paramIndex);
-                string filter = result.Key;
-                SugarParameter[] parameters = result.Value;
-
-                if (!string.IsNullOrWhiteSpace(filter) && filter != "{}")
+                foreach (var group in collections.ConditionalList)
                 {
-                    string innerFilter = filter.Trim();
-                    if (innerFilter.StartsWith("{") && innerFilter.EndsWith("}"))
+                    var result = this.ConditionalModelToSql(new List<IConditionalModel>() { group.Value }, paramIndex);
+                    string filter = result.Key;
+                    SugarParameter[] parameters = result.Value;
+
+                    if (!string.IsNullOrWhiteSpace(filter) && filter != "{}")
                     {
-                        innerFilter = innerFilter.Substring(1, innerFilter.Length - 2).Trim();
+                        string innerFilter = filter.Trim();
+                        if (innerFilter.StartsWith("{") && innerFilter.EndsWith("}"))
+                        {
+                            innerFilter = innerFilter.Substring(1, innerFilter.Length - 2).Trim();
+                        }
+                        if (!string.IsNullOrEmpty(innerFilter))
+                        {
+                            string groupOperator = group.Key == WhereType.Or ? "$or" : "$and";
+                            groupFilters.Add($"\"{groupOperator}\": [{{ {innerFilter} }} ]");
+                            allParameters.AddRange(parameters);
+                            paramIndex += parameters.Length;
+                        }
                     }
-                    if (!string.IsNullOrEmpty(innerFilter))
+                }
+            }
+            else
+            {
+                // 取第一个WhereType作为整体的逻辑运算符
+                var firstWhereType = collections.ConditionalList[0].Key;
+                string groupOperator = firstWhereType == WhereType.Or ? "$or" : "$and";
+
+                // 合并所有条件
+                var mergedFilters = new List<string>();
+                foreach (var group in collections.ConditionalList)
+                {
+                    var result = this.ConditionalModelToSql(new List<IConditionalModel>() { group.Value }, paramIndex);
+                    string filter = result.Key;
+                    SugarParameter[] parameters = result.Value;
+
+                    if (!string.IsNullOrWhiteSpace(filter) && filter != "{}")
                     {
-                        string groupOperator = group.Key == WhereType.Or ? "$or" : "$and";
-                        groupFilters.Add($"\"{groupOperator}\": [{{ {innerFilter} }} ]");
-                        allParameters.AddRange(parameters);
-                        paramIndex += parameters.Length;
+                        string innerFilter = filter.Trim();
+                        if (innerFilter.StartsWith("{") && innerFilter.EndsWith("}"))
+                        {
+                            innerFilter = innerFilter.Substring(1, innerFilter.Length - 2).Trim();
+                        }
+                        if (!string.IsNullOrEmpty(innerFilter))
+                        {
+                            mergedFilters.Add("{ " + innerFilter + " }");
+                            allParameters.AddRange(parameters);
+                            paramIndex += parameters.Length;
+                        }
                     }
+                }
+
+                if (mergedFilters.Count > 0)
+                {
+                    groupFilters.Add($"\"{groupOperator}\": [ {string.Join(", ", mergedFilters)} ]");
                 }
             }
             string finalFilter;
