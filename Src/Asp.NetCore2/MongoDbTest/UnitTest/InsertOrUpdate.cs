@@ -31,6 +31,8 @@ namespace MongoDbTest
             datas.First().Name = "aefa";
             var x2 = db.Storageable(datas).WhereColumns(it => it.Name).ToStorage();
             if (x2.InsertList.Count==0) Cases.ThrowUnitError();
+
+            db.Storageable(datas).WhereColumns(it => new { it.Name ,it.Age}).ExecuteCommand();
         }
         [SqlSugar.SugarTable("UnitStudent1zzsds3z1")]
         public class Student : MongoDbBase
