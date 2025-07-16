@@ -618,6 +618,10 @@ namespace SqlSugar
                     if (objProp == null)
                     {
                         objReference = DynamicInvoke(expression, rootExpression == null ? memberExpr : rootExpression);
+                        if (objReference == null&& rootExpression!=null) 
+                        {
+                            return null;
+                        }
                     }
                     else
                     {
