@@ -34,19 +34,10 @@ namespace OrmTest
                     IsAutoCloseConnection = true,
                     InitKeyType = InitKeyType.Attribute
                 });
-
-                int iRecordCount = 0;
-                int iPageCount = 0;
-
+                  
                 var resData = dbClient.Queryable<address_info>()
-                                      .Where(EWhere)
-                                      .ToPageList(1, 10, ref iRecordCount, ref iPageCount)
-                                      .Select(c => new
-                                      {
-                                          c.id,
-
-                                      })
-                                      .ToString();
+                                      .Where(EWhere) 
+                                      .ToSql();
             } 
 
         }
