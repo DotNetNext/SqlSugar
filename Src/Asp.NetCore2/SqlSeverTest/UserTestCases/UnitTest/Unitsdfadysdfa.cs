@@ -15,6 +15,22 @@ namespace OrmTest
             var myService = new MyService();
 
             myService.Query();
+            var db = NewUnitTest.Db;
+            var sql=db.Queryable<order_detail>()
+                .Where(it => it.id==1&&it.amount1 + it.amount2 > it.amount3)
+                .ToSql();
+            if (sql.Key != "SELECT [id],[amount1],[amount2],[amount3] FROM [order_detail]  WHERE (( [id] = @id0 ) AND (( [amount1] + [amount2] ) >  [amount3] ))")
+                throw new Exception("unit error");
+        }
+        public partial class order_detail
+        {
+
+            public long id { get; set; }
+
+            public decimal amount1 { get; set; }
+            public decimal amount2 { get; set; }
+
+            public decimal? amount3 { get; set; }
         }
 
         public partial class MyService
