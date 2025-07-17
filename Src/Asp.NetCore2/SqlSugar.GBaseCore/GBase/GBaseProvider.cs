@@ -282,6 +282,23 @@ namespace SqlSugar.GBase
             sqlCommand.CommandText = sql;
             sqlCommand.CommandType = this.CommandType;
             sqlCommand.CommandTimeout = this.CommandTimeOut;
+            if (sqlCommand?.Parameters?.Count > 0)
+            {
+                if (this.CommandType == CommandType.StoredProcedure && parameters != null && sqlCommand.Parameters.Count == parameters.Length)
+                {
+                    // 保证存储过程参数顺序与 SugarParameter 一致
+                    for (int i = 0; i < parameters.Length; i++)
+                    {
+                        var sugarParam = parameters[i];
+                        var dbParam = sqlCommand.Parameters.Cast<DbParameter>().FirstOrDefault(p => p.ParameterName == sugarParam.ParameterName);
+                        if (dbParam != null && sqlCommand.Parameters.IndexOf(dbParam) != i)
+                        {
+                            sqlCommand.Parameters.Remove(dbParam);
+                            sqlCommand.Parameters.Insert(i, dbParam);
+                        }
+                    }
+                }
+            } 
             if (this.Transaction != null)
             {
                 sqlCommand.Transaction = (GbsTransaction)this.Transaction;
