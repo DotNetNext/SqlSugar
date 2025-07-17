@@ -91,6 +91,13 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+
+            var x = db.Queryable<Student_001>().IncludesAllSecondLayer(x => x.school_001)
+            .ToList();
+            var x2 = db.Queryable<Student_001>().Includes(x => x.school_001, y => y.rooms)
+               .ToList(); 
+            if (db.Utilities.SerializeObject(x) != db.Utilities.SerializeObject(x2))
+                throw new Exception("unit error");
         }
 
         public class Student_001 
