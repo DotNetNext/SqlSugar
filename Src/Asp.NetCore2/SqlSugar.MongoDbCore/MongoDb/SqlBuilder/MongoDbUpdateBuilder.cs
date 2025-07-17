@@ -113,6 +113,10 @@ namespace SqlSugar.MongoDb
                         var bsonValue = UtilMethods.ParseJsonObject(col.Value?.ToString());
                         setDoc[col.DbColumnName] = bsonValue;
                     }
+                    else if (col.UpdateServerTime)
+                    {
+                        setDoc[col.DbColumnName] = UtilMethods.MyCreate(DateTime.Now);
+                    }
                     else if(col.IsPrimarykey==false)
                     {
                         var bsonValue = UtilMethods.MyCreate(col.Value, col);

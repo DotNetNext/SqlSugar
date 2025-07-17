@@ -207,6 +207,10 @@ namespace SqlSugar.MongoDb
                     {
                         doc[col.DbColumnName] = UtilMethods.MyCreate(ObjectId.Parse(col.Value?.ToString()));
                     }
+                    else if (col.InsertServerTime)
+                    {
+                        doc[col.DbColumnName] = UtilMethods.MyCreate(DateTime.Now);
+                    }
                     else
                     {
                         doc[col.DbColumnName] = UtilMethods.MyCreate(col.Value);
