@@ -533,11 +533,11 @@ WHERE table_name = '" + tableName + "'");
                               on  t1.table_name = t4.table_name and t1.column_name = t4.column_name 
                             left join ( select *
                                 from user_col_comments
-                                where table_name = upper('{tableName}') 
+                                where upper(table_name) = upper('{tableName}') 
                                 ) t5 on   t1.table_name = t5.table_name and t1.column_name = t5.column_name 
                             left join ( select *
                                  from user_tab_comments
-                                where table_name = upper('{tableName}')
+                                where upper(table_name) = upper('{tableName}')
                               ) t6 on  t1.table_name = t6.table_name
                             where upper(t1.table_name)=upper('{tableName}')
                             order by  t1.table_name, t1.column_id";
