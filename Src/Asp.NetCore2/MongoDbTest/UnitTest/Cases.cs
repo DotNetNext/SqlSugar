@@ -24,6 +24,7 @@ namespace MongoDbTest
             Update.Init();
             Delete.Init();
             InsertOrUpdate.Init();
+            Unitdafasdys.Init();
         } 
         public static void ThrowUnitError()
         {
