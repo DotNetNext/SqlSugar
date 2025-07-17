@@ -20,6 +20,7 @@ namespace MongoDbTest
             QueryLeftJoin2.Init();
             QueryJsonArray.Init();
             Insert.Init();
+            Insert2.Init();
             Update.Init();
             Delete.Init();
             InsertOrUpdate.Init();
