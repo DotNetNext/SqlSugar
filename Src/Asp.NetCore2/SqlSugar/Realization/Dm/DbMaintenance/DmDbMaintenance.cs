@@ -454,7 +454,7 @@ WHERE table_name = '" + tableName + "'");
         {
             List<DbColumnInfo> columns = GetOracleDbType(tableName);
             string sql = "select * from " + SqlBuilder.GetTranslationTableName(tableName) + " WHERE 1=2 ";
-            if (!this.GetTableInfoList(false).Any(it => it.Name == SqlBuilder.GetTranslationTableName(tableName).TrimStart('\"').TrimEnd('\"')))
+            if(!this.IsAnyTable(SqlBuilder.GetTranslationTableName(tableName).TrimStart('\"').TrimEnd('\"'),false))
             {
                 sql = "select * from \"" + tableName + "\" WHERE 1=2 ";
             }
@@ -531,8 +531,14 @@ WHERE table_name = '" + tableName + "'");
                                          on  t2.table_name = t3.table_name and t2.index_name = t3.index_name
                                         and t3.status = 'valid' and t3.uniqueness = 'unique') t4   --unique:唯一索引
                               on  t1.table_name = t4.table_name and t1.column_name = t4.column_name 
-                            left join user_col_comments t5 on   t1.table_name = t5.table_name and t1.column_name = t5.column_name 
-                            left join user_tab_comments t6 on  t1.table_name = t6.table_name
+                            left join ( select *
+                                from user_col_comments
+                                where upper(table_name) = upper('{tableName}') 
+                                ) t5 on   t1.table_name = t5.table_name and t1.column_name = t5.column_name 
+                            left join ( select *
+                                 from user_tab_comments
+                                where upper(table_name) = upper('{tableName}')
+                              ) t6 on  t1.table_name = t6.table_name
                             where upper(t1.table_name)=upper('{tableName}')
                             order by  t1.table_name, t1.column_id";
 
