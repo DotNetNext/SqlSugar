@@ -624,15 +624,15 @@ namespace SqlSugar.MongoDb
                     var value = val?.ToString();
                     if (UtilMethods.IsValidObjectId(value))
                     {
-                        bsonArray.Add(BsonValue.Create(ObjectId.Parse(value)));
+                        bsonArray.Add(UtilMethods.MyCreate(ObjectId.Parse(value)));
                     }
                     else 
                     {
-                        bsonArray.Add(BsonValue.Create(val));
+                        bsonArray.Add(UtilMethods.MyCreate(val));
                     }
                 }
                 else
-                    bsonArray.Add(BsonValue.Create(val));
+                    bsonArray.Add(UtilMethods.MyCreate(val));
             }
 
             // 构建MongoDB的 $in 查询表达式
@@ -666,7 +666,7 @@ namespace SqlSugar.MongoDb
                 elementValue = ObjectId.Parse(s);
             }
             // 构造 $in 查询表达式
-            var inDoc = new BsonDocument(fieldName.ToString(), new BsonDocument("$in", new BsonArray { BsonValue.Create(elementValue) }));
+            var inDoc = new BsonDocument(fieldName.ToString(), new BsonDocument("$in", new BsonArray { UtilMethods.MyCreate(elementValue) }));
             return inDoc.ToJson(UtilMethods.GetJsonWriterSettings());
         }
 

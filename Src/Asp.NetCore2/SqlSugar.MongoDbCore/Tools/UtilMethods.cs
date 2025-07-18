@@ -122,6 +122,10 @@ namespace SqlSugar.MongoDb
                 var utcNow = DateTime.SpecifyKind(dt, DateTimeKind.Utc);
                 return new BsonDateTime(utcNow);
             }
+            else if (value is Guid g) 
+            {
+                value = g.ToString();
+            }
             return BsonValue.Create(value);
         }
         internal static MongoDB.Bson.IO.JsonWriterSettings GetJsonWriterSettings() 
