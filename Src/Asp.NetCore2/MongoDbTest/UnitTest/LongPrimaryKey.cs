@@ -44,10 +44,8 @@ namespace MongoDbTest
         }
 
         [SqlSugar.SugarTable("UnitStutsdsdfr5fazzz1")]
-        public class Student  
-        {
-            [SqlSugar.SugarColumn(IsPrimaryKey =true,ColumnName ="_id")]
-            public long Id { get; set; }
+        public class Student: MongoDbBaseLong
+        { 
             public string Name { get; set; }
         }
     }
