@@ -12,4 +12,19 @@ namespace SqlSugar.MongoDb
         [SugarColumn(IsPrimaryKey =true,IsOnlyIgnoreInsert =true,ColumnName ="_id")]
         public string Id { get; set; }
     }
+    public class MongoDbBaseLong
+    {
+        [SqlSugar.SugarColumn(IsPrimaryKey = true, ColumnName = "_id")]
+        public long Id { get; set; }
+    }
+    public class MongoDbBaseString
+    {
+        [SqlSugar.SugarColumn(IsPrimaryKey = true, ColumnName = "_id")]
+        public string Id { get; set; }
+    }
+    public class MongoDbBaseGuid
+    {
+        [SqlSugar.SugarColumn(IsPrimaryKey = true, ColumnName = "_id")]
+        public Guid Id { get; set; }
+    }
 }
