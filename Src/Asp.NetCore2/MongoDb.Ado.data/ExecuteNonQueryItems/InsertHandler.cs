@@ -21,7 +21,7 @@ namespace MongoDb.Ado.data
             {
                 collection.InsertOne(doc);
             }
-            var objectId = doc["_id"].AsObjectId.ToString();
+            var objectId = doc["_id"].IsObjectId ? doc["_id"].AsObjectId.ToString() : doc["_id"].ToString();
             context.ids = new string[] { objectId };
             return 1;
         }

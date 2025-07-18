@@ -628,7 +628,7 @@ namespace SqlSugar.MongoDb
                     }
                     else 
                     {
-                        bsonArray.Add(BsonValue.Create(value));
+                        bsonArray.Add(BsonValue.Create(val));
                     }
                 }
                 else

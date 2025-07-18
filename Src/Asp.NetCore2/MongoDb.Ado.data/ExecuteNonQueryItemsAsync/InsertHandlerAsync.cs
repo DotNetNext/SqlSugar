@@ -24,7 +24,7 @@ namespace MongoDb.Ado.data
             {
                 await collection.InsertOneAsync(doc, null, token);
             }
-            var objectId = doc["_id"].AsObjectId.ToString();
+            var objectId = doc["_id"].IsObjectId? doc["_id"].AsObjectId.ToString() : doc["_id"].ToString();
             context.ids = new string[] { objectId };
             return 1;
         }

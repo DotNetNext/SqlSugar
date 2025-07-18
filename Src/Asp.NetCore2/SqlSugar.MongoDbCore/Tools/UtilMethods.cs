@@ -595,7 +595,7 @@ namespace SqlSugar.MongoDb
 
         internal static BsonValue MyCreate(object value, DbColumnInfo col)
         {
-            if (value != null&&IsObjectColumn(col))
+            if (value != null&&IsObjectColumn(col)&& value is string s&&IsValidObjectId(s))
             {
                 return MyCreate(ObjectId.Parse(value?.ToString()));
             }

@@ -201,12 +201,12 @@ namespace SqlSugar.MongoDb
                     // 自动推断类型，如 string、int、bool、DateTime、ObjectId 等
                     if (col.IsJson == true)
                     {
-                        doc[col.DbColumnName] =UtilMethods.ParseJsonObject(col.Value);
+                        doc[col.DbColumnName] = UtilMethods.ParseJsonObject(col.Value);
                     }
-                    else if (col.Value!=null&&col.DataType == nameof(ObjectId)) 
+                    else if (col.Value != null && col.DataType == nameof(ObjectId))
                     {
                         doc[col.DbColumnName] = UtilMethods.MyCreate(ObjectId.Parse(col.Value?.ToString()));
-                    }
+                    }  
                     else if (col.InsertServerTime)
                     {
                         doc[col.DbColumnName] = UtilMethods.MyCreate(DateTime.Now);

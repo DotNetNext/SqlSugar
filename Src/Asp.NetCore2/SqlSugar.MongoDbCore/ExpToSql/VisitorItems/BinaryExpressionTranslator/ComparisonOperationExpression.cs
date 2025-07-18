@@ -100,7 +100,11 @@ namespace SqlSugar.MongoDb
         {
             if (entityColumnInfo?.IsPrimarykey==true||entityColumnInfo?.DataType==nameof(ObjectId)) 
             {
-                rightValue=ObjectId.Parse(rightValue?.ToString());
+                var str = rightValue?.ToString();
+                if (UtilMethods.IsValidObjectId(str))
+                {
+                    rightValue = ObjectId.Parse(str);
+                } 
             }
             return rightValue;
         }

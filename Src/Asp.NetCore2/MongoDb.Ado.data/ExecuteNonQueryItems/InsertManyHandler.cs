@@ -23,7 +23,7 @@ namespace MongoDb.Ado.data
             {
                 collection.InsertMany(documents);
             }
-            var objectIds = documents.Select(it=>it["_id"].AsObjectId.ToString()).ToArray();
+            var objectIds = documents.Select(it=>it["_id"].IsObjectId? it["_id"].AsObjectId.ToString(): it["_id"]?.ToString()).ToArray();
             context.ids = objectIds;
             return documents.Count;
         }
