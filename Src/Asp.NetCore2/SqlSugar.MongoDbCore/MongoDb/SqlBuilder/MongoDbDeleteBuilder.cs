@@ -35,7 +35,15 @@ namespace SqlSugar.MongoDb
                     var bsonArray = new BsonArray();
                     foreach (var idStr in idStrings)
                     {
-                        bsonArray.Add(ObjectId.Parse(idStr)); // fallback 为普通字符串
+                        if (UtilMethods.IsValidObjectId(idStr))
+                        {
+                            bsonArray.Add(ObjectId.Parse(idStr));
+                        }
+                        else 
+                        {
+                            var value = SqlSugar.UtilMethods.ConvertDataByTypeName(key?.UnderType?.Name,idStr);
+                            bsonArray.Add(UtilMethods.MyCreate(value));
+                        }
                     }
 
                     var filter = new BsonDocument

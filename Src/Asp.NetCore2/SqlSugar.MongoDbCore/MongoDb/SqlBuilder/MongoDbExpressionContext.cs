@@ -621,7 +621,15 @@ namespace SqlSugar.MongoDb
                     bsonArray.Add(BsonNull.Value);
                 else if (name == "_id") 
                 {
-                    bsonArray.Add(BsonValue.Create(ObjectId.Parse(val?.ToString())));
+                    var value = val?.ToString();
+                    if (UtilMethods.IsValidObjectId(value))
+                    {
+                        bsonArray.Add(BsonValue.Create(ObjectId.Parse(value)));
+                    }
+                    else 
+                    {
+                        bsonArray.Add(BsonValue.Create(value));
+                    }
                 }
                 else
                     bsonArray.Add(BsonValue.Create(val));
