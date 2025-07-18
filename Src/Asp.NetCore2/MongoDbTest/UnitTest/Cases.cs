@@ -25,7 +25,11 @@ namespace MongoDbTest
             Delete.Init();
             InsertOrUpdate.Init();
             Unitdafasdys.Init();
+
+            //主键不是ObjectId类型用例 
+            //The primary key is not an ObjectId type use case
             LongPrimaryKey.Init();
+            GuidPrimaryKey.Init();
         } 
         public static void ThrowUnitError()
         {
