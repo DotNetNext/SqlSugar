@@ -30,6 +30,7 @@ namespace MongoDbTest
             //The primary key is not an ObjectId type use case
             LongPrimaryKey.Init();
             GuidPrimaryKey.Init();
+            StringPrimaryKey.Init();
         } 
         public static void ThrowUnitError()
         {

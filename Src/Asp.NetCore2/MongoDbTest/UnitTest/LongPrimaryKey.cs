@@ -44,7 +44,7 @@ namespace MongoDbTest
         }
 
         [SqlSugar.SugarTable("UnitStutsdsdfr5fazzz1")]
-        public class Student: MongoDbBaseLong
+        public class Student: MongoDbBaseLong//继承long主键
         { 
             public string Name { get; set; }
         }
