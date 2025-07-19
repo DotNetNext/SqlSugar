@@ -1774,9 +1774,7 @@ namespace SqlSugar
                 if (expression is NewExpression s && s.Arguments.Count > 1)
                 {
                     foreach (var item in s.Arguments)
-                    {
-                        if (ExpressionTool.GetParameters(item).Count > 0) 
-                        {
+                    { 
                             var q = this.Context.Queryable<object>().QueryBuilder;
                             var itemObj= q.GetExpressionValue(item, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple).GetResultString();
                             if (q.Parameters.Any())
@@ -1789,8 +1787,7 @@ namespace SqlSugar
                             else
                             {
                                 this.GroupBy(itemObj);
-                            }
-                        }
+                            } 
                     }
                     return this;
                 }
