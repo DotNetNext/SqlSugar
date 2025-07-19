@@ -1770,6 +1770,30 @@ namespace SqlSugar
                 var groupBySql = UtilMethods.GetSqlString(DbType.SqlServer, result, newParas.ToArray());
                 this.QueryBuilder.GroupBySql = groupBySql;
                 this.QueryBuilder.GroupBySqlOld = result;
+
+                if (expression is NewExpression s && s.Arguments.Count > 1)
+                {
+                    foreach (var item in s.Arguments)
+                    {
+                        if (ExpressionTool.GetParameters(item).Count > 0) 
+                        {
+                            var q = this.Context.Queryable<object>().QueryBuilder;
+                            var itemObj= q.GetExpressionValue(item, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple).GetResultString();
+                            if (q.Parameters.Any())
+                            {
+                                var itemGroupBySql = UtilMethods.GetSqlString(DbType.SqlServer, itemObj, q.Parameters.ToArray());
+                                this.QueryBuilder.GroupBySql = itemGroupBySql;
+                                this.QueryBuilder.GroupBySqlOld = itemGroupBySql;
+                                this.GroupBy(itemGroupBySql);
+                            }
+                            else
+                            {
+                                this.GroupBy(itemObj);
+                            }
+                        }
+                    }
+                    return this;
+                }
                 GroupBy(result);
             }
             else
