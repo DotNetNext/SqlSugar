@@ -485,14 +485,14 @@ namespace SqlSugar
                 if (this.ProcessingEventStartingSQL != null)
                     ExecuteProcessingSQL(ref sql, ref parameters);
                 ExecuteBefore(sql, parameters);
-                IDbCommand sqlCommand = GetCommand(sql, parameters);
+                using IDbCommand sqlCommand = GetCommand(sql, parameters);
                 int count = sqlCommand.ExecuteNonQuery();
                 if (this.IsClearParameters)
                     sqlCommand.Parameters.Clear();
                 // 影响条数
                 this.SqlExecuteCount = count;
                 ExecuteAfter(sql, parameters);
-                sqlCommand.Dispose();
+                //sqlCommand.Dispose();
                 return count;
             }
             catch (Exception ex)
@@ -633,7 +633,7 @@ namespace SqlSugar
                 if (this.ProcessingEventStartingSQL != null)
                     ExecuteProcessingSQL(ref sql,ref parameters);
                 ExecuteBefore(sql, parameters);
-                var sqlCommand =IsOpenAsync? await GetCommandAsync(sql, parameters) : GetCommand(sql, parameters);
+                using var sqlCommand =IsOpenAsync? await GetCommandAsync(sql, parameters) : GetCommand(sql, parameters);
                 int count;
                 if (this.CancellationToken == null)
                     count=await sqlCommand.ExecuteNonQueryAsync();
@@ -643,7 +643,7 @@ namespace SqlSugar
                     sqlCommand.Parameters.Clear();
                 this.SqlExecuteCount = count;
                 ExecuteAfter(sql, parameters);
-                sqlCommand.Dispose();
+                //sqlCommand.Dispose();
                 return count;
             }
             catch (Exception ex)
