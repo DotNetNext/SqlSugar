@@ -220,6 +220,8 @@ namespace SqlSugar.GBase
             {
                 foreach (var param in parameters.OrderByDescending(it => it.ParameterName.Length))
                 {
+                    if (param.Direction == 0)
+                        param.Direction = System.Data.ParameterDirection.Input;
                     if ((sql.Contains(param.ParameterName) && UtilMethods.HasBigObjectParam(param)) ||
                         this.CommandType == CommandType.StoredProcedure)
                     {
