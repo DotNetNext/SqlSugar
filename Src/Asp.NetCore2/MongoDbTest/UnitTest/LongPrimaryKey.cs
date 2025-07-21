@@ -21,7 +21,9 @@ namespace MongoDbTest
             }).ExecuteReturnSnowflakeId();
 
             var data=db.Queryable<Student>().Where(it => it.Id == id).ToList();
+            var data0 = db.Queryable<Student>().InSingle(id);
             if (data.First().Id != id) Cases.ThrowUnitError();
+            if (data0.Id!=id) Cases.ThrowUnitError();
             data.First().Name = "a2";
             db.Updateable(data).ExecuteCommand();
             var data2 = db.Queryable<Student>().Where(it => it.Id == id).ToList();
