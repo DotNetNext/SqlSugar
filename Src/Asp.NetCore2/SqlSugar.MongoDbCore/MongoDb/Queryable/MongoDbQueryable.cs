@@ -14,12 +14,26 @@ namespace SqlSugar.MongoDb
     {
         public override T InSingle(object pkValue)
         {
-            this.Where("{ \"_id\" : { \"$oid\" : \""+pkValue+"\" } }");
-            return this.Single();
+            if (pkValue is string s && UtilMethods.IsValidObjectId(s))
+            {
+                this.Where("{ \"_id\" : { \"$oid\" : \"" + pkValue + "\" } }");
+            }
+            else 
+            {
+                this.Where(new BsonDocument("_id", UtilMethods.MyCreate(pkValue)).ToJson(UtilMethods.GetJsonWriterSettings()));
+            }
+           return this.Single();
         }
         public override Task<T> InSingleAsync(object pkValue)
         {
-            this.Where("{ \"_id\" : { \"$oid\" : \"" + pkValue + "\" } }");
+            if (pkValue is string s && UtilMethods.IsValidObjectId(s))
+            {
+                this.Where("{ \"_id\" : { \"$oid\" : \"" + pkValue + "\" } }");
+            }
+            else
+            {
+                this.Where(new BsonDocument("_id", UtilMethods.MyCreate(pkValue)).ToJson(UtilMethods.GetJsonWriterSettings()));
+            }
             return this.SingleAsync();
         }
         public override JoinQueryInfo GetJoinInfo(Expression joinExpression, JoinType joinType)
