@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Linq;
 using static Dm.net.buffer.ByteArrayBuffer;
-using System.Collections;
+using System.Collections; 
 namespace SqlSugar.MongoDb 
 {
     public class MethodCallExpressionTractor
@@ -54,6 +54,16 @@ namespace SqlSugar.MongoDb
                     {
                         var value = context.GetType().GetMethod(name).Invoke(context, new object[] { model });
                         result = UtilMethods.MyCreate(value?.ToString());
+                    }
+                    else if (name.StartsWith(nameof(SqlFunc.Equals)))
+                    {
+
+                        var left = model.DataObject;
+                        var right = model.Args[0].MemberValue;
+                        var exp = Expression.Equal(left as Expression, right as Expression);
+                        var resultValue = new ExpressionVisitor(_context, new ExpressionVisitorContext()).Visit(exp);
+                        result = new ExpressionVisitor(_context,new ExpressionVisitorContext()).Visit(exp);
+                        return result;
                     }
                     else
                     {

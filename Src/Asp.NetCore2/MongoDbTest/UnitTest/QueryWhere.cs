@@ -40,6 +40,8 @@ namespace MongoDbTest
             var data=db.Queryable<Student>().Where(it => it.Id == pks.Last()).Select(it => it.Name).Single();
             var data2 = db.Queryable<Student>().Where(it => it.Id == pks.Last()).Select(it => it.Name).First();
             if (data!="jack"||data2!="jack") Cases.ThrowUnitError();
+            var data3 = db.Queryable<Student>().Where(it => it.Name.Equals("jack")).Select(it => it.Name).First();
+            if (data3 != "jack") Cases.ThrowUnitError();
         }
 
         private static void FilterStudentsByBool(SqlSugar.SqlSugarClient db)
