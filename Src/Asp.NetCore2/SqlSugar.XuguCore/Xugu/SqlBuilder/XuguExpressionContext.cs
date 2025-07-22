@@ -46,7 +46,11 @@ namespace SqlSugar.Xugu
             var parameter2 = model.Args[1];
             return string.Format(" ( cast({0} as date)= cast( {1} as date) ) ", parameter.MemberName, parameter2.MemberName); ;
         }
-
+        public override string ToDecimal(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            return string.Format(" CAST({0} AS DECIMAL(18,6))", parameter.MemberName);
+        }
         public override string IsNull(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
