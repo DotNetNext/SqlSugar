@@ -27,7 +27,26 @@ namespace MongoDb.Ado.data
             if (dotIndex == -1 || parenIndex == -1 || braceIndex == -1)
                 throw new FormatException("Command format not recognized.");
 
-            string collectionName = command.Substring(3, dotIndex - 3).Trim();
+            string collectionNameRaw = command.Substring(3, dotIndex - 3).Trim();
+            string collectionName = collectionNameRaw;
+
+            // 处理 getCollection("xxx") 格式
+            if (collectionNameRaw.StartsWith("getCollection(", StringComparison.OrdinalIgnoreCase))
+            {
+                int start = collectionNameRaw.IndexOf('(');
+                int end = collectionNameRaw.LastIndexOf(')');
+                if (start != -1 && end != -1 && end > start)
+                {
+                    string inner = collectionNameRaw.Substring(start + 1, end - start - 1).Trim();
+                    // 去掉引号
+                    if ((inner.StartsWith("\"") && inner.EndsWith("\"")) || (inner.StartsWith("'") && inner.EndsWith("'")))
+                    {
+                        inner = inner.Substring(1, inner.Length - 2);
+                    }
+                    collectionName = inner;
+                }
+            }
+
             string operation = command.Substring(dotIndex + 1, parenIndex - dotIndex - 1).Trim();
 
             string jsonPart = command.Substring(parenIndex + 1).Trim();
