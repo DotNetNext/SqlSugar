@@ -1052,7 +1052,7 @@ namespace SqlSugar
             var result = SqlQuery<T, T2, T3, T4, T5, T6, object>(sql, parameters);
             return new Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>>(result.Item1, result.Item2, result.Item3, result.Item4, result.Item5, result.Item6);
         }
-        public Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>, List<T7>> SqlQuery<T, T2, T3, T4, T5, T6, T7>(string sql, object parameters = null)
+        public virtual Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>, List<T7>> SqlQuery<T, T2, T3, T4, T5, T6, T7>(string sql, object parameters = null)
         {
             var parsmeterArray = this.GetParameters(parameters);
             this.Context.InitMappingInfo<T>();
@@ -1513,7 +1513,7 @@ namespace SqlSugar
                 this.Context.Root.AsyncId = Guid.NewGuid(); ;
             }
         }
-        private static bool NextResult(IDataReader dataReader)
+        protected bool NextResult(IDataReader dataReader)
         {
             try
             {
@@ -1784,7 +1784,7 @@ namespace SqlSugar
 
  
 
-        private List<TResult> GetData<TResult>(Type entityType, IDataReader dataReader)
+        protected List<TResult> GetData<TResult>(Type entityType, IDataReader dataReader)
         {
             List<TResult> result;
             if (entityType == UtilConstants.DynamicType)

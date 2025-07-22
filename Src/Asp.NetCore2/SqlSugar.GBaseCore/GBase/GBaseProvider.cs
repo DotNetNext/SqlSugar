@@ -39,7 +39,77 @@ namespace SqlSugar.GBase
 
         public string SplitCommandTag => UtilConstants.ReplaceCommaKey.Replace("{", "").Replace("}", "");
 
-       
+        public override Tuple<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>, List<T7>> SqlQuery<T, T2, T3, T4, T5, T6, T7>(string sql, object parameters = null)
+        {
+            var parsmeterArray = this.GetParameters(parameters);
+            this.Context.InitMappingInfo<T>();
+            var builder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
+            builder.SqlQueryBuilder.sql.Append(sql);
+            if (parsmeterArray != null && parsmeterArray.Any())
+                builder.SqlQueryBuilder.Parameters.AddRange(parsmeterArray);
+            string sqlString = builder.SqlQueryBuilder.ToSqlString();
+            SugarParameter[] Parameters = builder.SqlQueryBuilder.Parameters.ToArray();
+            this.GetDataBefore(sqlString, Parameters);
+            using (var dataReader = this.GetDataReader(sqlString, Parameters))
+            {
+                DbDataReader DbReader = (DbDataReader)dataReader;
+                List<T> result = new List<T>();
+                result = GetData<T>(typeof(T), dataReader);
+          
+                List<T2> result2 = null;
+                if (NextResult(dataReader))
+                {
+                    this.Context.InitMappingInfo<T2>();
+                    result2 = GetData<T2>(typeof(T2), dataReader);
+                }
+                List<T3> result3 = null;
+                if (NextResult(dataReader))
+                {
+                    this.Context.InitMappingInfo<T3>();
+                    result3 = GetData<T3>(typeof(T3), dataReader);
+                }
+                List<T4> result4 = null;
+                if (NextResult(dataReader))
+                {
+                    this.Context.InitMappingInfo<T4>();
+                    result4 = GetData<T4>(typeof(T4), dataReader);
+                }
+                List<T5> result5 = null;
+                if (NextResult(dataReader))
+                {
+                    this.Context.InitMappingInfo<T5>();
+                    result5 = GetData<T5>(typeof(T5), dataReader);
+                }
+                List<T6> result6 = null;
+                if (NextResult(dataReader))
+                {
+                    this.Context.InitMappingInfo<T6>();
+                    result6 = GetData<T6>(typeof(T6), dataReader);
+                }
+                List<T7> result7 = null;
+                if (NextResult(dataReader))
+                {
+                    this.Context.InitMappingInfo<T7>();
+                    result7 = GetData<T7>(typeof(T7), dataReader);
+                }
+                builder.SqlQueryBuilder.Clear();
+                if (this.Context.Ado.DataReaderParameters != null)
+                {
+                    foreach (IDataParameter item in this.Context.Ado.DataReaderParameters)
+                    {
+                        var parameter = parsmeterArray.FirstOrDefault(it => item.ParameterName.Substring(1) == it.ParameterName.Substring(1));
+                        if (parameter != null)
+                        {
+                            parameter.Value = item.Value;
+                        }
+                    }
+                    this.Context.Ado.DataReaderParameters = null;
+                }
+                this.GetDataAfter(sqlString, Parameters);
+                return Tuple.Create<List<T>, List<T2>, List<T3>, List<T4>, List<T5>, List<T6>, List<T7>>(result, result2, result3, result4, result5, result6, result7);
+            }
+        }
+
         public override object GetScalar(string sql, params SugarParameter[] parameters)
         {
             if (this.Context.Ado.Transaction != null)
