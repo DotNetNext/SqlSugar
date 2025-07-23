@@ -684,6 +684,45 @@ namespace SqlSugar.MongoDb
             return testValue.ToJson(UtilMethods.GetJsonWriterSettings());
         }
 
+        public override string DateDiff(MethodCallExpressionModel model)
+        {
+            var startDateExpr = model.Args[1].MemberValue as Expression;
+            var endDateExpr = model.Args[2].MemberValue as Expression;
+            var unitExpr = model.Args[0].MemberValue;
+
+            BsonValue startDate = new ExpressionVisitor(context).Visit(startDateExpr);
+            BsonValue endDate = new ExpressionVisitor(context).Visit(endDateExpr);
+
+            string unit = unitExpr.ToString().ToLower() switch
+            {
+                "year" => "year",
+                "month" => "month",
+                "day" => "day",
+                "hour" => "hour",
+                "minute" => "minute",
+                "second" => "second",
+                "millisecond" => "millisecond",
+                _ => throw new NotSupportedException($"不支持的时间单位: {unitExpr}")
+            };
+
+            var dateDiffDoc = new BsonDocument("$dateDiff", new BsonDocument
+            {
+                { "startDate", UtilMethods.GetMemberName(startDate)},
+                { "endDate", UtilMethods.GetMemberName(endDate) },
+                { "unit", unit }
+            });
+
+            return dateDiffDoc.ToJson(UtilMethods.GetJsonWriterSettings());
+        }
+        public override string DateAddDay(MethodCallExpressionModel model)
+        {
+            model.Args.Add(new MethodCallExpressionArgs()
+            {
+                 MemberValue=DateType.Day
+            });
+            return base.DateAddByType(model);
+        }
+
         #region  Helper 
         private static BsonValue GetMemberName(BsonValue memberName)
         {

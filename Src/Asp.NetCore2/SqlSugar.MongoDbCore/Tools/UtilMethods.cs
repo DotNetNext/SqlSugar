@@ -623,8 +623,10 @@ namespace SqlSugar.MongoDb
                 return memberName;
             else if (UtilMethods.IsMongoVariable(memberName))
                 return memberName;
-            else
+            else if (memberName is BsonString)
                 return $"${memberName}";
+            else
+                return memberName;
         }
         //public static object ConvertDataByTypeName(string ctypename,string value)
         //{
