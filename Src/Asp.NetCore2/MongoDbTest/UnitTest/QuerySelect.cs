@@ -55,8 +55,10 @@ namespace MongoDbTest
             {
                 Day = it.CreateDateTime.AddDays(1),
                 Year = it.CreateDateTime.AddYears(1),
-                AddMonth = it.CreateDateTime.AddMonths(1)
+                AddMonth = it.CreateDateTime.AddMonths(1),
+                datediff=SqlFunc.DateDiff(DateType.Day,it.CreateDateTime,DateTime.Now.AddDays(2))
             }).ToList();
+            if(list4.First().datediff!=2) Cases.ThrowUnitError();
             if (list4.First().Day.Date != dt.Date.AddDays(1)) Cases.ThrowUnitError();
             if (list4.First().Year.Date != dt.Date.AddYears(1)) Cases.ThrowUnitError();
             if (list4.First().AddMonth.Date != dt.Date.AddMonths(1)) Cases.ThrowUnitError();
