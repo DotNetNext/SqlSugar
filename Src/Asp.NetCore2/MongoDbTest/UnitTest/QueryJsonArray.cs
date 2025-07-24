@@ -61,6 +61,16 @@ namespace MongoDbTest
             if (!list2.First().Ids.Contains(x)) Cases.ThrowUnitError();
             var list3 = db.Queryable<IdsModel>().Where(it => !it.Ids.Contains(x)).ToList();
             if(list3.Any(s=>s.Ids.Contains(x))) Cases.ThrowUnitError();
+            db.Insertable(new IdsModel()
+            {
+                name = "b",
+                Ids = new List<string> { ObjectId.GenerateNewId() + "", ObjectId.GenerateNewId() + "" },
+                Students = new List<Student>() {
+              new Student(){ Id =ObjectId.GenerateNewId()+""}
+            }
+            }).ExecuteCommand();
+            var list4 = db.Queryable<IdsModel>().Select(it => it.Ids.Count()).ToList();
+            if (list4.Last()!=2) Cases.ThrowUnitError();
         }
 
         [SqlSugar.SugarTable("UnitStudentdfsds3zzz1")]
