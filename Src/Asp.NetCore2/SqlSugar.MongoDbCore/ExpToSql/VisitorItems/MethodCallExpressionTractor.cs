@@ -62,7 +62,7 @@ namespace SqlSugar.MongoDb
                         var right = model.Args[0].MemberValue;
                         var exp = Expression.Equal(left as Expression, right as Expression);
                         var resultValue = new ExpressionVisitor(_context, new ExpressionVisitorContext()).Visit(exp);
-                        result = new ExpressionVisitor(_context,new ExpressionVisitorContext()).Visit(exp);
+                        result = new ExpressionVisitor(_context, new ExpressionVisitorContext()).Visit(exp);
                         return result;
                     }
                     else
@@ -99,6 +99,27 @@ namespace SqlSugar.MongoDb
                 {
                     var ifConditions = MongoDbExpTools.ExtractIfElseEnd(methodCallExpression);
                     return BuildMongoSwitch(ifConditions);
+                }
+                else if (IsCountJson(methodCallExpression, name))
+                {
+                    // 处理 it.xx.Count() 其中 xx 为 JSON 数组字段
+                    var memberExpression = methodCallExpression.Arguments.FirstOrDefault() as MemberExpression;
+                    if (memberExpression != null)
+                    {
+                        // 获取集合字段名
+                        var collectionField = MongoNestedTranslator.TranslateNoFieldName(
+                            memberExpression,
+                            _context,
+                            new ExpressionVisitorContext { IsText = true }
+                        );
+
+                        // 构造 $size 查询
+                        var bson = new BsonDocument
+                            {
+                                { "$size", UtilMethods.GetMemberName(collectionField) }
+                            };
+                        result = bson;
+                    }
                 }
                 else if (IsAnyMethodCall(methodCallExpression, name))
                 {
@@ -245,6 +266,10 @@ namespace SqlSugar.MongoDb
         {
             return name == "Any" && methodCallExpression.Arguments.Count == 2;
         }
-
+         
+        private static bool IsCountJson(MethodCallExpression methodCallExpression, string name)
+        {
+            return name == "Count" && methodCallExpression?.Arguments?.FirstOrDefault() is MemberExpression m;
+        } 
     }
 }
