@@ -243,6 +243,10 @@ namespace MongoDbTest
             }).ToList();
             if (list29.Any(it => it.age >15 && it.age2 != 1)) Cases.ThrowUnitError();
             if (list29.Any(it => it.age < 15 && it.age2 != 2)) Cases.ThrowUnitError();
+            db.Queryable<Student>().Where(it => it.Age == 1).OrderBy(IT=>IT.Id).ToList();
+         
+            var list2111= db.Queryable<object>().AS("UnitStudent1231sds3z1")
+                .OrderBy("{ \"Name\" : 1 }").Where("{  Age: 1 }").ToDataTable();
         }
         [SqlSugar.SugarTable("UnitStudent1231sds3z1")]
         public class Student : MongoDbBase
