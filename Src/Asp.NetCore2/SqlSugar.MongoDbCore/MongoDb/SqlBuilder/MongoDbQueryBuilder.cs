@@ -128,7 +128,7 @@ namespace SqlSugar.MongoDb
                 order = order.Substring("ORDER BY ".Length).Trim();
 
                 var sortDoc = new BsonDocument();
-                if (order.StartsWith("{") && order.EndsWith("}")&&!order.Contains("UtilConstants")) 
+                if (order.StartsWith("{") && order.EndsWith("}")&&!order.Contains(UtilConstants.FieldName)) 
                 {
                     operations.Add($"{{ \"$sort\": {order} }}");
                     return;
