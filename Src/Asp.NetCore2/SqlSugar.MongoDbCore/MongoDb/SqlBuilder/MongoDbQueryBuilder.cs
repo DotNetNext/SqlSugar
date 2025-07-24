@@ -1,5 +1,4 @@
-﻿using Dm.util;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using MongoDB.Driver;
 using SqlSugar.MongoDb;
 using System;
@@ -129,6 +128,11 @@ namespace SqlSugar.MongoDb
                 order = order.Substring("ORDER BY ".Length).Trim();
 
                 var sortDoc = new BsonDocument();
+                if (order.StartsWith("{") && order.EndsWith("}")&&!order.Contains("UtilConstants")) 
+                {
+                    operations.Add($"{{ \"$sort\": {order} }}");
+                    return;
+                }
                 foreach (var str in order.Split(","))
                 {
                     int lastSpace = str.LastIndexOf(' ');
@@ -204,8 +208,8 @@ namespace SqlSugar.MongoDb
                 var joinWhereDoc = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonDocument>(item.JoinWhere);
                 var isEasyJoin = !(this.JoinQueryInfoLets?.Any(s => s.Key.EqualCase(item.ShortName)) == true);
                 var isExp = !isEasyJoin;
-                var localField = isExp ? string.Empty : joinWhereDoc.GetElement(0).Value["$eq"][0]?.toString()?.TrimStart('$'); 
-                var foreignField = isExp ?string.Empty: joinWhereDoc.GetElement(0).Value["$eq"][1]?.toString()?.TrimStart($"${item.ShortName}.".toCharArray());
+                var localField = isExp ? string.Empty : joinWhereDoc.GetElement(0).Value["$eq"][0]?.ToString()?.TrimStart('$'); 
+                var foreignField = isExp ?string.Empty: joinWhereDoc.GetElement(0).Value["$eq"][1]?.ToString()?.TrimStart($"${item.ShortName}.".ToCharArray());
 
                 string from = item.TableName ?? item.ShortName ?? "Unknown";
                 string asName = item.ShortName;
