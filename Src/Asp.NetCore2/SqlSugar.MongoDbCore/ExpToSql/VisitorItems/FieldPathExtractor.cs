@@ -184,7 +184,7 @@ namespace SqlSugar.MongoDb
 
         private static string GetLetKey(string resultString)
         {
-            return $"let_{resultString}";
+            return $"let_{resultString?.Replace(".","_")}";
         }
     }
 
