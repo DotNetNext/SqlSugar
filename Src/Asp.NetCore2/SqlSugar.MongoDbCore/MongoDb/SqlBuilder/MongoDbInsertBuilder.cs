@@ -116,7 +116,7 @@ namespace SqlSugar.MongoDb
                     }
                     return resultList;
                 }
-                else if (json is BsonArray array) 
+                else if (json is BsonArray array&&type.GetGenericArguments().Any()) 
                 {
                     var bsonArray = array;
 
@@ -141,6 +141,34 @@ namespace SqlSugar.MongoDb
                             resultList.Add(obj);
                         }
                     }
+                    return resultList;
+                }
+                else if (json is BsonArray array2 && type.IsArray)
+                { 
+                    var bsonArray = array2;
+
+                    // 3. 获取元素类型，例如 List<MyClass> => MyClass
+                    Type elementType = type.GetElementType();
+
+                    // 4. 构造泛型列表对象
+                    var resultList= Array.CreateInstance(elementType, array2.Count());
+
+                    // 5. 反序列化每一项
+                    int index = 0;
+                    foreach (var item in bsonArray)
+                    {
+                        if (item is BsonDocument doc)
+                        {
+                            var obj = BsonSerializer.Deserialize(doc, elementType);
+                            resultList.SetValue(obj, index);
+                        }
+                        else
+                        {
+                            var obj = MongoDbDataReaderHelper.ConvertBsonValue(item);
+                            resultList.SetValue(obj, index);
+                        }
+                        index++;
+                    } 
                     return resultList;
                 }
                 else
