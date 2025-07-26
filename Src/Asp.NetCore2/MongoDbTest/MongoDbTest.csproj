@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="UnitTest\QueryLeftJoin3.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\MongoDb.Ado.data\MongoDb.Ado.Data.csproj" />
     <ProjectReference Include="..\SqlSugar.MongoDbCore\SqlSugar.MongoDbCore.csproj" />
   </ItemGroup>
