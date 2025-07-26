@@ -94,7 +94,7 @@ namespace SqlSugar.DuckDB
                 new KeyValuePair<string, CSharpDataType>("USMALLINT", CSharpDataType.@short),  // 无符号
                 new KeyValuePair<string, CSharpDataType>("UINTEGER", CSharpDataType.@int),     // 无符号
                 new KeyValuePair<string, CSharpDataType>("UBIGINT", CSharpDataType.@long),     // 无符号
-
+                new KeyValuePair<string, CSharpDataType>("HUGEINT", CSharpDataType.@long), 
                 // 浮点数类型
                 new KeyValuePair<string, CSharpDataType>("FLOAT", CSharpDataType.@float),       // 4字节
                 new KeyValuePair<string, CSharpDataType>("DOUBLE", CSharpDataType.@double),     // 8字节
