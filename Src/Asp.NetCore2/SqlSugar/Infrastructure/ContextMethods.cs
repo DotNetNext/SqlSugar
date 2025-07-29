@@ -790,6 +790,10 @@ namespace SqlSugar
                         {
                             addItem = addItem.ObjToInt();
                         }
+                        else if (underType == UtilConstants.LongType && addItem != null)
+                        {
+                            addItem = addItem.ObjToLong();
+                        }
                         else if (addItem!=null&&underType?.FullName == "System.DateOnly") 
                         {
                             addItem = Convert.ToDateTime(addItem).ToString("yyyy-MM-dd");
