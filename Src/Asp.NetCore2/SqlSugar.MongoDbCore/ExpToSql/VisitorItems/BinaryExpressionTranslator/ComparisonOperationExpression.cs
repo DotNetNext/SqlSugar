@@ -41,10 +41,20 @@ namespace SqlSugar.MongoDb
         {
             string leftValue = isLeftValue ? field.ToString() : value.ToString();
             BsonValue rightValue = isLeftValue ?   value: field;
-            var expression = isLeftValue ? expr.Left as MemberExpression : expr.Right as MemberExpression;
+            var expression = isLeftValue ? MongoDbExpTools.RemoveConvert(expr.Left) as MemberExpression : MongoDbExpTools.RemoveConvert(expr.Right) as MemberExpression;
             EntityColumnInfo CurrentColumnInfo = null;
+            Type iSugarDataConverterType=UtilConstants.StringType;
             leftValue = GetLeftValue(leftValue, expression, ref CurrentColumnInfo);
+            if (CurrentColumnInfo?.SqlParameterDbType is Type t && typeof(ISugarDataConverter).IsAssignableFrom(t)) 
+            {
+                iSugarDataConverterType = t;
+            }
             rightValue = GetRightValue(CurrentColumnInfo, rightValue);
+            if (iSugarDataConverterType != UtilConstants.StringType) 
+            { 
+                var p = UtilMethods.GetParameterConverter(0, _context.context, rightValue,expression,CurrentColumnInfo);
+                rightValue = UtilMethods.MyCreate(p.Value);
+            }
             if (IsEq(op)) 
                 return GetEqResult(leftValue, rightValue); 
             else 

@@ -22,6 +22,15 @@ namespace SqlSugar.MongoDb
 {
     public class UtilMethods
     {
+        internal static SugarParameter GetParameterConverter(int index, ISqlSugarClient db, object value, Expression oppoSiteExpression, EntityColumnInfo columnInfo)
+        {
+            var entity = db.EntityMaintenance.GetEntityInfo(oppoSiteExpression.Type);
+            var type = columnInfo.SqlParameterDbType as Type;
+            var ParameterConverter = type.GetMethod("ParameterConverter").MakeGenericMethod(columnInfo.PropertyInfo.PropertyType);
+            var obj = Activator.CreateInstance(type);
+            var p = ParameterConverter.Invoke(obj, new object[] { value, 100 + index }) as SugarParameter;
+            return p;
+        }
         internal static SugarParameter GetParameterConverter(int index, ISqlSugarClient db, object value, EntityInfo entityInfo, EntityColumnInfo columnInfo)
         {
             var entity = entityInfo;
