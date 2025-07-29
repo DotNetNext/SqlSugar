@@ -95,7 +95,7 @@ namespace SqlSugar.MongoDb
             return filterArray;
         }
 
-        private static void UpdateByObject(List<IGrouping<int, DbColumnInfo>> groupList, List<string> operations, List<string> pks)
+        private  void UpdateByObject(List<IGrouping<int, DbColumnInfo>> groupList, List<string> operations, List<string> pks)
         {
             foreach (var group in groupList)
             {
@@ -121,6 +121,11 @@ namespace SqlSugar.MongoDb
                     {
                         var bsonValue = UtilMethods.MyCreate(col.Value, col);
                         setDoc[col.DbColumnName] = bsonValue;
+                    }
+                    else if (col.SqlParameterDbType is Type t && typeof(ISugarDataConverter).IsAssignableFrom(t))
+                    {
+                        var value = UtilMethods.GetParameterConverter(0, this.Context, col.Value, this.EntityInfo, this.EntityInfo.Columns.FirstOrDefault(s => s.PropertyName.EqualCase(col.PropertyName)));
+                        setDoc[col.DbColumnName] = UtilMethods.MyCreate(value);
                     }
                 }
 

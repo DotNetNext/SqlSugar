@@ -22,6 +22,15 @@ namespace SqlSugar.MongoDb
 {
     public class UtilMethods
     {
+        internal static SugarParameter GetParameterConverter(int index, ISqlSugarClient db, object value, EntityInfo entityInfo, EntityColumnInfo columnInfo)
+        {
+            var entity = entityInfo;
+            var type = columnInfo.SqlParameterDbType as Type;
+            var ParameterConverter = type.GetMethod("ParameterConverter").MakeGenericMethod(columnInfo.PropertyInfo.PropertyType);
+            var obj = Activator.CreateInstance(type);
+            var p = ParameterConverter.Invoke(obj, new object[] { value, 100 + index }) as SugarParameter;
+            return p;
+        }
         public static bool IsCollectionOrArrayButNotByteArray(Type type)
         {
             if (type == null)

@@ -234,10 +234,15 @@ namespace SqlSugar.MongoDb
                     else if (col.Value != null && col.DataType == nameof(ObjectId))
                     {
                         doc[col.DbColumnName] = UtilMethods.MyCreate(ObjectId.Parse(col.Value?.ToString()));
-                    }  
+                    }
                     else if (col.InsertServerTime)
                     {
                         doc[col.DbColumnName] = UtilMethods.MyCreate(DateTime.Now);
+                    }
+                    else if (col.SqlParameterDbType is Type t&& typeof(ISugarDataConverter).IsAssignableFrom(t)) 
+                    {
+                        var p =UtilMethods.GetParameterConverter(0,this.Context,col.Value,this.EntityInfo,this.EntityInfo.Columns.FirstOrDefault(s=>s.PropertyName.EqualCase(col.PropertyName)));
+                        doc[col.DbColumnName] = UtilMethods.MyCreate(p.Value);
                     }
                     else
                     {
