@@ -40,6 +40,12 @@ namespace MongoDbTest
             var list3 = db.Queryable<School>().Where(it=>it.Name== "zz大学"||it.Name== "ss大学").ToPageList(1, 2, ref count);
             if(count!=2||list3.Count!=2) Cases.ThrowUnitError();
             if (list3.First().Name!= "zz大学"|| list3.Last().Name != "ss大学") Cases.ThrowUnitError();
+            db.CodeFirst.InitTables<School2>();
+            db.DbMaintenance.TruncateTable<School2>();
+            db.Insertable(new School2() { StudentCount = 2222 }).ExecuteCommand();
+            db.Insertable(new School2() { StudentCount = 210 }).ExecuteCommand();
+            var count2=db.Queryable<School2>().Max(s => s.StudentCount);
+            if (count2!= 2222) Cases.ThrowUnitError();
         }
     }
     [SqlSugar.SugarTable("UnitStudent123131")]
@@ -53,5 +59,10 @@ namespace MongoDbTest
     public class School : MongoDbBase 
     {
         public string Name{ get; set; }
+    }
+    [SqlSugar.SugarTable("UnitSchool1231312")]
+    public class School2 : MongoDbBase
+    { 
+        public int StudentCount { get; set; }
     }
 }
