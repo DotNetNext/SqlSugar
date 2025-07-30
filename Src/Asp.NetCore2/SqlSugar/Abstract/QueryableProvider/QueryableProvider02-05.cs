@@ -363,6 +363,7 @@ namespace SqlSugar
             {
                 sql = " ";
             }
+            this.QueryBuilder.SelectNewIgnoreColumns = clone.QueryBuilder.SelectNewIgnoreColumns;
             this.QueryBuilder.SubToListParameters = clone.QueryBuilder.SubToListParameters;
             this.QueryBuilder.Parameters = clone.QueryBuilder.Parameters;
             this.QueryBuilder.LambdaExpressions.ParameterIndex = clone.QueryBuilder.LambdaExpressions.ParameterIndex;
@@ -1196,6 +1197,7 @@ namespace SqlSugar
                 sql = " ";
             }
             this.QueryBuilder.Parameters = clone.QueryBuilder.Parameters;
+            this.QueryBuilder.SelectNewIgnoreColumns = clone.QueryBuilder.SelectNewIgnoreColumns;
             this.QueryBuilder.SubToListParameters = clone.QueryBuilder.SubToListParameters;
             this.QueryBuilder.LambdaExpressions.ParameterIndex = clone.QueryBuilder.LambdaExpressions.ParameterIndex;
             var parameters = (expression as LambdaExpression).Parameters;
@@ -1927,6 +1929,7 @@ namespace SqlSugar
                 sql = " ";
             }
             this.QueryBuilder.Parameters = clone.QueryBuilder.Parameters;
+            this.QueryBuilder.SelectNewIgnoreColumns = clone.QueryBuilder.SelectNewIgnoreColumns;
             this.QueryBuilder.SubToListParameters = clone.QueryBuilder.SubToListParameters;
             this.QueryBuilder.LambdaExpressions.ParameterIndex=clone.QueryBuilder.LambdaExpressions.ParameterIndex; 
             var parameters = (expression as LambdaExpression).Parameters;
@@ -2762,6 +2765,7 @@ namespace SqlSugar
                 sql = " ";
             }
             this.QueryBuilder.Parameters = clone.QueryBuilder.Parameters;
+            this.QueryBuilder.SelectNewIgnoreColumns = clone.QueryBuilder.SelectNewIgnoreColumns;
             this.QueryBuilder.SubToListParameters = clone.QueryBuilder.SubToListParameters;
             this.QueryBuilder.LambdaExpressions.ParameterIndex = clone.QueryBuilder.LambdaExpressions.ParameterIndex;
             var parameters = (expression as LambdaExpression).Parameters;
