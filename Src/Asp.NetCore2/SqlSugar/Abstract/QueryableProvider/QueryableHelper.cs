@@ -2410,8 +2410,17 @@ namespace SqlSugar
                  new QueryableAppendColumn(){ Name="sugarIndex",AsName="sugarIndex" }
                 };
             this.QueryBuilder.AppendValues = null;
+            var isNavQuery = this.QueryBuilder.Includes != null;
+            if (isNavQuery)
+            {
+                this.Context.Ado.DbBind.QueryBuilder.AppendColumns = this.QueryBuilder.AppendColumns;
+            }
             var subList = ExpressionBuilderHelper.CallFunc(callType, methodParamters, this.Clone(), "SubQueryList");
             var appendValue = this.QueryBuilder.AppendValues;
+            if (isNavQuery)
+            {
+                appendValue = this.Context.Ado.DbBind.QueryBuilder.AppendValues;
+            }
             var list = (subList as IEnumerable).Cast<object>().ToList();
             if (isFirst && !typeof(TResult).IsAnonymousType())
             {
