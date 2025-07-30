@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Net.Mime;
 using System.Threading.Tasks;
@@ -61,7 +62,7 @@ public static class Unitdfafaa
                    .ToList<StudentsSubDto>(),
            }, true)
            .ToListAsync();
-
+        if (!result.First().Subs.Any()) throw new Exception("unit error");
         Console.WriteLine(JsonConvert.SerializeObject(result));
          
     }
