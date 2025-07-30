@@ -34,6 +34,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            Unitdafaaaaa.Init();
             Unitdfafaa.Init();
             Unitdasfyasdfa.Init();
             Unitafdssfasydsfsf.Init();
