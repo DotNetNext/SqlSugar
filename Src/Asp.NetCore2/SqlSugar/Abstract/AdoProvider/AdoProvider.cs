@@ -485,15 +485,18 @@ namespace SqlSugar
                 if (this.ProcessingEventStartingSQL != null)
                     ExecuteProcessingSQL(ref sql, ref parameters);
                 ExecuteBefore(sql, parameters);
-                using IDbCommand sqlCommand = GetCommand(sql, parameters);
-                int count = sqlCommand.ExecuteNonQuery();
-                if (this.IsClearParameters)
-                    sqlCommand.Parameters.Clear();
-                // 影响条数
-                this.SqlExecuteCount = count;
-                ExecuteAfter(sql, parameters);
-                //sqlCommand.Dispose();
-                return count;
+                using (IDbCommand sqlCommand = GetCommand(sql, parameters))
+                {
+                    int count = sqlCommand.ExecuteNonQuery();
+                    if (this.IsClearParameters)
+                        sqlCommand.Parameters.Clear();
+                    // 影响条数
+                    this.SqlExecuteCount = count;
+                    ExecuteAfter(sql, parameters);
+
+                    //sqlCommand.Dispose();
+                    return count;
+                }
             }
             catch (Exception ex)
             {
@@ -633,18 +636,20 @@ namespace SqlSugar
                 if (this.ProcessingEventStartingSQL != null)
                     ExecuteProcessingSQL(ref sql,ref parameters);
                 ExecuteBefore(sql, parameters);
-                using var sqlCommand =IsOpenAsync? await GetCommandAsync(sql, parameters) : GetCommand(sql, parameters);
-                int count;
-                if (this.CancellationToken == null)
-                    count=await sqlCommand.ExecuteNonQueryAsync();
-                else
-                    count=await sqlCommand.ExecuteNonQueryAsync(this.CancellationToken.Value);
-                if (this.IsClearParameters)
-                    sqlCommand.Parameters.Clear();
-                this.SqlExecuteCount = count;
-                ExecuteAfter(sql, parameters);
-                //sqlCommand.Dispose();
-                return count;
+                using (var sqlCommand = IsOpenAsync ? await GetCommandAsync(sql, parameters) : GetCommand(sql, parameters))
+                {
+                    int count;
+                    if (this.CancellationToken == null)
+                        count = await sqlCommand.ExecuteNonQueryAsync();
+                    else
+                        count = await sqlCommand.ExecuteNonQueryAsync(this.CancellationToken.Value);
+                    if (this.IsClearParameters)
+                        sqlCommand.Parameters.Clear();
+                    this.SqlExecuteCount = count;
+                    ExecuteAfter(sql, parameters);
+                    //sqlCommand.Dispose();
+                    return count;
+                }
             }
             catch (Exception ex)
             {
