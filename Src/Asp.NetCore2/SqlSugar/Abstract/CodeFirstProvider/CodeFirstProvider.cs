@@ -188,7 +188,14 @@ namespace SqlSugar
             TableDifferenceProvider result = new TableDifferenceProvider();
             foreach (var type in types)
             {
-                GetDifferenceTables(result, type);
+                try
+                {
+                    GetDifferenceTables(result, type);
+                }
+                catch (Exception ex)
+                {
+                    Check.ExceptionEasy($"实体{type.Name} 出错,具体错误:" + ex.Message, $" {type.Name} error." + ex.Message);
+                }
             }
             return result;
         }
