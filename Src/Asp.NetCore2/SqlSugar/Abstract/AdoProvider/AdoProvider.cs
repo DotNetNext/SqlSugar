@@ -345,13 +345,10 @@ namespace SqlSugar
             var result = new DbResult<bool>();
             try
             {
-                this.BeginTran();
-                var oldSlave = this.Context.CurrentConnectionConfig.SlaveConnectionConfigs;
-                this.Context.CurrentConnectionConfig.SlaveConnectionConfigs = null;
+                this.BeginTran(); 
                 if (action != null)
                     action();
-                this.CommitTran();
-                this.Context.CurrentConnectionConfig.SlaveConnectionConfigs = oldSlave;
+                this.CommitTran(); 
                 result.Data = result.IsSuccess = true;
             }
             catch (Exception ex)
