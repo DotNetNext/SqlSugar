@@ -14,7 +14,14 @@ namespace OrmTest
         public static void Init()
         {
             var db = NewUnitTest.Db;
-
+            db.CurrentConnectionConfig.SlaveConnectionConfigs =
+            new List<SlaveConnectionConfig>() {
+                    new()
+                    {
+                        HitRate=10,
+                        ConnectionString = NewUnitTest.Db.CurrentConnectionConfig.ConnectionString,
+                    }
+                };
             var types = Assembly.GetExecutingAssembly().GetTypes()
                     .Where(type => !type.IsGenericType)
                     .Where(s=>s.Namespace== "WebApplication4")
