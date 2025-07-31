@@ -64,6 +64,8 @@ namespace SqlSugar
         }
         public virtual void InitTables(Type entityType)
         {
+            var oldSlave = this.Context.CurrentConnectionConfig.SlaveConnectionConfigs;
+            this.Context.CurrentConnectionConfig.SlaveConnectionConfigs = null;
             var splitTableAttribute = entityType.GetCustomAttribute<SplitTableAttribute>();
             if (splitTableAttribute != null) 
             {
@@ -104,6 +106,7 @@ namespace SqlSugar
 
                 RestMappingTables(oldTableList);
             }
+            this.Context.CurrentConnectionConfig.SlaveConnectionConfigs = oldSlave;
 
         }
 
@@ -189,7 +192,7 @@ namespace SqlSugar
             foreach (var type in types)
             {
                 try
-                {
+                { 
                     GetDifferenceTables(result, type);
                 }
                 catch (Exception ex)
