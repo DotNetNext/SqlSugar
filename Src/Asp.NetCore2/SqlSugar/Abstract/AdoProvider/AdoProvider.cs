@@ -346,12 +346,12 @@ namespace SqlSugar
             try
             {
                 this.BeginTran();
-                var oldSave = this.Context.CurrentConnectionConfig.SlaveConnectionConfigs;
+                var oldSlave = this.Context.CurrentConnectionConfig.SlaveConnectionConfigs;
                 this.Context.CurrentConnectionConfig.SlaveConnectionConfigs = null;
                 if (action != null)
                     action();
                 this.CommitTran();
-                this.Context.CurrentConnectionConfig.SlaveConnectionConfigs = oldSave;
+                this.Context.CurrentConnectionConfig.SlaveConnectionConfigs = oldSlave;
                 result.Data = result.IsSuccess = true;
             }
             catch (Exception ex)
