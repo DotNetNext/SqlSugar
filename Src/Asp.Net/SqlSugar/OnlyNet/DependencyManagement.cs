@@ -126,7 +126,7 @@ namespace SqlSugar
                     var conn = db.GetAdapter();
                     IsTryDm = true;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
 
                     throw new Exception("你需要引用DmProvider.dll，在https://github.com/sunkaixuan/SqlSugar 源码里面下载");
