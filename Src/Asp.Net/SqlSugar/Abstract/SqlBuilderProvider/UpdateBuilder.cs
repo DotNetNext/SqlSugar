@@ -476,7 +476,7 @@ namespace SqlSugar
                 GetDbColumnIndex++;
                 return pname;
             }
-            else if (UtilMethods.IsErrorDecimalString() == true)
+            else if ((columnInfo.Value is decimal || columnInfo.Value is double || columnInfo.Value is float) && UtilMethods.IsErrorDecimalString() == true)
             {
                 var pname = Builder.SqlParameterKeyWord + "Decimal" + GetDbColumnIndex;
                 var p = new SugarParameter(pname, columnInfo.Value);

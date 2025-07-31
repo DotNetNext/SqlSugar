@@ -343,7 +343,7 @@ namespace SqlSugar
                 {
                     continue;
                 }
-                var item = memberAssignment.Expression;
+                var item =ExpressionTool.RemoveConvert(memberAssignment.Expression);
                 if (item.Type.IsClass()&& item is MemberExpression &&(item as MemberExpression).Expression is ParameterExpression) 
                 {
                     var rootType = ((item as MemberExpression).Expression as ParameterExpression).Type;

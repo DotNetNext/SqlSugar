@@ -751,6 +751,10 @@ namespace SqlSugar
 
                 if (destinationType.IsEnum && value is int)
                     return Enum.ToObject(destinationType, (int)value);
+                if (destinationType.IsEnum && value is double)
+                    return Enum.ToObject(destinationType, Convert.ToInt32(value));
+                if (destinationType.IsEnum && value is decimal)
+                    return Enum.ToObject(destinationType, Convert.ToInt32(value));
 
                 if (destinationType.Name == "TimeOnly"&& sourceType.Name!= "TimeOnly") 
                 {

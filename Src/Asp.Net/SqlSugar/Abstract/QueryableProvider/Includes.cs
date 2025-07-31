@@ -191,7 +191,7 @@ namespace SqlSugar
         }
         public ISugarQueryable<T> IncludesAllSecondLayer<TReturn1>(Expression<Func<T, TReturn1>> expression, params string[] ignoreProperyNameList) 
         {
-            this.Includes(expression);
+            //this.Includes(expression);
             var type = typeof(TReturn1);
             if (type.FullName.IsCollectionsList()) 
             {
