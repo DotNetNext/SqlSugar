@@ -741,6 +741,15 @@ namespace SqlSugar
         {
             List<DiffLogTableInfo> result = new List<DiffLogTableInfo>();
             var whereSql = Regex.Replace(sql, ".* WHERE ", "", RegexOptions.Singleline);
+            if (IsExists(sql))
+            {
+                // 取第一个 WHERE 后面的部分
+                var match = Regex.Match(sql, @"\bWHERE\b\s*(.*)", RegexOptions.Singleline | RegexOptions.IgnoreCase);
+                if (match.Success)
+                {
+                    whereSql = match.Groups[1].Value;
+                }
+            }
             var dt = this.Context.Queryable<T>().AS(this.DeleteBuilder.AsName).Filter(null, true).Where(whereSql).AddParameters(parameters).ToDataTable();
             if (dt.Rows != null && dt.Rows.Count > 0)
             {
@@ -799,6 +808,11 @@ namespace SqlSugar
                     }
                 }
             }
+        }
+
+        private static bool IsExists(string sql)
+        {
+            return UtilMethods.CountSubstringOccurrences(sql, "WHERE") > 1;
         }
     }
 }
