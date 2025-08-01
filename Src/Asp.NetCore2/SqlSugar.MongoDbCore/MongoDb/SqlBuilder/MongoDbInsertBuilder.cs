@@ -116,7 +116,7 @@ namespace SqlSugar.MongoDb
                     }
                     return resultList;
                 }
-                else if (json is BsonArray array&&type.GetGenericArguments().Any()) 
+                else if (json is BsonArray array && type.GetGenericArguments().Any())
                 {
                     var bsonArray = array;
 
@@ -135,23 +135,23 @@ namespace SqlSugar.MongoDb
                             var obj = BsonSerializer.Deserialize(doc, elementType);
                             resultList.Add(obj);
                         }
-                        else 
+                        else
                         {
-                            var obj = MongoDbDataReaderHelper.ConvertBsonValue(item); 
+                            var obj = MongoDbDataReaderHelper.ConvertBsonValue(item);
                             resultList.Add(obj);
                         }
                     }
                     return resultList;
                 }
                 else if (json is BsonArray array2 && type.IsArray)
-                { 
+                {
                     var bsonArray = array2;
 
                     // 3. 获取元素类型，例如 List<MyClass> => MyClass
                     Type elementType = type.GetElementType();
 
                     // 4. 构造泛型列表对象
-                    var resultList= Array.CreateInstance(elementType, array2.Count());
+                    var resultList = Array.CreateInstance(elementType, array2.Count());
 
                     // 5. 反序列化每一项
                     int index = 0;
@@ -168,7 +168,35 @@ namespace SqlSugar.MongoDb
                             resultList.SetValue(obj, index);
                         }
                         index++;
-                    } 
+                    }
+                    return resultList;
+                }
+                else if (json is string str && type.GetGenericArguments().Any())
+                {
+
+                    var jsonArray = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonArray>(str);
+
+                    // 3. 获取元素类型，例如 List<MyClass> => MyClass
+                    Type elementType = type.GetGenericArguments()[0];
+
+                    // 4. 构造泛型列表对象
+                    var resultList = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(elementType));
+
+                    // 5. 反序列化每一项
+                    foreach (var item in jsonArray)
+                    {
+                        if (item is BsonDocument)
+                        {
+                            var doc = item.AsBsonDocument;
+                            var obj = BsonSerializer.Deserialize(doc, elementType);
+                            resultList.Add(obj);
+                        }
+                        else
+                        {
+                            var obj = MongoDbDataReaderHelper.ConvertBsonValue(item);
+                            resultList.Add(obj);
+                        }
+                    }
                     return resultList;
                 }
                 else
