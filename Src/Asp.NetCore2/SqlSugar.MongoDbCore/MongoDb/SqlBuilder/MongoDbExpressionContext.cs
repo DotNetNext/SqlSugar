@@ -156,6 +156,48 @@ namespace SqlSugar.MongoDb
     public class MongoDbMethod : DefaultDbMethod, IDbMethods
     {
         public MongoNestedTranslatorContext  context { get; set; }
+        public override string Between(MethodCallExpressionModel model)
+        {
+            // 伪代码步骤：
+            // 1. 获取字段表达式 fieldExpr
+            // 2. 获取下限 lowerExpr 和上限 upperExpr
+            // 3. 解析字段名和边界值
+            // 4. 构造 MongoDB $gte 和 $lte 查询表达式
+            // 5. 返回 JSON 字符串
+
+            var fieldExpr =model.Args[0].MemberValue as Expression;
+            var lowerExpr = model.Args[1].MemberValue as Expression;
+            var upperExpr = model.Args[2].MemberValue as Expression;
+
+            BsonValue fieldName = new ExpressionVisitor(context).Visit(fieldExpr);
+            var lowerValue = ExpressionTool.DynamicInvoke(lowerExpr);
+            var upperValue = ExpressionTool.DynamicInvoke(upperExpr);
+
+            var betweenDoc = new BsonDocument(fieldName.ToString(), new BsonDocument
+            {
+                { "$gte", UtilMethods.MyCreate(lowerValue) },
+                { "$lte", UtilMethods.MyCreate(upperValue) }
+            });
+
+            return betweenDoc.ToJson(UtilMethods.GetJsonWriterSettings());
+        }
+        public override string UNIX_TIMESTAMP(MethodCallExpressionModel model)
+        {
+            // 伪代码步骤：
+            // 1. 获取日期字段表达式 dateExpr
+            // 2. 解析字段名
+            // 3. 构造 MongoDB $toLong 操作符
+            // 4. 返回 JSON 字符串
+
+            var dateExpr = model.DataObject as Expression ?? model.Args[0].MemberValue as Expression;
+            BsonValue fieldName = new ExpressionVisitor(context).Visit(dateExpr);
+
+            // MongoDB $toLong 可将日期转为时间戳（毫秒），需除以1000得到秒
+            var toLongDoc = new BsonDocument("$toLong", UtilMethods.GetMemberName(fieldName));
+            var unixTimestampDoc = new BsonDocument("$floor", new BsonDocument("$divide", new BsonArray { toLongDoc, 1000 }));
+
+            return unixTimestampDoc.ToJson(UtilMethods.GetJsonWriterSettings());
+        }
         public override string ToInt32(MethodCallExpressionModel model)
         {
             var item =model.Args[0].MemberValue;
