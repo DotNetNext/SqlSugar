@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>SqlSugar.MongoDbCore</id>
-    <version>5.1.4.213</version>
+    <version>5.1.4.238</version>
     <authors>sunkaixuan</authors>
     <owners>果糖大数据</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
@@ -11,7 +11,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description> SqlSugar操作.MongoDb 用例： https://github.com/DotNetNext/SqlSugar </description>
     <copyright>Copyright 2016</copyright>
-    <tags>MongoDb MongoDb MongoDb</tags>
+    <tags>MongoDb Mongo db MongoDb ORM</tags>
     <dependencies>
 		  <group targetFramework=".NETStandard2.1">
 			  <dependency id="MongoDB.Driver" version="3.3.0" />
