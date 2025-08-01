@@ -88,6 +88,11 @@ namespace MongoDbTest
             string [] ids3 = db.Queryable<Student>().Select(it => it.Id).ToArray();
             var list74 = db.Queryable<Student>().Where(it => ids3.Contains(it.Id)).ToList();
             if (list74.Count != ids2.Count) Cases.ThrowUnitError();
+
+            var list75 = db.Queryable<Student>().Where(it =>SqlFunc.Between(it.SchoolId,1,2)).ToList();
+            if(list75.Count!=1|| list75.First().SchoolId!=2) Cases.ThrowUnitError();
+
+            var list76 = db.Queryable<Student>().Select(it => SqlFunc.UNIX_TIMESTAMP(it.CreateDateTime)).ToList();
         }
 
         private static void ValidateStudentData(SqlSugar.SqlSugarClient db)
