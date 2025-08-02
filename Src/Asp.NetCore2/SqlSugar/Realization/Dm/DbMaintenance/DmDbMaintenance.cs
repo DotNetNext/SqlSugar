@@ -383,7 +383,7 @@ WHERE table_name = '" + tableName + "'");
         }
         public void CreateSchemaIfNotExists(ISqlSugarClient db)
         {
-            if (!db.CurrentConnectionConfig.ConnectionString.Contains("SCHEMA", StringComparison.OrdinalIgnoreCase))
+            if (!db.CurrentConnectionConfig.ConnectionString.Replace(" ","").Contains("SCHEMA=", StringComparison.OrdinalIgnoreCase))
             {
                 return;
             }
