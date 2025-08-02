@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dm;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -387,7 +388,7 @@ WHERE table_name = '" + tableName + "'");
             {
                 return;
             }
-            var schemaName = db.Ado.GetString("SELECT SF_GET_SCHEMA_NAME_BY_ID(CURRENT_SCHID)");
+            var schemaName = ((DmConnection)db.Ado.Connection).Schema;
             // 检查 Schema 是否存在，不存在则创建
             var schemaExists = db.Ado.GetInt($"SELECT COUNT(*) FROM SYSOBJECTS WHERE TYPE$ = 'SCH' AND Upper(NAME) = '{schemaName.ToUpper()}'") > 0;
             if (!schemaExists)
