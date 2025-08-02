@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.DirectoryServices.Protocols;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -393,11 +394,19 @@ WHERE table_name = '" + tableName + "'");
             object schemaName = string.Empty;
             if (dbConnection.TryGetValue("schema", out schemaName) && !string.IsNullOrEmpty(schemaName?.ToString()))
             {
+                var newConn = dbConnection.Remove("schema");
+                var newddb = new SqlSugarClient(new ConnectionConfig()
+                {
+                    ConnectionString =
+                    dbConnection.ToString(),
+                    DbType=DbType.Dm,
+                    IsAutoCloseConnection=true
+                });
                 // 检查 Schema 是否存在，不存在则创建
-                var schemaExists = db.Ado.GetInt($"SELECT COUNT(*) FROM SYSOBJECTS WHERE TYPE$ = 'SCH' AND Upper(NAME) = '{schemaName?.ToString()?.ToUpper()}'") > 0;
+                var schemaExists = newddb.Ado.GetInt($"SELECT COUNT(*) FROM SYSOBJECTS WHERE TYPE$ = 'SCH' AND Upper(NAME) = '{schemaName?.ToString()?.ToUpper()}'") > 0;
                 if (!schemaExists)
                 {
-                    db.Ado.ExecuteCommand($"CREATE SCHEMA {schemaName}");
+                    newddb.Ado.ExecuteCommand($"CREATE SCHEMA {schemaName}");
                 }
             }
         }
