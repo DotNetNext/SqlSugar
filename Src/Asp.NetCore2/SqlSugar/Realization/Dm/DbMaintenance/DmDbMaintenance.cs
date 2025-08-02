@@ -384,16 +384,21 @@ WHERE table_name = '" + tableName + "'");
         }
         public void CreateSchemaIfNotExists(ISqlSugarClient db)
         {
-            if (!db.CurrentConnectionConfig.ConnectionString.Replace(" ","").Contains("SCHEMA=", StringComparison.OrdinalIgnoreCase))
+            if (!db.CurrentConnectionConfig.ConnectionString.Replace(" ", "").Contains("SCHEMA=", StringComparison.OrdinalIgnoreCase))
             {
                 return;
             }
-            var schemaName = ((DmConnection)db.Ado.Connection).Schema;
-            // 检查 Schema 是否存在，不存在则创建
-            var schemaExists = db.Ado.GetInt($"SELECT COUNT(*) FROM SYSOBJECTS WHERE TYPE$ = 'SCH' AND Upper(NAME) = '{schemaName.ToUpper()}'") > 0;
-            if (!schemaExists)
+            DbConnectionStringBuilder dbConnection = new DbConnectionStringBuilder();
+            dbConnection.ConnectionString = db.CurrentConnectionConfig.ConnectionString;
+            object schemaName = string.Empty;
+            if (dbConnection.TryGetValue("schema", out schemaName) && !string.IsNullOrEmpty(schemaName?.ToString()))
             {
-                db.Ado.ExecuteCommand($"CREATE SCHEMA {schemaName}");
+                // 检查 Schema 是否存在，不存在则创建
+                var schemaExists = db.Ado.GetInt($"SELECT COUNT(*) FROM SYSOBJECTS WHERE TYPE$ = 'SCH' AND Upper(NAME) = '{schemaName?.ToString()?.ToUpper()}'") > 0;
+                if (!schemaExists)
+                {
+                    db.Ado.ExecuteCommand($"CREATE SCHEMA {schemaName}");
+                }
             }
         }
         public override bool CreateDatabase(string databaseName, string databaseDirectory = null)
