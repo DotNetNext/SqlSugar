@@ -460,18 +460,18 @@ AND sql LIKE '%"+tableName+"%'");
             this.Context.Ado.ExecuteCommand($"VACUUM INTO '{fullFileName}'");
             return true;
         }
-        private List<T> GetListOrCache<T>(string cacheKey, string sql)
-        {
-            return this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey,
-             () =>
-             {
-                 var isEnableLogEvent = this.Context.Ado.IsEnableLogEvent;
-                 this.Context.Ado.IsEnableLogEvent = false;
-                 var reval = this.Context.Ado.SqlQuery<T>(sql);
-                 this.Context.Ado.IsEnableLogEvent = isEnableLogEvent;
-                 return reval;
-             });
-        }
+        //private List<T> GetListOrCache<T>(string cacheKey, string sql)
+        //{
+        //    return this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey,
+        //     () =>
+        //     {
+        //         var isEnableLogEvent = this.Context.Ado.IsEnableLogEvent;
+        //         this.Context.Ado.IsEnableLogEvent = false;
+        //         var reval = this.Context.Ado.SqlQuery<T>(sql);
+        //         this.Context.Ado.IsEnableLogEvent = isEnableLogEvent;
+        //         return reval;
+        //     });
+        //}
         #endregion
     }
 }
