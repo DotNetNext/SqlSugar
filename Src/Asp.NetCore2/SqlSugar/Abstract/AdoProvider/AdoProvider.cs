@@ -1817,7 +1817,7 @@ namespace SqlSugar
             }
             return result;
         }
-        private async Task<List<TResult>> GetDataAsync<TResult>(Type entityType, IDataReader dataReader)
+        protected async Task<List<TResult>> GetDataAsync<TResult>(Type entityType, IDataReader dataReader)
         {
             List<TResult> result;
             if (entityType == UtilConstants.DynamicType)
