@@ -1,5 +1,4 @@
 ﻿using Dm;
-using Dm.util;
 using MongoDB.Bson;
 using Newtonsoft.Json.Linq; 
 using System;
@@ -175,7 +174,7 @@ namespace SqlSugar.MongoDb
                 else if (mb.LastParameter == shortName.TrimEnd('.'))
                 {
                     var replaceName = shortName.TrimEnd('.') + ".";
-                    resultString = $"${resultString.TrimStart(replaceName.toCharArray())}";
+                    resultString = $"${resultString.TrimStart(replaceName.ToCharArray())}";
                 }
             }
 

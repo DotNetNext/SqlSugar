@@ -1,5 +1,4 @@
-﻿using Dm.util;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.IdentityModel.Tokens;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using MongoDB.Bson.Serialization;
@@ -78,7 +77,7 @@ namespace SqlSugar.MongoDb
                 EntityType = lastPareamter.Type,
                 TableName = null
             };
-            newJoins.add(result);
+            newJoins.Add(result);
             queryBuilder.JoinQueryInfos = newJoins;
             MongoDbQueryBuilder mb2 = null;
             if (queryBuilder is MongoDbQueryBuilder mb) 
@@ -128,7 +127,7 @@ namespace SqlSugar.MongoDb
             }
             else
             {
-                using var reader = new JsonReader(json?.toString());
+                using var reader = new JsonReader(json?.ToString());
                 var arrayObj = BsonSerializer.Deserialize<BsonValue>(reader);
                 return arrayObj;
             }
