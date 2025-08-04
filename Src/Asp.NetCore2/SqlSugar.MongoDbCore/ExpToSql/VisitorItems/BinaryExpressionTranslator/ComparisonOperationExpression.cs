@@ -116,6 +116,13 @@ namespace SqlSugar.MongoDb
                     rightValue = ObjectId.Parse(str);
                 } 
             }
+            else  
+            {
+                if (rightValue!=null&&rightValue.IsString&&UtilMethods.IsValidObjectId(rightValue.AsString))
+                {
+                    rightValue = ObjectId.Parse(rightValue.AsString);
+                }
+            }
             return rightValue;
         }
     }
