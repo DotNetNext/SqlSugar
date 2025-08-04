@@ -127,7 +127,7 @@ namespace SqlSugar
                 eventAction += action;
                 Db.TempItems[TranSuccessEvent] = eventAction;
             }
-            else
+            else if(Db.TempItems != null)
             {
                 Db.TempItems[TranSuccessEvent] = action;
             }
