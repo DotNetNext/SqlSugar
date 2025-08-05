@@ -120,6 +120,8 @@ namespace SqlSugar.MongoDb
 
         public static BsonValue ParseJsonObject(object json)
         {
+            if (json == null)
+                return BsonValue.Create(null);
             if (json is string str && str.TrimStart().StartsWith("{"))
             { 
                 var arrayObj = BsonDocument.Parse(str);
