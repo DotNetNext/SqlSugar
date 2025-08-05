@@ -139,9 +139,13 @@ namespace SqlSugar.MongoDb
                 var utcNow = DateTime.SpecifyKind(dt, DateTimeKind.Utc);
                 return new BsonDateTime(utcNow);
             }
-            else if (value is Guid g) 
+            else if (value is Guid g)
             {
                 value = g.ToString();
+            }
+            else if (value is string s&&IsValidObjectId(s)) 
+            {
+                value = ObjectId.Parse(s);
             }
             return BsonValue.Create(value);
         }
