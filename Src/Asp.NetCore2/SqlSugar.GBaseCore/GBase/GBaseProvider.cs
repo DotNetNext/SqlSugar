@@ -123,11 +123,8 @@ namespace SqlSugar.GBase
             using (var dataReader = await this.GetDataReaderAsync(sqlString, Parameters))
             {
                 DbDataReader DbReader = (DbDataReader)dataReader;
-                List<T> result = new List<T>();
-                if (DbReader.HasRows)
-                {
-                    result = await GetDataAsync<T>(typeof(T), dataReader);
-                }
+                List<T> result = new List<T>(); 
+               result = await GetDataAsync<T>(typeof(T), dataReader); 
                 List<T2> result2 = null;
                 if (NextResult(dataReader))
                 {
