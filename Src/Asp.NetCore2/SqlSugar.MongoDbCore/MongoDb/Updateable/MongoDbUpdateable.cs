@@ -37,5 +37,33 @@ namespace SqlSugar.MongoDb
             this.UpdateBuilder.SetValues.Add(new KeyValuePair<string, string>("$set", expResult));
             return this;
         }
+        public override IUpdateable<T> SetColumns(Expression<Func<T, T>> columns, bool appendColumnsByDataFilter)
+        {
+            ThrowUpdateByObject();
+            var expResult = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.Update)
+                .GetResultString();
+            if (appendColumnsByDataFilter)
+            {
+                var newData = new T() { };
+                SqlSugar.UtilMethods.ClearPublicProperties(newData, this.EntityInfo);
+                var data = ((UpdateableProvider<T>)this.Context.Updateable(newData)).UpdateObjs.First();
+                foreach (var item in this.EntityInfo.Columns.Where(it => !it.IsPrimarykey && !it.IsIgnore && !it.IsOnlyIgnoreUpdate))
+                {
+                    var value = item.PropertyInfo.GetValue(data);
+                    if (value != null && !value.Equals(""))
+                    {
+                        if (!value.Equals(SqlSugar.UtilMethods.GetDefaultValue(item.UnderType)))
+                        {
+                            var pName = this.SqlBuilder.SqlParameterKeyWord + item.PropertyName + 1000;
+                            var p = new SugarParameter(pName, value);
+                            this.UpdateBuilder.Parameters.Add(p);
+                            UpdateBuilder.SetValues.Add(new KeyValuePair<string, string>(SqlBuilder.GetTranslationColumnName(item.DbColumnName), SqlBuilder.GetTranslationColumnName(item.DbColumnName) + "=" + pName));
+                        }
+                    }
+                }
+            }
+            this.UpdateBuilder.SetValues.Add(new KeyValuePair<string, string>("$set", expResult));
+            return this;
+        }
     }
 }
