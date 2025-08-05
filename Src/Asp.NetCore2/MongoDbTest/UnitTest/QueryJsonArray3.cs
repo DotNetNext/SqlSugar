@@ -24,6 +24,7 @@ namespace MongoDbTest
             db.Updateable(list).ExecuteCommand();
             var list2 = db.Queryable<Student>().ToList();
             if (list2.First().Book[1] != 2.2) Cases.ThrowUnitError();
+            db.Insertable(new Student() { Book = null}).ExecuteCommand();
         }
 
         [SqlSugar.SugarTable("UnitStudentds79991")]
