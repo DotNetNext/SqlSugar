@@ -23,7 +23,10 @@ namespace MongoDbTest
             }).ExecuteCommand();
             var data = db.Queryable<Student>().First();
             var list=db.Queryable<Student>().Where(s => s.Book.SchoolId == data.Book.SchoolId).ToList();
-            if (list.Any() == false) Cases.ThrowUnitError();
+            if (list.Any() == false) Cases.ThrowUnitError(); 
+            var ids = new List<string>() { data.Book.SchoolId};
+            var list2 = db.Queryable<Student>().Where(s => ids.Contains( s.Book.SchoolId ) ).ToList();
+            if (list2.Any() == false) Cases.ThrowUnitError();
         }
 
         [SqlSugar.SugarTable("UnitStudentdddd1")]
