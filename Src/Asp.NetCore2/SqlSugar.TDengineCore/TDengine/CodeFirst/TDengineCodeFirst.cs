@@ -87,6 +87,8 @@ namespace SqlSugar.TDengine
             //this.Context.DbMaintenance.AddIndex(entityInfo);
             //base.CreateIndex(entityInfo);
             this.Context.DbMaintenance.AddDefaultValue(entityInfo);
+
+            STable.Tags = null;
         }
 
         public override void ExistLogic(EntityInfo entityInfo)
