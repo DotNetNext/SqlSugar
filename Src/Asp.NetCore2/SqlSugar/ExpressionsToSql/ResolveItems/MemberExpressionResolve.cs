@@ -321,7 +321,7 @@ namespace SqlSugar
                     DefaultOneToOne(parameter, baseParameter, isLeft, isSetTempData, nav);
                 }
             }
-            else if (navN.IsNavgate(expression))
+            else if (navN.IsNavgate(expression)&&ExpressionTool.GetParameters(expression).Any())
             {
                 DefaultOneToOneN(parameter, baseParameter, isLeft, isSetTempData, navN);
             }
