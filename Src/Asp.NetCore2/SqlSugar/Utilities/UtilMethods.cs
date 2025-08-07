@@ -18,6 +18,10 @@ namespace SqlSugar
 {
     public class UtilMethods
     {
+        public static void UpdateQueryBuilderByClone<TResult>(QueryBuilder queryBuilder,ISugarQueryable<TResult> clone)
+        {
+            queryBuilder.MappingKeys = clone.QueryBuilder.MappingKeys;
+        }
         public static bool IsKeyValuePairType(Type type)
         {
             return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(KeyValuePair<,>);
