@@ -1,20 +1,20 @@
 ﻿
-using MongoDbTest;
-using SqlSugar; 
-
-public class QueryJson3
+using SqlSugar;
+namespace MongoDbTest
 {
-    public static void Init()
+    public class QueryJson3
     {
-        var db = DbHelper.GetNewDb();
-        db.DbMaintenance.TruncateTable<NoticeEntity>();
-        db.Insertable<NoticeEntity>(new NoticeEntity() { Id = 12312312L, NoticeTitle = "88888", noticeContentInfos = new List<NoticeContentInfo>() { new NoticeContentInfo { SubjectId = 1 } } }).ExecuteCommand();
-        var da = db.Updateable<NoticeEntity>()
-            .SetColumns(it => new NoticeEntity { NoticeTitle = "66666" },true ).Where(it => it.Id == 12312312L)
-            .ExecuteCommand() > 0; 
+        public static void Init()
+        {
+            var db = DbHelper.GetNewDb();
+            db.DbMaintenance.TruncateTable<NoticeEntity>();
+            db.Insertable<NoticeEntity>(new NoticeEntity() { Id = 12312312L, NoticeTitle = "88888", noticeContentInfos = new List<NoticeContentInfo>() { new NoticeContentInfo { SubjectId = 1 } } }).ExecuteCommand();
+            var da = db.Updateable<NoticeEntity>()
+                .SetColumns(it => new NoticeEntity { NoticeTitle = "66666" }, true).Where(it => it.Id == 12312312L)
+                .ExecuteCommand() > 0;
+        }
     }
 }
-
 /// <summary>
 /// 通知公告
 /// </summary>

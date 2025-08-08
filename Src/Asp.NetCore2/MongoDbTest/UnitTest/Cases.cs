@@ -18,6 +18,7 @@ namespace MongoDbTest
             QueryJson.Init();
             QueryJson2.Init();
             QueryJson3.Init();
+            QueryJson4.Init();
             QueryLeftJoin.Init();
             QueryLeftJoin2.Init();
             QueryLeftJoin3.Init();
