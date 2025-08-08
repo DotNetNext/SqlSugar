@@ -334,7 +334,13 @@ namespace SqlSugar.MongoDb
             string result = string.Format(this.AlterColumnToTableSql, tableName, columnName, dataType, dataSize, nullType, primaryKey, identity);
             return result;
         }
-
+        public override bool CreateDatabase(string databaseDirectory = null)
+        {
+            var newdb = this.Context.CopyNew();
+            newdb.Open();
+            newdb.Close();
+            return true;
+        } 
         /// <summary>
         ///by current connection string
         /// </summary>
