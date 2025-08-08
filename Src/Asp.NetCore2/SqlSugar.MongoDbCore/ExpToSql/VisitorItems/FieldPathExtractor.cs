@@ -75,7 +75,14 @@ namespace SqlSugar.MongoDb
 
             while (expr is MemberExpression member)
             {
-                parts.Push(member.Member.Name);
+                if (member.Member.Name.EqualCase("Id"))
+                {
+                    parts.Push("_id");
+                }
+                else
+                {
+                    parts.Push(member.Member.Name);
+                }
                 expr = member.Expression!;
             }
 
