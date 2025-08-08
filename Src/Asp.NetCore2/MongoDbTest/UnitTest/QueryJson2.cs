@@ -16,10 +16,11 @@ namespace MongoDbTest
             var db =  DbHelper.GetNewDb();
             db.CodeFirst.InitTables<Student>();
             db.DbMaintenance.TruncateTable<Student>();
+            var dt = DateTime.Now;
             db.Insertable(new Student()
             {
                 Age = 1,
-                Book = new Book() { SchoolId = ObjectId.GenerateNewId().ToString() }
+                Book = new Book() { SchoolId = ObjectId.GenerateNewId().ToString(),DateTime=dt}
             }).ExecuteCommand();
             var data = db.Queryable<Student>().First();
             var list=db.Queryable<Student>().Where(s => s.Book.SchoolId == data.Book.SchoolId).ToList();
@@ -27,6 +28,7 @@ namespace MongoDbTest
             var ids = new List<string>() { data.Book.SchoolId};
             var list2 = db.Queryable<Student>().Where(s => ids.Contains( s.Book.SchoolId ) ).ToList();
             if (list2.Any() == false) Cases.ThrowUnitError();
+            if(data.Book.DateTime.ToString("yyyy-MM-dd HH:mm:ss.fff") != dt.ToString("yyyy-MM-dd HH:mm:ss.fff")) Cases.ThrowUnitError();
         }
 
         [SqlSugar.SugarTable("UnitStudentdddd1")]
@@ -51,6 +53,7 @@ namespace MongoDbTest
             public string SchoolId { get; set; }
 
             public decimal BookId { get; set; }
+            public DateTime DateTime { get; set; }
         }
     }
 
