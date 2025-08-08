@@ -49,6 +49,7 @@ namespace SqlSugar.MongoDb
                     }
 
                     var array = new BsonArray(list);
+                    ConvertBsonDateTimeToLocal(array);
                     return array.ToJson(UtilMethods.GetJsonWriterSettings());
                 }
                 else
@@ -56,6 +57,7 @@ namespace SqlSugar.MongoDb
                     var realType = it.GetType();
                     var bson = it.ToBson(realType); // → byte[]
                     var doc = BsonSerializer.Deserialize<BsonDocument>(bson); // → BsonDocument
+                    ConvertBsonDateTimeToLocal(doc);
                     var json = doc.ToJson(UtilMethods.GetJsonWriterSettings());
                     return json;
                 }
@@ -204,7 +206,49 @@ namespace SqlSugar.MongoDb
                     return json;
                 }
             };
-        } 
+        }
+        private void ConvertBsonDateTimeToLocal(BsonValue bsonValue)
+        {
+            if (bsonValue == null || bsonValue.IsBsonNull)
+                return;
+
+            if (bsonValue.IsBsonDocument)
+            {
+                var doc = bsonValue.AsBsonDocument;
+                foreach (var element in doc.Elements.ToList())
+                {
+                    var val = element.Value;
+                    if (val.BsonType == BsonType.DateTime)
+                    {
+                        var utcDate = val.ToUniversalTime();
+                        var localDate = utcDate.ToLocalTime();
+                        doc[element.Name] =UtilMethods.MyCreate(localDate);
+                    }
+                    else
+                    {
+                        ConvertBsonDateTimeToLocal(val);
+                    }
+                }
+            }
+            else if (bsonValue.IsBsonArray)
+            {
+                var array = bsonValue.AsBsonArray;
+                for (int i = 0; i < array.Count; i++)
+                {
+                    var val = array[i];
+                    if (val.BsonType == BsonType.DateTime)
+                    {
+                        var utcDate = val.ToUniversalTime();
+                        var localDate = utcDate.ToLocalTime();
+                        array[i] = new BsonDateTime(localDate);
+                    }
+                    else
+                    {
+                        ConvertBsonDateTimeToLocal(val);
+                    }
+                }
+            }
+        }
         public override string SqlTemplate
         {
             get
