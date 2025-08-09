@@ -24,7 +24,7 @@ namespace MongoDb.Ado.data
                 var doc = documents[0];
                 var filter = doc["filter"].AsBsonDocument;
                 var update = doc["update"].AsBsonDocument;
-                if (IsUpateBySql(update))
+                if (IsHandlePipelineUpdate(update))
                 {
                     return await HandlePipelineUpdate(collection, filter, update);
                 }
@@ -93,7 +93,7 @@ namespace MongoDb.Ado.data
             }
         }
 
-        private static bool IsUpateBySql(BsonDocument update)
+        private static bool IsHandlePipelineUpdate(BsonDocument update)
         {
             return update.ElementCount == 1 && update.Contains("$set");
         }
