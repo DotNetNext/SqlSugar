@@ -87,6 +87,16 @@ namespace MongoDbTest
             var ages2 = db.Queryable<Student>().Where(it => it.SchoolId == "3").First();
             if(ages.age!=ages2.Age) Cases.ThrowUnitError();
             if (ages2.Name!="jack") Cases.ThrowUnitError();
+            db.Updateable<Student>()
+               .SetColumns(it => new Student()
+               {
+                   Name = "jack",
+                   Age = it.Age + 1
+               })
+               .Where(it => it.SchoolId == "3")
+           .ExecuteCommandAsync().GetAwaiter().GetResult();
+            var ages3 = db.Queryable<Student>().Where(it => it.SchoolId == "3").First();
+            if (ages.age+1 != ages3.Age) Cases.ThrowUnitError();
         }
         [SqlSugar.SugarTable("UnitStudentdghhuesd3z1")]
         public class Student : MongoDbBase
