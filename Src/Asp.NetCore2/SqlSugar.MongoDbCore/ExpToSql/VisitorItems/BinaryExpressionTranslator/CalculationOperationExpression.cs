@@ -25,25 +25,32 @@ namespace SqlSugar.MongoDb
             {
                 var leftValue = field;
                 var rightValue = value;
-                if (leftIsMember) 
+                if (leftIsMember)
                 {
                     leftValue = UtilMethods.GetMemberName(leftValue);
                 }
                 if (rightIsMember)
                 {
-                    rightValue = UtilMethods.GetMemberName(rightValue); 
+                    rightValue = UtilMethods.GetMemberName(rightValue);
                 }
                 return new BsonDocument
                 {
                     { operation, new BsonArray { leftValue, rightValue } }
                 };
             }
+            else if (operation == "$add") 
+            {
+                return new BsonDocument
+                {
+                   {operation, new BsonArray {UtilMethods.GetMemberName(field.ToString()), value } }
+                };
+            }
             else
             {
                 return new BsonDocument
-            {
-                { field.ToString(), new BsonDocument { { operation, value } } }
-            };
+                {
+                   { field.ToString(), new BsonDocument { { operation, value } } }
+                };
             }
         }
 
