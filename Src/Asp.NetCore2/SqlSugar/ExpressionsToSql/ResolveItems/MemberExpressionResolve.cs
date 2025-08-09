@@ -625,6 +625,10 @@ namespace SqlSugar
                 {
                     parameter.CommonTempData = base.AppendParameter(parameter.CommonTempData);
                 }
+                else if (parameter.CommonTempData  is MapperSql mapperSql)
+                {
+                    parameter.CommonTempData = mapperSql.Sql;
+                }
                 var result = this.Context.DbMehtods.DateValue(new MethodCallExpressionModel()
                 {
                     Conext=this.Context,
