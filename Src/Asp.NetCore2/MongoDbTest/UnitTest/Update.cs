@@ -1,4 +1,5 @@
-﻿using SqlSugar.MongoDb;
+﻿using SqlSugar;
+using SqlSugar.MongoDb;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,8 @@ namespace MongoDbTest
             var db = DbHelper.GetNewDb();
             db.CodeFirst.InitTables<Student>();
             db.DbMaintenance.TruncateTable<Student>();
+
+            /***************************Update by object***************************/
             db.Insertable(new Student() { Age = 1, Name = "11", SchoolId = "111", CreateDateTime = DateTime.Now }).ExecuteCommandAsync().GetAwaiter().GetResult();
             db.Insertable(new List<Student>() {
             new Student() { Age = 2, Name = "22", SchoolId = "222", CreateDateTime = DateTime.Now },
@@ -62,7 +65,28 @@ namespace MongoDbTest
             }
             ).WhereColumns(it =>new { it.Name,it.Age }).ExecuteCommand();
             var list5 = db.Queryable<Student>().Where(it => it.SchoolId == "3").ToList();
-            if(list5.Count!=1|| list5.First().Name!="yy") Cases.ThrowUnitError(); 
+            if(list5.Count!=1|| list5.First().Name!="yy") Cases.ThrowUnitError();
+
+
+            /***************************Update by sql***************************/
+            var ages=db.Queryable<Student>()
+                .Where(it => it.SchoolId == "3")
+                .Select(s => new
+                {
+                    name=s.Name,
+                    age = s.Age + 1
+                }).First();
+            db.Updateable<Student>()
+                .SetColumns(it => new Student()
+                {
+                    Name="jack",
+                    Age=it.Age+1
+                })
+                .Where(it => it.SchoolId == "3")
+                .ExecuteCommand();
+            var ages2 = db.Queryable<Student>().Where(it => it.SchoolId == "3").First();
+            if(ages.age!=ages2.Age) Cases.ThrowUnitError();
+            if (ages2.Name!="jack") Cases.ThrowUnitError();
         }
         [SqlSugar.SugarTable("UnitStudentdghhuesd3z1")]
         public class Student : MongoDbBase
