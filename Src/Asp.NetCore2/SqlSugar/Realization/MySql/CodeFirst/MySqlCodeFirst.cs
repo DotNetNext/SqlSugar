@@ -36,6 +36,7 @@ namespace SqlSugar
         protected override DbColumnInfo EntityColumnToDbColumn(EntityInfo entityInfo, string tableName, EntityColumnInfo item)
         {
             var propertyType = UtilMethods.GetUnderType(item.PropertyInfo);
+            UtilMethods.SetDefaultValueForBoolean(item, propertyType);
             var result = new DbColumnInfo()
             {
                 TableId = entityInfo.Columns.IndexOf(item),
@@ -47,7 +48,7 @@ namespace SqlSugar
                 DefaultValue = item.DefaultValue,
                 ColumnDescription = item.ColumnDescription,
                 Length = item.Length,
-                DecimalDigits=item.DecimalDigits,
+                DecimalDigits = item.DecimalDigits,
                 CreateTableFieldSort = item.CreateTableFieldSort
             };
             GetDbType(item, propertyType, result);

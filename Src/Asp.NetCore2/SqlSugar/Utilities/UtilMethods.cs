@@ -18,6 +18,19 @@ namespace SqlSugar
 {
     public class UtilMethods
     {
+
+        internal static void SetDefaultValueForBoolean(EntityColumnInfo item, Type propertyType)
+        {
+            if (propertyType == UtilConstants.BoolType && item.DefaultValue != null && item.DefaultValue.EqualCase("true"))
+            {
+                item.DefaultValue = "1";
+            }
+            else if (propertyType == UtilConstants.BoolType && item.DefaultValue != null && item.DefaultValue.EqualCase("false"))
+            {
+                item.DefaultValue = "0";
+            }
+        }
+
         public static void UpdateQueryBuilderByClone<TResult>(QueryBuilder queryBuilder,ISugarQueryable<TResult> clone)
         {
             queryBuilder.MappingKeys = clone.QueryBuilder.MappingKeys;
