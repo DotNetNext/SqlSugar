@@ -24,6 +24,9 @@ namespace OrmTest
             {
                 throw new Exception("unit error");
             }
+            var key=db.Queryable<EmpLicenseLogOff>()
+               .Where(it => it.EmpLicense.EmpInformation.LastUpdateTime.Value.Year==2025)
+               .ToList();
         }
     }
 }
