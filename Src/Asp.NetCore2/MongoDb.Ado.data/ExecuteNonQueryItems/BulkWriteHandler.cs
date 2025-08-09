@@ -49,7 +49,7 @@ namespace MongoDb.Ado.data
             }
         }
 
-        private static int HandlePipelineUpdate(IMongoCollection<BsonDocument> collection, BsonDocument filter, BsonDocument update)
+        private  int  HandlePipelineUpdate(IMongoCollection<BsonDocument> collection, BsonDocument filter, BsonDocument update)
         {
             // 构造pipeline update
             // 构造pipeline update，不写死，循环现有的$set值
@@ -73,8 +73,16 @@ namespace MongoDb.Ado.data
                     };
             var pipelineUpdate = new PipelineUpdateDefinition<BsonDocument>(updatePipeline);
 
-            var result = collection.UpdateMany(filter, pipelineUpdate);
-            return (int)result.ModifiedCount;
+            if (context.IsAnyServerSession)
+            {
+                var result = collection.UpdateMany(context.ServerSession,filter, pipelineUpdate);
+                return (int)result.ModifiedCount;
+            }
+            else
+            {
+                var result = collection.UpdateMany(filter, pipelineUpdate);
+                return (int)result.ModifiedCount;
+            }
         }
 
         private static bool IsUpateBySql(BsonDocument update)
