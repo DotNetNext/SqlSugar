@@ -82,6 +82,17 @@ namespace SqlSugar
 
             return finalTable;
         }
+        public static string EscapeLikeValue(ISqlSugarClient db, string value,params char[] wildcards) 
+        {
+            if (wildcards != null)
+            {
+                foreach (var item in wildcards)
+                {
+                    value = EscapeLikeValue(db,value,item);
+                }
+            }
+            return value;
+        }
         public static string EscapeLikeValue(ISqlSugarClient db, string value, char wildcard='%')
         {
             var dbType = db.CurrentConnectionConfig.DbType;
@@ -101,6 +112,21 @@ namespace SqlSugar
                 case DbType.Access:
                 case DbType.Odbc:
                 case DbType.TDSQLForPGODBC:
+
+                    if (wildcard == ']' || wildcard == '[') 
+                    {
+                        var keyLeft2 = "[[]";
+                        var keyRight2 = "[]]";
+                        var leftGuid2 = Guid.NewGuid().ToString();
+                        var rightGuid2 = Guid.NewGuid().ToString();
+                        value = value.Replace(keyLeft2, leftGuid2)
+                                     .Replace(keyRight2, rightGuid2);
+
+                        value = value.Replace(wildcard + "", $"[{wildcard}]");
+                        value = value.Replace(leftGuid2, keyLeft2)
+                                   .Replace(rightGuid2,keyRight2);
+                        break;
+                    }
                     // SQL Server 使用中括号转义 %, _ 等
                     var keyLeft = "[[]";
                     var keyRight = "[]]";

@@ -1331,6 +1331,10 @@ namespace SqlSugar
         {
             return UtilMethods.EscapeLikeValue(this.Context, value, wildcard);
         }
+        public string EscapeLikeValue(string value, char [] wildcards)
+        {
+            return UtilMethods.EscapeLikeValue(this.Context, value, wildcards);
+        }
         #endregion
     }
 }
