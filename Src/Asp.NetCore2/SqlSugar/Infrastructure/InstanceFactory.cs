@@ -744,6 +744,10 @@ namespace SqlSugar
             var newAssembly = new ReflectionInoCacheService().GetOrCreate<Assembly>(key, () => {
                 try
                 {
+                    if (string.IsNullOrEmpty(customDllName)&& CustomAssemblies?.Any() == true) 
+                    {
+                        customDllName = CustomAssemblies.First().GetName().Name;
+                    }
                     if (CustomAssemblies?.Any(it => it.FullName.StartsWith(customDllName))==true) 
                     {
                         return CustomAssemblies?.First(it => it.FullName.StartsWith(customDllName));
