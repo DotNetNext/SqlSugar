@@ -1860,6 +1860,7 @@ namespace SqlSugar
         {
             var result= new SqlSugarClient(UtilMethods.CopyConfig(this.Ado.Context.CurrentConnectionConfig));
             result.QueryFilter = this.QueryFilter;
+            result.Ado.CommandTimeOut = this.Ado.CommandTimeOut;
             return result;
         }
         public void ThenMapper<T>(IEnumerable<T> list, Action<T> action)
