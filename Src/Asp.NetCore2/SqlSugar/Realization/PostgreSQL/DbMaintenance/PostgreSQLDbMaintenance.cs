@@ -139,7 +139,7 @@ namespace SqlSugar
         {
             get
             {
-                return "create table {0} as (select * from {1} limit {2} offset 0)";
+                return "create table {2} as (select * from {1} limit  {0} offset 0)";
             }
         }
         protected override string DropTableSql
