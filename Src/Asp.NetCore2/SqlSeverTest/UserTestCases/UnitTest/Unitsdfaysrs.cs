@@ -49,6 +49,12 @@ namespace OrmTest
                     DriverCardInfo = dc,
                 }, true)
                 .ToListAsync().GetAwaiter().GetResult();
+
+            _db.Queryable<Drivers>()
+                  .Select(s => new
+                  {
+                      name=s.Id==0?"":SqlFunc.Subqueryable<Drivers>().Where(z=>z.DriverName.Equals(s.DriverName)).Select(z=>z.DriverName)
+                  }).ToList();
         }
         [SugarTable("T_DriverCard")]
 
