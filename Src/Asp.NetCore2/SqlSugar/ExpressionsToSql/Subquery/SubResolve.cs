@@ -54,6 +54,14 @@ namespace SqlSugar
                             {
                                 context.SingleTableNameSubqueryShortName = (((meExp.Body as BinaryExpression).Left as MemberExpression)?.Expression as ParameterExpression)?.Name;
                             }
+                            else if ((meExp.Body is MethodCallExpression methodCallExpression)&&methodCallExpression.Type==UtilConstants.BoolType)
+                            {
+                                var parameters = ExpressionTool.GetParameters(methodCallExpression);
+                                if (context.SingleTableNameSubqueryShortName == null&& parameters?.Select(s=>s.Name)?.Distinct()?.Count()==2)
+                                {
+                                    context.SingleTableNameSubqueryShortName = parameters?.LastOrDefault()?.Name;
+                                }
+                            }
                             if (ExpressionTool.GetMethodName(context.Expression).IsContainsIn("ToList") && meExp.Parameters.Any(it => it.Name == selfParameterName))
                             {
                                 if (meExp.Body is BinaryExpression)
