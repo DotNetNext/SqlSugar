@@ -168,6 +168,10 @@ namespace SqlSugar
                             {
                                 dbType = "numeric(18,6)";
                             }
+                            if (dbType.EqualCase("USER-DEFINED")&&it.Value is DateTime) 
+                            {
+                                dbType = "datetime";
+                            }
                         }
                         if (IsSqlServerModel())
                         {
