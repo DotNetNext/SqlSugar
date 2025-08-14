@@ -13,7 +13,9 @@ namespace MongoDbTest
         internal static void Init()
         {
             var db = DbHelper.GetNewDb();
-            db.DbMaintenance.TruncateTable<School, School>(); 
+            db.DbMaintenance.TruncateTable<Student, School>();
+
+            db.Insertable(new Student { Name = "jack" }).ExecuteCommand();
             // 添加学校数据
             var school = new School { Name = "TestSchool" };
             var ids=db.Insertable(school).ExecuteReturnPkList<string>(); 
@@ -24,9 +26,8 @@ namespace MongoDbTest
             var student2 = new Student { Name = "TestStudentNoSchool", SchoolId =
                ObjectId.GenerateNewId().ToString()
             }; 
+
             db.Insertable(student2).ExecuteCommand();
-
-
             if (db.Queryable<Student>().First(it => it.SchoolId == ids.Last()).Name != "TestStudent") Cases.ThrowUnitError();
             db.Updateable(db.Queryable<Student>().First(it => it.SchoolId == ids.Last())).ExecuteCommand();
             if (db.Queryable<Student>().First(it => it.SchoolId == ids.Last()).Name != "TestStudent") Cases.ThrowUnitError();
