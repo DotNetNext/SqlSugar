@@ -172,7 +172,7 @@ namespace SqlSugar.MongoDb
                                         { "as", "b" },
                                         { "in", new BsonDocument("$eq", new BsonArray { $"$$b.{leftField}", $"${rightField}" }) }
                                     };
-                var anyElementTrueDoc = new BsonDocument("$anyElementTrue", new BsonDocument("$map", mapDoc));
+                var anyElementTrueDoc = new BsonDocument("$expr", new BsonDocument("$anyElementTrue", new BsonDocument("$map", mapDoc)));
                 return anyElementTrueDoc;
             }
             else 
