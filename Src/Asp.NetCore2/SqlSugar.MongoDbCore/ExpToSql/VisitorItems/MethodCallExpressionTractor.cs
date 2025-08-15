@@ -143,6 +143,7 @@ namespace SqlSugar.MongoDb
 
             var memberExpression = methodCallExpression.Arguments[0] as MemberExpression;
             var lambdaExpression = methodCallExpression.Arguments[1] as LambdaExpression;
+            var firstParameterName = lambdaExpression.Parameters.FirstOrDefault().Name;
 
             // 获取集合字段名
             var collectionField = MongoNestedTranslator.TranslateNoFieldName(
@@ -160,7 +161,11 @@ namespace SqlSugar.MongoDb
                 // 左右表达式
                 var left = binaryExpr.Left;
                 var right = binaryExpr.Right;
-
+                if (ExpressionTool.GetParameters(right).Any(s => s.Name == firstParameterName)) 
+                {
+                     left = binaryExpr.Right;
+                     right = binaryExpr.Left;
+                } 
                 // 判断左侧是否为子对象属性，右侧是否为主对象属性
                 string leftField = MongoNestedTranslator.TranslateNoFieldName(left, _context, new ExpressionVisitorContext { IsText = true })?.ToString();
                 string rightField = MongoNestedTranslator.TranslateNoFieldName(right, _context, new ExpressionVisitorContext { IsText = true })?.ToString();
