@@ -157,6 +157,15 @@ namespace SqlSugar
                 var list = await this.Clone().Select<int>(" COUNT(1) ").ToListAsync();
                 return list.FirstOrDefault();
             }
+            if (this.QueryBuilder.AsTables?.Any() == true) 
+            {
+                var tableName= this.QueryBuilder.AsTables.FirstOrDefault().Value;
+                if (tableName.StartsWith(" (SELECT * FROM  (")) 
+                {
+                    var list = await this.Clone().Select<int>(" COUNT(1) ").ToListAsync();
+                    return list.FirstOrDefault();
+                }
+            }
             MappingTableList expMapping;
             int result;
             _CountBegin(out expMapping, out result);

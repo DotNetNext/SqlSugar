@@ -128,6 +128,15 @@ namespace SqlSugar
                 }
                 return this.Clone().Select<int>(" COUNT(1) ").ToList().FirstOrDefault();
             }
+            if (this.QueryBuilder.AsTables?.Any() == true)
+            {
+                var tableName = this.QueryBuilder.AsTables.FirstOrDefault().Value;
+                if (tableName.StartsWith(" (SELECT * FROM  ("))
+                {
+                    var list = this.Clone().Select<int>(" COUNT(1) ").ToList();
+                    return list.FirstOrDefault();
+                }
+            }
             MappingTableList expMapping;
             int result;
             _CountBegin(out expMapping, out result);
