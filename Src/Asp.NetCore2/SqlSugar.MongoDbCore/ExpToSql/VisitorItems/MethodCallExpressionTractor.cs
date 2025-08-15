@@ -155,35 +155,45 @@ namespace SqlSugar.MongoDb
             // 处理 Lambda 表达式体
             var body = lambdaExpression.Body;
 
-            // 只处理 s => s.Prop == it.Prop 这种表达式
-            if (body is BinaryExpression binaryExpr && binaryExpr.NodeType == ExpressionType.Equal)
+            // 支持多种比较操作
+            if (body is BinaryExpression binaryExpr)
             {
                 // 左右表达式
                 var left = binaryExpr.Left;
                 var right = binaryExpr.Right;
-                if (ExpressionTool.GetParameters(right).Any(s => s.Name == firstParameterName)) 
+                if (ExpressionTool.GetParameters(right).Any(s => s.Name == firstParameterName))
                 {
-                     left = binaryExpr.Right;
-                     right = binaryExpr.Left;
-                } 
-                // 判断左侧是否为子对象属性，右侧是否为主对象属性
+                    left = binaryExpr.Right;
+                    right = binaryExpr.Left;
+                }
                 string leftField = MongoNestedTranslator.TranslateNoFieldName(left, _context, new ExpressionVisitorContext { IsText = true })?.ToString();
                 string rightField = MongoNestedTranslator.TranslateNoFieldName(right, _context, new ExpressionVisitorContext { IsText = true })?.ToString();
 
-                // 构造 $map 和 $anyElementTrue
-                var mapDoc = new BsonDocument
-                                    {
-                                        { "input", $"${collectionField}" },
-                                        { "as", "b" },
-                                        { "in", new BsonDocument("$eq", new BsonArray { $"$$b.{leftField}", $"${rightField}" }) }
-                                    };
-                var anyElementTrueDoc = new BsonDocument("$expr", new BsonDocument("$anyElementTrue", new BsonDocument("$map", mapDoc)));
-                return anyElementTrueDoc;
+                // 映射表达式类型到Mongo操作符
+                string mongoOperator = binaryExpr.NodeType switch
+                {
+                    ExpressionType.Equal => "$eq",
+                    ExpressionType.NotEqual => "$ne",
+                    ExpressionType.GreaterThan => "$gt",
+                    ExpressionType.GreaterThanOrEqual => "$gte",
+                    ExpressionType.LessThan => "$lt",
+                    ExpressionType.LessThanOrEqual => "$lte",
+                    _ => null
+                };
+
+                if (mongoOperator != null)
+                {
+                    var mapDoc = new BsonDocument
+                    {
+                        { "input", $"${collectionField}" },
+                        { "as", "b" },
+                        { "in", new BsonDocument(mongoOperator, new BsonArray { $"$$b.{leftField}", $"${rightField}" }) }
+                    };
+                    var anyElementTrueDoc = new BsonDocument("$expr", new BsonDocument("$anyElementTrue", new BsonDocument("$map", mapDoc)));
+                    return anyElementTrueDoc;
+                }
             }
-            else 
-            {
-                return null;
-            }
+            return null;
         }
 
         private static bool IsComplexAnyExpression(MethodCallExpression methodCallExpression)
