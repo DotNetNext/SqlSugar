@@ -38,8 +38,11 @@ namespace MongoDbTest
             db.Insertable(new Student() { Age = 1, Name = "c", SchoolId = "1", Book = new List<Book>() { new Book() { SId = ObjectId.GenerateNewId() + "", CreateTime = DateTime.Now, Price = 21 } } }).ExecuteCommand();
             var data6= db.Queryable<Student>().Where(it => it.Book.Any(s => s.Price == 21 &&s.SId==id)).ToList();
             if(data6.Count!=1||data6.First().Name!="a") Cases.ThrowUnitError();
-
-
+            db.Insertable(new Student() { Age = 99, Name = "price=age", SchoolId = "1", Book = new List<Book>() { new Book() { SId = ObjectId.GenerateNewId() + "", CreateTime = DateTime.Now, Price = 99 } } }).ExecuteCommand();
+            var data7= db.Queryable<Student>().Where(it => it.Book.Any(s => s.Price == it.Age)).ToList();
+            var data8 = db.Queryable<Student>().Where(it => it.Book.Any(s => it.Age == s.Price)).ToList();
+            if(data7.Count != 1 || data8.Count!=1) Cases.ThrowUnitError();
+            if (data7.FirstOrDefault().Name!= "price=age" || data8.FirstOrDefault().Name != "price=age") Cases.ThrowUnitError();
             db.CodeFirst.InitTables<IdsModel>();
             db.DbMaintenance.TruncateTable<IdsModel>();
             var ids = new List<string> { ObjectId.GenerateNewId() + "" };
