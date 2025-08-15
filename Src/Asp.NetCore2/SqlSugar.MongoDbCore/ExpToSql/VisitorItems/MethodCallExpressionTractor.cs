@@ -122,10 +122,68 @@ namespace SqlSugar.MongoDb
                 }
                 else if (IsAnyMethodCall(methodCallExpression, name))
                 {
-                    return ProcessAnyExpression(methodCallExpression);
+                    if (IsComplexAnyExpression(methodCallExpression))
+                    {
+                        return HandleComplexAnyExpression(methodCallExpression);
+                    }
+                    else
+                    {
+                        return ProcessAnyExpression(methodCallExpression);
+                    }
                 }
                 return result;
             }
+        }
+
+        private BsonValue HandleComplexAnyExpression(MethodCallExpression methodCallExpression)
+        {
+            // 处理 it.Book.Any(s => s.Price == it.Age) 这种主表字段关联的 Any 表达式
+            // 参数1: 集合字段 it.Book
+            // 参数2: Lambda 表达式 s => s.Price == it.Age
+
+            var memberExpression = methodCallExpression.Arguments[0] as MemberExpression;
+            var lambdaExpression = methodCallExpression.Arguments[1] as LambdaExpression;
+
+            // 获取集合字段名
+            var collectionField = MongoNestedTranslator.TranslateNoFieldName(
+                memberExpression,
+                _context,
+                new ExpressionVisitorContext { IsText = true }
+            )?.ToString();
+
+            // 处理 Lambda 表达式体
+            var body = lambdaExpression.Body;
+
+            // 只处理 s => s.Prop == it.Prop 这种表达式
+            if (body is BinaryExpression binaryExpr && binaryExpr.NodeType == ExpressionType.Equal)
+            {
+                // 左右表达式
+                var left = binaryExpr.Left;
+                var right = binaryExpr.Right;
+
+                // 判断左侧是否为子对象属性，右侧是否为主对象属性
+                string leftField = MongoNestedTranslator.TranslateNoFieldName(left, _context, new ExpressionVisitorContext { IsText = true })?.ToString();
+                string rightField = MongoNestedTranslator.TranslateNoFieldName(right, _context, new ExpressionVisitorContext { IsText = true })?.ToString();
+
+                // 构造 $map 和 $anyElementTrue
+                var mapDoc = new BsonDocument
+                                    {
+                                        { "input", $"${collectionField}" },
+                                        { "as", "b" },
+                                        { "in", new BsonDocument("$eq", new BsonArray { $"$$b.{leftField}", $"${rightField}" }) }
+                                    };
+                var anyElementTrueDoc = new BsonDocument("$anyElementTrue", new BsonDocument("$map", mapDoc));
+                return anyElementTrueDoc;
+            }
+            else 
+            {
+                return null;
+            }
+        }
+
+        private static bool IsComplexAnyExpression(MethodCallExpression methodCallExpression)
+        {
+            return methodCallExpression.Arguments.Count == 2 && ExpressionTool.GetParameters(methodCallExpression.Arguments[1]).Select(s => s.Name).Distinct().Count() == 2;
         }
 
         private BsonValue ProcessAnyExpression(MethodCallExpression methodCallExpression)
