@@ -50,6 +50,15 @@ namespace Demo
                                 File = s.Image,
                                 //Image = s.Image == null ? null : new UploadFile() { Id = s.FileId, Url = s.Image == null ? "" : s.Image.FilePath }
                             }).ToPageList(1, 2, ref total);
+
+            var isTrue = true;
+            var list2 = Db.Queryable<SpShangPin>() 
+                .Select(s => new ShangPinView()
+                {
+                    Id = s.Id, 
+                    Image = new UploadFile() { Id = s.FileId, Url = isTrue?s.Id.ToString():s.Name},  
+                 
+                }).ToList();
             return total;
         }
     }
