@@ -48,7 +48,8 @@ namespace OrmTest
              .Select(x => new  DTO{ factory=x.factory, SysItems=x.SysItems })
              .ToList();
 
-
+            if (list.First().SysItems.fencode != "ITEM001") throw new Exception("unit error");
+            if (list2.First().SysItems.fencode != "ITEM001") throw new Exception("unit error");
         }
         [SugarTable("WarehoseReqDetail")]
         public class WarehoseReqDetailEntity
