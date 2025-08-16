@@ -32,6 +32,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UnitOneToManyNsdfafa.Init();
             Unitasdfays.Init();
             Unitadfafafa.Init();
             UnitSubGroupadfa.Init();
