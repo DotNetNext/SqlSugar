@@ -136,7 +136,14 @@ namespace SqlSugar
             MapperSql.Sql = $"( {queryable.ToSql().Key} ) ";
             if (isAny)
             {
-                MapperSql.Sql = $" EXISTS( {MapperSql.Sql}) ";
+                if (MapperSql.Sql.StartsWith("( ") && MapperSql.Sql.EndsWith(" ) "))
+                {
+                    MapperSql.Sql = $" EXISTS {MapperSql.Sql} ";
+                }
+                else
+                {
+                    MapperSql.Sql = $" EXISTS( {MapperSql.Sql}) ";
+                }
 
             }
             return MapperSql;
