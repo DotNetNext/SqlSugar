@@ -43,6 +43,12 @@ namespace OrmTest
                 .Select(x => new {  x.factory, x.SysItems })
                 .ToList();
 
+            var list2 = db.Queryable<WarehoseReqDetailEntity>().Includes(x => x.SysItems)
+              // .GroupBy(x => new { x.agrname, x.agrtype, x.agrclass, x.factory })
+             .Select(x => new  DTO{ factory=x.factory, SysItems=x.SysItems })
+             .ToList();
+
+
         }
         [SugarTable("WarehoseReqDetail")]
         public class WarehoseReqDetailEntity
@@ -74,6 +80,12 @@ namespace OrmTest
             [Navigate(NavigateType.OneToOne, nameof(fparentid), nameof(SysItemsEntity.fid))]
             public SysItemsEntity Parent { get; set; }
 
+        } 
+        public class DTO
+        {
+            public string factory { get; set; }
+
+            public Unitsdfayderqys.SysItemsEntity SysItems { get; set; }
         }
-    }
+    } 
 }
