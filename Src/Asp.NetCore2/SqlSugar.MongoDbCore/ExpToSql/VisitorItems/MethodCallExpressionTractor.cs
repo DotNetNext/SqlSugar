@@ -126,15 +126,107 @@ namespace SqlSugar.MongoDb
                     {
                         return HandleComplexAnyExpression(methodCallExpression);
                     }
+                    else if (IsSimpleValueListAny(methodCallExpression))
+                    {
+                        return HandleSimpleValueListAny(methodCallExpression);
+                    }
                     else
                     {
                         return ProcessAnyExpression(methodCallExpression);
                     }
+                     
                 }
                 return result;
             }
         }
 
+        private BsonValue HandleSimpleValueListAny(MethodCallExpression methodCallExpression)
+        {
+            var memberExpression = methodCallExpression.Arguments[0] as MemberExpression;
+            var lambdaExpression = methodCallExpression.Arguments[1] as LambdaExpression;
+            var paramName = lambdaExpression.Parameters.FirstOrDefault()?.Name;
+
+            // 集合字段名
+            var collectionField = MongoNestedTranslator.TranslateNoFieldName(
+                memberExpression,
+                _context,
+                new ExpressionVisitorContext { IsText = true }
+            )?.ToString();
+
+            // Lambda 表达式体
+            var body = lambdaExpression.Body;
+            if (body is BinaryExpression binaryExpr)
+            {
+                // 只处理 s == value 这种简单表达式
+                string mongoOperator = binaryExpr.NodeType switch
+                {
+                    ExpressionType.Equal => "$in",
+                    ExpressionType.NotEqual => "$nin",
+                    _ => null
+                };
+                if (mongoOperator != null)
+                {
+                    // s == value，左边是参数，右边是常量
+                    var left = binaryExpr.Left;
+                    var right = binaryExpr.Right;
+                    if (left is ParameterExpression && right is ConstantExpression constant)
+                    {
+                        var value = UtilMethods.MyCreate(constant.Value);
+                        var bson = new BsonDocument
+                                    {
+                                        { collectionField, new BsonDocument(mongoOperator, new BsonArray { value }) }
+                                    };
+                        return bson;
+                    }
+                    // s == it.xx 这种情况
+                    if (left is ParameterExpression && right != null)
+                    {
+                        var valueExpr = MongoNestedTranslator.TranslateNoFieldName(
+                            right,
+                            _context,
+                            new ExpressionVisitorContext { IsText = true }
+                        );
+                        var bson = new BsonDocument
+                                    {
+                                        { collectionField, new BsonDocument(mongoOperator, new BsonArray { valueExpr }) }
+                                    };
+                        return bson;
+                    }
+                }
+            }
+            return null;
+        }
+
+        private static bool IsSimpleValueListAny(MethodCallExpression methodCallExpression)
+        {
+            if (methodCallExpression.Arguments.Count == 2)
+            {
+                var memberExpression = methodCallExpression.Arguments[0] as MemberExpression;
+                var lambdaExpression = methodCallExpression.Arguments[1] as LambdaExpression;
+                if (memberExpression != null && lambdaExpression != null)
+                {
+                    var memberType = memberExpression.Type;
+                    if (typeof(IEnumerable<string>).IsAssignableFrom(memberType) ||
+                        typeof(IEnumerable<int>).IsAssignableFrom(memberType) ||
+                        typeof(IEnumerable<long>).IsAssignableFrom(memberType) ||
+                        typeof(IEnumerable<double>).IsAssignableFrom(memberType) ||
+                        typeof(IEnumerable<float>).IsAssignableFrom(memberType) ||
+                        typeof(IEnumerable<decimal>).IsAssignableFrom(memberType))
+                    {
+                        // 判断 lambda 是否是 s => s == value 或 s => s != value
+                        if (lambdaExpression.Body is BinaryExpression binaryExpr)
+                        {
+                            if ((binaryExpr.Left is ParameterExpression && binaryExpr.Right is ConstantExpression) ||
+                                (binaryExpr.Left is ParameterExpression && binaryExpr.Right != null))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+            return false;
+        }
         private BsonValue HandleComplexAnyExpression(MethodCallExpression methodCallExpression)
         {
             // 处理 it.Book.Any(s => s.Price == it.Age) 这种主表字段关联的 Any 表达式
