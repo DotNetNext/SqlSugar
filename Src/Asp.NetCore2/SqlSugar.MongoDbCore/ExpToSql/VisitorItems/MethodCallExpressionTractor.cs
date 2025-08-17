@@ -211,6 +211,7 @@ namespace SqlSugar.MongoDb
                         typeof(IEnumerable<long>).IsAssignableFrom(memberType) ||
                         typeof(IEnumerable<double>).IsAssignableFrom(memberType) ||
                         typeof(IEnumerable<float>).IsAssignableFrom(memberType) ||
+                        typeof(IEnumerable<Guid>).IsAssignableFrom(memberType) ||
                         typeof(IEnumerable<decimal>).IsAssignableFrom(memberType))
                     {
                         // 判断 lambda 是否是 s => s == value 或 s => s != value
