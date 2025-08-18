@@ -155,6 +155,13 @@ namespace SqlSugar
                     if (this.Context?.SugarContext?.QueryBuilder?.AppendNavInfo?.MappingNavProperties?.ContainsKey(memberName) == true)
                     {
                         ++i;
+                        if (this.Context?.SugarContext?.QueryBuilder is QueryBuilder builder&&item is MemberExpression member2&&member2?.Expression is ParameterExpression parameterExpression)
+                        {
+                            if (builder.SelectNewIgnoreColumns == null)
+                                builder.SelectNewIgnoreColumns = new List<KeyValuePair<string, string>>();
+                            var p=parameterExpression?.Type?.GetProperty(memberName);
+                            builder.SelectNewIgnoreColumns.Add(new KeyValuePair<string, string>(memberName,p?.PropertyType?.Name));
+                        }
                         continue;
                     }
                     ++i;

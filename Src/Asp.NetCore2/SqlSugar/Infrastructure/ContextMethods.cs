@@ -546,6 +546,10 @@ namespace SqlSugar
                            if (ignoreColumns.Any()) 
                            {
                                 ignorePropertyNames = ignoreColumns.Select(it => it.Key).ToList();
+                           } 
+                           if (ignorePropertyNames?.Contains(name)==true) 
+                           {
+                               continue;
                            }
                         }
                         result.Add(name, DataReaderToDynamicList_Part(readerValues, item, reval, mappingKeys, ignorePropertyNames));
