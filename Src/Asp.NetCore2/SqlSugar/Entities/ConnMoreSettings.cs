@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SqlSugar.Realization.PostgreSQL;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -39,5 +40,6 @@ namespace SqlSugar
         public DbType? DatabaseModel { get;set; }
         public bool ClickHouseEnableFinal { get; set; }
         public bool EnableJsonb { get;  set; }
+        public PostgresIdentityStrategy PostgresIdentityStrategy { get; set; } = PostgresIdentityStrategy.Serial; // 兼容性处理，默认使用Serial
     }
 }
