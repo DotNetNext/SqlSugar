@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
- 
+
 namespace SqlSugar
 {
     public class PostgreSQLDbMaintenance : DbMaintenanceProvider
@@ -73,7 +73,7 @@ namespace SqlSugar
         {
             get
             {
-                return @"select  table_name as name  from information_schema.views where table_schema  ='" + GetSchema()+"' ";
+                return @"select  table_name as name  from information_schema.views where table_schema  ='" + GetSchema() + "' ";
             }
         }
         #endregion
@@ -254,7 +254,7 @@ namespace SqlSugar
         {
             if (isCache == false)
             {
-                var sql = $" SELECT 1 FROM pg_catalog.pg_tables \r\n    WHERE schemaname = '"+GetSchema()+ "' \r\n    AND Lower(tablename) = '" + tableName.ToLower()+"' ";
+                var sql = $" SELECT 1 FROM pg_catalog.pg_tables \r\n    WHERE schemaname = '" + GetSchema() + "' \r\n    AND Lower(tablename) = '" + tableName.ToLower() + "' ";
                 return this.Context.Ado.GetInt(sql) > 0;
             }
             else
@@ -275,7 +275,7 @@ FROM information_schema.columns");
             result.Add("time");
             result.Add("date");
             result.Add("float8");
-            result.Add("float4"); 
+            result.Add("float4");
             result.Add("json");
             result.Add("jsonp");
             return result.Distinct().ToList();
@@ -284,7 +284,7 @@ FROM information_schema.columns");
         {
             return this.Context.Ado.SqlQuery<string>(@"SELECT tgname
 FROM pg_trigger
-WHERE tgrelid = '"+tableName+"'::regclass");
+WHERE tgrelid = '" + tableName + "'::regclass");
         }
         public override List<string> GetFuncList()
         {
@@ -302,26 +302,26 @@ WHERE tgrelid = '"+tableName+"'::regclass");
         }
         public override bool AddDefaultValue(string tableName, string columnName, string defaultValue)
         {
-            if (defaultValue?.StartsWith("'")==true&& defaultValue?.EndsWith("'") == true&& defaultValue?.Contains("(") == false
-                &&!defaultValue.EqualCase("'current_timestamp'") && !defaultValue.EqualCase("'current_date'")) 
+            if (defaultValue?.StartsWith("'") == true && defaultValue?.EndsWith("'") == true && defaultValue?.Contains("(") == false
+                && !defaultValue.EqualCase("'current_timestamp'") && !defaultValue.EqualCase("'current_date'"))
             {
-                string sql = string.Format(AddDefaultValueSql,this.SqlBuilder.GetTranslationColumnName( tableName), this.SqlBuilder.GetTranslationColumnName(columnName), defaultValue);
+                string sql = string.Format(AddDefaultValueSql, this.SqlBuilder.GetTranslationColumnName(tableName), this.SqlBuilder.GetTranslationColumnName(columnName), defaultValue);
                 return this.Context.Ado.ExecuteCommand(sql) > 0;
             }
             else if (defaultValue.EqualCase("current_timestamp") || defaultValue.EqualCase("current_date"))
             {
-                string sql = string.Format(AddDefaultValueSql, this.SqlBuilder.GetTranslationColumnName(tableName), this.SqlBuilder.GetTranslationColumnName(columnName),   defaultValue );
+                string sql = string.Format(AddDefaultValueSql, this.SqlBuilder.GetTranslationColumnName(tableName), this.SqlBuilder.GetTranslationColumnName(columnName), defaultValue);
                 return this.Context.Ado.ExecuteCommand(sql) > 0;
             }
             else if (defaultValue?.Contains("(") == false
          && !defaultValue.EqualCase("'current_timestamp'") && !defaultValue.EqualCase("'current_date'"))
             {
-                string sql = string.Format(AddDefaultValueSql, this.SqlBuilder.GetTranslationColumnName(tableName), this.SqlBuilder.GetTranslationColumnName(columnName), "'"+defaultValue+"'");
+                string sql = string.Format(AddDefaultValueSql, this.SqlBuilder.GetTranslationColumnName(tableName), this.SqlBuilder.GetTranslationColumnName(columnName), "'" + defaultValue + "'");
                 return this.Context.Ado.ExecuteCommand(sql) > 0;
             }
             else if (defaultValue?.ToLower()?.Contains("cast(") == true && defaultValue?.StartsWith("'") == true && defaultValue?.EndsWith("'") == true)
             {
-                string sql = string.Format(AddDefaultValueSql, this.SqlBuilder.GetTranslationColumnName(tableName), this.SqlBuilder.GetTranslationColumnName(columnName), defaultValue.Replace("''","'").TrimEnd('\'').TrimStart('\''));
+                string sql = string.Format(AddDefaultValueSql, this.SqlBuilder.GetTranslationColumnName(tableName), this.SqlBuilder.GetTranslationColumnName(columnName), defaultValue.Replace("''", "'").TrimEnd('\'').TrimStart('\''));
                 return this.Context.Ado.ExecuteCommand(sql) > 0;
             }
             else if (defaultValue?.ToLower()?.Contains("now()") == true)
@@ -356,11 +356,11 @@ WHERE tgrelid = '"+tableName+"'::regclass");
         {
             ConvertCreateColumnInfo(columnInfo);
             tableName = this.SqlBuilder.GetTranslationTableName(tableName);
-            var columnName= this.SqlBuilder.GetTranslationColumnName(columnInfo.DbColumnName);
+            var columnName = this.SqlBuilder.GetTranslationColumnName(columnInfo.DbColumnName);
             string sql = GetUpdateColumnSql(tableName, columnInfo);
             this.Context.Ado.ExecuteCommand(sql);
-            var isnull = columnInfo.IsNullable?" DROP NOT NULL ": " SET NOT NULL ";
-            this.Context.Ado.ExecuteCommand(string.Format("alter table {0} alter {1} {2}",tableName,columnName, isnull));
+            var isnull = columnInfo.IsNullable ? " DROP NOT NULL " : " SET NOT NULL ";
+            this.Context.Ado.ExecuteCommand(string.Format("alter table {0} alter {1} {2}", tableName, columnName, isnull));
             return true;
         }
 
@@ -415,13 +415,13 @@ WHERE tgrelid = '"+tableName+"'::regclass");
             });
             if (!GetDataBaseList(newDb).Any(it => it.Equals(databaseName, StringComparison.CurrentCultureIgnoreCase)))
             {
-                var isVast = this.Context?.CurrentConnectionConfig?.MoreSettings?.DatabaseModel==DbType.Vastbase;
+                var isVast = this.Context?.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.Vastbase;
                 var dbcompatibility = "";
-                if (isVast) 
+                if (isVast)
                 {
-                    dbcompatibility=" dbcompatibility = 'PG'";
+                    dbcompatibility = " dbcompatibility = 'PG'";
                 }
-                newDb.Ado.ExecuteCommand(string.Format(CreateDataBaseSql, this.SqlBuilder.SqlTranslationLeft+databaseName+this.SqlBuilder.SqlTranslationRight, databaseDirectory)+ dbcompatibility);
+                newDb.Ado.ExecuteCommand(string.Format(CreateDataBaseSql, this.SqlBuilder.SqlTranslationLeft + databaseName + this.SqlBuilder.SqlTranslationRight, databaseDirectory) + dbcompatibility);
             }
             return true;
         }
@@ -475,7 +475,7 @@ WHERE tgrelid = '"+tableName+"'::regclass");
         protected override bool IsAnyDefaultValue(string tableName, string columnName, List<DbColumnInfo> columns)
         {
             var defaultValue = columns.Where(it => it.DbColumnName.Equals(columnName, StringComparison.CurrentCultureIgnoreCase)).First().DefaultValue;
-            if (defaultValue?.StartsWith("NULL::") == true) 
+            if (defaultValue?.StartsWith("NULL::") == true)
             {
                 return false;
             }
@@ -485,6 +485,8 @@ WHERE tgrelid = '"+tableName+"'::regclass");
         {
             List<string> columnArray = new List<string>();
             Check.Exception(columns.IsNullOrEmpty(), "No columns found ");
+
+            var identityStrategy = this.Context.CurrentConnectionConfig.MoreSettings?.PostgresIdentityStrategy;
             foreach (var item in columns)
             {
                 string columnName = item.DbColumnName;
@@ -499,7 +501,7 @@ WHERE tgrelid = '"+tableName+"'::regclass");
                 //    dataType = "varchar";
                 //}
                 string dataSize = item.Length > 0 ? string.Format("({0})", item.Length) : null;
-                if (item.DecimalDigits > 0&&item.Length>0 && dataType == "numeric") 
+                if (item.DecimalDigits > 0 && item.Length > 0 && dataType == "numeric")
                 {
                     dataSize = $"({item.Length},{item.DecimalDigits})";
                 }
@@ -508,17 +510,17 @@ WHERE tgrelid = '"+tableName+"'::regclass");
                 string addItem = string.Format(this.CreateTableColumn, this.SqlBuilder.GetTranslationColumnName(columnName.ToLower(isAutoToLowerCodeFirst)), dataType, dataSize, nullType, primaryKey, "");
                 if (item.IsIdentity)
                 {
-                    if (dataType?.ToLower() == "int") 
-                    {
-                        dataSize = "int4";
-                    }
-                    else if (dataType?.ToLower() == "long")
-                    {
-                        dataSize = "int8";
-                    }
                     string length = dataType.Substring(dataType.Length - 1);
-                    string identityDataType = "serial" + length;
-                    addItem = addItem.Replace(dataType, identityDataType);
+                    if (identityStrategy == Realization.PostgreSQL.PostgresIdentityStrategy.Serial)
+                    {
+                        string identityDataType = "serial" + length;
+                        addItem = addItem.Replace(dataType, identityDataType);
+                    }
+                    else if (identityStrategy == Realization.PostgreSQL.PostgresIdentityStrategy.Identity)
+                    {
+                        string identityDataType = "int" + length + " GENERATED BY DEFAULT AS IDENTITY";
+                        addItem = addItem.Replace(dataType, identityDataType);
+                    }
                 }
                 columnArray.Add(addItem);
             }
@@ -537,7 +539,7 @@ WHERE tgrelid = '"+tableName+"'::regclass");
 
         public override List<DbColumnInfo> GetColumnInfosByTableName(string tableName, bool isCache = true)
         {
-            var result= base.GetColumnInfosByTableName(tableName.TrimEnd('"').TrimStart('"').ToLower(), isCache);
+            var result = base.GetColumnInfosByTableName(tableName.TrimEnd('"').TrimStart('"').ToLower(), isCache);
             if (result == null || result.Count() == 0)
             {
                 result = base.GetColumnInfosByTableName(tableName, isCache);
@@ -557,24 +559,24 @@ WHERE tgrelid = '"+tableName+"'::regclass");
                 List<string> pkList = new List<string>();
                 if (isCache)
                 {
-                    pkList=GetListOrCache<string>("GetColumnInfosByTableName_N_Pk"+tableName, sql);
+                    pkList = GetListOrCache<string>("GetColumnInfosByTableName_N_Pk" + tableName, sql);
                 }
                 else
                 {
                     pkList = this.Context.Ado.SqlQuery<string>(sql);
                 }
-                if (pkList.Count >1) 
+                if (pkList.Count > 1)
                 {
                     foreach (var item in result)
                     {
-                        if (pkList.Select(it=>it.ToUpper()).Contains(item.DbColumnName.ToUpper())) 
+                        if (pkList.Select(it => it.ToUpper()).Contains(item.DbColumnName.ToUpper()))
                         {
                             item.IsPrimarykey = true;
                         }
                     }
                 }
             }
-            catch  
+            catch
             {
 
             }
@@ -646,7 +648,7 @@ WHERE tgrelid = '"+tableName+"'::regclass");
         }
         private static void ConvertCreateColumnInfo(DbColumnInfo x)
         {
-            string[] array = new string[] { "uuid","int4", "text", "int2", "int8", "date", "bit", "text", "timestamp" };
+            string[] array = new string[] { "uuid", "int4", "text", "int2", "int8", "date", "bit", "text", "timestamp" };
 
             if (array.Contains(x.DataType?.ToLower()))
             {
