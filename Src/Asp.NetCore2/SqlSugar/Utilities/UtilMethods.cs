@@ -900,7 +900,8 @@ namespace SqlSugar
                     EnableILike=it.MoreSettings.EnableILike,
                     ClickHouseEnableFinal=it.MoreSettings.ClickHouseEnableFinal,
                     PgSqlIsAutoToLowerSchema=it.MoreSettings.PgSqlIsAutoToLowerSchema,
-                    EnableJsonb=it.MoreSettings.EnableJsonb
+                    EnableJsonb=it.MoreSettings.EnableJsonb,
+                    PostgresIdentityStrategy = it.MoreSettings.PostgresIdentityStrategy
 
                 },
                 SqlMiddle = it.SqlMiddle == null ? null : new SqlMiddle
