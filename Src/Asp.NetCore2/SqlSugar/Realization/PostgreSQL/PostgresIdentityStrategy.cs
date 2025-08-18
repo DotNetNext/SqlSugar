@@ -1,4 +1,4 @@
-﻿namespace SqlSugar.Realization.PostgreSQL
+﻿namespace SqlSugar 
 {
     public enum PostgresIdentityStrategy
     {
