@@ -43,6 +43,7 @@ namespace MongoDbTest
             var data8 = db.Queryable<Student>().Where(it => it.Book.Any(s => it.Age == s.Price)).ToList();
             if(data7.Count != 1 || data8.Count!=1) Cases.ThrowUnitError();
             if (data7.FirstOrDefault().Name!= "price=age" || data8.FirstOrDefault().Name != "price=age") Cases.ThrowUnitError();
+            var data9 = db.Queryable<Student>().Where(it => it.Book.Any()).ToList();
             db.CodeFirst.InitTables<IdsModel>();
             db.DbMaintenance.TruncateTable<IdsModel>();
             var ids = new List<string> { ObjectId.GenerateNewId() + "" };
