@@ -55,6 +55,10 @@ namespace SqlSugar
                 {
                     value = AppendUnaryExp(parameter, isLeft, value, oppoSiteExpression);
                 }
+                else if (oppoSiteExpression?.Type==UtilConstants.BoolType&&value is bool boolValue && parameter?.BaseParameter?.OperatorValue?.IsIn("AND", "OR")==true) 
+                {
+                    value = AppendOtherBool(parameter, isLeft, boolValue?" 1=1 ":" 1=2 ");
+                }
                 else
                 {
                     value = AppendOther(parameter, isLeft, value);
@@ -78,6 +82,27 @@ namespace SqlSugar
             }
             this.Context.Parameters.Add(new SugarParameter(appendValue, value));
             appendValue = string.Format(" {0} ", appendValue);
+            if (isLeft == true)
+            {
+                appendValue += ExpressionConst.ExpressionReplace + parameter.BaseParameter.Index;
+            }
+            if (this.Context.Result.Contains(ExpressionConst.FormatSymbol))
+            {
+                this.Context.Result.Replace(ExpressionConst.FormatSymbol, appendValue);
+            }
+            else
+            {
+                this.Context.Result.Append(appendValue);
+            }
+
+            return value;
+        }
+        private object AppendOtherBool(ExpressionParameter parameter, bool? isLeft, object value)
+        {
+            //var appendValue = this.Context.SqlParameterKeyWord + ExpressionConst.Const + Context.ParameterIndex;
+            Context.ParameterIndex++; 
+            //this.Context.Parameters.Add(new SugarParameter(appendValue, value));
+            var appendValue =value+"";
             if (isLeft == true)
             {
                 appendValue += ExpressionConst.ExpressionReplace + parameter.BaseParameter.Index;
