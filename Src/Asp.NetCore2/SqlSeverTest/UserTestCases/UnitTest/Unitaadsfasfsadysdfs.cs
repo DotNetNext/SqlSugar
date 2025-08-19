@@ -33,6 +33,17 @@ namespace OrmTest
                     u.Category == 3 || u.Category == 4
                     || (isAutoReg && det.IsSkinTest == 1 && det.SkinTestSign == 3))
                     .Any();
+
+                var bbb = db.Queryable<RecipeEntity, RecipeDetailEntity, UsageEntity>((rp, det, u) => new object[]
+                   {
+                                                    JoinType.Inner, det.RecipeId == rp.RecipeId && rp.Status == 2,
+                                                    JoinType.Inner, u.UsageId == det.UsageRouteId,
+                   })
+                //.Where((rp, det, u) => rp.ClinicId == clinicId && rpDetailIds.Contains(det.RecipeDetId))
+                .Where((rp, det, u) => u.Category == 2 ||
+                u.Category == 3 || u.Category == 4
+                || (!isAutoReg && det.IsSkinTest == 1 && det.SkinTestSign == 3))
+                .Any();
             }
             catch (Exception)
             {
