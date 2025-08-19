@@ -59,6 +59,10 @@ namespace SqlSugar
                 {
                     value = AppendOtherBool(parameter, isLeft, boolValue?" 1=1 ":" 1=2 ");
                 }
+                else if (isLeft==true&& value is bool isTrue && parameter?.BaseParameter?.BaseExpression is BinaryExpression binaryExpression&&binaryExpression.Left is UnaryExpression unaryExpression && unaryExpression.NodeType==ExpressionType.Not&&ExpressionTool.GetParameters(unaryExpression).Count==0)
+                {
+                    value = AppendOtherBool(parameter, isLeft, isTrue ? " (1=1) " : " (1=2) ");
+                }
                 else
                 {
                     value = AppendOther(parameter, isLeft, value);
