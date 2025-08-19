@@ -4,6 +4,7 @@ using System.Text;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Globalization;
+using SqlSugar.DbConvert;
 namespace SqlSugar
 {
     public partial class InsertBuilder : IDMLBuilder
@@ -323,6 +324,14 @@ namespace SqlSugar
                 var obj = Activator.CreateInstance(type);
                 var p = ParameterConverter.Invoke(obj, new object[] { columnInfo.Value, GetDbColumnIndex }) as SugarParameter;
                 return p.ParameterName;
+            }
+            else if (columnInfo.SqlParameterDbType is Type t&&t== typeof(EnumToStringConvert) && this.Context?.CurrentConnectionConfig?.MoreSettings?.TableEnumIsString == true)
+            {
+                var pname = Builder.SqlParameterKeyWord + $"{columnInfo.PropertyName}_str" + GetDbColumnIndex;
+                var p = new SugarParameter(pname, columnInfo.Value);
+                this.Parameters.Add(p);
+                GetDbColumnIndex++;
+                return pname;
             }
             else if (columnInfo.SqlParameterDbType is Type)
             {
