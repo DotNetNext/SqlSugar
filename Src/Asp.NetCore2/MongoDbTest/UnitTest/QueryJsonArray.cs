@@ -78,6 +78,13 @@ namespace MongoDbTest
             var list6= db.Queryable<IdsModel>().Select(it => new IdsModel { Students= it.Students }).ToList();
             var list5 = db.Queryable<IdsModel>().Select(it => new { it.Students}).ToList();
             if (list5.Last().Students.First().Id!= list6.Last().Students.First().Id) Cases.ThrowUnitError();
+
+            var p = new List<Student>() { new Student() { Age = 100111 } }; 
+            db.Updateable<IdsModel>()
+                .SetColumns(it =>   it.Students == p)
+                .Where(s=>s.name=="b").ExecuteCommand();
+            var data=db.Queryable<IdsModel>().Where(s => s.name == "b").First();
+            if (data.Students.First().Age != 100111) Cases.ThrowUnitError();
         }
 
         [SqlSugar.SugarTable("UnitStudentdfsds3zzz1")]
