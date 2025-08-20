@@ -97,6 +97,7 @@ namespace MongoDbTest
             var list77 = db.Queryable<Student>()
                 .Where(it=>"ac"== it.Name.Substring(1, it.SchoolId))
                 .Select(it => new { it.SchoolId,  name =it.Name.Substring(1, it.SchoolId) }).ToList();
+            if (list77.First().name != "ac") Cases.ThrowUnitError();
         }
 
         private static void ValidateStudentData(SqlSugar.SqlSugarClient db)
