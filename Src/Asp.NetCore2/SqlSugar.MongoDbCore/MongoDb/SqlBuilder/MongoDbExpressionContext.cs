@@ -584,7 +584,7 @@ namespace SqlSugar.MongoDb
             {
                 lengthValue = UtilMethods.GetMemberName(lengthValue);
             }
-            var substrDoc = new BsonDocument("$substrBytes", new BsonArray { GetMemberName(memberName), startValue, lengthValue });
+            var substrDoc = new BsonDocument("$substrBytes", new BsonArray { GetMemberName(memberName,item), startValue, lengthValue });
             return substrDoc.ToJson(UtilMethods.GetJsonWriterSettings());
         }
 
@@ -778,7 +778,14 @@ namespace SqlSugar.MongoDb
         {
             return UtilMethods.GetMemberName(memberName);
         }
-
+        private static BsonValue GetMemberName(BsonValue memberName,Expression expression)
+        {
+            if (ExpressionTool.GetParameters(expression).Count > 0)
+            {
+                return UtilMethods.GetMemberName(memberName);
+            }
+            return memberName;
+        }
         /// <summary>
         /// Converts a C# date format string to a MongoDB-compatible date format string.
         /// </summary>
