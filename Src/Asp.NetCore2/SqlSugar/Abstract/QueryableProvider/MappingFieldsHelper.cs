@@ -39,12 +39,17 @@ namespace SqlSugar
                 foreach (var item in mappingFieldsExpressions)
                 {
                     InitMappingFieldsExpression(item);
+                    var csharpTypeName= UtilMethods.GetUnderType(item.RightEntityColumn.PropertyInfo.PropertyType).Name;
+                    if (csharpTypeName .EqualCase(nameof(String)) && item.RightEntityColumn.SqlParameterDbType is System.Data.DbType dbtype) 
+                    {
+                        csharpTypeName =nameof(System.Data.DbType.AnsiString);
+                    }
                     clist.Add(new KeyValuePair<WhereType, ConditionalModel>(i==0?WhereType.Or: WhereType.And, new ConditionalModel()
                     {
                         FieldName = item.LeftEntityColumn.DbColumnName,
                         ConditionalType = ConditionalType.Equal,
                         FieldValue = item.RightEntityColumn.PropertyInfo.GetValue(model).ObjToString(),
-                        CSharpTypeName =UtilMethods.GetUnderType(item.RightEntityColumn.PropertyInfo.PropertyType).Name
+                        CSharpTypeName = csharpTypeName
                     }));
                     i++;
                 }
