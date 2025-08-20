@@ -576,11 +576,11 @@ namespace SqlSugar.MongoDb
             BsonValue memberName = new ExpressionVisitor(context).Visit(item);
             BsonValue startValue = new ExpressionVisitor(context).Visit(start as Expression);
             BsonValue lengthValue = new ExpressionVisitor(context).Visit(length as Expression);
-            if (startValue.IsString)
+            if (startValue.IsString&&ExpressionTool.GetParameters(start as Expression).Count>0)
             {
                 startValue = UtilMethods.GetMemberName(startValue);
             }
-            if (lengthValue.IsString) 
+            if (lengthValue.IsString && ExpressionTool.GetParameters(length as Expression).Count > 0) 
             {
                 lengthValue = UtilMethods.GetMemberName(lengthValue);
             }
