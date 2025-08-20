@@ -22,10 +22,29 @@ namespace SqlSugar.MongoDb
 
         public BsonDocument Extract(BinaryExpression expr)
         {
-            if (IsLogicalExpression(expr))
+            if (IsValidJsonEqualityExpression(expr))
+                return JsonEqualityExpression(expr);
+            else if (IsLogicalExpression(expr))
                 return LogicalBinaryExpression(expr);
             else
                 return FieldComparisonOrCalculationExpression(expr);
+        }
+
+        private BsonDocument JsonEqualityExpression(BinaryExpression expr)
+        {
+            var fieldName = new ExpressionVisitor(_context).Visit(expr.Left); 
+
+            // 步骤3：获取右侧常量值
+            object rightValue = ExpressionTool.DynamicInvoke(expr.Right);
+
+            var builder=InstanceFactory.GetInsertBuilder(this._context.context.CurrentConnectionConfig);
+            var json=builder.SerializeObjectFunc(rightValue); 
+            return new BsonDocument(fieldName+"",UtilMethods.ParseJsonObject(json));
+        }
+
+        private bool IsValidJsonEqualityExpression(BinaryExpression expr)
+        {
+            return this._context?.context != null && expr.NodeType == ExpressionType.Equal && UtilMethods.IsJsonMember(expr.Left, this._context?.context) && ExpressionTool.GetParameters(expr.Right).Count == 0;
         }
 
         private static bool IsLogicalExpression(BinaryExpression expr)

@@ -21,6 +21,19 @@ namespace SqlSugar.MongoDb
 {
     public class UtilMethods
     {
+        internal static bool IsJsonMember(Expression expression, SqlSugarProvider context)
+        {  
+            var member = expression as MemberExpression;
+            if (member == null)
+                return false;
+            if (!(member.Type.IsClass())||member.Type==typeof(string))
+                return false;
+            if (member.Expression == null)
+                return false;
+            var entity = context.EntityMaintenance.GetEntityInfo(member.Expression.Type);
+            var json = entity.Columns.FirstOrDefault(z => z.IsJson && z.PropertyName == member.Member.Name);
+            return json != null;
+        }
         internal static SugarParameter GetParameterConverter(int index, ISqlSugarClient db, object value, Expression oppoSiteExpression, EntityColumnInfo columnInfo)
         {
             var entity = db.EntityMaintenance.GetEntityInfo(oppoSiteExpression.Type);
