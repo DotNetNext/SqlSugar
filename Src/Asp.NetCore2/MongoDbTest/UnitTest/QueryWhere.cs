@@ -94,7 +94,9 @@ namespace MongoDbTest
 
             var list76 = db.Queryable<Student>().Select(it => SqlFunc.UNIX_TIMESTAMP(it.CreateDateTime)).ToList();
 
-            var list77 = db.Queryable<Student>().Select(it => new { it.SchoolId,  name =it.Name.Substring(1, it.SchoolId) }).ToList();
+            var list77 = db.Queryable<Student>()
+                .Where(it=>"ac"== it.Name.Substring(1, it.SchoolId))
+                .Select(it => new { it.SchoolId,  name =it.Name.Substring(1, it.SchoolId) }).ToList();
         }
 
         private static void ValidateStudentData(SqlSugar.SqlSugarClient db)
