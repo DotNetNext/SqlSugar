@@ -67,32 +67,34 @@ namespace MongoDbTest
             var list4 = db.Queryable<Student>().Where(it => it.Name.EndsWith("ck")).ToList();
             if (!list4.Any()) Cases.ThrowUnitError();
 
-            var list5 = db.Queryable<Student>().Where(it =>it.CreateDateTime==DateTime.Now.Date).ToList();
+            var list5 = db.Queryable<Student>().Where(it => it.CreateDateTime == DateTime.Now.Date).ToList();
             var list6 = db.Queryable<Student>().Where(it => it.CreateDateTime == DateTime.Now.AddDays(1)).ToList();
 
             var dt = DateTime.Now.AddDays(-10).Date;
-            var list70=db.Queryable<Student>().ToList().Where(it => it.CreateDateTime.Date == dt).ToList();
-            var list71 = db.Queryable<Student>().Where(it => it.CreateDateTime.Date == dt).ToList(); 
-   
+            var list70 = db.Queryable<Student>().ToList().Where(it => it.CreateDateTime.Date == dt).ToList();
+            var list71 = db.Queryable<Student>().Where(it => it.CreateDateTime.Date == dt).ToList();
+
             if (list71.Count != list70.Count) Cases.ThrowUnitError();
 
-            var ids=list71.Select(it => it.Id).ToList();
+            var ids = list71.Select(it => it.Id).ToList();
             var list72 = db.Queryable<Student>().Where(it => ids.Contains(it.Id)).ToList();
-            if(list72.Count!=ids.Count) Cases.ThrowUnitError();
+            if (list72.Count != ids.Count) Cases.ThrowUnitError();
 
             var ids2 = db.Queryable<Student>().Select(it => it.Id).ToList();
             var list73 = db.Queryable<Student>().Where(it => ids2.Contains(it.Id)).ToList();
             if (list73.Count != ids2.Count) Cases.ThrowUnitError();
 
 
-            string [] ids3 = db.Queryable<Student>().Select(it => it.Id).ToArray();
+            string[] ids3 = db.Queryable<Student>().Select(it => it.Id).ToArray();
             var list74 = db.Queryable<Student>().Where(it => ids3.Contains(it.Id)).ToList();
             if (list74.Count != ids2.Count) Cases.ThrowUnitError();
 
-            var list75 = db.Queryable<Student>().Where(it =>SqlFunc.Between(it.SchoolId,1,2)).ToList();
-            if(list75.Count!=1|| list75.First().SchoolId!=2) Cases.ThrowUnitError();
+            var list75 = db.Queryable<Student>().Where(it => SqlFunc.Between(it.SchoolId, 1, 2)).ToList();
+            if (list75.Count != 1 || list75.First().SchoolId != 2) Cases.ThrowUnitError();
 
             var list76 = db.Queryable<Student>().Select(it => SqlFunc.UNIX_TIMESTAMP(it.CreateDateTime)).ToList();
+
+            var list77 = db.Queryable<Student>().Select(it => new { it.SchoolId,  name =it.Name.Substring(1, it.SchoolId) }).ToList();
         }
 
         private static void ValidateStudentData(SqlSugar.SqlSugarClient db)
