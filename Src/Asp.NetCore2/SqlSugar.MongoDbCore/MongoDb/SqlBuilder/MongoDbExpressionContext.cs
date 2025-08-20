@@ -576,6 +576,14 @@ namespace SqlSugar.MongoDb
             BsonValue memberName = new ExpressionVisitor(context).Visit(item);
             BsonValue startValue = new ExpressionVisitor(context).Visit(start as Expression);
             BsonValue lengthValue = new ExpressionVisitor(context).Visit(length as Expression);
+            if (startValue.IsString)
+            {
+                startValue = UtilMethods.GetMemberName(startValue);
+            }
+            if (lengthValue.IsString) 
+            {
+                lengthValue = UtilMethods.GetMemberName(lengthValue);
+            }
             var substrDoc = new BsonDocument("$substrBytes", new BsonArray { GetMemberName(memberName), startValue, lengthValue });
             return substrDoc.ToJson(UtilMethods.GetJsonWriterSettings());
         }
