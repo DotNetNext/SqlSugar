@@ -33,6 +33,9 @@ namespace MongoDbTest
             var list6 = db.Queryable<Student>().Where(s => s.Book.Any(s => s == 11)).ToList();
             if (list5.Count != 0 ) Cases.ThrowUnitError();
             if (list6.Count != 0) Cases.ThrowUnitError();
+            db.Insertable(new Student() { Book = new List<double>() {  } }).ExecuteCommand();
+            var list7 = db.Queryable<Student>().Where(s => s.Book.Any()).ToList();
+            if (!list7.Any()) Cases.ThrowUnitError();
         }
 
         [SqlSugar.SugarTable("UnitStudentdsafaz1")]
