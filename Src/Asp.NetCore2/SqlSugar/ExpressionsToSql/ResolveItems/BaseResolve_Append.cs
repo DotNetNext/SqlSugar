@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic; 
 using System.Linq;
 using System.Linq.Expressions;
@@ -276,6 +277,14 @@ namespace SqlSugar
             string parameterName = this.Context.SqlParameterKeyWord + "constant" + this.Context.ParameterIndex;
             this.Context.ParameterIndex++; ;
             this.Context.Parameters.Add(new SugarParameter(parameterName, paramterValue));
+            if (this.BaseParameter?.OppsiteExpression is MemberExpression member&& this.BaseParameter?.BaseExpression is BinaryExpression binary&&ExpressionTool.IsEqualOrLtOrGt(binary)) 
+            {
+                if (ExpressionTool.IsSqlParameterDbType(this.Context, member)) 
+                {
+                    var p = ExpressionTool.GetParameterBySqlParameterDbType(this.Context.ParameterIndex, paramterValue, this.Context, member);
+                    this.Context.Parameters.Last().DbType = p.DbType;
+                }
+            }
             return parameterName;
         }
         protected string AppendParameter(SugarParameter p)
