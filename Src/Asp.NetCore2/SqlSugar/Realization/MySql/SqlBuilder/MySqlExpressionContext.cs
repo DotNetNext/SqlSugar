@@ -166,7 +166,16 @@ namespace SqlSugar
         public override string ToInt64(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
+            if (IsDorisDbType(model))
+            {
+                return string.Format(" CAST({0} AS BIGINT)", parameter.MemberName);
+            }
             return string.Format(" CAST({0} AS SIGNED)", parameter.MemberName);
+        }
+
+        private static bool IsDorisDbType(MethodCallExpressionModel model)
+        {
+            return model?.Conext?.SugarContext?.Context?.CurrentConnectionConfig?.DbType == DbType.Doris;
         }
 
         public override string ToString(MethodCallExpressionModel model)
