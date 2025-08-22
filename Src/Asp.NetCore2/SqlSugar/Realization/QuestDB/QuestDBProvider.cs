@@ -172,15 +172,7 @@ namespace SqlSugar
                     {
                         sqlParameter.Value = (sqlParameter.Value).ToString();
                     }
-                }
-                else if (sqlParameter.DbType == System.Data.DbType.Boolean)
-                {
-                    sqlParameter.DbType = System.Data.DbType.String;
-                    if (sqlParameter.Value != null)
-                    {
-                        sqlParameter.Value = sqlParameter.Value.ObjToString().ToLower();
-                    }
-                }
+                } 
                 ++index;
             }
             return result;
