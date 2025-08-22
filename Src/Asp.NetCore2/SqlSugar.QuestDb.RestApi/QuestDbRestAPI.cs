@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Xml.Linq;
 using System.Linq;
+using System.Data;
 namespace SqlSugar 
 {
     /// <summary>
@@ -97,7 +98,130 @@ namespace SqlSugar
             QuestDbPageSizeBulkCopy result = new QuestDbPageSizeBulkCopy(this,pageSize,db);
             return result;
         }
+        /// <summary>
+        /// 批量快速插入异步（DataTable重载）
+        /// </summary>
+        /// <param name="dataTable">要插入的数据表</param>
+        /// <param name="tableName">目标表名</param>
+        /// <param name="dateFormat">导入时，时间格式 默认:yyyy/M/d H:mm:ss</param>
+        /// <returns></returns>
+        public async Task<int> BulkCopyAsync(DataTable dataTable, string tableName, string dateFormat = "yyyy/M/d H:mm:ss")
+        {
+            if (string.IsNullOrWhiteSpace(url))
+            {
+                throw new Exception("BulkCopy功能需要启用RestAPI，程序启动时执行：RestAPIExtension.UseQuestDbRestAPI(\"localhost:9000\", \"username\", \"password\")");
+            }
+            if (dataTable == null || dataTable.Rows.Count == 0)
+            {
+                return 0;
+            }
+            var result = 0;
+            var fileName = $"{Guid.NewGuid()}.csv";
+            var filePath = Path.Combine(AppContext.BaseDirectory, fileName);
+            try
+            {
+                var client = new HttpClient();
+                var boundary = "---------------" + DateTime.Now.Ticks.ToString("x");
+                var list = new List<Hashtable>();
 
+                foreach (DataColumn col in dataTable.Columns)
+                {
+                    if (col.DataType == typeof(DateTime))
+                    {
+                        list.Add(new Hashtable()
+                        {
+                            { "name", col.ColumnName },
+                            { "type", "TIMESTAMP" },
+                            { "pattern", dateFormat }
+                        });
+                    }
+                    else
+                    {
+                        list.Add(new Hashtable()
+                        {
+                            { "name", col.ColumnName },
+                            { "type", col.DataType.Name.ToUpper() }
+                        });
+                    }
+                }
+                var schema = JsonConvert.SerializeObject(list);
+                // 写入CSV文件
+                using (var writer = new StreamWriter(filePath))
+                using (var csv = new CsvWriter(writer, CultureInfo.CurrentCulture))
+                {
+                    foreach (DataColumn col in dataTable.Columns)
+                    {
+                        csv.WriteField(col.ColumnName);
+                    }
+                    csv.NextRecord();
+                    foreach (DataRow row in dataTable.Rows)
+                    {
+                        foreach (DataColumn col in dataTable.Columns)
+                        {
+                            if (col.DataType == typeof(DateTime) && row[col] != DBNull.Value)
+                            {
+                                csv.WriteField(((DateTime)row[col]).ToString(dateFormat));
+                            }
+                            else
+                            {
+                                csv.WriteField(row[col]);
+                            }
+                        }
+                        csv.NextRecord();
+                    }
+                }
+
+                var httpContent = new MultipartFormDataContent(boundary);
+                if (!string.IsNullOrWhiteSpace(this.authorization))
+                    client.DefaultRequestHeaders.Add("Authorization", this.authorization);
+                httpContent.Add(new StringContent(schema), "schema");
+                httpContent.Add(new ByteArrayContent(File.ReadAllBytes(filePath)), "data");
+                httpContent.Headers.Remove("Content-Type");
+                httpContent.Headers.TryAddWithoutValidation("Content-Type", "multipart/form-data; boundary=" + boundary);
+                var httpResponseMessage = await Post(client, tableName, httpContent);
+                var readAsStringAsync = await httpResponseMessage.Content.ReadAsStringAsync();
+                var splitByLine = QuestDbRestAPHelper.SplitByLine(readAsStringAsync);
+                foreach (var s in splitByLine)
+                {
+                    if (s.Contains("Rows"))
+                    {
+                        var strings = s.Split('|');
+                        if (strings[1].Trim() == "Rows imported")
+                        {
+                            result = Convert.ToInt32(strings[2].Trim());
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                try
+                {
+                    File.Delete(filePath);
+                }
+                catch
+                {
+                    // ignored
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 批量快速插入
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="that"></param>
+        /// <param name="dateFormat">导入时，时间格式 默认:yyyy/M/d H:mm:ss</param>
+        /// <returns></returns>
+        public int BulkCopy(DataTable dataTable, string dateFormat = "yyyy/M/d H:mm:ss")  
+        {
+            return BulkCopyAsync(dataTable, dateFormat).GetAwaiter().GetResult();
+        }
         /// <summary>
         /// 批量快速插入异步
         /// </summary>
