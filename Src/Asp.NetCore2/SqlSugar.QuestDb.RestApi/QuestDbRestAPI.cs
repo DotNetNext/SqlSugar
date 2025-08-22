@@ -218,9 +218,9 @@ namespace SqlSugar
         /// <param name="that"></param>
         /// <param name="dateFormat">导入时，时间格式 默认:yyyy/M/d H:mm:ss</param>
         /// <returns></returns>
-        public int BulkCopy(DataTable dataTable, string dateFormat = "yyyy/M/d H:mm:ss")  
+        public int BulkCopy(DataTable dataTable, string tableName, string dateFormat = "yyyy/M/d H:mm:ss")  
         {
-            return BulkCopyAsync(dataTable, dateFormat).GetAwaiter().GetResult();
+            return BulkCopyAsync(dataTable,tableName, dateFormat).GetAwaiter().GetResult();
         }
         /// <summary>
         /// 批量快速插入异步
