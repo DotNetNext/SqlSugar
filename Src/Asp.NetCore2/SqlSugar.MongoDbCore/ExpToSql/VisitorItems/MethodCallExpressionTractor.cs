@@ -502,7 +502,7 @@ namespace SqlSugar.MongoDb
         private bool IsUnresolvableAnyExpression(AnyArgModel anyArgModel)
         {
             var leftIsUn = !(anyArgModel.Left is MemberExpression) && anyArgModel.LeftCount >= 1;
-            var rightIsUn = !(anyArgModel.Right is MemberExpression) && anyArgModel.LeftCount >= 1;
+            var rightIsUn = !(anyArgModel.Right is MemberExpression) && anyArgModel.RightCount >= 1;
             if (leftIsUn|| rightIsUn) 
             {
                 return true;
