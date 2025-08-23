@@ -126,13 +126,13 @@ namespace SqlSugar.MongoDb
                     {
                         return HandleComplexAnyExpression(methodCallExpression);
                     }
-                    else if (IsUnresolvableAnyExpression(anyArgModel)) 
-                    {
-                        return UnresolvablelexAnyExpression(methodCallExpression);
-                    }
                     else if (IsSimpleValueListAny(methodCallExpression))
                     {
                         return HandleSimpleValueListAny(methodCallExpression);
+                    } 
+                    else if (IsUnresolvableAnyExpression(anyArgModel))
+                    {
+                        return UnresolvablelexAnyExpression(methodCallExpression);
                     }
                     else
                     {
@@ -351,16 +351,16 @@ namespace SqlSugar.MongoDb
             {
                 var leftCount = ExpressionTool.GetParameters(MongoDbExpTools.RemoveConvert(b.Left)).Count();
                 var rightCount = ExpressionTool.GetParameters(MongoDbExpTools.RemoveConvert(b.Right)).Count();
-                if (MongoDbExpTools.RemoveConvert(b.Left) is MemberExpression  lm== false|| leftCount != 1) 
+                if (leftCount != 1) 
                     return false;
-                if (MongoDbExpTools.RemoveConvert(b.Right) is MemberExpression  lr== false || rightCount != 1)
+                if (rightCount != 1)
                     return false;
                 anyArgModel.IsBinary = true;
                 anyArgModel.LamdaExpression = l;
-                anyArgModel.Left = lm;
+                anyArgModel.Left = MongoDbExpTools.RemoveConvert(b.Left);
                 anyArgModel.LeftCount = leftCount;
                 anyArgModel.RightCount = rightCount;
-                anyArgModel.Right = lr;
+                anyArgModel.Right = MongoDbExpTools.RemoveConvert(b.Right);
                 anyArgModel.NodeType = b.NodeType;
             }
             return true;
@@ -503,6 +503,10 @@ namespace SqlSugar.MongoDb
         {
             var leftIsUn = !(anyArgModel.Left is MemberExpression) && anyArgModel.LeftCount >= 1;
             var rightIsUn = !(anyArgModel.Right is MemberExpression) && anyArgModel.RightCount >= 1;
+            if (anyArgModel.Right is BinaryExpression  rb|| anyArgModel.Left is BinaryExpression lb) 
+            { 
+                return false;
+            }
             if (leftIsUn|| rightIsUn) 
             {
                 return true;
