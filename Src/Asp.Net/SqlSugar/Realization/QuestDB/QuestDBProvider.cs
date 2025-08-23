@@ -80,6 +80,7 @@ namespace SqlSugar
         /// </summary>
         public override void CheckConnection()
         {
+            this.CheckConnectionBefore(this.Connection);
             if (this.Connection.State != ConnectionState.Open)
             {
                 try
@@ -104,6 +105,7 @@ namespace SqlSugar
                     Check.Exception(true, ErrorMessage.ConnnectionOpen, ex.Message);
                 }
             }
+            this.CheckConnectionAfter(this.Connection);
         }
         public override void SetCommandToAdapter(IDataAdapter dataAdapter, DbCommand command)
         {
@@ -170,15 +172,7 @@ namespace SqlSugar
                     {
                         sqlParameter.Value = (sqlParameter.Value).ToString();
                     }
-                }
-                else if (sqlParameter.DbType == System.Data.DbType.Boolean)
-                {
-                    sqlParameter.DbType = System.Data.DbType.String;
-                    if (sqlParameter.Value != null)
-                    {
-                        sqlParameter.Value = sqlParameter.Value.ObjToString().ToLower();
-                    }
-                }
+                } 
                 ++index;
             }
             return result;
