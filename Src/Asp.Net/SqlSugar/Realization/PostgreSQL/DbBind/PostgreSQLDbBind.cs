@@ -20,7 +20,7 @@ namespace SqlSugar
             if (csharpTypeName.ToLower().IsIn("boolean", "bool"))
                 csharpTypeName = "bool";
             if (csharpTypeName == "DateTimeOffset")
-                csharpTypeName = "DateTime";
+                return "timestamptz";
             var mappings = this.MappingTypes.Where(it => it.Value.ToString().Equals(csharpTypeName, StringComparison.CurrentCultureIgnoreCase)).ToList();
             if (mappings != null && mappings.Count > 0)
                 return mappings.First().Key;
@@ -71,6 +71,10 @@ namespace SqlSugar
                 {
                     var dbTypeName2 = dbTypeName.TrimStart('_');
                     return MappingTypes.Where(it => it.Value.ToString().ToLower() == dbTypeName2  || it.Key.ToLower() == dbTypeName2).Select(it => it.Value + "[]").First();
+                }
+                else if (dbTypeName.EndsWith("geometry")|| dbTypeName.EndsWith("geography"))
+                {
+                    return CSharpDataType.@string.ToString();
                 }
                 Check.ThrowNotSupportedException(string.Format(" \"{0}\" Type NotSupported, DbBindProvider.GetPropertyTypeName error.", dbTypeName));
                 return null;

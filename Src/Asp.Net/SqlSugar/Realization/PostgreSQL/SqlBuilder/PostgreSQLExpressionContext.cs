@@ -133,6 +133,11 @@ namespace SqlSugar
     }
     public class PostgreSQLMethod : DefaultDbMethod, IDbMethods
     {
+        public override string UNIX_TIMESTAMP(MethodCallExpressionModel model)
+        {
+            var parameterNameA = model.Args[0].MemberName;
+            return $" EXTRACT(EPOCH FROM {parameterNameA})::BIGINT ";
+        }
         public override string CharIndex(MethodCallExpressionModel model)
         {
             return string.Format(" (strpos ({1},{0})-1)", model.Args[0].MemberName, model.Args[1].MemberName);
@@ -431,9 +436,9 @@ namespace SqlSugar
             //var parameter2 = model.Args[2];
             //var parameter3= model.Args[3];
             var result= GetJson(parameter.MemberName, parameter1.MemberName, model.Args.Count()==2);
-            if (model.Args.Count > 2) 
+            if (model.Args.Count > 2)
             {
-               result = GetJson(result, model.Args[2].MemberName, model.Args.Count() == 3);
+                result = GetJson(result, model.Args[2].MemberName, model.Args.Count() == 3);
             }
             if (model.Args.Count > 3)
             {
@@ -447,6 +452,7 @@ namespace SqlSugar
             {
                 result = GetJson(result, model.Args[5].MemberName, model.Args.Count() == 6);
             }
+            result = ConvertToJsonbIfEnabled(model, result);
             return result;
         }
 
@@ -473,14 +479,14 @@ namespace SqlSugar
         {
             var parameter = model.Args[0];
             //var parameter1 = model.Args[1];
-            return $" json_array_length({parameter.MemberName}::json) ";
+            return ConvertToJsonbIfEnabled(model, $" json_array_length({parameter.MemberName}::json) ");
         }
 
         public override string JsonParse(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
             //var parameter1 = model.Args[1];
-            return $" ({parameter.MemberName}::json) ";
+            return ConvertToJsonbIfEnabled(model,$" ({parameter.MemberName}::json) ");
         }
 
         public override string JsonArrayAny(MethodCallExpressionModel model)
@@ -514,5 +520,19 @@ namespace SqlSugar
                 return $" {model.Args[0].MemberName}::jsonb @> '[{{\"{model.Args[1].MemberValue}\":\"{model.Args[2].MemberValue.ObjToStringNoTrim().ToSqlFilter()}\"}}]'::jsonb ";
             }
         }
+         
+        private static string ConvertToJsonbIfEnabled(MethodCallExpressionModel model, string result)
+        {
+            if (model?.Conext?.SugarContext?.Context is ISqlSugarClient db)
+            {
+                if (db.CurrentConnectionConfig?.MoreSettings?.EnableJsonb == true)
+                {
+                    result = result.Replace("::json", "::jsonb");
+                }
+            }
+
+            return result;
+        }
+
     }
 }
