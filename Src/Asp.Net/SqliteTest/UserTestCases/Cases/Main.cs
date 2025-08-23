@@ -31,6 +31,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            UnitFADFASFAY.Init();
             UnitOneToMany.Init();
             UnitOneToMany2.Init();
             UnitFilterUpdate.Init();

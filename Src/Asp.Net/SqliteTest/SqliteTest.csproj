@@ -68,6 +68,7 @@
     <Compile Include="UserTestCases\Cases\UnitAny.cs" />
     <Compile Include="UserTestCases\Cases\Unitasdfas2yy.cs" />
     <Compile Include="UserTestCases\Cases\Unitasdfasdfa1.cs" />
+    <Compile Include="UserTestCases\Cases\UnitFADFASFAY.cs" />
     <Compile Include="UserTestCases\Config.cs" />
     <Compile Include="UserTestCases\Cases.cs" />
     <Compile Include="UserTestCases\Demo\Demo0_SqlSugarClient.cs" />
