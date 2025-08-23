@@ -122,9 +122,13 @@ namespace SqlSugar.MongoDb
                 }
                 else if (IsAnyMethodCall(methodCallExpression, name))
                 {
-                    if (IsComplexAnyExpression(methodCallExpression))
+                    if (IsComplexAnyExpression(methodCallExpression, out AnyArgModel anyArgModel))
                     {
                         return HandleComplexAnyExpression(methodCallExpression);
+                    }
+                    else if (IsUnresolvableAnyExpression(anyArgModel)) 
+                    {
+                        return UnresolvablelexAnyExpression(methodCallExpression);
                     }
                     else if (IsSimpleValueListAny(methodCallExpression))
                     {
@@ -161,6 +165,12 @@ namespace SqlSugar.MongoDb
                 }
                 return result;
             }
+        }
+
+        private BsonValue UnresolvablelexAnyExpression(MethodCallExpression methodCallExpression)
+        {
+            BsonValue bsonValue = null;
+            return null;
         }
 
         private BsonValue HandleSimpleValueListAny(MethodCallExpression methodCallExpression)
@@ -312,25 +322,46 @@ namespace SqlSugar.MongoDb
             return null;
         }
 
-        private static bool IsComplexAnyExpression(MethodCallExpression methodCallExpression)
+        private static bool IsComplexAnyExpression(MethodCallExpression methodCallExpression, out AnyArgModel anyArgModel)
         {
+
+            anyArgModel=new AnyArgModel() { IsBinary = false };
+
             if (methodCallExpression.Arguments.Count != 2)
                 return false;
-
             var isTwoMemeber=ExpressionTool.GetParameters(methodCallExpression.Arguments[1]).Select(s => s.Name).Distinct().Count() == 2;
 
             if (!isTwoMemeber)
+            {
+                if (methodCallExpression.Arguments[1] is LambdaExpression la && la.Body is BinaryExpression bin) 
+                {
+                    var leftCount = ExpressionTool.GetParameters(MongoDbExpTools.RemoveConvert(bin.Left)).Count();
+                    var rightCount = ExpressionTool.GetParameters(MongoDbExpTools.RemoveConvert(bin.Right)).Count();
+                    anyArgModel.IsBinary = true;
+                    anyArgModel.LamdaExpression = la;
+                    anyArgModel.Left = MongoDbExpTools.RemoveConvert(bin.Left);
+                    anyArgModel.LeftCount = leftCount;
+                    anyArgModel.RightCount = rightCount;
+                    anyArgModel.Right = MongoDbExpTools.RemoveConvert(bin.Right);
+                    anyArgModel.NodeType = bin.NodeType;
+                }
                 return false;
+            }
             if (methodCallExpression.Arguments[1] is LambdaExpression l&&l.Body is BinaryExpression b) 
             {
-                if (MongoDbExpTools.RemoveConvert(b.Left) is MemberExpression == false||ExpressionTool.GetParameters(MongoDbExpTools.RemoveConvert(b.Left)).Count()!=1) 
-                {
+                var leftCount = ExpressionTool.GetParameters(MongoDbExpTools.RemoveConvert(b.Left)).Count();
+                var rightCount = ExpressionTool.GetParameters(MongoDbExpTools.RemoveConvert(b.Right)).Count();
+                if (MongoDbExpTools.RemoveConvert(b.Left) is MemberExpression  lm== false|| leftCount != 1) 
                     return false;
-                }
-                if (MongoDbExpTools.RemoveConvert(b.Right) is MemberExpression == false || ExpressionTool.GetParameters(MongoDbExpTools.RemoveConvert(b.Right)).Count() != 1)
-                {
+                if (MongoDbExpTools.RemoveConvert(b.Right) is MemberExpression  lr== false || rightCount != 1)
                     return false;
-                }
+                anyArgModel.IsBinary = true;
+                anyArgModel.LamdaExpression = l;
+                anyArgModel.Left = lm;
+                anyArgModel.LeftCount = leftCount;
+                anyArgModel.RightCount = rightCount;
+                anyArgModel.Right = lr;
+                anyArgModel.NodeType = b.NodeType;
             }
             return true;
         }
@@ -468,6 +499,16 @@ namespace SqlSugar.MongoDb
             return name;
         }
 
+        private bool IsUnresolvableAnyExpression(AnyArgModel anyArgModel)
+        {
+            var leftIsUn = !(anyArgModel.Left is MemberExpression) && anyArgModel.LeftCount >= 1;
+            var rightIsUn = !(anyArgModel.Right is MemberExpression) && anyArgModel.LeftCount >= 1;
+            if (leftIsUn|| rightIsUn) 
+            {
+                return true;
+            }
+            return false;
+        } 
         private static bool IsAnyMethodCall(MethodCallExpression methodCallExpression, string name)
         {
             return name == "Any" && methodCallExpression.Arguments.Count == 2;
