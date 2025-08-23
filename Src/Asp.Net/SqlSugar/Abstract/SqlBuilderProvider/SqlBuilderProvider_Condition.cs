@@ -251,10 +251,10 @@ namespace SqlSugar
                 date2Str = new DateTime(int.Parse(date2Str), 1, 1).ToString(SugarDateTimeFormat.Default);
             }
             if (!DateTime.TryParse(date1Str, out var date1))
-                throw new ArgumentException("date1 格式不正确");
+                Check.ExceptionEasy("date1 format is incorrect.(yyyy-MM-dd | yyyy | yyyy-MM | yyyy-MM-dd HH | yyyy-MM-dd HH:mm)", "date1 格式不正确，支持格式 yyyy-MM-dd | yyyy | yyyy-MM | yyyy-MM-dd HH | yyyy-MM-dd HH:mm");
 
             if (!DateTime.TryParse(date2Str, out var date2))
-                throw new ArgumentException("date2 格式不正确");
+                Check.ExceptionEasy("date2 format is incorrect.", "date2 格式不正确");
 
             if (len == 4) // yyyy
                 date2 = date2.AddYears(1);
@@ -267,7 +267,7 @@ namespace SqlSugar
             else if (len == 16) // yyyy-MM-dd HH:mm
                 date2 = date2.AddMinutes(1);
             else
-                throw new ArgumentException("date2 格式不支持，只支持 年、年-月、年月日、年月日小时、年月日小时分钟");
+                Check.ExceptionEasy("date format is incorrect.(yyyy-MM-dd | yyyy | yyyy-MM | yyyy-MM-dd HH | yyyy-MM-dd HH:mm)", "date 格式不正确，支持格式 yyyy-MM-dd | yyyy | yyyy-MM | yyyy-MM-dd HH | yyyy-MM-dd HH:mm");
 
             return new DateTime[] { date1, date2 };
         }
