@@ -29,7 +29,7 @@ namespace OrmTest
             var list = db.Queryable<CodeFirstTable1>().ToList();
             db.CodeFirst.InitTables<IndexClass>();
             db.CodeFirst.InitTables<SplitTableEntity>();
-            TestBool(db);
+            //TestBool(db);   Questdb bool bug  https://github.com/questdb/questdb/issues/6075
             TestGuid(db);
             var list2=db.Queryable<SplitTableEntity>()
                 .PartitionBy(it => new { it.Ts,  it.Id }).ToList();
