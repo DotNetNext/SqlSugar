@@ -314,7 +314,25 @@ namespace SqlSugar.MongoDb
 
         private static bool IsComplexAnyExpression(MethodCallExpression methodCallExpression)
         {
-            return methodCallExpression.Arguments.Count == 2 && ExpressionTool.GetParameters(methodCallExpression.Arguments[1]).Select(s => s.Name).Distinct().Count() == 2;
+            if (methodCallExpression.Arguments.Count != 2)
+                return false;
+
+            var isTwoMemeber=ExpressionTool.GetParameters(methodCallExpression.Arguments[1]).Select(s => s.Name).Distinct().Count() == 2;
+
+            if (!isTwoMemeber)
+                return false;
+            if (methodCallExpression.Arguments[1] is LambdaExpression l&&l.Body is BinaryExpression b) 
+            {
+                if (MongoDbExpTools.RemoveConvert(b.Left) is MemberExpression == false||ExpressionTool.GetParameters(MongoDbExpTools.RemoveConvert(b.Left)).Count()!=1) 
+                {
+                    return false;
+                }
+                if (MongoDbExpTools.RemoveConvert(b.Right) is MemberExpression == false || ExpressionTool.GetParameters(MongoDbExpTools.RemoveConvert(b.Right)).Count() != 1)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
         private BsonValue ProcessAnyExpression(MethodCallExpression methodCallExpression)
