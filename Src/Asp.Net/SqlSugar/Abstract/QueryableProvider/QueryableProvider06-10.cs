@@ -376,6 +376,7 @@ namespace SqlSugar
             {
                 sql = " ";
             }
+            UtilMethods.UpdateQueryBuilderByClone(this.QueryBuilder, clone);
             this.QueryBuilder.Parameters = clone.QueryBuilder.Parameters;
             this.QueryBuilder.SelectNewIgnoreColumns = clone.QueryBuilder.SelectNewIgnoreColumns;
             this.QueryBuilder.SubToListParameters = clone.QueryBuilder.SubToListParameters;
@@ -1223,6 +1224,7 @@ namespace SqlSugar
             {
                 sql = " ";
             }
+            UtilMethods.UpdateQueryBuilderByClone(this.QueryBuilder, clone);
             this.QueryBuilder.Parameters = clone.QueryBuilder.Parameters;
             this.QueryBuilder.SelectNewIgnoreColumns = clone.QueryBuilder.SelectNewIgnoreColumns;
             this.QueryBuilder.SubToListParameters = clone.QueryBuilder.SubToListParameters;
@@ -2085,6 +2087,7 @@ namespace SqlSugar
             {
                 sql = " ";
             }
+            UtilMethods.UpdateQueryBuilderByClone(this.QueryBuilder, clone);
             this.QueryBuilder.Parameters = clone.QueryBuilder.Parameters;
             this.QueryBuilder.SelectNewIgnoreColumns = clone.QueryBuilder.SelectNewIgnoreColumns;
             this.QueryBuilder.SubToListParameters = clone.QueryBuilder.SubToListParameters;
@@ -2790,6 +2793,7 @@ namespace SqlSugar
             {
                 sql = " ";
             }
+            UtilMethods.UpdateQueryBuilderByClone(this.QueryBuilder, clone);
             this.QueryBuilder.Parameters = clone.QueryBuilder.Parameters;
             this.QueryBuilder.SelectNewIgnoreColumns = clone.QueryBuilder.SelectNewIgnoreColumns;
             this.QueryBuilder.SubToListParameters = clone.QueryBuilder.SubToListParameters;
@@ -3589,6 +3593,7 @@ namespace SqlSugar
             {
                 sql = " ";
             }
+            UtilMethods.UpdateQueryBuilderByClone(this.QueryBuilder, clone);
             this.QueryBuilder.Parameters = clone.QueryBuilder.Parameters;
             this.QueryBuilder.SelectNewIgnoreColumns = clone.QueryBuilder.SelectNewIgnoreColumns;
             this.QueryBuilder.SubToListParameters = clone.QueryBuilder.SubToListParameters;

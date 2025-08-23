@@ -48,6 +48,7 @@ namespace SqlSugar
     /// </summary>
     public class SugarUnitOfWork : IDisposable, ISugarUnitOfWork
     {
+        private const string TranSuccessEvent = "_sqlSugar_tranSuccessEvent";
         public ISqlSugarClient Db { get; internal set; }
         public ITenant Tenant { get; internal set; }
         public bool IsTran { get; internal set; }
@@ -102,6 +103,10 @@ namespace SqlSugar
             {
                 this.Tenant.CommitTran();
                 IsCommit = true;
+                if (Db.TempItems != null && Db.TempItems.TryGetValue(TranSuccessEvent, out object value) && value != null && value is Action<ISqlSugarClient> eventAction) 
+                {
+                    eventAction(Db);
+                }
             }
             if (this.Db.Ado.Transaction==null&&this.IsClose == false)
             {
@@ -109,6 +114,40 @@ namespace SqlSugar
                 IsClose = true;
             }
             return IsCommit;
+        }
+
+        /// <summary>
+        /// 增加事务成功后事件
+        /// </summary>
+        /// <param name="action">需要执行的委托</param>
+        public void AppendTranSuccessEvent(Action<ISqlSugarClient> action)
+        {
+            if (Db.TempItems != null && Db.TempItems.TryGetValue(TranSuccessEvent, out object value) && value != null && value is Action<ISqlSugarClient> eventAction) 
+            {
+                eventAction += action;
+                Db.TempItems[TranSuccessEvent] = eventAction;
+            }
+            else if(Db.TempItems != null)
+            {
+                Db.TempItems[TranSuccessEvent] = action;
+            }
+        }
+
+        /// <summary>
+        /// 减少事务成功后事件
+        /// </summary>
+        /// <param name="action"></param>
+        public void SubtractTranSuccessEvent(Action<ISqlSugarClient> action)
+        {
+            if (Db.TempItems != null && Db.TempItems.TryGetValue(TranSuccessEvent, out object value) && value != null && value is Action<ISqlSugarClient> eventAction)
+            {
+                eventAction -= action;
+                Db.TempItems[TranSuccessEvent] = eventAction;
+                if (eventAction == null)
+                {
+                    Db.TempItems.Remove(TranSuccessEvent);
+                }
+            }
         }
     }
 }

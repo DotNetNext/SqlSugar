@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SqlSugar.DbConvert;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -517,6 +518,14 @@ namespace SqlSugar
                 var obj = Activator.CreateInstance(type);
                 var p = ParameterConverter.Invoke(obj, new object[] { columnInfo.Value, GetDbColumnIndex }) as SugarParameter;
                 return p.ParameterName;
+            }
+            else if (columnInfo.SqlParameterDbType is Type t && t == typeof(EnumToStringConvert) && this.Context?.CurrentConnectionConfig?.MoreSettings?.TableEnumIsString == true)
+            {
+                var pname = Builder.SqlParameterKeyWord + $"{columnInfo.PropertyName}_str" + GetDbColumnIndex;
+                var p = new SugarParameter(pname, columnInfo.Value);
+                this.Parameters.Add(p);
+                GetDbColumnIndex++;
+                return pname;
             }
             else if (columnInfo.SqlParameterDbType is Type)
             {

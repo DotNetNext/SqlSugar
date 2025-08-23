@@ -546,6 +546,10 @@ namespace SqlSugar
                            if (ignoreColumns.Any()) 
                            {
                                 ignorePropertyNames = ignoreColumns.Select(it => it.Key).ToList();
+                           } 
+                           if (ignorePropertyNames?.Contains(name)==true) 
+                           {
+                               continue;
                            }
                         }
                         result.Add(name, DataReaderToDynamicList_Part(readerValues, item, reval, mappingKeys, ignorePropertyNames));
@@ -1330,6 +1334,10 @@ namespace SqlSugar
         public string EscapeLikeValue(string value, char wildcard = '%') 
         {
             return UtilMethods.EscapeLikeValue(this.Context, value, wildcard);
+        }
+        public string EscapeLikeValue(string value, char [] wildcards)
+        {
+            return UtilMethods.EscapeLikeValue(this.Context, value, wildcards);
         }
         #endregion
     }
