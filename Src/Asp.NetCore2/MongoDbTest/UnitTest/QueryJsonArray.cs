@@ -1,10 +1,13 @@
 ﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Driver;
 using SqlSugar;
 using SqlSugar.MongoDb;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -102,6 +105,10 @@ namespace MongoDbTest
             if (data7.Count != 1 || data8.Count != 1) Cases.ThrowUnitError();
             if (data7.FirstOrDefault().Name != "price=age" || data8.FirstOrDefault().Name != "price=age") Cases.ThrowUnitError();
             var data9 = db.Queryable<Student>().Where(it => it.Book.Any()).ToList();
+            db.Insertable(new Student() { Age = 1000, Name = "anyany", SchoolId = "1", Book = new List<Book>() { new Book() {  book=new List<Book>() { new Book() { }  } } } }).ExecuteCommand();
+            var data10 = db.Queryable<Student>().Where(it => it.Book.Any(s => it.Age == 99)).ToList();
+            var data11 = db.Queryable<Student>().Where(it => it.Book.Any(s=>SqlFunc.ToString(it.Age)=="99")).ToList();
+            if(data11 .Count!=1|| data11.First().Age!=99) Cases.ThrowUnitError();
         }
 
         [SqlSugar.SugarTable("UnitStudentdfsds3zzz1")]
@@ -134,6 +141,8 @@ namespace MongoDbTest
             [BsonRepresentation(BsonType.ObjectId)]
             [SqlSugar.SugarColumn(ColumnDataType = nameof(ObjectId))]
             public string SId { get; set; }
+
+            public List<Book> book { get; set; }
         }
     }
 
