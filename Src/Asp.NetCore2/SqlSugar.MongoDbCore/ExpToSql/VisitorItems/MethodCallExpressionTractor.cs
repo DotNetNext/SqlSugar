@@ -35,7 +35,7 @@ namespace SqlSugar.MongoDb
                 BsonValue result = null;
                 var context = new MongoDbMethod() { context = this._context };
                 MethodCallExpressionModel model = new MethodCallExpressionModel();
-                var args =methodCallExpression.Arguments;
+                var args = methodCallExpression.Arguments;
                 model.Args = new List<MethodCallExpressionArgs>();
                 model.DataObject = methodCallExpression.Object;
                 foreach (var item in args)
@@ -44,210 +44,145 @@ namespace SqlSugar.MongoDb
                 }
                 if (typeof(IDbMethods).GetMethods().Any(it => it.Name == name))
                 {
-                    if (name == nameof(ToString))
-                    {
-                        var funcString = context.ToString(model);
-                        result = BsonDocument.Parse(funcString);
-                    }
-                    else if (name.StartsWith("To") || name == nameof(SqlFunc.IIF))
-                    {
-                        var value = context.GetType().GetMethod(name).Invoke(context, new object[] { model });
-                        result = BsonDocument.Parse(value?.ToString());
-                    }
-                    else if (name.StartsWith("Aggregate"))
-                    {
-                        var value = context.GetType().GetMethod(name).Invoke(context, new object[] { model });
-                        result = UtilMethods.MyCreate(value?.ToString());
-                    }
-                    else if (name.StartsWith(nameof(SqlFunc.Equals)))
-                    {
-
-                        var left = model.DataObject;
-                        var right = model.Args[0].MemberValue;
-                        var exp = Expression.Equal(left as Expression, right as Expression);
-                        var resultValue = new ExpressionVisitor(_context, new ExpressionVisitorContext()).Visit(exp);
-                        result = new ExpressionVisitor(_context, new ExpressionVisitorContext()).Visit(exp);
-                        return result;
-                    }
-                    else
-                    {
-                        var methodInfo = context.GetType().GetMethod(name);
-                        var funcString = methodInfo.Invoke(context, new object[] { model });
-                        result = BsonDocument.Parse(funcString?.ToString());
-                    }
+                    return InvokeMongoMethod(name, out result, context, model);
                 }
                 else if (name.StartsWith("Add"))
                 {
-                    // 根据方法名推断DateType
-                    DateType dateType = DateType.Minute;
-                    if (name.Equals("AddDays", StringComparison.OrdinalIgnoreCase))
-                        dateType = DateType.Day;
-                    else if (name.Equals("AddHours", StringComparison.OrdinalIgnoreCase))
-                        dateType = DateType.Hour;
-                    else if (name.Equals("AddMinutes", StringComparison.OrdinalIgnoreCase))
-                        dateType = DateType.Minute;
-                    else if (name.Equals("AddSeconds", StringComparison.OrdinalIgnoreCase))
-                        dateType = DateType.Second;
-                    else if (name.Equals("AddMilliseconds", StringComparison.OrdinalIgnoreCase))
-                        dateType = DateType.Millisecond;
-                    else if (name.Equals("AddMonths", StringComparison.OrdinalIgnoreCase))
-                        dateType = DateType.Month;
-                    else if (name.Equals("AddYears", StringComparison.OrdinalIgnoreCase))
-                        dateType = DateType.Year;
-                    // 追加DateType参数
-                    model.Args.Add(new MethodCallExpressionArgs() { MemberValue = dateType });
-                    var value = context.DateAddByType(model);
-                    result = BsonDocument.Parse(value?.ToString());
+                    result = AddDateByType(name, context, model);
                 }
-                else if (name == "End")
+                else if (IsEndCondition(name))
                 {
                     var ifConditions = MongoDbExpTools.ExtractIfElseEnd(methodCallExpression);
                     return BuildMongoSwitch(ifConditions);
                 }
                 else if (IsCountJson(methodCallExpression, name))
                 {
-                    // 处理 it.xx.Count() 其中 xx 为 JSON 数组字段
-                    var memberExpression = methodCallExpression.Arguments.FirstOrDefault() as MemberExpression;
-                    if (memberExpression != null)
-                    {
-                        // 获取集合字段名
-                        var collectionField = MongoNestedTranslator.TranslateNoFieldName(
-                            memberExpression,
-                            _context,
-                            new ExpressionVisitorContext { IsText = true }
-                        );
-
-                        // 构造 $size 查询
-                        var bson = new BsonDocument
-                            {
-                                { "$size", UtilMethods.GetMemberName(collectionField) }
-                            };
-                        result = bson;
-                    }
+                    result = ProcessCountJson(methodCallExpression, result);
                 }
-                else if (IsAnyMethodCall(methodCallExpression, name))
+                else if (IsAnyMethodCallOrEmpty(methodCallExpression, name))
                 {
-                    if (IsComplexAnyExpression(methodCallExpression, out AnyArgModel anyArgModel))
-                    {
-                        return HandleComplexAnyExpression(methodCallExpression);
-                    }
-                    else if (IsSimpleValueListAny(methodCallExpression))
-                    {
-                        return HandleSimpleValueListAny(methodCallExpression);
-                    } 
-                    else if (IsCallAnyExpression(anyArgModel))
-                    {
-                        return CallAnyExpression(methodCallExpression,anyArgModel);
-                    }
-                    else
-                    {
-                        return ProcessAnyExpression(methodCallExpression);
-                    }
+                    return HandleAnyMethodCall(methodCallExpression, name, result);
 
-                }
-                else if (IsAnyMethodCallEmpty(methodCallExpression, name))
-                {
-                    result = HandleAnyMethodCallEmpty(methodCallExpression, result);
                 }
                 return result;
             }
         }
 
-    
-        public static BsonValue TranslateMethodCall(MethodCallExpression methodCall, Type documentType,string name)
+        private BsonValue InvokeMongoMethod(string name, out BsonValue result, MongoDbMethod context, MethodCallExpressionModel model)
         {
-            var type = typeof(MongoDbExpTools);
-
-            // 获取泛型方法定义
-            var method = type.GetMethod("GetFilterBson", BindingFlags.Public | BindingFlags.Static);
-            if (method == null)
-                throw new InvalidOperationException("找不到 GetFilterBson 方法");
-
-            // 构造泛型方法
-            var genericMethod = method.MakeGenericMethod(documentType);
-
-            // 调用方法 (假设 methodCall 就是 Expression)
-            var lambda = Expression.Lambda(methodCall, ExpressionTool.GetParameters(methodCall).First());
-            var result = genericMethod.Invoke(null, new object[] { lambda });
-
-            return (BsonValue)result;
-        }
-        private static bool IsSimpleValueListAny(MethodCallExpression methodCallExpression)
-        {
-            if (methodCallExpression.Arguments.Count == 2)
+            if (name == nameof(ToString))
             {
-                var memberExpression = methodCallExpression.Arguments[0] as MemberExpression;
-                var lambdaExpression = methodCallExpression.Arguments[1] as LambdaExpression;
-                if (memberExpression != null && lambdaExpression != null)
-                {
-                    var memberType = memberExpression.Type;
-                    if (typeof(IEnumerable<string>).IsAssignableFrom(memberType) ||
-                        typeof(IEnumerable<int>).IsAssignableFrom(memberType) ||
-                        typeof(IEnumerable<long>).IsAssignableFrom(memberType) ||
-                        typeof(IEnumerable<double>).IsAssignableFrom(memberType) ||
-                        typeof(IEnumerable<float>).IsAssignableFrom(memberType) ||
-                        typeof(IEnumerable<Guid>).IsAssignableFrom(memberType) ||
-                        typeof(IEnumerable<decimal>).IsAssignableFrom(memberType))
-                    {
-                        // 判断 lambda 是否是 s => s == value 或 s => s != value
-                        if (lambdaExpression.Body is BinaryExpression binaryExpr)
-                        {
-                            if ((binaryExpr.Left is ParameterExpression && binaryExpr.Right is ConstantExpression) ||
-                                (binaryExpr.Left is ParameterExpression && binaryExpr.Right != null))
+                var funcString = context.ToString(model);
+                result = BsonDocument.Parse(funcString);
+            }
+            else if (name.StartsWith("To") || name == nameof(SqlFunc.IIF))
+            {
+                var value = context.GetType().GetMethod(name).Invoke(context, new object[] { model });
+                result = BsonDocument.Parse(value?.ToString());
+            }
+            else if (name.StartsWith("Aggregate"))
+            {
+                var value = context.GetType().GetMethod(name).Invoke(context, new object[] { model });
+                result = UtilMethods.MyCreate(value?.ToString());
+            }
+            else if (name.StartsWith(nameof(SqlFunc.Equals)))
+            {
+
+                var left = model.DataObject;
+                var right = model.Args[0].MemberValue;
+                var exp = Expression.Equal(left as Expression, right as Expression);
+                var resultValue = new ExpressionVisitor(_context, new ExpressionVisitorContext()).Visit(exp);
+                result = new ExpressionVisitor(_context, new ExpressionVisitorContext()).Visit(exp);
+                return result;
+            }
+            else
+            {
+                var methodInfo = context.GetType().GetMethod(name);
+                var funcString = methodInfo.Invoke(context, new object[] { model });
+                result = BsonDocument.Parse(funcString?.ToString());
+            }
+            return result;
+        }
+
+        private static BsonValue AddDateByType(string name, MongoDbMethod context, MethodCallExpressionModel model)
+        {
+            BsonValue result;
+            // 根据方法名推断DateType
+            DateType dateType = DateType.Minute;
+            if (name.Equals("AddDays", StringComparison.OrdinalIgnoreCase))
+                dateType = DateType.Day;
+            else if (name.Equals("AddHours", StringComparison.OrdinalIgnoreCase))
+                dateType = DateType.Hour;
+            else if (name.Equals("AddMinutes", StringComparison.OrdinalIgnoreCase))
+                dateType = DateType.Minute;
+            else if (name.Equals("AddSeconds", StringComparison.OrdinalIgnoreCase))
+                dateType = DateType.Second;
+            else if (name.Equals("AddMilliseconds", StringComparison.OrdinalIgnoreCase))
+                dateType = DateType.Millisecond;
+            else if (name.Equals("AddMonths", StringComparison.OrdinalIgnoreCase))
+                dateType = DateType.Month;
+            else if (name.Equals("AddYears", StringComparison.OrdinalIgnoreCase))
+                dateType = DateType.Year;
+            // 追加DateType参数
+            model.Args.Add(new MethodCallExpressionArgs() { MemberValue = dateType });
+            var value = context.DateAddByType(model);
+            result = BsonDocument.Parse(value?.ToString());
+            return result;
+        }
+
+        private BsonValue ProcessCountJson(MethodCallExpression methodCallExpression, BsonValue result)
+        {
+            // 处理 it.xx.Count() 其中 xx 为 JSON 数组字段
+            var memberExpression = methodCallExpression.Arguments.FirstOrDefault() as MemberExpression;
+            if (memberExpression != null)
+            {
+                // 获取集合字段名
+                var collectionField = MongoNestedTranslator.TranslateNoFieldName(
+                    memberExpression,
+                    _context,
+                    new ExpressionVisitorContext { IsText = true }
+                );
+
+                // 构造 $size 查询
+                var bson = new BsonDocument
                             {
-                                return true;
-                            }
-                        }
-                    }
-                }
+                                { "$size", UtilMethods.GetMemberName(collectionField) }
+                            };
+                result = bson;
             }
-            return false;
+
+            return result;
         }
-        private static bool IsComplexAnyExpression(MethodCallExpression methodCallExpression, out AnyArgModel anyArgModel)
+
+        private BsonValue HandleAnyMethodCall(MethodCallExpression methodCallExpression, string name, BsonValue result)
         {
-
-            anyArgModel=new AnyArgModel() { IsBinary = false };
-
-            if (methodCallExpression.Arguments.Count != 2)
-                return false;
-            var isTwoMemeber=ExpressionTool.GetParameters(methodCallExpression.Arguments[1]).Select(s => s.Name).Distinct().Count() == 2;
-
-            if (!isTwoMemeber)
+            if (IsAnyMethodCallEmpty(methodCallExpression, name))
             {
-                if (methodCallExpression.Arguments[1] is LambdaExpression la && la.Body is BinaryExpression bin) 
-                {
-                    var leftCount = ExpressionTool.GetParameters(MongoDbExpTools.RemoveConvert(bin.Left)).Count();
-                    var rightCount = ExpressionTool.GetParameters(MongoDbExpTools.RemoveConvert(bin.Right)).Count();
-                    anyArgModel.IsBinary = true;
-                    anyArgModel.LamdaExpression = la;
-                    anyArgModel.Left = MongoDbExpTools.RemoveConvert(bin.Left);
-                    anyArgModel.LeftCount = leftCount;
-                    anyArgModel.RightCount = rightCount;
-                    anyArgModel.Right = MongoDbExpTools.RemoveConvert(bin.Right);
-                    anyArgModel.NodeType = bin.NodeType;
-                }
-                return false;
+                return HandleAnyMethodCallEmpty(methodCallExpression, result);
             }
-            if (methodCallExpression.Arguments[1] is LambdaExpression l&&l.Body is BinaryExpression b) 
+            if (IsComplexAnyExpression(methodCallExpression, out AnyArgModel anyArgModel))
             {
-                var leftCount = ExpressionTool.GetParameters(MongoDbExpTools.RemoveConvert(b.Left)).Count();
-                var rightCount = ExpressionTool.GetParameters(MongoDbExpTools.RemoveConvert(b.Right)).Count(); 
-                anyArgModel.LamdaExpression = l;
-                anyArgModel.Left = MongoDbExpTools.RemoveConvert(b.Left);
-                anyArgModel.LeftCount = leftCount;
-                anyArgModel.RightCount = rightCount;
-                anyArgModel.Right = MongoDbExpTools.RemoveConvert(b.Right);
-                anyArgModel.NodeType = b.NodeType;
-                if (leftCount != 1) 
-                    return false;
-                if (rightCount != 1)
-                    return false;
-                anyArgModel.IsBinary = true;
+                return HandleComplexAnyExpression(methodCallExpression);
             }
-            return true;
+            else if (IsSimpleValueListAny(methodCallExpression))
+            {
+                return HandleSimpleValueListAny(methodCallExpression);
+            }
+            else if (IsCallAnyExpression(anyArgModel))
+            {
+                return CallAnyExpression(methodCallExpression, anyArgModel);
+            }
+            else
+            {
+                return ProcessAnyExpression(methodCallExpression);
+            }
         }
 
-      
+        private static bool IsEndCondition(string name)
+        {
+            return name == "End";
+        }
+         
         public BsonValue BuildMongoSwitch(List<KeyValuePair<string, Expression>> ifConditions)
         {
             if (ifConditions == null || ifConditions.Count < 3)
