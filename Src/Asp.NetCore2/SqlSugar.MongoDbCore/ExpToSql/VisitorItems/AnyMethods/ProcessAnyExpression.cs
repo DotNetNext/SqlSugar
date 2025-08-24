@@ -60,7 +60,26 @@ namespace SqlSugar.MongoDb
             var lambda = (LambdaExpression)whereExpression;
             var paramName = lambda.Parameters[0].Name;
 
-            // 这里假设嵌套集合字段为 book，实际应根据表达式动态获取
+            // 从表达式中动态获取嵌套集合字段名
+            string nestedCollectionField = null;
+            if (lambda.Body is MethodCallExpression innerAnyCall)
+            {
+                if (innerAnyCall.Arguments.Count > 0 && innerAnyCall.Arguments[0] is MemberExpression nestedMember)
+                {
+                    nestedCollectionField = nestedMember.Member.Name;
+                }
+                else if (innerAnyCall.Object is MemberExpression nestedMemberObj)
+                {
+                    nestedCollectionField = nestedMemberObj.Member.Name;
+                }
+            }
+
+            // fallback
+            if (string.IsNullOrEmpty(nestedCollectionField))
+            {
+                throw new Exception("Expressions are not supported."+ lambda.ToString());
+            }
+
             // 生成 $expr 查询，增加 $ifNull 逻辑
             var expr = new BsonDocument
                 {
@@ -90,7 +109,7 @@ namespace SqlSugar.MongoDb
                                                                                 {
                                                                                     { "$ifNull", new BsonArray
                                                                                         {
-                                                                                            $"$${paramName}.book",
+                                                                                            $"$${paramName}.{nestedCollectionField}",
                                                                                             new BsonArray()
                                                                                         }
                                                                                     }
