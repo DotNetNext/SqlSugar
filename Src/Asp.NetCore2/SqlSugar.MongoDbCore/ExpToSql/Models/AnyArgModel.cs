@@ -14,5 +14,6 @@ namespace SqlSugar.MongoDb
         public ExpressionType NodeType { get; internal set; }
         public int LeftCount { get; internal set; }
         public int RightCount { get; internal set; }
+        public bool IsTwoMemeber { get; internal set; }
     }
 }

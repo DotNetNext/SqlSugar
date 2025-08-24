@@ -9,6 +9,7 @@ using System.Reflection;
 using MongoDB.Driver;
 using MongoDB.Bson.Serialization;
 using System.Diagnostics.CodeAnalysis;
+using Dm.util;
 namespace SqlSugar.MongoDb 
 {
     public class MethodCallExpressionTractor
@@ -171,6 +172,7 @@ namespace SqlSugar.MongoDb
 
         private BsonValue CallAnyExpression(MethodCallExpression methodCall, AnyArgModel anyArgModel)
         {
+            var nodeType = anyArgModel.NodeType;
             // 获取集合字段名
             var collectionField = MongoNestedTranslator.TranslateNoFieldName(
                 methodCall.Arguments[0],
@@ -215,18 +217,42 @@ namespace SqlSugar.MongoDb
                 );
             }
 
+            // 映射表达式类型到Mongo操作符
+            string mongoOperator = nodeType switch
+            {
+                ExpressionType.Equal => "$eq",
+                ExpressionType.NotEqual => "$ne",
+                ExpressionType.GreaterThan => "$gt",
+                ExpressionType.GreaterThanOrEqual => "$gte",
+                ExpressionType.LessThan => "$lt",
+                ExpressionType.LessThanOrEqual => "$lte",
+                _ => "$eq"
+            };
+
+            if (leftExpr.Arguments.Any() && leftExpr.Arguments[0] is MemberExpression member && ExpressionTool.GetParameters(member).Count() > 0) 
+            {
+                var leftMember = MongoNestedTranslator.TranslateNoFieldName(
+                       member,
+                       _context,
+                       new ExpressionVisitorContext { IsText = true }
+                   );
+                var leftMemberStr = UtilMethods.GetMemberName(leftMember.ToString()).ToString();
+                var newValue = "$$b." + leftMember.ToString();
+                leftValue = leftValue?.ToString().Replace(leftMemberStr, newValue);
+                leftValue = UtilMethods.ParseJsonObject(leftValue);
+            } 
             // 构造 $map
             var mapDoc = new BsonDocument
             {
                 { "input", $"${collectionField}" },
                 { "as", "b" },
-                { "in", leftValue }
+                { "in", new BsonDocument(mongoOperator, new BsonArray { leftValue, rightValue }) }
             };
 
-            // 构造 $expr/$in
+            // 构造 $expr/$anyElementTrue
             var exprDoc = new BsonDocument
             {
-                { "$in", new BsonArray { rightValue, new BsonDocument("$map", mapDoc) } }
+                { "$anyElementTrue", new BsonDocument("$map", mapDoc) }
             };
 
             var bson = new BsonDocument
@@ -585,7 +611,7 @@ namespace SqlSugar.MongoDb
             var isleftCall = (anyArgModel.Left is MethodCallExpression) && anyArgModel.LeftCount >= 1;
             var isRightCall = !(anyArgModel.Right is MethodCallExpression) && anyArgModel.RightCount >= 1;
             var allCount = anyArgModel.LeftCount + anyArgModel.RightCount;
-            if ((isleftCall || isRightCall) && allCount == 1&&anyArgModel.NodeType.IsIn(ExpressionType.Equal,ExpressionType.NotEqual)) 
+            if ((isleftCall || isRightCall) && allCount == 1)
             {
                 anyArgModel.Left = isleftCall? anyArgModel.Left:anyArgModel.Right;
                 anyArgModel.Right = isleftCall ? anyArgModel.Right: anyArgModel.Left;
