@@ -21,6 +21,7 @@ namespace SqlSugar.MongoDb
             _context = context;
             _visitorContext = visitorContext; 
         }
+        
         public BsonValue Extract(Expression expr)
         {
             if (ExpressionTool.GetParameters(expr).Count == 0)
@@ -46,7 +47,7 @@ namespace SqlSugar.MongoDb
                 {
                     return InvokeMongoMethod(name, out result, context, model);
                 }
-                else if (name.StartsWith("Add"))
+                else if (IsAddMethod(name))
                 {
                     result = AddDateByType(name, context, model);
                 }
@@ -68,6 +69,7 @@ namespace SqlSugar.MongoDb
             }
         }
 
+        #region Core
         private BsonValue InvokeMongoMethod(string name, out BsonValue result, MongoDbMethod context, MethodCallExpressionModel model)
         {
             if (name == nameof(ToString))
@@ -178,11 +180,6 @@ namespace SqlSugar.MongoDb
             }
         }
 
-        private static bool IsEndCondition(string name)
-        {
-            return name == "End";
-        }
-         
         public BsonValue BuildMongoSwitch(List<KeyValuePair<string, Expression>> ifConditions)
         {
             if (ifConditions == null || ifConditions.Count < 3)
@@ -221,12 +218,12 @@ namespace SqlSugar.MongoDb
                     if (MongoDbExpTools.GetIsMemember(returnPair.Value))
                     {
                         thenExpr = UtilMethods.GetMemberName(thenExpr);
-                    } 
+                    }
                     branches.Add(new BsonDocument
                     {
                         { "case", caseExpr },
                         { "then", thenExpr }
-                    }); 
+                    });
                     i += 2;  // 跳过 RETURN
                 }
                 else if (key == "END")
@@ -244,7 +241,7 @@ namespace SqlSugar.MongoDb
                 ifConditions.Last().Value,
                 context,
                 new ExpressionVisitorContext { IsText = true }
-            ); 
+            );
             var switchDoc = new BsonDocument
             {
                 { "$switch", new BsonDocument
@@ -253,10 +250,9 @@ namespace SqlSugar.MongoDb
                         { "default", defaultValue }
                     }
                 }
-            }; 
+            };
             return switchDoc;
         }
-
 
         private static string TransformMethodName(MethodCallExpression methodCallExpression, string name)
         {
@@ -269,7 +265,7 @@ namespace SqlSugar.MongoDb
             {
                 name = "ContainsArray";
             }
-            else if (name == "Contains" && methodCallExpression.Arguments.Count ==2
+            else if (name == "Contains" && methodCallExpression.Arguments.Count == 2
                && methodCallExpression.Arguments.FirstOrDefault().Type.IsArray
                && ExpressionTool.GetParameters(methodCallExpression.Arguments.FirstOrDefault()).Count == 0
                )
@@ -277,20 +273,32 @@ namespace SqlSugar.MongoDb
                 name = "ContainsArray";
             }
             else if (name == "Contains" && methodCallExpression.Arguments.Count == 1
-              && methodCallExpression?.Object!=null
-              &&UtilMethods.IsCollectionOrArrayButNotByteArray(methodCallExpression.Object.Type)
-              && ExpressionTool.GetParameters(methodCallExpression?.Object).Count() >0
-              && ExpressionTool.GetParameters(methodCallExpression.Arguments.FirstOrDefault()).Count == 0) 
-            { 
+              && methodCallExpression?.Object != null
+              && UtilMethods.IsCollectionOrArrayButNotByteArray(methodCallExpression.Object.Type)
+              && ExpressionTool.GetParameters(methodCallExpression?.Object).Count() > 0
+              && ExpressionTool.GetParameters(methodCallExpression.Arguments.FirstOrDefault()).Count == 0)
+            {
                 name = "JsonArrayAny";
             }
             return name;
         }
 
-    
+
+        #endregion
+
+        #region  Helper
+        private static bool IsEndCondition(string name)
+        {
+            return name == "End";
+        }
         private static bool IsCountJson(MethodCallExpression methodCallExpression, string name)
         {
             return name == "Count" && methodCallExpression?.Arguments?.FirstOrDefault() is MemberExpression m;
+        }
+        private static bool IsAddMethod(string name)
+        {
+            return name.StartsWith("Add");
         } 
+        #endregion 
     }
 }
