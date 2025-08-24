@@ -113,7 +113,7 @@ namespace MongoDbTest
             var data14 = db.Queryable<Student>().Where(it => it.Books.Any(s => Convert.ToDateTime(s.TimeStr) > DateTime.Now)).ToList();
             if(data14.First().Name!= "adddays1") Cases.ThrowUnitError();
             var data15 = db.Queryable<Student>().Where(it => it.Books.Any(s =>s.BookChildList.Any())).ToList();
-            if (data15.Any(it=>it.Books.Any()==false)) Cases.ThrowUnitError();
+            if (data15.Any(it=>it.Books.Any(s=>s.BookChildList.Any())==false)) Cases.ThrowUnitError();
         }
 
         [SqlSugar.SugarTable("UnitStudentdfsds3zzz1")]
