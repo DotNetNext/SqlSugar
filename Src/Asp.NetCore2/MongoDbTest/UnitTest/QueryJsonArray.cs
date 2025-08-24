@@ -105,10 +105,13 @@ namespace MongoDbTest
             if (data7.Count != 1 || data8.Count != 1) Cases.ThrowUnitError();
             if (data7.FirstOrDefault().Name != "price=age" || data8.FirstOrDefault().Name != "price=age") Cases.ThrowUnitError();
             var data9 = db.Queryable<Student>().Where(it => it.Book.Any()).ToList();
-            db.Insertable(new Student() { Age = 1000, Name = "anyany", SchoolId = "1", Book = new List<Book>() { new Book() {  book=new List<Book>() { new Book() { }  } } } }).ExecuteCommand();
-            var data10 = db.Queryable<Student>().Where(it => it.Book.Any(s => it.Age == 99)).ToList();
-            var data11 = db.Queryable<Student>().Where(it => it.Book.Any(s=>SqlFunc.ToString(it.Age)=="99")).ToList();
-            if(data11 .Count!=1|| data11.First().Age!=99) Cases.ThrowUnitError();
+            db.Insertable(new Student() { Age = 1000, Name = "call", SchoolId = "1", Book = new List<Book>() { new Book() { NumStr = "1", book=new List<Book>() { new Book() { }  } } } }).ExecuteCommand();
+            var data12 = db.Queryable<Student>().Where(it => it.Book.Any(s => s.NumStr == "1")).ToList();
+            var data13 = db.Queryable<Student>().Where(it => it.Book.Any(s => SqlFunc.ToInt32(s.NumStr) ==1)).ToList();
+            if (data13.First().Name != "call") Cases.ThrowUnitError();
+            db.Insertable(new Student() { Age = 1, Name = "adddays1", SchoolId = "1", Book = new List<Book>() { new Book() { TimeStr=DateTime.Now.AddDays(1).ToString("yyyy-MM-dd HH:mm:ss") } } }).ExecuteCommand();
+            var data14 = db.Queryable<Student>().Where(it => it.Book.Any(s => Convert.ToDateTime(s.TimeStr) > DateTime.Now)).ToList();
+            if(data14.First().Name!= "adddays1") Cases.ThrowUnitError();
         }
 
         [SqlSugar.SugarTable("UnitStudentdfsds3zzz1")]
@@ -135,6 +138,8 @@ namespace MongoDbTest
         }
         public class Book
         {
+            public string TimeStr { get; set; }
+            public string NumStr { get; set; }
             public decimal Price { get; set; }
             public DateTime CreateTime { get; set; }
 
