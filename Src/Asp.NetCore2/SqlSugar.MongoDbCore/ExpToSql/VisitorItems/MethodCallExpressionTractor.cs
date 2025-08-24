@@ -12,7 +12,7 @@ using System.Diagnostics.CodeAnalysis;
 using Dm.util;
 namespace SqlSugar.MongoDb 
 {
-    public class MethodCallExpressionTractor
+    public partial class MethodCallExpressionTractor
     {
         MongoNestedTranslatorContext _context;
         ExpressionVisitorContext _visitorContext;
@@ -145,123 +145,15 @@ namespace SqlSugar.MongoDb
                     }
 
                 }
-                else if (IsAnyMethodCallEmpty(methodCallExpression, name)) 
+                else if (IsAnyMethodCallEmpty(methodCallExpression, name))
                 {
-                        // 处理 it.xx.Any()，即判断 JSON 数组字段是否非空
-                        var memberExpression = methodCallExpression.Arguments.FirstOrDefault() as MemberExpression;
-                        if (memberExpression != null)
-                        {
-                            // 获取集合字段名
-                            var collectionField = MongoNestedTranslator.TranslateNoFieldName(
-                                memberExpression,
-                                _context,
-                                new ExpressionVisitorContext { IsText = true }
-                            );
-
-                            // 构造 $size > 0 查询
-                            var bson = new BsonDocument
-                            {
-                                { "$expr", new BsonDocument("$gt", new BsonArray { new BsonDocument("$size", UtilMethods.GetMemberName(collectionField)), 0 }) }
-                            };
-                            result = bson;
-                        }
-                    } 
+                    result = HandleAnyMethodCallEmpty(methodCallExpression, result);
+                }
                 return result;
             }
         }
 
-        private BsonValue CallAnyExpression(MethodCallExpression methodCall, AnyArgModel anyArgModel)
-        {
-            var nodeType = anyArgModel.NodeType;
-            // 获取集合字段名
-            var collectionField = MongoNestedTranslator.TranslateNoFieldName(
-                methodCall.Arguments[0],
-                _context,
-                new ExpressionVisitorContext { IsText = true }
-            )?.ToString();
-
-            var leftExpr = anyArgModel.Left as MethodCallExpression;
-            var rightExpr = anyArgModel.Right;
-
-            // 处理左边表达式（如 $toString: "$$b.Age"）
-            BsonValue leftValue;
-            if (leftExpr != null)
-            {
-                leftValue = MongoNestedTranslator.TranslateNoFieldName(
-                    leftExpr,
-                    _context,
-                    new ExpressionVisitorContext { IsText = true }
-                );
-            }
-            else
-            {
-                leftValue = MongoNestedTranslator.TranslateNoFieldName(
-                    anyArgModel.Left,
-                    _context,
-                    new ExpressionVisitorContext { IsText = true }
-                );
-            }
-
-            // 处理右边表达式（如常量 "99"）
-            BsonValue rightValue;
-            if (rightExpr is ConstantExpression constantExpr)
-            {
-                rightValue = UtilMethods.MyCreate(constantExpr.Value);
-            }
-            else
-            {
-                rightValue = MongoNestedTranslator.TranslateNoFieldName(
-                    rightExpr,
-                    _context,
-                    new ExpressionVisitorContext { IsText = true }
-                );
-            }
-
-            // 映射表达式类型到Mongo操作符
-            string mongoOperator = nodeType switch
-            {
-                ExpressionType.Equal => "$eq",
-                ExpressionType.NotEqual => "$ne",
-                ExpressionType.GreaterThan => "$gt",
-                ExpressionType.GreaterThanOrEqual => "$gte",
-                ExpressionType.LessThan => "$lt",
-                ExpressionType.LessThanOrEqual => "$lte",
-                _ => "$eq"
-            };
-
-            if (leftExpr.Arguments.Any() && leftExpr.Arguments[0] is MemberExpression member && ExpressionTool.GetParameters(member).Count() > 0) 
-            {
-                var leftMember = MongoNestedTranslator.TranslateNoFieldName(
-                       member,
-                       _context,
-                       new ExpressionVisitorContext { IsText = true }
-                   );
-                var leftMemberStr = UtilMethods.GetMemberName(leftMember.ToString()).ToString();
-                var newValue = "$$b." + leftMember.ToString();
-                leftValue = leftValue?.ToString().Replace(leftMemberStr, newValue);
-                leftValue = UtilMethods.ParseJsonObject(leftValue);
-            } 
-            // 构造 $map
-            var mapDoc = new BsonDocument
-            {
-                { "input", $"${collectionField}" },
-                { "as", "b" },
-                { "in", new BsonDocument(mongoOperator, new BsonArray { leftValue, rightValue }) }
-            };
-
-            // 构造 $expr/$anyElementTrue
-            var exprDoc = new BsonDocument
-            {
-                { "$anyElementTrue", new BsonDocument("$map", mapDoc) }
-            };
-
-            var bson = new BsonDocument
-            {
-                { "$expr", exprDoc }
-            };
-
-            return bson;
-        }
+    
         public static BsonValue TranslateMethodCall(MethodCallExpression methodCall, Type documentType,string name)
         {
             var type = typeof(MongoDbExpTools);
@@ -280,63 +172,6 @@ namespace SqlSugar.MongoDb
 
             return (BsonValue)result;
         }
-        private BsonValue HandleSimpleValueListAny(MethodCallExpression methodCallExpression)
-        {
-            var memberExpression = methodCallExpression.Arguments[0] as MemberExpression;
-            var lambdaExpression = methodCallExpression.Arguments[1] as LambdaExpression;
-            var paramName = lambdaExpression.Parameters.FirstOrDefault()?.Name;
-
-            // 集合字段名
-            var collectionField = MongoNestedTranslator.TranslateNoFieldName(
-                memberExpression,
-                _context,
-                new ExpressionVisitorContext { IsText = true }
-            )?.ToString();
-
-            // Lambda 表达式体
-            var body = lambdaExpression.Body;
-            if (body is BinaryExpression binaryExpr)
-            {
-                // 只处理 s == value 这种简单表达式
-                string mongoOperator = binaryExpr.NodeType switch
-                {
-                    ExpressionType.Equal => "$in",
-                    ExpressionType.NotEqual => "$nin",
-                    _ => null
-                };
-                if (mongoOperator != null)
-                {
-                    // s == value，左边是参数，右边是常量
-                    var left = binaryExpr.Left;
-                    var right = binaryExpr.Right;
-                    if (left is ParameterExpression && right is ConstantExpression constant)
-                    {
-                        var value = UtilMethods.MyCreate(constant.Value);
-                        var bson = new BsonDocument
-                                    {
-                                        { collectionField, new BsonDocument(mongoOperator, new BsonArray { value }) }
-                                    };
-                        return bson;
-                    }
-                    // s == it.xx 这种情况
-                    if (left is ParameterExpression && right != null)
-                    {
-                        var valueExpr = MongoNestedTranslator.TranslateNoFieldName(
-                            right,
-                            _context,
-                            new ExpressionVisitorContext { IsText = true }
-                        );
-                        var bson = new BsonDocument
-                                    {
-                                        { collectionField, new BsonDocument(mongoOperator, new BsonArray { valueExpr }) }
-                                    };
-                        return bson;
-                    }
-                }
-            }
-            return null;
-        }
-
         private static bool IsSimpleValueListAny(MethodCallExpression methodCallExpression)
         {
             if (methodCallExpression.Arguments.Count == 2)
@@ -368,67 +203,6 @@ namespace SqlSugar.MongoDb
             }
             return false;
         }
-        private BsonValue HandleComplexAnyExpression(MethodCallExpression methodCallExpression)
-        {
-            // 处理 it.Book.Any(s => s.Price == it.Age) 这种主表字段关联的 Any 表达式
-            // 参数1: 集合字段 it.Book
-            // 参数2: Lambda 表达式 s => s.Price == it.Age
-
-            var memberExpression = methodCallExpression.Arguments[0] as MemberExpression;
-            var lambdaExpression = methodCallExpression.Arguments[1] as LambdaExpression;
-            var firstParameterName = lambdaExpression.Parameters.FirstOrDefault().Name;
-
-            // 获取集合字段名
-            var collectionField = MongoNestedTranslator.TranslateNoFieldName(
-                memberExpression,
-                _context,
-                new ExpressionVisitorContext { IsText = true }
-            )?.ToString();
-
-            // 处理 Lambda 表达式体
-            var body = lambdaExpression.Body;
-
-            // 支持多种比较操作
-            if (body is BinaryExpression binaryExpr)
-            {
-                // 左右表达式
-                var left = binaryExpr.Left;
-                var right = binaryExpr.Right;
-                if (ExpressionTool.GetParameters(right).Any(s => s.Name == firstParameterName))
-                {
-                    left = binaryExpr.Right;
-                    right = binaryExpr.Left;
-                }
-                string leftField = MongoNestedTranslator.TranslateNoFieldName(left, _context, new ExpressionVisitorContext { IsText = true })?.ToString();
-                string rightField = MongoNestedTranslator.TranslateNoFieldName(right, _context, new ExpressionVisitorContext { IsText = true })?.ToString();
-
-                // 映射表达式类型到Mongo操作符
-                string mongoOperator = binaryExpr.NodeType switch
-                {
-                    ExpressionType.Equal => "$eq",
-                    ExpressionType.NotEqual => "$ne",
-                    ExpressionType.GreaterThan => "$gt",
-                    ExpressionType.GreaterThanOrEqual => "$gte",
-                    ExpressionType.LessThan => "$lt",
-                    ExpressionType.LessThanOrEqual => "$lte",
-                    _ => null
-                };
-
-                if (mongoOperator != null)
-                {
-                    var mapDoc = new BsonDocument
-                    {
-                        { "input", $"${collectionField}" },
-                        { "as", "b" },
-                        { "in", new BsonDocument(mongoOperator, new BsonArray { $"$$b.{leftField}", $"${rightField}" }) }
-                    };
-                    var anyElementTrueDoc = new BsonDocument("$expr", new BsonDocument("$anyElementTrue", new BsonDocument("$map", mapDoc)));
-                    return anyElementTrueDoc;
-                }
-            }
-            return null;
-        }
-
         private static bool IsComplexAnyExpression(MethodCallExpression methodCallExpression, out AnyArgModel anyArgModel)
         {
 
@@ -473,35 +247,7 @@ namespace SqlSugar.MongoDb
             return true;
         }
 
-        private BsonValue ProcessAnyExpression(MethodCallExpression methodCallExpression)
-        {
-            // 处理 it.xx.Any(s => s.id == 1) 这种表达式
-            // memberExpression: it.xx
-            // whereExpression: s => s.id == 1
-            var memberExpression = methodCallExpression.Arguments[0] as MemberExpression;
-            var whereExpression = methodCallExpression.Arguments[1];
-
-            // 获取集合字段名
-            var collectionField = MongoNestedTranslator.TranslateNoFieldName(
-                memberExpression,
-                _context,
-                new ExpressionVisitorContext { IsText = true }
-            );
-
-            // 生成 $elemMatch 查询
-            var elemMatch = MongoNestedTranslator.TranslateNoFieldName(
-                whereExpression,
-                _context,
-                new ExpressionVisitorContext { IsText = true }
-            );
-
-            var bson = new BsonDocument
-                        {
-                            { collectionField?.ToString(), new BsonDocument("$elemMatch", elemMatch) }
-                        };
-            return bson;
-        }
-
+      
         public BsonValue BuildMongoSwitch(List<KeyValuePair<string, Expression>> ifConditions)
         {
             if (ifConditions == null || ifConditions.Count < 3)
@@ -606,28 +352,7 @@ namespace SqlSugar.MongoDb
             return name;
         }
 
-        private bool IsCallAnyExpression(AnyArgModel anyArgModel)
-        {
-            var isleftCall = (anyArgModel.Left is MethodCallExpression) && anyArgModel.LeftCount >= 1;
-            var isRightCall = !(anyArgModel.Right is MethodCallExpression) && anyArgModel.RightCount >= 1;
-            var allCount = anyArgModel.LeftCount + anyArgModel.RightCount;
-            if ((isleftCall || isRightCall) && allCount == 1)
-            {
-                anyArgModel.Left = isleftCall? anyArgModel.Left:anyArgModel.Right;
-                anyArgModel.Right = isleftCall ? anyArgModel.Right: anyArgModel.Left;
-                return true;
-            }
-            return false;
-        } 
-        private static bool IsAnyMethodCall(MethodCallExpression methodCallExpression, string name)
-        {
-            return name == "Any" && methodCallExpression.Arguments.Count == 2;
-        }
-        private static bool IsAnyMethodCallEmpty(MethodCallExpression methodCallExpression, string name)
-        {
-            return name == "Any" && methodCallExpression.Arguments.Count ==1;
-        }
-
+    
         private static bool IsCountJson(MethodCallExpression methodCallExpression, string name)
         {
             return name == "Count" && methodCallExpression?.Arguments?.FirstOrDefault() is MemberExpression m;
