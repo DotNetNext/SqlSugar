@@ -1,4 +1,7 @@
-﻿using MongoDB.Bson;
+﻿using MongoDb.Ado.data;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -9,6 +12,46 @@ namespace SqlSugar.MongoDb
 {
     public class MongoDbExpTools
     {
+        /// <summary>
+        /// 将表达式转换成 FilterDefinition，并返回对应的 BsonDocument
+        /// </summary>
+        public static BsonDocument GetFilterBson<TDocument>(Expression<Func<TDocument, bool>> predicate)
+        { 
+            // 1. 构造 FilterDefinition
+            var filter = Builders<TDocument>.Filter.Where(predicate);
+            var serializer = BsonSerializer.SerializerRegistry.GetSerializer<TDocument>();
+            var registry = BsonSerializer.SerializerRegistry;
+
+            // 3. 构造 RenderArgs<TDocument>
+            var args = new RenderArgs<TDocument>(serializer, registry);
+
+            var bson = filter.Render(new RenderArgs<TDocument>(serializer, registry)); 
+            return bson;
+        }
+        public static Expression GetRootObject(Expression expr)
+        {
+            while (true)
+            {
+                switch (expr)
+                {
+                    case MemberExpression memberExpr:
+                        expr = memberExpr.Expression;
+                        break;
+
+                    case MethodCallExpression methodCallExpr:
+                        expr = methodCallExpr.Object ??
+                               (methodCallExpr.Arguments.Count > 0 ? methodCallExpr.Arguments[0] : null);
+                        break;
+
+                    case UnaryExpression unaryExpr:
+                        expr = unaryExpr.Operand;
+                        break;
+
+                    default:
+                        return expr;
+                }
+            }
+        }
         public static List<KeyValuePair<string, Expression>> ExtractIfElseEnd(MethodCallExpression expression)
         {
             var result = new List<KeyValuePair<string, Expression>>();

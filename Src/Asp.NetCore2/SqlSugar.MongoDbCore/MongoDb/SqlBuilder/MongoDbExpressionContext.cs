@@ -483,6 +483,8 @@ namespace SqlSugar.MongoDb
         public override string ToString(MethodCallExpressionModel model)
         {
             var item = model.DataObject as Expression;
+            if (item == null && model.Args.Any())
+                item = model.Args[0].MemberValue as Expression;
             BsonValue memberName = new ExpressionVisitor(context).Visit(item as Expression);
 
             if (model.Args == null || model.Args.Count == 0)

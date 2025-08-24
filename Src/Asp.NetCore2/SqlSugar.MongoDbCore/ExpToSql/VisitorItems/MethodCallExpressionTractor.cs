@@ -4,7 +4,11 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
 using System.Linq;
-using System.Collections; 
+using System.Collections;
+using System.Reflection;
+using MongoDB.Driver;
+using MongoDB.Bson.Serialization;
+using System.Diagnostics.CodeAnalysis;
 namespace SqlSugar.MongoDb 
 {
     public class MethodCallExpressionTractor
@@ -30,7 +34,7 @@ namespace SqlSugar.MongoDb
                 BsonValue result = null;
                 var context = new MongoDbMethod() { context = this._context };
                 MethodCallExpressionModel model = new MethodCallExpressionModel();
-                var args = methodCallExpression.Arguments;
+                var args =methodCallExpression.Arguments;
                 model.Args = new List<MethodCallExpressionArgs>();
                 model.DataObject = methodCallExpression.Object;
                 foreach (var item in args)
@@ -130,9 +134,9 @@ namespace SqlSugar.MongoDb
                     {
                         return HandleSimpleValueListAny(methodCallExpression);
                     } 
-                    else if (IsUnresolvableAnyExpression(anyArgModel))
+                    else if (IsCallAnyExpression(anyArgModel))
                     {
-                        return UnresolvablelexAnyExpression(methodCallExpression);
+                        return CallAnyExpression(methodCallExpression,anyArgModel);
                     }
                     else
                     {
@@ -160,19 +164,96 @@ namespace SqlSugar.MongoDb
                             };
                             result = bson;
                         }
-                    }
-                {
-                }
+                    } 
                 return result;
             }
         }
 
-        private BsonValue UnresolvablelexAnyExpression(MethodCallExpression methodCallExpression)
+        private BsonValue CallAnyExpression(MethodCallExpression methodCall, AnyArgModel anyArgModel)
         {
-            BsonValue bsonValue = null;
-            return null;
-        }
+            // 获取集合字段名
+            var collectionField = MongoNestedTranslator.TranslateNoFieldName(
+                methodCall.Arguments[0],
+                _context,
+                new ExpressionVisitorContext { IsText = true }
+            )?.ToString();
 
+            var leftExpr = anyArgModel.Left as MethodCallExpression;
+            var rightExpr = anyArgModel.Right;
+
+            // 处理左边表达式（如 $toString: "$$b.Age"）
+            BsonValue leftValue;
+            if (leftExpr != null)
+            {
+                leftValue = MongoNestedTranslator.TranslateNoFieldName(
+                    leftExpr,
+                    _context,
+                    new ExpressionVisitorContext { IsText = true }
+                );
+            }
+            else
+            {
+                leftValue = MongoNestedTranslator.TranslateNoFieldName(
+                    anyArgModel.Left,
+                    _context,
+                    new ExpressionVisitorContext { IsText = true }
+                );
+            }
+
+            // 处理右边表达式（如常量 "99"）
+            BsonValue rightValue;
+            if (rightExpr is ConstantExpression constantExpr)
+            {
+                rightValue = UtilMethods.MyCreate(constantExpr.Value);
+            }
+            else
+            {
+                rightValue = MongoNestedTranslator.TranslateNoFieldName(
+                    rightExpr,
+                    _context,
+                    new ExpressionVisitorContext { IsText = true }
+                );
+            }
+
+            // 构造 $map
+            var mapDoc = new BsonDocument
+            {
+                { "input", $"${collectionField}" },
+                { "as", "b" },
+                { "in", leftValue }
+            };
+
+            // 构造 $expr/$in
+            var exprDoc = new BsonDocument
+            {
+                { "$in", new BsonArray { rightValue, new BsonDocument("$map", mapDoc) } }
+            };
+
+            var bson = new BsonDocument
+            {
+                { "$expr", exprDoc }
+            };
+
+            return bson;
+        }
+        public static BsonValue TranslateMethodCall(MethodCallExpression methodCall, Type documentType,string name)
+        {
+            var type = typeof(MongoDbExpTools);
+
+            // 获取泛型方法定义
+            var method = type.GetMethod("GetFilterBson", BindingFlags.Public | BindingFlags.Static);
+            if (method == null)
+                throw new InvalidOperationException("找不到 GetFilterBson 方法");
+
+            // 构造泛型方法
+            var genericMethod = method.MakeGenericMethod(documentType);
+
+            // 调用方法 (假设 methodCall 就是 Expression)
+            var lambda = Expression.Lambda(methodCall, ExpressionTool.GetParameters(methodCall).First());
+            var result = genericMethod.Invoke(null, new object[] { lambda });
+
+            return (BsonValue)result;
+        }
         private BsonValue HandleSimpleValueListAny(MethodCallExpression methodCallExpression)
         {
             var memberExpression = methodCallExpression.Arguments[0] as MemberExpression;
@@ -350,18 +431,18 @@ namespace SqlSugar.MongoDb
             if (methodCallExpression.Arguments[1] is LambdaExpression l&&l.Body is BinaryExpression b) 
             {
                 var leftCount = ExpressionTool.GetParameters(MongoDbExpTools.RemoveConvert(b.Left)).Count();
-                var rightCount = ExpressionTool.GetParameters(MongoDbExpTools.RemoveConvert(b.Right)).Count();
-                if (leftCount != 1) 
-                    return false;
-                if (rightCount != 1)
-                    return false;
-                anyArgModel.IsBinary = true;
+                var rightCount = ExpressionTool.GetParameters(MongoDbExpTools.RemoveConvert(b.Right)).Count(); 
                 anyArgModel.LamdaExpression = l;
                 anyArgModel.Left = MongoDbExpTools.RemoveConvert(b.Left);
                 anyArgModel.LeftCount = leftCount;
                 anyArgModel.RightCount = rightCount;
                 anyArgModel.Right = MongoDbExpTools.RemoveConvert(b.Right);
                 anyArgModel.NodeType = b.NodeType;
+                if (leftCount != 1) 
+                    return false;
+                if (rightCount != 1)
+                    return false;
+                anyArgModel.IsBinary = true;
             }
             return true;
         }
@@ -499,16 +580,15 @@ namespace SqlSugar.MongoDb
             return name;
         }
 
-        private bool IsUnresolvableAnyExpression(AnyArgModel anyArgModel)
+        private bool IsCallAnyExpression(AnyArgModel anyArgModel)
         {
-            var leftIsUn = !(anyArgModel.Left is MemberExpression) && anyArgModel.LeftCount >= 1;
-            var rightIsUn = !(anyArgModel.Right is MemberExpression) && anyArgModel.RightCount >= 1;
-            if (anyArgModel.Right is BinaryExpression  rb|| anyArgModel.Left is BinaryExpression lb) 
-            { 
-                return false;
-            }
-            if (leftIsUn|| rightIsUn) 
+            var isleftCall = (anyArgModel.Left is MethodCallExpression) && anyArgModel.LeftCount >= 1;
+            var isRightCall = !(anyArgModel.Right is MethodCallExpression) && anyArgModel.RightCount >= 1;
+            var allCount = anyArgModel.LeftCount + anyArgModel.RightCount;
+            if ((isleftCall || isRightCall) && allCount == 1&&anyArgModel.NodeType.IsIn(ExpressionType.Equal,ExpressionType.NotEqual)) 
             {
+                anyArgModel.Left = isleftCall? anyArgModel.Left:anyArgModel.Right;
+                anyArgModel.Right = isleftCall ? anyArgModel.Right: anyArgModel.Left;
                 return true;
             }
             return false;
