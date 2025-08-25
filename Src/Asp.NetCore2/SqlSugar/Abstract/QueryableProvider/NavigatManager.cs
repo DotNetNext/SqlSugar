@@ -588,17 +588,21 @@ namespace SqlSugar
                 var navList = selector(childDb.Queryable<object>(sqlObj.TableShortName).AS(GetDbTableName(navEntityInfo, sqlObj)).ClearFilter(QueryBuilder.RemoveFilters).Filter(this.QueryBuilder?.IsDisabledGobalFilter == true ? null : navEntityInfo.Type).AddParameters(sqlObj.Parameters).Where(conditionalModels).WhereIF(sqlObj.WhereString.HasValue(), sqlObj.WhereString).WhereIF(navObjectNameColumnInfo?.Navigat?.WhereSql != null, navObjectNameColumnInfo?.Navigat?.WhereSql).Select(sqlObj.SelectString).OrderByIF(sqlObj.OrderByString.HasValue(), sqlObj.OrderByString));
                 if (navList.HasValue())
                 {
-                    //var setValue = navList
-                    //  .Where(x => navColumn.PropertyInfo.GetValue(x).ObjToString() == listItemPkColumn.PropertyInfo.GetValue(item).ObjToString()).ToList();
-                    var groupQuery = (from l in list.Distinct()
-                                      join n in navList
-                                           on listItemPkColumn.PropertyInfo.GetValue(l).ObjToString()
-                                           equals navColumn.PropertyInfo.GetValue(n).ObjToString()
-                                      select new
-                                      {
-                                          l,
-                                          n
-                                      }).GroupBy(it => it.l).ToList();
+                    var groupQuery =
+                               (from l in list.Distinct()
+                                from n in navList
+                                let lValue = 
+                                listItemPkColumn.PropertyInfo.GetValue(n).ObjToString()
+                                let nValues = 
+                                ((navColumn.PropertyInfo.GetValue(l) as IEnumerable)?.Cast<object>()??new List<object>())
+                                where nValues != null && nValues.Select(x => x.ObjToString()).Contains(lValue)
+                                select new
+                                {
+                                    l,
+                                    n
+                                })
+                               .GroupBy(it => it.l)
+                               .ToList();
                     foreach (var item in groupQuery)
                     {
                         var itemSelectList = item.Select(it => it.n);
