@@ -790,7 +790,11 @@ namespace SqlSugar
             }
         }
 
-
+        public virtual Task<string> GetStringAsync(string sql, object parameters, CancellationToken cancellationToken)
+        {
+            this.CancellationToken = cancellationToken;
+            return GetStringAsync(sql, this.GetParameters(parameters));
+        }
         public virtual Task<string> GetStringAsync(string sql, object parameters)
         {
             return GetStringAsync(sql, this.GetParameters(parameters));
@@ -842,7 +846,11 @@ namespace SqlSugar
         {
             return GetScalar(sql, parameters).ObjToInt();
         }
-
+        public virtual Task<int> GetIntAsync(string sql, object parameters, CancellationToken cancellationToken)
+        {
+            this.CancellationToken = cancellationToken;
+            return GetIntAsync(sql, this.GetParameters(parameters));
+        }
         public virtual Task<int> GetIntAsync(string sql, object parameters)
         {
             return GetIntAsync(sql, this.GetParameters(parameters));
@@ -883,7 +891,11 @@ namespace SqlSugar
                 return GetDouble(sql, parameters.ToArray());
             }
         }
-
+        public virtual Task<Double> GetDoubleAsync(string sql, object parameters, CancellationToken cancellationToken)
+        {
+            this.CancellationToken = cancellationToken;
+            return GetDoubleAsync(sql, this.GetParameters(parameters));
+        }
         public virtual Task<Double> GetDoubleAsync(string sql, object parameters)
         {
             return GetDoubleAsync(sql, this.GetParameters(parameters));
@@ -1419,6 +1431,11 @@ namespace SqlSugar
             {
                 return GetScalar(sql, parameters.ToArray());
             }
+        }
+        public virtual Task<object> GetScalarAsync(string sql, object parameters, CancellationToken cancellationToken)
+        {
+            this.CancellationToken = cancellationToken;
+            return GetScalarAsync(sql, this.GetParameters(parameters));
         }
         public virtual Task<object> GetScalarAsync(string sql, object parameters)
         {

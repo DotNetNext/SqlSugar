@@ -75,6 +75,7 @@ namespace SqlSugar
         object GetScalar(string sql, List<SugarParameter> parameters);
 
         Task<object> GetScalarAsync(string sql, object parameters);
+        Task<object> GetScalarAsync(string sql, object parameters, CancellationToken cancellationToken);
         Task<object> GetScalarAsync(string sql, params SugarParameter[] parameters);
         Task<object> GetScalarAsync(string sql, List<SugarParameter> parameters);
 
@@ -92,6 +93,7 @@ namespace SqlSugar
         string GetString(string sql, params SugarParameter[] parameters);
         string GetString(string sql, List<SugarParameter> parameters);
         Task<string> GetStringAsync(string sql, object parameters);
+        Task<string> GetStringAsync(string sql, object parameters, CancellationToken cancellationToken);
         Task<string> GetStringAsync(string sql, params SugarParameter[] parameters);
         Task<string> GetStringAsync(string sql, List<SugarParameter> parameters);
 
@@ -101,6 +103,7 @@ namespace SqlSugar
         int GetInt(string sql, List<SugarParameter> parameters);
 
         Task<int> GetIntAsync(string sql, object pars);
+        Task<int> GetIntAsync(string sql, object pars,CancellationToken cancellationToken);
         Task<int> GetIntAsync(string sql, params SugarParameter[] parameters);
         Task<int> GetIntAsync(string sql, List<SugarParameter> parameters);
 
@@ -114,7 +117,7 @@ namespace SqlSugar
         Double GetDouble(string sql, params SugarParameter[] parameters);
         Double GetDouble(string sql, List<SugarParameter> parameters);
 
-
+        Task<Double> GetDoubleAsync(string sql, object parameters, CancellationToken cancellationToken);
         Task<Double> GetDoubleAsync(string sql, object parameters);
         Task<Double> GetDoubleAsync(string sql, params SugarParameter[] parameters);
         Task<Double> GetDoubleAsync(string sql, List<SugarParameter> parameters);
