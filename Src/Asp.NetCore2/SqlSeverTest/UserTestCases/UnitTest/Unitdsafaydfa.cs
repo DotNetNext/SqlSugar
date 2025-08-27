@@ -50,6 +50,10 @@ namespace OrmTest
                 .Where(p => p.Id == 1)
                 .Select(p => new { p.Id, p.Aid, entitys = p.ABEntries.Select(p => new { p.Color, p.MustNum }) })
                 .ToList();
+
+            if (faPlans3.First().entitys.Count() != 2) throw new Exception("unit error");
+            if (faPlans2.First().entitys.Count() != 2) throw new Exception("unit error");
+            if (faPlans.First().ABEntries.Count() != 2) throw new Exception("unit error");
         }
         [SugarTable("Unit0000A")]
         public class A
