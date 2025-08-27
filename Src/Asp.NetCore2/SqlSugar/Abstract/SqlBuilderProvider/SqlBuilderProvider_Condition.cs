@@ -250,6 +250,14 @@ namespace SqlSugar
             {
                 date2Str = new DateTime(int.Parse(date2Str), 1, 1).ToString(SugarDateTimeFormat.Default);
             }
+            if (date1Str.Length == 13) 
+            {
+                date1Str = date1Str + ":00:00";
+            }
+            if (date2Str.Length == 13)
+            {
+                date2Str = date2Str + ":00:00";
+            }
             if (!DateTime.TryParse(date1Str, out var date1))
                 Check.ExceptionEasy("date1 format is incorrect.(yyyy-MM-dd | yyyy | yyyy-MM | yyyy-MM-dd HH | yyyy-MM-dd HH:mm)", "date1 格式不正确，支持格式 yyyy-MM-dd | yyyy | yyyy-MM | yyyy-MM-dd HH | yyyy-MM-dd HH:mm");
 
