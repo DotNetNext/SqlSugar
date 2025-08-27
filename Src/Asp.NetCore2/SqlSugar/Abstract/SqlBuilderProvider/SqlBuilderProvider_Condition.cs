@@ -241,6 +241,8 @@ namespace SqlSugar
         }
         public static DateTime[] GetDateRange(string date1Str, string date2Str)
         {
+            date1Str = date1Str.Trim();
+            date2Str = date2Str.Trim();
             var len = date2Str.Trim().Length;
             if (date1Str.Length == 4)
             {
