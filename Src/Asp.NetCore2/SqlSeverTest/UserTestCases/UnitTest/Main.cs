@@ -34,6 +34,7 @@ namespace OrmTest
         }
         public static void Init()
         {
+            Unitadfafassys.Init();
             UnitArrayNavQuery.Init();
             Unitdfasdfasfysa.Init();
             UnitDefaultValueTest.Init();
