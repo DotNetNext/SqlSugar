@@ -14,6 +14,9 @@ namespace OrmTest
         public static void Init()
         {
             var db = NewUnitTest.Db;
+
+            DateRangeTest(db);
+
             //建表 
             db.CodeFirst.InitTables<A>();
             db.CodeFirst.InitTables<AB>();
@@ -29,13 +32,13 @@ namespace OrmTest
             var result2 = db.Insertable(new AB() { Bid = 2, Aid = 2 }).ExecuteCommand();//用例代码
             var result3 = db.Insertable(new B() { Id = 3, Bid = 2, MustNum = 2, Color = "3" }).ExecuteCommand();//用例代码
             var result4 = db.Insertable(new B() { Id = 4, Bid = 2, MustNum = 3, Color = "4" }).ExecuteCommand();//用例代码
-                                                                                                                 //正常示例
+                                                                                                                //正常示例
             var faPlans =
             db.Queryable<A>()
                .Includes(p => p.ABEntries)
                .Where(p => p.Id == 1)
                .ToList();
-            var faPlans2 =db.Queryable<A>()
+            var faPlans2 = db.Queryable<A>()
                   .Includes(p => p.ABEntries)
                   .Where(p => p.Id == 1)
                   .Select(p => new
@@ -55,6 +58,67 @@ namespace OrmTest
             if (faPlans2.First().entitys.Count() != 2) throw new Exception("unit error");
             if (faPlans.First().ABEntries.Count() != 2) throw new Exception("unit error");
         }
+
+        private static void DateRangeTest(SqlSugarClient db)
+        {
+            db.CodeFirst.InitTables<UserInfo001>();
+            var userInfo1 = db.Queryable<UserInfo001>()
+             .Where(new List<IConditionalModel>()
+          {
+                            new ConditionalModel()
+                            {
+                                 ConditionalType=ConditionalType.RangeDate,
+                                 FieldValue="2025-08,2025-08",
+                                  FieldName="RegistrationDate"
+                            }
+
+          }).ToList();
+            var userInfo2 = db.Queryable<UserInfo001>()
+              .Where(new List<IConditionalModel>()
+                {
+                    new ConditionalModel()
+                    {
+                         ConditionalType=ConditionalType.RangeDate,
+                         FieldValue="2025-08-27 09,2025-08-27 09",
+                          FieldName="RegistrationDate"
+                    }
+
+                }).ToList();
+            var userInfo3 = db.Queryable<UserInfo001>()
+                .Where(new List<IConditionalModel>()
+             {
+                        new ConditionalModel()
+                        {
+                             ConditionalType=ConditionalType.RangeDate,
+                             FieldValue="2025-08-27 09:01,2025-08-27 09:01",
+                              FieldName="RegistrationDate"
+                        }
+
+             }).ToList();
+            var userInfo4 = db.Queryable<UserInfo001>()
+                .Where(new List<IConditionalModel>()
+             {
+                                new ConditionalModel()
+                                {
+                                     ConditionalType=ConditionalType.RangeDate,
+                                     FieldValue="2025-08-27 09:01:01,2025-08-27 09:01:01",
+                                      FieldName="RegistrationDate"
+                                }
+
+             }).ToList();
+            var userInfo5 = db.Queryable<UserInfo001>()
+                .Where(new List<IConditionalModel>()
+             {
+                                            new ConditionalModel()
+                                            {
+                                                 ConditionalType=ConditionalType.RangeDate,
+                                                 FieldValue="2025,2025",
+                                                  FieldName="RegistrationDate"
+                                            }
+
+             }).ToList();
+        }
+
         [SugarTable("Unit0000A")]
         public class A
         {
@@ -139,7 +203,50 @@ namespace OrmTest
             /// </summary>
             public decimal MustNum { get; set; }
         }
+        public class UserInfo001
+        {
+            /// <summary>
+            /// User ID (Primary Key)
+            /// 用户ID（主键）
+            /// </summary>
+            [SugarColumn(IsIdentity = true, IsPrimaryKey = true)]
+            public int UserId { get; set; }
 
+            /// <summary>
+            /// User name
+            /// 用户名
+            /// </summary>
+            [SugarColumn(Length = 50, IsNullable = false)]
+            public string UserName { get; set; }
+
+            /// <summary>
+            /// User email
+            /// 用户邮箱
+            /// </summary>
+            [SugarColumn(IsNullable = true)]
+            public string Email { get; set; }
+
+
+            /// <summary>
+            /// Product price
+            /// 产品价格
+            /// </summary> 
+            public decimal Price { get; set; }
+
+            /// <summary>
+            /// User context
+            /// 用户内容
+            /// </summary>
+            [SugarColumn(ColumnDataType = StaticConfig.CodeFirst_BigString, IsNullable = true)]
+            public string Context { get; set; }
+
+            /// <summary>
+            /// User registration date
+            /// 用户注册日期
+            /// </summary>
+            [SugarColumn(IsNullable = true)]
+            public DateTime? RegistrationDate { get; set; }
+        }
 
     }
 }
