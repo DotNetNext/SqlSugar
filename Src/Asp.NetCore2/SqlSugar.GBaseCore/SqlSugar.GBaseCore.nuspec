@@ -14,7 +14,7 @@
     <tags>Asp.net core orm</tags>
     <dependencies>
       <group targetFramework=".NETStandard2.1">
-		  <dependency id="GBase.DataProvider" version="1.3.0" />
+		  <dependency id="GBase.DataProvider" version="1.5.0" />
       </group>
     </dependencies>
   </metadata>
