@@ -190,7 +190,7 @@ namespace SqlSugar.GBase
                 }
                 else
                 {
-                    return n + "'" + value + "'";
+                    return n + "'" + value?.ToString()?.ToSqlFilter() + "'";
                 }
             }
         }

@@ -115,7 +115,7 @@ namespace SqlSugar.GBase
                 }
                 else
                 {
-                    return "'" + value.ToString() + "'";
+                    return "'" + value.ToString().ToSqlFilter() + "'";
                 }
             }
         }
