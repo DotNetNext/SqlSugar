@@ -438,6 +438,47 @@ namespace SqlSugar.MongoDb
             var item = model.Args.First().MemberValue;
             BsonValue itemValue = new ExpressionVisitor(context).Visit(item as Expression);
             var dateType = (DateType)model.Args.Last().MemberValue;
+            if (itemValue is BsonDocument bsonDoc)
+            {
+                switch (dateType)
+                {
+                    case DateType.Year:
+                        return new BsonDocument("$year", bsonDoc).ToJson(UtilMethods.GetJsonWriterSettings());
+                    case DateType.Month:
+                        return new BsonDocument("$month", bsonDoc).ToJson(UtilMethods.GetJsonWriterSettings());
+                    case DateType.Day:
+                        return new BsonDocument("$dayOfMonth", bsonDoc).ToJson(UtilMethods.GetJsonWriterSettings());
+                    case DateType.Hour:
+                        return new BsonDocument("$hour", bsonDoc).ToJson(UtilMethods.GetJsonWriterSettings());
+                    case DateType.Minute:
+                        return new BsonDocument("$minute", bsonDoc).ToJson(UtilMethods.GetJsonWriterSettings());
+                    case DateType.Second:
+                        return new BsonDocument("$second", bsonDoc).ToJson(UtilMethods.GetJsonWriterSettings());
+                    case DateType.Millisecond:
+                        return new BsonDocument("$millisecond", bsonDoc).ToJson(UtilMethods.GetJsonWriterSettings());
+                    case DateType.Weekday:
+                        return new BsonDocument("$subtract", new BsonArray
+                        {
+                            new BsonDocument("$dayOfWeek", bsonDoc),
+                            1
+                        }).ToJson(UtilMethods.GetJsonWriterSettings());
+                    case DateType.Quarter:
+                        var expr = new BsonDocument("$add", new BsonArray
+                        {
+                            new BsonDocument("$divide", new BsonArray
+                            {
+                                new BsonDocument("$subtract", new BsonArray
+                                {
+                                    new BsonDocument("$month", bsonDoc),
+                                    1
+                                }),
+                                3
+                            }),
+                            1
+                        });
+                        return expr.ToJson(UtilMethods.GetJsonWriterSettings());
+                }
+            }
             switch (dateType)
             {
                 case DateType.Year:
