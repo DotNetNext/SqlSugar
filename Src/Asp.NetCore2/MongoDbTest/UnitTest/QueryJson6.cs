@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MongoDbTest.UnitTest
+namespace MongoDbTest
 {
     internal class QueryJson6
     {
