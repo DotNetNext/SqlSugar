@@ -41,7 +41,7 @@ namespace MongoDbTest
               .Where(m => Convert.ToDateTime(m.RetailDate.SetBeginDate).Year > 2022
                      && Convert.ToDateTime(m.RetailDate.SetEndDate).Year <= 2023).ToList();
 
-            if (datas2.Count != 1) Cases.ThrowUnitError();
+            if (datas3.Count != 1) Cases.ThrowUnitError();
         }
 
         public class RetailInfo
