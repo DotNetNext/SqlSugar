@@ -93,17 +93,91 @@ namespace SqlSugar
             var queryable = this.Context.Queryable<T>();
             var tableName = queryable.SqlBuilder.GetTranslationTableName(dt.TableName);
             dt.TableName = "temp"+SnowFlakeSingle.instance.getID();
-            var sql = string.Empty;
-            if (dt.Columns.Cast<DataColumn>().Any(it => it.DataType == UtilConstants.ByteArrayType))
+            
+            // 检查是否为TiDB，TiDB不支持CREATE TEMPORARY TABLE ... (SELECT ...)语法
+            if (this.Context?.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.Tidb)
             {
-                sql = queryable.AS(tableName).Where(it => false)
-                    .Select(string.Join(",", dt.Columns.Cast<DataColumn>().Select(it => queryable.SqlBuilder.GetTranslationTableName(it.ColumnName)))).ToSql().Key;
+                await CreateTempTableForTiDB(dt, tableName);
             }
-            else 
+            else
             {
-                sql=queryable.AS(tableName).Where(it => false).ToSql().Key;
+                // 原有的MySQL逻辑
+                var sql = string.Empty;
+                if (dt.Columns.Cast<DataColumn>().Any(it => it.DataType == UtilConstants.ByteArrayType))
+                {
+                    sql = queryable.AS(tableName).Where(it => false)
+                        .Select(string.Join(",", dt.Columns.Cast<DataColumn>().Select(it => queryable.SqlBuilder.GetTranslationTableName(it.ColumnName)))).ToSql().Key;
+                }
+                else 
+                {
+                    sql=queryable.AS(tableName).Where(it => false).ToSql().Key;
+                }
+                await this.Context.Ado.ExecuteCommandAsync($"Create TEMPORARY  table {dt.TableName}({sql}) ");
             }
-            await this.Context.Ado.ExecuteCommandAsync($"Create TEMPORARY  table {dt.TableName}({sql}) ");
+        }
+
+        /// <summary>
+        /// 为TiDB创建临时表，使用标准的CREATE TEMPORARY TABLE语法
+        /// </summary>
+        private async Task CreateTempTableForTiDB(DataTable dt, string originalTableName)
+        {
+            var columnDefinitions = new List<string>();
+            
+            foreach (DataColumn column in dt.Columns)
+            {
+                var columnName = new MySqlBuilder().GetTranslationColumnName(column.ColumnName);
+                var sqlType = GetTiDBColumnType(column);
+                columnDefinitions.Add($"{columnName} {sqlType}");
+            }
+            
+            var createTableSql = $"CREATE TEMPORARY TABLE {dt.TableName} ({string.Join(", ", columnDefinitions)})";
+            await this.Context.Ado.ExecuteCommandAsync(createTableSql);
+        }
+
+        /// <summary>
+        /// 将.NET DataColumn类型映射为TiDB支持的SQL类型
+        /// </summary>
+        private string GetTiDBColumnType(DataColumn column)
+        {
+            var dataType = column.DataType;
+            
+            if (dataType == typeof(int) || dataType == typeof(int?))
+                return "INT";
+            if (dataType == typeof(long) || dataType == typeof(long?))
+                return "BIGINT";
+            if (dataType == typeof(short) || dataType == typeof(short?))
+                return "SMALLINT";
+            if (dataType == typeof(byte) || dataType == typeof(byte?))
+                return "TINYINT";
+            if (dataType == typeof(bool) || dataType == typeof(bool?))
+                return "BOOLEAN";
+            if (dataType == typeof(decimal) || dataType == typeof(decimal?))
+                return "DECIMAL(18,2)";
+            if (dataType == typeof(double) || dataType == typeof(double?))
+                return "DOUBLE";
+            if (dataType == typeof(float) || dataType == typeof(float?))
+                return "FLOAT";
+            if (dataType == typeof(DateTime) || dataType == typeof(DateTime?))
+                return "DATETIME";
+            if (dataType == typeof(DateTimeOffset) || dataType == typeof(DateTimeOffset?))
+                return "TIMESTAMP";
+            if (dataType == typeof(TimeSpan) || dataType == typeof(TimeSpan?))
+                return "TIME";
+            if (dataType == typeof(Guid) || dataType == typeof(Guid?))
+                return "VARCHAR(36)";
+            if (dataType == typeof(byte[]))
+                return "LONGBLOB";
+            if (dataType == typeof(string))
+            {
+                // 根据MaxLength决定使用VARCHAR还是TEXT
+                if (column.MaxLength > 0 && column.MaxLength <= 65535)
+                    return $"VARCHAR({column.MaxLength})";
+                else
+                    return "TEXT";
+            }
+            
+            // 默认使用TEXT类型
+            return "TEXT";
         }
     }
 }
