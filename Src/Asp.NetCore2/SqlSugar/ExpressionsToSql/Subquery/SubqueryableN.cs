@@ -9,6 +9,10 @@ namespace SqlSugar
     { }
     public class Subqueryable<T1, T2, T3, T4, T5, T6, T7, T8, T9> : Subqueryable<T1> where T1 : class, new()
     {
+        public Subqueryable<T1, T2, T3, T4, T5, T6, T7, T8,T9> Having(Func<T1, T2, T3, T4, T5, T6, T7, T8,T9, bool> expression)
+        {
+            return this;
+        }
         public new Subqueryable<T1, T2, T3, T4, T5, T6, T7, T8,T9> AsWithAttr()
         {
             return this;
@@ -76,6 +80,10 @@ namespace SqlSugar
     }
     public class Subqueryable<T1, T2, T3, T4, T5, T6, T7, T8> : Subqueryable<T1> where T1 : class, new()
     {
+        public Subqueryable<T1, T2, T3, T4, T5, T6,T7,T8> Having(Func<T1, T2, T3, T4, T5, T6, T7, T8, bool> expression)
+        {
+            return this;
+        }
         public new Subqueryable<T1, T2, T3, T4, T5, T6, T7,T8> AsWithAttr()
         {
             return this;
@@ -139,6 +147,10 @@ namespace SqlSugar
     }
     public class Subqueryable<T1, T2, T3, T4, T5, T6, T7> : Subqueryable<T1> where T1 : class, new()
     {
+        public Subqueryable<T1, T2, T3, T4, T5, T6,T7> Having(Func<T1, T2, T3, T4, T5, T6,T7, bool> expression)
+        {
+            return this;
+        }
         public new Subqueryable<T1, T2, T3, T4, T5, T6,T7> AsWithAttr()
         {
             return this;
@@ -198,6 +210,10 @@ namespace SqlSugar
     }
     public class Subqueryable<T1, T2, T3, T4, T5, T6> : Subqueryable<T1> where T1 : class, new()
     {
+        public Subqueryable<T1, T2, T3, T4, T5,T6> Having(Func<T1, T2, T3, T4, T5,T6, bool> expression)
+        {
+            return this;
+        }
         public string SelectStringJoin(Func<T1, T2, T3, T4, T5,T6, string> expression, string separator)
         {
             return default(string);
@@ -262,6 +278,10 @@ namespace SqlSugar
     }
     public class Subqueryable<T1, T2, T3, T4, T5> : Subqueryable<T1> where T1 : class, new()
     {
+        public Subqueryable<T1, T2, T3, T4,T5> Having(Func<T1, T2, T3, T4,T5, bool> expression)
+        {
+            return this;
+        }
         public string SelectStringJoin(Func<T1, T2, T3, T4,T5, string> expression, string separator)
         {
             return default(string);
@@ -322,6 +342,10 @@ namespace SqlSugar
     }
     public class Subqueryable<T1, T2, T3, T4> : Subqueryable<T1> where T1 : class, new()
     {
+        public Subqueryable<T1, T2, T3,T4> Having(Func<T1, T2, T3,T4, bool> expression)
+        {
+            return this;
+        }
         public new Subqueryable<T1, T2, T3,T4> AsWithAttr()
         {
             return this;
@@ -572,6 +596,10 @@ namespace SqlSugar
         {
             return this;
         }
+        public Subqueryable<T1, T2,T3> Having(Func<T1, T2,T3, bool> expression)
+        {
+            return this;
+        }
     }
     public class Subqueryable<T1, T2> : Subqueryable<T1> where T1 : class, new()
     {
@@ -693,6 +721,10 @@ namespace SqlSugar
             return default(TResult);
         }
         public new Subqueryable<T1,T2> Take(int takeNum)
+        {
+            return this;
+        }
+        public Subqueryable<T1,T2> Having(Func<T1,T2, bool> expression)
         {
             return this;
         }
