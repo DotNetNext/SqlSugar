@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>SqlSugarCore</id>
-    <version>5.1.4.201-preview12</version>
+    <version>5.1.4.201</version>
     <authors>sunkaixuan</authors>
     <owners>果糖大数据科技</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
@@ -22,7 +22,7 @@
         <dependency id="MySqlConnector" version="2.2.5" />
         <dependency id="Oracle.ManagedDataAccess.Core" version="23.8.0" />
         <dependency id="Npgsql" version="5.0.18" />
-	    <dependency id="SqlSugarCore.Dm" version="8.8.0" />
+	    <dependency id="SqlSugarCore.Dm" version="8.8.2" />
 	    <dependency id="SqlSugarCore.Kdbndp" version="9.3.7.821" />
 		<dependency id="Oscar.Data.SqlClient" version="4.0.4" />
 		<dependency id="System.Text.RegularExpressions" version="4.3.1" />
