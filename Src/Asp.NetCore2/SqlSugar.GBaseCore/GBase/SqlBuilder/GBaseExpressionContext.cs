@@ -74,10 +74,14 @@ namespace SqlSugar.GBase
         public override string GetRandom()
         {
             return " SYS_GUID() ";
-        } 
+        }
+        public override string GetForXmlPath()
+        {
+            return "  FOR XML PATH('')),1,len(N','),'')  ";
+        }
         public override string GetStringJoinSelector(string result, string separator)
         {
-            return $"wm_concat({result})";
+            return $"stuff((SELECT cast(N'{separator}' as nvarchar(max)) + cast({result} as nvarchar(max))";
         }
         public override string DateValue(MethodCallExpressionModel model)
         {

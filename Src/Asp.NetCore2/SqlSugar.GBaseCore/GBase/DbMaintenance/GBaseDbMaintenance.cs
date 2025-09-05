@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions; 
+using System.Text.RegularExpressions;
+//using System.Data.Odbc;
 namespace SqlSugar.GBase
 {
     public class GBaseDbMaintenance : DbMaintenanceProvider
@@ -101,7 +102,7 @@ where a.tabtype in ('V')  and not (a.tabname like 'sys%') AND a.tabname <>'dual'
         {
             get
             {
-                return "ALTER TABLE {0} ADD CONSTRAINT {1} PRIMARY KEY({2})";
+                return "ALTER TABLE {0} ADD CONSTRAINT PRIMARY KEY({2}) CONSTRAINT {1} ";
             }
         }
         protected override string AddColumnToTableSql

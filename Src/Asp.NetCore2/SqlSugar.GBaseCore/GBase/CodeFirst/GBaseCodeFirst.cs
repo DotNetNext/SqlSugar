@@ -9,7 +9,7 @@ namespace SqlSugar.GBase
         public virtual bool IsNoTran { get; set; } = true;
         public override void ExistLogic(EntityInfo entityInfo) 
         {
-            this.Context.Ado.ExecuteCommand("select '不支持修改表' from dual ");
+            this.Context.Ado.ExecuteCommand("select 'do not support' from dual ");
         }
 
         protected override DbColumnInfo EntityColumnToDbColumn(EntityInfo entityInfo, string tableName, EntityColumnInfo item)
