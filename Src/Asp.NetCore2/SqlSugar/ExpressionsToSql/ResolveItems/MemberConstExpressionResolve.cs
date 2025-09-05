@@ -38,18 +38,18 @@ namespace SqlSugar
             if (parameter.OppsiteExpression != null)
             {
                 var exp = ExpressionTool.RemoveConvert(parameter.OppsiteExpression);
-                value = GetMemberValue(value, exp,out bool isConvert);
+                value = GetMemberValue(value, exp,out SugarParameter outConvertParameter);
                 var valueFullName = value?.GetType()?.FullName;
                 if (valueFullName == "Microsoft.Extensions.Primitives.StringValues")
                 {
                     value = value.ToString();
                 } 
-                if (isConvert && isSetTempData == false&& exp is MemberExpression m)
-                {
-                    var p = new SugarParameter($"@{m.Member.Name}"+this.Context.ParameterIndex, value);
+                if (outConvertParameter!=null && isSetTempData == false&& exp is MemberExpression m)
+                { 
+                    outConvertParameter.ParameterName = $"@{m.Member.Name}" + this.Context.ParameterIndex; 
                     this.Context.ParameterIndex++;
-                    this.Context.Parameters.Add(p);
-                    AppendMember(parameter, isLeft, p.ParameterName);
+                    this.Context.Parameters.Add(outConvertParameter);
+                    AppendMember(parameter, isLeft, outConvertParameter.ParameterName);
                     return;
                 }
             }

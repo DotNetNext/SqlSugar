@@ -516,7 +516,7 @@ namespace SqlSugar
                     List<object> result = new List<object>();
                     foreach (var memItem in (value as IList))
                     {
-                        result.Add(GetMemberValue(memItem, args.Last(), out bool b));
+                        result.Add(GetMemberValue(memItem, args.Last(), out SugarParameter outConvertParameter));
                     }
                     value = result;
                 }
