@@ -1786,7 +1786,7 @@ namespace SqlSugar
                     foreach (var item in s.Arguments)
                     { 
                             var q = this.Context.Queryable<object>().QueryBuilder;
-                            var itemObj= q.GetExpressionValue(item, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple).GetResultString();
+                            var itemObj= q.GetExpressionValue(item, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.WhereMultiple).GetResultString();
                             if (q.Parameters.Any())
                             {
                                 var itemGroupBySql = UtilMethods.GetSqlString(DbType.SqlServer, itemObj, q.Parameters.ToArray());
