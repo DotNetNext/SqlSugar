@@ -28,8 +28,12 @@ namespace SqlSugar.MongoDb
 
                     foreach (var e in enumerable)
                     {  
-                        var realType = e.GetType();
-                        if (realType.IsClass())
+                        var realType = e?.GetType();
+                        if (realType == null)
+                        {
+                            list.Add(BsonValue.Create(null));
+                        }
+                        else if (realType.IsClass())
                         {
                             var bson = e.ToBson(realType); // 序列化为 byte[]
                             var doc = BsonSerializer.Deserialize<BsonDocument>(bson); // 反序列化为 BsonDocument
