@@ -37,6 +37,11 @@ namespace SqlSugar
             }
             return result;
         }
+        public override string Collate(MethodCallExpressionModel model)
+        {
+            var name = model.Args[0].MemberName;
+            return $" {name}   COLLATE BINARY   ";
+        }
         public override string JsonIndex(MethodCallExpressionModel model)
         {
             var parameter = model.Args[0];
