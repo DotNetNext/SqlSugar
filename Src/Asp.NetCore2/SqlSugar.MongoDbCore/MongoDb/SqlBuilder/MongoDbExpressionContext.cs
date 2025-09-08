@@ -701,36 +701,53 @@ namespace SqlSugar.MongoDb
             // 获取字段名
             BsonValue fieldName = new ExpressionVisitor(context).Visit(itemExp);
 
+            var isConstValue = ExpressionTool.GetParameters(arrayExp).Count == 0;
             // 获取数组值
-            var arrayObj = ExpressionTool.DynamicInvoke(arrayExp) as IEnumerable;
-            if (arrayObj == null)
-                return null;
-           var name=fieldName.ToString();
-            // 构建BsonArray
-            var bsonArray = new BsonArray();
-            foreach (var val in arrayObj)
+            IEnumerable arrayObj = null;
+            if (isConstValue)
             {
-                if (val == null)
-                    bsonArray.Add(BsonNull.Value);
-                else if (name == "_id") 
+                arrayObj = ExpressionTool.DynamicInvoke(arrayExp) as IEnumerable;
+                if (arrayObj == null)
+                    return null;
+                var name = fieldName.ToString();
+                // 构建BsonArray
+                var bsonArray = new BsonArray();
+                foreach (var val in arrayObj)
                 {
-                    var value = val?.ToString();
-                    if (UtilMethods.IsValidObjectId(value))
+                    if (val == null)
+                        bsonArray.Add(BsonNull.Value);
+                    else if (name == "_id")
                     {
-                        bsonArray.Add(UtilMethods.MyCreate(ObjectId.Parse(value)));
+                        var value = val?.ToString();
+                        if (UtilMethods.IsValidObjectId(value))
+                        {
+                            bsonArray.Add(UtilMethods.MyCreate(ObjectId.Parse(value)));
+                        }
+                        else
+                        {
+                            bsonArray.Add(UtilMethods.MyCreate(val));
+                        }
                     }
-                    else 
-                    {
+                    else
                         bsonArray.Add(UtilMethods.MyCreate(val));
-                    }
                 }
-                else
-                    bsonArray.Add(UtilMethods.MyCreate(val));
-            }
 
-            // 构建MongoDB的 $in 查询表达式
-            var inDoc = new BsonDocument(name, new BsonDocument("$in", bsonArray));
-            return inDoc.ToJson(UtilMethods.GetJsonWriterSettings());
+                // 构建MongoDB的 $in 查询表达式
+                var inDoc = new BsonDocument(name, new BsonDocument("$in", bsonArray));
+                return inDoc.ToJson(UtilMethods.GetJsonWriterSettings());
+            }
+            else
+            {
+                // 数组表达式不是常量，需生成MongoDB $in表达式，数组字段为arrayExp，判断itemExp是否在数组中
+                // 获取字段名
+                var name = fieldName.ToString();
+                // 获取数组字段名
+                BsonValue arrayField = new ExpressionVisitor(context).Visit(arrayExp);
+                // 构建MongoDB的 $in 查询表达式，格式为 { "$in": [ "$_id", "$$let_RoleIds" ] }
+                var inArray = new BsonArray {  name, arrayField };
+                var inDoc = new BsonDocument("$in", inArray);
+                return inDoc.ToJson(UtilMethods.GetJsonWriterSettings());
+            }
         }
 
         public override string ContainsArrayUseSqlParameters(MethodCallExpressionModel model)
