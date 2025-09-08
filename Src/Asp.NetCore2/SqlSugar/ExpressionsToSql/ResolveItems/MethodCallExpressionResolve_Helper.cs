@@ -458,6 +458,12 @@ namespace SqlSugar
                 isRemoveParamter = true;
                 isNegate = true;
             }
+            else if (name == "IIF"&&item is MemberExpression member&& member?.Expression is BinaryExpression&& ExpressionTool.GetParameters(member).Count>0) 
+            { 
+                parameter.CommonTempData = GetNewExpressionValue(member);
+                isRemoveParamter = true;
+                isNegate = true;
+            }
             else
             {
                 base.Start();
