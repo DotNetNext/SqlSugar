@@ -736,6 +736,16 @@ namespace SqlSugar.MongoDb
                 var inDoc = new BsonDocument(name, new BsonDocument("$in", bsonArray));
                 return inDoc.ToJson(UtilMethods.GetJsonWriterSettings());
             }
+            else if (ExpressionTool.GetParameters(itemExp).Count == 0)
+            {
+                // itemExp 是常量表达式，arrayExp 是字段表达式
+                var value =UtilMethods.MyCreate(ExpressionTool.DynamicInvoke(itemExp));
+                BsonValue arrayField = new ExpressionVisitor(context).Visit(arrayExp);
+ 
+                // 构建 MongoDB $in 查询表达式，判断 value 是否在 arrayField 字段数组中
+                var inDoc = new BsonDocument(arrayField.ToString(), new BsonDocument(  "$in",new BsonArray() { value } ));
+                return inDoc.ToJson(UtilMethods.GetJsonWriterSettings());
+            }
             else
             {
                 // 数组表达式不是常量，需生成MongoDB $in表达式，数组字段为arrayExp，判断itemExp是否在数组中
@@ -744,7 +754,7 @@ namespace SqlSugar.MongoDb
                 // 获取数组字段名
                 BsonValue arrayField = new ExpressionVisitor(context).Visit(arrayExp);
                 // 构建MongoDB的 $in 查询表达式，格式为 { "$in": [ "$_id", "$$let_RoleIds" ] }
-                var inArray = new BsonArray {  name, arrayField };
+                var inArray = new BsonArray { name, arrayField };
                 var inDoc = new BsonDocument("$in", inArray);
                 return inDoc.ToJson(UtilMethods.GetJsonWriterSettings());
             }

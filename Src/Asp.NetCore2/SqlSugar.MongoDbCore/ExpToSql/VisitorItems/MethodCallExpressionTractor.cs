@@ -260,7 +260,8 @@ namespace SqlSugar.MongoDb
                 name = "ToDate";
             if (name == "Contains" && methodCallExpression.Arguments.Count == 1
                 && methodCallExpression?.Object?.Type != null 
-                && typeof(IEnumerable).IsAssignableFrom(methodCallExpression.Object.Type))
+                && typeof(IEnumerable).IsAssignableFrom(methodCallExpression.Object.Type)
+                && methodCallExpression.Object.Type!=UtilConstants.StringType)
             {
                 name = "ContainsArray";
             }

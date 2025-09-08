@@ -308,7 +308,7 @@ namespace SqlSugar.MongoDb
 
                 // $unwind
                 BsonValue unwindDoc = null;
-                if (item.JoinType == JoinType.Left&&isEasyJoin)
+                if (item.JoinType == JoinType.Left)
                 {
                     unwindDoc = new BsonDocument("$unwind", new BsonDocument
                     {
