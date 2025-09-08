@@ -99,7 +99,7 @@ namespace MongoDbTest
                studentName = s.Name,
                schoolName = sc.Name
            }).ToList();
-           if (dt7.Count != 1 || dt7.Last().studentName != "李四" || dt7.Last().schoolName != "复旦大学") Cases.ThrowUnitError();
+           if (dt7.Count != 2 || dt7.Last().studentName != "李四" || dt7.Last().schoolName != "复旦大学") Cases.ThrowUnitError();
         }
         [SqlSugar.SugarTable("UnitStudentdu2s31")]
         public class Student : MongoDbBase
