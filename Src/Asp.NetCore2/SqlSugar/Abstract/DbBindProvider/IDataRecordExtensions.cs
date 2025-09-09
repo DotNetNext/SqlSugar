@@ -151,7 +151,7 @@ namespace SqlSugar
             }
             if (dr.GetDataTypeName(i) == "NUMBER") 
             {
-               return Convert.ToInt32(dr.GetDouble(i));
+               return Convert.ToInt32(dr.GetDecimal(i));
             }
             var result = dr.GetInt32(i);
             return result;
@@ -160,7 +160,7 @@ namespace SqlSugar
         { 
             if (dr.GetDataTypeName(i) == "NUMBER")
             {
-                return Convert.ToInt32(dr.GetDouble(i));
+                return Convert.ToInt32(dr.GetDecimal(i));
             } 
             var result = dr.GetInt32(i);
             return result;

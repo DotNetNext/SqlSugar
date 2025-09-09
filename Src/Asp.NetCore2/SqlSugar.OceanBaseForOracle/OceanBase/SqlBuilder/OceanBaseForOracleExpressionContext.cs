@@ -72,6 +72,16 @@ namespace SqlSugar.OceanBaseForOracle
                 }
             }
         }
+
+        public override string GetLimit()
+        {
+            int num = 1;
+            if (this.Case?.Num != 1)
+            {
+                num = this.Case.Num;
+            }
+            return (this.Case?.HasWhere == true ? "AND" : "WHERE") + " ROWNUM=" + num;
+        }
     }
     public partial class OceanBaseForOracleMethod : DefaultDbMethod, IDbMethods
     {
