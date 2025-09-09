@@ -8,6 +8,7 @@ namespace SqlSugar.TDSQLForPGODBC
         public TDSQLForPGODBCExpressionContext()
         {
             base.DbMehtods = new TDSQLForPGODBCMethod();
+            base.Case = new ExpressionContextCase();
         }
         public override string SqlTranslationLeft
         {
@@ -134,7 +135,7 @@ namespace SqlSugar.TDSQLForPGODBC
         public override string GetLimit()
         {
             int num = 1;
-            if (this.Case.Num != 1)
+            if (this.Case.Num > 1)
             {
                 num = this.Case.Num;
             }
