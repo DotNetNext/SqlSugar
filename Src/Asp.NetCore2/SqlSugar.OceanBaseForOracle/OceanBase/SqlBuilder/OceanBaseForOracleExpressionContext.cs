@@ -16,6 +16,7 @@ namespace SqlSugar.OceanBaseForOracle
         public OceanBaseForOracleExpressionContext()
         {
             base.DbMehtods = new OceanBaseForOracleMethod();
+            base.Case = new ExpressionContextCase();
         }
         public override string SqlParameterKeyWord
         {
@@ -76,7 +77,7 @@ namespace SqlSugar.OceanBaseForOracle
         public override string GetLimit()
         {
             int num = 1;
-            if (this.Case?.Num != 1)
+            if (this.Case?.Num > 1)
             {
                 num = this.Case.Num;
             }
