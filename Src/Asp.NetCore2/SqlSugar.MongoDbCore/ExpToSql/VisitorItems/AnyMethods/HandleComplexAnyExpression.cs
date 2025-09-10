@@ -17,6 +17,10 @@ namespace SqlSugar.MongoDb
             // 参数2: Lambda 表达式 s => s.Price == it.Age
 
             var memberExpression = methodCallExpression.Arguments[0] as MemberExpression;
+            if (ExpressionTool.GetParameters(memberExpression).Count == 0)//变量.Any(s => s.Price == it.Age)
+            {
+                return HandleNoParameterAnyExpression(methodCallExpression, memberExpression);
+            }
             var lambdaExpression = methodCallExpression.Arguments[1] as LambdaExpression;
             var firstParameterName = lambdaExpression.Parameters.FirstOrDefault().Name;
 
@@ -71,5 +75,20 @@ namespace SqlSugar.MongoDb
             return null;
         }
 
+        private BsonValue HandleNoParameterAnyExpression(MethodCallExpression methodCallExpression, MemberExpression memberExpression)
+        {
+            var anyExpression = methodCallExpression.Arguments[1] as LambdaExpression;
+            var parameterType = anyExpression.Parameters[0].Type;
+            var parameter = ExpressionTool.GetParameters(methodCallExpression).First(s => s.Name != anyExpression.Parameters[0].Name);
+
+            var method = typeof(MongoDbExpTools).GetMethod("GetFilterBson", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
+            var genericMethod = method.MakeGenericMethod(parameter.Type);
+
+            // 将 methodCallExpression 转换为 LambdaExpression，并添加 parameter
+            var newLambda = Expression.Lambda(methodCallExpression, parameter);
+
+            var obj= genericMethod.Invoke(null, new object[] { newLambda }) ;
+            return obj as BsonValue;
+        }
     }
 }
