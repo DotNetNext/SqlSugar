@@ -122,6 +122,7 @@ namespace SqlSugar
         IUpdateable<T,T2> InnerJoin<T2>(Expression<Func<T,T2,bool>> joinExpress);
         IUpdateable<T, T2> InnerJoin<T2>(Expression<Func<T, T2, bool>> joinExpress,string tableName);
         IUpdateable<T, T2> InnerJoin<T2>(ISugarQueryable<T> queryable,Expression<Func<T, T2, bool>> joinExpress);
+        IUpdateable<T, T2> InnerJoin<T2>(ISugarQueryable<T2> queryable, Expression<Func<T, T2, bool>> joinExpress);
         UpdateablePage<T> PageSize(int pageSize);
         IUpdateable<T> In(object[] ids);
         ParameterUpdateable<T> UseParameter();
