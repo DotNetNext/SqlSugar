@@ -239,7 +239,7 @@ WHEN NOT MATCHED THEN
                 : sql;
 
             // replace the @param with ?
-            foreach (var k in dictionary)
+            foreach (var k in dictionary.OrderByDescending(o => o.Key.Length))
             {
                 sql = sql.Replace("@" + k.Key, " ?");
             }
