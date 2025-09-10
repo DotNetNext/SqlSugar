@@ -519,6 +519,10 @@ WHERE tgrelid = '"+tableName+"'::regclass");
                         {
                             dataSize = "int8";
                         }
+                        else if (dataType?.ToLower() == "bigint")
+                        {
+                            dataSize = "int8";
+                        }
                         string length = dataType.Substring(dataType.Length - 1);
                         string identityDataType = "serial" + length;
                         addItem = addItem.Replace(dataType, identityDataType);
