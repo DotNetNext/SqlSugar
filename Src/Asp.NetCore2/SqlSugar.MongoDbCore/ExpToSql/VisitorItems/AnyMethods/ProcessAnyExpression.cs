@@ -77,46 +77,56 @@ namespace SqlSugar.MongoDb
             // fallback
             if (string.IsNullOrEmpty(nestedCollectionField))
             {
-                throw new Exception("Expressions are not supported."+ lambda.ToString());
+                throw new Exception("Expressions are not supported." + lambda.ToString());
             }
 
-            // 生成 $expr 查询，增加 $ifNull 逻辑
+            // 生成 $expr 查询，兼容 null 和空集合
             var expr = new BsonDocument
+            {
                 {
+                    "$expr", new BsonDocument
                     {
-                        "$expr", new BsonDocument
                         {
+                            "$gt", new BsonArray
                             {
-                                "$gt", new BsonArray
+                                new BsonDocument
                                 {
-                                    new BsonDocument
                                     {
+                                        "$size", new BsonDocument
                                         {
-                                            "$size", new BsonDocument
                                             {
+                                                "$filter", new BsonDocument
                                                 {
-                                                    "$filter", new BsonDocument
-                                                    {
-                                                        { "input", $"${collectionField2}" },
-                                                        { "as", paramName },
-                                                        { "cond", new BsonDocument
-                                                            {
-                                                                { "$gt", new BsonArray
+                                                    { "input", $"${collectionField2}" },
+                                                    { "as", paramName },
+                                                    { "cond", new BsonDocument
+                                                        {
+                                                            { "$and", new BsonArray
+                                                                {
+                                                                    new BsonDocument
                                                                     {
-                                                                        new BsonDocument
-                                                                        {
-                                                                            { "$size", new BsonDocument
+                                                                        { "$isArray", $"$${paramName}.{nestedCollectionField}" }
+                                                                    },
+                                                                    new BsonDocument
+                                                                    {
+                                                                        { "$gt", new BsonArray
+                                                                            {
+                                                                                new BsonDocument
                                                                                 {
-                                                                                    { "$ifNull", new BsonArray
+                                                                                    { "$size", new BsonDocument
                                                                                         {
-                                                                                            $"$${paramName}.{nestedCollectionField}",
-                                                                                            new BsonArray()
+                                                                                            { "$ifNull", new BsonArray
+                                                                                                {
+                                                                                                    $"$${paramName}.{nestedCollectionField}",
+                                                                                                    new BsonArray()
+                                                                                                }
+                                                                                            }
                                                                                         }
                                                                                     }
-                                                                                }
+                                                                                },
+                                                                                0
                                                                             }
-                                                                        },
-                                                                        0
+                                                                        }
                                                                     }
                                                                 }
                                                             }
@@ -125,13 +135,14 @@ namespace SqlSugar.MongoDb
                                                 }
                                             }
                                         }
-                                    },
-                                    0
-                                }
+                                    }
+                                },
+                                0
                             }
                         }
                     }
-                };
+                }
+            };
             return expr;
         }
     }
