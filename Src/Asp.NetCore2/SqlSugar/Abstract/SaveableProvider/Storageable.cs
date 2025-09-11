@@ -575,11 +575,23 @@ namespace SqlSugar
                         var p = ParameterConverter.Invoke(obj, new object[] { value, 100 }) as SugarParameter;
                         value = p.Value;
                     }
+                    var cSharpTypeName = UtilMethods.GetTypeName(value);
+                    if (item.SqlParameterDbType is System.Data.DbType dbtype)
+                    {
+                        if (dbtype is System.Data.DbType.AnsiStringFixedLength) 
+                        {
+                            cSharpTypeName = "char";
+                        }
+                        else if (dbtype is System.Data.DbType.StringFixedLength)
+                        {
+                            cSharpTypeName = "nchar";
+                        }
+                    }
                     condition.ConditionalList.Add(new KeyValuePair<WhereType, ConditionalModel>(i==0?WhereType.Or :WhereType.And, new ConditionalModel()
                     {
                         FieldName = item.DbColumnName,
                         ConditionalType = ConditionalType.Equal,
-                        CSharpTypeName=UtilMethods.GetTypeName(value),
+                        CSharpTypeName= cSharpTypeName,
                         FieldValue = value==null?"null":value.ObjToString(formatTime),
                         FieldValueConvertFunc=this.Context.CurrentConnectionConfig.DbType==DbType.PostgreSQL? 
                                                UtilMethods.GetTypeConvert(value):null
