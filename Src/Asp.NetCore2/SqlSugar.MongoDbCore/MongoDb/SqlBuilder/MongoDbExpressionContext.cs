@@ -339,7 +339,7 @@ namespace SqlSugar.MongoDb
             context.queryBuilder.LambdaExpressions.Index++;
             return name;
         } 
-        public override string Contains(MethodCallExpressionModel model)
+      public override string Contains(MethodCallExpressionModel model)
         {
             var item = model.Args.First().MemberValue;
             BsonValue right = new ExpressionVisitor(context).Visit(item as Expression);
@@ -349,12 +349,26 @@ namespace SqlSugar.MongoDb
             {
                 { "$regex", right },        // right 是普通字符串值，例如 "a"
                 { "$options", "i" }         // 忽略大小写
-            }; 
-            var match=new BsonDocument
+            };
+            if (left is BsonDocument bsonDoc)
+            {
+                // left 是复杂表达式（如聚合管道中的表达式），需要嵌套 $expr
+                var exprDoc = new BsonDocument("$expr", new BsonDocument("$regexMatch", new BsonDocument
+                {
+                    { "input", bsonDoc },
+                    { "regex", right },
+                    { "options", "i" }
+                }));
+                return exprDoc.ToJson(UtilMethods.GetJsonWriterSettings());
+            }
+            else
+            {
+                var match = new BsonDocument
                 {
                     { left.ToString(), regexDoc }
                 };
-            return match.ToJson(UtilMethods.GetJsonWriterSettings());
+                return match.ToJson(UtilMethods.GetJsonWriterSettings());
+            }
         }
         public override string StartsWith(MethodCallExpressionModel model)
         {
