@@ -141,11 +141,11 @@ namespace SqlSugar
             }
             else if (pkColumn.UnderType == UtilConstants.GuidType)
             {
-                SetValue(pkColumn, insertData, () => Guid.NewGuid());
+                SetValue(pkColumn, insertData, () => UtilMethods.NewGuid());
             }
             else if (pkColumn.UnderType == UtilConstants.StringType)
             {
-                SetValue(pkColumn, insertData, () => Guid.NewGuid().ToString());
+                SetValue(pkColumn, insertData, () => UtilMethods.NewGuid().ToString());
             }
             else
             {

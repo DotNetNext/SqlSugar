@@ -2015,5 +2015,13 @@ namespace SqlSugar
         {
             return context?.SugarContext?.Context?.CurrentConnectionConfig?.MoreSettings ?? new ConnMoreSettings();
         }
+
+        public static object NewGuid()
+        {
+            if (StaticConfig.CustomGuidByValueFunc == null)
+                return Guid.NewGuid();
+            else
+                return StaticConfig.CustomGuidByValueFunc(Guid.NewGuid());
+        }
     }
 }
