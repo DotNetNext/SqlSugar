@@ -259,23 +259,23 @@ WHEN NOT MATCHED THEN
                 SetupParameters(cmd, dt, schema);
 
                 bool insertOneByOne = false;
-                foreach (GbsParameter param in cmd.Parameters)
-                {
-                    if (param.GbsType == GbsType.NVarChar ||
-                      param.GbsType == GbsType.Guid ||
-                      param.GbsType == GbsType.Byte ||
-                      param.GbsType == GbsType.Blob ||
-                      param.GbsType == GbsType.Text ||
-                      param.GbsType == GbsType.Date ||
-                      param.GbsType == GbsType.Clob)
-                    {
-                        // some data type does not support insert cursor feature.
-                        // insert data row by row.
-                        insertOneByOne = true;
-                        break;
-                    }
-                }
-
+                //foreach (GbsParameter param in cmd.Parameters)
+                //{
+                //    if (param.GbsType == GbsType.NVarChar ||
+                //      param.GbsType == GbsType.Guid ||
+                //      param.GbsType == GbsType.Byte ||
+                //      param.GbsType == GbsType.Blob ||
+                //      param.GbsType == GbsType.Text ||
+                //      param.GbsType == GbsType.Date ||
+                //      param.GbsType == GbsType.Clob)
+                //    {
+                //        // some data type does not support insert cursor feature.
+                //        // insert data row by row.
+                //        insertOneByOne = true;
+                //        break;
+                //    }
+                //}
+                insertOneByOne = true;
                 if (insertOneByOne)
                 {
                     cmd.Prepare();
