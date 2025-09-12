@@ -555,11 +555,11 @@ WHERE table_name = '"+tableName+"'");
 
         private List<string> GetPrimaryKeyByTableNames(string tableName)
         {
-            string cacheKey = "DbMaintenanceProvider.GetPrimaryKeyByTableNames." + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower();
-            cacheKey = GetCacheKey(cacheKey);
-            return this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey,
-                    () =>
-                    {
+            //string cacheKey = "DbMaintenanceProvider.GetPrimaryKeyByTableNames." + this.SqlBuilder.GetNoTranslationColumnName(tableName).ToLower();
+            //cacheKey = GetCacheKey(cacheKey);
+            //return this.Context.Utilities.GetReflectionInoCacheInstance().GetOrCreate(cacheKey,
+            //        () =>
+            //        {
                         var oldIsEnableLog = this.Context.Ado.IsEnableLogEvent;
                         this.Context.Ado.IsEnableLogEvent = false;
                         string sql = @" select distinct cu.COLUMN_name KEYNAME  from user_cons_columns cu, user_constraints au 
@@ -568,7 +568,7 @@ WHERE table_name = '"+tableName+"'");
                         var pks = this.Context.Ado.SqlQuery<string>(sql);
                         this.Context.Ado.IsEnableLogEvent = oldIsEnableLog;
                         return pks;
-                    });
+                    //});
         }
 
         public string GetTableComment(string tableName)
