@@ -38,6 +38,9 @@ namespace MongoDbTest
             db.Deleteable<Student>().In(id2).ExecuteCommandAsync().GetAwaiter().GetResult();
             var count6 = db.Queryable<Student>().Count();
             if (count6 != (count5 - 1)) Cases.ThrowUnitError();
+            var id3=db.Queryable<Student>().First().Id;
+            var rows4=db.Deleteable<Student>().AS("UnitStudent1ssdds3z1").In(id3).ExecuteCommandAsync().GetAwaiter().GetResult();
+            if(rows4!=1) Cases.ThrowUnitError();
         }
         [SqlSugar.SugarTable("UnitStudent1ssdds3z1")]
         public class Student : MongoDbBase
