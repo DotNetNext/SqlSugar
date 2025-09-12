@@ -2018,10 +2018,18 @@ namespace SqlSugar
 
         public static object NewGuid()
         {
-            if (StaticConfig.CustomGuidByValueFunc == null)
-                return Guid.NewGuid();
-            else
+            if (StaticConfig.CustomGuidFunc != null)
+            {
+                return StaticConfig.CustomGuidFunc();
+            }
+            else if (StaticConfig.CustomGuidByValueFunc != null)
+            {
                 return StaticConfig.CustomGuidByValueFunc(Guid.NewGuid());
+            }
+            else
+            {
+                return Guid.NewGuid();
+            }
         }
     }
 }
