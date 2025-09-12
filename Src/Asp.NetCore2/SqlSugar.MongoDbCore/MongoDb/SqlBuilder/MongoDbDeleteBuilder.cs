@@ -9,6 +9,23 @@ namespace SqlSugar.MongoDb
 {
     public class MongoDbDeleteBuilder : DeleteBuilder
     {
+        public override string GetTableNameString
+        {
+            get
+            {
+                var result = Builder.GetTranslationTableName(EntityInfo.EntityName);
+                if (AsName.HasValue())
+                {
+                    result =AsName;
+                }
+                result += UtilConstants.Space;
+                if (this.TableWithString.HasValue())
+                {
+                    result += TableWithString + UtilConstants.Space;
+                }
+                return result;
+            }
+        }
         public override string ToSqlString()
         {
             var sb = new StringBuilder($"deleteMany {this.GetTableNameString} ");
