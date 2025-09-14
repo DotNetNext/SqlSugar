@@ -72,7 +72,7 @@ namespace SqlSugar.MongoDb
                     return anyElementTrueDoc;
                 }
             }
-            return null;
+            return ProcessAnyExpression(methodCallExpression);
         }
 
         private BsonValue HandleNoParameterAnyExpression(MethodCallExpression methodCallExpression, MemberExpression memberExpression)
