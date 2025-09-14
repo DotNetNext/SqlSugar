@@ -48,7 +48,13 @@ namespace SqlSugar
             {
                 string columnParametersString = string.Join(",", this.DbColumnInfoList.Select(it =>base.GetDbColumn(it, Builder.SqlParameterKeyWord + it.DbColumnName)));
                 ActionMinDate();
-                return string.Format(SqlTemplate, GetTableNameString, columnsString, columnParametersString);
+                var result= string.Format(SqlTemplate, GetTableNameString, columnsString, columnParametersString);
+                if (MySqlIgnore)
+                {
+                    result=result.Remove(0, "INSERT INTO `".Length);
+                    result=result.Insert(0, "INSERT OR IGNORE  INTO  `");
+                }
+                return result;
             }
             else
             {
