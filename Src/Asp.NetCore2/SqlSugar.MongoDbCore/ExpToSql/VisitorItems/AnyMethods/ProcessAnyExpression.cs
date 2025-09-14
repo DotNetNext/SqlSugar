@@ -62,8 +62,13 @@ namespace SqlSugar.MongoDb
 
             // 从表达式中动态获取嵌套集合字段名
             string nestedCollectionField = null;
+            var isAnyEmpty = true;
             if (lambda.Body is MethodCallExpression innerAnyCall)
             {
+                if (innerAnyCall.Arguments.Count > 1) 
+                {
+                    isAnyEmpty = false;
+                }
                 if (innerAnyCall.Arguments.Count > 0 && innerAnyCall.Arguments[0] is MemberExpression nestedMember)
                 {
                     nestedCollectionField = nestedMember.Member.Name;
@@ -81,7 +86,10 @@ namespace SqlSugar.MongoDb
             }
 
             // 生成 $expr 查询，兼容 null 和空集合
-            var expr = new BsonDocument
+            BsonDocument expr = null;
+            if (isAnyEmpty)
+            {
+                expr = new BsonDocument
             {
                 {
                     "$expr", new BsonDocument
@@ -143,6 +151,11 @@ namespace SqlSugar.MongoDb
                     }
                 }
             };
+            }
+            else 
+            {
+
+            }
             return expr;
         }
     }
