@@ -624,6 +624,10 @@ WHERE tgrelid = '" + tableName + "'::regclass");
                     {
                         identityDataType = $" serial8 ";
                     }
+                    if (IsSqlServerModel() && dataType == "bigint")
+                    {
+                        identityDataType = $" serial8 ";
+                    }
                     addItem = addItem.Replace(dataType, identityDataType);
                 }
                 columnArray.Add(addItem);
