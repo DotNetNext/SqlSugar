@@ -76,7 +76,9 @@ namespace MongoDb.Ado.data
                 case BsonType.Decimal128:
                     return val.AsDecimal;
                 case BsonType.ObjectId:
-                    return val.AsObjectId.ToString(); 
+                    return val.AsObjectId.ToString();
+                case BsonType.Binary:
+                    return val.AsBsonBinaryData.Bytes;
                 // 其他类型可以扩展
                 default:
                     return val;
