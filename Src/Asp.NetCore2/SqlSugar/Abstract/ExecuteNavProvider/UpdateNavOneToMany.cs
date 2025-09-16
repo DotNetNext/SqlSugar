@@ -177,14 +177,14 @@ namespace SqlSugar
                 {
                     if (this._Context?.CurrentConnectionConfig?.MoreSettings?.IsAutoDeleteQueryFilter == true)
                     {
-                        this._Context.Deleteable<object>()
+                        this._Context.Deleteable<TChild>()
                            .AS(thisEntity.DbTableName)
                            .EnableQueryFilter(thisEntity.Type)
                            .In(thisFkColumn.DbColumnName, ids.Distinct().ToList()).ExecuteCommand();
                     }
                     else
                     {
-                        this._Context.Deleteable<object>()
+                        this._Context.Deleteable<TChild>()
                             .AS(thisEntity.DbTableName) 
                             .In(thisFkColumn.DbColumnName, ids.Distinct().ToList()).ExecuteCommand();
                     }
