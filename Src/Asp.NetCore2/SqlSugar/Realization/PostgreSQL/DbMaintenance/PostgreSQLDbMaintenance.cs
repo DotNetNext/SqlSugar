@@ -250,6 +250,18 @@ namespace SqlSugar
         #endregion
 
         #region Methods
+        public override bool IsAnyTable(string tableName, bool isCache = true)
+        {
+            if (isCache == false)
+            {
+                var sql = $" SELECT 1 FROM pg_catalog.pg_tables \r\n    WHERE schemaname = '"+GetSchema()+ "' \r\n    AND Lower(tablename) = '" + tableName.ToLower()+"' ";
+                return this.Context.Ado.GetInt(sql) > 0;
+            }
+            else
+            {
+                return base.IsAnyTable(tableName, isCache);
+            }
+        }
         public override List<string> GetDbTypes()
         {
             var result = this.Context.Ado.SqlQuery<string>(@"SELECT DISTINCT data_type

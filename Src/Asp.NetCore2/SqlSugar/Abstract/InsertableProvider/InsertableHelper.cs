@@ -120,7 +120,7 @@ namespace SqlSugar
                     {
                         continue;
                     }
-                    if (item.SqlParameterDbType is Type) 
+                    if (item.SqlParameterDbType is Type)
                     {
                         continue;
                     }
@@ -132,9 +132,9 @@ namespace SqlSugar
                     if (item.IsArray)
                     {
                         paramters.IsArray = true;
-                        if (item.Value == null || item.Value == DBNull.Value) 
+                        if (item.Value == null || item.Value == DBNull.Value)
                         {
-                            ArrayNull(item,paramters);
+                            ArrayNull(item, paramters);
                         }
 
                     }
@@ -212,7 +212,7 @@ namespace SqlSugar
                             dataEvent(columnInfo.PropertyInfo.GetValue(data, null), new DataFilterModel() { OperationType = DataFilterType.InsertByObject, EntityValue = item, EntityColumnInfo = columnInfo });
                         }
                     }
-                    else if (columnInfo.PropertyInfo.Name == "Item" && columnInfo.IsIgnore) 
+                    else if (columnInfo.PropertyInfo.Name == "Item" && columnInfo.IsIgnore)
                     {
                         //class index
                     }
@@ -224,7 +224,7 @@ namespace SqlSugar
             }
         }
 
-        private void DataChangeAop(T [] items)
+        private void DataChangeAop(T[] items)
         {
 
             var dataEvent = this.Context.CurrentConnectionConfig.AopEvents?.DataChangesExecuted;
@@ -232,7 +232,7 @@ namespace SqlSugar
             {
                 foreach (var item in items)
                 {
-                    if (item != null&& !(item is Dictionary<string,object>))
+                    if (item != null && !(item is Dictionary<string, object>))
                     {
                         foreach (var columnInfo in this.EntityInfo.Columns)
                         {
@@ -260,7 +260,7 @@ namespace SqlSugar
 
         private void SetInsertItemByDic(int i, T item, List<DbColumnInfo> insertItem)
         {
-            foreach (var column in (item as Dictionary<string, object>).OrderBy(it=>it.Key))
+            foreach (var column in (item as Dictionary<string, object>).OrderBy(it => it.Key))
             {
                 var columnInfo = new DbColumnInfo()
                 {
@@ -270,9 +270,9 @@ namespace SqlSugar
                     PropertyType = column.Value == null ? DBNull.Value.GetType() : UtilMethods.GetUnderType(column.Value.GetType()),
                     TableId = i
                 };
-                if (columnInfo.PropertyType?.FullName == "System.Text.Json.JsonElement") 
+                if (columnInfo.PropertyType?.FullName == "System.Text.Json.JsonElement")
                 {
-                    columnInfo.Value = column.Value.ObjToString(); 
+                    columnInfo.Value = column.Value.ObjToString();
                 }
                 if (columnInfo.PropertyType.IsEnum())
                 {
@@ -301,23 +301,23 @@ namespace SqlSugar
                 var isMapping = IsMappingColumns;
                 var columnInfo = new DbColumnInfo()
                 {
-                    Value = GetValue(item,column),
+                    Value = GetValue(item, column),
                     DbColumnName = column.DbColumnName,
                     PropertyName = column.PropertyName,
                     PropertyType = UtilMethods.GetUnderType(column.PropertyInfo),
                     TableId = i,
                     InsertSql = column.InsertSql,
                     InsertServerTime = column.InsertServerTime,
-                    DataType=column.DataType,
-                    SqlParameterDbType= column.SqlParameterDbType ,
-                    IsIdentity= column.IsIdentity
-                     
+                    DataType = column.DataType,
+                    SqlParameterDbType = column.SqlParameterDbType,
+                    IsIdentity = column.IsIdentity
+
                 };
                 if (column.DbColumnName == null)
                 {
                     column.DbColumnName = column.PropertyName;
                 }
-                if (isMapping&&column.ForOwnsOnePropertyInfo==null)
+                if (isMapping && column.ForOwnsOnePropertyInfo == null)
                 {
                     columnInfo.DbColumnName = GetDbColumnName(column.PropertyName);
                 }
@@ -353,7 +353,7 @@ namespace SqlSugar
                 }
                 insertItem.Add(columnInfo);
             }
-            if (EntityInfo.Discrimator.HasValue()) 
+            if (EntityInfo.Discrimator.HasValue())
             {
                 Check.ExceptionEasy(!Regex.IsMatch(EntityInfo.Discrimator, @"^(?:\w+:\w+)(?:,\w+:\w+)*$"), "The format should be type:cat for this type, and if there are multiple, it can be FieldName:cat,FieldName2:dog ", "格式错误应该是type:cat这种格式，如果是多个可以FieldName:cat,FieldName2:dog，不要有空格");
                 var array = EntityInfo.Discrimator.Split(',');
@@ -367,9 +367,9 @@ namespace SqlSugar
         }
         private static object GetValue(T item, EntityColumnInfo column)
         {
-            if (column.ForOwnsOnePropertyInfo != null) 
+            if (column.ForOwnsOnePropertyInfo != null)
             {
-                var owsPropertyValue= column.ForOwnsOnePropertyInfo.GetValue(item, null);
+                var owsPropertyValue = column.ForOwnsOnePropertyInfo.GetValue(item, null);
                 return column.PropertyInfo.GetValue(owsPropertyValue, null);
             }
             if (StaticConfig.EnableAot)
@@ -422,8 +422,9 @@ namespace SqlSugar
             }
             else
             {
-                return this.EntityInfo.Columns.Where(it => {
-                    
+                return this.EntityInfo.Columns.Where(it =>
+                {
+
                     if (StaticConfig.Check_StringIdentity)
                     {
                         Check.ExceptionEasy(it.IsIdentity && it.UnderType == typeof(string), "Auto-incremented is not a string, how can I use a executable startup configuration: StaticConfig.Check_StringIdentity=false ", "自增不是能string,如何非要用可以程序启动配置：StaticConfig.Check_StringIdentity=false");
@@ -487,7 +488,13 @@ namespace SqlSugar
             }
             if (this.RemoveCacheFunc != null)
             {
-                this.RemoveCacheFunc();
+                foreach (var removeCacheFunc in this.RemoveCacheFunc)
+                {
+                    if (removeCacheFunc != null)
+                    {
+                        removeCacheFunc();
+                    }
+                }
             }
             DataChangeAop(this.InsertObjs);
         }
@@ -541,7 +548,7 @@ namespace SqlSugar
                         it.PropertyName.Equals(col.ColumnName, StringComparison.CurrentCultureIgnoreCase));
                     DiffLogColumnInfo addItem = new DiffLogColumnInfo();
                     addItem.Value = row[col.ColumnName];
-                    addItem.ColumnName = sugarColumn?.DbColumnName??col.ColumnName;
+                    addItem.ColumnName = sugarColumn?.DbColumnName ?? col.ColumnName;
                     addItem.IsPrimaryKey = sugarColumn?.IsPrimarykey ?? false;
                     addItem.ColumnDescription = sugarColumn?.ColumnDescription;
                     item.Columns.Add(addItem);
