@@ -2,16 +2,16 @@
 <package >
   <metadata>
     <id>SqlSugar.GBaseCore</id>
-    <version>5.1.4.201</version>
+    <version>5.1.4.208</version>
     <authors>sunkaixuan</authors>
     <owners>Landa</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
     <projectUrl>https://github.com/sunkaixuan/SqlSugar</projectUrl>
     <iconUrl>https://secure.gravatar.com/avatar/a82c03402497b2e58fd65038a3699b30</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description> SqlSugar操作 GBase 南大通用数据库 </description>
+    <description> SqlSugar操作 GBase 南大通用数据库。教程：https://www.donet5.com/Home/Doc?typeId=2440</description>
     <copyright>Copyright 2016</copyright>
-    <tags>Asp.net core orm</tags>
+    <tags>Asp.net core GBase orm 南大通用</tags>
     <dependencies>
       <group targetFramework=".NETStandard2.1">
 		  <dependency id="GBase.DataProvider" version="1.5.0" />
