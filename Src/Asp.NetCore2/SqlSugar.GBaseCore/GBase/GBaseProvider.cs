@@ -1,13 +1,11 @@
-﻿using System;
+﻿using GBS.Data.GBasedbt;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 using System.Text.RegularExpressions;
-using GBS.Data.GBasedbt;
+using System.Threading.Tasks;
 
 namespace SqlSugar.GBase
 {
@@ -404,6 +402,10 @@ namespace SqlSugar.GBase
                         else
                         {
                             gbsParam.Value = (param.Value == null) ? DBNull.Value : param.Value;
+                            if (gbsParam.Value is DateTime)
+                            {
+                                gbsParam.Value = ((DateTime)gbsParam.Value).ToString("yyyy-MM-dd HH:mm:ss.fff");
+                            }
                         }
 
                         sqlCommand.Parameters.Add(gbsParam);
