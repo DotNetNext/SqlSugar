@@ -19,14 +19,14 @@ namespace SqlSugar
             var count = list.Length;
             var size = GetPageSize(20, count);
             Context.Utilities.PageEach(list.ToList(), size, item =>
-            { 
+            {
                 Before(item.ToList());
                 List<SugarParameter> allParamter = new List<SugarParameter>();
-                var sql=GetSql(item);
-                result+=Context.Ado.ExecuteCommand(sql.Key, sql.Value);
+                var sql = GetSql(item);
+                result += Context.Ado.ExecuteCommand(sql.Key, sql.Value);
                 After(item.ToList());
             });
-            return result<0?count:result;
+            return result < 0 ? count : result;
         }
         public async Task<int> ExecuteCommandAsync()
         {
@@ -34,12 +34,12 @@ namespace SqlSugar
             var list = Updateable.UpdateObjs;
             var count = list.Length;
             var size = GetPageSize(20, count);
-            await Context.Utilities.PageEachAsync(list.ToList(), size,async item =>
+            await Context.Utilities.PageEachAsync(list.ToList(), size, async item =>
             {
                 Before(item.ToList());
                 List<SugarParameter> allParamter = new List<SugarParameter>();
                 var sql = GetSql(item);
-                result +=await Context.Ado.ExecuteCommandAsync(sql.Key, sql.Value);
+                result += await Context.Ado.ExecuteCommandAsync(sql.Key, sql.Value);
                 After(item.ToList());
             });
             return result < 0 ? count : result;
@@ -74,9 +74,12 @@ namespace SqlSugar
                     this.Context.CurrentConnectionConfig.AopEvents.OnDiffLogEvent(Updateable.diffModel);
                 this.Updateable.Ado.IsDisableMasterSlaveSeparation = isDisableMasterSlaveSeparation;
             }
-            if (this.Updateable.RemoveCacheFunc != null)
+            foreach (var removeCacheFunc in this.Updateable.RemoveCacheFunc)
             {
-                this.Updateable.RemoveCacheFunc();
+                if (removeCacheFunc != null)
+                {
+                    removeCacheFunc();
+                }
             }
         }
         private List<DiffLogTableInfo> GetDiffTable(List<T> updateObjects)
@@ -170,7 +173,7 @@ namespace SqlSugar
             return new KeyValuePair<string, SugarParameter[]>(sbAllSql.ToString(), parameters.ToArray());
         }
 
-        private  int GetPageSize(int pageSize, int count)
+        private int GetPageSize(int pageSize, int count)
         {
             if (pageSize * count > 2100)
             {
@@ -189,7 +192,7 @@ namespace SqlSugar
         }
         private string FormatValue(Type type, string name, object value, List<SugarParameter> allParamter)
         {
-            var keyword=this.Updateable.UpdateBuilder.Builder.SqlParameterKeyWord;
+            var keyword = this.Updateable.UpdateBuilder.Builder.SqlParameterKeyWord;
             var result = keyword + name + allParamter.Count;
             var addParameter = new SugarParameter(result, value, type);
             allParamter.Add(addParameter);

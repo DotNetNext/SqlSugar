@@ -13,11 +13,14 @@
     <Authors>果糖大数据科技（南通）有限公司</Authors>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="dll\**" />
-    <EmbeddedResource Remove="dll\**" />
-    <None Remove="dll\**" />
-  </ItemGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<DebugType>none</DebugType>
+	</PropertyGroup>
+	<ItemGroup>
+		<Compile Remove="dll\**" />
+		<EmbeddedResource Remove="dll\**" />
+		<None Remove="dll\**" />
+	</ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.0" />

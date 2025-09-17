@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SqlSugar 
+namespace SqlSugar
 {
-    public class ParameterInsertable<T> : IParameterInsertable<T> where T:class,new()
+    public class ParameterInsertable<T> : IParameterInsertable<T> where T : class, new()
     {
-        internal IInsertable<T>   Inserable { get; set; }
+        internal IInsertable<T> Inserable { get; set; }
         internal SqlSugarProvider Context { get; set; }
         public int ExecuteCommand()
         {
@@ -32,11 +32,11 @@ namespace SqlSugar
                 return await ValuesExecuteCommandAsync();
             }
         }
-        public int DefaultExecuteCommand() 
+        public int DefaultExecuteCommand()
         {
             int result = 0;
             var inserable = Inserable as InsertableProvider<T>;
-            var columns= inserable.InsertBuilder.DbColumnInfoList.GroupBy(it => it.DbColumnName).Select(it=>it.Key).Distinct().ToList();
+            var columns = inserable.InsertBuilder.DbColumnInfoList.GroupBy(it => it.DbColumnName).Select(it => it.Key).Distinct().ToList();
             var tableWithString = inserable.InsertBuilder.TableWithString;
             var removeCacheFunc = inserable.RemoveCacheFunc;
             var objects = inserable.InsertObjs;
@@ -55,11 +55,11 @@ namespace SqlSugar
                 }
                 if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle)
                     this.Context.AddQueue("end \r\n");
-                result +=this.Context.SaveQueues(false);
+                result += this.Context.SaveQueues(false);
             });
             //if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle)
             //    result=objects.Length;
-            if (result == -1) 
+            if (result == -1)
             {
                 result = objects.Length;
             }
@@ -73,7 +73,7 @@ namespace SqlSugar
             var tableWithString = inserable.InsertBuilder.TableWithString;
             var removeCacheFunc = inserable.RemoveCacheFunc;
             var objects = inserable.InsertObjs;
-            await this.Context.Utilities.PageEachAsync<T,int>(objects, 60,async pagelist =>
+            await this.Context.Utilities.PageEachAsync<T, int>(objects, 60, async pagelist =>
             {
                 if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle)
                     this.Context.AddQueue("begin");
@@ -86,11 +86,11 @@ namespace SqlSugar
                     (itemable as InsertableProvider<T>).RemoveCacheFunc = removeCacheFunc;
                     itemable.AddQueue();
                 }
-                if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle) 
+                if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle)
                     this.Context.AddQueue("end");
                 result += await this.Context.SaveQueuesAsync(false);
                 if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle)
-                    result= objects.Length;
+                    result = objects.Length;
                 return result;
             });
             return result;
@@ -120,8 +120,8 @@ namespace SqlSugar
             {
 
                 StringBuilder batchInsetrSql;
-                List<SugarParameter> allParamter=new List<SugarParameter>();
-                GetInsertValues(identityList,columns, tableWithString, removeCacheFunc, pagelist, out batchInsetrSql, allParamter);
+                List<SugarParameter> allParamter = new List<SugarParameter>();
+                GetInsertValues(identityList, columns, tableWithString, removeCacheFunc, pagelist, out batchInsetrSql, allParamter);
                 result += this.Context.Ado.ExecuteCommand(batchInsetrSql.ToString(), allParamter);
 
             });
@@ -129,7 +129,7 @@ namespace SqlSugar
 
         }
 
-        public  async Task<int> ValuesExecuteCommandAsync()
+        public async Task<int> ValuesExecuteCommandAsync()
         {
             int result = 0;
             var inserable = Inserable as InsertableProvider<T>;
@@ -142,13 +142,13 @@ namespace SqlSugar
             {
                 identityList = new string[] { };
             }
-            await this.Context.Utilities.PageEachAsync(objects, 100,async pagelist =>
+            await this.Context.Utilities.PageEachAsync(objects, 100, async pagelist =>
             {
 
                 StringBuilder batchInsetrSql;
                 List<SugarParameter> allParamter = new List<SugarParameter>();
                 GetInsertValues(identityList, columns, tableWithString, removeCacheFunc, pagelist, out batchInsetrSql, allParamter);
-                result +=await this.Context.Ado.ExecuteCommandAsync(batchInsetrSql.ToString(), allParamter);
+                result += await this.Context.Ado.ExecuteCommandAsync(batchInsetrSql.ToString(), allParamter);
 
             });
             return result;
@@ -172,7 +172,7 @@ namespace SqlSugar
 
             return pageSize;
         }
-        private void GetInsertValues(string[] identitys, List<string> columns, string tableWithString, Action removeCacheFunc, List<T> items, out StringBuilder batchInsetrSql, List<SugarParameter> allParamter)
+        private void GetInsertValues(string[] identitys, List<string> columns, string tableWithString, List<Action> removeCacheFunc, List<T> items, out StringBuilder batchInsetrSql, List<SugarParameter> allParamter)
         {
             var itemable = this.Context.Insertable(items);
             itemable.InsertBuilder.DbColumnInfoList = itemable.InsertBuilder.DbColumnInfoList.Where(it => columns.Contains(it.DbColumnName)).ToList();
@@ -189,7 +189,7 @@ namespace SqlSugar
             foreach (var gitem in groupList)
             {
                 batchInsetrSql.Append("(");
-                insertColumns = string.Join(",", gitem.Select(it => FormatValue(it.PropertyType,it.DbColumnName, it.Value, allParamter, itemable.InsertBuilder.Builder.SqlParameterKeyWord)));
+                insertColumns = string.Join(",", gitem.Select(it => FormatValue(it.PropertyType, it.DbColumnName, it.Value, allParamter, itemable.InsertBuilder.Builder.SqlParameterKeyWord)));
                 batchInsetrSql.Append(insertColumns);
                 if (groupList.Last() == gitem)
                 {
@@ -201,13 +201,13 @@ namespace SqlSugar
                 }
             }
         }
-        private string FormatValue(Type type,string name, object value, List<SugarParameter> allParamter, string keyword)
+        private string FormatValue(Type type, string name, object value, List<SugarParameter> allParamter, string keyword)
         {
             var result = keyword + name + allParamter.Count;
-            var addParameter = new SugarParameter(result, value,type);
+            var addParameter = new SugarParameter(result, value, type);
             allParamter.Add(addParameter);
             return result;
-        } 
+        }
         #endregion
     }
 }

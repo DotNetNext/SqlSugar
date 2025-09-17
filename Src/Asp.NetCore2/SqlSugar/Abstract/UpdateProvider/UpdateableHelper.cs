@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks; 
+using System.Threading.Tasks;
 
 namespace SqlSugar
 {
@@ -23,7 +23,7 @@ namespace SqlSugar
             var isNoTran = this.Context.Ado.IsNoTran();
             try
             {
-                if (isNoTran) 
+                if (isNoTran)
                 {
                     this.Context.Ado.BeginTran();
                 }
@@ -78,7 +78,7 @@ namespace SqlSugar
                     AppendTracking(item, newUpdateable);
                     if (newUpdateable.UpdateBuilder.DbColumnInfoList?.Any() == true)
                     {
-                        trakRows +=await newUpdateable.ExecuteCommandAsync();
+                        trakRows += await newUpdateable.ExecuteCommandAsync();
                     }
                     ++i;
                 }
@@ -91,7 +91,7 @@ namespace SqlSugar
             {
                 if (isNoTran)
                 {
-                   await  this.Context.Ado.RollbackTranAsync();
+                    await this.Context.Ado.RollbackTranAsync();
                 }
                 throw;
             }
@@ -99,7 +99,7 @@ namespace SqlSugar
         }
         private bool UpdateObjectNotWhere()
         {
-            if (this.Context?.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.SqlServer) 
+            if (this.Context?.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.SqlServer)
             {
                 return false;
             }
@@ -146,7 +146,7 @@ namespace SqlSugar
             CheckWhere();
             PreToSql();
             AutoRemoveDataCache();
-            Check.ExceptionEasy(this.UpdateParameterIsNull&&this.UpdateBuilder.DbColumnInfoList.Count() == this.UpdateObjs.Length && this.UpdateObjs.Length==this.UpdateBuilder.DbColumnInfoList.Count(it => it.IsPrimarykey), "The primary key cannot be updated", "主键不能更新，更新主键会对代码逻辑存在未知隐患,如果非要更新：建议你删除在插入或者新建一个没主键的类。");
+            Check.ExceptionEasy(this.UpdateParameterIsNull && this.UpdateBuilder.DbColumnInfoList.Count() == this.UpdateObjs.Length && this.UpdateObjs.Length == this.UpdateBuilder.DbColumnInfoList.Count(it => it.IsPrimarykey), "The primary key cannot be updated", "主键不能更新，更新主键会对代码逻辑存在未知隐患,如果非要更新：建议你删除在插入或者新建一个没主键的类。");
             Check.Exception(UpdateBuilder.WhereValues.IsNullOrEmpty() && GetPrimaryKeys().IsNullOrEmpty(), "You cannot have no primary key and no conditions");
             string sql = UpdateBuilder.ToSqlString();
             ValidateVersion();
@@ -157,7 +157,7 @@ namespace SqlSugar
 
         private void CheckWhere()
         {
-            if (UpdateParameterIsNull && UpdateBuilder.WhereValues.IsNullOrEmpty()) 
+            if (UpdateParameterIsNull && UpdateBuilder.WhereValues.IsNullOrEmpty())
             {
                 Check.ExceptionEasy("Update requires conditions", "更新需要条件 Where");
             }
@@ -194,15 +194,15 @@ namespace SqlSugar
             }
             //Check.Exception(UpdateObjs == null || UpdateObjs.Count() == 0, "UpdateObjs is null");
             int i = 0;
-            if (this.EntityInfo.Columns.Any(it => it.IsPrimarykey)) 
+            if (this.EntityInfo.Columns.Any(it => it.IsPrimarykey))
             {
-                this.UpdateBuilder.OldPrimaryKeys = this.EntityInfo.Columns.Where(it => it.IsPrimarykey).Select(it=>it.DbColumnName).ToList();
+                this.UpdateBuilder.OldPrimaryKeys = this.EntityInfo.Columns.Where(it => it.IsPrimarykey).Select(it => it.DbColumnName).ToList();
             }
             foreach (var item in UpdateObjs)
             {
                 List<DbColumnInfo> updateItem = new List<DbColumnInfo>();
                 var isDic = item is Dictionary<string, object>;
-                if (item is Dictionary<string, string>) 
+                if (item is Dictionary<string, string>)
                 {
                     Check.ExceptionEasy("To use Updateable dictionary, use string or object", "Updateable字典请使用string,object类型");
                 }
@@ -232,7 +232,7 @@ namespace SqlSugar
             if (IsTrakingData())
             {
                 var trackingData = this.Context.TempItems.FirstOrDefault(it => it.Key.StartsWith("Tracking_" + item.GetHashCode()));
-                if (trackingData.Key == null && trackingData.Value == null) 
+                if (trackingData.Key == null && trackingData.Value == null)
                 {
                     return;
                 }
@@ -247,9 +247,9 @@ namespace SqlSugar
                         this.UpdateColumns(diffColumns.ToArray());
                     }
                 }
-                else 
+                else
                 {
-                    this.UpdateObjs = new T [] { null };
+                    this.UpdateObjs = new T[] { null };
                     this.UpdateBuilder.DbColumnInfoList = new List<DbColumnInfo>();
                 }
             }
@@ -297,7 +297,7 @@ namespace SqlSugar
             }
         }
 
-        private void DataChangesAop(T [] items)
+        private void DataChangesAop(T[] items)
         {
             if (typeof(T).FullName.StartsWith("System.Collections.Generic.Dictionary`"))
             {
@@ -351,7 +351,7 @@ namespace SqlSugar
         }
         private void SetUpdateItemByDic(int i, T item, List<DbColumnInfo> updateItem)
         {
-            foreach (var column in (item as Dictionary<string, object>).OrderBy(it=>it.Key))
+            foreach (var column in (item as Dictionary<string, object>).OrderBy(it => it.Key))
             {
                 var columnInfo = new DbColumnInfo()
                 {
@@ -416,7 +416,7 @@ namespace SqlSugar
                 {
                     columnInfo.IsJson = true;
                     var insertBuilder = InstanceFactory.GetInsertBuilder(this.Context?.CurrentConnectionConfig);
-                    if (insertBuilder?.SerializeObjectFunc != null&& columnInfo.Value != null) 
+                    if (insertBuilder?.SerializeObjectFunc != null&& columnInfo.Value != null)
                     {
                         columnInfo.Value = insertBuilder?.SerializeObjectFunc(columnInfo.Value);
                     }
@@ -451,18 +451,18 @@ namespace SqlSugar
                 return column.PropertyInfo.GetValue(item, null);
             }
         }
-        private  string GetSetSql(string value, Expression<Func<T, T>> columns)
+        private string GetSetSql(string value, Expression<Func<T, T>> columns)
         {
             if (value.Contains("= \"SYSDATE\""))
             {
                 value = value.Replace("= \"SYSDATE\"", "= SYSDATE");
             }
-            var shortName=(columns as LambdaExpression).Parameters.First().Name;
-            var replaceKey= "," + this.SqlBuilder.GetTranslationColumnName(shortName)+".";
+            var shortName = (columns as LambdaExpression).Parameters.First().Name;
+            var replaceKey = "," + this.SqlBuilder.GetTranslationColumnName(shortName) + ".";
             var newKey = "," + this.SqlBuilder.GetTranslationColumnName(this.EntityInfo.DbTableName) + ".";
             if (replaceKey != newKey)
             {
-                value = value.Replace(replaceKey,",");
+                value = value.Replace(replaceKey, ",");
             }
             return value;
         }
@@ -473,7 +473,7 @@ namespace SqlSugar
             {
                 var columns = this.UpdateBuilder.UpdateColumns;
                 this.UpdateBuilder.DbColumnInfoList = this.UpdateBuilder.DbColumnInfoList.Where(it => GetPrimaryKeys().Select(
-                iit => iit.ToLower()).Contains(it.DbColumnName.ToLower()) 
+                iit => iit.ToLower()).Contains(it.DbColumnName.ToLower())
                 || columns.Contains(it.PropertyName, StringComparer.OrdinalIgnoreCase)
                 || columns.Contains(it.DbColumnName, StringComparer.OrdinalIgnoreCase)).ToList();
             }
@@ -514,7 +514,7 @@ namespace SqlSugar
                     if (item.SqlParameterDbType is Type)
                     {
                         continue;
-                    } 
+                    }
                     var parameter = new SugarParameter(this.SqlBuilder.SqlParameterKeyWord + item.DbColumnName, item.Value, item.PropertyType);
                     if (item.IsJson)
                     {
@@ -596,7 +596,7 @@ namespace SqlSugar
                 parameter.DbType = System.Data.DbType.Int16;
             }
         }
-        private void OptRollBack(int updateRows,T updateData, object oldValue, string name)
+        private void OptRollBack(int updateRows, T updateData, object oldValue, string name)
         {
             if (updateRows == 0)
             {
@@ -672,7 +672,7 @@ namespace SqlSugar
                 List<IConditionalModel> conModels = new List<IConditionalModel>();
                 foreach (var item in pks)
                 {
-                    conModels.Add(new ConditionalModel() {CSharpTypeName=item.PropertyType.Name, FieldName = item.DbColumnName, ConditionalType = ConditionalType.Equal, FieldValue = item.Value.ObjToString() });
+                    conModels.Add(new ConditionalModel() { CSharpTypeName = item.PropertyType.Name, FieldName = item.DbColumnName, ConditionalType = ConditionalType.Equal, FieldValue = item.Value.ObjToString() });
                 }
                 var dbInfo = this.Context.Queryable<T>().Where(conModels).First();
                 if (dbInfo != null)
@@ -724,18 +724,21 @@ namespace SqlSugar
                     this.Context.CurrentConnectionConfig.AopEvents.OnDiffLogEvent(diffModel);
                 this.Ado.IsDisableMasterSlaveSeparation = isDisableMasterSlaveSeparation;
             }
-            if (this.RemoveCacheFunc != null)
+            foreach (var removeCacheFunc in this.RemoveCacheFunc)
             {
-                this.RemoveCacheFunc();
+                if (removeCacheFunc != null)
+                {
+                    removeCacheFunc();
+                }
             }
 
             DataChangesAop(this.UpdateObjs);
         }
-        private string _ExecuteCommandWithOptLock(T updateData,ref object oldVerValue)
+        private string _ExecuteCommandWithOptLock(T updateData, ref object oldVerValue)
         {
             Check.ExceptionEasy(UpdateParameterIsNull == true, "Optimistic lock can only be an entity update method", "乐观锁只能是实体更新方式");
             var verColumn = this.EntityInfo.Columns.FirstOrDefault(it => it.IsEnableUpdateVersionValidation);
-            Check.ExceptionEasy(verColumn == null, $" {this.EntityInfo.EntityName } need  IsEnableUpdateVersionValidation=true ", $"实体{this.EntityInfo.EntityName}没有找到版本标识特性 IsEnableUpdateVersionValidation");
+            Check.ExceptionEasy(verColumn == null, $" {this.EntityInfo.EntityName} need  IsEnableUpdateVersionValidation=true ", $"实体{this.EntityInfo.EntityName}没有找到版本标识特性 IsEnableUpdateVersionValidation");
             Check.ExceptionEasy(UpdateObjs.Length > 1, $"Optimistic lock can only handle a single update ", $"乐观锁只能处理单条更新");
             Check.ExceptionEasy(!verColumn.UnderType.IsIn(UtilConstants.StringType, UtilConstants.LongType, UtilConstants.GuidType, UtilConstants.DateType), $"Optimistic locks can only be guid, long, and string types", $"乐观锁只能是Guid、Long和字符串类型");
             var oldValue = verColumn.PropertyInfo.GetValue(updateData);
@@ -744,9 +747,9 @@ namespace SqlSugar
             verColumn.PropertyInfo.SetValue(updateData, newValue);
             var data = this.UpdateBuilder.DbColumnInfoList.FirstOrDefault(it =>
             it.PropertyName.EqualCase(verColumn.PropertyName));
-            if (data == null) 
+            if (data == null)
             {
-                data = new DbColumnInfo() { DbColumnName= verColumn.DbColumnName,PropertyName=verColumn.PropertyName, Value=newValue };
+                data = new DbColumnInfo() { DbColumnName = verColumn.DbColumnName, PropertyName = verColumn.PropertyName, Value = newValue };
                 this.UpdateBuilder.DbColumnInfoList.Add(data);
             }
             data.Value = newValue;
@@ -763,7 +766,7 @@ namespace SqlSugar
         }
         private void Before(string sql)
         {
-            if (this.IsEnableDiffLogEvent&&!string.IsNullOrEmpty(sql))
+            if (this.IsEnableDiffLogEvent && !string.IsNullOrEmpty(sql))
             {
                 var isDisableMasterSlaveSeparation = this.Ado.IsDisableMasterSlaveSeparation;
                 this.Ado.IsDisableMasterSlaveSeparation = true;
@@ -836,7 +839,7 @@ namespace SqlSugar
                         }
                     }
                     whereSql = UtilMethods.RemoveBeforeFirstWhere(sql);
-                } 
+                }
                 dt = this.Context.Queryable<T>().AS(this.UpdateBuilder.TableName).Filter(null, true).Where(whereSql).AddParameters(parameters).ToDataTable();
             }
             else
@@ -849,7 +852,7 @@ namespace SqlSugar
                 {
                     dt = this.Context.Queryable<T>().Filter(null, true).WhereClassByWhereColumns(this.UpdateObjs.ToList(), this.WhereColumnList.ToArray()).ToDataTable();
                 }
-                else if (this.UpdateBuilder.TableName.HasValue()) 
+                else if (this.UpdateBuilder.TableName.HasValue())
                 {
                     dt = this.Context.Queryable<T>().AS(this.UpdateBuilder.TableName).Filter(null, true).WhereClassByPrimaryKey(this.UpdateObjs.ToList()).ToDataTable();
                 }
@@ -881,7 +884,7 @@ namespace SqlSugar
                         }
                         catch (Exception ex)
                         {
-                            Check.ExceptionEasy(col.ColumnName + " No corresponding entity attribute found in difference log ."+ex.Message, col.ColumnName + "在差异日志中可能没有找到相应的实体属性,详细:"+ex.Message);
+                            Check.ExceptionEasy(col.ColumnName + " No corresponding entity attribute found in difference log ." + ex.Message, col.ColumnName + "在差异日志中可能没有找到相应的实体属性,详细:" + ex.Message);
                         }
                     }
                     result.Add(item);
@@ -892,7 +895,7 @@ namespace SqlSugar
 
         private static bool IsExists(string sql)
         {
-            return UtilMethods.CountSubstringOccurrences(sql,"WHERE")>1;
+            return UtilMethods.CountSubstringOccurrences(sql, "WHERE") > 1;
         }
         protected bool IsCorrectErrorSqlParameterName()
         {
@@ -909,7 +912,7 @@ namespace SqlSugar
         }
         protected void ThrowUpdateByExpressionByMesage(string message)
         {
-            Check.Exception(UpdateParameterIsNull == true, ErrorMessage.GetThrowMessage(" no support "+ message, "根据表达式更新 db.Updateable<T>()禁止使用 " + message+"。 更新分为2种方式 1.根据表达式更新 2.根据实体或者集合更新 ， 具体用法请查看文档 "));
+            Check.Exception(UpdateParameterIsNull == true, ErrorMessage.GetThrowMessage(" no support " + message, "根据表达式更新 db.Updateable<T>()禁止使用 " + message + "。 更新分为2种方式 1.根据表达式更新 2.根据实体或者集合更新 ， 具体用法请查看文档 "));
         }
         private void ThrowUpdateByObjectByMesage(string message)
         {

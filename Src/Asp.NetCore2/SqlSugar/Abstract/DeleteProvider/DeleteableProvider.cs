@@ -22,7 +22,7 @@ namespace SqlSugar
         public bool IsEnableDiffLogEvent { get; set; }
         public DiffLogModel diffModel { get; set; }
         public List<string> tempPrimaryKeys { get; set; }
-        internal Action RemoveCacheFunc { get; set; }
+        internal List<Action> RemoveCacheFunc { get; set; } = new List<Action>();
         public List<T> DeleteObjects { get; set; }
         public EntityInfo EntityInfo
         {
@@ -49,9 +49,9 @@ namespace SqlSugar
         {
             return ExecuteCommand() > 0;
         }
-        public Task<int> ExecuteCommandAsync(CancellationToken token) 
+        public Task<int> ExecuteCommandAsync(CancellationToken token)
         {
-            this.Context.Ado.CancellationToken= token;
+            this.Context.Ado.CancellationToken = token;
             return ExecuteCommandAsync();
         }
         public async Task<int> ExecuteCommandAsync()
@@ -132,21 +132,21 @@ namespace SqlSugar
                     isNvarchar = columnInfo.SqlParameterDbType is System.Data.DbType dbtype && dbtype == System.Data.DbType.String;
                     var value = columnInfo.PropertyInfo.GetValue(deleteObj, null);
                     value = UtilMethods.GetConvertValue(value);
-                    if (this.Context.CurrentConnectionConfig?.MoreSettings?.TableEnumIsString!=true&&
-                        columnInfo.SqlParameterDbType==null&& 
-                        columnInfo.PropertyInfo.PropertyType.IsEnum()) 
+                    if (this.Context.CurrentConnectionConfig?.MoreSettings?.TableEnumIsString != true &&
+                        columnInfo.SqlParameterDbType == null &&
+                        columnInfo.PropertyInfo.PropertyType.IsEnum())
                     {
                         value = Convert.ToInt64(value);
                     }
                     primaryKeyValues.Add(value);
                 }
-                if (this.Context.CurrentConnectionConfig.DbType==DbType.Oracle &&primaryKeyValues.Count >= 1000) 
+                if (this.Context.CurrentConnectionConfig.DbType == DbType.Oracle && primaryKeyValues.Count >= 1000)
                 {
                     List<string> inItems = new List<string>();
                     this.Context.Utilities.PageEach(primaryKeyValues, 999, pageItems =>
                     {
                         var inValueString = pageItems.ToArray().ToJoinSqlInVals();
-                        var whereItem= string.Format(DeleteBuilder.WhereInTemplate, SqlBuilder.GetTranslationColumnName(primaryFields.Single()), inValueString);
+                        var whereItem = string.Format(DeleteBuilder.WhereInTemplate, SqlBuilder.GetTranslationColumnName(primaryFields.Single()), inValueString);
                         inItems.Add(whereItem);
                     });
                     Where($"({string.Join(" OR ", inItems)})");
@@ -195,31 +195,31 @@ namespace SqlSugar
                         if (this.Context.CurrentConnectionConfig?.MoreSettings?.TableEnumIsString != true &&
                         columnInfo.SqlParameterDbType == null &&
                         columnInfo.PropertyInfo.PropertyType.IsEnum())
-                         {
+                        {
                             entityValue = Convert.ToInt64(entityValue);
-                         }
+                        }
                         var tempequals = DeleteBuilder.WhereInEqualTemplate;
                         if (this.Context.CurrentConnectionConfig.MoreSettings != null && this.Context.CurrentConnectionConfig.MoreSettings.DisableNvarchar == true)
                         {
                             tempequals = $"{SqlBuilder.SqlTranslationLeft}{{0}}{SqlBuilder.SqlTranslationRight}='{{1}}' ";
                         }
-                        if (SqlBuilder.SqlParameterKeyWord==":")
+                        if (SqlBuilder.SqlParameterKeyWord == ":")
                         {
-                            var isAutoToUpper =this.Context.CurrentConnectionConfig?.MoreSettings?.IsAutoToUpper??true;
+                            var isAutoToUpper = this.Context.CurrentConnectionConfig?.MoreSettings?.IsAutoToUpper ?? true;
                             if (entityValue != null && UtilMethods.GetUnderType(entityValue.GetType()) == UtilConstants.DateType)
                             {
                                 andString.AppendFormat("\"{0}\"={1} ", primaryField.ToUpper(isAutoToUpper), "to_date('" + entityValue.ObjToDate().ToString("yyyy-MM-dd HH:mm:ss") + "', 'YYYY-MM-DD HH24:MI:SS') ");
                             }
                             else
                             {
-                                andString.AppendFormat(tempequals.Replace("N","")+" ", primaryField.ToUpper(isAutoToUpper), entityValue);
+                                andString.AppendFormat(tempequals.Replace("N", "") + " ", primaryField.ToUpper(isAutoToUpper), entityValue);
                             }
                         }
                         else if (this.Context.CurrentConnectionConfig.DbType == DbType.PostgreSQL && (this.Context.CurrentConnectionConfig.MoreSettings == null || this.Context.CurrentConnectionConfig.MoreSettings?.PgSqlIsAutoToLower == true))
                         {
                             andString.AppendFormat("\"{0}\"={1} ", primaryField.ToLower(), new PostgreSQLExpressionContext().GetValue(entityValue));
                         }
-                        else if ( entityValue != null &&UtilMethods.IsNumber( UtilMethods.GetUnderType(entityValue.GetType()).Name))
+                        else if (entityValue != null && UtilMethods.IsNumber(UtilMethods.GetUnderType(entityValue.GetType()).Name))
                         {
                             andString.AppendFormat("{0}={1} ", this.SqlBuilder.GetTranslationColumnName(primaryField), $"{entityValue}");
                         }
@@ -243,7 +243,7 @@ namespace SqlSugar
                             {
                                 tempequals = tempequals.Replace("=N'", "='");
                             }
-                            else 
+                            else
                             {
                                 tempequals = SqlBuilder.RemoveN(tempequals);
                             }
@@ -275,9 +275,10 @@ namespace SqlSugar
         {
             var expResult = DeleteBuilder.GetExpressionValue(expression, ResolveExpressType.WhereSingle);
             var whereString = expResult.GetResultString();
-            if (expression.ToString().Contains("Subqueryable()")) {
+            if (expression.ToString().Contains("Subqueryable()"))
+            {
                 var entityTableName = this.EntityInfo.DbTableName;
-                if (this.DeleteBuilder.AsName.HasValue()) 
+                if (this.DeleteBuilder.AsName.HasValue())
                 {
                     entityTableName = this.DeleteBuilder.AsName;
                 }
@@ -297,7 +298,7 @@ namespace SqlSugar
                 }
                 whereString = whereString.Replace(expression.Parameters.First().Name + ".", this.SqlBuilder.GetTranslationTableName(entityTableName2) + ".");
                 whereString = whereString.Replace(this.SqlBuilder.GetTranslationColumnName(expression.Parameters.First().Name) + ".", this.SqlBuilder.GetTranslationTableName(entityTableName2) + ".");
-               
+
             }
             DeleteBuilder.WhereInfos.Add(whereString);
             return this;
@@ -354,7 +355,7 @@ namespace SqlSugar
             DeleteBuilder.Parameters.AddRange(parameters);
             return this;
         }
-        public IDeleteable<T> Where(List<IConditionalModel> conditionalModels, bool isWrap) 
+        public IDeleteable<T> Where(List<IConditionalModel> conditionalModels, bool isWrap)
         {
             if (conditionalModels.Count == 0)
             {
@@ -366,7 +367,7 @@ namespace SqlSugar
             {
                 result.Where($"({sql.Key})", sql.Value);
             }
-            else 
+            else
             {
                 result.Where(sql.Key, sql.Value);
             }
@@ -385,11 +386,11 @@ namespace SqlSugar
         }
         public IDeleteable<T> WhereColumns(T data, Expression<Func<T, object>> columns)
         {
-            return WhereColumns(new List<T>() { data },columns);
+            return WhereColumns(new List<T>() { data }, columns);
         }
-        public IDeleteable<T> WhereColumns(List<T> list,Expression<Func<T, object>> columns)
+        public IDeleteable<T> WhereColumns(List<T> list, Expression<Func<T, object>> columns)
         {
-            if (columns!=null)
+            if (columns != null)
             {
                 tempPrimaryKeys = DeleteBuilder.GetExpressionValue(columns, ResolveExpressType.ArraySingle).GetResultArray().Select(it => this.SqlBuilder.GetNoTranslationColumnName(it)).ToList();
             }
@@ -398,10 +399,10 @@ namespace SqlSugar
             //    tempPrimaryKeys = DeleteBuilder.GetExpressionValue(columns, ResolveExpressType.ArraySingle).GetResultArray().Select(it => this.SqlBuilder.GetNoTranslationColumnName(it)).ToList();
             //}
             this.Where(list);
-   
+
             return this;
         }
-        public IDeleteable<T> WhereColumns(List<Dictionary<string, object>> list) 
+        public IDeleteable<T> WhereColumns(List<Dictionary<string, object>> list)
         {
             List<IConditionalModel> conditionalModels = new List<IConditionalModel>();
             foreach (var model in list)
@@ -412,10 +413,10 @@ namespace SqlSugar
                 {
                     clist.Add(new KeyValuePair<WhereType, ConditionalModel>(i == 0 ? WhereType.Or : WhereType.And, new ConditionalModel()
                     {
-                        FieldName =item,
+                        FieldName = item,
                         ConditionalType = ConditionalType.Equal,
                         FieldValue = model[item].ObjToStringNoTrim(),
-                        CSharpTypeName = model[item]==null?null : model[item].GetType().Name
+                        CSharpTypeName = model[item] == null ? null : model[item].GetType().Name
                     }));
                     i++;
                 }
@@ -428,18 +429,18 @@ namespace SqlSugar
         }
         public IDeleteable<T> RemoveDataCache()
         {
-            this.RemoveCacheFunc = () =>
+            this.RemoveCacheFunc.Add(() =>
             {
                 var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService;
                 CacheSchemeMain.RemoveCache(cacheService, this.Context.EntityMaintenance.GetTableName<T>());
-            };
+            });
             return this;
         }
         public IDeleteable<T> EnableQueryFilter()
         {
             var queryable = this.Context.Queryable<T>();
-            queryable.QueryBuilder.LambdaExpressions.ParameterIndex= 1000;
-            var sqlable= queryable.ToSql();
+            queryable.QueryBuilder.LambdaExpressions.ParameterIndex = 1000;
+            var sqlable = queryable.ToSql();
             var whereInfos = Regex.Split(sqlable.Key, " Where ", RegexOptions.IgnoreCase);
             if (whereInfos.Length > 1)
             {
@@ -459,7 +460,7 @@ namespace SqlSugar
             }
             return this;
         }
-        public SplitTableDeleteProvider<T> SplitTable(Func<List<SplitTableInfo>, IEnumerable<SplitTableInfo>> getTableNamesFunc) 
+        public SplitTableDeleteProvider<T> SplitTable(Func<List<SplitTableInfo>, IEnumerable<SplitTableInfo>> getTableNamesFunc)
         {
             UtilMethods.StartCustomSplitTable(this.Context, typeof(T));
             this.Context.MappingTables.Add(this.EntityInfo.EntityName, this.EntityInfo.DbTableName);
@@ -488,7 +489,7 @@ namespace SqlSugar
             result.deleteobj = this;
             return result;
         }
-        public LogicDeleteProvider<T> IsLogic() 
+        public LogicDeleteProvider<T> IsLogic()
         {
             LogicDeleteProvider<T> result = new LogicDeleteProvider<T>();
             result.DeleteBuilder = this.DeleteBuilder;
@@ -497,11 +498,11 @@ namespace SqlSugar
         }
         public IDeleteable<T> RemoveDataCache(string likeString)
         {
-            this.RemoveCacheFunc = () =>
+            this.RemoveCacheFunc.Add(() =>
             {
                 var cacheService = this.Context.CurrentConnectionConfig.ConfigureExternalServices.DataInfoCacheService;
                 CacheSchemeMain.RemoveCacheByLike(cacheService, likeString);
-            };
+            });
             return this;
         }
         public IDeleteable<T> In<PkType>(List<PkType> primaryKeyValues)
@@ -584,12 +585,12 @@ namespace SqlSugar
             return this;
         }
 
-        public IDeleteable<T> In<PkType>(Expression<Func<T, object>> inField, ISugarQueryable<PkType> childQueryExpression) 
+        public IDeleteable<T> In<PkType>(Expression<Func<T, object>> inField, ISugarQueryable<PkType> childQueryExpression)
         {
             var lamResult = DeleteBuilder.GetExpressionValue(inField, ResolveExpressType.FieldSingle);
             var fieldName = lamResult.GetResultString();
-            var sql= childQueryExpression.ToSql();
-            Where($" {fieldName} IN ( SELECT {fieldName} FROM ( {sql.Key} ) SUBDEL) ",sql.Value);
+            var sql = childQueryExpression.ToSql();
+            Where($" {fieldName} IN ( SELECT {fieldName} FROM ( {sql.Key} ) SUBDEL) ", sql.Value);
             return this;
         }
         public IDeleteable<T> In<PkType>(string inField, List<PkType> primaryKeyValues)
@@ -600,16 +601,16 @@ namespace SqlSugar
             return this;
         }
 
-        public DeleteablePage<T> PageSize(int pageSize) 
+        public DeleteablePage<T> PageSize(int pageSize)
         {
             Check.ExceptionEasy(this.DeleteObjects == null, "PageSize can only be deleted as a List<Class> entity collection", "Deleteable.PageSize()只能是List<Class>实体集合方式删除,并且集合不能为null");
             DeleteablePage<T> result = new DeleteablePage<T>();
             result.DataList = this.DeleteObjects.ToArray();
             result.Context = this.Context;
             result.DiffModel = this.diffModel;
-            result.IsEnableDiffLogEvent= this.IsEnableDiffLogEvent;
+            result.IsEnableDiffLogEvent = this.IsEnableDiffLogEvent;
             result.TableName = this.DeleteBuilder.AsName;
-            result.PageSize =  pageSize;
+            result.PageSize = pageSize;
             return result;
         }
         public IDeleteable<T> With(string lockString)
@@ -715,8 +716,15 @@ namespace SqlSugar
                     this.Context.CurrentConnectionConfig.AopEvents.OnDiffLogEvent(diffModel);
                 this.Context.Ado.IsDisableMasterSlaveSeparation = isDisableMasterSlaveSeparation;
             }
-            if (this.RemoveCacheFunc != null) {
-                this.RemoveCacheFunc();
+            if (this.RemoveCacheFunc != null)
+            {
+                foreach (var removeCacheFunc in this.RemoveCacheFunc)
+                {
+                    if (removeCacheFunc != null)
+                    {
+                        removeCacheFunc();
+                    }
+                }
             }
             DataChangesAop(this.DeleteObjects);
         }
@@ -778,21 +786,21 @@ namespace SqlSugar
         protected virtual void DataAop(object deleteObj)
         {
             var dataEvent = this.Context.CurrentConnectionConfig.AopEvents?.DataExecuting;
-            if (deleteObj != null&& dataEvent!=null)
+            if (deleteObj != null && dataEvent != null)
             {
                 var model = new DataFilterModel()
                 {
                     OperationType = DataFilterType.DeleteByObject,
                     EntityValue = deleteObj,
-                    EntityColumnInfo=this.EntityInfo.Columns.FirstOrDefault() 
+                    EntityColumnInfo = this.EntityInfo.Columns.FirstOrDefault()
                 };
-                dataEvent(deleteObj,model);
+                dataEvent(deleteObj, model);
             }
         }
         protected virtual void DataChangesAop(List<T> deleteObjs)
         {
             var dataEvent = this.Context.CurrentConnectionConfig.AopEvents?.DataChangesExecuted;
-            if(dataEvent != null&&deleteObjs != null)
+            if (dataEvent != null && deleteObjs != null)
             {
                 foreach (var deleteObj in deleteObjs)
                 {
