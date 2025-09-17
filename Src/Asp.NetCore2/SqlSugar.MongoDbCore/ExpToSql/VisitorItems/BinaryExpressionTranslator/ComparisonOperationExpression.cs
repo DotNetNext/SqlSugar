@@ -41,6 +41,14 @@ namespace SqlSugar.MongoDb
         {
             string leftValue = isLeftMember ? field.ToString() : value.ToString();
             BsonValue rightValue = isLeftMember ?   value: field;
+            if (isLeftMember == false)
+            {
+                // 如果是大于、小于、大于等于、小于等于，op的值要取反
+                if (op == "$gt") op = "$lt";
+                else if (op == "$lt") op = "$gt";
+                else if (op == "$gte") op = "$lte";
+                else if (op == "$lte") op = "$gte";
+            }
             var expression = isLeftMember ? MongoDbExpTools.RemoveConvert(expr.Left) as MemberExpression : MongoDbExpTools.RemoveConvert(expr.Right) as MemberExpression;
             EntityColumnInfo CurrentColumnInfo = null;
             Type iSugarDataConverterType=UtilConstants.StringType;
