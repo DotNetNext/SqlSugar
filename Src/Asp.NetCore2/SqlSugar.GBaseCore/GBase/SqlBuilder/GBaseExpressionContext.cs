@@ -77,11 +77,19 @@ namespace SqlSugar.GBase
         }
         public override string GetForXmlPath()
         {
-            return "  FOR XML PATH('')),1,len(N','),'')  ";
+            return string.Empty;
         }
         public override string GetStringJoinSelector(string result, string separator)
         {
-            return $"stuff((SELECT cast(N'{separator}' as nvarchar(max)) + cast({result} as nvarchar(max))";
+            if (separator.Trim() == ",")
+            {
+                return $" WM_CONCAT({result})";
+            }
+            else
+            {
+                string guid_separator = UtilConstants.ReplaceKey.Replace("{", "").Replace("}", "");
+                return $" REPLACE(REPLACE(WM_CONCAT('{guid_separator}' || {result}), ',{guid_separator}', '{separator}'), '{guid_separator}', '')";
+            }
         }
         public override string DateValue(MethodCallExpressionModel model)
         {
@@ -183,7 +191,7 @@ namespace SqlSugar.GBase
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
             var parameter3 = model.Args[2];
-            return string.Format(" DATEDIFF('{0}',{1},{2}) ", parameter.MemberValue?.ToString().ToSqlFilter(), parameter2.MemberName, parameter3.MemberName);
+            return string.Format(" timestampdiff('{0}',{1},{2}) ", parameter.MemberValue?.ToString().ToSqlFilter(), parameter2.MemberName, parameter3.MemberName);
         }
         public override string ToString(MethodCallExpressionModel model)
         {
