@@ -964,7 +964,8 @@ namespace SqlSugar
                                     }
                                 }
                             }
-                            sql = sql.Replace(replace, newValue); 
+                            sql = sql.Replace(replace, newValue);
+                            sql = sql.Replace(" = null ", " is null ");
                         }
                     }
                     sb.Append(sql);
