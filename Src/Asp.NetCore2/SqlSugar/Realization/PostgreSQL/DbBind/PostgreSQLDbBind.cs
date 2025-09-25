@@ -76,6 +76,10 @@ namespace SqlSugar
                 {
                     return CSharpDataType.@string.ToString();
                 }
+                else if (dbTypeName.Contains(".")&& dbTypeName.Split('.').Count()==2)
+                {
+                    return GetPropertyTypeName(dbTypeName.Split('.').Last());
+                }
                 Check.ThrowNotSupportedException(string.Format(" \"{0}\" Type NotSupported, DbBindProvider.GetPropertyTypeName error.", dbTypeName));
                 return null;
             }
