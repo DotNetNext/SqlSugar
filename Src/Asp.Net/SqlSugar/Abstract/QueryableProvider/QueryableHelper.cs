@@ -686,6 +686,16 @@ namespace SqlSugar
                         }  
                     }
                 }
+                else if (navColumn != null && navColumn.Navigat.NavigatType == NavigateType.ManyToMany)
+                {
+                    var name1 = navColumn.Navigat.AClassId; 
+                    var name1Column = entityColumns.FirstOrDefault(it => it.PropertyName == name1); 
+                    if (name1Column != null)
+                    {
+                        if (!navInfo.AppendProperties.ContainsKey(name1Column.PropertyName))
+                            navInfo.AppendProperties.Add(name1Column.PropertyName, name1Column.DbColumnName);
+                    }  
+                }
             }
         }
 
@@ -1776,7 +1786,7 @@ namespace SqlSugar
                     foreach (var item in s.Arguments)
                     { 
                             var q = this.Context.Queryable<object>().QueryBuilder;
-                            var itemObj= q.GetExpressionValue(item, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.FieldMultiple).GetResultString();
+                            var itemObj= q.GetExpressionValue(item, isSingle ? ResolveExpressType.FieldSingle : ResolveExpressType.WhereMultiple).GetResultString();
                             if (q.Parameters.Any())
                             {
                                 var itemGroupBySql = UtilMethods.GetSqlString(DbType.SqlServer, itemObj, q.Parameters.ToArray());

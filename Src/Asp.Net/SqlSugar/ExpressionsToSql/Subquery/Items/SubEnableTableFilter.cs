@@ -64,6 +64,11 @@ namespace SqlSugar
                                 var whereStr = isWhere ? " AND " : " WHERE ";
                                 isWhere = true;
                                 result += (whereStr + SubTools.GetMethodValue(Context, exp, ResolveExpressType.WhereSingle));
+                                if (ChildType.IsInterface&& this.Context?.SugarContext?.QueryBuilder!=null)
+                                {
+                                    var filterType = ChildType;
+                                    result =this.Context.SugarContext?.QueryBuilder.ReplaceFilterColumnName(result, type);
+                                }
                             }
                         }
                     }

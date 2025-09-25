@@ -40,8 +40,9 @@ namespace SqlSugar
         #endregion
 
         #region Get Mehtod
-        protected object GetMemberValue(object value, Expression exp)
+        protected object GetMemberValue(object value, Expression exp,out SugarParameter outConvertParameter)
         {
+            outConvertParameter = null;
             if (exp is MemberExpression)
             {
                 var member = (exp as MemberExpression);
@@ -57,6 +58,7 @@ namespace SqlSugar
                         var obj = Activator.CreateInstance(type);
                         var p = ParameterConverter.Invoke(obj, new object[] { value, 100 + this.Context.ParameterIndex }) as SugarParameter;
                         value = p.Value;
+                        outConvertParameter = p;
                     }
                 }
             }

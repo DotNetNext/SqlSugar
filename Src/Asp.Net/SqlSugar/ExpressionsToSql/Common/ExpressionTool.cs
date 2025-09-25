@@ -895,7 +895,7 @@ namespace SqlSugar
                 }
                 else
                 {
-                    var value = baseResolve.GetNewExpressionValue(memberAssignment.Expression);
+                    var value = baseResolve.GetNewExpressionValue(ExpressionTool.RemoveConvert(memberAssignment.Expression));
                     //var leftInfo = keys[i];
                     additem.Type = nameof(ConstantExpression);
                     additem.RightName = memberAssignment.Member.Name;

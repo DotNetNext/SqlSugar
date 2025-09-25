@@ -904,7 +904,7 @@ namespace SqlSugar
                         if(sql.Contains(replace))
                         {
                             var value = columnInfo.PropertyInfo.GetValue(item);
-                            var newValue = "null";
+                            string newValue = null;
                             if (value != null) 
                             {
                                 if (UtilMethods.IsNumber(columnInfo.UnderType.Name))
@@ -954,6 +954,10 @@ namespace SqlSugar
                                     {
 
                                     }
+                                    else if(newValue==null)
+                                    {
+                                        newValue = "null";
+                                    }
                                     else 
                                     {
                                         newValue = "N" + newValue;
@@ -961,6 +965,7 @@ namespace SqlSugar
                                 }
                             }
                             sql = sql.Replace(replace, newValue);
+                            sql = sql.Replace(" = null ", " is null ");
                         }
                     }
                     sb.Append(sql);
