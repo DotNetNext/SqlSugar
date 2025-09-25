@@ -179,7 +179,7 @@ namespace SqlSugar
                     {
                         this._Context.Deleteable<TChild>()
                            .AS(thisEntity.DbTableName)
-                           .EnableQueryFilter(thisEntity.Type)
+                           .EnableQueryFilter()
                            .In(thisFkColumn.DbColumnName, ids.Distinct().ToList()).ExecuteCommand();
                     }
                     else
