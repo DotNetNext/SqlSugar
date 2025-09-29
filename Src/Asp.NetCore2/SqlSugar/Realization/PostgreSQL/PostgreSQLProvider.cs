@@ -147,6 +147,20 @@ namespace SqlSugar
                 {
                     sqlParameter.NpgsqlDbType =((NpgsqlDbType)parameter.CustomDbType);
                 }
+                else
+                {
+                    switch (parameter.Value)
+                    {
+                        case NpgsqlBox b: sqlParameter.NpgsqlDbType = NpgsqlDbType.Box; break;
+                        case NpgsqlCircle c: sqlParameter.NpgsqlDbType = NpgsqlDbType.Circle; break;
+                        case NpgsqlLine l: sqlParameter.NpgsqlDbType = NpgsqlDbType.Line; break;
+                        case NpgsqlLSeg s: sqlParameter.NpgsqlDbType = NpgsqlDbType.LSeg; break;
+                        case NpgsqlPath p: sqlParameter.NpgsqlDbType = NpgsqlDbType.Path; break;
+                        case NpgsqlPoint p: sqlParameter.NpgsqlDbType = NpgsqlDbType.Point; break;
+                        case NpgsqlPolygon p: sqlParameter.NpgsqlDbType = NpgsqlDbType.Polygon; break;
+                        default: break;
+                    }
+                }
             }
             return result;
         }

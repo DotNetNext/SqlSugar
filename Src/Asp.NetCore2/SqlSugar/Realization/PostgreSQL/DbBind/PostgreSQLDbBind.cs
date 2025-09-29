@@ -126,13 +126,9 @@ namespace SqlSugar
                     new KeyValuePair<string, CSharpDataType>("double precision",CSharpDataType.@int),
                     new KeyValuePair<string, CSharpDataType>("numeric",CSharpDataType.@decimal),
                     new KeyValuePair<string, CSharpDataType>("decimal",CSharpDataType.@decimal),
-                    new KeyValuePair<string, CSharpDataType>("path",CSharpDataType.@decimal),
-                    new KeyValuePair<string, CSharpDataType>("point",CSharpDataType.@decimal),
-                    new KeyValuePair<string, CSharpDataType>("polygon",CSharpDataType.@decimal),
 
                     new KeyValuePair<string, CSharpDataType>("boolean",CSharpDataType.@bool),
                     new KeyValuePair<string, CSharpDataType>("bool",CSharpDataType.@bool),
-                    new KeyValuePair<string, CSharpDataType>("box",CSharpDataType.@bool),
                     new KeyValuePair<string, CSharpDataType>("bytea",CSharpDataType.byteArray),
 
                     new KeyValuePair<string, CSharpDataType>("varchar",CSharpDataType.@string),
@@ -146,7 +142,6 @@ namespace SqlSugar
                     new KeyValuePair<string, CSharpDataType>("char",CSharpDataType.@string),
                     new KeyValuePair<string, CSharpDataType>("character",CSharpDataType.@string),
                     new KeyValuePair<string, CSharpDataType>("cidr",CSharpDataType.@string),
-                    new KeyValuePair<string, CSharpDataType>("circle",CSharpDataType.@string),
                     new KeyValuePair<string, CSharpDataType>("tsquery",CSharpDataType.@string),
                     new KeyValuePair<string, CSharpDataType>("tsvector",CSharpDataType.@string),
                     new KeyValuePair<string, CSharpDataType>("txid_snapshot",CSharpDataType.@string),
@@ -155,7 +150,6 @@ namespace SqlSugar
                     new KeyValuePair<string, CSharpDataType>("json",CSharpDataType.@string),
 
                     new KeyValuePair<string, CSharpDataType>("interval",CSharpDataType.@decimal),
-                    new KeyValuePair<string, CSharpDataType>("lseg",CSharpDataType.@decimal),
                     new KeyValuePair<string, CSharpDataType>("macaddr",CSharpDataType.@decimal),
                     new KeyValuePair<string, CSharpDataType>("money",CSharpDataType.@decimal),
                     new KeyValuePair<string, CSharpDataType>("timestamp",CSharpDataType.DateTime),
@@ -184,6 +178,15 @@ namespace SqlSugar
                     new KeyValuePair<string, CSharpDataType>("number",CSharpDataType.@long),
                     new KeyValuePair<string, CSharpDataType>("number",CSharpDataType.@bool),
                     new KeyValuePair<string, CSharpDataType>("number",CSharpDataType.@decimal),
+
+
+                    new KeyValuePair<string, CSharpDataType>("box",CSharpDataType.@NpgsqlBox),
+                    new KeyValuePair<string, CSharpDataType>("circle",CSharpDataType.@NpgsqlCircle),
+                    new KeyValuePair<string, CSharpDataType>("lseg",CSharpDataType.@NpgsqlLseg),
+                    new KeyValuePair<string, CSharpDataType>("line",CSharpDataType.@NpgsqlLine),
+                    new KeyValuePair<string, CSharpDataType>("path",CSharpDataType.@NpgsqlPath),
+                    new KeyValuePair<string, CSharpDataType>("point",CSharpDataType.@NpgsqlPoint),
+                    new KeyValuePair<string, CSharpDataType>("polygon",CSharpDataType.@NpgsqlPolygon),
                 };
         public override List<string> StringThrow
         {
