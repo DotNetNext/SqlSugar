@@ -27,6 +27,13 @@ namespace SqlSugar
         @DateTimeOffset,
         @Single,
 	    @TimeSpan,
-        @char
+        @char,
+        @NpgsqlBox,
+        @NpgsqlCircle,
+        @NpgsqlLine,
+        @NpgsqlLseg,
+        @NpgsqlPath,
+        @NpgsqlPoint,
+        @NpgsqlPolygon,
     }
 }
