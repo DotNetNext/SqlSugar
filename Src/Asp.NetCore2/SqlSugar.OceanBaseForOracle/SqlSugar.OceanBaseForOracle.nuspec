@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>SqlSugar.OceanBaseForOracleCore</id>
-    <version>5.1.4.190</version>
+    <version>5.1.4.205</version>
     <authors>sunkaixuan</authors>
     <owners>Landa</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
