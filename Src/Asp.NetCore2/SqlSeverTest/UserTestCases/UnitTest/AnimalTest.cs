@@ -52,6 +52,13 @@ namespace OrmTest
              ))
             .ToList();
             db.DbMaintenance.AddColumnRemark("Id", "DBO.Order", "a");
+
+            var cats =new List<Cat>() { 
+                new Cat { Name = "x", Color = "Gray" },
+                new Cat { Name = "y", Color = "Gray" }
+            };
+            db.Insertable(cats).ExecuteCommand();
+            db.Updateable(cats).ExecuteCommand();
         }
     }
     [SugarTable("Animal",IsDisabledDelete =true)]
