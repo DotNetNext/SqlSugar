@@ -216,7 +216,14 @@ namespace SqlSugar
             if (isLeftJoin == false)
             {
                 result.QueryBuilder.JoinQueryInfos.Remove(result.QueryBuilder.JoinQueryInfos.Last());
-                result.QueryBuilder.AsTables = oldAsName;
+                if (oldAsName?.Any() == false && result.QueryBuilder.AsTables?.Any() == true)
+                {
+                    //no things
+                }
+                else
+                {
+                    result.QueryBuilder.AsTables = oldAsName;
+                }
             }
             return result;
         }
