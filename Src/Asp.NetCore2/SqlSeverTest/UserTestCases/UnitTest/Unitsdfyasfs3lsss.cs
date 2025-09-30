@@ -19,6 +19,12 @@ namespace OrmTest
                 .Where(t => x.Any(s => s.UserName == t.UserName && s.Context == t.Context))
                 .ToList();
 
+            var userInfo1 = db.Queryable<UserInfo001>()
+                .Select(s => new
+                {
+                    n=SqlFunc.MappingColumn<bool>("1=1")?true:false
+                }).ToList();
+
             var userInfo2 = db.Queryable<UserInfo001>()
              .Where(t => x.Any(s =>  t.UserName ==s.UserName && t.Context == s.Context))
              .ToList();
