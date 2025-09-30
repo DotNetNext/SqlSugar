@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
  
 namespace SqlSugar 
@@ -105,6 +106,17 @@ namespace SqlSugar
                 var tempColumns = tempDataTable.Columns.Cast<DataColumn>().Select(it=>it.ColumnName);
                 columns = columns.Where(it => tempColumns.Any(s => s.EqualCase(it.DbColumnName))).ToList();
             }
+            var (isDiscrimator, discrimatorDict) = GetDiscrimator();
+
+            if (isDiscrimator && discrimatorDict?.Count > 0)
+            {
+                foreach (var dict in discrimatorDict)
+                {
+                    if (!dt.Columns.Contains(dict.Key))
+                        dt.Columns.Add(dict.Key);
+                }
+            }
+
             var isMySql = this.context.CurrentConnectionConfig.DbType.IsIn(DbType.MySql, DbType.MySqlConnector);
             var isSqliteCore = SugarCompatible.IsFramework==false&& this.context.CurrentConnectionConfig.DbType.IsIn(DbType.Sqlite);
             foreach (var item in datas)
@@ -167,6 +179,15 @@ namespace SqlSugar
                         value = UtilMethods.DateOnlyToDateTime(value);
                     }
                     dr[name] = value;
+                }
+                if (isDiscrimator && discrimatorDict?.Count > 0)
+                {
+                    foreach (var dict in discrimatorDict)
+                    {
+                        var key = dict.Key; var val = dict.Value;
+                        if (!string.IsNullOrWhiteSpace(val) && string.IsNullOrWhiteSpace(dr[key] + ""))
+                            dr[key] = val;
+                    }
                 }
                 dt.Rows.Add(dr);
             }
@@ -351,6 +372,25 @@ namespace SqlSugar
                     CacheSchemeMain.RemoveCache(cacheService, this.context.EntityMaintenance.GetTableName<T>());
                 }
             }
+        }
+
+        private (bool isDiscrimator, Dictionary<string, string> discrimatorDict) GetDiscrimator()
+        {
+            var isDiscrimator = entityInfo.Discrimator.HasValue();
+            var dict = new Dictionary<string, string>();
+            if (isDiscrimator)
+            {
+                Check.ExceptionEasy(!Regex.IsMatch(entityInfo.Discrimator, @"^(?:\w+:\w+)(?:,\w+:\w+)*$"), "The format should be type:cat for this type, and if there are multiple, it can be FieldName:cat,FieldName2:dog ", "格式错误应该是type:cat这种格式，如果是多个可以FieldName:cat,FieldName2:dog，不要有空格");
+                var array = entityInfo.Discrimator.Split(',');
+                foreach (var disItem in array)
+                {
+                    var name = disItem.Split(':').First();
+                    var value = disItem.Split(':').Last();
+                    dict.TryAdd(name, value);
+                }
+            }
+
+            return (isDiscrimator, dict);
         }
 
     }
