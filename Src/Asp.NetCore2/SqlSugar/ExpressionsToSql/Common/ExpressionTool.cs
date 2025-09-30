@@ -359,9 +359,15 @@ namespace SqlSugar
         }
         public static List<ParameterExpression> GetParameters(Expression expr)
         {
-            var ps = new ParameterExpressionVisitor();
+            var ps = new ParameterExpressionVisitor(); 
             ps.Visit(expr);
             return ps.Parameters;
+        }
+        public static bool NoParameterOrSqlfunc(Expression expr)
+        {
+            var ps = new ParameterExpressionVisitor();
+            ps.Visit(expr);
+            return ps.Parameters.Count==0&&ps.IsSqlFunc==false;
         }
         public static bool IsComparisonOperatorBool(BinaryExpression binaryExp)
         {
