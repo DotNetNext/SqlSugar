@@ -25,6 +25,33 @@ namespace OrmTest
                     n=SqlFunc.MappingColumn<bool>("1=1")?true:false
                 }).ToList();
 
+            var sql= db.Queryable<UserInfo001>()
+                .Where(it => it.UserId==-1)
+                .LeftJoinIF<UserInfo001>(false,(x, y) => false)
+                .ToSqlString();
+
+            if (!sql.Contains("[UserId] = -1 ")) throw new Exception("unit error");
+
+            var sq2 = db.Queryable<UserInfo001>()
+               .Where(it => it.UserId == -1)
+               .InnerJoinIF<UserInfo001>(false, (x, y) => false)
+               .ToSqlString();
+
+            if (!sq2.Contains("[UserId] = -1 ")) throw new Exception("unit error");
+
+
+            var sql3 = db.Queryable<UserInfo001>() 
+           .LeftJoinIF<UserInfo001>(false, (x, y) => false)
+           .ToSqlString();
+
+            if (!sql3.EndsWith("FROM [Unitadfaysd22] [x] ")) throw new Exception("unit error");
+
+            var sq4 = db.Queryable<UserInfo001>() 
+               .InnerJoinIF<UserInfo001>(false, (x, y) => false)
+               .ToSqlString();
+
+            if (!sq4.EndsWith("FROM [Unitadfaysd22] [x] ")) throw new Exception("unit error");
+
             var userInfo2 = db.Queryable<UserInfo001>()
              .Where(t => x.Any(s =>  t.UserName ==s.UserName && t.Context == s.Context))
              .ToList();
