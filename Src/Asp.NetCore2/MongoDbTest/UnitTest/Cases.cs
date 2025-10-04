@@ -39,6 +39,7 @@ namespace MongoDbTest
             Enum.Init();
             Enum2.Init();
             UnitDateTimeFunc.Init();
+            UnitDateOnly.Init();
             //主键不是ObjectId类型用例 
             //The primary key is not an ObjectId type use case
             LongPrimaryKey.Init();
