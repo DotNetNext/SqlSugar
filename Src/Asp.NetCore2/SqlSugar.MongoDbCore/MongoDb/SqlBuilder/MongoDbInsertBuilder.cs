@@ -171,6 +171,10 @@ namespace SqlSugar.MongoDb
                         else
                         {
                             var obj = MongoDbDataReaderHelper.ConvertBsonValue(item);
+                            if (obj is DBNull) 
+                            {
+                                obj = null;
+                            }
                             resultList.SetValue(obj, index);
                         }
                         index++;
