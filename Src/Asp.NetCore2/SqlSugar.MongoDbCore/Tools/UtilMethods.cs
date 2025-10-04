@@ -147,6 +147,12 @@ namespace SqlSugar.MongoDb
                 return arrayObj;
             }
         }
+        internal static object DateOnlyToDateTime(object value)
+        {
+            if (value == null) return null;
+            var method = value.GetType().GetMethods().First(it => it.GetParameters().Length == 0 && it.Name == "ToShortDateString");
+            return method.Invoke(value, new object[] { });
+        }
         public static BsonValue MyCreate(object value)
         {
             if (value is DateTime dt)
@@ -161,6 +167,10 @@ namespace SqlSugar.MongoDb
             else if (value is string s&&IsValidObjectId(s)) 
             {
                 value = ObjectId.Parse(s);
+            }
+            else if (value!=null&&value?.GetType()?.Name=="DateOnly")
+            {
+                value = Convert.ToDateTime(DateOnlyToDateTime(value)).ToString("yyyy-MM-dd");
             }
             return BsonValue.Create(value);
         }
