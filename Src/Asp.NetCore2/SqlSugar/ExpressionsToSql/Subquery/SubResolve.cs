@@ -309,6 +309,11 @@ namespace SqlSugar
                 it.HasWhere = isHasWhere;
                 return it.GetValue(it.Expression);
             }).ToList();
+            if (this.context?.SugarContext?.Context?.CurrentConnectionConfig?.DbType == DbType.Oracle && isubList.Any(s => s is SubSelect) && isubList.Any(s => s is SubOrderBy || s is SubOrderByDesc))
+            {
+                result.Insert(0, "SELECT * FROM(");
+                result.Add(") WHERE ROWNUM = 1  ");
+            }
             this.context.JoinIndex = 0;
             this.context.IsAsAttr = false;
             return result;
