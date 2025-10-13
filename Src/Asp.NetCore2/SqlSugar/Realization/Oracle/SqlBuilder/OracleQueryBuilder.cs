@@ -135,6 +135,9 @@ namespace SqlSugar
             string temp = isExternal ? ExternalPageTempalte : PageTempalte;
             return string.Format(temp, sql.ToString(), (pageIndex - 1) * pageSize + 1, pageIndex * pageSize);
         }
-
+        public override string GetExternalOrderBy(string externalOrderBy)
+        {
+            return Regex.Replace(externalOrderBy, @"\""\w+\""\.", "");
+        }
     }
 }
