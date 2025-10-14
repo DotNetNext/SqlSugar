@@ -30,8 +30,14 @@ namespace OrmTest
             var data= db.Queryable<CodeFirstTable2>().Where(it => it.IsOk==true).First();
             var data2 = db.Queryable<CodeFirstTable2>().Where(it => it.IsOk == false).First();
             db.Updateable(data).ExecuteCommand();
+            db.CodeFirst.InitTables<adfadf22222xx2221>();
+            db.Insertable(new adfadf22222xx2221() { aaaa = new byte[] { 1, 2 } }).ExecuteCommand();
             Console.WriteLine("#### CodeFirst end ####");
         }
+    }
+    public class adfadf22222xx2221
+    {
+        public byte[] aaaa { get; set; }
     }
     public class CodeFirstTable2
     {
