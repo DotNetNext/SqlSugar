@@ -12,6 +12,10 @@ namespace SqlSugar.GBase
             {
                 return nameof(DateTimeOffset);
             }
+            else if (csharpTypeName == "Byte[]")
+            {
+                return "blob";
+            }
             else
             {
                 return base.GetDbTypeName(csharpTypeName);

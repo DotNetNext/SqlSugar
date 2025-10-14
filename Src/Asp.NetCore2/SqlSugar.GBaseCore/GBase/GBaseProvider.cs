@@ -374,7 +374,7 @@ namespace SqlSugar.GBase
                         gbsParam.DbType = param.DbType;
                         gbsParam.ParameterName = param.ParameterName;
                         gbsParam.Direction = param.Direction;
-
+                        
                         if (UtilMethods.HasBigObjectParam(param))
                         {
                             // assign GbsType.
@@ -397,6 +397,12 @@ namespace SqlSugar.GBase
                                     gbsParam.GbsType = GbsType.Byte;
                                     gbsParam.Value = (param.Value == null) ? DBNull.Value : param.Value;
                                     break;
+                            }
+
+                            if (param.DbType is System.Data.DbType.Binary&& param.TypeName==null)
+                            {
+                                gbsParam.GbsType = GbsType.Blob;
+                                gbsParam.Value = (param.Value == null) ? string.Empty : param.Value;
                             }
                         }
                         else
@@ -452,7 +458,7 @@ namespace SqlSugar.GBase
             //    sqlCommand.Parameters.AddRange(ipars);
             //}
             CheckConnection();
-            return sqlCommand;
+            return sqlCommand!;
         }
         public override void SetCommandToAdapter(IDataAdapter dataAdapter, DbCommand command)
         {
