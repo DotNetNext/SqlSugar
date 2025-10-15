@@ -19,6 +19,10 @@ namespace SqlSugar
     public class UtilMethods
     {
 
+        internal static DbType? GetDatabaseType(ExpressionContext context)
+        {
+            return context?.SugarContext?.Context?.CurrentConnectionConfig?.DbType;
+        }
         internal static void SetDefaultValueForBoolean(EntityColumnInfo item, Type propertyType)
         {
             if (propertyType == UtilConstants.BoolType && item.DefaultValue != null && item.DefaultValue.EqualCase("true"))
