@@ -272,7 +272,7 @@ namespace SqlSugar
             if (sql.SelectString == null)
             {
                 //加载指定列
-                var manualPropertyNames = GetQueryPropertyNames(navObjectNamePropety);
+                var manualPropertyNames = GetQueryPropertyNames(navObjectNameColumnInfo);
 
                 var columns = bEntityInfo.Columns.Where(it => !it.IsIgnore)
                      .WhereIF(manualPropertyNames != null && manualPropertyNames.Length > 0, it => manualPropertyNames.Contains(it.PropertyName))
@@ -438,7 +438,7 @@ namespace SqlSugar
                 if (sqlObj.SelectString == null)
                 {
                     // 加载指定列
-                    var queryPropertyNames = GetQueryPropertyNames(navObjectNamePropety);
+                    var queryPropertyNames = GetQueryPropertyNames(navObjectNameColumnInfo);
 
                     var columns = navEntityInfo.Columns.Where(it => !it.IsIgnore)
                         .WhereIF(queryPropertyNames != null && queryPropertyNames.Length > 0, it => queryPropertyNames.Contains(it.PropertyName))
@@ -590,7 +590,7 @@ namespace SqlSugar
                 if (sqlObj.SelectString == null)
                 {
                     //加载指定列
-                    var manualPropertyNames = GetQueryPropertyNames(navObjectNamePropety);
+                    var manualPropertyNames = GetQueryPropertyNames(navObjectNameColumnInfo);
                     var columns = navEntityInfo.Columns.Where(it => !it.IsIgnore)
                         .WhereIF(manualPropertyNames != null && manualPropertyNames.Length > 0, it => manualPropertyNames.Contains(it.PropertyName))
                         .Select(it => GetOneToManySelectByColumnInfo(it, childDb)).ToList();
@@ -711,7 +711,7 @@ namespace SqlSugar
                 if (sqlObj.SelectString == null)
                 {
                     //加载指定列
-                    var manualPropertyNames = GetQueryPropertyNames(navObjectNamePropety);
+                    var manualPropertyNames = GetQueryPropertyNames(navObjectNameColumnInfo);
 
                     var columns = navEntityInfo.Columns.Where(it => !it.IsIgnore)
                         .WhereIF(manualPropertyNames != null && manualPropertyNames.Length > 0, it => manualPropertyNames.Contains(it.PropertyName))
@@ -1272,16 +1272,31 @@ namespace SqlSugar
         /// </summary>
         /// <param name="navObjectNamePropety"></param>
         /// <returns></returns>
-        private string[] GetQueryPropertyNames(System.Reflection.PropertyInfo navObjectNamePropety)
+        private string[] GetQueryPropertyNames(EntityColumnInfo navObjectNameColumnInfo)
         {
             string[] queryPropertyNames = null;
-            if (navObjectNamePropety != null)
+            if (navObjectNameColumnInfo?.Navigat?.QueryPropertyNames?.Any()==true)
             {
-                var navAttr = navObjectNamePropety.GetCustomAttribute<Navigate>();
-                if (navAttr != null && navAttr.QueryPropertyNames != null && navAttr.QueryPropertyNames.Length > 0)
+                var navInfo = navObjectNameColumnInfo?.Navigat;
+                queryPropertyNames = navObjectNameColumnInfo.Navigat.QueryPropertyNames;
+                var list = queryPropertyNames.ToList();
+                if (navInfo.AClassId != null) 
                 {
-                    queryPropertyNames = navAttr.QueryPropertyNames;
+                    list.Add(navInfo.AClassId);
                 }
+                if (navInfo.BClassId != null)
+                {
+                    list.Add(navInfo.BClassId);
+                }
+                if (navInfo.Name != null)
+                {
+                    list.Add(navInfo.Name);
+                }
+                if (navInfo.Name2 != null)
+                {
+                    list.Add(navInfo.Name2);
+                }
+                queryPropertyNames = list.ToArray();
             }
             return queryPropertyNames;
         }
