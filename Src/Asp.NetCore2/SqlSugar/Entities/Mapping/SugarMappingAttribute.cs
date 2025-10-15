@@ -243,6 +243,15 @@ namespace SqlSugar
 
         internal string BClassId { get; set; }
 
+        /// <summary>
+        /// 用于查询指定列
+        /// </summary>
+        internal string[] QueryPropertyNames { get; set; }
+        public string[] GetQueryPropertyNames()
+        {
+            return QueryPropertyNames;
+        }
+
         public string GetName()
         {
             return Name;
@@ -272,36 +281,40 @@ namespace SqlSugar
         {
             return WhereSql;
         }
-        public Navigate(NavigateType navigatType,string ifSingleMasterTableColumn_IfListChildTableColumn)
+        public Navigate(NavigateType navigatType,string ifSingleMasterTableColumn_IfListChildTableColumn, string[] queryPropertyNames = null)
         {
             this.Name = ifSingleMasterTableColumn_IfListChildTableColumn;
             this.NavigatType = navigatType;
+            this.QueryPropertyNames = queryPropertyNames;
         }
-        public Navigate(NavigateType navigatType, string ifSingleMasterTableColumn_IfListChildTableColumn, string ifSingleChildTableColumn_IfListMasterTableColumn)
+        public Navigate(NavigateType navigatType, string ifSingleMasterTableColumn_IfListChildTableColumn, string ifSingleChildTableColumn_IfListMasterTableColumn, string[] queryPropertyNames = null)
         {
             Check.ExceptionEasy(navigatType == NavigateType.ManyToMany, "Correct usage [Navigate(typeof(ABMapping), nameof(abmapping.aid), nameof(abmapp.bid))], incorrect usage: [Navigate(Navigate.ManyToMany, nameof(ABMapping.Aid), nameof(ABMapping.BId))]", "多对多第一个参数是Type不是NavigateType，正确用法[Navigate(typeof(ABMapping), nameof(ABMapping.Aid), nameof(ABMapping.BId))],错误用法：[Navigate(Navigate.ManyToMany, nameof(ABMapping.Aid), nameof(ABMapping.BId))]");
             this.Name = ifSingleMasterTableColumn_IfListChildTableColumn;
             this.Name2 = ifSingleChildTableColumn_IfListMasterTableColumn;
             this.NavigatType = navigatType;
+            this.QueryPropertyNames = queryPropertyNames;
         }
 
-        public Navigate(NavigateType navigatType, string ifSingleMasterTableColumn_IfListChildTableColumn, string ifSingleChildTableColumn_IfListMasterTableColumn, string whereSql)
+        public Navigate(NavigateType navigatType, string ifSingleMasterTableColumn_IfListChildTableColumn, string ifSingleChildTableColumn_IfListMasterTableColumn, string whereSql, string[] queryPropertyNames = null)
         {
             this.Name = ifSingleMasterTableColumn_IfListChildTableColumn;
             this.Name2 = ifSingleChildTableColumn_IfListMasterTableColumn;
             this.NavigatType = navigatType;
             this.WhereSql = whereSql;
+            this.QueryPropertyNames = queryPropertyNames;
             //Check.ExceptionEasy(navigatType != NavigateType.OneToOne, "Currently, only one-to-one navigation configuration Sql conditions are supported", "目前导航配置Sql条件只支持一对一");
         }
 
-        public Navigate(Type MappingTableType,string typeAId,string typeBId)
+        public Navigate(Type MappingTableType,string typeAId,string typeBId, string[] queryPropertyNames = null)
         {
             this.MappingType = MappingTableType;
             this.MappingAId = typeAId;
             this.MappingBId = typeBId;
             this.NavigatType = NavigateType.ManyToMany;
+            this.QueryPropertyNames = queryPropertyNames;
         }
-        public Navigate(Type MappingTableType, string mappingAId, string mappingBId,string aClassId,string bClassId)
+        public Navigate(Type MappingTableType, string mappingAId, string mappingBId,string aClassId,string bClassId, string[] queryPropertyNames = null)
         {
             this.MappingType = MappingTableType;
             this.MappingAId = mappingAId;
@@ -309,14 +322,16 @@ namespace SqlSugar
             this.AClassId = aClassId;
             this.BClassId = bClassId;
             this.NavigatType = NavigateType.ManyToMany;
+            this.QueryPropertyNames = queryPropertyNames;
         }
-        public Navigate(Type MappingTableType, string typeAiD, string typeBId,string mappingSql)
+        public Navigate(Type MappingTableType, string typeAiD, string typeBId,string mappingSql, string[] queryPropertyNames = null)
         {
             this.MappingType = MappingTableType;
             this.MappingAId = typeAiD;
             this.MappingBId = typeBId;
             this.NavigatType = NavigateType.ManyToMany;
             this.WhereSql+= mappingSql;
+            this.QueryPropertyNames = queryPropertyNames;
         }
     }
 
