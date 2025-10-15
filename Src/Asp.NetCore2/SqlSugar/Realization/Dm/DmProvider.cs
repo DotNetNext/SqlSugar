@@ -205,7 +205,7 @@ namespace SqlSugar
             return sqlParameter.Direction == ParameterDirection.Output && this.CommandType == CommandType.StoredProcedure;
         }
 
-        private static string[] KeyWord =new string []{ "@identity", ":identity", ":asc", "@asc", ":desc", "@desc","@month", ":month", ":day","@day","@group", ":group",":index", "@index", "@order", ":order", "@user", "@level", ":user", ":level",":type","@type", ":year", "@year" };
+        private static string[] KeyWord =new string []{  ":asc", "@asc", ":desc", "@desc","@month", ":month", ":day","@day","@group", ":group",":index", "@index", "@order", ":order", "@user", "@level", ":user", ":level",":type","@type", ":year", "@year" };
         private static string ReplaceKeyWordParameterName(string sql, SugarParameter[] parameters)
         {
             sql = ReplaceKeyWordWithAd(sql, parameters);
@@ -230,13 +230,23 @@ namespace SqlSugar
         {
             if (parameters != null && sql != null && sql.Contains("@"))
             {
+                var isSelectIdentity = sql.EndsWith(";select @@identity")&&sql.StartsWith("INSERT INTO ");
                 foreach (var item in parameters.OrderByDescending(it => it.ParameterName.Length))
                 {
                     if (item.ParameterName.StartsWith("@"))
                     {
                         item.ParameterName = ":" + item.ParameterName.TrimStart('@');
                     }
+                    var paraNameIsIdentity = isSelectIdentity && item.ParameterName.EqualCase(":Identity");
+                    if (paraNameIsIdentity) 
+                    {
+                        sql = sql.Replace(";select @@identity", "");
+                    }
                     sql = Regex.Replace(sql, "@" + item.ParameterName.TrimStart(':'), item.ParameterName, RegexOptions.IgnoreCase);
+                    if (paraNameIsIdentity)
+                    {
+                        sql = sql+";select @@identity";
+                    }
                 }
             }
 
