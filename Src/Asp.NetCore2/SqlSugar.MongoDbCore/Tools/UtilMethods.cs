@@ -21,6 +21,26 @@ namespace SqlSugar.MongoDb
 {
     public class UtilMethods
     {
+        public static void ConvertDateTimeToUnspecified(object o)
+        {
+            if (o == null) return;
+
+            var type = o.GetType();
+            foreach (var prop in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
+            {
+                if (!prop.CanRead || !prop.CanWrite) continue;
+
+                var value = prop.GetValue(o);
+                if (value is DateTime dt)
+                {
+                    prop.SetValue(o, DateTime.SpecifyKind(dt, DateTimeKind.Unspecified));
+                }
+                else if (value != null && !prop.PropertyType.IsPrimitive && !prop.PropertyType.IsEnum && prop.PropertyType != typeof(string))
+                {
+                    ConvertDateTimeToUnspecified(value); // Recursive for nested objects
+                }
+            }
+        }
         internal static bool IsJsonMember(Expression expression, SqlSugarProvider context)
         {  
             var member = expression as MemberExpression;

@@ -139,6 +139,7 @@ namespace SqlSugar.MongoDb
                         {
                             var doc = item.AsBsonDocument;
                             var obj = BsonSerializer.Deserialize(doc, elementType);
+                            UtilMethods.ConvertDateTimeToUnspecified(obj);
                             resultList.Add(obj);
                         }
                         else
