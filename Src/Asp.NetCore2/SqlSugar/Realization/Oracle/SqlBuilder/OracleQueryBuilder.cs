@@ -27,6 +27,10 @@ namespace SqlSugar
             {
                 return OffsetPage();
             }
+            else if (this.Take==1&&this.Skip==0)
+            {
+                return OffsetPage();
+            }
             var oldTake = Take;
             var oldSkip = Skip;
             var isDistinctPage = IsDistinct && (Take > 1 || Skip > 1);
