@@ -164,6 +164,7 @@ namespace SqlSugar
                 {
                     var copyDb = this.Clone();
                     copyDb.QueryBuilder.OrderByValue = null;
+                    copyDb.QueryBuilder.Includes = null;
                     var list = await copyDb.Select<int>(" COUNT(1) ").ToListAsync();
                     return list.FirstOrDefault();
                 }
