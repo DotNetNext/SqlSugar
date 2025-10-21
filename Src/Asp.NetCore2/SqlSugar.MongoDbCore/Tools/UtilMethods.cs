@@ -26,18 +26,65 @@ namespace SqlSugar.MongoDb
             if (o == null) return;
 
             var type = o.GetType();
+
+            // 如果是集合，遍历其中的元素
+            if (typeof(IEnumerable).IsAssignableFrom(type) && type != typeof(string))
+            {
+                foreach (var item in (IEnumerable)o)
+                {
+                    if (item == null) continue;
+                    var itemType = item.GetType();
+                    // 只处理 class（排除 string, array, list 等）
+                    if (itemType.IsClass && itemType != typeof(string) &&
+                        !typeof(IEnumerable).IsAssignableFrom(itemType))
+                    {
+                        ConvertDateTimeToUnspecified(item);
+                    }
+                }
+                return;
+            }
+
+            // 如果不是 class 直接返回（例如值类型或枚举）
+            if (!type.IsClass || type == typeof(string))
+                return;
+
             foreach (var prop in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
             {
-                if (!prop.CanRead || !prop.CanWrite) continue;
+                if (!prop.CanRead || !prop.CanWrite)
+                    continue;
 
                 var value = prop.GetValue(o);
+                if (value == null)
+                    continue;
+
                 if (value is DateTime dt)
                 {
                     prop.SetValue(o, DateTime.SpecifyKind(dt, DateTimeKind.Unspecified));
                 }
-                else if (value != null && !prop.PropertyType.IsPrimitive && !prop.PropertyType.IsEnum && prop.PropertyType != typeof(string))
+                else
                 {
-                    ConvertDateTimeToUnspecified(value); // Recursive for nested objects
+                    var propType = prop.PropertyType;
+
+                    // 如果是集合类型，则递归处理其中的元素
+                    if (typeof(IEnumerable).IsAssignableFrom(propType) && propType != typeof(string))
+                    {
+                        foreach (var item in (IEnumerable)value)
+                        {
+                            if (item == null) continue;
+                            var itemType = item.GetType();
+                            if (itemType.IsClass && itemType != typeof(string) &&
+                                !typeof(IEnumerable).IsAssignableFrom(itemType))
+                            {
+                                ConvertDateTimeToUnspecified(item);
+                            }
+                        }
+                    }
+                    // 如果是 class 类型，且不是 string/list/array，则递归
+                    else if (propType.IsClass && propType != typeof(string) &&
+                             !typeof(IEnumerable).IsAssignableFrom(propType))
+                    {
+                        ConvertDateTimeToUnspecified(value);
+                    }
                 }
             }
         }
