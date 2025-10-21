@@ -32,6 +32,7 @@ namespace MongoDbTest
             QueryJsonArray3.Init();
             Insert.Init();
             Insert2.Init();
+            Insert3.Init();
             Update.Init();
             Delete.Init();
             InsertOrUpdate.Init();
