@@ -331,6 +331,23 @@ namespace SqlSugar
             }
             return string.Format(" CAST({0} AS timestamp)", parameter.MemberName);
         }
+        public override string GetForXmlPath()
+        {
+            if (IsSqlServerModel())
+            {
+                return new SqlServerMethod().GetForXmlPath();
+            }
+            return base.GetForXmlPath();
+        }
+         
+        public override string GetStringJoinSelector(string result, string separator)
+        {
+            if (IsSqlServerModel())
+            {
+                return new SqlServerMethod().GetStringJoinSelector(result,separator);
+            }
+            return base.GetStringJoinSelector(result, separator);
+        }
         public override string DateAddByType(MethodCallExpressionModel model)
         {
             if (IsSqlServerModel(model))
@@ -559,7 +576,10 @@ namespace SqlSugar
         private static bool IsSqlServerModel(MethodCallExpressionModel model)
         {
             return model?.Conext?.SugarContext?.Context?.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.SqlServer;
+        } 
+        private bool IsSqlServerModel()
+        {
+            return this.sqlSugarClient?.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.SqlServer;
         }
-
     }
 }
