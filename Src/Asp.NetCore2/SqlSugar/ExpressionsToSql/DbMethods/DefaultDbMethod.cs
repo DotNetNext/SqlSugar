@@ -9,6 +9,7 @@ namespace SqlSugar
 {
     public partial class DefaultDbMethod : IDbMethods
     {
+        public ISqlSugarClient sqlSugarClient { get; set; }
         public virtual string ParameterKeyWord { get; set; }= "@";
         public virtual string RowNumber(MethodCallExpressionModel model) 
         {

@@ -65,6 +65,7 @@ namespace SqlSugar
                     result =  string.Join(",",(constant.Value+"").Split(',').Select(it=>this.Context.GetTranslationTableName(it)));
                 }
             }
+            this.Context.DbMehtods.sqlSugarClient = this.Context?.SugarContext?.Context;
             result = this.Context.DbMehtods.GetStringJoinSelector(result, ExpressionTool.GetExpressionValue(exp.Arguments[1]) + "");
 
             return result;
