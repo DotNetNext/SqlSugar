@@ -116,16 +116,16 @@ namespace SqlSugar.MongoDb
                     else if (col.UpdateServerTime)
                     {
                         setDoc[col.DbColumnName] = UtilMethods.MyCreate(DateTime.Now);
+                    } 
+                    else if (col.SqlParameterDbType is Type t && typeof(ISugarDataConverter).IsAssignableFrom(t))
+                    {
+                        var value = UtilMethods.GetParameterConverter(0, this.Context, col.Value, this.EntityInfo, this.EntityInfo.Columns.FirstOrDefault(s => s.PropertyName.EqualCase(col.PropertyName)));
+                        setDoc[col.DbColumnName] = UtilMethods.MyCreate(value.Value);
                     }
                     else if(col.IsPrimarykey==false)
                     {
                         var bsonValue = UtilMethods.MyCreate(col.Value, col);
                         setDoc[col.DbColumnName] = bsonValue;
-                    }
-                    else if (col.SqlParameterDbType is Type t && typeof(ISugarDataConverter).IsAssignableFrom(t))
-                    {
-                        var value = UtilMethods.GetParameterConverter(0, this.Context, col.Value, this.EntityInfo, this.EntityInfo.Columns.FirstOrDefault(s => s.PropertyName.EqualCase(col.PropertyName)));
-                        setDoc[col.DbColumnName] = UtilMethods.MyCreate(value);
                     }
                 }
 
