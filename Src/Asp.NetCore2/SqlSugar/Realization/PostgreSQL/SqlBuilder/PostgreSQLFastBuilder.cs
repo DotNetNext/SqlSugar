@@ -47,11 +47,11 @@ namespace SqlSugar
             var columns = this.Context.DbMaintenance.GetColumnInfosByTableName(this.entityInfo.DbTableName);
             try
             {
-                var identityColumnInfo = this.entityInfo.Columns.FirstOrDefault(it => it.IsIdentity);
-                if (identityColumnInfo != null)
-                {
-                    throw new Exception("PgSql bulkcopy no support identity");
-                }
+                //var identityColumnInfo = this.entityInfo.Columns.FirstOrDefault(it => it.IsIdentity);
+                //if (identityColumnInfo != null)
+                //{
+                //    throw new Exception("PgSql bulkcopy no support identity");
+                //}
                 BulkCopy(dt, copyString, conn, columns);
             }
             catch (Exception ex)

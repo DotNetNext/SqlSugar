@@ -86,7 +86,7 @@ namespace SqlSugar
             List<string> uInt64TypeName = new List<string>();
             foreach (DataColumn item in tempDataTable.Columns)
             {
-                if (item.DataType == typeof(UInt64)) 
+                if (item.DataType == typeof(UInt64))
                 {
                     uInt64TypeName.Add(item.ColumnName);
                 }
@@ -99,8 +99,27 @@ namespace SqlSugar
                     dt.Columns.Add(item.ColumnName, item.DataType);
                 }
             }
+
+            bool supportIdentity = true;
+            if (this.context.CurrentConnectionConfig.DbType == DbType.PostgreSQL || this.context.CurrentConnectionConfig.DbType == DbType.Vastbase)
+            {
+                supportIdentity = false;
+            }
+
+            if (!supportIdentity)
+            {
+                // PostgreSQL/Vastbase不支持自增主键导入
+                foreach (var identityColumnInfo in this.entityInfo.Columns.Where(it => it.IsIdentity))
+                {
+                    if (dt.Columns.Contains(identityColumnInfo.DbColumnName))
+                    {
+                        dt.Columns.Remove(identityColumnInfo.DbColumnName);
+                    }
+                }
+            }
+
             dt.TableName = GetTableName();
-            var columns = entityInfo.Columns; 
+            var columns = supportIdentity ? entityInfo.Columns : entityInfo.Columns.Where(it => !it.IsIdentity).ToList();
             if (columns.Where(it=>!it.IsIgnore).Count() > tempDataTable.Columns.Count)
             {
                 var tempColumns = tempDataTable.Columns.Cast<DataColumn>().Select(it=>it.ColumnName);
