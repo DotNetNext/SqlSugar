@@ -18,7 +18,7 @@ namespace SqlSugar
                 express.IfFalse
             };
             SetSingleTableNameSubqueryShortName(express);
-            if (ExpressionTool.GetParameters(express.Test).Count == 0)
+            if (ExpressionTool.NoParameterOrSqlfunc(express.Test))
             {
                 while (express != null)
                 {

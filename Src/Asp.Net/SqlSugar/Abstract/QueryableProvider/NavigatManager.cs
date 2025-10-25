@@ -271,7 +271,11 @@ namespace SqlSugar
             var sql = GetWhereSql(GetCrossDatabase(abDb, bEntity));
             if (sql.SelectString == null)
             {
+                //加载指定列
+                var manualPropertyNames = GetQueryPropertyNames(navObjectNameColumnInfo);
+
                 var columns = bEntityInfo.Columns.Where(it => !it.IsIgnore)
+                     .WhereIF(manualPropertyNames != null && manualPropertyNames.Length > 0, it => manualPropertyNames.Contains(it.PropertyName))
                      .Select(it => GetOneToManySelectByColumnInfo(it, abDb)).ToList();
                 sql.SelectString = String.Join(",", columns);
             }
@@ -433,7 +437,11 @@ namespace SqlSugar
                 var sqlObj = GetWhereSql(db, navObjectNameColumnInfo.Navigat.Name);
                 if (sqlObj.SelectString == null)
                 {
+                    // 加载指定列
+                    var queryPropertyNames = GetQueryPropertyNames(navObjectNameColumnInfo);
+
                     var columns = navEntityInfo.Columns.Where(it => !it.IsIgnore)
+                        .WhereIF(queryPropertyNames != null && queryPropertyNames.Length > 0, it => queryPropertyNames.Contains(it.PropertyName))
                         .Select(it => GetOneToOneSelectByColumnInfo(it, db)).ToList();
                     sqlObj.SelectString = String.Join(",", columns);
                 }
@@ -581,7 +589,10 @@ namespace SqlSugar
             {
                 if (sqlObj.SelectString == null)
                 {
+                    //加载指定列
+                    var manualPropertyNames = GetQueryPropertyNames(navObjectNameColumnInfo);
                     var columns = navEntityInfo.Columns.Where(it => !it.IsIgnore)
+                        .WhereIF(manualPropertyNames != null && manualPropertyNames.Length > 0, it => manualPropertyNames.Contains(it.PropertyName))
                         .Select(it => GetOneToManySelectByColumnInfo(it, childDb)).ToList();
                     sqlObj.SelectString = String.Join(",", columns);
                 }
@@ -699,7 +710,11 @@ namespace SqlSugar
             {
                 if (sqlObj.SelectString == null)
                 {
+                    //加载指定列
+                    var manualPropertyNames = GetQueryPropertyNames(navObjectNameColumnInfo);
+
                     var columns = navEntityInfo.Columns.Where(it => !it.IsIgnore)
+                        .WhereIF(manualPropertyNames != null && manualPropertyNames.Length > 0, it => manualPropertyNames.Contains(it.PropertyName))
                         .Select(it => GetOneToManySelectByColumnInfo(it,childDb)).ToList();
                     sqlObj.SelectString = String.Join(",", columns);
                 }
@@ -1252,5 +1267,38 @@ namespace SqlSugar
             return QueryBuilder.Builder.GetTranslationColumnName(it.DbColumnName) + " AS " + QueryBuilder.Builder.GetTranslationColumnName(it.PropertyName);
         }
 
+        /// <summary>
+        /// 获取查询的属性名称列表
+        /// </summary>
+        /// <param name="navObjectNamePropety"></param>
+        /// <returns></returns>
+        private string[] GetQueryPropertyNames(EntityColumnInfo navObjectNameColumnInfo)
+        {
+            string[] queryPropertyNames = null;
+            if (navObjectNameColumnInfo?.Navigat?.QueryPropertyNames?.Any()==true)
+            {
+                var navInfo = navObjectNameColumnInfo?.Navigat;
+                queryPropertyNames = navObjectNameColumnInfo.Navigat.QueryPropertyNames;
+                var list = queryPropertyNames.ToList();
+                if (navInfo.AClassId != null) 
+                {
+                    list.Add(navInfo.AClassId);
+                }
+                if (navInfo.BClassId != null)
+                {
+                    list.Add(navInfo.BClassId);
+                }
+                if (navInfo.Name != null)
+                {
+                    list.Add(navInfo.Name);
+                }
+                if (navInfo.Name2 != null)
+                {
+                    list.Add(navInfo.Name2);
+                }
+                queryPropertyNames = list.ToArray();
+            }
+            return queryPropertyNames;
+        }
     }
 }

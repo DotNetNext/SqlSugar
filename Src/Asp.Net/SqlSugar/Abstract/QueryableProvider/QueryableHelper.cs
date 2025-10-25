@@ -13,7 +13,7 @@ using System.Collections.ObjectModel;
 using NetTaste;
 using Newtonsoft.Json.Linq;
 using System.Xml.Linq;
-using System.Runtime.CompilerServices;
+using System.Runtime.CompilerServices; 
 
 
 namespace SqlSugar
@@ -865,6 +865,15 @@ namespace SqlSugar
                     else if (propertyInfo.PropertyType.FullName == "System.Ulid") 
                     {
                         propertyInfo.SetValue(addItem,UtilMethods.To( kv.Value, propertyInfo.PropertyType));
+                    }
+                    else if (kv.Value is string s&&
+                             s!=null&&
+                             s?.StartsWith("[")==true&&
+                             s?.EndsWith("]") == true&&
+                             UtilMethods.IsArrayOrList(propertyInfo.PropertyType)
+                             )
+                    {
+                        propertyInfo.SetValue(addItem,  UtilMethods.ConvertToArray(kv.Value?.ToString(), propertyInfo.PropertyType));
                     }
                     else
                     {

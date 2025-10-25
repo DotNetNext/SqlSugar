@@ -18,7 +18,65 @@ namespace SqlSugar
 {
     public class UtilMethods
     {
+        public static bool IsArrayOrList(Type propertyType) 
+        { 
+            if (propertyType==null||propertyType == typeof(string))
+                return false; 
+            var isList = propertyType.FullName.IsCollectionsList();
+            var isArray = propertyType.IsArray;
+            return isList || isArray;
+        }
+        public static object ConvertToArray(string input, Type targetType)
+        {
+            // 获取元素类型和集合类型
+            Type elementType;
+            bool isArray = targetType.IsArray;
+            bool isList = targetType.IsGenericType && targetType.GetGenericTypeDefinition() == typeof(List<>);
 
+            if (!isArray && !isList)
+                throw new ArgumentException("目标类型必须是数组或List类型");
+
+            elementType = isArray ? targetType.GetElementType() : targetType.GetGenericArguments()[0];
+
+            // 处理空输入
+            if (string.IsNullOrEmpty(input))
+            {
+                if (isArray)
+                    return Array.CreateInstance(elementType, 0);
+                else
+                    return Activator.CreateInstance(typeof(List<>).MakeGenericType(elementType));
+            }
+
+            // 解析输入字符串
+            var elements = input.Trim('[', ']').Split(',');
+
+            if (isArray)
+            {
+                // 处理数组
+                Array array = Array.CreateInstance(elementType, elements.Length);
+                for (int i = 0; i < elements.Length; i++)
+                {
+                    string element = elements[i]?.Trim()?.TrimStart('"')?.TrimEnd('"');
+                    array.SetValue(UtilMethods.ChangeType2(element, elementType), i);
+                }
+                return array;
+            }
+            else
+            {
+                // 处理List
+                var list = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(elementType));
+                for (int i = 0; i < elements.Length; i++)
+                {
+                    string element = elements[i]?.Trim()?.TrimStart('"')?.TrimEnd('"');
+                    list.Add(UtilMethods.ChangeType2(element, elementType));
+                }
+                return list;
+            }
+        }
+        internal static DbType? GetDatabaseType(ExpressionContext context)
+        {
+            return context?.SugarContext?.Context?.CurrentConnectionConfig?.DbType;
+        }
         internal static void SetDefaultValueForBoolean(EntityColumnInfo item, Type propertyType)
         {
             if (propertyType == UtilConstants.BoolType && item.DefaultValue != null && item.DefaultValue.EqualCase("true"))
