@@ -303,7 +303,19 @@ namespace SqlSugar
                 GetTopLevelMethodCalls(lambdaExpression.Body, methodCalls);
             }
         }
-
+        public static Dictionary<string, Expression> GetNewExpressionItemListNew(Expression lamExp)
+        {
+            var caseExp = GetLambdaExpressionBody(lamExp); 
+            caseExp = ExpressionTool.RemoveConvert(lamExp);
+            if (caseExp is MemberExpression c)
+            {
+                return new Dictionary<string, Expression>() { { c.Member.Name, c } };
+            }
+            else 
+            {
+                return GetNewExpressionItemList(lamExp);
+            }
+        }
         public static Dictionary<string, Expression> GetNewExpressionItemList(Expression lamExp)
         {
             var caseExp = GetLambdaExpressionBody(lamExp);

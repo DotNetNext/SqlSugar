@@ -246,18 +246,14 @@ namespace SqlSugar
         }
 
         public async Task<int> BulkMergeAsync(List<T> datas, Expression<Func<T, object>> whereColumnsExp, Expression<Func<T, object>> updateColumnsExp)
-        {
-            // 步骤：
-            // 1. 通过表达式获取 whereColumns 和 updateColumns 的列名数组
-            // 2. 调用已有的 BulkMergeAsync(List<T>, string[], string[]) 方法
-
+        { 
             // 1. 获取 whereColumns
-            var whereColumns =ExpressionTool.GetNewArrayMembers((whereColumnsExp as LambdaExpression).Body as NewArrayExpression);
+            var whereColumns =ExpressionTool.GetNewExpressionItemListNew((whereColumnsExp as LambdaExpression).Body).Select(it=>it.Key).ToArray();
             // 2. 获取 updateColumns
-            var updateColumns = ExpressionTool.GetNewArrayMembers((updateColumnsExp as LambdaExpression).Body as NewArrayExpression);
+            var updateColumns = ExpressionTool.GetNewExpressionItemListNew((updateColumnsExp as LambdaExpression).Body).Select(it => it.Key).ToArray(); 
 
             // 3. 调用 BulkMergeAsync
-            return await BulkMergeAsync(datas, whereColumns?.ToArray(), updateColumns?.ToArray());
+            return await BulkMergeAsync(datas, whereColumns, updateColumns);
         }
         public int BulkMerge(List<T> datas, Expression<Func<T, object>> whereColumnsExp, Expression<Func<T, object>> updateColumnsExp)
         {
