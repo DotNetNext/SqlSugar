@@ -312,14 +312,14 @@ namespace SqlSugar
                 {
                     hasNolock = true;
                 }
-                var result = it.GetValue(it.Expression);
-                var isJoin = (it is SubLeftJoin || it is SubInnerJoin);
+                var innerResult = it.GetValue(it.Expression);
+                var innerIsJoin = (it is SubLeftJoin || it is SubInnerJoin);
                 var isSqlServer =UtilMethods.GetDatabaseType(this.context) == DbType.SqlServer;
-                if (hasNolock && isJoin&& isSqlServer)
+                if (hasNolock && innerIsJoin&& isSqlServer)
                 {
-                    result = result.Replace("] ON (", "] " + SqlWith.NoLock + " ON (");
+                    innerResult = innerResult.Replace("] ON (", "] " + SqlWith.NoLock + " ON (");
                 }
-                return result;
+                return innerResult;
             }).ToList();
             if (this.context?.SugarContext?.Context?.CurrentConnectionConfig?.DbType == DbType.Oracle && isubList.Any(s => s is SubSelect) && isubList.Any(s => s is SubOrderBy || s is SubOrderByDesc))
             {

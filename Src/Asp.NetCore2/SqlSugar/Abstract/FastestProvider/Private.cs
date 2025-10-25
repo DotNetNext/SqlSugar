@@ -125,11 +125,11 @@ namespace SqlSugar
                 var tempColumns = tempDataTable.Columns.Cast<DataColumn>().Select(it=>it.ColumnName);
                 columns = columns.Where(it => tempColumns.Any(s => s.EqualCase(it.DbColumnName))).ToList();
             }
-            var (isDiscrimator, discrimatorDict) = GetDiscrimator();
+            MyTuple myTuple = GetDiscrimator();
 
-            if (isDiscrimator && discrimatorDict?.Count > 0)
+            if (myTuple.isDiscrimator && myTuple.discrimatorDict?.Count > 0)
             {
-                foreach (var dict in discrimatorDict)
+                foreach (var dict in myTuple.discrimatorDict)
                 {
                     if (!dt.Columns.Contains(dict.Key))
                         dt.Columns.Add(dict.Key);
@@ -199,9 +199,9 @@ namespace SqlSugar
                     }
                     dr[name] = value;
                 }
-                if (isDiscrimator && discrimatorDict?.Count > 0)
+                if (myTuple.isDiscrimator && myTuple.discrimatorDict?.Count > 0)
                 {
-                    foreach (var dict in discrimatorDict)
+                    foreach (var dict in myTuple.discrimatorDict)
                     {
                         var key = dict.Key; var val = dict.Value;
                         if (!string.IsNullOrWhiteSpace(val) && string.IsNullOrWhiteSpace(dr[key] + ""))
@@ -393,7 +393,7 @@ namespace SqlSugar
             }
         }
 
-        private (bool isDiscrimator, Dictionary<string, string> discrimatorDict) GetDiscrimator()
+        private MyTuple GetDiscrimator()
         {
             var isDiscrimator = entityInfo.Discrimator.HasValue();
             var dict = new Dictionary<string, string>();
@@ -405,12 +405,24 @@ namespace SqlSugar
                 {
                     var name = disItem.Split(':').First();
                     var value = disItem.Split(':').Last();
-                    dict.TryAdd(name, value);
+                    if(!dict.ContainsKey(name))
+                       dict.Add(name, value);
                 }
-            }
-
-            return (isDiscrimator, dict);
+            } 
+            return new MyTuple(isDiscrimator, dict);
         }
 
+    }
+
+    internal class MyTuple
+    {
+        public bool isDiscrimator;
+        public Dictionary<string, string> discrimatorDict;
+
+        public MyTuple(bool isDiscrimator, Dictionary<string, string> dict)
+        {
+            this.isDiscrimator = isDiscrimator;
+            this.discrimatorDict = dict;
+        }
     }
 }
