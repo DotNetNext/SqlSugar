@@ -959,7 +959,8 @@ namespace SqlSugar
                     ClickHouseEnableFinal=it.MoreSettings.ClickHouseEnableFinal,
                     PgSqlIsAutoToLowerSchema=it.MoreSettings.PgSqlIsAutoToLowerSchema,
                     EnableJsonb=it.MoreSettings.EnableJsonb,
-                    PostgresIdentityStrategy = it.MoreSettings.PostgresIdentityStrategy
+                    PostgresIdentityStrategy = it.MoreSettings.PostgresIdentityStrategy,
+                    InnerTemp=it.MoreSettings?.InnerTemp
 
                 },
                 SqlMiddle = it.SqlMiddle == null ? null : new SqlMiddle
