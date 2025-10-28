@@ -27,9 +27,9 @@ namespace SqlSugar
             {
                 return OffsetPage();
             }
-            else if (this.Take==1&&this.Skip==0)
+            else if (this.Take==1&&this.Skip==0&&this.TranLock==null&&this.OrderByValue!= "ORDER BY sysdate ")
             {
-                return OffsetPage();
+                return FirstSql();
             }
             var oldTake = Take;
             var oldSkip = Skip;
@@ -67,6 +67,16 @@ namespace SqlSugar
             this.Take = null;
             this.Offset = null;
             var pageSql = $"SELECT * FROM ( SELECT PAGETABLE1.*,ROWNUM PAGEINDEX FROM( { this.ToSqlString() }) PAGETABLE1 WHERE ROWNUM<={skip+take}) WHERE PAGEINDEX>={(skip==0?skip:(skip+1))}";
+            return pageSql;
+        }
+        private string FirstSql()
+        {
+            var skip = this.Skip ?? 1;
+            var take = this.Take;
+            this.Skip = null;
+            this.Take = null;
+            this.Offset = null;
+            var pageSql = $"SELECT * FROM( {this.ToSqlString()}) PAGETABLE1 WHERE ROWNUM<={skip + take}";
             return pageSql;
         }
 
