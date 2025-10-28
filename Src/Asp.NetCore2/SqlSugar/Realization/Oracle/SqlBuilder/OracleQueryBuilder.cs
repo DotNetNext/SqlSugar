@@ -27,7 +27,7 @@ namespace SqlSugar
             {
                 return OffsetPage();
             }
-            else if (this.Take==1&&this.Skip==0&&this.TranLock==null)
+            else if (this.Take==1&&this.Skip==0&&this.TranLock==null&&this.OrderByValue!= "ORDER BY sysdate ")
             {
                 return FirstSql();
             }
