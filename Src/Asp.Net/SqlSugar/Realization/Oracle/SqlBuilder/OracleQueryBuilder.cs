@@ -27,6 +27,10 @@ namespace SqlSugar
             {
                 return OffsetPage();
             }
+            else if (this.Take==1&&this.Skip==0)
+            {
+                return OffsetPage();
+            }
             var oldTake = Take;
             var oldSkip = Skip;
             var isDistinctPage = IsDistinct && (Take > 1 || Skip > 1);
@@ -135,6 +139,9 @@ namespace SqlSugar
             string temp = isExternal ? ExternalPageTempalte : PageTempalte;
             return string.Format(temp, sql.ToString(), (pageIndex - 1) * pageSize + 1, pageIndex * pageSize);
         }
-
+        public override string GetExternalOrderBy(string externalOrderBy)
+        {
+            return Regex.Replace(externalOrderBy, @"\""\w+\""\.", "");
+        }
     }
 }
