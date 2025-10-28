@@ -246,12 +246,15 @@ namespace SqlSugar
         }
 
         public async Task<int> BulkMergeAsync(List<T> datas, Expression<Func<T, object>> whereColumnsExp, Expression<Func<T, object>> updateColumnsExp)
-        { 
+        {
+            var columnInfos = this.context.EntityMaintenance.GetEntityInfo<T>().Columns;
             // 1. 获取 whereColumns
             var whereColumns =ExpressionTool.GetNewExpressionItemListNew((whereColumnsExp as LambdaExpression).Body).Select(it=>it.Key).ToArray();
             // 2. 获取 updateColumns
-            var updateColumns = ExpressionTool.GetNewExpressionItemListNew((updateColumnsExp as LambdaExpression).Body).Select(it => it.Key).ToArray(); 
+            var updateColumns = ExpressionTool.GetNewExpressionItemListNew((updateColumnsExp as LambdaExpression).Body).Select(it => it.Key).ToArray();
 
+            updateColumns = updateColumns.Select(s =>
+            columnInfos.Where(ec => ec.DbColumnName.EqualCase(s)|| ec.PropertyName.EqualCase(s)).FirstOrDefault()?.DbColumnName ?? s).ToArray();
             // 3. 调用 BulkMergeAsync
             return await BulkMergeAsync(datas, whereColumns, updateColumns);
         }
