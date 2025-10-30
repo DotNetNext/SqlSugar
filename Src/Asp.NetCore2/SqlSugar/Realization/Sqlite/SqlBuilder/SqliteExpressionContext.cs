@@ -105,6 +105,10 @@ namespace SqlSugar
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
+            if (parameter2.MemberValue is string s && s?.Contains("\\%") == true)
+            {
+                return string.Format(" ({0} like '%'||{1}||'%' escape '\\'  ) ", parameter.MemberName, parameter2.MemberName); ;
+            }
             return string.Format(" ({0} like '%'||{1}||'%') ", parameter.MemberName, parameter2.MemberName);
         }
 
@@ -112,6 +116,10 @@ namespace SqlSugar
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
+            if (parameter2.MemberValue is string s && s?.Contains("\\%") == true)
+            {
+                return string.Format(" ({0} like {1}||'%' escape '\\'  ) ", parameter.MemberName, parameter2.MemberName); ;
+            }
             return string.Format(" ({0} like {1}||'%') ", parameter.MemberName, parameter2.MemberName);
         }
 
@@ -119,6 +127,10 @@ namespace SqlSugar
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
+            if (parameter2.MemberValue is string s && s?.Contains("\\%") == true)
+            {
+                return string.Format(" ({0} like '%'||{1} escape '\\'  ) ", parameter.MemberName, parameter2.MemberName); ;
+            }
             return string.Format("  ({0} like '%'||{1}) ", parameter.MemberName, parameter2.MemberName);
         }
 
