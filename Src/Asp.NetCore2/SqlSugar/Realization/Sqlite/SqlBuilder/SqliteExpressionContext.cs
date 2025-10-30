@@ -105,7 +105,7 @@ namespace SqlSugar
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
-            if (parameter2.MemberValue is string s && s?.Contains("\\%") == true)
+            if (IsEscapedLikePattern(parameter2))
             {
                 return string.Format(" ({0} like '%'||{1}||'%' escape '\\'  ) ", parameter.MemberName, parameter2.MemberName); ;
             }
@@ -116,7 +116,7 @@ namespace SqlSugar
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
-            if (parameter2.MemberValue is string s && s?.Contains("\\%") == true)
+            if (IsEscapedLikePattern(parameter2))
             {
                 return string.Format(" ({0} like {1}||'%' escape '\\'  ) ", parameter.MemberName, parameter2.MemberName); ;
             }
@@ -127,11 +127,18 @@ namespace SqlSugar
         {
             var parameter = model.Args[0];
             var parameter2 = model.Args[1];
-            if (parameter2.MemberValue is string s && s?.Contains("\\%") == true)
+            if (IsEscapedLikePattern(parameter2))
             {
                 return string.Format(" ({0} like '%'||{1} escape '\\'  ) ", parameter.MemberName, parameter2.MemberName); ;
             }
             return string.Format("  ({0} like '%'||{1}) ", parameter.MemberName, parameter2.MemberName);
+        }
+
+        private static bool IsEscapedLikePattern(MethodCallExpressionArgs parameter2)
+        {
+            return parameter2.MemberValue is string s && s?.Contains("\\%") == true||
+                   parameter2.MemberValue is string s2 && s2?.Contains("\\_") == true
+                ;
         }
 
         public override string ToInt32(MethodCallExpressionModel model)
