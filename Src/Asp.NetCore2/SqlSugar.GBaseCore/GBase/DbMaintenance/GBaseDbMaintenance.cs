@@ -158,7 +158,7 @@ where a.tabtype in ('V')  and not (a.tabname like 'sys%') AND a.tabname <>'dual'
         {
             get
             {
-                return "DROP TABLE {0}";
+                return "DROP TABLE IF EXISTS {0}";
             }
         }
         protected override string DropColumnToTableSql

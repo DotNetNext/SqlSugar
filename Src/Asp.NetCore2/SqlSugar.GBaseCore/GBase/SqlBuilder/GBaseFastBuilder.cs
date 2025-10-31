@@ -15,6 +15,7 @@ namespace SqlSugar.GBase
         public bool IsActionUpdateColumns { get; set; }
 
         private DataTable _schema = null;
+        private string _temp_table_prefix = "Temp_GBASE_C2B986DE_EF71_4173_8632_D615B2543D30";
         public DbFastestProperties DbFastestProperties { get; set; } = new DbFastestProperties()
         {
             IsMerge = true
@@ -40,108 +41,125 @@ namespace SqlSugar.GBase
             var dts = dt.Columns.Cast<DataColumn>().Select(it => sqlBuilder.GetTranslationColumnName(it.ColumnName)).ToList();
 
             var oldTableName = dt.TableName;
-            dt.TableName = "Temp" + SnowFlakeSingle.instance.getID().ToString();
+            dt.TableName = _temp_table_prefix + SnowFlakeSingle.instance.getID().ToString();
             var sql = this.Context.Queryable<T>().AS(oldTableName).Where(it => false).Select(string.Join(",", dts)).ToSql().Key;
             await this.Context.Ado.ExecuteCommandAsync($"CREATE TABLE {dt.TableName} AS {sql} ");
         }
 
         public async Task<int> ExecuteBulkCopyAsync(DataTable dt)
         {
-            foreach (var item in this.FastEntityInfo.Columns)
+            try
             {
-                if (item.IsIdentity && dt.Columns.Contains(item.DbColumnName))
+                foreach (var item in this.FastEntityInfo.Columns)
                 {
-                    dt.Columns.Remove(item.DbColumnName);
+                    if (item.IsIdentity && dt.Columns.Contains(item.DbColumnName))
+                    {
+                        dt.Columns.Remove(item.DbColumnName);
+                    }
                 }
-            }
-            var dictionary = this.Context.Utilities.DataTableToDictionaryList(dt.Rows.Cast<DataRow>().Take(1).CopyToDataTable());
-            int result = 0;
-            var cn = this.Context.Ado.Connection as GbsConnection;
-            Open(cn);
-            if (this.Context.Ado.Transaction == null)
-            {
-                using (var transaction = cn.BeginTransaction())
+                var dictionary = this.Context.Utilities.DataTableToDictionaryList(dt.Rows.Cast<DataRow>().Take(1).CopyToDataTable());
+                int result = 0;
+                var cn = this.Context.Ado.Connection as GbsConnection;
+                Open(cn);
+                if (this.Context.Ado.Transaction == null)
                 {
-                    result = await _BulkCopy(dt, dictionary, cn, transaction);
-                    transaction.Commit();
+                    using (var transaction = cn.BeginTransaction())
+                    {
+                        result = await _BulkCopy(dt, dictionary, cn, transaction);
+                        transaction.Commit();
+                    }
                 }
-            }
-            else
-            {
-                result = await _BulkCopy(dt, dictionary, cn, this.Context.Ado.Transaction);
-            }
+                else
+                {
+                    result = await _BulkCopy(dt, dictionary, cn, this.Context.Ado.Transaction);
+                }
 
-            return result;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                this.DropTempTable(dt.TableName);
+                throw ex;
+            }
         }
 
         public async Task<int> UpdateByTempAsync(string tableName, string tempName, string[] updateColumns, string[] whereColumns)
         {
             Check.ArgumentNullException(!updateColumns.Any(), "update columns count is 0");
             Check.ArgumentNullException(!whereColumns.Any(), "where columns count is 0");
-
-            var cn = this.Context.Ado.Connection as GbsConnection;
-            Open(cn);
-
-            // remove identity from update columns
-            // tempName has the same schema with tableName.
-            SetupSchemaTable(cn, this.Context.Ado.Transaction, tempName);
-            foreach (DataRow row in this._schema.Select("IsIdentity = true"))
+            try
             {
-                var column = updateColumns.FirstOrDefault(o => string.Equals(o, (string)row["ColumnName"], StringComparison.OrdinalIgnoreCase));
-                if (column != null)
+                var cn = this.Context.Ado.Connection as GbsConnection;
+                Open(cn);
+
+                // remove identity from update columns
+                // tempName has the same schema with tableName.
+                SetupSchemaTable(cn, this.Context.Ado.Transaction, tempName);
+                foreach (DataRow row in this._schema.Select("IsIdentity = true"))
                 {
-                    updateColumns = updateColumns.Where(o => !string.Equals(o, (string)row["ColumnName"], StringComparison.OrdinalIgnoreCase)).ToArray();
+                    var column = updateColumns.FirstOrDefault(o => string.Equals(o, (string)row["ColumnName"], StringComparison.OrdinalIgnoreCase));
+                    if (column != null)
+                    {
+                        updateColumns = updateColumns.Where(o => !string.Equals(o, (string)row["ColumnName"], StringComparison.OrdinalIgnoreCase)).ToArray();
+                    }
                 }
-            }
-            var sqlBuilder = this.Context.Queryable<object>().SqlBuilder;
-            var whereSql = string.Join("  AND  ", whereColumns.Select(it => $"tgt.{sqlBuilder.GetTranslationColumnName(it)}=src.{sqlBuilder.GetTranslationColumnName(it)}"));
-            var updateColumnsSql = string.Join(" , ", updateColumns.Select(it => $"tgt.{sqlBuilder.GetTranslationColumnName(it)}=src.{sqlBuilder.GetTranslationColumnName(it)}"));
-            var sql = $@"MERGE INTO {sqlBuilder.GetTranslationColumnName(tableName)} tgt
+                var sqlBuilder = this.Context.Queryable<object>().SqlBuilder;
+                var whereSql = string.Join("  AND  ", whereColumns.Select(it => $"tgt.{sqlBuilder.GetTranslationColumnName(it)}=src.{sqlBuilder.GetTranslationColumnName(it)}"));
+                var updateColumnsSql = string.Join(" , ", updateColumns.Select(it => $"tgt.{sqlBuilder.GetTranslationColumnName(it)}=src.{sqlBuilder.GetTranslationColumnName(it)}"));
+                var sql = $@"MERGE INTO {sqlBuilder.GetTranslationColumnName(tableName)} tgt
 USING {sqlBuilder.GetTranslationColumnName(tempName)} src
 ON ({whereSql})
 WHEN MATCHED THEN
     UPDATE SET {updateColumnsSql}";
 
-            return await this.Context.Ado.ExecuteCommandAsync(sql);
+                return await this.Context.Ado.ExecuteCommandAsync(sql);
+            }
+            catch (Exception ex)
+            {
+                this.DropTempTable(tempName);
+                throw ex;
+            }
         }
 
         public async Task<int> Merge<T>(string tableName, DataTable dt, EntityInfo entityInfo, string[] whereColumns, string[] updateColumns, List<T> datas) where T : class, new()
         {
             Check.Exception(this.FastEntityInfo.Columns.Any(it => it.OracleSequenceName.HasValue()), "The BulkMerge method cannot be used for  sequence", "BulkMerge方法不能用序列");
-            var sqlBuilder = this.Context.Queryable<object>().SqlBuilder;
-            var insertColumns = entityInfo.Columns
-                .Where(it => it.IsIgnore == false)
-                .Where(it => it.IsIdentity == false)
-                .Where(it => it.InsertServerTime == false)
-                .Where(it => it.InsertSql == null)
-                .Where(it => it.OracleSequenceName == null)
-                .Where(it => it.IsOnlyIgnoreInsert == false);
-
-            // remove the identity column from the insert and update column
-            var cn = this.Context.Ado.Connection as GbsConnection;
-            Open(cn);
-            SetupSchemaTable(cn, this.Context.Ado.Transaction, dt.TableName);
-            foreach (DataRow row in this._schema.Select("IsIdentity = true"))
+            try
             {
-                // remove identity from insert columns
-                if (insertColumns.FirstOrDefault(o => string.Equals(o.DbColumnName,(string)row["ColumnName"], StringComparison.OrdinalIgnoreCase)) != null)
+                var sqlBuilder = this.Context.Queryable<object>().SqlBuilder;
+                var insertColumns = entityInfo.Columns
+                    .Where(it => it.IsIgnore == false)
+                    .Where(it => it.IsIdentity == false)
+                    .Where(it => it.InsertServerTime == false)
+                    .Where(it => it.InsertSql == null)
+                    .Where(it => it.OracleSequenceName == null)
+                    .Where(it => it.IsOnlyIgnoreInsert == false);
+
+                // remove the identity column from the insert and update column
+                var cn = this.Context.Ado.Connection as GbsConnection;
+                Open(cn);
+                SetupSchemaTable(cn, this.Context.Ado.Transaction, dt.TableName);
+                foreach (DataRow row in this._schema.Select("IsIdentity = true"))
                 {
-                    insertColumns = insertColumns.Where(o => !string.Equals(o.DbColumnName, (string)row["ColumnName"], StringComparison.OrdinalIgnoreCase));
+                    // remove identity from insert columns
+                    if (insertColumns.FirstOrDefault(o => string.Equals(o.DbColumnName,(string)row["ColumnName"], StringComparison.OrdinalIgnoreCase)) != null)
+                    {
+                        insertColumns = insertColumns.Where(o => !string.Equals(o.DbColumnName, (string)row["ColumnName"], StringComparison.OrdinalIgnoreCase));
+                    }
+
+                    // remove identity from update columns
+                    var column =  updateColumns.FirstOrDefault(o => string.Equals(o, (string)row["ColumnName"], StringComparison.OrdinalIgnoreCase));
+                    if (column != null)
+                    {
+                        updateColumns = updateColumns.Where(o => !string.Equals(o, (string)row["ColumnName"], StringComparison.OrdinalIgnoreCase)).ToArray();
+                    }
                 }
 
-                // remove identity from update columns
-                var column =  updateColumns.FirstOrDefault(o => string.Equals(o, (string)row["ColumnName"], StringComparison.OrdinalIgnoreCase));
-                if (column != null)
-                {
-                    updateColumns = updateColumns.Where(o => !string.Equals(o, (string)row["ColumnName"], StringComparison.OrdinalIgnoreCase)).ToArray();
-                }
-            }
-
-            var whereSql = string.Join("  AND  ", whereColumns.Select(it => $"tgt.{sqlBuilder.GetTranslationColumnName(it)}=src.{sqlBuilder.GetTranslationColumnName(it)}"));
-            var updateColumnsSql = string.Join(" , ", updateColumns.Select(it => $"tgt.{sqlBuilder.GetTranslationColumnName(it)}=src.{sqlBuilder.GetTranslationColumnName(it)}"));
-            var insertColumnsSqlTgt = string.Join(" , ", insertColumns.Select(it => "tgt." + sqlBuilder.GetTranslationColumnName(it.DbColumnName)));
-            var insertColumnsSqlsrc = string.Join(" , ", insertColumns.Select(it => "src." + sqlBuilder.GetTranslationColumnName(it.DbColumnName)));
-            var sql = $@"MERGE INTO {sqlBuilder.GetTranslationColumnName(tableName)} tgt
+                var whereSql = string.Join("  AND  ", whereColumns.Select(it => $"tgt.{sqlBuilder.GetTranslationColumnName(it)}=src.{sqlBuilder.GetTranslationColumnName(it)}"));
+                var updateColumnsSql = string.Join(" , ", updateColumns.Select(it => $"tgt.{sqlBuilder.GetTranslationColumnName(it)}=src.{sqlBuilder.GetTranslationColumnName(it)}"));
+                var insertColumnsSqlTgt = string.Join(" , ", insertColumns.Select(it => "tgt." + sqlBuilder.GetTranslationColumnName(it.DbColumnName)));
+                var insertColumnsSqlsrc = string.Join(" , ", insertColumns.Select(it => "src." + sqlBuilder.GetTranslationColumnName(it.DbColumnName)));
+                var sql = $@"MERGE INTO {sqlBuilder.GetTranslationColumnName(tableName)} tgt
 USING {sqlBuilder.GetTranslationColumnName(dt.TableName)} src
 ON ({whereSql})
 WHEN MATCHED THEN
@@ -149,8 +167,13 @@ WHEN MATCHED THEN
 WHEN NOT MATCHED THEN
     INSERT ({insertColumnsSqlTgt})
     VALUES ({insertColumnsSqlsrc})";
-
-            return await this.Context.Ado.ExecuteCommandAsync(sql);
+                return await this.Context.Ado.ExecuteCommandAsync(sql);
+            }
+            catch (Exception ex)
+            {
+                this.DropTempTable(dt.TableName);
+                throw ex;
+            }
         }
 
         private void SetupSchemaTable(GbsConnection cn, IDbTransaction transaction, string table_name)
@@ -358,6 +381,15 @@ WHEN NOT MATCHED THEN
             if (cn.State != ConnectionState.Open)
             {
                 cn.Open();
+            }
+        }
+
+        private void DropTempTable(string tableName)
+        {
+            if (tableName.StartsWith(_temp_table_prefix))
+            {
+                // it is a temp table.
+                this.Context.DbMaintenance.DropTable(tableName);
             }
         }
     }
