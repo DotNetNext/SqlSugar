@@ -41,7 +41,7 @@ namespace SqlSugar
             string copyString = $"COPY  {dt.TableName} ( {string.Join(",", lsColNames)} ) FROM STDIN (FORMAT BINARY)";
             var innertemp = this.Context.CurrentConnectionConfig?.MoreSettings?.InnerTemp as DbType?;
             if (this.Context?.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.OpenGauss ||
-                (this.Context?.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.Vastbase && innertemp == DbType.MySql))
+                this.Context?.CurrentConnectionConfig?.MoreSettings?.DatabaseModel == DbType.Vastbase)
             {
                 copyString = copyString.Replace("(FORMAT BINARY)", "(FORMAT 'BINARY')");
             }
