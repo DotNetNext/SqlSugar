@@ -106,6 +106,11 @@ namespace SqlSugar
                 result = $" {sql.ToString()} {(this.WhereInfos.Any()?"AND":"WHERE")}   ROWNUM = 1 ";
                 result = result.Replace(rowNumberString, " ");
             }
+            if (!string.IsNullOrEmpty(this.TranLock)&&this.GetGroupByString == null && this.Take >1 && this.Skip == null && oldOrderBy == null)
+            {
+                result = $" {sql.ToString()} {(this.WhereInfos.Any() ? "AND" : "WHERE")}   ROWNUM <= {this.Take} ";
+                result = result.Replace(rowNumberString, " ");
+            }
             if (ExternalPageIndex > 0)
             {
                 if (externalOrderBy.IsNullOrEmpty())
