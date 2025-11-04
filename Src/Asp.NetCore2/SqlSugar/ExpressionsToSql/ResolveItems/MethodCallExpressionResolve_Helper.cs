@@ -607,6 +607,28 @@ namespace SqlSugar
                 exp = (exp as UnaryExpression).Operand;
             }
             var member = exp as MemberExpression;
+
+            // TODO:  我这里只是简单判断 exp1 是否是表达式
+            object sqlCondition = null;
+
+            // 如果是表达式，按表达条件走
+            if (exp is ConditionalExpression exp1)
+            {
+
+                // TODO:  这里需要处理从表达转换为 SQL，这里只是简单处理了
+                var model = new MethodCallExpressionModel() { Args = new List<MethodCallExpressionArgs>() };
+                member = exp1.Test as MemberExpression;
+
+                model.Args.Add(new MethodCallExpressionArgs() { MemberValue = exp1.Test, MemberName = exp1.Test });
+                model.Args.Add(new MethodCallExpressionArgs() { MemberValue = exp1.IfTrue, MemberName = exp1.IfTrue });
+                model.Args.Add(new MethodCallExpressionArgs() { MemberValue = exp1.IfFalse, MemberName = exp1.IfFalse });
+                model.Expression = exp;
+
+                // 一个简单的，只处理 PgSql 返回类型的方式
+                sqlCondition = IIF_Ex(model);
+            }
+
+
             var it = member.Expression;
             var type = it.Type;
             var properyName = member.Member.Name;
@@ -615,7 +637,17 @@ namespace SqlSugar
             {
                 this.Context.SingleTableNameSubqueryShortName = it.ToString();
             }
-            sql = string.Format(sql, entity.Value, this.Context.GetTranslationColumnName(entity.TableName), entity.Key, eqName);
+
+            // TODO: 根据变化重新拼接
+            if (sqlCondition == null)
+            {
+                sql = string.Format(sql, entity.Value, this.Context.GetTranslationColumnName(entity.TableName), entity.Key, eqName);
+            }
+            else
+            {
+                sql = string.Format(sql, entity.Value, this.Context.GetTranslationColumnName(entity.TableName), entity.Key, sqlCondition);
+            }
+
             if (entity.Parameter != null)
             {
                 foreach (var item in entity.Parameter)
@@ -640,6 +672,36 @@ namespace SqlSugar
             {
                 AppendMember(parameter, parameter.IsLeft, sql);
             }
+        }
+
+        string IIF_Ex(MethodCallExpressionModel model)
+        {
+            var parameter = model.Args[0];
+            var parameter2 = model.Args[1];
+            var parameter3 = model.Args[2];
+            var ifTrue = parameter2.MemberName.ObjToString();
+            var ifFalse = parameter3.MemberName.ObjToString();
+            if (ifTrue == ifFalse)
+            {
+                return $" {parameter2.MemberName} ";
+            }
+            if (model.Parameters != null
+                && model.Conext != null
+                && ifTrue.StartsWith(model.Conext?.SqlParameterKeyWord)
+                && ifFalse.StartsWith(model.Conext?.SqlParameterKeyWord))
+            {
+                var p2 = model.Parameters.Where(it => it.ParameterName != null).FirstOrDefault(it => it.ParameterName.Equals(ifTrue));
+                var p3 = model.Parameters.Where(it => it.ParameterName != null).FirstOrDefault(it => it.ParameterName.Equals(ifFalse));
+                if (p2 != null && p3 != null)
+                {
+                    if (p2.Value?.Equals(p3.Value) == true)
+                    {
+                        model.Parameters.Remove(p3);
+                        return $" {parameter2.MemberName} ";
+                    }
+                }
+            }
+            return string.Format("( CASE  WHEN  {0} THEN N'{1}'  ELSE N'{2}' END )", parameter.MemberName.ToString().ToLower(), parameter2.MemberName.ToString().Trim('\"'), parameter3.MemberName.ToString().Trim('\"'));
         }
         private object GetMethodValue(string name, MethodCallExpressionModel model)
         {
