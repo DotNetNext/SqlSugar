@@ -618,8 +618,11 @@ namespace SqlSugar
                 // TODO:  这里需要处理从表达转换为 SQL，这里只是简单处理了
                 var model = new MethodCallExpressionModel() { Args = new List<MethodCallExpressionArgs>() };
                 member = exp1.Test as MemberExpression;
-
-                model.Args.Add(new MethodCallExpressionArgs() { MemberValue = exp1.Test, MemberName = exp1.Test });
+                // 获取变量对应的 数据库列名
+                var it1 = member.Expression;
+                var type1 = it1.Type;
+                var properyName1 = member.Member.Name;
+                model.Args.Add(new MethodCallExpressionArgs() { MemberValue = exp1.Test, MemberName = this.Context.GetDbColumnName(type1.Name, properyName1) });
                 model.Args.Add(new MethodCallExpressionArgs() { MemberValue = exp1.IfTrue, MemberName = exp1.IfTrue });
                 model.Args.Add(new MethodCallExpressionArgs() { MemberValue = exp1.IfFalse, MemberName = exp1.IfFalse });
                 model.Expression = exp;
