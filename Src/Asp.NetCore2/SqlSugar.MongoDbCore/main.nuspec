@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>SqlSugar.MongoDbCore</id>
-    <version>5.1.4.259</version>
+    <version>5.1.4.271/version>
     <authors>sunkaixuan</authors>
     <owners>果糖大数据</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
@@ -19,7 +19,7 @@
 	  </dependencies>
   </metadata>
   <files>
-    <file src="G:\Git\SqlSugar\Src\Asp.NetCore2\SqlSugar.MongoDbCore\bin\Debug\netstandard2.1\SqlSugar.MongoDbCore.dll" target="lib\net6.0"></file>
-	<file src="G:\Git\SqlSugar\Src\Asp.NetCore2\SqlSugar.MongoDbCore\bin\Debug\netstandard2.1\MongoDb.Ado.Data.dll" target="lib\net6.0"></file>
+    <file src="G:\Git\SqlSugar\Src\Asp.NetCore2\SqlSugar.MongoDbCore\bin\Debug\netstandard2.1\SqlSugar.MongoDbCore.dll" target="lib\netstandard2.1"></file>
+	<file src="G:\Git\SqlSugar\Src\Asp.NetCore2\SqlSugar.MongoDbCore\bin\Debug\netstandard2.1\MongoDb.Ado.Data.dll" target="lib\netstandard2.1"></file>
   </files>
 </package>
