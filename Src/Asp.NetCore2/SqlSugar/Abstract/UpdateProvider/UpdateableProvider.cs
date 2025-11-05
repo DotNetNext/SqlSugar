@@ -641,6 +641,10 @@ namespace SqlSugar
         {
             ThrowUpdateByExpression();
             var updateColumns = UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.ArraySingle).GetResultArray().Select(it => this.SqlBuilder.GetNoTranslationColumnName(it)).ToList();
+            if (this.SqlBuilder?.SqlTranslationLeft==string.Empty&&columns is LambdaExpression l && l.Body is UnaryExpression u&&u.Operand is MemberExpression m && m.Type == UtilConstants.BoolType) 
+            {
+                updateColumns = new List<string> { UpdateBuilder.GetExpressionValue(columns, ResolveExpressType.FieldSingle)?.GetResultString() };
+            }
             if (this.UpdateBuilder.UpdateColumns == null)
             {
                 this.UpdateBuilder.UpdateColumns = new List<string>();
