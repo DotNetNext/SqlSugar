@@ -30,6 +30,7 @@ namespace OrmTest
             _a7_JsonType.Init();
             _a8_SelectReturnType.Init();
             _a9_GeometryTest.Init();
+            b10_GetConfigValueTest.Init();
         }
     }
 
