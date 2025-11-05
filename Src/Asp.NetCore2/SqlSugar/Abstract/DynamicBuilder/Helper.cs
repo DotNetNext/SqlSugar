@@ -84,7 +84,8 @@ namespace SqlSugar
                   attributeType.GetProperty(nameof(SugarColumn.IsOwnsOne)),
                   attributeType.GetProperty(nameof(SugarColumn.InsertServerTime)),
                   attributeType.GetProperty(nameof(SugarColumn.UpdateServerTime)),
-                  attributeType.GetProperty(nameof(SugarColumn.QuerySql))
+                  attributeType.GetProperty(nameof(SugarColumn.QuerySql)),
+                  attributeType.GetProperty(nameof(SugarColumn.CreateTableFieldSort))
             }
             , new object[] {
                     sugarTable.IsPrimaryKey,
@@ -112,7 +113,8 @@ namespace SqlSugar
                     sugarTable.IsOwnsOne,
                      sugarTable.InsertServerTime,
                       sugarTable.UpdateServerTime,
-                    sugarTable.QuerySql
+                    sugarTable.QuerySql,
+                    sugarTable.CreateTableFieldSort
              });
             return attributeBuilder;
         }
