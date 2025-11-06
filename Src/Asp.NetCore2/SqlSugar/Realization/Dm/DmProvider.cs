@@ -240,7 +240,8 @@ namespace SqlSugar
                     {
                         item.ParameterName = ":" + item.ParameterName.TrimStart('@');
                     }
-                    var paraNameIsIdentity = isSelectIdentity && item.ParameterName.EqualCase(":Identity");
+                    var paraNameIsIdentity = isSelectIdentity && 
+                        ( item.ParameterName.EqualCase(":Identity")|| item.ParameterName==":id");
                     if (paraNameIsIdentity) 
                     {
                         sql = sql.Replace(";select @@identity", "");
