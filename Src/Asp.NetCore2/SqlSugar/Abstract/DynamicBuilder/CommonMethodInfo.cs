@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading.Tasks; 
 
 namespace SqlSugar 
 {
@@ -65,6 +65,14 @@ namespace SqlSugar
         public UpdateCommonMethodInfo WhereColumns(params string[] columns)
         {
             var result = Context.GetType().GetMyMethod("WhereColumns", 1, typeof(string[])).Invoke(Context, new object[] { columns });
+            UpdateCommonMethodInfo updateCommonMethod = new UpdateCommonMethodInfo();
+            updateCommonMethod.Context = result;
+            return updateCommonMethod;
+        }
+
+        public UpdateCommonMethodInfo EnableQueryFilter()
+        {
+            var result = Context.GetType().GetMyMethod("EnableQueryFilter", 0).Invoke(Context, new object[] {   });
             UpdateCommonMethodInfo updateCommonMethod = new UpdateCommonMethodInfo();
             updateCommonMethod.Context = result;
             return updateCommonMethod;

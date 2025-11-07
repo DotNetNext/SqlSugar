@@ -123,5 +123,15 @@ namespace SqlSugar
                 Context = result
             };
         }
+        public UpdateCommonMethodInfo PageSize(int pageSize)
+        {
+            var inertable = MethodInfo.Invoke(Context, new object[] { objectValue });
+            var newMethod = inertable.GetType().GetMyMethod("PageSize", 1,typeof(int));
+            var result = newMethod.Invoke(inertable, new object[] { pageSize });
+            return new UpdateCommonMethodInfo()
+            {
+                Context = result
+            };
+        }
     }
 }
