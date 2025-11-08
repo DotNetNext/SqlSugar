@@ -104,6 +104,7 @@ namespace SqlSugar
         public DateTime GetDate()
         {
             var sqlBuilder = InstanceFactory.GetSqlbuilder(this.Context.CurrentConnectionConfig);
+            sqlBuilder.Context = this.Context;
             var obj= this.Ado.GetScalar(sqlBuilder.FullSqlDateNow);
             if (obj is DateTime s)
                 return s;

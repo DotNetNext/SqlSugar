@@ -17,7 +17,11 @@ using System.Text.RegularExpressions;
 namespace SqlSugar
 {
     public class UtilMethods
-    {
+    { 
+        public static DbType? GetDataBaseModel(ISqlSugarClient client)
+        {
+            return client?.CurrentConnectionConfig?.MoreSettings?.DatabaseModel;
+        }
         public static bool IsArrayOrList(Type propertyType) 
         { 
             if (propertyType==null||propertyType == typeof(string))
