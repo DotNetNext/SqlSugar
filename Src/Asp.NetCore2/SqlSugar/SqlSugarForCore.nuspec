@@ -23,7 +23,7 @@
         <dependency id="Oracle.ManagedDataAccess.Core" version="23.8.0" />
         <dependency id="Npgsql" version="5.0.18" />
 	    <dependency id="SqlSugarCore.Dm" version="8.8.1" />
-	    <dependency id="SqlSugarCore.Kdbndp" version="9.3.7.905" />
+	    <dependency id="SqlSugarCore.Kdbndp" version="9.3.7.1032" />
 		<dependency id="Oscar.Data.SqlClient" version="4.0.4" />
 		<dependency id="System.Text.RegularExpressions" version="4.3.1" />
       </group>
