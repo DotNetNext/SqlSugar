@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- 
+    SqlSugar Performance Benchmarking Suite
+    SqlSugar 性能基准测试套件
+    
+    This project provides comprehensive performance benchmarks for SqlSugar ORM,
+    comparing it with other popular ORMs like Dapper and Entity Framework Core.
+    本项目为 SqlSugar ORM 提供全面的性能基准测试，与 Dapper 和 Entity Framework Core 等其他流行 ORM 进行比较。
+  -->
+
+  <PropertyGroup>
+    <!-- Console application / 控制台应用程序 -->
+    <OutputType>Exe</OutputType>
+    
+    <!-- Target .NET 6.0 for modern performance features / 目标 .NET 6.0 以获得现代性能特性 -->
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+
+  <!-- 
+    Benchmark and comparison dependencies
+    基准测试和对比依赖项
+  -->
+  <ItemGroup>
+    <!-- BenchmarkDotNet: Industry-standard .NET benchmarking framework / 业界标准的 .NET 基准测试框架 -->
+    <PackageReference Include="BenchmarkDotNet" Version="0.13.12" />
+    
+    <!-- Dapper: Lightweight ORM for performance comparison / 轻量级 ORM，用于性能对比 -->
+    <PackageReference Include="Dapper" Version="2.1.35" />
+    
+    <!-- Entity Framework Core: For future EF Core comparison benchmarks / 用于未来的 EF Core 对比基准测试 -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.25" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.25" />
+    
+    <!-- Dynamic LINQ: For dynamic query support / 用于动态查询支持 -->
+    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.6.0.1" />
+  </ItemGroup>
+
+  <!-- 
+    Reference to SqlSugar main project
+    引用 SqlSugar 主项目
+  -->
+  <ItemGroup>
+    <ProjectReference Include="..\SqlSugar\SqlSugar.csproj" />
+  </ItemGroup>
+
+</Project>
