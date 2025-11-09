@@ -286,14 +286,14 @@ namespace PerformanceBenchmarks.Benchmarks
         [Benchmark]
         public object SqlSugar_AggregateFunctions()
         {
-            return new
+            return _sqlSugarDb.Queryable<BenchmarkOrder>().Select(it => new
             {
-                Count = _sqlSugarDb.Queryable<BenchmarkOrder>().Count(),
-                Sum = _sqlSugarDb.Queryable<BenchmarkOrder>().Sum(o => o.TotalAmount),
-                Avg = _sqlSugarDb.Queryable<BenchmarkOrder>().Avg(o => o.TotalAmount),
-                Max = _sqlSugarDb.Queryable<BenchmarkOrder>().Max(o => o.TotalAmount),
-                Min = _sqlSugarDb.Queryable<BenchmarkOrder>().Min(o => o.TotalAmount)
-            };
+                Count = SqlFunc.AggregateCount(it.OrderId),
+                Sum = SqlFunc.AggregateSum(it.TotalAmount),
+                Avg = SqlFunc.AggregateAvg(it.TotalAmount),
+                Max = SqlFunc.AggregateMax(it.TotalAmount),
+                Min = SqlFunc.AggregateMin(it.TotalAmount),
+            }).First();
         }
 
         /// <summary>
