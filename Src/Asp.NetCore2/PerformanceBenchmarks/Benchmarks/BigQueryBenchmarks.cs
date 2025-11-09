@@ -32,6 +32,7 @@ namespace PerformanceBenchmarks.Benchmarks
             BenchmarkConfig.CleanupDatabase();
 
             _sqlSugarDb = BenchmarkConfig.GetSqlServerDb();
+            _sqlSugarDb.Open();
             _dapperConnection = new SqlConnection(BenchmarkConfig.SqlServerConnection);
             _dapperConnection.Open();
 
@@ -47,6 +48,7 @@ namespace PerformanceBenchmarks.Benchmarks
         [GlobalCleanup]
         public void Cleanup()
         {
+            _sqlSugarDb.Close();
             _dapperConnection?.Close();
             _dapperConnection?.Dispose();
             BenchmarkConfig.CleanupDatabase();
@@ -61,7 +63,7 @@ namespace PerformanceBenchmarks.Benchmarks
             // Insert customers
             // 插入客户
             var customers = new List<BenchmarkCustomer>();
-            for (int i = 1; i <= 100000; i++)
+            for (int i = 1; i <= 10000; i++)
             {
                 customers.Add(new BenchmarkCustomer
                 {
@@ -80,8 +82,8 @@ namespace PerformanceBenchmarks.Benchmarks
         }
 
         /// <summary>
-        /// SqlSugar: Query 100000 rows
-        /// SqlSugar: 查询10万
+        /// SqlSugar: Query 10000 rows
+        /// SqlSugar: 查询1万
         /// </summary>
         [Benchmark]
         public List<BenchmarkOrder> SqlSugar_SimpleQuery()

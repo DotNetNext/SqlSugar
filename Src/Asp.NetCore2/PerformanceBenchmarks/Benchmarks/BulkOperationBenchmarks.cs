@@ -31,6 +31,7 @@ namespace PerformanceBenchmarks.Benchmarks
         {
             BenchmarkConfig.InitializeDatabase();
             _sqlSugarDb = BenchmarkConfig.GetSqlServerDb();
+            _sqlSugarDb.Open();
             _dapperConnection = new SqlConnection(BenchmarkConfig.SqlServerConnection);
             _dapperConnection.Open();
 
@@ -44,6 +45,7 @@ namespace PerformanceBenchmarks.Benchmarks
         [GlobalCleanup]
         public void Cleanup()
         {
+            _sqlSugarDb.Close();
             _dapperConnection?.Close();
             _dapperConnection?.Dispose();
         }

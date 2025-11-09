@@ -43,7 +43,7 @@ namespace PerformanceBenchmarks
         {
             var db = new SqlSugarClient(new ConnectionConfig()
             {
-                IsAutoCloseConnection = true,
+                IsAutoCloseConnection = false,
                 DbType = DbType.SqlServer,
                 ConnectionString = SqlServerConnection,
                 LanguageType = LanguageType.Default
