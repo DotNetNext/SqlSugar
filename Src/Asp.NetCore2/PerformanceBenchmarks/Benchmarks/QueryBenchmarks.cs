@@ -171,11 +171,10 @@ namespace PerformanceBenchmarks.Benchmarks
         public List<BenchmarkOrder> SqlSugar_PaginationQuery()
         {
             int pageIndex = 1;
-            int pageSize = 20;
-            int totalCount = 0;
+            int pageSize = 20; 
             return _sqlSugarDb.Queryable<BenchmarkOrder>()
                 .OrderBy(o => o.OrderId)
-                .ToPageList(pageIndex, pageSize, ref totalCount);
+                .ToPageList(pageIndex, pageSize);
         }
 
         /// <summary>
