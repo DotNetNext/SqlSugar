@@ -267,14 +267,12 @@ namespace PerformanceBenchmarks.Benchmarks
         public List<object> SqlSugar_SelectColumns()
         {
             return _sqlSugarDb.Queryable<BenchmarkOrder>()
-                .Select(o => new
+                .Select<object>(o => new
                 {
                     o.OrderId,
                     o.OrderNumber,
                     o.TotalAmount
-                })
-                .ToList()
-                .Cast<object>()
+                }) 
                 .ToList();
         }
 

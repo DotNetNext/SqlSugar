@@ -141,16 +141,14 @@ namespace PerformanceBenchmarks.Benchmarks
         {
             return _sqlSugarDb.Queryable<BenchmarkOrder, BenchmarkCustomer>(
                 (o, c) => o.CustomerId == c.CustomerId)
-                .Select((o, c) => new
+                .Select<object>((o, c) => new
                 {
                     o.OrderId,
                     o.OrderNumber,
                     o.TotalAmount,
                     CustomerName = c.CustomerName,
                     CustomerEmail = c.Email
-                })
-                .ToList()
-                .Cast<object>()
+                }) 
                 .ToList();
         }
 
@@ -178,14 +176,12 @@ namespace PerformanceBenchmarks.Benchmarks
         {
             return _sqlSugarDb.Queryable<BenchmarkOrder>()
                 .LeftJoin<BenchmarkCustomer>((o, c) => o.CustomerId == c.CustomerId)
-                .Select((o, c) => new
+                .Select<object>((o, c) => new
                 {
                     o.OrderId,
                     o.OrderNumber,
                     CustomerName = c.CustomerName
-                })
-                .ToList()
-                .Cast<object>()
+                }) 
                 .ToList();
         }
 
@@ -216,7 +212,7 @@ namespace PerformanceBenchmarks.Benchmarks
                     JoinType.Left, o.OrderId == oi.OrderId,
                     JoinType.Left, oi.ProductId == p.ProductId
                 ))
-                .Select((o, c, oi, p) => new
+                .Select<object>((o, c, oi, p) => new
                 {
                     o.OrderId,
                     o.OrderNumber,
@@ -224,9 +220,7 @@ namespace PerformanceBenchmarks.Benchmarks
                     ProductName = p.ProductName,
                     oi.Quantity,
                     oi.TotalPrice
-                })
-                .ToList()
-                .Cast<object>()
+                }) 
                 .ToList();
         }
 
@@ -257,14 +251,12 @@ namespace PerformanceBenchmarks.Benchmarks
             return _sqlSugarDb.Queryable<BenchmarkOrder, BenchmarkCustomer>(
                 (o, c) => o.CustomerId == c.CustomerId)
                 .Where((o, c) => o.Status == "Completed" && c.IsActive == true)
-                .Select((o, c) => new
+                .Select<object>((o, c) => new
                 {
                     o.OrderId,
                     o.OrderNumber,
                     CustomerName = c.CustomerName
-                })
-                .ToList()
-                .Cast<object>()
+                }) 
                 .ToList();
         }
 
@@ -293,15 +285,13 @@ namespace PerformanceBenchmarks.Benchmarks
             return _sqlSugarDb.Queryable<BenchmarkOrder, BenchmarkCustomer>(
                 (o, c) => o.CustomerId == c.CustomerId)
                 .GroupBy((o, c) => c.CustomerId)
-                .Select((o, c) => new
+                .Select<object>((o, c) => new
                 {
                     CustomerId = c.CustomerId,
                     CustomerName = c.CustomerName,
                     OrderCount = SqlFunc.AggregateCount(o.OrderId),
                     TotalAmount = SqlFunc.AggregateSum(o.TotalAmount)
-                })
-                .ToList()
-                .Cast<object>()
+                }) 
                 .ToList();
         }
 

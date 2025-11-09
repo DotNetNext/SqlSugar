@@ -146,15 +146,13 @@ namespace PerformanceBenchmarks.Benchmarks
             return _sqlSugarDb.Queryable<BenchmarkOrder>()
                 .GroupBy(o => o.CustomerId)
                 .Having(o => SqlFunc.AggregateCount(o.OrderId) > 1)
-                .Select(o => new
+                .Select<object>(o => new
                 {
                     CustomerId = o.CustomerId,
                     OrderCount = SqlFunc.AggregateCount(o.OrderId),
                     TotalAmount = SqlFunc.AggregateSum(o.TotalAmount),
                     AvgAmount = SqlFunc.AggregateAvg(o.TotalAmount)
-                })
-                .ToList()
-                .Cast<object>()
+                }) 
                 .ToList();
         }
 
@@ -185,13 +183,13 @@ namespace PerformanceBenchmarks.Benchmarks
         {
             var query1 = _sqlSugarDb.Queryable<BenchmarkCustomer>()
                 .Where(c => c.City == "CityA")
-                .Select(c => new { c.CustomerId, c.CustomerName });
+                .Select<object>(c => new { c.CustomerId, c.CustomerName });
 
             var query2 = _sqlSugarDb.Queryable<BenchmarkCustomer>()
                 .Where(c => c.City == "CityB")
-                .Select(c => new { c.CustomerId, c.CustomerName });
+                .Select<object>(c => new { c.CustomerId, c.CustomerName });
 
-            return _sqlSugarDb.UnionAll(query1, query2).ToList().Cast<object>().ToList();
+            return _sqlSugarDb.UnionAll(query1, query2).ToList();
         }
 
         /// <summary>
@@ -286,7 +284,7 @@ namespace PerformanceBenchmarks.Benchmarks
         [Benchmark]
         public object SqlSugar_AggregateFunctions()
         {
-            return _sqlSugarDb.Queryable<BenchmarkOrder>().Select(it => new
+            return _sqlSugarDb.Queryable<BenchmarkOrder>().Select<object>(it => new
             {
                 Count = SqlFunc.AggregateCount(it.OrderId),
                 Sum = SqlFunc.AggregateSum(it.TotalAmount),
