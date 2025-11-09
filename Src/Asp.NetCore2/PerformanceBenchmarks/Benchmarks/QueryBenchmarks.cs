@@ -174,7 +174,7 @@ namespace PerformanceBenchmarks.Benchmarks
             int pageSize = 20; 
             return _sqlSugarDb.Queryable<BenchmarkOrder>()
                 .OrderBy(o => o.OrderId)
-                .ToPageList(pageIndex, pageSize);
+                .ToOffsetPage(pageIndex, pageSize);
         }
 
         /// <summary>
