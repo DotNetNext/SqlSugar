@@ -1,4 +1,4 @@
-using BenchmarkDotNet.Running;
+using BenchmarkDotNet.Running; 
 using System;
 
 namespace PerformanceBenchmarks
@@ -68,6 +68,10 @@ namespace PerformanceBenchmarks
             // Run complex query benchmarks
             // 运行复杂查询基准测试
             BenchmarkRunner.Run<Benchmarks.ComplexQueryBenchmarks>();
+
+            // Big query
+            // 查询大数据
+            BenchmarkRunner.Run<Benchmarks.BigQueryBenchmarks>();
 
             Console.WriteLine();
             Console.WriteLine("所有基准测试完成！");
