@@ -278,6 +278,10 @@ namespace SqlSugar
     }
     public class Subqueryable<T1, T2, T3, T4, T5> : Subqueryable<T1> where T1 : class, new()
     {
+        public TResult Select<TResult>(Func<T1, T2, T3, T4,T5, TResult> expression) where TResult : struct
+        {
+            return default(TResult);
+        }
         public Subqueryable<T1, T2, T3, T4,T5> Having(Func<T1, T2, T3, T4,T5, bool> expression)
         {
             return this;
