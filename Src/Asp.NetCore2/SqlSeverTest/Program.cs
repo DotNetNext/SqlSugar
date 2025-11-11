@@ -1,4 +1,4 @@
-﻿using SqlSugar;
+using SqlSugar;
 using System;
 
 namespace OrmTest
@@ -28,6 +28,7 @@ namespace OrmTest
             _a6_SqlPage.Init();
             _a7_JsonType.Init();
             _a8_SelectReturnType.Init();
+            _b1_UtilConvertTest.Init();
         }
     }
 
