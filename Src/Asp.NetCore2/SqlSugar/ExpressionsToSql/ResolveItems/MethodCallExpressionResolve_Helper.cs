@@ -875,7 +875,7 @@ namespace SqlSugar
                             var dateString2 = this.Context.DbMehtods.GetDateString(model.Args.First().MemberName.ObjToString(), model.Args.Last().MemberValue.ObjToString());
                             if (IsSqlServerModel())
                             {
-                                 return string.Format("FORMAT({0},'{1}','en-US')", model.Args.First().MemberName.ObjToString(), model.Args.Last().MemberValue.ObjToString());
+                                 return string.Format("FORMAT({0},'{1}')", model.Args.First().MemberName.ObjToString(), model.Args.Last().MemberValue.ObjToString());
                             }
                             if (dateString2 != null) return dateString2;
                             return GeDateFormat(model.Args.Last().MemberValue.ObjToString(), model.Args.First().MemberName.ObjToString());
