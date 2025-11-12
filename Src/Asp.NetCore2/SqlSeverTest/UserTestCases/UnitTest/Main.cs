@@ -1,4 +1,4 @@
-﻿using Demo;
+using Demo;
 using SqlSeverTest;
 using SqlSeverTest.UserTestCases;
 using SqlSeverTest.UserTestCases.UnitTest;
@@ -150,6 +150,7 @@ namespace OrmTest
             UCustom01.Init();
             UCustom02.Init();
             UCustom03.Init();
+            UnitUtilConvert.Init();
             Bulk();
             Filter();
             Insert();
