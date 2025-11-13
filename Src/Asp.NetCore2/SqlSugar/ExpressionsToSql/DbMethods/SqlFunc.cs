@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -468,5 +468,773 @@ namespace SqlSugar
         {
             throw new NotSupportedException("Can only be used in expressions");
         }
+
+        #region String Functions - Extended
+
+        /// <summary>
+        /// Reverses a string value
+        /// </summary>
+        public static string Reverse(string value)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Repeats a string value a specified number of times
+        /// </summary>
+        public static string Replicate(string value, int count)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the starting position of a pattern in a string
+        /// </summary>
+        public static int PatIndex(string pattern, string value)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns a four-character (SOUNDEX) code to evaluate the similarity of two strings
+        /// </summary>
+        public static string Soundex(string value)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the difference between the SOUNDEX values of two strings
+        /// </summary>
+        public static int Difference(string value1, string value2)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Formats a value with the specified format
+        /// </summary>
+        public static string Format(object value, string format)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns a Unicode string with delimiters added to make the input string a valid SQL Server delimited identifier
+        /// </summary>
+        public static string QuoteName(string value)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns a Unicode string with delimiters added using specified quote character
+        /// </summary>
+        public static string QuoteName(string value, string quoteChar)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Concatenates strings with a separator
+        /// </summary>
+        public static string ConcatWs(string separator, params object[] values)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Pads a string on the right with a specified character to a certain length
+        /// </summary>
+        public static string PadRight(string value, int length, char padChar)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the ASCII code value of the leftmost character
+        /// </summary>
+        public static int Ascii(string value)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the character for the specified ASCII code
+        /// </summary>
+        public static string Char(int asciiCode)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the Unicode value for the first character of the input expression
+        /// </summary>
+        public static int Unicode(string value)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the Unicode character for the specified integer code
+        /// </summary>
+        public static string NChar(int unicodeValue)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns part of a character expression (alternative to Substring)
+        /// </summary>
+        public static string SubstringIndex(string value, string delimiter, int count)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        #endregion
+
+        #region Math Functions - Extended
+
+        /// <summary>
+        /// Returns the value of a number raised to the power of another number
+        /// </summary>
+        public static double Power(double value, double power)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the square root of a number
+        /// </summary>
+        public static double Sqrt(double value)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns e raised to the power of a specified number
+        /// </summary>
+        public static double Exp(double value)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the natural logarithm of a number
+        /// </summary>
+        public static double Log(double value)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the natural logarithm of a number with specified base
+        /// </summary>
+        public static double Log(double value, double logBase)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the base-10 logarithm of a number
+        /// </summary>
+        public static double Log10(double value)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Converts radians to degrees
+        /// </summary>
+        public static double Degrees(double radians)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Converts degrees to radians
+        /// </summary>
+        public static double Radians(double degrees)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the sign of a number (-1, 0, or 1)
+        /// </summary>
+        public static int Sign(decimal value)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the constant value of PI
+        /// </summary>
+        public static double PI()
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the sine of an angle specified in radians
+        /// </summary>
+        public static double Sin(double radians)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the cosine of an angle specified in radians
+        /// </summary>
+        public static double Cos(double radians)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the tangent of an angle specified in radians
+        /// </summary>
+        public static double Tan(double radians)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the arc sine (inverse sine) of a number
+        /// </summary>
+        public static double Asin(double value)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the arc cosine (inverse cosine) of a number
+        /// </summary>
+        public static double Acos(double value)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the arc tangent (inverse tangent) of a number
+        /// </summary>
+        public static double Atan(double value)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the arc tangent of two numbers
+        /// </summary>
+        public static double Atan2(double y, double x)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the smallest integer greater than or equal to the specified number (alternative to Ceil)
+        /// </summary>
+        public static double Ceiling(double value)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Truncates a number to the specified number of decimal places
+        /// </summary>
+        public static decimal Truncate(decimal value, int decimals)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        #endregion
+
+        #region Date Functions - Extended
+
+        /// <summary>
+        /// Returns the last day of the month for a specified date
+        /// </summary>
+        public static DateTime EndOfMonth(DateTime date)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns a date from the specified year, month, and day
+        /// </summary>
+        public static DateTime DateFromParts(int year, int month, int day)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns a datetime from the specified date and time parts
+        /// </summary>
+        public static DateTime DateTimeFromParts(int year, int month, int day, int hour, int minute, int second)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns a time from the specified hour, minute, and second
+        /// </summary>
+        public static TimeSpan TimeFromParts(int hour, int minute, int second)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the name of the specified date part (e.g., "January" for month 1)
+        /// </summary>
+        public static string DateName(DateType dateType, DateTime date)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the integer value of the specified date part
+        /// </summary>
+        public static int DatePart(DateType dateType, DateTime date)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the quarter of the year for a specified date (1-4)
+        /// </summary>
+        public static int Quarter(DateTime date)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the day of the year for a specified date (1-366)
+        /// </summary>
+        public static int DayOfYear(DateTime date)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the week number of the year for a specified date
+        /// </summary>
+        public static int Week(DateTime date)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns a datetime value adjusted to a specified time zone offset
+        /// </summary>
+        public static DateTimeOffset SwitchOffset(DateTimeOffset dateTimeOffset, string timeZone)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the current UTC date and time
+        /// </summary>
+        public static DateTime GetUtcDate()
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the current system date and time with higher precision
+        /// </summary>
+        public static DateTime SysDateTime()
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the current UTC date and time with higher precision
+        /// </summary>
+        public static DateTime SysUtcDateTime()
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the current system date and time offset
+        /// </summary>
+        public static DateTimeOffset SysDateTimeOffset()
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        #endregion
+
+        #region Conversion Functions - Extended
+
+        /// <summary>
+        /// Tries to cast a value to the specified type, returns NULL if conversion fails
+        /// </summary>
+        public static T TryCast<T>(object value)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Tries to convert a value to the specified type, returns NULL if conversion fails
+        /// </summary>
+        public static T TryConvert<T>(object value)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Tries to parse a string to the specified type, returns NULL if parsing fails
+        /// </summary>
+        public static T TryParse<T>(string value)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Casts a value to the specified SQL type
+        /// </summary>
+        public static T Cast<T>(object value)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Converts a value to the specified SQL type
+        /// </summary>
+        public static T Convert<T>(object value)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        #endregion
+
+        #region Aggregate Functions - Extended
+
+        /// <summary>
+        /// Concatenates string values with a separator (SQL Server 2017+)
+        /// </summary>
+        public static string StringAgg(string value, string separator)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Concatenates string values with a separator and ordering (SQL Server 2017+)
+        /// </summary>
+        public static string StringAgg(string value, string separator, object orderBy)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Concatenates string values (MySQL GROUP_CONCAT)
+        /// </summary>
+        public static string GroupConcat(string value)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Concatenates string values with separator (MySQL GROUP_CONCAT)
+        /// </summary>
+        public static string GroupConcat(string value, string separator)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the checksum aggregate of values in a group
+        /// </summary>
+        public static int ChecksumAgg(object value)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the statistical standard deviation of all values
+        /// </summary>
+        public static double StDev(decimal value)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the statistical standard deviation for the population
+        /// </summary>
+        public static double StDevP(decimal value)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the statistical variance of all values
+        /// </summary>
+        public static double Var(decimal value)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the statistical variance for the population
+        /// </summary>
+        public static double VarP(decimal value)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the median value in a group of values (Oracle, PostgreSQL)
+        /// </summary>
+        public static decimal Median(decimal value)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the specified percentile value (SQL Server, PostgreSQL)
+        /// </summary>
+        public static decimal PercentileCont(decimal value, double percentile)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the discrete percentile value (SQL Server, PostgreSQL)
+        /// </summary>
+        public static decimal PercentileDisc(decimal value, double percentile)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        #endregion
+
+        #region Window Functions - Extended
+
+        /// <summary>
+        /// Returns the value of the next row in the result set
+        /// </summary>
+        public static T Lead<T>(T value)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the value of the next row with offset in the result set
+        /// </summary>
+        public static T Lead<T>(T value, int offset)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the value of the next row with offset and default value
+        /// </summary>
+        public static T Lead<T>(T value, int offset, T defaultValue)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the value of the previous row in the result set
+        /// </summary>
+        public static T Lag<T>(T value)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the value of the previous row with offset in the result set
+        /// </summary>
+        public static T Lag<T>(T value, int offset)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the value of the previous row with offset and default value
+        /// </summary>
+        public static T Lag<T>(T value, int offset, T defaultValue)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the first value in an ordered set of values
+        /// </summary>
+        public static T FirstValue<T>(T value)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the last value in an ordered set of values
+        /// </summary>
+        public static T LastValue<T>(T value)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the value at the specified position in an ordered set
+        /// </summary>
+        public static T NthValue<T>(T value, int position)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Divides the result set into a specified number of groups
+        /// </summary>
+        public static int Ntile(int numberOfGroups)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the relative rank of a row within a partition
+        /// </summary>
+        public static double PercentRank()
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the cumulative distribution of a value in a group of values
+        /// </summary>
+        public static double CumeDist()
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        #endregion
+
+        #region Conditional Functions - Extended
+
+        /// <summary>
+        /// Returns the first non-null value in the list (extended version)
+        /// </summary>
+        public static T Coalesce<T>(T value1, T value2, T value3)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the first non-null value in the list (extended version)
+        /// </summary>
+        public static T Coalesce<T>(T value1, T value2, T value3, T value4)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the first non-null value in the list (extended version)
+        /// </summary>
+        public static T Coalesce<T>(T value1, T value2, T value3, T value4, T value5)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns NULL if two expressions are equal, otherwise returns the first expression
+        /// </summary>
+        public static T NullIf<T>(T value1, T value2)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the greatest value from a list of values
+        /// </summary>
+        public static T Greatest<T>(params T[] values)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the least value from a list of values
+        /// </summary>
+        public static T Least<T>(params T[] values)
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        #endregion
+
+        #region Utility Functions - Extended
+
+        /// <summary>
+        /// Returns the current database name
+        /// </summary>
+        public static string DatabaseName()
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the current user name
+        /// </summary>
+        public static string CurrentUser()
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the current session user name
+        /// </summary>
+        public static string SessionUser()
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the current system user name
+        /// </summary>
+        public static string SystemUser()
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the host name of the client
+        /// </summary>
+        public static string HostName()
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the application name
+        /// </summary>
+        public static string AppName()
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns information about the current connection
+        /// </summary>
+        public static int ConnectionId()
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the last identity value inserted
+        /// </summary>
+        public static long LastInsertId()
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        /// <summary>
+        /// Returns the number of rows affected by the last statement
+        /// </summary>
+        public static int RowCount()
+        {
+            throw new NotSupportedException("Can only be used in expressions");
+        }
+
+        #endregion
     }
 }
