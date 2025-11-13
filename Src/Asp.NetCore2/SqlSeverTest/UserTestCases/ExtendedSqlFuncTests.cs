@@ -9,13 +9,14 @@ namespace OrmTest
     /// Test cases for extended SqlFunc methods
     /// Demonstrates usage of newly added SQL functions
     /// </summary>
-    public class ExtendedSqlFuncTests
+    public partial class NewUnitTest
     {
-        public static void Init()
+        public static void ExtendedSqlFunc()
         {
+            Console.WriteLine("");
             Console.WriteLine("=== Extended SqlFunc Tests ===");
             
-            var db = NewUnitTest.Db;
+            var db = Db;
 
             // Create test table
             db.CodeFirst.InitTables<TestProduct>();

@@ -900,9 +900,9 @@ namespace SqlSugar
         }
 
         /// <summary>
-        /// Converts a value to the specified SQL type
+        /// Converts a value to the specified SQL type (SQL CONVERT function)
         /// </summary>
-        public static T Convert<T>(object value)
+        public static T SqlConvert<T>(object value)
         {
             throw new NotSupportedException("Can only be used in expressions");
         }
@@ -1223,14 +1223,6 @@ namespace SqlSugar
         /// Returns the last identity value inserted
         /// </summary>
         public static long LastInsertId()
-        {
-            throw new NotSupportedException("Can only be used in expressions");
-        }
-
-        /// <summary>
-        /// Returns the number of rows affected by the last statement
-        /// </summary>
-        public static int RowCount()
         {
             throw new NotSupportedException("Can only be used in expressions");
         }
