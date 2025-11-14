@@ -277,7 +277,7 @@ namespace SqlSugar
                     Args = new List<MethodCallExpressionArgs>() {
                   new MethodCallExpressionArgs(){
                    IsMember=true,
-                   MemberName= formatBuilder.FormatValue(value)
+                   MemberName= formatBuilder.FormatValue(UtilMethods.DateOnlyToDateTime(value))
                   }
                  }
                 });
