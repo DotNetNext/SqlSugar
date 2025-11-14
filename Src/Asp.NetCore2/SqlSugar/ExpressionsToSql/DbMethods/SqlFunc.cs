@@ -732,14 +732,6 @@ namespace SqlSugar
         }
 
         /// <summary>
-        /// Returns the smallest integer greater than or equal to the specified number (alternative to Ceil)
-        /// </summary>
-        public static double Ceiling(double value)
-        {
-            throw new NotSupportedException("Can only be used in expressions");
-        }
-
-        /// <summary>
         /// Truncates a number to the specified number of decimal places
         /// </summary>
         public static decimal Truncate(decimal value, int decimals)
@@ -811,14 +803,6 @@ namespace SqlSugar
         /// Returns the day of the year for a specified date (1-366)
         /// </summary>
         public static int DayOfYear(DateTime date)
-        {
-            throw new NotSupportedException("Can only be used in expressions");
-        }
-
-        /// <summary>
-        /// Returns the week number of the year for a specified date
-        /// </summary>
-        public static int Week(DateTime date)
         {
             throw new NotSupportedException("Can only be used in expressions");
         }
